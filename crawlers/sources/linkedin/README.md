@@ -1,8 +1,9 @@
-# LinkedIn crawler
+# ⚠️ Nguồn này đã được thay thế
 
-- **Owner:** Phúc
-- **Trang bắt đầu:** _điền URL đã được phép thu thập_
-- **Cách chạy:** _chưa triển khai_
-- **Ghi chú robots/ToS:** _cần kiểm tra trước khi code_
+**LinkedIn** đã bị loại khỏi danh sách nguồn thu thập vì:
+- Điều khoản sử dụng (ToS) cấm cào dữ liệu rõ ràng
+- Phần lớn nội dung cần đăng nhập
+- Dễ bị khóa tài khoản khi cào tự động
 
-> Chỉ thu thập nội dung công khai được phép theo điều khoản của LinkedIn; không đăng nhập, vượt giới hạn, hoặc dùng biện pháp né chống bot.
+**Phúc** sẽ phụ trách một nguồn mới (đang chờ chốt).
+Xem chi tiết tại [TASKS.md](../../../TASKS.md).
