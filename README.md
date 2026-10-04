@@ -8,9 +8,10 @@ Dự án môn học Khai phá Dữ liệu (Data Mining) — Trường Đại h�
 
 ## 📌 Tài liệu dự án
 
-- 📋 [**Phân công công việc (TASKS.md)**](TASKS.md) — Ai làm gì, deadline, checklist
+- 📋 [**Phân công công việc (TASKS.md)**](TASKS.md) — Phân công, deadline, checklist
+- 🏛️ [**Kiến trúc Hệ thống & Chuẩn Data Mining**](docs/data_mining_pipeline_and_architecture.md) — Tài liệu trình giảng viên UTH
+- ☁️ [**Hướng dẫn Setup AWS EC2 & S3**](docs/ec2_s3_setup_guide.md) — Cẩm nang thực hành cho Leader
 - 📄 [Đề cương chi tiết dự án](docs/vietnam_it_recruitment_data_mining_project.md)
-- 🏗️ [Thiết kế kiến trúc kỹ thuật](docs/kien_truc_co_the.md)
 - 🕷️ [Cấu trúc Crawler & Phân công nguồn](crawlers/README.md)
 
 ---
@@ -35,12 +36,12 @@ Dự án môn học Khai phá Dữ liệu (Data Mining) — Trường Đại h�
 
 | Nguồn | Thư mục | Người phụ trách | Công cụ | Trạng thái |
 |---|---|---|---|---|
-| TopDev | `crawlers/sources/topdev/` | Sơn | requests + BS4 | ⬜ Chưa bắt đầu |
-| CareerViet | `crawlers/sources/careerviet/` | Tài | requests + BS4 | ⬜ Chưa bắt đầu |
-| ITviec | `crawlers/sources/itviec/` | Phát | requests + BS4 | ⬜ Chưa bắt đầu |
-| VietnamWorks | `crawlers/sources/vietnamworks/` | Khoa | requests + BS4 | ⬜ Chưa bắt đầu |
-| TopCV | `crawlers/sources/topcv/` | Thuận | Playwright / Browser Use | ⬜ Chưa bắt đầu |
-| _Chưa chốt_ | — | Phúc | _Tùy nguồn_ | ⚠️ Cần chọn nguồn |
+| TopDev | `crawlers/sources/topdev/` | Sơn | requests + BS4 | ✅ Đã có source code |
+| CareerViet | `crawlers/sources/careerviet/` | Tài | requests + BS4 | ✅ Đã có source code |
+| VietnamWorks | `crawlers/sources/vietnamworks/` | Khoa | requests + BS4 | ✅ Đã có source code |
+| ITviec | `crawlers/sources/itviec/` | Phát | requests + BS4 | 🔄 Đang hoàn thiện |
+| TopCV | `crawlers/sources/topcv/` | Thuận | Playwright / Browser Use | 🔄 Đang triển khai |
+| _Chưa chốt_ | — | Phúc | _Tùy nguồn_ | ⚠️ Đang đổi nguồn |
 
 > **Nhánh thử nghiệm:** Thuận + Phát phối hợp thử Browser Use + Ollama trên 1.000 tin (ITviec + TopCV).
 
