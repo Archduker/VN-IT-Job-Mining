@@ -1,0 +1,23 @@
+# ============================================================
+# VN IT Job Mining — Runtime Dependencies
+# ============================================================
+
+# --- Web Scraping ---
+requests==2.32.3
+beautifulsoup4==4.13.4
+lxml==5.4.0
+playwright==1.50.0          # TopCV (Cloudflare-protected)
+
+# --- Data Validation & Typing ---
+pydantic==2.11.3
+
+# --- Data Storage ---
+boto3==1.38.22               # AWS S3 upload
+python-dotenv==1.1.0         # Load .env variables
+
+# --- Scheduling / Orchestration ---
+# Airflow được cài riêng qua scripts/setup_airflow.sh
+# để tránh conflict với constraints
+
+# --- Utilities ---
+python-slugify==8.0.4        # Normalize text
