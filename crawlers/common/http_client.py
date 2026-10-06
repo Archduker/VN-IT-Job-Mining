@@ -351,6 +351,55 @@ class HttpClient:
         response.encoding = response.apparent_encoding or "utf-8"
         return response.text
 
+    def post(
+        self,
+        url: str,
+        data: Any = None,
+        json: Any = None,
+        headers: Optional[dict[str, str]] = None,
+        apply_delay: bool = True,
+        **kwargs,
+    ) -> Response:
+        """Gửi POST request với delay và User-Agent rotation tự động."""
+        if apply_delay and self._request_count > 0:
+            delay = self.delay_config.random_delay()
+            logger.debug(
+                "[%s] Sleeping %.2fs before POST #%s",
+                self.source, delay, self._request_count + 1,
+            )
+            time.sleep(delay)
+
+        ua = self._rotate_user_agent()
+        request_headers = {**self._session.headers, **(headers or {})}
+
+        try:
+            response = self._session.post(
+                url,
+                data=data,
+                json=json,
+                headers=request_headers,
+                timeout=self.timeout,
+                **kwargs,
+            )
+            self._request_count += 1
+
+            logger.info(
+                "[%s] POST %s | status=%s | size=%s bytes | #%s",
+                self.source,
+                url,
+                response.status_code,
+                len(response.content),
+                self._request_count,
+            )
+
+            if self.retry_config.raise_on_status:
+                response.raise_for_status()
+
+            return response
+        except Exception as exc:
+            logger.error("[%s] POST error | url=%s | err=%s", self.source, url, exc)
+            raise
+
     def close(self) -> None:
         """Đóng session và giải phóng connection pool.
 
