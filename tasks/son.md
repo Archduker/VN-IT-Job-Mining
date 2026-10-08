@@ -116,12 +116,19 @@ Bạn bắt buộc phải tuân thủ nghiêm ngặt 7 bước sau trong quá tr
 
 ## 🌿 5. Hướng Dẫn Git Workflow (Kéo Code, Tạo Nhánh & Push)
 
+> [!CAUTION]
+> **QUY TẮC BẮT BUỘC TRƯỚC KHI BẮT ĐẦU**:
+> 1. Luôn chuyển về `main` và kéo code mới nhất từ remote: `git checkout main && git pull origin main`.
+> 2. **BẮT BUỘC TẠO NHÁNH RIÊNG** cho nhiệm vụ của mình: `git checkout -b feature/topdev-crawler-json-clean`.  
+>    🚫 **TUYỆT ĐỐI KHÔNG** commit hoặc viết code trực tiếp trên nhánh `main`!
+> 3. Sau khi hoàn thành và test pass, push nhánh lên GitHub và tạo Pull Request để Team Leader (@billtran) review và merge.
+
 ```bash
 # 1. Cập nhật nhánh main từ remote
 git checkout main
 git pull origin main
 
-# 2. Tạo nhánh tính năng cho TopDev
+# 2. Bắt buộc tạo nhánh riêng cho mình từ main
 git checkout -b feature/topdev-crawler-json-clean
 
 # 3. Tiến hành chỉnh sửa file crawlers/sources/topdev/crawler.py

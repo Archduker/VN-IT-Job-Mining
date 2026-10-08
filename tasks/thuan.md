@@ -114,12 +114,19 @@ KÉO FILE HTML / PHẢN HỒI API
 
 ## 🌿 5. Hướng Dẫn Git Workflow (Kéo Code, Tạo Nhánh & Push)
 
+> [!CAUTION]
+> **QUY TẮC BẮT BUỘC TRƯỚC KHI BẮT ĐẦU**:
+> 1. Luôn chuyển về `main` và kéo code mới nhất từ remote: `git checkout main && git pull origin main`.
+> 2. **BẮT BUỘC TẠO NHÁNH RIÊNG** cho nhiệm vụ của mình: `git checkout -b feature/core-json-schema-topcv`.  
+>    🚫 **TUYỆT ĐỐI KHÔNG** commit hoặc viết code trực tiếp trên nhánh `main`!
+> 3. Sau khi hoàn thành và test pass 100%, push nhánh lên GitHub và tạo Pull Request để kiểm duyệt.
+
 ```bash
 # 1. Chuyển về nhánh main và kéo code mới nhất
 git checkout main
 git pull origin main
 
-# 2. Tạo nhánh làm việc riêng
+# 2. Bắt buộc tạo nhánh riêng cho mình từ main
 git checkout -b feature/core-json-schema-topcv
 
 # 3. Tiến hành sửa code, kiểm tra test

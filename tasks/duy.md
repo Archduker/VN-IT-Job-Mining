@@ -167,12 +167,19 @@ class GlintsCrawler(BaseCrawler):
 
 ## 🌿 6. Hướng Dẫn Git Workflow (Kéo Code, Tạo Nhánh & Push)
 
+> [!CAUTION]
+> **QUY TẮC BẮT BUỘC TRƯỚC KHI BẮT ĐẦU**:
+> 1. Luôn chuyển về `main` và kéo code mới nhất từ remote: `git checkout main && git pull origin main`.
+> 2. **BẮT BUỘC TẠO NHÁNH RIÊNG** cho nhiệm vụ của mình: `git checkout -b feature/glints-crawler-duy`.  
+>    🚫 **TUYỆT ĐỐI KHÔNG** commit hoặc viết code trực tiếp trên nhánh `main`!
+> 3. Sau khi hoàn thành và test pass, push nhánh lên GitHub và tạo Pull Request để Team Leader (@billtran) review và merge.
+
 ```bash
 # 1. Kéo code mới nhất từ nhánh main
 git checkout main
 git pull origin main
 
-# 2. Tạo nhánh làm việc cho nguồn Glints
+# 2. Bắt buộc tạo nhánh riêng cho mình từ main
 git checkout -b feature/glints-crawler-duy
 
 # 3. Code trong thư mục crawlers/sources/glints/ và run.py
