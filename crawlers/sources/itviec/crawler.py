@@ -35,12 +35,18 @@ from datetime import datetime, timezone, timedelta
 
 import requests
 
+repo_root = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+if repo_root not in sys.path:
+    sys.path.insert(0, repo_root)
+
 try:  # chạy như package hoặc trực tiếp
     from . import config, parser as job_parser
 except ImportError:  # pragma: no cover
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import config
     import parser as job_parser
+
+from crawlers.common.json_writer import JsonWriter
 
 log = logging.getLogger("itviec.crawler")
 
@@ -122,24 +128,49 @@ def save_checkpoint(path, seen_ids, extra=None):
     os.replace(tmp, path)  # ghi nguyên tử, mất điện không hỏng checkpoint
 
 
-# ---------------------------------------------------------------- JSONL writer
-# Mô phỏng common/jsonl_writer.py: append + flush từng dòng, ensure_ascii=False.
+# ---------------------------------------------------------------- JSON writer
+# Sử dụng common/json_writer.py: atomic write mảng JSON [ ... ]
+
+
+def open_json(date_str, batch_id):
+    """Mở JsonWriter cho partition: data/itviec/dt=…/batch_….json."""
+    day_dir = os.path.join(config.DATA_DIR, f"dt={date_str}")
+    os.makedirs(day_dir, exist_ok=True)
+    batch_seq_str = batch_id.rsplit("_", 1)[-1]
+    try:
+        batch_seq = int(batch_seq_str)
+    except ValueError:
+        batch_seq = 1
+    run_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    parent_dir = os.path.dirname(config.DATA_DIR)
+    return JsonWriter(
+        source=config.SOURCE,
+        output_dir=parent_dir,
+        run_date=run_date,
+        batch_seq=batch_seq,
+        filename_override=f"batch_{batch_seq:03d}.json",
+        validate_schema=False,
+    )
 
 
 def open_jsonl(date_str, batch_id):
-    """Mở (hoặc tiếp tục ghi vào) file partition: data/itviec/dt=…/batch_….jsonl."""
-    day_dir = os.path.join(config.DATA_DIR, f"dt={date_str}")
-    os.makedirs(day_dir, exist_ok=True)
-    batch_seq = batch_id.rsplit("_", 1)[-1]
-    return open(os.path.join(day_dir, f"batch_{batch_seq}.jsonl"), "a",
-                encoding="utf-8")
+    """Deprecated alias cho open_json."""
+    return open_json(date_str, batch_id)
 
 
-def write_record(fh, record):
-    fh.write(json.dumps(record, ensure_ascii=False))
-    fh.write("\n")
-    fh.flush()
-    os.fsync(fh.fileno())
+def write_record(target, record):
+    """Ghi record vào JsonWriter hoặc file handle (tương thích ngược)."""
+    if isinstance(target, JsonWriter):
+        target.write(record)
+    elif hasattr(target, "write"):
+        target.write(json.dumps(record, ensure_ascii=False))
+        target.write("\n")
+        target.flush()
+        if hasattr(target, "fileno"):
+            try:
+                os.fsync(target.fileno())
+            except OSError:
+                pass
 
 
 # ---------------------------------------------------------------- helpers
@@ -208,7 +239,7 @@ def crawl(max_items=None, batch_id=None, client=None):
              len(seen_ids), batch_id, max_items)
 
     stats = {"written": 0, "failed": 0, "skipped_seen_on_listing": 0}
-    fh = open_jsonl(date_str, batch_id)
+    writer = open_json(date_str, batch_id)
     since_checkpoint = 0
     try:
         for location in config.LISTING_LOCATIONS:
@@ -234,7 +265,7 @@ def crawl(max_items=None, batch_id=None, client=None):
                 for job in new_jobs:
                     if stats["written"] >= max_items:
                         break
-                    if _crawl_one(client, job, seen_ids, batch_id, fh, stats):
+                    if _crawl_one(client, job, seen_ids, batch_id, writer, stats):
                         since_checkpoint += 1
                         if since_checkpoint >= config.CHECKPOINT_INTERVAL:
                             save_checkpoint(config.CHECKPOINT_FILE, seen_ids)
@@ -242,13 +273,14 @@ def crawl(max_items=None, batch_id=None, client=None):
                             log.info("Checkpoint đã ghi (%d job).", len(seen_ids))
     finally:
         save_checkpoint(config.CHECKPOINT_FILE, seen_ids)
-        fh.close()
+        writer.close()
 
+    stats["output_file"] = str(writer.file_path)
     log.info("Hoàn thành batch %s: %s", batch_id, stats)
     return stats
 
 
-def _crawl_one(client, job, seen_ids, batch_id, fh, stats):
+def _crawl_one(client, job, seen_ids, batch_id, writer, stats):
     """Cào 1 tin detail. Return True nếu ghi thành công (đã tính checkpoint)."""
     slug, url = job["source_job_id"], job["url"]
     try:
@@ -279,7 +311,7 @@ def _crawl_one(client, job, seen_ids, batch_id, fh, stats):
     if warnings:
         log.warning("Thiếu field (%s): %s", url, ", ".join(warnings))
 
-    write_record(fh, record)
+    write_record(writer, record)
     seen_ids.add(slug)
     stats["written"] += 1
     log.info("✓ [%d] %s | %s", stats["written"], raw.get("title"), url)

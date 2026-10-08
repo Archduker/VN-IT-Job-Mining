@@ -15,6 +15,7 @@ Functions:
 from __future__ import annotations
 
 import hashlib
+import html as html_lib
 import re
 import unicodedata
 from datetime import date
@@ -89,14 +90,8 @@ def strip_html_tags(html: str) -> str:
     # Bỏ toàn bộ tags
     text = re.sub(r"<[^>]+>", "", text)
 
-    # Decode HTML entities
-    _HTML_ENTITIES = {
-        "&amp;": "&", "&lt;": "<", "&gt;": ">",
-        "&quot;": '"', "&#39;": "'", "&nbsp;": " ",
-        "&apos;": "'", "&copy;": "©",
-    }
-    for entity, char in _HTML_ENTITIES.items():
-        text = text.replace(entity, char)
+    # Decode HTML entities đầy đủ (bao gồm ký tự tiếng Việt có dấu &iacute;, &aacute;, v.v.)
+    text = html_lib.unescape(text)
 
     return clean_text(text)
 
@@ -106,6 +101,7 @@ def clean_text(text: str) -> str:
 
     Xử lý:
         - Strip leading/trailing whitespace
+        - Normalize non-breaking space (\\xa0)
         - Collapse multiple spaces/tabs thành 1 space
         - Collapse multiple newlines thành tối đa 2 newlines
         - Normalize unicode (NFC form)
@@ -127,6 +123,7 @@ def clean_text(text: str) -> str:
 
     # Unicode normalization (NFC)
     text = unicodedata.normalize("NFC", text)
+    text = text.replace("\xa0", " ").replace("\u200b", "")
 
     # Collapse multiple spaces/tabs (nhưng giữ newlines)
     lines = text.split("\n")

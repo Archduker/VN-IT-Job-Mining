@@ -51,3 +51,15 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+
+# Test & coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Airflow runtime
+airflow/*.db
+airflow/*.pid
+airflow/logs/
+airflow/webserver_config.py
+

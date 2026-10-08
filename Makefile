@@ -16,6 +16,7 @@ export AIRFLOW_HOME
 .PHONY: help setup install install-dev test test-cov lint format \
         airflow-webserver airflow-scheduler airflow-stop \
         crawl-topdev crawl-careerviet crawl-itviec crawl-vietnamworks \
+        crawl-vieclam24h crawl-topcv \
         clean clean-data
 
 # ── Default: show help ─────────────────────────────────────────
@@ -108,6 +109,12 @@ crawl-itviec:
 
 crawl-vietnamworks:
 	$(PYTHON) run.py --source vietnamworks --max-items 450
+
+crawl-vieclam24h:
+	$(PYTHON) run.py --source vieclam24h --max-items 450
+
+crawl-topcv:
+	$(PYTHON) run.py --source topcv --max-items 450
 
 # ── Cleanup ────────────────────────────────────────────────────
 clean:

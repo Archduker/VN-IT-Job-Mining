@@ -66,6 +66,26 @@ class TestJsonlWriter(unittest.TestCase):
                                  "Kỹ sư iOS — TP. Hồ Chí Minh")  # không bị escape \u
             self.assertNotIn("\\u", lines[0])
 
+    def test_open_json_writes_json_array(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            old_data_dir = crawler.config.DATA_DIR
+            crawler.config.DATA_DIR = os.path.join(tmp, "itviec")
+            try:
+                writer = crawler.open_json("2026-10-08", "2026-10-08_itviec_001")
+                rec = {"_meta": {"source": "itviec"},
+                       "raw": {"title": "Kỹ sư iOS — TP. Hồ Chí Minh", "x": 1}}
+                crawler.write_record(writer, rec)
+                writer.close()
+
+                self.assertTrue(os.path.exists(writer.file_path))
+                with open(writer.file_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                self.assertIsInstance(data, list)
+                self.assertEqual(len(data), 1)
+                self.assertEqual(data[0]["raw"]["title"], "Kỹ sư iOS — TP. Hồ Chí Minh")
+            finally:
+                crawler.config.DATA_DIR = old_data_dir
+
 
 class TestBuildRecord(unittest.TestCase):
     def test_meta_follows_data_contract(self):

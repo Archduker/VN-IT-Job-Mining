@@ -1,305 +1,159 @@
-# **Implementation Plan — VN IT Job Mining Data Collection System**
+# 📋 Implementation Plan & Bảng Phân Công Nhiệm Vụ (VN-IT-Job-Mining)
 
-## **Problem Statement:**
-Xây dựng hệ thống thu thập dữ liệu tự động dùng **Apache Airflow chạy trên laptop**, orchestrate việc cào 6 trang tuyển dụng IT tại Việt Nam. Code từ các bạn bè đã có trên GitHub cần được pull về, refactor theo chuẩn (type hints + docstrings), tích hợp vào pipeline Airflow. Data lưu **local vào `data/`** trước, S3 để sau.
-
----
-
-## **Requirements (Updated):**
-
-| # | Yêu cầu | Ghi chú |
-|---|---------|---------|
-| 1 | Pull code crawlers từ GitHub của các thành viên về | Mỗi người có branch riêng |
-| 2 | Chạy thử từng crawler, kiểm tra output | Verify HTML parsing đúng không |
-| 3 | Refactor code: type hints + docstrings | Không thay đổi logic cào |
-| 4 | Lưu JSONL vào `data/<source>/dt=YYYY-MM-DD/` | **Không cần S3 lúc này** |
-| 5 | Airflow LocalExecutor trên laptop | SQLite backend |
-| 6 | Rotating daily schedule cho 6 nguồn | Mỗi ngày 1 nguồn |
-| 7 | Cào được **toàn bộ** jobs có trên trang | Pagination đầy đủ |
-| 8 | Unit tests + integration tests | pytest |
-| 9 | Flow cào rõ ràng, code clean | Để báo cáo thầy |
+> **Dự án**: VN-IT-Job-Mining — Thu thập, Chuẩn hóa & Khai phá Dữ liệu Tuyển dụng CNTT Việt Nam  
+> **Cập nhật ngày**: 2026-10-08  
+> **Đối tượng**: Toàn bộ 7 thành viên trong nhóm nghiên cứu (UTH)  
+> **Tài liệu phân tích API tham chiếu**: [`docs/crawler_api_analysis.md`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/crawler_api_analysis.md)
 
 ---
 
-## **Current State (đã làm ở session trước):**
+## 🎯 1. Mục Tiêu & Bối Cảnh Nâng Cấp Hệ Thống
 
-✅ Tạo cấu trúc thư mục dự án  
-✅ `requirements.txt` + `requirements-dev.txt` + `pyproject.toml`  
-✅ `Makefile` với các shortcuts  
-✅ `scripts/setup_airflow.sh` + `scripts/install_deps.sh`  
-✅ `crawlers/common/schema.py` — Pydantic models (JobMetadata, JobRaw, JobRecord)  
-✅ `crawlers/common/http_client.py` — HttpClient với retry + delay + UA rotation  
-✅ `crawlers/common/logger.py` + `crawlers/common/utils.py`  
-✅ `tests/unit/test_schema.py` + `tests/unit/test_http_client.py`  
-⬜ Chưa cài được dependencies (cần `python3.14-venv` hoặc `sudo`)  
-⬜ Chưa pull code từ GitHub bạn bè  
-⬜ Chưa có crawler code nào hoạt động  
+Dự án bước vào giai đoạn then chốt: **Chuẩn hóa chất lượng dữ liệu thu thập từ 7 sàn tuyển dụng CNTT hàng đầu và thực hiện Phân tích Khám phá Dữ liệu (EDA) chuẩn mực học thuật**.
+
+### ⚠️ Các vấn đề kỹ thuật cấp bách cần giải quyết:
+1. **Định dạng file đầu ra**: Chuyển đổi toàn bộ cơ chế lưu trữ từ `.jsonl` sang file **`.json` chuẩn dạng mảng đối tượng** (`[ { "_meta": ..., "raw": ... }, ... ]`, uncompressed UTF-8 plain text) để tương thích hoàn toàn với tài liệu phân tích API và `json.load()` trong Python.
+2. **Dọn sạch thẻ HTML & Chuẩn hóa ngắt dòng**: Loại bỏ triệt để các thẻ `<p>`, `<span>`, `<div>`, `<strong>` trong các trường mô tả (`description_text`), yêu cầu (`requirements_text`), phúc lợi (`benefits_text`). Chuẩn hóa các chuỗi dính nhau dạng `AA,\nBB` thành định dạng xuống dòng sạch đẹp:
+   ```text
+   AA,
+   BB
+   ```
+3. **Bóc tách trường Lương số học**: Chuẩn hóa rõ ràng `salary_min` (float), `salary_max` (float), và `salary_currency` (`VND`, `USD`) để phục vụ vẽ biểu đồ phân phối và hồi quy lương.
+4. **Tính toán ngày đăng tin bài**: Với các nguồn không hiển thị ngày đăng cụ thể mà hiển thị hạn nộp hồ sơ hoặc thời gian còn lại (ví dụ *"còn 14 ngày"*), thực hiện công thức suy luận ngày đăng: `ngày đăng = ngày cào - (30 - số ngày còn lại)`.
+5. **Định danh Ngôn ngữ (`language`)**: Bổ sung trường `language: "vi" | "en"` trong `_meta` để phân loại bài tuyển dụng tiếng Anh hay tiếng Việt.
+6. **Mở rộng nguồn mới**: Bổ sung thành viên **Duy** phụ trách xây dựng crawler mới cho sàn **Glints Vietnam** ([`https://glints.com/vn`](https://glints.com/vn)).
+7. **Chuyên môn hóa EDA**: Phân công **Tài** và **Khoa** chuyên trách 100% việc trực quan hóa biểu đồ và mô tả dữ liệu chuyên sâu theo mô hình 3 bước (Số liệu -> Nguyên nhân -> Ý nghĩa thực tiễn).
 
 ---
 
-## **Revised Architecture:**
+## 👥 2. Bảng Phân Công Nhiệm Vụ 7 Thành Viên (Master Task Matrix)
+
+Nhóm gồm **7 thành viên** được chia thành 2 nhóm chuyên môn:
+* **Nhóm Thu Thập & Chuẩn Hóa Dữ Liệu (5 người)**: Thuận (Lead), Sơn, Phát, Phúc, Duy.
+* **Nhóm Khai Phá & Trực Quan Hóa EDA (2 người)**: Tài, Khoa.
+
+| STT | Thành viên | Vai trò & Nguồn phụ trách | Nhiệm vụ trọng tâm | File code / Notebook chính | Bản giao việc chi tiết | Trạng thái |
+| :---: | :--- | :--- | :--- | :--- | :---: | :---: |
+| **1** | **Thuận** *(Bill Tran)* | **Team Lead & Data Platform** *(TopCV & Core)* | Nâng cấp `crawlers/common` & `base` sang mảng `.json`, thêm `language` meta, bóc tách lương/HTML cho TopCV, viết script merge dữ liệu 7 nguồn. | [`crawlers/sources/topcv/crawler.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/topcv/crawler.py)<br>[`crawlers/common/schema.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/common/schema.py) | [📄 `tasks/thuan.md`](tasks/thuan.md) | 🟡 **ĐANG TRIỂN KHAI** |
+| **2** | **Sơn** | **Crawler Developer** *(TopDev)* | Bóc tách TopDev REST API, dọn sạch tag HTML trong requirements & benefits, chuẩn hóa ngắt dòng `AA,\nBB`, trích xuất `salary_min/max`, detect `language`. | [`crawlers/sources/topdev/crawler.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/topdev/crawler.py) | [📄 `tasks/son.md`](tasks/son.md) | 🟡 **ĐANG TRIỂN KHAI** |
+| **3** | **Phát** | **Crawler Developer** *(ITviec)* | Chuyển ITviec sang ghi mảng `.json`, dọn sạch thẻ `<p>` trong 4 sections HTML/Text, trích xuất lương USD/VND, tính ngày đăng từ hạn nộp, detect `language`. | [`crawlers/sources/itviec/crawler.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/itviec/crawler.py)<br>[`crawlers/sources/itviec/parser.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/itviec/parser.py) | [📄 `tasks/phat.md`](tasks/phat.md) | 🟡 **ĐANG TRIỂN KHAI** |
+| **4** | **Phúc** | **Crawler Developer** *(Việc Làm 24h)* | Làm sạch thẻ HTML SSR Next.js, tách dòng `AA,\nBB`, tính ngày đăng từ deadline ("14 days left"), chuẩn hóa lương triệu VNĐ, gán `language: "vi"`. | [`crawlers/sources/vieclam24h/crawler.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/vieclam24h/crawler.py) | [📄 `tasks/phuc.md`](tasks/phuc.md) | 🟡 **ĐANG TRIỂN KHAI** |
+| **5** | **Duy** *(Mới)* | **Crawler Developer** *(Glints Vietnam)* | Xây dựng Crawler mới cho sàn Glints (`crawlers/sources/glints/`), bóc tách lương min/max, skills, dọn sạch HTML, tích hợp vào `run.py`, xuất mảng `.json`. | [`crawlers/sources/glints/crawler.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/glints/crawler.py)<br>[`run.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/run.py) | [📄 `tasks/duy.md`](tasks/duy.md) | 🟡 **ĐANG TRIỂN KHAI** |
+| **6** | **Tài** | **Data Analyst / EDA Lead 1** *(Salary & Market)* | Chuyên đề EDA 1: Phân tích chất lượng dữ liệu missing value, phân phối mức lương (Min/Max/Range theo VND/USD), dải lương theo cấp bậc & kinh nghiệm. | [`notebooks/01_eda_salary_and_market_structure.ipynb`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/notebooks/01_eda_salary_and_market_structure.ipynb)<br>[`docs/eda_salary_report.md`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/eda_salary_report.md) | [📄 `tasks/tai.md`](tasks/tai.md) | 🟡 **ĐANG TRIỂN KHAI** |
+| **7** | **Khoa** | **Data Analyst / EDA Lead 2** *(Skills & NLP)* | Chuyên đề EDA 2: Phân tích Top kỹ năng công nghệ, Ma trận đồng xuất hiện tech stack, phân bố địa lý (HCM vs HN vs ĐN), Text Mining JD & Phúc lợi. | [`notebooks/02_eda_skills_geo_textmining.ipynb`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/notebooks/02_eda_skills_geo_textmining.ipynb)<br>[`docs/eda_skills_nlp_report.md`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/eda_skills_nlp_report.md) | [📄 `tasks/khoa.md`](tasks/khoa.md) | 🟡 **ĐANG TRIỂN KHAI** |
+
+---
+
+## 🔄 3. Quy Trình Bắt Buộc Khi Làm Crawler (The Golden Pipeline)
+
+Mọi thành viên thuộc nhóm Collect Data (Thuận, Sơn, Phát, Phúc, Duy) bắt buộc phải tuân theo chu trình 7 bước khép kín:
 
 ```mermaid
 flowchart TD
-    subgraph GitHub["GitHub (Archduker/VN-IT-Job-Mining)"]
-        B1["branch: feature/topdev (Sơn)"]
-        B2["branch: feature/careerviet (Tài)"]
-        B3["branch: feature/itviec (Phát)"]
-        B4["branch: feature/vietnamworks (Khoa)"]
-        B5["branch: feature/topcv (Thuận)"]
-    end
-
-    subgraph Local["Laptop Local"]
-        GIT["git pull / merge branches"]
-        GIT --> REFACTOR["Refactor code:\ntype hints + docstrings\n+ tích hợp common modules"]
-
-        subgraph Airflow["Apache Airflow (LocalExecutor)"]
-            DAG1["topdev_dag (Mon 20:00)"]
-            DAG2["careerviet_dag (Tue 20:00)"]
-            DAG3["itviec_dag (Wed 20:00)"]
-            DAG4["vietnamworks_dag (Thu 20:00)"]
-            DAG5["topcv_dag (Fri 20:00)"]
-            DAG6["source6_dag (Sat 20:00)"]
-        end
-
-        REFACTOR --> Airflow
-    end
-
-    subgraph Storage["Local Storage (data/)"]
-        D1["data/topdev/dt=2026-10-07/batch_001.jsonl"]
-        D2["data/careerviet/dt=2026-10-08/batch_001.jsonl"]
-        D3["data/.../..."]
-    end
-
-    Airflow --> Storage
-    Storage -.->|"Sau này (Phase 2)"| S3["AWS S3\n(Raw → Staging → Curated)"]
+    A["BƯỚC 1: KÉO FILE HTML / PHẢN HỒI API GỐC"] --> B["BƯỚC 2: ĐỌC RA CÁC THÀNH PHẦN CẦN TRÍCH XUẤT"]
+    B --> C["BƯỚC 3: SỬA CODE PARSER"]
+    C --> D["BƯỚC 4: CHUẨN HÓA DỮ LIỆU & LÀM SẠCH TEXT"]
+    D --> E{"BƯỚC 5: CÓ LỖI? (Còn thẻ HTML, sai dải lương, lỗi định dạng)"}
+    E -- "Có lỗi" --> F["BƯỚC 6: ĐỌC LẠI HTML GỐC & DEBUG CODE"]
+    F --> C
+    E -- "Đạt chuẩn" --> G["BƯỚC 7: RA ĐƯỢC BỘ JSON CHUẨN MẢNG (batch_001.json)"]
 ```
 
 ---
 
-## **Task Breakdown (Revised):**
+## 🏛️ 4. Kiến Trúc Hệ Thống Thu Thập Dữ Liệu (7 Nguồn Chuẩn)
+
+```text
+VN-IT-Job-Mining/
+├── crawlers/
+│   ├── base/
+│   │   ├── __init__.py
+│   │   └── base_crawler.py               # Abstract Class xuất ra mảng JSON
+│   ├── common/
+│   │   ├── checkpoint.py                 # Checkpoint chống cào trùng lặp
+│   │   ├── data_quality.py               # Kiểm tra tính hợp lệ dữ liệu JSON
+│   │   ├── http_client.py                # HTTP client xoay vòng UA, backoff delay
+│   │   ├── json_writer.py                # Ghi file batch_XXX.json mảng [ ... ] an toàn
+│   │   ├── logger.py                     # Logger chuẩn hoá
+│   │   ├── schema.py                     # Schema JobRecord, JobMetadata, JobRaw
+│   │   └── utils.py                      # strip_html_tags, clean_text, detect_language
+│   └── sources/
+│       ├── topdev/crawler.py             # Sơn phụ trách
+│       ├── vietnamworks/crawler.py       # Crawler có sẵn (API Search POST)
+│       ├── careerviet/crawler.py         # Crawler có sẵn (HTML SSR)
+│       ├── itviec/crawler.py             # Phát phụ trách
+│       ├── vieclam24h/crawler.py         # Phúc phụ trách
+│       ├── topcv/crawler.py              # Thuận phụ trách (Playwright headless)
+│       └── glints/crawler.py             # Duy phụ trách (Nguồn mới)
+├── tasks/                                # Thư mục giao việc chi tiết từng thành viên
+│   ├── thuan.md                          # Bản giao việc Thuận (Leader)
+│   ├── son.md                            # Bản giao việc Sơn (TopDev)
+│   ├── phat.md                           # Bản giao việc Phát (ITviec)
+│   ├── phuc.md                           # Bản giao việc Phúc (Việc Làm 24h)
+│   ├── duy.md                            # Bản giao việc Duy (Glints)
+│   ├── tai.md                            # Bản giao việc Tài (EDA Lương & Cấu trúc)
+│   └── khoa.md                           # Bản giao việc Khoa (EDA Kỹ năng & NLP)
+├── notebooks/                            # Thư mục chứa Jupyter Notebooks EDA
+│   ├── 01_eda_salary_and_market_structure.ipynb
+│   └── 02_eda_skills_geo_textmining.ipynb
+├── data/
+│   └── <source>/dt=YYYY-MM-DD/batch_001.json
+└── run.py                                # Giao diện điều phối CLI tập trung
+```
 
 ---
 
-### **Task 1: Setup môi trường — cài dependencies** `[ĐÃ CÓ SCRIPT, CẦN CHẠY]`
+## 📊 5. Tiêu Chuẩn Trực Quan Hóa & Viết Báo Cáo EDA (Dành Cho Tài & Khoa)
 
-**Objective:** Cài đặt pydantic, pytest và các deps cần thiết trước khi làm gì khác.
+Để bài báo cáo đạt điểm xuất sắc môn Khai phá Dữ liệu, mỗi biểu đồ do Tài và Khoa thực hiện phải tuân thủ nghiêm ngặt **Quy chuẩn 3 Bước**:
 
-**Implementation:**
-- Chạy `sudo apt install python3.14-venv` → tạo `.venv` → cài toàn bộ từ `requirements-dev.txt`
-- Hoặc fallback: chạy `scripts/install_deps.sh` (dùng `pip install --user`)
-- Verify: `python -c "import pydantic; import pytest"` pass
-
-**Demo:** `make test` chạy được 2 test files đã có (test_schema.py, test_http_client.py).
-
----
-
-### **Task 2: Data Schema + Common Modules** `[✅ ĐÃ XONG]`
-
-- `crawlers/common/schema.py` — Pydantic models
-- `crawlers/common/http_client.py` — HTTP client
-- `crawlers/common/logger.py` + `utils.py`
-- `tests/unit/test_schema.py` + `test_http_client.py`
+1. **Trực quan hóa (Visualization)**:
+   * Biểu đồ trực quan, thẩm mỹ, có Title, Labels trục X và Y đầy đủ đơn vị đo lường (triệu VNĐ, năm, số lượng tin).
+   * Dùng theme thống nhất: `seaborn.set_theme(style="whitegrid", palette="tab10")`.
+2. **Số liệu thực tế (Data Findings)**:
+   * Nêu rõ các chỉ số thống kê mô tả: Mean, Median, Min, Max, Độ lệch chuẩn (Std), Khoảng tứ phân vị (IQR), Tỷ lệ phần trăm (%).
+3. **Ý nghĩa & Insight thị trường (Actionable Takeaway)**:
+   * Phân tích bối cảnh ngành CNTT tại Việt Nam (Vì sao mức lương lệch phải? Vì sao Docker và CI/CD luôn đi kèm nhau? Vì sao TP.HCM chiếm đa số tin tuyển dụng?).
+   * Rút ra kết luận có giá trị thực tiễn cho sinh viên hoặc ứng viên tìm việc.
 
 ---
 
-### **Task 3: Build thêm Common Modules còn thiếu**
+## 🌿 6. Quy Chuẩn Git Workflow Cho Cả Nhóm
 
-**Objective:** Hoàn thiện 3 module còn thiếu trong common: `checkpoint.py`, `jsonl_writer.py`, `run.py`.
+Tất cả thành viên bắt buộc phải tuân theo quy trình làm việc Git chuẩn sau:
 
-**Implementation:**
-- `crawlers/common/checkpoint.py`: Class `CheckpointManager` — đọc/ghi state vào JSON file (seen_ids, last_page). Giúp resume khi interrupt
-- `crawlers/common/jsonl_writer.py`: Class `JsonlWriter` — ghi JSONL an toàn, validate schema trước khi ghi, flush từng dòng, lưu vào `data/<source>/dt=YYYY-MM-DD/`
-- `run.py` (root): Entry point `python run.py --source topdev --max-items 30`
-- Unit tests cho cả 2 modules
-
-**Demo:** Ghi 10 JobRecord mẫu vào `data/topdev/dt=.../batch_001.jsonl`, interrupt, resume tiếp từ checkpoint.
-
----
-
-### **Task 4: Pull và audit code từ GitHub**
-
-**Objective:** Pull toàn bộ branch của các thành viên về, chạy thử từng crawler, ghi nhận trạng thái.
-
-**Implementation:**
 ```bash
-# Pull từng branch về local
-git fetch origin
-git checkout feature/topdev
-git checkout feature/careerviet
-# ... etc
+# BƯỚC 1: Luôn cập nhật code mới nhất từ main trước khi làm việc
+git checkout main
+git pull origin main
 
-# Hoặc merge tất cả vào branch làm việc
-git merge origin/feature/topdev
-```
-- Chạy thử từng file crawler gốc: `python crawlers/sources/topdev/crawler.py`
-- Ghi nhận:
-  - Output có đúng không (có cào được HTML không)
-  - Trường nào đang lấy được, trường nào thiếu
-  - Có tuân thủ delay không
-  - Pagination có hoạt động không
-- Tạo **Audit Report** ngắn cho từng nguồn (markdown table)
+# BƯỚC 2: Tạo nhánh riêng theo định dạng quy ước:
+# - Cào dữ liệu: feature/<tên-nguồn>-<tên-bạn>
+# - EDA:         feature/eda-<chuyên-đề>-<tên-bạn>
+git checkout -b feature/topdev-son
 
-**Demo:** Bảng audit nhanh 6 nguồn: ✅ hoạt động / ⚠️ cần sửa / ❌ hỏng.
+# BƯỚC 3: Làm việc, kiểm tra test và chạy thử dữ liệu
+pytest tests/
+.venv/bin/python run.py --source <tên-nguồn> --max-items 3
 
----
+# BƯỚC 4: Kiểm tra trạng thái và commit code đúng quy chuẩn Conventional Commits
+git status
+git add <các-file-đã-sửa>
+git commit -m "feat(<nguồn-hoặc-eda>): mô tả ngắn gọn công việc đã hoàn thành"
 
-### **Task 5: Refactor TopDev Crawler (mẫu)**
+# BƯỚC 5: Đẩy nhánh lên GitHub
+git push -u origin feature/topdev-son
 
-**Objective:** Refactor crawler TopDev từ code gốc → theo chuẩn mới. Làm mẫu cho 5 crawler còn lại.
-
-**Implementation:**
-- Giữ nguyên logic parse HTML (không phá code bạn bè đã viết đúng)
-- Tách ra đúng cấu trúc:
-  ```
-  crawlers/sources/topdev/
-  ├── crawler.py   # Class TopDevCrawler kế thừa BaseCrawler, dùng common modules
-  ├── parser.py    # Chỉ chứa parse logic từ code gốc → trả về JobRaw dict
-  └── config.py    # URL, delay, max_items constants
-  ```
-- `crawler.py` phải:
-  - Dùng `HttpClient` (có sẵn) thay thế `requests.get` thủ công
-  - Dùng `JsonlWriter` để ghi output vào `data/topdev/dt=.../`
-  - Dùng `CheckpointManager` để không cào lại tin đã cào
-  - Output đúng schema `JobRecord` (JobMetadata + JobRaw)
-  - Cào **tất cả pages** (pagination loop)
-- Thêm type hints và docstrings
-- Viết unit tests cho `parser.py` dùng HTML fixture thật (lấy từ sample HTML đã có)
-
-**Demo:** Chạy `python run.py --source topdev --max-items 50`, xem file JSONL trong `data/topdev/`.
-
----
-
-### **Task 6: Refactor 4 Crawlers còn lại (CareerViet, ITviec, VietnamWorks, + Nguồn 6)**
-
-**Objective:** Áp dụng cùng cấu trúc Task 5 cho 4 nguồn còn lại.
-
-**Implementation:**
-- Mỗi crawler thực hiện tương tự Task 5
-- CareerViet (Tài), ITviec (Phát), VietnamWorks (Khoa): refactor code có sẵn
-- Nguồn 6 (Phúc): nếu code chưa có → implement mới theo BaseCrawler, chọn `vieclam24h.vn`
-- Mỗi nguồn có unit test riêng cho parser
-
-**Demo:** Chạy lần lượt 4 crawlers, mỗi cái thu thập được 50 jobs vào `data/`.
-
----
-
-### **Task 7: Implement TopCV Crawler (Playwright)**
-
-**Objective:** Crawler TopCV với Playwright để bypass Cloudflare.
-
-**Implementation:**
-- Cài `playwright` + `playwright install chromium`
-- `crawlers/common/browser_client.py`: wrapper BrowserClient
-- `crawlers/sources/topcv/crawler.py` dùng BrowserClient thay HttpClient
-- Cùng output format JSONL vào `data/topcv/`
-
-**Demo:** Crawl 30 jobs từ TopCV, bypass Cloudflare thành công.
-
----
-
-### **Task 8: Base Crawler Abstract Class**
-
-**Objective:** Tạo abstract class để standardize interface sau khi đã refactor xong tất cả crawlers (làm sau khi đã có real crawlers để nhìn ra pattern chung).
-
-**Implementation:**
-- `crawlers/base/base_crawler.py`: Abstract class với `run()`, `fetch_listing()`, `parse_listing()`, `fetch_detail()`, `parse_detail()`
-- Refactor lại 6 crawlers để kế thừa từ BaseCrawler
-
-**Demo:** `isinstance(TopDevCrawler(), BaseCrawler)` → True.
-
----
-
-### **Task 9: Setup Airflow và tạo 6 DAGs**
-
-**Objective:** Cài Airflow, tạo 6 DAGs với rotating daily schedule.
-
-**Implementation:**
-- Chạy `make setup` (script setup_airflow.sh)
-- Tạo `airflow/plugins/crawler_operators.py`: `CrawlerOperator` wrap crawler logic
-- Tạo 6 DAGs:
-
-```python
-# airflow/dags/topdev_dag.py
-with DAG(
-    dag_id="topdev_crawler",
-    schedule="0 20 * * 1",   # Thứ Hai 20:00
-    catchup=False,
-) as dag:
-    crawl = CrawlerOperator(task_id="crawl", source="topdev", max_items=450)
-    quality = DataQualityOperator(task_id="quality_check")
-    crawl >> quality
+# BƯỚC 6: Tạo Pull Request (PR) trên GitHub vào nhánh 'main', tag @billtran review và merge
 ```
 
-- Schedule:
-  - Thứ Hai — TopDev
-  - Thứ Ba — CareerViet
-  - Thứ Tư — ITviec
-  - Thứ Năm — VietnamWorks
-  - Thứ Sáu — TopCV
-  - Thứ Bảy — Nguồn 6
-
-**Demo:** Airflow UI hiển thị 6 DAGs, trigger thủ công 1 DAG và xem logs real-time.
-
 ---
 
-### **Task 10: Data Quality Check + Monitoring**
+## 📅 7. Cột Mốc Thời Gian (Timeline Đề Xuất)
 
-**Objective:** Thêm validation task sau mỗi crawl batch, theo dõi tiến độ qua Airflow UI.
-
-**Implementation:**
-- `crawlers/common/data_quality.py`: check record count, schema validation rate, dedup_key uniqueness
-- `DataQualityOperator` trong Airflow plugins
-- Dashboard đơn giản: tổng số jobs mỗi nguồn theo ngày (đọc từ JSONL local)
-- Script `scripts/report.py`: in ra bảng tóm tắt tiến độ thu thập
-
-**Demo:** Sau mỗi batch, log hiển thị "✅ topdev | 187 tin mới | 0 lỗi | 100% valid schema".
-
----
-
-### **Task 11: Comprehensive Tests**
-
-**Objective:** Hoàn thiện test suite, đạt coverage ≥ 75% cho common modules.
-
-**Implementation:**
-- `tests/fixtures/sample_html/`: lưu HTML thật từ mỗi trang để test offline
-- Unit tests cho từng parser
-- Integration test: mock HTTP → full crawler flow → verify JSONL output
-- DAG validation tests: `airflow dags test`
-
-**Demo:** `make test-cov` hiển thị coverage report ≥ 75%.
-
----
-
-### **Task 12: Documentation + Demo Materials**
-
-**Objective:** Chuẩn bị tài liệu và materials để báo cáo với thầy giáo.
-
-**Implementation:**
-- Update `README.md`: architecture diagram, setup guide, crawl commands
-- `docs/airflow_setup_guide.md`: step-by-step setup
-- `docs/demo_checklist.md`: checklist demo với thầy
-- Crawl pre-demo data: 100 jobs từ mỗi nguồn, export summary table
-- Slide đơn giản: architecture → Airflow DAG view → sample JSONL → job count stats
-
-**Demo:** Trình bày với thầy: Airflow UI → trigger DAG → xem log → mở file JSONL → show stats.
-
----
-
-## **Phase 2 (Sau khi thu thập đủ data — Tuần 4+):**
-- Setup AWS S3, migrate từ local storage sang S3
-- ELT pipeline: Raw JSONL → Staging → Curated Parquet
-- Deduplication cross-source
-- EDA + ML pipeline
-
----
-
-## **Priority thực hiện ngay (để demo T4):**
-
-```
-Task 1 (setup env) → Task 3 (checkpoint + jsonl_writer) → 
-Task 4 (pull + audit code) → Task 5 (refactor TopDev) → 
-Task 9 (Airflow + 1 DAG) → Task 12 (demo materials)
-```
-
-## **Status:** Đang thực hiện full plan theo yêu cầu.
+| Mốc thời gian | Nhóm Thu thập Dữ liệu (Thuận, Sơn, Phát, Phúc, Duy) | Nhóm Khai phá Dữ liệu EDA (Tài, Khoa) |
+| :---: | :--- | :--- |
+| **Ngày 1 – 2** | Sửa code parser, dọn sạch HTML, tách lương, tính ngày đăng, kiểm thử JSON mảng. Chạy crawler lấy 100–300 tin/nguồn. | Xây dựng khung Jupyter Notebook, chuẩn bị các hàm plotting và metrics thống kê. |
+| **Ngày 3** | Leader gộp toàn bộ dữ liệu 7 nguồn thành file `data/processed/combined_jobs.json`. | Nhận dữ liệu gộp, kiểm tra schema, chạy thử bước tiền xử lý (Preprocessing). |
+| **Ngày 4 – 5** | Hỗ trợ fix các trường hợp ngoại lệ trong dữ liệu nếu đội EDA phát hiện. | Hoàn thành toàn bộ các biểu đồ phân tích và viết nhận xét chi tiết 3 bước. |
+| **Ngày 6 – 7** | Đóng gói toàn bộ code, chạy bộ kiểm thử cuối cùng. | Tổng kết thành 2 báo cáo Markdown hoàn chỉnh, hợp nhất kết quả toàn nhóm. |
