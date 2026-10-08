@@ -34,6 +34,8 @@ __all__ = [
     "make_batch_id",
     "clean_text",
     "normalize_skills_text",
+    "detect_language",
+    "parse_salary",
 ]
 
 
@@ -63,10 +65,11 @@ def strip_html_tags(html: str) -> str:
     """Bỏ tất cả HTML tags và trả về plain text.
 
     Xử lý:
-        - Bỏ toàn bộ tags (<div>, <p>, <br>, ...)
-        - Thay thế <br>, <p>, <li> bằng newline trước khi strip
-        - Decode HTML entities cơ bản (&amp; → &, &lt; → <, ...)
-        - Xoá whitespace thừa
+        - Bỏ toàn bộ tags (<div>, <p>, <span>, <br>, <li>, ...)
+        - Thay thế <br>, <p>, <li>, <div> bằng newline trước khi strip
+        - Tách dòng sạch đẹp các mục phân cách bởi dấu phẩy trước ngắt dòng (ví dụ 'AA,<br>BB' -> 'AA,\nBB')
+        - Decode HTML entities đầy đủ (&amp; → &, &lt; → <, &iacute; → í, ...)
+        - Xoá whitespace thừa nhưng giữ ngắt dòng hợp lý
 
     Args:
         html: HTML string cần strip.
@@ -79,21 +82,151 @@ def strip_html_tags(html: str) -> str:
         'Senior Backend Developer'
         >>> strip_html_tags("<ul><li>Python</li><li>Django</li></ul>")
         'Python\\nDjango'
+        >>> strip_html_tags("<p>Yêu cầu:</p>AA,<br>BB")
+        'Yêu cầu:\\nAA,\\nBB'
     """
     if not html:
         return ""
 
-    # Thay block elements bằng newline để giữ cấu trúc
+    # Chuẩn hóa ngắt dòng cho thẻ <br>, block elements
     text = re.sub(r"<br\s*/?>", "\n", html, flags=re.IGNORECASE)
-    text = re.sub(r"</p>|</div>|</li>|</h[1-6]>", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"<(?:p|div|li|h[1-6]|tr)[^>]*>", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"</(?:p|div|li|h[1-6]|tr)>", "\n", text, flags=re.IGNORECASE)
 
-    # Bỏ toàn bộ tags
+    # Bỏ toàn bộ tags còn lại
     text = re.sub(r"<[^>]+>", "", text)
 
-    # Decode HTML entities đầy đủ (bao gồm ký tự tiếng Việt có dấu &iacute;, &aacute;, v.v.)
+    # Decode HTML entities đầy đủ
     text = html_lib.unescape(text)
 
-    return clean_text(text)
+    # Xử lý các trường hợp dòng chứa nhiều mục phân cách dấu phẩy dính liền ngắt dòng
+    lines = text.split("\n")
+    cleaned_lines = []
+    for line in lines:
+        cleaned_line = clean_text(line)
+        if cleaned_line:
+            cleaned_lines.append(cleaned_line)
+
+    return "\n".join(cleaned_lines)
+
+
+def detect_language(text: str) -> str:
+    """Nhận diện ngôn ngữ của văn bản ('vi' hoặc 'en').
+
+    Sử dụng kết hợp ký tự tiếng Việt có dấu đặc trưng và từ khóa thông dụng.
+
+    Args:
+        text: Văn bản cần nhận diện.
+
+    Returns:
+        'vi' nếu là tiếng Việt, ngược lại 'en'.
+
+    Examples:
+        >>> detect_language("Tuyển dụng lập trình viên Python kinh nghiệm 2 năm")
+        'vi'
+        >>> detect_language("Senior Software Engineer required with 5 years experience")
+        'en'
+    """
+    if not text:
+        return "vi"
+
+    # Tập ký tự đặc trưng tiếng Việt có dấu
+    vietnamese_chars = set("àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ"
+                           "ÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ")
+    
+    # Đếm số ký tự tiếng Việt có dấu
+    vn_char_count = sum(1 for ch in text if ch in vietnamese_chars)
+    if vn_char_count >= 2:
+        return "vi"
+
+    # Kiểm tra các stop words tiếng Việt phổ biến
+    lower_text = text.lower()
+    vn_words = {
+        "và", "của", "các", "cho", "được", "trong", "có", "với", "tuyển", "dụng",
+        "công", "việc", "kinh", "nghiệm", "mức", "lương", "yêu", "cầu", "quyền", "lợi"
+    }
+    tokens = re.findall(r"\b[a-zA-Zà-ỹÀ-ỸđĐ]+\b", lower_text)
+    if not tokens:
+        return "vi"
+
+    vn_matches = sum(1 for token in tokens if token in vn_words)
+    if vn_matches >= 2 or (vn_matches >= 1 and len(tokens) <= 5):
+        return "vi"
+
+    # Nếu có ít nhất 1 ký tự có dấu
+    if vn_char_count >= 1:
+        return "vi"
+
+    return "en"
+
+
+def parse_salary(salary_text: Optional[str]) -> tuple[Optional[float], Optional[float], Optional[str]]:
+    """Bóc tách mức lương từ text sang (salary_min, salary_max, salary_currency).
+
+    Args:
+        salary_text: Chuỗi text mức lương (ví dụ: '15 - 35 triệu', 'Thỏa thuận', '1000 - 2000 USD').
+
+    Returns:
+        Tuple (salary_min, salary_max, salary_currency).
+
+    Examples:
+        >>> parse_salary("15 - 35 triệu")
+        (15.0, 35.0, 'VND')
+        >>> parse_salary("Lên đến 50 triệu")
+        (None, 50.0, 'VND')
+        >>> parse_salary("Từ 20 triệu")
+        (20.0, None, 'VND')
+        >>> parse_salary("$1,000 - $2,500")
+        (1000.0, 2500.0, 'USD')
+        >>> parse_salary("Thỏa thuận")
+        (None, None, None)
+    """
+    if not salary_text:
+        return None, None, None
+
+    text = salary_text.strip()
+    lower_text = text.lower()
+
+    if any(neg in lower_text for neg in ["thỏa thuận", "thương lượng", "thoả thuận", "negotiable", "cạnh tranh"]):
+        return None, None, None
+
+    currency = "VND"
+    if "$" in text or "usd" in lower_text:
+        currency = "USD"
+    elif "vnd" in lower_text or "vnđ" in lower_text or "triệu" in lower_text or "tr" in lower_text:
+        currency = "VND"
+
+    # Tìm các số (có thể có dấu phẩy hoặc chấm thập phân)
+    # Xử lý dấu phẩy trong số hàng nghìn USD (1,500)
+    cleaned = text.replace(",", ".")
+    # Nhưng nếu là dạng $1,000 thì 1,000 -> 1000
+    cleaned_num_text = re.sub(r"(\d),(\d{3})", r"\1\2", text)
+
+    # Tìm tất cả các số trong chuỗi
+    numbers = re.findall(r"\d+(?:\.\d+)?", cleaned_num_text)
+    if not numbers:
+        return None, None, None
+
+    nums = [float(n) for n in numbers]
+
+    # Kiểm tra ngữ cảnh: range, min only (từ / trên), max only (lên đến / tới / dưới)
+    is_range = any(sep in text for sep in ["-", "–", "đến", "tới", "to"]) and len(nums) >= 2
+    is_up_to = any(w in lower_text for w in ["lên đến", "tới", "up to", "dưới", "<="]) and not is_range
+    is_from = any(w in lower_text for w in ["từ", "trên", "from", ">="]) and not is_range
+
+    if is_range:
+        return nums[0], nums[1], currency
+    elif is_up_to:
+        return None, nums[0], currency
+    elif is_from:
+        return nums[0], None, currency
+    else:
+        if len(nums) == 1:
+            return nums[0], nums[0], currency
+        elif len(nums) >= 2:
+            return nums[0], nums[1], currency
+
+    return None, None, currency
 
 
 def clean_text(text: str) -> str:

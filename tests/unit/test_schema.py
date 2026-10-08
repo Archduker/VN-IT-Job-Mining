@@ -210,9 +210,11 @@ class TestJobMetadata:
             source_job_id="2136579",
             url="https://topdev.vn/jobs/2136579?utm_source=home",
             batch_id="2026-10-07_topdev_001",
+            language="vi",
         )
         assert meta.dedup_key == "topdev:2136579"
         assert "utm_source" not in meta.url
+        assert meta.language == "vi"
 
     def test_factory_method_default_version(self):
         meta = JobMetadata.create(
@@ -222,6 +224,16 @@ class TestJobMetadata:
             batch_id="2026-10-07_itviec_001",
         )
         assert meta.crawler_version == "0.1.0"
+        assert meta.language == "vi"
+
+    def test_language_validation(self, valid_metadata_dict):
+        valid_metadata_dict["language"] = "en"
+        meta = JobMetadata(**valid_metadata_dict)
+        assert meta.language == "en"
+
+        valid_metadata_dict["language"] = "fr"
+        with pytest.raises(ValidationError):
+            JobMetadata(**valid_metadata_dict)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -234,6 +246,18 @@ class TestJobRaw:
         raw = JobRaw(**valid_raw_dict)
         assert raw.title == "Senior Backend Developer"
         assert raw.company == "FPT Software"
+        assert raw.salary_min is None
+        assert raw.salary_max is None
+        assert raw.salary_currency is None
+
+    def test_numeric_salary_fields(self, valid_raw_dict):
+        valid_raw_dict["salary_min"] = 15.0
+        valid_raw_dict["salary_max"] = 35.0
+        valid_raw_dict["salary_currency"] = "VND"
+        raw = JobRaw(**valid_raw_dict)
+        assert raw.salary_min == 15.0
+        assert raw.salary_max == 35.0
+        assert raw.salary_currency == "VND"
 
     def test_optional_fields_default_to_none(self, valid_raw_dict):
         raw = JobRaw(**valid_raw_dict)

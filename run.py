@@ -31,6 +31,7 @@ SUPPORTED_SOURCES = [
     "careerviet",
     "vieclam24h",
     "topcv",
+    "glints",
 ]
 
 
@@ -156,6 +157,21 @@ def run_crawler(
             "total_seen": seen_total,
             "output_file": output_file,
         }
+
+    elif source == "glints":
+        try:
+            from crawlers.sources.glints.crawler import GlintsCrawler
+
+            crawler = GlintsCrawler(
+                checkpoint_dir=checkpoint_dir,
+                output_dir=output_dir,
+                max_items=max_items,
+            )
+            if batch_id:
+                crawler.batch_id = batch_id
+            return crawler.run()
+        except ImportError:
+            raise NotImplementedError("Crawler nguồn 'glints' đang được phát triển hoặc chưa có file crawler.py.")
 
     raise ValueError(f"Chưa cài đặt runner cho nguồn {source}")
 

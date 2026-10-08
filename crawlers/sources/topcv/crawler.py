@@ -18,12 +18,12 @@ from bs4 import BeautifulSoup
 
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.schema import JobRecord
-from crawlers.common.utils import clean_text, strip_html_tags
+from crawlers.common.utils import clean_text, strip_html_tags, detect_language, parse_salary
 
 log = logging.getLogger("topcv.crawler")
 
 SOURCE = "topcv"
-CRAWLER_VERSION = "0.2.0"
+CRAWLER_VERSION = "0.3.0"
 BASE_URL = "https://www.topcv.vn"
 START_URL = "https://www.topcv.vn/viec-lam-it"
 
@@ -155,13 +155,19 @@ class TopCVCrawler(BaseCrawler):
 
         desc_html = item.get("html_snippet") or f"<p>{title} at {company}</p>"
         desc_text = strip_html_tags(desc_html)
+        sal_text = item.get("salary") or "Thương lượng"
+        sal_min, sal_max, sal_currency = parse_salary(sal_text)
+
+        # Tự động nhận diện ngôn ngữ
+        combined_text = f"{title} {company} {desc_text}"
+        lang = detect_language(combined_text)
 
         raw_data = {
             "title": title,
             "company": company,
             "description_html": desc_html,
             "description_text": desc_text,
-            "salary_text": item.get("salary") or "Thương lượng",
+            "salary_text": sal_text,
             "location_text": item.get("location"),
             "skills_text": None,
             "experience_text": item.get("experience"),
@@ -170,6 +176,9 @@ class TopCVCrawler(BaseCrawler):
             "requirements_text": None,
             "benefits_text": None,
             "posted_date_text": "",
+            "salary_min": sal_min,
+            "salary_max": sal_max,
+            "salary_currency": sal_currency,
         }
 
         return JobRecord.create(
@@ -179,6 +188,7 @@ class TopCVCrawler(BaseCrawler):
             batch_id=self.batch_id,
             raw_data=raw_data,
             crawler_version=self.crawler_version,
+            language=lang,
         )
 
 

@@ -168,6 +168,12 @@ class JobMetadata(BaseModel):
         pattern=r"^\d+\.\d+\.\d+$",
         examples=["0.1.0", "1.0.0"],
     )
+    language: str = Field(
+        default="vi",
+        description="Ngôn ngữ bài đăng (vi hoặc en)",
+        pattern=r"^(vi|en)$",
+        examples=["vi", "en"],
+    )
 
     @field_validator("url")
     @classmethod
@@ -205,6 +211,7 @@ class JobMetadata(BaseModel):
         url: str,
         batch_id: str,
         crawler_version: str = "0.1.0",
+        language: str = "vi",
     ) -> "JobMetadata":
         """Factory method: tạo JobMetadata với dedup_key tự động.
 
@@ -214,6 +221,7 @@ class JobMetadata(BaseModel):
             url: URL chi tiết job (chưa cần chuẩn hoá, validator sẽ xử lý).
             batch_id: ID batch chạy.
             crawler_version: Version crawler.
+            language: Ngôn ngữ bài đăng ("vi" hoặc "en"). Default: "vi".
 
         Returns:
             JobMetadata đã validate.
@@ -224,11 +232,14 @@ class JobMetadata(BaseModel):
             ...     source_job_id="2136579",
             ...     url="https://topdev.vn/viec-lam/senior-backend-2136579?utm_source=home",
             ...     batch_id="2026-10-07_topdev_001",
+            ...     language="vi",
             ... )
             >>> meta.dedup_key
             'topdev:2136579'
             >>> "utm_source" not in meta.url
             True
+            >>> meta.language
+            'vi'
         """
         return cls(
             source=source,
@@ -237,6 +248,7 @@ class JobMetadata(BaseModel):
             dedup_key=_make_dedup_key(source, source_job_id),
             batch_id=batch_id,
             crawler_version=crawler_version,
+            language=language,
         )
 
 
@@ -334,6 +346,21 @@ class JobRaw(BaseModel):
         description="Hạn nộp hồ sơ dạng text",
         examples=["31/10/2026", "30 days"],
     )
+    salary_min: Optional[float] = Field(
+        default=None,
+        description="Mức lương tối thiểu (float, ví dụ: 15.0)",
+        examples=[15.0, 20.0],
+    )
+    salary_max: Optional[float] = Field(
+        default=None,
+        description="Mức lương tối đa (float, ví dụ: 35.0)",
+        examples=[35.0, 40.0],
+    )
+    salary_currency: Optional[str] = Field(
+        default=None,
+        description="Đơn vị tiền tệ (ví dụ: 'VND', 'USD')",
+        examples=["VND", "USD"],
+    )
     extra: Optional[dict] = Field(
         default=None,
         description="Các trường bổ sung tuỳ nguồn (không bắt buộc)",
@@ -393,6 +420,7 @@ class JobRecord(BaseModel):
         batch_id: str,
         raw_data: dict,
         crawler_version: str = "0.1.0",
+        language: str = "vi",
     ) -> "JobRecord":
         """Factory method: tạo JobRecord đầy đủ từ raw data dict.
 
@@ -403,6 +431,7 @@ class JobRecord(BaseModel):
             batch_id: ID batch chạy.
             raw_data: Dict chứa dữ liệu thô từ trang (title, company, ...).
             crawler_version: Version crawler.
+            language: Ngôn ngữ bài đăng ("vi" hoặc "en"). Default: "vi".
 
         Returns:
             JobRecord đã validate đầy đủ.
@@ -416,6 +445,7 @@ class JobRecord(BaseModel):
             ...     source_job_id="2136579",
             ...     url="https://topdev.vn/viec-lam/senior-backend-2136579",
             ...     batch_id="2026-10-07_topdev_001",
+            ...     language="vi",
             ...     raw_data={
             ...         "title": "Senior Backend Developer",
             ...         "company": "FPT Software",
@@ -430,6 +460,7 @@ class JobRecord(BaseModel):
             url=url,
             batch_id=batch_id,
             crawler_version=crawler_version,
+            language=language,
         )
         raw = JobRaw(**raw_data)
         return cls(**{"_meta": meta, "raw": raw})
