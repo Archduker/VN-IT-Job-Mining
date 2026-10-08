@@ -141,9 +141,13 @@ class CareerVietCrawler(BaseCrawler):
         soup = BeautifulSoup(html, "html.parser")
         page = soup.find(class_="job-detail-page") or soup
 
-        # Title
-        h2_title = page.find("h2") or page.find("h1")
-        title = clean_text(h2_title.text) if h2_title else ""
+        # Title: Ưu tiên h1 hoặc class .title/.job-title trước khi fallback về h2
+        title_el = (
+            page.find("h1")
+            or page.select_one(".title, .job-title")
+            or page.find("h2")
+        )
+        title = clean_text(title_el.text) if title_el else ""
         if not title:
             # Fallback title from <title> tag
             t_tag = soup.find("title")
@@ -151,13 +155,24 @@ class CareerVietCrawler(BaseCrawler):
 
         # Company
         comp_tag = page.find("a", class_=lambda c: c and ("employer" in c or "company" in c))
-        if not comp_tag and h2_title:
-            comp_tag = h2_title.find_next("a")
+        if not comp_tag and title_el:
+            comp_tag = title_el.find_next("a")
         company = clean_text(comp_tag.text) if comp_tag else "Unknown"
 
-        # Salary
-        sal_tag = page.find("strong")
-        salary_text = clean_text(sal_tag.text) if sal_tag else "Thương lượng"
+        # Salary: Ưu tiên lấy từ box thông tin chi tiết (li chứa "Lương")
+        salary_text = "Thương lượng"
+        for li in page.find_all("li"):
+            if "lương" in li.text.lower():
+                p_tag = li.find("p")
+                if p_tag and clean_text(p_tag.text):
+                    salary_text = clean_text(p_tag.text)
+                    break
+        if salary_text == "Thương lượng":
+            sal_tag = page.find("strong")
+            if sal_tag and sal_tag.text.strip():
+                st = clean_text(sal_tag.text)
+                if not any(k in st.lower() for k in ["địa điểm", "ngày cập nhật", "ngành nghề", "hình thức"]):
+                    salary_text = st
 
         # Sections: Mô tả, Yêu cầu, Phúc lợi, Thông tin khác
         desc_html = ""
@@ -165,6 +180,34 @@ class CareerVietCrawler(BaseCrawler):
         benefits_text = ""
         location_text = ""
         exp_text = ""
+        seniority_text = ""
+        job_type_text = ""
+        posted_date_text = ""
+
+        # Trích xuất metadata từ detail-box (CareerViet hiện đại)
+        for li in page.find_all("li"):
+            text_lower = li.text.lower()
+            p_tag = li.find("p")
+            val = clean_text(p_tag.text) if p_tag else ""
+            if "địa điểm" in text_lower and not location_text and val:
+                location_text = val
+            elif "kinh nghiệm" in text_lower and not exp_text and val:
+                exp_text = val
+            elif "cấp bậc" in text_lower and not seniority_text and val:
+                seniority_text = val
+            elif "hình thức" in text_lower and not job_type_text and val:
+                job_type_text = val
+            elif "ngày cập nhật" in text_lower and not posted_date_text and val:
+                posted_date_text = val
+
+        # Fallback địa điểm từ div.map nếu có
+        map_link = page.select_one("div.map p a")
+        if not location_text and map_link:
+            location_text = clean_text(map_link.text)
+
+        # Tags / kỹ năng
+        skill_tags = [clean_text(a.text) for a in page.select(".job-tags a, .tag-item a, .tag-item") if clean_text(a.text)]
+        skills_text = ", ".join(skill_tags) if skill_tags else None
 
         sections = page.find_all(class_="detail-row")
         for s in sections:
@@ -179,11 +222,11 @@ class CareerVietCrawler(BaseCrawler):
                 benefits_text = clean_text(s.text)
             elif "thông tin khác" in htext:
                 info_text = s.text
-                if "Địa điểm" in info_text:
+                if not location_text and "Địa điểm" in info_text:
                     loc_match = re.search(r"Địa điểm:\s*([^\n]+)", info_text)
                     if loc_match:
                         location_text = loc_match.group(1).strip()
-                if "Kinh nghiệm" in info_text:
+                if not exp_text and "Kinh nghiệm" in info_text:
                     exp_match = re.search(r"Kinh nghiệm:\s*([^\n]+)", info_text)
                     if exp_match:
                         exp_text = exp_match.group(1).strip()
@@ -199,13 +242,13 @@ class CareerVietCrawler(BaseCrawler):
             "description_text": desc_text,
             "salary_text": salary_text,
             "location_text": location_text or None,
-            "skills_text": None,
+            "skills_text": skills_text,
             "experience_text": exp_text or None,
-            "employment_type_text": None,
-            "seniority_text": None,
+            "employment_type_text": job_type_text or None,
+            "seniority_text": seniority_text or None,
             "requirements_text": req_text or None,
             "benefits_text": benefits_text or None,
-            "posted_date_text": "",
+            "posted_date_text": posted_date_text or "",
         }
 
         return JobRecord.create(

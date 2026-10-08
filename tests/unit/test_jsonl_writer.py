@@ -1,5 +1,5 @@
 """
-Unit tests for crawlers.common.jsonl_writer
+Unit tests for crawlers.common.jsonl_writer (tương thích ngược với JsonWriter)
 """
 
 import json
@@ -14,7 +14,7 @@ def test_jsonl_writer_creates_partition_directory(tmp_path: Path):
     writer = JsonlWriter(source="topdev", output_dir=tmp_path, run_date=d, batch_seq=1)
     expected_dir = tmp_path / "topdev" / "dt=2026-10-08"
     assert expected_dir.exists()
-    assert writer.file_path == expected_dir / "batch_001.jsonl"
+    assert writer.file_path == expected_dir / "batch_001.json"
 
 
 def test_jsonl_writer_writes_valid_job_record(tmp_path: Path):
@@ -40,12 +40,12 @@ def test_jsonl_writer_writes_valid_job_record(tmp_path: Path):
     assert writer.file_path.exists()
 
     with open(writer.file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-        assert len(lines) == 1
-        data = json.loads(lines[0])
-        assert data["_meta"]["source"] == "topdev"
-        assert data["_meta"]["source_job_id"] == "test_001"
-        assert data["raw"]["title"] == "Python Developer"
+        data = json.load(f)
+        assert isinstance(data, list)
+        assert len(data) == 1
+        assert data[0]["_meta"]["source"] == "topdev"
+        assert data[0]["_meta"]["source_job_id"] == "test_001"
+        assert data[0]["raw"]["title"] == "Python Developer"
 
 
 def test_jsonl_writer_invalid_record_rejected(tmp_path: Path):

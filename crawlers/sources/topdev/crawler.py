@@ -16,6 +16,7 @@ from urllib.parse import urljoin
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient
 from crawlers.common.schema import JobRecord
+from crawlers.common.utils import strip_html_tags
 
 log = logging.getLogger("topdev.crawler")
 
@@ -167,20 +168,40 @@ class TopDevCrawler(BaseCrawler):
             or item.get("requirements_arr")
         )
         if isinstance(requirements, list):
-            requirements_text = "\n".join(str(r) for r in requirements)
+            req_cleaned = [strip_html_tags(str(r)) for r in requirements if r]
+            requirements_text = "\n".join(r for r in req_cleaned if r) or None
         else:
-            requirements_text = str(requirements) if requirements else None
+            requirements_text = strip_html_tags(str(requirements)) if requirements else None
 
         benefits = item.get("benefits_v2")
-        benefits_text = str(benefits) if benefits else None
+        benefits_list = []
+        if isinstance(benefits, list):
+            for b in benefits:
+                if isinstance(b, dict):
+                    b_name = (b.get("name") or "").strip()
+                    b_desc_raw = b.get("description") or ""
+                    b_desc = strip_html_tags(b_desc_raw) if b_desc_raw else ""
+                    if b_name and b_desc:
+                        benefits_list.append(f"{b_name}: {b_desc}")
+                    elif b_name:
+                        benefits_list.append(b_name)
+                    elif b_desc:
+                        benefits_list.append(b_desc)
+                elif isinstance(b, str):
+                    cleaned = strip_html_tags(b)
+                    if cleaned:
+                        benefits_list.append(cleaned)
+        elif isinstance(benefits, str):
+            cleaned = strip_html_tags(benefits)
+            if cleaned:
+                benefits_list.append(cleaned)
+        benefits_text = "\n".join(benefits_list) if benefits_list else None
 
         # Job type / Seniority
         job_types = item.get("job_types")
         job_type_str = str(job_types) if job_types else None
         levels = item.get("levels")
         seniority_str = str(levels) if levels else None
-
-        from crawlers.common.utils import strip_html_tags
 
         raw_data = {
             "title": title,

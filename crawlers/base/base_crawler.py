@@ -14,7 +14,7 @@ from typing import Any, Dict, Generator, List, Optional
 import logging
 
 from crawlers.common.checkpoint import CheckpointManager
-from crawlers.common.jsonl_writer import JsonlWriter
+from crawlers.common.json_writer import JsonWriter
 from crawlers.common.schema import JobRecord
 
 log = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ class BaseCrawler(ABC):
 
         # Output writer
         out_base = output_dir if output_dir else "data"
-        self.writer = JsonlWriter(source=self.source_name, output_dir=out_base)
+        self.writer = JsonWriter(source=self.source_name, output_dir=out_base)
         from crawlers.common.utils import make_batch_id
         self.batch_id = make_batch_id(self.source_name, seq=self.writer.batch_seq, run_date=self.writer.run_date)
 
@@ -105,7 +105,7 @@ class BaseCrawler(ABC):
                     self.skipped_count += 1
                     continue
 
-                # Write JSONL
+                # Write JSON
                 self.writer.write(record)
                 self.checkpoint.mark_seen(job_id)
                 self.crawled_count += 1
@@ -126,7 +126,7 @@ class BaseCrawler(ABC):
 
         # Finalize
         self.checkpoint.save()
-        self.writer.flush()
+        self.writer.close()
 
         stats = {
             "source": self.source_name,

@@ -92,15 +92,27 @@ class TopCVCrawler(BaseCrawler):
                 log.info("[TopCV] Found %d job cards on page.", len(cards))
 
                 for card in cards:
-                    a_tag = card.select_one("a[href*='/viec-lam/']")
+                    # Lấy link chi tiết chứa tiêu đề (bỏ qua thẻ avatar rỗng)
+                    a_tag = None
+                    for a in card.select("a[href*='/viec-lam/']"):
+                        if clean_text(a.text):
+                            a_tag = a
+                            break
                     if not a_tag:
                         continue
                     url = a_tag.get("href")
                     title = clean_text(a_tag.text)
-                    comp_tag = card.select_one(".company, .company-name, a.company")
+                    comp_tag = card.select_one(".company, .company-name, a.company, a[href*='/cong-ty/']")
                     comp = clean_text(comp_tag.text) if comp_tag else "Unknown"
-                    sal_tag = card.select_one(".salary, .title-salary")
+                    sal_tag = card.select_one(".salary, .title-salary, span.salary")
                     sal = clean_text(sal_tag.text) if sal_tag else "Thương lượng"
+
+                    # Lấy thông tin phụ
+                    city_tag = card.select_one(".city-text, .address, span.address")
+                    city = clean_text(city_tag.text) if city_tag else None
+
+                    exp_tag = card.select_one(".exp, span.exp")
+                    exp = clean_text(exp_tag.text) if exp_tag else None
 
                     job_id = card.get("data-job-id")
                     if not job_id and url:
@@ -114,6 +126,8 @@ class TopCVCrawler(BaseCrawler):
                             "title": title,
                             "company": comp,
                             "salary": sal,
+                            "location": city,
+                            "experience": exp,
                             "html_snippet": str(card),
                         })
 
@@ -148,9 +162,9 @@ class TopCVCrawler(BaseCrawler):
             "description_html": desc_html,
             "description_text": desc_text,
             "salary_text": item.get("salary") or "Thương lượng",
-            "location_text": None,
+            "location_text": item.get("location"),
             "skills_text": None,
-            "experience_text": None,
+            "experience_text": item.get("experience"),
             "employment_type_text": None,
             "seniority_text": None,
             "requirements_text": None,

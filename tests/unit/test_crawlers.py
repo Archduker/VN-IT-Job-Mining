@@ -25,6 +25,13 @@ def test_topdev_crawler_parse_item():
         "addresses": {"address_region_list": "TP. Hồ Chí Minh"},
         "content": "<p>Tuyển Senior Python Developer</p>",
         "published_at": "2026-10-06T10:00:00Z",
+        "requirements_original": "<p>Y&ecirc;u cầu 3 năm kinh nghiệm</p>",
+        "benefits_v2": [
+            {
+                "name": "Bảo hiểm",
+                "description": "<p>Chế độ ch&iacute;nh s&aacute;ch: Lương thưởng cạnh tranh tr&ecirc;n thị trường</p>",
+            }
+        ],
     }
     record = crawler.parse_item(raw_item)
     assert record is not None
@@ -35,6 +42,9 @@ def test_topdev_crawler_parse_item():
     assert record.raw.company == "Tech Corp"
     assert "Python, Django" in (record.raw.skills_text or "")
     assert record.raw.description_text == "Tuyển Senior Python Developer"
+    assert record.raw.requirements_text == "Yêu cầu 3 năm kinh nghiệm"
+    assert "Chế độ chính sách: Lương thưởng cạnh tranh trên thị trường" in (record.raw.benefits_text or "")
+    assert "<p>" not in (record.raw.benefits_text or "")
 
 
 def test_vietnamworks_crawler_parse_item():
@@ -129,3 +139,30 @@ def test_topcv_crawler_parse_item():
     assert record.meta.source_job_id == "666666"
     assert record.raw.title == "Data Analyst (SQL / PowerBI)"
     assert record.raw.company == "Shopee"
+
+
+def test_base_crawler_writes_json_array(tmp_path):
+    class DummyCrawler(TopDevCrawler):
+        def fetch_items(self):
+            yield {
+                "id": 111,
+                "title": "Python Dev",
+                "slug": "python-dev",
+                "company": {"display_name": "Company A"},
+                "salary": {"currency": "VND"},
+                "skills": [],
+                "content": "<p>Content A</p>",
+            }
+
+    crawler = DummyCrawler(output_dir=tmp_path, checkpoint_dir=tmp_path, max_items=1)
+    stats = crawler.run()
+    assert stats["crawled"] == 1
+    out_file = stats["output_file"]
+    assert out_file.endswith(".json")
+
+    import json
+    with open(out_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    assert isinstance(data, list)
+    assert len(data) == 1
+    assert data[0]["_meta"]["source"] == "topdev"
