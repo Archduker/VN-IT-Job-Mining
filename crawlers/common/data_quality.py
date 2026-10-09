@@ -124,7 +124,8 @@ class DataQualityChecker:
                     missing_titles += 1
                 if not record.raw.company:
                     missing_companies += 1
-                if not record.raw.description_html:
+                has_desc = bool(getattr(record.raw, "description_list", None) or getattr(record.raw, "description_html", None) or getattr(record.raw, "description_text", None))
+                if not has_desc:
                     missing_descriptions += 1
             except Exception as exc:
                 logger.warning(

@@ -156,8 +156,14 @@ def merge_datasets(
         src = meta.get("source", "unknown")
         lang = meta.get("language", "vi")
         sources_counter[src] += 1
-        lang_counter[lang] += 1
-        if raw.get("salary_min") is not None or raw.get("salary_max") is not None:
+        sal_obj = raw.get("salary") or {}
+        has_sal = (
+            raw.get("salary_min") is not None
+            or raw.get("salary_max") is not None
+            or sal_obj.get("salary_min") is not None
+            or sal_obj.get("salary_max") is not None
+        )
+        if has_sal:
             salary_extracted_count += 1
 
     logger.info("=" * 60)

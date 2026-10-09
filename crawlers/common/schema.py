@@ -252,29 +252,84 @@ class JobMetadata(BaseModel):
         )
 
 
+class JobSalary(BaseModel):
+    """Cấu trúc mức lương ngữ nghĩa chi tiết.
+
+    Attributes:
+        salary_text: Chuỗi hiển thị mức lương gốc (ví dụ: '15-25 triệu', 'Thỏa thuận').
+        salary_min: Mức lương tối thiểu (float).
+        salary_max: Mức lương tối đa (float).
+        salary_currency: Đơn vị tiền tệ ('VND', 'USD').
+        pay_period: Chu kỳ trả lương ('month', 'year', 'day', 'hour'). Mặc định: 'month'.
+        is_negotiable: Có phải mức lương thỏa thuận không (True/False).
+        has_commission: Có hoa hồng, thưởng KPI, thu nhập không giới hạn không (True/False).
+    """
+
+    salary_text: Optional[str] = Field(default=None, description="Chuỗi hiển thị mức lương gốc")
+    salary_min: Optional[float] = Field(default=None, description="Lương tối thiểu (số thực)")
+    salary_max: Optional[float] = Field(default=None, description="Lương tối đa (số thực)")
+    salary_currency: Optional[str] = Field(default=None, description="Đơn vị tiền tệ (VND, USD)")
+    pay_period: Optional[str] = Field(default="month", description="Chu kỳ trả: month, year, day, hour")
+    is_negotiable: bool = Field(default=False, description="Mức lương thỏa thuận (true/false)")
+    has_commission: bool = Field(default=False, description="Có hoa hồng / thu nhập biến đổi (true/false)")
+
+    model_config = {"extra": "allow"}
+
+
+class JobTags(BaseModel):
+    """Phân nhóm thẻ tag trực quan theo 3 nhóm: Yêu cầu, Quyền lợi, Chuyên môn.
+
+    Attributes:
+        requirements: Danh sách thẻ tag yêu cầu (null nếu không có trên trang).
+        benefits: Danh sách thẻ tag quyền lợi (null nếu không có trên trang).
+        skills: Danh sách thẻ tag chuyên môn kỹ thuật/vị trí (null nếu không có trên trang).
+    """
+
+    requirements: Optional[list[str]] = Field(default=None, description="Thẻ tag yêu cầu (nhóm Yêu cầu / Requirements)")
+    benefits: Optional[list[str]] = Field(default=None, description="Thẻ tag quyền lợi (nhóm Quyền lợi / Benefits) - null nếu không có")
+    skills: Optional[list[str]] = Field(default=None, description="Thẻ tag chuyên môn (nhóm Chuyên môn / Specialization)")
+
+    model_config = {"extra": "allow"}
+
+    # Thuộc tính tương thích ngược cho code cũ
+    @property
+    def technical_skills(self) -> list[str]:
+        return self.skills or []
+
+    @property
+    def job_roles(self) -> list[str]:
+        return []
+
+    @property
+    def attributes(self) -> dict:
+        return {}
+
+
 class JobRaw(BaseModel):
-    """Dữ liệu thô từ trang tuyển dụng — giữ nguyên văn gốc, không chuẩn hoá.
+    """Dữ liệu thô từ trang tuyển dụng theo Data Contract tinh gọn mới.
 
-    Mỗi nguồn có thể có các trường khác nhau. Các trường bắt buộc là:
-    - title, company, description_html, description_text
+    Các trường bắt buộc:
+    - title, company, description_list
 
-    Các trường còn lại là Optional vì mỗi trang có cách trình bày khác nhau.
-    ETL layer sẽ chuẩn hoá thành schema thống nhất.
+    Các trường cấu trúc:
+    - salary: Đối tượng mức lương có cấu trúc (JobSalary)
+    - tags: Đối tượng phân loại thẻ tags (JobTags)
+    - requirements_list: Danh sách các mục yêu cầu ứng viên (list[str])
+    - benefits_list: Danh sách các mục quyền lợi ứng viên (list[str])
 
     Attributes:
         title: Tiêu đề job (nguyên văn từ trang).
         company: Tên công ty tuyển dụng.
-        salary_text: Mức lương dạng text ("15-25 triệu", "Thỏa thuận", ...).
+        description_list: Danh sách các đoạn mô tả công việc (list[str]).
+        salary: Đối tượng mức lương có cấu trúc ngữ nghĩa (JobSalary).
+        tags: Đối tượng phân loại tags chuyên môn (JobTags).
+        requirements_list: Danh sách các mục yêu cầu ứng viên (list[str]).
+        benefits_list: Danh sách các mục quyền lợi ứng viên (list[str]).
         location_text: Địa điểm làm việc dạng text.
-        skills_text: Danh sách kỹ năng yêu cầu dạng text/CSV.
-        posted_date_text: Ngày đăng tuyển dạng text ("03/10/2026", "2 ngày trước").
+        deadline_text: Hạn nộp hồ sơ dạng text.
+        posted_date_text: Ngày đăng tuyển dạng text.
         employment_type_text: Loại hình công việc ("Fulltime", "Parttime", ...).
         seniority_text: Cấp bậc ("Senior", "Junior", "Intern", ...).
-        description_html: Mô tả công việc dạng HTML gốc (bắt buộc lưu để trích xuất lại).
-        description_text: Mô tả công việc dạng plain text (strip HTML tags).
-        requirements_text: Yêu cầu ứng viên dạng text.
-        benefits_text: Phúc lợi dạng text.
-        deadline_text: Hạn nộp hồ sơ dạng text.
         extra: Dict chứa các trường bổ sung tuỳ nguồn (không bắt buộc).
     """
 
@@ -291,32 +346,39 @@ class JobRaw(BaseModel):
         min_length=1,
         examples=["FPT Software", "VNG Corporation"],
     )
-    description_html: str = Field(
-        ...,
-        description="Mô tả công việc HTML gốc — bắt buộc lưu để trích xuất lại kỹ năng",
-        min_length=1,
-    )
-    description_text: str = Field(
-        ...,
-        description="Mô tả công việc plain text (strip HTML), dùng cho ML",
-        min_length=1,
+    description_list: list[str] = Field(
+        default_factory=list,
+        description="Mô tả công việc dạng danh sách chuỗi (list of strings)",
     )
 
-    # ── Tuỳ chọn (Optional theo từng nguồn) ─────────────────
-    salary_text: Optional[str] = Field(
+    # ── Tuỳ chọn có cấu trúc ────────────────────────────────
+    salary: Optional[JobSalary] = Field(
         default=None,
-        description="Mức lương dạng text gốc ('15-25 triệu', 'Thỏa thuận', 'Competitive')",
-        examples=["15-25 triệu", "Thỏa thuận", "Đăng nhập để xem mức lương"],
+        description="Đối tượng mức lương ngữ nghĩa chi tiết",
     )
+    tags: Optional[JobTags] = Field(
+        default=None,
+        description="Đối tượng phân loại thẻ tags chuyên môn, vai trò, phúc lợi",
+    )
+    requirements_list: list[str] = Field(
+        default_factory=list,
+        description="Danh sách các mục yêu cầu ứng viên (list of strings)",
+    )
+    benefits_list: list[str] = Field(
+        default_factory=list,
+        description="Danh sách các mục quyền lợi ứng viên (list of strings)",
+    )
+
+    # ── Thông tin phụ trợ nguyên bản ────────────────────────
     location_text: Optional[str] = Field(
         default=None,
         description="Địa điểm làm việc (nguyên văn từ trang)",
         examples=["Hồ Chí Minh", "Quận Bình Thạnh, Hồ Chí Minh", "Remote"],
     )
-    skills_text: Optional[str] = Field(
+    deadline_text: Optional[str] = Field(
         default=None,
-        description="Danh sách kỹ năng yêu cầu (dạng text hoặc CSV)",
-        examples=["Java, Spring Boot, MySQL", "Python | Django | PostgreSQL"],
+        description="Hạn nộp hồ sơ dạng text",
+        examples=["31/10/2026", "30 days"],
     )
     posted_date_text: Optional[str] = Field(
         default=None,
@@ -333,34 +395,6 @@ class JobRaw(BaseModel):
         description="Cấp bậc / kinh nghiệm yêu cầu",
         examples=["Senior", "Junior", "Intern", "Mid-level", "Fresher"],
     )
-    requirements_text: Optional[str] = Field(
-        default=None,
-        description="Yêu cầu ứng viên dạng plain text",
-    )
-    benefits_text: Optional[str] = Field(
-        default=None,
-        description="Phúc lợi dạng plain text",
-    )
-    deadline_text: Optional[str] = Field(
-        default=None,
-        description="Hạn nộp hồ sơ dạng text",
-        examples=["31/10/2026", "30 days"],
-    )
-    salary_min: Optional[float] = Field(
-        default=None,
-        description="Mức lương tối thiểu (float, ví dụ: 15.0)",
-        examples=[15.0, 20.0],
-    )
-    salary_max: Optional[float] = Field(
-        default=None,
-        description="Mức lương tối đa (float, ví dụ: 35.0)",
-        examples=[35.0, 40.0],
-    )
-    salary_currency: Optional[str] = Field(
-        default=None,
-        description="Đơn vị tiền tệ (ví dụ: 'VND', 'USD')",
-        examples=["VND", "USD"],
-    )
     extra: Optional[dict] = Field(
         default=None,
         description="Các trường bổ sung tuỳ nguồn (không bắt buộc)",
@@ -371,6 +405,120 @@ class JobRaw(BaseModel):
     def strip_whitespace(cls, v: str) -> str:
         """Strip leading/trailing whitespace."""
         return v.strip()
+
+    @property
+    def description_text(self) -> str:
+        """Thuộc tính tương thích ngược cho các đoạn mã đọc mô tả dạng text."""
+        return "\n".join(self.description_list)
+
+    @property
+    def requirements_text(self) -> str:
+        """Thuộc tính tương thích ngược cho yêu cầu dạng text."""
+        return "\n".join(self.requirements_list)
+
+    @property
+    def benefits_text(self) -> str:
+        """Thuộc tính tương thích ngược cho phúc lợi dạng text."""
+        return "\n".join(self.benefits_list)
+
+    @property
+    def salary_min(self) -> Optional[float]:
+        """Thuộc tính tương thích ngược cho mức lương tối thiểu."""
+        return self.salary.salary_min if self.salary else None
+
+    @property
+    def salary_max(self) -> Optional[float]:
+        """Thuộc tính tương thích ngược cho mức lương tối đa."""
+        return self.salary.salary_max if self.salary else None
+
+    @property
+    def salary_text(self) -> Optional[str]:
+        """Thuộc tính tương thích ngược cho text mức lương."""
+        return self.salary.salary_text if self.salary else None
+
+    @property
+    def salary_currency(self) -> Optional[str]:
+        """Thuộc tính tương thích ngược cho đơn vị tiền tệ."""
+        return self.salary.salary_currency if self.salary else None
+
+    @property
+    def skills_text(self) -> Optional[str]:
+        """Thuộc tính tương thích ngược cho danh sách kỹ năng dạng text."""
+        if self.tags and self.tags.skills:
+            return ", ".join(self.tags.skills)
+        if self.tags and self.tags.technical_skills:
+            return ", ".join(self.tags.technical_skills)
+        return None
+
+    @model_validator(mode="before")
+    @classmethod
+    def migrate_legacy_fields(cls, data: Any) -> Any:
+        """Bộ thích ứng tương thích ngược thông minh cho các nguồn crawler khác và dữ liệu cũ."""
+        if not isinstance(data, dict):
+            return data
+
+        d = dict(data)
+
+        # 1. Chuyển đổi description_text / description_html -> description_list nếu chưa có
+        if "description_list" not in d or not d["description_list"]:
+            raw_desc = d.get("description_text") or d.get("description_html")
+            if raw_desc:
+                # Strip HTML tags nếu có
+                clean_desc = re.sub(r"<[^>]+>", "", str(raw_desc))
+                lines = [line.strip() for line in clean_desc.split("\n") if line.strip()]
+                d["description_list"] = lines
+
+        if not d.get("description_list"):
+            raise ValueError("description_list không được để trống")
+
+        # 2. Đóng gói salary phẳng thành object salary nếu chưa có
+        if "salary" not in d or d["salary"] is None:
+            if any(k in d for k in ["salary_text", "salary_min", "salary_max", "salary_currency"]):
+                d["salary"] = {
+                    "salary_text": d.get("salary_text"),
+                    "salary_min": d.get("salary_min"),
+                    "salary_max": d.get("salary_max"),
+                    "salary_currency": d.get("salary_currency"),
+                }
+
+        # 3. Chuyển đổi requirements_text -> requirements_list nếu chưa có
+        if "requirements_list" not in d or not d["requirements_list"]:
+            req_text = d.get("requirements_text")
+            if req_text:
+                d["requirements_list"] = [line.strip() for line in str(req_text).split("\n") if line.strip()]
+
+        # 4. Chuyển đổi benefits_text -> benefits_list nếu chưa có
+        if "benefits_list" not in d or not d["benefits_list"]:
+            ben_text = d.get("benefits_text")
+            if ben_text:
+                d["benefits_list"] = [line.strip() for line in str(ben_text).split("\n") if line.strip()]
+
+        # 5. Chuyển đổi skills_text -> tags nếu chưa có
+        if "tags" not in d or not d["tags"]:
+            skills_raw = d.get("skills_text")
+            if skills_raw:
+                skills_items = [s.strip() for s in re.split(r"[,|;/]+", str(skills_raw)) if s.strip()]
+                d["tags"] = {"skills": skills_items}
+        elif isinstance(d["tags"], dict):
+            # Nếu tags có technical_skills nhưng chưa có skills
+            if "skills" not in d["tags"] and "technical_skills" in d["tags"]:
+                d["tags"]["skills"] = d["tags"].get("technical_skills")
+
+        # 6. Xóa các trường cũ khỏi dict để không lọt vào extra hoặc output
+        for legacy_key in [
+            "description_html",
+            "description_text",
+            "salary_text",
+            "salary_min",
+            "salary_max",
+            "salary_currency",
+            "requirements_text",
+            "benefits_text",
+            "skills_text",
+        ]:
+            d.pop(legacy_key, None)
+
+        return d
 
     model_config = {"extra": "allow"}
 

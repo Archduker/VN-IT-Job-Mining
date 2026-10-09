@@ -36,6 +36,9 @@ __all__ = [
     "normalize_skills_text",
     "detect_language",
     "parse_salary",
+    "parse_salary_detail",
+    "text_to_clean_lines",
+    "classify_job_tags",
 ]
 
 
@@ -326,3 +329,184 @@ def normalize_skills_text(skills_text: str) -> list[str]:
     skills = re.split(r"[,|;/]+", skills_text)
     skills = [s.strip() for s in skills if s.strip()]
     return skills
+
+
+def parse_salary_detail(
+    salary_text: Optional[str],
+    title: Optional[str] = None,
+) -> dict:
+    """Trích xuất và chuẩn hóa thông tin mức lương có ngữ nghĩa chi tiết.
+
+    Phân tích dải lương, đơn vị tiền tệ, chu kỳ trả lương (pay_period),
+    trạng thái thỏa thuận (is_negotiable), và cờ hoa hồng (has_commission).
+
+    Args:
+        salary_text: Chuỗi mức lương hiển thị (ví dụ: 'Tới 40 triệu', 'Thoả thuận').
+        title: Tiêu đề công việc (dự phòng trường hợp mức lương được viết trong title).
+
+    Returns:
+        Dict tương thích với schema JobSalary.
+    """
+    raw_text = clean_text(salary_text or "")
+    combined_context = f"{raw_text} {title or ''}".strip()
+    lower_context = combined_context.lower()
+
+    # 1. Phát hiện cờ hoa hồng / thu nhập biến đổi
+    commission_keywords = [
+        "hoa hồng", "commission", "không giới hạn", "thưởng doanh số", "thưởng kpi",
+        "bonus theo doanh số", "+ hoa hồng", "+ commission"
+    ]
+    has_commission = any(k in lower_context for k in commission_keywords)
+
+    # 2. Phát hiện trạng thái thỏa thuận
+    negotiable_keywords = ["thỏa thuận", "thoả thuận", "thương lượng", "negotiable", "competitive"]
+    is_raw_negotiable = any(k in raw_text.lower() for k in negotiable_keywords)
+
+    # 3. Trích xuất dải số từ text hoặc fallback từ title nếu raw_text là thỏa thuận
+    sal_to_parse = raw_text
+    if is_raw_negotiable and title:
+        m_sal = re.search(
+            r"(?:lương|salary|thu nhập|upto|up to|tới|từ)?\s*(\d+(?:[.,]\d+)?\s*(?:-|–|to|đến)?\s*\d+(?:[.,]\d+)?\s*(?:triệu|tr|m|usd|\$)|upto\s*\d+\s*(?:triệu|tr|m|usd|\$)|up to\s*\d+\s*(?:triệu|tr|m|usd|\$)|tới\s*\d+\s*(?:triệu|tr|m|usd|\$))",
+            title,
+            re.IGNORECASE,
+        )
+        if m_sal:
+            sal_to_parse = m_sal.group(0).strip()
+
+    sal_to_parse_norm = re.sub(r"\bupto\b", "up to", sal_to_parse, flags=re.IGNORECASE)
+    sal_min, sal_max, sal_currency = parse_salary(sal_to_parse_norm)
+
+    # 4. Xác định chu kỳ trả lương (pay_period)
+    pay_period: Optional[str] = None
+    if any(k in lower_context for k in ["/năm", "/nam", "/year", "annual", "annually", "hàng năm"]):
+        pay_period = "year"
+    elif any(k in lower_context for k in ["/ngày", "/ngay", "/day", "daily", "hàng ngày"]):
+        pay_period = "day"
+    elif any(k in lower_context for k in ["/giờ", "/gio", "/hour", "hourly"]):
+        pay_period = "hour"
+    elif any(k in lower_context for k in ["/tháng", "/thang", "/month", "monthly", "hàng tháng", "triệu", "tr"]):
+        pay_period = "month"
+    elif sal_min is not None or sal_max is not None:
+        # Đặc thù thị trường tuyển dụng IT Việt Nam, nếu có số tiền cụ thể thì mặc định là tháng
+        pay_period = "month"
+
+    # Nếu sau khi kiểm tra title mà tìm được số tiền thì không còn thuần thỏa thuận nữa
+    is_negotiable = is_raw_negotiable if (sal_min is None and sal_max is None) else False
+
+    return {
+        "salary_text": raw_text or "Thoả thuận",
+        "salary_min": sal_min,
+        "salary_max": sal_max,
+        "salary_currency": sal_currency,
+        "pay_period": pay_period or ("month" if not is_negotiable else None),
+        "is_negotiable": is_negotiable,
+        "has_commission": has_commission,
+    }
+
+
+def text_to_clean_lines(content: Optional[str]) -> list[str]:
+    """Chuyển đổi chuỗi text hoặc HTML thành danh sách các dòng sạch (list[str]).
+
+    Tự động nhận diện danh sách <li> hoặc ngắt dòng \\n, loại bỏ các ký hiệu
+    bullet point đầu dòng (-, *, •, +, 1., 2) và khoảng trắng thừa.
+
+    Args:
+        content: Chuỗi text hoặc đoạn mã HTML.
+
+    Returns:
+        List các chuỗi đã làm sạch.
+    """
+    if not content:
+        return []
+
+    if "<li" in content.lower():
+        # Trích xuất nội dung giữa <li>...</li>
+        li_matches = re.findall(r"<li[^>]*>(.*?)</li>", content, flags=re.DOTALL | re.IGNORECASE)
+        lines = [strip_html_tags(m) for m in li_matches if m.strip()]
+    else:
+        text = strip_html_tags(content) if ("<" in content and ">" in content) else content
+        lines = text.split("\n")
+
+    clean_lines: list[str] = []
+    for line in lines:
+        l = clean_text(line)
+        if not l:
+            continue
+        # Loại bỏ bullet points ở đầu dòng: •, -, *, +, 1., 2), v.v.
+        l = re.sub(r"^(?:[\s•\-\*+–—]+|(?:\d+[\.\)]\s*))", "", l).strip()
+        if len(l) >= 2 and not re.match(r"^[\s•\-\*+–—.,:;]+$", l):
+            clean_lines.append(l)
+
+    return clean_lines
+
+
+def classify_job_tags(raw_tags: list[str]) -> dict:
+    """Phân nhóm danh sách thẻ tag thành chuyên môn, chức danh, phúc lợi và thuộc tính.
+
+    Args:
+        raw_tags: Danh sách các tag thô lấy từ trang tuyển dụng.
+
+    Returns:
+        Dict chứa technical_skills, job_roles, benefits, attributes.
+    """
+    attributes: dict[str, str] = {}
+    benefits: list[str] = []
+    job_roles: list[str] = []
+    technical_skills: list[str] = []
+
+    role_keywords = [
+        "developer", "engineer", "lập trình viên", "kỹ sư", "manager", "leader",
+        "trưởng nhóm", "quản lý", "consultant", "analyst", "chuyên viên",
+        "product owner", "scrum master", "tester", "qa", "qc", "devops", "sysadmin", "architect"
+    ]
+    benefit_keywords = [
+        "bảo hiểm", "insurance", "du lịch", "travel", "team building", "thưởng", "bonus",
+        "phụ cấp", "allowance", "đào tạo", "training", "xe đưa đón", "cơm trưa", "chăm sóc sức khỏe"
+    ]
+
+    for tag in raw_tags:
+        t = clean_text(tag)
+        if not t:
+            continue
+        lower_t = t.lower()
+
+        # 1. Thuộc tính: Kinh nghiệm
+        if any(k in lower_t for k in ["kinh nghiệm", "experience", "năm kn"]):
+            attributes["experience"] = t
+            continue
+
+        # 2. Thuộc tính: Học vấn
+        if any(k in lower_t for k in ["đại học", "cao đẳng", "thạc sĩ", "tiến sĩ", "degree", "university", "college"]):
+            attributes["education"] = t
+            continue
+
+        # 3. Thuộc tính: Độ tuổi
+        if "tuổi" in lower_t or "age" in lower_t:
+            attributes["age"] = t
+            continue
+
+        # 4. Phúc lợi
+        if any(b in lower_t for b in benefit_keywords):
+            if t not in benefits:
+                benefits.append(t)
+            continue
+
+        # 5. Chức danh / Vai trò
+        if any(r in lower_t for r in role_keywords):
+            if t not in job_roles:
+                job_roles.append(t)
+            continue
+
+        # 6. Kỹ năng chuyên môn / công nghệ còn lại
+        if t not in technical_skills:
+            technical_skills.append(t)
+
+    return {
+        "technical_skills": technical_skills,
+        "job_roles": job_roles,
+        "benefits": benefits if benefits else None,
+        "attributes": attributes,
+        "skills": technical_skills + job_roles if (technical_skills or job_roles) else None,
+        "requirements": list(attributes.values()) if attributes else None,
+    }
+

@@ -246,32 +246,29 @@ class TestJobRaw:
         raw = JobRaw(**valid_raw_dict)
         assert raw.title == "Senior Backend Developer"
         assert raw.company == "FPT Software"
-        assert raw.salary_min is None
-        assert raw.salary_max is None
-        assert raw.salary_currency is None
+        assert raw.salary is None
+        assert len(raw.description_list) > 0
 
     def test_numeric_salary_fields(self, valid_raw_dict):
         valid_raw_dict["salary_min"] = 15.0
         valid_raw_dict["salary_max"] = 35.0
         valid_raw_dict["salary_currency"] = "VND"
         raw = JobRaw(**valid_raw_dict)
-        assert raw.salary_min == 15.0
-        assert raw.salary_max == 35.0
-        assert raw.salary_currency == "VND"
+        assert raw.salary.salary_min == 15.0
+        assert raw.salary.salary_max == 35.0
+        assert raw.salary.salary_currency == "VND"
 
     def test_optional_fields_default_to_none(self, valid_raw_dict):
         raw = JobRaw(**valid_raw_dict)
-        assert raw.salary_text is None
+        assert raw.salary is None
         assert raw.location_text is None
-        assert raw.skills_text is None
         assert raw.seniority_text is None
 
     def test_title_stripped(self):
         raw = JobRaw(
             title="  Senior Backend Developer  ",
             company="FPT",
-            description_html="<p>desc</p>",
-            description_text="desc",
+            description_list=["Mô tả công việc"],
         )
         assert raw.title == "Senior Backend Developer"
 
@@ -279,8 +276,7 @@ class TestJobRaw:
         raw = JobRaw(
             title="Dev",
             company="  FPT Software  ",
-            description_html="<p>desc</p>",
-            description_text="desc",
+            description_list=["Mô tả công việc"],
         )
         assert raw.company == "FPT Software"
 
@@ -289,27 +285,58 @@ class TestJobRaw:
         with pytest.raises(ValidationError):
             JobRaw(**valid_raw_dict)
 
-    def test_missing_description_html_raises_error(self, valid_raw_dict):
+    def test_missing_description_raises_error(self, valid_raw_dict):
         del valid_raw_dict["description_html"]
+        del valid_raw_dict["description_text"]
         with pytest.raises(ValidationError):
             JobRaw(**valid_raw_dict)
 
     def test_full_optional_fields(self, valid_raw_dict):
         full_raw = {
             **valid_raw_dict,
-            "salary_text": "15-25 triệu",
+            "salary": {
+                "salary_text": "15-25 triệu",
+                "salary_min": 15.0,
+                "salary_max": 25.0,
+                "salary_currency": "VND",
+                "pay_period": "month",
+            },
             "location_text": "Hồ Chí Minh",
-            "skills_text": "Java, Spring Boot, MySQL",
             "posted_date_text": "03/10/2026",
             "employment_type_text": "Fulltime",
             "seniority_text": "Senior",
-            "requirements_text": "3+ năm kinh nghiệm Java",
-            "benefits_text": "Bảo hiểm sức khoẻ",
+            "requirements_list": ["3+ năm kinh nghiệm Java"],
+            "benefits_list": ["Bảo hiểm sức khoẻ"],
             "deadline_text": "31/10/2026",
         }
         raw = JobRaw(**full_raw)
-        assert raw.salary_text == "15-25 triệu"
-        assert raw.skills_text == "Java, Spring Boot, MySQL"
+        assert raw.salary.salary_text == "15-25 triệu"
+        assert raw.requirements_list == ["3+ năm kinh nghiệm Java"]
+
+    def test_job_tags_structure_and_null_benefits(self):
+        from crawlers.common.schema import JobTags
+        # Case 1: benefits is None (null)
+        tags1 = JobTags(
+            requirements=["3 năm kinh nghiệm chuyên môn", "Đại Học trở lên"],
+            benefits=None,
+            skills=["Business Analyst", "IT - Phần mềm"]
+        )
+        assert tags1.benefits is None
+        assert len(tags1.requirements) == 2
+        assert len(tags1.skills) == 2
+        # Backward compatibility properties
+        assert tags1.technical_skills == ["Business Analyst", "IT - Phần mềm"]
+        assert tags1.job_roles == []
+        assert tags1.attributes == {}
+
+        # Case 2: all groups present
+        tags2 = JobTags(
+            requirements=["1 năm kinh nghiệm"],
+            benefits=["Bảo hiểm y tế", "Tháng lương 13"],
+            skills=["Python", "FastAPI"]
+        )
+        assert tags2.benefits == ["Bảo hiểm y tế", "Tháng lương 13"]
+        assert tags2.skills == ["Python", "FastAPI"]
 
 
 # ─────────────────────────────────────────────────────────────
