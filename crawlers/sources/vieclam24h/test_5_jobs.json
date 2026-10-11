@@ -2,210 +2,25 @@
   {
     "_meta": {
       "source": "vieclam24h",
-      "source_job_id": "1001",
-      "url": "https://vieclam24h.vn/senior-frontend-developer-reactjs-typescript-id1001.html",
-      "dedup_key": "vieclam24h:1001",
-      "crawled_at": "2026-10-11T07:23:22.251527Z",
+      "source_job_id": "200947717",
+      "url": "https://vieclam24h.vn/it-phan-mem/truong-phong-ky-thuat-c8p122id200947717.html",
+      "dedup_key": "vieclam24h:200947717",
+      "crawled_at": "2026-10-11T14:45:40.529983+07:00",
       "batch_id": "2026-10-11_vieclam24h_001",
-      "crawler_version": "0.2.0",
+      "crawler_version": "0.3.0",
       "language": "vi"
     },
     "raw": {
-      "title": "Senior Frontend Developer (ReactJS / TypeScript)",
-      "company": "Công ty Cổ phần Công nghệ ABC",
+      "title": "Trưởng Phòng Kỹ Thuật",
+      "company": "Công Ty TNHH Công Nghệ Dnic",
       "description_list": [
-        "Thiết kế component React",
-        "Tối ưu hóa hiệu năng web"
-      ],
-      "salary": {
-        "salary_text": "25 - 45 triệu",
-        "salary_min": 25.0,
-        "salary_max": 45.0,
-        "salary_currency": "VND",
-        "pay_period": "month",
-        "is_negotiable": false,
-        "has_commission": false
-      },
-      "tags": {
-        "requirements": null,
-        "benefits": null,
-        "skills": [
-          "ReactJS",
-          "TypeScript",
-          "Redux"
-        ]
-      },
-      "requirements_list": [
-        "Ít nhất 4 năm kinh nghiệm với ReactJS",
-        "Thành thạo TypeScript, Redux Toolkit",
-        "Có tư duy Clean Architecture"
-      ],
-      "benefits_list": [
-        "Lương tháng 13 + thưởng hiệu quả",
-        "Bảo hiểm sức khỏe toàn diện",
-        "Phụ cấp ăn trưa và gửi xe"
-      ],
-      "location_text": "Tầng 5, Tòa nhà Landmark, Hồ Chí Minh",
-      "deadline_text": "2026-01-01",
-      "posted_date_text": "2025-01-01",
-      "employment_type_text": "Toàn thời gian",
-      "seniority_text": "Senior",
-      "extra": {
-        "experience": "4 năm kinh nghiệm chuyên môn",
-        "address_components": {
-          "streetAddress": "Tầng 5, Tòa nhà Landmark",
-          "addressLocality": "Hồ Chí Minh",
-          "addressRegion": null,
-          "addressCountry": null
-        },
-        "hiring_quantity": "2 người",
-        "education": "Đại học"
-      }
-    }
-  },
-  {
-    "_meta": {
-      "source": "vieclam24h",
-      "source_job_id": "1002",
-      "url": "https://vieclam24h.vn/backend-engineer-golang-microservices-id1002.html",
-      "dedup_key": "vieclam24h:1002",
-      "crawled_at": "2026-10-11T07:23:22.251527Z",
-      "batch_id": "2026-10-11_vieclam24h_001",
-      "crawler_version": "0.2.0",
-      "language": "vi"
-    },
-    "raw": {
-      "title": "Backend Engineer (Golang / Microservices)",
-      "company": "Tập đoàn Giải pháp Số XYZ",
-      "description_list": [
-        "Xây dựng REST & gRPC API",
-        "Tối ưu database PostgreSQL và Redis"
-      ],
-      "salary": {
-        "salary_text": "Từ 20 triệu",
-        "salary_min": 20.0,
-        "salary_max": null,
-        "salary_currency": "VND",
-        "pay_period": "month",
-        "is_negotiable": false,
-        "has_commission": false
-      },
-      "tags": {
-        "requirements": null,
-        "benefits": null,
-        "skills": [
-          "Golang",
-          "Microservices",
-          "Docker"
-        ]
-      },
-      "requirements_list": [
-        "Kinh nghiệm Golang từ 2 năm trở lên",
-        "Hiểu rõ về Docker, Kubernetes",
-        "Kiến thức tốt về concurrency và caching"
-      ],
-      "benefits_list": [
-        "Thưởng dự án hấp dẫn",
-        "Tham gia các khóa đào tạo quốc tế",
-        "Môi trường năng động, trẻ trung"
-      ],
-      "location_text": "Số 12 Duy Tân, Cầu Giấy, Hà Nội",
-      "deadline_text": "2026-01-01",
-      "posted_date_text": "2025-01-01",
-      "employment_type_text": "Toàn thời gian",
-      "seniority_text": "Kỹ sư",
-      "extra": {
-        "experience": "2 năm kinh nghiệm chuyên môn",
-        "address_components": {
-          "streetAddress": "Số 12 Duy Tân, Cầu Giấy",
-          "addressLocality": "Hà Nội",
-          "addressRegion": null,
-          "addressCountry": null
-        },
-        "hiring_quantity": "3 người"
-      }
-    }
-  },
-  {
-    "_meta": {
-      "source": "vieclam24h",
-      "source_job_id": "1003",
-      "url": "https://vieclam24h.vn/ai-machine-learning-engineer-id1003.html",
-      "dedup_key": "vieclam24h:1003",
-      "crawled_at": "2026-10-11T07:23:22.251527Z",
-      "batch_id": "2026-10-11_vieclam24h_001",
-      "crawler_version": "0.2.0",
-      "language": "vi"
-    },
-    "raw": {
-      "title": "AI / Machine Learning Engineer",
-      "company": "Viện Trí tuệ Nhân tạo NextGen",
-      "description_list": [
-        "Fine-tuning mô hình ngôn ngữ lớn",
-        "Xây dựng pipeline RAG cho hệ thống hỏi đáp"
-      ],
-      "salary": {
-        "salary_text": "Thoả thuận",
-        "salary_min": null,
-        "salary_max": null,
-        "salary_currency": null,
-        "pay_period": null,
-        "is_negotiable": true,
-        "has_commission": false
-      },
-      "tags": {
-        "requirements": null,
-        "benefits": null,
-        "skills": [
-          "Python",
-          "PyTorch",
-          "LLM"
-        ]
-      },
-      "requirements_list": [
-        "Tốt nghiệp ĐH/ThS chuyên ngành CNTT, Toán Tin",
-        "Thành thạo Python, PyTorch, HuggingFace",
-        "Có bài báo khoa học là lợi thế lớn"
-      ],
-      "benefits_list": [
-        "Lương thưởng không giới hạn theo năng lực",
-        "Cơ hội làm việc cùng chuyên gia AI hàng đầu",
-        "Laptop cấu hình cao và tài khoản GPU cluster"
-      ],
-      "location_text": "Khu Công nghệ cao, TP Thủ Đức, Hồ Chí Minh",
-      "deadline_text": "2026-01-01",
-      "posted_date_text": "2025-01-01",
-      "employment_type_text": "Toàn thời gian",
-      "seniority_text": "Chuyên viên",
-      "extra": {
-        "experience": "1-3",
-        "address_components": {
-          "streetAddress": "Khu Công nghệ cao, TP Thủ Đức",
-          "addressLocality": "Hồ Chí Minh",
-          "addressRegion": null,
-          "addressCountry": null
-        },
-        "hiring_quantity": "1 người"
-      }
-    }
-  },
-  {
-    "_meta": {
-      "source": "vieclam24h",
-      "source_job_id": "1004",
-      "url": "https://vieclam24h.vn/devops-cloud-infrastructure-specialist-id1004.html",
-      "dedup_key": "vieclam24h:1004",
-      "crawled_at": "2026-10-11T07:23:22.251527Z",
-      "batch_id": "2026-10-11_vieclam24h_001",
-      "crawler_version": "0.2.0",
-      "language": "vi"
-    },
-    "raw": {
-      "title": "DevOps / Cloud Infrastructure Specialist",
-      "company": "Công ty Dịch vụ Đám mây CloudX",
-      "description_list": [
-        "Thiết lập CI/CD pipeline tự động hóa",
-        "Giám sát hệ thống bằng Prometheus, Grafana"
+        "Dẫn dắt đội ngũ chuyên gia, đảm bảo các giải pháp công nghệ từ phần cứng đến trí tuệ nhân tạo (AI) được triển khai hiệu quả, đáp ứng nhu cầu CNTT của khách hàng.",
+        "Quản lý toàn bộ quy trình tư vấn và thiết kế hệ thống, bao gồm máy chủ, mạng lưới và thiết bị văn phòng phù hợp với đặc thù của doanh nghiệp vừa và nhỏ.",
+        "Sắp xếp lịch làm việc cho bản thân và các thành viên trong nhóm, đảm bảo tiến độ cung cấp dịch vụ bảo trì và sao lưu dữ liệu định kỳ.",
+        "Cập nhật các xu hướng công nghệ mới về trình chiếu không dây Solstice và hội nghị truyền hình, nhằm mang lại trải nghiệm tốt cho người dùng cuối.",
+        "Phối hợp với đội ngũ kỹ thuật triển khai hệ sinh thái nhà thông minh, giúp khách hàng điều khiển căn hộ hoặc văn phòng trên giao diện dễ sử dụng.",
+        "Đảm bảo chất lượng vận hành của các giải pháp máy chủ sử dụng GPU cao cấp phục vụ xử lý dữ liệu lớn trong lĩnh vực trí tuệ nhân tạo.",
+        "Hướng dẫn đội ngũ nhân viên tiếp cận và xử lý các vấn đề kỹ thuật một cách đơn giản, dễ hiểu khi trao đổi với khách hàng không chuyên về IT."
       ],
       "salary": {
         "salary_text": "30 - 50 triệu",
@@ -219,61 +34,150 @@
       "tags": {
         "requirements": null,
         "benefits": null,
-        "skills": [
-          "DevOps",
-          "AWS",
-          "Kubernetes"
-        ]
+        "skills": null
       },
       "requirements_list": [
-        "3+ năm kinh nghiệm DevOps / SRE",
-        "Thành thạo Terraform, Ansible",
-        "Có chứng chỉ AWS Certified Solutions Architect là điểm cộng"
+        "Có kiến thức nền tảng vững chắc về Công nghệ thông tin, hiểu biết sâu về các sản phẩm và dịch vụ của Công ty.",
+        "Có khả năng cập nhật nhanh các xu hướng và công nghệ mới để đưa ra giải pháp phù hợp cho khách hàng.",
+        "Có năng lực quản lý, tổ chức và phân công công việc khoa học cho bản thân và đội ngũ.",
+        "Có kinh nghiệm thực tế trong vận hành và bảo trì hệ thống phần cứng như máy tính, máy chủ, thiết bị mạng và camera giám sát.",
+        "Có khả năng phân tích nhu cầu thực tế của khách hàng để xây dựng giải pháp tổng thể từ quản trị hệ thống đến truyền dẫn dữ liệu.",
+        "Có kỹ năng giao tiếp rõ ràng, khả năng giải thích các khái niệm kỹ thuật phức tạp thành những nội dung dễ hiểu với nhiều đối tượng khách hàng."
       ],
       "benefits_list": [
-        "Bảo hiểm sức khỏe PVI Premium cho cả gia đình",
-        "Review lương 2 lần/năm",
-        "Hỗ trợ 100% chi phí thi chứng chỉ quốc tế"
+        "Làm việc tại Công ty TNHH Công nghệ DNIC trong môi trường chuyên nghiệp, có cơ hội áp dụng kiến thức IT để giải quyết các vấn đề công nghệ thực tế cho khách hàng.",
+        "Có cơ hội tiếp cận và cập nhật các xu hướng công nghệ mới trong lĩnh vực phần cứng và phần mềm.",
+        "Mức lương cạnh tranh cùng thưởng hiệu suất dựa trên kết quả quản lý và vận hành hệ thống của đội ngũ.",
+        "Được tham gia vào quá trình tư vấn và bảo trì hệ thống, nâng cao kỹ năng quản trị từ truyền dẫn mạng đến giải pháp lưu trữ dữ liệu cho doanh nghiệp vừa và nhỏ.",
+        "Được sử dụng các thiết bị văn phòng hiện đại như máy tính xách tay, màn hình LED chuyên dụng phục vụ công việc.",
+        "Được Công ty hỗ trợ đào tạo liên tục về giải pháp AI và hệ thống nhà thông minh, cập nhật các công nghệ như Solstice và hội nghị truyền hình trực tuyến.",
+        "Cơ cấu tổ chức linh hoạt, chủ động sắp xếp thời gian làm việc và phân bổ nhiệm vụ cho các thành viên trong nhóm kỹ thuật.",
+        "Môi trường làm việc thân thiện, khuyến khích sự sáng tạo trong việc phát triển các giải pháp trình chiếu không dây, camera giám sát và các giải pháp công nghệ phù hợp với nhu cầu khách hàng."
       ],
-      "location_text": "Tòa nhà FPT, Quận Cầu Giấy, Hà Nội",
-      "deadline_text": "2026-01-01",
-      "posted_date_text": "2025-01-01",
-      "employment_type_text": "Toàn thời gian",
-      "seniority_text": "Senior",
+      "location_text": "Jamona City, 722 Đào Trí",
+      "deadline_text": "2026-10-24",
+      "posted_date_text": "2026-09-25",
+      "employment_type_text": "1",
+      "seniority_text": "2",
       "extra": {
-        "experience": "3 năm kinh nghiệm chuyên môn",
+        "experience": "4 năm kinh nghiệm chuyên môn",
         "address_components": {
-          "streetAddress": "Tòa nhà FPT, Quận Cầu Giấy",
-          "addressLocality": "Hà Nội",
+          "streetAddress": "Jamona City, 722 Đào Trí",
+          "addressLocality": null,
           "addressRegion": null,
           "addressCountry": null
         },
-        "hiring_quantity": "2 người"
+        "hiring_quantity": "1 người",
+        "work_schedule": "1"
       }
     }
   },
   {
     "_meta": {
       "source": "vieclam24h",
-      "source_job_id": "1005",
-      "url": "https://vieclam24h.vn/lead-software-quality-assurance-qa-qc-id1005.html",
-      "dedup_key": "vieclam24h:1005",
-      "crawled_at": "2026-10-11T07:23:22.251527Z",
+      "source_job_id": "200961159",
+      "url": "https://vieclam24h.vn/it-phan-mem/chuyen-vien-ung-dung-ai-ai-enablement-associate-c8p210000187id200961159.html",
+      "dedup_key": "vieclam24h:200961159",
+      "crawled_at": "2026-10-11T14:45:42.310312+07:00",
       "batch_id": "2026-10-11_vieclam24h_001",
-      "crawler_version": "0.2.0",
+      "crawler_version": "0.3.0",
       "language": "vi"
     },
     "raw": {
-      "title": "Lead Software Quality Assurance (QA/QC)",
-      "company": "FinTech Solutions Vietnam",
+      "title": "Chuyên Viên Ứng Dụng Ai (Ai Enablement Associate)",
+      "company": "Công Ty Cổ Phần Truyền Thông Tập Trung Mặt Trời Vàng",
       "description_list": [
-        "Lên kế hoạch test, xây dựng framework Automation Test",
-        "Quản lý nhóm QA 5 thành viên"
+        "Hiểu rõ và tổng hợp các yêu cầu của công ty, đặc biệt là của CEO, đối với hệ thống AI quản lý bán hàng, phối hợp với các công ty tư vấn AI bên ngoài để thúc đẩy việc triển khai toàn bộ quy trình của hệ thống trí tuệ nhân tạo quản lý bán hàng, từ việc phân tích yêu cầu, thử nghiệm mô hình cho đến triển khai chính thức",
+        "Thúc đẩy và thu thập phản hồi của đội ngũ kinh doanh về việc sử dụng công cụ AI, từ đó thúc đẩy quá trình cải tiến và tối ưu hóa sản phẩm, đồng thời nâng cao tỷ lệ áp dụng và mức độ hài lòng của đội ngũ bán hàng.",
+        "Theo dõi dữ liệu hiệu quả sử dụng của AI Agent (tỷ lệ phản hồi chính xác, tỷ lệ sử dụng, mức độ hài lòng của khách hàng, v.v.), lập báo cáo định kỳ cho cấp quản lý.",
+        "Thiết lập và duy trì cơ chế giao tiếp, điều phối giữa phòng ban (Bán hàng, IT, HR, v.v.) và với nhà cung cấp bên ngoài, bảo đảm dự án tiến hành thuận lợi.",
+        "Tham gia xây dựng lộ trình ứng dụng AI của công ty, thúc đẩy việc mở rộng kinh nghiệm thành công từ AI Agent bán hàng sang các lĩnh vực nghiệp vụ khác như AI Agent tuân thủ.",
+        "Liên tục cập nhật xu hướng và công cụ ứng dụng AI mới nhất trong ngành, đưa ra đề xuất cho việc xây dựng năng lực AI của công ty."
       ],
       "salary": {
-        "salary_text": "28 - 40 triệu",
-        "salary_min": 28.0,
-        "salary_max": 40.0,
+        "salary_text": "Thoả thuận",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": null,
+        "pay_period": null,
+        "is_negotiable": true,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": null
+      },
+      "requirements_list": [
+        "Tốt nghiệp Đại học trở lên, ưu tiên các chuyên ngành liên quan như Khoa học Máy tính, Khoa học Dữ liệu, Phân tích Kinh doanh, Kỹ thuật Công nghiệp, Quản lý Thông tin…",
+        "Có từ 0 - 3 năm kinh nghiệm, ưu tiên ứng viên có kinh nghiệm dự án ứng dụng công cụ AI (bao gồm dự án cá nhân/ thực tập/ đồ án môn học), không yêu cầu có nền tảng về phát triển thuật toán AI.",
+        "Có sự hiểu biết khái niệm cơ bản về Prompt Engineering, RAG (Kho tri thức), và quy trình làm việc của AI Agent.",
+        "Có khả năng học hỏi tốt, tinh thần tự giác cao, nhanh chóng nắm bắt các công cụ và phương pháp mới.",
+        "Khả năng giao tiếp và phối hợp giữa các bộ phận tốt, có thể phiên dịch các giải pháp kỹ thuật phức tạp sang ngôn ngữ kinh doanh.",
+        "Có năng lực quản lý dự án cơ bản, có thể độc lập theo dõi tiến độ dự án phối hợp nhiều bên.",
+        "Tiếng Trung và tiếng Anh tốt.",
+        "Ưu tiên ứng viên đã sử dụng công cụ AI để xây dựng AI Agent hoặc quy trình tự động hóa, từng tham gia các chương trình đào tạo chuyên sâu, cuộc thi Hackathon về AI hoặc có chứng chỉ liên quan đến AI, Prompt Engineering."
+      ],
+      "benefits_list": [
+        "Lương cứng hấp dẫn được đề xuất theo năng lực và kinh nghiệm.",
+        "Hỗ trợ thêm ăn trưa 50.000đ/ngày, phụ cấp điện thoại và xăng xe đi lại.",
+        "Tham gia đầy đủ BHXH, BHYT, BHTN với mức đóng cao và gia tăng theo sự thăng tiến, đảm bảo tối đa quyền lợi cho người lao động.",
+        "Hưởng gói Bảo hiểm sức khỏe PVI và chương trình khám sức khỏe định kỳ hàng năm, góp phần chăm sóc toàn diện sức khỏe thể chất và tinh thần của nhân viên.",
+        "Được hưởng các chế độ nghỉ Lễ, Tết theo quy định của nhà nước; đồng thời nhận các khoản thưởng và phúc lợi hấp dẫn vào các dịp đặc biệt theo chính sách Công ty.",
+        "Chế độ nghỉ sinh nhật có lương, chế độ phụ nữ nghỉ có lương trong tháng.",
+        "Nhân viên xuất sắc sẽ có cơ hội cử sang Tổng bộ đào tạo nâng cao nghiệp vụ.",
+        "Chương trình du lịch hàng năm theo chính sách của công ty.",
+        "Nhân viên công ty sẽ được nhận các chiết khấu hấp dẫn khi mua hàng với chính sách ưu đãi của các nhãn hàng lớn như Everon, Aristino, Giovani...theo chính sách tốt nhất.",
+        "Được tham gia các chương trình, hoạt động nội bộ của công ty.",
+        "Được làm việc trong môi trường tập đoàn truyền thông thang máy hàng đầu thế giới hiện nay. Môi trường làm việc quốc tế, có thể nâng cao trình độ ngoại ngữ.",
+        "Đào tạo kỹ năng mềm và kỹ năng chuyên môn.",
+        "Lộ trình thăng tiến lên Trưởng nhóm, Trưởng phòng chuyển đổi AI."
+      ],
+      "location_text": "Tầng 21, Tòa nhà Riverfront Financial Centre, Số 3A – 3B Đường Tôn Đức Thắng",
+      "deadline_text": "2026-11-12",
+      "posted_date_text": "2026-10-10",
+      "employment_type_text": "1",
+      "seniority_text": "5",
+      "extra": {
+        "experience": "1 năm kinh nghiệm chuyên môn",
+        "address_components": {
+          "streetAddress": "Tầng 21, Tòa nhà Riverfront Financial Centre, Số 3A – 3B Đường Tôn Đức Thắng",
+          "addressLocality": null,
+          "addressRegion": null,
+          "addressCountry": null
+        },
+        "hiring_quantity": "1 người",
+        "education": "1",
+        "work_schedule": "1"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vieclam24h",
+      "source_job_id": "200950587",
+      "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-it-quan-tri-he-thong-c7p73id200950587.html",
+      "dedup_key": "vieclam24h:200950587",
+      "crawled_at": "2026-10-11T14:45:59.399582+07:00",
+      "batch_id": "2026-10-11_vieclam24h_001",
+      "crawler_version": "0.3.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Nhân Viên IT Quản Trị Hệ Thống",
+      "company": "Công Ty Cổ Phần Truyền Thông Att Việt Nam",
+      "description_list": [
+        "Theo dõi, giám sát tình trạng hoạt động của hệ thống màn hình Digital Signage trên toàn quốc.",
+        "Kiểm tra, phát hiện và xử lý các trường hợp màn hình offline, mất kết nối hoặc hoạt động không ổn định.",
+        "Liên hệ với cửa hàng, đối tác hoặc khách hàng để phối hợp kiểm tra và hướng dẫn khắc phục sự cố từ xa.",
+        "Phối hợp với đội ngũ kỹ thuật trong việc xử lý các sự cố cần hỗ trợ từ xa hoặc trực tiếp tại hiện trường.",
+        "Theo dõi tình trạng thiết bị, cập nhật thông tin xử lý sự cố và đảm bảo hệ thống hoạt động ổn định.",
+        "Thực hiện các công việc vận hành và quản trị hệ thống khác theo sự phân công của quản lý."
+      ],
+      "salary": {
+        "salary_text": "9 - 11 triệu",
+        "salary_min": 9.0,
+        "salary_max": 11.0,
         "salary_currency": "VND",
         "pay_period": "month",
         "is_negotiable": false,
@@ -282,36 +186,196 @@
       "tags": {
         "requirements": null,
         "benefits": null,
-        "skills": [
-          "Automation Test",
-          "Selenium",
-          "Playwright"
-        ]
+        "skills": null
       },
       "requirements_list": [
-        "5+ năm kinh nghiệm kiểm thử, ít nhất 1 năm vị trí Lead",
-        "Thành thạo Selenium, Playwright, Cypress",
-        "Hiểu biết sâu về domain ngân hàng/thanh toán điện tử"
+        "Tốt nghiệp hoặc đang theo học các chuyên ngành Công nghệ thông tin, Kỹ thuật máy tính, Mạng máy tính, Phần mềm hoặc các ngành liên quan.",
+        "Có kiến thức cơ bản về máy tính, mạng LAN/Wi-Fi, Internet và hệ điều hành Windows/Android.",
+        "Có khả năng kiểm tra, xác định các lỗi kết nối và xử lý các sự cố IT cơ bản.",
+        "Có khả năng giao tiếp qua điện thoại, trao đổi và hướng dẫn khách hàng/đối tác trong quá trình xử lý sự cố.",
+        "Cẩn thận, kiên nhẫn, có tinh thần trách nhiệm và chủ động trong công việc.",
+        "Có khả năng làm việc theo ca hoặc hỗ trợ/trực hệ thống khi phát sinh sự cố, theo yêu cầu công việc.",
+        "ƯU TIÊN",
+        "Có kinh nghiệm làm IT Helpdesk, IT Support hoặc IT Operations.",
+        "Có kiến thức hoặc kinh nghiệm về Digital Signage, Android Box, IoT là lợi thế.",
+        "Có khả năng sử dụng các công cụ quản lý, giám sát hệ thống là một lợi thế."
       ],
       "benefits_list": [
-        "Thưởng tháng lương thứ 13, 14",
-        "Du lịch hàng năm tiêu chuẩn 5 sao",
-        "Thời gian làm việc linh hoạt, hybrid 2 ngày/tuần"
+        "Mức lương: 9-11 triệu Thỏa thuận theo năng lực và kinh nghiệm.",
+        "Được đào tạo về hệ thống Digital Signage, IoT và nền tảng quản lý màn hình của Công ty.",
+        "Được tiếp cận và làm việc trực tiếp với hệ thống thiết bị, phần mềm và các dự án công nghệ thực tế.",
+        "Môi trường làm việc trẻ, năng động, có cơ hội học hỏi và phát triển chuyên môn.",
+        "Có cơ hội phát triển theo các hướng IT System, Network Engineer, IT Operations hoặc Technical Support Leader.",
+        "Được hưởng các chế độ, chính sách theo quy định của Công ty và pháp luật hiện hành."
       ],
-      "location_text": "Quận 1, TP Hồ Chí Minh, Hồ Chí Minh",
-      "deadline_text": "2026-01-01",
-      "posted_date_text": "2025-01-01",
-      "employment_type_text": "Toàn thời gian",
-      "seniority_text": "Team Leader",
+      "location_text": "Nhà B1 ngõ 105 Lạc Long Quân P. Nghĩa Đô",
+      "deadline_text": "2026-10-20",
+      "posted_date_text": "2026-09-29",
+      "employment_type_text": "1",
+      "seniority_text": "5",
       "extra": {
-        "experience": "5 năm kinh nghiệm chuyên môn",
+        "experience": "3 năm kinh nghiệm chuyên môn",
         "address_components": {
-          "streetAddress": "Quận 1, TP Hồ Chí Minh",
-          "addressLocality": "Hồ Chí Minh",
+          "streetAddress": "Nhà B1 ngõ 105 Lạc Long Quân P. Nghĩa Đô",
+          "addressLocality": null,
           "addressRegion": null,
           "addressCountry": null
         },
-        "hiring_quantity": "1 người"
+        "hiring_quantity": "2 người",
+        "education": "2",
+        "work_schedule": "1"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vieclam24h",
+      "source_job_id": "200933051",
+      "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-ky-thuat-dien-nhe-lap-mang-c7p210000160id200933051.html",
+      "dedup_key": "vieclam24h:200933051",
+      "crawled_at": "2026-10-11T14:46:01.223658+07:00",
+      "batch_id": "2026-10-11_vieclam24h_001",
+      "crawler_version": "0.3.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Nhân Viên Kỹ Thuật Điện Nhẹ - Lắp Mạng",
+      "company": "Công Ty TNHH Tường Quang Phát",
+      "description_list": [
+        "Kéo cáp mạng, cáp camera, dây nguồn.",
+        "Lắp đặt camera, đầu ghi, switch, access point, tủ rack.",
+        "Bấm đầu RJ45, đánh số dây, sắp xếp tủ rack.",
+        "Thi công ống luồn, máng cáp, thang cáp.",
+        "Kiểm tra tín hiệu mạng và camera theo hướng dẫn.",
+        "Hỗ trợ cấu hình thiết bị cơ bản.",
+        "Chụp ảnh hiện trường và báo cáo tiến độ."
+      ],
+      "salary": {
+        "salary_text": "12 - 15 triệu",
+        "salary_min": 12.0,
+        "salary_max": 15.0,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": null
+      },
+      "requirements_list": [
+        "Không yêu cầu bằng cấp",
+        "Ưu tiên có kinh nghiệm về thi công và bảo trì hệ thống điện nhẹ,thi công hệ thống camera an ninh giám sát, thi công lắp đặt wifi, mạng lan,tel, tổng đài,…( chưa có kinh nghiệm sẽ được đào tạo)",
+        "Tinh thần trách nhiệm, cẩn thận, nhiệt tình",
+        "Thật thà, trung thực, chủ động trong công việc"
+      ],
+      "benefits_list": [
+        "Lương khởi điểm từ 12 - 15 triệu (hoặc cao hơn có thể thương lượng tùy năng lực).",
+        "Đóng BHXH, BHYT, BHTN theo quy định nhà nước.",
+        "Tham gia các hoạt động ngoại khóa cùng công ty, du lịch hàng năm.",
+        "Thưởng Tết, thưởng Lễ, sinh nhật,….theo quy định của công ty.",
+        "Cung cấp đầy đủ trang thiết bị cần thiết khi làm việc.",
+        "Thời gian làm việc:",
+        "Từ 8h00 - 17h00 (nghỉ trưa 12h - 13h). Làm 6 ngày trong tuần, nghỉ 1 ngày bất kì. Nhân viên chính thức hưởng thêm 1 ngày phép tháng."
+      ],
+      "location_text": "số 01 ngõ 750 Kim Giang",
+      "deadline_text": "2026-10-31",
+      "posted_date_text": "2026-09-10",
+      "employment_type_text": "1",
+      "seniority_text": "5",
+      "extra": {
+        "experience": "3 năm kinh nghiệm chuyên môn",
+        "address_components": {
+          "streetAddress": "số 01 ngõ 750 Kim Giang",
+          "addressLocality": null,
+          "addressRegion": null,
+          "addressCountry": null
+        },
+        "hiring_quantity": "5 người",
+        "work_schedule": "1"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vieclam24h",
+      "source_job_id": "200950600",
+      "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-tester-qa-qc-c8p73id200950600.html",
+      "dedup_key": "vieclam24h:200950600",
+      "crawled_at": "2026-10-11T14:46:02.563068+07:00",
+      "batch_id": "2026-10-11_vieclam24h_001",
+      "crawler_version": "0.3.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Nhân Viên Tester / QA-QC",
+      "company": "Công Ty Cổ Phần Truyền Thông Att Việt Nam",
+      "description_list": [
+        "Thực hiện kiểm thử các sản phẩm, phần mềm và hệ thống quản lý màn hình Digital Signage của Công ty.",
+        "Kiểm tra hoạt động của CMS, Android Player/Android Box, màn hình quảng cáo và các tính năng liên quan.",
+        "Phân tích yêu cầu, xây dựng test case/checklist và thực hiện kiểm thử theo từng tính năng.",
+        "Thực hiện các loại kiểm thử: Functional Testing, UI Testing, Integration Testing, Regression Testing và kiểm tra tính ổn định của hệ thống.",
+        "Phát hiện, ghi nhận, phân loại và theo dõi lỗi trong quá trình kiểm thử. Mô tả lỗi rõ ràng, cung cấp đầy đủ thông tin, hình ảnh/video hoặc log cần thiết để đội phát triển xử lý.",
+        "Phối hợp với Developer và các bộ phận liên quan để xác định nguyên nhân và kiểm tra lại lỗi sau khi được fix.",
+        "Kiểm tra kết nối và khả năng hoạt động giữa CMS – Android Box/Player – màn hình – hệ thống máy chủ.",
+        "Thực hiện kiểm thử các tình huống mất mạng, mất điện, thiết bị offline, khởi động lại thiết bị và đồng bộ dữ liệu.",
+        "Thực hiện kiểm thử API cơ bản khi cần.",
+        "Cập nhật kết quả kiểm thử và báo cáo tình trạng lỗi, tiến độ kiểm thử cho quản lý. Thực hiện các công việc khác liên quan đến QA/QC và kiểm thử phần mềm theo phân công."
+      ],
+      "salary": {
+        "salary_text": "12 - 15 triệu",
+        "salary_min": 12.0,
+        "salary_max": 15.0,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": null
+      },
+      "requirements_list": [
+        "Tốt nghiệp Cao đẳng/Đại học chuyên ngành CNTT, Khoa học máy tính, Kỹ thuật phần mềm hoặc các ngành liên quan.",
+        "Có kinh nghiệm từ 1-2 năm trở lên ở vị trí Tester/QA/QC.",
+        "Có kiến thức về quy trình kiểm thử phần mềm và các loại test cơ bản.",
+        "Có khả năng viết Test Case, Test Scenario, Checklist.",
+        "Có kinh nghiệm sử dụng các công cụ quản lý công việc/lỗi như Jira, Trello, GitHub hoặc các công cụ tương tự.",
+        "Có kiến thức cơ bản về API Testing, ưu tiên biết sử dụng Postman.",
+        "Có khả năng đọc hiểu tài liệu kỹ thuật và mô tả lỗi rõ ràng.",
+        "Cẩn thận, tư duy logic, có khả năng phân tích và phát hiện vấn đề.",
+        "Chủ động trong công việc, có tinh thần phối hợp với Developer và các bộ phận liên quan.",
+        "Có kinh nghiệm kiểm thử Web/App/Android, test Android Box, Android Player hoặc IoT.",
+        "Có kiến thức về REST API, HTTP/HTTPS, JSON.",
+        "Biết kiểm tra log Android hoặc sử dụng ADB là lợi thế, Có kinh nghiệm kiểm thử các hệ thống có kết nối giữa thiết bị và Server/CMS.",
+        "Có khả năng thực hiện kiểm thử tự động là lợi thế."
+      ],
+      "benefits_list": [
+        "Mức lương: 12 triệu -15 triệu thỏa thuận thêm theo năng lực và kinh nghiệm.",
+        "Được tham gia kiểm thử các sản phẩm công nghệ thực tế liên quan đến Digital Signage, Android, IoT và CMS.",
+        "Được đào tạo về hệ thống, thiết bị và quy trình kiểm thử của Công ty.",
+        "Môi trường làm việc trẻ, năng động, có cơ hội làm việc trực tiếp với Developer và đội ngũ kỹ thuật.",
+        "Có cơ hội phát triển theo hướng QA/QC, Senior Tester, QA Lead hoặc Automation Tester.",
+        "Hưởng đầy đủ các chế độ theo quy định của Công ty và pháp luật hiện hành."
+      ],
+      "location_text": "Nhà B1 ngõ 105 Lạc Long Quân P. Nghĩa Đô",
+      "deadline_text": "2026-10-20",
+      "posted_date_text": "2026-09-29",
+      "employment_type_text": "1",
+      "seniority_text": "5",
+      "extra": {
+        "experience": "3 năm kinh nghiệm chuyên môn",
+        "address_components": {
+          "streetAddress": "Nhà B1 ngõ 105 Lạc Long Quân P. Nghĩa Đô",
+          "addressLocality": null,
+          "addressRegion": null,
+          "addressCountry": null
+        },
+        "hiring_quantity": "2 người",
+        "education": "2",
+        "work_schedule": "1"
       }
     }
   }

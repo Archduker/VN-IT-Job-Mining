@@ -1,38 +1,31 @@
 # -*- coding: utf-8 -*-
-"""Thu thập việc làm Vieclam24h qua Selenium và BeautifulSoup, xuất dữ liệu theo Data Contract chuẩn."""
+"""Thu thập việc làm Vieclam24h qua Next.js SSR (__NEXT_DATA__) và HttpClient, xuất dữ liệu theo Data Contract chuẩn.
+
+Hoàn toàn loại bỏ Selenium, hoạt động thuần HTTP nhanh chóng, ổn định và an toàn trên môi trường CI/Airflow.
+"""
 
 from __future__ import annotations
 
 import argparse
 import json
 import logging
-import os
 import re
 import sys
 import time
-import unicodedata
 from collections.abc import Generator
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import urljoin
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from bs4 import BeautifulSoup
 from pydantic import ValidationError
-from selenium import webdriver
-from selenium.common.exceptions import (
-    ElementClickInterceptedException,
-    StaleElementReferenceException,
-)
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from crawlers.base.base_crawler import BaseCrawler
+from crawlers.common.http_client import DelayConfig, HttpClient, RetryConfig
 from crawlers.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags
 from crawlers.common.utils import (
     clean_text,
@@ -42,9 +35,14 @@ from crawlers.common.utils import (
 
 SITE_BASE_URL = "https://vieclam24h.vn"
 DEFAULT_OUTPUT = Path(__file__).resolve().with_name("vieclam24h_jobs.json")
-CRAWLER_VERSION = "0.2.0"
+CRAWLER_VERSION = "0.3.0"
 LOCAL_TIMEZONE = timezone(timedelta(hours=7))
-TARGET_INDUSTRIES = ["IT Phần cứng - Mạng", "IT Phần mềm"]
+
+# Các danh mục IT mục tiêu trên Vieclam24h
+TARGET_CATEGORIES = [
+    {"name": "IT Phần mềm", "path": "/viec-lam-it-phan-mem-o8.html"},
+    {"name": "IT Phần cứng - Mạng", "path": "/viec-lam-it-phan-cung-mang-o7.html"},
+]
 
 log = logging.getLogger("vieclam24h.crawler")
 
@@ -73,38 +71,18 @@ def _format_timestamp(ts: Any) -> str:
         return ""
 
 
-def set_react_input(driver: webdriver.Chrome, element: Any, value: str) -> None:
-    js_script = """
-        var element = arguments[0];
-        var value = arguments[1];
-        var valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-        element.focus();
-        valueSetter.call(element, value);
-        element.dispatchEvent(new Event('input', { bubbles: true }));
-        element.dispatchEvent(new Event('change', { bubbles: true }));
-        element.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'Enter' }));
-        element.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, key: 'Enter' }));
-    """
-    driver.execute_script(js_script, element, value)
-
-
-def safe_click(driver: webdriver.Chrome, wait: WebDriverWait, locator_or_element: Any, retries: int = 3) -> bool:
-    for attempt in range(retries):
+def _extract_next_data(html: str) -> dict[str, Any] | None:
+    """Trích xuất state JSON từ thẻ script __NEXT_DATA__."""
+    if not html:
+        return None
+    soup = BeautifulSoup(html, "html.parser")
+    script = soup.find("script", id="__NEXT_DATA__")
+    if script and script.string:
         try:
-            if isinstance(locator_or_element, tuple):
-                element = wait.until(EC.element_to_be_clickable(locator_or_element))
-            else:
-                element = locator_or_element
-
-            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-            time.sleep(0.3)
-            driver.execute_script("arguments[0].click();", element)
-            return True
-        except (StaleElementReferenceException, ElementClickInterceptedException):
-            time.sleep(0.5)
-            if attempt == retries - 1:
-                raise
-    return False
+            return json.loads(script.string)
+        except Exception as exc:
+            log.warning("Không giải mã được __NEXT_DATA__: %s", exc)
+    return None
 
 
 def _make_record(
@@ -123,11 +101,16 @@ def _make_record(
         raise ViecLam24hAPIError("Bản ghi thiếu tiêu đề hoặc tên công ty.")
 
     title_slug = job_detail.get("title_slug", "")
-    job_url = f"{SITE_BASE_URL}/{title_slug}-id{job_id}.html" if job_id and title_slug else fallback_url
+    job_url = fallback_url or f"{SITE_BASE_URL}/{title_slug}-id{job_id}.html"
 
     # Xử lý địa chỉ
     street_address, address_locality, address_region, address_country = None, None, None, None
     places = job_detail.get("places", [])
+    if isinstance(places, str):
+        try:
+            places = json.loads(places)
+        except Exception:
+            places = []
     if places and isinstance(places, list) and isinstance(places[0], dict):
         p_info = places[0]
         street_address = _clean_text(p_info.get("address"))
@@ -143,13 +126,15 @@ def _make_record(
     if s_min is not None:
         try:
             s_min_num = float(s_min)
-            s_min_val = s_min_num / 1_000_000 if s_min_num >= 1000 else s_min_num
+            if s_min_num > 0:
+                s_min_val = s_min_num / 1_000_000 if s_min_num >= 1000 else s_min_num
         except (ValueError, TypeError):
             pass
     if s_max is not None:
         try:
             s_max_num = float(s_max)
-            s_max_val = s_max_num / 1_000_000 if s_max_num >= 1000 else s_max_num
+            if s_max_num > 0:
+                s_max_val = s_max_num / 1_000_000 if s_max_num >= 1000 else s_max_num
         except (ValueError, TypeError):
             pass
 
@@ -214,7 +199,7 @@ def _make_record(
     )
 
     # Thẻ kỹ năng / tags nếu có từ API
-    skills_raw = job_detail.get("skills") or job_detail.get("tags") or []
+    skills_raw = job_detail.get("smart_tags") or job_detail.get("skills") or job_detail.get("tags") or []
     skill_names: list[str] = []
     if isinstance(skills_raw, list):
         for s in skills_raw:
@@ -243,15 +228,20 @@ def _make_record(
     }
     if job_detail.get("vacancy_quantity"):
         extra["hiring_quantity"] = f"{job_detail['vacancy_quantity']} người"
-    if job_detail.get("education"):
+    if job_detail.get("degree_requirement"):
+        extra["education"] = str(job_detail["degree_requirement"])
+    elif job_detail.get("education"):
         extra["education"] = str(job_detail["education"])
-    if job_detail.get("work_schedule"):
+    if job_detail.get("working_method"):
+        extra["work_schedule"] = str(job_detail["working_method"])
+    elif job_detail.get("work_schedule"):
         extra["work_schedule"] = str(job_detail["work_schedule"])
     if job_detail.get("workplace_type"):
         extra["workplace_type"] = str(job_detail["workplace_type"])
 
     employment_type_text = (
         _clean_text(job_detail.get("type_working_text"))
+        or _clean_text(job_detail.get("working_method"))
         or _clean_text(job_detail.get("employment_type"))
         or _clean_text(job_detail.get("work_type"))
         or None
@@ -259,6 +249,7 @@ def _make_record(
     seniority_text = (
         _clean_text(job_detail.get("position_text"))
         or _clean_text(job_detail.get("level"))
+        or _clean_text(job_detail.get("level_requirement"))
         or _clean_text(job_detail.get("job_level"))
         or None
     )
@@ -292,7 +283,7 @@ def _make_record(
 
 
 class ViecLam24hCrawler(BaseCrawler):
-    """Crawler tích hợp Selenium cho Vieclam24h theo chuẩn BaseCrawler của hệ thống."""
+    """Crawler thuần HTTP cho Vieclam24h dựa trên Next.js SSR (__NEXT_DATA__)."""
 
     source_name = "vieclam24h"
     crawler_version = CRAWLER_VERSION
@@ -312,30 +303,25 @@ class ViecLam24hCrawler(BaseCrawler):
             max_items=max_items,
             checkpoint_interval=checkpoint_interval,
         )
-        self.max_pages = max_pages
+        self.max_pages = max_pages or 5
         self.local_json_file = Path(local_json_file) if local_json_file else None
-        self.driver: webdriver.Chrome | None = None
-        self.wait: WebDriverWait | None = None
-
-    def _init_driver(self) -> None:
-        if self.driver is not None:
-            return
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless=new")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--window-size=1920,1080")
-        options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_argument(
-            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        self.client = HttpClient(
+            source=self.source_name,
+            delay_config=DelayConfig(min_seconds=0.5, max_seconds=1.5),
+            retry_config=RetryConfig(max_retries=3, backoff_factor=1.0),
         )
-        self.driver = webdriver.Chrome(options=options)
-        self.wait = WebDriverWait(self.driver, 15)
+
+    def _fetch_page_next_data(self, url: str) -> dict[str, Any] | None:
+        """Tải mã HTML của một URL và bóc tách __NEXT_DATA__."""
+        try:
+            resp = self.client.get(url)
+            return _extract_next_data(resp.text)
+        except Exception as exc:
+            log.warning("Lỗi tải trang %s: %s", url, exc)
+            return None
 
     def fetch_items(self) -> Generator[dict[str, Any], None, None]:
-        """Điều hướng Selenium qua danh sách hoặc nạp từ file JSON offline."""
+        """Duyệt listing qua các danh mục IT và tải detail từng tin tuyển dụng."""
         if self.local_json_file and self.local_json_file.exists():
             log.info("Đang đọc dữ liệu offline từ: %s", self.local_json_file)
             content = self.local_json_file.read_text(encoding="utf-8")
@@ -349,146 +335,82 @@ class ViecLam24hCrawler(BaseCrawler):
                         yield {"job_detail": it, "url": it.get("url", "")}
             return
 
-        self._init_driver()
-        assert self.driver is not None
-        assert self.wait is not None
+        collected_count = 0
+        seen_ids: set[str] = set()
 
-        try:
-            self.driver.get(SITE_BASE_URL)
-            time.sleep(3)
+        for category in TARGET_CATEGORIES:
+            cat_name = category["name"]
+            cat_path = category["path"]
+            log.info("[Vieclam24h] Bắt đầu quét ngành: %s (%s)", cat_name, cat_path)
 
-            # Định vị ô input Ngành nghề
-            try:
-                industry_input_xpath = (
-                    "//div[contains(@id, 'react-select') and contains(., 'Ngành nghề')]/following-sibling::div//input "
-                    "| //input[contains(@id, 'react-select')]"
-                )
-                industry_input = self.wait.until(EC.presence_of_element_located((By.XPATH, industry_input_xpath)))
-            except Exception:
-                industry_container_xpath = (
-                    "//div[contains(@id, 'react-select') and contains(., 'Ngành nghề')] | //div[text()='Ngành nghề']"
-                )
-                safe_click(self.driver, self.wait, (By.XPATH, industry_container_xpath))
-                time.sleep(0.5)
-                industry_input = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "input[id*='react-select']"))
-                )
+            for page_idx in range(1, self.max_pages + 1):
+                if self.max_items is not None and collected_count >= self.max_items:
+                    return
 
-            # Nhập danh sách ngành nghề mục tiêu
-            for industry in TARGET_INDUSTRIES:
-                safe_click(self.driver, self.wait, industry_input)
-                time.sleep(0.3)
-                set_react_input(self.driver, industry_input, industry)
-                time.sleep(0.5)
-                industry_input.send_keys(Keys.ENTER)
-                time.sleep(0.5)
+                page_url = f"{SITE_BASE_URL}{cat_path}?page={page_idx}" if page_idx > 1 else f"{SITE_BASE_URL}{cat_path}"
+                log.info("[Vieclam24h] Đang tải danh sách trang %d: %s", page_idx, page_url)
 
-            # Click tìm kiếm
-            search_btn_xpath = (
-                "//button[@data-test-id='common__button' and (contains(@class, 'bg-[#5A30B9]') or contains(@class, 'bg-primary'))]"
-            )
-            safe_click(self.driver, self.wait, (By.XPATH, search_btn_xpath))
-            time.sleep(3)
-
-            page_index = 1
-            yielded_ids: set[str] = set()
-            collected_count = 0
-
-            while True:
-                if self.max_pages is not None and page_index > self.max_pages:
+                try:
+                    resp = self.client.get(page_url)
+                    html = resp.text
+                except Exception as exc:
+                    log.warning("[Vieclam24h] Lỗi tải trang listing %s: %s", page_url, exc)
                     break
 
-                log.info("Đang xử lý trang danh sách số %d", page_index)
-                main_window = self.driver.current_window_handle
+                soup = BeautifulSoup(html, "html.parser")
+                next_data = _extract_next_data(html)
+                if not next_data:
+                    log.warning("[Vieclam24h] Không tìm thấy __NEXT_DATA__ tại trang %s", page_url)
+                    break
 
-                job_cards_xpath = "//a[@data-job-id and contains(@href, '.html')]"
-                job_links = self.driver.find_elements(By.XPATH, job_cards_xpath)
+                # Trích xuất danh sách link thẻ a từ DOM HTML
+                detail_links_map: dict[str, str] = {}
+                for a in soup.find_all("a"):
+                    href = a.get("href", "")
+                    clean_href = href.split("?")[0]
+                    if "-c" in clean_href and "id" in clean_href and clean_href.endswith(".html"):
+                        m = re.search(r"id(\d+)\.html", clean_href)
+                        if m:
+                            jid = m.group(1)
+                            detail_links_map[jid] = urljoin(SITE_BASE_URL, clean_href)
 
-                job_urls = []
-                seen_urls = set()
-                for link in job_links:
-                    u = link.get_attribute("href")
-                    if u and u not in seen_urls:
-                        seen_urls.add(u)
-                        job_urls.append(u)
+                api_state = next_data.get("props", {}).get("initialState", {}).get("api", {})
+                listing_items = api_state.get("getJobList", {}).get("data", {}).get("items", [])
+                if not listing_items:
+                    log.info("[Vieclam24h] Hết tin tại trang %d ngành %s", page_idx, cat_name)
+                    break
 
-                for url in job_urls:
+                for item_summary in listing_items:
                     if self.max_items is not None and collected_count >= self.max_items:
                         return
-                    try:
-                        self.driver.execute_script("window.open(arguments[0], '_blank');", url)
-                        time.sleep(1.5)
-                        self.driver.switch_to.window(self.driver.window_handles[-1])
-                        time.sleep(2)
 
-                        soup = BeautifulSoup(self.driver.page_source, "html.parser")
-                        script_tag = soup.find("script", id="__NEXT_DATA__")
-                        job_detail = None
+                    jid = str(item_summary.get("id", ""))
+                    if not jid or jid in seen_ids or self.checkpoint.is_seen(jid):
+                        continue
+                    seen_ids.add(jid)
 
-                        if script_tag and script_tag.string:
-                            try:
-                                next_data = json.loads(script_tag.string)
-                                job_detail = (
-                                    next_data.get("props", {})
-                                    .get("initialState", {})
-                                    .get("api", {})
-                                    .get("jobDetailHiddenContact", {})
-                                    .get("data", {})
-                                )
-                                if not job_detail:
-                                    page_props = next_data.get("props", {}).get("pageProps", {})
-                                    for k, v in page_props.items():
-                                        if isinstance(v, dict) and "id" in v and "title" in v:
-                                            job_detail = v
-                                            break
-                            except Exception:
-                                pass
+                    # Tìm URL chi tiết
+                    detail_url = detail_links_map.get(jid)
+                    title_slug = item_summary.get("title_slug", "")
+                    if not detail_url and title_slug:
+                        detail_url = f"{SITE_BASE_URL}/{title_slug}-id{jid}.html"
 
-                        if job_detail:
-                            job_id = str(job_detail.get("id", ""))
-                            if job_id and job_id in yielded_ids:
-                                self.driver.close()
-                                self.driver.switch_to.window(main_window)
-                                continue
-                            if job_id:
-                                yielded_ids.add(job_id)
+                    job_detail = None
+                    if detail_url:
+                        try:
+                            detail_next_data = self._fetch_page_next_data(detail_url)
+                            if detail_next_data:
+                                d_api = detail_next_data.get("props", {}).get("initialState", {}).get("api", {})
+                                job_detail = d_api.get("jobDetailHiddenContact", {}).get("data", {})
+                        except Exception as exc:
+                            log.warning("[Vieclam24h] Không tải được detail %s: %s", detail_url, exc)
 
-                            collected_count += 1
-                            yield {"job_detail": job_detail, "url": url}
+                    # Fallback dùng thông tin tóm tắt từ listing nếu detail page bị chặn hoặc rỗng
+                    if not job_detail:
+                        job_detail = item_summary
 
-                        self.driver.close()
-                        time.sleep(0.5)
-                        self.driver.switch_to.window(main_window)
-                        time.sleep(1)
-                    except Exception as exc:
-                        log.warning("Lỗi cào chi tiết bài viết %s: %s", url, exc)
-                        if len(self.driver.window_handles) > 1:
-                            self.driver.close()
-                        self.driver.switch_to.window(main_window)
-                        time.sleep(1)
-
-                # Chuyển trang tiếp theo qua rel="next"
-                try:
-                    next_btn_xpath = "//a[@rel='next']"
-                    next_buttons = self.driver.find_elements(By.XPATH, next_btn_xpath)
-                    if next_buttons:
-                        next_btn = next_buttons[0]
-                        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", next_btn)
-                        time.sleep(0.5)
-                        self.driver.execute_script("arguments[0].click();", next_btn)
-                        page_index += 1
-                        time.sleep(3)
-                    else:
-                        break
-                except Exception:
-                    break
-        finally:
-            if self.driver:
-                try:
-                    self.driver.quit()
-                except Exception:
-                    pass
-                self.driver = None
+                    collected_count += 1
+                    yield {"job_detail": job_detail, "url": detail_url or ""}
 
     def parse_item(self, item: dict[str, Any]) -> JobRecord | None:
         try:
@@ -510,9 +432,9 @@ class ViecLam24hCrawler(BaseCrawler):
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Crawl việc làm Vieclam24h theo chuẩn dự án.")
+    parser = argparse.ArgumentParser(description="Crawl việc làm Vieclam24h thuần HTTP theo chuẩn dự án.")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--max-pages", type=int, help="Giới hạn số trang cần crawl.")
+    parser.add_argument("--max-pages", type=int, default=5, help="Giới hạn số trang cần crawl.")
     parser.add_argument("--max-jobs", type=int, help="Giới hạn số lượng tin tuyển dụng.")
     parser.add_argument("--local-json-file", type=Path, help="Đường dẫn file JSON mẫu để chạy offline.")
     parser.add_argument("--verbose", action="store_true")

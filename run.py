@@ -169,8 +169,8 @@ Ví dụ sử dụng:
         "-s",
         type=str,
         required=True,
-        choices=SUPPORTED_SOURCES,
-        help="Nguồn tuyển dụng cần cào",
+        choices=SUPPORTED_SOURCES + ["all"],
+        help="Nguồn tuyển dụng cần cào (hoặc 'all' để chạy toàn bộ 7 nguồn)",
     )
     parser.add_argument(
         "--max-items",
@@ -208,46 +208,55 @@ Ví dụ sử dụng:
     args = parser.parse_args()
     log = setup_logger(verbose=args.verbose)
 
-    log.info("=" * 60)
-    log.info("Bắt đầu chạy crawler nguồn: %s | max_items: %d", args.source, args.max_items)
-    log.info("=" * 60)
+    target_sources = SUPPORTED_SOURCES if args.source == "all" else [args.source]
 
-    try:
-        stats = run_crawler(
-            source=args.source,
-            max_items=args.max_items,
-            output_dir=args.output_dir,
-            checkpoint_dir=args.checkpoint_dir,
-            batch_id=args.batch_id,
-        )
-    except Exception as exc:
-        log.error("Lỗi trong quá trình chạy crawler nguồn %s: %s", args.source, exc, exc_info=True)
-        return 1
+    all_results = []
+    overall_exit_code = 0
 
-    out_file = stats.get("output_file")
-    log.info("-" * 60)
-    log.info("KẾT QUẢ THU THẬP NGUỒN [%s]:", args.source.upper())
-    log.info("  - Số tin thu thập mới (crawled) : %d", stats.get("crawled", 0))
-    log.info("  - Số tin bỏ qua / trùng lặp    : %d", stats.get("skipped", 0))
-    log.info("  - Số lỗi (errors)               : %d", stats.get("errors", 0))
-    log.info("  - Tổng seen checkpoint          : %d", stats.get("total_seen", 0))
-    log.info("  - File kết quả (.json)          : %s", out_file or "N/A")
-    log.info("-" * 60)
+    log.info("=" * 70)
+    log.info("BẮT ĐẦU CHẠY CRAWLER (Tổng %d nguồn) | max_items: %d", len(target_sources), args.max_items)
+    log.info("=" * 70)
 
-    if out_file and os.path.exists(out_file) and os.path.getsize(out_file) > 0:
-        print("\n" + "=" * 60)
-        print("💡 CÂU LỆNH XEM NHANH 1 SAMPLE JSON ĐA DÒNG (PRETTY FORMAT):")
-        if out_file.endswith(".jsonl"):
-            print(f"python -c \"import json; print(json.dumps(json.loads(open('{out_file}').readline()), indent=2, ensure_ascii=False))\"")
-            print("Hoặc dùng jq:")
-            print(f"head -n 1 {out_file} | jq .")
-        else:
-            print(f"python -c \"import json; data = json.load(open('{out_file}')); print(json.dumps(data[0] if isinstance(data, list) and data else data, indent=2, ensure_ascii=False))\"")
-            print("Hoặc dùng jq:")
-            print(f"jq '.[0]' {out_file}")
-        print("=" * 60 + "\n")
+    for src in target_sources:
+        log.info("\n>>> ĐANG CHẠY NGUỒN: %s ...", src.upper())
+        try:
+            stats = run_crawler(
+                source=src,
+                max_items=args.max_items,
+                output_dir=args.output_dir,
+                checkpoint_dir=args.checkpoint_dir,
+                batch_id=args.batch_id,
+            )
+            all_results.append((src, True, stats))
+            log.info(
+                "[%s] Hoàn tất: crawled=%d, skipped=%d, errors=%d, file=%s",
+                src.upper(),
+                stats.get("crawled", 0),
+                stats.get("skipped", 0),
+                stats.get("errors", 0),
+                stats.get("output_file", "N/A"),
+            )
+        except Exception as exc:
+            log.error("Lỗi khi chạy crawler nguồn %s: %s", src, exc, exc_info=args.verbose)
+            all_results.append((src, False, {"error": str(exc)}))
+            overall_exit_code = 1
 
-    return 0
+    print("\n" + "=" * 80)
+    print("📊 BẢNG TỔNG KẾT KẾT QUẢ THU THẬP CẢ 7 NGUỒN TUYỂN DỤNG")
+    print("=" * 80)
+    print(f"{'NGUỒN':<15} | {'TRẠNG THÁI':<10} | {'MỚI (CRAWLED)':<13} | {'BỎ QUA':<8} | {'LỖI':<6} | {'FILE ĐẦU RA'}")
+    print("-" * 80)
+
+    for src, success, st in all_results:
+        status_str = "✅ SUCCESS" if success else "❌ FAILED"
+        crawled_val = str(st.get("crawled", 0)) if success else "0"
+        skipped_val = str(st.get("skipped", 0)) if success else "0"
+        errors_val = str(st.get("errors", 0)) if success else "1"
+        out_f = str(st.get("output_file") or "N/A") if success else f"Err: {st.get('error', '')[:25]}"
+        print(f"{src:<15} | {status_str:<10} | {crawled_val:<13} | {skipped_val:<8} | {errors_val:<6} | {out_f}")
+
+    print("=" * 80 + "\n")
+    return overall_exit_code
 
 
 if __name__ == "__main__":

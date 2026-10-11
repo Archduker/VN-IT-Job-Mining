@@ -7,7 +7,6 @@ requests==2.32.3
 beautifulsoup4==4.13.4
 lxml==5.4.0
 playwright==1.50.0          # TopCV (Cloudflare-protected)
-selenium>=4.20.0            # Vieclam24h
 
 # --- Data Validation & Typing ---
 pydantic==2.11.3
