@@ -64,9 +64,16 @@ class JobCrawlerOperator(BaseOperator):
             from crawlers.sources.topcv.crawler import TopCVCrawler
             crawler_cls = TopCVCrawler
         elif self.source == "itviec":
-            from crawlers.sources.itviec.crawler import crawl
-            stats = crawl(max_items=self.max_items)
-            return stats
+            try:
+                from crawlers.sources.itviec.crawler import ItviecCrawler
+                crawler_cls = ItviecCrawler
+            except ImportError:
+                from crawlers.sources.itviec.crawler import crawl
+                stats = crawl(max_items=self.max_items)
+                return stats
+        elif self.source == "glints":
+            from crawlers.sources.glints.crawler import GlintsCrawler
+            crawler_cls = GlintsCrawler
         else:
             raise ValueError(f"Unknown source: {self.source}")
 
