@@ -1,0 +1,443 @@
+[
+  {
+    "_meta": {
+      "source": "careerviet",
+      "source_job_id": "35C81470",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/job.35C81470.html",
+      "dedup_key": "careerviet:35C81470",
+      "crawled_at": "2026-10-11T06:20:11.483670Z",
+      "batch_id": "2026-10-11_careerviet_001",
+      "crawler_version": "0.5.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "[URGENT] Site Solution Engineer",
+      "company": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+      "description_list": [
+        "Mô tả Công việc",
+        "Spot check on the delivery site quality, subcontractor qualification (check subcontractor training certificate), and EHS.",
+        "Perform batch spot check, output quality spot check report, and trigger acceptance.",
+        "Track issue improvement and closure.",
+        "Perform process KCP self-check at the project level and output the QC checklist.",
+        "Adapt the SOP in the project and promote the implementation",
+        "Involve in RAN site survey, design for hardware installation (indoor & outdoor installation solution) such as BBU, RRU, antenna, power, grounding installation.",
+        "Output site auxiliary material solution such as power cable, optical cable, grounding cable, grounding bar, mechanical antenna bracket"
+      ],
+      "salary": {
+        "salary_text": "Cạnh tranh",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": null,
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": null
+      },
+      "requirements_list": [
+        "Yêu Cầu Công Việc",
+        "Bachelor’s degree in Telecommunication, Computer Engineering or related field of study",
+        "Good knowledge at mobile network site structure, such as indoor site, outdoor site, CRAN site.",
+        "Good background of site tower structure such as GMT, self-supported, rooftop towers",
+        "Able to use computer assisted drawing software such as AutoCAD, draw site layout, telecom equipment installation layout.",
+        "At least 2 years of experience working for major 3G/4G/5G RAN vendors",
+        "Candidates who possesses a Tower Climber working safety certificate have a great advantage",
+        "Have good background of low voltage electricity knowledge and experience and electricity safety.",
+        "Able to communicate effectively in English",
+        "Family with Microsoft office, Excel, Power point",
+        "Ability to adapt quickly to changing environments and manage parallel time-critical tasks",
+        "Ability to multi-task in a fast-paced environment",
+        "Ability to Travel as needed",
+        "Hard working & possible to work at weeken"
+      ],
+      "benefits_list": [
+        "Chế độ bảo hiểm",
+        "Du Lịch",
+        "Chế độ thưởng",
+        "Chăm sóc sức khỏe",
+        "Đào tạo",
+        "Tăng lương"
+      ],
+      "location_text": "Địa điểmHà Nội",
+      "deadline_text": "27/10/2026",
+      "posted_date_text": "11/10/2026",
+      "employment_type_text": "Nhân viên chính thức",
+      "seniority_text": "Nhân viên",
+      "extra": {
+        "experience": "1 - 3 Năm",
+        "education": "Đại học",
+        "age": "Không giới hạn tuổi",
+        "other_info": {
+          "Bằng cấp": "Đại học",
+          "Độ tuổi": "Không giới hạn tuổi",
+          "Lương": "Cạnh tranh"
+        }
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "careerviet",
+      "source_job_id": "35C87374",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/job.35C87374.html",
+      "dedup_key": "careerviet:35C87374",
+      "crawled_at": "2026-10-11T06:20:11.551506Z",
+      "batch_id": "2026-10-11_careerviet_001",
+      "crawler_version": "0.5.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "IP Engineer",
+      "company": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+      "description_list": [
+        "Mô tả Công việc",
+        "Design, implement Huawei enterprise network solutions (Backbone, Metro，WAN, SRV6，DCN).",
+        "Provide technical support for post-sales activities, including Design, deployment and migration.",
+        "Perform installation, configuration, commissioning, and troubleshooting of Huawei enterprise products (Router, Switches, iMaster NCE, etc.).",
+        "Proficient in core IP routing protocols, including OSPF, IS-IS, and BGP.Capable of solution design, deployment, and service migration based on the aforementioned IP protocols.",
+        "Support enterprise customers in incident response, problem resolution, and performance tuning.",
+        "Collaborate with R&D and GTAC teams for complex issue escalation and product improvements.",
+        "Conduct training, workshops, and knowledge transfer sessions for customers and partners.",
+        "Prepare and maintain technical documentation, including design guides, operation manuals, and change records."
+      ],
+      "salary": {
+        "salary_text": "Cạnh tranh",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": null,
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": null
+      },
+      "requirements_list": [
+        "Yêu Cầu Công Việc",
+        "Education Background Requirements: Bachelor or higher, major: Telecommunications technology, or related fields.",
+        "3–5 years of experience in enterprise networking or security solutions.",
+        "Solid knowledge of routing, switching, wireless, and security technologies.",
+        "Familiar with network automation and SDN platforms (Huawei iMaster NCE is a plus).",
+        "Understanding of enterprise cloud networking and security best practices.",
+        "Ability to perform complex troubleshooting and root cause analysis.",
+        "Able to communicate effectively in English both speaking and writing.",
+        "Family with Microsoft office, Excel, Power point.",
+        "Ability to adapt quickly to changing environments and manage parallel time-critical tasks.",
+        "Ability to multi-task in a fast-paced environment.",
+        "Ability to Travel as needed.",
+        "WORKING TIME AND BENEFITS",
+        "Monday to Friday (08:30-18:00).",
+        "Short term and long-term award",
+        "Huawei online and offline aboard training.",
+        "Participating in full insurance benefits (health insurance, social insurance, unemployment insurance), the company supports 24/24 accident insurance and health care insurance for employees.",
+        "Professional working environment, multinational company, good career development opportunities. Cultural and sports activities, taking care of employees' health and life are organized periodically...",
+        "Salary: negotiable."
+      ],
+      "benefits_list": [
+        "Chế độ bảo hiểm",
+        "Du Lịch",
+        "Chế độ thưởng",
+        "Chăm sóc sức khỏe",
+        "Đào tạo",
+        "Tăng lương"
+      ],
+      "location_text": "Địa điểmHà Nội",
+      "deadline_text": "15/10/2026",
+      "posted_date_text": "11/10/2026",
+      "employment_type_text": "Nhân viên chính thức",
+      "seniority_text": "Nhân viên",
+      "extra": {
+        "experience": "3 - 5 Năm",
+        "education": "Đại học",
+        "age": "Không giới hạn tuổi",
+        "other_info": {
+          "Bằng cấp": "Đại học",
+          "Độ tuổi": "Không giới hạn tuổi",
+          "Lương": "Cạnh tranh"
+        }
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "careerviet",
+      "source_job_id": "35C87378",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/job.35C87378.html",
+      "dedup_key": "careerviet:35C87378",
+      "crawled_at": "2026-10-11T06:20:11.616274Z",
+      "batch_id": "2026-10-11_careerviet_001",
+      "crawler_version": "0.5.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Transmission Engineer",
+      "company": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+      "description_list": [
+        "Mô tả Công việc",
+        "COMPANY BACKGROUND/CULTURE",
+        "Huawei is a leading global provider of information and communications technology (ICT) infrastructure and smart devices. We have 207,000+ employees and operate in over 170 countries and regions, serving more than three billion people around the world. We are committed to bringing digital to every person, home and organization for a fully connected, intelligent world.",
+        "Total R&D investment over the last decade now exceeds CNY977.3 billion.",
+        "In 2022, our total R&D spending was CNY161.5 billion, representing 25.1% of total revenue.",
+        "At the end of 2022, 114,000+ employees, or 55.4% of our workforce, worked in R&D.",
+        "By the end of 2022, Huawei held a total of 120,000+ active patents.",
+        "KEY RESPONSIBILITIES OF THIS ROLE",
+        "· Plan, deploy, and maintain DWDM, OTN, NMS transmission systems in core and metro networks.",
+        "· Perform commissioning, integration, cut-over, and acceptance testing for DWDM equipment.",
+        "· Monitor and optimize network performance, ensuring high availability and low latency.",
+        "· Troubleshoot transmission issues, perform root-cause analysis, and coordinate with operator for resolution.",
+        "· Support capacity planning and migration projects to meet growing bandwidth demands.",
+        "· Document network designs, maintenance activities, and troubleshooting procedures.",
+        "· Collaborate with cross-functional teams (IP Core/Metro, GPON) for end-to-end service delivery."
+      ],
+      "salary": {
+        "salary_text": "Cạnh tranh",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": null,
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": [
+          "Transmission Engineer",
+          "Telecom Transmission Engineer",
+          "RF Transmission Engineer",
+          "Kỹ Sư Truyền Dẫn"
+        ]
+      },
+      "requirements_list": [
+        "Yêu Cầu Công Việc",
+        "PROFESSIONAL EXPERIENCE/QUALIFICATIONS",
+        "Education Background Requirements: Bachelor or higher, major: Telecommunications technology, or related fields.",
+        "Hands-on experience with DWDM/OTN equipment (Huawei OSN 9800/8800/1800, etc. or similar).",
+        "Strong understanding of optical transmission technologies (DWDM, OTN, ROADM, EDFA, RAMAN, ASON, CDCF, coherent optics).",
+        "Experience with NMS platforms (Huawei U2000/NCE-T, etc.).",
+        "Able to communicate effectively in English both spoken and written",
+        "Family with Microsoft office, Excel, Power point",
+        "Ability to adapt quickly to changing environments and manage parallel time-critical tasks",
+        "Ability to multi-task in a fast-paced environment",
+        "Ability to Travel as needed",
+        "PREFERRED CERTIFICATIONS",
+        "· Huawei HCIP-Transmission or HCIE-Transmission.",
+        "· Optical networking certifications (e.g., Ciena, Nokia).",
+        "WORKING TIME AND BENEFITS",
+        "· Monday to Friday (08:30-18:00).",
+        "· Short term and long-term award",
+        "· Huawei online and offline aboard training.",
+        "· Participating in full insurance benefits (health insurance, social insurance, unemployment insurance), the company supports 24/24 accident insurance and health care insurance for employees.",
+        "· Professional working environment, multinational company, good career development opportunities. Cultural and sports activities, taking care of employees' health and life are organized periodically...",
+        "· Salary: negotiable."
+      ],
+      "benefits_list": [
+        "Chế độ bảo hiểm",
+        "Du Lịch",
+        "Chế độ thưởng",
+        "Chăm sóc sức khỏe",
+        "Đào tạo",
+        "Tăng lương"
+      ],
+      "location_text": "Địa điểmHà Nội",
+      "deadline_text": "15/10/2026",
+      "posted_date_text": "11/10/2026",
+      "employment_type_text": "Nhân viên chính thức",
+      "seniority_text": "Nhân viên",
+      "extra": {
+        "experience": null,
+        "education": "Đại học",
+        "age": "Không giới hạn tuổi",
+        "other_info": {
+          "Bằng cấp": "Đại học",
+          "Độ tuổi": "Không giới hạn tuổi",
+          "Lương": "Cạnh tranh"
+        }
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "careerviet",
+      "source_job_id": "35C8737C",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/job.35C8737C.html",
+      "dedup_key": "careerviet:35C8737C",
+      "crawled_at": "2026-10-11T06:20:11.688873Z",
+      "batch_id": "2026-10-11_careerviet_001",
+      "crawler_version": "0.5.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "IP Network Engineer",
+      "company": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+      "description_list": [
+        "Mô tả Công việc",
+        "COMPANY BACKGROUND/CULTURE",
+        "Huawei is a leading global provider of information and communications technology (ICT) infrastructure and smart devices. We have 207,000+ employees and operate in over 170 countries and regions, serving more than three billion people around the world. We are committed to bringing digital to every person, home and organization for a fully connected, intelligent world.",
+        "JOB DESCRIPTION",
+        "Technical solution consultant for customer (IP/Datacom/FTTx).",
+        "Responsible for designing, implementing and troubleshooting of Huawei Enterprise Networking products and solutions.",
+        "Enable and supervise Huawei authorized partners on how to test, design, implement and maintain Huawei Enterprise Service products integrated into their solutions.",
+        "Work closely and proactively with Presales Sales team to ensure early engagement to sales opportunities and bid creation such as Prove of Concept (POC) testing, technical clarification, etc."
+      ],
+      "salary": {
+        "salary_text": "Cạnh tranh",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": null,
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": [
+          "Network Administrator",
+          "Nhân viên quản trị mạng",
+          "IT Admin",
+          "IT Administrator",
+          "IP Network Engineer",
+          "Chuyên viên quản trị mạng",
+          "Kỹ sư quản trị mạng"
+        ]
+      },
+      "requirements_list": [
+        "Yêu Cầu Công Việc",
+        "JOB REQUIREMENTS",
+        "Bachelor's degree in Telecommunication or related fields.",
+        "Minimum 2 years of working experience in telecommunication industry hands-on aftersales experience in enterprise services for IT vendors, system integrators or service providers with a proven track record.",
+        "In-depth knowledge and practical experience in Networking technology such LAN, WLAN, WAN and Security",
+        "Valid CCIE, HCIE or equivalent certificate is preferred.",
+        "Customer-oriented, self-motivated and capable of working under pressure",
+        "Good command in English.",
+        "WORKING TIME AND BENEFITS",
+        "· Monday to Friday (08:30-18:00).",
+        "· Short term and long-term award",
+        "· Huawei online and offline aboard training.",
+        "· Participating in full insurance benefits (health insurance, social insurance, unemployment insurance), the company supports 24/24 accident insurance and health care insurance for employees.",
+        "· Professional working environment, multinational company, good career development opportunities. Cultural and sports activities, taking care of employees' health and life are organized periodically...",
+        "· Salary: negotiable."
+      ],
+      "benefits_list": [
+        "Chế độ bảo hiểm",
+        "Du Lịch",
+        "Chế độ thưởng",
+        "Chăm sóc sức khỏe",
+        "Đào tạo",
+        "Tăng lương"
+      ],
+      "location_text": "Địa điểmHà Nội",
+      "deadline_text": "15/10/2026",
+      "posted_date_text": "11/10/2026",
+      "employment_type_text": "Nhân viên chính thức",
+      "seniority_text": "Nhân viên",
+      "extra": {
+        "experience": "Trên 2 Năm",
+        "education": "Đại học",
+        "age": "Không giới hạn tuổi",
+        "other_info": {
+          "Bằng cấp": "Đại học",
+          "Độ tuổi": "Không giới hạn tuổi",
+          "Lương": "Cạnh tranh"
+        }
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "careerviet",
+      "source_job_id": "35C89996",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/job.35C89996.html",
+      "dedup_key": "careerviet:35C89996",
+      "crawled_at": "2026-10-11T06:20:11.750989Z",
+      "batch_id": "2026-10-11_careerviet_001",
+      "crawler_version": "0.5.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Chuyên Viên Tư Vấn Triển Khai ERP (Khối Doanh nghiệp)",
+      "company": "CÔNG TY CỔ PHẦN CÔNG NGHỆ FOXAI",
+      "description_list": [
+        "Phân tích nghiệp vụ khách hàng, thu thập yêu cầu và xây dựng giải pháp phù hợp với hệ thống; tư vấn khách hàng áp dụng theo kiến thức quản trị tiêu chuẩn.",
+        "Tham gia khảo sát, lập tài liệu Blueprint / BRD / SDD / User Manual cho từng phân hệ.",
+        "Cấu hình và kiểm thử hệ thống (UAT, SIT) theo quy trình chuẩn; phối hợp đội kỹ thuật xử lý lỗi, chỉnh sửa biểu mẫu, báo cáo và tích hợp dữ liệu (API, SQL, Excel…).",
+        "Hướng dẫn người dùng, tổ chức đào tạo và hỗ trợ quá trình Go-live; theo dõi, đánh giá hiệu quả vận hành và tư vấn cải tiến sau triển khai.",
+        "Lập kế hoạch, báo cáo tiến độ, đảm bảo chất lượng dự án; hỗ trợ presale, demo giải pháp cho cơ hội mới.",
+        "Mức thu nhập cạnh tranh: 15–35 triệu/tháng, thỏa thuận theo năng lực.",
+        "Thưởng dự án theo các dự án tham gia.",
+        "Đặc biệt chia cổ tức cho cán bộ nhân viên theo lợi nhuận của công ty.",
+        "Tham gia các khóa đào tạo kỹ năng mềm phục vụ cho công việc.",
+        "Thưởng các dịp lễ, Tết và team building hàng năm.",
+        "Xét duyệt tăng lương 2 lần/năm.",
+        "Được hưởng đầy đủ BHXH, BHYT và BHTN theo luật lao động Việt Nam hiện hành.",
+        "Làm việc trong môi trường trẻ trung, năng động, có cơ hội tham gia các dự án công nghệ tiên tiến.",
+        "Tham gia trực tiếp vào các dự án quy mô lớn trong và ngoài nước, cùng đội ngũ chuyên gia hàng đầu FOXAI."
+      ],
+      "salary": {
+        "salary_text": "12 Tr - 35 Tr VND",
+        "salary_min": 12.0,
+        "salary_max": 35.0,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": [
+          "IT",
+          "Tư vấn công nghệ SAP ERP",
+          "Tư vấn kỹ thuật SAP ERP",
+          "Tư vấn nghiệp vụ SAP ERP",
+          "ERP",
+          "Kỹ sư CNTT",
+          "Technical Engineering",
+          "ERP Functional Consultant",
+          "Kỹ Sư Triển Khai Hệ Thống"
+        ]
+      },
+      "requirements_list": [
+        "Tốt nghiệp Kế toán, Kiểm toán, Tài chính hoặc các ngành liên quan Quản trị doanh nghiệp/Sản xuất; có kiến thức về kế toán tài chính và vận hành doanh nghiệp.",
+        "Tối thiểu 02 năm kinh nghiệm triển khai ERP; ưu tiên đã làm SAP Business One, Odoo, Oracle ERP, Bravo, Fast, Misa hoặc tương đương.",
+        "Kỹ năng giao tiếp, trình bày, đào tạo người dùng tốt; chủ động xử lý vấn đề phát sinh.",
+        "Sẵn sàng đi công tác tỉnh/thành hoặc nước ngoài khi có yêu cầu; biết SQL, BI hoặc tiếng Anh là lợi thế."
+      ],
+      "benefits_list": [
+        "Laptop",
+        "Chế độ bảo hiểm",
+        "Du Lịch",
+        "Phụ cấp",
+        "Đồng phục",
+        "Chế độ thưởng",
+        "Chăm sóc sức khỏe",
+        "Đào tạo",
+        "Tăng lương",
+        "Công tác phí",
+        "Nghỉ phép năm",
+        "CLB thể thao"
+      ],
+      "location_text": "Địa điểmHà Nội",
+      "deadline_text": "06/11/2026",
+      "posted_date_text": "11/10/2026",
+      "employment_type_text": "Nhân viên chính thức",
+      "seniority_text": "Nhân viên",
+      "extra": {
+        "experience": "Trên 2 Năm",
+        "education": "Cao đẳng",
+        "age": "Không giới hạn tuổi",
+        "other_info": {
+          "Bằng cấp": "Cao đẳng",
+          "Độ tuổi": "Không giới hạn tuổi",
+          "Lương": "12 Tr - 35 Tr VND"
+        }
+      }
+    }
+  }
+]
