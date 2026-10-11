@@ -9,7 +9,6 @@ import logging
 import os
 import re
 import sys
-import tempfile
 import time
 import unicodedata
 from collections.abc import Generator
@@ -36,33 +35,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags
 from crawlers.common.utils import (
+    clean_text,
     detect_language,
-    parse_salary_detail,
     text_to_clean_lines,
 )
 
 SITE_BASE_URL = "https://vieclam24h.vn"
 DEFAULT_OUTPUT = Path(__file__).resolve().with_name("vieclam24h_jobs.json")
-CRAWLER_VERSION = "0.1.0"
+CRAWLER_VERSION = "0.2.0"
 LOCAL_TIMEZONE = timezone(timedelta(hours=7))
 TARGET_INDUSTRIES = ["IT Phần cứng - Mạng", "IT Phần mềm"]
-
-VISIBLE_RAW_FIELDS = {
-    "title",
-    "company",
-    "description_list",
-    "salary",
-    "tags",
-    "requirements_list",
-    "benefits_list",
-    "location_text",
-    "deadline_text",
-    "posted_date_text",
-    "employment_type_text",
-    "seniority_text",
-    "extra",
-}
-VISIBLE_EXTRA_FIELDS = {"work_schedule", "education", "hiring_quantity", "workplace_type", "experience", "address_components"}
 
 log = logging.getLogger("vieclam24h.crawler")
 
@@ -78,35 +60,6 @@ def _clean_text(value: Any) -> str | None:
     return text or None
 
 
-def _text_identity(value: str) -> str:
-    normalized = unicodedata.normalize("NFKC", value).casefold()
-    return re.sub(r"[^\w]+", "", normalized, flags=re.UNICODE)
-
-
-def _deduplicate_texts(values: list[str]) -> list[str]:
-    result: list[str] = []
-    seen: set[str] = set()
-    for value in values:
-        text = _clean_text(value)
-        if not text:
-            continue
-        identity = _text_identity(text)
-        if identity and identity not in seen:
-            result.append(text)
-            seen.add(identity)
-    return result
-
-
-def _url_identity(value: Any) -> str | None:
-    url = _clean_text(value)
-    if not url:
-        return None
-    parsed = urlsplit(url)
-    if not parsed.netloc or not parsed.path:
-        return None
-    return f"{parsed.netloc.lower()}{parsed.path.rstrip('/')}"
-
-
 def _format_timestamp(ts: Any) -> str:
     if not ts:
         return ""
@@ -118,26 +71,6 @@ def _format_timestamp(ts: Any) -> str:
         return str(ts)
     except Exception:
         return ""
-
-
-def _parse_html_to_list(html_content: Any) -> list[str]:
-    if not html_content:
-        return []
-    soup = BeautifulSoup(str(html_content), "html.parser")
-    items = []
-    for li in soup.find_all("li"):
-        text = li.get_text(strip=True)
-        if text:
-            items.append(text)
-    if not items:
-        for p in soup.find_all(["p", "div"]):
-            text = p.get_text(strip=True)
-            if text and text not in items:
-                items.append(text)
-    if not items:
-        text = soup.get_text(separator="\n", strip=True)
-        items = [line.strip() for line in text.split("\n") if line.strip()]
-    return _deduplicate_texts(items)
 
 
 def set_react_input(driver: webdriver.Chrome, element: Any, value: str) -> None:
@@ -180,7 +113,7 @@ def _make_record(
     *,
     batch_id: str,
     crawled_at: datetime,
-) -> dict[str, Any]:
+) -> JobRecord:
     job_id = str(job_detail.get("id", ""))
     title = _clean_text(job_detail.get("title"))
     employer = job_detail.get("employer_info", {})
@@ -195,10 +128,10 @@ def _make_record(
     # Xử lý địa chỉ
     street_address, address_locality, address_region, address_country = None, None, None, None
     places = job_detail.get("places", [])
-    if places and isinstance(places[0], dict):
+    if places and isinstance(places, list) and isinstance(places[0], dict):
         p_info = places[0]
         street_address = _clean_text(p_info.get("address"))
-        address_locality = _clean_text(p_info.get("city_name"))
+        address_locality = _clean_text(p_info.get("city_name") or p_info.get("province_name"))
 
     location_parts = [p for p in [street_address, address_locality, address_region, address_country] if p]
     location_text = ", ".join(location_parts) if location_parts else None
@@ -208,51 +141,132 @@ def _make_record(
     s_max = job_detail.get("salary_max")
     s_min_val, s_max_val = None, None
     if s_min is not None:
-        s_min_val = float(s_min) / 1000000 if s_min >= 1000 else float(s_min)
+        try:
+            s_min_num = float(s_min)
+            s_min_val = s_min_num / 1_000_000 if s_min_num >= 1000 else s_min_num
+        except (ValueError, TypeError):
+            pass
     if s_max is not None:
-        s_max_val = float(s_max) / 1000000 if s_max >= 1000 else float(s_max)
+        try:
+            s_max_num = float(s_max)
+            s_max_val = s_max_num / 1_000_000 if s_max_num >= 1000 else s_max_num
+        except (ValueError, TypeError):
+            pass
 
-    if s_min_val is not None and s_max_val is not None:
-        salary_text = f"{int(s_min_val)} - {int(s_max_val)} triệu"
-        is_neg = False
+    raw_salary_text = job_detail.get("salary_range_text") or job_detail.get("salary_text")
+    if not raw_salary_text:
+        if s_min_val is not None and s_max_val is not None:
+            salary_text = f"{int(s_min_val)} - {int(s_max_val)} triệu"
+            is_neg = False
+        elif s_min_val is not None:
+            salary_text = f"Từ {int(s_min_val)} triệu"
+            is_neg = False
+        elif s_max_val is not None:
+            salary_text = f"Tới {int(s_max_val)} triệu"
+            is_neg = False
+        else:
+            salary_text = "Thoả thuận"
+            is_neg = True
     else:
-        salary_text = "Thoả thuận"
-        is_neg = True
+        salary_text = str(raw_salary_text)
+        is_neg = (s_min_val is None and s_max_val is None)
 
     salary = JobSalary(
         salary_text=salary_text,
         salary_min=s_min_val,
         salary_max=s_max_val,
-        salary_currency="VND" if s_min is not None else None,
-        pay_period="month",
+        salary_currency="VND" if (s_min_val is not None or s_max_val is not None) else None,
+        pay_period="month" if (s_min_val is not None or s_max_val is not None) else None,
         is_negotiable=is_neg,
         has_commission=False,
     )
 
-    desc_html = job_detail.get("description_html") or job_detail.get("description")
-    req_html = job_detail.get("other_requirement_html") or job_detail.get("other_requirement")
-    benefit_html = job_detail.get("benefit_html") or job_detail.get("benefit")
+    desc_html = (
+        job_detail.get("description_html")
+        or job_detail.get("description")
+        or job_detail.get("job_description_html")
+    )
+    req_html = (
+        job_detail.get("other_requirement_html")
+        or job_detail.get("other_requirement")
+        or job_detail.get("job_requirement_html")
+        or job_detail.get("requirements")
+    )
+    benefit_html = (
+        job_detail.get("benefit_html")
+        or job_detail.get("benefit")
+        or job_detail.get("job_benefit_html")
+        or job_detail.get("benefits")
+    )
 
-    description_list = _parse_html_to_list(desc_html)
-    requirements_list = _parse_html_to_list(req_html)
-    benefits_list = _parse_html_to_list(benefit_html)
+    description_list = text_to_clean_lines(str(desc_html)) if desc_html else []
+    requirements_list = text_to_clean_lines(str(req_html)) if req_html else []
+    benefits_list = text_to_clean_lines(str(benefit_html)) if benefit_html else []
 
-    experience_val = job_detail.get("experience_range")
-    experience_text = f"{experience_val} năm kinh nghiệm chuyên môn" if experience_val else "Không yêu cầu kinh nghiệm"
+    if not description_list:
+        description_list = requirements_list if requirements_list else [title]
+
+    experience_val = job_detail.get("experience_range") or job_detail.get("experience_text")
+    experience_text = (
+        f"{experience_val} năm kinh nghiệm chuyên môn"
+        if (experience_val and str(experience_val).isdigit())
+        else (str(experience_val) if experience_val else "Không yêu cầu kinh nghiệm")
+    )
+
+    # Thẻ kỹ năng / tags nếu có từ API
+    skills_raw = job_detail.get("skills") or job_detail.get("tags") or []
+    skill_names: list[str] = []
+    if isinstance(skills_raw, list):
+        for s in skills_raw:
+            if isinstance(s, dict) and s.get("name"):
+                skill_names.append(str(s["name"]).strip())
+            elif isinstance(s, str) and s.strip():
+                skill_names.append(s.strip())
 
     tags = JobTags(
-        requirements=requirements_list or None,
-        benefits=benefits_list or None,
-        skills=None,
+        requirements=None,
+        benefits=None,
+        skills=skill_names or None,
     )
 
     raw_text = " ".join(value for value in (title, company, *description_list) if value)
     language = detect_language(raw_text)
 
+    extra: dict[str, Any] = {
+        "experience": experience_text,
+        "address_components": {
+            "streetAddress": street_address,
+            "addressLocality": address_locality,
+            "addressRegion": address_region,
+            "addressCountry": address_country,
+        },
+    }
+    if job_detail.get("vacancy_quantity"):
+        extra["hiring_quantity"] = f"{job_detail['vacancy_quantity']} người"
+    if job_detail.get("education"):
+        extra["education"] = str(job_detail["education"])
+    if job_detail.get("work_schedule"):
+        extra["work_schedule"] = str(job_detail["work_schedule"])
+    if job_detail.get("workplace_type"):
+        extra["workplace_type"] = str(job_detail["workplace_type"])
+
+    employment_type_text = (
+        _clean_text(job_detail.get("type_working_text"))
+        or _clean_text(job_detail.get("employment_type"))
+        or _clean_text(job_detail.get("work_type"))
+        or None
+    )
+    seniority_text = (
+        _clean_text(job_detail.get("position_text"))
+        or _clean_text(job_detail.get("level"))
+        or _clean_text(job_detail.get("job_level"))
+        or None
+    )
+
     raw_values = dict(
         title=title,
         company=company,
-        description_list=description_list or None,
+        description_list=description_list,
         salary=salary,
         tags=tags,
         requirements_list=requirements_list,
@@ -260,21 +274,9 @@ def _make_record(
         location_text=location_text,
         deadline_text=_format_timestamp(job_detail.get("resume_apply_expired")),
         posted_date_text=_format_timestamp(job_detail.get("created_at")),
-        employment_type_text="Toàn thời gian",
-        seniority_text="Nhân viên",
-        extra={
-            "work_schedule": "Thứ 2 - Thứ 6",
-            "education": "Đại Học trở lên",
-            "hiring_quantity": f"{job_detail.get('vacancy_quantity', 1)} người",
-            "workplace_type": "Làm việc tại văn phòng / Onsite",
-            "experience": experience_text,
-            "address_components": {
-                "streetAddress": street_address,
-                "addressLocality": address_locality,
-                "addressRegion": address_region,
-                "addressCountry": address_country,
-            },
-        },
+        employment_type_text=employment_type_text,
+        seniority_text=seniority_text,
+        extra=extra,
     )
     meta = JobMetadata(
         source="vieclam24h",
@@ -286,58 +288,7 @@ def _make_record(
         crawler_version=CRAWLER_VERSION,
         language=language,
     )
-    record = JobRecord(_meta=meta, raw=JobRaw(**raw_values))
-    return record.to_jsonl_dict()
-
-
-def _load_existing(path: Path) -> dict[str, dict[str, Any]]:
-    if not path.exists():
-        return {}
-    try:
-        existing = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise ViecLam24hAPIError(f"Không đọc được JSON hiện có tại {path}") from exc
-    if not isinstance(existing, list):
-        raise ViecLam24hAPIError(f"JSON hiện có tại {path} không phải array.")
-
-    records: dict[str, dict[str, Any]] = {}
-    for record in existing:
-        if not isinstance(record, dict):
-            continue
-        meta = record.get("_meta", {})
-        job_id = str(meta.get("source_job_id", ""))
-        if job_id:
-            records[job_id] = record
-    return records
-
-
-def _atomic_write(path: Path, records: dict[str, dict[str, Any]]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temp_name: str | None = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            "w",
-            encoding="utf-8",
-            newline="\n",
-            dir=path.parent,
-            prefix=f".{path.name}.",
-            suffix=".tmp",
-            delete=False,
-        ) as temp_file:
-            temp_name = temp_file.name
-            json.dump(list(records.values()), temp_file, ensure_ascii=False, indent=2)
-            temp_file.write("\n")
-            temp_file.flush()
-            os.fsync(temp_file.fileno())
-        os.replace(temp_name, path)
-    except Exception as exc:
-        raise ViecLam24hAPIError(f"Không thể ghi file JSON an toàn tại {path}: {exc}") from exc
-    finally:
-        if temp_name and os.path.exists(temp_name):
-            try:
-                os.unlink(temp_name)
-            except OSError:
-                pass
+    return JobRecord(_meta=meta, raw=JobRaw(**raw_values))
 
 
 class ViecLam24hCrawler(BaseCrawler):
@@ -353,6 +304,7 @@ class ViecLam24hCrawler(BaseCrawler):
         max_items: int | None = None,
         max_pages: int | None = None,
         checkpoint_interval: int = 10,
+        local_json_file: str | Path | None = None,
     ) -> None:
         super().__init__(
             checkpoint_dir=checkpoint_dir,
@@ -361,24 +313,66 @@ class ViecLam24hCrawler(BaseCrawler):
             checkpoint_interval=checkpoint_interval,
         )
         self.max_pages = max_pages
-        self.driver = webdriver.Chrome()
+        self.local_json_file = Path(local_json_file) if local_json_file else None
+        self.driver: webdriver.Chrome | None = None
+        self.wait: WebDriverWait | None = None
+
+    def _init_driver(self) -> None:
+        if self.driver is not None:
+            return
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless=new")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1920,1080")
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_argument(
+            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
+        self.driver = webdriver.Chrome(options=options)
         self.wait = WebDriverWait(self.driver, 15)
 
     def fetch_items(self) -> Generator[dict[str, Any], None, None]:
-        """Điều hướng Selenium qua danh sách, tìm kiếm ngành IT và trích xuất chi tiết tin."""
+        """Điều hướng Selenium qua danh sách hoặc nạp từ file JSON offline."""
+        if self.local_json_file and self.local_json_file.exists():
+            log.info("Đang đọc dữ liệu offline từ: %s", self.local_json_file)
+            content = self.local_json_file.read_text(encoding="utf-8")
+            data = json.loads(content)
+            items = data if isinstance(data, list) else [data]
+            for it in items:
+                if isinstance(it, dict):
+                    if "job_detail" in it:
+                        yield it
+                    else:
+                        yield {"job_detail": it, "url": it.get("url", "")}
+            return
+
+        self._init_driver()
+        assert self.driver is not None
+        assert self.wait is not None
+
         try:
             self.driver.get(SITE_BASE_URL)
             time.sleep(3)
 
             # Định vị ô input Ngành nghề
             try:
-                industry_input_xpath = "//div[contains(@id, 'react-select') and contains(., 'Ngành nghề')]/following-sibling::div//input | //input[contains(@id, 'react-select')]"
+                industry_input_xpath = (
+                    "//div[contains(@id, 'react-select') and contains(., 'Ngành nghề')]/following-sibling::div//input "
+                    "| //input[contains(@id, 'react-select')]"
+                )
                 industry_input = self.wait.until(EC.presence_of_element_located((By.XPATH, industry_input_xpath)))
             except Exception:
-                industry_container_xpath = "//div[contains(@id, 'react-select') and contains(., 'Ngành nghề')] | //div[text()='Ngành nghề']"
+                industry_container_xpath = (
+                    "//div[contains(@id, 'react-select') and contains(., 'Ngành nghề')] | //div[text()='Ngành nghề']"
+                )
                 safe_click(self.driver, self.wait, (By.XPATH, industry_container_xpath))
                 time.sleep(0.5)
-                industry_input = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[id*='react-select']")))
+                industry_input = self.wait.until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "input[id*='react-select']"))
+                )
 
             # Nhập danh sách ngành nghề mục tiêu
             for industry in TARGET_INDUSTRIES:
@@ -390,7 +384,9 @@ class ViecLam24hCrawler(BaseCrawler):
                 time.sleep(0.5)
 
             # Click tìm kiếm
-            search_btn_xpath = "//button[@data-test-id='common__button' and (contains(@class, 'bg-[#5A30B9]') or contains(@class, 'bg-primary'))]"
+            search_btn_xpath = (
+                "//button[@data-test-id='common__button' and (contains(@class, 'bg-[#5A30B9]') or contains(@class, 'bg-primary'))]"
+            )
             safe_click(self.driver, self.wait, (By.XPATH, search_btn_xpath))
             time.sleep(3)
 
@@ -407,7 +403,7 @@ class ViecLam24hCrawler(BaseCrawler):
 
                 job_cards_xpath = "//a[@data-job-id and contains(@href, '.html')]"
                 job_links = self.driver.find_elements(By.XPATH, job_cards_xpath)
-                
+
                 job_urls = []
                 seen_urls = set()
                 for link in job_links:
@@ -456,7 +452,7 @@ class ViecLam24hCrawler(BaseCrawler):
                                 continue
                             if job_id:
                                 yielded_ids.add(job_id)
-                            
+
                             collected_count += 1
                             yield {"job_detail": job_detail, "url": url}
 
@@ -487,25 +483,26 @@ class ViecLam24hCrawler(BaseCrawler):
                 except Exception:
                     break
         finally:
-            try:
-                self.driver.quit()
-            except Exception:
-                pass
+            if self.driver:
+                try:
+                    self.driver.quit()
+                except Exception:
+                    pass
+                self.driver = None
 
     def parse_item(self, item: dict[str, Any]) -> JobRecord | None:
         try:
-            job_detail = item.get("job_detail")
-            url = item.get("url", "")
-            if not isinstance(job_detail, dict):
+            if not isinstance(item, dict):
                 return None
-            
-            record_dict = _make_record(
+            job_detail = item.get("job_detail") if isinstance(item.get("job_detail"), dict) else item
+            url = item.get("url", "") if isinstance(item.get("url"), str) else ""
+
+            return _make_record(
                 job_detail,
                 url,
                 batch_id=self.batch_id,
                 crawled_at=datetime.now(LOCAL_TIMEZONE),
             )
-            return JobRecord.model_validate(record_dict)
         except (ViecLam24hAPIError, ValueError, ValidationError) as exc:
             log.warning("Bỏ qua job không hợp lệ: %s", exc)
             self.skipped_count += 1
@@ -517,6 +514,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--max-pages", type=int, help="Giới hạn số trang cần crawl.")
     parser.add_argument("--max-jobs", type=int, help="Giới hạn số lượng tin tuyển dụng.")
+    parser.add_argument("--local-json-file", type=Path, help="Đường dẫn file JSON mẫu để chạy offline.")
     parser.add_argument("--verbose", action="store_true")
     return parser.parse_args()
 
@@ -528,31 +526,20 @@ def main() -> int:
         format="%(levelname)s: %(message)s",
     )
 
-    output_path = args.output
-    all_records = _load_existing(output_path)
-    
     crawler = ViecLam24hCrawler(
+        output_dir=args.output.parent,
         max_items=args.max_jobs,
         max_pages=args.max_pages,
+        local_json_file=args.local_json_file,
     )
 
-    new_count = 0
     try:
-        for record in crawler.run():
-            record_dict = record.to_jsonl_dict()
-            meta = record_dict.get("_meta", {})
-            job_id = str(meta.get("source_job_id", ""))
-            if job_id:
-                all_records[job_id] = record_dict
-            else:
-                all_records[meta.get("url", str(len(all_records)))] = record_dict
-            new_count += 1
-            _atomic_write(output_path, all_records)
+        stats = crawler.run()
+        print(f"Vieclam24h: Hoàn tất thu thập. Thống kê: {stats}")
     except Exception as exc:
         log.error("Lỗi khi chạy crawler: %s", exc)
         return 1
 
-    print(f"Vieclam24h: Hoàn tất thu thập {new_count} tin mới. Lưu tại: {output_path.resolve()}")
     return 0
 
 

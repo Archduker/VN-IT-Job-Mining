@@ -1,0 +1,318 @@
+[
+  {
+    "_meta": {
+      "source": "vieclam24h",
+      "source_job_id": "1001",
+      "url": "https://vieclam24h.vn/senior-frontend-developer-reactjs-typescript-id1001.html",
+      "dedup_key": "vieclam24h:1001",
+      "crawled_at": "2026-10-11T07:23:22.251527Z",
+      "batch_id": "2026-10-11_vieclam24h_001",
+      "crawler_version": "0.2.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Senior Frontend Developer (ReactJS / TypeScript)",
+      "company": "Công ty Cổ phần Công nghệ ABC",
+      "description_list": [
+        "Thiết kế component React",
+        "Tối ưu hóa hiệu năng web"
+      ],
+      "salary": {
+        "salary_text": "25 - 45 triệu",
+        "salary_min": 25.0,
+        "salary_max": 45.0,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": [
+          "ReactJS",
+          "TypeScript",
+          "Redux"
+        ]
+      },
+      "requirements_list": [
+        "Ít nhất 4 năm kinh nghiệm với ReactJS",
+        "Thành thạo TypeScript, Redux Toolkit",
+        "Có tư duy Clean Architecture"
+      ],
+      "benefits_list": [
+        "Lương tháng 13 + thưởng hiệu quả",
+        "Bảo hiểm sức khỏe toàn diện",
+        "Phụ cấp ăn trưa và gửi xe"
+      ],
+      "location_text": "Tầng 5, Tòa nhà Landmark, Hồ Chí Minh",
+      "deadline_text": "2026-01-01",
+      "posted_date_text": "2025-01-01",
+      "employment_type_text": "Toàn thời gian",
+      "seniority_text": "Senior",
+      "extra": {
+        "experience": "4 năm kinh nghiệm chuyên môn",
+        "address_components": {
+          "streetAddress": "Tầng 5, Tòa nhà Landmark",
+          "addressLocality": "Hồ Chí Minh",
+          "addressRegion": null,
+          "addressCountry": null
+        },
+        "hiring_quantity": "2 người",
+        "education": "Đại học"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vieclam24h",
+      "source_job_id": "1002",
+      "url": "https://vieclam24h.vn/backend-engineer-golang-microservices-id1002.html",
+      "dedup_key": "vieclam24h:1002",
+      "crawled_at": "2026-10-11T07:23:22.251527Z",
+      "batch_id": "2026-10-11_vieclam24h_001",
+      "crawler_version": "0.2.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Backend Engineer (Golang / Microservices)",
+      "company": "Tập đoàn Giải pháp Số XYZ",
+      "description_list": [
+        "Xây dựng REST & gRPC API",
+        "Tối ưu database PostgreSQL và Redis"
+      ],
+      "salary": {
+        "salary_text": "Từ 20 triệu",
+        "salary_min": 20.0,
+        "salary_max": null,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": [
+          "Golang",
+          "Microservices",
+          "Docker"
+        ]
+      },
+      "requirements_list": [
+        "Kinh nghiệm Golang từ 2 năm trở lên",
+        "Hiểu rõ về Docker, Kubernetes",
+        "Kiến thức tốt về concurrency và caching"
+      ],
+      "benefits_list": [
+        "Thưởng dự án hấp dẫn",
+        "Tham gia các khóa đào tạo quốc tế",
+        "Môi trường năng động, trẻ trung"
+      ],
+      "location_text": "Số 12 Duy Tân, Cầu Giấy, Hà Nội",
+      "deadline_text": "2026-01-01",
+      "posted_date_text": "2025-01-01",
+      "employment_type_text": "Toàn thời gian",
+      "seniority_text": "Kỹ sư",
+      "extra": {
+        "experience": "2 năm kinh nghiệm chuyên môn",
+        "address_components": {
+          "streetAddress": "Số 12 Duy Tân, Cầu Giấy",
+          "addressLocality": "Hà Nội",
+          "addressRegion": null,
+          "addressCountry": null
+        },
+        "hiring_quantity": "3 người"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vieclam24h",
+      "source_job_id": "1003",
+      "url": "https://vieclam24h.vn/ai-machine-learning-engineer-id1003.html",
+      "dedup_key": "vieclam24h:1003",
+      "crawled_at": "2026-10-11T07:23:22.251527Z",
+      "batch_id": "2026-10-11_vieclam24h_001",
+      "crawler_version": "0.2.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "AI / Machine Learning Engineer",
+      "company": "Viện Trí tuệ Nhân tạo NextGen",
+      "description_list": [
+        "Fine-tuning mô hình ngôn ngữ lớn",
+        "Xây dựng pipeline RAG cho hệ thống hỏi đáp"
+      ],
+      "salary": {
+        "salary_text": "Thoả thuận",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": null,
+        "pay_period": null,
+        "is_negotiable": true,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": [
+          "Python",
+          "PyTorch",
+          "LLM"
+        ]
+      },
+      "requirements_list": [
+        "Tốt nghiệp ĐH/ThS chuyên ngành CNTT, Toán Tin",
+        "Thành thạo Python, PyTorch, HuggingFace",
+        "Có bài báo khoa học là lợi thế lớn"
+      ],
+      "benefits_list": [
+        "Lương thưởng không giới hạn theo năng lực",
+        "Cơ hội làm việc cùng chuyên gia AI hàng đầu",
+        "Laptop cấu hình cao và tài khoản GPU cluster"
+      ],
+      "location_text": "Khu Công nghệ cao, TP Thủ Đức, Hồ Chí Minh",
+      "deadline_text": "2026-01-01",
+      "posted_date_text": "2025-01-01",
+      "employment_type_text": "Toàn thời gian",
+      "seniority_text": "Chuyên viên",
+      "extra": {
+        "experience": "1-3",
+        "address_components": {
+          "streetAddress": "Khu Công nghệ cao, TP Thủ Đức",
+          "addressLocality": "Hồ Chí Minh",
+          "addressRegion": null,
+          "addressCountry": null
+        },
+        "hiring_quantity": "1 người"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vieclam24h",
+      "source_job_id": "1004",
+      "url": "https://vieclam24h.vn/devops-cloud-infrastructure-specialist-id1004.html",
+      "dedup_key": "vieclam24h:1004",
+      "crawled_at": "2026-10-11T07:23:22.251527Z",
+      "batch_id": "2026-10-11_vieclam24h_001",
+      "crawler_version": "0.2.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "DevOps / Cloud Infrastructure Specialist",
+      "company": "Công ty Dịch vụ Đám mây CloudX",
+      "description_list": [
+        "Thiết lập CI/CD pipeline tự động hóa",
+        "Giám sát hệ thống bằng Prometheus, Grafana"
+      ],
+      "salary": {
+        "salary_text": "30 - 50 triệu",
+        "salary_min": 30.0,
+        "salary_max": 50.0,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": [
+          "DevOps",
+          "AWS",
+          "Kubernetes"
+        ]
+      },
+      "requirements_list": [
+        "3+ năm kinh nghiệm DevOps / SRE",
+        "Thành thạo Terraform, Ansible",
+        "Có chứng chỉ AWS Certified Solutions Architect là điểm cộng"
+      ],
+      "benefits_list": [
+        "Bảo hiểm sức khỏe PVI Premium cho cả gia đình",
+        "Review lương 2 lần/năm",
+        "Hỗ trợ 100% chi phí thi chứng chỉ quốc tế"
+      ],
+      "location_text": "Tòa nhà FPT, Quận Cầu Giấy, Hà Nội",
+      "deadline_text": "2026-01-01",
+      "posted_date_text": "2025-01-01",
+      "employment_type_text": "Toàn thời gian",
+      "seniority_text": "Senior",
+      "extra": {
+        "experience": "3 năm kinh nghiệm chuyên môn",
+        "address_components": {
+          "streetAddress": "Tòa nhà FPT, Quận Cầu Giấy",
+          "addressLocality": "Hà Nội",
+          "addressRegion": null,
+          "addressCountry": null
+        },
+        "hiring_quantity": "2 người"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vieclam24h",
+      "source_job_id": "1005",
+      "url": "https://vieclam24h.vn/lead-software-quality-assurance-qa-qc-id1005.html",
+      "dedup_key": "vieclam24h:1005",
+      "crawled_at": "2026-10-11T07:23:22.251527Z",
+      "batch_id": "2026-10-11_vieclam24h_001",
+      "crawler_version": "0.2.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Lead Software Quality Assurance (QA/QC)",
+      "company": "FinTech Solutions Vietnam",
+      "description_list": [
+        "Lên kế hoạch test, xây dựng framework Automation Test",
+        "Quản lý nhóm QA 5 thành viên"
+      ],
+      "salary": {
+        "salary_text": "28 - 40 triệu",
+        "salary_min": 28.0,
+        "salary_max": 40.0,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": [
+          "Automation Test",
+          "Selenium",
+          "Playwright"
+        ]
+      },
+      "requirements_list": [
+        "5+ năm kinh nghiệm kiểm thử, ít nhất 1 năm vị trí Lead",
+        "Thành thạo Selenium, Playwright, Cypress",
+        "Hiểu biết sâu về domain ngân hàng/thanh toán điện tử"
+      ],
+      "benefits_list": [
+        "Thưởng tháng lương thứ 13, 14",
+        "Du lịch hàng năm tiêu chuẩn 5 sao",
+        "Thời gian làm việc linh hoạt, hybrid 2 ngày/tuần"
+      ],
+      "location_text": "Quận 1, TP Hồ Chí Minh, Hồ Chí Minh",
+      "deadline_text": "2026-01-01",
+      "posted_date_text": "2025-01-01",
+      "employment_type_text": "Toàn thời gian",
+      "seniority_text": "Team Leader",
+      "extra": {
+        "experience": "5 năm kinh nghiệm chuyên môn",
+        "address_components": {
+          "streetAddress": "Quận 1, TP Hồ Chí Minh",
+          "addressLocality": "Hồ Chí Minh",
+          "addressRegion": null,
+          "addressCountry": null
+        },
+        "hiring_quantity": "1 người"
+      }
+    }
+  }
+]

@@ -19,6 +19,7 @@
 > 3. **Phình To Git Repository**: File `batch_001.json` (64,948 dòng, 3.13MB) của Sơn sẽ bị kéo vĩnh viễn vào lịch sử Git.
 > 
 > 👉 **Giải pháp**: Áp dụng quy trình **3 Giai Đoạn Có Kiểm Soát** dưới đây.
+> **LƯU Ý QUAN TRỌNG**: Áp dụng quy trình là sao mỗi lần merge là phải kiểm tra rồi test lại nha.
 
 ---
 

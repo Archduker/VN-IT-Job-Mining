@@ -11,6 +11,13 @@ Schedule:
 """
 
 from datetime import datetime, timedelta
+import sys
+from pathlib import Path
+
+plugins_dir = str(Path(__file__).resolve().parents[1] / "plugins")
+if plugins_dir not in sys.path:
+    sys.path.insert(0, plugins_dir)
+
 from airflow import DAG
 from crawler_operators import JobCrawlerOperator, DataQualityOperator
 
