@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Crawler nguồn CareerViet (https://careerviet.vn).
+"""Crawler nguồn CareerViet (https://careerviet.vn) — Phiên bản chuẩn Data Contract Schema v1.
 
-Owner: Tài (refactored to single file BaseCrawler architecture).
-Duyệt qua danh mục việc làm CNTT - Phần mềm, tải listing và bóc tách trực tiếp trang chi tiết.
-Sử dụng HttpClient tiêu chuẩn với delay, auto-retry và rotate User-Agent.
+Hỗ trợ 2 chế độ thu thập:
+1. Online: Duyệt danh mục IT (/viec-lam/cntt-phan-mem-c1-vi.html) và tải trang chi tiết via HttpClient.
+2. Offline (--local-html-dir): Tải nhanh từ các file HTML đã lưu để test và kiểm thử hồi quy không phụ thuộc mạng.
 """
 
 import argparse
+import glob
 import hashlib
 import logging
+import os
 import re
-import sys
-from typing import Any, Dict, Generator, List, Optional
+from collections.abc import Generator
+from typing import Any
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
@@ -19,19 +21,26 @@ from bs4 import BeautifulSoup
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient
 from crawlers.common.schema import JobRecord
-from crawlers.common.utils import clean_text, strip_html_tags
+from crawlers.common.utils import (
+    clean_text,
+    detect_language,
+    parse_salary_detail,
+    strip_html_tags,
+    text_to_clean_lines,
+    classify_job_tags,
+)
 
 log = logging.getLogger("careerviet.crawler")
 
 SOURCE = "careerviet"
-CRAWLER_VERSION = "0.2.0"
+CRAWLER_VERSION = "0.5.0"
 BASE_URL = "https://careerviet.vn"
 CATEGORY_PATH = "/viec-lam/cntt-phan-mem-c1-vi.html"
 MAX_PAGES = 30
 
 
 def extract_job_id(url: str) -> str:
-    """Trích xuất ID job từ URL của CareerViet."""
+    """Trích xuất ID job duy nhất từ URL của CareerViet."""
     match = re.search(r"\.([A-Z0-9]{6,12})\.html", url)
     if match:
         return match.group(1)
@@ -42,18 +51,21 @@ def extract_job_id(url: str) -> str:
 
 
 class CareerVietCrawler(BaseCrawler):
-    """Crawler cho nguồn CareerViet."""
+    """Crawler cho nguồn CareerViet kế thừa BaseCrawler chuẩn hóa Data Contract v1."""
 
     source_name = SOURCE
     crawler_version = CRAWLER_VERSION
 
     def __init__(
         self,
-        checkpoint_dir: Optional[str] = None,
-        output_dir: Optional[str] = None,
-        max_items: Optional[int] = 30,
+        checkpoint_dir: str | None = None,
+        output_dir: str | None = None,
+        max_items: int | None = 30,
         checkpoint_interval: int = 10,
-        http_client: Optional[HttpClient] = None,
+        http_client: HttpClient | None = None,
+        save_html: bool = False,
+        html_storage_dir: str | None = None,
+        local_html_dir: str | None = None,
     ) -> None:
         super().__init__(
             checkpoint_dir=checkpoint_dir,
@@ -63,22 +75,47 @@ class CareerVietCrawler(BaseCrawler):
         )
         self.http_client = http_client or HttpClient(
             source=self.source_name,
-            delay_config=DelayConfig(min_seconds=1.5, max_seconds=3.0),
+            delay_config=DelayConfig(min_seconds=1.0, max_seconds=2.5),
             timeout=25,
         )
+        self.save_html = save_html
+        self.html_storage_dir = html_storage_dir or os.path.dirname(__file__)
+        self.local_html_dir = local_html_dir
 
     def _build_page_url(self, page: int) -> str:
         if page <= 1:
             return f"{BASE_URL}{CATEGORY_PATH}"
         return f"{BASE_URL}/viec-lam/cntt-phan-mem-c1-trang-{page}-vi.html"
 
-    def fetch_items(self) -> Generator[Dict[str, Any], None, None]:
-        """Duyệt các trang kết quả tìm kiếm và tải HTML chi tiết từng việc làm."""
+    def fetch_items(self) -> Generator[dict[str, Any], None, None]:
+        """Thu thập danh sách items từ web trực tuyến hoặc từ thư mục HTML cục bộ."""
+        # 1. Chế độ đọc file HTML cục bộ (Offline testing / fast validation)
+        if self.local_html_dir and os.path.exists(self.local_html_dir):
+            log.info("[CareerViet] Loading local HTML files from %s", self.local_html_dir)
+            pattern = os.path.join(self.local_html_dir, "*.html")
+            yielded = 0
+            for fpath in sorted(glob.glob(pattern)):
+                fname = os.path.basename(fpath)
+                m = re.search(r"([A-Z0-9]{6,12})\.html", fname)
+                job_id = m.group(1) if m else fname.replace(".html", "")
+                with open(fpath, encoding="utf-8") as f:
+                    html_content = f.read()
+
+                yield {
+                    "job_id": job_id,
+                    "url": f"{BASE_URL}/vi/tim-viec-lam/job.{job_id}.html",
+                    "html": html_content,
+                }
+                yielded += 1
+                if self.max_items and yielded >= self.max_items:
+                    break
+            return
+
+        # 2. Chế độ cào trực tuyến từ web
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Referer": BASE_URL,
         }
-
         seen_urls = set()
 
         for page in range(1, MAX_PAGES + 1):
@@ -105,7 +142,7 @@ class CareerVietCrawler(BaseCrawler):
                 log.info("[CareerViet] No job links found at page %d. Ending listing crawl.", page)
                 break
 
-            log.info("[CareerViet] Found %d job links on page %d", len(job_links), page)
+            log.info("[CareerViet] Found %d candidate job links on page %d", len(job_links), page)
             for jurl in job_links:
                 jid = extract_job_id(jurl)
                 if self.checkpoint.is_seen(jid):
@@ -115,6 +152,12 @@ class CareerVietCrawler(BaseCrawler):
                 # Tải trang chi tiết
                 try:
                     detail_html = self.http_client.get_html(jurl, headers=headers)
+                    if self.save_html and detail_html and len(detail_html) > 5000:
+                        save_path = os.path.join(self.html_storage_dir, f"{jid}.html")
+                        with open(save_path, "w", encoding="utf-8") as f:
+                            f.write(detail_html)
+                        log.info("[CareerViet] Saved detail HTML to %s", save_path)
+
                     yield {
                         "job_id": jid,
                         "url": jurl,
@@ -127,21 +170,21 @@ class CareerVietCrawler(BaseCrawler):
             # Kiểm tra phân trang tiếp theo
             next_btn = soup.select_one("li.next-page")
             if next_btn and "disabled" in next_btn.get("class", []):
-                log.info("[CareerViet] Reached last page according to pagination button.")
+                log.info("[CareerViet] Reached last page according to pagination.")
                 break
 
-    def parse_item(self, item: Dict[str, Any]) -> Optional[JobRecord]:
-        """Bóc tách nội dung HTML chi tiết thành JobRecord."""
+    def parse_item(self, item: dict[str, Any]) -> JobRecord | None:
+        """Bóc tách HTML chi tiết thành JobRecord chuẩn Data Contract Schema v1."""
         job_id = item.get("job_id")
         job_url = item.get("url")
         html = item.get("html")
-        if not html:
+        if not job_id or not job_url or not html:
             return None
 
         soup = BeautifulSoup(html, "html.parser")
         page = soup.find(class_="job-detail-page") or soup
 
-        # Title: Ưu tiên h1 hoặc class .title/.job-title trước khi fallback về h2
+        # 1. Tiêu đề công việc
         title_el = (
             page.find("h1")
             or page.select_one(".title, .job-title")
@@ -149,106 +192,128 @@ class CareerVietCrawler(BaseCrawler):
         )
         title = clean_text(title_el.text) if title_el else ""
         if not title:
-            # Fallback title from <title> tag
             t_tag = soup.find("title")
             title = clean_text(t_tag.text.split("-")[0]) if t_tag else "Unknown IT Job"
 
-        # Company
-        comp_tag = page.find("a", class_=lambda c: c and ("employer" in c or "company" in c))
+        # 2. Tên công ty tuyển dụng
+        comp_tag = page.select_one("a.employer, a.job-company-name, .company-name, a.company")
         if not comp_tag and title_el:
             comp_tag = title_el.find_next("a")
         company = clean_text(comp_tag.text) if comp_tag else "Unknown"
 
-        # Salary: Ưu tiên lấy từ box thông tin chi tiết (li chứa "Lương")
+        # 3. Trích xuất metadata từ detail-box (Key-Value list)
         salary_text = "Thương lượng"
-        for li in page.find_all("li"):
-            if "lương" in li.text.lower():
-                p_tag = li.find("p")
-                if p_tag and clean_text(p_tag.text):
-                    salary_text = clean_text(p_tag.text)
-                    break
-        if salary_text == "Thương lượng":
-            sal_tag = page.find("strong")
-            if sal_tag and sal_tag.text.strip():
-                st = clean_text(sal_tag.text)
-                if not any(k in st.lower() for k in ["địa điểm", "ngày cập nhật", "ngành nghề", "hình thức"]):
-                    salary_text = st
-
-        # Sections: Mô tả, Yêu cầu, Phúc lợi, Thông tin khác
-        desc_html = ""
-        req_text = ""
-        benefits_text = ""
         location_text = ""
         exp_text = ""
         seniority_text = ""
         job_type_text = ""
         posted_date_text = ""
+        deadline_text = ""
 
-        # Trích xuất metadata từ detail-box (CareerViet hiện đại)
-        for li in page.find_all("li"):
-            text_lower = li.text.lower()
+        for li in page.select(".detail-box li, .job-detail-content li, .box-item li, ul.list-info li"):
+            text_full = clean_text(li.get_text(separator=" ", strip=True))
+            text_lower = text_full.lower()
             p_tag = li.find("p")
-            val = clean_text(p_tag.text) if p_tag else ""
-            if "địa điểm" in text_lower and not location_text and val:
-                location_text = val
-            elif "kinh nghiệm" in text_lower and not exp_text and val:
-                exp_text = val
-            elif "cấp bậc" in text_lower and not seniority_text and val:
-                seniority_text = val
-            elif "hình thức" in text_lower and not job_type_text and val:
-                job_type_text = val
-            elif "ngày cập nhật" in text_lower and not posted_date_text and val:
-                posted_date_text = val
+            val = clean_text(p_tag.text) if p_tag else text_full
+
+            if "lương" in text_lower:
+                val_clean = val.replace("Lương:", "").replace("Lương", "").strip().lstrip(":").strip()
+                salary_text = val_clean or val
+            elif "địa điểm" in text_lower and not location_text:
+                location_text = val.replace("Địa điểm:", "").replace("Địa điểm", "").strip() or val
+            elif "kinh nghiệm" in text_lower and not exp_text:
+                exp_text = val.replace("Kinh nghiệm:", "").replace("Kinh nghiệm", "").strip() or val
+            elif "cấp bậc" in text_lower and not seniority_text:
+                seniority_text = val.replace("Cấp bậc:", "").replace("Cấp bậc", "").strip() or val
+            elif "hình thức" in text_lower and not job_type_text:
+                job_type_text = val.replace("Hình thức:", "").replace("Hình thức", "").strip() or val
+            elif "ngày cập nhật" in text_lower and not posted_date_text:
+                posted_date_text = val.replace("Ngày cập nhật:", "").replace("Ngày cập nhật", "").strip() or val
+            elif any(k in text_lower for k in ["hết hạn nộp", "hạn nộp"]) and not deadline_text:
+                deadline_text = val.replace("Hết hạn nộp:", "").replace("Hết hạn nộp", "").strip() or val
 
         # Fallback địa điểm từ div.map nếu có
-        map_link = page.select_one("div.map p a")
+        map_link = page.select_one("div.map p a, div.map")
         if not location_text and map_link:
             location_text = clean_text(map_link.text)
 
-        # Tags / kỹ năng
-        skill_tags = [clean_text(a.text) for a in page.select(".job-tags a, .tag-item a, .tag-item") if clean_text(a.text)]
-        skills_text = ", ".join(skill_tags) if skill_tags else None
+        # 4. Phân tích mức lương lồng nhau (JobSalary)
+        salary_detail = parse_salary_detail(salary_text, title=title)
 
-        sections = page.find_all(class_="detail-row")
+        # 5. Các khối chi tiết (Sections): Mô tả, Yêu cầu, Phúc lợi
+        desc_raw = ""
+        req_raw = ""
+        ben_raw = ""
+        extra_info: dict[str, str] = {}
+
+        sections = page.select(".detail-row, .job-description, .job-detail-content .row")
         for s in sections:
             header = s.find(["h2", "h3", "h4"])
-            htext = header.text.lower() if header else ""
+            htext = header.get_text(strip=True).lower() if header else ""
 
-            if "mô tả" in htext:
-                desc_html = str(s)
-            elif "yêu cầu" in htext:
-                req_text = clean_text(s.text)
-            elif "phúc lợi" in htext:
-                benefits_text = clean_text(s.text)
-            elif "thông tin khác" in htext:
-                info_text = s.text
-                if not location_text and "Địa điểm" in info_text:
-                    loc_match = re.search(r"Địa điểm:\s*([^\n]+)", info_text)
-                    if loc_match:
-                        location_text = loc_match.group(1).strip()
-                if not exp_text and "Kinh nghiệm" in info_text:
-                    exp_match = re.search(r"Kinh nghiệm:\s*([^\n]+)", info_text)
-                    if exp_match:
-                        exp_text = exp_match.group(1).strip()
+            if any(k in htext for k in ["mô tả", "job description"]):
+                desc_raw = str(s)
+            elif any(k in htext for k in ["yêu cầu", "requirements", "requirement"]):
+                req_raw = str(s)
+            elif any(k in htext for k in ["phúc lợi", "quyền lợi", "benefits", "benefit"]):
+                ben_raw = str(s)
+            elif any(k in htext for k in ["thông tin khác", "other info"]):
+                for li_item in s.find_all("li"):
+                    txt = clean_text(li_item.get_text(separator=" ", strip=True))
+                    if ":" in txt:
+                        k, v = txt.split(":", 1)
+                        extra_info[clean_text(k)] = clean_text(v)
 
-        if not desc_html:
-            desc_html = f"<p>{title} at {company}</p>"
-        desc_text = strip_html_tags(desc_html)
+        if not desc_raw:
+            desc_raw = f"<p>{title} at {company}</p>"
+
+        # Làm sạch danh sách dòng văn bản (list[str]) loại bỏ bullet rác
+        desc_list = text_to_clean_lines(desc_raw)
+        req_list = text_to_clean_lines(req_raw) if req_raw else None
+        ben_list = text_to_clean_lines(ben_raw) if ben_raw else None
+
+        # 6. Thẻ tags theo 3 nhóm cốt lõi: Yêu cầu, Quyền lợi, Chuyên môn
+        tag_items = []
+        for a in page.select(".job-tags a, .tag-item a, .tag-item, .job-tags li"):
+            txt = clean_text(a.get_text(strip=True))
+            if txt and txt not in tag_items and not txt.startswith("+"):
+                tag_items.append(txt)
+
+        # Phân loại tags
+        classified_tags = classify_job_tags(tag_items) if tag_items else {}
+        tag_requirements = classified_tags.get("requirements") or None
+        tag_benefits = classified_tags.get("benefits") or None
+        tag_skills = classified_tags.get("skills") or (tag_items if tag_items else None)
+
+        tags_data = {
+            "requirements": tag_requirements,
+            "benefits": tag_benefits,  # Bắt buộc null nếu không có thẻ phúc lợi riêng
+            "skills": tag_skills,
+        }
+
+        # 7. Nhận diện ngôn ngữ
+        desc_sample = " ".join(desc_list[:3]) if desc_list else f"{title} {company}"
+        lang = detect_language(desc_sample)
 
         raw_data = {
             "title": title,
             "company": company,
-            "description_html": desc_html,
-            "description_text": desc_text,
-            "salary_text": salary_text,
+            "salary": salary_detail,
+            "tags": tags_data,
+            "description_list": desc_list,
+            "requirements_list": req_list,
+            "benefits_list": ben_list,
             "location_text": location_text or None,
-            "skills_text": skills_text,
-            "experience_text": exp_text or None,
+            "deadline_text": deadline_text or None,
+            "posted_date_text": posted_date_text or "",
             "employment_type_text": job_type_text or None,
             "seniority_text": seniority_text or None,
-            "requirements_text": req_text or None,
-            "benefits_text": benefits_text or None,
-            "posted_date_text": posted_date_text or "",
+            "extra": {
+                "experience": exp_text or extra_info.get("Kinh nghiệm"),
+                "education": extra_info.get("Bằng cấp"),
+                "age": extra_info.get("Độ tuổi"),
+                "other_info": extra_info if extra_info else None,
+            },
         }
 
         return JobRecord.create(
@@ -258,6 +323,7 @@ class CareerVietCrawler(BaseCrawler):
             batch_id=self.batch_id,
             raw_data=raw_data,
             crawler_version=self.crawler_version,
+            language=lang,
         )
 
 
@@ -266,6 +332,8 @@ def main():
     parser.add_argument("--max-items", type=int, default=30, help="Số tin tối đa cần cào")
     parser.add_argument("--output-dir", type=str, default="data", help="Thư mục xuất dữ liệu")
     parser.add_argument("--checkpoint-dir", type=str, default=None, help="Thư mục lưu checkpoint")
+    parser.add_argument("--save-html", action="store_true", default=False, help="Lưu file HTML chi tiết")
+    parser.add_argument("--local-html-dir", type=str, default=None, help="Thư mục chứa HTML cục bộ")
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -277,6 +345,8 @@ def main():
         checkpoint_dir=args.checkpoint_dir,
         output_dir=args.output_dir,
         max_items=args.max_items,
+        save_html=args.save_html,
+        local_html_dir=args.local_html_dir,
     )
     result = crawler.run()
     print("Crawl completed:", result)
