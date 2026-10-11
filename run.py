@@ -121,42 +121,16 @@ def run_crawler(
         return crawler.run()
 
     elif source == "itviec":
-        import crawlers.sources.itviec.config as itviec_config
-        import crawlers.sources.itviec.crawler as itviec_crawler
+        from crawlers.sources.itviec.crawler import ItviecCrawler
 
-        # Đồng bộ cấu hình thư mục đầu ra
-        itviec_data_dir = os.path.join(output_dir, "itviec")
-        itviec_config.DATA_DIR = itviec_data_dir
-        itviec_config.ERROR_DIR = os.path.join(itviec_data_dir, "errors")
-        if checkpoint_dir:
-            itviec_config.CHECKPOINT_FILE = os.path.join(checkpoint_dir, "checkpoint.json")
-        else:
-            itviec_config.CHECKPOINT_FILE = os.path.join(itviec_data_dir, "checkpoint.json")
-
-        stats = itviec_crawler.crawl(max_items=max_items, batch_id=batch_id)
-
-        # Tìm file output mới nhất của itviec (ưu tiên .json, fallback .jsonl)
-        now = datetime.now(timezone(timedelta(hours=7)))
-        date_str = now.strftime("%Y-%m-%d")
-        dt_dir = os.path.join(itviec_data_dir, f"dt={date_str}")
-        json_files = sorted(glob.glob(os.path.join(dt_dir, "batch_*.json")))
-        if not json_files:
-            json_files = sorted(glob.glob(os.path.join(dt_dir, "batch_*.jsonl")))
-        output_file = stats.get("output_file") or (json_files[-1] if json_files else None)
-
-        seen_total = 0
-        if os.path.exists(itviec_config.CHECKPOINT_FILE):
-            cp = itviec_crawler.load_checkpoint(itviec_config.CHECKPOINT_FILE)
-            seen_total = len(cp.get("seen_ids", []))
-
-        return {
-            "source": "itviec",
-            "crawled": stats.get("written", 0),
-            "skipped": stats.get("skipped_seen_on_listing", 0),
-            "errors": stats.get("failed", 0),
-            "total_seen": seen_total,
-            "output_file": output_file,
-        }
+        crawler = ItviecCrawler(
+            checkpoint_dir=checkpoint_dir,
+            output_dir=output_dir,
+            max_items=max_items,
+        )
+        if batch_id:
+            crawler.batch_id = batch_id
+        return crawler.run()
 
     elif source == "glints":
         try:

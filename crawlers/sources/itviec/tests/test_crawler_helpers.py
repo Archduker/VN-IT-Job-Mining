@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Test các helper của crawler: checkpoint, JSONL writer, build_record, dedup.
+"""Test helper và kiến trúc ItviecCrawler (BaseCrawler v0.5.0).
 
-Không gọi mạng trong test (HttpClient chỉ được dùng ở test crawl Level 1 trở đi).
+Không gọi mạng trong test (HttpClient chỉ dùng ở integration test).
+Chạy:  python -m pytest crawlers/sources/itviec/tests/test_crawler_helpers.py -q
 """
 
 import json
@@ -10,110 +11,164 @@ import sys
 import tempfile
 import unittest
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_itviec_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_repo_root = os.path.abspath(os.path.join(_itviec_dir, "..", "..", ".."))
+sys.path.insert(0, _repo_root)
+sys.path.insert(0, _itviec_dir)
 
-import crawler  # noqa: E402
+from crawlers.sources.itviec.crawler import ItviecCrawler  # noqa: E402
 import parser as job_parser  # noqa: E402
 
 
-class TestCheckpoint(unittest.TestCase):
-    def test_roundtrip_and_missing_file(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = os.path.join(tmp, "checkpoint.json")
-            # chưa có file → rỗng, không crash
-            self.assertEqual(crawler.load_checkpoint(path),
-                             {"seen_ids": [], "sources": {}, "updated_at": None})
-            crawler.save_checkpoint(path, {"job-b", "job-a"})
-            data = crawler.load_checkpoint(path)
-            self.assertEqual(data["seen_ids"], ["job-a", "job-b"])  # sorted, ổn định
-            self.assertTrue(data["updated_at"])
+class TestItviecCrawlerInit(unittest.TestCase):
+    """ItviecCrawler khởi tạo đúng qua BaseCrawler."""
 
-    def test_corrupt_checkpoint_not_fatal(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = os.path.join(tmp, "checkpoint.json")
-            with open(path, "w") as fh:
-                fh.write("{not json")
-            data = crawler.load_checkpoint(path)  # phải chạy tiếp từ đầu
-            self.assertEqual(data["seen_ids"], [])
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.crawler = ItviecCrawler(
+            checkpoint_dir=os.path.join(self.tmp, "ckpt"),
+            output_dir=os.path.join(self.tmp, "out"),
+            max_items=5,
+        )
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_source_name(self):
+        self.assertEqual(self.crawler.source_name, "itviec")
+
+    def test_crawler_version(self):
+        self.assertEqual(self.crawler.crawler_version, "0.5.0")
+
+    def test_max_items(self):
+        self.assertEqual(self.crawler.max_items, 5)
+
+    def test_batch_id_format(self):
+        """batch_id do BaseCrawler sinh: YYYY-MM-DD_itviec_NNN."""
+        self.assertRegex(self.crawler.batch_id,
+                         r"\d{4}-\d{2}-\d{2}_itviec_\d{3}")
+
+    def test_has_checkpoint(self):
+        self.assertIsNotNone(self.crawler.checkpoint)
+
+    def test_has_writer(self):
+        self.assertIsNotNone(self.crawler.writer)
+
+
+class TestListingUrlBuilding(unittest.TestCase):
+    def test_page_1_has_no_query(self):
+        self.assertEqual(
+            ItviecCrawler._listing_url("/viec-lam-it", 1),
+            "https://itviec.com/viec-lam-it")
+
+    def test_page_n_has_page_param(self):
+        url = ItviecCrawler._listing_url("/viec-lam-it", 3)
+        self.assertEqual(url, "https://itviec.com/viec-lam-it?page=3")
+
+    def test_page_param_survives_normalize(self):
+        url = ItviecCrawler._listing_url("/viec-lam-it", 3)
+        self.assertEqual(
+            job_parser.normalize_url(url),
+            "https://itviec.com/viec-lam-it?page=3")
+
+
+class TestListingDedup(unittest.TestCase):
+    """Checkpoint khử trùng tin đã thấy trên listing."""
 
     def test_seen_filter_skips_old_jobs(self):
-        """Chạy lại không cào lại tin đã có trong checkpoint."""
         seen = {"senior-backend-java-fpt-0123"}
         jobs = job_parser.parse_listing(
             '<div class="job-card" '
             'data-search--job-selection-job-slug-value="senior-backend-java-fpt-0123"></div>'
             '<div class="job-card" '
-            'data-search--job-selection-job-slug-value="new-job-9999"></div>')
+            'data-search--job-selection-job-slug-value="new-job-9999"></div>'
+        )
         new = [j for j in jobs if j["source_job_id"] not in seen]
         self.assertEqual([j["source_job_id"] for j in new], ["new-job-9999"])
 
 
-class TestJsonlWriter(unittest.TestCase):
-    def test_append_unicode_and_one_record_per_line(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            crawler.open_jsonl  # kiểm tra hàm tồn tại
-            path = os.path.join(tmp, "batch_001.jsonl")
-            rec = {"_meta": {"source": "itviec"},
-                   "raw": {"title": "Kỹ sư iOS — TP. Hồ Chí Minh", "x": 1}}
-            with open(path, "a", encoding="utf-8") as fh:
-                crawler.write_record(fh, rec)
-                crawler.write_record(fh, rec)
-            with open(path, encoding="utf-8") as fh:
-                lines = fh.read().splitlines()
-            self.assertEqual(len(lines), 2)
-            for line in lines:
-                self.assertEqual(json.loads(line)["raw"]["title"],
-                                 "Kỹ sư iOS — TP. Hồ Chí Minh")  # không bị escape \u
-            self.assertNotIn("\\u", lines[0])
+class TestParseItem(unittest.TestCase):
+    """parse_item() với HTML mẫu (không gọi mạng)."""
 
-    def test_open_json_writes_json_array(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            old_data_dir = crawler.config.DATA_DIR
-            crawler.config.DATA_DIR = os.path.join(tmp, "itviec")
-            try:
-                writer = crawler.open_json("2026-10-08", "2026-10-08_itviec_001")
-                rec = {"_meta": {"source": "itviec"},
-                       "raw": {"title": "Kỹ sư iOS — TP. Hồ Chí Minh", "x": 1}}
-                crawler.write_record(writer, rec)
-                writer.close()
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.crawler = ItviecCrawler(
+            checkpoint_dir=os.path.join(self.tmp, "ckpt"),
+            output_dir=os.path.join(self.tmp, "out"),
+            max_items=5,
+        )
 
-                self.assertTrue(os.path.exists(writer.file_path))
-                with open(writer.file_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                self.assertIsInstance(data, list)
-                self.assertEqual(len(data), 1)
-                self.assertEqual(data[0]["raw"]["title"], "Kỹ sư iOS — TP. Hồ Chí Minh")
-            finally:
-                crawler.config.DATA_DIR = old_data_dir
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.tmp, ignore_errors=True)
 
+    def test_parse_item_returns_job_record(self):
+        import json as _json
+        jp = {
+            "@context": "http://schema.org", "@type": "JobPosting",
+            "title": "Python Developer",
+            "datePosted": "2026-10-01",
+            "validThrough": "2026-10-30",
+            "skills": "Python, Django",
+            "description": "<p>Xây dựng hệ thống backend bằng Python.</p>",
+            "employmentType": "FULL_TIME",
+            "hiringOrganization": {
+                "@type": "Organization", "name": "Tech Corp"},
+            "jobLocation": [],
+        }
+        html = (
+            "<html><body>"
+            f"<script type='application/ld+json'>{_json.dumps(jp)}</script>"
+            "<h1>Python Developer</h1>"
+            "</body></html>"
+        )
+        item = {
+            "url": "https://itviec.com/viec-lam-it/python-dev-001",
+            "source_job_id": "python-dev-001",
+            "html": html,
+        }
+        record = self.crawler.parse_item(item)
 
-class TestBuildRecord(unittest.TestCase):
-    def test_meta_follows_data_contract(self):
-        raw = {"title": "A", "description_html": "<p>x</p>"}
-        rec = crawler.build_record(raw, "https://itviec.com/viec-lam-it/abc-1",
-                                   "abc-1", "2026-10-05_itviec_001")
-        meta = rec["_meta"]
-        self.assertEqual(meta["source"], "itviec")
-        self.assertEqual(meta["source_job_id"], "abc-1")
-        self.assertEqual(meta["dedup_key"], "itviec:abc-1")
-        self.assertTrue(meta["crawled_at"].endswith("+07:00"))
-        self.assertEqual(rec["raw"], raw)  # raw không bị sửa
-        self.assertEqual(job_parser.validate_record(rec), [])
+        self.assertIsNotNone(record)
+        self.assertEqual(record.meta.source, "itviec")
+        self.assertEqual(record.meta.source_job_id, "python-dev-001")
+        self.assertEqual(record.meta.crawler_version, "0.5.0")
+        self.assertEqual(record.meta.language, "vi")
+        self.assertEqual(record.raw.title, "Python Developer")
+        self.assertEqual(record.raw.company, "Tech Corp")
+        self.assertIsInstance(record.raw.description_list, list)
+        self.assertTrue(len(record.raw.description_list) > 0)
 
-    def test_batch_id_format(self):
-        self.assertEqual(crawler.make_batch_id("2026-10-05", 7),
-                         "2026-10-05_itviec_007")
-
-
-class TestListingUrlBuilding(unittest.TestCase):
-    def test_page_1_has_no_query(self):
-        self.assertEqual(crawler.listing_page_url("/viec-lam-it", 1),
-                         "https://itviec.com/viec-lam-it")
-
-    def test_page_n_keeps_page_param_after_normalize(self):
-        url = crawler.listing_page_url("/viec-lam-it", 3)
-        self.assertEqual(job_parser.normalize_url(url),
-                         "https://itviec.com/viec-lam-it?page=3")
+    def test_parse_item_salary_is_nested(self):
+        """Salary trong record là object lồng, không phẳng ở root."""
+        import json as _json
+        jp = {
+            "@type": "JobPosting",
+            "title": "Dev",
+            "description": "<p>Làm việc với Python.</p>",
+            "hiringOrganization": {"name": "ACME"},
+        }
+        html = (
+            "<html><body>"
+            f"<script type='application/ld+json'>{_json.dumps(jp)}</script>"
+            "<h1>Dev</h1>"
+            '<div class="salary">Thương lượng</div>'
+            "</body></html>"
+        )
+        item = {
+            "url": "https://itviec.com/viec-lam-it/dev-002",
+            "source_job_id": "dev-002",
+            "html": html,
+        }
+        record = self.crawler.parse_item(item)
+        self.assertIsNotNone(record)
+        # salary là object lồng
+        self.assertIsNotNone(record.raw.salary)
+        self.assertTrue(record.raw.salary.is_negotiable)
+        # KHÔNG có salary_min phẳng ở root raw
+        raw_dict = record.raw.model_dump()
+        self.assertNotIn("salary_min", raw_dict)
 
 
 if __name__ == "__main__":
