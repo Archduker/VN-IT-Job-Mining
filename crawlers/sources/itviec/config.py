@@ -3,18 +3,13 @@
 
 Owner: Phát
 Chỉ chứa hằng số. Logic parse nằm ở parser.py, logic crawl nằm ở crawler.py.
-
-LƯU Ý KIẾN TRÚC (2026-10-05):
-    crawlers/common/ chưa tồn tại (Thuận - leader - phụ trách, xem TASKS.md T-01).
-    Các hằng số delay/retry/checkpoint dưới đây lấy đúng theo data contract
-    TASKS.md §4.2 để sau này đổi sang common module mà không cần sửa logic.
 """
 
 import os
 
 # ---------------------------------------------------------------- danh tính
 SOURCE = "itviec"
-CRAWLER_VERSION = "0.1.0"
+CRAWLER_VERSION = "0.5.0"
 
 # ---------------------------------------------------------------- URL nguồn
 BASE_URL = "https://itviec.com"
