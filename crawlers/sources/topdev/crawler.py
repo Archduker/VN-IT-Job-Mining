@@ -753,14 +753,15 @@ def _make_record(
     raw_text = " ".join(value for value in (title, company, *description_list) if value)
     language = detect_language(raw_text)
 
+    desc_final = description_list if description_list else [title]
     raw_values = dict(
         title=title,
         company=company,
-        description_list=description_list or None,
+        description_list=desc_final,
         salary=salary,
         tags=tags,
-        requirements_list=requirements_list,
-        benefits_list=benefits_list,
+        requirements_list=requirements_list or [],
+        benefits_list=benefits_list or [],
         location_text=_location_text(job),
         deadline_text=_date_value(job, "valid_through", "validThrough", "deadline"),
         posted_date_text=_posted_date_text(job),
@@ -791,12 +792,7 @@ def _make_record(
         crawler_version=CRAWLER_VERSION,
         language=language,
     )
-    if description_list:
-        record = JobRecord(_meta=meta, raw=JobRaw(**raw_values))
-    else:
-        # Shared schema requires a description; keep source records in TopDev output without inventing one.
-        raw = JobRaw.model_construct(**raw_values)
-        record = JobRecord.model_construct(_meta=meta, raw=raw)
+    record = JobRecord(_meta=meta, raw=JobRaw(**raw_values))
     return record.to_jsonl_dict()
 
 
@@ -1357,16 +1353,6 @@ class TopDevCrawler(BaseCrawler):
                 batch_id=self.batch_id,
                 crawled_at=datetime.now(LOCAL_TIMEZONE),
             )
-            if record["raw"].get("description_list") is None:
-                raw_data = dict(record["raw"])
-                if isinstance(raw_data.get("salary"), dict):
-                    raw_data["salary"] = JobSalary.model_validate(raw_data["salary"])
-                if isinstance(raw_data.get("tags"), dict):
-                    raw_data["tags"] = JobTags.model_validate(raw_data["tags"])
-                return JobRecord.model_construct(
-                    _meta=JobMetadata.model_validate(record["_meta"]),
-                    raw=JobRaw.model_construct(**raw_data),
-                )
             return JobRecord.model_validate(record)
         except (TopDevAPIError, ValueError, ValidationError) as exc:
             log.warning("Bỏ qua job không hợp lệ: %s", exc)
