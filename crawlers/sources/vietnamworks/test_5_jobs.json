@@ -1,0 +1,357 @@
+[
+  {
+    "_meta": {
+      "source": "vietnamworks",
+      "source_job_id": "2109463",
+      "url": "https://www.vietnamworks.com/senior-software-engineer-java-python-go-1789973147590526172-2109463-jv",
+      "dedup_key": "vietnamworks:2109463",
+      "crawled_at": "2026-10-11T06:21:40.363838Z",
+      "batch_id": "2026-10-11_vietnamworks_001",
+      "crawler_version": "0.5.0",
+      "language": "en"
+    },
+    "raw": {
+      "title": "Senior Software Engineer (Java/python/Go)",
+      "company": "CÔNG TY CỔ PHẦN VINSMART FUTURE",
+      "description_list": [
+        "Key Responsibilities",
+        "Design, develop, and operate backend services for event processing, workflow orchestration, and task lifecycle management.",
+        "Build internal and external APIs with well-defined data contracts, ensuring scalability, extensibility, and long-term maintainability.",
+        "Develop data ingestion pipelines, asynchronous processing services, message queues, retry mechanisms, and fault-tolerant error-handling workflows.",
+        "Implement core business logic for routing, prioritization, task assignment, workflow execution,..."
+      ],
+      "salary": {
+        "salary_text": "Thương lượng",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "USD",
+        "pay_period": null,
+        "is_negotiable": true,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": [
+          "Máy tính xách tay",
+          "Cơ hội du lịch",
+          "Phiếu giảm giá"
+        ],
+        "skills": [
+          "Java/.Net/Python"
+        ]
+      },
+      "requirements_list": [
+        "Bachelor's degree or higher in Computer Science, Software Engineering, Information Systems, or a related technical discipline.",
+        "At least 4 years of experience developing backend or platform software for production environments.",
+        "Strong proficiency in at least one programming language such as Go, Java, TypeScript, Python, or equivalent.",
+        "Hands-on experience designing and developing RESTful APIs, backend integration services, and..."
+      ],
+      "benefits_list": [
+        "Máy tính xách tay: Thinkpad",
+        "Cơ hội du lịch: Teambuilding",
+        "Phiếu giảm giá: Vinpearl"
+      ],
+      "location_text": "Ha Noi",
+      "deadline_text": "2026-10-21T23:59:59+07:00",
+      "posted_date_text": "2026-09-21T13:45:47+07:00",
+      "employment_type_text": "6",
+      "seniority_text": "Nhân viên",
+      "extra": {
+        "experience": "4 năm kinh nghiệm",
+        "job_level": "Nhân viên",
+        "company_size": "",
+        "number_of_recruits": 10,
+        "alias": "senior-software-engineer-java-python-go-1789973147590526172"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vietnamworks",
+      "source_job_id": "2110043",
+      "url": "https://www.vietnamworks.com/senior-fullstack-developer-data-platform-python-2110043-jv",
+      "dedup_key": "vietnamworks:2110043",
+      "crawled_at": "2026-10-11T06:21:40.364177Z",
+      "batch_id": "2026-10-11_vietnamworks_001",
+      "crawler_version": "0.5.0",
+      "language": "en"
+    },
+    "raw": {
+      "title": "Senior Fullstack Developer (Data Platform - Python)",
+      "company": "Vinfast Global",
+      "description_list": [
+        "VINFAST is a pioneering electric vehicle (EV) company committed to revolutionizing the automotive industry with sustainable and innovative mobility solutions. As a leading player in the EV market, VinFast is dedicated to delivering high-quality, cutting-edge electric vehicles that redefine the driving experience. Our team consists of passionate professionals driven by a..."
+      ],
+      "salary": {
+        "salary_text": "Thương lượng",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "USD",
+        "pay_period": null,
+        "is_negotiable": true,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": [
+          "Thưởng",
+          "Chăm sóc sức khoẻ",
+          "Khác"
+        ],
+        "skills": [
+          "Python Programming",
+          "PostgreSQL",
+          "Object Oriented Programming",
+          "Kubernetes",
+          "REST API"
+        ]
+      },
+      "requirements_list": [
+        "Must have:",
+        "5+ years of professional software engineering with production ownership - you have operated what you built, not only shipped it",
+        "Strong Python for backend and data services",
+        "Solid experience with PostgreSQL, REST API design and object storage",
+        "Comfortable with Docker, Kubernetes and CI/CD",
+        "Experience building systems that handle large data volumes",
+        "Farmiliar..."
+      ],
+      "benefits_list": [
+        "Thưởng: Competitive income (including 13th-month salary, performance bonuses, and other rewards as regulated by Vingroup).",
+        "Chăm sóc sức khoẻ: High-quality health insurance.",
+        "Khác: Working in a safe, modern, civilized, and professional environment with numerous opportunities for personal development, and even take the lead."
+      ],
+      "location_text": "Ha Noi",
+      "deadline_text": "2026-10-22T23:59:59+07:00",
+      "posted_date_text": "2026-09-22T12:17:37+07:00",
+      "employment_type_text": "6",
+      "seniority_text": "Nhân viên",
+      "extra": {
+        "experience": "4 năm kinh nghiệm",
+        "job_level": "Nhân viên",
+        "company_size": "",
+        "number_of_recruits": 5,
+        "alias": "senior-fullstack-developer-data-platform-python"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vietnamworks",
+      "source_job_id": "2106484",
+      "url": "https://www.vietnamworks.com/embedded-software-engineer-flash-boot-loader-2106484-jv",
+      "dedup_key": "vietnamworks:2106484",
+      "crawled_at": "2026-10-11T06:21:40.364466Z",
+      "batch_id": "2026-10-11_vietnamworks_001",
+      "crawler_version": "0.5.0",
+      "language": "en"
+    },
+    "raw": {
+      "title": "Embedded Software Engineer (Flash Boot Loader)",
+      "company": "Hella Vietnam",
+      "description_list": [
+        "Your Tasks",
+        "In the business division Electronics, you will be working with the software development team for electronics control units.",
+        "▪ Design, develop & test product-specific software of automotive electronics module & system over the entire product development cycle;",
+        "▪ Work on SW-architecture, write, test and debug code according to software requirement specification and the defined process;",
+        "▪..."
+      ],
+      "salary": {
+        "salary_text": "Thương lượng",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "USD",
+        "pay_period": null,
+        "is_negotiable": true,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": [
+          "Thưởng",
+          "Chăm sóc sức khoẻ",
+          "Đào tạo",
+          "Điện thoại",
+          "Hoạt động nhóm",
+          "Khác"
+        ],
+        "skills": [
+          "C Programming Language",
+          "AUTOSAR",
+          "Embedded System",
+          "Polyspace",
+          "CAN"
+        ]
+      },
+      "requirements_list": [
+        "▪ Minimum bachelor degree in computer science, engineering, or related field.",
+        "▪ 2-5 years experience in Embedded System.",
+        "▪ Embedded development tool especially Rhapsody, Polyspace, WindIdea, Davinci, DOORs, PTC…",
+        "▪ Be proficient with C programming language, firmware, bare-metal programming.",
+        "▪ Be familiar with embedded microcontroller 16-/32-bit microprocessor is a plus.",
+        "▪ Write and review Software specifications, Architecture and Design..."
+      ],
+      "benefits_list": [
+        "Thưởng: Guaranteed 13th month salary\nPerformance bonus\nService bonus of 1-month salary after 2 years working with HELLA",
+        "Chăm sóc sức khoẻ: healthcare insurances",
+        "Đào tạo: Clear development and qualification path in our consulting organization\nInternational trainings in HELLA facilities (if needed)",
+        "Điện thoại: mobile allowance",
+        "Hoạt động nhóm: The involvement of the entire project development of HELLA products\nHELLA activities for employees",
+        "Khác: International working environment\nLunch allowance"
+      ],
+      "location_text": "Ho Chi Minh",
+      "deadline_text": "2026-10-14T23:59:59+07:00",
+      "posted_date_text": "2026-09-14T11:39:44+07:00",
+      "employment_type_text": "6",
+      "seniority_text": "Nhân viên",
+      "extra": {
+        "experience": "2 năm kinh nghiệm",
+        "job_level": "Nhân viên",
+        "company_size": "100-499",
+        "number_of_recruits": 1,
+        "alias": "embedded-software-engineer-flash-boot-loader"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vietnamworks",
+      "source_job_id": "2112515",
+      "url": "https://www.vietnamworks.com/chuyen-vien-sap-sap-fico-1790581020480531143-2112515-jv",
+      "dedup_key": "vietnamworks:2112515",
+      "crawled_at": "2026-10-11T06:21:40.364709Z",
+      "batch_id": "2026-10-11_vietnamworks_001",
+      "crawler_version": "0.5.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Chuyên Viên SAP (SAP FICO)",
+      "company": "Công Ty Cổ Phần Vinsmart Future",
+      "description_list": [
+        "Mục tiêu công việc",
+        "Tham gia vận hành, hỗ trợ và phát triển hệ thống SAP FICO ở vai trò chuyên viên SAP FICO, phân tích yêu cầu nghiệp vụ, tư vấn giải pháp, dẫn dắt kỹ thuật và phối hợp triển khai các giải pháp SAP phục vụ khối Finance/Accounting và Business. Vị..."
+      ],
+      "salary": {
+        "salary_text": "Thương lượng",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "USD",
+        "pay_period": null,
+        "is_negotiable": true,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": [
+          "Thưởng",
+          "Nghỉ phép có lương",
+          "Đào tạo"
+        ],
+        "skills": [
+          "Sap"
+        ]
+      },
+      "requirements_list": [
+        "Học vấn & Kinh nghiệm",
+        "Tốt nghiệp Đại học chuyên ngành Công nghệ thông tin, Tài chính – Kế toán hoặc lĩnh vực liên quan.",
+        "Tối thiểu 5 năm kinh nghiệm triển khai/vận hành SAP FICO, ưu tiên ứng viên có kinh nghiệm với S/4HANA.",
+        "Đã tham gia ít nhất 2 dự án triển khai SAP FICO..."
+      ],
+      "benefits_list": [
+        "Thưởng: Mức thu nhập, các gói thưởng, phúc lợi hấp dẫn. Sử dụng các dịch vụ thuộc hệ sinh thái Tập đoàn: Ưu đãi học phí (Vinschool), khám chữa bệnh (Vinmec), nghỉ dưỡng (Vinpearl), mua xe (VinFast), thuê hoặc/và mua nhà (Vinhomes)",
+        "Nghỉ phép có lương: 12 ngày nghỉ phép năm, nghỉ các ngày lễ, Tết theo quy định của pháp luật. Được hưởng đầy đủ các chế độ bảo hiểm theo quy định của Luật Lao động (BHXH, BHYT, BHTN)",
+        "Đào tạo: Cơ hội tiếp cận dự án chiến lược công nghệ trọng điểm, quy mô lớn, quy tụ các nhà khoa học, chuyên gia, kỹ sư đến từ các Công ty công nghệ hàng đầu Việt Nam và thế giới."
+      ],
+      "location_text": "Ho Chi Minh, Ha Noi",
+      "deadline_text": "2026-10-28T23:59:59+07:00",
+      "posted_date_text": "2026-09-28T14:37:00+07:00",
+      "employment_type_text": "1",
+      "seniority_text": "Nhân viên",
+      "extra": {
+        "experience": "5 năm kinh nghiệm",
+        "job_level": "Nhân viên",
+        "company_size": "",
+        "number_of_recruits": 1,
+        "alias": "chuyen-vien-sap-sap-fico-1790581020480531143"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "vietnamworks",
+      "source_job_id": "2106434",
+      "url": "https://www.vietnamworks.com/ky-su-lap-trinh-ung-dung-fullstack-sofware-developer-1-2-nam-kinh-nghiem-2106434-jv",
+      "dedup_key": "vietnamworks:2106434",
+      "crawled_at": "2026-10-11T06:21:40.365008Z",
+      "batch_id": "2026-10-11_vietnamworks_001",
+      "crawler_version": "0.5.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Kỹ Sư Lập Trình Ứng Dụng Fullstack Sofware Developer (1-2 Năm Kinh Nghiệm)",
+      "company": "Asahi Intecc Hanoi Co., Ltd.",
+      "description_list": [
+        "Tham gia phân tích, thiết kế, phát triển và vận hành các phần mềm, ứng dụng Web phục vụ hoạt động sản xuất, quản lý và kinh doanh của Công ty",
+        "Phát triển Frontend, xây dựng giao diện thân thiện người dùng, đảm bảo tính ổn định",
+        "Phát triển Backend, RESTfull API và..."
+      ],
+      "salary": {
+        "salary_text": "Thương lượng",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "USD",
+        "pay_period": "month",
+        "is_negotiable": true,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": [
+          "Thưởng",
+          "Chăm sóc sức khoẻ",
+          "Nghỉ phép có lương",
+          "Đào tạo",
+          "Cơ hội du lịch",
+          "Hoạt động nhóm",
+          "Xe đưa đón",
+          "Khác"
+        ],
+        "skills": [
+          "Mobile Backend",
+          "Web Client",
+          "RESTful API",
+          "Công Nghệ Thông Tin",
+          "SQL Server"
+        ]
+      },
+      "requirements_list": [
+        "Nam/ Nữ, dưới 35 tuổi",
+        "Tốt nghiệp ĐH, CĐ các chuyên ngành Công nghệ thông tin, Khoa học máy tính hoặc các ngành liên quan",
+        "Thành thạo ngôn ngữ lập trình backend .NET",
+        "Có kiến thức tốt về lập trình Web và kiến trúc ứng dụng Client-Server",
+        "Ưu tiên có kinh nghiệm thiết..."
+      ],
+      "benefits_list": [
+        "Thưởng: Thu nhập hấp dẫn & chế độ tăng lương, thưởng hàng năm;",
+        "Chăm sóc sức khoẻ: Được mua bảo hiểm sức khỏe cho bản thân và gia đình;\nHưởng đầy đủ quyền lợi BHXH, BHYT, BHTN theo quy định;",
+        "Nghỉ phép có lương: Nghỉ 99 ngày trong năm (Tết dương lịch nghỉ 9 ngày)\nNghỉ tất cả các chủ nhật và 02 thứ 7/tháng. Giờ làm việc từ 7:30~16:00",
+        "Đào tạo: Có cơ hội đào tạo ở nước ngoài;",
+        "Cơ hội du lịch: Công ty tổ chức đi du lịch hè hàng năm;",
+        "Hoạt động nhóm: Được tham gia các hoạt động thể dục thể thao, văn hóa văn nghệ công đoàn công ty tổ chức",
+        "Xe đưa đón: Có xe công ty đưa đón đi làm hàng ngày;",
+        "Khác: Trợ cấp ăn trưa, đi lại, nhà ở, thâm niên, chức vụ …\nLàm việc trong môi trường sạch sẽ &amp; chuyên nghiệp;\nĐược khám sức khỏe, khám phát hiện bệnh nghề nghiệp định kỳ hàng năm;"
+      ],
+      "location_text": "Ha Noi",
+      "deadline_text": "2026-10-14T23:59:59+07:00",
+      "posted_date_text": "2026-09-14T10:59:05+07:00",
+      "employment_type_text": "1",
+      "seniority_text": "Nhân viên",
+      "extra": {
+        "experience": null,
+        "job_level": "Nhân viên",
+        "company_size": "",
+        "number_of_recruits": 1,
+        "alias": "ky-su-lap-trinh-ung-dung-fullstack-sofware-developer-1-2-nam-kinh-nghiem"
+      }
+    }
+  }
+]
