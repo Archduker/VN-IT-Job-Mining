@@ -181,11 +181,11 @@ def generate_excalidraw():
     add_text(75, sources_box_y + 10, "1. NGUỒN DỮ LIỆU TUYỂN DỤNG CNTT (8 JOB PORTALS)", font_size=14, color="#495057", align="left")
 
     sources_info = [
-        ("TopDev", "REST API v2", "api.topdev.vn", "#017cee", "125 jobs"),
-        ("VietnamWorks", "Search API", "ms.vietnamworks.com", "#1971c2", "2,232 jobs"),
+        ("TopDev", "REST API v2", "api.topdev.vn", "#017cee", "2,818 jobs"),
+        ("VietnamWorks", "Search API", "ms.vietnamworks.com", "#1971c2", "2,224 jobs"),
         ("CareerViet", "HTML SSR", "careerviet.vn", "#2f9e44", "655 jobs"),
         ("ITviec", "SSR + Sections", "itviec.com", "#e03131", "674 jobs"),
-        ("TopCV", "Playwright WAF", "topcv.vn", "#0ca678", "810 jobs"),
+        ("TopCV", "Playwright WAF", "topcv.vn", "#0ca678", "791 jobs"),
         ("ViecLam24h", "Next.js State", "vieclam24h.vn", "#f08c00", "445 jobs"),
         ("Glints", "API / Next.js", "glints.com/vn", "#ae3ec9", "244 jobs"),
         ("JobsGO", "Playwright + BS4", "jobsgo.vn", "#1098ad", "1,476 jobs"),
@@ -244,7 +244,7 @@ def generate_excalidraw():
 
     add_rect(1085, storage_y + 95, 210, 100, bg="#ffffff", stroke="#1971c2", stroke_w=1, roundness=2, roughness=0)
     add_text(1095, storage_y + 103, "📁 Local Raw Lake (JSON)", font_size=12, color="#1864ab", align="left")
-    add_text(1095, storage_y + 123, "data/<source>/dt=.../batch_*.json\n• 6,661 bản ghi chuẩn v1\n• Hive-style Partitioning\n• 195/195 Unit Tests Pass", font_size=10, color="#343a40", align="left")
+    add_text(1095, storage_y + 123, "data/<source>/dt=.../batch_*.json\n• 9,327 bản ghi Catalog\n• 9,038 tin sạch hợp nhất\n• 195/195 Unit Tests Pass", font_size=10, color="#343a40", align="left")
 
     add_rect(1315, storage_y + 95, 210, 100, bg="#ffffff", stroke="#f76707", stroke_w=1, roundness=2, roughness=0)
     add_text(1325, storage_y + 103, "☁️ AWS S3 Data Lake", font_size=12, color="#d9480f", align="left")
@@ -314,7 +314,7 @@ def generate_excalidraw():
     out_y = 1155
     add_rect(60, out_y, 1480, 85, bg="#ebfbee", stroke="#2b8a3e", stroke_w=2, roundness=3, roughness=0)
     add_text(80, out_y + 14, "🏆 KẾT QUẢ ĐẦU RA HOÀN CHỈNH (DATA ASSET & SYSTEM READINESS)", font_size=16, color="#2b8a3e", align="left")
-    add_text(80, out_y + 40, "• 6,661 Tin Việc Làm IT Sạch: 100% khớp Compact Schema v1 | 0% Trùng lặp | Lương số học min/max | Phân loại thẻ 3 chiều | Không còn rác HTML\n• 195/195 Unit Tests Passed (0.75s) | Báo cáo mẻ cào logs/crawl_reports/ | Sẵn sàng nạp PostgreSQL Data Warehouse cho Giai đoạn 2 (EDA & NLP)", font_size=12, color="#212529", align="left")
+    add_text(80, out_y + 40, "• 9,038 Tin Việc Làm IT Sạch (9,327 trong State Catalog): 100% khớp Compact Schema v1 | 0% Trùng lặp | Lương số học min/max | Phân loại thẻ 3 chiều | Không còn rác HTML\n• 195/195 Unit Tests Passed (0.47s) | PreClean Pipeline Hợp Nhất Đa Nguồn | Sẵn sàng cho Giai đoạn 2 (EDA & NLP Khám phá Dữ liệu)", font_size=12, color="#212529", align="left")
 
     return {
         "type": "excalidraw",

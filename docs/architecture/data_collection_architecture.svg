@@ -1,0 +1,417 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 10 1580 1260" width="1580" height="1260">
+<defs>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap");
+    text { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .mono { font-family: "JetBrains Mono", monospace; }
+  </style>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#495057" />
+  </marker>
+  <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#1971c2" />
+  </marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#2b8a3e" />
+  </marker>
+  <marker id="arrow-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#e8590c" />
+  </marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#7048e8" />
+  </marker>
+</defs>
+<rect x="20" y="10" width="1580" height="1260" fill="#f8f9fa" rx="16" />
+<rect x="40" y="30" width="1520" height="90" fill="#f8f9fa" stroke="#2b8a3e" stroke-width="2"  rx="8" />
+<text x="80" y="63.6" fill="#1e1e1e" font-size="24" font-weight="bold">
+<tspan x="80" dy="0">VN-IT-JOB-MINING — KIẾN TRÚC THU THẬP &amp; LUỒNG DỮ LIỆU ĐẦU-CUỐI</tspan>
+</text>
+<text x="80" y="90.6" fill="#495057" font-size="14" font-weight="normal">
+<tspan x="80" dy="0">Hệ Thống 8 Nguồn Tuyển Dụng | 9 Airflow DAGs | Data Contract Schema v1 | O(1) Deduplication | AWS S3 Raw Lake</tspan>
+</text>
+<rect x="40" y="140" width="1520" height="40" fill="#e7f5ff" stroke="#1971c2" stroke-width="2"  rx="8" />
+<text x="60" y="164.2" fill="#1864ab" font-size="18" font-weight="bold">
+<tspan x="60" dy="0">PHẦN A: KIẾN TRÚC HỆ THỐNG TỔNG THỂ (SYSTEM ARCHITECTURE)</tspan>
+</text>
+<rect x="60" y="195" width="160" height="40" fill="#e7f5ff" stroke="#017cee" stroke-width="2"  rx="8" />
+<rect x="66" y="201" width="34" height="28" fill="#ffffff" stroke="#017cee" stroke-width="1"  rx="8" />
+<text x="70" y="215.6" fill="#017cee" font-size="14" font-weight="normal">
+<tspan x="70" dy="0">🌪️</tspan>
+</text>
+<text x="106" y="212.7" fill="#1e1e1e" font-size="13" font-weight="normal">
+<tspan x="106" dy="0">Airflow 2.11+</tspan>
+</text>
+<text x="106" y="226.0" fill="#555555" font-size="10" font-weight="normal">
+<tspan x="106" dy="0">Orchestration</tspan>
+</text>
+<rect x="235" y="195" width="160" height="40" fill="#fff9db" stroke="#e67700" stroke-width="2"  rx="8" />
+<rect x="241" y="201" width="34" height="28" fill="#ffffff" stroke="#e67700" stroke-width="1"  rx="8" />
+<text x="245" y="215.6" fill="#e67700" font-size="14" font-weight="normal">
+<tspan x="245" dy="0">🐍</tspan>
+</text>
+<text x="281" y="212.7" fill="#1e1e1e" font-size="13" font-weight="normal">
+<tspan x="281" dy="0">Python 3.10+</tspan>
+</text>
+<text x="281" y="226.0" fill="#555555" font-size="10" font-weight="normal">
+<tspan x="281" dy="0">Core Framework</tspan>
+</text>
+<rect x="410" y="195" width="160" height="40" fill="#ebfbee" stroke="#2b8a3e" stroke-width="2"  rx="8" />
+<rect x="416" y="201" width="34" height="28" fill="#ffffff" stroke="#2b8a3e" stroke-width="1"  rx="8" />
+<text x="420" y="215.6" fill="#2b8a3e" font-size="14" font-weight="normal">
+<tspan x="420" dy="0">🎭</tspan>
+</text>
+<text x="456" y="212.7" fill="#1e1e1e" font-size="13" font-weight="normal">
+<tspan x="456" dy="0">Playwright</tspan>
+</text>
+<text x="456" y="226.0" fill="#555555" font-size="10" font-weight="normal">
+<tspan x="456" dy="0">Headless Chrome</tspan>
+</text>
+<rect x="585" y="195" width="160" height="40" fill="#f3f0ff" stroke="#7048e8" stroke-width="2"  rx="8" />
+<rect x="591" y="201" width="34" height="28" fill="#ffffff" stroke="#7048e8" stroke-width="1"  rx="8" />
+<text x="595" y="215.6" fill="#7048e8" font-size="14" font-weight="normal">
+<tspan x="595" dy="0">🍲</tspan>
+</text>
+<text x="631" y="212.7" fill="#1e1e1e" font-size="13" font-weight="normal">
+<tspan x="631" dy="0">BS4 &amp; Requests</tspan>
+</text>
+<text x="631" y="226.0" fill="#555555" font-size="10" font-weight="normal">
+<tspan x="631" dy="0">Fast SSR Parser</tspan>
+</text>
+<rect x="760" y="195" width="160" height="40" fill="#e6fcf5" stroke="#0ca678" stroke-width="2"  rx="8" />
+<rect x="766" y="201" width="34" height="28" fill="#ffffff" stroke="#0ca678" stroke-width="1"  rx="8" />
+<text x="770" y="215.6" fill="#0ca678" font-size="14" font-weight="normal">
+<tspan x="770" dy="0">🗄️</tspan>
+</text>
+<text x="806" y="212.7" fill="#1e1e1e" font-size="13" font-weight="normal">
+<tspan x="806" dy="0">SQLite Catalog</tspan>
+</text>
+<text x="806" y="226.0" fill="#555555" font-size="10" font-weight="normal">
+<tspan x="806" dy="0">O(1) State Dedup</tspan>
+</text>
+<rect x="935" y="195" width="160" height="40" fill="#fff0f6" stroke="#d6336c" stroke-width="2"  rx="8" />
+<rect x="941" y="201" width="34" height="28" fill="#ffffff" stroke="#d6336c" stroke-width="1"  rx="8" />
+<text x="945" y="215.6" fill="#d6336c" font-size="14" font-weight="normal">
+<tspan x="945" dy="0">🛡️</tspan>
+</text>
+<text x="981" y="212.7" fill="#1e1e1e" font-size="13" font-weight="normal">
+<tspan x="981" dy="0">Pydantic v2</tspan>
+</text>
+<text x="981" y="226.0" fill="#555555" font-size="10" font-weight="normal">
+<tspan x="981" dy="0">Data Contract v1</tspan>
+</text>
+<rect x="1110" y="195" width="160" height="40" fill="#fff4e6" stroke="#f76707" stroke-width="2"  rx="8" />
+<rect x="1116" y="201" width="34" height="28" fill="#ffffff" stroke="#f76707" stroke-width="1"  rx="8" />
+<text x="1120" y="215.6" fill="#f76707" font-size="14" font-weight="normal">
+<tspan x="1120" dy="0">☁️</tspan>
+</text>
+<text x="1156" y="212.7" fill="#1e1e1e" font-size="13" font-weight="normal">
+<tspan x="1156" dy="0">AWS S3</tspan>
+</text>
+<text x="1156" y="226.0" fill="#555555" font-size="10" font-weight="normal">
+<tspan x="1156" dy="0">Raw Data Lake</tspan>
+</text>
+<rect x="1285" y="195" width="160" height="40" fill="#f1f3f5" stroke="#343a40" stroke-width="2"  rx="8" />
+<rect x="1291" y="201" width="34" height="28" fill="#ffffff" stroke="#343a40" stroke-width="1"  rx="8" />
+<text x="1295" y="215.6" fill="#343a40" font-size="14" font-weight="normal">
+<tspan x="1295" dy="0">📊</tspan>
+</text>
+<text x="1331" y="212.7" fill="#1e1e1e" font-size="13" font-weight="normal">
+<tspan x="1331" dy="0">Live Monitor</tspan>
+</text>
+<text x="1331" y="226.0" fill="#555555" font-size="10" font-weight="normal">
+<tspan x="1331" dy="0">Terminal / CLI</tspan>
+</text>
+<rect x="60" y="255" width="1480" height="110" fill="#fafafa" stroke="#adb5bd" stroke-width="2" stroke-dasharray="6,6" rx="8" />
+<text x="75" y="277.6" fill="#495057" font-size="14" font-weight="normal">
+<tspan x="75" dy="0">1. NGUỒN DỮ LIỆU TUYỂN DỤNG CNTT (8 JOB PORTALS)</tspan>
+</text>
+<rect x="80" y="290" width="165" height="60" fill="#ffffff" stroke="#017cee" stroke-width="2"  rx="8" />
+<text x="90" y="307.7" fill="#017cee" font-size="13" font-weight="normal">
+<tspan x="90" dy="0">🌐 TopDev</tspan>
+</text>
+<text x="90" y="323.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="90" dy="0">REST API v2 | 2,818 jobs</tspan>
+</text>
+<text x="90" y="338.1" fill="#868e96" font-size="9" font-weight="normal">
+<tspan x="90" dy="0">api.topdev.vn</tspan>
+</text>
+<rect x="260" y="290" width="165" height="60" fill="#ffffff" stroke="#1971c2" stroke-width="2"  rx="8" />
+<text x="270" y="307.7" fill="#1971c2" font-size="13" font-weight="normal">
+<tspan x="270" dy="0">🌐 VietnamWorks</tspan>
+</text>
+<text x="270" y="323.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="270" dy="0">Search API | 2,224 jobs</tspan>
+</text>
+<text x="270" y="338.1" fill="#868e96" font-size="9" font-weight="normal">
+<tspan x="270" dy="0">ms.vietnamworks.com</tspan>
+</text>
+<rect x="440" y="290" width="165" height="60" fill="#ffffff" stroke="#2f9e44" stroke-width="2"  rx="8" />
+<text x="450" y="307.7" fill="#2f9e44" font-size="13" font-weight="normal">
+<tspan x="450" dy="0">🌐 CareerViet</tspan>
+</text>
+<text x="450" y="323.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="450" dy="0">HTML SSR | 655 jobs</tspan>
+</text>
+<text x="450" y="338.1" fill="#868e96" font-size="9" font-weight="normal">
+<tspan x="450" dy="0">careerviet.vn</tspan>
+</text>
+<rect x="620" y="290" width="165" height="60" fill="#ffffff" stroke="#e03131" stroke-width="2"  rx="8" />
+<text x="630" y="307.7" fill="#e03131" font-size="13" font-weight="normal">
+<tspan x="630" dy="0">🌐 ITviec</tspan>
+</text>
+<text x="630" y="323.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="630" dy="0">SSR + Sections | 674 jobs</tspan>
+</text>
+<text x="630" y="338.1" fill="#868e96" font-size="9" font-weight="normal">
+<tspan x="630" dy="0">itviec.com</tspan>
+</text>
+<rect x="800" y="290" width="165" height="60" fill="#ffffff" stroke="#0ca678" stroke-width="2"  rx="8" />
+<text x="810" y="307.7" fill="#0ca678" font-size="13" font-weight="normal">
+<tspan x="810" dy="0">🌐 TopCV</tspan>
+</text>
+<text x="810" y="323.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="810" dy="0">Playwright WAF | 791 jobs</tspan>
+</text>
+<text x="810" y="338.1" fill="#868e96" font-size="9" font-weight="normal">
+<tspan x="810" dy="0">topcv.vn</tspan>
+</text>
+<rect x="980" y="290" width="165" height="60" fill="#ffffff" stroke="#f08c00" stroke-width="2"  rx="8" />
+<text x="990" y="307.7" fill="#f08c00" font-size="13" font-weight="normal">
+<tspan x="990" dy="0">🌐 ViecLam24h</tspan>
+</text>
+<text x="990" y="323.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="990" dy="0">Next.js State | 445 jobs</tspan>
+</text>
+<text x="990" y="338.1" fill="#868e96" font-size="9" font-weight="normal">
+<tspan x="990" dy="0">vieclam24h.vn</tspan>
+</text>
+<rect x="1160" y="290" width="165" height="60" fill="#ffffff" stroke="#ae3ec9" stroke-width="2"  rx="8" />
+<text x="1170" y="307.7" fill="#ae3ec9" font-size="13" font-weight="normal">
+<tspan x="1170" dy="0">🌐 Glints</tspan>
+</text>
+<text x="1170" y="323.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="1170" dy="0">API / Next.js | 244 jobs</tspan>
+</text>
+<text x="1170" y="338.1" fill="#868e96" font-size="9" font-weight="normal">
+<tspan x="1170" dy="0">glints.com/vn</tspan>
+</text>
+<rect x="1340" y="290" width="165" height="60" fill="#ffffff" stroke="#1098ad" stroke-width="2"  rx="8" />
+<text x="1350" y="307.7" fill="#1098ad" font-size="13" font-weight="normal">
+<tspan x="1350" dy="0">🌐 JobsGO</tspan>
+</text>
+<text x="1350" y="323.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="1350" dy="0">Playwright + BS4 | 1,476 jobs</tspan>
+</text>
+<text x="1350" y="338.1" fill="#868e96" font-size="9" font-weight="normal">
+<tspan x="1350" dy="0">jobsgo.vn</tspan>
+</text>
+<rect x="60" y="390" width="420" height="215" fill="#e7f5ff" stroke="#017cee" stroke-width="2"  rx="8" />
+<text x="75" y="415.5" fill="#017cee" font-size="15" font-weight="normal">
+<tspan x="75" dy="0">2. TẦNG ĐIỀU PHỐI (APACHE AIRFLOW 2.11+)</tspan>
+</text>
+<text x="75" y="436.7" fill="#1e1e1e" font-size="13" font-weight="normal">
+<tspan x="75" dy="0">🌪️ Airflow Scheduler &amp; Webserver (Port 8080)</tspan>
+</text>
+<rect x="75" y="450" width="390" height="80" fill="#ffffff" stroke="#74c0fc" stroke-width="1"  rx="8" />
+<text x="85" y="467.9" fill="#343a40" font-size="11" font-weight="normal">
+<tspan x="85" dy="0">• 7 Daily Rotating DAGs (20:00 Hàng ngày):</tspan>
+<tspan x="85" dy="14.3">  crawler_topdev ... crawler_glints</tspan>
+<tspan x="85" dy="14.3">• 1 Master Weekly DAG: crawler_weekly_all (CN 22:00)</tspan>
+<tspan x="85" dy="14.3">• 1 Periodic 4-day DAG: periodic_it_job_mining_4days</tspan>
+</text>
+<rect x="75" y="540" width="390" height="45" fill="#ffffff" stroke="#74c0fc" stroke-width="1"  rx="8" />
+<text x="85" y="555.0" fill="#1864ab" font-size="10" font-weight="normal">
+<tspan x="85" dy="0">Operators: JobCrawlerOp, DataQualityOp, CrawlSummaryOp</tspan>
+<tspan x="85" dy="13.0">Callbacks: _on_crawl_success, _on_crawl_failure</tspan>
+</text>
+<rect x="510" y="390" width="530" height="215" fill="#f8f9fa" stroke="#3776ab" stroke-width="2"  rx="8" />
+<text x="525" y="415.5" fill="#3776ab" font-size="15" font-weight="normal">
+<tspan x="525" dy="0">3. ĐỘNG CƠ THU THẬP &amp; PHÒNG VỆ (BASECRAWLER ENGINE)</tspan>
+</text>
+<rect x="525" y="430" width="240" height="75" fill="#ffffff" stroke="#2b8a3e" stroke-width="1"  rx="8" />
+<text x="535" y="448.8" fill="#2b8a3e" font-size="12" font-weight="normal">
+<tspan x="535" dy="0">🛡️ HttpClient &amp; Anti-Scraping</tspan>
+</text>
+<text x="535" y="467.0" fill="#495057" font-size="10" font-weight="normal">
+<tspan x="535" dy="0">- User-Agent Rotation (Real browsers)</tspan>
+<tspan x="535" dy="13.0">- Polite Delay: 1.5s - 3.5s</tspan>
+<tspan x="535" dy="13.0">- Exponential Backoff &amp; Retries (3x)</tspan>
+</text>
+<rect x="785" y="430" width="240" height="75" fill="#ffffff" stroke="#0ca678" stroke-width="1"  rx="8" />
+<text x="795" y="448.8" fill="#0ca678" font-size="12" font-weight="normal">
+<tspan x="795" dy="0">🗄️ SQLite State Catalog &amp; Checkpoint</tspan>
+</text>
+<text x="795" y="467.0" fill="#495057" font-size="10" font-weight="normal">
+<tspan x="795" dy="0">- job_catalog.db (O(1) deduplication)</tspan>
+<tspan x="795" dy="13.0">- &lt;source&gt;_checkpoint.json (atomic)</tspan>
+<tspan x="795" dy="13.0">- Tránh cào lại tin đã SUCCESS</tspan>
+</text>
+<rect x="525" y="515" width="240" height="70" fill="#ffffff" stroke="#d6336c" stroke-width="1"  rx="8" />
+<text x="535" y="533.8" fill="#d6336c" font-size="12" font-weight="normal">
+<tspan x="535" dy="0">🛡️ Pydantic Schema v1 &amp; Clean Text</tspan>
+</text>
+<text x="535" y="552.0" fill="#495057" font-size="10" font-weight="normal">
+<tspan x="535" dy="0">- JobRecord: _meta, raw, salary, tags</tspan>
+<tspan x="535" dy="13.0">- Strip HTML &amp; bullets cleanup</tspan>
+<tspan x="535" dy="13.0">- Language detection: &#x27;vi&#x27; | &#x27;en&#x27;</tspan>
+</text>
+<rect x="785" y="515" width="240" height="70" fill="#ffffff" stroke="#e67700" stroke-width="1"  rx="8" />
+<text x="795" y="533.8" fill="#e67700" font-size="12" font-weight="normal">
+<tspan x="795" dy="0">💾 JsonWriter (Atomic Array)</tspan>
+</text>
+<text x="795" y="552.0" fill="#495057" font-size="10" font-weight="normal">
+<tspan x="795" dy="0">- Ghi file tạm .tmp rồi đổi tên</tspan>
+<tspan x="795" dy="13.0">- Đảm bảo JSON mảng [ ... ] toàn vẹn</tspan>
+<tspan x="795" dy="13.0">- Phân vùng Hive: dt=YYYY-MM-DD</tspan>
+</text>
+<rect x="1070" y="390" width="470" height="215" fill="#fff4e6" stroke="#f76707" stroke-width="2"  rx="8" />
+<text x="1085" y="415.5" fill="#d9480f" font-size="15" font-weight="normal">
+<tspan x="1085" dy="0">4. CHẤT LƯỢNG &amp; LƯU TRỮ (QUALITY GATE &amp; LAKE)</tspan>
+</text>
+<rect x="1085" y="430" width="440" height="45" fill="#ffffff" stroke="#2f9e44" stroke-width="1"  rx="8" />
+<text x="1095" y="446.8" fill="#2b8a3e" font-size="12" font-weight="normal">
+<tspan x="1095" dy="0">✅ DataQualityOperator (Kiểm định chất lượng tự động)</tspan>
+</text>
+<text x="1095" y="463.0" fill="#495057" font-size="10" font-weight="normal">
+<tspan x="1095" dy="0">Schema validity &gt;= 95% (Thực tế: 100%) | Dedup = 0% | Required fields</tspan>
+</text>
+<rect x="1085" y="485" width="210" height="100" fill="#ffffff" stroke="#1971c2" stroke-width="1"  rx="8" />
+<text x="1095" y="503.8" fill="#1864ab" font-size="12" font-weight="normal">
+<tspan x="1095" dy="0">📁 Local Raw Lake (JSON)</tspan>
+</text>
+<text x="1095" y="522.0" fill="#343a40" font-size="10" font-weight="normal">
+<tspan x="1095" dy="0">data/&lt;source&gt;/dt=.../batch_*.json</tspan>
+<tspan x="1095" dy="13.0">• 9,327 bản ghi Catalog</tspan>
+<tspan x="1095" dy="13.0">• 9,038 tin sạch hợp nhất</tspan>
+<tspan x="1095" dy="13.0">• 195/195 Unit Tests Pass</tspan>
+</text>
+<rect x="1315" y="485" width="210" height="100" fill="#ffffff" stroke="#f76707" stroke-width="1"  rx="8" />
+<text x="1325" y="503.8" fill="#d9480f" font-size="12" font-weight="normal">
+<tspan x="1325" dy="0">☁️ AWS S3 Data Lake</tspan>
+</text>
+<text x="1325" y="522.0" fill="#343a40" font-size="10" font-weight="normal">
+<tspan x="1325" dy="0">s3://vn-it-jobs-raw/...</tspan>
+<tspan x="1325" dy="13.0">• Độ bền 99.999999999%</tspan>
+<tspan x="1325" dy="13.0">• Đồng bộ qua boto3</tspan>
+<tspan x="1325" dy="13.0">• Sẵn sàng nạp PostgreSQL</tspan>
+</text>
+<rect x="60" y="625" width="1480" height="85" fill="#212529" stroke="#495057" stroke-width="2"  rx="8" />
+<text x="80" y="649.6" fill="#51cf66" font-size="14" font-weight="normal">
+<tspan x="80" dy="0">💻 TẦNG VẬN HÀNH &amp; GIÁM SÁT THỜI GIAN THỰC (LIVE MONITORING &amp; OPERATIONS)</tspan>
+</text>
+<text x="80" y="670.9" fill="#f8f9fa" font-size="11" font-weight="normal">
+<tspan x="80" dy="0">• Lệnh vận hành 1-click:  make start-airflow  (Chạy ngầm Scheduler + Webserver có PID) |  make monitor  (Dashboard live terminal) |  make stop-airflow</tspan>
+<tspan x="80" dy="14.3">• Nguồn dữ liệu giám sát: SQLite State Catalog (job_catalog.db) + Checkpoints + JSON Batches + Airflow Metadata DB (airflow.db)</tspan>
+<tspan x="80" dy="14.3">• Báo cáo kiểm toán: Tự động xuất JSON summary mẻ cào vào logs/crawl_reports/crawl_report_YYYY-MM-DD.json</tspan>
+</text>
+<line x1="800" y1="365" x2="800" y2="390" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)" />
+<text x="800.0" y="371.05" fill="#1e1e1e" font-size="12" font-weight="normal">
+<tspan x="800.0" dy="0">Trích xuất dữ liệu</tspan>
+</text>
+<line x1="480" y1="497" x2="510" y2="497" stroke="#017cee" stroke-width="2" marker-end="url(#arrow)" />
+<text x="493.5" y="491.8" fill="#017cee" font-size="12" font-weight="normal">
+<tspan x="493.5" dy="0">Kích hoạt task</tspan>
+</text>
+<line x1="1040" y1="497" x2="1070" y2="497" stroke="#d6336c" stroke-width="2" marker-end="url(#arrow)" />
+<text x="1053.5" y="491.8" fill="#d6336c" font-size="12" font-weight="normal">
+<tspan x="1053.5" dy="0">Kiểm định &amp; Ghi lake</tspan>
+</text>
+<rect x="40" y="740" width="1520" height="40" fill="#f3f0ff" stroke="#7048e8" stroke-width="2"  rx="8" />
+<text x="60" y="764.2" fill="#5f3dc4" font-size="18" font-weight="bold">
+<tspan x="60" dy="0">PHẦN B: SƠ ĐỒ LUỒNG DỮ LIỆU ĐẦU-CUỐI (END-TO-END DATA FLOW PIPELINE)</tspan>
+</text>
+<rect x="80" y="810" width="340" height="135" fill="#e7f5ff" stroke="#017cee" stroke-width="2"  rx="8" />
+<text x="95" y="833.7" fill="#017cee" font-size="13" font-weight="normal">
+<tspan x="95" dy="0">BƯỚC 1: LẬP LỊCH &amp; KÍCH HOẠT</tspan>
+</text>
+<text x="95" y="855.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="95" dy="0">Airflow Scheduler kích hoạt DAG</tspan>
+<tspan x="95" dy="14.3">theo cron (Daily 20:00 / Weekly CN 22:00</tspan>
+<tspan x="95" dy="14.3">hoặc lệnh trigger CLI)</tspan>
+</text>
+<line x1="420" y1="877" x2="450" y2="877" stroke="#017cee" stroke-width="2" marker-end="url(#arrow)" />
+<rect x="450" y="810" width="340" height="135" fill="#e7f5ff" stroke="#1971c2" stroke-width="2"  rx="8" />
+<text x="465" y="833.7" fill="#1971c2" font-size="13" font-weight="normal">
+<tspan x="465" dy="0">BƯỚC 2: QUÉT LISTING &amp; THU THẬP ID</tspan>
+</text>
+<text x="465" y="855.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="465" dy="0">HarvestListingOperator quét danh sách</tspan>
+<tspan x="465" dy="14.3">ngoài trang để bóc tách cặp</tspan>
+<tspan x="465" dy="14.3">(source_job_id, job_url)</tspan>
+</text>
+<line x1="790" y1="877" x2="820" y2="877" stroke="#1971c2" stroke-width="2" marker-end="url(#arrow-blue)" />
+<rect x="820" y="810" width="340" height="135" fill="#e6fcf5" stroke="#0ca678" stroke-width="2"  rx="8" />
+<text x="835" y="833.7" fill="#0ca678" font-size="13" font-weight="normal">
+<tspan x="835" dy="0">BƯỚC 3: KHỬ TRÙNG LẬP O(1) TẬP TRUNG</tspan>
+</text>
+<text x="835" y="855.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="835" dy="0">Đối chiếu SQLite Catalog (job_catalog.db):</tspan>
+<tspan x="835" dy="14.3">• Nếu đã có SUCCESS -&gt; SKIP BỎ QUA</tspan>
+<tspan x="835" dy="14.3">• Nếu MỚI hoặc FAILED -&gt; Đưa vào hàng đợi</tspan>
+</text>
+<line x1="1160" y1="877" x2="1190" y2="877" stroke="#0ca678" stroke-width="2" marker-end="url(#arrow)" />
+<rect x="1190" y="810" width="340" height="135" fill="#ebfbee" stroke="#2b8a3e" stroke-width="2"  rx="8" />
+<text x="1205" y="833.7" fill="#2b8a3e" font-size="13" font-weight="normal">
+<tspan x="1205" dy="0">BƯỚC 4: DETAIL WORKER CÀO CHI TIẾT</tspan>
+</text>
+<text x="1205" y="855.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="1205" dy="0">DetailCrawlerQueueOperator rút tin từ queue:</tspan>
+<tspan x="1205" dy="14.3">• Rate limiter: Polite Delay 1.5s - 3.5s</tspan>
+<tspan x="1205" dy="14.3">• Playwright (TopCV, JobsGO) / Requests (Khác)</tspan>
+</text>
+<line x1="1360" y1="945" x2="1360" y2="985" stroke="#2b8a3e" stroke-width="2" marker-end="url(#arrow-green)" />
+<text x="1360.0" y="957.8" fill="#2b8a3e" font-size="12" font-weight="normal">
+<tspan x="1360.0" dy="0">Đẩy payload</tspan>
+</text>
+<rect x="1190" y="990" width="340" height="135" fill="#fff9db" stroke="#e67700" stroke-width="2"  rx="8" />
+<text x="1205" y="1013.7" fill="#e67700" font-size="13" font-weight="normal">
+<tspan x="1205" dy="0">BƯỚC 5: LÀM SẠCH VĂN BẢN &amp; LƯƠNG</tspan>
+</text>
+<text x="1205" y="1035.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="1205" dy="0">Text Processing &amp; Regex Utilities:</tspan>
+<tspan x="1205" dy="14.3">• Strip HTML tags, tách bullet lines sạch</tspan>
+<tspan x="1205" dy="14.3">• Bóc tách lương số học: min, max, currency</tspan>
+<tspan x="1205" dy="14.3">• Phân loại 3 nhóm thẻ: req, skills, benefits</tspan>
+</text>
+<line x1="1190" y1="1057" x2="1160" y2="1057" stroke="#e67700" stroke-width="2" marker-end="url(#arrow)" />
+<rect x="820" y="990" width="340" height="135" fill="#fff0f6" stroke="#d6336c" stroke-width="2"  rx="8" />
+<text x="835" y="1013.7" fill="#d6336c" font-size="13" font-weight="normal">
+<tspan x="835" dy="0">BƯỚC 6: ÉP CHUẨN PYDANTIC SCHEMA V1</tspan>
+</text>
+<text x="835" y="1035.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="835" dy="0">Pydantic JobRecord Validation:</tspan>
+<tspan x="835" dy="14.3">• _meta: source, dedup_key, language, batch</tspan>
+<tspan x="835" dy="14.3">• raw: salary, tags, description_list, ...</tspan>
+<tspan x="835" dy="14.3">• Smart Adapter tương thích ngược</tspan>
+</text>
+<line x1="820" y1="1057" x2="790" y2="1057" stroke="#d6336c" stroke-width="2" marker-end="url(#arrow)" />
+<rect x="450" y="990" width="340" height="135" fill="#f8f0fc" stroke="#ae3ec9" stroke-width="2"  rx="8" />
+<text x="465" y="1013.7" fill="#ae3ec9" font-size="13" font-weight="normal">
+<tspan x="465" dy="0">BƯỚC 7: GHI FILE NGUYÊN TỬ (ATOMIC WRITE)</tspan>
+</text>
+<text x="465" y="1035.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="465" dy="0">JsonWriter ghi mảng JSON uncompressed:</tspan>
+<tspan x="465" dy="14.3">• Ghi ra file tạm batch_XXX.tmp</tspan>
+<tspan x="465" dy="14.3">• Flush &amp; Atomic rename sang batch_XXX.json</tspan>
+<tspan x="465" dy="14.3">• Lưu tại data/&lt;source&gt;/dt=YYYY-MM-DD/</tspan>
+</text>
+<line x1="450" y1="1057" x2="420" y2="1057" stroke="#ae3ec9" stroke-width="2" marker-end="url(#arrow)" />
+<rect x="80" y="990" width="340" height="135" fill="#fff4e6" stroke="#d9480f" stroke-width="2"  rx="8" />
+<text x="95" y="1013.7" fill="#d9480f" font-size="13" font-weight="normal">
+<tspan x="95" dy="0">BƯỚC 8: KIỂM ĐỊNH CHẤT LƯỢNG &amp; ĐỒNG BỘ</tspan>
+</text>
+<text x="95" y="1035.9" fill="#212529" font-size="11" font-weight="normal">
+<tspan x="95" dy="0">DataQualityOperator &amp; S3 Uploader:</tspan>
+<tspan x="95" dy="14.3">• Verify schema validity &gt;= 95%, dedup = 0%</tspan>
+<tspan x="95" dy="14.3">• Nếu PASS: Xuất CrawlSummary &amp; Sync AWS S3</tspan>
+<tspan x="95" dy="14.3">• Nếu FAIL: Dừng pipeline &amp; Cảnh báo</tspan>
+</text>
+<rect x="60" y="1155" width="1480" height="85" fill="#ebfbee" stroke="#2b8a3e" stroke-width="2"  rx="8" />
+<text x="80" y="1183.4" fill="#2b8a3e" font-size="16" font-weight="bold">
+<tspan x="80" dy="0">🏆 KẾT QUẢ ĐẦU RA HOÀN CHỈNH (DATA ASSET &amp; SYSTEM READINESS)</tspan>
+</text>
+<text x="80" y="1205.8" fill="#212529" font-size="12" font-weight="normal">
+<tspan x="80" dy="0">• 9,038 Tin Việc Làm IT Sạch (9,327 trong State Catalog): 100% khớp Compact Schema v1 | 0% Trùng lặp | Lương số học min/max | Phân loại thẻ 3 chiều | Không còn rác HTML</tspan>
+<tspan x="80" dy="15.600000000000001">• 195/195 Unit Tests Passed (0.47s) | PreClean Pipeline Hợp Nhất Đa Nguồn | Sẵn sàng cho Giai đoạn 2 (EDA &amp; NLP Khám phá Dữ liệu)</tspan>
+</text>
+</svg>
