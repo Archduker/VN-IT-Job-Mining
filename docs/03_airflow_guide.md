@@ -14,85 +14,90 @@ Sau khi khởi động Webserver, truy cập vào giao diện web tại:
 
 ---
 
-## 2. Cách Chạy Airflow Trên Laptop
+### 2. Cách Khởi Động & Vận Hành Airflow Chuẩn Production
 
-Để Airflow hoạt động hoàn chỉnh (vừa lập lịch tự động, vừa hiển thị UI), cần mở **2 cửa sổ Terminal**:
+Không cần mở nhiều terminal thủ công, hệ thống đã được tự động hóa qua Makefile và background daemon scripts:
 
-### Terminal 1: Khởi động Scheduler (Bộ điều phối & lập lịch)
 ```bash
-cd /home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining
-source .venv/bin/activate
-export AIRFLOW_HOME=$(pwd)/airflow
-export PYTHONPATH=.:$(pwd)/airflow/plugins
+# 1. Khởi động Airflow Production (Scheduler + Webserver chạy nền, lưu PID)
+make start-airflow
 
-# Khởi động Scheduler
-airflow scheduler
+# 2. Bật màn hình Giám Sát Thời Gian Thực (Live Terminal Monitor)
+make monitor
+
+# 3. Dừng an toàn toàn bộ tiến trình Airflow khi hoàn tất
+make stop-airflow
 ```
 
-### Terminal 2: Khởi động Webserver (Giao diện điều khiển)
-```bash
-cd /home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining
-source .venv/bin/activate
-export AIRFLOW_HOME=$(pwd)/airflow
-export PYTHONPATH=.:$(pwd)/airflow/plugins
-
-# Khởi động Webserver ở port 8080
-airflow webserver --port 8080
-```
+> [!NOTE]
+> Script [`scripts/start_airflow.sh`](scripts/start_airflow.sh) tự động kích hoạt virtualenv `.venv`, thiết lập `AIRFLOW_HOME=airflow`, khởi chạy Scheduler và Webserver dưới dạng daemon ngầm (`nohup`), ghi PID vào `airflow/scheduler.pid` và `airflow/webserver.pid`, đồng thời kiểm tra sức khỏe HTTP endpoint `http://localhost:8080` trước khi thông báo sẵn sàng.
 
 ---
 
 ## 3. Kiến Thức Trọng Tâm Cần Nắm Từ [Airflow Official Docs](https://airflow.apache.org/docs/)
 
-Theo tài liệu chuẩn của Apache Airflow, có **5 khái niệm cốt lõi (Core Concepts)** cần hiểu để tự tin trả lời câu hỏi của thầy:
+Theo tài liệu chuẩn của Apache Airflow, có **6 khái niệm cốt lõi (Core Concepts)** trong hệ thống cần nắm vững:
 
 ```
-┌────────────────────────────────────────────────────────┐
-│ DAG (Directed Acyclic Graph)                           │
-│ (Đồ thị có hướng không chu trình - đại diện quy trình) │
-│                                                        │
-│  ┌───────────────────────┐    >>    ┌────────────────┐ │
-│  │ Task 1: Crawl Source  │          │ Task 2: Quality│ │
-│  │ (JobCrawlerOperator)  │          │ (DataQualityOp)│ │
-│  └───────────────────────┘          └────────────────┘ │
-└────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 1. DAGs Architecture (9 DAGs Hoạt Động Song Song)                           │
+│                                                                             │
+│  [A] 7 Daily Rotating DAGs: crawler_topdev ... crawler_glints (20:00 Daily) │
+│      crawl_task >> quality_task                                             │
+│                                                                             │
+│  [B] 1 Master Weekly DAG: crawler_weekly_all (CN 22:00)                     │
+│      [crawl_topdev, crawl_topcv, ...] >> CrawlSummaryOperator               │
+│                                                                             │
+│  [C] 1 Periodic 4-day DAG: periodic_it_job_mining_4days                     │
+│      HarvestListingOp >> Dedup O(1) >> DetailQueueOp >> DataQualityOp       │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 1. DAG (Directed Acyclic Graph)
-- **Định nghĩa:** Là tập hợp các công việc (Tasks) được tổ chức theo thứ tự logic có quan hệ phụ thuộc lẫn nhau, **không tạo thành vòng lặp kín** (`A >> B`, không có chuyện `B quay lại A`).
-- **Trong dự án:** Mỗi nguồn tuyển dụng là 1 DAG độc lập nằm trong [airflow/dags/crawler_dags.py](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/dags/crawler_dags.py) (`crawler_topdev`, `crawler_vietnamworks`, ...).
+- **Định nghĩa:** Là tập hợp các công việc (Tasks) được tổ chức theo thứ tự logic có quan hệ phụ thuộc lẫn nhau, **không tạo thành vòng lặp kín** (`A >> B`, không quay ngược).
+- **Trong dự án:** Gồm **9 DAGs** được định nghĩa tại:
+  - [`airflow/dags/crawler_dags.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/dags/crawler_dags.py): 7 DAGs thường nhật xoay vòng + 1 DAG Master Weekly (`crawler_weekly_all`).
+  - [`airflow/dags/periodic_job_mining_dag.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/dags/periodic_job_mining_dag.py): Pipeline hàng đợi 2 giai đoạn chu kỳ 4 ngày.
 
-### 2. Operators & Tasks
-- **Operator:** Là bản thiết kế (template / class) cho việc cần làm.
-  - Trong dự án, team tự viết 2 custom operators tại [airflow/plugins/crawler_operators.py](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py):
-    - `JobCrawlerOperator`: Đảm nhận việc chạy crawler.
-    - `DataQualityOperator`: Đảm nhận việc kiểm tra file JSONL đầu ra.
-- **Task:** Là một thực thể (instance) cụ thể của Operator được gán vào DAG (ví dụ: `crawl_vietnamworks >> check_quality_vietnamworks`).
+### 2. Operators & Custom Task Design
+- **Operator:** Là khuôn mẫu (template / class) cho một tác vụ cụ thể. Dự án thiết kế **5 Custom Operators độc lập**:
+  1. `JobCrawlerOperator`: Đảm nhận việc chạy crawler nguồn, tích hợp callback logging và XCom output.
+  2. `DataQualityOperator`: Đảm nhận kiểm định tính toàn vẹn file JSON (`DataQualityChecker`).
+  3. `CrawlSummaryOperator`: Đọc XCom từ tất cả các task, tổng hợp chỉ số và xuất báo cáo JSON ra `logs/crawl_reports/`.
+  4. `HarvestListingOperator`: Quét toàn bộ listing ID của các sàn, đăng ký vào SQLite State Catalog.
+  5. `DetailCrawlerQueueOperator`: Rút tin mới từ hàng đợi để cào chi tiết có kiểm soát tốc độ.
 
-### 3. Schedule Interval (Lập Lịch Bằng Cron Expression)
-- Airflow sử dụng cú pháp Cron 5 trường: `phút giờ ngày-trong-tháng tháng ngày-trong-tuần`.
-- **Rotating Daily Schedule trong dự án (chạy lúc 20:00 tối mỗi ngày):**
+### 3. Task Callbacks & Audit Logging
+- Để theo dõi mẻ cào mà không làm bẩn code nghiệp vụ, DAGs sử dụng Airflow Callbacks:
+  - `on_success_callback=_on_crawl_success`: Bắt log số tin mới, tin bỏ qua, đường dẫn batch.
+  - `on_failure_callback=_on_crawl_failure`: Ghi nhận lỗi ngoại lệ và hỗ trợ gửi alert.
+
+### 4. Schedule Interval (Cron Expressions)
+- Airflow sử dụng cú pháp Cron chuẩn 5 trường: `phút giờ ngày tháng thứ`.
+- **Lịch xoay vòng thường nhật (20:00 hàng ngày):**
   - Thứ Hai: `0 20 * * 1` (TopDev)
   - Thứ Ba: `0 20 * * 2` (CareerViet)
   - Thứ Tư: `0 20 * * 3` (ITviec)
   - Thứ Năm: `0 20 * * 4` (VietnamWorks)
   - Thứ Sáu: `0 20 * * 5` (TopCV)
   - Thứ Bảy: `0 20 * * 6` (ViecLam24h)
+  - Chủ Nhật: `0 20 * * 0` (Glints)
+- **Master Weekly:** `0 22 * * 0` (Chủ Nhật 22:00) — cào tổng lực 8 nguồn và xuất summary.
+- **Periodic 4-day:** `0 2 * * *` (Mỗi 4 ngày lúc 02:00 sáng).
 
-### 4. XComs (Cross-Communication)
-- **Định nghĩa:** Cơ chế cho phép các Task truyền những mẩu dữ liệu nhỏ cho nhau.
-- **Trong dự án:** Task cào (`JobCrawlerOperator`) đẩy đường dẫn file vừa cào vào XCom:
+### 5. XComs (Cross-Communication)
+- Cơ chế cho phép các Task truyền payload meta nhỏ cho nhau. Task cào đẩy đường dẫn file vừa cào vào XCom:
   ```python
   context["ti"].xcom_push(key="output_file", value=stats["output_file"])
   ```
-  Task kiểm tra chất lượng (`DataQualityOperator`) rút đường dẫn đó ra để thẩm định:
+  Task kiểm tra chất lượng rút đường dẫn đó ra để thẩm định:
   ```python
   target_file = context["ti"].xcom_pull(task_ids="crawl_vietnamworks", key="output_file")
   ```
 
-### 5. Catchup & Backfill
-- Mặc định, nếu DAG có `start_date` trong quá khứ, Airflow sẽ cố gắng chạy bù toàn bộ các ngày bị thiếu.
-- Trong dự án, ta đặt `catchup=False` để **chỉ chạy đúng phiên hiện tại**, không làm nghẽn máy tính khi mới bật lên.
+### 6. Metadata DB: SQLite vs PostgreSQL
+- **Hiện tại:** Sử dụng SQLite (`airflow/airflow.db`) kèm `SequentialExecutor` cho môi trường cục bộ / máy ảo nhẹ nhàng, zero-configuration.
+- **Mở rộng Production:** Sẵn sàng chuyển đổi chuỗi kết nối sang PostgreSQL (`postgresql+psycopg2://...`) để kích hoạt `LocalExecutor` hoặc `CeleryExecutor` cho xử lý phân tán đa tiến trình.
 
 ---
 
@@ -100,40 +105,35 @@ Theo tài liệu chuẩn của Apache Airflow, có **5 khái niệm cốt lõi (
 
 Khi đăng nhập vào `http://localhost:8080`, bạn thao tác như sau:
 
-1. **Xem danh sách DAGs:**
-   - Màn hình chính liệt kê 6 DAGs của 6 trang tuyển dụng.
-   - Bên trái mỗi DAG có nút gạt **Bật / Tắt (Pause / Unpause)**. Gạt sang màu xanh để cho phép DAG chạy tự động.
-2. **Kích hoạt chạy thủ công (Trigger DAG):**
-   - Ở cột **Actions** ngoài cùng bên phải của mỗi DAG, nhấn vào biểu tượng **▶ (Trigger DAG)**.
-   - Nhấn **Trigger** để chạy ngay mà không cần đợi đến 20:00 tối.
+1. **Xem danh sách 9 DAGs:**
+   - Màn hình chính liệt kê 7 Daily DAGs, 1 Master Weekly DAG, và 1 Periodic DAG.
+   - Nút gạt **Pause / Unpause**: Gạt sang xanh để kích hoạt lịch tự động.
+2. **Kích hoạt chạy thử nghiệm ngay (Trigger DAG):**
+   - Bấm vào biểu tượng **▶ (Trigger DAG)** ở dòng `crawler_weekly_all` để demo cho thầy thấy toàn bộ 8 nguồn cùng được điều phối.
 3. **Theo dõi tiến độ chạy (Graph View & Grid View):**
-   - Bấm vào tên DAG (ví dụ: `crawler_vietnamworks`).
-   - Chuyển sang tab **Graph**: Sẽ thấy 2 ô nối nhau: `crawl_vietnamworks` ➜ `check_quality_vietnamworks`.
+   - Chuyển sang tab **Graph**: Quan sát các task crawler chạy song song và hội tụ về `weekly_summary`.
    - Màu sắc trạng thái:
      - 🟡 **Vàng (queued / running):** Đang xử lý.
      - 🟢 **Xanh lá cây (success):** Chạy thành công.
      - 🔴 **Đỏ (failed):** Có lỗi phát sinh.
 4. **Xem Log chi tiết của từng Task:**
-   - Bấm trực tiếp vào ô task hình chữ nhật màu xanh trên sơ đồ Graph.
-   - Chọn nút **Log** ở thanh menu bật lên.
-   - Toàn bộ log HTTP request, số lượng jobs cào được, và checkpoint sẽ hiển thị trực quan theo thời gian thực.
+   - Bấm vào ô task hình chữ nhật ➜ Chọn nút **Log**.
+   - Xem callback thành công và thống kê số tin mới cào được.
 
 ---
 
 ## 5. Các Lệnh Airflow CLI Cần Thuộc Lòng
 
-Nếu thầy yêu cầu thao tác trực tiếp trên Terminal thay vì dùng Web UI:
-
 ```bash
 # 1. Liệt kê toàn bộ DAGs của hệ thống
-airflow dags list
+AIRFLOW_HOME=airflow .venv/bin/airflow dags list
 
-# 2. Kiểm tra cú pháp lỗi của code DAG (báo lỗi nếu file Python bị sai import)
-airflow dags report
+# 2. Kiểm tra cú pháp lỗi của code DAG
+AIRFLOW_HOME=airflow .venv/bin/airflow dags report
 
 # 3. Test chạy 1 task độc lập mà không cần scheduler (cực kỳ hữu ích khi demo)
-airflow tasks test crawler_vietnamworks crawl_vietnamworks 2026-10-06
+AIRFLOW_HOME=airflow .venv/bin/airflow tasks test crawler_vietnamworks crawl_vietnamworks 2026-10-12
 
 # 4. Trigger 1 DAG chạy ngay lập tức qua CLI
-airflow dags trigger crawler_vietnamworks
+AIRFLOW_HOME=airflow .venv/bin/airflow dags trigger crawler_weekly_all
 ```
