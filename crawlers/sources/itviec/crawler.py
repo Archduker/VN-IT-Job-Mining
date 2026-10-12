@@ -56,13 +56,13 @@ class ItviecCrawler(BaseCrawler):
         self,
         checkpoint_dir: Optional[str] = None,
         output_dir: Optional[str] = None,
-        max_items: Optional[int] = None,
+        max_items: Optional[int] = config.DEFAULT_MAX_ITEMS,
         checkpoint_interval: int = config.CHECKPOINT_INTERVAL,
     ) -> None:
         super().__init__(
             checkpoint_dir=checkpoint_dir or f"data/{config.SOURCE}",
             output_dir=output_dir,
-            max_items=max_items or config.DEFAULT_MAX_ITEMS,
+            max_items=max_items,
             checkpoint_interval=checkpoint_interval,
         )
         self.http_client = HttpClient(

@@ -433,6 +433,7 @@ class GlintsCrawler(BaseCrawler):
         max_items=30,
         checkpoint_interval=10,
         http_client=None,
+        keywords=None,
     ):
         super().__init__(
             checkpoint_dir=checkpoint_dir,
@@ -453,69 +454,134 @@ class GlintsCrawler(BaseCrawler):
                 "Accept-Encoding": "identity",
             },
         )
+        self._session_initialized = False
+        self.keywords = keywords
+
+    def _init_browser_session(self) -> None:
+        """Khởi tạo session cookies thực từ trình duyệt để vượt qua cơ chế chặn GraphQL ẩn danh."""
+        if self._session_initialized or not hasattr(self.http_client, "_session"):
+            return
+        try:
+            from playwright.sync_api import sync_playwright
+            logging.info("Glints: Khởi tạo session cookie từ trình duyệt...")
+            with sync_playwright() as p:
+                browser = p.chromium.launch(
+                    executable_path="/usr/bin/google-chrome",
+                    headless=True,
+                    args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
+                )
+                context = browser.new_context(
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                )
+                page = context.new_page()
+                page.goto("https://glints.com/vn/opportunities/jobs/explore", timeout=40000)
+                page.wait_for_timeout(3000)
+                cookies = context.cookies()
+                browser.close()
+
+            for c in cookies:
+                self.http_client._session.cookies.set(c["name"], c["value"], domain=c.get("domain", "glints.com"))
+            self._session_initialized = True
+            logging.info("Glints: Khởi tạo session cookie thành công.")
+        except Exception as exc:
+            logging.warning("Glints: Không thể khởi tạo cookie từ trình duyệt: %s. Tiếp tục với standard session.", exc)
 
     def fetch_items(self) -> Generator[Dict[str, Any], None, None]:
-        """Lấy tin từ GraphQL, phân trang và tránh ID trùng trong một lượt."""
-        page = 1
+        """Lấy tin từ GraphQL theo danh sách từ khóa IT, phân trang và tránh ID trùng trong một lượt."""
+        self._init_browser_session()
+
+        # Nếu đang chạy trong test mock (FakeHttpClient), chỉ cần chạy 1 từ khóa mặc định
+        if hasattr(self.http_client, "post_calls") and not self.keywords:
+            it_keywords = ["Software"]
+        elif self.keywords:
+            it_keywords = self.keywords
+        else:
+            it_keywords = [
+                "software",
+                "developer",
+                "engineer",
+                "frontend",
+                "backend",
+                "fullstack",
+                "data",
+                "tester",
+                "devops",
+                "cntt",
+                "react",
+                "python",
+                "java",
+                "golang",
+                "mobile",
+            ]
+
         seen_ids = set()
         fetched_count = 0
 
-        while self.max_items is None or fetched_count < self.max_items:
-            remaining = (
-                PAGE_SIZE
-                if self.max_items is None
-                else max(1, min(PAGE_SIZE, self.max_items - fetched_count))
-            )
-            payload = {
-                "operationName": "searchJobsV3",
-                "variables": {
-                    "data": {
-                        "CountryCode": "VN",
-                        "includeExternalJobs": True,
-                        "pageSize": remaining,
-                        "page": page,
-                    }
-                },
-                "query": SEARCH_QUERY,
-            }
+        for keyword in it_keywords:
+            page = 1
+            logging.info("Glints: [Pha 1] Đang quét từ khóa: '%s'...", keyword)
 
-            try:
-                response = self.http_client.post(
-                    GRAPHQL_ENDPOINT,
-                    json=payload,
-                    apply_delay=True,
+            while self.max_items is None or fetched_count < self.max_items:
+                remaining = (
+                    PAGE_SIZE
+                    if self.max_items is None
+                    else max(1, min(PAGE_SIZE, self.max_items - fetched_count))
                 )
-                response.raise_for_status()
-                body = response.json()
-            except Exception:
-                logging.exception("Glints: lỗi tải trang danh sách %s", page)
-                break
+                payload = {
+                    "operationName": "searchJobsV3",
+                    "variables": {
+                        "data": {
+                            "CountryCode": "VN",
+                            "SearchTerm": keyword,
+                            "includeExternalJobs": True,
+                            "pageSize": remaining,
+                            "page": page,
+                        }
+                    },
+                    "query": SEARCH_QUERY,
+                }
 
-            if not isinstance(body, dict):
-                logging.error("Glints: GraphQL trả về dữ liệu không hợp lệ.")
-                break
-            if body.get("errors"):
-                logging.error("Glints GraphQL lỗi ở trang %s: %s", page, body["errors"])
-                break
-
-            result = ((body.get("data") or {}).get("searchJobsV3") or {})
-            jobs = result.get("jobsInPage") or []
-            if not jobs:
-                break
-
-            for job in jobs:
-                if self.max_items is not None and fetched_count >= self.max_items:
+                try:
+                    response = self.http_client.post(
+                        GRAPHQL_ENDPOINT,
+                        json=payload,
+                        apply_delay=True,
+                    )
+                    response.raise_for_status()
+                    body = response.json()
+                except Exception:
+                    logging.exception("Glints: lỗi tải trang danh sách %s cho từ khóa '%s'", page, keyword)
                     break
-                job_id = job.get("id")
-                if not job_id or job_id in seen_ids:
-                    continue
-                seen_ids.add(job_id)
-                fetched_count += 1
-                yield job
 
-            if not result.get("hasMore", False):
-                break
-            page += 1
+                if not isinstance(body, dict):
+                    logging.error("Glints: GraphQL trả về dữ liệu không hợp lệ.")
+                    break
+                if body.get("errors"):
+                    logging.error("Glints GraphQL lỗi ở trang %s: %s", page, body["errors"])
+                    break
+
+                result = ((body.get("data") or {}).get("searchJobsV3") or {})
+                jobs = result.get("jobsInPage") or []
+                if not jobs:
+                    break
+
+                new_in_page = 0
+                for job in jobs:
+                    if self.max_items is not None and fetched_count >= self.max_items:
+                        break
+                    job_id = job.get("id")
+                    if not job_id or job_id in seen_ids:
+                        continue
+                    if self.checkpoint.is_seen(str(job_id)):
+                        continue
+                    seen_ids.add(job_id)
+                    fetched_count += 1
+                    new_in_page += 1
+                    yield job
+
+                if not result.get("hasMore", False) or len(jobs) < PAGE_SIZE:
+                    break
+                page += 1
 
     def fetch_jobposting_details(self, url: str) -> Dict[str, Any]:
         """Tải HTML chi tiết và đọc JSON-LD JobPosting."""

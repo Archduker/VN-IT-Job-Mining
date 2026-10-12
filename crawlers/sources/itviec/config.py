@@ -21,8 +21,8 @@ LISTING_LOCATIONS = [
     "/viec-lam-it",
 ]
 
-# Giới hạn an toàn khi lần theo phân trang (trang hiện tại có ~33 trang).
-MAX_LISTING_PAGES = 40
+# Giới hạn an toàn khi lần theo phân trang (trang hiện tại có ~35-45 trang).
+MAX_LISTING_PAGES = 60
 
 # ---------------------------------------------------------------- HTTP
 # Data contract TASKS.md §4.2: delay ngẫu nhiên 2–5 giây giữa các request.

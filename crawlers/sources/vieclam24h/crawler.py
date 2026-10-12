@@ -303,7 +303,7 @@ class ViecLam24hCrawler(BaseCrawler):
             max_items=max_items,
             checkpoint_interval=checkpoint_interval,
         )
-        self.max_pages = max_pages or 5
+        self.max_pages = max_pages
         self.local_json_file = Path(local_json_file) if local_json_file else None
         self.client = HttpClient(
             source=self.source_name,
@@ -343,7 +343,10 @@ class ViecLam24hCrawler(BaseCrawler):
             cat_path = category["path"]
             log.info("[Vieclam24h] Bắt đầu quét ngành: %s (%s)", cat_name, cat_path)
 
-            for page_idx in range(1, self.max_pages + 1):
+            page_idx = 1
+            while True:
+                if self.max_pages is not None and page_idx > self.max_pages:
+                    break
                 if self.max_items is not None and collected_count >= self.max_items:
                     return
 
@@ -411,6 +414,8 @@ class ViecLam24hCrawler(BaseCrawler):
 
                     collected_count += 1
                     yield {"job_detail": job_detail, "url": detail_url or ""}
+
+                page_idx += 1
 
     def parse_item(self, item: dict[str, Any]) -> JobRecord | None:
         try:

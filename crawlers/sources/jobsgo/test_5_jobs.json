@@ -1,0 +1,371 @@
+[
+  {
+    "_meta": {
+      "source": "jobsgo",
+      "source_job_id": "28845978332",
+      "url": "https://jobsgo.vn/viec-lam/ky-su-kinh-doanh-ban-hang-sale-engineer-luong-co-ban-10-18-trieu-thang-hoa-hong-ha-noi-ho-chi-minh-28845978332.html",
+      "dedup_key": "jobsgo:28845978332",
+      "crawled_at": "2026-10-12 08:10:38.268509+00:00",
+      "batch_id": "2026-10-12_jobsgo_001",
+      "crawler_version": "0.1.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Kỹ Sư Kinh Doanh Bán Hàng/Sale Engineer - Lương Cơ Bản 10 - 18 Triệu/Tháng + % Hoa Hồng [Hà Nội, Hồ Chí Minh]",
+      "company": "Công Ty Cổ Phần Giải Pháp Tự Động Hóa Etek",
+      "description_list": [
+        "Phát triển và chăm sóc khách hàng hiện có và tìm kiếm mở rộng khách hàng mới là các trường đại học, cao đẳng, trường nghề, trung tâm đào tạo kỹ thuật và các cơ quan nhà nước.",
+        "Tư vấn giải pháp, thiết bị đào tạo kỹ thuật phù hợp với nhu cầu của khách hàng.",
+        "Lập báo giá, đàm phán, ký kết hợp đồng và theo dõi quá trình triển khai dự án.",
+        "Phối hợp với các bộ phận kỹ thuật, dự án để bàn giao, nghiệm thu và hỗ trợ sau bán hàng.",
+        "Thực hiện các báo cáo kinh doanh theo yêu cầu."
+      ],
+      "salary": {
+        "salary_text": "Thỏa thuận",
+        "salary_min": 10.0,
+        "salary_max": 18.0,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": true
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": [
+          "Bán Hàng Dự Án",
+          "Quản Lý Khách Hàng Trọng Điểm",
+          "Xây Dựng Quan Hệ Đối Tác",
+          "Phân Tích Thị Trường",
+          "Lập Kế Hoạch Kinh Doanh"
+        ]
+      },
+      "requirements_list": [
+        "Tốt nghiệp Cao đẳng/Đại học chuyên ngành Kỹ thuật (điện, điện tử, Tự động hóa, Cơ khí, Cơ điện tử hoặc các ngành liên quan).",
+        "Có tối thiểu 01 năm kinh nghiệm kinh doanh thiết bị kỹ thuật hoặc kinh doanh dự án B2B.",
+        "Ưu tiên ứng viên có kinh nghiệm làm việc với trường học, cơ quan nhà nước hoặc tham gia hồ sơ thầu.",
+        "Có khả năng giao tiếp tiếng Anh, đọc hiểu tài liệu kỹ thuật.",
+        "Có bằng lái xe ô tô và sẵn sàng đi công tác."
+      ],
+      "benefits_list": [
+        "Thu nhập cạnh tranh (Lương cơ bản + Thưởng doanh số).",
+        "Lương tháng 13.",
+        "Cấp xe ô tô nếu đạt chỉ tiêu doanh số.",
+        "Tham gia BHXH, BHTN, BHYT theo quy định của Nhà nước.",
+        "Tham gia Bảo hiểm tai nạn 24h theo quy định của Công ty.",
+        "Ăn trưa tại Nhà ăn Công ty + ăn nhẹ giữa giờ.",
+        "Chính sách chăm sóc sức khỏe CBNV và người thân.",
+        "Được đào tạo về sản phẩm và kỹ năng bán hàng.",
+        "Cơ hội phát triển nghề nghiệp trong môi trường chuyên nghiệp và làm việc với các đối tác quốc tế."
+      ],
+      "location_text": "Hà Nội, Hồ Chí Minh",
+      "deadline_text": "14/10/2026",
+      "posted_date_text": "14/09/2026",
+      "employment_type_text": "Toàn thời gian",
+      "seniority_text": "Nhân Viên/Chuyên Viên",
+      "extra": {
+        "work_schedule": null,
+        "education": "Cao Đẳng trở lên",
+        "experience": "Trên 1 năm",
+        "hiring_quantity": null,
+        "industry": "Cung cấp giải pháp, Sản xuất thiết bị tự động hóa trong Công nghiệp, thiết bị dạy nghề, thiết bị dân sinh",
+        "company_address": "Số 189 Đường Phan Trọng Tuệ, Thanh Liệt, Thanh Trì, Hà Nội",
+        "career": "Bán Hàng Kỹ Thuật,Bán Hàng Doanh Nghiệp - B2B,Phát Triển Kinh Doanh,Sales Công Nghệ Thông Tin",
+        "detailed_location": "Tòa nhà TAN PHAT ETEK, Số 189 đường Phan Trọng Tuệ, Thanh Liệt, ố 1 Đường Lê Đức Thọ, Phường Tân Thới Hiệp, Quận 12, TP Hồ Chí Minh."
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "jobsgo",
+      "source_job_id": "29269982607",
+      "url": "https://jobsgo.vn/viec-lam/gan-nhan-du-lieu-hinh-anh-ai-khong-yeu-cau-kinh-nghiem-29269982607.html",
+      "dedup_key": "jobsgo:29269982607",
+      "crawled_at": "2026-10-12 08:10:38.364825+00:00",
+      "batch_id": "2026-10-12_jobsgo_001",
+      "crawler_version": "0.1.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Gán Nhãn Dữ Liệu Hình Ảnh AI - Không Yêu Cầu Kinh Nghiệm",
+      "company": "Công Ty TNHH Alchera Việt Nam",
+      "description_list": [
+        "Thực hiện thao tác Data labeling (gán nhãn dữ liệu) trên phần mềm làm việc công ty cung cấp.",
+        "Kiểm tra và đảm bảo độ chính xác của dữ liệu.",
+        "Làm việc trên hệ thống nội bộ của công ty.",
+        "Báo cáo tiến độ công việc theo ngày/tuần.",
+        "Được đào tạo bài bản trước khi bắt đầu công việc.",
+        "Hỗ trợ mộc thực tập sau 6 tháng."
+      ],
+      "salary": {
+        "salary_text": "7 - 10 triệu VNĐ",
+        "salary_min": 7.0,
+        "salary_max": 10.0,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": null
+      },
+      "requirements_list": [
+        "Không yêu cầu kinh nghiệm – được đào tạo từ đầu.",
+        "Tốt nghiệp THPT trở lên. Không còn vướng bận lịch học.",
+        "Tin học văn phòng cơ bản.",
+        "Cẩn thận tỉ mỉ, nhanh nhẹn.",
+        "Độ tuổi từ 19~27."
+      ],
+      "benefits_list": [
+        "Thu nhập từ 6.800.000 ~ 10.000.000/ tháng.",
+        "Thử việc 2 tháng: nhận 100% lương, trừ 10% thuế TNCN theo quy định.",
+        "Thưởng thành tích 2 tháng/lần, lương tháng 13.",
+        "12 phép năm + 3 phép hè/năm.",
+        "Tham gia đầy đủ BHXH, BHYT, BHTN, khám sức khỏe định kỳ.",
+        "Công đoàn hỗ trợ Lễ, Tết.",
+        "Tiệc công ty định kỳ 2 tháng/lần, team building hằng năm.",
+        "Trang phục đi làm thoải mái, tự do.",
+        "Xét tăng lương quý 1 hằng năm.",
+        "Đồ ăn vặt miễn phí tại quầy.",
+        "Sếp người Hàn vui vẻ, thân thiện."
+      ],
+      "location_text": "Hồ Chí Minh",
+      "deadline_text": "08/11/2026",
+      "posted_date_text": "09/10/2026",
+      "employment_type_text": "Toàn thời gian",
+      "seniority_text": "Nhân Viên/Chuyên Viên",
+      "extra": {
+        "work_schedule": null,
+        "education": "THPT trở lên",
+        "experience": "Không yêu cầu",
+        "hiring_quantity": null,
+        "industry": null,
+        "company_address": null,
+        "career": "Nhập Liệu - Lưu Trữ,Dữ Liệu - AI - Học Máy,Vận Hành Máy - Lắp Ráp - Chế Biến",
+        "detailed_location": "Tầng 2,3,4 - 150 Nguyễn Xí, Phường Bình Thạnh, TP.HCM., Tầng 3A - 427 Trường Chinh, Phường Tân Bình, Thành phố Hồ Chí Minh."
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "jobsgo",
+      "source_job_id": "29212665648",
+      "url": "https://jobsgo.vn/viec-lam/tu-van-trien-khai-phan-mem-website-business-analyst-cong-nghe-thong-tin-duoc-dao-tao-29212665648.html",
+      "dedup_key": "jobsgo:29212665648",
+      "crawled_at": "2026-10-12 08:10:38.461198+00:00",
+      "batch_id": "2026-10-12_jobsgo_001",
+      "crawler_version": "0.1.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Tư Vấn Triển Khai Phần Mềm Website (Business Analyst/ Công Nghệ Thông Tin) - Được Đào Tạo",
+      "company": "Công Ty TNHH Công Nghệ Phần Mềm Nasani",
+      "description_list": [
+        "Tiếp nhận thông tin khách hàng.",
+        "Tư vấn triển khai phần mềm Website cho khách hàng.",
+        "Triển khai về bố cục, màu sắc, chức năng Website.",
+        "Lên ý tưởng, Demo Website cho khách hàng.",
+        "Tương tác bộ phận kỹ thuật hỗ trợ giúp khách hàng có trang Website hoàn chỉnh.",
+        "Kiểm tra Website trước khi bàn giao cho khách hàng.",
+        "Hỗ trợ chăm sóc khách hàng.",
+        "Các công việc khác theo sắp xếp của công ty."
+      ],
+      "salary": {
+        "salary_text": "7 - 20 triệu VNĐ",
+        "salary_min": 7.0,
+        "salary_max": 20.0,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": [
+          "Phân Tích Yêu Cầu Nghiệp Vụ",
+          "Tư Vấn Kỹ Thuật Trước Bán Hàng (Presales)"
+        ]
+      },
+      "requirements_list": [
+        "Sẵn sàng đi làm.",
+        "Vui vẻ, hòa đồng.",
+        "Chịu khó học hỏi."
+      ],
+      "benefits_list": [
+        "Được hưởng đầy đủ chính sách của công ty.",
+        "Được làm việc trong môi trường năng động.",
+        "Được đào tạo khi vào làm việc.",
+        "Cơ hội thăng tiến, phát triển.",
+        "Được mở rộng kiến thức."
+      ],
+      "location_text": "Hồ Chí Minh",
+      "deadline_text": "05/11/2026",
+      "posted_date_text": "06/10/2026",
+      "employment_type_text": "Toàn thời gian",
+      "seniority_text": "Nhân Viên/Chuyên Viên",
+      "extra": {
+        "work_schedule": null,
+        "education": "Trung cấp trở lên",
+        "experience": "Không yêu cầu",
+        "hiring_quantity": "5",
+        "industry": "Lập trình máy tính khác",
+        "company_address": "Lầu 3 Tòa nhà Saigon ICT, Lô 46 Công viên phần mềm Quang Trung, Phường Trung Mỹ Tây, TP Hồ Chí Minh, Việt Nam",
+        "career": "Triển Khai Giải Pháp IT,Phân Tích Nghiệp Vụ (BA),Sales Công Nghệ Thông Tin",
+        "detailed_location": "tòa nhà Sài Gòn Tel, Khu Công Viên Phần Mềm Quang Trung, Trung Mỹ Tây, Quận 12, Hồ Chí Minh, tòa nhà Sài Gòn Tel, Khu Công Viên Phần Mềm Quang Trung, Trung Mỹ Tây, Quận 12"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "jobsgo",
+      "source_job_id": "29214621024",
+      "url": "https://jobsgo.vn/viec-lam/master-data-engineer-29214621024.html",
+      "dedup_key": "jobsgo:29214621024",
+      "crawled_at": "2026-10-12 08:10:38.547903+00:00",
+      "batch_id": "2026-10-12_jobsgo_001",
+      "crawler_version": "0.1.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Master Data Engineer",
+      "company": "Công Ty TNHH Fine Scandinavia",
+      "description_list": [
+        "Trách nhiệm chính:",
+        "Tiếp nhận các yêu cầu (request) làm bản vẽ, BOM hoặc yêu cầu điều chỉnh bản vẽ (có ECR) từ các bộ phận liên quan.",
+        "Phối hợp cùng đội ngũ để thông báo hạn chót (deadline) hoàn thành bản vẽ cho phía người yêu cầu (requestor).",
+        "Quản lý & lập kế hoạch tổng thể (Master Planning) cho team Kỹ thuật (Technical Engineering Team) nhằm dự báo khối lượng công việc (workload) của đội ngũ.",
+        "Theo dõi sát sao (follow-up) và cập nhật tiến độ hằng ngày (daily tracking) nhằm đảm bảo tiến độ bản vẽ của Khối Kỹ thuật.",
+        "Tham gia các cuộc họp về phát triển sản phẩm mới (New Product Development), họp tối ưu hóa giá trị (Value Engineering) và họp sản xuất mẫu lô đầu tiên (First of Mass Production Sample) để ghi nhận (record) và cập nhật các thay đổi về bản vẽ (follow ECR procedure).",
+        "Quản lý việc cấp mã (code) cho cụm chi tiết (Sub-assembly), linh kiện (Component) và phụ kiện (Hardware), đảm bảo tính đồng bộ (matching) với hệ thống ERP.",
+        "Hỗ trợ đội ngũ kỹ thuật nhập BOM lên hệ thống ERP ở giai đoạn 2 (Giai đoạn 1 dành cho dự toán sơ bộ - draft costing; Giai đoạn 2 là BOM mẫu - sample BOM; Giai đoạn 3 là BOM sản xuất - production BOM).",
+        "Lập báo cáo tuần (khi có yêu cầu) và báo cáo công việc hằng tháng (bắt buộc).",
+        "Thực hiện các công việc khác theo phân công của Trưởng phòng Kỹ thuật (Technical Engineering Manager).",
+        "Quyền hạn:",
+        "Phối hợp làm việc và trao đổi thông tin nội bộ với các phòng ban liên quan.",
+        "Tham gia đánh giá chỉ số hiệu suất công việc (KPI) định kỳ hàng tháng và hàng năm.",
+        "Tham gia và đề xuất các chương trình đào tạo nội bộ."
+      ],
+      "salary": {
+        "salary_text": "Thỏa thuận",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": null,
+        "pay_period": null,
+        "is_negotiable": true,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": null
+      },
+      "requirements_list": [
+        "Tốt nghiệp trung cấp, cao đẳng, đại học chuyên ngành điện hoặc cơ khí chế tạo máy.",
+        "Am hiểu Điện, cơ khí, khí nén, thủy lực.",
+        "Biết cơ bản về lập trình PLC, chỉ cần biết cơ bản về lệnh, có thể mở thêm lệnh.",
+        "Về chuyên sâu sẽ được đào tạo thêm trong quá trình làm việc.",
+        "Có kinh nghiệm bảo trì line sản xuất.",
+        "Có tư duy cải tiến thiết bị.",
+        "Chịu được áp lực trong công việc, có thể làm việc độc lập hoặc theo nhóm, có tinh thần học hỏi.",
+        "Thời gian làm việc: hành chính (có thể tăng ca khi có yêu cầu)."
+      ],
+      "benefits_list": [
+        "Thưởng: doanh thu, lễ, Tết, sinh nhật, lương tháng 13, thâm niên, chuyên cần.",
+        "Hỗ trợ: đồng phục hàng năm, tiền nhà, tiền nuôi con nhỏ, phí khám tuyển dụng, khám phát hiện bệnh nghề nghiệp 2 lần/năm.",
+        "BH Tai nạn 80tr.",
+        "Gia nhập team rèn luyện thể lực: Trail / Run."
+      ],
+      "location_text": "Bình Dương",
+      "deadline_text": "05/11/2026",
+      "posted_date_text": "06/10/2026",
+      "employment_type_text": "Toàn thời gian",
+      "seniority_text": "Nhân Viên/Chuyên Viên",
+      "extra": {
+        "work_schedule": null,
+        "education": "Trung cấp trở lên",
+        "experience": "Trên 1 năm",
+        "hiring_quantity": null,
+        "industry": "Sản xuất/Vận hành sản xuất",
+        "company_address": "Nhà xưởng số 1,2 lô A12-1, đường D2, khu B, khu công nghiệp Đất Cuốc, xã Bắc Tân Uyên, thành phố Hồ Chí Minh, Việt Nam.",
+        "career": "Vận Hành - Bảo Trì - Sửa Chữa,Dữ Liệu - AI - Học Máy,Quản Lý Chất Lượng Sản Xuất,Kỹ Thuật Sản Xuất - Bảo Trì",
+        "detailed_location": "Nhà xưởng số 1, 2 lô A12 - 1, đường D2, khu B, KCN Đất Cuốc, xã Bắc Tân Uyên, Bình Dương, Nhà xưởng số 1, 2 lô A12-1, đường D2, khu B, KCN Đất Cuốc, xã Bắc Tân Uyên, TP. HCM"
+      }
+    }
+  },
+  {
+    "_meta": {
+      "source": "jobsgo",
+      "source_job_id": "28904734665",
+      "url": "https://jobsgo.vn/viec-lam/nhan-vien-kinh-doanh-thiet-bi-cong-nghiep-28904734665.html",
+      "dedup_key": "jobsgo:28904734665",
+      "crawled_at": "2026-10-12 08:10:38.627013+00:00",
+      "batch_id": "2026-10-12_jobsgo_001",
+      "crawler_version": "0.1.0",
+      "language": "vi"
+    },
+    "raw": {
+      "title": "Nhân Viên Kinh Doanh Thiết Bị Công Nghiệp",
+      "company": "Công Ty TNHH Đầu Tư Song Thành Phát",
+      "description_list": [
+        "Tìm kiếm và phát triển khách hàng trong lĩnh vực máy nén khí, thiết bị công nghiệp.",
+        "Chủ động gọi điện, chăm sóc khách hàng theo data có sẵn và mở rộng khách hàng mới.",
+        "Đăng bài, viết content và quản lý fanpage Facebook để quảng bá sản phẩm.",
+        "Tư vấn sản phẩm, lập báo giá, đàm phán hợp đồng.",
+        "Theo dõi tiến độ đơn hàng, phối hợp với bộ phận kỹ thuật để triển khai, lắp đặt, bảo hành.",
+        "Duy trì quan hệ tốt với khách hàng, đề xuất giải pháp tối ưu cho nhu cầu sử dụng.",
+        "Lập kế hoạch kinh doanh theo tuần, tháng, quý.",
+        "Báo cáo kết quả công việc định kỳ (hàng tuần, hàng tháng).",
+        "Đề xuất giải pháp cải thiện doanh số và phát triển khách hàng mới."
+      ],
+      "salary": {
+        "salary_text": "15 - 30 triệu VNĐ",
+        "salary_min": 15.0,
+        "salary_max": 30.0,
+        "salary_currency": "VND",
+        "pay_period": "month",
+        "is_negotiable": false,
+        "has_commission": false
+      },
+      "tags": {
+        "requirements": null,
+        "benefits": null,
+        "skills": null
+      },
+      "requirements_list": [
+        "Nam/Nữ, tuổi 23 – 35.",
+        "Tốt nghiệp Cao đẳng/Đại học, ưu tiên chuyên ngành Cơ khí, Điện, Máy móc, Công nghiệp.",
+        "Có 1–2 năm kinh nghiệm kinh doanh thiết bị công nghiệp hoặc các ngành liên quan như: máy móc, thiết bị, cơ khí, điện – tự động hóa, xây dựng,....",
+        "Biết quản lý & làm marketing trên fanpage để quảng bá sản phẩm/dịch vụ.",
+        "Năng động, giao tiếp tốt, có tinh thần học hỏi, chịu được áp lực công việc.",
+        "Có bằng lái xe B2 là lợi thế.",
+        "Biết sử dụng các công cụ AI hỗ trợ công việc như ChatGPT, CRM, AI viết nội dung, phân tích khách hàng...",
+        "Thành thạo máy tính, Zalo, Email."
+      ],
+      "benefits_list": [
+        "Thu nhập: Lương cứng 12 Triệu - 15 Triệu/tháng + Hoa hồng + Thưởng doanh số. ( Thu nhâp không giới hạn)",
+        "Chính sách phúc lợi đầy đủ: BHXH, BHYT, BHTN, lương tháng 13.",
+        "Được đào tạo về sản phẩm, kỹ thuật, kỹ năng Sales và ứng dụng AI.",
+        "Được đào tạo kiến thức sản phẩm, kỹ năng bán hàng.",
+        "Môi trường làm việc chuyên nghiệp, nhiều cơ hội thăng tiến."
+      ],
+      "location_text": "Hồ Chí Minh",
+      "deadline_text": "17/10/2026",
+      "posted_date_text": "17/09/2026",
+      "employment_type_text": "Toàn thời gian",
+      "seniority_text": "Nhân Viên/Chuyên Viên",
+      "extra": {
+        "work_schedule": null,
+        "education": "Cao Đẳng trở lên",
+        "experience": "1 - 2 năm",
+        "hiring_quantity": "2",
+        "industry": "Kinh doanh",
+        "company_address": "22/5 Street 109, Phuoc Long B Wards, District 9, Ho Chi Minh, Vietnam",
+        "career": "Bán Hàng Kỹ Thuật,Bán Hàng Doanh Nghiệp - B2B,Sales Công Nghệ Thông Tin",
+        "detailed_location": "Số 50, Đường số 1, KDC Thăng Long - Hưng Phú, P. Tam Phú, Hồ Chí Minh, Số 50, Đường số 1, KDC Thăng Long – Hưng Phú, P. Tam Phú,Hồ Chí Minh"
+      }
+    }
+  }
+]

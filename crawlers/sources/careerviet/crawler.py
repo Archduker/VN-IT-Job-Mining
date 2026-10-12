@@ -36,7 +36,7 @@ SOURCE = "careerviet"
 CRAWLER_VERSION = "0.5.0"
 BASE_URL = "https://careerviet.vn"
 CATEGORY_PATH = "/viec-lam/cntt-phan-mem-c1-vi.html"
-MAX_PAGES = 30
+MAX_PAGES = 100
 
 
 def extract_job_id(url: str) -> str:
@@ -66,6 +66,7 @@ class CareerVietCrawler(BaseCrawler):
         save_html: bool = False,
         html_storage_dir: str | None = None,
         local_html_dir: str | None = None,
+        max_pages: int | None = None,
     ) -> None:
         super().__init__(
             checkpoint_dir=checkpoint_dir,
@@ -73,19 +74,20 @@ class CareerVietCrawler(BaseCrawler):
             max_items=max_items,
             checkpoint_interval=checkpoint_interval,
         )
+        self.max_pages = max_pages or MAX_PAGES
         self.http_client = http_client or HttpClient(
             source=self.source_name,
-            delay_config=DelayConfig(min_seconds=1.0, max_seconds=2.5),
+            delay_config=DelayConfig(min_seconds=0.3, max_seconds=0.7),
             timeout=25,
         )
         self.save_html = save_html
         self.html_storage_dir = html_storage_dir or os.path.dirname(__file__)
         self.local_html_dir = local_html_dir
 
-    def _build_page_url(self, page: int) -> str:
+    def _build_page_url(self, page_fmt: str, base_path: str, page: int) -> str:
         if page <= 1:
-            return f"{BASE_URL}{CATEGORY_PATH}"
-        return f"{BASE_URL}/viec-lam/cntt-phan-mem-c1-trang-{page}-vi.html"
+            return f"{BASE_URL}{base_path}"
+        return f"{BASE_URL}{page_fmt.format(page=page)}"
 
     def fetch_items(self) -> Generator[dict[str, Any], None, None]:
         """Thu thập danh sách items từ web trực tuyến hoặc từ thư mục HTML cục bộ."""
@@ -111,67 +113,108 @@ class CareerVietCrawler(BaseCrawler):
                     break
             return
 
-        # 2. Chế độ cào trực tuyến từ web
+        # 2. Chế độ cào trực tuyến từ web (Pha 1: Thu hoạch URLs -> Pha 2: Cào chi tiết)
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Referer": BASE_URL,
         }
-        seen_urls = set()
 
-        for page in range(1, MAX_PAGES + 1):
-            page_url = self._build_page_url(page)
-            log.info("[CareerViet] Fetching listing page %d: %s", page, page_url)
+        categories = [
+            {
+                "name": "CNTT - Phần mềm",
+                "base": "/viec-lam/cntt-phan-mem-c1-vi.html",
+                "page_fmt": "/viec-lam/cntt-phan-mem-c1-trang-{page}-vi.html",
+            },
+            {
+                "name": "CNTT - Phần cứng / Mạng",
+                "base": "/viec-lam/cntt-phan-cung-mang-c61-vi.html",
+                "page_fmt": "/viec-lam/cntt-phan-cung-mang-c61-trang-{page}-vi.html",
+            },
+        ]
+
+        seen_urls = set()
+        harvested_targets: list[str] = []
+        cat_counts: dict[str, int] = {}
+
+        log.info("[CareerViet] ==================== BẮT ĐẦU PHA 1: THU HOẠCH URLs ====================")
+        for cat in categories:
+            cat_name = cat["name"]
+            cat_urls_count = 0
+            log.info("[CareerViet] [Pha 1] Bắt đầu quét danh mục: %s", cat_name)
+            for page in range(1, self.max_pages + 1):
+                page_url = self._build_page_url(cat["page_fmt"], cat["base"], page)
+                log.info("[CareerViet] [Pha 1] Đang quét trang %d [%s]: %s", page, cat_name, page_url)
+
+                try:
+                    html = self.http_client.get_html(page_url, headers=headers)
+                except Exception as exc:
+                    log.error("[CareerViet] Failed to fetch page %d [%s]: %s", page, cat_name, exc)
+                    break
+
+                soup = BeautifulSoup(html, "html.parser")
+                page_links = []
+                for a_tag in soup.select("div.job-item a.job-title, a[href*='/tim-viec-lam/']"):
+                    href = a_tag.get("href")
+                    if href and re.search(r"\.[A-Z0-9]{6,12}\.html", href):
+                        full_url = urljoin(BASE_URL, href)
+                        if full_url not in seen_urls:
+                            seen_urls.add(full_url)
+                            page_links.append(full_url)
+
+                if not page_links:
+                    log.info("[CareerViet] [Pha 1] Hết tin tại trang %d danh mục %s.", page, cat_name)
+                    break
+
+                harvested_targets.extend(page_links)
+                cat_urls_count += len(page_links)
+                log.info("[CareerViet] [Pha 1] Trang %d [%s] thu được %d URLs mới (Tổng tích lũy: %d)", page, cat_name, len(page_links), len(harvested_targets))
+
+                if self.max_items and len(harvested_targets) >= self.max_items:
+                    log.info("[CareerViet] [Pha 1] Đạt giới hạn max_items=%d trong Pha 1. Kết thúc thu hoạch sớm.", self.max_items)
+                    break
+
+            cat_counts[cat_name] = cat_urls_count
+            if self.max_items and len(harvested_targets) >= self.max_items:
+                break
+
+        log.info(
+            "[CareerViet] ==================== HOÀN THÀNH PHA 1 ====================\n"
+            "  * Tổng URLs thu hoạch: %d\n"
+            "  * CNTT - Phần mềm: %d URLs\n"
+            "  * CNTT - Phần cứng / Mạng: %d URLs\n"
+            "==========================================================================",
+            len(harvested_targets),
+            cat_counts.get("CNTT - Phần mềm", 0),
+            cat_counts.get("CNTT - Phần cứng / Mạng", 0),
+        )
+
+        log.info("[CareerViet] ==================== BẮT ĐẦU PHA 2: CÀO CHI TIẾT (%d items) ====================", len(harvested_targets))
+        yielded_total = 0
+        for idx, jurl in enumerate(harvested_targets, start=1):
+            jid = extract_job_id(jurl)
+            if self.checkpoint.is_seen(jid):
+                self.skipped_count += 1
+                continue
 
             try:
-                html = self.http_client.get_html(page_url, headers=headers)
+                detail_html = self.http_client.get_html(jurl, headers=headers)
+                if self.save_html and detail_html and len(detail_html) > 5000:
+                    save_path = os.path.join(self.html_storage_dir, f"{jid}.html")
+                    with open(save_path, "w", encoding="utf-8") as f:
+                        f.write(detail_html)
+
+                yield {
+                    "job_id": jid,
+                    "url": jurl,
+                    "html": detail_html,
+                }
+                yielded_total += 1
+                if self.max_items and yielded_total >= self.max_items:
+                    log.info("[CareerViet] [Pha 2] Đạt giới hạn max_items=%d. Hoàn tất cào chi tiết.", self.max_items)
+                    return
             except Exception as exc:
-                log.error("[CareerViet] Failed to fetch page %d: %s", page, exc)
-                break
-
-            soup = BeautifulSoup(html, "html.parser")
-            job_links = []
-            for a_tag in soup.select("div.job-item a.job-title, a[href*='/tim-viec-lam/']"):
-                href = a_tag.get("href")
-                if href and re.search(r"\.[A-Z0-9]{6,12}\.html", href):
-                    full_url = urljoin(BASE_URL, href)
-                    if full_url not in seen_urls:
-                        seen_urls.add(full_url)
-                        job_links.append(full_url)
-
-            if not job_links:
-                log.info("[CareerViet] No job links found at page %d. Ending listing crawl.", page)
-                break
-
-            log.info("[CareerViet] Found %d candidate job links on page %d", len(job_links), page)
-            for jurl in job_links:
-                jid = extract_job_id(jurl)
-                if self.checkpoint.is_seen(jid):
-                    self.skipped_count += 1
-                    continue
-
-                # Tải trang chi tiết
-                try:
-                    detail_html = self.http_client.get_html(jurl, headers=headers)
-                    if self.save_html and detail_html and len(detail_html) > 5000:
-                        save_path = os.path.join(self.html_storage_dir, f"{jid}.html")
-                        with open(save_path, "w", encoding="utf-8") as f:
-                            f.write(detail_html)
-                        log.info("[CareerViet] Saved detail HTML to %s", save_path)
-
-                    yield {
-                        "job_id": jid,
-                        "url": jurl,
-                        "html": detail_html,
-                    }
-                except Exception as exc:
-                    log.error("[CareerViet] Failed to fetch job detail %s: %s", jurl, exc)
-                    continue
-
-            # Kiểm tra phân trang tiếp theo
-            next_btn = soup.select_one("li.next-page")
-            if next_btn and "disabled" in next_btn.get("class", []):
-                log.info("[CareerViet] Reached last page according to pagination.")
-                break
+                log.error("[CareerViet] [Pha 2] Failed to fetch job detail %s (%d/%d): %s", jurl, idx, len(harvested_targets), exc)
+                continue
 
     def parse_item(self, item: dict[str, Any]) -> JobRecord | None:
         """Bóc tách HTML chi tiết thành JobRecord chuẩn Data Contract Schema v1."""

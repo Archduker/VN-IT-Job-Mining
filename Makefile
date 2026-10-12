@@ -14,7 +14,8 @@ AIRFLOW_HOME := $(PROJECT_ROOT)/airflow
 export AIRFLOW_HOME
 
 .PHONY: help setup install install-dev test test-cov lint format \
-        airflow-webserver airflow-scheduler airflow-stop \
+        start-airflow stop-airflow monitor \
+        airflow-webserver airflow-scheduler \
         crawl-topdev crawl-careerviet crawl-itviec crawl-vietnamworks \
         crawl-vieclam24h crawl-topcv \
         clean clean-data
@@ -30,6 +31,11 @@ help:
 	@echo "    make install            Install runtime deps only"
 	@echo "    make install-dev        Install runtime + dev deps"
 	@echo ""
+	@echo "  Airflow Operations:"
+	@echo "    make start-airflow      Start Airflow (Scheduler + Webserver in background)"
+	@echo "    make stop-airflow       Stop all Airflow processes safely"
+	@echo "    make monitor            Launch live terminal monitor dashboard"
+	@echo ""
 	@echo "  Testing:"
 	@echo "    make test               Run all tests"
 	@echo "    make test-cov           Run tests with coverage report"
@@ -38,9 +44,9 @@ help:
 	@echo "    make lint               Run ruff linter"
 	@echo "    make format             Auto-format with ruff"
 	@echo ""
-	@echo "  Airflow:"
-	@echo "    make airflow-webserver  Start Airflow web UI (port 8080)"
-	@echo "    make airflow-scheduler  Start Airflow scheduler"
+	@echo "  Airflow (Foreground):"
+	@echo "    make airflow-webserver  Start Airflow web UI (foreground port 8080)"
+	@echo "    make airflow-scheduler  Start Airflow scheduler (foreground)"
 	@echo ""
 	@echo "  Crawling (manual run):"
 	@echo "    make crawl-topdev       Crawl TopDev (max 450 items)"
@@ -86,7 +92,19 @@ lint:
 format:
 	$(VENV)/bin/ruff format crawlers/ tests/
 
-# ── Airflow ────────────────────────────────────────────────────
+# ── Airflow Operations (Background & Live Monitor) ─────────────
+start-airflow:
+	@chmod +x scripts/start_airflow.sh
+	@bash scripts/start_airflow.sh
+
+stop-airflow:
+	@chmod +x scripts/stop_airflow.sh
+	@bash scripts/stop_airflow.sh
+
+monitor:
+	$(PYTHON) scripts/monitor.py --watch
+
+# ── Airflow Foreground (Debug) ─────────────────────────────────
 airflow-webserver:
 	@echo "[airflow] Starting webserver on http://localhost:8080 ..."
 	@echo "[airflow] Press Ctrl+C to stop."

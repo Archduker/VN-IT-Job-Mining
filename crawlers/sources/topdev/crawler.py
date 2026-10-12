@@ -47,12 +47,7 @@ CRAWLER_VERSION = "0.1.0"
 PAGE_SIZE = 100
 REQUEST_ATTEMPTS = 3
 JOB_CATEGORY_IDS = (
-    1,  #IT
-    14, #Business, Finance
-    27, #Management
-    33, #Manufacturing & Engineering
-    50, #Service
-    61, #Design, Creativity
+    1,  # IT / Software Engineering
 )
 LOCAL_TIMEZONE = timezone(timedelta(hours=7))
 

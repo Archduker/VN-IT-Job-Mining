@@ -36,7 +36,8 @@ log = logging.getLogger("topcv.crawler")
 SOURCE = "topcv"
 CRAWLER_VERSION = "0.5.0"
 BASE_URL = "https://www.topcv.vn"
-START_URL = "https://www.topcv.vn/viec-lam-it"
+BASE_LISTING_URL = "https://www.topcv.vn/tim-viec-lam-cong-nghe-thong-tin-cr257"
+START_URL = BASE_LISTING_URL
 
 
 class TopCVCrawler(BaseCrawler):
@@ -69,73 +70,125 @@ class TopCVCrawler(BaseCrawler):
         self.html_storage_dir = html_storage_dir or os.path.dirname(__file__)
         self.local_html_dir = local_html_dir
 
-    def _fetch_listing_urls(self, page) -> list[dict[str, str]]:
-        """Quét trang danh sách tìm kiếm và thu thập danh sách {job_id, url}."""
-        log.info("[TopCV] Navigating to listing: %s", START_URL)
-        page.goto(START_URL, wait_until="domcontentloaded", timeout=30000)
-        page.wait_for_timeout(4000)
-
-        content = page.content()
-        if "Attention Required! | Cloudflare" in content:
-            log.warning("[TopCV] Cloudflare challenge detected! Waiting extra time...")
-            page.wait_for_timeout(6000)
-            content = page.content()
-
-        soup = BeautifulSoup(content, "html.parser")
-        cards = soup.select(".job-item-search-result, .job-item, div[data-job-id]")
-        log.info("[TopCV] Found %d job cards on listing page.", len(cards))
+    def _fetch_listing_urls(self, browser) -> list[dict[str, str]]:
+        """Pha 1 (URL Harvesting): Quét toàn bộ các trang danh sách và thu thập tất cả Job URLs vào hàng đợi."""
+        import random
+        import time
 
         job_targets = []
         seen_ids = set()
+        current_page = 1
+        max_pages_limit = 60
 
-        for card in cards:
-            job_id = card.get("data-job-id")
-            a_tag = None
-            for a in card.select("a[href*='/viec-lam/']"):
-                href = a.get("href", "")
-                if clean_text(a.text) and not any(k in href for k in ["viec-lam-it", "tag"]):
-                    a_tag = a
-                    break
-
-            if not a_tag:
-                continue
-
-            raw_url = a_tag.get("href", "")
-            if not job_id and raw_url:
-                m = re.search(r"[-_/](\d+)\.html", raw_url)
-                job_id = m.group(1) if m else None
-
-            if not job_id or str(job_id) in seen_ids:
-                continue
-
-            # Bỏ qua nếu đã từng crawl trong checkpoint
-            if str(job_id) in self.checkpoint.seen_ids:
-                continue
-
-            comp_tag = card.select_one(".company, .company-name, a.company, a[href*='/cong-ty/']")
-            comp = clean_text(comp_tag.text) if comp_tag else "Unknown"
-            sal_tag = card.select_one(".salary, .title-salary, span.salary")
-            sal = clean_text(sal_tag.text) if sal_tag else "Thương lượng"
-
-            seen_ids.add(str(job_id))
-            full_url = urljoin(BASE_URL, raw_url)
-            job_targets.append({
-                "job_id": str(job_id),
-                "url": full_url,
-                "title": clean_text(a_tag.text),
-                "company": comp,
-                "salary": sal,
-                "html_snippet": str(card),
-            })
-
+        while True:
             if self.max_items and len(job_targets) >= self.max_items:
                 break
+            if current_page > max_pages_limit:
+                log.info("[TopCV] Đã đạt giới hạn quét tối đa %d trang. Dừng Pha 1.", max_pages_limit)
+                break
+
+            page_url = f"{BASE_LISTING_URL}?page={current_page}"
+            log.info("[TopCV] [Pha 1] Đang thu hoạch trang listing %d: %s", current_page, page_url)
+
+            cards = []
+            for attempt in range(1, 4):
+                context = browser.new_context(
+                    user_agent=(
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                    ),
+                    viewport={"width": 1920, "height": 1080},
+                )
+                page = context.new_page()
+                try:
+                    page.goto(page_url, wait_until="domcontentloaded", timeout=35000)
+                    for _ in range(6):
+                        title = page.title()
+                        if "Cloudflare" not in title and "Just a moment" not in title:
+                            break
+                        log.warning("[TopCV] Phát hiện Cloudflare ở trang %d. Đang chờ giải mã... (%s)", current_page, title)
+                        page.wait_for_timeout(2500)
+
+                    content = page.content()
+                    soup = BeautifulSoup(content, "html.parser")
+                    cards = soup.select(".job-item-search-result, .job-item, div[data-job-id]")
+                    if cards:
+                        break
+                    else:
+                        log.warning("[TopCV] Trang %d chưa có cards ở lượt %d/3. Chờ thử lại...", current_page, attempt)
+                        time.sleep(3.0 * attempt)
+                except Exception as exc:
+                    log.warning("[TopCV] Lỗi tải trang listing %d ở lượt %d/3: %s", current_page, attempt, exc)
+                    time.sleep(3.0 * attempt)
+                finally:
+                    page.close()
+                    context.close()
+
+            if not cards:
+                log.info("[TopCV] Không còn job cards nào ở trang %d sau 3 lượt thử. Hoàn tất Pha 1.", current_page)
+                break
+
+            new_on_page = 0
+            for card in cards:
+                job_id = card.get("data-job-id")
+                a_tag = None
+                for a in card.select("a[href*='/viec-lam/']"):
+                    href = a.get("href", "")
+                    if clean_text(a.text) and not any(k in href for k in ["viec-lam-it", "tag"]):
+                        a_tag = a
+                        break
+
+                if not a_tag:
+                    continue
+
+                raw_url = a_tag.get("href", "")
+                if not job_id and raw_url:
+                    m = re.search(r"[-_/](\d+)\.html", raw_url)
+                    job_id = m.group(1) if m else None
+
+                if not job_id or str(job_id) in seen_ids:
+                    continue
+
+                if str(job_id) in self.checkpoint.seen_ids:
+                    continue
+
+                comp_tag = card.select_one(".company, .company-name, a.company, a[href*='/cong-ty/']")
+                comp = clean_text(comp_tag.text) if comp_tag else "Unknown"
+                sal_tag = card.select_one(".salary, .title-salary, span.salary")
+                sal = clean_text(sal_tag.text) if sal_tag else "Thương lượng"
+
+                seen_ids.add(str(job_id))
+                full_url = urljoin(BASE_URL, raw_url)
+                job_targets.append({
+                    "job_id": str(job_id),
+                    "url": full_url,
+                    "title": clean_text(a_tag.text),
+                    "company": comp,
+                    "salary": sal,
+                    "html_snippet": str(card),
+                })
+                new_on_page += 1
+
+                if self.max_items and len(job_targets) >= self.max_items:
+                    break
+
+            log.info(
+                "[TopCV] [Pha 1] Trang %d thu được %d candidates mới (Tổng hàng đợi: %d)",
+                current_page,
+                new_on_page,
+                len(job_targets),
+            )
+            current_page += 1
+            # Polite sleep giữa các trang listing để chống chặn WAF
+            time.sleep(random.uniform(2.0, 3.5))
 
         return job_targets
 
     def _sync_fetch_with_playwright(self) -> list[dict[str, Any]]:
-        """Thu thập danh sách và tải toàn bộ HTML chi tiết từng trang."""
+        """Pha 2 (Detail Crawling & Retry Queue): Tải toàn bộ HTML chi tiết qua hàng đợi có cơ chế thử lại."""
         from playwright.sync_api import sync_playwright
+        import random
+        import time
 
         items: list[dict[str, Any]] = []
 
@@ -168,78 +221,106 @@ class TopCVCrawler(BaseCrawler):
                     args=[
                         "--disable-blink-features=AutomationControlled",
                         "--no-sandbox",
+                        "--disable-dev-shm-usage",
                     ],
                 )
-                listing_context = browser.new_context(
-                    user_agent=(
-                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-                    ),
-                    viewport={"width": 1920, "height": 1080},
+
+                # Giai đoạn 1: Thu hoạch toàn bộ URLs
+                targets = self._fetch_listing_urls(browser)
+                log.info(
+                    "[TopCV] Đã hoàn thành Pha 1. Tổng URLs thu hoạch: %d. Bắt đầu Pha 2 (Detail Crawling)...",
+                    len(targets),
                 )
-                listing_page = listing_context.new_page()
-                targets = self._fetch_listing_urls(listing_page)
-                listing_page.close()
-                listing_context.close()
 
-                log.info("[TopCV] Fetched %d candidate job URLs. Fetching details...", len(targets))
+                # Giai đoạn 2: Cào chi tiết với Hàng đợi Chính (Main Queue) & Hàng đợi Thử lại (Retry Queue)
+                main_queue = list(targets)
+                retry_queue: list[dict[str, Any]] = []
 
-                for target in targets:
+                def fetch_detail(target: dict[str, Any], is_retry: bool = False) -> dict[str, Any] | None:
                     job_id = target["job_id"]
-                    raw_job_url = target["url"]
-                    # Làm sạch URL bỏ tracking token (u_sr_id, ta_source) để tránh Cloudflare challenge
-                    clean_job_url = raw_job_url.split("?")[0]
-
-                    # Kiểm tra file HTML đã lưu trước đó nếu có
+                    clean_job_url = target["url"].split("?")[0]
                     dest_file = os.path.join(self.html_storage_dir, f"{job_id}.html")
-                    content = ""
+
+                    # Tái sử dụng HTML đã lưu trong cache nếu có
                     if os.path.exists(dest_file):
-                        log.info("[TopCV] Reusing cached HTML: %s", dest_file)
                         with open(dest_file, encoding="utf-8") as f:
                             content = f.read()
-                    else:
-                        log.info("[TopCV] Navigating to detail: %s (Job ID: %s)", clean_job_url, job_id)
-                        # Dùng context sạch riêng biệt cho mỗi trang chi tiết để vượt Cloudflare triệt để
-                        detail_context = browser.new_context(
-                            user_agent=(
-                                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                                "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-                            ),
-                            viewport={"width": 1920, "height": 1080},
-                        )
-                        detail_page = detail_context.new_page()
-                        try:
-                            detail_page.goto(clean_job_url, wait_until="domcontentloaded", timeout=30000)
-                            detail_page.wait_for_timeout(3500)
-                            content = detail_page.content()
-                            if "Attention Required! | Cloudflare" in content:
-                                detail_page.wait_for_timeout(5000)
-                                content = detail_page.content()
+                        if len(content) > 10000:
+                            return {
+                                "job_id": job_id,
+                                "url": clean_job_url,
+                                "html_content": content,
+                            }
 
-                            if self.save_html and "Attention Required" not in content and len(content) > 10000:
-                                with open(dest_file, "w", encoding="utf-8") as f:
-                                    f.write(content)
-                                log.info("[TopCV] Saved detail HTML to %s (%d bytes)", dest_file, len(content))
-                        finally:
-                            detail_page.close()
-                            detail_context.close()
+                    # Polite sleep chống chặn IP
+                    delay = random.uniform(3.0, 5.5) if is_retry else random.uniform(2.0, 3.5)
+                    time.sleep(delay)
+
+                    detail_context = browser.new_context(
+                        user_agent=(
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                            "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                        ),
+                        viewport={"width": 1920, "height": 1080},
+                    )
+                    detail_page = detail_context.new_page()
+                    content = ""
+                    try:
+                        detail_page.goto(clean_job_url, wait_until="domcontentloaded", timeout=30000)
+                        detail_page.wait_for_timeout(3000)
+                        if "Cloudflare" in detail_page.title():
+                            detail_page.wait_for_timeout(5000)
+                        content = detail_page.content()
+
+                        if self.save_html and "Attention Required" not in content and len(content) > 10000:
+                            with open(dest_file, "w", encoding="utf-8") as f:
+                                f.write(content)
+                    except Exception as err:
+                        log.warning("[TopCV] Lỗi tải URL chi tiết %s: %s", clean_job_url, err)
+                    finally:
+                        detail_page.close()
+                        detail_context.close()
 
                     if content and "Attention Required" not in content and len(content) > 10000:
-                        items.append({
+                        return {
                             "job_id": job_id,
                             "url": clean_job_url,
                             "html_content": content,
-                        })
+                        }
+                    return None
+
+                # Lượt 1: Cào Main Queue
+                for idx, target in enumerate(main_queue, 1):
+                    item = fetch_detail(target, is_retry=False)
+                    if item:
+                        items.append(item)
                     else:
-                        log.warning("[TopCV] Detail page %s was blocked or incomplete. Using listing card fallback.", job_id)
-                        items.append({
-                            "job_id": job_id,
-                            "url": clean_job_url,
-                            "title": target.get("title"),
-                            "company": target.get("company"),
-                            "salary": target.get("salary"),
-                            "html_snippet": target.get("html_snippet"),
-                        })
+                        log.warning("[TopCV] Chi tiết %s thất bại ở Lượt 1. Đẩy vào Retry Queue.", target["job_id"])
+                        retry_queue.append(target)
+
+                    if idx % 10 == 0:
+                        log.info("[TopCV] Tiến độ Pha 2: %d/%d (Thành công: %d, Cần retry: %d)", idx, len(main_queue), len(items), len(retry_queue))
+
+                # Lượt 2: Cào lại Retry Queue nếu còn link lỗi
+                if retry_queue:
+                    log.info("[TopCV] Bắt đầu cào lại %d jobs trong Retry Queue...", len(retry_queue))
+                    time.sleep(5.0)  # Nghỉ hồi phục
+                    for target in retry_queue:
+                        item = fetch_detail(target, is_retry=True)
+                        if item:
+                            items.append(item)
+                            log.info("[TopCV] Cào lại thành công cho Job %s!", target["job_id"])
+                        else:
+                            # Fallback card nếu detail hoàn toàn không truy cập được
+                            log.warning("[TopCV] Job %s vẫn không tải được detail sau retry. Dùng listing fallback.", target["job_id"])
+                            items.append({
+                                "job_id": target["job_id"],
+                                "url": target["url"].split("?")[0],
+                                "title": target.get("title"),
+                                "company": target.get("company"),
+                                "salary": target.get("salary"),
+                                "html_snippet": target.get("html_snippet"),
+                            })
 
                 browser.close()
         except Exception as exc:

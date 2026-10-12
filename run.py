@@ -32,6 +32,7 @@ SUPPORTED_SOURCES = [
     "vieclam24h",
     "topcv",
     "glints",
+    "jobsgo",
 ]
 
 
@@ -48,7 +49,7 @@ def setup_logger(verbose: bool = False) -> logging.Logger:
 
 def run_crawler(
     source: str,
-    max_items: int = 30,
+    max_items: Optional[int] = 30,
     output_dir: str = "data",
     checkpoint_dir: Optional[str] = None,
     batch_id: Optional[str] = None,
@@ -60,94 +61,82 @@ def run_crawler(
             f"Nguồn '{source}' không được hỗ trợ. Chọn một trong: {', '.join(SUPPORTED_SOURCES)}"
         )
 
+    crawler_obj = None
     if source == "topdev":
         from crawlers.sources.topdev.crawler import TopDevCrawler
-
-        crawler = TopDevCrawler(
+        crawler_obj = TopDevCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
     elif source == "vietnamworks":
         from crawlers.sources.vietnamworks.crawler import VietnamWorksCrawler
-
-        crawler = VietnamWorksCrawler(
+        crawler_obj = VietnamWorksCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
     elif source == "careerviet":
         from crawlers.sources.careerviet.crawler import CareerVietCrawler
-
-        crawler = CareerVietCrawler(
+        crawler_obj = CareerVietCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
     elif source == "vieclam24h":
         from crawlers.sources.vieclam24h.crawler import ViecLam24hCrawler
-
-        crawler = ViecLam24hCrawler(
+        crawler_obj = ViecLam24hCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
     elif source == "topcv":
         from crawlers.sources.topcv.crawler import TopCVCrawler
-
-        crawler = TopCVCrawler(
+        crawler_obj = TopCVCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
     elif source == "itviec":
         from crawlers.sources.itviec.crawler import ItviecCrawler
-
-        crawler = ItviecCrawler(
+        crawler_obj = ItviecCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
     elif source == "glints":
         try:
             from crawlers.sources.glints.crawler import GlintsCrawler
-
-            crawler = GlintsCrawler(
+            crawler_obj = GlintsCrawler(
                 checkpoint_dir=checkpoint_dir,
                 output_dir=output_dir,
                 max_items=max_items,
             )
-            if batch_id:
-                crawler.batch_id = batch_id
-            return crawler.run()
         except ImportError:
             raise NotImplementedError("Crawler nguồn 'glints' đang được phát triển hoặc chưa có file crawler.py.")
+    elif source == "jobsgo":
+        from crawlers.sources.jobsgo.crawler import JobsGOCrawler
+        crawler_obj = JobsGOCrawler(
+            checkpoint_dir=checkpoint_dir,
+            output_dir=output_dir,
+            max_items=max_items,
+        )
+    else:
+        raise ValueError(f"Chưa cài đặt runner cho nguồn {source}")
 
-    raise ValueError(f"Chưa cài đặt runner cho nguồn {source}")
+    if batch_id:
+        crawler_obj.batch_id = batch_id
+    stats = crawler_obj.run()
+
+    # Tự động đồng bộ các jobs vừa cào vào State Catalog (SUCCESS)
+    try:
+        from crawlers.common.job_catalog import JobStateCatalog
+        JobStateCatalog().sync_from_batches(data_dir=output_dir, source=source)
+    except Exception as exc:
+        logging.getLogger("runner").warning("Không thể tự động đồng bộ catalog: %s", exc)
+
+    return stats
+
 
 
 def main() -> int:
@@ -177,7 +166,12 @@ Ví dụ sử dụng:
         "-m",
         type=int,
         default=30,
-        help="Số lượng tin tối đa cần thu thập trong batch (mặc định: 30)",
+        help="Số lượng tin tối đa cần thu thập trong batch (mặc định: 30, đặt 0 hoặc dùng --all-items để cào hết)",
+    )
+    parser.add_argument(
+        "--all-items",
+        action="store_true",
+        help="Cào toàn bộ items / toàn bộ trang không giới hạn (tương đương max_items=None)",
     )
     parser.add_argument(
         "--output-dir",
@@ -210,11 +204,15 @@ Ví dụ sử dụng:
 
     target_sources = SUPPORTED_SOURCES if args.source == "all" else [args.source]
 
+    # Xác định giới hạn items (None = cào toàn bộ tất cả các trang)
+    effective_max_items: Optional[int] = None if (args.all_items or args.max_items <= 0) else args.max_items
+
     all_results = []
     overall_exit_code = 0
 
     log.info("=" * 70)
-    log.info("BẮT ĐẦU CHẠY CRAWLER (Tổng %d nguồn) | max_items: %d", len(target_sources), args.max_items)
+    items_desc = "TOÀN BỘ (All Items / All Pages)" if effective_max_items is None else f"{effective_max_items} items/nguồn"
+    log.info("BẮT ĐẦU CHẠY CRAWLER (Tổng %d nguồn) | Mục tiêu: %s", len(target_sources), items_desc)
     log.info("=" * 70)
 
     for src in target_sources:
@@ -222,7 +220,7 @@ Ví dụ sử dụng:
         try:
             stats = run_crawler(
                 source=src,
-                max_items=args.max_items,
+                max_items=effective_max_items,
                 output_dir=args.output_dir,
                 checkpoint_dir=args.checkpoint_dir,
                 batch_id=args.batch_id,
@@ -240,6 +238,9 @@ Ví dụ sử dụng:
             log.error("Lỗi khi chạy crawler nguồn %s: %s", src, exc, exc_info=args.verbose)
             all_results.append((src, False, {"error": str(exc)}))
             overall_exit_code = 1
+
+    # Sắp xếp kết quả theo tên nguồn để hiển thị bảng rõ ràng
+    all_results.sort(key=lambda x: x[0])
 
     print("\n" + "=" * 80)
     print("📊 BẢNG TỔNG KẾT KẾT QUẢ THU THẬP CẢ 7 NGUỒN TUYỂN DỤNG")

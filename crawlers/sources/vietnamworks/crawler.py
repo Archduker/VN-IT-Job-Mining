@@ -33,7 +33,7 @@ CRAWLER_VERSION = "0.5.0"
 API_URL = "https://ms.vietnamworks.com/job-search/v1.0/search"
 IT_QUERIES = [
     "software developer",
-    "developer",
+    "software engineer",
     "backend",
     "frontend",
     "fullstack",
@@ -41,7 +41,19 @@ IT_QUERIES = [
     "devops",
     "tester",
     "qa qc",
+    "lập trình viên",
     "cntt",
+    "công nghệ thông tin",
+    "system engineer",
+    "solution architect",
+    "business analyst",
+    "mobile developer",
+    "product owner",
+    "data analyst",
+    "ai engineer",
+    "machine learning",
+    "cyber security",
+    "cloud engineer",
 ]
 HITS_PER_PAGE = 50
 
@@ -206,6 +218,8 @@ class VietnamWorksCrawler(BaseCrawler):
         desc_html = item.get("jobDescription") or f"<p>{title} at {company_name}</p>"
         req_html = item.get("jobRequirement") or ""
         desc_list = text_to_clean_lines(desc_html)
+        if not desc_list:
+            desc_list = [f"{title} at {company_name}"]
         req_list = text_to_clean_lines(req_html) if req_html else None
 
         # Phúc lợi dạng danh sách (Benefits List)

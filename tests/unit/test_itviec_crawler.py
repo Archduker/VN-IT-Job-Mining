@@ -11,13 +11,8 @@ import sys
 import tempfile
 import unittest
 
-_itviec_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_repo_root = os.path.abspath(os.path.join(_itviec_dir, "..", "..", ".."))
-sys.path.insert(0, _repo_root)
-sys.path.insert(0, _itviec_dir)
-
-from crawlers.sources.itviec.crawler import ItviecCrawler  # noqa: E402
-import parser as job_parser  # noqa: E402
+from crawlers.sources.itviec.crawler import ItviecCrawler
+from crawlers.sources.itviec import parser as job_parser
 
 
 class TestItviecCrawlerInit(unittest.TestCase):
