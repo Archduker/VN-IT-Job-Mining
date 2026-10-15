@@ -13,8 +13,10 @@ AIRFLOW_HOME := $(PROJECT_ROOT)/airflow
 
 export AIRFLOW_HOME
 
-.PHONY: help setup install install-dev test test-cov lint format \
+.PHONY: help setup install install-dev test test-cov test-ledger lint format \
+        minio-up minio-down setup-minio check-env \
         airflow-webserver airflow-scheduler airflow-stop \
+        discover-topcv crawl-topcv discover-topdev crawl-topdev \
         crawl-topdev crawl-careerviet crawl-itviec crawl-vietnamworks \
         crawl-vieclam24h crawl-topcv \
         clean clean-data
@@ -25,13 +27,20 @@ help:
 	@echo "  VN IT Job Mining — Available Commands"
 	@echo "  ========================================"
 	@echo ""
-	@echo "  Setup:"
+	@echo "  Setup & Environment:"
 	@echo "    make setup              Full setup: venv + Airflow install"
-	@echo "    make install            Install runtime deps only"
+	@echo "    make install            Install runtime deps (pandas, duckdb, minio...)"
 	@echo "    make install-dev        Install runtime + dev deps"
+	@echo "    make check-env          Verify environment & MinIO connection"
+	@echo ""
+	@echo "  MinIO Lakehouse:"
+	@echo "    make minio-up           Start local MinIO server (Docker) + auto-init bucket"
+	@echo "    make minio-down         Stop MinIO container"
+	@echo "    make setup-minio        Verify/Create vn-it-jobs bucket via python script"
 	@echo ""
 	@echo "  Testing:"
-	@echo "    make test               Run all tests"
+	@echo "    make test               Run all unit tests"
+	@echo "    make test-ledger        Run URL ledger & 21-day recrawl tests"
 	@echo "    make test-cov           Run tests with coverage report"
 	@echo ""
 	@echo "  Code Quality:"
@@ -42,11 +51,11 @@ help:
 	@echo "    make airflow-webserver  Start Airflow web UI (port 8080)"
 	@echo "    make airflow-scheduler  Start Airflow scheduler"
 	@echo ""
-	@echo "  Crawling (manual run):"
-	@echo "    make crawl-topdev       Crawl TopDev (max 450 items)"
-	@echo "    make crawl-careerviet   Crawl CareerViet (max 450 items)"
-	@echo "    make crawl-itviec       Crawl ITviec (max 450 items)"
-	@echo "    make crawl-vietnamworks Crawl VietnamWorks (max 450 items)"
+	@echo "  Crawling (Two-Phase):"
+	@echo "    make discover-topcv     Run Phase 1: URL Discovery for TopCV"
+	@echo "    make crawl-topcv        Run Phase 2: Detail Extraction for TopCV"
+	@echo "    make discover-topdev    Run Phase 1: URL Discovery for TopDev"
+	@echo "    make crawl-topdev       Run Phase 2: Detail Extraction for TopDev"
 	@echo ""
 	@echo "  Cleanup:"
 	@echo "    make clean              Remove __pycache__, .pytest_cache"
@@ -62,19 +71,41 @@ setup:
 # ── Install dependencies ───────────────────────────────────────
 install:
 	@test -d $(VENV) || python3 -m venv $(VENV)
-	$(PIP) install --quiet --upgrade pip
-	$(PIP) install --quiet -r requirements.txt
+	$(PIP) install --upgrade pip
+	$(PIP) install -r requirements.txt
 	@echo "[install] Runtime dependencies installed."
 
 install-dev:
 	@test -d $(VENV) || python3 -m venv $(VENV)
-	$(PIP) install --quiet --upgrade pip
-	$(PIP) install --quiet -r requirements-dev.txt
+	$(PIP) install --upgrade pip
+	$(PIP) install -r requirements-dev.txt
 	@echo "[install-dev] Dev dependencies installed."
+
+check-env:
+	@echo "Checking Python environment..."
+	@$(PYTHON) --version
+	@echo "Checking MinIO setup..."
+	@$(PYTHON) scripts/setup_minio.py || true
+
+# ── MinIO Commands ─────────────────────────────────────────────
+minio-up:
+	@echo "Starting MinIO Object Storage (API: :9000, Web UI: :9001)..."
+	docker compose -f docker-compose.minio.yml up -d
+	@echo "MinIO running! Web UI: http://localhost:9001 (User: minioadmin / Pass: minioadmin)"
+
+minio-down:
+	@echo "Stopping MinIO Object Storage..."
+	docker compose -f docker-compose.minio.yml down
+
+setup-minio:
+	$(PYTHON) scripts/setup_minio.py
 
 # ── Testing ────────────────────────────────────────────────────
 test:
 	$(PYTEST) tests/ -v
+
+test-ledger:
+	$(PYTEST) tests/unit/test_url_ledger.py -v
 
 test-cov:
 	$(PYTEST) tests/ --cov=crawlers --cov-report=term-missing --cov-report=html:htmlcov
@@ -97,24 +128,33 @@ airflow-scheduler:
 	@echo "[airflow] Press Ctrl+C to stop."
 	AIRFLOW_HOME=$(AIRFLOW_HOME) $(AIRFLOW) scheduler
 
-# ── Manual crawl commands ──────────────────────────────────────
-crawl-topdev:
-	$(PYTHON) run.py --source topdev --max-items 450
-
-crawl-careerviet:
-	$(PYTHON) run.py --source careerviet --max-items 450
-
-crawl-itviec:
-	$(PYTHON) run.py --source itviec --max-items 450
-
-crawl-vietnamworks:
-	$(PYTHON) run.py --source vietnamworks --max-items 450
-
-crawl-vieclam24h:
-	$(PYTHON) run.py --source vieclam24h --max-items 450
+# ── Crawling Commands (Two-Phase Supported) ────────────────────
+discover-topcv:
+	$(PYTHON) run.py --source topcv --phase discover
 
 crawl-topcv:
-	$(PYTHON) run.py --source topcv --max-items 450
+	$(PYTHON) run.py --source topcv --phase detail --batch-size 50
+
+discover-topdev:
+	$(PYTHON) run.py --source topdev --phase discover
+
+crawl-topdev:
+	$(PYTHON) run.py --source topdev --phase detail --batch-size 50
+
+crawl-careerviet:
+	$(PYTHON) run.py --source careerviet --phase all
+
+crawl-itviec:
+	$(PYTHON) run.py --source itviec --phase all
+
+crawl-vietnamworks:
+	$(PYTHON) run.py --source vietnamworks --phase all
+
+crawl-vieclam24h:
+	$(PYTHON) run.py --source vieclam24h --phase all
+
+crawl-glints:
+	$(PYTHON) run.py --source glints --phase all
 
 # ── Cleanup ────────────────────────────────────────────────────
 clean:
