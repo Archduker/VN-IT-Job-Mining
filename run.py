@@ -52,102 +52,98 @@ def run_crawler(
     output_dir: str = "data",
     checkpoint_dir: Optional[str] = None,
     batch_id: Optional[str] = None,
+    phase: str = "all",
+    max_pages: Optional[int] = None,
 ) -> Dict[str, Any]:
-    """Khởi tạo và thực thi crawler theo source."""
+    """Khởi tạo và thực thi crawler theo source và phase."""
     source = source.lower()
     if source not in SUPPORTED_SOURCES:
         raise ValueError(
             f"Nguồn '{source}' không được hỗ trợ. Chọn một trong: {', '.join(SUPPORTED_SOURCES)}"
         )
 
-    if source == "topdev":
-        from crawlers.sources.topdev.crawler import TopDevCrawler
+    crawler_map = {}
 
-        crawler = TopDevCrawler(
-            checkpoint_dir=checkpoint_dir,
-            output_dir=output_dir,
-            max_items=max_items,
-        )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
-    elif source == "vietnamworks":
-        from crawlers.sources.vietnamworks.crawler import VietnamWorksCrawler
-
-        crawler = VietnamWorksCrawler(
-            checkpoint_dir=checkpoint_dir,
-            output_dir=output_dir,
-            max_items=max_items,
-        )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
-    elif source == "careerviet":
-        from crawlers.sources.careerviet.crawler import CareerVietCrawler
-
-        crawler = CareerVietCrawler(
-            checkpoint_dir=checkpoint_dir,
-            output_dir=output_dir,
-            max_items=max_items,
-        )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
-    elif source == "vieclam24h":
-        from crawlers.sources.vieclam24h.crawler import ViecLam24hCrawler
-
-        crawler = ViecLam24hCrawler(
-            checkpoint_dir=checkpoint_dir,
-            output_dir=output_dir,
-            max_items=max_items,
-        )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
-    elif source == "topcv":
+    if source == "topcv":
         from crawlers.sources.topcv.crawler import TopCVCrawler
-
         crawler = TopCVCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
+    elif source == "topdev":
+        from crawlers.sources.topdev.crawler import TopDevCrawler
+        crawler = TopDevCrawler(
+            checkpoint_dir=checkpoint_dir,
+            output_dir=output_dir,
+            max_items=max_items,
+        )
+    elif source == "vietnamworks":
+        from crawlers.sources.vietnamworks.crawler import VietnamWorksCrawler
+        crawler = VietnamWorksCrawler(
+            checkpoint_dir=checkpoint_dir,
+            output_dir=output_dir,
+            max_items=max_items,
+        )
+    elif source == "careerviet":
+        from crawlers.sources.careerviet.crawler import CareerVietCrawler
+        crawler = CareerVietCrawler(
+            checkpoint_dir=checkpoint_dir,
+            output_dir=output_dir,
+            max_items=max_items,
+        )
+    elif source == "vieclam24h":
+        from crawlers.sources.vieclam24h.crawler import ViecLam24hCrawler
+        crawler = ViecLam24hCrawler(
+            checkpoint_dir=checkpoint_dir,
+            output_dir=output_dir,
+            max_items=max_items,
+        )
     elif source == "itviec":
         from crawlers.sources.itviec.crawler import ItviecCrawler
-
         crawler = ItviecCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
-        if batch_id:
-            crawler.batch_id = batch_id
-        return crawler.run()
-
     elif source == "glints":
         try:
             from crawlers.sources.glints.crawler import GlintsCrawler
-
             crawler = GlintsCrawler(
                 checkpoint_dir=checkpoint_dir,
                 output_dir=output_dir,
                 max_items=max_items,
             )
-            if batch_id:
-                crawler.batch_id = batch_id
-            return crawler.run()
         except ImportError:
             raise NotImplementedError("Crawler nguồn 'glints' đang được phát triển hoặc chưa có file crawler.py.")
+    else:
+        raise ValueError(f"Chưa cài đặt runner cho nguồn {source}")
 
-    raise ValueError(f"Chưa cài đặt runner cho nguồn {source}")
+    if batch_id:
+        crawler.batch_id = batch_id
+
+    # ── Điều phối theo Phase ───────────────────────────────────
+    if phase == "discover":
+        if hasattr(crawler, "discover_urls"):
+            discovered = crawler.discover_urls(max_pages=max_pages)
+            return {"source": source, "phase": "discover", "discovered_urls": discovered}
+        else:
+            raise NotImplementedError(f"Crawler nguồn '{source}' chưa cài đặt hàm discover_urls()")
+
+    elif phase == "detail":
+        if hasattr(crawler, "crawl_details"):
+            stats = crawler.crawl_details(limit=max_items)
+            return {"source": source, "phase": "detail", **stats}
+        else:
+            raise NotImplementedError(f"Crawler nguồn '{source}' chưa cài đặt hàm crawl_details()")
+
+    else:  # phase == "all"
+        if hasattr(crawler, "discover_urls") and hasattr(crawler, "crawl_details"):
+            discovered = crawler.discover_urls(max_pages=max_pages)
+            stats = crawler.crawl_details(limit=max_items)
+            return {"source": source, "phase": "all", "discovered_urls": discovered, **stats}
+        return crawler.run()
+
 
 
 def main() -> int:
@@ -199,6 +195,20 @@ Ví dụ sử dụng:
         help="Mã định danh batch (mặc định: tự sinh dạng YYYY-MM-DD_<source>_<seq>)",
     )
     parser.add_argument(
+        "--phase",
+        "-p",
+        type=str,
+        default="all",
+        choices=["discover", "detail", "all"],
+        help="Giai đoạn thực thi: 'discover' (Pha 1: quét link), 'detail' (Pha 2: cào chi tiết), 'all' (cả hai)",
+    )
+    parser.add_argument(
+        "--max-pages",
+        type=int,
+        default=None,
+        help="Số trang danh mục tối đa cần quét ở Phase 1 (mặc định: không giới hạn)",
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -214,11 +224,11 @@ Ví dụ sử dụng:
     overall_exit_code = 0
 
     log.info("=" * 70)
-    log.info("BẮT ĐẦU CHẠY CRAWLER (Tổng %d nguồn) | max_items: %d", len(target_sources), args.max_items)
+    log.info("BẮT ĐẦU CHẠY CRAWLER (Tổng %d nguồn) | Phase: %s | max_items: %d", len(target_sources), args.phase.upper(), args.max_items)
     log.info("=" * 70)
 
     for src in target_sources:
-        log.info("\n>>> ĐANG CHẠY NGUỒN: %s ...", src.upper())
+        log.info("\n>>> ĐANG CHẠY NGUỒN: %s (Phase: %s) ...", src.upper(), args.phase.upper())
         try:
             stats = run_crawler(
                 source=src,
@@ -226,15 +236,14 @@ Ví dụ sử dụng:
                 output_dir=args.output_dir,
                 checkpoint_dir=args.checkpoint_dir,
                 batch_id=args.batch_id,
+                phase=args.phase,
+                max_pages=args.max_pages,
             )
             all_results.append((src, True, stats))
             log.info(
-                "[%s] Hoàn tất: crawled=%d, skipped=%d, errors=%d, file=%s",
+                "[%s] Hoàn tất: %s",
                 src.upper(),
-                stats.get("crawled", 0),
-                stats.get("skipped", 0),
-                stats.get("errors", 0),
-                stats.get("output_file", "N/A"),
+                stats,
             )
         except Exception as exc:
             log.error("Lỗi khi chạy crawler nguồn %s: %s", src, exc, exc_info=args.verbose)

@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "source": "topcv",
+    "source_job_id": "topcv_3003",
+    "url": "https://www.topcv.vn/viec-lam/senior-data-engineer/3003.html",
+    "crawled_at": "2026-10-16T08:00:00Z",
+    "crawler_version": "2.0.0",
+    "version": 1,
+    "content_hash": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678abcdef012345678abcdef0123",
+    "status": "DONE"
+  },
+  "raw_payload": {
+    "box-header-job__title": "Kỹ sư Dữ liệu Cấp cao (Data Engineer - Big Data, Spark, Kafka)",
+    "box-header-job__company-name": "NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN PHÁT TRIỂN VIỆT NAM",
+    "box-header-job__salary--title": "Thỏa thuận",
+    "job-detail__info--deadline": "20/11/2026",
+    "experience": "2 - 4 năm",
+    "level": "Chuyên viên chính",
+    "employment_type": "Toàn thời gian tại văn phòng (On-site)",
+    "badge_tags": ["Apache Spark", "Kafka", "Data Lakehouse", "Airflow", "SQL Tuning"],
+    "description_list": [
+      "Vận hành và xây dựng các luồng dữ liệu thời gian thực (Real-time Streaming) và Batch processing từ Core Banking sang Data Lake.",
+      "Tối ưu hóa các tiến trình xử lý PySpark, Delta Lake và hệ thống phân phối Apache Kafka.",
+      "Đảm bảo chất lượng dữ liệu (Data Quality), bảo mật dữ liệu khách hàng theo quy chuẩn Ngân hàng Nhà nước."
+    ],
+    "requirements_list": [
+      "Tốt nghiệp Đại học chuyên ngành CNTT, Khoa học Máy tính hoặc Toán Tin.",
+      "Ít nhất 2 năm kinh nghiệm làm việc với hệ sinh thái Big Data: Hadoop, Spark, Hive, Kafka.",
+      "Thành thạo lập trình Python hoặc Scala, kỹ năng viết SQL tối ưu hóa chuyên sâu."
+    ],
+    "benefits_list": [
+      "Mức thu nhập thỏa thuận xứng đáng theo năng lực và kinh nghiệm.",
+      "Gói thưởng tài chính cuối năm từ 3 - 6 tháng lương.",
+      "Vay ưu đãi lãi suất cán bộ nhân viên ngân hàng mua nhà, mua xe."
+    ]
+  }
+}
