@@ -1,13 +1,15 @@
-# CẨM NANG KIẾN TRÚC CRAWL RAW DATA & CDC VERSIONING (MINIO)
+# CẨM NANG KIẾN TRÚC CRAWL RAW DATA, MINIO URL LEDGER & CDC VERSIONING
 
 > **Tài liệu quy trình cốt lõi số 2 (Core Document 02)**  
-> **Nguyên tắc cốt tử:** *"Cào là phải cào HẾT — Trang tuyển dụng có trường gì phải lấy nguyên vẹn trường đó, giữ nguyên tên trường gốc, không tự ý format hay ép schema ở bước cào."*
+> **Nguyên tắc cốt tử:**  
+> 1. *"Cào là phải cào HẾT — Trang tuyển dụng có trường gì phải lấy nguyên vẹn trường đó, giữ nguyên tên trường gốc, không tự ý format hay ép schema ở bước cào."*  
+> 2. *"Tách biệt 2 pha: Phase 1 vét sạch URL không giới hạn thời gian $\rightarrow$ Lưu URL Ledger vào MinIO $\rightarrow$ Phase 2 cào chi tiết với chu kỳ Re-crawl 21 ngày."*
 
 ---
 
 ## 1. Triết Lý Cào Dữ Liệu Raw As-Is (Zero Information Loss)
 
-Trong các hệ thống Data Mining hiện đại, bước thu thập dữ liệu (Collection) tuân thủ nghiêm ngặt nguyên lý **Bảo Toàn Thông Tin Tuyệt Đối**:
+Trong các hệ thống Data Mining hiện đại, bước thu thập dữ liệu tuân thủ nghiêm ngặt nguyên lý **Bảo Toàn Thông Tin Tuyệt Đối**:
 - **Không tự ý format lương:** Không được tự ý đổi "Thỏa thuận", "Cạnh tranh", "Từ 20 triệu" thành số rỗng hay số 0 ngay trong lúc cào. Hãy lưu nguyên chuỗi văn bản gốc (Raw String) cùng toàn bộ thẻ HTML bao quanh nó.
 - **Không vội chuẩn hóa tên trường:** Mỗi trang web có cấu trúc DOM hoặc khóa API riêng. Hãy cào nguyên văn các key đó.
   - Ví dụ ở TopCV: Giữ nguyên `"box-header-job__salary--title": "From 20 million"`, `"job-detail__info--deadline": "30/11/2026"`, `"badge-tag-list": [...]`.
@@ -16,152 +18,245 @@ Trong các hệ thống Data Mining hiện đại, bước thu thập dữ liệ
 
 ---
 
-## 2. Kiến Trúc Lưu Trữ MinIO Object Storage
+## 2. Kiến Trúc Thu Thập 2 Pha Độc Lập (Two-Phase Decoupled Pipeline)
 
-Hệ thống sử dụng **MinIO** — giải pháp Object Storage mã nguồn mở tương thích 100% với chuẩn S3 API.
+Hệ thống tách biệt hoàn toàn việc **Thu thập Link (Discovery)** và **Bóc tách Chi tiết (Extraction)** thông qua trạm trung chuyển **URL Ledger trên MinIO**:
 
 ```mermaid
 flowchart TD
-    Crawler["Crawler Runner (Python / Scrapy / Playwright)"] -->|boto3 / s3fs| MinIO["MinIO Server (S3-Compatible)\nEndpoint: http://localhost:9000"]
-    MinIO --> Bucket["Bucket: vn-it-jobs"]
-    
-    subgraph BucketPaths["Phân Tầng Trong Bucket vn-it-jobs"]
-        Raw["/raw/<source>/<YYYY-MM-DD>/<job_id>_v<version>.json"]
-        Catalog["/catalog/job_catalog_<source>.parquet"]
-        Staging["/staging/<source>/<YYYY-MM-DD>/batch.parquet"]
-        Curated["/curated/master_jobs_v1.parquet"]
+    subgraph Phase1["PHASE 1: URL DISCOVERY (Vét Sạch Link Không Giới Hạn)"]
+        ListCrawler["Spider List / Search API\n(Chạy qua tất cả các trang danh mục/phân trang)"]
+        CleanURL["Làm sạch Canonical URL\nBỏ utm_*, session_id, ref_source"]
+        GenURLHash["Tạo url_hash = MD5(canonical_url)\nIdentity_key = slugify(company + title)"]
+        ListCrawler --> CleanURL --> GenURLHash
     end
 
-    Bucket --> Raw
-    Bucket --> Catalog
-    Bucket --> Staging
-    Bucket --> Curated
+    subgraph MinIOStore["KHO LƯU TRỮ MINIO (Object Storage Lakehouse)"]
+        subgraph URLLedgerZone["minio://vn-it-jobs/url_ledger/<source>/"]
+            Manifest["manifests/manifest_YYYY-MM-DD.jsonl\n(Danh sách link phát hiện theo đợt)"]
+            MasterCatalog["catalog_master.parquet\n(Bảng trạng thái vòng đời của toàn bộ link)"]
+        end
+
+        subgraph RawDetailZone["minio://vn-it-jobs/raw/<source>/"]
+            RawJSON["<YYYY-MM-DD>/<job_id>_v<version>.json\n(100% Raw DOM / API Payload)"]
+        end
+    end
+
+    subgraph Phase2["PHASE 2: DETAIL EXTRACTION (Cào Chi Tiết & Re-crawl 21 Ngày)"]
+        Scheduler["Bộ Lọc Link Cần Cào:\n1. Link mới (status = PENDING)\n2. Link đến hạn 21 ngày (status = DONE & age >= 21d)"]
+        Worker["Detail Crawler\n(Tải HTML / API bài chi tiết)"]
+        Hasher["Tính Clean Container HTML Hash\nSo sánh với Catalog"]
+        Scheduler --> Worker --> Hasher
+    end
+
+    Phase1 -->|Ghi nhận link| Manifest --> MasterCatalog
+    MasterCatalog -->|Cung cấp link cần cào| Scheduler
+    Hasher -->|Ghi snapshot thô| RawJSON
+    Hasher -->|Cập nhật version, DONE, last_scraped_at| MasterCatalog
 ```
 
-### Cấu trúc file Raw chuẩn (`<job_id>_v<version>.json`)
-Mỗi tin cào về được bọc trong một **Envelop Metadata Chuẩn**:
+### Ưu điểm vượt trội của kiến trúc 2 pha:
+1. **Không giới hạn thời gian chạy:** Phase 1 chạy độc lập, vét sạch hàng ngàn link từ trang danh mục mà không sợ nghẽn mạng hay bị gián đoạn giữa chừng.
+2. **Kiểm soát độ phủ (Coverage):** Nhóm biết chính xác toàn thị trường đang có bao nhiêu vị trí tuyển dụng trước khi tiến hành cào chi tiết.
+3. **Tiết kiệm tài nguyên:** Nếu một link đã cào thành công và chưa đủ 21 ngày, Phase 2 tự động bỏ qua (Skip), không gửi request dư thừa lên website tuyển dụng.
 
+---
+
+## 3. Cấu Trúc URL Ledger & Phân Tầng Trên MinIO
+
+Hệ thống lưu trữ trực tiếp trên **MinIO Object Storage** dưới định dạng file phẳng chuẩn Big Data (JSONL & Parquet), không phụ thuộc SQL server:
+
+### 3.1. Phân tầng thư mục trong bucket `vn-it-jobs`:
+- **`url_ledger/<source>/manifests/manifest_<YYYY-MM-DD>.jsonl`**: Danh sách toàn bộ URL tìm thấy trong ngày cào (Append-only).
+- **`url_ledger/<source>/catalog_master.parquet`**: Bảng trạng thái vòng đời tổng hợp của toàn bộ các link của nguồn đó.
+- **`raw/<source>/<YYYY-MM-DD>/<job_id>_v<version>.json`**: File snapshot nội dung thô nguyên bản của từng bài đăng.
+
+### 3.2. Cấu trúc bản ghi URL trong `manifest_<date>.jsonl`:
 ```json
 {
-  "metadata": {
-    "job_id": "topcv_1948291",
-    "source": "topcv",
-    "source_url": "https://www.topcv.vn/viec-lam/senior-python-engineer/1948291.html",
-    "scraped_at": "2026-10-14T14:40:00.123456Z",
-    "scraper_version": "2.0.0",
-    "version": 1,
-    "content_hash": "a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890",
-    "http_status": 200
-  },
-  "raw_payload": {
-    "box-header-job__title": "Senior Python Backend Engineer (FastAPI, Redis)",
-    "box-header-job__salary--title": "Từ 25 - 45 triệu",
-    "box-header-job__company-name": "Công ty Cổ phần Công nghệ ABC",
-    "job-detail__box--experience": "3 - 5 năm",
-    "job-detail__box--level": "Senior",
-    "job-detail__box--location": "Tầng 5, Tòa nhà Techno, Quận Cầu Giấy, Hà Nội",
-    "job-detail__box--description_html": "<div>...</div>",
-    "job-detail__box--requirements_html": "<div>...</div>",
-    "job-detail__box--benefits_html": "<div>...</div>",
-    "badge_tags": ["Python", "FastAPI", "Docker", "Thưởng tháng 13", "Laptop cấp riêng"],
-    "raw_deadline": "25/11/2026"
-  }
+  "url_hash": "e4d909c290d0fb1ca068ffaddf22cbd0",
+  "canonical_url": "https://topcv.vn/viec-lam/senior-python-engineer/1948291.html",
+  "source": "topcv",
+  "job_id": "1948291",
+  "discovered_at": "2026-10-16T08:00:00Z",
+  "preliminary_title": "Senior Python Backend Engineer",
+  "preliminary_company": "FPT Software",
+  "identity_key": "fpt_software__senior_python_backend_engineer"
 }
 ```
 
+### 3.3. Bảng trạng thái vòng đời `catalog_master.parquet`:
+| Tên cột | Kiểu dữ liệu | Ý nghĩa |
+| :--- | :--- | :--- |
+| `url_hash` | `VARCHAR(32)` (PK) | Mã băm MD5 của canonical URL |
+| `canonical_url` | `TEXT` | URL gốc sau khi loại bỏ token theo dõi (`utm_*`, `ref`) |
+| `identity_key` | `TEXT` (Index) | Chuỗi định danh bản chất công việc (`clean_company + clean_title`) |
+| `status` | `VARCHAR(16)` | `PENDING`, `DONE`, `RECHECK_DUE`, `FAILED`, `CLOSED` |
+| `first_seen_at` | `TIMESTAMP` | Thời điểm lần đầu tiên tìm thấy link |
+| `last_seen_at` | `TIMESTAMP` | Thời điểm gần nhất thấy link vẫn còn trên trang danh mục |
+| `last_scraped_at`| `TIMESTAMP` | Thời điểm gần nhất cào thành công chi tiết |
+| `latest_version` | `INTEGER` | Phiên bản snapshot hiện tại ($1, 2, 3, \dots$) |
+| `content_hash` | `VARCHAR(64)` | Mã băm SHA256 của nội dung HTML chính bài viết |
+| `repost_of_url_hash` | `VARCHAR(32)` | Trỏ đến `url_hash` gốc nếu đây là tin đăng lại (Repost) |
+
 ---
 
-## 3. Cơ Chế Change Data Capture (CDC) & Content Hashing
+## 4. Cơ Chế Băm HTML Khối Nội Dung (Clean Container HTML Hashing)
 
-Đây là giải pháp trả lời trực diện câu hỏi hóc búa của Giảng viên: *"Nếu nhà tuyển dụng sửa tin thì sao?"*.
+### 4.1. So sánh: Băm HTML Thô vs Băm Parsed Fields vs Băm Container Sạch
+- **Băm toàn bộ HTML thô (`response.text`):** Rất dễ bị **dương tính giả (False Positive)** vì các trang web luôn chèn mã CSRF, số lượt xem (`views: 104`), ngày giờ server thay đổi từng giây $\rightarrow$ làm hash thay đổi liên tục dù nội dung tuyển dụng không đổi!
+- **Băm các trường đã parse:** Mất công viết parser chi tiết trước khi kiểm tra hash, dễ bỏ sót trường.
+- **Giải pháp tối ưu: Clean Container HTML Hashing:** Bóc tách khối thẻ bao bọc nội dung tuyển dụng (ví dụ `<div class="job-detail">`), loại bỏ các thẻ rác động (`<script>`, `<style>`, `<iframe>`, số lượt xem) rồi mới băm SHA256.
 
-### 3.1. Thuật toán tạo mã băm nội dung (`content_hash`)
-Thuật toán lấy toàn bộ các trường nội dung cốt lõi, chuẩn hóa khoảng trắng thừa và băm bằng thuật toán SHA256:
-
+### 4.2. Mã nguồn chuẩn (`calculate_html_hash`):
 ```python
 import hashlib
-import json
+import re
+from bs4 import BeautifulSoup
 
-def calculate_content_hash(raw_payload: dict) -> str:
+def calculate_html_hash(html_content: str, container_selector: str = "body") -> str:
     """
-    Sinh mã SHA256 từ các trường nội dung có khả năng bị sửa đổi.
-    Bỏ qua các trường động như lượt xem, ngày hiện tại.
+    Băm HTML khối nội dung chính, tự động loại bỏ các thành phần rác động:
+    - Thẻ <script>, <style>, <iframe>, <noscript>, <svg>
+    - Số lượt xem (views), timestamp hiển thị
+    - Thuộc tính ngẫu nhiên (CSRF token, nonce)
     """
-    significant_content = {
-        "title": raw_payload.get("box-header-job__title") or raw_payload.get("title", ""),
-        "salary": raw_payload.get("box-header-job__salary--title") or raw_payload.get("salary", ""),
-        "experience": raw_payload.get("job-detail__box--experience") or raw_payload.get("experience", ""),
-        "description": raw_payload.get("job-detail__box--description_html") or raw_payload.get("description", ""),
-        "requirements": raw_payload.get("job-detail__box--requirements_html") or raw_payload.get("requirements", ""),
-        "tags": sorted(raw_payload.get("badge_tags") or [])
-    }
+    soup = BeautifulSoup(html_content, "html.parser")
+    target = soup.select_one(container_selector) or soup.body or soup
     
-    # Serialize ổn định (sắp xếp key)
-    serialized = json.dumps(significant_content, sort_keys=True, ensure_ascii=False)
-    return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+    # Xóa sạch các thẻ động gây nhảy hash oan
+    for tag in target(["script", "style", "iframe", "noscript", "svg"]):
+        tag.decompose()
+        
+    # Chuẩn hóa khoảng trắng
+    clean_text = re.sub(r"\s+", " ", target.get_text(separator=" ", strip=True))
+    return hashlib.sha256(clean_text.encode("utf-8")).hexdigest()
 ```
 
-### 3.2. Bảng Trạng Thái Catalog (CDC State Table)
-Catalog duy trì trạng thái của từng bài đăng trong toàn bộ vòng đời của nó:
+---
 
-| Cột | Ý nghĩa | Ví dụ |
-| :--- | :--- | :--- |
-| `source` | Tên sàn tuyển dụng | `topcv` |
-| `job_id` | Định danh bài đăng trên sàn | `1948291` |
-| `latest_version` | Phiên bản snapshot hiện tại | `2` |
-| `current_content_hash` | Mã băm nội dung mới nhất | `e3b0c44298fc1c149...` |
-| `first_seen_at` | Thời điểm lần đầu cào thấy | `2026-10-01 08:00:00` |
-| `last_seen_at` | Thời điểm gần nhất thấy bài đăng còn online | `2026-10-14 14:00:00` |
-| `status` | Trạng thái vòng đời | `NEW` / `ACTIVE` / `UPDATED` / `CLOSED` |
+## 5. Chu Kỳ Re-crawl 21 Ngày & Ma Trận 4 Kịch Bản (URL vs Nội Dung)
 
-### 3.3. Quy trình Quyết định Phiên bản (Decision Flowchart)
+Hệ thống đặt chu kỳ kiểm tra lại độ tươi là **21 ngày** (3 tuần) — chu kỳ lý tưởng tương ứng với thời hạn trung bình của một tin tuyển dụng IT tại Việt Nam (thường là 30 ngày).
 
 ```mermaid
 flowchart TD
-    Start["Bắt đầu xử lý tin vừa cào"] --> CalcHash["Tính content_hash từ raw_payload"]
-    CalcHash --> QueryCatalog{"Kiểm tra job_id trong Catalog?"}
+    Scan["Phát hiện 1 bài đăng từ Phase 1"] --> CheckURL{"url_hash đã có trong catalog_master?"}
+
+    %% Nhánh URL đã có
+    CheckURL -- "CÓ (URL giữ nguyên)" --> CheckTime{"last_scraped_at cách hiện tại >= 21 ngày?"}
+    CheckTime -- "Chưa đủ 21 ngày" --> UpdateSeen["Chỉ cập nhật: last_seen_at = now()\nBỏ qua (SKIP) không cào lại detail"]
+    CheckTime -- "Đã >= 21 ngày\n(Đến hạn Re-crawl)" --> ReScrape["Tải lại nội dung detail & tính content_hash mới"]
     
-    QueryCatalog -- "Chưa có (Mới hoàn toàn)" --> CreateNew["Gán version = 1\nstatus = 'NEW'\nLưu snapshot: <job_id>_v1.json\nGhi nhận vào Catalog"]
+    ReScrape --> CompareHash{"content_hash mới == content_hash cũ?"}
+    CompareHash -- "TRÙNG NHAU (Kịch bản 1:\nURL nguyên, Nội dung nguyên)" --> KeepVer["Giữ nguyên version\nCập nhật status = 'DONE', last_scraped_at = now()"]
+    CompareHash -- "KHÁC NHAU (Kịch bản 2:\nURL nguyên, Nội dung THAY ĐỔI)" --> IncVer["Tăng version = latest_version + 1\nLưu snapshot mới: <id>_v<ver>.json\nCập nhật content_hash mới\n(Phục vụ nghiên cứu sự biến đổi yêu cầu SD3)"]
+
+    %% Nhánh URL mới
+    CheckURL -- "CHƯA CÓ (URL mới)" --> CheckSemantic{"content_hash này đã từng xuất hiện\ntrong Catalog của web này chưa?"}
+    CheckSemantic -- "TRÙNG KHỚP (Kịch bản 3:\nURL mới, Nội dung giữ nguyên - REPOST)" --> LinkRepost["Đánh dấu đây là REPOST / URL Alias!\nrepost_of_url_hash = url_hash_cũ\nKhông nhân bản bài viết rác vào Data Lake\nCập nhật vòng đời tuyển dụng của vị trí này"]
+    CheckSemantic -- "HOÀN TOÀN MỚI (Kịch bản 4:\nURL mới, Nội dung mới)" --> NewJob["Tạo bản ghi mới: status = 'PENDING'\nTiến hành cào detail\nLưu snapshot version = 1"]
+```
+
+### Giải nghĩa chuyên sâu Kịch bản 3 (URL thay đổi mà Nội dung giữ nguyên - Repost):
+- **Bản chất thực tế:** HR không tuyển được người sau 1 tháng, tin cũ bị trôi, HR bấm nút "Đăng lại tin". Hệ thống web sinh ra URL mới và ID mới, nhưng nội dung tuyển dụng giống hệt tin cũ.
+- **Xử lý:** Nhờ có `content_hash`, khi cào xong bài viết ở URL mới, hệ thống đối chiếu thấy `content_hash` này trùng khớp 100% với một bài đăng cũ.
+- **Hành động:** Hệ thống **không tạo file snapshot mới** làm phình to Data Lake, mà chỉ cập nhật Catalog: `repost_of_url_hash = url_hash_cũ`. Điều này giúp nhóm phát hiện vị trí này đã được tuyển kéo dài qua bao nhiêu đợt tuyển dụng!
+
+---
+
+## 6. Cơ Chế Bắt Lỗi An Toàn (Fault-Tolerant Skip Loop)
+
+Trong quá trình cào chi tiết hàng nghìn link ở Phase 2, một link bị lỗi (404, 500, timeout) **tuyệt đối không được làm chết toàn bộ crawler**. Mã nguồn thực thi vòng lặp bảo vệ:
+
+```python
+for item in links_to_crawl:
+    url = item["canonical_url"]
     
-    QueryCatalog -- "Đã tồn tại" --> CompareHash{"content_hash mới == current_content_hash cũ?"}
-    
-    CompareHash -- "TRÙNG KHỚP\n(Không thay đổi)" --> KeepAlive["Cập nhật last_seen_at = now()\nstatus = 'ACTIVE'\nKHÔNG ghi đè, KHÔNG tạo file rác"]
-    
-    CompareHash -- "KHÁC NHAU\n(Nhà tuyển dụng đã sửa tin!)" --> IncVersion["Tăng version = latest_version + 1\nstatus = 'UPDATED'\nLưu snapshot mới: <job_id>_v<ver>.json\nGhi log biến động nội dung vào Catalog"]
+    # 1. SKIP NẾU ĐÃ HOÀN THÀNH VÀ CHƯA ĐẾN HẠN 21 NGÀY
+    if item["status"] == "DONE" and not is_due_for_recrawl(item["last_scraped_at"], days=21):
+        continue
+
+    try:
+        response = http_client.get(url, timeout=15)
+        
+        # Link bị gỡ bỏ
+        if response.status_code == 404:
+            mark_url_status(item["url_hash"], status="CLOSED")
+            continue
+            
+        if response.status_code != 200:
+            raise Exception(f"HTTP Status {response.status_code}")
+            
+        new_hash = calculate_html_hash(response.text, container_selector=CONTAINER_SELECTOR)
+        
+        # Kiểm tra kịch bản Repost (URL mới nhưng content trùng tin cũ)
+        existing_repost = find_by_content_hash(new_hash)
+        if existing_repost and existing_repost["url_hash"] != item["url_hash"]:
+            update_url_ledger(item["url_hash"], status="DONE", repost_of_url_hash=existing_repost["url_hash"], last_scraped_at=now())
+            continue
+
+        if item.get("content_hash") == new_hash:
+            # Nội dung không đổi sau 21 ngày
+            update_url_ledger(item["url_hash"], status="DONE", last_scraped_at=now())
+        else:
+            # Tin mới hoặc tin có sửa đổi!
+            new_version = (item.get("latest_version") or 0) + 1
+            save_raw_to_minio(source, item["job_id"], response.text, version=new_version)
+            update_url_ledger(item["url_hash"], status="DONE", content_hash=new_hash, 
+                              latest_version=new_version, last_scraped_at=now())
+            
+    except Exception as e:
+        # BẮT LỖI AN TOÀN - GHI NHẬN FAILED VÀ SKIP TIẾP TỤC BÀI SAU
+        logger.error(f"❌ Failed to crawl {url}: {str(e)}")
+        update_url_ledger(item["url_hash"], status="FAILED", error_log=str(e), retry_count=item.get("retry_count", 0) + 1)
+        continue
 ```
 
 ---
 
-## 4. Kỹ Thuật Vượt Chướng Ngại Vật & Phòng Vệ (Anti-Bot & Reliability)
+## 7. Tự Động Hóa Điều Phối Với Apache Airflow
 
-### 4.1. Phân loại hình thái kỹ thuật từng trang web
-| Nguồn | Kiểu Render | Công nghệ thu thập tối ưu | Lưu ý đặc thù |
-| :--- | :--- | :--- | :--- |
-| **TopDev** | REST API | `httpx` / `requests` | Gọi trực tiếp endpoint `/api/v1/jobs`, có phân trang `page` & `page_size`. |
-| **TopCV** | SSR HTML | `httpx` + `BeautifulSoup` | Server-side Rendering, HTML chứa đầy đủ văn bản. Lưu ý xoay tua User-Agent. |
-| **VietnamWorks** | Algolia Search API | `httpx` JSON POST | API trả về JSON rất sạch nhưng có rate limit token. Cần bắt header `x-algolia-api-key`. |
-| **CareerViet** | SSR HTML | `httpx` + `BeautifulSoup` | Render DOM cổ điển, thẻ class phân biệt rõ ràng. |
-| **Vieclam24h** | Next.js SSR / API | `httpx` parsing `__NEXT_DATA__` | Có thể bóc trực tiếp JSON trong thẻ script `__NEXT_DATA__` mà không cần render trình duyệt. |
-| **ITViec** | Cloudflare / SPA | `Playwright` Headless Chrome | Có lớp bảo vệ Cloudflare nhẹ. Cần bật cờ stealth `--disable-blink-features=AutomationControlled`. |
-| **Glints & JobsGO** | GraphQL / SSR | `httpx` GraphQL query / BeautifulSoup | Glints gọi GraphQL query, JobsGO parse HTML với pagination rõ ràng. |
+Hệ thống được thiết lập một DAG định kỳ **21 ngày** mang tên `periodic_job_mining_21d_dag`:
 
-### 4.2. Bộ quy tắc An Toàn (Polite Crawling Rules)
-1. **Jitter Delay ngẫu nhiên:** Giữa 2 request liên tiếp luôn sleep một khoảng ngẫu nhiên từ $1.5$ đến $3.5$ giây:
-   ```python
-   import random, time
-   time.sleep(random.uniform(1.5, 3.5))
-   ```
-2. **User-Agent Rotation:** Luôn xoay tua ít nhất 5 User-Agent của các trình duyệt hiện đại (Chrome, Edge, Firefox trên Windows/Mac).
-3. **Exponential Backoff:** Nếu gặp lỗi HTTP 429 (Too Many Requests) hoặc 503, tự động chờ $2^k$ giây ($2s \rightarrow 4s \rightarrow 8s$) trước khi retry (tối đa 3 lần).
-4. **Không chạy quá 3 worker song song trên 1 domain:** Tránh gây tải lên hạ tầng của website tuyển dụng.
+```mermaid
+flowchart TD
+    DAG["DAG: periodic_job_mining_21d_dag\n(Schedule: @monthly hoặc mỗi 21 ngày)"]
+    
+    subgraph DiscoveryStage["1. Phase 1: URL Discovery (Chạy Song Song)"]
+        D1["TopDev Discover"]
+        D2["TopCV Discover"]
+        D3["VietnamWorks Discover"]
+        D4["CareerViet Discover"]
+        D5["Vieclam24h Discover"]
+        D6["ITViec Discover"]
+        D7["Glints/JobsGO Discover"]
+    end
+
+    subgraph LedgerStage["2. URL Ledger Check & Filter"]
+        Check["Lọc link: PENDING hoặc (DONE & age >= 21d)"]
+    end
+
+    subgraph DetailStage["3. Phase 2: Detail Extraction (Chạy Song Song)"]
+        C1["TopDev Worker"]
+        C2["TopCV Worker"]
+        C3["VietnamWorks Worker"]
+        C4["CareerViet Worker"]
+        C5["Vieclam24h Worker"]
+        C6["ITViec Worker"]
+        C7["Glints/JobsGO Worker"]
+    end
+
+    DAG --> DiscoveryStage --> LedgerStage --> DetailStage
+```
 
 ---
 
-## 5. Danh Sách Kiểm Tra Khi Nộp Code Cào (Checklist)
+## 8. Danh Sách Kiểm Tra & Hồ Sơ Bắt Buộc Khi Nộp Bài
 
-Trước khi tạo Pull Request vào nhánh `crawls/<tenweb>`, thành viên phải tự kiểm tra:
-- [ ] Không có bất kỳ logic nào tự ý format lương thành số hoặc bỏ qua chuỗi lương chữ.
-- [ ] Mọi trường dữ liệu DOM/API đều được lưu đầy đủ vào `raw_payload`.
-- [ ] Đã tích hợp hàm tính `content_hash` và kiểm tra CDC versioning.
-- [ ] File output lưu đúng cấu trúc `raw/<source>/<YYYY-MM-DD>/<job_id>_v<ver>.json`.
-- [ ] Đã hoàn thành bảng kiểm kê trường dữ liệu theo mẫu `templates/raw_crawl_inventory_template.md`.
+Trước khi tạo Pull Request vào nhánh `crawls/<tenweb>`, thành viên phải chuẩn bị:
+1. **Mã nguồn 2 hàm:** `discover_urls()` và `crawl_details()`.
+2. **Bộ mẫu đa định dạng (Multi-Format Test Suite):**
+   - Lưu ít nhất 3 file HTML thô có cấu trúc layout khác nhau vào `crawlers/sources/<tenweb>/samples/sample_*.html`.
+   - Lưu 3 file JSON đầu ra tương ứng vào `crawlers/sources/<tenweb>/samples/sample_*.json`.
+3. **File phân tích kiến trúc riêng:** Viết tại `docs/crawl/<tenweb>.md` giải thích chi tiết kiến trúc mạng, container selector dùng để băm HTML và các ngoại lệ của web mình.

@@ -1,8 +1,8 @@
 # BẢNG PHÂN CÔNG NHIỆM VỤ DỰ ÁN (TASKS & MILESTONES)
 
 > **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (VN-IT-Job-Mining)  
-> **Quy định Git:** Toàn bộ thành viên bắt đầu làm việc từ nhánh `main` và tạo nhánh độc lập: `crawls/<tenweb>`. Các nhánh cũ không dùng nữa sẽ được lưu trữ/bỏ qua.  
-> **Bộ 3 tài liệu quy trình bắt buộc phải đọc trước khi code:**
+> **Quy định Git:** Toàn bộ thành viên bắt đầu làm việc từ nhánh `main` và chuyển sang nhánh độc lập của mình: `crawls/<tenweb>`.  
+> **Bộ 3 tài liệu quy trình bắt buộc phải đọc trước khi bắt tay vào code:**
 > 1. [01_modern_data_mining_overview.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/01_modern_data_mining_overview.md)
 > 2. [02_crawling_architecture_guide.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/02_crawling_architecture_guide.md)
 > 3. [03_eda_and_integration_guide.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/03_eda_and_integration_guide.md)
@@ -11,35 +11,42 @@
 
 ## 1. MA TRẬN PHÂN CÔNG THÀNH VIÊN & NHÁNH LÀM VIỆC
 
-| Thành viên | Nguồn website phụ trách | Phương thức thu thập chính | Nhánh Git làm việc | File Báo cáo cần nộp |
+| Thành viên | Nguồn phụ trách | Phương thức thu thập chính | Nhánh Git làm việc | File Báo cáo & Tài liệu cần nộp |
 | :--- | :--- | :--- | :--- | :--- |
-| **Sơn** | **TopDev** | REST API (`/api/v1/jobs`) | `crawls/topdev` | `reports/topdev_inventory.md`<br>`reports/topdev_eda.md` |
-| **Thuận** | **TopCV** | SSR HTML / HTTP Parsing | `crawls/topcv` | `reports/topcv_inventory.md`<br>`reports/topcv_eda.md` |
-| **Khoa** | **VietnamWorks** | REST / Algolia Search API | `crawls/vietnamworks` | `reports/vietnamworks_inventory.md`<br>`reports/vietnamworks_eda.md` |
-| **Tài** | **CareerViet** | SSR DOM Parsing | `crawls/careerviet` | `reports/careerviet_inventory.md`<br>`reports/careerviet_eda.md` |
-| **Phúc** | **Vieclam24h** | SSR DOM / Next.js Data | `crawls/vieclam24h` | `reports/vieclam24h_inventory.md`<br>`reports/vieclam24h_eda.md` |
-| **Phát** | **ITViec** | Playwright Headless Chrome | `crawls/itviec` | `reports/itviec_inventory.md`<br>`reports/itviec_eda.md` |
-| **Duy** | **Glints & JobsGO** | GraphQL API & SSR DOM | `crawls/glints-jobsgo` | `reports/glints_jobsgo_inventory.md`<br>`reports/glints_jobsgo_eda.md` |
+| **Sơn** | **TopDev** | REST API (`/api/v1/jobs`) | `crawls/topdev` | `docs/crawl/topdev.md`<br>`reports/topdev_inventory.md`<br>`reports/topdev_eda.md` |
+| **Thuận** | **TopCV** | SSR HTML / HTTP Parsing | `crawls/topcv` | `docs/crawl/topcv.md`<br>`reports/topcv_inventory.md`<br>`reports/topcv_eda.md` |
+| **Khoa** | **VietnamWorks** | REST / Algolia Search API | `crawls/vietnamworks` | `docs/crawl/vietnamworks.md`<br>`reports/vietnamworks_inventory.md`<br>`reports/vietnamworks_eda.md` |
+| **Tài** | **CareerViet** | SSR DOM Parsing | `crawls/careerviet` | `docs/crawl/careerviet.md`<br>`reports/careerviet_inventory.md`<br>`reports/careerviet_eda.md` |
+| **Phúc** | **Vieclam24h** | SSR DOM / Next.js Data | `crawls/vieclam24h` | `docs/crawl/vieclam24h.md`<br>`reports/vieclam24h_inventory.md`<br>`reports/vieclam24h_eda.md` |
+| **Phát** | **ITViec** | Playwright Headless Chrome | `crawls/itviec` | `docs/crawl/itviec.md`<br>`reports/itviec_inventory.md`<br>`reports/itviec_eda.md` |
+| **Duy** | **Glints & JobsGO** | GraphQL API & SSR DOM | `crawls/glints-jobsgo` | `docs/crawl/glints_jobsgo.md`<br>`reports/glints_jobsgo_inventory.md`<br>`reports/glints_jobsgo_eda.md` |
 
 ---
 
-## 2. LỘ TRÌNH 2 GIAI ĐOẠN CỦA TỪNG BẠN
+## 2. QUY TRÌNH THỰC HIỆN 2 PHA CỦA TỪNG THÀNH VIÊN
 
 ```mermaid
-flowchart LR
-    subgraph G1["GIAI ĐOẠN 1: CÁ NHÂN (Deadline: Tuần 1)"]
-        CRAWL["1. Cào 100% Trường Raw As-Is\n(Không ép schema, áp dụng CDC Versioning)"]
-        EDA_SUB["2. Chạy EDA Sơ Bộ Tại Nguồn\n(Missing rate, Outliers, Phân phối)"]
-        DOCS1["3. Điền 2 Báo Cáo\n(raw_inventory & preliminary_eda)"]
-        CRAWL --> EDA_SUB --> DOCS1
+flowchart TD
+    subgraph Phase1["PHA 1: VÉT SẠCH URL (DISCOVERY)"]
+        P1A["Viết hàm discover_urls()\nQuét qua toàn bộ phân trang, không giới hạn thời gian"]
+        P1B["Làm sạch Canonical URL & ghi vào MinIO\nmanifest_<YYYY-MM-DD>.jsonl"]
+        P1A --> P1B
     end
 
-    subgraph G2["GIAI ĐOẠN 2: HỢP NHẤT TOÀN NHÓM (Tuần 2)"]
-        SUMMIT["4. Integration Summit\n(Báo cáo có trường gì, thiếu trường gì)"]
-        MAP["5. Điền integration_mapping_sheet\n(Ánh xạ về Common Target Schema)"]
-        PIPE["6. Đẩy vào MinIO /staging & /curated\n(AI Enrichment: Skills & Job Family)"]
-        DOCS1 --> SUMMIT --> MAP --> PIPE
+    subgraph Phase2["PHA 2: CÀO CHI TIẾT & RE-CRAWL 21 NGÀY"]
+        P2A["Viết hàm crawl_details()\nĐọc Catalog: Lọc link PENDING hoặc (DONE & >= 21 ngày)"]
+        P2B["Bọc Safe Skip: URL lỗi hoặc chưa đến hạn thì skip ngay"]
+        P2C["Tính Clean Container HTML Hash & Cập nhật Version CDC"]
+        P2A --> P2B --> P2C
     end
+
+    subgraph Deliverables["PHA 3: BÀN GIAO HỒ SƠ NGHIỆM THU"]
+        D1["Lưu ít nhất 3 cặp file HTML thô đa định dạng + JSON tương ứng\nvào crawlers/sources/<tenweb>/samples/"]
+        D2["Viết file docs/crawl/<tenweb>.md phân tích kiến trúc web"]
+        D3["Chạy EDA Sơ Bộ & Điền 2 template báo cáo"]
+    end
+
+    Phase1 --> Phase2 --> Deliverables
 ```
 
 ---
@@ -47,96 +54,71 @@ flowchart LR
 ## 3. CHI TIẾT CÔNG VIỆC TỪNG BẠN
 
 ### 3.1. Sơn — Phụ trách `TopDev` (Nhánh: `crawls/topdev`)
-- [ ] **Giai đoạn 1 - Crawl Raw:**
-  - Viết crawler gọi REST API `/api/v1/jobs` của TopDev.
-  - Lưu nguyên bản 100% payload JSON trả về từ API vào `data/raw/topdev/` (hoặc MinIO `raw/topdev/`).
-  - Áp dụng hàm `content_hash = SHA256(...)` và quản lý phiên bản `version` trong catalog khi có bài viết cập nhật.
-  - Không lọc bỏ các trường lồng nhau như `addresses`, `salary_range`, `company_profile`.
-- [ ] **Giai đoạn 1 - EDA Sơ bộ:**
-  - Tạo notebook `notebooks/eda_preliminary_topdev.ipynb`.
-  - Tính tỷ lệ null của các trường; phát hiện lương ngoại lai (lưu ý TopDev có lương USD cần theo dõi).
-  - Xuất báo cáo theo mẫu [raw_crawl_inventory_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md) và [preliminary_eda_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/preliminary_eda_template.md).
-- [ ] **Giai đoạn 2 - Integration:**
-  - Báo cáo với nhóm các trường độc đáo của TopDev (tech tags chuẩn, level phân loại rõ ràng).
-  - Điền [integration_mapping_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/integration_mapping_template.md).
+- [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` gọi REST API `/api/v1/jobs` lấy toàn bộ URL/Job IDs của tất cả các trang, ghi vào manifest trên MinIO.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào 100% payload chi tiết. Áp dụng cơ chế Safe Skip khi gặp lỗi. Đổi trạng thái sang `DONE`, chu kỳ re-crawl 21 ngày.
+- [ ] **Hồ sơ nghiệm thu bắt buộc:**
+  - `crawlers/sources/topdev/samples/`: Tối thiểu 3 file JSON thô có định dạng khác nhau (tin lương VND, lương USD, tin nhiều tech tags).
+  - Tự viết `docs/crawl/topdev.md` phân tích kiến trúc API, phân trang và container selector của TopDev.
+  - Điền báo cáo theo 2 mẫu [raw_crawl_inventory_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md) và [preliminary_eda_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/preliminary_eda_template.md).
 
 ### 3.2. Thuận — Phụ trách `TopCV` (Nhánh: `crawls/topcv`)
-- [ ] **Giai đoạn 1 - Crawl Raw:**
-  - Cào toàn bộ HTML của bài đăng chi tiết TopCV.
-  - Lưu giữ nguyên vẹn các selector đặc thù của TopCV: `"box-header-job__title"`, `"box-header-job__salary--title"`, `"badge-tag-list"`, `"job-detail__box--requirements"`, `"job-detail__box--benefits"`.
-  - Áp dụng CDC versioning: Nếu nhà tuyển dụng sửa lương hoặc sửa yêu cầu $\rightarrow$ tạo snapshot version mới.
-- [ ] **Giai đoạn 1 - EDA Sơ bộ:**
-  - Tạo notebook `notebooks/eda_preliminary_topcv.ipynb`.
-  - Đánh giá tỷ lệ bài viết có lương "Thỏa thuận", phân tích phân phối kinh nghiệm.
-  - Xuất báo cáo kiểm kê trường và EDA sơ bộ.
-- [ ] **Giai đoạn 2 - Integration:**
-  - Báo cáo danh sách trường với nhóm; xây dựng logic bóc tách lương chữ TopCV ("Từ 20 triệu" $\rightarrow$ min: 20, max: null).
+- [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` cào sạch danh sách link bài đăng từ trang tìm kiếm TopCV (không giới hạn thời gian), ghi vào MinIO URL Ledger.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào raw HTML bài đăng, giữ nguyên selector gốc. Tính Clean Container HTML Hash trên khối `div.job-detail`. Đổi trạng thái sang `DONE`, kiểm tra re-crawl 21 ngày.
+- [ ] **Hồ sơ nghiệm thu bắt buộc:**
+  - `crawlers/sources/topcv/samples/`: Ít nhất 3 file HTML thô có layout khác nhau (tin thường, tin Hot/VIP, tin có badge đặc thù) kèm 3 file JSON tương ứng.
+  - Tự viết `docs/crawl/topcv.md` phân tích DOM và selector chống nhảy hash oan của TopCV.
+  - Điền 2 báo cáo kiểm kê trường và EDA sơ bộ.
 
 ### 3.3. Khoa — Phụ trách `VietnamWorks` (Nhánh: `crawls/vietnamworks`)
-- [ ] **Giai đoạn 1 - Crawl Raw:**
-  - Cào thông qua Algolia / Search API của VietnamWorks, lấy toàn bộ search hit payload và job detail.
-  - Lưu thô 100% thuộc tính vào `data/raw/vietnamworks/` kèm `content_hash`.
-- [ ] **Giai đoạn 1 - EDA Sơ bộ:**
-  - Tạo notebook `notebooks/eda_preliminary_vietnamworks.ipynb`.
-  - Đánh giá cấu trúc trường skills và benefits của VietnamWorks.
-  - Điền báo cáo theo 2 template nộp bài.
-- [ ] **Giai đoạn 2 - Integration:**
-  - Tham gia đối chiếu trường, đặc biệt là trường `skills` dạng danh mục chuẩn của VietnamWorks để hỗ trợ nhóm xây dựng Skill Taxonomy.
+- [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` quét Algolia search hits, thu thập toàn bộ job links ghi vào manifest.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` lấy đầy đủ trường kỹ năng và phúc lợi của VietnamWorks. Tích hợp Safe Skip và quản lý trạng thái `DONE`.
+- [ ] **Hồ sơ nghiệm thu bắt buộc:**
+  - `crawlers/sources/vietnamworks/samples/`: Ít nhất 3 file mẫu đa định dạng kèm JSON tương ứng.
+  - Tự viết `docs/crawl/vietnamworks.md` phân tích headers, tokens và API search.
+  - Điền 2 báo cáo kiểm kê trường và EDA sơ bộ.
 
 ### 3.4. Tài — Phụ trách `CareerViet` (Nhánh: `crawls/careerviet`)
-- [ ] **Giai đoạn 1 - Crawl Raw:**
-  - Cào SSR HTML bài đăng CareerViet (trước đây là CareerBuilder).
-  - Lấy toàn bộ các trường: thông tin đãi ngộ, hạn nộp hồ sơ, địa điểm làm việc, ngày cập nhật.
-  - Tích hợp CDC Versioning kiểm tra cập nhật bài viết.
-- [ ] **Giai đoạn 1 - EDA Sơ bộ:**
-  - Tạo notebook `notebooks/eda_preliminary_careerviet.ipynb`.
-  - Kiểm tra outliers lương và tỷ lệ missing của trường kinh nghiệm.
-- [ ] **Giai đoạn 2 - Integration:**
-  - Điền bảng ánh xạ trường CareerViet sang Common Target Schema.
+- [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` duyệt toàn bộ danh mục IT của CareerViet lấy danh sách link.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` bóc tách nguyên vẹn SSR HTML. Áp dụng Clean Container HTML Hash trên khối chi tiết việc làm. Đổi trạng thái `DONE`, re-crawl 21 ngày.
+- [ ] **Hồ sơ nghiệm thu bắt buộc:**
+  - `crawlers/sources/careerviet/samples/`: Ít nhất 3 file HTML thô có cấu trúc khác nhau + JSON tương ứng.
+  - Tự viết `docs/crawl/careerviet.md` phân tích DOM và kỹ thuật cào.
+  - Điền 2 báo cáo kiểm kê trường và EDA sơ bộ.
 
 ### 3.5. Phúc — Phụ trách `Vieclam24h` (Nhánh: `crawls/vieclam24h`)
-- [ ] **Giai đoạn 1 - Crawl Raw:**
-  - Cào SSR DOM hoặc bóc tách trực tiếp object JSON `__NEXT_DATA__` của Vieclam24h.
-  - Thu thập nguyên bản 100% các trường không cắt xén.
-  - Tích hợp tính `content_hash` để sinh phiên bản mới khi tin được sửa.
-- [ ] **Giai đoạn 1 - EDA Sơ bộ:**
-  - Tạo notebook `notebooks/eda_preliminary_vieclam24h.ipynb`.
-  - Khảo sát đặc thù tin IT trên Vieclam24h (mức độ bao phủ tin Fresher/Junior).
-- [ ] **Giai đoạn 2 - Integration:**
-  - Đối chiếu trường và điền bảng ánh xạ.
+- [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` cào sạch link việc làm IT trên Vieclam24h.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` bóc tách JSON-LD hoặc `__NEXT_DATA__` thô. Bọc khối Safe Skip bắt lỗi. Quản lý trạng thái `DONE`.
+- [ ] **Hồ sơ nghiệm thu bắt buộc:**
+  - `crawlers/sources/vieclam24h/samples/`: Ít nhất 3 file mẫu đa định dạng + JSON tương ứng.
+  - Tự viết `docs/crawl/vieclam24h.md` phân tích cấu trúc dữ liệu Next.js của 24h.
+  - Điền 2 báo cáo kiểm kê trường và EDA sơ bộ.
 
 ### 3.6. Phát — Phụ trách `ITViec` (Nhánh: `crawls/itviec`)
-- [ ] **Giai đoạn 1 - Crawl Raw:**
-  - Sử dụng Playwright Headless Chrome (với stealth flag) để cào chi tiết bài đăng ITViec.
-  - Lấy toàn bộ: Thẻ kỹ năng, lý do gia nhập công ty ("Top 3 reasons to join us"), dải lương (nếu có hoặc hiển thị "Sign in to view").
-  - Lưu snapshot CDC versioning đầy đủ.
-- [ ] **Giai đoạn 1 - EDA Sơ bộ:**
-  - Tạo notebook `notebooks/eda_preliminary_itviec.ipynb`.
-  - Phân tích độ phong phú của thẻ kỹ năng trên ITViec (nguồn dữ liệu chất lượng cao nhất cho SD3).
-- [ ] **Giai đoạn 2 - Integration:**
-  - Đóng góp bộ từ khóa kỹ năng của ITViec làm từ điển nòng cốt cho AI Skill Extraction.
+- [ ] **Pha 1 (URL Discovery):** Sử dụng Playwright / httpx duyệt toàn bộ danh sách việc làm ITviec lưu vào manifest.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào raw HTML chi tiết (thẻ kỹ năng, "3 reasons to join us", văn bản JD). Tính HTML hash khối nội dung. Trạng thái `DONE`, re-crawl 21 ngày.
+- [ ] **Hồ sơ nghiệm thu bắt buộc:**
+  - `crawlers/sources/itviec/samples/`: Ít nhất 3 file HTML thô (tin lương công khai, tin lương ẩn, tin Spotlight) + JSON tương ứng.
+  - Tự viết `docs/crawl/itviec.md` phân tích cơ chế vượt Cloudflare nhẹ và selector chính.
+  - Điền 2 báo cáo kiểm kê trường và EDA sơ bộ.
 
 ### 3.7. Duy — Phụ trách `Glints & JobsGO` (Nhánh: `crawls/glints-jobsgo`)
-- [ ] **Giai đoạn 1 - Crawl Raw:**
-  - Glints: Bóc tách qua GraphQL API hoặc SSR DOM.
-  - JobsGO: Cào danh mục việc làm IT với đầy đủ metadata.
-  - Lưu raw nguyên bản và tích hợp CDC versioning cho cả 2 sàn.
-- [ ] **Giai đoạn 1 - EDA Sơ bộ:**
-  - Tạo notebook `notebooks/eda_preliminary_glints_jobsgo.ipynb`.
-  - Đánh giá sự khác biệt giữa 2 nền tảng về tỷ lệ công khai mức lương.
-- [ ] **Giai đoạn 2 - Integration:**
-  - Báo cáo bảng kiểm kê trường của cả 2 web và đề xuất cách map về Common Schema.
+- [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` cho cả Glints (GraphQL) và JobsGO (SSR) lấy toàn bộ danh mục link.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` bóc tách dữ liệu thô, áp dụng Safe Skip khi một link bị lỗi, lưu trạng thái `DONE`, chu kỳ 21 ngày.
+- [ ] **Hồ sơ nghiệm thu bắt buộc:**
+  - `crawlers/sources/glints/samples/` và `jobsgo/samples/`: File mẫu đa định dạng kèm JSON tương ứng của cả 2 sàn.
+  - Tự viết `docs/crawl/glints_jobsgo.md` phân tích kiến trúc của 2 trang web.
+  - Điền 2 báo cáo kiểm kê trường và EDA sơ bộ.
 
 ---
 
 ## 4. TIÊU CHUẨN NGHIỆM THU (DEFINITION OF DONE - DOD)
 
-Một thành viên được tính là hoàn thành nhiệm vụ khi thỏa mãn 5 điều kiện:
-1. **Mã nguồn sạch sẽ:** Đẩy lên đúng nhánh `crawls/<tenweb>`, không xung đột (conflict) với `main`.
-2. **Bảo toàn dữ liệu 100%:** Dữ liệu cào về ở dạng thô nguyên bản (không parse vội, không drop trường).
-3. **Có cơ chế CDC:** Script cào tự động tính `content_hash` và phát hiện bài viết bị sửa để sinh version mới.
-4. **Notebook EDA chạy thông suốt:** Sinh đủ số liệu thống kê Missing Rate, Outlier IQR, và các biểu đồ phân phối cơ bản.
-5. **Nộp đủ 3 file báo cáo theo Template:**
-   - `reports/<source>_inventory.md` (theo mẫu `templates/raw_crawl_inventory_template.md`).
-   - `reports/<source>_eda.md` (theo mẫu `templates/preliminary_eda_template.md`).
-   - `reports/<source>_mapping.md` (theo mẫu `templates/integration_mapping_template.md`).
+Một thành viên được tính là hoàn thành nhiệm vụ khi thỏa mãn 6 điều kiện bắt buộc:
+1. **Phân tách 2 pha:** Có đủ 2 hàm `discover_urls()` (vét sạch link, không giới hạn thời gian) và `crawl_details()` (cào chi tiết).
+2. **Safe Skip & Fault-Tolerance:** Script cào không bị crash khi gặp 1 link lỗi 404/500/timeout; tự động skip qua link tiếp theo.
+3. **Cơ chế Re-crawl 21 ngày:** Đặt trạng thái `DONE`, chỉ cào lại bài viết khi đã đủ $\ge 21$ ngày.
+4. **Bộ kiểm thử đa định dạng (Samples):** Có tối thiểu 3 file HTML mẫu có cấu trúc layout khác biệt kèm 3 file JSON tương ứng trong thư mục `samples/`.
+5. **Tự viết file phân tích kiến trúc:** Nộp file `docs/crawl/<tenweb>.md` giải thích chi tiết cơ chế cào và container selector của web mình.
+6. **Đầy đủ 2 báo cáo chất lượng:**
+   - `reports/<source>_inventory.md` (theo [raw_crawl_inventory_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md)).
+   - `reports/<source>_eda.md` (theo [preliminary_eda_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/preliminary_eda_template.md)).
