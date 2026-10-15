@@ -95,8 +95,13 @@ class TopCVCrawler(BaseCrawler):
                     args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
                 )
                 context = browser.new_context(
-                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                    extra_http_headers={
+                        "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+                        "Referer": "https://www.topcv.vn/",
+                    },
                 )
+                context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
                 page = context.new_page()
 
                 curr_page = 1
@@ -186,8 +191,15 @@ class TopCVCrawler(BaseCrawler):
                     args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
                 )
                 context = browser.new_context(
-                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                    extra_http_headers={
+                        "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+                        "Referer": "https://www.topcv.vn/viec-lam-it",
+                    },
                 )
+                context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
+                page = context.new_page()
 
                 for item in pending_records:
                     if limit and count >= limit:
@@ -197,18 +209,33 @@ class TopCVCrawler(BaseCrawler):
                     url_hash = item["url_hash"]
                     job_id = item["job_id"]
 
-                    page = context.new_page()
                     try:
                         log.info("[TopCV] [%d/%d] Đang tải chi tiết: %s", count + 1, len(pending_records), url)
-                        page.goto(url, wait_until="domcontentloaded", timeout=25000)
-                        page.wait_for_timeout(2500)
+                        page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                        page.wait_for_timeout(3500)
                         content = page.content()
 
+                        soup = BeautifulSoup(content, "html.parser")
+
+                        # Kiểm tra Cloudflare WAF / Turnstile
+                        if any(k in content for k in ["cf-turnstile", "challenges.cloudflare.com", "Thực hiện xác minh bảo mật", "Attention Required! | Cloudflare", "Sorry, you have been blocked"]):
+                            log.warning("[TopCV] Phát hiện Cloudflare challenge tại: %s. Chờ thêm 5s...", url)
+                            page.wait_for_timeout(5000)
+                            content = page.content()
+                            soup = BeautifulSoup(content, "html.parser")
+                            if not soup.select_one(CONTAINER_SELECTOR):
+                                raise RuntimeError(f"Cloudflare Turnstile/WAF challenge blocked: {url}")
+
+                        # Kiểm tra bài đăng hết hạn hoặc xóa
                         if "404 - Không tìm thấy" in content or "Tin tuyển dụng này đã hết hạn" in content:
                             log.warning("[TopCV] Bài đăng đã hết hạn hoặc bị xóa: %s", url)
                             self.ledger.mark_closed(url_hash)
                             stats["skipped"] += 1
                             continue
+
+                        # Đảm bảo container nội dung tồn tại
+                        if not soup.select_one(CONTAINER_SELECTOR):
+                            raise RuntimeError(f"Không tìm thấy selector nội dung '{CONTAINER_SELECTOR}': {url}")
 
                         # Băm Clean Container HTML Hash trên div.job-detail
                         new_hash = calculate_container_html_hash(content, container_selector=CONTAINER_SELECTOR)
@@ -235,7 +262,8 @@ class TopCVCrawler(BaseCrawler):
                         dest_file = os.path.join(dest_dir, f"{job_id}_v{new_ver}.json")
 
                         # Bóc tách envelope nguyên bản
-                        soup = BeautifulSoup(content, "html.parser")
+                        h1_el = soup.select_one("h1")
+                        title_text = h1_el.get_text(strip=True) if h1_el else "Unknown"
                         envelope = {
                             "metadata": {
                                 "job_id": job_id,
@@ -246,7 +274,7 @@ class TopCVCrawler(BaseCrawler):
                                 "content_hash": new_hash,
                             },
                             "raw_payload": {
-                                "title": soup.select_one("h1").get_text(strip=True) if soup.select_one("h1") else "",
+                                "title": title_text,
                                 "raw_html": content,
                             }
                         }
@@ -263,9 +291,8 @@ class TopCVCrawler(BaseCrawler):
                         log.error("[TopCV] Lỗi cào %s: %s. Safe Skip qua link tiếp theo.", url, exc)
                         self.ledger.mark_failed(url_hash, error_message=str(exc))
                         stats["failed"] += 1
-                    finally:
-                        page.close()
 
+                page.close()
                 browser.close()
         except Exception as exc:
             log.error("[TopCV] Lỗi trong quá trình chạy Detail Extraction: %s", exc)
