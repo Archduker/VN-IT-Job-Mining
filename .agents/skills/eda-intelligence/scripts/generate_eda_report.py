@@ -10,8 +10,15 @@ import argparse
 import json
 import sys
 from pathlib import Path
+
+# Thêm workspace root vào sys.path
+ROOT_DIR = Path(__file__).resolve().parents[4]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 import pandas as pd
 import numpy as np
+
 
 
 def generate_eda(source: str, output_path: str = None):

@@ -10,8 +10,15 @@ Sử dụng:
 import argparse
 import sys
 from pathlib import Path
+
+# Thêm workspace root vào sys.path để import crawlers.common
+ROOT_DIR = Path(__file__).resolve().parents[4]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 from bs4 import BeautifulSoup
 from crawlers.common.url_ledger import calculate_container_html_hash
+
 
 
 def inspect_html(html_path: str):
