@@ -14,14 +14,37 @@ Kỹ năng này trang bị cho AI Agent năng lực thiết kế, đánh giá, k
 
 ---
 
-## 1. Nguyên Tắc Cốt Tử: Zero Information Loss (Cào Raw As-Is)
+## 1. Đầu Vào Tiêu Chuẩn: File HTML Thô & Quy Trình 5 Bước Phân Tích DOM
+
+Mọi bài toán xây dựng parser cho bất kỳ website tuyển dụng nào đều bắt đầu từ **1 file HTML thô đại diện (`sample.html`)** do người dùng hoặc crawler tải về.
+
+### Quy trình tương tác giữa Thành viên & Agent:
+1. **Bước 1 (Tiếp nhận đầu vào):** Người dùng cung cấp đường dẫn file HTML thô đại diện (ví dụ: `crawlers/sources/<tenweb>/samples/sample_standard_job.html`).
+2. **Bước 2 (Chạy công cụ phân tích DOM tự động):**
+   ```bash
+   .venv/bin/python .agents/skills/crawling-architect/scripts/analyze_html_dom.py --html <path_to_html>
+   ```
+3. **Bước 3 (Dò tìm trường dữ liệu - Field Discovery):** Agent rà soát cây DOM và cấu trúc JSON-LD để xác định danh sách tất cả các trường có thể bóc tách:
+   - Tiêu đề công việc (`title`)
+   - Tên công ty (`company`)
+   - Mức lương thô nguyên bản (`salary_raw`)
+   - Hạn nộp hồ sơ (`deadline_raw`)
+   - Kinh nghiệm & cấp bậc (`experience`, `level`)
+   - Thẻ kỹ năng / tags (`badge_tags`)
+   - Khối mô tả công việc, yêu cầu, quyền lợi (`description_html`, `requirements_html`, `benefits_html`)
+4. **Bước 4 (Chỉ định Container Selector băm Hash):** Xác định thẻ cha bao bọc nội dung tuyển dụng (ví dụ: `div.job-detail`, `article`, `#job-detail`) để băm Clean Container HTML Hash, loại bỏ script/ads/views gây nhảy hash oan.
+5. **Bước 5 (Sinh Parser Python):** Xuất mã nguồn parser Python bóc tách đầy đủ 100% các trường trên, không format sớm, lưu trữ đúng định dạng Envelope chuẩn.
+
+---
+
+## 2. Nguyên Tắc Cốt Tử: Zero Information Loss (Cào Raw As-Is)
 
 Khi xây dựng crawler cho bất kỳ nguồn nào (TopCV, TopDev, ITViec, VietnamWorks, CareerViet, Vieclam24h, Glints, JobsGO), Agent **tuyệt đối không được**:
 - Tự ý format hoặc ép kiểu dữ liệu ở bước cào (Ví dụ: parse lương thành số, drop các chuỗi text "Thỏa thuận").
 - Bỏ qua các trường dữ liệu mà bản thân cảm thấy "không cần thiết" (Ví dụ: ngày hết hạn, badge phúc lợi, tên người liên hệ, class name đặc trưng của web).
 - Cố tình nhồi nhét vào một schema đích quá sớm.
 
-### Quy định đầu ra của Crawler:
+### Quy định đầu ra của Crawler (Raw Envelope):
 Mỗi bài đăng tuyển dụng cào về phải là một file JSON theo mẫu Envelope:
 ```json
 {
@@ -45,7 +68,7 @@ Mỗi bài đăng tuyển dụng cào về phải là một file JSON theo mẫu
 
 ---
 
-## 2. Kiến Trúc Thu Thập 2 Pha Độc Lập (Two-Phase Decoupled Pipeline)
+## 3. Kiến Trúc Thu Thập 2 Pha Độc Lập (Two-Phase Decoupled Pipeline)
 
 ### Phase 1: URL Discovery (`discover_urls`)
 - Quét qua tất cả các trang danh mục, tìm kiếm hoặc phân trang API.
@@ -63,7 +86,7 @@ Mỗi bài đăng tuyển dụng cào về phải là một file JSON theo mẫu
 
 ---
 
-## 3. Thuật Toán Băm Khối Nội Dung (Clean Container HTML Hashing)
+## 4. Thuật Toán Băm Khối Nội Dung (Clean Container HTML Hashing)
 
 Để vừa không cần viết code parse chi tiết từng trường trước khi kiểm tra thay đổi, vừa tránh bị "nhảy hash oan" do thời gian server, lượt xem động hay mã CSRF:
 
@@ -93,7 +116,7 @@ def calculate_html_hash(html_content: str, container_selector: str = "body") -> 
 
 ---
 
-## 4. Quản Lý Vòng Đời Trạng Thái & Xử Lý Repost
+## 5. Quản Lý Vòng Đời Trạng Thái & Xử Lý Repost
 
 ### Bảng trạng thái chuẩn:
 - `PENDING`: Link mới ghi nhận, chờ cào chi tiết.
@@ -110,12 +133,13 @@ Khi cào xong một URL mới, tính `content_hash`:
 
 ---
 
-## 5. Danh Sách Kiểm Tra Khi Nộp Code Cào (Checklist)
+## 6. Danh Sách Kiểm Tra Khi Nộp Code Cào (Checklist)
 
 Agent kiểm tra các điều kiện tiên quyết trước khi nghiệm thu crawler của từng thành viên:
+- [ ] Đã phân tích file HTML mẫu đại diện bằng `analyze_html_dom.py`.
 - [ ] Code tách bạch 2 hàm: `discover_urls()` và `crawl_details()`.
-- [ ] Áp dụng đúng hàm `calculate_html_hash` với selector khối container chính của website.
+- [ ] Áp dụng đúng hàm `calculate_container_html_hash` với selector khối container chính của website.
 - [ ] Trạng thái cào thành công lưu là `DONE`, chu kỳ re-crawl kiểm tra mốc 21 ngày.
-- [ ] Có khối `try...except` bắt lỗi skip an toàn từng URL.
+- [ ] Có khối `try...except` bắt lỗi Safe Skip an toàn cho từng URL.
 - [ ] Có đủ thư mục `samples/` chứa ít nhất 3 cặp file HTML thô đa định dạng + JSON tương ứng.
 - [ ] Có file phân tích kiến trúc độc lập tại `docs/crawl/<tenweb>.md`.
