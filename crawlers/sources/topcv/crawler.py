@@ -20,7 +20,18 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from crawlers.base.base_crawler import BaseCrawler
+from crawlers.common.anti_blocking import (
+    handle_cloudflare_backoff,
+    human_like_interaction,
+    is_cloudflare_challenge,
+    polite_sleep,
+)
 from crawlers.common.schema import JobRecord, JobSalary, JobTags
+from crawlers.common.url_ledger import (
+    UrlLedger,
+    calculate_container_html_hash,
+    clean_canonical_url,
+)
 from crawlers.common.utils import (
     clean_text,
     detect_language,
@@ -34,9 +45,11 @@ from crawlers.common.utils import (
 log = logging.getLogger("topcv.crawler")
 
 SOURCE = "topcv"
-CRAWLER_VERSION = "0.5.0"
+CRAWLER_VERSION = "2.0.0"
 BASE_URL = "https://www.topcv.vn"
 START_URL = "https://www.topcv.vn/viec-lam-it"
+CONTAINER_SELECTOR = "div.job-detail"
+
 
 
 class TopCVCrawler(BaseCrawler):
@@ -56,20 +69,279 @@ class TopCVCrawler(BaseCrawler):
         save_html: bool = False,
         html_storage_dir: str | None = None,
         local_html_dir: str | None = None,
+        min_delay: float = 3.0,
+        max_delay: float = 5.5,
     ) -> None:
+        target_output_dir = output_dir or "data/topcv"
         super().__init__(
             checkpoint_dir=checkpoint_dir,
-            output_dir=output_dir,
+            output_dir=target_output_dir,
             max_items=max_items,
             checkpoint_interval=checkpoint_interval,
         )
         self.chrome_path = chrome_path
         self.headless = headless
         self.save_html = save_html
-        self.html_storage_dir = html_storage_dir or os.path.dirname(__file__)
+        self.html_storage_dir = html_storage_dir or os.path.join(self.output_dir, "raw")
         self.local_html_dir = local_html_dir
+        self.min_delay = min_delay
+        self.max_delay = max_delay
+        self.ledger = UrlLedger(
+            source=self.source_name,
+            storage_dir=os.path.join(self.output_dir, "url_ledger"),
+        )
 
-    def _fetch_listing_urls(self, page) -> list[dict[str, str]]:
+    # ── PHA 1: URL DISCOVERY ──────────────────────────────────
+    def discover_urls(self, max_pages: int | None = None) -> int:
+        """Quét sạch toàn bộ link bài đăng từ trang danh mục TopCV và lưu vào UrlLedger & MinIO."""
+        log.info("[TopCV] === Bắt đầu Pha 1: URL Discovery ===")
+        from playwright.sync_api import sync_playwright
+
+        total_discovered = 0
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(
+                    headless=self.headless,
+                    executable_path=self.chrome_path if os.path.exists(self.chrome_path) else None,
+                    args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
+                )
+                context = browser.new_context(
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                    extra_http_headers={
+                        "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+                        "Referer": "https://www.topcv.vn/",
+                    },
+                )
+                context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                page = context.new_page()
+
+                curr_page = 1
+                while True:
+                    if max_pages and curr_page > max_pages:
+                        break
+
+                    target_url = f"{START_URL}?page={curr_page}" if curr_page > 1 else START_URL
+                    log.info("[TopCV] Đang quét danh mục trang %d: %s", curr_page, target_url)
+
+                    try:
+                        page.goto(target_url, wait_until="domcontentloaded", timeout=30000)
+                        human_like_interaction(page, scroll_times=2)
+                        content = page.content()
+
+                        if is_cloudflare_challenge(content):
+                            handled = handle_cloudflare_backoff(page, retry_attempt=1)
+                            if handled:
+                                content = page.content()
+
+                        soup = BeautifulSoup(content, "html.parser")
+                        cards = soup.select(".job-item-search-result, .job-item, div[data-job-id]")
+                        if not cards:
+                            log.info("[TopCV] Không còn bài đăng nào tại trang %d. Dừng quét.", curr_page)
+                            break
+
+                        for card in cards:
+                            # Tìm thẻ tiêu đề chính xác (ưu tiên h3, tránh thẻ avatar rỗng text)
+                            title_el = card.select_one("h3.title a, h3 a, .title a, a.title-link, a[data-toggle='tooltip']")
+                            a_tag = None
+                            if title_el:
+                                a_tag = title_el
+                            else:
+                                for a in card.select("a[href*='/viec-lam/']"):
+                                    if clean_text(a.text) and not any(k in a.get("href", "") for k in ["viec-lam-it", "tag"]):
+                                        a_tag = a
+                                        break
+                                if not a_tag:
+                                    a_tag = card.select_one("a[href*='/viec-lam/']")
+
+                            if not a_tag:
+                                continue
+
+                            raw_href = a_tag.get("href", "")
+                            if any(k in raw_href for k in ["viec-lam-it", "tag"]):
+                                continue
+
+                            job_id = card.get("data-job-id")
+                            if not job_id:
+                                m = re.search(r"[-_/](\d+)\.html", raw_href)
+                                job_id = m.group(1) if m else None
+
+                            if not job_id:
+                                continue
+
+                            clean_url = clean_canonical_url(urljoin(BASE_URL, raw_href))
+                            title = clean_text(a_tag.text)
+                            if not title:
+                                fallback_h = card.select_one("h3, .title, strong")
+                                title = clean_text(fallback_h.text) if fallback_h else ""
+
+                            comp_el = card.select_one(".company, .company-name, a.company, a[href*='/cong-ty/']")
+                            comp = clean_text(comp_el.text) if comp_el else "Unknown"
+
+                            # Ghi nhận vào Ledger
+                            self.ledger.register_url(
+                                raw_url=clean_url,
+                                job_id=str(job_id),
+                                preliminary_title=title,
+                                preliminary_company=comp,
+                            )
+                            total_discovered += 1
+
+                        curr_page += 1
+                        polite_sleep(self.min_delay, self.max_delay, reason=f"Chuyển tiếp trang danh mục {curr_page}")
+
+                    except Exception as exc:
+                        log.error("[TopCV] Lỗi khi quét danh mục trang %d: %s", curr_page, exc)
+                        break
+
+                browser.close()
+        except Exception as exc:
+            log.error("[TopCV] Không thể khởi chạy Playwright cho Discovery: %s", exc)
+
+        self.ledger.save_catalog()
+        manifest_file = self.ledger.export_daily_manifest()
+        # Đồng bộ tự động lên MinIO
+        self.ledger.sync_to_minio()
+        log.info("[TopCV] Hoàn thành Pha 1. Tổng cộng %d URL đã được ghi nhận vào %s", total_discovered, manifest_file)
+        return total_discovered
+
+    # ── PHA 2: DETAIL EXTRACTION ──────────────────────────────
+    def crawl_details(self, limit: int | None = None) -> dict[str, int]:
+        """Đọc URL Ledger, lọc các link PENDING hoặc (DONE và >= 21 ngày), tải HTML, băm Clean Hash và lưu raw."""
+        log.info("[TopCV] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
+        pending_records = self.ledger.get_pending_or_due_records(recheck_days=21)
+        log.info("[TopCV] Tìm thấy %d link cần xử lý trong Ledger.", len(pending_records))
+
+        stats = {"success": 0, "failed": 0, "skipped": 0, "repost": 0}
+        raw_storage_dir = os.path.join(self.output_dir, "raw")
+        os.makedirs(raw_storage_dir, exist_ok=True)
+
+        from playwright.sync_api import sync_playwright
+
+        count = 0
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(
+                    headless=self.headless,
+                    executable_path=self.chrome_path if os.path.exists(self.chrome_path) else None,
+                    args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
+                )
+                context = browser.new_context(
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                    extra_http_headers={
+                        "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+                        "Referer": "https://www.topcv.vn/viec-lam-it",
+                    },
+                )
+                context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
+                page = context.new_page()
+
+                for item in pending_records:
+                    if limit and count >= limit:
+                        break
+
+                    url = item["canonical_url"]
+                    url_hash = item["url_hash"]
+                    job_id = item["job_id"]
+
+                    try:
+                        log.info("[TopCV] [%d/%d] Đang tải chi tiết: %s", count + 1, len(pending_records), url)
+                        page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                        human_like_interaction(page, scroll_times=1)
+                        content = page.content()
+
+                        soup = BeautifulSoup(content, "html.parser")
+
+                        # Kiểm tra Cloudflare WAF / Turnstile
+                        if is_cloudflare_challenge(content):
+                            log.warning("[TopCV] Phát hiện Cloudflare challenge tại: %s. Chờ backoff...", url)
+                            if handle_cloudflare_backoff(page, retry_attempt=1):
+                                content = page.content()
+                                soup = BeautifulSoup(content, "html.parser")
+                            else:
+                                raise RuntimeError(f"Cloudflare Turnstile/WAF challenge blocked: {url}")
+
+                        # Kiểm tra bài đăng hết hạn hoặc xóa
+                        if "404 - Không tìm thấy" in content or "Tin tuyển dụng này đã hết hạn" in content:
+                            log.warning("[TopCV] Bài đăng đã hết hạn hoặc bị xóa: %s", url)
+                            self.ledger.mark_closed(url_hash)
+                            stats["skipped"] += 1
+                            continue
+
+                        # Đảm bảo container nội dung tồn tại
+                        if not soup.select_one(CONTAINER_SELECTOR):
+                            raise RuntimeError(f"Không tìm thấy selector nội dung '{CONTAINER_SELECTOR}': {url}")
+
+                        # Băm Clean Container HTML Hash trên div.job-detail
+                        new_hash = calculate_container_html_hash(content, container_selector=CONTAINER_SELECTOR)
+
+                        # Kiểm tra kịch bản Repost (URL mới nhưng content trùng tin cũ)
+                        existing = self.ledger.find_by_content_hash(new_hash)
+                        if existing and existing["url_hash"] != url_hash:
+                            log.info("[TopCV] Phát hiện Repost: %s trùng nội dung với %s", url, existing["canonical_url"])
+                            self.ledger.mark_done(url_hash, content_hash=new_hash, repost_of_url_hash=existing["url_hash"])
+                            stats["repost"] += 1
+                            count += 1
+                            continue
+
+                        # Xác định version snapshot
+                        curr_ver = item.get("latest_version") or 0
+                        new_ver = curr_ver if (item.get("content_hash") == new_hash and curr_ver > 0) else curr_ver + 1
+
+                        # Lưu file snapshot thô nguyên bản
+                        import json
+                        from datetime import datetime, timezone
+                        today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+                        dest_dir = os.path.join(raw_storage_dir, today_str)
+                        os.makedirs(dest_dir, exist_ok=True)
+                        dest_file = os.path.join(dest_dir, f"{job_id}_v{new_ver}.json")
+
+                        # Bóc tách envelope nguyên bản
+                        h1_el = soup.select_one("h1")
+                        title_text = h1_el.get_text(strip=True) if h1_el else "Unknown"
+                        envelope = {
+                            "metadata": {
+                                "job_id": job_id,
+                                "source": self.source_name,
+                                "source_url": url,
+                                "scraped_at": datetime.now(timezone.utc).isoformat(),
+                                "version": new_ver,
+                                "content_hash": new_hash,
+                            },
+                            "raw_payload": {
+                                "title": title_text,
+                                "raw_html": content,
+                            }
+                        }
+                        with open(dest_file, "w", encoding="utf-8") as f:
+                            json.dump(envelope, f, ensure_ascii=False, indent=2)
+
+                        # Đánh dấu DONE trong Ledger
+                        self.ledger.mark_done(url_hash, content_hash=new_hash, new_version=new_ver)
+                        stats["success"] += 1
+                        count += 1
+
+                        # Polite sleep giữa 2 bài đăng
+                        polite_sleep(self.min_delay, self.max_delay, reason=f"Nghỉ giữa bài đăng {count}")
+
+                    except Exception as exc:
+                        # Safe Skip: Ghi nhận lỗi và chuyển tiếp link sau
+                        log.error("[TopCV] Lỗi cào %s: %s. Safe Skip qua link tiếp theo.", url, exc)
+                        self.ledger.mark_failed(url_hash, error_message=str(exc))
+                        stats["failed"] += 1
+
+                page.close()
+                browser.close()
+        except Exception as exc:
+            log.error("[TopCV] Lỗi trong quá trình chạy Detail Extraction: %s", exc)
+
+        self.ledger.save_catalog()
+        # Đồng bộ kết quả lên MinIO
+        self.ledger.sync_to_minio()
+        log.info("[TopCV] Hoàn thành Pha 2. Thống kê: %s", stats)
+        return stats
+
+    def _fetch_listing_urls(self, page) -> list[dict[str, Any]]:
         """Quét trang danh sách tìm kiếm và thu thập danh sách {job_id, url}."""
         log.info("[TopCV] Navigating to listing: %s", START_URL)
         page.goto(START_URL, wait_until="domcontentloaded", timeout=30000)
@@ -482,12 +754,18 @@ class TopCVCrawler(BaseCrawler):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="TopCV IT Job Two-Phase Crawler")
-    parser.add_argument("--max-items", type=int, default=5, help="Số tin tối đa cần cào")
-    parser.add_argument("--output-dir", type=str, default="data", help="Thư mục xuất dữ liệu JSON/JSONL")
+    parser = argparse.ArgumentParser(description="TopCV IT Job Two-Phase Crawler (URL Discovery & Detail Extraction)")
+    parser.add_argument("--phase", type=str, choices=["all", "discovery", "details", "view"], default="all", help="Pha cần chạy: discovery (Pha 1), details (Pha 2), all (cả hai), view (xem link đã lưu)")
+    parser.add_argument("--max-pages", type=int, default=None, help="Số trang danh mục tối đa cần quét ở Pha 1 (mặc định: quét hết)")
+    parser.add_argument("--max-items", type=int, default=5, help="Số tin tối đa cần cào ở Pha 2 / legacy")
+    parser.add_argument("--min-delay", type=float, default=3.0, help="Thời gian nghỉ tối thiểu giữa các request (giây)")
+    parser.add_argument("--max-delay", type=float, default=5.5, help="Thời gian nghỉ tối đa giữa các request (giây)")
+    parser.add_argument("--output-dir", type=str, default="data/topcv", help="Thư mục gốc lưu trữ dữ liệu (mặc định: data/topcv)")
     parser.add_argument("--checkpoint-dir", type=str, default=None, help="Thư mục lưu checkpoint")
-    parser.add_argument("--save-html", action="store_true", default=False, help="Lưu file HTML chi tiết vào thư mục crawler (mặc định tắt)")
-    parser.add_argument("--local-html-dir", type=str, default=None, help="Thư mục chứa HTML cục bộ để parse nhanh không cần mạng")
+    parser.add_argument("--save-html", action="store_true", default=False, help="Lưu file HTML chi tiết (mặc định tắt)")
+    parser.add_argument("--local-html-dir", type=str, default=None, help="Thư mục chứa HTML cục bộ để parse nhanh offline")
+    parser.add_argument("--view-ledger", action="store_true", default=False, help="Xem bảng kiểm kê URL Ledger đã lưu")
+    parser.add_argument("--minio", action="store_true", default=False, help="Đọc dữ liệu URL Ledger từ MinIO khi xem")
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -495,15 +773,39 @@ def main():
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
 
+    if args.view_ledger or args.phase == "view":
+        from scripts.view_urls import load_local_ledger, load_minio_ledger, render_dashboard
+        if args.minio:
+            res = load_minio_ledger(source="topcv")
+        else:
+            res = load_local_ledger(source="topcv")
+        if res["exists"] and res["records"]:
+            render_dashboard(res["records"], source="topcv", source_path=res["source_path"], is_minio=args.minio)
+        else:
+            print(f"⚠️ Chưa có dữ liệu URL Ledger tại: {res['source_path']}")
+        return
+
     crawler = TopCVCrawler(
         checkpoint_dir=args.checkpoint_dir,
         output_dir=args.output_dir,
         max_items=args.max_items,
         save_html=args.save_html,
         local_html_dir=args.local_html_dir,
+        min_delay=args.min_delay,
+        max_delay=args.max_delay,
     )
-    result = crawler.run()
-    print("Crawl completed:", result)
+
+    if args.phase == "discovery":
+        total = crawler.discover_urls(max_pages=args.max_pages)
+        print(f"Pha 1 Discovery hoàn thành. Tổng số URL ghi nhận: {total}")
+    elif args.phase == "details":
+        stats = crawler.crawl_details(limit=args.max_items)
+        print("Pha 2 Detail Extraction hoàn thành:", stats)
+    else:
+        # Mặc định: Chạy cả 2 pha hoặc run legacy
+        crawler.discover_urls(max_pages=args.max_pages or 1)
+        stats = crawler.crawl_details(limit=args.max_items)
+        print("Crawl hoàn tất:", stats)
 
 
 if __name__ == "__main__":

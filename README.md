@@ -1,134 +1,46 @@
 # **VN IT Job Mining Data Collection System**
 
-Hệ thống thu thập dữ liệu tuyển dụng IT tự động tại Việt Nam, orchestrate bằng **Apache Airflow**, lưu trữ dữ liệu dạng **JSON mảng phân vùng (partitioned)**, kiểm soát chất lượng dữ liệu (**DataQualityChecker**) và chuẩn hóa theo **Data Contract Schema v1**.
+Hệ thống thu thập dữ liệu tuyển dụng IT tự động tại Việt Nam theo chuẩn **Modern Data Stack**, điều phối bằng **Apache Airflow**, kiến trúc **Two-Phase Decoupled Crawler** kết hợp **MinIO Lakehouse (URL Ledger & Manifests)**, lưu trữ dữ liệu dạng **JSON mảng phân vùng (partitioned)**, kiểm soát chất lượng dữ liệu (**DataQualityChecker**) và chuẩn hóa theo **Data Contract Schema v1**.
 
 ---
 
-## 🏛️ Kiến Trúc Hệ Thống
+## 🔄 Quy Trình Thu Thập Dữ Liệu Từng Bước (Data Collection Pipeline)
 
-```mermaid
-flowchart TD
-    subgraph Sources["6 Nguồn Thu Thập Tuyển Dụng"]
-        S1["TopDev (REST API)"]
-        S2["VietnamWorks (Search API)"]
-        S3["CareerViet (SSR + Detail)"]
-        S4["ITviec (SSR + Detail)"]
-        S5["TopCV (Playwright Headless Chrome)"]
-        S6["ViecLam24h (Next.js SSR State)"]
-    end
+Hệ thống triển khai thu thập dữ liệu tự động từ **7 sàn tuyển dụng CNTT** (TopDev, TopCV, VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints & JobsGO) theo quy trình 6 bước chuẩn hóa:
 
-    subgraph Architecture["BaseCrawler Framework"]
-        BC["BaseCrawler (crawlers/base/base_crawler.py)"]
-        HTTP["HttpClient (UA Rotation, Delay 2-5s, Retry)"]
-        CK["CheckpointManager (Atomic JSON, Resume, Dedup)"]
-        JW["JsonWriter (Atomic Array [ ... ], Schema Validation)"]
-        DQ["DataQualityChecker (Schema Valid Rate, Dedup Key, Completeness)"]
-    end
+### 🔹 Bước 1: Khởi Tạo Hạ Tầng Lưu Trữ & MinIO Lakehouse
+- Thiết lập môi trường Python (`.venv`) và các thư viện phụ thuộc.
+- Khởi chạy cụm lưu trữ đối tượng **MinIO Object Storage** qua Docker (`make minio-up`), cung cấp endpoint S3-compatible tại cổng `:9000` và Console UI tại `:9001`.
+- Tự động kiểm tra và khởi tạo bucket `vn-it-jobs` với các vùng dữ liệu: `/manifests` (danh mục URL), `/raw` (dữ liệu cào thô), và `/staging` (dữ liệu tiền xử lý) qua `scripts/setup_minio.py`.
 
-    subgraph Orchestration["Apache Airflow (LocalExecutor)"]
-        D1["crawler_topdev (Thứ Hai 20:00)"]
-        D2["crawler_careerviet (Thứ Ba 20:00)"]
-        D3["crawler_itviec (Thứ Tư 20:00)"]
-        D4["crawler_vietnamworks (Thứ Năm 20:00)"]
-        D5["crawler_topcv (Thứ Sáu 20:00)"]
-        D6["crawler_vieclam24h (Thứ Bảy 20:00)"]
-    end
+### 🔹 Bước 2: Pha 1 — Vét Sạch URL Không Giới Hạn (Phase 1: URL Discovery)
+- Kích hoạt hàm `discover_urls()` trên từng nguồn tuyển dụng để quét toàn bộ phân trang danh mục CNTT mà không giới hạn thời gian đăng.
+- Làm sạch URL về dạng chính tắc (Canonical URL): loại bỏ các tham số theo dõi phiên và quảng cáo (`utm_source`, `utm_campaign`, `utm_medium`, `fbclid`, token tracking).
+- Ghi nhận danh sách URL vào MinIO URL Ledger dưới dạng manifest phân vùng ngày: `manifest_<YYYY-MM-DD>.jsonl`.
 
-    subgraph Storage["Lưu Trữ Dữ Liệu"]
-        LOC["data/<source>/dt=YYYY-MM-DD/batch_XXX.json"]
-    end
+### 🔹 Bước 3: Pha 2 — Bóc Tách Chi Tiết & Chống Trùng Lặp (Phase 2: Detail Extraction & CDC)
+- Đọc catalog URL từ sổ cái (URL Ledger): chỉ lọc ra các URL có trạng thái `PENDING` hoặc bài viết đã hoàn tất (`DONE`) nhưng đã tồn tại $\ge 21$ ngày để kiểm tra cập nhật (Chu kỳ Re-crawl 21 ngày).
+- **Cơ chế Safe Skip (Chịu lỗi an toàn)**: Khi gặp link lỗi mạng (404 Not Found, 500 Server Error, timeout), crawler tự động log cảnh báo và bỏ qua link đó để tiếp tục cào các tin tiếp theo mà không làm sập tiến trình.
+- **Tính toán Clean Container HTML Hash**: Bóc tách riêng khối nội dung chi tiết bài viết (loại trừ các thành phần giao diện động như widget đề xuất, banner quảng cáo, số lượt xem) và băm SHA-256 để phát hiện nội dung có thực sự thay đổi hay không (Change Data Capture - CDC Versioning), ngăn chặn việc tăng version oan.
 
-    Sources --> BC
-    HTTP --> BC
-    CK --> BC
-    JW --> BC
-    BC --> LOC
-    Orchestration --> BC
-    LOC --> DQ
-```
+### 🔹 Bước 4: Chuẩn Hóa Schema & Ghi Dữ Liệu Phân Vùng (Schema Normalization & Storage)
+- Ép toàn bộ dữ liệu bóc tách được từ 7 sàn về thống nhất theo **Data Contract Schema v1** (`JobRecord` gồm metadata kỹ thuật `_meta` và nội dung nghiệp vụ `raw`):
+  - **Mức lương lồng nhau (`JobSalary`)**: Bóc tách số học `salary_min`, `salary_max`, `salary_currency` và chu kỳ thanh toán `pay_period`.
+  - **Phân nhóm thẻ tags (`JobTags`)**: Phân tách có ngữ nghĩa thành 3 nhóm riêng biệt (`requirements`, `benefits`, `skills`).
+  - **Làm sạch văn bản**: Loại bỏ thẻ HTML và chuẩn hóa các dòng bullet (`•`, `-`, `*`) thành mảng chuỗi sạch `description_list`, `requirements_list`, `benefits_list`.
+  - **Nhận diện ngôn ngữ**: Tự động gán nhãn `language: "vi"` hoặc `"en"` vào metadata.
+- Ghi dữ liệu dạng mảng JSON chuẩn UTF-8 ra thư mục phân vùng thời gian: `data/<source>/dt=YYYY-MM-DD/batch_XXX.json` (sử dụng cơ chế ghi nguyên tử Atomic Write qua file `.tmp` để chống hỏng file khi mất điện/dừng đột ngột).
 
----
+### 🔹 Bước 5: Kiểm Định Toàn Vẹn Dữ Liệu Tự Động (Data Quality Gate)
+- Mỗi lô dữ liệu sau khi xuất file được tự động kiểm tra nghiêm ngặt qua `DataQualityChecker`:
+  - Tỷ lệ bản ghi hợp lệ theo Pydantic Schema $\ge 95\%$ (thực tế toàn hệ thống đạt 100%).
+  - Tỷ lệ trùng lặp khóa `dedup_key` = 0% (tính duy nhất đạt 100%).
+  - Các trường cốt lõi bắt buộc không được phép để trống (`title`, `company`, `description_list`).
+  - Nếu không vượt qua kiểm định, task kiểm tra chất lượng sẽ phát tín hiệu fail và dừng pipeline để kỹ sư can thiệp.
 
-## 📐 Data Contract & Unified Schema v1
-
-Toàn bộ dữ liệu sau khi thu thập được chuẩn hóa theo định dạng **Compact Schema v1** ([`crawlers/common/schema.py`](crawlers/common/schema.py)), loại bỏ các trường HTML thô và văn bản trùng lặp để tối ưu dung lượng lưu trữ:
-
-### Cấu Trúc Record Chuẩn:
-```json
-{
-  "_meta": {
-    "source": "topcv",
-    "source_job_id": "2157137",
-    "url": "https://www.topcv.vn/viec-lam/2157137.html",
-    "dedup_key": "topcv:2157137",
-    "crawled_at": "2026-10-09T09:02:58Z",
-    "batch_id": "2026-10-09_topcv_001",
-    "crawler_version": "0.5.0",
-    "language": "vi"
-  },
-  "raw": {
-    "title": "Business Analyst - YC 3 Năm KN - Ưu Tiên CCBA",
-    "company": "TỔNG CÔNG TY GIẢI PHÁP DOANH NGHIỆP VIETTEL",
-    "salary": {
-      "salary_text": "25 - 60 triệu",
-      "salary_min": 25.0,
-      "salary_max": 60.0,
-      "salary_currency": "VND",
-      "pay_period": "month",
-      "is_negotiable": false,
-      "has_commission": false
-    },
-    "tags": {
-      "requirements": ["3 năm kinh nghiệm chuyên môn", "Đại Học trở lên", "Tiếng Anh TOEIC 650"],
-      "benefits": null,
-      "skills": ["Business Analyst (Phân tích nghiệp vụ)", "IT - Phần mềm"]
-    },
-    "description_list": [
-      "Xây dựng giải pháp nghiệp vụ đối với dự án nâng cấp...",
-      "Quản lý tiến độ dự án..."
-    ],
-    "requirements_list": [
-      "Tốt nghiệp Đại học chuyên ngành CNTT...",
-      "Có tối thiểu 3 năm kinh nghiệm ở vị trí ứng tuyển..."
-    ],
-    "benefits_list": [
-      "Lương thưởng cạnh tranh trên thị trường...",
-      "Chế độ chăm sóc y tế đặc biệt..."
-    ],
-    "location_text": "Hà Nội",
-    "deadline_text": "09/10/2026",
-    "employment_type_text": "Toàn thời gian",
-    "seniority_text": "Nhân viên",
-    "extra": {
-      "work_schedule": "Thứ 2 - Thứ 6 (08:00 - 17:30)",
-      "education": "Đại Học trở lên"
-    }
-  }
-}
-```
-
----
-
-## 📊 Ma Trận Đối Chiếu Trường Dữ Liệu 6 Nguồn Tuyển Dụng
-
-Để thống nhất Schema v1 trên toàn hệ thống, dưới đây là bảng đối chiếu khả năng trích xuất của từng nguồn:
-
-| Trường Dữ Liệu | TopCV | TopDev | ITviec | VietnamWorks | CareerViet | ViecLam24h | Quy Chuẩn Schema v1 |
-|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---|
-| **`title`** | ✅ H1 | ✅ API | ✅ JSON-LD | ✅ API | ✅ DOM | ✅ SSR State | `str` (Bắt buộc) |
-| **`company`** | ✅ Label | ✅ API | ✅ JSON-LD | ✅ API | ✅ DOM | ✅ SSR State | `str` (Bắt buộc) |
-| **`salary`** | ✅ Lồng | ⚠️ Text | ⚠️ Gated/Text | ✅ Min/Max | ⚠️ Text | ⚠️ Text/Range | `JobSalary` (Lồng chuẩn) |
-| **`tags.requirements`** | ✅ Nhóm riêng | ⚠️ Thuộc tính | ⚠️ Gộp chung | ⚠️ Gộp chung | ⚠️ Gộp chung | ⚠️ Gộp chung | `list[str] \| null` |
-| **`tags.benefits`** | ✅ (null nếu thiếu)| ⚠️ Icon | ⚠️ Gộp chung | ⚠️ Tag phúc lợi | ⚠️ Icon phúc lợi | ⚠️ Tag | `list[str] \| null` |
-| **`tags.skills`** | ✅ Chuyên môn | ✅ Tech stack | ✅ Key skills | ✅ Skills tag | ✅ Kỹ năng | ✅ Kỹ năng | `list[str] \| null` |
-| **`description_list`** | ✅ (`list[str]`) | HTML/Text | Text | HTML/Text | HTML/Text | Text | `list[str]` (Bắt buộc) |
-| **`requirements_list`**| ✅ (`list[str]`) | List/Text | Section text | HTML/Text | Section text | List/Text | `list[str] \| null` |
-| **`benefits_list`** | ✅ (`list[str]`) | Text | Section text | HTML/Text | Section text | List/Text | `list[str] \| null` |
-| **`location_text`** | ✅ Địa điểm | ✅ Addresses | ✅ JobLocation | ✅ City | ✅ Tỉnh thành | ✅ Tỉnh/Thành | `str \| null` |
-| **`deadline_text`** | ✅ Deadline | ⚠️ | ⚠️ | ✅ Expired date | ✅ Hạn nộp | ✅ Hạn nộp | `str \| null` |
-
-> [!TIP]
-> **Bộ thích ứng tương thích ngược (Smart Ingestion)**: `crawlers/common/schema.py` được trang bị `@model_validator(mode="before")` giúp tự động chuyển đổi các crawler đang xuất định dạng cũ (flat salary, `description_text`, `skills_text`) sang cấu trúc chuẩn mà không làm vỡ hệ thống hay gãy pipeline Airflow.
+### 🔹 Bước 6: Điều Phối Tự Động Hóa Với Apache Airflow (Automated Scheduling)
+- Vận hành 7 DAGs tương ứng với 7 nền tảng việc làm, được lập lịch chạy xoay vòng tự động vào khung giờ **20:00 hàng ngày** để tránh nghẽn mạng và chống bị sàn chặn IP.
+- Mỗi DAG liên kết chặt chẽ 2 task kế tiếp nhau: `JobCrawlerOperator` (cào và đẩy đường dẫn file qua XCom) ➡️ `DataQualityOperator` (kéo đường dẫn file từ XCom và thẩm định chất lượng).
 
 ---
 
@@ -140,48 +52,57 @@ source .venv/bin/activate
 export PYTHONPATH=.
 ```
 
-### 2. Chạy thử nghiệm từng crawler riêng lẻ (Single File .py)
-Mỗi nguồn được đóng gói gọn trong đúng **1 file duy nhất** tại `crawlers/sources/<source>/crawler.py`:
-
+### 2. Khởi động MinIO Lakehouse (Docker)
 ```bash
-# TopCV (Playwright - Mặc định không lưu HTML rác)
-python crawlers/sources/topcv/crawler.py --max-items 30
-
-# TopDev (REST API)
-python crawlers/sources/topdev/crawler.py --max-items 30
-
-# VietnamWorks (Search API)
-python crawlers/sources/vietnamworks/crawler.py --max-items 50
-
-# CareerViet (SSR)
-python crawlers/sources/careerviet/crawler.py --max-items 30
-
-# ViecLam24h (SSR State)
-python crawlers/sources/vieclam24h/crawler.py --max-items 30
-
-# ITviec (SSR + Detail)
-python crawlers/sources/itviec/crawler.py --max-items 30
+make minio-up      # Khởi chạy MinIO tại :9000 (Console UI: http://localhost:9001)
+make setup-minio   # Khởi tạo bucket và cấu trúc Lakehouse
 ```
 
-### 3. Xem báo cáo tiến độ thu thập
+### 3. Chạy Crawler theo Kiến Trúc Two-Phase (Discovery & Detail)
+```bash
+# Phase 1: Vét sạch URL vào MinIO URL Ledger
+python run.py --source topcv --phase discover
+python run.py --source topdev --phase discover
+
+# Phase 2: Cào chi tiết có bọc Safe Skip & Re-crawl 21 ngày
+python run.py --source topcv --phase detail --batch-size 50
+python run.py --source topdev --phase detail --batch-size 50
+```
+
+Hoặc chạy từng crawler độc lập:
+```bash
+python crawlers/sources/topcv/crawler.py --max-items 30
+python crawlers/sources/topdev/crawler.py --max-items 30
+python crawlers/sources/vietnamworks/crawler.py --max-items 50
+python crawlers/sources/careerviet/crawler.py --max-items 30
+python crawlers/sources/vieclam24h/crawler.py --max-items 30
+python crawlers/sources/itviec/crawler.py --max-items 30
+python crawlers/sources/glints/crawler.py --max-items 30
+```
+
+### 4. Xem báo cáo tiến độ thu thập
 ```bash
 python scripts/report.py
 ```
 
-### 4. Chạy Toàn Bộ Unit Tests
+### 5. Chạy Toàn Bộ Unit Tests
 ```bash
-pytest
+pytest tests/unit/ -v
 ```
-Toàn bộ **110/110 test cases** đạt trạng thái **100% Passed**.
+Toàn bộ **130/130 test cases** đạt trạng thái **100% Passed**.
 
 ---
 
-## 📚 Tài Liệu Hướng Dẫn & Bộ AI Skill
+## 📚 Bộ Tài Liệu Quy Trình & Kiến Trúc Cốt Lõi
 
-- **Quy trình chuẩn bóc tách nguồn dữ liệu mới**: [`docs/crawl_documents/01_crawler_analysis_methodology.md`](docs/crawl_documents/01_crawler_analysis_methodology.md)
-- **Nhật ký prompt thực chiến & Tư duy tiến hóa**: [`docs/crawl_documents/02_user_prompt_logs_and_insights.md`](docs/crawl_documents/02_user_prompt_logs_and_insights.md)
-- **Case Study chi tiết TopCV**: [`docs/crawl_documents/03_case_study_topcv.md`](docs/crawl_documents/03_case_study_topcv.md)
-- **Antigravity Custom Skill cho AI**: [`.agents/skills/job-crawler-analyzer/SKILL.md`](.agents/skills/job-crawler-analyzer/SKILL.md)
+1. **Bảng phân công nhiệm vụ & Tiêu chuẩn nghiệm thu (DoD)**: [`TASKS.md`](TASKS.md)
+2. **Tổng quan Data Mining & CRISP-DM hiện đại (Core 01)**: [`docs/01_modern_data_mining_overview.md`](docs/01_modern_data_mining_overview.md)
+3. **Kiến trúc Two-Phase Crawler & MinIO Lakehouse (Core 02)**: [`docs/02_crawling_architecture_guide.md`](docs/02_crawling_architecture_guide.md)
+4. **Hướng dẫn EDA & Tích hợp dữ liệu đa nguồn (Core 03)**: [`docs/03_eda_and_integration_guide.md`](docs/03_eda_and_integration_guide.md)
+5. **Hướng dẫn tự học & vận hành Apache Airflow**: [`docs/03_airflow_guide.md`](docs/03_airflow_guide.md)
+6. **Phương pháp chuẩn bóc tách nguồn dữ liệu mới**: [`docs/guides/crawler_analysis_methodology.md`](docs/guides/crawler_analysis_methodology.md)
+7. **Hồ sơ phân tích kiến trúc 7 sàn tuyển dụng**: Thư mục [`docs/crawl/`](docs/crawl/) (`topcv.md`, `topdev.md`, `vietnamworks.md`, `careerviet.md`, `vieclam24h.md`, `itviec.md`, `glints.md`).
+8. **Antigravity Custom Skill cho AI**: [`.agents/skills/job-crawler-analyzer/SKILL.md`](.agents/skills/job-crawler-analyzer/SKILL.md)
 
 ---
 
@@ -194,3 +115,4 @@ Toàn bộ **110/110 test cases** đạt trạng thái **100% Passed**.
 | Thứ Năm | **VietnamWorks** | `crawler_vietnamworks` | `0 20 * * 4` |
 | Thứ Sáu | **TopCV** | `crawler_topcv` | `0 20 * * 5` |
 | Thứ Bảy | **ViecLam24h** | `crawler_vieclam24h` | `0 20 * * 6` |
+| Chủ Nhật | **Glints** | `crawler_glints` | `0 20 * * 0` |

@@ -95,11 +95,11 @@ def test_careerviet_crawler_parse_item():
     }
     record = crawler.parse_item(raw_item)
     assert record is not None
-    assert record["_technical"]["source"] == "careerviet"
-    assert record["_technical"]["job_id"] == "35C11223"
-    assert record["raw_fields"]["title_raw"] == "Frontend Engineer"
-    assert record["raw_fields"]["company_raw"] == "VNG Corporation"
-    assert "ReactJS" in record["raw_fields"]["description_raw"]
+    assert record.meta.source == "careerviet"
+    assert record.meta.source_job_id == "35C11223"
+    assert record.raw.title == "Frontend Engineer"
+    assert record.raw.company == "VNG Corporation"
+    assert "ReactJS" in record.raw.description_text
 
 
 def test_vieclam24h_crawler_parse_item():

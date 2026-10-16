@@ -1,0 +1,53 @@
+{
+  "metadata": {
+    "source": "topcv",
+    "source_job_id": "topcv_2002",
+    "url": "https://www.topcv.vn/viec-lam/cloud-solution-architect/topcv_2002.html",
+    "scraped_at": "2026-10-16T08:00:00Z",
+    "crawler_version": "2.0.0",
+    "version": 1,
+    "content_hash": "997e66bbeee982ccd05543fbeda36169054c8bcedd8476021da80b8eacc3ca12",
+    "status": "DONE"
+  },
+  "raw_payload": {
+    "box-header-job": {
+      "box-header-job__title": "Cloud Solution Architect (AWS, Kubernetes, Terraform) - Up to $3,500",
+      "box-company-info": "TECH GLOBAL HOLDINGS PTE. LTD.",
+      "box-header-job__salary--title": "Tới 3,500 USD",
+      "box-header-job-list-info": {
+        "Kinh nghiệm": "Trên 5 năm",
+        "Cấp bậc": "Trưởng nhóm / Kiến trúc sư",
+        "Hình thức": "Toàn thời gian (100% Remote)",
+        "Hạn ứng tuyển": "15/12/2026"
+      }
+    },
+    "job-detail__body-left": {
+      "box-job-information-detail-item__overview": {
+        "job-tags": {
+          "Kỹ năng chuyên môn:": [
+            "AWS Solution Architect",
+            "Kubernetes (EKS)",
+            "Terraform",
+            "CI/CD",
+            "Microservices",
+            "English Upper-Intermediate"
+          ]
+        }
+      },
+      "box-job-information-detail-item__job-description": {
+        "box-job-information-detail-item__text": "Trách nhiệm công việc\nĐịnh hình kiến trúc hệ sinh thái Cloud đa khu vực (Multi-region Cloud Architecture) trên AWS.\nLãnh đạo chuyển đổi hạ tầng sang Kubernetes (EKS), áp dụng triệt để nguyên lý Infrastructure as Code (IaC) với Terraform.\nThiết lập chuẩn mực bảo mật Cloud Security, Zero Trust Network và tuân thủ tiêu chuẩn ISO 27001 / SOC2.\nTư vấn và cố vấn kỹ thuật (Mentoring) cho các kỹ sư DevOps và phát triển hệ thống."
+      },
+      "box-job-information-required-candidate": {
+        "box-job-information-detail-item__text": "Yêu cầu bắt buộc\nÍt nhất 5 năm kinh nghiệm làm việc với hạ tầng Cloud (ưu tiên AWS) và Container Orchestration.\nSở hữu chứng chỉ AWS Certified Solutions Architect Professional hoặc CKA (Certified Kubernetes Administrator) là lợi thế lớn.\nKhả năng giao tiếp tiếng Anh lưu loát với các bên liên quan tại Singapore và Châu Âu."
+      },
+      "box-job-information-benefit": {
+        "box-job-information-detail-item__text": "Chế độ đãi ngộ\nThu nhập thỏa thuận lên tới 3,500 USD Net/tháng.\nThưởng cổ phiếu ESOP định kỳ hàng năm theo cống hiến.\nLàm việc từ xa linh hoạt (Flexible Remote Policy)."
+      }
+    },
+    "job-detail__body-right": {
+      "box-company-info-detail": {
+        "company-name-label": "TECH GLOBAL HOLDINGS PTE. LTD."
+      }
+    }
+  }
+}
