@@ -330,10 +330,42 @@ class UrlLedger:
         Đích: minio://{bucket_name}/url_ledger/{source}/
         """
         import os
-        bucket = bucket_name or os.getenv("MINIO_BUCKET", "vn-it-jobs")
-        endpoint = endpoint_url or os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
-        ak = access_key or os.getenv("MINIO_ROOT_USER", "minioadmin")
-        sk = secret_key or os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
+        try:
+            from dotenv import load_dotenv
+            load_dotenv()
+        except Exception:
+            pass
+
+        bucket = (
+            bucket_name
+            or os.getenv("S3_BUCKET_NAME")
+            or os.getenv("R2_BUCKET_NAME")
+            or os.getenv("MINIO_BUCKET")
+            or os.getenv("S3_BUCKET")
+            or "vn-it-jobs"
+        )
+        endpoint = (
+            endpoint_url
+            or os.getenv("S3_ENDPOINT_URL")
+            or os.getenv("R2_ENDPOINT_URL")
+            or os.getenv("MINIO_ENDPOINT")
+            or "http://localhost:9000"
+        )
+        ak = (
+            access_key
+            or os.getenv("AWS_ACCESS_KEY_ID")
+            or os.getenv("R2_ACCESS_KEY_ID")
+            or os.getenv("MINIO_ROOT_USER")
+            or "minioadmin"
+        )
+        sk = (
+            secret_key
+            or os.getenv("AWS_SECRET_ACCESS_KEY")
+            or os.getenv("R2_SECRET_ACCESS_KEY")
+            or os.getenv("MINIO_ROOT_PASSWORD")
+            or "minioadmin"
+        )
+        region = "auto" if "r2.cloudflarestorage.com" in endpoint else os.getenv("AWS_REGION", "us-east-1")
 
         try:
             import boto3
@@ -345,7 +377,7 @@ class UrlLedger:
                 aws_access_key_id=ak,
                 aws_secret_access_key=sk,
                 config=Config(signature_version="s3v4", connect_timeout=3, retries={"max_attempts": 2}),
-                region_name="us-east-1",
+                region_name=region,
             )
 
             # Đảm bảo bucket tồn tại
@@ -357,11 +389,13 @@ class UrlLedger:
                 except Exception as b_exc:
                     logger.debug(f"Bucket {bucket} create/head check: {b_exc}")
 
+            storage_label = "Cloudflare R2" if "r2.cloudflarestorage.com" in endpoint else "MinIO"
+
             # Upload catalog_master.json
             if self.catalog_file.exists():
                 key = f"url_ledger/{self.source}/catalog_master.json"
                 s3.upload_file(str(self.catalog_file), bucket, key)
-                logger.info(f"[MinIO] Đã đồng bộ catalog lên minio://{bucket}/{key}")
+                logger.info(f"[{storage_label}] Đã đồng bộ catalog lên s3://{bucket}/{key}")
 
             # Upload all manifest files
             manifest_count = 0
@@ -370,9 +404,9 @@ class UrlLedger:
                 s3.upload_file(str(m_path), bucket, key)
                 manifest_count += 1
 
-            logger.info(f"[MinIO] Đã đồng bộ thành công {manifest_count} manifests lên minio://{bucket}/url_ledger/{self.source}/manifests/")
+            logger.info(f"[{storage_label}] Đã đồng bộ thành công {manifest_count} manifests lên s3://{bucket}/url_ledger/{self.source}/manifests/")
             return True
         except Exception as exc:
-            logger.warning(f"[MinIO] Không thể đồng bộ URL Ledger lên MinIO ({endpoint}): {exc}. Dữ liệu cục bộ vẫn an toàn.")
+            logger.warning(f"[{storage_label}] Không thể đồng bộ URL Ledger lên ({endpoint}): {exc}. Dữ liệu cục bộ vẫn an toàn.")
             return False
 

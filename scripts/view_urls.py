@@ -49,46 +49,62 @@ def load_local_ledger(source: str) -> Dict[str, Any]:
 
 def load_minio_ledger(
     source: str,
-    bucket_name: str = "vn-it-jobs",
-    endpoint: str = "http://localhost:9000",
-    ak: str = "minioadmin",
-    sk: str = "minioadmin",
+    bucket_name: Optional[str] = None,
+    endpoint: Optional[str] = None,
+    ak: Optional[str] = None,
+    sk: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Tải catalog_master.json và manifests trực tiếp từ MinIO S3 Lakehouse."""
+    """Tải catalog_master.json và manifests trực tiếp từ MinIO / Cloudflare R2 S3 Lakehouse."""
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except Exception:
+        pass
+
+    b_name = bucket_name or os.getenv("S3_BUCKET_NAME") or os.getenv("MINIO_BUCKET") or "vn-it-jobs"
+    ep = endpoint or os.getenv("S3_ENDPOINT_URL") or os.getenv("MINIO_ENDPOINT") or "http://localhost:9000"
+    access = ak or os.getenv("AWS_ACCESS_KEY_ID") or os.getenv("MINIO_ROOT_USER") or "minioadmin"
+    secret = sk or os.getenv("AWS_SECRET_ACCESS_KEY") or os.getenv("MINIO_ROOT_PASSWORD") or "minioadmin"
+    reg = "auto" if "r2.cloudflarestorage.com" in ep else os.getenv("AWS_REGION", "us-east-1")
+    is_r2 = "r2.cloudflarestorage.com" in ep
+
     try:
         import boto3
         from botocore.client import Config
 
         s3 = boto3.client(
             "s3",
-            endpoint_url=endpoint,
-            aws_access_key_id=ak,
-            aws_secret_access_key=sk,
-            config=Config(signature_version="s3v4", connect_timeout=3, retries={"max_attempts": 2}),
-            region_name="us-east-1",
+            endpoint_url=ep,
+            aws_access_key_id=access,
+            aws_secret_access_key=secret,
+            config=Config(signature_version="s3v4", connect_timeout=4, retries={"max_attempts": 2}),
+            region_name=reg,
         )
 
         catalog_key = f"url_ledger/{source}/catalog_master.json"
+        scheme = "r2" if is_r2 else "minio"
         try:
-            resp = s3.get_object(Bucket=bucket_name, Key=catalog_key)
+            resp = s3.get_object(Bucket=b_name, Key=catalog_key)
             catalog_data = json.loads(resp["Body"].read().decode("utf-8"))
             return {
                 "records": catalog_data,
-                "source_path": f"minio://{bucket_name}/{catalog_key}",
+                "source_path": f"{scheme}://{b_name}/{catalog_key}",
                 "exists": True,
                 "from_minio": True,
+                "is_r2": is_r2,
             }
         except Exception:
             # Nếu catalog_master chưa có, quét các file manifest JSONL
             prefix = f"url_ledger/{source}/manifests/"
-            objs = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+            objs = s3.list_objects_v2(Bucket=b_name, Prefix=prefix)
             contents = objs.get("Contents", [])
             if not contents:
                 return {
                     "records": {},
-                    "source_path": f"minio://{bucket_name}/{prefix}",
+                    "source_path": f"{scheme}://{b_name}/{prefix}",
                     "exists": False,
                     "from_minio": True,
+                    "is_r2": is_r2,
                 }
 
             combined_records = {}
@@ -96,7 +112,7 @@ def load_minio_ledger(
                 m_key = item["Key"]
                 if not m_key.endswith(".jsonl"):
                     continue
-                m_resp = s3.get_object(Bucket=bucket_name, Key=m_key)
+                m_resp = s3.get_object(Bucket=b_name, Key=m_key)
                 for line in m_resp["Body"].read().decode("utf-8").splitlines():
                     if line.strip():
                         rec = json.loads(line)
@@ -104,15 +120,18 @@ def load_minio_ledger(
 
             return {
                 "records": combined_records,
-                "source_path": f"minio://{bucket_name}/{prefix} ({len(contents)} manifests)",
+                "source_path": f"{scheme}://{b_name}/{prefix} ({len(contents)} manifests)",
                 "exists": True,
                 "from_minio": True,
+                "is_r2": is_r2,
             }
 
     except Exception as exc:
-        print(f"❌ Không thể kết nối tới MinIO tại {endpoint}: {exc}", file=sys.stderr)
-        print("💡 Gợi ý: Chạy 'bash scripts/start_minio.sh' hoặc kiểm tra Docker container MinIO.", file=sys.stderr)
-        return {"records": {}, "source_path": f"minio://{bucket_name}/url_ledger/{source}/", "exists": False, "from_minio": True}
+        target_name = "Cloudflare R2" if is_r2 else "MinIO"
+        print(f"❌ Không thể kết nối tới {target_name} tại {ep}: {exc}", file=sys.stderr)
+        if not is_r2:
+            print("💡 Gợi ý: Chạy 'bash scripts/start_minio.sh' hoặc kiểm tra Docker container MinIO.", file=sys.stderr)
+        return {"records": {}, "source_path": f"s3://{b_name}/url_ledger/{source}/", "exists": False, "from_minio": True, "is_r2": is_r2}
 
 
 def render_dashboard(
@@ -129,7 +148,13 @@ def render_dashboard(
     counts = Counter(r.get("status", "UNKNOWN") for r in records.values())
     repost_count = sum(1 for r in records.values() if r.get("repost_of_url_hash"))
 
-    storage_label = "🌐 [MINIO S3 LAKEHOUSE]" if is_minio else "💻 [LOCAL STORAGE]"
+    if is_minio:
+        if "r2://" in source_path or "r2.cloudflarestorage.com" in source_path:
+            storage_label = "☁️ [CLOUDFLARE R2 LAKEHOUSE]"
+        else:
+            storage_label = "🌐 [MINIO S3 LAKEHOUSE]"
+    else:
+        storage_label = "💻 [LOCAL STORAGE]"
 
     print("=" * 86)
     print(f"  BÁO CÁO KIỂM KÊ URL LEDGER — NGUỒN: {source.upper()} {storage_label}")
