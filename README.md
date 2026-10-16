@@ -112,7 +112,7 @@ Toàn bộ **130/130 test cases** đạt trạng thái **100% Passed**.
 | Thứ Hai | **TopDev** | `crawler_topdev` | `0 20 * * 1` |
 | Thứ Ba | **CareerViet** | `crawler_careerviet` | `0 20 * * 2` |
 | Thứ Tư | **ITviec** | `crawler_itviec` | `0 20 * * 3` |
-| Thứ Năm | **VietnamWorks** | `crawler_vietnamworks` | `0 20 * * 4` |
+| Mỗi ngày | **VietnamWorks** | `crawler_vietnamworks` | `0 20 * * *` (20:00 giờ Việt Nam) |
 | Thứ Sáu | **TopCV** | `crawler_topcv` | `0 20 * * 5` |
 | Thứ Bảy | **ViecLam24h** | `crawler_vieclam24h` | `0 20 * * 6` |
 | Chủ Nhật | **Glints** | `crawler_glints` | `0 20 * * 0` |

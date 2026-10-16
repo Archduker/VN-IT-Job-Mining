@@ -19,6 +19,10 @@ VietnamWorks là cổng thông tin việc làm lâu đời và quy mô lớn nh�
 - **Không lo Cloudflare Turnstile**: Endpoint này phục vụ trực tiếp cho Search Container của trang chủ.
 - **Dữ liệu cấu trúc có sẵn**: Trả về trực tiếp mảng `skills`, `benefits`, dải lương số `salaryMin`, `salaryMax`, chuỗi `prettySalary`.
 
+Các item IT API được lưu nguyên trạng trước khi chuẩn hóa thành schema v1, gồm cả các tin mà checkpoint đã ghi nhận. Tin ngoài IT bị loại dựa trên trường ngành của API, chức danh và kỹ năng kỹ thuật. Tất cả raw item của ngày chạy được gom thành một JSON array tại `data/vietnamworks/raw/YYYY-MM-DD/raw_batch.json`, mỗi phần tử có envelope và toàn bộ item API gốc trong `raw_payload`. Khi chạy qua Airflow, file raw batch được đồng bộ lên `raw/vietnamworks/YYYY-MM-DD/raw_batch.json` trong bucket MinIO.
+
+Raw JSON của các lần cào trước không thể khôi phục từ batch schema v1. Chạy lại crawler để truy vấn API và tạo raw snapshot; tin đã có trong checkpoint vẫn được lưu raw nhưng không bị ghi trùng vào batch dữ liệu chuẩn hóa. Raw giữ đủ trường API thực sự trả về, nhưng Search API có thể rút gọn nội dung dài (ví dụ kết thúc bằng `...`) hoặc không trả một số trường. Những phần đó cần được kiểm tra và lấy từ endpoint/trang chi tiết riêng; lưu raw không thể phục hồi dữ liệu API đã lược bỏ.
+
 ```
 [Search API: ms.vietnamworks.com/job-search/v1.0/search]
                          │
@@ -71,8 +75,6 @@ Dữ liệu được kiểm chứng thực tế tại [`crawlers/sources/vietnam
 3. **Chế độ Ngoại Tuyến `--local-json-file`**:
    - Cho phép truyền file JSON snapshot đã lưu để phục vụ test ngoại tuyến mà không cần kết nối mạng.
 
----
-
 ## 4. Kết Quả Kiểm Định Chất Lượng (Data Quality Result)
 
 Chạy kiểm tra tự động qua `DataQualityChecker`:
@@ -86,3 +88,13 @@ Data Quality Passed for crawlers/sources/vietnamworks/test_5_jobs.json:
 - missing_descriptions: 0
 - passed: True
 ```
+
+## 5. Chạy tự động hằng ngày và lưu lên MinIO
+
+DAG `crawler_vietnamworks` chạy hằng ngày lúc 20:00 theo múi giờ `Asia/Ho_Chi_Minh`, giới hạn tối đa 100 tin mới mỗi lần chạy. Kết quả vẫn được ghi cục bộ để kiểm tra chất lượng, sau đó Airflow tải file batch lên MinIO tại:
+
+```text
+minio://vn-it-jobs/raw/vietnamworks/dt=YYYY-MM-DD/batch_001.json
+```
+
+MinIO phải đang chạy, bucket `vn-it-jobs` phải tồn tại, và Airflow Scheduler phải hoạt động thì DAG mới chạy đúng lịch. Nếu upload MinIO lỗi, task crawl sẽ báo thất bại thay vì báo thành công khi dữ liệu chưa được lưu lên đích. Lệnh chạy crawler thủ công vẫn chỉ ghi JSON cục bộ.
