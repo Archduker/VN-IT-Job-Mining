@@ -47,7 +47,7 @@ $DOCKER_CMD run -d \
   -e "MINIO_ROOT_USER=minioadmin" \
   -e "MINIO_ROOT_PASSWORD=minioadmin" \
   --restart unless-stopped \
-  minio/minio server /data --console-address ":9001"
+  elestio/minio:latest server /data --console-address ":9001"
 
 echo "✅ Container 'minio-server' đã được kích hoạt thành công!"
 
