@@ -54,7 +54,12 @@ MAX_PAGES = 30
 DEFAULT_LEDGER_DIR = os.path.join("data", "careerviet", "url_ledger")
 DEFAULT_RAW_DIR = os.path.join("data", "careerviet", "raw")
 CATEGORY_MAP_FILENAME = "category_by_job_id.json"
-# Chi nap 3 nhom IT (c1/c61/keyword:developer); c37 Digital Marketing loai bo o Buoc 1.
+# Ba slug IT that (c1/c61/keyword:developer) duoc Buoc 1 nap mac dinh -> 748 URL.
+# c37 (Digital Marketing) KHONG nam trong glob nay; 281 URL c37 duoc nap CO
+# CHI DINH qua: python scripts/import_careerviet_urls_to_ledger.py --include-c37
+# (commit 1470de0) de do ti le IT cua bucket lai sau dot chay online.
+# Data Integration: dung raw_payload['Ngành nghề'] (KHONG dung
+# metadata.source_category) de quyet dinh tin nao la IT.
 URL_FILE_GLOBS = ("urls_c1_*.json", "urls_c61_*.json", "urls_developer_*.json")
 
 # An toan dot ONLINE (phuong an B): N loi 5xx LIEN TIEP thi DUNG ca dot,
@@ -858,6 +863,14 @@ class CareerVietCrawler(BaseCrawler):
             ledger.sync_to_minio()
         return stats
 
+    def sync_ledger_to_minio(self) -> bool:
+        """Chi dong bo ledger (catalog_master.json + manifests/*.jsonl) len MinIO.
+        KHONG chay Phase 1/2, KHONG goi mang ngoai truong careerviet.vn.
+        Dung khi ledger local da cap nhat va can day len MinIO ma khong cao lai.
+        Tra ve True/False theo UrlLedger.sync_to_minio()."""
+        ledger = self._get_ledger()
+        return ledger.sync_to_minio()
+
     def view_ledger(self) -> dict[str, int]:
         """Tom tat trang thai ledger (dung cho CLI --phase view)."""
         ledger = self._get_ledger()
@@ -869,11 +882,12 @@ class CareerVietCrawler(BaseCrawler):
         return counts
 
 
-def main():
+def main(argv: list[str] | None = None):
     parser = argparse.ArgumentParser(description="CareerViet IT Job Crawler (Two-Phase)")
     parser.add_argument(
-        "--phase", choices=["discovery", "details", "view"], default="details",
-        help="Phase 1 (discovery) / Phase 2 (details) / xem ledger (view)",
+        "--phase", choices=["discovery", "details", "view", "sync"], default="details",
+        help="Phase 1 (discovery) / Phase 2 (details) / xem ledger (view) / "
+             "dong bo ledger len MinIO (sync, khong goi mang ngoai truong)",
     )
     parser.add_argument("--limit", type=int, default=None, help="So chi tiet toi da (details)")
     parser.add_argument("--local-html-dir", type=str, default=None,
@@ -906,7 +920,7 @@ def main():
     parser.add_argument("--output-dir", type=str, default="data", help="[legacy] thu muc xuat du lieu")
     parser.add_argument("--checkpoint-dir", type=str, default=None, help="Thu muc checkpoint")
     parser.add_argument("--save-html", action="store_true", default=False, help="[legacy] luu HTML chi tiet")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     if args.shuffle and args.seed is None:
         parser.error("--shuffle can kem --seed <so_nguyen>")
 
@@ -952,6 +966,9 @@ def main():
             seed=args.seed,
         )
         print("[details] stats =", json.dumps(stats, ensure_ascii=False))
+    elif args.phase == "sync":
+        ok = crawler.sync_ledger_to_minio()
+        print(f"[sync] ledger -> MinIO: {'OK' if ok else 'KHONG THANH CONG (kiem tra MinIO dang chay?)'}")
     else:  # view
         crawler.view_ledger()
 
