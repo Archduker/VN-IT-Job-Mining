@@ -147,3 +147,30 @@ def get_s3_client():
 | **Lỗi Docker daemon** | `Cannot connect to the Docker daemon at unix:///var/run/docker.sock` | Mở ứng dụng Docker Desktop (Windows/macOS) hoặc chạy `sudo systemctl start docker` (Linux). |
 | **Bucket chưa xuất hiện** | Web UI không thấy bucket `vn-it-jobs` | Chạy lệnh `docker compose up -d minio-init` hoặc chạy `.venv/bin/python scripts/check_minio.py` để script tự động tạo bucket. |
 | **Muốn xóa làm sạch dữ liệu** | Cần đưa MinIO về trạng thái trắng ban đầu | Chạy `docker compose down -v` để xóa sạch volumes dữ liệu. |
+
+---
+
+## 6. Kiến Trúc Chia Sẻ Dữ Liệu Nhóm: Cloudflare R2 Cloud Lakehouse
+
+Khi dự án bước vào giai đoạn nhiều thành viên cào song song đa sàn (TopCV, ITViec, VietnamWorks,...), hệ thống hỗ trợ cơ chế **Hybrid Data Lakehouse**:
+- **Offline / Dev cá nhân**: Dùng MinIO cục bộ (`localhost:9000`).
+- **Làm việc nhóm tập trung**: Dùng Cloudflare R2 Bucket chung (`vn-it-jobs`), miễn phí 10 GB và $0 egress fee.
+
+### Các công cụ hỗ trợ Cloud R2 trong repo:
+1. **Thiết lập kết nối Cloud R2 tự động**:
+   ```bash
+   .venv/bin/python scripts/setup_cloud_storage.py
+   ```
+2. **Kéo dữ liệu cả nhóm về máy cục bộ**:
+   ```bash
+   .venv/bin/python scripts/sync_cloud_lakehouse.py --download
+   ```
+3. **Đẩy dữ liệu mới cào lên Cloud R2**:
+   ```bash
+   .venv/bin/python scripts/sync_cloud_lakehouse.py --upload
+   ```
+4. **Kiểm tra trạng thái lưu trữ trên Cloud**:
+   ```bash
+   .venv/bin/python scripts/sync_cloud_lakehouse.py --status
+   ```
+
