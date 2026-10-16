@@ -155,9 +155,29 @@ class UrlLedger:
 
     def __init__(self, source: str, storage_dir: Optional[str] = None):
         self.source = source.lower().strip()
-        self.base_dir = Path(storage_dir or f"data/url_ledger/{self.source}")
+        # Chuẩn hóa cấu trúc: data/<source>/url_ledger
+        target_dir = Path(storage_dir) if storage_dir else Path(f"data/{self.source}/url_ledger")
+        self.base_dir = target_dir
         self.manifests_dir = self.base_dir / "manifests"
         self.catalog_file = self.base_dir / "catalog_master.json"
+
+        # Tự động di chuyển dữ liệu cũ từ data/url_ledger/<source> nếu có
+        legacy_dir = Path(f"data/url_ledger/{self.source}")
+        if legacy_dir.exists() and not self.catalog_file.exists():
+            legacy_catalog = legacy_dir / "catalog_master.json"
+            if legacy_catalog.exists():
+                self.base_dir.mkdir(parents=True, exist_ok=True)
+                import shutil
+                try:
+                    shutil.copy2(legacy_catalog, self.catalog_file)
+                    legacy_manifests = legacy_dir / "manifests"
+                    if legacy_manifests.exists():
+                        self.manifests_dir.mkdir(parents=True, exist_ok=True)
+                        for m_file in legacy_manifests.glob("*.jsonl"):
+                            shutil.copy2(m_file, self.manifests_dir / m_file.name)
+                    logger.info(f"Đã di chuyển dữ liệu URL Ledger từ {legacy_dir} sang {self.base_dir}")
+                except Exception as e:
+                    logger.warning(f"Lỗi khi di chuyển dữ liệu từ {legacy_dir}: {e}")
 
         self.manifests_dir.mkdir(parents=True, exist_ok=True)
         self.records: Dict[str, Dict[str, Any]] = self._load_catalog()
@@ -282,3 +302,62 @@ class UrlLedger:
             if rec.get("content_hash") == content_hash and rec.get("status") == "DONE":
                 return rec
         return None
+
+    def sync_to_minio(
+        self,
+        bucket_name: Optional[str] = None,
+        endpoint_url: Optional[str] = None,
+        access_key: Optional[str] = None,
+        secret_key: Optional[str] = None,
+    ) -> bool:
+        """
+        Đồng bộ URL Ledger (catalog_master.json và manifests/*.jsonl) lên MinIO / S3.
+        Đích: minio://{bucket_name}/url_ledger/{source}/
+        """
+        import os
+        bucket = bucket_name or os.getenv("MINIO_BUCKET", "vn-it-jobs")
+        endpoint = endpoint_url or os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
+        ak = access_key or os.getenv("MINIO_ROOT_USER", "minioadmin")
+        sk = secret_key or os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
+
+        try:
+            import boto3
+            from botocore.client import Config
+
+            s3 = boto3.client(
+                "s3",
+                endpoint_url=endpoint,
+                aws_access_key_id=ak,
+                aws_secret_access_key=sk,
+                config=Config(signature_version="s3v4", connect_timeout=3, retries={"max_attempts": 2}),
+                region_name="us-east-1",
+            )
+
+            # Đảm bảo bucket tồn tại
+            try:
+                s3.head_bucket(Bucket=bucket)
+            except Exception:
+                try:
+                    s3.create_bucket(Bucket=bucket)
+                except Exception as b_exc:
+                    logger.debug(f"Bucket {bucket} create/head check: {b_exc}")
+
+            # Upload catalog_master.json
+            if self.catalog_file.exists():
+                key = f"url_ledger/{self.source}/catalog_master.json"
+                s3.upload_file(str(self.catalog_file), bucket, key)
+                logger.info(f"[MinIO] Đã đồng bộ catalog lên minio://{bucket}/{key}")
+
+            # Upload all manifest files
+            manifest_count = 0
+            for m_path in self.manifests_dir.glob("*.jsonl"):
+                key = f"url_ledger/{self.source}/manifests/{m_path.name}"
+                s3.upload_file(str(m_path), bucket, key)
+                manifest_count += 1
+
+            logger.info(f"[MinIO] Đã đồng bộ thành công {manifest_count} manifests lên minio://{bucket}/url_ledger/{self.source}/manifests/")
+            return True
+        except Exception as exc:
+            logger.warning(f"[MinIO] Không thể đồng bộ URL Ledger lên MinIO ({endpoint}): {exc}. Dữ liệu cục bộ vẫn an toàn.")
+            return False
+

@@ -105,3 +105,26 @@ def test_url_ledger_workflow():
         ledger.mark_failed(record.url_hash, error_message="HTTP 500 Internal Server Error")
         assert ledger.records[record.url_hash]["status"] == "FAILED"
         assert ledger.records[record.url_hash]["retry_count"] == 1
+
+
+def test_url_ledger_default_storage_dir():
+    ledger = UrlLedger(source="topcv")
+    assert str(ledger.base_dir).endswith("data/topcv/url_ledger")
+
+
+def test_url_ledger_sync_to_minio(monkeypatch):
+    from unittest.mock import MagicMock
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        ledger = UrlLedger(source="topcv", storage_dir=tmp_dir)
+        ledger.register_url("https://topcv.vn/job/123", job_id="123")
+        ledger.save_catalog()
+        ledger.export_daily_manifest()
+
+        # Mock boto3 client
+        mock_s3 = MagicMock()
+        monkeypatch.setattr("boto3.client", lambda *args, **kwargs: mock_s3)
+
+        success = ledger.sync_to_minio(bucket_name="vn-it-jobs", endpoint_url="http://mock-minio:9000")
+        assert success is True
+        assert mock_s3.upload_file.call_count >= 2
+
