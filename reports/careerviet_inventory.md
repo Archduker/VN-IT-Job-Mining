@@ -121,12 +121,20 @@ url_ledger/
 
 ### 5.2. Thứ tự lệnh (sau khi được duyệt)
 
+> **Máy Tài KHÔNG có Docker** → MinIO chạy bằng **AIStor** (file thực thi `minio.exe`). `<DATA_DIR>` và `<DUONG_DAN_LICENSE>` là **bí mật cá nhân**, đặt **ngoài repo**, **KHÔNG commit**, **KHÔNG dán** vào docs/log/commit (agent **không** đọc hay in). `docker compose` / `scripts/start_minio.sh` **chỉ** dùng trên máy khác có Docker.
+>
+> **Đường dẫn repo chứa dấu cách** (`d:\ĐH\Năm 3\Học kỳ 1\Khai thác dữ liệu\crawl data\VN-IT-Job-Mining`) → mọi `cd` và tham số `--local-dir`/`--license` **phải bọc nháy kép**.
+
 ```powershell
-# (1) Start MinIO (Tài chạy tay, agent KHÔNG gọi)
-bash scripts/start_minio.sh
+# (0) Di chuyen den repo (boc nhay vi duong dan co dau cach):
+cd "d:\ĐH\Năm 3\Học kỳ 1\Khai thác dữ liệu\crawl data\VN-IT-Job-Mining"
+
+# (1) Start MinIO AIStor (Tai chay tay; agent KHONG goi, KHONG ket noi that):
+minio.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>
+curl.exe http://localhost:9000/minio/health/live   # HTTP 200 -> san sang
 
 # (2) Đồng bộ ledger (không gọi mạng ngoài trường)
-python -X utf8 crawlers/sources/careerviet/crawler.py --phase sync
+python -X utf8 -m crawlers.sources.careerviet.crawler --phase sync
 
 # (3) Dry-run đẩy raw envelope (kiểm tra key mapping, không cần boto3)
 python -X utf8 scripts/push_raw_to_minio.py `
@@ -139,10 +147,16 @@ python -X utf8 scripts/push_raw_to_minio.py `
   --prefix raw/careerviet --verify-sha
 ```
 
+**Phương án phụ** (máy khác có Docker): Linux/macOS `bash scripts/start_minio.sh`; Windows PowerShell `docker compose -f docker-compose.minio.yml up -d`. `docker-compose.minio.yml` vẫn giữ trong repo làm tham chiếu.
+
 ### 5.3. An toàn
 
 - **Idempotent**: mặc định `--no-clobber` → `SKIPPED_EXISTS` khi key đã tồn tại (qua `head_object`).
-- **Bí mật** (`MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`) đọc từ env, **không bao giờ in** raw value; `--verbose` chỉ in `mini***dmin`.
+- **Bí mật** (`MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`) đọc từ env, **không bao giờ in** raw value; `--verbose` chỉ in dạng mask (`mini***dmin`).
+- **License AIStor là bí mật cá nhân**: file `.json` cấp cho máy Tài, **đặt ngoài repo** (ví dụ `D:\secrets\aistor-license.json`), **KHÔNG commit**, **KHÔNG dán** đường dẫn hay nội dung vào docs / log / issue / commit message. Agent **không** đọc, **không** in.
+- **Không có Docker trên máy Tài**: mọi lệnh ở §5.2 dùng `minio.exe server ... --license ...`; `docker-compose.minio.yml` và `scripts/start_minio.sh` chỉ còn là **phương án phụ** cho máy khác có Docker.
+- **Chỉ 4 biến môi trường được phép dùng**: `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET` (khớp `scripts/setup_minio.py:18-21` và `crawlers/common/url_ledger.py:318-321`). **KHÔNG** tự đặt tên mới (`MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`, `MINIO_REGION`).
+- **Đường dẫn repo có dấu cách**: `cd "d:\ĐH\Năm 3\Học kỳ 1\Khai thác dữ liệu\crawl data\VN-IT-Job-Mining"` phải bọc nháy kép; PowerShell ≥ 7 nên `$env:MINIO_ROOT_PASSWORD = Read-Host -AsSecureString "..."` thay vì đặt plain-text trong script.
 - **Lệch docs/code**: docs/02 §3.3 ghi `catalog_master.parquet`; `crawlers/common/url_ledger.py` ghi **`.json`** (converter parquet **chưa có**, thuộc file dùng chung → chỉ ghi nhận tại đây, **KHÔNG sửa** ở turn này).
 
 ---

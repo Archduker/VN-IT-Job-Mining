@@ -416,7 +416,7 @@ Subset CareerViet + push_raw_to_minio (lệnh:
 - [ ] cân nhắc **Re-crawl 21 ngày** qua `--phase details` (ledger tự convert `DONE -> RECHECK_DUE`).
 - [ ] Viết Clean layer ánh xạ `raw_payload -> Common Target Schema` (bên `data-integration-miner`).
 - [ ] Quyết định có mở rộng `_is_blocking` sang `504` hay không (hiện **không**; xem §5.2).
-- [ ] Chạy `--phase sync` + `push_raw_to_minio.py` sau khi MinIO local được Tài khởi động bằng `docker compose -f docker-compose.minio.yml up -d` (xem §13.3).
+- [ ] Chạy `--phase sync` + `push_raw_to_minio.py` sau khi MinIO local được Tài khởi động bằng **AIStor** `minio.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>` (xem §13.1 và §13.3; máy Tài **không** có Docker).
 - [ ] Đề xuất `.gitignore` thêm `backup/` + `*.bak` (Tài tự tay nếu chấp nhận).
 
 ---
@@ -452,18 +452,34 @@ python -X utf8 crawlers/sources/careerviet/crawler.py --phase sync
 # -> [sync] ledger -> MinIO: OK
 ```
 
-Yêu cầu MinIO đang chạy (**Windows PowerShell**):
+Yêu cầu MinIO đang chạy. **Máy Tài KHÔNG có Docker** → chạy **AIStor** (file thực thi `minio.exe` trên Windows). Cách **chính**:
 
 ```powershell
-docker compose -f docker-compose.minio.yml up -d
-# image: minio/minio:latest (ban Community, Apache 2.0, KHONG can license)
-# Check health:
+# Duong dan repo co dau cach va tieng Viet co dau -> PHAI boc nhay khi cd
+cd "d:\ĐH\Năm 3\Học kỳ 1\Khai thác dữ liệu\crawl data\VN-IT-Job-Mining"
+
+# Bat AIStor Server (DATA_DIR va LICENSE duoc Tai giu NGOAI repo):
+minio.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>
+
+# Kiem tra S3 API da san sang (Console web o :9001):
 curl.exe http://localhost:9000/minio/health/live
 ```
 
-(**Linux/macOS:** `bash scripts/start_minio.sh` — wrapper gọi `docker compose up -d`, đợi health-check 15 s, rồi chạy `python3 scripts/setup_minio.py` để tạo bucket + `.keep` marker.)
+- `<DATA_DIR>` – thư mục AIStor ghi object; **khuyên đặt ngoài repo** (ví dụ `D:\minio-data\`) để `git add .` không quét nhầm.
+- `<DUONG_DAN_LICENSE>` – file license `.json` **cá nhân** AIStor, đối xử **như credentials**:
+  - **Ngoài repo**, **KHÔNG commit**, **KHÔNG dán** đường dẫn hay nội dung vào docs / log / issue / commit message.
+  - Agent **không** đọc, **không** in nội dung hay đường dẫn license.
+  - Khi đổi máy, Tài tự copy file; người khác tự xin license riêng.
 
-Và 4 biến môi trường (`MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`); **KHÔNG hardcode** giá trị ở nơi khác; mặc định nằm trong `scripts/setup_minio.py:18-21`. Trên PowerShell version ≥ 7: `$env:MINIO_ROOT_PASSWORD = Read-Host -AsSecureString "MinIO password"` → map sang env cho tiến trình con (agent **không** in ra).
+**Phương án phụ** – **chỉ** khi máy **có** Docker (máy Tài hiện tại **KHÔNG** dùng):
+- Linux/macOS: `bash scripts/start_minio.sh` (wrapper gọi `docker compose up -d`, đợi health-check 15 s, rồi chạy `python3 scripts/setup_minio.py` tạo bucket + `.keep` marker).
+- Windows PowerShell (máy khác có Docker): `docker compose -f docker-compose.minio.yml up -d`.
+
+`docker-compose.minio.yml` giữ nguyên trong repo làm tham chiếu cho người dùng sau; docs/02 vẫn mô tả Docker.
+
+Cấu hình kết nối **chỉ qua 4 biến môi trường**: `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`. **KHÔNG hardcode** giá trị ở code / test / docs / log / commit message (mặc định nằm trong `scripts/setup_minio.py:18-21` – file dùng chung, agent **KHÔNG sửa**). PowerShell ≥ 7: `$env:MINIO_ROOT_PASSWORD = Read-Host -AsSecureString "MinIO password"` → map sang env cho tiến trình con (agent **không** in ra).
+
+> **Đường dẫn repo chứa dấu cách**: workspace `d:\ĐH\Năm 3\Học kỳ 1\Khai thác dữ liệu\crawl data\VN-IT-Job-Mining` có nhiều dấu cách và dấu tiếng Việt. Mọi lệnh `cd`, tham số `--local-dir`, `--license`, `--data-dir` **phải bọc nháy kép** (`cd "..."`), nếu không PowerShell báo `A positional parameter cannot be found...` (coi mỗi từ là tham số riêng).
 
 ### 13.2. Đẩy Raw Envelope Lên MinIO (script mới)
 
@@ -497,8 +513,10 @@ Vì `sync_to_minio` **chỉ** upload ledger (không raw), ta viết `scripts/pus
 ### 13.3. Thứ Tự Lệnh Đầy Đủ (sau khi MinIO được duyệt)
 
 ```powershell
-# 1. Start MinIO (Windows, Tai chay tay; agent **KHONG** goi, **KHONG** ket noi MinIO that)
-docker compose -f docker-compose.minio.yml up -d
+# 1. Start MinIO AIStor (may Tai KHONG co Docker). Tai chay tay;
+#    agent **KHONG** goi, **KHONG** ket noi MinIO that. DATA_DIR va
+#    DUONG_DAN_LICENSE duoc Tai giu NGOAI repo (khong commit).
+minio.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>
 curl.exe http://localhost:9000/minio/health/live   # (ky vong: HTTP 200, body rong)
 
 # 2. Dong bo ledger (khong goi mang ngoai truong; khong can Phase 1/2)
@@ -520,7 +538,7 @@ aws --endpoint-url http://localhost:9000 s3 ls s3://vn-it-jobs/raw/careerviet/ -
 
 Hoặc dùng MinIO client `mc ls local/vn-it-jobs/raw/careerviet/`.
 
-> **MinIO image**: `minio/minio:latest` trong `docker-compose.minio.yml` là **ban Community** (giấy phép Apache 2.0, **KHÔNG cần license key**, **KHÔNG** bắt đăng ký tài khoản). Nếu đổi sang `minio/minio:RELEASE.*-aarch64` hoặc các phiên bản Enterprise thì mới cần giấy phép — dự án này **không** dùng Enterprise.
+> **Môi trường thực tế của Tài**: máy **không có Docker** → chạy **AIStor** (`minio.exe server ... --license ...`). File license `.json` là **bí mật cá nhân**, đặt **ngoài repo**, **KHÔNG commit**, **KHÔNG dán** đường dẫn hay nội dung vào docs / log / issue / commit message (agent **không** bao giờ đọc hay in). `docker-compose.minio.yml` và `scripts/start_minio.sh` **chỉ còn là phương án phụ** cho máy khác có Docker; máy Tài **KHÔNG** dùng lệnh `docker compose`. Connection config **chỉ** qua 4 env: `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`.
 
 ### 13.4. Test Tự Động Cho Push Script
 
