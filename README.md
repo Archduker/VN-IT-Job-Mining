@@ -178,9 +178,9 @@ Toàn bộ **110/110 test cases** đạt trạng thái **100% Passed**.
 
 ## 📚 Tài Liệu Hướng Dẫn & Bộ AI Skill
 
-- **Quy trình chuẩn bóc tách nguồn dữ liệu mới**: [`docs/crawl_documents/01_crawler_analysis_methodology.md`](docs/crawl_documents/01_crawler_analysis_methodology.md)
-- **Nhật ký prompt thực chiến & Tư duy tiến hóa**: [`docs/crawl_documents/02_user_prompt_logs_and_insights.md`](docs/crawl_documents/02_user_prompt_logs_and_insights.md)
-- **Case Study chi tiết TopCV**: [`docs/crawl_documents/03_case_study_topcv.md`](docs/crawl_documents/03_case_study_topcv.md)
+- **Quy trình chuẩn bóc tách nguồn dữ liệu mới**: [`docs/guides/crawler_analysis_methodology.md`](docs/guides/crawler_analysis_methodology.md)
+- **Báo cáo phân tích kiến trúc TopCV**: [`docs/crawl/topcv.md`](docs/crawl/topcv.md)
+- **Tài liệu lưu trữ lịch sử prompt**: [`docs/archive/02_user_prompt_logs_and_insights.md`](docs/archive/02_user_prompt_logs_and_insights.md)
 - **Antigravity Custom Skill cho AI**: [`.agents/skills/job-crawler-analyzer/SKILL.md`](.agents/skills/job-crawler-analyzer/SKILL.md)
 
 ---
