@@ -127,7 +127,14 @@ assert result['unique_rate'] == 100.0
 "
 ```
 
-### Bước 5: Tích Hợp BaseCrawler & Bảo Vệ Airflow
+### Bước 5: Tích Hợp BaseCrawler, Cấu Trúc Lưu Trữ & Bảo Vệ Airflow
 - Kế thừa `BaseCrawler`.
+- **Cấu trúc lưu trữ chuẩn hóa**: Toàn bộ dữ liệu của nguồn phải lưu đúng trong `data/<source>/`:
+  - `data/<source>/url_ledger/catalog_master.json` & `manifests/manifest_YYYY-MM-DD.jsonl`
+  - `data/<source>/raw/YYYY-MM-DD/{job_id}_v{version}.json`
+  - `data/<source>/samples/sample_standard_job.html` & `.json`
+- **MinIO Lakehouse**: Đồng bộ qua `self.ledger.sync_to_minio()` lên `minio://vn-it-jobs/url_ledger/<source>/`. Người dùng xem trên Web Console UI: `http://localhost:9001` (User: `minioadmin` / Pass: `minioadmin`) hoặc CLI `python scripts/view_urls.py --source <source> [--minio]`.
+- **Chống chặn bot**: Tích hợp `crawlers.common.anti_blocking` với `polite_sleep` (ngẫu nhiên 3.0s - 5.5s) và `human_like_interaction`.
 - Đặt `save_html = False` làm giá trị mặc định để không lưu rác HTML.
 - **Không bao giờ sửa đổi Airflow DAGs hay Operators** (`airflow/dags/`, `airflow/plugins/`).
+

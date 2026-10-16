@@ -63,12 +63,17 @@ def setup_minio_lake():
         for prefix in initial_prefixes:
             print(f"  - minio://{BUCKET_NAME}/{prefix}")
 
+        print("\nMinIO Ready!")
+        print("  - Web Console UI : http://localhost:9001 (User: minioadmin / Pass: minioadmin)")
+        print(f"  - S3 API Endpoint: {MINIO_ENDPOINT}")
+        print(f"  - Bucket Name    : {BUCKET_NAME}")
+
     except ClientError as e:
         print(f"ClientError: {e}")
         sys.exit(1)
     except Exception as e:
         print(f"Connection failed: {e}")
-        print("Tip: Make sure MinIO is running (e.g., via 'make minio-up' or 'docker compose -f docker-compose.minio.yml up -d')")
+        print("Tip: Make sure MinIO is running (e.g., via 'bash scripts/start_minio.sh' or 'sudo docker compose -f docker-compose.minio.yml up -d')")
         sys.exit(1)
 
 

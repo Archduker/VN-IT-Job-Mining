@@ -20,6 +20,12 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from crawlers.base.base_crawler import BaseCrawler
+from crawlers.common.anti_blocking import (
+    handle_cloudflare_backoff,
+    human_like_interaction,
+    is_cloudflare_challenge,
+    polite_sleep,
+)
 from crawlers.common.schema import JobRecord, JobSalary, JobTags
 from crawlers.common.url_ledger import (
     UrlLedger,
@@ -63,26 +69,31 @@ class TopCVCrawler(BaseCrawler):
         save_html: bool = False,
         html_storage_dir: str | None = None,
         local_html_dir: str | None = None,
+        min_delay: float = 3.0,
+        max_delay: float = 5.5,
     ) -> None:
+        target_output_dir = output_dir or "data/topcv"
         super().__init__(
             checkpoint_dir=checkpoint_dir,
-            output_dir=output_dir,
+            output_dir=target_output_dir,
             max_items=max_items,
             checkpoint_interval=checkpoint_interval,
         )
         self.chrome_path = chrome_path
         self.headless = headless
         self.save_html = save_html
-        self.html_storage_dir = html_storage_dir or os.path.dirname(__file__)
+        self.html_storage_dir = html_storage_dir or os.path.join(self.output_dir, "raw")
         self.local_html_dir = local_html_dir
+        self.min_delay = min_delay
+        self.max_delay = max_delay
         self.ledger = UrlLedger(
             source=self.source_name,
-            storage_dir=os.path.join(output_dir or "data", "url_ledger", self.source_name),
+            storage_dir=os.path.join(self.output_dir, "url_ledger"),
         )
 
     # ── PHA 1: URL DISCOVERY ──────────────────────────────────
     def discover_urls(self, max_pages: int | None = None) -> int:
-        """Quét sạch toàn bộ link bài đăng từ trang danh mục TopCV và lưu vào UrlLedger."""
+        """Quét sạch toàn bộ link bài đăng từ trang danh mục TopCV và lưu vào UrlLedger & MinIO."""
         log.info("[TopCV] === Bắt đầu Pha 1: URL Discovery ===")
         from playwright.sync_api import sync_playwright
 
@@ -114,8 +125,13 @@ class TopCVCrawler(BaseCrawler):
 
                     try:
                         page.goto(target_url, wait_until="domcontentloaded", timeout=30000)
-                        page.wait_for_timeout(3000)
+                        human_like_interaction(page, scroll_times=2)
                         content = page.content()
+
+                        if is_cloudflare_challenge(content):
+                            handled = handle_cloudflare_backoff(page, retry_attempt=1)
+                            if handled:
+                                content = page.content()
 
                         soup = BeautifulSoup(content, "html.parser")
                         cards = soup.select(".job-item-search-result, .job-item, div[data-job-id]")
@@ -124,9 +140,22 @@ class TopCVCrawler(BaseCrawler):
                             break
 
                         for card in cards:
-                            a_tag = card.select_one("a[href*='/viec-lam/']")
+                            # Tìm thẻ tiêu đề chính xác (ưu tiên h3, tránh thẻ avatar rỗng text)
+                            title_el = card.select_one("h3.title a, h3 a, .title a, a.title-link, a[data-toggle='tooltip']")
+                            a_tag = None
+                            if title_el:
+                                a_tag = title_el
+                            else:
+                                for a in card.select("a[href*='/viec-lam/']"):
+                                    if clean_text(a.text) and not any(k in a.get("href", "") for k in ["viec-lam-it", "tag"]):
+                                        a_tag = a
+                                        break
+                                if not a_tag:
+                                    a_tag = card.select_one("a[href*='/viec-lam/']")
+
                             if not a_tag:
                                 continue
+
                             raw_href = a_tag.get("href", "")
                             if any(k in raw_href for k in ["viec-lam-it", "tag"]):
                                 continue
@@ -141,6 +170,10 @@ class TopCVCrawler(BaseCrawler):
 
                             clean_url = clean_canonical_url(urljoin(BASE_URL, raw_href))
                             title = clean_text(a_tag.text)
+                            if not title:
+                                fallback_h = card.select_one("h3, .title, strong")
+                                title = clean_text(fallback_h.text) if fallback_h else ""
+
                             comp_el = card.select_one(".company, .company-name, a.company, a[href*='/cong-ty/']")
                             comp = clean_text(comp_el.text) if comp_el else "Unknown"
 
@@ -154,7 +187,7 @@ class TopCVCrawler(BaseCrawler):
                             total_discovered += 1
 
                         curr_page += 1
-                        page.wait_for_timeout(2000)
+                        polite_sleep(self.min_delay, self.max_delay, reason=f"Chuyển tiếp trang danh mục {curr_page}")
 
                     except Exception as exc:
                         log.error("[TopCV] Lỗi khi quét danh mục trang %d: %s", curr_page, exc)
@@ -166,6 +199,8 @@ class TopCVCrawler(BaseCrawler):
 
         self.ledger.save_catalog()
         manifest_file = self.ledger.export_daily_manifest()
+        # Đồng bộ tự động lên MinIO
+        self.ledger.sync_to_minio()
         log.info("[TopCV] Hoàn thành Pha 1. Tổng cộng %d URL đã được ghi nhận vào %s", total_discovered, manifest_file)
         return total_discovered
 
@@ -177,7 +212,7 @@ class TopCVCrawler(BaseCrawler):
         log.info("[TopCV] Tìm thấy %d link cần xử lý trong Ledger.", len(pending_records))
 
         stats = {"success": 0, "failed": 0, "skipped": 0, "repost": 0}
-        raw_storage_dir = os.path.join(self.output_dir, "raw", self.source_name)
+        raw_storage_dir = os.path.join(self.output_dir, "raw")
         os.makedirs(raw_storage_dir, exist_ok=True)
 
         from playwright.sync_api import sync_playwright
@@ -212,18 +247,18 @@ class TopCVCrawler(BaseCrawler):
                     try:
                         log.info("[TopCV] [%d/%d] Đang tải chi tiết: %s", count + 1, len(pending_records), url)
                         page.goto(url, wait_until="domcontentloaded", timeout=30000)
-                        page.wait_for_timeout(3500)
+                        human_like_interaction(page, scroll_times=1)
                         content = page.content()
 
                         soup = BeautifulSoup(content, "html.parser")
 
                         # Kiểm tra Cloudflare WAF / Turnstile
-                        if any(k in content for k in ["cf-turnstile", "challenges.cloudflare.com", "Thực hiện xác minh bảo mật", "Attention Required! | Cloudflare", "Sorry, you have been blocked"]):
-                            log.warning("[TopCV] Phát hiện Cloudflare challenge tại: %s. Chờ thêm 5s...", url)
-                            page.wait_for_timeout(5000)
-                            content = page.content()
-                            soup = BeautifulSoup(content, "html.parser")
-                            if not soup.select_one(CONTAINER_SELECTOR):
+                        if is_cloudflare_challenge(content):
+                            log.warning("[TopCV] Phát hiện Cloudflare challenge tại: %s. Chờ backoff...", url)
+                            if handle_cloudflare_backoff(page, retry_attempt=1):
+                                content = page.content()
+                                soup = BeautifulSoup(content, "html.parser")
+                            else:
                                 raise RuntimeError(f"Cloudflare Turnstile/WAF challenge blocked: {url}")
 
                         # Kiểm tra bài đăng hết hạn hoặc xóa
@@ -286,6 +321,9 @@ class TopCVCrawler(BaseCrawler):
                         stats["success"] += 1
                         count += 1
 
+                        # Polite sleep giữa 2 bài đăng
+                        polite_sleep(self.min_delay, self.max_delay, reason=f"Nghỉ giữa bài đăng {count}")
+
                     except Exception as exc:
                         # Safe Skip: Ghi nhận lỗi và chuyển tiếp link sau
                         log.error("[TopCV] Lỗi cào %s: %s. Safe Skip qua link tiếp theo.", url, exc)
@@ -298,9 +336,12 @@ class TopCVCrawler(BaseCrawler):
             log.error("[TopCV] Lỗi trong quá trình chạy Detail Extraction: %s", exc)
 
         self.ledger.save_catalog()
+        # Đồng bộ kết quả lên MinIO
+        self.ledger.sync_to_minio()
         log.info("[TopCV] Hoàn thành Pha 2. Thống kê: %s", stats)
         return stats
 
+    def _fetch_listing_urls(self, page) -> list[dict[str, Any]]:
         """Quét trang danh sách tìm kiếm và thu thập danh sách {job_id, url}."""
         log.info("[TopCV] Navigating to listing: %s", START_URL)
         page.goto(START_URL, wait_until="domcontentloaded", timeout=30000)
@@ -713,12 +754,18 @@ class TopCVCrawler(BaseCrawler):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="TopCV IT Job Two-Phase Crawler")
-    parser.add_argument("--max-items", type=int, default=5, help="Số tin tối đa cần cào")
-    parser.add_argument("--output-dir", type=str, default="data", help="Thư mục xuất dữ liệu JSON/JSONL")
+    parser = argparse.ArgumentParser(description="TopCV IT Job Two-Phase Crawler (URL Discovery & Detail Extraction)")
+    parser.add_argument("--phase", type=str, choices=["all", "discovery", "details", "view"], default="all", help="Pha cần chạy: discovery (Pha 1), details (Pha 2), all (cả hai), view (xem link đã lưu)")
+    parser.add_argument("--max-pages", type=int, default=None, help="Số trang danh mục tối đa cần quét ở Pha 1 (mặc định: quét hết)")
+    parser.add_argument("--max-items", type=int, default=5, help="Số tin tối đa cần cào ở Pha 2 / legacy")
+    parser.add_argument("--min-delay", type=float, default=3.0, help="Thời gian nghỉ tối thiểu giữa các request (giây)")
+    parser.add_argument("--max-delay", type=float, default=5.5, help="Thời gian nghỉ tối đa giữa các request (giây)")
+    parser.add_argument("--output-dir", type=str, default="data/topcv", help="Thư mục gốc lưu trữ dữ liệu (mặc định: data/topcv)")
     parser.add_argument("--checkpoint-dir", type=str, default=None, help="Thư mục lưu checkpoint")
-    parser.add_argument("--save-html", action="store_true", default=False, help="Lưu file HTML chi tiết vào thư mục crawler (mặc định tắt)")
-    parser.add_argument("--local-html-dir", type=str, default=None, help="Thư mục chứa HTML cục bộ để parse nhanh không cần mạng")
+    parser.add_argument("--save-html", action="store_true", default=False, help="Lưu file HTML chi tiết (mặc định tắt)")
+    parser.add_argument("--local-html-dir", type=str, default=None, help="Thư mục chứa HTML cục bộ để parse nhanh offline")
+    parser.add_argument("--view-ledger", action="store_true", default=False, help="Xem bảng kiểm kê URL Ledger đã lưu")
+    parser.add_argument("--minio", action="store_true", default=False, help="Đọc dữ liệu URL Ledger từ MinIO khi xem")
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -726,15 +773,39 @@ def main():
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
 
+    if args.view_ledger or args.phase == "view":
+        from scripts.view_urls import load_local_ledger, load_minio_ledger, render_dashboard
+        if args.minio:
+            res = load_minio_ledger(source="topcv")
+        else:
+            res = load_local_ledger(source="topcv")
+        if res["exists"] and res["records"]:
+            render_dashboard(res["records"], source="topcv", source_path=res["source_path"], is_minio=args.minio)
+        else:
+            print(f"⚠️ Chưa có dữ liệu URL Ledger tại: {res['source_path']}")
+        return
+
     crawler = TopCVCrawler(
         checkpoint_dir=args.checkpoint_dir,
         output_dir=args.output_dir,
         max_items=args.max_items,
         save_html=args.save_html,
         local_html_dir=args.local_html_dir,
+        min_delay=args.min_delay,
+        max_delay=args.max_delay,
     )
-    result = crawler.run()
-    print("Crawl completed:", result)
+
+    if args.phase == "discovery":
+        total = crawler.discover_urls(max_pages=args.max_pages)
+        print(f"Pha 1 Discovery hoàn thành. Tổng số URL ghi nhận: {total}")
+    elif args.phase == "details":
+        stats = crawler.crawl_details(limit=args.max_items)
+        print("Pha 2 Detail Extraction hoàn thành:", stats)
+    else:
+        # Mặc định: Chạy cả 2 pha hoặc run legacy
+        crawler.discover_urls(max_pages=args.max_pages or 1)
+        stats = crawler.crawl_details(limit=args.max_items)
+        print("Crawl hoàn tất:", stats)
 
 
 if __name__ == "__main__":
