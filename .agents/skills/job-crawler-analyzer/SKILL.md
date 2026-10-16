@@ -47,52 +47,72 @@ company_el = soup.select_one(".company-name-label a, .company-name-label, .compa
 company = company_el.get_text(strip=True) if company_el else None
 ```
 
-### Bước 3: Chuẩn Hóa Lương & Phân Nhóm Thẻ Tags
+### Bước 3: Thu Thập Thô Nguyên Bản (DOM-Native Class Name & Partitioning / SD1)
 
-#### 1. Mức Lương Lồng Nhau (`JobSalary`)
-Dùng hàm `parse_salary_detail(salary_text, title)`:
-- `salary_min`: Lương tối thiểu (số thực triệu VNĐ hoặc USD).
-- `salary_max`: Lương tối đa (số thực triệu VNĐ hoặc USD).
-- `salary_currency`: `"VND"` hoặc `"USD"`.
-- `pay_period`: `"month"`, `"year"`, `"day"`, hoặc `"hour"`.
-- `is_negotiable`: `True` nếu có từ khóa *"Thỏa thuận"*, *"Cạnh tranh"*, *"Negotiable"*.
-- `has_commission`: `True` nếu có từ khóa *"hoa hồng"*, *"thưởng KPI"*, *"commission"*.
-- *Fallback*: Nếu mức lương hiển thị là *"Thỏa thuận"* nhưng tiêu đề có ghi số tiền (ví dụ: *"Dev Python Upto 35 Triệu"*), tự động quét regex từ tiêu đề!
+> [!CAUTION]
+> **QUY TẮC CỐT LÕI (ZERO INFORMATION LOSS - SD1)**:
+> Tại Tầng Cào Thô (Raw Crawl Tier):
+> 1. **Key trường = Chính xác CSS Class Name trong DOM**: Không tự đặt tên trường trừu tượng (`title`, `company`, `salary`), mà lấy trực tiếp tên class (`box-header-job__title`, `box-company-info`, `box-header-job__salary--title`, `job-tags`, `box-job-information-detail-item__text`).
+> 2. **TUYỆT ĐỐI KHÔNG dùng hậu tố `__html` hay `_html`**: Không nhồi nhét mã HTML cồng kềnh; giá trị văn bản được lưu trực tiếp dưới key class text (`box-job-information-detail-item__text`) với ngắt dòng và bullet nguyên bản.
+> 3. **Phân khối theo cây DOM ("Phân ra")**: Phân chia `raw_payload` theo các khối container cha (Header, Left Body, Right Body).
 
-#### 2. Phân Nhóm Thẻ Tags (`JobTags`)
-Quét các nhóm `.job-tags__group` hoặc badge container:
-```python
-tag_requirements = []
-tag_benefits = []
-tag_skills = []
-found_benefits_group = False
-
-for group in soup.select(".job-tags .job-tags__group"):
-    g_title = group.select_one(".job-tags__group-name").get_text(strip=True).lower()
-    items = [a.get_text(strip=True) for a in group.select(".item") if not a.get_text(strip=True).startswith("+")]
-    
-    if any(k in g_title for k in ["yêu cầu", "requirement"]):
-        tag_requirements.extend(items)
-    elif any(k in g_title for k in ["quyền lợi", "benefit", "phúc lợi"]):
-        found_benefits_group = True
-        tag_benefits.extend(items)
-    elif any(k in g_title for k in ["chuyên môn", "specialization", "skill"]):
-        tag_skills.extend(items)
-
-tags = {
-    "requirements": tag_requirements if tag_requirements else None,
-    "benefits": tag_benefits if (found_benefits_group and tag_benefits) else None,
-    "skills": tag_skills if tag_skills else None,
+#### 1. Quy chuẩn Trích xuất Tầng Thô (Raw Tier Payload Theo Class Name)
+```json
+{
+  "box-header-job": {
+    "box-header-job__title": "Chuyên viên Tư vấn Đầu tư",
+    "box-company-info": "Công ty cổ phần chứng khoán FPT",
+    "box-header-job__salary--title": "Thoả thuận",
+    "box-header-job-list-info": {
+      "Địa điểm": "Hà Nội",
+      "Kinh nghiệm": "Không yêu cầu",
+      "Hạn ứng tuyển": "31/08/2016"
+    },
+    "box-group-button-apply": "Hết hạn ứng tuyểnXem việc làm liên quan",
+    "box-header-job__warning-employer-data-protection": "..."
+  },
+  "job-detail__body-left": {
+    "box-job-information-detail-item__overview": {
+      "job-tags": {
+        "Yêu cầu:": ["Không yêu cầu kinh nghiệm chuyên môn"]
+      }
+    },
+    "box-job-information-detail-item__job-description": {
+      "box-job-information-detail-item__text": "- Tìm kiếm và duy trì mối quan hệ với khách hàng;\n- Thực hiện các nghiệp vụ môi giới chứng khoán;\n- Tư vấn đầu tư cho khách hàng..."
+    },
+    "box-job-information-required-candidate": {
+      "box-job-information-detail-item__text": "- Nam/Nữ tuổi từ 22;\n- Tốt nghiệp đại học khối kinh tế, tài chính..."
+    },
+    "box-job-information-benefit": {
+      "box-job-information-detail-item__text": "- Nhân viên được lựa chọn sẽ có cơ hội làm việc trong môi trường năng động...\n- Tháng lương thứ 13..."
+    },
+    "box-job-information-address-and-time": {
+      "box-job-information-address-and-time-list": {
+        "Địa điểm làm việc": "Hà Nội",
+        "Hạn ứng tuyển": "31/08/2016"
+      }
+    }
+  },
+  "job-detail__body-right": {
+    "box-job-information-general-info": {
+      "Cấp bậc": "Nhân viên",
+      "Số lượng tuyển": "Không giới hạn",
+      "Loại hình làm việc": "Toàn thời gian"
+    },
+    "box-company-info-detail": {
+      "company-name-label": "Công ty cổ phần chứng khoán FPT",
+      "Quy mô": "100-499 nhân viên",
+      "Địa điểm": "Tòa Nhà 52 Lạc Long Quân, Tây Hồ, Hà Nội."
+    }
+  }
 }
 ```
-> **QUY TẮC BẮT BUỘC**: Nếu trang không có nhóm thẻ quyền lợi $\rightarrow$ `benefits: null`. Tuyệt đối không nhồi nhét văn bản bài viết vào `tags`.
 
-#### 3. Làm Sạch Dòng Văn Bản (`list[str]`)
-Dùng hàm `text_to_clean_lines(content)` để bóc tách:
-- `description_list`: Danh sách các dòng mô tả công việc sạch.
-- `requirements_list`: Danh sách các dòng yêu cầu ứng viên sạch.
-- `benefits_list`: Danh sách các dòng quyền lợi sạch.
-Loại bỏ hoàn toàn các ký tự bullet đầu dòng: `•`, `-`, `*`, `+`, `1.`, `2)`.
+#### 2. Quy chuẩn Tầng Chuẩn Hóa (Data Harmonization Tier - SD2/SD3)
+*Chỉ thực hiện ở pipeline xử lý Staging/Curated, KHÔNG áp dụng đè lên file snapshot cào thô:*
+- Dùng `parse_salary_detail(salary_raw, title)` để bóc tách `JobSalary` (min, max, currency, is_negotiable).
+- Dùng `classify_job_tags()` để chia 3 nhóm thẻ (`skills`, `requirements`, `benefits`).
+- Dùng `text_to_clean_lines()` nếu cần danh sách bullet sạch phục vụ trích xuất NLP/LLM.
 
 ### Bước 4: Kiểm Soát Chất Lượng Dữ Liệu
 Chạy kiểm tra bắt buộc qua `DataQualityChecker`:

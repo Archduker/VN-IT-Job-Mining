@@ -46,8 +46,8 @@ class BaseCrawler(ABC):
         )
 
         # Output writer
-        out_base = output_dir if output_dir else "data"
-        self.writer = JsonWriter(source=self.source_name, output_dir=out_base)
+        self.output_dir = output_dir if output_dir else "data"
+        self.writer = JsonWriter(source=self.source_name, output_dir=self.output_dir)
         from crawlers.common.utils import make_batch_id
         self.batch_id = make_batch_id(self.source_name, seq=self.writer.batch_seq, run_date=self.writer.run_date)
 

@@ -11,6 +11,13 @@ Schedule:
 """
 
 from datetime import datetime, timedelta
+import sys
+from pathlib import Path
+
+plugins_dir = str(Path(__file__).resolve().parents[1] / "plugins")
+if plugins_dir not in sys.path:
+    sys.path.insert(0, plugins_dir)
+
 from airflow import DAG
 from crawler_operators import JobCrawlerOperator, DataQualityOperator
 
@@ -144,3 +151,24 @@ with DAG(
         source_task_id="crawl_vieclam24h",
     )
     crawl_vieclam24h >> quality_vieclam24h
+
+# 7. Glints (Chủ Nhật 20:00)
+with DAG(
+    dag_id="crawler_glints",
+    default_args=default_args,
+    description="Crawl IT jobs from Glints Vietnam",
+    schedule_interval="0 20 * * 0",
+    start_date=datetime(2026, 10, 1),
+    catchup=False,
+    tags=["crawlers", "glints"],
+) as glints_dag:
+    crawl_glints = JobCrawlerOperator(
+        task_id="crawl_glints",
+        source="glints",
+        max_items=50,
+    )
+    quality_glints = DataQualityOperator(
+        task_id="check_quality_glints",
+        source_task_id="crawl_glints",
+    )
+    crawl_glints >> quality_glints

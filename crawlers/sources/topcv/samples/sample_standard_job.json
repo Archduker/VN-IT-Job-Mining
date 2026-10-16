@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "source": "topcv",
+    "source_job_id": "2321616",
+    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-dau-tu/2321616.html",
+    "scraped_at": "2026-10-16T08:00:00Z",
+    "crawler_version": "2.0.0",
+    "version": 1,
+    "content_hash": "c054449d16f745b709941ee4abdaab228948cf99e0332921f2d5d8d49aaf76a7",
+    "status": "DONE"
+  },
+  "raw_payload": {
+    "box-header-job": {
+      "box-header-job__title": "Chuyên viên Tư vấn Đầu tư",
+      "box-company-info": "Công ty cổ phần chứng khoán FPT",
+      "box-header-job__salary--title": "Thoả thuận",
+      "box-header-job-list-info": {
+        "Địa điểm": "Hà Nội",
+        "Kinh nghiệm": "Không yêu cầu",
+        "Hạn ứng tuyển": "31/08/2016"
+      },
+      "box-group-button-apply": "Hết hạn ứng tuyểnXem việc làm liên quan",
+      "box-header-job__warning-employer-data-protection": "Nhà tuyển dụng đang hoàn tất thủ tục liên quan đến Thỏa thuận xử lý dữ liệu cá nhân theo quy định pháp luật. Bạn tạm thời chưa thể ứng tuyển vào tin này. Vui lòng quay lại sau."
+    },
+    "job-detail__body-left": {
+      "box-job-information-detail-item__overview": {
+        "job-tags": {
+          "Yêu cầu:": [
+            "Không yêu cầu kinh nghiệm chuyên môn"
+          ]
+        }
+      },
+      "box-job-information-detail-item__job-description": {
+        "box-job-information-detail-item__text": "- Tìm kiếm và duy trì mối quan hệ với khách hàng;\n- Thực hiện các nghiệp vụ môi giới chứng khoán;\n- Tư vấn đầu tư cho khách hàng và hỗ trợ khách hàng trong giao dịch chứng khoán;\n- Thực hiện các nhiệm vụ khác theo yêu cầu của Cán bộ quản lý trực tiếp và Trưởng bộ phận."
+      },
+      "box-job-information-required-candidate": {
+        "box-job-information-detail-item__text": "- Nam/Nữ tuổi từ 22;\n- Tốt nghiệp đại học khối kinh tế, tài chính, chứng khoán, kế toán, ngoại thương, ngân hàng (ưu tiên ứng viên có chứng chỉ liên quan của UBCK), biết sử dụng phần mềm phân tích kĩ thuật;\n- Kỹ năng giao tiếp khá, kỹ năng thuyết phục tốt, kỹ năng sales tốt;\n- Trung thực, nhiệt tình, năng động và tinh thần trách nhiệm cao trong công việc;\n- Tiếng Anh khá, sử dụng thành thạo vi tính văn phòng."
+      },
+      "box-job-information-benefit": {
+        "box-job-information-detail-item__text": "-  Nhân viên được lựa chọn sẽ có cơ hội làm việc trong môi trường năng động, chuyên nghiệp, cơ hội thăng tiến, đánh giá thực hiện công việc rõ ràng và chế độ đãi ngộ thỏa đáng;\n- Tháng lương thứ 13, thưởng theo kết quả sản xuất kinh doanh;\n- Hưởng bảo hiểm sức khỏe bổ sung cho nhân viên;\n-Được đóng BHXH-YT-TN theo quy định của Luật Lao động và chế độ phúc lợi của Công ty;\n-Được đài thọ các chi phí phát sinh khi tham gia các khóa đào tạo theo yêu cầu công việc hàng năm;\n-Được đài thọ toàn bộ chi phí khi tham gia các hoạt động ngoại khóa của công ty."
+      },
+      "box-job-information-address-and-time": {
+        "box-job-information-address-and-time-list": {
+          "Địa điểm làm việc": "Hà Nội",
+          "Cách thức ứng tuyển": "Ứng viên nộp hồ sơ trực tuyến bằng cách bấm Ứng tuyển ngay dưới đây.",
+          "info": "Hết hạn ứng tuyển Xem việc làm liên quan Hạn ứng tuyển: 31/08/2016"
+        }
+      }
+    },
+    "job-detail__body-right": {
+      "box-job-information-general-info": {
+        "Mức độ cạnh tranh": "Trải nghiệm trên ứng dụng",
+        "Cấp bậc": "Nhân viên",
+        "Số lượng tuyển": "Không giới hạn",
+        "Loại hình làm việc": "Toàn thời gian"
+      },
+      "box-company-info-detail": {
+        "company-name-label": "Công ty cổ phần chứng khoán FPT",
+        "Quy mô": "100-499 nhân viên",
+        "Địa điểm": "Tòa Nhà 52 Lạc Long Quân, Tây Hồ, Hà Nội.",
+        "Ngành nghề": "Môi giới hợp đồng hàng hóa và chứng khoán"
+      }
+    }
+  }
+}

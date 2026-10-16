@@ -60,6 +60,12 @@ htmlcov/
 # Airflow runtime
 airflow/*.db
 airflow/*.pid
+airflow/*.err
+airflow/*.out
 airflow/logs/
 airflow/webserver_config.py
+
+# Scratch & Sample HTML caches
+scratch/
+sample_htmls/
 

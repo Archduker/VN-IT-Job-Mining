@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "source": "topcv",
+    "source_job_id": "topcv_3003",
+    "url": "https://www.topcv.vn/viec-lam/senior-data-engineer/topcv_3003.html",
+    "scraped_at": "2026-10-16T08:00:00Z",
+    "crawler_version": "2.0.0",
+    "version": 1,
+    "content_hash": "ae84b1636600e4c8ba3209a49179d174fc387ee64b033e0a435f6b134957fc11",
+    "status": "DONE"
+  },
+  "raw_payload": {
+    "box-header-job": {
+      "box-header-job__title": "Kỹ sư Dữ liệu Cấp cao (Data Engineer - Big Data, Spark, Kafka)",
+      "box-company-info": "NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN PHÁT TRIỂN VIỆT NAM",
+      "box-header-job__salary--title": "Thỏa thuận",
+      "box-header-job-list-info": {
+        "Kinh nghiệm": "2 - 4 năm",
+        "Cấp bậc": "Chuyên viên chính",
+        "Hình thức": "Toàn thời gian tại văn phòng (On-site)",
+        "Hạn ứng tuyển": "20/11/2026"
+      }
+    },
+    "job-detail__body-left": {
+      "box-job-information-detail-item__overview": {
+        "job-tags": {
+          "Kỹ năng chuyên môn:": [
+            "Apache Spark",
+            "Kafka",
+            "Data Lakehouse",
+            "Airflow",
+            "SQL Tuning"
+          ]
+        }
+      },
+      "box-job-information-detail-item__job-description": {
+        "box-job-information-detail-item__text": "Nhiệm vụ chính\nVận hành và xây dựng các luồng dữ liệu thời gian thực (Real-time Streaming) và Batch processing từ Core Banking sang Data Lake.\nTối ưu hóa các tiến trình xử lý PySpark, Delta Lake và hệ thống phân phối Apache Kafka.\nĐảm bảo chất lượng dữ liệu (Data Quality), bảo mật dữ liệu khách hàng theo quy chuẩn Ngân hàng Nhà nước."
+      },
+      "box-job-information-required-candidate": {
+        "box-job-information-detail-item__text": "Tiêu chuẩn tuyển dụng\nTốt nghiệp Đại học chuyên ngành CNTT, Khoa học Máy tính hoặc Toán Tin.\nÍt nhất 2 năm kinh nghiệm làm việc với hệ sinh thái Big Data: Hadoop, Spark, Hive, Kafka.\nThành thạo lập trình Python hoặc Scala, kỹ năng viết SQL tối ưu hóa chuyên sâu."
+      },
+      "box-job-information-benefit": {
+        "box-job-information-detail-item__text": "Chế độ đãi ngộ\nMức thu nhập thỏa thuận xứng đáng theo năng lực và kinh nghiệm.\nGói thưởng tài chính cuối năm từ 3 - 6 tháng lương.\nVay ưu đãi lãi suất cán bộ nhân viên ngân hàng mua nhà, mua xe."
+      }
+    },
+    "job-detail__body-right": {
+      "box-company-info-detail": {
+        "company-name-label": "NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN PHÁT TRIỂN VIỆT NAM"
+      }
+    }
+  }
+}
