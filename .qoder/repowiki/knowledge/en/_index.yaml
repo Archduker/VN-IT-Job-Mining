@@ -1,0 +1,39 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: en-US
+branch: feature/itviec-crawler
+nodes_managed: true
+exported_at: "2026-10-06T15:02:02Z"
+modules:
+    "":
+        dir_name: Vietnam IT Job Data Mining Pipeline
+        title: Vietnam IT Job Data Mining Pipeline
+        scope:
+            - README.md
+            - .gitignore
+            - .env.example
+            - TASKS.md
+        source_files: []
+        children:
+            - crawlers
+            - docs
+        depends_on: []
+        related_to: []
+    crawlers:
+        dir_name: Vietnam IT Job Source Crawlers
+        title: Vietnam IT Job Source Crawlers
+        scope:
+            - crawlers/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    docs:
+        dir_name: Project Documentation & Architecture Guides
+        title: Project Documentation & Architecture Guides
+        scope:
+            - docs/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []

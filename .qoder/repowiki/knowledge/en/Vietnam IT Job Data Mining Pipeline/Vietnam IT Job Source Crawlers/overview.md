@@ -1,0 +1,1 @@
+Per-source crawlers that scrape Vietnamese IT job boards (ITviec, TopDev, CareerViet, VietnamWorks, TopCV, LinkedIn) into a unified JSONL data contract.

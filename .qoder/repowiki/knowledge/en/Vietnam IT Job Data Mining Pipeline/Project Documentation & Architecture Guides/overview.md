@@ -1,0 +1,1 @@
+Vietnamese-language project documentation covering the end-to-end data mining pipeline architecture, AWS EC2/S3 setup guide, and cross-file merge notes reconciling two competing design documents.

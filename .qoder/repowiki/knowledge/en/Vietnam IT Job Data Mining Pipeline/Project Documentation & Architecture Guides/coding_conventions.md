@@ -1,0 +1,2 @@
+- Documentation is written in Vietnamese with English section headers and inline English terms (e.g., 'Data Lakehouse', 'ELT', 'Free Tier'), reflecting a bilingual academic/engineering audience.
+- Architecture decisions are presented as paired alternatives with explicit recommendations (e.g., 'Lựa chọn 1A - Khuyên dùng' vs 'Lựa chọn 1B') so readers can trace trade-offs rather than follow a single prescribed path.

@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: crawlers
+title: Vietnam IT Job Source Crawlers
+scope:
+    - crawlers/
+source_files: []
+depends_on: []
+related_to: []

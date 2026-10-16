@@ -1,0 +1,2 @@
+- Each crawler targets one source under `crawlers/sources/<source>/` and writes output as JSONL conforming to the shared schema documented in the project's architecture guide.
+- Runtime configuration (AWS keys, region, bucket name, Telegram token/chat ID) is loaded from environment variables defined in `.env.example`, never hard-coded.

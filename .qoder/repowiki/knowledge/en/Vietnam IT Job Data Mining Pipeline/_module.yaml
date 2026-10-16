@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: ""
+title: Vietnam IT Job Data Mining Pipeline
+scope:
+    - README.md
+    - .gitignore
+    - .env.example
+    - TASKS.md
+source_files: []
+depends_on: []
+related_to: []

@@ -1,0 +1,6 @@
+- Each source directory follows the fixed triad `config.py` (constants only), `parser.py` (listing/detail parsers + validation), `crawler.py` (HTTP + checkpoint + JSONL writer + CLI).
+- Module imports use a try/except ImportError shim that falls back to absolute imports when the file is run directly, allowing both `python -m` invocation and direct script execution.
+- HTTP requests go through a local `HttpClient` class that enforces a random 2–5 second delay before every call and retries on network errors / 429 / 5xx with exponential backoff capped at 30s.
+- Checkpoint state (`seen_ids`, `sources`, `updated_at`) is persisted atomically via a `.tmp` file renamed with `os.replace`, and saved every 10 successfully written records.
+- Output records follow the `{"_meta": {...}, "raw": {...}}` shape defined by TASKS.md §4.1, with `_meta` containing `source`, `source_job_id`, `url`, `dedup_key`, `crawled_at`, `batch_id`, `crawler_version`.
+- Parser output preserves original HTML in `description_html` and strips tags only for the parallel `_text` fields (`description_text`, `requirements_text`, `benefits_text`); missing fields become `None` rather than raising.

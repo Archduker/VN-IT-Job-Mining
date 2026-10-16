@@ -1,0 +1,1 @@
+AWS Free Tier (EC2 t2.micro/t3.micro Ubuntu, S3 bucket, IAM); Python virtual environment with boto3/python-dotenv; cron-based scheduling; Mermaid diagrams for architecture visualization.

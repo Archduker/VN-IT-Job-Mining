@@ -1,0 +1,1 @@
+Python crawlers using requests + BeautifulSoup4 (and Playwright/Browser Use for JS-heavy sources), AWS S3 for multi-zone storage, cron on EC2 for scheduling, and Telegram Bot API for notifications; environment variables are sourced from `.env`.

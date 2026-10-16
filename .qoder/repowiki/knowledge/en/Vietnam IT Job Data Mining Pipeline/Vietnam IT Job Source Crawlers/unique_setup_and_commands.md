@@ -1,0 +1,1 @@
+Run a single source from the repository root: `python run.py --source itviec --max-items 30` or with a custom batch id: `python run.py --source careerviet --max-items 200 --batch-id 2026-10-07_careerviet_001`. Each source can also be executed standalone (e.g. `python crawlers/sources/itviec/crawler.py --max-items 1`).

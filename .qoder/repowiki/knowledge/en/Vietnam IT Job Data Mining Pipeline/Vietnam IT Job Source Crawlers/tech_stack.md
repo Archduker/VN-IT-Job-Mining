@@ -1,0 +1,1 @@
+Python with `requests` for HTTP and BeautifulSoup (`html.parser`) for HTML scraping; JSON-LD (`application/ld+json` JobPosting) is used as the primary structured signal on detail pages.

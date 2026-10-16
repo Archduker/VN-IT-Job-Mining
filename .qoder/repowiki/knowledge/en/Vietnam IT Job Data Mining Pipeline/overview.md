@@ -1,0 +1,1 @@
+Root of a university data-mining project that orchestrates per-source Vietnamese IT job crawlers, an ELT pipeline to AWS S3, and documentation for the end-to-end architecture.

@@ -1,0 +1,1 @@
+Deployment is manual rather than scripted at this level: contributors push crawler code to GitHub, then the operator pulls to EC2 and relies on cron to run the crawlers — there is no root-level `make` or container orchestration entry point.
