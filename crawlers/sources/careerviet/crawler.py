@@ -57,6 +57,11 @@ CATEGORY_MAP_FILENAME = "category_by_job_id.json"
 # Chi nap 3 nhom IT (c1/c61/keyword:developer); c37 Digital Marketing loai bo o Buoc 1.
 URL_FILE_GLOBS = ("urls_c1_*.json", "urls_c61_*.json", "urls_developer_*.json")
 
+# An toan dot ONLINE (phuong an B): N loi 5xx LIEN TIEP thi DUNG ca dot,
+# giu PENDING cho cac tin thuoc chuoi cuoi (khong mark_failed). Hang so noi bo.
+CONSECUTIVE_SERVER_ERROR_STOP = 3
+SERVER_ERROR_STATUSES = (500, 502, 503, 504)
+
 
 def extract_job_id(url: str) -> str:
     """Trích xuất ID job duy nhất từ URL của CareerViet."""
@@ -130,6 +135,29 @@ class CareerVietCrawler(BaseCrawler):
         resp = getattr(exc, "response", None)
         status = getattr(resp, "status_code", None) if resp is not None else None
         return status in (429, 403)
+
+    @staticmethod
+    def _server_status(exc: Exception) -> int | None:
+        """Ma HTTP cua ngoai le (qua exc.response), None neu khong co response."""
+        resp = getattr(exc, "response", None)
+        return getattr(resp, "status_code", None) if resp is not None else None
+
+    @staticmethod
+    def _is_server_error(exc: Exception) -> bool:
+        """5xx (500/502/503/504): loi phia server, co the tam -> dem chuoi lien tiep."""
+        return CareerVietCrawler._server_status(exc) in SERVER_ERROR_STATUSES
+
+    @staticmethod
+    def _flush_5xx_buffer(ledger, buf: list[dict[str, Any]], stats: dict[str, Any]) -> None:
+        """Chuyen cac 5xx roi rac (chuoi bi gian doan hoac het vong) sang FAILED +
+        reset bo dem (clearing buf). CHI goi khi KHONG dung do bao N 5xx lien tiep."""
+        for r in buf:
+            ledger.mark_failed(
+                r["url_hash"],
+                "Server 5xx roi rac (duoi nguong %d lien tiep) - Safe Skip"
+                % CONSECUTIVE_SERVER_ERROR_STOP)
+            stats["failed"] += 1
+        buf.clear()
 
     @staticmethod
     def _detect_block(html: str) -> tuple[bool, str]:
@@ -754,43 +782,70 @@ class CareerVietCrawler(BaseCrawler):
             headers = {"Accept": "text/html,application/xhtml+xml,*/*;q=0.8", "Referer": BASE_URL}
             client = self._online_client()
             try:
+                buf: list[dict[str, Any]] = []
                 for rec in candidates:
                     stats["files"] += 1
                     try:
                         html = client.get_html(rec["canonical_url"], headers=headers)
                     except Exception as exc:
                         if self._is_blocking(exc):
-                            # 429/403: KHONG mark_failed -> giu PENDING de dot sau thu lai
+                            # 429/403: DUNG tuc thi, GIU PENDING (khong mark_failed)
                             resp = getattr(exc, "response", None)
                             txt = getattr(resp, "text", None) if resp is not None else None
                             if txt:
                                 self._dump_blocked_page(
                                     rec["job_id"], txt,
                                     f"HTTP {getattr(resp, 'status_code', '?')}")
+                            self._flush_5xx_buffer(ledger, buf, stats)
                             log.error("[CareerViet] GAP 429/403 %s -> DUNG an toan, GIU PENDING "
                                       "(khong mark_failed): %s", rec["job_id"], exc)
                             break
+                        if self._is_server_error(exc):
+                            # 5xx (500/502/503/504): chua mark_failed, dem chuoi lien tiep
+                            buf.append(rec)
+                            log.warning("[CareerViet] Loi 5xx %s (HTTP %s) -> vao chuoi "
+                                        "lien tiep (%d/%d), chua mark_failed.",
+                                        rec["job_id"], self._server_status(exc),
+                                        len(buf), CONSECUTIVE_SERVER_ERROR_STOP)
+                            if len(buf) >= CONSECUTIVE_SERVER_ERROR_STOP:
+                                ids = [r["job_id"] for r in buf]
+                                log.error("[CareerViet] DUNG do chuoi 5xx lien tiep "
+                                          "(%d tin: %s) -> GIU PENDING, khong mark_failed.",
+                                          len(buf), ids)
+                                break
+                            continue
+                        # loi KHONG phai 5xx/chan (timeout/connection) -> Safe Skip cu,
+                        # dong thoi NGAT chuoi 5xx -> flush + reset
+                        self._flush_5xx_buffer(ledger, buf, stats)
                         ledger.mark_failed(rec["url_hash"], str(exc))
                         stats["failed"] += 1
                         log.error("[CareerViet] Safe Skip (online fetch) %s: %s", rec["job_id"], exc)
                         continue
                     blocked, reason = self._detect_block(html)
                     if blocked:
-                        # nghi chan (thieu container + dau hien ro): KHONG mark_failed -> giu PENDING
+                        # captcha/chan (HTTP 200 nhung khac dang) -> DUNG tuc thi, GIU PENDING
+                        self._flush_5xx_buffer(ledger, buf, stats)
                         self._dump_blocked_page(rec["job_id"], html, reason)
                         log.warning("[CareerViet] Nghi bi CHAN %s (%s) -> DUNG an toan, GIU PENDING "
                                     "(khong mark_failed).", rec["job_id"], reason)
                         break
                     try:
                         outcome = self._process_detail_record(rec, html, cat_map, exclude_volatile_dates, date_str)
+                        # tin nay KHONG phai 5xx -> chuoi 5xx bi gian doan -> flush FAILED + reset
+                        self._flush_5xx_buffer(ledger, buf, stats)
                         if outcome["tag"] == "repost":
                             stats["repost"] += 1
                         else:
                             _tally(outcome)
                     except Exception as exc:
+                        # 200 nhung dich loi -> gian doan chuoi 5xx; ban than tin nay FAILED
+                        self._flush_5xx_buffer(ledger, buf, stats)
                         ledger.mark_failed(rec["url_hash"], str(exc))
                         stats["failed"] += 1
                         log.error("[CareerViet] Safe Skip (online parse) %s: %s", rec["job_id"], exc)
+                else:
+                    # Het danh sach ma KHONG break (vd 2 lan 5xx < N) -> flush cac 5xx roi rac con sot.
+                    self._flush_5xx_buffer(ledger, buf, stats)
             finally:
                 client.close()
         else:

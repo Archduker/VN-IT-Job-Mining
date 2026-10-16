@@ -163,13 +163,18 @@ def test_blocking_keeps_pending_and_stops(tmp_path):
 
 
 def test_non_blocking_error_marks_failed_and_continues(tmp_path):
-    """Loi khong phai chan (500) van theo Safe Skip: mark_failed + tiep tuc."""
+    """Loi KHONG phai chan/5xx (connection) van theo Safe Skip: mark_failed + tiep tuc.
+
+    (Duoc doi tu _http_error(500) sang ConnectionError: duoi Phuong an B, 500 la
+    5xx nen 3 lan lien tiep se thanh 'bao' -> break + giu PENDING, khong con
+    FAILED. ConnectionError moi giu dung hanh vi 'loi khac' can kiem chung.)
+    """
     cr = _crawler(tmp_path)
     led = cr._get_ledger()
     ids = [f"JOB{i:03d}" for i in range(3)]
     _seed(led, ids)
 
-    fake = _FakeClient(_http_error(500))
+    fake = _FakeClient(requests.ConnectionError("network down"))
     cr._online_client = lambda: fake
     stats = cr.crawl_details(online=True, limit=3)
 

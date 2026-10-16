@@ -165,3 +165,87 @@ def test_online_blocked_page_keeps_pending_and_dumps(tmp_path):
     assert (bdir / "BLK001.html").exists()
     # KHONG sinh envelope cho tin bi chan
     assert list(Path(cr.raw_dir).rglob("BLK001*")) == []
+
+
+# ---- Phuong an B: chuong 5xx lien tiep (500/502/503/504) ---------------
+def _server(status: int) -> requests.HTTPError:
+    """Ngoai le HTTPError co response.status_code = status (danh dau 5xx/429)."""
+    return _http_error(status)
+
+
+def _good(marker: str) -> str:
+    """Trang TOT duoc biet noi dung theo marker de content_hash KHAC nhau
+    (neu khung, hai tin giong het se bi gan 'repost' chu khong phai 'success')."""
+    return GOOD_WITH_CAPTCHA_WORD.replace(">ABC<", f">ABC-{marker}<")
+
+
+def test_three_consecutive_503_stops_keeps_pending(tmp_path, caplog):
+    """(a) 3 lan 503 lien tiep -> break; 3 tin PENDING; 0 FAILED; log ro ly do."""
+    import logging
+    caplog.set_level(logging.WARNING, logger="careerviet.crawler")
+    cr = _crawler(tmp_path)
+    _seed(cr, ["S1", "S2", "S3", "S4"])        # 4 record nhung limit=3
+    fake = _FakeClient([_server(503), _server(503), _server(503), GOOD_WITH_CAPTCHA_WORD])
+    cr._online_client = lambda: fake
+    stats = cr.crawl_details(online=True, limit=3)
+    assert fake.calls == 3                      # dung ngay khi du N=3, khong xin S4
+    assert stats["failed"] == 0                 # khong mark_failed chuoi bao N
+    for j in ("S1", "S2", "S3"):
+        assert _status(cr, j) == "PENDING"      # chuoi cuoi GIU PENDING
+    assert _status(cr, "S4") == "PENDING"       # tin sau khong bi dong
+    assert any("chuoi 5xx lien tiep" in r.getMessage().lower() for r in caplog.records)
+
+
+def test_isolated_503_flushed_failed_when_success(tmp_path):
+    """(b) 503,200,503,200 -> cac tin 503 roi rac thanh FAILED, tin 200 DONE."""
+    cr = _crawler(tmp_path)
+    _seed(cr, ["A1", "B2", "A3", "B4"])
+    fake = _FakeClient([_server(503), _good("B2"),
+                        _server(503), _good("B4")])
+    cr._online_client = lambda: fake
+    stats = cr.crawl_details(online=True, limit=4)
+    assert _status(cr, "A1") == "FAILED"        # flush khi B2 thanh cong (chuoi gian)
+    assert _status(cr, "B2") == "DONE"
+    assert _status(cr, "A3") == "FAILED"
+    assert _status(cr, "B4") == "DONE"
+    assert stats["failed"] == 2 and stats["success"] == 2
+
+
+def test_two_503_at_end_flushed_failed(tmp_path):
+    """(c) 2 lan 503 roi het danh sach (duoi N=3) -> het vong flush thanh FAILED."""
+    cr = _crawler(tmp_path)
+    _seed(cr, ["C1", "C2"])
+    fake = _FakeClient([_server(503), _server(503)])
+    cr._online_client = lambda: fake
+    stats = cr.crawl_details(online=True, limit=2)
+    assert _status(cr, "C1") == "FAILED"
+    assert _status(cr, "C2") == "FAILED"
+    assert stats["failed"] == 2
+
+
+def test_storm_after_successes_only_trailing_pending(tmp_path):
+    """(d) 200,200,503,503,503 -> chi 3 tin cuoi PENDING, 2 tin 200 dau van DONE."""
+    cr = _crawler(tmp_path)
+    _seed(cr, ["D1", "D2", "S3", "S4", "S5"])
+    fake = _FakeClient([_good("D1"), _good("D2"),
+                        _server(503), _server(503), _server(503)])
+    cr._online_client = lambda: fake
+    stats = cr.crawl_details(online=True, limit=5)
+    assert _status(cr, "D1") == "DONE" and _status(cr, "D2") == "DONE"
+    for j in ("S3", "S4", "S5"):
+        assert _status(cr, j) == "PENDING"
+    assert stats["success"] == 2 and stats["failed"] == 0
+    assert fake.calls == 5
+
+
+def test_429_still_stops_immediately(tmp_path):
+    """(e) 429 van dung tuc thi nhu cu (khong phai 5xx -> khong dem chuoi)."""
+    cr = _crawler(tmp_path)
+    _seed(cr, ["E1", "E2"])
+    fake = _FakeClient([_server(429), GOOD_WITH_CAPTCHA_WORD])
+    cr._online_client = lambda: fake
+    stats = cr.crawl_details(online=True, limit=2)
+    assert fake.calls == 1
+    assert stats["failed"] == 0
+    assert _status(cr, "E1") == "PENDING"
+    assert _status(cr, "E2") == "PENDING"
