@@ -47,7 +47,7 @@ log = logging.getLogger("topcv.crawler")
 SOURCE = "topcv"
 CRAWLER_VERSION = "2.0.0"
 BASE_URL = "https://www.topcv.vn"
-START_URL = "https://www.topcv.vn/viec-lam-it"
+START_URL = "https://www.topcv.vn/tim-viec-lam-cong-nghe-thong-tin-cr257"
 CONTAINER_SELECTOR = "div.job-detail"
 
 
@@ -105,40 +105,72 @@ class TopCVCrawler(BaseCrawler):
                     executable_path=self.chrome_path if os.path.exists(self.chrome_path) else None,
                     args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
                 )
-                context = browser.new_context(
-                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-                    extra_http_headers={
-                        "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
-                        "Referer": "https://www.topcv.vn/",
-                    },
-                )
-                context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-                page = context.new_page()
-
                 curr_page = 1
+                consecutive_empty = 0
                 while True:
                     if max_pages and curr_page > max_pages:
                         break
 
-                    target_url = f"{START_URL}?page={curr_page}" if curr_page > 1 else START_URL
+                    target_url = (
+                        f"{START_URL}?type_keyword=1&disable_auto_detect_type_keyword=1&category_family=r257&saturday_status=0&page={curr_page}"
+                    )
                     log.info("[TopCV] Đang quét danh mục trang %d: %s", curr_page, target_url)
 
+                    cards = []
+                    page_soup = None
                     try:
-                        page.goto(target_url, wait_until="domcontentloaded", timeout=30000)
-                        human_like_interaction(page, scroll_times=2)
-                        content = page.content()
+                        for attempt in range(1, 4):
+                            context = browser.new_context(
+                                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                                locale="vi-VN",
+                                viewport={"width": 1280, "height": 800},
+                            )
+                            context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                            page = context.new_page()
 
-                        if is_cloudflare_challenge(content):
-                            handled = handle_cloudflare_backoff(page, retry_attempt=1)
-                            if handled:
+                            try:
+                                try:
+                                    page.goto(target_url, wait_until="networkidle", timeout=30000)
+                                except Exception:
+                                    page.goto(target_url, wait_until="domcontentloaded", timeout=30000)
+
+                                human_like_interaction(page, scroll_times=1)
                                 content = page.content()
 
-                        soup = BeautifulSoup(content, "html.parser")
-                        cards = soup.select(".job-item-search-result, .job-item, div[data-job-id]")
-                        if not cards:
-                            log.info("[TopCV] Không còn bài đăng nào tại trang %d. Dừng quét.", curr_page)
-                            break
+                                if is_cloudflare_challenge(content):
+                                    log.warning("[TopCV] Trang %d gặp Cloudflare challenge (lần thử %d/3).", curr_page, attempt)
+                                    context.close()
+                                    polite_sleep(8.0 * attempt, 12.0 * attempt, reason=f"Chờ giải phóng challenge trang {curr_page}")
+                                    continue
 
+                                soup = BeautifulSoup(content, "html.parser")
+                                cards = soup.select(".job-item-search-result, .job-item, div[data-job-id]")
+                                page_soup = soup
+                                context.close()
+                                if cards:
+                                    break
+                            except Exception as exc:
+                                log.warning("[TopCV] Lỗi khi tải trang %d (lần %d/3): %s", curr_page, attempt, exc)
+                                try:
+                                    context.close()
+                                except Exception:
+                                    pass
+                                polite_sleep(5.0 * attempt, 8.0 * attempt, reason="Lỗi tải trang")
+
+                        if not cards or page_soup is None:
+                            consecutive_empty += 1
+                            if consecutive_empty >= 2:
+                                log.info("[TopCV] Không còn bài đăng nào tại trang %d sau nhiều lần thử. Dừng quét danh mục.", curr_page)
+                                break
+                            else:
+                                log.warning("[TopCV] Bỏ qua trang %d do không đọc được thẻ, chuyển trang kế tiếp.", curr_page)
+                                curr_page += 1
+                                continue
+                        else:
+                            consecutive_empty = 0
+
+                        page_new = 0
+                        page_seen = 0
                         for card in cards:
                             # Tìm thẻ tiêu đề chính xác (ưu tiên h3, tránh thẻ avatar rỗng text)
                             title_el = card.select_one("h3.title a, h3 a, .title a, a.title-link, a[data-toggle='tooltip']")
@@ -147,7 +179,7 @@ class TopCVCrawler(BaseCrawler):
                                 a_tag = title_el
                             else:
                                 for a in card.select("a[href*='/viec-lam/']"):
-                                    if clean_text(a.text) and not any(k in a.get("href", "") for k in ["viec-lam-it", "tag"]):
+                                    if clean_text(a.text) and not any(k in a.get("href", "") for k in ["viec-lam-it", "cr257", "tag"]):
                                         a_tag = a
                                         break
                                 if not a_tag:
@@ -157,7 +189,7 @@ class TopCVCrawler(BaseCrawler):
                                 continue
 
                             raw_href = a_tag.get("href", "")
-                            if any(k in raw_href for k in ["viec-lam-it", "tag"]):
+                            if any(k in raw_href for k in ["viec-lam-it", "cr257", "tag"]):
                                 continue
 
                             job_id = card.get("data-job-id")
@@ -177,14 +209,43 @@ class TopCVCrawler(BaseCrawler):
                             comp_el = card.select_one(".company, .company-name, a.company, a[href*='/cong-ty/']")
                             comp = clean_text(comp_el.text) if comp_el else "Unknown"
 
-                            # Ghi nhận vào Ledger
+                            # Ghi nhận vào Ledger và kiểm tra URL mới
+                            before_count = len(self.ledger.records)
                             self.ledger.register_url(
                                 raw_url=clean_url,
                                 job_id=str(job_id),
                                 preliminary_title=title,
                                 preliminary_company=comp,
                             )
+                            if len(self.ledger.records) > before_count:
+                                page_new += 1
+                            else:
+                                page_seen += 1
                             total_discovered += 1
+
+                        # Kiểm tra xem có phải trang cuối cùng không
+                        next_el = page_soup.select_one("a[rel='next']")
+                        paginate_text = page_soup.select_one("#job-listing-paginate-text")
+                        is_last_page = not next_el and paginate_text is not None
+
+                        # Lưu catalog ngay sau mỗi trang để tránh mất mát dữ liệu
+                        self.ledger.save_catalog()
+                        log.info(
+                            "[TopCV] Trang %d: +%d link mới, %d link trùng. Tích lũy sổ cái: %d bài đăng",
+                            curr_page,
+                            page_new,
+                            page_seen,
+                            len(self.ledger.records),
+                        )
+
+                        # Đồng bộ định kỳ lên MinIO mỗi 5 trang
+                        if curr_page % 5 == 0:
+                            self.ledger.export_daily_manifest()
+                            self.ledger.sync_to_minio()
+
+                        if is_last_page:
+                            log.info("[TopCV] Đã chạm trang cuối cùng (%s). Hoàn tất quét toàn bộ danh mục.", paginate_text.text.strip())
+                            break
 
                         curr_page += 1
                         polite_sleep(self.min_delay, self.max_delay, reason=f"Chuyển tiếp trang danh mục {curr_page}")
@@ -227,10 +288,8 @@ class TopCVCrawler(BaseCrawler):
                 )
                 context = browser.new_context(
                     user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-                    extra_http_headers={
-                        "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
-                        "Referer": "https://www.topcv.vn/viec-lam-it",
-                    },
+                    locale="vi-VN",
+                    viewport={"width": 1280, "height": 800},
                 )
                 context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 

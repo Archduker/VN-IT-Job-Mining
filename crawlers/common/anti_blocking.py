@@ -71,7 +71,10 @@ def human_like_interaction(page: Any, scroll_times: int = 2) -> None:
 
 
 def is_cloudflare_challenge(html_content: str) -> bool:
-    """Kiểm tra xem nội dung trang có chứa dấu hiệu Cloudflare WAF / Turnstile hay không."""
+    """
+    Kiểm tra xem nội dung trang có chứa dấu hiệu Cloudflare WAF / Turnstile challenge hay không.
+    Tránh bắt nhầm các script nền như /cdn-cgi/challenge-platform/ khi trang đã tải nội dung bình thường.
+    """
     if not html_content:
         return False
     blocked_indicators = [
@@ -80,9 +83,15 @@ def is_cloudflare_challenge(html_content: str) -> bool:
         "Checking your browser before accessing",
         "Cloudflare Ray ID:",
         "Enable JavaScript and cookies to continue",
-        "challenge-platform",
+        "cf-browser-verification",
+        "cf-please-wait",
+        "data-translate=\"why_captcha_headline\"",
     ]
-    return any(ind in html_content for ind in blocked_indicators)
+    for ind in blocked_indicators:
+        if ind in html_content:
+            log.warning("[AntiBlocking] Khớp chỉ dấu Cloudflare: %s", ind)
+            return True
+    return False
 
 
 def handle_cloudflare_backoff(
@@ -107,6 +116,11 @@ def handle_cloudflare_backoff(
     try:
         # Chờ đợi với Playwright timeout
         page.wait_for_timeout(int(delay * 1000))
+        if hasattr(page, "reload") and callable(page.reload):
+            try:
+                page.reload(wait_until="domcontentloaded", timeout=30000)
+            except Exception:
+                pass
         new_content = page.content()
         if not is_cloudflare_challenge(new_content):
             log.info("[AntiBlocking] Đã vượt qua Cloudflare challenge thành công!")

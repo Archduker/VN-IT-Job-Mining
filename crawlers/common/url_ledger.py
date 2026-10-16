@@ -43,6 +43,15 @@ class UrlLedgerRecord:
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "UrlLedgerRecord":
+        import dataclasses
+        valid_fields = {f.name for f in dataclasses.fields(cls)}
+        clean_data = {k: v for k, v in data.items() if k in valid_fields}
+        if "last_crawled_at" in data and not clean_data.get("last_scraped_at"):
+            clean_data["last_scraped_at"] = data["last_crawled_at"]
+        return cls(**clean_data)
+
 
 def clean_canonical_url(raw_url: str) -> str:
     """
@@ -216,10 +225,16 @@ class UrlLedger:
         if url_hash in self.records:
             rec_dict = self.records[url_hash]
             rec_dict["last_seen_at"] = now_iso
+            # Tự động cập nhật tiêu đề / công ty nếu trước đó bị rỗng
+            if preliminary_title and not rec_dict.get("preliminary_title"):
+                rec_dict["preliminary_title"] = preliminary_title
+            if preliminary_company and not rec_dict.get("preliminary_company"):
+                rec_dict["preliminary_company"] = preliminary_company
             # Nếu đã cào nhưng đã quá 21 ngày thì chuyển sang RECHECK_DUE
-            if rec_dict.get("status") == "DONE" and is_due_for_recrawl(rec_dict.get("last_scraped_at"), days=21):
+            scraped_time = rec_dict.get("last_scraped_at") or rec_dict.get("last_crawled_at")
+            if rec_dict.get("status") == "DONE" and is_due_for_recrawl(scraped_time, days=21):
                 rec_dict["status"] = "RECHECK_DUE"
-            return UrlLedgerRecord(**rec_dict)
+            return UrlLedgerRecord.from_dict(rec_dict)
 
         # URL mới hoàn toàn
         new_record = UrlLedgerRecord(
