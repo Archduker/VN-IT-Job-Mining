@@ -97,4 +97,4 @@ DAG `crawler_vietnamworks` chạy hằng ngày lúc 20:00 theo múi giờ `Asia/
 minio://vn-it-jobs/raw/vietnamworks/dt=YYYY-MM-DD/batch_001.json
 ```
 
-MinIO phải đang chạy, bucket `vn-it-jobs` phải tồn tại, và Airflow Scheduler phải hoạt động thì DAG mới chạy đúng lịch. Nếu upload MinIO lỗi, task crawl sẽ báo thất bại thay vì báo thành công khi dữ liệu chưa được lưu lên đích. Lệnh chạy crawler thủ công vẫn chỉ ghi JSON cục bộ.
+MinIO AIStor phải đang chạy, bucket `vn-it-jobs` phải tồn tại, và Airflow Scheduler phải hoạt động thì DAG mới chạy đúng lịch. AIStor cần license Free Tier; lưu file license tại `secrets/minio.license` trước khi chạy `docker compose -f docker-compose.minio.yml up -d`. Tạo bucket bằng `make setup-minio` hoặc qua Console UI. Nếu upload MinIO lỗi, task crawl sẽ báo thất bại thay vì báo thành công khi dữ liệu chưa được lưu lên đích. Lệnh chạy crawler thủ công vẫn chỉ ghi JSON cục bộ.

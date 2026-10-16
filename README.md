@@ -53,10 +53,14 @@ export PYTHONPATH=.
 ```
 
 ### 2. Khởi động MinIO Lakehouse (Docker)
+MinIO AIStor cần license. Đăng ký Free Tier tại trang [MinIO AIStor](https://min.io/pricing), tải license và đặt tại `secrets/minio.license` (thư mục này đã được Git bỏ qua, không commit license).
+
 ```bash
-make minio-up      # Khởi chạy MinIO tại :9000 (Console UI: http://localhost:9001)
-make setup-minio   # Khởi tạo bucket và cấu trúc Lakehouse
+make minio-up      # Khởi chạy MinIO AIStor tại :9000 (Console UI: http://localhost:9001)
+make setup-minio   # Tạo bucket vn-it-jobs và cấu trúc Lakehouse
 ```
+
+Đăng nhập Console bằng `minioadmin` / `minioadmin` (mặc định chỉ dùng local; có thể đặt `MINIO_ROOT_USER` và `MINIO_ROOT_PASSWORD` trong `.env`). Nếu không chạy script setup, hãy tự tạo bucket `vn-it-jobs` trong Console.
 
 ### 3. Chạy Crawler theo Kiến Trúc Two-Phase (Discovery & Detail)
 ```bash

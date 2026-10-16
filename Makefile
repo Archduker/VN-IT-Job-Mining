@@ -34,7 +34,7 @@ help:
 	@echo "    make check-env          Verify environment & MinIO connection"
 	@echo ""
 	@echo "  MinIO Lakehouse:"
-	@echo "    make minio-up           Start local MinIO server (Docker) + auto-init bucket"
+	@echo "    make minio-up           Start local MinIO AIStor server (requires a license)"
 	@echo "    make minio-down         Stop MinIO container"
 	@echo "    make setup-minio        Verify/Create vn-it-jobs bucket via python script"
 	@echo ""
@@ -89,9 +89,9 @@ check-env:
 
 # ── MinIO Commands ─────────────────────────────────────────────
 minio-up:
-	@echo "Starting MinIO Object Storage (API: :9000, Web UI: :9001)..."
+	@echo "Starting MinIO AIStor (API: :9000, Web UI: :9001)..."
 	docker compose -f docker-compose.minio.yml up -d
-	@echo "MinIO running! Web UI: http://localhost:9001 (User: minioadmin / Pass: minioadmin)"
+	@echo "MinIO AIStor started. Create bucket vn-it-jobs in http://localhost:9001 if needed."
 
 minio-down:
 	@echo "Stopping MinIO Object Storage..."
