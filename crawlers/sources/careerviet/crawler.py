@@ -132,10 +132,59 @@ class CareerVietCrawler(BaseCrawler):
         return status in (429, 403)
 
     @staticmethod
-    def _looks_blocked(html: str) -> bool:
-        """Dấu hiệu trang chắn hình (captcha / từ khóa chặn) trong HTML trả về."""
-        low = (html or "").lower()
-        return any(k in low for k in ("captcha", "access denied", "too many requests"))
+    def _detect_block(html: str) -> tuple[bool, str]:
+        """Phat hien trang bi CHAN. Tra ve (blocked, ly_do).
+
+        Chi coi la chan KHI: trang THIEU khoi .job-detail-page DONG THOI co dau hien
+        chan ro ret (tieu de 'Access Denied'/'Just a moment', hop captcha, hoac phan
+        text hien thi chua cac cum tu do). Chu 'captcha' nam trong <script>/<style>
+        cua trang TOT (van con .job-detail-page) se KHONG bi tinh.
+        """
+        if not html or not html.strip():
+            return True, "HTML rong"
+        soup = BeautifulSoup(html, "html.parser")
+        if soup.select_one(".job-detail-page") is not None:
+            return False, ""
+        title_el = soup.find("title")
+        title_txt = (title_el.get_text() if title_el else "").strip().lower()
+        for t in soup(["script", "style", "noscript"]):
+            t.decompose()
+        body_txt = soup.get_text(" ", strip=True).lower()
+        captcha_box = soup.select_one(
+            ".g-recaptcha,#captcha,[id^='captcha'],[class*='captcha'],"
+            "[class*='cf-challenge'],[id*='cf-challenge']")
+        phrases = ("access denied", "just a moment", "too many requests")
+        if title_txt and any(ph in title_txt for ph in phrases):
+            return True, f"thieu .job-detail-page + tieu de '{title_txt[:60]}'"
+        if captcha_box is not None:
+            return True, "thieu .job-detail-page + hop captcha"
+        if any(ph in body_txt for ph in phrases):
+            return True, "thieu .job-detail-page + text hien thi co tu khoa chan"
+        return False, ""
+
+    @classmethod
+    def _looks_blocked(cls, html: str) -> bool:
+        """Tuong thich nguoc: tra ve bool theo _detect_block."""
+        return cls._detect_block(html)[0]
+
+    def _dump_blocked_page(self, job_id: str, html: str, reason: str):
+        """Luu trang nghi chan ra data/careerviet/_blocked/<job_id>.html (KHONG ghi de,
+        KHONG dua vao raw). Tra ve duong dan hoac None neu loi."""
+        dest = Path(self.raw_dir).parent / "_blocked" / f"{job_id}.html"
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            with open(dest, "x", encoding="utf-8") as fh:  # mode 'x' = khong ghi de
+                fh.write(html or "")
+            log.warning("[CareerViet] Luu trang NGHI chan %s -> %s (ly do: %s)",
+                        job_id, dest, reason)
+            return dest
+        except FileExistsError:
+            log.warning("[CareerViet] _blocked/%s.html da ton tai -> khong ghi de (ly do: %s)",
+                        job_id, reason)
+            return dest
+        except Exception as exc:  # pragma: no cover - disk side
+            log.error("[CareerViet] Khong luu duoc _blocked/%s: %s", job_id, exc)
+            return None
 
     def _build_page_url(self, page: int) -> str:
         if page <= 1:
@@ -712,6 +761,12 @@ class CareerVietCrawler(BaseCrawler):
                     except Exception as exc:
                         if self._is_blocking(exc):
                             # 429/403: KHONG mark_failed -> giu PENDING de dot sau thu lai
+                            resp = getattr(exc, "response", None)
+                            txt = getattr(resp, "text", None) if resp is not None else None
+                            if txt:
+                                self._dump_blocked_page(
+                                    rec["job_id"], txt,
+                                    f"HTTP {getattr(resp, 'status_code', '?')}")
                             log.error("[CareerViet] GAP 429/403 %s -> DUNG an toan, GIU PENDING "
                                       "(khong mark_failed): %s", rec["job_id"], exc)
                             break
@@ -719,10 +774,12 @@ class CareerVietCrawler(BaseCrawler):
                         stats["failed"] += 1
                         log.error("[CareerViet] Safe Skip (online fetch) %s: %s", rec["job_id"], exc)
                         continue
-                    if self._looks_blocked(html):
-                        # captcha: KHONG mark_failed -> giu PENDING
-                        log.warning("[CareerViet] Phat hien captcha chan %s -> DUNG an toan, GIU PENDING "
-                                    "(khong mark_failed).", rec["job_id"])
+                    blocked, reason = self._detect_block(html)
+                    if blocked:
+                        # nghi chan (thieu container + dau hien ro): KHONG mark_failed -> giu PENDING
+                        self._dump_blocked_page(rec["job_id"], html, reason)
+                        log.warning("[CareerViet] Nghi bi CHAN %s (%s) -> DUNG an toan, GIU PENDING "
+                                    "(khong mark_failed).", rec["job_id"], reason)
                         break
                     try:
                         outcome = self._process_detail_record(rec, html, cat_map, exclude_volatile_dates, date_str)
