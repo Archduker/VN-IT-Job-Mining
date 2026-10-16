@@ -1,40 +1,23 @@
-version: '3.8'
-
-services:
+﻿services:
   minio:
-    image: minio/minio:latest
+    image: cgr.dev/chainguard/minio:latest
     container_name: vn_it_jobs_minio
     restart: unless-stopped
     ports:
-      - "9000:9000"   # MinIO S3 API Endpoint
-      - "9001:9001"   # MinIO Web Console UI
+      - "9000:9000"
+      - "9001:9001"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
-      interval: 3s
-      timeout: 3s
-      retries: 5
-
-  minio-init:
-    image: minio/mc:latest
-    container_name: vn_it_jobs_minio_init
-    depends_on:
-      minio:
-        condition: service_healthy
-    entrypoint: >
-      /bin/sh -c "
-      echo 'Configuring MinIO client...' &&
-      mc alias set myminio http://minio:9000 minioadmin minioadmin &&
-      mc mb --ignore-existing myminio/vn-it-jobs &&
-      mc anonymous set download myminio/vn-it-jobs &&
-      echo 'Bucket vn-it-jobs initialized successfully!' &&
-      exit 0;
-      "
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 volumes:
   minio_data:
