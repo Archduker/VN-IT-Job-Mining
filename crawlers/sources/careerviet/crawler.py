@@ -12,8 +12,10 @@ import hashlib
 import json
 import logging
 import os
+import random
 import re
 import tempfile
+from collections import Counter
 from collections.abc import Generator
 from datetime import datetime, timezone
 from pathlib import Path
@@ -577,6 +579,42 @@ class CareerVietCrawler(BaseCrawler):
             "path": str(dest),
         }
 
+    def _select_pending(
+        self,
+        ledger: UrlLedger,
+        cat_map: dict[str, str],
+        source_categories: list[str] | None = None,
+        shuffle: bool = False,
+        seed: int | None = None,
+        limit: int | None = None,
+    ) -> list[dict[str, Any]]:
+        """Chon record PENDING/RECHECK_DUE: loc nhom -> xao (seed) -> cat limit.
+
+        Thu tu mac dinh (khong loc, khong xao) = thu tu chen cua ledger, GIU NGUYEN.
+        Xao dung random.Random(seed) RIENG, khong dong seed toan cuc.
+        Loi --shuffle thieu --seed duoc chan o tang CLI (main), o day seed=None chi
+        tao mot rng khong duoc xac dinh -> khong dung trong duong mac dinh.
+        Ngu source_category khong khop nhom nao co record duoc chon -> ValueError.
+        """
+        pending = list(ledger.get_pending_or_due_records(21))
+        if source_categories:
+            wanted = set(source_categories)
+            filtered = [r for r in pending if cat_map.get(r["job_id"]) in wanted]
+            if not filtered:
+                avail = sorted({c for c in (cat_map.get(r["job_id"]) for r in pending) if c})
+                raise ValueError(
+                    "source_category %s khong khop voi nhom nao co record duoc chon. "
+                    "Cac nhom kha dung: %s" % (sorted(wanted), avail))
+            selected = filtered
+        else:
+            selected = pending
+        if shuffle:
+            selected = list(selected)
+            random.Random(seed).shuffle(selected)
+        if limit is not None:
+            selected = selected[:limit]
+        return selected
+
     def crawl_details(
         self,
         limit: int | None = None,
@@ -585,6 +623,9 @@ class CareerVietCrawler(BaseCrawler):
         exclude_volatile_dates: bool = True,
         online: bool = False,
         sync_minio: bool = False,
+        source_categories: list[str] | None = None,
+        shuffle: bool = False,
+        seed: int | None = None,
     ) -> dict[str, Any]:
         """Phase 2: trich xuat raw envelope cho cac URL PENDING/RECHECK_DUE (21 ngay).
 
@@ -615,6 +656,25 @@ class CareerVietCrawler(BaseCrawler):
             v = str(outcome["version"])
             stats["versions"][v] = stats["versions"].get(v, 0) + 1
 
+        # ---- CHON DANH SACH: loc theo nhom -> xao (seed) -> cat limit ----
+        try:
+            candidates = self._select_pending(
+                ledger, cat_map, source_categories, shuffle, seed, limit)
+        except ValueError as exc:
+            log.error("[CareerViet] %s -> DUNG, khong goi mang, khong luu ledger.", exc)
+            print("[CareerViet] DUNG: " + str(exc))
+            stats["selection_error"] = str(exc)
+            return stats
+
+        sel_ids = [r["job_id"] for r in candidates]
+        sel_cat_dist = dict(Counter(cat_map.get(j) for j in sel_ids))
+        _mode = "online" if online else ("offline" if local_html_dir else "preview")
+        print("[CareerViet] SELECTION mode=%s so_it=%d" % (_mode, len(sel_ids)))
+        print("[CareerViet] SELECTION job_ids=%s" % sel_ids)
+        print("[CareerViet] SELECTION category_distribution=%s" % sel_cat_dist)
+        stats["selected"] = sel_ids
+        stats["selected_category_distribution"] = sel_cat_dist
+
         if local_html_dir:
             job_index = {r["job_id"]: r for r in ledger.records.values()}
             due_ids = {r["job_id"] for r in ledger.get_pending_or_due_records(21)}
@@ -643,25 +703,26 @@ class CareerVietCrawler(BaseCrawler):
                     log.error("[CareerViet] Safe Skip %s: %s", jid, exc)
         elif online:
             headers = {"Accept": "text/html,application/xhtml+xml,*/*;q=0.8", "Referer": BASE_URL}
-            pending = ledger.get_pending_or_due_records(21)
             client = self._online_client()
             try:
-                for rec in pending:
-                    if limit is not None and (stats["success"] + stats["failed"] + stats["repost"]) >= limit:
-                        break
+                for rec in candidates:
                     stats["files"] += 1
                     try:
                         html = client.get_html(rec["canonical_url"], headers=headers)
                     except Exception as exc:
+                        if self._is_blocking(exc):
+                            # 429/403: KHONG mark_failed -> giu PENDING de dot sau thu lai
+                            log.error("[CareerViet] GAP 429/403 %s -> DUNG an toan, GIU PENDING "
+                                      "(khong mark_failed): %s", rec["job_id"], exc)
+                            break
                         ledger.mark_failed(rec["url_hash"], str(exc))
                         stats["failed"] += 1
-                        if self._is_blocking(exc):
-                            log.error("[CareerViet] GAP 429/403 %s -> DUNG an toan: %s", rec["job_id"], exc)
-                            break
                         log.error("[CareerViet] Safe Skip (online fetch) %s: %s", rec["job_id"], exc)
                         continue
                     if self._looks_blocked(html):
-                        log.warning("[CareerViet] Phat hien captcha chan %s -> DUNG an toan.", rec["job_id"])
+                        # captcha: KHONG mark_failed -> giu PENDING
+                        log.warning("[CareerViet] Phat hien captcha chan %s -> DUNG an toan, GIU PENDING "
+                                    "(khong mark_failed).", rec["job_id"])
                         break
                     try:
                         outcome = self._process_detail_record(rec, html, cat_map, exclude_volatile_dates, date_str)
@@ -676,7 +737,8 @@ class CareerVietCrawler(BaseCrawler):
             finally:
                 client.close()
         else:
-            log.warning("[CareerViet] crawl_details: can local_html_dir hoac --online. Tu choi goi mang.")
+            log.info("[CareerViet] PREVIEW (khong --online/khong --local-html-dir): in danh sach "
+                     "se xu ly, KHONG goi mang, KHONG luu ledger.")
             return stats
 
         ledger.save_catalog()
@@ -720,12 +782,21 @@ def main():
                         default=True,
                         help="Mac Dinh TRUE: tam bo nhan 'Ngay cap nhat'/'Het han nop' khi bam hash. "
                              "Dung --no-exclude-volatile-dates de bat buoc bam CA 2 nhan.")
+    parser.add_argument("--source-category", dest="source_categories", action="append", metavar="CAT",
+                        help="Chi chon record thuoc nhom source_category nay (lap duoc nhieu lan, "
+                             "vd: --source-category c37_digital_mkt)")
+    parser.add_argument("--shuffle", action="store_true",
+                        help="Xao tron danh sach da loc TRUOC khi cat --limit (tat dinh theo --seed)")
+    parser.add_argument("--seed", type=int, default=None,
+                        help="Seed nguyen cho --shuffle (BAT BUOC khi dung --shuffle)")
     # Legacy (giu nguyen de tuong thich, KHONG mac dinh goi mang nua)
     parser.add_argument("--max-items", type=int, default=30, help="[legacy] so tin toi da")
     parser.add_argument("--output-dir", type=str, default="data", help="[legacy] thu muc xuat du lieu")
     parser.add_argument("--checkpoint-dir", type=str, default=None, help="Thu muc checkpoint")
     parser.add_argument("--save-html", action="store_true", default=False, help="[legacy] luu HTML chi tiet")
     args = parser.parse_args()
+    if args.shuffle and args.seed is None:
+        parser.error("--shuffle can kem --seed <so_nguyen>")
 
     logging.basicConfig(
         level=logging.INFO,
@@ -755,8 +826,8 @@ def main():
         print(f"[discovery] Tong so record trong ledger: {total} (online={args.online})")
     elif args.phase == "details":
         if not args.local_html_dir and not args.online:
-            print("[details] Can --local-html-dir (offline) hoac --online (mang). Tu choi goi mang.")
-            return
+            print("[details] PREVIEW (khong --online/khong --local-html-dir): chi in danh sach se "
+                  "xu ly, khong goi mang, khong luu ledger.")
         stats = crawler.crawl_details(
             limit=args.limit,
             local_html_dir=args.local_html_dir,
@@ -764,6 +835,9 @@ def main():
             exclude_volatile_dates=args.exclude_volatile_dates,
             online=args.online,
             sync_minio=args.sync_minio,
+            source_categories=args.source_categories,
+            shuffle=args.shuffle,
+            seed=args.seed,
         )
         print("[details] stats =", json.dumps(stats, ensure_ascii=False))
     else:  # view
