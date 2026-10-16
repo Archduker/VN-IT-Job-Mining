@@ -149,6 +149,50 @@ def test_missing_url_files_raise(fake_urls_dir, tmp_path):
         run_import(empty_dir, _storage(tmp_path))
 
 
+def test_include_c37_off_by_default_excludes_c37(fake_urls_dir, tmp_path):
+    """Mac dinh (khong co include_c37): van 4 record IT, khong doc c37."""
+    stats = run_import(fake_urls_dir, _storage(tmp_path))
+    assert stats["include_c37"] is False
+    assert stats["records_read"] == 4
+    assert "c37_digital_mkt" not in stats["category_counts"]
+    assert all("urls_c37" not in f for f in stats["files_read"])
+    cat_map = json.loads(Path(stats["category_map_path"]).read_text(encoding="utf-8"))
+    assert "SSDF999" not in cat_map
+
+
+def test_include_c37_true_adds_c37_and_keeps_real_category(fake_urls_dir, tmp_path):
+    """--include-c37: nap them file c37 va GIU NGUYEN source_category that trong file."""
+    stats = run_import(fake_urls_dir, _storage(tmp_path), include_c37=True)
+    assert stats["include_c37"] is True
+    assert stats["records_read"] == 5
+    assert stats["unique_job_ids"] == 5
+    assert stats["category_counts"] == {
+        "c1": 2, "c61": 1, "keyword:developer": 1, "c37_digital_mkt": 1
+    }
+    assert any("urls_c37" in f for f in stats["files_read"])
+
+    catalog = json.loads(Path(stats["catalog_path"]).read_text(encoding="utf-8"))
+    assert any(r["job_id"] == "SSDF999" for r in catalog.values())
+
+    # source_category c37 duoc giu nguyen gia tri that (c37_digital_mkt), khong hardcode
+    cat_map = json.loads(Path(stats["category_map_path"]).read_text(encoding="utf-8"))
+    assert cat_map["SSDF999"] == "c37_digital_mkt"
+
+
+def test_include_c37_true_missing_c37_file_raises(tmp_path, monkeypatch):
+    """Bat --include-c37 nhung khong co file c37 -> loi fail-fast (khong im lang bo qua)."""
+    monkeypatch.chdir(tmp_path)
+    urls_dir = tmp_path / "urls_src"
+    urls_dir.mkdir()
+    _write_urls_file(urls_dir, "urls_c1_2026-10-16.json", [_rec("AAA111", "c1")])
+    _write_urls_file(urls_dir, "urls_c61_2026-10-16.json", [_rec("BBB333", "c61")])
+    _write_urls_file(
+        urls_dir, "urls_developer_2026-10-16.json", [_rec("CCC444", "keyword:developer")]
+    )
+    with pytest.raises(FileNotFoundError):
+        run_import(urls_dir, _storage(tmp_path), include_c37=True)
+
+
 def test_build_category_map_detects_collisions():
     records = [
         {"job_id": "X1", "source_category": "c1"},

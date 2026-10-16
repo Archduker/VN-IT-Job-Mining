@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """Script offline nạp URL CareerViet (Pha 1 đã khảo sát) vào UrlLedger chuẩn nhóm.
 
-- Chỉ ĐỌC các file `urls_c1_*.json`, `urls_c61_*.json`, `urls_developer_*.json`
-  trong thư mục nguồn (mặc định `data/raw/careerviet/`). KHÔNG đọc `urls_c37_*`.
+- Mặc định CHỈ ĐỌC các file `urls_c1_*.json`, `urls_c61_*.json`,
+  `urls_developer_*.json` trong thư mục nguồn (mặc định `data/raw/careerviet/`).
+  KHÔNG đọc `urls_c37_*` -> tổng mặc định giữ nguyên 748.
+- Bật cờ `--include-c37` (mặc định TẮT) mới nạp thêm `urls_c37_*.json`.
+  `source_category` của c37 được GIỮ NGUYÊN giá trị thật trong file
+  (ví dụ `c37_digital_mkt`), KHÔNG hardcode/đổi tên.
 - Ghi mới vào `data/careerviet/url_ledger/` (catalog_master.json + manifests/*.jsonl)
   qua UrlLedger chuẩn; không sửa giải thuật ledger.
 - `source_category` thật (c1 / c61 / keyword:developer) được giữ trong file ánh xạ
@@ -47,18 +51,34 @@ SOURCE = "careerviet"
 DEFAULT_URLS_DIR = Path("data/raw/careerviet")
 DEFAULT_STORAGE_DIR = Path("data/careerviet/url_ledger")
 CATEGORY_MAP_FILENAME = "category_by_job_id.json"
-# Chỉ nạp 3 nhóm IT đã xác minh; c37 (Digital Marketing) không phải IT.
+# Nhóm IT mặc định (luôn nạp).
 URL_FILE_GLOBS = ("urls_c1_*.json", "urls_c61_*.json", "urls_developer_*.json")
+# Nhóm c37: mặc định LOẠI (không chắc chắn là IT); chỉ nạp khi --include-c37.
+URL_FILE_GLOB_C37 = "urls_c37_*.json"
 
 
-def load_url_records(urls_dir: Path) -> tuple[list[dict[str, str]], list[Path]]:
-    """Đọc toàn bộ record từ các file URL được phép; lỗi nếu thiếu file hoặc sai schema."""
+def _resolve_globs(include_c37: bool) -> tuple[str, ...]:
+    """Trả về glob patterns; thêm c37 chỉ khi include_c37=True."""
+    if include_c37:
+        return URL_FILE_GLOBS + (URL_FILE_GLOB_C37,)
+    return URL_FILE_GLOBS
+
+
+def load_url_records(
+    urls_dir: Path,
+    include_c37: bool = False,
+) -> tuple[list[dict[str, str]], list[Path]]:
+    """Đọc toàn bộ record từ các file URL được phép; lỗi nếu thiếu file hoặc sai schema.
+
+    source_category được lấy NGUYÊN VĂN từ từng record trong file (kể cả c37);
+    không suy luận hay ghi đè theo tên file.
+    """
     if not urls_dir.is_dir():
         raise FileNotFoundError(f"Thư mục chứa file URL không tồn tại: {urls_dir}")
 
     records: list[dict[str, str]] = []
     used_files: list[Path] = []
-    for pattern in URL_FILE_GLOBS:
+    for pattern in _resolve_globs(include_c37):
         matched = sorted(urls_dir.glob(pattern))
         if not matched:
             raise FileNotFoundError(
@@ -129,6 +149,7 @@ def run_import(
     storage_dir: Path,
     sync_minio: bool = False,
     force: bool = False,
+    include_c37: bool = False,
 ) -> dict[str, Any]:
     """Nạp URL vào UrlLedger và ghi file ánh xạ category. Trả về thống kê."""
     urls_dir = Path(urls_dir)
@@ -141,7 +162,7 @@ def run_import(
             f"File đích đã tồn tại: {category_map_path}. Dùng --force nếu cố ý ghi đè."
         )
 
-    records, used_files = load_url_records(urls_dir)
+    records, used_files = load_url_records(urls_dir, include_c37=include_c37)
 
     ledger = UrlLedger(source=SOURCE, storage_dir=str(storage_dir))
 
@@ -185,6 +206,7 @@ def run_import(
         "manifest_path": Path(manifest_path).as_posix(),
         "category_map_path": category_map_path.as_posix(),
         "minio_synced": minio_synced,
+        "include_c37": include_c37,
     }
     return stats
 
@@ -201,6 +223,9 @@ def main() -> int:
                         help="Đồng bộ ledger lên MinIO (mặc định: TẮT)")
     parser.add_argument("--force", action="store_true", default=False,
                         help="Cho phép ghi đè category_by_job_id.json đã tồn tại")
+    parser.add_argument("--include-c37", action="store_true", default=False,
+                        help="Nạp thêm urls_c37_*.json (mặc định: TẮT -> chỉ 748 IT)."
+                             " source_category c37 giữ nguyên giá trị thật trong file.")
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -213,6 +238,7 @@ def main() -> int:
         storage_dir=args.storage_dir,
         sync_minio=args.sync_minio,
         force=args.force,
+        include_c37=args.include_c37,
     )
     print(json.dumps(stats, ensure_ascii=False, indent=2))
     return 0

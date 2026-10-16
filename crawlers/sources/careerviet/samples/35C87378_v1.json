@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "job_id": "35C87378",
+    "source": "careerviet",
+    "source_url": "https://careerviet.vn/vi/tim-viec-lam/transmission-engineer.35C87378.html",
+    "scraped_at": "2026-10-16T13:05:12.674188+00:00",
+    "scraper_version": "1.0.0-raw-envelope",
+    "version": 1,
+    "content_hash": "984f7ad4cd67b01abd8620cf5771fea6aa98b4d721e7e2e533cb8a3f9b1df813",
+    "source_category": "keyword:developer"
+  },
+  "raw_payload": {
+    "title": "Transmission Engineer",
+    "job-company-name": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+    "detail-box": [
+      "Ngày cập nhật 15/10/2026",
+      "Ngành nghề CNTT - Phần mềm , Bưu chính viễn thông , CNTT - Phần cứng / Mạng",
+      "Hình thức Nhân viên chính thức",
+      "Ngày cập nhật 15/10/2026",
+      "Ngành nghề CNTT - Phần mềm , Bưu chính viễn thông , CNTT - Phần cứng / Mạng",
+      "Hình thức Nhân viên chính thức",
+      "Lương Cạnh tranh",
+      "Cấp bậc Nhân viên",
+      "Hết hạn nộp 15/10/2026"
+    ],
+    "detail-row": {
+      "Phúc lợi": "Phúc lợi Chế độ bảo hiểm Du Lịch Chế độ thưởng Chăm sóc sức khỏe Đào tạo Tăng lương",
+      "Mô tả Công việc": "Mô tả Công việc COMPANY BACKGROUND/CULTURE Huawei is a leading global provider of information and communications technology (ICT) infrastructure and smart devices. We have 207,000+ employees and operate in over 170 countries and regions, serving more than three billion people around the world. We are committed to bringing digital to every person, home and organization for a fully connected, intelligent world. Total R&D investment over the last decade now exceeds CNY977.3 billion . In 2022, our total R&D spending was CNY161.5 billion , representing 25.1% of total revenue. At the end of 2022, 114,000+ employees, or 55.4% of our workforce, worked in R&D. By the end of 2022, Huawei held a total of 120,000+ active patents. KEY RESPONSIBILITIES OF THIS ROLE · Plan, deploy, and maintain DWDM, OTN, NMS transmission systems in core and metro networks. · Perform commissioning, integration, cut-over, and acceptance testing for DWDM equipment. · Monitor and optimize network performance, ensuring high availability and low latency. · Troubleshoot transmission issues, perform root-cause analysis, and coordinate with operator for resolution. · Support capacity planning and migration projects to meet growing bandwidth demands. · Document network designs, maintenance activities, and troubleshooting procedures. · Collaborate with cross-functional teams (IP Core/Metro, GPON) for end-to-end service delivery.",
+      "Yêu Cầu Công Việc": "Yêu Cầu Công Việc PROFESSIONAL EXPERIENCE/QUALIFICATIONS • Education Background Requirements: Bachelor or higher, major: Telecommunications technology, or related fields. • Hands-on experience with DWDM/OTN equipment (Huawei OSN 9800/8800/1800, etc. or similar). • Strong understanding of optical transmission technologies (DWDM, OTN, ROADM, EDFA, RAMAN, ASON, CDCF, coherent optics). • Experience with NMS platforms (Huawei U2000/NCE-T, etc.). • Able to communicate effectively in English both spoken and written • Family with Microsoft office, Excel, Power point • Ability to adapt quickly to changing environments and manage parallel time-critical tasks • Ability to multi-task in a fast-paced environment • Ability to Travel as needed PREFERRED CERTIFICATIONS · Huawei HCIP-Transmission or HCIE-Transmission. · Optical networking certifications (e.g., Ciena, Nokia). WORKING TIME AND BENEFITS · Monday to Friday (08:30-18:00). · Short term and long-term award · Huawei online and offline aboard training. · Participating in full insurance benefits (health insurance, social insurance, unemployment insurance), the company supports 24/24 accident insurance and health care insurance for employees. · Professional working environment, multinational company, good career development opportunities. Cultural and sports activities, taking care of employees' health and life are organized periodically... · Salary: negotiable.",
+      "Địa điểm làm việc": "Địa điểm làm việc Hà Nội 15th Floor, Taisei Square Hanoi, 289 Khuat Duy Tien street, Dai Mo Ward, Ha Noi",
+      "Thông tin khác": "Thông tin khác Bằng cấp : Đại học Độ tuổi : Không giới hạn tuổi Lương : Cạnh tranh",
+      "Gợi ý hồ sơ": "Gợi ý hồ sơ Thiết kế CV Ứng Tuyển"
+    },
+    "job-tags": [
+      "Transmission Engineer",
+      "Telecom Transmission Engineer",
+      "RF Transmission Engineer",
+      "Kỹ Sư Truyền Dẫn"
+    ],
+    "map": "Hà Nội",
+    "Ngành nghề": [
+      "CNTT - Phần mềm , Bưu chính viễn thông , CNTT - Phần cứng / Mạng"
+    ],
+    "job-posting-schema": {
+      "@context": "http://schema.org",
+      "@type": "JobPosting",
+      "inLanguage": "vi",
+      "title": "Transmission Engineer",
+      "description": "\n        <p><strong>COMPANY BACKGROUND/CULTURE</strong></p><p>Huawei is a leading global provider of information and communications technology (ICT) infrastructure and smart devices. We have 207,000+ employees and operate in over 170 countries and regions, serving more than three billion people around the world. <strong><em>We are committed to bringing digital to every person, home and organization for a fully connected, intelligent world.</em></strong></p><p>Total R&D investment over the last decade now exceeds <strong>CNY977.3 billion</strong><strong>.</strong></p><p>In 2022, our total R&D spending was <strong>CNY161.5 billion</strong>, representing <strong>25.1%</strong> of total revenue.</p><p>At the end of 2022, <strong>114,000+</strong> employees, or <strong>55.4%</strong> of our workforce, worked in R&D.</p><p>By the end of 2022, Huawei held a total of <strong>120,000+</strong> active patents.</p><p><strong>KEY RESPONSIBILITIES OF THIS ROLE</strong></p><p>·        Plan, deploy, and maintain DWDM, OTN, NMS transmission systems in core and metro networks.</p><p>·        Perform commissioning, integration, cut-over, and acceptance testing for DWDM equipment.</p><p>·        Monitor and optimize network performance, ensuring high availability and low latency.</p><p>·        Troubleshoot transmission issues, perform root-cause analysis, and coordinate with operator for resolution.</p><p>·        Support capacity planning and migration projects to meet growing bandwidth demands.</p><p>·        Document network designs, maintenance activities, and troubleshooting procedures.</p><p>·        Collaborate with cross-functional teams (IP Core/Metro, GPON) for end-to-end service delivery.</p>\n        <p><strong>PROFESSIONAL EXPERIENCE/QUALIFICATIONS</strong></p><p>•        Education Background Requirements: Bachelor or higher, major: Telecommunications technology, or related fields.</p><p>•        Hands-on experience with DWDM/OTN equipment (Huawei OSN 9800/8800/1800, etc. or similar).</p><p>•        Strong understanding of optical transmission technologies (DWDM, OTN, ROADM, EDFA, RAMAN, ASON, CDCF, coherent optics).</p><p>•        Experience with NMS platforms (Huawei U2000/NCE-T, etc.).</p><p>•        Able to communicate effectively in English both spoken and written</p><p>•        Family with Microsoft office, Excel, Power point</p><p>•        Ability to adapt quickly to changing environments and manage parallel time-critical tasks</p><p>•        Ability to multi-task in a fast-paced environment</p><p>•        Ability to Travel as needed</p><p><strong>PREFERRED CERTIFICATIONS</strong></p><p>·        Huawei HCIP-Transmission or HCIE-Transmission.</p><p>·        Optical networking certifications (e.g., Ciena, Nokia).</p><p><strong>WORKING TIME AND BENEFITS</strong></p><p>·        Monday to Friday (08:30-18:00).</p><p>·        Short term and long-term award</p><p>·        Huawei online and offline aboard training.</p><p>·        Participating in full insurance benefits (health insurance, social insurance, unemployment insurance), the company supports 24/24 accident insurance and health care insurance for employees.</p><p>·        Professional working environment, multinational company, good career development opportunities. Cultural and sports activities, taking care of employees' health and life are organized periodically...</p><p>·        Salary: negotiable.</p>\n        <p>Ngành nghề: CNTT - Phần mềm, Bưu chính viễn thông, CNTT - Phần cứng / Mạng</p>\n        <p>Kinh nghiệm: null Năm</p>\n        <p>Cấp bậc: Nhân viên</p>\n        <p>Hình thức: Nhân viên chính thức</p>\n        <p>Địa điểm: Hà Nội</p>\n    ",
+      "datePosted": "2026-10-15T02:00:14.461Z",
+      "validThrough": "2026-10-15T23:59:00Z",
+      "baseSalary": {
+        "@type": "MonetaryAmount",
+        "currency": "VND",
+        "value": {
+          "@type": "QuantitativeValue",
+          "value": "Cạnh tranh",
+          "unitText": "MONTH"
+        }
+      },
+      "industry": "CNTT - Phần mềm, Bưu chính viễn thông, CNTT - Phần cứng / Mạng",
+      "jobBenefits": "Chế độ bảo hiểm, Du Lịch, Chế độ thưởng, Chăm sóc sức khỏe, Đào tạo, Tăng lương",
+      "educationRequirements": {
+        "@type": "EducationalOccupationalCredential",
+        "credentialCategory": "bachelor degree",
+        "alternateName": "Đại học/Cử nhân"
+      },
+      "directApply": true,
+      "url": "https://careerviet.vn/vi/tim-viec-lam/transmission-engineer.35C87378.html",
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+        "value": "35C87378"
+      },
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+        "url": "https://careerviet.vn/vi/nha-tuyen-dung/cong-ty-tnhh-cong-nghe-huawei-viet-nam.35A9F4CA.html",
+        "sameAs": null,
+        "logo": "https://images.careerviet.vn/employer_folders/lot8/330698/91538screenshot2025-04-22091240.png",
+        "description": "<p>Huawei is a leading global provider of information and communications technology (ICT) infrastructure and smart devices. We have 207,000+ employees and operate in over 170 countries and regions, serving more than three billion people around the world. We are committed to bringing digital to every person, home and organization for a fully connected, intelligent world. Total R&amp;D investment over the last decade now exceeds CNY977.3 billion. In 2022, our total R&amp;D spending was CNY161.5 billion, representing 25.1% of total revenue. At the end of 2022, 114,000+ employees, or 55.4% of our workforce, worked in R&amp;D. By the end of 2022, Huawei held a total of 120,000+ active patents</p>"
+      },
+      "employmentType": [
+        "\"FULL_TIME\""
+      ],
+      "jobLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "15th Floor, Taisei Square Hanoi, 289 Khuat Duy Tien street, Dai Mo Ward, Ha Noi",
+          "addressRegion": "Quận Cầu Giấy",
+          "addressLocality": "Hà Nội",
+          "postalCode": "10000",
+          "addressCountry": "VN"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "21.0024397",
+          "longitude": "105.793831"
+        }
+      },
+      "skills": "Transmission Engineer, Telecom Transmission Engineer, RF Transmission Engineer, Kỹ Sư Truyền Dẫn",
+      "workHours": "8:00-17:00",
+      "applicantLocationRequirements": {
+        "@type": "Country",
+        "name": "Việt Nam"
+      }
+    }
+  }
+}
