@@ -96,17 +96,24 @@ def analyze_html_file(html_path: str):
     print(f"{'Hạn nộp (deadline)':<22} | {dead_sel:<32} | {dead_val[:35]}")
 
     # Kinh nghiệm
-    exp_el = soup.select_one("[class*='experience'], div:has(span:contains('Kinh nghiệm'))")
+    exp_el = soup.select_one("[class*='experience'], div:-soup-contains('Kinh nghiệm')")
     exp_val = clean_str(exp_el.get_text()) if exp_el else "KHÔNG TÌM THẤY"
     print(f"{'Kinh nghiệm (exp)':<22} | {'[class*=\"experience\"]':<32} | {exp_val[:35]}")
 
-    # 3. Dò tìm thẻ Tags & Badges
-    print("\n🏷️ 3. DÒ TÌM THẺ KỸ NĂNG & PHÚC LỢI (TAGS / BADGES):")
+    # 3. Dò tìm các khối nội dung lớn (Content Blocks) & Thẻ Tags
+    print("\n📜 3. DÒ TÌM CÁC KHỐI NỘI DUNG LỚN & THẺ TAGS (ZERO LOSS):")
+    desc_el = soup.select_one(".job-description, .box-job-information-detail-item:has(h2:-soup-contains('Mô tả')) .box-job-information-detail-item__text")
+    req_el = soup.select_one(".job-requirements, .box-job-information-detail-item:has(h2:-soup-contains('Yêu cầu')) .box-job-information-detail-item__text")
+    ben_el = soup.select_one(".job-benefits, .box-job-information-detail-item:has(h2:-soup-contains('Quyền lợi')) .box-job-information-detail-item__text")
+    
+    print(f"  - Khối Mô tả (Description): {'✅ Tìm thấy' if desc_el else '⚠️ Cần selector tùy biến'}")
+    print(f"  - Khối Yêu cầu (Requirements): {'✅ Tìm thấy' if req_el else '⚠️ Cần selector tùy biến'}")
+    print(f"  - Khối Quyền lợi (Benefits): {'✅ Tìm thấy' if ben_el else '⚠️ Cần selector tùy biến'}")
+
     tag_elements = soup.select(".badge-tag-list .item, .tag, .badge, [class*='skill'], [class*='tag'] a, [class*='tag'] span")
     clean_tags = list(dict.fromkeys([clean_str(t.get_text()) for t in tag_elements if len(clean_str(t.get_text())) in range(2, 35)]))[:10]
     if clean_tags:
-        print(f"  ✅ Phát hiện {len(clean_tags)} thẻ tags đại diện:")
-        print(f"     👉 {clean_tags}")
+        print(f"  ✅ Phát hiện {len(clean_tags)} thẻ tags đại diện: {clean_tags}")
     else:
         print("  ℹ️ Không phát hiện thẻ tag dạng danh sách.")
 
@@ -127,8 +134,8 @@ def analyze_html_file(html_path: str):
     print(f"  👉 Container Selector tối ưu: '{best_container}' (Độ dài text: {max_len} chars)")
     print(f"  👉 Clean Hash SHA256 mẫu:     {clean_hash}")
 
-    # 5. Sinh Code Python Parser Gợi Ý
-    print("\n💻 5. CODE PYTHON PARSER GỢI Ý (COPY DÙNG NGAY):")
+    # 5. Sinh Code Python Parser Gợi Ý (Bảo Toàn 100% Trường - Zero Information Loss)
+    print("\n💻 5. CODE PYTHON PARSER GỢI Ý (ZERO INFORMATION LOSS):")
     print("-" * 80)
     snippet = f'''from bs4 import BeautifulSoup
 from crawlers.common.url_ledger import calculate_container_html_hash
@@ -140,12 +147,16 @@ def parse_raw_payload(html_content: str) -> dict:
     content_hash = calculate_container_html_hash(html_content, container_selector="{best_container}")
     
     # 2. Bóc tách 100% trường dữ liệu gốc (Zero Information Loss)
+    # Lưu ý: Giữ nguyên cấu trúc HTML, không tự ý parse thành list[str] ở tầng cào thô
     return {{
         "title": soup.select_one("{title_sel_str}").get_text(strip=True) if soup.select_one("{title_sel_str}") else None,
-        "company": soup.select_one("{comp_sel}").get_text(strip=True) if soup.select_one("{comp_sel}") else None,
+        "company_name": soup.select_one("{comp_sel}").get_text(strip=True) if soup.select_one("{comp_sel}") else None,
         "salary_raw": soup.select_one("{sal_sel}").get_text(strip=True) if soup.select_one("{sal_sel}") else None,
         "deadline_raw": soup.select_one("{dead_sel}").get_text(strip=True) if soup.select_one("{dead_sel}") else None,
-        "tags": [t.get_text(strip=True) for t in soup.select(".badge-tag-list .item, .tag, [class*='tag'] span")],
+        "tag_groups": {{g.select_one(".job-tags__group-name").get_text(strip=True): [a.get_text(strip=True) for a in g.select(".item, a") if a != g.select_one(".job-tags__group-name")] for g in soup.select(".job-tags__group")}} if soup.select(".job-tags__group") else [t.get_text(strip=True) for t in soup.select(".tag, [class*='tag'] span")],
+        "description_html": str(soup.select_one(".job-description, .box-job-information-detail-item__text")),
+        "requirements_html": str(soup.select_one(".job-requirements, .box-job-information-required-candidate .box-job-information-detail-item__text")),
+        "benefits_html": str(soup.select_one(".job-benefits, .box-job-information-benefit .box-job-information-detail-item__text")),
         "content_hash": content_hash,
         "raw_html": html_content,
     }}

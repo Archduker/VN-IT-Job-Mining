@@ -2,37 +2,34 @@
   "metadata": {
     "source": "topcv",
     "source_job_id": "topcv_2002",
-    "url": "https://www.topcv.vn/viec-lam/cloud-solution-architect/2002.html",
-    "crawled_at": "2026-10-16T08:00:00Z",
+    "url": "https://www.topcv.vn/viec-lam/cloud-solution-architect/topcv_2002.html",
+    "scraped_at": "2026-10-16T08:00:00Z",
     "crawler_version": "2.0.0",
     "version": 1,
-    "content_hash": "f6d7b2c3a4e5061728394a5b6c7d8e9f0123456789abcdef0123456789abcdef",
+    "content_hash": "997e66bbeee982ccd05543fbeda36169054c8bcedd8476021da80b8eacc3ca12",
     "status": "DONE"
   },
   "raw_payload": {
-    "box-header-job__title": "Cloud Solution Architect (AWS, Kubernetes, Terraform) - Up to $3,500",
-    "box-header-job__company-name": "TECH GLOBAL HOLDINGS PTE. LTD.",
-    "box-header-job__salary--title": "Tới 3,500 USD",
-    "job-detail__info--deadline": "15/12/2026",
+    "title": "Cloud Solution Architect (AWS, Kubernetes, Terraform) - Up to $3,500",
+    "company_name": "TECH GLOBAL HOLDINGS PTE. LTD.",
+    "salary_raw": "Tới 3,500 USD",
     "experience": "Trên 5 năm",
     "level": "Trưởng nhóm / Kiến trúc sư",
     "employment_type": "Toàn thời gian (100% Remote)",
-    "badge_tags": ["AWS Solution Architect", "Kubernetes (EKS)", "Terraform", "CI/CD", "Microservices", "English Upper-Intermediate"],
-    "description_list": [
-      "Định hình kiến trúc hệ sinh thái Cloud đa khu vực (Multi-region Cloud Architecture) trên AWS.",
-      "Lãnh đạo chuyển đổi hạ tầng sang Kubernetes (EKS), áp dụng triệt để nguyên lý Infrastructure as Code (IaC) với Terraform.",
-      "Thiết lập chuẩn mực bảo mật Cloud Security, Zero Trust Network và tuân thủ tiêu chuẩn ISO 27001 / SOC2.",
-      "Tư vấn và cố vấn kỹ thuật (Mentoring) cho các kỹ sư DevOps và phát triển hệ thống."
+    "deadline": "15/12/2026",
+    "badge_tags": [
+      "AWS Solution Architect",
+      "Kubernetes (EKS)",
+      "Terraform",
+      "CI/CD",
+      "Microservices",
+      "English Upper-Intermediate"
     ],
-    "requirements_list": [
-      "Ít nhất 5 năm kinh nghiệm làm việc với hạ tầng Cloud (ưu tiên AWS) và Container Orchestration.",
-      "Sở hữu chứng chỉ AWS Certified Solutions Architect Professional hoặc CKA (Certified Kubernetes Administrator) là lợi thế lớn.",
-      "Khả năng giao tiếp tiếng Anh lưu loát với các bên liên quan tại Singapore và Châu Âu."
-    ],
-    "benefits_list": [
-      "Thu nhập thỏa thuận lên tới 3,500 USD Net/tháng.",
-      "Thưởng cổ phiếu ESOP định kỳ hàng năm theo cống hiến.",
-      "Làm việc từ xa linh hoạt (Flexible Remote Policy)."
-    ]
+    "description_html": "<div class=\"job-description\">\n<h3>Trách nhiệm công việc</h3>\n<ul>\n<li>Định hình kiến trúc hệ sinh thái Cloud đa khu vực (Multi-region Cloud Architecture) trên AWS.</li>\n<li>Lãnh đạo chuyển đổi hạ tầng sang Kubernetes (EKS), áp dụng triệt để nguyên lý Infrastructure as Code (IaC) với Terraform.</li>\n<li>Thiết lập chuẩn mực bảo mật Cloud Security, Zero Trust Network và tuân thủ tiêu chuẩn ISO 27001 / SOC2.</li>\n<li>Tư vấn và cố vấn kỹ thuật (Mentoring) cho các kỹ sư DevOps và phát triển hệ thống.</li>\n</ul>\n</div>",
+    "description_raw": "Trách nhiệm công việc\nĐịnh hình kiến trúc hệ sinh thái Cloud đa khu vực (Multi-region Cloud Architecture) trên AWS.\nLãnh đạo chuyển đổi hạ tầng sang Kubernetes (EKS), áp dụng triệt để nguyên lý Infrastructure as Code (IaC) với Terraform.\nThiết lập chuẩn mực bảo mật Cloud Security, Zero Trust Network và tuân thủ tiêu chuẩn ISO 27001 / SOC2.\nTư vấn và cố vấn kỹ thuật (Mentoring) cho các kỹ sư DevOps và phát triển hệ thống.",
+    "requirements_html": "<div class=\"job-requirements\">\n<h3>Yêu cầu bắt buộc</h3>\n<ul>\n<li>Ít nhất 5 năm kinh nghiệm làm việc với hạ tầng Cloud (ưu tiên AWS) và Container Orchestration.</li>\n<li>Sở hữu chứng chỉ AWS Certified Solutions Architect Professional hoặc CKA (Certified Kubernetes Administrator) là lợi thế lớn.</li>\n<li>Khả năng giao tiếp tiếng Anh lưu loát với các bên liên quan tại Singapore và Châu Âu.</li>\n</ul>\n</div>",
+    "requirements_raw": "Yêu cầu bắt buộc\nÍt nhất 5 năm kinh nghiệm làm việc với hạ tầng Cloud (ưu tiên AWS) và Container Orchestration.\nSở hữu chứng chỉ AWS Certified Solutions Architect Professional hoặc CKA (Certified Kubernetes Administrator) là lợi thế lớn.\nKhả năng giao tiếp tiếng Anh lưu loát với các bên liên quan tại Singapore và Châu Âu.",
+    "benefits_html": "<div class=\"job-benefits\">\n<h3>Chế độ đãi ngộ</h3>\n<ul>\n<li>Thu nhập thỏa thuận lên tới 3,500 USD Net/tháng.</li>\n<li>Thưởng cổ phiếu ESOP định kỳ hàng năm theo cống hiến.</li>\n<li>Làm việc từ xa linh hoạt (Flexible Remote Policy).</li>\n</ul>\n</div>",
+    "benefits_raw": "Chế độ đãi ngộ\nThu nhập thỏa thuận lên tới 3,500 USD Net/tháng.\nThưởng cổ phiếu ESOP định kỳ hàng năm theo cống hiến.\nLàm việc từ xa linh hoạt (Flexible Remote Policy)."
   }
 }

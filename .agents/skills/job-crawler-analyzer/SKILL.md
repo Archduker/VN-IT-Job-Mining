@@ -47,52 +47,39 @@ company_el = soup.select_one(".company-name-label a, .company-name-label, .compa
 company = company_el.get_text(strip=True) if company_el else None
 ```
 
-### Bước 3: Chuẩn Hóa Lương & Phân Nhóm Thẻ Tags
+### Bước 3: Thu Thập Thô Nguyên Bản (Raw As-Is / SD1 Zero Information Loss) vs Chuẩn Hóa (Harmonization / SD2 & SD3)
 
-#### 1. Mức Lương Lồng Nhau (`JobSalary`)
-Dùng hàm `parse_salary_detail(salary_text, title)`:
-- `salary_min`: Lương tối thiểu (số thực triệu VNĐ hoặc USD).
-- `salary_max`: Lương tối đa (số thực triệu VNĐ hoặc USD).
-- `salary_currency`: `"VND"` hoặc `"USD"`.
-- `pay_period`: `"month"`, `"year"`, `"day"`, hoặc `"hour"`.
-- `is_negotiable`: `True` nếu có từ khóa *"Thỏa thuận"*, *"Cạnh tranh"*, *"Negotiable"*.
-- `has_commission`: `True` nếu có từ khóa *"hoa hồng"*, *"thưởng KPI"*, *"commission"*.
-- *Fallback*: Nếu mức lương hiển thị là *"Thỏa thuận"* nhưng tiêu đề có ghi số tiền (ví dụ: *"Dev Python Upto 35 Triệu"*), tự động quét regex từ tiêu đề!
+> [!CAUTION]
+> **QUY TẮC CỐT LÕI (ZERO INFORMATION LOSS - SD1)**:
+> Tại Tầng Cào Thô (Raw Crawl Tier):
+> - **TUYỆT ĐỐI KHÔNG can thiệp kiểu dữ liệu quá sớm**: Không tự ý xóa thẻ HTML, không ép văn bản thành danh sách dòng sạch (`requirements_list: list[str]`), không ép mức lương `"Thoả thuận"` thành số `null`.
+> - **Bắt buộc lưu 100% trường dữ liệu và thẻ tags**: Giữ nguyên toàn văn khối HTML (`description_html`, `requirements_html`, `benefits_html`), giữ nguyên chuỗi mức lương gốc (`salary_raw`), giữ trọn vẹn phân cấp nhóm thẻ (`tag_groups: dict[str, list[str]]`).
 
-#### 2. Phân Nhóm Thẻ Tags (`JobTags`)
-Quét các nhóm `.job-tags__group` hoặc badge container:
+#### 1. Quy chuẩn Trích xuất Tầng Thô (Raw Tier Payload)
 ```python
-tag_requirements = []
-tag_benefits = []
-tag_skills = []
-found_benefits_group = False
-
-for group in soup.select(".job-tags .job-tags__group"):
-    g_title = group.select_one(".job-tags__group-name").get_text(strip=True).lower()
-    items = [a.get_text(strip=True) for a in group.select(".item") if not a.get_text(strip=True).startswith("+")]
-    
-    if any(k in g_title for k in ["yêu cầu", "requirement"]):
-        tag_requirements.extend(items)
-    elif any(k in g_title for k in ["quyền lợi", "benefit", "phúc lợi"]):
-        found_benefits_group = True
-        tag_benefits.extend(items)
-    elif any(k in g_title for k in ["chuyên môn", "specialization", "skill"]):
-        tag_skills.extend(items)
-
-tags = {
-    "requirements": tag_requirements if tag_requirements else None,
-    "benefits": tag_benefits if (found_benefits_group and tag_benefits) else None,
-    "skills": tag_skills if tag_skills else None,
+raw_payload = {
+    "title": title_raw,
+    "company_name": company_raw,
+    "salary_raw": salary_raw,
+    "header_list_info": {"Địa điểm": "...", "Kinh nghiệm": "...", "Hạn nộp": "..."},
+    "tag_groups": {"Yêu cầu:": [...], "Chuyên môn:": [...]},
+    "description_html": str(soup.select_one(".job-description")),
+    "description_raw": soup.select_one(".job-description").get_text(separator="\n", strip=True),
+    "requirements_html": str(soup.select_one(".job-requirements")),
+    "requirements_raw": soup.select_one(".job-requirements").get_text(separator="\n", strip=True),
+    "benefits_html": str(soup.select_one(".job-benefits")),
+    "benefits_raw": soup.select_one(".job-benefits").get_text(separator="\n", strip=True),
+    "address_and_time_raw": {...},
+    "general_info_raw": {...},
+    "company_details_raw": {...}
 }
 ```
-> **QUY TẮC BẮT BUỘC**: Nếu trang không có nhóm thẻ quyền lợi $\rightarrow$ `benefits: null`. Tuyệt đối không nhồi nhét văn bản bài viết vào `tags`.
 
-#### 3. Làm Sạch Dòng Văn Bản (`list[str]`)
-Dùng hàm `text_to_clean_lines(content)` để bóc tách:
-- `description_list`: Danh sách các dòng mô tả công việc sạch.
-- `requirements_list`: Danh sách các dòng yêu cầu ứng viên sạch.
-- `benefits_list`: Danh sách các dòng quyền lợi sạch.
-Loại bỏ hoàn toàn các ký tự bullet đầu dòng: `•`, `-`, `*`, `+`, `1.`, `2)`.
+#### 2. Quy chuẩn Tầng Chuẩn Hóa (Data Harmonization Tier - SD2/SD3)
+*Chỉ thực hiện ở pipeline xử lý Staging/Curated, KHÔNG áp dụng đè lên file snapshot cào thô:*
+- Dùng `parse_salary_detail(salary_raw, title)` để bóc tách `JobSalary` (min, max, currency, is_negotiable).
+- Dùng `classify_job_tags()` để chia 3 nhóm thẻ (`skills`, `requirements`, `benefits`).
+- Dùng `text_to_clean_lines()` nếu cần danh sách bullet sạch phục vụ trích xuất NLP/LLM.
 
 ### Bước 4: Kiểm Soát Chất Lượng Dữ Liệu
 Chạy kiểm tra bắt buộc qua `DataQualityChecker`:

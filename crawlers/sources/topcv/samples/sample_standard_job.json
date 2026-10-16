@@ -1,42 +1,52 @@
 {
   "metadata": {
     "source": "topcv",
-    "source_job_id": "topcv_1001",
-    "url": "https://www.topcv.vn/viec-lam/senior-python-backend-engineer/1001.html",
-    "crawled_at": "2026-10-16T08:00:00Z",
+    "source_job_id": "2321616",
+    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-dau-tu/2321616.html",
+    "scraped_at": "2026-10-16T08:00:00Z",
     "crawler_version": "2.0.0",
     "version": 1,
-    "content_hash": "e5c6a1b2d3e4f5061728394a5b6c7d8e9f0123456789abcdef0123456789abcd",
+    "content_hash": "c054449d16f745b709941ee4abdaab228948cf99e0332921f2d5d8d49aaf76a7",
     "status": "DONE"
   },
   "raw_payload": {
-    "box-header-job__title": "Senior Python Backend Engineer (FastAPI, PostgreSQL, Redis)",
-    "box-header-job__company-name": "CÔNG TY CỔ PHẦN CÔNG NGHỆ ABC VIỆT NAM",
-    "box-header-job__salary--title": "25 - 45 triệu",
-    "job-detail__info--deadline": "30/11/2026",
-    "experience": "3 - 5 năm",
-    "level": "Senior",
-    "employment_type": "Toàn thời gian (Hybrid)",
-    "badge_tags": ["Python", "FastAPI", "PostgreSQL", "Redis", "Docker"],
-    "description_list": [
-      "Thiết kế, xây dựng và tối ưu hóa hệ thống backend xử lý dữ liệu lớn phục vụ hàng triệu người dùng.",
-      "Phát triển các RESTful API và microservices hiệu năng cao sử dụng FastAPI, Celery và Redis.",
-      "Phối hợp cùng đội ngũ Frontend, DevOps và Product Manager để hoàn thiện các tính năng cốt lõi.",
-      "Tối ưu hóa truy vấn cơ sở dữ liệu PostgreSQL, thiết kế kiến trúc caching và message queue."
-    ],
-    "requirements_list": [
-      "Có ít nhất 3 năm kinh nghiệm phát triển backend với ngôn ngữ Python.",
-      "Thành thạo ít nhất một web framework: FastAPI hoặc Django.",
-      "Hiểu sâu về cơ sở dữ liệu quan hệ (PostgreSQL / MySQL) và NoSQL (Redis, MongoDB).",
-      "Có kinh nghiệm làm việc với Docker, CI/CD và kiến trúc Microservices.",
-      "Kỹ năng giải quyết vấn đề tốt, tinh thần chủ động trong công việc."
-    ],
-    "benefits_list": [
-      "Mức lương cạnh tranh: 25.000.000 - 45.000.000 VNĐ/tháng.",
-      "Thưởng lương tháng 13 và thưởng hiệu quả kinh doanh theo quý.",
-      "Chính sách làm việc Hybrid (2 ngày làm việc tại nhà mỗi tuần).",
-      "Bảo hiểm sức khỏe cao cấp Bảo Việt dành cho nhân viên và người thân.",
-      "Cung cấp MacBook Pro M3 và màn hình rời phục vụ công việc."
-    ]
+    "title": "Chuyên viên Tư vấn Đầu tư",
+    "company_name": "Công ty cổ phần chứng khoán FPT",
+    "salary_raw": "Thoả thuậnXem mức lương thị trường cho vị trí này",
+    "header_list_info": {
+      "Địa điểm": "Hà Nội",
+      "Kinh nghiệm": "Không yêu cầu",
+      "Hạn ứng tuyển": "31/08/2016"
+    },
+    "apply_status": "Hết hạn ứng tuyểnXem việc làm liên quan",
+    "warning_notice": "Nhà tuyển dụng đang hoàn tất thủ tục liên quan đến Thỏa thuận xử lý dữ liệu cá nhân theo quy định pháp luật. Bạn tạm thời chưa thể ứng tuyển vào tin này. Vui lòng quay lại sau.",
+    "tag_groups": {
+      "Yêu cầu:": [
+        "Không yêu cầu kinh nghiệm chuyên môn"
+      ]
+    },
+    "description_html": "<div class=\"box-job-information-detail-item__text\">\n<p>- Tìm kiếm và duy trì mối quan hệ với khách hàng;\n</p><p>- Thực hiện các nghiệp vụ môi giới chứng khoán;\n</p><p>- Tư vấn đầu tư cho khách hàng và hỗ trợ khách hàng trong giao dịch chứng khoán;\n</p><p>- Thực hiện các nhiệm vụ khác theo yêu cầu của Cán bộ quản lý trực tiếp và Trưởng bộ phận.</p>\n</div>",
+    "description_raw": "- Tìm kiếm và duy trì mối quan hệ với khách hàng;\n- Thực hiện các nghiệp vụ môi giới chứng khoán;\n- Tư vấn đầu tư cho khách hàng và hỗ trợ khách hàng trong giao dịch chứng khoán;\n- Thực hiện các nhiệm vụ khác theo yêu cầu của Cán bộ quản lý trực tiếp và Trưởng bộ phận.",
+    "requirements_html": "<div class=\"box-job-information-detail-item__text\">\n<p>- Nam/Nữ tuổi từ 22;\n</p><p>- Tốt nghiệp đại học khối kinh tế, tài chính, chứng khoán, kế toán, ngoại thương, ngân hàng (ưu tiên ứng viên có chứng chỉ liên quan của UBCK), biết sử dụng phần mềm phân tích kĩ thuật;\n</p><p>- Kỹ năng giao tiếp khá, kỹ năng thuyết phục tốt, kỹ năng sales tốt;\n</p><p>- Trung thực, nhiệt tình, năng động và tinh thần trách nhiệm cao trong công việc;\n</p><p>- Tiếng Anh khá, sử dụng thành thạo vi tính văn phòng.</p>\n</div>",
+    "requirements_raw": "- Nam/Nữ tuổi từ 22;\n- Tốt nghiệp đại học khối kinh tế, tài chính, chứng khoán, kế toán, ngoại thương, ngân hàng (ưu tiên ứng viên có chứng chỉ liên quan của UBCK), biết sử dụng phần mềm phân tích kĩ thuật;\n- Kỹ năng giao tiếp khá, kỹ năng thuyết phục tốt, kỹ năng sales tốt;\n- Trung thực, nhiệt tình, năng động và tinh thần trách nhiệm cao trong công việc;\n- Tiếng Anh khá, sử dụng thành thạo vi tính văn phòng.",
+    "benefits_html": "<div class=\"box-job-information-detail-item__text\">\n<p>-  Nhân viên được lựa chọn sẽ có cơ hội làm việc trong môi trường năng động, chuyên nghiệp, cơ hội thăng tiến, đánh giá thực hiện công việc rõ ràng và chế độ đãi ngộ thỏa đáng;\n</p><p>- Tháng lương thứ 13, thưởng theo kết quả sản xuất kinh doanh;\n</p><p>- Hưởng bảo hiểm sức khỏe bổ sung cho nhân viên;\n</p><p>-Được đóng BHXH-YT-TN theo quy định của Luật Lao động và chế độ phúc lợi của Công ty;\n</p><p>-Được đài thọ các chi phí phát sinh khi tham gia các khóa đào tạo theo yêu cầu công việc hàng năm;\n</p><p>-Được đài thọ toàn bộ chi phí khi tham gia các hoạt động ngoại khóa của công ty.</p>\n</div>",
+    "benefits_raw": "-  Nhân viên được lựa chọn sẽ có cơ hội làm việc trong môi trường năng động, chuyên nghiệp, cơ hội thăng tiến, đánh giá thực hiện công việc rõ ràng và chế độ đãi ngộ thỏa đáng;\n- Tháng lương thứ 13, thưởng theo kết quả sản xuất kinh doanh;\n- Hưởng bảo hiểm sức khỏe bổ sung cho nhân viên;\n-Được đóng BHXH-YT-TN theo quy định của Luật Lao động và chế độ phúc lợi của Công ty;\n-Được đài thọ các chi phí phát sinh khi tham gia các khóa đào tạo theo yêu cầu công việc hàng năm;\n-Được đài thọ toàn bộ chi phí khi tham gia các hoạt động ngoại khóa của công ty.",
+    "address_and_time_raw": {
+      "Địa điểm làm việc": "Hà Nội",
+      "Cách thức ứng tuyển": "Ứng viên nộp hồ sơ trực tuyến bằng cách bấm Ứng tuyển ngay dưới đây.",
+      "info": "Hết hạn ứng tuyển Xem việc làm liên quan Hạn ứng tuyển: 31/08/2016"
+    },
+    "general_info_raw": {
+      "Mức độ cạnh tranh": "Trải nghiệm trên ứng dụng",
+      "Cấp bậc": "Nhân viên",
+      "Số lượng tuyển": "Không giới hạn",
+      "Loại hình làm việc": "Toàn thời gian"
+    },
+    "company_details_raw": {
+      "name": "Công ty cổ phần chứng khoán FPT",
+      "Quy mô": "100-499 nhân viên",
+      "Địa điểm": "Tòa Nhà 52 Lạc Long Quân, Tây Hồ, Hà Nội.",
+      "Ngành nghề": "Môi giới hợp đồng hàng hóa và chứng khoán"
+    }
   }
 }
