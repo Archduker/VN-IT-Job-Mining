@@ -2,9 +2,13 @@
 """Unit tests for VietnamWorks crawler (Schema v1 compliance)."""
 
 import json
+from pathlib import Path
+import tempfile
 import unittest
+from unittest.mock import Mock
 
 from crawlers.sources.vietnamworks.crawler import VietnamWorksCrawler
+from crawlers.sources.vietnamworks.crawler import is_it_job
 from crawlers.common.schema import JobRecord
 
 
@@ -43,6 +47,7 @@ class TestVietnamWorksCrawler(unittest.TestCase):
 
     def test_parse_item_schema_v1(self):
         record = self.crawler.parse_item(SAMPLE_JOB_PAYLOAD)
+        assert record is not None
         self.assertIsNotNone(record)
         self.assertIsInstance(record, JobRecord)
 
@@ -80,6 +85,85 @@ class TestVietnamWorksCrawler(unittest.TestCase):
         self.assertEqual(raw.deadline_text, "2026-11-20T00:00:00Z")
         self.assertEqual(raw.seniority_text, "Trưởng nhóm / Giám sát")
         self.assertEqual(raw.extra["experience"], "4 năm kinh nghiệm")
+
+    def test_fetch_items_preserves_original_payload_for_checkpointed_jobs(self):
+        raw_payload = {**SAMPLE_JOB_PAYLOAD, "unmappedApiField": {"keep": [1, 2]}}
+        second_payload = {
+            **SAMPLE_JOB_PAYLOAD,
+            "jobId": 1892838,
+            "jobTitle": "Backend Developer",
+            "unmappedApiField": {"keep": [3, 4]},
+        }
+        http_client = Mock()
+        http_client.post.return_value.json.return_value = {
+            "data": [raw_payload, second_payload]
+        }
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            crawler = VietnamWorksCrawler(
+                output_dir=temp_dir,
+                checkpoint_dir=str(Path(temp_dir) / "checkpoint"),
+                max_items=1,
+                http_client=http_client,
+                queries=["backend"],
+            )
+            crawler.checkpoint.mark_seen(str(raw_payload["jobId"]))
+
+            self.assertEqual(list(crawler.fetch_items()), [second_payload])
+            self.assertEqual(len(crawler.raw_payload_files), 1)
+
+            saved_records = json.loads(
+                crawler.raw_payload_files[0].read_text(encoding="utf-8")
+            )
+            self.assertEqual(len(saved_records), 2)
+            by_id = {record["metadata"]["job_id"]: record for record in saved_records}
+            self.assertEqual(by_id[str(raw_payload["jobId"])]["raw_payload"], raw_payload)
+            self.assertEqual(
+                by_id[str(second_payload["jobId"])]["raw_payload"],
+                second_payload,
+            )
+
+    def test_it_classifier_uses_industry_and_technical_signals(self):
+        garment_qa = {
+            "jobTitle": "QA in Garment Field for Office",
+            "skills": [{"skillName": "Quality"}, {"skillName": "Garment Knowledge"}],
+            "industriesV3": [{"industryV3NameVI": "Dệt may/May mặc/Giày dép"}],
+        }
+        it_product_manager = {
+            "jobTitle": "Product Manager",
+            "industriesV3": [{"industryV3NameVI": "Phần Mềm CNTT/Dịch vụ Phần mềm"}],
+        }
+        software_qa = {
+            "jobTitle": "QA Automation Engineer",
+            "skills": [{"skillName": "Selenium"}, {"skillName": "API Testing"}],
+        }
+
+        self.assertFalse(is_it_job(garment_qa))
+        self.assertTrue(is_it_job(it_product_manager))
+        self.assertTrue(is_it_job(software_qa))
+
+    def test_fetch_items_filters_non_it_before_saving_raw_payload(self):
+        garment_qa = {
+            "jobId": 550649,
+            "jobTitle": "QA in Garment Field for Office",
+            "industriesV3": [{"industryV3NameVI": "Dệt may/May mặc/Giày dép"}],
+            "skills": [{"skillName": "Garment Knowledge"}],
+        }
+        http_client = Mock()
+        http_client.post.return_value.json.return_value = {"data": [garment_qa]}
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            crawler = VietnamWorksCrawler(
+                output_dir=temp_dir,
+                checkpoint_dir=str(Path(temp_dir) / "checkpoint"),
+                max_items=1,
+                http_client=http_client,
+                queries=["QA automation"],
+            )
+
+            self.assertEqual(list(crawler.fetch_items()), [])
+            self.assertEqual(crawler.filtered_non_it_count, 1)
+            self.assertEqual(crawler.raw_payload_files, [])
 
 
 if __name__ == "__main__":

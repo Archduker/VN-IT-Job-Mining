@@ -14,6 +14,8 @@ from datetime import datetime, timedelta
 import sys
 from pathlib import Path
 
+import pendulum
+
 plugins_dir = str(Path(__file__).resolve().parents[1] / "plugins")
 if plugins_dir not in sys.path:
     sys.path.insert(0, plugins_dir)
@@ -93,9 +95,9 @@ with DAG(
 with DAG(
     dag_id="crawler_vietnamworks",
     default_args=default_args,
-    description="Crawl IT jobs from VietnamWorks",
-    schedule_interval="0 20 * * 4",
-    start_date=datetime(2026, 10, 1),
+    description="Crawl IT jobs from VietnamWorks daily and upload results to MinIO",
+    schedule_interval="0 20 * * *",
+    start_date=pendulum.datetime(2026, 10, 1, tz="Asia/Ho_Chi_Minh"),
     catchup=False,
     tags=["crawlers", "vietnamworks"],
 ) as vietnamworks_dag:

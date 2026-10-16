@@ -41,6 +41,7 @@ logs/
 # Environment variables
 .env
 .env.local
+/secrets/
 
 # IDE
 .vscode/
@@ -68,4 +69,3 @@ airflow/webserver_config.py
 # Scratch & Sample HTML caches
 scratch/
 sample_htmls/
-

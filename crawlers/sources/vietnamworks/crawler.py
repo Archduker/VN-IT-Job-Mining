@@ -8,10 +8,15 @@ Hỗ trợ 2 chế độ:
 """
 
 import argparse
+import hashlib
 import json
 import logging
 import os
+import re
+import unicodedata
 from collections.abc import Generator
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 from crawlers.base.base_crawler import BaseCrawler
@@ -32,18 +37,156 @@ SOURCE = "vietnamworks"
 CRAWLER_VERSION = "0.5.0"
 API_URL = "https://ms.vietnamworks.com/job-search/v1.0/search"
 IT_QUERIES = [
+    "cong nghe thong tin",
+    "information technology",
+    "IT",
     "software developer",
-    "developer",
-    "backend",
-    "frontend",
-    "fullstack",
+    "programmer",
+    "backend developer",
+    "frontend developer",
+    "fullstack developer",
+    "mobile developer",
+    "web developer",
     "data engineer",
+    "data analyst",
+    "data scientist",
+    "machine learning",
+    "cybersecurity",
+    "network engineer",
+    "cloud engineer",
     "devops",
-    "tester",
-    "qa qc",
-    "cntt",
+    "system administrator",
+    "IT support",
+    "software tester",
+    "QA automation",
+    "business analyst IT",
+    "IT project manager",
 ]
 HITS_PER_PAGE = 50
+IT_INDUSTRY_TERMS = (
+    "information technology",
+    "cong nghe thong tin",
+    "cntt",
+    "software",
+    "computer",
+    "internet",
+    "hardware networking",
+    "telecommunication",
+)
+IT_TITLE_TERMS = (
+    "information technology",
+    "cong nghe thong tin",
+    "cntt",
+    "software",
+    "programmer",
+    "programming",
+    "backend",
+    "back end",
+    "frontend",
+    "front end",
+    "fullstack",
+    "full stack",
+    "devops",
+    "data engineer",
+    "data scientist",
+    "data analyst",
+    "machine learning",
+    "artificial intelligence",
+    "cybersecurity",
+    "cyber security",
+    "network engineer",
+    "system administrator",
+    "systems administrator",
+    "database administrator",
+    "cloud engineer",
+    "mobile developer",
+    "web developer",
+    "application developer",
+    "software tester",
+    "software test",
+    "qa automation",
+    "IT support",
+    "IT project",
+    "IT manager",
+)
+IT_SKILL_TERMS = (
+    "python",
+    "java",
+    "javascript",
+    "typescript",
+    "c++",
+    "c#",
+    ".net",
+    "sql",
+    "aws",
+    "azure",
+    "gcp",
+    "docker",
+    "kubernetes",
+    "selenium",
+    "cypress",
+    "playwright",
+    "react",
+    "angular",
+    "node.js",
+    "linux",
+    "network security",
+    "machine learning",
+    "data engineering",
+    "software testing",
+)
+
+
+def _normalize_classification_text(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value.lower().replace("đ", "d"))
+    return re.sub(r"\s+", " ", "".join(
+        char for char in normalized if not unicodedata.combining(char)
+    )).strip()
+
+
+def _contains_term(text: str, terms: tuple[str, ...]) -> bool:
+    for term in terms:
+        normalized_term = _normalize_classification_text(term)
+        if re.search(rf"(?<!\w){re.escape(normalized_term)}(?!\w)", text):
+            return True
+    return False
+
+
+def is_it_job(item: dict[str, Any]) -> bool:
+    """Classify an API item as IT from its industry, job title, and technical skills."""
+    industry_labels: list[str] = []
+    for field in ("industriesV3", "industries"):
+        industries = item.get(field) or []
+        if isinstance(industries, list):
+            for industry in industries:
+                if isinstance(industry, dict):
+                    for key in (
+                        "industryV3NameVI",
+                        "industryV3Name",
+                        "industryNameVI",
+                        "industryName",
+                    ):
+                        label = industry.get(key)
+                        if isinstance(label, str) and label.strip():
+                            industry_labels.append(label)
+
+    industry_text = _normalize_classification_text(" ".join(industry_labels))
+    if _contains_term(industry_text, IT_INDUSTRY_TERMS):
+        return True
+
+    title = item.get("jobTitle")
+    title_text = _normalize_classification_text(title if isinstance(title, str) else "")
+    if _contains_term(title_text, IT_TITLE_TERMS):
+        return True
+
+    skills = item.get("skills") or []
+    skill_names = [
+        skill.get("skillName", "")
+        for skill in skills
+        if isinstance(skill, dict) and isinstance(skill.get("skillName"), str)
+    ] if isinstance(skills, list) else []
+    skill_text = _normalize_classification_text(" ".join(skill_names))
+    return _contains_term(skill_text, IT_SKILL_TERMS)
 
 
 class VietnamWorksCrawler(BaseCrawler):
@@ -75,6 +218,76 @@ class VietnamWorksCrawler(BaseCrawler):
             timeout=25,
         )
         self.local_json_file = local_json_file
+        self.raw_payload_files: list[Path] = []
+        self.raw_payload_file: Path | None = None
+        self._raw_payloads: dict[str, dict[str, Any]] = {}
+        self.filtered_non_it_count = 0
+
+    def _save_raw_payload(self, item: dict[str, Any]) -> None:
+        """Queue the untouched API item for the consolidated raw JSON file."""
+        raw_json = json.dumps(item, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        payload_hash = hashlib.sha256(raw_json.encode("utf-8")).hexdigest()
+        raw_id = item.get("jobId")
+        job_id = str(raw_id).strip() if raw_id is not None else ""
+        date_partition = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        raw_dir = Path(self.output_dir) / self.source_name / "raw" / date_partition
+        self.raw_payload_file = raw_dir / "raw_batch.json"
+        envelope = {
+            "metadata": {
+                "job_id": job_id or None,
+                "source": self.source_name,
+                "source_url": item.get("jobUrl"),
+                "scraped_at": datetime.now(timezone.utc).isoformat(),
+                "scraper_version": self.crawler_version,
+                "content_hash": payload_hash,
+            },
+            "raw_payload": item,
+        }
+
+        self._raw_payloads[job_id or payload_hash] = envelope
+
+    def _flush_raw_payloads(self) -> None:
+        """Atomically merge queued API items into the day's consolidated JSON array."""
+        if not self._raw_payloads or self.raw_payload_file is None:
+            return
+
+        existing_by_id: dict[str, dict[str, Any]] = {}
+        if self.raw_payload_file.is_file():
+            try:
+                with self.raw_payload_file.open("r", encoding="utf-8") as raw_file:
+                    existing_records = json.load(raw_file)
+            except (OSError, json.JSONDecodeError) as exc:
+                raise ValueError(
+                    f"Cannot load existing raw payload batch {self.raw_payload_file}: {exc}"
+                ) from exc
+
+            if not isinstance(existing_records, list):
+                raise ValueError(
+                    f"Raw payload batch must contain a JSON array: {self.raw_payload_file}"
+                )
+            for record in existing_records:
+                metadata = record.get("metadata", {})
+                identity = metadata.get("job_id") or metadata.get("content_hash")
+                if identity:
+                    existing_by_id[str(identity)] = record
+
+        existing_by_id.update(self._raw_payloads)
+        self.raw_payload_file.parent.mkdir(parents=True, exist_ok=True)
+        temporary_path = self.raw_payload_file.with_name(
+            f"{self.raw_payload_file.name}.tmp"
+        )
+        try:
+            with temporary_path.open("w", encoding="utf-8") as raw_file:
+                json.dump(list(existing_by_id.values()), raw_file, ensure_ascii=False, indent=2)
+                raw_file.flush()
+                os.fsync(raw_file.fileno())
+            os.replace(temporary_path, self.raw_payload_file)
+        except Exception:
+            temporary_path.unlink(missing_ok=True)
+            raise
+
+        self.raw_payload_files = [self.raw_payload_file]
+        self._raw_payloads.clear()
 
     def fetch_items(self) -> Generator[dict[str, Any], None, None]:
         """Lấy danh sách job items từ file offline hoặc từ Search API trực tuyến."""
@@ -86,10 +299,15 @@ class VietnamWorksCrawler(BaseCrawler):
             job_list = data if isinstance(data, list) else data.get("data", [])
             yielded = 0
             for job in job_list:
+                if not is_it_job(job):
+                    self.filtered_non_it_count += 1
+                    continue
+                self._save_raw_payload(job)
                 yield job
                 yielded += 1
                 if self.max_items and yielded >= self.max_items:
                     break
+            self._flush_raw_payloads()
             return
 
         # 2. Chế độ cào Search API trực tuyến
@@ -139,6 +357,10 @@ class VietnamWorksCrawler(BaseCrawler):
                     break
 
                 for job in job_list:
+                    if not is_it_job(job):
+                        self.filtered_non_it_count += 1
+                        continue
+                    self._save_raw_payload(job)
                     jid = job.get("jobId")
                     if not jid:
                         continue
@@ -154,7 +376,10 @@ class VietnamWorksCrawler(BaseCrawler):
                     total_yielded += 1
 
                     if self.max_items and total_yielded >= self.max_items:
+                        self._flush_raw_payloads()
                         return
+
+                self._flush_raw_payloads()
 
                 if len(job_list) < HITS_PER_PAGE:
                     break
