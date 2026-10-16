@@ -23,6 +23,7 @@ from airflow.models import BaseOperator
 from airflow.utils.context import Context
 
 from crawlers.common.data_quality import DataQualityChecker
+from crawlers.common.minio_storage import upload_file_to_minio
 
 logger = logging.getLogger("airflow.operators.vn_it_job")
 
@@ -79,6 +80,26 @@ class JobCrawlerOperator(BaseOperator):
 
         crawler = crawler_cls(output_dir=self.output_dir, max_items=self.max_items)
         stats = crawler.run()
+
+        if self.source == "vietnamworks" and stats.get("output_file"):
+            output_path = Path(stats["output_file"])
+            object_key = (
+                f"raw/{self.source}/{output_path.parent.name}/{output_path.name}"
+            )
+            stats["minio_uri"] = upload_file_to_minio(
+                output_path,
+                object_key=object_key,
+            )
+            logger.info("Uploaded VietnamWorks crawl output to %s", stats["minio_uri"])
+            raw_payload_files = getattr(crawler, "raw_payload_files", [])
+            uploaded_raw_count = 0
+            for raw_path in raw_payload_files:
+                raw_key = (
+                    f"raw/{self.source}/{raw_path.parent.name}/{raw_path.name}"
+                )
+                upload_file_to_minio(raw_path, object_key=raw_key)
+                uploaded_raw_count += 1
+            stats["raw_payloads_uploaded"] = uploaded_raw_count
 
         # Push file path to XCom for quality check task
         if stats.get("output_file"):
