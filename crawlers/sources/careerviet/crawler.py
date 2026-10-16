@@ -45,7 +45,8 @@ import logging
 import os
 import re
 from collections.abc import Generator
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin
 
@@ -55,12 +56,45 @@ from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient
 from crawlers.common.json_writer import JsonWriter
 
+try:
+    from .url_provider import BaseUrlProvider, LocalFileUrlProvider
+except ImportError:
+    from crawlers.sources.careerviet.url_provider import BaseUrlProvider, LocalFileUrlProvider
+
 log = logging.getLogger("careerviet.crawler")
 
 SOURCE = "careerviet"
 CRAWLER_VERSION = "1.0.0-raw-cdc"
 BASE_URL = "https://careerviet.vn"
 MAX_PAGES = 100
+
+
+def get_next_batch_seq(output_dir: str | Path, source_name: str, run_date: date) -> int:
+    """Xác định số thứ tự batch tiếp theo để đảm bảo lần chạy mới
+    nối tiếp số thứ tự file mới, không bao giờ ghi đè file batch cũ.
+    """
+    partition_dir = Path(output_dir) / source_name / f"dt={run_date.isoformat()}"
+    if not partition_dir.exists():
+        return 1
+
+    existing_seqs: list[int] = []
+    for fn in os.listdir(partition_dir):
+        m = re.match(r"^batch_(\d+)\.json$", fn)
+        if m:
+            seq = int(m.group(1))
+            fp = partition_dir / fn
+            try:
+                if fp.stat().st_size > 0:
+                    with open(fp, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        if isinstance(data, list) and len(data) > 0:
+                            existing_seqs.append(seq)
+            except Exception:
+                existing_seqs.append(seq)
+
+    if not existing_seqs:
+        return 1
+    return max(existing_seqs) + 1
 
 
 def extract_job_id(url: str) -> str:
@@ -152,10 +186,14 @@ class CareerVietCrawler(BaseCrawler):
         output_dir: str | None = "data/raw",
         max_items: int | None = 30,
         checkpoint_interval: int = 10,
+        batch_size: int = 200,
+        batch_seq: int | None = None,
         http_client: HttpClient | None = None,
         save_html: bool = False,
         html_storage_dir: str | None = None,
         local_html_dir: str | None = None,
+        url_provider: BaseUrlProvider | None = None,
+        url_files: list[str | Path] | None = None,
         max_pages: int | None = None,
         catalog_path: str | None = None,
     ) -> None:
@@ -166,15 +204,35 @@ class CareerVietCrawler(BaseCrawler):
             checkpoint_interval=checkpoint_interval,
         )
         self.output_dir = output_dir or "data/raw"
+        self.batch_size = batch_size
+        self.run_date = date.today()
+
+        # Xác định batch_seq: nếu truyền vào thì ưu tiên, nếu không thì tự tính số tiếp theo
+        if batch_seq is not None:
+            self.batch_seq = batch_seq
+        else:
+            self.batch_seq = get_next_batch_seq(self.output_dir, self.source_name, self.run_date)
+
         # Tái sử dụng JsonWriter với validate_schema=False để xuất dữ liệu raw nguyên bản
         self.writer = JsonWriter(
             source=self.source_name,
             output_dir=self.output_dir,
+            run_date=self.run_date,
+            batch_seq=self.batch_seq,
             validate_schema=False,
             flush_per_record=True,
         )
         from crawlers.common.utils import make_batch_id
         self.batch_id = make_batch_id(self.source_name, seq=self.writer.batch_seq, run_date=self.writer.run_date)
+        self.current_batch_records: int = len(self.writer.records)
+
+        # Cấu hình URL Provider (nếu cung cấp)
+        if url_provider is not None:
+            self.url_provider: BaseUrlProvider | None = url_provider
+        elif url_files is not None:
+            self.url_provider = LocalFileUrlProvider(file_paths=url_files, base_dir=self.output_dir)
+        else:
+            self.url_provider = None
 
         self.max_pages = max_pages or MAX_PAGES
         self.http_client = http_client or HttpClient(
@@ -188,6 +246,32 @@ class CareerVietCrawler(BaseCrawler):
         self.catalog_path = catalog_path or os.path.join(self.output_dir, self.source_name, "cdc_catalog.json")
         self.cdc_catalog: dict[str, Any] = {}
 
+    def _write_record(self, record_to_write: dict[str, Any]) -> bool:
+        """Ghi bản ghi vào batch file hiện tại.
+        Nếu số bản ghi trong batch đạt batch_size (chuẩn batch-200),
+        đóng file hiện tại và mở file batch kế tiếp (không bao giờ ghi đè file cũ).
+        """
+        if self.current_batch_records >= self.batch_size:
+            if self.writer:
+                self.writer.close()
+            self.batch_seq += 1
+            self.writer = JsonWriter(
+                source=self.source_name,
+                output_dir=self.output_dir,
+                run_date=self.run_date,
+                batch_seq=self.batch_seq,
+                validate_schema=False,
+                flush_per_record=True,
+            )
+            from crawlers.common.utils import make_batch_id
+            self.batch_id = make_batch_id(self.source_name, seq=self.writer.batch_seq, run_date=self.writer.run_date)
+            self.current_batch_records = len(self.writer.records)
+
+        success = self.writer.write(record_to_write)
+        if success:
+            self.current_batch_records += 1
+        return success
+
     def _load_cdc_catalog(self) -> None:
         """Nạp catalog CDC từ đĩa nếu tồn tại."""
         if os.path.exists(self.catalog_path):
@@ -200,6 +284,80 @@ class CareerVietCrawler(BaseCrawler):
                 self.cdc_catalog = {}
         else:
             self.cdc_catalog = {}
+
+    def _reconcile_catalog_with_batches(self) -> int:
+        """Đối soát tự động khi khởi động (Self-healing startup reconciliation):
+        Quét toàn bộ các batch JSON đã có trên đĩa.
+        Nếu phát hiện bản ghi nào (job_id, content_hash) đã nằm trong batch file
+        nhưng catalog chưa kịp ghi nhận (do tiến trình bị ngắt/kill giữa hai bước
+        ghi batch và ghi catalog), crawler sẽ tự động bổ sung bản ghi đó vào cdc_catalog
+        với status='active', coi là đã cào để không bao giờ bị cào hoặc ghi trùng lặp ở lần chạy sau.
+        """
+        reconciled_count = 0
+        search_dirs = [
+            Path(self.output_dir) / self.source_name,
+            Path(self.output_dir),
+        ]
+        scanned_dirs: set[Path] = set()
+
+        for sdir in search_dirs:
+            if not sdir.exists():
+                continue
+            for dt_dir in sdir.glob("dt=*"):
+                if not dt_dir.is_dir() or dt_dir in scanned_dirs:
+                    continue
+                scanned_dirs.add(dt_dir)
+                for batch_file in dt_dir.glob("batch_*.json"):
+                    if not batch_file.is_file() or batch_file.stat().st_size == 0:
+                        continue
+                    try:
+                        with open(batch_file, "r", encoding="utf-8") as bf:
+                            records = json.load(bf)
+                        if not isinstance(records, list):
+                            continue
+                        for rec in records:
+                            tech = rec.get("_technical")
+                            if not isinstance(tech, dict):
+                                continue
+                            job_id = tech.get("job_id")
+                            content_hash = tech.get("content_hash")
+                            if not job_id or not content_hash:
+                                continue
+
+                            if job_id not in self.cdc_catalog:
+                                version = tech.get("version", 1)
+                                crawled_at = tech.get("crawled_at") or datetime.now(timezone.utc).isoformat()
+                                self.cdc_catalog[job_id] = {
+                                    "job_id": job_id,
+                                    "url": tech.get("url", ""),
+                                    "source_category": tech.get("source_category"),
+                                    "current_version": version,
+                                    "current_hash": content_hash,
+                                    "status": "active",
+                                    "first_seen_at": crawled_at,
+                                    "last_seen_at": crawled_at,
+                                    "history": [
+                                        {
+                                            "version": version,
+                                            "content_hash": content_hash,
+                                            "crawled_at": crawled_at,
+                                        }
+                                    ],
+                                }
+                                self.checkpoint.mark_seen(job_id)
+                                reconciled_count += 1
+                    except Exception as exc:
+                        log.warning("[CareerViet] Lỗi đọc batch file khi đối soát %s: %s", batch_file, exc)
+
+        if reconciled_count > 0:
+            log.info(
+                "[CareerViet] Đối soát khởi động: Đã phục hồi và bổ sung %d bản ghi từ batch vào catalog",
+                reconciled_count,
+            )
+            self._save_cdc_catalog()
+            self.checkpoint.save()
+
+        return reconciled_count
 
     def _save_cdc_catalog(self) -> None:
         """Ghi atomic catalog CDC xuống đĩa."""
@@ -247,33 +405,66 @@ class CareerVietCrawler(BaseCrawler):
                     "job_id": job_id,
                     "url": f"{BASE_URL}/vi/tim-viec-lam/job.{job_id}.html",
                     "html": html_content,
+                    "source_category": "offline_test",
                 }
                 yielded += 1
                 if self.max_items and yielded >= self.max_items:
                     break
             return
 
-        # 2. Chế độ cào trực tuyến từ web
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Referer": BASE_URL,
         }
 
+        # 2. Chế độ nạp danh sách URLs từ UrlProvider (urls_c1_*.json, urls_c61_*.json, urls_developer_*.json...)
+        if self.url_provider:
+            log.info("[CareerViet] ==================== NẠP URLs TỪ URL PROVIDER ====================")
+            targets = self.url_provider.get_target_jobs()
+            log.info("[CareerViet] UrlProvider cung cấp %d jobs mục tiêu", len(targets))
+            yielded_total = 0
+            for idx, target in enumerate(targets, start=1):
+                jid = target["job_id"]
+                jurl = target["url"]
+                scat = target.get("source_category", "unknown")
+
+                try:
+                    detail_html = self.http_client.get_html(jurl, headers=headers)
+                    if self.save_html and detail_html:
+                        self._save_raw_html(jid, detail_html)
+
+                    yield {
+                        "job_id": jid,
+                        "url": jurl,
+                        "html": detail_html,
+                        "source_category": scat,
+                    }
+                    yielded_total += 1
+                    if self.max_items and yielded_total >= self.max_items:
+                        return
+                except Exception as exc:
+                    log.error("[CareerViet] Lỗi tải job detail %s (%d/%d): %s", jurl, idx, len(targets), exc)
+                    continue
+            return
+
+        # 3. Chế độ cào danh mục trực tuyến từ web (Fallback)
         categories = [
             {
                 "name": "CNTT - Phần mềm",
+                "code": "c1",
                 "base": "/viec-lam/cntt-phan-mem-c1-vi.html",
                 "page_fmt": "/viec-lam/cntt-phan-mem-c1-trang-{page}-vi.html",
             },
             {
                 "name": "CNTT - Phần cứng / Mạng",
+                "code": "c61",
                 "base": "/viec-lam/cntt-phan-cung-mang-c61-vi.html",
                 "page_fmt": "/viec-lam/cntt-phan-cung-mang-c61-trang-{page}-vi.html",
             },
         ]
 
         seen_urls = set()
-        harvested_targets: list[str] = []
+        harvested_targets: list[dict[str, str]] = []
 
         # Chia đều max_items theo số danh mục để tránh lệch mẫu.
         # per_cat_limit = ceil(max_items / n_cats). Phần dư sẽ được bù bởi cat sau.
@@ -289,7 +480,8 @@ class CareerVietCrawler(BaseCrawler):
 
         for cat in categories:
             cat_name = cat["name"]
-            cat_urls: list[str] = []
+            cat_code = cat["code"]
+            cat_urls: list[dict[str, str]] = []
             # Hạn trên cho danh mục này: per_cat_limit + phần bù nếu cat trước chưa đủ
             remaining = (self.max_items - len(harvested_targets)) if self.max_items else None
             cat_limit = min(per_cat_limit or remaining or 10**9, remaining or 10**9) if remaining is not None else None
@@ -310,7 +502,7 @@ class CareerVietCrawler(BaseCrawler):
                         full_url = urljoin(BASE_URL, href)
                         if full_url not in seen_urls:
                             seen_urls.add(full_url)
-                            page_links.append(full_url)
+                            page_links.append({"url": full_url, "source_category": cat_code})
 
                 if not page_links:
                     break
@@ -330,7 +522,9 @@ class CareerVietCrawler(BaseCrawler):
         log.info("[CareerViet] ==================== BẮT ĐẦU PHA 2: CÀO CHI TIẾT ====================")
 
         yielded_total = 0
-        for idx, jurl in enumerate(harvested_targets, start=1):
+        for idx, item_target in enumerate(harvested_targets, start=1):
+            jurl = item_target["url"]
+            scat = item_target.get("source_category", "c1")
             jid = extract_job_id(jurl)
 
             try:
@@ -342,6 +536,7 @@ class CareerVietCrawler(BaseCrawler):
                     "job_id": jid,
                     "url": jurl,
                     "html": detail_html,
+                    "source_category": scat,
                 }
                 yielded_total += 1
                 if self.max_items and yielded_total >= self.max_items:
@@ -357,6 +552,8 @@ class CareerVietCrawler(BaseCrawler):
         html = item.get("html")
         if not job_id or not job_url or not html:
             return None
+
+        source_category = item.get("source_category", "unknown")
 
         # Kiểm tra tin bị gỡ hoặc hết hạn
         html_lower = html.lower()
@@ -540,6 +737,7 @@ class CareerVietCrawler(BaseCrawler):
                 "crawled_at": crawled_at,
                 "content_hash": content_hash,
                 "version": 1,
+                "source_category": source_category,
             },
             "raw_fields": raw_fields,
             "embedded_json_raw": embedded_json_raw,
@@ -549,12 +747,15 @@ class CareerVietCrawler(BaseCrawler):
     def run(self) -> dict[str, Any]:
         """Thực thi pipeline cào Raw As-Is với CDC Versioning."""
         log.info(
-            "Starting CareerViet Raw CDC crawl (max_items=%s, output_dir=%s)",
+            "Starting CareerViet Raw CDC crawl (max_items=%s, output_dir=%s, batch_size=%s, batch_seq=%s)",
             self.max_items,
             self.output_dir,
+            self.batch_size,
+            self.batch_seq,
         )
 
         self._load_cdc_catalog()
+        self._reconcile_catalog_with_batches()
         batch_seen_ids: set[str] = set()
 
         for raw_item in self.fetch_items():
@@ -586,11 +787,13 @@ class CareerVietCrawler(BaseCrawler):
                     if job_id in self.cdc_catalog:
                         self.cdc_catalog[job_id]["status"] = "expired"
                         self.cdc_catalog[job_id]["last_seen_at"] = datetime.now(timezone.utc).isoformat()
+                        self._save_cdc_catalog()
                     self.skipped_count += 1
                     continue
 
                 content_hash = parsed["_technical"]["content_hash"]
                 crawled_at = parsed["_technical"]["crawled_at"]
+                source_category = parsed["_technical"].get("source_category")
 
                 # 2. Xử lý CDC
                 if job_id not in self.cdc_catalog:
@@ -600,6 +803,7 @@ class CareerVietCrawler(BaseCrawler):
                     self.cdc_catalog[job_id] = {
                         "job_id": job_id,
                         "url": parsed["_technical"]["url"],
+                        "source_category": source_category,
                         "current_version": version,
                         "current_hash": content_hash,
                         "status": "active",
@@ -618,14 +822,20 @@ class CareerVietCrawler(BaseCrawler):
                         "raw_fields": parsed["raw_fields"],
                         "embedded_json_raw": parsed.get("embedded_json_raw"),
                     }
-                    self.writer.write(record_to_write)
+                    self._write_record(record_to_write)
                     self.checkpoint.mark_seen(job_id)
                     self.crawled_count += 1
+
+                    # Yêu cầu a: Ghi catalog & checkpoint ngay sau mỗi bản ghi được ghi vào batch (atomic consistency)
+                    self._save_cdc_catalog()
+                    self.checkpoint.save()
 
                 elif self.cdc_catalog[job_id].get("current_hash") == content_hash:
                     # Trường hợp 2: Tin không đổi nội dung
                     self.cdc_catalog[job_id]["last_seen_at"] = crawled_at
                     self.cdc_catalog[job_id]["status"] = "active"
+                    if source_category and not self.cdc_catalog[job_id].get("source_category"):
+                        self.cdc_catalog[job_id]["source_category"] = source_category
                     self.checkpoint.mark_seen(job_id)
                     self.skipped_count += 1
 
@@ -638,6 +848,8 @@ class CareerVietCrawler(BaseCrawler):
                     self.cdc_catalog[job_id]["current_hash"] = content_hash
                     self.cdc_catalog[job_id]["last_seen_at"] = crawled_at
                     self.cdc_catalog[job_id]["status"] = "active"
+                    if source_category:
+                        self.cdc_catalog[job_id]["source_category"] = source_category
                     self.cdc_catalog[job_id].setdefault("history", []).append({
                         "version": new_version,
                         "content_hash": content_hash,
@@ -648,14 +860,16 @@ class CareerVietCrawler(BaseCrawler):
                         "raw_fields": parsed["raw_fields"],
                         "embedded_json_raw": parsed.get("embedded_json_raw"),
                     }
-                    self.writer.write(record_to_write)
+                    self._write_record(record_to_write)
                     self.checkpoint.mark_seen(job_id)
                     self.crawled_count += 1
 
-                # Flush checkpoint & catalog định kỳ
-                if (self.crawled_count + self.skipped_count) % self.checkpoint_interval == 0:
+                    # Yêu cầu a: Ghi catalog & checkpoint ngay sau mỗi bản ghi được ghi vào batch (atomic consistency)
                     self._save_cdc_catalog()
                     self.checkpoint.save()
+
+                # Flush log tiến độ định kỳ
+                if (self.crawled_count + self.skipped_count) % self.checkpoint_interval == 0:
                     log.info(
                         "[%s] Tiến độ: %d cào mới/cập nhật, %d bỏ qua",
                         self.source_name,
@@ -667,10 +881,11 @@ class CareerVietCrawler(BaseCrawler):
                 self.error_count += 1
                 log.error("[%s] Lỗi xử lý item %s: %s", self.source_name, job_id, exc, exc_info=True)
 
-        # Kết thúc và đóng file
+        # Kết thúc và đóng file an toàn
         self._save_cdc_catalog()
         self.checkpoint.save()
-        self.writer.close()
+        if self.writer:
+            self.writer.close()
 
         stats = {
             "source": self.source_name,
@@ -678,7 +893,7 @@ class CareerVietCrawler(BaseCrawler):
             "skipped": self.skipped_count,
             "errors": self.error_count,
             "total_seen": len(self.cdc_catalog),
-            "output_file": str(self.writer.file_path) if self.writer.file_path else None,
+            "output_file": str(self.writer.file_path) if self.writer and self.writer.file_path else None,
         }
         log.info("[%s] Hoàn tất đợt cào: %s", self.source_name, stats)
         return stats
@@ -691,6 +906,8 @@ def main():
     parser.add_argument("--checkpoint-dir", type=str, default=None, help="Thư mục lưu checkpoint")
     parser.add_argument("--save-html", action="store_true", default=False, help="Lưu file HTML chi tiết")
     parser.add_argument("--local-html-dir", type=str, default=None, help="Thư mục chứa HTML cục bộ")
+    parser.add_argument("--batch-size", type=int, default=200, help="Số bản ghi tối đa trong một batch file")
+    parser.add_argument("--url-files", nargs="*", default=None, help="Danh sách file URL nguồn (urls_c1_*.json...)")
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -704,6 +921,8 @@ def main():
         max_items=args.max_items,
         save_html=args.save_html,
         local_html_dir=args.local_html_dir,
+        batch_size=args.batch_size,
+        url_files=args.url_files,
     )
     result = crawler.run()
     print("Crawl completed:", result)
