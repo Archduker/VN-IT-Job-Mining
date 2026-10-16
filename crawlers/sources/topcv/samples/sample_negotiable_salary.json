@@ -10,25 +10,43 @@
     "status": "DONE"
   },
   "raw_payload": {
-    "title": "Kỹ sư Dữ liệu Cấp cao (Data Engineer - Big Data, Spark, Kafka)",
-    "company_name": "NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN PHÁT TRIỂN VIỆT NAM",
-    "salary_raw": "Thỏa thuận",
-    "experience": "2 - 4 năm",
-    "level": "Chuyên viên chính",
-    "employment_type": "Toàn thời gian tại văn phòng (On-site)",
-    "deadline": "20/11/2026",
-    "badge_tags": [
-      "Apache Spark",
-      "Kafka",
-      "Data Lakehouse",
-      "Airflow",
-      "SQL Tuning"
-    ],
-    "description_html": "<div class=\"job-description\">\n<h3>Nhiệm vụ chính</h3>\n<ul>\n<li>Vận hành và xây dựng các luồng dữ liệu thời gian thực (Real-time Streaming) và Batch processing từ Core Banking sang Data Lake.</li>\n<li>Tối ưu hóa các tiến trình xử lý PySpark, Delta Lake và hệ thống phân phối Apache Kafka.</li>\n<li>Đảm bảo chất lượng dữ liệu (Data Quality), bảo mật dữ liệu khách hàng theo quy chuẩn Ngân hàng Nhà nước.</li>\n</ul>\n</div>",
-    "description_raw": "Nhiệm vụ chính\nVận hành và xây dựng các luồng dữ liệu thời gian thực (Real-time Streaming) và Batch processing từ Core Banking sang Data Lake.\nTối ưu hóa các tiến trình xử lý PySpark, Delta Lake và hệ thống phân phối Apache Kafka.\nĐảm bảo chất lượng dữ liệu (Data Quality), bảo mật dữ liệu khách hàng theo quy chuẩn Ngân hàng Nhà nước.",
-    "requirements_html": "<div class=\"job-requirements\">\n<h3>Tiêu chuẩn tuyển dụng</h3>\n<ul>\n<li>Tốt nghiệp Đại học chuyên ngành CNTT, Khoa học Máy tính hoặc Toán Tin.</li>\n<li>Ít nhất 2 năm kinh nghiệm làm việc với hệ sinh thái Big Data: Hadoop, Spark, Hive, Kafka.</li>\n<li>Thành thạo lập trình Python hoặc Scala, kỹ năng viết SQL tối ưu hóa chuyên sâu.</li>\n</ul>\n</div>",
-    "requirements_raw": "Tiêu chuẩn tuyển dụng\nTốt nghiệp Đại học chuyên ngành CNTT, Khoa học Máy tính hoặc Toán Tin.\nÍt nhất 2 năm kinh nghiệm làm việc với hệ sinh thái Big Data: Hadoop, Spark, Hive, Kafka.\nThành thạo lập trình Python hoặc Scala, kỹ năng viết SQL tối ưu hóa chuyên sâu.",
-    "benefits_html": "<div class=\"job-benefits\">\n<h3>Chế độ đãi ngộ</h3>\n<ul>\n<li>Mức thu nhập thỏa thuận xứng đáng theo năng lực và kinh nghiệm.</li>\n<li>Gói thưởng tài chính cuối năm từ 3 - 6 tháng lương.</li>\n<li>Vay ưu đãi lãi suất cán bộ nhân viên ngân hàng mua nhà, mua xe.</li>\n</ul>\n</div>",
-    "benefits_raw": "Chế độ đãi ngộ\nMức thu nhập thỏa thuận xứng đáng theo năng lực và kinh nghiệm.\nGói thưởng tài chính cuối năm từ 3 - 6 tháng lương.\nVay ưu đãi lãi suất cán bộ nhân viên ngân hàng mua nhà, mua xe."
+    "box-header-job": {
+      "box-header-job__title": "Kỹ sư Dữ liệu Cấp cao (Data Engineer - Big Data, Spark, Kafka)",
+      "box-company-info": "NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN PHÁT TRIỂN VIỆT NAM",
+      "box-header-job__salary--title": "Thỏa thuận",
+      "box-header-job-list-info": {
+        "Kinh nghiệm": "2 - 4 năm",
+        "Cấp bậc": "Chuyên viên chính",
+        "Hình thức": "Toàn thời gian tại văn phòng (On-site)",
+        "Hạn ứng tuyển": "20/11/2026"
+      }
+    },
+    "job-detail__body-left": {
+      "box-job-information-detail-item__overview": {
+        "job-tags": {
+          "Kỹ năng chuyên môn:": [
+            "Apache Spark",
+            "Kafka",
+            "Data Lakehouse",
+            "Airflow",
+            "SQL Tuning"
+          ]
+        }
+      },
+      "box-job-information-detail-item__job-description": {
+        "box-job-information-detail-item__text": "Nhiệm vụ chính\nVận hành và xây dựng các luồng dữ liệu thời gian thực (Real-time Streaming) và Batch processing từ Core Banking sang Data Lake.\nTối ưu hóa các tiến trình xử lý PySpark, Delta Lake và hệ thống phân phối Apache Kafka.\nĐảm bảo chất lượng dữ liệu (Data Quality), bảo mật dữ liệu khách hàng theo quy chuẩn Ngân hàng Nhà nước."
+      },
+      "box-job-information-required-candidate": {
+        "box-job-information-detail-item__text": "Tiêu chuẩn tuyển dụng\nTốt nghiệp Đại học chuyên ngành CNTT, Khoa học Máy tính hoặc Toán Tin.\nÍt nhất 2 năm kinh nghiệm làm việc với hệ sinh thái Big Data: Hadoop, Spark, Hive, Kafka.\nThành thạo lập trình Python hoặc Scala, kỹ năng viết SQL tối ưu hóa chuyên sâu."
+      },
+      "box-job-information-benefit": {
+        "box-job-information-detail-item__text": "Chế độ đãi ngộ\nMức thu nhập thỏa thuận xứng đáng theo năng lực và kinh nghiệm.\nGói thưởng tài chính cuối năm từ 3 - 6 tháng lương.\nVay ưu đãi lãi suất cán bộ nhân viên ngân hàng mua nhà, mua xe."
+      }
+    },
+    "job-detail__body-right": {
+      "box-company-info-detail": {
+        "company-name-label": "NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN PHÁT TRIỂN VIỆT NAM"
+      }
+    }
   }
 }

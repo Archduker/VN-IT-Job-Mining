@@ -146,19 +146,29 @@ def parse_raw_payload(html_content: str) -> dict:
     # 1. Clean Container Hash
     content_hash = calculate_container_html_hash(html_content, container_selector="{best_container}")
     
-    # 2. Bóc tách 100% trường dữ liệu gốc (Zero Information Loss)
-    # Lưu ý: Giữ nguyên cấu trúc HTML, không tự ý parse thành list[str] ở tầng cào thô
+    # 2. Bóc tách 100% trường dữ liệu gốc (Tên trường = CSS Class Name, phân khối DOM, không dùng __html)
     return {{
-        "title": soup.select_one("{title_sel_str}").get_text(strip=True) if soup.select_one("{title_sel_str}") else None,
-        "company_name": soup.select_one("{comp_sel}").get_text(strip=True) if soup.select_one("{comp_sel}") else None,
-        "salary_raw": soup.select_one("{sal_sel}").get_text(strip=True) if soup.select_one("{sal_sel}") else None,
-        "deadline_raw": soup.select_one("{dead_sel}").get_text(strip=True) if soup.select_one("{dead_sel}") else None,
-        "tag_groups": {{g.select_one(".job-tags__group-name").get_text(strip=True): [a.get_text(strip=True) for a in g.select(".item, a") if a != g.select_one(".job-tags__group-name")] for g in soup.select(".job-tags__group")}} if soup.select(".job-tags__group") else [t.get_text(strip=True) for t in soup.select(".tag, [class*='tag'] span")],
-        "description_html": str(soup.select_one(".job-description, .box-job-information-detail-item__text")),
-        "requirements_html": str(soup.select_one(".job-requirements, .box-job-information-required-candidate .box-job-information-detail-item__text")),
-        "benefits_html": str(soup.select_one(".job-benefits, .box-job-information-benefit .box-job-information-detail-item__text")),
-        "content_hash": content_hash,
-        "raw_html": html_content,
+        "box-header-job": {{
+            "box-header-job__title": soup.select_one("{title_sel_str}").get_text(strip=True) if soup.select_one("{title_sel_str}") else None,
+            "box-company-info": soup.select_one("{comp_sel}").get_text(strip=True) if soup.select_one("{comp_sel}") else None,
+            "box-header-job__salary--title": soup.select_one("{sal_sel}").get_text(strip=True) if soup.select_one("{sal_sel}") else None,
+            "deadline_raw": soup.select_one("{dead_sel}").get_text(strip=True) if soup.select_one("{dead_sel}") else None,
+        }},
+        "job-detail__body-left": {{
+            "box-job-information-detail-item__overview": {{
+                "job-tags": {{g.select_one(".job-tags__group-name").get_text(strip=True): [a.get_text(strip=True) for a in g.select(".item, a") if a != g.select_one(".job-tags__group-name")] for g in soup.select(".job-tags__group")}} if soup.select(".job-tags__group") else [t.get_text(strip=True) for t in soup.select(".tag, [class*='tag'] span")]
+            }},
+            "box-job-information-detail-item__job-description": {{
+                "box-job-information-detail-item__text": soup.select_one(".job-description, .box-job-information-detail-item__text").get_text(separator="\\n", strip=True) if soup.select_one(".job-description, .box-job-information-detail-item__text") else None
+            }},
+            "box-job-information-required-candidate": {{
+                "box-job-information-detail-item__text": soup.select_one(".job-requirements, .box-job-information-required-candidate .box-job-information-detail-item__text").get_text(separator="\\n", strip=True) if soup.select_one(".job-requirements, .box-job-information-required-candidate .box-job-information-detail-item__text") else None
+            }},
+            "box-job-information-benefit": {{
+                "box-job-information-detail-item__text": soup.select_one(".job-benefits, .box-job-information-benefit .box-job-information-detail-item__text").get_text(separator="\\n", strip=True) if soup.select_one(".job-benefits, .box-job-information-benefit .box-job-information-detail-item__text") else None
+            }}
+        }},
+        "content_hash": content_hash
     }}
 '''
     print(snippet)

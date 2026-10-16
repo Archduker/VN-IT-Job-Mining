@@ -47,31 +47,64 @@ company_el = soup.select_one(".company-name-label a, .company-name-label, .compa
 company = company_el.get_text(strip=True) if company_el else None
 ```
 
-### Bước 3: Thu Thập Thô Nguyên Bản (Raw As-Is / SD1 Zero Information Loss) vs Chuẩn Hóa (Harmonization / SD2 & SD3)
+### Bước 3: Thu Thập Thô Nguyên Bản (DOM-Native Class Name & Partitioning / SD1)
 
 > [!CAUTION]
 > **QUY TẮC CỐT LÕI (ZERO INFORMATION LOSS - SD1)**:
 > Tại Tầng Cào Thô (Raw Crawl Tier):
-> - **TUYỆT ĐỐI KHÔNG can thiệp kiểu dữ liệu quá sớm**: Không tự ý xóa thẻ HTML, không ép văn bản thành danh sách dòng sạch (`requirements_list: list[str]`), không ép mức lương `"Thoả thuận"` thành số `null`.
-> - **Bắt buộc lưu 100% trường dữ liệu và thẻ tags**: Giữ nguyên toàn văn khối HTML (`description_html`, `requirements_html`, `benefits_html`), giữ nguyên chuỗi mức lương gốc (`salary_raw`), giữ trọn vẹn phân cấp nhóm thẻ (`tag_groups: dict[str, list[str]]`).
+> 1. **Key trường = Chính xác CSS Class Name trong DOM**: Không tự đặt tên trường trừu tượng (`title`, `company`, `salary`), mà lấy trực tiếp tên class (`box-header-job__title`, `box-company-info`, `box-header-job__salary--title`, `job-tags`, `box-job-information-detail-item__text`).
+> 2. **TUYỆT ĐỐI KHÔNG dùng hậu tố `__html` hay `_html`**: Không nhồi nhét mã HTML cồng kềnh; giá trị văn bản được lưu trực tiếp dưới key class text (`box-job-information-detail-item__text`) với ngắt dòng và bullet nguyên bản.
+> 3. **Phân khối theo cây DOM ("Phân ra")**: Phân chia `raw_payload` theo các khối container cha (Header, Left Body, Right Body).
 
-#### 1. Quy chuẩn Trích xuất Tầng Thô (Raw Tier Payload)
-```python
-raw_payload = {
-    "title": title_raw,
-    "company_name": company_raw,
-    "salary_raw": salary_raw,
-    "header_list_info": {"Địa điểm": "...", "Kinh nghiệm": "...", "Hạn nộp": "..."},
-    "tag_groups": {"Yêu cầu:": [...], "Chuyên môn:": [...]},
-    "description_html": str(soup.select_one(".job-description")),
-    "description_raw": soup.select_one(".job-description").get_text(separator="\n", strip=True),
-    "requirements_html": str(soup.select_one(".job-requirements")),
-    "requirements_raw": soup.select_one(".job-requirements").get_text(separator="\n", strip=True),
-    "benefits_html": str(soup.select_one(".job-benefits")),
-    "benefits_raw": soup.select_one(".job-benefits").get_text(separator="\n", strip=True),
-    "address_and_time_raw": {...},
-    "general_info_raw": {...},
-    "company_details_raw": {...}
+#### 1. Quy chuẩn Trích xuất Tầng Thô (Raw Tier Payload Theo Class Name)
+```json
+{
+  "box-header-job": {
+    "box-header-job__title": "Chuyên viên Tư vấn Đầu tư",
+    "box-company-info": "Công ty cổ phần chứng khoán FPT",
+    "box-header-job__salary--title": "Thoả thuận",
+    "box-header-job-list-info": {
+      "Địa điểm": "Hà Nội",
+      "Kinh nghiệm": "Không yêu cầu",
+      "Hạn ứng tuyển": "31/08/2016"
+    },
+    "box-group-button-apply": "Hết hạn ứng tuyểnXem việc làm liên quan",
+    "box-header-job__warning-employer-data-protection": "..."
+  },
+  "job-detail__body-left": {
+    "box-job-information-detail-item__overview": {
+      "job-tags": {
+        "Yêu cầu:": ["Không yêu cầu kinh nghiệm chuyên môn"]
+      }
+    },
+    "box-job-information-detail-item__job-description": {
+      "box-job-information-detail-item__text": "- Tìm kiếm và duy trì mối quan hệ với khách hàng;\n- Thực hiện các nghiệp vụ môi giới chứng khoán;\n- Tư vấn đầu tư cho khách hàng..."
+    },
+    "box-job-information-required-candidate": {
+      "box-job-information-detail-item__text": "- Nam/Nữ tuổi từ 22;\n- Tốt nghiệp đại học khối kinh tế, tài chính..."
+    },
+    "box-job-information-benefit": {
+      "box-job-information-detail-item__text": "- Nhân viên được lựa chọn sẽ có cơ hội làm việc trong môi trường năng động...\n- Tháng lương thứ 13..."
+    },
+    "box-job-information-address-and-time": {
+      "box-job-information-address-and-time-list": {
+        "Địa điểm làm việc": "Hà Nội",
+        "Hạn ứng tuyển": "31/08/2016"
+      }
+    }
+  },
+  "job-detail__body-right": {
+    "box-job-information-general-info": {
+      "Cấp bậc": "Nhân viên",
+      "Số lượng tuyển": "Không giới hạn",
+      "Loại hình làm việc": "Toàn thời gian"
+    },
+    "box-company-info-detail": {
+      "company-name-label": "Công ty cổ phần chứng khoán FPT",
+      "Quy mô": "100-499 nhân viên",
+      "Địa điểm": "Tòa Nhà 52 Lạc Long Quân, Tây Hồ, Hà Nội."
+    }
+  }
 }
 ```
 
