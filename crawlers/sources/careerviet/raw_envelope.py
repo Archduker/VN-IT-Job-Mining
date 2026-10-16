@@ -199,6 +199,16 @@ def build_raw_payload(html: str) -> dict[str, Any]:
         a_tags = [t for t in a_tags if t]
         location = ", ".join(a_tags) if a_tags else (_el_text(map_el) or None)
 
+    # 6. "Ngành nghề" NGUYÊN VĂN (nhãn IT): lấy phần giá trị của mọi dòng detail-box
+    #    bắt đầu bằng nhãn "Ngành nghề", khử trùng lặp giữ thứ tự. KHÔNG lọc bỏ tin
+    #    nào ở tầng raw — đây chỉ là bản sao thô để truy vết, chưa phân loại.
+    industry_vals: list[str] = []
+    for line in detail_box:
+        if line.startswith("Ngành nghề"):
+            val = _normalize_ws(line[len("Ngành nghề"):]).lstrip(":").strip()
+            if val and val not in industry_vals:
+                industry_vals.append(val)
+
     return {
         "title": _el_text(title_el),
         "job-company-name": _el_text(company_el),
@@ -206,6 +216,7 @@ def build_raw_payload(html: str) -> dict[str, Any]:
         "detail-row": detail_row,
         "job-tags": tag_items,
         "map": location,
+        "Ngành nghề": industry_vals or None,
         "job-posting-schema": extract_job_posting_jsonld(soup),
     }
 
