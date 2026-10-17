@@ -43,6 +43,15 @@ class UrlLedgerRecord:
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "UrlLedgerRecord":
+        import dataclasses
+        valid_fields = {f.name for f in dataclasses.fields(cls)}
+        clean_data = {k: v for k, v in data.items() if k in valid_fields}
+        if "last_crawled_at" in data and not clean_data.get("last_scraped_at"):
+            clean_data["last_scraped_at"] = data["last_crawled_at"]
+        return cls(**clean_data)
+
 
 def clean_canonical_url(raw_url: str) -> str:
     """
@@ -155,9 +164,29 @@ class UrlLedger:
 
     def __init__(self, source: str, storage_dir: Optional[str] = None):
         self.source = source.lower().strip()
-        self.base_dir = Path(storage_dir or f"data/url_ledger/{self.source}")
+        # Chuẩn hóa cấu trúc: data/<source>/url_ledger
+        target_dir = Path(storage_dir) if storage_dir else Path(f"data/{self.source}/url_ledger")
+        self.base_dir = target_dir
         self.manifests_dir = self.base_dir / "manifests"
         self.catalog_file = self.base_dir / "catalog_master.json"
+
+        # Tự động di chuyển dữ liệu cũ từ data/url_ledger/<source> nếu có
+        legacy_dir = Path(f"data/url_ledger/{self.source}")
+        if legacy_dir.exists() and not self.catalog_file.exists():
+            legacy_catalog = legacy_dir / "catalog_master.json"
+            if legacy_catalog.exists():
+                self.base_dir.mkdir(parents=True, exist_ok=True)
+                import shutil
+                try:
+                    shutil.copy2(legacy_catalog, self.catalog_file)
+                    legacy_manifests = legacy_dir / "manifests"
+                    if legacy_manifests.exists():
+                        self.manifests_dir.mkdir(parents=True, exist_ok=True)
+                        for m_file in legacy_manifests.glob("*.jsonl"):
+                            shutil.copy2(m_file, self.manifests_dir / m_file.name)
+                    logger.info(f"Đã di chuyển dữ liệu URL Ledger từ {legacy_dir} sang {self.base_dir}")
+                except Exception as e:
+                    logger.warning(f"Lỗi khi di chuyển dữ liệu từ {legacy_dir}: {e}")
 
         self.manifests_dir.mkdir(parents=True, exist_ok=True)
         self.records: Dict[str, Dict[str, Any]] = self._load_catalog()
@@ -196,10 +225,16 @@ class UrlLedger:
         if url_hash in self.records:
             rec_dict = self.records[url_hash]
             rec_dict["last_seen_at"] = now_iso
+            # Tự động cập nhật tiêu đề / công ty nếu trước đó bị rỗng
+            if preliminary_title and not rec_dict.get("preliminary_title"):
+                rec_dict["preliminary_title"] = preliminary_title
+            if preliminary_company and not rec_dict.get("preliminary_company"):
+                rec_dict["preliminary_company"] = preliminary_company
             # Nếu đã cào nhưng đã quá 21 ngày thì chuyển sang RECHECK_DUE
-            if rec_dict.get("status") == "DONE" and is_due_for_recrawl(rec_dict.get("last_scraped_at"), days=21):
+            scraped_time = rec_dict.get("last_scraped_at") or rec_dict.get("last_crawled_at")
+            if rec_dict.get("status") == "DONE" and is_due_for_recrawl(scraped_time, days=21):
                 rec_dict["status"] = "RECHECK_DUE"
-            return UrlLedgerRecord(**rec_dict)
+            return UrlLedgerRecord.from_dict(rec_dict)
 
         # URL mới hoàn toàn
         new_record = UrlLedgerRecord(
@@ -282,3 +317,96 @@ class UrlLedger:
             if rec.get("content_hash") == content_hash and rec.get("status") == "DONE":
                 return rec
         return None
+
+    def sync_to_minio(
+        self,
+        bucket_name: Optional[str] = None,
+        endpoint_url: Optional[str] = None,
+        access_key: Optional[str] = None,
+        secret_key: Optional[str] = None,
+    ) -> bool:
+        """
+        Đồng bộ URL Ledger (catalog_master.json và manifests/*.jsonl) lên MinIO / S3.
+        Đích: minio://{bucket_name}/url_ledger/{source}/
+        """
+        import os
+        try:
+            from dotenv import load_dotenv
+            load_dotenv()
+        except Exception:
+            pass
+
+        bucket = (
+            bucket_name
+            or os.getenv("S3_BUCKET_NAME")
+            or os.getenv("R2_BUCKET_NAME")
+            or os.getenv("MINIO_BUCKET")
+            or os.getenv("S3_BUCKET")
+            or "vn-it-jobs"
+        )
+        endpoint = (
+            endpoint_url
+            or os.getenv("S3_ENDPOINT_URL")
+            or os.getenv("R2_ENDPOINT_URL")
+            or os.getenv("MINIO_ENDPOINT")
+            or "http://localhost:9000"
+        )
+        ak = (
+            access_key
+            or os.getenv("AWS_ACCESS_KEY_ID")
+            or os.getenv("R2_ACCESS_KEY_ID")
+            or os.getenv("MINIO_ROOT_USER")
+            or "minioadmin"
+        )
+        sk = (
+            secret_key
+            or os.getenv("AWS_SECRET_ACCESS_KEY")
+            or os.getenv("R2_SECRET_ACCESS_KEY")
+            or os.getenv("MINIO_ROOT_PASSWORD")
+            or "minioadmin"
+        )
+        region = "auto" if "r2.cloudflarestorage.com" in endpoint else os.getenv("AWS_REGION", "us-east-1")
+
+        try:
+            import boto3
+            from botocore.client import Config
+
+            s3 = boto3.client(
+                "s3",
+                endpoint_url=endpoint,
+                aws_access_key_id=ak,
+                aws_secret_access_key=sk,
+                config=Config(signature_version="s3v4", connect_timeout=3, retries={"max_attempts": 2}),
+                region_name=region,
+            )
+
+            # Đảm bảo bucket tồn tại
+            try:
+                s3.head_bucket(Bucket=bucket)
+            except Exception:
+                try:
+                    s3.create_bucket(Bucket=bucket)
+                except Exception as b_exc:
+                    logger.debug(f"Bucket {bucket} create/head check: {b_exc}")
+
+            storage_label = "Cloudflare R2" if "r2.cloudflarestorage.com" in endpoint else "MinIO"
+
+            # Upload catalog_master.json
+            if self.catalog_file.exists():
+                key = f"url_ledger/{self.source}/catalog_master.json"
+                s3.upload_file(str(self.catalog_file), bucket, key)
+                logger.info(f"[{storage_label}] Đã đồng bộ catalog lên s3://{bucket}/{key}")
+
+            # Upload all manifest files
+            manifest_count = 0
+            for m_path in self.manifests_dir.glob("*.jsonl"):
+                key = f"url_ledger/{self.source}/manifests/{m_path.name}"
+                s3.upload_file(str(m_path), bucket, key)
+                manifest_count += 1
+
+            logger.info(f"[{storage_label}] Đã đồng bộ thành công {manifest_count} manifests lên s3://{bucket}/url_ledger/{self.source}/manifests/")
+            return True
+        except Exception as exc:
+            logger.warning(f"[{storage_label}] Không thể đồng bộ URL Ledger lên ({endpoint}): {exc}. Dữ liệu cục bộ vẫn an toàn.")
+            return False
+
