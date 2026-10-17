@@ -69,3 +69,5 @@ airflow/webserver_config.py
 scratch/
 sample_htmls/
 
+.minio.sys/
+vn-it-jobs/.minio.sys/
