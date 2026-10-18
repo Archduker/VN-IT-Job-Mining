@@ -1,8 +1,8 @@
 # BẢNG ÁNH XẠ TÍCH HỢP DỮ LIỆU — GLINTS & JOBSGO
 
-> **Người thực hiện:** Duy<br>
-> **Nguồn:** Glints Vietnam và JobsGO<br>
-> **Nhánh Git:** `crawls/glints-jobsgo`<br>
+> **Người thực hiện:** Duy
+> **Nguồn:** Glints Vietnam và JobsGO
+> **Nhánh Git:** `crawls/glints-jobsgo`
 > **Mục đích:** Đề xuất map sang Common Target Schema trong Integration Summit. Raw Zone giữ nguyên bản gốc; phép ánh xạ chỉ chạy ở Staging/Curated.
 
 ## 1. Bảng đối chiếu trường về Common Target Schema

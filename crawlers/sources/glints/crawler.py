@@ -21,12 +21,189 @@ from crawlers.common.schema import JobRecord
 
 SOURCE = "glints"
 CRAWLER_VERSION = "0.2.0"
-LISTING_URL = (
-    "https://glints.com/vn/opportunities/jobs/explore"
-    "?country=VN&category=software-engineering"
-)
+LISTING_URL = "https://glints.com/vn/job-category/computer-software"
 GRAPHQL_ENDPOINT = "https://glints.com/api/v2-alc/graphql?op=searchJobsV3"
 PAGE_SIZE = 30
+# Category ID lấy từ request GraphQL của trang Computer & Software trên Glints.
+IT_CATEGORY_IDS = (
+    "9dd9bc4d-38d5-4b5e-876a-de19bc22da45",
+)
+# Phạm vi IT cho dự án VN-IT-Job-Mining.
+# Dựa trên tên danh mục, tiêu đề và kỹ năng kỹ thuật
+# mà GraphQL listing trả về.
+
+_IT_CATEGORY_TERMS = (
+    "computer & software",
+    "software engineering",
+    "software architect",
+    "technical manager",
+    "system analyst",
+    "system administrator",
+    "database administrator",
+    "network engineer",
+    "technical support engineer",
+    "devops engineer",
+    "system security",
+    "cloud engineer",
+    "cybersecurity",
+    "it support",
+    "data analyst",
+    "data engineer",
+    "data scientist",
+    "data mining",
+    "data warehouse",
+    "qa engineer",
+    "qa manager",
+    "other testing positions",
+    "manual tester",
+    "test development",
+    "mobile developer",
+    "android developer",
+    "frontend developer",
+    "wordpress developer",
+    "flutter developer",
+    "backend developer",
+    "full stack developer",
+    "game developer",
+    "ai engineer",
+    "algorithm researcher",
+    "embedded engineer",
+    "hardware engineer",
+    "driver developer",
+    "ui/ux designer",
+)
+
+_IT_TITLE_TERMS = (
+    "software engineer",
+    "software developer",
+    "web developer",
+    "application developer",
+    "backend",
+    "back-end",
+    "frontend",
+    "front-end",
+    "full stack",
+    "fullstack",
+    "programmer",
+    "devops",
+    "site reliability",
+    "qa engineer",
+    "quality assurance engineer",
+    "software tester",
+    "test automation",
+    "data analyst",
+    "data engineer",
+    "data scientist",
+    "database administrator",
+    "network engineer",
+    "cybersecurity",
+    "cyber security",
+    "security engineer",
+    "cloud engineer",
+    "system administrator",
+    "systems administrator",
+    "system analyst",
+    "it support",
+    "technical support engineer",
+    "mobile developer",
+    "android developer",
+    "ios developer",
+    "flutter developer",
+    "game developer",
+    "embedded engineer",
+    "hardware engineer",
+    "firmware engineer",
+    "machine learning engineer",
+    "artificial intelligence engineer",
+    "ui/ux designer",
+    "ux designer",
+    "lập trình viên",
+    "kỹ sư phần mềm",
+    "kiểm thử phần mềm",
+    "kỹ sư dữ liệu",
+    "khoa học dữ liệu",
+    "an ninh mạng",
+    "quản trị hệ thống",
+    "quản trị mạng",
+    "hỗ trợ công nghệ thông tin",
+    "trí tuệ nhân tạo",
+    "kỹ sư nhúng",
+)
+
+_IT_SKILL_TERMS = (
+    "python",
+    "javascript",
+    "typescript",
+    "java",
+    "c++",
+    "c#",
+    "golang",
+    "rust",
+    "php",
+    "kotlin",
+    "swift",
+    "sql",
+    "react",
+    "node.js",
+    "angular",
+    "vue.js",
+    "django",
+    "flask",
+    "spring boot",
+    ".net",
+    "docker",
+    "kubernetes",
+    "aws",
+    "azure",
+    "google cloud",
+    "terraform",
+    "linux",
+    "selenium",
+    "cypress",
+    "playwright",
+    "tensorflow",
+    "pytorch",
+    "postgresql",
+    "mysql",
+    "mongodb",
+    "graphql",
+    "rest api",
+)
+
+
+def is_it_job(job):
+    """Trả về True nếu tin phù hợp phạm vi IT của dự án."""
+    if not isinstance(job, dict):
+        return False
+
+    title = str(job.get("title") or "").casefold()
+
+    category_obj = job.get("hierarchicalJobCategory") or {}
+    if isinstance(category_obj, dict):
+        category = str(category_obj.get("name") or "").casefold()
+    else:
+        category = ""
+
+    if any(term in category for term in _IT_CATEGORY_TERMS):
+        return True
+
+    if any(term in title for term in _IT_TITLE_TERMS):
+        return True
+
+    skill_names = []
+    for entry in job.get("skills") or []:
+        if not isinstance(entry, dict):
+            continue
+
+        skill_obj = entry.get("skill") or {}
+        if isinstance(skill_obj, dict):
+            name = skill_obj.get("name")
+            if name:
+                skill_names.append(str(name).casefold())
+
+    skill_text = " | ".join(skill_names)
+    return any(term in skill_text for term in _IT_SKILL_TERMS)
+
 
 SEARCH_QUERY = r"""
 query searchJobsV3($data: JobSearchConditionInput!) {
@@ -34,61 +211,150 @@ query searchJobsV3($data: JobSearchConditionInput!) {
         jobsInPage {
             id
             title
-            createdAt
-            updatedAt
             workArrangementOption
             status
+            createdAt
+            updatedAt
+            isHot
+            isApplied
+            shouldShowSalary
             educationLevel
             type
-            jobSource
-            minYearsOfExperience
-            maxYearsOfExperience
+            fraudReportFlag
             company {
+                ...CompanyFields
+                __typename
+            }
+            citySubDivision {
                 id
                 name
-                brandName
+                __typename
+            }
+            city {
+                ...CityFields
+                __typename
             }
             country {
-                code
-                name
-            }
-            location {
-                id
-                name
-                formattedName
-                parents {
-                    id
-                    name
-                    formattedName
-                    parents {
-                        id
-                        name
-                        formattedName
-                    }
-                }
+                ...CountryFields
+                __typename
             }
             salaries {
-                salaryType
-                salaryMode
-                minAmount
-                maxAmount
-                CurrencyCode
+                ...SalaryFields
+                __typename
             }
-            skills {
-                mustHave
-                skill {
-                    id
-                    name
-                }
+            location {
+                ...LocationFields
+                __typename
             }
+            minYearsOfExperience
+            maxYearsOfExperience
+            source
+            jobSource
             hierarchicalJobCategory {
                 id
                 level
                 name
+                children {
+                    name
+                    level
+                    id
+                    __typename
+                }
+                parents {
+                    id
+                    level
+                    name
+                    __typename
+                }
+                __typename
             }
+            skills {
+                skill {
+                    id
+                    name
+                    __typename
+                }
+                mustHave
+                __typename
+            }
+            traceInfo
+            __typename
         }
+        expInfo
         hasMore
+        __typename
     }
+}
+
+fragment CompanyFields on Company {
+  id
+  name
+  brandName
+  logo
+  status
+  isVIP
+  IndustryId
+  industry {
+    id
+    name
+    __typename
+  }
+  verificationTier {
+    type
+    userName
+    __typename
+  }
+  __typename
+}
+
+fragment CityFields on City {
+  id
+  name
+  __typename
+}
+
+fragment CountryFields on Country {
+  code
+  name
+  __typename
+}
+
+fragment SalaryFields on JobSalary {
+  id
+  salaryType
+  salaryMode
+  maxAmount
+  minAmount
+  CurrencyCode
+  __typename
+}
+
+fragment LocationFields on HierarchicalLocation {
+  id
+  name
+  administrativeLevelName
+  formattedName
+  level
+  slug
+  latitude
+  longitude
+  parents {
+    id
+    name
+    administrativeLevelName
+    formattedName
+    level
+    slug
+    CountryCode: countryCode
+    parents {
+      level
+      formattedName
+      slug
+      __typename
+    }
+    __typename
+  }
+  __typename
 }
 """
 
@@ -471,8 +737,9 @@ class GlintsCrawler(BaseCrawler):
                 "variables": {
                     "data": {
                         "CountryCode": "VN",
+                        "HierarchicalJobCategoryIds": list(IT_CATEGORY_IDS),
                         "includeExternalJobs": True,
-                        "pageSize": remaining,
+                        "pageSize": PAGE_SIZE,
                         "page": page,
                     }
                 },

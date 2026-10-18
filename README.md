@@ -116,3 +116,9 @@ Toàn bộ **130/130 test cases** đạt trạng thái **100% Passed**.
 | Thứ Sáu | **TopCV** | `crawler_topcv` | `0 20 * * 5` |
 | Thứ Bảy | **ViecLam24h** | `crawler_vieclam24h` | `0 20 * * 6` |
 | Chủ Nhật | **Glints** | `crawler_glints` | `0 20 * * 0` |
+
+
+## MinIO Lakehouse Guide
+
+- Vận hành MinIO: [docs/minio_lakehouse_guide.md](docs/minio_lakehouse_guide.md)
+- Agent skill: [.agents/skills/minio-lakehouse-guide/SKILL.md](.agents/skills/minio-lakehouse-guide/SKILL.md)

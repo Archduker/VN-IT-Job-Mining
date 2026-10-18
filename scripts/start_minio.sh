@@ -1,55 +1,37 @@
 #!/usr/bin/env bash
-# ==============================================================================
-# Script khởi động MinIO Lakehouse cho dự án VN-IT-Job-Mining
-# Cổng 9000: S3 API Endpoint (Crawler, Airflow, DuckDB)
-# Cổng 9001: MinIO Web Console UI (Xem bucket, quản lý file trên trình duyệt)
-# ==============================================================================
+# VN-IT-Job-Mining — Start MinIO (macOS / Linux)
+set -euo pipefail
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
 
-set -e
+if ! command -v docker >/dev/null 2>&1; then
+  echo "[ERROR] Docker CLI not found. Install Docker Desktop or Docker Engine." >&2
+  exit 1
+fi
+if ! docker info >/dev/null 2>&1; then
+  echo "[ERROR] Docker Engine is not running. Start Docker Desktop/daemon and retry." >&2
+  exit 1
+fi
 
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO_DIR"
+echo "[MinIO] Starting MinIO and building the bucket initializer..."
+docker compose -f docker-compose.minio.yml up -d --build
 
-echo "=== [VN-IT-Job-Mining] Khởi Động MinIO Lakehouse ==="
-
-# 1. Kiểm tra docker compose
-if ! command -v docker &> /dev/null; then
-    echo "❌ Lỗi: Docker chưa được cài đặt trên hệ thống."
+if command -v curl >/dev/null 2>&1; then
+  for _ in $(seq 1 45); do
+    if curl --silent --fail http://localhost:9000/minio/health/live >/dev/null; then break; fi
+    sleep 2
+  done
+  curl --silent --show-error --fail http://localhost:9000/minio/health/live >/dev/null || {
+    docker compose -f docker-compose.minio.yml logs --tail 60 minio minio-init
+    echo "[ERROR] MinIO health endpoint did not become ready." >&2
     exit 1
-fi
-
-# 2. Khởi động container MinIO
-echo "⏳ Đang bật MinIO container qua Docker Compose..."
-if docker compose -f docker-compose.minio.yml up -d 2>/dev/null; then
-    echo "✅ Docker Compose khởi động thành công (User hiện tại)."
+  }
 else
-    echo "⚠️ Cần quyền sudo để truy cập Docker socket..."
-    sudo docker compose -f docker-compose.minio.yml up -d
+  echo "[INFO] curl is unavailable on host; use python scripts/check_minio.py to verify API readiness."
 fi
 
-# 3. Đợi MinIO sẵn sàng (tối đa 15 giây)
-echo "⏳ Đang đợi MinIO sẵn sàng trên cổng 9000 và 9001..."
-MAX_RETRIES=15
-COUNT=0
-while [ $COUNT -lt $MAX_RETRIES ]; do
-    if curl -s http://localhost:9000/minio/health/live > /dev/null 2>&1 || nc -z localhost 9000 2>/dev/null; then
-        echo "✅ MinIO S3 API đã sẵn sàng trên cổng 9000."
-        break
-    fi
-    sleep 1
-    COUNT=$((COUNT+1))
-done
-
-# 4. Chạy script khởi tạo bucket vn-it-jobs
-echo "⏳ Kiểm tra và khởi tạo bucket 'vn-it-jobs'..."
-python3 "$REPO_DIR/scripts/setup_minio.py" || true
-
-echo ""
-echo "=============================================================================="
-echo "🎉 MinIO Lakehouse đã sẵn sàng hoạt động!"
-echo "👉 Web Console UI : http://localhost:9001"
-echo "   - Tài khoản     : minioadmin"
-echo "   - Mật khẩu      : minioadmin"
-echo "👉 S3 API Endpoint: http://localhost:9000"
-echo "👉 Bucket mặc định: vn-it-jobs"
-echo "=============================================================================="
+echo "[OK] MinIO Console: http://localhost:9001"
+echo "[OK] S3 API:       http://localhost:9000"
+echo "[OK] Bucket:       vn-it-jobs"
+echo "Local defaults: minioadmin / minioadmin (development only)."

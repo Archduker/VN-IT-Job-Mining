@@ -106,6 +106,7 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(any(k.startswith("raw/glints/_listing/" ) and k.endswith("page_0001.json") for k in self.store.objects))
         stats = crawler.crawl_details()
         self.assertEqual(stats["new"], 1)
+        self.assertEqual(stats["attempted"], 1)
         snapshots = [k for k in self.store.objects if k.startswith("raw/glints/202") and k.endswith("_v1.json")]
         self.assertEqual(len(snapshots), 1)
         snapshot = json.loads(self.store.objects[snapshots[0]].decode("utf-8"))
@@ -136,11 +137,37 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(len([c for c in session.get_calls if "cong-nghe-thong-tin" in c[0]]), 2)
         stats = crawler.crawl_details()
         self.assertEqual(stats["new"], 1)
+        self.assertEqual(stats["attempted"], 1)
         snapshot_keys = [k for k in self.store.objects if k.startswith("raw/jobsgo/202") and k.endswith("_v1.json")]
         self.assertEqual(len(snapshot_keys), 1)
         snapshot = json.loads(self.store.objects[snapshot_keys[0]].decode("utf-8"))
         self.assertEqual(snapshot["raw"]["html"], detail)
 
+
+    def test_jobsgo_listing_http_403_is_reported_not_silently_successful(self):
+        page_url = "https://jobsgo.vn/viec-lam-cong-nghe-thong-tin.html"
+        session = FakeSession(pages={page_url: (403, "Access denied")})
+        crawler = JobsGORawCrawler(
+            max_items=5, storage_dir=str(Path(self.temp.name) / "jobsgo-403"),
+            minio_store=self.store, http_client=session, delay_min=0, delay_max=0,
+        )
+        with self.assertRaisesRegex(RuntimeError, r"JobsGO discovery failed: 1 listing page\(s\) failed.*HTTP 403"):
+            crawler.discover_urls()
+        self.assertTrue(any("_listing_failures" in key for key in self.store.objects))
+        self.assertFalse(any(key.endswith("manifest_" + crawler._run_date + ".jsonl") and key.startswith("url_ledger/jobsgo/") for key in self.store.objects))
+
+    def test_glints_listing_http_403_is_reported_as_incomplete(self):
+        session = FakeSession(listing_body={})
+        def denied_post(url, **kwargs):
+            return FakeResponse(status_code=403, text="Access denied", data=None, url=url)
+        session.post = denied_post
+        crawler = GlintsRawPipeline(
+            max_items=5, storage_dir=str(Path(self.temp.name) / "glints-403"),
+            minio_store=self.store, http_client=session, delay_min=0, delay_max=0,
+        )
+        with self.assertRaisesRegex(RuntimeError, r"Glints discovery incomplete.*HTTP 403"):
+            crawler.discover_urls()
+        self.assertTrue(any("raw/glints/_listing_failures/" in key for key in self.store.objects))
 
     def _make_glints_crawler(self, listing, html_by_url, suffix="cdc"):
         session = FakeSession(listing_body=listing, html_by_url=html_by_url)
@@ -152,7 +179,35 @@ class PipelineTests(unittest.TestCase):
 
     @staticmethod
     def _make_listing(*jobs):
-        return {"data": {"searchJobsV3": {"jobsInPage": list(jobs), "hasMore": False}}}
+        jobs_with_category = []
+
+        for job in jobs:
+            item = dict(job)
+            item.setdefault(
+                "hierarchicalJobCategory",
+                {
+                    "id": "test-backend-category",
+                    "level": 2,
+                    "name": "Backend Developer",
+                    "parents": [
+                        {
+                            "id": "9dd9bc4d-38d5-4b5e-876a-de19bc22da45",
+                            "level": 1,
+                        "name": "Computer & Software",
+                        }
+                    ],
+                },
+            )
+            jobs_with_category.append(item)
+
+        return {
+            "data": {
+                "searchJobsV3": {
+                    "jobsInPage": jobs_with_category,
+                    "hasMore": False,
+                }
+            }
+        }
 
     def test_changed_detail_creates_next_version(self):
         from crawlers.sources.glints.crawler import slugify
@@ -213,13 +268,35 @@ class PipelineTests(unittest.TestCase):
 
     def test_failed_url_does_not_stop_next_url(self):
         listing = {
-            "data": {"searchJobsV3": {
-                "jobsInPage": [
-                    {"id": "g-1", "title": "Job One", "company": {"name": "A"}},
-                    {"id": "g-2", "title": "Job Two", "company": {"name": "B"}},
-                ], "hasMore": False,
-            }}
+            "data": {
+                "searchJobsV3": {
+                    "jobsInPage": [
+                        {
+                            "id": "g-1",
+                            "title": "Job One",
+                            "company": {"name": "A"},
+                            "hierarchicalJobCategory": {
+                                "id": "test-backend-1",
+                                "level": 2,
+                                "name": "Backend Developer",
+                            },
+                        },
+                        {
+                            "id": "g-2",
+                            "title": "Job Two",
+                            "company": {"name": "B"},
+                            "hierarchicalJobCategory": {
+                                "id": "test-backend-2",
+                                "level": 2,
+                                "name": "Backend Developer",
+                            },
+                        },
+                    ],
+                    "hasMore": False,
+                }
+            }
         }
+
         from crawlers.sources.glints.crawler import slugify
         urls = {
             f"https://glints.com/vn/opportunities/jobs/{slugify(title)}/{job_id}": html

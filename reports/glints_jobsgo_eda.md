@@ -1,9 +1,9 @@
 # BÁO CÁO EDA SƠ BỘ — GLINTS & JOBSGO
 
-> **Người thực hiện:** Duy<br>
-> **Nguồn:** Glints Vietnam và JobsGO<br>
-> **Notebook:** `notebooks/eda_preliminary_glints_jobsgo.ipynb`<br>
-> **MinIO:** `minio://vn-it-jobs/raw/glints/`, `minio://vn-it-jobs/raw/jobsgo/`<br>
+> **Người thực hiện:** Duy
+> **Nguồn:** Glints Vietnam và JobsGO
+> **Notebook:** `notebooks/eda_preliminary_glints_jobsgo.ipynb`
+> **MinIO:** `minio://vn-it-jobs/raw/glints/`, `minio://vn-it-jobs/raw/jobsgo/`
 > **Trạng thái:** Khung báo cáo chuẩn bị trước; số liệu phải được sinh từ snapshot thực tế, chưa điền số liệu giả.
 
 ## 1. Câu hỏi phân tích
@@ -20,38 +20,126 @@
 - Các giá trị số chỉ được đưa vào phân tích so sánh khi quy đổi được tiền tệ và chu kỳ trả lương có căn cứ. Bản gốc vẫn được bảo toàn trong MinIO.
 - Outlier IQR là “ngoại lai nghi vấn”, không đồng nghĩa lỗi dữ liệu. Trước khi loại/capping phải kiểm tra đơn vị tiền tệ, lương theo tháng/năm và đặc điểm nghề nghiệp.
 
-## 3. Chất lượng và tình trạng dữ liệu
+## 3. Kết quả chạy trên dữ liệu thật
 
-| Chỉ tiêu | Glints | JobsGO | Nguồn số liệu |
-|---|---:|---:|---|
-| Số URL trong catalog | Chưa chạy | Chưa chạy | `url_ledger/<source>/catalog_master.json` |
-| Số snapshot version mới nhất | Chưa chạy | Chưa chạy | `raw/<source>/..._v*.json` |
-| Tỷ lệ lương công khai dạng số (%) | Chưa chạy | Chưa chạy | Notebook EDA |
-| Tỷ lệ lương thương lượng / không công khai (%) | Chưa chạy | Chưa chạy | HTML/GraphQL raw |
-| Tỷ lệ thiếu địa điểm (%) | Chưa chạy | Chưa chạy | Snapshot raw |
-| Tỷ lệ thiếu kinh nghiệm (%) | Chưa chạy | Chưa chạy | Snapshot raw |
-| Tỷ lệ thiếu mô tả (%) | Chưa chạy | Chưa chạy | Snapshot raw |
+Chạy `python scripts/run_glints_jobsgo_eda.py` hoặc chạy toàn bộ notebook `notebooks/eda_preliminary_glints_jobsgo.ipynb`. Script cập nhật tự động khối bên dưới, sinh CSV và biểu đồ trong `reports/generated/`. Không copy số liệu từ synthetic fixtures.
 
-Không nên ghi các số ước lượng từ số trang kết quả tìm kiếm vào bảng này; chỉ ghi số đo trên raw snapshot đã thu thập và kiểm chứng.
+<!-- BEGIN AUTO-GENERATED EDA RESULTS -->
 
-## 4. Ngoại lai IQR
+# Kết quả EDA thực nghiệm — Glints & JobsGO
 
-Sử dụng Q1, Q3, IQR = Q3 − Q1; cận dưới `max(0, Q1 − 1.5*IQR)` và cận trên `Q3 + 1.5*IQR`. Chỉ áp dụng cho mẫu có `salary_min`/`salary_max` hợp lệ sau quy đổi về **triệu VND/tháng**. Không ép lương “thỏa thuận” vào phân phối số.
+- **Thời điểm chạy (UTC):** `2026-10-18 07:52:54 UTC`
+- **Endpoint:** `http://localhost:9000` | **Bucket:** `vn-it-jobs`
+- **Đơn vị phân tích:** snapshot version mới nhất theo `source_job_id`; snapshot listing, test fixture và HTML sample không tham gia thống kê.
+- **Nguyên tắc lương:** không gán 0 cho lương thiếu/thỏa thuận; chỉ so sánh theo tháng khi period + currency nhận diện được; USD chỉ quy đổi nếu `FX_VND_PER_USD` được đặt rõ trong `.env`.
 
-| Chỉ số | Glints | JobsGO |
+## 1. Tổng quan theo nguồn
+
+| Nguồn | URL catalog | Latest snapshots | Lương số | Lương thương lượng | Thiếu lương | Lương tháng so sánh được | FAILED ledger | Listing errors | Lỗi listing gần nhất |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| glints | 37 | 37 | 21 (56.76%) | 0 | 16 | 21 | 0 | 2 | HTTP 403 |
+| jobsgo | 0 | 0 | 0 (N/A (no snapshots)) | 0 | 0 | 0 | 0 | 1 | HTTP 403 |
+
+## 2. Missing rate các trường chính
+
+| Nguồn | Trường | Record | Thiếu | Missing rate |
+|---|---|---:|---:|---:|
+| glints | `title` | 37 | 0 | 0.00% |
+| glints | `company` | 37 | 0 | 0.00% |
+| glints | `salary_text` | 37 | 16 | 43.24% |
+| glints | `location` | 37 | 0 | 0.00% |
+| glints | `min_experience_years` | 37 | 0 | 0.00% |
+| glints | `description_chars` | 37 | 0 | 0.00% |
+| glints | `skill_tags_raw` | 37 | 8 | 21.62% |
+| jobsgo | `title` | 0 | 0 | N/A |
+| jobsgo | `company` | 0 | 0 | N/A |
+| jobsgo | `salary_text` | 0 | 0 | N/A |
+| jobsgo | `location` | 0 | 0 | N/A |
+| jobsgo | `min_experience_years` | 0 | 0 | N/A |
+| jobsgo | `description_chars` | 0 | 0 | N/A |
+| jobsgo | `skill_tags_raw` | 0 | 0 | N/A |
+
+## 3. Lương ngoại lai — IQR
+
+Đơn vị: triệu VND/tháng; bảng chỉ có giá trị khi tiền tệ và kỳ trả lương đủ rõ.
+
+| Nguồn | Trường | n | Q1 | Median | Q3 | IQR | Cận dưới | Cận trên | Outlier | Tỷ lệ |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| glints | `salary_min_million_vnd_month` | 21 | 10.000 | 12.000 | 20.000 | 10.000 | 0.000 | 35.000 | 3 | 14.29% |
+| glints | `salary_max_million_vnd_month` | 20 | 11.875 | 17.000 | 31.250 | 19.375 | 0.000 | 60.312 | 0 | 0.00% |
+| jobsgo | `salary_min_million_vnd_month` | 0 | N/A | N/A | N/A | N/A | N/A | N/A | 0 | N/A |
+| jobsgo | `salary_max_million_vnd_month` | 0 | N/A | N/A | N/A | N/A | N/A | N/A | 0 | N/A |
+
+## 4. Từ khóa kỹ năng (heuristic, không phải taxonomy chuẩn)
+
+| Kỹ năng | Số tin có từ khóa | Tỷ lệ lũy tích trên lượt nhắc |
 |---|---:|---:|
-| Số bản ghi có lương số chuẩn hóa | Chưa chạy | Chưa chạy |
-| Q1 / Median / Q3 lương tối thiểu | Chưa chạy | Chưa chạy |
-| IQR và cận ngoài | Chưa chạy | Chưa chạy |
-| Số và tỷ lệ outlier | Chưa chạy | Chưa chạy |
+| Agile | 9 | 3.18% |
+| Java | 7 | 5.65% |
+| AWS | 7 | 8.13% |
+| Docker | 7 | 10.60% |
+| CI/CD | 7 | 13.07% |
+| Python | 7 | 15.55% |
+| MySQL | 6 | 17.67% |
+| Scrum | 6 | 19.79% |
+| Azure | 6 | 21.91% |
+| Git | 6 | 24.03% |
+| JavaScript | 5 | 25.80% |
+| PHP | 5 | 27.56% |
+| Linux | 5 | 29.33% |
+| PostgreSQL | 5 | 31.10% |
+| Customer Service | 5 | 32.86% |
+| English Language | 4 | 34.28% |
+| C# | 4 | 35.69% |
+| SQL | 4 | 37.10% |
+| Machine Learning | 3 | 38.16% |
+| Quality Assurance | 3 | 39.22% |
 
-## 5. Biểu đồ bắt buộc trong notebook
+## 5. Biểu đồ được tạo
 
-1. Histogram phân phối lương min/max (triệu VND/tháng).
-2. Boxplot lương để xem ngoại lai IQR.
-3. Bar chart Top 15 kỹ năng/thẻ kỹ năng quan sát được.
-4. Biểu đồ tỷ lệ công khai lương theo nguồn.
-5. Bar chart Missing Rate của các trường chính theo nguồn.
+- `reports/generated/figures/01_salary_distribution.png`
+- `reports/generated/figures/02_experience_salary_relationship.png`
+- `reports/generated/figures/03_salary_dispersion_by_source.png`
+- `reports/generated/figures/04_pearson_correlation.png`
+- `reports/generated/figures/05_spearman_correlation.png`
+- `reports/generated/figures/06_skills_pareto.png`
+- `reports/generated/figures/07_salary_disclosure_by_source.png`
+- `reports/generated/figures/08_missing_rate_by_source.png`
+
+## 6. Raw field/HTML selector inventory
+
+- Tổng mục trường/selector quan sát được: **477** (field JSON và selector HTML được báo cáo riêng).
+- `presence_rate_pct` đo số snapshot có field/selector; `non_null_rate_pct` chỉ áp dụng trường JSON. `absent_rate_pct` phân biệt với field có nhưng null/empty.
+
+## 7. Lỗi đọc snapshot
+
+Số đối tượng không đọc/parse được: **0**.
+
+## 8. Diễn giải và giới hạn
+
+- Đây là EDA trên dữ liệu thực sự hiện diện trong MinIO ở thời điểm chạy, không phải ước lượng độ phủ của toàn website.
+- Không so sánh mức lương nếu currency/period chưa xác định; tỷ lệ lương dạng số có thể cao hơn tỷ lệ lương tháng so sánh được.
+- IQR đánh dấu điểm nghi vấn chứ không khẳng định dữ liệu sai; cần đối chiếu HTML gốc trước mọi xử lý outlier.
+- Skill frequency dùng keyword-boundary scan từ title/description/HTML; rà soát thủ công trước khi dùng cho phân tích thị trường chính thức.
+- Nếu một nguồn có 0 snapshot, phần trăm của nguồn đó là N/A; cần xử lý blocker crawl (ví dụ HTTP 403/selector thay đổi) trước khi so sánh hai nguồn.
+
+<!-- END AUTO-GENERATED EDA RESULTS -->
+
+## 4. Phương pháp Missing Rate và ngoại lai IQR
+
+Missing rate được tính trên snapshot detail mới nhất của mỗi URL/source job ID; field thiếu, explicit null, chuỗi rỗng và list rỗng được coi là missing cho các trường nghiệp vụ tương ứng. Raw selector inventory phân biệt trường JSON **có mặt** với trường có mặt nhưng null/empty.
+
+Sử dụng Q1, Q3, IQR = Q3 − Q1; cận dưới `max(0, Q1 − 1.5*IQR)` và cận trên `Q3 + 1.5*IQR`. Chỉ áp dụng cho `salary_min`/`salary_max` đủ căn cứ quy đổi về **triệu VND/tháng**. Outlier là tín hiệu rà soát HTML/raw gốc, không phải lệnh tự động xóa hay winsorize dữ liệu.
+
+## 5. Nhóm biểu đồ EDA bắt buộc
+
+1. **Distribution:** histogram lương tháng có thể so sánh.
+2. **Relationship:** scatter kinh nghiệm yêu cầu với cận lương tối đa tháng; xu hướng tuyến tính chỉ mang tính mô tả.
+3. **Dispersion/Outlier:** boxplot lương tháng theo nguồn và bảng IQR.
+4. **Correlation:** ma trận tương quan Pearson và Spearman cho trường số đủ dữ liệu.
+5. **Categorical frequency/Pareto:** tần suất keyword kỹ năng và tỷ lệ tích lũy.
+
+Bổ sung: bar chart missing rate và tỷ lệ tin có lương số. Mỗi biểu đồ ghi rõ khi thiếu dữ liệu; không được tạo quan sát giả để làm đầy chart.
 
 ## 6. So sánh sơ bộ giữa hai nền tảng
 
@@ -62,6 +150,6 @@ Sử dụng Q1, Q3, IQR = Q3 − Q1; cận dưới `max(0, Q1 − 1.5*IQR)` và 
 ## 7. Cách chạy và cập nhật số liệu
 
 1. Khởi động MinIO theo `docker-compose.minio.yml` và xác nhận bucket `vn-it-jobs` đã có dữ liệu.
-2. Chạy tất cả cell trong notebook theo thứ tự.
-3. Dùng `summary_by_source`, `missing_rate_table`, `iqr_summary` và các biểu đồ để thay các ô “Chưa chạy” bằng kết quả thật.
+2. Chạy `python scripts/run_glints_jobsgo_eda.py` hoặc **Run All** notebook.
+3. Đối chiếu `reports/generated/glints_jobsgo_eda_summary_YYYY-MM-DD.md`, các CSV và PNG; script tự cập nhật khối kết quả ở trên.
 4. Ghi lại ngày chạy, phạm vi URL, số record loại trùng và số snapshot lỗi trong báo cáo cuối.

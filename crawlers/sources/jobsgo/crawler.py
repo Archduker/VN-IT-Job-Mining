@@ -127,14 +127,15 @@ class JobsGORawCrawler(TwoPhaseRawCrawler):
         page_count = 0
         reported_total = None
         last_range_end = None
-
         failed_pages: list[tuple[str, str]] = []
+
         while queue and (max_pages is None or page_count < max_pages):
             page_url = queue.pop(0)
             if page_url in visited_pages:
                 continue
             visited_pages.add(page_url)
             page_count += 1
+            response = None
             try:
                 self._sleep()
                 response = self.http_client.get(page_url, timeout=25, headers={"Accept-Encoding": "identity"})
@@ -147,9 +148,27 @@ class JobsGORawCrawler(TwoPhaseRawCrawler):
                 if not isinstance(html, str) or not html:
                     raise RuntimeError("Empty listing HTML")
             except Exception as exc:
-                logger.exception("JobsGO listing page failed: %s", page_url)
                 failed_pages.append((page_url, str(exc)))
+                logger.exception("JobsGO listing page failed: %s", page_url)
                 full_scan = False
+                # Preserve the HTTP error page for diagnosis when the request returned a response.
+                try:
+                    failed_response = response
+                    if failed_response is not None:
+                        error_status = int(getattr(failed_response, "status_code", 0) or 0)
+                        error_html = getattr(failed_response, "text", "")
+                        error_key = f"raw/jobsgo/_listing_failures/{self._run_date}/page_{page_count:04d}.html"
+                        if isinstance(error_html, bytes):
+                            error_html = error_html.decode("utf-8", errors="replace")
+                        if isinstance(error_html, str) and error_html:
+                            self.store.put_text(error_key, error_html, "text/html; charset=utf-8")
+                        self.store.put_json(error_key + ".json", {
+                            "source": self.source, "url": page_url, "page": page_count,
+                            "http_status": error_status, "error": str(exc),
+                            "captured_at": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
+                        })
+                except Exception:
+                    logger.debug("Could not archive failed JobsGO listing response", exc_info=True)
                 continue
 
             page_key = f"raw/jobsgo/_listing/{self._run_date}/page_{page_count:04d}.html"
@@ -198,18 +217,16 @@ class JobsGORawCrawler(TwoPhaseRawCrawler):
         if reported_total is not None and last_range_end is not None and last_range_end < reported_total and not queue and max_pages is None:
             full_scan = False
             logger.warning("JobsGO listing reports %s results but pagination ended at %s; no CLOSED decisions this run.", reported_total, last_range_end)
-        if failed_pages and not seen_jobs:
-            self._finish_discovery(full_scan=False)
-            failed_url, reason = failed_pages[0]
-            raise RuntimeError(
-                "JobsGO discovery failed: "
-                f"{len(failed_pages)} listing page(s) failed, "
-                "0 job URLs discovered. "
-                f"First URL: {failed_url}; reason: {reason}"
-            )
-
         self._finish_discovery(full_scan=full_scan)
-        logger.info("JobsGO discovery: %d unique job URLs; pages=%d; full_scan=%s", len(seen_jobs), page_count, full_scan)
+        logger.info("JobsGO discovery: %d unique job URLs; pages=%d; full_scan=%s; failed_pages=%d",
+                    len(self._discovered_hashes), page_count, full_scan, len(failed_pages))
+        if failed_pages:
+            first_url, first_reason = failed_pages[0]
+            raise RuntimeError(
+                f"JobsGO discovery failed: {len(failed_pages)} listing page(s) failed, "
+                f"{len(self._discovered_hashes)} job URLs discovered. "
+                f"First URL: {first_url}, reason: {first_reason}"
+            )
         return len(self._discovered_hashes)
 
     def fetch_detail(self, url: str) -> Dict[str, Any]:
