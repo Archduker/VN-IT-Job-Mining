@@ -80,12 +80,24 @@ python crawlers/sources/itviec/crawler.py --max-items 30
 python crawlers/sources/glints/crawler.py --max-items 30
 ```
 
-### 4. Xem báo cáo tiến độ thu thập
+### 4. Lưu Trữ & Đồng Bộ Kết Quả .JSON Lên Cloudflare R2
+```bash
+# Tải toàn bộ kết quả của 1 nguồn lên Cloud R2 (ví dụ: topcv)
+python scripts/upload_to_r2.py --source topcv
+
+# Tải 1 file kết quả cụ thể
+python scripts/upload_to_r2.py --file crawlers/sources/vietnamworks/test_5_jobs.json
+
+# Hoặc đồng bộ toàn bộ kết quả cả nhóm:
+make upload-r2
+```
+
+### 5. Xem báo cáo tiến độ thu thập
 ```bash
 python scripts/report.py
 ```
 
-### 5. Chạy Toàn Bộ Unit Tests
+### 6. Chạy Toàn Bộ Unit Tests
 ```bash
 pytest tests/unit/ -v
 ```
@@ -95,14 +107,16 @@ Toàn bộ **130/130 test cases** đạt trạng thái **100% Passed**.
 
 ## 📚 Bộ Tài Liệu Quy Trình & Kiến Trúc Cốt Lõi
 
-1. **Bảng phân công nhiệm vụ & Tiêu chuẩn nghiệm thu (DoD)**: [`TASKS.md`](TASKS.md)
-2. **Tổng quan Data Mining & CRISP-DM hiện đại (Core 01)**: [`docs/01_modern_data_mining_overview.md`](docs/01_modern_data_mining_overview.md)
-3. **Kiến trúc Two-Phase Crawler & MinIO Lakehouse (Core 02)**: [`docs/02_crawling_architecture_guide.md`](docs/02_crawling_architecture_guide.md)
-4. **Hướng dẫn EDA & Tích hợp dữ liệu đa nguồn (Core 03)**: [`docs/03_eda_and_integration_guide.md`](docs/03_eda_and_integration_guide.md)
-5. **Hướng dẫn tự học & vận hành Apache Airflow**: [`docs/03_airflow_guide.md`](docs/03_airflow_guide.md)
-6. **Phương pháp chuẩn bóc tách nguồn dữ liệu mới**: [`docs/guides/crawler_analysis_methodology.md`](docs/guides/crawler_analysis_methodology.md)
-7. **Hồ sơ phân tích kiến trúc 7 sàn tuyển dụng**: Thư mục [`docs/crawl/`](docs/crawl/) (`topcv.md`, `topdev.md`, `vietnamworks.md`, `careerviet.md`, `vieclam24h.md`, `itviec.md`, `glints.md`).
-8. **Antigravity Custom Skill cho AI**: [`.agents/skills/job-crawler-analyzer/SKILL.md`](.agents/skills/job-crawler-analyzer/SKILL.md)
+1. **Cẩm nang sử dụng MinIO Object Storage (Up link & Sổ cái URL)**: [`docs/minio_docker_setup_guide.md`](docs/minio_docker_setup_guide.md)
+2. **Cẩm nang thiết lập & tải kết quả .JSON lên Cloudflare R2**: [`docs/cloud_r2_setup_guide.md`](docs/cloud_r2_setup_guide.md)
+3. **Bảng phân công nhiệm vụ & Tiêu chuẩn nghiệm thu (DoD)**: [`TASKS.md`](TASKS.md)
+4. **Tổng quan Data Mining & CRISP-DM hiện đại (Core 01)**: [`docs/01_modern_data_mining_overview.md`](docs/01_modern_data_mining_overview.md)
+5. **Kiến trúc Two-Phase Crawler & MinIO Lakehouse (Core 02)**: [`docs/02_crawling_architecture_guide.md`](docs/02_crawling_architecture_guide.md)
+6. **Hướng dẫn EDA & Tích hợp dữ liệu đa nguồn (Core 03)**: [`docs/03_eda_and_integration_guide.md`](docs/03_eda_and_integration_guide.md)
+7. **Hướng dẫn tự học & vận hành Apache Airflow**: [`docs/03_airflow_guide.md`](docs/03_airflow_guide.md)
+8. **Phương pháp chuẩn bóc tách nguồn dữ liệu mới**: [`docs/guides/crawler_analysis_methodology.md`](docs/guides/crawler_analysis_methodology.md)
+9. **Hồ sơ phân tích kiến trúc 7 sàn tuyển dụng**: Thư mục [`docs/crawl/`](docs/crawl/) (`topcv.md`, `topdev.md`, `vietnamworks.md`, `careerviet.md`, `vieclam24h.md`, `itviec.md`, `glints.md`).
+10. **Antigravity Custom Skill cho AI**: [`.agents/skills/job-crawler-analyzer/SKILL.md`](.agents/skills/job-crawler-analyzer/SKILL.md)
 
 ---
 

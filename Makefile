@@ -15,6 +15,7 @@ export AIRFLOW_HOME
 
 .PHONY: help setup install install-dev test test-cov test-ledger lint format \
         minio-up minio-down setup-minio check-env \
+        upload-r2 r2-status download-r2 \
         airflow-webserver airflow-scheduler airflow-stop \
         discover-topcv crawl-topcv discover-topdev crawl-topdev \
         crawl-topdev crawl-careerviet crawl-itviec crawl-vietnamworks \
@@ -33,10 +34,15 @@ help:
 	@echo "    make install-dev        Install runtime + dev deps"
 	@echo "    make check-env          Verify environment & MinIO connection"
 	@echo ""
-	@echo "  MinIO Lakehouse:"
+	@echo "  MinIO Lakehouse (Local URL Discovery & Ledger):"
 	@echo "    make minio-up           Start local MinIO server (Docker) + auto-init bucket"
 	@echo "    make minio-down         Stop MinIO container"
 	@echo "    make setup-minio        Verify/Create vn-it-jobs bucket via python script"
+	@echo ""
+	@echo "  Cloudflare R2 (Remote Result .json Lakehouse):"
+	@echo "    make upload-r2          Upload all result .json files to Cloudflare R2"
+	@echo "    make r2-status          Check storage status on Cloudflare R2"
+	@echo "    make download-r2        Download all team results from Cloudflare R2"
 	@echo ""
 	@echo "  Testing:"
 	@echo "    make test               Run all unit tests"
@@ -99,6 +105,19 @@ minio-down:
 
 setup-minio:
 	$(PYTHON) scripts/setup_minio.py
+
+# ── Cloudflare R2 Commands ─────────────────────────────────────
+upload-r2:
+	@echo "Uploading all result .json files to Cloudflare R2..."
+	$(PYTHON) scripts/upload_to_r2.py --all-results
+
+r2-status:
+	@echo "Checking Cloudflare R2 storage status..."
+	$(PYTHON) scripts/sync_cloud_lakehouse.py --status
+
+download-r2:
+	@echo "Downloading team results from Cloudflare R2..."
+	$(PYTHON) scripts/sync_cloud_lakehouse.py --download
 
 # ── Testing ────────────────────────────────────────────────────
 test:
