@@ -284,7 +284,7 @@ Kết quả quét **30/30** trang HTML trong `data/raw/careerviet/html/` (16/10/
 
 ---
 
-## 9. Lệnh Chạy Tham Chiếu (CHƯA chạy online)
+## 9. Lệnh Chạy Tham Chiếu (đã chạy online 2026-10-16 → 2026-10-17)
 
 ### 9.1. Backup ledger THẬT trước khi online (bắt buộc)
 
@@ -310,7 +310,9 @@ python -X utf8 -m crawlers.sources.careerviet.crawler --phase details `
 
 Kết quả (in ra stdout, ledger **KHÔNG đổi SHA-256**): 20 `job_id`, phân bố `{c37_digital_mkt: 20}`.
 
-### 9.3. Lệnh online lượt 1 (dự kiến, **CHỜ người hướng dẫn duyệt**)
+### 9.3. Lệnh online lượt 1 (dự kiến → **đã chạy**, xem §9.4)
+
+Tài đã chạy với phạm vi **rộng hơn** lệnh dự kiến bên dưới (toàn bộ PENDING, không `--limit 20`, không lọc `--source-category`):
 
 ```powershell
 python -X utf8 -m crawlers.sources.careerviet.crawler --phase details --online `
@@ -324,24 +326,57 @@ python -X utf8 scripts/careerviet_raw_stats.py
 python -X utf8 scripts/careerviet_it_check.py
 ```
 
-### 9.4. Kết quả online
+### 9.4. Kết quả online lượt 1 (2026-10-16 → 2026-10-17)
 
-**TODO sau đợt chạy 20 tin.** Khi chạy xong, chạy tiếp lệnh **chi đọc** để lấy số liệu tự động (V2/A6):
+**Trạng thái: HOÀN THÀNH — crawl sạch, 0 lỗi.** Tài đã chạy `python -X utf8 -m crawlers.sources.careerviet.crawler --phase details --online` với phạm vi **toàn bộ 1009 PENDING** (không giới hạn 20, không lọc `--source-category`), kết quả **1018 envelope + 11 repost**.
+
+**Lệnh tái lập** (chỉ đọc local, **không** gọi mạng):
 
 ```powershell
-python -X utf8 scripts/careerviet_report_fill.py --raw-dir data/careerviet/raw `
-  --ledger-dir data/careerviet/url_ledger
-# hoac xuat JSON cho may moc doc:
-python -X utf8 scripts/careerviet_report_fill.py --json | Out-File report_fill_online.json -Encoding utf8
+python -X utf8 scripts/careerviet_raw_stats.py
+python -X utf8 scripts/careerviet_it_check.py
+python -X utf8 scripts/careerviet_report_fill.py --json
+python -X utf8 scripts/careerviet_eda_charts.py    # sinh 16 bieu do + chu thich 3 phan
 ```
 
-Roi dien vào mục này:
-- Số envelope sinh / 20 (kỳ vọng 20).
-- Số tin có `"CNTT"` trong `raw_payload."Ngành nghề"` (mục tiêu: đo **tỉ lệ c37 là IT**).
-- Số `DONE` / `PENDING` còn lại / `FAILED` / `RECHECK_DUE` sau đợt.
-- **CDC mutually exclusive**: NEW / UPDATED / REPOST / CLOSED / FAILED / PENDING / RECHECK_DUE (khong dem repost trung NEW).
-- Có phát sinh `data/careerviet/_blocked/*.html` hay không; lý do (429/403/captcha/5xx-storm).
-- `content_hash` có đổi giữa hai version không (nếu có re-crawl).
+**Số thực đo**:
+
+| Chỉ số | Giá trị | Ghi chú |
+| :--- | ---: | :--- |
+| Envelope sinh (`data/careerviet/raw/2026-10-16/`) | **1018** | tất cả `_v1.json` |
+| Thời gian crawl | 17:09:58 UTC → 18:27:00 UTC = **77.0 phút** | qua `metadata.scraped_at` 1018 envelope |
+| TB / tin | **4.54 s** | khớp `DelayConfig(2.0–5.0 s)` |
+| Ledger DONE | **1029 / 1029** | 100 % |
+| Ledger PENDING / FAILED / RECHECK_DUE | **0 / 0 / 0** | crawl sạch |
+| `data/careerviet/_blocked/` | **0 file** | không 429/403/captcha |
+| **CDC NEW** | **1018** | version 1, không repost |
+| **CDC UPDATED / ACTIVE / CLOSED** | **0 / 0 / 0** | chưa re-crawl 21 ngày |
+| **CDC REPOST** | **11** | `content_hash` trùng URL khác, `repost_of_url_hash != null`, **không** sinh envelope |
+| Đối chiếu | `1029 − 11 = 1018` ✓ | |
+| Phiên bản phân bố | `{1: 1018}` | chưa v2+ |
+
+**Cấu trúc `raw_payload` đối chiếu bằng envelope thật** (đọc local, sửa trong lượt 2026-10-18): `detail-box` = **`List[str]`** (các dòng `<li>` metadata: Lương / Kinh nghiệm / Cấp bậc / Hình thức / Ngày cập nhật / Hết hạn nộp; độ dài `0`→24 tin, `9`→104, `10`→890), **KHÔNG phải** mô tả công việc. JD thật nằm trong `detail-row` = **`Dict[str,str]`** (số key `0`→1, `5`→279, `6`→729, `7`→9; heading `Mô tả Công việc` 1013/1018, `Yêu Cầu Công Việc`/`Phúc lợi`/`Thông tin khác`/`Gợi ý hồ sơ` 1017, `Địa điểm làm việc` 728). Bản đầy đủ trùng trong `job-posting-schema.description` (**1018/1018**). Chi tiết: `reports/careerviet_inventory.md` §1.2 và `reports/careerviet_eda.md` §1.1.
+
+**Tỉ lệ IT** (`raw_payload["Ngành nghề"]` chứa `"CNTT"` hoặc `"Phần mềm"`):
+
+| Bucket | Số tin | IT | % IT |
+| :--- | ---: | ---: | ---: |
+| `c1` | 602 | 398 | **66.1 %** |
+| `c37_digital_mkt` | 279 | 136 | **48.7 %** |
+| `keyword:developer` | 92 | 43 | **46.7 %** |
+| `c61` | 45 | 14 | **31.1 %** |
+| **Tổng** | **1018** | **591** | **58.1 %** |
+
+=> Bucket `c37` có **48.7 % IT / 51.3 % non-IT** → xác nhận quyết định `--include-c37` (commit `1470de0`) là **cần thiết** để đo tỉ lệ thật. Data Integration **phải** dùng `Ngành nghề`, **KHÔNG** dùng `source_category` (docs/crawl §8.1).
+
+**`content_hash` đổi giữa hai version**: **chưa có** vì chưa re-crawl sau 21 ngày (`RECHECK_DUE = 0`). Khi re-crawl, `_process_detail_record` sẽ phân nhánh `same_content` vs `new_version` theo `content_hash`.
+
+**Báo cáo chi tiết** (cùng repo, cập nhật lượt 2026-10-18):
+
+- [`reports/careerviet_inventory.md`](../../reports/careerviet_inventory.md) — field inventory + % null thực đo 8 trường.
+- [`reports/careerviet_eda.md`](../../reports/careerviet_eda.md) — EDA sơ bộ (null, CDC, IT ratio, top tags/locations/companies, so sánh IT vs ngoài IT) + nhúng 16 biểu đồ.
+- [`reports/careerviet_eda_charts.md`](../../reports/careerviet_eda_charts.md) — 16 biểu đồ + chú thích **Quan sát / Ý nghĩa / Hạn chế** tự động sinh bởi `scripts/careerviet_eda_charts.py`.
+- Ảnh PNG: `reports/figures/careerviet/01_bucket_supply.png` … `16_ledger_cdc.png` (16 file, cùng 1 style, mỗi ảnh có dòng nguồn riêng).
 
 ---
 
@@ -351,10 +386,10 @@ Roi dien vào mục này:
 python -X utf8 -m pytest -q
 ```
 
-Kết quả thực đo **tại HEAD `4bf8b1b` + working tree** (2026-10-16):
+Kết quả thực đo **tại HEAD `4701af8` + working tree** (2026-10-18):
 
 ```
-1 failed, 238 passed in 6.53s
+1 failed, 297 passed in 58.05s
   FAILED tests/unit/test_url_ledger.py::test_url_ledger_default_storage_dir
     ('data\\topcv\\url_ledger'.endswith('data/topcv/url_ledger') == False)
     # Windows path separator, co SAN, thuoc file dung chung -> KHONG sua o day.
@@ -362,7 +397,9 @@ Kết quả thực đo **tại HEAD `4bf8b1b` + working tree** (2026-10-16):
 
 Subset CareerViet + push_raw_to_minio (lệnh:
 `python -X utf8 -m pytest -q (Get-ChildItem tests/unit/test_careerviet_*.py | Select-Object -ExpandProperty FullName) tests/unit/test_push_raw_to_minio.py`):
-**92 passed / 0 failed** (tăng từ 52 sau khi thêm `report_fill`, `sync_phase`, `push_raw_to_minio`).
+**151 passed / 0 failed** (tăng từ 104 khi `test_careerviet_eda_charts.py` đi từ 12 lên **59** test ở lượt 2026-10-18; trước đó 52 → 92 khi thêm `report_fill`, `sync_phase`, `push_raw_to_minio`).
+
+> Biến thể chọn bằng `-k` (`pytest tests/unit -k "careerviet or push_raw"`) ra **161 passed / 137 deselected** vì gom thêm `test_import_careerviet_urls.py` (9 test) + 1 test `careerviet` trong `test_crawlers.py`. Con số chuẩn để đối chiếu vẫn là **151** theo lệnh nêu trên.
 
 | File test | Số test | Nội dung chính |
 | :--- | ---: | :--- |
@@ -377,20 +414,19 @@ Subset CareerViet + push_raw_to_minio (lệnh:
 | `test_careerviet_sync_phase.py` | 4 | `--phase sync` delegate `sync_to_minio`, argparse chap nhan `sync` |
 | `test_careerviet_report_fill.py` | 16 | scan envelope, % null, ti le CNTT, **CDC mutually exclusive** (repost khong trùng NEW) |
 | `test_push_raw_to_minio.py` | 15 | dry-run, no-clobber, `--job-id`, password khong log, anh xa `dt=` va bare date |
-| **Tổng subset** | **92** | (0 fail) |
+| `test_careerviet_eda_charts.py` | 59 | 16 biểu đồ + chú thích 3 phần: `flat_text` (hồi quy `&` không đóng entity), `pick_section`, `decorate` tự xuống dòng/thu nhỏ tiêu đề, audit chữ bằng `fig.get_tightbbox` trên cả 16 ảnh, biểu đồ 15 đọc `detail-row` KHÔNG `detail-box`, `skip()` cho mẫu mỏng, `pct` trả `n/a` thay vì bịa số; tmp_path, không mạng |
+| **Tổng subset** | **151** | (0 fail; tổng 12 file test ở bảng trên) |
 
 ---
 
 ## 11. Trạng Thái Repo Tham Chiếu
 
-- `HEAD = 4bf8b1b` — `feat(careerviet): dung ca dot khi 3 loi 5xx lien tiep (phuong an B), giu PENDING chuoi cuoi` (**đã commit**, 2026-10-16)
-- `HEAD~1 = f977ffb` — `fix(careerviet): chi coi la chan khi 403/429 hoac thieu .job-detail-page + dau hieu ro`
-- `HEAD~2 = 74f643b` — `feat(careerviet): cờ lấy mẫu, preview không mạng, giữ PENDING khi bị chặn`
-- `origin/crawls/careerviet = 719e05f` → local **ahead 4 commit** (`1470de0`, `74f643b`, `f977ffb`, `4bf8b1b`), **CHƯA push**.
-- Working tree **chưa commit** (A1 comment + C3 `--phase sync` + C4 docs + V2 report_fill + C1/C2/C5 push script & test & reports):
-  - Modified: `crawlers/sources/careerviet/crawler.py`, `docs/crawl/careerviet.md`.
-  - Untracked: `scripts/push_raw_to_minio.py`, `scripts/careerviet_report_fill.py`, `tests/unit/test_push_raw_to_minio.py`, `tests/unit/test_careerviet_sync_phase.py`, `tests/unit/test_careerviet_report_fill.py`, `reports/careerviet_inventory.md`, `reports/careerviet_eda.md`.
-  - Untracked **từ lượt khác** (ngoài phạm vi bàn giao này): `scripts/careerviet_salary_probe.py`, `scripts/careerviet_unledgered_probe.py`.
+- `HEAD = 4701af8` — `docs(careerviet): MinIO = AIStor (minio.exe --license), Docker chi la phu` (**đã commit & push**, 2026-10-17)
+- `origin/crawls/careerviet = 4701af8` → local **đồng nhất** origin (`0 ahead / 0 behind`).
+- Chuỗi 8 commit đã push (xem `git log --oneline 719e05f^..HEAD`): `1470de0`, `74f643b`, `f977ffb`, `4bf8b1b`, `9e6462d`, `b9cca20`, `315a04c`, `4701af8`.
+- Working tree **chưa commit** (lượt 2026-10-18):
+  - Modified: `reports/careerviet_eda.md` (424 dòng — §4 dựng lại theo 16 biểu đồ + bảng §4.17), `reports/careerviet_inventory.md` (202 dòng), `docs/crawl/careerviet.md` (§9 + §9.4 + §10 + §11 + §12 cập nhật).
+  - Untracked: `scripts/careerviet_eda_charts.py` (1363 dòng — 16 biểu đồ, `decorate()` đo-lại-sau-`tight_layout`, `flat_text` đã vá `close()`), `tests/unit/test_careerviet_eda_charts.py` (694 dòng, 59 test), `reports/figures/careerviet/*.png` (16 file), `reports/careerviet_eda_charts.md` (136 dòng, script sinh).
 
 ---
 
@@ -400,23 +436,25 @@ Subset CareerViet + push_raw_to_minio (lệnh:
 
 - [x] A1 comment `crawler.py` dòng 57 khớp thực tế c37.
 - [x] A2 docs §2.4 + §8.1 + §8.5 (1 template DOM + bảng 4 mẫu) + xin miễn DoD 4.
-- [x] A3 `reports/careerviet_inventory.md` (150 dòng, các ô số liệu ghi CHỜ ONLINE).
-- [x] A4 `reports/careerviet_eda.md` (159 dòng, khung chờ số liệu online).
+- [x] A3 `reports/careerviet_inventory.md` (202 dòng — **đã điền số thật** từ 1018 envelope, không còn ô CHỜ ONLINE).
+- [x] A4 `reports/careerviet_eda.md` (424 dòng — **đã điền số thật** + nhúng 16 biểu đồ + bảng tổng hợp IT vs ngoài IT §4.17).
 - [x] A6 `scripts/careerviet_report_fill.py` + test (16 pass, CDC mutually exclusive).
 - [x] C1 `scripts/push_raw_to_minio.py` (361 dòng, 14 cờ, env var khớp `setup_minio.py` + `url_ledger.py`).
 - [x] C2 `tests/unit/test_push_raw_to_minio.py` (15 pass, mock boto3).
 - [x] C3 `--phase sync` + `sync_ledger_to_minio()` trong `crawler.py`.
 - [x] C4 docs §13 MinIO (bucket, key, thứ tự lệnh, Windows docker, idempotent).
 - [x] C5 đề xuất `.gitignore` `backup/` + `*.bak` (agent KHÔNG tự sửa file dùng chung).
+- [x] E1 `scripts/careerviet_eda_charts.py` sinh **16 biểu đồ** + `reports/careerviet_eda_charts.md` (chú thích 3 phần Quan sát / Ý nghĩa / Hạn chế cho từng biểu đồ, mẫu mỏng thì ghi `skip` thật thay vì vẽ số bịa).
+- [x] E2 vá hiển thị + số liệu (lượt 2026-10-18): tiêu đề/phụ đề dài **tự xuống dòng/thu nhỏ** theo bề rộng thật còn lại (đo `ax._left_title`, tính cả colorbar, và **đo lại sau `tight_layout`** vì chỗ còn lại thu hẹp khi đặt chữ); `flat_text` gọi `close()` để giữ chữ có `&` không đóng entity ("Nhân viên C&B") — trước đó 3 `title` + 5 `job-company-name` bị đếm nhầm thành rỗng, làm lệch cả biểu đồ 04 và số công ty ở biểu đồ 11 (490 → **494**, khớp §1.1). Test: `tests/unit/test_careerviet_eda_charts.py` (**59 case**, gồm audit tự động quét cả 16 ảnh xem chữ tràn biên/đè colorbar).
 
 **Còn lại**:
 
-- [ ] Chạy online lượt 1 với 20 tin `c37_digital_mkt` sau khi backup + được duyệt (xem §9.3).
-- [ ] Điền §9.4 + `reports/careerviet_inventory.md` + `reports/careerviet_eda.md` bằng số liệu thật — chạy `python -X utf8 scripts/careerviet_report_fill.py --json` để lấy số tự động.
-- [ ] cân nhắc **Re-crawl 21 ngày** qua `--phase details` (ledger tự convert `DONE -> RECHECK_DUE`).
+- [x] Chạy online lượt 1 (2026-10-16 → 2026-10-17): **1018 envelope / 1029 DONE / 11 REPOST / 0 FAILED / 0 BLOCKED**, 77 phút, TB 4.54 s/tin (xem §9.4).
+- [x] Điền §9.4 + `reports/careerviet_inventory.md` + `reports/careerviet_eda.md` bằng số liệu thật (`careerviet_report_fill.py` + `careerviet_eda_charts.py`).
+- [ ] `--phase sync` + `push_raw_to_minio.py` sau khi Tài khởi động **AIStor** `minio.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>` và export 4 env `MINIO_*` (xem §13.1 + §13.3).
+- [ ] cân nhắc **Re-crawl 21 ngày** qua `--phase details` (ledger tự convert `DONE -> RECHECK_DUE`) → tạo `UPDATED` / `ACTIVE` cho §9.4.
 - [ ] Viết Clean layer ánh xạ `raw_payload -> Common Target Schema` (bên `data-integration-miner`).
 - [ ] Quyết định có mở rộng `_is_blocking` sang `504` hay không (hiện **không**; xem §5.2).
-- [ ] Chạy `--phase sync` + `push_raw_to_minio.py` sau khi MinIO local được Tài khởi động bằng **AIStor** `minio.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>` (xem §13.1 và §13.3; máy Tài **không** có Docker).
 - [ ] Đề xuất `.gitignore` thêm `backup/` + `*.bak` (Tài tự tay nếu chấp nhận).
 
 ---
