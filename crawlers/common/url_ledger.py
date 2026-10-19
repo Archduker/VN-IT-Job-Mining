@@ -391,11 +391,19 @@ class UrlLedger:
 
             storage_label = "Cloudflare R2" if "r2.cloudflarestorage.com" in endpoint else "MinIO"
 
-            # Upload catalog_master.json
+            # Upload catalog_master.json — guard: KHÔNG cho catalog RỖNG ghi đè catalog
+            # (đã có) trên MinIO, chống runner làm mất sổ cái của source khác/đã có dữ liệu.
+            local_records = self._load_catalog()
+            if not local_records:
+                logger.warning(
+                    f"[{storage_label}] Bỏ sync catalog {self.source}: catalog local rỗng "
+                    f"(tránh ghi đè ledger đã có)."
+                )
+                return False
             if self.catalog_file.exists():
                 key = f"url_ledger/{self.source}/catalog_master.json"
                 s3.upload_file(str(self.catalog_file), bucket, key)
-                logger.info(f"[{storage_label}] Đã đồng bộ catalog lên s3://{bucket}/{key}")
+                logger.info(f"[{storage_label}] Đã đồng bộ catalog ({len(local_records)} records) lên s3://{bucket}/{key}")
 
             # Upload all manifest files
             manifest_count = 0
