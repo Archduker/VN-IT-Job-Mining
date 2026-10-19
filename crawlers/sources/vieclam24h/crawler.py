@@ -289,7 +289,8 @@ class ViecLam24hCrawler(BaseCrawler):
         max_delay: float = 2.0,
         local_json_file: Path | str | None = None,
     ) -> None:
-        target_output_dir = output_dir or "data/vieclam24h"
+        base_dir = Path(output_dir or "data/vieclam24h")
+        target_output_dir = str(base_dir if base_dir.name == "vieclam24h" else (base_dir / "vieclam24h"))
         super().__init__(
             checkpoint_dir=checkpoint_dir,
             output_dir=target_output_dir,

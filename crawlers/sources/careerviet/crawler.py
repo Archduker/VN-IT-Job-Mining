@@ -546,7 +546,7 @@ class CareerVietCrawler(BaseCrawler):
                     log.error("[CareerViet] Discovery page %d loi (%s) -> dung an toan.", page, exc)
                     break
                 low = (html or "").lower()
-                if not html or any(k in low for k in ("captcha", "access denied", "too many requests")):
+                if not html or any(k in low for k in ("access denied", "too many requests")) or ("captcha" in low and "job-item" not in low):
                     log.warning("[CareerViet] Chan/bot nghi ngờ page %d -> dung an toan.", page)
                     break
                 soup = BeautifulSoup(html, "html.parser")

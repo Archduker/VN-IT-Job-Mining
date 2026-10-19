@@ -223,9 +223,11 @@ class VietnamWorksCrawler(BaseCrawler):
         self.raw_payload_file: Path | None = None
         self._raw_payloads: dict[str, dict[str, Any]] = {}
         self.filtered_non_it_count = 0
+        base_dir = Path(self.output_dir or f"data/{self.source_name}")
+        ledger_path = (base_dir if base_dir.name == self.source_name else (base_dir / self.source_name)) / "url_ledger"
         self.ledger = UrlLedger(
             source=self.source_name,
-            storage_dir=os.path.join(self.output_dir or "data/vietnamworks", "url_ledger"),
+            storage_dir=str(ledger_path),
         )
 
     def discover_urls(self, max_pages: int | None = None) -> list[str]:
@@ -240,7 +242,6 @@ class VietnamWorksCrawler(BaseCrawler):
                     "query": query,
                     "page": page,
                     "hitsPerPage": HITS_PER_PAGE,
-                    "ranges": {"salary": [0, 1000000000]},
                 }
                 try:
                     resp = self.http_client.post(API_URL, json=payload)
@@ -287,7 +288,7 @@ class VietnamWorksCrawler(BaseCrawler):
             try:
                 # Safe Skip block
                 payload = {
-                    "query": job_id,
+                    "filter": [{"field": "jobId", "value": str(job_id)}],
                     "page": 0,
                     "hitsPerPage": 1,
                 }
@@ -324,7 +325,8 @@ class VietnamWorksCrawler(BaseCrawler):
         raw_id = item.get("jobId")
         job_id = str(raw_id).strip() if raw_id is not None else ""
         date_partition = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        raw_dir = Path(self.output_dir) / self.source_name / "raw" / date_partition
+        base_dir = Path(self.output_dir or f"data/{self.source_name}")
+        raw_dir = (base_dir if base_dir.name == self.source_name else (base_dir / self.source_name)) / "raw" / date_partition
         self.raw_payload_file = raw_dir / "raw_batch.json"
         envelope = {
             "metadata": {

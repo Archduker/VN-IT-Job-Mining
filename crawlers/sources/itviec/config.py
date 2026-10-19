@@ -54,7 +54,7 @@ MIN_DELAY = float(os.getenv("CRAWL_DELAY_MIN", "3.0"))
 MAX_DELAY = float(os.getenv("CRAWL_DELAY_MAX", "5.5"))
 
 # ── Trình duyệt cho Playwright (verify launch được trên máy dev) ──
-BROWSER_PATH = os.getenv("ITVIEC_BROWSER_PATH", "/snap/bin/chromium")
+BROWSER_PATH = os.getenv("ITVIEC_BROWSER_PATH", "/usr/bin/google-chrome" if os.path.exists("/usr/bin/google-chrome") else "/snap/bin/chromium")
 
 # ── Browser context ───────────────────────────────────────────
 USER_AGENT = (

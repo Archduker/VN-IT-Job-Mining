@@ -129,7 +129,15 @@ class MinioRawStore:
         self.access_key = access_key or os.getenv("MINIO_ROOT_USER", "minioadmin")
         self.secret_key = secret_key or os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
         secure_env = os.getenv("MINIO_SECURE", "false").strip().lower() in {"1", "true", "yes"}
-        self.secure = secure if secure is not None else secure_env
+        if secure is not None:
+            self.secure = secure
+        elif self.endpoint.startswith("https://"):
+            self.secure = True
+        else:
+            self.secure = secure_env
+
+        region = "auto" if "r2.cloudflarestorage.com" in self.endpoint else "us-east-1"
+
         if client is None:
             import boto3
             from botocore.client import Config
@@ -139,7 +147,7 @@ class MinioRawStore:
                 aws_access_key_id=self.access_key,
                 aws_secret_access_key=self.secret_key,
                 use_ssl=self.secure,
-                region_name="us-east-1",
+                region_name=region,
                 config=Config(signature_version="s3v4", connect_timeout=5, read_timeout=30,
                               retries={"max_attempts": 3, "mode": "standard"}),
             )

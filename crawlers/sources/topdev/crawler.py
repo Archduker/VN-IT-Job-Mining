@@ -79,6 +79,15 @@ LISTING_FIELDS = ",".join(
 )
 DETAIL_FIELDS = ",".join(
     (
+        "id",
+        "title",
+        "slug",
+        "detail_url",
+        "salary",
+        "company",
+        "addresses",
+        "skills_str",
+        "skills_arr",
         "content",
         "requirements_arr",
         "requirements_original",
@@ -86,6 +95,7 @@ DETAIL_FIELDS = ",".join(
         "benefits_original",
         "recruitment_process_original",
         "valid_through",
+        "is_salary_visible",
     )
 )
 COMPANY_FIELDS = "display_name"
@@ -1253,9 +1263,11 @@ class TopDevCrawler(BaseCrawler):
             page_size=page_size,
             keyword=keyword,
         )
+        base_dir = Path(self.output_dir or f"data/{self.source_name}")
+        ledger_path = (base_dir if base_dir.name == self.source_name else (base_dir / self.source_name)) / "url_ledger"
         self.ledger = UrlLedger(
             source=self.source_name,
-            storage_dir=os.path.join(self.output_dir or "data/topdev", "url_ledger"),
+            storage_dir=str(ledger_path),
         )
 
     def discover_urls(self, max_pages: int | None = None) -> list[str]:
@@ -1325,14 +1337,15 @@ class TopDevCrawler(BaseCrawler):
                 record = JobRecord.model_validate(record_dict)
 
                 # Lưu raw snapshot
-                raw_out_dir = Path(self.output_dir or "data/topdev") / "raw"
+                base_dir = Path(self.output_dir or f"data/{self.source_name}")
+                raw_out_dir = (base_dir if base_dir.name == self.source_name else (base_dir / self.source_name)) / "raw"
                 raw_out_dir.mkdir(parents=True, exist_ok=True)
                 snapshot_file = raw_out_dir / f"{job_id}_v1.json"
                 with open(snapshot_file, "w", encoding="utf-8") as f:
-                    json.dump(record.model_dump(), f, ensure_ascii=False, indent=2)
+                    json.dump(record.model_dump(mode="json"), f, ensure_ascii=False, indent=2)
 
-                content_hash = hashlib.md5(json.dumps(record.raw.model_dump(), sort_keys=True).encode()).hexdigest()
-                self.ledger.mark_scraped(url_hash=url_hash, content_hash=content_hash, version=1, http_status=200)
+                content_hash = hashlib.md5(json.dumps(record.raw.model_dump(mode="json"), sort_keys=True).encode()).hexdigest()
+                self.ledger.mark_done(url_hash=url_hash, content_hash=content_hash, new_version=1)
                 stats["success"] += 1
                 count += 1
             except Exception as exc:

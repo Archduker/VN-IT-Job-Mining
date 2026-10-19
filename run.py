@@ -92,6 +92,8 @@ def run_crawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
+            ledger_dir=os.path.join(output_dir, source, "url_ledger") if output_dir else None,
+            raw_dir=os.path.join(output_dir, source, "raw") if output_dir else None,
         )
     elif source == "vieclam24h":
         from crawlers.sources.vieclam24h.crawler import ViecLam24hCrawler
@@ -109,10 +111,16 @@ def run_crawler(
         )
     elif source == "glints":
         from crawlers.sources.glints.raw_pipeline import GlintsRawPipeline
-        crawler = GlintsRawPipeline(max_items=max_items)
+        crawler = GlintsRawPipeline(
+            max_items=max_items,
+            storage_dir=os.path.join(output_dir, source, "url_ledger") if output_dir else None,
+        )
     elif source == "jobsgo":
         from crawlers.sources.jobsgo.crawler import JobsGORawCrawler
-        crawler = JobsGORawCrawler(max_items=max_items)
+        crawler = JobsGORawCrawler(
+            max_items=max_items,
+            storage_dir=os.path.join(output_dir, source, "url_ledger") if output_dir else None,
+        )
     else:
         raise ValueError(f"Chưa cài đặt runner cho nguồn {source}")
 
@@ -122,22 +130,22 @@ def run_crawler(
     # ── Điều phối theo Phase ───────────────────────────────────
     if phase == "discover":
         if hasattr(crawler, "discover_urls"):
-            discovered = crawler.discover_urls(max_pages=max_pages)
+            discovered = crawler.discover_urls(max_pages=max_pages, online=True) if source == "careerviet" else crawler.discover_urls(max_pages=max_pages)
             return {"source": source, "phase": "discover", "discovered_urls": discovered}
         else:
             raise NotImplementedError(f"Crawler nguồn '{source}' chưa cài đặt hàm discover_urls()")
 
     elif phase == "detail":
         if hasattr(crawler, "crawl_details"):
-            stats = crawler.crawl_details(limit=max_items)
+            stats = crawler.crawl_details(limit=max_items, online=True) if source == "careerviet" else crawler.crawl_details(limit=max_items)
             return {"source": source, "phase": "detail", **stats}
         else:
             raise NotImplementedError(f"Crawler nguồn '{source}' chưa cài đặt hàm crawl_details()")
 
     else:  # phase == "all"
         if hasattr(crawler, "discover_urls") and hasattr(crawler, "crawl_details"):
-            discovered = crawler.discover_urls(max_pages=max_pages)
-            stats = crawler.crawl_details(limit=max_items)
+            discovered = crawler.discover_urls(max_pages=max_pages, online=True) if source == "careerviet" else crawler.discover_urls(max_pages=max_pages)
+            stats = crawler.crawl_details(limit=max_items, online=True) if source == "careerviet" else crawler.crawl_details(limit=max_items)
             return {"source": source, "phase": "all", "discovered_urls": discovered, **stats}
         return crawler.run()
 

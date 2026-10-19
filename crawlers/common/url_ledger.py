@@ -391,6 +391,18 @@ class UrlLedger:
                 rec["repost_of_url_hash"] = repost_of_url_hash
             rec["error_log"] = None
 
+    def mark_scraped(
+        self,
+        url_hash: str,
+        content_hash: str,
+        version: Optional[int] = None,
+        http_status: Optional[int] = None,
+        **kwargs,
+    ):
+        """Tương thích ngược: Đánh dấu URL đã cào thành công (gọi mark_done)."""
+        self.mark_done(url_hash=url_hash, content_hash=content_hash, new_version=version)
+
+
     def mark_failed(self, url_hash: str, error_message: str):
         """Đánh dấu link bị cào lỗi (Safe Skip)."""
         if url_hash in self.records:

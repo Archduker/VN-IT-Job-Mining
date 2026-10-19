@@ -190,7 +190,13 @@ def parse_salary(salary_text: Optional[str]) -> tuple[Optional[float], Optional[
     text = salary_text.strip()
     lower_text = text.lower()
 
-    if any(neg in lower_text for neg in ["thỏa thuận", "thương lượng", "thoả thuận", "negotiable", "cạnh tranh"]):
+    gate_and_negotiable = [
+        "thỏa thuận", "thương lượng", "thoả thuận", "negotiable", "competitive",
+        "cạnh tranh", "đăng nhập", "sign in", "xem mức lương", "liên hệ",
+        "trao đổi khi phỏng vấn", "trao đổi trực tiếp", "thương lượng sau",
+        "tùy năng lực", "xứng đáng theo năng lực",
+    ]
+    if any(neg in lower_text for neg in gate_and_negotiable):
         return None, None, None
 
     currency = "VND"
@@ -358,8 +364,13 @@ def parse_salary_detail(
     ]
     has_commission = any(k in lower_context for k in commission_keywords)
 
-    # 2. Phát hiện trạng thái thỏa thuận
-    negotiable_keywords = ["thỏa thuận", "thoả thuận", "thương lượng", "negotiable", "competitive"]
+    # 2. Phát hiện trạng thái thỏa thuận và gate đăng nhập
+    negotiable_keywords = [
+        "thỏa thuận", "thoả thuận", "thương lượng", "negotiable", "competitive",
+        "cạnh tranh", "đăng nhập", "sign in", "xem mức lương", "liên hệ",
+        "trao đổi khi phỏng vấn", "trao đổi trực tiếp", "thương lượng sau",
+        "tùy năng lực", "xứng đáng theo năng lực",
+    ]
     is_raw_negotiable = any(k in raw_text.lower() for k in negotiable_keywords)
 
     # 3. Trích xuất dải số từ text hoặc fallback từ title nếu raw_text là thỏa thuận
