@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "job_id": "35C81470",
+    "source": "careerviet",
+    "source_url": "https://careerviet.vn/vi/tim-viec-lam/urgent-site-solution-engineer.35C81470.html",
+    "scraped_at": "2026-10-16T13:05:09.222100+00:00",
+    "scraper_version": "1.0.0-raw-envelope",
+    "version": 1,
+    "content_hash": "485187ae5defb72da82cca8167a75b1cdca5f64384bd35f14e641a39f6dd57e7",
+    "source_category": "keyword:developer"
+  },
+  "raw_payload": {
+    "title": "[URGENT] Site Solution Engineer",
+    "job-company-name": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+    "detail-box": [
+      "Ngày cập nhật 15/10/2026",
+      "Ngành nghề CNTT - Phần mềm , CNTT - Phần cứng / Mạng , Bưu chính viễn thông",
+      "Hình thức Nhân viên chính thức",
+      "Ngày cập nhật 15/10/2026",
+      "Ngành nghề CNTT - Phần mềm , CNTT - Phần cứng / Mạng , Bưu chính viễn thông",
+      "Hình thức Nhân viên chính thức",
+      "Lương Cạnh tranh",
+      "Kinh nghiệm 1 - 3 Năm",
+      "Cấp bậc Nhân viên",
+      "Hết hạn nộp 27/10/2026"
+    ],
+    "detail-row": {
+      "Phúc lợi": "Phúc lợi Chế độ bảo hiểm Du Lịch Chế độ thưởng Chăm sóc sức khỏe Đào tạo Tăng lương",
+      "Mô tả Công việc": "Mô tả Công việc 1. Spot check on the delivery site quality, subcontractor qualification (check subcontractor training certificate), and EHS. 2. Perform batch spot check, output quality spot check report, and trigger acceptance. 3. Track issue improvement and closure. 4. Perform process KCP self-check at the project level and output the QC checklist. 5. Adapt the SOP in the project and promote the implementation 6. Involve in RAN site survey, design for hardware installation (indoor & outdoor installation solution) such as BBU, RRU, antenna, power, grounding installation. 7. Output site auxiliary material solution such as power cable, optical cable, grounding cable, grounding bar, mechanical antenna bracket",
+      "Yêu Cầu Công Việc": "Yêu Cầu Công Việc • Bachelor’s degree in Telecommunication, Computer Engineering or related field of study • Good knowledge at mobile network site structure, such as indoor site, outdoor site, CRAN site. • Good background of site tower structure such as GMT, self-supported, rooftop towers • Able to use computer assisted drawing software such as AutoCAD, draw site layout, telecom equipment installation layout. • At least 2 years of experience working for major 3G/4G/5G RAN vendors • Candidates who possesses a Tower Climber working safety certificate have a great advantage • Have good background of low voltage electricity knowledge and experience and electricity safety. • Able to communicate effectively in English • Family with Microsoft office, Excel, Power point • Ability to adapt quickly to changing environments and manage parallel time-critical tasks • Ability to multi-task in a fast-paced environment • Ability to Travel as needed • Hard working & possible to work at weeken",
+      "Địa điểm làm việc": "Địa điểm làm việc Hà Nội 15th Floor, Taisei Square Hanoi, 289 Khuat Duy Tien street, Dai Mo Ward, Ha Noi",
+      "Thông tin khác": "Thông tin khác Bằng cấp : Đại học Độ tuổi : Không giới hạn tuổi Lương : Cạnh tranh",
+      "Gợi ý hồ sơ": "Gợi ý hồ sơ Thiết kế CV Ứng Tuyển"
+    },
+    "job-tags": [],
+    "map": "Hà Nội",
+    "Ngành nghề": [
+      "CNTT - Phần mềm , CNTT - Phần cứng / Mạng , Bưu chính viễn thông"
+    ],
+    "job-posting-schema": {
+      "@context": "http://schema.org",
+      "@type": "JobPosting",
+      "inLanguage": "vi",
+      "title": "[URGENT] Site Solution Engineer",
+      "description": "\n        <p>1. Spot check on the delivery site quality, subcontractor qualification (check subcontractor training certificate), and EHS.</p><p>2. Perform batch spot check, output quality spot check report, and trigger acceptance.</p><p>3. Track issue improvement and closure.</p><p>4. Perform process KCP self-check at the project level and output the QC checklist.</p><p>5. Adapt the SOP in the project and promote the implementation</p><p>6. Involve in RAN site survey, design for hardware installation (indoor & outdoor installation solution) such as BBU, RRU, antenna, power, grounding installation.</p><p>7. Output site auxiliary material solution such as power cable, optical cable, grounding cable, grounding bar, mechanical antenna bracket</p>\n        <p>•       Bachelor’s degree in Telecommunication, Computer Engineering or related field of study</p><p>•       Good knowledge at mobile network site structure, such as indoor site, outdoor site, CRAN site.</p><p>•       Good background of site tower structure such as GMT, self-supported, rooftop towers</p><p>•       Able to use computer assisted drawing software such as AutoCAD, draw site layout, telecom equipment installation layout.</p><p>•       At least 2 years of experience working for major 3G/4G/5G RAN vendors</p><p>•       Candidates who possesses a Tower Climber working safety certificate have a great advantage</p><p>•       Have good background of low voltage electricity knowledge and experience and electricity safety.</p><p>•       Able to communicate effectively in English</p><p>•       Family with Microsoft office, Excel, Power point</p><p>•       Ability to adapt quickly to changing environments and manage parallel time-critical tasks</p><p>•       Ability to multi-task in a fast-paced environment</p><p>•       Ability to Travel as needed</p><p>•       Hard working & possible to work at weeken</p>\n        <p>Ngành nghề: CNTT - Phần mềm, CNTT - Phần cứng / Mạng, Bưu chính viễn thông</p>\n        <p>Kinh nghiệm: 1 Năm</p>\n        <p>Cấp bậc: Nhân viên</p>\n        <p>Hình thức: Nhân viên chính thức</p>\n        <p>Địa điểm: Hà Nội</p>\n    ",
+      "datePosted": "2026-10-15T02:00:14.461Z",
+      "validThrough": "2026-10-27T23:59:00Z",
+      "baseSalary": {
+        "@type": "MonetaryAmount",
+        "currency": "VND",
+        "value": {
+          "@type": "QuantitativeValue",
+          "value": "Cạnh tranh",
+          "unitText": "MONTH"
+        }
+      },
+      "industry": "CNTT - Phần mềm, CNTT - Phần cứng / Mạng, Bưu chính viễn thông",
+      "jobBenefits": "Chế độ bảo hiểm, Du Lịch, Chế độ thưởng, Chăm sóc sức khỏe, Đào tạo, Tăng lương",
+      "experienceRequirements": {
+        "@type": "OccupationalExperienceRequirements",
+        "monthsOfExperience": 12,
+        "description": "Kinh nghiệm 1 Năm"
+      },
+      "educationRequirements": {
+        "@type": "EducationalOccupationalCredential",
+        "credentialCategory": "bachelor degree",
+        "alternateName": "Đại học/Cử nhân"
+      },
+      "directApply": true,
+      "url": "https://careerviet.vn/vi/tim-viec-lam/urgent-site-solution-engineer.35C81470.html",
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+        "value": "35C81470"
+      },
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+        "url": "https://careerviet.vn/vi/nha-tuyen-dung/cong-ty-tnhh-cong-nghe-huawei-viet-nam.35A9F4CA.html",
+        "sameAs": null,
+        "logo": "https://images.careerviet.vn/employer_folders/lot8/330698/91538screenshot2025-04-22091240.png",
+        "description": "<p>Huawei is a leading global provider of information and communications technology (ICT) infrastructure and smart devices. We have 207,000+ employees and operate in over 170 countries and regions, serving more than three billion people around the world. We are committed to bringing digital to every person, home and organization for a fully connected, intelligent world. Total R&amp;D investment over the last decade now exceeds CNY977.3 billion. In 2022, our total R&amp;D spending was CNY161.5 billion, representing 25.1% of total revenue. At the end of 2022, 114,000+ employees, or 55.4% of our workforce, worked in R&amp;D. By the end of 2022, Huawei held a total of 120,000+ active patents</p>"
+      },
+      "employmentType": [
+        "\"FULL_TIME\""
+      ],
+      "jobLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "15th Floor, Taisei Square Hanoi, 289 Khuat Duy Tien street, Dai Mo Ward, Ha Noi",
+          "addressRegion": "Quận Cầu Giấy",
+          "addressLocality": "Hà Nội",
+          "postalCode": "10000",
+          "addressCountry": "VN"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "21.0024397",
+          "longitude": "105.793831"
+        }
+      },
+      "skills": "",
+      "workHours": "8:00-17:00",
+      "applicantLocationRequirements": {
+        "@type": "Country",
+        "name": "Việt Nam"
+      }
+    }
+  }
+}

@@ -9,10 +9,16 @@ Hỗ trợ 2 chế độ thu thập:
 import argparse
 import glob
 import hashlib
+import json
 import logging
 import os
+import random
 import re
+import tempfile
+from collections import Counter
 from collections.abc import Generator
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin
 
@@ -21,7 +27,7 @@ from bs4 import BeautifulSoup
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient
 from crawlers.common.schema import JobRecord
-from crawlers.common.url_ledger import UrlLedger, clean_canonical_url
+from crawlers.common.url_ledger import UrlLedger
 from crawlers.common.utils import (
     clean_text,
     detect_language,
@@ -29,6 +35,11 @@ from crawlers.common.utils import (
     strip_html_tags,
     text_to_clean_lines,
     classify_job_tags,
+)
+from crawlers.sources.careerviet.raw_envelope import (
+    build_raw_envelope,
+    container_text_for_hash,
+    hash_container_text,
 )
 
 log = logging.getLogger("careerviet.crawler")
@@ -38,6 +49,23 @@ CRAWLER_VERSION = "0.5.0"
 BASE_URL = "https://careerviet.vn"
 CATEGORY_PATH = "/viec-lam/cntt-phan-mem-c1-vi.html"
 MAX_PAGES = 30
+
+# mac dinh thu muc cho Phase 1/2 (Ledger & raw envelope) — dat duoi data/careerviet/
+DEFAULT_LEDGER_DIR = os.path.join("data", "careerviet", "url_ledger")
+DEFAULT_RAW_DIR = os.path.join("data", "careerviet", "raw")
+CATEGORY_MAP_FILENAME = "category_by_job_id.json"
+# Ba slug IT that (c1/c61/keyword:developer) duoc Buoc 1 nap mac dinh -> 748 URL.
+# c37 (Digital Marketing) KHONG nam trong glob nay; 281 URL c37 duoc nap CO
+# CHI DINH qua: python scripts/import_careerviet_urls_to_ledger.py --include-c37
+# (commit 1470de0) de do ti le IT cua bucket lai sau dot chay online.
+# Data Integration: dung raw_payload['Ngành nghề'] (KHONG dung
+# metadata.source_category) de quyet dinh tin nao la IT.
+URL_FILE_GLOBS = ("urls_c1_*.json", "urls_c61_*.json", "urls_developer_*.json")
+
+# An toan dot ONLINE (phuong an B): N loi 5xx LIEN TIEP thi DUNG ca dot,
+# giu PENDING cho cac tin thuoc chuoi cuoi (khong mark_failed). Hang so noi bo.
+CONSECUTIVE_SERVER_ERROR_STOP = 3
+SERVER_ERROR_STATUSES = (500, 502, 503, 504)
 
 
 def extract_job_id(url: str) -> str:
@@ -67,6 +95,8 @@ class CareerVietCrawler(BaseCrawler):
         save_html: bool = False,
         html_storage_dir: str | None = None,
         local_html_dir: str | None = None,
+        ledger_dir: str | None = None,
+        raw_dir: str | None = None,
     ) -> None:
         super().__init__(
             checkpoint_dir=checkpoint_dir,
@@ -82,99 +112,112 @@ class CareerVietCrawler(BaseCrawler):
         self.save_html = save_html
         self.html_storage_dir = html_storage_dir or os.path.dirname(__file__)
         self.local_html_dir = local_html_dir
-        self.ledger = UrlLedger(
+        # Phase 1/2 (Ledger + raw envelope). Lazy: KHONG tao dir/doi catalog
+        # khi instantiate (tranh phoi nhiễm data/ trong unit test cu).
+        self.ledger_dir = ledger_dir or DEFAULT_LEDGER_DIR
+        self.raw_dir = raw_dir or DEFAULT_RAW_DIR
+        self._ledger: UrlLedger | None = None
+
+    def _get_ledger(self) -> UrlLedger:
+        """Trả (và cache) UrlLedger của nguồn. Mức lưu = self.ledger_dir."""
+        if self._ledger is None:
+            self._ledger = UrlLedger(source=self.source_name, storage_dir=self.ledger_dir)
+        return self._ledger
+
+    def _online_client(self) -> HttpClient:
+        """Client cho MỌI chế độ ONLINE: delay ngẫu nhiên 2-5s (quy định nhóm),
+        một luồng (requests.Session), timeout 25s. HttpClient tự áp delay + retry;
+        4xx/5xx raise (raise_on_status=True) để tầng gọi quyết định dừng an toàn."""
+        return HttpClient(
             source=self.source_name,
-            storage_dir=os.path.join(self.output_dir or "data/careerviet", "url_ledger"),
+            delay_config=DelayConfig(min_seconds=2.0, max_seconds=5.0),
+            timeout=25,
         )
 
-    def discover_urls(self, max_pages: int | None = None) -> list[str]:
-        """Pha 1: Quét danh mục việc làm CNTT CareerViet, lưu vào UrlLedger & MinIO."""
-        log.info("[CareerViet] === Bắt đầu Pha 1: URL Discovery ===")
-        discovered_urls: list[str] = []
-        pages_to_crawl = max_pages or 5
+    @staticmethod
+    def _is_blocking(exc: Exception) -> bool:
+        """429/403 (rate-limit / chặn) -> nên DỪNG cả đợt, không bắn tiếp."""
+        resp = getattr(exc, "response", None)
+        status = getattr(resp, "status_code", None) if resp is not None else None
+        return status in (429, 403)
 
-        for page in range(1, pages_to_crawl + 1):
-            page_url = self._build_page_url(page)
-            try:
-                resp = self.http_client.get(page_url)
-                soup = BeautifulSoup(resp.text, "html.parser")
-                job_items = soup.select("div.job-item, div.figure")
-                if not job_items:
-                    break
-                for item in job_items:
-                    a_tag = item.select_one("a.job_link, a.job-title, h3 a, a[href*='.html']")
-                    if not a_tag or not a_tag.get("href"):
-                        continue
-                    raw_href = a_tag["href"]
-                    if not any(k in raw_href for k in ["/tim-viec-lam/", "/viec-lam/"]):
-                        continue
-                    clean_url = clean_canonical_url(urljoin(BASE_URL, raw_href))
-                    job_id = extract_job_id(clean_url)
-                    title = clean_text(a_tag.text)
-                    comp_tag = item.select_one("a.company-name, .company, .name")
-                    company = clean_text(comp_tag.text) if comp_tag else ""
-                    self.ledger.register_url(
-                        raw_url=clean_url,
-                        job_id=job_id,
-                        preliminary_title=title,
-                        preliminary_company=company,
-                    )
-                    discovered_urls.append(clean_url)
-            except Exception as exc:
-                log.warning("[CareerViet] Safe Skip trang listing %d: %s", page, exc)
-                continue
+    @staticmethod
+    def _server_status(exc: Exception) -> int | None:
+        """Ma HTTP cua ngoai le (qua exc.response), None neu khong co response."""
+        resp = getattr(exc, "response", None)
+        return getattr(resp, "status_code", None) if resp is not None else None
 
-        self.ledger.save_catalog()
-        self.ledger.export_daily_manifest()
-        log.info("[CareerViet] Pha 1 hoàn thành: phát hiện %d URLs.", len(discovered_urls))
-        return discovered_urls
+    @staticmethod
+    def _is_server_error(exc: Exception) -> bool:
+        """5xx (500/502/503/504): loi phia server, co the tam -> dem chuoi lien tiep."""
+        return CareerVietCrawler._server_status(exc) in SERVER_ERROR_STATUSES
 
-    def crawl_details(self, limit: int | None = None) -> dict[str, int]:
-        """Pha 2: Bóc tách SSR HTML chi tiết với Safe Skip và chu kỳ Re-crawl 21 ngày."""
-        log.info("[CareerViet] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
-        pending = self.ledger.get_pending_or_due_records(recheck_days=21)
-        log.info("[CareerViet] Tìm thấy %d tin cần crawl chi tiết trong Ledger.", len(pending))
-        stats = {"success": 0, "failed": 0, "skipped": 0}
-        count = 0
+    @staticmethod
+    def _flush_5xx_buffer(ledger, buf: list[dict[str, Any]], stats: dict[str, Any]) -> None:
+        """Chuyen cac 5xx roi rac (chuoi bi gian doan hoac het vong) sang FAILED +
+        reset bo dem (clearing buf). CHI goi khi KHONG dung do bao N 5xx lien tiep."""
+        for r in buf:
+            ledger.mark_failed(
+                r["url_hash"],
+                "Server 5xx roi rac (duoi nguong %d lien tiep) - Safe Skip"
+                % CONSECUTIVE_SERVER_ERROR_STOP)
+            stats["failed"] += 1
+        buf.clear()
 
-        for item in pending:
-            if limit and count >= limit:
-                break
-            url = item["canonical_url"]
-            url_hash = item["url_hash"]
-            job_id = item["job_id"]
-            try:
-                # Safe Skip block
-                resp = self.http_client.get(url)
-                if not resp or resp.status_code != 200:
-                    raise RuntimeError(f"HTTP Error {resp.status_code if resp else 'No response'} for {url}")
-                record = self.parse_item({
-                    "job_id": job_id,
-                    "url": url,
-                    "html": resp.text,
-                })
-                if not record:
-                    raise ValueError(f"Không thể parse JobRecord cho {url}")
+    @staticmethod
+    def _detect_block(html: str) -> tuple[bool, str]:
+        """Phat hien trang bi CHAN. Tra ve (blocked, ly_do).
 
-                raw_out_dir = Path(self.output_dir or "data/careerviet") / "raw"
-                raw_out_dir.mkdir(parents=True, exist_ok=True)
-                snapshot_file = raw_out_dir / f"{job_id}_v1.json"
-                with open(snapshot_file, "w", encoding="utf-8") as f:
-                    json.dump(record.model_dump(), f, ensure_ascii=False, indent=2)
+        Chi coi la chan KHI: trang THIEU khoi .job-detail-page DONG THOI co dau hien
+        chan ro ret (tieu de 'Access Denied'/'Just a moment', hop captcha, hoac phan
+        text hien thi chua cac cum tu do). Chu 'captcha' nam trong <script>/<style>
+        cua trang TOT (van con .job-detail-page) se KHONG bi tinh.
+        """
+        if not html or not html.strip():
+            return True, "HTML rong"
+        soup = BeautifulSoup(html, "html.parser")
+        if soup.select_one(".job-detail-page") is not None:
+            return False, ""
+        title_el = soup.find("title")
+        title_txt = (title_el.get_text() if title_el else "").strip().lower()
+        for t in soup(["script", "style", "noscript"]):
+            t.decompose()
+        body_txt = soup.get_text(" ", strip=True).lower()
+        captcha_box = soup.select_one(
+            ".g-recaptcha,#captcha,[id^='captcha'],[class*='captcha'],"
+            "[class*='cf-challenge'],[id*='cf-challenge']")
+        phrases = ("access denied", "just a moment", "too many requests")
+        if title_txt and any(ph in title_txt for ph in phrases):
+            return True, f"thieu .job-detail-page + tieu de '{title_txt[:60]}'"
+        if captcha_box is not None:
+            return True, "thieu .job-detail-page + hop captcha"
+        if any(ph in body_txt for ph in phrases):
+            return True, "thieu .job-detail-page + text hien thi co tu khoa chan"
+        return False, ""
 
-                content_hash = hashlib.md5(json.dumps(record.raw.model_dump(), sort_keys=True).encode()).hexdigest()
-                self.ledger.mark_scraped(url_hash=url_hash, content_hash=content_hash, version=1, http_status=200)
-                stats["success"] += 1
-                count += 1
-            except Exception as exc:
-                log.warning("[CareerViet] Safe Skip lỗi cào chi tiết %s (ID %s): %s", url, job_id, exc)
-                self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
-                stats["failed"] += 1
-                continue
+    @classmethod
+    def _looks_blocked(cls, html: str) -> bool:
+        """Tuong thich nguoc: tra ve bool theo _detect_block."""
+        return cls._detect_block(html)[0]
 
-        self.ledger.save_catalog()
-        log.info("[CareerViet] Pha 2 hoàn tất: %s", stats)
-        return stats
+    def _dump_blocked_page(self, job_id: str, html: str, reason: str):
+        """Luu trang nghi chan ra data/careerviet/_blocked/<job_id>.html (KHONG ghi de,
+        KHONG dua vao raw). Tra ve duong dan hoac None neu loi."""
+        dest = Path(self.raw_dir).parent / "_blocked" / f"{job_id}.html"
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            with open(dest, "x", encoding="utf-8") as fh:  # mode 'x' = khong ghi de
+                fh.write(html or "")
+            log.warning("[CareerViet] Luu trang NGHI chan %s -> %s (ly do: %s)",
+                        job_id, dest, reason)
+            return dest
+        except FileExistsError:
+            log.warning("[CareerViet] _blocked/%s.html da ton tai -> khong ghi de (ly do: %s)",
+                        job_id, reason)
+            return dest
+        except Exception as exc:  # pragma: no cover - disk side
+            log.error("[CareerViet] Khong luu duoc _blocked/%s: %s", job_id, exc)
+            return None
 
     def _build_page_url(self, page: int) -> str:
         if page <= 1:
@@ -420,15 +463,466 @@ class CareerVietCrawler(BaseCrawler):
             language=lang,
         )
 
+    # ------------------------------------------------------------------
+    # PHASE 1 — URL DISCOVERY (khuôn TopCV). Mặc định OFFLINE, không gọi mạng.
+    # ------------------------------------------------------------------
+    def _load_category_map(self, category_map_path: str | None = None) -> dict[str, str]:
+        """Doc category_by_job_id.json (job_id -> source_category). Khong crash."""
+        candidates = []
+        if category_map_path:
+            candidates.append(Path(category_map_path))
+        candidates.append(Path(self.ledger_dir) / CATEGORY_MAP_FILENAME)
+        for cp in candidates:
+            if cp.exists():
+                try:
+                    return json.loads(cp.read_text(encoding="utf-8"))
+                except Exception as exc:  # pragma: no cover - defensive
+                    log.warning("[CareerViet] Khong doc duoc category map %s: %s", cp, exc)
+        return {}
 
-def main():
-    parser = argparse.ArgumentParser(description="CareerViet IT Job Crawler")
-    parser.add_argument("--max-items", type=int, default=30, help="Số tin tối đa cần cào")
-    parser.add_argument("--output-dir", type=str, default="data", help="Thư mục xuất dữ liệu")
-    parser.add_argument("--checkpoint-dir", type=str, default=None, help="Thư mục lưu checkpoint")
-    parser.add_argument("--save-html", action="store_true", default=False, help="Lưu file HTML chi tiết")
-    parser.add_argument("--local-html-dir", type=str, default=None, help="Thư mục chứa HTML cục bộ")
-    args = parser.parse_args()
+    @staticmethod
+    def _job_id_from_name(filename: str) -> str:
+        m = re.search(r"([A-Z0-9]{6,12})\.html?$", filename)
+        if m:
+            return m.group(1)
+        return filename.replace(".html", "")
+
+    def _register_from_urls_dir(
+        self, urls_dir: Path, category_map_path: str | None = None
+    ) -> int:
+        """Offline: nap URL tu cac file urls_c1/c61/developer_*.json (chi doc, khong
+        sua file dau vao). Ghi/cap nhat category_by_job_id.json vao THU MUC LEDGER.
+        Tra ve so job_id dang ky.
+        """
+        ledger = self._get_ledger()
+        cats: dict[str, str] = self._load_category_map(category_map_path)
+        registered_ids: set[str] = set()
+        for pattern in URL_FILE_GLOBS:
+            for fp in sorted(Path(urls_dir).glob(pattern)):
+                try:
+                    payload = json.loads(fp.read_text(encoding="utf-8"))
+                except Exception as exc:
+                    log.warning("[CareerViet] Bo qua file URL %s: %s", fp, exc)
+                    continue
+                for r in payload.get("records", []):
+                    url = r.get("url")
+                    jid = r.get("job_id")
+                    sc = r.get("source_category")
+                    if not url or not jid:
+                        continue
+                    ledger.register_url(raw_url=url, job_id=jid)
+                    registered_ids.add(jid)
+                    if sc:
+                        cats[jid] = sc
+        # Luu category map vao ledger dir (derived output, ghi nguyen tu).
+        dest_map = Path(self.ledger_dir) / CATEGORY_MAP_FILENAME
+        self._atomic_write_json(dest_map, cats, overwrite=True)
+        log.info(
+            "[CareerViet] Discovery offline: %d job_id dang ky tu %s", len(registered_ids), urls_dir
+        )
+        return len(registered_ids)
+
+    def _discover_online(self, max_pages: int | None = None) -> int:
+        """[KHONG chay trong dry-run] Duyệt danh mục IT TRÊN MẠNG và ghi URL vào ledger.
+
+        Chỉ được gọi khi có cờ --online tường minh. Một luồng (requests.Session),
+        polite delay 2-5s (DelayConfig mà HttpClient tự áp), dừng an toàn khi
+        HttpClient raise (429/403 qua raise_for_status) hoặc thấy captcha.
+        """
+        ledger = self._get_ledger()
+        client = self._online_client()
+        headers = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Referer": BASE_URL,
+        }
+        pages = max_pages or MAX_PAGES
+        added = 0
+        try:
+            for page in range(1, pages + 1):
+                page_url = self._build_page_url(page)
+                try:
+                    html = client.get_html(page_url, headers=headers)
+                except Exception as exc:
+                    log.error("[CareerViet] Discovery page %d loi (%s) -> dung an toan.", page, exc)
+                    break
+                low = (html or "").lower()
+                if not html or any(k in low for k in ("captcha", "access denied", "too many requests")):
+                    log.warning("[CareerViet] Chan/bot nghi ngờ page %d -> dung an toan.", page)
+                    break
+                soup = BeautifulSoup(html, "html.parser")
+                pairs = []
+                for a in soup.select("div.job-item a.job-title, a[href*='/tim-viec-lam/']"):
+                    href = a.get("href")
+                    if href and re.search(r"\.[A-Z0-9]{6,12}\.html", href):
+                        pairs.append((urljoin(BASE_URL, href), a.get_text(strip=True) or None))
+                if not pairs:
+                    break
+                for lu, ttl in pairs:
+                    jid = extract_job_id(lu)
+                    ledger.register_url(raw_url=lu, job_id=jid, preliminary_title=ttl)
+                    added += 1
+        finally:
+            client.close()
+        return added
+
+    def discover_urls(
+        self,
+        online: bool = False,
+        urls_dir: str | None = None,
+        category_map_path: str | None = None,
+        max_pages: int | None = None,
+        sync_minio: bool = False,
+    ) -> int:
+        """Phase 1: nap/nhat URL vao UrlLedger. Mac Dinh OFFLINE (khong goi mang).
+
+        - offline: neu co urls_dir -> nap tu urls_*.json; nguoc lai giu ledger da nap
+          o Buoc 1 (UrlLedger tu doc catalog_master.json khi khoi tao).
+        - online (can co=False->True tuong minh): duyet danh muc IT qua _discover_online.
+        Ket thuc: save_catalog + export_daily_manifest (+ sync_minio neu bat).
+        Tra ve tong so record trong ledger.
+        """
+        ledger = self._get_ledger()
+        if online:
+            self._discover_online(max_pages=max_pages)
+        elif urls_dir:
+            self._register_from_urls_dir(Path(urls_dir), category_map_path=category_map_path)
+        ledger.save_catalog()
+        ledger.export_daily_manifest()
+        if sync_minio:
+            ledger.sync_to_minio()
+        log.info("[CareerViet] discover_urls hoan tat: %d record trong ledger.", len(ledger.records))
+        return len(ledger.records)
+
+    # ------------------------------------------------------------------
+    # PHASE 2 — DETAIL EXTRACTION + Raw Envelope. Safe Skip + versioning.
+    # ------------------------------------------------------------------
+    def _atomic_write_json(self, dest: Path, obj: Any, overwrite: bool = False) -> Path | None:
+        """Ghi JSON nguyen tu (temp + os.replace). Mac dinh KHONG ghi de file cu."""
+        if dest.exists() and not overwrite:
+            return None
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp = tempfile.mkstemp(dir=str(dest.parent), prefix=dest.name + ".", suffix=".tmp")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump(obj, f, ensure_ascii=False, indent=2)
+            os.replace(tmp, dest)
+        except BaseException:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+            raise
+        return dest
+
+    def _process_detail_record(
+        self,
+        rec: dict[str, Any],
+        html: str,
+        cat_map: dict[str, str],
+        exclude_volatile_dates: bool,
+        date_str: str,
+    ) -> dict[str, Any]:
+        """Xu ly 1 record: tinh hash ( cung co nhu Buoc 2), phat hiện repost, tan
+        version, ghi envelope nguyen tu, mark_done. Tra ve dict ket qua.
+        """
+        ledger = self._get_ledger()
+        jid = rec["job_id"]
+        cleaned = container_text_for_hash(html, exclude_volatile_dates=exclude_volatile_dates)
+        content_hash = hash_container_text(cleaned)
+
+        # Repost: cung content_hash voi MOT tin DONE khac -> khong ghi file moi.
+        existing = ledger.find_by_content_hash(content_hash)
+        if existing and existing.get("url_hash") != rec.get("url_hash"):
+            ledger.mark_done(
+                rec["url_hash"],
+                content_hash=content_hash,
+                repost_of_url_hash=existing["url_hash"],
+            )
+            return {"tag": "repost", "version": rec.get("latest_version") or 0, "written": False, "path": None}
+
+        curr_ver = int(rec.get("latest_version") or 0)
+        same_content = rec.get("content_hash") == content_hash
+        new_ver = curr_ver if (same_content and curr_ver > 0) else curr_ver + 1
+
+        source_url = rec.get("canonical_url") or f"{BASE_URL}/vi/tim-viec-lam/job.{jid}.html"
+        env = build_raw_envelope(
+            html,
+            jid,
+            source_url,
+            source_category=cat_map.get(jid),
+            version=new_ver,
+            exclude_volatile_dates=exclude_volatile_dates,
+        )
+        dest = Path(self.raw_dir) / date_str / f"{jid}_v{new_ver}.json"
+        written = self._atomic_write_json(dest, env)
+        ledger.mark_done(rec["url_hash"], content_hash=content_hash, new_version=new_ver)
+        return {
+            "tag": "success",
+            "version": new_ver,
+            "written": written is not None,
+            "path": str(dest),
+        }
+
+    def _select_pending(
+        self,
+        ledger: UrlLedger,
+        cat_map: dict[str, str],
+        source_categories: list[str] | None = None,
+        shuffle: bool = False,
+        seed: int | None = None,
+        limit: int | None = None,
+    ) -> list[dict[str, Any]]:
+        """Chon record PENDING/RECHECK_DUE: loc nhom -> xao (seed) -> cat limit.
+
+        Thu tu mac dinh (khong loc, khong xao) = thu tu chen cua ledger, GIU NGUYEN.
+        Xao dung random.Random(seed) RIENG, khong dong seed toan cuc.
+        Loi --shuffle thieu --seed duoc chan o tang CLI (main), o day seed=None chi
+        tao mot rng khong duoc xac dinh -> khong dung trong duong mac dinh.
+        Ngu source_category khong khop nhom nao co record duoc chon -> ValueError.
+        """
+        pending = list(ledger.get_pending_or_due_records(21))
+        if source_categories:
+            wanted = set(source_categories)
+            filtered = [r for r in pending if cat_map.get(r["job_id"]) in wanted]
+            if not filtered:
+                avail = sorted({c for c in (cat_map.get(r["job_id"]) for r in pending) if c})
+                raise ValueError(
+                    "source_category %s khong khop voi nhom nao co record duoc chon. "
+                    "Cac nhom kha dung: %s" % (sorted(wanted), avail))
+            selected = filtered
+        else:
+            selected = pending
+        if shuffle:
+            selected = list(selected)
+            random.Random(seed).shuffle(selected)
+        if limit is not None:
+            selected = selected[:limit]
+        return selected
+
+    def crawl_details(
+        self,
+        limit: int | None = None,
+        local_html_dir: str | None = None,
+        category_map_path: str | None = None,
+        exclude_volatile_dates: bool = True,
+        online: bool = False,
+        sync_minio: bool = False,
+        source_categories: list[str] | None = None,
+        shuffle: bool = False,
+        seed: int | None = None,
+    ) -> dict[str, Any]:
+        """Phase 2: trich xuat raw envelope cho cac URL PENDING/RECHECK_DUE (21 ngay).
+
+        - OFFLINE (co local_html_dir): duyet theo file HTML co san; moi file can job_id
+          nam trong ledger; ngoai ledger -> bao ro, khong xu ly; trong ledger nhung
+          chua den han (DONE <21d) -> bo qua.
+        - ONLINE (can --online tuong minh): tai trang theo canonical_url cua ledger.
+        Safe Skip: loi 1 tin -> mark_failed roi tiep tuc, khong dung ca dot.
+        """
+        ledger = self._get_ledger()
+        cat_map = self._load_category_map(category_map_path)
+        date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        stats: dict[str, Any] = {
+            "files": 0,
+            "success": 0,
+            "failed": 0,
+            "repost": 0,
+            "skipped_not_due": 0,
+            "not_in_ledger": [],
+            "files_written": 0,
+            "versions": {},
+        }
+
+        def _tally(outcome: dict[str, Any]) -> None:
+            stats["success"] += 1
+            if outcome["written"]:
+                stats["files_written"] += 1
+            v = str(outcome["version"])
+            stats["versions"][v] = stats["versions"].get(v, 0) + 1
+
+        # ---- CHON DANH SACH: loc theo nhom -> xao (seed) -> cat limit ----
+        try:
+            candidates = self._select_pending(
+                ledger, cat_map, source_categories, shuffle, seed, limit)
+        except ValueError as exc:
+            log.error("[CareerViet] %s -> DUNG, khong goi mang, khong luu ledger.", exc)
+            print("[CareerViet] DUNG: " + str(exc))
+            stats["selection_error"] = str(exc)
+            return stats
+
+        sel_ids = [r["job_id"] for r in candidates]
+        sel_cat_dist = dict(Counter(cat_map.get(j) for j in sel_ids))
+        _mode = "online" if online else ("offline" if local_html_dir else "preview")
+        print("[CareerViet] SELECTION mode=%s so_it=%d" % (_mode, len(sel_ids)))
+        print("[CareerViet] SELECTION job_ids=%s" % sel_ids)
+        print("[CareerViet] SELECTION category_distribution=%s" % sel_cat_dist)
+        stats["selected"] = sel_ids
+        stats["selected_category_distribution"] = sel_cat_dist
+
+        if local_html_dir:
+            job_index = {r["job_id"]: r for r in ledger.records.values()}
+            due_ids = {r["job_id"] for r in ledger.get_pending_or_due_records(21)}
+            for fp in sorted(Path(local_html_dir).glob("*.html")):
+                if limit is not None and (stats["success"] + stats["failed"] + stats["repost"]) >= limit:
+                    break
+                stats["files"] += 1
+                jid = self._job_id_from_name(fp.name)
+                rec = job_index.get(jid)
+                if rec is None:
+                    stats["not_in_ledger"].append(jid)
+                    continue
+                if jid not in due_ids:
+                    stats["skipped_not_due"] += 1
+                    continue
+                try:
+                    html = fp.read_text(encoding="utf-8")
+                    outcome = self._process_detail_record(rec, html, cat_map, exclude_volatile_dates, date_str)
+                    if outcome["tag"] == "repost":
+                        stats["repost"] += 1
+                    else:
+                        _tally(outcome)
+                except Exception as exc:
+                    ledger.mark_failed(rec["url_hash"], str(exc))
+                    stats["failed"] += 1
+                    log.error("[CareerViet] Safe Skip %s: %s", jid, exc)
+        elif online:
+            headers = {"Accept": "text/html,application/xhtml+xml,*/*;q=0.8", "Referer": BASE_URL}
+            client = self._online_client()
+            try:
+                buf: list[dict[str, Any]] = []
+                for rec in candidates:
+                    stats["files"] += 1
+                    try:
+                        html = client.get_html(rec["canonical_url"], headers=headers)
+                    except Exception as exc:
+                        if self._is_blocking(exc):
+                            # 429/403: DUNG tuc thi, GIU PENDING (khong mark_failed)
+                            resp = getattr(exc, "response", None)
+                            txt = getattr(resp, "text", None) if resp is not None else None
+                            if txt:
+                                self._dump_blocked_page(
+                                    rec["job_id"], txt,
+                                    f"HTTP {getattr(resp, 'status_code', '?')}")
+                            self._flush_5xx_buffer(ledger, buf, stats)
+                            log.error("[CareerViet] GAP 429/403 %s -> DUNG an toan, GIU PENDING "
+                                      "(khong mark_failed): %s", rec["job_id"], exc)
+                            break
+                        if self._is_server_error(exc):
+                            # 5xx (500/502/503/504): chua mark_failed, dem chuoi lien tiep
+                            buf.append(rec)
+                            log.warning("[CareerViet] Loi 5xx %s (HTTP %s) -> vao chuoi "
+                                        "lien tiep (%d/%d), chua mark_failed.",
+                                        rec["job_id"], self._server_status(exc),
+                                        len(buf), CONSECUTIVE_SERVER_ERROR_STOP)
+                            if len(buf) >= CONSECUTIVE_SERVER_ERROR_STOP:
+                                ids = [r["job_id"] for r in buf]
+                                log.error("[CareerViet] DUNG do chuoi 5xx lien tiep "
+                                          "(%d tin: %s) -> GIU PENDING, khong mark_failed.",
+                                          len(buf), ids)
+                                break
+                            continue
+                        # loi KHONG phai 5xx/chan (timeout/connection) -> Safe Skip cu,
+                        # dong thoi NGAT chuoi 5xx -> flush + reset
+                        self._flush_5xx_buffer(ledger, buf, stats)
+                        ledger.mark_failed(rec["url_hash"], str(exc))
+                        stats["failed"] += 1
+                        log.error("[CareerViet] Safe Skip (online fetch) %s: %s", rec["job_id"], exc)
+                        continue
+                    blocked, reason = self._detect_block(html)
+                    if blocked:
+                        # captcha/chan (HTTP 200 nhung khac dang) -> DUNG tuc thi, GIU PENDING
+                        self._flush_5xx_buffer(ledger, buf, stats)
+                        self._dump_blocked_page(rec["job_id"], html, reason)
+                        log.warning("[CareerViet] Nghi bi CHAN %s (%s) -> DUNG an toan, GIU PENDING "
+                                    "(khong mark_failed).", rec["job_id"], reason)
+                        break
+                    try:
+                        outcome = self._process_detail_record(rec, html, cat_map, exclude_volatile_dates, date_str)
+                        # tin nay KHONG phai 5xx -> chuoi 5xx bi gian doan -> flush FAILED + reset
+                        self._flush_5xx_buffer(ledger, buf, stats)
+                        if outcome["tag"] == "repost":
+                            stats["repost"] += 1
+                        else:
+                            _tally(outcome)
+                    except Exception as exc:
+                        # 200 nhung dich loi -> gian doan chuoi 5xx; ban than tin nay FAILED
+                        self._flush_5xx_buffer(ledger, buf, stats)
+                        ledger.mark_failed(rec["url_hash"], str(exc))
+                        stats["failed"] += 1
+                        log.error("[CareerViet] Safe Skip (online parse) %s: %s", rec["job_id"], exc)
+                else:
+                    # Het danh sach ma KHONG break (vd 2 lan 5xx < N) -> flush cac 5xx roi rac con sot.
+                    self._flush_5xx_buffer(ledger, buf, stats)
+            finally:
+                client.close()
+        else:
+            log.info("[CareerViet] PREVIEW (khong --online/khong --local-html-dir): in danh sach "
+                     "se xu ly, KHONG goi mang, KHONG luu ledger.")
+            return stats
+
+        ledger.save_catalog()
+        if sync_minio:
+            ledger.sync_to_minio()
+        return stats
+
+    def sync_ledger_to_minio(self) -> bool:
+        """Chi dong bo ledger (catalog_master.json + manifests/*.jsonl) len MinIO.
+        KHONG chay Phase 1/2, KHONG goi mang ngoai truong careerviet.vn.
+        Dung khi ledger local da cap nhat va can day len MinIO ma khong cao lai.
+        Tra ve True/False theo UrlLedger.sync_to_minio()."""
+        ledger = self._get_ledger()
+        return ledger.sync_to_minio()
+
+    def view_ledger(self) -> dict[str, int]:
+        """Tom tat trang thai ledger (dung cho CLI --phase view)."""
+        ledger = self._get_ledger()
+        counts: dict[str, int] = {}
+        for rec in ledger.records.values():
+            st = rec.get("status", "?")
+            counts[st] = counts.get(st, 0) + 1
+        print(f"Ledger {self.source_name}: {len(ledger.records)} record; status={counts}")
+        return counts
+
+
+def main(argv: list[str] | None = None):
+    parser = argparse.ArgumentParser(description="CareerViet IT Job Crawler (Two-Phase)")
+    parser.add_argument(
+        "--phase", choices=["discovery", "details", "view", "sync"], default="details",
+        help="Phase 1 (discovery) / Phase 2 (details) / xem ledger (view) / "
+             "dong bo ledger len MinIO (sync, khong goi mang ngoai truong)",
+    )
+    parser.add_argument("--limit", type=int, default=None, help="So chi tiet toi da (details)")
+    parser.add_argument("--local-html-dir", type=str, default=None,
+                        help="Thu muc HTML cuc bo -> chay offline, KHONG goi mang")
+    parser.add_argument("--ledger-dir", type=str, default=DEFAULT_LEDGER_DIR,
+                        help="Thu muc UrlLedger")
+    parser.add_argument("--raw-dir", type=str, default=DEFAULT_RAW_DIR,
+                        help="Thu muc ghi raw envelope (data/careerviet/raw/<date>/...)")
+    parser.add_argument("--urls-dir", type=str, default=None,
+                        help="Discovery offline: nap tu urls_*.json trong thu muc nay")
+    parser.add_argument("--category-map", type=str, default=None,
+                        help="Duong dan category_by_job_id.json (optional)")
+    parser.add_argument("--max-pages", type=int, default=None, help="Gioi han trang khi --online discovery")
+    parser.add_argument("--online", action="store_true", default=False,
+                        help="Tuong minh cho phep GOI MANG (mac dinh KHONG)")
+    parser.add_argument("--sync-minio", action="store_true", default=False, help="Sync ledger len MinIO")
+    parser.add_argument("--exclude-volatile-dates", action=argparse.BooleanOptionalAction,
+                        default=True,
+                        help="Mac Dinh TRUE: tam bo nhan 'Ngay cap nhat'/'Het han nop' khi bam hash. "
+                             "Dung --no-exclude-volatile-dates de bat buoc bam CA 2 nhan.")
+    parser.add_argument("--source-category", dest="source_categories", action="append", metavar="CAT",
+                        help="Chi chon record thuoc nhom source_category nay (lap duoc nhieu lan, "
+                             "vd: --source-category c37_digital_mkt)")
+    parser.add_argument("--shuffle", action="store_true",
+                        help="Xao tron danh sach da loc TRUOC khi cat --limit (tat dinh theo --seed)")
+    parser.add_argument("--seed", type=int, default=None,
+                        help="Seed nguyen cho --shuffle (BAT BUOC khi dung --shuffle)")
+    # Legacy (giu nguyen de tuong thich, KHONG mac dinh goi mang nua)
+    parser.add_argument("--max-items", type=int, default=30, help="[legacy] so tin toi da")
+    parser.add_argument("--output-dir", type=str, default="data", help="[legacy] thu muc xuat du lieu")
+    parser.add_argument("--checkpoint-dir", type=str, default=None, help="Thu muc checkpoint")
+    parser.add_argument("--save-html", action="store_true", default=False, help="[legacy] luu HTML chi tiet")
+    args = parser.parse_args(argv)
+    if args.shuffle and args.seed is None:
+        parser.error("--shuffle can kem --seed <so_nguyen>")
 
     logging.basicConfig(
         level=logging.INFO,
@@ -441,9 +935,42 @@ def main():
         max_items=args.max_items,
         save_html=args.save_html,
         local_html_dir=args.local_html_dir,
+        ledger_dir=args.ledger_dir,
+        raw_dir=args.raw_dir,
     )
-    result = crawler.run()
-    print("Crawl completed:", result)
+
+    if args.phase == "discovery":
+        if not args.online and not args.urls_dir:
+            log.info("[CareerViet] Discovery OFFLINE: khong co --urls-dir -> giu ledger da nap (Buoc 1).")
+        total = crawler.discover_urls(
+            online=args.online,
+            urls_dir=args.urls_dir,
+            category_map_path=args.category_map,
+            max_pages=args.max_pages,
+            sync_minio=args.sync_minio,
+        )
+        print(f"[discovery] Tong so record trong ledger: {total} (online={args.online})")
+    elif args.phase == "details":
+        if not args.local_html_dir and not args.online:
+            print("[details] PREVIEW (khong --online/khong --local-html-dir): chi in danh sach se "
+                  "xu ly, khong goi mang, khong luu ledger.")
+        stats = crawler.crawl_details(
+            limit=args.limit,
+            local_html_dir=args.local_html_dir,
+            category_map_path=args.category_map,
+            exclude_volatile_dates=args.exclude_volatile_dates,
+            online=args.online,
+            sync_minio=args.sync_minio,
+            source_categories=args.source_categories,
+            shuffle=args.shuffle,
+            seed=args.seed,
+        )
+        print("[details] stats =", json.dumps(stats, ensure_ascii=False))
+    elif args.phase == "sync":
+        ok = crawler.sync_ledger_to_minio()
+        print(f"[sync] ledger -> MinIO: {'OK' if ok else 'KHONG THANH CONG (kiem tra MinIO dang chay?)'}")
+    else:  # view
+        crawler.view_ledger()
 
 
 if __name__ == "__main__":
