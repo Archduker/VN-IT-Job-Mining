@@ -1,0 +1,66 @@
+{
+  "_meta": {
+    "source": "vietnamworks",
+    "source_job_id": "2109463",
+    "url": "https://www.vietnamworks.com/senior-software-engineer-java-python-go-1789973147590526172-2109463-jv",
+    "dedup_key": "vietnamworks:2109463",
+    "crawled_at": "2026-10-11T06:21:40.363838Z",
+    "batch_id": "2026-10-11_vietnamworks_001",
+    "crawler_version": "0.5.0",
+    "language": "en"
+  },
+  "raw": {
+    "title": "Senior Software Engineer (Java/python/Go)",
+    "company": "CÔNG TY CỔ PHẦN VINSMART FUTURE",
+    "description_list": [
+      "Key Responsibilities",
+      "Design, develop, and operate backend services for event processing, workflow orchestration, and task lifecycle management.",
+      "Build internal and external APIs with well-defined data contracts, ensuring scalability, extensibility, and long-term maintainability.",
+      "Develop data ingestion pipelines, asynchronous processing services, message queues, retry mechanisms, and fault-tolerant error-handling workflows.",
+      "Implement core business logic for routing, prioritization, task assignment, workflow execution,..."
+    ],
+    "salary": {
+      "salary_text": "Thương lượng",
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": "USD",
+      "pay_period": null,
+      "is_negotiable": true,
+      "has_commission": false
+    },
+    "tags": {
+      "requirements": null,
+      "benefits": [
+        "Máy tính xách tay",
+        "Cơ hội du lịch",
+        "Phiếu giảm giá"
+      ],
+      "skills": [
+        "Java/.Net/Python"
+      ]
+    },
+    "requirements_list": [
+      "Bachelor's degree or higher in Computer Science, Software Engineering, Information Systems, or a related technical discipline.",
+      "At least 4 years of experience developing backend or platform software for production environments.",
+      "Strong proficiency in at least one programming language such as Go, Java, TypeScript, Python, or equivalent.",
+      "Hands-on experience designing and developing RESTful APIs, backend integration services, and..."
+    ],
+    "benefits_list": [
+      "Máy tính xách tay: Thinkpad",
+      "Cơ hội du lịch: Teambuilding",
+      "Phiếu giảm giá: Vinpearl"
+    ],
+    "location_text": "Ha Noi",
+    "deadline_text": "2026-10-21T23:59:59+07:00",
+    "posted_date_text": "2026-09-21T13:45:47+07:00",
+    "employment_type_text": "6",
+    "seniority_text": "Nhân viên",
+    "extra": {
+      "experience": "4 năm kinh nghiệm",
+      "job_level": "Nhân viên",
+      "company_size": "",
+      "number_of_recruits": 10,
+      "alias": "senior-software-engineer-java-python-go-1789973147590526172"
+    }
+  }
+}

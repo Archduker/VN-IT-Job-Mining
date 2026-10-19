@@ -1,0 +1,85 @@
+{
+  "_meta": {
+    "source": "careerviet",
+    "source_job_id": "35C87374",
+    "url": "https://careerviet.vn/vi/tim-viec-lam/job.35C87374.html",
+    "dedup_key": "careerviet:35C87374",
+    "crawled_at": "2026-10-11T06:20:11.551506Z",
+    "batch_id": "2026-10-11_careerviet_001",
+    "crawler_version": "0.5.0",
+    "language": "vi"
+  },
+  "raw": {
+    "title": "IP Engineer",
+    "company": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+    "description_list": [
+      "Mô tả Công việc",
+      "Design, implement Huawei enterprise network solutions (Backbone, Metro，WAN, SRV6，DCN).",
+      "Provide technical support for post-sales activities, including Design, deployment and migration.",
+      "Perform installation, configuration, commissioning, and troubleshooting of Huawei enterprise products (Router, Switches, iMaster NCE, etc.).",
+      "Proficient in core IP routing protocols, including OSPF, IS-IS, and BGP.Capable of solution design, deployment, and service migration based on the aforementioned IP protocols.",
+      "Support enterprise customers in incident response, problem resolution, and performance tuning.",
+      "Collaborate with R&D and GTAC teams for complex issue escalation and product improvements.",
+      "Conduct training, workshops, and knowledge transfer sessions for customers and partners.",
+      "Prepare and maintain technical documentation, including design guides, operation manuals, and change records."
+    ],
+    "salary": {
+      "salary_text": "Cạnh tranh",
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "pay_period": "month",
+      "is_negotiable": false,
+      "has_commission": false
+    },
+    "tags": {
+      "requirements": null,
+      "benefits": null,
+      "skills": null
+    },
+    "requirements_list": [
+      "Yêu Cầu Công Việc",
+      "Education Background Requirements: Bachelor or higher, major: Telecommunications technology, or related fields.",
+      "3–5 years of experience in enterprise networking or security solutions.",
+      "Solid knowledge of routing, switching, wireless, and security technologies.",
+      "Familiar with network automation and SDN platforms (Huawei iMaster NCE is a plus).",
+      "Understanding of enterprise cloud networking and security best practices.",
+      "Ability to perform complex troubleshooting and root cause analysis.",
+      "Able to communicate effectively in English both speaking and writing.",
+      "Family with Microsoft office, Excel, Power point.",
+      "Ability to adapt quickly to changing environments and manage parallel time-critical tasks.",
+      "Ability to multi-task in a fast-paced environment.",
+      "Ability to Travel as needed.",
+      "WORKING TIME AND BENEFITS",
+      "Monday to Friday (08:30-18:00).",
+      "Short term and long-term award",
+      "Huawei online and offline aboard training.",
+      "Participating in full insurance benefits (health insurance, social insurance, unemployment insurance), the company supports 24/24 accident insurance and health care insurance for employees.",
+      "Professional working environment, multinational company, good career development opportunities. Cultural and sports activities, taking care of employees' health and life are organized periodically...",
+      "Salary: negotiable."
+    ],
+    "benefits_list": [
+      "Chế độ bảo hiểm",
+      "Du Lịch",
+      "Chế độ thưởng",
+      "Chăm sóc sức khỏe",
+      "Đào tạo",
+      "Tăng lương"
+    ],
+    "location_text": "Địa điểmHà Nội",
+    "deadline_text": "15/10/2026",
+    "posted_date_text": "11/10/2026",
+    "employment_type_text": "Nhân viên chính thức",
+    "seniority_text": "Nhân viên",
+    "extra": {
+      "experience": "3 - 5 Năm",
+      "education": "Đại học",
+      "age": "Không giới hạn tuổi",
+      "other_info": {
+        "Bằng cấp": "Đại học",
+        "Độ tuổi": "Không giới hạn tuổi",
+        "Lương": "Cạnh tranh"
+      }
+    }
+  }
+}

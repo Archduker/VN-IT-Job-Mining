@@ -32,6 +32,7 @@ from urllib3.util.retry import Retry
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient
 from crawlers.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags
+from crawlers.common.url_ledger import UrlLedger, clean_canonical_url
 from crawlers.common.utils import (
     detect_language,
     parse_salary_detail,
@@ -1252,6 +1253,97 @@ class TopDevCrawler(BaseCrawler):
             page_size=page_size,
             keyword=keyword,
         )
+        self.ledger = UrlLedger(
+            source=self.source_name,
+            storage_dir=os.path.join(self.output_dir or "data/topdev", "url_ledger"),
+        )
+
+    def discover_urls(self, max_pages: int | None = None) -> list[str]:
+        """Pha 1: Quét danh mục API TopDev, lấy toàn bộ Job URLs và lưu vào UrlLedger & MinIO."""
+        log.info("[TopDev] === Bắt đầu Pha 1: URL Discovery ===")
+        discovered_urls: list[str] = []
+        page = 1
+        last_page = 1
+        while page <= last_page:
+            if max_pages and page > max_pages:
+                break
+            try:
+                payload = self.api_crawler._fetch_listing_with_retries(page)
+                jobs = payload.get("data", [])
+                meta = payload.get("meta", {})
+                last_page = _reported_page_count(meta, self.api_crawler.page_size)
+
+                for job in jobs:
+                    job_id = str(job.get("id"))
+                    raw_url = job.get("detail_url") or f"{SITE_BASE_URL}/detail-jobs/{job.get('slug')}-{job_id}"
+                    clean_url = clean_canonical_url(raw_url)
+                    title = job.get("title", "")
+                    company = job.get("company", {}).get("name", "") if isinstance(job.get("company"), dict) else ""
+                    self.ledger.register_url(
+                        raw_url=clean_url,
+                        job_id=job_id,
+                        preliminary_title=title,
+                        preliminary_company=company,
+                    )
+                    discovered_urls.append(clean_url)
+
+                self.ledger.save_catalog()
+                page += 1
+            except Exception as exc:
+                log.warning("[TopDev] Safe Skip trang listing %d: %s", page, exc)
+                page += 1
+                continue
+
+        self.ledger.export_daily_manifest()
+        log.info("[TopDev] Pha 1 hoàn thành: phát hiện %d URLs.", len(discovered_urls))
+        return discovered_urls
+
+    def crawl_details(self, limit: int | None = None) -> dict[str, int]:
+        """Pha 2: Bóc tách chi tiết tin từ URL Ledger với Safe Skip và chu kỳ Re-crawl 21 ngày."""
+        import hashlib
+        log.info("[TopDev] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
+        pending = self.ledger.get_pending_or_due_records(recheck_days=21)
+        log.info("[TopDev] Tìm thấy %d tin cần crawl chi tiết trong Ledger.", len(pending))
+        stats = {"success": 0, "failed": 0, "skipped": 0}
+        count = 0
+
+        for item in pending:
+            if limit and count >= limit:
+                break
+            url = item["canonical_url"]
+            url_hash = item["url_hash"]
+            job_id = item["job_id"]
+            try:
+                # Safe Skip block
+                detail_resp = self.api_crawler._fetch_detail_with_retries(job_id)
+                record_dict = _make_record(
+                    detail_resp,
+                    detail_resp,
+                    batch_id=self.batch_id,
+                    crawled_at=datetime.now(LOCAL_TIMEZONE),
+                )
+                record = JobRecord.model_validate(record_dict)
+
+                # Lưu raw snapshot
+                raw_out_dir = Path(self.output_dir or "data/topdev") / "raw"
+                raw_out_dir.mkdir(parents=True, exist_ok=True)
+                snapshot_file = raw_out_dir / f"{job_id}_v1.json"
+                with open(snapshot_file, "w", encoding="utf-8") as f:
+                    json.dump(record.model_dump(), f, ensure_ascii=False, indent=2)
+
+                content_hash = hashlib.md5(json.dumps(record.raw.model_dump(), sort_keys=True).encode()).hexdigest()
+                self.ledger.mark_scraped(url_hash=url_hash, content_hash=content_hash, version=1, http_status=200)
+                stats["success"] += 1
+                count += 1
+            except Exception as exc:
+                log.warning("[TopDev] Safe Skip lỗi cào chi tiết %s (ID %s): %s", url, job_id, exc)
+                self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
+                stats["failed"] += 1
+                continue
+
+        self.ledger.save_catalog()
+        log.info("[TopDev] Pha 2 hoàn tất: %s", stats)
+        return stats
 
     def fetch_items(self) -> Generator[dict[str, Any], None, None]:
         """Yield từng job sau khi ghép response danh sách và API chi tiết."""

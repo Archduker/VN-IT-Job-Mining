@@ -63,8 +63,13 @@ def load_minio_ledger(
 
     b_name = bucket_name or os.getenv("S3_BUCKET_NAME") or os.getenv("MINIO_BUCKET") or "vn-it-jobs"
     ep = endpoint or os.getenv("S3_ENDPOINT_URL") or os.getenv("MINIO_ENDPOINT") or "http://localhost:9000"
-    access = ak or os.getenv("AWS_ACCESS_KEY_ID") or os.getenv("MINIO_ROOT_USER") or "minioadmin"
-    secret = sk or os.getenv("AWS_SECRET_ACCESS_KEY") or os.getenv("MINIO_ROOT_PASSWORD") or "minioadmin"
+    is_localhost = "localhost" in ep or "127.0.0.1" in ep
+    if is_localhost:
+        access = ak or ("minioadmin" if os.getenv("MINIO_ROOT_USER") == os.getenv("AWS_ACCESS_KEY_ID") else os.getenv("MINIO_ROOT_USER", "minioadmin"))
+        secret = sk or ("minioadmin" if os.getenv("MINIO_ROOT_PASSWORD") == os.getenv("AWS_SECRET_ACCESS_KEY") else os.getenv("MINIO_ROOT_PASSWORD", "minioadmin"))
+    else:
+        access = ak or os.getenv("AWS_ACCESS_KEY_ID") or os.getenv("R2_ACCESS_KEY_ID") or os.getenv("MINIO_ROOT_USER") or "minioadmin"
+        secret = sk or os.getenv("AWS_SECRET_ACCESS_KEY") or os.getenv("R2_SECRET_ACCESS_KEY") or os.getenv("MINIO_ROOT_PASSWORD") or "minioadmin"
     reg = "auto" if "r2.cloudflarestorage.com" in ep else os.getenv("AWS_REGION", "us-east-1")
     is_r2 = "r2.cloudflarestorage.com" in ep
 
@@ -239,7 +244,7 @@ def main():
     parser.add_argument("--show-errors", action="store_true", default=False, help="In chi tiết log lỗi cho các link FAILED")
     parser.add_argument("--export-json", type=str, default=None, help="Đường dẫn file xuất JSON")
     parser.add_argument("--export-csv", type=str, default=None, help="Đường dẫn file xuất CSV")
-    parser.add_argument("--endpoint", type=str, default="http://localhost:9000", help="Endpoint MinIO (khi dùng --minio)")
+    parser.add_argument("--endpoint", type=str, default=None, help="Endpoint MinIO/S3 (mặc định lấy từ .env hoặc http://localhost:9000)")
     parser.add_argument("--bucket", type=str, default="vn-it-jobs", help="Tên bucket MinIO")
 
     args = parser.parse_args()

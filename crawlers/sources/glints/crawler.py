@@ -7,16 +7,19 @@ Chi tiết tin: JSON-LD JobPosting được nhúng trong HTML trang chi tiết.
 
 import json
 import logging
+import os
 import re
 import unicodedata
 from datetime import datetime, timedelta
 from html import unescape
 from html.parser import HTMLParser
+from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
 
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient
 from crawlers.common.schema import JobRecord
+from crawlers.common.url_ledger import UrlLedger, clean_canonical_url
 
 
 SOURCE = "glints"
@@ -453,6 +456,109 @@ class GlintsCrawler(BaseCrawler):
                 "Accept-Encoding": "identity",
             },
         )
+        self.ledger = UrlLedger(
+            source=self.source_name,
+            storage_dir=os.path.join(self.output_dir or "data/glints", "url_ledger"),
+        )
+
+    def discover_urls(self, max_pages: int | None = None) -> list[str]:
+        """Pha 1: Quét GraphQL listing Glints, lưu Job URLs vào UrlLedger & MinIO."""
+        logging.info("[Glints] === Bắt đầu Pha 1: URL Discovery ===")
+        discovered_urls: list[str] = []
+        page = 1
+        pages_to_crawl = max_pages or 5
+
+        while page <= pages_to_crawl:
+            payload = {
+                "operationName": "searchJobsV3",
+                "query": SEARCH_QUERY,
+                "variables": {
+                    "data": {
+                        "countryCode": "VN",
+                        "categoryIds": ["software-engineering"],
+                        "page": page,
+                        "pageSize": PAGE_SIZE,
+                    }
+                },
+            }
+            try:
+                resp = self.http_client.post(GRAPHQL_ENDPOINT, json=payload)
+                data = resp.json() if hasattr(resp, "json") else json.loads(resp.text)
+                jobs = data.get("data", {}).get("searchJobsV3", {}).get("jobsInPage", [])
+                if not jobs:
+                    break
+                for job in jobs:
+                    job_id = str(job.get("id"))
+                    slug = slugify(job.get("title", ""))
+                    raw_url = f"https://glints.com/vn/opportunities/jobs/{slug}/{job_id}"
+                    clean_url = clean_canonical_url(raw_url)
+                    title = clean_text(job.get("title", ""))
+                    company = clean_text(job.get("company", {}).get("name", "")) if isinstance(job.get("company"), dict) else ""
+                    self.ledger.register_url(
+                        raw_url=clean_url,
+                        job_id=job_id,
+                        preliminary_title=title,
+                        preliminary_company=company,
+                    )
+                    discovered_urls.append(clean_url)
+                page += 1
+            except Exception as exc:
+                logging.warning("[Glints] Safe Skip trang listing %d: %s", page, exc)
+                page += 1
+                continue
+
+        self.ledger.save_catalog()
+        self.ledger.export_daily_manifest()
+        logging.info("[Glints] Pha 1 hoàn tất: phát hiện %d URLs.", len(discovered_urls))
+        return discovered_urls
+
+    def crawl_details(self, limit: int | None = None) -> dict[str, int]:
+        """Pha 2: Bóc tách JSON-LD chi tiết với Safe Skip và chu kỳ Re-crawl 21 ngày."""
+        import hashlib
+        logging.info("[Glints] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
+        pending = self.ledger.get_pending_or_due_records(recheck_days=21)
+        logging.info("[Glints] Tìm thấy %d tin cần crawl chi tiết trong Ledger.", len(pending))
+        stats = {"success": 0, "failed": 0, "skipped": 0}
+        count = 0
+
+        for item in pending:
+            if limit and count >= limit:
+                break
+            url = item["canonical_url"]
+            url_hash = item["url_hash"]
+            job_id = item["job_id"]
+            try:
+                # Safe Skip block
+                details = self.fetch_jobposting_details(url)
+                record = self.parse_item({
+                    "id": job_id,
+                    "title": item.get("preliminary_title", ""),
+                    "company": {"name": item.get("preliminary_company", "")},
+                    "job_posting": details,
+                    "source_url": url,
+                })
+                if not record:
+                    raise ValueError(f"Không thể parse JobRecord cho {url}")
+
+                raw_out_dir = Path(self.output_dir or "data/glints") / "raw"
+                raw_out_dir.mkdir(parents=True, exist_ok=True)
+                snapshot_file = raw_out_dir / f"{job_id}_v1.json"
+                with open(snapshot_file, "w", encoding="utf-8") as f:
+                    json.dump(record.model_dump(), f, ensure_ascii=False, indent=2)
+
+                content_hash = hashlib.md5(json.dumps(record.raw.model_dump(), sort_keys=True).encode()).hexdigest()
+                self.ledger.mark_scraped(url_hash=url_hash, content_hash=content_hash, version=1, http_status=200)
+                stats["success"] += 1
+                count += 1
+            except Exception as exc:
+                logging.warning("[Glints] Safe Skip lỗi cào chi tiết %s (ID %s): %s", url, job_id, exc)
+                self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
+                stats["failed"] += 1
+                continue
+
+        self.ledger.save_catalog()
+        logging.info("[Glints] Pha 2 hoàn tất: %s", stats)
+        return stats
 
     def fetch_items(self) -> Generator[Dict[str, Any], None, None]:
         """Lấy tin từ GraphQL, phân trang và tránh ID trùng trong một lượt."""

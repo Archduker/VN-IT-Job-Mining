@@ -30,6 +30,9 @@ from crawlers.common.schema import JobRecord, JobSalary, JobTags
 from crawlers.common.url_ledger import (
     UrlLedger,
     calculate_container_html_hash,
+    calculate_json_canonical_hash,
+    calculate_json_field_hashes,
+    diff_json_versions,
     clean_canonical_url,
 )
 from crawlers.common.utils import (
@@ -324,20 +327,39 @@ class TopCVCrawler(BaseCrawler):
                         if "404 - Không tìm thấy" in content or "Tin tuyển dụng này đã hết hạn" in content:
                             log.warning("[TopCV] Bài đăng đã hết hạn hoặc bị xóa: %s", url)
                             self.ledger.mark_closed(url_hash)
-                            stats["skipped"] += 1
-                            continue
+                        # Bóc tách cấu trúc dữ liệu thô (Raw Structured Payload)
+                        h1_el = soup.select_one("h1")
+                        title_text = h1_el.get_text(strip=True) if h1_el else "Unknown"
+                        
+                        comp_el = soup.select_one(".company-name, .company, a[href*='/cong-ty/']")
+                        company_text = comp_el.get_text(strip=True) if comp_el else "Unknown"
 
-                        # Đảm bảo container nội dung tồn tại
-                        if not soup.select_one(CONTAINER_SELECTOR):
-                            raise RuntimeError(f"Không tìm thấy selector nội dung '{CONTAINER_SELECTOR}': {url}")
+                        salary_el = soup.select_one(".salary, .job-detail__info--salary, .box-header-job__salary--title")
+                        salary_text = salary_el.get_text(strip=True) if salary_el else "Thương lượng"
 
-                        # Băm Clean Container HTML Hash trên div.job-detail
-                        new_hash = calculate_container_html_hash(content, container_selector=CONTAINER_SELECTOR)
+                        deadline_el = soup.select_one(".deadline, .job-detail__info--deadline, .job-deadline")
+                        deadline_text = deadline_el.get_text(strip=True) if deadline_el else ""
 
-                        # Kiểm tra kịch bản Repost (URL mới nhưng content trùng tin cũ)
+                        container_el = soup.select_one(CONTAINER_SELECTOR) or soup.body or soup
+                        desc_text = container_el.get_text(separator=" ", strip=True) if container_el else ""
+
+                        raw_payload = {
+                            "title": title_text,
+                            "company": company_text,
+                            "salary": salary_text,
+                            "deadline": deadline_text,
+                            "content_text": desc_text,
+                            "raw_html": content,
+                        }
+
+                        # BƯỚC BĂM JSON SAU KHI CÀO (Post-Crawl Canonical JSON Hashing)
+                        new_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
+                        field_hashes = calculate_json_field_hashes({k: v for k, v in raw_payload.items() if k != "raw_html"})
+
+                        # Kiểm tra kịch bản Repost (URL mới nhưng content JSON trùng tin cũ)
                         existing = self.ledger.find_by_content_hash(new_hash)
                         if existing and existing["url_hash"] != url_hash:
-                            log.info("[TopCV] Phát hiện Repost: %s trùng nội dung với %s", url, existing["canonical_url"])
+                            log.info("[TopCV] Phát hiện Repost: %s trùng nội dung JSON với %s", url, existing["canonical_url"])
                             self.ledger.mark_done(url_hash, content_hash=new_hash, repost_of_url_hash=existing["url_hash"])
                             stats["repost"] += 1
                             count += 1
@@ -355,9 +377,6 @@ class TopCVCrawler(BaseCrawler):
                         os.makedirs(dest_dir, exist_ok=True)
                         dest_file = os.path.join(dest_dir, f"{job_id}_v{new_ver}.json")
 
-                        # Bóc tách envelope nguyên bản
-                        h1_el = soup.select_one("h1")
-                        title_text = h1_el.get_text(strip=True) if h1_el else "Unknown"
                         envelope = {
                             "metadata": {
                                 "job_id": job_id,
@@ -366,11 +385,9 @@ class TopCVCrawler(BaseCrawler):
                                 "scraped_at": datetime.now(timezone.utc).isoformat(),
                                 "version": new_ver,
                                 "content_hash": new_hash,
+                                "field_hashes": field_hashes,
                             },
-                            "raw_payload": {
-                                "title": title_text,
-                                "raw_html": content,
-                            }
+                            "raw_payload": raw_payload,
                         }
                         with open(dest_file, "w", encoding="utf-8") as f:
                             json.dump(envelope, f, ensure_ascii=False, indent=2)

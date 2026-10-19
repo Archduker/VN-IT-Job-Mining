@@ -22,6 +22,7 @@ from typing import Any
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient
 from crawlers.common.schema import JobRecord
+from crawlers.common.url_ledger import UrlLedger, clean_canonical_url
 from crawlers.common.utils import (
     clean_text,
     detect_language,
@@ -222,6 +223,99 @@ class VietnamWorksCrawler(BaseCrawler):
         self.raw_payload_file: Path | None = None
         self._raw_payloads: dict[str, dict[str, Any]] = {}
         self.filtered_non_it_count = 0
+        self.ledger = UrlLedger(
+            source=self.source_name,
+            storage_dir=os.path.join(self.output_dir or "data/vietnamworks", "url_ledger"),
+        )
+
+    def discover_urls(self, max_pages: int | None = None) -> list[str]:
+        """Pha 1: Quét Algolia Search API lấy danh sách Job URLs lưu vào UrlLedger & MinIO."""
+        log.info("[VietnamWorks] === Bắt đầu Pha 1: URL Discovery ===")
+        discovered_urls: list[str] = []
+        pages_to_query = max_pages or 5
+
+        for query in self.queries:
+            for page in range(pages_to_query):
+                payload = {
+                    "query": query,
+                    "page": page,
+                    "hitsPerPage": HITS_PER_PAGE,
+                    "ranges": {"salary": [0, 1000000000]},
+                }
+                try:
+                    resp = self.http_client.post(API_URL, json=payload)
+                    data = resp.json() if hasattr(resp, "json") else json.loads(resp.text)
+                    hits = data.get("data", [])
+                    if not hits:
+                        break
+                    for hit in hits:
+                        if not is_it_job(hit):
+                            continue
+                        job_id = str(hit.get("jobId", "")).strip()
+                        raw_url = hit.get("jobUrl") or f"https://www.vietnamworks.com/job-{job_id}-jv"
+                        clean_url = clean_canonical_url(raw_url)
+                        self.ledger.register_url(
+                            raw_url=clean_url,
+                            job_id=job_id,
+                            preliminary_title=hit.get("jobTitle", ""),
+                            preliminary_company=hit.get("companyName", ""),
+                        )
+                        discovered_urls.append(clean_url)
+                except Exception as exc:
+                    log.warning("[VietnamWorks] Safe Skip query '%s' page %d: %s", query, page, exc)
+                    continue
+
+        self.ledger.save_catalog()
+        self.ledger.export_daily_manifest()
+        log.info("[VietnamWorks] Pha 1 hoàn tất: phát hiện %d URLs.", len(discovered_urls))
+        return discovered_urls
+
+    def crawl_details(self, limit: int | None = None) -> dict[str, int]:
+        """Pha 2: Bóc tách chi tiết tin từ URL Ledger với Safe Skip và chu kỳ Re-crawl 21 ngày."""
+        log.info("[VietnamWorks] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
+        pending = self.ledger.get_pending_or_due_records(recheck_days=21)
+        log.info("[VietnamWorks] Tìm thấy %d tin cần crawl chi tiết trong Ledger.", len(pending))
+        stats = {"success": 0, "failed": 0, "skipped": 0}
+        count = 0
+
+        for item in pending:
+            if limit and count >= limit:
+                break
+            url = item["canonical_url"]
+            url_hash = item["url_hash"]
+            job_id = item["job_id"]
+            try:
+                # Safe Skip block
+                payload = {
+                    "query": job_id,
+                    "page": 0,
+                    "hitsPerPage": 1,
+                }
+                resp = self.http_client.post(API_URL, json=payload)
+                data = resp.json() if hasattr(resp, "json") else json.loads(resp.text)
+                hits = data.get("data", [])
+                if not hits:
+                    raise ValueError(f"Không tìm thấy payload cho jobId {job_id}")
+                hit = hits[0]
+                record = self.parse_item(hit)
+                if not record:
+                    raise ValueError(f"Không thể parse JobRecord cho {job_id}")
+
+                self._save_raw_payload(hit)
+                content_hash = hashlib.sha256(json.dumps(hit, sort_keys=True).encode()).hexdigest()
+                self.ledger.mark_scraped(url_hash=url_hash, content_hash=content_hash, version=1, http_status=200)
+                stats["success"] += 1
+                count += 1
+            except Exception as exc:
+                log.warning("[VietnamWorks] Safe Skip lỗi cào chi tiết %s (ID %s): %s", url, job_id, exc)
+                self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
+                stats["failed"] += 1
+                continue
+
+        self._flush_raw_payloads()
+        self.ledger.save_catalog()
+        log.info("[VietnamWorks] Pha 2 hoàn tất: %s", stats)
+        return stats
 
     def _save_raw_payload(self, item: dict[str, Any]) -> None:
         """Queue the untouched API item for the consolidated raw JSON file."""
@@ -430,7 +524,7 @@ class VietnamWorksCrawler(BaseCrawler):
         # 2. Bóc tách mô tả, yêu cầu, quyền lợi thành list[str] sạch không bullet
         desc_html = item.get("jobDescription") or f"<p>{title} at {company_name}</p>"
         req_html = item.get("jobRequirement") or ""
-        desc_list = text_to_clean_lines(desc_html)
+        desc_list = text_to_clean_lines(desc_html) or [f"{title} at {company_name}"]
         req_list = text_to_clean_lines(req_html) if req_html else None
 
         # Phúc lợi dạng danh sách (Benefits List)

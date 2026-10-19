@@ -1,0 +1,78 @@
+{
+  "_meta": {
+    "source": "vietnamworks",
+    "source_job_id": "2106484",
+    "url": "https://www.vietnamworks.com/embedded-software-engineer-flash-boot-loader-2106484-jv",
+    "dedup_key": "vietnamworks:2106484",
+    "crawled_at": "2026-10-11T06:21:40.364466Z",
+    "batch_id": "2026-10-11_vietnamworks_001",
+    "crawler_version": "0.5.0",
+    "language": "en"
+  },
+  "raw": {
+    "title": "Embedded Software Engineer (Flash Boot Loader)",
+    "company": "Hella Vietnam",
+    "description_list": [
+      "Your Tasks",
+      "In the business division Electronics, you will be working with the software development team for electronics control units.",
+      "▪ Design, develop & test product-specific software of automotive electronics module & system over the entire product development cycle;",
+      "▪ Work on SW-architecture, write, test and debug code according to software requirement specification and the defined process;",
+      "▪..."
+    ],
+    "salary": {
+      "salary_text": "Thương lượng",
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": "USD",
+      "pay_period": null,
+      "is_negotiable": true,
+      "has_commission": false
+    },
+    "tags": {
+      "requirements": null,
+      "benefits": [
+        "Thưởng",
+        "Chăm sóc sức khoẻ",
+        "Đào tạo",
+        "Điện thoại",
+        "Hoạt động nhóm",
+        "Khác"
+      ],
+      "skills": [
+        "C Programming Language",
+        "AUTOSAR",
+        "Embedded System",
+        "Polyspace",
+        "CAN"
+      ]
+    },
+    "requirements_list": [
+      "▪ Minimum bachelor degree in computer science, engineering, or related field.",
+      "▪ 2-5 years experience in Embedded System.",
+      "▪ Embedded development tool especially Rhapsody, Polyspace, WindIdea, Davinci, DOORs, PTC…",
+      "▪ Be proficient with C programming language, firmware, bare-metal programming.",
+      "▪ Be familiar with embedded microcontroller 16-/32-bit microprocessor is a plus.",
+      "▪ Write and review Software specifications, Architecture and Design..."
+    ],
+    "benefits_list": [
+      "Thưởng: Guaranteed 13th month salary\nPerformance bonus\nService bonus of 1-month salary after 2 years working with HELLA",
+      "Chăm sóc sức khoẻ: healthcare insurances",
+      "Đào tạo: Clear development and qualification path in our consulting organization\nInternational trainings in HELLA facilities (if needed)",
+      "Điện thoại: mobile allowance",
+      "Hoạt động nhóm: The involvement of the entire project development of HELLA products\nHELLA activities for employees",
+      "Khác: International working environment\nLunch allowance"
+    ],
+    "location_text": "Ho Chi Minh",
+    "deadline_text": "2026-10-14T23:59:59+07:00",
+    "posted_date_text": "2026-09-14T11:39:44+07:00",
+    "employment_type_text": "6",
+    "seniority_text": "Nhân viên",
+    "extra": {
+      "experience": "2 năm kinh nghiệm",
+      "job_level": "Nhân viên",
+      "company_size": "100-499",
+      "number_of_recruits": 1,
+      "alias": "embedded-software-engineer-flash-boot-loader"
+    }
+  }
+}

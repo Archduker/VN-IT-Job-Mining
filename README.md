@@ -21,7 +21,7 @@ Hệ thống triển khai thu thập dữ liệu tự động từ **7 sàn tuy�
 ### 🔹 Bước 3: Pha 2 — Bóc Tách Chi Tiết & Chống Trùng Lặp (Phase 2: Detail Extraction & CDC)
 - Đọc catalog URL từ sổ cái (URL Ledger): chỉ lọc ra các URL có trạng thái `PENDING` hoặc bài viết đã hoàn tất (`DONE`) nhưng đã tồn tại $\ge 21$ ngày để kiểm tra cập nhật (Chu kỳ Re-crawl 21 ngày).
 - **Cơ chế Safe Skip (Chịu lỗi an toàn)**: Khi gặp link lỗi mạng (404 Not Found, 500 Server Error, timeout), crawler tự động log cảnh báo và bỏ qua link đó để tiếp tục cào các tin tiếp theo mà không làm sập tiến trình.
-- **Tính toán Clean Container HTML Hash**: Bóc tách riêng khối nội dung chi tiết bài viết (loại trừ các thành phần giao diện động như widget đề xuất, banner quảng cáo, số lượt xem) và băm SHA-256 để phát hiện nội dung có thực sự thay đổi hay không (Change Data Capture - CDC Versioning), ngăn chặn việc tăng version oan.
+- **Băm Cấu Trúc JSON Sau Cào (Post-Crawl Canonical JSON Hashing & CDC)**: Tải nguyên bản dữ liệu thô (Raw As-Is) về Lakehouse, bóc tách cấu trúc trường vào JSON và băm SHA-256 trên dictionary đã chuẩn hóa khóa (`canonical JSON hash`) kèm băm theo từng trường (`salary_hash`, `requirements_hash`, etc.). Cơ chế này miễn nhiễm hoàn toàn với rác động HTML (lượt xem, CSRF, ads) và chỉ rõ chính xác trường nào bị thay đổi giữa các phiên bản.
 
 ### 🔹 Bước 4: Chuẩn Hóa Schema & Ghi Dữ Liệu Phân Vùng (Schema Normalization & Storage)
 - Ép toàn bộ dữ liệu bóc tách được từ 7 sàn về thống nhất theo **Data Contract Schema v1** (`JobRecord` gồm metadata kỹ thuật `_meta` và nội dung nghiệp vụ `raw`):

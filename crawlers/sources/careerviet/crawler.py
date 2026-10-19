@@ -21,6 +21,7 @@ from bs4 import BeautifulSoup
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient
 from crawlers.common.schema import JobRecord
+from crawlers.common.url_ledger import UrlLedger, clean_canonical_url
 from crawlers.common.utils import (
     clean_text,
     detect_language,
@@ -81,6 +82,99 @@ class CareerVietCrawler(BaseCrawler):
         self.save_html = save_html
         self.html_storage_dir = html_storage_dir or os.path.dirname(__file__)
         self.local_html_dir = local_html_dir
+        self.ledger = UrlLedger(
+            source=self.source_name,
+            storage_dir=os.path.join(self.output_dir or "data/careerviet", "url_ledger"),
+        )
+
+    def discover_urls(self, max_pages: int | None = None) -> list[str]:
+        """Pha 1: Quét danh mục việc làm CNTT CareerViet, lưu vào UrlLedger & MinIO."""
+        log.info("[CareerViet] === Bắt đầu Pha 1: URL Discovery ===")
+        discovered_urls: list[str] = []
+        pages_to_crawl = max_pages or 5
+
+        for page in range(1, pages_to_crawl + 1):
+            page_url = self._build_page_url(page)
+            try:
+                resp = self.http_client.get(page_url)
+                soup = BeautifulSoup(resp.text, "html.parser")
+                job_items = soup.select("div.job-item, div.figure")
+                if not job_items:
+                    break
+                for item in job_items:
+                    a_tag = item.select_one("a.job_link, a.job-title, h3 a, a[href*='.html']")
+                    if not a_tag or not a_tag.get("href"):
+                        continue
+                    raw_href = a_tag["href"]
+                    if not any(k in raw_href for k in ["/tim-viec-lam/", "/viec-lam/"]):
+                        continue
+                    clean_url = clean_canonical_url(urljoin(BASE_URL, raw_href))
+                    job_id = extract_job_id(clean_url)
+                    title = clean_text(a_tag.text)
+                    comp_tag = item.select_one("a.company-name, .company, .name")
+                    company = clean_text(comp_tag.text) if comp_tag else ""
+                    self.ledger.register_url(
+                        raw_url=clean_url,
+                        job_id=job_id,
+                        preliminary_title=title,
+                        preliminary_company=company,
+                    )
+                    discovered_urls.append(clean_url)
+            except Exception as exc:
+                log.warning("[CareerViet] Safe Skip trang listing %d: %s", page, exc)
+                continue
+
+        self.ledger.save_catalog()
+        self.ledger.export_daily_manifest()
+        log.info("[CareerViet] Pha 1 hoàn thành: phát hiện %d URLs.", len(discovered_urls))
+        return discovered_urls
+
+    def crawl_details(self, limit: int | None = None) -> dict[str, int]:
+        """Pha 2: Bóc tách SSR HTML chi tiết với Safe Skip và chu kỳ Re-crawl 21 ngày."""
+        log.info("[CareerViet] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
+        pending = self.ledger.get_pending_or_due_records(recheck_days=21)
+        log.info("[CareerViet] Tìm thấy %d tin cần crawl chi tiết trong Ledger.", len(pending))
+        stats = {"success": 0, "failed": 0, "skipped": 0}
+        count = 0
+
+        for item in pending:
+            if limit and count >= limit:
+                break
+            url = item["canonical_url"]
+            url_hash = item["url_hash"]
+            job_id = item["job_id"]
+            try:
+                # Safe Skip block
+                resp = self.http_client.get(url)
+                if not resp or resp.status_code != 200:
+                    raise RuntimeError(f"HTTP Error {resp.status_code if resp else 'No response'} for {url}")
+                record = self.parse_item({
+                    "job_id": job_id,
+                    "url": url,
+                    "html": resp.text,
+                })
+                if not record:
+                    raise ValueError(f"Không thể parse JobRecord cho {url}")
+
+                raw_out_dir = Path(self.output_dir or "data/careerviet") / "raw"
+                raw_out_dir.mkdir(parents=True, exist_ok=True)
+                snapshot_file = raw_out_dir / f"{job_id}_v1.json"
+                with open(snapshot_file, "w", encoding="utf-8") as f:
+                    json.dump(record.model_dump(), f, ensure_ascii=False, indent=2)
+
+                content_hash = hashlib.md5(json.dumps(record.raw.model_dump(), sort_keys=True).encode()).hexdigest()
+                self.ledger.mark_scraped(url_hash=url_hash, content_hash=content_hash, version=1, http_status=200)
+                stats["success"] += 1
+                count += 1
+            except Exception as exc:
+                log.warning("[CareerViet] Safe Skip lỗi cào chi tiết %s (ID %s): %s", url, job_id, exc)
+                self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
+                stats["failed"] += 1
+                continue
+
+        self.ledger.save_catalog()
+        log.info("[CareerViet] Pha 2 hoàn tất: %s", stats)
+        return stats
 
     def _build_page_url(self, page: int) -> str:
         if page <= 1:

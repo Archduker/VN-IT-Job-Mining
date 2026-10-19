@@ -110,12 +110,107 @@ def generate_identity_key(company: str, title: str) -> str:
     return f"{c_slug}__{t_slug}"
 
 
+def calculate_json_canonical_hash(
+    payload: Any,
+    exclude_keys: Optional[List[str]] = None,
+) -> str:
+    """
+    Băm mã SHA-256 trên cấu trúc JSON/Dictionary sau khi đã chuẩn hóa khóa (Canonical JSON).
+    - Tự động sắp xếp khóa (sort_keys=True) để bảo đảm thứ tự không ảnh hưởng mã băm.
+    - Loại trừ các trường động hoặc metadata nếu được chỉ định trong exclude_keys (ví dụ: scraped_at, runtime).
+    """
+    if payload is None:
+        return ""
+
+    exclude = set(exclude_keys or ["scraped_at", "version", "content_hash", "crawler_version", "scraper_version"])
+
+    def _filter_obj(obj: Any) -> Any:
+        if isinstance(obj, dict):
+            return {k: _filter_obj(v) for k, v in obj.items() if k not in exclude}
+        elif isinstance(obj, list):
+            return [_filter_obj(x) for x in obj]
+        return obj
+
+    filtered = _filter_obj(payload)
+    try:
+        canonical_str = json.dumps(filtered, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(canonical_str.encode("utf-8")).hexdigest()
+    except Exception as exc:
+        logger.warning(f"Lỗi khi canonicalize JSON hash: {exc}")
+        return ""
+
+
+def calculate_json_field_hashes(payload: Dict[str, Any]) -> Dict[str, str]:
+    """
+    Băm riêng biệt từng trường/khối nghiệp vụ trong đối tượng JSON (Granular Field Hashes):
+    Ví dụ: salary, deadline, requirements, description, benefits, skills, location.
+    Giúp định vị chính xác trường nào bị chỉnh sửa khi so sánh giữa 2 phiên bản.
+    """
+    if not isinstance(payload, dict):
+        return {}
+
+    field_hashes: Dict[str, str] = {}
+    for key, val in payload.items():
+        if key in ["scraped_at", "version", "content_hash", "raw_html"]:
+            continue
+        try:
+            if isinstance(val, (dict, list)):
+                norm_str = json.dumps(val, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            else:
+                norm_str = re.sub(r"\s+", " ", str(val).strip())
+            field_hashes[key] = hashlib.sha256(norm_str.encode("utf-8")).hexdigest()
+        except Exception:
+            continue
+    return field_hashes
+
+
+def diff_json_versions(old_payload: Dict[str, Any], new_payload: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    So sánh đối chiếu chi tiết giữa 2 phiên bản JSON (v1 vs v2) để chỉ ra cụ thể:
+    - Các trường bị sửa đổi giá trị (changed)
+    - Các trường mới được thêm vào (added)
+    - Các trường bị xóa bớt (removed)
+    """
+    ignore_keys = {"scraped_at", "version", "content_hash", "crawler_version", "scraper_version", "raw_html"}
+    old_filtered = {k: v for k, v in (old_payload or {}).items() if k not in ignore_keys}
+    new_filtered = {k: v for k, v in (new_payload or {}).items() if k not in ignore_keys}
+
+    all_keys = set(old_filtered.keys()) | set(new_filtered.keys())
+    changed: Dict[str, Dict[str, Any]] = {}
+    added: Dict[str, Any] = {}
+    removed: Dict[str, Any] = {}
+
+    for k in sorted(all_keys):
+        if k not in old_filtered:
+            added[k] = new_filtered[k]
+        elif k not in new_filtered:
+            removed[k] = old_filtered[k]
+        else:
+            v_old = old_filtered[k]
+            v_new = new_filtered[k]
+            if v_old != v_new:
+                changed[k] = {"before": v_old, "after": v_new}
+
+    is_modified = bool(changed or added or removed)
+    changed_fields = list(changed.keys()) + list(added.keys()) + list(removed.keys())
+
+    return {
+        "is_modified": is_modified,
+        "changed_fields": changed_fields,
+        "diff": {
+            "changed": changed,
+            "added": added,
+            "removed": removed,
+        },
+    }
+
+
 def calculate_container_html_hash(html_content: str, container_selector: str = "body") -> str:
     """
-    Băm HTML khối nội dung chính, tự động loại bỏ các thành phần rác động:
-    - Thẻ <script>, <style>, <iframe>, <noscript>, <svg>
-    - Số lượt xem (views), timestamp hiển thị
-    - Thuộc tính ngẫu nhiên (CSRF token, nonce)
+    [Legacy / Backwards Compatible]
+    Băm HTML khối nội dung chính, tự động loại bỏ các thành phần rác động.
+    Khuyến nghị: Với kiến trúc mới, hãy lưu Raw HTML trước, parse sang JSON rồi dùng
+    `calculate_json_canonical_hash()` để băm chuẩn xác trên dữ liệu nghiệp vụ.
     """
     if not html_content:
         return ""

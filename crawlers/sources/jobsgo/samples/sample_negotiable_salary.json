@@ -1,0 +1,61 @@
+{
+  "_meta": {
+    "source": "jobsgo",
+    "source_job_id": "jobsgo-job-neg-303",
+    "url": "https://jobsgo.vn/viec-lam/senior-devops-cloud-engineer-303.html",
+    "dedup_key": "jobsgo:jobsgo-job-neg-303",
+    "crawled_at": "2026-10-18T10:10:00.000000Z",
+    "batch_id": "2026-10-18_jobsgo_001",
+    "crawler_version": "1.0.0",
+    "language": "vi"
+  },
+  "raw": {
+    "title": "Senior DevOps / Cloud Infrastructure Engineer",
+    "company": "Global Software Enterprise",
+    "description_list": [
+      "Thiết lập và vận hành cụm Kubernetes trên AWS/GCP.",
+      "- Xây dựng quy trình CI/CD tự động bằng GitLab CI và Terraform.",
+      "- Giám sát hệ thống thông qua Prometheus, Grafana, ELK Stack."
+    ],
+    "salary": {
+      "salary_text": "Thỏa thuận",
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": "VND",
+      "pay_period": "MONTH",
+      "is_negotiable": true,
+      "has_commission": false
+    },
+    "tags": {
+      "requirements": [
+        "3+ năm kinh nghiệm AWS/GCP",
+        "Kubernetes, Docker, Terraform",
+        "CI/CD GitLab"
+      ],
+      "benefits": [
+        "Mức lương thỏa thuận cạnh tranh",
+        "Macbook Pro M3, phụ cấp remote",
+        "Trợ cấp chứng chỉ quốc tế"
+      ],
+      "skills": [
+        "DevOps",
+        "Kubernetes",
+        "AWS",
+        "Terraform",
+        "Docker",
+        "CI/CD"
+      ]
+    },
+    "location": "Đà Nẵng",
+    "experience": "3 năm",
+    "education": "Đại học",
+    "industry": "DevOps & Cloud Computing",
+    "working_form": "Toàn thời gian (Remote)",
+    "raw_attributes": {
+      "source_type": "jobsgo_negotiable",
+      "posted_date": "2026-10-18",
+      "deadline": "2026-11-20",
+      "views": 310
+    }
+  }
+}

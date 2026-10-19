@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import re
 import sys
 import time
@@ -27,6 +28,7 @@ from pydantic import ValidationError
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient, RetryConfig
 from crawlers.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags
+from crawlers.common.url_ledger import UrlLedger, clean_canonical_url
 from crawlers.common.utils import (
     clean_text,
     detect_language,
@@ -310,6 +312,108 @@ class ViecLam24hCrawler(BaseCrawler):
             delay_config=DelayConfig(min_seconds=0.5, max_seconds=1.5),
             retry_config=RetryConfig(max_retries=3, backoff_factor=1.0),
         )
+        self.ledger = UrlLedger(
+            source=self.source_name,
+            storage_dir=os.path.join(self.output_dir or "data/vieclam24h", "url_ledger"),
+        )
+
+    def discover_urls(self, max_pages: int | None = None) -> list[str]:
+        """Pha 1: Quét danh mục IT qua SSR Next.js sạch sẽ, ghi nhận vào UrlLedger & MinIO."""
+        log.info("[Vieclam24h] === Bắt đầu Pha 1: URL Discovery ===")
+        discovered_urls: list[str] = []
+        pages_to_crawl = max_pages or self.max_pages
+
+        for category in TARGET_CATEGORIES:
+            cat_path = category["path"]
+            for page_idx in range(1, pages_to_crawl + 1):
+                page_url = f"{SITE_BASE_URL}{cat_path}?page={page_idx}" if page_idx > 1 else f"{SITE_BASE_URL}{cat_path}"
+                try:
+                    resp = self.client.get(page_url)
+                    soup = BeautifulSoup(resp.text, "html.parser")
+                    next_data = soup.find("script", id="__NEXT_DATA__")
+                    if next_data and next_data.string:
+                        payload = json.loads(next_data.string)
+                        initial_state = payload.get("props", {}).get("pageProps", {}).get("initialState", {})
+                        job_list = initial_state.get("jobs", {}).get("list", [])
+                        for j in job_list:
+                            job_id = str(j.get("id"))
+                            slug = j.get("slug", "")
+                            link = f"{SITE_BASE_URL}/{slug}-id{job_id}.html" if slug else f"{SITE_BASE_URL}/id{job_id}.html"
+                            clean_link = clean_canonical_url(link)
+                            self.ledger.register_url(
+                                raw_url=clean_link,
+                                job_id=job_id,
+                                preliminary_title=j.get("title", ""),
+                                preliminary_company=j.get("company_name", ""),
+                            )
+                            discovered_urls.append(clean_link)
+                    else:
+                        for a in soup.select("a[href*='-id']"):
+                            href = a.get("href", "")
+                            m = re.search(r"-id(\d+)\.html", href)
+                            if m:
+                                job_id = m.group(1)
+                                clean_link = clean_canonical_url(urljoin(SITE_BASE_URL, href))
+                                self.ledger.register_url(raw_url=clean_link, job_id=job_id, preliminary_title=a.text.strip())
+                                discovered_urls.append(clean_link)
+                except Exception as exc:
+                    log.warning("[Vieclam24h] Safe Skip lỗi listing %s: %s", page_url, exc)
+                    continue
+
+        self.ledger.save_catalog()
+        self.ledger.export_daily_manifest()
+        log.info("[Vieclam24h] Pha 1 hoàn thành: phát hiện %d URLs.", len(discovered_urls))
+        return discovered_urls
+
+    def crawl_details(self, limit: int | None = None) -> dict[str, int]:
+        """Pha 2: Bóc tách chi tiết tin từ URL Ledger với Safe Skip và chu kỳ Re-crawl 21 ngày."""
+        import hashlib
+        log.info("[Vieclam24h] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
+        pending = self.ledger.get_pending_or_due_records(recheck_days=21)
+        log.info("[Vieclam24h] Tìm thấy %d tin cần crawl chi tiết trong Ledger.", len(pending))
+        stats = {"success": 0, "failed": 0, "skipped": 0}
+        count = 0
+
+        for item in pending:
+            if limit and count >= limit:
+                break
+            url = item["canonical_url"]
+            url_hash = item["url_hash"]
+            job_id = item["job_id"]
+            try:
+                # Safe Skip block
+                resp = self.client.get(url)
+                soup = BeautifulSoup(resp.text, "html.parser")
+                next_data = soup.find("script", id="__NEXT_DATA__")
+                if not next_data or not next_data.string:
+                    raise ValueError(f"Không tìm thấy __NEXT_DATA__ tại {url}")
+                payload = json.loads(next_data.string)
+                page_props = payload.get("props", {}).get("pageProps", {})
+                job_detail = page_props.get("jobDetail") or page_props.get("initialState", {}).get("jobDetail", {})
+                
+                record = self.parse_item({"job_detail": job_detail, "url": url})
+                if not record:
+                    raise ValueError(f"Không parse được JobRecord cho {url}")
+
+                raw_out_dir = Path(self.output_dir or "data/vieclam24h") / "raw"
+                raw_out_dir.mkdir(parents=True, exist_ok=True)
+                snapshot_file = raw_out_dir / f"{job_id}_v1.json"
+                with open(snapshot_file, "w", encoding="utf-8") as f:
+                    json.dump(record.model_dump(), f, ensure_ascii=False, indent=2)
+
+                content_hash = hashlib.md5(json.dumps(record.raw.model_dump(), sort_keys=True).encode()).hexdigest()
+                self.ledger.mark_scraped(url_hash=url_hash, content_hash=content_hash, version=1, http_status=200)
+                stats["success"] += 1
+                count += 1
+            except Exception as exc:
+                log.warning("[Vieclam24h] Safe Skip lỗi cào chi tiết %s: %s", url, exc)
+                self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
+                stats["failed"] += 1
+                continue
+
+        self.ledger.save_catalog()
+        log.info("[Vieclam24h] Pha 2 hoàn tất: %s", stats)
+        return stats
 
     def _fetch_page_next_data(self, url: str) -> dict[str, Any] | None:
         """Tải mã HTML của một URL và bóc tách __NEXT_DATA__."""

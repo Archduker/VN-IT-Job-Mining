@@ -423,6 +423,9 @@ def text_to_clean_lines(content: Optional[str]) -> list[str]:
         # Trích xuất nội dung giữa <li>...</li>
         li_matches = re.findall(r"<li[^>]*>(.*?)</li>", content, flags=re.DOTALL | re.IGNORECASE)
         lines = [strip_html_tags(m) for m in li_matches if m.strip()]
+        if not lines:
+            text = strip_html_tags(content) if ("<" in content and ">" in content) else content
+            lines = text.split("\n")
     else:
         text = strip_html_tags(content) if ("<" in content and ">" in content) else content
         lines = text.split("\n")

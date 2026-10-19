@@ -1,0 +1,98 @@
+{
+  "_meta": {
+    "source": "careerviet",
+    "source_job_id": "35C87378",
+    "url": "https://careerviet.vn/vi/tim-viec-lam/job.35C87378.html",
+    "dedup_key": "careerviet:35C87378",
+    "crawled_at": "2026-10-11T06:20:11.616274Z",
+    "batch_id": "2026-10-11_careerviet_001",
+    "crawler_version": "0.5.0",
+    "language": "vi"
+  },
+  "raw": {
+    "title": "Transmission Engineer",
+    "company": "CÔNG TY TNHH CÔNG NGHỆ HUAWEI VIỆT NAM",
+    "description_list": [
+      "Mô tả Công việc",
+      "COMPANY BACKGROUND/CULTURE",
+      "Huawei is a leading global provider of information and communications technology (ICT) infrastructure and smart devices. We have 207,000+ employees and operate in over 170 countries and regions, serving more than three billion people around the world. We are committed to bringing digital to every person, home and organization for a fully connected, intelligent world.",
+      "Total R&D investment over the last decade now exceeds CNY977.3 billion.",
+      "In 2022, our total R&D spending was CNY161.5 billion, representing 25.1% of total revenue.",
+      "At the end of 2022, 114,000+ employees, or 55.4% of our workforce, worked in R&D.",
+      "By the end of 2022, Huawei held a total of 120,000+ active patents.",
+      "KEY RESPONSIBILITIES OF THIS ROLE",
+      "· Plan, deploy, and maintain DWDM, OTN, NMS transmission systems in core and metro networks.",
+      "· Perform commissioning, integration, cut-over, and acceptance testing for DWDM equipment.",
+      "· Monitor and optimize network performance, ensuring high availability and low latency.",
+      "· Troubleshoot transmission issues, perform root-cause analysis, and coordinate with operator for resolution.",
+      "· Support capacity planning and migration projects to meet growing bandwidth demands.",
+      "· Document network designs, maintenance activities, and troubleshooting procedures.",
+      "· Collaborate with cross-functional teams (IP Core/Metro, GPON) for end-to-end service delivery."
+    ],
+    "salary": {
+      "salary_text": "Cạnh tranh",
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "pay_period": "month",
+      "is_negotiable": false,
+      "has_commission": false
+    },
+    "tags": {
+      "requirements": null,
+      "benefits": null,
+      "skills": [
+        "Transmission Engineer",
+        "Telecom Transmission Engineer",
+        "RF Transmission Engineer",
+        "Kỹ Sư Truyền Dẫn"
+      ]
+    },
+    "requirements_list": [
+      "Yêu Cầu Công Việc",
+      "PROFESSIONAL EXPERIENCE/QUALIFICATIONS",
+      "Education Background Requirements: Bachelor or higher, major: Telecommunications technology, or related fields.",
+      "Hands-on experience with DWDM/OTN equipment (Huawei OSN 9800/8800/1800, etc. or similar).",
+      "Strong understanding of optical transmission technologies (DWDM, OTN, ROADM, EDFA, RAMAN, ASON, CDCF, coherent optics).",
+      "Experience with NMS platforms (Huawei U2000/NCE-T, etc.).",
+      "Able to communicate effectively in English both spoken and written",
+      "Family with Microsoft office, Excel, Power point",
+      "Ability to adapt quickly to changing environments and manage parallel time-critical tasks",
+      "Ability to multi-task in a fast-paced environment",
+      "Ability to Travel as needed",
+      "PREFERRED CERTIFICATIONS",
+      "· Huawei HCIP-Transmission or HCIE-Transmission.",
+      "· Optical networking certifications (e.g., Ciena, Nokia).",
+      "WORKING TIME AND BENEFITS",
+      "· Monday to Friday (08:30-18:00).",
+      "· Short term and long-term award",
+      "· Huawei online and offline aboard training.",
+      "· Participating in full insurance benefits (health insurance, social insurance, unemployment insurance), the company supports 24/24 accident insurance and health care insurance for employees.",
+      "· Professional working environment, multinational company, good career development opportunities. Cultural and sports activities, taking care of employees' health and life are organized periodically...",
+      "· Salary: negotiable."
+    ],
+    "benefits_list": [
+      "Chế độ bảo hiểm",
+      "Du Lịch",
+      "Chế độ thưởng",
+      "Chăm sóc sức khỏe",
+      "Đào tạo",
+      "Tăng lương"
+    ],
+    "location_text": "Địa điểmHà Nội",
+    "deadline_text": "15/10/2026",
+    "posted_date_text": "11/10/2026",
+    "employment_type_text": "Nhân viên chính thức",
+    "seniority_text": "Nhân viên",
+    "extra": {
+      "experience": null,
+      "education": "Đại học",
+      "age": "Không giới hạn tuổi",
+      "other_info": {
+        "Bằng cấp": "Đại học",
+        "Độ tuổi": "Không giới hạn tuổi",
+        "Lương": "Cạnh tranh"
+      }
+    }
+  }
+}

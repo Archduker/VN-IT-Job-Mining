@@ -33,17 +33,19 @@ flowchart TD
         P1A --> P1B
     end
 
-    subgraph Phase2["PHA 2: CÀO CHI TIẾT & RE-CRAWL 21 NGÀY"]
+    subgraph Phase2["PHA 2: CÀO CHI TIẾT RAW AS-IS (RE-CRAWL 21 NGÀY)"]
         P2A["Viết hàm crawl_details()\nĐọc Catalog: Lọc link PENDING hoặc (DONE & >= 21 ngày)"]
         P2B["Bọc Safe Skip: URL lỗi hoặc chưa đến hạn thì skip ngay"]
-        P2C["Tính Clean Container HTML Hash & Cập nhật Version CDC\nĐồng bộ Raw Data lên MinIO + Cloudflare"]
+        P2C["Lưu Snapshot Thô Raw As-Is (HTML/API Payload)\nĐồng bộ Raw Data lên MinIO + Cloudflare"]
         P2A --> P2B --> P2C
     end
 
-    subgraph Deliverables["PHA 3: BÀN GIAO HỒ SƠ NGHIỆM THU"]
-        D1["Nộp ít nhất 3 cặp file HTML thô đa định dạng + 3 file JSON tương ứng\n(có thể kèm thêm file .md giải thích) vào crawlers/sources/<tenweb>/samples/"]
-        D2["Viết file docs/crawl/<tenweb>.md phân tích kiến trúc web"]
-        D3["Chạy EDA Sơ Bộ & Điền 2 template báo cáo"]
+    subgraph Deliverables["PHA 3: BÓC TÁCH JSON, BĂM HASH & HỒ SƠ NGHIỆM THU"]
+        D1["Bóc tách Structured JSON & Băm Canonical JSON Hash\nĐịnh vị trường thay đổi (Field-Level JSON Diff)"]
+        D2["Nộp ít nhất 3 cặp file HTML thô đa định dạng + 3 file JSON tương ứng\n(có thể kèm thêm file .md giải thích) vào crawlers/sources/<tenweb>/samples/"]
+        D3["Viết file docs/crawl/<tenweb>.md phân tích kiến trúc web"]
+        D4["Chạy EDA Sơ Bộ & Điền 2 template báo cáo"]
+        D1 --> D2 --> D3 --> D4
     end
 
     Phase1 --> Phase2 --> Deliverables
@@ -62,15 +64,15 @@ flowchart TD
 - [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào 100% payload chi tiết. Áp dụng cơ chế Safe Skip khi gặp lỗi. Đổi trạng thái sang `DONE`, chu kỳ re-crawl 21 ngày. Đồng bộ raw payload lên **MinIO** + **Cloudflare**.
 - [ ] **Hồ sơ nghiệm thu bắt buộc:**
   - `crawlers/sources/topdev/samples/`: **Tối thiểu 3 file HTML thô (hoặc response DOM/web) kèm 3 file JSON tương ứng** có định dạng khác nhau (tin lương VND, lương USD, tin nhiều tech tags). *Có thể nộp kèm file `.md` mô tả chi tiết từng sample*.
-  - Tự viết `docs/crawl/topdev.md` phân tích kiến trúc API, phân trang và container selector của TopDev.
+  - Tự viết `docs/crawl/topdev.md` phân tích kiến trúc API, phân trang và cấu trúc trường của TopDev.
   - Điền báo cáo theo 2 mẫu [raw_crawl_inventory_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md) và [preliminary_eda_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/preliminary_eda_template.md).
 
 ### 3.2. Thuận — Phụ trách `TopCV` (Nhánh: `crawls/topcv`)
 - [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` cào sạch danh sách link bài đăng từ trang tìm kiếm TopCV (không giới hạn thời gian), ghi vào URL Ledger và đồng bộ lên **MinIO** + **Cloudflare**.
-- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào raw HTML bài đăng, giữ nguyên selector gốc. Tính Clean Container HTML Hash trên khối `div.job-detail`. Đổi trạng thái sang `DONE`, kiểm tra re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào raw HTML bài đăng nguyên bản (Zero Info Loss). Bóc tách trường vào JSON và áp dụng Canonical JSON Hashing để quản lý phiên bản CDC và repost. Đổi trạng thái sang `DONE`, kiểm tra re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
 - [ ] **Hồ sơ nghiệm thu bắt buộc:**
   - `crawlers/sources/topcv/samples/`: **Ít nhất 3 file HTML thô** có layout khác nhau (tin thường, tin Hot/VIP, tin có badge đặc thù) kèm **3 file JSON tương ứng**. *Có thể nộp kèm file `.md` mô tả chi tiết từng sample*.
-  - Tự viết `docs/crawl/topcv.md` phân tích DOM và selector chống nhảy hash oan của TopCV.
+  - Tự viết `docs/crawl/topcv.md` phân tích DOM và cấu trúc trường bóc tách của TopCV.
   - Điền 2 báo cáo kiểm kê trường và EDA sơ bộ.
 
 ### 3.3. Khoa — Phụ trách `VietnamWorks` (Nhánh: `crawls/vietnamworks`)
@@ -83,7 +85,7 @@ flowchart TD
 
 ### 3.4. Tài — Phụ trách `CareerViet` (Nhánh: `crawls/careerviet`)
 - [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` duyệt toàn bộ danh mục IT của CareerViet lấy danh sách link, ghi vào manifest và đồng bộ lên **MinIO** + **Cloudflare**.
-- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` bóc tách nguyên vẹn SSR HTML. Áp dụng Clean Container HTML Hash trên khối chi tiết việc làm. Đổi trạng thái `DONE`, re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` bóc tách nguyên vẹn SSR HTML. Lưu raw HTML, chuyển đổi sang JSON và băm Canonical JSON Hash. Đổi trạng thái `DONE`, re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
 - [ ] **Hồ sơ nghiệm thu bắt buộc:**
   - `crawlers/sources/careerviet/samples/`: **Ít nhất 3 file HTML thô** có cấu trúc khác nhau kèm **3 file JSON tương ứng**. *Có thể nộp kèm file `.md` mô tả chi tiết từng sample*.
   - Tự viết `docs/crawl/careerviet.md` phân tích DOM và kỹ thuật cào.
@@ -99,7 +101,7 @@ flowchart TD
 
 ### 3.6. Phát — Phụ trách `ITViec` (Nhánh: `crawls/itviec`)
 - [ ] **Pha 1 (URL Discovery):** Sử dụng Playwright / httpx duyệt toàn bộ danh sách việc làm ITviec lưu vào manifest và đồng bộ lên **MinIO** + **Cloudflare**.
-- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào raw HTML chi tiết (thẻ kỹ năng, "3 reasons to join us", văn bản JD). Tính HTML hash khối nội dung. Trạng thái `DONE`, re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào raw HTML chi tiết (thẻ kỹ năng, "3 reasons to join us", văn bản JD). Bóc tách JSON và băm Canonical JSON Hash. Trạng thái `DONE`, re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
 - [ ] **Hồ sơ nghiệm thu bắt buộc:**
   - `crawlers/sources/itviec/samples/`: **Ít nhất 3 file HTML thô** (tin lương công khai, tin lương ẩn, tin Spotlight) kèm **3 file JSON tương ứng**. *Có thể nộp kèm file `.md` mô tả chi tiết từng sample*.
   - Tự viết `docs/crawl/itviec.md` phân tích cơ chế vượt Cloudflare nhẹ và selector chính.

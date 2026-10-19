@@ -44,13 +44,13 @@ flowchart LR
     end
 
     subgraph Phase2["2. Data Collection (Raw ELT)"]
-        EXT["Crawl Raw As-Is\n(Zero Info Loss)"] --> CDC["CDC & Content Hash\n(Bảo toàn phiên bản sửa tin)"]
-        CDC --> MINIO_RAW["MinIO: /raw"]
+        EXT["Crawl Raw As-Is\n(Zero Info Loss)"] --> MINIO_RAW["MinIO: /raw\n(Raw HTML & API Payload)"]
     end
 
-    subgraph Phase3["3. Data Understanding & EDA"]
-        EDA_PRE["EDA sơ bộ từng nguồn\n(Missing, Outlier, Schema)"] --> HARMON["Integration Summit\n(Họp thống nhất trường)"]
-        HARMON --> EDA_MAIN["EDA Tổng Thể\n(5 họ biểu đồ + tương quan)"]
+    subgraph Phase3["3. Post-Crawl JSON CDC & EDA"]
+        PARSE["Parse Structured JSON"] --> CDC["Post-Crawl JSON Hash & Diff\n(Quản lý phiên bản CDC)"]
+        CDC --> EDA_PRE["EDA Sơ Bộ Từng Nguồn\n(Missing, Outlier, Schema)"]
+        EDA_PRE --> HARMON["Integration Summit\n(Thống nhất trường dữ liệu)"]
     end
 
     subgraph Phase4["4. Data Preparation & Clean"]

@@ -1,0 +1,58 @@
+{
+  "_meta": {
+    "source": "topdev",
+    "source_job_id": "2137024",
+    "url": "https://topdev.vn/detail-jobs/chief-accountant-cong-ty-co-phan-vcj-warehouse-2137024",
+    "dedup_key": "topdev:2137024",
+    "crawled_at": "2026-10-10T19:10:03.660390+07:00",
+    "batch_id": "2026-10-10_topdev_001",
+    "crawler_version": "0.1.0",
+    "language": "vi"
+  },
+  "raw": {
+    "title": "Chief Accountant",
+    "company": "CÔNG TY CỔ PHẦN VCJ WAREHOUSE",
+    "description_list": [
+      "Indutry: Real Estate Development"
+    ],
+    "salary": {
+      "salary_text": "15.000.000 VND to 23.000.000 VND",
+      "salary_min": 15.0,
+      "salary_max": 23.0,
+      "salary_currency": "VND",
+      "pay_period": "month",
+      "is_negotiable": false,
+      "has_commission": false
+    },
+    "tags": {
+      "requirements": null,
+      "benefits": null,
+      "skills": [
+        "Kế toán",
+        "Kế Toán Trưởng"
+      ]
+    },
+    "requirements_list": [
+      "Required Experience: 2 – 5 years of experience in Finance, Accounting, or Treasury (FDI / foreign-invested company experience preferred).",
+      "Mandatory Certification: Chief Accountant Certificate (Mandatory).",
+      "Education / Major: Bachelor's Degree or higher in Accounting, Finance, Auditing, Economics, or related fields."
+    ],
+    "benefits_list": [
+      "Salary Range : VND 15,000,000- 23,000,000/ month (gross)",
+      "Allowance/ Bonus: 13th salary bonus",
+      "Statutory benefits : Social Insurance, Health Insurance, Unemployment Insurance as per Vietnam labor laws",
+      "Other benefits : Annuak health check up",
+      "Key Highlight: Full salary social insurance contribution."
+    ],
+    "location_text": "Thành phố Hà Nội",
+    "deadline_text": null,
+    "posted_date_text": "3 ngày trước",
+    "employment_type_text": "Fulltime",
+    "seniority_text": "Chuyên viên",
+    "extra": {
+      "experience": "2 năm, 5 năm",
+      "job_type": "Trực tiếp",
+      "recruitment_process": null
+    }
+  }
+}
