@@ -1,0 +1,3 @@
+source,latest_detail_snapshots,catalog_urls,catalog_pending,catalog_done,catalog_recheck_due,catalog_failed,catalog_closed,listing_failure_count,last_listing_failure,numeric_salary_count,numeric_salary_pct,negotiable_salary_count,missing_salary_count,comparable_monthly_salary_count
+glints,37,37,0,37,0,0,0,2,HTTP 403,21,56.76,0,16,21
+jobsgo,0,0,0,0,0,0,0,1,HTTP 403,0,,0,0,0

@@ -1,81 +1,79 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Script kiểm tra và khởi tạo MinIO Bucket cho dự án VN-IT-Job-Mining.
-
-Sử dụng:
-    python scripts/setup_minio.py
-"""
+"""Check/init the local MinIO Lakehouse bucket and layer marker objects."""
+from __future__ import annotations
 
 import os
 import sys
-import boto3
-from botocore.client import Config
-from botocore.exceptions import ClientError
-from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
+try:
+    import boto3
+    from botocore.client import Config
+    from botocore.exceptions import ClientError
+    from dotenv import load_dotenv
+except ImportError as exc:
+    print(f"[ERROR] Missing dependency: {exc}. Run: python -m pip install -r requirements.txt")
+    raise SystemExit(1)
 
-MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
-MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER", "minioadmin")
-MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
-BUCKET_NAME = os.getenv("MINIO_BUCKET", "vn-it-jobs")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+load_dotenv(PROJECT_ROOT / ".env", override=False)
+ENDPOINT = os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
+ACCESS_KEY = os.getenv("MINIO_ROOT_USER", "minioadmin")
+SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
+BUCKET = os.getenv("MINIO_BUCKET", "vn-it-jobs")
+PREFIXES = ("url_ledger/", "raw/", "staging/", "curated/")
 
 
 def get_s3_client():
     return boto3.client(
         "s3",
-        endpoint_url=MINIO_ENDPOINT,
-        aws_access_key_id=MINIO_ACCESS_KEY,
-        aws_secret_access_key=MINIO_SECRET_KEY,
-        config=Config(signature_version="s3v4"),
+        endpoint_url=ENDPOINT,
+        aws_access_key_id=ACCESS_KEY,
+        aws_secret_access_key=SECRET_KEY,
+        config=Config(signature_version="s3v4", connect_timeout=5, read_timeout=10,
+                      retries={"max_attempts": 3, "mode": "standard"}),
         region_name="us-east-1",
     )
 
 
-def setup_minio_lake():
-    print(f"Connecting to MinIO at {MINIO_ENDPOINT}...")
-    s3 = get_s3_client()
-
+def setup_minio_lake() -> int:
+    print(f"[MinIO] Endpoint: {ENDPOINT}")
+    print(f"[MinIO] Bucket:   {BUCKET}")
     try:
-        # Kiểm tra danh sách bucket hiện có
-        response = s3.list_buckets()
-        existing_buckets = [b["Name"] for b in response.get("Buckets", [])]
-        print(f"Existing buckets: {existing_buckets}")
+        s3 = get_s3_client()
+        try:
+            s3.head_bucket(Bucket=BUCKET)
+            print(f"[OK] Bucket '{BUCKET}' already exists.")
+        except ClientError as exc:
+            error_code = str(exc.response.get("Error", {}).get("Code", ""))
+            status = exc.response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+            if error_code not in {"404", "NoSuchBucket", "NotFound"} and status != 404:
+                raise
+            s3.create_bucket(Bucket=BUCKET)
+            print(f"[OK] Created bucket '{BUCKET}'.")
 
-        if BUCKET_NAME not in existing_buckets:
-            print(f"Creating bucket '{BUCKET_NAME}'...")
-            s3.create_bucket(Bucket=BUCKET_NAME)
-            print(f"Bucket '{BUCKET_NAME}' created successfully!")
-        else:
-            print(f"Bucket '{BUCKET_NAME}' already exists.")
+        for prefix in PREFIXES:
+            key = prefix + ".keep"
+            try:
+                s3.head_object(Bucket=BUCKET, Key=key)
+            except ClientError as exc:
+                code = str(exc.response.get("Error", {}).get("Code", ""))
+                status = exc.response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+                if code not in {"404", "NoSuchKey", "NotFound"} and status != 404:
+                    raise
+                s3.put_object(Bucket=BUCKET, Key=key, Body=b"")
+            print(f"  - minio://{BUCKET}/{prefix}")
 
-        # Tạo cấu trúc các folder phân tầng ban đầu
-        initial_prefixes = [
-            "url_ledger/",
-            "raw/",
-            "staging/",
-            "curated/",
-        ]
-        for prefix in initial_prefixes:
-            s3.put_object(Bucket=BUCKET_NAME, Key=f"{prefix}.keep", Body=b"")
-
-        print("MinIO Lakehouse directory structure verified successfully:")
-        for prefix in initial_prefixes:
-            print(f"  - minio://{BUCKET_NAME}/{prefix}")
-
-        print("\nMinIO Ready!")
-        print("  - Web Console UI : http://localhost:9001 (User: minioadmin / Pass: minioadmin)")
-        print(f"  - S3 API Endpoint: {MINIO_ENDPOINT}")
-        print(f"  - Bucket Name    : {BUCKET_NAME}")
-
-    except ClientError as e:
-        print(f"ClientError: {e}")
-        sys.exit(1)
-    except Exception as e:
-        print(f"Connection failed: {e}")
-        print("Tip: Make sure MinIO is running (e.g., via 'bash scripts/start_minio.sh' or 'sudo docker compose -f docker-compose.minio.yml up -d')")
-        sys.exit(1)
+        print("\n[OK] MinIO Lakehouse ready.")
+        print("Console: " + os.getenv("MINIO_CONSOLE", "http://localhost:9001"))
+        print("Bucket remains private by default; no anonymous access policy was changed.")
+        return 0
+    except Exception as exc:
+        print(f"[ERROR] MinIO setup failed: {exc}", file=sys.stderr)
+        print("Start Docker Desktop, then run: docker compose -f docker-compose.minio.yml up -d --build")
+        return 1
 
 
 if __name__ == "__main__":
-    setup_minio_lake()
+    raise SystemExit(setup_minio_lake())

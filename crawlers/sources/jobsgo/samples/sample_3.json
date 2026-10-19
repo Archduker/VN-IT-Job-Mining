@@ -1,0 +1,22 @@
+{
+  "_meta": {
+    "source": "jobsgo",
+    "source_job_id": "123458",
+    "url": "https://jobsgo.vn/viec-lam/data-analyst-123458.html",
+    "url_hash": "synthetic-url-hash-3",
+    "content_hash": "synthetic-content-hash-3",
+    "version": 1,
+    "status": "NEW",
+    "crawler_version": "0.3.0",
+    "fixture_type": "synthetic_test_fixture"
+  },
+  "raw": {
+    "html": "<!doctype html><html><body><main><h1>Data Analyst</h1><div class=\"job-summary\"><p>Mức lương: Từ 15 triệu VNĐ</p><p>Địa điểm: Đà Nẵng</p><p>Kinh nghiệm: 1 - 2 năm</p><p>Bằng cấp: Đại học</p></div><h2>Chi Tiết Công Việc</h2><p>Analyze product and sales data with SQL and Python.</p><h3>Yêu cầu công việc</h3><ul><li>SQL</li><li>Power BI</li></ul><h3>Quyền lợi được hưởng</h3><p>Linh hoạt giờ làm.</p></main></body></html>",
+    "listing_payload": {
+      "title": "Data Analyst",
+      "company": "Example Analytics",
+      "card_text": "Data Analyst\nExample Analytics\nTừ 15 triệu VNĐ | Đà Nẵng\nFull-time 1 - 2 năm",
+      "canonical_url": "https://jobsgo.vn/viec-lam/data-analyst-123458.html"
+    }
+  }
+}

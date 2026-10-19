@@ -32,6 +32,7 @@ SUPPORTED_SOURCES = [
     "vieclam24h",
     "topcv",
     "glints",
+    "jobsgo",
 ]
 
 
@@ -107,15 +108,11 @@ def run_crawler(
             max_items=max_items,
         )
     elif source == "glints":
-        try:
-            from crawlers.sources.glints.crawler import GlintsCrawler
-            crawler = GlintsCrawler(
-                checkpoint_dir=checkpoint_dir,
-                output_dir=output_dir,
-                max_items=max_items,
-            )
-        except ImportError:
-            raise NotImplementedError("Crawler nguồn 'glints' đang được phát triển hoặc chưa có file crawler.py.")
+        from crawlers.sources.glints.raw_pipeline import GlintsRawPipeline
+        crawler = GlintsRawPipeline(max_items=max_items)
+    elif source == "jobsgo":
+        from crawlers.sources.jobsgo.crawler import JobsGORawCrawler
+        crawler = JobsGORawCrawler(max_items=max_items)
     else:
         raise ValueError(f"Chưa cài đặt runner cho nguồn {source}")
 
@@ -158,6 +155,7 @@ Ví dụ sử dụng:
   .venv/bin/python run.py --source careerviet --max-items 1
   .venv/bin/python run.py --source vieclam24h --max-items 1
   .venv/bin/python run.py --source topcv --max-items 1
+  .venv/bin/python run.py --source jobsgo --phase all --max-items 5
         """,
     )
     parser.add_argument(
@@ -166,7 +164,7 @@ Ví dụ sử dụng:
         type=str,
         required=True,
         choices=SUPPORTED_SOURCES + ["all"],
-        help="Nguồn tuyển dụng cần cào (hoặc 'all' để chạy toàn bộ 7 nguồn)",
+        help="Nguồn tuyển dụng cần cào (hoặc 'all' để chạy toàn bộ 8 nguồn)",
     )
     parser.add_argument(
         "--max-items",
