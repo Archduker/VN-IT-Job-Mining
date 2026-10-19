@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Thu thập việc làm Vieclam24h qua Next.js SSR (__NEXT_DATA__) và HttpClient, xuất dữ liệu theo Data Contract chuẩn.
-
-Hoàn toàn loại bỏ Selenium, hoạt động thuần HTTP nhanh chóng, ổn định và an toàn trên môi trường CI/Airflow.
+"""Crawler nguồn Vieclam24h (https://vieclam24h.vn) — Phiên bản 2 giai đoạn 
+(Listing -> Detail) sử dụng UrlLedger và xuất dữ liệu chuẩn ra file JSON.
 """
 
 from __future__ import annotations
@@ -12,33 +11,37 @@ import logging
 import os
 import re
 import sys
-import time
-from collections.abc import Generator
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Generator
 from urllib.parse import urljoin
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from bs4 import BeautifulSoup
-from pydantic import ValidationError
 
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient, RetryConfig
 from crawlers.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags
-from crawlers.common.url_ledger import UrlLedger, clean_canonical_url
+from crawlers.common.url_ledger import (
+    UrlLedger,
+    calculate_container_html_hash,
+    clean_canonical_url,
+)
 from crawlers.common.utils import (
     clean_text,
     detect_language,
+    parse_salary_detail,
+    strip_html_tags,
     text_to_clean_lines,
 )
 
-SITE_BASE_URL = "https://vieclam24h.vn"
-DEFAULT_OUTPUT = Path(__file__).resolve().with_name("vieclam24h_jobs.json")
-CRAWLER_VERSION = "0.3.0"
-LOCAL_TIMEZONE = timezone(timedelta(hours=7))
+log = logging.getLogger("vieclam24h.crawler")
+
+SOURCE = "vieclam24h"
+CRAWLER_VERSION = "2.0.0"
+BASE_URL = "https://vieclam24h.vn"
 
 # Các danh mục IT mục tiêu trên Vieclam24h
 TARGET_CATEGORIES = [
@@ -46,7 +49,7 @@ TARGET_CATEGORIES = [
     {"name": "IT Phần cứng - Mạng", "path": "/viec-lam-it-phan-cung-mang-o7.html"},
 ]
 
-log = logging.getLogger("vieclam24h.crawler")
+CONTAINER_SELECTOR = "main"
 
 
 class ViecLam24hAPIError(RuntimeError):
@@ -73,37 +76,23 @@ def _format_timestamp(ts: Any) -> str:
         return ""
 
 
-def _extract_next_data(html: str) -> dict[str, Any] | None:
-    """Trích xuất state JSON từ thẻ script __NEXT_DATA__."""
-    if not html:
-        return None
-    soup = BeautifulSoup(html, "html.parser")
-    script = soup.find("script", id="__NEXT_DATA__")
-    if script and script.string:
-        try:
-            return json.loads(script.string)
-        except Exception as exc:
-            log.warning("Không giải mã được __NEXT_DATA__: %s", exc)
-    return None
-
-
 def _make_record(
     job_detail: dict[str, Any],
     fallback_url: str,
     *,
-    batch_id: str,
-    crawled_at: datetime,
+    batch_id: str = "batch_001",
+    crawled_at: datetime | None = None,
 ) -> JobRecord:
     job_id = str(job_detail.get("id", ""))
     title = _clean_text(job_detail.get("title"))
     employer = job_detail.get("employer_info", {})
-    company = _clean_text(employer.get("name") if isinstance(employer, dict) else None)
+    company = _clean_text(employer.get("name") if isinstance(employer, dict) else (job_detail.get("company_name") or job_detail.get("user_display_name")))
 
     if not title or not company:
         raise ViecLam24hAPIError("Bản ghi thiếu tiêu đề hoặc tên công ty.")
 
     title_slug = job_detail.get("title_slug", "")
-    job_url = fallback_url or f"{SITE_BASE_URL}/{title_slug}-id{job_id}.html"
+    job_url = fallback_url or f"{BASE_URL}/{title_slug}-id{job_id}.html"
 
     # Xử lý địa chỉ
     street_address, address_locality, address_region, address_country = None, None, None, None
@@ -276,7 +265,7 @@ def _make_record(
         source_job_id=job_id,
         url=job_url,
         dedup_key=f"vieclam24h:{job_id}" if job_id else f"vieclam24h:{job_url}",
-        crawled_at=crawled_at,
+        crawled_at=crawled_at or datetime.now(timezone.utc),
         batch_id=batch_id,
         crawler_version=CRAWLER_VERSION,
         language=language,
@@ -285,147 +274,336 @@ def _make_record(
 
 
 class ViecLam24hCrawler(BaseCrawler):
-    """Crawler thuần HTTP cho Vieclam24h dựa trên Next.js SSR (__NEXT_DATA__)."""
+    """Crawler cho nguồn Vieclam24h theo mô hình 2 giai đoạn (UrlLedger & JobRecord)."""
 
-    source_name = "vieclam24h"
+    source_name = SOURCE
     crawler_version = CRAWLER_VERSION
 
     def __init__(
         self,
         checkpoint_dir: str | None = None,
-        output_dir: str | Path | None = None,
-        max_items: int | None = None,
-        max_pages: int | None = None,
+        output_dir: str | None = None,
+        max_items: int | None = 5,
         checkpoint_interval: int = 10,
-        local_json_file: str | Path | None = None,
+        min_delay: float = 1.0,
+        max_delay: float = 2.0,
+        local_json_file: Path | str | None = None,
     ) -> None:
+        target_output_dir = output_dir or "data/vieclam24h"
         super().__init__(
             checkpoint_dir=checkpoint_dir,
-            output_dir=str(output_dir) if output_dir is not None else None,
-            max_items=max_items,
+            output_dir=target_output_dir,
             checkpoint_interval=checkpoint_interval,
-        )
-        self.max_pages = max_pages or 5
-        self.local_json_file = Path(local_json_file) if local_json_file else None
-        self.client = HttpClient(
-            source=self.source_name,
-            delay_config=DelayConfig(min_seconds=0.5, max_seconds=1.5),
-            retry_config=RetryConfig(max_retries=3, backoff_factor=1.0),
         )
         self.ledger = UrlLedger(
             source=self.source_name,
-            storage_dir=os.path.join(self.output_dir or "data/vieclam24h", "url_ledger"),
+            storage_dir=str(Path(self.output_dir) / "url_ledger"),
         )
+        
+        self.client = HttpClient(
+            source=self.source_name,
+            delay_config=DelayConfig(min_seconds=min_delay, max_seconds=max_delay),
+            retry_config=RetryConfig(max_retries=3, backoff_factor=1.0),
+        )
+        self.local_json_file = Path(local_json_file) if local_json_file else None
+        browser_headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.9",
+            "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Referer": "https://vieclam24h.vn/",
+        }
+        if hasattr(self.client, "session") and hasattr(self.client.session, "headers"):
+            self.client.session.headers.update(browser_headers)
 
-    def discover_urls(self, max_pages: int | None = None) -> list[str]:
-        """Pha 1: Quét danh mục IT qua SSR Next.js sạch sẽ, ghi nhận vào UrlLedger & MinIO."""
+    def _extract_next_data(self, html: str) -> dict[str, Any] | None:
+        """Trích xuất state JSON từ thẻ script __NEXT_DATA__."""
+        if not html:
+            return None
+        soup = BeautifulSoup(html, "html.parser")
+        script = soup.find("script", id="__NEXT_DATA__")
+        if script and script.string:
+            try:
+                return json.loads(script.string)
+            except Exception:
+                pass
+        return None
+
+    def _get_target_records(self, recheck_days: int = 21) -> list[dict[str, Any]]:
+        """Lấy danh sách các bản ghi cần xử lý."""
+        records = []
+        ledger_dict = (
+            getattr(self.ledger, "records", None)
+            or getattr(self.ledger, "catalog", None)
+            or getattr(self.ledger, "urls", None)
+        )
+        
+        if isinstance(ledger_dict, dict):
+            for r in ledger_dict.values():
+                if not r.get("content_hash") or not r.get("last_scraped_at"):
+                    records.append(r)
+                    continue
+                
+                last_str = r.get("last_scraped_at")
+                if last_str and recheck_days > 0:
+                    try:
+                        last_dt = datetime.fromisoformat(last_str.replace("Z", "+00:00"))
+                        age_days = (datetime.now(timezone.utc) - last_dt).days
+                        if age_days >= recheck_days:
+                            records.append(r)
+                    except Exception:
+                        pass
+        else:
+            records = self.ledger.get_pending_or_due_records(recheck_days=recheck_days)
+            
+        return records
+
+    # ── PHA 1: URL DISCOVERY ──────────────────────────────────
+    def discover_urls(self, max_pages: int | None = None) -> int:
+        """Quét toàn bộ danh mục Vieclam24h và ghi nhận vào UrlLedger."""
         log.info("[Vieclam24h] === Bắt đầu Pha 1: URL Discovery ===")
-        discovered_urls: list[str] = []
-        pages_to_crawl = max_pages or self.max_pages
+        total_discovered = 0
 
         for category in TARGET_CATEGORIES:
+            cat_name = category["name"]
             cat_path = category["path"]
-            for page_idx in range(1, pages_to_crawl + 1):
-                page_url = f"{SITE_BASE_URL}{cat_path}?page={page_idx}" if page_idx > 1 else f"{SITE_BASE_URL}{cat_path}"
+            log.info("[Vieclam24h] Quét danh mục: %s (%s)", cat_name, cat_path)
+
+            page_idx = 1
+            while True:
+                if max_pages is not None and page_idx > max_pages:
+                    break
+
+                page_url = f"{BASE_URL}{cat_path}?page={page_idx}" if page_idx > 1 else f"{BASE_URL}{cat_path}"
                 try:
                     resp = self.client.get(page_url)
-                    soup = BeautifulSoup(resp.text, "html.parser")
-                    next_data = soup.find("script", id="__NEXT_DATA__")
-                    if next_data and next_data.string:
-                        payload = json.loads(next_data.string)
-                        initial_state = payload.get("props", {}).get("pageProps", {}).get("initialState", {})
-                        job_list = initial_state.get("jobs", {}).get("list", [])
-                        for j in job_list:
-                            job_id = str(j.get("id"))
-                            slug = j.get("slug", "")
-                            link = f"{SITE_BASE_URL}/{slug}-id{job_id}.html" if slug else f"{SITE_BASE_URL}/id{job_id}.html"
-                            clean_link = clean_canonical_url(link)
-                            self.ledger.register_url(
-                                raw_url=clean_link,
-                                job_id=job_id,
-                                preliminary_title=j.get("title", ""),
-                                preliminary_company=j.get("company_name", ""),
-                            )
-                            discovered_urls.append(clean_link)
-                    else:
-                        for a in soup.select("a[href*='-id']"):
-                            href = a.get("href", "")
-                            m = re.search(r"-id(\d+)\.html", href)
+                    if resp.status_code >= 400:
+                        log.warning("[Vieclam24h] HTTP Error %d tại trang %d danh mục %s", resp.status_code, page_idx, cat_name)
+                        break
+
+                    html = resp.text
+                    soup = BeautifulSoup(html, "html.parser")
+                    
+                    detail_links_map: dict[str, dict[str, str]] = {}
+                    for a in soup.find_all("a"):
+                        href = a.get("href", "")
+                        clean_href = href.split("?")[0]
+                        if "-c" in clean_href and "id" in clean_href and clean_href.endswith(".html"):
+                            m = re.search(r"id(\d+)\.html", clean_href)
                             if m:
-                                job_id = m.group(1)
-                                clean_link = clean_canonical_url(urljoin(SITE_BASE_URL, href))
-                                self.ledger.register_url(raw_url=clean_link, job_id=job_id, preliminary_title=a.text.strip())
-                                discovered_urls.append(clean_link)
+                                jid = m.group(1)
+                                full_url = clean_canonical_url(urljoin(BASE_URL, clean_href))
+                                title_text = clean_text(a.get_text())
+                                detail_links_map[jid] = {"url": full_url, "title": title_text}
+
+                    script = soup.find("script", id="__NEXT_DATA__")
+                    if not script or not script.string:
+                        log.warning("[Vieclam24h] Không tìm thấy __NEXT_DATA__ tại trang %d", page_idx)
+                        break
+
+                    next_data = json.loads(script.string)
+                    api_state = next_data.get("props", {}).get("initialState", {}).get("api", {})
+                    listing_items = api_state.get("getJobList", {}).get("data", {}).get("items", [])
+
+                    if not listing_items:
+                        log.info("[Vieclam24h] Hết tin tại trang %d ngành %s", page_idx, cat_name)
+                        break
+
+                    for item in listing_items:
+                        jid = str(item.get("id", ""))
+                        title_slug = item.get("title_slug", "")
+                        title = clean_text(item.get("title", ""))
+                        
+                        comp_raw = (
+                            item.get("company_name")
+                            or item.get("user_display_name")
+                            or item.get("company")
+                        )
+                        if isinstance(comp_raw, dict):
+                            comp = clean_text(comp_raw.get("name") or comp_raw.get("display_name") or "") or "Unknown"
+                        else:
+                            comp = clean_text(str(comp_raw)) if comp_raw else "Unknown"
+
+                        detail_info = detail_links_map.get(jid)
+                        detail_url = detail_info["url"] if detail_info else None
+                        if not detail_url and title_slug:
+                            detail_url = clean_canonical_url(f"{BASE_URL}/{title_slug}-id{jid}.html")
+
+                        if not detail_url or not jid:
+                            continue
+
+                        self.ledger.register_url(
+                            raw_url=detail_url,
+                            job_id=jid,
+                            preliminary_title=title or (detail_info["title"] if detail_info else "Unknown"),
+                            preliminary_company=comp,
+                        )
+                        total_discovered += 1
+
+                    page_idx += 1
                 except Exception as exc:
-                    log.warning("[Vieclam24h] Safe Skip lỗi listing %s: %s", page_url, exc)
-                    continue
+                    log.error("[Vieclam24h] Lỗi quét danh mục trang %d ngành %s: %s", page_idx, cat_name, exc)
+                    break
 
         self.ledger.save_catalog()
-        self.ledger.export_daily_manifest()
-        log.info("[Vieclam24h] Pha 1 hoàn thành: phát hiện %d URLs.", len(discovered_urls))
-        return discovered_urls
+        manifest_file = self.ledger.export_daily_manifest()
+        self.ledger.sync_to_minio()
+        log.info("[Vieclam24h] Hoàn thành Pha 1. Tổng cộng %d URL đã ghi nhận vào %s", total_discovered, manifest_file)
+        return total_discovered
 
+    # ── PHA 2: DETAIL EXTRACTION ──────────────────────────────
     def crawl_details(self, limit: int | None = None) -> dict[str, int]:
-        """Pha 2: Bóc tách chi tiết tin từ URL Ledger với Safe Skip và chu kỳ Re-crawl 21 ngày."""
-        import hashlib
-        log.info("[Vieclam24h] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
-        pending = self.ledger.get_pending_or_due_records(recheck_days=21)
-        log.info("[Vieclam24h] Tìm thấy %d tin cần crawl chi tiết trong Ledger.", len(pending))
-        stats = {"success": 0, "failed": 0, "skipped": 0}
-        count = 0
+        """Tải chi tiết, trích xuất dữ liệu theo định dạng raw_data và lưu ra file JSON tập trung."""
+        log.info("[Vieclam24h] === Bắt đầu Pha 2: Detail Extraction (Xuất file raw_data JSON) ===")
+        pending_records = self._get_target_records(recheck_days=21)
+        log.info("[Vieclam24h] Tìm thấy %d link cần xử lý trong Ledger.", len(pending_records))
 
-        for item in pending:
-            if limit and count >= limit:
+        stats = {"success": 0, "failed": 0, "skipped": 0, "repost": 0}
+        extracted_jobs: list[dict[str, Any]] = []
+
+        count = 0
+        for item in pending_records:
+            if limit is not None and count >= limit:
                 break
+
             url = item["canonical_url"]
             url_hash = item["url_hash"]
             job_id = item["job_id"]
+
             try:
-                # Safe Skip block
+                log.info("[Vieclam24h] [%d/%d] Đang tải chi tiết: %s", count + 1, len(pending_records), url)
                 resp = self.client.get(url)
-                soup = BeautifulSoup(resp.text, "html.parser")
-                next_data = soup.find("script", id="__NEXT_DATA__")
-                if not next_data or not next_data.string:
-                    raise ValueError(f"Không tìm thấy __NEXT_DATA__ tại {url}")
-                payload = json.loads(next_data.string)
-                page_props = payload.get("props", {}).get("pageProps", {})
-                job_detail = page_props.get("jobDetail") or page_props.get("initialState", {}).get("jobDetail", {})
-                
-                record = self.parse_item({"job_detail": job_detail, "url": url})
-                if not record:
-                    raise ValueError(f"Không parse được JobRecord cho {url}")
+                if resp.status_code >= 400:
+                    log.warning("[Vieclam24h] HTTP Error %d tại URL: %s", resp.status_code, url)
+                    self.ledger.mark_failed(url_hash, error_message=f"HTTP {resp.status_code}")
+                    stats["failed"] += 1
+                    continue
 
-                raw_out_dir = Path(self.output_dir or "data/vieclam24h") / "raw"
-                raw_out_dir.mkdir(parents=True, exist_ok=True)
-                snapshot_file = raw_out_dir / f"{job_id}_v1.json"
-                with open(snapshot_file, "w", encoding="utf-8") as f:
-                    json.dump(record.model_dump(), f, ensure_ascii=False, indent=2)
+                html = resp.text
+                if "404" in html or "Tin tuyển dụng này không tồn tại" in html:
+                    self.ledger.mark_closed(url_hash)
+                    stats["skipped"] += 1
+                    continue
 
-                content_hash = hashlib.md5(json.dumps(record.raw.model_dump(), sort_keys=True).encode()).hexdigest()
-                self.ledger.mark_scraped(url_hash=url_hash, content_hash=content_hash, version=1, http_status=200)
+                # TÍNH TOÁN CLEAN CONTAINER HASH
+                new_hash = None
+                try:
+                    new_hash = calculate_container_html_hash(html, container_selector=CONTAINER_SELECTOR)
+                except Exception as exc:
+                    log.debug("[Vieclam24h] Không thể băm với selector '%s': %s", CONTAINER_SELECTOR, exc)
+
+                if not new_hash:
+                    import hashlib
+                    soup = BeautifulSoup(html, "html.parser")
+                    container = soup.select_one(CONTAINER_SELECTOR) or soup.select_one("body") or soup
+                    new_hash = hashlib.sha256(str(container).encode("utf-8")).hexdigest()
+
+                # Kiểm tra Repost
+                existing = self.ledger.find_by_content_hash(new_hash)
+                if existing and existing["url_hash"] != url_hash:
+                    log.info("[Vieclam24h] Phát hiện Repost: %s trùng nội dung với %s", url, existing["canonical_url"])
+                    self.ledger.mark_done(url_hash, content_hash=new_hash, repost_of_url_hash=existing["url_hash"])
+                    stats["repost"] += 1
+                    count += 1
+                    continue
+
+                curr_ver = item.get("latest_version") or 0
+                new_ver = curr_ver if (item.get("content_hash") == new_hash and curr_ver > 0) else curr_ver + 1
+
+                # Trích xuất dữ liệu từ __NEXT_DATA__
+                next_data = self._extract_next_data(html)
+                d_api = next_data.get("props", {}).get("initialState", {}).get("api", {}) if next_data else {}
+                job_detail = d_api.get("jobDetailHiddenContact", {}).get("data", {})
+
+                soup = BeautifulSoup(html, "html.parser")
+
+                # Bóc tách từng trường thông tin cụ thể
+                title = clean_text(
+                    job_detail.get("title")
+                    or (soup.select_one("h1").get_text(strip=True) if soup.select_one("h1") else "Unknown")
+                )
+
+                comp_raw = (
+                    job_detail.get("company_name")
+                    or job_detail.get("user_display_name")
+                    or job_detail.get("company", {})
+                )
+                if isinstance(comp_raw, dict):
+                    company = clean_text(comp_raw.get("name") or comp_raw.get("display_name") or "") or "Unknown"
+                else:
+                    company = clean_text(str(comp_raw)) if comp_raw else "Unknown"
+
+                salary_text = clean_text(job_detail.get("salary_text") or "Thoả thuận")
+                salary_detail = parse_salary_detail(salary_text, title=title)
+
+                desc_html = job_detail.get("description") or (
+                    str(soup.select_one(".job-description")) if soup.select_one(".job-description") else f"<p>{title}</p>"
+                )
+                desc_text = strip_html_tags(desc_html)
+                desc_list = text_to_clean_lines(desc_html or desc_text)
+
+                req_html = job_detail.get("requirement") or ""
+                req_text = strip_html_tags(req_html)
+                req_list = text_to_clean_lines(req_html or req_text)
+
+                ben_html = job_detail.get("benefit") or ""
+                ben_text = strip_html_tags(ben_html)
+                ben_list = text_to_clean_lines(ben_html or ben_text)
+
+                loc_text = clean_text(job_detail.get("address") or "")
+                deadline_text = clean_text(job_detail.get("expired_date") or "")
+                seniority = clean_text(
+                    job_detail.get("level", {}).get("name") if isinstance(job_detail.get("level"), dict) else ""
+                )
+                emp_type = clean_text(
+                    job_detail.get("working_form", {}).get("name") if isinstance(job_detail.get("working_form"), dict) else ""
+                )
+
+                # Chuẩn hóa raw_data theo đúng định dạng yêu cầu
+                raw_data = {
+                    "title": title,
+                    "company": company,
+                    "salary": salary_detail,
+                    "tags": {"requirements": None, "benefits": None, "skills": None},
+                    "description_list": desc_list,
+                    "requirements_list": req_list,
+                    "benefits_list": ben_list,
+                    "location_text": loc_text,
+                    "deadline_text": deadline_text,
+                    "posted_date_text": "",
+                    "employment_type_text": emp_type,
+                    "seniority_text": seniority,
+                    "extra": job_detail,
+                }
+
+                extracted_jobs.append(raw_data)
+
+                # Cập nhật UrlLedger
+                self.ledger.mark_done(url_hash, content_hash=new_hash, new_version=new_ver)
                 stats["success"] += 1
                 count += 1
+
             except Exception as exc:
-                log.warning("[Vieclam24h] Safe Skip lỗi cào chi tiết %s: %s", url, exc)
-                self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
+                log.error("[Vieclam24h] Lỗi cào %s: %s. Safe Skip.", url, exc)
+                self.ledger.mark_failed(url_hash, error_message=str(exc))
                 stats["failed"] += 1
-                continue
+
+        # Lưu danh sách công việc trích xuất được ra 1 file JSON tập trung
+        if extracted_jobs:
+            out_path = Path(self.output_dir)
+            out_path.mkdir(parents=True, exist_ok=True)
+            output_file = out_path / "batch_001.json"
+            
+            with open(output_file, "w", encoding="utf-8") as f:
+                json.dump(extracted_jobs, f, ensure_ascii=False, indent=4)
+            log.info("[Vieclam24h] Đã xuất thành công %d bản ghi ra file: %s", len(extracted_jobs), output_file)
 
         self.ledger.save_catalog()
-        log.info("[Vieclam24h] Pha 2 hoàn tất: %s", stats)
+        self.ledger.sync_to_minio()
+        log.info("[Vieclam24h] Hoàn thành Pha 2. Thống kê: %s", stats)
         return stats
 
-    def _fetch_page_next_data(self, url: str) -> dict[str, Any] | None:
-        """Tải mã HTML của một URL và bóc tách __NEXT_DATA__."""
-        try:
-            resp = self.client.get(url)
-            return _extract_next_data(resp.text)
-        except Exception as exc:
-            log.warning("Lỗi tải trang %s: %s", url, exc)
-            return None
-
     def fetch_items(self) -> Generator[dict[str, Any], None, None]:
-        """Duyệt listing qua các danh mục IT và tải detail từng tin tuyển dụng."""
+        """Tương thích BaseCrawler: Duyệt qua các bản ghi pending/due từ ledger hoặc file offline."""
         if self.local_json_file and self.local_json_file.exists():
             log.info("Đang đọc dữ liệu offline từ: %s", self.local_json_file)
             content = self.local_json_file.read_text(encoding="utf-8")
@@ -439,135 +617,76 @@ class ViecLam24hCrawler(BaseCrawler):
                         yield {"job_detail": it, "url": it.get("url", "")}
             return
 
-        collected_count = 0
-        seen_ids: set[str] = set()
-
-        for category in TARGET_CATEGORIES:
-            cat_name = category["name"]
-            cat_path = category["path"]
-            log.info("[Vieclam24h] Bắt đầu quét ngành: %s (%s)", cat_name, cat_path)
-
-            for page_idx in range(1, self.max_pages + 1):
-                if self.max_items is not None and collected_count >= self.max_items:
-                    return
-
-                page_url = f"{SITE_BASE_URL}{cat_path}?page={page_idx}" if page_idx > 1 else f"{SITE_BASE_URL}{cat_path}"
-                log.info("[Vieclam24h] Đang tải danh sách trang %d: %s", page_idx, page_url)
-
-                try:
-                    resp = self.client.get(page_url)
-                    html = resp.text
-                except Exception as exc:
-                    log.warning("[Vieclam24h] Lỗi tải trang listing %s: %s", page_url, exc)
-                    break
-
-                soup = BeautifulSoup(html, "html.parser")
-                next_data = _extract_next_data(html)
-                if not next_data:
-                    log.warning("[Vieclam24h] Không tìm thấy __NEXT_DATA__ tại trang %s", page_url)
-                    break
-
-                # Trích xuất danh sách link thẻ a từ DOM HTML
-                detail_links_map: dict[str, str] = {}
-                for a in soup.find_all("a"):
-                    href = a.get("href", "")
-                    clean_href = href.split("?")[0]
-                    if "-c" in clean_href and "id" in clean_href and clean_href.endswith(".html"):
-                        m = re.search(r"id(\d+)\.html", clean_href)
-                        if m:
-                            jid = m.group(1)
-                            detail_links_map[jid] = urljoin(SITE_BASE_URL, clean_href)
-
-                api_state = next_data.get("props", {}).get("initialState", {}).get("api", {})
-                listing_items = api_state.get("getJobList", {}).get("data", {}).get("items", [])
-                if not listing_items:
-                    log.info("[Vieclam24h] Hết tin tại trang %d ngành %s", page_idx, cat_name)
-                    break
-
-                for item_summary in listing_items:
-                    if self.max_items is not None and collected_count >= self.max_items:
-                        return
-
-                    jid = str(item_summary.get("id", ""))
-                    if not jid or jid in seen_ids or self.checkpoint.is_seen(jid):
-                        continue
-                    seen_ids.add(jid)
-
-                    # Tìm URL chi tiết
-                    detail_url = detail_links_map.get(jid)
-                    title_slug = item_summary.get("title_slug", "")
-                    if not detail_url and title_slug:
-                        detail_url = f"{SITE_BASE_URL}/{title_slug}-id{jid}.html"
-
-                    job_detail = None
-                    if detail_url:
-                        try:
-                            detail_next_data = self._fetch_page_next_data(detail_url)
-                            if detail_next_data:
-                                d_api = detail_next_data.get("props", {}).get("initialState", {}).get("api", {})
-                                job_detail = d_api.get("jobDetailHiddenContact", {}).get("data", {})
-                        except Exception as exc:
-                            log.warning("[Vieclam24h] Không tải được detail %s: %s", detail_url, exc)
-
-                    # Fallback dùng thông tin tóm tắt từ listing nếu detail page bị chặn hoặc rỗng
-                    if not job_detail:
-                        job_detail = item_summary
-
-                    collected_count += 1
-                    yield {"job_detail": job_detail, "url": detail_url or ""}
+        pending_records = self._get_target_records(recheck_days=21)
+        for item in pending_records:
+            url = item["canonical_url"]
+            job_id = item["job_id"]
+            try:
+                resp = self.client.get(url)
+                if resp.status_code >= 400:
+                    continue
+                html = resp.text
+                next_data = self._extract_next_data(html)
+                d_api = next_data.get("props", {}).get("initialState", {}).get("api", {}) if next_data else {}
+                job_detail = d_api.get("jobDetailHiddenContact", {}).get("data", {})
+                if not job_detail:
+                    continue
+                yield {
+                    "job_id": job_id,
+                    "url": url,
+                    "html_content": html,
+                    "job_detail": job_detail,
+                }
+            except Exception as exc:
+                log.warning("[Vieclam24h] Lỗi fetch item %s: %s", url, exc)
 
     def parse_item(self, item: dict[str, Any]) -> JobRecord | None:
+        """Chuẩn hóa dữ liệu thô sang JobRecord chuẩn xác."""
+        job_detail = item.get("job_detail") or item
+        fallback_url = item.get("url") or ""
         try:
-            if not isinstance(item, dict):
-                return None
-            job_detail = item.get("job_detail") if isinstance(item.get("job_detail"), dict) else item
-            url = item.get("url", "") if isinstance(item.get("url"), str) else ""
-
             return _make_record(
                 job_detail,
-                url,
+                fallback_url,
                 batch_id=self.batch_id,
-                crawled_at=datetime.now(LOCAL_TIMEZONE),
+                crawled_at=datetime.now(timezone.utc),
             )
-        except (ViecLam24hAPIError, ValueError, ValidationError) as exc:
-            log.warning("Bỏ qua job không hợp lệ: %s", exc)
-            self.skipped_count += 1
+        except Exception as exc:
+            log.warning("Bỏ qua bản ghi không hợp lệ: %s", exc)
             return None
 
 
-def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Crawl việc làm Vieclam24h thuần HTTP theo chuẩn dự án.")
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--max-pages", type=int, default=5, help="Giới hạn số trang cần crawl.")
-    parser.add_argument("--max-jobs", type=int, help="Giới hạn số lượng tin tuyển dụng.")
-    parser.add_argument("--local-json-file", type=Path, help="Đường dẫn file JSON mẫu để chạy offline.")
-    parser.add_argument("--verbose", action="store_true")
-    return parser.parse_args()
+def main():
+    parser = argparse.ArgumentParser(description="Vieclam24h Job Crawler (UrlLedger & JobRecord)")
+    parser.add_argument("--phase", type=str, choices=["all", "discovery", "details"], default="all", help="Pha cần chạy: discovery, details, all")
+    parser.add_argument("--max-pages", type=int, default=None, help="Số trang danh mục tối đa cần quét ở Pha 1")
+    parser.add_argument("--max-items", type=int, default=None, help="Số tin tối đa cần cào ở Pha 2")
+    parser.add_argument("--output-dir", type=str, default="data/vieclam24h", help="Thư mục gốc lưu trữ dữ liệu")
+    parser.add_argument("--checkpoint-dir", type=str, default=None, help="Thư mục lưu checkpoint")
+    args = parser.parse_args()
 
-
-def main() -> int:
-    args = _parse_args()
     logging.basicConfig(
-        level=logging.INFO if args.verbose else logging.WARNING,
-        format="%(levelname)s: %(message)s",
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
 
     crawler = ViecLam24hCrawler(
-        output_dir=args.output.parent,
-        max_items=args.max_jobs,
-        max_pages=args.max_pages,
-        local_json_file=args.local_json_file,
+        checkpoint_dir=args.checkpoint_dir,
+        output_dir=args.output_dir,
+        max_items=args.max_items,
     )
 
-    try:
-        stats = crawler.run()
-        print(f"Vieclam24h: Hoàn tất thu thập. Thống kê: {stats}")
-    except Exception as exc:
-        log.error("Lỗi khi chạy crawler: %s", exc)
-        return 1
-
-    return 0
+    if args.phase == "discovery":
+        total = crawler.discover_urls(max_pages=args.max_pages)
+        print(f"Pha 1 Discovery hoàn thành. Tổng số URL ghi nhận: {total}")
+    elif args.phase == "details":
+        stats = crawler.crawl_details(limit=args.max_items)
+        print("Pha 2 Detail Extraction hoàn thành:", stats)
+    else:
+        crawler.discover_urls(max_pages=args.max_pages)
+        stats = crawler.crawl_details(limit=args.max_items)
+        print("Crawl hoàn tất:", stats)
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()
