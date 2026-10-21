@@ -41,9 +41,9 @@ SOURCES_SPECS = {
         "skills_col": "skills_arr",
         "skills_str_col": "skills_str",
         "loc_col": "addresses.address_region_array",
-        "exp_col": "experiences_str",
-        "level_col": "job_levels_arr",
-        "type_col": "job_types_str",
+        "exp_col": "requirements_original",
+        "level_col": "title",
+        "type_col": "title",
         "insights": [
             "Tập dữ liệu quy mô lớn nhất dự án (>2,200 snapshots thô), có độ tin cậy thống kê cao nhất.",
             "Phân hóa rõ rệt hai dải lương: Dải lương nội địa (15 - 35 triệu VNĐ) và Dải lương quốc tế ($1,500 - $3,500 USD).",
@@ -328,13 +328,24 @@ print(f"✅ Đã khởi tạo môi trường phân tích thô cho nguồn: {{sou
     # Bước 1: Đọc file thô & Khảo sát cấu trúc
     # =========================================================================
     s1_md = """### Bước 1: Đọc File Thô & Khảo Sát Cấu Trúc Nguyên Bản
-Nạp dữ liệu thô nguyên bản từ **Cloudflare R2 / MinIO Lakehouse** và local cache qua `load_raw_source_dataframe()`.
+Nạp dữ liệu thô nguyên bản từ **Cloudflare R2 / MinIO Lakehouse** và local cache qua `load_raw_source_dataframe(auto_sync=True)`.
+Cơ chế tự động kiểm tra bucket Cloud R2, kéo các tệp JSON thô còn thiếu về bộ đệm cục bộ với timeout 3s an toàn.
 Sử dụng `pd.json_normalize()` để trải phẳng JSON thô mà không làm mất bất kỳ trường nào của sàn.
 """
     cells.append({"cell_type": "markdown", "metadata": {}, "source": s1_md})
 
-    s1_code = """# 1. Đọc nội dung file thô và trải phẳng JSON
-df, audit_meta = load_raw_source_dataframe(source_name, auto_sync=False)
+    s1_code = """# 1. Đọc nội dung file thô và trải phẳng JSON (Tự động đồng bộ Cloud R2 Lakehouse)
+df, audit_meta = load_raw_source_dataframe(source_name, auto_sync=True)
+
+# Hiển thị bảng điều khiển trạng thái đồng bộ Cloud Lakehouse
+sync_info = audit_meta.get("sync_info", {})
+print("=" * 70)
+print(f"☁️ TRẠNG THÁI CLOUD LAKEHOUSE: {sync_info.get('status', 'N/A')}")
+print(f"🔗 Endpoint: {sync_info.get('endpoint', 'N/A')} | Bucket: {sync_info.get('bucket', 'N/A')}")
+print(f"📥 Snapshots Cloud: {sync_info.get('cloud_keys_count', 0)} | Mới tải về: {sync_info.get('downloaded_count', 0)} | Tệp cục bộ: {sync_info.get('local_files_count', len(df))}")
+if sync_info.get('message'):
+    print(f"ℹ️ Thông điệp: {sync_info.get('message')}")
+print("=" * 70)
 
 print(f"Kiểu dữ liệu gốc: {type(df)}")
 print(f"Tổng số dòng (bản ghi): {df.shape[0]}")
@@ -678,12 +689,15 @@ plt.show()
 exp_col = "{cfg['exp_col']}"
 if exp_col not in df.columns:
     for c in df.columns:
-        if any(kw in c.lower() for kw in ['exp', 'kinh_nghiem']) and 'company' not in c.lower():
+        if any(kw in c.lower() for kw in ['exp', 'kinh_nghiem', 'requirement']) and 'company' not in c.lower():
             exp_col = c
             break
 
 print(f"Sử dụng cột kinh nghiệm gốc: {{exp_col}}")
-s_exp = df[exp_col].copy()
+if exp_col in df.columns:
+    s_exp = df[exp_col].copy()
+else:
+    s_exp = pd.Series([None] * len(df), name='experience', index=df.index)
 
 # 2. Thống kê null kinh nghiệm
 display(pd.DataFrame({{
@@ -704,7 +718,11 @@ def clean_experience(val):
         return 'Trống / Chưa khai báo'
     if any(k in s for k in ['không yêu cầu', 'chưa có kinh nghiệm', 'fresher', 'intern', '0']):
         return 'Không yêu cầu / Dưới 1 năm'
-    nums = [float(n) for n in re.findall(r'\\d+(?:\\.\\d+)?', s)]
+    year_match = re.findall(r'(\\d+(?:\\.\\d+)?)\\s*(?:\\+|-\\s*\\d+)?\\s*(?:năm|year)', s)
+    if year_match:
+        nums = [float(n) for n in year_match]
+    else:
+        nums = [float(n) for n in re.findall(r'\\d+(?:\\.\\d+)?', s)]
     if nums:
         # Nếu là số tháng (Glints monthsOfExperience)
         n = nums[0]
@@ -765,7 +783,27 @@ print(f"Cột cấp bậc: {{lvl_col}} | Cột hình thức: {{type_col}}")
 fig, axes = plt.subplots(1, 2, figsize=(15, 5))
 
 # A. Biểu đồ Cấp bậc tuyển dụng
-s_lvl = df[lvl_col].dropna().astype(str) if lvl_col in df.columns else pd.Series([])
+if lvl_col in df.columns:
+    if lvl_col == 'title' or 'title' in lvl_col.lower():
+        def extract_level_from_title(title):
+            t = str(title).lower()
+            if any(k in t for k in ['lead', 'leader', 'manager', 'head', 'principal', 'quản lý', 'trưởng nhóm']):
+                return 'Lead / Manager'
+            if any(k in t for k in ['senior', 'sr.', 'sr ']):
+                return 'Senior'
+            if any(k in t for k in ['middle', 'mid.', 'mid ']):
+                return 'Middle'
+            if any(k in t for k in ['junior', 'jr.', 'jr ']):
+                return 'Junior'
+            if any(k in t for k in ['fresher', 'intern', 'thực tập', 'trainee']):
+                return 'Fresher / Intern'
+            return 'Khác / Chuyên viên'
+        s_lvl = df[lvl_col].apply(extract_level_from_title)
+    else:
+        s_lvl = df[lvl_col].dropna().astype(str)
+else:
+    s_lvl = pd.Series([])
+
 if not s_lvl.empty:
     top_lvls = s_lvl.value_counts().head(8)
     sns.barplot(x=top_lvls.values, y=top_lvls.index, ax=axes[0], palette='Blues_r')
@@ -775,7 +813,23 @@ else:
     axes[0].text(0.5, 0.5, "Không có cột cấp bậc riêng biệt", ha='center')
 
 # B. Biểu đồ Hình thức làm việc
-s_typ = df[type_col].dropna().astype(str) if type_col in df.columns else pd.Series([])
+if type_col in df.columns:
+    if type_col == 'title' or 'title' in type_col.lower() or 'content' in type_col.lower():
+        def extract_work_type(row_text):
+            t = str(row_text).lower()
+            if any(k in t for k in ['remote', 'từ xa']):
+                return 'Remote'
+            if any(k in t for k in ['hybrid', 'linh hoạt']):
+                return 'Hybrid'
+            if any(k in t for k in ['part time', 'bán thời gian', 'part-time']):
+                return 'Part-time'
+            return 'Full-time / On-site'
+        s_typ = df[type_col].apply(extract_work_type)
+    else:
+        s_typ = df[type_col].dropna().astype(str)
+else:
+    s_typ = pd.Series([])
+
 if not s_typ.empty:
     top_typs = s_typ.value_counts().head(6)
     sns.barplot(x=top_typs.values, y=top_typs.index, ax=axes[1], palette='crest')

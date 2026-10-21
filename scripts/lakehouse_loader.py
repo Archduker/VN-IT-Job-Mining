@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 """scripts/lakehouse_loader.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Universal Lakehouse Raw Data Ingestion Module for VN-IT-Job-Mining.
+Universal Lakehouse Raw Data Ingestion & Auto-Sync Module for VN-IT-Job-Mining.
 
-Provides loading and local caching of raw job snapshots from Cloudflare R2 / MinIO
-Lakehouse across all 8 sources without altering or forcing a premature unified schema:
+Provides seamless loading, intelligent multi-threaded caching, and live synchronization
+of raw job snapshots from Cloudflare R2 / MinIO Lakehouse across all 8 sources:
   - CareerViet
   - Glints
   - ITviec
@@ -15,13 +15,16 @@ Lakehouse across all 8 sources without altering or forcing a premature unified s
   - Vieclam24h
   - VietnamWorks
 
-Design Principle:
+Design Principles:
   - Zero Information Loss (SD1): Preserves 100% of native payload fields and structure.
-  - Returns flattened native DataFrame via pd.json_normalize() for honest EDA.
+  - Auto-Sync by default: Detects missing files on local disk and pulls them automatically.
+  - Graceful Offline Fallback: If offline or timeout occurs, safely uses local cache in 3s.
+  - One-Click CLI: python scripts/lakehouse_loader.py --sync-all
 """
 
 from __future__ import annotations
 
+import argparse
 import concurrent.futures
 import glob
 import json
@@ -57,14 +60,17 @@ SUPPORTED_SOURCES = (
 )
 
 
-def get_lakehouse_client():
-    """Tạo kết nối tới Cloudflare R2 hoặc MinIO Lakehouse."""
+def get_lakehouse_client() -> Tuple[Any, Optional[str], Optional[str], str]:
+    """Tạo kết nối tới Cloudflare R2 hoặc MinIO Lakehouse kèm kiểm tra kết nối nhanh (3s timeout).
+
+    Returns:
+        (s3_client, bucket_name, endpoint_url, connection_status)
+    """
     try:
         import boto3
         from botocore.client import Config
     except ImportError:
-        logger.warning("Thư viện boto3 chưa được cài đặt. Chỉ có thể dùng dữ liệu cục bộ.")
-        return None, None, None
+        return None, None, None, "OFFLINE: Thiếu thư viện boto3"
 
     endpoint = (
         os.getenv("S3_ENDPOINT_URL")
@@ -98,49 +104,71 @@ def get_lakehouse_client():
             endpoint_url=endpoint,
             aws_access_key_id=ak,
             aws_secret_access_key=sk,
-            config=Config(signature_version="s3v4", connect_timeout=5, read_timeout=20, retries={"max_attempts": 2}),
+            config=Config(signature_version="s3v4", connect_timeout=3, read_timeout=10, retries={"max_attempts": 1}),
             region_name=region,
         )
-        return s3, bucket, endpoint
+        # Ping nhẹ kiểm tra quyền truy cập bucket
+        s3.head_bucket(Bucket=bucket)
+        return s3, bucket, endpoint, "CONNECTED"
     except Exception as exc:
-        logger.warning("Không thể khởi tạo Boto3 client: %s", exc)
-        return None, None, None
+        return None, bucket, endpoint, f"OFFLINE ({exc.__class__.__name__}: {exc})"
 
 
-def sync_source_from_lakehouse(source: str, max_workers: int = 8) -> int:
-    """Tải các snapshot còn thiếu từ R2 Lakehouse về thư mục data/<source>/raw/."""
-    s3, bucket, endpoint = get_lakehouse_client()
-    if not s3 or not bucket:
-        return 0
+def sync_source_from_lakehouse(source: str, max_workers: int = 8) -> Dict[str, Any]:
+    """Tự động kiểm tra và kéo các snapshot còn thiếu từ R2 Lakehouse về máy cục bộ.
+
+    Returns:
+        Dictionary chứa thông tin chi tiết về trạng thái đồng bộ
+    """
+    s3, bucket, endpoint, status = get_lakehouse_client()
+    local_source_dir = PROJECT_ROOT / "data" / source / "raw"
+    local_source_dir.mkdir(parents=True, exist_ok=True)
+    existing_files = {p.name for p in (PROJECT_ROOT / "data" / source).rglob("*.json")}
+
+    sync_result = {
+        "status": status,
+        "source": source,
+        "endpoint": endpoint,
+        "bucket": bucket,
+        "cloud_keys_count": 0,
+        "downloaded_count": 0,
+        "local_files_count": len(existing_files),
+        "message": ""
+    }
+
+    if status != "CONNECTED" or not s3:
+        sync_result["message"] = f"Không có kết nối Cloud ({status}). Sử dụng {len(existing_files)} tệp bộ đệm cục bộ."
+        logger.info(sync_result["message"])
+        return sync_result
 
     prefix = f"raw/{source}/"
-    logger.info("Đang kiểm tra dữ liệu trên Lakehouse: %s (Bucket: %s)", prefix, bucket)
-
     try:
         paginator = s3.get_paginator("list_objects_v2")
         cloud_keys = []
         for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
             for item in page.get("Contents", []):
                 cloud_keys.append(item["Key"])
+        sync_result["cloud_keys_count"] = len(cloud_keys)
     except Exception as exc:
-        logger.warning("Không thể lấy danh sách từ Cloud: %s", exc)
-        return 0
+        sync_result["status"] = f"ERROR ({exc})"
+        sync_result["message"] = f"Lỗi quét bucket {prefix}: {exc}"
+        logger.warning(sync_result["message"])
+        return sync_result
 
     if not cloud_keys:
-        logger.info("Không có snapshot nào trên Cloud cho nguồn %s", source)
-        return 0
-
-    local_source_dir = PROJECT_ROOT / "data" / source / "raw"
-    local_source_dir.mkdir(parents=True, exist_ok=True)
-    existing_files = {p.name for p in (PROJECT_ROOT / "data" / source).rglob("*.json")}
+        sync_result["message"] = f"Chưa có snapshot nào trên Cloud cho {source}. Dùng {len(existing_files)} tệp cục bộ."
+        logger.info(sync_result["message"])
+        return sync_result
 
     missing_keys = [k for k in cloud_keys if k.split("/")[-1] not in existing_files]
-    logger.info("Nguồn %s: %d keys trên Cloud, %d tệp cục bộ, cần tải %d tệp.", source, len(cloud_keys), len(existing_files), len(missing_keys))
-
     if not missing_keys:
-        return 0
+        sync_result["message"] = f"Đã đồng bộ đầy đủ ({len(cloud_keys)} snapshots trên Cloud, {len(existing_files)} tệp cục bộ)."
+        logger.info("Nguồn %s: %s", source, sync_result["message"])
+        return sync_result
 
+    logger.info("Nguồn %s: Đang tải tự động %d snapshot còn thiếu từ Cloud...", source, len(missing_keys))
     downloaded = 0
+
     def _download(key: str):
         parts = key.split("/")
         filename = parts[-1]
@@ -160,18 +188,35 @@ def sync_source_from_lakehouse(source: str, max_workers: int = 8) -> int:
             except Exception as e:
                 logger.warning("Lỗi tải %s: %e", futures[f], e)
 
-    logger.info("Đã đồng bộ xong %d snapshot mới về %s", downloaded, local_source_dir)
-    return downloaded
+    sync_result["downloaded_count"] = downloaded
+    sync_result["local_files_count"] = len(existing_files) + downloaded
+    sync_result["message"] = f"Đã tải thành công {downloaded} snapshot mới từ Cloud R2 về {local_source_dir}."
+    logger.info("Nguồn %s: %s", source, sync_result["message"])
+    return sync_result
+
+
+def sync_all_sources(max_workers: int = 8) -> Dict[str, Dict[str, Any]]:
+    """Đồng bộ toàn bộ 8 nguồn tuyển dụng từ Cloud R2 về máy trong 1 lệnh duy nhất."""
+    logger.info("=" * 70)
+    logger.info("   BẮT ĐẦU ĐỒNG BỘ TOÀN BỘ 8 NGUỒN TỪ CLOUDFLARE R2 LAKEHOUSE")
+    logger.info("=" * 70)
+    results = {}
+    for s in SUPPORTED_SOURCES:
+        results[s] = sync_source_from_lakehouse(s, max_workers=max_workers)
+    logger.info("=" * 70)
+    logger.info("🎉 Hoàn tất kiểm tra và đồng bộ 8 nguồn dữ liệu!")
+    return results
 
 
 def load_raw_source_dataframe(
     source: str,
-    auto_sync: bool = False,
+    auto_sync: bool = True,
     sample_limit: Optional[int] = None
 ) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """Tải và trải phẳng tập dữ liệu thô nguyên bản của một sàn tuyển dụng (pd.json_normalize).
 
-    Không can thiệp, không đổi tên cột, giữ nguyên 100% trường dữ liệu bản địa.
+    Mặc định auto_sync=True: Tự động kiểm tra và kéo snapshot mới nhất từ Cloud R2 / MinIO.
+    Nếu mất mạng hoặc offline: Tự động fallback về local cache trong 3 giây.
 
     Returns:
         (df_raw, audit_metadata)
@@ -179,10 +224,12 @@ def load_raw_source_dataframe(
     if source not in SUPPORTED_SOURCES:
         raise ValueError(f"Nguồn '{source}' không hỗ trợ. Phải thuộc: {SUPPORTED_SOURCES}")
 
+    sync_info = {}
     if auto_sync:
         try:
-            sync_source_from_lakehouse(source)
+            sync_info = sync_source_from_lakehouse(source)
         except Exception as exc:
+            sync_info = {"status": f"OFFLINE_FALLBACK ({exc})", "message": "Tự động chuyển sang dùng dữ liệu cục bộ."}
             logger.warning("Bỏ qua đồng bộ Cloud cho %s do: %s", source, exc)
 
     data_dir = PROJECT_ROOT / "data" / source
@@ -223,7 +270,6 @@ def load_raw_source_dataframe(
                     meta = item.get("metadata") or item.get("_meta") or {}
                     payload = item.get("raw_payload") or item.get("raw") or item.get("listing_response") or item
 
-                    # Xác định ID để lọc trùng lặp
                     jid = (
                         meta.get("job_id")
                         or (payload.get("id") if isinstance(payload, dict) else None)
@@ -245,16 +291,15 @@ def load_raw_source_dataframe(
 
     logger.info("Nguồn %s: Đã giải nén %d bản ghi payload thô.", source, len(raw_payloads))
 
-    # Trải phẳng cấu trúc JSON nguyên bản
     df_raw = pd.json_normalize(raw_payloads) if raw_payloads else pd.DataFrame()
 
-    # Đọc URL Ledger audit metadata
     ledger_catalog_file = PROJECT_ROOT / "data" / source / "url_ledger" / "catalog_master.json"
     ledger_audit = {
         "total_discovered": len(df_raw),
         "done_count": len(df_raw),
         "pending_count": 0,
-        "status_breakdown": {}
+        "status_breakdown": {},
+        "sync_info": sync_info
     }
     if ledger_catalog_file.exists():
         try:
@@ -273,6 +318,16 @@ def load_raw_source_dataframe(
 
 
 if __name__ == "__main__":
-    for s in SUPPORTED_SOURCES:
-        df, audit = load_raw_source_dataframe(s, auto_sync=False)
-        print(f"{s.upper():15}: {len(df):5d} rows, {len(df.columns):4d} raw native columns. Sample cols: {list(df.columns)[:5]}")
+    parser = argparse.ArgumentParser(description="Lakehouse Loader & Auto-Sync Tool")
+    parser.add_argument("--sync-all", action="store_true", help="Kéo toàn bộ snapshot của 8 nguồn từ Cloud R2")
+    parser.add_argument("--source", choices=list(SUPPORTED_SOURCES) + ["all"], default="all")
+    args = parser.parse_args()
+
+    if args.sync_all:
+        sync_all_sources()
+    else:
+        sources_to_run = SUPPORTED_SOURCES if args.source == "all" else [args.source]
+        for s in sources_to_run:
+            df, audit = load_raw_source_dataframe(s, auto_sync=True)
+            sync = audit.get("sync_info", {})
+            print(f"{s.upper():12}: {len(df):5d} rows, {len(df.columns):3d} cols | Cloud: {sync.get('status')} ({sync.get('cloud_keys_count', 0)} keys, +{sync.get('downloaded_count', 0)} new)")
