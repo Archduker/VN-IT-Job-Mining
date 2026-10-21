@@ -3,22 +3,22 @@
 > **Tác giả:** Sơn (Data Mining & Crawler Engineer)
 > **Nguồn dữ liệu:** TopDev Vietnam (`https://topdev.vn`)
 > **Công cụ:** Pandas, DuckDB, NumPy, Matplotlib, Seaborn
-> **Thời điểm phân tích:** 2026-10-18
+> **Thời điểm phân tích:** 2026-10-21
 > **Tiêu chuẩn:** CRISP-DM Phase 2 & Modern ELT (SD1 - SD5)
 
 ---
 
 ## 1. Tổng Quan Dữ Liệu & Vòng Đời Bài Đăng
 
-Hệ thống URL Ledger TopDev ghi nhận tổng cộng **65 bài đăng** công nghệ thông tin trong đợt quét Pha 1:
+Hệ thống URL Ledger TopDev ghi nhận tổng cộng **2,739 bài đăng** công nghệ thông tin trong đợt quét Pha 1 toàn diện (quét trọn vẹn 91 trang danh mục IT):
 
 | Chỉ số | Giá trị | Ghi chú |
 | :--- | :---: | :--- |
-| **Tổng số URL phát hiện (Discovery)** | **65** | URL bài đăng IT tại TopDev |
-| **Số tin đã cào chi tiết (`DONE`)** | **3** | Mẫu hoàn chỉnh kèm SHA256 (`samples/`) |
-| **Số tin đang chờ cào (`PENDING`)** | **62** | Đã ghi nhận trong ledger manifest |
-| **Số tin gặp lỗi tạm thời (`FAILED`)** | **0** | Đã cấu hình Safe Skip an toàn |
-| **Bộ mẫu đối chứng (`samples/`)** | **3 cặp** | Đầy đủ Standard, VIP, Negotiable |
+| **Tổng số URL phát hiện (Discovery)** | **2,739** | URL bài đăng IT tại TopDev (khử trùng từ 8,909 lượt hiển thị) |
+| **Số tin đã cào chi tiết (`DONE`)** | **2,739** | Hoàn tất 100% kèm SHA-256 duy nhất & language |
+| **Số tin đang chờ cào (`PENDING`)** | **0** | Đã hoàn tất toàn bộ |
+| **Số tin gặp lỗi tạm thời (`FAILED`)** | **0** | Không có lỗi phát sinh |
+| **Bộ mẫu đối chứng (`samples/`)** | **3 cặp** | Đầy đủ Standard, VIP VNPT-Net, Negotiable |
 
 ---
 

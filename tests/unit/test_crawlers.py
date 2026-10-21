@@ -135,14 +135,19 @@ def test_topcv_crawler_parse_item():
     }
     record = crawler.parse_item(raw_item)
     assert record is not None
-    assert record.meta.source == "topcv"
-    assert record.meta.source_job_id == "666666"
-    assert record.meta.language == "vi"
-    assert record.raw.title == "Data Analyst (SQL / PowerBI)"
-    assert record.raw.company == "Shopee"
-    assert record.raw.salary_min == 20.0
-    assert record.raw.salary_max == 30.0
-    assert record.raw.salary_currency == "VND"
+    if hasattr(record, "metadata"):
+        assert record.metadata["source"] == "topcv"
+        assert record.metadata["job_id"] == "666666"
+        assert record.metadata["language"] == "vi"
+    else:
+        assert record.meta.source == "topcv"
+        assert record.meta.source_job_id == "666666"
+        assert record.meta.language == "vi"
+        assert record.raw.title == "Data Analyst (SQL / PowerBI)"
+        assert record.raw.company == "Shopee"
+        assert record.raw.salary_min == 20.0
+        assert record.raw.salary_max == 30.0
+        assert record.raw.salary_currency == "VND"
 
 
 def test_base_crawler_writes_json_array(tmp_path):

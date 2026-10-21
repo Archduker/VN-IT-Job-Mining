@@ -174,3 +174,24 @@ with DAG(
         source_task_id="crawl_glints",
     )
     crawl_glints >> quality_glints
+
+# 8. JobsGO (Chủ Nhật 08:00)
+with DAG(
+    dag_id="crawler_jobsgo",
+    default_args=default_args,
+    description="Crawl IT jobs from JobsGO Vietnam",
+    schedule_interval="0 8 * * 0",
+    start_date=datetime(2026, 10, 1),
+    catchup=False,
+    tags=["crawlers", "jobsgo"],
+) as jobsgo_dag:
+    crawl_jobsgo = JobCrawlerOperator(
+        task_id="crawl_jobsgo",
+        source="jobsgo",
+        max_items=50,
+    )
+    quality_jobsgo = DataQualityOperator(
+        task_id="check_quality_jobsgo",
+        source_task_id="crawl_jobsgo",
+    )
+    crawl_jobsgo >> quality_jobsgo

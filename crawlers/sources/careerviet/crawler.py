@@ -19,15 +19,26 @@ from collections import Counter
 from collections.abc import Generator
 from datetime import datetime, timezone
 from pathlib import Path
+import sys
 from typing import Any
 from urllib.parse import urljoin
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from bs4 import BeautifulSoup
 
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient
 from crawlers.common.schema import JobRecord
-from crawlers.common.url_ledger import UrlLedger
+from crawlers.common.url_ledger import (
+    UrlLedger,
+    calculate_container_html_hash,
+    calculate_json_canonical_hash,
+    calculate_json_field_hashes,
+    diff_json_versions,
+)
 from crawlers.common.utils import (
     clean_text,
     detect_language,
@@ -36,11 +47,7 @@ from crawlers.common.utils import (
     text_to_clean_lines,
     classify_job_tags,
 )
-from crawlers.sources.careerviet.raw_envelope import (
-    build_raw_envelope,
-    container_text_for_hash,
-    hash_container_text,
-)
+from crawlers.common.minio_raw_pipeline import MinioRawStore
 
 log = logging.getLogger("careerviet.crawler")
 
@@ -66,6 +73,202 @@ URL_FILE_GLOBS = ("urls_c1_*.json", "urls_c61_*.json", "urls_developer_*.json")
 # giu PENDING cho cac tin thuoc chuoi cuoi (khong mark_failed). Hang so noi bo.
 CONSECUTIVE_SERVER_ERROR_STOP = 3
 SERVER_ERROR_STATUSES = (500, 502, 503, 504)
+
+
+CONTAINER_SELECTOR = ".job-detail-page"
+SCRAPER_VERSION = "1.0.0-raw-envelope"
+VOLATILE_LABELS: tuple[str, ...] = ("Ngày cập nhật", "Hết hạn nộp")
+
+
+def _normalize_ws(text: str) -> str:
+    """Chuẩn hóa khoảng trắng: mọi chuỗi whitespace -> 1 dấu cách, rồi strip."""
+    return re.sub(r"\s+", " ", text or "").strip()
+
+
+def _el_text(el) -> str:
+    """Văn bản thô của 1 node, dùng get_text(' ') + chuẩn hóa khoảng trắng."""
+    if el is None:
+        return ""
+    return _normalize_ws(el.get_text(" ", strip=True))
+
+
+def extract_job_posting_jsonld(soup: BeautifulSoup) -> Any | None:
+    """Bóc JSON-LD JobPosting nguyên bản. Không bao giờ raise; thiếu/hỏng -> None."""
+    try:
+        jp_script = soup.find("script", id="job-posting-schema")
+        if not jp_script:
+            for s in soup.find_all("script", type="application/ld+json"):
+                if s.string and '"JobPosting"' in s.string:
+                    jp_script = s
+                    break
+        if not jp_script or not jp_script.string:
+            return None
+
+        loaded = json.loads(jp_script.string.strip())
+        if isinstance(loaded, dict) and loaded.get("@type") == "JobPosting":
+            return loaded
+        if isinstance(loaded, list):
+            for el in loaded:
+                if isinstance(el, dict) and el.get("@type") == "JobPosting":
+                    return el
+            return loaded or None
+        return loaded
+    except Exception:
+        return None
+
+
+def _select_container(soup: BeautifulSoup, container_selector: str):
+    """Chọn khối container băm hash, fallback body -> toàn bộ soup."""
+    return soup.select_one(container_selector) or soup.body or soup
+
+
+def _clean_container(target) -> None:
+    """Gỡ các thẻ động khỏi CHÍNH target (script/style/iframe/noscript/svg)."""
+    for tag in target(["script", "style", "iframe", "noscript", "svg"]):
+        tag.decompose()
+
+
+def _strip_volatile_labels(target) -> None:
+    """Gỡ các khối <li> chứa nhãn 'Ngày cập nhật'/'Hết hạn nộp' khỏi target (bản sao)."""
+    blocks = []
+    seen = set()
+    for label in VOLATILE_LABELS:
+        needle = label.lower()
+        for node in target.find_all(string=lambda s, n=needle: n in (str(s) or "").lower()):
+            blk = node.find_parent("li")
+            if blk is None:
+                blk = node.parent
+            if blk is None or id(blk) in seen:
+                continue
+            seen.add(id(blk))
+            blocks.append(blk)
+    for blk in blocks:
+        try:
+            blk.decompose()
+        except Exception:
+            pass
+
+
+def container_text_for_hash(
+    html: str,
+    container_selector: str = CONTAINER_SELECTOR,
+    exclude_volatile_dates: bool = True,
+) -> str:
+    """Trả text mà calculate_container_html_hash sẽ băm sau khi làm sạch."""
+    if not html:
+        return ""
+    soup = BeautifulSoup(html, "html.parser")
+    target = _select_container(soup, container_selector)
+    _clean_container(target)
+    if exclude_volatile_dates:
+        _strip_volatile_labels(target)
+    return _normalize_ws(target.get_text(" ", strip=True))
+
+
+def hash_container_text(text: str) -> str:
+    """SHA-256 hex của chuỗi text đã làm sạch."""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def build_raw_payload(html: str) -> dict[str, Any]:
+    """Bóc các khối DOM thô theo tên class CSS gốc (Zero Information Loss)."""
+    soup = BeautifulSoup(html, "html.parser")
+    page = soup.select_one(CONTAINER_SELECTOR) or soup
+
+    # 1. Tiêu đề (h1.title) và công ty (a.job-company-name / a.employer)
+    title_el = page.select_one("h1.title") or page.find("h1") or page.select_one(".job-title")
+    company_el = page.select_one(
+        "a.job-company-name, a.employer, .company-name, a.company"
+    )
+
+    # 2. detail-box: các dòng key-value metadata, giữ nguyên văn từng dòng <li>
+    detail_box = [
+        _el_text(li)
+        for li in page.select(".detail-box li, .box-item li, ul.list-info li")
+    ]
+    detail_box = [t for t in detail_box if t]
+
+    # 3. detail-row: các section (Mô tả / Yêu cầu / Phúc lợi / ...) -> {header: text}
+    detail_row: dict[str, Any] = {}
+    for s in page.select(".detail-row, .job-description"):
+        header = s.find(["h2", "h3", "h4"])
+        key = _el_text(header) if header else ""
+        value = _el_text(s)
+        if not key and not value:
+            continue
+        key = key or f"section_{len(detail_row) + 1}"
+        if key in detail_row:
+            if isinstance(detail_row[key], list):
+                detail_row[key].append(value)
+            else:
+                detail_row[key] = [detail_row[key], value]
+        else:
+            detail_row[key] = value
+
+    # 4. job-tags: pill tag chuyên môn (rỗng nếu tin không có tag)
+    tag_items: list[str] = []
+    for a in page.select(".job-tags a, .tag-item a, .tag-item, .job-tags li"):
+        txt = _el_text(a)
+        if txt and not txt.startswith("+") and txt not in tag_items:
+            tag_items.append(txt)
+
+    # 5. map: địa điểm, nhiều thẻ <a> nối bằng ", " (đúng nguyên văn web)
+    location = None
+    map_el = page.select_one("div.map")
+    if map_el:
+        a_tags = [_el_text(a) for a in map_el.find_all("a")]
+        a_tags = [t for t in a_tags if t]
+        location = ", ".join(a_tags) if a_tags else (_el_text(map_el) or None)
+
+    # 6. Ngành nghề: lấy phần giá trị của các dòng bắt đầu bằng 'Ngành nghề'
+    industry_vals: list[str] = []
+    for line in detail_box:
+        if line.startswith("Ngành nghề"):
+            val = _normalize_ws(line[len("Ngành nghề"):]).lstrip(":").strip()
+            if val and val not in industry_vals:
+                industry_vals.append(val)
+
+    return {
+        "title": _el_text(title_el),
+        "job-company-name": _el_text(company_el),
+        "detail-box": detail_box,
+        "detail-row": detail_row,
+        "job-tags": tag_items,
+        "map": location,
+        "Ngành nghề": industry_vals or None,
+    }
+
+
+def build_raw_envelope(
+    html: str,
+    job_id: str,
+    source_url: str,
+    source_category: str | None = None,
+    version: int = 1,
+    scraped_at: str | None = None,
+    container_selector: str = CONTAINER_SELECTOR,
+    exclude_volatile_dates: bool = True,
+) -> dict[str, Any]:
+    """Sinh raw envelope {metadata, raw_payload} cho 1 tin CareerViet."""
+    raw_payload = build_raw_payload(html)
+
+    # Post-Crawl Canonical JSON Hashing: băm toàn vẹn document JSON của 1 bài đăng
+    canonical_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
+    field_hashes = calculate_json_field_hashes(raw_payload)
+
+    metadata = {
+        "job_id": job_id,
+        "source": SOURCE,
+        "source_url": source_url,
+        "scraped_at": scraped_at or datetime.now(timezone.utc).isoformat(),
+        "scraper_version": SCRAPER_VERSION,
+        "version": version,
+        "content_hash": canonical_hash,
+        "canonical_hash": canonical_hash,
+        "field_hashes": field_hashes,
+        "source_category": source_category,
+    }
+    return {"metadata": metadata, "raw_payload": raw_payload}
 
 
 def extract_job_id(url: str) -> str:
@@ -97,6 +300,7 @@ class CareerVietCrawler(BaseCrawler):
         local_html_dir: str | None = None,
         ledger_dir: str | None = None,
         raw_dir: str | None = None,
+        sync_minio: bool = False,
     ) -> None:
         super().__init__(
             checkpoint_dir=checkpoint_dir,
@@ -116,7 +320,42 @@ class CareerVietCrawler(BaseCrawler):
         # khi instantiate (tranh phoi nhiễm data/ trong unit test cu).
         self.ledger_dir = ledger_dir or DEFAULT_LEDGER_DIR
         self.raw_dir = raw_dir or DEFAULT_RAW_DIR
+        self.sync_minio = sync_minio
         self._ledger: UrlLedger | None = None
+        self._minio_store: MinioRawStore | None = None
+
+    def _get_minio_store(self) -> MinioRawStore | None:
+        """Trả về (lazy) instance MinioRawStore, None nếu không thể kết nối."""
+        if self._minio_store is None:
+            try:
+                self._minio_store = MinioRawStore()
+            except Exception as exc:
+                log.warning("[CareerViet] MinIO store khong kha dung: %s", exc)
+                self._minio_store = None
+        return self._minio_store
+
+    def sync_raw_to_minio(self) -> int:
+        """Đồng bộ tất cả các raw envelope JSON từ local lên MinIO Lakehouse."""
+        store = self._get_minio_store()
+        if not store:
+            log.warning("[CareerViet] Khong the ket noi MinIO de sync raw.")
+            return 0
+        raw_path = Path(self.raw_dir)
+        if not raw_path.exists():
+            return 0
+        count = 0
+        for f in raw_path.rglob("*.json"):
+            if "_v" not in f.name:
+                continue
+            rel = f.relative_to(raw_path)
+            s3_key = f"raw/{self.source_name}/{str(rel).replace('\\', '/')}"
+            try:
+                store.put_file(s3_key, f, content_type="application/json; charset=utf-8")
+                count += 1
+            except Exception as exc:
+                log.warning("[CareerViet] Loi upload %s len MinIO: %s", s3_key, exc)
+        log.info("[CareerViet] Da sync %d file raw len MinIO.", count)
+        return count
 
     def _get_ledger(self) -> UrlLedger:
         """Trả (và cache) UrlLedger của nguồn. Mức lưu = self.ledger_dir."""
@@ -219,7 +458,11 @@ class CareerVietCrawler(BaseCrawler):
             log.error("[CareerViet] Khong luu duoc _blocked/%s: %s", job_id, exc)
             return None
 
-    def _build_page_url(self, page: int) -> str:
+    def _build_page_url(self, page: int, cat_code: str = "c1") -> str:
+        if cat_code == "c61":
+            if page <= 1:
+                return f"{BASE_URL}/viec-lam/cntt-phan-cung-mang-c61-vi.html"
+            return f"{BASE_URL}/viec-lam/cntt-phan-cung-mang-c61-trang-{page}-vi.html"
         if page <= 1:
             return f"{BASE_URL}{CATEGORY_PATH}"
         return f"{BASE_URL}/viec-lam/cntt-phan-mem-c1-trang-{page}-vi.html"
@@ -537,30 +780,42 @@ class CareerVietCrawler(BaseCrawler):
         }
         pages = max_pages or MAX_PAGES
         added = 0
+        categories = [("c1", "CNTT - Phần mềm"), ("c61", "CNTT - Phần cứng / Mạng")]
         try:
-            for page in range(1, pages + 1):
-                page_url = self._build_page_url(page)
-                try:
-                    html = client.get_html(page_url, headers=headers)
-                except Exception as exc:
-                    log.error("[CareerViet] Discovery page %d loi (%s) -> dung an toan.", page, exc)
-                    break
-                low = (html or "").lower()
-                if not html or any(k in low for k in ("access denied", "too many requests")) or ("captcha" in low and "job-item" not in low):
-                    log.warning("[CareerViet] Chan/bot nghi ngờ page %d -> dung an toan.", page)
-                    break
-                soup = BeautifulSoup(html, "html.parser")
-                pairs = []
-                for a in soup.select("div.job-item a.job-title, a[href*='/tim-viec-lam/']"):
-                    href = a.get("href")
-                    if href and re.search(r"\.[A-Z0-9]{6,12}\.html", href):
-                        pairs.append((urljoin(BASE_URL, href), a.get_text(strip=True) or None))
-                if not pairs:
-                    break
-                for lu, ttl in pairs:
-                    jid = extract_job_id(lu)
-                    ledger.register_url(raw_url=lu, job_id=jid, preliminary_title=ttl)
-                    added += 1
+            for cat_code, cat_name in categories:
+                log.info("[CareerViet] Bat dau Discovery online: %s (%s)", cat_name, cat_code)
+                for page in range(1, pages + 1):
+                    page_url = self._build_page_url(page, cat_code=cat_code)
+                    try:
+                        html = client.get_html(page_url, headers=headers)
+                    except Exception as exc:
+                        log.error("[CareerViet] Discovery %s page %d loi (%s) -> dung an toan.", cat_code, page, exc)
+                        break
+                    low = (html or "").lower()
+                    if not html or any(k in low for k in ("access denied", "too many requests")) or ("captcha" in low and "job-item" not in low):
+                        log.warning("[CareerViet] Chan/bot nghi ngo %s page %d -> dung an toan.", cat_code, page)
+                        break
+                    soup = BeautifulSoup(html, "html.parser")
+                    pairs = []
+                    job_links = soup.select("a.job_link[href*='/tim-viec-lam/'], div.job-item h2 a[href*='/tim-viec-lam/']")
+                    if not job_links:
+                        job_links = soup.select("div.job-item a.job-title, a[href*='/tim-viec-lam/']")
+                    for a in job_links:
+                        href = a.get("href")
+                        if href and re.search(r"\.[A-Z0-9]{6,12}\.html", href):
+                            ttl = a.get("title") or a.get_text(strip=True) or None
+                            pairs.append((urljoin(BASE_URL, href), ttl))
+                    if not pairs:
+                        log.info("[CareerViet] Khong con job o %s page %d -> chuyen danh muc tiep theo.", cat_code, page)
+                        break
+                    seen_page = set()
+                    for lu, ttl in pairs:
+                        jid = extract_job_id(lu)
+                        if jid and jid not in seen_page:
+                            seen_page.add(jid)
+                            ledger.register_url(raw_url=lu, job_id=jid, preliminary_title=ttl)
+                            added += 1
+                    log.info("[CareerViet] Discovery %s page %d: da nhan dien %d URLs.", cat_code, page, len(seen_page))
         finally:
             client.close()
         return added
@@ -581,6 +836,8 @@ class CareerVietCrawler(BaseCrawler):
         Ket thuc: save_catalog + export_daily_manifest (+ sync_minio neu bat).
         Tra ve tong so record trong ledger.
         """
+        if sync_minio:
+            self.sync_minio = True
         ledger = self._get_ledger()
         if online:
             self._discover_online(max_pages=max_pages)
@@ -620,13 +877,15 @@ class CareerVietCrawler(BaseCrawler):
         exclude_volatile_dates: bool,
         date_str: str,
     ) -> dict[str, Any]:
-        """Xu ly 1 record: tinh hash ( cung co nhu Buoc 2), phat hiện repost, tan
+        """Xu ly 1 record: băm toàn vẹn document JSON sau cào, phat hiện repost, tan
         version, ghi envelope nguyen tu, mark_done. Tra ve dict ket qua.
         """
         ledger = self._get_ledger()
         jid = rec["job_id"]
-        cleaned = container_text_for_hash(html, exclude_volatile_dates=exclude_volatile_dates)
-        content_hash = hash_container_text(cleaned)
+
+        # Băm toàn vẹn document JSON của 1 bài đăng (Post-Crawl Canonical JSON Hashing)
+        raw_payload = build_raw_payload(html)
+        content_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
 
         # Repost: cung content_hash voi MOT tin DONE khac -> khong ghi file moi.
         existing = ledger.find_by_content_hash(content_hash)
@@ -653,6 +912,15 @@ class CareerVietCrawler(BaseCrawler):
         )
         dest = Path(self.raw_dir) / date_str / f"{jid}_v{new_ver}.json"
         written = self._atomic_write_json(dest, env)
+        if self.sync_minio:
+            store = self._get_minio_store()
+            if store:
+                s3_key = f"raw/{self.source_name}/{date_str}/{jid}_v{new_ver}.json"
+                try:
+                    store.put_json(s3_key, env)
+                    log.info("[CareerViet] Da luu thang vao MinIO: %s", s3_key)
+                except Exception as exc:
+                    log.warning("[CareerViet] Loi luu MinIO %s: %s", s3_key, exc)
         ledger.mark_done(rec["url_hash"], content_hash=content_hash, new_version=new_ver)
         return {
             "tag": "success",
@@ -708,6 +976,7 @@ class CareerVietCrawler(BaseCrawler):
         source_categories: list[str] | None = None,
         shuffle: bool = False,
         seed: int | None = None,
+        retry_failed: bool = False,
     ) -> dict[str, Any]:
         """Phase 2: trich xuat raw envelope cho cac URL PENDING/RECHECK_DUE (21 ngay).
 
@@ -715,9 +984,16 @@ class CareerVietCrawler(BaseCrawler):
           nam trong ledger; ngoai ledger -> bao ro, khong xu ly; trong ledger nhung
           chua den han (DONE <21d) -> bo qua.
         - ONLINE (can --online tuong minh): tai trang theo canonical_url cua ledger.
+          Neu co sync_minio: tu dong keo URL Ledger moi nhat tu MinIO truoc khi cao.
         Safe Skip: loi 1 tin -> mark_failed roi tiep tuc, khong dung ca dot.
         """
+        if sync_minio:
+            self.sync_minio = True
         ledger = self._get_ledger()
+        if self.sync_minio and online:
+            # Kéo URL Ledger mới nhất từ MinIO về máy để đảm bảo lấy URL từ MinIO
+            ledger.pull_from_minio()
+
         cat_map = self._load_category_map(category_map_path)
         date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         stats: dict[str, Any] = {
@@ -739,14 +1015,19 @@ class CareerVietCrawler(BaseCrawler):
             stats["versions"][v] = stats["versions"].get(v, 0) + 1
 
         # ---- CHON DANH SACH: loc theo nhom -> xao (seed) -> cat limit ----
-        try:
-            candidates = self._select_pending(
-                ledger, cat_map, source_categories, shuffle, seed, limit)
-        except ValueError as exc:
-            log.error("[CareerViet] %s -> DUNG, khong goi mang, khong luu ledger.", exc)
-            print("[CareerViet] DUNG: " + str(exc))
-            stats["selection_error"] = str(exc)
-            return stats
+        if retry_failed:
+            failed_recs = ledger.get_failed_records()
+            candidates = failed_recs[:limit] if limit is not None else failed_recs
+            log.info("[CareerViet] Che do RETRY FAILED QUEUE: %d tin can thu lai.", len(candidates))
+        else:
+            try:
+                candidates = self._select_pending(
+                    ledger, cat_map, source_categories, shuffle, seed, limit)
+            except ValueError as exc:
+                log.error("[CareerViet] %s -> DUNG, khong goi mang, khong luu ledger.", exc)
+                print("[CareerViet] DUNG: " + str(exc))
+                stats["selection_error"] = str(exc)
+                return stats
 
         sel_ids = [r["job_id"] for r in candidates]
         sel_cat_dist = dict(Counter(cat_map.get(j) for j in sel_ids))
@@ -842,6 +1123,11 @@ class CareerVietCrawler(BaseCrawler):
                             stats["repost"] += 1
                         else:
                             _tally(outcome)
+                        # Checkpoint sync dinh ky moi 15 tin thanh cong
+                        if self.sync_minio and (stats["success"] > 0 and stats["success"] % 15 == 0):
+                            ledger.save_catalog()
+                            ledger.sync_to_minio()
+                            log.info("[CareerViet] Checkpoint Sync: Da dong bo ledger len MinIO tai tin thu %d", stats["success"])
                     except Exception as exc:
                         # 200 nhung dich loi -> gian doan chuoi 5xx; ban than tin nay FAILED
                         self._flush_5xx_buffer(ledger, buf, stats)
@@ -904,6 +1190,7 @@ def main(argv: list[str] | None = None):
     parser.add_argument("--online", action="store_true", default=False,
                         help="Tuong minh cho phep GOI MANG (mac dinh KHONG)")
     parser.add_argument("--sync-minio", action="store_true", default=False, help="Sync ledger len MinIO")
+    parser.add_argument("--retry-failed", action="store_true", default=False, help="Cao lai cac URL trong Failed Queue")
     parser.add_argument("--exclude-volatile-dates", action=argparse.BooleanOptionalAction,
                         default=True,
                         help="Mac Dinh TRUE: tam bo nhan 'Ngay cap nhat'/'Het han nop' khi bam hash. "
@@ -937,6 +1224,7 @@ def main(argv: list[str] | None = None):
         local_html_dir=args.local_html_dir,
         ledger_dir=args.ledger_dir,
         raw_dir=args.raw_dir,
+        sync_minio=args.sync_minio,
     )
 
     if args.phase == "discovery":
@@ -964,11 +1252,15 @@ def main(argv: list[str] | None = None):
             source_categories=args.source_categories,
             shuffle=args.shuffle,
             seed=args.seed,
+            retry_failed=args.retry_failed,
         )
         print("[details] stats =", json.dumps(stats, ensure_ascii=False))
     elif args.phase == "sync":
-        ok = crawler.sync_ledger_to_minio()
-        print(f"[sync] ledger -> MinIO: {'OK' if ok else 'KHONG THANH CONG (kiem tra MinIO dang chay?)'}")
+        ok_ledger = crawler.sync_ledger_to_minio()
+        count_raw = crawler.sync_raw_to_minio() if hasattr(crawler, "sync_raw_to_minio") else 0
+        print(f"[sync] ledger -> MinIO: {'OK' if ok_ledger else 'FAIL'}")
+        if count_raw:
+            print(f"[sync] raw envelopes -> MinIO: {count_raw} files uploaded")
     else:  # view
         crawler.view_ledger()
 

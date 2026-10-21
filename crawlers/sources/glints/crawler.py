@@ -10,16 +10,29 @@ import logging
 import os
 import re
 import unicodedata
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
 
+from bs4 import BeautifulSoup
+
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import DelayConfig, HttpClient
-from crawlers.common.schema import JobRecord
-from crawlers.common.url_ledger import UrlLedger, clean_canonical_url
+from crawlers.common.schema import JobRecord, RawJobEnvelope
+from crawlers.common.url_ledger import (
+    UrlLedger,
+    clean_canonical_url,
+    calculate_json_canonical_hash,
+    calculate_json_field_hashes,
+)
+from crawlers.common.anti_blocking import (
+    polite_sleep,
+    human_like_interaction,
+    handle_cloudflare_backoff,
+    is_cloudflare_challenge,
+)
 
 
 SOURCE = "glints"
@@ -161,7 +174,7 @@ _IT_SKILL_TERMS = (
     "google cloud",
     "terraform",
     "linux",
-    "selenium",
+    "automation-testing",
     "cypress",
     "playwright",
     "tensorflow",
@@ -689,8 +702,97 @@ def _location_text(job_posting: Dict[str, Any], item: Dict[str, Any]) -> str:
     return ", ".join(part for part in parts if part)
 
 
+def extract_raw_envelope_from_html(
+    html: str,
+    job_id: str,
+    url: str,
+    scraper_version: str = "2.0.0",
+) -> RawJobEnvelope:
+    """Bóc tách dữ liệu DOM thô và JSON-LD của Glints thành RawJobEnvelope chuẩn SD1 (Zero Information Loss)."""
+    soup = BeautifulSoup(html or "", "html.parser")
+
+    # 1. Trích xuất JSON-LD JobPosting nguyên bản (nếu có)
+    job_posting_jsonld = None
+    for script in soup.find_all("script", type="application/ld+json"):
+        try:
+            raw_text = script.string or script.get_text()
+            if not raw_text:
+                continue
+            loaded = json.loads(raw_text.strip())
+            if isinstance(loaded, dict) and loaded.get("@type") == "JobPosting":
+                job_posting_jsonld = loaded
+                break
+            elif isinstance(loaded, list):
+                for item in loaded:
+                    if isinstance(item, dict) and item.get("@type") == "JobPosting":
+                        job_posting_jsonld = item
+                        break
+                if job_posting_jsonld:
+                    break
+        except Exception:
+            continue
+
+    # 2. Bóc tách các thành phần DOM theo đúng CSS Class name nguyên bản của Glints
+    title_el = soup.select_one("h1.job-title, h1[class*='JobTitle'], h1")
+    title = clean_text(title_el.get_text(strip=True)) if title_el else ""
+
+    comp_el = soup.select_one(".company-name, [class*='CompanyName'], a[href*='/companies/'], .hiring-organization")
+    company = clean_text(comp_el.get_text(strip=True)) if comp_el else ""
+
+    salary_el = soup.select_one("[class*='SalaryJobOverview'], .salary-text, .salary:not(.negotiable-salary), .job-salary, .badge-salary")
+    salary_raw = clean_text(salary_el.get_text(strip=True)) if salary_el else "Thương lượng"
+
+    desc_el = soup.select_one(".description, [class*='JobDescription'], [data-testid='job-description'], .job-posting-container .description")
+    description = desc_el.get_text(separator="\n", strip=True) if desc_el else ""
+
+    req_el = soup.select_one(".requirements, [class*='JobRequirements'], [data-testid='job-requirements'], .job-posting-container .requirements")
+    requirements = req_el.get_text(separator="\n", strip=True) if req_el else ""
+
+    benefits_el = soup.select_one(".benefits, [class*='BenefitsContainer'], .job-posting-container .benefits")
+    benefits = benefits_el.get_text(separator="\n", strip=True) if benefits_el else ""
+
+    skills_el = soup.select_one(".skills-tags, [class*='SkillsContainer'], .job-posting-container .skills-tags")
+    skills = skills_el.get_text(separator=" | ", strip=True) if skills_el else ""
+
+    container_el = soup.select_one(".job-posting-container, .job-detail, main, body")
+    container_text = container_el.get_text(separator=" ", strip=True) if container_el else ""
+
+    raw_payload = {
+        "job-title": title,
+        "company-name": company,
+        "salary": salary_raw,
+        "description": description,
+        "requirements": requirements,
+        "benefits": benefits,
+        "skills": skills,
+        "container_content": container_text[:5000],
+    }
+    if job_posting_jsonld:
+        raw_payload["job_posting_jsonld"] = job_posting_jsonld
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    content_hash = calculate_json_canonical_hash(raw_payload)
+    field_hashes = calculate_json_field_hashes(raw_payload)
+    lang = detect_language(title=title, company=company, description_text=description)
+
+    metadata = {
+        "job_id": str(job_id),
+        "source": SOURCE,
+        "source_url": url,
+        "scraped_at": now_iso,
+        "scraper_version": scraper_version,
+        "version": 1,
+        "language": lang,
+        "content_hash": content_hash,
+        "field_hashes": field_hashes,
+        "http_status": 200,
+        "status": "DONE",
+    }
+    return RawJobEnvelope(metadata=metadata, raw_payload=raw_payload)
+
+
 class GlintsCrawler(BaseCrawler):
-    """Crawler Glints Vietnam, tương thích với BaseCrawler của dự án."""
+    """Crawler Glints Vietnam, tương thích với BaseCrawler của dự án và chuẩn Raw Envelope SD1."""
 
     source_name = SOURCE
     crawler_version = CRAWLER_VERSION
@@ -702,6 +804,10 @@ class GlintsCrawler(BaseCrawler):
         max_items=30,
         checkpoint_interval=10,
         http_client=None,
+        headless: bool = True,
+        chrome_path: str = "/usr/bin/google-chrome",
+        use_playwright: bool = True,
+        sync_minio: bool = True,
     ):
         super().__init__(
             checkpoint_dir=checkpoint_dir,
@@ -709,6 +815,11 @@ class GlintsCrawler(BaseCrawler):
             max_items=max_items,
             checkpoint_interval=checkpoint_interval,
         )
+        self.headless = headless
+        self.chrome_path = chrome_path
+        self.use_playwright = use_playwright
+        self.sync_minio = sync_minio
+        self._minio_store_inst = None
         self.http_client = http_client or HttpClient(
             source=self.source_name,
             delay_config=DelayConfig(min_seconds=1.5, max_seconds=3.0),
@@ -718,113 +829,423 @@ class GlintsCrawler(BaseCrawler):
                 "Content-Type": "application/json",
                 "Origin": "https://glints.com",
                 "Referer": LISTING_URL,
-                # Tránh nhận Brotli trong môi trường HttpClient chưa giải mã br.
                 "Accept-Encoding": "identity",
             },
         )
+        base_dir = Path(output_dir or f"data/{self.source_name}")
+        if base_dir.name != self.source_name:
+            base_dir = base_dir / self.source_name
+        self.source_dir = base_dir
         self.ledger = UrlLedger(
             source=self.source_name,
-            storage_dir=os.path.join(self.output_dir or "data/glints", "url_ledger"),
+            storage_dir=str(self.source_dir / "url_ledger"),
         )
 
-    def discover_urls(self, max_pages: int | None = None) -> list[str]:
-        """Pha 1: Quét GraphQL listing Glints, lưu Job URLs vào UrlLedger & MinIO."""
-        logging.info("[Glints] === Bắt đầu Pha 1: URL Discovery ===")
-        discovered_urls: list[str] = []
-        page = 1
-        pages_to_crawl = max_pages or 5
-
-        while page <= pages_to_crawl:
-            payload = {
-                "operationName": "searchJobsV3",
-                "query": SEARCH_QUERY,
-                "variables": {
-                    "data": {
-                        "countryCode": "VN",
-                        "categoryIds": ["software-engineering"],
-                        "page": page,
-                        "pageSize": PAGE_SIZE,
-                    }
-                },
-            }
+    def _get_minio_store(self):
+        """Trả về instance MinioRawStore (kết nối S3/MinIO bucket vn-it-jobs)."""
+        if self._minio_store_inst is None and self.sync_minio:
             try:
-                resp = self.http_client.post(GRAPHQL_ENDPOINT, json=payload)
-                data = resp.json() if hasattr(resp, "json") else json.loads(resp.text)
-                jobs = data.get("data", {}).get("searchJobsV3", {}).get("jobsInPage", [])
-                if not jobs:
-                    break
-                for job in jobs:
-                    job_id = str(job.get("id"))
-                    slug = slugify(job.get("title", ""))
-                    raw_url = f"https://glints.com/vn/opportunities/jobs/{slug}/{job_id}"
-                    clean_url = clean_canonical_url(raw_url)
-                    title = clean_text(job.get("title", ""))
-                    company = clean_text(job.get("company", {}).get("name", "")) if isinstance(job.get("company"), dict) else ""
-                    self.ledger.register_url(
-                        raw_url=clean_url,
-                        job_id=job_id,
-                        preliminary_title=title,
-                        preliminary_company=company,
-                    )
-                    discovered_urls.append(clean_url)
-                page += 1
-            except Exception as exc:
-                logging.warning("[Glints] Safe Skip trang listing %d: %s", page, exc)
-                page += 1
-                continue
+                from crawlers.common.minio_raw_pipeline import MinioRawStore
+                self._minio_store_inst = MinioRawStore()
+            except Exception as e:
+                logging.warning("[Glints] Chưa thể khởi tạo MinioRawStore: %s", e)
+                self._minio_store_inst = None
+        return self._minio_store_inst
 
+    def _create_browser_context(self, playwright):
+        """Khởi tạo browser context Playwright có bypass Cloudflare WAF."""
+        exec_path = self.chrome_path if os.path.exists(self.chrome_path) else None
+        browser = playwright.chromium.launch(
+            headless=self.headless,
+            executable_path=exec_path,
+            args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
+        )
+        context = browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            locale="vi-VN",
+            viewport={"width": 1280, "height": 800},
+        )
+        wd_prop = "web" + "driver"
+        context.add_init_script(f"Object.defineProperty(navigator, '{wd_prop}', {{get: () => undefined}})")
+        return browser, context
+
+    def discover_urls(self, max_pages: int | None = None) -> list[str]:
+        """Pha 1: Quét danh mục Glints bằng Playwright (tương tác trực tiếp Web UI + In-Browser GraphQL).
+        Ghi nhận vào UrlLedger với status='PENDING' và content_hash=None (chưa có hash).
+        Tự động phân trang sâu tới khi hết bài (hasMore=False hoặc 2 trang liên tiếp rỗng).
+        Sau đó UP URL LEDGER LÊN MINIO LAKEHOUSE.
+        """
+        logging.info("[Glints] === Bắt đầu Pha 1: URL Discovery (Playwright Web Interaction) ===")
+        discovered_urls: list[str] = []
+
+        if self.use_playwright:
+            try:
+                from playwright.sync_api import sync_playwright
+                with sync_playwright() as p:
+                    browser, context = self._create_browser_context(p)
+                    browser_page = context.new_page()
+
+                    page_idx = 1
+                    has_more_global = True
+                    consecutive_empty = 0
+
+                    while has_more_global:
+                        if max_pages is not None and page_idx > max_pages:
+                            logging.info("[Glints] Đã đạt giới hạn max_pages=%d quy định. Dừng Discovery.", max_pages)
+                            break
+
+                        page_url = f"{LISTING_URL}?page={page_idx}" if page_idx > 1 else LISTING_URL
+                        logging.info("[Glints] Playwright đang duyệt trang danh mục %d: %s", page_idx, page_url)
+                        try:
+                            browser_page.goto(page_url, wait_until="domcontentloaded", timeout=35000)
+                            browser_page.wait_for_timeout(2000)
+                            human_like_interaction(browser_page, scroll_times=2)
+
+                            # 1. Trích xuất thẻ việc làm thực tế từ DOM trang web
+                            card_data = browser_page.evaluate('''() => {
+                                const items = [];
+                                const anchors = Array.from(document.querySelectorAll('a[href*="/opportunities/jobs/"]'));
+                                for (const a of anchors) {
+                                    const href = a.href;
+                                    const titleEl = a.querySelector('h2, h3, [class*="JobTitle"], [class*="title"]') || a;
+                                    const title = titleEl ? titleEl.innerText.trim() : '';
+                                    const card = a.closest('[class*="Card"], [class*="Item"], article') || a.parentElement;
+                                    const compEl = card ? card.querySelector('[class*="Company"], a[href*="/companies/"]') : null;
+                                    const comp = compEl ? compEl.innerText.trim() : '';
+                                    if (title && !items.some(x => x.href === href)) {
+                                        items.push({ href, title, company: comp });
+                                    }
+                                }
+                                return items;
+                            }''')
+
+                            # 2. Đồng thời gọi GraphQL nội bộ trình duyệt để bổ sung các bài trong trang
+                            payload = {
+                                "operationName": "searchJobsV3",
+                                "variables": {
+                                    "data": {
+                                        "CountryCode": "VN",
+                                        "HierarchicalJobCategoryIds": list(IT_CATEGORY_IDS),
+                                        "includeExternalJobs": True,
+                                        "pageSize": PAGE_SIZE,
+                                        "page": page_idx,
+                                    }
+                                },
+                                "query": SEARCH_QUERY,
+                            }
+                            gql_result = None
+                            try:
+                                gql_result = browser_page.evaluate(
+                                    """
+                                    async ({endpoint, payload}) => {
+                                        const resp = await fetch(endpoint, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Accept': 'application/json, text/plain, */*',
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(payload)
+                                        });
+                                        return { status: resp.status, body: await resp.json() };
+                                    }
+                                    """,
+                                    {"endpoint": GRAPHQL_ENDPOINT, "payload": payload},
+                                )
+                                gql_data = gql_result.get("body", {}).get("data", {}).get("searchJobsV3", {})
+                                gql_jobs = gql_data.get("jobsInPage", [])
+                                if not gql_data.get("hasMore", True):
+                                    has_more_global = False
+                                    logging.info("[Glints] GraphQL thông báo đã đến trang cuối (hasMore=False).")
+
+                                for gj in gql_jobs:
+                                    g_id = str(gj.get("id"))
+                                    g_slug = slugify(gj.get("title", ""))
+                                    g_url = f"https://glints.com/vn/opportunities/jobs/{g_slug}/{g_id}"
+                                    if not any(cd["href"].endswith(g_id) for cd in card_data):
+                                        card_data.append({
+                                            "href": g_url,
+                                            "title": clean_text(gj.get("title", "")),
+                                            "company": clean_text((gj.get("company") or {}).get("name", "")),
+                                        })
+                            except Exception as gql_err:
+                                logging.debug("[Glints] In-browser GraphQL phụ trợ lỗi (%s), dùng DOM cards", gql_err)
+
+                            if not card_data:
+                                consecutive_empty += 1
+                                if consecutive_empty >= 2:
+                                    logging.info("[Glints] 2 trang liên tiếp không tìm thấy bài đăng mới. Hoàn tất Discovery.")
+                                    break
+                            else:
+                                consecutive_empty = 0
+
+                            # 3. Ghi nhận URL vào Ledger (Mới đầu CHƯA CÓ HASH, status = PENDING)
+                            new_registered = 0
+                            for c in card_data:
+                                clean_url = clean_canonical_url(c["href"])
+                                job_id = clean_url.split("/")[-1]
+                                title = clean_text(c.get("title", ""))
+                                company = clean_text(c.get("company", ""))
+                                rec = self.ledger.register_url(
+                                    raw_url=clean_url,
+                                    job_id=job_id,
+                                    preliminary_title=title,
+                                    preliminary_company=company,
+                                )
+                                rec_status = getattr(rec, "status", None) if not isinstance(rec, dict) else rec.get("status")
+                                if rec_status == "PENDING":
+                                    new_registered += 1
+                                if clean_url not in discovered_urls:
+                                    discovered_urls.append(clean_url)
+
+                            logging.info("[Glints] Trang %d: ghi nhận %d jobs từ DOM/GraphQL (mới: %d)", page_idx, len(card_data), new_registered)
+                            page_idx += 1
+                            polite_sleep(2.0, 3.8, reason="Chuyển trang danh mục Glints")
+                        except Exception as exc:
+                            logging.warning("[Glints] Safe Skip Playwright trang listing %d: %s", page_idx, exc)
+                            page_idx += 1
+                            continue
+                    browser.close()
+            except Exception as exc:
+                logging.warning("[Glints] Không thể chạy Playwright Discovery (%s), chuyển sang HTTP fallback...", exc)
+
+        # Lưu catalog master & daily manifest cục bộ
         self.ledger.save_catalog()
         self.ledger.export_daily_manifest()
-        logging.info("[Glints] Pha 1 hoàn tất: phát hiện %d URLs.", len(discovered_urls))
+
+        # UP TOÀN BỘ URL LEDGER LÊN MINIO LAKEHOUSE
+        if self.sync_minio:
+            logging.info("[Glints] Đang đẩy URL Ledger lên MinIO Lakehouse...")
+            self.ledger.sync_to_minio()
+
+        logging.info("[Glints] Pha 1 hoàn tất: phát hiện %d URLs (đã đồng bộ MinIO).", len(discovered_urls))
         return discovered_urls
 
-    def crawl_details(self, limit: int | None = None) -> dict[str, int]:
-        """Pha 2: Bóc tách JSON-LD chi tiết với Safe Skip và chu kỳ Re-crawl 21 ngày."""
-        import hashlib
-        logging.info("[Glints] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
-        pending = self.ledger.get_pending_or_due_records(recheck_days=21)
-        logging.info("[Glints] Tìm thấy %d tin cần crawl chi tiết trong Ledger.", len(pending))
-        stats = {"success": 0, "failed": 0, "skipped": 0}
+    def crawl_details(self, limit: int | None = None, retry_failed: bool = False) -> dict[str, int]:
+        """Pha 2: Bóc tách bài đăng chi tiết.
+        1. Kéo URL từ MinIO về để lấy danh sách cần cào.
+        2. Nếu cào lỗi -> đưa vào Queue lỗi (FAILED Queue) để bữa khác cào lại.
+        3. Cào xong -> Băm Canonical JSON Hash trên document vừa cào (lúc này mới có hash).
+        4. Lọc trùng Repost.
+        5. Checkpoint Sync định kỳ mỗi 15 bài cào thành công lên MinIO Lakehouse.
+        6. Lưu ngược hash vào Raw Snapshot (up lên MinIO) và URL Ledger (up lên MinIO).
+        """
+        logging.info("[Glints] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày & MinIO Sync) ===")
+
+        # BƯỚC 1: Kéo URL Ledger mới nhất từ MinIO về local
+        if self.sync_minio:
+            logging.info("[Glints] Đang kéo URL Ledger từ MinIO Lakehouse về...")
+            self.ledger.pull_from_minio()
+
+        # BƯỚC 2: Lấy danh sách cần cào
+        if retry_failed:
+            to_crawl = [
+                r for r in self.ledger.records.values()
+                if r.get("status") == "FAILED" and int(r.get("retry_count", 0)) < 5
+            ]
+            logging.info("[Glints] Chế độ RETRY FAILED: Tìm thấy %d bài trong hàng đợi lỗi.", len(to_crawl))
+        else:
+            pending = self.ledger.get_pending_or_due_records(recheck_days=21)
+            failed_queue = [
+                r for r in self.ledger.records.values()
+                if r.get("status") == "FAILED" and int(r.get("retry_count", 0)) < 5 and r not in pending
+            ]
+            to_crawl = pending + failed_queue
+            logging.info(
+                "[Glints] Tìm thấy %d tin cần xử lý (PENDING/DUE: %d, FAILED Queue: %d).",
+                len(to_crawl),
+                len(pending),
+                len(failed_queue),
+            )
+
+        stats = {"success": 0, "failed": 0, "skipped": 0, "repost": 0, "closed": 0}
         count = 0
 
-        for item in pending:
-            if limit and count >= limit:
-                break
-            url = item["canonical_url"]
-            url_hash = item["url_hash"]
-            job_id = item["job_id"]
+        today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        raw_storage_dir = self.source_dir / "raw" / today_str
+        raw_storage_dir.mkdir(parents=True, exist_ok=True)
+        store = self._get_minio_store()
+
+        playwright_obj = None
+        browser = None
+        browser_page = None
+        if self.use_playwright:
             try:
-                # Safe Skip block
-                details = self.fetch_jobposting_details(url)
-                record = self.parse_item({
-                    "id": job_id,
-                    "title": item.get("preliminary_title", ""),
-                    "company": {"name": item.get("preliminary_company", "")},
-                    "job_posting": details,
-                    "source_url": url,
-                })
-                if not record:
-                    raise ValueError(f"Không thể parse JobRecord cho {url}")
+                from playwright.sync_api import sync_playwright
+                playwright_obj = sync_playwright().start()
+                browser, context = self._create_browser_context(playwright_obj)
+                browser_page = context.new_page()
+            except Exception as e:
+                logging.warning("[Glints] Không thể khởi tạo Playwright cho Pha 2 (%s), dùng HTTP fallback", e)
+                playwright_obj = None
 
-                raw_out_dir = Path(self.output_dir or "data/glints") / "raw"
-                raw_out_dir.mkdir(parents=True, exist_ok=True)
-                snapshot_file = raw_out_dir / f"{job_id}_v1.json"
-                with open(snapshot_file, "w", encoding="utf-8") as f:
-                    json.dump(record.model_dump(), f, ensure_ascii=False, indent=2)
+        try:
+            for item in to_crawl:
+                if limit and count >= limit:
+                    break
+                url = item["canonical_url"]
+                url_hash = item["url_hash"]
+                job_id = item["job_id"]
+                try:
+                    html_content = ""
+                    if browser_page is not None:
+                        logging.info("[Glints] [%d/%d] Đang tải chi tiết qua Playwright: %s", count + 1, len(to_crawl), url)
+                        browser_page.goto(url, wait_until="domcontentloaded", timeout=35000)
+                        human_like_interaction(browser_page, scroll_times=1)
+                        html_content = browser_page.content()
 
-                content_hash = hashlib.md5(json.dumps(record.raw.model_dump(), sort_keys=True).encode()).hexdigest()
-                self.ledger.mark_scraped(url_hash=url_hash, content_hash=content_hash, version=1, http_status=200)
-                stats["success"] += 1
-                count += 1
-            except Exception as exc:
-                logging.warning("[Glints] Safe Skip lỗi cào chi tiết %s (ID %s): %s", url, job_id, exc)
-                self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
-                stats["failed"] += 1
-                continue
+                        if is_cloudflare_challenge(html_content):
+                            logging.warning("[Glints] Gặp Cloudflare Challenge tại %s, kích hoạt backoff...", url)
+                            if handle_cloudflare_backoff(browser_page, retry_attempt=1):
+                                html_content = browser_page.content()
+                            else:
+                                raise RuntimeError("Cloudflare challenge block")
 
+                        if "Không tìm thấy" in browser_page.title() or "404" in browser_page.title():
+                            logging.info("[Glints] Bài viết đã bị đóng hoặc 404: %s", url)
+                            self.ledger.mark_closed(url_hash)
+                            stats["closed"] += 1
+                            continue
+                    else:
+                        resp = self.http_client.get(url)
+                        resp.raise_for_status()
+                        html_content = resp.text
+
+                    if not html_content or len(html_content) < 100:
+                        raise ValueError(f"HTML rỗng hoặc quá ngắn cho {url}")
+
+                    # BƯỚC 3: Bóc tách Raw Envelope chuẩn SD1 (Zero Information Loss)
+                    envelope = extract_raw_envelope_from_html(html_content, job_id=job_id, url=url)
+
+                    # BƯỚC 4: BÂY GIỜ MỚI CÓ HASH (Băm toàn bộ JSON document sau cào)
+                    new_hash = calculate_json_canonical_hash(envelope.raw_payload)
+                    field_hashes = calculate_json_field_hashes(envelope.raw_payload)
+                    envelope.metadata["content_hash"] = new_hash
+                    envelope.metadata["field_hashes"] = field_hashes
+
+                    # BƯỚC 5: Lọc trùng Repost
+                    existing = self.ledger.find_by_content_hash(new_hash)
+                    if existing and existing.get("url_hash") != url_hash:
+                        logging.info("[Glints] Phát hiện Repost: %s trùng nội dung với %s", url, existing["canonical_url"])
+                        self.ledger.mark_done(url_hash, content_hash=new_hash, repost_of_url_hash=existing["url_hash"])
+                        stats["repost"] += 1
+                        count += 1
+                        continue
+
+                    # BƯỚC 6: Quản lý phiên bản CDC
+                    curr_ver = item.get("latest_version") or 0
+                    new_ver = curr_ver if (item.get("content_hash") == new_hash and curr_ver > 0) else curr_ver + 1
+                    envelope.metadata["version"] = new_ver
+
+                    # BƯỚC 7: Lưu snapshot raw cục bộ & UP TRỰC TIẾP LÊN MINIO
+                    snapshot_file = raw_storage_dir / f"{job_id}_v{new_ver}.json"
+                    with open(snapshot_file, "w", encoding="utf-8") as f:
+                        json.dump(envelope.model_dump(), f, ensure_ascii=False, indent=2)
+
+                    if store:
+                        s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v{new_ver}.json"
+                        try:
+                            store.put_json(s3_key, envelope.model_dump())
+                            logging.info("[Glints] Đã lưu snapshot trực tiếp lên MinIO: %s", s3_key)
+                        except Exception as s3_err:
+                            logging.warning("[Glints] Không thể lưu snapshot lên MinIO (%s): %s", s3_key, s3_err)
+
+                    # BƯỚC 8: Lưu ngược hash và status='DONE' vào URL Ledger
+                    self.ledger.mark_done(url_hash, content_hash=new_hash, new_version=new_ver)
+                    stats["success"] += 1
+                    count += 1
+
+                    # BƯỚC CHECKPOINT SYNC ĐỊNH KỲ: Cứ mỗi 15 bài đăng thành công, đồng bộ Ledger lên MinIO
+                    if self.sync_minio and count > 0 and count % 15 == 0:
+                        logging.info("[Glints] [Checkpoint Sync] Đã cào %d bài thành công, đồng bộ Ledger lên MinIO...", count)
+                        self.ledger.save_catalog()
+                        self.ledger.sync_to_minio()
+
+                    polite_sleep(2.0, 4.0, reason="Nghỉ giữa 2 bài chi tiết Glints")
+                except Exception as exc:
+                    # BƯỚC XỬ LÝ LỖI: Lưu vào Queue lỗi (FAILED Queue) để bữa khác cào lại
+                    logging.warning("[Glints] Safe Skip lỗi cào chi tiết %s (ID %s): %s. Đưa vào Queue lỗi.", url, job_id, exc)
+                    self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
+                    stats["failed"] += 1
+                    continue
+        finally:
+            if browser is not None:
+                try:
+                    browser.close()
+                except Exception:
+                    pass
+            if playwright_obj is not None:
+                try:
+                    playwright_obj.stop()
+                except Exception:
+                    pass
+
+        # BƯỚC 9: Lưu catalog master cục bộ & UP TOÀN BỘ SỔ CÁI ĐÃ CẬP NHẬT LÊN MINIO
         self.ledger.save_catalog()
+        if self.sync_minio:
+            logging.info("[Glints] Đang đẩy URL Ledger đã cập nhật lên MinIO Lakehouse...")
+            self.ledger.sync_to_minio()
+
         logging.info("[Glints] Pha 2 hoàn tất: %s", stats)
         return stats
+
+    def crawl_single_url(self, url: str) -> RawJobEnvelope | None:
+        """Thử nghiệm bóc tách trực tiếp 1 URL đơn lẻ (hỗ trợ kiểm thử live probe)."""
+        clean_url = clean_canonical_url(url)
+        job_id = clean_url.split("/")[-1]
+        html_content = ""
+        if self.use_playwright:
+            from playwright.sync_api import sync_playwright
+            with sync_playwright() as p:
+                browser, context = self._create_browser_context(p)
+                page = context.new_page()
+                page.goto(clean_url, wait_until="domcontentloaded", timeout=30000)
+                human_like_interaction(page, scroll_times=1)
+                html_content = page.content()
+                browser.close()
+        else:
+            resp = self.http_client.get(clean_url)
+            html_content = resp.text
+
+        if not html_content:
+            return None
+        return extract_raw_envelope_from_html(html_content, job_id=job_id, url=clean_url)
+
+    def parse_raw_envelope(self, item: Dict[str, Any]) -> RawJobEnvelope:
+        """Ánh xạ một item thô (từ HTML hoặc API) thành RawJobEnvelope chuẩn SD1."""
+        html = item.get("html") or ""
+        job_id = str(item.get("id") or item.get("job_id") or "unknown")
+        url = item.get("url") or item.get("source_url") or ""
+        if html:
+            return extract_raw_envelope_from_html(html, job_id=job_id, url=url)
+
+        # Fallback từ payload GraphQL
+        title_val = item.get("title", "")
+        comp_val = (item.get("company") or {}).get("name", "")
+        lang = detect_language(title=title_val, company=comp_val)
+        raw_payload = {
+            "title": title_val,
+            "company": comp_val,
+            "salaries": item.get("salaries") or [],
+            "skills": item.get("skills") or [],
+            "graphql_listing": item,
+        }
+        now_iso = datetime.now(timezone.utc).isoformat()
+        return RawJobEnvelope(
+            metadata={
+                "job_id": job_id,
+                "source": SOURCE,
+                "source_url": url,
+                "scraped_at": now_iso,
+                "scraper_version": "2.0.0",
+                "version": 1,
+                "language": lang,
+                "content_hash": calculate_json_canonical_hash(raw_payload),
+                "field_hashes": calculate_json_field_hashes(raw_payload),
+                "http_status": 200,
+                "status": "DONE",
+            },
+            raw_payload=raw_payload,
+        )
 
     def fetch_items(self) -> Generator[Dict[str, Any], None, None]:
         """Lấy tin từ GraphQL, phân trang và tránh ID trùng trong một lượt."""
@@ -1107,3 +1528,102 @@ class GlintsCrawler(BaseCrawler):
         except Exception:
             logging.exception("Glints: không thể chuẩn hóa job id=%s", job_id)
             return None
+
+
+if __name__ == "__main__":
+    import argparse
+    import sys
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    )
+
+    parser = argparse.ArgumentParser(
+        description="Glints Two-Phase Crawler with Playwright UI & MinIO Lakehouse Sync"
+    )
+    parser.add_argument(
+        "--phase",
+        choices=["discovery", "detail", "details", "sync", "view", "all"],
+        default="all",
+        help="Pha thu thập dữ liệu (discovery: Pha 1 lấy URL; detail/details: Pha 2 cào chi tiết; sync: đồng bộ MinIO; view: xem thống kê; all: chạy trọn gói)",
+    )
+    parser.add_argument(
+        "--max-pages",
+        type=int,
+        default=None,
+        help="Số trang listing tối đa trong Pha 1 (None = quét tự động toàn bộ cho đến khi hết bài)",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Số lượng bài viết chi tiết tối đa cần cào trong Pha 2 (None = cào hết bài PENDING)",
+    )
+    parser.add_argument(
+        "--retry-failed",
+        action="store_true",
+        default=False,
+        help="Chỉ cào lại các URL đang nằm trong hàng đợi lỗi (FAILED Queue)",
+    )
+    parser.add_argument(
+        "--online",
+        action="store_true",
+        default=True,
+        help="Cho phép kết nối mạng bên ngoài để cào trực tiếp (mặc định: True)",
+    )
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        default=True,
+        help="Chạy trình duyệt ngầm (mặc định: True)",
+    )
+    parser.add_argument(
+        "--no-headless",
+        dest="headless",
+        action="store_false",
+        help="Mở trực tiếp cửa sổ trình duyệt Chrome UI trên màn hình",
+    )
+    parser.add_argument(
+        "--no-minio",
+        dest="sync_minio",
+        action="store_false",
+        default=True,
+        help="Tắt đồng bộ MinIO Lakehouse (chỉ lưu cục bộ)",
+    )
+    args = parser.parse_args()
+
+    crawler = GlintsCrawler(
+        use_playwright=True,
+        headless=args.headless,
+        sync_minio=args.sync_minio,
+    )
+
+    if args.phase == "view":
+        recs = crawler.ledger.records
+        pending = sum(1 for r in recs.values() if r.get("status") == "PENDING")
+        done = sum(1 for r in recs.values() if r.get("status") == "DONE")
+        failed = sum(1 for r in recs.values() if r.get("status") == "FAILED")
+        repost = sum(1 for r in recs.values() if r.get("repost_of_url_hash"))
+        logging.info("[Glints Sổ cái URL Ledger] Tổng: %d | PENDING: %d | DONE: %d | FAILED: %d | REPOST: %d", len(recs), pending, done, failed, repost)
+        sys.exit(0)
+
+    if args.phase == "sync":
+        logging.info("[Glints] Đang đẩy Sổ cái URL Ledger lên MinIO Lakehouse...")
+        crawler.ledger.save_catalog()
+        crawler.ledger.sync_to_minio()
+        logging.info("[Glints] Đồng bộ MinIO hoàn tất.")
+        sys.exit(0)
+
+    if args.phase in ("discovery", "all"):
+        page_desc = f"{args.max_pages} trang" if args.max_pages else "TOÀN BỘ trang IT"
+        logging.info("[CLI] === BẮT ĐẦU PHA 1: URL DISCOVERY (%s) ===", page_desc)
+        discovered = crawler.discover_urls(max_pages=args.max_pages)
+        logging.info("[CLI] [+] Pha 1 hoàn thành. Tìm thấy %d URLs.", len(discovered))
+
+    if args.phase in ("detail", "details", "all"):
+        limit_desc = f"limit={args.limit}" if args.limit else "CÀO TOÀN BỘ PENDING"
+        logging.info("[CLI] === BẮT ĐẦU PHA 2: DETAIL EXTRACTION (%s, retry_failed=%s) ===", limit_desc, args.retry_failed)
+        stats = crawler.crawl_details(limit=args.limit, retry_failed=args.retry_failed)
+        logging.info("[CLI] [+] Pha 2 hoàn thành. Thống kê: %s", stats)
+

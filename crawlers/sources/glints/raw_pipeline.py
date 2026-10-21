@@ -116,32 +116,6 @@ class GlintsRawPipeline(TwoPhaseRawCrawler):
 
         return _BrowserResponse(result)
 
-    def _post_glints_discovery_request(self, payload):
-        """Chọn HTTP client mặc định hoặc browser theo cấu hình môi trường."""
-        use_browser = (
-            os.getenv("GLINTS_BROWSER_DISCOVERY", "")
-            .strip()
-            .lower()
-            in {"1", "true", "yes"}
-        )
-
-        if use_browser:
-            return self._post_glints_graphql_in_browser(payload)
-
-        return self.http_client.post(
-            GRAPHQL_ENDPOINT,
-            json=payload,
-            timeout=25,
-            headers={
-                "Accept": "application/json, text/plain, */*",
-                "Content-Type": "application/json",
-                "Origin": "https://glints.com",
-                "Referer": LISTING_URL,
-                "Accept-Encoding": "identity",
-            },
-        ),
-
-
     def _close_glints_browser(self):
         """Đóng browser sau lượt Discover."""
         browser = getattr(self, "_glints_browser", None)

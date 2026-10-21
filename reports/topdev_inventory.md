@@ -3,10 +3,10 @@
 > **Người thực hiện:** Sơn (TopDev Source Lead)
 > **Nguồn phụ trách:** TopDev (`https://topdev.vn`)
 > **Nhánh Git:** `crawls/topdev` (merge vào `crawls/all`)
-> **Ngày hoàn thành kiểm kê:** 2026-10-18
-> **Tổng số URL phát hiện (URL Ledger):** 65 bài đăng (Pha 1 Discovery)
-> **Số snapshot thô đã trích xuất (Pha 2 Detail):** 3 snapshot mẫu thành công + 3 cặp HTML/JSON đối chứng (`crawlers/sources/topdev/samples/`)
-> **Đường dẫn lưu trữ MinIO / Local:** `minio://vn-it-jobs/raw/topdev/` và `data/raw/topdev/`
+> **Ngày hoàn thành kiểm kê:** 2026-10-21
+> **Tổng số URL phát hiện (URL Ledger):** 2,739 bài đăng IT toàn diện (Pha 1 Discovery quét 91 trang)
+> **Số snapshot thô đã trích xuất (Pha 2 Detail):** 2,739 snapshot thành công (100% DONE, 0 FAILED) + 3 cặp HTML/JSON đối chứng (`crawlers/sources/topdev/samples/`)
+> **Đường dẫn lưu trữ MinIO / Local:** `minio://vn-it-jobs/raw/topdev/` và `data/topdev/raw/`
 
 ---
 

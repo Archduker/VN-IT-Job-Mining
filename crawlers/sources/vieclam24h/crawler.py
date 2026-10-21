@@ -22,11 +22,15 @@ if __package__ in {None, ""}:
 from bs4 import BeautifulSoup
 
 from crawlers.base.base_crawler import BaseCrawler
+from crawlers.common.anti_blocking import polite_sleep
 from crawlers.common.http_client import DelayConfig, HttpClient, RetryConfig
+from crawlers.common.minio_raw_pipeline import MinioRawStore
 from crawlers.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags
 from crawlers.common.url_ledger import (
     UrlLedger,
     calculate_container_html_hash,
+    calculate_json_canonical_hash,
+    calculate_json_field_hashes,
     clean_canonical_url,
 )
 from crawlers.common.utils import (
@@ -47,6 +51,7 @@ BASE_URL = "https://vieclam24h.vn"
 TARGET_CATEGORIES = [
     {"name": "IT Phần mềm", "path": "/viec-lam-it-phan-mem-o8.html"},
     {"name": "IT Phần cứng - Mạng", "path": "/viec-lam-it-phan-cung-mang-o7.html"},
+    {"name": "Bưu chính viễn thông", "path": "/viec-lam-buu-chinh-vien-thong-o38.html"},
 ]
 
 CONTAINER_SELECTOR = "main"
@@ -76,6 +81,281 @@ def _format_timestamp(ts: Any) -> str:
         return ""
 
 
+def build_raw_payload(
+    html: str = "",
+    next_data: dict[str, Any] | None = None,
+    job_detail: dict[str, Any] | None = None,
+    employer_detail: dict[str, Any] | None = None,
+    job_posting: dict[str, Any] | None = None,
+    tags: Any = None,
+) -> dict[str, Any]:
+    """Bóc tách toàn bộ trường dữ liệu đặc thù của Vieclam24h vào đối tượng JSON (Zero Information Loss SD1).
+    
+    Tuân thủ đúng đặc tả tại neccessary.md:
+    - Lưu chuỗi lương nguyên bản hiển thị (ví dụ '10 - 25 triệu'), KHÔNG tự ý tách salary_min/salary_max.
+    - Bóc tách đầy đủ các khối: title, salary, deadline, location_summary, experience_summary,
+      description, requirements, benefits, working_time, working_address, general_info, keywords, company.
+    """
+    soup = BeautifulSoup(html, "html.parser") if html else None
+
+    # Nếu chưa có next_data nhưng có html, tìm thẻ script __NEXT_DATA__
+    if soup and not next_data:
+        script = soup.find("script", id="__NEXT_DATA__")
+        if script and script.string:
+            try:
+                next_data = json.loads(script.string)
+            except Exception:
+                pass
+
+    api = next_data.get("props", {}).get("initialState", {}).get("api", {}) if isinstance(next_data, dict) else {}
+    jd = job_detail or api.get("jobDetailHiddenContact", {}).get("data", {}) or {}
+    emp = employer_detail or api.get("employerDetailHiddenContact", {}).get("data", {}) or jd.get("employer_info", {}) or {}
+    jp = job_posting or api.get("jobPosting", {}).get("data", {}) or {}
+    tags_data = tags or api.get("getTags", {}).get("data", {}) or jd.get("skills_new") or jd.get("skills") or jd.get("tag") or []
+
+    # 1. Header & Badges
+    title = ""
+    if soup:
+        h1 = soup.find("h1")
+        if h1:
+            title = clean_text(h1.get_text(strip=True))
+    if not title:
+        title = clean_text(jd.get("title") or (jp.get("title") if isinstance(jp, dict) else "") or "")
+
+    salary_text = ""
+    if soup:
+        salary_el = soup.find("h2", class_=lambda c: c and "text-24" in c)
+        if salary_el and salary_el.get_text(strip=True):
+            salary_text = clean_text(salary_el.get_text(strip=True))
+        if not salary_text:
+            sal_label = soup.find(lambda t: t.name in ["div", "span", "p"] and t.get_text(strip=True) == "Mức lương")
+            if sal_label:
+                parent = sal_label.find_parent("div")
+                if parent:
+                    val = parent.get_text(separator=" ", strip=True).replace("Mức lương", "").strip()
+                    if val:
+                        salary_text = clean_text(val)
+    if not salary_text and next_data:
+        key_replaces = next_data.get("props", {}).get("pageProps", {}).get("metaSeo", {}).get("keyReplace", [])
+        for item in key_replaces:
+            if item.get("key") == "{MUC_LUONG}" and item.get("value"):
+                salary_text = clean_text(str(item["value"]))
+                break
+    if not salary_text:
+        raw_sal = (
+            jd.get("salary_range_text")
+            or jd.get("salary_text")
+            or (jp.get("baseSalary", {}).get("value", {}).get("value") if isinstance(jp.get("baseSalary"), dict) else "")
+            or "Thoả thuận"
+        )
+        salary_text = clean_text(str(raw_sal))
+
+    deadline = ""
+    loc_summary = ""
+    exp_summary = ""
+    if soup:
+        for div in soup.find_all("div", class_=lambda c: c and "flex items-center" in c and "gap" in c):
+            text = div.get_text(separator=" ", strip=True)
+            if "Hạn nộp hồ sơ" in text:
+                m = re.search(r"(\d{2}/\d{2}/\d{4})", text)
+                if m:
+                    deadline = m.group(1)
+            elif "Khu vực tuyển" in text:
+                loc_summary = clean_text(text.replace("Khu vực tuyển", "").strip())
+            elif "Kinh nghiệm" in text and not exp_summary:
+                exp_summary = clean_text(text.replace("Kinh nghiệm", "").strip())
+
+    if not deadline and jd.get("resume_apply_expired"):
+        deadline = _format_timestamp(jd.get("resume_apply_expired"))
+    if not loc_summary and jd.get("address"):
+        loc_summary = clean_text(str(jd.get("address")))
+    if not exp_summary and jd.get("experience_range"):
+        exp_summary = f"{jd.get('experience_range')} năm"
+
+    # 2. Content sections (Mô tả, Yêu cầu, Quyền lợi, Thời gian, Địa điểm)
+    def _extract_section_lines(h2_title: str) -> list[str]:
+        if not soup:
+            return []
+        h2 = soup.find(lambda t: t.name == "h2" and h2_title in t.get_text())
+        if not h2:
+            return []
+        parent = h2.find_parent("div")
+        if not parent:
+            return []
+        full_text = parent.get_text(separator="\n", strip=True)
+        lines = [clean_text(l) for l in full_text.split("\n") if clean_text(l)]
+        return lines[1:] if lines and h2_title in lines[0] else lines
+
+    desc_lines = _extract_section_lines("Mô tả công việc")
+    req_lines = _extract_section_lines("Yêu cầu công việc")
+    benefit_raw_lines = _extract_section_lines("Quyền lợi")
+
+    # Fallback to API text lines if DOM did not provide lines
+    if not desc_lines and (jd.get("description") or jd.get("description_html")):
+        desc_lines = text_to_clean_lines(jd.get("description_html") or jd.get("description"))
+    if not req_lines and (jd.get("other_requirement") or jd.get("other_requirement_html") or jd.get("requirement")):
+        req_lines = text_to_clean_lines(jd.get("other_requirement_html") or jd.get("other_requirement") or jd.get("requirement"))
+    if not benefit_raw_lines and (jd.get("benefit") or jd.get("benefit_html")):
+        benefit_raw_lines = text_to_clean_lines(jd.get("benefit_html") or jd.get("benefit"))
+
+    # Tách Thời gian làm việc và Địa điểm làm việc từ khối quyền lợi
+    benefit_lines = []
+    working_time = []
+    working_address = []
+    curr_target = benefit_lines
+    for line in benefit_raw_lines:
+        if "Thời gian làm việc:" in line:
+            curr_target = working_time
+            continue
+        elif "Địa điểm làm việc:" in line:
+            curr_target = working_address
+            continue
+        curr_target.append(line)
+
+    # 3. Thông tin chung (General info)
+    general_info = {}
+    if soup:
+        gen_section = soup.find(lambda tag: tag.name == "h2" and "Thông tin chung" in tag.get_text())
+        if gen_section:
+            gen_parent = gen_section.find_parent("div")
+            items = gen_parent.find_all("div", class_=lambda c: c and "text-12" in c and "text-grey-11" in c)
+            for it in items:
+                k = clean_text(it.get_text(strip=True))
+                val_el = it.find_next_sibling("div") or it.find_parent("div").find_next_sibling("div")
+                val = clean_text(val_el.get_text(separator=" ", strip=True)) if val_el else ""
+                if k and val:
+                    general_info[k] = val
+
+    # Workplaces
+    workplaces = []
+    if soup:
+        dd_el = soup.find(lambda t: t.name == "h2" and "Địa điểm làm việc" in t.get_text())
+        if dd_el:
+            p = dd_el.find_parent("div")
+            container = p.find("div", class_=lambda c: c and "flex-col" in c)
+            if container:
+                for row in container.find_all("div", recursive=False):
+                    text = clean_text(row.get_text(separator=" ", strip=True))
+                    if text and text not in workplaces:
+                        workplaces.append(text)
+            else:
+                for row in p.find_all("div", class_=lambda c: c and "flex" in c and "gap" in c):
+                    if "flex-col" not in (row.get("class") or []):
+                        text = clean_text(row.get_text(separator=" ", strip=True))
+                        if text and text not in workplaces:
+                            workplaces.append(text)
+
+    # Fallbacks for general info from jd
+    posted_date = general_info.get("Ngày đăng") or _format_timestamp(jd.get("created_at"))
+    job_level = general_info.get("Cấp bậc") or clean_text(jd.get("level_requirement") or jd.get("position_text") or "")
+    hiring_qty = general_info.get("Số lượng tuyển") or clean_text(str(jd.get("vacancy_quantity") or ""))
+    working_type = general_info.get("Hình thức làm việc") or clean_text(jd.get("working_method") or jd.get("type_working_text") or "")
+    exp_req = general_info.get("Yêu cầu kinh nghiệm") or exp_summary or clean_text(str(jd.get("experience_range") or ""))
+    industries = general_info.get("Ngành nghề") or clean_text(str(jp.get("industry") or ""))
+
+    # 4. Từ khoá (Keywords)
+    keywords = []
+    if soup:
+        kw_el = soup.find(string=lambda t: t and "Từ khoá" in t)
+        if kw_el:
+            kw_parent = kw_el.find_parent("div").find_parent("div")
+            for a in kw_parent.find_all("a"):
+                t = clean_text(a.get_text(strip=True))
+                if t and t not in keywords:
+                    keywords.append(t)
+    if not keywords and tags_data:
+        if isinstance(tags_data, list):
+            for t_item in tags_data:
+                if isinstance(t_item, dict) and t_item.get("name"):
+                    keywords.append(clean_text(t_item["name"]))
+                elif isinstance(t_item, str) and t_item.strip():
+                    keywords.append(clean_text(t_item))
+
+    # 5. Thông tin công ty (Company)
+    comp_name = ""
+    comp_addr = ""
+    comp_size = ""
+    if soup:
+        for el in soup.find_all(string=lambda t: t and "Quy mô" in t):
+            p = el.find_parent("div")
+            if p:
+                comp_size = clean_text(p.get_text(separator=" ", strip=True).replace("Quy mô :", "").replace("Quy mô:", "").strip())
+            box = el.find_parent("div", class_=lambda c: c and ("bg-white" in c or "rounded" in c))
+            if box:
+                c_title = box.find("div", class_=lambda c: c and "text-18" in c)
+                if c_title:
+                    comp_name = clean_text(c_title.get_text(strip=True))
+                for a_el in box.find_all(string=lambda t: t and "Địa chỉ" in t):
+                    a_p = a_el.find_parent("div")
+                    if a_p:
+                        comp_addr = clean_text(a_p.get_text(separator=" ", strip=True).replace("Địa chỉ :", "").replace("Địa chỉ:", "").strip())
+    if not comp_name:
+        comp_name = clean_text(
+            (emp.get("name") if isinstance(emp, dict) else "")
+            or jd.get("company_name")
+            or jd.get("user_display_name")
+            or (jp.get("hiringOrganization", {}).get("name") if isinstance(jp, dict) else "")
+            or ""
+        )
+    if not comp_addr and emp.get("address"):
+        comp_addr = clean_text(str(emp.get("address")))
+    if not comp_size and emp.get("company_size"):
+        comp_size = clean_text(str(emp.get("company_size")))
+
+    return {
+        "title": title,
+        "salary": salary_text,  # Chuỗi nguyên bản, KHÔNG tách salary_min/salary_max
+        "deadline": deadline,
+        "location_summary": loc_summary,
+        "experience_summary": exp_summary,
+        "description": desc_lines,
+        "requirements": req_lines,
+        "benefits": benefit_lines,
+        "working_time": "\n".join(working_time),
+        "working_address": "\n".join(working_address) if working_address else comp_addr,
+        "general_info": {
+            "posted_date": posted_date,
+            "level": job_level,
+            "hiring_quantity": hiring_qty,
+            "working_type": working_type,
+            "experience": exp_req,
+            "industries": industries,
+            "workplaces": workplaces,
+        },
+        "keywords": keywords,
+        "company": {
+            "name": comp_name,
+            "address": comp_addr,
+            "size": comp_size,
+        },
+    }
+
+
+def build_raw_envelope(
+    raw_payload: dict[str, Any],
+    job_id: str,
+    url: str,
+    version: int = 1,
+) -> dict[str, Any]:
+    """Đóng gói Raw Envelope JSON kèm Post-Crawl Canonical JSON Hashing."""
+    canonical_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
+    field_hashes = calculate_json_field_hashes(raw_payload)
+    return {
+        "metadata": {
+            "job_id": job_id,
+            "source": SOURCE,
+            "source_url": url,
+            "scraped_at": datetime.now(timezone.utc).isoformat(),
+            "scraper_version": CRAWLER_VERSION,
+            "version": version,
+            "content_hash": canonical_hash,
+            "canonical_hash": canonical_hash,
+            "field_hashes": field_hashes,
+        },
+        "raw_payload": raw_payload,
+    }
+
+
 def _make_record(
     job_detail: dict[str, Any],
     fallback_url: str,
@@ -83,10 +363,22 @@ def _make_record(
     batch_id: str = "batch_001",
     crawled_at: datetime | None = None,
 ) -> JobRecord:
-    job_id = str(job_detail.get("id", ""))
+    job_id = str(job_detail.get("id") or job_detail.get("job_id") or "")
+    if not job_id and fallback_url:
+        m_id = re.search(r"id(\d+)", fallback_url)
+        if m_id:
+            job_id = m_id.group(1)
+
     title = _clean_text(job_detail.get("title"))
-    employer = job_detail.get("employer_info", {})
-    company = _clean_text(employer.get("name") if isinstance(employer, dict) else (job_detail.get("company_name") or job_detail.get("user_display_name")))
+
+    comp_obj = job_detail.get("company")
+    if isinstance(comp_obj, dict):
+        company = _clean_text(comp_obj.get("name"))
+    elif isinstance(comp_obj, str):
+        company = _clean_text(comp_obj)
+    else:
+        employer = job_detail.get("employer_info", {})
+        company = _clean_text(employer.get("name") if isinstance(employer, dict) else (job_detail.get("company_name") or job_detail.get("user_display_name")))
 
     if not title or not company:
         raise ViecLam24hAPIError("Bản ghi thiếu tiêu đề hoặc tên công ty.")
@@ -106,6 +398,11 @@ def _make_record(
         p_info = places[0]
         street_address = _clean_text(p_info.get("address"))
         address_locality = _clean_text(p_info.get("city_name") or p_info.get("province_name"))
+
+    if not street_address:
+        street_address = _clean_text(job_detail.get("working_address") or (comp_obj.get("address") if isinstance(comp_obj, dict) else None))
+    if not address_locality:
+        address_locality = _clean_text(job_detail.get("location_summary"))
 
     location_parts = [p for p in [street_address, address_locality, address_region, address_country] if p]
     location_text = ", ".join(location_parts) if location_parts else None
@@ -129,7 +426,21 @@ def _make_record(
         except (ValueError, TypeError):
             pass
 
-    raw_salary_text = job_detail.get("salary_range_text") or job_detail.get("salary_text")
+    raw_salary_text = job_detail.get("salary") or job_detail.get("salary_range_text") or job_detail.get("salary_text")
+    if s_min_val is None and s_max_val is None and raw_salary_text:
+        m_range = re.search(r"(\d+(?:[.,]\d+)?)\s*-\s*(\d+(?:[.,]\d+)?)\s*triệu", str(raw_salary_text), re.I)
+        if m_range:
+            s_min_val = float(m_range.group(1).replace(",", "."))
+            s_max_val = float(m_range.group(2).replace(",", "."))
+        else:
+            m_single = re.search(r"(?:từ|trên)\s*(\d+(?:[.,]\d+)?)\s*triệu", str(raw_salary_text), re.I)
+            if m_single:
+                s_min_val = float(m_single.group(1).replace(",", "."))
+            else:
+                m_max_s = re.search(r"(?:tới|đến|dưới)\s*(\d+(?:[.,]\d+)?)\s*triệu", str(raw_salary_text), re.I)
+                if m_max_s:
+                    s_max_val = float(m_max_s.group(1).replace(",", "."))
+
     if not raw_salary_text:
         if s_min_val is not None and s_max_val is not None:
             salary_text = f"{int(s_min_val)} - {int(s_max_val)} triệu"
@@ -157,32 +468,54 @@ def _make_record(
         has_commission=False,
     )
 
-    desc_html = (
-        job_detail.get("description_html")
-        or job_detail.get("description")
+    desc_raw = (
+        job_detail.get("description")
+        or job_detail.get("description_html")
         or job_detail.get("job_description_html")
     )
-    req_html = (
-        job_detail.get("other_requirement_html")
+    req_raw = (
+        job_detail.get("requirements")
+        or job_detail.get("other_requirement_html")
         or job_detail.get("other_requirement")
         or job_detail.get("job_requirement_html")
-        or job_detail.get("requirements")
     )
-    benefit_html = (
-        job_detail.get("benefit_html")
+    benefit_raw = (
+        job_detail.get("benefits")
+        or job_detail.get("benefit_html")
         or job_detail.get("benefit")
         or job_detail.get("job_benefit_html")
-        or job_detail.get("benefits")
     )
 
-    description_list = text_to_clean_lines(str(desc_html)) if desc_html else []
-    requirements_list = text_to_clean_lines(str(req_html)) if req_html else []
-    benefits_list = text_to_clean_lines(str(benefit_html)) if benefit_html else []
+    if isinstance(desc_raw, list):
+        description_list = [_clean_text(str(x)) for x in desc_raw if _clean_text(str(x))]
+    elif desc_raw:
+        description_list = text_to_clean_lines(str(desc_raw))
+    else:
+        description_list = []
+
+    if isinstance(req_raw, list):
+        requirements_list = [_clean_text(str(x)) for x in req_raw if _clean_text(str(x))]
+    elif req_raw:
+        requirements_list = text_to_clean_lines(str(req_raw))
+    else:
+        requirements_list = []
+
+    if isinstance(benefit_raw, list):
+        benefits_list = [_clean_text(str(x)) for x in benefit_raw if _clean_text(str(x))]
+    elif benefit_raw:
+        benefits_list = text_to_clean_lines(str(benefit_raw))
+    else:
+        benefits_list = []
 
     if not description_list:
         description_list = requirements_list if requirements_list else [title]
 
-    experience_val = job_detail.get("experience_range") or job_detail.get("experience_text")
+    experience_val = (
+        job_detail.get("experience_range")
+        or job_detail.get("experience_text")
+        or job_detail.get("experience_summary")
+        or (job_detail.get("general_info", {}).get("experience") if isinstance(job_detail.get("general_info"), dict) else None)
+    )
     experience_text = (
         f"{experience_val} năm kinh nghiệm chuyên môn"
         if (experience_val and str(experience_val).isdigit())
@@ -274,7 +607,7 @@ def _make_record(
 
 
 class ViecLam24hCrawler(BaseCrawler):
-    """Crawler cho nguồn Vieclam24h theo mô hình 2 giai đoạn (UrlLedger & JobRecord)."""
+    """Crawler cho nguồn Vieclam24h theo mô hình 2 giai đoạn (UrlLedger & MinIO Lakehouse Raw Envelope)."""
 
     source_name = SOURCE
     crawler_version = CRAWLER_VERSION
@@ -283,11 +616,13 @@ class ViecLam24hCrawler(BaseCrawler):
         self,
         checkpoint_dir: str | None = None,
         output_dir: str | None = None,
-        max_items: int | None = 5,
+        max_items: int | None = None,
         checkpoint_interval: int = 10,
-        min_delay: float = 1.0,
-        max_delay: float = 2.0,
+        min_delay: float = 2.0,
+        max_delay: float = 4.0,
         local_json_file: Path | str | None = None,
+        sync_minio: bool = False,
+        online: bool = False,
     ) -> None:
         base_dir = Path(output_dir or "data/vieclam24h")
         target_output_dir = str(base_dir if base_dir.name == "vieclam24h" else (base_dir / "vieclam24h"))
@@ -300,7 +635,9 @@ class ViecLam24hCrawler(BaseCrawler):
             source=self.source_name,
             storage_dir=str(Path(self.output_dir) / "url_ledger"),
         )
-        
+        self.sync_minio = sync_minio
+        self.online = online
+        self._minio_store = None
         self.client = HttpClient(
             source=self.source_name,
             delay_config=DelayConfig(min_seconds=min_delay, max_seconds=max_delay),
@@ -315,6 +652,11 @@ class ViecLam24hCrawler(BaseCrawler):
         }
         if hasattr(self.client, "session") and hasattr(self.client.session, "headers"):
             self.client.session.headers.update(browser_headers)
+
+    def _get_minio_store(self) -> MinioRawStore:
+        if self._minio_store is None:
+            self._minio_store = MinioRawStore()
+        return self._minio_store
 
     def _extract_next_data(self, html: str) -> dict[str, Any] | None:
         """Trích xuất state JSON từ thẻ script __NEXT_DATA__."""
@@ -359,10 +701,11 @@ class ViecLam24hCrawler(BaseCrawler):
         return records
 
     # ── PHA 1: URL DISCOVERY ──────────────────────────────────
-    def discover_urls(self, max_pages: int | None = None) -> int:
-        """Quét toàn bộ danh mục Vieclam24h và ghi nhận vào UrlLedger."""
+    def discover_urls(self, online: bool = False, max_pages: int | None = None) -> int:
+        """Quét toàn bộ danh mục IT Vieclam24h, ghi nhận vào UrlLedger (content_hash=None) và đẩy lên MinIO."""
         log.info("[Vieclam24h] === Bắt đầu Pha 1: URL Discovery ===")
         total_discovered = 0
+        is_online = online or self.online
 
         for category in TARGET_CATEGORIES:
             cat_name = category["name"]
@@ -376,6 +719,8 @@ class ViecLam24hCrawler(BaseCrawler):
 
                 page_url = f"{BASE_URL}{cat_path}?page={page_idx}" if page_idx > 1 else f"{BASE_URL}{cat_path}"
                 try:
+                    if is_online and page_idx > 1:
+                        polite_sleep(1.0, 2.0, reason=f"Nghỉ giữa các trang danh mục {cat_name}")
                     resp = self.client.get(page_url)
                     if resp.status_code >= 400:
                         log.warning("[Vieclam24h] HTTP Error %d tại trang %d danh mục %s", resp.status_code, page_idx, cat_name)
@@ -387,8 +732,8 @@ class ViecLam24hCrawler(BaseCrawler):
                     detail_links_map: dict[str, dict[str, str]] = {}
                     for a in soup.find_all("a"):
                         href = a.get("href", "")
-                        clean_href = href.split("?")[0]
-                        if "-c" in clean_href and "id" in clean_href and clean_href.endswith(".html"):
+                        clean_href = href.split("?")[0].strip()
+                        if ("-c" in clean_href or "id" in clean_href) and clean_href.endswith(".html"):
                             m = re.search(r"id(\d+)\.html", clean_href)
                             if m:
                                 jid = m.group(1)
@@ -432,6 +777,7 @@ class ViecLam24hCrawler(BaseCrawler):
                         if not detail_url or not jid:
                             continue
 
+                        # Đăng ký URL vào ledger: ban đầu PENDING và content_hash=None
                         self.ledger.register_url(
                             raw_url=detail_url,
                             job_id=jid,
@@ -447,31 +793,53 @@ class ViecLam24hCrawler(BaseCrawler):
 
         self.ledger.save_catalog()
         manifest_file = self.ledger.export_daily_manifest()
-        self.ledger.sync_to_minio()
-        log.info("[Vieclam24h] Hoàn thành Pha 1. Tổng cộng %d URL đã ghi nhận vào %s", total_discovered, manifest_file)
-        return total_discovered
+        if self.sync_minio:
+            self.ledger.sync_to_minio()
+        log.info("[Vieclam24h] Hoàn thành Pha 1. Tổng cộng %d URL trong Ledger (%s)", len(self.ledger.records), manifest_file)
+        return len(self.ledger.records)
 
     # ── PHA 2: DETAIL EXTRACTION ──────────────────────────────
-    def crawl_details(self, limit: int | None = None) -> dict[str, int]:
-        """Tải chi tiết, trích xuất dữ liệu theo định dạng raw_data và lưu ra file JSON tập trung."""
-        log.info("[Vieclam24h] === Bắt đầu Pha 2: Detail Extraction (Xuất file raw_data JSON) ===")
-        pending_records = self._get_target_records(recheck_days=21)
-        log.info("[Vieclam24h] Tìm thấy %d link cần xử lý trong Ledger.", len(pending_records))
+    def crawl_details(
+        self,
+        online: bool = False,
+        limit: int | None = None,
+        retry_failed: bool = False,
+    ) -> dict[str, int]:
+        """Pha 2: Kéo URL từ MinIO, cào chi tiết HTML, bóc tách JSON, băm Document JSON và đẩy Raw Envelope lên MinIO."""
+        log.info("[Vieclam24h] === Bắt đầu Pha 2: Detail Extraction (MinIO Raw Envelope & Post-Crawl Hashing) ===")
+        is_online = online or self.online
+
+        if self.sync_minio and is_online:
+            log.info("[Vieclam24h] Đang kéo URL Ledger mới nhất từ MinIO về máy...")
+            self.ledger.pull_from_minio()
+
+        if retry_failed:
+            raw_candidates = self.ledger.get_failed_records()
+            log.info("[Vieclam24h] Chế độ retry-failed: tìm thấy %d link trong Failed Queue.", len(raw_candidates))
+        else:
+            raw_candidates = self._get_target_records(recheck_days=21)
+            log.info("[Vieclam24h] Tìm thấy %d link cần xử lý (PENDING hoặc đến hạn 21 ngày).", len(raw_candidates))
+
+        # Chỉ xử lý các bài thuộc miền vieclam24h.vn để bảo đảm cách ly nguồn
+        candidates = [r for r in raw_candidates if "vieclam24h.vn" in r.get("canonical_url", "")]
+
+        if limit is not None:
+            candidates = candidates[:limit]
 
         stats = {"success": 0, "failed": 0, "skipped": 0, "repost": 0}
         extracted_jobs: list[dict[str, Any]] = []
+        today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
-        count = 0
-        for item in pending_records:
-            if limit is not None and count >= limit:
-                break
-
+        for idx, item in enumerate(candidates, 1):
             url = item["canonical_url"]
             url_hash = item["url_hash"]
             job_id = item["job_id"]
 
             try:
-                log.info("[Vieclam24h] [%d/%d] Đang tải chi tiết: %s", count + 1, len(pending_records), url)
+                log.info("[Vieclam24h] [%d/%d] Đang tải chi tiết: %s", idx, len(candidates), url)
+                if is_online:
+                    polite_sleep(2.0, 4.0, reason="Nghỉ giữa 2 bài đăng Vieclam24h")
+
                 resp = self.client.get(url)
                 if resp.status_code >= 400:
                     log.warning("[Vieclam24h] HTTP Error %d tại URL: %s", resp.status_code, url)
@@ -480,126 +848,102 @@ class ViecLam24hCrawler(BaseCrawler):
                     continue
 
                 html = resp.text
-                if "404" in html or "Tin tuyển dụng này không tồn tại" in html:
+                if resp.status_code == 404 or "Tin tuyển dụng này không tồn tại" in html or "<title>404" in html:
                     self.ledger.mark_closed(url_hash)
                     stats["skipped"] += 1
                     continue
 
-                # TÍNH TOÁN CLEAN CONTAINER HASH
-                new_hash = None
-                try:
-                    new_hash = calculate_container_html_hash(html, container_selector=CONTAINER_SELECTOR)
-                except Exception as exc:
-                    log.debug("[Vieclam24h] Không thể băm với selector '%s': %s", CONTAINER_SELECTOR, exc)
+                # Trích xuất dữ liệu từ Next.js SSR state
+                next_data = self._extract_next_data(html)
+                api = next_data.get("props", {}).get("initialState", {}).get("api", {}) if next_data else {}
+                job_detail = api.get("jobDetailHiddenContact", {}).get("data", {})
+                employer_detail = api.get("employerDetailHiddenContact", {}).get("data", {})
+                job_posting = api.get("jobPosting", {}).get("data", {})
+                tags = api.get("getTags", {}).get("data", {})
 
-                if not new_hash:
-                    import hashlib
+                if not job_detail:
                     soup = BeautifulSoup(html, "html.parser")
-                    container = soup.select_one(CONTAINER_SELECTOR) or soup.select_one("body") or soup
-                    new_hash = hashlib.sha256(str(container).encode("utf-8")).hexdigest()
+                    h1_el = soup.select_one("h1")
+                    if not h1_el:
+                        log.warning("[Vieclam24h] Không tìm thấy nội dung bài đăng tại URL: %s", url)
+                        self.ledger.mark_closed(url_hash)
+                        stats["skipped"] += 1
+                        continue
+                    job_detail = {
+                        "id": job_id,
+                        "title": clean_text(h1_el.get_text(strip=True)),
+                        "description": str(soup.select_one(".job-description") or ""),
+                    }
 
-                # Kiểm tra Repost
-                existing = self.ledger.find_by_content_hash(new_hash)
+                # 1. Bóc tách 100% trường dữ liệu đặc thù vào raw_payload (Zero Information Loss)
+                raw_payload = build_raw_payload(
+                    html=html,
+                    next_data=next_data,
+                    job_detail=job_detail,
+                    employer_detail=employer_detail,
+                    job_posting=job_posting,
+                    tags=tags,
+                )
+
+                # 2. Băm toàn vẹn Document JSON sau cào (Post-Crawl Canonical JSON Hashing)
+                canonical_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
+                field_hashes = calculate_json_field_hashes(raw_payload)
+
+                # 3. Kiểm tra Repost
+                existing = self.ledger.find_by_content_hash(canonical_hash)
                 if existing and existing["url_hash"] != url_hash:
                     log.info("[Vieclam24h] Phát hiện Repost: %s trùng nội dung với %s", url, existing["canonical_url"])
-                    self.ledger.mark_done(url_hash, content_hash=new_hash, repost_of_url_hash=existing["url_hash"])
+                    self.ledger.mark_done(url_hash, content_hash=canonical_hash, repost_of_url_hash=existing["url_hash"])
                     stats["repost"] += 1
-                    count += 1
                     continue
 
+                # 4. Xác định version (CDC)
                 curr_ver = item.get("latest_version") or 0
-                new_ver = curr_ver if (item.get("content_hash") == new_hash and curr_ver > 0) else curr_ver + 1
+                new_ver = curr_ver if (item.get("content_hash") == canonical_hash and curr_ver > 0) else curr_ver + 1
 
-                # Trích xuất dữ liệu từ __NEXT_DATA__
-                next_data = self._extract_next_data(html)
-                d_api = next_data.get("props", {}).get("initialState", {}).get("api", {}) if next_data else {}
-                job_detail = d_api.get("jobDetailHiddenContact", {}).get("data", {})
+                # 5. Đóng gói Raw Envelope
+                envelope = build_raw_envelope(raw_payload, job_id=job_id, url=url, version=new_ver)
 
-                soup = BeautifulSoup(html, "html.parser")
+                # 6. Lưu file Raw Snapshot cục bộ
+                raw_dir = Path(self.output_dir) / "raw" / today_str
+                raw_dir.mkdir(parents=True, exist_ok=True)
+                snapshot_file = raw_dir / f"{job_id}_v{new_ver}.json"
+                with open(snapshot_file, "w", encoding="utf-8") as f:
+                    json.dump(envelope, f, ensure_ascii=False, indent=2)
 
-                # Bóc tách từng trường thông tin cụ thể
-                title = clean_text(
-                    job_detail.get("title")
-                    or (soup.select_one("h1").get_text(strip=True) if soup.select_one("h1") else "Unknown")
-                )
+                # 7. Đẩy snapshot lên MinIO Lakehouse
+                if self.sync_minio:
+                    s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v{new_ver}.json"
+                    self._get_minio_store().put_json(s3_key, envelope)
 
-                comp_raw = (
-                    job_detail.get("company_name")
-                    or job_detail.get("user_display_name")
-                    or job_detail.get("company", {})
-                )
-                if isinstance(comp_raw, dict):
-                    company = clean_text(comp_raw.get("name") or comp_raw.get("display_name") or "") or "Unknown"
-                else:
-                    company = clean_text(str(comp_raw)) if comp_raw else "Unknown"
-
-                salary_text = clean_text(job_detail.get("salary_text") or "Thoả thuận")
-                salary_detail = parse_salary_detail(salary_text, title=title)
-
-                desc_html = job_detail.get("description") or (
-                    str(soup.select_one(".job-description")) if soup.select_one(".job-description") else f"<p>{title}</p>"
-                )
-                desc_text = strip_html_tags(desc_html)
-                desc_list = text_to_clean_lines(desc_html or desc_text)
-
-                req_html = job_detail.get("requirement") or ""
-                req_text = strip_html_tags(req_html)
-                req_list = text_to_clean_lines(req_html or req_text)
-
-                ben_html = job_detail.get("benefit") or ""
-                ben_text = strip_html_tags(ben_html)
-                ben_list = text_to_clean_lines(ben_html or ben_text)
-
-                loc_text = clean_text(job_detail.get("address") or "")
-                deadline_text = clean_text(job_detail.get("expired_date") or "")
-                seniority = clean_text(
-                    job_detail.get("level", {}).get("name") if isinstance(job_detail.get("level"), dict) else ""
-                )
-                emp_type = clean_text(
-                    job_detail.get("working_form", {}).get("name") if isinstance(job_detail.get("working_form"), dict) else ""
-                )
-
-                # Chuẩn hóa raw_data theo đúng định dạng yêu cầu
-                raw_data = {
-                    "title": title,
-                    "company": company,
-                    "salary": salary_detail,
-                    "tags": {"requirements": None, "benefits": None, "skills": None},
-                    "description_list": desc_list,
-                    "requirements_list": req_list,
-                    "benefits_list": ben_list,
-                    "location_text": loc_text,
-                    "deadline_text": deadline_text,
-                    "posted_date_text": "",
-                    "employment_type_text": emp_type,
-                    "seniority_text": seniority,
-                    "extra": job_detail,
-                }
-
-                extracted_jobs.append(raw_data)
-
-                # Cập nhật UrlLedger
-                self.ledger.mark_done(url_hash, content_hash=new_hash, new_version=new_ver)
+                # 8. Lưu ngược lại mã hash vào URL trong Ledger
+                self.ledger.mark_done(url_hash, content_hash=canonical_hash, new_version=new_ver)
+                extracted_jobs.append(envelope)
                 stats["success"] += 1
-                count += 1
+
+                # 9. Checkpoint sync định kỳ mỗi 15 tin
+                if (stats["success"] + stats["repost"]) % 15 == 0:
+                    log.info("[Vieclam24h] Checkpoint sync: đồng bộ Ledger lên MinIO Lakehouse...")
+                    self.ledger.save_catalog()
+                    if self.sync_minio:
+                        self.ledger.sync_to_minio()
 
             except Exception as exc:
-                log.error("[Vieclam24h] Lỗi cào %s: %s. Safe Skip.", url, exc)
+                log.warning("[Vieclam24h] Lỗi cào %s: %s -> Safe Skip đưa vào Failed Queue", url, exc)
                 self.ledger.mark_failed(url_hash, error_message=str(exc))
                 stats["failed"] += 1
 
-        # Lưu danh sách công việc trích xuất được ra 1 file JSON tập trung
+        # Lưu batch tổng hợp cục bộ
         if extracted_jobs:
             out_path = Path(self.output_dir)
             out_path.mkdir(parents=True, exist_ok=True)
             output_file = out_path / "batch_001.json"
-            
             with open(output_file, "w", encoding="utf-8") as f:
-                json.dump(extracted_jobs, f, ensure_ascii=False, indent=4)
-            log.info("[Vieclam24h] Đã xuất thành công %d bản ghi ra file: %s", len(extracted_jobs), output_file)
+                json.dump(extracted_jobs, f, ensure_ascii=False, indent=2)
 
         self.ledger.save_catalog()
-        self.ledger.sync_to_minio()
+        if self.sync_minio:
+            self.ledger.sync_to_minio()
         log.info("[Vieclam24h] Hoàn thành Pha 2. Thống kê: %s", stats)
         return stats
 
@@ -658,10 +1002,13 @@ class ViecLam24hCrawler(BaseCrawler):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Vieclam24h Job Crawler (UrlLedger & JobRecord)")
-    parser.add_argument("--phase", type=str, choices=["all", "discovery", "details"], default="all", help="Pha cần chạy: discovery, details, all")
+    parser = argparse.ArgumentParser(description="Vieclam24h Two-Phase MinIO Job Crawler")
+    parser.add_argument("--phase", type=str, choices=["all", "discovery", "details", "sync", "view"], default="all", help="Pha cần chạy: discovery, details, sync, view, all")
+    parser.add_argument("--online", action="store_true", help="Cho phép gọi mạng cào trực tuyến")
+    parser.add_argument("--sync-minio", action="store_true", help="Tự động đồng bộ Ledger và Raw Snapshots lên MinIO")
+    parser.add_argument("--retry-failed", action="store_true", help="Cào lại các URL trong Failed Queue")
+    parser.add_argument("--limit", type=int, default=None, help="Số tin tối đa cần cào ở Pha 2")
     parser.add_argument("--max-pages", type=int, default=None, help="Số trang danh mục tối đa cần quét ở Pha 1")
-    parser.add_argument("--max-items", type=int, default=None, help="Số tin tối đa cần cào ở Pha 2")
     parser.add_argument("--output-dir", type=str, default="data/vieclam24h", help="Thư mục gốc lưu trữ dữ liệu")
     parser.add_argument("--checkpoint-dir", type=str, default=None, help="Thư mục lưu checkpoint")
     args = parser.parse_args()
@@ -674,18 +1021,26 @@ def main():
     crawler = ViecLam24hCrawler(
         checkpoint_dir=args.checkpoint_dir,
         output_dir=args.output_dir,
-        max_items=args.max_items,
+        sync_minio=args.sync_minio,
+        online=args.online,
     )
 
     if args.phase == "discovery":
-        total = crawler.discover_urls(max_pages=args.max_pages)
+        total = crawler.discover_urls(online=args.online, max_pages=args.max_pages)
         print(f"Pha 1 Discovery hoàn thành. Tổng số URL ghi nhận: {total}")
     elif args.phase == "details":
-        stats = crawler.crawl_details(limit=args.max_items)
+        stats = crawler.crawl_details(online=args.online, limit=args.limit, retry_failed=args.retry_failed)
         print("Pha 2 Detail Extraction hoàn thành:", stats)
+    elif args.phase == "sync":
+        crawler.ledger.save_catalog()
+        crawler.ledger.sync_to_minio()
+        print("Đã đồng bộ URL Ledger lên MinIO Lakehouse thành công.")
+    elif args.phase == "view":
+        stats = crawler.ledger.get_stats()
+        print("Trạng thái URL Ledger hiện tại:", stats)
     else:
-        crawler.discover_urls(max_pages=args.max_pages)
-        stats = crawler.crawl_details(limit=args.max_items)
+        crawler.discover_urls(online=args.online, max_pages=args.max_pages)
+        stats = crawler.crawl_details(online=args.online, limit=args.limit, retry_failed=args.retry_failed)
         print("Crawl hoàn tất:", stats)
 
 

@@ -3,7 +3,7 @@
 """Thống kê chất lượng tầng thô (Raw As-Is) cho nguồn CareerViet - envelope mới.
 
 Bản viết lại này đọc các RAW ENVELOPE ``{metadata, raw_payload}`` mà
-``crawlers/sources/careerviet/raw_envelope.py`` sinh ra (mỗi tin 1 file JSON,
+``crawlers/sources/careerviet/crawler.py`` sinh ra (mỗi tin 1 file JSON,
 tên ``{job_id}_v{version}.json``), và báo cáo:
 
 1. Tổng số envelope đã đọc.

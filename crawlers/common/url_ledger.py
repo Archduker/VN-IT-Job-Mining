@@ -67,7 +67,7 @@ def clean_canonical_url(raw_url: str) -> str:
     query_params = parse_qs(parsed.query, keep_blank_values=False)
     
     # Danh sách các query param cần lọc bỏ
-    tracking_prefixes = ("utm_", "fbclid", "gclid", "ref", "source", "u_sr_id", "ta_source")
+    tracking_prefixes = ("utm_", "fbclid", "gclid", "ref", "source", "u_sr_id", "ta_source", "traceinfo")
     clean_params = {
         k: v for k, v in query_params.items()
         if not any(k.lower().startswith(prefix) for prefix in tracking_prefixes)
@@ -300,6 +300,24 @@ class UrlLedger:
         self.base_dir.mkdir(parents=True, exist_ok=True)
         with open(self.catalog_file, "w", encoding="utf-8") as f:
             json.dump(self.records, f, ensure_ascii=False, indent=2)
+        try:
+            import pandas as pd
+            parquet_file = self.base_dir / "catalog_master.parquet"
+            pd.DataFrame(list(self.records.values())).to_parquet(parquet_file, index=False)
+        except Exception:
+            pass
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Thống kê tổng quan số lượng URL theo trạng thái."""
+        status_counts: Dict[str, int] = {}
+        for r in self.records.values():
+            st = r.get("status", "UNKNOWN")
+            status_counts[st] = status_counts.get(st, 0) + 1
+        return {
+            "source": self.source,
+            "total_urls": len(self.records),
+            "by_status": status_counts,
+        }
 
     def register_url(
         self,
@@ -512,6 +530,13 @@ class UrlLedger:
                 s3.upload_file(str(self.catalog_file), bucket, key)
                 logger.info(f"[{storage_label}] Đã đồng bộ catalog ({len(local_records)} records) lên s3://{bucket}/{key}")
 
+            parquet_file = self.base_dir / "catalog_master.parquet"
+            if parquet_file.exists():
+                try:
+                    s3.upload_file(str(parquet_file), bucket, f"url_ledger/{self.source}/catalog_master.parquet")
+                except Exception as p_err:
+                    logger.debug(f"Không thể upload parquet: {p_err}")
+
             # Upload all manifest files
             manifest_count = 0
             for m_path in self.manifests_dir.glob("*.jsonl"):
@@ -524,4 +549,101 @@ class UrlLedger:
         except Exception as exc:
             logger.warning(f"[{storage_label}] Không thể đồng bộ URL Ledger lên ({endpoint}): {exc}. Dữ liệu cục bộ vẫn an toàn.")
             return False
+
+    def pull_from_minio(
+        self,
+        bucket_name: Optional[str] = None,
+        endpoint_url: Optional[str] = None,
+        access_key: Optional[str] = None,
+        secret_key: Optional[str] = None,
+    ) -> bool:
+        """
+        Kéo URL Ledger (catalog_master.json) từ MinIO / S3 về máy cục bộ.
+        Nguồn: minio://{bucket_name}/url_ledger/{source}/catalog_master.json
+        Hợp nhất an toàn: nếu local chưa có hoặc MinIO có record mới thì cập nhật.
+        """
+        import os
+        try:
+            from dotenv import load_dotenv
+            load_dotenv()
+        except Exception:
+            pass
+
+        bucket = (
+            bucket_name
+            or os.getenv("S3_BUCKET_NAME")
+            or os.getenv("R2_BUCKET_NAME")
+            or os.getenv("MINIO_BUCKET")
+            or os.getenv("S3_BUCKET")
+            or "vn-it-jobs"
+        )
+        endpoint = (
+            endpoint_url
+            or os.getenv("S3_ENDPOINT_URL")
+            or os.getenv("R2_ENDPOINT_URL")
+            or os.getenv("MINIO_ENDPOINT")
+            or "http://localhost:9000"
+        )
+        ak = (
+            access_key
+            or os.getenv("AWS_ACCESS_KEY_ID")
+            or os.getenv("R2_ACCESS_KEY_ID")
+            or os.getenv("MINIO_ROOT_USER")
+            or "minioadmin"
+        )
+        sk = (
+            secret_key
+            or os.getenv("AWS_SECRET_ACCESS_KEY")
+            or os.getenv("R2_SECRET_ACCESS_KEY")
+            or os.getenv("MINIO_ROOT_PASSWORD")
+            or "minioadmin"
+        )
+        region = "auto" if "r2.cloudflarestorage.com" in endpoint else os.getenv("AWS_REGION", "us-east-1")
+        storage_label = "Cloudflare R2" if "r2.cloudflarestorage.com" in endpoint else "MinIO"
+
+        try:
+            import boto3
+            from botocore.client import Config
+
+            s3 = boto3.client(
+                "s3",
+                endpoint_url=endpoint,
+                aws_access_key_id=ak,
+                aws_secret_access_key=sk,
+                config=Config(signature_version="s3v4", connect_timeout=3, retries={"max_attempts": 2}),
+                region_name=region,
+            )
+
+            key = f"url_ledger/{self.source}/catalog_master.json"
+            try:
+                resp = s3.get_object(Bucket=bucket, Key=key)
+                remote_records = json.loads(resp["Body"].read().decode("utf-8"))
+            except Exception as get_exc:
+                logger.info(f"[{storage_label}] Khong tim thay {key} tren bucket {bucket} ({get_exc})")
+                return False
+
+            if not isinstance(remote_records, dict):
+                return False
+
+            merged_count = 0
+            for uh, r_rec in remote_records.items():
+                if uh not in self.records:
+                    self.records[uh] = r_rec
+                    merged_count += 1
+                else:
+                    local_rec = self.records[uh]
+                    if local_rec.get("status") == "PENDING" and r_rec.get("status") == "DONE":
+                        self.records[uh] = r_rec
+                        merged_count += 1
+
+            self.save_catalog()
+            logger.info(f"[{storage_label}] Da keo {len(remote_records)} records tu s3://{bucket}/{key} ve local (cap nhat {merged_count}).")
+            return True
+        except Exception as exc:
+            logger.warning(f"[{storage_label}] Khong the keo catalog tu MinIO ({endpoint}): {exc}")
+            return False
+
+    def get_failed_records(self) -> List[Dict[str, Any]]:
+        """Lấy danh sách các URL có trạng thái FAILED (Failed Queue)."""
+        return [r for r in self.records.values() if r.get("status") == "FAILED"]
 

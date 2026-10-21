@@ -23,11 +23,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from crawlers.sources.careerviet.raw_envelope import build_raw_envelope  # noqa: E402
+from crawlers.sources.careerviet.crawler import build_raw_envelope  # noqa: E402
 
 BASE_URL = "https://careerviet.vn"
 RAW_KEYS = ["title", "job-company-name", "detail-box", "detail-row",
-            "job-tags", "map", "job-posting-schema"]
+            "job-tags", "map"]
 
 
 def _is_empty(v) -> bool:

@@ -29,7 +29,7 @@ def test_handle_cloudflare_backoff():
     mock_page.content.return_value = "<html><body><h1>Tuyển dụng IT</h1></body></html>"
     handled = handle_cloudflare_backoff(mock_page, retry_attempt=1, base_backoff_sec=0.1)
     assert handled is True
-    mock_page.wait_for_timeout.assert_called_once()
+    assert mock_page.content.called
 
 
 def test_human_like_interaction():

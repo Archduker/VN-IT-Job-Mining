@@ -12,18 +12,22 @@ Nguyên tắc (Mục 7A + skill crawling-architect/job-crawler-analyzer):
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
 import unicodedata
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
-import hashlib
-
-from crawlers.common.url_ledger import calculate_container_html_hash
+from crawlers.common.url_ledger import (
+    calculate_container_html_hash,
+    calculate_json_canonical_hash,
+    calculate_json_field_hashes,
+)
 from crawlers.common.utils import clean_text, text_to_clean_lines
 from crawlers.sources.itviec import config as C
 
@@ -278,6 +282,82 @@ def _resolve_company(
     return (name or None), (url or None)
 
 
+def _extract_location(soup: BeautifulSoup) -> Optional[str]:
+    """Trích xuất địa điểm làm việc từ icon map-pin hoặc span normal-text."""
+    for icon in soup.select("use"):
+        href = icon.get("href", "") or icon.get("xlink:href", "")
+        if "map-pin" in href:
+            p = icon.find_parent("div") or icon.find_parent("span")
+            if p:
+                st = p.select_one("span.normal-text")
+                t = clean_text(st.get_text()) if st else clean_text(p.get_text())
+                if t:
+                    return t
+    for span in soup.select("span.normal-text"):
+        t = clean_text(span.get_text())
+        if any(k in t.lower() for k in ["hồ chí minh", "hà nội", "đà nẵng", "quận", "phường", "đường", "tòa nhà"]):
+            return t
+    return None
+
+
+def _extract_work_model(soup: BeautifulSoup) -> Optional[str]:
+    """Trích xuất hình thức làm việc: Tại văn phòng / Làm việc từ xa / Hybrid..."""
+    known_models = ["Tại văn phòng", "Làm việc từ xa", "Linh hoạt", "Hybrid", "Remote", "At office"]
+    for span in soup.select("span.normal-text"):
+        t = clean_text(span.get_text())
+        if t in known_models:
+            return t
+    return None
+
+
+def _extract_posted_at_raw(soup: BeautifulSoup) -> Optional[str]:
+    """Trích xuất chuỗi thời gian đăng tin nguyên bản (ví dụ: 'Đăng 1 giờ trước')."""
+    for span in soup.select("span.normal-text"):
+        t = clean_text(span.get_text())
+        if "đăng" in t.lower() or "posted" in t.lower():
+            return t
+    return None
+
+
+def _extract_tag_groups(soup: BeautifulSoup) -> tuple[List[str], List[str], List[str]]:
+    """Trích xuất 3 nhóm tags đặc trưng của ITViec: Kỹ năng, Chuyên môn, Lĩnh vực."""
+    skills, specialization, industries = [], [], []
+    for row in soup.select("div.d-flex, div.d-flex.flex-column"):
+        label = row.select_one("div.text-nowrap, div.fw-600")
+        if not label:
+            continue
+        txt = clean_text(label.get_text()).lower()
+        if "kỹ năng" in txt:
+            skills = [clean_text(a.get_text()) for a in row.select("a.itag, div.itag") if clean_text(a.get_text())]
+        elif "chuyên môn" in txt:
+            specialization = [clean_text(a.get_text()) for a in row.select("a.itag, div.itag") if clean_text(a.get_text())]
+        elif "lĩnh vực" in txt:
+            industries = [clean_text(d.get_text()) for d in row.select("a.itag, div.itag") if clean_text(d.get_text())]
+    return skills, specialization, industries
+
+
+def _extract_company_details(soup: BeautifulSoup) -> Dict[str, Any]:
+    """Trích xuất thông tin công ty chi tiết ở sidebar (job-show-employer-info)."""
+    c_box = soup.select_one("section.job-show-employer-info, div.job-show-employer-info")
+    details: Dict[str, Any] = {}
+    if not c_box:
+        return details
+    rating_el = c_box.select_one("div.h4, span.rating-score")
+    if rating_el:
+        details["rating"] = clean_text(rating_el.get_text())
+    slogan_el = c_box.select_one("div.imt-5 p, div.imt-xl-4 p, p.employer-slogan")
+    if slogan_el:
+        details["slogan"] = clean_text(slogan_el.get_text())
+    for r in c_box.select("div.row.ipy-2, div.row.gx-0"):
+        cols = r.select("div.col")
+        if len(cols) >= 2:
+            k = clean_text(cols[0].get_text())
+            v = clean_text(cols[1].get_text(" ", strip=True))
+            if k and v:
+                details[k] = v
+    return details
+
+
 def parse_detail(html: str, job_id: Optional[str] = None) -> Dict[str, Any]:
     """Trả về `raw_payload` cho envelope — giữ nguyên tối đa dữ liệu site cung cấp.
 
@@ -290,19 +370,26 @@ def parse_detail(html: str, job_id: Optional[str] = None) -> Dict[str, Any]:
     title = clean_text(h1.get_text()) if h1 else (jsonld or {}).get("title")
 
     # Company: ƯU TIÊN JSON-LD hiringOrganization.name; KHÔNG dùng anchor đầu tiên
-    # (dễ dính sidebar "Nhà tuyển dụng nổi bật"). company_url khớp theo tên/slug job.
     company_name, company_url = _resolve_company(soup, jsonld, job_id)
 
-    # Skill tags thô (JSON-LD skills là 1 chuỗi; giữ nguyên, KHÔNG tách list ở tầng raw)
+    # Địa điểm, hình thức làm việc, thời gian đăng
+    work_location = _extract_location(soup)
+    work_model = _extract_work_model(soup)
+    posted_at_raw = _extract_posted_at_raw(soup)
+
+    # 3 nhóm tags: Kỹ năng, Chuyên môn, Lĩnh vực
+    dom_skills, specialization, industries = _extract_tag_groups(soup)
+
     skill_tags: List[str] = []
-    if jsonld and isinstance(jsonld.get("skills"), str):
+    if dom_skills:
+        skill_tags.extend(dom_skills)
+    elif jsonld and isinstance(jsonld.get("skills"), str):
         skill_tags.append(jsonld["skills"])
 
-    # Lương hiển thị nguyên văn (có thể là chuỗi gate "Đăng nhập để xem mức lương").
-    # Siết selector: bỏ link nhiễu (báo cáo/khảo sát lương), chỉ nhận chuỗi có tín hiệu lương.
+    # Lương hiển thị nguyên văn (chuỗi gate hoặc số tiền khi đã đăng nhập)
     salary_display_text = None
     _sal_tokens = ("triệu", "usd", "$", "đăng nhập để xem", "thỏa thuận", "thoả thuận",
-                   "thương lượng", "mức lương", "sign in to view", "cạnh tranh")
+                   "thương lượng", "mức lương", "sign in to view", "cạnh tranh", "you'll love it")
     _sal_noise = ("báo cáo", "khảo sát", "survey", "salary report", "xem ngay")
     for el in soup.select("[class*='salary' i]"):
         t = clean_text(el.get_text(" "))
@@ -315,9 +402,7 @@ def parse_detail(html: str, job_id: Optional[str] = None) -> Dict[str, Any]:
             salary_display_text = t
             break
 
-    # `salary_range` từ data-layer analytics của ITviec (attribute trên div.jd-main).
-    # Đây là trường CÔNG KHAI thứ hai: có giá trị khi NTD công khai lương, rỗng khi gate.
-    # Không suy diễn/bịa: gate -> None.
+    # Dải lương analytics data-layer
     salary_range_datalayer = None
     dl_el = soup.select_one("[data-jobs--save-data-layer-value]")
     if dl_el:
@@ -328,20 +413,69 @@ def parse_detail(html: str, job_id: Optional[str] = None) -> Dict[str, Any]:
         except Exception:
             salary_range_datalayer = None
 
+    if not salary_range_datalayer:
+        apply_btn = soup.select_one("[data-jobs--data-layer-params-value]")
+        if apply_btn:
+            try:
+                params = json.loads(apply_btn.get("data-jobs--data-layer-params-value", "{}"))
+                if isinstance(params, dict) and params.get("salary_range"):
+                    salary_range_datalayer = params["salary_range"]
+            except Exception:
+                pass
+
+    sections = _extract_sections(soup)
+    company_details = _extract_company_details(soup)
+
     raw_payload: Dict[str, Any] = {
         "title": title,
         "company_name": company_name,
         "company_url": company_url,
         "salary_display_text": salary_display_text,
-        "skill_tags": skill_tags,
         "salary_range_datalayer": salary_range_datalayer,
-        "sections": _extract_sections(soup),
-        # JSON-LD JobPosting NGUYÊN VĂN (bao gồm description HTML gốc, baseSalary,
-        # jobLocation[], datePosted, validThrough, employmentType, experience…).
+        "work_location": work_location,
+        "work_model": work_model,
+        "posted_at_raw": posted_at_raw,
+        "skill_tags": skill_tags,
+        "specialization": specialization,
+        "industries": industries,
+        "sections": sections,
+        "company_details": company_details,
         "job_posting_jsonld": jsonld,
     }
-    # Không tự chèn field site không có (vd seniority). Giữ raw, không normalize.
     return raw_payload
+
+
+def build_raw_payload(html: str, job_id: str = "") -> Dict[str, Any]:
+    """Bóc tách 100% trường dữ liệu đặc thù của ITViec vào đối tượng JSON (Zero Information Loss)."""
+    return parse_detail(html, job_id=job_id)
+
+
+def build_raw_envelope(
+    html: str,
+    job_id: str,
+    url: str,
+    version: int = 1,
+    http_status: int = 200,
+) -> Dict[str, Any]:
+    """Đóng gói Envelope kèm mã băm toàn vẹn document JSON sau cào (Post-Crawl Canonical JSON Hashing)."""
+    raw_payload = build_raw_payload(html, job_id=job_id)
+    canonical_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
+    field_hashes = calculate_json_field_hashes(raw_payload)
+    return {
+        "metadata": {
+            "job_id": job_id,
+            "source": C.SOURCE,
+            "source_url": url,
+            "scraped_at": datetime.now(timezone.utc).isoformat(),
+            "scraper_version": C.CRAWLER_VERSION,
+            "version": version,
+            "content_hash": canonical_hash,
+            "canonical_hash": canonical_hash,
+            "field_hashes": field_hashes,
+            "http_status": http_status,
+        },
+        "raw_payload": raw_payload,
+    }
 
 
 def build_canonical_jsonld(jsonld: Optional[Dict[str, Any]]) -> Dict[str, Any]:

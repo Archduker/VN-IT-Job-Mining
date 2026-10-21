@@ -75,22 +75,28 @@ class JobCrawlerOperator(BaseOperator):
         elif self.source == "glints":
             from crawlers.sources.glints.crawler import GlintsCrawler
             crawler_cls = GlintsCrawler
+        elif self.source == "jobsgo":
+            from crawlers.sources.jobsgo.crawler import JobsGoCrawler
+            crawler_cls = JobsGoCrawler
         else:
             raise ValueError(f"Unknown source: {self.source}")
 
         crawler = crawler_cls(output_dir=self.output_dir, max_items=self.max_items)
         stats = crawler.run()
 
-        if self.source == "vietnamworks" and stats.get("output_file"):
+        if stats.get("output_file"):
             output_path = Path(stats["output_file"])
             object_key = (
                 f"raw/{self.source}/{output_path.parent.name}/{output_path.name}"
             )
-            stats["minio_uri"] = upload_file_to_minio(
-                output_path,
-                object_key=object_key,
-            )
-            logger.info("Uploaded VietnamWorks crawl output to %s", stats["minio_uri"])
+            try:
+                stats["minio_uri"] = upload_file_to_minio(
+                    output_path,
+                    object_key=object_key,
+                )
+                logger.info("Uploaded %s crawl output to %s", self.source, stats["minio_uri"])
+            except Exception as up_err:
+                logger.warning("Auto-upload to lakehouse skipped or failed for %s: %s", self.source, up_err)
             raw_payload_files = getattr(crawler, "raw_payload_files", [])
             uploaded_raw_count = 0
             for raw_path in raw_payload_files:

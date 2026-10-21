@@ -30,9 +30,15 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from crawlers.base.base_crawler import BaseCrawler
+from crawlers.common.anti_blocking import polite_sleep
 from crawlers.common.http_client import DelayConfig, HttpClient
-from crawlers.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags
-from crawlers.common.url_ledger import UrlLedger, clean_canonical_url
+from crawlers.common.minio_raw_pipeline import MinioRawStore
+from crawlers.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags, RawJobEnvelope
+from crawlers.common.url_ledger import (
+    UrlLedger,
+    calculate_json_canonical_hash,
+    clean_canonical_url,
+)
 from crawlers.common.utils import (
     detect_language,
     parse_salary_detail,
@@ -966,11 +972,12 @@ class TopDevAPICrawler:
         self.keyword = keyword
         self.sleeper = sleeper
 
-    def _fetch_listing(self, page: int) -> dict[str, Any]:
+    def _fetch_listing(self, page: int, category_ids: int | str | None = None) -> dict[str, Any]:
+        target_category = str(category_ids) if category_ids is not None else "1"
         params: dict[str, Any] = {
             "page": page,
             "page_size": self.page_size,
-            "job_categories_ids": ",".join(map(str, JOB_CATEGORY_IDS)),
+            "category_ids": target_category,
             "locale": self.locale,
             "fields[job]": LISTING_FIELDS,
         }
@@ -985,11 +992,11 @@ class TopDevAPICrawler:
             )
         return payload
 
-    def _fetch_listing_with_retries(self, page: int) -> dict[str, Any]:
+    def _fetch_listing_with_retries(self, page: int, category_ids: int | str | None = None) -> dict[str, Any]:
         last_error: TopDevAPIError | None = None
         for attempt in range(REQUEST_ATTEMPTS):
             try:
-                payload = self._fetch_listing(page)
+                payload = self._fetch_listing(page, category_ids=category_ids)
                 meta = payload["meta"]
                 if meta.get("current_page") != page:
                     raise TopDevAPIError(
@@ -1219,29 +1226,323 @@ class TopDevAPICrawler:
         return stats
 
 
+def build_raw_payload_from_html(html_str: str) -> dict[str, Any]:
+    """Bóc tách 100% trường dữ liệu đặc thù từ DOM HTML (chuẩn neccessay.md & .html).
+
+    Bảo toàn tính toàn vẹn (Zero Information Loss) bao gồm:
+    - Tiêu đề, Mức lương thô (header & body), Địa điểm, Cấp bậc, Số năm kinh nghiệm.
+    - Danh sách thẻ kỹ năng (tags/badges trong card bài đăng chính).
+    - Thời hạn còn lại và Số lượng ứng viên.
+    - Khối tóm tắt bullet: Vị trí, Đơn vị, Số lượng tuyển (02), Thu nhập, Địa điểm làm việc.
+    - 3 Section chi tiết: Vai trò & trách nhiệm (8 mục), Kỹ năng & trình độ (25 mục), Quyền lợi (5 mục).
+    - Khối thông tin công ty: Tên đầy đủ, Ngành nghề, Quy mô, Quốc gia, Việc làm đang tuyển.
+    - Hỗ trợ tương thích ngược cho các thẻ test cũ (job-title, company-name, salary, description, requirements, job-detail).
+    """
+    soup = BeautifulSoup(html_str, "html.parser")
+    payload: dict[str, Any] = {}
+
+    def _clean(s: Any) -> str:
+        if not s:
+            return ""
+        return re.sub(r"\s+", " ", str(s)).strip()
+
+    # 1. Hỗ trợ test legacy / simple selectors
+    title_el = soup.find(class_="job-title") or soup.select_one("a[href*='/detail-jobs/'], h1")
+    company_el = soup.find(class_="company-name") or soup.select_one(".company-name-label")
+    salary_el = (
+        soup.find(class_="salary")
+        or soup.find(class_="salary-text")
+        or soup.select_one("span[class*='text-[#E4007F]'], span[class*='text-[#e4007f]']")
+    )
+
+    if title_el:
+        payload["title"] = _clean(title_el.get_text())
+        payload["job-title"] = payload["title"]
+
+    if company_el:
+        payload["company"] = _clean(company_el.get_text())
+        payload["company-name"] = payload["company"]
+
+    if salary_el:
+        payload["salary"] = _clean(salary_el.get_text())
+        payload["salary_raw"] = payload["salary"]
+
+    skills_tags_box = soup.find(class_="skills-tags")
+    if skills_tags_box:
+        tags = [_clean(t.get_text()) for t in skills_tags_box.find_all(["span", "a"]) if _clean(t.get_text())]
+        if tags:
+            payload["tags"] = tags
+            payload["skills"] = tags
+
+    job_detail_legacy = soup.find(class_="job-detail")
+    if job_detail_legacy:
+        payload["job-detail"] = _clean(job_detail_legacy.get_text())
+    desc_legacy = soup.find(class_="description")
+    if desc_legacy:
+        payload["description"] = _clean(desc_legacy.get_text())
+        payload["description_list"] = [_clean(desc_legacy.get_text())]
+    req_legacy = soup.find(class_="requirements")
+    if req_legacy:
+        payload["requirements"] = _clean(req_legacy.get_text())
+        payload["requirements_list"] = [
+            _clean(li.get_text()) for li in req_legacy.find_all("li") if _clean(li.get_text())
+        ]
+
+    # 2. Modern TopDev layout parsing (chuẩn neccessay.md & .html)
+    top_container = soup.find("div", class_="container")
+    if top_container:
+        cols = top_container.find_all("div", recursive=False)
+        left_col = cols[0] if len(cols) > 0 else None
+        right_col = cols[1] if len(cols) > 1 else None
+
+        # Left Column: Header card & Body card
+        if left_col:
+            left_divs = left_col.find_all("div", recursive=False)
+            header_card = left_divs[0] if len(left_divs) > 0 else None
+            body_card = left_divs[1] if len(left_divs) > 1 else None
+
+            # Header details
+            if header_card:
+                meta_spans = []
+                for sp in header_card.find_all("span", class_=lambda c: c and "font-medium" in c):
+                    txt = _clean(sp.get_text())
+                    if txt and txt not in meta_spans:
+                        meta_spans.append(txt)
+                payload["header_meta"] = meta_spans
+                if len(meta_spans) >= 1:
+                    payload["location"] = meta_spans[0]
+                    payload["location_text"] = meta_spans[0]
+                if len(meta_spans) >= 2:
+                    payload["job_level"] = meta_spans[1]
+                    payload["seniority_text"] = meta_spans[1]
+                if len(meta_spans) >= 3:
+                    payload["experience"] = meta_spans[2]
+
+                tags: list[str] = []
+                for a in header_card.select("a[href*='keyword=']"):
+                    t = _clean(a.get_text())
+                    if t and t not in tags:
+                        tags.append(t)
+                for sp in header_card.select("span.rounded-\\[64px\\]"):
+                    t = _clean(sp.get_text())
+                    if t and t not in tags:
+                        tags.append(t)
+                payload["tags"] = tags
+                payload["skills"] = tags
+
+                for sp in header_card.find_all("span"):
+                    txt = _clean(sp.get_text())
+                    if "Còn" in txt and "ngày" in txt:
+                        payload["remaining_time"] = txt
+                    if "Ứng viên" in txt:
+                        payload["applicants_count"] = txt
+
+            # Body Card details
+            if body_card:
+                overview: list[str] = []
+                summary_div = body_card.find("div", class_=lambda c: c and "py-4" in c)
+                if summary_div:
+                    raw_txt = _clean(summary_div.get_text(separator=" "))
+                    parts = [_clean(p) for p in raw_txt.split("•") if _clean(p)]
+                    for p in parts:
+                        overview.append(f"• {p}")
+                if not overview:
+                    for item in body_card.find_all(["div", "p"]):
+                        t = _clean(item.get_text())
+                        if t.startswith("•") and "\n" not in t and "•" not in t[1:]:
+                            if t not in overview:
+                                overview.append(t)
+                payload["overview_bullets"] = overview
+
+                for bullet in overview:
+                    if "Số lượng tuyển dụng:" in bullet:
+                        payload["positions_count"] = bullet.split("Số lượng tuyển dụng:")[1].strip()
+                    elif "Thu nhập:" in bullet:
+                        payload["income_text"] = bullet.split("Thu nhập:")[1].strip()
+                    elif "Địa điểm làm việc:" in bullet:
+                        payload["work_location"] = bullet.split("Địa điểm làm việc:")[1].strip()
+
+                # Sections: 1. Vai trò & trách nhiệm, 2. Kỹ năng & trình độ, 3. Quyền lợi
+                sections: dict[str, list[str]] = {}
+                headers = body_card.find_all("span", class_=lambda c: c and "text-[#3659B3]" in c)
+                for h in headers:
+                    h_text = _clean(h.get_text())
+                    next_div = h.find_next_sibling("div")
+                    if next_div:
+                        lines = [_clean(li.get_text()) for li in next_div.find_all(["li", "p"]) if _clean(li.get_text())]
+                        if not lines:
+                            lines = [_clean(l) for l in next_div.get_text(separator="\n").split("\n") if _clean(l)]
+                        sections[h_text] = lines
+
+                payload["sections"] = sections
+                for k, v in sections.items():
+                    if "Vai trò" in k:
+                        payload["responsibilities"] = v
+                        payload["description_list"] = v
+                    elif "Kỹ năng" in k:
+                        payload["requirements"] = v
+                        payload["requirements_list"] = v
+                    elif "Quyền lợi" in k:
+                        payload["benefits"] = v
+                        payload["benefits_list"] = v
+
+        # Right Column (Company Sidebar):
+        if right_col:
+            company_box = right_col.find("div", class_=lambda c: c and "shadow" in c and "bg-white" in c and "overflow-hidden" in c)
+            if company_box:
+                c_name_el = company_box.find(["span", "div", "a"], class_=lambda c: c and "text-brand-600" in c and "font-semibold" in c)
+                if c_name_el:
+                    company_name = _clean(c_name_el.get_text())
+                    payload["company"] = company_name
+                    payload["company-name"] = company_name
+                    payload["company_name_full"] = company_name
+
+                for item in company_box.find_all("div", class_=lambda c: c and "items-center" in c and "justify-between" in c):
+                    spans = item.find_all("span")
+                    if len(spans) >= 2:
+                        l_text = _clean(spans[0].get_text())
+                        v_text = _clean(spans[1].get_text())
+                        if "Ngành nghề" in l_text:
+                            payload["company_industry"] = v_text
+                        elif "Quy mô" in l_text:
+                            payload["company_size"] = v_text
+                        elif "Quốc gia" in l_text:
+                            payload["company_country"] = v_text
+
+                active_jobs = company_box.find("span", class_=lambda c: c and "text-brand-600" in c and "lowercase" in c)
+                if active_jobs:
+                    payload["company_active_jobs"] = _clean(active_jobs.get_text())
+
+    return payload
+
+
+def build_raw_payload_from_api(item: dict[str, Any]) -> dict[str, Any]:
+    """Bóc tách dữ liệu từ API hit JSON thành raw_payload đầy đủ, bảo toàn key gốc."""
+    payload = dict(item)
+    title = _clean_text(item.get("title") or "")
+    payload["title"] = title
+    payload["job-title"] = title
+
+    company_obj = item.get("company")
+    if isinstance(company_obj, dict):
+        company_name = _clean_text(company_obj.get("display_name") or company_obj.get("name") or "")
+    else:
+        company_name = _clean_text(company_obj or "")
+    payload["company"] = company_name
+    payload["company-name"] = company_name
+
+    salary_data = item.get("salary")
+    if isinstance(salary_data, dict):
+        s_val = salary_data.get("value")
+        s_min = salary_data.get("min")
+        s_max = salary_data.get("max")
+        s_curr = salary_data.get("currency", "VND")
+        if s_val:
+            salary_raw = s_val
+        elif s_min not in (None, "*") and s_max not in (None, "*"):
+            salary_raw = f"{s_min} - {s_max} {s_curr}"
+        elif s_min not in (None, "*"):
+            salary_raw = f"Từ {s_min} {s_curr}"
+        else:
+            salary_raw = "Thỏa thuận"
+    else:
+        salary_raw = _clean_text(salary_data or "Thỏa thuận")
+    payload["salary_raw"] = salary_raw
+    payload["salary"] = salary_raw
+    return payload
+
+
+def extract_raw_envelope_from_html(
+    html: str,
+    job_id: str,
+    url: str,
+    version: int = 1,
+) -> RawJobEnvelope:
+    """Hàm độc lập bóc tách RawJobEnvelope từ chuỗi DOM HTML phục vụ unit tests và offline processing.
+
+    Lưu ý: Chỉ chứa duy nhất 1 trường content_hash và trường language trong metadata.
+    """
+    raw_payload = build_raw_payload_from_html(html)
+    content_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
+    sample_text = (
+        " ".join(raw_payload.get("responsibilities", [])[:3])
+        or " ".join(raw_payload.get("description_list", [])[:3])
+        or raw_payload.get("description", "")
+        or raw_payload.get("title", "")
+    )
+    lang = detect_language(sample_text)
+
+    metadata = {
+        "job_id": str(job_id),
+        "source": "topdev",
+        "source_job_id": str(job_id),
+        "source_url": url,
+        "scraped_at": datetime.now(timezone.utc).isoformat(),
+        "scraper_version": "2.0.0",
+        "crawler_version": "2.0.0",
+        "version": version,
+        "content_hash": content_hash,
+        "language": lang,
+    }
+    return RawJobEnvelope(metadata=metadata, raw_payload=raw_payload)
+
+
 class TopDevCrawler(BaseCrawler):
-    """Adapter dùng API TopDev bên trong pipeline chuẩn của repository."""
+    """Crawler TopDev — Two-Phase Decoupled (URL Discovery -> Detail Extraction), RAW-FIRST.
+
+    Tuân thủ nghiêm ngặt chuẩn Modern Data Stack (docs/crawler_output_checklist.md &
+    docs/two_phase_minio_crawler_playbook.md):
+    1. Hai pha độc lập: Pha 1 discover_urls() & Pha 2 crawl_details().
+    2. Pha 1: URL ban đầu hoàn toàn chưa có hash (content_hash = None, status = "PENDING").
+    3. Pha 2: Kéo URL từ MinIO về máy trước khi lọc URL (ledger.pull_from_minio()).
+    4. Băm duy nhất 1 trường content_hash trên document JSON sau cào (calculate_json_canonical_hash).
+    5. Nhận diện ngôn ngữ tự động qua detect_language() lưu vào metadata.language.
+    6. Bóc tách 100% trường dữ liệu theo neccessay.md & .html (Zero Information Loss).
+    7. Cơ chế Safe Skip & Failed Queue (ledger.mark_failed, cờ CLI --retry-failed).
+    8. Checkpoint Sync định kỳ (mỗi 15 tin tự động lưu & sync MinIO Lakehouse).
+    9. Chống chặn bot: Polite sleep ngẫu nhiên 2.0s - 4.5s.
+    10. Đầy đủ các cờ CLI chuẩn: --phase {discovery, details, sync, view}, --online, --sync-minio, --retry-failed, --limit, --local-html-dir.
+    """
 
     source_name = "topdev"
-    crawler_version = CRAWLER_VERSION
+    crawler_version = "2.0.0"
 
     def __init__(
         self,
         checkpoint_dir: str | None = None,
         output_dir: str | Path | None = None,
         max_items: int | None = None,
-        checkpoint_interval: int = 10,
+        limit: int | None = None,
+        checkpoint_interval: int = 15,
         http_client: HttpClient | None = None,
         timeout: float = 25.0,
         page_size: int = PAGE_SIZE,
         keyword: str | None = None,
+        category_ids: int = 1,
+        sync_minio: bool = False,
+        ledger_dir: str | None = None,
+        raw_dir: str | None = None,
+        local_html_dir: str | Path | None = None,
     ) -> None:
+        effective_limit = limit if limit is not None else max_items
+        root = str(output_dir or f"data/{self.source_name}").rstrip(os.sep)
+        if Path(root).name != self.source_name:
+            root = os.path.join(root, self.source_name)
+
         super().__init__(
             checkpoint_dir=checkpoint_dir,
-            output_dir=str(output_dir) if output_dir is not None else None,
-            max_items=max_items,
+            output_dir=root,
+            max_items=effective_limit,
             checkpoint_interval=checkpoint_interval,
         )
+        self.sync_minio = sync_minio
+        self.category_ids = category_ids
+        self.local_html_dir = local_html_dir
+        self.ledger_dir = ledger_dir or os.path.join(self.output_dir, "url_ledger")
+        self.raw_root = raw_dir or os.path.join(self.output_dir, "raw")
+        os.makedirs(self.ledger_dir, exist_ok=True)
+        os.makedirs(self.raw_root, exist_ok=True)
+
         extra_headers = {
             "Accept": "application/json",
             "Origin": SITE_BASE_URL,
@@ -1263,24 +1564,54 @@ class TopDevCrawler(BaseCrawler):
             page_size=page_size,
             keyword=keyword,
         )
-        base_dir = Path(self.output_dir or f"data/{self.source_name}")
-        ledger_path = (base_dir if base_dir.name == self.source_name else (base_dir / self.source_name)) / "url_ledger"
         self.ledger = UrlLedger(
             source=self.source_name,
-            storage_dir=str(ledger_path),
+            storage_dir=self.ledger_dir,
         )
+        self._minio_store: MinioRawStore | None = None
 
-    def discover_urls(self, max_pages: int | None = None) -> list[str]:
+    @property
+    def minio_store(self) -> MinioRawStore:
+        if self._minio_store is None:
+            self._minio_store = MinioRawStore()
+        return self._minio_store
+
+    def parse_raw_envelope(self, item: dict[str, Any]) -> RawJobEnvelope:
+        """Parse raw envelope từ API item phục vụ interface tương thích."""
+        job_id = str(item.get("id") or item.get("job_id", "")).strip()
+        slug = item.get("slug", "")
+        url = item.get("detail_url") or f"{SITE_BASE_URL}/detail-jobs/{slug}-{job_id}"
+        raw_payload = build_raw_payload_from_api(item)
+        content_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
+        sample_text = _clean_text(item.get("content") or item.get("title") or "")
+        lang = detect_language(sample_text)
+
+        metadata = {
+            "job_id": job_id,
+            "source": self.source_name,
+            "source_job_id": job_id,
+            "source_url": url,
+            "scraped_at": datetime.now(timezone.utc).isoformat(),
+            "scraper_version": self.crawler_version,
+            "crawler_version": "2.0.0",
+            "version": 1,
+            "content_hash": content_hash,
+            "language": lang,
+        }
+        return RawJobEnvelope(metadata=metadata, raw_payload=raw_payload)
+
+    def discover_urls(self, max_pages: int | None = None, category_ids: int | None = None) -> list[str]:
         """Pha 1: Quét danh mục API TopDev, lấy toàn bộ Job URLs và lưu vào UrlLedger & MinIO."""
         log.info("[TopDev] === Bắt đầu Pha 1: URL Discovery ===")
         discovered_urls: list[str] = []
+        target_category = category_ids if category_ids is not None else self.category_ids
         page = 1
         last_page = 1
         while page <= last_page:
             if max_pages and page > max_pages:
                 break
             try:
-                payload = self.api_crawler._fetch_listing_with_retries(page)
+                payload = self.api_crawler._fetch_listing_with_retries(page, category_ids=target_category)
                 jobs = payload.get("data", [])
                 meta = payload.get("meta", {})
                 last_page = _reported_page_count(meta, self.api_crawler.page_size)
@@ -1299,25 +1630,59 @@ class TopDevCrawler(BaseCrawler):
                     )
                     discovered_urls.append(clean_url)
 
-                self.ledger.save_catalog()
+                if page % 10 == 0:
+                    log.info("[TopDev] Đang quét trang %d/%d (Đã phát hiện %d URLs)...", page, last_page, len(discovered_urls))
+                    self.ledger.save_catalog()
+                    if self.sync_minio:
+                        try:
+                            self.ledger.sync_to_minio()
+                        except Exception as e:
+                            log.warning("[TopDev] Checkpoint sync MinIO Pha 1 thất bại: %s", e)
+
+                polite_sleep(0.3, 0.7)
                 page += 1
             except Exception as exc:
                 log.warning("[TopDev] Safe Skip trang listing %d: %s", page, exc)
                 page += 1
                 continue
 
+        self.ledger.save_catalog()
         self.ledger.export_daily_manifest()
+        if self.sync_minio:
+            try:
+                self.ledger.sync_to_minio()
+            except Exception as e:
+                log.warning("[TopDev] Đồng bộ MinIO Pha 1 thất bại: %s", e)
         log.info("[TopDev] Pha 1 hoàn thành: phát hiện %d URLs.", len(discovered_urls))
         return discovered_urls
 
-    def crawl_details(self, limit: int | None = None) -> dict[str, int]:
+    def crawl_details(
+        self,
+        limit: int | None = None,
+        retry_failed: bool = False,
+        local_html_dir: str | Path | None = None,
+    ) -> dict[str, int]:
         """Pha 2: Bóc tách chi tiết tin từ URL Ledger với Safe Skip và chu kỳ Re-crawl 21 ngày."""
-        import hashlib
         log.info("[TopDev] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
-        pending = self.ledger.get_pending_or_due_records(recheck_days=21)
+        if self.sync_minio:
+            try:
+                self.ledger.pull_from_minio()
+            except Exception as e:
+                log.warning("[TopDev] Kéo ledger từ MinIO thất bại: %s", e)
+
+        if retry_failed:
+            pending = [
+                rec for rec in self.ledger.records.values()
+                if rec.get("status") == "FAILED"
+            ]
+        else:
+            pending = self.ledger.get_pending_or_due_records(recheck_days=21)
+
         log.info("[TopDev] Tìm thấy %d tin cần crawl chi tiết trong Ledger.", len(pending))
         stats = {"success": 0, "failed": 0, "skipped": 0}
         count = 0
+        date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        effective_html_dir = Path(local_html_dir or self.local_html_dir) if (local_html_dir or self.local_html_dir) else None
 
         for item in pending:
             if limit and count >= limit:
@@ -1327,27 +1692,53 @@ class TopDevCrawler(BaseCrawler):
             job_id = item["job_id"]
             try:
                 # Safe Skip block
-                detail_resp = self.api_crawler._fetch_detail_with_retries(job_id)
-                record_dict = _make_record(
-                    detail_resp,
-                    detail_resp,
-                    batch_id=self.batch_id,
-                    crawled_at=datetime.now(LOCAL_TIMEZONE),
-                )
-                record = JobRecord.model_validate(record_dict)
+                if effective_html_dir and effective_html_dir.is_dir():
+                    html_file = effective_html_dir / f"{job_id}.html"
+                    if not html_file.is_file():
+                        candidates = list(effective_html_dir.glob(f"*{job_id}*.html"))
+                        if candidates:
+                            html_file = candidates[0]
+                    if not html_file.is_file():
+                        log.warning("[TopDev] Safe Skip không tìm thấy file HTML cục bộ cho job %s", job_id)
+                        stats["skipped"] += 1
+                        continue
+                    html_content = html_file.read_text(encoding="utf-8")
+                    envelope = extract_raw_envelope_from_html(html_content, job_id=job_id, url=url)
+                else:
+                    polite_sleep(2.0, 4.5)
+                    detail_resp = self.api_crawler._fetch_detail_with_retries(job_id)
+                    envelope = self.parse_raw_envelope(detail_resp)
 
-                # Lưu raw snapshot
-                base_dir = Path(self.output_dir or f"data/{self.source_name}")
-                raw_out_dir = (base_dir if base_dir.name == self.source_name else (base_dir / self.source_name)) / "raw"
-                raw_out_dir.mkdir(parents=True, exist_ok=True)
-                snapshot_file = raw_out_dir / f"{job_id}_v1.json"
+                content_hash = envelope.metadata["content_hash"]
+
+                # Lưu raw snapshot cục bộ: data/topdev/raw/<YYYY-MM-DD>/{job_id}_v1.json
+                day_raw_dir = Path(self.raw_root) / date_str
+                day_raw_dir.mkdir(parents=True, exist_ok=True)
+                snapshot_file = day_raw_dir / f"{job_id}_v1.json"
                 with open(snapshot_file, "w", encoding="utf-8") as f:
-                    json.dump(record.model_dump(mode="json"), f, ensure_ascii=False, indent=2)
+                    json.dump(envelope.model_dump(mode="json"), f, ensure_ascii=False, indent=2)
 
-                content_hash = hashlib.md5(json.dumps(record.raw.model_dump(mode="json"), sort_keys=True).encode()).hexdigest()
+                # Đẩy lên MinIO nếu có cờ sync_minio
+                if self.sync_minio:
+                    try:
+                        s3_key = f"raw/{self.source_name}/{date_str}/{job_id}_v{envelope.metadata.get('version', 1)}.json"
+                        self.minio_store.put_json(s3_key, envelope.model_dump(mode="json"))
+                    except Exception as me:
+                        log.warning("[TopDev] Lỗi đẩy snapshot lên MinIO cho job %s: %s", job_id, me)
+
                 self.ledger.mark_done(url_hash=url_hash, content_hash=content_hash, new_version=1)
                 stats["success"] += 1
                 count += 1
+
+                # Checkpoint sync định kỳ
+                if count % self.checkpoint_interval == 0:
+                    log.info("[TopDev] Tiến độ Pha 2: Đã cào %d/%d tin chi tiết (Thành công: %d, Lỗi: %d)...", count, len(pending), stats["success"], stats["failed"])
+                    self.ledger.save_catalog()
+                    if self.sync_minio:
+                        try:
+                            self.ledger.sync_to_minio()
+                        except Exception as e:
+                            log.warning("[TopDev] Checkpoint sync MinIO thất bại: %s", e)
             except Exception as exc:
                 log.warning("[TopDev] Safe Skip lỗi cào chi tiết %s (ID %s): %s", url, job_id, exc)
                 self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
@@ -1355,6 +1746,12 @@ class TopDevCrawler(BaseCrawler):
                 continue
 
         self.ledger.save_catalog()
+        if self.sync_minio:
+            try:
+                self.ledger.sync_to_minio()
+            except Exception as e:
+                log.warning("[TopDev] Sync MinIO hoàn tất Pha 2 thất bại: %s", e)
+
         log.info("[TopDev] Pha 2 hoàn tất: %s", stats)
         return stats
 
@@ -1466,15 +1863,27 @@ class TopDevCrawler(BaseCrawler):
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Crawl danh sách và nội dung việc làm TopDev qua API v2."
+        description="Crawler TopDev — Two-Phase Decoupled (URL Discovery -> Detail Extraction), RAW-FIRST."
     )
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--max-pages", type=int, help="Giới hạn trang để chạy thử.")
-    parser.add_argument("--max-jobs", type=int, help="Giới hạn số tin để chạy thử.")
+    parser.add_argument(
+        "--phase",
+        choices=["discovery", "details", "sync", "view"],
+        default="details",
+        help="Pha thực thi: discovery (Pha 1), details (Pha 2), sync (Đồng bộ MinIO), view (Xem URL Ledger).",
+    )
+    parser.add_argument("--online", action="store_true", help="Chạy online tương tác trực tiếp với API/Web TopDev.")
+    parser.add_argument("--sync-minio", action="store_true", help="Tự động đồng bộ URL Ledger và Raw Snapshots lên MinIO Lakehouse.")
+    parser.add_argument("--retry-failed", action="store_true", help="Chỉ cào lại các URL trong hàng đợi lỗi (status=FAILED).")
+    parser.add_argument("--limit", type=int, help="Giới hạn số lượng tin chi tiết cần cào.")
+    parser.add_argument("--max-pages", type=int, help="Giới hạn số trang quét danh mục ở Pha 1.")
+    parser.add_argument("--local-html-dir", type=Path, help="Đường dẫn thư mục chứa HTML thô để parse offline.")
+    parser.add_argument("--category-ids", type=int, default=1, help="ID ngành tuyển dụng (1 = IT).")
     parser.add_argument("--page-size", type=int, default=PAGE_SIZE)
-    parser.add_argument("--keyword", help="Từ khóa tìm kiếm API, ví dụ Java hoặc Backend.")
+    parser.add_argument("--keyword", help="Từ khóa tìm kiếm API, ví dụ Java hoặc DevOps.")
+    parser.add_argument("--checkpoint-interval", type=int, default=15, help="Số tin cào xong sẽ tự động checkpoint sync lên MinIO.")
     parser.add_argument("--delay", type=float, default=0.5, help="Khoảng nghỉ giữa request (giây).")
     parser.add_argument("--timeout", type=float, default=25.0)
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--verbose", action="store_true")
     return parser.parse_args()
 
@@ -1485,35 +1894,44 @@ def main() -> int:
         level=logging.INFO if args.verbose else logging.WARNING,
         format="%(levelname)s: %(message)s",
     )
-    session = _build_session(prompt_for_cookie=True)
-    try:
-        crawler = TopDevAPICrawler(
-            session=session,
-            timeout=args.timeout,
-            delay=args.delay,
-            page_size=args.page_size,
-            keyword=args.keyword,
-        )
-        stats = crawler.crawl(
-            output_path=args.output,
-            max_pages=args.max_pages,
-            max_jobs=args.max_jobs,
-        )
-    except (TopDevAPIError, OSError, ValueError) as exc:
-        log.error("%s", exc)
-        return 1
-    finally:
-        session.close()
-
-    print(
-        f"TopDev: {stats.pages_processed} trang, {stats.jobs_collected} tin mới, "
-        f"{stats.duplicate_jobs} trùng, {stats.skipped_jobs} bỏ qua."
+    crawler = TopDevCrawler(
+        limit=args.limit,
+        page_size=args.page_size,
+        keyword=args.keyword,
+        category_ids=args.category_ids,
+        checkpoint_interval=args.checkpoint_interval,
+        sync_minio=args.sync_minio,
+        local_html_dir=args.local_html_dir,
+        timeout=args.timeout,
     )
-    if stats.failed:
-        print(f"Cảnh báo: {stats.stop_reason}", file=sys.stderr)
-    if stats.records or args.output.exists():
-        print(f"JSON: {args.output.resolve()}")
-    return 1 if stats.failed else 0
+
+    if args.phase == "discovery":
+        urls = crawler.discover_urls(max_pages=args.max_pages)
+        print(f"Pha 1 Discovery hoàn thành: phát hiện {len(urls)} URLs.")
+        return 0
+    elif args.phase == "details":
+        stats = crawler.crawl_details(
+            limit=args.limit,
+            retry_failed=args.retry_failed,
+            local_html_dir=args.local_html_dir,
+        )
+        print(f"Pha 2 Details hoàn thành: {stats}")
+        return 0 if stats["failed"] == 0 else 1
+    elif args.phase == "sync":
+        print("Đồng bộ dữ liệu cục bộ lên MinIO Lakehouse...")
+        crawler.ledger.save_catalog()
+        crawler.ledger.sync_to_minio()
+        print("Đồng bộ hoàn tất.")
+        return 0
+    elif args.phase == "view":
+        total = len(crawler.ledger.records)
+        pending = sum(1 for r in crawler.ledger.records.values() if r.get("status") == "PENDING")
+        done = sum(1 for r in crawler.ledger.records.values() if r.get("status") == "DONE")
+        failed = sum(1 for r in crawler.ledger.records.values() if r.get("status") == "FAILED")
+        print(f"URL Ledger TopDev: Tổng {total} URLs | PENDING: {pending} | DONE: {done} | FAILED: {failed}")
+        return 0
+
+    return 0
 
 
 if __name__ == "__main__":

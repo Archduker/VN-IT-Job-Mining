@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Unit test cho crawlers/sources/careerviet/raw_envelope.py.
+"""Unit test cho raw envelope của CareerViet trong crawlers/sources/careerviet/crawler.py.
 
 Dung HTML MINI trong tmp_path (khong phu thuoc data/ cuc bo), dung pathlib.
 Bao dam:
@@ -12,12 +12,14 @@ Bao dam:
 import hashlib
 from pathlib import Path
 
+from bs4 import BeautifulSoup
 from crawlers.common.url_ledger import calculate_container_html_hash
-from crawlers.sources.careerviet.raw_envelope import (
+from crawlers.sources.careerviet.crawler import (
     CONTAINER_SELECTOR,
     build_raw_envelope,
     build_raw_payload,
     container_text_for_hash,
+    extract_job_posting_jsonld,
 )
 
 
@@ -92,38 +94,40 @@ def test_envelope_metadata_and_payload(tmp_path):
     meta = env["metadata"]
     assert set(meta) == {
         "job_id", "source", "source_url", "scraped_at",
-        "scraper_version", "version", "content_hash", "source_category",
+        "scraper_version", "version", "content_hash", "canonical_hash", "field_hashes", "source_category",
     }
     assert meta["source"] == "careerviet"
     assert meta["source_category"] == "c1"
     assert meta["version"] == 1
     assert len(meta["content_hash"]) == 64
+    assert len(meta["canonical_hash"]) == 64
+    assert isinstance(meta["field_hashes"], dict)
 
     payload = env["raw_payload"]
     assert payload["title"] == "Senior Python Developer"
     assert payload["job-company-name"] == "ABC Tech"
     assert payload["map"] == "Hà Nội, Hồ Chí Minh"
     assert "Python" in payload["job-tags"]
-    # JSON-LD nguyên bản, giữ đúng @type
-    assert payload["job-posting-schema"]["@type"] == "JobPosting"
     # "2 - 3 Năm" KHONG bi dinh lien (con khoang trang giua so va "Năm")
     joined = " ".join(payload["detail-box"])
     assert "Năm" in joined and "3Năm" not in joined
 
 
 def test_jsonld_broken_or_missing_returns_none(tmp_path):
-    broken = _write(tmp_path, "broken.html", """<div class="job-detail-page">
+    broken = """<div class="job-detail-page">
       <h1 class="title">T</h1>
       <script id="job-posting-schema" type="application/ld+json">{ khong phai JSON }</script>
-    </div>""")
-    assert build_raw_payload(broken)["job-posting-schema"] is None
+    </div>"""
+    soup_broken = BeautifulSoup(broken, "html.parser")
+    assert extract_job_posting_jsonld(soup_broken) is None
 
-    missing = _write(tmp_path, "missing.html", """<div class="job-detail-page">
+    missing = """<div class="job-detail-page">
       <h1 class="title">T</h1>
-    </div>""")
-    assert build_raw_payload(missing)["job-posting-schema"] is None
+    </div>"""
+    soup_missing = BeautifulSoup(missing, "html.parser")
+    assert extract_job_posting_jsonld(soup_missing) is None
 
     # build_raw_envelope khong duoc crash khi JSON-LD hong
     env = build_raw_envelope(broken, "J1", "https://x/y", source_category=None)
-    assert env["raw_payload"]["job-posting-schema"] is None
     assert env["metadata"]["source_category"] is None
+    assert "job-posting-schema" not in env["raw_payload"]
