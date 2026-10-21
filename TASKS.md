@@ -129,3 +129,27 @@ Một thành viên được tính là hoàn thành nhiệm vụ khi thỏa mãn 
 7. **Đầy đủ 2 báo cáo chất lượng:**
    - `reports/<source>_inventory.md` (theo [raw_crawl_inventory_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md)).
    - `reports/<source>_eda.md` (theo [preliminary_eda_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/preliminary_eda_template.md)).
+
+---
+
+## 5. PHÂN CÔNG GIAI ĐOẠN 2: EDA KIỂM TRA CHẤT LƯỢNG DỮ LIỆU & KHAI PHÁ KHOẢNG TRỐNG ĐA NGUỒN
+
+Sau khi dữ liệu thô (Raw As-Is) đã được kéo về Lakehouse (MinIO & Cloudflare R2), dự án kích hoạt 2 nhóm chuyên trách theo phương pháp luận đi lên từ câu hỏi kỹ thuật (**Inquiry-Driven Framework**) phục vụ trực tiếp cho bước Pre-processing:
+
+### 5.1. Nhóm EDA Kiểm Tra Chất Lượng Dữ Liệu (3 Thành Viên)
+- **Nhiệm vụ:** Đóng vai trò là "kính hiển vi chẩn đoán chất lượng dữ liệu thô", kiểm tra toàn diện 5 trụ cột kỹ thuật: Độ hoàn thiện (Completeness / Missingness), Tính hợp lệ & Kiểu dữ liệu (Validity & Schema Types), Tính duy nhất (Uniqueness / Duplication), Hình thái phân phối & Ngoại lai (Distribution & Outliers via IQR), và Độ thiên lệch & Mất cân bằng (Bias & Class Balance). Xuất bộ 7 biểu đồ chẩn đoán chất lượng dữ liệu để làm cơ sở cho kế hoạch Tiền xử lý.
+- **Phân công Hybrid:**
+  - *Thành viên 1:* Chuyên môn Sức khỏe dữ liệu & Phân phối số $\to$ Phụ trách **TopCV, Vieclam24h, CareerViet**.
+  - *Thành viên 2:* Chuyên môn Tech Stack & Xử lý văn bản NLP $\to$ Phụ trách **ITViec, TopDev, VietnamWorks**.
+  - *Thành viên 3:* Chuyên môn Tương quan đa chiều & Pipeline đa nguồn $\to$ Phụ trách **Glints, JobsGO** (+ Cross-Platform Master Pipeline).
+- **Tài liệu hướng dẫn & nghiệm thu chi tiết:** 👉 [01_huong_dan_eda_nhom_3_nguoi.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/tasks/01_huong_dan_eda_nhom_3_nguoi.md)
+
+### 5.2. Nhóm Khai Phá Khoảng Trống Dữ Liệu & So Sánh Bù Trừ Đa Nguồn (Nhóm Còn Lại)
+- **Nhiệm vụ:** Áp dụng mô hình câu hỏi **Why - What - How** để đào sâu câu hỏi cốt tử: **"Bộ dữ liệu nguồn đó THIẾU GÌ?" (Data Gap Analysis)**. Tự do bắt cặp song song (mỗi cặp 2 người) để thực hiện đối chiếu chéo **2 nguồn trên 8 nguồn**, tìm kiếm sự bù trừ (complementarity) khoảng trống thông tin giữa 2 sàn, và đề xuất giải pháp kỹ thuật (Imputation, Master Source Rule, Bias Mitigation) nộp cho Leader phục vụ bước Data Integration.
+- **5 Trục đối chiếu khoảng trống kỹ thuật:**
+  1. Khoảng trống Schema & Độ phủ trường (Schema Coverage & Gaps)
+  2. Khoảng trống Minh bạch lương & Nhu cầu Imputation (Salary Gaps)
+  3. Khoảng trống Thẻ kỹ năng & Chất lượng JD (Skills & Text Gaps)
+  4. Khoảng trống Phân khúc cấp bậc & Thiên lệch mẫu (Segment Bias)
+  5. Xung đột dữ liệu thực thể & Luật hợp nhất (Entity Conflicts)
+- **Tài liệu hướng dẫn, mẫu báo cáo & nghiệm thu chi tiết:** 👉 [02_huong_dan_insight_va_so_sanh_nguon.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/tasks/02_huong_dan_insight_va_so_sanh_nguon.md)
