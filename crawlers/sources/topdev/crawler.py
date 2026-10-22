@@ -38,11 +38,13 @@ from crawlers.common.url_ledger import (
     UrlLedger,
     calculate_json_canonical_hash,
     clean_canonical_url,
+    generate_url_hash,
 )
 from crawlers.common.utils import (
     detect_language,
     parse_salary_detail,
     text_to_clean_lines,
+    is_job_closed_or_expired,
 )
 
 API_BASE_URL = "https://api.topdev.vn/td/v2"
@@ -1603,12 +1605,16 @@ class TopDevCrawler(BaseCrawler):
     def discover_urls(self, max_pages: int | None = None, category_ids: int | None = None) -> list[str]:
         """Pha 1: Quét danh mục API TopDev, lấy toàn bộ Job URLs và lưu vào UrlLedger & MinIO."""
         log.info("[TopDev] === Bắt đầu Pha 1: URL Discovery ===")
+        effective_max_pages = max_pages if max_pages is not None else 2
         discovered_urls: list[str] = []
         target_category = category_ids if category_ids is not None else self.category_ids
         page = 1
         last_page = 1
+        consecutive_known_jobs = 0
+        early_stop_threshold = 10
+
         while page <= last_page:
-            if max_pages and page > max_pages:
+            if effective_max_pages and page > effective_max_pages:
                 break
             try:
                 payload = self.api_crawler._fetch_listing_with_retries(page, category_ids=target_category)
@@ -1620,8 +1626,17 @@ class TopDevCrawler(BaseCrawler):
                     job_id = str(job.get("id"))
                     raw_url = job.get("detail_url") or f"{SITE_BASE_URL}/detail-jobs/{job.get('slug')}-{job_id}"
                     clean_url = clean_canonical_url(raw_url)
+                    url_hash = generate_url_hash(clean_url)
                     title = job.get("title", "")
                     company = job.get("company", {}).get("name", "") if isinstance(job.get("company"), dict) else ""
+                    
+                    # Kiểm tra xem tin đã tồn tại trong Ledger hay chưa
+                    existing_rec = self.ledger.records.get(url_hash)
+                    if existing_rec and existing_rec.get("status") == "DONE":
+                        consecutive_known_jobs += 1
+                    else:
+                        consecutive_known_jobs = 0
+
                     self.ledger.register_url(
                         raw_url=clean_url,
                         job_id=job_id,
@@ -1629,6 +1644,10 @@ class TopDevCrawler(BaseCrawler):
                         preliminary_company=company,
                     )
                     discovered_urls.append(clean_url)
+
+                if consecutive_known_jobs >= early_stop_threshold:
+                    log.info("[TopDev] Early-Stop kích hoạt: Gặp liên tiếp %d tin cũ đã cào. Dừng quét phân trang.", consecutive_known_jobs)
+                    break
 
                 if page % 10 == 0:
                     log.info("[TopDev] Đang quét trang %d/%d (Đã phát hiện %d URLs)...", page, last_page, len(discovered_urls))
@@ -1705,28 +1724,50 @@ class TopDevCrawler(BaseCrawler):
                     html_content = html_file.read_text(encoding="utf-8")
                     envelope = extract_raw_envelope_from_html(html_content, job_id=job_id, url=url)
                 else:
-                    polite_sleep(2.0, 4.5)
+                    polite_sleep(1.0, 2.5)
                     detail_resp = self.api_crawler._fetch_detail_with_retries(job_id)
+                    
+                    # Kiểm tra tin đã đóng tuyển dụng hoặc hết hạn
+                    if is_job_closed_or_expired(detail_resp):
+                        log.info("[TopDev] Bài đăng %s đã đóng/hết hạn -> mark_closed & bỏ qua", job_id)
+                        self.ledger.mark_closed(url_hash)
+                        stats["skipped"] += 1
+                        continue
+
                     envelope = self.parse_raw_envelope(detail_resp)
 
                 content_hash = envelope.metadata["content_hash"]
+                old_hash = item.get("content_hash")
+                old_version = item.get("latest_version") or 0
 
-                # Lưu raw snapshot cục bộ: data/topdev/raw/<YYYY-MM-DD>/{job_id}_v1.json
+                # Đối chiếu hash: Nếu nội dung không đổi và tin đã DONE thì giữ nguyên version
+                if old_hash and old_hash == content_hash and item.get("status") == "DONE":
+                    log.info("[TopDev] Bài đăng %s không đổi nội dung (hash match) -> Giữ nguyên v%d", job_id, old_version)
+                    self.ledger.mark_done(url_hash=url_hash, content_hash=content_hash, new_version=old_version)
+                    stats["success"] += 1
+                    count += 1
+                    continue
+
+                # Xác định số phiên bản mới
+                new_version = old_version + 1 if old_version > 0 else 1
+                envelope.metadata["version"] = new_version
+
+                # Lưu raw snapshot cục bộ: data/topdev/raw/<YYYY-MM-DD>/{job_id}_v{new_version}.json
                 day_raw_dir = Path(self.raw_root) / date_str
                 day_raw_dir.mkdir(parents=True, exist_ok=True)
-                snapshot_file = day_raw_dir / f"{job_id}_v1.json"
+                snapshot_file = day_raw_dir / f"{job_id}_v{new_version}.json"
                 with open(snapshot_file, "w", encoding="utf-8") as f:
                     json.dump(envelope.model_dump(mode="json"), f, ensure_ascii=False, indent=2)
 
                 # Đẩy lên MinIO nếu có cờ sync_minio
                 if self.sync_minio:
                     try:
-                        s3_key = f"raw/{self.source_name}/{date_str}/{job_id}_v{envelope.metadata.get('version', 1)}.json"
+                        s3_key = f"raw/{self.source_name}/{date_str}/{job_id}_v{new_version}.json"
                         self.minio_store.put_json(s3_key, envelope.model_dump(mode="json"))
                     except Exception as me:
                         log.warning("[TopDev] Lỗi đẩy snapshot lên MinIO cho job %s: %s", job_id, me)
 
-                self.ledger.mark_done(url_hash=url_hash, content_hash=content_hash, new_version=1)
+                self.ledger.mark_done(url_hash=url_hash, content_hash=content_hash, new_version=new_version)
                 stats["success"] += 1
                 count += 1
 

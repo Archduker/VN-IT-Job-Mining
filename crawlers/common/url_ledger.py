@@ -377,17 +377,80 @@ class UrlLedger:
         logger.info(f"Exported {len(self.records)} records to {manifest_path}")
         return manifest_path
 
-    def get_pending_or_due_records(self, recheck_days: int = 21) -> List[Dict[str, Any]]:
-        """Lọc danh sách các link cần cào chi tiết ở Phase 2."""
-        items = []
+    def get_queue_summary(self, recheck_days: int = 21) -> Dict[str, int]:
+        """Thống kê chi tiết tình trạng hàng đợi cào chi tiết."""
+        summary = {
+            "total": len(self.records),
+            "pending": 0,
+            "recheck_due": 0,
+            "done": 0,
+            "closed": 0,
+            "failed": 0,
+        }
+        for rec in self.records.values():
+            st = rec.get("status", "UNKNOWN")
+            if st == "PENDING":
+                summary["pending"] += 1
+            elif st == "RECHECK_DUE":
+                summary["recheck_due"] += 1
+            elif st == "DONE":
+                if is_due_for_recrawl(rec.get("last_scraped_at") or rec.get("last_crawled_at"), days=recheck_days):
+                    summary["recheck_due"] += 1
+                else:
+                    summary["done"] += 1
+            elif st == "CLOSED":
+                summary["closed"] += 1
+            elif st == "FAILED":
+                summary["failed"] += 1
+        return summary
+
+    def get_pending_or_due_records(
+        self,
+        recheck_days: int = 21,
+        limit: Optional[int] = None,
+        sort_newest: bool = False,
+    ) -> List[Dict[str, Any]]:
+        """Lọc và phân bổ danh sách các link cần cào chi tiết ở Phase 2 theo thứ tự ưu tiên:
+        1. Ưu tiên 1 (P1): Các tin PENDING (tin mới phát hiện).
+        2. Ưu tiên 2 (P2): Các tin RECHECK_DUE (tin cũ đã cào >= 21 ngày).
+        3. Tuyệt đối loại trừ: Các tin CLOSED (đã đóng/hết hạn).
+        
+        Nếu sort_newest=True:
+        - Nhóm PENDING sắp xếp theo ngày phát hiện mới nhất (discovered_at DESC).
+        - Nhóm RECHECK_DUE sắp xếp theo ngày cào cũ nhất (last_scraped_at ASC).
+        """
+        pending_items: List[Dict[str, Any]] = []
+        due_items: List[Dict[str, Any]] = []
+
         for rec in self.records.values():
             status = rec.get("status")
-            if status == "PENDING" or status == "RECHECK_DUE":
-                items.append(rec)
-            elif status == "DONE" and is_due_for_recrawl(rec.get("last_scraped_at"), days=recheck_days):
+            if status == "CLOSED":
+                continue
+            if status == "PENDING":
+                pending_items.append(rec)
+            elif status == "RECHECK_DUE":
+                due_items.append(rec)
+            elif status == "DONE" and is_due_for_recrawl(rec.get("last_scraped_at") or rec.get("last_crawled_at"), days=recheck_days):
                 rec["status"] = "RECHECK_DUE"
-                items.append(rec)
-        return items
+                due_items.append(rec)
+
+        if sort_newest:
+            # Sắp xếp P1: Tin mới nhất lên đầu
+            pending_items.sort(
+                key=lambda x: str(x.get("discovered_at") or x.get("last_seen_at") or ""),
+                reverse=True,
+            )
+
+            # Sắp xếp P2: Tin cũ nhất đến hạn kiểm tra lên đầu
+            due_items.sort(
+                key=lambda x: str(x.get("last_scraped_at") or x.get("last_crawled_at") or ""),
+                reverse=False,
+            )
+
+        priority_queue = pending_items + due_items
+        if limit is not None and limit > 0:
+            return priority_queue[:limit]
+        return priority_queue
 
     def mark_done(
         self,

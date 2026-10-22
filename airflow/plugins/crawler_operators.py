@@ -24,71 +24,64 @@ from airflow.utils.context import Context
 
 from crawlers.common.data_quality import DataQualityChecker
 from crawlers.common.minio_storage import upload_file_to_minio
+from run import run_crawler
 
 logger = logging.getLogger("airflow.operators.vn_it_job")
 
+SOURCE_PROFILES = {
+    "topdev": {"max_items": 50, "max_pages": 2, "timeout_minutes": 3},
+    "vietnamworks": {"max_items": 50, "max_pages": 2, "timeout_minutes": 3},
+    "careerviet": {"max_items": 40, "max_pages": 2, "timeout_minutes": 4},
+    "vieclam24h": {"max_items": 40, "max_pages": 2, "timeout_minutes": 4},
+    "itviec": {"max_items": 35, "max_pages": 2, "timeout_minutes": 5},
+    "topcv": {"max_items": 25, "max_pages": 2, "timeout_minutes": 6},
+    "jobsgo": {"max_items": 25, "max_pages": 2, "timeout_minutes": 6},
+    "glints": {"max_items": 20, "max_pages": 2, "timeout_minutes": 7},
+}
+
 
 class JobCrawlerOperator(BaseOperator):
-    """Operator để chạy crawler của một nguồn cụ thể."""
+    """Operator để chạy crawler của một nguồn cụ thể theo từng Pha (Phase)."""
 
-    template_fields = ("source", "max_items")
+    template_fields = ("source", "phase", "max_items", "max_pages")
 
     def __init__(
         self,
         source: str,
-        max_items: int = 50,
+        phase: str = "detail",
+        max_items: Optional[int] = None,
+        max_pages: Optional[int] = None,
         output_dir: Optional[str] = "data",
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
-        self.source = source
-        self.max_items = max_items
+        self.source = source.lower().strip()
+        self.phase = phase.lower().strip()
+        profile = SOURCE_PROFILES.get(self.source, {"max_items": 30, "max_pages": 2})
+        self.max_items = max_items if max_items is not None else profile["max_items"]
+        self.max_pages = max_pages if max_pages is not None else profile["max_pages"]
         self.output_dir = output_dir
 
     def execute(self, context: Context) -> dict[str, Any]:
-        logger.info("Executing JobCrawlerOperator for source='%s', max_items=%d", self.source, self.max_items)
+        logger.info(
+            "Executing JobCrawlerOperator for source='%s', phase='%s', max_items=%s, max_pages=%s",
+            self.source,
+            self.phase,
+            self.max_items,
+            self.max_pages,
+        )
 
-        crawler_cls = None
-        if self.source == "topdev":
-            from crawlers.sources.topdev.crawler import TopDevCrawler
-            crawler_cls = TopDevCrawler
-        elif self.source == "vietnamworks":
-            from crawlers.sources.vietnamworks.crawler import VietnamWorksCrawler
-            crawler_cls = VietnamWorksCrawler
-        elif self.source == "careerviet":
-            from crawlers.sources.careerviet.crawler import CareerVietCrawler
-            crawler_cls = CareerVietCrawler
-        elif self.source == "vieclam24h":
-            from crawlers.sources.vieclam24h.crawler import ViecLam24hCrawler
-            crawler_cls = ViecLam24hCrawler
-        elif self.source == "topcv":
-            from crawlers.sources.topcv.crawler import TopCVCrawler
-            crawler_cls = TopCVCrawler
-        elif self.source == "itviec":
-            try:
-                from crawlers.sources.itviec.crawler import ItviecCrawler
-                crawler_cls = ItviecCrawler
-            except ImportError:
-                from crawlers.sources.itviec.crawler import crawl
-                stats = crawl(max_items=self.max_items)
-                return stats
-        elif self.source == "glints":
-            from crawlers.sources.glints.crawler import GlintsCrawler
-            crawler_cls = GlintsCrawler
-        elif self.source == "jobsgo":
-            from crawlers.sources.jobsgo.crawler import JobsGoCrawler
-            crawler_cls = JobsGoCrawler
-        else:
-            raise ValueError(f"Unknown source: {self.source}")
-
-        crawler = crawler_cls(output_dir=self.output_dir, max_items=self.max_items)
-        stats = crawler.run()
+        stats = run_crawler(
+            source=self.source,
+            max_items=self.max_items,
+            output_dir=self.output_dir or "data",
+            phase=self.phase,
+            max_pages=self.max_pages,
+        )
 
         if stats.get("output_file"):
             output_path = Path(stats["output_file"])
-            object_key = (
-                f"raw/{self.source}/{output_path.parent.name}/{output_path.name}"
-            )
+            object_key = f"raw/{self.source}/{output_path.parent.name}/{output_path.name}"
             try:
                 stats["minio_uri"] = upload_file_to_minio(
                     output_path,
@@ -97,17 +90,7 @@ class JobCrawlerOperator(BaseOperator):
                 logger.info("Uploaded %s crawl output to %s", self.source, stats["minio_uri"])
             except Exception as up_err:
                 logger.warning("Auto-upload to lakehouse skipped or failed for %s: %s", self.source, up_err)
-            raw_payload_files = getattr(crawler, "raw_payload_files", [])
-            uploaded_raw_count = 0
-            for raw_path in raw_payload_files:
-                raw_key = (
-                    f"raw/{self.source}/{raw_path.parent.name}/{raw_path.name}"
-                )
-                upload_file_to_minio(raw_path, object_key=raw_key)
-                uploaded_raw_count += 1
-            stats["raw_payloads_uploaded"] = uploaded_raw_count
 
-        # Push file path to XCom for quality check task
         if stats.get("output_file"):
             context["ti"].xcom_push(key="output_file", value=stats["output_file"])
 
