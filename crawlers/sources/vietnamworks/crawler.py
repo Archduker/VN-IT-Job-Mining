@@ -45,6 +45,7 @@ from crawlers.common.url_ledger import (
     UrlLedger,
     calculate_json_canonical_hash,
     clean_canonical_url,
+    generate_url_hash,
 )
 from crawlers.common.utils import (
     clean_text,
@@ -52,6 +53,7 @@ from crawlers.common.utils import (
     parse_salary_detail,
     strip_html_tags,
     text_to_clean_lines,
+    is_job_closed_or_expired,
 )
 
 log = logging.getLogger("vietnamworks.crawler")
@@ -692,8 +694,10 @@ class VietnamWorksCrawler(BaseCrawler):
         """
         log.info("[VietnamWorks] === Bắt đầu Pha 1: URL Discovery ===")
         discovered_urls: list[str] = []
-        pages_to_query = max_pages if max_pages is not None else 100
+        pages_to_query = max_pages if max_pages is not None else 2
         ledger = self._get_ledger()
+        consecutive_known_jobs = 0
+        early_stop_threshold = 10
 
         # Đọc từ local file nếu có
         if not online and self.local_json_file and os.path.exists(self.local_json_file):
@@ -803,44 +807,45 @@ class VietnamWorksCrawler(BaseCrawler):
                         log.warning("[VietnamWorks] Lỗi quét industry %s page %d: %s", ind_id, page, exc)
                         continue
 
-            # Tầng 3: Quét theo danh sách 35 từ khóa IT
-            log.info("[VietnamWorks] Discovery Tầng 3: Quét theo danh sách 35 từ khóa IT...")
-            for query in self.queries:
-                for page in range(pages_to_query):
-                    payload = {
-                        "userId": 0,
-                        "query": query,
-                        "filter": [],
-                        "ranges": [],
-                        "order": [],
-                        "hitsPerPage": HITS_PER_PAGE,
-                        "page": page,
-                    }
-                    try:
-                        resp = self.http_client.post(API_URL, json=payload, headers=headers)
-                        data = resp.json() if hasattr(resp, "json") else json.loads(resp.text)
-                        hits = data.get("data", [])
-                        if not hits:
-                            break
-                        for hit in hits:
-                            if not is_it_job(hit):
-                                continue
-                            job_id = str(hit.get("jobId", "")).strip()
-                            raw_url = hit.get("jobUrl") or f"https://www.vietnamworks.com/job-{job_id}-jv"
-                            clean_url = clean_canonical_url(raw_url)
-                            ledger.register_url(
-                                raw_url=clean_url,
-                                job_id=job_id,
-                                preliminary_title=hit.get("jobTitle", ""),
-                                preliminary_company=hit.get("companyName", ""),
-                            )
-                            discovered_urls.append(clean_url)
-                        if len(hits) < HITS_PER_PAGE:
-                            break
-                        time.sleep(0.3)
-                    except Exception as exc:
-                        log.warning("[VietnamWorks] Safe Skip query '%s' page %d: %s", query, page, exc)
-                        continue
+            # Tầng 3: Quét theo danh sách 35 từ khóa IT (chỉ chạy khi quét sâu pages_to_query > 2)
+            if pages_to_query > 2:
+                log.info("[VietnamWorks] Discovery Tầng 3: Quét sâu theo danh sách 35 từ khóa IT...")
+                for query in self.queries:
+                    for page in range(pages_to_query):
+                        payload = {
+                            "userId": 0,
+                            "query": query,
+                            "filter": [],
+                            "ranges": [],
+                            "order": [],
+                            "hitsPerPage": HITS_PER_PAGE,
+                            "page": page,
+                        }
+                        try:
+                            resp = self.http_client.post(API_URL, json=payload, headers=headers)
+                            data = resp.json() if hasattr(resp, "json") else json.loads(resp.text)
+                            hits = data.get("data", [])
+                            if not hits:
+                                break
+                            for hit in hits:
+                                if not is_it_job(hit):
+                                    continue
+                                job_id = str(hit.get("jobId", "")).strip()
+                                raw_url = hit.get("jobUrl") or f"https://www.vietnamworks.com/job-{job_id}-jv"
+                                clean_url = clean_canonical_url(raw_url)
+                                ledger.register_url(
+                                    raw_url=clean_url,
+                                    job_id=job_id,
+                                    preliminary_title=hit.get("jobTitle", ""),
+                                    preliminary_company=hit.get("companyName", ""),
+                                )
+                                discovered_urls.append(clean_url)
+                            if len(hits) < HITS_PER_PAGE:
+                                break
+                            time.sleep(0.3)
+                        except Exception as exc:
+                            log.warning("[VietnamWorks] Safe Skip query '%s' page %d: %s", query, page, exc)
+                            continue
 
         ledger.save_catalog()
         ledger.export_daily_manifest()
@@ -930,14 +935,36 @@ class VietnamWorksCrawler(BaseCrawler):
                 else:
                     raise RuntimeError("Chưa bật --online hoặc thiếu --local-html-dir để lấy nội dung chi tiết")
 
-                # 2. Nhận diện ngôn ngữ bài đăng
+                # 2. Kiểm tra tin đã đóng tuyển dụng hoặc hết hạn
+                if is_job_closed_or_expired(raw_payload):
+                    log.info("[VietnamWorks] Job %s đã đóng hoặc hết hạn -> mark_closed", job_id)
+                    ledger.mark_closed(url_hash)
+                    stats["skipped"] += 1
+                    continue
+
+                # 3. Nhận diện ngôn ngữ bài đăng
                 desc_sample = " ".join(raw_payload.get("description_list", [])[:3]) or raw_payload.get("title", "")
                 language = detect_language(desc_sample)
 
-                # 3. Băm toàn vẹn Document JSON duy nhất (Post-Crawl Canonical JSON Hashing)
+                # 4. Băm toàn vẹn Document JSON duy nhất (Post-Crawl Canonical JSON Hashing)
                 content_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
 
-                # 4. Kiểm tra tin đăng lại (Repost Detection)
+                # 5. Đối chiếu hash: Nếu nội dung không đổi và tin đã DONE thì giữ nguyên version
+                old_hash = item.get("content_hash")
+                old_version = item.get("latest_version") or 0
+                if old_hash and old_hash == content_hash and item.get("status") == "DONE":
+                    log.info("[VietnamWorks] Job %s không đổi nội dung -> Giữ nguyên v%d", job_id, old_version)
+                    ledger.mark_scraped(
+                        url_hash=url_hash,
+                        content_hash=content_hash,
+                        version=old_version,
+                        http_status=200,
+                    )
+                    stats["success"] += 1
+                    count += 1
+                    continue
+
+                # 6. Kiểm tra tin đăng lại (Repost Detection)
                 existing = ledger.find_by_content_hash(content_hash)
                 if existing and existing["url_hash"] != url_hash:
                     ledger.mark_scraped(
@@ -949,34 +976,36 @@ class VietnamWorksCrawler(BaseCrawler):
                     stats["skipped"] += 1
                     continue
 
-                # 5. Đóng gói Raw Envelope JSON và lưu trữ cục bộ
+                new_version = old_version + 1 if old_version > 0 else 1
+
+                # 7. Đóng gói Raw Envelope JSON và lưu trữ cục bộ
                 envelope = build_raw_envelope(
                     raw_payload=raw_payload,
                     job_id=job_id,
                     url=url,
-                    version=1,
+                    version=new_version,
                     language=language,
                 )
 
                 day_raw_dir = Path(self.raw_dir) / date_str
                 day_raw_dir.mkdir(parents=True, exist_ok=True)
-                json_file_path = day_raw_dir / f"{job_id}_v1.json"
+                json_file_path = day_raw_dir / f"{job_id}_v{new_version}.json"
                 with open(json_file_path, "w", encoding="utf-8") as f:
                     json.dump(envelope, f, ensure_ascii=False, indent=2)
 
-                # 6. Đồng bộ lên MinIO Lakehouse nếu có cờ
+                # 8. Đồng bộ lên MinIO Lakehouse nếu có cờ
                 if self.sync_minio:
-                    s3_key = f"raw/{self.source_name}/{date_str}/{job_id}_v1.json"
+                    s3_key = f"raw/{self.source_name}/{date_str}/{job_id}_v{new_version}.json"
                     try:
                         self._get_minio_store().put_json(s3_key, envelope)
                     except Exception as exc_s3:
                         log.warning("[VietnamWorks] Lỗi đẩy snapshot lên MinIO (%s): %s", s3_key, exc_s3)
 
-                # 7. Lưu ngược lại hash vào URL trong Ledger (chuyển status=DONE)
+                # 9. Lưu ngược lại hash vào URL trong Ledger (chuyển status=DONE)
                 ledger.mark_scraped(
                     url_hash=url_hash,
                     content_hash=content_hash,
-                    version=1,
+                    version=new_version,
                     http_status=200,
                 )
                 stats["success"] += 1

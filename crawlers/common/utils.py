@@ -39,6 +39,7 @@ __all__ = [
     "parse_salary_detail",
     "text_to_clean_lines",
     "classify_job_tags",
+    "is_job_closed_or_expired",
 ]
 
 
@@ -523,4 +524,102 @@ def classify_job_tags(raw_tags: list[str]) -> dict:
         "skills": technical_skills + job_roles if (technical_skills or job_roles) else None,
         "requirements": list(attributes.values()) if attributes else None,
     }
+
+
+def is_job_closed_or_expired(
+    payload_or_html: Any = None,
+    status_code: int = 200,
+    deadline_raw: Optional[str] = None,
+    reference_date: Optional[date] = None,
+) -> bool:
+    """Xác định bài đăng tuyển dụng đã hết hạn hoặc đã đóng hay chưa.
+
+    Tiêu chí nhận diện:
+    1. HTTP Status Code: 404 hoặc 410 -> True
+    2. Payload Dictionary:
+       - Có trường `is_closed=True`, `is_active=False`
+       - Trạng thái `status` thuộc ("closed", "expired", "inactive", "hidden")
+       - Các trường ngày hết hạn (`valid_through`, `expired_at`, `expiredOn`, `deadline`) < ngày tham chiếu
+    3. Deadline Date:
+       - Nếu chuỗi ngày nộp hồ sơ hợp lệ và trước ngày tham chiếu -> True
+    4. Text / HTML DOM Keywords:
+       - Chứa các từ khóa đóng tuyển dụng (tiếng Việt & tiếng Anh)
+    """
+    # 1. Kiểm tra mã HTTP
+    if status_code in (404, 410):
+        return True
+
+    today = reference_date or date.today()
+
+    def _parse_date_string(date_str: Optional[str]) -> Optional[date]:
+        if not date_str or not isinstance(date_str, str):
+            return None
+        raw = date_str.strip()
+        # ISO string: 2026-10-15T...
+        if "T" in raw:
+            raw = raw.split("T")[0]
+        # Match YYYY-MM-DD
+        m = re.match(r"^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})", raw)
+        if m:
+            try:
+                return date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+            except ValueError:
+                pass
+        # Match DD/MM/YYYY
+        m = re.match(r"^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})", raw)
+        if m:
+            try:
+                return date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+            except ValueError:
+                pass
+        return None
+
+    # 2. Kiểm tra chuỗi deadline_raw truyền vào trực tiếp
+    if deadline_raw:
+        dl_date = _parse_date_string(deadline_raw)
+        if dl_date and dl_date < today:
+            return True
+
+    # 3. Kiểm tra payload dạng Dict (API response)
+    if isinstance(payload_or_html, dict):
+        if payload_or_html.get("is_closed") is True:
+            return True
+        if payload_or_html.get("is_active") is False:
+            return True
+        st = str(payload_or_html.get("status", "")).lower()
+        if st in ("closed", "expired", "inactive", "hidden", "disabled"):
+            return True
+        
+        # Kiểm tra các trường ngày tháng trong API
+        for date_key in ("valid_through", "expired_at", "expiredOn", "deadline", "end_date", "expire_date"):
+            val = payload_or_html.get(date_key)
+            if val:
+                dl = _parse_date_string(str(val))
+                if dl and dl < today:
+                    return True
+
+    # 4. Kiểm tra chuỗi Text / HTML DOM
+    if isinstance(payload_or_html, str):
+        text_lower = payload_or_html.lower()
+        closed_keywords = (
+            "tin tuyển dụng đã hết hạn",
+            "tin đã hết hạn",
+            "việc làm đã hết hạn",
+            "việc làm này không còn tồn tại",
+            "hết hạn nộp hồ sơ",
+            "đã dừng nhận hồ sơ",
+            "ngừng nhận hồ sơ",
+            "vị trí này đã đóng",
+            "công việc này đã đóng",
+            "this job is no longer available",
+            "job has expired",
+            "this job opening is closed",
+            "the position has been filled",
+            "job post is expired",
+        )
+        if any(kw in text_lower for kw in closed_keywords):
+            return True
+
+    return False
+
 
