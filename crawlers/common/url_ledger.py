@@ -27,6 +27,8 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
 
 @contextmanager
 def file_lock(lock_path: Path, timeout: float = 10.0):
@@ -301,13 +303,19 @@ class UrlLedger:
     def __init__(self, source: str, storage_dir: Optional[str] = None):
         self.source = source.lower().strip()
         # Chuẩn hóa cấu trúc: data/<source>/url_ledger
-        target_dir = Path(storage_dir) if storage_dir else Path(f"data/{self.source}/url_ledger")
+        if storage_dir:
+            target_dir = Path(storage_dir)
+            if not target_dir.is_absolute():
+                target_dir = PROJECT_ROOT / target_dir
+        else:
+            target_dir = PROJECT_ROOT / f"data/{self.source}/url_ledger"
+
         self.base_dir = target_dir
         self.manifests_dir = self.base_dir / "manifests"
         self.catalog_file = self.base_dir / "catalog_master.json"
 
         # Tự động di chuyển dữ liệu cũ từ data/url_ledger/<source> nếu có
-        legacy_dir = Path(f"data/url_ledger/{self.source}")
+        legacy_dir = PROJECT_ROOT / f"data/url_ledger/{self.source}"
         if legacy_dir.exists() and not self.catalog_file.exists():
             legacy_catalog = legacy_dir / "catalog_master.json"
             if legacy_catalog.exists():

@@ -27,12 +27,16 @@ COOLDOWN_MINUTES_SURGE = 55
 VN_TZ = timezone(timedelta(hours=7))
 
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
+
 class AdaptiveWorkloadRouter:
     """Quản lý trạng thái và ra quyết định phân tuyến co giãn đàn hồi theo backlog."""
 
     def __init__(self, source: str, base_dir: str = "data") -> None:
         self.source = source.lower().strip()
-        self.base_dir = Path(base_dir)
+        b_path = Path(base_dir)
+        self.base_dir = b_path if b_path.is_absolute() else (PROJECT_ROOT / b_path)
         self.state_file = self.base_dir / self.source / "router_state.json"
         self._ledger: Optional[UrlLedger] = None
 

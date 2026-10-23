@@ -124,10 +124,14 @@ class JobCrawlerOperator(BaseOperator):
             self.max_pages,
         )
 
+        out_dir = self.output_dir or "data"
+        if not Path(out_dir).is_absolute():
+            out_dir = str(PROJECT_ROOT / out_dir)
+
         stats = run_crawler(
             source=self.source,
             max_items=effective_max_items,
-            output_dir=self.output_dir or "data",
+            output_dir=out_dir,
             phase=self.phase,
             max_pages=self.max_pages,
         )
@@ -221,7 +225,8 @@ class DataPreprocessOperator(BaseOperator):
         super().__init__(**kwargs)
         self.source = source.lower().strip()
         self.date_str = date_str
-        self.base_dir = Path(base_dir)
+        b_path = Path(base_dir)
+        self.base_dir = b_path if b_path.is_absolute() else (PROJECT_ROOT / b_path)
 
     def execute(self, context: Context) -> dict[str, Any]:
         import json
