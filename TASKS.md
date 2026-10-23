@@ -3,9 +3,9 @@
 > **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (VN-IT-Job-Mining)  
 > **Quy định Git:** Toàn bộ thành viên bắt đầu làm việc từ nhánh `main` và chuyển sang nhánh độc lập của mình: `crawls/<tenweb>`.  
 > **Bộ 3 tài liệu quy trình bắt buộc phải đọc trước khi bắt tay vào code:**
-> 1. [01_modern_data_mining_overview.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/01_modern_data_mining_overview.md)
-> 2. [02_crawling_architecture_guide.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/02_crawling_architecture_guide.md)
-> 3. [03_eda_and_integration_guide.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/03_eda_and_integration_guide.md)
+> 1. [01_modern_data_mining_overview.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/01_modern_data_mining_overview.md)
+> 2. [02_crawling_architecture_guide.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/02_crawling_architecture_guide.md)
+> 3. [03_eda_and_integration_guide.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/03_eda_and_integration_guide.md)
 
 ---
 
@@ -33,17 +33,19 @@ flowchart TD
         P1A --> P1B
     end
 
-    subgraph Phase2["PHA 2: CÀO CHI TIẾT & RE-CRAWL 21 NGÀY"]
+    subgraph Phase2["PHA 2: CÀO CHI TIẾT RAW AS-IS (RE-CRAWL 21 NGÀY)"]
         P2A["Viết hàm crawl_details()\nĐọc Catalog: Lọc link PENDING hoặc (DONE & >= 21 ngày)"]
         P2B["Bọc Safe Skip: URL lỗi hoặc chưa đến hạn thì skip ngay"]
-        P2C["Tính Clean Container HTML Hash & Cập nhật Version CDC\nĐồng bộ Raw Data lên MinIO + Cloudflare"]
+        P2C["Lưu Snapshot Thô Raw As-Is (HTML/API Payload)\nĐồng bộ Raw Data lên MinIO + Cloudflare"]
         P2A --> P2B --> P2C
     end
 
-    subgraph Deliverables["PHA 3: BÀN GIAO HỒ SƠ NGHIỆM THU"]
-        D1["Nộp ít nhất 3 cặp file HTML thô đa định dạng + 3 file JSON tương ứng\n(có thể kèm thêm file .md giải thích) vào crawlers/sources/<tenweb>/samples/"]
-        D2["Viết file docs/crawl/<tenweb>.md phân tích kiến trúc web"]
-        D3["Chạy EDA Sơ Bộ & Điền 2 template báo cáo"]
+    subgraph Deliverables["PHA 3: BÓC TÁCH JSON, BĂM HASH & HỒ SƠ NGHIỆM THU"]
+        D1["Bóc tách Structured JSON & Băm Canonical JSON Hash\nĐịnh vị trường thay đổi (Field-Level JSON Diff)"]
+        D2["Nộp ít nhất 3 cặp file HTML thô đa định dạng + 3 file JSON tương ứng\n(có thể kèm thêm file .md giải thích) vào crawlers/sources/<tenweb>/samples/"]
+        D3["Viết file docs/crawl/<tenweb>.md phân tích kiến trúc web"]
+        D4["Chạy EDA Sơ Bộ & Điền 2 template báo cáo"]
+        D1 --> D2 --> D3 --> D4
     end
 
     Phase1 --> Phase2 --> Deliverables
@@ -62,15 +64,15 @@ flowchart TD
 - [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào 100% payload chi tiết. Áp dụng cơ chế Safe Skip khi gặp lỗi. Đổi trạng thái sang `DONE`, chu kỳ re-crawl 21 ngày. Đồng bộ raw payload lên **MinIO** + **Cloudflare**.
 - [ ] **Hồ sơ nghiệm thu bắt buộc:**
   - `crawlers/sources/topdev/samples/`: **Tối thiểu 3 file HTML thô (hoặc response DOM/web) kèm 3 file JSON tương ứng** có định dạng khác nhau (tin lương VND, lương USD, tin nhiều tech tags). *Có thể nộp kèm file `.md` mô tả chi tiết từng sample*.
-  - Tự viết `docs/crawl/topdev.md` phân tích kiến trúc API, phân trang và container selector của TopDev.
-  - Điền báo cáo theo 2 mẫu [raw_crawl_inventory_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md) và [preliminary_eda_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/preliminary_eda_template.md).
+  - Tự viết `docs/crawl/topdev.md` phân tích kiến trúc API, phân trang và cấu trúc trường của TopDev.
+  - Điền báo cáo theo 2 mẫu [raw_crawl_inventory_template.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md) và [preliminary_eda_template.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/templates/preliminary_eda_template.md).
 
 ### 3.2. Thuận — Phụ trách `TopCV` (Nhánh: `crawls/topcv`)
 - [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` cào sạch danh sách link bài đăng từ trang tìm kiếm TopCV (không giới hạn thời gian), ghi vào URL Ledger và đồng bộ lên **MinIO** + **Cloudflare**.
-- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào raw HTML bài đăng, giữ nguyên selector gốc. Tính Clean Container HTML Hash trên khối `div.job-detail`. Đổi trạng thái sang `DONE`, kiểm tra re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào raw HTML bài đăng nguyên bản (Zero Info Loss). Bóc tách trường vào JSON và áp dụng Canonical JSON Hashing để quản lý phiên bản CDC và repost. Đổi trạng thái sang `DONE`, kiểm tra re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
 - [ ] **Hồ sơ nghiệm thu bắt buộc:**
   - `crawlers/sources/topcv/samples/`: **Ít nhất 3 file HTML thô** có layout khác nhau (tin thường, tin Hot/VIP, tin có badge đặc thù) kèm **3 file JSON tương ứng**. *Có thể nộp kèm file `.md` mô tả chi tiết từng sample*.
-  - Tự viết `docs/crawl/topcv.md` phân tích DOM và selector chống nhảy hash oan của TopCV.
+  - Tự viết `docs/crawl/topcv.md` phân tích DOM và cấu trúc trường bóc tách của TopCV.
   - Điền 2 báo cáo kiểm kê trường và EDA sơ bộ.
 
 ### 3.3. Khoa — Phụ trách `VietnamWorks` (Nhánh: `crawls/vietnamworks`)
@@ -83,7 +85,7 @@ flowchart TD
 
 ### 3.4. Tài — Phụ trách `CareerViet` (Nhánh: `crawls/careerviet`)
 - [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` duyệt toàn bộ danh mục IT của CareerViet lấy danh sách link, ghi vào manifest và đồng bộ lên **MinIO** + **Cloudflare**.
-- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` bóc tách nguyên vẹn SSR HTML. Áp dụng Clean Container HTML Hash trên khối chi tiết việc làm. Đổi trạng thái `DONE`, re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` bóc tách nguyên vẹn SSR HTML. Lưu raw HTML, chuyển đổi sang JSON và băm Canonical JSON Hash. Đổi trạng thái `DONE`, re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
 - [ ] **Hồ sơ nghiệm thu bắt buộc:**
   - `crawlers/sources/careerviet/samples/`: **Ít nhất 3 file HTML thô** có cấu trúc khác nhau kèm **3 file JSON tương ứng**. *Có thể nộp kèm file `.md` mô tả chi tiết từng sample*.
   - Tự viết `docs/crawl/careerviet.md` phân tích DOM và kỹ thuật cào.
@@ -99,7 +101,7 @@ flowchart TD
 
 ### 3.6. Phát — Phụ trách `ITViec` (Nhánh: `crawls/itviec`)
 - [ ] **Pha 1 (URL Discovery):** Sử dụng Playwright / httpx duyệt toàn bộ danh sách việc làm ITviec lưu vào manifest và đồng bộ lên **MinIO** + **Cloudflare**.
-- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào raw HTML chi tiết (thẻ kỹ năng, "3 reasons to join us", văn bản JD). Tính HTML hash khối nội dung. Trạng thái `DONE`, re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
+- [ ] **Pha 2 (Detail Extraction):** Viết `crawl_details()` cào raw HTML chi tiết (thẻ kỹ năng, "3 reasons to join us", văn bản JD). Bóc tách JSON và băm Canonical JSON Hash. Trạng thái `DONE`, re-crawl 21 ngày. Đồng bộ lên **MinIO** + **Cloudflare**.
 - [ ] **Hồ sơ nghiệm thu bắt buộc:**
   - `crawlers/sources/itviec/samples/`: **Ít nhất 3 file HTML thô** (tin lương công khai, tin lương ẩn, tin Spotlight) kèm **3 file JSON tương ứng**. *Có thể nộp kèm file `.md` mô tả chi tiết từng sample*.
   - Tự viết `docs/crawl/itviec.md` phân tích cơ chế vượt Cloudflare nhẹ và selector chính.
@@ -125,5 +127,29 @@ Một thành viên được tính là hoàn thành nhiệm vụ khi thỏa mãn 
 5. **Đồng bộ lưu trữ Đám mây & Lakehouse (MinIO & Cloudflare):** Toàn bộ dữ liệu cào (URL Ledger Manifest ở Pha 1 & Raw Data ở Pha 2) bắt buộc phải được đồng bộ đầy đủ lên **cả MinIO Lakehouse cục bộ VÀ Cloudflare (Cloudflare R2 Object Storage)**.
 6. **Tự viết file phân tích kiến trúc:** Nộp file `docs/crawl/<tenweb>.md` giải thích chi tiết cơ chế cào và container selector của web mình.
 7. **Đầy đủ 2 báo cáo chất lượng:**
-   - `reports/<source>_inventory.md` (theo [raw_crawl_inventory_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md)).
-   - `reports/<source>_eda.md` (theo [preliminary_eda_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/preliminary_eda_template.md)).
+   - `reports/<source>_inventory.md` (theo [raw_crawl_inventory_template.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md)).
+   - `reports/<source>_eda.md` (theo [preliminary_eda_template.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/templates/preliminary_eda_template.md)).
+
+---
+
+## 5. PHÂN CÔNG GIAI ĐOẠN 2: EDA KIỂM TRA CHẤT LƯỢNG DỮ LIỆU & KHAI PHÁ KHOẢNG TRỐNG ĐA NGUỒN
+
+Sau khi dữ liệu thô (Raw As-Is) đã được kéo về Lakehouse (MinIO & Cloudflare R2), dự án kích hoạt 2 nhóm chuyên trách theo phương pháp luận đi lên từ câu hỏi kỹ thuật (**Inquiry-Driven Framework**) phục vụ trực tiếp cho bước Pre-processing:
+
+### 5.1. Nhóm EDA Kiểm Tra Chất Lượng Dữ Liệu (3 Thành Viên)
+- **Nhiệm vụ:** Đóng vai trò là "kính hiển vi chẩn đoán chất lượng dữ liệu thô", kiểm tra toàn diện 5 trụ cột kỹ thuật: Độ hoàn thiện (Completeness / Missingness), Tính hợp lệ & Kiểu dữ liệu (Validity & Schema Types), Tính duy nhất (Uniqueness / Duplication), Hình thái phân phối & Ngoại lai (Distribution & Outliers via IQR), và Độ thiên lệch & Mất cân bằng (Bias & Class Balance). Xuất bộ 7 biểu đồ chẩn đoán chất lượng dữ liệu để làm cơ sở cho kế hoạch Tiền xử lý.
+- **Phân công Hybrid:**
+  - *Thành viên 1:* Chuyên môn Sức khỏe dữ liệu & Phân phối số $\to$ Phụ trách **TopCV, Vieclam24h, CareerViet**.
+  - *Thành viên 2:* Chuyên môn Tech Stack & Xử lý văn bản NLP $\to$ Phụ trách **ITViec, TopDev, VietnamWorks**.
+  - *Thành viên 3:* Chuyên môn Tương quan đa chiều & Pipeline đa nguồn $\to$ Phụ trách **Glints, JobsGO** (+ Cross-Platform Master Pipeline).
+- **Tài liệu hướng dẫn & nghiệm thu chi tiết:** 👉 [01_huong_dan_eda_nhom_3_nguoi.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/tasks/01_huong_dan_eda_nhom_3_nguoi.md)
+
+### 5.2. Nhóm Khai Phá Khoảng Trống Dữ Liệu & So Sánh Bù Trừ Đa Nguồn (Nhóm Còn Lại)
+- **Nhiệm vụ:** Áp dụng mô hình câu hỏi **Why - What - How** để đào sâu câu hỏi cốt tử: **"Bộ dữ liệu nguồn đó THIẾU GÌ?" (Data Gap Analysis)**. Tự do bắt cặp song song (mỗi cặp 2 người) để thực hiện đối chiếu chéo **2 nguồn trên 8 nguồn**, tìm kiếm sự bù trừ (complementarity) khoảng trống thông tin giữa 2 sàn, và đề xuất giải pháp kỹ thuật (Imputation, Master Source Rule, Bias Mitigation) nộp cho Leader phục vụ bước Data Integration.
+- **5 Trục đối chiếu khoảng trống kỹ thuật:**
+  1. Khoảng trống Schema & Độ phủ trường (Schema Coverage & Gaps)
+  2. Khoảng trống Minh bạch lương & Nhu cầu Imputation (Salary Gaps)
+  3. Khoảng trống Thẻ kỹ năng & Chất lượng JD (Skills & Text Gaps)
+  4. Khoảng trống Phân khúc cấp bậc & Thiên lệch mẫu (Segment Bias)
+  5. Xung đột dữ liệu thực thể & Luật hợp nhất (Entity Conflicts)
+- **Tài liệu hướng dẫn, mẫu báo cáo & nghiệm thu chi tiết:** 👉 [02_huong_dan_insight_va_so_sanh_nguon.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/tasks/02_huong_dan_insight_va_so_sanh_nguon.md)

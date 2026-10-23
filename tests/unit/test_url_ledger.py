@@ -109,7 +109,8 @@ def test_url_ledger_workflow():
 
 def test_url_ledger_default_storage_dir():
     ledger = UrlLedger(source="topcv")
-    assert str(ledger.base_dir).endswith("data/topcv/url_ledger")
+    normalized_path = str(ledger.base_dir).replace("\\", "/")
+    assert normalized_path.endswith("data/topcv/url_ledger")
 
 
 def test_url_ledger_sync_to_minio(monkeypatch):

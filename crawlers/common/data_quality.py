@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from crawlers.common.logger import get_logger
-from crawlers.common.schema import JobRecord, validate_record
+from crawlers.common.schema import JobRecord, RawJobEnvelope, validate_record
 
 logger = get_logger("data_quality")
 
@@ -118,15 +118,24 @@ class DataQualityChecker:
             try:
                 record = validate_record(item)
                 valid_schema_count += 1
-                dedup_keys.add(record.meta.dedup_key)
+                if isinstance(record, RawJobEnvelope):
+                    m = record.metadata if isinstance(record.metadata, dict) else {}
+                    dkey = m.get("job_id") or m.get("source_job_id") or m.get("url") or str(idx)
+                    dedup_keys.add(f"{m.get('source', 'unknown')}:{dkey}")
+                    if not record.raw_payload:
+                        missing_titles += 1
+                        missing_companies += 1
+                        missing_descriptions += 1
+                else:
+                    dedup_keys.add(record.meta.dedup_key)
 
-                if not record.raw.title:
-                    missing_titles += 1
-                if not record.raw.company:
-                    missing_companies += 1
-                has_desc = bool(getattr(record.raw, "description_list", None) or getattr(record.raw, "description_html", None) or getattr(record.raw, "description_text", None))
-                if not has_desc:
-                    missing_descriptions += 1
+                    if not record.raw.title:
+                        missing_titles += 1
+                    if not record.raw.company:
+                        missing_companies += 1
+                    has_desc = bool(getattr(record.raw, "description_list", None) or getattr(record.raw, "description_html", None) or getattr(record.raw, "description_text", None))
+                    if not has_desc:
+                        missing_descriptions += 1
             except Exception as exc:
                 logger.warning(
                     "Quality check error at %s record %d: %s",

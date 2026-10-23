@@ -1,7 +1,7 @@
 # Báo Cáo Kiểm Toán Toàn Diện Tính Tuân Thủ Hạ Tầng Airflow (Airflow Compatibility Audit)
 
 > **Mục tiêu tài liệu**: Đánh giá chi tiết mức độ tuân thủ, khả năng vận hành liên tục và các rủi ro làm gãy luồng điều phối tự động của toàn bộ 7 crawler trên hạ tầng **Apache Airflow** của dự án VN-IT-Job-Mining.  
-> **Tài liệu tham chiếu**: [`airflow/dags/crawler_dags.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/dags/crawler_dags.py), [`airflow/plugins/crawler_operators.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py), [`crawlers/common/data_quality.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/common/data_quality.py).  
+> **Tài liệu tham chiếu**: [`airflow/dags/crawler_dags.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/airflow/dags/crawler_dags.py), [`airflow/plugins/crawler_operators.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py), [`crawlers/common/data_quality.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/common/data_quality.py).  
 > **Cập nhật ngày**: 11/10/2026
 
 ---
@@ -68,7 +68,7 @@ flowchart LR
 ## 3. Phân Tích Chuyên Sâu Các Điểm Gãy Hạ Tầng (Breaking Points)
 
 ### 🔴 Điểm Gãy 1: Lỗi Import Hàm `crawl()` Tại Nguồn ITviec
-- **Hiện tượng**: Tại dòng 67 của [`airflow/plugins/crawler_operators.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py#L67):
+- **Hiện tượng**: Tại dòng 67 của [`airflow/plugins/crawler_operators.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py#L67):
   ```python
   elif self.source == "itviec":
       from crawlers.sources.itviec.crawler import crawl
@@ -85,7 +85,7 @@ flowchart LR
 ---
 
 ### 🔴 Điểm Gãy 2: Crash Selenium Chrome Thiếu Headless Mode Tại Nguồn Việc Làm 24h
-- **Hiện tượng**: Tại dòng 364 của [`crawlers/sources/vieclam24h/crawler.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/vieclam24h/crawler.py#L364):
+- **Hiện tượng**: Tại dòng 364 của [`crawlers/sources/vieclam24h/crawler.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/vieclam24h/crawler.py#L364):
   ```python
   self.driver = webdriver.Chrome()
   ```
@@ -112,7 +112,7 @@ flowchart LR
 
 ## 4. Bản Vá Mã Nguồn Khắc Phục Lỗi Airflow (Proposed Code Patch)
 
-### 🛠️ Bản vá cho [`airflow/plugins/crawler_operators.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py):
+### 🛠️ Bản vá cho [`airflow/plugins/crawler_operators.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py):
 ```python
         # Cập nhật xử lý đồng bộ BaseCrawler cho toàn bộ 7 nguồn:
         if self.source == "topdev":
@@ -143,7 +143,7 @@ flowchart LR
         stats = crawler.run()
 ```
 
-### 🛠️ Bản vá cho [`airflow/dags/crawler_dags.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/dags/crawler_dags.py):
+### 🛠️ Bản vá cho [`airflow/dags/crawler_dags.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/airflow/dags/crawler_dags.py):
 Thêm DAG thứ 7 cho Glints vào Chủ Nhật:
 ```python
 # 7. Glints (Chủ Nhật 20:00)
@@ -173,4 +173,4 @@ with DAG(
 ## 5. Kết Luận Dành Cho Nhóm Trưởng
 Hạ tầng Airflow hiện tại rất chặt chẽ với cơ chế Quality Gate qua XCom. Tuy nhiên, nếu merge code các nhánh thành viên vào ngay mà **chưa vá các điểm gãy nêu trên**, hệ thống Airflow sẽ lập tức bị gián đoạn và báo lỗi đỏ ở 3/6 DAGs.
 
-Kế hoạch merge cập nhật trong [`audit_and_merge_plan.md`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/crawl/audit_and_merge_plan.md) đã tích hợp đầy đủ các điều kiện tiên quyết này.
+Kế hoạch merge cập nhật trong [`audit_and_merge_plan.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/crawl/audit_and_merge_plan.md) đã tích hợp đầy đủ các điều kiện tiên quyết này.

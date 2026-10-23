@@ -15,10 +15,10 @@ Nguồn tuyển dụng **ITviec** (`https://itviec.com`) là nền tảng chuyê
 
 Trong nhánh `origin/feature/itviec-crawler`, bạn Phát đã hoàn thành một đợt refactor toàn diện:
 - **Tách bạch trách nhiệm (Separation of Concerns)**:
-  - [`config.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/itviec/config.py): Lưu hằng số, cấu hình URL, delay, retry, phiên bản crawler.
-  - [`parser.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/itviec/parser.py): Chuyên trách bóc tách HTML thuần (Listing & Detail), trả về dict cấu trúc chuẩn.
-  - [`crawler.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/itviec/crawler.py): Kế thừa `BaseCrawler`, quản lý kết nối HTTP, checkpoint, vòng lặp thu thập.
-  - [`tests/`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/itviec/tests): Bộ unit test ngoại tuyến độc lập.
+  - [`config.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/config.py): Lưu hằng số, cấu hình URL, delay, retry, phiên bản crawler.
+  - [`parser.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/parser.py): Chuyên trách bóc tách HTML thuần (Listing & Detail), trả về dict cấu trúc chuẩn.
+  - [`crawler.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/crawler.py): Kế thừa `BaseCrawler`, quản lý kết nối HTTP, checkpoint, vòng lặp thu thập.
+  - [`tests/`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/tests): Bộ unit test ngoại tuyến độc lập.
 
 ### Sơ Đồ Khối Module ITviec
 
@@ -106,11 +106,11 @@ return crawler.run()
 ## 3. Đánh Giá Bộ Test Suite (`crawlers/sources/itviec/tests/`)
 
 Nhánh ITviec có chất lượng kiểm thử tốt nhất trong 4 nhánh:
-1. [`test_crawler_helpers.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/itviec/tests/test_crawler_helpers.py):
+1. [`test_crawler_helpers.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/tests/test_crawler_helpers.py):
    - Kiểm thử khởi tạo `ItviecCrawler`, thuộc tính `source_name`, `crawler_version`, định dạng `batch_id`.
    - Kiểm thử việc xây dựng và chuẩn hóa URL phân trang (`_listing_url`).
    - Kiểm thử logic bỏ qua bài đăng trùng lặp (`checkpoint.is_seen`).
-2. [`test_parser.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/itviec/tests/test_parser.py):
+2. [`test_parser.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/tests/test_parser.py):
    - Kiểm thử trích xuất thẻ JSON-LD `JobPosting`.
    - Kiểm thử bóc tách đa ngôn ngữ (bài đăng thuần tiếng Anh và tiếng Việt).
    - Kiểm thử xử lý dải lương nhiều biến thể: Lương USD, Lương triệu VND, Lương Thỏa thuận ("You'll love it").

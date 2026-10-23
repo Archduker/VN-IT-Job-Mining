@@ -86,6 +86,9 @@ def is_cloudflare_challenge(html_content: str) -> bool:
         "cf-browser-verification",
         "cf-please-wait",
         "data-translate=\"why_captcha_headline\"",
+        "Too Many Requests",
+        "429 Too Many Requests",
+        "Error 429",
     ]
     for ind in blocked_indicators:
         if ind in html_content:
@@ -114,11 +117,16 @@ def handle_cloudflare_backoff(
     )
 
     try:
-        # Chờ đợi với Playwright timeout
-        page.wait_for_timeout(int(delay * 1000))
+        # Sử dụng time.sleep để tránh treo hoặc timeout WebSocket CDP của trình duyệt trong thời gian chờ dài
+        time.sleep(delay)
+        if hasattr(page, "context") and hasattr(page.context, "clear_cookies"):
+            try:
+                page.context.clear_cookies()
+            except Exception:
+                pass
         if hasattr(page, "reload") and callable(page.reload):
             try:
-                page.reload(wait_until="domcontentloaded", timeout=30000)
+                page.reload(wait_until="domcontentloaded", timeout=35000)
             except Exception:
                 pass
         new_content = page.content()
@@ -130,3 +138,46 @@ def handle_cloudflare_backoff(
 
     log.warning("[AntiBlocking] Vẫn chưa vượt qua Cloudflare challenge sau %ss.", delay)
     return False
+
+
+def handle_rate_limit_cooldown(
+    page: Any,
+    cooldown_sec: float = 45.0,
+) -> bool:
+    """
+    Xử lý khi phát hiện HTTP 429 Too Many Requests hoặc Cloudflare Rate Limiting.
+    Tạm dừng đủ lâu (45s - 60s) để Cloudflare rate limit window tự động reset trên IP.
+    """
+    jitter = random.uniform(3.0, 8.0)
+    total_cooldown = round(cooldown_sec + jitter, 1)
+    log.warning(
+        "[AntiBlocking] Phát hiện HTTP 429 / Rate Limit! Kích hoạt Cooldown %ss để hạ nhiệt IP...",
+        total_cooldown,
+    )
+
+    try:
+        # Sử dụng time.sleep để giữ phiên an toàn mà không làm timeout socket CDP
+        time.sleep(total_cooldown)
+
+        # Xóa cookie bị Cloudflare gắn cờ để tái tạo session sạch
+        if hasattr(page, "context") and hasattr(page.context, "clear_cookies"):
+            try:
+                page.context.clear_cookies()
+            except Exception:
+                pass
+
+        if hasattr(page, "reload") and callable(page.reload):
+            try:
+                page.reload(wait_until="domcontentloaded", timeout=35000)
+                human_like_interaction(page, scroll_times=1)
+                new_content = page.content()
+                if not is_cloudflare_challenge(new_content) and "Too Many Requests" not in new_content:
+                    log.info("[AntiBlocking] Cooldown hoàn tất! Đã vượt qua Rate Limit thành công.")
+                    return True
+            except Exception:
+                pass
+    except Exception as exc:
+        log.error("[AntiBlocking] Lỗi khi chờ Cooldown: %s", exc)
+
+    return False
+

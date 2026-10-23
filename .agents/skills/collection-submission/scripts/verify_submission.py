@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
-"""Script kiểm tra và chấm điểm tự động hồ sơ nghiệm thu thu thập dữ liệu (DoD Verifier).
+"""Script kiểm tra và chấm điểm tự động hồ sơ nghiệm thu thu thập dữ liệu (DoD Verifier & Grader).
+
+Thang điểm 100 điểm chuẩn theo submission_scoring_rubric.md.
 
 Sử dụng:
     python3 .agents/skills/collection-submission/scripts/verify_submission.py --source topcv
-    python3 .agents/skills/collection-submission/scripts/verify_submission.py --source vietnamworks
+    python3 .agents/skills/collection-submission/scripts/verify_submission.py --all
 """
 
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import os
+import re
 import sys
 from pathlib import Path
+from typing import Any
 
 # ANSI colors
 GREEN = "\033[92m"
@@ -23,147 +28,392 @@ CYAN = "\033[96m"
 BOLD = "\033[1m"
 RESET = "\033[0m"
 
+ALL_SOURCES = [
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "careerviet",
+    "vieclam24h",
+    "itviec",
+    "glints",
+    "jobsgo",
+]
 
-def print_banner(source: str) -> None:
-    print(f"\n{CYAN}{BOLD}{'=' * 65}{RESET}")
-    print(f"{CYAN}{BOLD} KIỂM TRA HỒ SƠ NGHIỆM THU THU THẬP DỮ LIỆU: [{source.upper()}]{RESET}")
-    print(f"{CYAN}{BOLD}{'=' * 65}{RESET}\n")
 
+class DoDScorer:
+    """Bộ chấm điểm tự động 100 điểm theo tiêu chuẩn nghiệm thu DoD."""
 
-def check_samples(source: str) -> tuple[bool, list[str]]:
-    details = []
-    samples_dir = Path("crawlers") / "sources" / source / "samples"
-    if not samples_dir.is_dir():
-        details.append(f"{RED}[FAIL]{RESET} Thư mục mẫu không tồn tại: {samples_dir}")
-        return False, details
-
-    html_files = sorted(list(samples_dir.glob("*.html")))
-    json_files = sorted(list(samples_dir.glob("*.json")))
-    md_files = sorted(list(samples_dir.glob("*.md")))
-
-    # 1. Kiểm tra số lượng HTML files
-    if len(html_files) >= 3:
-        details.append(f"{GREEN}[PASS]{RESET} File HTML thô: tìm thấy {len(html_files)}/3 file")
-        for f in html_files:
-            size_kb = f.stat().st_size / 1024
-            details.append(f"       • {f.name} ({size_kb:.1f} KB)")
-    else:
-        details.append(f"{RED}[FAIL]{RESET} File HTML thô: chỉ có {len(html_files)}/3 file (yêu cầu tối thiểu 3 file)")
-
-    # 2. Kiểm tra số lượng JSON files & tính hợp lệ
-    valid_json = 0
-    if len(json_files) >= 3:
-        details.append(f"{GREEN}[PASS]{RESET} File JSON tương ứng: tìm thấy {len(json_files)}/3 file")
-        for f in json_files:
+    def __init__(self, source: str) -> None:
+        self.source = source.lower().strip()
+        self.scores: dict[str, int] = {}
+        self.max_scores: dict[str, int] = {
+            "TC1_TwoPhase": 20,
+            "TC2_SafeSkip": 10,
+            "TC3_Recrawl21d": 10,
+            "TC4_Samples": 20,
+            "TC5_Lakehouse": 10,
+            "TC6_ArchitectureDoc": 15,
+            "TC7_Reports": 15,
+        }
+        self.bonus: int = 0
+        self.penalty: int = 0
+        self.details: dict[str, list[str]] = {}
+        self.crawler_path = Path("crawlers") / "sources" / self.source / "crawler.py"
+        self.crawler_code = ""
+        if self.crawler_path.is_file():
             try:
-                with open(f, "r", encoding="utf-8") as jf:
-                    data = json.load(jf)
+                self.crawler_code = self.crawler_path.read_text(encoding="utf-8")
+            except Exception:
+                self.crawler_code = ""
+
+    def evaluate(self) -> dict[str, Any]:
+        self._check_tc1_two_phase()
+        self._check_tc2_safe_skip()
+        self._check_tc3_recrawl()
+        self._check_tc4_samples()
+        self._check_tc5_lakehouse()
+        self._check_tc6_docs()
+        self._check_tc7_reports()
+        self._check_bonus_and_penalties()
+
+        base_score = sum(self.scores.values())
+        total_score = max(0, base_score + self.bonus - self.penalty)
+
+        return {
+            "source": self.source,
+            "scores": self.scores,
+            "bonus": self.bonus,
+            "penalty": self.penalty,
+            "total_score": total_score,
+            "passed": total_score >= 70,
+            "details": self.details,
+        }
+
+    def _check_tc1_two_phase(self) -> None:
+        """TC1 (20đ): discover_urls (10đ) & crawl_details (10đ)."""
+        log_items = []
+        score = 0
+        if not self.crawler_code:
+            log_items.append(f"{RED}[FAIL]{RESET} Không tìm thấy file mã nguồn crawler: {self.crawler_path}")
+            self.scores["TC1_TwoPhase"] = 0
+            self.details["TC1_TwoPhase"] = log_items
+            return
+
+        has_discover = bool(re.search(r"def\s+discover_urls\b", self.crawler_code))
+        has_crawl_details = bool(re.search(r"def\s+crawl_details\b", self.crawler_code))
+
+        if has_discover:
+            score += 10
+            log_items.append(f"{GREEN}[PASS]{RESET} Có hàm discover_urls() cho Pha 1 (+10đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Thiếu hàm discover_urls() (0/10đ)")
+
+        if has_crawl_details:
+            score += 10
+            log_items.append(f"{GREEN}[PASS]{RESET} Có hàm crawl_details() cho Pha 2 (+10đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Thiếu hàm crawl_details() (0/10đ)")
+
+        self.scores["TC1_TwoPhase"] = score
+        self.details["TC1_TwoPhase"] = log_items
+
+    def _check_tc2_safe_skip(self) -> None:
+        """TC2 (10đ): try...except item-level & continue graceful."""
+        log_items = []
+        score = 0
+        if not self.crawler_code:
+            self.scores["TC2_SafeSkip"] = 0
+            self.details["TC2_SafeSkip"] = [f"{RED}[FAIL]{RESET} Không có code để kiểm tra Safe Skip"]
+            return
+
+        has_try = "try:" in self.crawler_code and "except" in self.crawler_code
+        has_safe_skip_pattern = bool(
+            re.search(r"(safe_skip|Safe Skip|safe skip|skip|continue)", self.crawler_code, re.IGNORECASE)
+        )
+
+        if has_try:
+            score += 5
+            log_items.append(f"{GREEN}[PASS]{RESET} Có khối try...except bao bọc xử lý (+5đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Không có try...except bao bọc ngoại lệ (0/5đ)")
+
+        if has_safe_skip_pattern:
+            score += 5
+            log_items.append(f"{GREEN}[PASS]{RESET} Có cơ chế ghi log cảnh báo và bỏ qua an toàn (+5đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Chưa có cơ chế skip lỗi mạng an toàn (0/5đ)")
+
+        self.scores["TC2_SafeSkip"] = score
+        self.details["TC2_SafeSkip"] = log_items
+
+    def _check_tc3_recrawl(self) -> None:
+        """TC3 (10đ): Quản lý trạng thái và chu kỳ re-crawl 21 ngày."""
+        log_items = []
+        score = 0
+        if not self.crawler_code:
+            self.scores["TC3_Recrawl21d"] = 0
+            self.details["TC3_Recrawl21d"] = [f"{RED}[FAIL]{RESET} Không có code để kiểm tra Re-crawl"]
+            return
+
+        has_status = bool(re.search(r"(PENDING|DONE|FAILED|status)", self.crawler_code))
+        has_21_days = bool(re.search(r"(21|days=21|recrawl|re_crawl)", self.crawler_code, re.IGNORECASE))
+
+        if has_status:
+            score += 5
+            log_items.append(f"{GREEN}[PASS]{RESET} Có quản lý trạng thái bài viết (+5đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Thiếu quản lý trạng thái URL PENDING/DONE (0/5đ)")
+
+        if has_21_days:
+            score += 5
+            log_items.append(f"{GREEN}[PASS]{RESET} Có logic kiểm tra chu kỳ Re-crawl 21 ngày (+5đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Chưa có điều kiện kiểm tra hạn 21 ngày (0/5đ)")
+
+        self.scores["TC3_Recrawl21d"] = score
+        self.details["TC3_Recrawl21d"] = log_items
+
+    def _check_tc4_samples(self) -> None:
+        """TC4 (20đ): 3 HTML (7đ) + 3 JSON valid (7đ) + đa dạng layout (3đ) + README (3đ)."""
+        log_items = []
+        score = 0
+        samples_dir = Path("crawlers") / "sources" / self.source / "samples"
+        if not samples_dir.is_dir():
+            log_items.append(f"{RED}[FAIL]{RESET} Thư mục mẫu không tồn tại: {samples_dir} (0/20đ)")
+            self.scores["TC4_Samples"] = 0
+            self.details["TC4_Samples"] = log_items
+            return
+
+        html_files = sorted(list(samples_dir.glob("*.html")))
+        json_files = sorted(list(samples_dir.glob("*.json")))
+        readme_file = samples_dir / "README.md"
+
+        # 1. HTML files
+        if len(html_files) >= 3:
+            score += 7
+            log_items.append(f"{GREEN}[PASS]{RESET} Đủ file HTML thô ({len(html_files)}/3 file) (+7đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Thiếu file HTML thô ({len(html_files)}/3 file) (0/7đ)")
+
+        # 2. JSON files & tính hợp lệ
+        valid_json = 0
+        for jf in json_files:
+            try:
+                with open(jf, "r", encoding="utf-8") as f:
+                    json.load(f)
                     valid_json += 1
-                    keys_info = list(data.keys()) if isinstance(data, dict) else f"{len(data)} items"
-                    details.append(f"       • {f.name} (Valid JSON, structure: {keys_info[:4]})")
-            except Exception as e:
-                details.append(f"       • {RED}{f.name} (Lỗi cú pháp JSON: {e}){RESET}")
-    else:
-        details.append(f"{RED}[FAIL]{RESET} File JSON: chỉ có {len(json_files)}/3 file (yêu cầu tối thiểu 3 file)")
+            except Exception:
+                pass
 
-    # 3. Kiểm tra file markdown mô tả sample (tùy chọn)
-    if md_files:
-        details.append(f"{GREEN}[PASS]{RESET} File Markdown mô tả sample: {', '.join(f.name for f in md_files)}")
-    else:
-        details.append(f"{YELLOW}[INFO]{RESET} File Markdown mô tả sample: Không có (khuyến khích thêm samples/README.md)")
+        if valid_json >= 3:
+            score += 7
+            log_items.append(f"{GREEN}[PASS]{RESET} Đủ file JSON tương ứng hợp lệ ({valid_json}/3 file) (+7đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Thiếu file JSON hợp lệ ({valid_json}/3 file) (0/7đ)")
 
-    passed = len(html_files) >= 3 and valid_json >= 3
-    return passed, details
+        # 3. Đa dạng layout
+        sample_names = " ".join([f.name for f in html_files + json_files])
+        if ("hot" in sample_names or "vip" in sample_names) and ("negotiable" in sample_names or "salary" in sample_names):
+            score += 3
+            log_items.append(f"{GREEN}[PASS]{RESET} Có sự đa dạng layout (chuẩn, VIP/hot, thỏa thuận) (+3đ)")
+        elif len(html_files) >= 3 and valid_json >= 3:
+            score += 1
+            log_items.append(f"{YELLOW}[WARN]{RESET} Chưa thể hiện rõ sự khác biệt layout giữa các file (+1/3đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Chưa có layout đa dạng (0/3đ)")
+
+        # 4. README
+        if readme_file.is_file() and readme_file.stat().st_size > 50:
+            score += 3
+            log_items.append(f"{GREEN}[PASS]{RESET} Có samples/README.md hướng dẫn mapping (+3đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Thiếu file samples/README.md (0/3đ)")
+
+        self.scores["TC4_Samples"] = score
+        self.details["TC4_Samples"] = log_items
+
+    def _check_tc5_lakehouse(self) -> None:
+        """TC5 (10đ): MinIO & Cloudflare R2 integration."""
+        log_items = []
+        score = 0
+
+        # Kiểm tra code tích hợp MinIO/Ledger
+        has_minio_code = bool(re.search(r"(minio|url_ledger|ledger|sync_to_minio)", self.crawler_code, re.IGNORECASE))
+        has_data_dir = (Path("data") / self.source).is_dir() or (Path("data") / "raw" / self.source).is_dir()
+
+        if has_minio_code:
+            score += 5
+            log_items.append(f"{GREEN}[PASS]{RESET} Mã nguồn có tích hợp module Lakehouse/URL Ledger (+5đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Mã nguồn chưa tích hợp UrlLedger hoặc sync MinIO (0/5đ)")
+
+        if has_data_dir:
+            score += 5
+            log_items.append(f"{GREEN}[PASS]{RESET} Đã có thư mục lưu trữ dữ liệu phân vùng data/{self.source}/ (+5đ)")
+        else:
+            log_items.append(f"{YELLOW}[INFO]{RESET} Chưa có thư mục dữ liệu cục bộ data/{self.source}/ (0/5đ)")
+
+        self.scores["TC5_Lakehouse"] = score
+        self.details["TC5_Lakehouse"] = log_items
+
+    def _check_tc6_docs(self) -> None:
+        """TC6 (15đ): docs/crawl/<source>.md."""
+        log_items = []
+        score = 0
+        doc_path = Path("docs") / "crawl" / f"{self.source}.md"
+
+        if doc_path.is_file():
+            score += 5
+            log_items.append(f"{GREEN}[PASS]{RESET} Tồn tại file docs/crawl/{self.source}.md (+5đ)")
+            size = doc_path.stat().st_size
+            if size >= 500:
+                score += 5
+                log_items.append(f"{GREEN}[PASS]{RESET} Độ dài tài liệu đầy đủ ({size} bytes) (+5đ)")
+            else:
+                log_items.append(f"{YELLOW}[WARN]{RESET} Tài liệu quá ngắn ({size} < 500 bytes) (0/5đ)")
+
+            content = doc_path.read_text(encoding="utf-8")
+            if any(k in content for k in ["API", "DOM", "selector", "CSS", "WAF", "SSR", "HTML"]):
+                score += 5
+                log_items.append(f"{GREEN}[PASS]{RESET} Có phân tích kỹ thuật chi tiết (SSR/API/Selector) (+5đ)")
+            else:
+                log_items.append(f"{YELLOW}[WARN]{RESET} Thiếu phân tích sâu về kiến trúc mạng/DOM (0/5đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Không tìm thấy docs/crawl/{self.source}.md (0/15đ)")
+
+        self.scores["TC6_ArchitectureDoc"] = score
+        self.details["TC6_ArchitectureDoc"] = log_items
+
+    def _check_tc7_reports(self) -> None:
+        """TC7 (15đ): inventory (8đ) & eda report (7đ)."""
+        log_items = []
+        score = 0
+        inv_path = Path("reports") / f"{self.source}_inventory.md"
+        eda_path = Path("reports") / f"{self.source}_eda.md"
+
+        if inv_path.is_file() and inv_path.stat().st_size >= 100:
+            score += 8
+            log_items.append(f"{GREEN}[PASS]{RESET} Có báo cáo kiểm kê trường dữ liệu: {inv_path} (+8đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Thiếu báo cáo kiểm kê: {inv_path} (0/8đ)")
+
+        if eda_path.is_file() and eda_path.stat().st_size >= 100:
+            score += 7
+            log_items.append(f"{GREEN}[PASS]{RESET} Có báo cáo phân tích EDA sơ bộ: {eda_path} (+7đ)")
+        else:
+            log_items.append(f"{RED}[FAIL]{RESET} Thiếu báo cáo EDA: {eda_path} (0/7đ)")
+
+        self.scores["TC7_Reports"] = score
+        self.details["TC7_Reports"] = log_items
+
+    def _check_bonus_and_penalties(self) -> None:
+        """Kiểm tra điểm thưởng và điểm trừ."""
+        bonus_items = []
+        penalty_items = []
+
+        # 1. Bonus: Kế thừa BaseCrawler
+        if self.crawler_code and "BaseCrawler" in self.crawler_code:
+            self.bonus += 5
+            bonus_items.append(f"{GREEN}[BONUS]{RESET} Kế thừa chuẩn BaseCrawler (+5đ)")
+
+        # 2. Bonus: Unit tests
+        test_path = Path("tests") / "unit" / f"test_{self.source}_crawler.py"
+        if test_path.is_file():
+            self.bonus += 5
+            bonus_items.append(f"{GREEN}[BONUS]{RESET} Có file unit test: {test_path} (+5đ)")
+
+        # 3. Penalty: Selenium
+        if self.crawler_code and ("selenium" in self.crawler_code or "webdriver" in self.crawler_code):
+            self.penalty += 5
+            penalty_items.append(f"{RED}[PENALTY]{RESET} Sử dụng Selenium không tối ưu (-5đ)")
+
+        # 4. Penalty: Large files in git
+        crawler_dir = Path("crawlers") / "sources" / self.source
+        for f in crawler_dir.glob("*.json"):
+            if f.stat().st_size > 1024 * 1024:
+                self.penalty += 10
+                penalty_items.append(f"{RED}[PENALTY]{RESET} Commit file data lớn {f.name} ({f.stat().st_size/1024/1024:.1f} MB) (-10đ)")
+
+        self.details["Bonus"] = bonus_items
+        self.details["Penalty"] = penalty_items
 
 
-def check_docs_and_reports(source: str) -> tuple[bool, list[str]]:
-    details = []
-    crawl_doc = Path("docs") / "crawl" / f"{source}.md"
-    inventory_report = Path("reports") / f"{source}_inventory.md"
-    eda_report = Path("reports") / f"{source}_eda.md"
+def print_single_report(res: dict[str, Any]) -> None:
+    source = res["source"]
+    print(f"\n{CYAN}{BOLD}{'=' * 70}{RESET}")
+    print(f"{CYAN}{BOLD} BÁO CÁO ĐÁNH GIÁ CHUẨN ĐẦU RA THU THẬP DỮ LIỆU: [{source.upper()}]{RESET}")
+    print(f"{CYAN}{BOLD}{'=' * 70}{RESET}\n")
 
-    # Kiểm tra doc
-    if crawl_doc.is_file() and crawl_doc.stat().st_size > 100:
-        details.append(f"{GREEN}[PASS]{RESET} Tài liệu phân tích kiến trúc web: {crawl_doc} ({crawl_doc.stat().st_size} bytes)")
-    else:
-        details.append(f"{RED}[FAIL]{RESET} Tài liệu phân tích kiến trúc web thiếu hoặc quá ngắn: {crawl_doc}")
+    for tc_key, logs in res["details"].items():
+        if tc_key in ["Bonus", "Penalty"] and not logs:
+            continue
+        print(f"{BOLD}► {tc_key}:{RESET}")
+        for line in logs:
+            print(f"   {line}")
+        print()
 
-    # Kiểm tra inventory report
-    if inventory_report.is_file() and inventory_report.stat().st_size > 100:
-        details.append(f"{GREEN}[PASS]{RESET} Báo cáo kiểm kê trường dữ liệu: {inventory_report}")
-    else:
-        details.append(f"{RED}[FAIL]{RESET} Thiếu báo cáo kiểm kê: {inventory_report}")
+    print(f"{CYAN}{'-' * 70}{RESET}")
+    scores = res["scores"]
+    print(f"{BOLD}Điểm các tiêu chí chuẩn DoD:{RESET}")
+    for k, v in scores.items():
+        print(f"  • {k:22s}: {v:2d} điểm")
+    print(f"  • {'Bonus':22s}: +{res['bonus']} điểm")
+    print(f"  • {'Penalty':22s}: -{res['penalty']} điểm")
+    print(f"{CYAN}{'-' * 70}{RESET}")
 
-    # Kiểm tra eda report
-    if eda_report.is_file() and eda_report.stat().st_size > 100:
-        details.append(f"{GREEN}[PASS]{RESET} Báo cáo phân tích EDA sơ bộ: {eda_report}")
-    else:
-        details.append(f"{RED}[FAIL]{RESET} Thiếu báo cáo EDA: {eda_report}")
-
-    passed = crawl_doc.is_file() and inventory_report.is_file() and eda_report.is_file()
-    return passed, details
+    total = res["total_score"]
+    color = GREEN if total >= 70 else (YELLOW if total >= 40 else RED)
+    status_text = "ĐẠT CHUẨN (PASS)" if res["passed"] else "CHƯA ĐẠT CHUẨN (FAIL)"
+    print(f"{BOLD}TỔNG ĐIỂM NGHIỆM THU: {color}{BOLD}{total} / 100 ĐIỂM — {status_text}{RESET}\n")
 
 
-def check_storage_readiness() -> tuple[bool, list[str]]:
-    details = []
-    # Nạp .env nếu có
-    env_file = Path(".env")
-    if env_file.is_file():
-        with open(env_file, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#") and "=" in line:
-                    k, v = line.split("=", 1)
-                    os.environ.setdefault(k.strip(), v.strip())
+def print_all_summary(results: list[dict[str, Any]]) -> None:
+    print(f"\n{CYAN}{BOLD}{'=' * 85}{RESET}")
+    print(f"{CYAN}{BOLD} BẢNG TỔNG KẾT ĐÁNH GIÁ NGHIỆM THU TOÀN BỘ 7 SÀN TUYỂN DỤNG (DoD SUMMARY){RESET}")
+    print(f"{CYAN}{BOLD}{'=' * 85}{RESET}\n")
 
-    # Kiểm tra MinIO
-    minio_endpoint = os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
-    details.append(f"{GREEN}[PASS]{RESET} MinIO Endpoint được cấu hình: {minio_endpoint}")
+    header = f"{'Nguồn':<14} | {'TC1':<4} | {'TC2':<4} | {'TC3':<4} | {'TC4':<4} | {'TC5':<4} | {'TC6':<4} | {'TC7':<4} | {'Bonus':<5} | {'Phạt':<4} | {'Tổng':<6} | {'Kết Quả':<10}"
+    print(f"{BOLD}{header}{RESET}")
+    print("-" * len(header))
 
-    # Kiểm tra Cloudflare R2
-    r2_endpoint = os.getenv("R2_ENDPOINT_URL") or os.getenv("S3_ENDPOINT_URL")
-    if r2_endpoint and "r2.cloudflarestorage.com" in r2_endpoint:
-        details.append(f"{GREEN}[PASS]{RESET} Cloudflare R2 Endpoint: {r2_endpoint}")
-    else:
-        details.append(f"{YELLOW}[WARN]{RESET} Chưa cấu hình R2_ENDPOINT_URL trong .env (chạy local-only hoặc điền theo .env.example)")
+    for r in results:
+        sc = r["scores"]
+        src = r["source"]
+        tot = r["total_score"]
+        status = f"{GREEN}PASS{RESET}" if r["passed"] else f"{RED}FAIL{RESET}"
+        print(
+            f"{src:<14} | {sc['TC1_TwoPhase']:<4} | {sc['TC2_SafeSkip']:<4} | "
+            f"{sc['TC3_Recrawl21d']:<4} | {sc['TC4_Samples']:<4} | {sc['TC5_Lakehouse']:<4} | "
+            f"{sc['TC6_ArchitectureDoc']:<4} | {sc['TC7_Reports']:<4} | "
+            f"+{r['bonus']:<4} | -{r['penalty']:<3} | {BOLD}{tot:>3}/100{RESET} | {status:<10}"
+        )
 
-    return True, details
+    print(f"\n{CYAN}{BOLD}{'=' * 85}{RESET}\n")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Kiểm tra nghiệm thu hồ sơ thu thập dữ liệu (DoD)")
-    parser.add_argument("--source", required=True, help="Tên nguồn (VD: topcv, vietnamworks, careerviet, itviec...)")
+    parser = argparse.ArgumentParser(description="Kiểm tra và chấm điểm tự động hồ sơ nghiệm thu thu thập dữ liệu (DoD)")
+    parser.add_argument("--source", help="Tên nguồn (VD: topcv, vietnamworks, topdev...)")
+    parser.add_argument("--all", action="store_true", help="Chấm điểm toàn bộ 7 sàn tuyển dụng")
     args = parser.parse_args()
 
-    source = args.source.strip().lower()
-    print_banner(source)
-
-    print(f"{BOLD}1. Kiểm Tra Bộ Mẫu Dữ Liệu (crawlers/sources/{source}/samples/):{RESET}")
-    samples_ok, samples_details = check_samples(source)
-    for line in samples_details:
-        print(f"  {line}")
-
-    print(f"\n{BOLD}2. Kiểm Tra Tài Liệu & Báo Cáo Nghiệm Thu:{RESET}")
-    docs_ok, docs_details = check_docs_and_reports(source)
-    for line in docs_details:
-        print(f"  {line}")
-
-    print(f"\n{BOLD}3. Kiểm Tra Hạ Tầng Lưu Trữ Đa Tầng (MinIO & Cloudflare R2):{RESET}")
-    storage_ok, storage_details = check_storage_readiness()
-    for line in storage_details:
-        print(f"  {line}")
-
-    print(f"\n{CYAN}{BOLD}{'=' * 65}{RESET}")
-    if samples_ok and docs_ok:
-        print(f"{GREEN}{BOLD} KẾT QUẢ TỔNG THỂ: ĐẠT TIÊU CHUẨN NGHIỆM THU (DOD PASSED)!{RESET}")
-        print(f"{GREEN} Nhánh 'crawls/{source}' đã sẵn sàng tạo Pull Request vào nhánh 'main'.{RESET}")
-        print(f"{CYAN}{BOLD}{'=' * 65}{RESET}\n")
-        return 0
-    else:
-        print(f"{RED}{BOLD} KẾT QUẢ TỔNG THỂ: CHƯA ĐẠT TIÊU CHUẨN NGHIỆM THU (DOD FAILED)!{RESET}")
-        print(f"{YELLOW} Vui lòng hoàn thiện các mục bị đánh dấu [FAIL] ở trên trước khi nộp bài.{RESET}")
-        print(f"{CYAN}{BOLD}{'=' * 65}{RESET}\n")
+    if not args.source and not args.all:
+        parser.print_help()
         return 1
+
+    if args.all:
+        results = []
+        for src in ALL_SOURCES:
+            scorer = DoDScorer(src)
+            results.append(scorer.evaluate())
+        print_all_summary(results)
+        return 0
+
+    source = args.source.strip().lower()
+    scorer = DoDScorer(source)
+    res = scorer.evaluate()
+    print_single_report(res)
+    return 0 if res["passed"] else 1
 
 
 if __name__ == "__main__":

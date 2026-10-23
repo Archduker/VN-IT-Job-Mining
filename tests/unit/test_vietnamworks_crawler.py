@@ -7,9 +7,12 @@ import tempfile
 import unittest
 from unittest.mock import Mock
 
-from crawlers.sources.vietnamworks.crawler import VietnamWorksCrawler
-from crawlers.sources.vietnamworks.crawler import is_it_job
-from crawlers.common.schema import JobRecord
+from crawlers.sources.vietnamworks.crawler import (
+    VietnamWorksCrawler,
+    extract_raw_envelope_from_html,
+    is_it_job,
+)
+from crawlers.common.schema import JobRecord, RawJobEnvelope
 
 
 SAMPLE_JOB_PAYLOAD = {
@@ -164,6 +167,35 @@ class TestVietnamWorksCrawler(unittest.TestCase):
             self.assertEqual(list(crawler.fetch_items()), [])
             self.assertEqual(crawler.filtered_non_it_count, 1)
             self.assertEqual(crawler.raw_payload_files, [])
+
+    def test_extract_raw_envelope_from_html(self):
+        sample_html = """
+        <div class="job-details-container">
+          <h1 class="job-title">Senior Software Engineer (Java/python/Go)</h1>
+          <div class="company-name">VINSMART FUTURE</div>
+          <div class="salary">Thương lượng</div>
+          <div class="description"><p>Backend services</p></div>
+          <div class="requirements"><ul><li>4 years experience</li></ul></div>
+        </div>
+        """
+        envelope = extract_raw_envelope_from_html(
+            sample_html,
+            job_id="2109463",
+            url="https://www.vietnamworks.com/job-2109463-jv",
+        )
+        self.assertIsInstance(envelope, RawJobEnvelope)
+        self.assertEqual(envelope.metadata["source"], "vietnamworks")
+        self.assertEqual(envelope.metadata["crawler_version"], "2.0.0")
+        self.assertEqual(envelope.raw_payload["job-title"], "Senior Software Engineer (Java/python/Go)")
+        self.assertEqual(envelope.raw_payload["salary"], "Thương lượng")
+        self.assertIn("job-details-container", envelope.raw_payload)
+
+    def test_crawler_parse_raw_envelope(self):
+        envelope = self.crawler.parse_raw_envelope(SAMPLE_JOB_PAYLOAD)
+        self.assertIsInstance(envelope, RawJobEnvelope)
+        self.assertEqual(envelope.metadata["source"], "vietnamworks")
+        self.assertEqual(envelope.metadata["source_job_id"], "1892837")
+        self.assertEqual(envelope.raw_payload["jobTitle"], "Senior Software Engineer (Java/Python)")
 
 
 if __name__ == "__main__":

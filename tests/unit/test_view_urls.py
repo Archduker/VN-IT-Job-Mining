@@ -85,3 +85,32 @@ def test_export_data(tmp_path):
     export_data(records, json_path=str(json_out), csv_path=str(csv_out))
     assert json_out.exists()
     assert csv_out.exists()
+
+
+def test_audit_source_metadata_and_render_all(capsys):
+    from scripts.view_urls import audit_source_metadata, render_all_sources_audit
+
+    test_hash = "066c4f321c78637f343b6d155738f705"
+    test_records = {
+        test_hash: {
+            "url_hash": test_hash,
+            "canonical_url": "https://topcv.vn/job/123",
+            "source": "topcv",
+            "job_id": "123",
+            "discovered_at": "2026-10-16T10:00:00Z",
+            "status": "DONE",
+            "preliminary_title": "Backend Dev",
+            "preliminary_company": "FPT",
+        }
+    }
+    audit = audit_source_metadata(test_records)
+    assert audit["total"] == 1
+    assert audit["valid_schema"] == 1
+    assert audit["hash_match"] == 1
+    assert audit["is_ok"] is True
+
+    all_res = {"topcv": {"exists": True, "records": test_records}}
+    render_all_sources_audit(all_res, is_minio=False)
+    captured = capsys.readouterr()
+    assert "BÁO CÁO KIỂM TOÁN CHUẨN HÓA METADATA" in captured.out
+    assert "TOPCV" in captured.out

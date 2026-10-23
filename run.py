@@ -32,6 +32,7 @@ SUPPORTED_SOURCES = [
     "vieclam24h",
     "topcv",
     "glints",
+    "jobsgo",
 ]
 
 
@@ -54,6 +55,8 @@ def run_crawler(
     batch_id: Optional[str] = None,
     phase: str = "all",
     max_pages: Optional[int] = None,
+    engine: Optional[str] = None,
+    online: bool = True,
 ) -> Dict[str, Any]:
     """Khởi tạo và thực thi crawler theo source và phase."""
     source = source.lower()
@@ -66,11 +69,14 @@ def run_crawler(
 
     if source == "topcv":
         from crawlers.sources.topcv.crawler import TopCVCrawler
-        crawler = TopCVCrawler(
-            checkpoint_dir=checkpoint_dir,
-            output_dir=output_dir,
-            max_items=max_items,
-        )
+        kwargs = {
+            "checkpoint_dir": checkpoint_dir,
+            "output_dir": output_dir,
+            "max_items": max_items,
+        }
+        if engine:
+            kwargs["engine"] = engine
+        crawler = TopCVCrawler(**kwargs)
     elif source == "topdev":
         from crawlers.sources.topdev.crawler import TopDevCrawler
         crawler = TopDevCrawler(
@@ -91,6 +97,8 @@ def run_crawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
+            ledger_dir=os.path.join(output_dir, source, "url_ledger") if output_dir else None,
+            raw_dir=os.path.join(output_dir, source, "raw") if output_dir else None,
         )
     elif source == "vieclam24h":
         from crawlers.sources.vieclam24h.crawler import ViecLam24hCrawler
@@ -107,15 +115,17 @@ def run_crawler(
             max_items=max_items,
         )
     elif source == "glints":
-        try:
-            from crawlers.sources.glints.crawler import GlintsCrawler
-            crawler = GlintsCrawler(
-                checkpoint_dir=checkpoint_dir,
-                output_dir=output_dir,
-                max_items=max_items,
-            )
-        except ImportError:
-            raise NotImplementedError("Crawler nguồn 'glints' đang được phát triển hoặc chưa có file crawler.py.")
+        from crawlers.sources.glints.raw_pipeline import GlintsRawPipeline
+        crawler = GlintsRawPipeline(
+            max_items=max_items,
+            storage_dir=os.path.join(output_dir, source, "url_ledger") if output_dir else None,
+        )
+    elif source == "jobsgo":
+        from crawlers.sources.jobsgo.crawler import JobsGORawCrawler
+        crawler = JobsGORawCrawler(
+            max_items=max_items,
+            storage_dir=os.path.join(output_dir, source, "url_ledger") if output_dir else None,
+        )
     else:
         raise ValueError(f"Chưa cài đặt runner cho nguồn {source}")
 
@@ -125,22 +135,35 @@ def run_crawler(
     # ── Điều phối theo Phase ───────────────────────────────────
     if phase == "discover":
         if hasattr(crawler, "discover_urls"):
-            discovered = crawler.discover_urls(max_pages=max_pages)
+            kw = {"max_pages": max_pages}
+            if "online" in crawler.discover_urls.__code__.co_varnames:
+                kw["online"] = online
+            discovered = crawler.discover_urls(**kw)
             return {"source": source, "phase": "discover", "discovered_urls": discovered}
         else:
             raise NotImplementedError(f"Crawler nguồn '{source}' chưa cài đặt hàm discover_urls()")
 
     elif phase == "detail":
         if hasattr(crawler, "crawl_details"):
-            stats = crawler.crawl_details(limit=max_items)
+            kw = {"limit": max_items}
+            if "online" in crawler.crawl_details.__code__.co_varnames:
+                kw["online"] = online
+            stats = crawler.crawl_details(**kw)
             return {"source": source, "phase": "detail", **stats}
         else:
             raise NotImplementedError(f"Crawler nguồn '{source}' chưa cài đặt hàm crawl_details()")
 
     else:  # phase == "all"
         if hasattr(crawler, "discover_urls") and hasattr(crawler, "crawl_details"):
-            discovered = crawler.discover_urls(max_pages=max_pages)
-            stats = crawler.crawl_details(limit=max_items)
+            kw_disc = {"max_pages": max_pages}
+            if "online" in crawler.discover_urls.__code__.co_varnames:
+                kw_disc["online"] = online
+            discovered = crawler.discover_urls(**kw_disc)
+
+            kw_det = {"limit": max_items}
+            if "online" in crawler.crawl_details.__code__.co_varnames:
+                kw_det["online"] = online
+            stats = crawler.crawl_details(**kw_det)
             return {"source": source, "phase": "all", "discovered_urls": discovered, **stats}
         return crawler.run()
 
@@ -158,6 +181,7 @@ Ví dụ sử dụng:
   .venv/bin/python run.py --source careerviet --max-items 1
   .venv/bin/python run.py --source vieclam24h --max-items 1
   .venv/bin/python run.py --source topcv --max-items 1
+  .venv/bin/python run.py --source jobsgo --phase all --max-items 5
         """,
     )
     parser.add_argument(
@@ -166,7 +190,7 @@ Ví dụ sử dụng:
         type=str,
         required=True,
         choices=SUPPORTED_SOURCES + ["all"],
-        help="Nguồn tuyển dụng cần cào (hoặc 'all' để chạy toàn bộ 7 nguồn)",
+        help="Nguồn tuyển dụng cần cào (hoặc 'all' để chạy toàn bộ 8 nguồn)",
     )
     parser.add_argument(
         "--max-items",
@@ -209,6 +233,25 @@ Ví dụ sử dụng:
         help="Số trang danh mục tối đa cần quét ở Phase 1 (mặc định: không giới hạn)",
     )
     parser.add_argument(
+        "--engine",
+        type=str,
+        default="cloakbrowser",
+        choices=["cloakbrowser", "curl_cffi", "playwright", "nodriver"],
+        help="Engine vượt Cloudflare cho các nguồn hỗ trợ (mặc định: cloakbrowser)",
+    )
+    parser.add_argument(
+        "--online",
+        action="store_true",
+        default=True,
+        help="Bật chế độ cào trực tuyến (mặc định: True)",
+    )
+    parser.add_argument(
+        "--offline",
+        dest="online",
+        action="store_false",
+        help="Chạy chế độ offline từ cache HTML",
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -238,6 +281,8 @@ Ví dụ sử dụng:
                 batch_id=args.batch_id,
                 phase=args.phase,
                 max_pages=args.max_pages,
+                engine=args.engine,
+                online=args.online,
             )
             all_results.append((src, True, stats))
             log.info(

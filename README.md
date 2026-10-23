@@ -1,6 +1,36 @@
 # **VN IT Job Mining Data Collection System**
 
-Hệ thống thu thập dữ liệu tuyển dụng IT tự động tại Việt Nam theo chuẩn **Modern Data Stack**, điều phối bằng **Apache Airflow**, kiến trúc **Two-Phase Decoupled Crawler** kết hợp **MinIO Lakehouse (URL Ledger & Manifests)**, lưu trữ dữ liệu dạng **JSON mảng phân vùng (partitioned)**, kiểm soát chất lượng dữ liệu (**DataQualityChecker**) và chuẩn hóa theo **Data Contract Schema v1**.
+Hệ thống thu thập dữ liệu tuyển dụng IT tự động tại Việt Nam theo chuẩn **Modern Data Stack**, điều phối bằng **Apache Airflow**, kiến trúc **Two-Phase Decoupled Crawler** kết hợp **Cloudflare R2 Lakehouse (URL Ledger & Manifests)**, lưu trữ dữ liệu dạng **JSON mảng phân vùng (partitioned)**, kiểm soát chất lượng dữ liệu (**DataQualityChecker**) và chuẩn hóa theo **Data Contract Schema v1**.
+
+---
+
+## 🖥️ Trung Tâm Giám Sát & Điều Phối Toàn Hệ Thống (Central Observatory)
+
+Hệ thống sở hữu trang web UI dashboard hiện đại đặt tại [`monitoring/`](monitoring/) phân chia rõ rệt **Backend (FastAPI)** và **Frontend (React 18 + Vite + Tailwind + Recharts + Plotly 3D)**:
+
+- **Sứ mệnh cốt lõi (Visual Truth Engine)**: *Miêu tả hình ảnh thực tế của toàn bộ dòng chảy dữ liệu thông qua các chỉ số và biểu đồ liên tục, liền mạch theo chuẩn pipeline 3 giai đoạn (`Collection` ➔ `Pre-processing` ➔ `Processing`) để từng bước tinh chế ra **Bộ Dữ Liệu Vàng Hoàn Chỉnh Nhất (Golden Master Dataset)**.*
+- **Chiến lược EDA Đa Tầng (Multi-stage EDA)**:
+  - *Master Dashboard*: Cung cấp bức tranh toàn cảnh cấp cao về bộ dữ liệu hợp nhất (độ hội tụ schema, phân bổ lương thị trường, top kỹ năng vàng, hệ số làm sạch).
+  - *EDA Chi Tiết Từng Giai Đoạn*: Được thiết kế chuyên biệt cho từng bước xử lý dữ liệu (EDA Thô As-Is tại Collection, EDA Regex & Outliers tại Pre-processing, EDA Deduplication & Semantic Drift tại Processing).
+- **Phân Tách Rõ Ràng Vận Hành (Decoupled Operations)**:
+  - *Crawling Operations*: Giám sát tiến độ cào, URL Ledger manifests, SSE live stream logs, kiểm soát batch run.
+  - *EDA Intelligence*: Kiểm kê trường dữ liệu thô (field inventory), đo lường tỷ lệ khuyết thiếu (missingness profiling), và 5 họ biểu đồ khoa học 2D.
+- **Giám Sát Apache Airflow Trực Tiếp**:
+  - Tự động theo dõi tiến trình sống (PID) của Scheduler và Webserver (Port 8080).
+  - Truy vấn trực tiếp SQLite Metadata DB (`airflow/airflow.db`) để cập nhật trạng thái của 7 DAGs cào xoay vòng hàng ngày.
+- **Hạ Tầng Lưu Trữ Đám Mây Độc Quyền Cloudflare R2**:
+  - 100% chuyển sang Cloudflare R2 bucket `vn-it-jobs` (đã loại bỏ hoàn toàn các cấu hình MinIO/S3 cũ).
+  - Tích hợp **R2 Diff Engine & Đồng Bộ 1-Click** giúp kiểm toán chênh lệch giữa ổ đĩa cục bộ và Remote Cloud.
+- **Quy Chuẩn Giám Sát Không Đăng Nhập (Zero-Auth Standard)**:
+  - Không có bất kỳ form đăng nhập, xác thực hay phân quyền người dùng nào. Đây là bảng điều khiển kỹ thuật nội bộ (Internal Engineering Monitor) tối ưu cho việc quan sát trực tiếp, phản hồi thời gian thực và tự động hóa.
+- **Chuẩn Hóa 100% TypeScript (Strictly No JavaScript)**:
+  - Toàn bộ frontend, các components, cấu hình (`vite.config.ts`, `tailwind.config.ts`) và models được định kiểu chặt chẽ bằng TypeScript. Khóa cứng `"allowJs": false` trong `tsconfig.json`.
+- **API Trung Tâm Điều Hành**: [`GET /api/dashboard`](http://localhost:8000/api/dashboard) (hoặc `/api/v1/dashboard`) và tài liệu Swagger API tại [`http://localhost:8000/docs`](http://localhost:8000/docs).
+- **Khởi chạy nhanh 1 lệnh**:
+  ```bash
+  ./monitoring/run_all.sh
+  ```
+  Giao diện Web Dashboard truy cập tại `http://localhost:5173`. Quy tắc phát triển xem tại [`.agents/rules/monitoring_system_rules.md`](.agents/rules/monitoring_system_rules.md) và Skill MCP tại [`.agents/skills/mcp-ui-architect/SKILL.md`](.agents/skills/mcp-ui-architect/SKILL.md).
 
 ---
 
@@ -21,7 +51,7 @@ Hệ thống triển khai thu thập dữ liệu tự động từ **7 sàn tuy�
 ### 🔹 Bước 3: Pha 2 — Bóc Tách Chi Tiết & Chống Trùng Lặp (Phase 2: Detail Extraction & CDC)
 - Đọc catalog URL từ sổ cái (URL Ledger): chỉ lọc ra các URL có trạng thái `PENDING` hoặc bài viết đã hoàn tất (`DONE`) nhưng đã tồn tại $\ge 21$ ngày để kiểm tra cập nhật (Chu kỳ Re-crawl 21 ngày).
 - **Cơ chế Safe Skip (Chịu lỗi an toàn)**: Khi gặp link lỗi mạng (404 Not Found, 500 Server Error, timeout), crawler tự động log cảnh báo và bỏ qua link đó để tiếp tục cào các tin tiếp theo mà không làm sập tiến trình.
-- **Tính toán Clean Container HTML Hash**: Bóc tách riêng khối nội dung chi tiết bài viết (loại trừ các thành phần giao diện động như widget đề xuất, banner quảng cáo, số lượt xem) và băm SHA-256 để phát hiện nội dung có thực sự thay đổi hay không (Change Data Capture - CDC Versioning), ngăn chặn việc tăng version oan.
+- **Băm Cấu Trúc JSON Sau Cào (Post-Crawl Canonical JSON Hashing & CDC)**: Tải nguyên bản dữ liệu thô (Raw As-Is) về Lakehouse, bóc tách cấu trúc trường vào JSON và băm SHA-256 trên dictionary đã chuẩn hóa khóa (`canonical JSON hash`) kèm băm theo từng trường (`salary_hash`, `requirements_hash`, etc.). Cơ chế này miễn nhiễm hoàn toàn với rác động HTML (lượt xem, CSRF, ads) và chỉ rõ chính xác trường nào bị thay đổi giữa các phiên bản.
 
 ### 🔹 Bước 4: Chuẩn Hóa Schema & Ghi Dữ Liệu Phân Vùng (Schema Normalization & Storage)
 - Ép toàn bộ dữ liệu bóc tách được từ 7 sàn về thống nhất theo **Data Contract Schema v1** (`JobRecord` gồm metadata kỹ thuật `_meta` và nội dung nghiệp vụ `raw`):
@@ -116,3 +146,9 @@ Toàn bộ **130/130 test cases** đạt trạng thái **100% Passed**.
 | Thứ Sáu | **TopCV** | `crawler_topcv` | `0 20 * * 5` |
 | Thứ Bảy | **ViecLam24h** | `crawler_vieclam24h` | `0 20 * * 6` |
 | Chủ Nhật | **Glints** | `crawler_glints` | `0 20 * * 0` |
+
+
+## MinIO Lakehouse Guide
+
+- Vận hành MinIO: [docs/minio_lakehouse_guide.md](docs/minio_lakehouse_guide.md)
+- Agent skill: [.agents/skills/minio-lakehouse-guide/SKILL.md](.agents/skills/minio-lakehouse-guide/SKILL.md)

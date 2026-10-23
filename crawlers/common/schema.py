@@ -523,6 +523,22 @@ class JobRaw(BaseModel):
     model_config = {"extra": "allow"}
 
 
+class RawJobEnvelope(BaseModel):
+    """Envelope chuẩn Zero Information Loss (SD1) cho tầng cào thô (Raw Tier).
+
+    Cấu trúc:
+        {
+            "metadata": { ... },     # JobMetadata hoặc dict metadata
+            "raw_payload": { ... }    # Dữ liệu bóc tách DOM theo CSS class names
+        }
+    """
+
+    metadata: dict = Field(..., description="Metadata bài đăng (job_id, source, url, scraped_at, version, ...)")
+    raw_payload: dict = Field(..., description="Dữ liệu thô bảo toàn DOM với key là CSS class name")
+
+    model_config = {"extra": "allow"}
+
+
 class JobRecord(BaseModel):
     """Wrapper model chứa đầy đủ một job record theo Data Contract.
 
@@ -618,37 +634,18 @@ class JobRecord(BaseModel):
 # Module-level helper
 # ─────────────────────────────────────────────────────────────
 
-def validate_record(data: dict) -> JobRecord:
-    """Parse và validate một raw dict thành JobRecord.
-
-    Tiện ích để validate dữ liệu nhận từ crawler trước khi ghi vào JSONL.
+def validate_record(data: dict) -> Union[JobRecord, RawJobEnvelope]:
+    """Parse và validate một raw dict thành RawJobEnvelope (ưu tiên) hoặc JobRecord.
 
     Args:
-        data: Dict với structure {"_meta": {...}, "raw": {...}}.
+        data: Dict với structure {"metadata": {...}, "raw_payload": {...}}
+              hoặc {"_meta": {...}, "raw": {...}}.
 
     Returns:
-        JobRecord đã validate.
-
-    Raises:
-        pydantic.ValidationError: Nếu data không hợp lệ.
-
-    Examples:
-        >>> record = validate_record({
-        ...     "_meta": {
-        ...         "source": "topdev",
-        ...         "source_job_id": "123",
-        ...         "url": "https://topdev.vn/viec-lam/xyz-123",
-        ...         "dedup_key": "topdev:123",
-        ...         "batch_id": "2026-10-07_topdev_001",
-        ...     },
-        ...     "raw": {
-        ...         "title": "Backend Dev",
-        ...         "company": "FPT",
-        ...         "description_html": "<p>desc</p>",
-        ...         "description_text": "desc",
-        ...     }
-        ... })
+        RawJobEnvelope hoặc JobRecord đã validate.
     """
+    if isinstance(data, dict) and "metadata" in data and "raw_payload" in data:
+        return RawJobEnvelope.model_validate(data)
     return JobRecord.model_validate(data)
 
 

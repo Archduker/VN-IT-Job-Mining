@@ -5,10 +5,12 @@ import json
 import unittest
 from unittest.mock import patch
 
+from crawlers.common.schema import RawJobEnvelope
 from crawlers.sources.glints.crawler import (
     GlintsCrawler,
     detect_language,
     extract_jobposting,
+    extract_raw_envelope_from_html,
     format_amount,
     html_to_text,
     html_to_text_list,
@@ -191,6 +193,56 @@ class GlintsCrawlerTests(unittest.TestCase):
         self.assertEqual(raw["deadline_text"], "2026-11-01")
         self.assertIn("Python", raw["tags"]["skills"])
         self.assertEqual(payload["language"], "vi")
+
+    def test_extract_raw_envelope_from_html(self):
+        sample_html = """
+        <div class="job-posting-container">
+          <h1 class="job-title">Senior Python Developer</h1>
+          <div class="company-name">Glints Tech</div>
+          <div class="salary">30,000,000 - 50,000,000 VND</div>
+          <div class="description"><p>Build scalable microservices</p></div>
+          <div class="requirements"><ul><li>Python 3.12</li></ul></div>
+          <script type="application/ld+json">
+            {"@context": "https://schema.org", "@type": "JobPosting", "title": "Senior Python Developer"}
+          </script>
+        </div>
+        """
+        env = extract_raw_envelope_from_html(
+            sample_html,
+            job_id="test-job-999",
+            url="https://glints.com/vn/opportunities/jobs/test-job-999",
+        )
+        self.assertIsInstance(env, RawJobEnvelope)
+        self.assertEqual(env.metadata["source"], "glints")
+        self.assertEqual(env.metadata["job_id"], "test-job-999")
+        self.assertEqual(env.metadata["status"], "DONE")
+        self.assertEqual(env.raw_payload["job-title"], "Senior Python Developer")
+        self.assertEqual(env.raw_payload["company-name"], "Glints Tech")
+        self.assertEqual(env.raw_payload["salary"], "30,000,000 - 50,000,000 VND")
+        self.assertIn("microservices", env.raw_payload["description"])
+        self.assertIn("Python 3.12", env.raw_payload["requirements"])
+        self.assertIsNotNone(env.raw_payload.get("job_posting_jsonld"))
+        self.assertTrue(bool(env.metadata.get("content_hash")))
+
+    def test_parse_raw_envelope_method(self):
+        item = {
+            "id": "job-abc",
+            "title": "Backend Go Engineer",
+            "company": {"name": "SotaTek"},
+            "salaries": [{"minAmount": 20000000}],
+            "skills": [{"name": "Golang"}],
+            "url": "https://glints.com/vn/opportunities/jobs/job-abc",
+        }
+        env = self.crawler.parse_raw_envelope(item)
+        self.assertIsInstance(env, RawJobEnvelope)
+        self.assertEqual(env.metadata["source"], "glints")
+        self.assertEqual(env.metadata["job_id"], "job-abc")
+        self.assertEqual(env.raw_payload["title"], "Backend Go Engineer")
+
+    def test_two_phase_methods_exist(self):
+        self.assertTrue(hasattr(self.crawler, "discover_urls"))
+        self.assertTrue(hasattr(self.crawler, "crawl_details"))
+        self.assertTrue(hasattr(self.crawler, "crawl_single_url"))
 
 
 if __name__ == "__main__":

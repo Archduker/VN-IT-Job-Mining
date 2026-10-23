@@ -29,6 +29,13 @@ import time
 from dataclasses import dataclass, field
 from typing import Optional
 
+try:
+    from curl_cffi import requests as curl_requests
+    HAS_CURL_CFFI = True
+except ImportError:
+    curl_requests = None
+    HAS_CURL_CFFI = False
+
 import requests
 from requests import Response, Session
 from requests.adapters import HTTPAdapter
@@ -39,6 +46,16 @@ logger = logging.getLogger(__name__)
 # ─────────────────────────────────────────────────────────────
 # User-Agent pool (Chrome/Firefox trên Windows/Mac/Linux)
 # ─────────────────────────────────────────────────────────────
+_CHROME_USER_AGENTS: list[str] = [
+    # Chrome on Windows (Tránh Linux Desktop UA vì bị Cloudflare cắm cờ bot)
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+    # Chrome on macOS
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+]
+
 _USER_AGENTS: list[str] = [
     # Chrome on Windows
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -176,6 +193,7 @@ class HttpClient:
         delay_config: Optional[DelayConfig] = None,
         retry_config: Optional[RetryConfig] = None,
         extra_headers: Optional[dict[str, str]] = None,
+        impersonate: Optional[str] = None,
     ) -> None:
         """Khởi tạo HttpClient.
 
@@ -185,22 +203,35 @@ class HttpClient:
             delay_config: Cấu hình delay giữa requests. Default: 2-5 giây.
             retry_config: Cấu hình retry policy. Default: 3 retries với backoff.
             extra_headers: Headers bổ sung (merge vào _DEFAULT_HEADERS).
+            impersonate: Phiên bản trình duyệt cho curl_cffi (vd: "chrome124").
         """
         self.source = source
         self.timeout = timeout
         self.delay_config = delay_config or DelayConfig()
         self.retry_config = retry_config or RetryConfig()
+        self.impersonate = impersonate
 
         self._session = self._build_session(extra_headers or {})
+        self._curl_session = None
+        if self.impersonate and HAS_CURL_CFFI:
+            try:
+                self._curl_session = curl_requests.Session(impersonate=self.impersonate)
+                self._curl_session.headers.update({**_DEFAULT_HEADERS, **(extra_headers or {})})
+                logger.debug("[%s] curl_cffi session initialized with impersonate=%s", self.source, self.impersonate)
+            except Exception as e:
+                logger.warning("[%s] Failed to init curl_cffi session: %s. Falling back to requests.", self.source, e)
+                self._curl_session = None
+
         self._request_count = 0
 
         logger.debug(
-            "[%s] HttpClient initialized | timeout=%ss | delay=%s-%ss | max_retries=%s",
+            "[%s] HttpClient initialized | timeout=%ss | delay=%s-%ss | max_retries=%s | impersonate=%s",
             self.source,
             self.timeout,
             self.delay_config.min_seconds,
             self.delay_config.max_seconds,
             self.retry_config.max_retries,
+            self.impersonate,
         )
 
     def _build_session(self, extra_headers: dict[str, str]) -> Session:
@@ -238,8 +269,13 @@ class HttpClient:
         Returns:
             User-Agent string được chọn.
         """
-        ua = random.choice(_USER_AGENTS)
+        if self.impersonate:
+            ua = random.choice(_CHROME_USER_AGENTS)
+        else:
+            ua = random.choice(_USER_AGENTS)
         self._session.headers["User-Agent"] = ua
+        if self._curl_session:
+            self._curl_session.headers["User-Agent"] = ua
         return ua
 
     def get(
@@ -250,31 +286,7 @@ class HttpClient:
         apply_delay: bool = True,
         **kwargs,
     ) -> Response:
-        """Gửi GET request với delay và User-Agent rotation tự động.
-
-        Args:
-            url: URL cần fetch.
-            params: Query parameters (dict).
-            headers: Request-level headers (override session headers).
-            apply_delay: Có áp dụng delay trước request không.
-                Đặt False cho request đầu tiên hoặc khi test.
-            **kwargs: Các tham số khác truyền vào requests.get().
-
-        Returns:
-            requests.Response object.
-
-        Raises:
-            requests.HTTPError: Nếu response status là lỗi (4xx/5xx)
-                và retry_config.raise_on_status = True.
-            requests.ConnectionError: Nếu không kết nối được.
-            requests.Timeout: Nếu request timeout.
-
-        Examples:
-            >>> client = HttpClient(source="topdev")
-            >>> resp = client.get("https://topdev.vn/it-jobs", params={"page": 2})
-            >>> resp.status_code
-            200
-        """
+        """Gửi GET request với delay và User-Agent rotation tự động."""
         # Apply random delay (trừ request đầu tiên)
         if apply_delay and self._request_count > 0:
             delay = self.delay_config.random_delay()
@@ -290,6 +302,30 @@ class HttpClient:
 
         # Merge request-level headers
         request_headers = {**self._session.headers, **(headers or {})}
+
+        if self._curl_session:
+            try:
+                response = self._curl_session.get(
+                    url,
+                    params=params,
+                    headers=request_headers,
+                    timeout=self.timeout,
+                    **kwargs,
+                )
+                self._request_count += 1
+                logger.info(
+                    "[%s] GET (curl_cffi) %s | status=%s | size=%s bytes | #%s",
+                    self.source,
+                    url,
+                    response.status_code,
+                    len(response.content),
+                    self._request_count,
+                )
+                if self.retry_config.raise_on_status and response.status_code >= 400:
+                    response.raise_for_status()
+                return response
+            except Exception as e:
+                logger.warning("[%s] curl_cffi GET error on %s: %s. Falling back to requests.Session.", self.source, url, e)
 
         try:
             response = self._session.get(
@@ -401,16 +437,13 @@ class HttpClient:
             raise
 
     def close(self) -> None:
-        """Đóng session và giải phóng connection pool.
-
-        Nên gọi khi kết thúc crawl để tránh resource leak.
-
-        Examples:
-            >>> client = HttpClient(source="topdev")
-            >>> # ... crawl ...
-            >>> client.close()
-        """
+        """Đóng session và giải phóng connection pool."""
         self._session.close()
+        if self._curl_session:
+            try:
+                self._curl_session.close()
+            except Exception:
+                pass
         logger.debug("[%s] Session closed. Total requests: %s", self.source, self._request_count)
 
     def __enter__(self) -> "HttpClient":

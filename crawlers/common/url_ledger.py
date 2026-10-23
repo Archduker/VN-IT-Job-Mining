@@ -10,15 +10,56 @@ import hashlib
 import json
 import logging
 import re
+import time
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
+try:
+    import fcntl
+except ImportError:
+    fcntl = None
+
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
+
+
+@contextmanager
+def file_lock(lock_path: Path, timeout: float = 10.0):
+    """Context manager khóa file an toàn chống xung đột giữa các tiến trình."""
+    if fcntl is None:
+        yield
+        return
+
+    lock_file = open(lock_path, "a")
+    start_time = time.time()
+    locked = False
+    while True:
+        try:
+            fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            locked = True
+            break
+        except (BlockingIOError, IOError):
+            if time.time() - start_time > timeout:
+                logger.warning("Timeout (%.1fs) chờ lock trên %s. Tiếp tục xử lý.", timeout, lock_path)
+                break
+            time.sleep(0.05)
+    try:
+        yield
+    finally:
+        if locked:
+            try:
+                fcntl.flock(lock_file, fcntl.LOCK_UN)
+            except Exception:
+                pass
+        try:
+            lock_file.close()
+        except Exception:
+            pass
 
 
 @dataclass
@@ -67,7 +108,7 @@ def clean_canonical_url(raw_url: str) -> str:
     query_params = parse_qs(parsed.query, keep_blank_values=False)
     
     # Danh sách các query param cần lọc bỏ
-    tracking_prefixes = ("utm_", "fbclid", "gclid", "ref", "source", "u_sr_id", "ta_source")
+    tracking_prefixes = ("utm_", "fbclid", "gclid", "ref", "source", "u_sr_id", "ta_source", "traceinfo")
     clean_params = {
         k: v for k, v in query_params.items()
         if not any(k.lower().startswith(prefix) for prefix in tracking_prefixes)
@@ -110,12 +151,107 @@ def generate_identity_key(company: str, title: str) -> str:
     return f"{c_slug}__{t_slug}"
 
 
+def calculate_json_canonical_hash(
+    payload: Any,
+    exclude_keys: Optional[List[str]] = None,
+) -> str:
+    """
+    Băm mã SHA-256 trên cấu trúc JSON/Dictionary sau khi đã chuẩn hóa khóa (Canonical JSON).
+    - Tự động sắp xếp khóa (sort_keys=True) để bảo đảm thứ tự không ảnh hưởng mã băm.
+    - Loại trừ các trường động hoặc metadata nếu được chỉ định trong exclude_keys (ví dụ: scraped_at, runtime).
+    """
+    if payload is None:
+        return ""
+
+    exclude = set(exclude_keys or ["scraped_at", "version", "content_hash", "crawler_version", "scraper_version"])
+
+    def _filter_obj(obj: Any) -> Any:
+        if isinstance(obj, dict):
+            return {k: _filter_obj(v) for k, v in obj.items() if k not in exclude}
+        elif isinstance(obj, list):
+            return [_filter_obj(x) for x in obj]
+        return obj
+
+    filtered = _filter_obj(payload)
+    try:
+        canonical_str = json.dumps(filtered, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(canonical_str.encode("utf-8")).hexdigest()
+    except Exception as exc:
+        logger.warning(f"Lỗi khi canonicalize JSON hash: {exc}")
+        return ""
+
+
+def calculate_json_field_hashes(payload: Dict[str, Any]) -> Dict[str, str]:
+    """
+    Băm riêng biệt từng trường/khối nghiệp vụ trong đối tượng JSON (Granular Field Hashes):
+    Ví dụ: salary, deadline, requirements, description, benefits, skills, location.
+    Giúp định vị chính xác trường nào bị chỉnh sửa khi so sánh giữa 2 phiên bản.
+    """
+    if not isinstance(payload, dict):
+        return {}
+
+    field_hashes: Dict[str, str] = {}
+    for key, val in payload.items():
+        if key in ["scraped_at", "version", "content_hash", "raw_html"]:
+            continue
+        try:
+            if isinstance(val, (dict, list)):
+                norm_str = json.dumps(val, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            else:
+                norm_str = re.sub(r"\s+", " ", str(val).strip())
+            field_hashes[key] = hashlib.sha256(norm_str.encode("utf-8")).hexdigest()
+        except Exception:
+            continue
+    return field_hashes
+
+
+def diff_json_versions(old_payload: Dict[str, Any], new_payload: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    So sánh đối chiếu chi tiết giữa 2 phiên bản JSON (v1 vs v2) để chỉ ra cụ thể:
+    - Các trường bị sửa đổi giá trị (changed)
+    - Các trường mới được thêm vào (added)
+    - Các trường bị xóa bớt (removed)
+    """
+    ignore_keys = {"scraped_at", "version", "content_hash", "crawler_version", "scraper_version", "raw_html"}
+    old_filtered = {k: v for k, v in (old_payload or {}).items() if k not in ignore_keys}
+    new_filtered = {k: v for k, v in (new_payload or {}).items() if k not in ignore_keys}
+
+    all_keys = set(old_filtered.keys()) | set(new_filtered.keys())
+    changed: Dict[str, Dict[str, Any]] = {}
+    added: Dict[str, Any] = {}
+    removed: Dict[str, Any] = {}
+
+    for k in sorted(all_keys):
+        if k not in old_filtered:
+            added[k] = new_filtered[k]
+        elif k not in new_filtered:
+            removed[k] = old_filtered[k]
+        else:
+            v_old = old_filtered[k]
+            v_new = new_filtered[k]
+            if v_old != v_new:
+                changed[k] = {"before": v_old, "after": v_new}
+
+    is_modified = bool(changed or added or removed)
+    changed_fields = list(changed.keys()) + list(added.keys()) + list(removed.keys())
+
+    return {
+        "is_modified": is_modified,
+        "changed_fields": changed_fields,
+        "diff": {
+            "changed": changed,
+            "added": added,
+            "removed": removed,
+        },
+    }
+
+
 def calculate_container_html_hash(html_content: str, container_selector: str = "body") -> str:
     """
-    Băm HTML khối nội dung chính, tự động loại bỏ các thành phần rác động:
-    - Thẻ <script>, <style>, <iframe>, <noscript>, <svg>
-    - Số lượt xem (views), timestamp hiển thị
-    - Thuộc tính ngẫu nhiên (CSRF token, nonce)
+    [Legacy / Backwards Compatible]
+    Băm HTML khối nội dung chính, tự động loại bỏ các thành phần rác động.
+    Khuyến nghị: Với kiến trúc mới, hãy lưu Raw HTML trước, parse sang JSON rồi dùng
+    `calculate_json_canonical_hash()` để băm chuẩn xác trên dữ liệu nghiệp vụ.
     """
     if not html_content:
         return ""
@@ -200,11 +336,60 @@ class UrlLedger:
                 logger.error(f"Failed to load catalog {self.catalog_file}: {e}")
         return {}
 
+    def reload(self) -> None:
+        """Nạp lại trạng thái mới nhất từ disk (cho Multi-Worker song song)."""
+        self.records = self._load_catalog()
+
     def save_catalog(self):
-        """Lưu toàn bộ catalog xuống disk."""
+        """Lưu toàn bộ catalog xuống disk với cơ chế FileLock và Ghi Nguyên Tử (Atomic Write) hỗ trợ Multi-Worker."""
         self.base_dir.mkdir(parents=True, exist_ok=True)
-        with open(self.catalog_file, "w", encoding="utf-8") as f:
-            json.dump(self.records, f, ensure_ascii=False, indent=2)
+        lock_file = self.catalog_file.with_suffix(".lock")
+
+        with file_lock(lock_file, timeout=15.0):
+            # Hợp nhất an toàn (Merge) với dữ liệu từ các worker khác trên disk nếu có
+            if self.catalog_file.exists():
+                try:
+                    with open(self.catalog_file, "r", encoding="utf-8") as f:
+                        disk_records = json.load(f)
+                    for k, v in self.records.items():
+                        if k not in disk_records:
+                            disk_records[k] = v
+                        else:
+                            disk_rec = disk_records[k]
+                            # Nếu local đã cào xong (DONE), ưu tiên giữ DONE
+                            if v.get("status") == "DONE":
+                                disk_records[k] = v
+                            elif v.get("last_scraped_at") and (not disk_rec.get("last_scraped_at") or v["last_scraped_at"] > disk_rec.get("last_scraped_at", "")):
+                                disk_records[k] = v
+                    self.records = disk_records
+                except Exception:
+                    pass
+
+            temp_file = self.catalog_file.with_suffix(".tmp")
+            with open(temp_file, "w", encoding="utf-8") as f:
+                json.dump(self.records, f, ensure_ascii=False, indent=2)
+            temp_file.replace(self.catalog_file)
+
+            try:
+                import pandas as pd
+                parquet_file = self.base_dir / "catalog_master.parquet"
+                temp_parquet = parquet_file.with_suffix(".tmp")
+                pd.DataFrame(list(self.records.values())).to_parquet(temp_parquet, index=False)
+                temp_parquet.replace(parquet_file)
+            except Exception:
+                pass
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Thống kê tổng quan số lượng URL theo trạng thái."""
+        status_counts: Dict[str, int] = {}
+        for r in self.records.values():
+            st = r.get("status", "UNKNOWN")
+            status_counts[st] = status_counts.get(st, 0) + 1
+        return {
+            "source": self.source,
+            "total_urls": len(self.records),
+            "by_status": status_counts,
+        }
 
     def register_url(
         self,
@@ -264,17 +449,80 @@ class UrlLedger:
         logger.info(f"Exported {len(self.records)} records to {manifest_path}")
         return manifest_path
 
-    def get_pending_or_due_records(self, recheck_days: int = 21) -> List[Dict[str, Any]]:
-        """Lọc danh sách các link cần cào chi tiết ở Phase 2."""
-        items = []
+    def get_queue_summary(self, recheck_days: int = 21) -> Dict[str, int]:
+        """Thống kê chi tiết tình trạng hàng đợi cào chi tiết."""
+        summary = {
+            "total": len(self.records),
+            "pending": 0,
+            "recheck_due": 0,
+            "done": 0,
+            "closed": 0,
+            "failed": 0,
+        }
+        for rec in self.records.values():
+            st = rec.get("status", "UNKNOWN")
+            if st == "PENDING":
+                summary["pending"] += 1
+            elif st == "RECHECK_DUE":
+                summary["recheck_due"] += 1
+            elif st == "DONE":
+                if is_due_for_recrawl(rec.get("last_scraped_at") or rec.get("last_crawled_at"), days=recheck_days):
+                    summary["recheck_due"] += 1
+                else:
+                    summary["done"] += 1
+            elif st == "CLOSED":
+                summary["closed"] += 1
+            elif st == "FAILED":
+                summary["failed"] += 1
+        return summary
+
+    def get_pending_or_due_records(
+        self,
+        recheck_days: int = 21,
+        limit: Optional[int] = None,
+        sort_newest: bool = False,
+    ) -> List[Dict[str, Any]]:
+        """Lọc và phân bổ danh sách các link cần cào chi tiết ở Phase 2 theo thứ tự ưu tiên:
+        1. Ưu tiên 1 (P1): Các tin PENDING (tin mới phát hiện).
+        2. Ưu tiên 2 (P2): Các tin RECHECK_DUE (tin cũ đã cào >= 21 ngày).
+        3. Tuyệt đối loại trừ: Các tin CLOSED (đã đóng/hết hạn).
+        
+        Nếu sort_newest=True:
+        - Nhóm PENDING sắp xếp theo ngày phát hiện mới nhất (discovered_at DESC).
+        - Nhóm RECHECK_DUE sắp xếp theo ngày cào cũ nhất (last_scraped_at ASC).
+        """
+        pending_items: List[Dict[str, Any]] = []
+        due_items: List[Dict[str, Any]] = []
+
         for rec in self.records.values():
             status = rec.get("status")
-            if status == "PENDING" or status == "RECHECK_DUE":
-                items.append(rec)
-            elif status == "DONE" and is_due_for_recrawl(rec.get("last_scraped_at"), days=recheck_days):
+            if status == "CLOSED":
+                continue
+            if status == "PENDING":
+                pending_items.append(rec)
+            elif status == "RECHECK_DUE":
+                due_items.append(rec)
+            elif status == "DONE" and is_due_for_recrawl(rec.get("last_scraped_at") or rec.get("last_crawled_at"), days=recheck_days):
                 rec["status"] = "RECHECK_DUE"
-                items.append(rec)
-        return items
+                due_items.append(rec)
+
+        if sort_newest:
+            # Sắp xếp P1: Tin mới nhất lên đầu
+            pending_items.sort(
+                key=lambda x: str(x.get("discovered_at") or x.get("last_seen_at") or ""),
+                reverse=True,
+            )
+
+            # Sắp xếp P2: Tin cũ nhất đến hạn kiểm tra lên đầu
+            due_items.sort(
+                key=lambda x: str(x.get("last_scraped_at") or x.get("last_crawled_at") or ""),
+                reverse=False,
+            )
+
+        priority_queue = pending_items + due_items
+        if limit is not None and limit > 0:
+            return priority_queue[:limit]
+        return priority_queue
 
     def mark_done(
         self,
@@ -295,6 +543,18 @@ class UrlLedger:
             if repost_of_url_hash:
                 rec["repost_of_url_hash"] = repost_of_url_hash
             rec["error_log"] = None
+
+    def mark_scraped(
+        self,
+        url_hash: str,
+        content_hash: str,
+        version: Optional[int] = None,
+        http_status: Optional[int] = None,
+        **kwargs,
+    ):
+        """Tương thích ngược: Đánh dấu URL đã cào thành công (gọi mark_done)."""
+        self.mark_done(url_hash=url_hash, content_hash=content_hash, new_version=version)
+
 
     def mark_failed(self, url_hash: str, error_message: str):
         """Đánh dấu link bị cào lỗi (Safe Skip)."""
@@ -391,11 +651,26 @@ class UrlLedger:
 
             storage_label = "Cloudflare R2" if "r2.cloudflarestorage.com" in endpoint else "MinIO"
 
-            # Upload catalog_master.json
+            # Upload catalog_master.json — guard: KHÔNG cho catalog RỖNG ghi đè catalog
+            # (đã có) trên MinIO, chống runner làm mất sổ cái của source khác/đã có dữ liệu.
+            local_records = self._load_catalog()
+            if not local_records:
+                logger.warning(
+                    f"[{storage_label}] Bỏ sync catalog {self.source}: catalog local rỗng "
+                    f"(tránh ghi đè ledger đã có)."
+                )
+                return False
             if self.catalog_file.exists():
                 key = f"url_ledger/{self.source}/catalog_master.json"
                 s3.upload_file(str(self.catalog_file), bucket, key)
-                logger.info(f"[{storage_label}] Đã đồng bộ catalog lên s3://{bucket}/{key}")
+                logger.info(f"[{storage_label}] Đã đồng bộ catalog ({len(local_records)} records) lên s3://{bucket}/{key}")
+
+            parquet_file = self.base_dir / "catalog_master.parquet"
+            if parquet_file.exists():
+                try:
+                    s3.upload_file(str(parquet_file), bucket, f"url_ledger/{self.source}/catalog_master.parquet")
+                except Exception as p_err:
+                    logger.debug(f"Không thể upload parquet: {p_err}")
 
             # Upload all manifest files
             manifest_count = 0
@@ -409,4 +684,101 @@ class UrlLedger:
         except Exception as exc:
             logger.warning(f"[{storage_label}] Không thể đồng bộ URL Ledger lên ({endpoint}): {exc}. Dữ liệu cục bộ vẫn an toàn.")
             return False
+
+    def pull_from_minio(
+        self,
+        bucket_name: Optional[str] = None,
+        endpoint_url: Optional[str] = None,
+        access_key: Optional[str] = None,
+        secret_key: Optional[str] = None,
+    ) -> bool:
+        """
+        Kéo URL Ledger (catalog_master.json) từ MinIO / S3 về máy cục bộ.
+        Nguồn: minio://{bucket_name}/url_ledger/{source}/catalog_master.json
+        Hợp nhất an toàn: nếu local chưa có hoặc MinIO có record mới thì cập nhật.
+        """
+        import os
+        try:
+            from dotenv import load_dotenv
+            load_dotenv()
+        except Exception:
+            pass
+
+        bucket = (
+            bucket_name
+            or os.getenv("S3_BUCKET_NAME")
+            or os.getenv("R2_BUCKET_NAME")
+            or os.getenv("MINIO_BUCKET")
+            or os.getenv("S3_BUCKET")
+            or "vn-it-jobs"
+        )
+        endpoint = (
+            endpoint_url
+            or os.getenv("S3_ENDPOINT_URL")
+            or os.getenv("R2_ENDPOINT_URL")
+            or os.getenv("MINIO_ENDPOINT")
+            or "http://localhost:9000"
+        )
+        ak = (
+            access_key
+            or os.getenv("AWS_ACCESS_KEY_ID")
+            or os.getenv("R2_ACCESS_KEY_ID")
+            or os.getenv("MINIO_ROOT_USER")
+            or "minioadmin"
+        )
+        sk = (
+            secret_key
+            or os.getenv("AWS_SECRET_ACCESS_KEY")
+            or os.getenv("R2_SECRET_ACCESS_KEY")
+            or os.getenv("MINIO_ROOT_PASSWORD")
+            or "minioadmin"
+        )
+        region = "auto" if "r2.cloudflarestorage.com" in endpoint else os.getenv("AWS_REGION", "us-east-1")
+        storage_label = "Cloudflare R2" if "r2.cloudflarestorage.com" in endpoint else "MinIO"
+
+        try:
+            import boto3
+            from botocore.client import Config
+
+            s3 = boto3.client(
+                "s3",
+                endpoint_url=endpoint,
+                aws_access_key_id=ak,
+                aws_secret_access_key=sk,
+                config=Config(signature_version="s3v4", connect_timeout=3, retries={"max_attempts": 2}),
+                region_name=region,
+            )
+
+            key = f"url_ledger/{self.source}/catalog_master.json"
+            try:
+                resp = s3.get_object(Bucket=bucket, Key=key)
+                remote_records = json.loads(resp["Body"].read().decode("utf-8"))
+            except Exception as get_exc:
+                logger.info(f"[{storage_label}] Khong tim thay {key} tren bucket {bucket} ({get_exc})")
+                return False
+
+            if not isinstance(remote_records, dict):
+                return False
+
+            merged_count = 0
+            for uh, r_rec in remote_records.items():
+                if uh not in self.records:
+                    self.records[uh] = r_rec
+                    merged_count += 1
+                else:
+                    local_rec = self.records[uh]
+                    if local_rec.get("status") == "PENDING" and r_rec.get("status") == "DONE":
+                        self.records[uh] = r_rec
+                        merged_count += 1
+
+            self.save_catalog()
+            logger.info(f"[{storage_label}] Da keo {len(remote_records)} records tu s3://{bucket}/{key} ve local (cap nhat {merged_count}).")
+            return True
+        except Exception as exc:
+            logger.warning(f"[{storage_label}] Khong the keo catalog tu MinIO ({endpoint}): {exc}")
+            return False
+
+    def get_failed_records(self) -> List[Dict[str, Any]]:
+        """Lấy danh sách các URL có trạng thái FAILED (Failed Queue)."""
+        return [r for r in self.records.values() if r.get("status") == "FAILED"]
 

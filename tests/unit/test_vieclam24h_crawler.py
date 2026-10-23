@@ -97,5 +97,44 @@ class TestViecLam24hCrawler(unittest.TestCase):
             self.assertEqual(stats["errors"], 0)
 
 
+    def test_dom_ground_truth_payload(self):
+        """Test build_raw_payload on crawlers/sources/vieclam24h/.html against neccessary.md."""
+        html_path = Path(__file__).resolve().parents[2] / "crawlers" / "sources" / "vieclam24h" / ".html"
+        if not html_path.exists():
+            self.skipTest(f"Sample DOM file {html_path} not found")
+
+        html_content = html_path.read_text(encoding="utf-8")
+        from crawlers.sources.vieclam24h.crawler import build_raw_payload
+
+        payload = build_raw_payload(html=html_content)
+
+        # 1. SD1 Zero Information Loss & Schema purity
+        self.assertNotIn("salary_min", payload, "Raw payload must NOT have artificial salary_min")
+        self.assertNotIn("salary_max", payload, "Raw payload must NOT have artificial salary_max")
+        self.assertEqual(payload["salary"], "10 - 25 triệu")
+
+        # 2. Key fields from neccessary.md
+        self.assertEqual(payload["title"], "Nhân Viên Kinh Doanh Phần Mềm | Nghỉ T7 - Chủ Nhật")
+        self.assertEqual(payload["deadline"], "05/11/2026")
+        self.assertEqual(payload["location_summary"], "Hà Nội")
+        self.assertEqual(payload["experience_summary"], "1 năm")
+        self.assertIn("Tiếp nhận data từ hệ thống, liên hệ tư vấn giới thiệu sản phẩm phần mềm đến khách hàng.", payload["description"])
+        self.assertIn("Tốt nghiệp Cao đẳng/Đại học.", payload["requirements"])
+        self.assertIn("Lương cứng 7-9 triệu + % Doanh số + Thưởng Hiệu quả CV", payload["benefits"])
+        self.assertEqual(payload["company"]["name"], "Công Ty TNHH Đầu Tư Nghiên Cứu Và Phát Triển Phần Mềm Việt Nam")
+        self.assertEqual(payload["company"]["size"], "10 - 150 nhân viên")
+
+        # 3. Verify transformation into JobRecord (Staging tier handles min/max)
+        raw_item = {
+            "job_detail": payload,
+            "url": "https://vieclam24h.vn/ban-hang-kinh-doanh/nhan-vien-kinh-doanh-phan-mem-nghi-t7-chu-nhat-c13p210000160id200966027.html"
+        }
+        record = self.crawler.parse_item(raw_item)
+        self.assertIsNotNone(record)
+        self.assertEqual(record.raw.salary.salary_min, 10.0)
+        self.assertEqual(record.raw.salary.salary_max, 25.0)
+        self.assertEqual(record.raw.salary.salary_text, "10 - 25 triệu")
+
+
 if __name__ == "__main__":
     unittest.main()
