@@ -25,15 +25,17 @@ export type TabType =
 interface PipelineSidebarProps {
   currentTab: TabType
   onSelectTab: (tab: TabType) => void
+  collapsed?: boolean
 }
 
 export const PipelineSidebar: React.FC<PipelineSidebarProps> = ({
   currentTab,
   onSelectTab,
+  collapsed = false,
 }) => {
   const navSections = [
     {
-      group: 'TRUNG TÂM ĐIỀU HÀNH',
+      group: 'EXECUTIVE COMMAND',
       items: [
         {
           id: 'dashboard' as TabType,
@@ -45,52 +47,52 @@ export const PipelineSidebar: React.FC<PipelineSidebarProps> = ({
       ],
     },
     {
-      group: 'GIAI ĐOẠN 1: THU THẬP & EDA THÔ',
+      group: 'PHASE 1: COLLECTION & EDA',
       items: [
         {
           id: 'crawling' as TabType,
           label: 'Crawling Operations',
-          sublabel: 'Điều phối 8 sàn & URL Ledger',
+          sublabel: '8 Portals & URL Ledger',
           icon: Radio,
         },
         {
           id: 'eda' as TabType,
           label: 'EDA Intelligence',
-          sublabel: 'Kiểm kê trường, Missing & 2D Charts',
+          sublabel: 'Field Inventory, Missing & 2D Charts',
           icon: BarChart3,
         },
       ],
     },
     {
-      group: 'ĐIỀU PHỐI TỰ ĐỘNG HÓA',
+      group: 'AUTOMATED ORCHESTRATION',
       items: [
         {
           id: 'airflow' as TabType,
           label: 'Airflow Pipeline',
-          sublabel: 'Scheduler daemon & 7 DAGs xoay vòng',
+          sublabel: 'Scheduler Daemon & 7 Rotation DAGs',
           icon: Cpu,
         },
       ],
     },
     {
-      group: 'GIAI ĐOẠN 2 & 3: LÀM SẠCH & TÍCH HỢP',
+      group: 'PHASE 2 & 3: SANITIZATION & INTEGRATION',
       items: [
         {
           id: 'preprocessing' as TabType,
           label: 'Pre-processing',
-          sublabel: 'Quy tắc Regex & Giảm khuyết thiếu',
+          sublabel: 'Regex Rules & Null Reduction',
           icon: FileCheck2,
         },
         {
           id: 'processing' as TabType,
           label: 'Processing & Dedup',
-          sublabel: 'Schema đích & Khử trùng lặp',
+          sublabel: 'Target Schema & Entity Resolution',
           icon: GitMerge,
         },
       ],
     },
     {
-      group: 'PHÂN HỆ NÂNG CAO & CLOUD',
+      group: 'ADVANCED AI & CLOUD',
       items: [
         {
           id: 'ml3d' as TabType,
@@ -101,7 +103,7 @@ export const PipelineSidebar: React.FC<PipelineSidebarProps> = ({
         {
           id: 'cloud' as TabType,
           label: 'Cloudflare R2 Sync',
-          sublabel: 'Lakehouse 4 tầng & Diff Engine',
+          sublabel: 'Lakehouse 4-Layer & Diff Engine',
           icon: Cloud,
         },
       ],
@@ -109,8 +111,14 @@ export const PipelineSidebar: React.FC<PipelineSidebarProps> = ({
   ]
 
   return (
-    <aside className="w-72 bg-slate-900/90 backdrop-blur-md border-r border-slate-800/80 flex flex-col justify-between shrink-0 h-[calc(100vh-4rem)] sticky top-16 select-none overflow-y-auto">
-      <div className="p-3.5 space-y-5">
+    <aside
+      className={`bg-slate-900/90 backdrop-blur-md border-r border-slate-800/80 flex flex-col justify-between shrink-0 h-[calc(100vh-4rem)] sticky top-16 select-none overflow-hidden transition-all duration-300 ${
+        collapsed
+          ? 'w-0 opacity-0 pointer-events-none border-r-0'
+          : 'w-72 opacity-100'
+      }`}
+    >
+      <div className="p-3.5 space-y-5 overflow-y-auto">
         {navSections.map((sec, idx) => (
           <div key={idx} className="space-y-1">
             <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">
@@ -171,7 +179,7 @@ export const PipelineSidebar: React.FC<PipelineSidebarProps> = ({
             <span>Zero-Auth Observatory</span>
           </div>
           <p className="text-[11px] text-slate-400 leading-relaxed">
-            Hệ thống giám sát kỹ thuật thuần túy. Phản ánh hình ảnh thực tế qua từng bước pipeline.
+            Pure engineering monitor. Reflects real-time data quality across every pipeline stage.
           </p>
         </div>
       </div>

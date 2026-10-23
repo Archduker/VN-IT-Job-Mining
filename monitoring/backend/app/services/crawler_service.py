@@ -169,120 +169,160 @@ class CrawlerService:
             await asyncio.sleep(0.5)
 
     def get_weekly_crawl_schedule(self) -> Dict[str, Any]:
-        """Tạo bảng kế hoạch điều phối cào 7 ngày trong tuần với chỉ tiêu dự kiến vs thực tế."""
-        schedule_definition = [
+        """Tạo bảng kế hoạch điều phối 2 Pha (Pha 1 Discovery & Pha 2 Detail) cho 8 sàn tuyển dụng."""
+        from app.services.ledger_service import ledger_service
+
+        # Định nghĩa 8 sàn tuyển dụng chuẩn
+        source_configs = [
             {
-                "day_of_week": "Thứ Hai",
+                "day_of_week": "Thứ Hai (Monday)",
                 "day_index": 1,
                 "focal_source": "topdev",
-                "dag_id": "crawler_detail_topdev",
-                "scheduled_time": "20:00",
-                "projected_quota": 250,
                 "engine": "curl_cffi (TLS Impersonation)",
+                "quota": 250,
+                "detail_time": "20:00 PM",
                 "recrawl_strategy": "Safe Skip + Re-crawl 21 ngày",
             },
             {
-                "day_of_week": "Thứ Ba",
+                "day_of_week": "Thứ Ba (Tuesday)",
                 "day_index": 2,
                 "focal_source": "careerviet",
-                "dag_id": "crawler_detail_careerviet",
-                "scheduled_time": "20:00",
-                "projected_quota": 200,
                 "engine": "curl_cffi (HTML Parser)",
+                "quota": 200,
+                "detail_time": "20:00 PM",
                 "recrawl_strategy": "Anti-403 + Fallback",
             },
             {
-                "day_of_week": "Thứ Tư",
+                "day_of_week": "Thứ Tư (Wednesday)",
                 "day_index": 3,
                 "focal_source": "itviec",
-                "dag_id": "crawler_detail_itviec",
-                "scheduled_time": "20:00",
-                "projected_quota": 200,
                 "engine": "curl_cffi (Session Auth)",
+                "quota": 200,
+                "detail_time": "20:00 PM",
                 "recrawl_strategy": "JSON-LD & DOM Matcher",
             },
             {
-                "day_of_week": "Thứ Năm",
+                "day_of_week": "Thứ Năm (Thursday)",
                 "day_index": 4,
                 "focal_source": "vietnamworks",
-                "dag_id": "crawler_detail_vietnamworks",
-                "scheduled_time": "20:00",
-                "projected_quota": 300,
                 "engine": "curl_cffi (Algolia/API)",
+                "quota": 300,
+                "detail_time": "20:00 PM",
                 "recrawl_strategy": "IT Domain Filter",
             },
             {
-                "day_of_week": "Thứ Sáu",
+                "day_of_week": "Thứ Sáu (Friday)",
                 "day_index": 5,
                 "focal_source": "topcv",
-                "dag_id": "crawler_detail_topcv",
-                "scheduled_time": "20:00",
-                "projected_quota": 350,
-                "engine": "playwright (Headless Cloudflare)",
+                "engine": "playwright (Cloudflare Bypass)",
+                "quota": 350,
+                "detail_time": "20:00 PM",
                 "recrawl_strategy": "Two-Phase Discovery/Detail",
             },
             {
-                "day_of_week": "Thứ Bảy",
+                "day_of_week": "Thứ Bảy (Saturday)",
                 "day_index": 6,
                 "focal_source": "vieclam24h",
-                "dag_id": "crawler_detail_vieclam24h",
-                "scheduled_time": "20:00",
-                "projected_quota": 250,
                 "engine": "curl_cffi (Mobile UA)",
+                "quota": 250,
+                "detail_time": "20:00 PM",
                 "recrawl_strategy": "Safe Skip + CDC Hash",
             },
             {
-                "day_of_week": "Chủ Nhật",
+                "day_of_week": "Chủ Nhật S1 (Sunday)",
                 "day_index": 7,
                 "focal_source": "glints",
-                "dag_id": "crawler_detail_glints",
-                "scheduled_time": "20:00",
-                "projected_quota": 250,
                 "engine": "curl_cffi + playwright",
+                "quota": 250,
+                "detail_time": "14:00 PM",
                 "recrawl_strategy": "Weekly Catch-up & Backup",
+            },
+            {
+                "day_of_week": "Chủ Nhật S2 (Sunday)",
+                "day_index": 8,
+                "focal_source": "jobsgo",
+                "engine": "curl_cffi (TLS Impersonation)",
+                "quota": 250,
+                "detail_time": "20:00 PM",
+                "recrawl_strategy": "Safe Skip + Re-crawl 21 ngày",
             },
         ]
 
-        days = []
+        phase1_discovery = []
+        phase2_detail = []
         total_projected = 0
         total_actual = 0
+        total_pending = 0
 
-        for item in schedule_definition:
-            src = item["focal_source"]
+        for sc in source_configs:
+            src = sc["focal_source"]
             st = self.get_source_status(src)
-            actual_count = st["total_raw"] if st["total_raw"] > 0 else st["total_urls"]
+            ledger_st = ledger_service.get_ledger_summary(src)
+            counts = ledger_st.get("counts", {})
 
-            # Trường hợp Chủ Nhật bao gồm cả glints và jobsgo
-            if src == "glints":
-                st_jobsgo = self.get_source_status("jobsgo")
-                actual_count += (st_jobsgo["total_raw"] if st_jobsgo["total_raw"] > 0 else st_jobsgo["total_urls"])
+            # Đã cào thực tế từ thư mục raw
+            actual_count = st["total_raw"]
+            # Số tin chờ cào (PENDING + NEW)
+            pending_count = counts.get("PENDING", 0) + counts.get("NEW", 0)
+            # Tổng số URLs trong ledger
+            total_urls = ledger_st.get("total", 0)
 
-            quota = item["projected_quota"]
+            quota = sc["quota"]
             total_projected += quota
             total_actual += actual_count
+            total_pending += pending_count
 
             progress = round((actual_count / max(quota, 1)) * 100, 1)
 
+            # Airflow status
             if st["is_running"]:
-                status = "ACTIVE_QUEUE"
-            elif actual_count >= quota:
-                status = "COMPLETED"
+                status = "RUNNING"
+            elif actual_count >= quota or pending_count == 0:
+                status = "SUCCESS"
             else:
                 status = "SCHEDULED"
 
-            day_entry = dict(item)
-            day_entry["actual_crawled"] = actual_count
-            day_entry["progress_pct"] = progress
-            day_entry["status"] = status
-            days.append(day_entry)
+            # 1. Bảng Pha 1: Daily URL Discovery
+            phase1_entry = {
+                "day_of_week": sc["day_of_week"],
+                "day_index": sc["day_index"],
+                "focal_source": src,
+                "dag_id": "dag_discovery_daily",
+                "task_id": f"discover_{src}",
+                "scheduled_time": "05:00 AM",
+                "quota_pages": 2,
+                "total_discovered": total_urls,
+                "status": "SUCCESS",
+            }
+            phase1_discovery.append(phase1_entry)
+
+            # 2. Bảng Pha 2: Adaptive Detail Extraction
+            phase2_entry = {
+                "day_of_week": sc["day_of_week"],
+                "day_index": sc["day_index"],
+                "focal_source": src,
+                "dag_id": f"crawler_detail_{src}",
+                "scheduled_time": sc["detail_time"],
+                "projected_quota": quota,
+                "actual_crawled": actual_count,
+                "uncrawled_pending": pending_count,
+                "progress_pct": progress,
+                "engine": sc["engine"],
+                "recrawl_strategy": sc["recrawl_strategy"],
+                "status": status,
+            }
+            phase2_detail.append(phase2_entry)
 
         overall_pct = round((total_actual / max(total_projected, 1)) * 100, 1)
 
         return {
+            "phase1_discovery": phase1_discovery,
+            "phase2_detail": phase2_detail,
             "total_projected_weekly": total_projected,
             "total_actual_crawled": total_actual,
+            "total_uncrawled_pending": total_pending,
             "overall_progress_pct": overall_pct,
-            "days": days,
+            "days": phase2_detail,  # backward compatibility
             "generated_at": datetime.now().isoformat(),
         }
 

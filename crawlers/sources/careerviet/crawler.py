@@ -170,6 +170,18 @@ def hash_container_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def _get_extra(d: dict, keys: list[str]) -> str | None:
+    """Tìm giá trị đầu tiên match trong extra_info dict theo danh sách key biến thể.
+
+    Hỗ trợ các label dị biệt giữa các tin đăng trên CareerViet (ví dụ:
+    'Bằng cấp' vs 'Trình độ', 'Độ tuổi' vs 'Tuổi', ...).
+    """
+    for k in keys:
+        if k in d and d[k]:
+            return d[k]
+    return None
+
+
 def build_raw_payload(html: str) -> dict[str, Any]:
     """Bóc các khối DOM thô theo tên class CSS gốc (Zero Information Loss)."""
     soup = BeautifulSoup(html, "html.parser")
@@ -596,11 +608,11 @@ class CareerVietCrawler(BaseCrawler):
             p_tag = li.find("p")
             val = clean_text(p_tag.text) if p_tag else text_full
 
-            if "lương" in text_lower:
-                val_clean = val.replace("Lương:", "").replace("Lương", "").strip().lstrip(":").strip()
+            if any(k in text_lower for k in ["lương", "salary", "mức lương"]):
+                val_clean = val.replace("Lương:", "").replace("Lương", "").replace("Mức lương:", "").strip().lstrip(":").strip()
                 salary_text = val_clean or val
-            elif "địa điểm" in text_lower and not location_text:
-                location_text = val.replace("Địa điểm:", "").replace("Địa điểm", "").strip() or val
+            elif any(k in text_lower for k in ["địa điểm", "nơi làm việc", "location"]) and not location_text:
+                location_text = val.replace("Địa điểm:", "").replace("Địa điểm", "").replace("Nơi làm việc:", "").strip() or val
             elif "kinh nghiệm" in text_lower and not exp_text:
                 exp_text = val.replace("Kinh nghiệm:", "").replace("Kinh nghiệm", "").strip() or val
             elif "cấp bậc" in text_lower and not seniority_text:
@@ -612,10 +624,12 @@ class CareerVietCrawler(BaseCrawler):
             elif any(k in text_lower for k in ["hết hạn nộp", "hạn nộp"]) and not deadline_text:
                 deadline_text = val.replace("Hết hạn nộp:", "").replace("Hết hạn nộp", "").strip() or val
 
-        # Fallback địa điểm từ div.map nếu có
-        map_link = page.select_one("div.map p a, div.map")
-        if not location_text and map_link:
-            location_text = clean_text(map_link.text)
+        # Fallback địa điểm từ div.map — hỗ trợ multi-location (nhiều thành phố/địa chỉ)
+        if not location_text:
+            map_div = page.select_one("div.map")
+            if map_div:
+                parts = [clean_text(a.text) for a in map_div.find_all("a") if clean_text(a.text)]
+                location_text = " | ".join(parts) if parts else clean_text(map_div.get_text(separator=" ", strip=True))
 
         # 4. Phân tích mức lương lồng nhau (JobSalary)
         salary_detail = parse_salary_detail(salary_text, title=title)
@@ -689,9 +703,9 @@ class CareerVietCrawler(BaseCrawler):
             "employment_type_text": job_type_text or None,
             "seniority_text": seniority_text or None,
             "extra": {
-                "experience": exp_text or extra_info.get("Kinh nghiệm"),
-                "education": extra_info.get("Bằng cấp"),
-                "age": extra_info.get("Độ tuổi"),
+                "experience": exp_text or _get_extra(extra_info, ["Kinh nghiệm", "Yêu cầu kinh nghiệm", "Experience"]),
+                "education": _get_extra(extra_info, ["Bằng cấp", "Trình độ", "Học vấn", "Education"]),
+                "age": _get_extra(extra_info, ["Độ tuổi", "Tuổi", "Age"]),
                 "other_info": extra_info if extra_info else None,
             },
         }

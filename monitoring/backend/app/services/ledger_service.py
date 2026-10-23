@@ -177,13 +177,13 @@ class LedgerService:
             for h, rec in data.items():
                 item = {
                     "url_hash": h,
-                    "job_id": rec.get("job_id"),
-                    "job_title": rec.get("job_title") or rec.get("title"),
-                    "company": rec.get("company"),
-                    "url": rec.get("url"),
+                    "job_id": str(rec.get("job_id")) if rec.get("job_id") is not None else None,
+                    "job_title": rec.get("job_title") or rec.get("title") or rec.get("preliminary_title"),
+                    "company": rec.get("company") or rec.get("preliminary_company"),
+                    "url": rec.get("canonical_url") or rec.get("url"),
                     "status": rec.get("status", "NEW"),
-                    "scraped_at": rec.get("scraped_at") or rec.get("discovered_at"),
-                    "http_status": rec.get("http_status"),
+                    "scraped_at": rec.get("last_scraped_at") or rec.get("scraped_at") or rec.get("discovered_at"),
+                    "http_status": rec.get("http_status") or (200 if str(rec.get("status", "")).upper() in ("DONE", "SCRAPED") else None),
                     "content_hash": rec.get("content_hash"),
                     "repost_of_url_hash": rec.get("repost_of_url_hash"),
                 }
@@ -193,13 +193,17 @@ class LedgerService:
             if status_filter and status_filter.upper() != "ALL":
                 items = [it for it in items if it["status"] == status_filter.upper()]
 
-            # Tìm kiếm theo tiêu đề hoặc công ty
+            # Tìm kiếm theo job_id, url_hash, canonical_url, tiêu đề hoặc công ty
             if search_query:
-                q = search_query.lower()
+                q = search_query.lower().strip()
                 items = [
                     it
                     for it in items
-                    if (it.get("job_title") and q in it["job_title"].lower())
+                    if (it.get("job_id") and q in it["job_id"].lower())
+                    or (it.get("url_hash") and q in it["url_hash"].lower())
+                    or (it.get("url") and q in it["url"].lower())
+                    or (it.get("content_hash") and q in it["content_hash"].lower())
+                    or (it.get("job_title") and q in it["job_title"].lower())
                     or (it.get("company") and q in it["company"].lower())
                 ]
 

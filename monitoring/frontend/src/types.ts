@@ -199,7 +199,19 @@ export interface EnumStatusSummary {
   generated_at?: string
 }
 
-export interface WeeklyScheduleDay {
+export interface Phase1DiscoveryItem {
+  day_of_week: string
+  day_index: number
+  focal_source: string
+  dag_id: string
+  task_id: string
+  scheduled_time: string
+  quota_pages: number
+  total_discovered: number
+  status: 'SUCCESS' | 'RUNNING' | 'SCHEDULED' | 'FAILED' | string
+}
+
+export interface Phase2DetailItem {
   day_of_week: string
   day_index: number
   focal_source: string
@@ -207,18 +219,47 @@ export interface WeeklyScheduleDay {
   scheduled_time: string
   projected_quota: number
   actual_crawled: number
+  uncrawled_pending: number
   progress_pct: number
   engine: string
   recrawl_strategy: string
-  status: 'COMPLETED' | 'ACTIVE_QUEUE' | 'SCHEDULED' | 'PAUSED'
+  status: 'SUCCESS' | 'RUNNING' | 'SCHEDULED' | 'FAILED' | string
 }
 
+// Backward-compatibility alias
+export type WeeklyScheduleDay = Phase2DetailItem
+
 export interface WeeklyScheduleResponse {
+  phase1_discovery?: Phase1DiscoveryItem[]
+  phase2_detail?: Phase2DetailItem[]
   total_projected_weekly: number
   total_actual_crawled: number
+  total_uncrawled_pending?: number
   overall_progress_pct: number
-  days: WeeklyScheduleDay[]
+  days?: Phase2DetailItem[]
   generated_at?: string
+}
+
+export interface LedgerItem {
+  job_id: string | null
+  url_hash: string
+  job_title?: string | null
+  company?: string | null
+  url: string | null
+  status: 'PENDING' | 'DONE' | 'RECHECK_DUE' | 'CLOSED' | 'FAILED' | string
+  scraped_at: string | null
+  http_status: number | null
+  content_hash: string | null
+  repost_of_url_hash: string | null
+}
+
+export interface LedgerListResponse {
+  source: string
+  total: number
+  counts: Record<string, number>
+  page: number
+  page_size: number
+  items: LedgerItem[]
 }
 
 export interface SourceCloudSyncStatus {

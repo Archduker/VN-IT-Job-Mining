@@ -1,13 +1,27 @@
 import React, { useEffect, useState } from 'react'
-import { Cloud, RefreshCw, ShieldCheck, Database, Cpu } from 'lucide-react'
+import {
+  Cloud,
+  RefreshCw,
+  ShieldCheck,
+  Database,
+  Cpu,
+  PanelLeftClose,
+  PanelLeftOpen,
+} from 'lucide-react'
 import axios from 'axios'
 import { CloudHealth } from '../../types'
 
 interface TopBarProps {
   onRefreshAll?: () => void
+  sidebarCollapsed?: boolean
+  onToggleSidebar?: () => void
 }
 
-export const TopBar: React.FC<TopBarProps> = ({ onRefreshAll }) => {
+export const TopBar: React.FC<TopBarProps> = ({
+  onRefreshAll,
+  sidebarCollapsed = false,
+  onToggleSidebar,
+}) => {
   const [r2Health, setR2Health] = useState<CloudHealth | null>(null)
   const [airflowRunning, setAirflowRunning] = useState<boolean>(false)
   const [loading, setLoading] = useState(false)
@@ -45,6 +59,21 @@ export const TopBar: React.FC<TopBarProps> = ({ onRefreshAll }) => {
   return (
     <header className="h-16 border-b border-slate-800 bg-slate-900/90 backdrop-blur-md px-6 flex items-center justify-between z-10 sticky top-0">
       <div className="flex items-center space-x-3">
+        {/* Sidebar Toggle Button */}
+        {onToggleSidebar && (
+          <button
+            onClick={onToggleSidebar}
+            className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 text-slate-300 hover:text-white transition-colors"
+            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {sidebarCollapsed ? (
+              <PanelLeftOpen className="w-4 h-4" />
+            ) : (
+              <PanelLeftClose className="w-4 h-4" />
+            )}
+          </button>
+        )}
+
         <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
           <Database className="w-5 h-5 text-white" />
         </div>
@@ -58,7 +87,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onRefreshAll }) => {
             </span>
           </div>
           <p className="text-[11px] text-slate-400">
-            Giám Sát Vận Hành & Đo Lường Chất Lượng Dữ Liệu Toàn Diện
+            Data Operations & Pipeline Monitor
           </p>
         </div>
       </div>
@@ -100,7 +129,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onRefreshAll }) => {
               <span>{r2Health.latency_ms}ms</span>
             </span>
           ) : (
-            <span className="text-amber-400 font-semibold">Chưa kết nối</span>
+            <span className="text-amber-400 font-semibold">Disconnected</span>
           )}
         </div>
 
@@ -116,7 +145,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onRefreshAll }) => {
           onClick={handleRefresh}
           disabled={loading}
           className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-colors"
-          title="Làm mới trạng thái"
+          title="Refresh all data"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-indigo-400' : ''}`} />
         </button>
