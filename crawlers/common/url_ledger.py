@@ -10,15 +10,56 @@ import hashlib
 import json
 import logging
 import re
+import time
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
+try:
+    import fcntl
+except ImportError:
+    fcntl = None
+
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
+
+
+@contextmanager
+def file_lock(lock_path: Path, timeout: float = 10.0):
+    """Context manager khóa file an toàn chống xung đột giữa các tiến trình."""
+    if fcntl is None:
+        yield
+        return
+
+    lock_file = open(lock_path, "a")
+    start_time = time.time()
+    locked = False
+    while True:
+        try:
+            fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            locked = True
+            break
+        except (BlockingIOError, IOError):
+            if time.time() - start_time > timeout:
+                logger.warning("Timeout (%.1fs) chờ lock trên %s. Tiếp tục xử lý.", timeout, lock_path)
+                break
+            time.sleep(0.05)
+    try:
+        yield
+    finally:
+        if locked:
+            try:
+                fcntl.flock(lock_file, fcntl.LOCK_UN)
+            except Exception:
+                pass
+        try:
+            lock_file.close()
+        except Exception:
+            pass
 
 
 @dataclass
@@ -295,17 +336,48 @@ class UrlLedger:
                 logger.error(f"Failed to load catalog {self.catalog_file}: {e}")
         return {}
 
+    def reload(self) -> None:
+        """Nạp lại trạng thái mới nhất từ disk (cho Multi-Worker song song)."""
+        self.records = self._load_catalog()
+
     def save_catalog(self):
-        """Lưu toàn bộ catalog xuống disk."""
+        """Lưu toàn bộ catalog xuống disk với cơ chế FileLock và Ghi Nguyên Tử (Atomic Write) hỗ trợ Multi-Worker."""
         self.base_dir.mkdir(parents=True, exist_ok=True)
-        with open(self.catalog_file, "w", encoding="utf-8") as f:
-            json.dump(self.records, f, ensure_ascii=False, indent=2)
-        try:
-            import pandas as pd
-            parquet_file = self.base_dir / "catalog_master.parquet"
-            pd.DataFrame(list(self.records.values())).to_parquet(parquet_file, index=False)
-        except Exception:
-            pass
+        lock_file = self.catalog_file.with_suffix(".lock")
+
+        with file_lock(lock_file, timeout=15.0):
+            # Hợp nhất an toàn (Merge) với dữ liệu từ các worker khác trên disk nếu có
+            if self.catalog_file.exists():
+                try:
+                    with open(self.catalog_file, "r", encoding="utf-8") as f:
+                        disk_records = json.load(f)
+                    for k, v in self.records.items():
+                        if k not in disk_records:
+                            disk_records[k] = v
+                        else:
+                            disk_rec = disk_records[k]
+                            # Nếu local đã cào xong (DONE), ưu tiên giữ DONE
+                            if v.get("status") == "DONE":
+                                disk_records[k] = v
+                            elif v.get("last_scraped_at") and (not disk_rec.get("last_scraped_at") or v["last_scraped_at"] > disk_rec.get("last_scraped_at", "")):
+                                disk_records[k] = v
+                    self.records = disk_records
+                except Exception:
+                    pass
+
+            temp_file = self.catalog_file.with_suffix(".tmp")
+            with open(temp_file, "w", encoding="utf-8") as f:
+                json.dump(self.records, f, ensure_ascii=False, indent=2)
+            temp_file.replace(self.catalog_file)
+
+            try:
+                import pandas as pd
+                parquet_file = self.base_dir / "catalog_master.parquet"
+                temp_parquet = parquet_file.with_suffix(".tmp")
+                pd.DataFrame(list(self.records.values())).to_parquet(temp_parquet, index=False)
+                temp_parquet.replace(parquet_file)
+            except Exception:
+                pass
 
     def get_stats(self) -> Dict[str, Any]:
         """Thống kê tổng quan số lượng URL theo trạng thái."""

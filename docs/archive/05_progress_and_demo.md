@@ -38,7 +38,7 @@ Tính đến thời điểm hiện tại, hệ thống đã hoàn thành thiết
 - **Cơ chế chịu lỗi:** Thiết lập tự động thử lại (`retries=1`, `retry_delay=5 phút`) khi gặp sự cố gián đoạn đường truyền.
 
 ### 2. Thiết Kế Động Cơ Thu Thập Hướng Đối Tượng (`BaseCrawler`)
-- Toàn bộ crawler đều kế thừa kiến trúc chung [`BaseCrawler`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/base/base_crawler.py).
+- Toàn bộ crawler đều kế thừa kiến trúc chung [`BaseCrawler`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/base/base_crawler.py).
 - **Lịch sự & An toàn (Polite Crawling):** Tự động tạo khoảng nghỉ (delay ngẫu nhiên 2 - 5 giây) giữa các lượt request và xoay vòng User-Agent Header.
 - **Khử trùng lặp qua Checkpoint:** Lưu trữ danh sách `source_job_id` đã từng cào vào file `<source>_checkpoint.json`. Những lần chạy sau chỉ cào tin mới, giúp tiết kiệm băng thông và tối ưu hiệu suất.
 

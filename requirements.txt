@@ -6,7 +6,8 @@
 requests==2.32.3
 beautifulsoup4==4.13.4
 lxml==5.4.0
-playwright==1.50.0          # TopCV (Cloudflare-protected)
+playwright>=1.53.0           # TopCV (Cloudflare-protected)
+cloakbrowser>=0.6.0          # Native C++ patched stealth Chromium bypass Cloudflare
 curl-cffi>=0.7.0
 nodriver>=0.50.0            # TLS/JA3/JA4 Chrome impersonation bypass Cloudflare
 

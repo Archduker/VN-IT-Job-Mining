@@ -43,7 +43,7 @@ Raw JSON của các lần cào trước không thể khôi phục từ batch sch
 
 ## 2. Bảng Đối Chiếu Dữ Liệu Thực Tế (API Payload vs. Schema v1)
 
-Dữ liệu được kiểm chứng thực tế tại [`crawlers/sources/vietnamworks/test_5_jobs.json`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/vietnamworks/test_5_jobs.json):
+Dữ liệu được kiểm chứng thực tế tại [`crawlers/sources/vietnamworks/test_5_jobs.json`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/vietnamworks/test_5_jobs.json):
 
 | Trường Schema | Job 1 (Senior Software Eng - EN) | Job 2 (Senior Mobile Flutter - EN) | Job 3 (Senior Backend Java - EN) | Job 4 (Fullstack C#/.NET - VI) | Job 5 (Data Engineer - EN) |
 | :--- | :--- | :--- | :--- | :--- | :--- |

@@ -1,6 +1,36 @@
 # **VN IT Job Mining Data Collection System**
 
-Hệ thống thu thập dữ liệu tuyển dụng IT tự động tại Việt Nam theo chuẩn **Modern Data Stack**, điều phối bằng **Apache Airflow**, kiến trúc **Two-Phase Decoupled Crawler** kết hợp **MinIO Lakehouse (URL Ledger & Manifests)**, lưu trữ dữ liệu dạng **JSON mảng phân vùng (partitioned)**, kiểm soát chất lượng dữ liệu (**DataQualityChecker**) và chuẩn hóa theo **Data Contract Schema v1**.
+Hệ thống thu thập dữ liệu tuyển dụng IT tự động tại Việt Nam theo chuẩn **Modern Data Stack**, điều phối bằng **Apache Airflow**, kiến trúc **Two-Phase Decoupled Crawler** kết hợp **Cloudflare R2 Lakehouse (URL Ledger & Manifests)**, lưu trữ dữ liệu dạng **JSON mảng phân vùng (partitioned)**, kiểm soát chất lượng dữ liệu (**DataQualityChecker**) và chuẩn hóa theo **Data Contract Schema v1**.
+
+---
+
+## 🖥️ Trung Tâm Giám Sát & Điều Phối Toàn Hệ Thống (Central Observatory)
+
+Hệ thống sở hữu trang web UI dashboard hiện đại đặt tại [`monitoring/`](monitoring/) phân chia rõ rệt **Backend (FastAPI)** và **Frontend (React 18 + Vite + Tailwind + Recharts + Plotly 3D)**:
+
+- **Sứ mệnh cốt lõi (Visual Truth Engine)**: *Miêu tả hình ảnh thực tế của toàn bộ dòng chảy dữ liệu thông qua các chỉ số và biểu đồ liên tục, liền mạch theo chuẩn pipeline 3 giai đoạn (`Collection` ➔ `Pre-processing` ➔ `Processing`) để từng bước tinh chế ra **Bộ Dữ Liệu Vàng Hoàn Chỉnh Nhất (Golden Master Dataset)**.*
+- **Chiến lược EDA Đa Tầng (Multi-stage EDA)**:
+  - *Master Dashboard*: Cung cấp bức tranh toàn cảnh cấp cao về bộ dữ liệu hợp nhất (độ hội tụ schema, phân bổ lương thị trường, top kỹ năng vàng, hệ số làm sạch).
+  - *EDA Chi Tiết Từng Giai Đoạn*: Được thiết kế chuyên biệt cho từng bước xử lý dữ liệu (EDA Thô As-Is tại Collection, EDA Regex & Outliers tại Pre-processing, EDA Deduplication & Semantic Drift tại Processing).
+- **Phân Tách Rõ Ràng Vận Hành (Decoupled Operations)**:
+  - *Crawling Operations*: Giám sát tiến độ cào, URL Ledger manifests, SSE live stream logs, kiểm soát batch run.
+  - *EDA Intelligence*: Kiểm kê trường dữ liệu thô (field inventory), đo lường tỷ lệ khuyết thiếu (missingness profiling), và 5 họ biểu đồ khoa học 2D.
+- **Giám Sát Apache Airflow Trực Tiếp**:
+  - Tự động theo dõi tiến trình sống (PID) của Scheduler và Webserver (Port 8080).
+  - Truy vấn trực tiếp SQLite Metadata DB (`airflow/airflow.db`) để cập nhật trạng thái của 7 DAGs cào xoay vòng hàng ngày.
+- **Hạ Tầng Lưu Trữ Đám Mây Độc Quyền Cloudflare R2**:
+  - 100% chuyển sang Cloudflare R2 bucket `vn-it-jobs` (đã loại bỏ hoàn toàn các cấu hình MinIO/S3 cũ).
+  - Tích hợp **R2 Diff Engine & Đồng Bộ 1-Click** giúp kiểm toán chênh lệch giữa ổ đĩa cục bộ và Remote Cloud.
+- **Quy Chuẩn Giám Sát Không Đăng Nhập (Zero-Auth Standard)**:
+  - Không có bất kỳ form đăng nhập, xác thực hay phân quyền người dùng nào. Đây là bảng điều khiển kỹ thuật nội bộ (Internal Engineering Monitor) tối ưu cho việc quan sát trực tiếp, phản hồi thời gian thực và tự động hóa.
+- **Chuẩn Hóa 100% TypeScript (Strictly No JavaScript)**:
+  - Toàn bộ frontend, các components, cấu hình (`vite.config.ts`, `tailwind.config.ts`) và models được định kiểu chặt chẽ bằng TypeScript. Khóa cứng `"allowJs": false` trong `tsconfig.json`.
+- **API Trung Tâm Điều Hành**: [`GET /api/dashboard`](http://localhost:8000/api/dashboard) (hoặc `/api/v1/dashboard`) và tài liệu Swagger API tại [`http://localhost:8000/docs`](http://localhost:8000/docs).
+- **Khởi chạy nhanh 1 lệnh**:
+  ```bash
+  ./monitoring/run_all.sh
+  ```
+  Giao diện Web Dashboard truy cập tại `http://localhost:5173`. Quy tắc phát triển xem tại [`.agents/rules/monitoring_system_rules.md`](.agents/rules/monitoring_system_rules.md) và Skill MCP tại [`.agents/skills/mcp-ui-architect/SKILL.md`](.agents/skills/mcp-ui-architect/SKILL.md).
 
 ---
 

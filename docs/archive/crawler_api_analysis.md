@@ -38,7 +38,7 @@ Hệ thống yêu cầu Python 3.12+ và môi trường ảo `.venv` đã cài �
 
 ```bash
 # 1. Di chuyển vào thư mục gốc dự án
-cd /home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining
+cd /run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining
 
 # 2. Kiểm tra môi trường ảo
 python3 -m venv .venv
@@ -59,7 +59,7 @@ playwright install chromium
 
 ### 1.2 Sử dụng bộ điều phối tập trung `run.py`
 
-File [`run.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/run.py) tại thư mục gốc là giao diện dòng lệnh thống nhất, tự động định tuyến đến crawler tương ứng, quản lý checkpoint và in ra thông số chạy cùng câu lệnh đối chiếu JSON.
+File [`run.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/run.py) tại thư mục gốc là giao diện dòng lệnh thống nhất, tự động định tuyến đến crawler tương ứng, quản lý checkpoint và in ra thông số chạy cùng câu lệnh đối chiếu JSON.
 
 #### Cú pháp chung:
 ```bash
@@ -152,7 +152,7 @@ data/
 │       └── batch_002.json
 ```
 
-File `.json` chứa danh sách đối tượng JSON (`[ { "_meta": ..., "raw": ... }, ... ]`), tuân thủ nghiêm ngặt schema [`JobRecord`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/common/schema.py).  
+File `.json` chứa danh sách đối tượng JSON (`[ { "_meta": ..., "raw": ... }, ... ]`), tuân thủ nghiêm ngặt schema [`JobRecord`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/common/schema.py).  
 > [!IMPORTANT]
 > **Định dạng file hoàn toàn không nén (Uncompressed Plain JSON)**: Tất cả file kết quả được lưu trữ dưới dạng text UTF-8 thông thường (plain text `.json`, không nén gzip/zip hay nhị phân và không phải jsonl nén). Bạn có thể mở trực tiếp bằng bất kỳ trình soạn thảo mã nguồn nào (VS Code, Sublime, Notepad, Vim) hoặc phân tích trực tiếp với Python `json.load` mà không cần bước giải nén.
 

@@ -838,31 +838,31 @@ Theo quy định chuẩn của Agent Skill `eda-intelligence`, toàn bộ 5 họ
 - **Biểu đồ gốc:** Thể hiện phân phối tần suất và đường cong ước lượng mật độ nhân (KDE) của mức lương tối đa. Phân phối thể hiện độ lệch phải mạnh mẽ đặc trưng của thị trường lao động.
 - **Biểu đồ Log Transformation:** Chuyển đổi $y = \\log(1 + \\text{{Salary}})$ giúp nén đuôi dài bên phải, đưa phân phối về gần dạng phân phối chuẩn (Gaussian-like), tạo tiền đề tối ưu cho các thuật toán hồi quy tuyến tính và phát hiện gian lận.
 
-![Phân phối mức lương](/home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/reports/figures/cross_platform_1_distribution.png)
+![Phân phối mức lương](figures/cross_platform_1_distribution.png)
 
 ### 4.2 Biểu Đồ Họ 2: Mối Quan Hệ (Relationship Plots)
 - Scatter plot thể hiện mối tương quan đồng biến mạnh giữa **Số năm kinh nghiệm tối thiểu** và **Mức lương tối đa**.
 - Đường hồi quy tuyến tính màu đỏ đi kèm dải tin cậy 95% (Confidence Interval) chứng minh mức gia tăng thu nhập ổn định trung bình từ 6 - 12 triệu VNĐ cho mỗi năm tích lũy thâm niên chuyên môn trong ngành IT.
 
-![Quan hệ kinh nghiệm và lương](/home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/reports/figures/cross_platform_2_relationship.png)
+![Quan hệ kinh nghiệm và lương](figures/cross_platform_2_relationship.png)
 
 ### 4.3 Biểu Đồ Họ 3: Độ Biến Thiên & Phân Tán (Dispersion & Variance Plots)
 - **Phân tán theo Cấp bậc (Seniority):** Mức độ phân tán (IQR) tăng vọt rõ rệt từ cấp độ `Junior` lên `Senior` và đạt đỉnh tại `Lead / Manager`. Tại nhóm quản lý, mức chênh lệch giữa lương thấp nhất và cao nhất có thể lên tới 50 triệu VNĐ.
 - **Phân tán giữa các Sàn (Platforms):** VietnamWorks và TopCV có biên độ phân tán lương rộng nhất nhờ sở hữu nhiều vị trí tuyển dụng doanh nghiệp đa quốc gia và mức lương trả bằng USD.
 
-![Độ biến thiên mức lương](/home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/reports/figures/cross_platform_3_dispersion.png)
+![Độ biến thiên mức lương](figures/cross_platform_3_dispersion.png)
 
 ### 4.4 Biểu Đồ Họ 4: Ma Trận Tương Quan (Correlation Matrix Heatmaps)
 - So sánh song song **Hệ số tương quan Pearson** (đo lường quan hệ tuyến tính) và **Spearman** (đo lường quan hệ đơn điệu phi tuyến).
 - **Phát hiện quan trọng:** Hệ số tương quan Spearman giữa `salary_min_vnd` và `salary_max_vnd` đạt **0.95+**, khẳng định tính nhất quán logic tuyệt đối trong bóc tách dải lương. Tương quan giữa `min_experience_years` và `salary_max_vnd` đạt mức **0.62 - 0.71**, là nhân tố ảnh hưởng lớn nhất tới thu nhập.
 
-![Ma trận tương quan](/home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/reports/figures/cross_platform_4_correlation.png)
+![Ma trận tương quan](figures/cross_platform_4_correlation.png)
 
 ### 4.5 Biểu Đồ Họ 5: Tần Suất Kỹ Năng & Đường Tích Lũy Pareto (Categorical Frequency & Pareto)
 - Top 20 công nghệ có nhu cầu tuyển dụng cao nhất toàn thị trường IT Việt Nam.
 - **Quy luật Pareto (80/20):** Các kỹ năng cốt lõi như **SQL, Python, Java, React, Docker, AWS, JavaScript/TypeScript** chiếm tới hơn **70%** tổng lượng yêu cầu kỹ thuật từ các nhà tuyển dụng.
 
-![Top kỹ năng IT và Pareto](/home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/reports/figures/cross_platform_5_pareto_skills.png)
+![Top kỹ năng IT và Pareto](figures/cross_platform_5_pareto_skills.png)
 
 ### Bảng Xếp Hạng Top 15 Kỹ Năng IT Có Nhu Cầu Cao Nhất
 

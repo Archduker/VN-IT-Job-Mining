@@ -3,9 +3,9 @@
 > **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (VN-IT-Job-Mining)  
 > **Quy định Git:** Toàn bộ thành viên bắt đầu làm việc từ nhánh `main` và chuyển sang nhánh độc lập của mình: `crawls/<tenweb>`.  
 > **Bộ 3 tài liệu quy trình bắt buộc phải đọc trước khi bắt tay vào code:**
-> 1. [01_modern_data_mining_overview.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/01_modern_data_mining_overview.md)
-> 2. [02_crawling_architecture_guide.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/02_crawling_architecture_guide.md)
-> 3. [03_eda_and_integration_guide.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/03_eda_and_integration_guide.md)
+> 1. [01_modern_data_mining_overview.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/01_modern_data_mining_overview.md)
+> 2. [02_crawling_architecture_guide.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/02_crawling_architecture_guide.md)
+> 3. [03_eda_and_integration_guide.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/03_eda_and_integration_guide.md)
 
 ---
 
@@ -65,7 +65,7 @@ flowchart TD
 - [ ] **Hồ sơ nghiệm thu bắt buộc:**
   - `crawlers/sources/topdev/samples/`: **Tối thiểu 3 file HTML thô (hoặc response DOM/web) kèm 3 file JSON tương ứng** có định dạng khác nhau (tin lương VND, lương USD, tin nhiều tech tags). *Có thể nộp kèm file `.md` mô tả chi tiết từng sample*.
   - Tự viết `docs/crawl/topdev.md` phân tích kiến trúc API, phân trang và cấu trúc trường của TopDev.
-  - Điền báo cáo theo 2 mẫu [raw_crawl_inventory_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md) và [preliminary_eda_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/preliminary_eda_template.md).
+  - Điền báo cáo theo 2 mẫu [raw_crawl_inventory_template.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md) và [preliminary_eda_template.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/templates/preliminary_eda_template.md).
 
 ### 3.2. Thuận — Phụ trách `TopCV` (Nhánh: `crawls/topcv`)
 - [ ] **Pha 1 (URL Discovery):** Viết `discover_urls()` cào sạch danh sách link bài đăng từ trang tìm kiếm TopCV (không giới hạn thời gian), ghi vào URL Ledger và đồng bộ lên **MinIO** + **Cloudflare**.
@@ -127,8 +127,8 @@ Một thành viên được tính là hoàn thành nhiệm vụ khi thỏa mãn 
 5. **Đồng bộ lưu trữ Đám mây & Lakehouse (MinIO & Cloudflare):** Toàn bộ dữ liệu cào (URL Ledger Manifest ở Pha 1 & Raw Data ở Pha 2) bắt buộc phải được đồng bộ đầy đủ lên **cả MinIO Lakehouse cục bộ VÀ Cloudflare (Cloudflare R2 Object Storage)**.
 6. **Tự viết file phân tích kiến trúc:** Nộp file `docs/crawl/<tenweb>.md` giải thích chi tiết cơ chế cào và container selector của web mình.
 7. **Đầy đủ 2 báo cáo chất lượng:**
-   - `reports/<source>_inventory.md` (theo [raw_crawl_inventory_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md)).
-   - `reports/<source>_eda.md` (theo [preliminary_eda_template.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/templates/preliminary_eda_template.md)).
+   - `reports/<source>_inventory.md` (theo [raw_crawl_inventory_template.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/templates/raw_crawl_inventory_template.md)).
+   - `reports/<source>_eda.md` (theo [preliminary_eda_template.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/templates/preliminary_eda_template.md)).
 
 ---
 
@@ -142,7 +142,7 @@ Sau khi dữ liệu thô (Raw As-Is) đã được kéo về Lakehouse (MinIO & 
   - *Thành viên 1:* Chuyên môn Sức khỏe dữ liệu & Phân phối số $\to$ Phụ trách **TopCV, Vieclam24h, CareerViet**.
   - *Thành viên 2:* Chuyên môn Tech Stack & Xử lý văn bản NLP $\to$ Phụ trách **ITViec, TopDev, VietnamWorks**.
   - *Thành viên 3:* Chuyên môn Tương quan đa chiều & Pipeline đa nguồn $\to$ Phụ trách **Glints, JobsGO** (+ Cross-Platform Master Pipeline).
-- **Tài liệu hướng dẫn & nghiệm thu chi tiết:** 👉 [01_huong_dan_eda_nhom_3_nguoi.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/tasks/01_huong_dan_eda_nhom_3_nguoi.md)
+- **Tài liệu hướng dẫn & nghiệm thu chi tiết:** 👉 [01_huong_dan_eda_nhom_3_nguoi.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/tasks/01_huong_dan_eda_nhom_3_nguoi.md)
 
 ### 5.2. Nhóm Khai Phá Khoảng Trống Dữ Liệu & So Sánh Bù Trừ Đa Nguồn (Nhóm Còn Lại)
 - **Nhiệm vụ:** Áp dụng mô hình câu hỏi **Why - What - How** để đào sâu câu hỏi cốt tử: **"Bộ dữ liệu nguồn đó THIẾU GÌ?" (Data Gap Analysis)**. Tự do bắt cặp song song (mỗi cặp 2 người) để thực hiện đối chiếu chéo **2 nguồn trên 8 nguồn**, tìm kiếm sự bù trừ (complementarity) khoảng trống thông tin giữa 2 sàn, và đề xuất giải pháp kỹ thuật (Imputation, Master Source Rule, Bias Mitigation) nộp cho Leader phục vụ bước Data Integration.
@@ -152,4 +152,4 @@ Sau khi dữ liệu thô (Raw As-Is) đã được kéo về Lakehouse (MinIO & 
   3. Khoảng trống Thẻ kỹ năng & Chất lượng JD (Skills & Text Gaps)
   4. Khoảng trống Phân khúc cấp bậc & Thiên lệch mẫu (Segment Bias)
   5. Xung đột dữ liệu thực thể & Luật hợp nhất (Entity Conflicts)
-- **Tài liệu hướng dẫn, mẫu báo cáo & nghiệm thu chi tiết:** 👉 [02_huong_dan_insight_va_so_sanh_nguon.md](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/tasks/02_huong_dan_insight_va_so_sanh_nguon.md)
+- **Tài liệu hướng dẫn, mẫu báo cáo & nghiệm thu chi tiết:** 👉 [02_huong_dan_insight_va_so_sanh_nguon.md](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/tasks/02_huong_dan_insight_va_so_sanh_nguon.md)

@@ -1,6 +1,6 @@
 # JobsGO Crawler — Kiến Trúc Kỹ Thuật & Vượt Rào Cản Cloudflare WAF
 
-> **Tài liệu tham chiếu:** [`cloudflare.md`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/cloudflare.md), [`docs/two_phase_minio_crawler_playbook.md`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/two_phase_minio_crawler_playbook.md).
+> **Tài liệu tham chiếu:** [`cloudflare.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/cloudflare.md), [`docs/two_phase_minio_crawler_playbook.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/two_phase_minio_crawler_playbook.md).
 
 ---
 
@@ -17,7 +17,7 @@
 
 ## 2. Giải Pháp Vượt Cloudflare: Mô Hình Dual-Engine
 
-Theo tài liệu [`cloudflare.md`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/cloudflare.md), crawler triển khai kiến trúc 2 tầng engine linh hoạt:
+Theo tài liệu [`cloudflare.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/cloudflare.md), crawler triển khai kiến trúc 2 tầng engine linh hoạt:
 
 1. **Engine 1: `curl_cffi` (Mặc định cho Batch & Airflow Pipelines):**
    - Giả lập trọn vẹn TLS/JA3/JA4 fingerprint của Chrome 124 (`impersonate="chrome124"`).

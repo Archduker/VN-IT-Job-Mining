@@ -20,7 +20,7 @@ Sau khi khởi động Webserver, truy cập vào giao diện web tại:
 
 ### Terminal 1: Khởi động Scheduler (Bộ điều phối & lập lịch)
 ```bash
-cd /home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining
+cd /run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining
 source .venv/bin/activate
 export AIRFLOW_HOME=$(pwd)/airflow
 export PYTHONPATH=.:$(pwd)/airflow/plugins
@@ -31,7 +31,7 @@ airflow scheduler
 
 ### Terminal 2: Khởi động Webserver (Giao diện điều khiển)
 ```bash
-cd /home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining
+cd /run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining
 source .venv/bin/activate
 export AIRFLOW_HOME=$(pwd)/airflow
 export PYTHONPATH=.:$(pwd)/airflow/plugins
@@ -60,11 +60,11 @@ Theo tài liệu chuẩn của Apache Airflow, có **5 khái niệm cốt lõi (
 
 ### 1. DAG (Directed Acyclic Graph)
 - **Định nghĩa:** Là tập hợp các công việc (Tasks) được tổ chức theo thứ tự logic có quan hệ phụ thuộc lẫn nhau, **không tạo thành vòng lặp kín** (`A >> B`, không có chuyện `B quay lại A`).
-- **Trong dự án:** Mỗi nguồn tuyển dụng là 1 DAG độc lập nằm trong [airflow/dags/crawler_dags.py](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/dags/crawler_dags.py) (`crawler_topdev`, `crawler_vietnamworks`, ...).
+- **Trong dự án:** Mỗi nguồn tuyển dụng là 1 DAG độc lập nằm trong [airflow/dags/crawler_dags.py](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/airflow/dags/crawler_dags.py) (`crawler_topdev`, `crawler_vietnamworks`, ...).
 
 ### 2. Operators & Tasks
 - **Operator:** Là bản thiết kế (template / class) cho việc cần làm.
-  - Trong dự án, team tự viết 2 custom operators tại [airflow/plugins/crawler_operators.py](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py):
+  - Trong dự án, team tự viết 2 custom operators tại [airflow/plugins/crawler_operators.py](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py):
     - `JobCrawlerOperator`: Đảm nhận việc chạy crawler.
     - `DataQualityOperator`: Đảm nhận việc kiểm tra file JSONL đầu ra.
 - **Task:** Là một thực thể (instance) cụ thể của Operator được gán vào DAG (ví dụ: `crawl_vietnamworks >> check_quality_vietnamworks`).

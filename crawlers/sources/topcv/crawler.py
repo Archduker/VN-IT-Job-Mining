@@ -72,6 +72,14 @@ DEFAULT_USER_AGENT = (
 )
 
 
+class RateLimitLockError(RuntimeError):
+    """Ném ra khi TopCV / Cloudflare kích hoạt WAF Rate Limiting 429 hoặc Turnstile Challenge."""
+
+    def __init__(self, message: str, url: str = ""):
+        super().__init__(message)
+        self.url = url
+
+
 def extract_job_id(url: str) -> str:
     """Trích xuất mã ID bài tuyển dụng từ TopCV URL."""
     m = re.search(r"/([0-9]+)\.html", url)
@@ -339,12 +347,16 @@ class TopCVCrawler(BaseCrawler):
         self,
         ledger_dir: str = "data/topcv/url_ledger",
         raw_root: str = "data/topcv/raw",
-        engine: str = "playwright",
+        engine: str = "cloakbrowser",
         browser_path: Optional[str] = "/usr/bin/google-chrome",
         sync_minio: bool = False,
-        min_delay: float = 5.0,
-        max_delay: float = 8.5,
+        min_delay: float = 3.0,
+        max_delay: float = 6.0,
         local_html_dir: Optional[str] = None,
+        raise_on_lock: bool = False,
+        proxy: Optional[str] = None,
+        worker_id: Optional[Union[int, str]] = None,
+        total_workers: int = 1,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -361,6 +373,10 @@ class TopCVCrawler(BaseCrawler):
         self.min_delay = min_delay
         self.max_delay = max_delay
         self.local_html_dir = local_html_dir
+        self.raise_on_lock = raise_on_lock
+        self.proxy = proxy
+        self.worker_id = worker_id
+        self.total_workers = max(1, int(total_workers))
 
         self._ledger: Optional[UrlLedger] = None
         self._minio_store: Optional[MinioRawStore] = None
@@ -370,6 +386,8 @@ class TopCVCrawler(BaseCrawler):
         self._playwright_instance: Any = None
         self._playwright_context: Any = None
         self._playwright_page: Any = None
+        self._cloak_context: Any = None
+        self._cloak_page: Any = None
         self._nodriver_browser: Any = None
 
     def _get_ledger(self) -> UrlLedger:
@@ -412,22 +430,28 @@ class TopCVCrawler(BaseCrawler):
 
         log.info("[TopCV] Khởi tạo Playwright Off-Screen Persistent Session (Profile: %s)...", user_data_dir)
         self._playwright_instance = sync_playwright().start()
-        self._playwright_context = self._playwright_instance.chromium.launch_persistent_context(
-            user_data_dir=user_data_dir,
-            executable_path=self.browser_path if (self.browser_path and os.path.exists(self.browser_path)) else None,
-            headless=False,
-            args=[
+        pw_kwargs = {
+            "user_data_dir": user_data_dir,
+            "executable_path": self.browser_path if (self.browser_path and os.path.exists(self.browser_path)) else None,
+            "headless": False,
+            "args": [
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
                 "--disable-blink-features=AutomationControlled",
                 "--window-position=-2400,-2400",
                 "--window-size=1920,1080",
             ],
-            user_agent=DEFAULT_USER_AGENT,
-            viewport={"width": 1920, "height": 1080},
-            locale="vi-VN",
-            timezone_id="Asia/Ho_Chi_Minh",
-        )
+            "user_agent": DEFAULT_USER_AGENT,
+            "viewport": {"width": 1920, "height": 1080},
+            "locale": "vi-VN",
+            "timezone_id": "Asia/Ho_Chi_Minh",
+        }
+        if self.proxy:
+            pw_kwargs["proxy"] = {"server": self.proxy}
+            masked_proxy = self.proxy.split("@")[-1] if "@" in self.proxy else self.proxy
+            log.info("[TopCV] Playwright định tuyến qua Proxy: %s", masked_proxy)
+
+        self._playwright_context = self._playwright_instance.chromium.launch_persistent_context(**pw_kwargs)
 
         self._playwright_page = self._playwright_context.new_page()
         # Áp dụng script stealth che giấu môi trường tự động
@@ -463,6 +487,117 @@ class TopCVCrawler(BaseCrawler):
         self._playwright_context = None
         self._playwright_instance = None
 
+    def _ensure_cloakbrowser_page(self) -> Any:
+        """Khởi tạo persistent CloakBrowser (Native C++ Stealth Chromium) context."""
+        if self._cloak_page is not None:
+            try:
+                if not self._cloak_page.is_closed():
+                    return self._cloak_page
+            except Exception:
+                pass
+
+        self._close_cloakbrowser_session()
+
+        from cloakbrowser import launch_persistent_context
+
+        profile_folder = f".cloak_profile_w{self.worker_id}" if self.worker_id is not None else ".cloak_profile"
+        user_data_dir = os.path.join(self.output_dir, profile_folder)
+        os.makedirs(user_data_dir, exist_ok=True)
+        os.environ["CLOAKBROWSER_SUPPRESS_FONT_WARNING"] = "1"
+
+        def _cleanup_singleton_locks(dir_path: str) -> None:
+            for fname in ["SingletonLock", "SingletonCookie", "SingletonSocket"]:
+                target_path = os.path.join(dir_path, fname)
+                try:
+                    if os.path.islink(target_path) or os.path.exists(target_path):
+                        os.unlink(target_path)
+                except Exception:
+                    pass
+
+        _cleanup_singleton_locks(user_data_dir)
+
+        log.info("[TopCV] Khởi tạo CloakBrowser Native C++ Stealth Context (Profile: %s)...", user_data_dir)
+        launch_kwargs = {
+            "user_data_dir": user_data_dir,
+            "headless": True,
+            "humanize": True,
+            "args": [
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--window-size=1920,1080",
+            ],
+            "viewport": {"width": 1920, "height": 1080},
+            "locale": "vi-VN",
+            "timezone_id": "Asia/Ho_Chi_Minh",
+        }
+        if self.proxy:
+            launch_kwargs["proxy"] = self.proxy
+            launch_kwargs["geoip"] = True
+            masked_proxy = self.proxy.split("@")[-1] if "@" in self.proxy else self.proxy
+            log.info("[TopCV] CloakBrowser định tuyến qua Proxy: %s (geoip=True)", masked_proxy)
+
+        for attempt in range(2):
+            try:
+                self._cloak_context = launch_persistent_context(**launch_kwargs)
+                break
+            except Exception as launch_err:
+                if ("processsingleton" in str(launch_err).lower() or "singletonlock" in str(launch_err).lower()) and attempt == 0:
+                    log.warning("[TopCV] Phát hiện đụng độ ProcessSingleton ở profile %s. Đang dọn dẹp và thử lại...", user_data_dir)
+                    _cleanup_singleton_locks(user_data_dir)
+                    time.sleep(1.0)
+                else:
+                    raise
+
+        self._cloak_page = self._cloak_context.pages[0] if self._cloak_context.pages else self._cloak_context.new_page()
+        return self._cloak_page
+
+    def _close_cloakbrowser_session(self) -> None:
+        """Đóng an toàn phiên CloakBrowser và dọn dẹp lock file."""
+        try:
+            if self._cloak_page and not self._cloak_page.is_closed():
+                self._cloak_page.close()
+        except Exception:
+            pass
+        try:
+            if self._cloak_context:
+                self._cloak_context.close()
+        except Exception:
+            pass
+        self._cloak_page = None
+        self._cloak_context = None
+
+        profile_folder = f".cloak_profile_w{self.worker_id}" if getattr(self, "worker_id", None) is not None else ".cloak_profile"
+        user_data_dir = os.path.join(self.output_dir, profile_folder)
+        for fname in ["SingletonLock", "SingletonCookie", "SingletonSocket"]:
+            lp = os.path.join(user_data_dir, fname)
+            try:
+                if os.path.islink(lp) or os.path.exists(lp):
+                    os.unlink(lp)
+            except Exception:
+                pass
+
+    def _fetch_cloakbrowser(self, url: str) -> str:
+        """Tải nội dung trang qua CloakBrowser với C++ source-level bypass và humanize."""
+        try:
+            page = self._ensure_cloakbrowser_page()
+            resp = page.goto(url, timeout=35000, wait_until="domcontentloaded")
+            content = page.content()
+
+            status_code = resp.status if resp else 200
+            if status_code == 429 or is_cloudflare_challenge(content):
+                log.warning("[TopCV] [CloakBrowser] Gặp 429 hoặc Cloudflare Challenge tại %s. Kích hoạt Cooldown...", url)
+                if handle_rate_limit_cooldown(page, cooldown_sec=30.0):
+                    content = page.content()
+                else:
+                    raise RateLimitLockError(f"Cloudflare rate limit / challenge blocked after cooldown: {url}", url=url)
+
+            return content
+        except Exception as e:
+            if "closed" in str(e).lower() or "target" in str(e).lower():
+                log.warning("[TopCV] CloakBrowser bị đóng bất ngờ (%s). Đang đặt lại phiên...", e)
+                self._close_cloakbrowser_session()
+            raise
+
     def _fetch_playwright(self, url: str) -> str:
         """Tải nội dung trang qua Playwright Persistent Off-Screen Context với tự động Cooldown khi gặp 429."""
         try:
@@ -480,7 +615,7 @@ class TopCVCrawler(BaseCrawler):
                 elif handle_cloudflare_backoff(page, retry_attempt=1):
                     content = page.content()
                 else:
-                    raise RuntimeError(f"Cloudflare rate limit / challenge blocked after cooldown: {url}")
+                    raise RateLimitLockError(f"Cloudflare rate limit / challenge blocked after cooldown: {url}", url=url)
 
             return content
         except Exception as e:
@@ -521,7 +656,9 @@ class TopCVCrawler(BaseCrawler):
 
     def _get_page_content(self, url: str) -> str:
         """Điều phối tải nội dung trang web theo Engine được cấu hình."""
-        if self.engine == "nodriver":
+        if self.engine == "cloakbrowser":
+            return self._fetch_cloakbrowser(url)
+        elif self.engine == "nodriver":
             return self._fetch_nodriver(url)
         elif self.engine == "playwright":
             return self._fetch_playwright(url)
@@ -532,18 +669,19 @@ class TopCVCrawler(BaseCrawler):
             resp = client.get(url)
             html = resp.text
             if is_cloudflare_challenge(html) or resp.status_code in [403, 429]:
-                log.warning("[TopCV] curl_cffi nhận status %s / Cloudflare challenge, tự động chuyển sang Playwright Stealth...", resp.status_code)
-                return self._fetch_playwright(url)
+                log.warning("[TopCV] curl_cffi nhận status %s / Cloudflare challenge, tự động chuyển sang CloakBrowser C++ Stealth...", resp.status_code)
+                return self._fetch_cloakbrowser(url)
             return html
         except Exception as exc:
-            log.warning("[TopCV] curl_cffi thất bại (%s), chuyển sang Playwright Stealth...", exc)
-            return self._fetch_playwright(url)
+            log.warning("[TopCV] curl_cffi thất bại (%s), chuyển sang CloakBrowser C++ Stealth...", exc)
+            return self._fetch_cloakbrowser(url)
 
     # ── PHA 1: URL DISCOVERY ──────────────────────────────────────────
     def discover_urls(self, online: bool = False, max_pages: Optional[int] = None) -> List[str]:
         """Pha 1: Quét danh mục việc làm CNTT TopCV, ban đầu chưa có hash, đẩy lên MinIO."""
         log.info("[TopCV] === Bắt đầu Pha 1: URL Discovery (Engine: %s) ===", self.engine)
         ledger = self._get_ledger()
+        ledger.reload()
         discovered_urls: List[str] = []
 
         if not online:
@@ -608,6 +746,7 @@ class TopCVCrawler(BaseCrawler):
                     break
         finally:
             self._close_playwright_session()
+            self._close_cloakbrowser_session()
 
         ledger.save_catalog()
         ledger.export_daily_manifest()
@@ -623,10 +762,12 @@ class TopCVCrawler(BaseCrawler):
         online: bool = False,
         limit: Optional[int] = None,
         retry_failed: bool = False,
+        raise_on_lock: Optional[bool] = None,
     ) -> Dict[str, int]:
         """Pha 2: Kéo URL từ MinIO, cào chi tiết với Pacing an toàn + Power Nap + Checkpoint sync lên MinIO."""
         log.info("[TopCV] === Bắt đầu Pha 2: Detail Extraction (Engine: %s, Chu kỳ Re-crawl 21 ngày) ===", self.engine)
         ledger = self._get_ledger()
+        ledger.reload()
 
         # Kéo catalog mới nhất từ MinIO Lakehouse
         if self.sync_minio and online:
@@ -637,6 +778,25 @@ class TopCVCrawler(BaseCrawler):
         candidates = ledger.get_failed_records() if retry_failed else ledger.get_pending_or_due_records(recheck_days=21)
         total_candidates = len(candidates)
         log.info("[TopCV] Tìm thấy %d bài đăng cần cào chi tiết (retry_failed=%s).", total_candidates, retry_failed)
+
+        # Phân vùng Hash Sharding nếu chạy Multi-Worker song song
+        if self.worker_id is not None and self.total_workers > 1:
+            try:
+                worker_idx = int(self.worker_id)
+            except ValueError:
+                worker_idx = 0
+            n_workers = self.total_workers
+            candidates = [
+                rec for rec in candidates
+                if int(rec["url_hash"][:8], 16) % n_workers == worker_idx
+            ]
+            log.info(
+                "[TopCV Worker %d/%d] Phân vùng Shard hoàn tất: nhận %d / %d URL độc quyền (không trùng lặp).",
+                worker_idx + 1,
+                n_workers,
+                len(candidates),
+                total_candidates,
+            )
 
         if limit and limit > 0:
             candidates = candidates[:limit]
@@ -705,14 +865,35 @@ class TopCVCrawler(BaseCrawler):
                     # Polite Sleep ngẫu nhiên giữa 2 bài đăng (3.5s - 6.5s)
                     polite_sleep(self.min_delay, self.max_delay, reason=f"Nghỉ giữa bài đăng {idx}")
 
+                except RateLimitLockError as lock_exc:
+                    log.warning("[TopCV] [LOCK DETECTED] Bị khóa Cloudflare / Rate limit tại %s: %s", url, lock_exc)
+                    # Bảo toàn URL ở PENDING (không ghi nhận FAILED)
+                    self._close_playwright_session()
+                    self._close_cloakbrowser_session()
+                    if self.sync_minio:
+                        ledger.save_catalog()
+                        ledger.sync_to_minio()
+                    should_raise = self.raise_on_lock if raise_on_lock is None else raise_on_lock
+                    if should_raise:
+                        raise
+                    stats["locked"] = True
+                    break
                 except Exception as exc:
+                    err_msg = str(exc)
+                    if "processsingleton" in err_msg.lower() or "singletonlock" in err_msg.lower():
+                        log.warning("[TopCV] Lỗi ProcessSingleton trình duyệt (%s). Giữ nguyên PENDING và khởi động lại phiên...", exc)
+                        self._close_cloakbrowser_session()
+                        self._close_playwright_session()
+                        time.sleep(2.0)
+                        continue
                     # Safe Skip & đưa vào Failed Queue
                     log.warning("[TopCV] Safe Skip lỗi cào chi tiết %s: %s", url, exc)
-                    ledger.mark_failed(url_hash, error_message=str(exc))
+                    ledger.mark_failed(url_hash, error_message=err_msg)
                     stats["failed"] += 1
                     continue
         finally:
             self._close_playwright_session()
+            self._close_cloakbrowser_session()
             if self._nodriver_browser:
                 try:
                     self._nodriver_browser.stop()
@@ -735,6 +916,7 @@ class TopCVCrawler(BaseCrawler):
     def fetch_items(self) -> Generator[dict[str, Any], None, None]:
         """Phương thức tương thích chuẩn BaseCrawler."""
         ledger = self._get_ledger()
+        ledger.reload()
         for rec in ledger.records.values():
             if rec.get("status") == "DONE":
                 yield rec
@@ -772,9 +954,9 @@ def main() -> int:
     )
     parser.add_argument(
         "--engine",
-        choices=["playwright", "nodriver", "curl_cffi"],
-        default="playwright",
-        help="Engine vượt Cloudflare (mặc định: playwright Off-Screen Stealth)",
+        choices=["cloakbrowser", "playwright", "nodriver", "curl_cffi"],
+        default="cloakbrowser",
+        help="Engine vượt Cloudflare (mặc định: cloakbrowser Native C++ Stealth)",
     )
     parser.add_argument("--online", action="store_true", default=False, help="Bật kết nối mạng ngoài")
     parser.add_argument("--sync-minio", action="store_true", default=False, help="Đồng bộ URL Ledger và raw lên MinIO/R2")
