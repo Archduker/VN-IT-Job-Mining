@@ -4,7 +4,7 @@
 > **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (VN-IT-Job-Mining)  
 > **Bộ phận chuyên trách:** Nhóm EDA Intelligence & Data Quality (3 thành viên)  
 > **Nguyên tắc chỉ đạo cốt lõi:** **Khám phá đi lên từ câu hỏi (Inquiry-Driven Framework)** — Tiếp nhận trực tiếp dữ liệu thô (Raw As-Is) vừa cào về từ Lakehouse, kiểm tra toàn diện chất lượng dữ liệu qua 5 trụ cột kỹ thuật, chẩn đoán độ lệch (Bias) và tính mất cân bằng (Balance) bằng hệ thống trực quan hóa phong phú (Visual phong phú) để làm cơ sở khoa học cho chuỗi xử lý Pre-processing.  
-> **Phạm vi nguồn dữ liệu:** 8 sàn việc làm IT hàng đầu (TopCV, ITViec, VietnamWorks, TopDev, Glints, JobsGO, CareerViet, Vieclam24h) lưu trữ trên Lakehouse (MinIO & Cloudflare R2).
+> **Phạm vi nguồn dữ liệu:** 8 sàn việc làm IT hàng đầu (TopCV, ITViec, VietnamWorks, TopDev, Glints, JobsGO, CareerViet, Vieclam24h) lưu trữ trên Lakehouse (Cloudflare R2).
 
 ---
 

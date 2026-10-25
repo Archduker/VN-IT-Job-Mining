@@ -9,12 +9,12 @@
 | STT | Tiêu Chí Kiểm Tra | Trọng Số | Trạng Thái Đạt |
 | :---: | :--- | :---: | :---: |
 | **1** | Kiến trúc Hai Pha Độc Lập (`discover_urls` & `crawl_details`) | 20đ | [ ] ĐẠT |
-| **2** | Pha 1: URL ban đầu **hoàn toàn chưa có hash**, đẩy lên MinIO | 10đ | [ ] ĐẠT |
-| **3** | Pha 2: Kéo URL từ MinIO về máy để thực hiện cào chi tiết | 10đ | [ ] ĐẠT |
+| **2** | Pha 1: URL ban đầu **hoàn toàn chưa có hash**, đẩy lên Cloudflare R2 | 10đ | [ ] ĐẠT |
+| **3** | Pha 2: Kéo URL từ Cloudflare R2 về máy để thực hiện cào chi tiết | 10đ | [ ] ĐẠT |
 | **4** | **Băm toàn vẹn Document JSON của 1 bài đăng** (Không băm HTML thô) | 15đ | [ ] ĐẠT |
 | **5** | **Lưu ngược lại hash vào cả URL trong Ledger lẫn file Raw Snapshot** | 10đ | [ ] ĐẠT |
 | **6** | Cơ chế Safe Skip & **Failed Queue** (Gặp lỗi đưa vào queue bữa khác cào lại) | 10đ | [ ] ĐẠT |
-| **7** | Cơ chế **Checkpoint Sync định kỳ** (mỗi 15-20 tin tự động đẩy lên MinIO) | 5đ | [ ] ĐẠT |
+| **7** | Cơ chế **Checkpoint Sync định kỳ** (mỗi 15-20 tin tự động đẩy lên Cloudflare R2) | 5đ | [ ] ĐẠT |
 | **8** | Chống chặn Bot: Polite Sleep ngẫu nhiên 2.0s - 4.5s giữa các lượt cào | 5đ | [ ] ĐẠT |
 | **9** | Đủ bộ 3 cặp file mẫu: 3 HTML thô + 3 JSON Raw Envelope + README mapping | 15đ | [ ] ĐẠT |
 | **10** | Mã nguồn Single-File gọn gàng (`crawler.py`), đầy đủ cờ CLI | 5đ | [ ] ĐẠT |
@@ -31,13 +31,13 @@
 
 ---
 
-### Quy Chuẩn 2: Quản Lý URL & MinIO Lakehouse
+### Quy Chuẩn 2: Quản Lý URL & Cloudflare R2 Lakehouse
 - [ ] **Tại Pha 1 (Discovery):**
   - [ ] Khi đăng ký bài viết mới vào Ledger: `status = "PENDING"`.
   - [ ] **Ban đầu chưa có hash:** `content_hash = None`. Tuyệt đối không sinh hash giả khi chưa tải trang chi tiết.
-  - [ ] Đồng bộ catalog master (`catalog_master.json`) và daily manifest (`manifest_YYYY-MM-DD.jsonl`) lên `minio://vn-it-jobs/url_ledger/<source>/`.
+  - [ ] Đồng bộ catalog master (`catalog_master.json`) và daily manifest (`manifest_YYYY-MM-DD.jsonl`) lên `r2://vn-it-jobs/url_ledger/<source>/`.
 - [ ] **Tại Pha 2 (Details):**
-  - [ ] Crawler có khả năng gọi `ledger.pull_from_minio()` để kéo catalog mới nhất từ MinIO về máy trước khi lọc URL cào.
+  - [ ] Crawler có khả năng gọi `ledger.pull_from_minio()` để kéo catalog mới nhất từ Cloudflare R2 về máy trước khi lọc URL cào.
 
 ---
 
@@ -47,8 +47,8 @@
   - [ ] Áp dụng `calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])` trên chính đối tượng JSON này.
 - [ ] **Lưu ngược lại mã hash vào 2 vị trí:**
   - [ ] **Vị trí 1 (URL trong Ledger):** Cập nhật `content_hash = canonical_hash`, chuyển `status = "DONE"`, cập nhật `last_scraped_at = now()`.
-  - [ ] **Vị trí 2 (Raw Envelope Snapshot):** Lưu vào trường `metadata.content_hash`, `metadata.canonical_hash` và `metadata.field_hashes` trong file raw JSON đẩy lên MinIO:
-    `minio://vn-it-jobs/raw/<source>/<YYYY-MM-DD>/{job_id}_v{version}.json`.
+  - [ ] **Vị trí 2 (Raw Envelope Snapshot):** Lưu vào trường `metadata.content_hash`, `metadata.canonical_hash` và `metadata.field_hashes` trong file raw JSON đẩy lên Cloudflare R2:
+    `r2://vn-it-jobs/raw/<source>/<YYYY-MM-DD>/{job_id}_v{version}.json`.
 
 ---
 
@@ -59,7 +59,7 @@
   - [ ] Trạng thái bài viết chuyển sang `status = "FAILED"`, lưu lại chi tiết lỗi và số lần thử (`retry_count`).
   - [ ] Crawler hỗ trợ cờ CLI `--retry-failed` để lần sau có thể chọn cào lại các URL trong hàng đợi lỗi này.
 - [ ] **Checkpoint Sync Định Kỳ:**
-  - [ ] Khi cào hàng trăm tin, cứ sau mỗi **15 - 20 bài đăng** thành công, crawler tự động gọi `ledger.save_catalog()` và `ledger.sync_to_minio()` để đồng bộ ngay tiến độ lên MinIO Lakehouse.
+  - [ ] Khi cào hàng trăm tin, cứ sau mỗi **15 - 20 bài đăng** thành công, crawler tự động gọi `ledger.save_catalog()` và `ledger.sync_to_minio()` để đồng bộ ngay tiến độ lên Cloudflare R2 Lakehouse.
 
 ---
 
@@ -103,6 +103,6 @@ Tại thư mục `crawlers/sources/<source_name>/samples/`:
   python3 .agents/skills/collection-submission/scripts/verify_submission.py --source <source_name>
   ```
   - **Điểm nghiệm thu tối thiểu:** $\ge 100 / 100$ điểm.
-- [ ] Kiểm tra thực tế trên MinIO Lakehouse qua Web Console UI (`http://localhost:9001`):
+- [ ] Kiểm tra thực tế trên Cloudflare R2 Lakehouse qua Web Console UI (`http://localhost:9001`):
   - [ ] `url_ledger/<source>/catalog_master.json` đã tồn tại và hiển thị đúng số lượng URL.
   - [ ] `raw/<source>/<YYYY-MM-DD>/` chứa đầy đủ các file raw envelope JSON đã cào.

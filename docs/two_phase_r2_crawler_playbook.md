@@ -1,4 +1,4 @@
-# Cẩm Nang Kiến Trúc: Two-Phase Decoupled Crawler & MinIO Lakehouse Playbook
+# Cẩm Nang Kiến Trúc: Two-Phase Decoupled Crawler & Cloudflare R2 Lakehouse Playbook
 
 > **Mục đích tài liệu:** Hướng dẫn toàn diện và quy chuẩn mẫu để xây dựng, tái cấu trúc hoặc nghiệm thu crawler cho bất kỳ website tuyển dụng nào (CareerViet, TopCV, TopDev, ITViec, VietnamWorks, Vieclam24h, JobsGO, Glints...) đạt chuẩn **Modern Data Stack** của dự án VN-IT-Job-Mining.
 
@@ -8,18 +8,18 @@
 
 ```mermaid
 flowchart LR
-    A["Web Tuyển Dụng"] -->|"Pha 1: Discovery (Chưa có hash)"| B["MinIO URL Ledger"]
-    B -->|"Pha 2: Kéo URL từ MinIO"| C["Cào Chi Tiết HTML"]
+    A["Web Tuyển Dụng"] -->|"Pha 1: Discovery (Chưa có hash)"| B["Cloudflare R2 URL Ledger"]
+    B -->|"Pha 2: Kéo URL từ Cloudflare R2"| C["Cào Chi Tiết HTML"]
     C -->|"Bóc tách JSON"| D["Document JSON (raw_payload)"]
     D -->|"Canonical JSON Hash"| E["Mã Hash Toàn Vẹn"]
     E -->|"Lưu ngược lại URL (status=DONE)"| B
-    E -->|"Lưu vào Raw Envelope"| F["MinIO Raw Lakehouse"]
+    E -->|"Lưu vào Raw Envelope"| F["Cloudflare R2 Raw Lakehouse"]
     C -.->|"Lỗi cào"| G["Failed Queue (Bữa khác cào lại)"]
 ```
 
 1. **Kiến Trúc Hai Pha Tách Rời (Two-Phase Decoupled Pipeline):**
    - **Pha 1 (Discovery):** Thu thập URL từ danh mục/API, ghi nhận vào URL Ledger.
-   - **Pha 2 (Details):** Đọc danh sách URL từ URL Ledger trên MinIO để cào chi tiết. Hai pha chạy độc lập, có thể chạy cách nhau vài giờ hoặc vài ngày.
+   - **Pha 2 (Details):** Đọc danh sách URL từ URL Ledger trên Cloudflare R2 để cào chi tiết. Hai pha chạy độc lập, có thể chạy cách nhau vài giờ hoặc vài ngày.
 2. **Ban Đầu Chưa Có Hash:**
    - Khi phát hiện URL ở Pha 1, bài viết chưa được cào chi tiết nên **tuyệt đối không có hash** (`content_hash = None`, `status = "PENDING"`).
 3. **Băm Toàn Vẹn Document JSON (Tuyệt Đối Không Băm HTML Thô):**
@@ -27,12 +27,12 @@ flowchart LR
    - Bắt buộc bóc tách toàn bộ dữ liệu bài đăng vào cấu trúc **Document JSON (`raw_payload`)**, sau đó áp dụng **Canonical JSON Hashing** (`calculate_json_canonical_hash`) trên toàn vẹn đối tượng JSON này.
 4. **Lưu Ngược Lại Mã Hash Vào Cả URL Ledger Và Raw Envelope:**
    - Sau khi băm: Lưu ngược lại mã hash vào URL trong Ledger (đánh dấu `status = "DONE"`).
-   - Đóng gói mã hash vào `metadata` của file Raw Envelope JSON và lưu trực tiếp lên MinIO Lakehouse.
+   - Đóng gói mã hash vào `metadata` của file Raw Envelope JSON và lưu trực tiếp lên Cloudflare R2 Lakehouse.
 5. **Cơ Chế Safe Skip & Failed Queue (Không Bao Giờ Mất Dấu Tin Lỗi):**
    - Khi 1 URL bị lỗi (timeout, mạng, 404, bot block) $\rightarrow$ Không được làm dừng chương trình.
    - Ghi nhận `mark_failed`, đưa vào **Failed Queue** để bữa khác có thể cào lại (`--retry-failed`).
 6. **Checkpoint Sync Định Kỳ:**
-   - Cứ mỗi 15 - 20 bài đăng cào thành công, crawler tự động lưu và đồng bộ Ledger lên MinIO Lakehouse để bảo toàn tiến độ dù có mất điện hay ngắt mạng.
+   - Cứ mỗi 15 - 20 bài đăng cào thành công, crawler tự động lưu và đồng bộ Ledger lên Cloudflare R2 Lakehouse để bảo toàn tiến độ dù có mất điện hay ngắt mạng.
 7. **Single-File Pattern (Gọn Gàng & Dễ Bảo Trì):**
    - Toàn bộ crawler, parser, envelope builder và CLI nên nằm gọn trong 1 file `crawlers/sources/<tenweb>/crawler.py` duy nhất.
 
@@ -52,23 +52,23 @@ flowchart LR
      ```
      *(Lúc này `status = "PENDING"`, `content_hash = None` — chưa có hash).*
   4. Xuất file manifest ngày: `data/<source>/url_ledger/manifests/manifest_YYYY-MM-DD.jsonl`.
-  5. **Đẩy lên MinIO Lakehouse:**
+  5. **Đẩy lên Cloudflare R2 Lakehouse:**
      ```python
      ledger.save_catalog()
-     ledger.sync_to_minio()
+     ledger.sync_to_r2()
      ```
-     Đích đến: `minio://vn-it-jobs/url_ledger/<source>/catalog_master.json`.
+     Đích đến: `r2://vn-it-jobs/url_ledger/<source>/catalog_master.json`.
 
 ---
 
 ### 2.2. Pha 2 — Detail Extraction & Post-Crawl Hashing (`--phase details`)
 
-- **Nhiệm vụ:** Đọc các bài viết cần cào từ MinIO, tải HTML, bóc tách JSON, băm toàn vẹn document và đẩy snapshot lên MinIO.
+- **Nhiệm vụ:** Đọc các bài viết cần cào từ Cloudflare R2, tải HTML, bóc tách JSON, băm toàn vẹn document và đẩy snapshot lên Cloudflare R2.
 - **Thao tác:**
-  1. **Kéo danh sách URL từ MinIO về máy:**
+  1. **Kéo danh sách URL từ Cloudflare R2 về máy:**
      ```python
-     if self.sync_minio and online:
-         ledger.pull_from_minio()  # Kéo catalog mới nhất từ MinIO về local
+     if self.sync_r2 and online:
+         ledger.pull_from_r2()  # Kéo catalog mới nhất từ Cloudflare R2 về local
      ```
   2. **Lọc danh sách cần cào:**
      - Bình thường: Lấy các tin `status == "PENDING"` hoặc đã cào quá 21 ngày (`RECHECK_DUE`).
@@ -95,7 +95,7 @@ flowchart LR
   6. **Kiểm tra bài đăng lặp (Repost Detection):**
      - Tìm kiếm trong ledger: `existing = ledger.find_by_content_hash(canonical_hash)`.
      - Nếu trùng hash với một bài khác: Đánh dấu `repost_of_url_hash = existing["url_hash"]`, không sinh file mới để tiết kiệm dung lượng Lakehouse.
-  7. **Lưu file Raw Envelope lên MinIO Lakehouse:**
+  7. **Lưu file Raw Envelope lên Cloudflare R2 Lakehouse:**
      - Đóng gói Envelope chuẩn:
        ```python
        envelope = {
@@ -112,7 +112,7 @@ flowchart LR
        }
        ```
      - Lưu cục bộ: `data/<source>/raw/<YYYY-MM-DD>/{job_id}_v{version}.json`.
-     - Đẩy trực tiếp lên MinIO: `minio://vn-it-jobs/raw/<source>/<YYYY-MM-DD>/{job_id}_v{version}.json`.
+     - Đẩy trực tiếp lên Cloudflare R2: `r2://vn-it-jobs/raw/<source>/<YYYY-MM-DD>/{job_id}_v{version}.json`.
   8. **Lưu ngược lại mã Hash vào URL trong Ledger:**
      ```python
      ledger.mark_done(url_hash, content_hash=canonical_hash, new_version=new_version)
@@ -122,7 +122,7 @@ flowchart LR
        ```python
        if count % 15 == 0:
            ledger.save_catalog()
-           ledger.sync_to_minio()
+           ledger.sync_to_r2()
        ```
   10. **Bắt lỗi Safe Skip & Failed Queue:**
       - Nếu bất kỳ lỗi nào xảy ra trong quá trình tải/parse:
@@ -150,7 +150,7 @@ from typing import Any
 from bs4 import BeautifulSoup
 from crawlers.base.base_crawler import BaseCrawler
 from crawlers.common.http_client import HttpClient
-from crawlers.common.minio_raw_pipeline import MinioRawStore
+from crawlers.common.r2_raw_pipeline import R2RawStore
 from crawlers.common.url_ledger import (
     UrlLedger,
     calculate_json_canonical_hash,
@@ -193,7 +193,7 @@ class StandardSourceCrawler(BaseCrawler):
         super().__init__(**kwargs)
         self.ledger_dir = kwargs.get("ledger_dir", "data/<source_name>/url_ledger")
         self.raw_dir = kwargs.get("raw_dir", "data/<source_name>/raw")
-        self.sync_minio = kwargs.get("sync_minio", False)
+        self.sync_r2 = kwargs.get("sync_r2", False)
         self._ledger = None
         self._minio_store = None
 
@@ -202,27 +202,27 @@ class StandardSourceCrawler(BaseCrawler):
             self._ledger = UrlLedger(source="<source_name>", storage_dir=self.ledger_dir)
         return self._ledger
 
-    def _get_minio_store(self) -> MinioRawStore:
+    def _get_minio_store(self) -> R2RawStore:
         if self._minio_store is None:
-            self._minio_store = MinioRawStore()
+            self._minio_store = R2RawStore()
         return self._minio_store
 
     def discover_urls(self, online: bool = False, max_pages: int | None = None) -> int:
-        """Pha 1: Quét danh mục, ban đầu chưa có hash, lưu lên MinIO."""
+        """Pha 1: Quét danh mục, ban đầu chưa có hash, lưu lên Cloudflare R2."""
         ledger = self._get_ledger()
         # ... Quét web, bóc URL & title ...
         # ledger.register_url(raw_url=u, job_id=jid, preliminary_title=t)
         ledger.save_catalog()
         ledger.export_daily_manifest()
-        if self.sync_minio:
-            ledger.sync_to_minio()
+        if self.sync_r2:
+            ledger.sync_to_r2()
         return len(ledger.records)
 
     def crawl_details(self, online: bool = False, limit: int | None = None, retry_failed: bool = False) -> dict[str, Any]:
-        """Pha 2: Kéo URL từ MinIO, cào chi tiết, băm JSON sau cào, lưu ngược lại hash."""
+        """Pha 2: Kéo URL từ Cloudflare R2, cào chi tiết, băm JSON sau cào, lưu ngược lại hash."""
         ledger = self._get_ledger()
-        if self.sync_minio and online:
-            ledger.pull_from_minio()
+        if self.sync_r2 and online:
+            ledger.pull_from_r2()
 
         candidates = ledger.get_failed_records() if retry_failed else ledger.get_pending_or_due_records(21)
         if limit:
@@ -241,7 +241,7 @@ class StandardSourceCrawler(BaseCrawler):
                     ledger.mark_done(rec["url_hash"], content_hash=content_hash, repost_of_url_hash=existing["url_hash"])
                     continue
 
-                # Tạo envelope và lưu MinIO
+                # Tạo envelope và lưu Cloudflare R2
                 env = build_raw_envelope(html, rec["job_id"], rec["canonical_url"])
                 s3_key = f"raw/<source_name>/{today}/{rec['job_id']}_v1.json"
                 self._get_minio_store().put_json(s3_key, env)
@@ -250,16 +250,16 @@ class StandardSourceCrawler(BaseCrawler):
                 ledger.mark_done(rec["url_hash"], content_hash=content_hash)
 
                 # Checkpoint sync định kỳ
-                if self.sync_minio and idx % 15 == 0:
+                if self.sync_r2 and idx % 15 == 0:
                     ledger.save_catalog()
-                    ledger.sync_to_minio()
+                    ledger.sync_to_r2()
             except Exception as exc:
                 # Safe skip đưa vào Failed Queue
                 ledger.mark_failed(rec["url_hash"], str(exc))
 
         ledger.save_catalog()
-        if self.sync_minio:
-            ledger.sync_to_minio()
+        if self.sync_r2:
+            ledger.sync_to_r2()
 ```
 
 ---
@@ -270,12 +270,12 @@ Mỗi file `crawler.py` bắt buộc hỗ trợ các tham số dòng lệnh sau:
 
 | Tham số | Ý nghĩa |
 | :--- | :--- |
-| `--phase discovery` | Chạy Pha 1: Thu thập URL vào ledger và đẩy lên MinIO |
+| `--phase discovery` | Chạy Pha 1: Thu thập URL vào ledger và đẩy lên Cloudflare R2 |
 | `--phase details` | Chạy Pha 2: Cào chi tiết, băm JSON sau cào, lưu ngược hash |
-| `--phase sync` | Chỉ đồng bộ ledger và raw files cục bộ lên MinIO (không gọi mạng ngoài) |
+| `--phase sync` | Chỉ đồng bộ ledger và raw files cục bộ lên Cloudflare R2 (không gọi mạng ngoài) |
 | `--phase view` | Xem tóm tắt thống kê trạng thái ledger hiện tại |
 | `--online` | Cho phép kết nối internet cào trực tuyến (mặc định tắt) |
-| `--sync-minio` | Tự động đồng bộ URL Ledger và Raw Snapshots lên MinIO Lakehouse |
+| `--sync-minio` | Tự động đồng bộ URL Ledger và Raw Snapshots lên Cloudflare R2 Lakehouse |
 | `--retry-failed` | Cào lại các URL đang nằm trong Failed Queue |
 | `--limit N` | Giới hạn số lượng tin xử lý (dùng để test thử nghiệm) |
 | `--local-html-dir DIR` | Chạy cào offline từ thư mục HTML có sẵn trên đĩa |
@@ -289,7 +289,7 @@ Khi nhận nhiệm vụ xây dựng crawler cho nguồn mới (ví dụ: `itviec
 2. **Bước 2 (Viết `build_raw_payload`):** Bóc tách đầy đủ tất cả các trường dữ liệu của trang tuyển dụng vào dictionary JSON (Zero Information Loss).
 3. **Bước 3 (Băm toàn vẹn JSON):** Gọi `calculate_json_canonical_hash(raw_payload)` để làm `content_hash`.
 4. **Bước 4 (Viết Pha 1 Discovery):** Thu thập URL vào `UrlLedger` (ban đầu chưa có hash), đẩy lên `url_ledger/itviec/`.
-5. **Bước 5 (Viết Pha 2 Details):** Kéo URL từ MinIO, cào chi tiết với Polite Sleep, băm JSON sau cào, lưu ngược hash vào URL và đẩy raw envelope lên MinIO. Bắt lỗi đưa vào Failed Queue.
+5. **Bước 5 (Viết Pha 2 Details):** Kéo URL từ Cloudflare R2, cào chi tiết với Polite Sleep, băm JSON sau cào, lưu ngược hash vào URL và đẩy raw envelope lên Cloudflare R2. Bắt lỗi đưa vào Failed Queue.
 6. **Bước 6 (Tạo 3 cặp mẫu & Unit Tests):** Chạy script sinh 3 file `{job_id}_v1.json` và viết test kiểm tra tính tất định.
 7. **Bước 7 (Nghiệm thu):** Chạy DoD Scorer:
    ```bash

@@ -35,7 +35,7 @@ Tài liệu này là quy chuẩn bắt buộc (Non-negotiable Rules) cho bất k
 - Bắt buộc theo dõi:
   1. Trạng thái của **Scheduler daemon** (PID, Heartbeat).
   2. Trạng thái của **Webserver daemon** (Cổng `:8080`, số lượng workers).
-  3. Lịch sử chạy và kết quả thực thi (`success`, `failed`, `running`) của 7 DAGs cào xoay vòng hàng ngày: `crawler_topdev`, `crawler_careerviet`, `crawler_itviec`, `crawler_vietnamworks`, `crawler_topcv`, `crawler_vieclam24h`.
+  3. Lịch sử chạy và kết quả thực thi (`success`, `failed`, `running`) của 9 DAGs cào Hai Pha: `dag_discovery_daily` (quét URL 05:00 hàng ngày) và 8 DAGs cào chi tiết dồn cuối tuần `crawler_detail_<source>`.
   4. Thông tin được truy vấn trực tiếp từ cơ sở dữ liệu `airflow/airflow.db` và tiến trình hệ điều hành.
 
 ---

@@ -1,6 +1,6 @@
 # JobsGO Crawler — Kiến Trúc Kỹ Thuật & Vượt Rào Cản Cloudflare WAF
 
-> **Tài liệu tham chiếu:** [`cloudflare.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/cloudflare.md), [`docs/two_phase_minio_crawler_playbook.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/two_phase_minio_crawler_playbook.md).
+> **Tài liệu tham chiếu:** [`cloudflare.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/cloudflare.md), [`docs/two_phase_r2_crawler_playbook.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/two_phase_r2_crawler_playbook.md).
 
 ---
 
@@ -38,11 +38,11 @@ Theo tài liệu [`cloudflare.md`](file:///run/media/billtran/Data/Archduker/Stu
 ```mermaid
 flowchart LR
     A["JobsGO Web<br/>(?page=X)"] -->|"Pha 1: Discovery<br/>status=PENDING, hash=None"| B["URL Ledger Master<br/>catalog_master.json"]
-    B -->|"Đồng bộ S3 API"| C[("MinIO Lakehouse<br/>url_ledger/jobsgo/")]
-    C -->|"Pha 2: pull_from_minio()"| D["Lọc tin PENDING & Recrawl 21d"]
+    B -->|"Đồng bộ S3 API"| C[("Cloudflare R2 Lakehouse<br/>url_ledger/jobsgo/")]
+    C -->|"Pha 2: pull_from_r2()"| D["Lọc tin PENDING & Recrawl 21d"]
     D -->|"Dual-Engine Fetch<br/>Polite Sleep 2.0-4.5s"| E["Tải HTML & Bóc tách"]
     E -->|"Băm canonical SHA-256"| F["Single content_hash & language"]
-    F -->|"Đóng gói Snapshot"| G[("MinIO Lakehouse<br/>raw/jobsgo/YYYY-MM-DD/")]
+    F -->|"Đóng gói Snapshot"| G[("Cloudflare R2 Lakehouse<br/>raw/jobsgo/YYYY-MM-DD/")]
     F -->|"Lưu ngược hash<br/>status=DONE"| B
     E -.->|"Safe Skip khi lỗi"| H["Failed Queue<br/>status=FAILED"]
 ```
@@ -51,12 +51,12 @@ flowchart LR
    - Quét qua phân trang danh mục CNTT.
    - Trích xuất URL canonical sạch, loại bỏ tracking tokens (`utm_*`, `ref`, v.v.).
    - Đăng ký vào Ledger: `status = "PENDING"`, `content_hash = None` (tuyệt đối không sinh hash giả khi chưa tải chi tiết).
-   - Xuất daily manifest `manifest_YYYY-MM-DD.jsonl` và đồng bộ master catalog lên MinIO Lakehouse `minio://vn-it-jobs/url_ledger/jobsgo/`.
+   - Xuất daily manifest `manifest_YYYY-MM-DD.jsonl` và đồng bộ master catalog lên Cloudflare R2 Lakehouse `r2://vn-it-jobs/url_ledger/jobsgo/`.
 2. **Pha 2 (Detail Extraction):**
-   - Kéo URL mới nhất từ MinIO về máy (`ledger.pull_from_minio()`).
+   - Kéo URL mới nhất từ Cloudflare R2 về máy (`ledger.pull_from_r2()`).
    - Lọc các bài đăng cần xử lý: `status == "PENDING"` hoặc đã cào quá 21 ngày (`RECHECK_DUE`).
    - Hỗ trợ chế độ cào lại lỗi: `--retry-failed` lọc các bài đăng trong `Failed Queue` (`status == "FAILED"`).
-   - Checkpoint Sync định kỳ: Cứ sau mỗi 15 bài đăng thành công, tự động lưu tiến trình và đồng bộ lên MinIO.
+   - Checkpoint Sync định kỳ: Cứ sau mỗi 15 bài đăng thành công, tự động lưu tiến trình và đồng bộ lên Cloudflare R2.
 
 ---
 
@@ -75,21 +75,21 @@ Theo đúng quy chuẩn dữ liệu và yêu cầu dự án:
 ## 5. Hướng Dẫn Sử Dụng Giao Diện Dòng Lệnh (CLI)
 
 ```bash
-# 1. Quét URL danh mục Pha 1 (Discovery) đồng bộ lên MinIO
-.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase discovery --online --sync-minio --max-pages 5
+# 1. Quét URL danh mục Pha 1 (Discovery) đồng bộ lên Cloudflare R2
+.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase discovery --online --sync-r2 --max-pages 5
 
 # 2. Cào chi tiết Pha 2 (Details) với động cơ curl_cffi mặc định
-.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase details --online --sync-minio --limit 20
+.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase details --online --sync-r2 --limit 20
 
 # 3. Cào chi tiết với động cơ Playwright
-.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase details --engine playwright --online --sync-minio --limit 10
+.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase details --engine playwright --online --sync-r2 --limit 10
 
 # 4. Cào lại các URL trong hàng đợi lỗi (Failed Queue)
-.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase details --retry-failed --online --sync-minio
+.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase details --retry-failed --online --sync-r2
 
 # 5. Xem thống kê trạng thái URL Ledger
 .venv/bin/python crawlers/sources/jobsgo/crawler.py --phase view
 
-# 6. Kiểm tra URL Ledger trực tiếp từ MinIO Lakehouse
-.venv/bin/python scripts/view_urls.py --source jobsgo --minio
+# 6. Kiểm tra URL Ledger trực tiếp từ Cloudflare R2 Lakehouse
+.venv/bin/python scripts/view_urls.py --source jobsgo --r2
 ```

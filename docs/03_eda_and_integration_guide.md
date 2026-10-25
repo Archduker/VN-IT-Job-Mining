@@ -16,7 +16,7 @@
 ```mermaid
 flowchart TD
     subgraph RawStore["1. Dữ Liệu Thô (Raw As-Is)"]
-        R1["Snapshot Payload API / Raw DOM\n(minio://vn-it-jobs/raw/)"]
+        R1["Snapshot Payload API / Raw DOM\n(r2://vn-it-jobs/raw/)"]
         R2["Bộ Mẫu Đối Chứng Benchmark\n(21 bộ mẫu: 3 HTML + 3 JSON)"]
     end
 

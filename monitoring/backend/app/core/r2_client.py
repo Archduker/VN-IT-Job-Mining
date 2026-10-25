@@ -248,7 +248,8 @@ class CloudflareR2Client:
                 for f in files:
                     if f.endswith(".json"):
                         f_path = Path(root) / f
-                        key = str(f_path.relative_to(settings.DATA_DIR))
+                        rel_under_raw = str(f_path.relative_to(local_raw_dir)).replace("\\", "/")
+                        key = f"raw/{source}/{rel_under_raw}"
                         try:
                             client.upload_file(str(f_path), self.bucket_name, key)
                             uploaded += 1
@@ -335,7 +336,7 @@ class CloudflareR2Client:
                     for obj in page.get("Contents", []):
                         k = obj["Key"]
                         for s in settings.SUPPORTED_SOURCES:
-                            if k.startswith(f"{s}/raw/") or k.startswith(f"raw/{s}/"):
+                            if k.startswith(f"raw/{s}/"):
                                 r2_source_counts[s] += 1
                             elif k.startswith(f"url_ledger/{s}/"):
                                 r2_ledger_exists[s] = True

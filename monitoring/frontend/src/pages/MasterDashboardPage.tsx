@@ -10,6 +10,8 @@ import {
   ArrowRight,
   Download,
   AlertCircle,
+  AlertTriangle,
+  ExternalLink,
 } from 'lucide-react'
 import {
   BarChart,
@@ -22,7 +24,7 @@ import {
   PieChart,
   Pie,
 } from 'recharts'
-import { MasterDashboardData } from '../types'
+import { MasterDashboardData, AlertSummary } from '../types'
 
 const COLORS = [
   '#6366f1',
@@ -37,14 +39,19 @@ const COLORS = [
 
 export const MasterDashboardPage: React.FC = () => {
   const [data, setData] = useState<MasterDashboardData | null>(null)
+  const [alertSummary, setAlertSummary] = useState<AlertSummary | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchDashboard = async () => {
     try {
       setLoading(true)
-      const res = await axios.get<MasterDashboardData>('/api/dashboard')
+      const [res, alertRes] = await Promise.all([
+        axios.get<MasterDashboardData>('/api/dashboard'),
+        axios.get<AlertSummary>('/api/v1/alerts').catch(() => null),
+      ])
       setData(res.data)
+      if (alertRes?.data) setAlertSummary(alertRes.data)
       setError(null)
     } catch (err: any) {
       setError(err.message || 'Lỗi khi tải thông tin từ api/Dashboard')
@@ -84,6 +91,35 @@ export const MasterDashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Alert Banner nếu có sự cố */}
+      {alertSummary && alertSummary.alerts.length > 0 && (
+        <div className="p-4 rounded-2xl bg-amber-950/40 border border-amber-500/40 backdrop-blur-md flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 shrink-0">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="font-bold text-slate-100 text-sm">
+                  Phát hiện {alertSummary.alerts.length} cảnh báo vận hành
+                </span>
+                {alertSummary.critical_count > 0 && (
+                  <span className="px-2 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-300 font-bold text-[10px]">
+                    {alertSummary.critical_count} NGHIÊM TRỌNG
+                  </span>
+                )}
+              </div>
+              <p className="text-slate-300 mt-0.5">
+                {alertSummary.alerts[0].title}: {alertSummary.alerts[0].message}
+              </p>
+            </div>
+          </div>
+          <div className="text-right text-[11px] text-amber-300 shrink-0">
+            Xem chi tiết tại biểu tượng chuông trên thanh điều hướng.
+          </div>
+        </div>
+      )}
+
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-slate-800">
         <div>

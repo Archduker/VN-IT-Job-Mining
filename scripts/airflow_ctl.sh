@@ -50,10 +50,13 @@ SOURCES=(
 )
 
 cmd_init() {
-    log_info "1. Khởi tạo / cập nhật database Airflow SQLite..."
+    log_info "1. Khởi tạo / cập nhật database Airflow trên PostgreSQL (Zero-SQLite Policy)..."
     "${AIRFLOW}" db migrate
 
-    log_info "2. Thiết lập 8 Resource Pools cách ly 2 Pha (slots=1)..."
+    log_info "2. Đăng ký kết nối Cloudflare R2 Remote Logging (r2_s3_conn)..."
+    "${VENV_PYTHON}" "${PROJECT_ROOT}/scripts/setup_airflow_connections.py"
+
+    log_info "3. Thiết lập 8 Resource Pools cách ly 2 Pha (slots=1)..."
     for src in "${SOURCES[@]}"; do
         pool_name="pool_${src}"
         "${AIRFLOW}" pools set "${pool_name}" 1 "Isolation pool for ${src} crawler (Phase 1 & Phase 2)"
@@ -63,7 +66,7 @@ cmd_init() {
     echo ""
     log_info "Danh sách Pools hiện tại:"
     "${AIRFLOW}" pools list
-    log_ok "Khởi tạo Airflow thành công!"
+    log_ok "Khởi tạo Airflow trên PostgreSQL thành công!"
 }
 
 cmd_start() {

@@ -1,0 +1,189 @@
+{
+  "source_platform": "vietnamworks",
+  "step": "integration",
+  "schema_version": "2.0-comprehensive-25-fields",
+  "timestamp": "2026-10-25T19:25:25.538826+00:00",
+  "total_files_scanned": 1155,
+  "total_envelopes_parsed": 2085,
+  "total_integrated_records": 1359,
+  "total_fields_in_schema": 29,
+  "output_format": "json",
+  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/vietnamworks/vietnamworks_integrated_flat.json",
+  "field_completeness_audit": {
+    "job_id_global": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "source_platform": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "source_job_id": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "source_url": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "crawled_at": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "job_title": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "company_name": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "company_address": {
+      "filled_count": 1153,
+      "missing_count": 206,
+      "completeness_pct": 84.84,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "company_scale": {
+      "filled_count": 637,
+      "missing_count": 722,
+      "completeness_pct": 46.87,
+      "null_diagnosis": "Có sẵn 47% qua trường companySize / companySizeVI."
+    },
+    "raw_category_text": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_location_text": {
+      "filled_count": 1152,
+      "missing_count": 207,
+      "completeness_pct": 84.77,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "working_locations": {
+      "filled_count": 1358,
+      "missing_count": 1,
+      "completeness_pct": 99.93,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_posted_date": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_updated_at": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Có sẵn 100% qua trường lastUpdatedOn trong Search API."
+    },
+    "raw_deadline": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_working_time": {
+      "filled_count": 0,
+      "missing_count": 1359,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Missing By Design: VietnamWorks không có trường working_time riêng."
+    },
+    "raw_salary_text": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_employment_type": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_work_mode": {
+      "filled_count": 0,
+      "missing_count": 1359,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Implicit text: Chế độ làm việc nằm trong tiêu đề bài đăng."
+    },
+    "raw_experience_text": {
+      "filled_count": 1121,
+      "missing_count": 238,
+      "completeness_pct": 82.49,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_seniority_text": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_education_text": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Có sẵn 100% thông qua highestDegreeId chuẩn hóa."
+    },
+    "raw_headcount": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Có sẵn 100% qua numberOfRecruits."
+    },
+    "raw_age_text": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Có sẵn 100% qua trường rangeAge."
+    },
+    "raw_gender_text": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Có sẵn qua isShowGender / gender."
+    },
+    "skills_list": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "benefits_list": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_description_text": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_requirements_text": {
+      "filled_count": 1359,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    }
+  },
+  "duration_seconds": 0.35
+}

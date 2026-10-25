@@ -14,7 +14,7 @@ Mọi con số đều lấy từ code / lệnh chạy thật trên máy Windows 
 ## 1. Kiến Trúc Hai Pha (Two-Phase Decoupled Crawler)
 
 Hệ thống tách **URL Discovery** (Pha 1) và **Detail Extraction** (Pha 2) thành hai vòng đời
-độc lập, nối với nhau qua **UrlLedger** (MinIO-style). Nhờ đó, số lượng URL tìm được
+độc lập, nối với nhau qua **UrlLedger** (Cloudflare R2-style). Nhờ đó, số lượng URL tìm được
 **không bị giới hạn bởi** tốc độ / ngân sách thời gian cào chi tiết.
 
 ```
@@ -187,7 +187,7 @@ thực tế là **~9 request** (3 lần × 3 tin) — **vẫn có giới hạn**
 
 | Cờ | Kiểu | Ý nghĩa |
 | :--- | :--- | :--- |
-| `--phase {discovery,details,view,sync}` | enum | Mặc định `details`. `view` = đọc ledger in thống kê, **KHÔNG** gọi mạng. `sync` = đồng bộ ledger → MinIO, **KHÔNG** gọi mạng ngoài trường (C3). |
+| `--phase {discovery,details,view,sync}` | enum | Mặc định `details`. `view` = đọc ledger in thống kê, **KHÔNG** gọi mạng. `sync` = đồng bộ ledger → Cloudflare R2, **KHÔNG** gọi mạng ngoài trường (C3). |
 | `--online` | flag | **BẮT BUỘC** để gọi mạng. Không có → preview/offline. |
 | `--local-html-dir <DIR>` | str | Chạy offline từ HTML đã lưu; **KHÔNG gọi mạng**. |
 | `--source-category <CAT>` | **lặp** (`action="append"`) | Chỉ chọn record có `category_by_job_id[jid] == CAT`. Dùng nhiều lần để cộng nhóm. |
@@ -195,7 +195,7 @@ thực tế là **~9 request** (3 lần × 3 tin) — **vẫn có giới hạn**
 | `--seed <int>` | int | **BẮT BUỘC đi kèm `--shuffle`**. Thiếu → `parser.error("--shuffle can kem --seed <so_nguyen>")`. |
 | `--limit <int>` | int | Cắt SAU lọc + xáo (thứ tự: **filter → shuffle → cut**). |
 | `--exclude-volatile-dates / --no-exclude-volatile-dates` | bool (`BooleanOptionalAction`) | Mặc định `True`: bỏ nhãn "Cập nhật/Hết hạn" khi băm. |
-| `--ledger-dir`, `--raw-dir`, `--category-map`, `--urls-dir`, `--max-pages`, `--sync-minio`, `--checkpoint-dir`, `--max-items`, `--output-dir` | | còn lại như help string. |
+| `--ledger-dir`, `--raw-dir`, `--category-map`, `--urls-dir`, `--max-pages`, `--sync-r2`, `--checkpoint-dir`, `--max-items`, `--output-dir` | | còn lại như help string. |
 
 ### 6.2. Thứ tự chọn ứng viên (`_select_pending`, dòng 659–693)
 
@@ -395,9 +395,9 @@ Kết quả thực đo **tại HEAD `4701af8` + working tree** (2026-10-18):
     # Windows path separator, co SAN, thuoc file dung chung -> KHONG sua o day.
 ```
 
-Subset CareerViet + push_raw_to_minio (lệnh:
-`python -X utf8 -m pytest -q (Get-ChildItem tests/unit/test_careerviet_*.py | Select-Object -ExpandProperty FullName) tests/unit/test_push_raw_to_minio.py`):
-**151 passed / 0 failed** (tăng từ 104 khi `test_careerviet_eda_charts.py` đi từ 12 lên **59** test ở lượt 2026-10-18; trước đó 52 → 92 khi thêm `report_fill`, `sync_phase`, `push_raw_to_minio`).
+Subset CareerViet + push_raw_to_r2 (lệnh:
+`python -X utf8 -m pytest -q (Get-ChildItem tests/unit/test_careerviet_*.py | Select-Object -ExpandProperty FullName) tests/unit/test_push_raw_to_r2.py`):
+**151 passed / 0 failed** (tăng từ 104 khi `test_careerviet_eda_charts.py` đi từ 12 lên **59** test ở lượt 2026-10-18; trước đó 52 → 92 khi thêm `report_fill`, `sync_phase`, `push_raw_to_r2`).
 
 > Biến thể chọn bằng `-k` (`pytest tests/unit -k "careerviet or push_raw"`) ra **161 passed / 137 deselected** vì gom thêm `test_import_careerviet_urls.py` (9 test) + 1 test `careerviet` trong `test_crawlers.py`. Con số chuẩn để đối chiếu vẫn là **151** theo lệnh nêu trên.
 
@@ -411,9 +411,9 @@ Subset CareerViet + push_raw_to_minio (lệnh:
 | `test_careerviet_block_detect.py` | 13 | `_detect_block` 3 kịch bản + **Ngưỡng 5xx Phương án B (a-e)** |
 | `test_careerviet_raw_stats.py` | 4 | script thống kê envelope đọc raw |
 | `test_careerviet_it_check.py` | 5 | script đọc `Ngành nghề`, CNTT detection |
-| `test_careerviet_sync_phase.py` | 4 | `--phase sync` delegate `sync_to_minio`, argparse chap nhan `sync` |
+| `test_careerviet_sync_phase.py` | 4 | `--phase sync` delegate `sync_to_r2`, argparse chap nhan `sync` |
 | `test_careerviet_report_fill.py` | 16 | scan envelope, % null, ti le CNTT, **CDC mutually exclusive** (repost khong trùng NEW) |
-| `test_push_raw_to_minio.py` | 15 | dry-run, no-clobber, `--job-id`, password khong log, anh xa `dt=` va bare date |
+| `test_push_raw_to_r2.py` | 15 | dry-run, no-clobber, `--job-id`, password khong log, anh xa `dt=` va bare date |
 | `test_careerviet_eda_charts.py` | 59 | 16 biểu đồ + chú thích 3 phần: `flat_text` (hồi quy `&` không đóng entity), `pick_section`, `decorate` tự xuống dòng/thu nhỏ tiêu đề, audit chữ bằng `fig.get_tightbbox` trên cả 16 ảnh, biểu đồ 15 đọc `detail-row` KHÔNG `detail-box`, `skip()` cho mẫu mỏng, `pct` trả `n/a` thay vì bịa số; tmp_path, không mạng |
 | **Tổng subset** | **151** | (0 fail; tổng 12 file test ở bảng trên) |
 
@@ -421,7 +421,7 @@ Subset CareerViet + push_raw_to_minio (lệnh:
 
 ## 11. Trạng Thái Repo Tham Chiếu
 
-- `HEAD = 4701af8` — `docs(careerviet): MinIO = AIStor (minio.exe --license), Docker chi la phu` (**đã commit & push**, 2026-10-17)
+- `HEAD = 4701af8` — `docs(careerviet): Cloudflare R2 = AIStor (r2.exe --license), Docker chi la phu` (**đã commit & push**, 2026-10-17)
 - `origin/crawls/careerviet = 4701af8` → local **đồng nhất** origin (`0 ahead / 0 behind`).
 - Chuỗi 8 commit đã push (xem `git log --oneline 719e05f^..HEAD`): `1470de0`, `74f643b`, `f977ffb`, `4bf8b1b`, `9e6462d`, `b9cca20`, `315a04c`, `4701af8`.
 - Working tree **chưa commit** (lượt 2026-10-18):
@@ -439,10 +439,10 @@ Subset CareerViet + push_raw_to_minio (lệnh:
 - [x] A3 `reports/careerviet_inventory.md` (202 dòng — **đã điền số thật** từ 1018 envelope, không còn ô CHỜ ONLINE).
 - [x] A4 `reports/careerviet_eda.md` (424 dòng — **đã điền số thật** + nhúng 16 biểu đồ + bảng tổng hợp IT vs ngoài IT §4.17).
 - [x] A6 `scripts/careerviet_report_fill.py` + test (16 pass, CDC mutually exclusive).
-- [x] C1 `scripts/push_raw_to_minio.py` (361 dòng, 14 cờ, env var khớp `setup_minio.py` + `url_ledger.py`).
-- [x] C2 `tests/unit/test_push_raw_to_minio.py` (15 pass, mock boto3).
-- [x] C3 `--phase sync` + `sync_ledger_to_minio()` trong `crawler.py`.
-- [x] C4 docs §13 MinIO (bucket, key, thứ tự lệnh, Windows docker, idempotent).
+- [x] C1 `scripts/push_raw_to_r2.py` (361 dòng, 14 cờ, env var khớp `setup_r2.py` + `url_ledger.py`).
+- [x] C2 `tests/unit/test_push_raw_to_r2.py` (15 pass, mock boto3).
+- [x] C3 `--phase sync` + `sync_ledger_to_r2()` trong `crawler.py`.
+- [x] C4 docs §13 Cloudflare R2 (bucket, key, thứ tự lệnh, Windows docker, idempotent).
 - [x] C5 đề xuất `.gitignore` `backup/` + `*.bak` (agent KHÔNG tự sửa file dùng chung).
 - [x] E1 `scripts/careerviet_eda_charts.py` sinh **16 biểu đồ** + `reports/careerviet_eda_charts.md` (chú thích 3 phần Quan sát / Ý nghĩa / Hạn chế cho từng biểu đồ, mẫu mỏng thì ghi `skip` thật thay vì vẽ số bịa).
 - [x] E2 vá hiển thị + số liệu (lượt 2026-10-18): tiêu đề/phụ đề dài **tự xuống dòng/thu nhỏ** theo bề rộng thật còn lại (đo `ax._left_title`, tính cả colorbar, và **đo lại sau `tight_layout`** vì chỗ còn lại thu hẹp khi đặt chữ); `flat_text` gọi `close()` để giữ chữ có `&` không đóng entity ("Nhân viên C&B") — trước đó 3 `title` + 5 `job-company-name` bị đếm nhầm thành rỗng, làm lệch cả biểu đồ 04 và số công ty ở biểu đồ 11 (490 → **494**, khớp §1.1). Test: `tests/unit/test_careerviet_eda_charts.py` (**59 case**, gồm audit tự động quét cả 16 ảnh xem chữ tràn biên/đè colorbar).
@@ -451,7 +451,7 @@ Subset CareerViet + push_raw_to_minio (lệnh:
 
 - [x] Chạy online lượt 1 (2026-10-16 → 2026-10-17): **1018 envelope / 1029 DONE / 11 REPOST / 0 FAILED / 0 BLOCKED**, 77 phút, TB 4.54 s/tin (xem §9.4).
 - [x] Điền §9.4 + `reports/careerviet_inventory.md` + `reports/careerviet_eda.md` bằng số liệu thật (`careerviet_report_fill.py` + `careerviet_eda_charts.py`).
-- [ ] `--phase sync` + `push_raw_to_minio.py` sau khi Tài khởi động **AIStor** `minio.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>` và export 4 env `MINIO_*` (xem §13.1 + §13.3).
+- [ ] `--phase sync` + `push_raw_to_r2.py` sau khi Tài khởi động **AIStor** `r2.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>` và export 4 env `MINIO_*` (xem §13.1 + §13.3).
 - [ ] cân nhắc **Re-crawl 21 ngày** qua `--phase details` (ledger tự convert `DONE -> RECHECK_DUE`) → tạo `UPDATED` / `ACTIVE` cho §9.4.
 - [ ] Viết Clean layer ánh xạ `raw_payload -> Common Target Schema` (bên `data-integration-miner`).
 - [ ] Quyết định có mở rộng `_is_blocking` sang `504` hay không (hiện **không**; xem §5.2).
@@ -459,7 +459,7 @@ Subset CareerViet + push_raw_to_minio (lệnh:
 
 ---
 
-## 13. MinIO — Cấu Trúc Bucket, Đẩy Raw Envelope, Đồng Bộ Ledger
+## 13. Cloudflare R2 — Cấu Trúc Bucket, Đẩy Raw Envelope, Đồng Bộ Ledger
 
 Theo `docs/01_modern_data_mining_overview.md` §3 và `docs/02_crawling_architecture_guide.md` §3.1, bucket `vn-it-jobs` có 4 zone:
 
@@ -467,12 +467,12 @@ Theo `docs/01_modern_data_mining_overview.md` §3 và `docs/02_crawling_architec
 s3://vn-it-jobs/
   url_ledger/
     careerviet/
-      catalog_master.json             # UrlLedger.sync_to_minio()
+      catalog_master.json             # UrlLedger.sync_to_r2()
       manifests/manifest_<date>.jsonl
   raw/
     careerviet/
       <YYYY-MM-DD>/
-        <job_id>_v<version>.json      # push_raw_to_minio.py (§13.2)
+        <job_id>_v<version>.json      # push_raw_to_r2.py (§13.2)
   staging/   # chưa dùng cho CareerViet
   curated/   # chưa dùng cho CareerViet
 ```
@@ -481,49 +481,49 @@ s3://vn-it-jobs/
 
 ### 13.1. Đồng Bộ Ledger (đã có sẵn, không cần script mới)
 
-`UrlLedger.sync_to_minio()` (`crawlers/common/url_ledger.py:306`) upload `catalog_master.json` + `manifests/*.jsonl` lên prefix `url_ledger/<source>/`. CareerViet vốn có cờ `--sync-minio` trong `--phase details` / `--phase discovery`.
+`UrlLedger.sync_to_r2()` (`crawlers/common/url_ledger.py:306`) upload `catalog_master.json` + `manifests/*.jsonl` lên prefix `url_ledger/<source>/`. CareerViet vốn có cờ `--sync-r2` trong `--phase details` / `--phase discovery`.
 
-**Chạy riêng, không cần cào lại** (thêm A-turn C3): `--phase sync` gọi `crawler.sync_ledger_to_minio()`.
+**Chạy riêng, không cần cào lại** (thêm A-turn C3): `--phase sync` gọi `crawler.sync_ledger_to_r2()`.
 
 ```powershell
 python -X utf8 crawlers/sources/careerviet/crawler.py --phase sync
-# -> [sync] ledger -> MinIO: OK
+# -> [sync] ledger -> Cloudflare R2: OK
 ```
 
-Yêu cầu MinIO đang chạy. **Máy Tài KHÔNG có Docker** → chạy **AIStor** (file thực thi `minio.exe` trên Windows). Cách **chính**:
+Yêu cầu Cloudflare R2 đang chạy. **Máy Tài KHÔNG có Docker** → chạy **AIStor** (file thực thi `r2.exe` trên Windows). Cách **chính**:
 
 ```powershell
 # Duong dan repo co dau cach va tieng Viet co dau -> PHAI boc nhay khi cd
 cd "d:\ĐH\Năm 3\Học kỳ 1\Khai thác dữ liệu\crawl data\VN-IT-Job-Mining"
 
 # Bat AIStor Server (DATA_DIR va LICENSE duoc Tai giu NGOAI repo):
-minio.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>
+r2.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>
 
 # Kiem tra S3 API da san sang (Console web o :9001):
-curl.exe http://localhost:9000/minio/health/live
+curl.exe http://localhost:9000/r2/health/live
 ```
 
-- `<DATA_DIR>` – thư mục AIStor ghi object; **khuyên đặt ngoài repo** (ví dụ `D:\minio-data\`) để `git add .` không quét nhầm.
+- `<DATA_DIR>` – thư mục AIStor ghi object; **khuyên đặt ngoài repo** (ví dụ `D:\r2-data\`) để `git add .` không quét nhầm.
 - `<DUONG_DAN_LICENSE>` – file license `.json` **cá nhân** AIStor, đối xử **như credentials**:
   - **Ngoài repo**, **KHÔNG commit**, **KHÔNG dán** đường dẫn hay nội dung vào docs / log / issue / commit message.
   - Agent **không** đọc, **không** in nội dung hay đường dẫn license.
   - Khi đổi máy, Tài tự copy file; người khác tự xin license riêng.
 
 **Phương án phụ** – **chỉ** khi máy **có** Docker (máy Tài hiện tại **KHÔNG** dùng):
-- Linux/macOS: `bash scripts/start_minio.sh` (wrapper gọi `docker compose up -d`, đợi health-check 15 s, rồi chạy `python3 scripts/setup_minio.py` tạo bucket + `.keep` marker).
-- Windows PowerShell (máy khác có Docker): `docker compose -f docker-compose.minio.yml up -d`.
+- Linux/macOS: `bash scripts/start_r2.sh` (wrapper gọi `docker compose up -d`, đợi health-check 15 s, rồi chạy `python3 scripts/setup_r2.py` tạo bucket + `.keep` marker).
+- Windows PowerShell (máy khác có Docker): `docker compose -f docker-compose.r2.yml up -d`.
 
-`docker-compose.minio.yml` giữ nguyên trong repo làm tham chiếu cho người dùng sau; docs/02 vẫn mô tả Docker.
+`docker-compose.r2.yml` giữ nguyên trong repo làm tham chiếu cho người dùng sau; docs/02 vẫn mô tả Docker.
 
-Cấu hình kết nối **chỉ qua 4 biến môi trường**: `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`. **KHÔNG hardcode** giá trị ở code / test / docs / log / commit message (mặc định nằm trong `scripts/setup_minio.py:18-21` – file dùng chung, agent **KHÔNG sửa**). PowerShell ≥ 7: `$env:MINIO_ROOT_PASSWORD = Read-Host -AsSecureString "MinIO password"` → map sang env cho tiến trình con (agent **không** in ra).
+Cấu hình kết nối **chỉ qua 4 biến môi trường**: `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`. **KHÔNG hardcode** giá trị ở code / test / docs / log / commit message (mặc định nằm trong `scripts/setup_r2.py:18-21` – file dùng chung, agent **KHÔNG sửa**). PowerShell ≥ 7: `$env:MINIO_ROOT_PASSWORD = Read-Host -AsSecureString "Cloudflare R2 password"` → map sang env cho tiến trình con (agent **không** in ra).
 
 > **Đường dẫn repo chứa dấu cách**: workspace `d:\ĐH\Năm 3\Học kỳ 1\Khai thác dữ liệu\crawl data\VN-IT-Job-Mining` có nhiều dấu cách và dấu tiếng Việt. Mọi lệnh `cd`, tham số `--local-dir`, `--license`, `--data-dir` **phải bọc nháy kép** (`cd "..."`), nếu không PowerShell báo `A positional parameter cannot be found...` (coi mỗi từ là tham số riêng).
 
-### 13.2. Đẩy Raw Envelope Lên MinIO (script mới)
+### 13.2. Đẩy Raw Envelope Lên Cloudflare R2 (script mới)
 
-Vì `sync_to_minio` **chỉ** upload ledger (không raw), ta viết `scripts/push_raw_to_minio.py` đẩy raw envelope local → MinIO.
+Vì `sync_to_r2` **chỉ** upload ledger (không raw), ta viết `scripts/push_raw_to_r2.py` đẩy raw envelope local → Cloudflare R2.
 
-**Ánh xa key**: `data/careerviet/raw/<date>/<jid>_v<n>.json` → `raw/careerviet/<date>/<jid>_v<n>.json` (docs/01 §3, docs/02 §3.1). Script `push_raw_to_minio.py` **chap nhan ca 2 khai niem thu muc local** (thua nhận bare `<YYYY-MM-DD>` của CareerViet crawler **và** `dt=<YYYY-MM-DD>` của convention Hive/topcv), nhung **luôn loai bo `dt=`** khi sinh S3 key để khớp docs/01.
+**Ánh xa key**: `data/careerviet/raw/<date>/<jid>_v<n>.json` → `raw/careerviet/<date>/<jid>_v<n>.json` (docs/01 §3, docs/02 §3.1). Script `push_raw_to_r2.py` **chap nhan ca 2 khai niem thu muc local** (thua nhận bare `<YYYY-MM-DD>` của CareerViet crawler **và** `dt=<YYYY-MM-DD>` của convention Hive/topcv), nhung **luôn loai bo `dt=`** khi sinh S3 key để khớp docs/01.
 
 **Cờ CLI** (đủ dùng):
 
@@ -548,39 +548,39 @@ Vì `sync_to_minio` **chỉ** upload ledger (không raw), ta viết `scripts/pus
 - `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` đọc từ env, **không bao giờ in** giá trị (kể cả `--verbose`, chỉ in `access_key=<4 đầu>***<4 cuối>`).
 - `boto3` lazy import — chạy `--dry-run` **không cần** cài boto3.
 
-### 13.3. Thứ Tự Lệnh Đầy Đủ (sau khi MinIO được duyệt)
+### 13.3. Thứ Tự Lệnh Đầy Đủ (sau khi Cloudflare R2 được duyệt)
 
 ```powershell
-# 1. Start MinIO AIStor (may Tai KHONG co Docker). Tai chay tay;
-#    agent **KHONG** goi, **KHONG** ket noi MinIO that. DATA_DIR va
+# 1. Start Cloudflare R2 AIStor (may Tai KHONG co Docker). Tai chay tay;
+#    agent **KHONG** goi, **KHONG** ket noi Cloudflare R2 that. DATA_DIR va
 #    DUONG_DAN_LICENSE duoc Tai giu NGOAI repo (khong commit).
-minio.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>
-curl.exe http://localhost:9000/minio/health/live   # (ky vong: HTTP 200, body rong)
+r2.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>
+curl.exe http://localhost:9000/r2/health/live   # (ky vong: HTTP 200, body rong)
 
 # 2. Dong bo ledger (khong goi mang ngoai truong; khong can Phase 1/2)
 python -X utf8 -m crawlers.sources.careerviet.crawler --phase sync
 
 # 3. Dry-run day raw (kiem tra key mapping, khong can boto3)
-python -X utf8 scripts/push_raw_to_minio.py `
+python -X utf8 scripts/push_raw_to_r2.py `
   --source careerviet --local-dir data/careerviet `
   --prefix raw/careerviet --dry-run --verbose
 
 # 4. Upload that (idempotent, mac dinh --no-clobber)
-python -X utf8 scripts/push_raw_to_minio.py `
+python -X utf8 scripts/push_raw_to_r2.py `
   --source careerviet --local-dir data/careerviet `
   --prefix raw/careerviet --verify-sha
 
-# 5. doi chieu tren MinIO console
+# 5. doi chieu tren Cloudflare R2 console
 aws --endpoint-url http://localhost:9000 s3 ls s3://vn-it-jobs/raw/careerviet/ --recursive
 ```
 
-Hoặc dùng MinIO client `mc ls local/vn-it-jobs/raw/careerviet/`.
+Hoặc dùng Cloudflare R2 client `mc ls local/vn-it-jobs/raw/careerviet/`.
 
-> **Môi trường thực tế của Tài**: máy **không có Docker** → chạy **AIStor** (`minio.exe server ... --license ...`). File license `.json` là **bí mật cá nhân**, đặt **ngoài repo**, **KHÔNG commit**, **KHÔNG dán** đường dẫn hay nội dung vào docs / log / issue / commit message (agent **không** bao giờ đọc hay in). `docker-compose.minio.yml` và `scripts/start_minio.sh` **chỉ còn là phương án phụ** cho máy khác có Docker; máy Tài **KHÔNG** dùng lệnh `docker compose`. Connection config **chỉ** qua 4 env: `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`.
+> **Môi trường thực tế của Tài**: máy **không có Docker** → chạy **AIStor** (`r2.exe server ... --license ...`). File license `.json` là **bí mật cá nhân**, đặt **ngoài repo**, **KHÔNG commit**, **KHÔNG dán** đường dẫn hay nội dung vào docs / log / issue / commit message (agent **không** bao giờ đọc hay in). `docker-compose.r2.yml` và `scripts/start_r2.sh` **chỉ còn là phương án phụ** cho máy khác có Docker; máy Tài **KHÔNG** dùng lệnh `docker compose`. Connection config **chỉ** qua 4 env: `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`.
 
 ### 13.4. Test Tự Động Cho Push Script
 
-`tests/unit/test_push_raw_to_minio.py` **mock boto3**, không kết nối MinIO thật.
+`tests/unit/test_push_raw_to_r2.py` **mock boto3**, không kết nối Cloudflare R2 thật.
 5 assertion chính:
 - `--dry-run` → **không** gọi `put_object`.
 - `--no-clobber` mặc định → `head_object` OK (key tồn tại) → bỏ qua, `put_object` không gọi.

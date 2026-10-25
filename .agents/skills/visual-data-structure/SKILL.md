@@ -40,3 +40,11 @@ collection/collection/reports/EDA_<source>.ipynb
 └── Chương 7: Bệnh Án Dữ Liệu Toàn Nguồn & Bản Thiết Kế Tiền Xử Lý (Health Card & Blueprint)
 ```
 ---
+
+## 3. Giao Thức Xuất Bản Bệnh Án Cho AI Tiền Xử Lý (EDA-First Diagnostic Interface)
+Mỗi notebook EDA đóng vai trò là "Bệnh án Dữ liệu thô" cung cấp đầu vào cho chuỗi tiền xử lý.  
+Để phục vụ nguyên tắc **Chẩn đoán Tiên quyết**, AI Agent và các kỹ sư có thể trích xuất nhanh 5 phân vùng lỗi (WHAT — WHY — HOW) và Chương 7 Preprocessing Blueprint mà không bị nghẽn token bằng công cụ:
+```bash
+python scripts/read_eda_diagnosis.py --source <source_name>
+```
+Toàn bộ logic tiền xử lý tại `preprocessing/` (bóc tách dải lương, bóc trần null, bù khuyết GenAI, xử lý ngoại lai IQR) bắt buộc phải đối chiếu và căn cứ trực tiếp trên bệnh án này.

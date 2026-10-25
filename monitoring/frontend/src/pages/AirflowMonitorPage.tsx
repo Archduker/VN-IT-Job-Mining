@@ -61,13 +61,13 @@ export const AirflowMonitorPage: React.FC = () => {
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20 font-semibold uppercase tracking-wider">
               Orchestration Engine
             </span>
-            <span className="text-[11px] text-slate-500 font-mono">Port 8080 • SQLite DB</span>
+            <span className="text-[11px] text-slate-500 font-mono">Port 8080 • PostgreSQL DB</span>
           </div>
           <h2 className="text-xl font-bold text-white mt-1.5 flex items-center space-x-2">
             <span>Apache Airflow Orchestrator Monitor</span>
           </h2>
           <p className="text-xs text-slate-400">
-            Giám sát vận hành 7 DAGs cào dữ liệu xoay vòng (7-day decoupled daily schedule) và trạng thái các daemon cốt lõi.
+            Giám sát vận hành 9 DAGs cào dữ liệu Hai Pha (Daily Discovery 05:00 & 8 DAGs Chi tiết) và trạng thái daemon cốt lõi.
           </p>
         </div>
 
@@ -181,13 +181,13 @@ export const AirflowMonitorPage: React.FC = () => {
                 dbConnected ? 'text-emerald-300' : 'text-rose-400'
               }`}
             >
-              {dbConnected ? 'SQLITE READY' : 'DISCONNECTED'}
+              {dbConnected ? 'POSTGRESQL READY' : 'DISCONNECTED'}
             </span>
           </div>
           <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-            <span>Dung lượng DB:</span>
+            <span>Cơ sở dữ liệu:</span>
             <span className="font-mono text-slate-300">
-              {status?.database.size_mb !== undefined ? `${status.database.size_mb} MB` : '0 MB'}
+              {status?.database.name || 'airflow'} (Port {status?.database.port || 5432})
             </span>
           </div>
         </div>
@@ -202,8 +202,8 @@ export const AirflowMonitorPage: React.FC = () => {
             {status?.active_dags_count || dags.length} DAGs
           </div>
           <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-            <span>Chu kỳ:</span>
-            <span className="text-indigo-300">7 Ngày Xoay Vòng</span>
+            <span>Kiến trúc:</span>
+            <span className="text-indigo-300">Hai Pha (Discovery & Detail)</span>
           </div>
         </div>
       </div>
@@ -213,10 +213,10 @@ export const AirflowMonitorPage: React.FC = () => {
         <ShieldCheck className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
         <div className="text-xs space-y-1">
           <p className="font-semibold text-slate-200">
-            Chiến Lược Điều Phối 7-Day Decoupled Rotation Crawler
+            Kiến Trúc Điều Phối Hai Pha (Two-Phase Decoupled Ingestion Pipeline)
           </p>
           <p className="text-slate-400 leading-relaxed">
-            Mỗi ngày trong tuần Airflow sẽ kích hoạt chính xác 1 DAG ứng với 1 sàn tuyển dụng (TopDev, CareerViet, ITViec, VietnamWorks, DevWork, NodeFlair, TopCV) theo kiến trúc cào Raw As-Is Zero-Loss. Dữ liệu sau cào được hash canonical JSON để CDC thay đổi và tự động đồng bộ lên Cloudflare R2 bucket <span className="font-mono text-indigo-300">vn-it-jobs</span>.
+            Hệ thống phân tách triệt để 2 pha cào: Pha 1 Discovery quét nhanh trang danh mục lúc 05:00 sáng nạp vào URL Ledger, Pha 2 Detail bóc tách chi tiết JobRecord nguyên bản cho 8 sàn (TopDev, CareerViet, ITViec, VietnamWorks, TopCV, ViecLam24h, Glints, JobsGO) vào buổi tối. Dữ liệu sau cào được băm Canonical JSON SHA-256 để chống trùng lặp và đồng bộ trực tiếp lên Cloudflare R2 bucket <span className="font-mono text-indigo-300">vn-it-jobs</span>.
           </p>
         </div>
       </div>
@@ -253,7 +253,7 @@ export const AirflowMonitorPage: React.FC = () => {
               {dags.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-8 text-center text-slate-500">
-                    {loading ? 'Đang truy vấn SQLite Airflow Database...' : 'Không tìm thấy DAG nào.'}
+                    {loading ? 'Đang truy vấn PostgreSQL Airflow Database...' : 'Không tìm thấy DAG nào.'}
                   </td>
                 </tr>
               ) : (

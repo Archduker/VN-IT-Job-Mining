@@ -3,11 +3,11 @@
 
 Điều phối nhịp cào tự động co giãn đàn hồi theo số lượng hàng đợi tồn đọng (pending backlog):
 1. Khống chế cứng hạn ngạch: Đúng 30 tin / mỗi lần cào.
-2. Tự động nhận diện 4 cấp độ tải:
-   - IDLE (pending = 0): Skip ngay trong 0.05 giây.
-   - NORMAL (pending <= 30): Ban ngày Skip, chỉ chạy 1 ca tối duy nhất (20:00 - 23:00) tiêu thụ sạch.
-   - MODERATE (30 < pending < 300): Chạy 2-3 ca/ngày (trưa, chiều, tối).
-   - SURGE (pending >= 300, e.g. TopCV 2,629 tin): Kích hoạt chu kỳ "Chạy 1 ca 30 tin - Nghỉ 1h Cooldown".
+2. Chiến lược cào tiết kiệm tài nguyên EC2 On-Demand:
+   - Phase 1 (Daily Discovery): Chạy cố định 05:00 sáng mỗi ngày, lấy URL mới nhất (sort=new) lưu vào Ledger.
+   - Phase 2 (Detail Extraction): Tập trung xả hàng đợi vào cuối tuần (Thứ 7 & Chủ Nhật) qua các ca 09h, 14h, 18h, 21h, 22h.
+   - Ngày trong tuần (Thứ 2 đến Thứ 6): Ban ngày Skip hoàn toàn (0.05s, 0 tải EC2); chỉ chạy 1 ca tối duy nhất (21:00) bảo trì dọn 30 tin.
+   - An toàn tuyệt đối: Cooldown tối thiểu 55 phút giữa các ca, tự động dừng ngay khi hàng đợi rỗng.
 """
 
 from __future__ import annotations
@@ -98,6 +98,7 @@ class AdaptiveWorkloadRouter:
 
         vn_now = now_utc.astimezone(VN_TZ)
         vn_hour = vn_now.hour
+        is_weekend = vn_now.weekday() in (5, 6)
 
         summary = self.ledger.get_queue_summary()
         pending = summary.get("pending", 0)
@@ -115,101 +116,75 @@ class AdaptiveWorkloadRouter:
             except Exception:
                 last_run_end = None
 
-        # 1. Cấp 1: Hàng đợi rỗng (Backlog == 0)
+        # 1. Cấp 1: Hàng đợi rỗng (Backlog == 0) -> Nghỉ ngơi tuyệt đối
         if backlog == 0:
             return {
                 "should_run": False,
                 "tier": "IDLE",
                 "quota": 0,
                 "backlog": 0,
-                "reason": "Hàng đợi rỗng (Pending = 0), nghỉ ngơi hoàn toàn.",
+                "reason": "Hàng đợi rỗng (Pending = 0), không có tin mới để cào.",
             }
 
-        # 2. Cấp 4: Quá tải nặng (Backlog >= 300, e.g. TopCV 2,629 tin)
-        # Chu kỳ: Chạy 1 ca 30 tin (mất 2 phút) -> Nghỉ tối thiểu 55-60 phút Cooldown
-        if backlog >= 300:
-            tier = "SURGE"
-            if last_run_end:
-                elapsed = now_utc - last_run_end
-                if elapsed < timedelta(minutes=COOLDOWN_MINUTES_SURGE):
-                    left_min = max(1, int((timedelta(minutes=COOLDOWN_MINUTES_SURGE) - elapsed).total_seconds() / 60))
-                    return {
-                        "should_run": False,
-                        "tier": tier,
-                        "quota": 0,
-                        "backlog": backlog,
-                        "reason": f"Đang trong thời gian nghỉ Cooldown 1h (còn {left_min} phút trước ca kế tiếp).",
-                    }
-            return {
-                "should_run": True,
-                "tier": tier,
-                "quota": MAX_ITEMS_PER_BATCH,
-                "backlog": backlog,
-                "reason": f"Surge Duty-Cycle: Kích hoạt ca cào {MAX_ITEMS_PER_BATCH} tin (Backlog: {backlog}).",
-            }
-
-        # 3. Cấp 3: Vừa phải (30 < Backlog < 300)
-        # Chạy 3 ca/ngày (trưa, chiều, tối), cách nhau tối thiểu 2.5 tiếng
-        if backlog > 30:
-            tier = "MODERATE"
-            if last_run_end:
-                elapsed = now_utc - last_run_end
-                if elapsed < timedelta(minutes=150):
-                    left_min = max(1, int((timedelta(minutes=150) - elapsed).total_seconds() / 60))
-                    return {
-                        "should_run": False,
-                        "tier": tier,
-                        "quota": 0,
-                        "backlog": backlog,
-                        "reason": f"Đang trong thời gian nghỉ giữa các ca Moderate (còn {left_min} phút).",
-                    }
-            if vn_hour in [11, 12, 13, 17, 18, 20, 21, 22]:
-                return {
-                    "should_run": True,
-                    "tier": tier,
-                    "quota": MAX_ITEMS_PER_BATCH,
-                    "backlog": backlog,
-                    "reason": f"Moderate Batch: Kích hoạt ca cào {MAX_ITEMS_PER_BATCH} tin (Khung {vn_hour}h, Backlog: {backlog}).",
-                }
-            return {
-                "should_run": False,
-                "tier": tier,
-                "quota": 0,
-                "backlog": backlog,
-                "reason": f"Chờ khung giờ Moderate (12h, 17h, 20h-22h). Giờ hiện tại: {vn_hour}h.",
-            }
-
-        # 4. Cấp 2: Bình thường (0 < Backlog <= 30)
-        # Chỉ chạy 1 ca tối duy nhất (sau 20:00 VN) để dọn sạch 30 tin
-        tier = "NORMAL"
-        if last_run_end:
-            last_vn = last_run_end.astimezone(VN_TZ)
-            # Nếu đã chạy trong ca tối hôm nay (giờ VN >= 20) hoặc vừa chạy cách đây dưới 4 tiếng
-            if (last_vn.date() == vn_now.date() and last_vn.hour >= 20) or (now_utc - last_run_end < timedelta(hours=4)):
+        # 2. Quy tắc Ngày trong tuần (Thứ 2 đến Thứ 6):
+        # Ban ngày tạm hoãn cào chi tiết để tiết kiệm EC2 On-Demand và dồn tải vào cuối tuần.
+        # Chỉ duy nhất ca tối (sau 20:00 VN) chạy bảo trì 1 lần tối đa 30 tin.
+        if not is_weekend:
+            if vn_hour < 20:
                 return {
                     "should_run": False,
-                    "tier": tier,
+                    "tier": "WEEKDAY_PAUSE",
                     "quota": 0,
                     "backlog": backlog,
-                    "reason": "Ca tối định kỳ hôm nay đã hoàn tất thành công.",
+                    "reason": "Ngày trong tuần (T2-T6 ban ngày): Tạm dừng cào chi tiết, dồn hàng đợi để xả vào cuối tuần.",
                 }
 
-        if vn_hour >= 20:
+            # Ca tối ngày thường (sau 20:00 VN)
+            if last_run_end:
+                last_vn = last_run_end.astimezone(VN_TZ)
+                # Đã chạy ca tối hôm nay hoặc vừa chạy cách đây chưa đủ 3 tiếng
+                if (last_vn.date() == vn_now.date() and last_vn.hour >= 20) or (now_utc - last_run_end < timedelta(hours=3)):
+                    return {
+                        "should_run": False,
+                        "tier": "WEEKDAY_MAINTENANCE",
+                        "quota": 0,
+                        "backlog": backlog,
+                        "reason": "Ca tối bảo trì ngày thường hôm nay đã hoàn tất. Chờ phiên cuối tuần.",
+                    }
+
             quota = min(backlog, MAX_ITEMS_PER_BATCH)
             return {
                 "should_run": True,
-                "tier": tier,
+                "tier": "WEEKDAY_MAINTENANCE",
                 "quota": quota,
                 "backlog": backlog,
-                "reason": f"Normal Evening: Kích hoạt ca tối định kỳ dọn sạch {quota} tin tồn đọng.",
+                "reason": f"Ca tối bảo trì ngày thường: Kích hoạt cào {quota} tin tồn đọng (Backlog: {backlog}).",
             }
 
+        # 3. Quy tắc Cuối tuần (Thứ 7 & Chủ Nhật) - WEEKEND FLUSH MODE:
+        # Cào tập trung dọn sạch hàng đợi tồn đọng theo các ca 09h, 14h, 18h, 21h, 22h.
+        # Khống chế cứng 30 tin / ca và kiểm tra Cooldown an toàn để chống block bot.
+        if last_run_end:
+            elapsed = now_utc - last_run_end
+            cooldown_required = timedelta(minutes=COOLDOWN_MINUTES_SURGE)
+            if elapsed < cooldown_required:
+                left_min = max(1, int((cooldown_required - elapsed).total_seconds() / 60))
+                return {
+                    "should_run": False,
+                    "tier": "WEEKEND_COOLDOWN",
+                    "quota": 0,
+                    "backlog": backlog,
+                    "reason": f"Cuối tuần: Đang trong thời gian nghỉ Cooldown an toàn (còn {left_min} phút trước ca kế tiếp).",
+                }
+
+        quota = min(backlog, MAX_ITEMS_PER_BATCH)
+        tier = "WEEKEND_SURGE" if backlog >= 300 else ("WEEKEND_MODERATE" if backlog > 30 else "WEEKEND_NORMAL")
         return {
-            "should_run": False,
+            "should_run": True,
             "tier": tier,
-            "quota": 0,
+            "quota": quota,
             "backlog": backlog,
-            "reason": f"Chờ đến ca tối định kỳ (sau 20:00). Giờ hiện tại: {vn_hour}h.",
+            "reason": f"Cuối tuần ({tier}): Kích hoạt ca cào xả hàng đợi {quota} tin (Backlog: {backlog}).",
         }
 
     def record_start(self) -> None:

@@ -17,9 +17,9 @@ Hệ thống sở hữu trang web UI dashboard hiện đại đặt tại [`moni
   - *EDA Intelligence*: Kiểm kê trường dữ liệu thô (field inventory), đo lường tỷ lệ khuyết thiếu (missingness profiling), và 5 họ biểu đồ khoa học 2D.
 - **Giám Sát Apache Airflow Trực Tiếp**:
   - Tự động theo dõi tiến trình sống (PID) của Scheduler và Webserver (Port 8080).
-  - Truy vấn trực tiếp SQLite Metadata DB (`airflow/airflow.db`) để cập nhật trạng thái của 7 DAGs cào xoay vòng hàng ngày.
+  - Truy vấn trực tiếp SQLite Metadata DB (`airflow/PostgreSQL database (airflow)`) để cập nhật trạng thái của 7 DAGs cào xoay vòng hàng ngày.
 - **Hạ Tầng Lưu Trữ Đám Mây Độc Quyền Cloudflare R2**:
-  - 100% chuyển sang Cloudflare R2 bucket `vn-it-jobs` (đã loại bỏ hoàn toàn các cấu hình MinIO/S3 cũ).
+  - 100% chuyển sang Cloudflare R2 bucket `vn-it-jobs` (đã loại bỏ hoàn toàn các cấu hình Cloudflare R2/S3 cũ).
   - Tích hợp **R2 Diff Engine & Đồng Bộ 1-Click** giúp kiểm toán chênh lệch giữa ổ đĩa cục bộ và Remote Cloud.
 - **Quy Chuẩn Giám Sát Không Đăng Nhập (Zero-Auth Standard)**:
   - Không có bất kỳ form đăng nhập, xác thực hay phân quyền người dùng nào. Đây là bảng điều khiển kỹ thuật nội bộ (Internal Engineering Monitor) tối ưu cho việc quan sát trực tiếp, phản hồi thời gian thực và tự động hóa.
@@ -38,15 +38,15 @@ Hệ thống sở hữu trang web UI dashboard hiện đại đặt tại [`moni
 
 Hệ thống triển khai thu thập dữ liệu tự động từ **7 sàn tuyển dụng CNTT** (TopDev, TopCV, VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints & JobsGO) theo quy trình 6 bước chuẩn hóa:
 
-### 🔹 Bước 1: Khởi Tạo Hạ Tầng Lưu Trữ & MinIO Lakehouse
+### 🔹 Bước 1: Khởi Tạo Hạ Tầng Lưu Trữ & Cloudflare R2 Lakehouse
 - Thiết lập môi trường Python (`.venv`) và các thư viện phụ thuộc.
-- Khởi chạy cụm lưu trữ đối tượng **MinIO Object Storage** qua Docker (`make minio-up`), cung cấp endpoint S3-compatible tại cổng `:9000` và Console UI tại `:9001`.
+- Khởi chạy cụm lưu trữ đối tượng **Cloudflare R2 Object Storage** qua Docker (`make minio-up`), cung cấp endpoint S3-compatible tại cổng `:9000` và Console UI tại `:9001`.
 - Tự động kiểm tra và khởi tạo bucket `vn-it-jobs` với các vùng dữ liệu: `/manifests` (danh mục URL), `/raw` (dữ liệu cào thô), và `/staging` (dữ liệu tiền xử lý) qua `scripts/setup_minio.py`.
 
 ### 🔹 Bước 2: Pha 1 — Vét Sạch URL Không Giới Hạn (Phase 1: URL Discovery)
 - Kích hoạt hàm `discover_urls()` trên từng nguồn tuyển dụng để quét toàn bộ phân trang danh mục CNTT mà không giới hạn thời gian đăng.
 - Làm sạch URL về dạng chính tắc (Canonical URL): loại bỏ các tham số theo dõi phiên và quảng cáo (`utm_source`, `utm_campaign`, `utm_medium`, `fbclid`, token tracking).
-- Ghi nhận danh sách URL vào MinIO URL Ledger dưới dạng manifest phân vùng ngày: `manifest_<YYYY-MM-DD>.jsonl`.
+- Ghi nhận danh sách URL vào Cloudflare R2 URL Ledger dưới dạng manifest phân vùng ngày: `manifest_<YYYY-MM-DD>.jsonl`.
 
 ### 🔹 Bước 3: Pha 2 — Bóc Tách Chi Tiết & Chống Trùng Lặp (Phase 2: Detail Extraction & CDC)
 - Đọc catalog URL từ sổ cái (URL Ledger): chỉ lọc ra các URL có trạng thái `PENDING` hoặc bài viết đã hoàn tất (`DONE`) nhưng đã tồn tại $\ge 21$ ngày để kiểm tra cập nhật (Chu kỳ Re-crawl 21 ngày).
@@ -82,15 +82,15 @@ source .venv/bin/activate
 export PYTHONPATH=.
 ```
 
-### 2. Khởi động MinIO Lakehouse (Docker)
+### 2. Khởi động Cloudflare R2 Lakehouse (Docker)
 ```bash
-make minio-up      # Khởi chạy MinIO tại :9000 (Console UI: http://localhost:9001)
+make minio-up      # Khởi chạy Cloudflare R2 tại :9000 (Console UI: http://localhost:9001)
 make setup-minio   # Khởi tạo bucket và cấu trúc Lakehouse
 ```
 
 ### 3. Chạy Crawler theo Kiến Trúc Two-Phase (Discovery & Detail)
 ```bash
-# Phase 1: Vét sạch URL vào MinIO URL Ledger
+# Phase 1: Vét sạch URL vào Cloudflare R2 URL Ledger
 python run.py --source topcv --phase discover
 python run.py --source topdev --phase discover
 
@@ -127,7 +127,7 @@ Toàn bộ **130/130 test cases** đạt trạng thái **100% Passed**.
 
 1. **Bảng phân công nhiệm vụ & Tiêu chuẩn nghiệm thu (DoD)**: [`TASKS.md`](TASKS.md)
 2. **Tổng quan Data Mining & CRISP-DM hiện đại (Core 01)**: [`docs/01_modern_data_mining_overview.md`](docs/01_modern_data_mining_overview.md)
-3. **Kiến trúc Two-Phase Crawler & MinIO Lakehouse (Core 02)**: [`docs/02_crawling_architecture_guide.md`](docs/02_crawling_architecture_guide.md)
+3. **Kiến trúc Two-Phase Crawler & Cloudflare R2 Lakehouse (Core 02)**: [`docs/02_crawling_architecture_guide.md`](docs/02_crawling_architecture_guide.md)
 4. **Hướng dẫn EDA & Tích hợp dữ liệu đa nguồn (Core 03)**: [`docs/03_eda_and_integration_guide.md`](docs/03_eda_and_integration_guide.md)
 5. **Hướng dẫn tự học & vận hành Apache Airflow**: [`docs/03_airflow_guide.md`](docs/03_airflow_guide.md)
 6. **Phương pháp chuẩn bóc tách nguồn dữ liệu mới**: [`docs/guides/crawler_analysis_methodology.md`](docs/guides/crawler_analysis_methodology.md)
@@ -136,19 +136,21 @@ Toàn bộ **130/130 test cases** đạt trạng thái **100% Passed**.
 
 ---
 
-## 🕒 Rotating Daily Schedule trên Airflow
-| Ngày | Nguồn | DAG ID | Lịch Chạy |
-|:---|:---|:---|:---|
-| Thứ Hai | **TopDev** | `crawler_topdev` | `0 20 * * 1` |
-| Thứ Ba | **CareerViet** | `crawler_careerviet` | `0 20 * * 2` |
-| Thứ Tư | **ITviec** | `crawler_itviec` | `0 20 * * 3` |
-| Mỗi ngày | **VietnamWorks** | `crawler_vietnamworks` | `0 20 * * *` (20:00 giờ Việt Nam) |
-| Thứ Sáu | **TopCV** | `crawler_topcv` | `0 20 * * 5` |
-| Thứ Bảy | **ViecLam24h** | `crawler_vieclam24h` | `0 20 * * 6` |
-| Chủ Nhật | **Glints** | `crawler_glints` | `0 20 * * 0` |
+## 🕒 Lập Lịch Hai Pha (Two-Phase Decoupled Schedule) trên Airflow
+| Phân Loại | Nguồn | DAG ID | Lịch Chạy | Vai Trò |
+|:---|:---|:---|:---|:---|
+| **Pha 1 (Discovery)** | Cả 8 Sàn IT | `dag_discovery_daily` | `0 5 * * *` (05:00 hàng ngày) | Quét URL mới (sort=new), nạp vào UrlLedger |
+| **Pha 2 (Detail)** | TopDev | `crawler_detail_topdev` | `0 9,14,18,21,22 * * *` | Cào chi tiết theo hạn ngạch 30 tin (Xả cuối tuần) |
+| **Pha 2 (Detail)** | VietnamWorks | `crawler_detail_vietnamworks` | `0 9,14,18,21,22 * * *` | Cào chi tiết theo hạn ngạch 30 tin (Xả cuối tuần) |
+| **Pha 2 (Detail)** | CareerViet | `crawler_detail_careerviet` | `0 9,14,18,21,22 * * *` | Cào chi tiết theo hạn ngạch 30 tin (Xả cuối tuần) |
+| **Pha 2 (Detail)** | ViecLam24h | `crawler_detail_vieclam24h` | `0 9,14,18,21,22 * * *` | Cào chi tiết theo hạn ngạch 30 tin (Xả cuối tuần) |
+| **Pha 2 (Detail)** | ITviec | `crawler_detail_itviec` | `0 9,14,18,21,22 * * *` | Cào chi tiết theo hạn ngạch 30 tin (Xả cuối tuần) |
+| **Pha 2 (Detail)** | TopCV | `crawler_detail_topcv` | `0 9,14,18,21,22 * * *` | Cào chi tiết theo hạn ngạch 30 tin (Xả cuối tuần) |
+| **Pha 2 (Detail)** | JobsGO | `crawler_detail_jobsgo` | `0 9,14,18,21,22 * * *` | Cào chi tiết theo hạn ngạch 30 tin (Xả cuối tuần) |
+| **Pha 2 (Detail)** | Glints | `crawler_detail_glints` | `0 9,14,18,21,22 * * *` | Cào chi tiết theo hạn ngạch 30 tin (Xả cuối tuần) |
 
 
-## MinIO Lakehouse Guide
+## Cloudflare R2 Lakehouse Guide
 
-- Vận hành MinIO: [docs/minio_lakehouse_guide.md](docs/minio_lakehouse_guide.md)
+- Vận hành Cloudflare R2: [docs/minio_lakehouse_guide.md](docs/minio_lakehouse_guide.md)
 - Agent skill: [.agents/skills/minio-lakehouse-guide/SKILL.md](.agents/skills/minio-lakehouse-guide/SKILL.md)

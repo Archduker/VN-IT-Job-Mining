@@ -1,0 +1,44 @@
+{
+  "source_platform": "itviec",
+  "audit_timestamp": "2026-10-25T18:03:01.848009+00:00",
+  "total_files_scanned": 692,
+  "total_raw_envelopes": 692,
+  "stub_jds_removed_policy_1b": 8,
+  "total_clean_records": 683,
+  "salary_metrics": {
+    "total_with_numeric_salary": 189,
+    "salary_coverage_pct": 27.67,
+    "salary_header_regex_hits": 0,
+    "salary_jd_regex_implicit_hits": 10,
+    "salary_p1_vnd": 61976.0,
+    "salary_q1_vnd": 35560000.0,
+    "salary_median_vnd": 50800000.0,
+    "salary_q3_vnd": 71120000.0,
+    "salary_p99_vnd": 511703523200.01935
+  },
+  "imputation_metrics": {
+    "records_imputed_by_genai": 613,
+    "imputation_rate_pct": 89.75
+  },
+  "language_distribution": {
+    "en": 464,
+    "vi": 153,
+    "bilingual": 66
+  },
+  "job_family_distribution": {
+    "JF05_DEVOPS": 230,
+    "JF10_PROD_BA": 116,
+    "JF08_QA_QC": 83,
+    "JF01_BACKEND": 46,
+    "JF07_DATA_AI": 35,
+    "JF04_MOBILE": 33,
+    "JF00_OTHER_IT": 30,
+    "JF03_FULLSTACK": 29,
+    "JF02_FRONTEND": 27,
+    "JF06_DATA_ENG": 26,
+    "JF09_SECURITY": 15,
+    "JF12_EMBEDDED": 9,
+    "JF11_UI_UX": 4
+  },
+  "execution_time_seconds": 1.06
+}

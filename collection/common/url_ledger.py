@@ -334,6 +334,16 @@ class UrlLedger:
 
         self.manifests_dir.mkdir(parents=True, exist_ok=True)
         self.records: Dict[str, Dict[str, Any]] = self._load_catalog()
+        self.by_job_id: Dict[str, str] = self._build_job_id_index()
+
+    def _build_job_id_index(self) -> Dict[str, str]:
+        """Xây dựng chỉ mục tra cứu nhanh job_id -> url_hash phục vụ kiểm tra trùng lặp Tầng 2."""
+        index: Dict[str, str] = {}
+        for u_hash, rec in self.records.items():
+            jid = str(rec.get("job_id", "")).strip()
+            if jid:
+                index[jid] = u_hash
+        return index
 
     def _load_catalog(self) -> Dict[str, Dict[str, Any]]:
         if self.catalog_file.exists():
@@ -347,6 +357,7 @@ class UrlLedger:
     def reload(self) -> None:
         """Nạp lại trạng thái mới nhất từ disk (cho Multi-Worker song song)."""
         self.records = self._load_catalog()
+        self.by_job_id = self._build_job_id_index()
 
     def save_catalog(self):
         """Lưu toàn bộ catalog xuống disk với cơ chế FileLock và Ghi Nguyên Tử (Atomic Write) hỗ trợ Multi-Worker."""
@@ -370,6 +381,7 @@ class UrlLedger:
                             elif v.get("last_scraped_at") and (not disk_rec.get("last_scraped_at") or v["last_scraped_at"] > disk_rec.get("last_scraped_at", "")):
                                 disk_records[k] = v
                     self.records = disk_records
+                    self.by_job_id = self._build_job_id_index()
                 except Exception:
                     pass
 
@@ -399,6 +411,59 @@ class UrlLedger:
             "by_status": status_counts,
         }
 
+    def check_duplicate(
+        self,
+        raw_url: str,
+        job_id: Optional[str] = None,
+    ) -> tuple[bool, str, Optional[Dict[str, Any]]]:
+        """
+        Kiểm tra trùng lặp theo 2 tầng khóa:
+        - Tầng 1: URL Hash chuẩn hóa (clean_canonical_url -> MD5)
+        - Tầng 2: Job ID duy nhất do sàn cấp
+
+        Returns:
+            (is_duplicate: bool, match_type: str, existing_record_dict: Optional[dict])
+            match_type: 'URL_HASH', 'JOB_ID', hoặc 'NONE'
+        """
+        canonical = clean_canonical_url(raw_url)
+        u_hash = generate_url_hash(canonical)
+
+        # 1. Trùng theo URL Hash
+        if u_hash in self.records:
+            return True, "URL_HASH", self.records[u_hash]
+
+        # 2. Trùng theo Job ID
+        jid_str = str(job_id).strip() if job_id else ""
+        if jid_str and jid_str in self.by_job_id:
+            matched_hash = self.by_job_id[jid_str]
+            if matched_hash in self.records:
+                return True, "JOB_ID", self.records[matched_hash]
+
+        return False, "NONE", None
+
+    def is_known(self, raw_url: str, job_id: Optional[str] = None) -> bool:
+        """Kiểm tra xem URL hoặc Job ID đã từng xuất hiện trong hệ thống hay chưa."""
+        is_dup, _, _ = self.check_duplicate(raw_url, job_id=job_id)
+        return is_dup
+
+    def get_record(
+        self,
+        raw_url: Optional[str] = None,
+        job_id: Optional[str] = None,
+    ) -> Optional[UrlLedgerRecord]:
+        """Lấy bản ghi từ URL hoặc Job ID nếu có."""
+        if raw_url:
+            _, _, rec = self.check_duplicate(raw_url, job_id=job_id)
+            if rec:
+                return UrlLedgerRecord.from_dict(rec)
+        elif job_id:
+            jid = str(job_id).strip()
+            if jid in self.by_job_id:
+                u_hash = self.by_job_id[jid]
+                if u_hash in self.records:
+                    return UrlLedgerRecord.from_dict(self.records[u_hash])
+        return None
+
     def register_url(
         self,
         raw_url: str,
@@ -408,33 +473,53 @@ class UrlLedger:
     ) -> UrlLedgerRecord:
         """
         Ghi nhận một URL mới phát hiện từ Phase 1 (Discovery).
-        Nếu URL đã có, chỉ cập nhật last_seen_at.
+        Kiểm tra trùng lặp đa tầng (URL Hash & Job ID).
+        Nếu URL hoặc Job ID đã có:
+          - Cập nhật last_seen_at = now
+          - Cập nhật canonical_url nếu đổi redirect/slug
+          - Bổ sung preliminary_title/company nếu trước đó khuyết
+          - Kiểm tra 21 ngày recheck_due nếu status == "DONE"
+        Nếu chưa từng xuất hiện:
+          - Đăng ký mới với status = "PENDING"
         """
         canonical = clean_canonical_url(raw_url)
         url_hash = generate_url_hash(canonical)
+        jid_str = str(job_id).strip() if job_id else ""
         now_iso = datetime.now(timezone.utc).isoformat()
         identity_key = generate_identity_key(preliminary_company or "", preliminary_title or "")
 
-        if url_hash in self.records:
-            rec_dict = self.records[url_hash]
-            rec_dict["last_seen_at"] = now_iso
-            # Tự động cập nhật tiêu đề / công ty nếu trước đó bị rỗng
-            if preliminary_title and not rec_dict.get("preliminary_title"):
-                rec_dict["preliminary_title"] = preliminary_title
-            if preliminary_company and not rec_dict.get("preliminary_company"):
-                rec_dict["preliminary_company"] = preliminary_company
-            # Nếu đã cào nhưng đã quá 21 ngày thì chuyển sang RECHECK_DUE
-            scraped_time = rec_dict.get("last_scraped_at") or rec_dict.get("last_crawled_at")
-            if rec_dict.get("status") == "DONE" and is_due_for_recrawl(scraped_time, days=21):
-                rec_dict["status"] = "RECHECK_DUE"
-            return UrlLedgerRecord.from_dict(rec_dict)
+        is_dup, match_type, existing_rec = self.check_duplicate(raw_url, job_id=job_id)
 
-        # URL mới hoàn toàn
+        if is_dup and existing_rec:
+            existing_rec["last_seen_at"] = now_iso
+
+            # Nếu trùng theo Job ID nhưng đổi URL (ví dụ: đổi slug hoặc redirect)
+            if match_type == "JOB_ID":
+                existing_rec["canonical_url"] = canonical
+                old_hash = existing_rec.get("url_hash", "")
+                if old_hash and old_hash != url_hash:
+                    # Lưu bản ghi dưới url_hash mới để tra cứu trực tiếp bằng URL mới
+                    self.records[url_hash] = existing_rec
+                    if jid_str:
+                        self.by_job_id[jid_str] = url_hash
+
+            if preliminary_title and not existing_rec.get("preliminary_title"):
+                existing_rec["preliminary_title"] = preliminary_title
+            if preliminary_company and not existing_rec.get("preliminary_company"):
+                existing_rec["preliminary_company"] = preliminary_company
+
+            scraped_time = existing_rec.get("last_scraped_at") or existing_rec.get("last_crawled_at")
+            if existing_rec.get("status") == "DONE" and is_due_for_recrawl(scraped_time, days=21):
+                existing_rec["status"] = "RECHECK_DUE"
+
+            return UrlLedgerRecord.from_dict(existing_rec)
+
+        # URL & Job ID mới hoàn toàn
         new_record = UrlLedgerRecord(
             url_hash=url_hash,
             canonical_url=canonical,
             source=self.source,
-            job_id=job_id,
+            job_id=jid_str,
             discovered_at=now_iso,
             status="PENDING",
             preliminary_title=preliminary_title,
@@ -443,6 +528,8 @@ class UrlLedger:
             last_seen_at=now_iso,
         )
         self.records[url_hash] = new_record.to_dict()
+        if jid_str:
+            self.by_job_id[jid_str] = url_hash
         return new_record
 
     def export_daily_manifest(self, date_str: Optional[str] = None) -> Path:
@@ -789,4 +876,9 @@ class UrlLedger:
     def get_failed_records(self) -> List[Dict[str, Any]]:
         """Lấy danh sách các URL có trạng thái FAILED (Failed Queue)."""
         return [r for r in self.records.values() if r.get("status") == "FAILED"]
+
+    # Cloudflare R2 Aliases
+    sync_to_r2 = sync_to_minio
+    pull_from_r2 = pull_from_minio
+
 

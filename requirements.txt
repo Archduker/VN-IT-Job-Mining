@@ -14,10 +14,13 @@ nodriver>=0.50.0            # TLS/JA3/JA4 Chrome impersonation bypass Cloudflare
 # --- Data Validation & Typing ---
 pydantic==2.11.3
 
-# --- Data Storage & Lakehouse (MinIO S3 API) ---
-boto3==1.38.22               # MinIO S3-compatible client
-minio>=7.2.0                 # Native MinIO client
+# --- Cloud Data Lakehouse (Cloudflare R2 Object Storage) ---
+boto3>=1.38.0                # Cloudflare R2 S3-compatible client
 python-dotenv==1.1.0         # Load .env variables
+
+# --- Database & Airflow Providers (Zero-SQLite Policy) ---
+psycopg2-binary>=2.9.9       # PostgreSQL driver for Airflow & Observatory
+apache-airflow-providers-amazon>=9.0.0 # Airflow S3 Remote Logging for Cloudflare R2
 
 # --- Data Processing & Parquet/JSONL ---
 pandas>=2.2.0

@@ -282,7 +282,14 @@ def load_raw_source_dataframe(
                         seen_ids.add(jid)
 
                     if isinstance(payload, dict):
-                        raw_payloads.append(payload)
+                        row_data = dict(payload)
+                        if "job_id" not in row_data and meta.get("job_id"):
+                            row_data["job_id"] = meta.get("job_id")
+                        if "source_url" not in row_data and meta.get("source_url"):
+                            row_data["source_url"] = meta.get("source_url")
+                        if "canonical_hash" not in row_data and meta.get("canonical_hash"):
+                            row_data["canonical_hash"] = meta.get("canonical_hash")
+                        raw_payloads.append(row_data)
         except Exception as exc:
             logger.debug("Bỏ qua file %s do lỗi JSON: %s", fp.name, exc)
 

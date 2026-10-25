@@ -133,8 +133,11 @@ export interface AirflowWebserverStatus {
 export interface AirflowDatabaseStatus {
   connected: boolean
   engine: string
-  path: string
-  size_mb: number
+  host?: string
+  port?: number
+  name?: string
+  path?: string
+  size_mb?: number
 }
 
 export interface AirflowStatusResponse {
@@ -335,3 +338,23 @@ export interface ProcessingMetricsData {
   deduplication_metrics: DeduplicationMetrics
   schema_mapping_inventory: SchemaMappingItem[]
 }
+
+export interface AlertItem {
+  id: string
+  severity: 'CRITICAL' | 'WARNING' | 'INFO'
+  category: 'AIRFLOW' | 'STORAGE' | 'DATABASE' | 'CRAWLER'
+  title: string
+  message: string
+  source?: string
+  timestamp: string
+  action_url?: string
+}
+
+export interface AlertSummary {
+  total_alerts: number
+  critical_count: number
+  warning_count: number
+  alerts: AlertItem[]
+  last_checked: string
+}
+

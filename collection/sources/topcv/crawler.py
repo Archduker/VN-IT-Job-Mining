@@ -694,7 +694,7 @@ class TopCVCrawler(BaseCrawler):
         try:
             while page <= max_p:
                 page_url = (
-                    f"{START_URL}?type_keyword=1&disable_auto_detect_type_keyword=1&category_family=r257&saturday_status=0&page={page}"
+                    f"{START_URL}?sort=new&type_keyword=1&disable_auto_detect_type_keyword=1&category_family=r257&saturday_status=0&page={page}"
                 )
                 log.info("[TopCV] [Pha 1] Đang quét trang %d: %s", page, page_url)
                 try:
@@ -706,6 +706,9 @@ class TopCVCrawler(BaseCrawler):
                     soup = BeautifulSoup(html, "html.parser")
                     job_links = soup.select("a[href*='/viec-lam/']")
                     new_on_page = 0
+                    dup_url_on_page = 0
+                    dup_id_on_page = 0
+                    consecutive_known = 0
 
                     for a in job_links:
                         href = a.get("href", "")
@@ -718,19 +721,41 @@ class TopCVCrawler(BaseCrawler):
                         if len(title) < 5 or any(k in href for k in ["viec-lam-it", "cr257", "tag"]):
                             continue
 
-                        # Đăng ký vào Ledger: status = PENDING, content_hash = None
-                        url_hash = generate_url_hash(clean_url)
-                        is_new = url_hash not in ledger.records
+                        # Kiểm tra trùng lặp đa tầng: Tầng 1 (URL Hash) & Tầng 2 (Job ID)
+                        is_dup, match_type, _ = ledger.check_duplicate(clean_url, job_id=job_id)
+
                         ledger.register_url(
                             raw_url=clean_url,
                             job_id=job_id,
                             preliminary_title=title,
                         )
-                        if is_new:
+
+                        if is_dup:
+                            consecutive_known += 1
+                            if match_type == "URL_HASH":
+                                dup_url_on_page += 1
+                            else:
+                                dup_id_on_page += 1
+                        else:
+                            consecutive_known = 0
                             new_on_page += 1
                             discovered_urls.append(clean_url)
 
-                    log.info("[TopCV] Trang %d: phát hiện %d URL mới.", page, new_on_page)
+                    log.info(
+                        "[TopCV] Trang %d: +%d URL mới | Trùng URL: %d | Trùng Job ID: %d",
+                        page,
+                        new_on_page,
+                        dup_url_on_page,
+                        dup_id_on_page,
+                    )
+
+                    # Dừng sớm nếu gặp liên tiếp nhiều tin cũ khi quét danh mục sort=new
+                    if consecutive_known >= 15 and page > 1:
+                        log.info(
+                            "[TopCV] Đã gặp %d tin đã ghi nhận liên tiếp trên danh mục sort=new. Dừng sớm an toàn.",
+                            consecutive_known,
+                        )
+                        break
 
                     # Kiểm tra trang tiếp theo
                     next_page_str = f"page={page + 1}"

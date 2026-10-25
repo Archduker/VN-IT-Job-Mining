@@ -1,4 +1,4 @@
-# Glints Raw Pipeline Addendum — URL Discovery, MinIO and CDC
+# Glints Raw Pipeline Addendum — URL Discovery, Cloudflare R2 and CDC
 
 This file supplements the existing `docs/crawl/glints.md` audit document. The old `GlintsCrawler` and `JobRecord` normalization remain available, but the required Raw Zone path is routed through `GlintsRawPipeline` by `run.py` after running the supplied `install_overlay.py` integration helper.
 
@@ -14,10 +14,10 @@ This file supplements the existing `docs/crawl/glints.md` audit document. The ol
 
 - Constructed public URL pattern: `https://glints.com/vn/opportunities/jobs/<slugified-title>/<job-id>`.
 - Preferred hash containers, in order: `.job-detail`, `[data-testid*='job-detail']`, `main`, `body`.
-- Hash algorithm: SHA-256 over normalized visible text from the selected container and a stable projection of job listing fields. The original HTML is not modified before it is written to MinIO; when the HTTP library exposes response bytes, their Base64 representation is also kept in the snapshot for replay/audit.
+- Hash algorithm: SHA-256 over normalized visible text from the selected container and a stable projection of job listing fields. The original HTML is not modified before it is written to Cloudflare R2; when the HTTP library exposes response bytes, their Base64 representation is also kept in the snapshot for replay/audit.
 - `Accept-Encoding: identity` is sent to avoid receiving Brotli in environments where the HTTP stack is not configured to decode it.
 
-## CDC and MinIO
+## CDC and Cloudflare R2
 
 ```text
 url_ledger/glints/catalog_master.json

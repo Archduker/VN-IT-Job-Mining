@@ -14,7 +14,7 @@ AIRFLOW_HOME := $(PROJECT_ROOT)/airflow
 export AIRFLOW_HOME
 
 .PHONY: help setup install install-dev test test-cov test-ledger lint format \
-        minio-up minio-down setup-minio check-env \
+        db-up db-down check-r2 check-env \
         airflow-webserver airflow-scheduler airflow-stop \
         discover-topcv crawl-topcv discover-topdev crawl-topdev \
         crawl-topdev crawl-careerviet crawl-itviec crawl-vietnamworks \
@@ -84,21 +84,21 @@ install-dev:
 check-env:
 	@echo "Checking Python environment..."
 	@$(PYTHON) --version
-	@echo "Checking MinIO setup..."
-	@$(PYTHON) scripts/setup_minio.py || true
+	@echo "Checking Cloudflare R2 Lakehouse..."
+	@$(PYTHON) scripts/check_r2.py || true
 
-# ── MinIO Commands ─────────────────────────────────────────────
-minio-up:
-	@echo "Starting MinIO Object Storage (API: :9000, Web UI: :9001)..."
-	docker compose -f docker-compose.minio.yml up -d
-	@echo "MinIO running! Web UI: http://localhost:9001 (User: minioadmin / Pass: minioadmin)"
+# ── Database & Cloud Lakehouse (Zero-SQLite & R2 Exclusive) ─────
+db-up:
+	@echo "Starting PostgreSQL 16 (Zero-SQLite Policy)..."
+	docker compose up -d postgres
+	@echo "PostgreSQL is running on localhost:5432"
 
-minio-down:
-	@echo "Stopping MinIO Object Storage..."
-	docker compose -f docker-compose.minio.yml down
+db-down:
+	@echo "Stopping PostgreSQL..."
+	docker compose down
 
-setup-minio:
-	$(PYTHON) scripts/setup_minio.py
+check-r2:
+	$(PYTHON) scripts/check_r2.py
 
 # ── Testing ────────────────────────────────────────────────────
 test:

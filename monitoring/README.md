@@ -52,7 +52,7 @@ Endpoint: `GET /api/dashboard` (hoặc `GET /api/v1/dashboard`) phục vụ toà
 
 ## ☁️ Hạ Tầng Cloud Lakehouse (Độc Quyền Cloudflare R2)
 
-Dự án chuẩn hóa **100% độc quyền trên Cloudflare R2** (`vn-it-jobs`). Toàn bộ cấu hình MinIO cục bộ và thư viện `boto3` dùng chung cho S3 generic đã được loại bỏ.
+Dự án chuẩn hóa **100% độc quyền trên Cloudflare R2** (`vn-it-jobs`). Toàn bộ cấu hình Cloudflare R2 cục bộ và thư viện `boto3` dùng chung cho S3 generic đã được loại bỏ.
 
 - **R2 Diff Engine**: So khớp theo thời gian thực tổng số tệp cục bộ (`data/<source>/raw/`) và đám mây R2 (`raw/<source>/`).
 - **Đồng Bộ 1-Click**: Nút bấm kích hoạt tải lên R2 trực tiếp từ giao diện giám sát cho từng sàn.
@@ -65,7 +65,7 @@ Dự án chuẩn hóa **100% độc quyền trên Cloudflare R2** (`vn-it-jobs`)
 Giao diện giám sát vận hành Airflow trực tiếp:
 - Theo dõi PID Scheduler & Webserver (Port 8080).
 - Trực quan hóa 7 DAGs xoay vòng hàng ngày (`crawler_topdev`, `crawler_careerviet`, `crawler_itviec`, `crawler_vietnamworks`, `crawler_topcv`, `crawler_vieclam24h`, `crawler_glints`).
-- Đọc trực tiếp trạng thái run từ SQLite metadata DB (`airflow/airflow.db`).
+- Đọc trực tiếp trạng thái run từ SQLite metadata DB (`airflow/PostgreSQL database (airflow)`).
 
 ---
 

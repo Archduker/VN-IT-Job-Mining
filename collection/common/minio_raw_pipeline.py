@@ -124,10 +124,32 @@ class MinioRawStore:
             load_dotenv()
         except ImportError:
             pass
-        self.bucket = bucket or os.getenv("MINIO_BUCKET", "vn-it-jobs")
-        self.endpoint = endpoint or os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
-        self.access_key = access_key or os.getenv("MINIO_ROOT_USER", "minioadmin")
-        self.secret_key = secret_key or os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
+        self.bucket = (
+            bucket
+            or os.getenv("R2_BUCKET_NAME")
+            or os.getenv("S3_BUCKET_NAME")
+            or os.getenv("MINIO_BUCKET")
+            or "vn-it-jobs"
+        )
+        self.endpoint = (
+            endpoint
+            or os.getenv("R2_ENDPOINT_URL")
+            or os.getenv("S3_ENDPOINT_URL")
+            or os.getenv("MINIO_ENDPOINT")
+            or "https://bb8811262069cd3e4d244a9dc7bf6a84.r2.cloudflarestorage.com"
+        )
+        self.access_key = (
+            access_key
+            or os.getenv("R2_ACCESS_KEY_ID")
+            or os.getenv("AWS_ACCESS_KEY_ID")
+            or os.getenv("MINIO_ROOT_USER")
+        )
+        self.secret_key = (
+            secret_key
+            or os.getenv("R2_SECRET_ACCESS_KEY")
+            or os.getenv("AWS_SECRET_ACCESS_KEY")
+            or os.getenv("MINIO_ROOT_PASSWORD")
+        )
         secure_env = os.getenv("MINIO_SECURE", "false").strip().lower() in {"1", "true", "yes"}
         if secure is not None:
             self.secure = secure

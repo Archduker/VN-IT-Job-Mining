@@ -3,7 +3,7 @@
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import cloud_r2, dashboard
+from app.api.v1.endpoints import alerts, cloud_r2, dashboard
 from app.api.v1.endpoints.collection import crawling, eda as collection_eda
 from app.api.v1.endpoints.preprocessing import cleaning
 from app.api.v1.endpoints.processing import harmonization
@@ -38,3 +38,6 @@ api_router.include_router(spatial_3d.router, prefix="/mining/spatial-3d", tags=[
 
 # 8. Hạ Tầng Cloudflare R2 Cloud Lakehouse (Sync Engine & Diff)
 api_router.include_router(cloud_r2.router, prefix="/cloud/r2", tags=["Cloudflare R2"])
+
+# 9. Trung Tâm Cảnh Báo Sự Cố Thời Gian Thực (Alert Center)
+api_router.include_router(alerts.router, prefix="/alerts", tags=["System Alerts"])

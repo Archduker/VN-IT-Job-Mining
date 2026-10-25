@@ -25,7 +25,7 @@ from airflow.utils.context import Context
 
 from collection.common.adaptive_router import AdaptiveWorkloadRouter, MAX_ITEMS_PER_BATCH
 from collection.common.data_quality import DataQualityChecker
-from collection.common.minio_storage import upload_file_to_minio
+from collection.common.r2_storage import upload_file_to_r2
 from collection.common.utils import (
     clean_text,
     text_to_clean_lines,
@@ -149,13 +149,13 @@ class JobCrawlerOperator(BaseOperator):
             output_path = Path(stats["output_file"])
             object_key = f"raw/{self.source}/{output_path.parent.name}/{output_path.name}"
             try:
-                stats["minio_uri"] = upload_file_to_minio(
+                stats["r2_uri"] = upload_file_to_r2(
                     output_path,
                     object_key=object_key,
                 )
-                logger.info("Uploaded %s crawl output to %s", self.source, stats["minio_uri"])
+                logger.info("Uploaded %s crawl output to Cloudflare R2: %s", self.source, stats["r2_uri"])
             except Exception as up_err:
-                logger.warning("Auto-upload to lakehouse skipped or failed for %s: %s", self.source, up_err)
+                logger.warning("Auto-upload to Cloudflare R2 skipped or failed for %s: %s", self.source, up_err)
 
         if stats.get("output_file"):
             context["ti"].xcom_push(key="output_file", value=stats["output_file"])

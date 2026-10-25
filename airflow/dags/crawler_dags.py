@@ -2,17 +2,16 @@
 """Airflow DAGs configuration for Two-Phase Decoupled IT job scraping:
 
 1. Daily Discovery DAG (`dag_discovery_daily` - 05:00 AM UTC+7):
-   - Cố định mỗi ngày cào 1 lần: Quét 1-2 trang mới nhất của cả 8 sàn tuyển dụng.
+   - Cố định mỗi ngày cào 1 lần: Quét 1-2 trang mới nhất (sắp xếp theo sort=new) của cả 8 sàn tuyển dụng.
    - Nạp các URL mới vào UrlLedger với status='PENDING'.
    - Phân bổ Pool riêng cho từng nguồn (`pool_{source}`, slots=1) để cách ly triệt để với Phase 2.
 
-2. Adaptive Detail DAGs (`crawler_detail_{source}` - Khung 08:00 đến 22:00 UTC+7):
+2. Weekend-Focused Detail DAGs (`crawler_detail_{source}` - Ca 09:00, 14:00, 18:00, 21:00, 22:00 UTC+7):
    - Khống chế cứng hạn ngạch: Đúng 30 tin / lần cào (thời gian chạy ~1.5 - 2 phút).
-   - Tự động co giãn theo số lượng `pending` qua `AdaptiveRouteCheckOperator`:
+   - Tối ưu hóa chi phí EC2 On-Demand & Tránh Cloudflare Rate-Limit qua `AdaptiveRouteCheckOperator`:
      * IDLE (pending = 0): Bỏ qua ngay lập tức trong 0.05 giây.
-     * NORMAL (pending <= 30): Ban ngày Skip, chỉ chạy 1 ca tối duy nhất (sau 20:00) cào sạch 30 tin.
-     * MODERATE (30 < pending < 300): Chạy 3 ca/ngày (12h, 17h, 20h).
-     * SURGE (pending >= 300, như TopCV 2,629 tin): Chu kỳ "Chạy 1 ca 30 tin - Nghỉ 1h Cooldown".
+     * NGÀY THƯỜNG (T2-T6): Ban ngày tự động Skip; chỉ chạy 1 ca tối duy nhất (21:00) bảo trì 30 tin.
+     * CUỐI TUẦN (Thứ 7 - CN): Chế độ xả hàng đợi tập trung (5 ca: 09h, 14h, 18h, 21h, 22h), mỗi ca 30 tin, nghỉ 55 phút Cooldown giữa các ca.
    - Pipeline 4 bước: Route Check >> Crawl Detail (30 tin) >> Data Quality >> Preprocess (Staging).
    - Dùng chung `pool_{source}` với Discovery để đảm bảo 2 Phase KHÔNG BAO GIỜ đụng nhau.
 """
@@ -138,7 +137,7 @@ with DAG(
     dag_id="crawler_detail_topdev",
     default_args=default_args,
     description="Adaptive Detail Queue Draining & Preprocessing for TopDev",
-    schedule="0 8-22 * * *",
+    schedule="0 9,14,18,21,22 * * *",
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
@@ -173,7 +172,7 @@ with DAG(
     dag_id="crawler_detail_vietnamworks",
     default_args=default_args,
     description="Adaptive Detail Queue Draining & Preprocessing for VietnamWorks",
-    schedule="0 8-22 * * *",
+    schedule="0 9,14,18,21,22 * * *",
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
@@ -208,7 +207,7 @@ with DAG(
     dag_id="crawler_detail_careerviet",
     default_args=default_args,
     description="Adaptive Detail Queue Draining & Preprocessing for CareerViet",
-    schedule="0 8-22 * * *",
+    schedule="0 9,14,18,21,22 * * *",
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
@@ -243,7 +242,7 @@ with DAG(
     dag_id="crawler_detail_vieclam24h",
     default_args=default_args,
     description="Adaptive Detail Queue Draining & Preprocessing for ViecLam24h",
-    schedule="0 8-22 * * *",
+    schedule="0 9,14,18,21,22 * * *",
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
@@ -278,7 +277,7 @@ with DAG(
     dag_id="crawler_detail_itviec",
     default_args=default_args,
     description="Adaptive Detail Queue Draining & Preprocessing for ITviec",
-    schedule="0 8-22 * * *",
+    schedule="0 9,14,18,21,22 * * *",
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
@@ -313,7 +312,7 @@ with DAG(
     dag_id="crawler_detail_topcv",
     default_args=default_args,
     description="Adaptive Detail Queue Draining & Preprocessing for TopCV",
-    schedule="0 8-22 * * *",
+    schedule="0 9,14,18,21,22 * * *",
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
@@ -348,7 +347,7 @@ with DAG(
     dag_id="crawler_detail_jobsgo",
     default_args=default_args,
     description="Adaptive Detail Queue Draining & Preprocessing for JobsGO",
-    schedule="0 8-22 * * *",
+    schedule="0 9,14,18,21,22 * * *",
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
@@ -383,7 +382,7 @@ with DAG(
     dag_id="crawler_detail_glints",
     default_args=default_args,
     description="Adaptive Detail Queue Draining & Preprocessing for Glints Vietnam",
-    schedule="0 8-22 * * *",
+    schedule="0 9,14,18,21,22 * * *",
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,

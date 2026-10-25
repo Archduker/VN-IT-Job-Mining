@@ -14,6 +14,29 @@ Kỹ năng này trang bị cho AI Agent năng lực điều phối toàn bộ ch
 
 ---
 
+## 0. NGUYÊN TẮC BẮT BUỘC: CHẨN ĐOÁN TIÊN QUYẾT (EDA-FIRST PROTOCOL)
+
+> [!IMPORTANT]
+> **ĐIỀU KIỆN TIÊN QUYẾT TRƯỚC KHI CAN THIỆP MÃ NGUỒN TIỀN XỬ LÝ:**  
+> AI Agent và kỹ sư **TUYỆT ĐỐI KHÔNG ĐƯỢC TIỀN XỬ LÝ MÙ (NO BLIND PROCESSING)** hoặc áp dụng quy tắc mặc định cho mọi sàn.  
+> **Trước khi viết hoặc chạy bất kỳ logic tiền xử lý nào (Schema, Regex lương, Bù khuyết, Outlier, Deduplication) cho một sàn, AI Agent BẮT BUỘC phải đọc hồ sơ bệnh án EDA của sàn đó.**
+
+### Cách Thức AI Agent Nạp Bệnh Án EDA:
+1. **Sử dụng bộ trích xuất tối ưu token:**
+   Chạy lệnh để lấy ngay 5 phân vùng lỗi (WHAT — WHY — HOW) và Chương 7 Bản thiết kế tiền xử lý:
+   ```bash
+   python scripts/read_eda_diagnosis.py --source <source_name>
+   # ví dụ: python scripts/read_eda_diagnosis.py --source topcv
+   ```
+2. **Đối chiếu trực tiếp 5 phân vùng lỗi để ra quyết định kỹ thuật:**
+   - **Trụ cột 1 (Completeness & Sneaky Nulls):** Tra cứu bảng null markers của sàn (ví dụ: Vieclam24h có `""`, Glints có `[]`, VietnamWorks có `salary=0`, CareerViet có `…`). Cấu hình đúng `sneaky_null_detector.py` và chiến lược GenAI Imputation.
+   - **Trụ cột 2 (Validity & Cascade Salary):** Kiểm tra sàn có lương ẩn trong JD không (ví dụ: TopCV có ~15% tin thỏa thuận chứa lương trong phần quyền lợi), tiền tệ USD hay VND, chu kỳ tháng hay năm để cấu hình `salary_parser.py`.
+   - **Trụ cột 3 (Uniqueness & Duplication):** Tra cứu tỷ lệ trùng lặp URL và trùng lặp tiêu đề + công ty để thiết lập các khối Blocking và ngưỡng Cosine trong `record_linkage.py`.
+   - **Trụ cột 4 (Distribution & Outliers):** Nắm rõ dải lương IQR Bounds, 3 lỗi nhập liệu số phổ biến đã được định vị tại sàn, và chỉ số Skewness để kích hoạt Log-transformation và Winsorization.
+   - **Trụ cột 5 (Bias & Class Balance):** Nắm rõ độ lệch cấp bậc (Seniority) và độ phủ địa lý để cân chỉnh bộ mapping 12 Job Family và 6 Seniorities trong `taxonomy_mapper.py`.
+
+---
+
 ## 1. Quy Trình Ánh Xạ Schema Đa Nguồn (Schema Harmonization)
 
 Khi tích hợp dữ liệu từ 7 website tuyển dụng, Agent đối chiếu và ánh xạ theo bảng từ điển dữ liệu (Data Dictionary):

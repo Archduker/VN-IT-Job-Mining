@@ -1,11 +1,11 @@
 # Phân tích crawler Glints Vietnam và JobsGO
 
 > Phụ trách: Duy — nhánh local `crawls/glints-jobsgo`
-> Nguyên tắc: Raw-As-Is, lưu trữ MinIO, tách Discovery/Detail, Safe Skip, CDC và re-crawl 21 ngày.
+> Nguyên tắc: Raw-As-Is, lưu trữ Cloudflare R2, tách Discovery/Detail, Safe Skip, CDC và re-crawl 21 ngày.
 
 ## 1. Mục tiêu và phạm vi
 
-Crawler thu thập URL tin tuyển dụng, lưu listing payload/HTML thô vào MinIO và dùng catalog để quản lý trạng thái URL. Dữ liệu raw phải được giữ nguyên để có thể tái phân tích; việc bóc tách trường, quy đổi lương, nhận diện kỹ năng và chuẩn hóa schema là bước EDA/Staging sau đó.
+Crawler thu thập URL tin tuyển dụng, lưu listing payload/HTML thô vào Cloudflare R2 và dùng catalog để quản lý trạng thái URL. Dữ liệu raw phải được giữ nguyên để có thể tái phân tích; việc bóc tách trường, quy đổi lương, nhận diện kỹ năng và chuẩn hóa schema là bước EDA/Staging sau đó.
 
 Hai nguồn chạy độc lập:
 
@@ -54,7 +54,7 @@ Trong một lần chạy được quan sát ở môi trường phát triển, li
 2. Không tìm cách vượt qua biện pháp kiểm soát truy cập.
 3. Kiểm tra có API/feed/cách truy cập chính thức được website hoặc giảng viên cho phép không; nếu chưa có, báo rõ blocker và không tạo số liệu giả.
 
-## 4. MinIO key layout
+## 4. Cloudflare R2 key layout
 
 ```text
 vn-it-jobs/
@@ -72,9 +72,9 @@ S3 prefix là tên khóa logic, không phải thư mục vật lý. Bucket đư�
 ## 5. Chu trình vận hành
 
 ```powershell
-# Khởi động MinIO (giữ nguyên named volume)
-docker compose -f .\docker-compose.minio.yml up -d --build
-python scripts/check_minio.py
+# Khởi động Cloudflare R2 (giữ nguyên named volume)
+docker compose -f .\docker-compose.r2.yml up -d --build
+python scripts/check_r2.py
 
 # Discovery trước; lượt chính thức không giới hạn max-pages
 python run.py --source glints --phase discover
@@ -84,7 +84,7 @@ python run.py --source jobsgo --phase discover
 python run.py --source glints --phase detail --max-items 30
 python run.py --source jobsgo --phase detail --max-items 30
 
-# Chạy EDA từ snapshot thật đã lưu trong MinIO
+# Chạy EDA từ snapshot thật đã lưu trong Cloudflare R2
 python scripts/run_glints_jobsgo_eda.py
 ```
 
@@ -111,8 +111,8 @@ Thư mục sample có sẵn trong gói là **synthetic test fixtures** để uni
 
 ```powershell
 python -m compileall -q crawlers run.py scripts
-python -m pytest tests/unit/test_glints_jobsgo_pipeline.py tests/unit/test_minio_init.py -q
-python scripts/check_minio.py
+python -m pytest tests/unit/test_glints_jobsgo_pipeline.py tests/unit/test_r2_init.py -q
+python scripts/check_r2.py
 ```
 
-Unit tests dùng HTTP response và MinIO store giả lập; chúng không chứng minh website live đã cho phép cào. Chỉ kết quả của lần chạy trên MinIO thực và log/HTTP status mới là bằng chứng thu thập thực tế.
+Unit tests dùng HTTP response và Cloudflare R2 store giả lập; chúng không chứng minh website live đã cho phép cào. Chỉ kết quả của lần chạy trên Cloudflare R2 thực và log/HTTP status mới là bằng chứng thu thập thực tế.

@@ -4,10 +4,16 @@
 VN-IT-Job-Mining Central Observatory.
 """
 
+import sys
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
+
+# Đảm bảo PYTHONPATH nhận thư mục gốc repo để nạp các package collection/
+if str(settings.ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(settings.ROOT_DIR))
+
 from app.api.v1.router import api_router
 from app.services.dashboard_service import dashboard_service
 

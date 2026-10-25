@@ -185,3 +185,21 @@ def test_crawling_cloud_sync_status():
     assert "overall_sync_pct" in data
     assert "sources" in data
     assert len(data["sources"]) >= 8
+
+
+def test_system_alerts():
+    """Kiểm tra endpoint cảnh báo trực tiếp trên Web Monitor."""
+    res = client.get("/api/v1/alerts")
+    assert res.status_code == 200
+    data = res.json()
+    assert "total_alerts" in data
+    assert "critical_count" in data
+    assert "warning_count" in data
+    assert "alerts" in data
+
+    if data["alerts"]:
+        first_alert = data["alerts"][0]
+        ack_res = client.post(f"/api/v1/alerts/{first_alert['id']}/acknowledge")
+        assert ack_res.status_code == 200
+        assert ack_res.json()["acknowledged"] is True
+

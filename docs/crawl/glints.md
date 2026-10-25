@@ -22,7 +22,7 @@ flowchart TD
         EvaluateGQL["page.evaluate() -> fetch(GRAPHQL_ENDPOINT)\n(Query searchJobsV3 với Category IT)"]
         ParseCards["Trích xuất jobsInPage:\nUUID + Title + Company"]
         CleanURL["Tạo Canonical URL chuẩn:\n/jobs/{slug}/{uuid}\n(Loại bỏ traceInfo, utm_*)"]
-        LedgerStore["Ghi nhận vào UrlLedger:\n1. catalog_master.json\n2. manifest_YYYY-MM-DD.jsonl\n3. Sync lên MinIO Lakehouse"]
+        LedgerStore["Ghi nhận vào UrlLedger:\n1. catalog_master.json\n2. manifest_YYYY-MM-DD.jsonl\n3. Sync lên Cloudflare R2 Lakehouse"]
         BrowserInit --> CFBypass1 --> EvaluateGQL --> ParseCards --> CleanURL --> LedgerStore
     end
 
@@ -35,13 +35,13 @@ flowchart TD
         RawEnvelope["Đóng gói RawJobEnvelope:\n{metadata, raw_payload}"]
         HashCDC["Tính Post-Crawl Canonical JSON Hash\nKiểm tra Repost & Tăng version CDC"]
         SaveSnapshot["Lưu file snapshot thô:\ndata/glints/raw/YYYY-MM-DD/{job_id}_v{version}.json"]
-        SyncMinIO["self.ledger.sync_to_minio()\nĐồng bộ S3 Bucket vn-it-jobs"]
+        SyncCloudflare R2["self.ledger.sync_to_r2()\nĐồng bộ S3 Bucket vn-it-jobs"]
         PoliteSleep["polite_sleep(3.5, 6.0)\nNghỉ ngẫu nhiên giữa 2 tin"]
 
         ReadLedger --> NavDetail --> DetectCF
         DetectCF -- "Có" --> Backoff --> ExtractDOM
         DetectCF -- "Không" --> ExtractDOM
-        ExtractDOM --> RawEnvelope --> HashCDC --> SaveSnapshot --> SyncMinIO --> PoliteSleep
+        ExtractDOM --> RawEnvelope --> HashCDC --> SaveSnapshot --> SyncCloudflare R2 --> PoliteSleep
     end
 
     Phase1 -.->|Cung cấp danh sách URL| Phase2
@@ -90,7 +90,7 @@ Tại tầng cào thô, dữ liệu được đóng gói vào `RawJobEnvelope` g
 - **Băm Canonical JSON Hashing**: Sử dụng `calculate_json_canonical_hash(envelope.raw_payload)` để băm sau cào, miễn nhiễm với thời gian server và token CSRF động.
 - **Xử lý Repost**: Nếu `content_hash` trùng khớp với một bản ghi cũ trong Catalog nhưng `url_hash` khác $\rightarrow$ Đánh dấu `repost_of_url_hash`, không nhân bản file snapshot thừa vào Lakehouse.
 - **Chu kỳ Re-crawl 21 ngày**: Kiểm tra `get_pending_or_due_records(recheck_days=21)`, chỉ cào lại các bài viết chưa từng cào (`PENDING`) hoặc đã quá 21 ngày tuổi.
-- **Đồng bộ MinIO Lakehouse**: Sau mỗi lượt Discovery và Detail, crawler tự động gọi `self.ledger.sync_to_minio()` đẩy URL Ledger và snapshots lên S3 bucket `vn-it-jobs`.
+- **Đồng bộ Cloudflare R2 Lakehouse**: Sau mỗi lượt Discovery và Detail, crawler tự động gọi `self.ledger.sync_to_r2()` đẩy URL Ledger và snapshots lên S3 bucket `vn-it-jobs`.
 
 ---
 
@@ -105,7 +105,7 @@ python3 .agents/skills/collection-submission/scripts/verify_submission.py --sour
 - **TC2_SafeSkip**: 10/10 điểm (Bọc `try...except` và bỏ qua an toàn).
 - **TC3_Recrawl21d**: 10/10 điểm (Logic 21 ngày hoàn chỉnh).
 - **TC4_Samples**: 20/20 điểm (Đủ 3 cặp HTML + JSON chuẩn `RawJobEnvelope` + `README.md`).
-- **TC5_Lakehouse**: 10/10 điểm (Tích hợp UrlLedger & MinIO).
+- **TC5_Lakehouse**: 10/10 điểm (Tích hợp UrlLedger & Cloudflare R2).
 - **TC6_ArchitectureDoc**: 15/15 điểm (Tài liệu phân tích kỹ thuật chi tiết).
 - **TC7_Reports**: 15/15 điểm (`reports/glints_inventory.md` và `reports/glints_eda.md`).
 - **Bonus**: +10 điểm (Kế thừa `BaseCrawler` + Unit test đầy đủ).

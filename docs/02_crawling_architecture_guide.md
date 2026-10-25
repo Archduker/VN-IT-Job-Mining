@@ -3,7 +3,7 @@
 > **Tài liệu quy trình cốt lõi số 2 (Core Document 02)**  
 > **Nguyên tắc cốt tử:**  
 > 1. *"Cào là phải cào HẾT — Trang tuyển dụng có trường gì phải lấy nguyên vẹn trường đó, giữ nguyên tên trường gốc, không tự ý format hay ép schema ở bước cào."*  
-> 2. *"Tách biệt 2 pha: Phase 1 vét sạch URL không giới hạn thời gian $\rightarrow$ Lưu URL Ledger vào MinIO $\rightarrow$ Phase 2 cào chi tiết với chu kỳ Re-crawl 21 ngày."*
+> 2. *"Tách biệt 2 pha: Phase 1 vét sạch URL không giới hạn thời gian $\rightarrow$ Lưu URL Ledger vào Cloudflare R2 $\rightarrow$ Phase 2 cào chi tiết với chu kỳ Re-crawl 21 ngày."*
 
 ---
 
@@ -20,7 +20,7 @@ Trong các hệ thống Data Mining hiện đại, bước thu thập dữ liệ
 
 ## 2. Kiến Trúc Thu Thập 2 Pha Độc Lập (Two-Phase Decoupled Pipeline)
 
-Hệ thống tách biệt hoàn toàn việc **Thu thập Link (Discovery)** và **Bóc tách Chi tiết (Extraction)** thông qua trạm trung chuyển **URL Ledger trên MinIO**:
+Hệ thống tách biệt hoàn toàn việc **Thu thập Link (Discovery)** và **Bóc tách Chi tiết (Extraction)** thông qua trạm trung chuyển **URL Ledger trên Cloudflare R2**:
 
 ```mermaid
 flowchart TD
@@ -31,13 +31,13 @@ flowchart TD
         ListCrawler --> CleanURL --> GenURLHash
     end
 
-    subgraph MinIOStore["KHO LƯU TRỮ MINIO (Object Storage Lakehouse)"]
-        subgraph URLLedgerZone["minio://vn-it-jobs/url_ledger/<source>/"]
+    subgraph Cloudflare R2Store["KHO LƯU TRỮ MINIO (Object Storage Lakehouse)"]
+        subgraph URLLedgerZone["r2://vn-it-jobs/url_ledger/<source>/"]
             Manifest["manifests/manifest_YYYY-MM-DD.jsonl\n(Danh sách link phát hiện theo đợt)"]
             MasterCatalog["catalog_master.parquet\n(Bảng trạng thái vòng đời của toàn bộ link)"]
         end
 
-        subgraph RawDetailZone["minio://vn-it-jobs/raw/<source>/"]
+        subgraph RawDetailZone["r2://vn-it-jobs/raw/<source>/"]
             RawJSON["<YYYY-MM-DD>/<job_id>_v<version>.json\n(100% Raw DOM / API Payload)"]
         end
     end
@@ -45,7 +45,7 @@ flowchart TD
     subgraph Phase2["PHASE 2: DETAIL SCRAPING (Cào Chi Tiết Raw As-Is)"]
         Scheduler["Bộ Lọc Link Cần Cào:\n1. Link mới (status = PENDING)\n2. Link đến hạn 21 ngày (status = DONE & age >= 21d)"]
         Worker["Detail Crawler\n(Tải 100% Raw HTML / API bài chi tiết)"]
-        RawWriter["Lưu Snapshot Thô Nguyên Bản\n(minio://vn-it-jobs/raw/<source>/...)"]
+        RawWriter["Lưu Snapshot Thô Nguyên Bản\n(r2://vn-it-jobs/raw/<source>/...)"]
         Scheduler --> Worker --> RawWriter
     end
 
@@ -70,9 +70,9 @@ flowchart TD
 
 ---
 
-## 3. Cấu Trúc URL Ledger & Phân Tầng Trên MinIO
+## 3. Cấu Trúc URL Ledger & Phân Tầng Trên Cloudflare R2
 
-Hệ thống lưu trữ trực tiếp trên **MinIO Object Storage** dưới định dạng file phẳng chuẩn Big Data (JSONL & Parquet), không phụ thuộc SQL server:
+Hệ thống lưu trữ trực tiếp trên **Cloudflare R2 Object Storage** dưới định dạng file phẳng chuẩn Big Data (JSONL & Parquet), không phụ thuộc SQL server:
 
 ### 3.1. Phân tầng thư mục trong bucket `vn-it-jobs`:
 - **`url_ledger/<source>/manifests/manifest_<YYYY-MM-DD>.jsonl`**: Danh sách toàn bộ URL tìm thấy trong ngày cào (Append-only).
