@@ -1,39 +1,22 @@
 services:
-  minio:
-    image: elestio/minio:latest
-    container_name: vn_it_jobs_minio
+  postgres:
+    image: postgres:16-alpine
+    container_name: vn_it_jobs_postgres
     restart: unless-stopped
     ports:
-      - "9000:9000"   # MinIO S3 API Endpoint
-      - "9001:9001"   # MinIO Web Console UI
+      - "5432:5432"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      POSTGRES_USER: ${POSTGRES_USER:-airflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
+      POSTGRES_DB: ${POSTGRES_DB:-airflow}
     volumes:
-      - minio_data:/data
-    command: server /data --console-address ":9001"
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-airflow} -d ${POSTGRES_DB:-airflow}"]
       interval: 5s
-      timeout: 3s
+      timeout: 5s
       retries: 5
 
-  minio-init:
-    image: elestio/minio:latest
-    container_name: vn_it_jobs_minio_init
-    depends_on:
-      minio:
-        condition: service_healthy
-    entrypoint: >
-      /bin/sh -c "
-      echo '[Init] Đang cấu hình MinIO Client nội bộ...' &&
-      mc alias set local http://minio:9000 minioadmin minioadmin &&
-      mc mb --ignore-existing local/vn-it-jobs &&
-      mc anonymous set download local/vn-it-jobs &&
-      echo '[Init] Bucket vn-it-jobs đã sẵn sàng cho cả team!' &&
-      exit 0;
-      "
-
 volumes:
-  minio_data:
+  postgres_data:
     driver: local

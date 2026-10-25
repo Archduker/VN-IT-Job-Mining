@@ -186,7 +186,7 @@ def main():
         class_name=class_name,
     )
 
-    out_dir = Path(f"crawlers/sources/{source_id}")
+    out_dir = Path(f"collection/sources/{source_id}")
     out_dir.mkdir(parents=True, exist_ok=True)
     out_file = out_dir / "crawler_scaffold.py"
 

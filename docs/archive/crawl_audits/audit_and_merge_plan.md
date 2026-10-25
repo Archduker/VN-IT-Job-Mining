@@ -2,9 +2,9 @@
 
 > **Mục tiêu**: Hướng dẫn chi tiết chiến lược giải quyết bất đồng bộ Schema giữa các nhánh, bảo vệ hạ tầng Apache Airflow không bị gãy luồng, và lộ trình merge code an toàn cho Nhóm trưởng phê duyệt.  
 > **Tài liệu nền tảng kèm theo**:  
-> 1. [`docs/crawl/schema_comparison_matrix.md`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/crawl/schema_comparison_matrix.md) — Ma trận đối chiếu 15 trường dữ liệu JSON thực tế giữa 7 nguồn.  
-> 2. [`docs/crawl/airflow_compatibility_audit.md`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/crawl/airflow_compatibility_audit.md) — Báo cáo kiểm toán tương thích hạ tầng Airflow.  
-> 3. [`docs/crawl/crawl_data_issues.md`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/docs/crawl/crawl_data_issues.md) — Sổ nhật ký theo dõi lỗi dữ liệu và sự cố kỹ thuật.  
+> 1. [`docs/crawl/schema_comparison_matrix.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/crawl/schema_comparison_matrix.md) — Ma trận đối chiếu 15 trường dữ liệu JSON thực tế giữa 7 nguồn.  
+> 2. [`docs/crawl/airflow_compatibility_audit.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/crawl/airflow_compatibility_audit.md) — Báo cáo kiểm toán tương thích hạ tầng Airflow.  
+> 3. [`docs/crawl/crawl_data_issues.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/crawl/crawl_data_issues.md) — Sổ nhật ký theo dõi lỗi dữ liệu và sự cố kỹ thuật.  
 > **Cập nhật ngày**: 11/10/2026
 
 ---
@@ -56,7 +56,7 @@ flowchart TD
 
 ## 3. Chi Tiết Các Bước Vá Chuẩn Hóa (Giai Đoạn 1)
 
-### Bước 1.1: Vá Hạ Tầng Airflow ([`airflow/plugins/crawler_operators.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py))
+### Bước 1.1: Vá Hạ Tầng Airflow ([`airflow/plugins/crawler_operators.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/airflow/plugins/crawler_operators.py))
 - **Mục tiêu**: Khắc phục lỗi `ImportError` cho ITviec và bổ sung nguồn Glints.
 - **Thực hiện**:
   Cập nhật hàm `JobCrawlerOperator.execute`:
@@ -88,7 +88,7 @@ flowchart TD
   crawler = crawler_cls(output_dir=self.output_dir, max_items=self.max_items)
   stats = crawler.run()
   ```
-- **Bổ sung DAG Glints**: Thêm DAG `crawler_glints` vào [`airflow/dags/crawler_dags.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/airflow/dags/crawler_dags.py) chạy lúc 20:00 Chủ Nhật.
+- **Bổ sung DAG Glints**: Thêm DAG `crawler_glints` vào [`airflow/dags/crawler_dags.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/airflow/dags/crawler_dags.py) chạy lúc 20:00 Chủ Nhật.
 
 ---
 

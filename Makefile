@@ -14,8 +14,7 @@ AIRFLOW_HOME := $(PROJECT_ROOT)/airflow
 export AIRFLOW_HOME
 
 .PHONY: help setup install install-dev test test-cov test-ledger lint format \
-        minio-up minio-down setup-minio check-env \
-        upload-r2 r2-status download-r2 \
+        db-up db-down check-r2 check-env \
         airflow-webserver airflow-scheduler airflow-stop \
         discover-topcv crawl-topcv discover-topdev crawl-topdev \
         crawl-topdev crawl-careerviet crawl-itviec crawl-vietnamworks \
@@ -34,15 +33,10 @@ help:
 	@echo "    make install-dev        Install runtime + dev deps"
 	@echo "    make check-env          Verify environment & MinIO connection"
 	@echo ""
-	@echo "  MinIO Lakehouse (Local URL Discovery & Ledger):"
+	@echo "  MinIO Lakehouse:"
 	@echo "    make minio-up           Start local MinIO server (Docker) + auto-init bucket"
 	@echo "    make minio-down         Stop MinIO container"
 	@echo "    make setup-minio        Verify/Create vn-it-jobs bucket via python script"
-	@echo ""
-	@echo "  Cloudflare R2 (Remote Result .json Lakehouse):"
-	@echo "    make upload-r2          Upload all result .json files to Cloudflare R2"
-	@echo "    make r2-status          Check storage status on Cloudflare R2"
-	@echo "    make download-r2        Download all team results from Cloudflare R2"
 	@echo ""
 	@echo "  Testing:"
 	@echo "    make test               Run all unit tests"
@@ -90,34 +84,21 @@ install-dev:
 check-env:
 	@echo "Checking Python environment..."
 	@$(PYTHON) --version
-	@echo "Checking MinIO setup..."
-	@$(PYTHON) scripts/setup_minio.py || true
+	@echo "Checking Cloudflare R2 Lakehouse..."
+	@$(PYTHON) scripts/check_r2.py || true
 
-# ── MinIO Commands ─────────────────────────────────────────────
-minio-up:
-	@echo "Starting MinIO Object Storage (API: :9000, Web UI: :9001)..."
-	docker compose -f docker-compose.minio.yml up -d
-	@echo "MinIO running! Web UI: http://localhost:9001 (User: minioadmin / Pass: minioadmin)"
+# ── Database & Cloud Lakehouse (Zero-SQLite & R2 Exclusive) ─────
+db-up:
+	@echo "Starting PostgreSQL 16 (Zero-SQLite Policy)..."
+	docker compose up -d postgres
+	@echo "PostgreSQL is running on localhost:5432"
 
-minio-down:
-	@echo "Stopping MinIO Object Storage..."
-	docker compose -f docker-compose.minio.yml down
+db-down:
+	@echo "Stopping PostgreSQL..."
+	docker compose down
 
-setup-minio:
-	$(PYTHON) scripts/setup_minio.py
-
-# ── Cloudflare R2 Commands ─────────────────────────────────────
-upload-r2:
-	@echo "Uploading all result .json files to Cloudflare R2..."
-	$(PYTHON) scripts/upload_to_r2.py --all-results
-
-r2-status:
-	@echo "Checking Cloudflare R2 storage status..."
-	$(PYTHON) scripts/sync_cloud_lakehouse.py --status
-
-download-r2:
-	@echo "Downloading team results from Cloudflare R2..."
-	$(PYTHON) scripts/sync_cloud_lakehouse.py --download
+check-r2:
+	$(PYTHON) scripts/check_r2.py
 
 # ── Testing ────────────────────────────────────────────────────
 test:
@@ -127,14 +108,14 @@ test-ledger:
 	$(PYTEST) tests/unit/test_url_ledger.py -v
 
 test-cov:
-	$(PYTEST) tests/ --cov=crawlers --cov-report=term-missing --cov-report=html:htmlcov
+	$(PYTEST) tests/ --cov=collection --cov-report=term-missing --cov-report=html:htmlcov
 
 # ── Code Quality ───────────────────────────────────────────────
 lint:
-	$(VENV)/bin/ruff check crawlers/ tests/
+	$(VENV)/bin/ruff check collection/ tests/
 
 format:
-	$(VENV)/bin/ruff format crawlers/ tests/
+	$(VENV)/bin/ruff format collection/ tests/
 
 # ── Airflow ────────────────────────────────────────────────────
 airflow-webserver:

@@ -78,7 +78,7 @@ Hệ thống kết nối đến 6 nền tảng tuyển dụng IT lớn nhất Vi
   - *Mở rộng:* Dễ dàng chuyển sang PostgreSQL để chạy `LocalExecutor` song song nhiều tác vụ.
 
 ### Bước 3: Động Cơ Thu Thập (BaseCrawler Engine)
-Toàn bộ crawler đều kế thừa từ class chuẩn [`BaseCrawler`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/base/base_crawler.py):
+Toàn bộ crawler đều kế thừa từ class chuẩn [`BaseCrawler`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/base/base_crawler.py):
 1. **Lịch sự & Chống chặn (Polite Crawling):** Thiết lập delay ngẫu nhiên 2 - 5 giây giữa các lượt request, tự động xoay vòng User-Agent Header.
 2. **Khử trùng lặp (Deduplication Checkpoint):** Lưu các ID tin đã từng cào vào `<source>_checkpoint.json`. Lần cào sau sẽ bỏ qua các tin đã có để tiết kiệm thời gian và băng thông.
 3. **Chuẩn hóa dữ liệu với Pydantic (`JobRecord`):** Mọi tin việc làm bất kể từ nguồn nào cũng được ép về một chuẩn duy nhất gồm:

@@ -69,3 +69,7 @@ airflow/webserver_config.py
 # Scratch & Sample HTML caches
 scratch/
 sample_htmls/
+
+# MinIO Lakehouse local storage & caches
+.minio.sys/
+vn-it-jobs/

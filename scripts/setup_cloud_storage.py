@@ -66,6 +66,8 @@ def upload_existing_ledgers(s3, bucket_name: str):
     if not data_dir.exists():
         return
 
+    from collection.common.r2_storage import canonicalize_lakehouse_key
+
     print("\n[*] Đang quét và tải lên dữ liệu hiện có lên Cloud R2...")
     count = 0
     for root, _, files in os.walk(data_dir):
@@ -73,10 +75,9 @@ def upload_existing_ledgers(s3, bucket_name: str):
             if f.endswith((".json", ".jsonl", ".parquet", ".html")):
                 local_path = Path(root) / f
                 rel_path = local_path.relative_to(PROJECT_ROOT / "data")
-                s3_key = str(rel_path).replace("\\", "/")
-                
-                # Bỏ qua file checkpoint tạm
-                if "checkpoints" in s3_key:
+                try:
+                    s3_key = canonicalize_lakehouse_key(str(rel_path))
+                except ValueError:
                     continue
 
                 try:

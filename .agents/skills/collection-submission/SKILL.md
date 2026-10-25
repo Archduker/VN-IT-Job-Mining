@@ -16,7 +16,7 @@ Kỹ năng này trang bị cho AI Agent và các thành viên dự án quy chu�
 ## 1. Tiêu Chuẩn Bộ Mẫu Thử Nghiệm (Samples Delivery Standard)
 
 Mỗi sàn tuyển dụng bắt buộc phải tạo thư mục lưu trữ mẫu tại:
-`crawlers/sources/<tenweb>/samples/`
+`collection/sources/<tenweb>/samples/`
 
 ### 1.1. Cấu trúc bắt buộc: 3 File HTML Thô + 3 File JSON Tương Ứng
 Bộ mẫu phải phản ánh được sự biến thiên layout của sàn web thực tế:
@@ -34,7 +34,7 @@ Bộ mẫu phải phản ánh được sự biến thiên layout của sàn web 
 
 ### 1.2. File Markdown Mô Tả Sample (`.md`)
 Khuyến khích và cho phép thành viên nộp thêm file Markdown ghi chú tại:
-`crawlers/sources/<tenweb>/samples/README.md` (hoặc `sample_notes.md`)
+`collection/sources/<tenweb>/samples/README.md` (hoặc `sample_notes.md`)
 - Trình bày URL gốc của từng sample.
 - Bảng đối soát các selector CSS/XPath tương ứng trên giao diện web.
 - Ghi chú các trường dị biệt hoặc trường dễ bị null trên sàn đó.
@@ -94,9 +94,9 @@ Mỗi nhánh `crawls/<tenweb>` khi tạo Pull Request vào `main` phải có đ�
 1. **Tài liệu phân tích kiến trúc web:**
    `docs/crawl/<tenweb>.md` (phân tích SSR/SPA, cơ chế chống bot, Cloudflare WAF, container selector).
 2. **Báo cáo kiểm kê trường dữ liệu (Field Inventory):**
-   `reports/<tenweb>_inventory.md` (theo mẫu `templates/raw_crawl_inventory_template.md`).
+   `collection/reports/<tenweb>_inventory.md` (theo mẫu `templates/raw_crawl_inventory_template.md`).
 3. **Báo cáo phân tích dữ liệu sơ bộ (Preliminary EDA):**
-   `reports/<tenweb>_eda.md` (theo mẫu `templates/preliminary_eda_template.md`).
+   `collection/reports/<tenweb>_eda.md` (theo mẫu `templates/preliminary_eda_template.md`).
 
 ---
 
@@ -113,10 +113,10 @@ python3 .agents/skills/collection-submission/scripts/verify_submission.py --sour
 ```
 
 ### Tiêu chí chấm điểm tự động của Script:
-- [x] **Criterion 1 (HTML Samples):** Tối thiểu 3 file `.html` trong `crawlers/sources/<source>/samples/`.
+- [x] **Criterion 1 (HTML Samples):** Tối thiểu 3 file `.html` trong `collection/sources/<source>/samples/`.
 - [x] **Criterion 2 (JSON Samples):** Tối thiểu 3 file `.json` tương ứng, parse hợp lệ không lỗi cú pháp.
 - [x] **Criterion 3 (Sample Docs):** Kiểm tra file `.md` mô tả sample nếu có.
 - [x] **Criterion 4 (Architecture Doc):** File `docs/crawl/<source>.md` tồn tại và có nội dung phân tích.
-- [x] **Criterion 5 (Inventory Report):** File `reports/<source>_inventory.md` tồn tại.
-- [x] **Criterion 6 (EDA Report):** File `reports/<source>_eda.md` tồn tại.
+- [x] **Criterion 5 (Inventory Report):** File `collection/reports/<source>_inventory.md` tồn tại.
+- [x] **Criterion 6 (EDA Report):** File `collection/reports/<source>_eda.md` tồn tại.
 - [x] **Criterion 7 (Storage Readiness):** Kiểm tra cấu hình kết nối MinIO và Cloudflare R2 trong môi trường.

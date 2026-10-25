@@ -1,7 +1,7 @@
 # Ma Trận So Sánh & Đối Chiếu Schema 7 Nguồn Tuyển Dụng (Schema Comparison Matrix)
 
 > **Mục tiêu tài liệu**: Đối chiếu chi tiết 15 trường dữ liệu thực tế từ các file JSON mẫu của từng nhánh crawl so với chuẩn **Data Contract Schema v1** của dự án VN-IT-Job-Mining.  
-> **Tài liệu tham chiếu**: [Skill `job-crawler-analyzer`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/.agents/skills/job-crawler-analyzer/SKILL.md), [`crawlers/common/schema.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/common/schema.py).  
+> **Tài liệu tham chiếu**: [Skill `job-crawler-analyzer`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/.agents/skills/job-crawler-analyzer/SKILL.md), [`crawlers/common/schema.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/common/schema.py).  
 > **Cập nhật ngày**: 11/10/2026
 
 ---

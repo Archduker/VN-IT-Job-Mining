@@ -4,8 +4,8 @@ description: >-
   Chuyên gia kiến trúc hệ thống thu thập dữ liệu tuyển dụng chuẩn Modern Data Stack.
   Chuyên sâu về: cào Raw As-Is (Zero Information Loss, cào 100% trường đặc thù của từng web),
   kiến trúc Two-Phase Decoupled Crawler (URL Discovery không giới hạn thời gian & Detail Extraction),
-  MinIO URL Ledger Manifests (JSONL/Parquet), Clean Container HTML Hashing, chu kỳ Re-crawl 21 ngày,
-  cơ chế Safe Skip bắt lỗi an toàn và điều phối tự động qua Apache Airflow.
+  MinIO URL Ledger Manifests (JSONL/Parquet), băm cấu trúc JSON sau cào (Post-Crawl Canonical JSON Hashing & CDC),
+  chu kỳ Re-crawl 21 ngày, cơ chế Safe Skip bắt lỗi an toàn và điều phối tự động qua Apache Airflow.
 ---
 
 # Crawling Architect Skill
@@ -19,7 +19,7 @@ Kỹ năng này trang bị cho AI Agent năng lực thiết kế, đánh giá, k
 Mọi bài toán xây dựng parser cho bất kỳ website tuyển dụng nào đều bắt đầu từ **1 file HTML thô đại diện (`sample.html`)** do người dùng hoặc crawler tải về.
 
 ### Quy trình tương tác giữa Thành viên & Agent:
-1. **Bước 1 (Tiếp nhận đầu vào):** Người dùng cung cấp đường dẫn file HTML thô đại diện (ví dụ: `crawlers/sources/<tenweb>/samples/sample_standard_job.html`).
+1. **Bước 1 (Tiếp nhận đầu vào):** Người dùng cung cấp đường dẫn file HTML thô đại diện (ví dụ: `collection/sources/<tenweb>/samples/sample_standard_job.html`).
 2. **Bước 2 (Chạy công cụ phân tích DOM tự động):**
    ```bash
    .venv/bin/python .agents/skills/crawling-architect/scripts/analyze_html_dom.py --html <path_to_html>
@@ -32,8 +32,8 @@ Mọi bài toán xây dựng parser cho bất kỳ website tuyển dụng nào �
    - Kinh nghiệm & cấp bậc (`experience`, `level`)
    - Thẻ kỹ năng / tags (`badge_tags`)
    - Khối mô tả công việc, yêu cầu, quyền lợi (`description_html`, `requirements_html`, `benefits_html`)
-4. **Bước 4 (Chỉ định Container Selector băm Hash):** Xác định thẻ cha bao bọc nội dung tuyển dụng (ví dụ: `div.job-detail`, `article`, `#job-detail`) để băm Clean Container HTML Hash, loại bỏ script/ads/views gây nhảy hash oan.
-5. **Bước 5 (Sinh Parser Python):** Xuất mã nguồn parser Python bóc tách đầy đủ 100% các trường trên, không format sớm, lưu trữ đúng định dạng Envelope chuẩn.
+4. **Bước 4 (Bóc tách dữ liệu vào JSON):** Bóc tách đầy đủ các trường trên vào Dictionary JSON theo đúng nguyên tắc Zero Information Loss.
+5. **Bước 5 (Băm Canonical JSON Hash & Field Hashes):** Tính toán mã băm trên đối tượng JSON đã chuẩn hóa khóa (`calculate_json_canonical_hash`) và băm theo từng trường (`calculate_json_field_hashes`) để kiểm soát phiên bản CDC và định vị thay đổi.
 
 ---
 
@@ -135,32 +135,26 @@ Dữ liệu URL Ledger và Raw snapshots được tự động đồng bộ lên
 
 ---
 
-## 4. Thuật Toán Băm Khối Nội Dung (Clean Container HTML Hashing)
+## 4. Thuật Toán Băm Cấu Trúc JSON Sau Cào (Post-Crawl Canonical JSON & Field Hashing)
 
-Để vừa không cần viết code parse chi tiết từng trường trước khi kiểm tra thay đổi, vừa tránh bị "nhảy hash oan" do thời gian server, lượt xem động hay mã CSRF:
+Để vừa bảo toàn nguyên lý Zero Information Loss ở tầng cào, vừa tránh "nhảy hash oan" do thời gian server, lượt xem động hay mã CSRF, bước băm hash được thực hiện **sau khi đã trích xuất cấu trúc JSON**:
 
 ```python
-import hashlib
-import re
-from bs4 import BeautifulSoup
+from crawlers.common.url_ledger import (
+    calculate_json_canonical_hash,
+    calculate_json_field_hashes,
+    diff_json_versions,
+)
 
-def calculate_html_hash(html_content: str, container_selector: str = "body") -> str:
-    """
-    Băm HTML khối nội dung chính, tự động loại bỏ các thành phần rác động:
-    - Thẻ <script>, <style>, <iframe>, <noscript>, <svg>
-    - Số lượt xem (views), timestamp hiển thị
-    - Thuộc tính ngẫu nhiên (CSRF token, nonce)
-    """
-    soup = BeautifulSoup(html_content, "html.parser")
-    target = soup.select_one(container_selector) or soup.body or soup
-    
-    # Xóa sạch các thẻ động gây nhảy hash oan
-    for tag in target(["script", "style", "iframe", "noscript", "svg"]):
-        tag.decompose()
-        
-    # Chuẩn hóa khoảng trắng
-    clean_text = re.sub(r"\s+", " ", target.get_text(separator=" ", strip=True))
-    return hashlib.sha256(clean_text.encode("utf-8")).hexdigest()
+# 1. Băm toàn bộ JSON đã chuẩn hóa thứ tự khóa (Canonical Hash)
+canonical_hash = calculate_json_canonical_hash(json_payload, exclude_keys=["raw_html"])
+
+# 2. Băm chi tiết từng trường nghiệp vụ (Field Hashes)
+field_hashes = calculate_json_field_hashes(json_payload)
+
+# 3. So sánh đối chiếu và phát hiện trường bị thay đổi (JSON Diffing)
+diff_result = diff_json_versions(old_json_payload, new_json_payload)
+# diff_result: {"is_modified": True, "changed_fields": ["salary"], "diff": {...}}
 ```
 
 ---
@@ -206,7 +200,7 @@ Agent kiểm tra các điều kiện tiên quyết trước khi nghiệm thu cra
 - [ ] Tích hợp tự động đồng bộ `self.ledger.sync_to_minio()`.
 - [ ] Có thể kiểm tra kết quả qua `scripts/view_urls.py --source <source> [--minio]`.
 - [ ] Tích hợp cơ chế Polite Sleep (ngẫu nhiên 3.0s - 5.5s) và chống chặn Cloudflare.
-- [ ] Áp dụng đúng hàm `calculate_container_html_hash` với selector khối container chính của website.
+- [ ] Áp dụng đúng hàm `calculate_json_canonical_hash` và `calculate_json_field_hashes` trên cấu trúc JSON sau cào để quản lý phiên bản CDC.
 - [ ] Trạng thái cào thành công lưu là `DONE`, chu kỳ re-crawl kiểm tra mốc 21 ngày.
 - [ ] Có khối `try...except` bắt lỗi Safe Skip an toàn cho từng URL.
 - [ ] Có đủ thư mục `samples/` chứa ít nhất 3 cặp file HTML thô đa định dạng + JSON tương ứng.

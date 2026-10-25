@@ -1,0 +1,69 @@
+{
+  "dataset_name": "VN-IT-Jobs-Curated-Golden-Master",
+  "generated_at": "2026-10-25T18:03:17.543702+00:00",
+  "total_staging_records": 9415,
+  "total_golden_records": 8388,
+  "deduplication_metrics": {
+    "total_input_records": 9415,
+    "total_golden_records": 8388,
+    "duplicates_removed": 1027,
+    "deduplication_rate_pct": 10.91,
+    "cross_platform_cluster_count": 672
+  },
+  "salary_metrics": {
+    "total_with_numeric_salary": 4232,
+    "salary_coverage_pct": 50.45,
+    "salary_p1_vnd": 32257.99999999999,
+    "salary_q1_vnd": 7000000.0,
+    "salary_median_vnd": 15000000.0,
+    "salary_q3_vnd": 26500000.0,
+    "salary_p99_vnd": 101600000.0
+  },
+  "platform_breakdown": {
+    "careerviet": 559,
+    "glints": 311,
+    "itviec": 667,
+    "jobsgo": 1108,
+    "topcv": 1534,
+    "topdev": 2372,
+    "vieclam24h": 517,
+    "vietnamworks": 1320
+  },
+  "job_family_breakdown": {
+    "JF00_OTHER_IT": 3691,
+    "JF10_PROD_BA": 1214,
+    "JF05_DEVOPS": 838,
+    "JF08_QA_QC": 605,
+    "JF11_UI_UX": 451,
+    "JF07_DATA_AI": 311,
+    "JF12_EMBEDDED": 297,
+    "JF01_BACKEND": 285,
+    "JF09_SECURITY": 220,
+    "JF04_MOBILE": 179,
+    "JF06_DATA_ENG": 147,
+    "JF03_FULLSTACK": 98,
+    "JF02_FRONTEND": 52
+  },
+  "seniority_breakdown": {
+    "Middle": 4369,
+    "Chưa xác định": 1461,
+    "Lead/Manager": 1316,
+    "Senior": 607,
+    "Intern": 445,
+    "Fresher": 104,
+    "Junior": 86
+  },
+  "top_cities": {
+    "Không xác định": 2616,
+    "Hà Nội": 2111,
+    "Hồ Chí Minh": 1741,
+    "Ha Noi": 509,
+    "Ho Chi Minh": 351,
+    "Đà Nẵng": 91,
+    "Đồng Nai": 84,
+    "Hải Phòng": 43,
+    "Bắc Ninh": 34,
+    "Bình Dương": 33
+  },
+  "total_pipeline_duration_seconds": 18.38
+}

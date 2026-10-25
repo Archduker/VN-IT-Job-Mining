@@ -3,7 +3,7 @@
 > **Tài liệu quy trình cốt lõi số 2 (Core Document 02)**  
 > **Nguyên tắc cốt tử:**  
 > 1. *"Cào là phải cào HẾT — Trang tuyển dụng có trường gì phải lấy nguyên vẹn trường đó, giữ nguyên tên trường gốc, không tự ý format hay ép schema ở bước cào."*  
-> 2. *"Tách biệt 2 pha: Phase 1 vét sạch URL không giới hạn thời gian $\rightarrow$ Lưu URL Ledger vào MinIO $\rightarrow$ Phase 2 cào chi tiết với chu kỳ Re-crawl 21 ngày."*
+> 2. *"Tách biệt 2 pha: Phase 1 vét sạch URL không giới hạn thời gian $\rightarrow$ Lưu URL Ledger vào Cloudflare R2 $\rightarrow$ Phase 2 cào chi tiết với chu kỳ Re-crawl 21 ngày."*
 
 ---
 
@@ -20,7 +20,7 @@ Trong các hệ thống Data Mining hiện đại, bước thu thập dữ liệ
 
 ## 2. Kiến Trúc Thu Thập 2 Pha Độc Lập (Two-Phase Decoupled Pipeline)
 
-Hệ thống tách biệt hoàn toàn việc **Thu thập Link (Discovery)** và **Bóc tách Chi tiết (Extraction)** thông qua trạm trung chuyển **URL Ledger trên MinIO**:
+Hệ thống tách biệt hoàn toàn việc **Thu thập Link (Discovery)** và **Bóc tách Chi tiết (Extraction)** thông qua trạm trung chuyển **URL Ledger trên Cloudflare R2**:
 
 ```mermaid
 flowchart TD
@@ -31,28 +31,36 @@ flowchart TD
         ListCrawler --> CleanURL --> GenURLHash
     end
 
-    subgraph MinIOStore["KHO LƯU TRỮ MINIO (Object Storage Lakehouse)"]
-        subgraph URLLedgerZone["minio://vn-it-jobs/url_ledger/<source>/"]
+    subgraph Cloudflare R2Store["KHO LƯU TRỮ MINIO (Object Storage Lakehouse)"]
+        subgraph URLLedgerZone["r2://vn-it-jobs/url_ledger/<source>/"]
             Manifest["manifests/manifest_YYYY-MM-DD.jsonl\n(Danh sách link phát hiện theo đợt)"]
             MasterCatalog["catalog_master.parquet\n(Bảng trạng thái vòng đời của toàn bộ link)"]
         end
 
-        subgraph RawDetailZone["minio://vn-it-jobs/raw/<source>/"]
+        subgraph RawDetailZone["r2://vn-it-jobs/raw/<source>/"]
             RawJSON["<YYYY-MM-DD>/<job_id>_v<version>.json\n(100% Raw DOM / API Payload)"]
         end
     end
 
-    subgraph Phase2["PHASE 2: DETAIL EXTRACTION (Cào Chi Tiết & Re-crawl 21 Ngày)"]
+    subgraph Phase2["PHASE 2: DETAIL SCRAPING (Cào Chi Tiết Raw As-Is)"]
         Scheduler["Bộ Lọc Link Cần Cào:\n1. Link mới (status = PENDING)\n2. Link đến hạn 21 ngày (status = DONE & age >= 21d)"]
-        Worker["Detail Crawler\n(Tải HTML / API bài chi tiết)"]
-        Hasher["Tính Clean Container HTML Hash\nSo sánh với Catalog"]
-        Scheduler --> Worker --> Hasher
+        Worker["Detail Crawler\n(Tải 100% Raw HTML / API bài chi tiết)"]
+        RawWriter["Lưu Snapshot Thô Nguyên Bản\n(r2://vn-it-jobs/raw/<source>/...)"]
+        Scheduler --> Worker --> RawWriter
+    end
+
+    subgraph PostCrawl["POST-CRAWL PROCESSING (Bóc Tách & Băm JSON)"]
+        Parser["JSON Structuring / Parser\n(Chuyển đổi Raw DOM/API thành Structured JSON)"]
+        JSONHasher["Tính Canonical JSON Hash & Field Hashes\nSo sánh đối chiếu với Catalog"]
+        DiffEngine["JSON Diff Engine: Định vị trường thay đổi\nCập nhật version, DONE, last_scraped_at vào Catalog"]
+        Parser --> JSONHasher --> DiffEngine
     end
 
     Phase1 -->|Ghi nhận link| Manifest --> MasterCatalog
     MasterCatalog -->|Cung cấp link cần cào| Scheduler
-    Hasher -->|Ghi snapshot thô| RawJSON
-    Hasher -->|Cập nhật version, DONE, last_scraped_at| MasterCatalog
+    RawWriter --> RawJSON
+    RawJSON --> Parser
+    DiffEngine --> MasterCatalog
 ```
 
 ### Ưu điểm vượt trội của kiến trúc 2 pha:
@@ -62,9 +70,9 @@ flowchart TD
 
 ---
 
-## 3. Cấu Trúc URL Ledger & Phân Tầng Trên MinIO
+## 3. Cấu Trúc URL Ledger & Phân Tầng Trên Cloudflare R2
 
-Hệ thống lưu trữ trực tiếp trên **MinIO Object Storage** dưới định dạng file phẳng chuẩn Big Data (JSONL & Parquet), không phụ thuộc SQL server:
+Hệ thống lưu trữ trực tiếp trên **Cloudflare R2 Object Storage** dưới định dạng file phẳng chuẩn Big Data (JSONL & Parquet), không phụ thuộc SQL server:
 
 ### 3.1. Phân tầng thư mục trong bucket `vn-it-jobs`:
 - **`url_ledger/<source>/manifests/manifest_<YYYY-MM-DD>.jsonl`**: Danh sách toàn bộ URL tìm thấy trong ngày cào (Append-only).
@@ -101,36 +109,59 @@ Hệ thống lưu trữ trực tiếp trên **MinIO Object Storage** dưới đ�
 
 ---
 
-## 4. Cơ Chế Băm HTML Khối Nội Dung (Clean Container HTML Hashing)
+## 4. Cơ Chế Băm Cấu Trúc JSON Sau Cào (Post-Crawl Canonical JSON & Field Hashing)
 
-### 4.1. So sánh: Băm HTML Thô vs Băm Parsed Fields vs Băm Container Sạch
-- **Băm toàn bộ HTML thô (`response.text`):** Rất dễ bị **dương tính giả (False Positive)** vì các trang web luôn chèn mã CSRF, số lượt xem (`views: 104`), ngày giờ server thay đổi từng giây $\rightarrow$ làm hash thay đổi liên tục dù nội dung tuyển dụng không đổi!
-- **Băm các trường đã parse:** Mất công viết parser chi tiết trước khi kiểm tra hash, dễ bỏ sót trường.
-- **Giải pháp tối ưu: Clean Container HTML Hashing:** Bóc tách khối thẻ bao bọc nội dung tuyển dụng (ví dụ `<div class="job-detail">`), loại bỏ các thẻ rác động (`<script>`, `<style>`, `<iframe>`, số lượt xem) rồi mới băm SHA256.
+### 4.1. Tại sao Hash phải là bước thực hiện SAU BƯỚC CÀO trên dữ liệu JSON?
+Trong quy trình Modern ELT, **bước cào (Crawler)** chỉ thuần túy làm nhiệm vụ **Extract & Load Raw As-Is (Zero Information Loss)**: tải nguyên vẹn mã HTML hoặc API response về Data Lake. Việc băm kiểm tra thay đổi (Change Data Capture - CDC) được thực hiện ở **bước xử lý sau cào trên đối tượng JSON**:
+1. **Giải phóng hoàn toàn Crawler:** Crawler không bị nghẽn CPU vì parse DOM, không bị crash khi trang web đổi CSS class, và không phải phụ thuộc vào việc chỉ băm 1 selector cụ thể.
+2. **Miễn nhiễm 100% với rác động của HTML:** Các thành phần như CSRF tokens, view counters (`Lượt xem: 1,420`), timestamp server, và box việc làm liên quan bị loại bỏ hoàn toàn khỏi đối tượng JSON nghiệp vụ.
+3. **Thống nhất cho cả 7 sàn tuyển dụng:** Nguồn dữ liệu từ API JSON (TopDev, VietnamWorks) hay từ SSR HTML (TopCV, CareerViet, ITViec, Vieclam24h) sau khi bóc tách đều thành JSON $\rightarrow$ dùng chung 1 engine băm và diff duy nhất.
+4. **Biết chính xác "Người ta thay đổi ở đâu":** Bằng cách băm theo từng trường (`salary`, `requirements`, `deadline`, `benefits`), ta so sánh được trực tiếp key-value giữa 2 phiên bản để chỉ rõ trường nào bị chỉnh sửa.
 
-### 4.2. Mã nguồn chuẩn (`calculate_html_hash`):
+### 4.2. Mã nguồn chuẩn Băm JSON Canonical & Băm Đa Trường (`crawlers/common/url_ledger.py`):
 ```python
 import hashlib
+import json
 import re
-from bs4 import BeautifulSoup
+from typing import Any, Dict, List, Optional
 
-def calculate_html_hash(html_content: str, container_selector: str = "body") -> str:
-    """
-    Băm HTML khối nội dung chính, tự động loại bỏ các thành phần rác động:
-    - Thẻ <script>, <style>, <iframe>, <noscript>, <svg>
-    - Số lượt xem (views), timestamp hiển thị
-    - Thuộc tính ngẫu nhiên (CSRF token, nonce)
-    """
-    soup = BeautifulSoup(html_content, "html.parser")
-    target = soup.select_one(container_selector) or soup.body or soup
+def calculate_json_canonical_hash(payload: Any, exclude_keys: Optional[List[str]] = None) -> str:
+    """Băm SHA-256 trên dictionary JSON sau khi đã chuẩn hóa khóa (Canonical JSON)."""
+    if payload is None:
+        return ""
+    exclude = set(exclude_keys or ["scraped_at", "version", "content_hash", "crawler_version", "scraper_version"])
     
-    # Xóa sạch các thẻ động gây nhảy hash oan
-    for tag in target(["script", "style", "iframe", "noscript", "svg"]):
-        tag.decompose()
-        
-    # Chuẩn hóa khoảng trắng
-    clean_text = re.sub(r"\s+", " ", target.get_text(separator=" ", strip=True))
-    return hashlib.sha256(clean_text.encode("utf-8")).hexdigest()
+    def _filter_obj(obj: Any) -> Any:
+        if isinstance(obj, dict):
+            return {k: _filter_obj(v) for k, v in obj.items() if k not in exclude}
+        elif isinstance(obj, list):
+            return [_filter_obj(x) for x in obj]
+        return obj
+
+    filtered = _filter_obj(payload)
+    canonical_str = json.dumps(filtered, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical_str.encode("utf-8")).hexdigest()
+
+def calculate_json_field_hashes(payload: Dict[str, Any]) -> Dict[str, str]:
+    """Băm riêng biệt từng trường nghiệp vụ (salary, deadline, requirements, benefits, etc.)."""
+    field_hashes: Dict[str, str] = {}
+    for key, val in payload.items():
+        if key in ["scraped_at", "version", "content_hash", "raw_html"]:
+            continue
+        norm_str = json.dumps(val, ensure_ascii=False, sort_keys=True, separators=(",", ":")) if isinstance(val, (dict, list)) else re.sub(r"\s+", " ", str(val).strip())
+        field_hashes[key] = hashlib.sha256(norm_str.encode("utf-8")).hexdigest()
+    return field_hashes
+
+def diff_json_versions(old_payload: Dict[str, Any], new_payload: Dict[str, Any]) -> Dict[str, Any]:
+    """So sánh đối chiếu chi tiết giữa 2 phiên bản JSON (v1 vs v2) để chỉ ra trường nào bị sửa đổi."""
+    # (Định vị cụ thể trường changed, added, removed và giá trị before/after)
+    ...
+```
+
+### 4.3. Công cụ đối chiếu trực quan 2 phiên bản:
+Sử dụng script CLI `scripts/diff_job_versions.py` để xem chi tiết các trường bị chỉnh sửa kèm Git-style unified diff cho các văn bản dài:
+```bash
+python scripts/diff_job_versions.py --file1 data/<source>/raw/<date>/<id>_v1.json --file2 data/<source>/raw/<date>/<id>_v2.json
 ```
 
 ---

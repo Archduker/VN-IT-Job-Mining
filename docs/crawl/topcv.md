@@ -20,19 +20,29 @@
 
 ---
 
-## 2. Xác Định Container Selector Cho Clean Container HTML Hashing
+## 2. Bóc Tách Trường Vào JSON & Băm Cấu Trúc JSON Sau Cào
 
-Để tính mã băm nội dung ổn định mà không bị nhảy hash oan do các thành phần động (thời gian server, lượt xem, việc làm liên quan):
-- **Container Selector khuyến nghị:** `div.job-detail` kết hợp `div.box-header-job`.
-- **Thẻ bị loại bỏ trước khi băm:**
-  - `<script>`, `<style>`, `<iframe>`, `<svg>`, `<noscript>`
-  - Khối việc làm liên quan: `.box-suggest-job`, `.similar-jobs`
-  - Các chỉ số động: `.view-count`, `.timestamp`
-
+Quy trình chuẩn: Cào Raw HTML As-Is $\rightarrow$ Bóc tách các trường nghiệp vụ vào JSON $\rightarrow$ Tính Canonical JSON Hash & Field Hashes:
+- **Khối trích xuất chính:** `div.box-header-job` (tiêu đề, lương, hạn nộp, công ty) và `div.job-detail` (mô tả, yêu cầu, quyền lợi).
+- **Mã nguồn tính hash trên JSON:**
 ```python
-from crawlers.common.url_ledger import calculate_container_html_hash
+from crawlers.common.url_ledger import calculate_json_canonical_hash, calculate_json_field_hashes
 
-content_hash = calculate_container_html_hash(html_text, container_selector="div.job-detail")
+# Bóc tách ra dictionary nghiệp vụ
+payload = {
+    "title": "Senior Python Backend Engineer",
+    "company": "CÔNG TY CỔ PHẦN CÔNG NGHỆ ABC",
+    "salary": "25 - 45 triệu",
+    "deadline": "30/11/2026",
+    "description": "...",
+    "requirements": "...",
+}
+
+# Băm toàn bộ JSON chuẩn hóa
+content_hash = calculate_json_canonical_hash(payload)
+
+# Băm chi tiết từng trường để định vị thay đổi
+field_hashes = calculate_json_field_hashes(payload)
 ```
 
 ---

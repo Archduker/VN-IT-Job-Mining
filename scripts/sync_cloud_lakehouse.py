@@ -99,6 +99,37 @@ def show_status(s3, bucket: str, endpoint: str, filter_source: str = None):
         print(f"❌ Không thể lấy danh sách đối tượng từ Cloud: {exc}")
 
 
+def local_path_to_s3_key(local_path: Path, data_dir: Path) -> str | None:
+    """Ánh xạ đường dẫn local data/<source>/<layer>/... sang Lakehouse S3 key <layer>/<source>/..."""
+    rel_path = local_path.relative_to(data_dir)
+    parts = rel_path.parts
+
+    # Bỏ qua các tệp/thư mục rác hoặc nhạy cảm
+    for p in parts:
+        if p.startswith(".") or p in ("checkpoints", "__pycache__", "router_state.json"):
+            return None
+    if parts[-1].endswith((".tmp", ".lock", ".swp")) or parts[-1] == "router_state.json":
+        return None
+
+    if len(parts) >= 2 and parts[1] in ("raw", "url_ledger", "staging"):
+        source, layer = parts[0], parts[1]
+        rest = "/".join(parts[2:])
+        return f"{layer}/{source}/{rest}"
+    if parts[0] in ("raw", "url_ledger", "staging", "curated"):
+        return "/".join(parts)
+    return None
+
+
+def s3_key_to_local_path(s3_key: str, data_dir: Path) -> Path:
+    """Ánh xạ Lakehouse S3 key <layer>/<source>/... về đường dẫn local data/<source>/<layer>/..."""
+    parts = s3_key.split("/")
+    if len(parts) >= 2 and parts[0] in ("raw", "url_ledger", "staging"):
+        layer, source = parts[0], parts[1]
+        rest = "/".join(parts[2:])
+        return data_dir / source / layer / rest
+    return data_dir / s3_key
+
+
 def upload_to_cloud(s3, bucket: str, filter_source: str = None):
     print("=" * 70)
     print("   ĐỒNG BỘ DỮ LIỆU CỤC BỘ LÊN CLOUD DATA LAKEHOUSE (UPLOAD)")
@@ -118,14 +149,11 @@ def upload_to_cloud(s3, bucket: str, filter_source: str = None):
                 continue
 
             local_path = Path(root) / f
-            rel_path = local_path.relative_to(PROJECT_ROOT / "data")
-            s3_key = str(rel_path).replace("\\", "/")
-
-            if filter_source and not s3_key.startswith(f"{filter_source}/") and not f"/{filter_source}/" in s3_key:
+            s3_key = local_path_to_s3_key(local_path, data_dir)
+            if not s3_key:
                 continue
 
-            # Bỏ qua checkpoints
-            if "checkpoints" in s3_key:
+            if filter_source and not s3_key.startswith(f"{filter_source}/") and not f"/{filter_source}/" in s3_key:
                 continue
 
             try:
@@ -161,10 +189,10 @@ def download_from_cloud(s3, bucket: str, filter_source: str = None):
                 s3_key = item["Key"]
                 size = item["Size"]
 
-                if filter_source and not s3_key.startswith(f"{filter_source}/") and not f"/{filter_source}/" in s3_key:
+                if filter_source and not f"/{filter_source}/" in s3_key:
                     continue
 
-                local_dest = data_dir / s3_key
+                local_dest = s3_key_to_local_path(s3_key, data_dir)
                 local_dest.parent.mkdir(parents=True, exist_ok=True)
 
                 # Tải file về

@@ -13,7 +13,7 @@
 
 Nền tảng **TopDev** (`https://topdev.vn`) cung cấp hệ thống REST API v2 (`https://api.topdev.vn/td/v2/jobs`) hỗ trợ phân trang và dữ liệu việc làm IT rất dồi dào.
 
-Trong commit `6dc0b52`, bạn Sơn đã thực hiện nâng cấp quy mô lớn đối với [`crawlers/sources/topdev/crawler.py`](file:///home/billtran/Desktop/Learning/UTH/VN-IT-Job-Mining/crawlers/sources/topdev/crawler.py) (+1,579 lines):
+Trong commit `6dc0b52`, bạn Sơn đã thực hiện nâng cấp quy mô lớn đối với [`crawlers/sources/topdev/crawler.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/topdev/crawler.py) (+1,579 lines):
 1. **Làm sạch thẻ HTML**: Tích hợp BeautifulSoup và `text_to_clean_lines` để bóc tách mô tả, yêu cầu, trách nhiệm thành danh sách dòng sạch.
 2. **Chuẩn hóa mức lương**: Sử dụng `parse_salary_detail` kết hợp các trường số từ API (`salary_min`, `salary_max`, `currency`).
 3. **Phát hiện ngôn ngữ**: Nhận diện bài đăng tiếng Anh/tiếng Việt và lưu vào `JobMetadata.language`.
