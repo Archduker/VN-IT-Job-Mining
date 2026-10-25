@@ -31,7 +31,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 try:
-    from crawlers.common.url_ledger import UrlLedgerRecord, clean_canonical_url, generate_url_hash
+    from collection.common.url_ledger import UrlLedgerRecord, clean_canonical_url, generate_url_hash
 except Exception:
     UrlLedgerRecord = None
     clean_canonical_url = None
@@ -439,7 +439,7 @@ def main():
     if not res["exists"] or not res["records"]:
         print(f"⚠️ Không tìm thấy bản ghi URL Ledger nào cho '{args.source}' tại: {res['source_path']}")
         if not args.minio:
-            print(f"💡 Thử chạy với cờ '--minio' hoặc chạy Phase 1 Discovery: python -m crawlers.sources.{args.source}.crawler --phase discovery")
+            print(f"💡 Thử chạy với cờ '--minio' hoặc chạy Phase 1 Discovery: python -m collection.sources.{args.source}.crawler --phase discovery")
         return
 
     render_dashboard(

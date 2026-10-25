@@ -58,7 +58,10 @@ class DoDScorer:
         self.bonus: int = 0
         self.penalty: int = 0
         self.details: dict[str, list[str]] = {}
-        self.crawler_path = Path("crawlers") / "sources" / self.source / "crawler.py"
+        c_path = Path("collection") / "sources" / self.source / "crawler.py"
+        if not c_path.is_file():
+            c_path = Path("crawlers") / "sources" / self.source / "crawler.py"
+        self.crawler_path = c_path
         self.crawler_code = ""
         if self.crawler_path.is_file():
             try:
@@ -177,7 +180,9 @@ class DoDScorer:
         """TC4 (20đ): 3 HTML (7đ) + 3 JSON valid (7đ) + đa dạng layout (3đ) + README (3đ)."""
         log_items = []
         score = 0
-        samples_dir = Path("crawlers") / "sources" / self.source / "samples"
+        samples_dir = Path("collection") / "sources" / self.source / "samples"
+        if not samples_dir.is_dir():
+            samples_dir = Path("crawlers") / "sources" / self.source / "samples"
         if not samples_dir.is_dir():
             log_items.append(f"{RED}[FAIL]{RESET} Thư mục mẫu không tồn tại: {samples_dir} (0/20đ)")
             self.scores["TC4_Samples"] = 0
@@ -288,8 +293,13 @@ class DoDScorer:
         """TC7 (15đ): inventory (8đ) & eda report (7đ)."""
         log_items = []
         score = 0
-        inv_path = Path("reports") / f"{self.source}_inventory.md"
-        eda_path = Path("reports") / f"{self.source}_eda.md"
+        inv_path = Path("collection") / "reports" / f"{self.source}_inventory.md"
+        if not inv_path.is_file():
+            inv_path = Path("reports") / f"{self.source}_inventory.md"
+
+        eda_path = Path("collection") / "reports" / f"{self.source}_eda.md"
+        if not eda_path.is_file():
+            eda_path = Path("reports") / f"{self.source}_eda.md"
 
         if inv_path.is_file() and inv_path.stat().st_size >= 100:
             score += 8

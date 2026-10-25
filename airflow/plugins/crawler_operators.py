@@ -23,10 +23,10 @@ from airflow.exceptions import AirflowSkipException
 from airflow.models import BaseOperator
 from airflow.utils.context import Context
 
-from crawlers.common.adaptive_router import AdaptiveWorkloadRouter, MAX_ITEMS_PER_BATCH
-from crawlers.common.data_quality import DataQualityChecker
-from crawlers.common.minio_storage import upload_file_to_minio
-from crawlers.common.utils import (
+from collection.common.adaptive_router import AdaptiveWorkloadRouter, MAX_ITEMS_PER_BATCH
+from collection.common.data_quality import DataQualityChecker
+from collection.common.minio_storage import upload_file_to_minio
+from collection.common.utils import (
     clean_text,
     text_to_clean_lines,
     parse_salary_detail,

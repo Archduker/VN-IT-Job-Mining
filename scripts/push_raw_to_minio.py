@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """push_raw_to_minio.py — Day raw envelope (va tuy chon ledger) cua CareerViet
-len MinIO/S3 ma KHONG sua file dung chung `crawlers/common/url_ledger.py`.
+len MinIO/S3 ma KHONG sua file dung chung `collection/common/url_ledger.py`.
 
 Cau truc dich (theo docs/01 §3 va docs/02 §3.1, 479 dong doc crawl §13):
 

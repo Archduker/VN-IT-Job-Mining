@@ -108,14 +108,14 @@ test-ledger:
 	$(PYTEST) tests/unit/test_url_ledger.py -v
 
 test-cov:
-	$(PYTEST) tests/ --cov=crawlers --cov-report=term-missing --cov-report=html:htmlcov
+	$(PYTEST) tests/ --cov=collection --cov-report=term-missing --cov-report=html:htmlcov
 
 # ── Code Quality ───────────────────────────────────────────────
 lint:
-	$(VENV)/bin/ruff check crawlers/ tests/
+	$(VENV)/bin/ruff check collection/ tests/
 
 format:
-	$(VENV)/bin/ruff format crawlers/ tests/
+	$(VENV)/bin/ruff format collection/ tests/
 
 # ── Airflow ────────────────────────────────────────────────────
 airflow-webserver:

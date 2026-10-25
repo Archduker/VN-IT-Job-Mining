@@ -68,7 +68,7 @@ def run_crawler(
     crawler_map = {}
 
     if source == "topcv":
-        from crawlers.sources.topcv.crawler import TopCVCrawler
+        from collection.sources.topcv.crawler import TopCVCrawler
         kwargs = {
             "checkpoint_dir": checkpoint_dir,
             "output_dir": output_dir,
@@ -78,21 +78,21 @@ def run_crawler(
             kwargs["engine"] = engine
         crawler = TopCVCrawler(**kwargs)
     elif source == "topdev":
-        from crawlers.sources.topdev.crawler import TopDevCrawler
+        from collection.sources.topdev.crawler import TopDevCrawler
         crawler = TopDevCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
     elif source == "vietnamworks":
-        from crawlers.sources.vietnamworks.crawler import VietnamWorksCrawler
+        from collection.sources.vietnamworks.crawler import VietnamWorksCrawler
         crawler = VietnamWorksCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
     elif source == "careerviet":
-        from crawlers.sources.careerviet.crawler import CareerVietCrawler
+        from collection.sources.careerviet.crawler import CareerVietCrawler
         crawler = CareerVietCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
@@ -101,27 +101,27 @@ def run_crawler(
             raw_dir=os.path.join(output_dir, source, "raw") if output_dir else None,
         )
     elif source == "vieclam24h":
-        from crawlers.sources.vieclam24h.crawler import ViecLam24hCrawler
+        from collection.sources.vieclam24h.crawler import ViecLam24hCrawler
         crawler = ViecLam24hCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
     elif source == "itviec":
-        from crawlers.sources.itviec.crawler import ItviecCrawler
+        from collection.sources.itviec.crawler import ItviecCrawler
         crawler = ItviecCrawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
         )
     elif source == "glints":
-        from crawlers.sources.glints.raw_pipeline import GlintsRawPipeline
+        from collection.sources.glints.raw_pipeline import GlintsRawPipeline
         crawler = GlintsRawPipeline(
             max_items=max_items,
             storage_dir=os.path.join(output_dir, source, "url_ledger") if output_dir else None,
         )
     elif source == "jobsgo":
-        from crawlers.sources.jobsgo.crawler import JobsGORawCrawler
+        from collection.sources.jobsgo.crawler import JobsGORawCrawler
         crawler = JobsGORawCrawler(
             max_items=max_items,
             storage_dir=os.path.join(output_dir, source, "url_ledger") if output_dir else None,

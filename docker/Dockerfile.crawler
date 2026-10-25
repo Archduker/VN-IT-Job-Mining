@@ -28,7 +28,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Sao chép mã nguồn crawler và scripts điều phối
-COPY crawlers/ /app/crawlers/
+COPY collection/ /app/collection/
 COPY scripts/ /app/scripts/
 COPY run.py /app/run.py
 

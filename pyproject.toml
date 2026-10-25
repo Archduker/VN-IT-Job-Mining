@@ -16,7 +16,7 @@ python_functions = ["test_*"]
 addopts = "-v --tb=short"
 
 [tool.coverage.run]
-source = ["crawlers"]
+source = ["collection"]
 omit = ["tests/*", "**/__init__.py"]
 
 [tool.coverage.report]

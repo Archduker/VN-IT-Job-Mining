@@ -119,7 +119,7 @@ Chạy kiểm tra bắt buộc qua `DataQualityChecker`:
 ```bash
 python -c "
 from crawlers.common.data_quality import DataQualityChecker
-checker = DataQualityChecker('crawlers/sources/<source>/test_5_jobs.json')
+checker = DataQualityChecker('collection/sources/<source>/test_5_jobs.json')
 result = checker.check()
 assert result['passed'] is True
 assert result['schema_valid_rate'] == 100.0

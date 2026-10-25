@@ -234,7 +234,7 @@ cmd_route() {
     echo " Thời gian đánh giá: $(date '+%Y-%m-%d %H:%M:%S %Z')"
     echo "=========================================================================================="
     "${VENV_PYTHON}" -c '
-from crawlers.common.adaptive_router import AdaptiveWorkloadRouter
+from collection.common.adaptive_router import AdaptiveWorkloadRouter
 sources = ["topdev", "vietnamworks", "careerviet", "vieclam24h", "itviec", "topcv", "jobsgo", "glints"]
 print("%-14s | %-9s | %-6s | %-5s | %-7s | %s" % ("NGUỒN", "PHÂN CẤP", "CHẠY?", "QUOTA", "PENDING", "LÝ DO ĐIỀU PHỐI"))
 print("-" * 92)

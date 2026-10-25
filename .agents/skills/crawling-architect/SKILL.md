@@ -19,7 +19,7 @@ Kỹ năng này trang bị cho AI Agent năng lực thiết kế, đánh giá, k
 Mọi bài toán xây dựng parser cho bất kỳ website tuyển dụng nào đều bắt đầu từ **1 file HTML thô đại diện (`sample.html`)** do người dùng hoặc crawler tải về.
 
 ### Quy trình tương tác giữa Thành viên & Agent:
-1. **Bước 1 (Tiếp nhận đầu vào):** Người dùng cung cấp đường dẫn file HTML thô đại diện (ví dụ: `crawlers/sources/<tenweb>/samples/sample_standard_job.html`).
+1. **Bước 1 (Tiếp nhận đầu vào):** Người dùng cung cấp đường dẫn file HTML thô đại diện (ví dụ: `collection/sources/<tenweb>/samples/sample_standard_job.html`).
 2. **Bước 2 (Chạy công cụ phân tích DOM tự động):**
    ```bash
    .venv/bin/python .agents/skills/crawling-architect/scripts/analyze_html_dom.py --html <path_to_html>

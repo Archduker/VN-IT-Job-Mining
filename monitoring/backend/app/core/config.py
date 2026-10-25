@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     # Đường dẫn thư mục cốt lõi
     ROOT_DIR: Path = REPO_ROOT
     DATA_DIR: Path = REPO_ROOT / "data"
-    REPORTS_DIR: Path = REPO_ROOT / "reports"
+    REPORTS_DIR: Path = REPO_ROOT / "collection" / "reports"
     NOTEBOOKS_DIR: Path = REPO_ROOT / "notebooks"
     LOGS_DIR: Path = REPO_ROOT / "logs"
 

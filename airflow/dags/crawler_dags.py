@@ -55,7 +55,7 @@ with DAG(
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
-    tags=["crawlers", "discovery", "daily"],
+    tags=["collection", "discovery", "daily"],
 ) as discovery_dag:
     
     disc_topdev = JobCrawlerOperator(
@@ -142,7 +142,7 @@ with DAG(
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
-    tags=["crawlers", "detail", "topdev"],
+    tags=["collection", "detail", "topdev"],
 ) as topdev_dag:
     check_topdev = AdaptiveRouteCheckOperator(
         task_id="check_route_topdev",
@@ -177,7 +177,7 @@ with DAG(
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
-    tags=["crawlers", "detail", "vietnamworks"],
+    tags=["collection", "detail", "vietnamworks"],
 ) as vnw_dag:
     check_vnw = AdaptiveRouteCheckOperator(
         task_id="check_route_vietnamworks",
@@ -212,7 +212,7 @@ with DAG(
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
-    tags=["crawlers", "detail", "careerviet"],
+    tags=["collection", "detail", "careerviet"],
 ) as cv_dag:
     check_cv = AdaptiveRouteCheckOperator(
         task_id="check_route_careerviet",
@@ -247,7 +247,7 @@ with DAG(
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
-    tags=["crawlers", "detail", "vieclam24h"],
+    tags=["collection", "detail", "vieclam24h"],
 ) as vl24h_dag:
     check_vl24h = AdaptiveRouteCheckOperator(
         task_id="check_route_vieclam24h",
@@ -282,7 +282,7 @@ with DAG(
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
-    tags=["crawlers", "detail", "itviec"],
+    tags=["collection", "detail", "itviec"],
 ) as itviec_dag:
     check_itviec = AdaptiveRouteCheckOperator(
         task_id="check_route_itviec",
@@ -317,7 +317,7 @@ with DAG(
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
-    tags=["crawlers", "detail", "topcv"],
+    tags=["collection", "detail", "topcv"],
 ) as topcv_dag:
     check_topcv = AdaptiveRouteCheckOperator(
         task_id="check_route_topcv",
@@ -352,7 +352,7 @@ with DAG(
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
-    tags=["crawlers", "detail", "jobsgo"],
+    tags=["collection", "detail", "jobsgo"],
 ) as jobsgo_dag:
     check_jobsgo = AdaptiveRouteCheckOperator(
         task_id="check_route_jobsgo",
@@ -387,7 +387,7 @@ with DAG(
     start_date=START_DATE,
     catchup=False,
     max_active_runs=1,
-    tags=["crawlers", "detail", "glints"],
+    tags=["collection", "detail", "glints"],
 ) as glints_dag:
     check_glints = AdaptiveRouteCheckOperator(
         task_id="check_route_glints",
