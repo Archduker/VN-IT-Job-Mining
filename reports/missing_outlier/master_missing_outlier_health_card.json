@@ -1,0 +1,170 @@
+{
+  "step": "step_3_missing_and_outlier",
+  "generated_at": "2026-10-26T17:56:36.878419+00:00",
+  "total_records_in": 9824,
+  "total_records_out": 9824,
+  "zero_record_loss_verified": true,
+  "pure_json_only": true,
+  "duration_seconds": 11.712,
+  "ai_governance": {
+    "team_approved": false,
+    "pilot_benchmark_path": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/reports/ai_governance/pilot_gemini_imputation_benchmark.md",
+    "heuristic_imputer_active": true,
+    "genai_batch_called": false
+  },
+  "scrubbing_and_cleaning_metrics": {
+    "sneaky_nulls_unmasked": 12348,
+    "masked_salaries_scrubbed": 1018,
+    "phone_salaries_scrubbed": 50,
+    "dot_glitches_repaired": 2,
+    "experience_imputed_heuristic": 3086,
+    "seniority_imputed_heuristic": 1154,
+    "skills_imputed_heuristic": 130,
+    "salary_records_winsorized": 131,
+    "salary_fixes": {
+      "salary_min_vnd": {
+        "usd_to_vnd": 2,
+        "over_zeroing": 23
+      },
+      "salary_max_vnd": {
+        "over_zeroing": 10
+      }
+    },
+    "quality_summary": {
+      "total_records": 9824,
+      "quality_score_mean": 0.998,
+      "quality_score_min": 0.45,
+      "records_below_0_5": 9,
+      "violation_counts": {
+        "violation_salary_range": 6,
+        "violation_experience_range": 0,
+        "violation_date_order": 7,
+        "violation_negative_salary": 0,
+        "violation_multiple_fixes": 9,
+        "is_outlier_capped": 131
+      }
+    }
+  },
+  "iqr_diagnostics": {
+    "salary_min_vnd": {
+      "total_records": 3730,
+      "q1": 9000000.0,
+      "q3": 20000000.0,
+      "iqr": 11000000.0,
+      "lower_bound": 0.0,
+      "upper_bound": 36500000.0,
+      "outlier_count": 248,
+      "outlier_rate_pct": 6.65,
+      "skewness": 14.89,
+      "kurtosis": 322.43
+    },
+    "salary_max_vnd": {
+      "total_records": 3809,
+      "q1": 15000000.0,
+      "q3": 30480000.0,
+      "iqr": 15480000.0,
+      "lower_bound": 0.0,
+      "upper_bound": 53700000.0,
+      "outlier_count": 268,
+      "outlier_rate_pct": 7.04,
+      "skewness": 3.74,
+      "kurtosis": 25.95
+    },
+    "min_experience_years": {
+      "total_records": 8506,
+      "q1": 1.0,
+      "q3": 3.0,
+      "iqr": 2.0,
+      "lower_bound": 0.0,
+      "upper_bound": 6.0,
+      "outlier_count": 228,
+      "outlier_rate_pct": 2.68,
+      "skewness": 1.77,
+      "kurtosis": 6.54
+    }
+  },
+  "quality_rules_summary": {
+    "total_records": 9824,
+    "quality_score_mean": 0.998,
+    "quality_score_min": 0.45,
+    "records_below_0_5": 9,
+    "violation_counts": {
+      "violation_salary_range": 6,
+      "violation_experience_range": 0,
+      "violation_date_order": 7,
+      "violation_negative_salary": 0,
+      "violation_multiple_fixes": 9,
+      "is_outlier_capped": 131
+    }
+  },
+  "sources": {
+    "careerviet": {
+      "total_records": 599,
+      "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/careerviet/careerviet_missing_outlier.json",
+      "with_numeric_salary": 599,
+      "with_experience": 599,
+      "with_skills": 533,
+      "outlier_capped_count": 11
+    },
+    "glints": {
+      "total_records": 331,
+      "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/glints/glints_missing_outlier.json",
+      "with_numeric_salary": 331,
+      "with_experience": 331,
+      "with_skills": 320,
+      "outlier_capped_count": 8
+    },
+    "itviec": {
+      "total_records": 691,
+      "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/itviec/itviec_missing_outlier.json",
+      "with_numeric_salary": 691,
+      "with_experience": 691,
+      "with_skills": 687,
+      "outlier_capped_count": 8
+    },
+    "jobsgo": {
+      "total_records": 1520,
+      "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/jobsgo/jobsgo_missing_outlier.json",
+      "with_numeric_salary": 1520,
+      "with_experience": 1520,
+      "with_skills": 1515,
+      "outlier_capped_count": 20
+    },
+    "topcv": {
+      "total_records": 1950,
+      "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/topcv/topcv_missing_outlier.json",
+      "with_numeric_salary": 1950,
+      "with_experience": 1950,
+      "with_skills": 1906,
+      "outlier_capped_count": 33
+    },
+    "topdev": {
+      "total_records": 2755,
+      "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/topdev/topdev_missing_outlier.json",
+      "with_numeric_salary": 2755,
+      "with_experience": 2755,
+      "with_skills": 1263,
+      "outlier_capped_count": 26
+    },
+    "vieclam24h": {
+      "total_records": 619,
+      "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/vieclam24h/vieclam24h_missing_outlier.json",
+      "with_numeric_salary": 619,
+      "with_experience": 619,
+      "with_skills": 619,
+      "outlier_capped_count": 6
+    },
+    "vietnamworks": {
+      "total_records": 1359,
+      "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/vietnamworks/vietnamworks_missing_outlier.json",
+      "with_numeric_salary": 1359,
+      "with_experience": 1359,
+      "with_skills": 1359,
+      "outlier_capped_count": 19
+    }
+  },
+  "master_output_files": {
+    "raw_for_normalization": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/raw_for_normalization.json",
+    "legacy_staging_flat": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/staging/staging_flat_all_sources.json"
+  }
+}

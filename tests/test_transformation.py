@@ -297,3 +297,201 @@ def test_transform_runner_reads_integration_and_writes_outputs(tmp_path, monkeyp
     ]
     assert (reports_dir / "master_transformation_report.json").is_file()
     assert json.loads(source_input.read_text(encoding="utf-8")) == integration_records
+
+
+def test_salary_parser_dot_split_and_negative_patterns():
+    from preprocessing.transformation.salary_parser import scan_salary_in_jd_text
+
+    # 1. Số có dấu chấm hàng nghìn không bị gãy
+    parsed = scan_salary_in_jd_text("Thu nhập: 15.000.000 - 20.000.000 VNĐ hàng tháng")
+    assert parsed is not None
+    assert parsed["salary_min_vnd"] == 15_000_000.0
+    assert parsed["salary_max_vnd"] == 20_000_000.0
+
+    # 2. Bộ lọc Negative Patterns chặn trích xuất nhầm từ phúc lợi
+    assert scan_salary_in_jd_text("Hưởng lương tháng thứ 13 và thưởng Tết.") is None
+    assert scan_salary_in_jd_text("Chính sách xét tăng lương 1-2 lần hàng năm.") is None
+    assert scan_salary_in_jd_text("Thử việc hưởng 100% lương.") is None
+    assert scan_salary_in_jd_text("Thưởng các dịp lễ 30/4 - 1/5 hấp dẫn.") is None
+    assert scan_salary_in_jd_text("Hỗ trợ phụ cấp ăn trưa 1 triệu/tháng.") is None
+
+
+def test_salary_parser_lower_bound_and_thousand_units():
+    # Cận dưới
+    p1 = UniversalSalaryParser.parse_text("Từ 15 triệu")
+    assert p1["salary_min_vnd"] == 15_000_000.0
+    assert p1["salary_max_vnd"] is None
+
+    p2 = UniversalSalaryParser.parse_text("Trên 20 triệu")
+    assert p2["salary_min_vnd"] == 20_000_000.0
+    assert p2["salary_max_vnd"] is None
+
+    p3 = UniversalSalaryParser.parse_text("Tối thiểu $1000")
+    assert p3["salary_min_vnd"] == 25_400_000.0
+    assert p3["salary_max_vnd"] is None
+
+    # Đơn vị nghìn k
+    p4 = UniversalSalaryParser.parse_text("500k - 800k")
+    assert p4["salary_min_vnd"] == 500_000.0
+    assert p4["salary_max_vnd"] == 800_000.0
+
+
+def test_parse_salary_cascade_with_benefits():
+    from preprocessing.transformation.salary_parser import parse_salary_cascade
+
+    # Header là thỏa thuận, JD không có số, nhưng benefits có số
+    res = parse_salary_cascade(
+        raw_salary_text="Thỏa thuận",
+        jd_text="Mô tả công việc chung, không có số lương.",
+        benefits=["Lương cơ bản 15 - 20 triệu/tháng", "Đóng bảo hiểm đầy đủ"],
+    )
+    assert res["salary_min_vnd"] == 15_000_000.0
+    assert res["salary_max_vnd"] == 20_000_000.0
+    assert res["salary_source"] == "benefits_regex"
+
+
+def test_parse_age_and_education_and_seniority():
+    from preprocessing.transformation.record_transformer import (
+        _parse_age_range,
+        _parse_education_level,
+        _parse_seniority_level,
+        _parse_company_scale,
+        _parse_saturday_work,
+    )
+
+    # Age
+    assert _parse_age_range("22-32") == (22, 32)
+    assert _parse_age_range("Tuổi 23 - 45") == (23, 45)
+    assert _parse_age_range("Từ 30 tuổi trở xuống") == (None, 30)
+    assert _parse_age_range("Từ 25 tuổi trở lên") == (25, None)
+
+    # Education
+    assert _parse_education_level("Cao Đẳng trở lên") == "Cao đẳng"
+    assert _parse_education_level("bachelor degree") == "Cử nhân / Đại học"
+    assert _parse_education_level("Thạc sĩ") == "Thạc sĩ / Cao học"
+    assert _parse_education_level("Tiến sĩ") == "Tiến sĩ"
+    assert _parse_education_level("Không yêu cầu") == "Không yêu cầu"
+    assert _parse_education_level("0") is None
+
+    # Seniority (Phương án 1)
+    assert _parse_seniority_level("Trưởng nhóm", "Backend Developer") == "Senior / Lead"
+    assert _parse_seniority_level(None, "Senior Java Developer") == "Senior / Lead"
+    assert _parse_seniority_level("Giám Đốc và Cấp Cao Hơn", None) == "Director / Executive"
+    assert _parse_seniority_level(None, "Fresher ReactJS") == "Intern / Fresher"
+    assert _parse_seniority_level("Nhân viên", None) == "Junior / Middle"
+
+    # Company scale
+    assert _parse_company_scale("500-1000 nhân viên") == (500, 1000, "Large")
+    assert _parse_company_scale("25-99") == (25, 99, "SME")
+    assert _parse_company_scale("Hơn 50.000") == (50000, None, "Enterprise")
+
+    # Saturday work
+    assert _parse_saturday_work("Thứ 2 - Thứ 6 (từ 08:30 đến 17:30)") is False
+    assert _parse_saturday_work("Thứ 2 - Thứ 6 + Thứ 7 cách tuần") is True
+    assert _parse_saturday_work("Thứ 2 - Thứ 7") is True
+    assert _parse_saturday_work("Nghỉ thứ 7 và Chủ Nhật") is False
+
+
+def test_transform_job_record_comprehensive_extraction():
+    raw_record = {
+        "job_title": "Senior Python Developer",
+        "raw_salary_text": "Thỏa thuận",
+        "raw_description_text": "<div class='jd'><p>Phát triển hệ thống Microservices Python.</p></div>",
+        "raw_requirements_text": "Tối thiểu 3 năm kinh nghiệm với Django và FastAPI.",
+        "benefits_list": ["Lương thỏa thuận", "Bảo hiểm sức khỏe cao cấp", "Du lịch hàng năm"],
+        "raw_posted_date": "20/10/2026",
+        "raw_age_text": "24-35",
+        "raw_education_text": "Đại học trở lên",
+        "raw_seniority_text": None,
+        "company_scale": "100-499 nhân viên",
+        "raw_working_time": "Thứ 2 - Thứ 6 (08:30 - 17:30)",
+        "raw_location_text": "Quận 1, TP.HCM",
+        "skills_list": ["Python", "FastAPI", "Mê Linh", "không yêu cầu kinh nghiệm"],
+    }
+
+    transformed = transform_job_record(raw_record)
+
+    # 1. Seniority fallback từ job_title
+    assert transformed["standardized_seniority"] == "Senior / Lead"
+
+    # 2. Tuổi
+    assert transformed["age_min"] == 24
+    assert transformed["age_max"] == 35
+
+    # 3. Học vấn
+    assert transformed["standardized_education"] == "Cử nhân / Đại học"
+
+    # 4. Quy mô công ty
+    assert transformed["company_size_min"] == 100
+    assert transformed["company_size_max"] == 499
+    assert transformed["company_scale_tier"] == "Medium"
+
+    # 5. Làm thứ 7
+    assert transformed["is_saturday_work"] is False
+
+    # 6. Làm sạch skills & đếm counts
+    assert "Mê Linh" not in transformed["skills_list"]
+    assert "không yêu cầu kinh nghiệm" not in transformed["skills_list"]
+    assert "Python" in transformed["skills_list"]
+    assert transformed["skills_count"] == 2
+    assert transformed["benefits_count"] == 3
+
+    # 7. Text metrics & HTML cleaning
+    assert "<div" not in transformed["jd_clean_text"]
+    assert "<p" not in transformed["jd_clean_text"]
+    assert transformed["word_count"] > 0
+    assert transformed["is_stub_jd"] is True  # short test sample (<30 words)
+    assert transformed["primary_language"] == "vi"
+
+    # 8. Tiền đề Bước 3 & Bước 4
+    assert transformed["is_salary_missing"] is True  # do header Thỏa thuận và JD không có số
+    assert transformed["salary_mid_vnd"] is None
+    assert transformed["missing_skills_flag"] is False
+    assert transformed["missing_seniority_flag"] is False
+    assert transformed["missing_education_flag"] is False
+    assert transformed["seniority_rank"] == 3  # Senior / Lead = 3
+    assert transformed["education_rank"] == 4  # Cử nhân / Đại học = 4
+    assert transformed["genai_imputation_eligible"] is False  # stub JD
+
+
+def test_benefits_salary_cascade_rejection_and_acceptance():
+    from preprocessing.transformation.salary_parser import parse_salary_cascade
+
+    # 1. Các bẫy phúc lợi phổ biến PHẢI BỊ LOẠI BỎ (không được gán làm lương)
+    trap_cases = [
+        ["13th-month salary", "Chế độ bảo hiểm"],
+        ["Thưởng tháng lương thứ 13 và các gói phúc lợi đa dạng"],
+        ["14 ngày nghỉ phép năm có hưởng lương, nghỉ chế độ có hưởng lương"],
+        ["MB tự hào mang đến mức thu nhập bình quân 37,4 triệu VNĐ/tháng (Nguồn: BCTN 2024)"],
+        ["Full salary in 2 months of probation"],
+        ["Social insurance based on 100% salary"],
+        ["Performance bonus of up to 4 months’ salary"],
+        ["Salary review every 6 months"],
+    ]
+    for traps in trap_cases:
+        res = parse_salary_cascade(
+            raw_salary_text="Đăng nhập để xem mức lương",
+            jd_text="Mô tả công việc không có lương",
+            benefits=traps,
+        )
+        assert res["salary_min_vnd"] is None, f"Bẫy {traps} không được nhận là lương!"
+        assert res["salary_max_vnd"] is None, f"Bẫy {traps} không được nhận là lương!"
+
+    # 2. Dải lương thực thụ trong benefits PHẢI ĐƯỢC BÓC TÁCH CHÍNH XÁC
+    valid_res1 = parse_salary_cascade(
+        raw_salary_text="Đăng nhập để xem mức lương",
+        jd_text="Công việc thú vị",
+        benefits=["Competitive Package", "Salary (Gross): 35 - 45 millions", "Health insurance"],
+    )
+    assert valid_res1["salary_min_vnd"] == 35_000_000.0
+    assert valid_res1["salary_max_vnd"] == 45_000_000.0
+    assert valid_res1["salary_source"] == "benefits_regex"
+
+    valid_res2 = parse_salary_cascade(
+        raw_salary_text="Thương lượng",
+        jd_text="Tuyển dụng lập trình viên",
+        benefits=["Thu nhập cạnh tranh (up to 50M), đánh giá theo năng lực", "Team building"],
+    )
+    assert valid_res2["salary_max_vnd"] == 50_000_000.0
+    assert valid_res2["salary_source"] == "benefits_regex"
+    assert valid_res2["pay_period"] == "month"  # không bị nhầm year-end bonus thành annual

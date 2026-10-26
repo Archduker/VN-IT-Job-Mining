@@ -1,0 +1,62 @@
+{
+  "step": "missing_outlier",
+  "source_platform": "vieclam24h",
+  "generated_at": "2026-10-26T15:17:44.355246+00:00",
+  "input_records": 619,
+  "output_records": 619,
+  "retains_all_records": true,
+  "salary_scrubber": {
+    "initial_valid_salaries": 600,
+    "false_positives_scrubbed_to_negotiable": 0,
+    "input_errors_repaired": 0,
+    "final_valid_salaries": 600
+  },
+  "winsorization": {
+    "salary_max_vnd_iqr": {
+      "total_records": 600,
+      "q1": 15000000.0,
+      "q3": 20000000.0,
+      "iqr": 5000000.0,
+      "lower_bound": 7500000.0,
+      "upper_bound": 27500000.0,
+      "outlier_count": 86,
+      "outlier_rate_pct": 14.33,
+      "skewness": 1.61,
+      "kurtosis": 4.92
+    },
+    "salary_max_vnd_bounds": {
+      "p_low": 3000000.0,
+      "p_high": 50000000.0
+    },
+    "salary_min_vnd_iqr": {
+      "total_records": 600,
+      "q1": 8000000.0,
+      "q3": 12000000.0,
+      "iqr": 4000000.0,
+      "lower_bound": 2000000.0,
+      "upper_bound": 18000000.0,
+      "outlier_count": 50,
+      "outlier_rate_pct": 8.33,
+      "skewness": 2.02,
+      "kurtosis": 7.98
+    },
+    "salary_min_vnd_bounds": {
+      "p_low": 1000000.0,
+      "p_high": 30000000.0
+    },
+    "winsorized_records_count": 9
+  },
+  "imputation": {
+    "experience_years": {
+      "initial_missing": 212,
+      "imputed_by_heuristic": 173,
+      "remaining_missing": 39
+    },
+    "skills_list": {
+      "initial_missing": 0,
+      "imputed_by_heuristic": 0,
+      "remaining_missing": 0
+    }
+  },
+  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/vieclam24h/vieclam24h_missing_outlier_flat.json"
+}

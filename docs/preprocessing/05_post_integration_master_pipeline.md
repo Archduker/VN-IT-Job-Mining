@@ -86,12 +86,18 @@ Sau khi hoàn thành bước **Integration**, ta thu được **Một Bảng Ph�
   - Lưu trữ minh bạch: Giữ cờ `is_salary_negotiable_declared = 1` và lưu giá trị bóc tách được vào `salary_min_vnd`, `salary_max_vnd` kèm `salary_source = 'jd_regex'`.
 
 ### 2.2. Giai Đoạn 3: Bù Khuyết Bằng GenAI & Xử Lý Ngoại Lai (Missing & Outlier)
-- **GenAI Missing Value Imputation (Gemini 1.5 Flash):**
+- **Cơ Chế Phản Hồi Vòng Lặp & Bộ Lọc Tiền Kiểm Định (Heuristic Scrubber & Cyclic Loop):**
+  - Khảo sát thực chứng hậu Transformer phát hiện các dị biệt mới: Bắt nhầm số điện thoại liên hệ (sau tên người có chữ "Lương" như `"Khánh Lương SĐT 0243.936.6990"` thành 243 triệu) hoặc số bị che giấu (`"1*** USD"` thành 25,400 VND).
+  - Trước khi tính phân vị IQR, module `outlier_handler.py` kích hoạt `scrub_salary_false_positives` để reset các trường hợp này về `None` và bật `is_negotiable = 1` an toàn.
+- **Quy Chuẩn Quản Trị AI Bắt Buộc Có Xác Nhận (Human-in-the-Loop AI Sign-off):**
+  - GenAI Imputer (Gemini 1.5 Flash) **tuyệt đối không được chạy tự do**. Bắt buộc chạy Pilot đối chứng (20 mẫu), xuất báo cáo kiểm định và chỉ thực thi khi có sự xác nhận của Bạn (User) và Team.
+  - Tầng Heuristic (Regex trích xuất kinh nghiệm từ câu văn JD) được ưu tiên xử lý trước để giảm thiểu chi phí token.
+- **GenAI Missing Value Imputation (Gemini 1.5 Flash - Có Phê Duyệt):**
   - Đọc toàn bộ văn bản JD để bù khuyết các trường bị trống:
-    - Thiếu kinh nghiệm $\rightarrow$ GenAI đọc câu yêu cầu trích xuất số năm (`min_experience_years`).
-    - Thiếu cấp bậc $\rightarrow$ GenAI suy luận bậc chuẩn (`job_seniority`: Intern, Junior, Middle, Senior, Lead).
-    - Thiếu thành phố $\rightarrow$ GenAI đọc địa chỉ văn phòng suy luận `primary_city`.
-    - Danh mục `skills_list` rỗng $\rightarrow$ GenAI trích xuất danh sách Hard Skills và Domain Skills.
+    - Thiếu kinh nghiệm $\rightarrow$ Đọc câu yêu cầu trích xuất số năm (`min_experience_years`).
+    - Thiếu cấp bậc $\rightarrow$ Suy luận bậc chuẩn (`job_seniority`: Intern, Junior, Middle, Senior, Lead).
+    - Thiếu thành phố $\rightarrow$ Đọc địa chỉ văn phòng suy luận `primary_city`.
+    - Danh mục `skills_list` rỗng $\rightarrow$ Trích xuất danh sách Hard Skills và Domain Skills.
   - Mọi giá trị do GenAI điền đều được gắn cờ `is_imputed_by_genai = True` để bảo toàn tính minh bạch khoa học.
 - **Xử lý Ngoại lai bằng Winsorization:**
   - Không xóa bỏ bản ghi (Zero Record Loss Policy) nhằm bảo toàn dữ liệu kỹ năng.

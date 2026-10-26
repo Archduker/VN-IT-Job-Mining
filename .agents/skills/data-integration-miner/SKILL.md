@@ -35,6 +35,16 @@ Kỹ năng này trang bị cho AI Agent năng lực điều phối toàn bộ ch
    - **Trụ cột 4 (Distribution & Outliers):** Nắm rõ dải lương IQR Bounds, 3 lỗi nhập liệu số phổ biến đã được định vị tại sàn, và chỉ số Skewness để kích hoạt Log-transformation và Winsorization.
    - **Trụ cột 5 (Bias & Class Balance):** Nắm rõ độ lệch cấp bậc (Seniority) và độ phủ địa lý để cân chỉnh bộ mapping 12 Job Family và 6 Seniorities trong `taxonomy_mapper.py`.
 
+### 0.1. NGUYÊN TẮC VÒNG LẶP KHAI PHÁ DỮ LIỆU HIỆN ĐẠI (CYCLIC FEEDBACK LOOPS)
+- Quy trình Data Mining hiện đại **không phải đường thẳng 1 chiều**. Một bước có thể lặp lại nhiều lần.
+- Khi các bước sau (như kiểm định ngoại lai ở Step 3 hoặc cụm chuẩn hóa ở Step 4) phát hiện các vấn đề mới (như bóc nhầm số điện thoại thành lương hoặc mã che giấu `1*** USD`), hệ thống có quyền kích hoạt vòng lặp phản hồi để điều chỉnh quy tắc bóc tách và tái thực thi.
+
+### 0.2. NGUYÊN TẮC BẮT BUỘC: QUẢN TRỊ AI CÓ PHÊ DUYỆT CỦA NHÓM (HUMAN-IN-THE-LOOP AI SIGN-OFF)
+- **Tuyệt đối không chạy mô hình AI/LLM tự do:** Mọi module AI (Gemini Flash Imputer, Zero-shot Job Family, Embeddings ESCO) đều phải:
+  1. Khai báo rõ ràng prompt, chi phí token và cơ chế fallback.
+  2. Chạy thử nghiệm Pilot trên 20 - 30 bản ghi đại diện xuất báo cáo so sánh trước/sau.
+  3. **BẮT BUỘC PHẢI CÓ SỰ XÁC NHẬN CỦA BẠN (USER) VÀ TEAM** trước khi kích hoạt chạy hàng loạt trên toàn bộ dữ liệu.
+
 ---
 
 ## 1. Quy Trình Ánh Xạ Schema Đa Nguồn (Schema Harmonization)

@@ -1,0 +1,62 @@
+{
+  "step": "missing_outlier",
+  "source_platform": "topdev",
+  "generated_at": "2026-10-26T15:17:43.906521+00:00",
+  "input_records": 2755,
+  "output_records": 2755,
+  "retains_all_records": true,
+  "salary_scrubber": {
+    "initial_valid_salaries": 1047,
+    "false_positives_scrubbed_to_negotiable": 670,
+    "input_errors_repaired": 0,
+    "final_valid_salaries": 377
+  },
+  "winsorization": {
+    "salary_max_vnd_iqr": {
+      "total_records": 377,
+      "q1": 1333333.3333333333,
+      "q3": 13000000.0,
+      "iqr": 11666666.666666666,
+      "lower_bound": 0.0,
+      "upper_bound": 30500000.0,
+      "outlier_count": 43,
+      "outlier_rate_pct": 11.41,
+      "skewness": 8.43,
+      "kurtosis": 90.74
+    },
+    "salary_max_vnd_bounds": {
+      "p_low": 1000000.0,
+      "p_high": 100000000.0
+    },
+    "salary_min_vnd_iqr": {
+      "total_records": 406,
+      "q1": 1333333.3333333333,
+      "q3": 13000000.0,
+      "iqr": 11666666.666666666,
+      "lower_bound": 0.0,
+      "upper_bound": 30500000.0,
+      "outlier_count": 39,
+      "outlier_rate_pct": 9.61,
+      "skewness": 7.45,
+      "kurtosis": 86.1
+    },
+    "salary_min_vnd_bounds": {
+      "p_low": 1000000.0,
+      "p_high": 100000000.0
+    },
+    "winsorized_records_count": 5
+  },
+  "imputation": {
+    "experience_years": {
+      "initial_missing": 2755,
+      "imputed_by_heuristic": 2018,
+      "remaining_missing": 737
+    },
+    "skills_list": {
+      "initial_missing": 1528,
+      "imputed_by_heuristic": 36,
+      "remaining_missing": 1492
+    }
+  },
+  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/topdev/topdev_missing_outlier_flat.json"
+}

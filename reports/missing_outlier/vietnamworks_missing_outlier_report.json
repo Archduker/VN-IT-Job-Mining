@@ -1,0 +1,62 @@
+{
+  "step": "missing_outlier",
+  "source_platform": "vietnamworks",
+  "generated_at": "2026-10-26T15:17:44.694713+00:00",
+  "input_records": 1359,
+  "output_records": 1359,
+  "retains_all_records": true,
+  "salary_scrubber": {
+    "initial_valid_salaries": 592,
+    "false_positives_scrubbed_to_negotiable": 2,
+    "input_errors_repaired": 1,
+    "final_valid_salaries": 590
+  },
+  "winsorization": {
+    "salary_max_vnd_iqr": {
+      "total_records": 590,
+      "q1": 13000000.0,
+      "q3": 50800000.0,
+      "iqr": 37800000.0,
+      "lower_bound": 0.0,
+      "upper_bound": 107500000.0,
+      "outlier_count": 53,
+      "outlier_rate_pct": 8.98,
+      "skewness": 9.65,
+      "kurtosis": 100.51
+    },
+    "salary_max_vnd_bounds": {
+      "p_low": 1000000.0,
+      "p_high": 648970000000.0017
+    },
+    "salary_min_vnd_iqr": {
+      "total_records": 527,
+      "q1": 12700000.0,
+      "q3": 30000000.0,
+      "iqr": 17300000.0,
+      "lower_bound": 0.0,
+      "upper_bound": 55950000.0,
+      "outlier_count": 80,
+      "outlier_rate_pct": 15.18,
+      "skewness": 9.58,
+      "kurtosis": 105.83
+    },
+    "salary_min_vnd_bounds": {
+      "p_low": 1000000.0,
+      "p_high": 437388000000.0007
+    },
+    "winsorized_records_count": 10
+  },
+  "imputation": {
+    "experience_years": {
+      "initial_missing": 238,
+      "imputed_by_heuristic": 93,
+      "remaining_missing": 145
+    },
+    "skills_list": {
+      "initial_missing": 0,
+      "imputed_by_heuristic": 0,
+      "remaining_missing": 0
+    }
+  },
+  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/vietnamworks/vietnamworks_missing_outlier_flat.json"
+}

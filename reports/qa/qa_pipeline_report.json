@@ -1,0 +1,145 @@
+{
+  "timestamp": "2026-10-26T18:06:37.143936+00:00",
+  "overall_status": "PASSED",
+  "duration_seconds": 10.331,
+  "total_checks": 5,
+  "passed_checks": 5,
+  "failed_checks": 0,
+  "checks": {
+    "check_1_lineage_and_existence": {
+      "check_id": "CHECK_1_LINEAGE_EXISTENCE",
+      "name": "Lineage & File Existence Integrity",
+      "status": "PASSED",
+      "files": {
+        "raw_for_outlier": {
+          "path": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/raw_for_outlier.json",
+          "exists": true,
+          "records": 9824,
+          "size_mb": 68.6,
+          "json_valid": true
+        },
+        "raw_for_normalization": {
+          "path": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/raw_for_normalization.json",
+          "exists": true,
+          "records": 9824,
+          "size_mb": 72.92,
+          "json_valid": true
+        },
+        "golden_master": {
+          "path": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json",
+          "exists": true,
+          "records": 8475,
+          "size_mb": 53.27,
+          "json_valid": true
+        }
+      },
+      "lineage": {
+        "stage1_to_stage2": {
+          "count_f1": 9824,
+          "count_f2": 9824,
+          "id_preservation_rate_pct": 100.0,
+          "is_exact_match": true
+        },
+        "stage2_to_golden": {
+          "count_f2": 9824,
+          "count_f3": 8475,
+          "records_reduced": 1349,
+          "deduplication_reduction_pct": 13.73,
+          "golden_ids_in_stage2": true,
+          "in_expected_range": true
+        }
+      },
+      "errors": []
+    },
+    "check_2_pure_json_rfc8259": {
+      "check_id": "CHECK_2_PURE_JSON_RFC8259",
+      "name": "100% PURE JSON & Zero NaN Compliance",
+      "status": "PASSED",
+      "forbidden_files_found": [],
+      "nan_scan_results": {
+        "raw_for_outlier": {
+          "file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/raw_for_outlier.json",
+          "nan_in_data_count": 0,
+          "nan_raw_tokens": 0,
+          "is_clean": true
+        },
+        "raw_for_normalization": {
+          "file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/raw_for_normalization.json",
+          "nan_in_data_count": 0,
+          "nan_raw_tokens": 0,
+          "is_clean": true
+        },
+        "golden_master": {
+          "file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json",
+          "nan_in_data_count": 0,
+          "nan_raw_tokens": 0,
+          "is_clean": true
+        }
+      },
+      "errors": []
+    },
+    "check_3_golden_master_contract": {
+      "check_id": "CHECK_3_GOLDEN_MASTER_CONTRACT",
+      "name": "Golden Master Contract & Zero Raw Fields",
+      "status": "PASSED",
+      "total_records_checked": 8475,
+      "root_raw_violations_count": 0,
+      "offending_root_raw_keys": [],
+      "jd_clean_text_metrics": {
+        "missing_jd_clean_text": 0,
+        "missing_description_text": 0,
+        "missing_requirements_text": 0,
+        "unexpected_raw_prefixes": 0
+      },
+      "benefits_prefix_violations_count": 0,
+      "errors": []
+    },
+    "check_4_skills_and_extract_contract": {
+      "check_id": "CHECK_4_SKILLS_EXTRACT_CONTRACT",
+      "name": "Skills & Extract_from_JD Schema Contract",
+      "status": "PASSED",
+      "total_records_checked": 8475,
+      "skills_group_metrics": {
+        "records_with_skills_group": 8475,
+        "records_valid_skills_count": 8475,
+        "average_skills_per_record": 2.77,
+        "records_with_zero_skills": 3268
+      },
+      "extract_from_jd_metrics": {
+        "records_with_extract_group": 8475,
+        "education_coverage_count": 6867,
+        "seniority_coverage_count": 8475,
+        "saturday_specified_count": 3538,
+        "age_limits_extracted_count": 686,
+        "text_metrics_present_count": 8475
+      },
+      "errors": []
+    },
+    "check_5_outlier_quality_governance": {
+      "check_id": "CHECK_5_OUTLIER_QUALITY_GOVERNANCE",
+      "name": "Outlier Handling & Quality Governance Compliance",
+      "status": "PASSED",
+      "total_records_checked": 8475,
+      "quality_score_metrics": {
+        "valid_score_count": 8475,
+        "score_min": 0.45,
+        "score_max": 1.0,
+        "score_mean": 0.998,
+        "records_perfect_1_0": 8332,
+        "records_penalized": 143
+      },
+      "outlier_capping_metrics": {
+        "is_outlier_capped_count": 115,
+        "is_outlier_capped_pct": 1.36
+      },
+      "rules_audit": {
+        "qr1_salary_range_violations": 6,
+        "qr2_experience_range_violations": 0,
+        "qr3_date_order_violations": 6,
+        "qr4_negative_salary_violations": 0,
+        "qr5_multiple_fixes_tracked": 0
+      },
+      "errors": []
+    }
+  }
+}

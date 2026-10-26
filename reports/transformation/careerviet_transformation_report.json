@@ -1,0 +1,61 @@
+{
+  "step": "transformation",
+  "source_platform": "careerviet",
+  "generated_at": "2026-10-26T17:54:29.545117+00:00",
+  "input_records": 599,
+  "output_records": 599,
+  "records_with_salary_min_vnd": 190,
+  "records_with_salary_max_vnd": 204,
+  "salary_sources": {
+    "header_negotiable": 391,
+    "header": 200,
+    "jd_regex": 8
+  },
+  "salary_currencies": {
+    "VND": 593,
+    "USD": 6
+  },
+  "sgd_converted_records": 0,
+  "sgd_fx_dates": {},
+  "unconverted_non_vnd_records": 0,
+  "negotiable_salary_records": 380,
+  "records_with_education_parsed": 0,
+  "records_with_seniority_parsed": 588,
+  "records_with_age_parsed": 0,
+  "records_with_company_scale_parsed": 0,
+  "records_with_saturday_work_declared": 0,
+  "records_with_stub_jd": 1,
+  "salaries_extracted_from_benefits": 0,
+  "language_distribution": {
+    "vi": 373,
+    "bilingual": 225,
+    "unknown": 1
+  },
+  "dates": {
+    "posted_date": {
+      "input_non_empty": 586,
+      "parsed": 586
+    },
+    "updated_date": {
+      "input_non_empty": 586,
+      "parsed": 586
+    },
+    "deadline_date": {
+      "input_non_empty": 586,
+      "parsed": 586
+    },
+    "crawled_at_iso": {
+      "input_non_empty": 599,
+      "parsed": 599
+    }
+  },
+  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/careerviet/careerviet_transformed_flat.json",
+  "input_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/careerviet/careerviet_integrated_flat.json",
+  "salary_range_report": {
+    "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/careerviet/careerviet_salary_sorted_vnd.json",
+    "records_with_numeric_vnd_salary": 208,
+    "sort_order": "salary_min_vnd ascending, then salary_max_vnd ascending",
+    "retains_all_records_in_transformed_output": true
+  },
+  "duration_seconds": 0.629
+}

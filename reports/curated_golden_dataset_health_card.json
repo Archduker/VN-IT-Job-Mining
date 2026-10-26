@@ -1,69 +1,77 @@
 {
-  "dataset_name": "VN-IT-Jobs-Curated-Golden-Master",
-  "generated_at": "2026-10-25T18:03:17.543702+00:00",
-  "total_staging_records": 9415,
-  "total_golden_records": 8388,
-  "deduplication_metrics": {
-    "total_input_records": 9415,
-    "total_golden_records": 8388,
-    "duplicates_removed": 1027,
-    "deduplication_rate_pct": 10.91,
-    "cross_platform_cluster_count": 672
+  "dataset_name": "VN-IT-Job-Mining Curated Golden Master Dataset",
+  "format": "100% PURE JSON",
+  "generated_at": "2026-10-26T18:03:04.733980+00:00",
+  "total_staging_records_in": 9824,
+  "total_golden_records_out": 8475,
+  "stub_jds_excluded_from_golden": 294,
+  "duration_seconds": 62.99,
+  "normalization_achievements": {
+    "tech_skills_canonicalized_records": 5736,
+    "portal_noise_skills_filtered_count": 1853,
+    "saturday_work_declared_count": 787,
+    "saturday_off_declared_count": 3305,
+    "education_standardized_count": 7997,
+    "age_limits_extracted_count": 815,
+    "work_mode_distribution": {
+      "Onsite": 7707,
+      "Hybrid": 667,
+      "Remote": 101
+    },
+    "employment_type_distribution": {
+      "Full-time": 7919,
+      "Internship": 423,
+      "Contract": 81,
+      "Part-time": 52
+    },
+    "education_distribution": {
+      "Đại học": 4986,
+      "Thạc sĩ / Cao học": 330,
+      "Không đề cập": 1608,
+      "Cao đẳng": 1034,
+      "Trung cấp / Nghề": 496,
+      "Không yêu cầu": 21
+    },
+    "top_10_cities": {
+      "Hà Nội": 4146,
+      "Hồ Chí Minh": 2922,
+      "Toàn quốc": 374,
+      "Bình Dương": 120,
+      "Đà Nẵng": 111,
+      "Hải Phòng": 92,
+      "Đồng Nai": 87,
+      "Bắc Ninh": 86,
+      "Hưng Yên": 80,
+      "Bà Rịa - Vũng Tàu": 60
+    },
+    "top_job_families": {
+      "null": 8475
+    },
+    "seniority_distribution": {
+      "Junior": 5118,
+      "Lead/Manager": 2382,
+      "Intern": 656,
+      "Chưa xác định": 118,
+      "Middle": 96,
+      "Fresher": 80,
+      "Senior": 25
+    }
   },
-  "salary_metrics": {
-    "total_with_numeric_salary": 4232,
-    "salary_coverage_pct": 50.45,
-    "salary_p1_vnd": 32257.99999999999,
-    "salary_q1_vnd": 7000000.0,
-    "salary_median_vnd": 15000000.0,
-    "salary_q3_vnd": 26500000.0,
-    "salary_p99_vnd": 101600000.0
+  "distribution_metrics": {
+    "skewness_raw_salary": 3.31,
+    "skewness_log_salary": -0.74,
+    "salary_coverage_pct": 37.82,
+    "experience_coverage_pct": 87.28,
+    "skills_coverage_pct": 61.44
   },
-  "platform_breakdown": {
-    "careerviet": 559,
-    "glints": 311,
-    "itviec": 667,
-    "jobsgo": 1108,
-    "topcv": 1534,
-    "topdev": 2372,
-    "vieclam24h": 517,
-    "vietnamworks": 1320
+  "cross_platform_deduplication": {
+    "total_input_records": 9824,
+    "total_golden_records": 8769,
+    "duplicates_removed": 1055,
+    "deduplication_rate_pct": 10.74,
+    "cross_platform_cluster_count": 719
   },
-  "job_family_breakdown": {
-    "JF00_OTHER_IT": 3691,
-    "JF10_PROD_BA": 1214,
-    "JF05_DEVOPS": 838,
-    "JF08_QA_QC": 605,
-    "JF11_UI_UX": 451,
-    "JF07_DATA_AI": 311,
-    "JF12_EMBEDDED": 297,
-    "JF01_BACKEND": 285,
-    "JF09_SECURITY": 220,
-    "JF04_MOBILE": 179,
-    "JF06_DATA_ENG": 147,
-    "JF03_FULLSTACK": 98,
-    "JF02_FRONTEND": 52
-  },
-  "seniority_breakdown": {
-    "Middle": 4369,
-    "Chưa xác định": 1461,
-    "Lead/Manager": 1316,
-    "Senior": 607,
-    "Intern": 445,
-    "Fresher": 104,
-    "Junior": 86
-  },
-  "top_cities": {
-    "Không xác định": 2616,
-    "Hà Nội": 2111,
-    "Hồ Chí Minh": 1741,
-    "Ha Noi": 509,
-    "Ho Chi Minh": 351,
-    "Đà Nẵng": 91,
-    "Đồng Nai": 84,
-    "Hải Phòng": 43,
-    "Bắc Ninh": 34,
-    "Bình Dương": 33
-  },
-  "total_pipeline_duration_seconds": 18.38
+  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json",
+  "golden_master_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json",
+  "curated_flat_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/curated_flat_golden_jobs.json"
 }

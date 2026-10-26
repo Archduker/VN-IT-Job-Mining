@@ -51,8 +51,8 @@ Bảng ma trận dưới đây là **Khế ước bắt buộc (Architectural Co
 | :--- | :--- | :--- | :--- | :--- |
 | **Bước 1: Integration**<br>`preprocessing/integration/` | Gom dữ liệu đa nguồn về một cấu trúc phẳng thống nhất | - Đọc `RawJobEnvelope`<br>- Ánh xạ tên cột tương đương<br>- **Ép phẳng JSON lồng nhau** (dict, list, detail-box, jsonld)<br>- Tạo khóa toàn cục `job_id_global` | - **CẤM** parse số min/max lương<br>- **CẤM** đổi tiền tệ (USD->VND)<br>- **CẤM** xóa bỏ hàng (drop rows)<br>- **CẤM** điền giá trị khuyết thiếu (fillna) | **KHÔNG DÙNG** (100% Pure Deterministic Logic) |
 | **Bước 2: Transformation**<br>`preprocessing/transformation/` | Bóc tách kiểu dữ liệu, chuẩn hóa dải số và định dạng | - Regex bóc tách dải lương `salary_min_vnd`, `salary_max_vnd`<br>- Regex quét lương ẩn trong JD text<br>- Quy đổi USD theo tỷ giá dự án 25,400 VND/USD<br>- Quy đổi SGD theo tỷ giá lịch sử SGD/USD × 25,400 VND/USD<br>- Quy đổi lương năm sang tháng (`/12`); ghi metadata tỷ giá<br>- Ép kiểu dữ liệu (`float`, `int`, `datetime`)<br>- Xuất danh sách tin có lương VND, sắp xếp theo khoảng lương; không xóa tin khỏi dataset chính | - **CẤM** tự ý xóa bản ghi nghi ngờ outlier<br>- **CẤM** điền giá trị trung bình vào ô null<br>- **CẤM** biến đổi phi tuyến (log-scale)<br>- Không tự đoán tỷ giá cho tiền tệ chưa nhận diện | Hỗ trợ fallback: trích xuất lương khi câu văn JD quá phức tạp |
-| **Bước 3: Missing & Outlier**<br>`preprocessing/missing_outlier/` | Bóc trần null trá hình, bù khuyết qua GenAI & chặn ngoại lai | - Bóc trần 9+ null markers (`thỏa thuận`, `0`, `[]`)<br>- Bảo toàn cờ `is_negotiable=1` (MNAR)<br>- **Dùng GenAI đọc JD bù khuyết kinh nghiệm, level, thành phố, kỹ năng**<br>- Phát hiện 3 lỗi nhập liệu số bằng IQR<br>- Áp dụng Winsorization (capping 1% & 99%) | - **CẤM** fill Mean/Median vào lương thỏa thuận<br>- **CẤM** drop hàng làm mất thông tin kỹ năng<br>- **CẤM** dùng GenAI bịa đặt thông tin khi JD không có cơ sở | **TRỌNG TÂM:** GenAI đọc hiểu sâu văn bản JD để điền giá trị thiếu (Imputation) |
-| **Bước 4: Normalization**<br>`preprocessing/normalization/` | Đưa các biến về cùng thang đo và hệ từ điển quy chuẩn | - Biến đổi Log-transform $y = \log(1 + \text{salary})$<br>- Min-Max Scaling hoặc RobustScaler<br>- Chuẩn hóa 63 tỉnh thành Việt Nam<br>- Chuẩn hóa 6 bậc Seniority (Intern -> Lead)<br>- Mapping kỹ năng về chuẩn ESCO | - **CẤM** scale dữ liệu trước khi xử lý outlier<br>- **CẤM** ghi đè làm mất nhãn gốc của sàn | Hỗ trợ mapping ngữ nghĩa các chức danh tự do về 12 Job Family chuẩn |
+| **Bước 3: Missing & Outlier**<br>`preprocessing/missing_outlier/` | Bóc trần null trá hình, bù khuyết qua GenAI & chặn ngoại lai | - Bóc trần 9+ null markers (`thỏa thuận`, `0`, `[]`)<br>- Bảo toàn cờ `is_negotiable=1` (MNAR)<br>- **Dùng GenAI đọc JD bù khuyết kinh nghiệm, level, thành phố, kỹ năng**<br>- Phát hiện 3 lỗi nhập liệu số bằng IQR<br>- Áp dụng Winsorization (capping 1% & 99%) | - **CẤM** fill Mean/Median vào lương thỏa thuận<br>- **CẤM** drop hàng làm mất thông tin kỹ năng<br>- **CẤM** dùng GenAI bịa đặt thông tin khi JD không có cơ sở<br>- **CẤM CHẠY BATCH GENAI KHI CHƯA CÓ TEAM SIGN-OFF** | **TRỌNG TÂM:** GenAI đọc hiểu sâu văn bản JD để điền giá trị thiếu (BẮT BUỘC có xác nhận từ User & Team) |
+| **Bước 4: Normalization**<br>`preprocessing/normalization/` | Đưa các biến về cùng thang đo và hệ từ điển quy chuẩn | - Biến đổi Log-transform $y = \log(1 + \text{salary})$<br>- Min-Max Scaling hoặc RobustScaler<br>- Chuẩn hóa 63 tỉnh thành Việt Nam<br>- Chuẩn hóa 6 bậc Seniority (Intern -> Lead)<br>- Mapping kỹ năng về chuẩn ESCO | - **CẤM** scale dữ liệu trước khi xử lý outlier<br>- **CẤM** ghi đè làm mất nhãn gốc của sàn | Hỗ trợ mapping ngữ nghĩa các chức danh tự do về 12 Job Family chuẩn (BẮT BUỘC Pilot duyệt) |
 
 ---
 
@@ -87,6 +87,21 @@ Modern Data Mining không áp dụng quy trình đường thẳng (Waterfall) c�
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
 ```
+
+### 3.1. Quy Chuẩn Vòng Lặp Phản Hồi Hiện Đại (Modern Cyclic Feedback Loops)
+> [!IMPORTANT]
+> **Quy trình Data Mining hiện đại không phải đường thẳng 1 chiều (Waterfall):**
+> - Một bước có thể lặp lại nhiều lần. Các bước sau liên tục gửi tín hiệu phản hồi ngược về các bước trước:
+>   - **Step 3 (Outliers) $\longrightarrow$ Step 2 (Transformation):** Khi phân tích phân vị IQR phát hiện các ngoại lai do bóc nhầm số điện thoại (ví dụ: `Khánh Lương SĐT: 0243.936.6990` thành lương 243 triệu) hoặc nhầm số che giấu (`1*** USD`), hệ thống có quyền kích hoạt vòng lặp tinh chỉnh Regex và tái thực thi.
+>   - **Step 4 (Deduplication) $\longrightarrow$ Step 3 (Missing Values):** Khi hợp nhất các bài đăng trùng lặp xuyên sàn, thông tin phong phú hơn từ các nguồn đối ứng giúp giảm tỷ lệ khuyết thiếu thực tế.
+
+### 3.2. Quy Chuẩn Quản Trị Trí Tuệ Nhân Tạo Bắt Buộc Xác Nhận (Human-in-the-Loop AI Governance)
+> [!CAUTION]
+> **Quy chế phê duyệt bắt buộc trước khi chạy AI/LLM:**
+> - Mọi can thiệp bằng mô hình AI (Gemini 1.5 Flash Imputer, Zero-shot Job Family, Embeddings ESCO) đều phải:
+>   1. Khai báo rõ ràng cấu trúc prompt, model, chi phí token ước tính và cơ chế heuristic fallback.
+>   2. Chạy thử nghiệm Pilot trên 20 - 30 bản ghi đối chứng xuất báo cáo trước/sau.
+>   3. **BẮT BUỘC PHẢI CÓ SỰ XÁC NHẬN CHÍNH THỨC CỦA BẠN (USER) VÀ TEAM** trước khi kích hoạt chạy hàng loạt (Batch Inference).
 
 ---
 

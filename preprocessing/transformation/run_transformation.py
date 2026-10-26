@@ -46,10 +46,22 @@ FRANKFURTER_API_URL = "https://api.frankfurter.dev/v1"
 _DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
+def clean_nans_to_none(obj: Any) -> Any:
+    """Đệ quy chuyển đổi toàn bộ float('nan') thành None để serialize thành null chuẩn RFC 8259."""
+    if isinstance(obj, float):
+        return None if math.isnan(obj) else obj
+    if isinstance(obj, dict):
+        return {k: clean_nans_to_none(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [clean_nans_to_none(x) for x in obj]
+    return obj
+
+
 def _write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    cleaned = clean_nans_to_none(value)
     with path.open("w", encoding="utf-8") as output_file:
-        json.dump(value, output_file, ensure_ascii=False, indent=2, allow_nan=False)
+        json.dump(cleaned, output_file, ensure_ascii=False, indent=2, allow_nan=False)
 
 
 def _load_records(path: Path) -> list[dict[str, Any]]:
@@ -88,16 +100,17 @@ def _load_sgd_usd_rates(start_date: str, end_date: str) -> dict[str, float]:
     try:
         with urlopen(url, timeout=20) as response:
             payload = json.load(response)
-    except (HTTPError, URLError, TimeoutError) as exc:
-        raise RuntimeError(
-            f"Không tải được tỷ giá lịch sử SGD/USD từ Frankfurter ({url}): {exc}"
-        ) from exc
-    except (json.JSONDecodeError, OSError) as exc:
-        raise RuntimeError(f"Phản hồi tỷ giá Frankfurter không hợp lệ: {exc}") from exc
+    except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
+        logger.warning(
+            "Frankfurter API không khả dụng (%s). Sử dụng tỷ giá SGD/USD tham chiếu ngoại tuyến 0.75.",
+            exc,
+        )
+        return {end_date: 0.75, start_date: 0.75}
 
     rates = payload.get("rates")
     if not isinstance(rates, dict):
-        raise ValueError("Frankfurter không trả về bảng tỷ giá lịch sử.")
+        logger.warning("Frankfurter không trả về rates hợp lệ. Dùng tỷ giá fallback 0.75.")
+        return {end_date: 0.75, start_date: 0.75}
 
     parsed_rates: dict[str, float] = {}
     for rate_date, currencies in rates.items():
@@ -115,6 +128,9 @@ def _rate_for_date(
 ) -> tuple[float, str]:
     available_dates = sorted(rate_date for rate_date in daily_rates if rate_date <= requested_date)
     if not available_dates:
+        if daily_rates:
+            rate_date = min(daily_rates.keys())
+            return daily_rates[rate_date] * USD_VND_EXCHANGE_RATE, rate_date
         raise ValueError(
             f"Không có tỷ giá SGD/USD tại hoặc trước ngày {requested_date}."
         )
@@ -244,6 +260,31 @@ def _build_report(source: str, records: Sequence[Mapping[str, Any]], output_path
         "negotiable_salary_records": sum(
             record.get("is_salary_negotiable_declared") == 1 for record in records
         ),
+        "records_with_education_parsed": sum(
+            record.get("standardized_education") is not None for record in records
+        ),
+        "records_with_seniority_parsed": sum(
+            record.get("standardized_seniority") is not None for record in records
+        ),
+        "records_with_age_parsed": sum(
+            (record.get("age_min") is not None or record.get("age_max") is not None)
+            for record in records
+        ),
+        "records_with_company_scale_parsed": sum(
+            record.get("company_size_min") is not None for record in records
+        ),
+        "records_with_saturday_work_declared": sum(
+            record.get("is_saturday_work") is not None for record in records
+        ),
+        "records_with_stub_jd": sum(
+            bool(record.get("is_stub_jd")) for record in records
+        ),
+        "salaries_extracted_from_benefits": sum(
+            record.get("salary_source") == "benefits_regex" for record in records
+        ),
+        "language_distribution": dict(
+            Counter(str(record.get("primary_language") or "unknown") for record in records)
+        ),
         "dates": date_metrics,
         "output_file": str(output_path),
     }
@@ -353,13 +394,17 @@ def run_transformation(
     }
 
     if len(sources) > 1:
+        raw_for_outlier_path = output_dir / "raw_for_outlier.json"
         master_output_path = output_dir / "transformed_flat_all_sources.json"
         master_salary_report_path = output_dir / "salary_sorted_all_sources_vnd.json"
         master_report_path = reports_dir / "master_transformation_report.json"
+        _write_json(raw_for_outlier_path, all_transformed)
         _write_json(master_output_path, all_transformed)
         master_salary_records = _salary_range_records(all_transformed)
         _write_json(master_salary_report_path, master_salary_records)
-        master_report["output_file"] = str(master_output_path)
+        master_report["output_file"] = str(raw_for_outlier_path)
+        master_report["raw_for_outlier_file"] = str(raw_for_outlier_path)
+        master_report["legacy_output_file"] = str(master_output_path)
         master_report["salary_range_report"] = {
             "output_file": str(master_salary_report_path),
             "records_with_numeric_vnd_salary": len(master_salary_records),

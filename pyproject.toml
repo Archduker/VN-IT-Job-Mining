@@ -14,6 +14,9 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+markers = [
+    "integration: mark test as integration test with real data files",
+]
 
 [tool.coverage.run]
 source = ["collection"]

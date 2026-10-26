@@ -47,17 +47,28 @@ def push_source_data(source: str = None, dry_run: bool = False):
         raw_files = list(src_raw.rglob("*.json"))
         print(f"\n>> Đang xử lý nguồn: {src.upper()} ({len(raw_files)} files raw)...")
 
+        # Lấy danh sách object đã tồn tại trên R2 để kiểm tra O(1), tránh hàng nghìn HTTP roundtrips
+        existing_keys = set()
+        try:
+            paginator = s3.get_paginator("list_objects_v2")
+            for page in paginator.paginate(Bucket=bucket, Prefix=f"raw/{src}/"):
+                for obj in page.get("Contents", []):
+                    existing_keys.add(obj["Key"])
+            print(f"   Đã tìm thấy {len(existing_keys)} files đã có trên R2. Bỏ qua các file này...")
+        except Exception as pe:
+            print(f"   Cảnh báo không thể list objects ({pe}), sẽ fallback về head_object.")
+
+        files_to_upload = []
         for f in raw_files:
             rel_under_raw = str(f.relative_to(src_raw)).replace("\\", "/")
             object_key = f"raw/{src}/{rel_under_raw}"
 
-            if dry_run:
-                print(f" [DRY-RUN] Sẽ upload: {object_key}")
-                total_uploaded += 1
-                continue
-
-            try:
-                # Kiểm tra xem object đã tồn tại chưa để tránh upload lại
+            # Kiểm tra xem object đã tồn tại chưa để tránh upload lại
+            if existing_keys:
+                if object_key in existing_keys:
+                    total_skipped += 1
+                    continue
+            else:
                 try:
                     s3.head_object(Bucket=bucket, Key=object_key)
                     total_skipped += 1
@@ -65,12 +76,36 @@ def push_source_data(source: str = None, dry_run: bool = False):
                 except Exception:
                     pass
 
-                upload_file_to_r2(f, object_key, bucket_name=bucket)
-                total_uploaded += 1
-                if total_uploaded % 50 == 0:
-                    print(f"  - Đã upload {total_uploaded} files...")
-            except Exception as e:
-                print(f"  [LỖI] {object_key}: {e}")
+            files_to_upload.append((f, object_key))
+
+        if dry_run:
+            for _, k in files_to_upload:
+                print(f" [DRY-RUN] Sẽ upload: {k}")
+            total_uploaded += len(files_to_upload)
+            continue
+
+        print(f"   Đang đồng bộ song song {len(files_to_upload)} files lên Cloudflare R2...")
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        def _upload_task(item):
+            file_path, key = item
+            upload_file_to_r2(file_path, key, bucket_name=bucket)
+            return key
+
+        uploaded_in_src = 0
+        with ThreadPoolExecutor(max_workers=16) as executor:
+            future_to_key = {executor.submit(_upload_task, item): item[1] for item in files_to_upload}
+            for future in as_completed(future_to_key):
+                key = future_to_key[future]
+                try:
+                    future.result()
+                    uploaded_in_src += 1
+                    if uploaded_in_src % 100 == 0 or uploaded_in_src == len(files_to_upload):
+                        print(f"  - Đã upload {uploaded_in_src}/{len(files_to_upload)} files...")
+                except Exception as e:
+                    print(f"  [LỖI] {key}: {e}")
+
+        total_uploaded += uploaded_in_src
 
     print("\n" + "=" * 70)
     print(f"Hoàn thành! Đã upload: {total_uploaded} files | Đã tồn tại (Bỏ qua): {total_skipped} files")

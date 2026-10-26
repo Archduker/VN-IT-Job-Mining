@@ -1,0 +1,60 @@
+{
+  "step": "transformation",
+  "source_platform": "vieclam24h",
+  "generated_at": "2026-10-26T17:54:35.778543+00:00",
+  "input_records": 619,
+  "output_records": 619,
+  "records_with_salary_min_vnd": 594,
+  "records_with_salary_max_vnd": 594,
+  "salary_sources": {
+    "header": 591,
+    "header_negotiable": 25,
+    "benefits_regex": 3
+  },
+  "salary_currencies": {
+    "VND": 619
+  },
+  "sgd_converted_records": 0,
+  "sgd_fx_dates": {},
+  "unconverted_non_vnd_records": 0,
+  "negotiable_salary_records": 25,
+  "records_with_education_parsed": 0,
+  "records_with_seniority_parsed": 619,
+  "records_with_age_parsed": 0,
+  "records_with_company_scale_parsed": 0,
+  "records_with_saturday_work_declared": 2,
+  "records_with_stub_jd": 0,
+  "salaries_extracted_from_benefits": 3,
+  "language_distribution": {
+    "vi": 557,
+    "bilingual": 48,
+    "en": 14
+  },
+  "dates": {
+    "posted_date": {
+      "input_non_empty": 619,
+      "parsed": 619
+    },
+    "updated_date": {
+      "input_non_empty": 0,
+      "parsed": 0
+    },
+    "deadline_date": {
+      "input_non_empty": 619,
+      "parsed": 619
+    },
+    "crawled_at_iso": {
+      "input_non_empty": 619,
+      "parsed": 619
+    }
+  },
+  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/vieclam24h/vieclam24h_transformed_flat.json",
+  "input_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/vieclam24h/vieclam24h_integrated_flat.json",
+  "salary_range_report": {
+    "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/vieclam24h/vieclam24h_salary_sorted_vnd.json",
+    "records_with_numeric_vnd_salary": 594,
+    "sort_order": "salary_min_vnd ascending, then salary_max_vnd ascending",
+    "retains_all_records_in_transformed_output": true
+  },
+  "duration_seconds": 0.434
+}

@@ -19,7 +19,13 @@ import pandas as pd
 from preprocessing.integration.json_flattener import flatten_raw_job_record
 from preprocessing.transformation.salary_parser import UniversalSalaryParser, parse_salary_cascade
 from preprocessing.missing_outlier.sneaky_null_detector import is_val_null, detect_null_type
-from preprocessing.missing_outlier.outlier_handler import detect_iqr_outliers, fix_common_salary_input_errors, winsorize_series
+from preprocessing.missing_outlier.outlier_handler import (
+    clean_and_repair_salary_record,
+    detect_iqr_outliers,
+    fix_common_salary_input_errors,
+    winsorize_series,
+)
+from preprocessing.missing_outlier.genai_text_imputer import GenAITextImputer
 from preprocessing.normalization.text_cleaner import clean_job_title, normalize_city, normalize_seniority
 
 
@@ -137,3 +143,66 @@ def test_text_normalization():
     assert normalize_seniority("Thực tập sinh", "Intern Python") == "Intern"
     assert normalize_seniority("Senior", "Senior Data Engineer") == "Senior"
     assert normalize_seniority("Trưởng nhóm", "Team Lead") == "Lead/Manager"
+
+
+def test_clean_and_repair_salary_record_false_positives():
+    """Kiểm tra khử bẫy lương ảo (SĐT, masked, dot glitch)."""
+    # 1. Bẫy số điện thoại trong JD
+    rec_phone = {
+        "salary_min_vnd": 243936000.0,
+        "salary_max_vnd": 243936000.0,
+        "salary_source": "jd_regex",
+        "salary_text_raw": "Khánh Lương, SĐT: 0243.936.6990 máy lẻ 827.",
+        "is_negotiable": 0,
+    }
+    cleaned_phone = clean_and_repair_salary_record(rec_phone)
+    assert cleaned_phone["salary_max_vnd"] is None
+    assert cleaned_phone["is_negotiable"] == 1
+    assert "scrubbed_false_positive" in cleaned_phone["salary_source"]
+
+    # 2. Bẫy masked salary
+    rec_masked = {
+        "salary_min_vnd": 25400.0,
+        "salary_max_vnd": 25400.0,
+        "salary_source": "header",
+        "salary_text_raw": "Lên tới 1*** USD",
+        "is_negotiable": 0,
+    }
+    cleaned_masked = clean_and_repair_salary_record(rec_masked)
+    assert cleaned_masked["salary_max_vnd"] is None
+    assert cleaned_masked["is_negotiable"] == 1
+    assert cleaned_masked["salary_source"] == "masked_negotiable"
+
+    # 3. Sửa lỗi dấu chấm phần nghìn (500.000 VND -> 500k)
+    rec_dot = {
+        "salary_min_vnd": None,
+        "salary_max_vnd": 500.0,
+        "salary_source": "header",
+        "raw_salary_text": "Lên đến 500.000 VND",
+        "salary_text_raw": "Lên đến 500.000 VND",
+    }
+    repaired_dot = clean_and_repair_salary_record(rec_dot)
+    assert repaired_dot["salary_max_vnd"] == 500_000.0
+
+
+def test_genai_imputer_governance_guard_and_heuristic():
+    """Kiểm tra cơ chế chặn AI khi chưa có sign-off và bộ bóc tách Heuristic."""
+    imputer = GenAITextImputer(team_approved=False)
+    assert imputer.team_approved is False
+
+    # Heuristic bù khuyết từ câu văn JD
+    rec = {
+        "job_title": "Backend Python Developer",
+        "raw_description_text": "Yêu cầu từ 2 đến 3 năm kinh nghiệm với Django và Docker tại Hà Nội.",
+        "raw_requirements_text": "",
+        "min_experience_years": None,
+        "standardized_seniority": None,
+        "primary_city": None,
+        "skills_list": [],
+    }
+    imputed = imputer.impute_job_record(rec)
+    assert imputed["min_experience_years"] == 2.0
+    assert imputed["primary_city"] == "Hà Nội"
+    assert "Python" in imputed["skills_list"] or "Docker" in imputed["skills_list"]
+    assert imputed.get("is_imputed_by_genai") is not True  # Chưa gọi genai vì team_approved=False
+
