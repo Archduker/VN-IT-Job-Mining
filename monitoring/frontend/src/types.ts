@@ -1,5 +1,16 @@
 // TypeScript Interfaces for VN-IT-Job-Mining Central Observatory
 
+export type TabType =
+  | 'dashboard'
+  | 'crawling'
+  | 'airflow'
+  | 'preprocessing'
+  | 'processing'
+  | 'eda'
+  | 'ml3d'
+  | 'cloud'
+
+
 export interface DatasetMetadata {
   version: string
   storage_layer: string

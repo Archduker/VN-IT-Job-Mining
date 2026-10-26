@@ -101,6 +101,16 @@ def main():
         return
 
     batch_idx = 1
+    if LOG_FILE.exists():
+        try:
+            import re
+            content = LOG_FILE.read_text(encoding="utf-8")
+            matches = re.findall(r"\[Ca (\d+) Hoàn Tất\]", content)
+            if matches:
+                batch_idx = max(int(m) for m in matches) + 1
+                logger.info("Tiếp tục tiến trình từ Ca %d dựa trên lịch sử log.", batch_idx)
+        except Exception:
+            pass
     total_crawled_session = 0
 
     while True:
@@ -126,6 +136,14 @@ def main():
                 logger.info("[Drain TopCV] Đã đồng bộ UrlLedger lần cuối lên Cloudflare R2.")
             except Exception as se:
                 logger.warning("[Drain TopCV] Lỗi đồng bộ R2 lần cuối: %s", se)
+
+            try:
+                from scripts.push_raw_to_r2 import push_source_data
+                logger.info("[Drain TopCV] Bắt đầu đồng bộ toàn bộ file raw lên Cloudflare R2...")
+                push_source_data(source=SOURCE)
+                logger.info("[Drain TopCV] Đã đồng bộ toàn bộ file raw lên Cloudflare R2 thành công.")
+            except Exception as re:
+                logger.warning("[Drain TopCV] Lỗi đồng bộ raw lên R2: %s", re)
 
             # Xuất báo cáo tổng kết
             summary_data = {

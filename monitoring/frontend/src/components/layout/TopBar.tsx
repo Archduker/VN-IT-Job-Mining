@@ -3,30 +3,42 @@ import {
   Cloud,
   RefreshCw,
   ShieldCheck,
-  Database,
   Cpu,
-  PanelLeftClose,
-  PanelLeftOpen,
   Bell,
   AlertTriangle,
   AlertCircle,
   Info,
   Check,
-  ExternalLink,
+  Sun,
+  User,
+  Zap,
 } from 'lucide-react'
 import axios from 'axios'
-import { CloudHealth, AlertSummary, AlertItem } from '../../types'
+import { CloudHealth, AlertSummary, AlertItem, TabType } from '../../types'
 
 interface TopBarProps {
+  currentTab: TabType
+  onSelectTab: (tab: TabType) => void
   onRefreshAll?: () => void
   sidebarCollapsed?: boolean
   onToggleSidebar?: () => void
 }
 
+const PIPELINE_PROCESSES: { id: TabType; label: string }[] = [
+  { id: 'dashboard', label: 'Dashboard' },
+  { id: 'crawling', label: 'Collection' },
+  { id: 'airflow', label: 'Airflow Pipeline' },
+  { id: 'preprocessing', label: 'Pre-processing' },
+  { id: 'processing', label: 'Processing & Dedup' },
+  { id: 'eda', label: 'EDA Intelligence' },
+  { id: 'ml3d', label: 'AI/ML 3D Lab' },
+  { id: 'cloud', label: 'Cloudflare R2' },
+]
+
 export const TopBar: React.FC<TopBarProps> = ({
+  currentTab,
+  onSelectTab,
   onRefreshAll,
-  sidebarCollapsed = false,
-  onToggleSidebar,
 }) => {
   const [r2Health, setR2Health] = useState<CloudHealth | null>(null)
   const [airflowRunning, setAirflowRunning] = useState<boolean>(false)
@@ -62,7 +74,7 @@ export const TopBar: React.FC<TopBarProps> = ({
     return () => clearInterval(interval)
   }, [])
 
-  // Close drawer when clicking outside
+  // Close alert drawer when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
@@ -105,83 +117,94 @@ export const TopBar: React.FC<TopBarProps> = ({
   const hasCritical = alertSummary ? alertSummary.critical_count > 0 : false
 
   return (
-    <header className="h-16 border-b border-slate-800 bg-slate-900/90 backdrop-blur-md px-6 flex items-center justify-between z-20 sticky top-0">
-      <div className="flex items-center space-x-3">
-        {/* Sidebar Toggle Button */}
-        {onToggleSidebar && (
-          <button
-            onClick={onToggleSidebar}
-            className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 text-slate-300 hover:text-white transition-colors"
-            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {sidebarCollapsed ? (
-              <PanelLeftOpen className="w-4 h-4" />
-            ) : (
-              <PanelLeftClose className="w-4 h-4" />
-            )}
-          </button>
-        )}
-
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-          <Database className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="text-sm font-bold text-white tracking-wide">
-              VN-IT-Job-Mining
-            </h1>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-semibold uppercase">
-              Central Observatory
-            </span>
+    <header className="h-16 border-b border-slate-800 bg-[#0f172a] px-4 lg:px-6 flex items-center justify-between z-30 sticky top-0 shadow-md">
+      {/* Left: Brand Identity */}
+      <div className="flex items-center space-x-3 shrink-0">
+        <div className="flex items-center space-x-2.5 cursor-pointer" onClick={() => onSelectTab('dashboard')}>
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
+            <Zap className="w-5 h-5 text-slate-950 font-bold" />
           </div>
-          <p className="text-[11px] text-slate-400">
-            Data Operations & Pipeline Monitor (R2 Cloud Native)
-          </p>
+          <div className="hidden sm:block">
+            <div className="flex items-center space-x-1.5">
+              <span className="text-sm font-extrabold text-white tracking-tight">
+                VN-IT Mining
+              </span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20 font-bold uppercase tracking-wider">
+                AI
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-400 -mt-0.5">Central Observatory</p>
+          </div>
         </div>
       </div>
 
-      <div className="flex items-center space-x-3 relative">
-        {/* Airflow Daemon Status Pill */}
+      {/* Middle: Horizontal Pipeline Processes (Thanh ngang các tiến trình) */}
+      <nav className="flex items-center space-x-1 md:space-x-2 overflow-x-auto no-scrollbar mx-4 py-1">
+        {PIPELINE_PROCESSES.map((proc) => {
+          const isActive = currentTab === proc.id
+          return (
+            <button
+              key={proc.id}
+              onClick={() => onSelectTab(proc.id)}
+              className={`px-3 py-1.5 text-xs md:text-sm font-medium transition-all duration-150 rounded-lg whitespace-nowrap relative ${
+                isActive
+                  ? 'text-[#f97316] font-bold after:content-[""] after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:bg-[#f97316]'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+              }`}
+            >
+              {proc.label}
+            </button>
+          )
+        })}
+      </nav>
+
+      {/* Right: Quick Telemetry + Actions + Theme + Alert Bell + Avatar */}
+      <div className="flex items-center space-x-2.5 sm:space-x-3 shrink-0 relative">
+        {/* Airflow Status Pill */}
         <div
-          className={`hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-xl border text-xs font-medium transition-colors ${
+          className={`hidden xl:flex items-center space-x-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium ${
             airflowRunning
-              ? 'bg-indigo-950/40 border-indigo-500/30 text-indigo-300'
+              ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-300'
               : 'bg-slate-800/60 border-slate-700/60 text-slate-400'
           }`}
+          title="Airflow Daemon Status"
         >
-          <Cpu className="w-4 h-4 text-indigo-400" />
-          <span>Airflow (PostgreSQL):</span>
+          <Cpu className="w-3.5 h-3.5 text-indigo-400" />
+          <span className="text-[11px]">Airflow:</span>
           {airflowRunning ? (
-            <span className="flex items-center space-x-1.5 font-semibold text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>ONLINE</span>
-            </span>
+            <span className="text-[10px] text-emerald-400 font-bold">ONLINE</span>
           ) : (
-            <span className="text-slate-400">STOPPED</span>
+            <span className="text-[10px] text-slate-400">OFFLINE</span>
           )}
         </div>
 
-        {/* Cloudflare R2 Connection Pill */}
+        {/* Cloudflare R2 Pill */}
         <div
-          className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl border text-xs font-medium transition-colors ${
+          className={`hidden xl:flex items-center space-x-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium ${
             r2Health?.connected
               ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-300'
               : 'bg-amber-950/40 border-amber-500/30 text-amber-300'
           }`}
+          title="Cloudflare R2 Bucket Health"
         >
-          <Cloud className="w-4 h-4" />
-          <span className="hidden md:inline">Cloudflare R2:</span>
+          <Cloud className="w-3.5 h-3.5 text-orange-400" />
+          <span className="text-[11px]">R2:</span>
           {r2Health?.connected ? (
-            <span className="flex items-center space-x-1.5 font-semibold text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>{r2Health.latency_ms}ms</span>
-            </span>
+            <span className="text-[10px] text-emerald-400 font-bold">{r2Health.latency_ms}ms</span>
           ) : (
-            <span className="text-amber-400 font-semibold">Disconnected</span>
+            <span className="text-[10px] text-amber-400">DISCONNECTED</span>
           )}
         </div>
 
-        {/* Integrated Alert Bell Button */}
+        {/* Theme Toggle Button (matching sun icon in images) */}
+        <button
+          className="p-2 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-slate-800 transition-colors"
+          title="Light / Dark mode"
+        >
+          <Sun className="w-4 h-4" />
+        </button>
+
+        {/* Integrated Alert Bell Button with Notification Count Badge */}
         <div className="relative">
           <button
             onClick={() => setShowAlertDrawer((v) => !v)}
@@ -189,20 +212,14 @@ export const TopBar: React.FC<TopBarProps> = ({
               hasCritical
                 ? 'bg-rose-950/60 border-rose-500/50 text-rose-300 hover:bg-rose-900/60'
                 : activeAlertCount > 0
-                ? 'bg-amber-950/60 border-amber-500/50 text-amber-300 hover:bg-amber-900/60'
+                ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700'
                 : 'bg-slate-800/80 hover:bg-slate-700 border-slate-700 text-slate-300'
             }`}
-            title="Trung tâm cảnh báo sự cố"
+            title="Alert Notifications"
           >
             <Bell className={`w-4 h-4 ${hasCritical ? 'animate-bounce text-rose-400' : ''}`} />
             {activeAlertCount > 0 && (
-              <span
-                className={`absolute -top-1.5 -right-1.5 text-[10px] font-bold px-1.5 py-0.2 rounded-full border shadow-sm ${
-                  hasCritical
-                    ? 'bg-rose-600 text-white border-rose-400'
-                    : 'bg-amber-500 text-slate-950 border-amber-300'
-                }`}
-              >
+              <span className="absolute -top-1 -right-1 text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-[#f97316] text-white border border-slate-900 shadow-sm leading-tight">
                 {activeAlertCount}
               </span>
             )}
@@ -217,19 +234,19 @@ export const TopBar: React.FC<TopBarProps> = ({
               <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
                 <div className="flex items-center space-x-2">
                   <AlertTriangle className="w-4 h-4 text-amber-400" />
-                  <h3 className="font-bold text-white text-sm">Trung Tâm Cảnh Báo</h3>
+                  <h3 className="font-bold text-white text-sm">System Alerts & Logs</h3>
                 </div>
                 <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
-                  {activeAlertCount} sự cố hoạt động
+                  {activeAlertCount} active
                 </span>
               </div>
 
-              <div className="max-h-80 overflow-y-auto space-x-0 space-y-2.5 pr-1">
+              <div className="max-h-80 overflow-y-auto space-y-2.5 pr-1">
                 {activeAlertCount === 0 ? (
                   <div className="text-center py-6 text-slate-400 space-y-1">
                     <ShieldCheck className="w-8 h-8 text-emerald-400 mx-auto" />
-                    <p className="font-semibold text-slate-200">Hệ thống an toàn 100%</p>
-                    <p className="text-[11px]">Không có cảnh báo hay sự cố nào đang kích hoạt.</p>
+                    <p className="font-semibold text-slate-200">All Systems Nominal</p>
+                    <p className="text-[11px]">No active critical or warning alerts detected.</p>
                   </div>
                 ) : (
                   alertSummary?.alerts.map((alert: AlertItem) => {
@@ -273,14 +290,14 @@ export const TopBar: React.FC<TopBarProps> = ({
                           {alert.message}
                         </p>
                         <div className="flex items-center justify-between pt-1 border-t border-slate-800/60 text-[10px] text-slate-400">
-                          <span>Phân hệ: {alert.category}</span>
+                          <span>Module: {alert.category}</span>
                           <button
                             onClick={() => handleAcknowledge(alert.id)}
                             className="flex items-center space-x-1 text-slate-400 hover:text-emerald-300 transition-colors"
-                            title="Ẩn cảnh báo này"
+                            title="Acknowledge alert"
                           >
                             <Check className="w-3 h-3" />
-                            <span>Đã xử lý</span>
+                            <span>Dismiss</span>
                           </button>
                         </div>
                       </div>
@@ -292,14 +309,21 @@ export const TopBar: React.FC<TopBarProps> = ({
           )}
         </div>
 
-        {/* Refresh button */}
+        {/* User Profile Avatar (matching the circular avatar in Image 1 & 2) */}
+        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-400 to-amber-500 p-0.5 shadow cursor-pointer" title="Zero-Auth Admin Session">
+          <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-amber-400 font-bold text-xs">
+            <User className="w-4 h-4 text-orange-400" />
+          </div>
+        </div>
+
+        {/* Global Refresh button */}
         <button
           onClick={handleRefresh}
           disabled={loading}
           className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-colors"
-          title="Refresh all data"
+          title="Refresh telemetry"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-indigo-400' : ''}`} />
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-orange-400' : ''}`} />
         </button>
       </div>
     </header>
