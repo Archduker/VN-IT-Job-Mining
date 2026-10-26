@@ -1,0 +1,189 @@
+{
+  "source_platform": "vieclam24h",
+  "step": "integration",
+  "schema_version": "2.0-comprehensive-25-fields",
+  "timestamp": "2026-10-25T19:25:25.190016+00:00",
+  "total_files_scanned": 619,
+  "total_envelopes_parsed": 619,
+  "total_integrated_records": 619,
+  "total_fields_in_schema": 29,
+  "output_format": "json",
+  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/vieclam24h/vieclam24h_integrated_flat.json",
+  "field_completeness_audit": {
+    "job_id_global": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "source_platform": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "source_job_id": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "source_url": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "crawled_at": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "job_title": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "company_name": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "company_address": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "company_scale": {
+      "filled_count": 0,
+      "missing_count": 619,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Optional field: Trường scale trong company dict thường rỗng."
+    },
+    "raw_category_text": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_location_text": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "working_locations": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_posted_date": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_updated_at": {
+      "filled_count": 0,
+      "missing_count": 619,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Missing By Design: Chỉ lưu posted_date."
+    },
+    "raw_deadline": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_working_time": {
+      "filled_count": 20,
+      "missing_count": 599,
+      "completeness_pct": 3.23,
+      "null_diagnosis": "Optional field omission: Chỉ 6% NTD nhập giờ làm việc cụ thể do đặc thù linh hoạt."
+    },
+    "raw_salary_text": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_employment_type": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_work_mode": {
+      "filled_count": 0,
+      "missing_count": 619,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Implicit text: Không có trường danh mục Onsite/Remote trên form."
+    },
+    "raw_experience_text": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_seniority_text": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_education_text": {
+      "filled_count": 0,
+      "missing_count": 619,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Optional field: Ô nhập bằng cấp trong general_info là tùy chọn, đa số tin IT để trống hoặc viết trong JD."
+    },
+    "raw_headcount": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Có sẵn 100% qua general_info['hiring_quantity']."
+    },
+    "raw_age_text": {
+      "filled_count": 0,
+      "missing_count": 619,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Optional field: Chỉ một số ít bài đăng phổ thông có giới hạn tuổi."
+    },
+    "raw_gender_text": {
+      "filled_count": 0,
+      "missing_count": 619,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Optional field: Đa phần ghi nhận không yêu cầu giới tính."
+    },
+    "skills_list": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "benefits_list": {
+      "filled_count": 616,
+      "missing_count": 3,
+      "completeness_pct": 99.52,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_description_text": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_requirements_text": {
+      "filled_count": 619,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    }
+  },
+  "duration_seconds": 0.12
+}

@@ -1,0 +1,44 @@
+{
+  "source_platform": "jobsgo",
+  "audit_timestamp": "2026-10-25T18:03:03.293338+00:00",
+  "total_files_scanned": 1521,
+  "total_raw_envelopes": 1520,
+  "stub_jds_removed_policy_1b": 75,
+  "total_clean_records": 1445,
+  "salary_metrics": {
+    "total_with_numeric_salary": 954,
+    "salary_coverage_pct": 66.02,
+    "salary_header_regex_hits": 0,
+    "salary_jd_regex_implicit_hits": 6,
+    "salary_p1_vnd": 1000000.0,
+    "salary_q1_vnd": 13000000.0,
+    "salary_median_vnd": 18000000.0,
+    "salary_q3_vnd": 25000000.0,
+    "salary_p99_vnd": 67350000.00000013
+  },
+  "imputation_metrics": {
+    "records_imputed_by_genai": 813,
+    "imputation_rate_pct": 56.26
+  },
+  "language_distribution": {
+    "vi": 1137,
+    "bilingual": 193,
+    "en": 115
+  },
+  "job_family_distribution": {
+    "JF00_OTHER_IT": 619,
+    "JF05_DEVOPS": 231,
+    "JF10_PROD_BA": 221,
+    "JF08_QA_QC": 148,
+    "JF12_EMBEDDED": 50,
+    "JF07_DATA_AI": 42,
+    "JF09_SECURITY": 39,
+    "JF11_UI_UX": 31,
+    "JF01_BACKEND": 24,
+    "JF04_MOBILE": 15,
+    "JF03_FULLSTACK": 13,
+    "JF06_DATA_ENG": 9,
+    "JF02_FRONTEND": 3
+  },
+  "execution_time_seconds": 1.34
+}

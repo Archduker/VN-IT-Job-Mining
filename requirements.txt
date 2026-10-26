@@ -6,14 +6,32 @@
 requests==2.32.3
 beautifulsoup4==4.13.4
 lxml==5.4.0
-playwright==1.50.0          # TopCV (Cloudflare-protected)
+playwright>=1.53.0           # TopCV (Cloudflare-protected)
+cloakbrowser>=0.6.0          # Native C++ patched stealth Chromium bypass Cloudflare
+curl-cffi>=0.7.0
+nodriver>=0.50.0            # TLS/JA3/JA4 Chrome impersonation bypass Cloudflare
 
 # --- Data Validation & Typing ---
 pydantic==2.11.3
 
-# --- Data Storage ---
-boto3==1.38.22               # AWS S3 upload
+# --- Cloud Data Lakehouse (Cloudflare R2 Object Storage) ---
+boto3>=1.38.0                # Cloudflare R2 S3-compatible client
 python-dotenv==1.1.0         # Load .env variables
+
+# --- Database & Airflow Providers (Zero-SQLite Policy) ---
+psycopg2-binary>=2.9.9       # PostgreSQL driver for Airflow & Observatory
+apache-airflow-providers-amazon>=9.0.0 # Airflow S3 Remote Logging for Cloudflare R2
+
+# --- Data Processing & Parquet/JSONL ---
+pandas>=2.2.0
+pyarrow>=17.0.0
+duckdb>=1.1.0
+
+# --- EDA & Visualizations (5 Bounded Charts) ---
+seaborn>=0.13.0
+matplotlib>=3.9.0
+scipy>=1.14.0
+scikit-learn>=1.4.0
 
 # --- Scheduling / Orchestration ---
 # Airflow được cài riêng qua scripts/setup_airflow.sh

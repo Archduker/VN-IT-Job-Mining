@@ -63,7 +63,7 @@ info "AIRFLOW_HOME set to: ${AIRFLOW_HOME}"
 mkdir -p "${AIRFLOW_HOME}"
 
 # Khởi tạo DB và tạo file config mặc định trước
-info "Initialising Airflow database (SQLite) ..."
+info "Initialising Airflow database (PostgreSQL - Zero-SQLite Policy) ..."
 AIRFLOW_HOME="${AIRFLOW_HOME}" airflow db migrate 2>/dev/null || \
 AIRFLOW_HOME="${AIRFLOW_HOME}" airflow db init
 
