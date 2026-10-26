@@ -28,13 +28,32 @@ def normalize_city(location_text: Optional[str]) -> str:
     if not location_text:
         return "Không xác định"
 
-    s = str(location_text).lower()
+    original = str(location_text).strip()
+    if not original:
+        return "Không xác định"
+    s = original.casefold()
 
-    if any(k in s for k in ["hồ chí minh", "hcm", "tp.hcm", "sài gòn", "quận 1", "bình thạnh", "tân bình"]):
+    if any(
+        k in s
+        for k in (
+            "hồ chí minh",
+            "ho chi minh",
+            "sài gòn",
+            "sai gon",
+            "quận 1",
+            "bình thạnh",
+            "tân bình",
+        )
+    ) or re.search(r"(?<!\w)(?:hcm|tp\s*\.?\s*hcm)(?!\w)", s):
         return "Hồ Chí Minh"
-    if any(k in s for k in ["hà nội", "hn", "cầu giấy", "ba đình", "nam từ liêm", "đống đa"]):
+    if any(
+        k in s
+        for k in ("hà nội", "ha noi", "cầu giấy", "ba đình", "nam từ liêm", "đống đa")
+    ) or re.search(r"(?<!\w)hn(?!\w)", s):
         return "Hà Nội"
-    if any(k in s for k in ["đà nẵng", "dn", "ngũ hành sơn"]):
+    if any(k in s for k in ("đà nẵng", "da nang", "ngũ hành sơn")) or re.search(
+        r"(?<!\w)dn(?!\w)", s
+    ):
         return "Đà Nẵng"
     if any(k in s for k in ["bình dương", "dĩ an", "thủ dầu một"]):
         return "Bình Dương"
@@ -47,7 +66,7 @@ def normalize_city(location_text: Optional[str]) -> str:
     if any(k in s for k in ["remote", "từ xa", "toàn quốc", "online"]):
         return "Remote"
 
-    return location_text.strip()
+    return original
 
 
 def normalize_seniority(seniority_text: Optional[str], title_text: Optional[str] = "") -> str:
