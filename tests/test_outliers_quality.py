@@ -68,12 +68,30 @@ class TestSalaryInputErrorFixes:
         assert untouched == 800_000_000.0 and label is None
 
     def test_r3_annual_salary_mistyped_as_monthly(self):
-        # 360 triệu + JD có từ "năm" -> chia 12 (ví dụ bệnh án careerviet)
+        # 360 triệu + JD có "triệu/năm" -> chia 12 (ví dụ bệnh án careerviet)
         fixed, label = fix_salary_input_errors_detailed(
             360_000_000.0, jd_text="Thu nhập 360 triệu/năm, thưởng tháng 13"
         )
         assert label == "annual_to_monthly"
         assert fixed == pytest.approx(30_000_000.0)
+
+    def test_r3_no_false_positive_on_experience_years(self):
+        # Hồi quy lỗi thiết kế cũ: từ trần "năm" trong "5 năm kinh nghiệm" KHÔNG
+        # được kích hoạt R3 — lương tháng 250 triệu thật của ghế cấp cao phải giữ
+        # nguyên (TRUE outlier theo bệnh án EDA, chỉ winsorize chứ không chia 12).
+        untouched, label = fix_salary_input_errors_detailed(
+            250_000_000.0, jd_text="Yêu cầu 5 năm kinh nghiệm, lương hấp dẫn"
+        )
+        assert label is None
+        assert untouched == 250_000_000.0
+
+    def test_r3_fires_on_diacritic_annual_phrasing(self):
+        # Dạng tiếng Việt có dấu "lương năm" vẫn phải bắt đúng
+        fixed, label = fix_salary_input_errors_detailed(
+            286_000_000.0, jd_text="Mức lương năm 286 triệu, trả theo quý"
+        )
+        assert label == "annual_to_monthly"
+        assert fixed == pytest.approx(286_000_000.0 / 12.0)
 
     def test_r3_takes_priority_over_r2(self):
         # 450 triệu vừa >300M vừa có "annual" -> phải là R3 (chia 12), không phải R2

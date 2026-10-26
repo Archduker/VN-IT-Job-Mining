@@ -42,12 +42,13 @@ Cả 8 sàn đều được EDA cảnh báo cùng một mô hình phân phối v
 | :-: | :--- | :--- | :--- |
 | **R1. Gõ USD vào ô VNĐ** | $100 < \text{salary} < 50.000$ (VNĐ/tháng không thể rẻ thế) | $\times\ 25.400$ | `salary_fix_applied = 'usd_to_vnd'` |
 | **R2. Thừa số 0 (Over-zeroing)** | $\text{salary} > 300.000.000$ **và** cấp bậc non-Director (dùng `standardized_seniority` của Phát; careerviet 80.5% là Nhân viên → rule này rất hữu dụng) | Chia về dải hợp lý theo logic bậc 10 | `salary_fix_applied = 'over_zeroing'` |
-| **R3. Nhầm lương năm vào tháng** | $\text{salary} > 200.000.000$ **và** `jd_text` chứa "năm/annual/year" (careerviet trụ cột 2 nêu ví dụ "300–450 triệu/năm") | $/\ 12$ | `salary_fix_applied = 'annual_to_monthly'` |
+| **R3. Nhầm lương năm vào tháng** | $\text{salary} > 200.000.000$ **và** `jd_text` chứa dấu hiệu lương THEO NĂM **tường minh** — bộ token `ANNUAL_SALARY_TOKENS`: "annual/yearly/per year", "/năm", "lương năm", "thu nhập năm", "theo năm"... (careerviet trụ cột 2 nêu ví dụ "300–450 triệu/năm"). **Cấm dùng từ trần "năm/year"**: JD nào cũng chứa "X năm kinh nghiệm" → chia 12 oan lương thật ghế cấp cao | $/\ 12$ | `salary_fix_applied = 'annual_to_monthly'` |
 
-> 📌 **Khoảng trống code hiện tại** (`preprocessing/missing_outlier/outlier_handler.py`):
-> - R2 (Over-zeroing) **chưa cài đặt** — thêm vào `fix_common_salary_input_errors()`;
-> - Dải R1 hiện wrote `100–10.000`, TASKS.md yêu cầu `< 50.000` — nới theo chuẩn nghiệm thu;
-> - Winsorize **chưa gắn cờ** `is_outlier_capped` — sửa `winsorize_series()` hoặc bọc hàm mới trả kèm mask cờ.
+> 📌 **Trạng thái cài đặt** (cập nhật sau nghiệm thu — toàn bộ trong `outlier_handler.py`):
+> - ✅ R2 (Over-zeroing) đã cài đặt trong `fix_salary_input_errors_detailed()` (chia bậc 10, tối đa 3 bậc, miễn trừ Director);
+> - ✅ Dải R1 đã nới đúng chuẩn nghiệm thu `100 < x < 50.000`;
+> - ✅ Winsorize đã gắn cờ `is_outlier_capped` qua `winsorize_with_capping()`/`winsorize_by_source()`;
+> - ✅ R3 siết token lương-năm-tường minh (hồi quy tại `test_r3_no_false_positive_on_experience_years`).
 
 ---
 

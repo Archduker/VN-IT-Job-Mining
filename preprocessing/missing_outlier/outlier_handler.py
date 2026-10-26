@@ -64,6 +64,13 @@ USD_TO_VND_RATE = 25_400.0
 DIRECTOR_TOKENS = ("director", "giám đốc", "chief", "executive",
                    "tổng giám đốc", "phó tổng", "vp", "head of")
 
+# Chuỗi đặc trưng "lương THEO NĂM" tường minh cho rule R3. Cố Ý KHÔNG dùng từ
+# trần "năm"/"year": mọi JD đều chứa "X năm kinh nghiệm" -> sẽ chia 12 oan
+# lương tháng thật của ghế cấp cao (vi phạm nguyên tắc TRUE-outlier bệnh án EDA).
+ANNUAL_SALARY_TOKENS = ("annual", "yearly", "per year", "each year",
+                        "/năm", "/ năm", "lương năm", "thu nhập năm",
+                        "theo năm", "tính năm", "quy đổi năm")
+
 
 def fix_salary_input_errors_detailed(
     salary_vnd: Optional[float],
@@ -74,7 +81,8 @@ def fix_salary_input_errors_detailed(
 
     Quy tắc (TASKS.md 6.3.5 / outlier_spec.md mục 3):
       R1. Gõ USD vào ô VNĐ : 100 < salary < 50,000 -> nhân 25,400 ("usd_to_vnd").
-      R3. Nhầm lương năm   : salary > 200 triệu và JD chứa "năm/annual/year"
+      R3. Nhầm lương năm   : salary > 200 triệu và JD chứa dấu hiệu lương THEO
+                            NĂM tường minh ("annual", "/năm", "lương năm"...)
                             -> chia 12 ("annual_to_monthly").
       R2. Thừa số 0        : salary > 300 triệu, vị trí non-Director, không có từ
                             khóa năm -> chia bậc 10 về dải hợp lý ("over_zeroing").
@@ -99,8 +107,9 @@ def fix_salary_input_errors_detailed(
     jd_lower = (jd_text or "").lower()
     sen_lower = (seniority_text or "").lower()
 
-    # R3: Nhầm lương năm vào ô lương tháng
-    if val > 200_000_000.0 and any(k in jd_lower for k in ("năm", "annual", "year")):
+    # R3: Nhầm lương năm vào ô lương tháng (chỉ khi JD nêu ngữ cảnh lương năm
+    # tường minh — xem ANNUAL_SALARY_TOKENS để tránh chia oan "X năm kinh nghiệm")
+    if val > 200_000_000.0 and any(k in jd_lower for k in ANNUAL_SALARY_TOKENS):
         return val / 12.0, "annual_to_monthly"
 
     # R2: Gõ thừa số 0 cho vị trí non-Director

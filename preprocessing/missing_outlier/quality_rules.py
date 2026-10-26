@@ -65,6 +65,9 @@ def add_quality_flags(df: pd.DataFrame) -> pd.DataFrame:
         out["violation_negative_salary"] = ((smin < 0) | (smax < 0)).fillna(False)
     elif smax is not None:
         out["violation_negative_salary"] = (smax < 0).fillna(False)
+    elif smin is not None:
+        # Trường hợp hiếm: chỉ có một cột lương trong bảng vẫn phải bắt được lương âm
+        out["violation_negative_salary"] = (smin < 0).fillna(False)
 
     if _has_num_col(out, "min_experience_years"):
         exp = pd.to_numeric(out["min_experience_years"], errors="coerce")
