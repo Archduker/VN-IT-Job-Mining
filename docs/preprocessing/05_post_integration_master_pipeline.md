@@ -54,6 +54,32 @@ Sau khi hoàn thành bước **Integration**, ta thu được **Một Bảng Ph�
 ## 2. Chi Tiết Các Giai Đoạn Sau Integration
 
 ### 2.1. Giai Đoạn 2: Chuyển Hóa & Bóc Tách Kiểu Dữ Liệu (Transformation)
+- Hàm `transform_job_record` trong `preprocessing.transformation.record_transformer` bổ sung các trường chuẩn hóa
+  trên bản ghi phẳng và giữ nguyên các trường `raw_*` để truy vết dữ liệu nguồn.
+- Ngày đăng, cập nhật, hết hạn và thời điểm thu thập được chuẩn hóa thành chuỗi ISO `YYYY-MM-DD`;
+  kiểu tuyển dụng, hình thức làm việc, số năm kinh nghiệm, số lượng tuyển và địa điểm có trường chuẩn riêng.
+- Chạy Transformation riêng sau khi đã tạo dữ liệu Integration:
+  `python -m preprocessing.integration.run_integration`, sau đó
+  `python -m preprocessing.transformation.run_transformation`.
+- Đầu vào là `data/integration/<source>/<source>_integrated_flat.json`; đầu ra theo nguồn là
+  `data/transformation/<source>/<source>_transformed_flat.json`, kèm report tại `reports/transformation/`.
+  Chạy `python -m preprocessing.transformation.run_transformation --source glints` để chỉ xử lý một nguồn.
+- Mỗi nguồn xuất thêm `data/transformation/<source>/<source>_salary_sorted_vnd.json`; chạy tất cả nguồn
+  xuất `data/transformation/salary_sorted_all_sources_vnd.json`. Báo cáo chỉ gồm tin có ít nhất một
+  đầu mút lương VND đã parse được, sắp xếp tăng dần theo `salary_min_vnd` rồi `salary_max_vnd`.
+  Tin thỏa thuận hoặc không parse được vẫn được giữ nguyên trong file transformed đầy đủ.
+- USD được quy đổi theo tỷ giá dự án 25.400 VND/USD. SGD dùng tỷ giá lịch sử SGD/USD theo ngày đăng
+  từ Frankfurter (`https://api.frankfurter.dev/v1`), nhân với tỷ giá USD/VND cố định 25.400 của dự án.
+  Đây là tỷ giá VND quy đổi chéo, không phải báo giá SGD/VND lịch sử trực tiếp từ ngân hàng. Tỷ giá
+  SGD/USD áp dụng và ngày tỷ giá được ghi ở `salary_fx_rate_to_vnd`, `salary_fx_rate_date` và
+  `salary_fx_source`; số tiền SGD gốc vẫn được giữ ở `salary_min_original`, `salary_max_original` và
+  `salary_currency_original`.
+- Nếu ngày đăng không có tỷ giá (ngày nghỉ/cuối tuần), dùng ngày có tỷ giá gần nhất trước đó. Nếu thiếu
+  ngày đăng thì lấy ngày crawl; nếu không có cả hai hoặc API không có tỷ giá thì dừng với lỗi rõ ràng,
+  không âm thầm ghi lương SGD thành VND. Hiện EDA nhận diện VND, USD và SGD; mã tiền khác nếu xuất hiện
+  sẽ được giữ nguyên dữ liệu gốc và thống kê là chưa quy đổi, không tự chọn tỷ giá không có căn cứ.
+- Runner kiểm tra đầu vào JSON, bảo toàn số lượng bản ghi và raw fields; không thực hiện imputation,
+  xóa bản ghi hay winsorization.
 - **Cascade Salary Extraction:**
   - Giải quyết bài toán *"Lương nằm trong mô tả công việc"*: Với $60\% - 70\%$ bài đăng ghi "Thỏa thuận" ở header, module `UniversalSalaryParser` kích hoạt bộ quét regex trên clean JD text để bóc tách lương ngầm định.
   - Giải quyết bài toán *"Lương năm"*: Nhận diện các bài đăng ghi thu nhập 300 - 500 triệu/năm và tự động quy đổi về lương tháng bằng phép chia cho 12.
