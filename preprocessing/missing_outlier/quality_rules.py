@@ -73,8 +73,9 @@ def add_quality_flags(df: pd.DataFrame) -> pd.DataFrame:
         ).fillna(False)
 
     if "raw_posted_date" in out.columns and "raw_deadline" in out.columns:
-        posted = pd.to_datetime(out["raw_posted_date"], errors="coerce")
-        deadline = pd.to_datetime(out["raw_deadline"], errors="coerce")
+        # Ngày nguồn VN mang dạng dd/mm/YYYY -> bắt buộc dayfirst để không lật ngược ngày/tháng
+        posted = pd.to_datetime(out["raw_posted_date"], errors="coerce", dayfirst=True)
+        deadline = pd.to_datetime(out["raw_deadline"], errors="coerce", dayfirst=True)
         both = posted.notna() & deadline.notna()
         out["violation_date_order"] = (both & (deadline < posted)).fillna(False)
 
