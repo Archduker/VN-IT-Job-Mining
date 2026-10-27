@@ -58,8 +58,21 @@ def run_stage_missing_outlier() -> int:
     return 0 if res is None else res
 
 
+def run_stage_gemini_enrichment(mock_mode: bool = False, limit: Optional[int] = None, force: bool = False) -> int:
+    logger.info("=== GIAI ĐOẠN 3.5: GEMINI ALL-IN-ONE AGENT ENRICHMENT & SALARY PREDICTION ===")
+    from preprocessing.missing_outlier.run_gemini_enrichment import run_enrichment_pipeline
+    res = run_enrichment_pipeline(
+        input_file="data/staging/raw_for_normalization.json",
+        checkpoint_file="data/staging/gemini_checkpoint.jsonl",
+        mock_mode=mock_mode,
+        limit=limit,
+        force=force,
+    )
+    return 0 if res["errors_count"] == 0 else 1
+
+
 def run_stage_normalization() -> int:
-    logger.info("=== GIAI ĐOẠN 4: DEEP NORMALIZATION & DEDUPLICATION (Chuẩn hóa sâu 10 nhóm) ===")
+    logger.info("=== GIAI ĐOẠN 4: DEEP NORMALIZATION & DEDUPLICATION (Chuẩn hóa sâu 10 nhóm / 11 khóa) ===")
     from preprocessing.normalization.run_deep_normalization import main as normalization_main
     res = normalization_main()
     return 0 if res is None else res
@@ -78,12 +91,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--all",
         action="store_true",
-        help="Chạy toàn bộ 5 bước từ Integration đến QA Quality Audit.",
+        help="Chạy toàn bộ các bước từ Integration đến QA Quality Audit.",
     )
     parser.add_argument(
         "--step",
-        choices=["integration", "transformation", "missing_outlier", "normalization", "qa"],
+        choices=["integration", "transformation", "missing_outlier", "gemini_enrichment", "normalization", "qa"],
         help="Chạy một bước cụ thể.",
+    )
+    parser.add_argument(
+        "--mock",
+        action="store_true",
+        help="Chạy Gemini Agent ở chế độ mock offline không cần API key.",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Giới hạn số bản ghi xử lý trong Gemini Agent.",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Chạy lại toàn bộ không bỏ qua checkpoint.",
     )
     return parser.parse_args()
 
@@ -110,6 +139,7 @@ def main() -> int:
             "integration": ("integration", run_stage_integration),
             "transformation": ("transformation", run_stage_transformation),
             "missing_outlier": ("missing_outlier", run_stage_missing_outlier),
+            "gemini_enrichment": ("gemini_enrichment", lambda: run_stage_gemini_enrichment(mock_mode=args.mock, limit=args.limit, force=args.force)),
             "normalization": ("normalization", run_stage_normalization),
             "qa": ("qa", run_stage_qa),
         }

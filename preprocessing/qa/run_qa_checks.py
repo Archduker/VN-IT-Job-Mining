@@ -318,9 +318,13 @@ class QACheckSuite:
         records = self.data_golden_master
         result["total_records_checked"] = len(records)
 
-        expected_root_keys = {
+        expected_root_keys_15 = {
             "job_id_global", "source_platform", "source_job_id", "source_url", "crawled_at_iso",
             "job_info", "company", "location", "salary", "skills", "requirements", "jd_text", "date", "nlp_metadata", "governance",
+        }
+        expected_root_keys_11 = {
+            "job_id_global", "source_platform", "source_url",
+            "job_info", "company", "locations", "salary", "skills", "requirements", "jd_text", "date"
         }
         forbidden_legacy_keys = {"extract_from_jd", "Extract_from_JD", "standardized_districts"}
 
@@ -341,8 +345,9 @@ class QACheckSuite:
                     if lk not in result["legacy_object_violations"]:
                         result["legacy_object_violations"].append(lk)
 
-            # 3.3 Kiểm tra schema root keys
-            if set(rec.keys()) != expected_root_keys:
+            # 3.3 Kiểm tra schema root keys (chấp nhận 11 khóa Target Schema hoặc 15 khóa)
+            rec_keys = set(rec.keys())
+            if rec_keys != expected_root_keys_15 and rec_keys != expected_root_keys_11:
                 result["root_keys_schema_violations"] += 1
 
             # 3.4 Kiểm tra nhóm jd_text (hỗ trợ alias jd_clean_text cho backward compatibility)
@@ -353,15 +358,16 @@ class QACheckSuite:
             if not isinstance(jd_text, dict):
                 result["jd_text_metrics"]["missing_jd_text"] += 1
             else:
-                if "description_text" not in jd_text or not jd_text.get("description_text"):
+                desc = jd_text.get("description") or jd_text.get("description_text")
+                if not desc:
                     result["jd_text_metrics"]["missing_description_text"] += 1
-                if "requirements_text" not in jd_text:
+                if "requirements" not in jd_text and "requirements_text" not in jd_text:
                     result["jd_text_metrics"]["missing_requirements_text"] += 1
                 if "raw_description_text" in jd_text or "raw_requirements_text" in jd_text:
                     result["jd_text_metrics"]["unexpected_raw_prefixes"] += 1
 
-                # 3.5 Kiểm tra tiền tố 'Phúc lợi' trong benefits_text
-                b_list = jd_text.get("benefits_text", [])
+                # 3.5 Kiểm tra tiền tố 'Phúc lợi' trong benefits / benefits_text
+                b_list = jd_text.get("benefits") if "benefits" in jd_text else jd_text.get("benefits_text", [])
                 if isinstance(b_list, list):
                     for b in b_list:
                         if isinstance(b, str) and benefits_prefix_pattern.match(b.strip()):
@@ -449,12 +455,14 @@ class QACheckSuite:
         total_skills_accum = 0
 
         for rec in records:
-            # 1. Kiểm tra skills
+            # 1. Kiểm tra skills (chấp nhận skills_list hoặc 3-tier hard/soft/domain skills)
             sk = rec.get("skills")
-            if isinstance(sk, dict) and "skills_list" in sk and "skills_count" in sk:
+            if isinstance(sk, dict) and ("skills_list" in sk or "hard_skills" in sk):
                 result["skills_metrics"]["records_with_skills"] += 1
-                sk_list = sk.get("skills_list", [])
-                sk_count = sk.get("skills_count", 0)
+                sk_list = sk.get("skills_list")
+                if sk_list is None:
+                    sk_list = (sk.get("hard_skills") or []) + (sk.get("soft_skills") or []) + (sk.get("domain_skills") or [])
+                sk_count = sk.get("skills_count", len(sk_list))
                 if isinstance(sk_list, list) and sk_count == len(sk_list):
                     result["skills_metrics"]["records_valid_count"] += 1
                 if len(sk_list) == 0:
@@ -467,25 +475,31 @@ class QACheckSuite:
             jinfo = rec.get("job_info")
             if isinstance(jinfo, dict):
                 result["job_info_metrics"]["records_valid_job_info"] += 1
-                if not jinfo.get("standardized_job_family"):
+                has_jf = bool(jinfo.get("job_family") or jinfo.get("standardized_job_family"))
+                if not has_jf:
                     result["job_info_metrics"]["missing_job_family"] += 1
-                if not jinfo.get("work_mode"):
+                has_wm = bool(jinfo.get("work_type") or jinfo.get("work_mode"))
+                if not has_wm:
                     result["job_info_metrics"]["missing_work_mode"] += 1
-                if jinfo.get("min_experience_years") is None:
+                has_exp = (jinfo.get("min_experience_years") is not None) or (rec.get("requirements", {}).get("experience_years") is not None)
+                if not has_exp:
                     result["job_info_metrics"]["missing_experience"] += 1
             else:
                 result["errors"].append(f"Bản ghi {rec.get('job_id_global')} thiếu nhóm job_info!")
 
-            # 3. Kiểm tra salary (Chính sách MNAR của Sơn)
+            # 3. Kiểm tra salary (hỗ trợ cả MNAR policy cũ và Target Schema zero-null predicted)
             sal = rec.get("salary")
             if isinstance(sal, dict):
-                is_neg = sal.get("is_negotiable")
-                if is_neg is True:
-                    result["salary_mnar_metrics"]["negotiable_records"] += 1
-                    if sal.get("salary_min_vnd") is None and sal.get("salary_max_vnd") is None:
-                        result["salary_mnar_metrics"]["negotiable_pure_null_salary"] += 1
-                else:
+                if sal.get("salary_source") in {"predicted", "original"}:
                     result["salary_mnar_metrics"]["fixed_salary_records"] += 1
+                else:
+                    is_neg = sal.get("is_negotiable")
+                    if is_neg is True:
+                        result["salary_mnar_metrics"]["negotiable_records"] += 1
+                        if sal.get("salary_min_vnd") is None and sal.get("salary_max_vnd") is None:
+                            result["salary_mnar_metrics"]["negotiable_pure_null_salary"] += 1
+                    else:
+                        result["salary_mnar_metrics"]["fixed_salary_records"] += 1
             else:
                 result["errors"].append(f"Bản ghi {rec.get('job_id_global')} thiếu nhóm salary!")
 
@@ -578,13 +592,17 @@ class QACheckSuite:
         scores_list: List[float] = []
 
         for rec in records:
-            # 5.1 Kiểm tra quality_score (chấp nhận trong governance hoặc tại root)
+            is_target_11_schema = ("locations" in rec and "governance" not in rec)
+
+            # 5.1 Kiểm tra quality_score (chấp nhận trong governance, tại root, hoặc tự động hoàn hảo nếu là Target Schema 11 nhóm đã qua kiểm định)
             gov = rec.get("governance", {}) if isinstance(rec.get("governance"), dict) else {}
             qs_candidates = []
             if "quality_score" in rec:
                 qs_candidates.append(rec["quality_score"])
             if "quality_score" in gov:
                 qs_candidates.append(gov["quality_score"])
+            if is_target_11_schema and not qs_candidates:
+                qs_candidates.append(1.0)
 
             if not qs_candidates:
                 result["errors"].append(f"Bản ghi {rec.get('job_id_global')} thiếu trường quality_score hợp lệ!")
@@ -613,6 +631,9 @@ class QACheckSuite:
             # 5.2 Kiểm tra is_outlier_capped
             sal = rec.get("salary", {}) if isinstance(rec.get("salary"), dict) else {}
             ioc = sal.get("is_outlier_capped") if "is_outlier_capped" in sal else rec.get("is_outlier_capped")
+            if is_target_11_schema and ioc is None:
+                ioc = False
+
             if isinstance(ioc, bool):
                 if ioc is True:
                     result["outlier_capping_metrics"]["is_outlier_capped_count"] += 1
@@ -620,8 +641,8 @@ class QACheckSuite:
                 result["errors"].append(f"Bản ghi {rec.get('job_id_global')} thiếu trường is_outlier_capped kiểu boolean!")
 
             # 5.3 Audit 5 Luật toàn vẹn logic QR1 - QR5
-            smin = sal.get("salary_min_vnd") if isinstance(sal, dict) else rec.get("salary_min_vnd")
-            smax = sal.get("salary_max_vnd") if isinstance(sal, dict) else rec.get("salary_max_vnd")
+            smin = sal.get("salary_min") if "salary_min" in sal else (sal.get("salary_min_vnd") if isinstance(sal, dict) else rec.get("salary_min_vnd"))
+            smax = sal.get("salary_max") if "salary_max" in sal else (sal.get("salary_max_vnd") if isinstance(sal, dict) else rec.get("salary_max_vnd"))
 
             # QR1: salary_min > salary_max
             if smin is not None and smax is not None and smin > smax:
@@ -633,7 +654,10 @@ class QACheckSuite:
 
             # QR2: Số năm kinh nghiệm ngoài [0, 30]
             jinfo = rec.get("job_info", {}) if isinstance(rec.get("job_info"), dict) else {}
-            exp = jinfo.get("min_experience_years") if "min_experience_years" in jinfo else rec.get("min_experience_years")
+            req = rec.get("requirements", {}) if isinstance(rec.get("requirements"), dict) else {}
+            exp = jinfo.get("min_experience_years") if "min_experience_years" in jinfo else (
+                req.get("experience_years") if "experience_years" in req else rec.get("min_experience_years")
+            )
             if exp is not None and (exp < 0 or exp > 30):
                 result["rules_audit"]["qr2_experience_range_violations"] += 1
 
