@@ -1,14 +1,17 @@
 {
   "source_platform": "jobsgo",
   "step": "integration",
-  "schema_version": "2.0-comprehensive-25-fields",
-  "timestamp": "2026-10-25T19:25:23.413873+00:00",
+  "schema_version": "3.0-grouped-and-flat-canonical",
+  "timestamp": "2026-10-27T03:55:34.102217+00:00",
   "total_files_scanned": 1521,
   "total_envelopes_parsed": 1520,
   "total_integrated_records": 1520,
-  "total_fields_in_schema": 29,
+  "total_fields_in_schema": 37,
   "output_format": "json",
-  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/jobsgo/jobsgo_integrated_flat.json",
+  "output_files": {
+    "grouped": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/jobsgo/jobsgo_integrated_grouped.json",
+    "flat": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/jobsgo/jobsgo_integrated_flat.json"
+  },
   "field_completeness_audit": {
     "job_id_global": {
       "filled_count": 1520,
@@ -40,22 +43,10 @@
       "completeness_pct": 100.0,
       "null_diagnosis": "Đầy đủ 100%."
     },
-    "job_title": {
-      "filled_count": 1520,
-      "missing_count": 0,
-      "completeness_pct": 100.0,
-      "null_diagnosis": "Đầy đủ 100%."
-    },
     "company_name": {
       "filled_count": 1514,
       "missing_count": 6,
       "completeness_pct": 99.61,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
-    },
-    "company_address": {
-      "filled_count": 1500,
-      "missing_count": 20,
-      "completeness_pct": 98.68,
       "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     },
     "company_scale": {
@@ -64,10 +55,28 @@
       "completeness_pct": 0.0,
       "null_diagnosis": "Optional field: Đa phần nhà tuyển dụng chưa cập nhật quy mô."
     },
-    "raw_category_text": {
-      "filled_count": 1513,
-      "missing_count": 7,
-      "completeness_pct": 99.54,
+    "company_address": {
+      "filled_count": 1500,
+      "missing_count": 20,
+      "completeness_pct": 98.68,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "company_url": {
+      "filled_count": 0,
+      "missing_count": 1520,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "company_logo_image": {
+      "filled_count": 0,
+      "missing_count": 1520,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Missing By Design: Payload không bao gồm URL avatar công ty."
+    },
+    "company_industry": {
+      "filled_count": 1489,
+      "missing_count": 31,
+      "completeness_pct": 97.96,
       "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     },
     "raw_location_text": {
@@ -81,6 +90,60 @@
       "missing_count": 101,
       "completeness_pct": 93.36,
       "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "geo_coordinates": {
+      "filled_count": 0,
+      "missing_count": 1520,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Missing By Design: Sàn không lưu tọa độ địa lý dạng số."
+    },
+    "skills_list": {
+      "filled_count": 1513,
+      "missing_count": 7,
+      "completeness_pct": 99.54,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "job_title": {
+      "filled_count": 1520,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_description_text": {
+      "filled_count": 1455,
+      "missing_count": 65,
+      "completeness_pct": 95.72,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_requirements_text": {
+      "filled_count": 1451,
+      "missing_count": 69,
+      "completeness_pct": 95.46,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "benefits_list": {
+      "filled_count": 1443,
+      "missing_count": 77,
+      "completeness_pct": 94.93,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_salary_text": {
+      "filled_count": 1514,
+      "missing_count": 6,
+      "completeness_pct": 99.61,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "salary_currency": {
+      "filled_count": 1016,
+      "missing_count": 504,
+      "completeness_pct": 66.84,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "is_salary_visible": {
+      "filled_count": 1520,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
     },
     "raw_posted_date": {
       "filled_count": 1512,
@@ -100,40 +163,22 @@
       "completeness_pct": 99.61,
       "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     },
-    "raw_working_time": {
-      "filled_count": 1058,
-      "missing_count": 462,
-      "completeness_pct": 69.61,
-      "null_diagnosis": "Có sẵn trong trường working_time (71% tin có dữ liệu)."
-    },
-    "raw_salary_text": {
-      "filled_count": 1514,
-      "missing_count": 6,
-      "completeness_pct": 99.61,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
-    },
-    "raw_employment_type": {
-      "filled_count": 1512,
-      "missing_count": 8,
-      "completeness_pct": 99.47,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
-    },
     "raw_work_mode": {
       "filled_count": 0,
       "missing_count": 1520,
       "completeness_pct": 0.0,
       "null_diagnosis": "Implicit text: Không có trường phân loại riêng trên header."
     },
-    "raw_experience_text": {
-      "filled_count": 1514,
-      "missing_count": 6,
-      "completeness_pct": 99.61,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
-    },
     "raw_seniority_text": {
       "filled_count": 1512,
       "missing_count": 8,
       "completeness_pct": 99.47,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_experience_text": {
+      "filled_count": 1514,
+      "missing_count": 6,
+      "completeness_pct": 99.61,
       "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     },
     "raw_education_text": {
@@ -148,6 +193,12 @@
       "completeness_pct": 55.46,
       "null_diagnosis": "Khai báo 55% trong hiring_quantity; 45% còn lại để trống."
     },
+    "raw_working_time": {
+      "filled_count": 1058,
+      "missing_count": 462,
+      "completeness_pct": 69.61,
+      "null_diagnosis": "Có sẵn trong trường working_time (71% tin có dữ liệu)."
+    },
     "raw_age_text": {
       "filled_count": 0,
       "missing_count": 1520,
@@ -160,30 +211,30 @@
       "completeness_pct": 0.0,
       "null_diagnosis": "Gender equality compliance: Form tuyển dụng không phân biệt giới tính."
     },
-    "skills_list": {
+    "raw_employment_type": {
+      "filled_count": 1512,
+      "missing_count": 8,
+      "completeness_pct": 99.47,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_category_text": {
       "filled_count": 1513,
       "missing_count": 7,
       "completeness_pct": 99.54,
       "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     },
-    "benefits_list": {
-      "filled_count": 1443,
-      "missing_count": 77,
-      "completeness_pct": 94.93,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    "is_content_image": {
+      "filled_count": 0,
+      "missing_count": 1520,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Mặc định False: Sàn tuyển dụng dùng văn bản HTML thuần."
     },
-    "raw_description_text": {
-      "filled_count": 1455,
-      "missing_count": 65,
-      "completeness_pct": 95.72,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
-    },
-    "raw_requirements_text": {
-      "filled_count": 1451,
-      "missing_count": 69,
-      "completeness_pct": 95.46,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    "auxiliary_features": {
+      "filled_count": 1520,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
     }
   },
-  "duration_seconds": 0.24
+  "duration_seconds": 0.4
 }

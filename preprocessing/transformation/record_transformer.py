@@ -8,7 +8,6 @@ from collections.abc import Mapping
 from datetime import date, datetime
 from typing import Any
 
-from preprocessing.normalization.text_cleaner import normalize_city
 from preprocessing.transformation.bullet_stitcher import stitch_fragmented_bullets
 from preprocessing.transformation.html_cleaner import strip_html_tags
 from preprocessing.transformation.salary_parser import parse_salary_cascade
@@ -371,6 +370,7 @@ def transform_job_record(
     if not location:
         locations = _normalize_list(record.get("working_locations"))
         location = locations[0] if locations else None
+    from preprocessing.normalization.text_cleaner import normalize_city
     transformed["primary_city"] = normalize_city(location)
 
     # 5. Chuẩn hóa hình thức & kinh nghiệm
@@ -460,3 +460,71 @@ def transform_job_record(
     transformed["education_rank"] = education_ranks.get(transformed["standardized_education"])
 
     return transformed
+
+
+def to_flat_record(grouped: Mapping[str, Any]) -> dict[str, Any]:
+    """Trải phẳng cấu trúc nhóm về dạng phẳng 1 tầng."""
+    flat: dict[str, Any] = {
+        "job_id_global": grouped.get("job_id_global"),
+        "source_platform": grouped.get("source_platform"),
+        "source_job_id": grouped.get("source_job_id"),
+        "source_url": grouped.get("source_url"),
+        "crawled_at": grouped.get("crawled_at"),
+    }
+    for grp_key in ["company", "location", "skills", "jd", "salary", "date", "extract", "other"]:
+        grp_data = grouped.get(grp_key)
+        if isinstance(grp_data, dict):
+            flat.update(grp_data)
+    for k, v in grouped.items():
+        if k not in ["company", "location", "skills", "jd", "salary", "date", "extract", "other"] and k not in flat:
+            flat[k] = v
+    return flat
+
+
+def is_empty_stub_record(record: Mapping[str, Any]) -> bool:
+    """Kiểm tra bản ghi có phải là bài đăng rỗng/vô nghĩa (stub) cần loại bỏ không."""
+    jd_group = record.get("jd") if isinstance(record.get("jd"), dict) else record
+    other_group = record.get("other") if isinstance(record.get("other"), dict) else record
+
+    title = str(jd_group.get("job_title") or record.get("job_title") or "").strip()
+    if not title:
+        return True
+
+    desc = str(jd_group.get("raw_description_text") or record.get("raw_description_text") or "").strip()
+    if not desc:
+        is_banner = (
+            other_group.get("is_content_image") is True
+            or record.get("is_content_image") is True
+        )
+        if is_banner:
+            return False  # Bảo vệ bài đăng ảnh banner
+        return True
+
+    return False
+
+
+def extract_raw_salary_bounds(
+    salary_text: str | None,
+    raw_min: Any | None = None,
+    raw_max: Any | None = None,
+) -> tuple[float | None, float | None]:
+    """Trích xuất 2 con số thô min và max từ chuỗi lương hoặc từ số có sẵn."""
+    from preprocessing.transformation.salary_parser import UniversalSalaryParser
+
+    try:
+        if raw_min is not None and float(raw_min) > 0:
+            s_min = float(raw_min)
+            s_max = float(raw_max) if (raw_max is not None and float(raw_max) > 0) else None
+            return s_min, s_max
+        if raw_max is not None and float(raw_max) > 0:
+            return None, float(raw_max)
+    except (ValueError, TypeError):
+        pass
+
+    if not salary_text or not str(salary_text).strip():
+        return None, None
+
+    res = UniversalSalaryParser.parse_text(str(salary_text).strip())
+    s_min = res.get("salary_min_original")
+    s_max = res.get("salary_max_original")
+    return s_min, s_max

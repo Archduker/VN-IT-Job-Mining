@@ -447,6 +447,22 @@ def extract_education(record: Dict[str, Any]) -> str:
     return "Không đề cập"
 
 
+def extract_company_scale_tier(scale_str: Optional[str]) -> Optional[str]:
+    """Phân cấp quy mô công ty thành: Small, Medium, Large, Enterprise."""
+    if not scale_str:
+        return None
+    s = str(scale_str).lower()
+    if any(k in s for k in ["1000", "5000", "10.000", "10,000", "trên 1000", "trên 500"]):
+        return "Enterprise"
+    if any(k in s for k in ["500-", "300-", "100-499", "100-", "200-"]):
+        return "Large"
+    if any(k in s for k in ["50-", "25-99", "50-100"]):
+        return "Medium"
+    if any(k in s for k in ["10-", "1-", "dưới 20", "dưới 50", "dưới 10"]):
+        return "Small"
+    return "Medium"
+
+
 def extract_age_range(record: Dict[str, Any]) -> Tuple[Optional[int], Optional[int]]:
     """Bóc tách dải tuổi yêu cầu (age_min, age_max)."""
     text = f"{record.get('raw_age_text') or ''} {record.get('raw_requirements_text') or ''} {record.get('raw_description_text') or ''}".lower()
@@ -538,7 +554,12 @@ def deep_normalize_record(record: Dict[str, Any], keep_raw: bool = False) -> Dic
     salary_max_orig = sal_dict.get("salary_max_original") if "salary_max_original" in sal_dict else rec.get("salary_max_original")
     salary_curr_orig = sal_dict.get("salary_currency_original") or rec.get("salary_currency_original") or "VND"
     pay_period = sal_dict.get("pay_period") or rec.get("pay_period") or "month"
-    is_neg = sal_dict.get("is_negotiable") if "is_negotiable" in sal_dict else (bool(rec.get("is_negotiable")) if rec.get("is_negotiable") is not None else True)
+    if "is_negotiable" in sal_dict:
+        is_neg = bool(sal_dict["is_negotiable"])
+    elif rec.get("is_negotiable") is not None:
+        is_neg = bool(rec.get("is_negotiable"))
+    else:
+        is_neg = not (bool(salary_min_vnd and salary_min_vnd > 0) or bool(salary_max_vnd and salary_max_vnd > 0))
     has_comm = sal_dict.get("has_commission") if "has_commission" in sal_dict else bool(rec.get("has_commission", False))
     salary_source = sal_dict.get("salary_source") or rec.get("salary_source") or "header_negotiable"
     salary_curr = sal_dict.get("salary_currency") or rec.get("salary_currency") or "VND"
@@ -569,6 +590,13 @@ def deep_normalize_record(record: Dict[str, Any], keep_raw: bool = False) -> Dic
     emp_type = normalize_employment_type(rec)
     work_mode = extract_work_mode(rec)
     min_exp_years = rec.get("min_experience_years")
+    if min_exp_years is None:
+        raw_exp = str(rec.get("raw_experience_text") or "")
+        m_exp = re.search(r"(\d+(?:\.\d+)?)\s*(?:[-–tođến]+\s*(\d+(?:\.\d+)?))?\s*năm", raw_exp, re.IGNORECASE)
+        if m_exp:
+            min_exp_years = float(m_exp.group(1))
+        elif any(w in raw_exp.lower() for w in ["không yêu cầu", "chưa có", "fresher", "thực tập"]):
+            min_exp_years = 0.0
     headcount = rec.get("headcount")
 
     # 7. Văn bản JD làm sạch
@@ -608,104 +636,146 @@ def deep_normalize_record(record: Dict[str, Any], keep_raw: bool = False) -> Dic
     is_stub = (word_count < 30)
 
     # Lương winsorized & log-transform
-    sal_winsorized = rec.get("salary_max_winsorized") or (rec.get("extract_from_jd", {}).get("salary_max_winsorized") if isinstance(rec.get("extract_from_jd"), dict) else None)
-    is_sal_winsorized = bool(rec.get("is_salary_winsorized", False) or (rec.get("extract_from_jd", {}).get("is_salary_winsorized") if isinstance(rec.get("extract_from_jd"), dict) else False))
+    sal_winsorized = rec.get("salary_max_winsorized") or (rec.get("salary", {}).get("salary_max_winsorized") if isinstance(rec.get("salary"), dict) else None)
+    is_sal_winsorized = bool(rec.get("is_salary_winsorized", False) or (rec.get("salary", {}).get("is_salary_winsorized") if isinstance(rec.get("salary"), dict) else False))
     s_eval = sal_winsorized or salary_max_vnd
     log_salary_max = round(float(np.log1p(s_eval)), 4) if s_eval is not None and not (isinstance(s_eval, float) and math.isnan(s_eval)) and s_eval > 0 else None
 
-    # Nhóm bóc tách yêu cầu và vị trí (extract_from_jd)
-    extract_from_jd_dict = {
-        "standardized_education": std_edu,
-        "standardized_seniority": std_seniority,
-        "age_min": age_min,
-        "age_max": age_max,
-        "is_saturday_work": sat_work,
-        "word_count": word_count,
-        "char_count": char_count,
-        "is_stub_jd": is_stub,
-        "primary_language": "vi",
-        "company_size_min": rec.get("company_size_min"),
-        "company_size_max": rec.get("company_size_max"),
-        "company_scale_tier": rec.get("company_scale_tier"),
-        "skills_count": len(all_skills),
-        "benefits_count": len(benefits_clean),
-        "imputed_fields": rec.get("imputed_fields"),
-        "salary_max_winsorized": sal_winsorized,
-        "is_salary_winsorized": is_sal_winsorized,
-        "is_outlier_capped": bool(rec.get("is_outlier_capped", False) or is_sal_winsorized),
-        "log_salary_max": log_salary_max,
-        "quality_score": rec.get("quality_score"),
-    }
+    # Công ty & Quy mô
+    std_family = rec.get("standardized_job_family") or classify_job_family(clean_title, all_skills)
+    comp_addr = rec.get("company_address") or (rec.get("company", {}).get("company_address") if isinstance(rec.get("company"), dict) else None)
+    comp_url = rec.get("company_url") or (rec.get("company", {}).get("company_url") if isinstance(rec.get("company"), dict) else None)
+    comp_logo = rec.get("company_logo_image") or (rec.get("company", {}).get("company_logo_image") if isinstance(rec.get("company"), dict) else None)
+    comp_ind = rec.get("company_industry") or (rec.get("company", {}).get("company_industry") if isinstance(rec.get("company"), dict) else None)
+    comp_scale_tier = rec.get("company_scale_tier") or extract_company_scale_tier(comp_scale)
 
-    # Lắp ráp đối tượng kết quả
+    geo_coords = rec.get("geo_coordinates") or (rec.get("location", {}).get("geo_coordinates") if isinstance(rec.get("location"), dict) else None)
+    is_banner = bool(rec.get("is_content_image") if rec.get("is_content_image") is not None else (rec.get("other", {}).get("is_content_image") if isinstance(rec.get("other"), dict) else False))
+    soft_sk = rec.get("soft_skills") or []
+    dom_sk = rec.get("domain_skills") or []
+
+    # Điểm chất lượng & MNAR Lương
+    is_outlier_capped = bool(rec.get("is_outlier_capped", False) or is_sal_winsorized)
+    quality_score = float(rec.get("quality_score", 0.85)) if rec.get("quality_score") is not None and not (isinstance(rec.get("quality_score"), float) and math.isnan(rec.get("quality_score"))) else 0.85
+    min_exp_years = float(min_exp_years) if min_exp_years is not None and not (isinstance(min_exp_years, float) and math.isnan(min_exp_years)) else 0.0
+
+    if is_neg:
+        salary_min_vnd = None
+        salary_max_vnd = None
+        salary_min_orig = None
+        salary_max_orig = None
+        sal_winsorized = None
+        log_salary_max = None
+        is_sal_winsorized = False
+        is_outlier_capped = False
+
     out: Dict[str, Any] = {
+        # 5 Root Identifiers
         "job_id_global": job_id_global,
         "source_platform": source_platform,
         "source_job_id": source_job_id,
         "source_url": source_url,
-        "job_title": clean_title,
+        "crawled_at_iso": crawled_iso,
+
+        # 1. job_info
+        "job_info": {
+            "job_title": clean_title,
+            "standardized_job_family": std_family,
+            "standardized_seniority": std_seniority,
+            "employment_type": emp_type,
+            "work_mode": work_mode,
+            "min_experience_years": min_exp_years,
+            "headcount": headcount,
+        },
+
+        # 2. company
         "company": {
             "company_name": comp_name,
             "company_name_normalized": comp_norm,
             "company_scale": comp_scale,
+            "company_scale_tier": comp_scale_tier,
+            "company_address": comp_addr,
+            "company_url": comp_url,
+            "company_logo_image": comp_logo,
+            "company_industry": comp_ind,
             "category_text": comp_cats,
         },
+
+        # 3. location
+        "location": {
+            "primary_city": primary_city,
+            "cities_list": cities_list,
+            "districts_list": districts_list,
+            "detailed_locations": detailed_locations,
+            "geo_coordinates": geo_coords,
+        },
+
+        # 4. salary
         "salary": {
             "salary_text": salary_text,
-            "salary_min_vnd": salary_min_vnd,
-            "salary_max_vnd": salary_max_vnd,
+            "salary_currency_original": salary_curr_orig,
             "salary_min_original": salary_min_orig,
             "salary_max_original": salary_max_orig,
-            "salary_currency_original": salary_curr_orig,
+            "salary_min_vnd": salary_min_vnd,
+            "salary_max_vnd": salary_max_vnd,
+            "salary_fx_rate_to_vnd": salary_fx_rate,
             "pay_period": pay_period,
             "is_negotiable": is_neg,
-            "has_commission": has_comm,
             "salary_source": salary_source,
-            "salary_currency": salary_curr,
-            "salary_fx_rate_to_vnd": salary_fx_rate,
-            "salary_fx_rate_date": salary_fx_date,
-            "salary_fx_source": salary_fx_src,
-            "is_salary_negotiable_declared": is_salary_neg_decl,
+            "salary_max_winsorized": sal_winsorized,
+            "is_salary_winsorized": is_sal_winsorized,
+            "is_outlier_capped": is_outlier_capped,
+            "log_salary_max": log_salary_max,
         },
+
+        # 5. skills
+        "skills": {
+            "skills_list": all_skills,
+            "skills_count": len(all_skills),
+            "soft_skills": soft_sk,
+            "domain_skills": dom_sk,
+        },
+
+        # 6. requirements
+        "requirements": {
+            "standardized_education": std_edu,
+            "age_min": age_min,
+            "age_max": age_max,
+            "is_saturday_work": sat_work,
+        },
+
+        # 7. jd_text
+        "jd_text": {
+            "description_text": raw_desc,
+            "requirements_text": raw_req,
+            "benefits_text": benefits_clean,
+        },
+
+        # 8. date
         "date": {
             "posted_date": posted_date,
             "updated_date": updated_date,
             "deadline_date": deadline_date,
-            "crawled_at_iso": crawled_iso,
         },
-        "working_locations": raw_locs,
-        "cities_list": cities_list,
-        "districts_list": districts_list,
-        "detailed_locations": detailed_locations,
-        "employment_type": emp_type,
-        "work_mode": work_mode,
-        "min_experience_years": min_exp_years,
-        "headcount": headcount,
-        "jd_clean_text": {
-            "benefits_text": benefits_clean,
-            # Nếu keep_raw=True thì giữ tên raw_*, ngược lại chuyển thành tên sạch không raw_
-            ("raw_description_text" if keep_raw else "description_text"): raw_desc,
-            ("raw_requirements_text" if keep_raw else "requirements_text"): raw_req,
+
+        # 9. nlp_metadata
+        "nlp_metadata": {
+            "word_count": word_count,
+            "char_count": char_count,
+            "primary_language": "vi",
+            "is_stub_jd": is_stub,
+            "is_content_image": is_banner,
         },
-        # Nhóm skills độc lập ở root level (không dùng if-else hard/soft)
-        "skills": {
-            "skills_list": all_skills,
-            "skills_count": len(all_skills),
+
+        # 10. governance
+        "governance": {
+            "quality_score": round(quality_score, 4),
+            "imputed_fields": rec.get("imputed_fields") or [],
+            "is_golden_merged": bool(rec.get("is_golden_merged", False)),
+            "duplicate_count": int(rec.get("duplicate_count", 1)),
+            "duplicate_platforms": rec.get("duplicate_platforms") or [source_platform],
+            "duplicate_job_ids": rec.get("duplicate_job_ids") or [job_id_global],
         },
-        # Nhóm bóc tách yêu cầu và vị trí (extract_from_jd)
-        "extract_from_jd": extract_from_jd_dict,
-        "Extract_from_JD": extract_from_jd_dict,  # Alias tương thích ngược
-        # Giữ các trường phẳng tiện dụng cho truy vấn nhanh
-        "primary_city": primary_city,
-        "standardized_districts": districts_list,
-        "is_saturday_work": sat_work,
-        "standardized_education": std_edu,
-        "age_min": age_min,
-        "age_max": age_max,
-        "standardized_seniority": std_seniority,
-        "log_salary_max": log_salary_max,
-        "is_outlier_capped": bool(rec.get("is_outlier_capped", False) or is_sal_winsorized),
-        "quality_score": rec.get("quality_score"),
     }
 
     # Nếu keep_raw=True, giữ lại các trường raw_* ở root làm input cho bước sau
@@ -720,3 +790,108 @@ def deep_normalize_record(record: Dict[str, Any], keep_raw: bool = False) -> Dic
                 del out[k]
 
     return clean_nans_to_none(out)
+
+
+def to_curated_flat_record(rec: Dict[str, Any]) -> Dict[str, Any]:
+    """Chuyển đổi bản ghi Vàng (Golden Record 10 nhóm) thành định dạng phẳng 1 tầng cho Pandas."""
+    jinfo = rec.get("job_info", {}) if isinstance(rec.get("job_info"), dict) else {}
+    comp = rec.get("company", {}) if isinstance(rec.get("company"), dict) else {}
+    loc = rec.get("location", {}) if isinstance(rec.get("location"), dict) else {}
+    sal = rec.get("salary", {}) if isinstance(rec.get("salary"), dict) else {}
+    sk = rec.get("skills", {}) if isinstance(rec.get("skills"), dict) else {}
+    req = rec.get("requirements", {}) if isinstance(rec.get("requirements"), dict) else {}
+    jd = rec.get("jd_text", {}) if isinstance(rec.get("jd_text"), dict) else (rec.get("jd_clean_text", {}) if isinstance(rec.get("jd_clean_text"), dict) else {})
+    dt = rec.get("date", {}) if isinstance(rec.get("date"), dict) else {}
+    nlp = rec.get("nlp_metadata", {}) if isinstance(rec.get("nlp_metadata"), dict) else (rec.get("extract_from_jd", {}) if isinstance(rec.get("extract_from_jd"), dict) else {})
+    gov = rec.get("governance", {}) if isinstance(rec.get("governance"), dict) else {}
+
+    flat = {
+        # Root Identifiers
+        "job_id_global": rec.get("job_id_global"),
+        "source_platform": rec.get("source_platform"),
+        "source_job_id": rec.get("source_job_id"),
+        "source_url": rec.get("source_url"),
+        "crawled_at_iso": rec.get("crawled_at_iso") or dt.get("crawled_at_iso") or rec.get("crawled_at"),
+
+        # Core Job Info
+        "job_title": jinfo.get("job_title") or rec.get("job_title"),
+        "standardized_job_family": jinfo.get("standardized_job_family") or rec.get("standardized_job_family"),
+        "standardized_seniority": jinfo.get("standardized_seniority") or rec.get("standardized_seniority"),
+        "employment_type": jinfo.get("employment_type") or rec.get("employment_type"),
+        "work_mode": jinfo.get("work_mode") or rec.get("work_mode"),
+        "min_experience_years": jinfo.get("min_experience_years") if "min_experience_years" in jinfo else rec.get("min_experience_years", 0.0),
+        "headcount": jinfo.get("headcount") if "headcount" in jinfo else rec.get("headcount"),
+
+        # Company Info
+        "company_name": comp.get("company_name"),
+        "company_name_normalized": comp.get("company_name_normalized"),
+        "company_scale": comp.get("company_scale"),
+        "company_scale_tier": comp.get("company_scale_tier"),
+        "company_address": comp.get("company_address"),
+        "company_url": comp.get("company_url"),
+        "company_logo_image": comp.get("company_logo_image"),
+        "company_industry": comp.get("company_industry"),
+        "company_category_text": comp.get("category_text"),
+
+        # Location Info
+        "primary_city": loc.get("primary_city") or rec.get("primary_city"),
+        "cities_list": loc.get("cities_list") or rec.get("cities_list", []),
+        "districts_list": loc.get("districts_list") or rec.get("districts_list", []),
+        "detailed_locations": loc.get("detailed_locations") or rec.get("detailed_locations", []),
+        "geo_coordinates": loc.get("geo_coordinates") or rec.get("geo_coordinates"),
+
+        # Salary Info
+        "salary_text": sal.get("salary_text"),
+        "salary_min_vnd": sal.get("salary_min_vnd"),
+        "salary_max_vnd": sal.get("salary_max_vnd"),
+        "salary_min_original": sal.get("salary_min_original"),
+        "salary_max_original": sal.get("salary_max_original"),
+        "salary_currency_original": sal.get("salary_currency_original"),
+        "pay_period": sal.get("pay_period"),
+        "is_negotiable": sal.get("is_negotiable"),
+        "salary_source": sal.get("salary_source"),
+        "salary_fx_rate_to_vnd": sal.get("salary_fx_rate_to_vnd"),
+        "salary_max_winsorized": sal.get("salary_max_winsorized"),
+        "is_salary_winsorized": sal.get("is_salary_winsorized", False),
+        "is_outlier_capped": sal.get("is_outlier_capped", False),
+        "log_salary_max": sal.get("log_salary_max"),
+
+        # Skills Info
+        "skills_list": sk.get("skills_list", []),
+        "skills_count": sk.get("skills_count", 0),
+        "soft_skills": sk.get("soft_skills", []),
+        "domain_skills": sk.get("domain_skills", []),
+
+        # Requirements Info
+        "standardized_education": req.get("standardized_education") or rec.get("standardized_education"),
+        "age_min": req.get("age_min") if "age_min" in req else rec.get("age_min"),
+        "age_max": req.get("age_max") if "age_max" in req else rec.get("age_max"),
+        "is_saturday_work": req.get("is_saturday_work") if "is_saturday_work" in req else rec.get("is_saturday_work"),
+
+        # Text Info
+        "description_text": jd.get("description_text", ""),
+        "requirements_text": jd.get("requirements_text", ""),
+        "benefits_text": jd.get("benefits_text", []),
+
+        # Date Info
+        "posted_date": dt.get("posted_date"),
+        "updated_date": dt.get("updated_date"),
+        "deadline_date": dt.get("deadline_date"),
+
+        # NLP Metadata
+        "word_count": nlp.get("word_count", 0),
+        "char_count": nlp.get("char_count", 0),
+        "primary_language": nlp.get("primary_language", "vi"),
+        "is_stub_jd": nlp.get("is_stub_jd", False),
+        "is_content_image": nlp.get("is_content_image", False),
+
+        # Governance
+        "quality_score": gov.get("quality_score") if "quality_score" in gov else rec.get("quality_score"),
+        "imputed_fields": gov.get("imputed_fields", []),
+        "is_golden_merged": gov.get("is_golden_merged", False),
+        "duplicate_count": gov.get("duplicate_count", 1),
+        "duplicate_platforms": gov.get("duplicate_platforms", []),
+        "duplicate_job_ids": gov.get("duplicate_job_ids", []),
+    }
+
+    return clean_nans_to_none(flat)

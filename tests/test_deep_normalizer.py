@@ -19,6 +19,7 @@ from preprocessing.normalization.deep_normalizer import (
     normalize_company_categories,
     normalize_employment_type,
     normalize_text_unicode,
+    to_curated_flat_record,
 )
 
 
@@ -182,28 +183,36 @@ def test_deep_normalize_record_zero_raw_in_golden():
     # Golden master normalize: keep_raw=False
     golden = deep_normalize_record(sample_record, keep_raw=False)
 
-    # 1. Zero raw_* fields at root level
-    root_raw_keys = [k for k in golden.keys() if k.startswith("raw_")]
-    assert len(root_raw_keys) == 0, f"Root still has raw keys: {root_raw_keys}"
+    # 1. 10 Nhóm Nghiệp vụ + 5 Định danh toàn cục (15 root keys chính xác)
+    expected_root_keys = {
+        "job_id_global", "source_platform", "source_job_id", "source_url", "crawled_at_iso",
+        "job_info", "company", "location", "salary", "skills", "requirements", "jd_text", "date", "nlp_metadata", "governance",
+    }
+    assert set(golden.keys()) == expected_root_keys, f"Khóa root không khớp 10 nhóm chuẩn: {set(golden.keys()) ^ expected_root_keys}"
+
+    # Khẳng định cấm trùng lặp legacy
+    assert "extract_from_jd" not in golden, "Vẫn còn tồn tại extract_from_jd cũ!"
+    assert "Extract_from_JD" not in golden, "Vẫn còn tồn tại alias Extract_from_JD cũ!"
+    assert "standardized_districts" not in golden, "Vẫn còn trùng lặp standardized_districts ở root!"
 
     # 2. company.category_text is a list
     assert isinstance(golden["company"]["category_text"], list)
     assert "Ngân hàng" in golden["company"]["category_text"]
     assert "CNTT - Phần mềm" in golden["company"]["category_text"]
 
-    # 3. working_locations hierarchy
-    assert "Hồ Chí Minh" in golden["cities_list"]
-    assert "Hà Nội" in golden["cities_list"]
-    assert any("Quận 1" in d for d in golden["districts_list"])
-    assert any("Đống Đa" in d for d in golden["districts_list"])
-    assert len(golden["detailed_locations"]) >= 2
+    # 3. location hierarchy
+    assert "Hồ Chí Minh" in golden["location"]["cities_list"]
+    assert "Hà Nội" in golden["location"]["cities_list"]
+    assert any("Quận 1" in d for d in golden["location"]["districts_list"])
+    assert any("Đống Đa" in d for d in golden["location"]["districts_list"])
+    assert len(golden["location"]["detailed_locations"]) >= 2
 
-    # 4. jd_clean_text has description_text and requirements_text (no raw_ prefix)
-    assert "description_text" in golden["jd_clean_text"]
-    assert "requirements_text" in golden["jd_clean_text"]
-    assert "raw_description_text" not in golden["jd_clean_text"]
-    assert "raw_requirements_text" not in golden["jd_clean_text"]
-    assert not golden["jd_clean_text"]["benefits_text"][0].startswith("Phúc lợi")
+    # 4. jd_text has description_text and requirements_text (no raw_ prefix)
+    assert "description_text" in golden["jd_text"]
+    assert "requirements_text" in golden["jd_text"]
+    assert "raw_description_text" not in golden["jd_text"]
+    assert "raw_requirements_text" not in golden["jd_text"]
+    assert not golden["jd_text"]["benefits_text"][0].startswith("Phúc lợi")
 
     # 5. skills group at root level
     assert "skills" in golden
@@ -211,9 +220,26 @@ def test_deep_normalize_record_zero_raw_in_golden():
     assert golden["skills"]["skills_count"] == len(golden["skills"]["skills_list"])
     assert "SOC Engineer" in golden["skills"]["skills_list"]
 
-    # 6. extract_from_jd attributes
-    extract = golden["extract_from_jd"]
-    assert extract["is_saturday_work"] is False
-    assert extract["standardized_education"] == "Đại học"
-    assert extract["age_min"] == 25
-    assert extract["age_max"] == 35
+    # 6. requirements attributes
+    req = golden["requirements"]
+    assert req["is_saturday_work"] is False
+    assert req["standardized_education"] == "Đại học"
+    assert req["age_min"] == 25
+    assert req["age_max"] == 35
+
+    # 7. job_info attributes
+    jinfo = golden["job_info"]
+    assert jinfo["job_title"] == "SOC Engineer"
+    assert jinfo["work_mode"] == "Onsite"
+    assert jinfo["employment_type"] == "Full-time"
+    assert jinfo["min_experience_years"] == 4.0
+
+    # 8. to_curated_flat_record verification
+    flat = to_curated_flat_record(golden)
+    assert flat["job_id_global"] == "careerviet_35C8AEA1"
+    assert flat["job_title"] == "SOC Engineer"
+    assert flat["primary_city"] in ["Hồ Chí Minh", "Hà Nội"]
+    assert flat["standardized_education"] == "Đại học"
+    assert flat["is_saturday_work"] is False
+    assert flat["salary_min_vnd"] == 30000000.0
+    assert flat["salary_max_vnd"] == 50000000.0

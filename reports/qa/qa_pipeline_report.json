@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-10-26T18:06:37.143936+00:00",
+  "timestamp": "2026-10-27T06:34:13.921150+00:00",
   "overall_status": "PASSED",
-  "duration_seconds": 10.331,
+  "duration_seconds": 13.346,
   "total_checks": 5,
   "passed_checks": 5,
   "failed_checks": 0,
@@ -14,37 +14,37 @@
         "raw_for_outlier": {
           "path": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/raw_for_outlier.json",
           "exists": true,
-          "records": 9824,
-          "size_mb": 68.6,
+          "records": 10024,
+          "size_mb": 44.27,
           "json_valid": true
         },
         "raw_for_normalization": {
           "path": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/raw_for_normalization.json",
           "exists": true,
-          "records": 9824,
-          "size_mb": 72.92,
+          "records": 10024,
+          "size_mb": 53.61,
           "json_valid": true
         },
         "golden_master": {
           "path": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json",
           "exists": true,
-          "records": 8475,
-          "size_mb": 53.27,
+          "records": 8967,
+          "size_mb": 52.03,
           "json_valid": true
         }
       },
       "lineage": {
         "stage1_to_stage2": {
-          "count_f1": 9824,
-          "count_f2": 9824,
+          "count_f1": 10024,
+          "count_f2": 10024,
           "id_preservation_rate_pct": 100.0,
           "is_exact_match": true
         },
         "stage2_to_golden": {
-          "count_f2": 9824,
-          "count_f3": 8475,
-          "records_reduced": 1349,
-          "deduplication_reduction_pct": 13.73,
+          "count_f2": 10024,
+          "count_f3": 8967,
+          "records_reduced": 1057,
+          "deduplication_reduction_pct": 10.54,
           "golden_ids_in_stage2": true,
           "in_expected_range": true
         }
@@ -80,62 +80,92 @@
     },
     "check_3_golden_master_contract": {
       "check_id": "CHECK_3_GOLDEN_MASTER_CONTRACT",
-      "name": "Golden Master Contract & Zero Raw Fields",
+      "name": "Golden Master Target Schema 10 Groups & Zero Raw",
       "status": "PASSED",
-      "total_records_checked": 8475,
+      "total_records_checked": 8967,
       "root_raw_violations_count": 0,
       "offending_root_raw_keys": [],
-      "jd_clean_text_metrics": {
-        "missing_jd_clean_text": 0,
+      "legacy_object_violations": [],
+      "root_keys_schema_violations": 0,
+      "jd_text_metrics": {
+        "missing_jd_text": 0,
         "missing_description_text": 0,
         "missing_requirements_text": 0,
         "unexpected_raw_prefixes": 0
       },
       "benefits_prefix_violations_count": 0,
-      "errors": []
+      "errors": [],
+      "jd_clean_text_metrics": {
+        "missing_jd_text": 0,
+        "missing_description_text": 0,
+        "missing_requirements_text": 0,
+        "unexpected_raw_prefixes": 0
+      }
     },
     "check_4_skills_and_extract_contract": {
-      "check_id": "CHECK_4_SKILLS_EXTRACT_CONTRACT",
-      "name": "Skills & Extract_from_JD Schema Contract",
+      "check_id": "CHECK_4_DOMAIN_GROUPS_INTEGRITY",
+      "name": "Domain Groups & MNAR Policy Compliance",
       "status": "PASSED",
-      "total_records_checked": 8475,
+      "total_records_checked": 8967,
+      "skills_metrics": {
+        "records_with_skills": 8967,
+        "records_valid_count": 8967,
+        "average_skills_per_record": 2.84,
+        "records_with_zero_skills": 3344
+      },
+      "job_info_metrics": {
+        "records_valid_job_info": 8967,
+        "missing_job_family": 0,
+        "missing_work_mode": 0,
+        "missing_experience": 0
+      },
+      "salary_mnar_metrics": {
+        "negotiable_records": 5446,
+        "negotiable_pure_null_salary": 5446,
+        "fixed_salary_records": 3521
+      },
+      "requirements_metrics": {
+        "records_valid_requirements": 8967,
+        "education_standardized": 8967,
+        "saturday_specified": 4037
+      },
+      "errors": [],
       "skills_group_metrics": {
-        "records_with_skills_group": 8475,
-        "records_valid_skills_count": 8475,
-        "average_skills_per_record": 2.77,
-        "records_with_zero_skills": 3268
+        "records_with_skills_group": 8967,
+        "records_valid_skills_count": 8967,
+        "average_skills_per_record": 2.84,
+        "records_with_zero_skills": 3344
       },
       "extract_from_jd_metrics": {
-        "records_with_extract_group": 8475,
-        "education_coverage_count": 6867,
-        "seniority_coverage_count": 8475,
-        "saturday_specified_count": 3538,
-        "age_limits_extracted_count": 686,
-        "text_metrics_present_count": 8475
-      },
-      "errors": []
+        "records_with_extract_group": 8967,
+        "education_coverage_count": 8967,
+        "seniority_coverage_count": 8967,
+        "saturday_specified_count": 4037,
+        "age_limits_extracted_count": 8967,
+        "text_metrics_present_count": 8967
+      }
     },
     "check_5_outlier_quality_governance": {
       "check_id": "CHECK_5_OUTLIER_QUALITY_GOVERNANCE",
       "name": "Outlier Handling & Quality Governance Compliance",
       "status": "PASSED",
-      "total_records_checked": 8475,
+      "total_records_checked": 8967,
       "quality_score_metrics": {
-        "valid_score_count": 8475,
+        "valid_score_count": 8967,
         "score_min": 0.45,
         "score_max": 1.0,
         "score_mean": 0.998,
-        "records_perfect_1_0": 8332,
-        "records_penalized": 143
+        "records_perfect_1_0": 8812,
+        "records_penalized": 155
       },
       "outlier_capping_metrics": {
-        "is_outlier_capped_count": 115,
-        "is_outlier_capped_pct": 1.36
+        "is_outlier_capped_count": 75,
+        "is_outlier_capped_pct": 0.84
       },
       "rules_audit": {
-        "qr1_salary_range_violations": 6,
+        "qr1_salary_range_violations": 28,
         "qr2_experience_range_violations": 0,
-        "qr3_date_order_violations": 6,
+        "qr3_date_order_violations": 1514,
         "qr4_negative_salary_violations": 0,
         "qr5_multiple_fixes_tracked": 0
       },

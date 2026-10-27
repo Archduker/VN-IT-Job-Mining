@@ -14,6 +14,7 @@ AIRFLOW_HOME := $(PROJECT_ROOT)/airflow
 export AIRFLOW_HOME
 
 .PHONY: help setup install install-dev test test-cov test-ledger lint format \
+        run-preprocessing qa-check \
         db-up db-down check-r2 check-env \
         airflow-webserver airflow-scheduler airflow-stop \
         discover-topcv crawl-topcv discover-topdev crawl-topdev \
@@ -42,6 +43,10 @@ help:
 	@echo "    make test               Run all unit tests"
 	@echo "    make test-ledger        Run URL ledger & 21-day recrawl tests"
 	@echo "    make test-cov           Run tests with coverage report"
+	@echo ""
+	@echo "  Preprocessing Pipeline:"
+	@echo "    make run-preprocessing  Execute end-to-end preprocessing (Step 1 -> 4 + QA)"
+	@echo "    make qa-check           Run 5-pillar QA quality audit suite"
 	@echo ""
 	@echo "  Code Quality:"
 	@echo "    make lint               Run ruff linter"
@@ -109,6 +114,13 @@ test-ledger:
 
 test-cov:
 	$(PYTEST) tests/ --cov=collection --cov-report=term-missing --cov-report=html:htmlcov
+
+# ── Preprocessing Pipeline ─────────────────────────────────────
+run-preprocessing:
+	$(PYTHON) -m preprocessing.master_pipeline --all
+
+qa-check:
+	$(PYTHON) preprocessing/qa/run_qa_checks.py
 
 # ── Code Quality ───────────────────────────────────────────────
 lint:

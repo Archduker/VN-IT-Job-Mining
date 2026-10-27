@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 """preprocessing.integration.run_integration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Module thực thi DUY NHẤT giai đoạn INTEGRATION (Ép phẳng JSON & Gom 25 trường phẳng chuẩn).
+Module thực thi DUY NHẤT giai đoạn INTEGRATION đa nguồn (Ép phẳng JSON & Phân 8 Nhóm Thuộc Tính).
 
 Tuân thủ nghiêm ngặt ranh giới kiến trúc:
   - 100% ĐỊNH DẠNG ĐẦU RA LƯU DẠNG JSON (.json).
-  - CHỈ thực hiện: Mapping gom 25 trường chung & Ép phẳng các cấu trúc JSON lồng nhau.
-  - BẢO TOÀN DỮ LIỆU NGUYÊN BẢN (Zero Information Loss): Mọi trường thô đều được nhặt lại
-    (bằng cấp, thời gian, chi nhánh, hình thức, chế độ, chỉ tiêu, ngành nghề, độ tuổi, giới tính),
-    dù nguồn nào bị null thì trường đó vẫn tồn tại trong schema phẳng chuẩn.
+  - Xuất bản đồng thời 2 định dạng:
+    1. Grouped JSON (`integrated_grouped_all_sources.json`): Cấp gốc gồm các khóa định danh phẳng
+       + 8 nhóm đối tượng (company, location, skills, jd, salary, date, extract, other).
+    2. Flat JSON (`integrated_flat_all_sources.json`): Trải phẳng 100% phục vụ tương thích ngược với DataFrames.
+  - BẢO TOÀN DỮ LIỆU NGUYÊN BẢN (Zero Information Loss): Mọi trường thô và trường ẩn đều được trích xuất
+    (logo ảnh, tọa độ GPS, cờ ảnh banner, bằng cấp, thời gian, chi nhánh, hình thức, chỉ tiêu, độ tuổi, giới tính).
   - TỰ ĐỘNG CHẨN ĐOÁN KỸ THUẬT: Báo cáo chi tiết "Vì sao nó Null cho từng nguồn và từng khoảng trống".
-  - TUYỆT ĐỐI KHÔNG LẤN SÂN sang Transformer (parse lương số), Missing (drop stub JD/GenAI), Normalization.
 """
 
 from __future__ import annotations
@@ -38,7 +39,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from preprocessing.integration.json_flattener import flatten_raw_job_record
+from preprocessing.integration.json_flattener import (
+    flatten_raw_job_record,
+    to_grouped_record,
+    to_flat_record,
+)
 
 SOURCES = [
     "careerviet",
@@ -53,6 +58,36 @@ SOURCES = [
 
 # Từ điển chẩn đoán kỹ thuật giải mã nguyên nhân Null theo từng sàn và từng trường
 NULL_DIAGNOSTIC_KNOWLEDGE_BASE: Dict[str, Dict[str, str]] = {
+    "company_logo_image": {
+        "vietnamworks": "Có sẵn 100% qua trường companyLogo CDN URL.",
+        "glints": "Có sẵn trong JSON-LD hiringOrganization.logo.",
+        "itviec": "Có sẵn trong JSON-LD hiringOrganization.logo.",
+        "careerviet": "Missing By Design: Dữ liệu cào DOM text không lưu link ảnh đại diện doanh nghiệp.",
+        "jobsgo": "Missing By Design: Payload không bao gồm URL avatar công ty.",
+        "topcv": "Missing By Design: Crawler thu thập thông tin chữ, không trích xuất URL CDN ảnh.",
+        "topdev": "Missing By Design: Trường logo lưu ở bảng nhà tuyển dụng riêng biệt.",
+        "vieclam24h": "Missing By Design: Object company không chứa URL logo trong payload này.",
+    },
+    "geo_coordinates": {
+        "vietnamworks": "Có sẵn qua workingLocations[].geoLoc (lat, lon).",
+        "careerviet": "Missing By Design: Sàn không tích hợp tọa độ số GPS.",
+        "glints": "Missing By Design: Sàn không nhúng tọa độ GPS trong JSON-LD.",
+        "itviec": "Missing By Design: Sàn không cung cấp kinh độ/vĩ độ.",
+        "jobsgo": "Missing By Design: Sàn không lưu tọa độ địa lý dạng số.",
+        "topcv": "Missing By Design: Sàn không cung cấp tọa độ trong payload chi tiết.",
+        "topdev": "Missing By Design: Payload địa chỉ chỉ lưu chuỗi và mã vùng ID.",
+        "vieclam24h": "Missing By Design: Sàn không lưu kinh độ/vĩ độ.",
+    },
+    "is_content_image": {
+        "topdev": "Có sẵn 100% qua is_content_image (nhận diện bài đăng dạng banner đồ họa).",
+        "careerviet": "Mặc định False: Sàn tuyển dụng dùng văn bản HTML thuần.",
+        "glints": "Mặc định False: Sàn tuyển dụng dùng văn bản HTML thuần.",
+        "itviec": "Mặc định False: Sàn tuyển dụng dùng văn bản HTML thuần.",
+        "jobsgo": "Mặc định False: Sàn tuyển dụng dùng văn bản HTML thuần.",
+        "topcv": "Mặc định False: Sàn tuyển dụng dùng văn bản HTML thuần.",
+        "vieclam24h": "Mặc định False: Sàn tuyển dụng dùng văn bản HTML thuần.",
+        "vietnamworks": "Mặc định False: Sàn tuyển dụng dùng văn bản HTML thuần.",
+    },
     "raw_education_text": {
         "careerviet": "Missing By Design trên thẻ tóm tắt; nhà tuyển dụng thường ghi yêu cầu bằng cấp trực tiếp trong bullet 'Yêu cầu công việc'.",
         "itviec": "Skills-over-degree: Nền tảng chuyên IT không áp dụng ô chọn bằng cấp hàn lâm trên form tuyển dụng.",
@@ -75,7 +110,7 @@ NULL_DIAGNOSTIC_KNOWLEDGE_BASE: Dict[str, Dict[str, str]] = {
     },
     "raw_work_mode": {
         "careerviet": "Implicit text: Chế độ Onsite/Remote được viết trong tiêu đề hoặc mô tả, form không có danh mục riêng.",
-        "itviec": "Implicit text: Phân loại Remote/Hybrid được gắn qua tag công việc hoặc JD text.",
+        "itviec": "Implicit text: Phân loại Remote/Hybrid được gắn qua tag công việc hoặc work_model.",
         "jobsgo": "Implicit text: Không có trường phân loại riêng trên header.",
         "topdev": "Implicit text: Chế độ làm việc được ghi trong slug hoặc quyền lợi.",
         "vieclam24h": "Implicit text: Không có trường danh mục Onsite/Remote trên form.",
@@ -100,7 +135,7 @@ NULL_DIAGNOSTIC_KNOWLEDGE_BASE: Dict[str, Dict[str, str]] = {
         "jobsgo": "Anti-age discrimination: Form không có trường giới hạn tuổi.",
         "topdev": "Anti-age discrimination: Nền tảng chỉ đánh giá theo năng lực kỹ thuật.",
         "vieclam24h": "Optional field: Chỉ một số ít bài đăng phổ thông có giới hạn tuổi.",
-        "topcv": "Xuất hiện 12% qua overview_tags['Yêu cầu'] (ví dụ: 'Tuổi 18 - 30').",
+        "topcv": "Xuất hiện qua overview_tags['Yêu cầu'] (ví dụ: 'Tuổi 18 - 30') hoặc general_info.",
         "vietnamworks": "Có sẵn 100% qua trường rangeAge.",
     },
     "raw_gender_text": {
@@ -128,7 +163,7 @@ NULL_DIAGNOSTIC_KNOWLEDGE_BASE: Dict[str, Dict[str, str]] = {
         "glints": "Missing By Design: Quy mô lưu trong hồ sơ công ty tách biệt, không nằm trên trang job.",
         "itviec": "Missing By Design: Trang chi tiết job không nhúng quy mô công ty.",
         "jobsgo": "Optional field: Đa phần nhà tuyển dụng chưa cập nhật quy mô.",
-        "vieclam24h": "Optional field: Trường scale trong company dict thường rỗng.",
+        "vieclam24h": "Có sẵn qua company.size.",
         "topcv": "Có sẵn 92% qua company_scale ('25-99 nhân viên',...).",
         "topdev": "Có sẵn 100% qua trường company_size trong company payload.",
         "vietnamworks": "Có sẵn 47% qua trường companySize / companySizeVI.",
@@ -152,16 +187,22 @@ def setup_integration_directories() -> Tuple[Path, Path]:
 
 def integrate_single_source(
     source_name: str, data_int_dir: Path, reports_int_dir: Path
-) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    """Thực hiện ép phẳng và gom 25 trường phẳng chuẩn cho 1 nguồn cào, lưu thuần JSON."""
-    logger.info(f"--- Đang tích hợp (Integration 25 trường) nguồn: {source_name.upper()} ---")
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], Dict[str, Any]]:
+    """Thực hiện ép phẳng và gom nhóm thuộc tính cho 1 nguồn cào, lưu cả Grouped & Flat JSON.
+
+    Returns:
+        Tuple: (grouped_records, flat_records, report_dict)
+    """
+    logger.info(f"--- Đang tích hợp (Integration Phân Nhóm Mới) nguồn: {source_name.upper()} ---")
     t0 = time.time()
 
     raw_files = glob.glob(str(PROJECT_ROOT / "data" / source_name / "raw" / "**" / "*.json"), recursive=True)
     if not raw_files:
         raw_files = glob.glob(str(PROJECT_ROOT / "data" / source_name / "**" / "*.json"), recursive=True)
+        raw_files = [f for f in raw_files if "url_ledger" not in f and "cloak" not in f and "checkpoints" not in f and "staging" not in f]
 
-    records_by_id: Dict[str, Dict[str, Any]] = {}
+    records_grouped_by_id: Dict[str, Dict[str, Any]] = {}
+    records_flat_by_id: Dict[str, Dict[str, Any]] = {}
     total_files_scanned = len(raw_files)
     total_envelopes = 0
 
@@ -177,34 +218,42 @@ def integrate_single_source(
                     continue
 
                 total_envelopes += 1
-                flat_rec = flatten_raw_job_record(it, source_fallback=source_name)
+                flat_rec = flatten_raw_job_record(it, source_fallback=source_name, return_grouped=False, include_auxiliary=True)
+                grouped_rec = to_grouped_record(flat_rec)
+
                 jid = flat_rec.get("job_id_global")
                 if jid and jid != f"{source_name}_":
-                    records_by_id[jid] = flat_rec
+                    records_flat_by_id[jid] = flat_rec
+                    records_grouped_by_id[jid] = grouped_rec
         except Exception as exc:
             logger.warning(f"Lỗi đọc/flatten file {fpath}: {exc}")
 
-    integrated_records = list(records_by_id.values())
-    total_unique = len(integrated_records)
+    integrated_grouped = list(records_grouped_by_id.values())
+    integrated_flat = list(records_flat_by_id.values())
+    total_unique = len(integrated_grouped)
 
-    # 1. Lưu toàn bộ bản ghi phẳng tích hợp dạng JSON (25 trường)
-    out_json_path = data_int_dir / source_name / f"{source_name}_integrated_flat.json"
-    with open(out_json_path, "w", encoding="utf-8") as fp:
-        json.dump(integrated_records, fp, ensure_ascii=False, indent=2)
+    # 1. Lưu bản ghi dạng Grouped JSON (Header phẳng + 8 nhóm đối tượng)
+    out_grouped_path = data_int_dir / source_name / f"{source_name}_integrated_grouped.json"
+    with open(out_grouped_path, "w", encoding="utf-8") as fp:
+        json.dump(integrated_grouped, fp, ensure_ascii=False, indent=2)
 
-    # 2. Thống kê chất lượng & chẩn đoán lý do Null cho từng trường
+    # 2. Lưu bản ghi dạng Flat JSON (30+ trường phẳng tương thích ngược)
+    out_flat_path = data_int_dir / source_name / f"{source_name}_integrated_flat.json"
+    with open(out_flat_path, "w", encoding="utf-8") as fp:
+        json.dump(integrated_flat, fp, ensure_ascii=False, indent=2)
+
+    # 3. Thống kê chất lượng & chẩn đoán lý do Null cho từng trường phẳng
     field_completeness = {}
     if total_unique > 0:
-        sample_keys = list(integrated_records[0].keys())
+        sample_keys = list(integrated_flat[0].keys())
         for k in sample_keys:
             non_empty_count = sum(
-                1 for r in integrated_records
-                if r.get(k) is not None and r.get(k) != "" and r.get(k) != []
+                1 for r in integrated_flat
+                if r.get(k) is not None and r.get(k) != "" and r.get(k) != [] and r.get(k) != {}
             )
             pct = round(non_empty_count / total_unique * 100.0, 2)
             missing = total_unique - non_empty_count
 
-            # Lấy lý do null từ Knowledge Base
             null_reason = NULL_DIAGNOSTIC_KNOWLEDGE_BASE.get(k, {}).get(
                 source_name,
                 "Trường tùy chọn, nhà tuyển dụng không khai báo trên form." if pct < 100 else "Đầy đủ 100%."
@@ -220,14 +269,17 @@ def integrate_single_source(
     report = {
         "source_platform": source_name,
         "step": "integration",
-        "schema_version": "2.0-comprehensive-25-fields",
+        "schema_version": "3.0-grouped-and-flat-canonical",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "total_files_scanned": total_files_scanned,
         "total_envelopes_parsed": total_envelopes,
         "total_integrated_records": total_unique,
         "total_fields_in_schema": len(field_completeness),
         "output_format": "json",
-        "output_file": str(out_json_path),
+        "output_files": {
+            "grouped": str(out_grouped_path),
+            "flat": str(out_flat_path),
+        },
         "field_completeness_audit": field_completeness,
         "duration_seconds": round(time.time() - t0, 2),
     }
@@ -237,45 +289,53 @@ def integrate_single_source(
         json.dump(report, fp, ensure_ascii=False, indent=2)
 
     logger.info(
-        f"  -> {source_name}: Tích hợp thành công {total_unique:,} bản ghi (25 trường) vào {out_json_path.name} ({time.time() - t0:.2f}s)"
+        f"  -> {source_name}: Tích hợp thành công {total_unique:,} bản ghi (Grouped & Flat) vào {out_grouped_path.name} ({time.time() - t0:.2f}s)"
     )
-    return integrated_records, report
+    return integrated_grouped, integrated_flat, report
 
 
 def run_all_integration() -> None:
-    """Điều phối toàn bộ quá trình Integration cho 8 nguồn và xuất bản Master JSON 25 trường."""
+    """Điều phối toàn bộ quá trình Integration cho 8 nguồn và xuất bản Master JSON cả 2 định dạng."""
     logger.info("================================================================================")
-    logger.info("       BẮT ĐẦU GIAI ĐOẠN INTEGRATION MỞ RỘNG (25 TRƯỜNG PHẲNG CHUẨN)           ")
-    logger.info("       (100% ĐỊNH DẠNG JSON - BẢO TOÀN THỜI GIAN, ĐỊA ĐIỂM, BẰNG CẤP, HÌNH THỨC) ")
+    logger.info("       BẮT ĐẦU GIAI ĐOẠN INTEGRATION MỞ RỘNG (HEADER PHẲNG + 8 NHÓM CHUẨN)      ")
+    logger.info("       (100% JSON - BẢO TOÀN TRƯỜNG ẨN: LOGO CDN, GPS, BANNER ẢNH, LƯƠNG SỐ)   ")
     logger.info("================================================================================")
     t_start = time.time()
 
     data_int_dir, reports_int_dir = setup_integration_directories()
 
-    all_integrated_records: List[Dict[str, Any]] = []
+    all_integrated_grouped: List[Dict[str, Any]] = []
+    all_integrated_flat: List[Dict[str, Any]] = []
     source_reports: Dict[str, Dict[str, Any]] = {}
 
     for s in SOURCES:
-        records, rep = integrate_single_source(s, data_int_dir, reports_int_dir)
-        all_integrated_records.extend(records)
+        grouped_recs, flat_recs, rep = integrate_single_source(s, data_int_dir, reports_int_dir)
+        all_integrated_grouped.extend(grouped_recs)
+        all_integrated_flat.extend(flat_recs)
         source_reports[s] = rep
 
-    total_master = len(all_integrated_records)
+    total_master = len(all_integrated_grouped)
 
-    # Xuất bản Master Integrated JSON chứa toàn bộ 25 trường phẳng của cả 8 sàn
-    master_json_path = data_int_dir / "integrated_flat_all_sources.json"
-    logger.info(f"Đang lưu Master Integrated JSON 25 trường: {master_json_path} ({total_master:,} bản ghi)...")
-    with open(master_json_path, "w", encoding="utf-8") as fp:
-        json.dump(all_integrated_records, fp, ensure_ascii=False, indent=2)
+    # 1. Xuất bản Master Grouped JSON (Header phẳng + 8 nhóm)
+    master_grouped_path = data_int_dir / "integrated_grouped_all_sources.json"
+    logger.info(f"Đang lưu Master Grouped JSON: {master_grouped_path} ({total_master:,} bản ghi)...")
+    with open(master_grouped_path, "w", encoding="utf-8") as fp:
+        json.dump(all_integrated_grouped, fp, ensure_ascii=False, indent=2)
 
-    # Master Integration Summary Report (dạng JSON)
+    # 2. Xuất bản Master Flat JSON (37 trường phẳng)
+    master_flat_path = data_int_dir / "integrated_flat_all_sources.json"
+    logger.info(f"Đang lưu Master Flat JSON: {master_flat_path} ({total_master:,} bản ghi)...")
+    with open(master_flat_path, "w", encoding="utf-8") as fp:
+        json.dump(all_integrated_flat, fp, ensure_ascii=False, indent=2)
+
+    # 3. Master Integration Summary Report (dạng JSON)
     field_completeness_all = {}
     if total_master > 0:
-        sample_keys = list(all_integrated_records[0].keys())
+        sample_keys = list(all_integrated_flat[0].keys())
         for k in sample_keys:
             non_empty_count = sum(
-                1 for r in all_integrated_records
-                if r.get(k) is not None and r.get(k) != "" and r.get(k) != []
+                1 for r in all_integrated_flat
+                if r.get(k) is not None and r.get(k) != "" and r.get(k) != [] and r.get(k) != {}
             )
             pct = round(non_empty_count / total_master * 100.0, 2)
             field_completeness_all[k] = {
@@ -290,20 +350,17 @@ def run_all_integration() -> None:
             }
 
     master_report = {
-        "pipeline_phase": "Step 1 - Integration (Exhaustive 25 Fields)",
-        "output_format": "100% JSON",
+        "pipeline_phase": "Step 1 - Integration (Header Flat + 8 Groups Canonical)",
+        "output_format": "100% JSON (Dual-Form: Grouped & Flat)",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "total_integrated_records": total_master,
         "total_fields": len(field_completeness_all),
-        "master_json_path": str(master_json_path),
+        "output_files": {
+            "grouped_master": str(master_grouped_path),
+            "flat_master": str(master_flat_path),
+        },
         "source_breakdown": {
-            s: len(records) for s, records in zip(
-                SOURCES,
-                [
-                    [r for r in all_integrated_records if r.get("source_platform") == s]
-                    for s in SOURCES
-                ]
-            )
+            s: source_reports[s]["total_integrated_records"] for s in SOURCES
         },
         "field_completeness_audit": field_completeness_all,
         "total_duration_seconds": round(time.time() - t_start, 2),
@@ -314,17 +371,22 @@ def run_all_integration() -> None:
         json.dump(master_report, fp, ensure_ascii=False, indent=2)
 
     # In kết quả kiểm kê ra terminal
-    print("\n" + "=" * 100)
-    print(f"{'SÀN TUYỂN DỤNG':<15} | {'RAW SCAN':<10} | {'BẢN GHI PHẲNG 25 CỘT':<25} | {'FILE JSON ĐẦU RA'}")
-    print("-" * 100)
+    print("\n" + "=" * 115)
+    print(f"{'SÀN TUYỂN DỤNG':<15} | {'RAW SCAN':<10} | {'TÍCH HỢP DUY NHẤT':<20} | {'FILE GROUPED JSON':<35} | {'FILE FLAT JSON'}")
+    print("-" * 115)
     for s in SOURCES:
         rep = source_reports[s]
-        print(f"{s:<15} | {rep['total_envelopes_parsed']:<10,} | {rep['total_integrated_records']:<25,} | data/integration/{s}/{s}_integrated_flat.json")
-    print("=" * 100)
-    print(f"{'TỔNG MASTER':<15} | {sum(r['total_envelopes_parsed'] for r in source_reports.values()):<10,} | {total_master:<25,} | data/integration/integrated_flat_all_sources.json")
-    print("=" * 100 + "\n")
-    logger.info(f"GIAI ĐOẠN INTEGRATION (25 TRƯỜNG PHẲNG) HOÀN TẤT THÀNH CÔNG TRONG {time.time() - t_start:.2f} GIÂY (100% JSON)!")
+        print(f"{s:<15} | {rep['total_envelopes_parsed']:<10,} | {rep['total_integrated_records']:<20,} | {s}_integrated_grouped.json{'':<9} | {s}_integrated_flat.json")
+    print("=" * 115)
+    print(f"{'TỔNG MASTER':<15} | {sum(r['total_envelopes_parsed'] for r in source_reports.values()):<10,} | {total_master:<20,} | integrated_grouped_all_sources.json | integrated_flat_all_sources.json")
+    print("=" * 115 + "\n")
+    logger.info(f"GIAI ĐOẠN INTEGRATION HOÀN TẤT THÀNH CÔNG TRONG {time.time() - t_start:.2f} GIÂY (100% JSON - DUAL FORMAT)!")
+
+
+def main() -> int:
+    run_all_integration()
+    return 0
 
 
 if __name__ == "__main__":
-    run_all_integration()
+    sys.exit(main())

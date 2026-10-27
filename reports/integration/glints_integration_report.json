@@ -1,14 +1,17 @@
 {
   "source_platform": "glints",
   "step": "integration",
-  "schema_version": "2.0-comprehensive-25-fields",
-  "timestamp": "2026-10-25T19:25:23.004330+00:00",
+  "schema_version": "3.0-grouped-and-flat-canonical",
+  "timestamp": "2026-10-27T03:55:33.441034+00:00",
   "total_files_scanned": 331,
   "total_envelopes_parsed": 331,
   "total_integrated_records": 331,
-  "total_fields_in_schema": 29,
+  "total_fields_in_schema": 37,
   "output_format": "json",
-  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/glints/glints_integrated_flat.json",
+  "output_files": {
+    "grouped": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/glints/glints_integrated_grouped.json",
+    "flat": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/glints/glints_integrated_flat.json"
+  },
   "field_completeness_audit": {
     "job_id_global": {
       "filled_count": 331,
@@ -40,23 +43,11 @@
       "completeness_pct": 100.0,
       "null_diagnosis": "Đầy đủ 100%."
     },
-    "job_title": {
-      "filled_count": 331,
-      "missing_count": 0,
-      "completeness_pct": 100.0,
-      "null_diagnosis": "Đầy đủ 100%."
-    },
     "company_name": {
       "filled_count": 331,
       "missing_count": 0,
       "completeness_pct": 100.0,
       "null_diagnosis": "Đầy đủ 100%."
-    },
-    "company_address": {
-      "filled_count": 291,
-      "missing_count": 40,
-      "completeness_pct": 87.92,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     },
     "company_scale": {
       "filled_count": 0,
@@ -64,11 +55,29 @@
       "completeness_pct": 0.0,
       "null_diagnosis": "Missing By Design: Quy mô lưu trong hồ sơ công ty tách biệt, không nằm trên trang job."
     },
-    "raw_category_text": {
-      "filled_count": 331,
-      "missing_count": 0,
-      "completeness_pct": 100.0,
-      "null_diagnosis": "Đầy đủ 100%."
+    "company_address": {
+      "filled_count": 291,
+      "missing_count": 40,
+      "completeness_pct": 87.92,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "company_url": {
+      "filled_count": 270,
+      "missing_count": 61,
+      "completeness_pct": 81.57,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "company_logo_image": {
+      "filled_count": 326,
+      "missing_count": 5,
+      "completeness_pct": 98.49,
+      "null_diagnosis": "Có sẵn trong JSON-LD hiringOrganization.logo."
+    },
+    "company_industry": {
+      "filled_count": 0,
+      "missing_count": 331,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     },
     "raw_location_text": {
       "filled_count": 331,
@@ -81,6 +90,60 @@
       "missing_count": 0,
       "completeness_pct": 100.0,
       "null_diagnosis": "Đầy đủ 100%."
+    },
+    "geo_coordinates": {
+      "filled_count": 0,
+      "missing_count": 331,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Missing By Design: Sàn không nhúng tọa độ GPS trong JSON-LD."
+    },
+    "skills_list": {
+      "filled_count": 293,
+      "missing_count": 38,
+      "completeness_pct": 88.52,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "job_title": {
+      "filled_count": 331,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_description_text": {
+      "filled_count": 331,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "raw_requirements_text": {
+      "filled_count": 331,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "benefits_list": {
+      "filled_count": 268,
+      "missing_count": 63,
+      "completeness_pct": 80.97,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_salary_text": {
+      "filled_count": 331,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "salary_currency": {
+      "filled_count": 212,
+      "missing_count": 119,
+      "completeness_pct": 64.05,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "is_salary_visible": {
+      "filled_count": 212,
+      "missing_count": 119,
+      "completeness_pct": 64.05,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     },
     "raw_posted_date": {
       "filled_count": 331,
@@ -100,40 +163,22 @@
       "completeness_pct": 97.58,
       "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     },
-    "raw_working_time": {
-      "filled_count": 0,
-      "missing_count": 331,
-      "completeness_pct": 0.0,
-      "null_diagnosis": "Missing By Design: Glints không thiết kế trường giờ giấc làm việc hàng ngày."
-    },
-    "raw_salary_text": {
-      "filled_count": 331,
-      "missing_count": 0,
-      "completeness_pct": 100.0,
-      "null_diagnosis": "Đầy đủ 100%."
-    },
-    "raw_employment_type": {
-      "filled_count": 331,
-      "missing_count": 0,
-      "completeness_pct": 100.0,
-      "null_diagnosis": "Đầy đủ 100%."
-    },
     "raw_work_mode": {
       "filled_count": 331,
       "missing_count": 0,
       "completeness_pct": 100.0,
       "null_diagnosis": "Có sẵn 96% qua nhãn 'Làm tại công ty / Remote' trong requirements."
     },
-    "raw_experience_text": {
-      "filled_count": 294,
-      "missing_count": 37,
-      "completeness_pct": 88.82,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
-    },
     "raw_seniority_text": {
       "filled_count": 0,
       "missing_count": 331,
       "completeness_pct": 0.0,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_experience_text": {
+      "filled_count": 294,
+      "missing_count": 37,
+      "completeness_pct": 88.82,
       "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     },
     "raw_education_text": {
@@ -148,6 +193,12 @@
       "completeness_pct": 0.0,
       "null_diagnosis": "Confidential hiring: Form Glints không hiển thị số lượng tuyển dụng."
     },
+    "raw_working_time": {
+      "filled_count": 0,
+      "missing_count": 331,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Missing By Design: Glints không thiết kế trường giờ giấc làm việc hàng ngày."
+    },
     "raw_age_text": {
       "filled_count": 0,
       "missing_count": 331,
@@ -160,30 +211,30 @@
       "completeness_pct": 0.0,
       "null_diagnosis": "Gender equality compliance: Chống phân biệt giới tính theo chuẩn Singapore."
     },
-    "skills_list": {
-      "filled_count": 293,
-      "missing_count": 38,
-      "completeness_pct": 88.52,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
-    },
-    "benefits_list": {
-      "filled_count": 268,
-      "missing_count": 63,
-      "completeness_pct": 80.97,
-      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
-    },
-    "raw_description_text": {
+    "raw_employment_type": {
       "filled_count": 331,
       "missing_count": 0,
       "completeness_pct": 100.0,
       "null_diagnosis": "Đầy đủ 100%."
     },
-    "raw_requirements_text": {
+    "raw_category_text": {
       "filled_count": 331,
       "missing_count": 0,
       "completeness_pct": 100.0,
       "null_diagnosis": "Đầy đủ 100%."
+    },
+    "is_content_image": {
+      "filled_count": 0,
+      "missing_count": 331,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Mặc định False: Sàn tuyển dụng dùng văn bản HTML thuần."
+    },
+    "auxiliary_features": {
+      "filled_count": 0,
+      "missing_count": 331,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     }
   },
-  "duration_seconds": 0.08
+  "duration_seconds": 0.11
 }

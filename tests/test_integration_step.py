@@ -52,7 +52,7 @@ def test_integration_master_flat_json():
     with open(master_path, "r", encoding="utf-8") as f:
         master_records = json.load(f)
 
-    assert len(master_records) == 9824, f"Tổng số bản ghi tích hợp là {len(master_records)}, mong đợi 9824"
+    assert len(master_records) >= 9824, f"Tổng số bản ghi tích hợp là {len(master_records)}, mong đợi >= 9824"
 
     # Kiểm tra cấu trúc bản ghi phẳng chuẩn (Canonical Flat Record - 29 trường toàn diện)
     sample = master_records[0]

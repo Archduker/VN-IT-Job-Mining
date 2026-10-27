@@ -94,6 +94,14 @@ def clean_and_repair_salary_record(record: Dict[str, Any]) -> Dict[str, Any]:
         if rec.get("salary_min_vnd"):
             rec["salary_min_vnd"] = fix_common_salary_input_errors(rec["salary_min_vnd"], ext_s)
 
+    # 5. Tự động sửa lỗi đảo ngược biên lương (Inverted Salary Range min > max)
+    cur_min = rec.get("salary_min_vnd")
+    cur_max = rec.get("salary_max_vnd")
+    if cur_min is not None and cur_max is not None and cur_min > cur_max:
+        rec["salary_min_vnd"] = cur_max
+        rec["salary_max_vnd"] = cur_min
+        rec["salary_fix_note"] = "swapped_inverted_bounds"
+
     return rec
 
 
@@ -351,6 +359,19 @@ def apply_outlier_pipeline(
             if lb:
                 counts[lb] = counts.get(lb, 0) + 1
         stats["salary_fix_counts"][col] = counts
+
+    # Tự động hoán vị dải lương ngược (min > max) nếu có
+    if "salary_min_vnd" in out.columns and "salary_max_vnd" in out.columns:
+        inv_mask = (
+            out["salary_min_vnd"].notna()
+            & out["salary_max_vnd"].notna()
+            & (out["salary_min_vnd"] > out["salary_max_vnd"])
+        )
+        if inv_mask.any():
+            temp_min = out.loc[inv_mask, "salary_min_vnd"].copy()
+            out.loc[inv_mask, "salary_min_vnd"] = out.loc[inv_mask, "salary_max_vnd"]
+            out.loc[inv_mask, "salary_max_vnd"] = temp_min
+            stats["inverted_salary_bounds_swapped"] = int(inv_mask.sum())
 
     # 2) Chẩn đoán IQR sau sửa (số liệu cho báo cáo kiểm định ngoại lai)
     numeric_cols = [c for c in list(salary_cols) + [experience_col] if c in out.columns]

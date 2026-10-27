@@ -91,12 +91,12 @@ def run_missing_outlier_pipeline(
 ) -> Dict[str, Any]:
     start_time = time.perf_counter()
 
-    # Nhận diện đường dẫn đầu vào (ưu tiên raw_for_outlier.json)
+    # Nhận diện đường dẫn đầu vào (ưu tiên transformed_flat_all_sources.json)
     if input_path:
         input_file = input_path
     else:
-        candidate_primary = PROJECT_ROOT / "data" / "transformation" / "raw_for_outlier.json"
-        candidate_legacy = PROJECT_ROOT / "data" / "transformation" / "transformed_flat_all_sources.json"
+        candidate_primary = PROJECT_ROOT / "data" / "transformation" / "transformed_flat_all_sources.json"
+        candidate_legacy = PROJECT_ROOT / "data" / "transformation" / "raw_for_outlier.json"
         input_file = candidate_primary if candidate_primary.is_file() else candidate_legacy
 
     missing_outlier_dir = PROJECT_ROOT / "data" / "missing_outlier"
@@ -145,6 +145,30 @@ def run_missing_outlier_pipeline(
 
     for r in records:
         rec = dict(r)
+
+        # 0. Khởi tạo và quy đổi lương về chuẩn số học VND
+        curr = rec.get("salary_currency")
+        s_min = rec.get("salary_min")
+        s_max = rec.get("salary_max")
+
+        rec["salary_currency_original"] = curr or "VND"
+        rec["salary_min_original"] = s_min
+        rec["salary_max_original"] = s_max
+
+        if curr == "USD":
+            rec["salary_min_vnd"] = round(float(s_min) * 25400.0, 2) if s_min is not None else None
+            rec["salary_max_vnd"] = round(float(s_max) * 25400.0, 2) if s_max is not None else None
+            rec["salary_fx_rate_to_vnd"] = 25400.0
+            rec["salary_source"] = "header_usd_converted"
+        else:
+            rec["salary_min_vnd"] = float(s_min) if s_min is not None else None
+            rec["salary_max_vnd"] = float(s_max) if s_max is not None else None
+            rec["salary_fx_rate_to_vnd"] = 1.0
+            rec["salary_source"] = "header_numeric" if (s_min is not None or s_max is not None) else "header_negotiable"
+
+        is_neg = (rec["salary_min_vnd"] is None and rec["salary_max_vnd"] is None)
+        rec["is_negotiable"] = is_neg
+        rec["is_salary_negotiable_declared"] = 1 if is_neg else 0
 
         # 1. Bóc trần sneaky nulls ở các trường chuỗi
         for field in ("primary_city", "standardized_seniority", "company_scale_tier", "employment_type"):

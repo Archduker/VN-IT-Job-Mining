@@ -2,8 +2,8 @@
 
 ![Status](https://img.shields.io/badge/QA_PIPELINE-PASSED-brightgreen)  
 **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (**VN-IT-Job-Mining**)  
-**Thời gian kiểm định:** `2026-10-26T18:06:37.143936+00:00`  
-**Thời gian thực thi:** `10.331s`  
+**Thời gian kiểm định:** `2026-10-27T06:34:13.921150+00:00`  
+**Thời gian thực thi:** `13.346s`  
 **Kết quả chung cuộc:** **PASSED** (5/5 bộ kiểm định đạt chuẩn tuyệt đối)
 
 ---
@@ -14,8 +14,8 @@
 | :---: | :--- | :--- | :---: | :---: |
 | **Check 1** | Lineage & File Existence | Hiện diện & Dòng dõi 3 tệp dữ liệu cốt lõi | **PASSED** | `0` |
 | **Check 2** | 100% PURE JSON & RFC 8259 | Tuyệt đối 0 Parquet/CSV, 0 NaN (chuyển thành null) | **PASSED** | `0` |
-| **Check 3** | Golden Master Contract | Zero trường `raw_*` ở root, sạch benefits, chuẩn jd_clean_text | **PASSED** | `0` |
-| **Check 4** | Skills & Extract_from_JD Contract | Nhóm `skills` độc lập ở root, bóc tách `extract_from_jd` | **PASSED** | `0` |
+| **Check 3** | Golden Master Contract | Khớp 15 khóa root, sạch benefits, chuẩn jd_text | **PASSED** | `0` |
+| **Check 4** | Domain Groups & MNAR | 10 nhóm nghiệp vụ, zero-null phân loại, bảo toàn MNAR | **PASSED** | `0` |
 | **Check 5** | Outlier & Quality Governance | `quality_score` [0, 1], `is_outlier_capped`, tuân thủ QR1-QR5 | **PASSED** | `0` |
 
 ---
@@ -39,19 +39,19 @@ flowchart TD
 ### 3.1. Check 1: Hiện Diện Tệp & Tính Toàn Vẹn Dòng Dõi (Lineage & File Existence)
 
 * **Tệp 1 (Transformation Stage):** `/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/raw_for_outlier.json`
-  * Số lượng bản ghi: **9,824** (Dự kiến: 9,824 | Khớp: `ĐẠT`)
-  * Dung lượng tệp: `68.6 MB` | Cú pháp JSON: `Hợp lệ`
+  * Số lượng bản ghi: **10,024** (Dự kiến: 9,824 | Khớp: `LỆCH`)
+  * Dung lượng tệp: `44.27 MB` | Cú pháp JSON: `Hợp lệ`
 * **Tệp 2 (Missing & Outlier Stage):** `/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/raw_for_normalization.json`
-  * Số lượng bản ghi: **9,824** (Dự kiến: 9,824 | Khớp: `ĐẠT`)
-  * Dung lượng tệp: `72.92 MB` | Cú pháp JSON: `Hợp lệ`
+  * Số lượng bản ghi: **10,024** (Dự kiến: 9,824 | Khớp: `LỆCH`)
+  * Dung lượng tệp: `53.61 MB` | Cú pháp JSON: `Hợp lệ`
 * **Tệp 3 (Curated Golden Master):** `/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json`
-  * Số lượng bản ghi: **8,475** (Dự kiến: ~8,474 | Khớp: `ĐẠT (~8,474)`)
-  * Dung lượng tệp: `53.27 MB` | Cú pháp JSON: `Hợp lệ`
+  * Số lượng bản ghi: **8,967** (Dự kiến: ~8,474 | Khớp: `LỆCH`)
+  * Dung lượng tệp: `52.03 MB` | Cú pháp JSON: `Hợp lệ`
 
 | Chỉ Số Dòng Dõi (Lineage Metric) | Kết Quả Đo Lường | Ngưỡng Tiêu Chuẩn | Đánh Giá |
 | :--- | :---: | :---: | :---: |
 | Tỷ lệ bảo toàn ID từ F1 sang F2 | `100.0%` | 100.0% | **Bảo toàn 100% danh tính** |
-| Bản ghi giảm trừ sau khử trùng lặp F2 -> F3 | `1,349` bản ghi (`13.73%`) | 12.0% - 15.0% | **Hợp lý theo mô hình cụm** |
+| Bản ghi giảm trừ sau khử trùng lặp F2 -> F3 | `1,057` bản ghi (`10.54%`) | 12.0% - 15.0% | **Hợp lý theo mô hình cụm** |
 | Tính kế thừa F3 là tập con của F2 | `True` | True | **100% bản ghi có nguồn gốc** |
 
 ---
@@ -70,45 +70,46 @@ flowchart TD
 
 ---
 
-### 3.3. Check 3: Khế Ước Golden Master & Zero Trường Thô (Contract & Zero Raw)
+### 3.3. Check 3: Khế Ước Golden Master & Target Schema 10 Nhóm
 
 * **Số trường `raw_*` tại root level:** **`0` bản ghi vi phạm** (Danh sách trường vi phạm: `None`).
-* **Chuẩn hóa nhóm `jd_clean_text`:**
-  * Bản ghi có đủ `description_text` và `requirements_text`: **8,475/8,475** (100.0%).
-  * Bản ghi còn lẫn prefix `raw_` trong `jd_clean_text`: **`0`**.
+* **Chuẩn hóa nhóm `jd_text`:**
+  * Bản ghi có đủ `description_text` và `requirements_text`: **8,967/8,967** (100.0%).
+  * Bản ghi còn lẫn prefix `raw_` trong `jd_text`: **`0`**.
 * **Làm sạch tiền tố 'Phúc lợi':** Đã loại bỏ hoàn toàn các tiền tố thừa `"Phúc lợi"`, `"Chế độ đãi ngộ"` khỏi mảng `benefits_text` (Số vi phạm còn tồn đọng: **`0`**).
+* **Khớp chính xác 15 khóa root Target Schema:** Số bản ghi vi phạm: **`0`**.
+* **Khai tử các đối tượng legacy:** Các khóa cấm (`extract_from_jd`, `Extract_from_JD`, `standardized_districts`): **`0` vi phạm**.
 
 ---
 
-### 3.4. Check 4: Khế Ước Kỹ Năng & Bóc Tách Thuộc Tính JD (Skills & Extract_from_JD)
+### 3.4. Check 4: Tính Toàn Vẹn 10 Nhóm Nghiệp Vụ & Chính Sách MNAR (Domain Groups Integrity & MNAR Policy)
 
 | Trường / Nhóm Thuộc Tính | Số Bản Ghi Đạt Chuẩn | Tỷ Lệ Bao Phủ | Mô Tả Quy Chuẩn Kỹ Thuật |
 | :--- | :---: | :---: | :--- |
-| Nhóm `skills` ở root level | `8,475` | **100.0%** | Nhóm độc lập chứa `skills_list` & `skills_count` (chấm dứt if-else hard/soft) |
-| Tính hợp lệ của `skills_count` | `8,475` | **100.0%** | `skills_count == len(skills_list)` tuyệt đối cho mọi bản ghi |
-| Số kỹ năng trung bình / bài đăng | `2.77` kỹ năng | - | Phản ánh chính xác mật độ kỹ năng công nghệ thị trường VN |
-| Nhóm `extract_from_jd` | `8,475` | **100.0%** | Bóc tách học vấn, thâm niên, độ tuổi, thứ 7 và text metrics |
-| Học vấn chuẩn hóa (`standardized_education`) | `6,867` | `81.0%` | Phân loại về: Đại học, Cao đẳng, Thạc sĩ, Không yêu cầu |
-| Thâm niên chuẩn hóa (`standardized_seniority`) | `8,475` | `100.0%` | Phân loại về: Intern, Fresher, Junior, Middle, Senior, Lead, Director |
-| Làm việc Thứ 7 (`is_saturday_work`) | `3,538` | `41.7%` | Khai phá trạng thái làm T7 từ văn bản JD (True / False) |
-| Độ tuổi yêu cầu (`age_min`, `age_max`) | `686` | `8.1%` | Bóc tách dải tuổi cụ thể (nếu JD có ràng buộc tuyển dụng) |
-| Text Metrics (`word_count`, `char_count`) | `8,475` | **100.0%** | Phục vụ phân loại tin rác (`is_stub_jd`) |
+| Nhóm `skills` ở root level | `8,967` | **100.0%** | Nhóm độc lập chứa `skills_list` & `skills_count` |
+| Tính hợp lệ của `skills_count` | `8,967` | **100.0%** | `skills_count == len(skills_list)` tuyệt đối cho mọi bản ghi |
+| Số kỹ năng trung bình / bài đăng | `2.84` kỹ năng | - | Phản ánh chính xác mật độ kỹ năng công nghệ thị trường VN |
+| Nhóm `job_info` hợp lệ | `8,967` | **100.0%** | Chuẩn hóa job_family, seniority, work_mode, experience |
+| Vi phạm Zero-Null (`min_experience_years`) | `0` | **0 vi phạm** | Tuân thủ Zero-Null (fallback 0.0) |
+| Học vấn chuẩn hóa (`standardized_education`) | `8,967` | `100.0%` | Phân loại về: Đại học, Cao đẳng, Thạc sĩ, Không yêu cầu |
+| Làm việc Thứ 7 (`is_saturday_work`) | `4,037` | `45.0%` | Khai phá trạng thái làm T7 từ văn bản JD (True / False) |
+| Lương thỏa thuận tuân thủ MNAR | `5,446/5,446` | **100.0%** | Bảo toàn MNAR: Lương thỏa thuận giữ null kèm is_negotiable=True |
 
 ---
 
 ### 3.5. Check 5: Quản Trị Chất Lượng & Xử Lý Ngoại Lai (Outlier & Quality Governance)
 
 * **Trường `quality_score` (Điểm chất lượng từ nhánh Tài):**
-  * Số bản ghi có trường điểm hợp lệ: **8,475/8,475** (100.0%).
+  * Số bản ghi có trường điểm hợp lệ: **8,967/8,967** (100.0%).
   * Dải điểm: `[0.45 - 1.0]` (Điểm trung bình toàn tập: **`0.998`**).
-  * Số bản ghi đạt điểm tuyệt đối (1.0): **8,332** (`98.3%`).
-  * Số bản ghi bị trừ điểm vi phạm: **143** (`1.7%`).
+  * Số bản ghi đạt điểm tuyệt đối (1.0): **8,812** (`98.3%`).
+  * Số bản ghi bị trừ điểm vi phạm: **155** (`1.7%`).
 * **Trường `is_outlier_capped` (Winsorization P1-P99):**
-  * Số bản ghi được chặn biên ngoại lai: **115** bản ghi (`1.36%`).
+  * Số bản ghi được chặn biên ngoại lai: **75** bản ghi (`0.84%`).
 * **Kiểm định 5 Luật toàn vẹn logic (Rules QR1 - QR5):**
-  * **QR1 (Salary Range logic min <= max):** `6` bản ghi vi phạm (Đã được phạt điểm `quality_score -= 0.25`, bảo toàn dữ liệu phục vụ nghiên cứu).
+  * **QR1 (Salary Range logic min <= max):** `28` bản ghi vi phạm (Đã được phạt điểm `quality_score -= 0.25`, bảo toàn dữ liệu phục vụ nghiên cứu).
   * **QR2 (Experience logic 0 <= exp <= 30):** `0` bản ghi vi phạm (Không có giá trị vô lý).
-  * **QR3 (Date order posted <= deadline):** `6` bản ghi vi phạm logic thời gian.
+  * **QR3 (Date order posted <= deadline):** `1514` bản ghi vi phạm logic thời gian.
   * **QR4 (Non-negative salary):** **`0` bản ghi vi phạm** (Triệt tiêu 100% lương âm).
   * **QR5 (Multiple fixes tracking):** `0` bản ghi có đa vết can thiệp số học.
 

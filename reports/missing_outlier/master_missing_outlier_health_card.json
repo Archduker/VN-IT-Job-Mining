@@ -1,11 +1,11 @@
 {
   "step": "step_3_missing_and_outlier",
-  "generated_at": "2026-10-26T17:56:36.878419+00:00",
-  "total_records_in": 9824,
-  "total_records_out": 9824,
+  "generated_at": "2026-10-27T05:02:58.783315+00:00",
+  "total_records_in": 10024,
+  "total_records_out": 10024,
   "zero_record_loss_verified": true,
   "pure_json_only": true,
-  "duration_seconds": 11.712,
+  "duration_seconds": 12.042,
   "ai_governance": {
     "team_approved": false,
     "pilot_benchmark_path": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/reports/ai_governance/pilot_gemini_imputation_benchmark.md",
@@ -13,98 +13,98 @@
     "genai_batch_called": false
   },
   "scrubbing_and_cleaning_metrics": {
-    "sneaky_nulls_unmasked": 12348,
+    "sneaky_nulls_unmasked": 40096,
     "masked_salaries_scrubbed": 1018,
-    "phone_salaries_scrubbed": 50,
+    "phone_salaries_scrubbed": 0,
     "dot_glitches_repaired": 2,
-    "experience_imputed_heuristic": 3086,
-    "seniority_imputed_heuristic": 1154,
+    "experience_imputed_heuristic": 8942,
+    "seniority_imputed_heuristic": 9723,
     "skills_imputed_heuristic": 130,
-    "salary_records_winsorized": 131,
+    "salary_records_winsorized": 121,
     "salary_fixes": {
       "salary_min_vnd": {
-        "usd_to_vnd": 2,
-        "over_zeroing": 23
+        "over_zeroing": 13,
+        "usd_to_vnd": 2
       },
       "salary_max_vnd": {
-        "over_zeroing": 10
+        "over_zeroing": 13
       }
     },
     "quality_summary": {
-      "total_records": 9824,
+      "total_records": 10024,
       "quality_score_mean": 0.998,
       "quality_score_min": 0.45,
-      "records_below_0_5": 9,
+      "records_below_0_5": 10,
       "violation_counts": {
-        "violation_salary_range": 6,
+        "violation_salary_range": 28,
         "violation_experience_range": 0,
         "violation_date_order": 7,
         "violation_negative_salary": 0,
-        "violation_multiple_fixes": 9,
-        "is_outlier_capped": 131
+        "violation_multiple_fixes": 10,
+        "is_outlier_capped": 121
       }
     }
   },
   "iqr_diagnostics": {
     "salary_min_vnd": {
-      "total_records": 3730,
-      "q1": 9000000.0,
-      "q3": 20000000.0,
-      "iqr": 11000000.0,
+      "total_records": 3847,
+      "q1": 8000000.0,
+      "q3": 18000000.0,
+      "iqr": 10000000.0,
       "lower_bound": 0.0,
-      "upper_bound": 36500000.0,
-      "outlier_count": 248,
-      "outlier_rate_pct": 6.65,
-      "skewness": 14.89,
-      "kurtosis": 322.43
+      "upper_bound": 33000000.0,
+      "outlier_count": 285,
+      "outlier_rate_pct": 7.41,
+      "skewness": 15.52,
+      "kurtosis": 346.75
     },
     "salary_max_vnd": {
-      "total_records": 3809,
+      "total_records": 3844,
       "q1": 15000000.0,
-      "q3": 30480000.0,
-      "iqr": 15480000.0,
+      "q3": 30000000.0,
+      "iqr": 15000000.0,
       "lower_bound": 0.0,
-      "upper_bound": 53700000.0,
-      "outlier_count": 268,
-      "outlier_rate_pct": 7.04,
-      "skewness": 3.74,
-      "kurtosis": 25.95
+      "upper_bound": 52500000.0,
+      "outlier_count": 250,
+      "outlier_rate_pct": 6.5,
+      "skewness": 3.82,
+      "kurtosis": 27.94
     },
     "min_experience_years": {
-      "total_records": 8506,
-      "q1": 1.0,
+      "total_records": 8942,
+      "q1": 0.5,
       "q3": 3.0,
-      "iqr": 2.0,
+      "iqr": 2.5,
       "lower_bound": 0.0,
-      "upper_bound": 6.0,
-      "outlier_count": 228,
-      "outlier_rate_pct": 2.68,
-      "skewness": 1.77,
-      "kurtosis": 6.54
+      "upper_bound": 6.75,
+      "outlier_count": 256,
+      "outlier_rate_pct": 2.86,
+      "skewness": 1.71,
+      "kurtosis": 5.97
     }
   },
   "quality_rules_summary": {
-    "total_records": 9824,
+    "total_records": 10024,
     "quality_score_mean": 0.998,
     "quality_score_min": 0.45,
-    "records_below_0_5": 9,
+    "records_below_0_5": 10,
     "violation_counts": {
-      "violation_salary_range": 6,
+      "violation_salary_range": 28,
       "violation_experience_range": 0,
       "violation_date_order": 7,
       "violation_negative_salary": 0,
-      "violation_multiple_fixes": 9,
-      "is_outlier_capped": 131
+      "violation_multiple_fixes": 10,
+      "is_outlier_capped": 121
     }
   },
   "sources": {
     "careerviet": {
-      "total_records": 599,
+      "total_records": 590,
       "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/careerviet/careerviet_missing_outlier.json",
-      "with_numeric_salary": 599,
-      "with_experience": 599,
-      "with_skills": 533,
-      "outlier_capped_count": 11
+      "with_numeric_salary": 590,
+      "with_experience": 590,
+      "with_skills": 526,
+      "outlier_capped_count": 10
     },
     "glints": {
       "total_records": 331,
@@ -115,28 +115,28 @@
       "outlier_capped_count": 8
     },
     "itviec": {
-      "total_records": 691,
+      "total_records": 687,
       "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/itviec/itviec_missing_outlier.json",
-      "with_numeric_salary": 691,
-      "with_experience": 691,
+      "with_numeric_salary": 687,
+      "with_experience": 687,
       "with_skills": 687,
-      "outlier_capped_count": 8
+      "outlier_capped_count": 3
     },
     "jobsgo": {
-      "total_records": 1520,
+      "total_records": 1455,
       "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/jobsgo/jobsgo_missing_outlier.json",
-      "with_numeric_salary": 1520,
-      "with_experience": 1520,
-      "with_skills": 1515,
-      "outlier_capped_count": 20
+      "with_numeric_salary": 1455,
+      "with_experience": 1455,
+      "with_skills": 1451,
+      "outlier_capped_count": 28
     },
     "topcv": {
-      "total_records": 1950,
+      "total_records": 2228,
       "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/topcv/topcv_missing_outlier.json",
-      "with_numeric_salary": 1950,
-      "with_experience": 1950,
-      "with_skills": 1906,
-      "outlier_capped_count": 33
+      "with_numeric_salary": 2228,
+      "with_experience": 2228,
+      "with_skills": 2228,
+      "outlier_capped_count": 25
     },
     "topdev": {
       "total_records": 2755,
@@ -144,7 +144,7 @@
       "with_numeric_salary": 2755,
       "with_experience": 2755,
       "with_skills": 1263,
-      "outlier_capped_count": 26
+      "outlier_capped_count": 23
     },
     "vieclam24h": {
       "total_records": 619,
@@ -160,7 +160,7 @@
       "with_numeric_salary": 1359,
       "with_experience": 1359,
       "with_skills": 1359,
-      "outlier_capped_count": 19
+      "outlier_capped_count": 18
     }
   },
   "master_output_files": {

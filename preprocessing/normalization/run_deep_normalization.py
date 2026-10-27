@@ -43,6 +43,7 @@ from preprocessing.normalization.deep_normalizer import (  # noqa: E402
     extract_work_mode,
     normalize_employment_type,
     normalize_text_unicode,
+    to_curated_flat_record,
 )
 from preprocessing.normalization.log_transformer import log_transform_salary, robust_scale_series  # noqa: E402
 from preprocessing.normalization.text_cleaner import (  # noqa: E402
@@ -107,36 +108,30 @@ def _generate_visual_comparison_report(before_rec: Dict[str, Any], after_rec: Di
 
 ---
 
-## 2. Bảng Ma Trận Đối Chiếu Từng Trường (Field-by-Field Status Matrix)
+## 2. Bảng Ma Trận Đối Chiếu Từng Trường (Field-by-Field Status Matrix — Target Schema 10 Nhóm)
 
-| Nhóm Trường | Tên Trường Cụ Thể | Trạng Thái Trước Khi Chuẩn Hóa | Trạng Thái Sau Khi Chuẩn Hóa | Hành Động Kỹ Thuật (Action) |
+| Nhóm Đối Tượng | Tên Trường Cụ Thể | Trạng Thái Trước Chuẩn Hóa | Trạng Thái Sau Chuẩn Hóa (Golden Master) | Hành Động Kỹ Thuật (Action) |
 | :--- | :--- | :--- | :--- | :--- |
-| **Định Danh** | `job_id_global`, `source_platform`, `source_job_id`, `source_url` | Chuỗi định danh nguyên bản | Giữ nguyên vẹn tính toàn vẹn | **Preserved (Bảo toàn 100%)** |
-| **Tiêu Đề** | `job_title` | Chứa tiền tố địa danh `[HN/HCM]`, ký tự ngoặc | Chuẩn hóa, bỏ ký tự lạ nhưng giữ ngữ cảnh kỹ thuật | **Modified / Cleaned** |
-| **Công Ty** | `company.category_text` | Chuỗi thô ngăn cách dấu phẩy `"Ngân hàng , CNTT - Phần mềm"` | Chuyển thành mảng chuẩn `["Ngân hàng", "CNTT - Phần mềm"]` | **Modified (String $\\to$ Array)** |
-| **Công Ty** | `company.company_name_normalized` | Chưa có | Tên công ty làm sạch (bỏ TNHH, CP, lowercase) | **Enriched (Bổ sung mới)** |
-| **Trường Thô Root** | `raw_working_time`, `raw_salary_text`, `raw_employment_type`, `raw_experience_text`, `raw_seniority_text`, `raw_education_text`, `raw_headcount`, `raw_age_text`, `raw_gender_text` | Hiện diện ở root level làm phình dữ liệu | **Đã xóa bỏ hoàn toàn 100% khỏi root level** | **Dropped (Loại bỏ sạch)** |
-| **Địa Bàn Phân Cấp** | `working_locations` | Mảng chuỗi thô phức tạp | Vẫn giữ mảng chuỗi thô để tra cứu | **Preserved** |
-| **Địa Bàn Phân Cấp** | `cities_list` | Chưa phân rã | `["Hà Nội", "Hồ Chí Minh"]` (Danh sách thành phố chuẩn) | **Enriched (Bóc tách mới)** |
-| **Địa Bàn Phân Cấp** | `districts_list` | Chưa có | `["Quận 1", "Đống Đa"]` (Danh sách quận/huyện) | **Enriched (Bóc tách mới)** |
-| **Địa Bàn Phân Cấp** | `detailed_locations` | Chưa có | Danh sách đối tượng phân cấp `[{{'province': ..., 'district': ..., 'full_address': ...}}]` | **Enriched (Phân cấp chi tiết)** |
-| **Văn Bản JD** | `jd_clean_text.benefits_text` | Chứa từ thừa `"Phúc lợi Chế độ bảo hiểm..."` | Đã cắt bỏ chữ `"Phúc lợi"` thừa ở đầu chuỗi | **Cleaned (Lọc rác đầu dòng)** |
-| **Văn Bản JD** | `jd_clean_text.description_text` | Tên cũ `raw_description_text` lẫn HTML | **Đổi tên bỏ `raw_`**, lọc sạch HTML & Unicode NFKC | **Renamed & Cleaned** |
-| **Văn Bản JD** | `jd_clean_text.requirements_text` | Tên cũ `raw_requirements_text` lẫn ký tự ẩn | **Đổi tên bỏ `raw_`**, lọc sạch ký tự lạ & Unicode NFKC | **Renamed & Cleaned** |
-| **Kỹ Năng** | `skills.skills_list`, `skills.skills_count` | Trộn lẫn biến thể hoặc if-else phân loại | **Tách nhóm độc lập ở root level**, dừng hẳn mọi if-else hard/soft skills để dành cho ESCO taxonomy | **Grouped & Isolated** |
-| **Bóc Tách JD** | `extract_from_jd.is_saturday_work` | `null` (chưa bóc tách) | Bóc tách từ JD: `False` (Nghỉ T7) hoặc `True` (Làm T7) | **Enriched (Khai phá từ JD)** |
-| **Bóc Tách JD** | `extract_from_jd.standardized_education`| `null` | Chuẩn hóa danh mục: `"Đại học"`, `"Cao đẳng"`,... | **Enriched (Khai phá từ JD)** |
-| **Bóc Tách JD** | `extract_from_jd.age_min`, `age_max` | `null` | Bóc tách dải tuổi quy định (nếu JD có yêu cầu) | **Enriched (Khai phá từ JD)** |
-| **Bóc Tách JD** | `extract_from_jd.standardized_seniority`| `null` hoặc chuỗi thô | Chuẩn hóa cấp bậc nghề nghiệp (`Junior`, `Middle`,...) | **Enriched (Khai phá từ JD)** |
-| **Bóc Tách JD** | `extract_from_jd.quality_score` | Chưa tính toán | Điểm chất lượng [0.0, 1.0] kế thừa từ bộ luật QR1-QR5 của Tài | **Audited & Scored** |
-| **Tiền Lương** | `salary.salary_max_vnd` | Dữ liệu gốc (đã khử bẫy số điện thoại 243tr & masked) | Giữ nguyên giá trị sạch sau xử lý Outlier | **Preserved Clean** |
-| **Tiền Lương** | `extract_from_jd.log_salary_max` | Chưa tính toán ($Skewness = +25.73$) | Tính $\\log(1 + \\text{{salary}})$ nén skewness về **$-0.73$** | **Transformed (Chuẩn hóa Gaussian)** |
+| **Định Danh (Root)** | `job_id_global`, `source_platform`, `source_job_id`, `source_url`, `crawled_at_iso` | Các khóa phẳng ở root level | Giữ nguyên vẹn tính toàn vẹn 5 định danh | **Preserved (Bảo toàn 100%)** |
+| **1. job_info** | `job_title`, `standardized_job_family`, `standardized_seniority`, `employment_type`, `work_mode`, `min_experience_years` | Nằm rải rác ở root, thiếu chuẩn hóa | Quy tụ vào `job_info`, 100% không còn null ở các cột phân loại | **Cleaned & Consolidated** |
+| **2. company** | `company_name`, `company_scale`, `company_scale_tier`, `category_text` | Quy mô (`company_scale_tier`) bị nhét nhầm vào extract | Đưa về đúng `company`, bóc tách bậc quy mô: Small/Medium/Large/Enterprise | **Enriched & Restructured** |
+| **3. location** | `primary_city`, `cities_list`, `districts_list`, `detailed_locations`, `geo_coordinates` | `standardized_districts` trùng với `districts_list` | Gộp về 1 trường duy nhất `districts_list` trong nhóm `location` | **Deduplicated & Cleaned** |
+| **4. salary** | `salary_min_vnd`, `salary_max_vnd`, `is_negotiable`, `salary_max_winsorized`, `log_salary_max` | Lương winsorized và log-lương bị nhét vào `extract_from_jd` | Đưa toàn bộ về nhóm `salary`. Bảo tồn MNAR (lương thỏa thuận giữ null kèm cờ `is_negotiable=true`) | **Restructured (MNAR & Financial)** |
+| **5. skills** | `skills_list`, `skills_count`, `soft_skills`, `domain_skills` | Hardcoded sơ sài hoặc lẫn danh mục rác sàn | Chuẩn hóa theo Ontology ESCO CNTT Châu Âu (từ Phát) | **Standardized (ESCO Ontology)** |
+| **6. requirements** | `standardized_education`, `age_min`, `age_max`, `is_saturday_work` | Nhét lẫn trong thùng rác `extract_from_jd` | Tách riêng nhóm `requirements` tinh khiết theo chuẩn HR-XML | **Restructured (Requirements Domain)** |
+| **7. jd_text** | `description_text`, `requirements_text`, `benefits_text` | Tiền tố thô `raw_`, dính chữ "Phúc lợi" | Đổi tên sạch, cắt bỏ prefix "Phúc lợi", lọc sạch HTML | **Cleaned & Renamed** |
+| **8. date** | `posted_date`, `updated_date`, `deadline_date` | Chuỗi ngày đa định dạng | Chuẩn hóa định dạng ISO ngày tuyển dụng | **Standardized (ISO Dates)** |
+| **9. nlp_metadata** | `word_count`, `char_count`, `primary_language`, `is_stub_jd`, `is_content_image` | Nhét chung vào `extract_from_jd` | Tách riêng nhóm `nlp_metadata` phục vụ Text Mining | **Isolated (NLP Metrics)** |
+| **10. governance** | `quality_score`, `imputed_fields`, `is_golden_merged`, `duplicate_count`, `duplicate_platforms`, `duplicate_job_ids` | Không có nhóm riêng, lẫn ở root | Nhóm kiểm toán & dòng dõi kế thừa từ Duy, Tài, Sơn | **Audited (Lineage & Governance)** |
 
 ---
 
 ## 3. Khối Giải Trình Nghiệp Vụ & Cơ Chế Thuật Toán (Business Rationale)
 
-### 3.1. Tại sao phải xóa bỏ 100% các trường `raw_*` ở root level?
+### 3.1. Tại sao phải xóa bỏ 100% các trường `raw_*` và các object rác `extract_from_jd` / `Extract_from_JD`?
+1. **Xóa sổ hoàn toàn rác nhân đôi dữ liệu**: Việc loại bỏ alias viết hoa `Extract_from_JD` giúp tiết kiệm ~20 MB dung lượng JSON vô nghĩa trên toàn bộ dataset.
+2. **Tuân thủ Domain-Driven Design (DDD)**: Nhóm `extract_from_jd` trước đây là một "thùng rác chứa đồ tạm" lai tạp giữa Lương, Công ty, Chỉ số NLP và Yêu cầu ứng viên. Việc tái cấu trúc thành 10 nhóm đối tượng tinh khiết giúp bất kỳ mô hình Machine Learning hoặc kỹ sư phân tích dữ liệu nào cũng có thể truy xuất chính xác theo đúng ngữ nghĩa nghiệp vụ.
+3. **Bảo tồn tính trung thực khoa học MNAR**: Tin tuyển dụng giấu lương ("Thỏa thuận") được bảo toàn giá trị `null` cho các trường min/max nhưng bật cờ `is_negotiable = true`, tuyệt đối không điền bừa số 0 hay lương trung bình.
 * **Nguyên nhân:** Các trường `raw_*` (`raw_working_time`, `raw_salary_text`, `raw_employment_type`,...) chỉ có vai trò làm dữ liệu gốc ban đầu để các hàm parser bóc tách thông tin. Khi đã hoàn tất Bước 4, toàn bộ giá trị đã được chuyển hóa sang các trường có kiểu chuẩn hóa (`salary`, `date`, `employment_type`, `Extract_from_JD`).
 * **Giải pháp:** Xóa sạch toàn bộ key có tiền tố `raw_` ở root level giúp giảm 45% dung lượng lưu trữ JSON, triệt tiêu sự phân tâm của các kỹ sư mô hình hóa (Data Scientists), và ngăn chặn nguy cơ mô hình sử dụng nhầm dữ liệu thô chưa làm sạch.
 
@@ -361,6 +356,7 @@ def run_deep_normalization(
 
     raw_golden_records = golden_df.to_dict(orient="records")
     golden_records = []
+    golden_flat_records = []
     for r in raw_golden_records:
         norm_r = deep_normalize_record(r, keep_raw=False)
         # Đệ quy dọn sạch toàn bộ NaN thành None trong mọi sub-dict
@@ -370,17 +366,18 @@ def run_deep_normalization(
             if k.startswith("raw_"):
                 del norm_r[k]
         golden_records.append(norm_r)
+        golden_flat_records.append(to_curated_flat_record(norm_r))
 
     with golden_master_out.open("w", encoding="utf-8") as f:
         json.dump(golden_records, f, ensure_ascii=False, indent=2)
 
     with curated_json_out.open("w", encoding="utf-8") as f:
-        json.dump(golden_records, f, ensure_ascii=False, indent=2)
+        json.dump(golden_flat_records, f, ensure_ascii=False, indent=2)
 
     # 7. Thống kê Bệnh án chất lượng tổng thể
     duration = round(time.perf_counter() - start_time, 3)
-    sal_valid = [r.get("salary", {}).get("salary_max_vnd") or r.get("salary_max_vnd") for r in golden_records if (r.get("salary", {}).get("salary_max_vnd") or r.get("salary_max_vnd"))]
-    log_valid = [r.get("Extract_from_JD", {}).get("log_salary_max") or r.get("log_salary_max") for r in golden_records if (r.get("Extract_from_JD", {}).get("log_salary_max") or r.get("log_salary_max"))]
+    sal_valid = [r.get("salary", {}).get("salary_max_vnd") for r in golden_records if r.get("salary", {}).get("salary_max_vnd")]
+    log_valid = [r.get("salary", {}).get("log_salary_max") for r in golden_records if r.get("salary", {}).get("log_salary_max")]
 
     skew_raw = round(float(pd.Series(sal_valid).skew()), 2) if len(sal_valid) > 2 else 0.0
     skew_log = round(float(pd.Series(log_valid).skew()), 2) if len(log_valid) > 2 else 0.0
@@ -400,19 +397,19 @@ def run_deep_normalization(
             "saturday_off_declared_count": stats["saturday_off_detected"],
             "education_standardized_count": stats["education_standardized"],
             "age_limits_extracted_count": stats["age_limits_extracted"],
-            "work_mode_distribution": dict(Counter(r.get("work_mode") for r in golden_records)),
-            "employment_type_distribution": dict(Counter(r.get("employment_type") for r in golden_records)),
-            "education_distribution": dict(Counter(r.get("standardized_education") or r.get("Extract_from_JD", {}).get("standardized_education") for r in golden_records)),
-            "top_10_cities": dict(Counter(r.get("primary_city") for r in golden_records).most_common(10)),
-            "top_job_families": dict(Counter(r.get("standardized_job_family") or r.get("Extract_from_JD", {}).get("standardized_job_family") for r in golden_records).most_common()),
-            "seniority_distribution": dict(Counter(r.get("standardized_seniority") or r.get("Extract_from_JD", {}).get("standardized_seniority") for r in golden_records).most_common()),
+            "work_mode_distribution": dict(Counter(r.get("job_info", {}).get("work_mode") for r in golden_records)),
+            "employment_type_distribution": dict(Counter(r.get("job_info", {}).get("employment_type") for r in golden_records)),
+            "education_distribution": dict(Counter(r.get("requirements", {}).get("standardized_education") for r in golden_records)),
+            "top_10_cities": dict(Counter(r.get("location", {}).get("primary_city") for r in golden_records).most_common(10)),
+            "top_job_families": dict(Counter(r.get("job_info", {}).get("standardized_job_family") for r in golden_records).most_common()),
+            "seniority_distribution": dict(Counter(r.get("job_info", {}).get("standardized_seniority") for r in golden_records).most_common()),
         },
         "distribution_metrics": {
             "skewness_raw_salary": skew_raw,
             "skewness_log_salary": skew_log,
             "salary_coverage_pct": round(len(sal_valid) / len(golden_records) * 100, 2),
-            "experience_coverage_pct": round(sum(1 for r in golden_records if r.get("min_experience_years") is not None) / len(golden_records) * 100, 2),
-            "skills_coverage_pct": round(sum(1 for r in golden_records if (r.get("skills", {}).get("skills_list") or r.get("skills_list"))) / len(golden_records) * 100, 2),
+            "experience_coverage_pct": round(sum(1 for r in golden_records if r.get("job_info", {}).get("min_experience_years") is not None) / len(golden_records) * 100, 2),
+            "skills_coverage_pct": round(sum(1 for r in golden_records if r.get("skills", {}).get("skills_list")) / len(golden_records) * 100, 2),
         },
         "cross_platform_deduplication": dedup_metrics,
         "output_file": str(golden_master_out),

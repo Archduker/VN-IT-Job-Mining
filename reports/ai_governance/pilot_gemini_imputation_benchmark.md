@@ -5,23 +5,23 @@
 
 | ID | Nguồn | Tiêu Đề | Kinh Nghiệm Trước | Kinh Nghiệm Đề Xuất (Heuristic) | Kỹ Năng Đề Xuất |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `jobsgo_29282434550` | `jobsgo` | Nhân Viên Tư Vấn & Hỗ Trợ Dịch Vụ K | None | **0.0 năm** | Chưa tìm thấy |
-| `glints_be4ab682-f17d-49e4-a5e3-f4b727150d52` | `glints` | Wordpress Developer intern | None | **0.0 năm** | Php, Javascript, Mysql, Git, Html |
-| `topdev_2139038` | `topdev` | CVCC Đào tạo và phát triển_TA184 | None | **5.0 năm** | Chưa tìm thấy |
-| `topdev_2137286` | `topdev` | Trưởng Nhóm Quản Lý Thiết Kế MEP | None | **0.0 năm** | Chưa tìm thấy |
-| `topdev_2137821` | `topdev` | Nhân viên siêu thị TOPZONE | None | **0.0 năm** | Chưa tìm thấy |
-| `topcv_2056499` | `topcv` | Nhân Viên Lập Trình Vận Hành CNC | None | **0.0 năm** | Chưa tìm thấy |
-| `jobsgo_29024311339` | `jobsgo` | Japanese Business Analyst Intern | None | **0.0 năm** | Chưa tìm thấy |
-| `vietnamworks_2100671` | `vietnamworks` | Application Support Officer | None | **3.0 năm** | Chưa tìm thấy |
-| `jobsgo_29091391599` | `jobsgo` | Nhân Viên Điện Lạnh - Đi Làm Ngay | None | **Null** | Chưa tìm thấy |
-| `topdev_2136971` | `topdev` | RB-60488241-CV Dịch vụ khách hàng-J | None | **Null** | Chưa tìm thấy |
-| `glints_2faf9925-0caf-4819-8c49-104de8c2eb9e` | `glints` | BD651- KỸ SƯ CẢI TIẾN-Bình Dương | None | **Null** | Chưa tìm thấy |
-| `glints_a68e5dc1-67b6-435f-9ed9-ae7cdf912202` | `glints` | Golang Developer | 3.0 | **3.0 năm** | Python, Golang |
-| `jobsgo_28996922496` | `jobsgo` | Nhân Viên Kinh Doanh Thiết Bị Công  | None | **0.0 năm** | Chưa tìm thấy |
-| `topdev_2137138` | `topdev` | Nhân Viên Marketing - Mạnh Content | None | **1.0 năm** | Chưa tìm thấy |
-| `topdev_2139322` | `topdev` | Nhân Viên Quản lý Truyền thông Thươ | None | **Null** | Chưa tìm thấy |
-| `vieclam24h_200964591` | `vieclam24h` | Nhân Viên Kinh Doanh Phân Phối Linh | None | **1.0 năm** | Chưa tìm thấy |
-| `glints_8c13d28e-e4a5-41fd-bbb0-9315adf137f6` | `glints` | Thực tập sinh, Tình nguyện viên Dat | None | **0.0 năm** | Chưa tìm thấy |
-| `topdev_2138527` | `topdev` | Kế Toán Thuế | None | **3.0 năm** | Chưa tìm thấy |
-| `vietnamworks_2107871` | `vietnamworks` | AI Enablement Engineer | None | **Null** | Chưa tìm thấy |
-| `topdev_2138304` | `topdev` | Nhân Viên Kho Vận (Kho chi nhánh) | None | **Null** | Chưa tìm thấy |
+| `jobsgo_29359712639` | `jobsgo` | Nhân Viên Kỹ Thuật IT | None | **0.0 năm** | Chưa tìm thấy |
+| `careerviet_35C89FFF` | `careerviet` | Business Analyst | None | **1.0 năm** | Chưa tìm thấy |
+| `topcv_2285395` | `topcv` | Monetization Game | None | **0.0 năm** | Chưa tìm thấy |
+| `topcv_2309267` | `topcv` | Nhân Viên Tư Vấn Marketing Phần Mềm | None | **Null** | Chưa tìm thấy |
+| `topcv_1633673` | `topcv` | System Administrator – Managed Serv | None | **5.0 năm** | Python, Docker, Aws, Azure, Gcp, Linux |
+| `jobsgo_29020373429` | `jobsgo` | Kỹ Sư Hạ Tầng Kỹ Thuật – Cấp Thoát  | None | **2.0 năm** | Chưa tìm thấy |
+| `jobsgo_28977518105` | `jobsgo` | Nhân Viên Kinh Doanh | None | **1.0 năm** | Chưa tìm thấy |
+| `vietnamworks_2120485` | `vietnamworks` | Chuyên Gia Công Nghệ Hạ Tầng (Syste | None | **5.0 năm** | Chưa tìm thấy |
+| `itviec_middle-qa-automation-engineer-playwright-selenium-fpt-digital-4422` | `itviec` | Middle QA Automation Engineer (Play | None | **2.0 năm** | Python, Java, Javascript, Typescript, Sql, Ci/Cd |
+| `vietnamworks_2106472` | `vietnamworks` | MES Engineer (New Project) | None | **0.0 năm** | Chưa tìm thấy |
+| `topdev_2136575` | `topdev` | Chuyên viên Phân tích nghiệp vụ | None | **3.0 năm** | Chưa tìm thấy |
+| `careerviet_35C80317` | `careerviet` | Development Manager | None | **5.0 năm** | Python, Node.Js, Aws, Azure, Postgresql, Mongodb, Redis, Ci/Cd |
+| `careerviet_35C87659` | `careerviet` | Operation Supervisor | None | **0.0 năm** | Chưa tìm thấy |
+| `itviec_senior-cloud-devops-hybrid-infrastructure-engineer-vision-advisory-analytics-4451` | `itviec` | Senior Cloud, DevOps & Hybrid Infra | None | **0.0 năm** | Docker, Kubernetes, Aws, Mysql, Mongodb, Redis, Devops, Ci/Cd, Git, Linux |
+| `topcv_2054074` | `topcv` | Nhân Viên PreSales Engineer | None | **Null** | Chưa tìm thấy |
+| `topcv_2317584` | `topcv` | Graphic Designer POD - Hấp Dẫn | None | **2.0 năm** | Chưa tìm thấy |
+| `vieclam24h_200948976` | `vieclam24h` | Nhân Viên Lập Trình CNC Phay | None | **Null** | Chưa tìm thấy |
+| `vietnamworks_2071836` | `vietnamworks` | Kỹ Sư Thiết Kế Cơ Khí Tự Động Hóa ( | None | **2.0 năm** | Chưa tìm thấy |
+| `careerviet_35C88B80` | `careerviet` | Nhân Viên Điều Độ Cảng | None | **0.0 năm** | Chưa tìm thấy |
+| `vietnamworks_2100787` | `vietnamworks` | Kỹ Sư Tích Hợp Phần Cứng | None | **3.0 năm** | Chưa tìm thấy |

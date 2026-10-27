@@ -1,0 +1,327 @@
+{
+  "name": "Don vi hanh chinh cap tinh VN — 34 đơn vị hiện hành (từ 1/7/2025, NQ 60-NQ/TW & 202/2025/QH15); alias gồm tên tỉnh cũ kế thừa + quận/huyện có bằng chứng trên data thật",
+  "version": "2.0.0",
+  "owner": "Phat Nguyen (Text & Skill Processing, Buoc 3)",
+  "spec_note": "docs/preprocessing/normalization/04_scaling_and_taxonomy.md §5 ghi chuan '63 tinh thanh' — tai lieu co, danh muc hanh chinh hien hanh la 34. Ban 2.0.0 lay 34 canonical. Ghi nhan lech, khong tu sua docs 04.",
+  "matching": "loader bo dau + lowercase + nen khoang trang khi so sanh; alias dai nhat thang, khop ranh gioi tu",
+  "sources": [
+    "https://xaydungchinhsach.chinhphu.vn/chi-tiet-34-don-vi-hanh-chinh-cap-tinh-tu-12-6-2025-119250612141845533.htm",
+    "https://www.cityapartment.com.vn/danh-sach-34-tinh-thanh-viet-nam-moi-nhat/ (bang 34 dong, 27/10/2026)"
+  ],
+  "successor_map_2025": {
+    "Hà Nội": [],
+    "Hồ Chí Minh": [
+      "Bà Rịa - Vũng Tàu",
+      "Bình Dương",
+      "Thành phố Hồ Chí Minh"
+    ],
+    "Đà Nẵng": [
+      "Quảng Nam"
+    ],
+    "Hải Phòng": [
+      "Hải Dương"
+    ],
+    "Cần Thơ": [
+      "Sóc Trăng",
+      "Hậu Giang"
+    ],
+    "Huế": [
+      "Thừa Thiên Huế"
+    ],
+    "Tuyên Quang": [
+      "Hà Giang"
+    ],
+    "Lào Cai": [
+      "Yên Bái"
+    ],
+    "Thái Nguyên": [
+      "Bắc Kạn"
+    ],
+    "Phú Thọ": [
+      "Hòa Bình",
+      "Vĩnh Phúc"
+    ],
+    "Bắc Ninh": [
+      "Bắc Giang"
+    ],
+    "Hưng Yên": [
+      "Thái Bình"
+    ],
+    "Ninh Bình": [
+      "Hà Nam",
+      "Nam Định"
+    ],
+    "Quảng Trị": [
+      "Quảng Bình"
+    ],
+    "Quảng Ngãi": [
+      "Kon Tum"
+    ],
+    "Gia Lai": [
+      "Bình Định"
+    ],
+    "Khánh Hòa": [
+      "Ninh Thuận"
+    ],
+    "Lâm Đồng": [
+      "Đắk Nông",
+      "Bình Thuận"
+    ],
+    "Đắk Lắk": [
+      "Phú Yên"
+    ],
+    "Đồng Nai": [
+      "Bình Phước"
+    ],
+    "Tây Ninh": [
+      "Long An"
+    ],
+    "Đồng Tháp": [
+      "Tiền Giang"
+    ],
+    "Vĩnh Long": [
+      "Bến Tre",
+      "Trà Vinh"
+    ],
+    "Cà Mau": [
+      "Bạc Liêu"
+    ],
+    "An Giang": [
+      "Kiên Giang"
+    ]
+  },
+  "provinces": {
+    "Hà Nội": [
+      "ba dinh",
+      "bac tu liem",
+      "cau giay",
+      "dong anh",
+      "dong da",
+      "gia lam",
+      "ha dong",
+      "ha noi",
+      "hai ba trung",
+      "hanoi",
+      "hn",
+      "hoai duc",
+      "hoan kiem",
+      "long bien",
+      "nam tu liem",
+      "soc son",
+      "thanh xuan"
+    ],
+    "Hồ Chí Minh": [
+      "ba ria",
+      "ben cat",
+      "binh chanh",
+      "binh thanh",
+      "Bà Rịa - Vũng Tàu",
+      "Bình Dương",
+      "can gio",
+      "di an",
+      "go vap",
+      "hcm",
+      "hcmc",
+      "ho chi minh",
+      "hochiminh",
+      "nha be",
+      "phu nhuan",
+      "quan 1",
+      "quan 10",
+      "quan 12",
+      "quan 2",
+      "quan 3",
+      "quan 4",
+      "quan 5",
+      "quan 7",
+      "quan 9",
+      "quan ba",
+      "quan bay",
+      "quan hai",
+      "quan mot",
+      "quan muoi hai",
+      "quan nam",
+      "sai gon",
+      "tan binh",
+      "thu dau mot",
+      "thu duc",
+      "thuan an",
+      "Thành phố Hồ Chí Minh",
+      "tp hcm",
+      "tp.hcm",
+      "vsip",
+      "vung tau"
+    ],
+    "Đà Nẵng": [
+      "chu lai",
+      "da nang",
+      "danang",
+      "dn",
+      "hai chau",
+      "hoi an",
+      "lien chieu",
+      "ngo quyen",
+      "ngu hanh son",
+      "quang nam",
+      "Quảng Nam",
+      "son tra",
+      "tam ky",
+      "thanh khe"
+    ],
+    "Hải Phòng": [
+      "chi linh",
+      "do son",
+      "hai duong",
+      "hai phong",
+      "haiphong",
+      "hong bang",
+      "Hải Dương",
+      "kien thuy",
+      "kinh mon",
+      "nam sach"
+    ],
+    "Cần Thơ": [
+      "binh thuy",
+      "can tho",
+      "cantho",
+      "hau giang",
+      "Hậu Giang",
+      "long my",
+      "ninh kieu",
+      "soc trang",
+      "Sóc Trăng",
+      "vi thanh"
+    ],
+    "Huế": [
+      "a luoi",
+      "hue",
+      "phu vang",
+      "thua thien hue",
+      "Thừa Thiên Huế"
+    ],
+    "Quảng Ninh": [],
+    "Bắc Ninh": [
+      "bac giang",
+      "Bắc Giang",
+      "lang Giang",
+      "que vo",
+      "tu son",
+      "viet yen",
+      "vsip bac ninh",
+      "yen dung",
+      "yen phong"
+    ],
+    "Ninh Bình": [
+      "Hà Nam",
+      "Nam Định"
+    ],
+    "Hưng Yên": [
+      "Thái Bình"
+    ],
+    "Thái Nguyên": [
+      "Bắc Kạn"
+    ],
+    "Phú Thọ": [
+      "Hòa Bình",
+      "Vĩnh Phúc"
+    ],
+    "Tuyên Quang": [
+      "Hà Giang"
+    ],
+    "Lào Cai": [
+      "Yên Bái"
+    ],
+    "Điện Biên": [],
+    "Lai Châu": [],
+    "Sơn La": [],
+    "Cao Bằng": [],
+    "Lạng Sơn": [],
+    "Nghệ An": [],
+    "Hà Tĩnh": [],
+    "Quảng Trị": [
+      "Quảng Bình"
+    ],
+    "Quảng Ngãi": [
+      "Kon Tum"
+    ],
+    "Gia Lai": [
+      "Bình Định"
+    ],
+    "Khánh Hòa": [
+      "cam ranh",
+      "nha trang",
+      "ninh hoa",
+      "Ninh Thuận",
+      "phan rang",
+      "van phong"
+    ],
+    "Lâm Đồng": [
+      "Bình Thuận",
+      "Đắk Nông"
+    ],
+    "Đắk Lắk": [
+      "Phú Yên"
+    ],
+    "Đồng Nai": [
+      "bien hoa",
+      "bienhoa",
+      "binh phuoc",
+      "Bình Phước",
+      "dong xoai",
+      "long khanh",
+      "long thanh",
+      "nhon trach",
+      "xuan loc"
+    ],
+    "Tây Ninh": [
+      "Long An"
+    ],
+    "An Giang": [
+      "Kiên Giang"
+    ],
+    "Đồng Tháp": [
+      "Tiền Giang"
+    ],
+    "Vĩnh Long": [
+      "Bến Tre",
+      "Trà Vinh"
+    ],
+    "Cà Mau": [
+      "Bạc Liêu"
+    ],
+    "Thanh Hóa": []
+  },
+  "special_values": {
+    "remote": [
+      "remote",
+      "tu xa",
+      "lam viec tu xa",
+      "wfh",
+      "work from home",
+      "online working",
+      "working from home"
+    ],
+    "toan_quoc": [
+      "toan quoc",
+      "quoc gia",
+      "nationwide",
+      "all locations"
+    ],
+    "nuoc_ngoai": [
+      "international",
+      "nuoc ngoai",
+      "overseas",
+      "singapore",
+      "thailand",
+      "japan",
+      "korea",
+      "usa",
+      "australia"
+    ]
+  },
+  "priority_hubs": [
+    "Ho Chi Minh",
+    "Ha Noi",
+    "Da Nang"
+  ]
+}

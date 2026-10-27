@@ -1,23 +1,26 @@
 {
-  "pipeline_phase": "Step 1 - Integration (Exhaustive 25 Fields)",
-  "output_format": "100% JSON",
-  "timestamp": "2026-10-25T19:25:26.382894+00:00",
-  "total_integrated_records": 9824,
-  "total_fields": 29,
-  "master_json_path": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/integrated_flat_all_sources.json",
+  "pipeline_phase": "Step 1 - Integration (Header Flat + 8 Groups Canonical)",
+  "output_format": "100% JSON (Dual-Form: Grouped & Flat)",
+  "timestamp": "2026-10-27T03:55:40.590268+00:00",
+  "total_integrated_records": 10456,
+  "total_fields": 37,
+  "output_files": {
+    "grouped_master": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/integrated_grouped_all_sources.json",
+    "flat_master": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/integrated_flat_all_sources.json"
+  },
   "source_breakdown": {
     "careerviet": 599,
     "glints": 331,
     "itviec": 691,
     "jobsgo": 1520,
-    "topcv": 1950,
+    "topcv": 2582,
     "topdev": 2755,
     "vieclam24h": 619,
     "vietnamworks": 1359
   },
   "field_completeness_audit": {
     "job_id_global": {
-      "filled_count": 9824,
+      "filled_count": 10456,
       "missing_count": 0,
       "completeness_pct": 100.0,
       "source_coverage": {
@@ -33,7 +36,7 @@
       "general_null_diagnosis": "Tỷ lệ trống 0.0% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "source_platform": {
-      "filled_count": 9824,
+      "filled_count": 10456,
       "missing_count": 0,
       "completeness_pct": 100.0,
       "source_coverage": {
@@ -49,7 +52,7 @@
       "general_null_diagnosis": "Tỷ lệ trống 0.0% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "source_job_id": {
-      "filled_count": 9824,
+      "filled_count": 10456,
       "missing_count": 0,
       "completeness_pct": 100.0,
       "source_coverage": {
@@ -65,7 +68,7 @@
       "general_null_diagnosis": "Tỷ lệ trống 0.0% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "source_url": {
-      "filled_count": 9824,
+      "filled_count": 10456,
       "missing_count": 0,
       "completeness_pct": 100.0,
       "source_coverage": {
@@ -81,7 +84,7 @@
       "general_null_diagnosis": "Tỷ lệ trống 0.0% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "crawled_at": {
-      "filled_count": 9824,
+      "filled_count": 10456,
       "missing_count": 0,
       "completeness_pct": 100.0,
       "source_coverage": {
@@ -96,10 +99,170 @@
       },
       "general_null_diagnosis": "Tỷ lệ trống 0.0% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
+    "company_name": {
+      "filled_count": 10427,
+      "missing_count": 29,
+      "completeness_pct": 99.72,
+      "source_coverage": {
+        "careerviet": 98.16,
+        "glints": 100.0,
+        "itviec": 98.84,
+        "jobsgo": 99.61,
+        "topcv": 99.85,
+        "topdev": 100.0,
+        "vieclam24h": 100.0,
+        "vietnamworks": 100.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 0.28% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "company_scale": {
+      "filled_count": 3702,
+      "missing_count": 6754,
+      "completeness_pct": 35.41,
+      "source_coverage": {
+        "careerviet": 0.0,
+        "glints": 0.0,
+        "itviec": 0.0,
+        "jobsgo": 0.0,
+        "topcv": 94.73,
+        "topdev": 0.0,
+        "vieclam24h": 100.0,
+        "vietnamworks": 46.87
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 64.59% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "company_address": {
+      "filled_count": 7055,
+      "missing_count": 3401,
+      "completeness_pct": 67.47,
+      "source_coverage": {
+        "careerviet": 65.78,
+        "glints": 87.92,
+        "itviec": 94.36,
+        "jobsgo": 98.68,
+        "topcv": 94.73,
+        "topdev": 0.0,
+        "vieclam24h": 100.0,
+        "vietnamworks": 84.84
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 32.53% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "company_url": {
+      "filled_count": 3708,
+      "missing_count": 6748,
+      "completeness_pct": 35.46,
+      "source_coverage": {
+        "careerviet": 0.0,
+        "glints": 81.57,
+        "itviec": 98.84,
+        "jobsgo": 0.0,
+        "topcv": 0.0,
+        "topdev": 100.0,
+        "vieclam24h": 0.0,
+        "vietnamworks": 0.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 64.54% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "company_logo_image": {
+      "filled_count": 2311,
+      "missing_count": 8145,
+      "completeness_pct": 22.1,
+      "source_coverage": {
+        "careerviet": 0.0,
+        "glints": 98.49,
+        "itviec": 94.36,
+        "jobsgo": 0.0,
+        "topcv": 0.0,
+        "topdev": 0.0,
+        "vieclam24h": 0.0,
+        "vietnamworks": 98.09
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 77.9% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "company_industry": {
+      "filled_count": 6469,
+      "missing_count": 3987,
+      "completeness_pct": 61.87,
+      "source_coverage": {
+        "careerviet": 97.83,
+        "glints": 0.0,
+        "itviec": 96.38,
+        "jobsgo": 97.96,
+        "topcv": 91.75,
+        "topdev": 0.0,
+        "vieclam24h": 0.0,
+        "vietnamworks": 100.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 38.13% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "raw_location_text": {
+      "filled_count": 10337,
+      "missing_count": 119,
+      "completeness_pct": 98.86,
+      "source_coverage": {
+        "careerviet": 97.83,
+        "glints": 100.0,
+        "itviec": 98.84,
+        "jobsgo": 99.41,
+        "topcv": 96.63,
+        "topdev": 99.93,
+        "vieclam24h": 100.0,
+        "vietnamworks": 100.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 1.14% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "working_locations": {
+      "filled_count": 9952,
+      "missing_count": 504,
+      "completeness_pct": 95.18,
+      "source_coverage": {
+        "careerviet": 98.5,
+        "glints": 100.0,
+        "itviec": 94.36,
+        "jobsgo": 93.36,
+        "topcv": 86.29,
+        "topdev": 100.0,
+        "vieclam24h": 100.0,
+        "vietnamworks": 99.93
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 4.82% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "geo_coordinates": {
+      "filled_count": 1357,
+      "missing_count": 9099,
+      "completeness_pct": 12.98,
+      "source_coverage": {
+        "careerviet": 0.0,
+        "glints": 0.0,
+        "itviec": 0.0,
+        "jobsgo": 0.0,
+        "topcv": 0.0,
+        "topdev": 0.0,
+        "vieclam24h": 0.0,
+        "vietnamworks": 99.85
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 87.02% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "skills_list": {
+      "filled_count": 8686,
+      "missing_count": 1770,
+      "completeness_pct": 83.07,
+      "source_coverage": {
+        "careerviet": 78.13,
+        "glints": 88.52,
+        "itviec": 99.42,
+        "jobsgo": 99.54,
+        "topcv": 97.6,
+        "topdev": 44.54,
+        "vieclam24h": 100.0,
+        "vietnamworks": 100.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 16.93% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
     "job_title": {
-      "filled_count": 9811,
+      "filled_count": 10443,
       "missing_count": 13,
-      "completeness_pct": 99.87,
+      "completeness_pct": 99.88,
       "source_coverage": {
         "careerviet": 98.5,
         "glints": 100.0,
@@ -110,172 +273,60 @@
         "vieclam24h": 100.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 0.13% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 0.12% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
-    "company_name": {
-      "filled_count": 9795,
-      "missing_count": 29,
-      "completeness_pct": 99.7,
+    "raw_description_text": {
+      "filled_count": 10032,
+      "missing_count": 424,
+      "completeness_pct": 95.94,
       "source_coverage": {
-        "careerviet": 98.16,
+        "careerviet": 99.83,
         "glints": 100.0,
-        "itviec": 98.84,
-        "jobsgo": 99.61,
-        "topcv": 99.79,
+        "itviec": 99.42,
+        "jobsgo": 95.72,
+        "topcv": 86.29,
         "topdev": 100.0,
         "vieclam24h": 100.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 0.3% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 4.06% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
-    "company_address": {
-      "filled_count": 6458,
-      "missing_count": 3366,
-      "completeness_pct": 65.74,
+    "raw_requirements_text": {
+      "filled_count": 10020,
+      "missing_count": 436,
+      "completeness_pct": 95.83,
       "source_coverage": {
-        "careerviet": 65.78,
-        "glints": 87.92,
-        "itviec": 94.36,
-        "jobsgo": 98.68,
-        "topcv": 94.82,
-        "topdev": 0.0,
-        "vieclam24h": 100.0,
-        "vietnamworks": 84.84
-      },
-      "general_null_diagnosis": "Tỷ lệ trống 34.26% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
-    },
-    "company_scale": {
-      "filled_count": 2486,
-      "missing_count": 7338,
-      "completeness_pct": 25.31,
-      "source_coverage": {
-        "careerviet": 0.0,
-        "glints": 0.0,
-        "itviec": 0.0,
-        "jobsgo": 0.0,
-        "topcv": 94.82,
-        "topdev": 0.0,
-        "vieclam24h": 0.0,
-        "vietnamworks": 46.87
-      },
-      "general_null_diagnosis": "Tỷ lệ trống 74.69% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
-    },
-    "raw_category_text": {
-      "filled_count": 6854,
-      "missing_count": 2970,
-      "completeness_pct": 69.77,
-      "source_coverage": {
-        "careerviet": 97.83,
-        "glints": 100.0,
-        "itviec": 94.36,
-        "jobsgo": 99.54,
-        "topcv": 92.0,
-        "topdev": 0.0,
-        "vieclam24h": 100.0,
-        "vietnamworks": 100.0
-      },
-      "general_null_diagnosis": "Tỷ lệ trống 30.23% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
-    },
-    "raw_location_text": {
-      "filled_count": 9523,
-      "missing_count": 301,
-      "completeness_pct": 96.94,
-      "source_coverage": {
-        "careerviet": 97.83,
+        "careerviet": 99.83,
         "glints": 100.0,
         "itviec": 98.84,
-        "jobsgo": 99.41,
-        "topcv": 96.82,
-        "topdev": 99.93,
-        "vieclam24h": 100.0,
-        "vietnamworks": 84.77
-      },
-      "general_null_diagnosis": "Tỷ lệ trống 3.06% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
-    },
-    "working_locations": {
-      "filled_count": 9406,
-      "missing_count": 418,
-      "completeness_pct": 95.75,
-      "source_coverage": {
-        "careerviet": 98.5,
-        "glints": 100.0,
-        "itviec": 94.36,
-        "jobsgo": 93.36,
-        "topcv": 86.26,
-        "topdev": 100.0,
-        "vieclam24h": 100.0,
-        "vietnamworks": 99.93
-      },
-      "general_null_diagnosis": "Tỷ lệ trống 4.25% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
-    },
-    "raw_posted_date": {
-      "filled_count": 5059,
-      "missing_count": 4765,
-      "completeness_pct": 51.5,
-      "source_coverage": {
-        "careerviet": 97.83,
-        "glints": 100.0,
-        "itviec": 94.36,
-        "jobsgo": 99.47,
-        "topcv": 0.0,
-        "topdev": 0.0,
+        "jobsgo": 95.46,
+        "topcv": 86.29,
+        "topdev": 99.85,
         "vieclam24h": 100.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 48.5% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 4.17% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
-    "raw_updated_at": {
-      "filled_count": 1945,
-      "missing_count": 7879,
-      "completeness_pct": 19.8,
+    "benefits_list": {
+      "filled_count": 9665,
+      "missing_count": 791,
+      "completeness_pct": 92.43,
       "source_coverage": {
-        "careerviet": 97.83,
-        "glints": 0.0,
-        "itviec": 0.0,
-        "jobsgo": 0.0,
-        "topcv": 0.0,
-        "topdev": 0.0,
-        "vieclam24h": 0.0,
+        "careerviet": 99.83,
+        "glints": 80.97,
+        "itviec": 98.84,
+        "jobsgo": 94.93,
+        "topcv": 86.99,
+        "topdev": 89.0,
+        "vieclam24h": 99.52,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 80.2% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
-    },
-    "raw_deadline": {
-      "filled_count": 6983,
-      "missing_count": 2841,
-      "completeness_pct": 71.08,
-      "source_coverage": {
-        "careerviet": 97.83,
-        "glints": 97.58,
-        "itviec": 94.93,
-        "jobsgo": 99.61,
-        "topcv": 98.77,
-        "topdev": 0.0,
-        "vieclam24h": 100.0,
-        "vietnamworks": 100.0
-      },
-      "general_null_diagnosis": "Tỷ lệ trống 28.92% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
-    },
-    "raw_working_time": {
-      "filled_count": 2760,
-      "missing_count": 7064,
-      "completeness_pct": 28.09,
-      "source_coverage": {
-        "careerviet": 0.0,
-        "glints": 0.0,
-        "itviec": 0.0,
-        "jobsgo": 69.61,
-        "topcv": 86.26,
-        "topdev": 0.0,
-        "vieclam24h": 3.23,
-        "vietnamworks": 0.0
-      },
-      "general_null_diagnosis": "Tỷ lệ trống 71.91% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 7.57% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "raw_salary_text": {
-      "filled_count": 9747,
-      "missing_count": 77,
-      "completeness_pct": 99.22,
+      "filled_count": 10362,
+      "missing_count": 94,
+      "completeness_pct": 99.1,
       "source_coverage": {
         "careerviet": 97.83,
         "glints": 100.0,
@@ -286,124 +337,204 @@
         "vieclam24h": 100.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 0.78% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 0.9% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
-    "raw_employment_type": {
-      "filled_count": 6947,
-      "missing_count": 2877,
-      "completeness_pct": 70.71,
+    "salary_currency": {
+      "filled_count": 6599,
+      "missing_count": 3857,
+      "completeness_pct": 63.11,
+      "source_coverage": {
+        "careerviet": 33.39,
+        "glints": 64.05,
+        "itviec": 94.93,
+        "jobsgo": 66.84,
+        "topcv": 56.66,
+        "topdev": 40.0,
+        "vieclam24h": 95.48,
+        "vietnamworks": 100.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 36.89% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "is_salary_visible": {
+      "filled_count": 9778,
+      "missing_count": 678,
+      "completeness_pct": 93.52,
+      "source_coverage": {
+        "careerviet": 97.83,
+        "glints": 64.05,
+        "itviec": 20.98,
+        "jobsgo": 100.0,
+        "topcv": 100.0,
+        "topdev": 100.0,
+        "vieclam24h": 100.0,
+        "vietnamworks": 100.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 6.48% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "raw_posted_date": {
+      "filled_count": 5059,
+      "missing_count": 5397,
+      "completeness_pct": 48.38,
       "source_coverage": {
         "careerviet": 97.83,
         "glints": 100.0,
         "itviec": 94.36,
         "jobsgo": 99.47,
-        "topcv": 96.82,
+        "topcv": 0.0,
         "topdev": 0.0,
         "vieclam24h": 100.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 29.29% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 51.62% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "raw_updated_at": {
+      "filled_count": 1945,
+      "missing_count": 8511,
+      "completeness_pct": 18.6,
+      "source_coverage": {
+        "careerviet": 97.83,
+        "glints": 0.0,
+        "itviec": 0.0,
+        "jobsgo": 0.0,
+        "topcv": 0.0,
+        "topdev": 0.0,
+        "vieclam24h": 0.0,
+        "vietnamworks": 100.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 81.4% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "raw_deadline": {
+      "filled_count": 7600,
+      "missing_count": 2856,
+      "completeness_pct": 72.69,
+      "source_coverage": {
+        "careerviet": 97.83,
+        "glints": 97.58,
+        "itviec": 94.93,
+        "jobsgo": 99.61,
+        "topcv": 98.49,
+        "topdev": 0.0,
+        "vieclam24h": 100.0,
+        "vietnamworks": 100.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 27.31% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "raw_work_mode": {
-      "filled_count": 2219,
-      "missing_count": 7605,
-      "completeness_pct": 22.59,
+      "filled_count": 3480,
+      "missing_count": 6976,
+      "completeness_pct": 33.28,
       "source_coverage": {
         "careerviet": 0.0,
         "glints": 100.0,
-        "itviec": 0.0,
+        "itviec": 94.65,
         "jobsgo": 0.0,
-        "topcv": 96.82,
+        "topcv": 96.63,
         "topdev": 0.0,
         "vieclam24h": 0.0,
         "vietnamworks": 0.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 77.41% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
-    },
-    "raw_experience_text": {
-      "filled_count": 6560,
-      "missing_count": 3264,
-      "completeness_pct": 66.78,
-      "source_coverage": {
-        "careerviet": 89.32,
-        "glints": 88.82,
-        "itviec": 85.24,
-        "jobsgo": 99.61,
-        "topcv": 96.82,
-        "topdev": 0.0,
-        "vieclam24h": 100.0,
-        "vietnamworks": 82.49
-      },
-      "general_null_diagnosis": "Tỷ lệ trống 33.22% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 66.72% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "raw_seniority_text": {
-      "filled_count": 5964,
-      "missing_count": 3860,
-      "completeness_pct": 60.71,
+      "filled_count": 6571,
+      "missing_count": 3885,
+      "completeness_pct": 62.84,
       "source_coverage": {
         "careerviet": 97.83,
         "glints": 0.0,
         "itviec": 0.0,
         "jobsgo": 99.47,
-        "topcv": 96.82,
+        "topcv": 96.63,
         "topdev": 0.0,
         "vieclam24h": 100.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 39.29% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 37.16% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "raw_experience_text": {
+      "filled_count": 6578,
+      "missing_count": 3878,
+      "completeness_pct": 62.91,
+      "source_coverage": {
+        "careerviet": 89.32,
+        "glints": 88.82,
+        "itviec": 0.0,
+        "jobsgo": 99.61,
+        "topcv": 96.63,
+        "topdev": 0.0,
+        "vieclam24h": 100.0,
+        "vietnamworks": 82.49
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 37.09% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "raw_education_text": {
-      "filled_count": 5141,
-      "missing_count": 4683,
-      "completeness_pct": 52.33,
+      "filled_count": 5765,
+      "missing_count": 4691,
+      "completeness_pct": 55.14,
       "source_coverage": {
         "careerviet": 0.0,
         "glints": 100.0,
         "itviec": 0.0,
         "jobsgo": 99.61,
-        "topcv": 99.33,
+        "topcv": 99.19,
         "topdev": 0.0,
         "vieclam24h": 0.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 47.67% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 44.86% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "raw_headcount": {
-      "filled_count": 4709,
-      "missing_count": 5115,
-      "completeness_pct": 47.93,
+      "filled_count": 5316,
+      "missing_count": 5140,
+      "completeness_pct": 50.84,
       "source_coverage": {
         "careerviet": 0.0,
         "glints": 0.0,
         "itviec": 0.0,
         "jobsgo": 55.46,
-        "topcv": 96.82,
+        "topcv": 96.63,
         "topdev": 0.0,
         "vieclam24h": 100.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 52.07% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 49.16% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "raw_working_time": {
+      "filled_count": 3306,
+      "missing_count": 7150,
+      "completeness_pct": 31.62,
+      "source_coverage": {
+        "careerviet": 0.0,
+        "glints": 0.0,
+        "itviec": 0.0,
+        "jobsgo": 69.61,
+        "topcv": 86.29,
+        "topdev": 0.0,
+        "vieclam24h": 3.23,
+        "vietnamworks": 0.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 68.38% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "raw_age_text": {
-      "filled_count": 1668,
-      "missing_count": 8156,
-      "completeness_pct": 16.98,
+      "filled_count": 1774,
+      "missing_count": 8682,
+      "completeness_pct": 16.97,
       "source_coverage": {
         "careerviet": 0.0,
         "glints": 0.0,
         "itviec": 0.0,
         "jobsgo": 0.0,
-        "topcv": 15.85,
+        "topcv": 16.07,
         "topdev": 0.0,
         "vieclam24h": 0.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 83.02% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 83.03% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
     "raw_gender_text": {
       "filled_count": 1359,
-      "missing_count": 8465,
-      "completeness_pct": 13.83,
+      "missing_count": 9097,
+      "completeness_pct": 13.0,
       "source_coverage": {
         "careerviet": 0.0,
         "glints": 0.0,
@@ -414,72 +545,72 @@
         "vieclam24h": 0.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 86.17% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 87.0% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
-    "skills_list": {
-      "filled_count": 8072,
-      "missing_count": 1752,
-      "completeness_pct": 82.17,
+    "raw_employment_type": {
+      "filled_count": 7554,
+      "missing_count": 2902,
+      "completeness_pct": 72.25,
       "source_coverage": {
-        "careerviet": 78.13,
-        "glints": 88.52,
-        "itviec": 99.42,
+        "careerviet": 97.83,
+        "glints": 100.0,
+        "itviec": 94.36,
+        "jobsgo": 99.47,
+        "topcv": 96.63,
+        "topdev": 0.0,
+        "vieclam24h": 100.0,
+        "vietnamworks": 100.0
+      },
+      "general_null_diagnosis": "Tỷ lệ trống 27.75% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+    },
+    "raw_category_text": {
+      "filled_count": 7429,
+      "missing_count": 3027,
+      "completeness_pct": 71.05,
+      "source_coverage": {
+        "careerviet": 97.83,
+        "glints": 100.0,
+        "itviec": 94.36,
         "jobsgo": 99.54,
-        "topcv": 97.74,
-        "topdev": 44.54,
+        "topcv": 91.75,
+        "topdev": 0.0,
         "vieclam24h": 100.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 17.83% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 28.95% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
-    "benefits_list": {
-      "filled_count": 9112,
-      "missing_count": 712,
-      "completeness_pct": 92.75,
+    "is_content_image": {
+      "filled_count": 2755,
+      "missing_count": 7701,
+      "completeness_pct": 26.35,
       "source_coverage": {
-        "careerviet": 99.83,
-        "glints": 80.97,
-        "itviec": 98.84,
-        "jobsgo": 94.93,
-        "topcv": 86.82,
-        "topdev": 89.0,
-        "vieclam24h": 99.52,
-        "vietnamworks": 100.0
-      },
-      "general_null_diagnosis": "Tỷ lệ trống 7.25% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
-    },
-    "raw_description_text": {
-      "filled_count": 9486,
-      "missing_count": 338,
-      "completeness_pct": 96.56,
-      "source_coverage": {
-        "careerviet": 99.83,
-        "glints": 100.0,
-        "itviec": 99.42,
-        "jobsgo": 95.72,
-        "topcv": 86.26,
+        "careerviet": 0.0,
+        "glints": 0.0,
+        "itviec": 0.0,
+        "jobsgo": 0.0,
+        "topcv": 0.0,
         "topdev": 100.0,
-        "vieclam24h": 100.0,
-        "vietnamworks": 100.0
+        "vieclam24h": 0.0,
+        "vietnamworks": 0.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 3.44% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 73.65% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     },
-    "raw_requirements_text": {
-      "filled_count": 9474,
-      "missing_count": 350,
-      "completeness_pct": 96.44,
+    "auxiliary_features": {
+      "filled_count": 6659,
+      "missing_count": 3797,
+      "completeness_pct": 63.69,
       "source_coverage": {
-        "careerviet": 99.83,
-        "glints": 100.0,
-        "itviec": 98.84,
-        "jobsgo": 95.46,
-        "topcv": 86.26,
-        "topdev": 99.85,
+        "careerviet": 0.0,
+        "glints": 0.0,
+        "itviec": 96.38,
+        "jobsgo": 100.0,
+        "topcv": 96.63,
+        "topdev": 0.0,
         "vieclam24h": 100.0,
         "vietnamworks": 100.0
       },
-      "general_null_diagnosis": "Tỷ lệ trống 3.56% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
+      "general_null_diagnosis": "Tỷ lệ trống 36.31% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     }
   },
-  "total_duration_seconds": 3.59
+  "total_duration_seconds": 7.44
 }
