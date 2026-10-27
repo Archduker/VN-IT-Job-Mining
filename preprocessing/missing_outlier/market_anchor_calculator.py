@@ -165,7 +165,7 @@ class MarketAnchorCalculator:
     def get_anchor(self, platform: Optional[str], seniority: Optional[str]) -> Dict[str, float]:
         """Tra cứu mỏ neo với cơ chế fallback phân cấp."""
         plat_clean = (platform or "").strip().lower()
-        sen_clean = (seniority or "").strip()
+        sen_clean = (seniority or "").strip().lower()
 
         # Cấp 1: Khớp chính xác cả sàn và cấp bậc (nếu đủ mẫu)
         if (plat_clean, sen_clean) in self.cell_anchors:
@@ -183,7 +183,7 @@ class MarketAnchorCalculator:
 
         # Cấp 4: Tham chiếu khung lương sàn theo seniority nếu có
         for sen_key, (f_min, f_max) in SENIORITY_FLOOR_MAP.items():
-            if sen_clean.lower() == sen_key.lower():
+            if sen_clean == sen_key.lower():
                 return {
                     "median_min": f_min,
                     "median_max": f_max,
@@ -237,11 +237,11 @@ class MarketAnchorCalculator:
         # Nhóm requirements hoặc job_info
         req = rec.get("requirements")
         if isinstance(req, dict) and req.get("standardized_seniority"):
-            return str(req["standardized_seniority"]).strip()
+            return str(req["standardized_seniority"]).strip().lower()
 
         jinfo = rec.get("job_info")
         if isinstance(jinfo, dict) and jinfo.get("standardized_seniority"):
-            return str(jinfo["standardized_seniority"]).strip()
+            return str(jinfo["standardized_seniority"]).strip().lower()
 
         sen = rec.get("standardized_seniority")
-        return str(sen).strip() if sen else "Middle"
+        return str(sen).strip().lower() if sen else "middle"

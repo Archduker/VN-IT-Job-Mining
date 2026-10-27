@@ -105,28 +105,53 @@ Modern Data Mining không áp dụng quy trình đường thẳng (Waterfall) c�
 
 ---
 
-## 4. Nguyên Tắc Ép Phẳng JSON (JSON Flattening)
+## 4. Nguyên Tắc Cấu Trúc Dữ Liệu: Target Schema 11 Khóa & Bảng Phẳng
 
-Thay vì thiết kế cơ sở dữ liệu quan hệ (RDBMS) phức tạp gồm nhiều bảng có khóa ngoại (DIM/FACT) gây tốn kém chi phí JOIN khi huấn luyện mô hình, toàn bộ dữ liệu tuyển dụng được ép phẳng thành **Một Bảng Phẳng Duy Nhất (Single Flat Table)**.
+> [!IMPORTANT]
+> **Quy Chuẩn Single Source of Truth:**  
+> Hệ thống áp dụng cấu trúc dữ liệu vàng chuẩn hóa 2 tầng phân cấp tinh giản gồm đúng **11 Khóa Gốc** tại `data/curated/golden_master.json`, đồng thời xuất bản bảng phẳng duy nhất tại `data/curated/curated_flat_golden_jobs.json` theo tài liệu quy chuẩn:
+> - Chi tiết từ điển dữ liệu: Xem [`TARGET_SCHEMA_11_KEYS.md`](TARGET_SCHEMA_11_KEYS.md)
+> - Hướng dẫn vận hành Gemini Agent: Xem [`GEMINI_AGENT_USER_GUIDE.md`](GEMINI_AGENT_USER_GUIDE.md)
+> - Quy chuẩn kiểm định QA 5/5: Xem [`QA_VALIDATION_SUITE.md`](QA_VALIDATION_SUITE.md)
+> - Quyết định kiến trúc ADR: Xem [`docs/adr/0001-target-schema-11-keys-pure-json.md`](../adr/0001-target-schema-11-keys-pure-json.md) và [`docs/adr/0002-zero-null-market-anchored-salary.md`](../adr/0002-zero-null-market-anchored-salary.md)
 
-### Cấu Trúc Bảng Phẳng Chuẩn (Canonical Flat Schema):
-Mỗi dòng là một bài đăng tuyển dụng hoàn chỉnh, bao gồm các nhóm cột:
+### 4.1. Cấu Trúc 11 Khóa Gốc (Golden Master Target Schema):
+Mỗi bản ghi đại diện cho một tin tuyển dụng CNTT tinh chế 100% PURE RFC 8259 JSON:
+
+```text
++----------------------------------------------------------------------------------------------------+
+|                               TARGET SCHEMA 11 KHÓA GỐC (GOLDEN RECORD)                             |
++----------------------------------------------------------------------------------------------------+
+| 1. job_id_global:    Định danh duy nhất toàn cục (<platform>_<id>)                                  |
+| 2. source_platform:  Nguồn sàn tuyển dụng (itviec, topcv, vietnamworks, topdev...)                |
+| 3. source_url:       Canonical URL truy vết nguồn gốc (Data Lineage)                               |
+| 4. job_info:         title, job_role, working_model (onsite/hybrid/remote), work_format              |
+| 5. company:          name, industry, size_range                                                    |
+| 6. locations:        primary_city, addresses, geo_coordinates, all_locations                       |
+| 7. salary:           salary_min_vnd, salary_max_vnd, is_salary_negotiable, salary_source (Zero-null)|
+| 8. skills:           primary_tech_stack, required_technical, preferred_skills, soft_skills          |
+| 9. requirements:     standardized_seniority, years_experience_min/max, education_level, age_range    |
+| 10. jd_text:         description, requirements, benefits, language (100% tiếng Việt sạch)          |
+| 11. date:            posted_date, crawled_date, expired_date (ISO 8601 YYYY-MM-DD)                 |
++----------------------------------------------------------------------------------------------------+
+```
+
+### 4.2. Cấu Trúc Bảng Phẳng (Canonical Flat View):
+Tệp `data/curated/curated_flat_golden_jobs.json` được ép phẳng phục vụ huấn luyện mô hình học máy:
 
 ```text
 +----------------------------------------------------------------------------------------------------+
 |                                 CANONICAL FLAT JOB RECORD (1 HÀNG)                                 |
 +----------------------------------------------------------------------------------------------------+
-| 1. ĐỊNH DANH:     job_id_global, source_platform, source_job_id, source_url, crawled_at             |
-| 2. CÔNG TY:       company_name, company_address, company_scale, company_industry                       |
-| 3. VỊ TRÍ:        job_title, standardized_job_family, seniority_text, standardized_seniority           |
-| 4. ĐỊA ĐIỂM:      location_raw, primary_city, is_remote                                            |
-| 5. LƯƠNG GỐC:     salary_raw, is_salary_negotiable, salary_source (header / jd_regex / genai)       |
-| 6. LƯƠNG SỐ HỌC:  salary_min_vnd, salary_max_vnd, salary_currency, pay_period, log_salary_max      |
-| 7. KINH NGHIỆM:   experience_raw, min_experience_years                                              |
-| 8. KỸ NĂNG:       skills_list (Python list[str]), skills_count, top_hard_skills                     |
-| 9. QUYỀN LỢI:     benefits_list (Python list[str]), benefits_count                                  |
-| 10. VĂN BẢN SẠCH: jd_clean_text, requirements_clean_text, word_count                                |
-| 11. CỜ KIỂM ĐỊNH: is_imputed_by_genai, is_outlier, quality_score                                    |
+| 1. ĐỊNH DANH:     job_id_global, source_platform, source_url                                        |
+| 2. CÔNG TY:       company_name                                                                     |
+| 3. VỊ TRÍ:        job_title, job_role, working_model                                               |
+| 4. ĐỊA ĐIỂM:      primary_city                                                                     |
+| 5. LƯƠNG SỐ HỌC:  salary_min_vnd, salary_max_vnd, is_salary_negotiable, salary_source             |
+| 6. KỸ NĂNG:       primary_tech_stack, required_technical, preferred_skills                         |
+| 7. YÊU CẦU:       standardized_seniority, years_experience_min, years_experience_max               |
+| 8. VĂN BẢN SẠCH:  jd_description                                                                   |
+| 9. THỜI GIAN:     posted_date                                                                      |
 +----------------------------------------------------------------------------------------------------+
 ```
 

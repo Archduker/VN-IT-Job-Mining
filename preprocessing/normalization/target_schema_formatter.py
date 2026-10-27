@@ -245,11 +245,17 @@ class TargetSchemaFormatter:
         raw_reqs = raw_record.get("requirements") if isinstance(raw_record.get("requirements"), dict) else {}
         exp_years = en_reqs.get("experience_years")
         if exp_years is None:
-            exp_years = raw_reqs.get("experience_years") or raw_record.get("min_experience_years") or 0.0
+            exp_years = (
+                raw_reqs.get("experience_years")
+                or raw_job_info.get("min_experience_years")
+                or raw_record.get("min_experience_years")
+                or 0.0
+            )
 
         sen = (
             en_reqs.get("standardized_seniority")
             or raw_reqs.get("standardized_seniority")
+            or raw_job_info.get("standardized_seniority")
             or raw_record.get("standardized_seniority")
             or "middle"
         )
@@ -278,21 +284,27 @@ class TargetSchemaFormatter:
         raw_jd = raw_record.get("jd_text") if isinstance(raw_record.get("jd_text"), dict) else {}
         desc = (
             en_jd.get("translated_description")
+            or en_jd.get("description")
             or raw_jd.get("description")
+            or raw_jd.get("description_text")
             or raw_record.get("jd_clean_text")
             or raw_record.get("raw_description_text")
             or ""
         )
         req_text = (
             en_jd.get("translated_requirements")
+            or en_jd.get("requirements")
             or raw_jd.get("requirements")
+            or raw_jd.get("requirements_text")
             or raw_record.get("requirements_clean_text")
             or raw_record.get("raw_requirements_text")
             or ""
         )
         benefits = (
             en_jd.get("translated_benefits")
+            or en_jd.get("benefits")
             or raw_jd.get("benefits")
+            or raw_jd.get("benefits_text")
             or raw_record.get("benefits_list")
             or []
         )

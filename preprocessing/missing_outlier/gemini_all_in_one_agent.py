@@ -259,12 +259,14 @@ class GeminiAllInOneAgent:
         raw_desc = (
             record.get("raw_description_text")
             or (record.get("jd_text") or {}).get("description")
+            or (record.get("jd_text") or {}).get("description_text")
             or record.get("jd_clean_text")
             or ""
         )
         raw_req = (
             record.get("raw_requirements_text")
             or (record.get("jd_text") or {}).get("requirements")
+            or (record.get("jd_text") or {}).get("requirements_text")
             or (record.get("requirements") or {}).get("experience_raw_text")
             or record.get("requirements_clean_text")
             or ""
@@ -272,6 +274,7 @@ class GeminiAllInOneAgent:
         raw_benefits_list = (
             record.get("benefits_list")
             or (record.get("jd_text") or {}).get("benefits")
+            or (record.get("jd_text") or {}).get("benefits_text")
             or record.get("benefits")
             or []
         )
@@ -712,10 +715,36 @@ class GeminiAllInOneAgent:
             sal_source = "predicted"
 
         # 4. Translation & Texts
-        trans_title = enrich_result.get("translated_title") or record.get("job_title") or ""
-        trans_desc = enrich_result.get("translated_description") or record.get("raw_description_text") or ""
-        trans_req = enrich_result.get("translated_requirements") or record.get("raw_requirements_text") or ""
-        trans_benefits = enrich_result.get("translated_benefits") or record.get("benefits_list") or []
+        trans_title = (
+            enrich_result.get("translated_title")
+            or record.get("job_title")
+            or (record.get("job_info") or {}).get("title")
+            or (record.get("job_info") or {}).get("job_title")
+            or ""
+        )
+        trans_desc = (
+            enrich_result.get("translated_description")
+            or record.get("raw_description_text")
+            or (record.get("jd_text") or {}).get("description_text")
+            or (record.get("jd_text") or {}).get("description")
+            or record.get("jd_clean_text")
+            or ""
+        )
+        trans_req = (
+            enrich_result.get("translated_requirements")
+            or record.get("raw_requirements_text")
+            or (record.get("jd_text") or {}).get("requirements_text")
+            or (record.get("jd_text") or {}).get("requirements")
+            or record.get("requirements_clean_text")
+            or ""
+        )
+        trans_benefits = (
+            enrich_result.get("translated_benefits")
+            or record.get("benefits_list")
+            or (record.get("jd_text") or {}).get("benefits_text")
+            or (record.get("jd_text") or {}).get("benefits")
+            or []
+        )
         if isinstance(trans_benefits, str):
             trans_benefits = [trans_benefits]
 

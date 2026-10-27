@@ -46,6 +46,7 @@ from preprocessing.normalization.deep_normalizer import (  # noqa: E402
     to_curated_flat_record,
 )
 from preprocessing.normalization.log_transformer import log_transform_salary, robust_scale_series  # noqa: E402
+from preprocessing.normalization.target_schema_formatter import TargetSchemaFormatter  # noqa: E402
 from preprocessing.normalization.text_cleaner import (  # noqa: E402
     classify_job_family,
     clean_job_title,
@@ -361,12 +362,10 @@ def run_deep_normalization(
         norm_r = deep_normalize_record(r, keep_raw=False)
         # Đệ quy dọn sạch toàn bộ NaN thành None trong mọi sub-dict
         norm_r = clean_nans_to_none(norm_r)
-        # Kiểm tra đanh thép: KHÔNG có bất kỳ trường raw_* nào ở root level
-        for k in list(norm_r.keys()):
-            if k.startswith("raw_"):
-                del norm_r[k]
-        golden_records.append(norm_r)
-        golden_flat_records.append(to_curated_flat_record(norm_r))
+        # Định dạng chuẩn mực 11 khóa Target Schema tinh giản
+        target_r = TargetSchemaFormatter.format_record(norm_r)
+        golden_records.append(target_r)
+        golden_flat_records.append(TargetSchemaFormatter.to_flat_target_record(target_r))
 
     with golden_master_out.open("w", encoding="utf-8") as f:
         json.dump(golden_records, f, ensure_ascii=False, indent=2)
@@ -376,8 +375,8 @@ def run_deep_normalization(
 
     # 7. Thống kê Bệnh án chất lượng tổng thể
     duration = round(time.perf_counter() - start_time, 3)
-    sal_valid = [r.get("salary", {}).get("salary_max_vnd") for r in golden_records if r.get("salary", {}).get("salary_max_vnd")]
-    log_valid = [r.get("salary", {}).get("log_salary_max") for r in golden_records if r.get("salary", {}).get("log_salary_max")]
+    sal_valid = [r.get("salary", {}).get("salary_max") for r in golden_records if r.get("salary", {}).get("salary_max")]
+    log_valid = [math.log1p(s) for s in sal_valid if s and s > 0]
 
     skew_raw = round(float(pd.Series(sal_valid).skew()), 2) if len(sal_valid) > 2 else 0.0
     skew_log = round(float(pd.Series(log_valid).skew()), 2) if len(log_valid) > 2 else 0.0
@@ -397,19 +396,19 @@ def run_deep_normalization(
             "saturday_off_declared_count": stats["saturday_off_detected"],
             "education_standardized_count": stats["education_standardized"],
             "age_limits_extracted_count": stats["age_limits_extracted"],
-            "work_mode_distribution": dict(Counter(r.get("job_info", {}).get("work_mode") for r in golden_records)),
-            "employment_type_distribution": dict(Counter(r.get("job_info", {}).get("employment_type") for r in golden_records)),
+            "work_mode_distribution": dict(Counter(r.get("job_info", {}).get("work_type") for r in golden_records)),
+            "employment_type_distribution": dict(Counter(r.get("job_info", {}).get("work_type") for r in golden_records)),
             "education_distribution": dict(Counter(r.get("requirements", {}).get("standardized_education") for r in golden_records)),
-            "top_10_cities": dict(Counter(r.get("location", {}).get("primary_city") for r in golden_records).most_common(10)),
-            "top_job_families": dict(Counter(r.get("job_info", {}).get("standardized_job_family") for r in golden_records).most_common()),
-            "seniority_distribution": dict(Counter(r.get("job_info", {}).get("standardized_seniority") for r in golden_records).most_common()),
+            "top_10_cities": dict(Counter((r.get("locations") or [{}])[0].get("province") for r in golden_records if r.get("locations")).most_common(10)),
+            "top_job_families": dict(Counter(r.get("job_info", {}).get("job_family") for r in golden_records).most_common()),
+            "seniority_distribution": dict(Counter(r.get("requirements", {}).get("standardized_seniority") for r in golden_records).most_common()),
         },
         "distribution_metrics": {
             "skewness_raw_salary": skew_raw,
             "skewness_log_salary": skew_log,
             "salary_coverage_pct": round(len(sal_valid) / len(golden_records) * 100, 2),
-            "experience_coverage_pct": round(sum(1 for r in golden_records if r.get("job_info", {}).get("min_experience_years") is not None) / len(golden_records) * 100, 2),
-            "skills_coverage_pct": round(sum(1 for r in golden_records if r.get("skills", {}).get("skills_list")) / len(golden_records) * 100, 2),
+            "experience_coverage_pct": round(sum(1 for r in golden_records if r.get("requirements", {}).get("experience_years") is not None) / len(golden_records) * 100, 2),
+            "skills_coverage_pct": round(sum(1 for r in golden_records if r.get("skills", {}).get("hard_skills")) / len(golden_records) * 100, 2),
         },
         "cross_platform_deduplication": dedup_metrics,
         "output_file": str(golden_master_out),

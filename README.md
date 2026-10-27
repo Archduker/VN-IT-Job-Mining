@@ -23,19 +23,18 @@ Hệ thống được thiết kế theo ranh giới đanh thép (**Ironclad Boun
 |                                     │                                                              |
 |                                     ▼ (9,390 files JSON thô tại r2://vn-it-jobs/raw/)              |
 |                                                                                                    |
-|  [GIAI ĐOẠN 2: DATA PREPROCESSING (TIỀN XỬ LÝ & TÍCH HỢP GOLDEN DATASET)]                          |
+|  [GIAI ĐOẠN 2: DATA PREPROCESSING (TIỀN XỬ LÝ & TINH CHẾ GOLDEN DATASET)]                          |
 |  * Giao thức EDA-First: Bắt buộc đọc Bệnh án EDA trước khi can thiệp mã nguồn                      |
-|  * Step 1: Schema Mapping & JSON Flattening -> Ép phẳng JSON về Single Flat Staging Table (20 cột) |
-|  * Step 2: Data Transformation -> Cascade Salary Parser (Regex + JD Scanner), USD->VND, Parse Date|
-|  * Step 3: Text & Skill Processing -> Bullet Stitching, 12 Job Families (SD2), ESCO Taxonomy (SD3) |
-|  * Step 4: Missing Values -> Bóc trần 9+ Sneaky Null Markers, bảo toàn MNAR, GenAI JD Imputer     |
-|  * Step 5: Outlier & Quality Rules -> Kiểm định IQR, sửa 3 lỗi nhập liệu số, Winsorization P1-P99  |
-|  * Step 6: Deduplication & Record Linkage -> Blocking + Cosine Semantic Match -> Golden Record    |
-|  * Step 7: Master Pipeline Orchestrator -> Xuất bản chuẩn Bộ 3 Deliverables lên Lakehouse          |
+|  * Step 1: Schema Mapping & JSON Flattening -> Ép phẳng dữ liệu 8 sàn về raw_for_normalization.json|
+|  * Step 2: Data Transformation -> Bóc tách dải lương, quy đổi USD->VND (25,400), chuẩn hóa ngày    |
+|  * Step 3: Gemini Enrichment & Market Anchors -> Bù khuyết Zero-null, 3 lớp kỹ năng, dịch JD EN->VI|
+|  * Step 4: Deep Normalization & Formatting -> Khử trùng lặp, xuất bản Target Schema 11 Khóa Gốc    |
+|  * Step 5: QA Validation Suite -> Kiểm định 5 khế ước chất lượng tự động, đạt 5/5 PASSED           |
 |                                     │                                                              |
 |                                     ▼                                                              |
-|  [ĐẦU RA CUỐI CÙNG: GOLDEN MASTER DATASET] (curated_golden_flat_jobs.parquet)                     |
-|  Sẵn sàng phục vụ trọn vẹn 5 bài toán khai phá chuyên sâu: SD1 - SD5                               |
+|  [ĐẦU RA CUỐI CÙNG: GOLDEN MASTER DATASET] (100% PURE RFC 8259 JSON, 8,967 BẢN GHI)                |
+|  * data/curated/golden_master.json (Nested 11 Khóa Gốc, Zero-null lương, mô tả tiếng Việt sạch)    |
+|  * data/curated/curated_flat_golden_jobs.json (Bảng phẳng phục vụ Machine Learning / Data Mining)   |
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
 ```
@@ -147,14 +146,20 @@ Khác với các pipeline truyền thống áp dụng công thức "mò mẫm" c
 +----------------------------------------------------------------------------------------------------+
 ```
 
-### 3. Chuẩn Xuất Bản Bộ 3 Tài Liệu Sau Xử Lý (The 3-Deliverables Standard)
-Mỗi sàn tuyển dụng sau khi đi qua pipeline tiền xử lý đều xuất bản đúng 3 tài liệu chuẩn mực tại Lakehouse:
-1. **File 1 — Bảng Dữ Liệu Phẳng Chuẩn Hóa (Flat Clean Dataset):**  
-   Đường dẫn: `staging/<source>/<source>_flat_clean.parquet` (và bản hợp nhất `curated/curated_golden_flat_jobs.parquet`). Toàn bộ cấu trúc lồng nhau đã được ép phẳng, các cột định lượng đã sẵn sàng cho mô hình hóa.
-2. **File 2 — Bệnh Án Chất Lượng Dữ Liệu (Data Quality Health Card):**  
-   Đường dẫn: `reports/<source>/<source>_quality_health_card.json`. Đo lường 5 trụ cột chất lượng: tỷ lệ khuyết thiếu trước/sau bù khuyết, ngưỡng IQR, phân vị P1-P99, tỷ lệ bản ghi qua GenAI, độ lệch Skewness.
-3. **File 3 — Từ Điển Biến Đổi Dữ Liệu (Transformation Manifest):**  
-   Đường dẫn: `reports/<source>/<source>_transformation_manifest.md`. Báo cáo giải trình minh bạch nguồn gốc dữ liệu (**Data Lineage**), công thức regex bóc tách lương và luật xử lý ngoại lệ.
+### 3. Chuẩn Xuất Bản Bộ Dữ Liệu Vàng Sau Tiền Xử Lý (Golden Deliverables Standard)
+Sau khi hoàn tất toàn trình tiền xử lý, hệ thống xuất bản đúng 4 tài liệu và sản phẩm dữ liệu chuẩn mực tại `data/curated/` và `reports/`:
+1. **File 1 — Bộ Dữ Liệu Vàng Phân Tầng (Nested Golden Master):**  
+   Đường dẫn: [`data/curated/golden_master.json`](data/curated/golden_master.json).  
+   Định dạng: **100% PURE RFC 8259 JSON** (0 NaN, 0 Parquet/CSV), đúng 11 Khóa Gốc, Zero-null lương, mô tả tiếng Việt sạch thẻ HTML.
+2. **File 2 — Bảng Dữ Liệu Vàng Phẳng (Curated Flat Golden Dataset):**  
+   Đường dẫn: [`data/curated/curated_flat_golden_jobs.json`](data/curated/curated_flat_golden_jobs.json).  
+   Định dạng: Bảng phẳng 1 tầng phục vụ nạp trực tiếp vào DuckDB, Pandas, Polars, Scikit-Learn để phân cụm và dự đoán.
+3. **File 3 — Báo Cáo Kiểm Định Chất Lượng QA (QA Pipeline Report):**  
+   Đường dẫn: [`reports/qa/qa_pipeline_report.md`](reports/qa/qa_pipeline_report.md) & [`reports/qa/qa_pipeline_report.json`](reports/qa/qa_pipeline_report.json).  
+   Đo lường 5 khế ước chất lượng tự động: Lineage, Pure JSON, Zero-raw & Clean JD, Skills Contract, Outliers & Quality Score (5/5 PASSED).
+4. **File 4 — Bệnh Án Chất Lượng Dữ Liệu Vàng (Curated Golden Dataset Health Card):**  
+   Đường dẫn: [`reports/curated_golden_dataset_health_card.json`](reports/curated_golden_dataset_health_card.json).  
+   Đo lường phân vị lương P25 - P50 - P75, tỷ lệ bản ghi có kỹ năng và chỉ số hoàn thiện của từng trường.
 
 ---
 
@@ -216,26 +221,38 @@ python scripts/read_eda_diagnosis.py --source all
 
 ### 4. Vận Hành Tiền Xử Lý & Tinh Chế Dữ Liệu (Giai Đoạn 2)
 ```bash
-# Chạy ép phẳng JSON thô và tích hợp dữ liệu
-python preprocessing/integration/run_integration.py
+# 1. Chạy toàn bộ Master Pipeline từ A-Z (Khuyến nghị dùng cờ --mock cho dev/test để không tốn quota API)
+python preprocessing/master_pipeline.py --step all --mock
 
-# Chạy toàn bộ chuỗi tiền xử lý (ép phẳng, parse lương, text cleaning, imputer, outlier, dedup)
-python scripts/run_staging_integration_pipeline.py
+# 2. Hoặc chạy từng bước độc lập:
+# Bước 1: Tích hợp và ép phẳng đa nguồn
+python preprocessing/master_pipeline.py --step integration
 
-# Đồng bộ sản phẩm Bộ 3 Deliverables lên Cloudflare R2
-python scripts/push_integration_to_r2.py
+# Bước 2: Bóc tách kiểu dữ liệu và chuẩn hóa dải số
+python preprocessing/master_pipeline.py --step transformation
+
+# Bước 3: Làm giàu bằng Gemini Preprocessing Agent kết hợp Market Anchors
+python preprocessing/master_pipeline.py --step gemini_enrichment --mock --limit 100
+
+# Bước 4: Chuẩn hóa sâu, khử trùng lặp và xuất bản Target Schema 11 Khóa
+python preprocessing/master_pipeline.py --step normalization
+
+# Bước 5: Kiểm định tự động 5 khế ước chất lượng dữ liệu Vàng
+python preprocessing/master_pipeline.py --step qa
 ```
 
-### 5. Chạy Kiểm Thử Tự Động (Test Suites)
+### 5. Chạy Kiểm Thử Tự Động Toàn Diện (Pytest Suites)
 ```bash
-# Chạy bộ test kiểm thử tiền xử lý toàn diện
-pytest tests/test_preprocessing_pipeline.py -v
+# Chạy bộ 34 tests chuyên sâu cho Agent, Market Anchor, Target Schema và QA Pipeline:
+pytest tests/test_market_anchor_calculator.py \
+       tests/test_gemini_all_in_one_agent.py \
+       tests/test_target_schema_formatter.py \
+       tests/test_checkpoint_store.py \
+       tests/test_run_gemini_enrichment.py \
+       tests/test_qa_pipeline.py -v
 
-# Chạy kiểm thử khử trùng lặp và làm sạch văn bản
-pytest tests/test_cross_deduplicator.py tests/test_text_preprocessing_and_metrics.py -v
-
-# Chạy toàn bộ unit tests của hệ thống
-pytest tests/ -v
+# Chạy kiểm định 5 khế ước chất lượng dữ liệu vàng trực tiếp:
+python preprocessing/qa/run_qa_checks.py
 ```
 
 ### 6. Khởi Động Dashboard Giám Sát (Monitoring UI)
@@ -265,17 +282,19 @@ VN-IT-Job-Mining/
 │   └── sources/                      # Mã nguồn crawler chuyên biệt của từng sàn
 ├── data/                             # Dữ liệu cục bộ phân tầng (raw/, staging/, curated/)
 ├── docs/                             # Hệ thống tài liệu kiến trúc kỹ thuật chuẩn mực
-│   ├── preprocessing/                # Tài liệu quy chuẩn kỹ thuật 4 bước tiền xử lý & Post-Integration
+│   ├── adr/                          # Architectural Decision Records (ADR 0001, ADR 0002)
+│   ├── preprocessing/                # Đặc tả TARGET_SCHEMA_11_KEYS, GEMINI_AGENT_USER_GUIDE, QA_VALIDATION_SUITE
 │   └── crawl/                        # Tài liệu phân tích kiến trúc bóc tách của từng website
 ├── monitoring/                       # Trung tâm giám sát toàn hệ thống (Observatory)
 │   ├── backend/                      # FastAPI service, Airflow monitor, R2 client, Alert system
 │   └── frontend/                     # React 18 + Vite + Tailwind CSS dashboard
 ├── preprocessing/                    # Giai đoạn 2: Mã nguồn tiền xử lý và tinh chế Golden Dataset
-│   ├── integration/                  # json_flattener.py (Ép phẳng JSON đa nguồn về bảng phẳng 20 cột)
+│   ├── master_pipeline.py            # CLI Orchestrator điều phối toàn trình 5 bước tiền xử lý
+│   ├── integration/                  # Ép phẳng JSON đa nguồn về raw_for_normalization.json
 │   ├── transformation/               # salary_parser.py, bullet_stitcher.py, html_cleaner.py
-│   ├── missing_outlier/              # sneaky_null_detector.py, genai_text_imputer.py, outlier_handler.py
-│   └── normalization/                # text_cleaner.py, cross_deduplicator.py, log_transformer.py
-├── reports/                          # Bộ 3 Deliverables sau xử lý (Health Cards, Manifests, Integration reports)
+│   ├── missing_outlier/              # gemini_all_in_one_agent.py, market_anchor_calculator.py, checkpoint_store.py
+│   └── normalization/                # target_schema_formatter.py, run_deep_normalization.py
+├── reports/                          # QA Reports (qa_pipeline_report.md/json) & Health Cards
 ├── scripts/                          # Bộ công cụ dòng lệnh tự động hóa (read_eda_diagnosis.py, push_to_r2,...)
 └── tests/                            # Bộ kiểm thử đơn vị & kiểm thử tích hợp tự động (Pytest)
 ```

@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-10-27T07:53:52.904077+00:00",
+  "timestamp": "2026-10-27T08:22:07.209953+00:00",
   "overall_status": "PASSED",
-  "duration_seconds": 10.394,
+  "duration_seconds": 8.433,
   "total_checks": 5,
   "passed_checks": 5,
   "failed_checks": 0,
@@ -29,7 +29,7 @@
           "path": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json",
           "exists": true,
           "records": 8967,
-          "size_mb": 52.03,
+          "size_mb": 33.68,
           "json_valid": true
         }
       },
@@ -110,8 +110,8 @@
       "skills_metrics": {
         "records_with_skills": 8967,
         "records_valid_count": 8967,
-        "average_skills_per_record": 2.84,
-        "records_with_zero_skills": 3344
+        "average_skills_per_record": 2.2,
+        "records_with_zero_skills": 1500
       },
       "job_info_metrics": {
         "records_valid_job_info": 8967,
@@ -120,9 +120,9 @@
         "missing_experience": 0
       },
       "salary_mnar_metrics": {
-        "negotiable_records": 5446,
-        "negotiable_pure_null_salary": 5446,
-        "fixed_salary_records": 3521
+        "negotiable_records": 0,
+        "negotiable_pure_null_salary": 0,
+        "fixed_salary_records": 8967
       },
       "requirements_metrics": {
         "records_valid_requirements": 8967,
@@ -133,8 +133,8 @@
       "skills_group_metrics": {
         "records_with_skills_group": 8967,
         "records_valid_skills_count": 8967,
-        "average_skills_per_record": 2.84,
-        "records_with_zero_skills": 3344
+        "average_skills_per_record": 2.2,
+        "records_with_zero_skills": 1500
       },
       "extract_from_jd_metrics": {
         "records_with_extract_group": 8967,
@@ -152,20 +152,20 @@
       "total_records_checked": 8967,
       "quality_score_metrics": {
         "valid_score_count": 8967,
-        "score_min": 0.45,
+        "score_min": 1.0,
         "score_max": 1.0,
-        "score_mean": 0.998,
-        "records_perfect_1_0": 8812,
-        "records_penalized": 155
+        "score_mean": 1.0,
+        "records_perfect_1_0": 8967,
+        "records_penalized": 0
       },
       "outlier_capping_metrics": {
-        "is_outlier_capped_count": 75,
-        "is_outlier_capped_pct": 0.84
+        "is_outlier_capped_count": 0,
+        "is_outlier_capped_pct": 0.0
       },
       "rules_audit": {
-        "qr1_salary_range_violations": 28,
+        "qr1_salary_range_violations": 0,
         "qr2_experience_range_violations": 0,
-        "qr3_date_order_violations": 1514,
+        "qr3_date_order_violations": 0,
         "qr4_negative_salary_violations": 0,
         "qr5_multiple_fixes_tracked": 0
       },

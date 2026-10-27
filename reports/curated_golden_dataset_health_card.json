@@ -1,11 +1,11 @@
 {
   "dataset_name": "VN-IT-Job-Mining Curated Golden Master Dataset",
   "format": "100% PURE JSON",
-  "generated_at": "2026-10-27T06:08:18.365079+00:00",
+  "generated_at": "2026-10-27T08:10:58.195580+00:00",
   "total_staging_records_in": 10024,
   "total_golden_records_out": 8967,
   "stub_jds_excluded_from_golden": 0,
-  "duration_seconds": 84.506,
+  "duration_seconds": 81.08,
   "normalization_achievements": {
     "tech_skills_canonicalized_records": 6056,
     "portal_noise_skills_filtered_count": 1971,
@@ -14,67 +14,41 @@
     "education_standardized_count": 8220,
     "age_limits_extracted_count": 916,
     "work_mode_distribution": {
-      "Onsite": 8033,
-      "Hybrid": 821,
-      "Remote": 113
+      "fulltime": 8967
     },
     "employment_type_distribution": {
-      "Full-time": 8357,
-      "Internship": 468,
-      "Contract": 84,
-      "Part-time": 58
+      "fulltime": 8967
     },
     "education_distribution": {
-      "Đại học": 5331,
-      "Thạc sĩ / Cao học": 332,
-      "Không đề cập": 1609,
-      "Cao đẳng": 1141,
-      "Trung cấp / Nghề": 530,
-      "Không yêu cầu": 24
+      "đại học": 5331,
+      "thạc sĩ / cao học": 332,
+      "không đề cập": 1609,
+      "cao đẳng": 1141,
+      "trung cấp / nghề": 530,
+      "không yêu cầu": 24
     },
     "top_10_cities": {
-      "Hà Nội": 4454,
-      "Hồ Chí Minh": 3078,
-      "Toàn quốc": 349,
-      "Bình Dương": 122,
-      "Đà Nẵng": 117,
-      "Hải Phòng": 98,
-      "Bắc Ninh": 93,
-      "Đồng Nai": 89,
-      "Hưng Yên": 84,
-      "Bà Rịa - Vũng Tàu": 60
+      "Chưa xác định": 8967
     },
     "top_job_families": {
-      "JF00_OTHER_IT": 5162,
-      "JF05_DEVOPS": 912,
-      "JF08_QA_QC": 553,
-      "JF10_PROD_BA": 527,
-      "JF01_BACKEND": 440,
-      "JF07_DATA_AI": 376,
-      "JF12_EMBEDDED": 188,
-      "JF06_DATA_ENG": 185,
-      "JF04_MOBILE": 161,
-      "JF02_FRONTEND": 156,
-      "JF03_FULLSTACK": 114,
-      "JF11_UI_UX": 102,
-      "JF09_SECURITY": 91
+      "JF00_OTHER_IT": 8967
     },
     "seniority_distribution": {
-      "Middle": 3912,
-      "Lead/Manager": 2938,
-      "Intern": 915,
-      "Senior": 412,
-      "Chưa xác định": 323,
-      "Junior": 267,
-      "Fresher": 200
+      "middle": 3912,
+      "lead/manager": 2938,
+      "intern": 915,
+      "senior": 412,
+      "chưa xác định": 323,
+      "junior": 267,
+      "fresher": 200
     }
   },
   "distribution_metrics": {
-    "skewness_raw_salary": 3.36,
-    "skewness_log_salary": -0.95,
-    "salary_coverage_pct": 37.17,
+    "skewness_raw_salary": 0.0,
+    "skewness_log_salary": 0.0,
+    "salary_coverage_pct": 100.0,
     "experience_coverage_pct": 100.0,
-    "skills_coverage_pct": 62.71
+    "skills_coverage_pct": 0.0
   },
   "cross_platform_deduplication": {
     "total_input_records": 10024,

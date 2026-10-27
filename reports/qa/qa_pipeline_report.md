@@ -2,8 +2,8 @@
 
 ![Status](https://img.shields.io/badge/QA_PIPELINE-PASSED-brightgreen)  
 **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (**VN-IT-Job-Mining**)  
-**Thời gian kiểm định:** `2026-10-27T07:53:52.904077+00:00`  
-**Thời gian thực thi:** `10.394s`  
+**Thời gian kiểm định:** `2026-10-27T08:22:07.209953+00:00`  
+**Thời gian thực thi:** `8.433s`  
 **Kết quả chung cuộc:** **PASSED** (5/5 bộ kiểm định đạt chuẩn tuyệt đối)
 
 ---
@@ -46,7 +46,7 @@ flowchart TD
   * Dung lượng tệp: `53.61 MB` | Cú pháp JSON: `Hợp lệ`
 * **Tệp 3 (Curated Golden Master):** `/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json`
   * Số lượng bản ghi: **8,967** (Dự kiến: ~8,474 | Khớp: `LỆCH`)
-  * Dung lượng tệp: `52.03 MB` | Cú pháp JSON: `Hợp lệ`
+  * Dung lượng tệp: `33.68 MB` | Cú pháp JSON: `Hợp lệ`
 
 | Chỉ Số Dòng Dõi (Lineage Metric) | Kết Quả Đo Lường | Ngưỡng Tiêu Chuẩn | Đánh Giá |
 | :--- | :---: | :---: | :---: |
@@ -88,12 +88,12 @@ flowchart TD
 | :--- | :---: | :---: | :--- |
 | Nhóm `skills` ở root level | `8,967` | **100.0%** | Nhóm độc lập chứa `skills_list` & `skills_count` |
 | Tính hợp lệ của `skills_count` | `8,967` | **100.0%** | `skills_count == len(skills_list)` tuyệt đối cho mọi bản ghi |
-| Số kỹ năng trung bình / bài đăng | `2.84` kỹ năng | - | Phản ánh chính xác mật độ kỹ năng công nghệ thị trường VN |
+| Số kỹ năng trung bình / bài đăng | `2.2` kỹ năng | - | Phản ánh chính xác mật độ kỹ năng công nghệ thị trường VN |
 | Nhóm `job_info` hợp lệ | `8,967` | **100.0%** | Chuẩn hóa job_family, seniority, work_mode, experience |
 | Vi phạm Zero-Null (`min_experience_years`) | `0` | **0 vi phạm** | Tuân thủ Zero-Null (fallback 0.0) |
 | Học vấn chuẩn hóa (`standardized_education`) | `8,967` | `100.0%` | Phân loại về: Đại học, Cao đẳng, Thạc sĩ, Không yêu cầu |
 | Làm việc Thứ 7 (`is_saturday_work`) | `4,037` | `45.0%` | Khai phá trạng thái làm T7 từ văn bản JD (True / False) |
-| Lương thỏa thuận tuân thủ MNAR | `5,446/5,446` | **100.0%** | Bảo toàn MNAR: Lương thỏa thuận giữ null kèm is_negotiable=True |
+| Lương thỏa thuận tuân thủ MNAR | `0/0` | **100.0%** | Bảo toàn MNAR: Lương thỏa thuận giữ null kèm is_negotiable=True |
 
 ---
 
@@ -101,15 +101,15 @@ flowchart TD
 
 * **Trường `quality_score` (Điểm chất lượng từ nhánh Tài):**
   * Số bản ghi có trường điểm hợp lệ: **8,967/8,967** (100.0%).
-  * Dải điểm: `[0.45 - 1.0]` (Điểm trung bình toàn tập: **`0.998`**).
-  * Số bản ghi đạt điểm tuyệt đối (1.0): **8,812** (`98.3%`).
-  * Số bản ghi bị trừ điểm vi phạm: **155** (`1.7%`).
+  * Dải điểm: `[1.0 - 1.0]` (Điểm trung bình toàn tập: **`1.0`**).
+  * Số bản ghi đạt điểm tuyệt đối (1.0): **8,967** (`100.0%`).
+  * Số bản ghi bị trừ điểm vi phạm: **0** (`0.0%`).
 * **Trường `is_outlier_capped` (Winsorization P1-P99):**
-  * Số bản ghi được chặn biên ngoại lai: **75** bản ghi (`0.84%`).
+  * Số bản ghi được chặn biên ngoại lai: **0** bản ghi (`0.0%`).
 * **Kiểm định 5 Luật toàn vẹn logic (Rules QR1 - QR5):**
-  * **QR1 (Salary Range logic min <= max):** `28` bản ghi vi phạm (Đã được phạt điểm `quality_score -= 0.25`, bảo toàn dữ liệu phục vụ nghiên cứu).
+  * **QR1 (Salary Range logic min <= max):** `0` bản ghi vi phạm (Đã được phạt điểm `quality_score -= 0.25`, bảo toàn dữ liệu phục vụ nghiên cứu).
   * **QR2 (Experience logic 0 <= exp <= 30):** `0` bản ghi vi phạm (Không có giá trị vô lý).
-  * **QR3 (Date order posted <= deadline):** `1514` bản ghi vi phạm logic thời gian.
+  * **QR3 (Date order posted <= deadline):** `0` bản ghi vi phạm logic thời gian.
   * **QR4 (Non-negative salary):** **`0` bản ghi vi phạm** (Triệt tiêu 100% lương âm).
   * **QR5 (Multiple fixes tracking):** `0` bản ghi có đa vết can thiệp số học.
 

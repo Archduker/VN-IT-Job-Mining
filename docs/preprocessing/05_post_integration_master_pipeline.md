@@ -15,36 +15,29 @@ Sau khi hoàn thành bước **Integration**, ta thu được **Một Bảng Ph�
 |                         BẢN ĐỒ TỔNG THỂ SAU BƯỚC INTEGRATION (POST-INTEGRATION)                    |
 +----------------------------------------------------------------------------------------------------+
 |                                                                                                    |
-|   [GIAI ĐOẠN 1: BẢNG PHẲNG STAGING ĐÃ TÍCH HỢP] (staging_flat_jobs.parquet)                        |
-|   9,390 dòng x 20 cột phẳng thô (toàn bộ cấu trúc lồng nhau đã được ép phẳng)                      |
+|   [GIAI ĐOẠN 1: TÍCH HỢP DỮ LIỆU ĐA NGUỒN] (raw_for_normalization.json)                             |
+|   10,024 bài đăng x cấu trúc chuẩn hóa trung gian từ 8 sàn tuyển dụng                               |
 |                                     │                                                              |
 |                                     ▼                                                              |
-|   [GIAI ĐOẠN 2: CHUYỂN HÓA & BÓC TÁCH KIỂU (TRANSFORMATION)]                                       |
-|   * Cascade Salary Parser: Header Regex -> JD Regex Scanner (bóc lương ẩn) -> GenAI Fallback       |
-|   * Quy đổi tiền tệ: USD -> VND (tỷ giá 25,400); quy đổi lương năm -> lương tháng (/12)            |
-|   * Chuẩn hóa ngày tháng ISO 8601 & Bóc tách số năm kinh nghiệm                                    |
+|   [GIAI ĐOẠN 2: CHUYỂN HÓA & LÀM GIÀU GEMINI AGENT (GEMINI ENRICHMENT)]                            |
+|   * Market Anchor Calculator: Tạo ma trận trung vị lương 2 chiều (Platform x Seniority)             |
+|   * Gemini All-in-One Preprocessing Agent: Phân tầng kỹ năng 3 lớp (Core, Required, Preferred)     |
+|   * Dịch tự động JD tiếng Anh sang tiếng Việt & Quy đổi tỷ giá 1 USD = 25,400 VND                  |
+|   * Resumable Checkpoint Store: Lưu vết từng bản ghi vào checkpoint_gemini.jsonl an toàn           |
 |                                     │                                                              |
 |                                     ▼                                                              |
-|   [GIAI ĐOẠN 3: BÙ KHUYẾT BẰNG GEN AI & XỬ LÝ NGOẠI LAI (MISSING & OUTLIER)]                       |
-|   * Bóc trần 9+ Null Markers trá hình ('thỏa thuận', 'cạnh tranh', '0') -> giữ cờ is_negotiable    |
-|   * GenAI Imputer: Gemini đọc JD bù khuyết kinh nghiệm, cấp bậc, thành phố, kỹ năng               |
-|   * Kiểm định IQR: Nhận diện 3 lỗi số học & Winsorization (capping 1% và 99%, không drop hàng)     |
+|   [GIAI ĐOẠN 3: ĐỊNH DẠNG TARGET SCHEMA 11 KHÓA & KHỬ TRÙNG LẶP (DEEP NORMALIZATION)]              |
+|   * TargetSchemaFormatter: Gom dữ liệu về đúng 11 khóa root và sinh bảng phẳng (Flat View)          |
+|   * Khử trùng lặp đa tầng (Deduplication) bảo toàn bản ghi có độ đầy đủ cao nhất                   |
 |                                     │                                                              |
 |                                     ▼                                                              |
-|   [GIAI ĐOẠN 4: KHỬ TRÙNG LẶP NGỮ NGHĨA XUYÊN SÀN (CROSS-PLATFORM DEDUPLICATION)]                  |
-|   * Nhóm bài đăng theo: normalized_company + primary_city                                          |
-|   * So khớp ngữ nghĩa: Cosine Similarity trên vector nhúng văn bản JD (ngưỡng >= 0.88)             |
-|   * Hợp nhất: Giữ lại bản ghi có độ đầy đủ thông tin cao nhất (Golden Record Selection)            |
+|   [GIAI ĐOẠN 4: KIỂM ĐỊNH CHẤT LƯỢNG QA 5 KHẾ ƯỚC (QA VALIDATION SUITE)]                            |
+|   * Lineage, Pure RFC 8259 JSON, Clean JD, Skills Contract, Outlier & Quality Score >= 0.70        |
 |                                     │                                                              |
 |                                     ▼                                                              |
-|   [GIAI ĐOẠN 5: CHUẨN HÓA & LÀM GIÀU AI (NORMALIZATION & TAXONOMY ENRICHMENT)]                     |
-|   * Log-transformation cho mức lương: y = log(1 + salary_max_vnd)                                  |
-|   * Phân loại Zero-shot Chức danh tuyển dụng về 12 Job Family chuẩn (SD2)                          |
-|   * Mapping Kỹ năng về Taxonomy ESCO quốc tế qua Semantic Embeddings (SD3)                         |
-|                                     │                                                              |
-|                                     ▼                                                              |
-|   [ĐẦU RA CUỐI CÙNG: GOLDEN MASTER DATASET] (curated_flat_jobs.parquet)                            |
-|   Bộ dữ liệu phẳng hoàn chỉnh, không còn null trá hình, không còn outlier, chuẩn hóa toàn diện     |
+|   [ĐẦU RA CUỐI CÙNG: BỘ DỮ LIỆU VÀNG CHUẨN] (100% PURE RFC 8259 JSON, 8,967 BẢN GHI)             |
+|   * data/curated/golden_master.json (Nested 11 Khóa Gốc)                                           |
+|   * data/curated/curated_flat_golden_jobs.json (Bảng phẳng phục vụ Machine Learning/Data Mining)   |
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
 ```
@@ -117,29 +110,30 @@ Sau khi hoàn thành bước **Integration**, ta thu được **Một Bảng Ph�
 
 ---
 
-## 3. Bản Xuất Bản Hồ Sơ 3 File Sau Khi Xử Lý (The 3-Deliverables Standard)
+## 3. Bản Xuất Bản Hồ Sơ Dữ Liệu Vàng Sau Tiền Xử Lý (Golden Deliverables Standard)
 
-Để giải quyết trọn vẹn yêu cầu *"một chuỗi/nguồn tạo ra 3 file"*, sau khi xử lý qua pipeline, mỗi nguồn dữ liệu tuyển dụng xuất bản đúng bộ 3 tài liệu chuẩn mực tại Lakehouse:
+Sau khi xử lý qua Master Pipeline, toàn bộ hệ thống xuất bản đúng bộ tài liệu và sản phẩm dữ liệu vàng chuẩn mực:
 
 ```text
 +----------------------------------------------------------------------------------------------------+
-|                         BỘ 3 TÀI LIỆU XUẤT BẢN CHUẨN MỰC CHO MỖI NGUỒN CÀO                         |
+|                         BỘ TÀI LIỆU VÀ SẢN PHẨM DỮ LIỆU VÀNG XUẤT BẢN CHUẨN MỰC                    |
 +----------------------------------------------------------------------------------------------------+
 |                                                                                                    |
-|  FILE 1: BẢNG DỮ LIỆU PHẲNG CHUẨN HÓA (Flat Clean Dataset)                                         |
-|  * Đường dẫn: staging/<source>/<source>_flat_clean.parquet (hoặc .csv)                             |
-|  * Định dạng: Bảng phẳng duy nhất, toàn bộ JSON lồng nhau đã được ép phẳng, các cột số đã được     |
-|    bóc tách, các ô khuyết đã được GenAI bù đắp. Sẵn sàng đưa vào Pandas/DuckDB phân tích ngay.     |
+|  FILE 1: BỘ DỮ LIỆU VÀNG PHÂN TẦNG (Golden Master Nested Dataset)                                  |
+|  * Đường dẫn: data/curated/golden_master.json                                                      |
+|  * Định dạng: 100% PURE RFC 8259 JSON, đúng 11 Khóa Gốc, Zero-null lương, mô tả tiếng Việt sạch.   |
 |                                                                                                    |
-|  FILE 2: BỆNH ÁN & HỒ SƠ CHẤT LƯỢNG DỮ LIỆU (Data Quality Health Card & Metrics)                   |
-|  * Đường dẫn: reports/<source>/<source>_quality_health_card.json                                   |
-|  * Định dạng: Tệp JSON đo lường chi tiết 5 trụ cột chất lượng: Tỷ lệ khuyết thiếu trước/sau bù,   |
-|    chỉ số IQR, ngưỡng phân vị P1-P99, tỷ lệ bản ghi được GenAI xử lý, độ lệch Skewness/Kurtosis.   |
+|  FILE 2: BẢNG DỮ LIỆU VÀNG PHẲNG (Curated Flat Golden Dataset)                                    |
+|  * Đường dẫn: data/curated/curated_flat_golden_jobs.json                                           |
+|  * Định dạng: Bảng phẳng 1 tầng phục vụ nạp trực tiếp vào DuckDB, Pandas, Polars và Scikit-Learn.  |
 |                                                                                                    |
-|  FILE 3: TỪ ĐIỂN ÁNH XẠ TRƯỜNG & LOG BIẾN ĐỔI (Transformation Manifest & Data Dictionary)          |
-|  * Đường dẫn: reports/<source>/<source>_transformation_manifest.md                                 |
-|  * Định dạng: Báo cáo Markdown giải trình minh bạch nguồn gốc dữ liệu (Data Lineage & Provenance):  |
-|    Trường nào lấy từ đâu, công thức regex bóc tách lương ra sao, rule sửa lỗi ngoại lai là gì.     |
+|  FILE 3: BÁO CÁO KIỂM ĐỊNH CHẤT LƯỢNG QA (QA Pipeline Validation Report)                          |
+|  * Đường dẫn: reports/qa/qa_pipeline_report.md (Markdown) & reports/qa/qa_pipeline_report.json     |
+|  * Định dạng: Báo cáo kết quả kiểm định 5 khế ước chất lượng tự động đạt 5/5 PASSED.               |
+|                                                                                                    |
+|  FILE 4: BỆNH ÁN CHẤT LƯỢNG DỮ LIỆU VÀNG (Curated Golden Dataset Health Card)                      |
+|  * Đường dẫn: reports/curated_golden_dataset_health_card.json                                      |
+|  * Định dạng: Tệp JSON đo lường chi tiết phân vị lương, độ hoàn thiện của từng trường và thống kê.  |
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
 ```

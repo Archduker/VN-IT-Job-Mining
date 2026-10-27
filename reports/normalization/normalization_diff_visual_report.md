@@ -98,80 +98,33 @@
 {
   "job_id_global": "careerviet_35C8AEA1",
   "source_platform": "careerviet",
-  "source_job_id": "35C8AEA1",
   "source_url": "https://careerviet.vn/vi/tim-viec-lam/hn-hcm-soc-engineer.35C8AEA1.html",
-  "crawled_at_iso": "2026-10-20T11:11:15.219864+00:00",
   "job_info": {
-    "job_title": "SOC Engineer",
-    "standardized_job_family": "JF09_SECURITY",
-    "standardized_seniority": "Middle",
-    "employment_type": "Full-time",
-    "work_mode": "Onsite",
-    "min_experience_years": 4.0,
-    "headcount": null
+    "title": "Chưa xác định",
+    "job_family": "JF00_OTHER_IT",
+    "work_type": "fulltime",
+    "is_remote": false
   },
   "company": {
-    "company_name": "Ngân Hàng TMCP Việt Nam Thịnh Vượng - VPBANK",
-    "company_name_normalized": "ngân hàng tmcp thịnh vượng vpbank",
-    "company_scale": null,
-    "company_scale_tier": "Medium",
-    "company_address": "Địa điểm làm việc Hồ Chí Minh 3A-3B Tôn Đức Thắng, phường Bến Nghé, Quận 1, TP.HCM Hà Nội 89 Láng Hạ, Đống Đa, Hà Nội",
-    "company_url": null,
-    "company_logo_image": null,
-    "company_industry": "Ngân hàng , CNTT - Phần mềm",
-    "category_text": [
-      "Ngân hàng",
-      "CNTT - Phần mềm"
-    ]
+    "name": "Chưa xác định",
+    "industry": null,
+    "size": null
   },
-  "location": {
-    "primary_city": "Hà Nội",
-    "cities_list": [
-      "Hà Nội",
-      "Hồ Chí Minh"
-    ],
-    "districts_list": [
-      "Quận 1",
-      "Đống Đa"
-    ],
-    "detailed_locations": [
-      {
-        "province": "Hồ Chí Minh",
-        "district": "Quận 1",
-        "full_address": "Hồ Chí Minh 3A-3B Tôn Đức Thắng, phường Bến Nghé, Quận 1, TP.HCM"
-      },
-      {
-        "province": "Hà Nội",
-        "district": "Đống Đa",
-        "full_address": "Hà Nội 89 Láng Hạ, Đống Đa,"
-      }
-    ],
-    "geo_coordinates": null
-  },
+  "locations": [
+    {
+      "province": "Chưa xác định",
+      "district": null,
+      "Details_address": null
+    }
+  ],
   "salary": {
-    "salary_text": "Cạnh tranh",
-    "salary_currency_original": "VND",
-    "salary_min_original": null,
-    "salary_max_original": null,
-    "salary_min_vnd": null,
-    "salary_max_vnd": null,
-    "salary_fx_rate_to_vnd": 1.0,
-    "pay_period": "month",
-    "is_negotiable": true,
-    "salary_source": "header_negotiable",
-    "salary_max_winsorized": null,
-    "is_salary_winsorized": false,
-    "is_outlier_capped": false,
-    "log_salary_max": null
+    "salary_min": 15000000.0,
+    "salary_max": 22500000.0,
+    "salary_currency": "VND",
+    "salary_source": "header_negotiable"
   },
   "skills": {
-    "skills_list": [
-      "PHP",
-      "Python",
-      "Soc Analyst",
-      "Soc Engineer"
-    ],
-    "skills_count": 4,
+    "hard_skills": [],
     "soft_skills": [],
     "domain_skills": [
       "An toàn thông tin",
@@ -179,45 +132,22 @@
     ]
   },
   "requirements": {
-    "standardized_education": "Đại học",
-    "age_min": null,
-    "age_max": null,
+    "experience_years": 4.0,
+    "standardized_seniority": "middle",
+    "standardized_education": "đại học",
     "is_saturday_work": null
   },
   "jd_text": {
-    "description_text": "Mô tả Công việc Tham gia xây dựng các quy trình, hướng dẫn, playbook cho hoạt động của SOC Tham gia Nghiên cứu và đề xuất các giải pháp công nghệ và thông lệ tiên tiến để áp dụng vào hoạt động SOC Tham gia xác định các yêu cầu đối với dữ liệu ANBM phục vụ cho công tác quản trị, phân tích, giám sát và báo cáo Giám sát an ninh 24/7 hệ thống CNTT Quản lý và ứng phó sự cố ANBM Quản lý và săn lùng mối đe dọa chủ động Quản lý lỗ hổng bảo mật Phối hợp với các bên liên quan để rà soát các kịch bản ứng phó sự cố và diễn tập hàng năm về an toàn thông tin Phối hợp với các bên liên quan đển thực hiện các thay đổi nhằm xử lý các vấn đề về ANBM Tham gia quản lý, giám sát các chỉ số, thước đo về tình trạng ANBM CNTT Theo dõi, tổng hợp và cung cấp thông tin về hiệu quả của các luật/ kịch bản giám sát sự kiện bất thường Theo dõi, giám sát và đánh giá kết quả thực hiện các hành động khắc phục và các biện pháp giảm thiểu được xác định từ các sự cố ANBM Tham gia rà soát và cập nhật các quy trình, hướng dẫn, playbook cho hoạt động của SOC",
-    "requirements_text": "Yêu Cầu Công Việc Tốt nghiệp Đại học chuyên ngành về CNTT, An toàn thông tin hoặc chuyên ngành liên quan. Kinh nghiệm tối thiểu 4 năm với các lĩnh vực về ANBM, CNTT Có tối thiểu 3 năm kinh nghiệm trong các lĩnh vực ANBM như giám sát điều hành sự kiện ANBM, quản lý và ứng phó sự cố, phân tích điều tra sự cố ANBM, săn lùng mối đe dọa chủ động, quản lý lỗ hổng bảo mật, đánh giá ANBM, phân tích dữ liệu ANBM Am hiểu, có kiến thức tốt về các tiêu chuẩn bảo mật CNTT quốc tế (ISO 270001, PCI-DSS, ITIL, MITRE ATT&CK, OWSAP, v.v. Có kiến thức và kỹ năng an ninh bảo mật mạng, hệ thống, ứng dụng, CSDL Hiểu biết về các hệ thống giải pháp ANBM nói chung và SOC nói riêng như SIEM, SOAR, EDR, NDR FW, WAF, DBFW, IPS, DLP, PIM, v.v. Có kiến thức và kỹ năng xây dựng quy trình quản lý SOC Có kiến thức và kỹ năng ANBM trên các môi trường cloud Có kiến thức và kỹ năng tự động hóa và tối ưu SOC Có kiến thức và kỹ năng phân tích mã độc, mã hóa, săn lùng mối đe dọa Có kiến thức và kỹ năng lập trình một số ngôn ngữ: Python, Shell, PHP Có kiến thức và kỹ năng sử dụng các công cụ ANBM để kiểm thử xâm nhập, khai thác lỗ hổng: VA, APPScan, Metaexploit, kalilinux, Burpsuite, v.v.",
-    "benefits_text": [
+    "language": "vi",
+    "description": "Mô tả Công việc Tham gia xây dựng các quy trình, hướng dẫn, playbook cho hoạt động của SOC Tham gia Nghiên cứu và đề xuất các giải pháp công nghệ và thông lệ tiên tiến để áp dụng vào hoạt động SOC Tham gia xác định các yêu cầu đối với dữ liệu ANBM phục vụ cho công tác quản trị, phân tích, giám sát và báo cáo Giám sát an ninh 24/7 hệ thống CNTT Quản lý và ứng phó sự cố ANBM Quản lý và săn lùng mối đe dọa chủ động Quản lý lỗ hổng bảo mật Phối hợp với các bên liên quan để rà soát các kịch bản ứng phó sự cố và diễn tập hàng năm về an toàn thông tin Phối hợp với các bên liên quan đển thực hiện các thay đổi nhằm xử lý các vấn đề về ANBM Tham gia quản lý, giám sát các chỉ số, thước đo về tình trạng ANBM CNTT Theo dõi, tổng hợp và cung cấp thông tin về hiệu quả của các luật/ kịch bản giám sát sự kiện bất thường Theo dõi, giám sát và đánh giá kết quả thực hiện các hành động khắc phục và các biện pháp giảm thiểu được xác định từ các sự cố ANBM Tham gia rà soát và cập nhật các quy trình, hướng dẫn, playbook cho hoạt động của SOC",
+    "requirements": "Yêu Cầu Công Việc Tốt nghiệp Đại học chuyên ngành về CNTT, An toàn thông tin hoặc chuyên ngành liên quan. Kinh nghiệm tối thiểu 4 năm với các lĩnh vực về ANBM, CNTT Có tối thiểu 3 năm kinh nghiệm trong các lĩnh vực ANBM như giám sát điều hành sự kiện ANBM, quản lý và ứng phó sự cố, phân tích điều tra sự cố ANBM, săn lùng mối đe dọa chủ động, quản lý lỗ hổng bảo mật, đánh giá ANBM, phân tích dữ liệu ANBM Am hiểu, có kiến thức tốt về các tiêu chuẩn bảo mật CNTT quốc tế (ISO 270001, PCI-DSS, ITIL, MITRE ATT&CK, OWSAP, v.v. Có kiến thức và kỹ năng an ninh bảo mật mạng, hệ thống, ứng dụng, CSDL Hiểu biết về các hệ thống giải pháp ANBM nói chung và SOC nói riêng như SIEM, SOAR, EDR, NDR FW, WAF, DBFW, IPS, DLP, PIM, v.v. Có kiến thức và kỹ năng xây dựng quy trình quản lý SOC Có kiến thức và kỹ năng ANBM trên các môi trường cloud Có kiến thức và kỹ năng tự động hóa và tối ưu SOC Có kiến thức và kỹ năng phân tích mã độc, mã hóa, săn lùng mối đe dọa Có kiến thức và kỹ năng lập trình một số ngôn ngữ: Python, Shell, PHP Có kiến thức và kỹ năng sử dụng các công cụ ANBM để kiểm thử xâm nhập, khai thác lỗ hổng: VA, APPScan, Metaexploit, kalilinux, Burpsuite, v.v.",
+    "benefits": [
       "Chế độ bảo hiểm Phụ cấp Chế độ thưởng Chăm sóc sức khỏe Đào tạo Nghỉ phép năm"
     ]
   },
   "date": {
     "posted_date": "16/10/2026",
-    "updated_date": "16/10/2026",
-    "deadline_date": "30/11/2026"
-  },
-  "nlp_metadata": {
-    "word_count": 494,
-    "char_count": 2201,
-    "primary_language": "vi",
-    "is_stub_jd": false,
-    "is_content_image": false
-  },
-  "governance": {
-    "quality_score": 1.0,
-    "imputed_fields": [
-      "min_experience_years_from_raw",
-      "seniority_from_raw",
-      "primary_city_from_loc"
-    ],
-    "is_golden_merged": false,
-    "duplicate_count": 1,
-    "duplicate_platforms": [
-      "careerviet"
-    ],
-    "duplicate_job_ids": [
-      "careerviet_35C8AEA1"
-    ]
+    "expired_date": null
   }
 }
 ```

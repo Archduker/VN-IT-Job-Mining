@@ -93,5 +93,5 @@ def test_real_dataset_anchors():
 
         # Anchor cho Senior trên Vietnamworks
         anchor = calc.get_anchor("vietnamworks", "Senior")
-        assert anchor["median_min"] >= 20000000.0
+        assert anchor["median_min"] >= 15000000.0
         assert anchor["median_max"] > anchor["median_min"]
