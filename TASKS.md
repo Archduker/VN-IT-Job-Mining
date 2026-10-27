@@ -282,16 +282,16 @@ Sau khi dữ liệu thô (Raw As-Is) đã được kéo về Lakehouse (Cloudfla
 - **Nhánh Git:** `feature/text-skill-processing` *(hoặc `nlp/phat-nguyen`)*
 - **Thư mục phụ trách:** `preprocessing/normalization/`, `data/dictionaries/`, và `tests/test_skill_processing.py`
 - **Việc đang xử lý & cần làm tiếp theo:**
-  - [ ] **Đọc bệnh án EDA (`python scripts/read_eda_diagnosis.py --source <source>`):** Nắm rõ Trụ cột 5 (Bias) và cấu trúc văn bản/tags (Trụ cột 1 & 2) của từng sàn (ví dụ lỗi bullet ngắt dòng ở Vieclam24h/CareerViet, 3 mảng tags ở TopCV) trước khi chuẩn hóa.
-  - [ ] **Nâng cấp bộ làm sạch văn bản (`text_cleaner.py`):**
+  - [x] **Đọc bệnh án EDA (`python scripts/read_eda_diagnosis.py --source <source>`):** Nắm rõ Trụ cột 5 (Bias) và cấu trúc văn bản/tags (Trụ cột 1 & 2) của từng sàn (ví dụ lỗi bullet ngắt dòng ở Vieclam24h/CareerViet, 3 mảng tags ở TopCV) trước khi chuẩn hóa.
+  - [x] **Nâng cấp bộ làm sạch văn bản (`text_cleaner.py`):**
     - Loại bỏ sạch sẽ các thẻ HTML, emoji, ký tự điều khiển ẩn.
     - Xử lý kỹ thuật **Bullet Stitching**: Nối các câu mô tả bị ngắt dòng giữa chừng từ nguồn Vieclam24h/CareerViet.
     - Làm sạch tiêu đề (`clean_job_title`): Bỏ tiền tố địa danh `[HN]`, `[HCM]`, bỏ đuôi quảng cáo lương `Lương 20M`, `Thu nhập cao`.
     - Chuẩn hóa địa danh làm việc về danh mục 63 Tỉnh thành chuẩn Việt Nam và gắn cờ `is_remote = 1`.
-  - [ ] **Xây dựng Taxonomy Mapper (`taxonomy_mapper.py`):**
+  - [x] **Xây dựng Taxonomy Mapper (`taxonomy_mapper.py`):**
     - Phân loại tiêu đề công việc vào **12 Job Family chuẩn ngành IT** (Backend, Frontend, Fullstack, Mobile, DevOps, Data Eng, Data AI, QA QC, Security, BA PM, UI UX, Embedded) phục vụ mục tiêu **SD2**.
     - Chuẩn hóa cấp bậc nghề nghiệp về **6 bậc chuẩn** (`INTERN`, `FRESHER`, `JUNIOR`, `MIDDLE`, `SENIOR`, `LEAD_MGR`).
-  - [ ] **Xây dựng Skill Normalizer & Từ điển ESCO IT Skills (`skill_normalizer.py`):**
+  - [x] **Xây dựng Skill Normalizer & Từ điển ESCO IT Skills (`skill_normalizer.py`):**
     - Xây dựng từ điển `data/dictionaries/esco_it_skills.json`.
     - Chuẩn hóa đồng nhất các biến thể kỹ năng công nghệ (`ReactJS`, `React.js`, `React JS` $\to$ `React`; `VueJS` $\to$ `Vue`; `Golang` $\to$ `Go`; `NodeJS` $\to$ `Node.js`).
     - Phân chia danh mục kỹ năng thành 3 nhóm rõ rệt: `hard_skills`, `domain_knowledge`, `soft_skills` (phục vụ mục tiêu **SD3**).

@@ -30,7 +30,9 @@ wheels/
 *.jsonl
 *.parquet
 *.csv
-data/
+data/*
+!data/dictionaries/
+!data/dictionaries/**
 output/
 logs/
 *.log
@@ -42,6 +44,7 @@ logs/
 .env
 .env.local
 /secrets/
+.env.example
 
 # IDE
 .vscode/
