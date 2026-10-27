@@ -147,15 +147,24 @@ def run_missing_outlier_pipeline(
         rec = dict(r)
 
         # 0. Khởi tạo và quy đổi lương về chuẩn số học VND
-        curr = rec.get("salary_currency")
+        curr = rec.get("salary_currency") or rec.get("salary_currency_original") or "VND"
         s_min = rec.get("salary_min")
+        if s_min is None:
+            s_min = rec.get("salary_min_vnd") if rec.get("salary_min_vnd") is not None else rec.get("salary_min_original")
         s_max = rec.get("salary_max")
+        if s_max is None:
+            s_max = rec.get("salary_max_vnd") if rec.get("salary_max_vnd") is not None else rec.get("salary_max_original")
 
-        rec["salary_currency_original"] = curr or "VND"
+        rec["salary_currency_original"] = curr
         rec["salary_min_original"] = s_min
         rec["salary_max_original"] = s_max
 
-        if curr == "USD":
+        # Bảo toàn giá trị lương VND nếu đã được transformation tính toán chuẩn
+        if rec.get("salary_min_vnd") is not None and rec.get("salary_fx_rate_to_vnd") is not None:
+            rec["salary_min_vnd"] = float(rec["salary_min_vnd"])
+            rec["salary_max_vnd"] = float(rec["salary_max_vnd"]) if rec.get("salary_max_vnd") is not None else rec["salary_min_vnd"]
+            rec["salary_source"] = rec.get("salary_source") or "header_numeric"
+        elif curr == "USD":
             rec["salary_min_vnd"] = round(float(s_min) * 25400.0, 2) if s_min is not None else None
             rec["salary_max_vnd"] = round(float(s_max) * 25400.0, 2) if s_max is not None else None
             rec["salary_fx_rate_to_vnd"] = 25400.0
@@ -165,6 +174,9 @@ def run_missing_outlier_pipeline(
             rec["salary_max_vnd"] = float(s_max) if s_max is not None else None
             rec["salary_fx_rate_to_vnd"] = 1.0
             rec["salary_source"] = "header_numeric" if (s_min is not None or s_max is not None) else "header_negotiable"
+
+        rec["salary_min"] = rec["salary_min_vnd"]
+        rec["salary_max"] = rec["salary_max_vnd"]
 
         is_neg = (rec["salary_min_vnd"] is None and rec["salary_max_vnd"] is None)
         rec["is_negotiable"] = is_neg

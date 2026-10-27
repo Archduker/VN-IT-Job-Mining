@@ -105,6 +105,9 @@ db-down:
 check-r2:
 	$(PYTHON) scripts/check_r2.py
 
+push-silver:
+	$(PYTHON) scripts/push_silver_to_r2.py
+
 # ── Testing ────────────────────────────────────────────────────
 test:
 	$(PYTEST) tests/ -v

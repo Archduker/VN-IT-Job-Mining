@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import re
 from typing import Any, Dict, List, Optional, Union
 
@@ -190,29 +191,52 @@ class TargetSchemaFormatter:
         # 4. locations
         locations = cls.format_locations(raw_record)
 
-        # 5. salary
+        # 5. salary (Ground-Truth Realism: Preserve null for negotiable)
         en_sal = enriched.get("salary") or {}
         raw_sal = raw_record.get("salary") if isinstance(raw_record.get("salary"), dict) else {}
+
         sal_min = en_sal.get("salary_min")
         if sal_min is None:
-            sal_min = raw_sal.get("salary_min") or raw_record.get("salary_min") or 15000000.0
+            sal_min = raw_sal.get("salary_min") or raw_sal.get("salary_min_vnd") or raw_record.get("salary_min") or raw_record.get("salary_min_vnd")
 
         sal_max = en_sal.get("salary_max")
         if sal_max is None:
-            sal_max = raw_sal.get("salary_max") or raw_record.get("salary_max") or sal_min * 1.5
+            sal_max = raw_sal.get("salary_max") or raw_sal.get("salary_max_vnd") or raw_record.get("salary_max") or raw_record.get("salary_max_vnd")
 
         sal_source = (
             en_sal.get("salary_source")
             or raw_sal.get("salary_source")
             or raw_record.get("salary_source")
-            or "predicted"
+            or ("explicit_range" if sal_min is not None else "negotiable")
         )
 
+        is_neg = (
+            en_sal.get("is_salary_negotiable")
+            or raw_sal.get("is_salary_negotiable")
+            or raw_sal.get("is_negotiable")
+            or raw_record.get("is_salary_negotiable")
+            or raw_record.get("is_negotiable")
+        )
+
+        if sal_min is not None and not (isinstance(sal_min, float) and math.isnan(sal_min)) and float(sal_min) > 0:
+            sal_min_val = float(sal_min)
+            sal_max_val = float(sal_max if sal_max is not None and not (isinstance(sal_max, float) and math.isnan(sal_max)) and float(sal_max) >= sal_min_val else sal_min_val)
+            is_negotiable = False
+            sal_source_str = str(sal_source).strip().lower()
+            if sal_source_str in {"negotiable", "competitive", "predicted"}:
+                sal_source_str = "explicit_range"
+        else:
+            sal_min_val = None
+            sal_max_val = None
+            is_negotiable = True
+            sal_source_str = "competitive" if str(sal_source).strip().lower() == "competitive" else "negotiable"
+
         salary = {
-            "salary_min": float(sal_min),
-            "salary_max": float(sal_max),
+            "salary_min": sal_min_val,
+            "salary_max": sal_max_val,
             "salary_currency": "VND",
-            "salary_source": str(sal_source).strip().lower(),
+            "is_salary_negotiable": is_negotiable,
+            "salary_source": sal_source_str,
         }
 
         # 6. skills
@@ -311,10 +335,17 @@ class TargetSchemaFormatter:
         if isinstance(benefits, str):
             benefits = [benefits]
 
+        desc_clean = str(desc).strip()
+        req_clean = str(req_text).strip()
+        if not desc_clean and req_clean:
+            desc_clean = req_clean
+        elif not desc_clean:
+            desc_clean = f"Tuyển dụng {title or 'nhân sự IT'}"
+
         jd_text = {
             "language": "vi",  # Chuẩn hóa về tiếng Việt sau bản địa hóa
-            "description": str(desc).strip(),
-            "requirements": str(req_text).strip(),
+            "description": desc_clean,
+            "requirements": req_clean,
             "benefits": list(benefits),
         }
 
@@ -382,7 +413,8 @@ class TargetSchemaFormatter:
             "salary_min": sal.get("salary_min"),
             "salary_max": sal.get("salary_max"),
             "salary_currency": sal.get("salary_currency", "VND"),
-            "salary_source": sal.get("salary_source", "predicted"),
+            "is_salary_negotiable": sal.get("is_salary_negotiable", False if sal.get("salary_min") else True),
+            "salary_source": sal.get("salary_source", "negotiable"),
             "hard_skills": skills.get("hard_skills", []),
             "soft_skills": skills.get("soft_skills", []),
             "domain_skills": skills.get("domain_skills", []),

@@ -137,7 +137,7 @@ Mỗi bản ghi đại diện cho một tin tuyển dụng CNTT tinh chế 100% 
 ```
 
 ### 4.2. Cấu Trúc Bảng Phẳng (Canonical Flat View):
-Tệp `data/curated/curated_flat_golden_jobs.json` được ép phẳng phục vụ huấn luyện mô hình học máy:
+Tệp `data/silver/silver_flat_jobs.json` (và bản sao tương thích `data/curated/curated_flat_golden_jobs.json`) được ép phẳng phục vụ huấn luyện mô hình học máy:
 
 ```text
 +----------------------------------------------------------------------------------------------------+

@@ -32,9 +32,11 @@ Hệ thống được thiết kế theo ranh giới đanh thép (**Ironclad Boun
 |  * Step 5: QA Validation Suite -> Kiểm định 5 khế ước chất lượng tự động, đạt 5/5 PASSED           |
 |                                     │                                                              |
 |                                     ▼                                                              |
-|  [ĐẦU RA CUỐI CÙNG: GOLDEN MASTER DATASET] (100% PURE RFC 8259 JSON, 8,967 BẢN GHI)                |
-|  * data/curated/golden_master.json (Nested 11 Khóa Gốc, Zero-null lương, mô tả tiếng Việt sạch)    |
-|  * data/curated/curated_flat_golden_jobs.json (Bảng phẳng phục vụ Machine Learning / Data Mining)   |
+|  [ĐẦU RA TIỀN XỬ LÝ: SILVER MASTER DATASET] (100% PURE RFC 8259 JSON, 8,959 BẢN GHI GROUND TRUTH)  |
+|  * data/silver/silver_master_dataset.json (Nested 11 Khóa Gốc, bảo tồn null lương thỏa thuận, 100% VI)|
+|  * data/silver/silver_flat_jobs.json (Bảng phẳng phục vụ Machine Learning / Data Mining)            |
+|  * Bản sao tương thích ngược: data/curated/golden_master.json & curated_flat_golden_jobs.json      |
+|  * Đã đồng bộ Cloudflare R2: s3://vn-it-jobs/silver/                                               |
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
 ```
@@ -46,7 +48,7 @@ Hệ thống được thiết kế theo ranh giới đanh thép (**Ironclad Boun
 | Lớp Kiến Trúc (Layer) | Công Nghệ & Thư Viện Chính | Mục Đích Kỹ Thuật |
 | :--- | :--- | :--- |
 | **Ngôn Ngữ & Môi Trường** | **Python 3.12**, **TypeScript (ES2022)** | Nền tảng thực thi backend, data pipelines và giao diện giám sát |
-| **Lưu Trữ Lakehouse** | **Cloudflare R2 Object Storage** (S3 API), **Parquet**, **JSONL** | Lưu trữ đối tượng đám mây phân tầng (`url_ledger/`, `raw/`, `staging/`, `curated/`) |
+| **Lưu Trữ Lakehouse** | **Cloudflare R2 Object Storage** (S3 API), **JSON RFC 8259** | Kiến trúc Huy chương Medallion (`raw/` (Bronze) ➔ `silver/` (Silver Master) ➔ `gold/`) |
 | **Điều Phối & Lập Lịch** | **Apache Airflow 2.8+** | Tự động hóa lịch cào Discovery hàng ngày & Detail định kỳ theo hạn ngạch |
 | **Công Cụ Thu Thập** | **Playwright**, **HTTPX**, **BeautifulSoup4**, **Selectolax** | Thu thập SSR DOM, Next.js hydration data, Algolia Search API, GraphQL API |
 | **Xử Lý Dữ Liệu & Query**| **DuckDB**, **Polars**, **Pandas**, **NumPy** | Đọc ghi Parquet tốc độ cao, xử lý vector hóa và ép phẳng dữ liệu quy mô lớn |

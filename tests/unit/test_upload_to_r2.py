@@ -1,8 +1,13 @@
 """Unit tests cho script upload_to_r2.py."""
 
 import json
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.upload_to_r2 import (
     _extract_source_from_path,
@@ -71,6 +76,10 @@ def test_resolve_r2_key():
     # URL ledger
     ledger_path = Path("data/topcv/url_ledger/catalog_master.json")
     assert resolve_r2_key(ledger_path, source="topcv") == "url_ledger/topcv/catalog_master.json"
+
+    # Silver dataset key
+    silver_path = Path("data/silver/silver_master_dataset.json")
+    assert resolve_r2_key(silver_path) == "silver/silver_master_dataset.json"
 
 
 def test_extract_source_from_path():

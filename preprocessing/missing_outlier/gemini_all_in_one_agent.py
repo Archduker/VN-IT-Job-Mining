@@ -204,27 +204,42 @@ class GeminiAllInOneAgent:
         return f"{GEMINI_BASE_ENDPOINT}/{self.model_name}:generateContent"
 
     def is_english_job(self, text: str, language_code: Optional[str] = None) -> bool:
-        """Nhận diện tin tuyển dụng bằng tiếng Anh."""
+        """Nhận diện tin tuyển dụng bằng tiếng Anh kết hợp tỷ lệ ký tự dấu tiếng Việt."""
         if language_code and str(language_code).strip().lower() in {"en", "eng", "english"}:
             return True
+        if language_code and str(language_code).strip().lower() in {"vi", "vie", "vietnamese"}:
+            return False
         if not text:
             return False
+
+        # Kiểm tra tỷ lệ ký tự có dấu tiếng Việt
+        vi_chars = set("àáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵđ"
+                       "ÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬÈÉẺẼẸÊẾỀỂỄỆÌÍỈĨỊÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÙÚỦŨỤƯỨỪỬỮỰỲÝỶỸỴĐ")
+        total_letters = sum(1 for c in text if c.isalpha())
+        if total_letters > 0:
+            vi_count = sum(1 for c in text if c in vi_chars)
+            # Nếu có dấu tiếng Việt rõ ràng (>= 2.5% tổng ký tự chữ) -> chắc chắn tiếng Việt
+            if (vi_count / total_letters) >= 0.025:
+                return False
+
         # Kiểm tra từ vựng tiếng Anh đặc trưng
         en_stop_words = {
             "the", "and", "with", "experience", "requirements", "responsibilities",
             "skills", "working", "knowledge", "design", "development", "ability",
-            "years", "team", "strong", "understanding", "degree", "computer", "science"
+            "years", "team", "strong", "understanding", "degree", "computer", "science",
+            "we", "you", "for", "are", "looking"
         }
-        words = re.findall(r"\b[a-z]{3,}\b", text.lower())
+        words = re.findall(r"\b[a-z]{2,}\b", text.lower())
         if not words:
             return False
         en_count = sum(1 for w in words if w in en_stop_words)
-        return (en_count / min(len(words), 80)) >= 0.25
+        return (en_count / min(len(words), 80)) >= 0.20
 
     def enrich_record(
         self,
         record: Dict[str, Any],
         market_anchor: Optional[Dict[str, float]] = None,
+        force_ai: bool = False,
     ) -> Dict[str, Any]:
         """Làm giàu và chuẩn hóa toàn diện 1 bản ghi công việc.
 
@@ -232,6 +247,7 @@ class GeminiAllInOneAgent:
             record: Dict bản ghi (có thể là phẳng hoặc lồng cấp).
             market_anchor: Dict chứa mean_min, mean_max, median_min, median_max
                            tính từ MarketAnchorCalculator cho [platform x seniority].
+            force_ai: Nếu True, bỏ qua bộ lọc 2-tier và luôn gọi Gemini API (nếu có key).
 
         Returns:
             Dict chứa đầy đủ các trường làm giàu:
@@ -307,11 +323,25 @@ class GeminiAllInOneAgent:
         combined_text = f"{job_title}\n{raw_desc}\n{raw_req}".strip()
         is_en = self.is_english_job(combined_text, raw_lang)
 
+        # 2-Tier Decision Gate:
+        # Chỉ gọi GenAI khi thực sự cần:
+        # 1. Cần dịch thuật sang tiếng Việt (is_en == True)
+        # 2. Hoặc các kỹ năng chuyên môn không thể trích xuất qua bộ từ khóa Tier 1 (len == 0)
+        # 3. Hoặc có cờ force_ai
+        prelim_hard_skills: List[str] = []
+        combined_lower = combined_text.lower()
+        for pattern, skill_name in HARD_SKILLS_PATTERNS:
+            if re.search(pattern, combined_lower):
+                if skill_name not in prelim_hard_skills:
+                    prelim_hard_skills.append(skill_name)
+
+        needs_ai = force_ai or is_en or (len(prelim_hard_skills) == 0)
+
         # Gọi Gemini hoặc Heuristic
         enrich_result: Optional[Dict[str, Any]] = None
         imputed_by_gemini = False
 
-        if not self.mock_mode and self.api_key:
+        if not self.mock_mode and self.api_key and needs_ai:
             try:
                 enrich_result = self._call_gemini_api(
                     job_title=job_title,
@@ -395,10 +425,13 @@ class GeminiAllInOneAgent:
             "   - is_saturday_work: true nếu có làm thứ 7, false nếu chỉ làm thứ 2 - thứ 6 / nghỉ thứ 7 và CN, null nếu không đề cập.\n"
             "3. Lương và Tiền tệ:\n"
             "   - Tỷ giá ngoại tệ bắt buộc: 1 USD = 25,400 VND. Nếu lương gốc bằng USD, nhân 25400 để ra VND.\n"
-            "   - Nếu lương ban đầu là 'Thỏa thuận' hoặc rỗng: hãy dự đoán mức lương (salary_min, salary_max) thực tế bằng VND "
-            "dựa trên độ khó của tech stack, kinh nghiệm và neo vào mốc thị trường sau:\n"
-            f"     {anchor_info}\n"
-            "   - Điền salary_source: 'original' nếu có lương gốc, hoặc 'predicted' nếu là lương dự đoán.\n"
+            "   - NGUYÊN TẮC THỰC TẾ (GROUND TRUTH REALISM):\n"
+            "     + Nếu bài đăng ban đầu ghi 'Thỏa thuận', 'Thương lượng', 'Cạnh tranh', hoặc KHÔNG CÓ con số lương trong JD:\n"
+            "       * salary_min: null\n"
+            "       * salary_max: null\n"
+            "       * salary_source: 'negotiable' (hoặc 'competitive')\n"
+            "     + CHỈ điền salary_min và salary_max nếu trong bài đăng CÓ NÊU MỨC LƯƠNG SỐ CỤ THỂ (khi đó nếu trích xuất từ thân JD thì ghi salary_source: 'jd_extracted', nếu có sẵn từ header ghi 'original').\n"
+            "     + TUYỆT ĐỐI KHÔNG BỊA ĐẶT SỐ LƯƠNG GIẢ ĐỊNH KHI JD KHÔNG ĐỀ CẬP.\n"
             "4. Dịch thuật & Bản địa hóa:\n"
             f"   - Tin tuyển dụng này {'LÀ TIẾNG ANH' if is_en else 'LÀ TIẾNG VIỆT'}.\n"
             "   - Nếu là tiếng Anh, BẮT BUỘC DỊCH TOÀN BỘ sang tiếng Việt tự nhiên, chuẩn văn phong tuyển dụng IT Việt Nam:\n"
@@ -437,10 +470,10 @@ class GeminiAllInOneAgent:
             '  "standardized_seniority": "intern" | "fresher" | "junior" | "middle" | "senior" | "lead" | "manager",\n'
             '  "standardized_education": "bachelor" | "master" | "college" | "none",\n'
             '  "is_saturday_work": boolean | null,\n'
-            '  "salary_min": float,\n'
-            '  "salary_max": float,\n'
+            '  "salary_min": float | null,\n'
+            '  "salary_max": float | null,\n'
             '  "salary_currency": "VND",\n'
-            '  "salary_source": "original" | "predicted",\n'
+            '  "salary_source": "original" | "jd_extracted" | "negotiable" | "competitive",\n'
             '  "translated_title": "string",\n'
             '  "translated_description": "string",\n'
             '  "translated_requirements": "string",\n'
@@ -469,6 +502,42 @@ class GeminiAllInOneAgent:
         raw_json_str = data["candidates"][0]["content"]["parts"][0]["text"]
         parsed = json.loads(raw_json_str)
         return parsed
+
+    def _extract_hidden_salary(self, text: str) -> Optional[Tuple[float, float]]:
+        """Quét tìm dải lương ẩn trong văn bản JD (ví dụ: 'thu nhập từ 15-25 triệu', 'lương 1000 - 2000 usd')."""
+        if not text:
+            return None
+        # Mẫu 1: X - Y triệu / tr / m
+        m_vnd = re.search(
+            r"(?:lương|thu\s*nhập|mức\s*lương|salary|package)\s*[:–-]?\s*(?:lên\s*đến|từ)?\s*(\d+(?:[.,]\d+)?)\s*(?:[-–tođến~]+\s*(\d+(?:[.,]\d+)?))?\s*(?:triệu|tr|m)\b",
+            text,
+            flags=re.I,
+        )
+        if m_vnd:
+            try:
+                v1 = float(m_vnd.group(1).replace(",", ".")) * 1000000.0
+                v2 = float(m_vnd.group(2).replace(",", ".")) * 1000000.0 if m_vnd.group(2) else v1
+                if 3000000.0 <= v1 <= 300000000.0:
+                    return (min(v1, v2), max(v1, v2))
+            except Exception:
+                pass
+
+        # Mẫu 2: USD ($X - $Y hoặc X - Y USD)
+        m_usd = re.search(
+            r"(?:lương|thu\s*nhập|salary)\s*[:–-]?\s*(?:lên\s*đến|từ)?\s*\$?(\d+(?:[.,]\d+)?)\s*(?:[-–tođến~]+\s*\$?(\d+(?:[.,]\d+)?))?\s*(?:usd|\$)\b",
+            text,
+            flags=re.I,
+        )
+        if m_usd:
+            try:
+                u1 = float(m_usd.group(1).replace(",", ".")) * self.usd_vnd_rate
+                u2 = float(m_usd.group(2).replace(",", ".")) * self.usd_vnd_rate if m_usd.group(2) else u1
+                if 5000000.0 <= u1 <= 500000000.0:
+                    return (round(min(u1, u2), -4), round(max(u1, u2), -4))
+            except Exception:
+                pass
+
+        return None
 
     def _heuristic_fallback(
         self,
@@ -584,11 +653,11 @@ class GeminiAllInOneAgent:
         elif has_sat_negative or has_mon_fri:
             sat_work = False
 
-        # 8. Xử lý Lương & Quy đổi tiền tệ & Dự đoán thị trường
-        sal_min: float = 0.0
-        sal_max: float = 0.0
+        # 8. Xử lý Lương & Quy đổi tiền tệ & Nhận diện lương ẩn (Ground-Truth Realism)
+        sal_min: Optional[float] = None
+        sal_max: Optional[float] = None
         sal_curr: str = "VND"
-        sal_source: str = "original"
+        sal_source: str = "negotiable"
 
         has_orig_sal = (
             raw_sal_min is not None
@@ -610,27 +679,18 @@ class GeminiAllInOneAgent:
             sal_curr = "VND"
             sal_source = "original"
         else:
-            # Dự đoán theo Market Anchor
-            sal_source = "predicted"
-            sal_curr = "VND"
-            if market_anchor and market_anchor.get("mean_min") and market_anchor.get("mean_max"):
-                base_min = market_anchor["mean_min"]
-                base_max = market_anchor["mean_max"]
+            # Quét tìm dải lương ẩn trong toàn bộ nội dung văn bản JD
+            hidden_sal = self._extract_hidden_salary(full_text)
+            if hidden_sal:
+                sal_min, sal_max = hidden_sal
+                sal_curr = "VND"
+                sal_source = "jd_extracted"
             else:
-                # Default anchor fallback theo seniority
-                default_anchors = {
-                    "intern": (3000000.0, 6000000.0),
-                    "fresher": (8000000.0, 15000000.0),
-                    "junior": (12000000.0, 22000000.0),
-                    "middle": (20000000.0, 35000000.0),
-                    "senior": (35000000.0, 60000000.0),
-                    "lead": (50000000.0, 80000000.0),
-                    "manager": (55000000.0, 95000000.0),
-                }
-                base_min, base_max = default_anchors.get(sen, (20000000.0, 35000000.0))
-
-            sal_min = round(base_min, -4)
-            sal_max = round(base_max, -4)
+                sal_min = None
+                sal_max = None
+                sal_curr = "VND"
+                is_comp = any(w in raw_sal_text.lower() for w in ["cạnh tranh", "competitive"])
+                sal_source = "competitive" if is_comp else "negotiable"
 
         # 9. Dịch thuật & Tiêu đề
         trans_title = job_title
@@ -695,24 +755,23 @@ class GeminiAllInOneAgent:
         if sat_work is not None and not isinstance(sat_work, bool):
             sat_work = None
 
-        # 3. Salary (Zero Null Guarantee)
-        sal_min = enrich_result.get("salary_min")
-        sal_max = enrich_result.get("salary_max")
-        sal_source = str(enrich_result.get("salary_source") or "predicted").strip().lower()
+        # 3. Salary (Ground-Truth Realism: Giữ nguyên null cho tin thỏa thuận)
+        raw_sal_min = enrich_result.get("salary_min")
+        raw_sal_max = enrich_result.get("salary_max")
+        sal_source = str(enrich_result.get("salary_source") or "negotiable").strip().lower()
 
-        if sal_min is None or (isinstance(sal_min, float) and math.isnan(sal_min)) or sal_min <= 0:
-            if market_anchor and market_anchor.get("mean_min"):
-                sal_min = market_anchor["mean_min"]
-            else:
-                sal_min = 15000000.0
-            sal_source = "predicted"
-
-        if sal_max is None or (isinstance(sal_max, float) and math.isnan(sal_max)) or sal_max < sal_min:
-            if market_anchor and market_anchor.get("mean_max"):
-                sal_max = max(sal_min, market_anchor["mean_max"])
-            else:
-                sal_max = sal_min * 1.5
-            sal_source = "predicted"
+        if raw_sal_min is not None and not (isinstance(raw_sal_min, float) and math.isnan(raw_sal_min)) and float(raw_sal_min) > 0:
+            sal_min_val: Optional[float] = float(raw_sal_min)
+            sal_max_val: Optional[float] = float(raw_sal_max if raw_sal_max is not None and not (isinstance(raw_sal_max, float) and math.isnan(raw_sal_max)) and float(raw_sal_max) >= sal_min_val else sal_min_val)
+            is_neg: bool = False
+            if sal_source in {"predicted", "negotiable", "competitive"}:
+                sal_source = "explicit_range"
+        else:
+            sal_min_val = None
+            sal_max_val = None
+            is_neg = True
+            if sal_source not in {"competitive", "negotiable"}:
+                sal_source = "negotiable"
 
         # 4. Translation & Texts
         trans_title = (
@@ -761,10 +820,11 @@ class GeminiAllInOneAgent:
                 "is_saturday_work": sat_work,
             },
             "salary": {
-                "salary_min": float(sal_min),
-                "salary_max": float(sal_max),
+                "salary_min": sal_min_val,
+                "salary_max": sal_max_val,
                 "salary_currency": "VND",
                 "salary_source": sal_source,
+                "is_salary_negotiable": is_neg,
             },
             "jd_text": {
                 "language": "vi",  # Đã dịch hoàn toàn sang tiếng Việt

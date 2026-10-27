@@ -52,9 +52,12 @@ def load_input_records(file_path: Union[str, Path]) -> List[Dict[str, Any]]:
     if not p.exists():
         # Thử tìm các file thay thế phổ biến trong staging
         fallback_paths = [
-            Path("data/staging/normalized_jobs.json"),
-            Path("data/staging/validated_clean_jobs.json"),
             Path("data/curated/golden_master.json"),
+            Path("data/staging/normalized_jobs.json"),
+            Path("data/missing_outlier/raw_for_normalization.json"),
+            Path("data/staging/raw_for_normalization.json"),
+            Path("data/staging/staging_normalized_all_sources.json"),
+            Path("data/staging/validated_clean_jobs.json"),
         ]
         for fb in fallback_paths:
             if fb.exists():
@@ -98,6 +101,7 @@ def run_enrichment_pipeline(
     api_key: Optional[str] = None,
     model_name: Optional[str] = None,
     force: bool = False,
+    force_ai: bool = False,
 ) -> Dict[str, Any]:
     """Hàm điều phối toàn bộ quá trình làm giàu dữ liệu."""
     start_time = time.time()
@@ -117,7 +121,12 @@ def run_enrichment_pipeline(
     # 2. Khởi tạo Checkpoint Store
     ckpt_path = Path(checkpoint_file)
     ckpt_store = CheckpointStore(ckpt_path)
-    processed_ids = set() if force else ckpt_store.get_processed_ids()
+    if force:
+        logger.info("Cờ force=True: Xóa trắng checkpoint cũ để chạy lại từ đầu...")
+        ckpt_store.clear()
+        processed_ids = set()
+    else:
+        processed_ids = ckpt_store.get_processed_ids()
     logger.info("Số bản ghi đã có trong checkpoint: %d", len(processed_ids))
 
     # Lọc danh sách bản ghi cần xử lý
@@ -145,7 +154,7 @@ def run_enrichment_pipeline(
 
         anchor = anchor_calc.get_anchor(platform, sen)
         try:
-            enriched = agent.enrich_record(rec, market_anchor=anchor)
+            enriched = agent.enrich_record(rec, market_anchor=anchor, force_ai=force_ai)
             formatted = TargetSchemaFormatter.format_record(rec, enriched_data=enriched)
             ckpt_store.append(formatted)
             return formatted
@@ -177,8 +186,16 @@ def run_enrichment_pipeline(
                     logger.info("Tiến độ: [%d/%d] bản ghi hoàn thành", idx, len(pending_records))
 
     # 5. Xuất Golden Master nếu được chỉ định
-    all_checkpoints = ckpt_store.load_all()
-    logger.info("Tổng số bản ghi trong checkpoint sau khi xử lý: %d", len(all_checkpoints))
+    raw_checkpoints = ckpt_store.load_all()
+    unique_map: Dict[str, Any] = {}
+    for r in raw_checkpoints:
+        jid = r.get("job_id_global") or r.get("id")
+        if jid:
+            unique_map[jid] = r
+        else:
+            unique_map[f"id_{id(r)}"] = r
+    all_checkpoints = list(unique_map.values())
+    logger.info("Tổng số bản ghi duy nhất trong checkpoint sau khi xử lý: %d", len(all_checkpoints))
 
     if golden_output:
         g_path = Path(golden_output)
@@ -216,6 +233,7 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument("--workers", type=int, default=4, help="Số worker song song")
     parser.add_argument("--model", default=None, help="Tên model Gemini")
     parser.add_argument("--force", action="store_true", help="Chạy lại toàn bộ không bỏ qua checkpoint")
+    parser.add_argument("--force-ai", action="store_true", help="Ép buộc gọi Gemini API cho tất cả bản ghi (bỏ qua 2-Tier filter)")
     return parser.parse_args(args)
 
 
@@ -231,6 +249,7 @@ def main(args: Optional[List[str]] = None) -> int:
         workers=parsed.workers,
         model_name=parsed.model,
         force=parsed.force,
+        force_ai=parsed.force_ai,
     )
     return 0 if res["errors_count"] == 0 else 1
 

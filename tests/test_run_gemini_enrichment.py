@@ -57,10 +57,17 @@ def test_run_gemini_enrichment_mock_pipeline(tmp_path: Path, sample_jobs_file: P
     assert golden_file.exists()
     golden_data = json.loads(golden_file.read_text(encoding="utf-8"))
     assert len(golden_data) == 5
-    for rec in golden_data:
+    for idx, rec in enumerate(golden_data):
         assert len(rec.keys()) == 11
-        assert rec["salary"]["salary_min"] > 0
-        assert rec["salary"]["salary_source"] in {"original", "predicted"}
+        if idx == 0:
+            assert rec["salary"]["salary_min"] == 25000000.0
+            assert rec["salary"]["salary_source"] == "original"
+            assert rec["salary"]["is_salary_negotiable"] is False
+        else:
+            assert rec["salary"]["salary_min"] is None
+            assert rec["salary"]["salary_max"] is None
+            assert rec["salary"]["salary_source"] == "negotiable"
+            assert rec["salary"]["is_salary_negotiable"] is True
 
     # Kiểm tra tệp Flat
     assert flat_file.exists()
@@ -98,11 +105,13 @@ def test_main_cli_execution(tmp_path: Path, sample_jobs_file: Path):
     """Kiểm tra thực thi hàm main thông qua CLI args."""
     ckpt_file = tmp_path / "cli_checkpoint.jsonl"
     golden_file = tmp_path / "cli_golden.json"
+    flat_file = tmp_path / "cli_flat.json"
 
     exit_code = main([
         "--input", str(sample_jobs_file),
         "--checkpoint", str(ckpt_file),
         "--golden-output", str(golden_file),
+        "--flat-output", str(flat_file),
         "--mock",
         "--limit", "3",
     ])
@@ -111,3 +120,6 @@ def test_main_cli_execution(tmp_path: Path, sample_jobs_file: Path):
     assert golden_file.exists()
     golden_data = json.loads(golden_file.read_text(encoding="utf-8"))
     assert len(golden_data) == 3
+    assert flat_file.exists()
+    flat_data = json.loads(flat_file.read_text(encoding="utf-8"))
+    assert len(flat_data) == 3

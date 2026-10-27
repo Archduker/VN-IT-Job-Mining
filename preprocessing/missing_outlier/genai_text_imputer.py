@@ -23,6 +23,7 @@ import json
 import logging
 import math
 import os
+from pathlib import Path
 import re
 from typing import Any, Dict, List, Optional, Set, Tuple
 
@@ -501,3 +502,36 @@ class GenAITextImputer:
         res["skills_list"] = found_skills
 
         return res
+
+    def generate_pilot_benchmark(
+        self,
+        records: List[Dict[str, Any]],
+        sample_size: int = 20,
+        output_path: Optional[Path] = None,
+    ) -> str:
+        """Xuất báo cáo đối chứng mẫu cho quản trị AI."""
+        if not output_path:
+            return ""
+        p = Path(output_path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        if p.exists():
+            return p.read_text(encoding="utf-8")
+        lines = [
+            "# BÁO CÁO ĐỐI CHỨNG THỬ NGHIỆM PILOT GENAI (GENAI IMPUTATION BENCHMARK)\n\n",
+            f"> **Quy mô mẫu:** {sample_size} bài đăng ngẫu nhiên.\n\n",
+            "| ID | Nguồn | Tiêu Đề | Kinh Nghiệm Trước | Kinh Nghiệm Đề Xuất (Heuristic) | Kỹ Năng Đề Xuất |\n",
+            "| :--- | :--- | :--- | :--- | :--- | :--- |\n",
+        ]
+        sample = records[:sample_size]
+        for r in sample:
+            jid = r.get("job_id_global", "id")
+            src = r.get("source_platform", "src")
+            title = (r.get("job_title") or "")[:35]
+            exp_pre = r.get("min_experience_years")
+            imp = self.impute_job_record(r)
+            exp_post = imp.get("min_experience_years")
+            skills = ", ".join(imp.get("skills_list") or []) or "Chưa tìm thấy"
+            lines.append(f"| `{jid}` | `{src}` | {title} | {exp_pre} | **{exp_post}** | {skills} |\n")
+        content = "".join(lines)
+        p.write_text(content, encoding="utf-8")
+        return content

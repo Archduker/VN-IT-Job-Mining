@@ -72,7 +72,7 @@ style: |
 # KIẾN TRÚC TIỀN XỬ LÝ DỮ LIỆU ĐA NGUỒN & XÂY DỰNG BỘ DỮ LIỆU VÀNG
 ### Đề án: Phân tích thị trường lao động IT & Kỹ năng nghề nghiệp tại Việt Nam
 **Môn học:** Khai phá Dữ liệu (Data Mining)  
-**Quy mô:** 10,024 bài đăng thô $\rightarrow$ 8,967 bài đăng Golden Master  
+**Quy mô:** 10,456 bài đăng thô $\rightarrow$ 8,959 bài đăng Golden Master  
 
 <div style="margin-top: 40px; font-size: 0.8em; color: #94a3b8;">
   <span>Học viên thực hiện: Nhóm Nghiên cứu VN-IT-Job-Mining</span><br>
@@ -80,20 +80,20 @@ style: |
 </div>
 
 <!-- note:
-Chào thầy cô và các bạn. Hôm nay nhóm em xin trình bày về Kiến trúc Tiền xử lý Dữ liệu Đa nguồn cho đề tài Phân tích thị trường việc làm IT tại Việt Nam. Trọng tâm của bài báo cáo là phương pháp luận khoa học và giải pháp kỹ thuật để chuyển đổi hơn 10.000 bài đăng thô từ 8 sàn tuyển dụng lớn thành Bộ Dữ Liệu Vàng 8.967 bản ghi đạt chuẩn 100% PURE JSON RFC 8259.
+Chào thầy cô và các bạn. Hôm nay nhóm em xin trình bày về Kiến trúc Tiền xử lý Dữ liệu Đa nguồn cho đề tài Phân tích thị trường việc làm IT tại Việt Nam. Trọng tâm của bài báo cáo là phương pháp luận khoa học và giải pháp kỹ thuật để chuyển đổi 10.456 bài đăng thô từ 8 sàn công nghệ lớn thành Bộ Dữ Liệu Vàng 8.959 bản ghi đạt chuẩn 100% PURE JSON RFC 8259.
 -->
 
 ---
 
 ## 1. Bối Cảnh Thực Tế & Thách Thức Dữ Liệu IT
 
-* **Quy mô thu thập:** 10,024 bài đăng từ **8 sàn tuyển dụng hàng đầu** (TopCV, TopDev, VietnamWorks, ITviec, CareerViet, Vieclam24h, Glints, JobsGO).
+* **Quy mô thu thập:** 10,456 bài đăng từ **8 sàn tuyển dụng hàng đầu** (TopCV, TopDev, VietnamWorks, ITviec, CareerViet, Vieclam24h, Glints, JobsGO).
 * **Đặc tính dữ liệu thực tế (Real-world Data Sins):**
   * **Cấu trúc dị thể nặng:** JSON lồng nhau 3-4 tầng, mảng tags, detail-box HTML, JSON-LD ngầm.
   * **Lương che giấu & Lương ẩn:** 65% ghi *"Thỏa thuận"*, nhưng lương thực tế nằm rải rác trong câu chữ mô tả công việc (JD).
   * **Sneaky Nulls:** 9+ dạng null trá hình (`"thỏa thuận"`, `"cạnh tranh"`, `0`, `[]`, `"null"`).
   * **Ngoại lai nhập liệu:** Bắt nhầm số điện thoại (SĐT `0243.936...` thành 243 triệu VND) hoặc chuỗi che giấu (`1*** USD`).
-  * **Trùng lặp xuyên sàn:** Cùng 1 vị trí tuyển dụng nhưng được HR đăng đồng thời lên 3-4 sàn khác nhau.
+  * **Trùng lặp xuyên sàn:** Cùng 1 vị trí tuyển dụng nhưng được HR đăng đồng thời lên 3-4 sàn khác nhau (768 cụm trùng).
 
 <!-- note:
 Khi tiếp cận dữ liệu việc làm thực tế tại Việt Nam, thách thức lớn nhất không phải là cào dữ liệu, mà là 'bệnh án' của dữ liệu thô. 65% bài đăng ghi lương thỏa thuận nhưng thực chất nhà tuyển dụng đã viết mức lương trong phần mô tả. Ngoài ra, các giá trị null giả mạo như số 0, chuỗi 'thỏa thuận' và lỗi bóc nhầm số điện thoại liên hệ thành lương hàng trăm triệu đòi hỏi một quy trình xử lý cực kỳ chặt chẽ.
@@ -103,29 +103,29 @@ Khi tiếp cận dữ liệu việc làm thực tế tại Việt Nam, thách th
 
 ## 2. Kiến Trúc Pipeline Hiện Đại & Ranh Giới Đanh Thép
 
-Quy trình tiền xử lý được chuẩn hóa theo **CRISP-DM nâng cấp ELT** với **4 Giai đoạn liên hoàn**:
+Quy trình tiền xử lý được chuẩn hóa theo **CRISP-DM nâng cấp ELT** với **5 Giai đoạn liên hoàn**:
 
 ```text
 +----------------------------------------------------------------------------------------------------+
 | [GĐ 1: INTEGRATION]       --> [GĐ 2: TRANSFORMATION]    --> [GĐ 3: MISSING & OUTLIER]              |
 | * Ép phẳng JSON 8 sàn         * Cascade Salary Parser       * Bóc trần 9+ Sneaky Nulls (MNAR)      |
 | * Schema Mapping 8 nhóm       * Quy đổi USD/SGD -> VND      * IQR & Winsorization P1-P99           |
-| * Khóa `job_id_global`        * ISO 8601 & Parse Năm KN     * Gemini All-in-One + Market Anchor    |
+| * Khóa `job_id_global`        * ISO 8601 & Parse Năm KN     * Cyclic Loop & Heuristic Scrubber     |
 +----------------------------------------------------------------------------------------------------+
                                                │
                                                ▼
 +----------------------------------------------------------------------------------------------------+
-| [GĐ 4: DEEP NORMALIZATION & TARGET SCHEMA]  --> [GĐ 5: QA PIPELINE AUDIT (5/5 PASSED)]             |
-| * Khử trùng Cosine Sim >= 0.82 (loại 1,057)     * Check 1: Dòng dõi & Lưu vết File                 |
-| * Target Schema Chuẩn 11 Root Keys              * Check 2: 100% PURE JSON RFC 8259 (Zero NaN)      |
-| * 3-Tier Skills (Hard / Soft / Domain)          * Check 3-5: Golden Contract & Outlier Governance  |
+| [GĐ 4: DEEP NORMALIZATION] --> [GĐ 4.5: GEMINI ALL-IN-ONE AGENT] --> [GĐ 5: QA AUDIT (5/5 PASSED)]  |
+| * Khử trùng Cosine >= 0.82     * 2-Tier Decision Gate (Tiết kiệm)    * Check 1: Dòng dõi & Lưu vết   |
+| * Gộp 1,136 tin trùng (768 cụm)* Ground-Truth Realism (Giữ null MNAR)* Check 2: 100% PURE JSON       |
+| * Loại bỏ 361 tin Stub JDs     * Market Anchor Calculator 4 cấp      * Check 3-5: Golden Contract    |
 +----------------------------------------------------------------------------------------------------+
 ```
 
 * **Khế ước Ranh giới đanh thép (Ironclad Boundaries):** Bước trước không lấn sân bước sau (Integration cấm parse lương, Transformation cấm xóa outlier).
 
 <!-- note:
-Để tránh tình trạng chồng chéo chức năng giữa các module, chúng em thiết lập Ma trận Ranh giới đanh thép. Giai đoạn 1 chỉ thuần túy tích hợp cấu trúc, giai đoạn 2 chuyển đổi định dạng và bóc tách định lượng, giai đoạn 3 xử lý khuyết thiếu thống kê và ngoại lai, và giai đoạn 4 chuẩn hóa sâu để đóng gói Bộ Dữ Liệu Vàng.
+Hệ thống tiền xử lý được thiết kế theo 5 giai đoạn liên hoàn: Giai đoạn 1 tích hợp cấu trúc, Giai đoạn 2 chuyển hóa định dạng & Cascade regex, Giai đoạn 3 xử lý khuyết thiếu và ngoại lai thống kê, Giai đoạn 4 chuẩn hóa sâu & khử trùng lặp thực thể, và Giai đoạn 4.5 ứng dụng Gemini All-in-One với cơ chế 2-Tier Decision Gate thông minh, bảo toàn Ground-Truth Realism.
 -->
 
 ---
@@ -243,89 +243,74 @@ Tại sao chúng em KHÔNG XÓA DÒNG khi gặp outlier? Vì phương pháp lu�
 
 ---
 
-## 9. Giai Đoạn 3.5: Gemini All-in-One Preprocessing Agent
-
-* **Sứ mệnh:** Đọc hiểu ngữ nghĩa sâu văn bản JD để giải quyết 4 bài toán lớn trong **một lần duyệt duy nhất**:
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.8em;">
-<div>
-
-### 1. Phân Loại Kỹ Năng 3 Lớp
-* **Hard Skills:** Giữ nguyên tiếng Anh chuẩn (Python, Docker, AWS, React, Kubernetes).
-* **Soft Skills:** Tiếng Việt (Giao tiếp, Làm việc nhóm, Giải quyết vấn đề).
-* **Domain Skills:** Tiếng Việt (Fintech, E-commerce, EdTech, Logistics).
-
-### 2. Làm Giàu Yêu Cầu (Requirements)
-* `experience_years`: Chuẩn hóa số thực (0.0 cho Fresher/Intern).
-* `standardized_seniority`: 7 bậc chuẩn.
-* `standardized_education`: Đại học, Cao đẳng, Thạc sĩ, Không yêu cầu.
-* `is_saturday_work`: Khai phá trạng thái làm T7.
-
-</div>
-<div>
-
-### 3. Dự Đoán Lương Thị Trường Neo
-* Neo vào ma trận Mean/Median `[Platform x Seniority]`.
-* Đảm bảo **Zero-Null** có căn cứ (`salary_source = 'predicted'`).
-
-### 4. Bản Địa Hóa & Dịch Thuật
-* Dịch tiêu đề, JD, yêu cầu, quyền lợi từ tiếng Anh sang tiếng Việt thống nhất.
-
-### 5. Resumable Checkpoint Store
-* Lưu checkpoint JSONL từng dòng, tự động resume khi gặp sự cố mạng hoặc quota limit.
-
-</div>
-</div>
-
-<!-- note:
-Giai đoạn 3.5 là bước đột phá AI của hệ thống. Thay vì gọi nhiều prompt riêng lẻ tốn kém, nhóm xây dựng Gemini All-in-One Agent giải quyết 4 nhiệm vụ cùng lúc: phân loại kỹ năng 3 lớp Hard-Soft-Domain, trích xuất yêu cầu học vấn và làm thứ 7, dự đoán lương thị trường có cơ sở, và dịch thuật các JD tiếng Anh về tiếng Việt. Đi kèm là module CheckpointStore giúp tiến trình có thể tạm dừng và chạy tiếp bất cứ lúc nào.
--->
-
----
-
-## 10. Giai Đoạn 3.5: Market Anchor Calculator
-
-* **Vấn đề của LLM thuần túy:** Nếu để LLM tự đoán mức lương, nguy cơ xảy ra hiện tượng **ảo giác (Hallucination)** là rất cao!
-* **Giải pháp: Khung Tham Chiếu Phân Tầng 4 Cấp (Hierarchical Market Anchors)**
-
-```text
-[Cấp 1: Khớp chính xác cả Sàn Tuyển Dụng & Cấp Bậc] (nếu n >= 15 mẫu có lương thực)
-        │ (Nếu thiếu mẫu)
-        ▼
-[Cấp 2: Khớp theo Cấp Bậc toàn thị trường] (Seniority Overall Median)
-        │ (Nếu không rõ cấp bậc)
-        ▼
-[Cấp 3: Khớp theo Trung vị Sàn Tuyển Dụng] (Platform Overall Median)
-        │ (Fallback cuối cùng)
-        ▼
-[Cấp 4: Khung Lương Sàn Lý Thuyết IT Việt Nam] (Intern: 3-6M, Junior: 10-18M, Senior: 30-55M...)
-```
-
-* **Kết quả:** Lương được dự đoán luôn dao động trong **vùng an toàn thực tế của thị trường IT Việt Nam**, bảo toàn độ tin cậy khoa học.
-
-<!-- note:
-Để khống chế tuyệt đối hiện tượng ảo giác của mô hình ngôn ngữ lớn, nhóm phát minh cơ chế Market Anchor Calculator. Mọi dự đoán lương của Gemini đều phải lấy mỏ neo từ ma trận trung vị thực tế của sàn và cấp bậc. Nếu bài đăng là Junior trên TopCV, Gemini sẽ phải neo xung quanh mức 12 đến 20 triệu chứ không thể tùy tiện đoán 50 triệu hay 5 triệu.
--->
-
----
-
-## 11. Giai Đoạn 4: Khử Trùng Lặp Ngữ Nghĩa Xuyên Sàn
+## 9. Giai Đoạn 4: Khử Trùng Lặp Ngữ Nghĩa Xuyên Sàn (Deduplication)
 
 * **Bản chất bài toán:** 1 vị trí tuyển dụng thường được nhà tuyển dụng đăng chéo trên TopCV, VietnamWorks, TopDev và ITviec với tiêu đề hơi khác nhau.
 * **Quy trình Khử trùng lặp 2 Bước (Entity Resolution Pipeline):**
   1. **Lọc thô (Blocking):** Nhóm bài đăng theo `normalized_company` và `province` địa phương để giảm độ phức tạp từ $\mathcal{O}(N^2)$ xuống $\mathcal{O}(K \cdot M^2)$.
   2. **So khớp ngữ nghĩa sâu:** Tính khoảng cách **Cosine Similarity** trên vector nhúng văn bản mô tả công việc (Text Embeddings):
      $$\text{Cosine Sim}(u, v) = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|} \ge 0.82$$
-  3. **Hợp nhất Bản ghi Vàng (Golden Record Selection):** Giữ lại bài đăng có độ phong phú thông tin cao nhất.
-* **Kết quả thực tế:** Phát hiện và loại bỏ chính xác **1,057 bài đăng trùng lặp** ($10.54\%$), bảo đảm tính nguyên bản cho các thuật toán Data Mining.
+  3. **Hợp nhất Bản ghi Vàng (Golden Record Selection):** Giữ lại bài đăng có độ chi tiết cao nhất.
+* **Kết quả thực tế:**
+  * Phát hiện và gộp chính xác **1,136 bài đăng trùng lặp trong 768 cụm** xuyên sàn ($10.86\%$).
+  * Loại trừ **361 tin Stub JDs** quá ngắn (< 30 từ), đưa dữ liệu về **8,959 bản ghi tinh hoa**.
 
 <!-- note:
-Một đóng góp quan trọng ở Bước 4 là thuật toán khử trùng lặp xuyên sàn. Để không phải so sánh chéo 10.000 x 10.000 cặp bản ghi, chúng em dùng kỹ thuật Blocking theo tên công ty và tỉnh thành. Sau đó áp dụng Cosine Similarity trên vector ngữ nghĩa với ngưỡng thực nghiệm 0.82. Kết quả là hệ thống đã gộp thành công 1.057 bài đăng trùng chéo giữa các sàn.
+Ở Bước 4, hệ thống giải quyết triệt để bài toán trùng lặp xuyên sàn. Để không phải tính toán 50 triệu cặp, chúng em dùng Blocking gom cụm công ty và địa phương, sau đó đo Cosine Similarity ngưỡng 0.82. Kết quả là gộp thành công 1.136 bài trùng trong 768 cụm và loại bỏ 361 tin rác stub JD.
 -->
 
 ---
 
-## 12. Giai Đoạn 4: Target Schema Chuẩn 11 Khóa Tinh Gọn
+## 10. Giai Đoạn 4.5: Gemini All-in-One Agent & 2-Tier Decision Gate
+
+* **Sứ mệnh:** Đọc hiểu ngữ nghĩa sâu văn bản JD kết hợp cơ chế kiểm soát chi phí thông minh:
+* **Bộ Lọc Quyết Định 2 Tầng (2-Tier Decision Gate):**
+  * **Tier 1 (Heuristic Engine):** Quét nhanh Hard Skills qua bộ từ khóa công nghệ không tốn token.
+  * **Tier 2 (Gemini 1.5 Flash):** Chỉ kích hoạt khi: (1) Cần dịch thuật JD tiếng Anh sang tiếng Việt (`is_english_job` với dấu tiếng Việt < 2.5%), (2) Tier 1 không tìm thấy skill (`len == 0`), hoặc (3) Bật cờ `--force-ai`.
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.78em;">
+<div>
+
+### 4 Nhiệm Vụ Single-Pass của Gemini:
+1. **Phân loại 3 lớp:** Hard skills (EN), Soft & Domain skills (VN).
+2. **Làm giàu yêu cầu:** Bổ sung học vấn, kinh nghiệm, làm T7.
+3. **Bản địa hóa:** Dịch tiêu đề, JD, quyền lợi sang tiếng Việt.
+4. **Dự đoán lương:** Neo theo ma trận `[Platform x Seniority]`.
+
+</div>
+<div>
+
+### Cơ Chế Phục Hồi & Tối Ưu:
+* **Checkpoint Store (JSONL):** Tự động lưu từng dòng, phục hồi tức thì khi mất mạng hoặc quota limit.
+* **Độc lập Offline:** Hỗ trợ Fallback Heuristic và Mock Mode không cần internet/API key.
+
+</div>
+</div>
+
+<!-- note:
+Giai đoạn 4.5 là bước đột phá AI với cơ chế 2-Tier Decision Gate. Để không lãng phí token cho 10.000 bài, Tier 1 Heuristic quét từ khóa trước. Chỉ khi bài viết bằng tiếng Anh cần dịch thuật hoặc không bóc được kỹ năng thì Gemini mới được kích hoạt. Đi kèm là CheckpointStore giúp tiến trình bền bỉ chạy tiếp bất cứ lúc nào.
+-->
+
+---
+
+## 11. Giai Đoạn 4.5: Ground-Truth Realism & Market Anchor
+
+* **Vấn đề ảo giác của LLM:** Nếu để LLM tự đoán lương, nguy cơ sinh số ảo rất cao!
+* **Giải pháp: Khung Mỏ Neo Phân Tầng 4 Cấp (Market Anchor Calculator):**
+  * *Cấp 1:* Trung vị thực tế của cặp `[Sàn Tuyển Dụng x Cấp Bậc]` ($N \ge 15$ mẫu).
+  * *Cấp 2:* Trung vị cấp bậc toàn thị trường $\rightarrow$ *Cấp 3:* Trung vị toàn sàn $\rightarrow$ *Cấp 4:* Khung sàn lý thuyết IT (Intern 3-6M, Junior 12-20M, Senior 35-55M...).
+* **Nguyên tắc Tôn trọng Thực tế Tuyệt đối (Ground-Truth Realism):**
+  * **Bảo toàn cơ chế MNAR:** Nếu bài đăng gốc ghi *"Thỏa thuận"* và không có lương cụ thể trong JD, hệ thống **bảo toàn nguyên trạng**:
+    $$\text{salary\_min} = \text{null}, \quad \text{salary\_max} = \text{null}, \quad \text{is\_salary\_negotiable} = \text{True}$$
+  * Tuyệt đối **không bịa đặt số liệu giả mạo** khi bài đăng không có cơ sở!
+
+<!-- note:
+Chúng em đề cao nguyên tắc Ground-Truth Realism: nếu một bài đăng thực sự là lương thỏa thuận, hệ thống sẽ bảo toàn null kèm cờ is_salary_negotiable = True, chứ không bịa đặt số lương giả mạo. Đồng thời, Market Anchor Calculator 4 cấp đảm bảo mọi dự đoán đều nằm vững chắc trong biên độ trung vị thực tế của thị trường.
+-->
+
+---
+
+## 12. Giai Đoạn 5: Target Schema Chuẩn 11 Khóa Tinh Gọn
 
 Toàn bộ các trường trung gian, cờ kỹ thuật và cột thô `raw_*` được loại bỏ hoàn toàn, đóng gói dữ liệu về **11 Khóa Gốc Chuẩn Mực**:
 
@@ -337,16 +322,16 @@ Toàn bộ các trường trung gian, cờ kỹ thuật và cột thô `raw_*` �
   "job_info": { "title": "Senior Java Backend Engineer", "job_family": "backend", "work_type": "full_time", "is_remote": false },
   "company": { "name": "FPT Software", "industry": "IT - Phần mềm", "size": "1000+" },
   "locations": [ { "province": "Hà Nội", "district": "Cầu Giấy", "Details_address": "Duy Tân" } ],
-  "salary": { "salary_min": 35000000.0, "salary_max": 50000000.0, "salary_currency": "VND", "salary_source": "original" },
+  "salary": { "salary_min": 35000000.0, "salary_max": 50000000.0, "salary_currency": "VND", "is_salary_negotiable": false, "salary_source": "explicit_range" },
   "skills": { "hard_skills": ["Java", "Spring Boot", "Docker", "Kafka"], "soft_skills": ["Làm việc nhóm"], "domain_skills": ["Fintech"] },
   "requirements": { "experience_years": 4.0, "standardized_seniority": "senior", "standardized_education": "bachelor", "is_saturday_work": false },
-  "jd_text": { "language": "vi", "description": "...", "requirements": "...", "benefits": "..." },
+  "jd_text": { "language": "vi", "description": "...", "requirements": "...", "benefits": ["Thưởng dự án", "Bảo hiểm PVI"] },
   "date": { "posted_date": "2026-10-15", "expired_date": "2026-11-15" }
 }
 ```
 
 <!-- note:
-Sau khi qua TargetSchemaFormatter, bộ dữ liệu đã được lột xác hoàn toàn: không còn bất kỳ cột thô mang tiền tố raw_, không còn các cờ kỹ thuật phục vụ debug. Toàn bộ 8.967 bản ghi đều chuẩn xác 11 khóa ở root level, cấu trúc lồng nhau được tinh giản gọn gàng, sẵn sàng nạp ngay vào DuckDB, Pandas hoặc các mô hình Machine Learning.
+Sau khi qua TargetSchemaFormatter, bộ dữ liệu đã được lột xác hoàn toàn: không còn bất kỳ cột thô mang tiền tố raw_, không còn các cờ kỹ thuật phục vụ debug. Toàn bộ 8.959 bản ghi đều chuẩn xác 11 khóa ở root level, cấu trúc lồng nhau được tinh giản gọn gàng, sẵn sàng nạp ngay vào DuckDB, Pandas hoặc các mô hình Machine Learning.
 -->
 
 ---
@@ -357,14 +342,14 @@ Báo cáo kiểm định chất lượng tự động (`reports/qa/qa_pipeline_r
 
 | Bộ Kiểm Định (Check Suite) | Mục Tiêu Kỹ Thuật | Kết Quả Đo Lường | Trạng Thái |
 | :--- | :--- | :---: | :---: |
-| **Check 1: Lineage & Integrity** | Bảo toàn ID từ F1 sang F2; tỷ lệ khử trùng F2 $\rightarrow$ F3 | $100\%$ ID preserved; Giảm $10.54\%$ trùng | <span class="success">PASSED (0 lỗi)</span> |
+| **Check 1: Lineage & Integrity** | Bảo toàn ID từ F1 sang F2; tỷ lệ khử trùng F2 $\rightarrow$ F3 | $100\%$ ID preserved; Giảm $14.32\%$ mẫu dư thừa | <span class="success">PASSED (0 lỗi)</span> |
 | **Check 2: PURE JSON RFC 8259** | Cấm Parquet/CSV, quét sâu đệ quy tìm hằng số `NaN` | `0` Parquet, `0` NaN (100% null RFC 8259) | <span class="success">PASSED (0 lỗi)</span> |
 | **Check 3: Golden Master Contract** | Khớp 11 root keys, sạch tiền tố phúc lợi, zero `raw_*` | `0` bản ghi vi phạm cấu trúc | <span class="success">PASSED (0 lỗi)</span> |
-| **Check 4: Domain Groups & MNAR** | 10 nhóm nghiệp vụ, bảo toàn MNAR lương thỏa thuận | $100\%$ tuân thủ MNAR & Zero-Null | <span class="success">PASSED (0 lỗi)</span> |
-| **Check 5: Outlier Governance** | Tuân thủ luật chất lượng QR1-QR5, Winsorization | $100\%$ lương nằm trong vùng hợp lệ | <span class="success">PASSED (0 lỗi)</span> |
+| **Check 4: Domain Groups & MNAR** | 10 nhóm nghiệp vụ, bảo toàn MNAR lương thỏa thuận | $100\%$ tuân thủ MNAR & Zero-Null học vấn | <span class="success">PASSED (0 lỗi)</span> |
+| **Check 5: Outlier Governance** | Tuân thủ luật chất lượng QR1-QR5, Winsorization | $100\%$ lương nằm trong vùng hợp lệ [4M - 120M] | <span class="success">PASSED (0 lỗi)</span> |
 
 <!-- note:
-Tính khoa học của đề tài được khẳng định qua Suite kiểm định QA tự động 5/5 PASSED. Chúng em kiểm tra khắt khe chuẩn RFC 8259: không cho phép bất kỳ hằng số NaN nào tồn tại trong JSON. Dòng dõi dữ liệu từ 10.024 bản ghi thô kế thừa chuẩn xác sang 8.967 bản ghi Golden Master, đảm bảo tính toàn vẹn 100%.
+Tính khoa học của đề tài được khẳng định qua Suite kiểm định QA tự động 5/5 PASSED. Chúng em kiểm tra khắt khe chuẩn RFC 8259: không cho phép bất kỳ hằng số NaN nào tồn tại trong JSON. Dòng dõi dữ liệu từ 10.456 bản ghi thô kế thừa chuẩn xác sang 8.959 bản ghi Golden Master, đảm bảo tính toàn vẹn 100%.
 -->
 
 ---
@@ -373,15 +358,16 @@ Tính khoa học của đề tài được khẳng định qua Suite kiểm đ�
 
 | Tiêu Chí Đánh Giá | Dữ Liệu Thô Ban Đầu (Raw) | Bộ Dữ Liệu Vàng (Golden Master) | Mức Độ Cải Thiện |
 | :--- | :---: | :---: | :---: |
-| **Số lượng bản ghi** | 10,024 bản ghi (lẫn trùng lặp) | **8,967 bản ghi độc bản** | Loại bỏ 1,057 tin trùng lặp |
-| **Độ phủ dữ liệu lương** | $35.2\%$ (đa phần thỏa thuận) | **$100.0\%$ (Original + Predicted)** | Tăng trưởng $+64.8\%$ |
-| **Độ lệch phân phối lương (Skewness)** | $> 5.8$ (lệch phải nghiêm trọng) | **$0.42$ (chuẩn hóa Log-scale)** | Đưa về phân phối chuẩn đối xứng |
-| **Độ phủ số năm kinh nghiệm** | $48.5\%$ | **$100.0\%$ (Zero-Null)** | Bù khuyết trọn vẹn qua GenAI |
-| **Chuẩn hóa kỹ năng** | Văn bản thô, lẫn tag rác sàn | **3 lớp độc lập (Hard/Soft/Domain)** | Lọc bỏ 100% portal noise |
+| **Số lượng bản ghi** | 10,456 bản ghi (lẫn trùng lặp) | **8,959 bản ghi độc bản** | Loại bỏ 1,136 bài trùng + 361 stubs |
+| **Bảo toàn lương Ground-Truth** | 65% thỏa thuận bị che giấu | **Bảo toàn MNAR + Dải số minh bạch** | Phân định rõ explicit vs negotiable |
+| **Độ lệch phân phối lương (Skewness)** | $> 4.01$ (lệch phải nghiêm trọng) | **$-0.66$ (chuẩn hóa Log-scale)** | Đưa về phân phối chuẩn đối xứng |
+| **Độ phủ số năm kinh nghiệm** | $48.5\%$ | **$100.0\%$ (Zero-Null)** | Bù khuyết trọn vẹn qua Heuristic/AI |
+| **Chuẩn hóa kỹ năng** | Văn bản thô, lẫn tag rác sàn | **3 lớp độc lập (Hard/Soft/Domain)** | Lọc bỏ 2,173 portal noise tags |
+| **Chuẩn hóa học vấn** | Chuỗi tự do, nhiều ô trống | **8,621 bản ghi chuẩn hóa** | Phân cấp Đại học/Cao đẳng/Thạc sĩ |
 | **Chuẩn hóa địa bàn** | Chuỗi địa chỉ tự do | **Phân cấp Tỉnh/Thành 63 tỉnh** | Thống nhất 100% địa giới |
 
 <!-- note:
-Bảng đối chiếu trước và sau tiền xử lý là minh chứng rõ ràng nhất cho hiệu quả của hệ thống: Tỷ lệ phủ dữ liệu lương và kinh nghiệm đạt mức 100% tuyệt đối, độ lệch Skewness của mức lương từ 5.8 được kéo về mức 0.42 đạt chuẩn phân phối chuẩn, và toàn bộ kỹ năng công nghệ được phân loại rạch ròi 3 lớp.
+Bảng đối chiếu trước và sau tiền xử lý chứng minh hiệu quả toàn diện: từ 10.456 bài thô ban đầu, hệ thống đã tinh gọn về 8.959 bài độc bản, độ lệch phân phối lương Skewness từ 4.01 được đưa về -0.66 gần đối xứng chuẩn, độ phủ kinh nghiệm đạt 100% và 8.621 bài có học vấn chuẩn hóa.
 -->
 
 ---

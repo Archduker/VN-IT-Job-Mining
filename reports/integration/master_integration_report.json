@@ -1,7 +1,7 @@
 {
   "pipeline_phase": "Step 1 - Integration (Header Flat + 8 Groups Canonical)",
   "output_format": "100% JSON (Dual-Form: Grouped & Flat)",
-  "timestamp": "2026-10-27T03:55:40.590268+00:00",
+  "timestamp": "2026-10-27T10:10:52.207210+00:00",
   "total_integrated_records": 10456,
   "total_fields": 37,
   "output_files": {
@@ -612,5 +612,5 @@
       "general_null_diagnosis": "Tỷ lệ trống 36.31% chủ yếu do đặc thù thiết kế form của các sàn không thu thập trường này."
     }
   },
-  "total_duration_seconds": 7.44
+  "total_duration_seconds": 7.74
 }

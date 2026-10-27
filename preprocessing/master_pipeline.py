@@ -39,43 +39,64 @@ logger = logging.getLogger("MasterPipeline")
 
 def run_stage_integration() -> int:
     logger.info("=== GIAI ĐOẠN 1: INTEGRATION (Tích hợp & Khảo sát 8 sàn) ===")
-    from preprocessing.integration.run_integration import main as integration_main
-    res = integration_main()
-    return 0 if res is None else res
+    from preprocessing.integration.run_integration import run_all_integration
+    run_all_integration()
+    return 0
 
 
 def run_stage_transformation() -> int:
     logger.info("=== GIAI ĐOẠN 2: TRANSFORMATION (Chuyển đổi kiểu & Trích xuất lương/ngày) ===")
-    from preprocessing.transformation.run_transformation import main as transformation_main
-    res = transformation_main()
-    return 0 if res is None else res
+    from preprocessing.transformation.run_transformation import SOURCES, run_transformation
+    res = run_transformation(SOURCES)
+    return 0 if res else 1
 
 
 def run_stage_missing_outlier() -> int:
     logger.info("=== GIAI ĐOẠN 3: MISSING VALUES & OUTLIER HANDLING (Xử lý khuyết & Ngoại lai) ===")
-    from preprocessing.missing_outlier.run_missing_outlier import main as missing_outlier_main
-    res = missing_outlier_main()
-    return 0 if res is None else res
+    from preprocessing.missing_outlier.run_missing_outlier import run_missing_outlier_pipeline
+    res = run_missing_outlier_pipeline()
+    return 0 if res else 1
 
 
-def run_stage_gemini_enrichment(mock_mode: bool = False, limit: Optional[int] = None, force: bool = False) -> int:
-    logger.info("=== GIAI ĐOẠN 3.5: GEMINI ALL-IN-ONE AGENT ENRICHMENT & SALARY PREDICTION ===")
+def run_stage_gemini_enrichment(
+    mock_mode: bool = False,
+    limit: Optional[int] = None,
+    force: bool = False,
+    force_ai: bool = False,
+) -> int:
+    logger.info("=== GIAI ĐOẠN 4.5: GEMINI ALL-IN-ONE AGENT ENRICHMENT & GROUND-TRUTH NORMALIZATION ===")
     from preprocessing.missing_outlier.run_gemini_enrichment import run_enrichment_pipeline
+    input_candidate = Path("data/curated/golden_master.json")
+    if not input_candidate.exists():
+        input_candidate = Path("data/missing_outlier/raw_for_normalization.json")
+
     res = run_enrichment_pipeline(
-        input_file="data/staging/raw_for_normalization.json",
+        input_file=str(input_candidate),
         checkpoint_file="data/staging/gemini_checkpoint.jsonl",
+        golden_output="data/curated/golden_master.json",
+        flat_output="data/curated/curated_flat_golden_jobs.json",
         mock_mode=mock_mode,
         limit=limit,
         force=force,
+        force_ai=force_ai,
     )
+
+    # Đồng bộ sang phân tầng Silver Dataset chuẩn Medallion
+    silver_dir = PROJECT_ROOT / "data" / "silver"
+    silver_dir.mkdir(parents=True, exist_ok=True)
+    import shutil
+    shutil.copy2("data/curated/golden_master.json", silver_dir / "silver_master_dataset.json")
+    shutil.copy2("data/curated/curated_flat_golden_jobs.json", silver_dir / "silver_flat_jobs.json")
+    logger.info("Đã đồng bộ Silver Dataset chuẩn tại: %s", silver_dir)
+
     return 0 if res["errors_count"] == 0 else 1
 
 
 def run_stage_normalization() -> int:
     logger.info("=== GIAI ĐOẠN 4: DEEP NORMALIZATION & DEDUPLICATION (Chuẩn hóa sâu 10 nhóm / 11 khóa) ===")
-    from preprocessing.normalization.run_deep_normalization import main as normalization_main
-    res = normalization_main()
-    return 0 if res is None else res
+    from preprocessing.normalization.run_deep_normalization import run_deep_normalization
+    res = run_deep_normalization()
+    return 0 if res else 1
 
 
 def run_stage_qa() -> int:
@@ -114,6 +135,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Chạy lại toàn bộ không bỏ qua checkpoint.",
     )
+    parser.add_argument(
+        "--force-ai",
+        action="store_true",
+        help="Ép buộc gọi Gemini API cho tất cả bản ghi (bỏ qua 2-Tier filter).",
+    )
     return parser.parse_args()
 
 
@@ -132,6 +158,7 @@ def main() -> int:
             ("transformation", run_stage_transformation),
             ("missing_outlier", run_stage_missing_outlier),
             ("normalization", run_stage_normalization),
+            ("gemini_enrichment", lambda: run_stage_gemini_enrichment(mock_mode=args.mock, limit=args.limit, force=args.force, force_ai=args.force_ai)),
             ("qa", run_stage_qa),
         ]
     else:
@@ -139,8 +166,8 @@ def main() -> int:
             "integration": ("integration", run_stage_integration),
             "transformation": ("transformation", run_stage_transformation),
             "missing_outlier": ("missing_outlier", run_stage_missing_outlier),
-            "gemini_enrichment": ("gemini_enrichment", lambda: run_stage_gemini_enrichment(mock_mode=args.mock, limit=args.limit, force=args.force)),
             "normalization": ("normalization", run_stage_normalization),
+            "gemini_enrichment": ("gemini_enrichment", lambda: run_stage_gemini_enrichment(mock_mode=args.mock, limit=args.limit, force=args.force, force_ai=args.force_ai)),
             "qa": ("qa", run_stage_qa),
         }
         steps_to_run = [step_map[args.step]]
@@ -158,7 +185,10 @@ def main() -> int:
     total_elapsed = time.perf_counter() - start_time
     logger.info("==================================================================")
     logger.info("TOÀN BỘ PIPELINE ĐÃ HOÀN TẤT THÀNH CÔNG TRONG %.2f GIÂY!", total_elapsed)
-    logger.info("Dữ liệu Golden Master đạt chuẩn đã sẵn sàng tại: data/curated/golden_master.json")
+    logger.info("Dữ liệu Silver Dataset đạt chuẩn đã sẵn sàng tại:")
+    logger.info("  - Nested Master: data/silver/silver_master_dataset.json")
+    logger.info("  - Flat View:     data/silver/silver_flat_jobs.json")
+    logger.info("  - Curated Alias: data/curated/golden_master.json")
     logger.info("==================================================================")
     return 0
 

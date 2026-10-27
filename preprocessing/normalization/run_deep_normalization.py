@@ -200,10 +200,12 @@ def run_deep_normalization(
     in_file = input_path or (candidate_primary if candidate_primary.is_file() else candidate_legacy)
     staging_out = output_dir or PROJECT_ROOT / "data" / "staging"
     curated_out = curated_dir or PROJECT_ROOT / "data" / "curated"
+    silver_out = PROJECT_ROOT / "data" / "silver"
     rep_dir = reports_dir or PROJECT_ROOT / "reports"
 
     staging_out.mkdir(parents=True, exist_ok=True)
     curated_out.mkdir(parents=True, exist_ok=True)
+    silver_out.mkdir(parents=True, exist_ok=True)
     rep_dir.mkdir(parents=True, exist_ok=True)
 
     # 1. Dọn dẹp các tệp non-JSON
@@ -350,10 +352,12 @@ def run_deep_normalization(
         golden_df = curated_df.copy()
         stub_removed = 0
 
-    # 6. Xuất bản Bộ Dữ Liệu Vàng (Curated Golden Master) - 100% JSON DUY NHẤT
+    # 6. Xuất bản Bộ Dữ Liệu Silver & Curated Master - 100% JSON DUY NHẤT
     golden_master_out = curated_out / "golden_master.json"
     curated_json_out = curated_out / "curated_flat_golden_jobs.json"
-    logger.info("Xuất bản Bộ Dữ Liệu Vàng (JSON duy nhất) tại: %s và %s", golden_master_out, curated_json_out)
+    silver_master_out = silver_out / "silver_master_dataset.json"
+    silver_flat_out = silver_out / "silver_flat_jobs.json"
+    logger.info("Xuất bản Silver Dataset (100% JSON) tại: %s và %s", silver_master_out, silver_flat_out)
 
     raw_golden_records = golden_df.to_dict(orient="records")
     golden_records = []
@@ -371,6 +375,12 @@ def run_deep_normalization(
         json.dump(golden_records, f, ensure_ascii=False, indent=2)
 
     with curated_json_out.open("w", encoding="utf-8") as f:
+        json.dump(golden_flat_records, f, ensure_ascii=False, indent=2)
+
+    with silver_master_out.open("w", encoding="utf-8") as f:
+        json.dump(golden_records, f, ensure_ascii=False, indent=2)
+
+    with silver_flat_out.open("w", encoding="utf-8") as f:
         json.dump(golden_flat_records, f, ensure_ascii=False, indent=2)
 
     # 7. Thống kê Bệnh án chất lượng tổng thể
@@ -418,6 +428,14 @@ def run_deep_normalization(
 
     health_card_path = rep_dir / "curated_golden_dataset_health_card.json"
     with health_card_path.open("w", encoding="utf-8") as f:
+        json.dump(health_card, f, ensure_ascii=False, indent=2)
+
+    silver_rep_dir = rep_dir / "silver"
+    silver_rep_dir.mkdir(parents=True, exist_ok=True)
+    with (silver_rep_dir / "silver_dataset_health_card.json").open("w", encoding="utf-8") as f:
+        json.dump(health_card, f, ensure_ascii=False, indent=2)
+
+    with (silver_out / "silver_dataset_health_card.json").open("w", encoding="utf-8") as f:
         json.dump(health_card, f, ensure_ascii=False, indent=2)
 
     # 8. Sinh Báo cáo Trực quan Before vs After

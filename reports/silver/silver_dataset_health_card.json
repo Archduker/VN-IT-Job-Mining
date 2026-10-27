@@ -1,0 +1,18 @@
+{
+  "dataset_name": "VN-IT-Job-Mining Silver Dataset (Medallion Architecture)",
+  "format": "100% PURE RFC 8259 JSON",
+  "total_silver_records": 8959,
+  "ground_truth_metrics": {
+    "total_unique_jobs": 8959,
+    "salary_negotiable_null_count": 5397,
+    "salary_negotiable_pct": 60.24,
+    "salary_explicit_count": 3562,
+    "salary_explicit_pct": 39.76,
+    "language_vietnamese_count": 8959,
+    "language_vietnamese_pct": 100.0
+  },
+  "files": {
+    "silver_master_nested": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/silver/silver_master_dataset.json",
+    "silver_flat_jobs": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/silver/silver_flat_jobs.json"
+  }
+}

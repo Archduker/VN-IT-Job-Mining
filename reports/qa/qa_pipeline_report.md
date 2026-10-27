@@ -2,8 +2,8 @@
 
 ![Status](https://img.shields.io/badge/QA_PIPELINE-PASSED-brightgreen)  
 **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (**VN-IT-Job-Mining**)  
-**Thời gian kiểm định:** `2026-10-27T08:22:07.209953+00:00`  
-**Thời gian thực thi:** `8.433s`  
+**Thời gian kiểm định:** `2026-10-27T10:31:59.868605+00:00`  
+**Thời gian thực thi:** `17.219s`  
 **Kết quả chung cuộc:** **PASSED** (5/5 bộ kiểm định đạt chuẩn tuyệt đối)
 
 ---
@@ -39,19 +39,19 @@ flowchart TD
 ### 3.1. Check 1: Hiện Diện Tệp & Tính Toàn Vẹn Dòng Dõi (Lineage & File Existence)
 
 * **Tệp 1 (Transformation Stage):** `/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/raw_for_outlier.json`
-  * Số lượng bản ghi: **10,024** (Dự kiến: 9,824 | Khớp: `LỆCH`)
-  * Dung lượng tệp: `44.27 MB` | Cú pháp JSON: `Hợp lệ`
+  * Số lượng bản ghi: **10,456** (Dự kiến: 9,824 | Khớp: `LỆCH`)
+  * Dung lượng tệp: `76.95 MB` | Cú pháp JSON: `Hợp lệ`
 * **Tệp 2 (Missing & Outlier Stage):** `/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/missing_outlier/raw_for_normalization.json`
-  * Số lượng bản ghi: **10,024** (Dự kiến: 9,824 | Khớp: `LỆCH`)
-  * Dung lượng tệp: `53.61 MB` | Cú pháp JSON: `Hợp lệ`
+  * Số lượng bản ghi: **10,456** (Dự kiến: 9,824 | Khớp: `LỆCH`)
+  * Dung lượng tệp: `84.07 MB` | Cú pháp JSON: `Hợp lệ`
 * **Tệp 3 (Curated Golden Master):** `/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json`
-  * Số lượng bản ghi: **8,967** (Dự kiến: ~8,474 | Khớp: `LỆCH`)
-  * Dung lượng tệp: `33.68 MB` | Cú pháp JSON: `Hợp lệ`
+  * Số lượng bản ghi: **8,959** (Dự kiến: ~8,474 | Khớp: `LỆCH`)
+  * Dung lượng tệp: `34.54 MB` | Cú pháp JSON: `Hợp lệ`
 
 | Chỉ Số Dòng Dõi (Lineage Metric) | Kết Quả Đo Lường | Ngưỡng Tiêu Chuẩn | Đánh Giá |
 | :--- | :---: | :---: | :---: |
 | Tỷ lệ bảo toàn ID từ F1 sang F2 | `100.0%` | 100.0% | **Bảo toàn 100% danh tính** |
-| Bản ghi giảm trừ sau khử trùng lặp F2 -> F3 | `1,057` bản ghi (`10.54%`) | 12.0% - 15.0% | **Hợp lý theo mô hình cụm** |
+| Bản ghi giảm trừ sau khử trùng lặp F2 -> F3 | `1,497` bản ghi (`14.32%`) | 12.0% - 15.0% | **Hợp lý theo mô hình cụm** |
 | Tính kế thừa F3 là tập con của F2 | `True` | True | **100% bản ghi có nguồn gốc** |
 
 ---
@@ -74,7 +74,7 @@ flowchart TD
 
 * **Số trường `raw_*` tại root level:** **`0` bản ghi vi phạm** (Danh sách trường vi phạm: `None`).
 * **Chuẩn hóa nhóm `jd_text`:**
-  * Bản ghi có đủ `description_text` và `requirements_text`: **8,967/8,967** (100.0%).
+  * Bản ghi có đủ `description_text` và `requirements_text`: **8,959/8,959** (100.0%).
   * Bản ghi còn lẫn prefix `raw_` trong `jd_text`: **`0`**.
 * **Làm sạch tiền tố 'Phúc lợi':** Đã loại bỏ hoàn toàn các tiền tố thừa `"Phúc lợi"`, `"Chế độ đãi ngộ"` khỏi mảng `benefits_text` (Số vi phạm còn tồn đọng: **`0`**).
 * **Khớp chính xác 15 khóa root Target Schema:** Số bản ghi vi phạm: **`0`**.
@@ -86,13 +86,13 @@ flowchart TD
 
 | Trường / Nhóm Thuộc Tính | Số Bản Ghi Đạt Chuẩn | Tỷ Lệ Bao Phủ | Mô Tả Quy Chuẩn Kỹ Thuật |
 | :--- | :---: | :---: | :--- |
-| Nhóm `skills` ở root level | `8,967` | **100.0%** | Nhóm độc lập chứa `skills_list` & `skills_count` |
-| Tính hợp lệ của `skills_count` | `8,967` | **100.0%** | `skills_count == len(skills_list)` tuyệt đối cho mọi bản ghi |
-| Số kỹ năng trung bình / bài đăng | `2.2` kỹ năng | - | Phản ánh chính xác mật độ kỹ năng công nghệ thị trường VN |
-| Nhóm `job_info` hợp lệ | `8,967` | **100.0%** | Chuẩn hóa job_family, seniority, work_mode, experience |
+| Nhóm `skills` ở root level | `8,959` | **100.0%** | Nhóm độc lập chứa `skills_list` & `skills_count` |
+| Tính hợp lệ của `skills_count` | `8,959` | **100.0%** | `skills_count == len(skills_list)` tuyệt đối cho mọi bản ghi |
+| Số kỹ năng trung bình / bài đăng | `4.84` kỹ năng | - | Phản ánh chính xác mật độ kỹ năng công nghệ thị trường VN |
+| Nhóm `job_info` hợp lệ | `8,959` | **100.0%** | Chuẩn hóa job_family, seniority, work_mode, experience |
 | Vi phạm Zero-Null (`min_experience_years`) | `0` | **0 vi phạm** | Tuân thủ Zero-Null (fallback 0.0) |
-| Học vấn chuẩn hóa (`standardized_education`) | `8,967` | `100.0%` | Phân loại về: Đại học, Cao đẳng, Thạc sĩ, Không yêu cầu |
-| Làm việc Thứ 7 (`is_saturday_work`) | `4,037` | `45.0%` | Khai phá trạng thái làm T7 từ văn bản JD (True / False) |
+| Học vấn chuẩn hóa (`standardized_education`) | `8,959` | `100.0%` | Phân loại về: Đại học, Cao đẳng, Thạc sĩ, Không yêu cầu |
+| Làm việc Thứ 7 (`is_saturday_work`) | `4,112` | `45.9%` | Khai phá trạng thái làm T7 từ văn bản JD (True / False) |
 | Lương thỏa thuận tuân thủ MNAR | `0/0` | **100.0%** | Bảo toàn MNAR: Lương thỏa thuận giữ null kèm is_negotiable=True |
 
 ---
@@ -100,9 +100,9 @@ flowchart TD
 ### 3.5. Check 5: Quản Trị Chất Lượng & Xử Lý Ngoại Lai (Outlier & Quality Governance)
 
 * **Trường `quality_score` (Điểm chất lượng từ nhánh Tài):**
-  * Số bản ghi có trường điểm hợp lệ: **8,967/8,967** (100.0%).
+  * Số bản ghi có trường điểm hợp lệ: **8,959/8,959** (100.0%).
   * Dải điểm: `[1.0 - 1.0]` (Điểm trung bình toàn tập: **`1.0`**).
-  * Số bản ghi đạt điểm tuyệt đối (1.0): **8,967** (`100.0%`).
+  * Số bản ghi đạt điểm tuyệt đối (1.0): **8,959** (`100.0%`).
   * Số bản ghi bị trừ điểm vi phạm: **0** (`0.0%`).
 * **Trường `is_outlier_capped` (Winsorization P1-P99):**
   * Số bản ghi được chặn biên ngoại lai: **0** bản ghi (`0.0%`).

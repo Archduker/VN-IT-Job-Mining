@@ -1,61 +1,61 @@
 {
   "dataset_name": "VN-IT-Job-Mining Curated Golden Master Dataset",
   "format": "100% PURE JSON",
-  "generated_at": "2026-10-27T08:10:58.195580+00:00",
-  "total_staging_records_in": 10024,
-  "total_golden_records_out": 8967,
-  "stub_jds_excluded_from_golden": 0,
-  "duration_seconds": 81.08,
+  "generated_at": "2026-10-27T10:28:54.759020+00:00",
+  "total_staging_records_in": 10456,
+  "total_golden_records_out": 8959,
+  "stub_jds_excluded_from_golden": 361,
+  "duration_seconds": 103.058,
   "normalization_achievements": {
-    "tech_skills_canonicalized_records": 6056,
-    "portal_noise_skills_filtered_count": 1971,
-    "saturday_work_declared_count": 860,
-    "saturday_off_declared_count": 3707,
-    "education_standardized_count": 8220,
-    "age_limits_extracted_count": 916,
+    "tech_skills_canonicalized_records": 6207,
+    "portal_noise_skills_filtered_count": 2173,
+    "saturday_work_declared_count": 867,
+    "saturday_off_declared_count": 3759,
+    "education_standardized_count": 8621,
+    "age_limits_extracted_count": 925,
     "work_mode_distribution": {
-      "fulltime": 8967
+      "fulltime": 8959
     },
     "employment_type_distribution": {
-      "fulltime": 8967
+      "fulltime": 8959
     },
     "education_distribution": {
-      "đại học": 5331,
-      "thạc sĩ / cao học": 332,
-      "không đề cập": 1609,
-      "cao đẳng": 1141,
-      "trung cấp / nghề": 530,
+      "đại học": 5330,
+      "thạc sĩ / cao học": 333,
+      "không đề cập": 1608,
+      "cao đẳng": 1135,
+      "trung cấp / nghề": 529,
       "không yêu cầu": 24
     },
     "top_10_cities": {
-      "Chưa xác định": 8967
+      "Chưa xác định": 8959
     },
     "top_job_families": {
-      "JF00_OTHER_IT": 8967
+      "JF00_OTHER_IT": 8959
     },
     "seniority_distribution": {
-      "middle": 3912,
-      "lead/manager": 2938,
-      "intern": 915,
-      "senior": 412,
-      "chưa xác định": 323,
-      "junior": 267,
-      "fresher": 200
+      "junior": 5567,
+      "lead/manager": 2404,
+      "intern": 497,
+      "chưa xác định": 225,
+      "middle": 123,
+      "fresher": 94,
+      "senior": 49
     }
   },
   "distribution_metrics": {
-    "skewness_raw_salary": 0.0,
-    "skewness_log_salary": 0.0,
-    "salary_coverage_pct": 100.0,
+    "skewness_raw_salary": 4.01,
+    "skewness_log_salary": -0.66,
+    "salary_coverage_pct": 37.07,
     "experience_coverage_pct": 100.0,
     "skills_coverage_pct": 0.0
   },
   "cross_platform_deduplication": {
-    "total_input_records": 10024,
-    "total_golden_records": 8967,
-    "duplicates_removed": 1057,
-    "deduplication_rate_pct": 10.54,
-    "cross_platform_cluster_count": 721
+    "total_input_records": 10456,
+    "total_golden_records": 9320,
+    "duplicates_removed": 1136,
+    "deduplication_rate_pct": 10.86,
+    "cross_platform_cluster_count": 768
   },
   "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json",
   "golden_master_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/curated/golden_master.json",

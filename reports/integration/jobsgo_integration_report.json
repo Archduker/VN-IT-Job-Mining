@@ -2,7 +2,7 @@
   "source_platform": "jobsgo",
   "step": "integration",
   "schema_version": "3.0-grouped-and-flat-canonical",
-  "timestamp": "2026-10-27T03:55:34.102217+00:00",
+  "timestamp": "2026-10-27T10:10:45.670138+00:00",
   "total_files_scanned": 1521,
   "total_envelopes_parsed": 1520,
   "total_integrated_records": 1520,
@@ -236,5 +236,5 @@
       "null_diagnosis": "Đầy đủ 100%."
     }
   },
-  "duration_seconds": 0.4
+  "duration_seconds": 0.51
 }

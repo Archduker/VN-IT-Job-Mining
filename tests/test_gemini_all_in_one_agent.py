@@ -58,12 +58,13 @@ def test_heuristic_fallback_enrichment(agent):
     assert reqs["standardized_education"] == "bachelor"
     assert reqs["is_saturday_work"] is False
 
-    # 3. Kiểm tra lương dự đoán (Zero Null)
+    # 3. Kiểm tra lương (Ground-Truth Realism: giữ nguyên null khi lương thỏa thuận)
     sal = res["salary"]
-    assert sal["salary_min"] > 0
-    assert sal["salary_max"] >= sal["salary_min"]
+    assert sal["salary_min"] is None
+    assert sal["salary_max"] is None
+    assert sal["is_salary_negotiable"] is True
     assert sal["salary_currency"] == "VND"
-    assert sal["salary_source"] == "predicted"
+    assert sal["salary_source"] == "negotiable"
 
 
 def test_salary_usd_to_vnd_conversion(agent):
@@ -143,10 +144,10 @@ def test_mocked_gemini_api_call():
                                 "standardized_seniority": "middle",
                                 "standardized_education": "bachelor",
                                 "is_saturday_work": false,
-                                "salary_min": 25000000.0,
-                                "salary_max": 40000000.0,
+                                "salary_min": null,
+                                "salary_max": null,
                                 "salary_currency": "VND",
-                                "salary_source": "predicted",
+                                "salary_source": "negotiable",
                                 "translated_title": "Kỹ sư Backend Golang",
                                 "translated_description": "Mô tả công việc Golang...",
                                 "translated_requirements": "Yêu cầu 2.5 năm Golang...",
@@ -180,5 +181,31 @@ def test_mocked_gemini_api_call():
         assert res["skills"]["domain_skills"] == ["Tài chính công nghệ (Fintech)"]
         assert res["requirements"]["experience_years"] == 2.5
         assert res["requirements"]["standardized_seniority"] == "middle"
-        assert res["salary"]["salary_source"] == "predicted"
-        assert res["salary"]["salary_min"] == 25000000.0
+        assert res["salary"]["salary_source"] == "negotiable"
+        assert res["salary"]["salary_min"] is None
+        assert res["salary"]["salary_max"] is None
+        assert res["salary"]["is_salary_negotiable"] is True
+
+
+def test_hidden_salary_extraction_from_jd(agent):
+    """Kiểm tra trích xuất lương ẩn từ thân văn bản JD."""
+    rec = {
+        "job_title": "Frontend Vue.js Developer",
+        "source_platform": "topcv",
+        "raw_description_text": (
+            "Phát triển giao diện ứng dụng web.\n"
+            "Mức thu nhập: 18 - 28 triệu/tháng tùy theo năng lực."
+        ),
+        "raw_requirements_text": "Ít nhất 2 năm kinh nghiệm Vue.js.",
+        "raw_salary_text": "Thỏa thuận",
+        "salary_min": None,
+        "salary_max": None,
+    }
+
+    res = agent.enrich_record(rec)
+    sal = res["salary"]
+
+    assert sal["salary_min"] == 18000000.0
+    assert sal["salary_max"] == 28000000.0
+    assert sal["salary_source"] == "jd_extracted"
+    assert sal["is_salary_negotiable"] is False

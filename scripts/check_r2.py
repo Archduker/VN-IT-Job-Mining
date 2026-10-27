@@ -58,8 +58,19 @@ def main():
 
         print(f"  - Tổng số đối tượng (Objects): {total_files:,}")
         print(f"  - Tổng dung lượng lưu trữ:    {total_size / (1024 * 1024):.2f} MB")
+        
+        layer_icons = {
+            "bronze": "🥉 [BRONZE]",
+            "raw": "🥉 [BRONZE/RAW]",
+            "url_ledger": "🥉 [BRONZE/LEDGER]",
+            "silver": "🥈 [SILVER - MASTER]",
+            "gold": "🥇 [GOLD - MINING]",
+            "transformation": "⚙️  [INTERMEDIATE]",
+            "integration": "⚙️  [INTERMEDIATE]",
+        }
         for cat, cnt in sorted(categories.items()):
-            print(f"    📁 {cat:<15}: {cnt:>6} files")
+            tag = layer_icons.get(cat, "📁")
+            print(f"    {tag:<22} {cat:<15}: {cnt:>6} files")
 
         print("\n4. Kiểm tra quyền ghi/xóa (Write/Delete probe):")
         probe_key = ".health_probe_r2.tmp"

@@ -164,10 +164,9 @@ def resolve_r2_key(local_path: Path, source: str | None = None, custom_dest: str
     try:
         data_rel = resolved_path.relative_to(PROJECT_ROOT / "data")
         parts = data_rel.parts
-        # Chuẩn hóa về raw/<source>/... nếu chưa có prefix raw
-        if parts[0] != "raw":
-            return f"raw/{str(data_rel).replace(chr(92), '/')}"
-        return str(data_rel).replace("\\", "/")
+        if parts[0] in {"silver", "gold", "curated", "transformation", "integration", "raw", "url_ledger"}:
+            return str(data_rel).replace("\\", "/")
+        return f"raw/{str(data_rel).replace(chr(92), '/')}"
     except ValueError:
         pass
 
@@ -263,6 +262,7 @@ def run_upload(
     file_path: str | None = None,
     dest_key: str | None = None,
     all_results: bool = False,
+    silver: bool = False,
     dry_run: bool = False,
 ) -> int:
     """Điều phối toàn bộ quy trình upload kết quả JSON lên Cloudflare R2."""
@@ -275,7 +275,15 @@ def run_upload(
     # 1. Tìm các file cần xử lý
     files_to_upload: list[tuple[Path, str]] = []
 
-    if file_path:
+    if silver:
+        silver_dir = PROJECT_ROOT / "data" / "silver"
+        if not silver_dir.exists():
+            print(f"❌ [LỖI] Không tìm thấy thư mục: {silver_dir}")
+            return 1
+        for p in sorted(silver_dir.glob("*.json")):
+            files_to_upload.append((p, f"silver/{p.name}"))
+
+    elif file_path:
         target = Path(file_path).resolve()
         if not target.exists():
             print(f"❌ [LỖI] Không tìm thấy file: {file_path}")
@@ -399,6 +407,11 @@ Ví dụ thực tế:
         action="store_true",
         help="Tải toàn bộ các file kết quả .json của tất cả 7 nguồn",
     )
+    group.add_argument(
+        "--silver",
+        action="store_true",
+        help="Tải Bộ Dữ Liệu Chuẩn Silver Dataset (data/silver/) lên Cloudflare R2",
+    )
 
     parser.add_argument(
         "--dest",
@@ -420,6 +433,7 @@ Ví dụ thực tế:
         file_path=args.file,
         dest_key=args.dest,
         all_results=args.all_results,
+        silver=args.silver,
         dry_run=args.dry_run,
     )
     sys.exit(exit_code)

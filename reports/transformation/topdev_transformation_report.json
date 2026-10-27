@@ -1,23 +1,62 @@
 {
-  "source_platform": "topdev",
   "step": "transformation",
-  "timestamp": "2026-10-27T04:38:28.668828+00:00",
-  "total_input_records": 2755,
-  "total_transformed_records": 2755,
-  "retention_rate_pct": 100.0,
-  "drop_stub_audit": {
-    "total_dropped": 0,
-    "dropped_empty_title": 0,
-    "dropped_empty_desc": 0,
-    "protected_banners": 0
+  "source_platform": "topdev",
+  "generated_at": "2026-10-27T10:11:03.196009+00:00",
+  "input_records": 2755,
+  "output_records": 2755,
+  "records_with_salary_min_vnd": 1093,
+  "records_with_salary_max_vnd": 1085,
+  "salary_sources": {
+    "benefits_regex": 81,
+    "header_negotiable": 1571,
+    "header": 1102,
+    "jd_regex": 1
   },
-  "salary_extraction_audit": {
-    "salary_numeric_extracted": 1102,
-    "extraction_rate_pct": 40.0
+  "salary_currencies": {
+    "VND": 2702,
+    "USD": 53
   },
-  "output_files": {
-    "grouped": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/topdev/topdev_transformed_grouped.json",
-    "flat": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/topdev/topdev_transformed_flat.json"
+  "sgd_converted_records": 0,
+  "sgd_fx_dates": {},
+  "unconverted_non_vnd_records": 0,
+  "negotiable_salary_records": 1588,
+  "records_with_education_parsed": 0,
+  "records_with_seniority_parsed": 1975,
+  "records_with_age_parsed": 0,
+  "records_with_company_scale_parsed": 0,
+  "records_with_saturday_work_declared": 0,
+  "records_with_stub_jd": 0,
+  "salaries_extracted_from_benefits": 81,
+  "language_distribution": {
+    "vi": 2268,
+    "bilingual": 287,
+    "en": 200
   },
-  "duration_seconds": 0.86
+  "dates": {
+    "posted_date": {
+      "input_non_empty": 0,
+      "parsed": 0
+    },
+    "updated_date": {
+      "input_non_empty": 0,
+      "parsed": 0
+    },
+    "deadline_date": {
+      "input_non_empty": 0,
+      "parsed": 0
+    },
+    "crawled_at_iso": {
+      "input_non_empty": 2755,
+      "parsed": 2755
+    }
+  },
+  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/topdev/topdev_transformed_flat.json",
+  "input_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/topdev/topdev_integrated_flat.json",
+  "salary_range_report": {
+    "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/transformation/topdev/topdev_salary_sorted_vnd.json",
+    "records_with_numeric_vnd_salary": 1184,
+    "sort_order": "salary_min_vnd ascending, then salary_max_vnd ascending",
+    "retains_all_records_in_transformed_output": true
+  },
+  "duration_seconds": 3.126
 }

@@ -2,7 +2,7 @@
   "source_platform": "topcv",
   "step": "integration",
   "schema_version": "3.0-grouped-and-flat-canonical",
-  "timestamp": "2026-10-27T03:55:35.074831+00:00",
+  "timestamp": "2026-10-27T10:10:46.650728+00:00",
   "total_files_scanned": 2591,
   "total_envelopes_parsed": 2591,
   "total_integrated_records": 2582,
@@ -236,5 +236,5 @@
       "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
     }
   },
-  "duration_seconds": 0.97
+  "duration_seconds": 0.98
 }

@@ -1,12 +1,12 @@
 # ĐẶC TẢ QUY CHUẨN DỮ LIỆU VÀNG: TARGET SCHEMA 11 KHÓA
 *(Golden Master Target Schema 11 Keys Specification & Data Dictionary)*
 
-> **Phiên bản:** 2.0 (Modern Data Mining Standard)  
-> **Áp dụng cho:** `data/curated/golden_master.json` và `data/curated/curated_flat_golden_jobs.json`  
+> **Phiên bản:** 3.0 (Medallion Architecture & Ground Truth Realism)  
+> **Áp dụng cho:** Silver Dataset (`data/silver/silver_master_dataset.json` và `data/silver/silver_flat_jobs.json`, tương thích `data/curated/golden_master.json`)  
 > **Nguyên tắc cốt lõi:**  
 > 1. **100% PURE RFC 8259 JSON:** Cấm tuyệt đối giá trị `NaN`, `Infinity`, cấm lưu trữ file `.parquet` hay `.csv` trong phân tầng Preprocessing.  
 > 2. **Cấu trúc phẳng phân cấp 2 tầng (Strict 2-Level Nested):** Đúng 11 khóa root ở tầng 1, toàn bộ thuộc tính chi tiết nằm ở tầng 2.  
-> 3. **Zero-Null Lương (Complete Salary Coverage):** Không có giá trị null ở trường lương; các tin thỏa thuận hoặc thiếu lương được dự đoán qua ma trận Market Anchor kết hợp Gemini (`salary_source = "predicted"`).  
+> 3. **Bảo tồn tính chân thực thị trường (Ground Truth Realism):** Bảo tồn tuyệt đối `null` cho các tin tuyển dụng thỏa thuận / thương lượng (`salary_source = "negotiable"` hoặc `"competitive"`, `is_salary_negotiable = true`). Chỉ gán giá trị số khi nhà tuyển dụng công khai hoặc trích xuất dải số từ thân JD (`salary_source = "jd_extracted"`).  
 > 4. **100% Tiếng Việt Chuẩn Hóa:** Toàn bộ tiêu đề, mô tả, yêu cầu và phúc lợi bằng tiếng Anh đều được tự động dịch sang tiếng Việt sạch thẻ HTML, gắn cờ `language = "vi"`.
 
 ---

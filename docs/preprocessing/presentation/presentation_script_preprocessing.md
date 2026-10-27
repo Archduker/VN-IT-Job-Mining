@@ -197,17 +197,114 @@
 
 ---
 
-### SLIDE 12: Giai Đoạn 4 - Khử Trùng Lặp Ngữ Nghĩa Xuyên Sàn
-* **Thời gian:** `10:30 - 11:30` (60 giây)
-* **Thị giác màn hình:** Quy trình Blocking $\rightarrow$ Text Embeddings Cosine Similarity $\ge 0.82$, kết quả loại 1,057 bài trùng.
+### SLIDE 09: Giai Đoạn 4 - Khử Trùng Lặp Ngữ Nghĩa Xuyên Sàn (Deduplication)
+* **Thời gian:** `07:30 - 08:30` (60 giây)
+* **Thị giác màn hình:** Quy trình Blocking $\rightarrow$ Text Embeddings Cosine Similarity $\ge 0.82$, kết quả gộp 1,136 bài trùng trong 768 cụm, loại 361 tin stub JD.
 * **Lời thoại người thuyết trình:**
   > *"Bước vào Giai đoạn 4, nhóm thực hiện bài toán **Khử trùng lặp thực thể xuyên sàn (Cross-Platform Entity Resolution)**.  
   > Cùng một vị trí tuyển dụng ví dụ như Senior Java Developer tại Hà Nội thường được doanh nghiệp đăng lên cả TopCV, VietnamWorks và ITviec với câu từ được xào nấu khác nhau đôi chút. Nếu giữ nguyên, việc đếm tần suất kỹ năng sẽ bị thổi phồng sai lệch.  
-  > Nếu so sánh cặp đôi toàn bộ 10.000 bài đăng, chi phí tính toán sẽ là $\mathcal{O}(N^2)$ với gần 100 triệu phép tính. Nhóm đã áp dụng kỹ thuật **Blocking**: chỉ so khớp các bài đăng có cùng tên công ty chuẩn hóa và cùng tỉnh thành.  
+  > Nếu so sánh cặp đôi toàn bộ hơn 10.000 bài đăng, chi phí tính toán sẽ là $\mathcal{O}(N^2)$ với hơn 50 triệu phép tính. Nhóm đã áp dụng kỹ thuật **Blocking**: chỉ so khớp các bài đăng có cùng tên công ty chuẩn hóa và cùng tỉnh thành.  
   > Sau đó, nhóm tính toán độ tương đồng **Cosine Similarity** trên vector nhúng văn bản mô tả công việc. Với ngưỡng thực nghiệm $\ge 0.82$, hệ thống phát hiện chính xác các bài đăng trùng lặp và tiến hành hợp nhất thành một 'Bản ghi Vàng' duy nhất, ưu tiên giữ lại các trường có độ chi tiết cao nhất.  
-  > Kết quả: Nhóm đã loại bỏ chính xác **1,057 bài đăng trùng lặp**, tương đương 10.54% dữ liệu dư thừa."*
+  > Kết quả: Nhóm đã phát hiện và gộp chính xác **1,136 bài đăng trùng lặp trong 768 cụm** (10.86%), đồng thời tự động loại trừ **361 tin Stub JDs** quá ngắn dưới 30 từ, cô đọng tập dữ liệu về **8,959 bản ghi tinh hoa**."*
 * **Cử chỉ & Nhấn mạnh (Speaking Tips):**
-  * **Điểm cần nhấn giọng:** Nhấn mạnh con số **"Loại bỏ 1,057 bài đăng trùng lặp (10.54%)"** và công thức **"Cosine Similarity >= 0.82"**.
+  * **Điểm cần nhấn giọng:** Nhấn mạnh con số **"1,136 bài đăng trùng lặp trong 768 cụm"** và **"Cosine Similarity >= 0.82"**.
+  * **Điểm ngắt nghỉ:** `[NGẮT NGHỈ 1 GIÂY]` khi chuyển từ kỹ thuật Blocking sang phép đo Cosine.
+  * **Điểm trỏ tay vào slide:** `[TRỎ TAY VÀO SLIDE: Con số giảm trừ 1,136 bài trùng và con số 8,959 bản ghi vàng]`.
+
+---
+
+### SLIDE 10: Giai Đoạn 4.5 - Gemini All-in-One Preprocessing Agent & 2-Tier Decision Gate
+* **Thời gian:** `08:30 - 09:30` (60 giây)
+* **Thị giác màn hình:** Bảng 4 nhiệm vụ song hành của Gemini Agent, cơ chế 2-Tier Decision Gate, module Checkpoint Store.
+* **Lời thoại người thuyết trình:**
+  > *"Sau khi hoàn thiện khử trùng lặp, nhóm triển khai bước đột phá AI: **Giai đoạn 4.5 - Gemini All-in-One Preprocessing Agent** sử dụng mô hình Gemini 1.5 Flash.  
+  > Để tối ưu hóa chi phí token và độ trễ, nhóm sáng tạo **Bộ lọc quyết định 2 tầng (2-Tier Decision Gate)**:  
+  > **Tier 1 (Heuristic Engine):** Sử dụng các biểu thức regex và từ điển công nghệ quét nhanh hard skills mà không tốn một token nào.  
+  > **Tier 2 (Gemini API):** Chỉ được kích hoạt khi thực sự cần: Một là bài đăng bằng tiếng Anh cần dịch thuật sang tiếng Việt (nhận diện qua tỷ lệ dấu tiếng Việt dưới 2.5% và stop words tiếng Anh), hai là khi Tier 1 không trích xuất được kỹ năng nào, hoặc ba là khi bật cờ `--force-ai`.  
+  > Khi được gọi, Gemini thực thi đồng thời 4 nhiệm vụ: phân loại kỹ năng 3 lớp Hard-Soft-Domain, trích xuất yêu cầu học vấn và làm thứ 7, dịch thuật thống nhất ngữ nghĩa, và dự đoán lương có căn cứ.  
+  > Hệ thống đi kèm module **Checkpoint Store** ghi nhận tiến trình từng dòng JSONL, giúp hệ thống bền bỉ tự phục hồi khi gặp sự cố mạng hoặc hạn ngạch API."*
+* **Cử chỉ & Nhấn mạnh (Speaking Tips):**
+  * **Điểm cần nhấn giọng:** Nhấn mạnh cụm từ **"2-Tier Decision Gate (Bộ lọc quyết định 2 tầng)"** và **"Single-pass 4 trong 1"**.
+  * **Điểm ngắt nghỉ:** `[NGẮT NGHỈ 1 GIÂY]` khi phân biệt giữa Tier 1 Heuristic và Tier 2 Gemini.
+  * **Điểm trỏ tay vào slide:** `[TRỎ TAY VÀO SLIDE: Sơ đồ 2 tầng lọc Tier 1 vs Tier 2 và khối Checkpoint Store]`.
+
+---
+
+### SLIDE 11: Giai Đoạn 4.5 - Ground-Truth Realism & Market Anchor Calculator
+* **Thời gian:** `09:30 - 10:30` (60 giây)
+* **Thị giác màn hình:** Sơ đồ 4 cấp mỏ neo thị trường, nguyên tắc Ground-Truth Realism bảo toàn null MNAR.
+* **Lời thoại người thuyết trình:**
+  > *"Thưa Thầy Cô, một triết lý quan trọng mà nhóm kiên định theo đuổi là **Ground-Truth Realism - Tôn trọng thực tế dữ liệu tuyệt đối**.  
+  > Nếu một bài đăng thực sự là lương thỏa thuận và trong JD không hề có căn cứ con số, nhóm **bảo toàn nguyên trạng giá trị null** kèm theo cờ `is_salary_negotiable = True` và nguồn `salary_source = 'negotiable'`, tuyệt đối không để AI bịa đặt ra những con số giả mạo.  
+  > Đối với các bài đăng cần dự đoán, để loại bỏ hoàn toàn nguy cơ ảo giác (Hallucination) của LLM, nhóm xây dựng **Market Anchor Calculator**.  
+  > Trước khi gửi prompt cho Gemini, hệ thống tính toán sẵn ma trận mỏ neo thị trường dựa trên trung vị mức lương thực tế theo từng cặp `[Sàn Tuyển Dụng x Cấp Bậc]`. Hệ thống tra cứu phân cấp 4 tầng: từ trung vị ô kết hợp, trung vị cấp bậc, trung vị sàn, cho đến khung sàn lý thuyết IT (Intern 3-6M, Junior 12-20M, Senior 35-55M...).  
+  > Gemini bắt buộc phải neo dự đoán xung quanh dải mỏ neo này. Nhờ đó, 100% mức lương xử lý đều bảo đảm tính chân thực và khoa học."*
+* **Cử chỉ & Nhấn mạnh (Speaking Tips):**
+  * **Điểm cần nhấn giọng:** Nhấn mạnh **"Ground-Truth Realism"**, **"Tuyệt đối không bịa đặt số giả mạo"**, và **"Mỏ neo 4 cấp"**.
+  * **Điểm ngắt nghỉ:** `[NGẮT NGHỈ 1.5 GIÂY]` sau khi nêu nguyên tắc tôn trọng thực tế dữ liệu.
+  * **Điểm trỏ tay vào slide:** `[TRỎ TAY VÀO SLIDE: 4 bậc thang mỏ neo và dòng chữ bảo toàn null MNAR]`.
+
+---
+
+### SLIDE 12: Giai Đoạn 5 - Target Schema Chuẩn 11 Khóa Tinh Gọn
+* **Thời gian:** `10:30 - 11:15` (45 giây)
+* **Thị giác màn hình:** Đoạn JSON mẫu 11 khóa canonical, dọn dẹp sạch cờ kỹ thuật và cột `raw_*`.
+* **Lời thoại người thuyết trình:**
+  > *"Sau khi khử trùng lặp và làm giàu dữ liệu, module `TargetSchemaFormatter` tiến hành đóng gói đầu ra cuối cùng về chuẩn **Target Schema 11 Khóa Gốc Tinh Gọn**.  
+  > 11 khóa gốc này bao gồm: `job_id_global`, `source_platform`, `source_url`, `job_info`, `company`, `locations`, `salary`, `skills`, `requirements`, `jd_text` và `date`.  
+  > Điểm cải tiến mới nhất là trong đối tượng `salary`, trường `is_salary_negotiable` được định nghĩa minh bạch để phân biệt rõ ràng giữa tin có dải lương công khai (`salary_source = 'explicit_range'`) và tin thỏa thuận.  
+  > Tất cả các cột thô mang tiền tố `raw_*`, các cờ trung gian phục vụ debug như `is_stub_jd`, `quality_score`, `is_outlier_capped` đều được tinh giản triệt để. Toàn bộ 8,959 bản ghi đều thống nhất cấu trúc 100%, sẵn sàng nạp ngay vào DuckDB và Pandas."*
+* **Cử chỉ & Nhấn mạnh (Speaking Tips):**
+  * **Điểm cần nhấn giọng:** Nhấn mạnh **"11 Khóa Gốc Tinh Gọn"** và **"Phân định rõ explicit_range vs negotiable"**.
+  * **Điểm ngắt nghỉ:** `[NGẮT NGHỈ 1 GIÂY]` sau khi liệt kê các nhóm thông tin.
+  * **Điểm trỏ tay vào slide:** `[TRỎ TAY VÀO SLIDE: Đoạn code JSON mẫu 11 khóa chuẩn]`.
+
+---
+
+### SLIDE 13: Giai Đoạn 5 - Kiểm Định Chất Lượng Đường Ống (QA 5/5 PASSED)
+* **Thời gian:** `11:15 - 12:15` (60 giây)
+* **Thị giác màn hình:** Bảng điểm 5/5 PASSED, dòng dõi dữ liệu 10,456 ➔ 8,959, chuẩn RFC 8259 Zero NaN.
+* **Lời thoại người thuyết trình:**
+  > *"Để đảm bảo tính nghiêm ngặt về mặt kỹ thuật phần mềm và khoa học dữ liệu, nhóm đã xây dựng bộ kiểm thử chất lượng tự động gồm 5 bài kiểm tra chuyên sâu trong `reports/qa/qa_pipeline_report.md` và đạt kết quả **5/5 PASSED tuyệt đối**:  
+  > Check 1 bảo đảm tính kế thừa dòng dõi dữ liệu từ 10,456 bản ghi thô qua khử trùng lặp gộp 1,136 tin trùng thành công sang 8,959 bản ghi Golden Master.  
+  > Check 2 chứng minh bộ dữ liệu đạt chuẩn **100% PURE JSON RFC 8259**, quét sâu đệ quy không còn bất kỳ hằng số NaN nào gây lỗi parser.  
+  > Check 3, 4, 5 xác nhận sự tuân thủ tuyệt đối cấu trúc Target Schema 11 khóa, tính nguyên vẹn của chính sách MNAR và các luật chất lượng ngoại lai QR1-QR5.  
+  > Bộ dữ liệu đã hoàn toàn sạch sẽ, không còn rác và đạt chuẩn xuất xưởng công nghiệp."*
+* **Cử chỉ & Nhấn mạnh (Speaking Tips):**
+  * **Điểm cần nhấn giọng:** Giọng dõng dạc, tự hào ở cụm từ **"5/5 PASSED tuyệt đối"**, **"100% PURE JSON RFC 8259"**.
+  * **Điểm ngắt nghỉ:** `[NGẮT NGHỈ 1.5 GIÂY]` sau khi đọc xong con số 5/5 PASSED.
+  * **Điểm trỏ tay vào slide:** `[TRỎ TAY VÀO SLIDE: Huy hiệu PASSED màu xanh lá và 5 hàng kiểm định chất lượng]`.
+
+---
+
+### SLIDE 14: Bảng So Sánh Chỉ Số Chất Lượng (Trước vs Sau)
+* **Thời gian:** `12:15 - 13:15` (60 giây)
+* **Thị giác màn hình:** Bảng so sánh Trước vs Sau (10,456 ➔ 8,959 bản ghi, Skewness giảm từ 4.01 về -0.66, 8,621 bài có học vấn).
+* **Lời thoại người thuyết trình:**
+  > *"Nhìn vào bảng so sánh Trước vs Sau trên màn hình:  
+  > Từ 10,456 bài đăng thô lẫn lộn trùng lặp, hệ thống đã tinh lọc thành công **8,959 bản ghi độc bản**, loại bỏ 1,136 bài trùng trong 768 cụm và 361 tin rác stub JD.  
+  > Về mặt phân phối thống kê: Độ lệch phân phối lương (Skewness) từ mức lệch phải rất nặng $\gamma_1 = 4.01$ đã được kéo về mức $\gamma_1 = -0.66$ đạt chuẩn đối xứng phân phối qua phép biến đổi Log-transform.  
+  > Về độ phủ dữ liệu: 100% bản ghi có số năm kinh nghiệm hợp lệ, 8,621 bản ghi được chuẩn hóa trình độ học vấn, 2,173 tag kỹ năng rác danh mục sàn bị loại bỏ hoàn toàn, và kỹ năng công nghệ được phân tách độc lập 3 lớp Hard-Soft-Domain. Bộ dữ liệu đã ở trạng thái tối ưu nhất cho các mô hình khai phá tiếp theo."*
+* **Cử chỉ & Nhấn mạnh (Speaking Tips):**
+  * **Điểm cần nhấn giọng:** Nhấn mạnh sự chuyển dịch **"10,456 ➔ 8,959 bản ghi"**, **"Skewness từ 4.01 về -0.66"**, **"8,621 học vấn chuẩn hóa"**.
+  * **Điểm ngắt nghỉ:** `[NGẮT NGHỈ 1 GIÂY]` sau mỗi cặp chỉ số Before-After.
+  * **Điểm trỏ tay vào slide:** `[TRỎ TAY VÀO SLIDE: Cột Mức Độ Cải Thiện ở bảng số liệu]`.
+
+---
+
+### SLIDE 15: Kết Luận & Sẵn Sàng Cho 5 Mục Tiêu Chiến Lược SD1 — SD5
+* **Thời gian:** `13:15 - 14:00` (45 giây)
+* **Thị giác màn hình:** Tóm tắt 4 đóng góp chính, liên kết 5 mục tiêu SD1-SD5, lời cảm ơn.
+* **Lời thoại người thuyết trình:**
+  > *"Kính thưa Thầy Cô và các bạn,  
+  > Tóm lại, giai đoạn Tiền xử lý dữ liệu của nhóm đã hoàn thành xuất sắc sứ mệnh:  
+  > Chuyển đổi thành công 10,456 bản ghi thô dị thể thành **8,959 bản ghi Bộ Dữ Liệu Vàng độc bản**, hoàn thành trọn vẹn mục tiêu nền tảng **SD1: Tích hợp dữ liệu thị trường lao động IT**.  
+  > Nền tảng dữ liệu vàng này đã sẵn sàng mở đường cho các phân tích chuyên sâu tiếp theo của đề án: từ phân loại 12 Job Family ở **SD2**, khai phá luật kết hợp kỹ năng FP-Growth ở **SD3**, đến việc đối chiếu khoảng cách đào tạo Đại học ở **SD4** và xây dựng hệ thống khuyến nghị lộ trình nghề nghiệp ở **SD5**.  
+  > Nhóm em xin chân thành cảm ơn quý Thầy Cô đã chú ý lắng nghe và rất mong nhận được những nhận xét, góp ý quý báu từ Hội đồng ạ!"*
+* **Cử chỉ & Nhấn mạnh (Speaking Tips):**
+  * **Điểm cần nhấn giọng:** Nhấn mạnh **"Hoàn thành trọn vẹn SD1"**, **"Sẵn sàng cho SD2 đến SD5"**.
+  * **Điểm ngắt nghỉ:** Cúi đầu chào nhẹ, giọng chân thành, tươi vui khi nói lời cảm ơn.
+  * **Điểm trỏ tay vào slide:** `[TRỎ TAY VÀO SLIDE: Bản đồ 5 mục tiêu SD1 ➔ SD5 và Logo nhóm]`.
   * **Điểm ngắt nghỉ:** `[NGẮT NGHỈ 1 GIÂY]` khi chuyển từ kỹ thuật Blocking sang phép đo Cosine.
   * **Điểm trỏ tay vào slide:** `[TRỎ TAY VÀO SLIDE: Con số giảm trừ 1,057 bài trùng và ngưỡng 0.82]`.
 
