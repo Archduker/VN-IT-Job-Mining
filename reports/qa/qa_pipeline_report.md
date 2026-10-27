@@ -2,8 +2,8 @@
 
 ![Status](https://img.shields.io/badge/QA_PIPELINE-PASSED-brightgreen)  
 **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (**VN-IT-Job-Mining**)  
-**Thời gian kiểm định:** `2026-10-27T06:34:13.921150+00:00`  
-**Thời gian thực thi:** `13.346s`  
+**Thời gian kiểm định:** `2026-10-27T06:35:28.524166+00:00`  
+**Thời gian thực thi:** `13.769s`  
 **Kết quả chung cuộc:** **PASSED** (5/5 bộ kiểm định đạt chuẩn tuyệt đối)
 
 ---
