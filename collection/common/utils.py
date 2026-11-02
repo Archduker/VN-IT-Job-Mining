@@ -19,7 +19,7 @@ import html as html_lib
 import re
 import unicodedata
 from datetime import date
-from typing import Optional
+from typing import Any, Optional
 from urllib.parse import urlparse, urlencode, parse_qs, urlunparse
 
 # Reuse normalize_url từ schema module (single source of truth)

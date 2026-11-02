@@ -6,6 +6,30 @@ import os
 from pathlib import Path
 
 
+def resolve_r2_endpoint(explicit: str | None = None, required: bool = True) -> str:
+    """Return the R2 endpoint from the argument or the environment (.env is loaded).
+
+    Lookup order: explicit, R2_ENDPOINT_URL, S3_ENDPOINT_URL, R2_ACCOUNT_ID.
+    Raises ValueError if nothing is configured, unless required=False.
+    """
+    try:
+        from dotenv import load_dotenv
+
+        load_dotenv()
+    except ImportError:
+        pass
+
+    endpoint = explicit or os.getenv("R2_ENDPOINT_URL") or os.getenv("S3_ENDPOINT_URL")
+    account_id = os.getenv("R2_ACCOUNT_ID")
+    if not endpoint and account_id:
+        endpoint = f"https://{account_id}.r2.cloudflarestorage.com"
+    if not endpoint and required:
+        raise ValueError(
+            "Chưa cấu hình Cloudflare R2 endpoint: đặt R2_ENDPOINT_URL hoặc R2_ACCOUNT_ID trong .env."
+        )
+    return endpoint or ""
+
+
 def get_r2_client(
     endpoint_url: str | None = None,
     access_key: str | None = None,
@@ -15,12 +39,7 @@ def get_r2_client(
     import boto3
     from botocore.client import Config
 
-    endpoint = (
-        endpoint_url
-        or os.getenv("R2_ENDPOINT_URL")
-        or os.getenv("S3_ENDPOINT_URL")
-        or "https://bb8811262069cd3e4d244a9dc7bf6a84.r2.cloudflarestorage.com"
-    )
+    endpoint = resolve_r2_endpoint(endpoint_url)
     ak = (
         access_key
         or os.getenv("R2_ACCESS_KEY_ID")

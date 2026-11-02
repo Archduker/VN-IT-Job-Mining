@@ -21,6 +21,7 @@ from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 
+from collection.common.r2_storage import resolve_r2_endpoint
 from collection.common.url_ledger import (
     UrlLedger,
     calculate_container_html_hash,
@@ -132,11 +133,9 @@ class MinioRawStore:
             or "vn-it-jobs"
         )
         self.endpoint = (
-            endpoint
-            or os.getenv("R2_ENDPOINT_URL")
-            or os.getenv("S3_ENDPOINT_URL")
+            resolve_r2_endpoint(endpoint, required=False)
             or os.getenv("MINIO_ENDPOINT")
-            or "https://bb8811262069cd3e4d244a9dc7bf6a84.r2.cloudflarestorage.com"
+            or ""
         )
         self.access_key = (
             access_key
@@ -161,6 +160,10 @@ class MinioRawStore:
         region = "auto" if "r2.cloudflarestorage.com" in self.endpoint else "us-east-1"
 
         if client is None:
+            if not self.endpoint:
+                raise ValueError(
+                    "Chưa cấu hình Cloudflare R2 endpoint: đặt R2_ENDPOINT_URL hoặc R2_ACCOUNT_ID trong .env."
+                )
             import boto3
             from botocore.client import Config
             self.client = boto3.client(
@@ -202,8 +205,8 @@ class MinioRawStore:
                     return  # Bucket đã tồn tại nhưng create trả AlreadyOwned/Conflict.
                 except Exception:
                     raise RuntimeError(
-                        f"Không kết nối/khởi tạo được MinIO bucket '{self.bucket}' tại {self.endpoint}. "
-                        "Kiểm tra docker-compose.minio.yml và biến MINIO_* trong .env."
+                        f"Không kết nối/khởi tạo được R2 bucket '{self.bucket}' tại {self.endpoint}. "
+                        "Kiểm tra các biến R2_* trong .env."
                     ) from create_exc
 
     def get_bytes(self, key: str) -> Optional[bytes]:

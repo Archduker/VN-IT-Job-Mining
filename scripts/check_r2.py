@@ -15,7 +15,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 load_dotenv(PROJECT_ROOT / ".env")
 
-from collection.common.r2_storage import get_r2_client
+from collection.common.r2_storage import get_r2_client, resolve_r2_endpoint
 
 
 def main():
@@ -24,11 +24,7 @@ def main():
     print("   Dự án: VN-IT-Job-Mining (R2-Exclusive Architecture)")
     print("=" * 70)
 
-    endpoint = (
-        os.getenv("R2_ENDPOINT_URL")
-        or os.getenv("S3_ENDPOINT_URL")
-        or "https://bb8811262069cd3e4d244a9dc7bf6a84.r2.cloudflarestorage.com"
-    )
+    endpoint = resolve_r2_endpoint(required=False) or "(chưa cấu hình)"
     bucket = os.getenv("R2_BUCKET_NAME") or os.getenv("S3_BUCKET_NAME") or "vn-it-jobs"
 
     print(f"1. Cấu hình kiểm tra:")

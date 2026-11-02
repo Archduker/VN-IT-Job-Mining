@@ -34,7 +34,7 @@ Hệ thống được thiết kế theo ranh giới đanh thép (**Ironclad Boun
 |  * Step 7: Master Pipeline Orchestrator -> Xuất bản chuẩn Bộ 3 Deliverables lên Lakehouse          |
 |                                     │                                                              |
 |                                     ▼                                                              |
-|  [ĐẦU RA CUỐI CÙNG: GOLDEN MASTER DATASET] (curated_golden_flat_jobs.parquet)                     |
+|  [ĐẦU RA CUỐI CÙNG: GOLDEN MASTER DATASET] (curated_flat_golden_jobs.parquet)                     |
 |  Sẵn sàng phục vụ trọn vẹn 5 bài toán khai phá chuyên sâu: SD1 - SD5                               |
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
@@ -50,8 +50,8 @@ Hệ thống được thiết kế theo ranh giới đanh thép (**Ironclad Boun
 | **Lưu Trữ Lakehouse** | **Cloudflare R2 Object Storage** (S3 API), **Parquet**, **JSONL** | Lưu trữ đối tượng đám mây phân tầng (`url_ledger/`, `raw/`, `staging/`, `curated/`) |
 | **Điều Phối & Lập Lịch** | **Apache Airflow 2.8+** | Tự động hóa lịch cào Discovery hàng ngày & Detail định kỳ theo hạn ngạch |
 | **Công Cụ Thu Thập** | **Playwright**, **HTTPX**, **BeautifulSoup4**, **Selectolax** | Thu thập SSR DOM, Next.js hydration data, Algolia Search API, GraphQL API |
-| **Xử Lý Dữ Liệu & Query**| **DuckDB**, **Polars**, **Pandas**, **NumPy** | Đọc ghi Parquet tốc độ cao, xử lý vector hóa và ép phẳng dữ liệu quy mô lớn |
-| **AI / NLP & Text Mining**| **Google Gemini API (`gemini-1.5-flash`)**, **Sentence-Transformers** | Bù khuyết văn bản JD, trích xuất kỹ năng ngầm định, tính Cosine Similarity |
+| **Xử Lý Dữ Liệu & Query**| **DuckDB**, **Pandas**, **NumPy** | Đọc ghi Parquet tốc độ cao, xử lý vector hóa và ép phẳng dữ liệu quy mô lớn |
+| **AI / NLP & Text Mining**| **Google Gemini API (`gemini-1.5-flash`)**, **Scikit-learn (TF-IDF)** | Bù khuyết văn bản JD, trích xuất kỹ năng ngầm định, tính Cosine Similarity |
 | **Kiểm Định & Thống Kê** | **Scikit-learn**, **Tukey's IQR Fences**, **Pydantic v2**, **Pytest** | Phát hiện ngoại lai, kiểm soát hợp lệ Data Contract, kiểm thử toàn trình |
 | **Trung Tâm Giám Sát (UI)**| **FastAPI**, **React 18**, **Vite**, **Tailwind CSS**, **Recharts**, **Plotly 3D** | Dashboard điều hành kỹ thuật thời gian thực, trực quan hóa 2D/3D |
 
@@ -135,13 +135,13 @@ Khác với các pipeline truyền thống áp dụng công thức "mò mẫm" c
 |                                     ▼                                                              |
 |  [BƯỚC 6: DEDUPLICATION & RECORD LINKAGE]                                                          |
 |  * Cấp 1 (Blocking): Nhóm theo (normalized_company, primary_city, job_family)                       |
-|  * Cấp 2 (Matching): Tính độ tương đồng tiêu đề (Jaro-Winkler) và Cosine Similarity JD (>= 0.88)   |
+|  * Cấp 2 (Matching): Độ tương đồng tiêu đề (Jaccard) và TF-IDF Cosine JD (>= 0.82 - 0.88)          |
 |  * Golden Record Resolver: Áp dụng Survivorship Rules chọn bản ghi đại diện hoàn chỉnh nhất       |
 |  * Gán cluster_id, cờ is_duplicate = True, lưu vết source_platforms                                |
 |                                     │                                                              |
 |                                     ▼                                                              |
 |  [BƯỚC 7: PIPELINE ORCHESTRATION & LAKEHOUSE PUBLISHING]                                           |
-|  * master_pipeline.py: Điều phối liên hoàn 6 bước, hỗ trợ chạy đơn nguồn hoặc gộp 8 sàn            |
+|  * scripts/run_staging_integration_pipeline.py: Điều phối toàn chuỗi cho cả 8 sàn                  |
 |  * Xuất bản chuẩn Bộ 3 Deliverables sau xử lý cho từng nguồn và bộ dữ liệu hợp nhất                |
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
@@ -150,7 +150,7 @@ Khác với các pipeline truyền thống áp dụng công thức "mò mẫm" c
 ### 3. Chuẩn Xuất Bản Bộ 3 Tài Liệu Sau Xử Lý (The 3-Deliverables Standard)
 Mỗi sàn tuyển dụng sau khi đi qua pipeline tiền xử lý đều xuất bản đúng 3 tài liệu chuẩn mực tại Lakehouse:
 1. **File 1 — Bảng Dữ Liệu Phẳng Chuẩn Hóa (Flat Clean Dataset):**  
-   Đường dẫn: `staging/<source>/<source>_flat_clean.parquet` (và bản hợp nhất `curated/curated_golden_flat_jobs.parquet`). Toàn bộ cấu trúc lồng nhau đã được ép phẳng, các cột định lượng đã sẵn sàng cho mô hình hóa.
+   Đường dẫn: `staging/<source>/<source>_flat_clean.parquet` (và bản hợp nhất `curated/curated_flat_golden_jobs.parquet`). Toàn bộ cấu trúc lồng nhau đã được ép phẳng, các cột định lượng đã sẵn sàng cho mô hình hóa.
 2. **File 2 — Bệnh Án Chất Lượng Dữ Liệu (Data Quality Health Card):**  
    Đường dẫn: `reports/<source>/<source>_quality_health_card.json`. Đo lường 5 trụ cột chất lượng: tỷ lệ khuyết thiếu trước/sau bù khuyết, ngưỡng IQR, phân vị P1-P99, tỷ lệ bản ghi qua GenAI, độ lệch Skewness.
 3. **File 3 — Từ Điển Biến Đổi Dữ Liệu (Transformation Manifest):**  
@@ -195,8 +195,8 @@ python run.py --source topcv --phase discover
 python run.py --source itviec --phase discover
 
 # Chạy Pha 2: Cào chi tiết có bọc Safe Skip & Re-crawl 21 ngày
-python run.py --source topcv --phase detail --batch-size 50
-python run.py --source itviec --phase detail --batch-size 50
+python run.py --source topcv --phase detail --max-items 50
+python run.py --source itviec --phase detail --max-items 50
 
 # Đồng bộ dữ liệu thô lên Cloudflare R2 Lakehouse
 python scripts/push_raw_to_r2.py
@@ -222,8 +222,11 @@ python preprocessing/integration/run_integration.py
 # Chạy toàn bộ chuỗi tiền xử lý (ép phẳng, parse lương, text cleaning, imputer, outlier, dedup)
 python scripts/run_staging_integration_pipeline.py
 
-# Đồng bộ sản phẩm Bộ 3 Deliverables lên Cloudflare R2
+# Đồng bộ dữ liệu Integration (data/integration/ và reports/integration/) lên Cloudflare R2
 python scripts/push_integration_to_r2.py
+
+# Đồng bộ các tầng raw, url_ledger, staging, curated trong data/ lên Cloudflare R2
+python scripts/sync_cloud_lakehouse.py --upload
 ```
 
 ### 5. Chạy Kiểm Thử Tự Động (Test Suites)

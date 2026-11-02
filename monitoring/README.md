@@ -31,7 +31,7 @@ $$\textbf{1. Collection} \longrightarrow \textbf{2. Pre-processing} \longrightar
 
 3. **Giai Đoạn 3: Processing (Tích hợp, Khử trùng lặp & Khai phá AI/ML)**
    - *3.1 Schema Harmonization*: Ánh xạ 8 proprietary schemas về **Common Target Schema v1**.
-   - *3.2 Entity Resolution*: Sử dụng Sentence-Transformers tính Cosine Similarity tiêu đề và công ty để loại bỏ bài đăng trùng lặp xuyên sàn.
+   - *3.2 Entity Resolution*: Kết hợp Jaccard trên tiêu đề và TF-IDF Cosine Similarity trên JD trong từng nhóm công ty + thành phố để loại bỏ bài đăng trùng lặp xuyên sàn.
    - *3.3 Golden Master Dataset Assembly*: Đóng gói tập dữ liệu vàng sạch vào phân tầng `curated/golden_master/` (định dạng Parquet).
    - *3.4 AI/ML 3D Spatial Lab*: Trực quan hóa không gian đa chiều WebGL 60 FPS (UMAP 3D Embeddings và ranh giới phân tách tin rác Isolation Forest).
 

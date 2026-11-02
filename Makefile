@@ -29,14 +29,14 @@ help:
 	@echo ""
 	@echo "  Setup & Environment:"
 	@echo "    make setup              Full setup: venv + Airflow install"
-	@echo "    make install            Install runtime deps (pandas, duckdb, minio...)"
+	@echo "    make install            Install runtime deps (pandas, duckdb, boto3...)"
 	@echo "    make install-dev        Install runtime + dev deps"
-	@echo "    make check-env          Verify environment & MinIO connection"
+	@echo "    make check-env          Verify environment & Cloudflare R2 connection"
 	@echo ""
-	@echo "  MinIO Lakehouse:"
-	@echo "    make minio-up           Start local MinIO server (Docker) + auto-init bucket"
-	@echo "    make minio-down         Stop MinIO container"
-	@echo "    make setup-minio        Verify/Create vn-it-jobs bucket via python script"
+	@echo "  Database & Cloud Lakehouse:"
+	@echo "    make db-up              Start PostgreSQL (Docker)"
+	@echo "    make db-down            Stop PostgreSQL"
+	@echo "    make check-r2           Check the Cloudflare R2 connection"
 	@echo ""
 	@echo "  Testing:"
 	@echo "    make test               Run all unit tests"
@@ -105,7 +105,7 @@ test:
 	$(PYTEST) tests/ -v
 
 test-ledger:
-	$(PYTEST) tests/unit/test_url_ledger.py -v
+	$(PYTEST) tests/test_url_ledger_dedup.py -v
 
 test-cov:
 	$(PYTEST) tests/ --cov=collection --cov-report=term-missing --cov-report=html:htmlcov
@@ -133,13 +133,13 @@ discover-topcv:
 	$(PYTHON) run.py --source topcv --phase discover
 
 crawl-topcv:
-	$(PYTHON) run.py --source topcv --phase detail --batch-size 50
+	$(PYTHON) run.py --source topcv --phase detail --max-items 50
 
 discover-topdev:
 	$(PYTHON) run.py --source topdev --phase discover
 
 crawl-topdev:
-	$(PYTHON) run.py --source topdev --phase detail --batch-size 50
+	$(PYTHON) run.py --source topdev --phase detail --max-items 50
 
 crawl-careerviet:
 	$(PYTHON) run.py --source careerviet --phase all

@@ -27,7 +27,7 @@ from __future__ import annotations
 import hashlib
 import re
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Any, Optional, Union
 from urllib.parse import urlparse, urlencode, parse_qs, urlunparse
 
 from pydantic import BaseModel, Field, field_validator, model_validator

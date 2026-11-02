@@ -32,7 +32,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Generator, List, Optional
+from typing import Any, Dict, Generator, List, Optional, Union
 from urllib.parse import urljoin, urlparse
 
 # Đảm bảo import được các module của dự án

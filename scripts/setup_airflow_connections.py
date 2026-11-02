@@ -28,11 +28,13 @@ except ImportError:
 
 
 def register_r2_connection():
-    endpoint = (
-        os.getenv("R2_ENDPOINT_URL")
-        or os.getenv("S3_ENDPOINT_URL")
-        or "https://bb8811262069cd3e4d244a9dc7bf6a84.r2.cloudflarestorage.com"
-    )
+    endpoint = os.getenv("R2_ENDPOINT_URL") or os.getenv("S3_ENDPOINT_URL")
+    account_id = os.getenv("R2_ACCOUNT_ID")
+    if not endpoint and account_id:
+        endpoint = f"https://{account_id}.r2.cloudflarestorage.com"
+    if not endpoint:
+        print("[ERROR] Chưa cấu hình R2_ENDPOINT_URL hoặc R2_ACCOUNT_ID.")
+        sys.exit(1)
     ak = os.getenv("R2_ACCESS_KEY_ID") or os.getenv("AWS_ACCESS_KEY_ID")
     sk = os.getenv("R2_SECRET_ACCESS_KEY") or os.getenv("AWS_SECRET_ACCESS_KEY")
 

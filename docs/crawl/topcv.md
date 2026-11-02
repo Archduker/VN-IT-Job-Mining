@@ -77,7 +77,7 @@ flowchart LR
     end
 
     subgraph Detail["Pha 2: Detail Extraction"]
-        C1["python run.py --source topcv --phase detail --batch-size 50"]
+        C1["python run.py --source topcv --phase detail --max-items 50"]
         C2["Kiểm tra Re-crawl 21 ngày & Safe Skip"]
         C3["Lưu snapshot raw vào data/raw/topcv/"]
         C1 --> C2 --> C3
