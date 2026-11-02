@@ -40,7 +40,7 @@ export const ProcessingPage: React.FC = () => {
         <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold uppercase tracking-wider">
           Giai Đoạn 3 • Stage 3
         </span>
-        <h2 className="text-xl font-bold text-white mt-1.5">
+        <h2 className="text-xl font-bold text-slate-100 mt-1.5">
           Processing, Schema Harmonization & Deduplication
         </h2>
         <p className="text-xs text-slate-400">
@@ -52,7 +52,7 @@ export const ProcessingPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
           <div className="text-xs text-slate-400">Ngưỡng Tương Đồng (Threshold)</div>
-          <div className="text-2xl font-bold text-white mt-1.5">
+          <div className="text-2xl font-bold text-slate-100 mt-1.5">
             Cosine $\ge$ {deduplication_metrics.similarity_threshold}
           </div>
           <div className="text-xs text-slate-400 mt-1">all-MiniLM-L6-v2 Embeddings</div>
@@ -81,7 +81,7 @@ export const ProcessingPage: React.FC = () => {
 
       {/* Similarity Score Distribution Chart */}
       <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-        <h3 className="text-sm font-bold text-white">
+        <h3 className="text-sm font-bold text-slate-100">
           Phân Phối Điểm Tương Đồng Ngữ Nghĩa (Cosine Similarity Distribution)
         </h3>
         <div className="h-56">
@@ -101,7 +101,7 @@ export const ProcessingPage: React.FC = () => {
 
       {/* Schema Mapping Inventory Table */}
       <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+        <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
           <GitMerge className="w-4 h-4 text-emerald-400" />
           <span>Bảng Ánh Xạ Schema Đích Chuẩn Hóa (Common Target Schema v1)</span>
         </h3>
@@ -118,7 +118,7 @@ export const ProcessingPage: React.FC = () => {
             <tbody className="divide-y divide-slate-800/60">
               {schema_mapping_inventory.map((row: any) => (
                 <tr key={row.target_field} className="hover:bg-slate-800/40">
-                  <td className="py-2.5 px-3 font-mono font-bold text-white">{row.target_field}</td>
+                  <td className="py-2.5 px-3 font-mono font-bold text-slate-100">{row.target_field}</td>
                   <td className="py-2.5 px-3 text-slate-400">{row.data_type}</td>
                   <td className="py-2.5 px-3 font-semibold text-emerald-400">{row.unified_pct}%</td>
                   <td className="py-2.5 px-3">

@@ -78,7 +78,7 @@ export const EDAPage: React.FC = () => {
               Khoa Học Dữ Liệu • Data Science & EDA Hub
             </span>
           </div>
-          <h2 className="text-xl font-bold text-white mt-1">
+          <h2 className="text-xl font-bold text-slate-100 mt-1">
             EDA Intelligence: Kiểm Kê Trường & 5 Họ Biểu Đồ 2D
           </h2>
           <p className="text-xs text-slate-400">
@@ -93,7 +93,7 @@ export const EDAPage: React.FC = () => {
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               viewMode === 'single'
                 ? 'bg-cyan-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-400 hover:text-slate-100'
             }`}
           >
             Đơn Nguồn ({selectedSource.toUpperCase()})
@@ -103,7 +103,7 @@ export const EDAPage: React.FC = () => {
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               viewMode === 'cross'
                 ? 'bg-cyan-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-400 hover:text-slate-100'
             }`}
           >
             So Sánh Xuyên Sàn (8 Sàn)
@@ -124,7 +124,7 @@ export const EDAPage: React.FC = () => {
                   className={`px-3 py-1 rounded-lg text-xs font-semibold uppercase transition ${
                     selectedSource === s
                       ? 'bg-cyan-600 text-white shadow'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800'
                   }`}
                 >
                   {s}
@@ -147,7 +147,7 @@ export const EDAPage: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
                 <div className="text-xs text-slate-400">Tổng Số Bản Ghi (N)</div>
-                <div className="text-xl font-bold text-white mt-1">
+                <div className="text-xl font-bold text-slate-100 mt-1">
                   {summary.total_records.toLocaleString()} tin
                 </div>
                 <div className="text-[11px] text-slate-400 mt-1">Mẫu khảo sát cào thô</div>
@@ -183,7 +183,7 @@ export const EDAPage: React.FC = () => {
 
           {/* Field Inventory Table */}
           <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+            <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
               <Table className="w-4 h-4 text-cyan-400" />
               <span>Bảng Kiểm Kê Trường & Tỷ Lệ Missing (Field Inventory)</span>
             </h3>
@@ -202,7 +202,7 @@ export const EDAPage: React.FC = () => {
                 <tbody className="divide-y divide-slate-800/60">
                   {inventory.map((row) => (
                     <tr key={row.field_name} className="hover:bg-slate-800/40">
-                      <td className="py-2.5 px-3 font-mono font-bold text-white">
+                      <td className="py-2.5 px-3 font-mono font-bold text-slate-100">
                         {row.field_name}
                       </td>
                       <td className="py-2.5 px-3 text-slate-400">{row.data_type}</td>
@@ -236,7 +236,7 @@ export const EDAPage: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Họ 1: Phân Phối Lương (Histogram) */}
               <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                <h4 className="text-sm font-bold text-white flex items-center space-x-2">
+                <h4 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
                   <Activity className="w-4 h-4 text-indigo-400" />
                   <span>Họ 1: Phân Phối Mức Lương IT (Histogram 2D)</span>
                 </h4>
@@ -262,7 +262,7 @@ export const EDAPage: React.FC = () => {
 
               {/* Họ 5: Tần Suất Kỹ Năng & Pareto */}
               <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                <h4 className="text-sm font-bold text-white flex items-center space-x-2">
+                <h4 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
                   <TrendingUp className="w-4 h-4 text-emerald-400" />
                   <span>Họ 5: Tần Suất Kỹ Năng & Pareto (Top Yêu Cầu)</span>
                 </h4>
@@ -286,7 +286,7 @@ export const EDAPage: React.FC = () => {
       ) : (
         /* Cross-Platform Comparison Mode */
         <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-          <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+          <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
             <Sparkles className="w-4 h-4 text-cyan-400" />
             <span>So Sánh Chất Lượng & Độ Hoàn Thiện Giữa 8 Sàn Tuyển Dụng</span>
           </h3>
@@ -317,7 +317,7 @@ export const EDAPage: React.FC = () => {
                   { name: 'JobsGO', comp: 90.5, sal: 79.0, exp: 86.5, spec: 'Bảo vệ Cloudflare, phủ rộng thị trường' },
                 ].map((row) => (
                   <tr key={row.name} className="hover:bg-slate-800/40">
-                    <td className="py-2.5 px-3 font-bold text-white">{row.name}</td>
+                    <td className="py-2.5 px-3 font-bold text-slate-100">{row.name}</td>
                     <td className="py-2.5 px-3 text-emerald-400 font-semibold">{row.comp}%</td>
                     <td className="py-2.5 px-3 text-cyan-400 font-semibold">{row.sal}%</td>
                     <td className="py-2.5 px-3 text-indigo-300 font-semibold">{row.exp}%</td>

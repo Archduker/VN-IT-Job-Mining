@@ -15,7 +15,7 @@ def get_airflow_daemon_status():
     return airflow_service.get_daemon_status()
 
 
-@router.get("/dags", summary="Lấy danh sách 7 DAGs cào dữ liệu và trạng thái chạy gần nhất")
+@router.get("/dags", summary="Lấy danh sách 9 DAGs cào dữ liệu và trạng thái chạy gần nhất")
 def get_crawler_dags():
     """Trả về danh sách các DAGs cào xoay vòng hàng ngày, lịch chạy, và kết quả thực thi gần nhất."""
     return airflow_service.get_crawler_dags_status()

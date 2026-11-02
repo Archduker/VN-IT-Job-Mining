@@ -172,9 +172,10 @@ export interface R2DiffResult {
 
 export interface R2SyncResponse {
   source: string
+  status: 'completed' | 'failed'
   uploaded_count: number
-  failed_count: number
-  errors: string[]
+  errors_count?: number
+  message?: string
 }
 
 
@@ -358,3 +359,160 @@ export interface AlertSummary {
   last_checked: string
 }
 
+
+// ── Trang Collection và Raw (/api/v1/monitor) ─────────────────────
+export type RunStatus = 'done' | 'partial' | 'fail' | 'running' | null
+
+export interface SourceDayCell {
+  count: number
+  status: RunStatus
+  runs: number
+  failed_runs: number
+  first_start: string | null
+  last_end: string | null
+}
+
+export interface CollectionDay {
+  date: string
+  dow: string
+  is_today: boolean
+  total: number
+  by_source: Record<string, SourceDayCell>
+}
+
+export interface CollectionKpi {
+  today: number
+  yesterday: number
+  total: number
+  avg_per_day: number
+  runs_ok: number | null
+  runs_total: number | null
+  unique_total: number | null
+  unique_reason: string | null
+}
+
+export interface ProgressPoint {
+  date: string
+  actual: number
+  plan: number | null
+}
+
+export interface ScheduleItem {
+  label: string
+  times: string[]
+  note: string
+}
+
+export interface TodayStep {
+  time: string | null
+  name: string
+  status: RunStatus
+  detail: string
+}
+
+export interface CollectionMonitor {
+  generated_at: string
+  days: CollectionDay[]
+  count_origin: Record<string, 'ledger' | 'raw' | null>
+  kpi: CollectionKpi
+  queue: { pending: number; recheck_due: number; failed: number; done: number; total: number }
+  progress: { target: number; target_date: string; points: ProgressPoint[] }
+  schedule: ScheduleItem[]
+  today_steps: TodayStep[]
+  airflow_available: boolean
+  unavailable_reason: string | null
+  has_data: boolean
+}
+
+export interface SourceOverviewItem {
+  source: string
+  completeness_pct: number | null
+}
+
+export interface FeatureTarget {
+  code: string
+  name: string
+  use: string
+  std: string
+  raw_key: string | null
+}
+
+export interface FeatureIssue {
+  code: string
+  label: string
+  problem: string
+  where: string
+  fix: string
+}
+
+export interface SourceReport {
+  source: string
+  domain: string
+  overview: {
+    integrated_records: number | null
+    clean_records: number | null
+    stub_removed: number | null
+    report_time: string | null
+    completeness_pct: number | null
+    weakest: string | null
+    weakest_pct: number | null
+    ledger: { total: number; pending: number; done: number; recheck_due: number; failed: number } | null
+  }
+  unavailable_reason: string | null
+  targets: FeatureTarget[]
+  issues: FeatureIssue[]
+}
+
+export interface UnivariateItem {
+  label: string
+  count: number
+  pct: number
+}
+
+export interface Univariate {
+  code: string
+  kind: 'num' | 'cat' | 'empty'
+  title?: string
+  unit?: string
+  base?: number
+  items?: UnivariateItem[]
+  stats?: { k: string; v: string | number | null }[]
+  unavailable_reason: string | null
+}
+
+export interface SampleList {
+  source: string
+  origin: 'local' | 'r2' | null
+  items: { id: string; title: string | null }[]
+  unavailable_reason: string | null
+}
+
+export type JsonPath = (string | number)[]
+
+export interface SampleHighlight {
+  path: JsonPath
+  kind: 'feature' | 'dup'
+  feature: string | null
+}
+
+export interface SampleNote {
+  code: string
+  name: string
+  status: 'ok' | 'warn' | 'fallback' | 'fail' | 'missing'
+  path: string | null
+  raw: string | null
+  normalized: string | null
+  how: string
+}
+
+export interface RawSample {
+  source: string
+  id: string
+  origin: 'local' | 'r2'
+  raw: unknown
+  title: string | null
+  scraped_at: string | null
+  highlights: SampleHighlight[]
+  notes: SampleNote[]
+  features_in_raw: number
+}

@@ -3,7 +3,7 @@
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import alerts, cloud_r2, dashboard
+from app.api.v1.endpoints import alerts, cloud_r2, dashboard, monitor
 from app.api.v1.endpoints.collection import crawling, eda as collection_eda
 from app.api.v1.endpoints.preprocessing import cleaning
 from app.api.v1.endpoints.processing import harmonization
@@ -41,3 +41,6 @@ api_router.include_router(cloud_r2.router, prefix="/cloud/r2", tags=["Cloudflare
 
 # 9. Trung Tâm Cảnh Báo Sự Cố Thời Gian Thực (Alert Center)
 api_router.include_router(alerts.router, prefix="/alerts", tags=["System Alerts"])
+
+# 10. Trang chính Collection và Raw: chỉ dùng số liệu thật
+api_router.include_router(monitor.router, prefix="/monitor", tags=["Monitor"])

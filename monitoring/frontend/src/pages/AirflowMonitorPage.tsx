@@ -63,7 +63,7 @@ export const AirflowMonitorPage: React.FC = () => {
             </span>
             <span className="text-[11px] text-slate-500 font-mono">Port 8080 • PostgreSQL DB</span>
           </div>
-          <h2 className="text-xl font-bold text-white mt-1.5 flex items-center space-x-2">
+          <h2 className="text-xl font-bold text-slate-100 mt-1.5 flex items-center space-x-2">
             <span>Apache Airflow Orchestrator Monitor</span>
           </h2>
           <p className="text-xs text-slate-400">
@@ -198,7 +198,7 @@ export const AirflowMonitorPage: React.FC = () => {
             <span className="text-xs font-medium text-slate-400">Tổng Số DAGs Hoạt Động</span>
             <Layers className="w-4 h-4 text-indigo-400" />
           </div>
-          <div className="text-lg font-bold text-white">
+          <div className="text-lg font-bold text-slate-100">
             {status?.active_dags_count || dags.length} DAGs
           </div>
           <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
@@ -226,7 +226,7 @@ export const AirflowMonitorPage: React.FC = () => {
         <div className="p-4 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Activity className="w-4 h-4 text-violet-400" />
-            <h3 className="text-sm font-bold text-white">
+            <h3 className="text-sm font-bold text-slate-100">
               Danh Sách DAGs Tuyển Dụng Xoay Vòng Hàng Tuần
             </h3>
           </div>

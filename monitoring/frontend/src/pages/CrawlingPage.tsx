@@ -136,6 +136,8 @@ export const CrawlingPage: React.FC = () => {
     fetchLedger()
   }, [selectedSource, ledgerPage, searchLedger, statusFilter])
 
+  useEffect(() => () => eventSourceRef.current?.close(), [])
+
   const startLogStream = () => {
     if (eventSourceRef.current) {
       eventSourceRef.current.close()
@@ -262,7 +264,7 @@ export const CrawlingPage: React.FC = () => {
               Operations Module • Crawling Operations
             </span>
           </div>
-          <h2 className="text-xl font-bold text-white mt-1">
+          <h2 className="text-xl font-bold text-slate-100 mt-1">
             Batch Crawler Orchestrator & URL Ledger ({selectedSource.toUpperCase()})
           </h2>
           <p className="text-xs text-slate-400">
@@ -292,7 +294,7 @@ export const CrawlingPage: React.FC = () => {
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
               <span className="text-slate-400">Active Source:</span>
-              <span className="ml-2 text-white font-bold">{activeSource ? activeSource.name : 'None'}</span>
+              <span className="ml-2 text-slate-100 font-bold">{activeSource ? activeSource.name : 'None'}</span>
             </div>
             <div>
               <span className="text-slate-400">Engine:</span>
@@ -332,7 +334,7 @@ export const CrawlingPage: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <p className="text-xs text-slate-400 mb-1">Total Stored Objects</p>
-              <p className="text-3xl font-extrabold font-mono text-white">{cloudSync?.total_cloud_raw?.toLocaleString() ?? '—'}</p>
+              <p className="text-3xl font-extrabold font-mono text-slate-100">{cloudSync?.total_cloud_raw?.toLocaleString() ?? '—'}</p>
             </div>
             <div>
               <p className="text-xs text-slate-400 mb-1">Sync Health</p>
@@ -364,7 +366,7 @@ export const CrawlingPage: React.FC = () => {
       {syncFeedback && (
         <div className="p-3.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs flex items-center justify-between">
           <span>{syncFeedback}</span>
-          <button onClick={() => setSyncFeedback(null)} className="text-slate-400 hover:text-white">✕</button>
+          <button onClick={() => setSyncFeedback(null)} className="text-slate-400 hover:text-slate-100">✕</button>
         </div>
       )}
       {errorMessage && (
@@ -373,7 +375,7 @@ export const CrawlingPage: React.FC = () => {
             <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
             <span>{errorMessage}</span>
           </div>
-          <button onClick={() => setErrorMessage(null)} className="text-slate-400 hover:text-white ml-2">✕</button>
+          <button onClick={() => setErrorMessage(null)} className="text-slate-400 hover:text-slate-100 ml-2">✕</button>
         </div>
       )}
 
@@ -381,7 +383,7 @@ export const CrawlingPage: React.FC = () => {
       {phase1Data.length > 0 && (
         <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
           <div className="border-b border-slate-800 pb-3">
-            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+            <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
               <Layers className="w-4 h-4 text-indigo-400" />
               <span>3.1 Phase 1: Daily URL Discovery Schedule (05:00 AM UTC+7)</span>
             </h3>
@@ -406,12 +408,12 @@ export const CrawlingPage: React.FC = () => {
               <tbody className="divide-y divide-slate-800/60">
                 {phase1Data.map((d) => (
                   <tr key={`p1-${d.day_index}`} className="hover:bg-slate-800/40 transition">
-                    <td className="py-2.5 px-3 font-bold text-white whitespace-nowrap">{d.day_of_week}</td>
+                    <td className="py-2.5 px-3 font-bold text-slate-100 whitespace-nowrap">{d.day_of_week}</td>
                     <td className="py-2.5 px-3 font-semibold text-indigo-300 uppercase">{d.focal_source}</td>
                     <td className="py-2.5 px-3 font-mono text-[11px] text-slate-300">{d.dag_id}</td>
                     <td className="py-2.5 px-3 font-mono text-[11px] text-slate-300">{d.task_id}</td>
                     <td className="py-2.5 px-3 text-slate-300">{d.scheduled_time}</td>
-                    <td className="py-2.5 px-3 text-white font-mono font-bold">{d.quota_pages} Pages</td>
+                    <td className="py-2.5 px-3 text-slate-100 font-mono font-bold">{d.quota_pages} Pages</td>
                     <td className="py-2.5 px-3 text-emerald-400 font-mono font-bold">{d.total_discovered.toLocaleString()} URLs</td>
                     <td className="py-2.5 px-3 text-right">{renderStatusBadge(d.status)}</td>
                   </tr>
@@ -426,7 +428,7 @@ export const CrawlingPage: React.FC = () => {
       <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+            <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
               <Calendar className="w-4 h-4 text-indigo-400" />
               <span>3.2 Phase 2: Adaptive Detail Extraction Schedule (20:00 PM UTC+7)</span>
             </h3>
@@ -457,11 +459,11 @@ export const CrawlingPage: React.FC = () => {
             <tbody className="divide-y divide-slate-800/60">
               {phase2Data.map((day) => (
                 <tr key={`p2-${day.day_index}`} className="hover:bg-slate-800/40 transition">
-                  <td className="py-2.5 px-3 font-bold text-white whitespace-nowrap">{day.day_of_week}</td>
+                  <td className="py-2.5 px-3 font-bold text-slate-100 whitespace-nowrap">{day.day_of_week}</td>
                   <td className="py-2.5 px-3 font-semibold text-indigo-300 uppercase">{day.focal_source}</td>
                   <td className="py-2.5 px-3 font-mono text-[11px] text-slate-300">{day.dag_id}</td>
                   <td className="py-2.5 px-3 text-slate-300">{day.scheduled_time}</td>
-                  <td className="py-2.5 px-3 font-mono text-white font-bold">{day.projected_quota} items</td>
+                  <td className="py-2.5 px-3 font-mono text-slate-100 font-bold">{day.projected_quota} items</td>
                   <td className="py-2.5 px-3 font-mono text-emerald-400 font-bold">{day.actual_crawled.toLocaleString()} items</td>
                   <td className="py-2.5 px-3 font-mono font-bold">
                     <span className={day.uncrawled_pending > 0 ? 'text-amber-400' : 'text-slate-500'}>
@@ -496,7 +498,7 @@ export const CrawlingPage: React.FC = () => {
 
       {/* 4. DATA SOURCE SELECTION MATRIX (8 PORTALS) */}
       <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+        <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
           <Cpu className="w-4 h-4 text-indigo-400" />
           <span>Data Source Selection Matrix (8 Portals)</span>
         </h3>
@@ -525,7 +527,7 @@ export const CrawlingPage: React.FC = () => {
                       isRunning ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'
                     }`}
                   />
-                  <span className="text-xs font-bold uppercase text-white truncate">{s.name}</span>
+                  <span className="text-xs font-bold uppercase text-slate-100 truncate">{s.name}</span>
                 </div>
                 <p className="text-lg font-extrabold font-mono text-indigo-300">{cloudCount.toLocaleString()}</p>
                 <p className="text-[10px] text-slate-400">in R2</p>
@@ -539,7 +541,7 @@ export const CrawlingPage: React.FC = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-center">
           <p className="text-xs text-slate-400 uppercase tracking-wider font-bold mb-2">Total URLs in Ledger</p>
-          <p className="text-4xl font-extrabold font-mono text-white">{enumSummary?.total?.toLocaleString() || '—'}</p>
+          <p className="text-4xl font-extrabold font-mono text-slate-100">{enumSummary?.total?.toLocaleString() || '—'}</p>
           <p className="text-xs text-slate-400 mt-1">Discovered Catalog</p>
         </div>
         <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-center">
@@ -563,12 +565,12 @@ export const CrawlingPage: React.FC = () => {
       <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+            <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
               <Layers className="w-4 h-4 text-indigo-400" />
               <span>5-State Enum Lifecycle Breakdown</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Total <span className="text-white font-bold font-mono">{enumSummary?.total?.toLocaleString() || '—'}</span> URLs across the entire URL Ledger system. Click a card to filter.
+              Total <span className="text-slate-100 font-bold font-mono">{enumSummary?.total?.toLocaleString() || '—'}</span> URLs across the entire URL Ledger system. Click a card to filter.
             </p>
           </div>
           {statusFilter !== 'ALL' && (
@@ -602,7 +604,7 @@ export const CrawlingPage: React.FC = () => {
                 <span className={`text-xs font-bold uppercase tracking-wider text-${st.color}-400`}>{st.label}</span>
                 {st.icon}
               </div>
-              <p className="text-3xl font-extrabold font-mono text-white">{st.data?.count?.toLocaleString() || 0}</p>
+              <p className="text-3xl font-extrabold font-mono text-slate-100">{st.data?.count?.toLocaleString() || 0}</p>
               <div className="flex items-center justify-between mt-1">
                 <span className="text-[10px] text-slate-400">{st.desc}</span>
                 <span className={`text-xs font-semibold text-${st.color}-400`}>{st.data?.pct || 0}%</span>
@@ -638,7 +640,7 @@ export const CrawlingPage: React.FC = () => {
               <select
                 value={phase}
                 onChange={(e) => setPhase(e.target.value)}
-                className="bg-slate-950 border border-slate-800 text-white text-xs rounded-xl px-3 py-2 font-medium focus:outline-none focus:border-indigo-500"
+                className="bg-slate-950 border border-slate-800 text-slate-100 text-xs rounded-xl px-3 py-2 font-medium focus:outline-none focus:border-indigo-500"
               >
                 <option value="all">Full Pipeline (Phase 1 + Phase 2)</option>
                 <option value="discover">Phase 1: URL Discovery</option>
@@ -655,7 +657,7 @@ export const CrawlingPage: React.FC = () => {
                 max="200"
                 value={maxItems}
                 onChange={(e) => setMaxItems(Number(e.target.value))}
-                className="w-28 bg-slate-950 border border-slate-800 text-white text-xs rounded-xl px-3 py-2 font-mono focus:outline-none focus:border-indigo-500"
+                className="w-28 bg-slate-950 border border-slate-800 text-slate-100 text-xs rounded-xl px-3 py-2 font-mono focus:outline-none focus:border-indigo-500"
               />
             </div>
             {(selectedSource === 'topcv' || selectedSource === 'jobsgo') && (
@@ -666,7 +668,7 @@ export const CrawlingPage: React.FC = () => {
                 <select
                   value={engine}
                   onChange={(e) => setEngine(e.target.value)}
-                  className="bg-slate-950 border border-slate-800 text-white text-xs rounded-xl px-3 py-2 font-medium focus:outline-none focus:border-indigo-500"
+                  className="bg-slate-950 border border-slate-800 text-slate-100 text-xs rounded-xl px-3 py-2 font-medium focus:outline-none focus:border-indigo-500"
                 >
                   <option value="curl_cffi">curl_cffi (JA3/TLS Chrome 124)</option>
                   <option value="playwright">playwright (Headless Browser Fallback)</option>
@@ -686,7 +688,7 @@ export const CrawlingPage: React.FC = () => {
             ) : (
               <button
                 onClick={handleStartCrawl}
-                className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold transition shadow-lg shadow-indigo-600/30"
+                className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-slate-100 text-xs font-bold transition shadow-lg shadow-indigo-600/30"
               >
                 <Play className="w-4 h-4 fill-current" />
                 <span>START BATCH CRAWL</span>
@@ -709,7 +711,7 @@ export const CrawlingPage: React.FC = () => {
               </span>
             )}
           </div>
-          <button onClick={() => setLogs([])} className="text-xs text-slate-400 hover:text-white transition">
+          <button onClick={() => setLogs([])} className="text-xs text-slate-400 hover:text-slate-100 transition">
             Clear
           </button>
         </div>
@@ -733,12 +735,12 @@ export const CrawlingPage: React.FC = () => {
       <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+            <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
               <FileCode2 className="w-4 h-4 text-indigo-400" />
               <span>URL Ledger Manifest ({selectedSource.toUpperCase()})</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Total: <span className="font-bold text-white">{ledgerTotal}</span> URLs
+              Total: <span className="font-bold text-slate-100">{ledgerTotal}</span> URLs
               • Done: <span className="text-emerald-400 font-semibold">{ledgerCounts['DONE'] || ledgerCounts['SCRAPED'] || 0}</span>
               • Pending: <span className="text-amber-400 font-semibold">{ledgerCounts['PENDING'] || ledgerCounts['NEW'] || 0}</span>
               • Failed: <span className="text-rose-400 font-semibold">{ledgerCounts['ERROR'] || ledgerCounts['FAILED'] || 0}</span>
@@ -748,7 +750,7 @@ export const CrawlingPage: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => { setStatusFilter(e.target.value); setLedgerPage(1) }}
-              className="bg-slate-950 border border-slate-800 text-xs rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500"
+              className="bg-slate-950 border border-slate-800 text-xs rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-indigo-500"
             >
               <option value="ALL">All Status</option>
               <option value="DONE">DONE (Extracted)</option>
@@ -764,7 +766,7 @@ export const CrawlingPage: React.FC = () => {
                 placeholder="Search Job ID, URL Hash..."
                 value={searchLedger}
                 onChange={(e) => { setSearchLedger(e.target.value); setLedgerPage(1) }}
-                className="bg-slate-950 border border-slate-800 text-xs rounded-xl pl-9 pr-3 py-2 text-white placeholder-slate-400 w-56 focus:outline-none focus:border-indigo-500"
+                className="bg-slate-950 border border-slate-800 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-100 placeholder-slate-400 w-56 focus:outline-none focus:border-indigo-500"
               />
             </div>
           </div>
@@ -799,7 +801,7 @@ export const CrawlingPage: React.FC = () => {
 
                   return (
                     <tr key={idx} className="hover:bg-slate-800/40 transition">
-                      <td className="py-2.5 px-3 font-mono font-bold text-white">
+                      <td className="py-2.5 px-3 font-mono font-bold text-slate-100">
                         {item.job_id || item.url_hash?.slice(0, 12) || 'N/A'}
                       </td>
                       <td className="py-2.5 px-3">

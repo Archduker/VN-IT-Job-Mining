@@ -36,7 +36,7 @@ Tài liệu này là quy chuẩn bắt buộc (Non-negotiable Rules) cho bất k
   1. Trạng thái của **Scheduler daemon** (PID, Heartbeat).
   2. Trạng thái của **Webserver daemon** (Cổng `:8080`, số lượng workers).
   3. Lịch sử chạy và kết quả thực thi (`success`, `failed`, `running`) của 9 DAGs cào Hai Pha: `dag_discovery_daily` (quét URL 05:00 hàng ngày) và 8 DAGs cào chi tiết dồn cuối tuần `crawler_detail_<source>`.
-  4. Thông tin được truy vấn trực tiếp từ cơ sở dữ liệu `airflow/airflow.db` và tiến trình hệ điều hành.
+  4. Thông tin được truy vấn trực tiếp từ cơ sở dữ liệu PostgreSQL của Airflow và tiến trình hệ điều hành.
 
 ---
 
@@ -53,16 +53,12 @@ Tài liệu này là quy chuẩn bắt buộc (Non-negotiable Rules) cho bất k
 ---
 
 ## 6. Tiêu Chuẩn Thẩm Mỹ Giao Diện (Aesthetic & Design Standards)
-- **Theme**: Dark Slate cao cấp làm chủ đạo (`bg-slate-950`, `bg-slate-900`, viền `border-slate-800`).
-- **Hiệu ứng**: Áp dụng Glassmorphism (`backdrop-blur-md`), góc bo hiện đại (`rounded-2xl`), và các hiệu ứng phát sáng nhẹ (Subtle glow).
-- **Màu sắc ngữ nghĩa thống nhất**:
-  - `Emerald (#10b981)`: Trạng thái thành công, Golden Master Dataset, kết nối online.
-  - `Cyan (#06b6d4)`: Tác vụ tiền xử lý, dữ liệu làm sạch.
-  - `Indigo/Violet (#6366f1 / #8b5cf6)`: Master Dashboard, thương hiệu hệ thống, phân hệ ML 3D.
-  - `Amber (#f59e0b)`: Cảnh báo, chênh lệch đồng bộ (Out of sync), tiến trình đang chạy.
-  - `Rose (#f43f5e)`: Lỗi cào, bài đăng bất thường / tin rác (Isolation Forest Anomaly).
-- **Tận dụng MCP**: Tận dụng triệt để `shadcn-space` MCP để lấy cấu trúc blocks chuẩn, kết hợp `magic-ui` để tạo animation mượt mà.
-
+- **Theme**: Nền sáng theo thiết kế JobCrawl Dashboard v2: nền trang `#F4F4F7`, thẻ trắng viền `#ECEBF2`, chữ `#1C1B26`, thanh điều hướng tối `#1C1B26`. Token nằm trong `monitoring/frontend/tailwind.config.ts`.
+- **Phông chữ**: Chỉ dùng một phông Be Vietnam Pro.
+- **Màu nhấn**: Một màu tím `#5B4CE6`. Mỗi nguồn có một màu cố định trong `constants/sources.ts`, dùng giống nhau ở mọi biểu đồ.
+- **Màu trạng thái thống nhất**: xanh là xong, cam là xong một phần, đỏ là lỗi, tím nhạt là đang chạy.
+- **Biểu đồ**: Di chuột vào phải hiện tooltip nền tối ghi rõ số liệu.
+- **Số liệu**: Trang chính chỉ hiện số thật; thiếu dữ liệu thì hiện trạng thái trống kèm lý do. Trang còn dùng số minh họa phải gắn nhãn "Số liệu mẫu".
 
 ---
 

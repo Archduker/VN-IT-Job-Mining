@@ -4,6 +4,17 @@ Hệ thống Giám sát & Đo lường Toàn diện cho nền tảng khai phá d
 
 ---
 
+## 🧭 Trang Chính
+
+| Trang | Đường dẫn | API | Nội dung |
+| :--- | :--- | :--- | :--- |
+| Collection | `/` | `GET /api/v1/monitor/collection?days=7\|14` | Tin theo ngày, lịch cào, các bước hôm nay, tiến độ so với kế hoạch |
+| Raw | `/raw` | `GET /api/v1/monitor/sources`, `/sources/{source}/report`, `/univariate/{F1..F8}`, `/samples`, `/samples/{id}` | 8 feature target, vấn đề và hướng xử lý, phân tích đơn biến, bản ghi raw có chú thích |
+
+Hai trang này chỉ hiện số thật, thiếu dữ liệu thì báo trống kèm lý do. Kế hoạch thu thập đặt bằng `TARGET_UNIQUE` và `TARGET_DATE` trong `.env`. Các trang EDA, Pre-processing, Processing, Master Dashboard và ML 3D nằm trong nhóm "Công cụ khác" và còn dùng số minh họa, có gắn nhãn "Số liệu mẫu".
+
+---
+
 ## 🎯 Sứ Mệnh Cốt Lõi (Core Mission)
 
 > **Mục tiêu tối thượng của hệ thống Monitoring**:

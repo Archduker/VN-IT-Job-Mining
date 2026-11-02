@@ -146,7 +146,7 @@ export const MLMining3DPage: React.FC = () => {
           <span className="text-xs px-2.5 py-0.5 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20 font-semibold uppercase tracking-wider">
             Phòng Thí Nghiệm Machine Learning 3D
           </span>
-          <h2 className="text-xl font-bold text-white mt-1.5">
+          <h2 className="text-xl font-bold text-slate-100 mt-1.5">
             3D Spatial Machine Learning Observatory
           </h2>
           <p className="text-xs text-slate-400">
@@ -161,7 +161,7 @@ export const MLMining3DPage: React.FC = () => {
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               modelType === 'umap'
                 ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-400 hover:text-slate-100'
             }`}
           >
             <Box className="w-3.5 h-3.5" />
@@ -172,7 +172,7 @@ export const MLMining3DPage: React.FC = () => {
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               modelType === 'isolation-forest'
                 ? 'bg-rose-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-400 hover:text-slate-100'
             }`}
           >
             <ShieldAlert className="w-3.5 h-3.5" />

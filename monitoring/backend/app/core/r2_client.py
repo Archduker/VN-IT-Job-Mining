@@ -137,10 +137,13 @@ class CloudflareR2Client:
 
         try:
             for layer in layers:
-                resp = client.list_objects_v2(Bucket=self.bucket_name, Prefix=layer)
-                items = resp.get("Contents", [])
-                cnt = len(items)
-                sz = sum(it["Size"] for it in items)
+                cnt = 0
+                sz = 0
+                paginator = client.get_paginator("list_objects_v2")
+                for page in paginator.paginate(Bucket=self.bucket_name, Prefix=layer):
+                    for it in page.get("Contents", []):
+                        cnt += 1
+                        sz += it["Size"]
                 result["layers"][layer.rstrip("/")] = {
                     "count": cnt,
                     "size_bytes": sz,
@@ -208,7 +211,8 @@ class CloudflareR2Client:
         # Chênh lệch: các file local chưa có trên remote
         unpushed = [f for f in local_files if f not in remote_keys]
         total_local = len(local_files)
-        total_cloud = len([k for k in remote_keys if k.startswith(f"{source}/raw/") or k.startswith(f"raw/{source}/")])
+        # remote_keys chứa cả 2 dạng prefix của cùng một object, nên đếm theo một dạng
+        total_cloud = len([k for k in remote_keys if k.startswith(f"raw/{source}/")])
         synced_count = total_local - len(unpushed)
         synced_pct = round((synced_count / max(total_local, 1)) * 100, 1)
         is_in_sync = len(unpushed) == 0 and total_local > 0
@@ -236,31 +240,25 @@ class CloudflareR2Client:
         if not client:
             return {"source": source, "status": "failed", "message": "Chưa kết nối được Cloudflare R2"}
 
-        unpushed = diff["unpushed_samples"]
         uploaded = 0
         errors = []
 
-        import os
-        from pathlib import Path
         local_raw_dir = settings.DATA_DIR / source / "raw"
-        if local_raw_dir.exists():
-            for root, _, files in os.walk(local_raw_dir):
-                for f in files:
-                    if f.endswith(".json"):
-                        f_path = Path(root) / f
-                        rel_under_raw = str(f_path.relative_to(local_raw_dir)).replace("\\", "/")
-                        key = f"raw/{source}/{rel_under_raw}"
-                        try:
-                            client.upload_file(str(f_path), self.bucket_name, key)
-                            uploaded += 1
-                        except Exception as e:
-                            errors.append(f"{f}: {e}")
+        for rel in diff["missing_in_cloud"]:
+            f_path = settings.DATA_DIR / rel
+            rel_under_raw = f_path.relative_to(local_raw_dir).as_posix()
+            key = f"raw/{source}/{rel_under_raw}"
+            try:
+                client.upload_file(str(f_path), self.bucket_name, key)
+                uploaded += 1
+            except Exception as e:
+                errors.append(f"{f_path.name}: {e}")
 
         self._sync_status_cache = None
 
         return {
             "source": source,
-            "status": "completed",
+            "status": "failed" if errors and not uploaded else "completed",
             "uploaded_count": uploaded,
             "errors_count": len(errors),
             "message": f"Đã đồng bộ {uploaded} files lên Cloudflare R2",
@@ -328,6 +326,7 @@ class CloudflareR2Client:
         # Liệt kê tệp trên R2 theo prefix để tăng tốc
         r2_source_counts = {s: 0 for s in settings.SUPPORTED_SOURCES}
         r2_ledger_exists = {s: False for s in settings.SUPPORTED_SOURCES}
+        last_upload = None
 
         if client:
             try:
@@ -338,6 +337,9 @@ class CloudflareR2Client:
                         for s in settings.SUPPORTED_SOURCES:
                             if k.startswith(f"raw/{s}/"):
                                 r2_source_counts[s] += 1
+                                modified = obj.get("LastModified")
+                                if modified and (last_upload is None or modified > last_upload):
+                                    last_upload = modified
                             elif k.startswith(f"url_ledger/{s}/"):
                                 r2_ledger_exists[s] = True
             except Exception as exc:
@@ -384,7 +386,7 @@ class CloudflareR2Client:
             "total_local_raw": total_local_raw,
             "total_cloud_raw": total_cloud_raw,
             "sources": source_statuses,
-            "last_synced_at": datetime.now().isoformat(),
+            "last_synced_at": last_upload.isoformat() if last_upload else None,
         }
         self._sync_status_cache = result
         self._sync_status_cache_time = now_ts

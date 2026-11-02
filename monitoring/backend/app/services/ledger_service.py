@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from app.core.config import settings
+from app.core.data_paths import find_catalog_file
 
 logger = logging.getLogger("ledger_service")
 
@@ -21,13 +22,7 @@ class LedgerService:
 
     def _find_catalog_file(self, source: str) -> Optional[Path]:
         """Tìm đường dẫn catalog_master.json của nguồn."""
-        p1 = self.data_dir / source / "url_ledger" / "catalog_master.json"
-        if p1.exists():
-            return p1
-        p2 = self.data_dir / "url_ledger" / source / "catalog_master.json"
-        if p2.exists():
-            return p2
-        return None
+        return find_catalog_file(source)
 
     def get_system_enum_summary(self) -> Dict[str, Any]:
         """Thống kê chi tiết 5 trạng thái Enum vòng đời URL trên toàn bộ 8 sàn và phân bổ từng sàn."""

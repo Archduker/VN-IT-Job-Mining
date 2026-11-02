@@ -106,7 +106,7 @@ export const CloudflareR2Page: React.FC = () => {
           <span className="text-xs px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-semibold uppercase tracking-wider">
             Cloud Object Storage
           </span>
-          <h2 className="text-xl font-bold text-white mt-1.5">
+          <h2 className="text-xl font-bold text-slate-100 mt-1.5">
             Cloudflare R2 Data Lakehouse (Độc Quyền)
           </h2>
           <p className="text-xs text-slate-400">
@@ -144,10 +144,10 @@ export const CloudflareR2Page: React.FC = () => {
                 health?.connected ? 'bg-emerald-600/30' : 'bg-amber-600/30'
               }`}
             >
-              <Cloud className="w-5 h-5 text-white" />
+              <Cloud className="w-5 h-5 text-slate-100" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">
+              <h3 className="text-sm font-bold text-slate-100">
                 Trạng Thái Kết Nối R2: {health?.connected ? 'SẴN SÀNG (ONLINE)' : 'CHƯA KẾT NỐI'}
               </h3>
               <p className="text-xs text-slate-400">
@@ -204,13 +204,13 @@ export const CloudflareR2Page: React.FC = () => {
           return (
             <div key={layer.key} className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-white">{layer.title}</span>
+                <span className="text-xs font-bold text-slate-100">{layer.title}</span>
                 <Icon className={`w-4 h-4 ${layer.color}`} />
               </div>
               <p className="text-[11px] text-slate-400">{layer.desc}</p>
               <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
                 <span className="text-slate-400">Đối tượng (Objects):</span>
-                <span className="font-bold text-white">
+                <span className="font-bold text-slate-100">
                   {metric ? metric.count.toLocaleString() : '0'}
                 </span>
               </div>
@@ -231,7 +231,7 @@ export const CloudflareR2Page: React.FC = () => {
           <div className="flex items-center space-x-2">
             <UploadCloud className="w-5 h-5 text-indigo-400" />
             <div>
-              <h3 className="text-sm font-bold text-white">
+              <h3 className="text-sm font-bold text-slate-100">
                 R2 Diff Engine & Công Cụ Đồng Bộ Hóa Đám Mây
               </h3>
               <p className="text-xs text-slate-400">
@@ -260,11 +260,18 @@ export const CloudflareR2Page: React.FC = () => {
 
         {/* Sync Status Banner for Selected Source */}
         {syncResult && (
-          <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center justify-between">
+          <div
+            className={`p-3.5 rounded-xl border text-xs flex items-center justify-between ${
+              syncResult.status === 'failed'
+                ? 'bg-rose-500/10 border-rose-500/20 text-rose-300'
+                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+            }`}
+          >
             <div className="flex items-center space-x-2">
-              <Check className="w-4 h-4 text-emerald-400" />
+              <Check className="w-4 h-4" />
               <span>
-                Đã đồng bộ thành công sàn <strong className="uppercase">{syncResult.source}</strong>: Tải lên {syncResult.uploaded_count} tệp tin mới lên R2 (Lỗi: {syncResult.failed_count}).
+                {syncResult.status === 'failed' ? 'Đồng bộ thất bại' : 'Đã đồng bộ'} sàn{' '}
+                <strong className="uppercase">{syncResult.source}</strong>: Tải lên {syncResult.uploaded_count} tệp tin lên R2 (Lỗi: {syncResult.errors_count ?? 0}).
               </span>
             </div>
           </div>
@@ -283,7 +290,7 @@ export const CloudflareR2Page: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
               <div className="p-4 rounded-xl bg-slate-950/50 border border-slate-800">
                 <span className="text-xs text-slate-400">Tập Tin Cục Bộ (Local)</span>
-                <div className="text-lg font-bold text-white mt-1">
+                <div className="text-lg font-bold text-slate-100 mt-1">
                   {currentDiff.local_count} files
                 </div>
                 <div className="text-[11px] text-slate-500 mt-1 font-mono">

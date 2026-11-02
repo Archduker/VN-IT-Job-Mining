@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     NOTEBOOKS_DIR: Path = REPO_ROOT / "notebooks"
     LOGS_DIR: Path = REPO_ROOT / "logs"
 
+    # Kế hoạch thu thập hiển thị trên trang Collection
+    TARGET_UNIQUE: int = int(os.getenv("TARGET_UNIQUE", "10000"))
+    TARGET_DATE: str = os.getenv("TARGET_DATE", "2026-11-15")
+
     # Danh sách 8 sàn tuyển dụng CNTT được hỗ trợ
     SUPPORTED_SOURCES: List[str] = [
         "topcv",

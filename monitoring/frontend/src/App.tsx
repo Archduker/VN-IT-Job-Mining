@@ -1,90 +1,73 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Sidebar } from './components/layout/Sidebar'
 import { TopBar } from './components/layout/TopBar'
-import { PipelineSidebar, TabType } from './components/layout/PipelineSidebar'
-import { MasterDashboardPage } from './pages/MasterDashboardPage'
+import { SampleDataNotice } from './components/ui'
+import { AirflowMonitorPage } from './pages/AirflowMonitorPage'
+import { CloudflareR2Page } from './pages/CloudflareR2Page'
+import { CollectionMonitorPage } from './pages/CollectionMonitorPage'
 import { CrawlingPage } from './pages/CrawlingPage'
 import { EDAPage } from './pages/EDAPage'
-import { AirflowMonitorPage } from './pages/AirflowMonitorPage'
+import { MasterDashboardPage } from './pages/MasterDashboardPage'
+import { MLMining3DPage } from './pages/MLMining3DPage'
 import { PreprocessingPage } from './pages/PreprocessingPage'
 import { ProcessingPage } from './pages/ProcessingPage'
-import { MLMining3DPage } from './pages/MLMining3DPage'
-import { CloudflareR2Page } from './pages/CloudflareR2Page'
+import { RawReportPage } from './pages/RawReportPage'
 
-const SIDEBAR_STORAGE_KEY = 'sidebar_collapsed'
+const TITLES: Record<string, [string, string?]> = {
+  '/': ['Thu thập dữ liệu', '8 nguồn · cập nhật theo URL Ledger và Airflow'],
+  '/raw': ['Báo cáo theo nguồn', 'Chọn một nguồn để xem 8 feature target, vấn đề cần xử lý, phân tích đơn biến và một bản ghi raw.'],
+  '/crawling': ['Cấu hình cào'],
+  '/airflow': ['Airflow'],
+  '/cloud': ['Cloudflare R2'],
+  '/eda': ['EDA'],
+  '/preprocessing': ['Pre-processing'],
+  '/processing': ['Processing'],
+  '/master': ['Master Dashboard'],
+  '/ml3d': ['ML 3D'],
+}
 
-export const App: React.FC = () => {
-  const [currentTab, setCurrentTab] = useState<TabType>('dashboard')
-  const [refreshKey, setRefreshKey] = useState<number>(0)
-  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem(SIDEBAR_STORAGE_KEY) === 'true'
-    } catch {
-      return false
-    }
-  })
+const withNotice = (page: React.ReactElement): React.ReactElement => (
+  <>
+    <SampleDataNotice />
+    {page}
+  </>
+)
 
-  const handleRefreshAll = () => {
-    setRefreshKey((k) => k + 1)
-  }
-
-  const toggleSidebar = useCallback(() => {
-    setSidebarCollapsed((prev) => {
-      const next = !prev
-      try {
-        localStorage.setItem(SIDEBAR_STORAGE_KEY, String(next))
-      } catch {
-        /* localStorage unavailable */
-      }
-      return next
-    })
-  }, [])
-
-  const renderContent = () => {
-    switch (currentTab) {
-      case 'dashboard':
-        return <MasterDashboardPage key={`dash-${refreshKey}`} />
-      case 'crawling':
-        return <CrawlingPage key={`crawl-${refreshKey}`} />
-      case 'eda':
-        return <EDAPage key={`eda-${refreshKey}`} />
-      case 'airflow':
-        return <AirflowMonitorPage key={`airflow-${refreshKey}`} />
-      case 'preprocessing':
-        return <PreprocessingPage key={`prep-${refreshKey}`} />
-      case 'processing':
-        return <ProcessingPage key={`proc-${refreshKey}`} />
-      case 'ml3d':
-        return <MLMining3DPage key={`ml-${refreshKey}`} />
-      case 'cloud':
-        return <CloudflareR2Page key={`cloud-${refreshKey}`} />
-      default:
-        return <MasterDashboardPage key={`default-${refreshKey}`} />
-    }
-  }
+const Shell: React.FC = () => {
+  const { pathname } = useLocation()
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [title, subtitle] = TITLES[pathname] ?? ['JobCrawl']
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col text-slate-100 selection:bg-indigo-500/30 selection:text-indigo-200">
-      <TopBar
-        onRefreshAll={handleRefreshAll}
-        sidebarCollapsed={sidebarCollapsed}
-        onToggleSidebar={toggleSidebar}
-      />
-      <div className="flex flex-1">
-        <PipelineSidebar
-          currentTab={currentTab}
-          onSelectTab={setCurrentTab}
-          collapsed={sidebarCollapsed}
-        />
-        <main
-          className={`flex-1 p-6 mx-auto w-full overflow-y-auto transition-all duration-300 ${
-            sidebarCollapsed ? 'max-w-full' : 'max-w-7xl'
-          }`}
-        >
-          {renderContent()}
-        </main>
-      </div>
+    <div className="min-h-screen bg-ground text-ink flex flex-col lg:flex-row">
+      <Sidebar />
+      <main className="flex-1 min-w-0 px-4 sm:px-8 pt-7 pb-12 flex flex-col gap-6">
+        <TopBar title={title} subtitle={subtitle} onRefreshAll={() => setRefreshKey((k) => k + 1)} />
+        <div key={refreshKey} className="min-w-0">
+          <Routes>
+            <Route path="/" element={<CollectionMonitorPage />} />
+            <Route path="/raw" element={<RawReportPage />} />
+            <Route path="/crawling" element={<CrawlingPage />} />
+            <Route path="/airflow" element={<AirflowMonitorPage />} />
+            <Route path="/cloud" element={<CloudflareR2Page />} />
+            <Route path="/eda" element={withNotice(<EDAPage />)} />
+            <Route path="/preprocessing" element={withNotice(<PreprocessingPage />)} />
+            <Route path="/processing" element={withNotice(<ProcessingPage />)} />
+            <Route path="/master" element={withNotice(<MasterDashboardPage />)} />
+            <Route path="/ml3d" element={withNotice(<MLMining3DPage />)} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </main>
     </div>
   )
 }
+
+export const App: React.FC = () => (
+  <BrowserRouter>
+    <Shell />
+  </BrowserRouter>
+)
 
 export default App

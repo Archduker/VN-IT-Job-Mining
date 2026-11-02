@@ -127,7 +127,7 @@ export const MasterDashboardPage: React.FC = () => {
             <Sparkles className="w-4 h-4" />
             <span>Executive Master Dashboard • api/Dashboard</span>
           </div>
-          <h2 className="text-xl font-bold text-white mt-1">
+          <h2 className="text-xl font-bold text-slate-100 mt-1">
             Bộ Dữ Liệu Hoàn Chỉnh Sau Integration (Golden Master)
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
@@ -160,7 +160,7 @@ export const MasterDashboardPage: React.FC = () => {
             <span>Dữ Liệu Thô (Raw)</span>
             <Layers className="w-4 h-4 text-indigo-400" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-bold text-slate-100 mt-2">
             {dataset_metadata.total_raw_scraped.toLocaleString()}
           </div>
           <div className="text-xs text-slate-400 mt-1">
@@ -210,14 +210,14 @@ export const MasterDashboardPage: React.FC = () => {
 
       {/* Visual Data Lineage */}
       <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-        <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+        <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
           <GitFork className="w-4 h-4 text-indigo-400" />
           <span>Dòng Chảy Dữ Liệu Liền Mạch (Data Lineage)</span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-center">
           <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
             <div className="text-xs text-slate-400">1. Cào Thô (Raw)</div>
-            <div className="text-lg font-bold text-white mt-1">{data_lineage.raw_input_files} files</div>
+            <div className="text-lg font-bold text-slate-100 mt-1">{data_lineage.raw_input_files} files</div>
           </div>
           <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
             <div className="text-xs text-slate-400">2. Tiền Xử Lý (Pre-processed)</div>
@@ -239,7 +239,7 @@ export const MasterDashboardPage: React.FC = () => {
         {/* Platform Share */}
         <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white">
+            <h3 className="text-sm font-bold text-slate-100">
               Đóng Góp Tỷ Trọng Từ 8 Sàn Tuyển Dụng
             </h3>
             <span className="text-xs text-slate-400">Tổng 8 nguồn</span>
@@ -266,7 +266,7 @@ export const MasterDashboardPage: React.FC = () => {
         {/* Market Salary Benchmark */}
         <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+            <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
               <TrendingUp className="w-4 h-4 text-emerald-400" />
               <span>Phân Bố Mức Lương Chuẩn Thị Trường (Triệu VND)</span>
             </h3>
@@ -277,7 +277,7 @@ export const MasterDashboardPage: React.FC = () => {
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
               <div className="text-xs text-slate-400">Phân vị 25 (P25)</div>
-              <div className="text-lg font-bold text-white mt-1">{market_salary_benchmark_vnd.p25}M</div>
+              <div className="text-lg font-bold text-slate-100 mt-1">{market_salary_benchmark_vnd.p25}M</div>
             </div>
             <div className="p-3 rounded-xl bg-slate-950 border border-emerald-500/30 bg-emerald-950/10">
               <div className="text-xs text-emerald-400 font-medium">Trung Vị (Median)</div>
@@ -285,18 +285,18 @@ export const MasterDashboardPage: React.FC = () => {
             </div>
             <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
               <div className="text-xs text-slate-400">Phân vị 75 (P75)</div>
-              <div className="text-lg font-bold text-white mt-1">{market_salary_benchmark_vnd.p75}M</div>
+              <div className="text-lg font-bold text-slate-100 mt-1">{market_salary_benchmark_vnd.p75}M</div>
             </div>
           </div>
 
           <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2 text-xs">
             <div className="flex justify-between text-slate-400">
               <span>Mức lương trung bình (Mean):</span>
-              <span className="text-white font-semibold">{market_salary_benchmark_vnd.mean} Triệu VND</span>
+              <span className="text-slate-100 font-semibold">{market_salary_benchmark_vnd.mean} Triệu VND</span>
             </div>
             <div className="flex justify-between text-slate-400">
               <span>Khoảng hợp lệ chuẩn:</span>
-              <span className="text-white font-semibold">
+              <span className="text-slate-100 font-semibold">
                 {market_salary_benchmark_vnd.min_valid}M - {market_salary_benchmark_vnd.max_valid}M VND/tháng
               </span>
             </div>
@@ -309,7 +309,7 @@ export const MasterDashboardPage: React.FC = () => {
         {/* Schema Convergence Table */}
         <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white">
+            <h3 className="text-sm font-bold text-slate-100">
               Độ Hội Tụ Vào Common Target Schema v1
             </h3>
             <span className="text-xs text-emerald-400 font-medium">
@@ -337,7 +337,7 @@ export const MasterDashboardPage: React.FC = () => {
         {/* Top Golden Skills */}
         <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white">
+            <h3 className="text-sm font-bold text-slate-100">
               Top Kỹ Năng Công Nghệ Chuẩn Hóa (ESCO Standard)
             </h3>
             <span className="text-xs text-slate-400">Phần trăm xuất hiện</span>
@@ -349,7 +349,7 @@ export const MasterDashboardPage: React.FC = () => {
                 className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80 flex items-center justify-between"
               >
                 <div>
-                  <div className="text-xs font-semibold text-white">{sk.skill}</div>
+                  <div className="text-xs font-semibold text-slate-100">{sk.skill}</div>
                   <div className="text-[10px] text-slate-400">{sk.job_count} bài đăng</div>
                 </div>
                 <span className="text-xs font-bold text-indigo-400">{sk.percentage}%</span>

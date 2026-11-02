@@ -4,7 +4,7 @@
 VN-IT-Job-Mining Central Observatory (Zero-SQLite Policy: PostgreSQL Backend).
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import logging
 import os
 from pathlib import Path
@@ -169,18 +169,41 @@ class AirflowService:
                 result.append({
                     "dag_id": dag_id,
                     "source": meta["source"],
-                    "schedule_display": meta["day"],
+                    "schedule_day": meta["day"],
                     "is_paused": db_meta["is_paused"],
                     "is_active": db_meta["is_active"],
-                    "latest_run_state": dag_run.get("state", "NO_RUNS"),
-                    "latest_execution_date": dag_run.get("execution_date"),
-                    "latest_duration_seconds": dag_run.get("duration_seconds"),
+                    "last_run_state": dag_run.get("state"),
+                    "last_run_start": dag_run.get("start_date"),
+                    "last_run_end": dag_run.get("end_date"),
+                    "duration_seconds": dag_run.get("duration_seconds"),
                 })
 
             return result
         except Exception as exc:
             logger.error("[AirflowService] Lỗi truy vấn PostgreSQL Airflow: %s", exc)
             return []
+
+    def get_run_history(self, days: int = 14) -> Optional[List[Dict[str, Any]]]:
+        """Lịch sử dag_run trong N ngày gần nhất; None nếu không kết nối được Airflow DB."""
+        if not self._check_db_connection():
+            return None
+        try:
+            since = datetime.now(timezone.utc) - timedelta(days=days)
+            with self.engine.connect() as conn:
+                rows = conn.execute(
+                    text(
+                        "SELECT dag_id, state, start_date, end_date FROM dag_run "
+                        "WHERE start_date >= :since ORDER BY start_date"
+                    ),
+                    {"since": since},
+                ).fetchall()
+            return [
+                {"dag_id": r[0], "state": r[1], "start_date": r[2], "end_date": r[3]}
+                for r in rows
+            ]
+        except Exception as exc:
+            logger.error("[AirflowService] Lỗi đọc lịch sử dag_run: %s", exc)
+            return None
 
 
 airflow_service = AirflowService()
