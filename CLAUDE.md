@@ -16,15 +16,16 @@ pip install -r requirements-dev.txt
 touch .env   # config lives only in .env; there is no .env.example
 ```
 
-Tests:
+Tests (process and folder rules in `tests/README.md`):
 
 ```bash
-pytest tests/                                       # all
-pytest tests/test_url_ledger_dedup.py               # one file
-pytest tests/test_cross_deduplicator.py::test_name  # one test
+make test-fast                                            # unit only
+make test                                                 # everything except live; network is blocked
+make check                                                # test + code quality report + frontend build (the `quality` target is not written yet, GEN-3)
+pytest tests/unit/test_url_ledger_dedup.py::test_name     # one test
 ```
 
-Without local `data/`, 3 tests fail: both in `tests/test_integration_step.py` and `test_crawling_enum_summary` in `tests/test_monitoring_api.py`. They need pipeline outputs, not a code fix. `test_flatten_sources_samples` passes vacuously in that state because it only checks sample files that exist.
+Tests live in `tests/unit/`, `tests/integration/`, `tests/contract/` (crawler standards C1–C14, offline fixtures in `tests/fixtures/<source>/`), and `tests/data/`. `tests/conftest.py` marks tests by folder, blocks non-localhost network unless `@pytest.mark.live` with `--run-live`, and skips `@pytest.mark.needs_data(paths)` tests when the local `data/` or `reports/` paths are missing.
 
 Lint: `make lint` / `make format` (ruff on `collection/` and `tests/` only). The tree currently has ~1,300 ruff findings, so check only the lines you change rather than aiming for a clean run.
 
@@ -32,8 +33,8 @@ Pipeline:
 
 ```bash
 # Collection: --phase discover|detail|all, --source <name>|all
-python run.py --source topcv --phase discover --max-pages 2
-python run.py --source topcv --phase detail --max-items 30    # --engine only applies to topcv
+python run.py --source topcv --phase discover --max-pages 2 --sync-r2
+python run.py --source topcv --phase detail --max-items 30 --sync-r2   # without --sync-r2 nothing reaches R2; --engine only applies to topcv
 python scripts/sync_cloud_lakehouse.py --status|--download|--upload [--source topcv]
 python scripts/push_raw_to_r2.py [--source topcv] [--dry-run]
 
@@ -45,52 +46,43 @@ python scripts/push_integration_to_r2.py                      # pushes data/inte
 python scripts/sync_cloud_lakehouse.py --upload               # pushes everything else in data/, including staging and curated
 ```
 
-Monitoring: `./monitoring/run_all.sh` starts FastAPI on :8000 (`/docs`) and Vite on :5173, which proxies `/api` to the backend. It requires `.venv/` and `npm install` in `monitoring/frontend`. Frontend type-check and build: `npm run build`. There is no frontend test or lint script.
+Monitoring: `./start_monitoring.sh` (or `make monitor`) checks `.env` without printing values, creates `.venv` and runs `npm ci` when needed, starts PostgreSQL through docker for the Airflow cards, then runs FastAPI on 127.0.0.1:8000 (`/docs`) and Vite on :5173, which proxies `/api` to the backend. Logs go to `logs/monitoring/`. `--check` only verifies; `--no-db` and `--no-browser` skip those steps. It never starts the Airflow scheduler, because the scheduler crawls and writes to R2. `monitoring/run_all.sh` is a wrapper for it. Frontend type-check and build: `npm run build`. There is no frontend test or lint script.
 
 Airflow: `make setup`, `make db-up` (Postgres via docker compose), `make airflow-webserver`, `make airflow-scheduler`. Airflow is installed by `scripts/setup_airflow.sh`, not `requirements.txt`.
 
+## Folder guides
+
+Each code folder has its own `CLAUDE.md` with the context for that area. Read it before working there:
+
+| Folder | Covers |
+|---|---|
+| `collection/CLAUDE.md` | two-phase flow, ledger lifecycle and merge rule, R2 layout, envelope and CDC, per-source pitfalls, crawler standards C1–C14 |
+| `airflow/CLAUDE.md` | DAGs, operators, pools, adaptive router, `run_crawler` as an API |
+| `monitoring/CLAUDE.md` | backend and frontend layout, real-numbers rule, `feature_targets.py`, UI tokens, 390px checks |
+| `preprocessing/CLAUDE.md` | step boundaries, EDA-first, deliverables, open PRE items |
+| `scripts/CLAUDE.md` | which scripts only read, which write locally, which write or delete on R2 |
+| `tests/CLAUDE.md` | test pitfalls and how to write a contract test (process in `tests/README.md`) |
+| `docs/CLAUDE.md` | map of docs and how to log a fixed bug |
+
+Fixed bugs, with cause and fix, are in `docs/issue_log.md`; open items are in `KNOWN_ISSUED.md`.
+
 ## Architecture
 
-### Stage 1: Collection (`collection/`, entry point `run.py`)
+Collection (`collection/`, entry point `run.py`) → R2 (`url_ledger/`, `raw/`) → preprocessing (`preprocessing/`, driver `scripts/run_staging_integration_pipeline.py`) → `data/curated/curated_flat_golden_jobs.parquet`. Airflow (`airflow/`) schedules collection. Monitoring (`monitoring/`) reads `data/`, `reports/`, R2 and Airflow.
 
-Crawlers are two-phase and decoupled, and the URL Ledger is the contract between the phases:
+Crawlers are two-phase and decoupled; the URL Ledger (`collection/common/url_ledger.py`, `data/<source>/url_ledger/catalog_master.json`) is the contract between Discovery (registers `PENDING` URLs) and Detail (writes a `RawJobEnvelope` and a canonical JSON hash for CDC). The ledger on R2 is the source of truth. Seven sources subclass `BaseCrawler`; Glints runs through `GlintsRawPipeline`. `run.py` dispatches through hand-written `if/elif` branches and introspects `__code__.co_varnames` for an optional `online` argument, so a new source needs a branch there plus `SOURCES` lists in `scripts/run_staging_integration_pipeline.py`, `preprocessing/integration/run_integration.py`, `scripts/read_eda_diagnosis.py`, monitoring `config.py`, and a `_flatten_<source>` in `json_flattener.py`.
 
-- **Discovery** (`discover_urls`) registers canonicalized URLs as `PENDING` with no hash.
-- **Detail** (`crawl_details`) processes `PENDING` first, then `DONE` records at least 21 days old (`RECHECK_DUE`). It writes a `RawJobEnvelope` (`metadata` + `raw_payload`, in `collection/common/schema.py`) and stores a canonical JSON hash for CDC. Failures on a single URL are recorded and skipped; they never abort the batch ("Safe Skip").
-
-`collection/common/url_ledger.py` holds the lifecycle (`PENDING`, `DONE`, `RECHECK_DUE`, `FAILED`, `CLOSED`), stored at `data/<source>/url_ledger/catalog_master.json` with daily manifests. The catalog on R2 is the source of truth: crawlers pull it before detail runs and sync it back during and after them.
-
-There are two crawler bases. Seven sources subclass `BaseCrawler` (`collection/base/base_crawler.py`) and supply the two phase methods themselves. Glints runs through `GlintsRawPipeline` (`TwoPhaseRawCrawler`). `run.py` dispatches through hand-written `if/elif` branches and introspects `__code__.co_varnames` for an optional `online` argument, so a new source needs a branch there plus `SOURCES` lists elsewhere (`scripts/run_staging_integration_pipeline.py`, `preprocessing/integration/run_integration.py`, `scripts/read_eda_diagnosis.py`, monitoring `config.py`) and a `_flatten_<source>` in `json_flattener.py`.
-
-**"MinIO" in names means Cloudflare R2.** `minio_raw_pipeline.py`, `MinioRawStore`, and `sync_to_minio` are the live R2 implementation; `r2_raw_pipeline.py` and `minio_storage.py` are thin aliases. MinIO itself was removed, so do not add MinIO infrastructure. `canonicalize_lakehouse_key` enforces the bucket layout `url_ledger/`, `raw/`, `staging/`, `curated/` and rejects cache and checkpoint files. `MinioRawStore` checks the bucket in `__init__` and raises on bad credentials.
+**Storage is Cloudflare R2 only.** Every connection goes through `collection/common/r2_storage.get_r2_client()`; missing config raises instead of falling back to localhost. All MinIO names were renamed to R2 on 2026-11-02 (`--sync-minio` is kept as an alias of `--sync-r2`). `canonicalize_lakehouse_key` enforces the bucket layout `url_ledger/`, `raw/`, `staging/`, `curated/`.
 
 Raw data is immutable: fixes to parsed fields belong in preprocessing, not in stored raw files.
 
-### Stage 2: Preprocessing (`preprocessing/`, driver `scripts/run_staging_integration_pipeline.py`)
+`reports/` holds pipeline outputs (health cards, manifests, integration reports) that the monitoring pages read; it is tracked in git. Do not put ad-hoc reports there; audit output (`reports/data_audit_*`) is git-ignored.
 
-`preprocessing/` is a library of step functions; the driver in `scripts/` runs them per source and then merges: flatten → salary cascade (header regex, JD regex, GenAI) → null detection and stub-JD removal → GenAI imputation → outlier fixes and winsorizing → normalization → cross-platform dedup. Each source produces three deliverables: `<source>_flat_clean.parquet`, `<source>_quality_health_card.json`, and `<source>_transformation_manifest.md`.
-
-Conventions enforced by `docs/preprocessing/00_architecture_overview.md`:
-
-- **Step boundaries are a hard contract.** Integration must not parse salaries, convert currency, drop rows, or impute. Transformation must not delete suspected outliers or fill values. Missing/Outlier must not fill with mean or median. Normalization must not scale before outlier handling. Read the matrix there before moving logic between steps.
-- **EDA-first.** Rules are per-source and come from `collection/reports/EDA_<source>.ipynb`. Load them with `scripts/read_eda_diagnosis.py` rather than reading the notebooks, which embed large base64 images.
-- Negotiable salaries stay `NaN` with a flag (MNAR). Outliers are capped, not dropped. GenAI-filled values are flagged (`is_imputed_by_genai`). The imputer falls back to heuristics when no API key is set.
-
-### Orchestration (`airflow/`)
-
-`dag_discovery_daily` runs at 05:00. Eight `crawler_detail_<source>` DAGs run route check → crawl → data quality → preprocess. `collection/common/adaptive_router.py` skips or runs each slot depending on backlog, weekday, and a 55-minute cooldown, capped at 30 items per batch. Discovery and detail share `pool_<source>` (1 slot) so the two phases of a source never overlap. Operators call `run_crawler` from `run.py` directly, so its signature is an API.
-
-`DataPreprocessOperator` is a separate lightweight cleaner writing `data/<source>/staging/<date>/`. It does not use `preprocessing/`, and the golden dataset never comes from Airflow.
-
-### Monitoring (`monitoring/`)
-
-FastAPI (`backend/app`: endpoints → services) plus React/TypeScript (`frontend/src/pages`). `.agents/rules/monitoring_system_rules.md` is mandatory for work here. Key rules: no login or auth UI; operational controls live on `/crawling` and analysis charts on `/eda`, never mixed; frontend is TypeScript only with no `.js`/`.jsx` files, and types go in `types.ts`; R2 diffing uses `content_hash`, not timestamps; follow the light theme, single font, and semantic colors defined there.
-
-The main pages are Collection (`/`) and Raw (`/raw`), served by `/api/v1/monitor` (`collection_monitor_service.py`, `source_report_service.py`). They show only real numbers and return `null` with a reason when a source is missing. Field locations per source live in `backend/app/core/feature_targets.py` and must stay in step with `json_flattener.py`. Older pages under "Công cụ khác" keep their dark-era Tailwind classes: `tailwind.config.ts` inverts the `slate` palette and remaps accent shades, so in new code use the `ink`, `line`, `panel`, `brand`, and `state` tokens, never `slate`. EDA, Pre-processing, Processing, and Master Dashboard read pipeline outputs (`reports/`, `data/staging/`) through `pipeline_report_service.py`, under the same no-invented-numbers rule; `reports/` is tracked in git, so these pages show the last committed pipeline run. ML 3D is hidden from the menu, and its endpoint still returns random points.
+Safety rules that apply everywhere: config lives only in `.env` and its values are never printed (compare hashes instead); any write or delete on R2 is dry-run first and needs the user's approval; never start the Airflow scheduler, because it crawls and writes to R2.
 
 ## Agent resources
 
-`.agents/skills/` holds project playbooks for other agents (for example `crawling-architect`, `data-integration-miner`, `collection-submission`). Claude Code does not load them automatically, so read the relevant `SKILL.md` when working in that area. Per-source site analysis is in `docs/crawl/<source>.md`, and crawler conventions are in `docs/two_phase_r2_crawler_playbook.md`. `docs/archive/` is historical.
+`.agents/skills/` holds project playbooks for other agents (for example `crawling-architect`, `data-integration-miner`, `collection-submission`). Claude Code does not load them automatically, so read the relevant `SKILL.md` when working in that area. Per-source site analysis is in `docs/crawl/<source>.md` (the "Hiện trạng 03/11/2026" box at the top of each is current; the rest may be stale), and crawler conventions are in `docs/two_phase_r2_crawler_playbook.md`. `docs/archive/` is historical.
 
 ## Known mismatches
 

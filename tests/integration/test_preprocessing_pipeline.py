@@ -23,6 +23,7 @@ from preprocessing.missing_outlier.outlier_handler import detect_iqr_outliers, f
 from preprocessing.normalization.text_cleaner import clean_job_title, normalize_city, normalize_seniority
 
 
+@pytest.mark.needs_data("data/topcv/raw/2026-10-20/2324170_v1.json", "data/topdev/raw/2026-10-20/2139491_v1.json")
 def test_flatten_sources_samples():
     """Kiểm tra ép phẳng JSON trên mẫu thực tế của 8 sàn."""
     sample_files = {

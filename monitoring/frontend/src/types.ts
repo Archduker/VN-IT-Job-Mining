@@ -18,31 +18,6 @@ export interface FieldInventoryItem {
   sample_value: string | null
 }
 
-export interface SemanticVectorPoint3D {
-  id: string
-  title: string
-  company: string
-  job_family: string
-  salary_vnd?: number
-  x: number
-  y: number
-  z: number
-  is_anomaly: boolean
-  skills: string[]
-}
-
-export interface Spatial3DData {
-  algorithm: string
-  total_points: number
-  points: SemanticVectorPoint3D[]
-  decision_boundary_mesh?: {
-    x: number[][]
-    y: number[][]
-    z: number[][]
-    threshold_score: number
-  }
-}
-
 export interface CloudHealth {
   configured: boolean
   connected: boolean
@@ -389,7 +364,7 @@ export interface SampleHighlight {
 export interface SampleNote {
   code: string
   name: string
-  status: 'ok' | 'warn' | 'fallback' | 'imputer' | 'fail' | 'missing'
+  status: 'ok' | 'warn' | 'fallback' | 'fail' | 'missing'
   path: string | null
   raw: string | null
   normalized: string | null
@@ -486,7 +461,8 @@ export interface DashboardReport {
 
 export interface EdaSummary {
   source: string
-  total_records: number
+  total_records: number | null
+  sampled_records: number
   fields_count: number
   completeness_score_pct: number | null
   salary_parse_rate_pct: number | null

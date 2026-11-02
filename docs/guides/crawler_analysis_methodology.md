@@ -60,6 +60,8 @@ Mở file HTML đại diện bằng `BeautifulSoup` và tiến hành ánh xạ c
 
 ### 🔹 Bước 3: Chuẩn Hóa Dữ Liệu & Quy Tắc Làm Sạch (Data Cleaning Pipeline)
 
+> **Lưu ý (03/11/2026):** raw là bất biến và giữ nguyên dữ liệu trang. Các quy tắc chuẩn hóa ở bước này (lương, tags, làm sạch dòng) thuộc `preprocessing/`, không đưa vào crawler hay file raw. Crawler chỉ bóc tách vào `raw_payload`.
+
 #### 1. Chuẩn Hóa Mức Lương (`JobSalary`)
 Mức lương không được lưu trữ dưới dạng text thô mà phải phân tách thành đối tượng lồng:
 - **Dải lương số (`salary_min`, `salary_max`)**: Quy đổi về cùng đơn vị triệu VNĐ (hoặc USD).
@@ -89,6 +91,8 @@ Tuyệt đối không gộp chung toàn bộ tags vào một mảng phẳng. Kh�
 ---
 
 ### 🔹 Bước 4: Kiểm Soát Chất Lượng & Viết Unit Test Tự Động
+
+> **Lưu ý (03/11/2026):** kiểm thử crawler hiện làm bằng contract test `tests/contract/test_<nguồn>_contract.py` với 3 mẫu thật trong `tests/fixtures/<nguồn>/` (tiêu chuẩn C1–C14, `collection/CLAUDE.md`). File `test_N_jobs.json` không còn dùng. Quy trình test chung: `tests/README.md`.
 1. **Kiểm tra tính hợp lệ qua Pydantic Model (`JobRecord`)**:
    - Tất cả bản ghi thu thập bắt buộc phải khởi tạo thành công qua `JobRecord.model_validate(record)`.
 2. **Kiểm tra chất lượng dữ liệu với `DataQualityChecker`**:

@@ -48,6 +48,7 @@ export const CrawlingPage: React.FC = () => {
   const [phase, setPhase] = useState<string>('all')
   const [maxItems, setMaxItems] = useState<number>(10)
   const [engine, setEngine] = useState<string>('curl_cffi')
+  const [syncR2, setSyncR2] = useState<boolean>(true)
   const [isCrawling, setIsCrawling] = useState<boolean>(false)
 
   // Live Logs state
@@ -165,11 +166,12 @@ export const CrawlingPage: React.FC = () => {
   const handleStartCrawl = async () => {
     try {
       setIsCrawling(true)
-      setLogs([`[Client] Starting crawler for ${selectedSource.toUpperCase()} (Phase: ${phase})...`])
+      setLogs([`[Client] Starting crawler for ${selectedSource.toUpperCase()} (Phase: ${phase}, ${syncR2 ? 'đồng bộ R2' : 'chỉ lưu trên máy'})...`])
       await axios.post(`/api/v1/crawling/${selectedSource}/trigger`, {
         phase,
         max_items: maxItems,
         engine: selectedSource === 'topcv' || selectedSource === 'jobsgo' ? engine : undefined,
+        sync_r2: syncR2,
       })
       startLogStream()
       fetchSources()
@@ -254,7 +256,7 @@ export const CrawlingPage: React.FC = () => {
       )
     if (s === 'UNKNOWN')
       return (
-        <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-400">
+        <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-state-idle-bg text-state-idle-fg">
           <AlertCircle className="w-3 h-3" />
           <span>KHÔNG RÕ</span>
         </span>
@@ -669,6 +671,22 @@ export const CrawlingPage: React.FC = () => {
                 </select>
               </div>
             )}
+            <div>
+              <label className="flex items-center gap-2 text-xs text-ink-soft cursor-pointer select-none pb-2">
+                <input
+                  type="checkbox"
+                  checked={syncR2}
+                  onChange={(e) => setSyncR2(e.target.checked)}
+                  className="h-4 w-4 accent-brand-500"
+                />
+                <span className="font-semibold">Đồng bộ R2</span>
+              </label>
+              {!syncR2 && (
+                <p className="text-[11px] text-state-partial-fg max-w-[220px]">
+                  Raw và ledger chỉ lưu trên máy. Nhớ đẩy lên bằng push_raw_to_r2.py.
+                </p>
+              )}
+            </div>
           </div>
           <div className="flex items-center space-x-3">
             {isCrawling ? (
@@ -740,7 +758,7 @@ export const CrawlingPage: React.FC = () => {
               • Failed: <span className="text-rose-400 font-semibold">{ledgerCounts['ERROR'] || ledgerCounts['FAILED'] || 0}</span>
             </p>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <select
               value={statusFilter}
               onChange={(e) => { setStatusFilter(e.target.value); setLedgerPage(1) }}
@@ -753,14 +771,14 @@ export const CrawlingPage: React.FC = () => {
               <option value="CLOSED">CLOSED (Expired)</option>
               <option value="FAILED">FAILED (Error)</option>
             </select>
-            <div className="relative">
+            <div className="relative flex-1 min-w-0 sm:flex-none">
               <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
               <input
                 type="text"
                 placeholder="Search Job ID, URL Hash..."
                 value={searchLedger}
                 onChange={(e) => { setSearchLedger(e.target.value); setLedgerPage(1) }}
-                className="bg-slate-950 border border-slate-800 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-100 placeholder-slate-400 w-56 focus:outline-none focus:border-indigo-500"
+                className="bg-slate-950 border border-slate-800 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-100 placeholder-slate-400 w-full sm:w-56 focus:outline-none focus:border-indigo-500"
               />
             </div>
           </div>

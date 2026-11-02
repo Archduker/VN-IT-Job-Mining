@@ -24,7 +24,7 @@ from bs4 import BeautifulSoup
 from collection.base.base_crawler import BaseCrawler
 from collection.common.anti_blocking import polite_sleep
 from collection.common.http_client import DelayConfig, HttpClient, RetryConfig
-from collection.common.minio_raw_pipeline import MinioRawStore
+from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags
 from collection.common.url_ledger import (
     UrlLedger,
@@ -607,7 +607,7 @@ def _make_record(
 
 
 class ViecLam24hCrawler(BaseCrawler):
-    """Crawler cho nguồn Vieclam24h theo mô hình 2 giai đoạn (UrlLedger & MinIO Lakehouse Raw Envelope)."""
+    """Crawler cho nguồn Vieclam24h theo mô hình 2 giai đoạn (UrlLedger & R2 Lakehouse Raw Envelope)."""
 
     source_name = SOURCE
     crawler_version = CRAWLER_VERSION
@@ -621,7 +621,7 @@ class ViecLam24hCrawler(BaseCrawler):
         min_delay: float = 2.0,
         max_delay: float = 4.0,
         local_json_file: Path | str | None = None,
-        sync_minio: bool = False,
+        sync_r2: bool = False,
         online: bool = False,
     ) -> None:
         base_dir = Path(output_dir or "data/vieclam24h")
@@ -635,9 +635,9 @@ class ViecLam24hCrawler(BaseCrawler):
             source=self.source_name,
             storage_dir=str(Path(self.output_dir) / "url_ledger"),
         )
-        self.sync_minio = sync_minio
+        self.sync_r2 = sync_r2
         self.online = online
-        self._minio_store = None
+        self._r2_store = None
         self.client = HttpClient(
             source=self.source_name,
             delay_config=DelayConfig(min_seconds=min_delay, max_seconds=max_delay),
@@ -653,10 +653,10 @@ class ViecLam24hCrawler(BaseCrawler):
         if hasattr(self.client, "session") and hasattr(self.client.session, "headers"):
             self.client.session.headers.update(browser_headers)
 
-    def _get_minio_store(self) -> MinioRawStore:
-        if self._minio_store is None:
-            self._minio_store = MinioRawStore()
-        return self._minio_store
+    def _get_r2_store(self) -> R2RawStore:
+        if self._r2_store is None:
+            self._r2_store = R2RawStore()
+        return self._r2_store
 
     def _extract_next_data(self, html: str) -> dict[str, Any] | None:
         """Trích xuất state JSON từ thẻ script __NEXT_DATA__."""
@@ -702,7 +702,7 @@ class ViecLam24hCrawler(BaseCrawler):
 
     # ── PHA 1: URL DISCOVERY ──────────────────────────────────
     def discover_urls(self, online: bool = False, max_pages: int | None = None) -> int:
-        """Quét toàn bộ danh mục IT Vieclam24h, ghi nhận vào UrlLedger (content_hash=None) và đẩy lên MinIO."""
+        """Quét toàn bộ danh mục IT Vieclam24h, ghi nhận vào UrlLedger (content_hash=None) và đẩy lên R2."""
         log.info("[Vieclam24h] === Bắt đầu Pha 1: URL Discovery ===")
         total_discovered = 0
         is_online = online or self.online
@@ -793,8 +793,8 @@ class ViecLam24hCrawler(BaseCrawler):
 
         self.ledger.save_catalog()
         manifest_file = self.ledger.export_daily_manifest()
-        if self.sync_minio:
-            self.ledger.sync_to_minio()
+        if self.sync_r2:
+            self.ledger.sync_final()
         log.info("[Vieclam24h] Hoàn thành Pha 1. Tổng cộng %d URL trong Ledger (%s)", len(self.ledger.records), manifest_file)
         return len(self.ledger.records)
 
@@ -805,13 +805,13 @@ class ViecLam24hCrawler(BaseCrawler):
         limit: int | None = None,
         retry_failed: bool = False,
     ) -> dict[str, int]:
-        """Pha 2: Kéo URL từ MinIO, cào chi tiết HTML, bóc tách JSON, băm Document JSON và đẩy Raw Envelope lên MinIO."""
-        log.info("[Vieclam24h] === Bắt đầu Pha 2: Detail Extraction (MinIO Raw Envelope & Post-Crawl Hashing) ===")
+        """Pha 2: Kéo URL từ R2, cào chi tiết HTML, bóc tách JSON, băm Document JSON và đẩy Raw Envelope lên R2."""
+        log.info("[Vieclam24h] === Bắt đầu Pha 2: Detail Extraction (R2 Raw Envelope & Post-Crawl Hashing) ===")
         is_online = online or self.online
 
-        if self.sync_minio and is_online:
-            log.info("[Vieclam24h] Đang kéo URL Ledger mới nhất từ MinIO về máy...")
-            self.ledger.pull_from_minio()
+        if self.sync_r2 and is_online:
+            log.info("[Vieclam24h] Đang kéo URL Ledger mới nhất từ R2 về máy...")
+            self.ledger.pull_from_r2()
 
         if retry_failed:
             raw_candidates = self.ledger.get_failed_records()
@@ -911,10 +911,10 @@ class ViecLam24hCrawler(BaseCrawler):
                 with open(snapshot_file, "w", encoding="utf-8") as f:
                     json.dump(envelope, f, ensure_ascii=False, indent=2)
 
-                # 7. Đẩy snapshot lên MinIO Lakehouse
-                if self.sync_minio:
+                # 7. Đẩy snapshot lên R2 Lakehouse
+                if self.sync_r2:
                     s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v{new_ver}.json"
-                    self._get_minio_store().put_json(s3_key, envelope)
+                    self._get_r2_store().put_json(s3_key, envelope)
 
                 # 8. Lưu ngược lại mã hash vào URL trong Ledger
                 self.ledger.mark_done(url_hash, content_hash=canonical_hash, new_version=new_ver)
@@ -923,10 +923,10 @@ class ViecLam24hCrawler(BaseCrawler):
 
                 # 9. Checkpoint sync định kỳ mỗi 15 tin
                 if (stats["success"] + stats["repost"]) % 15 == 0:
-                    log.info("[Vieclam24h] Checkpoint sync: đồng bộ Ledger lên MinIO Lakehouse...")
+                    log.info("[Vieclam24h] Checkpoint sync: đồng bộ Ledger lên R2 Lakehouse...")
                     self.ledger.save_catalog()
-                    if self.sync_minio:
-                        self.ledger.sync_to_minio()
+                    if self.sync_r2:
+                        self.ledger.sync_to_r2()
 
             except Exception as exc:
                 log.warning("[Vieclam24h] Lỗi cào %s: %s -> Safe Skip đưa vào Failed Queue", url, exc)
@@ -942,8 +942,8 @@ class ViecLam24hCrawler(BaseCrawler):
                 json.dump(extracted_jobs, f, ensure_ascii=False, indent=2)
 
         self.ledger.save_catalog()
-        if self.sync_minio:
-            self.ledger.sync_to_minio()
+        if self.sync_r2:
+            self.ledger.sync_final()
         log.info("[Vieclam24h] Hoàn thành Pha 2. Thống kê: %s", stats)
         return stats
 
@@ -1002,10 +1002,10 @@ class ViecLam24hCrawler(BaseCrawler):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Vieclam24h Two-Phase MinIO Job Crawler")
+    parser = argparse.ArgumentParser(description="Vieclam24h Two-Phase R2 Job Crawler")
     parser.add_argument("--phase", type=str, choices=["all", "discovery", "details", "sync", "view"], default="all", help="Pha cần chạy: discovery, details, sync, view, all")
     parser.add_argument("--online", action="store_true", help="Cho phép gọi mạng cào trực tuyến")
-    parser.add_argument("--sync-minio", action="store_true", help="Tự động đồng bộ Ledger và Raw Snapshots lên MinIO")
+    parser.add_argument("--sync-r2", "--sync-minio", action="store_true", help="Tự động đồng bộ Ledger và Raw Snapshots lên MinIO")
     parser.add_argument("--retry-failed", action="store_true", help="Cào lại các URL trong Failed Queue")
     parser.add_argument("--limit", type=int, default=None, help="Số tin tối đa cần cào ở Pha 2")
     parser.add_argument("--max-pages", type=int, default=None, help="Số trang danh mục tối đa cần quét ở Pha 1")
@@ -1021,7 +1021,7 @@ def main():
     crawler = ViecLam24hCrawler(
         checkpoint_dir=args.checkpoint_dir,
         output_dir=args.output_dir,
-        sync_minio=args.sync_minio,
+        sync_r2=args.sync_r2,
         online=args.online,
     )
 
@@ -1033,8 +1033,8 @@ def main():
         print("Pha 2 Detail Extraction hoàn thành:", stats)
     elif args.phase == "sync":
         crawler.ledger.save_catalog()
-        crawler.ledger.sync_to_minio()
-        print("Đã đồng bộ URL Ledger lên MinIO Lakehouse thành công.")
+        crawler.ledger.sync_final()
+        print("Đã đồng bộ URL Ledger lên R2 Lakehouse thành công.")
     elif args.phase == "view":
         stats = crawler.ledger.get_stats()
         print("Trạng thái URL Ledger hiện tại:", stats)

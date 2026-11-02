@@ -1,5 +1,11 @@
 # Glints Raw Pipeline Addendum — URL Discovery, Cloudflare R2 and CDC
 
+> **Hiện trạng 03/11/2026**
+>
+> - Xem trạng thái ở `docs/crawl/glints.md`.
+>
+> Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
+
 This file supplements the existing `docs/crawl/glints.md` audit document. The old `GlintsCrawler` and `JobRecord` normalization remain available, but the required Raw Zone path is routed through `GlintsRawPipeline` by `run.py` after running the supplied `install_overlay.py` integration helper.
 
 ## Listing API
@@ -8,7 +14,7 @@ This file supplements the existing `docs/crawl/glints.md` audit document. The ol
 - Operation: `searchJobsV3`; pagination uses `variables.data.page` and `pageSize`.
 - The exact GraphQL query and full response object returned to that query are stored per listing page as JSON under `raw/glints/_listing/YYYY-MM-DD/page_NNNN.json`.
 - Each returned job object is also archived individually by date and under a `current/` object pointer for Phase 2 lookup. Repeated discovery runs use a capture-time suffix for historical keys so a second scan does not overwrite an earlier listing payload.
-- The existing query selects only fields explicitly named in `crawlers/sources/glints/crawler.py`. The raw response is not truncated after it is returned, but the query does not promise to expose every field that might exist in Glints' internal GraphQL schema. The full detail HTML is stored as a second raw source of truth.
+- The existing query selects only fields explicitly named in `collection/sources/glints/crawler.py`. The raw response is not truncated after it is returned, but the query does not promise to expose every field that might exist in Glints' internal GraphQL schema. The full detail HTML is stored as a second raw source of truth.
 
 ## Detail URL and HTML hash
 
@@ -34,4 +40,4 @@ A new URL starts as PENDING. New/changed detail content is written as a snapshot
 
 ## Fixture layouts
 
-`crawlers/sources/glints/samples/` contains three explicitly synthetic HTML/JSON fixture pairs: JSON-LD `JobPosting`, JSON-LD `@graph`, and an HTML variant with no JSON-LD. These are test fixtures, not collected production data.
+`collection/sources/glints/samples/` contains three explicitly synthetic HTML/JSON fixture pairs: JSON-LD `JobPosting`, JSON-LD `@graph`, and an HTML variant with no JSON-LD. These are test fixtures, not collected production data.

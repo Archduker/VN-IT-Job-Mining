@@ -2,15 +2,15 @@
 """Crawler nguồn VietnamWorks (https://www.vietnamworks.com) — Modern Data Stack Two-Phase Decoupled.
 
 Tuân thủ nghiêm ngặt chuẩn kiến trúc dự án VN-IT-Job-Mining (docs/crawler_output_checklist.md &
-docs/two_phase_minio_crawler_playbook.md):
+docs/two_phase_r2_crawler_playbook.md):
 1. Kiến trúc Hai Pha Độc Lập: Pha 1 discover_urls() & Pha 2 crawl_details().
 2. Pha 1 (Discovery): Thu thập URL vào UrlLedger, ban đầu content_hash = None, status = "PENDING".
-3. Pha 2 (Details): Kéo danh sách URL từ MinIO về máy, cào chi tiết với Polite Sleep ngẫu nhiên 2.0s - 4.5s.
+3. Pha 2 (Details): Kéo danh sách URL từ R2 về máy, cào chi tiết với Polite Sleep ngẫu nhiên 2.0s - 4.5s.
 4. Cơ chế Hash duy nhất: Tính toán content_hash duy nhất trên đối tượng Document JSON sau cào (calculate_json_canonical_hash).
 5. Trường language: Tự động nhận diện ngôn ngữ bài viết ("vi" hoặc "en") và lưu vào metadata envelope.
 6. Zero Information Loss: Trích xuất 100% trường dữ liệu theo đặc tả neccessary.md & .html.
 7. Cơ chế Safe Skip & Failed Queue: Bọc try...except từng tin, lỗi đưa vào Failed Queue (--retry-failed).
-8. Checkpoint Sync định kỳ: Cứ sau mỗi 15 tin tự động lưu catalog và đồng bộ lên MinIO Lakehouse (bucket vn-it-jobs).
+8. Checkpoint Sync định kỳ: Cứ sau mỗi 15 tin tự động lưu catalog và đồng bộ lên R2 Lakehouse (bucket vn-it-jobs).
 9. Hỗ trợ Single-File CLI đầy đủ cờ lệnh.
 """
 
@@ -39,7 +39,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from collection.base.base_crawler import BaseCrawler
 from collection.common.http_client import DelayConfig, HttpClient
-from collection.common.minio_raw_pipeline import MinioRawStore
+from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import JobRecord, RawJobEnvelope
 from collection.common.url_ledger import (
     UrlLedger,
@@ -637,7 +637,7 @@ class VietnamWorksCrawler(BaseCrawler):
         queries: list[str] | None = None,
         local_json_file: str | None = None,
         local_html_dir: str | None = None,
-        sync_minio: bool = False,
+        sync_r2: bool = False,
     ) -> None:
         super().__init__(
             checkpoint_dir=checkpoint_dir,
@@ -653,7 +653,7 @@ class VietnamWorksCrawler(BaseCrawler):
         )
         self.local_json_file = local_json_file
         self.local_html_dir = local_html_dir
-        self.sync_minio = sync_minio
+        self.sync_r2 = sync_r2
         self.raw_payload_files: list[Path] = []
         self.raw_payload_file: Path | None = None
         self._raw_payloads: dict[str, dict[str, Any]] = {}
@@ -668,7 +668,7 @@ class VietnamWorksCrawler(BaseCrawler):
         ) / "raw"
 
         self._ledger = None
-        self._minio_store = None
+        self._r2_store = None
 
     def _get_ledger(self) -> UrlLedger:
         if self._ledger is None:
@@ -682,13 +682,13 @@ class VietnamWorksCrawler(BaseCrawler):
     def ledger(self) -> UrlLedger:
         return self._get_ledger()
 
-    def _get_minio_store(self) -> MinioRawStore:
-        if self._minio_store is None:
-            self._minio_store = MinioRawStore()
-        return self._minio_store
+    def _get_r2_store(self) -> R2RawStore:
+        if self._r2_store is None:
+            self._r2_store = R2RawStore()
+        return self._r2_store
 
     def discover_urls(self, online: bool = False, max_pages: int | None = None) -> list[str]:
-        """Pha 1: Quét Algolia Search API lấy danh sách Job URLs lưu vào UrlLedger & MinIO.
+        """Pha 1: Quét Algolia Search API lấy danh sách Job URLs lưu vào UrlLedger & R2.
 
         Ban đầu URL chưa có hash: status = 'PENDING', content_hash = None.
         """
@@ -849,12 +849,9 @@ class VietnamWorksCrawler(BaseCrawler):
 
         ledger.save_catalog()
         ledger.export_daily_manifest()
-        if self.sync_minio:
-            try:
-                ledger.sync_to_minio()
-                log.info("[VietnamWorks] Đã đồng bộ URL Ledger lên MinIO Lakehouse.")
-            except Exception as e:
-                log.warning("[VietnamWorks] Không thể đồng bộ MinIO trong Pha 1: %s", e)
+        if self.sync_r2:
+            ledger.sync_final()
+            log.info("[VietnamWorks] Đã đồng bộ URL Ledger lên R2 Lakehouse.")
 
         log.info("[VietnamWorks] Pha 1 hoàn tất: phát hiện %d URLs.", len(discovered_urls))
         return discovered_urls
@@ -866,18 +863,18 @@ class VietnamWorksCrawler(BaseCrawler):
         retry_failed: bool = False,
         local_html_dir: str | None = None,
     ) -> dict[str, int]:
-        """Pha 2: Bóc tách chi tiết tin từ URL Ledger, băm Document JSON duy nhất (content_hash) và lưu MinIO.
+        """Pha 2: Bóc tách chi tiết tin từ URL Ledger, băm Document JSON duy nhất (content_hash) và lưu R2.
 
         Áp dụng Polite Sleep 2.0s - 4.5s ngẫu nhiên, Checkpoint Sync mỗi 15 tin, và Safe Skip.
         """
         log.info("[VietnamWorks] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
         ledger = self._get_ledger()
 
-        if self.sync_minio and online:
+        if self.sync_r2 and online:
             try:
-                ledger.pull_from_minio()
+                ledger.pull_from_r2()
             except Exception as e:
-                log.warning("[VietnamWorks] Không thể pull Ledger từ MinIO: %s", e)
+                log.warning("[VietnamWorks] Không thể pull Ledger từ R2: %s", e)
 
         candidates = (
             ledger.get_failed_records() if retry_failed else ledger.get_pending_or_due_records(recheck_days=21)
@@ -952,7 +949,7 @@ class VietnamWorksCrawler(BaseCrawler):
                 # 5. Đối chiếu hash: Nếu nội dung không đổi và tin đã DONE thì giữ nguyên version
                 old_hash = item.get("content_hash")
                 old_version = item.get("latest_version") or 0
-                if old_hash and old_hash == content_hash and item.get("status") == "DONE":
+                if not ledger.next_version(item, content_hash)[0]:
                     log.info("[VietnamWorks] Job %s không đổi nội dung -> Giữ nguyên v%d", job_id, old_version)
                     ledger.mark_scraped(
                         url_hash=url_hash,
@@ -993,13 +990,13 @@ class VietnamWorksCrawler(BaseCrawler):
                 with open(json_file_path, "w", encoding="utf-8") as f:
                     json.dump(envelope, f, ensure_ascii=False, indent=2)
 
-                # 8. Đồng bộ lên MinIO Lakehouse nếu có cờ
-                if self.sync_minio:
+                # 8. Đồng bộ lên R2 Lakehouse nếu có cờ
+                if self.sync_r2:
                     s3_key = f"raw/{self.source_name}/{date_str}/{job_id}_v{new_version}.json"
                     try:
-                        self._get_minio_store().put_json(s3_key, envelope)
+                        self._get_r2_store().put_json(s3_key, envelope)
                     except Exception as exc_s3:
-                        log.warning("[VietnamWorks] Lỗi đẩy snapshot lên MinIO (%s): %s", s3_key, exc_s3)
+                        log.warning("[VietnamWorks] Lỗi đẩy snapshot lên R2 (%s): %s", s3_key, exc_s3)
 
                 # 9. Lưu ngược lại hash vào URL trong Ledger (chuyển status=DONE)
                 ledger.mark_scraped(
@@ -1011,11 +1008,11 @@ class VietnamWorksCrawler(BaseCrawler):
                 stats["success"] += 1
                 count += 1
 
-                # 8. Checkpoint Sync Định Kỳ: Cứ sau mỗi 15 tin tự động lưu & sync MinIO
+                # 8. Checkpoint Sync Định Kỳ: Cứ sau mỗi 15 tin tự động lưu & sync R2
                 if count % 15 == 0:
                     ledger.save_catalog()
-                    if self.sync_minio:
-                        ledger.sync_to_minio()
+                    if self.sync_r2:
+                        ledger.sync_to_r2()
                     log.info("[VietnamWorks] Checkpoint sync hoàn tất tại mốc %d tin.", count)
 
             except Exception as exc:
@@ -1026,8 +1023,8 @@ class VietnamWorksCrawler(BaseCrawler):
                 continue
 
         ledger.save_catalog()
-        if self.sync_minio:
-            ledger.sync_to_minio()
+        if self.sync_r2:
+            ledger.sync_final()
 
         log.info("[VietnamWorks] Pha 2 hoàn tất: %s", stats)
         return stats
@@ -1349,10 +1346,10 @@ class VietnamWorksCrawler(BaseCrawler):
                 page += 1
 
     def sync_lakehouse(self) -> None:
-        """Đồng bộ toàn bộ catalog URL và file snapshot raw lên MinIO Lakehouse."""
+        """Đồng bộ toàn bộ catalog URL và file snapshot raw lên R2 Lakehouse."""
         ledger = self._get_ledger()
         ledger.save_catalog()
-        ledger.sync_to_minio()
+        ledger.sync_final()
         log.info("[VietnamWorks] Đồng bộ Lakehouse hoàn tất.")
 
     def view_ledger_summary(self) -> None:
@@ -1380,7 +1377,7 @@ def main() -> None:
         help="Chọn pha thực thi: discovery (Pha 1), details (Pha 2), sync (đồng bộ), view (xem ledger)",
     )
     parser.add_argument("--online", action="store_true", help="Bật kết nối internet cào trực tuyến")
-    parser.add_argument("--sync-minio", action="store_true", help="Đồng bộ URL Ledger và Raw Snapshots lên MinIO Lakehouse")
+    parser.add_argument("--sync-r2", "--sync-minio", action="store_true", help="Đồng bộ URL Ledger và Raw Snapshots lên MinIO Lakehouse")
     parser.add_argument("--retry-failed", action="store_true", help="Cào lại các URL trong hàng đợi lỗi (Failed Queue)")
     parser.add_argument("--limit", type=int, default=None, help="Giới hạn số lượng tin xử lý")
     parser.add_argument("--local-html-dir", type=str, default=None, help="Thư mục chứa HTML thô để cào offline")
@@ -1402,7 +1399,7 @@ def main() -> None:
         max_items=args.limit or args.max_items,
         local_json_file=args.local_json_file,
         local_html_dir=args.local_html_dir,
-        sync_minio=args.sync_minio,
+        sync_r2=args.sync_r2,
     )
 
     if args.phase == "discovery":

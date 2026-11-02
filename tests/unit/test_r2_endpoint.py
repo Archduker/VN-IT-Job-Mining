@@ -3,13 +3,13 @@
 
 import pytest
 
-from collection.common.minio_raw_pipeline import MinioRawStore
+from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.r2_storage import resolve_r2_endpoint
 
 
 @pytest.fixture(autouse=True)
 def clean_env(monkeypatch):
-    for name in ("R2_ENDPOINT_URL", "S3_ENDPOINT_URL", "R2_ACCOUNT_ID", "MINIO_ENDPOINT"):
+    for name in ("R2_ENDPOINT_URL", "S3_ENDPOINT_URL", "R2_ACCOUNT_ID"):
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setattr("dotenv.load_dotenv", lambda *args, **kwargs: False)
 
@@ -35,4 +35,4 @@ def test_missing_endpoint_is_empty_when_optional():
 
 def test_store_without_endpoint_raises():
     with pytest.raises(ValueError, match="R2_ENDPOINT_URL"):
-        MinioRawStore(access_key="key", secret_key="secret", ensure_bucket=False)
+        R2RawStore(access_key="key", secret_key="secret", ensure_bucket=False)

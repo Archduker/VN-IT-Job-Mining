@@ -46,7 +46,6 @@ const STATUS: Record<SampleNote['status'], { text: string; cls: string }> = {
   ok: { text: 'Chuẩn hóa được', cls: 'bg-state-done-bg text-state-done-fg' },
   warn: { text: 'Cần xem lại', cls: 'bg-state-partial-bg text-state-partial-fg' },
   fallback: { text: 'Suy từ trường khác', cls: 'bg-state-partial-bg text-state-partial-fg' },
-  imputer: { text: 'Chờ imputer', cls: 'bg-state-idle-bg text-state-idle-fg' },
   fail: { text: 'Chưa có giá trị', cls: 'bg-state-fail-bg text-state-fail-fg' },
   missing: { text: 'Không có trong raw', cls: 'bg-state-idle-bg text-state-idle-fg' },
 }

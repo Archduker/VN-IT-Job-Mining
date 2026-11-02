@@ -4,7 +4,7 @@ description: >-
   Chuyên gia kiến trúc hệ thống thu thập dữ liệu tuyển dụng chuẩn Modern Data Stack.
   Chuyên sâu về: cào Raw As-Is (Zero Information Loss, cào 100% trường đặc thù của từng web),
   kiến trúc Two-Phase Decoupled Crawler (URL Discovery không giới hạn thời gian & Detail Extraction),
-  MinIO URL Ledger Manifests (JSONL/Parquet), băm cấu trúc JSON sau cào (Post-Crawl Canonical JSON Hashing & CDC),
+  R2 URL Ledger Manifests (JSONL/Parquet), băm cấu trúc JSON sau cào (Post-Crawl Canonical JSON Hashing & CDC),
   chu kỳ Re-crawl 21 ngày, cơ chế Safe Skip bắt lỗi an toàn và điều phối tự động qua Apache Airflow.
 ---
 
@@ -90,26 +90,22 @@ data/
         └── sample_standard_job.json
 ```
 
-### 3.2. Cấu Trúc Lưu Trữ Trên MinIO Lakehouse & Web Console UI
-Dữ liệu URL Ledger và Raw snapshots được tự động đồng bộ lên MinIO S3 bucket `vn-it-jobs`:
-- **Đường dẫn MinIO**:
-  - `minio://vn-it-jobs/url_ledger/<source>/catalog_master.json`
-  - `minio://vn-it-jobs/url_ledger/<source>/manifests/manifest_<YYYY-MM-DD>.jsonl`
-  - `minio://vn-it-jobs/raw/<source>/<YYYY-MM-DD>/{job_id}_v{version}.json`
-- **Truy cập MinIO Web Console (UI)**:
-  - Địa chỉ: `http://localhost:9001` (User: `minioadmin` / Pass: `minioadmin`).
-  - Cho phép người dùng trực tiếp duyệt cây thư mục bucket `vn-it-jobs`, xem và tải file JSON/JSONL đã lưu.
-- **S3 API Endpoint**: `http://localhost:9000` dùng cho Airflow, DuckDB và Boto3 SDK.
-- **Khởi động MinIO**: Chạy `bash scripts/start_minio.sh` hoặc `sudo docker compose -f docker-compose.minio.yml up -d`.
+### 3.2. Cấu Trúc Lưu Trữ Trên R2 Lakehouse & Web Console UI
+Dữ liệu URL Ledger và Raw snapshots được tự động đồng bộ lên R2 bucket `vn-it-jobs`:
+- **Đường dẫn R2**:
+  - `r2://vn-it-jobs/url_ledger/<source>/catalog_master.json`
+  - `r2://vn-it-jobs/url_ledger/<source>/manifests/manifest_<YYYY-MM-DD>.jsonl`
+  - `r2://vn-it-jobs/raw/<source>/<YYYY-MM-DD>/{job_id}_v{version}.json`
+- **Kết nối**: `collection/common/r2_storage.get_r2_client()`, cấu hình trong `.env` (xem skill `r2-lakehouse-guide`).
 
 ### 3.3. Công Cụ Kiểm Tra Link (scripts/view_urls.py)
-Để kiểm tra các link đã lưu cả cục bộ và trên MinIO:
+Để kiểm tra các link đã lưu cả cục bộ và trên R2:
 ```bash
 # Xem dữ liệu cục bộ data/<source>/url_ledger/
 .venv/bin/python scripts/view_urls.py --source <source>
 
-# Xem dữ liệu đọc TRỰC TIẾP từ MinIO Lakehouse
-.venv/bin/python scripts/view_urls.py --source <source> --minio
+# Xem dữ liệu đọc TRỰC TIẾP từ R2 Lakehouse
+.venv/bin/python scripts/view_urls.py --source <source> --r2
 
 # Lọc theo trạng thái và giới hạn số bản ghi
 .venv/bin/python scripts/view_urls.py --source <source> --status PENDING --limit 20
@@ -123,15 +119,15 @@ Dữ liệu URL Ledger và Raw snapshots được tự động đồng bộ lên
 - Chuẩn hóa canonical URL (loại bỏ token tracking `utm_*`, `ref`, `u_sr_id`, `ta_source`).
 - Lưu catalog master xuống `data/<source>/url_ledger/catalog_master.json`.
 - Xuất daily manifest: `data/<source>/url_ledger/manifests/manifest_<YYYY-MM-DD>.jsonl`.
-- Tự động gọi `self.ledger.sync_to_minio()` đẩy manifest lên `minio://vn-it-jobs/url_ledger/<source>/manifests/`.
+- Tự động gọi `self.ledger.sync_to_r2()` đẩy manifest lên `r2://vn-it-jobs/url_ledger/<source>/manifests/`.
 
 ### Phase 2: Detail Extraction (`crawl_details`)
-- Đọc danh sách URL từ URL Ledger (cục bộ hoặc MinIO).
+- Đọc danh sách URL từ URL Ledger (cục bộ hoặc R2).
 - Lọc các link thỏa mãn điều kiện cần cào:
   1. `status == "PENDING"` (chưa từng cào bao giờ).
   2. `status == "DONE"` VÀ `last_scraped_at <= now() - 21 days` (đã cào quá 21 ngày, cần kiểm tra lại độ tươi).
 - **Cơ chế Safe Skip:** Bọc `try...except` quanh từng link. Nếu 1 URL bị 404, 500 hoặc timeout $\rightarrow$ Ghi log `status = "FAILED"`, tự động skip và chuyển ngay sang link tiếp theo, không ngắt quãng chương trình.
-- Sau khi hoàn thành, tự động sync kết quả lên MinIO.
+- Sau khi hoàn thành, tự động sync kết quả lên R2.
 
 ---
 
@@ -163,7 +159,7 @@ diff_result = diff_json_versions(old_json_payload, new_json_payload)
 
 ### Bảng trạng thái chuẩn:
 - `PENDING`: Link mới ghi nhận, chờ cào chi tiết.
-- `DONE`: Đã cào chi tiết thành công và lưu file vào MinIO.
+- `DONE`: Đã cào chi tiết thành công và lưu file vào R2.
 - `RECHECK_DUE`: Đã cào $\ge 21$ ngày, đến hạn re-crawl.
 - `FAILED`: Lỗi cào (404, timeout, bot block).
 - `CLOSED`: Tin đã bị gỡ bỏ hoặc thông báo hết hạn.
@@ -171,7 +167,7 @@ diff_result = diff_json_versions(old_json_payload, new_json_payload)
 ### Xử lý kịch bản Repost (URL đổi, Nội dung giữ nguyên):
 Khi cào xong một URL mới, tính `content_hash`:
 - Nếu `content_hash` trùng khớp với một bản ghi đã có trong Catalog $\rightarrow$ Đây là hành vi Repost/Đổi link.
-- Không tạo file snapshot mới làm phình to MinIO.
+- Không tạo file snapshot mới làm phình to R2.
 - Ghi nhận `repost_of_url_hash = <id_cũ>`, cập nhật `last_seen_at = now()`.
 
 ---
@@ -197,8 +193,8 @@ Agent kiểm tra các điều kiện tiên quyết trước khi nghiệm thu cra
 - [ ] Đã phân tích file HTML mẫu đại diện bằng `analyze_html_dom.py`.
 - [ ] Code tách bạch 2 hàm: `discover_urls()` và `crawl_details()`.
 - [ ] Lưu trữ đúng cấu trúc chuẩn hóa `data/<source>/url_ledger/` và `data/<source>/raw/`.
-- [ ] Tích hợp tự động đồng bộ `self.ledger.sync_to_minio()`.
-- [ ] Có thể kiểm tra kết quả qua `scripts/view_urls.py --source <source> [--minio]`.
+- [ ] Tích hợp tự động đồng bộ `self.ledger.sync_to_r2()`.
+- [ ] Có thể kiểm tra kết quả qua `scripts/view_urls.py --source <source> [--r2]`.
 - [ ] Tích hợp cơ chế Polite Sleep (ngẫu nhiên 3.0s - 5.5s) và chống chặn Cloudflare.
 - [ ] Áp dụng đúng hàm `calculate_json_canonical_hash` và `calculate_json_field_hashes` trên cấu trúc JSON sau cào để quản lý phiên bản CDC.
 - [ ] Trạng thái cào thành công lưu là `DONE`, chu kỳ re-crawl kiểm tra mốc 21 ngày.

@@ -106,6 +106,7 @@ def test_language_detection_and_vietnamese_standardization():
     assert "lương tháng 13" in standardized
 
 
+@pytest.mark.needs_data("data/topdev/raw/2026-10-20/2139491_v1.json")
 def test_topdev_real_html_cleaning():
     """Kiểm tra trên file thật của TopDev: bảo đảm sau khi làm phẳng không còn thẻ HTML."""
     path = "data/topdev/raw/2026-10-20/2139491_v1.json"

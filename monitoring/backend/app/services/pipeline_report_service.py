@@ -190,19 +190,22 @@ class PipelineReportService:
             "lineage": [row for row in lineage if row["records"] is not None],
         }
 
-    def get_eda_summary(self, source: str, total_records: int, completeness: Optional[float]) -> Dict[str, Any]:
+    def get_eda_summary(self, source: str, completeness: Optional[float]) -> Dict[str, Any]:
         card = health_card(source) or {}
+        report = integration_report(source) or {}
         frame = staging_frame(source)
         negotiable = None
         if frame is not None and "is_salary_negotiable_declared" in frame and len(frame):
             negotiable = round(100 * float(frame["is_salary_negotiable_declared"].fillna(0).mean()), 2)
         return {
             "source": source,
-            "total_records": total_records,
+            "total_records": report.get("total_integrated_records"),
             "completeness_score_pct": completeness,
             "salary_parse_rate_pct": (card.get("salary_metrics") or {}).get("salary_coverage_pct"),
             "negotiable_salary_pct": negotiable,
-            "reason": None if card else f"Chưa có health card của {source}. Chạy {PIPELINE_CMD}.",
+            "reason": None if card and report else (
+                f"Chưa có báo cáo Integration hoặc health card của {source}. Chạy {PIPELINE_CMD}."
+            ),
         }
 
     def get_eda_charts(self, source: str) -> Dict[str, Any]:
@@ -213,7 +216,8 @@ class PipelineReportService:
                 "unavailable_reason": f"Chưa có data/staging/{source}/{source}_flat_clean.parquet. Tải về từ R2 hoặc chạy {PIPELINE_CMD}.",
                 "salary_histogram": [], "skills_pareto": [], "locations": [], "records": 0,
             }
-        salary_mid = frame[[c for c in ("salary_min_vnd", "salary_max_vnd") if c in frame]].mean(axis=1).dropna() / 1e6
+        salary_cols = frame[[c for c in ("salary_min_vnd", "salary_max_vnd") if c in frame]]
+        salary_mid = salary_cols.where(salary_cols > 0).mean(axis=1).dropna() / 1e6  # 0 VND là lương ẩn
         edges = [0, 10, 20, 30, 40, 50, 60, 80, 100, 150, float("inf")]
         hist = pd.cut(salary_mid, bins=edges, right=False).value_counts(sort=False)
         histogram = [

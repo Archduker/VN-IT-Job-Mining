@@ -1,5 +1,13 @@
 # PHÂN TÍCH KIẾN TRÚC THU THẬP NGUỒN TOPCV (TOPCV CRAWLER ARCHITECTURE)
 
+> **Hiện trạng 03/11/2026**
+>
+> - Crawler: `collection/sources/topcv/crawler.py`. Engine mặc định `curl_cffi`; `cloakbrowser` cần license, thiếu license thì mọi trang lỗi (L-08). Nghỉ 3.0–6.0 giây giữa các tin, nghỉ dài 15–20 giây định kỳ.
+> - Đã sửa: luôn ghi `_v1` (L-04); discovery lỗi toàn bộ mà báo thành công, nay raise `DiscoveryError` (L-09, tiêu chuẩn C14).
+> - Test: `tests/contract/test_topcv_contract.py`, mẫu `tests/fixtures/topcv/` (tin thường, lương thỏa thuận, trang `/brand/` của nhà tuyển dụng VIP).
+>
+> Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
+
 > **Người phụ trách:** Thuận (Leader)  
 > **Nguồn mục tiêu:** [TopCV Việt Nam](https://www.topcv.vn)  
 > **Nhánh Git:** `crawls/topcv`  
@@ -102,7 +110,7 @@ flowchart LR
 
 ## 5. Thư Mục Mẫu Kiểm Thử Đa Định Dạng (Multi-Format Test Suite)
 
-Đã hoàn thành và lưu trữ tại `crawlers/sources/topcv/samples/`:
+Đã hoàn thành và lưu trữ tại `collection/sources/topcv/samples/`:
 1. `sample_standard_job.html` & `.json`: Tin tuyển dụng thông thường có lương VNĐ.
 2. `sample_hot_vip_job.html` & `.json`: Tin tuyển dụng VIP Hot có lương USD.
 3. `sample_negotiable_salary.html` & `.json`: Tin tuyển dụng mức lương thỏa thuận.

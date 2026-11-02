@@ -247,8 +247,10 @@ def _flatten_careerviet(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         if ben_str:
             flat["benefits_list"] = [b.strip() for b in re.split(r"[\n\r;•\-\*]+", str(ben_str)) if b.strip()]
 
-    # Không dùng job-tags làm kỹ năng: đây là tag SEO của trang.
-    # skills_list để rỗng, GenAI imputer sẽ quét kỹ năng từ JD.
+    # Tags kỹ năng
+    tags = raw.get("job-tags")
+    if isinstance(tags, list):
+        flat["skills_list"] = [str(t) for t in tags]
 
 
 def _flatten_glints(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
@@ -422,8 +424,8 @@ def _flatten_jobsgo(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     # Ngành nghề
     occs = raw.get("occupations")
     if isinstance(occs, list):
-        # occupations là ngành nghề, không phải kỹ năng; GenAI imputer quét kỹ năng từ JD.
         flat["raw_category_text"] = ", ".join(str(o) for o in occs if o)
+        flat["skills_list"].extend([str(o) for o in occs if o])
 
     # Ép phẳng general_info
     gen = raw.get("general_info")

@@ -1,5 +1,13 @@
 # Báo Cáo Kiểm Toán Kỹ Thuật Crawler ITviec (itviec.com)
 
+> **Hiện trạng 03/11/2026**
+>
+> - Crawler: `collection/sources/itviec/{crawler,parser,config}.py`; nghỉ theo `CRAWL_DELAY_MIN`/`CRAWL_DELAY_MAX` (mặc định 3.0–5.5 giây).
+> - Đã sửa: chốt chặn ghi đè catalog kết nối localhost (L-07); xóa 4 tin test giả `job-mot-100`… trên R2 và trên máy (L-12).
+> - Còn mở: chưa có contract test và C14.
+>
+> Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
+
 > **Nhánh kiểm toán**: `origin/feature/itviec-crawler`  
 > **Commit**: `a85c815534c9394bff27cf99d7a61a3a1e295dc0` (*"refactor: source ITviec crawler"*)  
 > **Tác giả phụ trách**: Hồng Phát  
@@ -15,10 +23,10 @@ Nguồn tuyển dụng **ITviec** (`https://itviec.com`) là nền tảng chuyê
 
 Trong nhánh `origin/feature/itviec-crawler`, bạn Phát đã hoàn thành một đợt refactor toàn diện:
 - **Tách bạch trách nhiệm (Separation of Concerns)**:
-  - [`config.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/config.py): Lưu hằng số, cấu hình URL, delay, retry, phiên bản crawler.
-  - [`parser.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/parser.py): Chuyên trách bóc tách HTML thuần (Listing & Detail), trả về dict cấu trúc chuẩn.
-  - [`crawler.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/crawler.py): Kế thừa `BaseCrawler`, quản lý kết nối HTTP, checkpoint, vòng lặp thu thập.
-  - [`tests/`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/tests): Bộ unit test ngoại tuyến độc lập.
+  - [`config.py`](../../collection/sources/itviec/config.py): Lưu hằng số, cấu hình URL, delay, retry, phiên bản crawler.
+  - [`parser.py`](../../collection/sources/itviec/parser.py): Chuyên trách bóc tách HTML thuần (Listing & Detail), trả về dict cấu trúc chuẩn.
+  - [`crawler.py`](../../collection/sources/itviec/crawler.py): Kế thừa `BaseCrawler`, quản lý kết nối HTTP, checkpoint, vòng lặp thu thập.
+  - `tests/` (không còn trong repo): Bộ unit test ngoại tuyến độc lập.
 
 ### Sơ Đồ Khối Module ITviec
 
@@ -103,14 +111,14 @@ return crawler.run()
 
 ---
 
-## 3. Đánh Giá Bộ Test Suite (`crawlers/sources/itviec/tests/`)
+## 3. Đánh Giá Bộ Test Suite (`collection/sources/itviec/tests/`)
 
 Nhánh ITviec có chất lượng kiểm thử tốt nhất trong 4 nhánh:
-1. [`test_crawler_helpers.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/tests/test_crawler_helpers.py):
+1. `test_crawler_helpers.py` (không còn trong repo):
    - Kiểm thử khởi tạo `ItviecCrawler`, thuộc tính `source_name`, `crawler_version`, định dạng `batch_id`.
    - Kiểm thử việc xây dựng và chuẩn hóa URL phân trang (`_listing_url`).
    - Kiểm thử logic bỏ qua bài đăng trùng lặp (`checkpoint.is_seen`).
-2. [`test_parser.py`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/itviec/tests/test_parser.py):
+2. `test_parser.py` (không còn trong repo):
    - Kiểm thử trích xuất thẻ JSON-LD `JobPosting`.
    - Kiểm thử bóc tách đa ngôn ngữ (bài đăng thuần tiếng Anh và tiếng Việt).
    - Kiểm thử xử lý dải lương nhiều biến thể: Lương USD, Lương triệu VND, Lương Thỏa thuận ("You'll love it").

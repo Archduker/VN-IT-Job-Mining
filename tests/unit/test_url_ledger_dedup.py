@@ -3,6 +3,7 @@
 
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+import json
 import tempfile
 import pytest
 
@@ -131,3 +132,109 @@ def test_canonicalize_lakehouse_key():
 
     with pytest.raises(ValueError):
         canonicalize_lakehouse_key("data/checkpoints/checkpoint.json")
+
+    # 4. Layout cũ theo ngày trước, nguồn sau được đưa về đúng chuẩn
+    assert canonicalize_lakehouse_key("raw/crawling/2026-10-15/topcv/1_v1.json") == "raw/topcv/2026-10-15/1_v1.json"
+    assert canonicalize_lakehouse_key("crawling/raw/2026-10-15/topcv/1_v1.json") == "raw/topcv/2026-10-15/1_v1.json"
+    assert (canonicalize_lakehouse_key("raw/url_ledger/2026-11-02/careerviet/catalog_master.json")
+            == "url_ledger/careerviet/snapshots/2026-11-02/catalog_master.json")
+
+    # 5. Không coi thư mục lạ là tên nguồn
+    with pytest.raises(ValueError):
+        canonicalize_lakehouse_key("crawling/raw/foo.json")
+    with pytest.raises(ValueError):
+        canonicalize_lakehouse_key("raw/unknown/2026-10-15/a.json")
+
+
+def test_sync_paths_handle_legacy_layout(tmp_path):
+    import importlib
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+    sync = importlib.import_module("sync_cloud_lakehouse")
+
+    assert sync.s3_key_to_local_path("raw/crawling/2026-10-15/topcv/1_v1.json", tmp_path) == tmp_path / "topcv/raw/2026-10-15/1_v1.json"
+    assert sync.s3_key_to_local_path("raw/topcv/2026-10-15/1_v1.json", tmp_path) == tmp_path / "topcv/raw/2026-10-15/1_v1.json"
+    assert sync.local_path_to_s3_key(tmp_path / "crawling/raw/2026-10-15/itviec/a_v1.json", tmp_path) == "raw/itviec/2026-10-15/a_v1.json"
+    assert sync.local_path_to_s3_key(tmp_path / "topcv/raw/2026-10-15/a_v1.json", tmp_path) == "raw/topcv/2026-10-15/a_v1.json"
+    assert sync.local_path_to_s3_key(tmp_path / "crawling/raw/a.json", tmp_path) is None
+
+
+def test_migrate_local_layout(tmp_path):
+    import importlib
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+    migrate = importlib.import_module("migrate_lakehouse_layout")
+
+    legacy = tmp_path / "crawling" / "raw" / "2026-10-15"
+    for name, body in (("topcv/a_v1.json", "A"), ("topcv/b_v1.json", "B"), ("itviec/c_v1.json", "C")):
+        (legacy / name).parent.mkdir(parents=True, exist_ok=True)
+        (legacy / name).write_text(body)
+    (tmp_path / "topcv/raw/2026-10-15").mkdir(parents=True)
+    (tmp_path / "topcv/raw/2026-10-15/b_v1.json").write_text("B")       # trùng hệt
+    (tmp_path / "itviec/raw/2026-10-15").mkdir(parents=True)
+    (tmp_path / "itviec/raw/2026-10-15/c_v1.json").write_text("khác")   # khác nội dung
+
+    dry = migrate.migrate_local(tmp_path, apply=False)
+    assert dry["stats"] == {"moved": 1, "duplicate_removed": 1, "conflict_skipped": 1}
+    assert (legacy / "topcv/a_v1.json").exists()
+
+    migrate.migrate_local(tmp_path, apply=True)
+    assert (tmp_path / "topcv/raw/2026-10-15/a_v1.json").read_text() == "A"
+    assert not (legacy / "topcv").exists()
+    assert (legacy / "itviec/c_v1.json").read_text() == "C"
+    assert (tmp_path / "itviec/raw/2026-10-15/c_v1.json").read_text() == "khác"
+
+
+def _ledger_with_two(tmp_path):
+    led = UrlLedger("topcv", storage_dir=str(tmp_path))
+    led.register_url("https://www.topcv.vn/viec-lam/a/1.html", job_id="1", preliminary_title="a")
+    led.register_url("https://www.topcv.vn/viec-lam/b/2.html", job_id="2", preliminary_title="b")
+    led.save_catalog()
+    return led, list(led.records)
+
+
+def _disk(tmp_path):
+    return json.loads((tmp_path / "catalog_master.json").read_text(encoding="utf-8"))
+
+
+def test_failed_and_closed_survive_save(tmp_path):
+    """Trước 03/11/2026 save_catalog để bản PENDING trên đĩa đè FAILED/CLOSED, nên 8 ledger đều có 0 FAILED."""
+    led, (h1, h2) = _ledger_with_two(tmp_path)
+    led.mark_failed(h1, "HTTP 500")
+    led.mark_closed(h2)
+    led.save_catalog()
+    disk = _disk(tmp_path)
+    assert disk[h1]["status"] == "FAILED" and disk[h1]["retry_count"] == 1
+    assert disk[h2]["status"] == "CLOSED"
+
+
+def test_latest_status_change_wins_between_workers(tmp_path):
+    led, (h1, _) = _ledger_with_two(tmp_path)
+    worker_a = UrlLedger("topcv", storage_dir=str(tmp_path))
+    worker_b = UrlLedger("topcv", storage_dir=str(tmp_path))
+    worker_a.mark_done(h1, content_hash="h")
+    worker_b.mark_failed(h1, "timeout")      # đổi sau A
+    worker_a.save_catalog()
+    worker_b.save_catalog()
+    assert _disk(tmp_path)[h1]["status"] == "FAILED"
+
+    worker_c = UrlLedger("topcv", storage_dir=str(tmp_path))
+    worker_d = UrlLedger("topcv", storage_dir=str(tmp_path))
+    worker_c.mark_failed(h1, "timeout")
+    worker_d.mark_done(h1, content_hash="h2")  # đổi sau C
+    worker_d.save_catalog()
+    worker_c.save_catalog()                    # C lưu sau nhưng thay đổi của C cũ hơn
+    assert _disk(tmp_path)[h1]["status"] == "DONE"
+
+
+def test_records_without_updated_at_keep_old_merge_rule(tmp_path):
+    led, (h1, _) = _ledger_with_two(tmp_path)
+    disk = _disk(tmp_path)
+    disk[h1].update({"status": "DONE", "last_scraped_at": "2026-10-01T00:00:00+00:00"})
+    (tmp_path / "catalog_master.json").write_text(json.dumps(disk), encoding="utf-8")
+    led.records[h1].update({"status": "PENDING", "last_scraped_at": None})
+    led.records[h1].pop("updated_at", None)
+    led.save_catalog()
+    assert _disk(tmp_path)[h1]["status"] == "DONE"

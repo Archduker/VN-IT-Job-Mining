@@ -1,8 +1,17 @@
 # Hướng Dẫn Kỹ Thuật Cào CareerViet (CareerViet Crawl Guide)
 
+> **Hiện trạng 03/11/2026**
+>
+> - Crawler: `collection/sources/careerviet/crawler.py`, qua `HttpClient` (`DelayConfig` 2–5 giây khi online). Cần Python 3.12.
+> - Đã sửa: không đẩy ledger khi chạy qua `run.py --sync-r2` (L-06).
+> - Mục 13 (MinIO/AIStor cục bộ, `localhost:9000`) là lịch sử: hệ thống chỉ dùng Cloudflare R2, xem `docs/cloud_r2_setup_guide.md`.
+> - Còn mở: chưa có contract test và C14; nghỉ giữa tin do `HttpClient` tự áp nên kiểm tra C10 bằng AST chưa nhận ra (SCRAPE-13).
+>
+> Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
+
 > **Nhánh**: `crawls/careerviet`
 > **Nguồn**: CareerViet — `https://careerviet.vn` (SSR HTML, không API công khai)
-> **Crawler**: `crawlers/sources/careerviet/crawler.py` — `CareerVietCrawler`
+> **Crawler**: `collection/sources/careerviet/crawler.py` — `CareerVietCrawler`
 > **`CRAWLER_VERSION`**: `0.5.0` (hằng số trong `crawler.py`)
 > **Trạng thái**: Phase 1 **HOÀN THÀNH** (ledger 1.029 URL, 100% PENDING). Phase 2 **CHƯA chạy online**.
 
@@ -64,7 +73,7 @@ Hệ thống tách **URL Discovery** (Pha 1) và **Detail Extraction** (Pha 2) t
 - `manifests/manifest_<YYYY-MM-DD>.jsonl` — **JSONL append-only** cho phép phát hiện incremental (mỗi lần chạy ghi 1 dòng trạng thái).
 - `category_by_job_id.json` — bản đồ phẳng phái sinh từ Phase-1 URL files, chỉ dùng cho **filter `--source-category`** ở Pha 2.
 
-### 2.3. Tập trạng thái (`crawlers/common/url_ledger.py` dòng 31, 220–292)
+### 2.3. Tập trạng thái (`collection/common/url_ledger.py` dòng 31, 220–292)
 
 ```
 PENDING  ->  DONE  ----(sau 21 ngay)---->  RECHECK_DUE  ->  (chay lai) -> DONE
@@ -150,7 +159,7 @@ Nhánh xử lý trong `_process_detail_record` (dòng 618–657):
 - Một `requests.Session` duy nhất, vòng lặp `for rec in candidates:` **tuần tự một luồng**.
 - `timeout=25`.
 
-User-Agent xoay vòng từ pool 7 UA trình duyệt thật trong `crawlers/common/http_client.py`
+User-Agent xoay vòng từ pool 7 UA trình duyệt thật trong `collection/common/http_client.py`
 (`_USER_AGENTS`); **KHÔNG in cookie/token** khi debug.
 
 ### 5.2. Ma trận xử lý lỗi (nhánh online, `crawler.py` dòng 780–849)
@@ -173,7 +182,7 @@ User-Agent xoay vòng từ pool 7 UA trình duyệt thật trong `crawlers/commo
 
 ### 5.4. Lưu ý: `HttpClient` TỰ retry 3 lần (giới hạn §8.3)
 
-`crawlers/common/http_client.py` `RetryConfig` dùng `status_forcelist=(429, 500, 502, 503, 504)`,
+`collection/common/http_client.py` `RetryConfig` dùng `status_forcelist=(429, 500, 502, 503, 504)`,
 `max_retries=3`, `backoff_factor=1.0` (1s → 2s → 4s) + `raise_on_status=True`.
 Nghĩa là: khi crawler **nhìn thấy** một `HTTPError` 429/5xx, `requests` **đã âm thầm thử lại 3 lần**
 cho chính request đó. Với Ngưỡng B (3 × 5xx liên tiếp), tổng số request phát sinh trước khi `break`
@@ -258,7 +267,7 @@ Envelope **chỉ tồn tại khi fetch thành công** (`raise_on_status=True` l�
 
 ### 8.4. Số Mẫu Kiểm Thử Offline
 
-- 3 cặp HTML + JSON trong `crawlers/sources/careerviet/samples/` (theo convention của nhóm).
+- 3 cặp HTML + JSON trong `collection/sources/careerviet/samples/` (theo convention của nhóm).
 - 30 HTML trong `data/raw/careerviet/html/` — là **bộ kiểm tra hồi quy** cho `_detect_block` (0/30 false-positive ở tiêu chí mới).
 - **Không suy ra** tỉ lệ CNTT thị trường từ 3 hay 30 mẫu.
 
@@ -271,10 +280,10 @@ Kết quả quét **30/30** trang HTML trong `data/raw/careerviet/html/` (16/10/
 
 | Tổ hợp       | Số tin /30 | `job_id` đại diện | Nguồn file |
 |--------------|-----------:|-------------------|------------|
-| no-tag row=6 | 13         | `35C81470`        | `crawlers/sources/careerviet/samples/` (keyword:developer) |
+| no-tag row=6 | 13         | `35C81470`        | `collection/sources/careerviet/samples/` (keyword:developer) |
 | no-tag row=5 | 5          | `35C848E9`        | `data/careerviet/_dryrun/raw/2026-10-16/35C848E9_v1.json` + `data/raw/careerviet/html/35C848E9.html` (c1) |
-| tag row=5    | 5          | `35C833DD`        | `crawlers/sources/careerviet/samples/` (c37_digital_mkt) |
-| tag row=6    | 2          | `35C87378`        | `crawlers/sources/careerviet/samples/` (keyword:developer) |
+| tag row=5    | 5          | `35C833DD`        | `collection/sources/careerviet/samples/` (c37_digital_mkt) |
+| tag row=6    | 2          | `35C87378`        | `collection/sources/careerviet/samples/` (keyword:developer) |
 
 **DoD 4 (TASKS.md mục 4)** yêu cầu “3 mẫu HTML đại diện cho 3 layout khác nhau”. CareerViet **không có** 3 layout khác nhau (chỉ 1 template). **Đề xuất xin miễn DoD 4 (phần “3 layout”)** với lý do:
 
@@ -373,9 +382,9 @@ python -X utf8 scripts/careerviet_eda_charts.py    # sinh 16 bieu do + chu thich
 
 **Báo cáo chi tiết** (cùng repo, cập nhật lượt 2026-10-18):
 
-- [`reports/careerviet_inventory.md`](../../reports/careerviet_inventory.md) — field inventory + % null thực đo 8 trường.
-- [`reports/careerviet_eda.md`](../../reports/careerviet_eda.md) — EDA sơ bộ (null, CDC, IT ratio, top tags/locations/companies, so sánh IT vs ngoài IT) + nhúng 16 biểu đồ.
-- [`reports/careerviet_eda_charts.md`](../../reports/careerviet_eda_charts.md) — 16 biểu đồ + chú thích **Quan sát / Ý nghĩa / Hạn chế** tự động sinh bởi `scripts/careerviet_eda_charts.py`.
+- `reports/careerviet_inventory.md` (không còn trong repo) — field inventory + % null thực đo 8 trường.
+- `reports/careerviet_eda.md` (không còn trong repo) — EDA sơ bộ (null, CDC, IT ratio, top tags/locations/companies, so sánh IT vs ngoài IT) + nhúng 16 biểu đồ.
+- `reports/careerviet_eda_charts.md` (không còn trong repo) — 16 biểu đồ + chú thích **Quan sát / Ý nghĩa / Hạn chế** tự động sinh bởi `scripts/careerviet_eda_charts.py`.
 - Ảnh PNG: `reports/figures/careerviet/01_bucket_supply.png` … `16_ledger_cdc.png` (16 file, cùng 1 style, mỗi ảnh có dòng nguồn riêng).
 
 ---
@@ -451,7 +460,7 @@ Subset CareerViet + push_raw_to_r2 (lệnh:
 
 - [x] Chạy online lượt 1 (2026-10-16 → 2026-10-17): **1018 envelope / 1029 DONE / 11 REPOST / 0 FAILED / 0 BLOCKED**, 77 phút, TB 4.54 s/tin (xem §9.4).
 - [x] Điền §9.4 + `reports/careerviet_inventory.md` + `reports/careerviet_eda.md` bằng số liệu thật (`careerviet_report_fill.py` + `careerviet_eda_charts.py`).
-- [ ] `--phase sync` + `push_raw_to_r2.py` sau khi Tài khởi động **AIStor** `r2.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>` và export 4 env `MINIO_*` (xem §13.1 + §13.3).
+- [ ] `--phase sync` + `push_raw_to_r2.py` sau khi Tài khởi động **AIStor** `r2.exe server <DATA_DIR> --console-address ":9001" --license <DUONG_DAN_LICENSE>` và export 4 biến `R2_*` (xem §13.1 + §13.3).
 - [ ] cân nhắc **Re-crawl 21 ngày** qua `--phase details` (ledger tự convert `DONE -> RECHECK_DUE`) → tạo `UPDATED` / `ACTIVE` cho §9.4.
 - [ ] Viết Clean layer ánh xạ `raw_payload -> Common Target Schema` (bên `data-integration-miner`).
 - [ ] Quyết định có mở rộng `_is_blocking` sang `504` hay không (hiện **không**; xem §5.2).
@@ -477,16 +486,16 @@ s3://vn-it-jobs/
   curated/   # chưa dùng cho CareerViet
 ```
 
-**Lệch giữa docs/02 và code (ghi nhận, KHÔNG sửa)**: `docs/02` §3.3 ghi `catalog_master.parquet`; `crawlers/common/url_ledger.py` ghi **`.json`** (không có converter parquet). Thuộc **file dùng chung** → chỉ ghi nhận tại đây.
+**Lệch giữa docs/02 và code (ghi nhận, KHÔNG sửa)**: `docs/02` §3.3 ghi `catalog_master.parquet`; `collection/common/url_ledger.py` ghi **`.json`** (không có converter parquet). Thuộc **file dùng chung** → chỉ ghi nhận tại đây.
 
 ### 13.1. Đồng Bộ Ledger (đã có sẵn, không cần script mới)
 
-`UrlLedger.sync_to_r2()` (`crawlers/common/url_ledger.py:306`) upload `catalog_master.json` + `manifests/*.jsonl` lên prefix `url_ledger/<source>/`. CareerViet vốn có cờ `--sync-r2` trong `--phase details` / `--phase discovery`.
+`UrlLedger.sync_to_r2()` (`collection/common/url_ledger.py:306`) upload `catalog_master.json` + `manifests/*.jsonl` lên prefix `url_ledger/<source>/`. CareerViet vốn có cờ `--sync-r2` trong `--phase details` / `--phase discovery`.
 
 **Chạy riêng, không cần cào lại** (thêm A-turn C3): `--phase sync` gọi `crawler.sync_ledger_to_r2()`.
 
 ```powershell
-python -X utf8 crawlers/sources/careerviet/crawler.py --phase sync
+python -X utf8 collection/sources/careerviet/crawler.py --phase sync
 # -> [sync] ledger -> Cloudflare R2: OK
 ```
 
@@ -515,7 +524,7 @@ curl.exe http://localhost:9000/r2/health/live
 
 `docker-compose.r2.yml` giữ nguyên trong repo làm tham chiếu cho người dùng sau; docs/02 vẫn mô tả Docker.
 
-Cấu hình kết nối **chỉ qua 4 biến môi trường**: `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`. **KHÔNG hardcode** giá trị ở code / test / docs / log / commit message (mặc định nằm trong `scripts/setup_r2.py:18-21` – file dùng chung, agent **KHÔNG sửa**). PowerShell ≥ 7: `$env:MINIO_ROOT_PASSWORD = Read-Host -AsSecureString "Cloudflare R2 password"` → map sang env cho tiến trình con (agent **không** in ra).
+Cấu hình kết nối **chỉ qua 4 biến môi trường**: `R2_ENDPOINT_URL`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`. **KHÔNG hardcode** giá trị ở code / test / docs / log / commit message (mặc định nằm trong `scripts/setup_r2.py:18-21` – file dùng chung, agent **KHÔNG sửa**). PowerShell ≥ 7: `$env:R2_SECRET_ACCESS_KEY = Read-Host -AsSecureString "Cloudflare R2 password"` → map sang env cho tiến trình con (agent **không** in ra).
 
 > **Đường dẫn repo chứa dấu cách**: workspace `d:\ĐH\Năm 3\Học kỳ 1\Khai thác dữ liệu\crawl data\VN-IT-Job-Mining` có nhiều dấu cách và dấu tiếng Việt. Mọi lệnh `cd`, tham số `--local-dir`, `--license`, `--data-dir` **phải bọc nháy kép** (`cd "..."`), nếu không PowerShell báo `A positional parameter cannot be found...` (coi mỗi từ là tham số riêng).
 
@@ -532,8 +541,8 @@ Vì `sync_to_r2` **chỉ** upload ledger (không raw), ta viết `scripts/push_r
 | `--source` | `careerviet` | Tên source (đổi để tái sử dụng cho nguồn khác) |
 | `--local-dir` | `data/careerviet` | Gốc chưa `raw/` và `url_ledger/` |
 | `--prefix` | `raw/careerviet` | Prefix S3 đích |
-| `--bucket` | env `MINIO_BUCKET` | Overide bucket |
-| `--endpoint` | env `MINIO_ENDPOINT` | Overide endpoint |
+| `--bucket` | env `R2_BUCKET_NAME` | Overide bucket |
+| `--endpoint` | env `R2_ENDPOINT_URL` | Overide endpoint |
 | `--date` | (lặp) | Lọc theo ngày `YYYY-MM-DD` (khớp cả `raw/<date>/` **và** `raw/dt=<date>/`) |
 | `--job-id` | (lặp) | Lọc job id cụ thể |
 | `--no-clobber` | **BẬT** | Head `head_object`, nếu key đã có → `SKIPPED_EXISTS` |
@@ -545,7 +554,7 @@ Vì `sync_to_r2` **chỉ** upload ledger (không raw), ta viết `scripts/push_r
 | `--verbose` | TẮT | Log access-key đã mask (`min***in`) |
 
 **An toàn bí mật**:
-- `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` đọc từ env, **không bao giờ in** giá trị (kể cả `--verbose`, chỉ in `access_key=<4 đầu>***<4 cuối>`).
+- `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` đọc từ env, **không bao giờ in** giá trị (kể cả `--verbose`, chỉ in `access_key=<4 đầu>***<4 cuối>`).
 - `boto3` lazy import — chạy `--dry-run` **không cần** cài boto3.
 
 ### 13.3. Thứ Tự Lệnh Đầy Đủ (sau khi Cloudflare R2 được duyệt)
@@ -576,7 +585,7 @@ aws --endpoint-url http://localhost:9000 s3 ls s3://vn-it-jobs/raw/careerviet/ -
 
 Hoặc dùng Cloudflare R2 client `mc ls local/vn-it-jobs/raw/careerviet/`.
 
-> **Môi trường thực tế của Tài**: máy **không có Docker** → chạy **AIStor** (`r2.exe server ... --license ...`). File license `.json` là **bí mật cá nhân**, đặt **ngoài repo**, **KHÔNG commit**, **KHÔNG dán** đường dẫn hay nội dung vào docs / log / issue / commit message (agent **không** bao giờ đọc hay in). `docker-compose.r2.yml` và `scripts/start_r2.sh` **chỉ còn là phương án phụ** cho máy khác có Docker; máy Tài **KHÔNG** dùng lệnh `docker compose`. Connection config **chỉ** qua 4 env: `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`.
+> **Môi trường thực tế của Tài**: máy **không có Docker** → chạy **AIStor** (`r2.exe server ... --license ...`). File license `.json` là **bí mật cá nhân**, đặt **ngoài repo**, **KHÔNG commit**, **KHÔNG dán** đường dẫn hay nội dung vào docs / log / issue / commit message (agent **không** bao giờ đọc hay in). `docker-compose.r2.yml` và `scripts/start_r2.sh` **chỉ còn là phương án phụ** cho máy khác có Docker; máy Tài **KHÔNG** dùng lệnh `docker compose`. Connection config **chỉ** qua 4 env: `R2_ENDPOINT_URL`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`.
 
 ### 13.4. Test Tự Động Cho Push Script
 

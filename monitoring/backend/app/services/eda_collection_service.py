@@ -50,7 +50,11 @@ class EDACollectionService:
 
     def get_field_inventory(self, source: str) -> List[Dict[str, Any]]:
         """Sinh bảng kiểm kê trường và tỷ lệ khuyết thiếu (Field Inventory)."""
-        samples = self._load_raw_samples(source, max_records=200)
+        return self._inventory_from(self._load_raw_samples(source, max_records=200))
+
+    @staticmethod
+    def _inventory_from(samples: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Bảng kiểm kê tính từ các bản ghi raw đã đọc sẵn."""
         if not samples:
             return []
 
@@ -91,13 +95,15 @@ class EDACollectionService:
         """Tóm tắt chất lượng của nguồn; số chưa đo được thì để None kèm lý do."""
         from app.services.pipeline_report_service import pipeline_report_service
 
-        inventory = self.get_field_inventory(source)
+        samples = self._load_raw_samples(source, max_records=200)
+        inventory = self._inventory_from(samples)
         completeness = None
         if inventory:
             avg_null_rate = sum(item["null_rate_pct"] for item in inventory) / len(inventory)
             completeness = max(0.0, round(100.0 - avg_null_rate, 2))
-        summary = pipeline_report_service.get_eda_summary(source, len(self._load_raw_samples(source)), completeness)
+        summary = pipeline_report_service.get_eda_summary(source, completeness)
         summary["fields_count"] = len(inventory)
+        summary["sampled_records"] = len(samples)
         return summary
 
     def get_charts_2d(self, source: str) -> Dict[str, Any]:

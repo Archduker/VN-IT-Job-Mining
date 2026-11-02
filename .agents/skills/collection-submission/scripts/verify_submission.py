@@ -238,19 +238,19 @@ class DoDScorer:
         self.details["TC4_Samples"] = log_items
 
     def _check_tc5_lakehouse(self) -> None:
-        """TC5 (10đ): MinIO & Cloudflare R2 integration."""
+        """TC5 (10đ): R2 & Cloudflare R2 integration."""
         log_items = []
         score = 0
 
-        # Kiểm tra code tích hợp MinIO/Ledger
-        has_minio_code = bool(re.search(r"(minio|url_ledger|ledger|sync_to_minio)", self.crawler_code, re.IGNORECASE))
+        # Kiểm tra code tích hợp R2/Ledger
+        has_r2_code = bool(re.search(r"(r2|url_ledger|ledger|sync_to_r2)", self.crawler_code, re.IGNORECASE))
         has_data_dir = (Path("data") / self.source).is_dir() or (Path("data") / "raw" / self.source).is_dir()
 
-        if has_minio_code:
+        if has_r2_code:
             score += 5
             log_items.append(f"{GREEN}[PASS]{RESET} Mã nguồn có tích hợp module Lakehouse/URL Ledger (+5đ)")
         else:
-            log_items.append(f"{RED}[FAIL]{RESET} Mã nguồn chưa tích hợp UrlLedger hoặc sync MinIO (0/5đ)")
+            log_items.append(f"{RED}[FAIL]{RESET} Mã nguồn chưa tích hợp UrlLedger hoặc sync R2 (0/5đ)")
 
         if has_data_dir:
             score += 5

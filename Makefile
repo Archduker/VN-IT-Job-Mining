@@ -13,7 +13,7 @@ AIRFLOW_HOME := $(PROJECT_ROOT)/airflow
 
 export AIRFLOW_HOME
 
-.PHONY: help setup install install-dev test test-cov test-ledger lint format \
+.PHONY: help setup install install-dev test test-fast test-contract test-live check quality test-cov test-ledger lint format monitor \
         db-up db-down check-r2 check-env \
         airflow-webserver airflow-scheduler airflow-stop \
         discover-topcv crawl-topcv discover-topdev crawl-topdev \
@@ -39,7 +39,11 @@ help:
 	@echo "    make check-r2           Check the Cloudflare R2 connection"
 	@echo ""
 	@echo "  Testing:"
-	@echo "    make test               Run all unit tests"
+	@echo "    make test               Run all tests except live (no network)"
+	@echo "    make test-fast          Run unit tests only"
+	@echo "    make test-contract      Run crawler contract tests (C1-C14)"
+	@echo "    make test-live          Run live tests (real crawl / real R2)"
+	@echo "    make check              test + code quality report + frontend build"
 	@echo "    make test-ledger        Run URL ledger & 21-day recrawl tests"
 	@echo "    make test-cov           Run tests with coverage report"
 	@echo ""
@@ -88,6 +92,9 @@ check-env:
 	@$(PYTHON) scripts/check_r2.py || true
 
 # ── Database & Cloud Lakehouse (Zero-SQLite & R2 Exclusive) ─────
+monitor:
+	@./start_monitoring.sh
+
 db-up:
 	@echo "Starting PostgreSQL 16 (Zero-SQLite Policy)..."
 	docker compose up -d postgres
@@ -101,11 +108,28 @@ check-r2:
 	$(PYTHON) scripts/check_r2.py
 
 # ── Testing ────────────────────────────────────────────────────
+# Quy trình test: xem tests/README.md. Mặc định không chạy test live và không ra mạng.
 test:
-	$(PYTEST) tests/ -v
+	$(PYTEST) tests/
+
+test-fast:
+	$(PYTEST) tests/ -m unit -q
+
+test-contract:
+	$(PYTEST) tests/ -m contract
+
+test-live:
+	$(PYTEST) tests/ -m live --run-live
 
 test-ledger:
-	$(PYTEST) tests/test_url_ledger_dedup.py -v
+	$(PYTEST) tests/unit/test_url_ledger_dedup.py tests/integration/test_ledger_sync.py -v
+
+check: test quality
+	cd monitoring/frontend && npm run build
+
+# Báo cáo code thừa, trùng, chết ra docs/code_quality.md (chỉ liệt kê, không sửa code)
+quality:
+	$(PYTHON) scripts/report_code_quality.py
 
 test-cov:
 	$(PYTEST) tests/ --cov=collection --cov-report=term-missing --cov-report=html:htmlcov

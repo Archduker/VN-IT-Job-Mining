@@ -17,14 +17,18 @@ const SourceDetail: React.FC<{ source: string }> = ({ source }) => {
   return (
     <>
       <section aria-label="Tóm tắt nguồn" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard label="Bản ghi raw trên máy" value={fmt(s.total_records)} sub="Đọc tối đa 200 bản ghi để kiểm kê" />
-        <StatCard label="Độ đầy đủ trung bình" value={pct(s.completeness_score_pct)} sub={`${s.fields_count} trường trong raw`} />
+        <StatCard label="Bản ghi sau Integration" value={fmt(s.total_records)} sub="Theo báo cáo Integration của nguồn" />
+        <StatCard
+          label="Độ đầy đủ trong raw"
+          value={pct(s.completeness_score_pct)}
+          sub={`${s.fields_count} trường, tính trên ${fmt(s.sampled_records)} bản ghi raw đầu tiên trên máy`}
+        />
         <StatCard label="Có lương dạng số" value={pct(s.salary_parse_rate_pct)} sub={s.reason ?? 'Theo health card của pipeline'} />
         <StatCard label="Lương thỏa thuận" value={pct(s.negotiable_salary_pct)} sub="Tính từ parquet staging" />
       </section>
 
       <Card>
-        <SectionTitle title="Kiểm kê trường trong raw" hint="Tỉ lệ thiếu tính trên các bản ghi raw đang có trên máy." />
+        <SectionTitle title="Kiểm kê trường trong raw" hint="Tỉ lệ thiếu tính trên tối đa 200 bản ghi raw đầu tiên đang có trên máy." />
         {inventory.data.length ? (
           <TableShell head={['Trường', 'Kiểu', 'Số dòng thiếu', 'Tỉ lệ thiếu', 'Số giá trị khác nhau', 'Giá trị mẫu']} alignRightFrom={2}>
             {inventory.data.map((row) => (

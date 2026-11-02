@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "monitoring" / "backend"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "monitoring" / "backend"))
 
 from app.core.config import settings  # noqa: E402
 from app.main import app  # noqa: E402
@@ -69,7 +69,7 @@ def test_pages_report_missing_files_instead_of_numbers(empty_root):
     charts = client.get("/api/v1/eda/topcv/charts").json()
     assert charts["available"] is False and charts["salary_histogram"] == []
     summary = client.get("/api/v1/eda/topcv/summary").json()
-    assert summary["total_records"] == 0 and summary["salary_parse_rate_pct"] is None
+    assert summary["total_records"] is None and summary["salary_parse_rate_pct"] is None
 
 
 def test_dashboard_reads_curated_card(reports_root):
@@ -99,13 +99,14 @@ def test_eda_charts_from_staging_parquet(empty_root):
     folder = empty_root / "data" / "staging" / "topcv"
     folder.mkdir(parents=True)
     pd.DataFrame({
-        "salary_min_vnd": [10e6, 20e6, None], "salary_max_vnd": [20e6, 30e6, None],
-        "skills_list": [["Python", "SQL"], ["Python"], []], "primary_city": ["Hà Nội", "Hà Nội", "Đà Nẵng"],
-        "is_salary_negotiable_declared": [0, 0, 1],
+        "salary_min_vnd": [10e6, 20e6, None, 0], "salary_max_vnd": [20e6, 30e6, None, 0],
+        "skills_list": [["Python", "SQL"], ["Python"], [], []],
+        "primary_city": ["Hà Nội", "Hà Nội", "Đà Nẵng", "Đà Nẵng"],
+        "is_salary_negotiable_declared": [0, 0, 1, 1],
     }).to_parquet(folder / "topcv_flat_clean.parquet")
     charts = client.get("/api/v1/eda/topcv/charts").json()
-    assert charts["records"] == 3 and charts["salary_records"] == 2
+    assert charts["records"] == 4 and charts["salary_records"] == 2  # lương 0 VND không tính
     assert {b["bin"]: b["count"] for b in charts["salary_histogram"]}["10–20M"] == 1
     assert charts["skills_pareto"][0] == {"label": "Python", "count": 2, "cumulative_pct": 66.7}
-    assert charts["locations"][0] == {"label": "Hà Nội", "count": 2}
-    assert client.get("/api/v1/eda/topcv/summary").json()["negotiable_salary_pct"] == 33.33
+    assert {loc["label"]: loc["count"] for loc in charts["locations"]} == {"Hà Nội": 2, "Đà Nẵng": 2}
+    assert client.get("/api/v1/eda/topcv/summary").json()["negotiable_salary_pct"] == 50.0

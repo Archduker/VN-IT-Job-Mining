@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Shared Raw-As-Is, MinIO URL Ledger and CDC pipeline primitives.
+"""Shared Raw-As-Is, R2 URL Ledger and CDC pipeline primitives.
 
 This module deliberately stores source HTML/GraphQL payloads before any schema
-normalization. It uses the project's UrlLedger for lifecycle tracking and MinIO
+normalization. It uses the project's UrlLedger for lifecycle tracking and R2
 (S3-compatible API) as the durable state/object store.
 """
 from __future__ import annotations
@@ -96,7 +96,7 @@ def combined_content_hash(html: str, listing_payload: Optional[Dict[str, Any]], 
     if not isinstance(listing_payload, dict):
         return html_hash
     # Only stable, semantically meaningful listing fields. Keep the complete
-    # listing payload in MinIO separately; this projection is used only for CDC.
+    # listing payload in R2 separately; this projection is used only for CDC.
     stable_keys = (
         "title", "company", "country", "location", "salaries", "skills",
         "hierarchicalJobCategory", "minYearsOfExperience", "maxYearsOfExperience",
@@ -107,8 +107,8 @@ def combined_content_hash(html: str, listing_payload: Optional[Dict[str, Any]], 
     return hashlib.sha256((html_hash + "\n" + serialized).encode("utf-8")).hexdigest()
 
 
-class MinioRawStore:
-    """Small MinIO/S3 adapter. Raises on connection/auth errors; missing keys return None."""
+class R2RawStore:
+    """Small R2/S3 adapter. Raises on connection/auth errors; missing keys return None."""
 
     def __init__(
         self,
@@ -129,27 +129,23 @@ class MinioRawStore:
             bucket
             or os.getenv("R2_BUCKET_NAME")
             or os.getenv("S3_BUCKET_NAME")
-            or os.getenv("MINIO_BUCKET")
             or "vn-it-jobs"
         )
         self.endpoint = (
             resolve_r2_endpoint(endpoint, required=False)
-            or os.getenv("MINIO_ENDPOINT")
             or ""
         )
         self.access_key = (
             access_key
             or os.getenv("R2_ACCESS_KEY_ID")
             or os.getenv("AWS_ACCESS_KEY_ID")
-            or os.getenv("MINIO_ROOT_USER")
         )
         self.secret_key = (
             secret_key
             or os.getenv("R2_SECRET_ACCESS_KEY")
             or os.getenv("AWS_SECRET_ACCESS_KEY")
-            or os.getenv("MINIO_ROOT_PASSWORD")
         )
-        secure_env = os.getenv("MINIO_SECURE", "false").strip().lower() in {"1", "true", "yes"}
+        secure_env = False
         if secure is not None:
             self.secure = secure
         elif self.endpoint.startswith("https://"):
@@ -263,7 +259,7 @@ class TwoPhaseRawCrawler:
         self,
         max_items: Optional[int] = 30,
         storage_dir: Optional[str] = None,
-        minio_store: Optional[MinioRawStore] = None,
+        r2_store: Optional[R2RawStore] = None,
         http_client: Any = None,
         recheck_days: int = 21,
         close_after_missing_cycles: int = 3,
@@ -277,7 +273,7 @@ class TwoPhaseRawCrawler:
         self.close_after_missing_cycles = int(os.getenv("CRAWL_CLOSE_MISSING_CYCLES", str(close_after_missing_cycles)))
         self.storage_dir = Path(storage_dir or f"data/{self.source}/url_ledger")
         self.storage_dir.mkdir(parents=True, exist_ok=True)
-        self.store = minio_store or MinioRawStore()
+        self.store = r2_store or R2RawStore()
         self.http_client = http_client
         self.delay_min = float(os.getenv("CRAWL_DELAY_MIN", str(delay_min if delay_min is not None else 1.5)))
         self.delay_max = float(os.getenv("CRAWL_DELAY_MAX", str(delay_max if delay_max is not None else 3.0)))
@@ -289,7 +285,7 @@ class TwoPhaseRawCrawler:
         self._discovery_completed = False
 
     def _load_remote_catalog_before_ledger(self) -> None:
-        """MinIO catalog is source of truth; a fresh machine pulls it before a run."""
+        """R2 catalog is source of truth; a fresh machine pulls it before a run."""
         key = f"url_ledger/{self.source}/catalog_master.json"
         remote = self.store.get_json(key)
         if isinstance(remote, dict):
@@ -425,7 +421,7 @@ class TwoPhaseRawCrawler:
                 elif row.get("status") != "CLOSED":
                     miss_counts[url_hash] = int(miss_counts.get(url_hash, 0)) + 1
                     if miss_counts[url_hash] >= self.close_after_missing_cycles:
-                        row["status"] = "CLOSED"
+                        self.ledger.mark_closed(url_hash)
                         logger.info("[%s] Marked CLOSED after repeated absence: %s", self.source, row.get("canonical_url"))
             self.store.put_json(misses_key, miss_counts)
 
@@ -438,7 +434,7 @@ class TwoPhaseRawCrawler:
         raise NotImplementedError
 
     def crawl_details(self, limit: Optional[int] = None) -> Dict[str, Any]:
-        """Crawl only pending, due, or retryable URLs, persisting every snapshot to MinIO."""
+        """Crawl only pending, due, or retryable URLs, persisting every snapshot to R2."""
         limit = self.max_items if limit is None else limit
         pending = self.ledger.get_pending_or_due_records(recheck_days=self.recheck_days)
         for row in self.ledger.records.values():
@@ -540,6 +536,6 @@ class TwoPhaseRawCrawler:
         stats["skipped"] = stats["unchanged"] + stats["reposts"]
         stats["errors"] = stats["failed"]
         stats["total_seen"] = len(self.ledger.records)
-        bucket = getattr(self.store, "bucket", os.getenv("MINIO_BUCKET", "vn-it-jobs"))
-        stats["output_file"] = f"minio://{bucket}/raw/{self.source}/"
+        bucket = getattr(self.store, "bucket", os.getenv("R2_BUCKET_NAME", "vn-it-jobs"))
+        stats["output_file"] = f"r2://{bucket}/raw/{self.source}/"
         return stats

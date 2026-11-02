@@ -134,6 +134,8 @@ class JobCrawlerOperator(BaseOperator):
             output_dir=out_dir,
             phase=self.phase,
             max_pages=self.max_pages,
+            # Airflow chạy theo lịch: luôn kéo ledger trước pha 2 và đẩy raw cùng ledger lên R2 (SCRAPE-9)
+            sync_r2=True,
         )
 
         # Ghi nhận hoàn tất ca cào vào AdaptiveRouter để bắt đầu tính giờ nghỉ Cooldown

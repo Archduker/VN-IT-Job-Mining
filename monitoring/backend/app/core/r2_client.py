@@ -2,12 +2,13 @@
 """Dedicated Cloudflare R2 Client cho VN-IT-Job-Mining.
 
 Kết nối trực tiếp tới Cloudflare R2 Endpoint qua giao thức S3v4,
-loại bỏ hoàn toàn MinIO S3 cục bộ.
+loại bỏ hoàn toàn R2 cục bộ.
 """
 
 from datetime import datetime
 import logging
 import os
+from pathlib import Path
 import time
 from typing import Any, Dict, List, Optional
 import boto3
@@ -322,9 +323,11 @@ class CloudflareR2Client:
         source_statuses = {}
         total_local_raw = 0
         total_cloud_raw = 0
+        total_synced_raw = 0
 
         # Liệt kê tệp trên R2 theo prefix để tăng tốc
         r2_source_counts = {s: 0 for s in settings.SUPPORTED_SOURCES}
+        r2_keys = {s: set() for s in settings.SUPPORTED_SOURCES}
         r2_ledger_exists = {s: False for s in settings.SUPPORTED_SOURCES}
         last_upload = None
 
@@ -337,6 +340,7 @@ class CloudflareR2Client:
                         for s in settings.SUPPORTED_SOURCES:
                             if k.startswith(f"raw/{s}/"):
                                 r2_source_counts[s] += 1
+                                r2_keys[s].add(k)
                                 modified = obj.get("LastModified")
                                 if modified and (last_upload is None or modified > last_upload):
                                     last_upload = modified
@@ -349,9 +353,15 @@ class CloudflareR2Client:
             # Đếm số raw cục bộ
             local_raw_dir = settings.DATA_DIR / src / "raw"
             local_raw_count = 0
+            synced_count = 0  # file trên máy đã có đúng key trên R2; so từng key chứ không so số đếm
             if local_raw_dir.exists():
                 for root, _, files in os.walk(local_raw_dir):
-                    local_raw_count += sum(1 for f in files if f.endswith(".json"))
+                    for f in files:
+                        if not f.endswith(".json"):
+                            continue
+                        local_raw_count += 1
+                        rel = (Path(root) / f).relative_to(local_raw_dir).as_posix()
+                        synced_count += f"raw/{src}/{rel}" in r2_keys[src]
 
             # Kiểm tra ledger cục bộ
             cat_file = settings.DATA_DIR / src / "url_ledger" / "catalog_master.json"
@@ -362,9 +372,9 @@ class CloudflareR2Client:
             cloud_count = r2_source_counts[src]
             total_local_raw += local_raw_count
             total_cloud_raw += cloud_count
+            total_synced_raw += synced_count
 
-            sync_pct = round((cloud_count / max(local_raw_count, 1)) * 100, 1) if local_raw_count > 0 else (100.0 if cloud_count > 0 else 0.0)
-            sync_pct = min(100.0, sync_pct)
+            sync_pct = round(synced_count / local_raw_count * 100, 1) if local_raw_count > 0 else (100.0 if cloud_count > 0 else 0.0)
 
             source_statuses[src] = {
                 "source": src,
@@ -372,11 +382,12 @@ class CloudflareR2Client:
                 "ledger_cloud": r2_ledger_exists[src],
                 "local_raw_count": local_raw_count,
                 "cloud_raw_count": cloud_count,
+                "synced_raw_count": synced_count,
                 "sync_pct": sync_pct,
                 "status": "SYNCED" if (sync_pct >= 95.0 and r2_ledger_exists[src]) else "OUT_OF_SYNC",
             }
 
-        overall_sync = round((total_cloud_raw / max(total_local_raw, 1)) * 100, 1) if total_local_raw > 0 else 100.0
+        overall_sync = round(total_synced_raw / total_local_raw * 100, 1) if total_local_raw > 0 else 100.0
 
         result = {
             "connected": conn.get("connected", False),
@@ -385,6 +396,7 @@ class CloudflareR2Client:
             "overall_sync_pct": min(100.0, overall_sync),
             "total_local_raw": total_local_raw,
             "total_cloud_raw": total_cloud_raw,
+            "total_synced_raw": total_synced_raw,
             "sources": source_statuses,
             "last_synced_at": last_upload.isoformat() if last_upload else None,
         }

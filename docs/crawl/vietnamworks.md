@@ -1,5 +1,13 @@
 # Hướng Dẫn Phân Tích & Đối Chiếu Bóc Tách Dữ Liệu Tuyển Dụng VietnamWorks (VietnamWorks Search API & Data Contract Mapping)
 
+> **Hiện trạng 03/11/2026**
+>
+> - Crawler: `collection/sources/vietnamworks/crawler.py`, qua API và `HttpClient`.
+> - Đã sửa: ghi version mới cho nội dung không đổi khi cào lại (L-03).
+> - Còn mở: tin `CLOSED` vẫn có raw mới (SCRAPE-8); nghỉ giữa tin 1.2–2.2 giây, dưới chuẩn 2.0–4.5 (SCRAPE-13); `raw/2026-10-16/raw_batch.json` chỉ có trên máy (PRE-8); chưa có contract test và C14.
+>
+> Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
+
 > **Nhánh thực hiện**: `crawl/vietnamworks`  
 > **Người thực hiện**: Nhóm trưởng (Team Leader)  
 > **Nguồn tuyển dụng**: VietnamWorks (`https://www.vietnamworks.com`)  
@@ -43,7 +51,7 @@ Raw JSON của các lần cào trước không thể khôi phục từ batch sch
 
 ## 2. Bảng Đối Chiếu Dữ Liệu Thực Tế (API Payload vs. Schema v1)
 
-Dữ liệu được kiểm chứng thực tế tại [`crawlers/sources/vietnamworks/test_5_jobs.json`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/crawlers/sources/vietnamworks/test_5_jobs.json):
+Dữ liệu được kiểm chứng thực tế tại `collection/sources/vietnamworks/test_5_jobs.json` (không còn trong repo):
 
 | Trường Schema | Job 1 (Senior Software Eng - EN) | Job 2 (Senior Mobile Flutter - EN) | Job 3 (Senior Backend Java - EN) | Job 4 (Fullstack C#/.NET - VI) | Job 5 (Data Engineer - EN) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -79,7 +87,7 @@ Dữ liệu được kiểm chứng thực tế tại [`crawlers/sources/vietnam
 
 Chạy kiểm tra tự động qua `DataQualityChecker`:
 ```text
-Data Quality Passed for crawlers/sources/vietnamworks/test_5_jobs.json:
+Data Quality Passed for collection/sources/vietnamworks/test_5_jobs.json:
 - total_records: 5
 - valid_schema_records: 5 (100.0%)
 - unique_keys: 5 (100.0%)

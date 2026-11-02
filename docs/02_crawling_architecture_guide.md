@@ -1,4 +1,6 @@
-# CẨM NANG KIẾN TRÚC CRAWL RAW DATA, MINIO URL LEDGER & CDC VERSIONING
+# CẨM NANG KIẾN TRÚC CRAWL RAW DATA, R2 URL LEDGER & CDC VERSIONING
+
+> **Cập nhật 03/11/2026.** Tài liệu mô tả thiết kế. Tiêu chuẩn chính thức (C1–C14) và các bẫy đã gặp nằm ở `collection/CLAUDE.md`; lỗi đã sửa ở `docs/issue_log.md`. Các đoạn đã sửa theo code: catalog lưu dạng JSON, hash tính trên JSON chứ không trên HTML, version quyết định bằng `UrlLedger.next_version`, Airflow dùng `dag_discovery_daily` và 8 DAG `crawler_detail_<nguồn>`.
 
 > **Tài liệu quy trình cốt lõi số 2 (Core Document 02)**  
 > **Nguyên tắc cốt tử:**  
@@ -31,10 +33,10 @@ flowchart TD
         ListCrawler --> CleanURL --> GenURLHash
     end
 
-    subgraph Cloudflare R2Store["KHO LƯU TRỮ MINIO (Object Storage Lakehouse)"]
+    subgraph R2Store["KHO LƯU TRỮ R2 (Object Storage Lakehouse)"]
         subgraph URLLedgerZone["r2://vn-it-jobs/url_ledger/<source>/"]
             Manifest["manifests/manifest_YYYY-MM-DD.jsonl\n(Danh sách link phát hiện theo đợt)"]
-            MasterCatalog["catalog_master.parquet\n(Bảng trạng thái vòng đời của toàn bộ link)"]
+            MasterCatalog["catalog_master.json\n(Bảng trạng thái vòng đời của toàn bộ link)"]
         end
 
         subgraph RawDetailZone["r2://vn-it-jobs/raw/<source>/"]
@@ -76,7 +78,7 @@ Hệ thống lưu trữ trực tiếp trên **Cloudflare R2 Object Storage** dư
 
 ### 3.1. Phân tầng thư mục trong bucket `vn-it-jobs`:
 - **`url_ledger/<source>/manifests/manifest_<YYYY-MM-DD>.jsonl`**: Danh sách toàn bộ URL tìm thấy trong ngày cào (Append-only).
-- **`url_ledger/<source>/catalog_master.parquet`**: Bảng trạng thái vòng đời tổng hợp của toàn bộ các link của nguồn đó.
+- **`url_ledger/<source>/catalog_master.json`**: Bảng trạng thái vòng đời tổng hợp của toàn bộ các link của nguồn đó (dict `url_hash → bản ghi`).
 - **`raw/<source>/<YYYY-MM-DD>/<job_id>_v<version>.json`**: File snapshot nội dung thô nguyên bản của từng bài đăng.
 
 ### 3.2. Cấu trúc bản ghi URL trong `manifest_<date>.jsonl`:
@@ -93,7 +95,7 @@ Hệ thống lưu trữ trực tiếp trên **Cloudflare R2 Object Storage** dư
 }
 ```
 
-### 3.3. Bảng trạng thái vòng đời `catalog_master.parquet`:
+### 3.3. Các trường của một bản ghi trong `catalog_master.json`:
 | Tên cột | Kiểu dữ liệu | Ý nghĩa |
 | :--- | :--- | :--- |
 | `url_hash` | `VARCHAR(32)` (PK) | Mã băm MD5 của canonical URL |
@@ -104,8 +106,10 @@ Hệ thống lưu trữ trực tiếp trên **Cloudflare R2 Object Storage** dư
 | `last_seen_at` | `TIMESTAMP` | Thời điểm gần nhất thấy link vẫn còn trên trang danh mục |
 | `last_scraped_at`| `TIMESTAMP` | Thời điểm gần nhất cào thành công chi tiết |
 | `latest_version` | `INTEGER` | Phiên bản snapshot hiện tại ($1, 2, 3, \dots$) |
-| `content_hash` | `VARCHAR(64)` | Mã băm SHA256 của nội dung HTML chính bài viết |
-| `repost_of_url_hash` | `VARCHAR(32)` | Trỏ đến `url_hash` gốc nếu đây là tin đăng lại (Repost) |
+| `content_hash` | `VARCHAR(64)` | SHA-256 của `raw_payload` dạng JSON chuẩn hóa (`calculate_json_canonical_hash`), không phải của HTML |
+| `repost_of_url_hash` | `VARCHAR(32)` | Trỏ đến `url_hash` gốc nếu đây là tin đăng lại (Repost); repost không có file raw |
+| `updated_at` | `TIMESTAMP` | Lần đổi trạng thái gần nhất, do `mark_done`/`mark_failed`/`mark_closed` ghi. `save_catalog()` gộp theo trường này: bản mới hơn thắng (từ 03/11/2026) |
+| `error_log`, `retry_count` | `TEXT`, `INTEGER` | Lỗi gần nhất và số lần lỗi, khi `FAILED` |
 
 ---
 
@@ -118,7 +122,7 @@ Trong quy trình Modern ELT, **bước cào (Crawler)** chỉ thuần túy làm 
 3. **Thống nhất cho cả 7 sàn tuyển dụng:** Nguồn dữ liệu từ API JSON (TopDev, VietnamWorks) hay từ SSR HTML (TopCV, CareerViet, ITViec, Vieclam24h) sau khi bóc tách đều thành JSON $\rightarrow$ dùng chung 1 engine băm và diff duy nhất.
 4. **Biết chính xác "Người ta thay đổi ở đâu":** Bằng cách băm theo từng trường (`salary`, `requirements`, `deadline`, `benefits`), ta so sánh được trực tiếp key-value giữa 2 phiên bản để chỉ rõ trường nào bị chỉnh sửa.
 
-### 4.2. Mã nguồn chuẩn Băm JSON Canonical & Băm Đa Trường (`crawlers/common/url_ledger.py`):
+### 4.2. Mã nguồn chuẩn Băm JSON Canonical & Băm Đa Trường (`collection/common/url_ledger.py`):
 ```python
 import hashlib
 import json
@@ -158,11 +162,8 @@ def diff_json_versions(old_payload: Dict[str, Any], new_payload: Dict[str, Any])
     ...
 ```
 
-### 4.3. Công cụ đối chiếu trực quan 2 phiên bản:
-Sử dụng script CLI `scripts/diff_job_versions.py` để xem chi tiết các trường bị chỉnh sửa kèm Git-style unified diff cho các văn bản dài:
-```bash
-python scripts/diff_job_versions.py --file1 data/<source>/raw/<date>/<id>_v1.json --file2 data/<source>/raw/<date>/<id>_v2.json
-```
+### 4.3. Đối chiếu 2 phiên bản:
+Script `diff_job_versions.py` chưa được viết. Tạm thời so hai file bằng `diff <(jq -S .raw_payload a_v1.json) <(jq -S .raw_payload a_v2.json)`.
 
 ---
 
@@ -200,86 +201,50 @@ flowchart TD
 
 Trong quá trình cào chi tiết hàng nghìn link ở Phase 2, một link bị lỗi (404, 500, timeout) **tuyệt đối không được làm chết toàn bộ crawler**. Mã nguồn thực thi vòng lặp bảo vệ:
 
+Bản dưới theo code hiện tại (xem `crawl_details()` của TopCV hoặc JobsGO):
+
 ```python
-for item in links_to_crawl:
-    url = item["canonical_url"]
-    
-    # 1. SKIP NẾU ĐÃ HOÀN THÀNH VÀ CHƯA ĐẾN HẠN 21 NGÀY
-    if item["status"] == "DONE" and not is_due_for_recrawl(item["last_scraped_at"], days=21):
-        continue
-
+for rec in ledger.get_pending_or_due_records(21):   # tin DONE đến hạn bị đổi sang RECHECK_DUE trong bộ nhớ
     try:
-        response = http_client.get(url, timeout=15)
-        
-        # Link bị gỡ bỏ
-        if response.status_code == 404:
-            mark_url_status(item["url_hash"], status="CLOSED")
-            continue
-            
-        if response.status_code != 200:
-            raise Exception(f"HTTP Status {response.status_code}")
-            
-        new_hash = calculate_html_hash(response.text, container_selector=CONTAINER_SELECTOR)
-        
-        # Kiểm tra kịch bản Repost (URL mới nhưng content trùng tin cũ)
-        existing_repost = find_by_content_hash(new_hash)
-        if existing_repost and existing_repost["url_hash"] != item["url_hash"]:
-            update_url_ledger(item["url_hash"], status="DONE", repost_of_url_hash=existing_repost["url_hash"], last_scraped_at=now())
+        html = client.get_html(rec["canonical_url"])
+        if is_removed(html):                          # 404, "tin đã hết hạn"
+            ledger.mark_closed(rec["url_hash"])
             continue
 
-        if item.get("content_hash") == new_hash:
-            # Nội dung không đổi sau 21 ngày
-            update_url_ledger(item["url_hash"], status="DONE", last_scraped_at=now())
-        else:
-            # Tin mới hoặc tin có sửa đổi!
-            new_version = (item.get("latest_version") or 0) + 1
-            save_raw_to_minio(source, item["job_id"], response.text, version=new_version)
-            update_url_ledger(item["url_hash"], status="DONE", content_hash=new_hash, 
-                              latest_version=new_version, last_scraped_at=now())
-            
-    except Exception as e:
-        # BẮT LỖI AN TOÀN - GHI NHẬN FAILED VÀ SKIP TIẾP TỤC BÀI SAU
-        logger.error(f"❌ Failed to crawl {url}: {str(e)}")
-        update_url_ledger(item["url_hash"], status="FAILED", error_log=str(e), retry_count=item.get("retry_count", 0) + 1)
-        continue
+        payload = build_raw_payload(html)
+        content_hash = calculate_json_canonical_hash(payload, exclude_keys=["raw_html"])
+
+        # Kịch bản 3: URL mới, nội dung trùng tin khác -> repost, không ghi file
+        existing = ledger.find_by_content_hash(content_hash)
+        if existing and existing["url_hash"] != rec["url_hash"]:
+            ledger.mark_done(rec["url_hash"], content_hash=content_hash, repost_of_url_hash=existing["url_hash"])
+            continue
+
+        # Kịch bản 1 và 2: next_version coi RECHECK_DUE như DONE (không so status == "DONE")
+        changed, version = UrlLedger.next_version(rec, content_hash)
+        if changed:
+            save_raw(source, rec["job_id"], payload, version=version)   # <job_id>_v<version>.json
+        ledger.mark_done(rec["url_hash"], content_hash=content_hash, new_version=version)
+
+    except Exception as exc:
+        # Safe Skip: ghi FAILED (kèm error_log, retry_count) rồi đi tiếp
+        ledger.mark_failed(rec["url_hash"], str(exc))
+
+ledger.save_catalog()
+if sync_r2:
+    ledger.sync_final()   # raise LedgerSyncError nếu không đẩy được lên R2
 ```
 
 ---
 
 ## 7. Tự Động Hóa Điều Phối Với Apache Airflow
 
-Hệ thống được thiết lập một DAG định kỳ **21 ngày** mang tên `periodic_job_mining_21d_dag`:
+Chi tiết vận hành ở `docs/03_airflow_guide.md`. Tóm tắt:
 
-```mermaid
-flowchart TD
-    DAG["DAG: periodic_job_mining_21d_dag\n(Schedule: @monthly hoặc mỗi 21 ngày)"]
-    
-    subgraph DiscoveryStage["1. Phase 1: URL Discovery (Chạy Song Song)"]
-        D1["TopDev Discover"]
-        D2["TopCV Discover"]
-        D3["VietnamWorks Discover"]
-        D4["CareerViet Discover"]
-        D5["Vieclam24h Discover"]
-        D6["ITViec Discover"]
-        D7["Glints/JobsGO Discover"]
-    end
-
-    subgraph LedgerStage["2. URL Ledger Check & Filter"]
-        Check["Lọc link: PENDING hoặc (DONE & age >= 21d)"]
-    end
-
-    subgraph DetailStage["3. Phase 2: Detail Extraction (Chạy Song Song)"]
-        C1["TopDev Worker"]
-        C2["TopCV Worker"]
-        C3["VietnamWorks Worker"]
-        C4["CareerViet Worker"]
-        C5["Vieclam24h Worker"]
-        C6["ITViec Worker"]
-        C7["Glints/JobsGO Worker"]
-    end
-
-    DAG --> DiscoveryStage --> LedgerStage --> DetailStage
-```
+- `dag_discovery_daily` (05:00 mỗi ngày) chạy discovery cho 8 nguồn, 2 luồng song song.
+- 8 DAG `crawler_detail_<nguồn>` chạy theo `DETAIL_CRON` (`collection/common/detail_schedule.py`): route check (`adaptive_router.py`, tối đa 30 tin, nghỉ 55 phút giữa các ca) → cào → kiểm tra chất lượng → tiền xử lý nhẹ.
+- Discovery và detail của cùng nguồn dùng chung `pool_<nguồn>` (1 slot) nên không chạy chồng.
+- Mọi task gọi `run_crawler(..., sync_r2=True)`.
 
 ---
 
@@ -287,7 +252,7 @@ flowchart TD
 
 Trước khi tạo Pull Request vào nhánh `crawls/<tenweb>`, thành viên phải chuẩn bị:
 1. **Mã nguồn 2 hàm:** `discover_urls()` và `crawl_details()`.
-2. **Bộ mẫu đa định dạng (Multi-Format Test Suite):**
-   - Lưu ít nhất 3 file HTML thô có cấu trúc layout khác nhau vào `crawlers/sources/<tenweb>/samples/sample_*.html`.
-   - Lưu 3 file JSON đầu ra tương ứng vào `crawlers/sources/<tenweb>/samples/sample_*.json`.
-3. **File phân tích kiến trúc riêng:** Viết tại `docs/crawl/<tenweb>.md` giải thích chi tiết kiến trúc mạng, container selector dùng để băm HTML và các ngoại lệ của web mình.
+2. **Mẫu và contract test (C13):**
+   - 3 trang thật (tin thường, tin VIP/hot, lương thỏa thuận) trong `tests/fixtures/<tenweb>/`.
+   - `tests/contract/test_<tenweb>_contract.py` chạy offline, dùng `tests/contract/standards.py`.
+3. **File phân tích kiến trúc riêng:** Viết tại `docs/crawl/<tenweb>.md` giải thích chi tiết kiến trúc mạng, cách bóc tách `raw_payload` và các ngoại lệ của web mình.

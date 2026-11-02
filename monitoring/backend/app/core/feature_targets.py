@@ -78,7 +78,7 @@ RAW_PATHS: Dict[str, Dict[str, List[Path]]] = {
         "F4": [("detail-box", "re:^Lương")],
         "F5": [("detail-box", "re:^Kinh nghiệm")],
         "F6": [("detail-box", "re:^Cấp bậc")],
-        "F7": [("detail-row", "Yêu Cầu Công Việc")],
+        "F7": [("job-tags",)],
         "F8": [("detail-box", "re:^(Ngày cập nhật|Hết hạn)")],
     },
     "glints": {
@@ -108,7 +108,7 @@ RAW_PATHS: Dict[str, Dict[str, List[Path]]] = {
         "F4": [("salary_raw",)],
         "F5": [("experience",)],
         "F6": [("general_info", "job_level")],
-        "F7": [("requirements_bullets",)],
+        "F7": [("occupations",)],
         "F8": [("general_info", "posted_date"), ("deadline_raw",)],
     },
     "topcv": {
@@ -126,10 +126,12 @@ RAW_PATHS: Dict[str, Dict[str, List[Path]]] = {
         "F2": [("company", "company_name"), ("company", "name"), ("company",)],
         "F3": [("addresses", "address_region_list")],
         "F4": [("salary_raw",), ("salary",)],
-        "F5": [("experience",), ("extra", "experience"), ("experiences_str",)],
+        "F5": [("experience",), ("extra", "experience"), ("experiences_str",),
+               ("job_posting_jsonld", "experienceRequirements")],
         "F6": [("seniority_text",), ("job_level",), ("job_levels_str",)],
         "F7": [("skills_arr",), ("skills_str",)],
-        "F8": [("recalled_at",), ("created_at",)],
+        # published.date có từ 2026-11-02 (DETAIL_FIELDS); date_posted chỉ có ở bản cào từ HTML
+        "F8": [("recalled_at",), ("created_at",), ("published", "date"), ("date_posted",), ("valid_through",)],
     },
     "vieclam24h": {
         "F1": [("title",)],
@@ -159,8 +161,8 @@ SOURCE_DOMAINS: Dict[str, str] = {
     "vieclam24h": "vieclam24h.vn", "vietnamworks": "vietnamworks.com",
 }
 
-# Feature mà Integration cố ý để trống, bước GenAI imputer sẽ bù từ JD.
-FILLED_BY_IMPUTER = {("careerviet", "F7"), ("jobsgo", "F7")}
+# Feature mà pipeline đang lấy sai giá trị; trang Raw cảnh báo dù có dữ liệu (sửa ở bước pre-processing, PRE-6).
+WARN_FEATURES = {("careerviet", "F7"), ("jobsgo", "F7")}
 
 # Vấn đề đã kiểm chứng riêng cho từng nguồn; ghi đè nội dung mặc định của feature.
 SOURCE_ISSUES: Dict[str, Dict[str, Dict[str, str]]] = {
@@ -169,16 +171,16 @@ SOURCE_ISSUES: Dict[str, Dict[str, Dict[str, str]]] = {
                "where": "Scraper", "fix": "Khử dòng trùng trong detail-box, cắt nhãn trước khi parse"},
         "F6": {"problem": "Cấp bậc \"Nhân viên\" không khớp thang chuẩn và có thể mâu thuẫn với title",
                "where": "Luật chuẩn hóa", "fix": "Ưu tiên cấp bậc suy từ title"},
-        "F7": {"problem": "Trang không có ô kỹ năng; job-tags là tag SEO nên không dùng",
-               "where": "Normalizer", "fix": "Imputer quét kỹ năng từ phần yêu cầu công việc"},
+        "F7": {"problem": "Pipeline đang lấy job-tags làm kỹ năng, nhưng đây là tag SEO của trang",
+               "where": "Normalizer", "fix": "Bỏ job-tags, quét từ điển kỹ năng trong phần yêu cầu"},
     },
     "itviec": {
         "F6": {"problem": "Trang không có ô cấp bậc riêng", "where": "Luật chuẩn hóa",
                "fix": "Suy cấp bậc từ title"},
     },
     "jobsgo": {
-        "F7": {"problem": "Trang không có ô kỹ năng; occupations là ngành nghề nên không dùng",
-               "where": "Normalizer", "fix": "Imputer quét kỹ năng từ phần yêu cầu công việc"},
+        "F7": {"problem": "Pipeline đang lấy occupations (ngành nghề) làm kỹ năng",
+               "where": "Normalizer", "fix": "Bỏ occupations, quét từ điển kỹ năng trong phần yêu cầu"},
     },
     "vietnamworks": {
         "F4": {"problem": "salaryMin/salaryMax bằng 0 khi lương ẩn, lúc đó chỉ còn prettySalary",

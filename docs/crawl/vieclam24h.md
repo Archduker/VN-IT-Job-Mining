@@ -1,5 +1,12 @@
 # Báo Cáo Phân Tích Kỹ Thuật & Tối Ưu Hóa Crawler Việc Làm 24h (vieclam24h.vn)
 
+> **Hiện trạng 03/11/2026**
+>
+> - Crawler: `collection/sources/vieclam24h/crawler.py`, qua `HttpClient`, nghỉ 2.0–4.0 giây giữa tin.
+> - Còn mở: chưa có contract test và C14.
+>
+> Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
+
 > **Dự án**: VN-IT-Job-Mining  
 > **Nguồn**: Việc Làm 24h (`vieclam24h`)  
 > **Kiến trúc mới**: **Thuần HTTP 2 Giai Đoạn (Listing -> Detail) qua Next.js SSR `__NEXT_DATA__`** (ĐÃ LOẠI BỎ HOÀN TOÀN SELENIUM)  
@@ -105,5 +112,5 @@ python run.py --source vieclam24h --max-items 5 -v
 pytest tests/unit/test_vieclam24h_crawler.py -v
 
 # 3. Kiểm tra chất lượng dữ liệu
-python -c "from crawlers.common.data_quality import DataQualityChecker; print(DataQualityChecker(file_path='crawlers/sources/vieclam24h/test_5_jobs.json').check())"
+python -c "from crawlers.common.data_quality import DataQualityChecker; print(DataQualityChecker(file_path='collection/sources/vieclam24h/test_5_jobs.json').check())"
 ```

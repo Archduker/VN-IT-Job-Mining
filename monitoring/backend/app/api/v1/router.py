@@ -7,7 +7,6 @@ from app.api.v1.endpoints import alerts, cloud_r2, dashboard, monitor
 from app.api.v1.endpoints.collection import crawling, eda as collection_eda
 from app.api.v1.endpoints.preprocessing import cleaning
 from app.api.v1.endpoints.processing import harmonization
-from app.api.v1.endpoints.mining import spatial_3d
 from app.api.v1.endpoints.orchestration import airflow
 
 api_router = APIRouter()
@@ -34,7 +33,6 @@ api_router.include_router(cleaning.router, prefix="/preprocessing", tags=["Pre-p
 api_router.include_router(harmonization.router, prefix="/processing", tags=["Processing"])
 
 # 7. Phân Hệ Machine Learning: Không Gian 3D WebGL
-api_router.include_router(spatial_3d.router, prefix="/mining/spatial-3d", tags=["ML Spatial 3D Lab"])
 
 # 8. Hạ Tầng Cloudflare R2 Cloud Lakehouse (Sync Engine & Diff)
 api_router.include_router(cloud_r2.router, prefix="/cloud/r2", tags=["Cloudflare R2"])

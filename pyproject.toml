@@ -14,7 +14,14 @@ pythonpath = ["."]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short"
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "unit: hàm nhỏ, không đọc data/, không mạng (tests/unit/)",
+    "integration: API monitoring và script với tmp_path (tests/integration/)",
+    "contract: crawler đạt tiêu chuẩn collection C1–C14, offline (tests/contract/)",
+    "needs_data(*paths): cần data/ hoặc reports/ thật; skip khi thiếu đường dẫn",
+    "live: cào hoặc gọi R2 thật; chỉ chạy với --run-live",
+]
 
 [tool.coverage.run]
 source = ["collection"]

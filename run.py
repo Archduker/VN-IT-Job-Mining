@@ -57,8 +57,13 @@ def run_crawler(
     max_pages: Optional[int] = None,
     engine: Optional[str] = None,
     online: bool = True,
+    sync_r2: bool = False,
 ) -> Dict[str, Any]:
-    """Khởi tạo và thực thi crawler theo source và phase."""
+    """Khởi tạo và thực thi crawler theo source và phase.
+
+    sync_r2: kéo ledger từ R2 trước pha 2 và đẩy raw cùng ledger lên R2. Airflow luôn bật; chạy tay mặc định tắt.
+    Glints chạy qua GlintsRawPipeline, luôn ghi thẳng lên R2 nên không dùng tham số này.
+    """
     source = source.lower()
     if source not in SUPPORTED_SOURCES:
         raise ValueError(
@@ -73,6 +78,7 @@ def run_crawler(
             "checkpoint_dir": checkpoint_dir,
             "output_dir": output_dir,
             "max_items": max_items,
+            "sync_r2": sync_r2,
         }
         if engine:
             kwargs["engine"] = engine
@@ -83,6 +89,7 @@ def run_crawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
+            sync_r2=sync_r2,
         )
     elif source == "vietnamworks":
         from collection.sources.vietnamworks.crawler import VietnamWorksCrawler
@@ -90,6 +97,7 @@ def run_crawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
+            sync_r2=sync_r2,
         )
     elif source == "careerviet":
         from collection.sources.careerviet.crawler import CareerVietCrawler
@@ -99,6 +107,7 @@ def run_crawler(
             max_items=max_items,
             ledger_dir=os.path.join(output_dir, source, "url_ledger") if output_dir else None,
             raw_dir=os.path.join(output_dir, source, "raw") if output_dir else None,
+            sync_r2=sync_r2,
         )
     elif source == "vieclam24h":
         from collection.sources.vieclam24h.crawler import ViecLam24hCrawler
@@ -106,6 +115,7 @@ def run_crawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
+            sync_r2=sync_r2,
         )
     elif source == "itviec":
         from collection.sources.itviec.crawler import ItviecCrawler
@@ -113,6 +123,7 @@ def run_crawler(
             checkpoint_dir=checkpoint_dir,
             output_dir=output_dir,
             max_items=max_items,
+            sync_r2=sync_r2,
         )
     elif source == "glints":
         from collection.sources.glints.raw_pipeline import GlintsRawPipeline
@@ -125,6 +136,7 @@ def run_crawler(
         crawler = JobsGORawCrawler(
             max_items=max_items,
             storage_dir=os.path.join(output_dir, source, "url_ledger") if output_dir else None,
+            sync_r2=sync_r2,
         )
     else:
         raise ValueError(f"Chưa cài đặt runner cho nguồn {source}")
@@ -235,9 +247,9 @@ Ví dụ sử dụng:
     parser.add_argument(
         "--engine",
         type=str,
-        default="cloakbrowser",
+        default="curl_cffi",
         choices=["cloakbrowser", "curl_cffi", "playwright", "nodriver"],
-        help="Engine vượt Cloudflare cho các nguồn hỗ trợ (mặc định: cloakbrowser)",
+        help="Engine vượt Cloudflare cho các nguồn hỗ trợ (mặc định: curl_cffi; cloakbrowser cần license)",
     )
     parser.add_argument(
         "--online",
@@ -256,6 +268,12 @@ Ví dụ sử dụng:
         "--verbose",
         action="store_true",
         help="Bật log chi tiết DEBUG",
+    )
+
+    parser.add_argument(
+        "--sync-r2",
+        action="store_true",
+        help="Kéo ledger từ R2 trước pha 2 và đẩy raw cùng ledger lên R2 (ghi lên bucket dùng chung)",
     )
 
     args = parser.parse_args()
@@ -283,6 +301,7 @@ Ví dụ sử dụng:
                 max_pages=args.max_pages,
                 engine=args.engine,
                 online=args.online,
+                sync_r2=args.sync_r2,
             )
             all_results.append((src, True, stats))
             log.info(

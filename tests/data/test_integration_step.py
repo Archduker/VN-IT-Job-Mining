@@ -5,9 +5,11 @@ import json
 from pathlib import Path
 import pytest
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_INT_DIR = PROJECT_ROOT / "data" / "integration"
 REPORTS_INT_DIR = PROJECT_ROOT / "reports" / "integration"
+
+pytestmark = pytest.mark.needs_data("data/integration", "reports/integration")
 
 
 def test_integration_files_exist_and_are_valid_json():

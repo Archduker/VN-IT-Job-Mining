@@ -2,6 +2,13 @@
 
 > **Mục đích tài liệu:** Hướng dẫn toàn diện và quy chuẩn mẫu để xây dựng, tái cấu trúc hoặc nghiệm thu crawler cho bất kỳ website tuyển dụng nào (CareerViet, TopCV, TopDev, ITViec, VietnamWorks, Vieclam24h, JobsGO, Glints...) đạt chuẩn **Modern Data Stack** của dự án VN-IT-Job-Mining.
 
+> **Cập nhật 03/11/2026.** Bảng tiêu chuẩn C1–C14 trong `collection/CLAUDE.md` là bản chính thức; khi tài liệu này mâu thuẫn với bảng đó thì bảng thắng. Các thay đổi so với bản cũ:
+> - Version quyết định bằng `UrlLedger.next_version(record, hash)` (C12), không viết cứng `_v1`.
+> - Cuối mỗi pha gọi `ledger.sync_final()`; đồng bộ thất bại thì raise `LedgerSyncError` (C9).
+> - Discovery không tải được trang danh sách nào thì raise `DiscoveryError` (C14).
+> - Mẫu và test nằm ở `tests/fixtures/<nguồn>/` và `tests/contract/test_<nguồn>_contract.py` (C13), không còn thư mục `samples/`.
+> - Chỉ dùng Cloudflare R2; tên MinIO đã bỏ. Các lỗi đã gặp: `docs/issue_log.md`.
+
 ---
 
 ## 1. Triết Lý & Nguyên Tắc Cốt Tử
@@ -34,7 +41,7 @@ flowchart LR
 6. **Checkpoint Sync Định Kỳ:**
    - Cứ mỗi 15 - 20 bài đăng cào thành công, crawler tự động lưu và đồng bộ Ledger lên Cloudflare R2 Lakehouse để bảo toàn tiến độ dù có mất điện hay ngắt mạng.
 7. **Single-File Pattern (Gọn Gàng & Dễ Bảo Trì):**
-   - Toàn bộ crawler, parser, envelope builder và CLI nên nằm gọn trong 1 file `crawlers/sources/<tenweb>/crawler.py` duy nhất.
+   - Toàn bộ crawler, parser, envelope builder và CLI nên nằm gọn trong 1 file `collection/sources/<tenweb>/crawler.py` duy nhất.
 
 ---
 
@@ -55,9 +62,11 @@ flowchart LR
   5. **Đẩy lên Cloudflare R2 Lakehouse:**
      ```python
      ledger.save_catalog()
-     ledger.sync_to_r2()
+     if self.sync_r2:
+         ledger.sync_final()  # raise LedgerSyncError nếu không đẩy được
      ```
      Đích đến: `r2://vn-it-jobs/url_ledger/<source>/catalog_master.json`.
+  6. **Báo lỗi khi không tải được trang nào (C14):** đếm số trang danh sách tải được; bằng 0 thì `raise DiscoveryError(...)` để Airflow báo đỏ. Mất vài trang vẫn là thành công.
 
 ---
 
@@ -74,7 +83,7 @@ flowchart LR
      - Bình thường: Lấy các tin `status == "PENDING"` hoặc đã cào quá 21 ngày (`RECHECK_DUE`).
      - Chế độ cào lại lỗi (`--retry-failed`): Lấy các tin `status == "FAILED"` từ Failed Queue.
   3. **Vòng lặp cào từng bài đăng kèm Polite Sleep:**
-     - Delay ngẫu nhiên giữa 2 bài đăng: 2.0s - 4.5s.
+     - Delay ngẫu nhiên giữa 2 bài đăng: 2.0s - 4.5s, gọi `collection.common.anti_blocking.polite_sleep` (C10). Nguồn hay chặn bot được đặt chậm hơn (TopCV 3.0–6.0s).
      - Kiểm tra phát hiện chặn/Cloudflare: nếu nghi ngờ bị chặn $\rightarrow$ dừng an toàn, giữ nguyên trạng thái PENDING.
   4. **Bóc tách Document JSON (Zero Information Loss):**
      ```python
@@ -84,7 +93,7 @@ flowchart LR
      ```
   5. **Băm toàn vẹn Document JSON sau cào (Post-Crawl Canonical JSON Hashing):**
      ```python
-     from crawlers.common.url_ledger import (
+     from collection.common.url_ledger import (
          calculate_json_canonical_hash,
      )
 
@@ -95,6 +104,7 @@ flowchart LR
   6. **Kiểm tra bài đăng lặp (Repost Detection):**
      - Tìm kiếm trong ledger: `existing = ledger.find_by_content_hash(canonical_hash)`.
      - Nếu trùng hash với một bài khác: Đánh dấu `repost_of_url_hash = existing["url_hash"]`, không sinh file mới để tiết kiệm dung lượng Lakehouse.
+     - **Quyết định version (C12):** `changed, new_version = UrlLedger.next_version(rec, canonical_hash)`. `changed == False` (cào lại, nội dung không đổi) thì chỉ `mark_done` để cập nhật `last_scraped_at`, không ghi file. Không so `status == "DONE"`: tin đến hạn đã bị đổi sang `RECHECK_DUE` trong bộ nhớ.
   7. **Lưu file Raw Envelope lên Cloudflare R2 Lakehouse:**
      - Đóng gói Envelope chuẩn:
        ```python
@@ -138,7 +148,7 @@ flowchart LR
 Dưới đây là mẫu khung sườn chuẩn áp dụng cho bất kỳ nguồn nào:
 
 ```python
-# crawlers/sources/<source_name>/crawler.py
+# collection/sources/<source_name>/crawler.py
 import argparse
 import json
 import logging
@@ -148,10 +158,10 @@ from pathlib import Path
 from typing import Any
 
 from bs4 import BeautifulSoup
-from crawlers.base.base_crawler import BaseCrawler
-from crawlers.common.http_client import HttpClient
-from crawlers.common.r2_raw_pipeline import R2RawStore
-from crawlers.common.url_ledger import (
+from collection.base.base_crawler import BaseCrawler
+from collection.common.http_client import HttpClient
+from collection.common.r2_raw_pipeline import R2RawStore
+from collection.common.url_ledger import (
     UrlLedger,
     calculate_json_canonical_hash,
 )
@@ -195,17 +205,17 @@ class StandardSourceCrawler(BaseCrawler):
         self.raw_dir = kwargs.get("raw_dir", "data/<source_name>/raw")
         self.sync_r2 = kwargs.get("sync_r2", False)
         self._ledger = None
-        self._minio_store = None
+        self._r2_store = None
 
     def _get_ledger(self) -> UrlLedger:
         if self._ledger is None:
             self._ledger = UrlLedger(source="<source_name>", storage_dir=self.ledger_dir)
         return self._ledger
 
-    def _get_minio_store(self) -> R2RawStore:
-        if self._minio_store is None:
-            self._minio_store = R2RawStore()
-        return self._minio_store
+    def _get_r2_store(self) -> R2RawStore:
+        if self._r2_store is None:
+            self._r2_store = R2RawStore()
+        return self._r2_store
 
     def discover_urls(self, online: bool = False, max_pages: int | None = None) -> int:
         """Pha 1: Quét danh mục, ban đầu chưa có hash, lưu lên Cloudflare R2."""
@@ -241,13 +251,19 @@ class StandardSourceCrawler(BaseCrawler):
                     ledger.mark_done(rec["url_hash"], content_hash=content_hash, repost_of_url_hash=existing["url_hash"])
                     continue
 
+                # C12: không đổi nội dung thì không ghi file mới
+                changed, version = UrlLedger.next_version(rec, content_hash)
+                if not changed:
+                    ledger.mark_done(rec["url_hash"], content_hash=content_hash, new_version=version)
+                    continue
+
                 # Tạo envelope và lưu Cloudflare R2
-                env = build_raw_envelope(html, rec["job_id"], rec["canonical_url"])
-                s3_key = f"raw/<source_name>/{today}/{rec['job_id']}_v1.json"
-                self._get_minio_store().put_json(s3_key, env)
+                env = build_raw_envelope(html, rec["job_id"], rec["canonical_url"], version=version)
+                s3_key = f"raw/<source_name>/{today}/{rec['job_id']}_v{version}.json"
+                self._get_r2_store().put_json(s3_key, env)
 
                 # Lưu ngược lại hash vào URL
-                ledger.mark_done(rec["url_hash"], content_hash=content_hash)
+                ledger.mark_done(rec["url_hash"], content_hash=content_hash, new_version=version)
 
                 # Checkpoint sync định kỳ
                 if self.sync_r2 and idx % 15 == 0:
@@ -259,7 +275,7 @@ class StandardSourceCrawler(BaseCrawler):
 
         ledger.save_catalog()
         if self.sync_r2:
-            ledger.sync_to_r2()
+            ledger.sync_final()  # C9: raise LedgerSyncError thay vì chỉ ghi warning
 ```
 
 ---
@@ -275,7 +291,7 @@ Mỗi file `crawler.py` bắt buộc hỗ trợ các tham số dòng lệnh sau:
 | `--phase sync` | Chỉ đồng bộ ledger và raw files cục bộ lên Cloudflare R2 (không gọi mạng ngoài) |
 | `--phase view` | Xem tóm tắt thống kê trạng thái ledger hiện tại |
 | `--online` | Cho phép kết nối internet cào trực tuyến (mặc định tắt) |
-| `--sync-minio` | Tự động đồng bộ URL Ledger và Raw Snapshots lên Cloudflare R2 Lakehouse |
+| `--sync-r2` | Tự động đồng bộ URL Ledger và Raw Snapshots lên Cloudflare R2 Lakehouse (tên cũ `--sync-minio` vẫn nhận). Chạy qua `run.py` cũng phải thêm `--sync-r2`; Airflow luôn bật |
 | `--retry-failed` | Cào lại các URL đang nằm trong Failed Queue |
 | `--limit N` | Giới hạn số lượng tin xử lý (dùng để test thử nghiệm) |
 | `--local-html-dir DIR` | Chạy cào offline từ thư mục HTML có sẵn trên đĩa |
@@ -285,12 +301,12 @@ Mỗi file `crawler.py` bắt buộc hỗ trợ các tham số dòng lệnh sau:
 ## 5. Các Bước Áp Dụng Cho Nguồn Cào Mới
 
 Khi nhận nhiệm vụ xây dựng crawler cho nguồn mới (ví dụ: `itviec`):
-1. **Bước 1 (Lấy 3 HTML mẫu):** Tải 3 file HTML thô đại diện vào `crawlers/sources/itviec/samples/{job_id}.html`.
+1. **Bước 1 (Lấy 3 HTML mẫu):** Tải 3 trang thật (tin thường, tin VIP/hot, lương thỏa thuận) vào `tests/fixtures/itviec/`. Cắt bỏ script/style nhưng giữ nguyên `content_hash`.
 2. **Bước 2 (Viết `build_raw_payload`):** Bóc tách đầy đủ tất cả các trường dữ liệu của trang tuyển dụng vào dictionary JSON (Zero Information Loss).
 3. **Bước 3 (Băm toàn vẹn JSON):** Gọi `calculate_json_canonical_hash(raw_payload)` để làm `content_hash`.
 4. **Bước 4 (Viết Pha 1 Discovery):** Thu thập URL vào `UrlLedger` (ban đầu chưa có hash), đẩy lên `url_ledger/itviec/`.
 5. **Bước 5 (Viết Pha 2 Details):** Kéo URL từ Cloudflare R2, cào chi tiết với Polite Sleep, băm JSON sau cào, lưu ngược hash vào URL và đẩy raw envelope lên Cloudflare R2. Bắt lỗi đưa vào Failed Queue.
-6. **Bước 6 (Tạo 3 cặp mẫu & Unit Tests):** Chạy script sinh 3 file `{job_id}_v1.json` và viết test kiểm tra tính tất định.
+6. **Bước 6 (Contract test):** Viết `tests/contract/test_itviec_contract.py` theo mẫu `test_topdev_contract.py` / `test_topcv_contract.py`, dùng các hàm chung trong `tests/contract/standards.py` (C1, C4–C14). Chạy `make test-contract`.
 7. **Bước 7 (Nghiệm thu):** Chạy DoD Scorer:
    ```bash
    python3 .agents/skills/collection-submission/scripts/verify_submission.py --source itviec

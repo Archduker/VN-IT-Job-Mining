@@ -41,7 +41,7 @@ Tài liệu này là quy chuẩn bắt buộc (Non-negotiable Rules) cho bất k
 ---
 
 ## 5. Nguyên Tắc Đồng Bộ Cloudflare R2 Vững Chắc (Robust R2 Sync Engine)
-- Hệ thống độc quyền sử dụng **Cloudflare R2** (`vn-it-jobs`). Toàn bộ mã nguồn MinIO S3 cục bộ và generic Boto3 S3 đã bị loại bỏ.
+- Hệ thống độc quyền sử dụng **Cloudflare R2** (`vn-it-jobs`). Toàn bộ mã nguồn R2 cục bộ và generic Boto3 S3 đã bị loại bỏ.
 - **Đồng bộ hóa liên tục giữa Cloud và Monitoring (Cloud & Monitoring Sync)**:
   - Hệ thống giám sát không được vận hành cô lập với ổ cứng cục bộ mà phải liên tục kiểm toán (Audit) đối chiếu với Cloudflare R2 bucket.
   - Phân hệ Crawling & Collection phải tích hợp dải giám sát đồng bộ (Cloud Synchronization Strip), hiển thị độ trễ ping và hỗ trợ **1-Click Cloud Sync** cho cả URL Ledger (`catalog_master.json`) lẫn các tệp JSON thô (Raw As-Is).

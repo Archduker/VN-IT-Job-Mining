@@ -122,7 +122,7 @@ def main():
 
             # Đồng bộ lần cuối lên Cloudflare R2
             try:
-                ledger.sync_to_minio()
+                ledger.sync_to_r2()
                 logger.info("[Drain TopCV] Đã đồng bộ UrlLedger lần cuối lên Cloudflare R2.")
             except Exception as se:
                 logger.warning("[Drain TopCV] Lỗi đồng bộ R2 lần cuối: %s", se)
@@ -176,7 +176,7 @@ def main():
 
             # Đồng bộ UrlLedger lên R2
             try:
-                ledger.sync_to_minio()
+                ledger.sync_to_r2()
             except Exception:
                 pass
 

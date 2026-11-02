@@ -164,13 +164,22 @@ def _today_steps(grouped: Dict[Tuple[date, str], List[Dict[str, Any]]], today: d
         steps.append({
             "time": _hhmm(datetime.fromisoformat(last)) if last else None,
             "name": "Đẩy dữ liệu lên R2",
-            "status": "done" if sync.get("overall_sync_pct", 0) >= 100 else "partial",
-            "detail": f"{sync.get('total_cloud_raw', 0):,} / {sync.get('total_local_raw', 0):,} file raw đã có trên R2".replace(",", "."),
+            "status": "done" if sync.get("total_synced_raw", 0) >= sync.get("total_local_raw", 0) else "partial",
+            "detail": _sync_detail(sync),
         })
     else:
         steps.append({"time": None, "name": "Đẩy dữ liệu lên R2", "status": None,
                       "detail": "Chưa kết nối được Cloudflare R2"})
     return steps
+
+
+def _sync_detail(sync: Dict[str, Any]) -> str:
+    local, synced = sync.get("total_local_raw", 0), sync.get("total_synced_raw", 0)
+    extra = sync.get("total_cloud_raw", 0) - synced
+    text = f"{synced:,} / {local:,} file raw trên máy đã có trên R2"
+    if extra > 0:
+        text += f" · R2 có thêm {extra:,} file không có trên máy"
+    return text.replace(",", ".")
 
 
 class CollectionMonitorService:

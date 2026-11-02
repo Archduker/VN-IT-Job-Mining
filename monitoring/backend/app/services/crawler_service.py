@@ -12,34 +12,31 @@ from typing import Any, AsyncGenerator, Dict, Optional
 
 from app.core.config import settings
 from collection.common.adaptive_router import COOLDOWN_MINUTES_SURGE, MAX_ITEMS_PER_BATCH, VN_TZ
+from collection.common.detail_schedule import WEEKDAY_SLOT_HOURS, WEEKEND_SLOT_HOURS
 
 logger = logging.getLogger("crawler_service")
 
 
-# Lịch thật của Phase 2: DAG kích hoạt 09, 14, 18, 21, 22h hằng ngày (airflow/dags/crawler_dags.py),
-# AdaptiveWorkloadRouter bỏ qua các ca ban ngày T2–T6 và chỉ chạy một ca tối.
+# Lịch Phase 2 lấy từ collection/common/detail_schedule.py, dùng chung với DAG và router.
 DISCOVERY_SCHEDULE_TIME = "05:00 hằng ngày"
-DETAIL_SCHEDULE_TIME = "T2–T6: 21h · T7, CN: 09, 14, 18, 21, 22h"
-WEEKDAY_SLOTS = (21,)
-WEEKEND_SLOTS = (9, 14, 18, 21, 22)
 
-SOURCE_ENGINES = {
-    "topdev": "curl_cffi (TLS Impersonation)",
-    "careerviet": "curl_cffi (HTML Parser)",
-    "itviec": "curl_cffi (Session Auth)",
-    "vietnamworks": "curl_cffi (Algolia/API)",
-    "topcv": "playwright (Cloudflare Bypass)",
-    "vieclam24h": "curl_cffi (Mobile UA)",
-    "glints": "curl_cffi + playwright",
-    "jobsgo": "curl_cffi (TLS Impersonation)",
-}
+
+def _hours(hours) -> str:
+    return ", ".join(f"{h:02d}" for h in hours) + "h"
+
+
+DETAIL_SCHEDULE_TIME = (
+    f"T2–T6: {_hours(WEEKDAY_SLOT_HOURS[:1])}"
+    + (f" ({_hours(WEEKDAY_SLOT_HOURS[1:])} nếu ca trước bỏ qua)" if len(WEEKDAY_SLOT_HOURS) > 1 else "")
+    + f" · T7, CN: {_hours(WEEKEND_SLOT_HOURS)}"
+)
 
 
 def next_detail_slot(now_vn: datetime) -> datetime:
     """Ca Phase 2 kế tiếp mà router cho phép chạy, theo giờ Việt Nam."""
     for offset in range(8):
         day = (now_vn + timedelta(days=offset)).date()
-        slots = WEEKEND_SLOTS if day.weekday() >= 5 else WEEKDAY_SLOTS
+        slots = WEEKEND_SLOT_HOURS if day.weekday() >= 5 else WEEKDAY_SLOT_HOURS
         for hour in slots:
             slot = datetime.combine(day, time(hour), tzinfo=VN_TZ)
             if slot > now_vn:
@@ -72,6 +69,7 @@ class CrawlerService:
         self.active_processes: Dict[str, asyncio.subprocess.Process] = {}
         self.log_buffers: Dict[str, list] = {}
         self.log_dropped: Dict[str, int] = {}
+        self.log_done: Dict[str, bool] = {}  # True khi read_stream đã ghi dòng exit code
         self.job_status: Dict[str, Dict[str, Any]] = {}
 
     def get_source_status(self, source: str) -> Dict[str, Any]:
@@ -107,8 +105,12 @@ class CrawlerService:
         max_items: int = 30,
         max_pages: Optional[int] = None,
         engine: Optional[str] = None,
+        sync_r2: bool = True,
     ) -> Dict[str, Any]:
-        """Kích hoạt crawler nguồn chỉ định qua subprocess run.py."""
+        """Kích hoạt crawler nguồn chỉ định qua subprocess run.py.
+
+        sync_r2 mặc định bật: chạy mà không đồng bộ thì raw và ledger chỉ nằm trên máy, lần chạy sau lệch (SCRAPE-4).
+        """
         source = source.lower()
         if source not in settings.SUPPORTED_SOURCES:
             raise ValueError(f"Nguồn '{source}' không được hỗ trợ")
@@ -137,9 +139,12 @@ class CrawlerService:
             cmd.extend(["--max-pages", str(max_pages)])
         if engine and source in ["topcv", "jobsgo"]:
             cmd.extend(["--engine", engine])
+        if sync_r2:
+            cmd.append("--sync-r2")
 
         self.log_buffers[source] = []
         self.log_dropped[source] = 0
+        self.log_done[source] = False
         now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         self.log_buffers[source].append(f"[{now_str}] Bắt đầu thực thi: {' '.join(cmd)}\n")
 
@@ -176,6 +181,7 @@ class CrawlerService:
             self.log_buffers[source].append(
                 f"[{finish_str}] Tiến trình kết thúc với exit code: {proc.returncode}\n"
             )
+            self.log_done[source] = True
 
         asyncio.create_task(read_stream())
 
@@ -206,18 +212,22 @@ class CrawlerService:
         """SSE Generator truyền log dòng lệnh theo thời gian thực."""
         sent = 0  # Tổng số dòng đã gửi, tính cả dòng đã bị cắt khỏi buffer
         while True:
+            # Đọc trạng thái trước khi gửi, để dòng nào ghi trước lúc read_stream xong cũng được gửi
+            proc = self.active_processes.get(source)
+            finished = proc is not None and proc.returncode is not None and self.log_done.get(source, True)
+
             buffer = self.log_buffers.get(source, [])
             dropped = self.log_dropped.get(source, 0)
-            for line in buffer[max(sent - dropped, 0):]:
+            start = max(sent - dropped, 0)
+            chunk = buffer[start:]  # chụp lại trước khi yield; buffer có thể dài thêm trong lúc gửi
+            for line in chunk:
                 yield line.rstrip("\r\n")
-            sent = dropped + len(buffer)
+            sent = dropped + start + len(chunk)
 
-            proc = self.active_processes.get(source)
             if proc is None:
                 yield "[EOF] Nguồn này chưa có tiến trình đang chạy."
                 break
-            if proc.returncode is not None:
-                # Tiến trình đã xong và đã gửi hết log
+            if finished:
                 yield "[EOF] Quá trình cào đã hoàn tất."
                 break
 
@@ -242,9 +252,9 @@ class CrawlerService:
         for src in settings.SUPPORTED_SOURCES:
             st = self.get_source_status(src)
             ledger_st = ledger_service.get_ledger_summary(src)
-            counts = ledger_st.get("counts", {})
-            # Router xả cả PENDING và RECHECK_DUE (adaptive_router.evaluate)
-            backlog = counts.get("PENDING", 0) + counts.get("NEW", 0) + counts.get("RECHECK_DUE", 0)
+            # Router xả PENDING và tin đến hạn cào lại, gồm cả DONE từ 21 ngày (UrlLedger.get_queue_summary)
+            queue = ledger_service.get_queue_summary(src)
+            backlog = queue["pending"] + queue["recheck_due"]
             total_actual += st["total_raw"]
             total_backlog += backlog
 
@@ -274,8 +284,8 @@ class CrawlerService:
                 "actual_crawled": st["total_raw"],
                 "uncrawled_pending": backlog,
                 "batches_needed": -(-backlog // MAX_ITEMS_PER_BATCH),
-                "last_run_start": str(run["start_date"]) if run and run.get("start_date") else None,
-                "engine": SOURCE_ENGINES.get(src, "curl_cffi"),
+                "last_run_start": run["start_date"].isoformat() if run and run.get("start_date") else None,
+                "engine": st["engine"],
                 "status": status,
             })
 

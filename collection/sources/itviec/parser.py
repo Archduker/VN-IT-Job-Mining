@@ -73,8 +73,8 @@ def filter_job_urls(urls: List[str]) -> "tuple[List[str], List[str]]":
 
 
 def sync_mode() -> bool:
-    """Chế độ sync MinIO cho ITViec. Set env ITVIEC_SYNC=0 khi chạy SIMULATION/ledger tạm
-    để KHÔNG bao giờ đụng MinIO thật (bảo vệ ledger production)."""
+    """Chế độ sync R2 cho ITViec. Set env ITVIEC_SYNC=0 khi chạy SIMULATION/ledger tạm
+    để KHÔNG bao giờ đụng R2 thật (bảo vệ ledger production)."""
     return os.getenv("ITVIEC_SYNC", "1") != "0"
 
 
@@ -87,20 +87,15 @@ def local_catalog_count(ledger) -> int:
 
 
 def remote_catalog_count(ledger) -> Optional[int]:
-    """Số bản ghi catalog ITViec trên MinIO; None nếu chưa đọc được."""
+    """Số bản ghi catalog ITViec trên R2; None nếu chưa đọc được.
+
+    Trước 02/11/2026 hàm này kết nối localhost:9000 bằng khóa minioadmin nên luôn trả None, và
+    can_upload_catalog(None) luôn cho ghi: chốt chặn catalog nhỏ đè catalog lớn chưa từng hoạt động.
+    """
     try:
-        import boto3
-        from botocore.client import Config
-        ep = os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
-        bkt = os.getenv("MINIO_BUCKET", "vn-it-jobs")
-        c = boto3.client(
-            "s3", endpoint_url=ep,
-            aws_access_key_id=os.getenv("MINIO_ROOT_USER", "minioadmin"),
-            aws_secret_access_key=os.getenv("MINIO_ROOT_PASSWORD", "minioadmin"),
-            config=Config(signature_version="s3v4", connect_timeout=3, retries={"max_attempts": 1}),
-            region_name="us-east-1",
-        )
-        obj = c.get_object(Bucket=bkt, Key=f"url_ledger/{ledger.source}/catalog_master.json")
+        from collection.common.r2_storage import get_r2_client, resolve_r2_bucket
+
+        obj = get_r2_client().get_object(Bucket=resolve_r2_bucket(), Key=f"url_ledger/{ledger.source}/catalog_master.json")
         rec = json.loads(obj["Body"].read())
         return len(rec) if isinstance(rec, dict) else None
     except Exception:
@@ -108,7 +103,7 @@ def remote_catalog_count(ledger) -> Optional[int]:
 
 
 def can_upload_catalog(local_count: int, remote_count: Optional[int]) -> bool:
-    """Cho ghi catalog local lên MinIO khi: local>0 VÀ (chưa có remote HOẶC local>=remote).
+    """Cho ghi catalog local lên R2 khi: local>0 VÀ (chưa có remote HOẶC local>=remote).
 
     Chặn catalog nhỏ/rỗng ghi đè catalog lớn hơn (đảm bảo #2/#3). Khi local<remote thường là
     ledger tạm/ít bản ghi -> không upload.

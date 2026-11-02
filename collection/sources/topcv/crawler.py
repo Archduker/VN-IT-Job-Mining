@@ -2,10 +2,10 @@
 """Crawler việc làm TopCV Việt Nam (https://www.topcv.vn).
 
 Tuân thủ nghiêm ngặt chuẩn Modern Data Stack (docs/crawler_output_checklist.md &
-docs/two_phase_minio_crawler_playbook.md):
+docs/two_phase_r2_crawler_playbook.md):
 1. Hai pha độc lập: Pha 1 discover_urls() & Pha 2 crawl_details().
 2. Pha 1: URL ban đầu hoàn toàn chưa có hash (content_hash = None, status = "PENDING").
-3. Pha 2: Kéo URL từ MinIO về máy trước khi lọc URL (ledger.pull_from_minio()).
+3. Pha 2: Kéo URL từ R2 về máy trước khi lọc URL (ledger.pull_from_r2()).
 4. Cơ chế Vượt Cloudflare Triệt Để:
    - Playwright Stealth Off-Screen (--window-position=-2400,-2400, Full GPU, No popup).
    - nodriver (CDP thuần qua WebSocket).
@@ -14,8 +14,8 @@ docs/two_phase_minio_crawler_playbook.md):
 6. Trường language: Nhận diện ngôn ngữ ("vi" / "en") bằng detect_language().
 7. Bóc tách 100% trường dữ liệu theo necessary.md (Zero Information Loss).
 8. Triệt tiêu mã 429: Adaptive Pacing (3.5s - 6.5s) + Power Nap mỗi 25 bài + Cooldown 45s-60s tự phục hồi.
-9. Checkpoint Sync định kỳ: Cứ mỗi 15 tin tự động lưu & đồng bộ MinIO / Cloudflare R2 Lakehouse.
-10. Đầy đủ các cờ CLI chuẩn: --phase, --engine, --online, --sync-minio, --retry-failed, --limit, --max-pages.
+9. Checkpoint Sync định kỳ: Cứ mỗi 15 tin tự động lưu & đồng bộ Cloudflare R2 Lakehouse.
+10. Đầy đủ các cờ CLI chuẩn: --phase, --engine, --online, --sync-r2, --retry-failed, --limit, --max-pages.
 """
 
 from __future__ import annotations
@@ -51,9 +51,10 @@ from collection.common.anti_blocking import (
     polite_sleep,
 )
 from collection.common.http_client import DelayConfig, HttpClient, RetryConfig
-from collection.common.minio_raw_pipeline import MinioRawStore
+from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import RawJobEnvelope
 from collection.common.url_ledger import (
+    DiscoveryError,
     UrlLedger,
     calculate_json_canonical_hash,
     clean_canonical_url,
@@ -347,9 +348,9 @@ class TopCVCrawler(BaseCrawler):
         self,
         ledger_dir: str = "data/topcv/url_ledger",
         raw_root: str = "data/topcv/raw",
-        engine: str = "cloakbrowser",
+        engine: str = "curl_cffi",  # cloakbrowser cần license (SCRAPE-10)
         browser_path: Optional[str] = "/usr/bin/google-chrome",
-        sync_minio: bool = False,
+        sync_r2: bool = False,
         min_delay: float = 3.0,
         max_delay: float = 6.0,
         local_html_dir: Optional[str] = None,
@@ -369,7 +370,7 @@ class TopCVCrawler(BaseCrawler):
         self.raw_root = raw_root
         self.engine = engine.lower()
         self.browser_path = browser_path
-        self.sync_minio = sync_minio
+        self.sync_r2 = sync_r2
         self.min_delay = min_delay
         self.max_delay = max_delay
         self.local_html_dir = local_html_dir
@@ -379,7 +380,7 @@ class TopCVCrawler(BaseCrawler):
         self.total_workers = max(1, int(total_workers))
 
         self._ledger: Optional[UrlLedger] = None
-        self._minio_store: Optional[MinioRawStore] = None
+        self._r2_store: Optional[R2RawStore] = None
         self._http_client: Optional[HttpClient] = None
 
         # Persistent session objects for reuse across the batch
@@ -395,10 +396,10 @@ class TopCVCrawler(BaseCrawler):
             self._ledger = UrlLedger(source=self.source_name, storage_dir=self.ledger_dir)
         return self._ledger
 
-    def _get_minio_store(self) -> MinioRawStore:
-        if self._minio_store is None:
-            self._minio_store = MinioRawStore()
-        return self._minio_store
+    def _get_r2_store(self) -> R2RawStore:
+        if self._r2_store is None:
+            self._r2_store = R2RawStore()
+        return self._r2_store
 
     def _get_http_client(self) -> HttpClient:
         if self._http_client is None:
@@ -678,7 +679,7 @@ class TopCVCrawler(BaseCrawler):
 
     # ── PHA 1: URL DISCOVERY ──────────────────────────────────────────
     def discover_urls(self, online: bool = False, max_pages: Optional[int] = None) -> List[str]:
-        """Pha 1: Quét danh mục việc làm CNTT TopCV, ban đầu chưa có hash, đẩy lên MinIO."""
+        """Pha 1: Quét danh mục việc làm CNTT TopCV, ban đầu chưa có hash, đẩy lên R2."""
         log.info("[TopCV] === Bắt đầu Pha 1: URL Discovery (Engine: %s) ===", self.engine)
         ledger = self._get_ledger()
         ledger.reload()
@@ -690,6 +691,8 @@ class TopCVCrawler(BaseCrawler):
 
         page = 1
         max_p = max_pages or 100
+        pages_ok = 0
+        first_error: Optional[str] = None
 
         try:
             while page <= max_p:
@@ -701,7 +704,9 @@ class TopCVCrawler(BaseCrawler):
                     html = self._get_page_content(page_url)
                     if not html or len(html) < 2000:
                         log.warning("[TopCV] Nội dung trang %d rỗng hoặc quá ngắn, dừng quét.", page)
+                        first_error = first_error or f"trang {page} rỗng hoặc quá ngắn"
                         break
+                    pages_ok += 1
 
                     soup = BeautifulSoup(html, "html.parser")
                     job_links = soup.select("a[href*='/viec-lam/']")
@@ -768,6 +773,7 @@ class TopCVCrawler(BaseCrawler):
 
                 except Exception as exc:
                     log.warning("[TopCV] Lỗi khi quét danh mục trang %d: %s", page, exc)
+                    first_error = first_error or f"trang {page}: {exc}"
                     break
         finally:
             self._close_playwright_session()
@@ -775,9 +781,12 @@ class TopCVCrawler(BaseCrawler):
 
         ledger.save_catalog()
         ledger.export_daily_manifest()
-        if self.sync_minio:
-            ledger.sync_to_minio()
+        if self.sync_r2:
+            ledger.sync_final()
 
+        if pages_ok == 0 and first_error:
+            # Safe Skip chỉ cho từng URL; không lấy được trang nào thì cả pha thất bại để Airflow báo đỏ (C14)
+            raise DiscoveryError(f"[TopCV] Không lấy được trang danh sách nào: {first_error}")
         log.info("[TopCV] Hoàn thành Pha 1. Tổng URL ghi nhận: %d.", len(ledger.records))
         return discovered_urls
 
@@ -789,15 +798,15 @@ class TopCVCrawler(BaseCrawler):
         retry_failed: bool = False,
         raise_on_lock: Optional[bool] = None,
     ) -> Dict[str, int]:
-        """Pha 2: Kéo URL từ MinIO, cào chi tiết với Pacing an toàn + Power Nap + Checkpoint sync lên MinIO."""
+        """Pha 2: Kéo URL từ R2, cào chi tiết với Pacing an toàn + Power Nap + Checkpoint sync lên R2."""
         log.info("[TopCV] === Bắt đầu Pha 2: Detail Extraction (Engine: %s, Chu kỳ Re-crawl 21 ngày) ===", self.engine)
         ledger = self._get_ledger()
         ledger.reload()
 
-        # Kéo catalog mới nhất từ MinIO Lakehouse
-        if self.sync_minio and online:
-            log.info("[TopCV] Đang kéo catalog mới nhất từ MinIO / Cloudflare R2 Lakehouse...")
-            ledger.pull_from_minio()
+        # Kéo catalog mới nhất từ R2 Lakehouse
+        if self.sync_r2 and online:
+            log.info("[TopCV] Đang kéo catalog mới nhất từ Cloudflare R2 Lakehouse...")
+            ledger.pull_from_r2()
 
         # Lọc danh sách cần cào
         candidates = ledger.get_failed_records() if retry_failed else ledger.get_pending_or_due_records(recheck_days=21)
@@ -863,25 +872,35 @@ class TopCVCrawler(BaseCrawler):
                         stats["repost"] += 1
                         continue
 
-                    # 4. Lưu snapshot cục bộ
-                    snapshot_file = os.path.join(daily_raw_dir, f"{job_id}_v1.json")
+                    # 4. Cào lại mà nội dung không đổi thì giữ version, không ghi file mới (C12)
+                    changed, version = ledger.next_version(rec, content_hash)
+                    if not changed:
+                        log.info("[TopCV] %s không đổi nội dung -> giữ nguyên v%d", job_id, version)
+                        ledger.mark_done(url_hash, content_hash=content_hash)
+                        stats["success"] += 1
+                        stats["unchanged"] = stats.get("unchanged", 0) + 1
+                        continue
+                    envelope.metadata["version"] = version
+
+                    # 5. Lưu snapshot cục bộ
+                    snapshot_file = os.path.join(daily_raw_dir, f"{job_id}_v{version}.json")
                     with open(snapshot_file, "w", encoding="utf-8") as f:
                         json.dump(envelope.model_dump(), f, ensure_ascii=False, indent=2)
 
-                    # 5. Đẩy snapshot lên MinIO / R2 Lakehouse
-                    if self.sync_minio:
-                        s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v1.json"
-                        self._get_minio_store().put_json(s3_key, envelope.model_dump())
+                    # 5. Đẩy snapshot lên R2 Lakehouse
+                    if self.sync_r2:
+                        s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v{version}.json"
+                        self._get_r2_store().put_json(s3_key, envelope.model_dump())
 
                     # 6. Lưu ngược lại hash vào URL trong Ledger (status = DONE)
-                    ledger.mark_done(url_hash, content_hash=content_hash)
+                    ledger.mark_done(url_hash, content_hash=content_hash, new_version=version)
                     stats["success"] += 1
 
                     # 7. Checkpoint Sync định kỳ mỗi 15 tin
-                    if self.sync_minio and stats["success"] % 15 == 0:
+                    if self.sync_r2 and stats["success"] % 15 == 0:
                         log.info("[TopCV] Checkpoint sync: Tự động đồng bộ tiến độ (%d tin DONE) lên Cloudflare R2...", stats["success"])
                         ledger.save_catalog()
-                        ledger.sync_to_minio()
+                        ledger.sync_to_r2()
 
                     # 8. Power Nap sau mỗi 25 bài đăng thành công để reset rate limit pool
                     if stats["success"] > 0 and stats["success"] % 25 == 0:
@@ -895,9 +914,9 @@ class TopCVCrawler(BaseCrawler):
                     # Bảo toàn URL ở PENDING (không ghi nhận FAILED)
                     self._close_playwright_session()
                     self._close_cloakbrowser_session()
-                    if self.sync_minio:
+                    if self.sync_r2:
                         ledger.save_catalog()
-                        ledger.sync_to_minio()
+                        ledger.sync_to_r2()
                     should_raise = self.raise_on_lock if raise_on_lock is None else raise_on_lock
                     if should_raise:
                         raise
@@ -927,8 +946,8 @@ class TopCVCrawler(BaseCrawler):
                 self._nodriver_browser = None
 
         ledger.save_catalog()
-        if self.sync_minio:
-            ledger.sync_to_minio()
+        if self.sync_r2:
+            ledger.sync_final()
 
         log.info(
             "[TopCV] Hoàn thành Pha 2. Thành công: %d, Lỗi: %d, Repost: %d.",
@@ -980,23 +999,23 @@ def main() -> int:
     parser.add_argument(
         "--engine",
         choices=["cloakbrowser", "playwright", "nodriver", "curl_cffi"],
-        default="cloakbrowser",
-        help="Engine vượt Cloudflare (mặc định: cloakbrowser Native C++ Stealth)",
+        default="curl_cffi",
+        help="Engine vượt Cloudflare (mặc định: curl_cffi; cloakbrowser cần license)",
     )
     parser.add_argument("--online", action="store_true", default=False, help="Bật kết nối mạng ngoài")
-    parser.add_argument("--sync-minio", action="store_true", default=False, help="Đồng bộ URL Ledger và raw lên MinIO/R2")
+    parser.add_argument("--sync-r2", "--sync-minio", action="store_true", default=False, help="Đồng bộ URL Ledger và raw lên MinIO/R2")
     parser.add_argument("--retry-failed", action="store_true", default=False, help="Cào lại các URL trong Failed Queue")
     parser.add_argument("--limit", type=int, default=None, help="Giới hạn số bài đăng chi tiết")
     parser.add_argument("--max-pages", type=int, default=None, help="Giới hạn số trang quét Pha 1")
     parser.add_argument("--local-html-dir", type=str, default=None, help="Thư mục chứa HTML tải trước")
-    parser.add_argument("--minio", action="store_true", default=False, help="Đọc dữ liệu URL Ledger từ MinIO khi xem")
+    parser.add_argument("--r2", "--minio", action="store_true", default=False, help="Đọc dữ liệu URL Ledger từ R2 khi xem")
 
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
     crawler = TopCVCrawler(
         engine=args.engine,
-        sync_minio=args.sync_minio,
+        sync_r2=args.sync_r2,
         local_html_dir=args.local_html_dir,
     )
 
@@ -1007,8 +1026,8 @@ def main() -> int:
     elif args.phase == "sync":
         ledger = crawler._get_ledger()
         ledger.save_catalog()
-        ledger.sync_to_minio()
-        log.info("[TopCV] Đã đồng bộ Ledger lên MinIO / Cloudflare R2 Lakehouse.")
+        ledger.sync_final()
+        log.info("[TopCV] Đã đồng bộ Ledger lên Cloudflare R2 Lakehouse.")
     elif args.phase == "view":
         ledger = crawler._get_ledger()
         records = ledger.records

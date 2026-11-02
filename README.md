@@ -243,8 +243,8 @@ pytest tests/ -v
 
 ### 6. Khởi Động Dashboard Giám Sát (Monitoring UI)
 ```bash
-# Khởi chạy đồng thời FastAPI Backend (Port 8000) và React Frontend (Port 5173)
-./monitoring/run_all.sh
+# Kiểm tra .env, cài phụ thuộc khi cần, bật PostgreSQL, chạy Backend (8000) và Frontend (5173), mở trình duyệt
+./start_monitoring.sh          # hoặc: make monitor
 ```
 Truy cập giao diện điều khiển tại: `http://localhost:5173`  
 Tài liệu Swagger API tại: `http://localhost:8000/docs`

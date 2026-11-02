@@ -15,7 +15,7 @@ export const Card: React.FC<{ className?: string; children: React.ReactNode }> =
 export const SectionTitle: React.FC<{ title: React.ReactNode; hint?: React.ReactNode }> = ({ title, hint }) => (
   <div>
     <h2 className="text-lg font-semibold text-ink">{title}</h2>
-    {hint && <p className="mt-1 text-ink-muted">{hint}</p>}
+    {hint && <p className="mt-1 text-ink-muted [overflow-wrap:anywhere]">{hint}</p>}
   </div>
 )
 

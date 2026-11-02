@@ -2,17 +2,17 @@
 """Crawler việc làm JobsGO Việt Nam (https://jobsgo.vn).
 
 Tuân thủ nghiêm ngặt chuẩn Modern Data Stack (docs/crawler_output_checklist.md &
-docs/two_phase_minio_crawler_playbook.md):
+docs/two_phase_r2_crawler_playbook.md):
 1. Hai pha độc lập: Pha 1 discover_urls() & Pha 2 crawl_details().
 2. Pha 1: URL ban đầu hoàn toàn chưa có hash (content_hash = None, status = "PENDING").
-3. Pha 2: Kéo URL từ MinIO về máy trước khi lọc URL (ledger.pull_from_minio()).
+3. Pha 2: Kéo URL từ R2 về máy trước khi lọc URL (ledger.pull_from_r2()).
 4. Cơ chế Vượt Cloudflare Dual-Engine theo cloudflare.md (curl_cffi giả lập Chrome 124 TLS & Playwright Chromium dự phòng).
 5. Cơ chế Hash: CHỈ LƯU DUY NHẤT 1 TRƯỜNG content_hash (băm canonical SHA-256 từ raw_payload).
 6. Trường language: Nhận diện ngôn ngữ ("vi" / "en") bằng detect_language().
 7. Bóc tách 100% trường dữ liệu theo neccessary.md (Zero Information Loss).
 8. Cơ chế Safe Skip & Failed Queue (ledger.mark_failed, cờ CLI --retry-failed).
-9. Checkpoint Sync định kỳ: Cứ mỗi 15 tin tự động lưu & đồng bộ MinIO Lakehouse.
-10. Đầy đủ các cờ CLI chuẩn: --phase, --engine, --online, --sync-minio, --retry-failed, --limit, --max-pages.
+9. Checkpoint Sync định kỳ: Cứ mỗi 15 tin tự động lưu & đồng bộ R2 Lakehouse.
+10. Đầy đủ các cờ CLI chuẩn: --phase, --engine, --online, --sync-r2, --retry-failed, --limit, --max-pages.
 """
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ from collection.common.anti_blocking import (
     polite_sleep,
 )
 from collection.common.http_client import DelayConfig, HttpClient, RetryConfig
-from collection.common.minio_raw_pipeline import MinioRawStore
+from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import RawJobEnvelope
 from collection.common.url_ledger import (
     UrlLedger,
@@ -283,7 +283,7 @@ class JobsGoCrawler(BaseCrawler):
         ledger_dir: Optional[str] = None,
         storage_dir: Optional[str] = None,
         raw_dir: Optional[str] = None,
-        sync_minio: bool = False,
+        sync_r2: bool = False,
         local_html_dir: Optional[str] = None,
         min_delay: float = 1.5,
         max_delay: float = 3.0,
@@ -300,7 +300,7 @@ class JobsGoCrawler(BaseCrawler):
         )
         self.engine = engine
         self.browser_path = browser_path
-        self.sync_minio = sync_minio
+        self.sync_r2 = sync_r2
         self.local_html_dir = local_html_dir
         self.min_delay = min_delay
         self.max_delay = max_delay
@@ -311,7 +311,7 @@ class JobsGoCrawler(BaseCrawler):
         os.makedirs(self.raw_root, exist_ok=True)
 
         self._ledger: Optional[UrlLedger] = None
-        self._minio_store: Optional[MinioRawStore] = kwargs.get("minio_store")
+        self._r2_store: Optional[R2RawStore] = kwargs.get("r2_store")
         self._http_client: Optional[HttpClient] = kwargs.get("http_client")
         self._run_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
@@ -320,10 +320,10 @@ class JobsGoCrawler(BaseCrawler):
             self._ledger = UrlLedger(source=self.source_name, storage_dir=self.ledger_dir)
         return self._ledger
 
-    def _get_minio_store(self) -> MinioRawStore:
-        if self._minio_store is None:
-            self._minio_store = MinioRawStore()
-        return self._minio_store
+    def _get_r2_store(self) -> R2RawStore:
+        if self._r2_store is None:
+            self._r2_store = R2RawStore()
+        return self._r2_store
 
     def _get_http_client(self) -> HttpClient:
         if self._http_client is None:
@@ -384,7 +384,7 @@ class JobsGoCrawler(BaseCrawler):
 
     # ── PHA 1: URL DISCOVERY ──────────────────────────────────────────
     def discover_urls(self, online: bool = False, max_pages: Optional[int] = None) -> List[str]:
-        """Pha 1: Quét danh mục việc làm CNTT JobsGO, ban đầu chưa có hash, đẩy lên MinIO."""
+        """Pha 1: Quét danh mục việc làm CNTT JobsGO, ban đầu chưa có hash, đẩy lên R2."""
         log.info("[JobsGO] === Bắt đầu Pha 1: URL Discovery (Engine: %s) ===", self.engine)
         ledger = self._get_ledger()
         discovered_urls = DiscoveredUrls()
@@ -448,9 +448,9 @@ class JobsGoCrawler(BaseCrawler):
 
             except Exception as exc:
                 if self._http_client is not None and isinstance(exc, RuntimeError):
-                    if self._minio_store is not None:
+                    if self._r2_store is not None:
                         failed_key = f"raw/{self.source_name}/_listing_failures/{self._run_date}/page_{page:04d}.json"
-                        self._minio_store.put_json(failed_key, {
+                        self._r2_store.put_json(failed_key, {
                             "source": self.source_name,
                             "page": page,
                             "url": page_url,
@@ -465,8 +465,8 @@ class JobsGoCrawler(BaseCrawler):
 
         ledger.save_catalog()
         ledger.export_daily_manifest()
-        if self.sync_minio:
-            ledger.sync_to_minio()
+        if self.sync_r2:
+            ledger.sync_final()
 
         log.info("[JobsGO] Hoàn thành Pha 1. Tổng URL ghi nhận: %d.", len(ledger.records))
         return discovered_urls
@@ -576,25 +576,35 @@ class JobsGoCrawler(BaseCrawler):
                             stats["repost"] += 1
                             continue
 
+                        # Cào lại mà nội dung không đổi thì giữ version, không ghi file mới (C12)
+                        changed, version = ledger.next_version(rec, content_hash)
+                        if not changed:
+                            log.info("[JobsGO] %s không đổi nội dung -> giữ nguyên v%d", job_id, version)
+                            ledger.mark_done(url_hash, content_hash=content_hash)
+                            stats["success"] += 1
+                            stats["unchanged"] = stats.get("unchanged", 0) + 1
+                            continue
+                        envelope.metadata["version"] = version
+
                         # 4. Lưu snapshot cục bộ
-                        snapshot_file = os.path.join(daily_raw_dir, f"{job_id}_v1.json")
+                        snapshot_file = os.path.join(daily_raw_dir, f"{job_id}_v{version}.json")
                         with open(snapshot_file, "w", encoding="utf-8") as f:
                             json.dump(envelope.model_dump(), f, ensure_ascii=False, indent=2)
 
-                        # 5. Đẩy snapshot lên MinIO / Cloudflare R2 Lakehouse
-                        if self.sync_minio:
-                            s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v1.json"
-                            self._get_minio_store().put_json(s3_key, envelope.model_dump())
+                        # 5. Đẩy snapshot lên Cloudflare R2 Lakehouse
+                        if self.sync_r2:
+                            s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v{version}.json"
+                            self._get_r2_store().put_json(s3_key, envelope.model_dump())
 
                         # 6. Cập nhật URL trong Ledger (status = DONE)
-                        ledger.mark_done(url_hash, content_hash=content_hash)
+                        ledger.mark_done(url_hash, content_hash=content_hash, new_version=version)
                         stats["success"] += 1
 
                         # 7. Checkpoint Sync định kỳ mỗi 15 tin
-                        if self.sync_minio and stats["success"] % 15 == 0:
+                        if self.sync_r2 and stats["success"] % 15 == 0:
                             log.info("[JobsGO] [Checkpoint Sync] Đã đạt %d tin thành công! Đồng bộ tiến trình lên R2...", stats["success"])
                             ledger.save_catalog()
-                            ledger.sync_to_minio()
+                            ledger.sync_to_r2()
 
                         # Polite sleep
                         sleep_s = random.uniform(self.min_delay, self.max_delay)
@@ -624,14 +634,14 @@ class JobsGoCrawler(BaseCrawler):
         limit: Optional[int] = None,
         retry_failed: bool = False,
     ) -> Dict[str, int]:
-        """Pha 2: Kéo URL từ MinIO, cào chi tiết, băm JSON sau cào, checkpoint sync lên MinIO."""
+        """Pha 2: Kéo URL từ R2, cào chi tiết, băm JSON sau cào, checkpoint sync lên R2."""
         log.info("[JobsGO] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
         ledger = self._get_ledger()
 
-        # Kéo catalog mới nhất từ MinIO Lakehouse
-        if self.sync_minio and online:
-            log.info("[JobsGO] Đang kéo catalog mới nhất từ MinIO Lakehouse...")
-            ledger.pull_from_minio()
+        # Kéo catalog mới nhất từ R2 Lakehouse
+        if self.sync_r2 and online:
+            log.info("[JobsGO] Đang kéo catalog mới nhất từ R2 Lakehouse...")
+            ledger.pull_from_r2()
 
         # Lọc danh sách cần cào
         candidates = ledger.get_failed_records() if retry_failed else ledger.get_pending_or_due_records(recheck_days=21)
@@ -660,12 +670,18 @@ class JobsGoCrawler(BaseCrawler):
                 html = getattr(resp, "text", str(resp))
                 envelope = build_raw_envelope(html, job_id=job_id, url=url)
                 content_hash = envelope.metadata["content_hash"]
-                ledger.mark_done(rec["url_hash"], content_hash=content_hash)
+                changed, version = ledger.next_version(rec, content_hash)
+                ledger.mark_done(rec["url_hash"], content_hash=content_hash, new_version=version if changed else None)
+                if not changed:
+                    stats["success"] += 1
+                    stats["unchanged"] = stats.get("unchanged", 0) + 1
+                    continue
+                envelope.metadata["version"] = version
                 env_dict = envelope.model_dump()
                 env_dict["raw"] = {"html": html}
-                if self._minio_store is not None:
-                    s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v1.json"
-                    self._minio_store.put_json(s3_key, env_dict)
+                if self._r2_store is not None:
+                    s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v{version}.json"
+                    self._r2_store.put_json(s3_key, env_dict)
                 stats["success"] += 1
                 stats["new"] += 1
             return stats
@@ -680,8 +696,8 @@ class JobsGoCrawler(BaseCrawler):
             )
             ledger.save_catalog()
             ledger.export_daily_manifest()
-            if self.sync_minio:
-                ledger.sync_to_minio()
+            if self.sync_r2:
+                ledger.sync_final()
             log.info("[JobsGO] Hoàn thành Pha 2 bằng nodriver. Thống kê kết quả: %s", stats)
             return stats
 
@@ -715,25 +731,35 @@ class JobsGoCrawler(BaseCrawler):
                     stats["repost"] += 1
                     continue
 
+                # Cào lại mà nội dung không đổi thì giữ version, không ghi file mới (C12)
+                changed, version = ledger.next_version(rec, content_hash)
+                if not changed:
+                    log.info("[JobsGO] %s không đổi nội dung -> giữ nguyên v%d", job_id, version)
+                    ledger.mark_done(url_hash, content_hash=content_hash)
+                    stats["success"] += 1
+                    stats["unchanged"] = stats.get("unchanged", 0) + 1
+                    continue
+                envelope.metadata["version"] = version
+
                 # 4. Lưu snapshot cục bộ
-                snapshot_file = os.path.join(daily_raw_dir, f"{job_id}_v1.json")
+                snapshot_file = os.path.join(daily_raw_dir, f"{job_id}_v{version}.json")
                 with open(snapshot_file, "w", encoding="utf-8") as f:
                     json.dump(envelope.model_dump(), f, ensure_ascii=False, indent=2)
 
-                # 5. Đẩy snapshot lên MinIO Lakehouse
-                if self.sync_minio:
-                    s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v1.json"
-                    self._get_minio_store().put_json(s3_key, envelope.model_dump())
+                # 5. Đẩy snapshot lên R2 Lakehouse
+                if self.sync_r2:
+                    s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v{version}.json"
+                    self._get_r2_store().put_json(s3_key, envelope.model_dump())
 
                 # 6. Lưu ngược lại hash vào URL trong Ledger (status = DONE)
-                ledger.mark_done(url_hash, content_hash=content_hash)
+                ledger.mark_done(url_hash, content_hash=content_hash, new_version=version)
                 stats["success"] += 1
 
                 # 7. Checkpoint Sync định kỳ mỗi 15 tin
-                if self.sync_minio and stats["success"] % 15 == 0:
-                    log.info("[JobsGO] Checkpoint sync: Tự động đồng bộ tiến độ lên MinIO Lakehouse...")
+                if self.sync_r2 and stats["success"] % 15 == 0:
+                    log.info("[JobsGO] Checkpoint sync: Tự động đồng bộ tiến độ lên R2 Lakehouse...")
                     ledger.save_catalog()
-                    ledger.sync_to_minio()
+                    ledger.sync_to_r2()
 
                 # Polite Sleep ngẫu nhiên giữa 2 bài đăng
                 polite_sleep(self.min_delay, self.max_delay, reason=f"Nghỉ giữa bài đăng {idx}")
@@ -746,8 +772,8 @@ class JobsGoCrawler(BaseCrawler):
                 continue
 
         ledger.save_catalog()
-        if self.sync_minio:
-            ledger.sync_to_minio()
+        if self.sync_r2:
+            ledger.sync_final()
 
         log.info("[JobsGO] Hoàn thành Pha 2. Thống kê kết quả: %s", stats)
         return stats
@@ -781,7 +807,7 @@ def main() -> int:
     parser.add_argument("--phase", choices=["discovery", "details", "sync", "view"], default="details", help="Pha thực thi")
     parser.add_argument("--engine", choices=["curl_cffi", "playwright", "nodriver"], default="nodriver", help="Engine vượt Cloudflare (mặc định: nodriver)")
     parser.add_argument("--online", action="store_true", help="Bật kết nối cào trực tuyến")
-    parser.add_argument("--sync-minio", action="store_true", help="Đồng bộ tự động với MinIO Lakehouse")
+    parser.add_argument("--sync-r2", "--sync-minio", action="store_true", help="Đồng bộ tự động với MinIO Lakehouse")
     parser.add_argument("--retry-failed", action="store_true", help="Cào lại các bài đăng trong Failed Queue")
     parser.add_argument("--limit", type=int, default=None, help="Giới hạn số lượng bài đăng chi tiết cần xử lý")
     parser.add_argument("--max-pages", type=int, default=None, help="Giới hạn số trang quét danh mục Pha 1")
@@ -790,7 +816,7 @@ def main() -> int:
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-7s | %(name)s | %(message)s")
 
-    crawler = JobsGoCrawler(engine=args.engine, sync_minio=args.sync_minio, local_html_dir=args.local_html_dir)
+    crawler = JobsGoCrawler(engine=args.engine, sync_r2=args.sync_r2, local_html_dir=args.local_html_dir)
 
     if args.phase == "view":
         ledger = crawler._get_ledger()
@@ -804,8 +830,8 @@ def main() -> int:
     if args.phase == "sync":
         ledger = crawler._get_ledger()
         ledger.save_catalog()
-        ledger.sync_to_minio()
-        print("✅ Đã đồng bộ URL Ledger lên MinIO Lakehouse.")
+        ledger.sync_final()
+        print("✅ Đã đồng bộ URL Ledger lên R2 Lakehouse.")
         return 0
 
     if args.phase == "discovery":

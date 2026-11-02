@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from fastapi.testclient import TestClient
 
-BACKEND_DIR = Path(__file__).resolve().parent.parent / "monitoring" / "backend"
+BACKEND_DIR = Path(__file__).resolve().parents[2] / "monitoring" / "backend"
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
@@ -95,18 +95,6 @@ def test_processing_metrics():
     assert {"dedup", "field_completeness", "not_recorded"} <= set(data)
 
 
-def test_ml_spatial_3d():
-    """Kiểm tra không gian vector 3D cho Machine Learning."""
-    res = client.get("/api/v1/mining/spatial-3d/umap")
-    assert res.status_code == 200
-    data = res.json()
-    assert data["algorithm"] == "umap_3d"
-    assert len(data["points"]) > 0
-    pt = data["points"][0]
-    assert "x" in pt and "y" in pt and "z" in pt
-    assert "job_family" in pt
-
-
 def test_cloud_r2_status():
     """Kiểm tra endpoint trạng thái Cloudflare R2."""
     res = client.get("/api/v1/cloud/r2/status")
@@ -162,6 +150,7 @@ def test_cloud_r2_diff():
     assert "synced_pct" in data
 
 
+@pytest.mark.needs_data(*[f"data/{s}/url_ledger/catalog_master.json" for s in ("topcv", "topdev", "itviec", "careerviet", "vieclam24h", "vietnamworks", "glints", "jobsgo")])
 def test_crawling_enum_summary():
     """Kiểm tra endpoint thống kê định lượng 5 trạng thái Enum vòng đời URL."""
     res = client.get("/api/v1/crawling/enum-summary")
