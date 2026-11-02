@@ -245,6 +245,13 @@ export const CrawlingPage: React.FC = () => {
           <span>FAILED</span>
         </span>
       )
+    if (s === 'UNKNOWN')
+      return (
+        <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-400">
+          <AlertCircle className="w-3 h-3" />
+          <span>KHÔNG RÕ</span>
+        </span>
+      )
     return (
       <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-400">
         <Clock className="w-3 h-3" />
@@ -430,7 +437,7 @@ export const CrawlingPage: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
               <Calendar className="w-4 h-4 text-indigo-400" />
-              <span>3.2 Phase 2: Adaptive Detail Extraction Schedule (20:00 PM UTC+7)</span>
+              <span>3.2 Phase 2: Adaptive Detail Extraction Schedule</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               Quota <strong className="text-indigo-300 font-mono">{weeklySchedule?.total_projected_weekly?.toLocaleString() || '2,050'}</strong> items/week

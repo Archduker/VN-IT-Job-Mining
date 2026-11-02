@@ -247,10 +247,8 @@ def _flatten_careerviet(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         if ben_str:
             flat["benefits_list"] = [b.strip() for b in re.split(r"[\n\r;•\-\*]+", str(ben_str)) if b.strip()]
 
-    # Tags kỹ năng
-    tags = raw.get("job-tags")
-    if isinstance(tags, list):
-        flat["skills_list"] = [str(t) for t in tags]
+    # Không dùng job-tags làm kỹ năng: đây là tag SEO của trang.
+    # skills_list để rỗng, GenAI imputer sẽ quét kỹ năng từ JD.
 
 
 def _flatten_glints(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
@@ -424,8 +422,8 @@ def _flatten_jobsgo(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     # Ngành nghề
     occs = raw.get("occupations")
     if isinstance(occs, list):
+        # occupations là ngành nghề, không phải kỹ năng; GenAI imputer quét kỹ năng từ JD.
         flat["raw_category_text"] = ", ".join(str(o) for o in occs if o)
-        flat["skills_list"].extend([str(o) for o in occs if o])
 
     # Ép phẳng general_info
     gen = raw.get("general_info")
@@ -528,6 +526,15 @@ def _flatten_topdev(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("title") or raw.get("job-title"))
     flat["raw_salary_text"] = _clean_str(raw.get("salary_raw") or raw.get("salary"))
     flat["raw_posted_date"] = _clean_str(raw.get("recalled_at") or raw.get("created_at"))
+
+    # Kinh nghiệm và cấp bậc: bản HTML để ở cấp ngoài, bản API để trong extra
+    extra = raw.get("extra") if isinstance(raw.get("extra"), dict) else {}
+    flat["raw_experience_text"] = _clean_str(
+        raw.get("experience") or extra.get("experience") or raw.get("experiences_str")
+    )
+    flat["raw_seniority_text"] = _clean_str(
+        raw.get("seniority_text") or raw.get("job_level") or raw.get("job_levels_str")
+    )
 
     # Company
     comp = raw.get("company")

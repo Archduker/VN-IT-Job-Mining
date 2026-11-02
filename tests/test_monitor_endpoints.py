@@ -145,7 +145,7 @@ def test_sample_annotations_mark_features_and_duplicates(empty_env):
     notes = {n["code"]: n for n in data["notes"]}
     assert notes["F4"]["status"] == "ok" and "28.000.000" in notes["F4"]["normalized"]
     assert notes["F5"]["normalized"].startswith("2 năm")
-    assert notes["F7"]["status"] == "warn" and "SEO" in notes["F7"]["how"]
+    assert notes["F7"]["normalized"] is None and "SEO" in notes["F7"]["how"]
 
 
 def test_missing_sample_is_404(empty_env):

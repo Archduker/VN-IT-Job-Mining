@@ -50,10 +50,10 @@ Bảng đối chiếu cách lấy dữ liệu từ trường gốc của 8 sàn 
 | `job_title` | `str` | `title` | `title` / `job-title` | `jobTitle` / `title` | `title` | `title` | `title` | `job-title` | `title` |
 | `company_name` | `str` | `company` | `company` / `company-name` | `companyName` | `company_name` | `job-company-name` | `company.name` | `company-name` | `company` |
 | `raw_salary_text` | `str` | `salary_raw` | `salary_raw` / `salary` | `prettySalary` / `salary_raw` | `salary_display_text` | Parse từ `detail-box` | `salary` | `salary` | `salary_raw` |
-| `raw_experience_text` | `str` | `experience` | `requirements_arr` | `yearsOfExperience` | Bóc từ JD | Parse từ `detail-box` | `experience_summary` | `requirements` | `experience` |
+| `raw_experience_text` | `str` | `experience` | `experience` / `extra.experience` | `yearsOfExperience` | Bóc từ JD | Parse từ `detail-box` | `experience_summary` | `requirements` | `experience` |
 | `raw_location_text` | `str` | `location` | `addresses[0]` | `workingLocations[0]` | `work_location` | `map` | `location_summary` | `jsonld.jobLocation` | `location` |
-| `raw_seniority_text` | `str` | `general_info['Cấp bậc']` | Bóc từ title | `jobLevelVI` / `jobLevel` | Bóc từ title | Parse từ `detail-box` | `general_info.level` | `jsonld.employmentType` | `general_info.job_level` |
-| `skills_list` | `list[str]`| `required_skills` / `Chuyên môn` | `skills_arr` | `skills[].skillName` | `skill_tags` | `job-tags` | `keywords` | `skills` | Bóc từ occupations |
+| `raw_seniority_text` | `str` | `general_info['Cấp bậc']` | `seniority_text` / `job_level` | `jobLevelVI` / `jobLevel` | Bóc từ title | Parse từ `detail-box` | `general_info.level` | `jsonld.employmentType` | `general_info.job_level` |
+| `skills_list` | `list[str]`| `required_skills` / `Chuyên môn` | `skills_arr` | `skills[].skillName` | `skill_tags` | Imputer quét từ JD | `keywords` | `skills` | Imputer quét từ JD |
 | `benefits_list` | `list[str]`| `benefits_bullets` / `welfare_tags`| `benefits_original` | `benefits[].benefitValue` | `sections['Phúc lợi']` | `detail-row['Phúc lợi']`| `benefits` | `benefits` | `benefits_bullets` |
 | `raw_description_text` | `str` | `description_bullets` | `content` (HTML) | `jobDescription` | `sections['Mô tả']` | `detail-row['Mô tả']` | `description` | `description` | `description_bullets` |
 | `raw_requirements_text`| `str` | `requirements_bullets`| `requirements_original`| `jobRequirement` | `sections['Yêu cầu']`| `detail-row['Yêu cầu']`| `requirements` | `requirements` | `requirements_bullets` |

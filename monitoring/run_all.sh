@@ -10,7 +10,7 @@ echo "========================================================"
 # Khởi chạy Backend FastAPI ngầm
 echo ">> Khởi động Backend FastAPI tại http://localhost:8000..."
 cd "$ROOT_DIR/monitoring/backend" || exit 1
-"$ROOT_DIR/.venv/bin/python" -m uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+"$ROOT_DIR/.venv/bin/python" -m uvicorn app.main:app --host 127.0.0.1 --port 8000 &
 BACKEND_PID=$!
 
 # Đợi backend sẵn sàng

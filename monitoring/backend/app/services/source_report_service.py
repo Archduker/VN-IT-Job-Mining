@@ -394,7 +394,7 @@ def annotate_envelope(source: str, envelope: Dict[str, Any]) -> Dict[str, Any]:
         elif found:
             status = "fail"
         warning = overrides.get(code, {}).get("problem") if source == "careerviet" and code == "F7" else None
-        if warning and status == "ok":
+        if warning and status == "fail":
             status = "warn"
         notes.append({
             "code": code, "name": feature["name"], "status": status,

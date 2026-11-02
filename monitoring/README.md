@@ -110,7 +110,7 @@ Hệ thống được chuẩn hóa kết hợp cùng các công cụ MCP:
 ### 1. Khởi chạy Backend API (FastAPI)
 ```bash
 cd monitoring/backend
-../../.venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+../../.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 - API Docs: `http://localhost:8000/docs`
 - Master Dashboard API: `http://localhost:8000/api/dashboard`

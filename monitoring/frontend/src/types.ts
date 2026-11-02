@@ -212,7 +212,7 @@ export interface Phase1DiscoveryItem {
   scheduled_time: string
   quota_pages: number
   total_discovered: number
-  status: 'SUCCESS' | 'RUNNING' | 'SCHEDULED' | 'FAILED' | string
+  status: 'SUCCESS' | 'RUNNING' | 'SCHEDULED' | 'FAILED' | 'UNKNOWN' | string
 }
 
 export interface Phase2DetailItem {

@@ -99,4 +99,3 @@ Trust the code over the docs on these:
 - The golden file is `data/curated/curated_flat_golden_jobs.parquet`; `TASKS.md` still uses the old planned name.
 - `TASKS.md` is the original plan: `master_pipeline.py` was never built (the driver is `scripts/run_staging_integration_pipeline.py`), and dedup uses Jaccard plus TF-IDF cosine rather than Jaro-Winkler.
 - Airflow runs on Postgres ("Zero-SQLite Policy"), so the `airflow.db` reference in the monitoring rules is outdated.
-- `data/vietnamworks/raw/2026-10-16/raw_batch.json` is tracked in git even though `data/` is ignored.

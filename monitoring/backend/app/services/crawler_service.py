@@ -15,12 +15,31 @@ from app.core.config import settings
 logger = logging.getLogger("crawler_service")
 
 
+# Lịch của crawler_detail_<source> trong airflow/dags/crawler_dags.py
+DETAIL_SCHEDULE_TIME = "09, 14, 18, 21, 22h"
+
+
+def _discovery_status(states: Optional[Dict[str, Optional[str]]], task_id: str) -> str:
+    """Đổi trạng thái task Airflow sang nhãn bảng Phase 1; không đọc được thì trả UNKNOWN."""
+    if states is None or task_id not in states:
+        return "UNKNOWN"
+    state = states[task_id]
+    if state == "success":
+        return "SUCCESS"
+    if state in ("failed", "upstream_failed"):
+        return "FAILED"
+    if state == "running":
+        return "RUNNING"
+    return "SCHEDULED"
+
+
 class CrawlerService:
     """Quản lý các tiến trình chạy crawler và stream log console thời gian thực."""
 
     def __init__(self):
         self.active_processes: Dict[str, asyncio.subprocess.Process] = {}
         self.log_buffers: Dict[str, list] = {}
+        self.log_dropped: Dict[str, int] = {}
         self.job_status: Dict[str, Dict[str, Any]] = {}
 
     def get_source_status(self, source: str) -> Dict[str, Any]:
@@ -88,6 +107,7 @@ class CrawlerService:
             cmd.extend(["--engine", engine])
 
         self.log_buffers[source] = []
+        self.log_dropped[source] = 0
         now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         self.log_buffers[source].append(f"[{now_str}] Bắt đầu thực thi: {' '.join(cmd)}\n")
 
@@ -118,6 +138,7 @@ class CrawlerService:
                 # Giới hạn bộ đệm 2000 dòng gần nhất
                 if len(self.log_buffers[source]) > 2000:
                     self.log_buffers[source].pop(0)
+                    self.log_dropped[source] += 1
             await proc.wait()
             finish_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
             self.log_buffers[source].append(
@@ -151,26 +172,31 @@ class CrawlerService:
 
     async def stream_logs(self, source: str) -> AsyncGenerator[str, None]:
         """SSE Generator truyền log dòng lệnh theo thời gian thực."""
-        last_index = 0
+        sent = 0  # Tổng số dòng đã gửi, tính cả dòng đã bị cắt khỏi buffer
         while True:
             buffer = self.log_buffers.get(source, [])
-            if last_index < len(buffer):
-                for idx in range(last_index, len(buffer)):
-                    clean_line = buffer[idx].rstrip("\r\n")
-                    yield f"data: {clean_line}\n\n"
-                last_index = len(buffer)
+            dropped = self.log_dropped.get(source, 0)
+            for line in buffer[max(sent - dropped, 0):]:
+                yield line.rstrip("\r\n")
+            sent = dropped + len(buffer)
 
             proc = self.active_processes.get(source)
-            if proc is not None and proc.returncode is not None and last_index >= len(buffer):
+            if proc is None:
+                yield "[EOF] Nguồn này chưa có tiến trình đang chạy."
+                break
+            if proc.returncode is not None:
                 # Tiến trình đã xong và đã gửi hết log
-                yield f"data: [EOF] Quá trình cào đã hoàn tất.\n\n"
+                yield "[EOF] Quá trình cào đã hoàn tất."
                 break
 
             await asyncio.sleep(0.5)
 
     def get_weekly_crawl_schedule(self) -> Dict[str, Any]:
         """Tạo bảng kế hoạch điều phối 2 Pha (Pha 1 Discovery & Pha 2 Detail) cho 8 sàn tuyển dụng."""
+        from app.services.airflow_service import airflow_service
         from app.services.ledger_service import ledger_service
+
+        discovery_states = airflow_service.get_latest_discovery_states()
 
         # Định nghĩa 8 sàn tuyển dụng chuẩn
         source_configs = [
@@ -180,7 +206,6 @@ class CrawlerService:
                 "focal_source": "topdev",
                 "engine": "curl_cffi (TLS Impersonation)",
                 "quota": 250,
-                "detail_time": "20:00 PM",
                 "recrawl_strategy": "Safe Skip + Re-crawl 21 ngày",
             },
             {
@@ -189,7 +214,6 @@ class CrawlerService:
                 "focal_source": "careerviet",
                 "engine": "curl_cffi (HTML Parser)",
                 "quota": 200,
-                "detail_time": "20:00 PM",
                 "recrawl_strategy": "Anti-403 + Fallback",
             },
             {
@@ -198,7 +222,6 @@ class CrawlerService:
                 "focal_source": "itviec",
                 "engine": "curl_cffi (Session Auth)",
                 "quota": 200,
-                "detail_time": "20:00 PM",
                 "recrawl_strategy": "JSON-LD & DOM Matcher",
             },
             {
@@ -207,7 +230,6 @@ class CrawlerService:
                 "focal_source": "vietnamworks",
                 "engine": "curl_cffi (Algolia/API)",
                 "quota": 300,
-                "detail_time": "20:00 PM",
                 "recrawl_strategy": "IT Domain Filter",
             },
             {
@@ -216,7 +238,6 @@ class CrawlerService:
                 "focal_source": "topcv",
                 "engine": "playwright (Cloudflare Bypass)",
                 "quota": 350,
-                "detail_time": "20:00 PM",
                 "recrawl_strategy": "Two-Phase Discovery/Detail",
             },
             {
@@ -225,7 +246,6 @@ class CrawlerService:
                 "focal_source": "vieclam24h",
                 "engine": "curl_cffi (Mobile UA)",
                 "quota": 250,
-                "detail_time": "20:00 PM",
                 "recrawl_strategy": "Safe Skip + CDC Hash",
             },
             {
@@ -234,7 +254,6 @@ class CrawlerService:
                 "focal_source": "glints",
                 "engine": "curl_cffi + playwright",
                 "quota": 250,
-                "detail_time": "14:00 PM",
                 "recrawl_strategy": "Weekly Catch-up & Backup",
             },
             {
@@ -243,7 +262,6 @@ class CrawlerService:
                 "focal_source": "jobsgo",
                 "engine": "curl_cffi (TLS Impersonation)",
                 "quota": 250,
-                "detail_time": "20:00 PM",
                 "recrawl_strategy": "Safe Skip + Re-crawl 21 ngày",
             },
         ]
@@ -292,7 +310,7 @@ class CrawlerService:
                 "scheduled_time": "05:00 AM",
                 "quota_pages": 2,
                 "total_discovered": total_urls,
-                "status": "SUCCESS",
+                "status": _discovery_status(discovery_states, f"discover_{src}"),
             }
             phase1_discovery.append(phase1_entry)
 
@@ -302,7 +320,7 @@ class CrawlerService:
                 "day_index": sc["day_index"],
                 "focal_source": src,
                 "dag_id": f"crawler_detail_{src}",
-                "scheduled_time": sc["detail_time"],
+                "scheduled_time": DETAIL_SCHEDULE_TIME,
                 "projected_quota": quota,
                 "actual_crawled": actual_count,
                 "uncrawled_pending": pending_count,
