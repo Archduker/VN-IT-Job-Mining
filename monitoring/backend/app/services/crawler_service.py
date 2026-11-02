@@ -2,7 +2,7 @@
 """Service điều phối và giám sát tiến trình Crawler (Subprocess Runner & SSE Streamer)."""
 
 import asyncio
-from datetime import datetime, timezone
+from datetime import datetime, time, timedelta, timezone
 import logging
 import os
 from pathlib import Path
@@ -11,26 +11,58 @@ import sys
 from typing import Any, AsyncGenerator, Dict, Optional
 
 from app.core.config import settings
+from collection.common.adaptive_router import COOLDOWN_MINUTES_SURGE, MAX_ITEMS_PER_BATCH, VN_TZ
 
 logger = logging.getLogger("crawler_service")
 
 
-# Lịch của crawler_detail_<source> trong airflow/dags/crawler_dags.py
-DETAIL_SCHEDULE_TIME = "09, 14, 18, 21, 22h"
+# Lịch thật của Phase 2: DAG kích hoạt 09, 14, 18, 21, 22h hằng ngày (airflow/dags/crawler_dags.py),
+# AdaptiveWorkloadRouter bỏ qua các ca ban ngày T2–T6 và chỉ chạy một ca tối.
+DISCOVERY_SCHEDULE_TIME = "05:00 hằng ngày"
+DETAIL_SCHEDULE_TIME = "T2–T6: 21h · T7, CN: 09, 14, 18, 21, 22h"
+WEEKDAY_SLOTS = (21,)
+WEEKEND_SLOTS = (9, 14, 18, 21, 22)
+
+SOURCE_ENGINES = {
+    "topdev": "curl_cffi (TLS Impersonation)",
+    "careerviet": "curl_cffi (HTML Parser)",
+    "itviec": "curl_cffi (Session Auth)",
+    "vietnamworks": "curl_cffi (Algolia/API)",
+    "topcv": "playwright (Cloudflare Bypass)",
+    "vieclam24h": "curl_cffi (Mobile UA)",
+    "glints": "curl_cffi + playwright",
+    "jobsgo": "curl_cffi (TLS Impersonation)",
+}
+
+
+def next_detail_slot(now_vn: datetime) -> datetime:
+    """Ca Phase 2 kế tiếp mà router cho phép chạy, theo giờ Việt Nam."""
+    for offset in range(8):
+        day = (now_vn + timedelta(days=offset)).date()
+        slots = WEEKEND_SLOTS if day.weekday() >= 5 else WEEKDAY_SLOTS
+        for hour in slots:
+            slot = datetime.combine(day, time(hour), tzinfo=VN_TZ)
+            if slot > now_vn:
+                return slot
+    raise RuntimeError("Không tìm được ca kế tiếp")
+
+
+def _run_status(state: Optional[str]) -> str:
+    """Đổi trạng thái Airflow sang nhãn bảng lịch."""
+    if state == "success":
+        return "SUCCESS"
+    if state in ("failed", "upstream_failed"):
+        return "FAILED"
+    if state in ("running", "queued"):
+        return "RUNNING"
+    return "SCHEDULED"
 
 
 def _discovery_status(states: Optional[Dict[str, Optional[str]]], task_id: str) -> str:
     """Đổi trạng thái task Airflow sang nhãn bảng Phase 1; không đọc được thì trả UNKNOWN."""
     if states is None or task_id not in states:
         return "UNKNOWN"
-    state = states[task_id]
-    if state == "success":
-        return "SUCCESS"
-    if state in ("failed", "upstream_failed"):
-        return "FAILED"
-    if state == "running":
-        return "RUNNING"
-    return "SCHEDULED"
+    return _run_status(states[task_id])
 
 
 class CrawlerService:
@@ -192,157 +224,72 @@ class CrawlerService:
             await asyncio.sleep(0.5)
 
     def get_weekly_crawl_schedule(self) -> Dict[str, Any]:
-        """Tạo bảng kế hoạch điều phối 2 Pha (Pha 1 Discovery & Pha 2 Detail) cho 8 sàn tuyển dụng."""
+        """Lịch 2 pha theo đúng DAG và AdaptiveWorkloadRouter, trạng thái lấy từ Airflow."""
         from app.services.airflow_service import airflow_service
         from app.services.ledger_service import ledger_service
 
         discovery_states = airflow_service.get_latest_discovery_states()
-
-        # Định nghĩa 8 sàn tuyển dụng chuẩn
-        source_configs = [
-            {
-                "day_of_week": "Thứ Hai (Monday)",
-                "day_index": 1,
-                "focal_source": "topdev",
-                "engine": "curl_cffi (TLS Impersonation)",
-                "quota": 250,
-                "recrawl_strategy": "Safe Skip + Re-crawl 21 ngày",
-            },
-            {
-                "day_of_week": "Thứ Ba (Tuesday)",
-                "day_index": 2,
-                "focal_source": "careerviet",
-                "engine": "curl_cffi (HTML Parser)",
-                "quota": 200,
-                "recrawl_strategy": "Anti-403 + Fallback",
-            },
-            {
-                "day_of_week": "Thứ Tư (Wednesday)",
-                "day_index": 3,
-                "focal_source": "itviec",
-                "engine": "curl_cffi (Session Auth)",
-                "quota": 200,
-                "recrawl_strategy": "JSON-LD & DOM Matcher",
-            },
-            {
-                "day_of_week": "Thứ Năm (Thursday)",
-                "day_index": 4,
-                "focal_source": "vietnamworks",
-                "engine": "curl_cffi (Algolia/API)",
-                "quota": 300,
-                "recrawl_strategy": "IT Domain Filter",
-            },
-            {
-                "day_of_week": "Thứ Sáu (Friday)",
-                "day_index": 5,
-                "focal_source": "topcv",
-                "engine": "playwright (Cloudflare Bypass)",
-                "quota": 350,
-                "recrawl_strategy": "Two-Phase Discovery/Detail",
-            },
-            {
-                "day_of_week": "Thứ Bảy (Saturday)",
-                "day_index": 6,
-                "focal_source": "vieclam24h",
-                "engine": "curl_cffi (Mobile UA)",
-                "quota": 250,
-                "recrawl_strategy": "Safe Skip + CDC Hash",
-            },
-            {
-                "day_of_week": "Chủ Nhật S1 (Sunday)",
-                "day_index": 7,
-                "focal_source": "glints",
-                "engine": "curl_cffi + playwright",
-                "quota": 250,
-                "recrawl_strategy": "Weekly Catch-up & Backup",
-            },
-            {
-                "day_of_week": "Chủ Nhật S2 (Sunday)",
-                "day_index": 8,
-                "focal_source": "jobsgo",
-                "engine": "curl_cffi (TLS Impersonation)",
-                "quota": 250,
-                "recrawl_strategy": "Safe Skip + Re-crawl 21 ngày",
-            },
-        ]
+        history = airflow_service.get_run_history(days=14)
+        latest_runs: Dict[str, Dict[str, Any]] = {}
+        for run in history or []:
+            latest_runs[run["dag_id"]] = run  # history đã sắp theo start_date tăng dần
 
         phase1_discovery = []
         phase2_detail = []
-        total_projected = 0
         total_actual = 0
-        total_pending = 0
+        total_backlog = 0
 
-        for sc in source_configs:
-            src = sc["focal_source"]
+        for src in settings.SUPPORTED_SOURCES:
             st = self.get_source_status(src)
             ledger_st = ledger_service.get_ledger_summary(src)
             counts = ledger_st.get("counts", {})
+            # Router xả cả PENDING và RECHECK_DUE (adaptive_router.evaluate)
+            backlog = counts.get("PENDING", 0) + counts.get("NEW", 0) + counts.get("RECHECK_DUE", 0)
+            total_actual += st["total_raw"]
+            total_backlog += backlog
 
-            # Đã cào thực tế từ thư mục raw
-            actual_count = st["total_raw"]
-            # Số tin chờ cào (PENDING + NEW)
-            pending_count = counts.get("PENDING", 0) + counts.get("NEW", 0)
-            # Tổng số URLs trong ledger
-            total_urls = ledger_st.get("total", 0)
-
-            quota = sc["quota"]
-            total_projected += quota
-            total_actual += actual_count
-            total_pending += pending_count
-
-            progress = round((actual_count / max(quota, 1)) * 100, 1)
-
-            # Airflow status
-            if st["is_running"]:
-                status = "RUNNING"
-            elif actual_count >= quota or pending_count == 0:
-                status = "SUCCESS"
-            else:
-                status = "SCHEDULED"
-
-            # 1. Bảng Pha 1: Daily URL Discovery
-            phase1_entry = {
-                "day_of_week": sc["day_of_week"],
-                "day_index": sc["day_index"],
+            phase1_discovery.append({
                 "focal_source": src,
                 "dag_id": "dag_discovery_daily",
                 "task_id": f"discover_{src}",
-                "scheduled_time": "05:00 AM",
+                "scheduled_time": DISCOVERY_SCHEDULE_TIME,
                 "quota_pages": 2,
-                "total_discovered": total_urls,
+                "total_discovered": ledger_st.get("total", 0),
                 "status": _discovery_status(discovery_states, f"discover_{src}"),
-            }
-            phase1_discovery.append(phase1_entry)
+            })
 
-            # 2. Bảng Pha 2: Adaptive Detail Extraction
-            phase2_entry = {
-                "day_of_week": sc["day_of_week"],
-                "day_index": sc["day_index"],
+            dag_id = f"crawler_detail_{src}"
+            run = latest_runs.get(dag_id)
+            if st["is_running"]:
+                status = "RUNNING"
+            elif history is None:
+                status = "UNKNOWN"
+            else:
+                status = _run_status(run["state"] if run else None)
+            phase2_detail.append({
                 "focal_source": src,
-                "dag_id": f"crawler_detail_{src}",
+                "dag_id": dag_id,
                 "scheduled_time": DETAIL_SCHEDULE_TIME,
-                "projected_quota": quota,
-                "actual_crawled": actual_count,
-                "uncrawled_pending": pending_count,
-                "progress_pct": progress,
-                "engine": sc["engine"],
-                "recrawl_strategy": sc["recrawl_strategy"],
+                "batch_limit": MAX_ITEMS_PER_BATCH,
+                "actual_crawled": st["total_raw"],
+                "uncrawled_pending": backlog,
+                "batches_needed": -(-backlog // MAX_ITEMS_PER_BATCH),
+                "last_run_start": str(run["start_date"]) if run and run.get("start_date") else None,
+                "engine": SOURCE_ENGINES.get(src, "curl_cffi"),
                 "status": status,
-            }
-            phase2_detail.append(phase2_entry)
-
-        overall_pct = round((total_actual / max(total_projected, 1)) * 100, 1)
+            })
 
         return {
             "phase1_discovery": phase1_discovery,
             "phase2_detail": phase2_detail,
-            "total_projected_weekly": total_projected,
+            "airflow_available": history is not None,
+            "batch_limit": MAX_ITEMS_PER_BATCH,
+            "cooldown_minutes": COOLDOWN_MINUTES_SURGE,
+            "next_detail_slot": next_detail_slot(datetime.now(VN_TZ)).isoformat(),
             "total_actual_crawled": total_actual,
-            "total_uncrawled_pending": total_pending,
-            "overall_progress_pct": overall_pct,
+            "total_uncrawled_pending": total_backlog,
             "days": phase2_detail,  # backward compatibility
             "generated_at": datetime.now().isoformat(),
         }
-
 
 crawler_service = CrawlerService()

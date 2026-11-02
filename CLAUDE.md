@@ -13,7 +13,7 @@ Setup needs Python 3.12 (`careerviet/crawler.py` uses 3.12-only f-string syntax)
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
-cp .env.example .env
+touch .env   # config lives only in .env; there is no .env.example
 ```
 
 Tests:
@@ -86,7 +86,7 @@ Conventions enforced by `docs/preprocessing/00_architecture_overview.md`:
 
 FastAPI (`backend/app`: endpoints → services) plus React/TypeScript (`frontend/src/pages`). `.agents/rules/monitoring_system_rules.md` is mandatory for work here. Key rules: no login or auth UI; operational controls live on `/crawling` and analysis charts on `/eda`, never mixed; frontend is TypeScript only with no `.js`/`.jsx` files, and types go in `types.ts`; R2 diffing uses `content_hash`, not timestamps; follow the light theme, single font, and semantic colors defined there.
 
-The main pages are Collection (`/`) and Raw (`/raw`), served by `/api/v1/monitor` (`collection_monitor_service.py`, `source_report_service.py`). They show only real numbers and return `null` with a reason when a source is missing. Field locations per source live in `backend/app/core/feature_targets.py` and must stay in step with `json_flattener.py`. Older pages under "Công cụ khác" keep their dark-era Tailwind classes: `tailwind.config.ts` inverts the `slate` palette and remaps accent shades, so in new code use the `ink`, `line`, `panel`, `brand`, and `state` tokens, never `slate`. EDA, Pre-processing, Processing, Master Dashboard, and ML 3D still serve mock data and carry a "Số liệu mẫu" banner.
+The main pages are Collection (`/`) and Raw (`/raw`), served by `/api/v1/monitor` (`collection_monitor_service.py`, `source_report_service.py`). They show only real numbers and return `null` with a reason when a source is missing. Field locations per source live in `backend/app/core/feature_targets.py` and must stay in step with `json_flattener.py`. Older pages under "Công cụ khác" keep their dark-era Tailwind classes: `tailwind.config.ts` inverts the `slate` palette and remaps accent shades, so in new code use the `ink`, `line`, `panel`, `brand`, and `state` tokens, never `slate`. EDA, Pre-processing, Processing, and Master Dashboard read pipeline outputs (`reports/`, `data/staging/`) through `pipeline_report_service.py`, under the same no-invented-numbers rule; `reports/` is tracked in git, so these pages show the last committed pipeline run. ML 3D is hidden from the menu, and its endpoint still returns random points.
 
 ## Agent resources
 

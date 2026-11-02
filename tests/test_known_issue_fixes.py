@@ -37,9 +37,40 @@ def test_discovery_status_uses_airflow_state():
 
 def test_weekly_schedule_does_not_claim_success_without_airflow(monkeypatch):
     monkeypatch.setattr(airflow_service, "get_latest_discovery_states", lambda: None)
+    monkeypatch.setattr(airflow_service, "get_run_history", lambda days=14: None)
     data = crawler_module.crawler_service.get_weekly_crawl_schedule()
     assert {row["status"] for row in data["phase1_discovery"]} == {"UNKNOWN"}
-    assert {row["scheduled_time"] for row in data["phase2_detail"]} == {"09, 14, 18, 21, 22h"}
+    assert {row["status"] for row in data["phase2_detail"]} == {"UNKNOWN"}
+    assert data["airflow_available"] is False
+
+
+def test_phase2_status_comes_from_latest_dag_run(monkeypatch):
+    from datetime import datetime
+
+    runs = [
+        {"dag_id": "crawler_detail_topcv", "state": "success", "start_date": datetime(2026, 11, 1, 9)},
+        {"dag_id": "crawler_detail_topcv", "state": "failed", "start_date": datetime(2026, 11, 1, 14)},
+        {"dag_id": "crawler_detail_itviec", "state": "success", "start_date": datetime(2026, 11, 1, 9)},
+    ]
+    monkeypatch.setattr(airflow_service, "get_latest_discovery_states", lambda: {})
+    monkeypatch.setattr(airflow_service, "get_run_history", lambda days=14: runs)
+    rows = {r["focal_source"]: r for r in crawler_module.crawler_service.get_weekly_crawl_schedule()["phase2_detail"]}
+    assert rows["topcv"]["status"] == "FAILED"
+    assert rows["itviec"]["status"] == "SUCCESS"
+    assert rows["glints"]["status"] == "SCHEDULED"
+
+
+def test_next_detail_slot_follows_router_rules():
+    from datetime import datetime
+
+    from app.services.crawler_service import VN_TZ, next_detail_slot
+
+    monday_noon = datetime(2026, 11, 2, 12, tzinfo=VN_TZ)
+    assert next_detail_slot(monday_noon) == datetime(2026, 11, 2, 21, tzinfo=VN_TZ)
+    friday_late = datetime(2026, 11, 6, 21, 30, tzinfo=VN_TZ)
+    assert next_detail_slot(friday_late) == datetime(2026, 11, 7, 9, tzinfo=VN_TZ)
+    saturday_15h = datetime(2026, 11, 7, 15, tzinfo=VN_TZ)
+    assert next_detail_slot(saturday_15h) == datetime(2026, 11, 7, 18, tzinfo=VN_TZ)
 
 
 def test_stream_ends_when_source_has_no_process():
@@ -94,3 +125,12 @@ def test_topdev_experience_from_api_extra():
     flat = flatten("topdev", {"title": "Dev", "extra": {"experience": "2 năm"}, "job_levels_str": "Junior"})
     assert flat["raw_experience_text"] == "2 năm"
     assert flat["raw_seniority_text"] == "Junior"
+
+
+def test_raw_page_marks_skills_left_for_imputer():
+    from app.services.source_report_service import annotate_envelope
+
+    envelope = {"metadata": {"source": "jobsgo", "job_id": "x"},
+                "raw_payload": {"title": "Dev", "occupations": ["CNTT"], "requirements_bullets": ["Java"]}}
+    note = {n["code"]: n for n in annotate_envelope("jobsgo", envelope)["notes"]}["F7"]
+    assert note["status"] == "imputer" and "occupations" in note["how"]

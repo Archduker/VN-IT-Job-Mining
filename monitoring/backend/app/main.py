@@ -15,7 +15,7 @@ if str(settings.ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(settings.ROOT_DIR))
 
 from app.api.v1.router import api_router
-from app.services.dashboard_service import dashboard_service
+from app.services.pipeline_report_service import pipeline_report_service
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -47,7 +47,7 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 @app.get("/api/dashboard", tags=["Master Dashboard"], summary="Alias trực tiếp cho /api/v1/dashboard")
 def get_dashboard_alias():
     """Alias trực tiếp truy cập vào thông tin bộ dữ liệu sau integration."""
-    return dashboard_service.get_master_dashboard_data()
+    return pipeline_report_service.get_dashboard()
 
 
 @app.get("/", tags=["System"], summary="Health check gốc")

@@ -38,9 +38,10 @@ class EDASummary(BaseModel):
     source: str
     total_records: int
     fields_count: int
-    completeness_score_pct: float
-    salary_parse_rate_pct: float
-    negotiable_salary_pct: float
+    completeness_score_pct: Optional[float] = None
+    salary_parse_rate_pct: Optional[float] = None
+    negotiable_salary_pct: Optional[float] = None
+    reason: Optional[str] = None
 
 
 class SemanticVectorPoint3D(BaseModel):

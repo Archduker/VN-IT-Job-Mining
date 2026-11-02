@@ -9,7 +9,7 @@ from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple
 
 from app.core.config import settings
 from app.core.data_paths import iter_raw_files, load_json_report, read_raw_envelopes
-from app.core.feature_targets import FEATURES, RAW_PATHS, SOURCE_DOMAINS, SOURCE_ISSUES
+from app.core.feature_targets import FEATURES, FILLED_BY_IMPUTER, RAW_PATHS, SOURCE_DOMAINS, SOURCE_ISSUES
 from app.core.r2_client import r2_client
 from app.services.ledger_service import ledger_service
 
@@ -393,9 +393,11 @@ def annotate_envelope(source: str, envelope: Dict[str, Any]) -> Dict[str, Any]:
             status = "fallback" if inferred or not found else "ok"
         elif found:
             status = "fail"
-        warning = overrides.get(code, {}).get("problem") if source == "careerviet" and code == "F7" else None
-        if warning and status == "fail":
-            status = "warn"
+        warning = None
+        if (source, code) in FILLED_BY_IMPUTER and not value:
+            status = "imputer"
+            issue = overrides.get(code, {})
+            warning = f"{issue.get('problem')}. {issue.get('fix')}." if issue else None
         notes.append({
             "code": code, "name": feature["name"], "status": status,
             "path": ", ".join(".".join(str(x) for x in p) for p in found[:3]) or None,

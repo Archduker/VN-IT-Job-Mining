@@ -1,60 +1,5 @@
 // TypeScript Interfaces for VN-IT-Job-Mining Central Observatory
 
-export interface DatasetMetadata {
-  version: string
-  storage_layer: string
-  format: string
-  total_raw_scraped: number
-  total_preprocessed: number
-  total_golden_unique: number
-  deduplication_rate_pct: number
-  overall_completeness_score: number
-}
-
-export interface PlatformBreakdown {
-  source: string
-  raw_count: number
-  contributed_unique: number
-  share_pct: number
-}
-
-export interface MarketSalaryBenchmark {
-  currency: string
-  unit: string
-  p25: number
-  median: number
-  mean: number
-  p75: number
-  p90: number
-  min_valid: number
-  max_valid: number
-}
-
-export interface GoldenSkill {
-  skill: string
-  job_count: number
-  percentage: number
-}
-
-export interface DataLineage {
-  raw_input_files: number
-  preprocessed_records: number
-  filtered_spams: number
-  cross_platform_duplicates_merged: number
-  final_golden_records: number
-}
-
-export interface MasterDashboardData {
-  status: string
-  generated_at: string
-  dataset_metadata: DatasetMetadata
-  platform_breakdown: PlatformBreakdown[]
-  schema_convergence: Record<string, number>
-  market_salary_benchmark_vnd: MarketSalaryBenchmark
-  top_golden_skills: GoldenSkill[]
-  data_lineage: DataLineage
-}
-
 export interface SourceStatus {
   id: string
   name: string
@@ -204,8 +149,6 @@ export interface EnumStatusSummary {
 }
 
 export interface Phase1DiscoveryItem {
-  day_of_week: string
-  day_index: number
   focal_source: string
   dag_id: string
   task_id: string
@@ -216,18 +159,16 @@ export interface Phase1DiscoveryItem {
 }
 
 export interface Phase2DetailItem {
-  day_of_week: string
-  day_index: number
   focal_source: string
   dag_id: string
   scheduled_time: string
-  projected_quota: number
+  batch_limit: number
   actual_crawled: number
   uncrawled_pending: number
-  progress_pct: number
+  batches_needed: number
+  last_run_start: string | null
   engine: string
-  recrawl_strategy: string
-  status: 'SUCCESS' | 'RUNNING' | 'SCHEDULED' | 'FAILED' | string
+  status: 'SUCCESS' | 'RUNNING' | 'SCHEDULED' | 'FAILED' | 'UNKNOWN' | string
 }
 
 // Backward-compatibility alias
@@ -236,10 +177,12 @@ export type WeeklyScheduleDay = Phase2DetailItem
 export interface WeeklyScheduleResponse {
   phase1_discovery?: Phase1DiscoveryItem[]
   phase2_detail?: Phase2DetailItem[]
-  total_projected_weekly: number
+  airflow_available: boolean
+  batch_limit: number
+  cooldown_minutes: number
+  next_detail_slot: string
   total_actual_crawled: number
   total_uncrawled_pending?: number
-  overall_progress_pct: number
   days?: Phase2DetailItem[]
   generated_at?: string
 }
@@ -287,58 +230,6 @@ export interface CloudSyncOverview {
   last_synced_at?: string
 }
 
-
-export interface ParsingRuleItem {
-  rule_name: string
-  target_field: string
-  total_attempted: number
-  successfully_parsed: number
-  success_rate_pct: number
-  failed_samples: string[]
-}
-
-export interface NullReductionItem {
-  field: string
-  raw_null_pct: number
-  clean_null_pct: number
-  improvement_pct: number
-}
-
-export interface PreprocessingMetricsData {
-  total_records_processed?: number
-  parsing_rules: ParsingRuleItem[]
-  null_reduction_comparison: NullReductionItem[]
-}
-
-export interface CrossPlatformPair {
-  pair: string
-  duplicates_found: number
-  pct: number
-}
-
-export interface DeduplicationMetrics {
-  similarity_threshold: number
-  total_comparisons: number
-  detected_duplicates: number
-  deduplication_rate_pct: number
-  similarity_score_distribution: {
-    ranges: string[]
-    pairs_count: number[]
-  }
-  top_cross_platform_pairs: CrossPlatformPair[]
-}
-
-export interface SchemaMappingItem {
-  target_field: string
-  data_type: string
-  unified_pct: number
-  status: string
-}
-
-export interface ProcessingMetricsData {
-  deduplication_metrics: DeduplicationMetrics
-  schema_mapping_inventory: SchemaMappingItem[]
-}
 
 export interface AlertItem {
   id: string
@@ -498,7 +389,7 @@ export interface SampleHighlight {
 export interface SampleNote {
   code: string
   name: string
-  status: 'ok' | 'warn' | 'fallback' | 'fail' | 'missing'
+  status: 'ok' | 'warn' | 'fallback' | 'imputer' | 'fail' | 'missing'
   path: string | null
   raw: string | null
   normalized: string | null
@@ -515,4 +406,117 @@ export interface RawSample {
   highlights: SampleHighlight[]
   notes: SampleNote[]
   features_in_raw: number
+}
+
+// ── Số liệu pipeline thật: /preprocessing/metrics, /processing/metrics, /dashboard, /eda ──
+
+export interface RankItem {
+  label: string
+  count: number
+}
+
+export interface PreprocessingSource {
+  source: string
+  available: boolean
+  audit_timestamp?: string | null
+  raw_envelopes?: number | null
+  stub_removed?: number | null
+  clean_records?: number | null
+  salary_coverage_pct?: number | null
+  salary_jd_hits?: number | null
+  imputed_records?: number | null
+  imputation_rate_pct?: number | null
+  language_distribution?: Record<string, number>
+}
+
+export interface PreprocessingReport {
+  available: boolean
+  unavailable_reason: string | null
+  generated_at: string | null
+  sources: PreprocessingSource[]
+  totals: {
+    raw_envelopes: number | null
+    stub_removed: number | null
+    clean_records: number | null
+    imputed_records: number | null
+  }
+}
+
+export interface FieldCompletenessItem {
+  field: string
+  filled: number | null
+  missing: number | null
+  completeness_pct: number | null
+}
+
+export interface ProcessingReport {
+  available: boolean
+  unavailable_reason: string | null
+  generated_at: string | null
+  integrated_records: number | null
+  dedup: {
+    input_records: number | null
+    golden_records: number | null
+    duplicates_removed: number | null
+    deduplication_rate_pct: number | null
+    cross_platform_clusters: number | null
+  } | null
+  field_completeness: FieldCompletenessItem[]
+  not_recorded: string[]
+}
+
+export interface DashboardReport {
+  available: boolean
+  unavailable_reason: string | null
+  generated_at: string | null
+  totals: {
+    integrated_records: number | null
+    staging_records: number | null
+    golden_records: number
+    deduplication_rate_pct: number | null
+    salary_coverage_pct: number | null
+  } | null
+  platform_breakdown: { source: string; golden_records: number; share_pct: number | null }[]
+  salary_vnd_million: { p1: number | null; q1: number | null; median: number | null; q3: number | null; p99: number | null } | null
+  job_family: RankItem[]
+  seniority: RankItem[]
+  top_cities: RankItem[]
+  lineage: { step: string; records: number }[]
+}
+
+export interface EdaSummary {
+  source: string
+  total_records: number
+  fields_count: number
+  completeness_score_pct: number | null
+  salary_parse_rate_pct: number | null
+  negotiable_salary_pct: number | null
+  reason: string | null
+}
+
+export interface EdaCharts {
+  available: boolean
+  unavailable_reason: string | null
+  records: number
+  salary_records?: number
+  salary_histogram: { bin: string; count: number }[]
+  skills_pareto: { label: string; count: number; cumulative_pct: number }[]
+  locations: RankItem[]
+}
+
+export interface EdaCompareRow {
+  source: string
+  available: boolean
+  records: number | null
+  completeness_pct: number | null
+  salary_text_pct: number | null
+  salary_numeric_pct: number | null
+  experience_pct: number | null
+  seniority_pct: number | null
+}
+
+export interface EdaCompare {
+  available: boolean
+  unavailable_reason: string | null
+  sources: EdaCompareRow[]
 }

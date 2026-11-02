@@ -33,6 +33,13 @@ import {
   LedgerItem,
 } from '../types'
 
+const formatSlot = (iso: string | null): string => {
+  if (!iso) return '—'
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return iso
+  return d.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+}
+
 export const CrawlingPage: React.FC = () => {
   const [sources, setSources] = useState<SourceStatus[]>([])
   const [selectedSource, setSelectedSource] = useState<string>('topcv')
@@ -392,7 +399,7 @@ export const CrawlingPage: React.FC = () => {
           <div className="border-b border-slate-800 pb-3">
             <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
               <Layers className="w-4 h-4 text-indigo-400" />
-              <span>3.1 Phase 1: Daily URL Discovery Schedule (05:00 AM UTC+7)</span>
+              <span>3.1 Phase 1: Daily URL Discovery Schedule (05:00 hằng ngày)</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               Sweep catalog pages across all 8 portals and ingest new URLs into Ledger with PENDING status.
@@ -402,7 +409,6 @@ export const CrawlingPage: React.FC = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
                 <tr>
-                  <th className="py-2.5 px-3">Day</th>
                   <th className="py-2.5 px-3">Portal</th>
                   <th className="py-2.5 px-3">Airflow DAG ID</th>
                   <th className="py-2.5 px-3">Task ID</th>
@@ -414,8 +420,7 @@ export const CrawlingPage: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-slate-800/60">
                 {phase1Data.map((d) => (
-                  <tr key={`p1-${d.day_index}`} className="hover:bg-slate-800/40 transition">
-                    <td className="py-2.5 px-3 font-bold text-slate-100 whitespace-nowrap">{d.day_of_week}</td>
+                  <tr key={`p1-${d.focal_source}`} className="hover:bg-slate-800/40 transition">
                     <td className="py-2.5 px-3 font-semibold text-indigo-300 uppercase">{d.focal_source}</td>
                     <td className="py-2.5 px-3 font-mono text-[11px] text-slate-300">{d.dag_id}</td>
                     <td className="py-2.5 px-3 font-mono text-[11px] text-slate-300">{d.task_id}</td>
@@ -440,10 +445,10 @@ export const CrawlingPage: React.FC = () => {
               <span>3.2 Phase 2: Adaptive Detail Extraction Schedule</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Quota <strong className="text-indigo-300 font-mono">{weeklySchedule?.total_projected_weekly?.toLocaleString() || '2,050'}</strong> items/week
-              vs Crawled <strong className="text-emerald-400 font-mono">{weeklySchedule?.total_actual_crawled?.toLocaleString() || 0}</strong> items
-              • Pending <strong className="text-amber-400 font-mono">{weeklySchedule?.total_uncrawled_pending?.toLocaleString() || 0}</strong> items
-              ({weeklySchedule?.overall_progress_pct || 0}% target)
+              Router chạy tối đa <strong className="text-indigo-300 font-mono">{weeklySchedule?.batch_limit ?? 30}</strong> tin mỗi ca,
+              nghỉ {weeklySchedule?.cooldown_minutes ?? 55} phút giữa các ca và bỏ qua khi hàng đợi rỗng
+              • Backlog <strong className="text-amber-400 font-mono">{weeklySchedule?.total_uncrawled_pending?.toLocaleString() ?? 0}</strong> tin
+              {weeklySchedule && !weeklySchedule.airflow_available && ' • Chưa kết nối Airflow nên chưa có trạng thái lần chạy'}
             </p>
           </div>
         </div>
@@ -451,49 +456,31 @@ export const CrawlingPage: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
               <tr>
-                <th className="py-2.5 px-3">Day</th>
                 <th className="py-2.5 px-3">Portal</th>
                 <th className="py-2.5 px-3">Detail DAG ID</th>
                 <th className="py-2.5 px-3">Run Time</th>
-                <th className="py-2.5 px-3">Quota</th>
                 <th className="py-2.5 px-3">Crawled</th>
-                <th className="py-2.5 px-3">Pending</th>
-                <th className="py-2.5 px-3">Progress %</th>
+                <th className="py-2.5 px-3">Backlog</th>
+                <th className="py-2.5 px-3">Ca cần để xả</th>
+                <th className="py-2.5 px-3">Lần chạy gần nhất</th>
                 <th className="py-2.5 px-3">Engine</th>
                 <th className="py-2.5 px-3 text-right">Airflow State</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
               {phase2Data.map((day) => (
-                <tr key={`p2-${day.day_index}`} className="hover:bg-slate-800/40 transition">
-                  <td className="py-2.5 px-3 font-bold text-slate-100 whitespace-nowrap">{day.day_of_week}</td>
+                <tr key={`p2-${day.focal_source}`} className="hover:bg-slate-800/40 transition">
                   <td className="py-2.5 px-3 font-semibold text-indigo-300 uppercase">{day.focal_source}</td>
                   <td className="py-2.5 px-3 font-mono text-[11px] text-slate-300">{day.dag_id}</td>
                   <td className="py-2.5 px-3 text-slate-300">{day.scheduled_time}</td>
-                  <td className="py-2.5 px-3 font-mono text-slate-100 font-bold">{day.projected_quota} items</td>
                   <td className="py-2.5 px-3 font-mono text-emerald-400 font-bold">{day.actual_crawled.toLocaleString()} items</td>
                   <td className="py-2.5 px-3 font-mono font-bold">
                     <span className={day.uncrawled_pending > 0 ? 'text-amber-400' : 'text-slate-500'}>
                       {day.uncrawled_pending.toLocaleString()} items
                     </span>
                   </td>
-                  <td className="py-2.5 px-3 min-w-[120px]">
-                    <div className="flex items-center space-x-2">
-                      <div className="flex-1 h-2 rounded-full bg-slate-950 overflow-hidden border border-slate-800">
-                        <div
-                          style={{ width: `${Math.min(100, day.progress_pct)}%` }}
-                          className={`h-full rounded-full ${
-                            day.progress_pct >= 100
-                              ? 'bg-emerald-500'
-                              : day.progress_pct > 50
-                              ? 'bg-indigo-500'
-                              : 'bg-amber-500'
-                          }`}
-                        />
-                      </div>
-                      <span className="font-mono text-[10px] text-slate-300">{day.progress_pct}%</span>
-                    </div>
-                  </td>
+                  <td className="py-2.5 px-3 font-mono text-slate-300">{day.batches_needed} ca</td>
+                  <td className="py-2.5 px-3 text-slate-300 whitespace-nowrap">{formatSlot(day.last_run_start)}</td>
                   <td className="py-2.5 px-3 text-[11px] text-slate-300">{day.engine}</td>
                   <td className="py-2.5 px-3 text-right">{renderStatusBadge(day.status)}</td>
                 </tr>
@@ -562,9 +549,9 @@ export const CrawlingPage: React.FC = () => {
           <p className="text-xs text-slate-400 mt-1">Queued for Phase 2</p>
         </div>
         <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-center">
-          <p className="text-xs text-slate-400 uppercase tracking-wider font-bold mb-2">Weekly Schedule Quota</p>
-          <p className="text-4xl font-extrabold font-mono text-violet-400">{weeklySchedule?.total_projected_weekly?.toLocaleString() ?? '—'}</p>
-          <p className="text-xs text-slate-400 mt-1">Projected Target</p>
+          <p className="text-xs text-slate-400 uppercase tracking-wider font-bold mb-2">Ca detail kế tiếp</p>
+          <p className="text-2xl font-extrabold font-mono text-violet-400">{formatSlot(weeklySchedule?.next_detail_slot ?? null)}</p>
+          <p className="text-xs text-slate-400 mt-1">Giờ Việt Nam, theo adaptive router</p>
         </div>
       </div>
 

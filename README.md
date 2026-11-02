@@ -182,8 +182,8 @@ source .venv/bin/activate
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 
-# Cấu hình biến môi trường
-cp .env.example .env
+# Cấu hình biến môi trường: chỉ quản lý trong .env (repo không có file mẫu)
+touch .env
 # Điền thông tin Cloudflare R2 credentials (R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_ENDPOINT_URL)
 # Điền GEMINI_API_KEY để phục vụ tính năng bù khuyết GenAI
 ```

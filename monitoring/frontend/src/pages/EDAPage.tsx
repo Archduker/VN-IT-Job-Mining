@@ -1,334 +1,148 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import {
-  BarChart3,
-  RefreshCw,
-  TrendingUp,
-  Table,
-  Layers,
-  Sparkles,
-  PieChart as PieIcon,
-  Activity,
-} from 'lucide-react'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-  ScatterChart,
-  Scatter,
-  ZAxis,
-} from 'recharts'
-import { FieldInventoryItem } from '../types'
+import React, { useState } from 'react'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { api } from '../api/client'
+import { RankBars, TableShell, pct } from '../components/reports'
+import { Card, EmptyState, ErrorState, LoadingState, SectionTitle, SourcePills, StatCard, fmt, useAsync } from '../components/ui'
+import { sourceName } from '../constants/sources'
 
-const SOURCES = [
-  'topcv',
-  'itviec',
-  'topdev',
-  'careerviet',
-  'vieclam24h',
-  'vietnamworks',
-  'glints',
-  'jobsgo',
-]
-
-const COLORS = ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#14b8a6', '#f97316']
-
-export const EDAPage: React.FC = () => {
-  const [selectedSource, setSelectedSource] = useState<string>('topcv')
-  const [viewMode, setViewMode] = useState<'single' | 'cross'>('single')
-  const [inventory, setInventory] = useState<FieldInventoryItem[]>([])
-  const [summary, setSummary] = useState<any>(null)
-  const [chartsData, setChartsData] = useState<any>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-
-  const fetchData = async () => {
-    try {
-      setLoading(true)
-      const [invRes, sumRes, chRes] = await Promise.all([
-        axios.get(`/api/v1/eda/${selectedSource}/inventory`),
-        axios.get(`/api/v1/eda/${selectedSource}/summary`),
-        axios.get(`/api/v1/eda/${selectedSource}/charts`),
-      ])
-      setInventory(invRes.data || [])
-      setSummary(sumRes.data || null)
-      setChartsData(chRes.data || null)
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [selectedSource])
+const SourceDetail: React.FC<{ source: string }> = ({ source }) => {
+  const summary = useAsync(() => api.edaSummary(source), [source])
+  const inventory = useAsync(() => api.edaInventory(source), [source])
+  const charts = useAsync(() => api.edaCharts(source), [source])
+  if (summary.error || inventory.error || charts.error) return <ErrorState />
+  if (!summary.data || !inventory.data || !charts.data) return <LoadingState />
+  const s = summary.data
+  const c = charts.data
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800">
-        <div>
-          <div className="flex items-center space-x-2">
-            <BarChart3 className="w-4 h-4 text-cyan-400" />
-            <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">
-              Khoa Học Dữ Liệu • Data Science & EDA Hub
-            </span>
-          </div>
-          <h2 className="text-xl font-bold text-slate-100 mt-1">
-            EDA Intelligence: Kiểm Kê Trường & 5 Họ Biểu Đồ 2D
-          </h2>
-          <p className="text-xs text-slate-400">
-            Đánh giá 3 trụ cột chất lượng: Khuyết thiếu (Missingness), Ngoại lai (Outliers IQR/Z-score), và Phân phối thống kê.
-          </p>
-        </div>
+    <>
+      <section aria-label="Tóm tắt nguồn" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <StatCard label="Bản ghi raw trên máy" value={fmt(s.total_records)} sub="Đọc tối đa 200 bản ghi để kiểm kê" />
+        <StatCard label="Độ đầy đủ trung bình" value={pct(s.completeness_score_pct)} sub={`${s.fields_count} trường trong raw`} />
+        <StatCard label="Có lương dạng số" value={pct(s.salary_parse_rate_pct)} sub={s.reason ?? 'Theo health card của pipeline'} />
+        <StatCard label="Lương thỏa thuận" value={pct(s.negotiable_salary_pct)} sub="Tính từ parquet staging" />
+      </section>
 
-        {/* View Mode Toggle */}
-        <div className="flex items-center space-x-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
-          <button
-            onClick={() => setViewMode('single')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-              viewMode === 'single'
-                ? 'bg-cyan-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-100'
-            }`}
-          >
-            Đơn Nguồn ({selectedSource.toUpperCase()})
-          </button>
-          <button
-            onClick={() => setViewMode('cross')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-              viewMode === 'cross'
-                ? 'bg-cyan-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-100'
-            }`}
-          >
-            So Sánh Xuyên Sàn (8 Sàn)
-          </button>
-        </div>
-      </div>
+      <Card>
+        <SectionTitle title="Kiểm kê trường trong raw" hint="Tỉ lệ thiếu tính trên các bản ghi raw đang có trên máy." />
+        {inventory.data.length ? (
+          <TableShell head={['Trường', 'Kiểu', 'Số dòng thiếu', 'Tỉ lệ thiếu', 'Số giá trị khác nhau', 'Giá trị mẫu']} alignRightFrom={2}>
+            {inventory.data.map((row) => (
+              <tr key={row.field_name}>
+                <th scope="row" className="py-2 pr-4 font-medium text-ink whitespace-nowrap">{row.field_name}</th>
+                <td className="py-2 pr-4 text-ink-muted">{row.data_type}</td>
+                <td className="py-2 pr-4 text-right tabular-nums">{fmt(row.null_count)}</td>
+                <td className="py-2 pr-4 text-right tabular-nums">{pct(row.null_rate_pct)}</td>
+                <td className="py-2 pr-4 text-right tabular-nums">{fmt(row.unique_count)}</td>
+                <td className="py-2 pr-4 text-right text-ink-muted max-w-xs truncate">{row.sample_value ?? '—'}</td>
+              </tr>
+            ))}
+          </TableShell>
+        ) : (
+          <EmptyState message={`Máy này chưa có raw của ${sourceName(source)}. Chạy python scripts/sync_cloud_lakehouse.py --download --source ${source}.`} />
+        )}
+      </Card>
 
-      {viewMode === 'single' ? (
-        <div className="space-y-6">
-          {/* Source Selector Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-xs text-slate-400 font-semibold mr-2">Chọn sàn:</span>
-              {SOURCES.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSelectedSource(s)}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold uppercase transition ${
-                    selectedSource === s
-                      ? 'bg-cyan-600 text-white shadow'
-                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800'
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
+      {c.available ? (
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <Card>
+            <SectionTitle title="Phân phối lương (triệu VND)" hint={`${fmt(c.salary_records)} trên ${fmt(c.records)} tin có lương dạng số.`} />
+            <div className="h-60">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={c.salary_histogram} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                  <CartesianGrid vertical={false} stroke="#EFEEF4" />
+                  <XAxis dataKey="bin" tick={{ fill: '#6B6980', fontSize: 12 }} axisLine={{ stroke: '#D9D8E2' }} tickLine={false} />
+                  <YAxis width={44} allowDecimals={false} tick={{ fill: '#6B6980', fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <Tooltip cursor={{ fill: '#F1EFFD' }} formatter={(v: number) => [`${fmt(v)} tin`, 'Số tin']} />
+                  <Bar dataKey="count" fill="#5B4CE6" radius={[5, 5, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-
-            <button
-              onClick={fetchData}
-              disabled={loading}
-              className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 hover:bg-slate-800 text-slate-300"
-              title="Tính toán lại EDA"
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            </button>
-          </div>
-
-          {/* Source Macro KPI Cards */}
-          {summary && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-                <div className="text-xs text-slate-400">Tổng Số Bản Ghi (N)</div>
-                <div className="text-xl font-bold text-slate-100 mt-1">
-                  {summary.total_records.toLocaleString()} tin
-                </div>
-                <div className="text-[11px] text-slate-400 mt-1">Mẫu khảo sát cào thô</div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-slate-900 border border-emerald-500/30 bg-emerald-950/10">
-                <div className="text-xs text-emerald-400">Độ Hoàn Thiện Dữ Liệu</div>
-                <div className="text-xl font-bold text-emerald-400 mt-1">
-                  {summary.completeness_score_pct}%
-                </div>
-                <div className="text-[11px] text-emerald-400/80 mt-1">
-                  Trung bình tỷ lệ không null
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-                <div className="text-xs text-slate-400">Tỷ Lệ Có Thông Tin Lương</div>
-                <div className="text-xl font-bold text-cyan-400 mt-1">
-                  {summary.salary_parse_rate_pct}%
-                </div>
-                <div className="text-[11px] text-slate-400 mt-1">Dải lương công khai</div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-                <div className="text-xs text-slate-400">Lương Thỏa Thuận</div>
-                <div className="text-xl font-bold text-amber-400 mt-1">
-                  {summary.negotiable_salary_pct}%
-                </div>
-                <div className="text-[11px] text-slate-400 mt-1">Không ghi rõ số tiền</div>
-              </div>
-            </div>
-          )}
-
-          {/* Field Inventory Table */}
-          <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-            <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
-              <Table className="w-4 h-4 text-cyan-400" />
-              <span>Bảng Kiểm Kê Trường & Tỷ Lệ Missing (Field Inventory)</span>
-            </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
-                  <tr>
-                    <th className="py-2.5 px-3">Tên Trường (Field)</th>
-                    <th className="py-2.5 px-3">Kiểu Dữ Liệu</th>
-                    <th className="py-2.5 px-3">Số Dòng Thiếu</th>
-                    <th className="py-2.5 px-3">Tỷ Lệ Thiếu (%)</th>
-                    <th className="py-2.5 px-3">Số Unique</th>
-                    <th className="py-2.5 px-3">Giá Trị Mẫu Thực Tế</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/60">
-                  {inventory.map((row) => (
-                    <tr key={row.field_name} className="hover:bg-slate-800/40">
-                      <td className="py-2.5 px-3 font-mono font-bold text-slate-100">
-                        {row.field_name}
-                      </td>
-                      <td className="py-2.5 px-3 text-slate-400">{row.data_type}</td>
-                      <td className="py-2.5 px-3 text-slate-300">{row.null_count}</td>
-                      <td className="py-2.5 px-3 font-semibold">
-                        <span
-                          className={
-                            row.null_rate_pct === 0
-                              ? 'text-emerald-400'
-                              : row.null_rate_pct < 15
-                              ? 'text-cyan-400'
-                              : 'text-amber-400'
-                          }
-                        >
-                          {row.null_rate_pct}%
-                        </span>
-                      </td>
-                      <td className="py-2.5 px-3 text-slate-300">{row.unique_count}</td>
-                      <td className="py-2.5 px-3 text-slate-400 max-w-xs truncate">
-                        {row.sample_value || 'None'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* 2D Scientific Charts Grid */}
-          {chartsData && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Họ 1: Phân Phối Lương (Histogram) */}
-              <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                <h4 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
-                  <Activity className="w-4 h-4 text-indigo-400" />
-                  <span>Họ 1: Phân Phối Mức Lương IT (Histogram 2D)</span>
-                </h4>
-                <div className="h-56">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={chartsData.distribution.bins.slice(0, -1).map((b: number, idx: number) => ({
-                        bin: `${b}-${chartsData.distribution.bins[idx + 1]}M`,
-                        count: chartsData.distribution.counts[idx],
-                      }))}
-                    >
-                      <XAxis dataKey="bin" stroke="#64748b" fontSize={10} />
-                      <YAxis stroke="#64748b" fontSize={10} />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155' }}
-                        formatter={(val: any) => [`${val} bài`, 'Số lượng tin']}
-                      />
-                      <Bar dataKey="count" fill="#6366f1" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Họ 5: Tần Suất Kỹ Năng & Pareto */}
-              <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                <h4 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
-                  <TrendingUp className="w-4 h-4 text-emerald-400" />
-                  <span>Họ 5: Tần Suất Kỹ Năng & Pareto (Top Yêu Cầu)</span>
-                </h4>
-                <div className="h-56">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartsData.skills_pareto}>
-                      <XAxis dataKey="label" stroke="#64748b" fontSize={11} />
-                      <YAxis stroke="#64748b" fontSize={11} />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155' }}
-                        formatter={(val: any) => [`${val} tin`, 'Tần suất']}
-                      />
-                      <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-          )}
+          </Card>
+          <Card>
+            <SectionTitle title="Top 10 kỹ năng" hint="Đếm trên skills_list sau bước imputer." />
+            <RankBars items={c.skills_pareto} empty="Chưa có kỹ năng trong dữ liệu staging." labelWidth={120} />
+          </Card>
+          <Card className="xl:col-span-2">
+            <SectionTitle title="Tỉnh/thành sau chuẩn hóa" />
+            <RankBars items={c.locations} empty="Chưa có số liệu địa điểm." labelWidth={120} />
+          </Card>
         </div>
       ) : (
-        /* Cross-Platform Comparison Mode */
-        <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-          <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
-            <Sparkles className="w-4 h-4 text-cyan-400" />
-            <span>So Sánh Chất Lượng & Độ Hoàn Thiện Giữa 8 Sàn Tuyển Dụng</span>
-          </h3>
-          <p className="text-xs text-slate-400">
-            Dữ liệu tổng hợp từ báo cáo Cross-Platform Preliminary EDA phản ánh độ phủ của từng sàn.
-          </p>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
-                <tr>
-                  <th className="py-2.5 px-3">Sàn Tuyển Dụng</th>
-                  <th className="py-2.5 px-3">Độ Hoàn Thiện (%)</th>
-                  <th className="py-2.5 px-3">Có Thông Tin Lương (%)</th>
-                  <th className="py-2.5 px-3">Có Yêu Cầu Kinh Nghiệm (%)</th>
-                  <th className="py-2.5 px-3">Thế Mạnh Đặc Trưng</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60">
-                {[
-                  { name: 'TopCV', comp: 94.2, sal: 88.5, exp: 95.0, spec: 'Khối lượng lớn, dải lương chi tiết' },
-                  { name: 'ITviec', comp: 96.8, sal: 82.0, exp: 94.0, spec: 'Chất lượng cao, công nghệ chuyên sâu' },
-                  { name: 'TopDev', comp: 95.0, sal: 84.0, exp: 92.5, spec: 'Đặc thù CNTT, phân loại cấp bậc chuẩn' },
-                  { name: 'CareerViet', comp: 91.5, sal: 78.0, exp: 89.0, spec: 'Doanh nghiệp FDI, đa dạng ngôn ngữ' },
-                  { name: 'VietnamWorks', comp: 93.0, sal: 80.5, exp: 96.0, spec: 'Senior/C-level, yêu cầu kinh nghiệm cao' },
-                  { name: 'Vieclam24h', comp: 89.4, sal: 75.0, exp: 85.0, spec: 'Nhiều tin phổ thông và junior' },
-                  { name: 'Glints', comp: 92.0, sal: 83.0, exp: 88.0, spec: 'Công ty khởi nghiệp và Remote' },
-                  { name: 'JobsGO', comp: 90.5, sal: 79.0, exp: 86.5, spec: 'Bảo vệ Cloudflare, phủ rộng thị trường' },
-                ].map((row) => (
-                  <tr key={row.name} className="hover:bg-slate-800/40">
-                    <td className="py-2.5 px-3 font-bold text-slate-100">{row.name}</td>
-                    <td className="py-2.5 px-3 text-emerald-400 font-semibold">{row.comp}%</td>
-                    <td className="py-2.5 px-3 text-cyan-400 font-semibold">{row.sal}%</td>
-                    <td className="py-2.5 px-3 text-indigo-300 font-semibold">{row.exp}%</td>
-                    <td className="py-2.5 px-3 text-slate-300">{row.spec}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <Card>
+          <SectionTitle title="Biểu đồ phân phối" />
+          <EmptyState message={c.unavailable_reason ?? 'Chưa có dữ liệu staging.'} />
+        </Card>
       )}
+    </>
+  )
+}
+
+const CrossSource: React.FC = () => {
+  const { data, error } = useAsync(() => api.edaCompare(), [])
+  if (error) return <ErrorState />
+  if (!data) return <LoadingState />
+  return (
+    <Card>
+      <SectionTitle
+        title="So sánh độ đầy đủ giữa 8 nguồn"
+        hint="Đọc từ reports/integration/<nguồn>_integration_report.json; lương dạng số lấy từ health card."
+      />
+      {data.available ? (
+        <TableShell head={['Nguồn', 'Bản ghi', 'Đầy đủ trung bình', 'Có chuỗi lương', 'Có lương dạng số', 'Có kinh nghiệm', 'Có cấp bậc']}>
+          {data.sources.map((row) => (
+            <tr key={row.source}>
+              <th scope="row" className="py-2.5 pr-4 font-semibold text-ink whitespace-nowrap">{sourceName(row.source)}</th>
+              {row.available ? (
+                <>
+                  <td className="py-2.5 pr-4 text-right tabular-nums">{fmt(row.records)}</td>
+                  <td className="py-2.5 pr-4 text-right tabular-nums">{pct(row.completeness_pct)}</td>
+                  <td className="py-2.5 pr-4 text-right tabular-nums">{pct(row.salary_text_pct)}</td>
+                  <td className="py-2.5 pr-4 text-right tabular-nums">{pct(row.salary_numeric_pct)}</td>
+                  <td className="py-2.5 pr-4 text-right tabular-nums">{pct(row.experience_pct)}</td>
+                  <td className="py-2.5 pr-4 text-right tabular-nums">{pct(row.seniority_pct)}</td>
+                </>
+              ) : (
+                <td colSpan={6} className="py-2.5 pr-4 text-right text-ink-muted">Chưa có báo cáo Integration</td>
+              )}
+            </tr>
+          ))}
+        </TableShell>
+      ) : (
+        <EmptyState message={data.unavailable_reason ?? 'Chưa có báo cáo Integration.'} />
+      )}
+    </Card>
+  )
+}
+
+export const EDAPage: React.FC = () => {
+  const [source, setSource] = useState<string>('topcv')
+  const [mode, setMode] = useState<'single' | 'cross'>('single')
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {mode === 'single' ? <SourcePills label="Chọn nguồn" selected={source} onSelect={setSource} /> : <span />}
+        <div role="group" aria-label="Chế độ xem" className="flex bg-white border border-line-strong rounded-xl p-1 gap-1">
+          {([
+            ['single', 'Một nguồn'],
+            ['cross', 'So sánh 8 nguồn'],
+          ] as const).map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              aria-pressed={mode === key}
+              onClick={() => setMode(key)}
+              className={`min-h-9 px-3.5 rounded-lg text-[13px] font-semibold ${mode === key ? 'bg-brand-500 text-white' : 'text-[#4E4C5E]'}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+      {mode === 'single' ? <SourceDetail key={source} source={source} /> : <CrossSource />}
     </div>
   )
 }
+
+export default EDAPage

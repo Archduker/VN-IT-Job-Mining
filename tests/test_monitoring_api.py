@@ -15,6 +15,22 @@ from app.main import app
 client = TestClient(app)
 
 
+@pytest.fixture
+def topcv_raw(tmp_path, monkeypatch):
+    """Một file raw TopCV trong thư mục tạm, để bảng kiểm kê không phụ thuộc data/ trên máy."""
+    import json
+
+    from app.services.eda_collection_service import eda_collection_service
+
+    folder = tmp_path / "topcv" / "raw" / "2026-11-01"
+    folder.mkdir(parents=True)
+    envelope = {"metadata": {"source": "topcv", "job_id": "1"},
+                "raw_payload": {"title": "Python Developer", "salary_raw": "", "location": "Hà Nội"}}
+    (folder / "1_v1.json").write_text(json.dumps(envelope, ensure_ascii=False), encoding="utf-8")
+    monkeypatch.setattr(eda_collection_service, "data_dir", tmp_path)
+    return tmp_path
+
+
 def test_root_health():
     """Kiểm tra endpoint gốc."""
     res = client.get("/")
@@ -30,13 +46,7 @@ def test_master_dashboard_endpoints():
         res = client.get(url)
         assert res.status_code == 200
         data = res.json()
-        assert data["status"] == "success"
-        assert "dataset_metadata" in data
-        assert "platform_breakdown" in data
-        assert "schema_convergence" in data
-        assert "market_salary_benchmark_vnd" in data
-        assert data["dataset_metadata"]["total_golden_unique"] > 0
-        assert data["dataset_metadata"]["deduplication_rate_pct"] > 0
+        assert {"available", "totals", "platform_breakdown", "salary_vnd_million", "lineage"} <= set(data)
 
 
 def test_collection_sources():
@@ -51,14 +61,21 @@ def test_collection_sources():
     assert "topdev" in source_ids
 
 
-def test_collection_eda_inventory():
+def test_collection_eda_inventory(topcv_raw):
     """Kiểm tra bảng kiểm kê trường dữ liệu thô."""
     res = client.get("/api/v1/collection/eda/topcv/inventory")
     assert res.status_code == 200
-    items = res.json()
-    assert len(items) > 0
-    assert "field_name" in items[0]
-    assert "null_rate_pct" in items[0]
+    items = {item["field_name"]: item for item in res.json()}
+    assert set(items) == {"title", "salary_raw", "location"}
+    assert items["salary_raw"]["null_rate_pct"] == 100.0
+
+
+def test_eda_inventory_is_empty_without_raw(tmp_path, monkeypatch):
+    """Không có raw thì không dựng bảng kiểm kê mẫu."""
+    from app.services.eda_collection_service import eda_collection_service
+
+    monkeypatch.setattr(eda_collection_service, "data_dir", tmp_path)
+    assert client.get("/api/v1/eda/topcv/inventory").json() == []
 
 
 def test_preprocessing_metrics():
@@ -66,8 +83,8 @@ def test_preprocessing_metrics():
     res = client.get("/api/v1/preprocessing/metrics")
     assert res.status_code == 200
     data = res.json()
-    assert "parsing_rules" in data
-    assert "null_reduction_comparison" in data
+    assert len(data["sources"]) == 8
+    assert {"raw_envelopes", "clean_records", "imputed_records"} <= set(data["totals"])
 
 
 def test_processing_metrics():
@@ -75,8 +92,7 @@ def test_processing_metrics():
     res = client.get("/api/v1/processing/metrics")
     assert res.status_code == 200
     data = res.json()
-    assert "deduplication_metrics" in data
-    assert "schema_mapping_inventory" in data
+    assert {"dedup", "field_completeness", "not_recorded"} <= set(data)
 
 
 def test_ml_spatial_3d():
@@ -124,7 +140,7 @@ def test_airflow_dags():
         assert "schedule_day" in dag
 
 
-def test_decoupled_routes():
+def test_decoupled_routes(topcv_raw):
     """Kiểm tra các route decoupled /crawling và /eda độc lập."""
     crawl_res = client.get("/api/v1/crawling/sources")
     assert crawl_res.status_code == 200
@@ -166,14 +182,11 @@ def test_crawling_weekly_schedule():
     res = client.get("/api/v1/crawling/weekly-schedule")
     assert res.status_code == 200
     data = res.json()
-    assert data["total_projected_weekly"] > 0
-    assert "days" in data
-    assert len(data["days"]) >= 7
-    first_day = data["days"][0]
-    assert "day_of_week" in first_day
-    assert "focal_source" in first_day
-    assert "projected_quota" in first_day
-    assert "actual_crawled" in first_day
+    assert len(data["phase2_detail"]) == 8
+    first = data["phase2_detail"][0]
+    assert first["batch_limit"] == 30
+    assert {"focal_source", "uncrawled_pending", "batches_needed", "status"} <= set(first)
+    assert "actual_crawled" in first
 
 
 def test_crawling_cloud_sync_status():

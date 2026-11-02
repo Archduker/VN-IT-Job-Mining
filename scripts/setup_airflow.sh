@@ -105,8 +105,9 @@ AIRFLOW_HOME="${AIRFLOW_HOME}" airflow users create \
 # ── Step 8: Create .env với AIRFLOW_HOME ─────────────────────
 ENV_FILE="${PROJECT_ROOT}/.env"
 if [ ! -f "${ENV_FILE}" ]; then
-    info "Creating .env from .env.example ..."
-    cp "${PROJECT_ROOT}/.env.example" "${ENV_FILE}"
+    # Cấu hình chỉ quản lý trong .env, repo không có file mẫu
+    warn ".env chưa có, tạo file trống. Điền khóa R2 và PostgreSQL vào ${ENV_FILE}."
+    touch "${ENV_FILE}"
 fi
 
 # Append AIRFLOW_HOME if not present

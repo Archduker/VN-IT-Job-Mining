@@ -2,7 +2,6 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   BarChart3,
-  Box,
   Cloud,
   Cpu,
   Database,
@@ -34,7 +33,6 @@ const TOOLS: NavItem[] = [
   { to: '/preprocessing', label: 'Pre-processing', icon: FileCheck2 },
   { to: '/processing', label: 'Processing', icon: GitMerge },
   { to: '/master', label: 'Master Dashboard', icon: Table2 },
-  { to: '/ml3d', label: 'ML 3D', icon: Box },
 ]
 
 const linkClass = ({ isActive }: { isActive: boolean }): string =>

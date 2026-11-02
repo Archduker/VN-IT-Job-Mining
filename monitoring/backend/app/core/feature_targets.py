@@ -159,6 +159,9 @@ SOURCE_DOMAINS: Dict[str, str] = {
     "vieclam24h": "vieclam24h.vn", "vietnamworks": "vietnamworks.com",
 }
 
+# Feature mà Integration cố ý để trống, bước GenAI imputer sẽ bù từ JD.
+FILLED_BY_IMPUTER = {("careerviet", "F7"), ("jobsgo", "F7")}
+
 # Vấn đề đã kiểm chứng riêng cho từng nguồn; ghi đè nội dung mặc định của feature.
 SOURCE_ISSUES: Dict[str, Dict[str, Dict[str, str]]] = {
     "careerviet": {

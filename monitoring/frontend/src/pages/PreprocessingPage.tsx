@@ -1,107 +1,63 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import { FileCheck, Sparkles, AlertTriangle, ArrowRight, CheckCircle2 } from 'lucide-react'
-import { PreprocessingMetricsData, ParsingRuleItem } from '../types'
+import React from 'react'
+import { api } from '../api/client'
+import { ReportStamp, TableShell, pct } from '../components/reports'
+import { Card, ErrorState, LoadingState, SectionTitle, StatCard, fmt, useAsync } from '../components/ui'
+import { sourceName } from '../constants/sources'
+
+const date = (iso: string | null | undefined): string =>
+  iso ? new Date(iso).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '—'
 
 export const PreprocessingPage: React.FC = () => {
-  const [data, setData] = useState<PreprocessingMetricsData | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-
-  useEffect(() => {
-    axios
-      .get<PreprocessingMetricsData>('/api/v1/preprocessing/metrics')
-      .then((res) => setData(res.data))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false))
-  }, [])
-
-  if (loading || !data) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    )
-  }
-
-  const { parsing_rules, null_reduction_comparison } = data
+  const { data, error, loading } = useAsync(() => api.preprocessing(), [])
+  if (error && !data) return <ErrorState />
+  if (loading && !data) return <LoadingState />
+  if (!data) return null
+  const { totals } = data
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800">
-        <span className="text-xs px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-semibold uppercase tracking-wider">
-          Giai Đoạn 2 • Stage 2
-        </span>
-        <h2 className="text-xl font-bold text-slate-100 mt-1.5">
-          Pre-processing Observatory & Data Cleaning
-        </h2>
-        <p className="text-xs text-slate-400">
-          Theo dõi các quy tắc tiền xử lý: Regex dải lương VND, bóc tách số năm kinh nghiệm, làm sạch HTML và đo lường mức độ suy giảm Null.
-        </p>
-      </div>
+    <div className="flex flex-col gap-6">
+      <ReportStamp generatedAt={data.generated_at} reason={data.unavailable_reason} />
 
-      {/* Parsing Rules Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {parsing_rules.map((rule: ParsingRuleItem) => (
-          <div key={rule.rule_name} className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-cyan-400" />
-                <span>{rule.rule_name}</span>
-              </h4>
-              <span className="text-xs font-bold text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/30">
-                {rule.success_rate_pct}% Thành công
-              </span>
-            </div>
-            <div className="text-xs text-slate-400">
-              Trường đích: <span className="font-mono text-slate-300">{rule.target_field}</span>
-            </div>
-            <div className="flex justify-between text-xs text-slate-400 border-t border-slate-800 pt-2">
-              <span>Đã parse: {rule.successfully_parsed.toLocaleString()} / {rule.total_attempted.toLocaleString()}</span>
-              <span>Lỗi/Bỏ qua: {(rule.total_attempted - rule.successfully_parsed).toLocaleString()}</span>
-            </div>
-            {rule.failed_samples?.length > 0 && (
-              <div className="text-[11px] text-amber-400/90 bg-amber-950/20 p-2 rounded-lg border border-amber-500/20">
-                Mẫu chuỗi không khớp: {rule.failed_samples.join(', ')}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+      <section aria-label="Tổng các nguồn" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <StatCard label="Envelope raw đã đọc" value={fmt(totals.raw_envelopes)} sub="Tổng các nguồn có health card" />
+        <StatCard label="Tin bị loại vì JD rỗng" value={fmt(totals.stub_removed)} sub="JD dưới 30 từ (chính sách 1.B)" />
+        <StatCard label="Bản ghi sạch" value={fmt(totals.clean_records)} sub="Sau khử trùng lặp trong từng nguồn" />
+        <StatCard label="Bản ghi được imputer bù" value={fmt(totals.imputed_records)} sub="Có cờ is_imputed_by_genai" />
+      </section>
 
-      {/* Null Reduction Comparison Table */}
-      <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-        <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
-          <Sparkles className="w-4 h-4 text-cyan-400" />
-          <span>Mức Độ Cải Thiện Dữ Liệu Sau Tiền Xử Lý (Null Reduction Rate)</span>
-        </h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
-              <tr>
-                <th className="py-2.5 px-3">Trường Dữ Liệu</th>
-                <th className="py-2.5 px-3">Tỷ Lệ Thiếu Thô (%)</th>
-                <th className="py-2.5 px-3">Sau Tiền Xử Lý (%)</th>
-                <th className="py-2.5 px-3">Mức Cải Thiện</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/60">
-              {null_reduction_comparison.map((item: any) => (
-                <tr key={item.field} className="hover:bg-slate-800/40">
-                  <td className="py-2.5 px-3 font-semibold text-slate-100">{item.field}</td>
-                  <td className="py-2.5 px-3 text-rose-400">{item.raw_null_pct}%</td>
-                  <td className="py-2.5 px-3 text-emerald-400">{item.clean_null_pct}%</td>
-                  <td className="py-2.5 px-3">
-                    <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-cyan-500/20 text-cyan-300">
-                      +{item.improvement_pct}% dữ liệu thu hồi
-                    </span>
+      <Card>
+        <SectionTitle
+          title="Kết quả làm sạch theo nguồn"
+          hint="Đọc từ reports/<nguồn>/<nguồn>_quality_health_card.json. Nguồn chưa có file thì để trống."
+        />
+        <TableShell head={['Nguồn', 'Raw', 'Loại JD rỗng', 'Bản ghi sạch', 'Có lương dạng số', 'Được imputer bù', 'Ngôn ngữ (vi / song ngữ / en)', 'Ngày chạy']}>
+          {data.sources.map((row) => (
+            <tr key={row.source}>
+              <th scope="row" className="py-2.5 pr-4 font-semibold text-ink whitespace-nowrap">{sourceName(row.source)}</th>
+              {row.available ? (
+                <>
+                  <td className="py-2.5 pr-4 text-right tabular-nums">{fmt(row.raw_envelopes)}</td>
+                  <td className="py-2.5 pr-4 text-right tabular-nums">{fmt(row.stub_removed)}</td>
+                  <td className="py-2.5 pr-4 text-right tabular-nums font-semibold">{fmt(row.clean_records)}</td>
+                  <td className="py-2.5 pr-4 text-right tabular-nums">{pct(row.salary_coverage_pct)}</td>
+                  <td className="py-2.5 pr-4 text-right tabular-nums whitespace-nowrap">
+                    {fmt(row.imputed_records)} ({pct(row.imputation_rate_pct)})
                   </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                  <td className="py-2.5 pr-4 text-right tabular-nums whitespace-nowrap">
+                    {fmt(row.language_distribution?.vi ?? null)} / {fmt(row.language_distribution?.bilingual ?? null)} /{' '}
+                    {fmt(row.language_distribution?.en ?? null)}
+                  </td>
+                  <td className="py-2.5 pr-4 text-right whitespace-nowrap">{date(row.audit_timestamp)}</td>
+                </>
+              ) : (
+                <td colSpan={7} className="py-2.5 pr-4 text-right text-ink-muted">Chưa có health card</td>
+              )}
+            </tr>
+          ))}
+        </TableShell>
+      </Card>
     </div>
   )
 }
+
+export default PreprocessingPage
