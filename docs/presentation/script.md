@@ -7,7 +7,7 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 **Nói:**
 
 - Em trình bày phần tiền xử lý của đề tài khai phá việc làm IT từ 8 trang tuyển dụng.
-- Đầu vào là 14.292 bản ghi raw, đầu ra là 8.344 tin IT đã làm sạch với 267 cột đặc trưng.
+- Đầu vào là 14.292 bản ghi raw, đầu ra là 5.177 tin IT đã làm sạch với 230 cột đặc trưng.
 - Bố cục: vấn đề dữ liệu trước, rồi từng bước xử lý, mỗi bước chỉ rõ nó giải vấn đề nào.
 
 **Thầy có thể hỏi:**
@@ -119,36 +119,41 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 ## Slide 6. Tin ngoài IT lẫn vào dữ liệu
 
-**Kết luận trên slide:** Không lọc thì 82% tin TopDev là ngoài IT → Clean bỏ 2.149 tin (C4c) sau khi kiểm bằng nhãn tay.
+**Kết luận trên slide:** Không lọc thì 82% tin TopDev là ngoài IT → Clean bỏ 5.514 tin (C4c) sau khi kiểm bằng nhãn tay.
 
 **Nói:**
 
 - TopDev có 82% tiêu đề ngoài IT, ví dụ Kế toán trưởng, Nhân viên kinh doanh.
 - Nguyên nhân: API TopDev bỏ qua tham số category_ids=1, có hay không có đều ra 14.572 tin.
-- Bước Clean phân loại bằng luật cộng JEV, gán nhãn tay 541 tin để kiểm, rồi mới bỏ 2.149 tin ngoài IT.
+- Bước Clean phân loại bằng luật if-else 2 tầng: tầng 1 xét từ khóa tiêu đề; tin chưa quyết được thì tầng 2 xét nhóm nghề và số kỹ năng trong JD.
+- Gán nhãn tay 541 tin để đo độ đúng, rồi mới bỏ 5.514 tin ngoài IT.
 
 **Thầy có thể hỏi:**
 
 - *Sao không bỏ hết TopDev?*  
-  Vẫn có tin IT thật; sau phân loại còn 162 tin IT TopDev.
+  Vẫn có tin IT thật; sau phân loại còn 230 tin IT TopDev.
 - *Luật đúng bao nhiêu?*  
-  Trên mẫu gán tay, luật quyết 304 tin, đúng 303.
-- *JEV là gì?*  
-  Model hỏi đáp có/không (OpenCode jev-1.13-free); trả xác suất, dưới 0,5 thì gắn cờ cần kiểm.
+  Tầng 1 đúng 303/304; tầng 2 khó hơn, đúng 194/237.
+- *Tầng 2 là gì?*  
+  Tiêu đề thuộc 1 trong 12 nhóm nghề IT và JD có ít nhất 2 kỹ năng công nghệ thì là IT; ngưỡng 2 cho kết quả tốt nhất khi thử 2–6.
+- *Sao không dùng model AI?*  
+  Luật if-else giải thích được từng quyết định, không phụ thuộc dịch vụ ngoài; độ đúng đo bằng nhãn tay.
 
 **Lấy số ở đâu:**
 
-- `reports/preprocessing/01_clean/_all.json → extra.review, extra.it_status, rules C4a/C4c`
+- `reports/preprocessing/01_clean/_all.json → extra.review, extra.it_levels, rules C4a/C4c`
 - `data/preprocessing/review/it_<nguồn>.csv (nhãn tay)`
+- `preprocessing/common/it_filter.py (classify, classify_unknown)`
 
 ## Slide 7. Trùng lặp: thêm điều kiện thì bớt trùng giả
 
-**Kết luận trên slide:** Clean bỏ 3.480 bản ghi trùng (C1, C2, C6, C7); so trùng chỉ đúng khi tỉnh đã chuẩn hóa.
+**Kết luận trên slide:** Clean bỏ 3.413 bản ghi trùng (C1, C2, C6, C7); so trùng chỉ đúng khi tỉnh đã chuẩn hóa.
 
 **Nói:**
 
 - Luật trùng: cùng công ty, cùng tiêu đề, cùng tỉnh, cùng tuần đăng.
 - Chỉ so tiêu đề + công ty thì 171 nhóm trùng khác nguồn; thêm tỉnh thì còn 9, vì mỗi nguồn ghi thành phố một kiểu.
+- Thêm điều kiện cùng tuần đăng vì công ty hay đăng lại cùng vị trí sau vài tháng: đó là đợt tuyển mới, không phải bản trùng.
 - Nên phải chuẩn hóa tỉnh trước rồi mới so trùng.
 
 **Thầy có thể hỏi:**
@@ -187,13 +192,14 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 ## Slide 9. Lương: bộ parse cũ đọc sai đơn vị
 
-**Kết luận trên slide:** Bộ parse cũ sai 251 tin, bộ mới còn 0 → lương dùng được để thống kê (T2, T2f).
+**Kết luận trên slide:** Bộ parse cũ đọc sai 251 tin, bộ mới còn 0 → lương dùng được để thống kê.
 
 **Nói:**
 
-- Lỗi chính: dấu phân cách hàng nghìn bị đọc thành dấu thập phân, nên 2,000 USD thành 2 USD.
-- Bộ parse mới chỉ nhận số có đơn vị tiền, đọc nguyên số có dấu phân cách, và chặn lương tháng ngoài 1–500 triệu.
-- Sau đó Normalization gắn cờ ngoại lai bằng IQR và winsorize 1–99%.
+- Biểu đồ là số tin bộ parse cũ đọc sai ở từng nguồn; bộ mới chạy lại trên cùng raw thì còn 0 tin sai.
+- Lỗi chính: dấu phân cách hàng nghìn bị đọc thành dấu thập phân, nên 2.000 USD chỉ còn vài chục nghìn đồng.
+- Bảng bên phải là ví dụ thật: chuỗi lương trong raw, bộ cũ đọc thành gì, bộ mới đọc thành gì.
+- Bộ mới chỉ nhận số có đơn vị tiền, đọc nguyên số có dấu phân cách, chặn lương tháng ngoài 1–500 triệu.
 
 **Thầy có thể hỏi:**
 
@@ -201,14 +207,16 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
   Giữ trống và cờ is_negotiable, không bù.
 - *USD đổi thế nào?*  
   Tỉ giá cố định 25.400 VND/USD, ghi trong salary_parser.py.
+- *Cột 'bộ mới đọc' lấy đâu?*  
+  Script gọi parse_salary_cascade trên đúng chuỗi raw đó lúc tạo slide, không gõ tay.
 - *Ngưỡng 500 triệu ở đâu ra?*  
   Lương tháng IT ở Việt Nam trên 500 triệu gần như không có; số trên đó là parse sai, nên để trống và gắn cờ salary_suspect.
 
 **Lấy số ở đâu:**
 
-- `preprocessing/transformation/salary_parser.py`
+- `raw_issues_before.json → sources.<nguồn>.salary.parsed_under_1m_examples`
+- `preprocessing/transformation/salary_parser.py → parse_salary_cascade`
 - `reports/preprocessing/03_transformation/_all.json → rules T2, T2f`
-- `reports/preprocessing/04_normalization/_all.json → extra.global_salary_stats`
 
 ## Slide 10. Địa điểm, cấp bậc, kỹ năng, ngày tháng: mỗi nguồn một kiểu
 
@@ -236,7 +244,7 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 ## Slide 11. Pipeline 5 bước: số dòng vào → ra mỗi bước
 
-**Kết luận trên slide:** 14.292 bản ghi raw → 8.344 tin sạch; mọi dòng bị bỏ đều có luật và lý do.
+**Kết luận trên slide:** 14.292 bản ghi raw → 5.177 tin sạch; mọi dòng bị bỏ đều có luật và lý do.
 
 **Nói:**
 
@@ -252,7 +260,11 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - *Sao gộp ở Integration?*  
   Từ đó các nguồn cùng schema, xử lý chung một lần; báo cáo vẫn giữ số theo nguồn (by_source).
 - *Silver, gold nằm đâu?*  
-  R2 bucket vn-it-jobs: staging/<nguồn>/preprocessing/<bước>.*, curated/preprocessing/.
+  R2 bucket vn-it-jobs: bronze raw/<nguồn>/…, silver staging/<nguồn>/preprocessing/<bước>.*, gold curated/preprocessing/features.parquet.
+- *Cho thầy xem dữ liệu?*  
+  Mở ./start_monitoring.sh, vào http://127.0.0.1:5173: trang Raw cho bronze; trang Pre-processing chọn bước, bấm một dòng để xem đủ trường (đọc thẳng từ R2).
+- *Máy và R2 có khớp không?*  
+  python scripts/push_preprocessing_to_r2.py (không cờ chỉ so, không ghi); lần kiểm gần nhất 34/34 khớp.
 
 **Lấy số ở đâu:**
 
@@ -261,18 +273,19 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 ## Slide 12. 1. Clean: bỏ bản cũ, trùng, ngoài IT, JD quá ngắn
 
-**Kết luận trên slide:** Clean giữ 58,4% bản ghi; phần bỏ chủ yếu là bản trùng và tin ngoài IT.
+**Kết luận trên slide:** Clean giữ 36,2% bản ghi; phần bỏ chủ yếu là bản trùng và tin ngoài IT.
 
 **Nói:**
 
-- Bỏ nhiều nhất là tin ngoài IT (2.149) và bản cũ (1.987).
-- C5 bỏ 319 tin có JD dưới 30 từ, không đủ nội dung để phân tích.
-- Còn lại 8.344 tin.
+- Bỏ nhiều nhất là tin ngoài IT (5.514) và bản cũ (1.987).
+- Tin ngoài IT: tầng 1 (từ khóa tiêu đề) xếp 2.112 tin, tầng 2 (nhóm nghề + kỹ năng JD) xếp 3.417 tin.
+- C5 bỏ 188 tin có JD dưới 30 từ, không đủ nội dung để phân tích.
+- Còn lại 5.177 tin.
 
 **Thầy có thể hỏi:**
 
-- *JEV tốn bao nhiêu?*  
-  0 câu hỏi, 0.0 USD (bản miễn phí).
+- *Sao ITviec vẫn còn vài tin ngoài IT?*  
+  Chính sách đã duyệt cho ITviec là không bỏ tin nào vì đây là trang chuyên IT; tin bị luật xếp ngoài IT vẫn giữ.
 - *Tin bị bỏ có xem lại được không?*  
   Có, mỗi luật lưu ví dụ (examples) trong báo cáo và hiện trên trang Monitoring.
 
@@ -288,14 +301,14 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 **Nói:**
 
 - Integration làm phẳng envelope của từng nguồn về cùng 18 trường.
-- Sửa 874 tin ITviec lấy ngày từ JSON-LD thay cho 'Đăng 6 giờ trước', và 541 tin TopDev lấy ngày đăng, kinh nghiệm.
-- I4 bỏ tag SEO, ngành nghề khỏi kỹ năng ở 1.658 tin.
+- Sửa 874 tin ITviec lấy ngày từ JSON-LD thay cho 'Đăng 6 giờ trước', và 71 tin TopDev lấy ngày đăng, kinh nghiệm.
+- I4 bỏ tag SEO, ngành nghề khỏi kỹ năng ở 1.030 tin.
 
 **Thầy có thể hỏi:**
 
 - *I0 bằng 0 nghĩa là gì?*  
   Không có dòng JSON hỏng; luật vẫn chạy và tô đỏ trên Monitoring nếu có.
-- *Sao vẫn 8.344 dòng?*  
+- *Sao vẫn 5.177 dòng?*  
   Integration không bỏ tin, chỉ đổi dạng.
 
 **Lấy số ở đâu:**
@@ -305,19 +318,19 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 ## Slide 14. 3. Transformation: bóc lương, ngôn ngữ, địa điểm
 
-**Kết luận trên slide:** Không còn lương sai đơn vị; 1.783 JD tiếng Anh được xác định để dịch.
+**Kết luận trên slide:** Không còn lương sai đơn vị; 1.395 JD tiếng Anh được nhận đúng và vẫn rút được kỹ năng.
 
 **Nói:**
 
 - Biểu đồ so cùng dữ liệu trước và sau khi sửa các lỗi tìm được khi review.
-- Lương chỉ lấy từ tiêu đề khi có đơn vị tiền, nên từ 676 còn 26 tin, bỏ các số trong mã tin, năm.
+- Lương chỉ lấy từ tiêu đề khi có đơn vị tiền, nên từ 676 còn 22 tin, bỏ các số trong mã tin, năm.
 - Ngôn ngữ chỉ xét JD: dưới 1% chữ có dấu tiếng Việt là tiếng Anh; bỏ nhãn bilingual.
 - Phường/xã chỉ nhận khi có trong danh mục mới của đúng tỉnh.
 
 **Thầy có thể hỏi:**
 
-- *Dịch bằng gì?*  
-  Gemini 3.8 Flash qua khóa Gemini riêng; thi 30 JD mẫu, chấm điểm rồi mới dịch hết.
+- *Sao không dịch JD tiếng Anh?*  
+  Dự án không dùng model; từ điển kỹ năng song ngữ nên JD tiếng Anh vẫn rút được kỹ năng, cột language cho biết ngôn ngữ.
 - *Sao tiếng Anh tăng?*  
   1.583 tin bilingual cũ được xếp lại theo JD; phần lớn là tiếng Việt có vài từ tiếng Anh.
 - *Ngưỡng 1% ở đâu ra?*  
@@ -334,19 +347,19 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 **Nói:**
 
-- Trước đây 54% tin bị xếp Middle vì 'Nhân viên' bị hiểu là Middle; giờ còn 10,8%.
+- Trước đây 54% tin bị xếp Middle vì 'Nhân viên' bị hiểu là Middle; giờ còn 13,5%.
 - Không xác định được cấp bậc thì để trống, không đoán.
 - Kỹ năng C trước khớp cả chữ C đơn lẻ nên có ở 6.912 tin; nay chỉ nhận C/C++, 'ngôn ngữ C'.
-- JEV kiểm lại nhãn: không đồng ý thì gắn cờ cần kiểm (N2b).
+- Luật mâu thuẫn gắn cờ 635 tin: Senior mà dưới 2 năm kinh nghiệm, Thực tập mà từ 3 năm, hoặc có nhóm nghề mà JD không có kỹ năng nào.
 
 **Thầy có thể hỏi:**
 
 - *Sao 'Không rõ' nhiều?*  
-  1.557 tin không ghi cấp bậc ở raw, tiêu đề hay số năm kinh nghiệm; để trống trung thực hơn đoán.
+  700 tin không ghi cấp bậc ở raw, tiêu đề hay số năm kinh nghiệm; để trống trung thực hơn đoán.
 - *12 nhóm nghề gồm gì?*  
   Backend, Frontend, Fullstack, Mobile, Data/AI, DevOps/Cloud, QA/QC, Bảo mật, Hệ thống/Mạng, BA, PM, UI/UX; còn lại là Khác.
 - *IQR làm gì?*  
-  Lương ngoài [Q1 − 1,5·IQR; Q3 + 1,5·IQR] gắn cờ is_outlier_salary (276 tin), không xóa.
+  Lương ngoài [Q1 − 1,5·IQR; Q3 + 1,5·IQR] gắn cờ is_outlier_salary (113 tin), không xóa.
 
 **Lấy số ở đâu:**
 
@@ -355,11 +368,11 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 ## Slide 16. 5. Encoding: bảng đặc trưng cho mô hình
 
-**Kết luận trên slide:** Đầu ra cuối là bảng 8.344 dòng × 267 cột, lưu tầng gold trên R2.
+**Kết luận trên slide:** Đầu ra cuối là bảng 5.177 dòng × 230 cột, lưu tầng gold trên R2.
 
 **Nói:**
 
-- Bước cuối đổi mọi trường thành số để đưa vào mô hình.
+- Mô hình chỉ đọc được số, nên bước cuối đổi mọi trường thành các cột số; mỗi cột như vậy gọi là một cột đặc trưng.
 - Cấp bậc là thứ bậc 0–5, chưa rõ là −1; nhóm nghề one-hot; tỉnh và kỹ năng multi-hot.
 - Trường số giữ nguyên và có cờ thiếu giá trị đi kèm.
 
@@ -367,7 +380,7 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 - *Sao chỉ 200 kỹ năng?*  
   Lấy kỹ năng phổ biến nhất để ma trận không quá thưa; danh sách trong encoding_dictionary.json.
-- *Độ thưa 98% có sao không?*  
+- *Độ thưa 97% có sao không?*  
   Bình thường với multi-hot kỹ năng; mô hình dùng ma trận thưa.
 
 **Lấy số ở đâu:**
@@ -375,32 +388,7 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `reports/preprocessing/05_encoding/_all.json`
 - `data/preprocessing/05_encoding/features.parquet, encoding_dictionary.json`
 
-## Slide 17. Dữ liệu bronze, silver, gold nằm ở đâu
-
-**Kết luận trên slide:** Thầy hỏi dữ liệu ở tầng nào thì mở trang Monitoring tương ứng, đọc thẳng từ R2.
-
-**Nói:**
-
-- Dữ liệu lưu theo ba tầng trên Cloudflare R2: bronze là raw gốc, silver là kết quả từng bước, gold là bảng cuối cho mô hình.
-- Khi thầy muốn xem dữ liệu, em mở Monitoring: trang Raw cho bronze, trang Pre-processing cho silver và gold, chọn bước rồi bấm một dòng để xem đủ các trường.
-- Bản trên máy và bản trên R2 được so từng file; khung 'Lưu trữ' ở trang Pre-processing báo khớp hay lệch.
-
-**Thầy có thể hỏi:**
-
-- *Cho thầy xem một tin đi từ raw tới gold?*  
-  Trang Pre-processing: chọn bước Clean, lọc nguồn, bấm một dòng; rồi chọn các bước sau, tìm cùng job_id_global.
-- *Máy và R2 có khớp không?*  
-  Chạy python scripts/push_preprocessing_to_r2.py (không cờ chỉ so, không ghi); lần kiểm gần nhất 34/34 khớp.
-- *Sao silver tách theo nguồn?*  
-  Bố cục R2 bắt buộc tên nguồn ở cấp 2 của staging/, nên bảng gộp được tách lại theo source_platform khi đẩy lên.
-
-**Lấy số ở đâu:**
-
-- `preprocessing/common/r2_export.py (bố cục key)`
-- `python scripts/push_preprocessing_to_r2.py`
-- `docs/cloud_r2_setup_guide.md mục 4.4`
-
-## Slide 18. Đối chiếu: vấn đề nào được giải ở bước nào
+## Slide 17. Đối chiếu: vấn đề nào được giải ở bước nào
 
 **Nói:**
 
@@ -411,8 +399,8 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 - *Kết quả lấy từ đâu?*  
   rows_affected của luật trong reports/preprocessing/<bước>/_all.json; mã luật: A1: C4c; A2: I2; A3: I3; B: C1, C2, C6, C7; C: T1; D: T2; E: N1; F: N2; G: N4; H: T3; I: C5.
-- *Có luật nào chưa có tác dụng?*  
-  Luật dịch JD và luật JEV kiểm cấp bậc đang bằng 0: chờ chấm mẫu dịch và chờ JEV mở lại lượt.
+- *Có luật nào bằng 0?*  
+  C3 (bản ghi lỗi) và I0 (JSON hỏng) bằng 0: luật chặn an toàn, lần chạy này không gặp bản ghi lỗi.
 - *Làm sao chắc không sót?*  
   Hàm check_links() trong build_slides.py so bảng vấn đề với danh sách luật của 5 báo cáo; lệch thì không tạo slide.
 
@@ -421,38 +409,37 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `scripts/build_slides.py → ISSUE_TO_RULES, SOLVE, check_links()`
 - `reports/preprocessing/<bước>/_all.json → rules[].rows_affected`
 
-## Slide 19. Kết luận pre-processing và việc còn dở
+## Slide 18. Kết luận pre-processing và việc còn dở
 
 **Nói:**
 
 - Ba việc còn dở, nói thẳng để thầy biết giới hạn của số liệu hiện tại.
-- Tin 'cần kiểm' vẫn giữ trong dữ liệu, có cột it_status để lọc khi phân tích.
-- Dịch toàn bộ ước tính khoảng 9,9 USD cho 3.568 đoạn, nên chạy sau khi chấm mẫu.
+- Luật IT tầng 2 sai khoảng 18% trên mẫu, nên một phần tin bị bỏ có thể là IT thật.
+- Toàn bộ pipeline là luật if-else, chạy lại cho cùng kết quả, không tốn tiền API.
 
 **Thầy có thể hỏi:**
 
-- *Tin 'cần kiểm' có làm sai kết quả?*  
-  Có thể lẫn một ít tin ngoài IT; phân tích có thể lọc it_status = 'it' để chắc.
-- *Khi nào xong?*  
-  JEV mở lại lượt miễn phí sau khoảng 10 giờ; chạy lại --use-api, cache nối tiếp chỗ dừng.
+- *Tin bị bỏ nhầm thì sao?*  
+  Danh sách tin bị bỏ nằm trong báo cáo Clean (C4c); gán thêm nhãn tay vào data/preprocessing/review/ rồi chỉnh luật tầng 2.
+- *Sao bỏ model AI?*  
+  Dịch vụ ngoài hết lượt, hết hạn mức; luật if-else giải thích được từng quyết định và đo được độ đúng bằng nhãn tay.
 - *Chạy lại toàn bộ thế nào?*  
   python scripts/run_preprocessing.py --step all --source all, rồi python scripts/build_slides.py.
 
 **Lấy số ở đâu:**
 
-- `reports/preprocessing/01_clean/_all.json → api.calls`
-- `data/preprocessing/04_normalization/all.parquet → it_status`
-- `python scripts/run_preprocessing.py --step transformation --source all --dry-run --use-api (ước tính tiền dịch)`
+- `reports/preprocessing/01_clean/_all.json → extra.review (level2_correct, level2_labeled), extra.it_levels`
+- `data/preprocessing/04_normalization/all.parquet`
 
-## Slide 20. Bước tiếp theo là mô hình: dữ liệu còn những lỗ hổng nào
+## Slide 19. Bước tiếp theo là mô hình: dữ liệu còn những lỗ hổng nào
 
-**Kết luận trên slide:** Lỗ hổng lớn nhất là lương (53% thiếu) → cần chốt cách xử lý trước khi chọn mô hình.
+**Kết luận trên slide:** Lỗ hổng lớn nhất là lương (55% thiếu) → cần chốt cách xử lý trước khi chọn mô hình.
 
 **Nói:**
 
-- Pre-processing xong nhưng dữ liệu đưa vào mô hình còn năm lỗ hổng, đo trên cùng bảng 8.344 tin.
-- Lớn nhất là lương: 53% tin để lương thỏa thuận, nên mô hình lương chỉ có 3.917 tin có nhãn.
-- Nhóm nghề 'Khác' chiếm 41%, và gần một nửa tin còn 'cần kiểm' IT vì JEV hết lượt.
+- Pre-processing xong nhưng dữ liệu đưa vào mô hình còn năm lỗ hổng, đo trên cùng bảng 5.177 tin.
+- Lớn nhất là lương: 55% tin để lương thỏa thuận, nên mô hình lương chỉ có 2.348 tin có nhãn.
+- Nhóm nghề 'Khác' chiếm 11%; 875 tin là IT do luật tầng 2 quyết, độ đúng thấp hơn tầng 1.
 - Dữ liệu cũng lệch: tập trung ở Hà Nội, TP.HCM và vài nguồn lớn.
 - Slide sau là các câu em muốn xin ý kiến thầy.
 
@@ -467,23 +454,23 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 **Lấy số ở đâu:**
 
-- `data/preprocessing/04_normalization/all.parquet → salary_min_vnd/salary_max_vnd, job_family, it_status, language, seniority, tinh_chinh, source_platform`
+- `data/preprocessing/04_normalization/all.parquet → salary_min_vnd/salary_max_vnd, job_family, it_rule_level, language, seniority, tinh_chinh, source_platform`
 - `reports/preprocessing/05_encoding/_all.json → extra.total_columns, extra.skills_sparsity`
 
-## Slide 21. Xin ý kiến thầy: chọn hướng xử lý trước khi làm mô hình
+## Slide 20. Xin ý kiến thầy: chọn hướng xử lý trước khi làm mô hình
 
 **Nói:**
 
 - Mỗi thẻ là một lỗ hổng ở slide trước, kèm hai hướng em đang cân nhắc.
 - Em muốn thầy góp ý hướng nào hợp với mục tiêu đề tài, hoặc gợi ý hướng khác.
-- Câu em ưu tiên hỏi nhất là số 1 (lương) và số 2 (tin cần kiểm), vì ảnh hưởng trực tiếp đến nhãn của mô hình.
+- Câu em ưu tiên hỏi nhất là số 1 (lương) và số 2 (độ đúng luật IT), vì ảnh hưởng trực tiếp đến dữ liệu đưa vào mô hình.
 
 **Thầy có thể hỏi:**
 
 - *Em định dùng mô hình gì?*  
   Còn tùy hướng xử lý: dự đoán lương là hồi quy; phân nhóm nghề là phân loại; khai phá kỹ năng có thể dùng luật kết hợp.
 - *Em nghiêng về hướng nào?*  
-  Lương: A, học trên tin có lương để khỏi nhãn giả. Tin cần kiểm: B, giữ hết và dùng it_status, rồi so kết quả khi lọc.
+  Lương: A, học trên tin có lương để khỏi nhãn giả. Luật IT: A nếu thầy chấp nhận sai số khoảng 18%, B nếu cần chính xác hơn.
 - *Sao không làm cả hai rồi so?*  
   Được, nếu thầy đồng ý thì em chạy cả A và B rồi báo cáo chênh lệch.
 
@@ -491,12 +478,12 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 - `data/preprocessing/04_normalization/all.parquet`
 - `data/preprocessing/05_encoding/features.parquet, encoding_dictionary.json`
-- `Ước tính tiền dịch: python scripts/run_preprocessing.py --step transformation --source all --dry-run --use-api`
+- `reports/preprocessing/01_clean/_all.json → extra.review`
 
 ## Việc còn tồn đọng (ghi chú cho mình, không chiếu)
 
-- JEV hết lượt miễn phí sau 0 câu: 4.052/8.344 tin còn "cần kiểm" IT; luật JEV kiểm cấp bậc, nhóm nghề chưa chạy. Chạy lại `--use-api` khi có lượt (KNOWN_ISSUED.md PRE-9).
-- Dịch JD: 0/1.783 JD tiếng Anh đã dịch. Khóa Gemini báo hết hạn mức (429) với gemini-3.8-flash, gemini-3.5-flash vẫn gọi được; cần chọn model hoặc nạp thêm, rồi chấm 30 mẫu mới dịch hết (ước tính ~9,9 USD, vượt trần 9 USD của sổ Google) (PRE-10).
+- Luật IT tầng 2 đúng 81,9% (194/237 tin gán nhãn); gán thêm nhãn tay để chỉnh luật nếu cần độ đúng cao hơn.
 - TopDev: cần cào lại để có ngày đăng, kinh nghiệm; crawler cũng đang cào cả tin ngoài IT vì API bỏ qua bộ lọc ngành.
-- Mô hình: chờ thầy chọn hướng cho lương thiếu (53%), tin cần kiểm, nhóm nghề 'Khác' (41%), giảm chiều, JD tiếng Anh, lệch vùng (PRE-11).
+- ITviec giữ mọi tin theo chính sách đã duyệt, kể cả 11 tin luật xếp ngoài IT.
+- Mô hình: chờ thầy chọn hướng cho lương thiếu (55%), độ đúng luật IT, nhóm nghề 'Khác' (11%), giảm chiều, lệch vùng (PRE-11).
 - Mức Cao/TB/Thấp của các nhóm thiếu trường, địa điểm, cấp bậc, kỹ năng, ngày, văn bản là tự đánh giá; tài liệu gốc chưa ghi.
