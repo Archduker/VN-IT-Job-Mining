@@ -3,7 +3,7 @@ import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAx
 import { ArrowRight } from 'lucide-react'
 import { api } from '../../api/client'
 import { SOURCES, sourceName } from '../../constants/sources'
-import { ItReview, StepApiUsage, StepReportData, StepRule, StepSummary, StorageItem } from '../../types'
+import { ItReview, StepReportData, StepRule, StepSummary, StorageItem } from '../../types'
 import { PctBar, TableShell, pct } from '../reports'
 import { Card, EmptyState, ErrorState, LoadingState, SectionTitle, StatCard, fmt, useAsync } from '../ui'
 
@@ -111,30 +111,22 @@ const DropChart: React.FC<{ rules: StepRule[] }> = ({ rules }) => {
   )
 }
 
-export const ApiUsage: React.FC<{ api: StepApiUsage }> = ({ api: a }) => (
-  <p className="m-0 text-ink-soft [overflow-wrap:anywhere]">
-    {a.used
-      ? `API ${a.model ?? ''}: ${fmt(a.calls)} lần gọi, ${fmt(a.cache_hits)} lần lấy từ cache, ${a.cost_usd ?? 0} USD.`
-      : a.would_call
-        ? `Chạy thử: sẽ gọi API ${fmt(a.would_call)} lần, ước tính ${a.estimated_cost_usd} USD.`
-        : `Không dùng API${a.reason ? `: ${a.reason}` : ''}.`}
-  </p>
-)
-
-/** Khối riêng của bước Clean: kiểm tin ngoài IT ở cả 8 nguồn, chưa bỏ khi chưa có chính sách được duyệt. */
+/** Khối riêng của bước Clean: kết quả luật IT 2 tầng ở cả 8 nguồn, đo trên nhãn tay. */
 export const ItReviewPanel: React.FC<{ report: StepReportData }> = ({ report }) => {
   const status = (report.extra.it_status ?? {}) as Record<string, Record<string, number>>
+  const levels = (report.extra.it_levels ?? {}) as Record<string, Record<string, number>>
   const review = (report.extra.review ?? {}) as Record<string, ItReview>
   const policy = (report.extra.it_policy ?? {}) as Record<string, unknown>
   return (
     <Card>
       <SectionTitle
         title="Kiểm tin ngoài IT"
-        hint="Phân loại bằng luật từ khóa và JEV. Chỉ bỏ theo preprocessing/clean/it_policy.json do bạn duyệt. 'Ngoài IT đúng': trong các tin đã gán nhãn mà hệ thống xếp ngoài IT (nhóm chính sách sẽ bỏ), bao nhiêu tin đúng là ngoài IT."
+        hint="Tầng 1: từ khóa tiêu đề. Tầng 2 (tin tầng 1 không quyết được): nhóm nghề IT và ít nhất 2 kỹ năng trong JD. Chỉ bỏ theo preprocessing/clean/it_policy.json. Các cột 'đúng' đo trên tin đã gán nhãn tay."
       />
-      <TableShell head={['Nguồn', 'IT', 'Ngoài IT', 'Cần kiểm', 'Đã gán nhãn', 'Ngoài IT đúng', 'Luật đúng', 'JEV đúng', 'Chính sách']} alignRightFrom={1}>
+      <TableShell head={['Nguồn', 'IT', 'Ngoài IT', 'Tầng 2 quyết', 'Đã gán nhãn', 'Ngoài IT đúng', 'Tầng 1 đúng', 'Tầng 2 đúng', 'Chính sách']} alignRightFrom={1}>
         {SOURCES.map((s) => {
           const st = status[s.id] ?? {}
+          const lv = levels[s.id] ?? {}
           const rv = review[s.id]
           const pol = policy[s.id]
           return (
@@ -142,11 +134,11 @@ export const ItReviewPanel: React.FC<{ report: StepReportData }> = ({ report }) 
               <th scope="row" className="py-2.5 pr-4 font-semibold text-ink whitespace-nowrap">{s.name}</th>
               <td className="py-2.5 pr-4 text-right tabular-nums">{fmt(st.it ?? 0)}</td>
               <td className="py-2.5 pr-4 text-right tabular-nums">{fmt(st.non_it ?? 0)}</td>
-              <td className="py-2.5 pr-4 text-right tabular-nums">{fmt(st.can_kiem ?? 0)}</td>
+              <td className="py-2.5 pr-4 text-right tabular-nums">{fmt((lv.tang_2_it ?? 0) + (lv.tang_2_non_it ?? 0))}</td>
               <td className="py-2.5 pr-4 text-right tabular-nums whitespace-nowrap">{rv ? `${rv.labeled}/${rv.rows}` : '—'}</td>
               <td className="py-2.5 pr-4 text-right tabular-nums">{rv?.status_non_it ? `${rv.status_non_it_correct}/${rv.status_non_it}` : '—'}</td>
               <td className="py-2.5 pr-4 text-right tabular-nums">{rv?.rule_decided ? `${rv.rule_correct}/${rv.rule_decided}` : '—'}</td>
-              <td className="py-2.5 pr-4 text-right tabular-nums">{rv?.jev_labeled ? `${rv.jev_correct}/${rv.jev_labeled}` : '—'}</td>
+              <td className="py-2.5 pr-4 text-right tabular-nums">{rv?.level2_labeled ? `${rv.level2_correct}/${rv.level2_labeled}` : '—'}</td>
               <td className="py-2.5 pr-4 text-right whitespace-nowrap">{typeof pol === 'string' || !pol ? 'Chưa duyệt' : 'Đã duyệt'}</td>
             </tr>
           )
@@ -192,7 +184,6 @@ export const StepOverview: React.FC<{ step: string }> = ({ step }) => {
       <Card>
         <SectionTitle title="Các luật của bước, đúng thứ tự chạy" />
         <RuleTable rules={r.rules} inputRows={r.input.rows} />
-        <ApiUsage api={r.api} />
       </Card>
       {step === '01_clean' && <ItReviewPanel report={r} />}
       {merged && <RuleExamples rules={r.rules} hint="Ví dụ lấy từ các nguồn, tối đa 3 mỗi nguồn." />}

@@ -515,17 +515,6 @@ export interface StepRule {
   by_source?: Record<string, number>
 }
 
-export interface StepApiUsage {
-  used?: boolean
-  model?: string
-  calls?: number
-  cache_hits?: number
-  cost_usd?: number
-  would_call?: number
-  estimated_cost_usd?: number
-  reason?: string | null
-}
-
 export interface ItReview {
   file: string
   rows: number
@@ -535,8 +524,8 @@ export interface ItReview {
   rule_correct: number
   status_non_it: number
   status_non_it_correct: number
-  jev_labeled: number
-  jev_correct: number
+  level2_labeled: number
+  level2_correct: number
 }
 
 export interface StepReportData {
@@ -551,9 +540,9 @@ export interface StepReportData {
   rules: StepRule[]
   fields: { field: string; fill_pct_in?: number; fill_pct_out?: number }[]
   checks: { rows_conserved: boolean | null; notes: string[] }
-  api: StepApiUsage
   extra: {
     it_status?: Record<string, number> | Record<string, Record<string, number>>
+    it_levels?: Record<string, number> | Record<string, Record<string, number>>
     it_policy?: string | Record<string, unknown>
     review?: ItReview | Record<string, ItReview>  // nguồn: một mục; _all: theo nguồn
     sources?: Record<string, { input: number; output: number }>
