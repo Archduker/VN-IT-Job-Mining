@@ -2,13 +2,45 @@
 
 Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation/slides.html`. Sửa lời trong script rồi chạy lại, đừng sửa file này bằng tay.
 
+**Thời lượng gợi ý:** khoảng 1 phút mỗi slide, tổng khoảng 23 phút, chưa tính hỏi đáp. Trong slide bấm N để xem lời nói.
+
+**Dàn bài:**
+
+  - Slide 1. Tiền xử lý dữ liệu việc làm IT Việt Nam
+- **Nội dung**
+  - Slide 2. Bố cục bài trình bày
+- **Vấn đề dữ liệu**
+  - Slide 3. Dữ liệu vào: 14 nghìn bản ghi nhưng chỉ 10,7 nghìn tin
+  - Slide 4. Dữ liệu raw có 11 nhóm vấn đề
+  - Slide 5. Ví dụ raw thật (1): sai phạm vi, sai giá trị
+  - Slide 6. Ví dụ raw thật (2): cùng một thông tin, mỗi nguồn ghi một kiểu
+  - Slide 7. Tin ngoài IT lẫn vào dữ liệu
+  - Slide 8. Trùng lặp: thêm điều kiện thì bớt trùng giả
+  - Slide 9. Độ phủ trường: mỗi nguồn có một bộ trường khác nhau
+  - Slide 10. Lương: bộ parse cũ đọc sai đơn vị
+  - Slide 11. Địa điểm, cấp bậc, kỹ năng, ngày tháng: mỗi nguồn một kiểu
+- **Quy trình xử lý**
+  - Slide 12. Pipeline 5 bước: số dòng vào → ra mỗi bước
+  - Slide 13. 1. Clean: bỏ bản cũ, trùng, ngoài IT, JD quá ngắn
+  - Slide 14. 2. Integration: gộp 8 nguồn về một schema 18 trường
+  - Slide 15. 3. Transformation: bóc lương, ngôn ngữ, địa điểm
+  - Slide 16. 4. Normalization: cấp bậc, nhóm nghề, kỹ năng chuẩn
+  - Slide 17. 5. Encoding: bảng đặc trưng cho mô hình
+  - Slide 18. Đối chiếu: vấn đề nào được giải ở bước nào
+- **Đánh giá**
+  - Slide 19. Ưu điểm
+  - Slide 20. Nhược điểm: dữ liệu còn 5 lỗ hổng
+  - Slide 21. Hướng khắc phục
+  - Slide 22. Xin ý kiến thầy: chọn hướng xử lý trước khi làm mô hình
+  - Slide 23. Kết luận
+
 ## Slide 1. Tiền xử lý dữ liệu việc làm IT Việt Nam
 
 **Nói:**
 
-- Em trình bày phần tiền xử lý của đề tài khai phá việc làm IT từ 8 trang tuyển dụng.
+- Em chào thầy và các bạn. Em xin trình bày phần tiền xử lý dữ liệu của đề tài khai phá việc làm IT từ 8 trang tuyển dụng.
 - Đầu vào là 14.292 bản ghi raw, đầu ra là 5.177 tin IT đã làm sạch với 230 cột đặc trưng.
-- Bố cục: vấn đề dữ liệu trước, rồi từng bước xử lý, mỗi bước chỉ rõ nó giải vấn đề nào.
+- Mọi con số trên slide đều sinh tự động từ báo cáo của pipeline, thầy hỏi số nào em chỉ được file gốc.
 
 **Thầy có thể hỏi:**
 
@@ -22,12 +54,34 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `reports/preprocessing/01_clean/_all.json (input.rows, output.rows)`
 - `reports/preprocessing/05_encoding/_all.json (extra.total_columns)`
 
-## Slide 2. Dữ liệu vào: 14 nghìn bản ghi nhưng chỉ 10,7 nghìn tin
+*Chuyển ý → slide 2: Bố cục bài trình bày*
+
+## Slide 2. Bố cục bài trình bày · Nội dung
+
+**Nói:**
+
+- Bài gồm ba phần: vấn đề của dữ liệu raw, quy trình 5 bước xử lý, và tự đánh giá kết quả.
+- Mỗi bước xử lý đều chỉ rõ nó giải vấn đề nào ở phần 1; phần đánh giá nêu cả ưu điểm lẫn nhược điểm, kèm việc cụ thể để khắc phục.
+- Cuối bài em có vài câu muốn xin ý kiến thầy trước khi làm mô hình.
+
+**Thầy có thể hỏi:**
+
+- *Trình bày bao lâu?*  
+  Khoảng 1 phút mỗi slide; phần vấn đề và quy trình là chính, phần đánh giá ngắn hơn.
+
+**Lấy số ở đâu:**
+
+- `scripts/build_slides.py → SECTIONS`
+
+*Chuyển ý → slide 3: Dữ liệu vào: 14 nghìn bản ghi nhưng chỉ 10,7 nghìn tin*
+
+## Slide 3. Dữ liệu vào: 14 nghìn bản ghi nhưng chỉ 10,7 nghìn tin · Vấn đề dữ liệu
 
 **Kết luận trên slide:** 14.292 bản ghi nhưng chỉ 10.758 tin khác nhau → phải giữ bản mới nhất và bỏ bản trùng trước.
 
 **Nói:**
 
+- Phần 1 là vấn đề dữ liệu: trước khi xử lý, em đo xem raw sai ở đâu và sai bao nhiêu.
 - Cột trên cùng là mọi bản ghi raw đang có trên R2.
 - Bỏ 1.547 tin chép lại trong file batch cũ thì còn 12.745 file từng tin.
 - Một tin cào lại khi đã đổi nội dung thì có thêm phiên bản, nên chỉ có 10.758 tin khác nhau.
@@ -48,7 +102,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `reports/preprocessing/01_clean/_all.json → input.rows`
 - `docs/preprocessing/data_issues_2026-11-03.html (bảng theo nguồn)`
 
-## Slide 3. Dữ liệu raw có 11 nhóm vấn đề
+*Chuyển ý → slide 4: Dữ liệu raw có 11 nhóm vấn đề*
+
+## Slide 4. Dữ liệu raw có 11 nhóm vấn đề · Vấn đề dữ liệu
 
 **Nói:**
 
@@ -71,7 +127,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `docs/presentation/data/raw_issues_before.json`
 - `docs/preprocessing/data_issues_2026-11-03.md, .html`
 
-## Slide 4. Ví dụ raw thật (1): sai phạm vi, sai giá trị
+*Chuyển ý → slide 5: Ví dụ raw thật (1): sai phạm vi, sai giá trị*
+
+## Slide 5. Ví dụ raw thật (1): sai phạm vi, sai giá trị · Vấn đề dữ liệu
 
 **Kết luận trên slide:** Không xử lý thì thống kê sẽ đếm cả việc kế toán, lương 2.000 USD thành 50 nghìn đồng, một công ty thành hai.
 
@@ -95,7 +153,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 - `docs/presentation/data/raw_issues_before.json → title.non_it_examples, salary.parsed_under_1m_examples, company.example, sneaky_null`
 
-## Slide 5. Ví dụ raw thật (2): cùng một thông tin, mỗi nguồn ghi một kiểu
+*Chuyển ý → slide 6: Ví dụ raw thật (2): cùng một thông tin, mỗi nguồn ghi một kiểu*
+
+## Slide 6. Ví dụ raw thật (2): cùng một thông tin, mỗi nguồn ghi một kiểu · Vấn đề dữ liệu
 
 **Kết luận trên slide:** Cùng một thông tin nhưng mỗi nguồn một kiểu → phải chuẩn hóa về một dạng chung trước khi phân tích.
 
@@ -117,7 +177,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 - `docs/presentation/data/raw_issues_before.json → sources.<nguồn>.location.top, seniority.top, experience.top, skills.top`
 
-## Slide 6. Tin ngoài IT lẫn vào dữ liệu
+*Chuyển ý → slide 7: Tin ngoài IT lẫn vào dữ liệu*
+
+## Slide 7. Tin ngoài IT lẫn vào dữ liệu · Vấn đề dữ liệu
 
 **Kết luận trên slide:** Không lọc thì 82% tin TopDev là ngoài IT → Clean bỏ 5.514 tin (C4c) sau khi kiểm bằng nhãn tay.
 
@@ -145,7 +207,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `data/preprocessing/review/it_<nguồn>.csv (nhãn tay)`
 - `preprocessing/common/it_filter.py (classify, classify_unknown)`
 
-## Slide 7. Trùng lặp: thêm điều kiện thì bớt trùng giả
+*Chuyển ý → slide 8: Trùng lặp: thêm điều kiện thì bớt trùng giả*
+
+## Slide 8. Trùng lặp: thêm điều kiện thì bớt trùng giả · Vấn đề dữ liệu
 
 **Kết luận trên slide:** Clean bỏ 3.413 bản ghi trùng (C1, C2, C6, C7); so trùng chỉ đúng khi tỉnh đã chuẩn hóa.
 
@@ -168,7 +232,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `raw_issues_before.json → dedup`
 - `reports/preprocessing/01_clean/_all.json → rules C1, C2, C6, C7; extra.cross_source_pairs`
 
-## Slide 8. Độ phủ trường: mỗi nguồn có một bộ trường khác nhau
+*Chuyển ý → slide 9: Độ phủ trường: mỗi nguồn có một bộ trường khác nhau*
+
+## Slide 9. Độ phủ trường: mỗi nguồn có một bộ trường khác nhau · Vấn đề dữ liệu
 
 **Kết luận trên slide:** Giữ 18 trường dùng chung được; 6 trường chỉ 1–2 nguồn có thì bỏ (I1), null trá hình về null (T1, I5).
 
@@ -190,7 +256,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `raw_issues_before.json → field_matrix`
 - `reports/preprocessing/02_integration/_all.json → fields (fill_pct_in/out)`
 
-## Slide 9. Lương: bộ parse cũ đọc sai đơn vị
+*Chuyển ý → slide 10: Lương: bộ parse cũ đọc sai đơn vị*
+
+## Slide 10. Lương: bộ parse cũ đọc sai đơn vị · Vấn đề dữ liệu
 
 **Kết luận trên slide:** Bộ parse cũ đọc sai 251 tin, bộ mới còn 0 → lương dùng được để thống kê.
 
@@ -218,7 +286,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `preprocessing/transformation/salary_parser.py → parse_salary_cascade`
 - `reports/preprocessing/03_transformation/_all.json → rules T2, T2f`
 
-## Slide 10. Địa điểm, cấp bậc, kỹ năng, ngày tháng: mỗi nguồn một kiểu
+*Chuyển ý → slide 11: Địa điểm, cấp bậc, kỹ năng, ngày tháng: mỗi nguồn một kiểu*
+
+## Slide 11. Địa điểm, cấp bậc, kỹ năng, ngày tháng: mỗi nguồn một kiểu · Vấn đề dữ liệu
 
 **Kết luận trên slide:** Chưa chuẩn hóa thì không so được giữa các nguồn → bóc tách (T3, T4, T7, T8) rồi quy chuẩn (N1–N4).
 
@@ -242,12 +312,15 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 - `raw_issues_before.json → sources.<nguồn>.location / seniority / skills / dates`
 
-## Slide 11. Pipeline 5 bước: số dòng vào → ra mỗi bước
+*Chuyển ý → slide 12: Pipeline 5 bước: số dòng vào → ra mỗi bước*
+
+## Slide 12. Pipeline 5 bước: số dòng vào → ra mỗi bước · Quy trình xử lý
 
 **Kết luận trên slide:** 14.292 bản ghi raw → 5.177 tin sạch; mọi dòng bị bỏ đều có luật và lý do.
 
 **Nói:**
 
+- Phần 2 là quy trình: 5 bước nối tiếp, mỗi bước giải một số vấn đề vừa nêu.
 - Chỉ bước Clean bỏ dòng; bốn bước sau giữ nguyên số dòng, chỉ sửa và thêm cột.
 - Mỗi bước ghi báo cáo theo luật bảo toàn: số vào bằng số ra cộng số bỏ.
 - Từ Integration, 8 nguồn gộp thành một bảng all.parquet có cột source_platform.
@@ -271,7 +344,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `reports/preprocessing/<bước>/_all.json → input.rows, output.rows, checks`
 - `python scripts/push_preprocessing_to_r2.py (chạy không cờ chỉ so máy với R2)`
 
-## Slide 12. 1. Clean: bỏ bản cũ, trùng, ngoài IT, JD quá ngắn
+*Chuyển ý → slide 13: 1. Clean: bỏ bản cũ, trùng, ngoài IT, JD quá ngắn*
+
+## Slide 13. 1. Clean: bỏ bản cũ, trùng, ngoài IT, JD quá ngắn · Quy trình xử lý
 
 **Kết luận trên slide:** Clean giữ 36,2% bản ghi; phần bỏ chủ yếu là bản trùng và tin ngoài IT.
 
@@ -294,7 +369,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `reports/preprocessing/01_clean/_all.json`
 - `python scripts/run_preprocessing.py --step clean --source all --dry-run`
 
-## Slide 13. 2. Integration: gộp 8 nguồn về một schema 18 trường
+*Chuyển ý → slide 14: 2. Integration: gộp 8 nguồn về một schema 18 trường*
+
+## Slide 14. 2. Integration: gộp 8 nguồn về một schema 18 trường · Quy trình xử lý
 
 **Kết luận trên slide:** Từ đây mọi nguồn dùng chung một schema → các bước sau xử lý một lần cho cả 8 nguồn.
 
@@ -316,7 +393,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `reports/preprocessing/02_integration/_all.json`
 - `preprocessing/integration/json_flattener.py`
 
-## Slide 14. 3. Transformation: bóc lương, ngôn ngữ, địa điểm
+*Chuyển ý → slide 15: 3. Transformation: bóc lương, ngôn ngữ, địa điểm*
+
+## Slide 15. 3. Transformation: bóc lương, ngôn ngữ, địa điểm · Quy trình xử lý
 
 **Kết luận trên slide:** Không còn lương sai đơn vị; 1.395 JD tiếng Anh được nhận đúng và vẫn rút được kỹ năng.
 
@@ -341,7 +420,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `reports/preprocessing/03_transformation/_all.json → rules T2–T8, extra.language_distribution`
 - `docs/presentation/data/before_review.json`
 
-## Slide 15. 4. Normalization: cấp bậc, nhóm nghề, kỹ năng chuẩn
+*Chuyển ý → slide 16: 4. Normalization: cấp bậc, nhóm nghề, kỹ năng chuẩn*
+
+## Slide 16. 4. Normalization: cấp bậc, nhóm nghề, kỹ năng chuẩn · Quy trình xử lý
 
 **Kết luận trên slide:** Phân bố cấp bậc hợp lý lại (Middle không còn chiếm đa số) → số liệu theo cấp bậc dùng phân tích được.
 
@@ -366,7 +447,9 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `reports/preprocessing/04_normalization/_all.json → rules N1–N7`
 - `data/preprocessing/04_normalization/all.parquet (cột seniority, skills_std)`
 
-## Slide 16. 5. Encoding: bảng đặc trưng cho mô hình
+*Chuyển ý → slide 17: 5. Encoding: bảng đặc trưng cho mô hình*
+
+## Slide 17. 5. Encoding: bảng đặc trưng cho mô hình · Quy trình xử lý
 
 **Kết luận trên slide:** Đầu ra cuối là bảng 5.177 dòng × 230 cột, lưu tầng gold trên R2.
 
@@ -388,11 +471,13 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `reports/preprocessing/05_encoding/_all.json`
 - `data/preprocessing/05_encoding/features.parquet, encoding_dictionary.json`
 
-## Slide 17. Đối chiếu: vấn đề nào được giải ở bước nào
+*Chuyển ý → slide 18: Đối chiếu: vấn đề nào được giải ở bước nào*
+
+## Slide 18. Đối chiếu: vấn đề nào được giải ở bước nào · Quy trình xử lý
 
 **Nói:**
 
-- Bảng đọc theo hai chiều: mỗi vấn đề ở slide 3 đều có bước giải, và mọi luật trong 5 bước đều giải ít nhất một vấn đề.
+- Bảng đọc theo hai chiều: mỗi vấn đề ở slide 4 đều có bước giải, và mọi luật trong 5 bước đều giải ít nhất một vấn đề.
 - Cột kết quả là số tin thật mà bước đó bỏ hoặc sửa, lấy từ báo cáo của bước.
 
 **Thầy có thể hỏi:**
@@ -409,44 +494,54 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `scripts/build_slides.py → ISSUE_TO_RULES, SOLVE, check_links()`
 - `reports/preprocessing/<bước>/_all.json → rules[].rows_affected`
 
-## Slide 18. Kết luận pre-processing và việc còn dở
+*Chuyển ý → slide 19: Ưu điểm*
+
+## Slide 19. Ưu điểm · Đánh giá
+
+**Kết luận trên slide:** Kết quả xử lý kiểm chứng được bằng số và chạy lại được, không dựa vào cảm tính.
 
 **Nói:**
 
-- Ba việc còn dở, nói thẳng để thầy biết giới hạn của số liệu hiện tại.
-- Luật IT tầng 2 sai khoảng 18% trên mẫu, nên một phần tin bị bỏ có thể là IT thật.
-- Toàn bộ pipeline là luật if-else, chạy lại cho cùng kết quả, không tốn tiền API.
+- Phần 3, em tự đánh giá kết quả: ưu điểm, nhược điểm và hướng khắc phục.
+- Trước hết là sáu điểm mạnh; điểm nào cũng có con số kiểm được.
+- Quan trọng nhất là truy vết: báo cáo mỗi bước ghi số vào bằng số ra cộng số bỏ, nên không có dòng nào mất mà không rõ lý do.
+- Luật lọc IT không đặt theo cảm tính: tầng 1 đúng 303/304 tin trên mẫu gán nhãn tay.
+- Các lỗi gốc như lương sai đơn vị và cấp bậc lệch về Middle đã sửa tận gốc ở bộ parse, không vá tay.
+- Thiếu thì để trống và gắn cờ, không bù số giả; và toàn bộ là luật if-else nên ai chạy lại cũng ra đúng số này.
 
 **Thầy có thể hỏi:**
 
-- *Tin bị bỏ nhầm thì sao?*  
-  Danh sách tin bị bỏ nằm trong báo cáo Clean (C4c); gán thêm nhãn tay vào data/preprocessing/review/ rồi chỉnh luật tầng 2.
-- *Sao bỏ model AI?*  
-  Dịch vụ ngoài hết lượt, hết hạn mức; luật if-else giải thích được từng quyết định và đo được độ đúng bằng nhãn tay.
+- *Bảo toàn dòng kiểm ở đâu?*  
+  Trường checks.rows_conserved trong mỗi reports/preprocessing/<bước>/_all.json, cả 5 bước đều true.
+- *Sao không bù giá trị thiếu?*  
+  Bù sẽ tạo số giả, nhất là nhãn lương; giữ trống và có cột cờ thiếu giá trị ở bước Encoding.
 - *Chạy lại toàn bộ thế nào?*  
   python scripts/run_preprocessing.py --step all --source all, rồi python scripts/build_slides.py.
 
 **Lấy số ở đâu:**
 
-- `reports/preprocessing/01_clean/_all.json → extra.review (level2_correct, level2_labeled), extra.it_levels`
-- `data/preprocessing/04_normalization/all.parquet`
+- `reports/preprocessing/<bước>/_all.json → checks.rows_conserved`
+- `reports/preprocessing/01_clean/_all.json → extra.review`
+- `docs/presentation/data/raw_issues_before.json, before_review.json (số trước sửa)`
 
-## Slide 19. Bước tiếp theo là mô hình: dữ liệu còn những lỗ hổng nào
+*Chuyển ý → slide 20: Nhược điểm: dữ liệu còn 5 lỗ hổng*
+
+## Slide 20. Nhược điểm: dữ liệu còn 5 lỗ hổng · Đánh giá
 
 **Kết luận trên slide:** Lỗ hổng lớn nhất là lương (55% thiếu) → cần chốt cách xử lý trước khi chọn mô hình.
 
 **Nói:**
 
-- Pre-processing xong nhưng dữ liệu đưa vào mô hình còn năm lỗ hổng, đo trên cùng bảng 5.177 tin.
+- Ngược lại, em cũng nói thẳng nhược điểm: dữ liệu đưa vào mô hình còn năm lỗ hổng, đo trên cùng bảng 5.177 tin.
 - Lớn nhất là lương: 55% tin để lương thỏa thuận, nên mô hình lương chỉ có 2.348 tin có nhãn.
 - Nhóm nghề 'Khác' chiếm 11%; 875 tin là IT do luật tầng 2 quyết, độ đúng thấp hơn tầng 1.
 - Dữ liệu cũng lệch: tập trung ở Hà Nội, TP.HCM và vài nguồn lớn.
-- Slide sau là các câu em muốn xin ý kiến thầy.
+- Slide sau là việc em sẽ làm cho từng lỗ hổng.
 
 **Thầy có thể hỏi:**
 
 - *Sao không bù lương thiếu luôn?*  
-  Bù bằng trung bình sẽ tạo nhãn giả cho mô hình lương; em muốn thầy chọn hướng ở slide sau.
+  Bù bằng trung bình sẽ tạo nhãn giả cho mô hình lương; em muốn thầy chọn hướng ở slide xin ý kiến.
 - *'Khác' gồm gì?*  
   Tin IT không khớp 12 nhóm theo luật tiêu đề, ví dụ IT support, ERP, kỹ sư nhúng; xem cột job_family trong all.parquet.
 - *Lệch vùng có sao không?*  
@@ -457,11 +552,40 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `data/preprocessing/04_normalization/all.parquet → salary_min_vnd/salary_max_vnd, job_family, it_rule_level, language, seniority, tinh_chinh, source_platform`
 - `reports/preprocessing/05_encoding/_all.json → extra.total_columns, extra.skills_sparsity`
 
-## Slide 20. Xin ý kiến thầy: chọn hướng xử lý trước khi làm mô hình
+*Chuyển ý → slide 21: Hướng khắc phục*
+
+## Slide 21. Hướng khắc phục · Đánh giá
+
+**Kết luận trên slide:** Ưu tiên lương và luật IT tầng 2 vì ảnh hưởng trực tiếp đến nhãn mô hình.
 
 **Nói:**
 
-- Mỗi thẻ là một lỗ hổng ở slide trước, kèm hai hướng em đang cân nhắc.
+- Mỗi dòng là một nhược điểm, việc cụ thể em sẽ làm, và con số để biết đã xong.
+- Lương: không bù trung bình vì sẽ tạo nhãn giả; mô hình lương học trên 2.348 tin có lương.
+- Luật IT tầng 2 còn sai khoảng 18%: cách sửa là gán thêm nhãn tay rồi chỉnh luật, vẫn không dùng model.
+- Hai việc này làm trước vì chúng quyết định nhãn của mô hình; vài hướng em chưa chắc nên xin ý kiến thầy ở slide sau.
+
+**Thầy có thể hỏi:**
+
+- *Tin bị bỏ nhầm thì sao?*  
+  Danh sách tin bị bỏ nằm trong báo cáo Clean (C4c); gán thêm nhãn tay vào data/preprocessing/review/ rồi chỉnh luật tầng 2.
+- *Sao không dịch JD tiếng Anh?*  
+  Từ điển kỹ năng có cả tiếng Anh và tiếng Việt nên vẫn rút được kỹ năng; dịch cần model, dự án đã bỏ model.
+- *230 cột thưa 97,2% thì sao?*  
+  Mô hình dùng ma trận thưa; nếu cần thì giảm chiều bằng SVD hoặc chỉ giữ top 50 kỹ năng.
+
+**Lấy số ở đâu:**
+
+- `data/preprocessing/04_normalization/all.parquet → salary_min_vnd, job_family, it_rule_level, language, seniority, tinh_chinh`
+- `reports/preprocessing/01_clean/_all.json → extra.review`
+
+*Chuyển ý → slide 22: Xin ý kiến thầy: chọn hướng xử lý trước khi làm mô hình*
+
+## Slide 22. Xin ý kiến thầy: chọn hướng xử lý trước khi làm mô hình · Đánh giá
+
+**Nói:**
+
+- Đây là các hướng em chưa tự quyết được: mỗi thẻ là một lỗ hổng, kèm hai hướng em đang cân nhắc.
 - Em muốn thầy góp ý hướng nào hợp với mục tiêu đề tài, hoặc gợi ý hướng khác.
 - Câu em ưu tiên hỏi nhất là số 1 (lương) và số 2 (độ đúng luật IT), vì ảnh hưởng trực tiếp đến dữ liệu đưa vào mô hình.
 
@@ -479,6 +603,29 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - `data/preprocessing/04_normalization/all.parquet`
 - `data/preprocessing/05_encoding/features.parquet, encoding_dictionary.json`
 - `reports/preprocessing/01_clean/_all.json → extra.review`
+
+*Chuyển ý → slide 23: Kết luận*
+
+## Slide 23. Kết luận · Đánh giá
+
+**Nói:**
+
+- Tóm lại, từ 14.292 bản ghi raw của 8 trang, em thu được 5.177 tin IT sạch với 230 cột đặc trưng.
+- Cả 11 nhóm vấn đề đều có luật xử lý, số liệu kiểm được trong báo cáo từng bước và trên Monitoring.
+- Bước tiếp theo là mô hình: hồi quy cho lương, phân loại cho nhóm nghề, luật kết hợp cho kỹ năng, theo hướng thầy góp ý.
+- Phần trình bày của em đến đây là hết. Em cảm ơn thầy và các bạn đã lắng nghe, em xin nhận câu hỏi và góp ý.
+
+**Thầy có thể hỏi:**
+
+- *Em định dùng mô hình gì?*  
+  Dự đoán lương là hồi quy; phân nhóm nghề là phân loại; khai phá kỹ năng dùng luật kết hợp (Apriori/FP-Growth).
+- *Cho thầy xem dữ liệu thật?*  
+  ./start_monitoring.sh, mở http://127.0.0.1:5173: trang Raw cho bronze, trang Pre-processing cho silver/gold, bấm một dòng để xem đủ trường.
+
+**Lấy số ở đâu:**
+
+- `reports/preprocessing/01_clean/_all.json (input.rows, output.rows)`
+- `reports/preprocessing/05_encoding/_all.json (extra.total_columns)`
 
 ## Việc còn tồn đọng (ghi chú cho mình, không chiếu)
 

@@ -257,9 +257,9 @@ def build(raw: dict, raw_now: dict, reports: dict, after: dict, before: dict, st
         f'<div class="kpis"><div><b>8</b><span>nguồn tuyển dụng</span></div><div><b>{n(clean["input"]["rows"])}</b><span>bản ghi raw vào</span></div>'
         f'<div><b>{n(clean["output"]["rows"])}</b><span>tin IT sạch ra</span></div><div><b>{n(reports["05_encoding"]["extra"]["total_columns"])}</b><span>cột đặc trưng (biến đầu vào mô hình)</span></div></div>'
         f'<p class="date">Số liệu chốt ngày {esc(reports["05_encoding"]["generated_at"][:10])}</p></div>',
-        ["Em trình bày phần tiền xử lý của đề tài khai phá việc làm IT từ 8 trang tuyển dụng.",
+        ["Em chào thầy và các bạn. Em xin trình bày phần tiền xử lý dữ liệu của đề tài khai phá việc làm IT từ 8 trang tuyển dụng.",
          f"Đầu vào là {n(clean['input']['rows'])} bản ghi raw, đầu ra là {n(clean['output']['rows'])} tin IT đã làm sạch với {n(reports['05_encoding']['extra']['total_columns'])} cột đặc trưng.",
-         "Bố cục: vấn đề dữ liệu trước, rồi từng bước xử lý, mỗi bước chỉ rõ nó giải vấn đề nào."],
+         "Mọi con số trên slide đều sinh tự động từ báo cáo của pipeline, thầy hỏi số nào em chỉ được file gốc."],
         [("Tại sao chỉ 8 nguồn?", "Đây là 8 trang có lượng tin IT lớn và cào được ổn định; danh sách SOURCES trong preprocessing/common."),
          ("Số liệu lấy lúc nào?", "Ngày ghi trên slide là generated_at của báo cáo bước Encoding.")],
         ["reports/preprocessing/01_clean/_all.json (input.rows, output.rows)", "reports/preprocessing/05_encoding/_all.json (extra.total_columns)"]))
@@ -638,7 +638,7 @@ def build(raw: dict, raw_now: dict, reports: dict, after: dict, before: dict, st
     out.append(slide(
         "Đối chiếu: vấn đề nào được giải ở bước nào",
         f'<table class="matrix sol"><thead><tr><th>Vấn đề</th><th>Bước số</th><th>Cách giải</th><th>Kết quả</th></tr></thead><tbody>{trs}</tbody></table>',
-        ["Bảng đọc theo hai chiều: mỗi vấn đề ở slide 3 đều có bước giải, và mọi luật trong 5 bước đều giải ít nhất một vấn đề.",
+        ["Bảng đọc theo hai chiều: mỗi vấn đề ở slide 4 đều có bước giải, và mọi luật trong 5 bước đều giải ít nhất một vấn đề.",
          "Cột kết quả là số tin thật mà bước đó bỏ hoặc sửa, lấy từ báo cáo của bước."],
         [("Kết quả lấy từ đâu?", "rows_affected của luật trong reports/preprocessing/<bước>/_all.json; mã luật: " +
           "; ".join(f"{c}: {', '.join(SOLVE[c][1])}" for c in ISSUES) + "."),
@@ -646,24 +646,32 @@ def build(raw: dict, raw_now: dict, reports: dict, after: dict, before: dict, st
          ("Làm sao chắc không sót?", "Hàm check_links() trong build_slides.py so bảng vấn đề với danh sách luật của 5 báo cáo; lệch thì không tạo slide.")],
         ["scripts/build_slides.py → ISSUE_TO_RULES, SOLVE, check_links()", "reports/preprocessing/<bước>/_all.json → rules[].rows_affected"]))
 
-    # 16. Kết luận + việc còn dở
+    # Đánh giá (1): ưu điểm, mỗi điểm có số kiểm được
     l2 = pct(100 * review["level2_correct"] / max(review["level2_labeled"], 1))
+    l2_err = pct(100 - 100 * review["level2_correct"] / max(review["level2_labeled"], 1), 0)
+    conserved = sum(1 for st in STEPS if reports[st]["checks"].get("rows_conserved"))
+    pros = [
+        (f"{conserved}/{len(STEPS)}", "Truy vết được", "Bước nào cũng bảo toàn dòng: số vào = số ra + số bỏ; mỗi dòng bị bỏ có luật và lý do"),
+        (f"{n(review['rule_correct'])}/{n(review['rule_decided'])}", "Luật được kiểm chứng", f"Lọc IT tầng 1 đo trên {n(review['labeled'])} tin gán nhãn tay, không đặt theo cảm tính"),
+        (f"{n(bad_sal)} → {n(now_bad)}", "Sửa lỗi gốc", f"Lương sai đơn vị; Middle từ {pct(100 * sb.get('Middle', 0) / before['rows'], 1)} về {pct(100 * sa.get('Middle', 0) / after['rows'], 1)}"),
+        ("0", "Không bịa dữ liệu", "Thiếu thì để trống + cờ; ngoại lai gắn cờ, không xóa, không bù trung bình"),
+        ("0", "Không phụ thuộc model", "Toàn bộ là luật if-else: chạy lại ra cùng kết quả, không tốn tiền API"),
+        ("1 lệnh", "Chạy lại được", f"Cả pipeline và mọi số trên slide sinh tự động; {storage['silver'] + storage['gold']} object silver/gold trên R2"),
+    ]
     out.append(slide(
-        "Kết luận pre-processing và việc còn dở",
-        f'<div class="center"><div class="todo"><div><b>Luật IT tầng 2</b><span>Đúng {l2} trên {n(review["level2_labeled"])} tin gán nhãn tay; muốn cao hơn thì gán thêm nhãn để chỉnh luật</span></div>'
-        f'<div><b>TopDev</b><span>Cần cào lại để có đủ ngày đăng, kinh nghiệm; crawler đang cào cả tin ngoài IT</span></div>'
-        f'<div><b>Mô hình</b><span>Chờ thầy chọn hướng cho các lỗ hổng ở 2 slide sau</span></div></div>'
-        f'<ol class="end"><li>{n(clean["input"]["rows"])} bản ghi raw → {n(clean["output"]["rows"])} tin IT sạch, không mất dòng nào không lý do.</li>'
-        f'<li>11 nhóm vấn đề đều có luật if-else xử lý, không dùng model; số liệu kiểm được trong báo cáo từng bước.</li>'
-        f'<li>Đầu ra {n(enc["extra"]["total_columns"])} cột đặc trưng, lưu theo tầng bronze/silver/gold trên R2.</li></ol></div>',
-        ["Ba việc còn dở, nói thẳng để thầy biết giới hạn của số liệu hiện tại.",
-         f"Luật IT tầng 2 sai khoảng {pct(100 - 100 * review['level2_correct'] / max(review['level2_labeled'], 1), 0)} trên mẫu, nên một phần tin bị bỏ có thể là IT thật.",
-         "Toàn bộ pipeline là luật if-else, chạy lại cho cùng kết quả, không tốn tiền API."],
-        [("Tin bị bỏ nhầm thì sao?", f"Danh sách tin bị bỏ nằm trong báo cáo Clean (C4c); gán thêm nhãn tay vào data/preprocessing/review/ rồi chỉnh luật tầng 2."),
-         ("Sao bỏ model AI?", "Dịch vụ ngoài hết lượt, hết hạn mức; luật if-else giải thích được từng quyết định và đo được độ đúng bằng nhãn tay."),
+        "Ưu điểm",
+        '<div class="center"><div class="pros">' + "".join(f"<div><b>{esc(v)}</b><strong>{esc(t)}</strong><span>{esc(d)}</span></div>" for v, t, d in pros) + "</div></div>",
+        ["Trước hết là sáu điểm mạnh; điểm nào cũng có con số kiểm được.",
+         "Quan trọng nhất là truy vết: báo cáo mỗi bước ghi số vào bằng số ra cộng số bỏ, nên không có dòng nào mất mà không rõ lý do.",
+         f"Luật lọc IT không đặt theo cảm tính: tầng 1 đúng {n(review['rule_correct'])}/{n(review['rule_decided'])} tin trên mẫu gán nhãn tay.",
+         "Các lỗi gốc như lương sai đơn vị và cấp bậc lệch về Middle đã sửa tận gốc ở bộ parse, không vá tay.",
+         "Thiếu thì để trống và gắn cờ, không bù số giả; và toàn bộ là luật if-else nên ai chạy lại cũng ra đúng số này."],
+        [("Bảo toàn dòng kiểm ở đâu?", "Trường checks.rows_conserved trong mỗi reports/preprocessing/<bước>/_all.json, cả 5 bước đều true."),
+         ("Sao không bù giá trị thiếu?", "Bù sẽ tạo số giả, nhất là nhãn lương; giữ trống và có cột cờ thiếu giá trị ở bước Encoding."),
          ("Chạy lại toàn bộ thế nào?", "python scripts/run_preprocessing.py --step all --source all, rồi python scripts/build_slides.py.")],
-        ["reports/preprocessing/01_clean/_all.json → extra.review (level2_correct, level2_labeled), extra.it_levels",
-         "data/preprocessing/04_normalization/all.parquet"]))
+        ["reports/preprocessing/<bước>/_all.json → checks.rows_conserved", "reports/preprocessing/01_clean/_all.json → extra.review",
+         "docs/presentation/data/raw_issues_before.json, before_review.json (số trước sửa)"],
+        conclusion="Kết quả xử lý kiểm chứng được bằng số và chạy lại được, không dựa vào cảm tính."))
 
     out[-1]["todo"] = [
         f"Luật IT tầng 2 đúng {l2} ({n(review['level2_correct'])}/{n(review['level2_labeled'])} tin gán nhãn); gán thêm nhãn tay để chỉnh luật nếu cần độ đúng cao hơn.",
@@ -673,30 +681,56 @@ def build(raw: dict, raw_now: dict, reports: dict, after: dict, before: dict, st
         "Mức Cao/TB/Thấp của các nhóm thiếu trường, địa điểm, cấp bậc, kỹ năng, ngày, văn bản là tự đánh giá; tài liệu gốc chưa ghi.",
     ]
 
-    # 17. Vấn đề cho bước mô hình
+    # Đánh giá (2): nhược điểm = lỗ hổng còn lại cho bước mô hình
     N = after["rows"]
     gaps = [("Thiếu lương (thỏa thuận)", N - after["salary_any"]), ("Nhóm nghề 'Khác'", after["family_khac"]),
             ("Tin IT do luật tầng 2 quyết", after["level2_kept"] or 0), ("JD tiếng Anh (không dịch)", after["lang_en"]),
             ("Cấp bậc không rõ", after["seniority"].get("Không rõ", 0))]
     gaps.sort(key=lambda x: -x[1])
     out.append(slide(
-        "Bước tiếp theo là mô hình: dữ liệu còn những lỗ hổng nào",
+        "Nhược điểm: dữ liệu còn 5 lỗ hổng",
         '<div class="two">' + chart_box(hbar([(k, 100 * v / N) for k, v in gaps], f"Tỉ lệ tin bị ảnh hưởng (% trên {n(N)} tin)", "Lỗ hổng",
                                              w=700, label_w=220, bar=44, fmt=lambda v: pct(v, 1), vmax=100), "04_normalization/all.parquet")
         + f'<div class="facts"><div><b>{pct(100 * after["city_top2"] / N, 0)}</b><span>tin ở Hà Nội + TP.HCM</span></div>'
           f'<div><b>{n(max(after["by_source"].values()))} : {n(min(after["by_source"].values()))}</b><span>tin nguồn nhiều nhất : ít nhất</span></div>'
           f'<div><b>{n(enc["extra"]["total_columns"])} cột</b><span>ma trận kỹ năng thưa {pct(enc["extra"]["skills_sparsity"])}</span></div></div></div>',
-        [f"Pre-processing xong nhưng dữ liệu đưa vào mô hình còn năm lỗ hổng, đo trên cùng bảng {n(N)} tin.",
+        [f"Ngược lại, em cũng nói thẳng nhược điểm: dữ liệu đưa vào mô hình còn năm lỗ hổng, đo trên cùng bảng {n(N)} tin.",
          f"Lớn nhất là lương: {pct(100 * (N - after['salary_any']) / N, 0)} tin để lương thỏa thuận, nên mô hình lương chỉ có {n(after['salary_any'])} tin có nhãn.",
          f"Nhóm nghề 'Khác' chiếm {pct(100 * after['family_khac'] / N, 0)}; {n(after['level2_kept'] or 0)} tin là IT do luật tầng 2 quyết, độ đúng thấp hơn tầng 1.",
          "Dữ liệu cũng lệch: tập trung ở Hà Nội, TP.HCM và vài nguồn lớn.",
-         "Slide sau là các câu em muốn xin ý kiến thầy."],
-        [("Sao không bù lương thiếu luôn?", "Bù bằng trung bình sẽ tạo nhãn giả cho mô hình lương; em muốn thầy chọn hướng ở slide sau."),
+         "Slide sau là việc em sẽ làm cho từng lỗ hổng."],
+        [("Sao không bù lương thiếu luôn?", "Bù bằng trung bình sẽ tạo nhãn giả cho mô hình lương; em muốn thầy chọn hướng ở slide xin ý kiến."),
          ("'Khác' gồm gì?", "Tin IT không khớp 12 nhóm theo luật tiêu đề, ví dụ IT support, ERP, kỹ sư nhúng; xem cột job_family trong all.parquet."),
          ("Lệch vùng có sao không?", "Mô hình sẽ học chủ yếu thị trường Hà Nội, TP.HCM; kết luận cho tỉnh khác kém tin cậy.")],
         ["data/preprocessing/04_normalization/all.parquet → salary_min_vnd/salary_max_vnd, job_family, it_rule_level, language, seniority, tinh_chinh, source_platform",
          "reports/preprocessing/05_encoding/_all.json → extra.total_columns, extra.skills_sparsity"],
         conclusion=f"Lỗ hổng lớn nhất là lương ({pct(100 * (N - after['salary_any']) / N, 0)} thiếu) → cần chốt cách xử lý trước khi chọn mô hình."))
+
+    # Đánh giá (3): hướng khắc phục, mỗi dòng có cách đo đã xong
+    pN = lambda v: pct(100 * v / N, 0)  # noqa: E731
+    fixes = [
+        (f"Thiếu lương {pN(N - after['salary_any'])}", "Mô hình lương chỉ học trên tin có lương; cờ lương thỏa thuận làm đặc trưng", f"{n(after['salary_any'])} nhãn thật, 0 nhãn bù"),
+        (f"Luật IT tầng 2 đúng {l2}", "Gán thêm nhãn tay cho tin tầng 2 quyết, chỉnh từ khóa và ngưỡng kỹ năng", "Độ đúng tầng 2 trên nhãn mới"),
+        (f"Nhóm nghề 'Khác' {pN(after['family_khac'])}", "Thêm nhóm Nhúng, IT Support, ERP vào luật tiêu đề", "Tỉ lệ 'Khác' giảm"),
+        (f"JD tiếng Anh {pN(after['lang_en'])}", "Bổ sung từ khóa tiếng Anh cho luật nhóm nghề, cấp bậc (kỹ năng đã song ngữ)", "Không cần dịch, không model"),
+        (f"Cấp bậc không rõ {pN(after['seniority'].get('Không rõ', 0))}", "Giữ −1 và cờ thiếu; không đoán từ tiêu đề mơ hồ", "0 nhãn đoán"),
+        ("TopDev thiếu trường", "Sửa crawler lọc IT, cào lại ngày đăng, kinh nghiệm", "TopDev đủ 2 trường"),
+        (f"Lệch vùng {pN(after['city_top2'])} HN + TP.HCM", "Chia tầng theo tỉnh và nguồn khi tách train/test", "Đánh giá theo từng vùng"),
+    ]
+    out.append(slide(
+        "Hướng khắc phục",
+        '<table class="matrix fix"><thead><tr><th>Nhược điểm</th><th>Việc sẽ làm</th><th>Đo kết quả</th></tr></thead><tbody>'
+        + "".join(f'<tr><td><b>{esc(a)}</b></td><td>{esc(b)}</td><td class="n">{esc(c)}</td></tr>' for a, b, c in fixes) + "</tbody></table>",
+        ["Mỗi dòng là một nhược điểm, việc cụ thể em sẽ làm, và con số để biết đã xong.",
+         f"Lương: không bù trung bình vì sẽ tạo nhãn giả; mô hình lương học trên {n(after['salary_any'])} tin có lương.",
+         f"Luật IT tầng 2 còn sai khoảng {l2_err}: cách sửa là gán thêm nhãn tay rồi chỉnh luật, vẫn không dùng model.",
+         "Hai việc này làm trước vì chúng quyết định nhãn của mô hình; vài hướng em chưa chắc nên xin ý kiến thầy ở slide sau."],
+        [("Tin bị bỏ nhầm thì sao?", "Danh sách tin bị bỏ nằm trong báo cáo Clean (C4c); gán thêm nhãn tay vào data/preprocessing/review/ rồi chỉnh luật tầng 2."),
+         ("Sao không dịch JD tiếng Anh?", "Từ điển kỹ năng có cả tiếng Anh và tiếng Việt nên vẫn rút được kỹ năng; dịch cần model, dự án đã bỏ model."),
+         (f"{n(enc['extra']['total_columns'])} cột thưa {pct(enc['extra']['skills_sparsity'], 1)} thì sao?", "Mô hình dùng ma trận thưa; nếu cần thì giảm chiều bằng SVD hoặc chỉ giữ top 50 kỹ năng.")],
+        ["data/preprocessing/04_normalization/all.parquet → salary_min_vnd, job_family, it_rule_level, language, seniority, tinh_chinh",
+         "reports/preprocessing/01_clean/_all.json → extra.review"],
+        conclusion="Ưu tiên lương và luật IT tầng 2 vì ảnh hưởng trực tiếp đến nhãn mô hình."))
 
     # 18. Câu hỏi xin ý kiến thầy
     asks = [
@@ -712,7 +746,7 @@ def build(raw: dict, raw_now: dict, reports: dict, after: dict, before: dict, st
     out.append(slide(
         "Xin ý kiến thầy: chọn hướng xử lý trước khi làm mô hình",
         f'<div class="center"><div class="asks">{cards}</div></div>',
-        ["Mỗi thẻ là một lỗ hổng ở slide trước, kèm hai hướng em đang cân nhắc.",
+        ["Đây là các hướng em chưa tự quyết được: mỗi thẻ là một lỗ hổng, kèm hai hướng em đang cân nhắc.",
          "Em muốn thầy góp ý hướng nào hợp với mục tiêu đề tài, hoặc gợi ý hướng khác.",
          "Câu em ưu tiên hỏi nhất là số 1 (lương) và số 2 (độ đúng luật IT), vì ảnh hưởng trực tiếp đến dữ liệu đưa vào mô hình."],
         [("Em định dùng mô hình gì?", "Còn tùy hướng xử lý: dự đoán lương là hồi quy; phân nhóm nghề là phân loại; khai phá kỹ năng có thể dùng luật kết hợp."),
@@ -720,7 +754,54 @@ def build(raw: dict, raw_now: dict, reports: dict, after: dict, before: dict, st
          ("Sao không làm cả hai rồi so?", "Được, nếu thầy đồng ý thì em chạy cả A và B rồi báo cáo chênh lệch.")],
         ["data/preprocessing/04_normalization/all.parquet", "data/preprocessing/05_encoding/features.parquet, encoding_dictionary.json",
          "reports/preprocessing/01_clean/_all.json → extra.review"]))
+
+    # Kết luận + cảm ơn (Q&A của slide này cũng là câu chốt cuối buổi)
+    out.append(slide(
+        "Kết luận",
+        '<div class="concl-list">'
+        f'<div><i>1</i><p><b>{n(clean["input"]["rows"])} → {n(clean["output"]["rows"])}</b> bản ghi raw thành tin IT sạch, {n(enc["extra"]["total_columns"])} cột đặc trưng</p></div>'
+        f'<div><i>2</i><p><b>{len(ISSUES)}/{len(ISSUES)}</b> nhóm vấn đề có luật if-else xử lý, kiểm được bằng số trong báo cáo</p></div>'
+        '<div><i>3</i><p><b>Bước tiếp:</b> dự đoán lương, phân loại nhóm nghề, luật kết hợp kỹ năng</p></div>'
+        '</div><p class="thanks">Em cảm ơn thầy và các bạn đã lắng nghe</p>',
+        [f"Tóm lại, từ {n(clean['input']['rows'])} bản ghi raw của 8 trang, em thu được {n(clean['output']['rows'])} tin IT sạch với {n(enc['extra']['total_columns'])} cột đặc trưng.",
+         f"Cả {len(ISSUES)} nhóm vấn đề đều có luật xử lý, số liệu kiểm được trong báo cáo từng bước và trên Monitoring.",
+         "Bước tiếp theo là mô hình: hồi quy cho lương, phân loại cho nhóm nghề, luật kết hợp cho kỹ năng, theo hướng thầy góp ý.",
+         "Phần trình bày của em đến đây là hết. Em cảm ơn thầy và các bạn đã lắng nghe, em xin nhận câu hỏi và góp ý."],
+        [("Em định dùng mô hình gì?", "Dự đoán lương là hồi quy; phân nhóm nghề là phân loại; khai phá kỹ năng dùng luật kết hợp (Apriori/FP-Growth)."),
+         ("Cho thầy xem dữ liệu thật?", "./start_monitoring.sh, mở http://127.0.0.1:5173: trang Raw cho bronze, trang Pre-processing cho silver/gold, bấm một dòng để xem đủ trường.")],
+        ["reports/preprocessing/01_clean/_all.json (input.rows, output.rows)", "reports/preprocessing/05_encoding/_all.json (extra.total_columns)"]))
+    add_sections(out)
     return out
+
+
+SECTIONS = [  # (tên phần, slide bắt đầu, lời mở phần, mô tả trên slide Bố cục)
+    ("Vấn đề dữ liệu", lambda s: s["title"].startswith("Dữ liệu vào"),
+     "Phần 1 là vấn đề dữ liệu: trước khi xử lý, em đo xem raw sai ở đâu và sai bao nhiêu.", "11 nhóm vấn đề đo trên raw, kèm ví dụ thật"),
+    ("Quy trình xử lý", lambda s: s["title"].startswith("Pipeline"),
+     "Phần 2 là quy trình: 5 bước nối tiếp, mỗi bước giải một số vấn đề vừa nêu.", "Clean → Encoding, số dòng và luật mỗi bước"),
+    ("Đánh giá", lambda s: s["title"] == "Ưu điểm",
+     "Phần 3, em tự đánh giá kết quả: ưu điểm, nhược điểm và hướng khắc phục.", "Ưu điểm, nhược điểm, hướng khắc phục, xin ý kiến"),
+]
+
+
+def add_sections(out: list) -> None:
+    """Gắn tên phần (kicker) cho slide, thêm lời mở phần, chèn slide Bố cục sau slide tiêu đề."""
+    starts = [next(i for i, s in enumerate(out) if match(s)) for _, match, _, _ in SECTIONS]
+    for (name, _, intro, _), i in zip(SECTIONS, starts):
+        out[i]["say"].insert(0, intro)
+        for s in out[i:]:
+            s["sec"] = name
+    ends = [x - 1 for x in starts[1:]] + [len(out) - 1]
+    cards = "".join(f'<div><i>0{k}</i><b>{esc(name)}</b><span>{esc(desc)}</span><em>Slide {a + 2}–{b + 2}</em></div>'
+                    for k, ((name, _, _, desc), a, b) in enumerate(zip(SECTIONS, starts, ends), 1))
+    agenda = slide("Bố cục bài trình bày", f'<div class="agenda">{cards}</div>',
+                   ["Bài gồm ba phần: vấn đề của dữ liệu raw, quy trình 5 bước xử lý, và tự đánh giá kết quả.",
+                    "Mỗi bước xử lý đều chỉ rõ nó giải vấn đề nào ở phần 1; phần đánh giá nêu cả ưu điểm lẫn nhược điểm, kèm việc cụ thể để khắc phục.",
+                    "Cuối bài em có vài câu muốn xin ý kiến thầy trước khi làm mô hình."],
+                   [("Trình bày bao lâu?", "Khoảng 1 phút mỗi slide; phần vấn đề và quy trình là chính, phần đánh giá ngắn hơn.")],
+                   ["scripts/build_slides.py → SECTIONS"])
+    agenda["sec"] = "Nội dung"
+    out.insert(1, agenda)
 
 
 CSS = """
@@ -789,6 +870,22 @@ figure{margin:0}figcaption{font-size:13px;color:var(--muted);margin-top:2px}
 #notes code{font-size:14px;background:#F0F4F8;padding:1px 4px}
 #help{position:fixed;bottom:6px;left:10px;font-size:13px;color:var(--muted)}
 .printnotes{display:none}
+.kicker{position:absolute;top:10px;right:48px;margin:0;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:bold}
+.prog{position:absolute;left:0;bottom:0;height:5px;background:var(--accent)}
+.agenda{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;height:100%;align-items:center}
+.agenda div{border-top:6px solid var(--accent);background:#F5F8FC;border-radius:0 0 10px 10px;padding:28px 26px;display:flex;flex-direction:column;gap:10px;min-height:300px}
+.agenda i{font-style:normal;font-size:56px;font-weight:bold;color:#C7D4EA;line-height:1}
+.agenda b{font-size:30px;color:#102A43}.agenda span{font-size:21px;color:var(--muted)}.agenda em{margin-top:auto;font-style:normal;font-size:17px;color:var(--accent)}
+.pros{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.pros div{border-top:5px solid #067647;background:#F3FAF6;border-radius:0 0 10px 10px;padding:18px 20px;display:flex;flex-direction:column;gap:4px;min-height:200px}
+.pros b{font-size:44px;color:#067647;line-height:1.1}.pros strong{font-size:23px;color:#102A43}.pros span{font-size:18px;color:var(--muted);line-height:1.35}
+.matrix.fix th,.matrix.fix td{font-size:21px;padding:14px 10px;vertical-align:top}.matrix.fix td:first-child b{color:#B42318}
+.matrix.fix td.n{color:#067647;font-weight:bold;white-space:normal}
+.concl-list{display:flex;flex-direction:column;gap:22px;margin-top:40px}
+.concl-list div{display:flex;align-items:center;gap:22px}
+.concl-list i{flex:none;width:54px;height:54px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;font-size:28px;font-weight:bold;display:flex;align-items:center;justify-content:center}
+.concl-list p{margin:0;font-size:28px}.concl-list b{color:#102A43}
+.thanks{margin-top:56px;font-size:34px;color:var(--accent);font-style:italic;text-align:center}
 @media print{@page{size:1280px 1500px;margin:0}html,body{background:#fff}#deck{position:static;display:block}#notes,#notes.on,#help{display:none!important}
   .s{display:flex!important;position:relative;transform:none!important;box-shadow:none;border:1px solid #ccc;height:auto;break-inside:avoid}
   .s .body{flex:none;height:560px}
@@ -814,10 +911,12 @@ def render(slides: list) -> str:
                  f"<h3>Câu hỏi có thể gặp</h3><ul>{''.join(f'<li><b>{esc(q)}</b> {esc(a)}</li>' for q, a in s['qa'])}</ul>"
                  f"<h3>Lấy số ở đâu</h3><ul>{''.join(f'<li><code>{esc(x)}</code></li>' for x in s['src'])}</ul>")
         parts.append(
-            f'<section class="s"><h1>{esc(s["title"])}</h1>' + (f'<span class="tag">{esc(s["tag"])}</span>' if s["tag"] else "")
+            f'<section class="s"><h1>{esc(s["title"])}</h1>'
+            + (f'<p class="kicker">{esc(" · ".join(x for x in (s.get("sec"), s["tag"]) if x))}</p>' if s.get("sec") or s["tag"] else "")
             + f'<div class="body">{RULE_CODES.sub("", s["body"])}</div>'
             + (f'<div class="concl">Kết luận: {esc(RULE_CODES.sub("", s["conclusion"]))}</div>' if s["conclusion"] else "")
-            + f'<span class="pg">{k}/{len(slides)}</span><div class="printnotes">{notes}</div></section>')
+            + f'<span class="pg">{k}/{len(slides)}</span><div class="prog" style="width:{100 * k / len(slides):.1f}%"></div>'
+            f'<div class="printnotes">{notes}</div></section>')
     return (f'<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>Tiền xử lý dữ liệu</title><style>{CSS}</style></head><body><div id="deck">{"".join(parts)}</div>'
             f'<div id="notes"></div><div id="help">← → chuyển slide · N lời nói và câu hỏi · P in lời nói · F toàn màn hình</div>'
@@ -845,14 +944,25 @@ def load_inputs():
 def render_md(slides: list) -> str:
     """Kịch bản thuyết trình: lời nói, câu hỏi dự đoán kèm trả lời, chỗ lấy số. Cùng nội dung với phím N trong slide."""
     lines = ["# Kịch bản thuyết trình: Tiền xử lý dữ liệu việc làm IT", "",
-             "Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation/slides.html`. Sửa lời trong script rồi chạy lại, đừng sửa file này bằng tay.", ""]
+             "Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation/slides.html`. Sửa lời trong script rồi chạy lại, đừng sửa file này bằng tay.", "",
+             f"**Thời lượng gợi ý:** khoảng 1 phút mỗi slide, tổng khoảng {len(slides)} phút, chưa tính hỏi đáp. Trong slide bấm N để xem lời nói.", "",
+             "**Dàn bài:**", ""]
+    sec = None
+    for k, s in enumerate(slides, 1):
+        if s.get("sec") != sec:
+            sec = s.get("sec")
+            lines.append(f"- **{sec or 'Mở đầu'}**")
+        lines.append(f"  - Slide {k}. {s['title']}")
+    lines.append("")
     todo = []
     for k, s in enumerate(slides, 1):
-        lines += [f"## Slide {k}. {s['title']}", ""]
+        lines += [f"## Slide {k}. {s['title']}" + (f" · {s['sec']}" if s.get("sec") else ""), ""]
         if s["conclusion"]:
             lines += [f"**Kết luận trên slide:** {s['conclusion']}", ""]
         lines += ["**Nói:**", ""] + [f"- {x}" for x in s["say"]] + ["", "**Thầy có thể hỏi:**", ""]
         lines += [f"- *{q}*  \n  {a}" for q, a in s["qa"]] + ["", "**Lấy số ở đâu:**", ""] + [f"- `{x}`" for x in s["src"]] + [""]
+        if k < len(slides):
+            lines += [f"*Chuyển ý → slide {k + 1}: {slides[k]['title']}*", ""]
         todo += s.get("todo", [])
     lines += ["## Việc còn tồn đọng (ghi chú cho mình, không chiếu)", ""] + [f"- {t}" for t in todo] + [""]
     return "\n".join(lines)
