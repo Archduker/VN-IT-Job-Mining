@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:53:37+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:53+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 315
+    "rows": 271
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 315
+    "rows": 271
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 668,
+      "rows_affected": 571,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 200,
+      "rows_affected": 163,
       "examples": [
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
@@ -42,11 +42,11 @@
           "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
         },
         {
-          "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
+          "job_id": "052cfb91-4006-4261-9541-f759695858ab",
           "field": "salary_min_max",
-          "before": "₫8.000.000-11.000.000/Tháng",
-          "after": "8000000.0 - 11000000.0 VND (header)",
-          "url": "https://glints.com/vn/opportunities/jobs/hcm925-ky-thuat-vien-khuon-kcx-tan-thuan-khong-kinh-nghiem/0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd"
+          "before": "₫15.000.000-18.000.000/Tháng",
+          "after": "15000000.0 - 18000000.0 VND (header)",
+          "url": "https://glints.com/vn/opportunities/jobs/nhan-vien-it-dong-nai-15-trieu/052cfb91-4006-4261-9541-f759695858ab"
         }
       ]
     },
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 315,
+      "rows_affected": 271,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 234,
+      "rows_affected": 202,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -97,35 +97,21 @@
       "id": "T2f",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 6,
+      "rows_affected": 5,
       "examples": []
     },
     {
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 315,
-      "examples": []
-    },
-    {
-      "id": "T6b",
-      "name": "Dịch JD tiếng Anh sang tiếng Việt",
-      "action": "modify",
-      "rows_affected": 0,
-      "examples": []
-    },
-    {
-      "id": "T6c",
-      "name": "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term",
-      "action": "flag",
-      "rows_affected": 0,
+      "rows_affected": 271,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 315,
+      "rows_affected": 271,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -154,7 +140,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 315,
+      "rows_affected": 271,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -183,13 +169,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 62.9,
-      "fill_pct_out": 62.9
+      "fill_pct_in": 59.4,
+      "fill_pct_out": 59.4
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 63.2,
-      "fill_pct_out": 63.2
+      "fill_pct_in": 59.8,
+      "fill_pct_out": 59.8
     },
     {
       "field": "posted_date",
@@ -198,18 +184,18 @@
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 97.8,
-      "fill_pct_out": 97.8
+      "fill_pct_in": 98.2,
+      "fill_pct_out": 98.2
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 74.3,
-      "fill_pct_out": 74.3
+      "fill_pct_in": 74.5,
+      "fill_pct_out": 74.5
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 74.3,
-      "fill_pct_out": 74.3
+      "fill_pct_in": 74.5,
+      "fill_pct_out": 74.5
     },
     {
       "field": "headcount",
@@ -228,18 +214,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 97.5,
-      "fill_pct_out": 97.5
+      "fill_pct_in": 98.2,
+      "fill_pct_out": 98.2
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 94.0,
-      "fill_pct_out": 94.0
-    },
-    {
-      "field": "description_vi",
-      "fill_pct_in": 65.4,
-      "fill_pct_out": 65.4
+      "fill_pct_in": 93.0,
+      "fill_pct_out": 93.0
     },
     {
       "field": "locations",
@@ -258,21 +239,21 @@
   },
   "api": {
     "used": false,
-    "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 199,
-      "title": 1,
-      "jd": 6,
-      "none": 109
+      "header": 163,
+      "title": 0,
+      "jd": 5,
+      "none": 103
     },
-    "salary_under_1m_count": 6,
+    "salary_under_1m_count": 5,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 206,
-      "en": 109
+      "vi": 165,
+      "en": 106
     },
-    "experience_parsed_rate": 74.3
+    "experience_parsed_rate": 74.5
   }
 }

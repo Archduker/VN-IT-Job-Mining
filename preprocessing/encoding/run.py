@@ -4,13 +4,13 @@
 Mã hóa bộ golden đã chuẩn hóa (04_normalization/all.parquet) thành bảng số học
 cho các mô hình Machine Learning:
 - E1: Ordinal Seniority (0-5, -1 cho Chưa rõ).
-- E2: One-hot job_family, source_platform, employment_type, it_status.
+- E2: One-hot job_family, source_platform, employment_type.
 - E3: Multi-hot top 10 tỉnh/thành + tinh__other + is_remote + is_foreign.
 - E4: Multi-hot top K kỹ năng (count >= 20, tối đa 200) + skills__other_count.
 - E5: Giữ cột số liên tục + thêm cột __missing (0/1).
 - E6: Binary flags (is_negotiable, is_outlier_salary).
 - E7: Đặc trưng thời gian (posted_month, days_to_deadline).
-- E8: Probability scores (it_prob, seniority_prob, job_family_prob) + __missing.
+- E8: Cờ của luật if-else (it_rule_level__2, seniority_can_kiem, job_family_can_kiem), 0/1.
 Xuất features.parquet và encoding_dictionary.json.
 """
 
@@ -132,15 +132,6 @@ def encode_dataset(
         "method": "one-hot",
         "categories": ["full_time", "part_time", "intern", "other"],
         "missing_indicator": "employment_type__missing",
-    }
-
-    # it_status
-    for st in ["it", "non_it", "can_kiem"]:
-        cols[f"it_status__{st}"] = (df["it_status"] == st).astype(np.uint8).values
-    dictionary["it_status"] = {
-        "source_column": "it_status",
-        "method": "one-hot",
-        "categories": ["it", "non_it", "can_kiem"],
     }
 
     rules_counts["E2"] = total_rows
@@ -312,21 +303,17 @@ def encode_dataset(
     }
 
     # -------------------------------------------------------------
-    # E8: Probability scores (it_prob, seniority_prob, job_family_prob)
+    # E8: cờ của luật if-else (sau Clean mọi tin đều là IT nên it_status không còn thông tin; giữ tầng quyết)
     # -------------------------------------------------------------
-    prob_cols = ["it_prob", "seniority_prob", "job_family_prob"]
-    e8_affected = 0
-    for pcol in prob_cols:
-        val_series = pd.to_numeric(df[pcol], errors="coerce") if pcol in df.columns else pd.Series(np.nan, index=df.index)
-        cols[pcol] = val_series.astype(np.float32).values
-        cols[f"{pcol}__missing"] = val_series.isna().astype(np.uint8).values
-        e8_affected += int(val_series.notna().sum())
-
-    rules_counts["E8"] = e8_affected
-    dictionary["probability_features"] = {
-        "columns": prob_cols,
-        "missing_suffix": "__missing",
+    flag_src = {
+        "it_rule_level__2": (pd.to_numeric(df["it_rule_level"], errors="coerce") == 2) if "it_rule_level" in df.columns else pd.Series(False, index=df.index),
+        "seniority_can_kiem": df["seniority_can_kiem"] if "seniority_can_kiem" in df.columns else pd.Series(False, index=df.index),
+        "job_family_can_kiem": df["job_family_can_kiem"] if "job_family_can_kiem" in df.columns else pd.Series(False, index=df.index),
     }
+    for col, ser in flag_src.items():
+        cols[col] = ser.fillna(False).astype(bool).astype(np.uint8).values
+    rules_counts["E8"] = int(sum(cols[c].sum() for c in flag_src))
+    dictionary["rule_flags"] = list(flag_src)
 
     res_df = pd.DataFrame(cols)
     return res_df, dictionary, rules_counts
@@ -334,8 +321,7 @@ def encode_dataset(
 
 def run(
     sources: Sequence[str] = SOURCES,
-    dry_run: bool = True,
-    use_api: bool = False
+    dry_run: bool = True
 ) -> Dict[str, StepReport]:
     report = StepReport(STEP, "_all", dry_run)
 
@@ -362,13 +348,13 @@ def run(
 
     # Đăng ký rules vào báo cáo
     report.rule("E1", "Mã hóa Ordinal cho Seniority (0-5, -1 cho Chưa rõ)", "modify", rules_counts.get("E1", 0))
-    report.rule("E2", "Mã hóa One-hot cho Job Family, Nền tảng, Hình thức, IT status", "modify", rules_counts.get("E2", 0))
+    report.rule("E2", "Mã hóa One-hot cho Job Family, Nền tảng, Hình thức", "modify", rules_counts.get("E2", 0))
     report.rule("E3", "Mã hóa Multi-hot cho Top 10 tỉnh/thành, Remote, Ngoại quốc", "modify", rules_counts.get("E3", 0))
     report.rule("E4", "Mã hóa Multi-hot cho Top K kỹ năng phổ biến", "modify", rules_counts.get("E4", 0))
     report.rule("E5", "Bảo toàn số học và gắn cờ khuyết thiếu missing", "modify", rules_counts.get("E5", 0))
-    report.rule("E6", "Mã hóa nhị phân cờ lương và IT status", "modify", rules_counts.get("E6", 0))
+    report.rule("E6", "Mã hóa nhị phân cờ lương", "modify", rules_counts.get("E6", 0))
     report.rule("E7", "Bóc tách đặc trưng thời gian (tháng đăng, ngày tới hạn)", "modify", rules_counts.get("E7", 0))
-    report.rule("E8", "Bảo toàn điểm xác suất JEV và gắn cờ khuyết thiếu", "modify", rules_counts.get("E8", 0))
+    report.rule("E8", "Mã hóa nhị phân cờ của luật if-else (tầng 2, nhãn mâu thuẫn)", "modify", rules_counts.get("E8", 0))
 
     # Đo độ thưa của kỹ năng
     skill_cols = [c for c in features_df.columns if c.startswith("skill__")]
@@ -383,10 +369,11 @@ def run(
         "feature_types": {
             "id_columns": ["job_id_global"],
             "ordinal_columns": ["seniority_ord"],
-            "one_hot_columns": [c for c in features_df.columns if "__" in c and any(c.startswith(p) for p in ["job_family__", "source_platform__", "employment_type__", "it_status__"]) and not c.endswith("__missing")],
+            "one_hot_columns": [c for c in features_df.columns if "__" in c and any(c.startswith(p) for p in ["job_family__", "source_platform__", "employment_type__"]) and not c.endswith("__missing")],
             "multi_hot_columns": [c for c in features_df.columns if c.startswith("tinh__") or c.startswith("skill__") or c in ["is_remote", "is_foreign"]],
-            "continuous_numeric_columns": [c for c in features_df.columns if not c.endswith("__missing") and c in ["log_salary_min", "log_salary_max", "exp_min_years", "exp_max_years", "headcount", "posted_month", "days_to_deadline", "it_prob", "seniority_prob", "job_family_prob"]],
+            "continuous_numeric_columns": [c for c in features_df.columns if not c.endswith("__missing") and c in ["log_salary_min", "log_salary_max", "exp_min_years", "exp_max_years", "headcount", "posted_month", "days_to_deadline"]],
             "missing_indicator_columns": [c for c in features_df.columns if c.endswith("__missing")],
+            "rule_flag_columns": ["it_rule_level__2", "seniority_can_kiem", "job_family_can_kiem"],
         },
         "skills_sparsity": round(sparsity * 100, 2),
         "encoded_skills_count": len(skill_cols),

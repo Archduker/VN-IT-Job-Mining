@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:53:57+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:13:07+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 8344
+    "rows": 5177
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 8344
+    "rows": 5177
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 7455,
+      "rows_affected": 4315,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -43,21 +43,21 @@
         }
       ],
       "by_source": {
-        "topcv": 1975,
-        "topdev": 1634,
-        "vietnamworks": 1201,
-        "careerviet": 583,
-        "vieclam24h": 468,
+        "topcv": 1554,
+        "topdev": 227,
+        "vietnamworks": 867,
+        "careerviet": 441,
+        "vieclam24h": 182,
         "itviec": 187,
-        "glints": 218,
-        "jobsgo": 1189
+        "glints": 178,
+        "jobsgo": 679
       }
     },
     {
       "id": "N2",
       "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
       "action": "modify",
-      "rows_affected": 6787,
+      "rows_affected": 4477,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -82,21 +82,21 @@
         }
       ],
       "by_source": {
-        "topcv": 1975,
-        "topdev": 742,
-        "vietnamworks": 1113,
-        "careerviet": 551,
-        "vieclam24h": 468,
+        "topcv": 1554,
+        "topdev": 113,
+        "vietnamworks": 810,
+        "careerviet": 422,
+        "vieclam24h": 182,
         "itviec": 471,
-        "glints": 276,
-        "jobsgo": 1191
+        "glints": 243,
+        "jobsgo": 682
       }
     },
     {
       "id": "N3",
       "name": "Phân loại 12 nhóm nghề IT",
       "action": "modify",
-      "rows_affected": 4942,
+      "rows_affected": 4604,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -121,81 +121,81 @@
         }
       ],
       "by_source": {
-        "topcv": 1442,
-        "topdev": 301,
-        "vietnamworks": 819,
-        "careerviet": 434,
-        "vieclam24h": 144,
+        "topcv": 1355,
+        "topdev": 210,
+        "vietnamworks": 816,
+        "careerviet": 392,
+        "vieclam24h": 140,
         "itviec": 877,
-        "glints": 260,
-        "jobsgo": 665
+        "glints": 259,
+        "jobsgo": 555
       }
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 6270,
+      "rows_affected": 4765,
       "examples": [],
       "by_source": {
-        "topcv": 1879,
-        "topdev": 624,
-        "vietnamworks": 1249,
-        "careerviet": 393,
-        "vieclam24h": 441,
+        "topcv": 1523,
+        "topdev": 205,
+        "vietnamworks": 900,
+        "careerviet": 357,
+        "vieclam24h": 182,
         "itviec": 905,
-        "glints": 307,
-        "jobsgo": 472
+        "glints": 266,
+        "jobsgo": 427
       }
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 8341,
+      "rows_affected": 5174,
       "examples": [],
       "by_source": {
-        "topcv": 1983,
-        "topdev": 1635,
-        "vietnamworks": 1249,
-        "careerviet": 592,
-        "vieclam24h": 467,
+        "topcv": 1560,
+        "topdev": 227,
+        "vietnamworks": 900,
+        "careerviet": 448,
+        "vieclam24h": 181,
         "itviec": 905,
-        "glints": 315,
-        "jobsgo": 1195
+        "glints": 271,
+        "jobsgo": 682
       }
     },
     {
       "id": "N2b",
-      "name": "JEV không đồng ý nhãn cấp bậc/nhóm nghề: gắn cờ cần kiểm",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 0,
+      "rows_affected": 635,
       "examples": [],
       "by_source": {
-        "topcv": 0,
-        "topdev": 0,
-        "vietnamworks": 0,
-        "careerviet": 0,
-        "vieclam24h": 0,
-        "itviec": 0,
-        "glints": 0,
-        "jobsgo": 0
+        "topcv": 38,
+        "topdev": 18,
+        "vietnamworks": 19,
+        "careerviet": 40,
+        "vieclam24h": 2,
+        "itviec": 364,
+        "glints": 4,
+        "jobsgo": 150
       }
     },
     {
       "id": "N6a",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 33,
+      "rows_affected": 24,
       "examples": [],
       "by_source": {
         "topcv": 2,
-        "topdev": 2,
-        "vietnamworks": 17,
-        "careerviet": 2,
+        "topdev": 0,
+        "vietnamworks": 12,
+        "careerviet": 1,
         "vieclam24h": 2,
         "itviec": 1,
-        "glints": 6,
+        "glints": 5,
         "jobsgo": 1
       }
     },
@@ -203,34 +203,34 @@
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
       "action": "modify",
-      "rows_affected": 276,
+      "rows_affected": 113,
       "examples": [],
       "by_source": {
-        "topcv": 45,
-        "topdev": 17,
-        "vietnamworks": 74,
-        "careerviet": 8,
-        "vieclam24h": 2,
-        "itviec": 95,
-        "glints": 11,
-        "jobsgo": 24
+        "topcv": 7,
+        "topdev": 1,
+        "vietnamworks": 40,
+        "careerviet": 1,
+        "vieclam24h": 0,
+        "itviec": 59,
+        "glints": 1,
+        "jobsgo": 4
       }
     },
     {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 3773,
+      "rows_affected": 2278,
       "examples": [],
       "by_source": {
-        "topcv": 1157,
-        "topdev": 487,
-        "vietnamworks": 327,
-        "careerviet": 188,
-        "vieclam24h": 441,
+        "topcv": 884,
+        "topdev": 61,
+        "vietnamworks": 235,
+        "careerviet": 136,
+        "vieclam24h": 168,
         "itviec": 231,
-        "glints": 199,
-        "jobsgo": 743
+        "glints": 162,
+        "jobsgo": 401
       }
     }
   ],
@@ -242,18 +242,18 @@
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 89.0,
-      "fill_pct_out": 89.0
+      "fill_pct_in": 82.9,
+      "fill_pct_out": 82.9
     },
     {
       "field": "seniority",
-      "fill_pct_in": 81.3,
-      "fill_pct_out": 81.3
+      "fill_pct_in": 86.5,
+      "fill_pct_out": 86.5
     },
     {
       "field": "seniority_source",
-      "fill_pct_in": 81.3,
-      "fill_pct_out": 81.3
+      "fill_pct_in": 86.5,
+      "fill_pct_out": 86.5
     },
     {
       "field": "job_family",
@@ -267,33 +267,33 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 75.2,
-      "fill_pct_out": 75.2
+      "fill_pct_in": 92.1,
+      "fill_pct_out": 92.1
     },
     {
       "field": "company_norm",
-      "fill_pct_in": 100.0,
-      "fill_pct_out": 100.0
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 42.5,
-      "fill_pct_out": 42.5
+      "fill_pct_in": 39.8,
+      "fill_pct_out": 39.8
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 45.2,
-      "fill_pct_out": 45.2
+      "fill_pct_in": 44.0,
+      "fill_pct_out": 44.0
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 42.5,
-      "fill_pct_out": 42.5
+      "fill_pct_in": 39.8,
+      "fill_pct_out": 39.8
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 45.2,
-      "fill_pct_out": 45.2
+      "fill_pct_in": 44.0,
+      "fill_pct_out": 44.0
     },
     {
       "field": "is_outlier_salary",
@@ -307,63 +307,55 @@
   },
   "api": {
     "used": false,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 0,
-    "reason": "không bật --use-api",
-    "max_cost_usd": 0.3
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1984,
-        "output": 1984
+        "input": 1561,
+        "output": 1561
       },
       "topdev": {
-        "input": 1635,
-        "output": 1635
+        "input": 227,
+        "output": 227
       },
       "vietnamworks": {
-        "input": 1249,
-        "output": 1249
+        "input": 900,
+        "output": 900
       },
       "careerviet": {
-        "input": 592,
-        "output": 592
+        "input": 448,
+        "output": 448
       },
       "vieclam24h": {
-        "input": 468,
-        "output": 468
+        "input": 182,
+        "output": 182
       },
       "itviec": {
         "input": 905,
         "output": 905
       },
       "glints": {
-        "input": 315,
-        "output": 315
+        "input": 271,
+        "output": 271
       },
       "jobsgo": {
-        "input": 1196,
-        "output": 1196
+        "input": 683,
+        "output": 683
       }
     },
     "global_salary_stats": {
-      "outlier_count": 276,
+      "outlier_count": 113,
       "salary_suspect_count": 0,
       "iqr_bounds": {
         "lower": 0.0,
-        "upper": 52500000.0
+        "upper": 76000000.0
       },
-      "winsorize_q01_min": 2000000.0,
-      "winsorize_q99_min": 63500000.0,
-      "winsorize_q01_max": 3000000.0,
-      "winsorize_q99_max": 101600000.0
+      "winsorize_q01_min": 1804999.9999999998,
+      "winsorize_q99_min": 89328999.99999987,
+      "winsorize_q01_max": 2952620.0,
+      "winsorize_q99_max": 127000000.0
     },
-    "total_jobs": 8344
+    "total_jobs": 5177
   }
 }

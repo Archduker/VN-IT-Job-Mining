@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:52:50+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:13+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/01_clean/<nguồn>.jsonl",
-    "rows": 8344
+    "rows": 5177
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 8344
+    "rows": 5177
   },
   "dropped": [
     {
@@ -41,17 +41,17 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
       "action": "modify",
-      "rows_affected": 8344,
+      "rows_affected": 5177,
       "examples": [],
       "by_source": {
-        "topcv": 1984,
-        "topdev": 1635,
-        "vietnamworks": 1249,
-        "careerviet": 592,
-        "vieclam24h": 468,
+        "topcv": 1561,
+        "topdev": 227,
+        "vietnamworks": 900,
+        "careerviet": 448,
+        "vieclam24h": 182,
         "itviec": 905,
-        "glints": 315,
-        "jobsgo": 1196
+        "glints": 271,
+        "jobsgo": 683
       }
     },
     {
@@ -97,7 +97,7 @@
       "id": "I3",
       "name": "TopDev lấy ngày đăng và kinh nghiệm từ published/JSON-LD",
       "action": "modify",
-      "rows_affected": 541,
+      "rows_affected": 71,
       "examples": [
         {
           "job_id": "2133063",
@@ -123,7 +123,7 @@
       ],
       "by_source": {
         "topcv": 0,
-        "topdev": 541,
+        "topdev": 71,
         "vietnamworks": 0,
         "careerviet": 0,
         "vieclam24h": 0,
@@ -136,46 +136,46 @@
       "id": "I4",
       "name": "Bỏ tag SEO và ngành nghề khỏi skills_list",
       "action": "modify",
-      "rows_affected": 1658,
+      "rows_affected": 1030,
       "examples": [
         {
-          "job_id": "25613728225",
+          "job_id": "27681538345",
           "field": "skills_list",
-          "before": "['Điện Lạnh - HVAC', 'Điện - Điện Công Nghiệp', 'An Toàn Thông Tin - An Ninh Mạng']",
+          "before": "['Quản Lý Dự Án IT', 'Kiểm Thử Phần Mềm', 'Dữ Liệu - AI - Học Máy']",
           "after": "[]",
-          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-25613728225.html"
+          "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-solution-engineer-thu-nhap-12-20-trieu-27681538345.html"
         },
         {
-          "job_id": "27011061641",
+          "job_id": "27712444149",
           "field": "skills_list",
-          "before": "['Điện Lạnh - HVAC', 'Điện - Điện Công Nghiệp', 'An Toàn Thông Tin - An Ninh Mạng']",
+          "before": "['Kiểm Thử Phần Mềm', 'Vận Hành IT - IT Helpdesk', 'Triển Khai Giải Pháp IT']",
           "after": "[]",
-          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-27011061641.html"
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-dinh-thu-phan-mem-qa-engineer-luong-10-20-trieu-27712444149.html"
         },
         {
-          "job_id": "27522188780",
+          "job_id": "28385786022",
           "field": "skills_list",
-          "before": "['Sales Công Nghệ Thông Tin', 'Triển Khai Giải Pháp IT', 'Thiết Kế Giao Diện - UI-UX']",
+          "before": "['Quản Lý Dự Án IT', 'Sales Công Nghệ Thông Tin', 'Điện Tử - Vi Mạch - Bán Dẫn']",
           "after": "[]",
-          "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-tu-van-thiet-ke-website-fulltime-ho-chi-minh-27522188780.html"
+          "url": "https://jobsgo.vn/viec-lam/ky-su-presales-cntt-server-network-cctv-thu-nhap-20-25-trieu-28385786022.html"
         }
       ],
       "by_source": {
         "topcv": 0,
         "topdev": 0,
         "vietnamworks": 0,
-        "careerviet": 466,
+        "careerviet": 349,
         "vieclam24h": 0,
         "itviec": 0,
         "glints": 0,
-        "jobsgo": 1192
+        "jobsgo": 681
       }
     },
     {
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 2978,
+      "rows_affected": 1291,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -200,14 +200,14 @@
         }
       ],
       "by_source": {
-        "topcv": 16,
-        "topdev": 1051,
+        "topcv": 11,
+        "topdev": 41,
         "vietnamworks": 1,
-        "careerviet": 592,
-        "vieclam24h": 2,
+        "careerviet": 448,
+        "vieclam24h": 0,
         "itviec": 31,
-        "glints": 89,
-        "jobsgo": 1196
+        "glints": 76,
+        "jobsgo": 683
       }
     }
   ],
@@ -224,33 +224,33 @@
     },
     {
       "field": "company_address",
-      "fill_pct_in": 73.6,
-      "fill_pct_out": 73.6
+      "fill_pct_in": 87.0,
+      "fill_pct_out": 87.0
     },
     {
       "field": "raw_category_text",
-      "fill_pct_in": 78.5,
-      "fill_pct_out": 78.5
+      "fill_pct_in": 93.0,
+      "fill_pct_out": 93.0
     },
     {
       "field": "raw_location_text",
-      "fill_pct_in": 95.9,
-      "fill_pct_out": 95.9
+      "fill_pct_in": 95.8,
+      "fill_pct_out": 95.8
     },
     {
       "field": "working_locations",
-      "fill_pct_in": 98.6,
-      "fill_pct_out": 98.6
+      "fill_pct_in": 98.7,
+      "fill_pct_out": 98.7
     },
     {
       "field": "raw_posted_date",
-      "fill_pct_in": 62.5,
-      "fill_pct_out": 62.5
+      "fill_pct_in": 66.0,
+      "fill_pct_out": 66.0
     },
     {
       "field": "raw_deadline",
-      "fill_pct_in": 79.7,
-      "fill_pct_out": 79.7
+      "fill_pct_in": 94.7,
+      "fill_pct_out": 94.7
     },
     {
       "field": "raw_salary_text",
@@ -259,38 +259,38 @@
     },
     {
       "field": "raw_employment_type",
-      "fill_pct_in": 79.7,
-      "fill_pct_out": 79.7
+      "fill_pct_in": 94.7,
+      "fill_pct_out": 94.7
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 79.9,
-      "fill_pct_out": 79.9
+      "fill_pct_in": 90.0,
+      "fill_pct_out": 90.0
     },
     {
       "field": "raw_seniority_text",
-      "fill_pct_in": 65.5,
-      "fill_pct_out": 65.5
+      "fill_pct_in": 72.6,
+      "fill_pct_out": 72.6
     },
     {
       "field": "raw_education_text",
-      "fill_pct_in": 56.8,
-      "fill_pct_out": 56.8
+      "fill_pct_in": 66.0,
+      "fill_pct_out": 66.0
     },
     {
       "field": "raw_headcount",
-      "fill_pct_in": 52.3,
-      "fill_pct_out": 52.3
+      "fill_pct_in": 58.6,
+      "fill_pct_out": 58.6
     },
     {
       "field": "skills_list",
-      "fill_pct_in": 65.7,
-      "fill_pct_out": 65.7
+      "fill_pct_in": 76.7,
+      "fill_pct_out": 76.7
     },
     {
       "field": "benefits_list",
-      "fill_pct_in": 96.7,
-      "fill_pct_out": 96.7
+      "fill_pct_in": 99.0,
+      "fill_pct_out": 99.0
     },
     {
       "field": "raw_description_text",
@@ -299,8 +299,8 @@
     },
     {
       "field": "raw_requirements_text",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     }
   ],
   "checks": {
@@ -309,41 +309,41 @@
   },
   "api": {
     "used": false,
-    "reason": "bước này không gọi API"
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1984,
-        "output": 1984
+        "input": 1561,
+        "output": 1561
       },
       "topdev": {
-        "input": 1635,
-        "output": 1635
+        "input": 227,
+        "output": 227
       },
       "vietnamworks": {
-        "input": 1249,
-        "output": 1249
+        "input": 900,
+        "output": 900
       },
       "careerviet": {
-        "input": 592,
-        "output": 592
+        "input": 448,
+        "output": 448
       },
       "vieclam24h": {
-        "input": 468,
-        "output": 468
+        "input": 182,
+        "output": 182
       },
       "itviec": {
         "input": 905,
         "output": 905
       },
       "glints": {
-        "input": 315,
-        "output": 315
+        "input": 271,
+        "output": 271
       },
       "jobsgo": {
-        "input": 1196,
-        "output": 1196
+        "input": 683,
+        "output": 683
       }
     }
   }

@@ -29,7 +29,7 @@ def temp_review(tmp_path, monkeypatch):
             "job_title": "Kế toán trưởng",
             "skills": "Kế toán",
             "it_rule": "non_it",
-            "it_prob": "",
+            "it_rule_level": "1",
             "it_status": "non_it",
             "nhan_tay": "",
         })
@@ -39,7 +39,7 @@ def temp_review(tmp_path, monkeypatch):
             "job_title": "Senior Backend Developer",
             "skills": "Python, Django",
             "it_rule": "it",
-            "it_prob": "0.95",
+            "it_rule_level": "1",
             "it_status": "it",
             "nhan_tay": "it",
         })

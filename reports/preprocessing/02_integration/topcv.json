@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:52:49+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:12+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
-    "rows": 1984
+    "rows": 1561
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 1984
+    "rows": 1561
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
       "action": "modify",
-      "rows_affected": 1984,
+      "rows_affected": 1561,
       "examples": []
     },
     {
@@ -59,8 +59,15 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 16,
+      "rows_affected": 11,
       "examples": [
+        {
+          "job_id": "1991304",
+          "field": "empty_value",
+          "before": "'' or []",
+          "after": null,
+          "url": "https://www.topcv.vn/brand/cmctelecom/tuyen-dung/ky-su-giam-sat-he-thong-fresher-system-admin-j1991304.html"
+        },
         {
           "job_id": "2321161",
           "field": "empty_value",
@@ -74,13 +81,6 @@
           "before": "'' or []",
           "after": null,
           "url": "https://www.topcv.vn/viec-lam/it-helpdesk-intern/2324476.html"
-        },
-        {
-          "job_id": "2329091",
-          "field": "empty_value",
-          "before": "'' or []",
-          "after": null,
-          "url": "https://www.topcv.vn/brand/smartosc/tuyen-dung/performance-tester-banking-j2329091.html"
         }
       ]
     }
@@ -98,23 +98,23 @@
     },
     {
       "field": "company_address",
-      "fill_pct_in": 97.3,
-      "fill_pct_out": 97.3
+      "fill_pct_in": 96.8,
+      "fill_pct_out": 96.8
     },
     {
       "field": "raw_category_text",
-      "fill_pct_in": 94.5,
-      "fill_pct_out": 94.5
+      "fill_pct_in": 93.9,
+      "fill_pct_out": 93.9
     },
     {
       "field": "raw_location_text",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "working_locations",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "raw_posted_date",
@@ -128,23 +128,23 @@
     },
     {
       "field": "raw_salary_text",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "raw_employment_type",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "raw_seniority_text",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "raw_education_text",
@@ -153,13 +153,13 @@
     },
     {
       "field": "raw_headcount",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "skills_list",
-      "fill_pct_in": 99.6,
-      "fill_pct_out": 99.6
+      "fill_pct_in": 99.7,
+      "fill_pct_out": 99.7
     },
     {
       "field": "benefits_list",
@@ -183,7 +183,7 @@
   },
   "api": {
     "used": false,
-    "reason": "bước này không gọi API"
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {}
 }

@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:42:18+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:05+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/itviec/raw",
     "rows": 911
@@ -81,10 +81,32 @@
     },
     {
       "id": "C4a",
-      "name": "Phân loại IT (luật + JEV), chỉ gắn cờ",
+      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 67,
-      "examples": []
+      "rows_affected": 15,
+      "examples": [
+        {
+          "job_id": "2d-concept-artist-all-level-cong-ty-co-phan-sabogame-3212",
+          "field": "job_title",
+          "before": "2D Concept Artist All level",
+          "after": "non_it",
+          "url": "https://itviec.com/viec-lam-it/2d-concept-artist-all-level-cong-ty-co-phan-sabogame-3212"
+        },
+        {
+          "job_id": "2d-concept-artist-senior-cong-ty-co-phan-sabogame-4427",
+          "field": "job_title",
+          "before": "2D Concept Artist Senior",
+          "after": "non_it",
+          "url": "https://itviec.com/viec-lam-it/2d-concept-artist-senior-cong-ty-co-phan-sabogame-4427"
+        },
+        {
+          "job_id": "avvc-events-engineer-tech-lounge-av-hanoi-nab-innovation-centre-vietnam-0637",
+          "field": "job_title",
+          "before": "AVVC Events Engineer - Tech Lounge & AV (Hanoi)",
+          "after": "non_it",
+          "url": "https://itviec.com/viec-lam-it/avvc-events-engineer-tech-lounge-av-hanoi-nab-innovation-centre-vietnam-0637"
+        }
+      ]
     },
     {
       "id": "C4c",
@@ -182,21 +204,18 @@
     "notes": []
   },
   "api": {
-    "used": true,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 12,
-    "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
-    "max_cost_usd": 0.3
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "it_levels": {
+      "tang_1_it": 843,
+      "tang_2_non_it": 15,
+      "tang_2_it": 52
+    },
     "it_status": {
-      "it": 843,
-      "can_kiem": 67
+      "it": 895,
+      "non_it": 15
     },
     "it_policy": {
       "drop": [],
@@ -210,10 +229,10 @@
       "labeled_non_it": 1,
       "rule_decided": 3,
       "rule_correct": 3,
-      "status_non_it": 0,
-      "status_non_it_correct": 0,
-      "jev_labeled": 0,
-      "jev_correct": 0
+      "status_non_it": 5,
+      "status_non_it_correct": 1,
+      "level2_labeled": 19,
+      "level2_correct": 15
     }
   }
 }

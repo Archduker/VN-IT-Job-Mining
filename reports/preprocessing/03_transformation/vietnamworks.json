@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:53:15+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:28+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 1249
+    "rows": 900
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1249
+    "rows": 900
   },
   "dropped": [],
   "rules": [
@@ -18,35 +18,35 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1775,
+      "rows_affected": 1254,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 346,
+      "rows_affected": 250,
       "examples": [
-        {
-          "job_id": "2093759",
-          "field": "salary_min_max",
-          "before": "40000000 - 50000000 VND",
-          "after": "40000000.0 - 50000000.0 VND (header)",
-          "url": "https://www.vietnamworks.com/giam-doc-phat-trien-noi-dung-hoc-lieu-so-2093759-jv"
-        },
-        {
-          "job_id": "2094563",
-          "field": "salary_min_max",
-          "before": "350 - 500 USD",
-          "after": "8890000.0 - 12700000.0 VND (header)",
-          "url": "https://www.vietnamworks.com/nhan-vien-mua-hang-quoc-te-di-lam-ngay-2094563-jv"
-        },
         {
           "job_id": "2094849",
           "field": "salary_min_max",
           "before": "1000 - 2000 USD",
           "after": "25400000.0 - 50800000.0 VND (header)",
           "url": "https://www.vietnamworks.com/sap-fico-functional-consultant--2094849-jv"
+        },
+        {
+          "job_id": "2095514",
+          "field": "salary_min_max",
+          "before": "25000000 - 50000000 VND",
+          "after": "25000000.0 - 50000000.0 VND (header)",
+          "url": "https://www.vietnamworks.com/pho-truong-phong-phan-tich-nghiep-vu-ba--2095514-jv"
+        },
+        {
+          "job_id": "2096718",
+          "field": "salary_min_max",
+          "before": "0 - 40000000 VND",
+          "after": "None - 40000000.0 VND (header)",
+          "url": "https://www.vietnamworks.com/hn-dn-hcm-business-development-executive-it-outsourcing-salary-upto-40m-bonus-2096718-jv"
         }
       ]
     },
@@ -54,22 +54,15 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 1249,
+      "rows_affected": 900,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 1026,
+      "rows_affected": 749,
       "examples": [
-        {
-          "job_id": "2025655",
-          "field": "exp_min_max",
-          "before": "1 năm",
-          "after": "1.0 - 1.0 years",
-          "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
-        },
         {
           "job_id": "2085748",
           "field": "exp_min_max",
@@ -83,6 +76,13 @@
           "before": "3 năm",
           "after": "3.0 - 3.0 years",
           "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+        },
+        {
+          "job_id": "2093859",
+          "field": "exp_min_max",
+          "before": "3 năm",
+          "after": "3.0 - 3.0 years",
+          "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
         }
       ]
     },
@@ -90,50 +90,29 @@
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 1241,
+      "rows_affected": 893,
       "examples": []
     },
     {
       "id": "T2f",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 17,
+      "rows_affected": 12,
       "examples": []
     },
     {
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 1249,
-      "examples": []
-    },
-    {
-      "id": "T6b",
-      "name": "Dịch JD tiếng Anh sang tiếng Việt",
-      "action": "modify",
-      "rows_affected": 0,
-      "examples": []
-    },
-    {
-      "id": "T6c",
-      "name": "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term",
-      "action": "flag",
-      "rows_affected": 0,
+      "rows_affected": 900,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 1249,
+      "rows_affected": 900,
       "examples": [
-        {
-          "job_id": "2025655",
-          "field": "skills_clean",
-          "before": "['Quản Trị Rủi Ro Thông Tin' 'ISO Standards' 'ISO 27001' 'ITSM'\n 'Tổng Hợp Thông Tin']",
-          "after": "['ISO Standards', 'ISO 27001', 'ITSM', 'Tổng Hợp Thông Tin']",
-          "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
-        },
         {
           "job_id": "2085748",
           "field": "skills_clean",
@@ -147,6 +126,13 @@
           "before": "['Application Development' 'Programning Languages' 'Kỹ Thuật Viên Bảo Trì'\n 'Technical' 'Kỹ sư bảo trì']",
           "after": "['Application Development', 'Programning Languages', 'Technical', 'Kỹ sư bảo trì']",
           "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+        },
+        {
+          "job_id": "2093859",
+          "field": "skills_clean",
+          "before": "['Amazon Web Services' 'AWS Architecture' 'Technical Sales'\n 'IT Solutions Planning' 'Cloud Solutions']",
+          "after": "['AWS', 'Azure', 'Amazon Web Services', 'AWS Architecture', 'Technical Sales']",
+          "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
         }
       ]
     },
@@ -154,15 +140,8 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 1249,
+      "rows_affected": 900,
       "examples": [
-        {
-          "job_id": "2025655",
-          "field": "locations",
-          "before": "Tòa nhà Phương Nam, 219 Quốc lộ 13, Phường 26, Quận Bình Thạnh",
-          "after": "{'dia_chi_cu_the': 'Tòa nhà Phương Nam, 219 Quốc lộ 13', 'phuong_xa': None, 'tinh_thanh': None, 'raw': 'Tòa nhà Phương Nam, 219 Quốc lộ 13, Phường 26, Quận Bình Thạnh'}",
-          "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
-        },
         {
           "job_id": "2085748",
           "field": "locations",
@@ -176,6 +155,13 @@
           "before": "Phu Yen",
           "after": "{'dia_chi_cu_the': 'Khu Công Nghiệp An Phú', 'phuong_xa': None, 'tinh_thanh': 'Đắk Lắk', 'raw': 'Khu Công Nghiệp An Phú, Phú Yên'}",
           "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+        },
+        {
+          "job_id": "2093859",
+          "field": "locations",
+          "before": "Ha Noi",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': None, 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Hà Nội, Vietnam'}",
+          "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
         }
       ]
     }
@@ -183,13 +169,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 22.7,
-      "fill_pct_out": 22.7
+      "fill_pct_in": 22.3,
+      "fill_pct_out": 22.3
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 26.2,
-      "fill_pct_out": 26.2
+      "fill_pct_in": 26.1,
+      "fill_pct_out": 26.1
     },
     {
       "field": "posted_date",
@@ -203,18 +189,18 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 82.1,
-      "fill_pct_out": 82.1
+      "fill_pct_in": 83.2,
+      "fill_pct_out": 83.2
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 82.1,
-      "fill_pct_out": 82.1
+      "fill_pct_in": 83.2,
+      "fill_pct_out": 83.2
     },
     {
       "field": "headcount",
-      "fill_pct_in": 99.4,
-      "fill_pct_out": 99.4
+      "fill_pct_in": 99.2,
+      "fill_pct_out": 99.2
     },
     {
       "field": "job_title_clean",
@@ -233,13 +219,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 91.1,
-      "fill_pct_out": 91.1
-    },
-    {
-      "field": "description_vi",
-      "fill_pct_in": 51.6,
-      "fill_pct_out": 51.6
+      "fill_pct_in": 90.8,
+      "fill_pct_out": 90.8
     },
     {
       "field": "locations",
@@ -258,21 +239,21 @@
   },
   "api": {
     "used": false,
-    "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 359,
+      "header": 258,
       "title": 2,
       "jd": 2,
-      "none": 886
+      "none": 638
     },
-    "salary_under_1m_count": 5,
+    "salary_under_1m_count": 4,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 644,
-      "en": 605
+      "vi": 500,
+      "en": 400
     },
-    "experience_parsed_rate": 82.1
+    "experience_parsed_rate": 83.2
   }
 }

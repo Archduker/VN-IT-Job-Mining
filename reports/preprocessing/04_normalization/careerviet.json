@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:53:53+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:13:04+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 592
+    "rows": 448
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 592
+    "rows": 448
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 583,
+      "rows_affected": 441,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -28,18 +28,18 @@
           "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
         },
         {
-          "job_id": "35C3B2DA",
+          "job_id": "35C7AC66",
           "field": "tinh_chinh",
           "before": "Hồ Chí Minh",
           "after": "TP. Hồ Chí Minh",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/technical-specialist.35C3B2DA.html"
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ats-software-development-engineer.35C7AC66.html"
         },
         {
-          "job_id": "35C5BDE1",
+          "job_id": "35C80317",
           "field": "tinh_chinh",
-          "before": "Hà Nội",
-          "after": "TP. Hà Nội",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
+          "before": "Hồ Chí Minh",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/development-manager.35C80317.html"
         }
       ]
     },
@@ -47,7 +47,7 @@
       "id": "N2",
       "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
       "action": "modify",
-      "rows_affected": 551,
+      "rows_affected": 422,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -57,18 +57,18 @@
           "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
         },
         {
-          "job_id": "35C3B2DA",
+          "job_id": "35C7AC66",
           "field": "seniority",
           "before": "Nhân viên",
           "after": "Junior (kinh_nghiem)",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/technical-specialist.35C3B2DA.html"
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ats-software-development-engineer.35C7AC66.html"
         },
         {
-          "job_id": "35C5BDE1",
+          "job_id": "35C80317",
           "field": "seniority",
-          "before": "Nhân viên",
-          "after": "Mới tốt nghiệp (kinh_nghiem)",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
+          "before": "Quản lý",
+          "after": "Trưởng nhóm/Quản lý (raw)",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/development-manager.35C80317.html"
         }
       ]
     },
@@ -76,7 +76,7 @@
       "id": "N3",
       "name": "Phân loại 12 nhóm nghề IT",
       "action": "modify",
-      "rows_affected": 434,
+      "rows_affected": 392,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -86,18 +86,18 @@
           "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
         },
         {
-          "job_id": "35C5BDE1",
-          "field": "job_family",
-          "before": "VỊ TRÍ USER EXPERIENCE ASSURANCE (UXA) - USER ORIENTED TESTERS",
-          "after": "Kiểm thử (QA/QC) (title)",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
-        },
-        {
           "job_id": "35C7AC66",
           "field": "job_family",
           "before": "ATS Software Development Engineer",
           "after": "Backend (skills)",
           "url": "https://careerviet.vn/vi/tim-viec-lam/ats-software-development-engineer.35C7AC66.html"
+        },
+        {
+          "job_id": "35C80317",
+          "field": "job_family",
+          "before": "Development Manager",
+          "after": "DevOps/Cloud (skills)",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/development-manager.35C80317.html"
         }
       ]
     },
@@ -105,42 +105,42 @@
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 393,
+      "rows_affected": 357,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 592,
+      "rows_affected": 448,
       "examples": []
     },
     {
       "id": "N2b",
-      "name": "JEV không đồng ý nhãn cấp bậc/nhóm nghề: gắn cờ cần kiểm",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 0,
+      "rows_affected": 40,
       "examples": []
     },
     {
       "id": "N6a",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 2,
+      "rows_affected": 1,
       "examples": []
     },
     {
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
       "action": "modify",
-      "rows_affected": 8,
+      "rows_affected": 1,
       "examples": []
     },
     {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 188,
+      "rows_affected": 136,
       "examples": []
     }
   ],
@@ -152,18 +152,18 @@
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 98.5,
-      "fill_pct_out": 98.5
+      "fill_pct_in": 98.4,
+      "fill_pct_out": 98.4
     },
     {
       "field": "seniority",
-      "fill_pct_in": 93.1,
-      "fill_pct_out": 93.1
+      "fill_pct_in": 94.2,
+      "fill_pct_out": 94.2
     },
     {
       "field": "seniority_source",
-      "fill_pct_in": 93.1,
-      "fill_pct_out": 93.1
+      "fill_pct_in": 94.2,
+      "fill_pct_out": 94.2
     },
     {
       "field": "job_family",
@@ -177,8 +177,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 66.4,
-      "fill_pct_out": 66.4
+      "fill_pct_in": 79.7,
+      "fill_pct_out": 79.7
     },
     {
       "field": "company_norm",
@@ -187,23 +187,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 29.9,
-      "fill_pct_out": 29.9
+      "fill_pct_in": 28.3,
+      "fill_pct_out": 28.3
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 31.8,
-      "fill_pct_out": 31.8
+      "fill_pct_in": 30.4,
+      "fill_pct_out": 30.4
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 29.9,
-      "fill_pct_out": 29.9
+      "fill_pct_in": 28.3,
+      "fill_pct_out": 28.3
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 31.8,
-      "fill_pct_out": 31.8
+      "fill_pct_in": 30.4,
+      "fill_pct_out": 30.4
     },
     {
       "field": "is_outlier_salary",
@@ -217,40 +217,32 @@
   },
   "api": {
     "used": false,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 0,
-    "reason": "không bật --use-api",
-    "max_cost_usd": 0.3
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
     "seniority_distribution": {
-      "Junior": 214,
-      "Middle": 117,
-      "Trưởng nhóm/Quản lý": 97,
-      "Senior": 87,
-      "Mới tốt nghiệp": 20,
-      "Thực tập": 16
+      "Junior": 155,
+      "Middle": 93,
+      "Senior": 78,
+      "Trưởng nhóm/Quản lý": 70,
+      "Mới tốt nghiệp": 13,
+      "Thực tập": 13
     },
     "job_family_distribution": {
-      "Khác": 158,
-      "Data/AI": 100,
-      "DevOps/Cloud": 89,
-      "Backend": 77,
-      "Phân tích nghiệp vụ (BA)": 46,
-      "Kiểm thử (QA/QC)": 26,
-      "Bảo mật": 24,
-      "Quản lý sản phẩm/dự án": 22,
-      "Hệ thống/Mạng": 19,
-      "Mobile": 13,
+      "Data/AI": 93,
+      "DevOps/Cloud": 83,
+      "Backend": 72,
+      "Khác": 56,
+      "Phân tích nghiệp vụ (BA)": 43,
+      "Kiểm thử (QA/QC)": 24,
+      "Bảo mật": 21,
+      "Hệ thống/Mạng": 18,
+      "Quản lý sản phẩm/dự án": 12,
+      "Mobile": 11,
       "Fullstack": 7,
       "Frontend": 6,
-      "Thiết kế UI/UX": 5
+      "Thiết kế UI/UX": 2
     },
-    "salary_outliers": 8
+    "salary_outliers": 1
   }
 }

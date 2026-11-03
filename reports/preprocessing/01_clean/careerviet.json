@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:42:13+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:01+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/careerviet/raw",
     "rows": 660
   },
   "output": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
-    "rows": 592
+    "rows": 448
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 41
+      "rows": 189
     },
     {
       "rule": "C5",
@@ -41,12 +41,12 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
-      "rows": 4
+      "rows": 2
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 5
+      "rows": 3
     }
   ],
   "rules": [
@@ -95,30 +95,30 @@
     },
     {
       "id": "C4a",
-      "name": "Phân loại IT (luật + JEV), chỉ gắn cờ",
+      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 246,
+      "rows_affected": 189,
       "examples": [
         {
-          "job_id": "35C81C24",
+          "job_id": "35C3B2DA",
           "field": "job_title",
-          "before": "Oversea Sales Logistics",
+          "before": "Technical Specialist",
           "after": "non_it",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/oversea-sales-logistics.35C81C24.html"
+          "url": "https://careerviet.vn/vi/tim-viec-lam/technical-specialist.35C3B2DA.html"
         },
         {
-          "job_id": "35C81C25",
+          "job_id": "35C5BDE1",
           "field": "job_title",
-          "before": "Sales Logistics",
+          "before": "VỊ TRÍ USER EXPERIENCE ASSURANCE (UXA) - USER ORIENTED TESTERS",
           "after": "non_it",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/sales-logistics.35C81C25.html"
+          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
         },
         {
-          "job_id": "35C81FF9",
+          "job_id": "35C7FCA1",
           "field": "job_title",
-          "before": "Nhân Viên Kinh Doanh (B2B)",
+          "before": "NHÂN VIÊN KINH DOANH PHẦN MỀM CAD/CAM/CAE (Hà Nội)",
           "after": "non_it",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-kinh-doanh-b2b.35C81FF9.html"
+          "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-kinh-doanh-phan-mem-cad-cam-cae-ha-noi.35C7FCA1.html"
         }
       ]
     },
@@ -126,28 +126,28 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 41,
+      "rows_affected": 189,
       "examples": [
         {
-          "job_id": "35C81C24",
+          "job_id": "35C3B2DA",
           "field": "job_title",
-          "before": "Oversea Sales Logistics",
+          "before": "Technical Specialist",
           "after": null,
-          "url": "https://careerviet.vn/vi/tim-viec-lam/oversea-sales-logistics.35C81C24.html"
+          "url": "https://careerviet.vn/vi/tim-viec-lam/technical-specialist.35C3B2DA.html"
         },
         {
-          "job_id": "35C81C25",
+          "job_id": "35C5BDE1",
           "field": "job_title",
-          "before": "Sales Logistics",
+          "before": "VỊ TRÍ USER EXPERIENCE ASSURANCE (UXA) - USER ORIENTED TESTERS",
           "after": null,
-          "url": "https://careerviet.vn/vi/tim-viec-lam/sales-logistics.35C81C25.html"
+          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
         },
         {
-          "job_id": "35C81FF9",
+          "job_id": "35C7FCA1",
           "field": "job_title",
-          "before": "Nhân Viên Kinh Doanh (B2B)",
+          "before": "NHÂN VIÊN KINH DOANH PHẦN MỀM CAD/CAM/CAE (Hà Nội)",
           "after": null,
-          "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-kinh-doanh-b2b.35C81FF9.html"
+          "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-kinh-doanh-phan-mem-cad-cam-cae-ha-noi.35C7FCA1.html"
         }
       ]
     },
@@ -162,28 +162,21 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
       "action": "drop",
-      "rows_affected": 4,
+      "rows_affected": 2,
       "examples": [
-        {
-          "job_id": "35C864C3",
-          "field": "dedup_key",
-          "before": "chương trình học viện công nghệ bkacad|giảng viên quản trị mạng và quản trị hệ thống|ha_noi|2026-W41",
-          "after": "giữ 35C82F56",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/giang-vien-quan-tri-mang-va-quan-tri-he-thong.35C864C3.html"
-        },
-        {
-          "job_id": "35C873DF",
-          "field": "dedup_key",
-          "before": "viễn thông ipn|nhân viên kỹ thuật|ha_noi|2026-W42",
-          "after": "giữ 35C8AB1D",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-ky-thuat.35C873DF.html"
-        },
         {
           "job_id": "35C88574",
           "field": "dedup_key",
           "before": "phát triển công nghệ điện tử bình anh|chuyên viên phân tích dữ liệu|ha_noi|2026-W42",
           "after": "giữ 35C89455",
           "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phan-tich-du-lieu.35C88574.html"
+        },
+        {
+          "job_id": "35C8A197",
+          "field": "dedup_key",
+          "before": "vacxin|[đại phước nhơn trạch] chuyên viên it|ho_chi_minh|2026-W42",
+          "after": "giữ 35C89DA2",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/dai-phuoc-nhon-trach-chuyen-vien-it.35C8A197.html"
         }
       ]
     },
@@ -191,7 +184,7 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 5,
+      "rows_affected": 3,
       "examples": [
         {
           "job_id": "35C8995E",
@@ -201,18 +194,18 @@
           "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-tu-van-trien-khai-phan-mem-website.35C8995E.html"
         },
         {
-          "job_id": "35C89998",
+          "job_id": "35C8A493",
           "field": "dedup_key",
-          "before": "công nghệ foxai|chuyên viên kinh doanh phần mềm erp|ha_noi|2026-W43",
-          "after": "giữ topcv:2096102",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-kinh-doanh-phan-mem-erp.35C89998.html"
+          "before": "dược hậu giang|[cần thơ] chuyên gia về ứng dụng, dự án sap|can_tho|2026-W42",
+          "after": "giữ vieclam24h:200962525",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/can-tho-chuyen-gia-ve-ung-dung-du-an-sap.35C8A493.html"
         },
         {
-          "job_id": "35C8A330",
+          "job_id": "35C8B3BB",
           "field": "dedup_key",
-          "before": "ila|business planning analyst|ho_chi_minh|2026-W42",
-          "after": "giữ vietnamworks:2118339",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/business-planning-analyst.35C8A330.html"
+          "before": "easia travel|senior full-stack developer|ha_noi|2026-W43",
+          "after": "giữ vietnamworks:2122905",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/senior-full-stack-developer.35C8B3BB.html"
         }
       ]
     }
@@ -231,12 +224,12 @@
     {
       "field": "raw_location_text",
       "fill_pct_in": 97.8,
-      "fill_pct_out": 97.6
+      "fill_pct_out": 97.8
     },
     {
       "field": "raw_posted_date",
       "fill_pct_in": 97.8,
-      "fill_pct_out": 97.6
+      "fill_pct_out": 97.8
     },
     {
       "field": "raw_description_text",
@@ -254,22 +247,19 @@
     "notes": []
   },
   "api": {
-    "used": true,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 11,
-    "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
-    "max_cost_usd": 0.3
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "it_levels": {
+      "tang_1_it": 396,
+      "tang_2_non_it": 148,
+      "tang_2_it": 57,
+      "tang_1_non_it": 41
+    },
     "it_status": {
-      "it": 396,
-      "can_kiem": 205,
-      "non_it": 41
+      "it": 453,
+      "non_it": 189
     },
     "it_policy": {
       "drop": [
@@ -285,10 +275,10 @@
       "labeled_non_it": 58,
       "rule_decided": 46,
       "rule_correct": 46,
-      "status_non_it": 40,
-      "status_non_it_correct": 40,
-      "jev_labeled": 0,
-      "jev_correct": 0
+      "status_non_it": 63,
+      "status_non_it_correct": 57,
+      "level2_labeled": 31,
+      "level2_correct": 24
     }
   }
 }

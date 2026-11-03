@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:53:49+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:13:03+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1635
+    "rows": 227
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 1635
+    "rows": 227
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 1634,
+      "rows_affected": 227,
       "examples": [
         {
           "job_id": "2017763",
@@ -47,7 +47,7 @@
       "id": "N2",
       "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
       "action": "modify",
-      "rows_affected": 742,
+      "rows_affected": 113,
       "examples": [
         {
           "job_id": "2133063",
@@ -76,7 +76,7 @@
       "id": "N3",
       "name": "Phân loại 12 nhóm nghề IT",
       "action": "modify",
-      "rows_affected": 301,
+      "rows_affected": 210,
       "examples": [
         {
           "job_id": "2017763",
@@ -105,42 +105,42 @@
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 624,
+      "rows_affected": 205,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 1635,
+      "rows_affected": 227,
       "examples": []
     },
     {
       "id": "N2b",
-      "name": "JEV không đồng ý nhãn cấp bậc/nhóm nghề: gắn cờ cần kiểm",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 0,
+      "rows_affected": 18,
       "examples": []
     },
     {
       "id": "N6a",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 2,
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
       "action": "modify",
-      "rows_affected": 17,
+      "rows_affected": 1,
       "examples": []
     },
     {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 487,
+      "rows_affected": 61,
       "examples": []
     }
   ],
@@ -152,18 +152,18 @@
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "seniority",
-      "fill_pct_in": 45.4,
-      "fill_pct_out": 45.4
+      "fill_pct_in": 49.8,
+      "fill_pct_out": 49.8
     },
     {
       "field": "seniority_source",
-      "fill_pct_in": 45.4,
-      "fill_pct_out": 45.4
+      "fill_pct_in": 49.8,
+      "fill_pct_out": 49.8
     },
     {
       "field": "job_family",
@@ -177,8 +177,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 38.2,
-      "fill_pct_out": 38.2
+      "fill_pct_in": 90.3,
+      "fill_pct_out": 90.3
     },
     {
       "field": "company_norm",
@@ -187,23 +187,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 29.7,
-      "fill_pct_out": 29.7
+      "fill_pct_in": 24.2,
+      "fill_pct_out": 24.2
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 29.8,
-      "fill_pct_out": 29.8
+      "fill_pct_in": 26.9,
+      "fill_pct_out": 26.9
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 29.7,
-      "fill_pct_out": 29.7
+      "fill_pct_in": 24.2,
+      "fill_pct_out": 24.2
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 29.8,
-      "fill_pct_out": 29.8
+      "fill_pct_in": 26.9,
+      "fill_pct_out": 26.9
     },
     {
       "field": "is_outlier_salary",
@@ -217,40 +217,32 @@
   },
   "api": {
     "used": false,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 0,
-    "reason": "không bật --use-api",
-    "max_cost_usd": 0.3
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
     "seniority_distribution": {
-      "Trưởng nhóm/Quản lý": 229,
-      "Junior": 215,
-      "Senior": 178,
-      "Middle": 75,
-      "Thực tập": 43,
-      "Mới tốt nghiệp": 2
+      "Senior": 46,
+      "Junior": 24,
+      "Trưởng nhóm/Quản lý": 23,
+      "Middle": 17,
+      "Thực tập": 2,
+      "Mới tốt nghiệp": 1
     },
     "job_family_distribution": {
-      "Khác": 1334,
-      "Backend": 63,
-      "Thiết kế UI/UX": 52,
+      "Backend": 43,
       "Kiểm thử (QA/QC)": 37,
-      "DevOps/Cloud": 35,
-      "Quản lý sản phẩm/dự án": 35,
-      "Data/AI": 29,
+      "Data/AI": 26,
+      "DevOps/Cloud": 23,
       "Phân tích nghiệp vụ (BA)": 19,
+      "Quản lý sản phẩm/dự án": 18,
+      "Thiết kế UI/UX": 18,
+      "Khác": 17,
       "Fullstack": 8,
-      "Mobile": 8,
       "Bảo mật": 8,
       "Hệ thống/Mạng": 5,
+      "Mobile": 3,
       "Frontend": 2
     },
-    "salary_outliers": 17
+    "salary_outliers": 1
   }
 }

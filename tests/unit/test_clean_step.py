@@ -1,4 +1,4 @@
-"""Bước 01 Clean (docs/preprocessing/spec/P1_clean.md): C1–C7, chính sách IT, tra tỉnh, JEV có cache."""
+"""Bước 01 Clean (docs/preprocessing/spec/P1_clean.md): C1–C7, chính sách IT, luật IT 2 tầng, tra tỉnh."""
 
 import csv
 import json
@@ -7,9 +7,7 @@ import pytest
 
 from preprocessing.clean import run as clean
 from preprocessing.common import province, step_report
-from preprocessing.common.api_cache import ApiCache
-from preprocessing.common.it_filter import classify
-from preprocessing.common.jev_client import JevClient
+from preprocessing.common.it_filter import classify, classify_unknown
 
 JD = " ".join(["Phát triển hệ thống backend bằng Python và Django cho khách hàng."] * 5)
 
@@ -35,7 +33,6 @@ def sandbox(tmp_path, monkeypatch):
     monkeypatch.setattr(clean, "REVIEW_DIR", tmp_path / "data" / "preprocessing" / "review")
     monkeypatch.setattr(clean, "POLICY_PATH", tmp_path / "it_policy.json")
     monkeypatch.setattr(step_report, "REPORTS_ROOT", tmp_path / "reports")
-    monkeypatch.setattr("preprocessing.common.api_cache.CACHE_ROOT", tmp_path / "cache")
     raw_a = tmp_path / "data" / "src_a" / "raw"
     write(raw_a / "2026-10-20" / "1_v1.json", env("src_a", "1", "Backend Developer", scraped="2026-10-20T06:00:00+00:00"))
     write(raw_a / "2026-11-01" / "1_v2.json", env("src_a", "1", "Senior Backend Developer", version=2))
@@ -75,9 +72,9 @@ def test_rules_c1_to_c7_and_conservation(sandbox):
 
 
 def test_policy_drops_only_approved_status(sandbox):
-    (sandbox / "it_policy.json").write_text(json.dumps({"src_a": {"drop": ["non_it", "can_kiem"]}}), encoding="utf-8")
+    (sandbox / "it_policy.json").write_text(json.dumps({"src_a": {"drop": ["non_it"]}}), encoding="utf-8")
     reports = clean.run(["src_a"], dry_run=True)
-    assert rows(reports["src_a"], "C4c") == 1  # chỉ "Kế toán trưởng"; can_kiem không bao giờ bị bỏ tự động
+    assert rows(reports["src_a"], "C4c") == 1  # chỉ "Kế toán trưởng"
 
 
 def test_review_file_kept_once_labeled(sandbox):
@@ -117,11 +114,13 @@ def test_it_rule_needs_real_evidence(title, skills, expected):
     assert classify(title, skills) == expected
 
 
-def test_combine():
-    assert clean.combine("it", 0.95) == "it"
-    assert clean.combine("it", 0.2) == "can_kiem"
-    assert clean.combine("unknown", 0.1) == "non_it"
-    assert clean.combine("non_it", None) == "non_it" and clean.combine("unknown", None) == "can_kiem"
+@pytest.mark.parametrize("title,jd,expected", [
+    ("Nhân viên kinh doanh", "Tư vấn khách hàng, chăm sóc đại lý, báo cáo doanh số hằng tháng.", "non_it"),
+    ("Project Manager", "Làm việc với team Java, React, SQL trên AWS để ra mắt sản phẩm.", "it"),  # nhóm PM + 4 kỹ năng
+    ("Project Manager", "Làm việc với khách hàng.", "non_it"),  # có nhóm nghề nhưng JD không đủ 2 kỹ năng
+])
+def test_level2_needs_family_and_jd_skills(title, jd, expected):
+    assert classify_unknown(title, None, jd) == expected
 
 
 def test_province_34():
@@ -130,33 +129,3 @@ def test_province_34():
     assert province.key("Tòa nhà MB, 18 Lê Văn Lương, Hà Nội") == "ha_noi"
     assert province.key("1 Nguyễn Huệ, Quận 1") is None  # tên đường, không phải TP. Huế
     assert province.is_remote("Remote") and province.is_foreign("Tokyo, Japan")
-
-
-class FakeSession:
-    def __init__(self):
-        self.calls = 0
-
-    def post(self, url, **kw):
-        self.calls += 1
-
-        class R:
-            def raise_for_status(self):
-                pass
-
-            def json(self):
-                return {"model": "typesafe/jev-1.13-x", "answers": {"is_it_job": {"type": "noul", "noul": 0.9}},
-                        "usage": {"cost": 0.00002}}
-        return R()
-
-
-def test_jev_cache_and_budget(tmp_path, monkeypatch):
-    monkeypatch.setenv("OPENCODE_API_KEY", "test")
-    session = FakeSession()
-    jev = JevClient(True, dry_run=False, cache=ApiCache("jev", root=tmp_path), session=session)
-    args = ("is_it_job", "q", "t", "f", {"title": "Dev"})
-    assert jev.noul(*args) == 0.9 and jev.noul(*args) == 0.9
-    assert session.calls == 1 and jev.report()["cache_hits"] == 1
-    broke = JevClient(True, dry_run=False, max_cost_usd=0.0, cache=ApiCache("jev2", root=tmp_path), session=session)
-    assert broke.noul(*args) is None and session.calls == 1  # hết trần thì không gọi
-    dry = JevClient(True, dry_run=True, cache=ApiCache("jev3", root=tmp_path), session=session)
-    assert dry.noul(*args) is None and dry.report()["would_call"] == 1 and session.calls == 1

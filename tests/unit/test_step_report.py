@@ -4,7 +4,6 @@ import json
 
 import pytest
 
-from preprocessing.common.api_cache import ApiCache
 from preprocessing.common.step_report import StepReport, StepReportError, merge_reports
 
 
@@ -40,11 +39,3 @@ def test_merge_sums_sources():
     total = merge_reports("01_clean", [report(10, 7, 3), report(5, 5, 0)], dry_run=True)
     assert total.data["input"]["rows"] == 15 and total.data["output"]["rows"] == 12
     total.check_conserved()
-
-
-def test_cache_hit_on_second_read(tmp_path):
-    cache = ApiCache("jev", root=tmp_path)
-    key = cache.key("typesafe/jev-1.13", "q", "text")
-    assert cache.get(key) is None
-    cache.put(key, {"p": 0.9}, cost_usd=0.00002)
-    assert cache.get(key) == {"p": 0.9} and cache.cache_hits == 1 and cache.calls == 1

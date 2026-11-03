@@ -2,15 +2,12 @@
 """Bước 03 Transformation (docs/preprocessing/spec/P3_transformation.md).
 
 Ép kiểu dữ liệu, bóc tách lương cascade, ngày, kinh nghiệm, headcount,
-làm sạch text, rút kỹ năng/phúc lợi, dịch JD tiếng Anh sang tiếng Việt (chỉ khi đã chọn model
-trong translate_model.json), tách địa điểm 3 cấp theo 34 tỉnh. Đọc và ghi một file all.parquet.
+làm sạch text và nhận ngôn ngữ JD (không dịch: kỹ năng rút song ngữ nên JD tiếng Anh vẫn dùng được),
+rút kỹ năng/phúc lợi, tách địa điểm 3 cấp theo 34 tỉnh. Đọc và ghi một file all.parquet. Không gọi model nào.
 """
 
 from __future__ import annotations
 
-import csv
-import json
-import random
 from typing import Any, Dict, List, Optional, Sequence
 
 import pandas as pd
@@ -27,20 +24,16 @@ from preprocessing.transformation.location_parser import parse_locations
 from preprocessing.transformation.salary_parser import parse_salary_cascade
 from preprocessing.transformation.skill_extractor import extract_benefits, extract_skills
 from preprocessing.transformation.text_metrics import detect_jd_language
-from preprocessing.transformation.translator import DEFAULT_MODEL, GeminiTranslator
 
 STEP = "03_transformation"
 DATA_DIR = REPO_ROOT / "data"
 IN_FILE = DATA_DIR / "preprocessing" / "02_integration" / "all.parquet"
 OUT_FILE = DATA_DIR / "preprocessing" / STEP / "all.parquet"
-REVIEW_DIR = DATA_DIR / "preprocessing" / "review"
-# Model dịch do người dùng chọn sau khi chấm translate_30.csv; chưa có file thì chỉ dịch 30 JD mẫu
-MODEL_CHOICE_PATH = REPO_ROOT / "preprocessing" / "transformation" / "translate_model.json"
 
 KEY_FIELDS = (
     "salary_min_vnd", "salary_max_vnd", "posted_date", "deadline_date",
     "exp_min_years", "exp_max_years", "headcount", "job_title_clean",
-    "description_clean", "skills_clean", "benefits_std", "description_vi",
+    "description_clean", "skills_clean", "benefits_std",
     "locations", "language"
 )
 
@@ -80,21 +73,18 @@ def _clean_job_title(title: Optional[str]) -> Optional[str]:
 def process_source(
     source: str,
     input_records: List[Dict[str, Any]],
-    translator: Optional[GeminiTranslator],
     dry_run: bool = True
-) -> tuple[List[Dict[str, Any]], StepReport, List[Dict[str, Any]]]:
+) -> tuple[List[Dict[str, Any]], StepReport]:
     report = StepReport(STEP, source, dry_run)
     total_rows = len(input_records)
     report.set_io(IN_FILE, total_rows, OUT_FILE, total_rows)
 
     transformed_rows: List[Dict[str, Any]] = []
-    en_sample_candidates: List[Dict[str, Any]] = []
 
     # Thống kê luật
     t1_count, t2_count, t3_count, t4_count, t5_count, t6_count, t7_count, t8_count = 0, 0, 0, 0, 0, 0, 0, 0
     t2_salary_under_1m = 0
     t2_suspect = 0
-    t6b_count = t6b_lost = 0
     t2_from_x_count = 0
     t2_sources_count = {"header": 0, "title": 0, "jd": 0, "none": 0}
 
@@ -227,22 +217,6 @@ def process_source(
                     "url": url,
                 })
 
-        # T6b: chỉ dịch JD tiếng Anh; JD tiếng Việt giữ nguyên
-        rec["description_vi"], rec["requirements_vi"], rec["translated_by"] = desc_clean, req_clean, None
-        if lang == "en" and desc_clean:
-            en_sample_candidates.append({"job_id": job_id, "source": source, "title": title_clean, "jd": desc_clean})
-            rec["description_vi"] = rec["requirements_vi"] = None
-            if translator is not None:
-                desc_vi, lost_desc = translator.translate_text(desc_clean)
-                req_vi, lost_req = translator.translate_text(req_clean)
-                rec["description_vi"], rec["requirements_vi"] = desc_vi, req_vi
-                rec["translated_by"] = translator.model if desc_vi else None
-                if desc_vi:
-                    t6b_count += 1
-                if lost_desc or lost_req:
-                    flags.append("translate_lost_term")
-                    t6b_lost += 1
-
         rec["flags"] = flags
         transformed_rows.append(rec)
 
@@ -254,8 +228,6 @@ def process_source(
     report.rule("T5", "Bóc tách chỉ tiêu headcount", "modify", t5_count)
     report.rule("T2f", "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect", "flag", t2_suspect)
     report.rule("T6", "Làm sạch text HTML/bullet và phát hiện ngôn ngữ", "modify", t6_count)
-    report.rule("T6b", "Dịch JD tiếng Anh sang tiếng Việt", "modify", t6b_count)
-    report.rule("T6c", "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term", "flag", t6b_lost)
     report.rule("T7", "Rút kỹ năng và phúc lợi song ngữ", "modify", t7_count, t7_examples)
     report.rule("T8", "Bóc tách địa điểm 3 cấp", "modify", t8_count, t8_examples)
 
@@ -277,81 +249,29 @@ def process_source(
     }
 
     report.check_conserved()
-    return transformed_rows, report, en_sample_candidates
-
-
-def export_review_30_jd(candidates: List[Dict[str, Any]], use_api: bool, dry_run: bool) -> Dict[str, Any]:
-    """30 JD tiếng Anh rải đều theo nguồn, dịch bằng model mặc định để người dùng chấm điểm.
-
-    Chỉ ghi file khi đủ bản dịch thật; file đã có điểm chấm thì không đụng tới.
-    """
-    out_csv = REVIEW_DIR / "translate_30.csv"
-    if out_csv.exists():
-        with out_csv.open(encoding="utf-8-sig") as f:
-            rows = list(csv.DictReader(f))
-        if any((r.get("diem_1_den_5") or r.get("diem_a") or r.get("diem_b") or "").strip() for r in rows):
-            return {"status": "đã có điểm chấm, giữ nguyên"}
-
-    by_src: Dict[str, List[Dict[str, Any]]] = {}
-    for c in sorted(candidates, key=lambda c: str(c["job_id"])):
-        by_src.setdefault(c["source"], []).append(c)
-    rng = random.Random(42)
-    for lst in by_src.values():
-        rng.shuffle(lst)
-    sampled: List[Dict[str, Any]] = []
-    while len(sampled) < 30 and any(by_src.values()):  # lấy vòng tròn qua các nguồn
-        for src in sorted(by_src):
-            if by_src[src] and len(sampled) < 30:
-                sampled.append(by_src[src].pop())
-
-    models = (DEFAULT_MODEL,)  # người dùng chọn tiết kiệm (03/11/2026): chỉ chấm 3.8 Flash, không thi Argon
-    trs = [GeminiTranslator(use_api=use_api, dry_run=dry_run, model=m, max_budget_usd=0.05) for m in models]
-    out = [[t.translate_text(item["jd"][:1500])[0] for t in trs] for item in sampled]
-    stats = {m: t.stats() for m, t in zip(models, trs)}
-    if dry_run or not all(all(o) for o in out):
-        return {"status": "chưa ghi file: chưa có đủ bản dịch thật", "sampled": len(sampled), "api": stats}
-
-    REVIEW_DIR.mkdir(parents=True, exist_ok=True)
-    with out_csv.open("w", encoding="utf-8-sig", newline="") as f:
-        w = csv.writer(f)
-        w.writerow(["job_id", "source", "title", "ban_goc", "ban_dich", "diem_1_den_5", "ghi_chu"])
-        for item, (a,) in zip(sampled, out):
-            w.writerow([item["job_id"], item["source"], item["title"], item["jd"][:1500], a, "", ""])
-    return {"status": "đã ghi file", "sampled": len(sampled), "model": models[0], "api": stats}
+    return transformed_rows, report
 
 
 def run(
     sources: Sequence[str] = SOURCES,
-    dry_run: bool = True,
-    use_api: bool = False
+    dry_run: bool = True
 ) -> Dict[str, StepReport]:
-    chosen = json.loads(MODEL_CHOICE_PATH.read_text(encoding="utf-8")).get("model") if MODEL_CHOICE_PATH.exists() else None
-    # dry-run --use-api vẫn ước tính tiền dịch toàn bộ bằng model mặc định, kể cả khi chưa chọn model
-    model = chosen or (DEFAULT_MODEL if dry_run and use_api else None)
-    translator = GeminiTranslator(use_api=use_api, dry_run=dry_run, model=model) if model else None
     df_in = pd.read_parquet(IN_FILE) if IN_FILE.exists() else pd.DataFrame(columns=["source_platform"])
     groups = {src: g.to_dict(orient="records") for src, g in df_in.groupby("source_platform")}
 
     reports: Dict[str, StepReport] = {}
     all_rows: List[Dict[str, Any]] = []
-    all_en: List[Dict[str, Any]] = []
     for src in sources:
-        rows, rep, en_cand = process_source(src, groups.get(src, []), translator, dry_run=dry_run)
+        rows, rep = process_source(src, groups.get(src, []), dry_run=dry_run)
         reports[src] = rep
         all_rows.extend(rows)
-        all_en.extend(en_cand)
 
-    review = export_review_30_jd(all_en, use_api, dry_run) if all_en else {"status": "không có JD tiếng Anh"}
-    api = translator.stats() if translator else {"used": False, "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"}
     for rep in reports.values():
-        rep.data["api"] = api
         rep.check_conserved()
         rep.write()
 
     total_rep = merge_reports(STEP, list(reports.values()), dry_run)
     total_rep.set_io(IN_FILE, len(df_in), OUT_FILE, len(all_rows))
-    total_rep.data["api"] = api
-    total_rep.data["extra"]["translate_review"] = review
     total_rep.data["extra"]["language_distribution"] = {k: sum(1 for r in all_rows if r.get("language") == k) for k in ("vi", "en")}
     total_rep.check_conserved()
     if not dry_run and all_rows:

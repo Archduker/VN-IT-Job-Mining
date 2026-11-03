@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Bước 01 Clean (docs/preprocessing/spec/P1_clean.md): khử trùng, bỏ rác, phân loại IT ở cả 8 nguồn.
+"""Bước 01 Clean (docs/preprocessing/spec/P1_clean.md): khử trùng, bỏ rác, phân loại IT bằng luật 2 tầng ở cả 8 nguồn.
 
 Không bỏ tin ngoài IT khi chưa có preprocessing/clean/it_policy.json do người dùng duyệt (C4c).
 Output giữ nguyên raw_payload, chỉ thêm metadata.clean.
@@ -16,8 +16,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from preprocessing.common import REPO_ROOT, SOURCES, province
-from preprocessing.common.it_filter import classify
-from preprocessing.common.jev_client import JevClient
+from preprocessing.common.it_filter import classify, classify_unknown
 from preprocessing.common.raw_reader import read_raw, snapshot_order
 from preprocessing.common.step_report import StepReport, merge_reports
 from preprocessing.integration.json_flattener import flatten_raw_job_record
@@ -28,20 +27,10 @@ DATA_DIR = REPO_ROOT / "data"
 OUT_DIR = DATA_DIR / "preprocessing" / STEP
 REVIEW_DIR = DATA_DIR / "preprocessing" / "review"
 POLICY_PATH = REPO_ROOT / "preprocessing" / "clean" / "it_policy.json"
-JEV_BUDGET_USD = 0.30  # trần cho cả lượt chạy; sổ chung của OpenCode chặn ở 0,95 USD
 MIN_JD_WORDS = 30  # chính sách 1.B cũ (transformation/text_metrics.filter_valid_clean_records)
 TEST_ID = re.compile(r"^job-[a-z]+-\d+$")
-REVIEW_NON_IT, REVIEW_CAN_KIEM, REVIEW_SEED = 50, 30, 42
+REVIEW_NON_IT, REVIEW_LEVEL2, REVIEW_SEED = 50, 30, 42
 KEY_FIELDS = ("job_title", "company_name", "raw_location_text", "raw_posted_date", "raw_description_text", "skills_list")
-
-IT_QUESTION = dict(
-    name="is_it_job",
-    instructions="Tin tuyển dụng này có tuyển một vị trí thuộc ngành Công nghệ thông tin không "
-                 "(phát triển phần mềm, dữ liệu, hạ tầng, kiểm thử, bảo mật, quản lý sản phẩm công nghệ)?",
-    true_desc="Công việc chính là công việc kỹ thuật hoặc sản phẩm công nghệ thông tin.",
-    false_desc="Công việc chính thuộc ngành khác (kinh doanh, kế toán, nhân sự, marketing, lái xe, giáo dục…), "
-               "kể cả khi công ty là công ty công nghệ.",
-)
 
 Item = Dict[str, Any]  # {"rel", "env", "origin", "flat"}
 
@@ -87,15 +76,6 @@ def filled(flat: Dict[str, Any]) -> int:
     return sum(not _empty(v) for k, v in flat.items() if k not in {"job_id_global", "source_platform"})
 
 
-def combine(rule: str, prob: Optional[float]) -> str:
-    if prob is None:
-        return rule if rule != "unknown" else "can_kiem"
-    jev = "it" if prob >= 0.7 else "non_it" if prob <= 0.3 else None
-    if jev is None or (rule != "unknown" and rule != jev):
-        return "can_kiem"
-    return jev
-
-
 # ---------------------------------------------------------------- tiện ích báo cáo
 def _job_id(item: Item) -> str:
     return str(item["env"]["metadata"].get("job_id") or "")
@@ -116,7 +96,7 @@ def load_policy() -> Dict[str, Any]:
 
 
 # ---------------------------------------------------------------- C1–C6 trong một nguồn
-def clean_source(source: str, jev: JevClient, policy: Dict[str, Any], report: StepReport) -> Tuple[List[Item], List[Item]]:
+def clean_source(source: str, policy: Dict[str, Any], report: StepReport) -> Tuple[List[Item], List[Item]]:
     """Trả (tin giữ lại sau C6, mọi tin đã phân loại IT trước C4c — dùng để đo độ đúng trên nhãn tay)."""
     raw_dir = DATA_DIR / source / "raw"
     snapshots, batch, _ = read_raw(raw_dir)
@@ -167,31 +147,32 @@ def clean_source(source: str, jev: JevClient, policy: Dict[str, Any], report: St
         it["flat"] = flatten_raw_job_record(it["env"], source)
     fill_in = _fill(items)
 
-    # C4a: phân loại IT ở mọi nguồn, không bỏ
-    def jev_state(f):
-        return {"title": f.get("job_title"), "skills": (f.get("skills_list") or [])[:15],
-                "jd": str(f.get("raw_description_text") or "")[:500]}
-
-    q = (IT_QUESTION["name"], IT_QUESTION["instructions"], IT_QUESTION["true_desc"], IT_QUESTION["false_desc"])
-    jev.prefetch(*q, [jev_state(it["flat"]) for it in items])
-    status = Counter()
+    # C4a: luật 2 tầng ở mọi nguồn, chỉ gắn nhãn; bỏ hay không do C4c và it_policy.json
+    status, levels = Counter(), Counter()
     for it in items:
         f = it["flat"]
         rule = classify(f.get("job_title"), f.get("skills_list"))
-        prob = jev.noul(*q, jev_state(f))
-        st = combine(rule, prob)
+        level = 1
+        if rule == "unknown":
+            level = 2
+            st = classify_unknown(f.get("job_title"), f.get("skills_list"),
+                                  f"{f.get('raw_description_text') or ''} {f.get('raw_requirements_text') or ''}", f.get("company_name"))
+        else:
+            st = rule
         status[st] += 1
-        it["env"]["metadata"]["clean"] = {"snapshot_file": it["rel"], "it_rule": rule, "it_prob": prob,
+        levels[f"tang_{level}_{st}"] += 1
+        it["env"]["metadata"]["clean"] = {"snapshot_file": it["rel"], "it_rule": rule, "it_rule_level": level,
                                           "it_status": st, "dedup_key": dedup_key(f), "also_on": []}
     non_it = [i for i in items if i["env"]["metadata"]["clean"]["it_status"] == "non_it"]
-    report.rule("C4a", "Phân loại IT (luật + JEV), chỉ gắn cờ", "flag", status["non_it"] + status["can_kiem"],
-                [_ex(i, "job_title", i["flat"].get("job_title"), "non_it") for i in non_it])
+    report.rule("C4a", "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
+                "flag", status["non_it"], [_ex(i, "job_title", i["flat"].get("job_title"), "non_it") for i in non_it])
+    report.data["extra"]["it_levels"] = dict(levels)
     report.data["extra"]["it_status"] = dict(status)
 
     classified = list(items)
 
-    # C4c: chỉ bỏ theo chính sách đã duyệt; can_kiem không bao giờ bị bỏ tự động
-    drop_status = {s for s in (policy.get(source) or {}).get("drop", []) if s != "can_kiem"}
+    # C4c: chỉ bỏ theo chính sách đã duyệt
+    drop_status = set((policy.get(source) or {}).get("drop", []))
     c4 = [i for i in items if i["env"]["metadata"]["clean"]["it_status"] in drop_status]
     c4_ids = {id(i) for i in c4}
     items = [i for i in items if id(i) not in c4_ids]
@@ -271,46 +252,43 @@ def review_sample(source: str, items: List[Item], report: StepReport) -> None:
     if not _has_labels(path):
         rng = random.Random(REVIEW_SEED)
         pick = []
-        for st, n in (("non_it", REVIEW_NON_IT), ("can_kiem", REVIEW_CAN_KIEM)):
-            pool = sorted((i for i in items if i["env"]["metadata"]["clean"]["it_status"] == st), key=_job_id)
+        for level, n in ((1, REVIEW_NON_IT), (2, REVIEW_LEVEL2)):  # tầng 1: chỉ tin non_it; tầng 2: mọi tin
+            pool = sorted((i for i in items if i["env"]["metadata"]["clean"]["it_rule_level"] == level
+                           and (level == 2 or i["env"]["metadata"]["clean"]["it_status"] == "non_it")), key=_job_id)
             pick += rng.sample(pool, min(n, len(pool)))
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8-sig", newline="") as fh:
             w = csv.writer(fh)
-            w.writerow(["job_id", "source_url", "job_title", "skills", "it_rule", "it_prob", "it_status", "nhan_tay"])
+            w.writerow(["job_id", "source_url", "job_title", "skills", "it_rule", "it_rule_level", "it_status", "nhan_tay"])
             for i in pick:
                 c = i["env"]["metadata"]["clean"]
                 w.writerow([_job_id(i), i["env"]["metadata"].get("source_url"), i["flat"].get("job_title"),
                             ", ".join(map(str, (i["flat"].get("skills_list") or [])[:10])), c["it_rule"],
-                            c["it_prob"], c["it_status"], ""])
+                            c["it_rule_level"], c["it_status"], ""])
     with path.open(encoding="utf-8-sig", newline="") as fh:
         rows = list(csv.DictReader(fh))
     labeled = [(r["nhan_tay"].strip(), by_id[r["job_id"]]) for r in rows
                if (r.get("nhan_tay") or "").strip() in {"it", "non_it"} and r["job_id"] in by_id]
     decided = [(lab, c) for lab, c in labeled if c["it_rule"] in {"it", "non_it"}]
     non_it = [(lab, c) for lab, c in labeled if c["it_status"] == "non_it"]  # đúng nhóm mà chính sách sẽ bỏ
-    jev = [(lab, c) for lab, c in labeled if c["it_prob"] is not None]
+    level2 = [(lab, c) for lab, c in labeled if c["it_rule_level"] == 2]
     report.data["extra"]["review"] = {
         "file": f"data/preprocessing/review/{path.name}", "rows": len(rows), "labeled": len(labeled),
         "labeled_non_it": sum(lab == "non_it" for lab, _ in labeled),
         "rule_decided": len(decided), "rule_correct": sum(lab == c["it_rule"] for lab, c in decided),
         "status_non_it": len(non_it), "status_non_it_correct": sum(lab == "non_it" for lab, _ in non_it),
-        "jev_labeled": len(jev), "jev_correct": sum((c["it_prob"] >= 0.5) == (lab == "it") for lab, c in jev)}
+        "level2_labeled": len(level2), "level2_correct": sum(lab == c["it_status"] for lab, c in level2)}
 
 
 # ---------------------------------------------------------------- chạy
-def run(sources: Sequence[str] = SOURCES, dry_run: bool = True, use_api: bool = False) -> Dict[str, StepReport]:
+def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> Dict[str, StepReport]:
     policy = load_policy()
     reports: Dict[str, StepReport] = {}
     kept: Dict[str, List[Item]] = {}
     classified: Dict[str, List[Item]] = {}
-    spent = 0.0
     for src in sources:
         reports[src] = StepReport(STEP, src, dry_run)
-        jev = JevClient(use_api, dry_run, max_cost_usd=max(JEV_BUDGET_USD - spent, 0))
-        kept[src], classified[src] = clean_source(src, jev, policy, reports[src])
-        spent += jev.cache.cost_usd
-        reports[src].data["api"] = jev.report()
+        kept[src], classified[src] = clean_source(src, policy, reports[src])
     pairs = cross_source_dedup(kept, reports)
     for src in sources:
         r = reports[src]
@@ -333,12 +311,6 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True, use_api: bool = 
     total.data["extra"]["review"] = {s: reports[s].data["extra"]["review"] for s in sources}
     total.data["extra"]["cross_source_pairs"] = dict(pairs.most_common())
     total.data["extra"]["it_policy"] = {s: reports[s].data["extra"]["it_policy"] for s in sources}
-    total.data["api"] = {"used": any(r.data["api"]["used"] for r in reports.values()),
-                         "calls": sum(r.data["api"]["calls"] for r in reports.values()),
-                         "cache_hits": sum(r.data["api"]["cache_hits"] for r in reports.values()),
-                         "cost_usd": round(spent, 6),
-                         "would_call": sum(r.data["api"].get("would_call", 0) for r in reports.values()),
-                         "estimated_cost_usd": round(sum(r.data["api"].get("estimated_cost_usd", 0)
-                                                         for r in reports.values()), 4)}
+    total.data["extra"]["it_levels"] = {s: reports[s].data["extra"]["it_levels"] for s in sources}
     total.write()
     return reports

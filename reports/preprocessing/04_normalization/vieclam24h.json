@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:53:53+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:13:05+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 468
+    "rows": 182
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 468
+    "rows": 182
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 468,
+      "rows_affected": 182,
       "examples": [
         {
           "job_id": "200011696",
@@ -35,11 +35,11 @@
           "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
         },
         {
-          "job_id": "200496877",
+          "job_id": "200665507",
           "field": "tinh_chinh",
-          "before": "TP.HCM , Long An , Ninh Thuận , + 1",
-          "after": "TP. Hồ Chí Minh",
-          "url": "https://vieclam24h.vn/van-hanh-bao-tri-bao-duong/giam-sat-he-thong-dien-nhe-c10p122id200496877.html"
+          "before": "Hà Nội",
+          "after": "TP. Hà Nội",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
         }
       ]
     },
@@ -47,7 +47,7 @@
       "id": "N2",
       "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
       "action": "modify",
-      "rows_affected": 468,
+      "rows_affected": 182,
       "examples": [
         {
           "job_id": "200011696",
@@ -64,11 +64,11 @@
           "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
         },
         {
-          "job_id": "200496877",
+          "job_id": "200665507",
           "field": "seniority",
           "before": "Nhân viên",
-          "after": "Mới tốt nghiệp (kinh_nghiem)",
-          "url": "https://vieclam24h.vn/van-hanh-bao-tri-bao-duong/giam-sat-he-thong-dien-nhe-c10p122id200496877.html"
+          "after": "Middle (kinh_nghiem)",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
         }
       ]
     },
@@ -76,7 +76,7 @@
       "id": "N3",
       "name": "Phân loại 12 nhóm nghề IT",
       "action": "modify",
-      "rows_affected": 144,
+      "rows_affected": 140,
       "examples": [
         {
           "job_id": "200011696",
@@ -105,21 +105,21 @@
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 441,
+      "rows_affected": 182,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 467,
+      "rows_affected": 181,
       "examples": []
     },
     {
       "id": "N2b",
-      "name": "JEV không đồng ý nhãn cấp bậc/nhóm nghề: gắn cờ cần kiểm",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 0,
+      "rows_affected": 2,
       "examples": []
     },
     {
@@ -133,14 +133,14 @@
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
       "action": "modify",
-      "rows_affected": 2,
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 441,
+      "rows_affected": 168,
       "examples": []
     }
   ],
@@ -177,33 +177,33 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 94.2,
-      "fill_pct_out": 94.2
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "company_norm",
-      "fill_pct_in": 99.8,
-      "fill_pct_out": 99.8
+      "fill_pct_in": 99.5,
+      "fill_pct_out": 99.5
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 94.0,
-      "fill_pct_out": 94.0
+      "fill_pct_in": 91.8,
+      "fill_pct_out": 91.8
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 94.2,
-      "fill_pct_out": 94.2
+      "fill_pct_in": 92.3,
+      "fill_pct_out": 92.3
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 94.0,
-      "fill_pct_out": 94.0
+      "fill_pct_in": 91.8,
+      "fill_pct_out": 91.8
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 94.2,
-      "fill_pct_out": 94.2
+      "fill_pct_in": 92.3,
+      "fill_pct_out": 92.3
     },
     {
       "field": "is_outlier_salary",
@@ -217,39 +217,31 @@
   },
   "api": {
     "used": false,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 0,
-    "reason": "không bật --use-api",
-    "max_cost_usd": 0.3
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
     "seniority_distribution": {
-      "Mới tốt nghiệp": 201,
-      "Junior": 185,
-      "Middle": 34,
-      "Trưởng nhóm/Quản lý": 25,
-      "Thực tập": 18,
+      "Junior": 91,
+      "Mới tốt nghiệp": 41,
+      "Middle": 23,
+      "Thực tập": 12,
+      "Trưởng nhóm/Quản lý": 10,
       "Senior": 5
     },
     "job_family_distribution": {
-      "Khác": 324,
-      "Backend": 27,
-      "DevOps/Cloud": 26,
+      "Khác": 42,
+      "Backend": 26,
       "Hệ thống/Mạng": 25,
+      "DevOps/Cloud": 25,
       "Mobile": 14,
       "Phân tích nghiệp vụ (BA)": 12,
-      "Thiết kế UI/UX": 11,
       "Data/AI": 10,
       "Kiểm thử (QA/QC)": 10,
+      "Thiết kế UI/UX": 9,
       "Fullstack": 4,
       "Quản lý sản phẩm/dự án": 4,
       "Frontend": 1
     },
-    "salary_outliers": 2
+    "salary_outliers": 0
   }
 }

@@ -54,7 +54,7 @@ class StepReport:
             "rules": [],
             "fields": [],
             "checks": {"rows_conserved": None, "notes": []},
-            "api": {"used": False, "reason": "bước này không gọi API"},
+            "api": {"used": False, "reason": "pipeline không dùng model (luật if-else)"},
             "extra": {},
         }
 

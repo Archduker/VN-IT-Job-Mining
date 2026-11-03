@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:42:21+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:06+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/glints/raw",
     "rows": 331
   },
   "output": {
     "path": "data/preprocessing/01_clean/glints.jsonl",
-    "rows": 315
+    "rows": 271
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 12
+      "rows": 56
     },
     {
       "rule": "C5",
@@ -73,10 +73,17 @@
     },
     {
       "id": "C4a",
-      "name": "Phân loại IT (luật + JEV), chỉ gắn cờ",
+      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 87,
+      "rows_affected": 56,
       "examples": [
+        {
+          "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
+          "field": "job_title",
+          "before": "HCM925-KỸ THUẬT VIÊN KHUÔN - KCX TÂN THUẬN (KHÔNG KINH NGHIỆM)",
+          "after": "non_it",
+          "url": "https://glints.com/vn/opportunities/jobs/hcm925-ky-thuat-vien-khuon-kcx-tan-thuan-khong-kinh-nghiem/0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd"
+        },
         {
           "job_id": "07ec34c7-ecce-40ee-8104-c3dc283a15d5",
           "field": "job_title",
@@ -85,18 +92,11 @@
           "url": "https://glints.com/vn/opportunities/jobs/bd651-ky-su-cai-tien-ky-thuat-co-khi-dien-kcn-vsip1/07ec34c7-ecce-40ee-8104-c3dc283a15d5"
         },
         {
-          "job_id": "1734a2ee-645b-4403-a5d0-5cf91d06b813",
+          "job_id": "092b1873-9996-4869-bc3b-ec6f377e531c",
           "field": "job_title",
-          "before": "Trưởng phòng kế toán - Tiếng Anh hoặc Nhật - Đồng Nai",
+          "before": "VT234 - Utilities Engineer – Kỹ sư hệ thống phụ trợ - KCN PHÚ MỸ",
           "after": "non_it",
-          "url": "https://glints.com/vn/opportunities/jobs/truong-phong-ke-toan-tieng-anh-hoac-nhat-dong-nai/1734a2ee-645b-4403-a5d0-5cf91d06b813"
-        },
-        {
-          "job_id": "18104851-92f3-48ff-8022-56aede7f8cd3",
-          "field": "job_title",
-          "before": "[HCM541] Tổ trưởng Sản xuất - Tiếng Anh/Nhật - Linh Trung",
-          "after": "non_it",
-          "url": "https://glints.com/vn/opportunities/jobs/hcm541-to-truong-san-xuat-tieng-anh-nhat-linh-trung/18104851-92f3-48ff-8022-56aede7f8cd3"
+          "url": "https://glints.com/vn/opportunities/jobs/vt234-utilities-engineer-ky-su-he-thong-phu-tro-kcn-phu-my/092b1873-9996-4869-bc3b-ec6f377e531c"
         }
       ]
     },
@@ -104,8 +104,15 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 12,
+      "rows_affected": 56,
       "examples": [
+        {
+          "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
+          "field": "job_title",
+          "before": "HCM925-KỸ THUẬT VIÊN KHUÔN - KCX TÂN THUẬN (KHÔNG KINH NGHIỆM)",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/hcm925-ky-thuat-vien-khuon-kcx-tan-thuan-khong-kinh-nghiem/0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd"
+        },
         {
           "job_id": "07ec34c7-ecce-40ee-8104-c3dc283a15d5",
           "field": "job_title",
@@ -114,18 +121,11 @@
           "url": "https://glints.com/vn/opportunities/jobs/bd651-ky-su-cai-tien-ky-thuat-co-khi-dien-kcn-vsip1/07ec34c7-ecce-40ee-8104-c3dc283a15d5"
         },
         {
-          "job_id": "1734a2ee-645b-4403-a5d0-5cf91d06b813",
+          "job_id": "092b1873-9996-4869-bc3b-ec6f377e531c",
           "field": "job_title",
-          "before": "Trưởng phòng kế toán - Tiếng Anh hoặc Nhật - Đồng Nai",
+          "before": "VT234 - Utilities Engineer – Kỹ sư hệ thống phụ trợ - KCN PHÚ MỸ",
           "after": null,
-          "url": "https://glints.com/vn/opportunities/jobs/truong-phong-ke-toan-tieng-anh-hoac-nhat-dong-nai/1734a2ee-645b-4403-a5d0-5cf91d06b813"
-        },
-        {
-          "job_id": "18104851-92f3-48ff-8022-56aede7f8cd3",
-          "field": "job_title",
-          "before": "[HCM541] Tổ trưởng Sản xuất - Tiếng Anh/Nhật - Linh Trung",
-          "after": null,
-          "url": "https://glints.com/vn/opportunities/jobs/hcm541-to-truong-san-xuat-tieng-anh-nhat-linh-trung/18104851-92f3-48ff-8022-56aede7f8cd3"
+          "url": "https://glints.com/vn/opportunities/jobs/vt234-utilities-engineer-ky-su-he-thong-phu-tro-kcn-phu-my/092b1873-9996-4869-bc3b-ec6f377e531c"
         }
       ]
     },
@@ -210,7 +210,7 @@
     {
       "field": "skills_list",
       "fill_pct_in": 88.5,
-      "fill_pct_out": 88.6
+      "fill_pct_out": 88.2
     }
   ],
   "checks": {
@@ -218,22 +218,19 @@
     "notes": []
   },
   "api": {
-    "used": true,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 12,
-    "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
-    "max_cost_usd": 0.3
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "it_levels": {
+      "tang_1_it": 244,
+      "tang_2_non_it": 44,
+      "tang_1_non_it": 12,
+      "tang_2_it": 31
+    },
     "it_status": {
-      "it": 244,
-      "can_kiem": 75,
-      "non_it": 12
+      "it": 275,
+      "non_it": 56
     },
     "it_policy": {
       "drop": [
@@ -249,10 +246,10 @@
       "labeled_non_it": 29,
       "rule_decided": 11,
       "rule_correct": 11,
-      "status_non_it": 11,
-      "status_non_it_correct": 11,
-      "jev_labeled": 0,
-      "jev_correct": 0
+      "status_non_it": 28,
+      "status_non_it_correct": 26,
+      "level2_labeled": 31,
+      "level2_correct": 26
     }
   }
 }

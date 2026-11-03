@@ -3,10 +3,10 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Pipeline vận hành toàn diện quy trình Preprocessing sau bước Integration:
   1. Đọc và ép phẳng toàn bộ dữ liệu thô (JSON Flattening) từ 8 sàn tuyển dụng.
-  2. Bóc tách dải lương Cascade 3 tầng (Header Regex -> JD Regex Scanner -> GenAI Fallback).
+  2. Bóc tách dải lương Cascade 3 tầng (Header Regex -> Title -> JD Regex Scanner).
   3. Quy đổi ngoại tệ (USD sang VND) và lương năm sang tháng (/12).
   4. Bóc trần null markers, phát hiện và loại bỏ Stub JD < 30 từ (Chính sách 1.B).
-  5. Bù khuyết dữ liệu thông minh qua GenAI Imputer (min_experience, seniority, city, skills).
+  5. Bù khuyết bằng luật if-else (GenAITextImputer, tên cũ; không gọi model).
   6. Chuẩn hóa dải lương (Log-transformation, IQR Outlier Capping & Winsorization).
   7. Chuẩn hóa phân loại (12 Job Family SD2, 6 bậc Seniority, 63 tỉnh thành).
   8. Khử trùng lặp ngữ nghĩa xuyên sàn (Cross-Platform Entity Resolution via Embeddings).
@@ -171,7 +171,7 @@ def process_single_source(
                 flat["detected_language"] = detect_language(combined_jd)
                 flat["lexical_diversity_ttr"] = text_metrics.get("lexical_diversity_ttr", 0.0)
 
-                # 7. Bù khuyết thông minh qua GenAITextImputer (offline heuristic fallback)
+                # 7. Bù khuyết bằng luật (GenAITextImputer, không gọi model)
                 flat_imputed = imputer.impute_job_record(flat)
                 if flat_imputed.get("is_imputed_by_genai", False):
                     imputed_count += 1

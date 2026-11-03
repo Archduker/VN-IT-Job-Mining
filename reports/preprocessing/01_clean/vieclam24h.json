@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:42:16+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:03+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/vieclam24h/raw",
     "rows": 1276
   },
   "output": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
-    "rows": 468
+    "rows": 182
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 186
+      "rows": 475
     },
     {
       "rule": "C5",
@@ -41,12 +41,12 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
-      "rows": 1
+      "rows": 0
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 5
+      "rows": 3
     }
   ],
   "rules": [
@@ -95,9 +95,9 @@
     },
     {
       "id": "C4a",
-      "name": "Phân loại IT (luật + JEV), chỉ gắn cờ",
+      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 522,
+      "rows_affected": 475,
       "examples": [
         {
           "job_id": "100160858",
@@ -114,11 +114,11 @@
           "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-kinh-doanh-c8p73id200452314.html"
         },
         {
-          "job_id": "200501353",
+          "job_id": "200496877",
           "field": "job_title",
-          "before": "Thủ Kho (Khoán)",
+          "before": "Giám Sát Hệ Thống Điện Nhẹ",
           "after": "non_it",
-          "url": "https://vieclam24h.vn/xay-dung/thu-kho-khoan-c31p73id200501353.html"
+          "url": "https://vieclam24h.vn/van-hanh-bao-tri-bao-duong/giam-sat-he-thong-dien-nhe-c10p122id200496877.html"
         }
       ]
     },
@@ -126,7 +126,7 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 186,
+      "rows_affected": 475,
       "examples": [
         {
           "job_id": "100160858",
@@ -143,11 +143,11 @@
           "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-kinh-doanh-c8p73id200452314.html"
         },
         {
-          "job_id": "200501353",
+          "job_id": "200496877",
           "field": "job_title",
-          "before": "Thủ Kho (Khoán)",
+          "before": "Giám Sát Hệ Thống Điện Nhẹ",
           "after": null,
-          "url": "https://vieclam24h.vn/xay-dung/thu-kho-khoan-c31p73id200501353.html"
+          "url": "https://vieclam24h.vn/van-hanh-bao-tri-bao-duong/giam-sat-he-thong-dien-nhe-c10p122id200496877.html"
         }
       ]
     },
@@ -162,30 +162,15 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
       "action": "drop",
-      "rows_affected": 1,
-      "examples": [
-        {
-          "job_id": "200954647",
-          "field": "dedup_key",
-          "before": "viễn thông fpt|kỹ thuật viên triển khai và bảo trì [vĩnh long]|ha_noi|2026-W40",
-          "after": "giữ 200949664",
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/ky-thuat-vien-trien-khai-va-bao-tri-vinh-long-c7p210000190id200954647.html"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 5,
+      "rows_affected": 3,
       "examples": [
-        {
-          "job_id": "200947711",
-          "field": "dedup_key",
-          "before": "công nghệ hagitek|nhân viên kỹ thuật hạ tầng mạng – camera|da_nang|2026-W39",
-          "after": "giữ jobsgo:29002123253",
-          "url": "https://vieclam24h.vn/buu-chinh-vien-thong/nhan-vien-ky-thuat-ha-tang-mang-camera-c38p104id200947711.html"
-        },
         {
           "job_id": "200957562",
           "field": "dedup_key",
@@ -199,6 +184,13 @@
           "before": "truyền thông tập trung mặt trời vàng|chuyên viên ứng dụng ai (ai enablement associate) - tiếng trung|ho_chi_minh|2026-W41",
           "after": "giữ jobsgo:29281416125",
           "url": "https://vieclam24h.vn/it-phan-mem/chuyen-vien-ung-dung-ai-ai-enablement-associate-tieng-trung-c8p210000187id200961159.html"
+        },
+        {
+          "job_id": "200968653",
+          "field": "dedup_key",
+          "before": "một thành viên hoàng khang giang|nhân viên it|da_nang|2026-W43",
+          "after": "giữ jobsgo:29401386590",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-it-c7p210000180id200968653.html"
         }
       ]
     }
@@ -240,22 +232,19 @@
     "notes": []
   },
   "api": {
-    "used": true,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 12,
-    "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
-    "max_cost_usd": 0.3
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "it_levels": {
+      "tang_1_non_it": 186,
+      "tang_1_it": 138,
+      "tang_2_non_it": 289,
+      "tang_2_it": 47
+    },
     "it_status": {
-      "non_it": 186,
-      "it": 138,
-      "can_kiem": 336
+      "non_it": 475,
+      "it": 185
     },
     "it_policy": {
       "drop": [
@@ -271,10 +260,10 @@
       "labeled_non_it": 77,
       "rule_decided": 48,
       "rule_correct": 48,
-      "status_non_it": 48,
-      "status_non_it_correct": 48,
-      "jev_labeled": 0,
-      "jev_correct": 0
+      "status_non_it": 77,
+      "status_non_it_correct": 75,
+      "level2_labeled": 32,
+      "level2_correct": 28
     }
   }
 }

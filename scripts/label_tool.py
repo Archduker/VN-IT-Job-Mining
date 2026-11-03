@@ -54,7 +54,7 @@ SOURCES = (
     "vietnamworks",
 )
 
-FIELDS = ["job_id", "source_url", "job_title", "skills", "it_rule", "it_prob", "it_status", "nhan_tay"]
+FIELDS = ["job_id", "source_url", "job_title", "skills", "it_rule", "it_rule_level", "it_status", "nhan_tay"]
 
 # Danh sách từ khóa chức danh 100% ngoài IT (an toàn tuyệt đối để tự động nhận diện)
 OBVIOUS_NON_IT_PATTERNS = [
@@ -367,7 +367,7 @@ def run_tui(target_source: Optional[str] = None, unlabeled_only: bool = True) ->
             skills = r.get("skills") or "(Trống)"
             rule = r.get("it_rule") or "unknown"
             status = r.get("it_status") or "can_kiem"
-            prob = r.get("it_prob") or "None"
+            level = r.get("it_rule_level") or "—"
             url = r.get("source_url") or "—"
 
             rule_color = C_GREEN if rule == "it" else (C_RED if rule == "non_it" else C_YELLOW)
@@ -385,7 +385,7 @@ def run_tui(target_source: Optional[str] = None, unlabeled_only: bool = True) ->
             print(
                 f"🤖 {C_BOLD}DỰ ĐOÁN:{C_RESET}   Luật từ khóa: {rule_color}{rule}{C_RESET} | "
                 f"Trạng thái: {status_color}{status}{C_RESET} | "
-                f"JEV prob: {prob}"
+                f"Tầng luật: {level}"
             )
             print(f"🏷️  {C_BOLD}HIỆN TẠI:{C_RESET}  {nhan_str}")
             print(f"🔗 {C_DIM}Link gốc:{C_RESET}  {url}")
@@ -721,7 +721,7 @@ WEB_HTML = r"""<!DOCTYPE html>
           <div class="job-meta">
             <span class="meta-tag ${ruleClass}">Luật từ khóa: ${item.it_rule}</span>
             <span class="meta-tag ${statusClass}">Trạng thái: ${item.it_status}</span>
-            <span class="meta-tag">JEV prob: ${item.it_prob || 'None'}</span>
+            <span class="meta-tag">Tầng luật: ${item.it_rule_level || '—'}</span>
             <a href="${item.source_url}" target="_blank" class="link-origin" style="margin-left:auto;">
               Mở link gốc ↗
             </a>

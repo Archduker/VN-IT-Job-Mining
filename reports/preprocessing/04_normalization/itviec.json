@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:53:54+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:13:05+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 905
@@ -117,9 +117,9 @@
     },
     {
       "id": "N2b",
-      "name": "JEV không đồng ý nhãn cấp bậc/nhóm nghề: gắn cờ cần kiểm",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 0,
+      "rows_affected": 364,
       "examples": []
     },
     {
@@ -133,7 +133,7 @@
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
       "action": "modify",
-      "rows_affected": 95,
+      "rows_affected": 59,
       "examples": []
     },
     {
@@ -217,15 +217,7 @@
   },
   "api": {
     "used": false,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 0,
-    "reason": "không bật --use-api",
-    "max_cost_usd": 0.3
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
     "seniority_distribution": {
@@ -251,6 +243,6 @@
       "Hệ thống/Mạng": 15,
       "Thiết kế UI/UX": 4
     },
-    "salary_outliers": 95
+    "salary_outliers": 59
   }
 }

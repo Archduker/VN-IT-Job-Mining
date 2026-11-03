@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """preprocessing.missing_outlier
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Module bóc trần null markers, GenAI Imputer và xử lý ngoại lai IQR.
+Module bóc trần null markers, bù khuyết bằng luật (GenAITextImputer, tên cũ) và xử lý ngoại lai IQR.
 """
 
 from preprocessing.missing_outlier.sneaky_null_detector import is_val_null, detect_null_type, classify_salary_null

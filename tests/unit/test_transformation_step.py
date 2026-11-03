@@ -21,9 +21,7 @@ from preprocessing.transformation.experience_parser import parse_experience
 from preprocessing.transformation.location_parser import split_location
 from preprocessing.transformation.salary_parser import UniversalSalaryParser, parse_salary_cascade
 from preprocessing.transformation.skill_extractor import extract_benefits, extract_skills, filter_metadata_skills
-from preprocessing.transformation.translator import GeminiTranslator
 from preprocessing.common import step_report
-from preprocessing.common.api_cache import ApiCache
 
 
 def test_t2_salary_parser_d2_d3_d7_under_1m():
@@ -137,28 +135,6 @@ def test_t7_skills_and_benefits_extraction():
     assert "Khám sức khỏe" in bens
 
 
-def test_t6b_translator_keep_terms_and_cache(tmp_path):
-    cache = ApiCache("test_trans", root=tmp_path / "cache")
-    translator = GeminiTranslator(use_api=False, dry_run=True, cache=cache)
-
-    # 1. Kiểm tra phát hiện mất từ KEEP
-    present = ["Python", "Docker"]
-    # Bản dịch thiếu Docker
-    assert translator._check_lost_terms(present, "Kinh nghiệm với Python") is True
-    # Bản dịch đủ cả 2
-    assert translator._check_lost_terms(present, "Kinh nghiệm với Python và Docker") is False
-
-    # 2. Kiểm tra Cache
-    trans_cached = GeminiTranslator(use_api=False, dry_run=False, cache=cache)
-    key = cache.key(trans_cached.model, "v1.0", "Senior Java Developer with Docker")
-    cache.put(key, {"translated_text": "Senior Java Developer với Docker", "model": "gemini"}, cost_usd=0.0001)
-
-    result, lost = trans_cached.translate_text("Senior Java Developer with Docker")
-    assert result == "Senior Java Developer với Docker"
-    assert lost is False
-    assert cache.cache_hits == 1
-
-
 def test_transformation_pipeline_integration(tmp_path, monkeypatch):
     test_in = tmp_path / "data" / "preprocessing" / "02_integration"
     test_out = tmp_path / "data" / "preprocessing" / "03_transformation"
@@ -168,8 +144,6 @@ def test_transformation_pipeline_integration(tmp_path, monkeypatch):
     test_in.mkdir(parents=True, exist_ok=True)
     monkeypatch.setattr(transformation, "IN_FILE", test_in / "all.parquet")
     monkeypatch.setattr(transformation, "OUT_FILE", test_out / "all.parquet")
-    monkeypatch.setattr(transformation, "MODEL_CHOICE_PATH", tmp_path / "translate_model.json")
-    monkeypatch.setattr(transformation, "REVIEW_DIR", test_rev)
     monkeypatch.setattr(step_report, "REPORTS_ROOT", test_rep)
 
     # Tạo data parquet đầu vào P2 mẫu
@@ -177,7 +151,7 @@ def test_transformation_pipeline_integration(tmp_path, monkeypatch):
         {
             "job_id_global": "g1", "source_platform": "glints", "source_job_id": "1",
             "source_url": "https://g/1", "crawled_at": "2026-11-01",
-            "it_rule": "it", "it_prob": None, "it_status": "it", "dedup_key": "k1", "also_on": [],
+            "it_rule": "it", "it_rule_level": 1, "it_status": "it", "dedup_key": "k1", "also_on": [],
             "job_title": "Java Dev (15-20tr)", "company_name": "Cty A", "company_address": None,
             "raw_category_text": None, "raw_location_text": "Hà Nội", "working_locations": ["Hà Nội"],
             "raw_posted_date": "2026-10-25", "raw_deadline": "2026-11-15",
@@ -192,7 +166,7 @@ def test_transformation_pipeline_integration(tmp_path, monkeypatch):
     df_in = pd.DataFrame(rows_p2)
     df_in.to_parquet(test_in / "all.parquet", engine="pyarrow", index=False)
 
-    reports = transformation.run(["glints"], dry_run=False, use_api=False)
+    reports = transformation.run(["glints"], dry_run=False)
     rep = reports["glints"]
 
     # 1. Kiểm tra bảo toàn dòng

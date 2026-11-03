@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:52:50+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:12+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
-    "rows": 468
+    "rows": 182
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 468
+    "rows": 182
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
       "action": "modify",
-      "rows_affected": 468,
+      "rows_affected": 182,
       "examples": []
     },
     {
@@ -59,23 +59,8 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 2,
-      "examples": [
-        {
-          "job_id": "200968337",
-          "field": "empty_value",
-          "before": "'' or []",
-          "after": null,
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-sua-chua-may-in-c7p210000160id200968337.html"
-        },
-        {
-          "job_id": "200969321",
-          "field": "empty_value",
-          "before": "'' or []",
-          "after": null,
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-ky-thuat-sua-chua-may-in-c7p210000160id200969321.html"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
     }
   ],
   "fields": [
@@ -156,8 +141,8 @@
     },
     {
       "field": "benefits_list",
-      "fill_pct_in": 99.6,
-      "fill_pct_out": 99.6
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "raw_description_text",
@@ -176,7 +161,7 @@
   },
   "api": {
     "used": false,
-    "reason": "bước này không gọi API"
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {}
 }

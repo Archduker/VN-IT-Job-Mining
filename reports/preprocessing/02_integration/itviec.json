@@ -2,8 +2,8 @@
   "step": "02_integration",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:52:50+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:12+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
     "rows": 905
@@ -205,7 +205,7 @@
   },
   "api": {
     "used": false,
-    "reason": "bước này không gọi API"
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {}
 }

@@ -24,7 +24,7 @@ IN_DIR = DATA_DIR / "preprocessing" / "01_clean"
 OUT_FILE = DATA_DIR / "preprocessing" / STEP / "all.parquet"
 
 KEYS = ("job_id_global", "source_platform", "source_job_id", "source_url", "crawled_at")
-CLEAN_META = ("it_rule", "it_prob", "it_status", "dedup_key", "also_on")
+CLEAN_META = ("it_rule", "it_rule_level", "it_status", "dedup_key", "also_on")
 KEEP_18 = (
     "job_title",
     "company_name",
@@ -186,7 +186,7 @@ def process_source(source: str, dry_run: bool = True) -> tuple[List[Dict[str, An
 
             # 2. Metadata clean từ P1
             record["it_rule"] = clean_info.get("it_rule")
-            record["it_prob"] = clean_info.get("it_prob")
+            record["it_rule_level"] = clean_info.get("it_rule_level")
             record["it_status"] = clean_info.get("it_status")
             record["dedup_key"] = clean_info.get("dedup_key")
             record["also_on"] = clean_info.get("also_on") or []
@@ -237,7 +237,7 @@ def process_source(source: str, dry_run: bool = True) -> tuple[List[Dict[str, An
     return rows, report
 
 
-def run(sources: Sequence[str] = SOURCES, dry_run: bool = True, use_api: bool = False) -> Dict[str, StepReport]:
+def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> Dict[str, StepReport]:
     reports: Dict[str, StepReport] = {}
     all_rows: List[Dict[str, Any]] = []
     for src in sources:

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Bước 04 Normalization (docs/preprocessing/spec/P4_normalization.md).
 
-Chuẩn hóa 34 tỉnh/thành sau sáp nhập, 6 cấp bậc tiếng Việt, 12 nhóm nghề IT (khớp từ nguyên vẹn + JEV),
+Chuẩn hóa 34 tỉnh/thành sau sáp nhập, 6 cấp bậc tiếng Việt, 12 nhóm nghề IT (khớp từ nguyên vẹn),
 ánh xạ kỹ năng chuẩn, chuẩn hóa tên công ty, xử lý ngoại lai lương (IQR + Winsorize 1-99%),
-log1p lương. Đọc và ghi một file all.parquet (đã gộp 8 nguồn từ bước Integration).
+log1p lương. Nhãn mâu thuẫn được gắn cờ bằng luật if-else, không gọi model. Đọc và ghi một file all.parquet (đã gộp 8 nguồn từ bước Integration).
 """
 
 from __future__ import annotations
@@ -15,7 +15,6 @@ import numpy as np
 import pandas as pd
 
 from preprocessing.common import REPO_ROOT, SOURCES
-from preprocessing.common.jev_client import JevClient
 from preprocessing.common.province import fold, is_foreign, is_remote, key as prov_key, name as prov_name
 from preprocessing.common.step_report import StepReport, merge_reports
 from preprocessing.missing_outlier.outlier_handler import (
@@ -101,43 +100,27 @@ def _normalize_locations(locations_val: Any) -> Tuple[List[Dict[str, Any]], Opti
     return norm_locs, primary_city
 
 
-def _jev_question(name: str, what: str, label: str) -> Tuple[str, str, str, str]:
-    return (f"{name}_dung", f"Tin tuyển dụng này có {what} là '{label}' không?",
-            f"{what} của tin đúng là '{label}'", f"{what} của tin không phải '{label}'")
+SENIOR_LEVELS = {"Senior", "Trưởng nhóm/Quản lý"}
+ENTRY_LEVELS = {"Thực tập", "Mới tốt nghiệp"}
 
 
-def _jev_state(rec: Dict[str, Any]) -> Dict[str, Any]:
-    jd = rec.get("description_clean")
-    return {"title": rec.get("job_title_clean"), "jd": jd[:500] if isinstance(jd, str) else ""}
+def _num(v: Any) -> Optional[float]:
+    return None if v is None or (isinstance(v, float) and np.isnan(v)) else float(v)
 
 
-def _jev_verify(jev: JevClient, name: str, what: str, label: str, rec: Dict[str, Any]) -> Optional[float]:
-    """Hỏi JEV có/không: nhãn luật đưa ra có đúng không. Không gọi được thì None."""
-    return jev.noul(*_jev_question(name, what, label), _jev_state(rec))
-
-
-def _prefetch_labels(jev: JevClient, records: List[Dict[str, Any]]) -> None:
-    """Chạy luật trước để biết nhãn, rồi gọi JEV song song theo từng nhãn (vòng chính lấy kết quả đã nhớ)."""
-    groups: Dict[Tuple[str, str, str], List[Dict[str, Any]]] = {}
-    for rec in records:
-        sen, _ = classify_seniority(rec.get("raw_seniority_text"), rec.get("job_title_clean"), rec.get("exp_min_years"))
-        fam, _ = classify_job_family_rule(rec.get("job_title_clean"), canonicalize_skills(rec.get("skills_clean")))
-        if sen:
-            groups.setdefault(("seniority", "cấp bậc", sen), []).append(_jev_state(rec))
-        if fam:
-            groups.setdefault(("job_family", "nhóm nghề", fam), []).append(_jev_state(rec))
-    for (name, what, label), states in groups.items():
-        jev.prefetch(*_jev_question(name, what, label), states)
-
-
-def _low(prob: Optional[float]) -> bool:
-    return prob is not None and prob < 0.5
+def seniority_conflict(sen: Optional[str], exp_min: Any, exp_max: Any) -> bool:
+    """N2b: cấp bậc mâu thuẫn số năm kinh nghiệm (Senior mà < 2 năm, Thực tập mà ≥ 3 năm)."""
+    lo, hi = _num(exp_min), _num(exp_max)
+    if sen in SENIOR_LEVELS:
+        return (hi if hi is not None else lo) is not None and (hi if hi is not None else lo) < 2
+    if sen in ENTRY_LEVELS:
+        return lo is not None and lo >= 3
+    return False
 
 
 def process_source_records(
     source: str,
     input_records: List[Dict[str, Any]],
-    jev: JevClient,
     dry_run: bool = True
 ) -> Tuple[List[Dict[str, Any]], StepReport]:
     report = StepReport(STEP, source, dry_run)
@@ -145,7 +128,6 @@ def process_source_records(
     report.set_io(IN_FILE, total_rows, OUT_FILE, total_rows)
 
     rows: List[Dict[str, Any]] = []
-    _prefetch_labels(jev, input_records)
 
     n1_count, n2_count, n3_count, n4_count, n5_count, n_can_kiem = 0, 0, 0, 0, 0, 0
     n1_examples, n2_examples, n3_examples = [], [], []
@@ -184,8 +166,7 @@ def process_source_records(
         )
         rec["seniority"] = sen
         rec["seniority_source"] = sen_src
-        rec["seniority_prob"] = _jev_verify(jev, "seniority", "cấp bậc", sen, rec) if sen else None
-        rec["seniority_can_kiem"] = _low(rec["seniority_prob"])
+        rec["seniority_can_kiem"] = seniority_conflict(sen, rec.get("exp_min_years"), rec.get("exp_max_years"))
         if sen:
             n2_count += 1
             if len(n2_examples) < 3:
@@ -202,8 +183,7 @@ def process_source_records(
         fam = fam or "Khác"
         rec["job_family"] = fam
         rec["job_family_source"] = fam_src or "none"
-        rec["job_family_prob"] = _jev_verify(jev, "job_family", "nhóm nghề", fam, rec) if fam != "Khác" else None
-        rec["job_family_can_kiem"] = _low(rec["job_family_prob"])
+        rec["job_family_can_kiem"] = fam != "Khác" and not skills_std  # có nhóm nghề nhưng JD không có kỹ năng nào
         if fam != "Khác":
             n3_count += 1
             if len(n3_examples) < 3:
@@ -230,7 +210,7 @@ def process_source_records(
     report.rule("N3", "Phân loại 12 nhóm nghề IT", "modify", n3_count, n3_examples)
     report.rule("N4", "Ánh xạ kỹ năng chuẩn theo từ điển", "modify", n4_count)
     report.rule("N5", "Chuẩn hóa tên công ty", "modify", n5_count)
-    report.rule("N2b", "JEV không đồng ý nhãn cấp bậc/nhóm nghề: gắn cờ cần kiểm", "flag", n_can_kiem)
+    report.rule("N2b", "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm", "flag", n_can_kiem)
 
     report.check_conserved()
     return rows, report
@@ -301,9 +281,7 @@ def apply_global_salary_normalizations(
 def run(
     sources: Sequence[str] = SOURCES,
     dry_run: bool = True,
-    use_api: bool = False,
 ) -> Dict[str, StepReport]:
-    jev = JevClient(use_api=use_api, dry_run=dry_run)
     df_in = pd.read_parquet(IN_FILE) if IN_FILE.exists() else pd.DataFrame(columns=["source_platform"])
     groups = {src: g.to_dict(orient="records") for src, g in df_in.groupby("source_platform")}
 
@@ -311,7 +289,7 @@ def run(
     all_rows: List[Dict[str, Any]] = []
     counts: Dict[str, int] = {}
     for src in sources:
-        rows, rep = process_source_records(src, groups.get(src, []), jev, dry_run=dry_run)
+        rows, rep = process_source_records(src, groups.get(src, []), dry_run=dry_run)
         reports[src] = rep
         counts[src] = len(rows)
         all_rows.extend(rows)
@@ -337,7 +315,6 @@ def run(
             for f in KEY_FIELDS
             for pct in [round(sum(1 for r in src_normalized if _is_filled(r.get(f))) * 100.0 / total_rows, 1) if total_rows else 0.0]
         ]
-        rep.data["api"] = jev.report()
         rep.data["extra"] = {
             "seniority_distribution": pd.Series([r.get("seniority") or "(trống)" for r in src_normalized]).value_counts().to_dict(),
             "job_family_distribution": pd.Series([r.get("job_family") for r in src_normalized]).value_counts().to_dict(),
@@ -348,7 +325,6 @@ def run(
 
     total_rep = merge_reports(STEP, list(reports.values()), dry_run)
     total_rep.set_io(IN_FILE, len(df_in), OUT_FILE, len(all_normalized))
-    total_rep.data["api"] = jev.report()
     total_rep.data["extra"].update({"global_salary_stats": salary_stats, "total_jobs": len(all_normalized)})
     total_rep.check_conserved()
     if not dry_run and all_normalized:

@@ -40,7 +40,7 @@ def _make_env(src, job_id, raw_payload, clean_meta=None):
             "scraped_at": "2026-11-01T06:00:00+00:00",
             "clean": clean_meta or {
                 "it_rule": "it",
-                "it_prob": None,
+                "it_rule_level": 1,
                 "it_status": "it",
                 "dedup_key": f"company|title|hanoi|2026-W44",
                 "also_on": [],

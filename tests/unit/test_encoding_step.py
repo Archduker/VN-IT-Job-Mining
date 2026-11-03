@@ -3,7 +3,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Kiểm thử Bước 05 Encoding theo đặc tả docs/prompting/P5_encoding.md:
 - E1: Ordinal Seniority (0-5, -1 cho Chưa rõ)
-- E2: One-hot job_family, source_platform, employment_type, it_status
+- E2: One-hot job_family, source_platform, employment_type
 - E3: Multi-hot top 10 tỉnh/thành + tinh__other + remote/ngoai_vn
 - E4: Multi-hot top K kỹ năng (count >= 20, max 200) + skills__other_count
 - E5: Bảo toàn số học liên tục + cờ __missing (0/1)
@@ -49,9 +49,9 @@ def mock_golden_df():
             "is_outlier_salary": False,
             "posted_date": "2026-10-01",
             "deadline_date": "2026-10-31",
-            "it_prob": 0.95,
-            "seniority_prob": None,
-            "job_family_prob": 0.88,
+            "it_rule_level": 2,
+            "seniority_can_kiem": True,
+            "job_family_can_kiem": False,
         },
         {
             "job_id_global": "job_02",
@@ -59,7 +59,7 @@ def mock_golden_df():
             "seniority": "Chưa rõ",
             "job_family": "Khác",
             "raw_employment_type": None,
-            "it_status": "can_kiem",
+            "it_status": "it",
             "locations": [
                 {"tinh_key": "unknown_province", "remote": True, "ngoai_vn": False}
             ],
@@ -73,9 +73,9 @@ def mock_golden_df():
             "is_outlier_salary": True,
             "posted_date": None,
             "deadline_date": None,
-            "it_prob": None,
-            "seniority_prob": None,
-            "job_family_prob": None,
+            "it_rule_level": 1,
+            "seniority_can_kiem": False,
+            "job_family_can_kiem": False,
         }
     ]
     # Thêm 9 tỉnh giả lập với tần suất 2, để ha_noi (tần suất 5) và prov_1..9 là top 10,
@@ -103,9 +103,9 @@ def mock_golden_df():
             "is_outlier_salary": False,
             "posted_date": "2026-10-10",
             "deadline_date": "2026-11-10",
-            "it_prob": 0.9,
-            "seniority_prob": 0.8,
-            "job_family_prob": 0.9,
+            "it_rule_level": 1,
+            "seniority_can_kiem": False,
+            "job_family_can_kiem": True,
         })
     return pd.DataFrame(rows)
 
@@ -135,9 +135,7 @@ def test_e2_one_hot_encodings(mock_golden_df):
     assert features_df.loc[1, "employment_type__full_time"] == 0
     assert features_df.loc[1, "employment_type__missing"] == 1
 
-    # it_status
-    assert features_df.loc[0, "it_status__it"] == 1
-    assert features_df.loc[1, "it_status__can_kiem"] == 1
+    assert not any(c.startswith("it_status__") for c in features_df.columns)  # sau Clean mọi tin là IT
 
 
 def test_e3_e4_multi_hot_provinces_and_skills(mock_golden_df):
@@ -161,17 +159,15 @@ def test_e5_e8_numeric_preservation_and_missing_flags(mock_golden_df):
     assert features_df.loc[0, "log_salary_min__missing"] == 0
     assert features_df.loc[0, "exp_min_years"] == pytest.approx(1.0, abs=0.01)
     assert features_df.loc[0, "exp_min_years__missing"] == 0
-    assert features_df.loc[0, "it_prob"] == pytest.approx(0.95, abs=0.01)
-    assert features_df.loc[0, "it_prob__missing"] == 0
-    assert features_df.loc[0, "seniority_prob__missing"] == 1
+    # E8: cờ luật if-else
+    assert features_df.loc[0, "it_rule_level__2"] == 1 and features_df.loc[0, "seniority_can_kiem"] == 1
+    assert features_df.loc[1, "it_rule_level__2"] == 0 and features_df.loc[1, "job_family_can_kiem"] == 0
 
     # Row 2: Values missing
     assert pd.isna(features_df.loc[1, "log_salary_min"])
     assert features_df.loc[1, "log_salary_min__missing"] == 1
     assert pd.isna(features_df.loc[1, "exp_min_years"])
     assert features_df.loc[1, "exp_min_years__missing"] == 1
-    assert pd.isna(features_df.loc[1, "it_prob"])
-    assert features_df.loc[1, "it_prob__missing"] == 1
 
 
 def test_e6_e7_binary_flags_and_temporal(mock_golden_df):

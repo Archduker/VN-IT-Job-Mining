@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:53:48+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:13:02+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1984
+    "rows": 1561
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 1984
+    "rows": 1561
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 1975,
+      "rows_affected": 1554,
       "examples": [
         {
           "job_id": "2013194",
@@ -28,11 +28,11 @@
           "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
         },
         {
-          "job_id": "2192436",
+          "job_id": "2281042",
           "field": "tinh_chinh",
           "before": "Hà Nội",
           "after": "TP. Hà Nội",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-ky-thuat-chi-nam-thu-nhap-hap-dan-6-thang-kinh-nghiem-ha-noi-dong-da/2192436.html"
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
         },
         {
           "job_id": "2321616",
@@ -47,7 +47,7 @@
       "id": "N2",
       "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
       "action": "modify",
-      "rows_affected": 1975,
+      "rows_affected": 1554,
       "examples": [
         {
           "job_id": "2013194",
@@ -57,11 +57,11 @@
           "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
         },
         {
-          "job_id": "2192436",
+          "job_id": "2281042",
           "field": "seniority",
-          "before": "Nhân viên",
-          "after": "Mới tốt nghiệp (kinh_nghiem)",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-ky-thuat-chi-nam-thu-nhap-hap-dan-6-thang-kinh-nghiem-ha-noi-dong-da/2192436.html"
+          "before": "Quản lý / Giám sát",
+          "after": "Trưởng nhóm/Quản lý (raw)",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
         },
         {
           "job_id": "2321616",
@@ -76,7 +76,7 @@
       "id": "N3",
       "name": "Phân loại 12 nhóm nghề IT",
       "action": "modify",
-      "rows_affected": 1442,
+      "rows_affected": 1355,
       "examples": [
         {
           "job_id": "2013194",
@@ -105,21 +105,21 @@
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 1879,
+      "rows_affected": 1523,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 1983,
+      "rows_affected": 1560,
       "examples": []
     },
     {
       "id": "N2b",
-      "name": "JEV không đồng ý nhãn cấp bậc/nhóm nghề: gắn cờ cần kiểm",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 0,
+      "rows_affected": 38,
       "examples": []
     },
     {
@@ -133,14 +133,14 @@
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
       "action": "modify",
-      "rows_affected": 45,
+      "rows_affected": 7,
       "examples": []
     },
     {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 1157,
+      "rows_affected": 884,
       "examples": []
     }
   ],
@@ -152,18 +152,18 @@
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 99.1,
-      "fill_pct_out": 99.1
+      "fill_pct_in": 99.2,
+      "fill_pct_out": 99.2
     },
     {
       "field": "seniority",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "seniority_source",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "job_family",
@@ -177,8 +177,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 94.7,
-      "fill_pct_out": 94.7
+      "fill_pct_in": 97.6,
+      "fill_pct_out": 97.6
     },
     {
       "field": "company_norm",
@@ -187,23 +187,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 51.9,
-      "fill_pct_out": 51.9
+      "fill_pct_in": 48.9,
+      "fill_pct_out": 48.9
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 58.3,
-      "fill_pct_out": 58.3
+      "fill_pct_in": 56.6,
+      "fill_pct_out": 56.6
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 51.9,
-      "fill_pct_out": 51.9
+      "fill_pct_in": 48.9,
+      "fill_pct_out": 48.9
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 58.3,
-      "fill_pct_out": 58.3
+      "fill_pct_in": 56.6,
+      "fill_pct_out": 56.6
     },
     {
       "field": "is_outlier_salary",
@@ -217,40 +217,32 @@
   },
   "api": {
     "used": false,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 0,
-    "reason": "không bật --use-api",
-    "max_cost_usd": 0.3
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
     "seniority_distribution": {
-      "Junior": 794,
-      "Trưởng nhóm/Quản lý": 413,
-      "Mới tốt nghiệp": 286,
-      "Middle": 246,
-      "Thực tập": 119,
-      "Senior": 117
+      "Junior": 612,
+      "Trưởng nhóm/Quản lý": 362,
+      "Middle": 223,
+      "Mới tốt nghiệp": 175,
+      "Senior": 104,
+      "Thực tập": 78
     },
     "job_family_distribution": {
-      "Khác": 542,
-      "Thiết kế UI/UX": 261,
-      "Backend": 222,
-      "DevOps/Cloud": 166,
-      "Data/AI": 159,
-      "Kiểm thử (QA/QC)": 140,
-      "Quản lý sản phẩm/dự án": 122,
-      "Phân tích nghiệp vụ (BA)": 105,
+      "Backend": 218,
+      "Khác": 206,
+      "Thiết kế UI/UX": 199,
+      "DevOps/Cloud": 164,
+      "Data/AI": 156,
+      "Kiểm thử (QA/QC)": 138,
+      "Quản lý sản phẩm/dự án": 114,
+      "Phân tích nghiệp vụ (BA)": 103,
       "Mobile": 88,
       "Hệ thống/Mạng": 64,
       "Fullstack": 56,
-      "Bảo mật": 42,
+      "Bảo mật": 38,
       "Frontend": 17
     },
-    "salary_outliers": 45
+    "salary_outliers": 7
   }
 }

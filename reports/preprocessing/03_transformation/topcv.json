@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:52:52+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:13+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 1984
+    "rows": 1561
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1984
+    "rows": 1561
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 2935,
+      "rows_affected": 2350,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 1193,
+      "rows_affected": 907,
       "examples": [
         {
           "job_id": "2013194",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 1975,
+      "rows_affected": 1554,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 1975,
+      "rows_affected": 1554,
       "examples": [
         {
           "job_id": "2013194",
@@ -71,11 +71,11 @@
           "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
         },
         {
-          "job_id": "2192436",
+          "job_id": "2281042",
           "field": "exp_min_max",
-          "before": "Dưới 1 năm",
-          "after": "0.0 - 1.0 years",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-ky-thuat-chi-nam-thu-nhap-hap-dan-6-thang-kinh-nghiem-ha-noi-dong-da/2192436.html"
+          "before": "1 năm",
+          "after": "1.0 - 1.0 years",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
         },
         {
           "job_id": "2321616",
@@ -90,7 +90,7 @@
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 1975,
+      "rows_affected": 1554,
       "examples": []
     },
     {
@@ -104,28 +104,14 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 1984,
-      "examples": []
-    },
-    {
-      "id": "T6b",
-      "name": "Dịch JD tiếng Anh sang tiếng Việt",
-      "action": "modify",
-      "rows_affected": 0,
-      "examples": []
-    },
-    {
-      "id": "T6c",
-      "name": "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term",
-      "action": "flag",
-      "rows_affected": 0,
+      "rows_affected": 1561,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 1977,
+      "rows_affected": 1560,
       "examples": [
         {
           "job_id": "2013194",
@@ -135,11 +121,11 @@
           "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
         },
         {
-          "job_id": "2192436",
+          "job_id": "2281042",
           "field": "skills_clean",
-          "before": "['IT Helpdesk/IT support' 'IT - Phần cứng và máy tính' 'Nhanh nhẹn'\n 'Cẩn thận' 'Học hỏi' 'Chịu Áp Lực' 'Am hiểu phần cứng máy chủ'\n 'Khả năng lắp đặt máy chủ' 'Xử lý các lỗi cơ bản về phần cứng máy chủ']",
-          "after": "['IT Helpdesk/IT support', 'Nhanh nhẹn', 'Cẩn thận', 'Học hỏi', 'Chịu Áp Lực']",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-ky-thuat-chi-nam-thu-nhap-hap-dan-6-thang-kinh-nghiem-ha-noi-dong-da/2192436.html"
+          "before": "['Product Owner/Product Manager' 'IT - Phần cứng và máy tính' 'Viễn thông'\n 'Làm việc độc lập' 'Làm việc nhóm' 'Quản lý thời gian'\n 'Giao tiếp rõ ràng' 'Sử Dụng Phần Mềm Quản Lý Dự Án'\n 'Quản lý công việc khoa học']",
+          "after": "['Agile/Scrum', 'Product Owner/Product Manager', 'Viễn thông', 'Làm việc độc lập', 'Làm việc nhóm']",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
         },
         {
           "job_id": "2321616",
@@ -154,7 +140,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 1984,
+      "rows_affected": 1561,
       "examples": [
         {
           "job_id": "2013194",
@@ -164,11 +150,11 @@
           "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
         },
         {
-          "job_id": "2192436",
+          "job_id": "2281042",
           "field": "locations",
           "before": "Hà Nội",
-          "after": "{'dia_chi_cu_the': None, 'phuong_xa': 'Phường Đống Đa', 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Hà Nội: Tầng 1,2,3 Tòa nhà PmaxLand, số 32/133 Thái Hà, Phường Đống Đa (Phường Đống Đa thuộc quận Đống Đa cũ)'}",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-ky-thuat-chi-nam-thu-nhap-hap-dan-6-thang-kinh-nghiem-ha-noi-dong-da/2192436.html"
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': 'Phường Nghĩa Đô', 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Hà Nội: ông ty VNPT Technology, số 124 Hoàng Quốc Việt, Phường Nghĩa Đô (Phường Nghĩa Đô có thể thuộc các quận Bắc Từ Liêm, Cầu Giấy cũ)'}",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
         },
         {
           "job_id": "2321616",
@@ -183,13 +169,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 51.9,
-      "fill_pct_out": 51.9
+      "fill_pct_in": 48.9,
+      "fill_pct_out": 48.9
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 58.3,
-      "fill_pct_out": 58.3
+      "fill_pct_in": 56.6,
+      "fill_pct_out": 56.6
     },
     {
       "field": "posted_date",
@@ -198,23 +184,23 @@
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 96.1,
-      "fill_pct_out": 96.1
+      "fill_pct_in": 95.3,
+      "fill_pct_out": 95.3
     },
     {
       "field": "headcount",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "job_title_clean",
@@ -228,18 +214,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 94.7,
-      "fill_pct_out": 94.7
+      "fill_pct_in": 97.6,
+      "fill_pct_out": 97.6
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 97.2,
-      "fill_pct_out": 97.2
-    },
-    {
-      "field": "description_vi",
-      "fill_pct_in": 95.5,
-      "fill_pct_out": 95.5
+      "fill_pct_in": 97.5,
+      "fill_pct_out": 97.5
     },
     {
       "field": "locations",
@@ -258,21 +239,21 @@
   },
   "api": {
     "used": false,
-    "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 1188,
-      "title": 9,
+      "header": 903,
+      "title": 8,
       "jd": 0,
-      "none": 787
+      "none": 650
     },
     "salary_under_1m_count": 2,
-    "salary_from_x_count": 36,
+    "salary_from_x_count": 23,
     "language_distribution": {
-      "vi": 1894,
-      "en": 90
+      "vi": 1481,
+      "en": 80
     },
-    "experience_parsed_rate": 99.5
+    "experience_parsed_rate": 99.6
   }
 }

@@ -4,7 +4,7 @@
     python scripts/run_preprocessing.py --step clean --source glints --dry-run
     python scripts/run_preprocessing.py --step all --source all
 
-Mỗi bước ghi reports/preprocessing/<bước>/<nguồn>.json (Monitoring đọc). Chỉ ghi trên máy, không đụng R2.
+Mỗi bước ghi reports/preprocessing/<bước>/<nguồn>.json (Monitoring đọc). Chỉ ghi trên máy, không đụng R2. Không gọi model nào: mọi phân loại là luật if-else.
 Đặc tả: docs/preprocessing/spec/P0_pipeline_contract.md.
 """
 
@@ -37,7 +37,6 @@ def main(argv=None) -> int:
     parser.add_argument("--step", required=True, choices=[*step_map.keys(), "all"])
     parser.add_argument("--source", default="all", choices=[*SOURCES, "all"])
     parser.add_argument("--dry-run", action="store_true", help="chỉ đọc và ghi báo cáo, không ghi dữ liệu")
-    parser.add_argument("--use-api", action="store_true", help="cho phép gọi JEV/LLM (có cache)")
     args = parser.parse_args(argv)
 
     steps = list(STEPS) if args.step == "all" else [step_map[args.step]]
@@ -46,7 +45,7 @@ def main(argv=None) -> int:
         if step not in MODULES:
             print(f"{step}: chưa làm (xem docs/prompting/), dừng.")
             return 1
-        reports = importlib.import_module(MODULES[step]).run(sources, dry_run=args.dry_run, use_api=args.use_api)
+        reports = importlib.import_module(MODULES[step]).run(sources, dry_run=args.dry_run)
         for src, r in reports.items():
             d = r.data
             print(f"{step} {src}: input {d['input']['rows']} → output {d['output']['rows']} ({d['mode']})"

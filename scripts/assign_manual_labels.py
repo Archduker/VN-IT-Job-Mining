@@ -30,7 +30,7 @@ SOURCES = [
     "vietnamworks",
 ]
 
-FIELDS = ["job_id", "source_url", "job_title", "skills", "it_rule", "it_prob", "it_status", "nhan_tay"]
+FIELDS = ["job_id", "source_url", "job_title", "skills", "it_rule", "it_rule_level", "it_status", "nhan_tay"]
 
 
 def evaluate_job(source: str, job_id: str, title: str, skills: str) -> Tuple[str, str]:

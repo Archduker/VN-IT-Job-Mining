@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:42:05+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:11:46+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/topdev/raw",
     "rows": 3890
   },
   "output": {
     "path": "data/preprocessing/01_clean/topdev.jsonl",
-    "rows": 1635
+    "rows": 227
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 1123
+      "rows": 2552
     },
     {
       "rule": "C5",
@@ -41,7 +41,7 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
-      "rows": 23
+      "rows": 2
     },
     {
       "rule": "C7",
@@ -95,30 +95,30 @@
     },
     {
       "id": "C4a",
-      "name": "Phân loại IT (luật + JEV), chỉ gắn cờ",
+      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 2620,
+      "rows_affected": 2552,
       "examples": [
         {
-          "job_id": "2133619",
+          "job_id": "2132754",
           "field": "job_title",
-          "before": "Kế toán trưởng",
+          "before": "Solution Consulting Manager (FC Manager)",
           "after": "non_it",
-          "url": "https://topdev.vn/viec-lam/ke-toan-truong-lotte-engineering-construction-co-ltd-nha-thau-thi-cong-xay-dung-moi-du-an-lotte-eco-smart-city-2133619"
+          "url": "https://topdev.vn/viec-lam/solution-consulting-manager-fc-manager-cong-ty-co-phan-giai-phap-oris-2132754"
         },
         {
-          "job_id": "2134040",
+          "job_id": "2132755",
           "field": "job_title",
-          "before": "CHUYÊN GIA ĐẢM BẢO AN NINH THÔNG TIN",
+          "before": "Functional Consultant – ORIS Business Suite",
           "after": "non_it",
-          "url": "https://topdev.vn/viec-lam/chuyen-gia-dam-bao-an-ninh-thong-tin-cong-ty-co-phan-chung-khoan-vpbank-2134040"
+          "url": "https://topdev.vn/viec-lam/functional-consultant-oris-business-suite-cong-ty-co-phan-giai-phap-oris-2132755"
         },
         {
-          "job_id": "2135255",
+          "job_id": "2132760",
           "field": "job_title",
-          "before": "Chuyên viên Kinh doanh kênh phân phối",
+          "before": "Customer Success – ORIS Business Suite",
           "after": "non_it",
-          "url": "https://topdev.vn/viec-lam/chuyen-vien-kinh-doanh-kenh-phan-phoi-cong-ty-co-phan-ad-tek-2135255"
+          "url": "https://topdev.vn/viec-lam/customer-success-oris-business-suite-cong-ty-co-phan-giai-phap-oris-2132760"
         }
       ]
     },
@@ -126,28 +126,28 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 1123,
+      "rows_affected": 2552,
       "examples": [
         {
-          "job_id": "2133619",
+          "job_id": "2132754",
           "field": "job_title",
-          "before": "Kế toán trưởng",
+          "before": "Solution Consulting Manager (FC Manager)",
           "after": null,
-          "url": "https://topdev.vn/viec-lam/ke-toan-truong-lotte-engineering-construction-co-ltd-nha-thau-thi-cong-xay-dung-moi-du-an-lotte-eco-smart-city-2133619"
+          "url": "https://topdev.vn/viec-lam/solution-consulting-manager-fc-manager-cong-ty-co-phan-giai-phap-oris-2132754"
         },
         {
-          "job_id": "2134040",
+          "job_id": "2132755",
           "field": "job_title",
-          "before": "CHUYÊN GIA ĐẢM BẢO AN NINH THÔNG TIN",
+          "before": "Functional Consultant – ORIS Business Suite",
           "after": null,
-          "url": "https://topdev.vn/viec-lam/chuyen-gia-dam-bao-an-ninh-thong-tin-cong-ty-co-phan-chung-khoan-vpbank-2134040"
+          "url": "https://topdev.vn/viec-lam/functional-consultant-oris-business-suite-cong-ty-co-phan-giai-phap-oris-2132755"
         },
         {
-          "job_id": "2135255",
+          "job_id": "2132760",
           "field": "job_title",
-          "before": "Chuyên viên Kinh doanh kênh phân phối",
+          "before": "Customer Success – ORIS Business Suite",
           "after": null,
-          "url": "https://topdev.vn/viec-lam/chuyen-vien-kinh-doanh-kenh-phan-phoi-cong-ty-co-phan-ad-tek-2135255"
+          "url": "https://topdev.vn/viec-lam/customer-success-oris-business-suite-cong-ty-co-phan-giai-phap-oris-2132760"
         }
       ]
     },
@@ -162,28 +162,21 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
       "action": "drop",
-      "rows_affected": 23,
+      "rows_affected": 2,
       "examples": [
         {
-          "job_id": "2132754",
+          "job_id": "2141079",
           "field": "dedup_key",
-          "before": "giải pháp oris|solution consulting manager (fc manager)|ho_chi_minh|2026-W43",
-          "after": "giữ 2139658",
-          "url": "https://topdev.vn/viec-lam/solution-consulting-manager-fc-manager-cong-ty-co-phan-giai-phap-oris-2132754"
+          "before": "công nghệ bookingcare|fullstack ai engineer|ha_noi|2026-W44",
+          "after": "giữ 2133063",
+          "url": "https://topdev.vn/viec-lam/fullstack-ai-engineer-cong-ty-co-phan-cong-nghe-bookingcare-2141079"
         },
         {
-          "job_id": "2132755",
+          "job_id": "2141955",
           "field": "dedup_key",
-          "before": "giải pháp oris|functional consultant – oris business suite|ho_chi_minh|2026-W43",
-          "after": "giữ 2139659",
-          "url": "https://topdev.vn/viec-lam/functional-consultant-oris-business-suite-cong-ty-co-phan-giai-phap-oris-2132755"
-        },
-        {
-          "job_id": "2132760",
-          "field": "dedup_key",
-          "before": "giải pháp oris|customer success – oris business suite|ho_chi_minh|2026-W43",
-          "after": "giữ 2139660",
-          "url": "https://topdev.vn/viec-lam/customer-success-oris-business-suite-cong-ty-co-phan-giai-phap-oris-2132760"
+          "before": "salesnow|remote data engineer - ai data platform japan (python)||2026-W44",
+          "after": "giữ 2133822",
+          "url": "https://topdev.vn/viec-lam/remote-data-engineer-ai-data-platform-japan-python-salesnow-inc-2141955"
         }
       ]
     },
@@ -217,12 +210,12 @@
     {
       "field": "raw_location_text",
       "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_out": 100.0
     },
     {
       "field": "raw_posted_date",
       "fill_pct_in": 40.4,
-      "fill_pct_out": 33.1
+      "fill_pct_out": 31.3
     },
     {
       "field": "raw_description_text",
@@ -232,7 +225,7 @@
     {
       "field": "skills_list",
       "fill_pct_in": 45.0,
-      "fill_pct_out": 36.9
+      "fill_pct_out": 83.7
     }
   ],
   "checks": {
@@ -240,22 +233,19 @@
     "notes": []
   },
   "api": {
-    "used": true,
-    "model": "jev-1.13-free",
-    "calls": 0,
-    "cache_hits": 0,
-    "cost_usd": 0.0,
-    "total_spent_usd": 0.0,
-    "global_cap_usd": 0.95,
-    "errors": 12,
-    "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
-    "max_cost_usd": 0.3
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "it_levels": {
+      "tang_1_it": 162,
+      "tang_2_non_it": 1429,
+      "tang_2_it": 68,
+      "tang_1_non_it": 1123
+    },
     "it_status": {
-      "it": 162,
-      "can_kiem": 1497,
-      "non_it": 1123
+      "it": 230,
+      "non_it": 2552
     },
     "it_policy": {
       "drop": [
@@ -271,10 +261,10 @@
       "labeled_non_it": 79,
       "rule_decided": 51,
       "rule_correct": 51,
-      "status_non_it": 50,
-      "status_non_it_correct": 50,
-      "jev_labeled": 0,
-      "jev_correct": 0
+      "status_non_it": 78,
+      "status_non_it_correct": 78,
+      "level2_labeled": 29,
+      "level2_correct": 28
     }
   }
 }

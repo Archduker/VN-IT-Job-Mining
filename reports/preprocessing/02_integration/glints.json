@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:52:50+00:00",
-  "code_version": "9be1e8e",
+  "generated_at": "2026-11-03T17:12:13+00:00",
+  "code_version": "7dee2a4",
   "input": {
     "path": "data/preprocessing/01_clean/glints.jsonl",
-    "rows": 315
+    "rows": 271
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 315
+    "rows": 271
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
       "action": "modify",
-      "rows_affected": 315,
+      "rows_affected": 271,
       "examples": []
     },
     {
@@ -59,7 +59,7 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 89,
+      "rows_affected": 76,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -98,8 +98,8 @@
     },
     {
       "field": "company_address",
-      "fill_pct_in": 87.6,
-      "fill_pct_out": 87.6
+      "fill_pct_in": 86.7,
+      "fill_pct_out": 86.7
     },
     {
       "field": "raw_category_text",
@@ -123,8 +123,8 @@
     },
     {
       "field": "raw_deadline",
-      "fill_pct_in": 97.8,
-      "fill_pct_out": 97.8
+      "fill_pct_in": 98.2,
+      "fill_pct_out": 98.2
     },
     {
       "field": "raw_salary_text",
@@ -138,8 +138,8 @@
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 90.2,
-      "fill_pct_out": 90.2
+      "fill_pct_in": 91.1,
+      "fill_pct_out": 91.1
     },
     {
       "field": "raw_seniority_text",
@@ -158,13 +158,13 @@
     },
     {
       "field": "skills_list",
-      "fill_pct_in": 88.6,
-      "fill_pct_out": 88.6
+      "fill_pct_in": 88.2,
+      "fill_pct_out": 88.2
     },
     {
       "field": "benefits_list",
-      "fill_pct_in": 81.9,
-      "fill_pct_out": 81.9
+      "fill_pct_in": 82.7,
+      "fill_pct_out": 82.7
     },
     {
       "field": "raw_description_text",
@@ -183,7 +183,7 @@
   },
   "api": {
     "used": false,
-    "reason": "bước này không gọi API"
+    "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {}
 }

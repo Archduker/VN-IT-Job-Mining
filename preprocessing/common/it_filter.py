@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Luật từ khóa phân loại tin IT (P1 C4a). Khớp theo từ nguyên vẹn, không theo chuỗi con (PRE-1).
+"""Luật if-else 2 tầng phân loại tin IT (P1 C4a). Khớp theo từ nguyên vẹn, không theo chuỗi con (PRE-1).
 
-Kết quả chỉ là một nửa của it_status; nửa kia là JEV (preprocessing/common/jev_client.py).
+Tầng 1 `classify`: từ khóa tiêu đề + kỹ năng raw → it | non_it | unknown.
+Tầng 2 `classify_unknown`: chỉ cho tin tầng 1 ra unknown, xét nhóm nghề theo tiêu đề và số kỹ năng rút từ JD.
 Không tự bỏ tin: quyết bỏ nằm ở preprocessing/clean/it_policy.json do người dùng duyệt.
 """
 
@@ -25,7 +26,7 @@ STRONG_IT = [
     "solution architect", "tech lead", "technical lead", "cto", "kỹ sư phần mềm", "salesforce", "crm developer",
 ]
 # Từ như "kỹ thuật", "engineer", "security" cố ý không có ở đây: một mình không đủ kết luận
-# ("Kỹ thuật bảo trì nhà máy", "Security (Nhân viên bảo an)"), nên ra unknown để JEV và người quyết.
+# ("Kỹ thuật bảo trì nhà máy", "Security (Nhân viên bảo an)"), nên ra unknown để tầng 2 quyết.
 NON_IT = [
     "kế toán", "ke toan", "accountant", "accounting", "kiểm toán", "tài xế", "lái xe", "driver", "giáo viên",
     "giảng viên", "giảng dạy", "teacher", "gia sư", "nhân sự", "hr", "tuyển dụng", "recruiter", "marketing",
@@ -68,11 +69,27 @@ def classify(title: Any, skills: Any = None) -> str:
     tech = {_norm(s) for s in (skills or []) if isinstance(s, str)} & TECH_SKILLS
     strong, non = bool(_STRONG.search(t)), bool(_NON.search(t))
     if strong and non:
-        return "unknown"  # "Kinh doanh phần mềm", "IT Recruiter": để người và JEV quyết
+        return "unknown"  # "Kinh doanh phần mềm", "IT Recruiter": để tầng 2 quyết
     if strong:
         return "it"
     if non:
         return "non_it"
     if len(tech) >= MIN_TECH_SKILLS:
         return "it"
-    return "unknown"  # chỉ có từ yếu hoặc không có gì: can_kiem
+    return "unknown"  # chỉ có từ yếu hoặc không có gì: tầng 2 quyết
+
+
+# Tầng 2: đo trên 227 tin "unknown" đã gán nhãn tay (03/11/2026) đúng 81,5%; ngưỡng 2 cho kết quả tốt nhất (2–6).
+MIN_JD_SKILLS = 2
+
+
+def classify_unknown(title: Any, skills_list: Any = None, jd_text: Any = None, company: Any = None) -> str:
+    """it | non_it cho tin tầng 1 không quyết được: có nhóm nghề IT (12 nhóm) và ≥ MIN_JD_SKILLS kỹ năng."""
+    # import trong hàm: common không phụ thuộc cứng vào transformation/normalization khi chỉ dùng tầng 1
+    from preprocessing.normalization.text_cleaner import canonicalize_skills, classify_job_family_rule
+    from preprocessing.transformation.skill_extractor import extract_skills
+
+    skills = canonicalize_skills(extract_skills(skills_list if isinstance(skills_list, list) else None,
+                                                str(jd_text or ""), company))
+    family, _ = classify_job_family_rule(str(title or ""), skills)
+    return "it" if family and len(skills) >= MIN_JD_SKILLS else "non_it"
