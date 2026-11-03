@@ -272,7 +272,7 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 **Thầy có thể hỏi:**
 
 - *JEV tốn bao nhiêu?*  
-  188 câu hỏi, 0.0 USD (bản miễn phí).
+  0 câu hỏi, 0.0 USD (bản miễn phí).
 - *Tin bị bỏ có xem lại được không?*  
   Có, mỗi luật lưu ví dụ (examples) trong báo cáo và hiện trên trang Monitoring.
 
@@ -495,8 +495,8 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 
 ## Việc còn tồn đọng (ghi chú cho mình, không chiếu)
 
-- JEV hết lượt miễn phí sau 188 câu: 4.052/8.344 tin còn "cần kiểm" IT; luật JEV kiểm cấp bậc, nhóm nghề chưa chạy. Chạy lại `--use-api` khi có lượt (KNOWN_ISSUED.md PRE-9).
-- Dịch JD: 0/1.783 JD tiếng Anh đã dịch. Lượt dịch 30 mẫu bị Gemini báo quá tải (503); chấm mẫu xong mới dịch hết, ước tính ~9,9 USD (PRE-10).
+- JEV hết lượt miễn phí sau 0 câu: 4.052/8.344 tin còn "cần kiểm" IT; luật JEV kiểm cấp bậc, nhóm nghề chưa chạy. Chạy lại `--use-api` khi có lượt (KNOWN_ISSUED.md PRE-9).
+- Dịch JD: 0/1.783 JD tiếng Anh đã dịch. Khóa Gemini báo hết hạn mức (429) với gemini-3.8-flash, gemini-3.5-flash vẫn gọi được; cần chọn model hoặc nạp thêm, rồi chấm 30 mẫu mới dịch hết (ước tính ~9,9 USD, vượt trần 9 USD của sổ Google) (PRE-10).
 - TopDev: cần cào lại để có ngày đăng, kinh nghiệm; crawler cũng đang cào cả tin ngoài IT vì API bỏ qua bộ lọc ngành.
 - Mô hình: chờ thầy chọn hướng cho lương thiếu (53%), tin cần kiểm, nhóm nghề 'Khác' (41%), giảm chiều, JD tiếng Anh, lệch vùng (PRE-11).
 - Mức Cao/TB/Thấp của các nhóm thiếu trường, địa điểm, cấp bậc, kỹ năng, ngày, văn bản là tự đánh giá; tài liệu gốc chưa ghi.

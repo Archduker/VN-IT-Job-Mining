@@ -660,7 +660,7 @@ def build(raw: dict, raw_now: dict, reports: dict, after: dict, before: dict, st
 
     out[-1]["todo"] = [
         f"JEV hết lượt miễn phí sau {n(clean['api']['calls'])} câu: {n(its.get('can_kiem', 0))}/{n(after['rows'])} tin còn \"cần kiểm\" IT; luật JEV kiểm cấp bậc, nhóm nghề chưa chạy. Chạy lại `--use-api` khi có lượt (KNOWN_ISSUED.md PRE-9).",
-        f"Dịch JD: {n(ra('T6b'))}/{n(after['lang_en'])} JD tiếng Anh đã dịch. Lượt dịch 30 mẫu bị Gemini báo quá tải (503); chấm mẫu xong mới dịch hết, ước tính ~9,9 USD (PRE-10).",
+        f"Dịch JD: {n(ra('T6b'))}/{n(after['lang_en'])} JD tiếng Anh đã dịch. Khóa Gemini báo hết hạn mức (429) với gemini-3.8-flash, gemini-3.5-flash vẫn gọi được; cần chọn model hoặc nạp thêm, rồi chấm 30 mẫu mới dịch hết (ước tính ~9,9 USD, vượt trần 9 USD của sổ Google) (PRE-10).",
         "TopDev: cần cào lại để có ngày đăng, kinh nghiệm; crawler cũng đang cào cả tin ngoài IT vì API bỏ qua bộ lọc ngành.",
         f"Mô hình: chờ thầy chọn hướng cho lương thiếu ({pct(100 * (after['rows'] - after['salary_any']) / after['rows'], 0)}), tin cần kiểm, nhóm nghề 'Khác' ({pct(100 * after['family_khac'] / after['rows'], 0)}), giảm chiều, JD tiếng Anh, lệch vùng (PRE-11).",
         "Mức Cao/TB/Thấp của các nhóm thiếu trường, địa điểm, cấp bậc, kỹ năng, ngày, văn bản là tự đánh giá; tài liệu gốc chưa ghi.",

@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-03T14:51:52+00:00",
-  "code_version": "0b54ff4",
+  "generated_at": "2026-11-03T16:42:13+00:00",
+  "code_version": "9be1e8e",
   "input": {
     "path": "data/careerviet/raw",
     "rows": 660
@@ -261,7 +261,7 @@
     "cost_usd": 0.0,
     "total_spent_usd": 0.0,
     "global_cap_usd": 0.95,
-    "errors": 12,
+    "errors": 11,
     "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
     "max_cost_usd": 0.3
   },

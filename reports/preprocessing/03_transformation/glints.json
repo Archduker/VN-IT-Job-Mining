@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-03T16:08:03+00:00",
-  "code_version": "0b54ff4",
+  "generated_at": "2026-11-03T16:53:37+00:00",
+  "code_version": "9be1e8e",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 315

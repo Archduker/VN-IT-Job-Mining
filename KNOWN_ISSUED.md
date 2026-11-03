@@ -2,7 +2,7 @@
 
 Danh sách việc còn tồn đọng, cập nhật ngày 03/11/2026 trên nhánh `fix/known-issues-p1`. Xử lý xong mục nào thì chuyển sang `docs/issue_log.md` theo khuôn Lỗi → Nguyên nhân → Cách xử lý → Kiểm chứng (xem `docs/CLAUDE.md`), rồi xóa khỏi đây.
 
-Thứ tự làm của dự án: **web scraping → trực quan hóa dữ liệu → pre-processing**. Phần pre-processing để sau, chưa sửa.
+Thứ tự làm của dự án: **web scraping → trực quan hóa dữ liệu → pre-processing**.
 
 ## 1. Web scraping
 
@@ -72,44 +72,9 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 - Vị trí: `monitoring/frontend/src/pages/CrawlingPage.tsx` (khoảng 890 dòng)
 - Cách xử lý: tách thành các component trong `components/`.
 
-## 3. Pre-processing (để sau)
+## 3. Pre-processing
 
-Code sửa cho PRE-1 và PRE-2 đã viết xong và có test, đang cất trong git stash "preprocessing: so khớp theo từ + chuẩn hóa sau imputer (hoãn)". Lấy lại bằng `git stash list` rồi `git stash apply stash@{N}`.
-
-**PRE-1. Phân loại theo chuỗi con làm sai nhóm nghề, cấp bậc, thành phố**
-
-- Vị trí: `classify_job_family`, `normalize_seniority`, `normalize_city` trong `preprocessing/normalization/text_cleaner.py`; heuristic trong `preprocessing/missing_outlier/genai_text_imputer.py`
-- Ảnh hưởng: "ba" khớp trong "backend", "soc" khớp trong "associate", "intern" khớp trong "international". Bộ golden có 1.214 tin BA/Product, phần lớn là xếp sai.
-- Cách xử lý: so khớp theo từ nguyên vẹn (có trong stash).
-
-**PRE-2. Chuẩn hóa chạy trước imputer**
-
-- Vị trí: `scripts/run_staging_integration_pipeline.py`
-- Ảnh hưởng: nhóm nghề, thành phố, cấp bậc được tính trước khi imputer bù giá trị, nên giá trị bù không được dùng. Từ commit `a87b2c1`, CareerViet và JobsGO để `skills_list` rỗng cho imputer bù, nên nhóm nghề của hai nguồn này chỉ còn dựa vào title.
-- Cách xử lý: chuẩn hóa sau imputer (có trong stash).
-
-**PRE-3. Tên thành phố không dấu chưa được gộp**
-
-- Vị trí: `normalize_city`
-- Ảnh hưởng: có cả "Hà Nội" (2.111) và "Ha Noi" (509), "Hồ Chí Minh" (1.741) và "Ho Chi Minh" (351).
-- Cách xử lý: bỏ dấu trước khi so khớp.
-
-**PRE-4. Dữ liệu đã xử lý cần chạy lại**
-
-- Vị trí: `data/staging/`, `data/curated/` trên R2, `reports/` trong git
-- Ảnh hưởng: chưa phản ánh phần làm phẳng đã sửa ở commit `a87b2c1` (CareerViet, JobsGO, TopDev), cũng như PRE-1 đến PRE-3.
-- Cách xử lý: làm PRE-1 đến PRE-3, chạy `python scripts/run_staging_integration_pipeline.py`, so số trước và sau, rồi mới đẩy lên R2.
-
-**PRE-6. Kỹ năng của CareerViet và JobsGO lấy sai trường**
-
-- Vị trí: `_flatten_careerviet`, `_flatten_jobsgo` trong `preprocessing/integration/json_flattener.py`
-- Ảnh hưởng: CareerViet lấy `job-tags` (tag SEO của trang) làm kỹ năng, JobsGO lấy `occupations` (ngành nghề). Trang Raw cảnh báo F7 ở hai nguồn này.
-- Lưu ý khi sửa: đã thử bỏ hai trường này ở commit `a87b2c1`, nhưng phải hoàn tác. Khi `skills_list` rỗng, nhóm nghề chỉ còn dựa vào title, và mọi bản ghi của hai nguồn đều phải gọi imputer. Cần làm cùng PRE-2 (chuẩn hóa sau imputer), và chỉ gọi imputer khi thiếu trường khác ngoài kỹ năng.
-
-**PRE-7. Làm phẳng TopDev chưa đọc ngày đăng và kinh nghiệm từ JSON-LD**
-
-- Vị trí: `_flatten_topdev` trong `preprocessing/integration/json_flattener.py`
-- Ảnh hưởng: `raw_posted_date` chỉ đọc `recalled_at`, `created_at` (luôn rỗng). Raw có `published.date`, `date_posted` và `job_posting_jsonld.experienceRequirements` nhưng không được dùng. Trang Raw đã đọc các trường này.
+PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_log.md` L-27). Còn lại:
 
 **PRE-9. JEV chưa chạy hết (cập nhật 03/11/2026)**
 
@@ -119,7 +84,8 @@ Code sửa cho PRE-1 và PRE-2 đã viết xong và có test, đang cất trong 
 
 **PRE-10. Chưa dịch JD tiếng Anh**
 
-- 1.783 JD tiếng Anh, 0 đã dịch. Lượt dịch 30 mẫu bằng `gemini-3.8-flash` bị Gemini báo quá tải (503), chưa ra `data/preprocessing/review/translate_30.csv`.
+- 1.783 JD tiếng Anh, 0 đã dịch. Thử lại 03/11: `gemini-3.8-flash` trả 429 "exceeded your current quota" (khóa hiện tại hết hạn mức cho model này); `gemini-3.5-flash` vẫn trả 200. Chưa có `data/preprocessing/review/translate_30.csv`.
+- Cần chọn: nạp/kiểm gói Google cho 3.8 Flash, hoặc đổi sang 3.5 Flash (`DEFAULT_MODEL` trong `translator.py`, `THINKING` đã có mức `minimal`). Dịch hết ước tính khoảng 9,9 USD, vượt trần 9 USD của sổ `spend_google.json` và trần 0,60 USD mỗi lần chạy, nên phải nâng trần có chủ ý.
 - Cách xử lý: chạy lại lượt 30 mẫu, chấm điểm, ghi `preprocessing/transformation/translate_model.json`, rồi dịch hết (ước tính khoảng 9,9 USD cho 3.568 đoạn; luôn `--dry-run --use-api` trước).
 
 **PRE-11. Chờ chốt hướng cho bước mô hình**

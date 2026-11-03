@@ -46,6 +46,6 @@ Mỗi nguồn ra 3 file: `<nguồn>_flat_clean.parquet`, `reports/<nguồn>/<ngu
 
 ## Việc còn mở
 
-`KNOWN_ISSUED.md` mục 3: PRE-1 (phân loại theo chuỗi con), PRE-2 (chuẩn hóa chạy trước imputer), PRE-3 (tên thành phố không dấu), PRE-4 (chạy lại dữ liệu), PRE-6 (kỹ năng CareerViet/JobsGO lấy sai trường), PRE-7 (TopDev chưa đọc JSON-LD), PRE-9 (chạy JEV cho bước Clean). Code sửa PRE-1 và PRE-2 đã có test, đang nằm trong git stash "preprocessing: so khớp theo từ + chuẩn hóa sau imputer (hoãn)".
+`KNOWN_ISSUED.md` mục 3: PRE-9 (JEV chưa hỏi hết vì hết lượt miễn phí), PRE-10 (chưa dịch JD tiếng Anh), PRE-11 (chờ chốt hướng cho mô hình). PRE-1 đến PRE-7 của pipeline cũ đã hết (`docs/issue_log.md` L-27).
 
 Chạy lại pipeline thì so số trước và sau, rồi mới đẩy lên R2 (`scripts/push_integration_to_r2.py`, `scripts/sync_cloud_lakehouse.py --upload`; cả hai đều ghi lên R2).

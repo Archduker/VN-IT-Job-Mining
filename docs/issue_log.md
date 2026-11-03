@@ -210,6 +210,38 @@ Kết quả chung sau đợt sửa:
     - `en` 1.785 tin;
     - Điện Biên 0.
 
+
+### L-27. Các lỗi pipeline cũ PRE-1, 2, 3, 4, 6, 7 hết khi chuyển sang pipeline 5 bước; "ai" bị tính là Machine Learning; dịch treo khi Gemini quá tải (03/11/2026)
+- **Lỗi:**
+  - PRE-1: phân loại khớp chuỗi con ("ba" trong "backend", "intern" trong "international").
+  - PRE-2: chuẩn hóa chạy trước bước bù giá trị.
+  - PRE-3: tên tỉnh không dấu chưa gộp ("Ha Noi" 509 tin).
+  - PRE-4: dữ liệu cũ trên `data/staging`, `data/curated` cần chạy lại.
+  - PRE-6: kỹ năng CareerViet, JobsGO lấy tag SEO, ngành nghề.
+  - PRE-7: TopDev không đọc ngày đăng, kinh nghiệm trong JSON-LD.
+  - Mới: chữ "ai" (đại từ tiếng Việt) được tính là kỹ năng Machine Learning, 179/182 tin CareerViet có kỹ năng này.
+  - Mới: lượt dịch 30 JD mẫu chạy hàng giờ không ra file khi Gemini trả 503.
+- **Nguyên nhân:**
+  - PRE-1 đến PRE-7 nằm ở pipeline cũ (`scripts/run_staging_integration_pipeline.py`).
+  - `skills.json` có biến thể "ai" cho Machine Learning.
+  - `translator.py` thử lại 5 lần khi gặp 429/503 nhưng không tính là lỗi, nên luật "dừng sau 5 lỗi liên tiếp" không bao giờ chạy.
+- **Cách xử lý:**
+  - Pipeline 5 bước (`scripts/run_preprocessing.py`) thay pipeline cũ:
+    - so khớp theo từ (`has_term`);
+    - không có bước bù giá trị;
+    - tỉnh quy về 34 tỉnh qua `common/province.py`;
+    - Integration bỏ tag SEO/ngành (I4) và đọc ngày đăng, kinh nghiệm của TopDev (I3).
+  - Git stash "preprocessing: so khớp theo từ + chuẩn hóa sau imputer (hoãn)" không còn cần; giữ lại, người dùng tự xóa bằng `git stash drop` nếu muốn.
+  - Bỏ "ai" khỏi `skills.json`, thêm "trí tuệ nhân tạo", "ai/ml", "ai engineer".
+  - Hết 5 lần thử vì 429/503 thì tính một lỗi.
+- **Kiểm chứng:**
+  - Đo trên `data/preprocessing/04_normalization/all.parquet`:
+    - 200 tin có "backend" trong tiêu đề, 174 xếp Backend, không tin nào BA;
+    - 0 tin tỉnh không dấu;
+    - kỹ năng CareerViet, JobsGO lấy từ JD (SQL, Python…);
+    - nhóm Data/AI từ 973 còn 724 tin sau khi bỏ "ai".
+  - `test_vietnamese_word_ai_is_not_machine_learning`, `test_gemini_overload_503_stops_after_five_chunks`.
+  - Phần TopDev còn thiếu là do raw thiếu (SCRAPE-5).
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

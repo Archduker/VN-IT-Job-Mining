@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-03T14:51:18+00:00",
-  "code_version": "0b54ff4",
+  "generated_at": "2026-11-03T16:42:02+00:00",
+  "code_version": "9be1e8e",
   "input": {
     "path": "data/topcv/raw",
     "rows": 2749
@@ -256,12 +256,12 @@
   "api": {
     "used": true,
     "model": "jev-1.13-free",
-    "calls": 188,
-    "cache_hits": 0,
+    "calls": 0,
+    "cache_hits": 188,
     "cost_usd": 0.0,
     "total_spent_usd": 0.0,
     "global_cap_usd": 0.95,
-    "errors": 13,
+    "errors": 12,
     "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
     "max_cost_usd": 0.3
   },
