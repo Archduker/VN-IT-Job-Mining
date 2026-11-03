@@ -40,6 +40,17 @@ flowchart TD
 
 Bucket chỉ có 4 tầng: `url_ledger/`, `raw/`, `staging/`, `curated/`. `canonicalize_lakehouse_key` từ chối key không đúng layout.
 
+**Bố cục theo kiến trúc medallion (bronze → silver → gold):**
+
+| Tầng | Prefix trên R2 | Nội dung | Ai ghi |
+|---|---|---|---|
+| Quản lý URL | `url_ledger/<nguồn>/catalog_master.json` | Danh sách URL và trạng thái cào (nguồn sự thật của crawler) | crawler |
+| **Bronze** (thô, bất biến) | `raw/<nguồn>/<YYYY-MM-DD>/<job_id>_v<N>.json` | Mỗi tin một envelope JSON đúng như lúc cào; không bao giờ sửa | crawler, `push_raw_to_r2.py` |
+| **Silver** (đã làm sạch, theo từng bước) | `staging/<nguồn>/preprocessing/01_clean.jsonl` → `02_integration.parquet` → `03_transformation.parquet` → `04_normalization.parquet` | Output của 4 bước pre-processing; output bước trước là input bước sau. Từ bước 02 dữ liệu đã gộp 8 nguồn, trên R2 tách lại theo nguồn vì tầng `staging/` bắt buộc có tên nguồn ở cấp 2 | `push_preprocessing_to_r2.py` |
+| **Gold** (sẵn cho mô hình) | `curated/preprocessing/features.parquet`, `curated/preprocessing/encoding_dictionary.json` | Bảng đặc trưng số (bước 05 Encoding) và từ điển mã hóa | `push_preprocessing_to_r2.py` |
+
+Mỗi object silver/gold có metadata `step`, `generated-at` (thời điểm chạy bước, lấy từ `reports/preprocessing/<bước>/_all.json`) và `rows`. Script và trang Monitoring so từng key theo hai giá trị này để biết R2 khớp hay lệch với máy.
+
 ---
 
 ## 2. 🔑 Cách Lấy Thông Số Kết Nối Trên Cloudflare (Mất 2 Phút)
@@ -121,7 +132,9 @@ python scripts/reconcile_ledger_from_raw.py --source topcv --push         # ghi 
 
 ### 4.4. Dữ liệu sau pre-processing
 
-`python scripts/sync_cloud_lakehouse.py --upload` đẩy `data/` (gồm `staging/`, `curated/`); `python scripts/push_integration_to_r2.py` đẩy kết quả integration.
+Pipeline 5 bước mới: `python scripts/push_preprocessing_to_r2.py` chạy thử (chỉ đọc R2, liệt kê key mới/lệch/khớp), thêm `--push` để ghi. Chỉ đẩy key chưa có hoặc lệch. Bố cục key: `preprocessing/common/r2_export.py`; trang Monitoring `/preprocessing` có khối "Lưu trữ" so từng key.
+
+Pipeline cũ: `python scripts/sync_cloud_lakehouse.py --upload` đẩy `data/` (gồm `staging/`, `curated/`); `python scripts/push_integration_to_r2.py` đẩy kết quả integration.
 
 > `scripts/upload_to_r2.py` (công cụ cũ cho layout `dt=YYYY-MM-DD/batch_XXX.json` và `samples/`) đã bị xóa ngày 03/11/2026; dùng `push_raw_to_r2.py`.
 

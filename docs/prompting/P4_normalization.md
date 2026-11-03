@@ -23,39 +23,43 @@ Code sửa PRE-1 (khớp từ nguyên vẹn) đang ở git stash "preprocessing:
 ## 3. Pseudo code
 
 ```text
-SENIORITY = ["Thực tập","Mới tốt nghiệp","Junior","Middle","Senior","Trưởng nhóm/Quản lý"]   # + "Chưa rõ"
+SENIORITY = ["Thực tập","Mới tốt nghiệp","Junior","Middle","Senior","Trưởng nhóm/Quản lý"]   # không xác định → null (để trống)
 FAMILIES  = [12 nhóm trong đặc tả]                                                         # + "Khác"
 
-run(source, dry_run, use_api):
-    df = đọc parquet
+process_source_records(source, rows, jev, dry_run):     # rows = một nhóm source_platform của 03_transformation/all.parquet
     N1: for loc in locations:
             p = province.lookup(loc.tinh_thanh or loc.raw)     # tên mới, tên cũ, bí danh, không dấu
             loc.tinh_key, loc.tinh_thanh = p.key, p.name if p else (None, None)
             loc.tinh_cu = tên gốc nếu khác p.name
             loc.remote = khớp "remote|từ xa"; loc.ngoai_vn = khớp danh sách nước ngoài
-        tinh_chinh = locations[0].tinh_thanh
-    N2: seniority, source, prob = by_word(raw_seniority_text) or by_word(job_title_clean) or by_years(exp_min_years)
-        if None and use_api: label, prob = jev.choice(SENIORITY, title + 500 ký tự JD); label = label if prob >= 0.5 else "Chưa rõ"
-    N3: job_family tương tự: luật từ nguyên vẹn trên title + skills_std → jev.choice(FAMILIES + ["Khác"])
+        tinh_chinh = tinh_thanh đầu tiên khác null trong locations
+    N2: seniority, source = by_word(raw_seniority_text) or by_word(job_title_clean) or by_years(exp_min_years) or (None, None)
+        # "Nhân viên", "Nhân viên/Chuyên viên", "Chuyên viên" không phải cấp bậc → bỏ qua, xét tiêu đề và số năm
+    N3: job_family = luật từ nguyên vẹn trên title + skills_std, không ra → "Khác"
+    N2b (JEV chỉ hỏi có/không, không dùng choice):
+        nếu có nhãn: prob = jev.noul("<trường>_dung", "Tin này có <trường> là '<nhãn>' không?", state=title + 500 ký tự JD)
+        <trường>_prob = prob; <trường>_can_kiem = prob < 0,5   # gắn cờ → mẫu gán nhãn tay → nhãn tay ghi đè
+        nhãn luật giữ nguyên, JEV không tự đổi nhãn
     N4: skills_std = [SKILLS.canonical(s) for s in skills_clean], bỏ trùng
     N5: company_norm = normalize_company_name(company_name)
 
-run_all(dry_run, use_api):
-    all = concat 8 nguồn                                           # N8
+run(sources, dry_run, use_api):
+    all = đọc 03_transformation/all.parquet; groupby source_platform → process_source_records
+    N6a: lương tháng ngoài 1–500 triệu → NaN, salary_suspect = true (trước IQR)
     N6: fix_common_salary_input_errors → is_outlier_salary (IQR) → *_capped (winsorize 1–99%, ngưỡng tính trên all)
     N7: log_salary_* = log1p(*_capped)
     N9: tắt mặc định; --fuzzy-dedup chỉ ghi 30 cặp điểm cao vào báo cáo
-    ghi all.parquet; chép sang data/curated/curated_flat_golden_jobs.parquet
+    ghi 04_normalization/all.parquet. KHÔNG chép đè data/curated/curated_flat_golden_jobs.parquet (file của pipeline cũ)
 ```
 
 ## 4. Ràng buộc
 
 - Không bỏ dòng. Không ghi đè cột cũ; `locations` chỉ được thêm khóa.
 - N6 trước N7. Ngưỡng cap tính trên toàn bộ nguồn.
-- Luật chạy trước, JEV chỉ cho phần luật không ra. JEV chỉ chọn trong danh sách nhãn; prob < 0,5 thì "Chưa rõ" / "Khác".
+- Luật đưa nhãn, JEV chỉ kiểm có/không (`noul`) rồi gắn cờ `*_can_kiem`; không dùng `choice`, không để JEV tự gán nhãn. Không có nhãn thì để trống, không đoán.
 - Nhãn giá trị viết tiếng Việt (thuật ngữ ngành giữ tiếng Anh), tên cột giữ tiếng Anh.
-- Phường/xã không chuẩn hóa (chưa có danh mục). Không tự tải danh mục từ mạng.
-- Chép sang `data/curated/` chỉ trên máy. Đẩy lên R2 là việc riêng, phải được bạn đồng ý.
+- Phường/xã đã được P3 đối chiếu `preprocessing/dictionaries/wards_34.json` (3.321 đơn vị mới). Không tự tải danh mục từ mạng lúc chạy.
+- Không ghi vào `data/curated/`. Đẩy lên R2 là việc riêng, phải được bạn đồng ý.
 
 ## 5. Ví dụ (thành test, JEV mock)
 
@@ -69,11 +73,13 @@ run_all(dry_run, use_api):
 | `raw="Tokyo, Japan"` | `tinh_thanh=None`, `ngoai_vn=true` |
 | `raw_seniority_text="Trưởng phòng"` | "Trưởng nhóm/Quản lý", `seniority_source="raw"` |
 | title "Senior Java Developer" | "Senior", `title` |
-| title "International Business Analyst", không có cấp bậc, không có số năm | không ra "Thực tập"; gọi JEV |
-| JEV trả "Junior" prob 0,4 | "Chưa rõ" |
+| title "International Business Analyst", không có cấp bậc, không có số năm | `seniority=None` (để trống), không gọi JEV |
+| `raw_seniority_text="Nhân viên"`, title "Kế toán", không có số năm | `seniority=None` |
+| title "Senior Backend Developer", JEV noul trả 0,1 | `seniority="Senior"`, `seniority_prob=0.1`, `seniority_can_kiem=true` |
 | title "Backend Developer" | "Backend", không ra BA |
 | `skills_clean=["ReactJS","React.js"]` | `["React"]` |
-| lương 2 tỷ/tháng giữa các tin 10–50 triệu | `is_outlier_salary=true`, `*_capped` = mức 99% |
+| lương 400 triệu/tháng giữa các tin 10–50 triệu | `is_outlier_salary=true`, `*_capped` = mức 99% |
+| lương 2,026 tỷ/tháng | `salary_suspect=true`, lương = NaN |
 
 ## 6. Cách review
 

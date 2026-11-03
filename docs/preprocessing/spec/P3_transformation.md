@@ -1,6 +1,6 @@
 # P3. Transformation: ép kiểu, parse số, làm sạch chữ, dịch JD, rút kỹ năng và phúc lợi
 
-> Trạng thái: **đặc tả, chờ duyệt** (sửa 03/11/2026: địa điểm 3 cấp, dịch JD sang tiếng Việt, từ điển song ngữ, bỏ imputer Gemini). Cần P2 xong trước.
+> Trạng thái: **đã làm, chạy thật 03/11/2026** (8.378 → 8.378, chưa dịch). Sửa sau review 03/11 ở mục 8.
 > Prompt: `docs/prompting/P3_transformation.md`.
 
 ## 1. Ngữ cảnh
@@ -97,3 +97,14 @@
 - Dịch: chấm 30 JD (2 model, P0 mục 6). Đạt khi không có bản nào dịch mất thuật ngữ trong bảng không dịch hoặc sai nghĩa yêu cầu.
 - Từ điển kỹ năng: 20 JD ngẫu nhiên, so kỹ năng rút được với đọc tay.
 - H3: kiểm 10 tin TopCV có hạn nộp trước ngày cào trên trang, ghi kết luận vào báo cáo.
+
+## 8. Sửa sau review 03/11/2026
+
+| Mục | Trước | Sau |
+|---|---|---|
+| Input/Output | file theo nguồn | `02_integration/all.parquet` → `03_transformation/all.parquet` |
+| T2 lương | tiêu đề/JD nhận mọi số: 676 tin lấy lương từ tiêu đề, phần lớn sai ("(2026TD450981)" → 2 tỷ, "Microsoft 365" → 365 triệu, "2+ Năm … Upto 35 Triệu" → 2,9 triệu) | tiêu đề/JD chỉ nhận cụm có đơn vị tiền; đơn vị "triệu/m" phải đứng sát số; số có dấu hàng nghìn đọc đủ; ngoài 1–500 triệu/tháng → NaN + `salary_suspect` (T2f). Còn 27 tin lấy từ tiêu đề, 33 tin nghi sai |
+| T6 ngôn ngữ | đếm từ khóa, 1.583 tin "bilingual" | chỉ xét JD, bỏ dòng đầu TopCV, chữ có dấu < 1% → `en`. Kết quả: 6.593 `vi`, 1.785 `en` |
+| T6b dịch | dịch cả `bilingual`, cắt ở 4.000 ký tự, file chấm tạo lúc dry-run nên trống | chỉ dịch `en`; chia đoạn ≤ 3.000 ký tự; file `translate_30.csv` chỉ ghi khi có bản dịch thật của 2 model (Mistral Small 3.2, DeepSeek V3.2); dịch toàn bộ chỉ khi có `preprocessing/transformation/translate_model.json`; trần chung 0,95 USD |
+| T7 kỹ năng | "c", "go", "py", "ts" khớp chữ đứng riêng: "C" ở 6.912/8.373 tin | "C" chỉ khi "C/C++", "ngôn ngữ C"…; bỏ "go", "py", "ts". Còn 243 tin |
+| T8 địa điểm | giữ "Quận 1", "Địa chỉ trụ sở:", phường cụt ngoặc; "Điện Biên Phủ" → tỉnh Điện Biên | bỏ quận/huyện; `phuong_xa` phải có trong `dictionaries/wards_34.json` (3.321 phường/xã mới, nguồn thanglequoc/vietnamese-provinces-database, MIT); tên phường cũ → null. 3.456 tin có phường |

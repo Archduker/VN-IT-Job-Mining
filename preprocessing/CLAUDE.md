@@ -8,7 +8,11 @@ Thứ tự làm của dự án là web scraping → trực quan hóa → pre-pro
 
 ## Pipeline 5 bước (đang làm)
 
-- Driver `scripts/run_preprocessing.py`; mỗi bước là `preprocessing/<bước>/run.py` với `run(sources, dry_run, use_api)`. Đã có: `clean/` (P1, đã chạy thật 03/11/2026 bằng luật, chưa có JEV).
+- Driver `scripts/run_preprocessing.py`; mỗi bước là `preprocessing/<bước>/run.py` với `run(sources, dry_run, use_api)`. Đủ 5 bước, chạy thật 03/11/2026 không dùng API (chưa có JEV, chưa dịch).
+- Bước Clean ghi theo nguồn (`01_clean/<nguồn>.jsonl`); **từ Integration dữ liệu gộp 8 nguồn trong một file `all.parquet`** (cột `source_platform`). Bước 03/04 `groupby` theo nguồn để báo cáo vẫn có số theo nguồn.
+- Không ghi vào `data/curated/` (file golden của pipeline cũ). Đẩy silver/gold lên R2 bằng `scripts/push_preprocessing_to_r2.py` (bố cục trong `common/r2_export.py`).
+- JEV chỉ hỏi có/không để gắn cờ, không tự gán nhãn. Dịch JD chỉ khi có `transformation/translate_model.json` (bạn chọn sau khi chấm `review/translate_30.csv`). Mọi lần gọi API cộng vào `data/preprocessing/_cache/spend.json`, chạm 0,95 USD thì dừng.
+- Từ điển trong `dictionaries/`: `provinces_34.json`, `wards_34.json` (3.321 phường/xã mới, MIT, nguồn ghi trong file), `skills.json`, `benefits.json`. Tên kỹ năng ngắn (C, R, Go) chỉ được thêm kèm ngữ cảnh.
 - `common/`: `step_report.py` (schema báo cáo, luật bảo toàn input = output + bị bỏ), `raw_reader.py`, `province.py` + `dictionaries/provinces_34.json`, `it_filter.py`, `jev_client.py` + `api_cache.py` (cache `data/preprocessing/_cache/`, trần chi phí).
 - File mẫu gán nhãn `data/preprocessing/review/it_<nguồn>.csv` đã có nhãn tay thì không bao giờ bị ghi đè.
 

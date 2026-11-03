@@ -8,7 +8,7 @@
 - `docs/preprocessing/spec/P4_normalization.md` mục N1: bảng 34 tỉnh, dùng cho `tinh_key`.
 - `scripts/report_data_issues.py`: `IT_WORDS`, `CLEAR_NON_IT`, `dedup_funnel`.
 - `preprocessing/normalization/cross_deduplicator.py`: `normalize_company_name`.
-- Tài liệu JEV: https://openrouter.ai/docs/guides/community/jev-tutorial (endpoint `POST https://openrouter.ai/api/alpha/decisions`, câu hỏi kiểu `noul`).
+- Tài liệu JEV: https://opencode.ai/v2/docs/console/models/ mục Jev (endpoint `POST https://opencode.ai/inference/systemone/v1/systemone`, model `jev-1.13-free`, câu hỏi kiểu `noul`).
 
 Số hiện tại:
 - 10.758 tin sau khi giữ bản mới nhất.
@@ -82,7 +82,7 @@ export_review_sample(src):
 - Không sửa `raw_payload`; chỉ thêm `metadata.clean`. Không ghi ra dữ liệu đã làm phẳng.
 - **Không bỏ tin ngoài IT khi chưa có `it_policy.json`.** Không tạo file này thay bạn.
 - Khớp từ nguyên vẹn, không khớp chuỗi con (PRE-1).
-- Khóa `OPENROUTER_API_KEY` đọc từ `.env`, không in ra. Chỉ gọi mạng khi có `--use-api`. Lần đầu chạy toàn bộ thì `--dry-run --use-api` trước, gửi ước tính tiền cho bạn.
+- Khóa `OPENCODE_API_KEY` đọc từ `.env`, không in ra. Chỉ gọi mạng khi có `--use-api`. Lần đầu chạy toàn bộ thì `--dry-run --use-api` trước, gửi ước tính tiền cho bạn.
 - Chỉ gửi cho JEV tiêu đề, kỹ năng, 500 ký tự đầu JD.
 - `province.key` viết một lần, P4 dùng lại.
 - Thứ tự luật cố định: C1 → C7.

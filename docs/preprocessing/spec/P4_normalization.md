@@ -1,6 +1,6 @@
 # P4. Normalization: 34 tỉnh, nhãn tiếng Việt, outlier, log lương, gộp nguồn
 
-> Trạng thái: **đặc tả, chờ duyệt** (sửa 03/11/2026: 34 tỉnh sau sáp nhập, nhãn tiếng Việt, JEV cho cấp bậc và nhóm nghề).
+> Trạng thái: **đã làm, chạy thật 03/11/2026** (8.378 → 8.378, chưa gọi JEV). Sửa sau review 03/11 ở mục 8.
 > Cần P3 xong trước. Prompt: `docs/prompting/P4_normalization.md`.
 
 ## 1. Ngữ cảnh
@@ -139,3 +139,14 @@ Luật:
   - JEV prob 0,4 → "Chưa rõ";
   - N6 không đổi số dòng;
   - N7 chạy sau N6.
+
+## 8. Sửa sau review 03/11/2026
+
+| Mục | Trước | Sau |
+|---|---|---|
+| Input/Output | file theo nguồn, gộp ở N8 | đọc/ghi `all.parquet` (gộp từ P2) |
+| N1 tỉnh | `tinh_chinh` = phần tử đầu dù null; tên "Bắc Ninh", "Quảng Ninh", "Đồng Nai" | `tinh_chinh` = tỉnh đầu tiên khác null; theo danh mục chính thức (03/2026) ba tỉnh này là thành phố: "TP. Bắc Ninh", "TP. Quảng Ninh", "TP. Đồng Nai" |
+| N2 cấp bậc | "Nhân viên"/"Chuyên viên" → Middle: 54% tin là Middle | bỏ qua các nhãn này; không xác định → null. Middle còn 10,4%; 1.465 tin để trống |
+| N2b JEV | `choice` tự gán nhãn khi luật không ra | chỉ `noul` kiểm nhãn của luật; prob < 0,5 → `seniority_can_kiem` / `job_family_can_kiem` |
+| N6 lương | winsorize để lại 2 tỷ/tháng và 0đ | N6a: ngoài 1–500 triệu/tháng → NaN + `salary_suspect` trước IQR. Sau cap: 3–101,6 triệu |
+| Ghi file | chép đè `data/curated/curated_flat_golden_jobs.parquet` | không chép; file golden cũ giữ nguyên |

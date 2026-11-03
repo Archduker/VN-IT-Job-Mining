@@ -17,8 +17,8 @@ Hiện tại:
 
 - **Input:** `data/preprocessing/01_clean/<nguồn>.jsonl`.
 - **Output:**
-  - `data/preprocessing/02_integration/<nguồn>.parquet`: khóa + `it_rule`, `it_prob`, `it_status`, `dedup_key`, `also_on` + 18 trường.
-  - `reports/preprocessing/02_integration/…`.
+  - **Một file** `data/preprocessing/02_integration/all.parquet` gộp 8 nguồn (cột `source_platform` giữ nguồn): khóa + `it_rule`, `it_prob`, `it_status`, `dedup_key`, `also_on` + 18 trường. Từ bước này trở đi không còn file theo nguồn.
+  - `reports/preprocessing/02_integration/<nguồn>.json` (số theo nguồn) và `_all.json` (tổng, có `fields` gộp).
   - Code mới: `preprocessing/integration/run.py` (mới), sửa `json_flattener.py`.
 
 ## 3. Pseudo code
@@ -26,17 +26,22 @@ Hiện tại:
 ```text
 KEEP = [18 trường trong đặc tả]
 
-run(source, dry_run):
+process_source(source, dry_run):
     report = StepReport("02_integration", source, mode)
-    rows = []
-    for env in đọc jsonl:
+    rows, bad = [], []
+    for line in đọc jsonl:
+        env = json.loads(line) hoặc: bad.append(dòng, lỗi); continue      # I0: drop, không được lặng lẽ bỏ
         flat = flatten_raw_job_record(env)                 # I1
         flat = {k: flat.get(k) for k in KEYS + KEEP} | env.metadata.clean
         flat = {k: None if là_trống(v) else v}             # I5
         rows.append(flat)
     report.fields = độ phủ từng trường (có/không có giá trị)
-    report.input_rows = report.output_rows = len(rows)   # không bỏ dòng
-    ...
+    report.input_rows = số dòng đọc; output_rows = len(rows); rule I0 drop = len(bad)
+    return rows, report
+
+run(sources, dry_run):
+    rows_all = nối rows của 8 nguồn; total = merge_reports(...); total.check_conserved()
+    ghi từng report nguồn, ghi all.parquet (nếu không dry-run), ghi _all
 
 _flatten_itviec:    raw_posted_date = jsonld.datePosted or posted_at_raw       # I2
 _flatten_topdev:    raw_posted_date = published.date or date_posted or jsonld.datePosted
@@ -49,7 +54,7 @@ rồi so: chỉ trong lúc chạy, không lưu flattener cũ thành code thứ h
 
 ## 4. Ràng buộc
 
-- Không parse lương, ngày, số năm; không đổi tiền; không bỏ dòng; không bù.
+- Không parse lương, ngày, số năm; không đổi tiền; không bù. Chỉ bỏ dòng JSON hỏng (I0), có đếm và ví dụ.
 - Null trá hình ("0", "Đang cập nhật") giữ nguyên chữ; P3 mới đổi.
 - Đổi tên trường thì sửa `RAW_PATHS` trong `feature_targets.py` cùng lúc.
 - I4: ghi rõ trong báo cáo số tin có `skills_list` rỗng sau sửa. Kỹ năng từ JD do P3 (T7b) rút, không làm ở đây.
@@ -65,6 +70,7 @@ rồi so: chỉ trong lúc chạy, không lưu flattener cũ thành code thứ h
 | CareerViet chỉ có `job-tags` | `skills_list=[]` |
 | `company_address=""` | `None` |
 | envelope có `raw_age_text` | cột `raw_age_text` không có trong output |
+| file jsonl có 3 dòng tốt + 1 dòng `{"hỏng":` | input 4, output 3, `dropped=[I0: 1]`, bảo toàn vẫn đúng |
 
 ## 6. Cách review
 

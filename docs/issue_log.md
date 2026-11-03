@@ -172,6 +172,44 @@ Kết quả chung sau đợt sửa:
 - **Cách xử lý:** bước Clean mới (`preprocessing/clean/run.py`, đặc tả `docs/preprocessing/spec/P1_clean.md`) đọc riêng file lô (`preprocessing/common/raw_reader.read_raw`). Luật C2 bỏ tin trong file lô đã có file riêng; tin chỉ có trong file lô (206 tin VietnamWorks) được giữ đến khi cào lại có file riêng. Luật C1 giữ snapshot mới nhất của mỗi `job_id`.
 - **Kiểm chứng:** `tests/unit/test_clean_step.py::test_rules_c1_to_c7_and_conservation`; lần chạy 03/11/2026: C1 bỏ 1.987, C2 bỏ 1.341 (VietnamWorks 725, Vieclam24h 616), output 8.373 tin không trùng `job_id`.
 
+### L-26. Output P2–P5 sai lương, kỹ năng, cấp bậc, ngôn ngữ, địa điểm (review 03/11/2026)
+- **Lỗi:** trên 8.373 tin sau Normalization:
+  - 676 tin lấy lương từ tiêu đề, phần lớn sai ("(2026TD450981)" → 2 tỷ/tháng, "Microsoft 365" → 365 triệu);
+  - "Up to 40.000.000 VND" → 40.000đ; "From 9.000.000 VND" → 9 nghìn tỷ;
+  - kỹ năng "C" ở 6.912 tin (83%);
+  - 54% tin là Middle;
+  - 1.583 tin "bilingual" phần lớn là tiếng Việt (ước tính dịch 0,45 USD, vượt trần);
+  - file chấm dịch `translate_30.csv` tạo lúc dry-run nên trống;
+  - 31 tin Hà Nội bị xếp tỉnh Điện Biên;
+  - bước 04 ghi đè `data/curated/curated_flat_golden_jobs.parquet`;
+  - dòng JSON hỏng ở Integration bị bỏ mà không đếm.
+- **Nguyên nhân:**
+  - `salary_parser.py` nhận mọi số trong tiêu đề/JD; nhận "m"/"tr" ở bất kỳ đâu trong chuỗi ("from", "trưởng"); số có dấu hàng nghìn chỉ đọc nhóm đầu.
+  - `skills.json` có biến thể "c", "go", "py", "ts".
+  - `classify_seniority` coi "Nhân viên"/"Chuyên viên" là Middle và "quản lý" trong tiêu đề là cấp quản lý.
+  - `detect_language` đếm từ khóa thay vì xét chữ JD.
+  - `location_parser` khớp chuỗi con.
+- **Cách xử lý:**
+  - Tiêu đề/JD chỉ nhận cụm có đơn vị tiền.
+  - Lương tháng ngoài 1–500 triệu thì để NaN và gắn cờ `salary_suspect`.
+  - "C" chỉ nhận khi có ngữ cảnh.
+  - Cấp bậc không xác định thì để trống.
+  - JEV chỉ hỏi có/không (`noul`) để gắn cờ `*_can_kiem`; bỏ `choice`.
+  - Ngôn ngữ chỉ xét JD: chữ có dấu < 1% thì là `en`.
+  - Dịch chia đoạn, có 2 model thi 30 JD, trần chung 0,95 USD (`_cache/spend.json`).
+  - Phường/xã đối chiếu `dictionaries/wards_34.json` (3.321 đơn vị mới), bỏ quận/huyện.
+  - Gộp 8 nguồn ở Integration (`all.parquet`); luật I0 cho dòng JSON hỏng.
+  - Bỏ bước chép đè file golden.
+  - Chi tiết ở mục 8 của `docs/preprocessing/spec/P2–P4`.
+- **Kiểm chứng:**
+  - `tests/unit/test_preprocessing_review_fixes.py` (các ví dụ sai ở trên), `make test`.
+  - Chạy thật `scripts/run_preprocessing.py --step all`:
+    - Middle 10,7%;
+    - kỹ năng "C" còn 243 tin;
+    - không còn lương > 500 triệu/tháng;
+    - `en` 1.785 tin;
+    - Điện Biên 0.
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

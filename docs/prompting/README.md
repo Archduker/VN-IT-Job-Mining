@@ -54,4 +54,4 @@ Thứ tự làm: P0 → P1 → P6 → P2 → P3 → P4 → P5. Sau mỗi phase, 
 - Config chỉ trong `.env`, không in giá trị.
 - Raw bất biến: không sửa `data/<nguồn>/raw/`.
 - Không bật Airflow scheduler.
-- JEV và LLM chỉ gọi khi có `--use-api`, có cache, khóa `OPENROUTER_API_KEY` trong `.env`. Chỉ gửi nội dung tin tuyển dụng.
+- JEV và LLM chỉ gọi khi có `--use-api`, có cache, khóa trong `.env`: `OPENCODE_API_KEY` (JEV qua OpenCode Console), `GEMINI_API_KEY` (dịch bằng Gemini). Chỉ gửi nội dung tin tuyển dụng.

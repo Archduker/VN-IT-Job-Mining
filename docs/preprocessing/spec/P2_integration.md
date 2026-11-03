@@ -1,6 +1,6 @@
 # P2. Integration: làm phẳng về 18 trường chung
 
-> Trạng thái: **đặc tả, chờ duyệt** (03/11/2026). Cần P1 xong trước.
+> Trạng thái: **đã làm, chạy thật 03/11/2026** (8.378 → 8.378). Sửa sau review 03/11: gộp 8 nguồn vào một file `all.parquet`; dòng JSON hỏng thành luật bỏ I0 (mục 8).
 > Prompt: `docs/prompting/P2_integration.md`.
 
 ## 1. Ngữ cảnh
@@ -63,3 +63,8 @@ Mọi giá trị vẫn là **chữ như raw** (tiền tố `raw_`). Integration 
 - Độ phủ sau sửa: ITviec `raw_posted_date` dạng tuyệt đối ≥ 95%; TopDev `raw_posted_date` > 0% và `raw_experience_text` > 0% (với raw cũ thiếu trường thì báo số thật, không ép).
 - Review: mở 5 tin ITviec và 5 tin TopDev trên trang, so ngày đăng với cột mới.
 - Test: mỗi luật I2–I5 một test với envelope mẫu; test cũ của flattener vẫn qua.
+
+## 8. Sửa sau review 03/11/2026
+
+- **Gộp nguồn ở bước này.** Output là một file `data/preprocessing/02_integration/all.parquet`, cột `source_platform` giữ nguồn. Các bước sau đọc file này; báo cáo vẫn có số theo nguồn (`by_source` trong `_all.json`). Trang Monitoring từ bước 02 chỉ xem tổng, nguồn là bộ lọc.
+- **I0 (drop):** dòng JSON hỏng trong `01_clean/<nguồn>.jsonl` được đếm vào `dropped` kèm ví dụ (số dòng, lỗi), không bị bỏ lặng lẽ. Lần chạy 03/11: 0 dòng.

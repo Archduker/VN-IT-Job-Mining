@@ -101,12 +101,14 @@ Map thư mục cũ sang bước mới (chuyển dần trong từng phase, không
 
 ## 6. Gọi API ngoài (JEV, LLM)
 
-Hai loại API, đều qua OpenRouter, dùng chung khóa `OPENROUTER_API_KEY` trong `.env` (không in giá trị):
+Hai loại API, hai khóa trong `.env` (không in giá trị). Đổi 03/11/2026: bỏ OpenRouter.
 
 | Loại | Model | Dùng ở | Việc |
 |---|---|---|---|
-| JEV | `typesafe/jev-1.13` | 01 Clean (C4a), 04 Normalization (N2, N3) | Phân loại: có/không (`noul`), chọn 1 trong N (`choice`), kèm xác suất. JEV không sinh chữ |
-| LLM dịch | mặc định `anthropic/claude-haiku-5-5`, đối chứng một model Gemini Flash; chọn sau khi chấm 30 JD | 03 Transformation (T6b) | Dịch JD tiếng Anh sang tiếng Việt, giữ thuật ngữ kỹ thuật |
+| JEV | `jev-1.13-free` qua OpenCode Console (`https://opencode.ai/inference/systemone/v1/systemone`), khóa `OPENCODE_API_KEY` | 01 Clean (C4a), 04 Normalization (N2b) | Chỉ hỏi có/không (`noul`) kèm xác suất, để gắn cờ cần kiểm; không dùng `choice`. JEV không sinh chữ |
+| LLM dịch | `gemini-3.8-flash` (mặc định, có gói miễn phí), đối chứng `gemini-4-argon`; gọi thẳng API Google, khóa `GEMINI_API_KEY` | 03 Transformation (T6b) | Dịch JD tiếng Anh sang tiếng Việt, giữ thuật ngữ kỹ thuật |
+
+Sổ tiền riêng theo nhà cung cấp: `data/preprocessing/_cache/spend_opencode.json`, `spend_google.json`; mỗi sổ chạm 0,95 USD thì dừng gọi.
 
 Luật:
 

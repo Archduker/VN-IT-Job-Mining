@@ -111,11 +111,21 @@ Code sửa cho PRE-1 và PRE-2 đã viết xong và có test, đang cất trong 
 - Vị trí: `_flatten_topdev` trong `preprocessing/integration/json_flattener.py`
 - Ảnh hưởng: `raw_posted_date` chỉ đọc `recalled_at`, `created_at` (luôn rỗng). Raw có `published.date`, `date_posted` và `job_posting_jsonld.experienceRequirements` nhưng không được dùng. Trang Raw đã đọc các trường này.
 
-**PRE-9. Chạy JEV cho bước Clean**
+**PRE-9. JEV chưa chạy hết (cập nhật 03/11/2026)**
 
-- Bước Clean (P1) đã chạy thật bằng luật từ khóa, chưa có JEV vì `.env` chưa có `OPENROUTER_API_KEY`.
-- Ảnh hưởng: 4.300 tin ở nhóm "cần kiểm" (`can_kiem`) đi tiếp sang các bước sau, gồm 1.497 tin TopDev mà phần lớn là ngoài IT (SCRAPE-15).
-- Cách xử lý: thêm khóa, chạy `python scripts/run_preprocessing.py --step clean --source all --dry-run --use-api` để xem ước tính (lần đo 03/11: 10.964 lần gọi, khoảng 0,18 USD; tài khoản giới hạn 1 USD), rồi chạy lại không có `--dry-run`. Sau đó gán nhãn mẫu mới (file review chưa có nhãn sẽ được chọn lại theo kết quả JEV) và xem lại `it_policy.json`.
+- Đã thêm `OPENCODE_API_KEY`, nhưng bản `jev-1.13-free` hết lượt miễn phí sau 188 câu (lỗi 429, chờ khoảng 10 giờ).
+- Ảnh hưởng: 4.052/8.344 tin còn `it_status = can_kiem`; luật N2b (JEV kiểm cấp bậc, nhóm nghề) chưa gắn cờ tin nào.
+- Cách xử lý: khi có lượt, chạy lại `python scripts/run_preprocessing.py --step all --source all --use-api` (cache nối tiếp chỗ dừng), rồi đẩy lại R2 (`scripts/push_preprocessing_to_r2.py`, chạy thử trước) và chạy lại `scripts/build_slides.py`.
+
+**PRE-10. Chưa dịch JD tiếng Anh**
+
+- 1.783 JD tiếng Anh, 0 đã dịch. Lượt dịch 30 mẫu bằng `gemini-3.8-flash` bị Gemini báo quá tải (503), chưa ra `data/preprocessing/review/translate_30.csv`.
+- Cách xử lý: chạy lại lượt 30 mẫu, chấm điểm, ghi `preprocessing/transformation/translate_model.json`, rồi dịch hết (ước tính khoảng 9,9 USD cho 3.568 đoạn; luôn `--dry-run --use-api` trước).
+
+**PRE-11. Chờ chốt hướng cho bước mô hình**
+
+- Số đo trên `data/preprocessing/04_normalization/all.parquet`: 53% tin thiếu lương (thỏa thuận), 38% nhóm nghề "Khác", 49% tin IT "cần kiểm", 19% cấp bậc không rõ, 78% tin ở Hà Nội + TP.HCM, ma trận kỹ năng thưa 98,4%.
+- Đã đưa thành 6 câu hỏi A/B ở slide cuối `docs/presentation/slides.html` để xin ý kiến thầy. Chưa chọn hướng nào.
 
 ## 4. Chung
 

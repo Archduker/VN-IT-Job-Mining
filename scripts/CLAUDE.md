@@ -22,9 +22,10 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 |---|---|
 | `reconcile_ledger_from_raw.py --apply` | Dựng lại ledger từ raw: tạo bản ghi thiếu, cập nhật bản ghi có raw mới hơn. Không hạ `CLOSED`, không xóa bản ghi; repost cũ có snapshot mới thì bỏ `repost_of_url_hash` |
 | `label_tool.py [--source] [--web] [--stats] [--auto-obvious] [--generate-policy]` | Tool gán nhãn tay cho review C4b (`data/preprocessing/review/it_<nguồn>.csv`), hỗ trợ TUI 1 phím bấm và Web UI nhanh |
-| `run_preprocessing.py --step <bước>\|all --source <nguồn>\|all [--dry-run] [--use-api]` | Pipeline pre-processing 5 bước mới (`docs/preprocessing/spec/`). Ghi `data/preprocessing/<bước>/`, `reports/preprocessing/<bước>/` (Monitoring đọc), mẫu gán nhãn `data/preprocessing/review/`. `--use-api` gọi JEV qua OpenRouter (tài khoản giới hạn 1 USD): luôn `--dry-run --use-api` trước để xem ước tính tiền. Hiện có bước `clean` |
+| `run_preprocessing.py --step <bước>\|all --source <nguồn>\|all [--dry-run] [--use-api]` | Pipeline pre-processing 5 bước mới (`docs/preprocessing/spec/`). Ghi `data/preprocessing/<bước>/`, `reports/preprocessing/<bước>/` (Monitoring đọc), mẫu gán nhãn `data/preprocessing/review/`. `--use-api` gọi JEV qua OpenCode (`OPENCODE_API_KEY`) và Gemini (`GEMINI_API_KEY`); sổ tiền riêng mỗi bên, chặn ở 0,95 USD. Luôn `--dry-run --use-api` trước để xem ước tính tiền. Đủ 5 bước. Từ bước 02 dữ liệu gộp 8 nguồn trong một file `all.parquet`. Dịch JD chỉ chạy khi có `preprocessing/transformation/translate_model.json` |
 | `run_staging_integration_pipeline.py` | Chạy cả pipeline pre-processing, ghi `data/staging/`, `data/curated/`, `reports/<nguồn>/` (thuộc phần pre-processing, đang để sau) |
 | `create_golden_master_eda_notebook.py` | Sinh notebook EDA cho bộ golden |
+| `build_slides.py [--save-before <parquet>]` | Sinh slide thuyết trình `docs/presentation/slides.html` từ báo cáo 5 bước, `docs/presentation/data/*.json` (số trước sửa) và `compute()` của `report_data_issues.py`. Dừng nếu bảng vấn đề ↔ luật (`ISSUE_TO_RULES`) lệch với luật trong báo cáo. Chạy lại sau mỗi lần chạy pipeline |
 
 ## Ghi hoặc xóa trên R2 (phải chạy thử và được đồng ý)
 
@@ -36,6 +37,7 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 | `migrate_lakehouse_layout.py --r2 --apply` | bỏ `--apply` | Chép key layout cũ sang layout chuẩn, **xóa** key cũ |
 | `sync_cloud_lakehouse.py --upload` | `--status` | Đẩy cả `data/` (gồm staging, curated) |
 | `push_integration_to_r2.py` | — | Đẩy kết quả integration |
+| `push_preprocessing_to_r2.py --push` | chạy không cờ | Đẩy output pipeline 5 bước: silver `staging/<nguồn>/preprocessing/<bước>.*` (bảng gộp tách theo nguồn), gold `curated/preprocessing/`. Chỉ đẩy key chưa có hoặc lệch (so `generated-at` và số dòng trong metadata). Bố cục: `preprocessing/common/r2_export.py` |
 | `check_r2.py` (`make check-r2`) | — | Ghi rồi xóa ngay một key thử để kiểm quyền |
 | `setup_cloud_storage.py` | — | Ghi khóa R2 vào `.env`, tạo bucket nếu chưa có |
 
