@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { api } from '../api/client'
-import { SourceDetail, StepOverview, StepStrip } from '../components/preprocessing'
+import { RowSample, SourceDetail, StepOverview, StepStrip, StoragePanel } from '../components/preprocessing'
 import { ReportStamp, TableShell, pct } from '../components/reports'
 import { Card, ErrorState, LoadingState, SectionTitle, SourcePills, StatCard, fmt, useAsync } from '../components/ui'
 import { sourceName } from '../constants/sources'
@@ -9,32 +9,45 @@ import { sourceName } from '../constants/sources'
 const date = (iso: string | null | undefined): string =>
   iso ? new Date(iso).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '—'
 
-/** Trang theo docs/monitoring/preprocessing_page_spec.md: dải 5 bước → tổng 8 nguồn → từng nguồn. */
+/** Trang theo docs/monitoring/preprocessing_page_spec.md: dải 5 bước → tổng của bước.
+ *  Bước Clean còn tách theo nguồn; từ Integration dữ liệu đã gộp nên chỉ xem tổng, nguồn chỉ là bộ lọc của bảng dòng. */
 export const PreprocessingPage: React.FC = () => {
   const [params, setParams] = useSearchParams()
   const step = params.get('step') ?? '01_clean'
-  const source = params.get('source') ?? 'topdev'
-  const set = (next: Record<string, string>) => setParams({ step, source, ...next }, { replace: true })
+  const source = params.get('source')
+  const set = (next: Record<string, string | null>) => {
+    const merged: Record<string, string> = {}
+    for (const [k, v] of Object.entries({ step, source, ...next })) if (v) merged[k] = v
+    setParams(merged, { replace: true })
+  }
   const steps = useAsync(() => api.preprocessingSteps(), [])
   if (steps.error && !steps.data) return <ErrorState />
   if (!steps.data) return <LoadingState />
   const i = steps.data.findIndex((s) => s.step === step)
+  const perSource = step === '01_clean'
+  const cleanSource = source ?? 'topdev'
 
   return (
     <div className="flex flex-col gap-6">
-      <StepStrip steps={steps.data} selected={step} onSelect={(s) => set({ step: s })} />
+      <StepStrip steps={steps.data} selected={step} onSelect={(s) => set({ step: s, source: s === '01_clean' ? source : null })} />
       <StepOverview step={step} />
-      <Card>
-        <SectionTitle title="Đi sâu một nguồn" hint="Input của bước này là output của bước trước." />
-        <SourcePills label="Chọn nguồn" selected={source} onSelect={(s) => set({ source: s })} />
-      </Card>
-      <SourceDetail
-        step={step}
-        source={source}
-        prev={i > 0 ? steps.data[i - 1] : undefined}
-        next={i >= 0 && i < steps.data.length - 1 ? steps.data[i + 1] : undefined}
-        onGoStep={(s) => set({ step: s })}
-      />
+      {perSource && (
+        <>
+          <Card>
+            <SectionTitle title="Đi sâu một nguồn" hint="Bước Clean chạy riêng từng nguồn. Từ bước Integration dữ liệu gộp 8 nguồn thành một bảng." />
+            <SourcePills label="Chọn nguồn" selected={cleanSource} onSelect={(s) => set({ source: s })} />
+          </Card>
+          <SourceDetail
+            step={step}
+            source={cleanSource}
+            prev={i > 0 ? steps.data[i - 1] : undefined}
+            next={i >= 0 && i < steps.data.length - 1 ? steps.data[i + 1] : undefined}
+            onGoStep={(s) => set({ step: s, source: null })}
+          />
+        </>
+      )}
+      <RowSample step={step} source={perSource ? cleanSource : source} onSource={(s) => set({ source: s })} />
+      <StoragePanel step={step} />
       <LegacyHealthCards />
     </div>
   )
@@ -49,7 +62,11 @@ const LegacyHealthCards: React.FC = () => {
   const { totals } = data
 
   return (
-    <div className="flex flex-col gap-6">
+    <details className="group flex flex-col gap-6">
+      <summary className="cursor-pointer select-none min-h-9 px-3 py-2 rounded-lg border border-line-strong bg-white text-[13px] font-medium text-ink w-fit">
+        Pipeline cũ (để so sánh): bấm để mở
+      </summary>
+      <div className="flex flex-col gap-6 mt-6">
       <ReportStamp generatedAt={data.generated_at} reason={data.unavailable_reason} />
 
       <section aria-label="Tổng các nguồn" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -90,7 +107,8 @@ const LegacyHealthCards: React.FC = () => {
           ))}
         </TableShell>
       </Card>
-    </div>
+      </div>
+    </details>
   )
 }
 

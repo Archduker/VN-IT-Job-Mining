@@ -579,3 +579,32 @@ export interface StepResponse {
   command?: string
   report?: StepReportData
 }
+
+export interface StorageItem {
+  step: string
+  source: string | null
+  key: string
+  local_rows: number | null
+  local_generated_at: string | null
+  status: 'khop' | 'lech' | 'chua_day' | 'khong_ro'
+  r2_rows: number | null
+  r2_size: number | null
+}
+
+export interface StorageResponse {
+  bucket: string
+  reason: string | null
+  items: StorageItem[]
+  command: string
+}
+
+export interface StepRowsResponse {
+  step: string
+  source: string | null
+  origin: 'r2' | 'local'
+  note: string | null
+  total: number
+  offset: number
+  limit: number
+  rows: Record<string, unknown>[]
+}
