@@ -74,24 +74,12 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 
 ## 3. Pre-processing
 
-PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_log.md` L-27). Còn lại:
-
-**PRE-9. JEV chưa chạy hết (cập nhật 03/11/2026)**
-
-- Đã thêm `OPENCODE_API_KEY`, nhưng bản `jev-1.13-free` hết lượt miễn phí sau 188 câu (lỗi 429, chờ khoảng 10 giờ).
-- Ảnh hưởng: 4.052/8.344 tin còn `it_status = can_kiem`; luật N2b (JEV kiểm cấp bậc, nhóm nghề) chưa gắn cờ tin nào.
-- Cách xử lý: khi có lượt, chạy lại `python scripts/run_preprocessing.py --step all --source all --use-api` (cache nối tiếp chỗ dừng), rồi đẩy lại R2 (`scripts/push_preprocessing_to_r2.py`, chạy thử trước) và chạy lại `scripts/build_slides.py`.
-
-**PRE-10. Chưa dịch JD tiếng Anh**
-
-- 1.783 JD tiếng Anh, 0 đã dịch. Thử lại 03/11: `gemini-3.8-flash` trả 429 "exceeded your current quota" (khóa hiện tại hết hạn mức cho model này); `gemini-3.5-flash` vẫn trả 200. Chưa có `data/preprocessing/review/translate_30.csv`.
-- Cần chọn: nạp/kiểm gói Google cho 3.8 Flash, hoặc đổi sang 3.5 Flash (`DEFAULT_MODEL` trong `translator.py`, `THINKING` đã có mức `minimal`). Dịch hết ước tính khoảng 9,9 USD, vượt trần 9 USD của sổ `spend_google.json` và trần 0,60 USD mỗi lần chạy, nên phải nâng trần có chủ ý.
-- Cách xử lý: chạy lại lượt 30 mẫu, chấm điểm, ghi `preprocessing/transformation/translate_model.json`, rồi dịch hết (ước tính khoảng 9,9 USD cho 3.568 đoạn; luôn `--dry-run --use-api` trước).
+PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_log.md` L-27); PRE-9, PRE-10 (JEV, dịch) hết vì đã bỏ model (L-28). Còn lại:
 
 **PRE-11. Chờ chốt hướng cho bước mô hình**
 
-- Số đo trên `data/preprocessing/04_normalization/all.parquet`: 53% tin thiếu lương (thỏa thuận), 38% nhóm nghề "Khác", 49% tin IT "cần kiểm", 19% cấp bậc không rõ, 78% tin ở Hà Nội + TP.HCM, ma trận kỹ năng thưa 98,4%.
-- Đã đưa thành 6 câu hỏi A/B ở slide cuối `docs/presentation/slides.html` để xin ý kiến thầy. Chưa chọn hướng nào.
+- Số đo 04/11/2026 trên `data/preprocessing/04_normalization/all.parquet` (5.177 tin): 55% thiếu lương (thỏa thuận), 17% tin IT do luật tầng 2 quyết (tầng 2 đúng 81,9% trên nhãn tay), 13% cấp bậc không rõ, 11% nhóm nghề "Khác", 74% tin ở Hà Nội + TP.HCM, ma trận kỹ năng thưa 97,2%.
+- Đã đưa thành 5 câu hỏi A/B ở slide cuối `docs/presentation/slides.html` để xin ý kiến thầy. Chưa chọn hướng nào.
 
 ## 4. Chung
 

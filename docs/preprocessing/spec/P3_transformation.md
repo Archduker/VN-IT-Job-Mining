@@ -1,5 +1,7 @@
 # P3. Transformation: ép kiểu, parse số, làm sạch chữ, dịch JD, rút kỹ năng và phúc lợi
 
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+
 > Trạng thái: **đã làm, chạy thật 03/11/2026** (8.378 → 8.378, chưa dịch). Sửa sau review 03/11 ở mục 8.
 > Prompt: `docs/prompting/P3_transformation.md`.
 

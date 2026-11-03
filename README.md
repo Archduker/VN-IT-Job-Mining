@@ -1,5 +1,7 @@
 # VN-IT-Job-Mining: Nền Tảng Thu Thập & Tiền Xử Lý Dữ Liệu Tuyển Dụng IT Việt Nam
 
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+
 > **Hệ thống Khai phá & Tích hợp Dữ liệu Tuyển dụng CNTT Chuẩn Modern Data Stack**  
 > Kiến trúc phân tầng **Two-Phase Decoupled Crawler** kết hợp **Cloudflare R2 Data Lakehouse**, điều phối tự động qua **Apache Airflow**, và chuỗi tiền xử lý tinh chế dữ liệu thông minh ứng dụng **GenAI (Gemini 1.5 Flash)** tạo nên **Bộ Dữ Liệu Vàng (Golden Master Dataset)**.
 

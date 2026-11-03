@@ -1,5 +1,7 @@
 # Prompt P4: Normalization (34 tỉnh, nhãn tiếng Việt, JEV, outlier, log, gộp nguồn)
 
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+
 ## 1. Ngữ cảnh
 
 Đọc trước:

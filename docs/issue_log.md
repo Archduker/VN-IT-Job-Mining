@@ -242,6 +242,30 @@ Kết quả chung sau đợt sửa:
     - nhóm Data/AI từ 973 còn 724 tin sau khi bỏ "ai".
   - `test_vietnamese_word_ai_is_not_machine_learning`, `test_gemini_overload_503_stops_after_five_chunks`.
   - Phần TopDev còn thiếu là do raw thiếu (SCRAPE-5).
+
+### L-28. Bỏ hẳn model/LLM khỏi dự án, thay bằng luật if-else (04/11/2026)
+- **Lỗi:**
+  - JEV (OpenCode `jev-1.13-free`) hết lượt miễn phí sau 188 câu, còn 10.775 câu; 4.052 tin kẹt ở "cần kiểm".
+  - Gemini 3.8 Flash trả 429 hết hạn mức, chưa dịch được JD nào.
+  - Kết quả phụ thuộc dịch vụ ngoài, khó giải thích.
+- **Nguyên nhân:** pipeline 5 bước dựa vào model ở 4 chỗ:
+  - C4a hỏi JEV tin có phải IT;
+  - T6b dịch JD;
+  - N2b hỏi JEV nhãn cấp bậc, nhóm nghề;
+  - E8 mã hóa xác suất JEV.
+- **Cách xử lý:** người dùng quyết định bỏ model (04/11/2026).
+  - C4a: luật 2 tầng `it_filter.classify` + `classify_unknown` (nhóm nghề theo tiêu đề và ≥ 2 kỹ năng JD), lưu `it_rule_level`. `it_status` chỉ còn `it`/`non_it`. Người dùng chọn bỏ luôn tin tầng 2 xếp ngoài IT.
+  - T6b, T6c bỏ; giữ `language`.
+  - N2b: luật mâu thuẫn cấp bậc–kinh nghiệm và nhóm nghề–kỹ năng.
+  - E8: cờ 0/1.
+  - Xóa `common/jev_client.py`, `common/api_cache.py`, `transformation/translator.py`, cờ `--use-api`, khung API trên Monitoring.
+  - Bộ bù giá trị của pipeline cũ (`genai_text_imputer.py`) bỏ đường gọi Gemini, chỉ còn luật.
+- **Kiểm chứng:**
+  - Chạy thật `--step all`: 14.292 bản ghi raw → 5.177 tin IT.
+  - Tầng 1 đúng 303/304, tầng 2 đúng 194/237 (81,9%) trên nhãn tay.
+  - N2b gắn cờ 635 tin.
+  - R2 34/34 khớp.
+  - Test `test_level2_needs_family_and_jd_skills`, `test_seniority_conflict_with_experience`, `test_e5_e8_*`; `make test`.
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

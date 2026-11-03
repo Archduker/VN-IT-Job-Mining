@@ -91,7 +91,7 @@ Map thư mục cũ sang bước mới (chuyển dần trong từng phase, không
 | `integration/json_flattener.py` | 02 Integration (Clean mượn để đọc khóa) |
 | `missing_outlier/sneaky_null_detector.py` | 03 Transformation |
 | `transformation/*` (lương, HTML, bullet, text_metrics) | 03 Transformation |
-| `missing_outlier/genai_text_imputer.py` (Gemini) | bỏ. Thay bằng JEV để phân loại (01 Clean, 04 Normalization) và LLM để dịch JD (03 Transformation), mục 6 |
+| `missing_outlier/genai_text_imputer.py` | không dùng trong pipeline 5 bước; bản cũ đã bỏ đường gọi Gemini, chỉ còn luật (mục 6) |
 | `missing_outlier/outlier_handler.py` | 04 Normalization (cap trước khi log) |
 | `normalization/text_cleaner.py`, `log_transformer.py` | 04 Normalization |
 | `normalization/cross_deduplicator.py` | 01 Clean dùng luật chính xác; bản fuzzy để ở 04, chỉ bật nếu số liệu cho thấy cần |
@@ -99,28 +99,18 @@ Map thư mục cũ sang bước mới (chuyển dần trong từng phase, không
 
 `scripts/run_staging_integration_pipeline.py` giữ nguyên đến khi P5 xong và số liệu mới được duyệt, rồi mới xóa.
 
-## 6. Gọi API ngoài (JEV, LLM)
+## 6. Không dùng model (cập nhật 04/11/2026)
 
-Hai loại API, hai khóa trong `.env` (không in giá trị). Đổi 03/11/2026: bỏ OpenRouter.
+Pipeline không gọi model hay LLM nào. Mọi phân loại là luật if-else, mọi chuẩn hóa là từ điển; chạy lại cho cùng kết quả, không tốn tiền, không cần khóa API. JEV (OpenCode) và Gemini đã bỏ (`docs/issue_log.md` L-28).
 
-| Loại | Model | Dùng ở | Việc |
-|---|---|---|---|
-| JEV | `jev-1.13-free` qua OpenCode Console (`https://opencode.ai/inference/systemone/v1/systemone`), khóa `OPENCODE_API_KEY` | 01 Clean (C4a), 04 Normalization (N2b) | Chỉ hỏi có/không (`noul`) kèm xác suất, để gắn cờ cần kiểm; không dùng `choice`. JEV không sinh chữ |
-| LLM dịch | `gemini-3.8-flash` (mặc định, có gói miễn phí), đối chứng `gemini-4-argon`; gọi thẳng API Google, khóa `GEMINI_API_KEY` | 03 Transformation (T6b) | Dịch JD tiếng Anh sang tiếng Việt, giữ thuật ngữ kỹ thuật |
+| Việc trước dùng model | Nay làm bằng |
+|---|---|
+| 01 Clean C4a: JEV hỏi tin có phải IT | Luật 2 tầng trong `preprocessing/common/it_filter.py`: tầng 1 từ khóa tiêu đề (`classify`); tin tầng 1 ra `unknown` thì tầng 2 (`classify_unknown`) xếp IT khi tiêu đề thuộc 12 nhóm nghề và JD có ≥ 2 kỹ năng. Lưu `it_rule_level` |
+| 03 Transformation T6b, T6c: dịch JD tiếng Anh | Bỏ. Giữ `language`; kỹ năng rút bằng từ điển song ngữ |
+| 04 Normalization N2b: JEV kiểm nhãn | Luật mâu thuẫn: Senior/Trưởng nhóm mà kinh nghiệm < 2 năm, Thực tập/Mới tốt nghiệp mà ≥ 3 năm → `seniority_can_kiem`; có nhóm nghề mà JD không có kỹ năng → `job_family_can_kiem` |
+| 05 Encoding E8: xác suất JEV | Cờ 0/1 `it_rule_level__2`, `seniority_can_kiem`, `job_family_can_kiem` |
 
-Sổ tiền riêng theo nhà cung cấp: `data/preprocessing/_cache/spend_opencode.json`, `spend_google.json`; mỗi sổ chạm 0,95 USD thì dừng gọi.
-
-Luật:
-
-- Chỉ gọi khi có cờ `--use-api`. `--dry-run` chỉ đếm số lần sẽ gọi và ước tính tiền theo số token.
-- **Cache** theo hash (model + câu hỏi + nội dung) ở `data/preprocessing/_cache/jev/` và `…/_cache/translate/`. Chạy lại thì đọc cache: kết quả giống hệt, không tốn thêm tiền. JEV trả xác suất hơi khác giữa các lần gọi, nên cache là cách duy nhất để chạy lại ra cùng số.
-- Báo cáo bước thêm khối:
-  ```json
-  "api": {"used": true, "model": "typesafe/jev-1.13", "calls": 812, "cache_hits": 9946, "cost_usd": 0.016}
-  ```
-- Thiếu khóa hoặc không có `--use-api` thì bước vẫn chạy bằng luật và từ điển, ghi `"api": {"used": false, "reason": "…"}`. Không dừng.
-- Chạy lần đầu trên toàn bộ dữ liệu phải chạy `--dry-run` trước, gửi ước tính tiền cho bạn duyệt.
-- Không gửi gì ngoài nội dung tin tuyển dụng (tiêu đề, kỹ năng, JD). Không gửi đường dẫn máy, khóa, dữ liệu ledger.
+Báo cáo bước vẫn có khối `"api": {"used": false, "reason": "pipeline không dùng model (luật if-else)"}` để Monitoring đọc như cũ. Độ đúng của luật đo bằng nhãn tay (`data/preprocessing/review/it_<nguồn>.csv`), ghi ở `extra.review` của báo cáo Clean.
 
 ## 7. Ranh giới
 

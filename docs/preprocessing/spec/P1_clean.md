@@ -1,5 +1,7 @@
 # P1. Clean sơ bộ: khử trùng, bỏ rác, phân loại IT (chưa bỏ)
 
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+
 > Trạng thái: **đã làm, đã chạy thật 03/11/2026 bằng luật; còn chạy JEV (PRE-9)**. Kết quả và các điểm khác đặc tả: mục 9.
 > Cần P0 xong trước. Prompt: `docs/prompting/P1_clean.md`.
 > Số liệu: `docs/preprocessing/data_issues_2026-11-03.md`, đo lại ngày 03/11 bằng `scripts/report_data_issues.py`.

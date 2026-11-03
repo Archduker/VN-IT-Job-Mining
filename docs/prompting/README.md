@@ -1,5 +1,7 @@
 # docs/prompting: prompt cho từng phase refactor pre-processing
 
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+
 Mỗi file là một prompt dán cho agent (Claude Code) để làm một phase. Prompt **trỏ về đặc tả**, không chép lại: đặc tả là luật, prompt là cách làm.
 
 | Phase | Prompt | Đặc tả |
