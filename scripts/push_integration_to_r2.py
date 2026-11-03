@@ -6,7 +6,6 @@
 lên Cloudflare R2 Cloud Lakehouse (Bucket: vn-it-jobs, Prefix: integration/).
 """
 
-import glob
 import os
 import sys
 import time

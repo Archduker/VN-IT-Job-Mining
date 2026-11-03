@@ -14,13 +14,11 @@ Functions:
 
 from __future__ import annotations
 
-import hashlib
 import html as html_lib
 import re
 import unicodedata
-from datetime import date
+from datetime import date, datetime, timezone
 from typing import Any, Optional
-from urllib.parse import urlparse, urlencode, parse_qs, urlunparse
 
 # Reuse normalize_url từ schema module (single source of truth)
 from collection.common.schema import normalize_url, hash_url
@@ -208,7 +206,6 @@ def parse_salary(salary_text: Optional[str]) -> tuple[Optional[float], Optional[
 
     # Tìm các số (có thể có dấu phẩy hoặc chấm thập phân)
     # Xử lý dấu phẩy trong số hàng nghìn USD (1,500)
-    cleaned = text.replace(",", ".")
     # Nhưng nếu là dạng $1,000 thì 1,000 -> 1000
     cleaned_num_text = re.sub(r"(\d),(\d{3})", r"\1\2", text)
 
@@ -622,4 +619,23 @@ def is_job_closed_or_expired(
 
     return False
 
+def collapse_whitespace(value: Any) -> Optional[str]:
+    """Gộp mọi khoảng trắng (cả xuống dòng) thành một dấu cách; chuỗi rỗng thành None.
 
+    Khác clean_text: clean_text giữ xuống dòng. TopDev và Vieclam24h trước đây mỗi nguồn tự viết một bản giống hệt.
+    """
+    if value is None:
+        return None
+    text = re.sub(r"\s+", " ", str(value)).strip()
+    return text or None
+
+
+def parse_iso_utc(value: Any) -> Optional[datetime]:
+    """Đọc thời gian ISO 8601 (chấp nhận hậu tố Z); không có múi giờ thì coi là UTC; sai định dạng thì None."""
+    if not value:
+        return None
+    try:
+        stamp = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return stamp if stamp.tzinfo else stamp.replace(tzinfo=timezone.utc)

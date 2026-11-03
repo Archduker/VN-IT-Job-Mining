@@ -1,0 +1,292 @@
+{
+  "step": "01_clean",
+  "source": "careerviet",
+  "mode": "applied",
+  "generated_at": "2026-11-03T11:07:03+00:00",
+  "code_version": "55d4867",
+  "input": {
+    "path": "data/careerviet/raw",
+    "rows": 660
+  },
+  "output": {
+    "path": "data/preprocessing/01_clean/careerviet.jsonl",
+    "rows": 593
+  },
+  "dropped": [
+    {
+      "rule": "C1",
+      "reason": "Giữ snapshot mới nhất của mỗi job_id",
+      "rows": 18
+    },
+    {
+      "rule": "C2",
+      "reason": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "rows": 0
+    },
+    {
+      "rule": "C3",
+      "reason": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "rows": 0
+    },
+    {
+      "rule": "C4c",
+      "reason": "Bỏ tin ngoài IT theo it_policy.json",
+      "rows": 41
+    },
+    {
+      "rule": "C5",
+      "reason": "Bỏ JD dưới 30 từ",
+      "rows": 0
+    },
+    {
+      "rule": "C6",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "rows": 4
+    },
+    {
+      "rule": "C7",
+      "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "rows": 4
+    }
+  ],
+  "rules": [
+    {
+      "id": "C1",
+      "name": "Giữ snapshot mới nhất của mỗi job_id",
+      "action": "drop",
+      "rows_affected": 18,
+      "examples": [
+        {
+          "job_id": "35C81985",
+          "field": "snapshot_file",
+          "before": "2026-10-20/35C81985_v1.json",
+          "after": "2026-11-01/35C81985_v2.json",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/dieu-phoi-vien-chuong-trinh.35C81985.html"
+        },
+        {
+          "job_id": "35C85B2F",
+          "field": "snapshot_file",
+          "before": "2026-10-20/35C85B2F_v1.json",
+          "after": "2026-11-01/35C85B2F_v2.json",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C85B2F.html"
+        },
+        {
+          "job_id": "35C87769",
+          "field": "snapshot_file",
+          "before": "2026-10-20/35C87769_v1.json",
+          "after": "2026-11-01/35C87769_v2.json",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/data-governance-manager.35C87769.html"
+        }
+      ]
+    },
+    {
+      "id": "C2",
+      "name": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C3",
+      "name": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C4a",
+      "name": "Phân loại IT (luật + JEV), chỉ gắn cờ",
+      "action": "flag",
+      "rows_affected": 243,
+      "examples": [
+        {
+          "job_id": "35C81C24",
+          "field": "job_title",
+          "before": "Oversea Sales Logistics",
+          "after": "non_it",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/oversea-sales-logistics.35C81C24.html"
+        },
+        {
+          "job_id": "35C81C25",
+          "field": "job_title",
+          "before": "Sales Logistics",
+          "after": "non_it",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/sales-logistics.35C81C25.html"
+        },
+        {
+          "job_id": "35C81FF9",
+          "field": "job_title",
+          "before": "Nhân Viên Kinh Doanh (B2B)",
+          "after": "non_it",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-kinh-doanh-b2b.35C81FF9.html"
+        }
+      ]
+    },
+    {
+      "id": "C4c",
+      "name": "Bỏ tin ngoài IT theo it_policy.json",
+      "action": "drop",
+      "rows_affected": 41,
+      "examples": [
+        {
+          "job_id": "35C81C24",
+          "field": "job_title",
+          "before": "Oversea Sales Logistics",
+          "after": null,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/oversea-sales-logistics.35C81C24.html"
+        },
+        {
+          "job_id": "35C81C25",
+          "field": "job_title",
+          "before": "Sales Logistics",
+          "after": null,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/sales-logistics.35C81C25.html"
+        },
+        {
+          "job_id": "35C81FF9",
+          "field": "job_title",
+          "before": "Nhân Viên Kinh Doanh (B2B)",
+          "after": null,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-kinh-doanh-b2b.35C81FF9.html"
+        }
+      ]
+    },
+    {
+      "id": "C5",
+      "name": "Bỏ JD dưới 30 từ",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C6",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "action": "drop",
+      "rows_affected": 4,
+      "examples": [
+        {
+          "job_id": "35C864C3",
+          "field": "dedup_key",
+          "before": "chương trình học viện công nghệ bkacad|giảng viên quản trị mạng và quản trị hệ thống|ha_noi|2026-W41",
+          "after": "giữ 35C82F56",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/giang-vien-quan-tri-mang-va-quan-tri-he-thong.35C864C3.html"
+        },
+        {
+          "job_id": "35C873DF",
+          "field": "dedup_key",
+          "before": "viễn thông ipn|nhân viên kỹ thuật|ha_noi|2026-W42",
+          "after": "giữ 35C8AB1D",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-ky-thuat.35C873DF.html"
+        },
+        {
+          "job_id": "35C88574",
+          "field": "dedup_key",
+          "before": "phát triển công nghệ điện tử bình anh|chuyên viên phân tích dữ liệu|ha_noi|2026-W42",
+          "after": "giữ 35C89455",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phan-tich-du-lieu.35C88574.html"
+        }
+      ]
+    },
+    {
+      "id": "C7",
+      "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "action": "drop",
+      "rows_affected": 4,
+      "examples": [
+        {
+          "job_id": "35C8995E",
+          "field": "dedup_key",
+          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm website|ho_chi_minh|2026-W43",
+          "after": "giữ topcv:2320402",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-tu-van-trien-khai-phan-mem-website.35C8995E.html"
+        },
+        {
+          "job_id": "35C89998",
+          "field": "dedup_key",
+          "before": "công nghệ foxai|chuyên viên kinh doanh phần mềm erp|ha_noi|2026-W43",
+          "after": "giữ topcv:2096102",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-kinh-doanh-phan-mem-erp.35C89998.html"
+        },
+        {
+          "job_id": "35C8A330",
+          "field": "dedup_key",
+          "before": "ila|business planning analyst|ho_chi_minh|2026-W42",
+          "after": "giữ vietnamworks:2118339",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/business-planning-analyst.35C8A330.html"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "job_title",
+      "fill_pct_in": 99.8,
+      "fill_pct_out": 99.8
+    },
+    {
+      "field": "company_name",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_location_text",
+      "fill_pct_in": 97.8,
+      "fill_pct_out": 97.6
+    },
+    {
+      "field": "raw_posted_date",
+      "fill_pct_in": 97.8,
+      "fill_pct_out": 97.6
+    },
+    {
+      "field": "raw_description_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_list",
+      "fill_pct_in": 79.1,
+      "fill_pct_out": 78.8
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "model": "typesafe/jev-1.13",
+    "calls": 0,
+    "cache_hits": 0,
+    "cost_usd": 0.0,
+    "errors": 0,
+    "reason": "không bật --use-api",
+    "max_cost_usd": 0.3
+  },
+  "extra": {
+    "it_status": {
+      "it": 399,
+      "can_kiem": 202,
+      "non_it": 41
+    },
+    "it_policy": {
+      "drop": [
+        "non_it"
+      ],
+      "approved_on": "2026-11-03",
+      "evidence": "C4b: Gán tay 77 tin, 42/47 non_it theo luật đúng (89.4%), 58 non_it (logistics, giáo viên, cơ khí...)"
+    },
+    "review": {
+      "file": "data/preprocessing/review/it_careerviet.csv",
+      "rows": 77,
+      "labeled": 77,
+      "labeled_non_it": 58,
+      "rule_decided": 46,
+      "rule_correct": 46,
+      "status_non_it": 40,
+      "status_non_it_correct": 40,
+      "jev_labeled": 0,
+      "jev_correct": 0
+    }
+  }
+}

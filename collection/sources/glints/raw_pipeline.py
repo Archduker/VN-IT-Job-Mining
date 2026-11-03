@@ -6,11 +6,7 @@ import os
 import json
 import base64
 import logging
-import random
-import re
-import time
 from typing import Any, Dict, Optional
-from urllib.parse import urljoin
 
 import requests
 

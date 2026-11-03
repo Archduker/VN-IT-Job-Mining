@@ -224,7 +224,7 @@ def ruff_findings(paths: Sequence[Path], root: Path) -> List[Dict[str, Any]]:
     if not ruff:
         return []
     cmd = [ruff, "check", *map(str, paths), "--select", "F401,F811,F841", "--output-format", "json",
-           "--no-fix", "--exit-zero", "--isolated"]
+           "--no-fix", "--exit-zero", "--isolated", "--extend-exclude", "*.ipynb"]
     out = subprocess.run(cmd, capture_output=True, text=True, cwd=root).stdout
     try:
         items = json.loads(out or "[]")

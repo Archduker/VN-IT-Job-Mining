@@ -15,7 +15,9 @@ Bản đồ tài liệu. Khi tài liệu mâu thuẫn với code thì tin code; 
 | R2 | `cloud_r2_setup_guide.md` | Đã cập nhật 03/11/2026 |
 | Airflow | `03_airflow_guide.md` | Đã cập nhật 03/11/2026 |
 | EDA, integration | `03_eda_and_integration_guide.md`, `tasks/` | |
-| Pre-processing | `preprocessing/` | `00_architecture_overview.md` là luật ranh giới các bước |
+| Pre-processing | `preprocessing/` | `00_architecture_overview.md` là thiết kế cũ (4 bước). Refactor 5 bước Clean → Integration → Transformation → Normalization → Encoding: đặc tả trong `preprocessing/spec/P0…P5`, chờ duyệt |
+| Monitoring | `monitoring/preprocessing_page_spec.md` | Đặc tả trang Pre-processing theo từng bước |
+| Prompt cho agent | `prompting/` | Một prompt mỗi phase, theo khuôn trong `prompting/README.md` |
 | Lịch sử | `archive/` | Không sửa, không dùng làm căn cứ |
 
 Việc còn mở nằm ở `KNOWN_ISSUED.md` (thư mục gốc), không nằm trong `docs/`.

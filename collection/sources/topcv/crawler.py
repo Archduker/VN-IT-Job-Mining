@@ -21,7 +21,6 @@ docs/two_phase_r2_crawler_playbook.md):
 from __future__ import annotations
 
 import argparse
-import asyncio
 import hashlib
 import json
 import logging
@@ -33,7 +32,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional, Union
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
 # Đảm bảo import được các module của dự án
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
@@ -58,7 +57,6 @@ from collection.common.url_ledger import (
     UrlLedger,
     calculate_json_canonical_hash,
     clean_canonical_url,
-    generate_url_hash,
 )
 from collection.common.utils import clean_text, detect_language
 
@@ -904,7 +902,7 @@ class TopCVCrawler(BaseCrawler):
 
                     # 8. Power Nap sau mỗi 25 bài đăng thành công để reset rate limit pool
                     if stats["success"] > 0 and stats["success"] % 25 == 0:
-                        nap_sec = polite_sleep(15.0, 20.0, reason=f"Power Nap giải phóng Cloudflare Rate Limit sau {stats['success']} tin")
+                        polite_sleep(15.0, 20.0, reason=f"Power Nap giải phóng Cloudflare Rate Limit sau {stats['success']} tin")
 
                     # Polite Sleep ngẫu nhiên giữa 2 bài đăng (3.5s - 6.5s)
                     polite_sleep(self.min_delay, self.max_delay, reason=f"Nghỉ giữa bài đăng {idx}")

@@ -26,10 +26,8 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
-import glob
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -69,8 +67,8 @@ def get_lakehouse_client() -> Tuple[Any, Optional[str], Optional[str], str]:
         (s3_client, bucket_name, endpoint_url, connection_status)
     """
     try:
-        import boto3
-        from botocore.client import Config
+        import boto3  # noqa: F401 (chỉ kiểm tra đã cài)
+        from botocore.client import Config  # noqa: F401
     except ImportError:
         return None, None, None, "OFFLINE: Thiếu thư viện boto3"
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Endpoints quản trị độc quyền Cloudflare R2 Cloud Lakehouse."""
 
-from typing import Any, Dict, Optional
 from fastapi import APIRouter, HTTPException, Query
 
 from app.core.r2_client import r2_client

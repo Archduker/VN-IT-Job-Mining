@@ -5,14 +5,11 @@ Kết nối trực tiếp tới Cloudflare R2 Endpoint qua giao thức S3v4,
 loại bỏ hoàn toàn R2 cục bộ.
 """
 
-from datetime import datetime
 import logging
 import os
 from pathlib import Path
 import time
-from typing import Any, Dict, List, Optional
-import boto3
-from botocore.client import Config
+from typing import Any, Dict, Optional
 from botocore.exceptions import ClientError, EndpointConnectionError
 
 from app.core.config import settings
@@ -43,19 +40,11 @@ class CloudflareR2Client:
             return None
 
         if self._client is None:
-            self._client = boto3.client(
-                "s3",
-                endpoint_url=self.endpoint_url,
-                aws_access_key_id=self.access_key,
-                aws_secret_access_key=self.secret_key,
-                config=Config(
-                    signature_version="s3v4",
-                    connect_timeout=5,
-                    read_timeout=10,
-                    retries={"max_attempts": 2},
-                ),
-                region_name="auto",
-            )
+            from collection.common.r2_storage import get_r2_client
+
+            # Monitoring cần báo lỗi nhanh nên timeout ngắn hơn crawler
+            self._client = get_r2_client(self.endpoint_url, self.access_key, self.secret_key,
+                                         read_timeout=10, max_attempts=2)
         return self._client
 
     def check_connection(self) -> Dict[str, Any]:
@@ -94,32 +83,6 @@ class CloudflareR2Client:
                 "error": str(exc),
                 "message": f"Không thể kết nối Cloudflare R2: {exc}",
             }
-
-    def list_layer_objects(self, prefix: str, max_keys: int = 100) -> List[Dict[str, Any]]:
-        """Liệt kê danh sách objects theo prefix phân tầng trên Cloudflare R2."""
-        client = self.get_client()
-        if not client:
-            return []
-
-        try:
-            resp = client.list_objects_v2(
-                Bucket=self.bucket_name,
-                Prefix=prefix,
-                MaxKeys=max_keys,
-            )
-            contents = resp.get("Contents", [])
-            return [
-                {
-                    "key": item["Key"],
-                    "size": item["Size"],
-                    "last_modified": item["LastModified"].isoformat(),
-                    "etag": item.get("ETag", "").strip('"'),
-                }
-                for item in contents
-            ]
-        except Exception as exc:
-            logger.error("Lỗi liệt kê objects prefix=%s từ R2: %s", prefix, exc)
-            return []
 
     def get_layers_summary(self) -> Dict[str, Any]:
         """Thống kê tổng số lượng object và dung lượng 4 phân tầng Lakehouse trên R2."""

@@ -123,7 +123,7 @@ python scripts/reconcile_ledger_from_raw.py --source topcv --push         # ghi 
 
 `python scripts/sync_cloud_lakehouse.py --upload` đẩy `data/` (gồm `staging/`, `curated/`); `python scripts/push_integration_to_r2.py` đẩy kết quả integration.
 
-> `scripts/upload_to_r2.py` là công cụ cũ, viết cho layout `dt=YYYY-MM-DD/batch_XXX.json` và `samples/`. Không dùng cho dữ liệu mới.
+> `scripts/upload_to_r2.py` (công cụ cũ cho layout `dt=YYYY-MM-DD/batch_XXX.json` và `samples/`) đã bị xóa ngày 03/11/2026; dùng `push_raw_to_r2.py`.
 
 **Mọi lệnh ghi hoặc xóa trên R2 đều chạy thử trước** và cần người phụ trách đồng ý.
 

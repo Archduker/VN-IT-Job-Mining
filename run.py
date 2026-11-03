@@ -12,8 +12,6 @@ Sử dụng:
 """
 
 import argparse
-import glob
-from datetime import datetime, timezone, timedelta
 import logging
 import os
 import sys
@@ -70,7 +68,6 @@ def run_crawler(
             f"Nguồn '{source}' không được hỗ trợ. Chọn một trong: {', '.join(SUPPORTED_SOURCES)}"
         )
 
-    crawler_map = {}
 
     if source == "topcv":
         from collection.sources.topcv.crawler import TopCVCrawler

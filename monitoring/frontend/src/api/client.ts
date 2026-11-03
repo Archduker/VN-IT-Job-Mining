@@ -14,6 +14,8 @@ import {
   SampleList,
   SourceOverviewItem,
   SourceReport,
+  StepResponse,
+  StepSummary,
   Univariate,
 } from '../types'
 
@@ -34,6 +36,10 @@ export const api = {
   r2Status: () => get<CloudHealth>('/cloud/r2/status'),
   airflowStatus: () => get<AirflowStatusResponse>('/orchestration/airflow/status'),
   preprocessing: () => get<PreprocessingReport>('/preprocessing/metrics'),
+  preprocessingSteps: () => get<StepSummary[]>('/preprocessing/steps'),
+  preprocessingStep: (step: string) => get<StepResponse>(`/preprocessing/steps/${step}`),
+  preprocessingStepSource: (step: string, source: string) =>
+    get<StepResponse>(`/preprocessing/steps/${step}/${source}`),
   processing: () => get<ProcessingReport>('/processing/metrics'),
   dashboard: () => get<DashboardReport>('/dashboard'),
   edaInventory: (source: string) => get<FieldInventoryItem[]>(`/eda/${source}/inventory`),

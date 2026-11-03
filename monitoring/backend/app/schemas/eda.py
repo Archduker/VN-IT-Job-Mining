@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Pydantic schemas cho EDA."""
 
-from typing import Any, Dict, List, Optional
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -12,26 +12,6 @@ class FieldInventoryItem(BaseModel):
     null_rate_pct: float
     unique_count: int
     sample_value: Optional[str] = None
-
-
-class OutlierProfile(BaseModel):
-    q1: float
-    median: float
-    q3: float
-    iqr: float
-    lower_bound: float
-    upper_bound: float
-    outlier_count: int
-    outlier_rate_pct: float
-    max_value: Optional[float] = None
-    min_value: Optional[float] = None
-
-
-class Distribution2D(BaseModel):
-    bins: List[float]
-    counts: List[int]
-    density_kde: Optional[List[float]] = None
-    box: Dict[str, float]
 
 
 class EDASummary(BaseModel):

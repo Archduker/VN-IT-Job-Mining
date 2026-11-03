@@ -45,13 +45,11 @@ from collection.common.url_ledger import (
     UrlLedger,
     calculate_json_canonical_hash,
     clean_canonical_url,
-    generate_url_hash,
 )
 from collection.common.utils import (
     clean_text,
     detect_language,
     parse_salary_detail,
-    strip_html_tags,
     text_to_clean_lines,
     is_job_closed_or_expired,
 )
@@ -696,8 +694,6 @@ class VietnamWorksCrawler(BaseCrawler):
         discovered_urls: list[str] = []
         pages_to_query = max_pages if max_pages is not None else 2
         ledger = self._get_ledger()
-        consecutive_known_jobs = 0
-        early_stop_threshold = 10
 
         # Đọc từ local file nếu có
         if not online and self.local_json_file and os.path.exists(self.local_json_file):
@@ -947,7 +943,6 @@ class VietnamWorksCrawler(BaseCrawler):
                 content_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
 
                 # 5. Đối chiếu hash: Nếu nội dung không đổi và tin đã DONE thì giữ nguyên version
-                old_hash = item.get("content_hash")
                 old_version = item.get("latest_version") or 0
                 if not ledger.next_version(item, content_hash)[0]:
                     log.info("[VietnamWorks] Job %s không đổi nội dung -> Giữ nguyên v%d", job_id, old_version)

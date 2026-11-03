@@ -4,7 +4,15 @@ Ngữ cảnh khi làm việc với pre-processing. Thiết kế đầy đủ: `d
 
 Thứ tự làm của dự án là web scraping → trực quan hóa → pre-processing. **Phần này đang để sau:** chỉ sửa khi người dùng yêu cầu rõ.
 
-## Cấu trúc
+**Refactor đang đặc tả (03/11/2026):** 5 bước Clean → Integration → Transformation → Normalization → Encoding, output bước trước là input bước sau, mỗi bước ghi báo cáo cho Monitoring. Đặc tả: `docs/preprocessing/spec/`; prompt: `docs/prompting/`. Khi refactor xong, bảng "Cấu trúc" dưới đây sẽ thay đổi. Đã chốt: địa điểm theo 34 tỉnh sau sáp nhập (JSON 3 cấp); tin ngoài IT chưa được bỏ khi chưa có `preprocessing/clean/it_policy.json` do người dùng duyệt; JEV và LLM dịch chỉ gọi khi có `--use-api`, có cache.
+
+## Pipeline 5 bước (đang làm)
+
+- Driver `scripts/run_preprocessing.py`; mỗi bước là `preprocessing/<bước>/run.py` với `run(sources, dry_run, use_api)`. Đã có: `clean/` (P1, đã chạy thật 03/11/2026 bằng luật, chưa có JEV).
+- `common/`: `step_report.py` (schema báo cáo, luật bảo toàn input = output + bị bỏ), `raw_reader.py`, `province.py` + `dictionaries/provinces_34.json`, `it_filter.py`, `jev_client.py` + `api_cache.py` (cache `data/preprocessing/_cache/`, trần chi phí).
+- File mẫu gán nhãn `data/preprocessing/review/it_<nguồn>.csv` đã có nhãn tay thì không bao giờ bị ghi đè.
+
+## Cấu trúc (pipeline cũ)
 
 `preprocessing/` là thư viện các hàm theo bước; driver nằm ở `scripts/run_staging_integration_pipeline.py`, chạy từng nguồn rồi gộp:
 
@@ -29,11 +37,11 @@ Mỗi nguồn ra 3 file: `<nguồn>_flat_clean.parquet`, `reports/<nguồn>/<ngu
 ## Dữ liệu đầu vào
 
 - Đọc `data/<nguồn>/raw/`, nên chạy `python scripts/sync_cloud_lakehouse.py --download` trước.
-- File batch cũ `data/vieclam24h/raw/2026-10-20/batch_001.json` và `data/vietnamworks/raw/2026-10-16/raw_batch.json` gom nhiều tin, trùng với file từng tin. Khi làm phẳng phải khử trùng theo `job_id`, ưu tiên file từng tin (PRE-8).
+- File batch cũ `data/vieclam24h/raw/2026-10-20/batch_001.json` và `data/vietnamworks/raw/2026-10-16/raw_batch.json` gom nhiều tin, trùng với file từng tin. Bước Clean đã khử trùng theo `job_id`, ưu tiên file từng tin (luật C2, `docs/issue_log.md` L-25).
 - Repost không có file raw; ledger ghi `repost_of_url_hash`.
 
 ## Việc còn mở
 
-`KNOWN_ISSUED.md` mục 3: PRE-1 (phân loại theo chuỗi con), PRE-2 (chuẩn hóa chạy trước imputer), PRE-3 (tên thành phố không dấu), PRE-4 (chạy lại dữ liệu), PRE-6 (kỹ năng CareerViet/JobsGO lấy sai trường), PRE-7 (TopDev chưa đọc JSON-LD), PRE-8. Code sửa PRE-1 và PRE-2 đã có test, đang nằm trong git stash "preprocessing: so khớp theo từ + chuẩn hóa sau imputer (hoãn)".
+`KNOWN_ISSUED.md` mục 3: PRE-1 (phân loại theo chuỗi con), PRE-2 (chuẩn hóa chạy trước imputer), PRE-3 (tên thành phố không dấu), PRE-4 (chạy lại dữ liệu), PRE-6 (kỹ năng CareerViet/JobsGO lấy sai trường), PRE-7 (TopDev chưa đọc JSON-LD), PRE-9 (chạy JEV cho bước Clean). Code sửa PRE-1 và PRE-2 đã có test, đang nằm trong git stash "preprocessing: so khớp theo từ + chuẩn hóa sau imputer (hoãn)".
 
 Chạy lại pipeline thì so số trước và sau, rồi mới đẩy lên R2 (`scripts/push_integration_to_r2.py`, `scripts/sync_cloud_lakehouse.py --upload`; cả hai đều ghi lên R2).

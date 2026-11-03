@@ -21,7 +21,7 @@ Tests (process and folder rules in `tests/README.md`):
 ```bash
 make test-fast                                            # unit only
 make test                                                 # everything except live; network is blocked
-make check                                                # test + code quality report + frontend build (the `quality` target is not written yet, GEN-3)
+make check                                                # test + code quality report (docs/code_quality.md) + frontend build
 pytest tests/unit/test_url_ledger_dedup.py::test_name     # one test
 ```
 

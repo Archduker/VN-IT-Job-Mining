@@ -39,8 +39,13 @@ def get_r2_client(
     endpoint_url: str | None = None,
     access_key: str | None = None,
     secret_key: str | None = None,
+    read_timeout: int = 60,
+    max_attempts: int = 3,
 ):
-    """Initialize and return a boto3 S3 client configured for Cloudflare R2."""
+    """Client boto3 cho Cloudflare R2. Mọi kết nối R2 trong repo phải đi qua hàm này (một thứ tự khóa duy nhất).
+
+    Khóa: tham số, rồi R2_*, rồi AWS_*. Endpoint: tham số, R2_ENDPOINT_URL hoặc R2_ACCOUNT_ID; thiếu thì raise.
+    """
     import boto3
     from botocore.client import Config
 
@@ -61,7 +66,8 @@ def get_r2_client(
         endpoint_url=endpoint,
         aws_access_key_id=ak,
         aws_secret_access_key=sk,
-        config=Config(signature_version="s3v4", connect_timeout=10, retries={"max_attempts": 3}),
+        config=Config(signature_version="s3v4", connect_timeout=10, read_timeout=read_timeout,
+                      retries={"max_attempts": max_attempts}),
         region_name="auto",
     )
 

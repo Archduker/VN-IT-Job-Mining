@@ -30,6 +30,7 @@ from app.core.config import settings  # noqa: E402
 from app.core.feature_targets import FEATURES, RAW_PATHS  # noqa: E402
 from app.services.source_report_service import _match_paths, _value_at  # noqa: E402
 from collection.common.url_ledger import is_due_for_recrawl  # noqa: E402
+from collection.common.utils import parse_iso_utc  # noqa: E402
 
 SOURCES: List[str] = list(settings.SUPPORTED_SOURCES)
 # Thư mục cấp 1 hợp lệ trong data/ ngoài thư mục của 8 nguồn
@@ -41,14 +42,7 @@ BLOCKED_MAX_CHARS = 1000  # JD thật có thể nhắc "captcha"; chỉ coi là 
 LEDGER_LAG = timedelta(hours=1)  # raw mới hơn ledger quá mức này nghĩa là ledger chưa được đồng bộ
 
 
-def _parse_time(value: Any) -> Optional[datetime]:
-    if not value:
-        return None
-    try:
-        stamp = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
-    except ValueError:
-        return None
-    return stamp if stamp.tzinfo else stamp.replace(tzinfo=timezone.utc)
+_parse_time = parse_iso_utc  # collection/common/utils.py
 
 
 def _text_len(node: Any) -> int:

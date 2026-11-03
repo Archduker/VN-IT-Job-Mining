@@ -14,8 +14,8 @@ import sys
 from pathlib import Path
 
 try:
-    import boto3
-    from botocore.client import Config
+    import boto3  # noqa: F401 (chỉ kiểm tra đã cài)
+    from botocore.client import Config  # noqa: F401
     from dotenv import load_dotenv
 except ImportError:
     print("[LỖI] Thiếu thư viện phụ thuộc. Vui lòng chạy: pip install boto3 python-dotenv")

@@ -35,7 +35,7 @@ def main():
         s3 = get_r2_client()
         print("\n2. Kiểm tra xác thực Cloudflare R2 trên Bucket:")
         # Thử liệt kê đối tượng mẫu để kiểm tra kết nối tới bucket
-        test_resp = s3.list_objects_v2(Bucket=bucket, MaxKeys=1)
+        s3.list_objects_v2(Bucket=bucket, MaxKeys=1)
         print(f"  [OK] Xác thực API thành công! Bucket '{bucket}' đang hoạt động.")
 
         print("\n3. Thống kê phân tầng dữ liệu trên Cloudflare R2:")

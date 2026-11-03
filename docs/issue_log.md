@@ -147,8 +147,30 @@ Kết quả chung sau đợt sửa:
   - Không đẩy file batch lên R2: 725/931 tin (78%) đã có bản đầy đủ hơn trên R2. Hash khác nhau chỉ vì crawler mới bóc thêm 9 trường; 97/103 trường chung giống hệt.
   - Thêm `reconcile_ledger_from_raw.py --register-batch-missing <file>`: đăng ký `PENDING` cho tin trong batch chưa có file riêng và chưa có trong ledger, ghi nguồn gốc vào `registered_from_batch`. Đã chạy `--push` ngày 03/11: ledger trên R2 từ 1.258 lên 1.464 bản ghi (+206 `PENDING`), không mất bản ghi nào, không bản ghi cũ nào đổi trạng thái. Bản R2 trước đó được sao lưu ở `data/vietnamworks/url_ledger/backups/`.
   - Audit báo nhầm 206 tin là "ledger chậm hơn raw", vì tính cả lần cào trong file batch. Đã sửa: chỉ tính lần cào từ file từng tin.
-- **Còn lại:** 206 tin sẽ được cào dần qua các ca detail; tin đã hết hạn sẽ thành `CLOSED`. File batch vẫn nằm trên máy và vẫn cần khử trùng khi làm phẳng (PRE-8).
+- **Còn lại:** 206 tin sẽ được cào dần qua các ca detail; tin đã hết hạn sẽ thành `CLOSED`. File batch vẫn nằm trên máy; bước Clean đã khử trùng (L-25).
 - **Kiểm chứng:** `tests/integration/test_ledger_sync.py::test_batch_missing_dry_run_lists_only_new_jobs`, `test_batch_missing_apply_registers_pending_without_hash`; `tests/integration/test_audit_raw_data.py::test_ledger_consistency`; `audit_raw_data.py --r2`: 0 mục mức cao.
+
+### L-23. Crawler để lại thư mục rỗng `data/<nguồn>/dt=*`
+
+- **Lỗi:** sau mỗi lần cào, `data/` có thêm thư mục `dt=YYYY-MM-DD` rỗng theo layout cũ, làm lệnh so máy với R2 và báo cáo audit đếm sai.
+- **Nguyên nhân:** `collection/common/json_writer.JsonWriter` tạo thư mục ngay khi khởi tạo, kể cả khi không có bản ghi nào được ghi; `close()` luôn gọi `flush()`.
+- **Cách xử lý:** chỉ tạo thư mục trong `flush()`; `close()` chỉ flush khi có bản ghi hoặc file đã tồn tại. Đã xóa các thư mục `dt=*` rỗng trên máy.
+- **Kiểm chứng:** `tests/unit/test_json_writer.py` (2 test: đóng khi không có bản ghi thì không tạo thư mục; có bản ghi thì ghi đúng file).
+
+### L-24. Code chết và kết nối R2 tự tạo ngoài `get_r2_client()` (SCRAPE-15, GEN-4, một phần GEN-3)
+
+- **Lỗi:** `docs/code_quality.md` báo các hàm chốt chặn ghi đè catalog của ITviec (`sync_mode`, `local_catalog_count`, `remote_catalog_count`, `can_upload_catalog` trong `collection/sources/itviec/parser.py`) không được gọi ở đâu; `scripts/upload_to_r2.py` vẫn ghi theo layout cũ `dt=*/batch_*.json`; `r2_raw_pipeline.py` và `monitoring/backend/app/core/r2_client.py` tự tạo `boto3.client`.
+- **Nguyên nhân:** chốt chặn ITviec viết xong nhưng chưa nối vào luồng đồng bộ; bảo vệ thực tế là `ledger_push_decision()` và luật gộp theo `updated_at` của ledger. Script upload cũ không được xóa khi đổi layout. Hai chỗ `boto3.client` có trước khi gom kết nối về `get_r2_client()` (cùng loại lỗi với L-01).
+- **Cách xử lý:** xóa các hàm chốt chặn ITviec, `scripts/upload_to_r2.py` và test của nó, `collection/common/ip_rotator.py`, `jsonl_writer.py`, cùng các hàm không ai gọi khác trong báo cáo. `get_r2_client()` nhận thêm `read_timeout`, `max_attempts`; `R2RawStore` và `CloudflareR2Client` gọi qua hàm này. Còn `setup_cloud_storage.py` tự tạo client vì phải thử khóa người dùng vừa nhập (ngoại lệ ghi trong `scripts/CLAUDE.md`).
+- **Còn lại:** các mục còn lại của báo cáo chất lượng code (GEN-3).
+- **Kiểm chứng:** `make test` xanh; `make quality` không còn báo các hàm trên.
+
+### L-25. File batch cũ trùng file từng tin khi làm phẳng (PRE-8)
+
+- **Lỗi:** `data/vietnamworks/raw/2026-10-16/raw_batch.json` (931 tin) và `data/vieclam24h/raw/2026-10-20/batch_001.json` (616 tin) gom nhiều tin trong một file; 1.341 tin trong đó đã có file riêng mới hơn, nên pipeline cũ đếm và xử lý trùng.
+- **Nguyên nhân:** layout cũ ghi theo lô; pipeline cũ đọc mọi file JSON mà không phân biệt file lô với file từng tin.
+- **Cách xử lý:** bước Clean mới (`preprocessing/clean/run.py`, đặc tả `docs/preprocessing/spec/P1_clean.md`) đọc riêng file lô (`preprocessing/common/raw_reader.read_raw`). Luật C2 bỏ tin trong file lô đã có file riêng; tin chỉ có trong file lô (206 tin VietnamWorks) được giữ đến khi cào lại có file riêng. Luật C1 giữ snapshot mới nhất của mỗi `job_id`.
+- **Kiểm chứng:** `tests/unit/test_clean_step.py::test_rules_c1_to_c7_and_conservation`; lần chạy 03/11/2026: C1 bỏ 1.987, C2 bỏ 1.341 (VietnamWorks 725, Vieclam24h 616), output 8.373 tin không trùng `job_id`.
 
 ## 3. Monitoring
 

@@ -1,0 +1,256 @@
+{
+  "step": "01_clean",
+  "source": "glints",
+  "mode": "applied",
+  "generated_at": "2026-11-03T11:07:04+00:00",
+  "code_version": "55d4867",
+  "input": {
+    "path": "data/glints/raw",
+    "rows": 331
+  },
+  "output": {
+    "path": "data/preprocessing/01_clean/glints.jsonl",
+    "rows": 315
+  },
+  "dropped": [
+    {
+      "rule": "C1",
+      "reason": "Giữ snapshot mới nhất của mỗi job_id",
+      "rows": 0
+    },
+    {
+      "rule": "C2",
+      "reason": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "rows": 0
+    },
+    {
+      "rule": "C3",
+      "reason": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "rows": 0
+    },
+    {
+      "rule": "C4c",
+      "reason": "Bỏ tin ngoài IT theo it_policy.json",
+      "rows": 12
+    },
+    {
+      "rule": "C5",
+      "reason": "Bỏ JD dưới 30 từ",
+      "rows": 0
+    },
+    {
+      "rule": "C6",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "rows": 2
+    },
+    {
+      "rule": "C7",
+      "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "rows": 2
+    }
+  ],
+  "rules": [
+    {
+      "id": "C1",
+      "name": "Giữ snapshot mới nhất của mỗi job_id",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C2",
+      "name": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C3",
+      "name": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C4a",
+      "name": "Phân loại IT (luật + JEV), chỉ gắn cờ",
+      "action": "flag",
+      "rows_affected": 87,
+      "examples": [
+        {
+          "job_id": "07ec34c7-ecce-40ee-8104-c3dc283a15d5",
+          "field": "job_title",
+          "before": "[BD651] Kỹ sư Cải tiến - Kỹ thuật/Cơ khí/Điện - KCN VSIP1",
+          "after": "non_it",
+          "url": "https://glints.com/vn/opportunities/jobs/bd651-ky-su-cai-tien-ky-thuat-co-khi-dien-kcn-vsip1/07ec34c7-ecce-40ee-8104-c3dc283a15d5"
+        },
+        {
+          "job_id": "1734a2ee-645b-4403-a5d0-5cf91d06b813",
+          "field": "job_title",
+          "before": "Trưởng phòng kế toán - Tiếng Anh hoặc Nhật - Đồng Nai",
+          "after": "non_it",
+          "url": "https://glints.com/vn/opportunities/jobs/truong-phong-ke-toan-tieng-anh-hoac-nhat-dong-nai/1734a2ee-645b-4403-a5d0-5cf91d06b813"
+        },
+        {
+          "job_id": "18104851-92f3-48ff-8022-56aede7f8cd3",
+          "field": "job_title",
+          "before": "[HCM541] Tổ trưởng Sản xuất - Tiếng Anh/Nhật - Linh Trung",
+          "after": "non_it",
+          "url": "https://glints.com/vn/opportunities/jobs/hcm541-to-truong-san-xuat-tieng-anh-nhat-linh-trung/18104851-92f3-48ff-8022-56aede7f8cd3"
+        }
+      ]
+    },
+    {
+      "id": "C4c",
+      "name": "Bỏ tin ngoài IT theo it_policy.json",
+      "action": "drop",
+      "rows_affected": 12,
+      "examples": [
+        {
+          "job_id": "07ec34c7-ecce-40ee-8104-c3dc283a15d5",
+          "field": "job_title",
+          "before": "[BD651] Kỹ sư Cải tiến - Kỹ thuật/Cơ khí/Điện - KCN VSIP1",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/bd651-ky-su-cai-tien-ky-thuat-co-khi-dien-kcn-vsip1/07ec34c7-ecce-40ee-8104-c3dc283a15d5"
+        },
+        {
+          "job_id": "1734a2ee-645b-4403-a5d0-5cf91d06b813",
+          "field": "job_title",
+          "before": "Trưởng phòng kế toán - Tiếng Anh hoặc Nhật - Đồng Nai",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/truong-phong-ke-toan-tieng-anh-hoac-nhat-dong-nai/1734a2ee-645b-4403-a5d0-5cf91d06b813"
+        },
+        {
+          "job_id": "18104851-92f3-48ff-8022-56aede7f8cd3",
+          "field": "job_title",
+          "before": "[HCM541] Tổ trưởng Sản xuất - Tiếng Anh/Nhật - Linh Trung",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/hcm541-to-truong-san-xuat-tieng-anh-nhat-linh-trung/18104851-92f3-48ff-8022-56aede7f8cd3"
+        }
+      ]
+    },
+    {
+      "id": "C5",
+      "name": "Bỏ JD dưới 30 từ",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C6",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "action": "drop",
+      "rows_affected": 2,
+      "examples": [
+        {
+          "job_id": "05decc01-d944-4958-8c7a-21697b2d32e8",
+          "field": "dedup_key",
+          "before": "kết nối nhân lực worklink|kỹ thuật viên it phần mềm - kcn long đức - đồng nai|ho_chi_minh|2026-W42",
+          "after": "giữ 83fe5651-5b24-4ee4-ba8e-52eef6615019",
+          "url": "https://glints.com/vn/opportunities/jobs/ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/05decc01-d944-4958-8c7a-21697b2d32e8"
+        },
+        {
+          "job_id": "160cfe51-8606-4eec-91e1-15a2cd5a1fc7",
+          "field": "dedup_key",
+          "before": "chuỗi bán lẻ mini min|tư vấn triển khai phần mềm b2b|ho_chi_minh|2026-W43",
+          "after": "giữ f8f06818-8693-4853-80d5-a6eb7ac201dc",
+          "url": "https://glints.com/vn/opportunities/jobs/tu-van-trien-khai-phan-mem-b2b/160cfe51-8606-4eec-91e1-15a2cd5a1fc7"
+        }
+      ]
+    },
+    {
+      "id": "C7",
+      "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "action": "drop",
+      "rows_affected": 2,
+      "examples": [
+        {
+          "job_id": "091b32f4-7c9f-4ae2-befa-e9f7880e07fa",
+          "field": "dedup_key",
+          "before": "kinh doanh f88|chuyên viên cao cấp rủi ro gian lận (fraud risk data analyst)|ho_chi_minh|2026-W43",
+          "after": "giữ jobsgo:29391080129",
+          "url": "https://glints.com/vn/opportunities/jobs/chuyen-vien-cao-cap-rui-ro-gian-lan-fraud-risk-data-analyst/091b32f4-7c9f-4ae2-befa-e9f7880e07fa"
+        },
+        {
+          "job_id": "ceba21b2-ef17-4ef0-ab1e-b5458aa1f1a6",
+          "field": "dedup_key",
+          "before": "kết nối nhân lực worklink|nhân viên it (helpdesk) - tiếng nhật n4 - quận 7, tp.hcm|ho_chi_minh|2026-W43",
+          "after": "giữ jobsgo:29405080078",
+          "url": "https://glints.com/vn/opportunities/jobs/nhan-vien-it-helpdesk-tieng-nhat-n4-quan-7-tp-hcm/ceba21b2-ef17-4ef0-ab1e-b5458aa1f1a6"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "job_title",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_name",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_location_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_posted_date",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_description_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_list",
+      "fill_pct_in": 88.5,
+      "fill_pct_out": 88.6
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "model": "typesafe/jev-1.13",
+    "calls": 0,
+    "cache_hits": 0,
+    "cost_usd": 0.0,
+    "errors": 0,
+    "reason": "không bật --use-api",
+    "max_cost_usd": 0.3
+  },
+  "extra": {
+    "it_status": {
+      "it": 244,
+      "can_kiem": 75,
+      "non_it": 12
+    },
+    "it_policy": {
+      "drop": [
+        "non_it"
+      ],
+      "approved_on": "2026-11-03",
+      "evidence": "C4b: Gán tay 42 tin, 12/12 non_it theo luật đúng 100%, 29 non_it (xây dựng, may mặc, sơn, cơ khí...)"
+    },
+    "review": {
+      "file": "data/preprocessing/review/it_glints.csv",
+      "rows": 42,
+      "labeled": 42,
+      "labeled_non_it": 29,
+      "rule_decided": 11,
+      "rule_correct": 11,
+      "status_non_it": 11,
+      "status_non_it_correct": 11,
+      "jev_labeled": 0,
+      "jev_correct": 0
+    }
+  }
+}

@@ -5,14 +5,11 @@ VN-IT-Job-Mining Central Observatory.
 """
 
 from datetime import datetime, timezone
-import json
 import logging
 import os
-from pathlib import Path
 from typing import Any, Dict, List
 from sqlalchemy import text
 
-from app.core.config import settings
 from app.services.airflow_service import airflow_service
 
 logger = logging.getLogger("alert_service")

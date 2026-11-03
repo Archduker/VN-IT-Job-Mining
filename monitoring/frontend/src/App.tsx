@@ -19,7 +19,7 @@ const TITLES: Record<string, [string, string?]> = {
   '/airflow': ['Airflow'],
   '/cloud': ['Cloudflare R2'],
   '/eda': ['EDA', 'Kiểm kê trường raw và phân phối từ dữ liệu staging'],
-  '/preprocessing': ['Pre-processing', 'Kết quả làm sạch theo nguồn, đọc từ health card của pipeline'],
+  '/preprocessing': ['Pre-processing', '5 bước Clean → Integration → Transformation → Normalization → Encoding, đọc báo cáo từng bước'],
   '/processing': ['Processing', 'Integration và khử trùng lặp liên nguồn'],
   '/master': ['Master Dashboard', 'Bộ golden sau khử trùng lặp'],
 }

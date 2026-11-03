@@ -8,7 +8,6 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -28,16 +27,14 @@ from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags
 from collection.common.url_ledger import (
     UrlLedger,
-    calculate_container_html_hash,
     calculate_json_canonical_hash,
     calculate_json_field_hashes,
     clean_canonical_url,
 )
 from collection.common.utils import (
+    collapse_whitespace,
     clean_text,
     detect_language,
-    parse_salary_detail,
-    strip_html_tags,
     text_to_clean_lines,
 )
 
@@ -61,11 +58,7 @@ class ViecLam24hAPIError(RuntimeError):
     """Lỗi xử lý dữ liệu hoặc DOM tại Vieclam24h."""
 
 
-def _clean_text(value: Any) -> str | None:
-    if value is None:
-        return None
-    text = re.sub(r"\s+", " ", str(value)).strip()
-    return text or None
+_clean_text = collapse_whitespace  # collection/common/utils.py
 
 
 def _format_timestamp(ts: Any) -> str:
@@ -887,7 +880,6 @@ class ViecLam24hCrawler(BaseCrawler):
 
                 # 2. Băm toàn vẹn Document JSON sau cào (Post-Crawl Canonical JSON Hashing)
                 canonical_hash = calculate_json_canonical_hash(raw_payload, exclude_keys=["raw_html"])
-                field_hashes = calculate_json_field_hashes(raw_payload)
 
                 # 3. Kiểm tra Repost
                 existing = self.ledger.find_by_content_hash(canonical_hash)

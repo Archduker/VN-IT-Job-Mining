@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Endpoints cho phân hệ Collection EDA (Giai đoạn 1: Khám Phá Dữ Liệu Thô)."""
 
-from typing import Any, Dict, List
+from typing import List
 from fastapi import APIRouter, HTTPException
 
 from app.core.config import settings

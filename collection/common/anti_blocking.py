@@ -10,7 +10,7 @@ Cung cấp:
 import logging
 import random
 import time
-from typing import Any, Optional
+from typing import Any
 
 log = logging.getLogger("collection.anti_blocking")
 

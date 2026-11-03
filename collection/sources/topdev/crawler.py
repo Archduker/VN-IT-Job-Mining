@@ -41,6 +41,7 @@ from collection.common.url_ledger import (
     generate_url_hash,
 )
 from collection.common.utils import (
+    collapse_whitespace,
     detect_language,
     parse_salary_detail,
     text_to_clean_lines,
@@ -213,11 +214,7 @@ def _cookie_header_from_environment(
     return cookie_header or None
 
 
-def _clean_text(value: Any) -> str | None:
-    if value is None:
-        return None
-    text = re.sub(r"\s+", " ", str(value)).strip()
-    return text or None
+_clean_text = collapse_whitespace  # collection/common/utils.py
 
 
 def _text_identity(value: str) -> str:
@@ -1746,7 +1743,6 @@ class TopDevCrawler(BaseCrawler):
                     envelope = self.parse_raw_envelope(detail_resp)
 
                 content_hash = envelope.metadata["content_hash"]
-                old_hash = item.get("content_hash")
                 old_version = item.get("latest_version") or 0
 
                 # Đối chiếu hash: Nếu nội dung không đổi và tin đã DONE thì giữ nguyên version

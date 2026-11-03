@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Endpoints cho phân hệ Crawling Observatory (Giai đoạn 1)."""
 
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Query
 from sse_starlette.sse import EventSourceResponse
 

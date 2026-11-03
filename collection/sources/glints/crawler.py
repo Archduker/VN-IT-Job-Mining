@@ -1188,28 +1188,6 @@ class GlintsCrawler(BaseCrawler):
         logging.info("[Glints] Pha 2 hoàn tất: %s", stats)
         return stats
 
-    def crawl_single_url(self, url: str) -> RawJobEnvelope | None:
-        """Thử nghiệm bóc tách trực tiếp 1 URL đơn lẻ (hỗ trợ kiểm thử live probe)."""
-        clean_url = clean_canonical_url(url)
-        job_id = clean_url.split("/")[-1]
-        html_content = ""
-        if self.use_playwright:
-            from playwright.sync_api import sync_playwright
-            with sync_playwright() as p:
-                browser, context = self._create_browser_context(p)
-                page = context.new_page()
-                page.goto(clean_url, wait_until="domcontentloaded", timeout=30000)
-                human_like_interaction(page, scroll_times=1)
-                html_content = page.content()
-                browser.close()
-        else:
-            resp = self.http_client.get(clean_url)
-            html_content = resp.text
-
-        if not html_content:
-            return None
-        return extract_raw_envelope_from_html(html_content, job_id=job_id, url=clean_url)
-
     def parse_raw_envelope(self, item: Dict[str, Any]) -> RawJobEnvelope:
         """Ánh xạ một item thô (từ HTML hoặc API) thành RawJobEnvelope chuẩn SD1."""
         html = item.get("html") or ""
@@ -1254,11 +1232,6 @@ class GlintsCrawler(BaseCrawler):
         fetched_count = 0
 
         while self.max_items is None or fetched_count < self.max_items:
-            remaining = (
-                PAGE_SIZE
-                if self.max_items is None
-                else max(1, min(PAGE_SIZE, self.max_items - fetched_count))
-            )
             payload = {
                 "operationName": "searchJobsV3",
                 "variables": {

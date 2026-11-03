@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Báo cáo theo nguồn cho trang Raw: 8 feature target, đơn biến, mẫu raw có chú thích."""
 
-from collections import Counter
 import json
 import logging
 import re

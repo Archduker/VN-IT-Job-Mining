@@ -9,7 +9,6 @@ Bao gồm:
 from __future__ import annotations
 
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any, Optional
@@ -23,7 +22,7 @@ from airflow.exceptions import AirflowSkipException
 from airflow.models import BaseOperator
 from airflow.utils.context import Context
 
-from collection.common.adaptive_router import AdaptiveWorkloadRouter, MAX_ITEMS_PER_BATCH
+from collection.common.adaptive_router import AdaptiveWorkloadRouter
 from collection.common.data_quality import DataQualityChecker
 from collection.common.r2_storage import upload_file_to_r2
 from collection.common.utils import (

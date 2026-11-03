@@ -7,6 +7,7 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 | Script | Việc |
 |---|---|
 | `audit_raw_data.py [--r2]` | Báo cáo chất lượng raw và ledger ra `reports/data_audit_<ngày>.md` (không đưa vào git). Đọc kỹ cột "Ledger chậm hơn raw", "DONE thiếu raw" (đã trừ repost), "Raw ngoài ledger" |
+| `report_data_issues.py` | Thống kê vấn đề dữ liệu raw sau làm phẳng (trùng lặp, độ phủ trường, lương, ngày…), ghi `docs/preprocessing/data_issues_2026-11-03.html`. `compute()` trả dict để Monitoring dùng lại |
 | `read_eda_diagnosis.py --source <nguồn>` | Đọc luật EDA từ notebook mà không mở notebook |
 | `view_urls.py [--r2] [--status]` | Xem ledger trên máy hoặc trên R2 |
 | `sync_cloud_lakehouse.py --status` | So máy với R2 |
@@ -20,6 +21,8 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 | Script | Việc |
 |---|---|
 | `reconcile_ledger_from_raw.py --apply` | Dựng lại ledger từ raw: tạo bản ghi thiếu, cập nhật bản ghi có raw mới hơn. Không hạ `CLOSED`, không xóa bản ghi; repost cũ có snapshot mới thì bỏ `repost_of_url_hash` |
+| `label_tool.py [--source] [--web] [--stats] [--auto-obvious] [--generate-policy]` | Tool gán nhãn tay cho review C4b (`data/preprocessing/review/it_<nguồn>.csv`), hỗ trợ TUI 1 phím bấm và Web UI nhanh |
+| `run_preprocessing.py --step <bước>\|all --source <nguồn>\|all [--dry-run] [--use-api]` | Pipeline pre-processing 5 bước mới (`docs/preprocessing/spec/`). Ghi `data/preprocessing/<bước>/`, `reports/preprocessing/<bước>/` (Monitoring đọc), mẫu gán nhãn `data/preprocessing/review/`. `--use-api` gọi JEV qua OpenRouter (tài khoản giới hạn 1 USD): luôn `--dry-run --use-api` trước để xem ước tính tiền. Hiện có bước `clean` |
 | `run_staging_integration_pipeline.py` | Chạy cả pipeline pre-processing, ghi `data/staging/`, `data/curated/`, `reports/<nguồn>/` (thuộc phần pre-processing, đang để sau) |
 | `create_golden_master_eda_notebook.py` | Sinh notebook EDA cho bộ golden |
 
@@ -42,13 +45,9 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 - `start_airflow.sh`, `airflow_ctl.sh`: bật scheduler, tức là cào thật. Xem `airflow/CLAUDE.md`.
 - `setup_airflow.sh`, `setup_airflow_connections.py`, `setup_ec2.sh`: cài đặt môi trường.
 
-## Đã cũ
-
-- `upload_to_r2.py` viết cho layout `dt=YYYY-MM-DD/batch_XXX.json` và thư mục `samples/`, đều đã bỏ. Không dùng cho dữ liệu mới; dùng `push_raw_to_r2.py`.
-
 ## Lưu ý khi viết script mới
 
-- Kết nối R2 qua `collection.common.r2_storage.get_r2_client()` và `resolve_r2_bucket()`. Không tự tạo `boto3.client` hay đọc biến môi trường riêng: ledger từng đọc khóa theo thứ tự khác với raw nên đẩy sai chỗ (`docs/issue_log.md` L-01).
+- Kết nối R2 qua `collection.common.r2_storage.get_r2_client()` và `resolve_r2_bucket()`. Không tự tạo `boto3.client` hay đọc biến môi trường riêng (ngoại lệ duy nhất: `setup_cloud_storage.py` thử khóa người dùng vừa nhập): ledger từng đọc khóa theo thứ tự khác với raw nên đẩy sai chỗ (`docs/issue_log.md` L-01).
 - Key R2 đi qua `canonicalize_lakehouse_key`.
 - Bước ghi thật đặt sau cờ `--apply` hoặc `--push`; mặc định là chạy thử.
 - Không in giá trị trong `.env`; muốn so hai khóa thì so hash.

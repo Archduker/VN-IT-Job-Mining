@@ -40,19 +40,13 @@ for p in (ROOT, ROOT / "scripts"):
 
 from collection.common.r2_storage import LAKEHOUSE_SOURCES  # noqa: E402
 from collection.common.url_ledger import UrlLedger, clean_canonical_url, generate_url_hash  # noqa: E402
+from collection.common.utils import parse_iso_utc  # noqa: E402
 
 LAG = timedelta(hours=1)
 SKIP_DIRS = {"_index", "_quality", "_listing"}
 
 
-def _parse_time(value: Any) -> Optional[datetime]:
-    if not value:
-        return None
-    try:
-        stamp = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
-    except ValueError:
-        return None
-    return stamp if stamp.tzinfo else stamp.replace(tzinfo=timezone.utc)
+_parse_time = parse_iso_utc  # collection/common/utils.py
 
 
 def latest_snapshots(raw_dir: Path) -> Dict[str, Dict[str, Any]]:

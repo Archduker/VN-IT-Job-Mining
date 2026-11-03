@@ -7,7 +7,6 @@ normalization. It uses the project's UrlLedger for lifecycle tracking and R2
 """
 from __future__ import annotations
 
-import base64
 import hashlib
 import json
 import logging
@@ -16,18 +15,15 @@ import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence
-from urllib.parse import urlparse
+from typing import Any, Dict, List, Optional, Sequence
 
 from bs4 import BeautifulSoup
 
 from collection.common.r2_storage import resolve_r2_endpoint
 from collection.common.url_ledger import (
     UrlLedger,
-    calculate_container_html_hash,
     clean_canonical_url,
     generate_url_hash,
-    is_due_for_recrawl,
 )
 
 logger = logging.getLogger(__name__)
@@ -153,25 +149,14 @@ class R2RawStore:
         else:
             self.secure = secure_env
 
-        region = "auto" if "r2.cloudflarestorage.com" in self.endpoint else "us-east-1"
-
         if client is None:
             if not self.endpoint:
                 raise ValueError(
                     "Chưa cấu hình Cloudflare R2 endpoint: đặt R2_ENDPOINT_URL hoặc R2_ACCOUNT_ID trong .env."
                 )
-            import boto3
-            from botocore.client import Config
-            self.client = boto3.client(
-                "s3",
-                endpoint_url=self.endpoint,
-                aws_access_key_id=self.access_key,
-                aws_secret_access_key=self.secret_key,
-                use_ssl=self.secure,
-                region_name=region,
-                config=Config(signature_version="s3v4", connect_timeout=5, read_timeout=30,
-                              retries={"max_attempts": 3, "mode": "standard"}),
-            )
+            from collection.common.r2_storage import get_r2_client
+
+            self.client = get_r2_client(self.endpoint, self.access_key, self.secret_key, read_timeout=30)
         else:
             self.client = client
         if ensure_bucket:
@@ -189,7 +174,7 @@ class R2RawStore:
         try:
             self.client.head_bucket(Bucket=self.bucket)
             return
-        except Exception as head_exc:
+        except Exception:
             # Bucket chưa có thì tạo; nếu head bị từ chối trên một số S3-compatible
             # deployments, thử create rồi xác minh lại trước khi báo lỗi.
             try:

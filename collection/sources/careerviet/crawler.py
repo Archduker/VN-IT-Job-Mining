@@ -34,16 +34,13 @@ from collection.common.http_client import DelayConfig, HttpClient
 from collection.common.schema import JobRecord
 from collection.common.url_ledger import (
     UrlLedger,
-    calculate_container_html_hash,
     calculate_json_canonical_hash,
     calculate_json_field_hashes,
-    diff_json_versions,
 )
 from collection.common.utils import (
     clean_text,
     detect_language,
     parse_salary_detail,
-    strip_html_tags,
     text_to_clean_lines,
     classify_job_tags,
 )
@@ -92,31 +89,6 @@ def _el_text(el) -> str:
     return _normalize_ws(el.get_text(" ", strip=True))
 
 
-def extract_job_posting_jsonld(soup: BeautifulSoup) -> Any | None:
-    """Bóc JSON-LD JobPosting nguyên bản. Không bao giờ raise; thiếu/hỏng -> None."""
-    try:
-        jp_script = soup.find("script", id="job-posting-schema")
-        if not jp_script:
-            for s in soup.find_all("script", type="application/ld+json"):
-                if s.string and '"JobPosting"' in s.string:
-                    jp_script = s
-                    break
-        if not jp_script or not jp_script.string:
-            return None
-
-        loaded = json.loads(jp_script.string.strip())
-        if isinstance(loaded, dict) and loaded.get("@type") == "JobPosting":
-            return loaded
-        if isinstance(loaded, list):
-            for el in loaded:
-                if isinstance(el, dict) and el.get("@type") == "JobPosting":
-                    return el
-            return loaded or None
-        return loaded
-    except Exception:
-        return None
-
-
 def _select_container(soup: BeautifulSoup, container_selector: str):
     """Chọn khối container băm hash, fallback body -> toàn bộ soup."""
     return soup.select_one(container_selector) or soup.body or soup
@@ -147,27 +119,6 @@ def _strip_volatile_labels(target) -> None:
             blk.decompose()
         except Exception:
             pass
-
-
-def container_text_for_hash(
-    html: str,
-    container_selector: str = CONTAINER_SELECTOR,
-    exclude_volatile_dates: bool = True,
-) -> str:
-    """Trả text mà calculate_container_html_hash sẽ băm sau khi làm sạch."""
-    if not html:
-        return ""
-    soup = BeautifulSoup(html, "html.parser")
-    target = _select_container(soup, container_selector)
-    _clean_container(target)
-    if exclude_volatile_dates:
-        _strip_volatile_labels(target)
-    return _normalize_ws(target.get_text(" ", strip=True))
-
-
-def hash_container_text(text: str) -> str:
-    """SHA-256 hex của chuỗi text đã làm sạch."""
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def build_raw_payload(html: str) -> dict[str, Any]:
@@ -433,11 +384,6 @@ class CareerVietCrawler(BaseCrawler):
         if any(ph in body_txt for ph in phrases):
             return True, "thieu .job-detail-page + text hien thi co tu khoa chan"
         return False, ""
-
-    @classmethod
-    def _looks_blocked(cls, html: str) -> bool:
-        """Tuong thich nguoc: tra ve bool theo _detect_block."""
-        return cls._detect_block(html)[0]
 
     def _dump_blocked_page(self, job_id: str, html: str, reason: str):
         """Luu trang nghi chan ra data/careerviet/_blocked/<job_id>.html (KHONG ghi de,

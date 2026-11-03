@@ -43,14 +43,21 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 - CareerViet nghỉ qua `HttpClient` (`DelayConfig` 2–5 giây), đúng chuẩn, nhưng `tests/contract/standards.check_random_pause` chỉ tìm lời gọi `polite_sleep` hoặc `uniform` nên sẽ báo nhầm.
 - Cần quyết: nâng lên chuẩn, hoặc ghi ngoại lệ có lý do cho nguồn gọi API. Làm cùng contract test của từng nguồn.
 
-**SCRAPE-15. Chốt chặn ghi đè catalog của ITviec chưa từng được gọi**
-
-- `sync_mode`, `local_catalog_count`, `remote_catalog_count`, `can_upload_catalog` trong `collection/sources/itviec/parser.py` không có chỗ nào gọi (`docs/code_quality.md`, bảng B1; `docs/issue_log.md` L-07).
-- Cần quyết: nối vào bước đồng bộ của ITviec, hoặc xóa vì cơ chế chung của ledger đã bảo vệ.
-
 **SCRAPE-14. Contract test cho 6 nguồn còn lại**
 
 - Đã có: TopDev, TopCV. Còn: VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints, JobsGO. Mỗi nguồn cần 3 mẫu thật trong `tests/fixtures/<nguồn>/` (xem `tests/CLAUDE.md`).
+
+**SCRAPE-15. TopDev cào cả tin ngoài IT**
+
+- `collection/sources/topdev/crawler.py:_fetch_listing` gửi `category_ids=1` (ghi chú "1 = IT"), nhưng API `/td/v2/jobs` bỏ qua tham số này: có hay không đều trả 14.572 tin, trang 1 giống 50/50 (đo 03/11/2026).
+- Ảnh hưởng: bước Clean (P1) xếp 1.123/2.782 tin TopDev là ngoài IT, 1.497 tin cần kiểm. Trong 30 tin cần kiểm đã gán nhãn có 29 tin ngoài IT. Pre-processing chỉ lọc được phần đã cào, mỗi lượt cào vẫn tốn request cho tin không dùng.
+- Cách xử lý: tìm tham số lọc ngành đúng của API (hoặc lọc theo danh mục trên trang), sửa Discovery, kèm contract test.
+
+**SCRAPE-16. 297 tin TopCV cào ngày 22–26/10 không có JD trong raw**
+
+- Raw của các tin này chỉ có tiêu đề, công ty, lương, địa điểm; không có trường mô tả hay yêu cầu nào (không phải lỗi làm phẳng: không có trường chữ nào dài hơn 300 ký tự). 244 tin là trang `/viec-lam/`, 53 tin là trang `/brand/`. Có cả tin IT thật (ví dụ "Embedded Systems Engineer").
+- Hiện tại: bước Clean bỏ các tin này theo luật C5 (JD dưới 30 từ).
+- Cách xử lý: tìm vì sao crawler TopCV không lấy được JD trong 22–26/10, rồi đưa các tin này về `PENDING` để cào lại (chạy thử, gửi số liệu, chờ đồng ý vì ghi lên R2). Bản cào mới sẽ tự thay bản cũ qua luật C1.
 
 ## 2. Trực quan hóa dữ liệu
 
@@ -104,11 +111,11 @@ Code sửa cho PRE-1 và PRE-2 đã viết xong và có test, đang cất trong 
 - Vị trí: `_flatten_topdev` trong `preprocessing/integration/json_flattener.py`
 - Ảnh hưởng: `raw_posted_date` chỉ đọc `recalled_at`, `created_at` (luôn rỗng). Raw có `published.date`, `date_posted` và `job_posting_jsonld.experienceRequirements` nhưng không được dùng. Trang Raw đã đọc các trường này.
 
-**PRE-8. File batch cũ trùng với file từng tin**
+**PRE-9. Chạy JEV cho bước Clean**
 
-- Vị trí: `data/vieclam24h/raw/2026-10-20/batch_001.json` (616 tin, đều đã có file riêng), `data/vietnamworks/raw/2026-10-16/raw_batch.json` (931 tin, 725 đã có file riêng).
-- Cách xử lý: khử trùng theo `job_id` khi làm phẳng, ưu tiên file từng tin.
-- `raw_batch.json` của VietnamWorks (9 MB) chỉ có trên máy. Đã quyết 03/11/2026: **không đẩy lên R2**, vì 725/931 tin (78%) đã có bản đầy đủ hơn trên R2 (hash khác chỉ vì crawler mới bóc thêm 9 trường). 206 tin còn lại đã được đăng ký `PENDING` trên R2 để cào lại (`docs/issue_log.md` L-21). Vẫn còn: khử trùng file batch khi làm phẳng.
+- Bước Clean (P1) đã chạy thật bằng luật từ khóa, chưa có JEV vì `.env` chưa có `OPENROUTER_API_KEY`.
+- Ảnh hưởng: 4.300 tin ở nhóm "cần kiểm" (`can_kiem`) đi tiếp sang các bước sau, gồm 1.497 tin TopDev mà phần lớn là ngoài IT (SCRAPE-15).
+- Cách xử lý: thêm khóa, chạy `python scripts/run_preprocessing.py --step clean --source all --dry-run --use-api` để xem ước tính (lần đo 03/11: 10.964 lần gọi, khoảng 0,18 USD; tài khoản giới hạn 1 USD), rồi chạy lại không có `--dry-run`. Sau đó gán nhãn mẫu mới (file review chưa có nhãn sẽ được chọn lại theo kết quả JEV) và xem lại `it_policy.json`.
 
 ## 4. Chung
 
@@ -116,6 +123,4 @@ Code sửa cho PRE-1 và PRE-2 đã viết xong và có test, đang cất trong 
 
 **GEN-2. `README.md` và `TASKS.md` lệch code.** Chi tiết ở mục "Known mismatches" trong `CLAUDE.md`.
 
-**GEN-3. Dọn code theo `docs/code_quality.md`.** Báo cáo (`make quality`) liệt kê import thừa, hàm không ai gọi, module không ai import, hàm trùng logic và trùng tên. Người dùng duyệt từng mục (xóa, gộp hay giữ) rồi mới sửa. Báo cáo không bắt được chỗ tự tạo `boto3.client(...)` ngoài `r2_storage.get_r2_client()`: còn ở `r2_raw_pipeline.py`, `monitoring/backend/app/core/r2_client.py`, `setup_cloud_storage.py`, `upload_to_r2.py` (đúng loại lỗi của L-01).
-
-**GEN-4. `scripts/upload_to_r2.py` viết cho layout cũ** (`dt=YYYY-MM-DD/batch_XXX.json`, `samples/`). Cần xóa hoặc viết lại; tạm thời dùng `push_raw_to_r2.py`.
+**GEN-3. Dọn code theo `docs/code_quality.md`.** Báo cáo (`make quality`) liệt kê import thừa, hàm không ai gọi, module không ai import, hàm trùng logic và trùng tên. Người dùng duyệt từng mục (xóa, gộp hay giữ) rồi mới sửa. Báo cáo không bắt được chỗ tự tạo `boto3.client(...)`; các chỗ đó đã chuyển qua `get_r2_client()` (`docs/issue_log.md` L-24).

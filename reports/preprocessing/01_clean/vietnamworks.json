@@ -1,0 +1,300 @@
+{
+  "step": "01_clean",
+  "source": "vietnamworks",
+  "mode": "applied",
+  "generated_at": "2026-11-03T11:07:02+00:00",
+  "code_version": "55d4867",
+  "input": {
+    "path": "data/vietnamworks/raw",
+    "rows": 2878
+  },
+  "output": {
+    "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
+    "rows": 1249
+  },
+  "dropped": [
+    {
+      "rule": "C1",
+      "reason": "Giữ snapshot mới nhất của mỗi job_id",
+      "rows": 728
+    },
+    {
+      "rule": "C2",
+      "reason": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "rows": 725
+    },
+    {
+      "rule": "C3",
+      "reason": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "rows": 0
+    },
+    {
+      "rule": "C4c",
+      "reason": "Bỏ tin ngoài IT theo it_policy.json",
+      "rows": 169
+    },
+    {
+      "rule": "C5",
+      "reason": "Bỏ JD dưới 30 từ",
+      "rows": 1
+    },
+    {
+      "rule": "C6",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "rows": 6
+    },
+    {
+      "rule": "C7",
+      "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "rows": 0
+    }
+  ],
+  "rules": [
+    {
+      "id": "C1",
+      "name": "Giữ snapshot mới nhất của mỗi job_id",
+      "action": "drop",
+      "rows_affected": 728,
+      "examples": [
+        {
+          "job_id": "2025655",
+          "field": "snapshot_file",
+          "before": "2026-10-20/2025655_v1.json",
+          "after": "2026-11-01/2025655_v2.json",
+          "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
+        },
+        {
+          "job_id": "2096443",
+          "field": "snapshot_file",
+          "before": "2026-10-20/2096443_v1.json",
+          "after": "2026-11-01/2096443_v2.json",
+          "url": "https://www.vietnamworks.com/product-development-2096443-jv"
+        },
+        {
+          "job_id": "2096574",
+          "field": "snapshot_file",
+          "before": "2026-10-20/2096574_v1.json",
+          "after": "2026-11-01/2096574_v2.json",
+          "url": "https://www.vietnamworks.com/it-governance-officer-2096574-jv"
+        }
+      ]
+    },
+    {
+      "id": "C2",
+      "name": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "action": "drop",
+      "rows_affected": 725,
+      "examples": [
+        {
+          "job_id": "2025655",
+          "field": "snapshot_file",
+          "before": "2026-10-16/raw_batch.json",
+          "after": "đã có file riêng",
+          "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
+        },
+        {
+          "job_id": "2085748",
+          "field": "snapshot_file",
+          "before": "2026-10-16/raw_batch.json",
+          "after": "đã có file riêng",
+          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
+        },
+        {
+          "job_id": "2092686",
+          "field": "snapshot_file",
+          "before": "2026-10-16/raw_batch.json",
+          "after": "đã có file riêng",
+          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+        }
+      ]
+    },
+    {
+      "id": "C3",
+      "name": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C4a",
+      "name": "Phân loại IT (luật + JEV), chỉ gắn cờ",
+      "action": "flag",
+      "rows_affected": 739,
+      "examples": [
+        {
+          "job_id": "1811606",
+          "field": "job_title",
+          "before": "Sales Engineer",
+          "after": "non_it",
+          "url": "https://www.vietnamworks.com/sales-engineer-1790752331072092706-1811606-jv"
+        },
+        {
+          "job_id": "2071836",
+          "field": "job_title",
+          "before": "Kỹ Sư Thiết Kế Cơ Khí Tự Động Hóa (Automation Mechanical Design Engineer) - Thu Nhập Upto 30 Triệu/tháng",
+          "after": "non_it",
+          "url": "https://www.vietnamworks.com/ky-su-thiet-ke-co-khi-tu-djong-hoa-automation-mechanical-design-engineer-thu-nhap-upto-30-trieuthang-2071836-jv"
+        },
+        {
+          "job_id": "2091560",
+          "field": "job_title",
+          "before": "Senior Global Sales (Up to $3,500++)",
+          "after": "non_it",
+          "url": "https://www.vietnamworks.com/senior-global-sales-up-to-dollar3500-2091560-jv"
+        }
+      ]
+    },
+    {
+      "id": "C4c",
+      "name": "Bỏ tin ngoài IT theo it_policy.json",
+      "action": "drop",
+      "rows_affected": 169,
+      "examples": [
+        {
+          "job_id": "1811606",
+          "field": "job_title",
+          "before": "Sales Engineer",
+          "after": null,
+          "url": "https://www.vietnamworks.com/sales-engineer-1790752331072092706-1811606-jv"
+        },
+        {
+          "job_id": "2071836",
+          "field": "job_title",
+          "before": "Kỹ Sư Thiết Kế Cơ Khí Tự Động Hóa (Automation Mechanical Design Engineer) - Thu Nhập Upto 30 Triệu/tháng",
+          "after": null,
+          "url": "https://www.vietnamworks.com/ky-su-thiet-ke-co-khi-tu-djong-hoa-automation-mechanical-design-engineer-thu-nhap-upto-30-trieuthang-2071836-jv"
+        },
+        {
+          "job_id": "2091560",
+          "field": "job_title",
+          "before": "Senior Global Sales (Up to $3,500++)",
+          "after": null,
+          "url": "https://www.vietnamworks.com/senior-global-sales-up-to-dollar3500-2091560-jv"
+        }
+      ]
+    },
+    {
+      "id": "C5",
+      "name": "Bỏ JD dưới 30 từ",
+      "action": "drop",
+      "rows_affected": 1,
+      "examples": [
+        {
+          "job_id": "2120938",
+          "field": "raw_description_text",
+          "before": "Develop and maintain automated vision inspection systems",
+          "after": null,
+          "url": "https://www.vietnamworks.com/automated-optical-inspection-engineer-aoi-vision-1792385078942905098-2120938-jv"
+        }
+      ]
+    },
+    {
+      "id": "C6",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "action": "drop",
+      "rows_affected": 6,
+      "examples": [
+        {
+          "job_id": "2109884",
+          "field": "dedup_key",
+          "before": "ngân hàng tmcp quân đội mbbank|chuyên viên cao cấp công nghệ mô hình - senior machine learning engineer - khối dữ liệu (2026td456629)|ha_noi|2026-W39",
+          "after": "giữ 2110215",
+          "url": "https://www.vietnamworks.com/chuyen-vien-cao-cap-cong-nghe-mo-hinh-senior-machine-learning-engineer-khoi-du-lieu-2026td456629-1790045648171714627-2109884-jv"
+        },
+        {
+          "job_id": "2114675",
+          "field": "dedup_key",
+          "before": "michael page|application engineer - hanoi|ha_noi|2026-W40",
+          "after": "giữ 2114683",
+          "url": "https://www.vietnamworks.com/application-engineer-hanoi-1-2114675-jv"
+        },
+        {
+          "job_id": "2116513",
+          "field": "dedup_key",
+          "before": "navigos search|network security engineer|ha_noi|2026-W41",
+          "after": "giữ 2116512",
+          "url": "https://www.vietnamworks.com/network-security-engineer-15-2116513-jv"
+        }
+      ]
+    },
+    {
+      "id": "C7",
+      "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    }
+  ],
+  "fields": [
+    {
+      "field": "job_title",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_name",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_location_text",
+      "fill_pct_in": 74.0,
+      "fill_pct_out": 75.3
+    },
+    {
+      "field": "raw_posted_date",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_description_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_list",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "model": "typesafe/jev-1.13",
+    "calls": 0,
+    "cache_hits": 0,
+    "cost_usd": 0.0,
+    "errors": 0,
+    "reason": "không bật --use-api",
+    "max_cost_usd": 0.3
+  },
+  "extra": {
+    "it_status": {
+      "non_it": 169,
+      "can_kiem": 570,
+      "it": 686
+    },
+    "it_policy": {
+      "drop": [
+        "non_it"
+      ],
+      "approved_on": "2026-11-03",
+      "evidence": "C4b: Gán tay 80 tin, 48/50 non_it theo luật đúng (96.0%), 72 non_it (kế toán, HR, cơ khí...)"
+    },
+    "review": {
+      "file": "data/preprocessing/review/it_vietnamworks.csv",
+      "rows": 80,
+      "labeled": 80,
+      "labeled_non_it": 72,
+      "rule_decided": 48,
+      "rule_correct": 47,
+      "status_non_it": 48,
+      "status_non_it_correct": 47,
+      "jev_labeled": 0,
+      "jev_correct": 0
+    }
+  }
+}

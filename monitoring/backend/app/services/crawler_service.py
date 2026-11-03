@@ -5,8 +5,6 @@ import asyncio
 from datetime import datetime, time, timedelta, timezone
 import logging
 import os
-from pathlib import Path
-import subprocess
 import sys
 from typing import Any, AsyncGenerator, Dict, Optional
 

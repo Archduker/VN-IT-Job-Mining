@@ -107,7 +107,7 @@ def main():
         ledger.reload()
         summary = ledger.get_queue_summary()
         pending = summary.get("pending", 0)
-        done = summary.get("done", 0)
+        summary.get("done", 0)
 
         # 1. Kiểm tra điều kiện hoàn tất 100%
         if pending == 0:

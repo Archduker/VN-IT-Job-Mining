@@ -12,9 +12,7 @@ Nguyên tắc (Mục 7A + skill crawling-architect/job-crawler-analyzer):
 
 from __future__ import annotations
 
-import hashlib
 import json
-import os
 import re
 import unicodedata
 from datetime import datetime, timezone
@@ -24,7 +22,6 @@ from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 
 from collection.common.url_ledger import (
-    calculate_container_html_hash,
     calculate_json_canonical_hash,
     calculate_json_field_hashes,
 )
@@ -70,49 +67,6 @@ def filter_job_urls(urls: List[str]) -> "tuple[List[str], List[str]]":
     for u in urls:
         (jobs if is_job_url(u) else non).append(u)
     return jobs, non
-
-
-def sync_mode() -> bool:
-    """Chế độ sync R2 cho ITViec. Set env ITVIEC_SYNC=0 khi chạy SIMULATION/ledger tạm
-    để KHÔNG bao giờ đụng R2 thật (bảo vệ ledger production)."""
-    return os.getenv("ITVIEC_SYNC", "1") != "0"
-
-
-def local_catalog_count(ledger) -> int:
-    """Số bản ghi trong catalog LOCAL (đọc từ đĩa)."""
-    try:
-        return len(json.load(open(ledger.catalog_file, encoding="utf-8")))
-    except Exception:
-        return 0
-
-
-def remote_catalog_count(ledger) -> Optional[int]:
-    """Số bản ghi catalog ITViec trên R2; None nếu chưa đọc được.
-
-    Trước 02/11/2026 hàm này kết nối localhost:9000 bằng khóa minioadmin nên luôn trả None, và
-    can_upload_catalog(None) luôn cho ghi: chốt chặn catalog nhỏ đè catalog lớn chưa từng hoạt động.
-    """
-    try:
-        from collection.common.r2_storage import get_r2_client, resolve_r2_bucket
-
-        obj = get_r2_client().get_object(Bucket=resolve_r2_bucket(), Key=f"url_ledger/{ledger.source}/catalog_master.json")
-        rec = json.loads(obj["Body"].read())
-        return len(rec) if isinstance(rec, dict) else None
-    except Exception:
-        return None
-
-
-def can_upload_catalog(local_count: int, remote_count: Optional[int]) -> bool:
-    """Cho ghi catalog local lên R2 khi: local>0 VÀ (chưa có remote HOẶC local>=remote).
-
-    Chặn catalog nhỏ/rỗng ghi đè catalog lớn hơn (đảm bảo #2/#3). Khi local<remote thường là
-    ledger tạm/ít bản ghi -> không upload.
-    """
-    if local_count <= 0:
-        return False
-    if remote_count is None:
-        return True
-    return local_count >= remote_count
 
 
 def parse_listing(html: str) -> List[Dict[str, Any]]:
@@ -483,29 +437,6 @@ def build_canonical_jsonld(jsonld: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     if not isinstance(jsonld, dict):
         return {}
     return {k: jsonld[k] for k in C.HASH_JSONLD_FIELDS if k in jsonld}
-
-
-def compute_content_hash(
-    html: str,
-    jsonld: Optional[Dict[str, Any]],
-    container_selector: Optional[str] = None,
-) -> str:
-    """content_hash LAI (Phương án A, đã duyệt):
-
-        SHA256( clean_text(container)  +  canonical_jsonld )
-
-    - clean_text(container): SHA-256 của text khối JD (script/style đã gỡ) -> không đổi
-      khi chỉ layout/nav/footer/tracking đổi.
-    - canonical_jsonld: SHA-256 của JSON-LD subset (baseSalary/skills/...) -> đổi khi
-      nhà tuyển dụng sửa lương/kỹ năng/mô tả (dù nằm trong <script> bị text-hash bỏ qua).
-    """
-    container = container_selector or C.JD_HASH_CONTAINER
-    text_part = calculate_container_html_hash(html, container_selector=container)
-    canon = json.dumps(
-        build_canonical_jsonld(jsonld), sort_keys=True, ensure_ascii=False, separators=(",", ":")
-    )
-    jsonld_part = hashlib.sha256(canon.encode("utf-8")).hexdigest()
-    return hashlib.sha256((text_part + jsonld_part).encode("utf-8")).hexdigest()
 
 
 def parse_sitemap(xml_text: str) -> List[str]:

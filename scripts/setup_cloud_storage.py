@@ -9,7 +9,6 @@ Hỗ trợ:
 """
 
 import argparse
-import json
 import os
 import sys
 from pathlib import Path
@@ -17,7 +16,7 @@ from pathlib import Path
 try:
     import boto3
     from botocore.client import Config
-    from dotenv import load_dotenv
+    from dotenv import load_dotenv  # noqa: F401 (chỉ kiểm tra đã cài)
 except ImportError:
     print("[LỖI] Thiếu thư viện phụ thuộc. Vui lòng chạy: pip install boto3 python-dotenv")
     sys.exit(1)

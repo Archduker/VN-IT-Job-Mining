@@ -496,3 +496,86 @@ export interface EdaCompare {
   unavailable_reason: string | null
   sources: EdaCompareRow[]
 }
+
+// ---- Pre-processing theo bước (reports/preprocessing/<bước>/<nguồn>.json, schema P0 mục 4)
+export interface StepExample {
+  job_id: string
+  field: string
+  before: unknown
+  after: unknown
+  url?: string | null
+}
+
+export interface StepRule {
+  id: string
+  name: string
+  action: 'drop' | 'flag' | 'modify'
+  rows_affected: number
+  examples: StepExample[]
+  by_source?: Record<string, number>
+}
+
+export interface StepApiUsage {
+  used?: boolean
+  model?: string
+  calls?: number
+  cache_hits?: number
+  cost_usd?: number
+  would_call?: number
+  estimated_cost_usd?: number
+  reason?: string | null
+}
+
+export interface ItReview {
+  file: string
+  rows: number
+  labeled: number
+  labeled_non_it: number
+  rule_decided: number
+  rule_correct: number
+  status_non_it: number
+  status_non_it_correct: number
+  jev_labeled: number
+  jev_correct: number
+}
+
+export interface StepReportData {
+  step: string
+  source: string
+  mode: 'dry_run' | 'applied'
+  generated_at: string
+  code_version: string
+  input: { path: string | null; rows: number }
+  output: { path: string | null; rows: number }
+  dropped: { rule: string; reason: string; rows: number }[]
+  rules: StepRule[]
+  fields: { field: string; fill_pct_in?: number; fill_pct_out?: number }[]
+  checks: { rows_conserved: boolean | null; notes: string[] }
+  api: StepApiUsage
+  extra: {
+    it_status?: Record<string, number> | Record<string, Record<string, number>>
+    it_policy?: string | Record<string, unknown>
+    review?: ItReview | Record<string, ItReview>  // nguồn: một mục; _all: theo nguồn
+    sources?: Record<string, { input: number; output: number }>
+  }
+}
+
+export interface StepSummary {
+  step: string
+  name: string
+  available: boolean
+  command?: string
+  mode?: 'dry_run' | 'applied'
+  generated_at?: string
+  input_rows?: number
+  output_rows?: number
+  stale?: boolean
+}
+
+export interface StepResponse {
+  step: string
+  source?: string
+  available: boolean
+  command?: string
+  report?: StepReportData
+}

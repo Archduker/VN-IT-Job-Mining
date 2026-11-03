@@ -25,11 +25,10 @@ import os
 import random
 import re
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
 # Đảm bảo import được các module của dự án
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
@@ -536,7 +535,6 @@ class JobsGoCrawler(BaseCrawler):
                             raise RuntimeError("Không thể điều hướng tới URL sau 2 lần thử")
 
                         # Chờ Cloudflare Turnstile giải quyết và h1 render
-                        loaded = False
                         for _ in range(25):
                             try:
                                 title = await page.evaluate("document.title")
@@ -547,7 +545,6 @@ class JobsGoCrawler(BaseCrawler):
                                         'document.querySelector("h1.job-title, h1, .job-detail") ? document.querySelector("h1.job-title, h1, .job-detail").innerText : ""'
                                     )
                                     if h1:
-                                        loaded = True
                                         break
                             except ValueError:
                                 raise

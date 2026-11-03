@@ -73,7 +73,7 @@ class JsonWriter:
 
         base_dir = Path(output_dir or "data")
         partition_dir = base_dir / self.source / f"dt={self.run_date.isoformat()}"
-        partition_dir.mkdir(parents=True, exist_ok=True)
+        # Chỉ tạo thư mục khi thật sự ghi (flush): BaseCrawler tạo writer ở mọi lần chạy, kể cả crawler 2 pha
 
         filename = filename_override or f"batch_{self.batch_seq:03d}.json"
         self.file_path = partition_dir / filename
@@ -139,6 +139,7 @@ class JsonWriter:
     def flush(self) -> None:
         """Atomic write: Ghi toàn bộ mảng self.records ra file tạm .tmp rồi rename sang file_path."""
         tmp_path = self.file_path.with_name(f"{self.file_path.name}.tmp")
+        self.file_path.parent.mkdir(parents=True, exist_ok=True)
         try:
             with open(tmp_path, "w", encoding="utf-8") as f:
                 json.dump(self.records, f, indent=self.indent, ensure_ascii=False)
@@ -158,7 +159,8 @@ class JsonWriter:
     def close(self) -> None:
         """Đóng writer và flush dữ liệu xuống đĩa."""
         if not self._closed:
-            self.flush()
+            if self.records or self.file_path.exists():
+                self.flush()
             self._closed = True
             logger.info(
                 "[%s] Đã đóng JSON writer %s: %d bản ghi (%d bytes)",

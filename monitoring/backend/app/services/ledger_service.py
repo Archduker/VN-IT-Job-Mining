@@ -4,9 +4,8 @@
 from collections import Counter
 import json
 import logging
-import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from app.core.config import settings
 from app.core.data_paths import find_catalog_file
