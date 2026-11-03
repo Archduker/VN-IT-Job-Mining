@@ -84,21 +84,24 @@
   },
   {
    "key": "bac_ninh",
-   "name": "Bắc Ninh",
+   "name": "TP. Bắc Ninh",
    "old": [
     "Bắc Giang",
     "Bắc Ninh"
    ],
-   "aliases": []
+   "aliases": [
+    "Bắc Ninh"
+   ]
   },
   {
    "key": "quang_ninh",
-   "name": "Quảng Ninh",
+   "name": "TP. Quảng Ninh",
    "old": [
     "Quảng Ninh"
    ],
    "aliases": [
-    "Hạ Long"
+    "Hạ Long",
+    "Quảng Ninh"
    ]
   },
   {
@@ -259,13 +262,14 @@
   },
   {
    "key": "dong_nai",
-   "name": "Đồng Nai",
+   "name": "TP. Đồng Nai",
    "old": [
     "Bình Phước",
     "Đồng Nai"
    ],
    "aliases": [
-    "Biên Hòa"
+    "Biên Hòa",
+    "Đồng Nai"
    ]
   },
   {

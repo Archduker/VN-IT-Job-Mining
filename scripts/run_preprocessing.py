@@ -21,19 +21,26 @@ if str(ROOT) not in sys.path:
 
 from preprocessing.common import SOURCES, STEPS  # noqa: E402
 
-MODULES = {"01_clean": "preprocessing.clean.run"}  # các bước sau thêm khi làm P2–P5
+MODULES = {
+    "01_clean": "preprocessing.clean.run",
+    "02_integration": "preprocessing.integration.run",
+    "03_transformation": "preprocessing.transformation.run",
+    "04_normalization": "preprocessing.normalization.run",
+    "05_encoding": "preprocessing.encoding.run",
+}
 
 
 def main(argv=None) -> int:
-    names = {s[3:]: s for s in STEPS}
+    step_map = {s[3:]: s for s in STEPS}
+    step_map.update({s: s for s in STEPS})
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--step", required=True, choices=[*names, "all"])
+    parser.add_argument("--step", required=True, choices=[*step_map.keys(), "all"])
     parser.add_argument("--source", default="all", choices=[*SOURCES, "all"])
     parser.add_argument("--dry-run", action="store_true", help="chỉ đọc và ghi báo cáo, không ghi dữ liệu")
     parser.add_argument("--use-api", action="store_true", help="cho phép gọi JEV/LLM (có cache)")
     args = parser.parse_args(argv)
 
-    steps = list(STEPS) if args.step == "all" else [names[args.step]]
+    steps = list(STEPS) if args.step == "all" else [step_map[args.step]]
     sources = list(SOURCES) if args.source == "all" else [args.source]
     for step in steps:  # đúng thứ tự, không đảo
         if step not in MODULES:

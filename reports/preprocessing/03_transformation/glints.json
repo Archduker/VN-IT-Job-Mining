@@ -1,0 +1,278 @@
+{
+  "step": "03_transformation",
+  "source": "glints",
+  "mode": "applied",
+  "generated_at": "2026-11-03T16:08:03+00:00",
+  "code_version": "0b54ff4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 315
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 315
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 668,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 200,
+      "examples": [
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "salary_min_max",
+          "before": "₫8.500.000-9.000.000/Tháng",
+          "after": "8500000.0 - 9000000.0 VND (header)",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
+          "field": "salary_min_max",
+          "before": "₫20.000.000-40.000.000/Tháng",
+          "after": "20000000.0 - 40000000.0 VND (header)",
+          "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
+        },
+        {
+          "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
+          "field": "salary_min_max",
+          "before": "₫8.000.000-11.000.000/Tháng",
+          "after": "8000000.0 - 11000000.0 VND (header)",
+          "url": "https://glints.com/vn/opportunities/jobs/hcm925-ky-thuat-vien-khuon-kcx-tan-thuan-khong-kinh-nghiem/0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 315,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 234,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "exp_min_max",
+          "before": "1 - 3 năm kinh nghiệm",
+          "after": "1.0 - 3.0 years",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "02ab4af2-fa4b-4b73-9795-c9047f9b9dbc",
+          "field": "exp_min_max",
+          "before": "3 - 5 năm kinh nghiệm",
+          "after": "3.0 - 5.0 years",
+          "url": "https://glints.com/vn/opportunities/jobs/developer/02ab4af2-fa4b-4b73-9795-c9047f9b9dbc"
+        },
+        {
+          "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
+          "field": "exp_min_max",
+          "before": "1 - 3 năm kinh nghiệm",
+          "after": "1.0 - 3.0 years",
+          "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 6,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 315,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch JD tiếng Anh sang tiếng Việt",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6c",
+      "name": "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 315,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "['AWS', 'Azure']",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "skills_clean",
+          "before": "['React.js' 'jQuery' 'Laravel' 'MongoDB' 'PostgreSQL' 'C++' 'MySQL'\n 'Node.js' 'Microsoft SQL Server' 'JavaScript']",
+          "after": "['C#', 'Java', 'Machine Learning', 'Python', 'SQL']",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "skills_clean",
+          "before": "['Artificial Intelligence' 'Process Improvement'\n 'Research and Development (R&D)']",
+          "after": "['Machine Learning', 'Artificial Intelligence', 'Process Improvement', 'Research and Development (R&D)']",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 315,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "locations",
+          "before": "Quận Một",
+          "after": "{'dia_chi_cu_the': 'Tầng 17, tòa nhà Saigon Trade Centre, 37 Tôn Đức Thắng, Bến Nghé', 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Địa chỉ trụ sở: Tầng 17, tòa nhà Saigon Trade Centre, 37 Tôn Đức Thắng, Bến Nghé, Quận 1, TP HCM\\nĐịa chỉ các cửa hàng:\\nhttps://www.skechersvn.vn/pages/store-locator'}",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "locations",
+          "before": "Long Thành",
+          "after": "{'dia_chi_cu_the': 'Tầng 2 tòa nhà MeKong Tower, số 235-241 Cộng Hòa', 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Tầng 2 tòa nhà MeKong Tower, số 235-241 Cộng Hòa, Phường 13, Quận Tân Bình, Tp Hồ Chí Minh'}",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "locations",
+          "before": "Quận Thủ Đức",
+          "after": "{'dia_chi_cu_the': 'Tòa Nhà HQ, Số 201 Trần Não', 'phuong_xa': 'Phường An Khánh', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Tòa Nhà HQ, Số 201 Trần Não, Phường An Khánh, TP. Thủ Đức'}",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 62.9,
+      "fill_pct_out": 62.9
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 63.2,
+      "fill_pct_out": 63.2
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 97.8,
+      "fill_pct_out": 97.8
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 74.3,
+      "fill_pct_out": 74.3
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 74.3,
+      "fill_pct_out": 74.3
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 97.5,
+      "fill_pct_out": 97.5
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 94.0,
+      "fill_pct_out": 94.0
+    },
+    {
+      "field": "description_vi",
+      "fill_pct_in": 65.4,
+      "fill_pct_out": 65.4
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 199,
+      "title": 1,
+      "jd": 6,
+      "none": 109
+    },
+    "salary_under_1m_count": 6,
+    "salary_from_x_count": 0,
+    "language_distribution": {
+      "vi": 206,
+      "en": 109
+    },
+    "experience_parsed_rate": 74.3
+  }
+}

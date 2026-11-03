@@ -28,7 +28,7 @@ DATA_DIR = REPO_ROOT / "data"
 OUT_DIR = DATA_DIR / "preprocessing" / STEP
 REVIEW_DIR = DATA_DIR / "preprocessing" / "review"
 POLICY_PATH = REPO_ROOT / "preprocessing" / "clean" / "it_policy.json"
-JEV_BUDGET_USD = 0.30  # trần cho cả lượt chạy; tài khoản OpenRouter giới hạn 1 USD
+JEV_BUDGET_USD = 0.30  # trần cho cả lượt chạy; sổ chung của OpenCode chặn ở 0,95 USD
 MIN_JD_WORDS = 30  # chính sách 1.B cũ (transformation/text_metrics.filter_valid_clean_records)
 TEST_ID = re.compile(r"^job-[a-z]+-\d+$")
 REVIEW_NON_IT, REVIEW_CAN_KIEM, REVIEW_SEED = 50, 30, 42
@@ -168,14 +168,17 @@ def clean_source(source: str, jev: JevClient, policy: Dict[str, Any], report: St
     fill_in = _fill(items)
 
     # C4a: phân loại IT ở mọi nguồn, không bỏ
+    def jev_state(f):
+        return {"title": f.get("job_title"), "skills": (f.get("skills_list") or [])[:15],
+                "jd": str(f.get("raw_description_text") or "")[:500]}
+
+    q = (IT_QUESTION["name"], IT_QUESTION["instructions"], IT_QUESTION["true_desc"], IT_QUESTION["false_desc"])
+    jev.prefetch(*q, [jev_state(it["flat"]) for it in items])
     status = Counter()
     for it in items:
         f = it["flat"]
         rule = classify(f.get("job_title"), f.get("skills_list"))
-        prob = jev.noul(IT_QUESTION["name"], IT_QUESTION["instructions"], IT_QUESTION["true_desc"],
-                        IT_QUESTION["false_desc"],
-                        {"title": f.get("job_title"), "skills": (f.get("skills_list") or [])[:15],
-                         "jd": str(f.get("raw_description_text") or "")[:500]})
+        prob = jev.noul(*q, jev_state(f))
         st = combine(rule, prob)
         status[st] += 1
         it["env"]["metadata"]["clean"] = {"snapshot_file": it["rel"], "it_rule": rule, "it_prob": prob,

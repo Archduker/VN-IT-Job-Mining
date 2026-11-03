@@ -150,7 +150,7 @@ class FakeSession:
 
 
 def test_jev_cache_and_budget(tmp_path, monkeypatch):
-    monkeypatch.setenv("OPENROUTER_API_KEY", "test")
+    monkeypatch.setenv("OPENCODE_API_KEY", "test")
     session = FakeSession()
     jev = JevClient(True, dry_run=False, cache=ApiCache("jev", root=tmp_path), session=session)
     args = ("is_it_job", "q", "t", "f", {"title": "Dev"})

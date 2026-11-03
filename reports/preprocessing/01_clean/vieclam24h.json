@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-03T11:07:03+00:00",
-  "code_version": "55d4867",
+  "generated_at": "2026-11-03T14:51:54+00:00",
+  "code_version": "0b54ff4",
   "input": {
     "path": "data/vieclam24h/raw",
     "rows": 1276
   },
   "output": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
-    "rows": 467
+    "rows": 468
   },
   "dropped": [
     {
@@ -46,7 +46,7 @@
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 6
+      "rows": 5
     }
   ],
   "rules": [
@@ -177,7 +177,7 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 6,
+      "rows_affected": 5,
       "examples": [
         {
           "job_id": "200947711",
@@ -240,13 +240,15 @@
     "notes": []
   },
   "api": {
-    "used": false,
-    "model": "typesafe/jev-1.13",
+    "used": true,
+    "model": "jev-1.13-free",
     "calls": 0,
     "cache_hits": 0,
     "cost_usd": 0.0,
-    "errors": 0,
-    "reason": "không bật --use-api",
+    "total_spent_usd": 0.0,
+    "global_cap_usd": 0.95,
+    "errors": 12,
+    "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
     "max_cost_usd": 0.3
   },
   "extra": {

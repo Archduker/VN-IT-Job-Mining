@@ -108,6 +108,16 @@ def merge_reports(step: str, reports: List[StepReport], dry_run: bool) -> StepRe
         reason = next((d["reason"] for r in reports for d in r.data["dropped"] if d["rule"] == rule["id"]), None)
         total.rule(rule["id"], rule["name"], rule["action"], rule["rows_affected"], rule["examples"], reason)
         total.data["rules"][-1]["by_source"] = rule["by_source"]
+    weights = {r.data["source"]: r.data["output"]["rows"] for r in reports}
+    n = sum(weights.values())
+    fields: Dict[str, Dict[str, float]] = {}
+    for r in reports:  # độ phủ của bảng gộp = trung bình theo số dòng của từng nguồn
+        for f in r.data.get("fields") or []:
+            agg = fields.setdefault(f["field"], {"field": f["field"], "fill_pct_in": 0.0, "fill_pct_out": 0.0})
+            for k in ("fill_pct_in", "fill_pct_out"):
+                agg[k] += (f.get(k) or 0) * weights[r.data["source"]] / n if n else 0
+    total.data["fields"] = [{**f, "fill_pct_in": round(f["fill_pct_in"], 1), "fill_pct_out": round(f["fill_pct_out"], 1)}
+                            for f in fields.values()]
     total.data["extra"]["sources"] = {r.data["source"]: {"input": r.data["input"]["rows"],
                                                          "output": r.data["output"]["rows"]} for r in reports}
     return total

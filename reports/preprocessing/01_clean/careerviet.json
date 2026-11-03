@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-03T11:07:03+00:00",
-  "code_version": "55d4867",
+  "generated_at": "2026-11-03T14:51:52+00:00",
+  "code_version": "0b54ff4",
   "input": {
     "path": "data/careerviet/raw",
     "rows": 660
   },
   "output": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
-    "rows": 593
+    "rows": 592
   },
   "dropped": [
     {
@@ -46,7 +46,7 @@
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 4
+      "rows": 5
     }
   ],
   "rules": [
@@ -97,7 +97,7 @@
       "id": "C4a",
       "name": "Phân loại IT (luật + JEV), chỉ gắn cờ",
       "action": "flag",
-      "rows_affected": 243,
+      "rows_affected": 246,
       "examples": [
         {
           "job_id": "35C81C24",
@@ -191,7 +191,7 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 4,
+      "rows_affected": 5,
       "examples": [
         {
           "job_id": "35C8995E",
@@ -245,8 +245,8 @@
     },
     {
       "field": "skills_list",
-      "fill_pct_in": 79.1,
-      "fill_pct_out": 78.8
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
     }
   ],
   "checks": {
@@ -254,19 +254,21 @@
     "notes": []
   },
   "api": {
-    "used": false,
-    "model": "typesafe/jev-1.13",
+    "used": true,
+    "model": "jev-1.13-free",
     "calls": 0,
     "cache_hits": 0,
     "cost_usd": 0.0,
-    "errors": 0,
-    "reason": "không bật --use-api",
+    "total_spent_usd": 0.0,
+    "global_cap_usd": 0.95,
+    "errors": 12,
+    "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
     "max_cost_usd": 0.3
   },
   "extra": {
     "it_status": {
-      "it": 399,
-      "can_kiem": 202,
+      "it": 396,
+      "can_kiem": 205,
       "non_it": 41
     },
     "it_policy": {

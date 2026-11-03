@@ -33,8 +33,10 @@ def _table() -> Tuple[Dict[str, Dict[str, Any]], List[Tuple[re.Pattern, str]], r
         for n in {p["name"], *p["old"], *p["aliases"]}:
             names.append((fold(re.sub(r"^TP\.\s*", "", n)), p["key"]))
     names.sort(key=lambda x: -len(x[0]))  # tên dài trước: "ba ria vung tau" trước "vung tau"
-    # "Nguyễn Huệ" là tên đường ở TP.HCM, không phải TP. Huế
-    patterns = [(re.compile(("(?<!nguyen )" if n == "hue" else "") + rf"\b{re.escape(n)}\b"), k) for n, k in names if n]
+    # Tên đường trùng tên tỉnh: "Nguyễn Huệ" (TP.HCM) không phải Huế, "Điện Biên Phủ" không phải tỉnh Điện Biên
+    pre = {"hue": "(?<!nguyen )"}
+    post = {"dien bien": "(?! phu)"}
+    patterns = [(re.compile(pre.get(n, "") + rf"\b{re.escape(n)}\b" + post.get(n, "")), k) for n, k in names if n]
     remote = re.compile(r"\b(" + "|".join(re.escape(fold(x)) for x in doc["remote"]) + r")\b")
     foreign = re.compile(r"\b(" + "|".join(re.escape(fold(x)) for x in doc["foreign"]) + r")\b")
     return by_key, patterns, remote, foreign

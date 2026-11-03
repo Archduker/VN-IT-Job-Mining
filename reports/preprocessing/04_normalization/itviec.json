@@ -1,0 +1,256 @@
+{
+  "step": "04_normalization",
+  "source": "itviec",
+  "mode": "applied",
+  "generated_at": "2026-11-03T16:08:17+00:00",
+  "code_version": "0b54ff4",
+  "input": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 905
+  },
+  "output": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 905
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "N1",
+      "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
+      "action": "modify",
+      "rows_affected": 187,
+      "examples": [
+        {
+          "job_id": "ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
+          "field": "tinh_chinh",
+          "before": "Tầng 21, Tòa nhà Riverfront Financial Centre, Số 3A – 3B Đường Tôn Đức Thắng, Phường Sài Gòn, TP Hồ Chí Minh",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://itviec.com/viec-lam-it/ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829"
+        },
+        {
+          "job_id": "business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345",
+          "field": "tinh_chinh",
+          "before": "Quận 7",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+        },
+        {
+          "job_id": "fintech-frontend-dev-javascript-react-new-wealth-2706",
+          "field": "tinh_chinh",
+          "before": "Quận Phú Nhuận",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://itviec.com/viec-lam-it/fintech-frontend-dev-javascript-react-new-wealth-2706"
+        }
+      ]
+    },
+    {
+      "id": "N2",
+      "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
+      "action": "modify",
+      "rows_affected": 471,
+      "examples": [
+        {
+          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Trưởng nhóm/Quản lý (title)",
+          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
+        },
+        {
+          "job_id": "business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Thực tập (title)",
+          "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+        },
+        {
+          "job_id": "hcm-urgent-middle-senior-data-scientist-mti-technology-2354",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Senior (title)",
+          "url": "https://itviec.com/viec-lam-it/hcm-urgent-middle-senior-data-scientist-mti-technology-2354"
+        }
+      ]
+    },
+    {
+      "id": "N3",
+      "name": "Phân loại 12 nhóm nghề IT",
+      "action": "modify",
+      "rows_affected": 877,
+      "examples": [
+        {
+          "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
+          "field": "job_family",
+          "before": "AI Engineer (Remote)",
+          "after": "Data/AI (title)",
+          "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
+        },
+        {
+          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
+          "field": "job_family",
+          "before": "AI Operations Manager (from 5yoe, Excellent English)",
+          "after": "DevOps/Cloud (skills)",
+          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
+        },
+        {
+          "job_id": "business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345",
+          "field": "job_family",
+          "before": "Business Analyst Intern (Company Secretariat)",
+          "after": "Phân tích nghiệp vụ (BA) (title)",
+          "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+        }
+      ]
+    },
+    {
+      "id": "N4",
+      "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
+      "action": "modify",
+      "rows_affected": 905,
+      "examples": []
+    },
+    {
+      "id": "N5",
+      "name": "Chuẩn hóa tên công ty",
+      "action": "modify",
+      "rows_affected": 905,
+      "examples": []
+    },
+    {
+      "id": "N2b",
+      "name": "JEV không đồng ý nhãn cấp bậc/nhóm nghề: gắn cờ cần kiểm",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "N6a",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "N6",
+      "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
+      "action": "modify",
+      "rows_affected": 95,
+      "examples": []
+    },
+    {
+      "id": "N7",
+      "name": "Biến đổi log1p cho mức lương",
+      "action": "modify",
+      "rows_affected": 231,
+      "examples": []
+    }
+  ],
+  "fields": [
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "tinh_chinh",
+      "fill_pct_in": 20.3,
+      "fill_pct_out": 20.3
+    },
+    {
+      "field": "seniority",
+      "fill_pct_in": 52.0,
+      "fill_pct_out": 52.0
+    },
+    {
+      "field": "seniority_source",
+      "fill_pct_in": 52.0,
+      "fill_pct_out": 52.0
+    },
+    {
+      "field": "job_family",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_family_source",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_std",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_norm",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "salary_min_vnd_capped",
+      "fill_pct_in": 24.2,
+      "fill_pct_out": 24.2
+    },
+    {
+      "field": "salary_max_vnd_capped",
+      "fill_pct_in": 25.5,
+      "fill_pct_out": 25.5
+    },
+    {
+      "field": "log_salary_min",
+      "fill_pct_in": 24.2,
+      "fill_pct_out": 24.2
+    },
+    {
+      "field": "log_salary_max",
+      "fill_pct_in": 25.5,
+      "fill_pct_out": 25.5
+    },
+    {
+      "field": "is_outlier_salary",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "model": "jev-1.13-free",
+    "calls": 0,
+    "cache_hits": 0,
+    "cost_usd": 0.0,
+    "total_spent_usd": 0.0,
+    "global_cap_usd": 0.95,
+    "errors": 0,
+    "reason": "không bật --use-api",
+    "max_cost_usd": 0.3
+  },
+  "extra": {
+    "seniority_distribution": {
+      "Senior": 252,
+      "Trưởng nhóm/Quản lý": 122,
+      "Thực tập": 46,
+      "Middle": 26,
+      "Junior": 16,
+      "Mới tốt nghiệp": 9
+    },
+    "job_family_distribution": {
+      "Backend": 200,
+      "DevOps/Cloud": 177,
+      "Data/AI": 112,
+      "Kiểm thử (QA/QC)": 96,
+      "Quản lý sản phẩm/dự án": 66,
+      "Fullstack": 59,
+      "Phân tích nghiệp vụ (BA)": 53,
+      "Bảo mật": 44,
+      "Mobile": 34,
+      "Khác": 28,
+      "Frontend": 17,
+      "Hệ thống/Mạng": 15,
+      "Thiết kế UI/UX": 4
+    },
+    "salary_outliers": 95
+  }
+}

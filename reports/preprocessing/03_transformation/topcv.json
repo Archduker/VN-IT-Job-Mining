@@ -1,0 +1,278 @@
+{
+  "step": "03_transformation",
+  "source": "topcv",
+  "mode": "applied",
+  "generated_at": "2026-11-03T16:07:24+00:00",
+  "code_version": "0b54ff4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 1984
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 1984
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 2935,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 1193,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "salary_min_max",
+          "before": "8 - 20 triệu",
+          "after": "8000000.0 - 20000000.0 VND (header)",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2305925",
+          "field": "salary_min_max",
+          "before": "30 - 40 triệu",
+          "after": "30000000.0 - 40000000.0 VND (header)",
+          "url": "https://www.topcv.vn/viec-lam/truong-nhom-phan-tich-nghiep-vu-business-analyst-leader-senior-business-analyst-tai-ha-noi-luong-tu-30-40-trieu/2305925.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "salary_min_max",
+          "before": "15 - 30 triệu",
+          "after": "15000000.0 - 30000000.0 VND (header)",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 1975,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 1975,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "exp_min_max",
+          "before": "Dưới 1 năm",
+          "after": "0.0 - 1.0 years",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2192436",
+          "field": "exp_min_max",
+          "before": "Dưới 1 năm",
+          "after": "0.0 - 1.0 years",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-ky-thuat-chi-nam-thu-nhap-hap-dan-6-thang-kinh-nghiem-ha-noi-dong-da/2192436.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "exp_min_max",
+          "before": "2 năm",
+          "after": "2.0 - 2.0 years",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 1975,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 1984,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch JD tiếng Anh sang tiếng Việt",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6c",
+      "name": "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 1977,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "skills_clean",
+          "before": "['Manual Tester' 'IT - Phần cứng và máy tính' 'IT - Phần mềm' 'Tài chính'\n 'Kỹ Năng Phân Tích Yêu Cầu' 'Kỹ Năng Viết Test Case']",
+          "after": "['SQL', 'Manual Tester', 'Tài chính']",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2192436",
+          "field": "skills_clean",
+          "before": "['IT Helpdesk/IT support' 'IT - Phần cứng và máy tính' 'Nhanh nhẹn'\n 'Cẩn thận' 'Học hỏi' 'Chịu Áp Lực' 'Am hiểu phần cứng máy chủ'\n 'Khả năng lắp đặt máy chủ' 'Xử lý các lỗi cơ bản về phần cứng máy chủ']",
+          "after": "['IT Helpdesk/IT support', 'Nhanh nhẹn', 'Cẩn thận', 'Học hỏi', 'Chịu Áp Lực']",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-ky-thuat-chi-nam-thu-nhap-hap-dan-6-thang-kinh-nghiem-ha-noi-dong-da/2192436.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "skills_clean",
+          "before": "['Product Owner/Product Manager' 'IT - Phần mềm' 'Game' 'Figma'\n 'Design System' 'Prototype' 'user flow' 'wireframe' 'UI/UX design'\n 'Analysis' 'Component' 'user-centric thinking' 'Variant' 'Handoff']",
+          "after": "['Kotlin', 'Swift', 'Product Owner/Product Manager', 'Game', 'Figma']",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 1984,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': 'Phường Phương Liệt', 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Hà Nội: 315 Trường Chinh, Phường Phương Liệt (Phường Phương Liệt thuộc quận Thanh Xuân cũ)'}",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2192436",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': 'Phường Đống Đa', 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Hà Nội: Tầng 1,2,3 Tòa nhà PmaxLand, số 32/133 Thái Hà, Phường Đống Đa (Phường Đống Đa thuộc quận Đống Đa cũ)'}",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-ky-thuat-chi-nam-thu-nhap-hap-dan-6-thang-kinh-nghiem-ha-noi-dong-da/2192436.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "locations",
+          "before": "Hồ Chí Minh",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': 'Phường Tân Bình', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Hồ Chí Minh: 62/6-8-10 Trương Công Định, Phường Tân Bình (Phường Tân Bình thuộc quận Tân Bình cũ)'}",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 51.9,
+      "fill_pct_out": 51.9
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 58.3,
+      "fill_pct_out": 58.3
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 99.5,
+      "fill_pct_out": 99.5
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 99.5,
+      "fill_pct_out": 99.5
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 96.1,
+      "fill_pct_out": 96.1
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 99.5,
+      "fill_pct_out": 99.5
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 94.7,
+      "fill_pct_out": 94.7
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 97.2,
+      "fill_pct_out": 97.2
+    },
+    {
+      "field": "description_vi",
+      "fill_pct_in": 95.5,
+      "fill_pct_out": 95.5
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 1188,
+      "title": 9,
+      "jd": 0,
+      "none": 787
+    },
+    "salary_under_1m_count": 2,
+    "salary_from_x_count": 36,
+    "language_distribution": {
+      "vi": 1894,
+      "en": 90
+    },
+    "experience_parsed_rate": 99.5
+  }
+}

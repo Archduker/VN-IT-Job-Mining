@@ -1,0 +1,278 @@
+{
+  "step": "03_transformation",
+  "source": "vietnamworks",
+  "mode": "applied",
+  "generated_at": "2026-11-03T16:07:43+00:00",
+  "code_version": "0b54ff4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 1249
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 1249
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 1775,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 346,
+      "examples": [
+        {
+          "job_id": "2093759",
+          "field": "salary_min_max",
+          "before": "40000000 - 50000000 VND",
+          "after": "40000000.0 - 50000000.0 VND (header)",
+          "url": "https://www.vietnamworks.com/giam-doc-phat-trien-noi-dung-hoc-lieu-so-2093759-jv"
+        },
+        {
+          "job_id": "2094563",
+          "field": "salary_min_max",
+          "before": "350 - 500 USD",
+          "after": "8890000.0 - 12700000.0 VND (header)",
+          "url": "https://www.vietnamworks.com/nhan-vien-mua-hang-quoc-te-di-lam-ngay-2094563-jv"
+        },
+        {
+          "job_id": "2094849",
+          "field": "salary_min_max",
+          "before": "1000 - 2000 USD",
+          "after": "25400000.0 - 50800000.0 VND (header)",
+          "url": "https://www.vietnamworks.com/sap-fico-functional-consultant--2094849-jv"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 1249,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 1026,
+      "examples": [
+        {
+          "job_id": "2025655",
+          "field": "exp_min_max",
+          "before": "1 năm",
+          "after": "1.0 - 1.0 years",
+          "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
+        },
+        {
+          "job_id": "2085748",
+          "field": "exp_min_max",
+          "before": "5 năm",
+          "after": "5.0 - 5.0 years",
+          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
+        },
+        {
+          "job_id": "2092686",
+          "field": "exp_min_max",
+          "before": "3 năm",
+          "after": "3.0 - 3.0 years",
+          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 1241,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 17,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 1249,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch JD tiếng Anh sang tiếng Việt",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6c",
+      "name": "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 1249,
+      "examples": [
+        {
+          "job_id": "2025655",
+          "field": "skills_clean",
+          "before": "['Quản Trị Rủi Ro Thông Tin' 'ISO Standards' 'ISO 27001' 'ITSM'\n 'Tổng Hợp Thông Tin']",
+          "after": "['ISO Standards', 'ISO 27001', 'ITSM', 'Tổng Hợp Thông Tin']",
+          "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
+        },
+        {
+          "job_id": "2085748",
+          "field": "skills_clean",
+          "before": "['Artificial Intelligence' 'Security Analysis' 'AWS' 'Azure'\n 'Security Audit']",
+          "after": "['Artificial Intelligence', 'Security Analysis', 'AWS', 'Azure', 'Security Audit']",
+          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
+        },
+        {
+          "job_id": "2092686",
+          "field": "skills_clean",
+          "before": "['Application Development' 'Programning Languages' 'Kỹ Thuật Viên Bảo Trì'\n 'Technical' 'Kỹ sư bảo trì']",
+          "after": "['Application Development', 'Programning Languages', 'Technical', 'Kỹ sư bảo trì']",
+          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 1249,
+      "examples": [
+        {
+          "job_id": "2025655",
+          "field": "locations",
+          "before": "Tòa nhà Phương Nam, 219 Quốc lộ 13, Phường 26, Quận Bình Thạnh",
+          "after": "{'dia_chi_cu_the': 'Tòa nhà Phương Nam, 219 Quốc lộ 13', 'phuong_xa': None, 'tinh_thanh': None, 'raw': 'Tòa nhà Phương Nam, 219 Quốc lộ 13, Phường 26, Quận Bình Thạnh'}",
+          "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
+        },
+        {
+          "job_id": "2085748",
+          "field": "locations",
+          "before": "Ho Chi Minh",
+          "after": "{'dia_chi_cu_the': 'F-Town 3, Lô E3 Võ Chí Công, Khu CNC', 'phuong_xa': 'Phường Tăng Nhơn Phú', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'F-Town 3, Lô E3 Võ Chí Công, Khu CNC, Phường Tăng Nhơn Phú, Thành phố Hồ Chí Minh, Việt Nam'}",
+          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
+        },
+        {
+          "job_id": "2092686",
+          "field": "locations",
+          "before": "Phu Yen",
+          "after": "{'dia_chi_cu_the': 'Khu Công Nghiệp An Phú', 'phuong_xa': None, 'tinh_thanh': 'Đắk Lắk', 'raw': 'Khu Công Nghiệp An Phú, Phú Yên'}",
+          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 22.7,
+      "fill_pct_out": 22.7
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 26.2,
+      "fill_pct_out": 26.2
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 82.1,
+      "fill_pct_out": 82.1
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 82.1,
+      "fill_pct_out": 82.1
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 99.4,
+      "fill_pct_out": 99.4
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 91.1,
+      "fill_pct_out": 91.1
+    },
+    {
+      "field": "description_vi",
+      "fill_pct_in": 51.6,
+      "fill_pct_out": 51.6
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 359,
+      "title": 2,
+      "jd": 2,
+      "none": 886
+    },
+    "salary_under_1m_count": 5,
+    "salary_from_x_count": 0,
+    "language_distribution": {
+      "vi": 644,
+      "en": 605
+    },
+    "experience_parsed_rate": 82.1
+  }
+}

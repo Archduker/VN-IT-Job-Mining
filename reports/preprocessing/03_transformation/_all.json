@@ -1,0 +1,431 @@
+{
+  "step": "03_transformation",
+  "source": "_all",
+  "mode": "applied",
+  "generated_at": "2026-11-03T16:08:10+00:00",
+  "code_version": "0b54ff4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 8344
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 8344
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 24791,
+      "examples": [],
+      "by_source": {
+        "topcv": 2935,
+        "topdev": 13234,
+        "vietnamworks": 1775,
+        "careerviet": 1741,
+        "vieclam24h": 494,
+        "itviec": 2960,
+        "glints": 668,
+        "jobsgo": 984
+      }
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 3917,
+      "examples": [
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "salary_min_max",
+          "before": "₫8.500.000-9.000.000/Tháng",
+          "after": "8500000.0 - 9000000.0 VND (header)",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
+          "field": "salary_min_max",
+          "before": "₫20.000.000-40.000.000/Tháng",
+          "after": "20000000.0 - 40000000.0 VND (header)",
+          "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
+        },
+        {
+          "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
+          "field": "salary_min_max",
+          "before": "₫8.000.000-11.000.000/Tháng",
+          "after": "8000000.0 - 11000000.0 VND (header)",
+          "url": "https://glints.com/vn/opportunities/jobs/hcm925-ky-thuat-vien-khuon-kcx-tan-thuan-khong-kinh-nghiem/0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd"
+        }
+      ],
+      "by_source": {
+        "topcv": 1193,
+        "topdev": 529,
+        "vietnamworks": 346,
+        "careerviet": 190,
+        "vieclam24h": 441,
+        "itviec": 232,
+        "glints": 200,
+        "jobsgo": 786
+      }
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 7193,
+      "examples": [],
+      "by_source": {
+        "topcv": 1975,
+        "topdev": 541,
+        "vietnamworks": 1249,
+        "careerviet": 578,
+        "vieclam24h": 468,
+        "itviec": 874,
+        "glints": 315,
+        "jobsgo": 1193
+      }
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 6618,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "exp_min_max",
+          "before": "1 - 3 năm kinh nghiệm",
+          "after": "1.0 - 3.0 years",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "02ab4af2-fa4b-4b73-9795-c9047f9b9dbc",
+          "field": "exp_min_max",
+          "before": "3 - 5 năm kinh nghiệm",
+          "after": "3.0 - 5.0 years",
+          "url": "https://glints.com/vn/opportunities/jobs/developer/02ab4af2-fa4b-4b73-9795-c9047f9b9dbc"
+        },
+        {
+          "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
+          "field": "exp_min_max",
+          "before": "1 - 3 năm kinh nghiệm",
+          "after": "1.0 - 3.0 years",
+          "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
+        }
+      ],
+      "by_source": {
+        "topcv": 1975,
+        "topdev": 413,
+        "vietnamworks": 1026,
+        "careerviet": 522,
+        "vieclam24h": 468,
+        "itviec": 787,
+        "glints": 234,
+        "jobsgo": 1193
+      }
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 4354,
+      "examples": [],
+      "by_source": {
+        "topcv": 1975,
+        "topdev": 0,
+        "vietnamworks": 1241,
+        "careerviet": 0,
+        "vieclam24h": 468,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 670
+      }
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 33,
+      "examples": [],
+      "by_source": {
+        "topcv": 2,
+        "topdev": 2,
+        "vietnamworks": 17,
+        "careerviet": 2,
+        "vieclam24h": 2,
+        "itviec": 1,
+        "glints": 6,
+        "jobsgo": 1
+      }
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 8344,
+      "examples": [],
+      "by_source": {
+        "topcv": 1984,
+        "topdev": 1635,
+        "vietnamworks": 1249,
+        "careerviet": 592,
+        "vieclam24h": 468,
+        "itviec": 905,
+        "glints": 315,
+        "jobsgo": 1196
+      }
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch JD tiếng Anh sang tiếng Việt",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": [],
+      "by_source": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    },
+    {
+      "id": "T6c",
+      "name": "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": [],
+      "by_source": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 8174,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "['AWS', 'Azure']",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "skills_clean",
+          "before": "['React.js' 'jQuery' 'Laravel' 'MongoDB' 'PostgreSQL' 'C++' 'MySQL'\n 'Node.js' 'Microsoft SQL Server' 'JavaScript']",
+          "after": "['C#', 'Java', 'Machine Learning', 'Python', 'SQL']",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "skills_clean",
+          "before": "['Artificial Intelligence' 'Process Improvement'\n 'Research and Development (R&D)']",
+          "after": "['Machine Learning', 'Artificial Intelligence', 'Process Improvement', 'Research and Development (R&D)']",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        }
+      ],
+      "by_source": {
+        "topcv": 1977,
+        "topdev": 1487,
+        "vietnamworks": 1249,
+        "careerviet": 591,
+        "vieclam24h": 467,
+        "itviec": 905,
+        "glints": 315,
+        "jobsgo": 1183
+      }
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 8344,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "locations",
+          "before": "Quận Một",
+          "after": "{'dia_chi_cu_the': 'Tầng 17, tòa nhà Saigon Trade Centre, 37 Tôn Đức Thắng, Bến Nghé', 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Địa chỉ trụ sở: Tầng 17, tòa nhà Saigon Trade Centre, 37 Tôn Đức Thắng, Bến Nghé, Quận 1, TP HCM\\nĐịa chỉ các cửa hàng:\\nhttps://www.skechersvn.vn/pages/store-locator'}",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "locations",
+          "before": "Long Thành",
+          "after": "{'dia_chi_cu_the': 'Tầng 2 tòa nhà MeKong Tower, số 235-241 Cộng Hòa', 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Tầng 2 tòa nhà MeKong Tower, số 235-241 Cộng Hòa, Phường 13, Quận Tân Bình, Tp Hồ Chí Minh'}",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "locations",
+          "before": "Quận Thủ Đức",
+          "after": "{'dia_chi_cu_the': 'Tòa Nhà HQ, Số 201 Trần Não', 'phuong_xa': 'Phường An Khánh', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Tòa Nhà HQ, Số 201 Trần Não, Phường An Khánh, TP. Thủ Đức'}",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        }
+      ],
+      "by_source": {
+        "topcv": 1984,
+        "topdev": 1635,
+        "vietnamworks": 1249,
+        "careerviet": 592,
+        "vieclam24h": 468,
+        "itviec": 905,
+        "glints": 315,
+        "jobsgo": 1196
+      }
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 42.5,
+      "fill_pct_out": 42.5
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 45.2,
+      "fill_pct_out": 45.2
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 62.5,
+      "fill_pct_out": 62.5
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 79.6,
+      "fill_pct_out": 79.6
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 79.3,
+      "fill_pct_out": 79.3
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 73.5,
+      "fill_pct_out": 73.5
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 52.2,
+      "fill_pct_out": 52.2
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 75.2,
+      "fill_pct_out": 75.2
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 94.0,
+      "fill_pct_out": 94.0
+    },
+    {
+      "field": "description_vi",
+      "fill_pct_in": 78.6,
+      "fill_pct_out": 78.6
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"
+  },
+  "extra": {
+    "sources": {
+      "topcv": {
+        "input": 1984,
+        "output": 1984
+      },
+      "topdev": {
+        "input": 1635,
+        "output": 1635
+      },
+      "vietnamworks": {
+        "input": 1249,
+        "output": 1249
+      },
+      "careerviet": {
+        "input": 592,
+        "output": 592
+      },
+      "vieclam24h": {
+        "input": 468,
+        "output": 468
+      },
+      "itviec": {
+        "input": 905,
+        "output": 905
+      },
+      "glints": {
+        "input": 315,
+        "output": 315
+      },
+      "jobsgo": {
+        "input": 1196,
+        "output": 1196
+      }
+    },
+    "translate_review": {
+      "status": "chưa ghi file: chưa có đủ bản dịch thật",
+      "sampled": 30,
+      "api": {
+        "gemini-3.8-flash": {
+          "used": false,
+          "model": "gemini-3.8-flash",
+          "calls": 0,
+          "cache_hits": 0,
+          "cost_usd": 0.0,
+          "total_spent_usd": 0.0,
+          "global_cap_usd": 9.0,
+          "errors": 0,
+          "reason": "không bật --use-api",
+          "max_budget_usd": 0.05
+        }
+      }
+    },
+    "language_distribution": {
+      "vi": 6561,
+      "en": 1783
+    }
+  }
+}

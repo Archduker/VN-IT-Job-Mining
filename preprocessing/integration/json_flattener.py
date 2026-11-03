@@ -248,9 +248,12 @@ def _flatten_careerviet(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
             flat["benefits_list"] = [b.strip() for b in re.split(r"[\n\r;•\-\*]+", str(ben_str)) if b.strip()]
 
     # Tags kỹ năng
-    tags = raw.get("job-tags")
-    if isinstance(tags, list):
-        flat["skills_list"] = [str(t) for t in tags]
+    # I4: Kỹ năng CareerViet: lấy trường kỹ năng thật nếu raw có; nếu không có thì để rỗng (không lấy job-tags là tag SEO)
+    skills = raw.get("skills") or raw.get("skills_list")
+    if isinstance(skills, list):
+        flat["skills_list"] = [str(t) for t in skills if str(t).strip()]
+    elif isinstance(skills, str):
+        flat["skills_list"] = [s.strip() for s in re.split(r"[,|;/•]+", skills) if s.strip()]
 
 
 def _flatten_glints(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
@@ -322,7 +325,10 @@ def _flatten_itviec(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("title"))
     flat["company_name"] = _clean_str(raw.get("company_name") or raw.get("company"))
     flat["raw_location_text"] = _clean_str(raw.get("work_location"))
-    flat["raw_posted_date"] = _clean_str(raw.get("posted_at_raw"))
+    # I2: ITviec raw_posted_date lấy job_posting_jsonld.datePosted; không có mới dùng posted_at_raw
+    jsonld = raw.get("job_posting_jsonld")
+    jsonld_dict = jsonld if isinstance(jsonld, dict) else {}
+    flat["raw_posted_date"] = _clean_str(jsonld_dict.get("datePosted")) or _clean_str(raw.get("posted_at_raw"))
     flat["raw_salary_text"] = _clean_str(raw.get("salary_display_text"))
 
     # Ép phẳng sections
@@ -425,7 +431,12 @@ def _flatten_jobsgo(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     occs = raw.get("occupations")
     if isinstance(occs, list):
         flat["raw_category_text"] = ", ".join(str(o) for o in occs if o)
-        flat["skills_list"].extend([str(o) for o in occs if o])
+    # I4: Kỹ năng JobsGO: lấy trường kỹ năng thật nếu raw có; nếu không có thì để rỗng (không lấy occupations)
+    skills = raw.get("skills") or raw.get("skills_list")
+    if isinstance(skills, list):
+        flat["skills_list"].extend([str(s) for s in skills if str(s).strip()])
+    elif isinstance(skills, str):
+        flat["skills_list"].extend([s.strip() for s in re.split(r"[,|;/•]+", skills) if s.strip()])
 
     # Ép phẳng general_info
     gen = raw.get("general_info")
@@ -527,12 +538,33 @@ def _flatten_topcv(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
 def _flatten_topdev(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("title") or raw.get("job-title"))
     flat["raw_salary_text"] = _clean_str(raw.get("salary_raw") or raw.get("salary"))
-    flat["raw_posted_date"] = _clean_str(raw.get("recalled_at") or raw.get("created_at"))
+
+    jsonld = raw.get("job_posting_jsonld")
+    jsonld_dict = jsonld if isinstance(jsonld, dict) else {}
+
+    # I3: TopDev raw_posted_date theo thứ tự published.date → date_posted → job_posting_jsonld.datePosted
+    pub = raw.get("published")
+    pub_date = pub.get("date") if isinstance(pub, dict) else pub
+    flat["raw_posted_date"] = _clean_str(
+        pub_date or raw.get("date_posted") or jsonld_dict.get("datePosted") or raw.get("recalled_at") or raw.get("created_at")
+    )
+
+    # I3: TopDev raw_experience_text từ job_posting_jsonld.experienceRequirements
+    exp_req = jsonld_dict.get("experienceRequirements")
+    exp_text = None
+    if isinstance(exp_req, dict):
+        months = exp_req.get("monthsOfExperience")
+        if months is not None:
+            exp_text = f"{months} months"
+        else:
+            exp_text = str(exp_req)
+    elif exp_req is not None:
+        exp_text = str(exp_req)
 
     # Kinh nghiệm và cấp bậc: bản HTML để ở cấp ngoài, bản API để trong extra
     extra = raw.get("extra") if isinstance(raw.get("extra"), dict) else {}
     flat["raw_experience_text"] = _clean_str(
-        raw.get("experience") or extra.get("experience") or raw.get("experiences_str")
+        exp_text or raw.get("experience") or extra.get("experience") or raw.get("experiences_str")
     )
     flat["raw_seniority_text"] = _clean_str(
         raw.get("seniority_text") or raw.get("job_level") or raw.get("job_levels_str")

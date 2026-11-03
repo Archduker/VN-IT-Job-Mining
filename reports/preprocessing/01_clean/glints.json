@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-03T11:07:04+00:00",
-  "code_version": "55d4867",
+  "generated_at": "2026-11-03T14:51:58+00:00",
+  "code_version": "0b54ff4",
   "input": {
     "path": "data/glints/raw",
     "rows": 331
@@ -218,13 +218,15 @@
     "notes": []
   },
   "api": {
-    "used": false,
-    "model": "typesafe/jev-1.13",
+    "used": true,
+    "model": "jev-1.13-free",
     "calls": 0,
     "cache_hits": 0,
     "cost_usd": 0.0,
-    "errors": 0,
-    "reason": "không bật --use-api",
+    "total_spent_usd": 0.0,
+    "global_cap_usd": 0.95,
+    "errors": 12,
+    "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
     "max_cost_usd": 0.3
   },
   "extra": {

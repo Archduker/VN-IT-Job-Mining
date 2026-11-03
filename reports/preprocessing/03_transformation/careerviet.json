@@ -1,0 +1,278 @@
+{
+  "step": "03_transformation",
+  "source": "careerviet",
+  "mode": "applied",
+  "generated_at": "2026-11-03T16:07:50+00:00",
+  "code_version": "0b54ff4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 592
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 592
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 1741,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 190,
+      "examples": [
+        {
+          "job_id": "35C32FB4",
+          "field": "salary_min_max",
+          "before": "10 - 15 Triệu VND",
+          "after": "10000000.0 - 15000000.0 VND (header)",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+        },
+        {
+          "job_id": "35C5BDE1",
+          "field": "salary_min_max",
+          "before": "11,5 - 18,5 Triệu VND",
+          "after": "11500000.0 - 18500000.0 VND (header)",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
+        },
+        {
+          "job_id": "35C8048D",
+          "field": "salary_min_max",
+          "before": "14 - 16 Triệu VND",
+          "after": "14000000.0 - 16000000.0 VND (header)",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/odoo-developer-fresher-junior.35C8048D.html"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 578,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 522,
+      "examples": [
+        {
+          "job_id": "35C32FB4",
+          "field": "exp_min_max",
+          "before": "1 - 10 Năm",
+          "after": "1.0 - 10.0 years",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+        },
+        {
+          "job_id": "35C3B2DA",
+          "field": "exp_min_max",
+          "before": "1 - 2 Năm",
+          "after": "1.0 - 2.0 years",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/technical-specialist.35C3B2DA.html"
+        },
+        {
+          "job_id": "35C5BDE1",
+          "field": "exp_min_max",
+          "before": "Chưa có kinh nghiệm",
+          "after": "0.0 - 0.0 years",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 592,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch JD tiếng Anh sang tiếng Việt",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6c",
+      "name": "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 591,
+      "examples": [
+        {
+          "job_id": "35C32FB4",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "['C++', 'Python']",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+        },
+        {
+          "job_id": "35C3B2DA",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "[]",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/technical-specialist.35C3B2DA.html"
+        },
+        {
+          "job_id": "35C5BDE1",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "['Automation Test']",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 592,
+      "examples": [
+        {
+          "job_id": "35C32FB4",
+          "field": "locations",
+          "before": "Long An",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': None, 'tinh_thanh': 'Tây Ninh', 'raw': 'Long An'}",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+        },
+        {
+          "job_id": "35C3B2DA",
+          "field": "locations",
+          "before": "Hồ Chí Minh",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Hồ Chí Minh'}",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/technical-specialist.35C3B2DA.html"
+        },
+        {
+          "job_id": "35C5BDE1",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': None, 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Hà Nội'}",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 29.9,
+      "fill_pct_out": 29.9
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 31.8,
+      "fill_pct_out": 31.8
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 97.6,
+      "fill_pct_out": 97.6
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 97.6,
+      "fill_pct_out": 97.6
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 88.2,
+      "fill_pct_out": 88.2
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 59.5,
+      "fill_pct_out": 59.5
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 66.4,
+      "fill_pct_out": 66.4
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 97.1,
+      "fill_pct_out": 97.1
+    },
+    {
+      "field": "description_vi",
+      "fill_pct_in": 83.8,
+      "fill_pct_out": 83.8
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 189,
+      "title": 0,
+      "jd": 3,
+      "none": 400
+    },
+    "salary_under_1m_count": 2,
+    "salary_from_x_count": 0,
+    "language_distribution": {
+      "vi": 496,
+      "en": 96
+    },
+    "experience_parsed_rate": 88.2
+  }
+}

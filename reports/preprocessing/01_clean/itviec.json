@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-03T11:07:03+00:00",
-  "code_version": "55d4867",
+  "generated_at": "2026-11-03T14:51:56+00:00",
+  "code_version": "0b54ff4",
   "input": {
     "path": "data/itviec/raw",
     "rows": 911
   },
   "output": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
-    "rows": 901
+    "rows": 905
   },
   "dropped": [
     {
@@ -41,12 +41,12 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
-      "rows": 5
+      "rows": 0
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 0
+      "rows": 1
     }
   ],
   "rules": [
@@ -126,37 +126,23 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
       "action": "drop",
-      "rows_affected": 5,
-      "examples": [
-        {
-          "job_id": "ai-engineer-bosch-global-software-technologies-company-limited-4016",
-          "field": "dedup_key",
-          "before": "bosch global software technologies company limited|ai engineer||2026-W43",
-          "after": "giữ ai-engineer-bosch-global-software-technologies-company-limited-4106",
-          "url": "https://itviec.com/viec-lam-it/ai-engineer-bosch-global-software-technologies-company-limited-4016"
-        },
-        {
-          "job_id": "data-quality-management-specialist-data-division-mb-bank-5856",
-          "field": "dedup_key",
-          "before": "mb bank|data quality management specialist - data division||2026-W43",
-          "after": "giữ data-quality-management-specialist-data-division-mb-bank-0217",
-          "url": "https://itviec.com/viec-lam-it/data-quality-management-specialist-data-division-mb-bank-5856"
-        },
-        {
-          "job_id": "senior-business-model-validation-analyst-bi-mb-bank-0019",
-          "field": "dedup_key",
-          "before": "mb bank|senior business model validation analyst (bi)||2026-W43",
-          "after": "giữ senior-business-model-validation-analyst-bi-mb-bank-5636",
-          "url": "https://itviec.com/viec-lam-it/senior-business-model-validation-analyst-bi-mb-bank-0019"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 0,
-      "examples": []
+      "rows_affected": 1,
+      "examples": [
+        {
+          "job_id": "remote-mobile-game-developer-upto-2-000-ateam-viet-nam-3401",
+          "field": "dedup_key",
+          "before": "ateam|[remote] mobile game developer (upto $2,000)||2026-W40",
+          "after": "giữ vietnamworks:2113891",
+          "url": "https://itviec.com/viec-lam-it/remote-mobile-game-developer-upto-2-000-ateam-viet-nam-3401"
+        }
+      ]
     }
   ],
   "fields": [
@@ -196,13 +182,15 @@
     "notes": []
   },
   "api": {
-    "used": false,
-    "model": "typesafe/jev-1.13",
+    "used": true,
+    "model": "jev-1.13-free",
     "calls": 0,
     "cache_hits": 0,
     "cost_usd": 0.0,
-    "errors": 0,
-    "reason": "không bật --use-api",
+    "total_spent_usd": 0.0,
+    "global_cap_usd": 0.95,
+    "errors": 12,
+    "reason": "dừng gọi sau 5 lỗi liên tiếp: HTTPError",
     "max_cost_usd": 0.3
   },
   "extra": {

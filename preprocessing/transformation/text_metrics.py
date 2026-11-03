@@ -105,6 +105,24 @@ def detect_language(text: str) -> str:
     return "vi" if has_vi_accents else "en"
 
 
+_VI_LETTER = re.compile(r"[ăâđêôơưàáạảãằắặẳẵầấậẩẫèéẹẻẽềếệểễìíịỉĩòóọỏõồốộổỗờớợởỡùúụủũừứựửữỳýỵỷỹ]", re.IGNORECASE)
+_LETTER = re.compile(r"[^\W\d_]")
+VI_RATIO_MIN = 0.01  # dưới 1% chữ có dấu: chỉ còn tiêu đề mục kiểu "Bằng cấp / Education" -> vẫn là JD tiếng Anh
+
+
+def detect_jd_language(jd_text: Optional[str], title: Optional[str] = None, company: Optional[str] = None) -> str:
+    """T6: ngôn ngữ chỉ xét trên JD. Bỏ dòng đầu TopCV "Chi tiết công việc <tiêu đề> tại <công ty>" rồi đếm chữ có dấu."""
+    s = str(jd_text or "")
+    for part in (title, company):
+        if part:
+            s = s.replace(str(part), " ")
+    s = re.sub(r"chi tiết công việc|\btại\b", " ", s, flags=re.IGNORECASE)
+    letters = len(_LETTER.findall(s))
+    if not letters:
+        return "vi"
+    return "en" if len(_VI_LETTER.findall(s)) / letters < VI_RATIO_MIN else "vi"
+
+
 def standardize_to_vietnamese(text: Optional[str]) -> Optional[str]:
     """Chuẩn hóa và dịch các tiêu đề/thuật ngữ tiếng Anh thông dụng sang tiếng Việt (Chính sách 2.B)."""
     if not text:

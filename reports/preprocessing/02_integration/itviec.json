@@ -1,0 +1,211 @@
+{
+  "step": "02_integration",
+  "source": "itviec",
+  "mode": "applied",
+  "generated_at": "2026-11-03T14:52:06+00:00",
+  "code_version": "0b54ff4",
+  "input": {
+    "path": "data/preprocessing/01_clean/itviec.jsonl",
+    "rows": 905
+  },
+  "output": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 905
+  },
+  "dropped": [
+    {
+      "rule": "I0",
+      "reason": "dòng không đọc được JSON, cần xem lại file 01_clean",
+      "rows": 0
+    }
+  ],
+  "rules": [
+    {
+      "id": "I0",
+      "name": "Bỏ dòng JSON hỏng trong file Clean",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I1",
+      "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
+      "action": "modify",
+      "rows_affected": 905,
+      "examples": []
+    },
+    {
+      "id": "I2",
+      "name": "ITviec lấy ngày đăng từ JSON-LD datePosted",
+      "action": "modify",
+      "rows_affected": 874,
+      "examples": [
+        {
+          "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
+          "field": "raw_posted_date",
+          "before": null,
+          "after": "2026-09-29",
+          "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
+        },
+        {
+          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
+          "field": "raw_posted_date",
+          "before": null,
+          "after": "2026-09-30",
+          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
+        },
+        {
+          "job_id": "business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345",
+          "field": "raw_posted_date",
+          "before": null,
+          "after": "2026-10-14",
+          "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+        }
+      ]
+    },
+    {
+      "id": "I3",
+      "name": "TopDev lấy ngày đăng và kinh nghiệm từ published/JSON-LD",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I4",
+      "name": "Bỏ tag SEO và ngành nghề khỏi skills_list",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I5",
+      "name": "Chuyển chuỗi rỗng và container rỗng về null",
+      "action": "modify",
+      "rows_affected": 31,
+      "examples": [
+        {
+          "job_id": "application-consultant-java-python-sql-avenue-5116",
+          "field": "empty_value",
+          "before": "'' or []",
+          "after": null,
+          "url": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-5116"
+        },
+        {
+          "job_id": "back-end-engineer-python-or-ruby-infrastructure-the-umdenken-0924",
+          "field": "empty_value",
+          "before": "'' or []",
+          "after": null,
+          "url": "https://itviec.com/viec-lam-it/back-end-engineer-python-or-ruby-infrastructure-the-umdenken-0924"
+        },
+        {
+          "job_id": "bridge-system-engineer-japanese-n1-n2-itviec-recruitment-consulting-3458",
+          "field": "empty_value",
+          "before": "'' or []",
+          "after": null,
+          "url": "https://itviec.com/viec-lam-it/bridge-system-engineer-japanese-n1-n2-itviec-recruitment-consulting-3458"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "job_title",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_name",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_address",
+      "fill_pct_in": 96.6,
+      "fill_pct_out": 96.6
+    },
+    {
+      "field": "raw_category_text",
+      "fill_pct_in": 96.6,
+      "fill_pct_out": 96.6
+    },
+    {
+      "field": "raw_location_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "working_locations",
+      "fill_pct_in": 96.6,
+      "fill_pct_out": 96.6
+    },
+    {
+      "field": "raw_posted_date",
+      "fill_pct_in": 96.6,
+      "fill_pct_out": 96.6
+    },
+    {
+      "field": "raw_deadline",
+      "fill_pct_in": 96.6,
+      "fill_pct_out": 96.6
+    },
+    {
+      "field": "raw_salary_text",
+      "fill_pct_in": 99.8,
+      "fill_pct_out": 99.8
+    },
+    {
+      "field": "raw_employment_type",
+      "fill_pct_in": 96.6,
+      "fill_pct_out": 96.6
+    },
+    {
+      "field": "raw_experience_text",
+      "fill_pct_in": 87.0,
+      "fill_pct_out": 87.0
+    },
+    {
+      "field": "raw_seniority_text",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "raw_education_text",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "raw_headcount",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "skills_list",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "benefits_list",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_description_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_requirements_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "bước này không gọi API"
+  },
+  "extra": {}
+}

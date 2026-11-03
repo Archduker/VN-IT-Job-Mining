@@ -1,0 +1,278 @@
+{
+  "step": "03_transformation",
+  "source": "jobsgo",
+  "mode": "applied",
+  "generated_at": "2026-11-03T16:08:05+00:00",
+  "code_version": "0b54ff4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 1196
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 1196
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 984,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 786,
+      "examples": [
+        {
+          "job_id": "27522188780",
+          "field": "salary_min_max",
+          "before": "4 - 15 triệu VNĐ",
+          "after": "4000000.0 - 15000000.0 VND (header)",
+          "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-tu-van-thiet-ke-website-fulltime-ho-chi-minh-27522188780.html"
+        },
+        {
+          "job_id": "27681538345",
+          "field": "salary_min_max",
+          "before": "12 - 20 triệu VNĐ",
+          "after": "12000000.0 - 20000000.0 VND (header)",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-solution-engineer-thu-nhap-12-20-trieu-27681538345.html"
+        },
+        {
+          "job_id": "27705423806",
+          "field": "salary_min_max",
+          "before": "15 - 100 triệu VNĐ",
+          "after": "15000000.0 - 100000000.0 VND (header)",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-kinh-doanh-phan-mem-sales-executive-thu-nhap-khong-gioi-han-27705423806.html"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 1193,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 1193,
+      "examples": [
+        {
+          "job_id": "25613728225",
+          "field": "exp_min_max",
+          "before": "Trên 1 năm",
+          "after": "1.0 - None years",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-25613728225.html"
+        },
+        {
+          "job_id": "27011061641",
+          "field": "exp_min_max",
+          "before": "Trên 1 năm",
+          "after": "1.0 - None years",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-27011061641.html"
+        },
+        {
+          "job_id": "27522188780",
+          "field": "exp_min_max",
+          "before": "Không yêu cầu",
+          "after": "0.0 - 0.0 years",
+          "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-tu-van-thiet-ke-website-fulltime-ho-chi-minh-27522188780.html"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 670,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 1196,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch JD tiếng Anh sang tiếng Việt",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6c",
+      "name": "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 1183,
+      "examples": [
+        {
+          "job_id": "25613728225",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "[]",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-25613728225.html"
+        },
+        {
+          "job_id": "27011061641",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "[]",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-27011061641.html"
+        },
+        {
+          "job_id": "27522188780",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "[]",
+          "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-tu-van-thiet-ke-website-fulltime-ho-chi-minh-27522188780.html"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 1196,
+      "examples": [
+        {
+          "job_id": "25613728225",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': '17 Đinh Núp', 'phuong_xa': 'Phường Yên Hoà', 'tinh_thanh': 'TP. Hà Nội', 'raw': '17 Đinh Núp, Phường Yên Hòa, Quận Cầu Giấy, Hà Nội (Trước sáp nhập:Hà Nội |Sau sáp nhập:Hà Nội)'}",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-25613728225.html"
+        },
+        {
+          "job_id": "27011061641",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': '17 Đinh Núp', 'phuong_xa': 'Phường Yên Hoà', 'tinh_thanh': 'TP. Hà Nội', 'raw': '17 Đinh Núp, Phường Yên Hòa, Quận Cầu Giấy, Hà Nội (Trước sáp nhập:Hà Nội |Sau sáp nhập:Hà Nội)'}",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-27011061641.html"
+        },
+        {
+          "job_id": "27522188780",
+          "field": "locations",
+          "before": "Hồ Chí Minh",
+          "after": "{'dia_chi_cu_the': 'Tòa Nhà ICT, Công Viên Phần Mềm Quang Trung', 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Tòa Nhà ICT, Công Viên Phần Mềm Quang Trung, Quận 12, Hồ Chí Minh (Trước sáp nhập:Quận 12, Hồ Chí Minh |Sau sáp nhập:Trung Mỹ Tây, Hồ Chí Minh)'}",
+          "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-tu-van-thiet-ke-website-fulltime-ho-chi-minh-27522188780.html"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 59.4,
+      "fill_pct_out": 59.4
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 62.1,
+      "fill_pct_out": 62.1
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 99.7,
+      "fill_pct_out": 99.7
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 99.7,
+      "fill_pct_out": 99.7
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 79.2,
+      "fill_pct_out": 79.2
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 56.0,
+      "fill_pct_out": 56.0
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 99.8,
+      "fill_pct_out": 99.8
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 39.5,
+      "fill_pct_out": 39.5
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 96.7,
+      "fill_pct_out": 96.7
+    },
+    {
+      "field": "description_vi",
+      "fill_pct_in": 90.8,
+      "fill_pct_out": 90.8
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 777,
+      "title": 9,
+      "jd": 1,
+      "none": 409
+    },
+    "salary_under_1m_count": 1,
+    "salary_from_x_count": 42,
+    "language_distribution": {
+      "vi": 1087,
+      "en": 109
+    },
+    "experience_parsed_rate": 99.7
+  }
+}

@@ -1,0 +1,278 @@
+{
+  "step": "03_transformation",
+  "source": "topdev",
+  "mode": "applied",
+  "generated_at": "2026-11-03T16:07:34+00:00",
+  "code_version": "0b54ff4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 1635
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 1635
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 13234,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 529,
+      "examples": [
+        {
+          "job_id": "2133063",
+          "field": "salary_min_max",
+          "before": "30.000.000 VND to 40.000.000 VND",
+          "after": "30000000.0 - 40000000.0 VND (header)",
+          "url": "https://topdev.vn/viec-lam/fullstack-ai-engineer-cong-ty-co-phan-cong-nghe-bookingcare-2133063"
+        },
+        {
+          "job_id": "2133631",
+          "field": "salary_min_max",
+          "before": "15.000.000 VND to 25.000.000 VND",
+          "after": "15000000.0 - 25000000.0 VND (header)",
+          "url": "https://topdev.vn/viec-lam/ky-su-lap-trinh-backend-java-cong-ty-tnhh-cung-cap-giai-phap-dich-vu-gia-tri-gia-tang-vivas-2133631"
+        },
+        {
+          "job_id": "2133632",
+          "field": "salary_min_max",
+          "before": "10.000.000 VND to 30.000.000 VND",
+          "after": "10000000.0 - 30000000.0 VND (header)",
+          "url": "https://topdev.vn/viec-lam/ky-su-du-lieu-data-engineer-cong-ty-tnhh-cung-cap-giai-phap-dich-vu-gia-tri-gia-tang-vivas-2133632"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 541,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 413,
+      "examples": [
+        {
+          "job_id": "2133063",
+          "field": "exp_min_max",
+          "before": "60 months",
+          "after": "5.0 - 5.0 years",
+          "url": "https://topdev.vn/viec-lam/fullstack-ai-engineer-cong-ty-co-phan-cong-nghe-bookingcare-2133063"
+        },
+        {
+          "job_id": "2133631",
+          "field": "exp_min_max",
+          "before": "24 months",
+          "after": "2.0 - 2.0 years",
+          "url": "https://topdev.vn/viec-lam/ky-su-lap-trinh-backend-java-cong-ty-tnhh-cung-cap-giai-phap-dich-vu-gia-tri-gia-tang-vivas-2133631"
+        },
+        {
+          "job_id": "2133632",
+          "field": "exp_min_max",
+          "before": "24 months",
+          "after": "2.0 - 2.0 years",
+          "url": "https://topdev.vn/viec-lam/ky-su-du-lieu-data-engineer-cong-ty-tnhh-cung-cap-giai-phap-dich-vu-gia-tri-gia-tang-vivas-2133632"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 1635,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch JD tiếng Anh sang tiếng Việt",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6c",
+      "name": "Bản dịch thiếu thuật ngữ cần giữ: gắn cờ translate_lost_term",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 1487,
+      "examples": [
+        {
+          "job_id": "2017763",
+          "field": "skills_clean",
+          "before": "['JavaScript' 'Front-End' 'TypeScript']",
+          "after": "['Agile/Scrum', 'Angular', 'Git', 'HTML/CSS', 'JavaScript']",
+          "url": "https://topdev.vn/viec-lam/lap-trinh-vien-front-end-cong-ty-cp-phan-mem-mor-2-2017763"
+        },
+        {
+          "job_id": "2132757",
+          "field": "skills_clean",
+          "before": "['ERP' 'Database' 'Business Analyst']",
+          "after": "['Agile/Scrum', 'REST API', 'SQL', 'ERP', 'Database']",
+          "url": "https://topdev.vn/viec-lam/business-analyst-erp-implementation-cong-ty-co-phan-giai-phap-oris-2132757"
+        },
+        {
+          "job_id": "2132792",
+          "field": "skills_clean",
+          "before": "['Java' 'Python' 'JSON' 'REST API' 'Data Structure & Algorithm'\n 'Software Architect' 'AI']",
+          "after": "['CI/CD', 'Docker', 'Git', 'Java', 'Machine Learning']",
+          "url": "https://topdev.vn/viec-lam/ai-native-software-engineer-weeds-vina-2132792"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 1635,
+      "examples": [
+        {
+          "job_id": "2017763",
+          "field": "locations",
+          "before": "Thành phố Hà Nội",
+          "after": "{'dia_chi_cu_the': 'Tầng 6, tòa CT1, tòa nhà Bắc Hà C14, Tố Hữu', 'phuong_xa': None, 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Tầng 6, tòa CT1, tòa nhà Bắc Hà C14, Tố Hữu, Phường Trung Văn, Quận Nam Từ Liêm, Thành phố Hà Nội'}",
+          "url": "https://topdev.vn/viec-lam/lap-trinh-vien-front-end-cong-ty-cp-phan-mem-mor-2-2017763"
+        },
+        {
+          "job_id": "2132757",
+          "field": "locations",
+          "before": "Thành phố Hồ Chí Minh",
+          "after": "{'dia_chi_cu_the': 'CN1: 25/6 Quốc lộ 13', 'phuong_xa': 'Phường Lái Thiêu', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'CN1: 25/6 Quốc lộ 13, P. Lái Thiêu, Thành phố Hồ Chí Minh'}",
+          "url": "https://topdev.vn/viec-lam/business-analyst-erp-implementation-cong-ty-co-phan-giai-phap-oris-2132757"
+        },
+        {
+          "job_id": "2132792",
+          "field": "locations",
+          "before": "Thành phố Hà Nội",
+          "after": "{'dia_chi_cu_the': 'Số 174, Đường Thái Hà', 'phuong_xa': None, 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Số 174, Đường Thái Hà, Phường Trung Liệt, Quận Đống Đa, Thành phố Hà Nội'}",
+          "url": "https://topdev.vn/viec-lam/ai-native-software-engineer-weeds-vina-2132792"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 29.7,
+      "fill_pct_out": 29.7
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 29.8,
+      "fill_pct_out": 29.8
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 33.1,
+      "fill_pct_out": 33.1
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 25.3,
+      "fill_pct_out": 25.3
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 25.3,
+      "fill_pct_out": 25.3
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 38.2,
+      "fill_pct_out": 38.2
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 88.0,
+      "fill_pct_out": 88.0
+    },
+    {
+      "field": "description_vi",
+      "fill_pct_in": 90.3,
+      "fill_pct_out": 90.3
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "chưa chọn model: chấm data/preprocessing/review/translate_30.csv rồi ghi preprocessing/transformation/translate_model.json"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 530,
+      "title": 0,
+      "jd": 1,
+      "none": 1104
+    },
+    "salary_under_1m_count": 0,
+    "salary_from_x_count": 0,
+    "language_distribution": {
+      "vi": 1477,
+      "en": 158
+    },
+    "experience_parsed_rate": 25.3
+  }
+}

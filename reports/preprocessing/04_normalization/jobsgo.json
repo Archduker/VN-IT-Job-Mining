@@ -1,0 +1,256 @@
+{
+  "step": "04_normalization",
+  "source": "jobsgo",
+  "mode": "applied",
+  "generated_at": "2026-11-03T16:08:18+00:00",
+  "code_version": "0b54ff4",
+  "input": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 1196
+  },
+  "output": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 1196
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "N1",
+      "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
+      "action": "modify",
+      "rows_affected": 1189,
+      "examples": [
+        {
+          "job_id": "25613728225",
+          "field": "tinh_chinh",
+          "before": "Hà Nội",
+          "after": "TP. Hà Nội",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-25613728225.html"
+        },
+        {
+          "job_id": "27011061641",
+          "field": "tinh_chinh",
+          "before": "Hà Nội",
+          "after": "TP. Hà Nội",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-27011061641.html"
+        },
+        {
+          "job_id": "27522188780",
+          "field": "tinh_chinh",
+          "before": "Hồ Chí Minh",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-tu-van-thiet-ke-website-fulltime-ho-chi-minh-27522188780.html"
+        }
+      ]
+    },
+    {
+      "id": "N2",
+      "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
+      "action": "modify",
+      "rows_affected": 1191,
+      "examples": [
+        {
+          "job_id": "25613728225",
+          "field": "seniority",
+          "before": "Nhân Viên/Chuyên Viên",
+          "after": "Junior (kinh_nghiem)",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-25613728225.html"
+        },
+        {
+          "job_id": "27011061641",
+          "field": "seniority",
+          "before": "Nhân Viên/Chuyên Viên",
+          "after": "Junior (kinh_nghiem)",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-27011061641.html"
+        },
+        {
+          "job_id": "27522188780",
+          "field": "seniority",
+          "before": "Thực Tập Sinh",
+          "after": "Thực tập (raw)",
+          "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-tu-van-thiet-ke-website-fulltime-ho-chi-minh-27522188780.html"
+        }
+      ]
+    },
+    {
+      "id": "N3",
+      "name": "Phân loại 12 nhóm nghề IT",
+      "action": "modify",
+      "rows_affected": 665,
+      "examples": [
+        {
+          "job_id": "25613728225",
+          "field": "job_family",
+          "before": "Kỹ Sư Thiết Kế Hệ Thống ELV",
+          "after": "Thiết kế UI/UX (title)",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-25613728225.html"
+        },
+        {
+          "job_id": "27011061641",
+          "field": "job_family",
+          "before": "Kỹ Sư Thiết Kế Hệ Thống ELV",
+          "after": "Thiết kế UI/UX (title)",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-27011061641.html"
+        },
+        {
+          "job_id": "27522188780",
+          "field": "job_family",
+          "before": "Thực Tập Sinh Tư Vấn Thiết Kế Website Fulltime - Hồ Chí Minh",
+          "after": "Thiết kế UI/UX (title)",
+          "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-tu-van-thiet-ke-website-fulltime-ho-chi-minh-27522188780.html"
+        }
+      ]
+    },
+    {
+      "id": "N4",
+      "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
+      "action": "modify",
+      "rows_affected": 472,
+      "examples": []
+    },
+    {
+      "id": "N5",
+      "name": "Chuẩn hóa tên công ty",
+      "action": "modify",
+      "rows_affected": 1195,
+      "examples": []
+    },
+    {
+      "id": "N2b",
+      "name": "JEV không đồng ý nhãn cấp bậc/nhóm nghề: gắn cờ cần kiểm",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "N6a",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "N6",
+      "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
+      "action": "modify",
+      "rows_affected": 24,
+      "examples": []
+    },
+    {
+      "id": "N7",
+      "name": "Biến đổi log1p cho mức lương",
+      "action": "modify",
+      "rows_affected": 743,
+      "examples": []
+    }
+  ],
+  "fields": [
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "tinh_chinh",
+      "fill_pct_in": 98.7,
+      "fill_pct_out": 98.7
+    },
+    {
+      "field": "seniority",
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
+    },
+    {
+      "field": "seniority_source",
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
+    },
+    {
+      "field": "job_family",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_family_source",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_std",
+      "fill_pct_in": 39.5,
+      "fill_pct_out": 39.5
+    },
+    {
+      "field": "company_norm",
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
+    },
+    {
+      "field": "salary_min_vnd_capped",
+      "fill_pct_in": 59.4,
+      "fill_pct_out": 59.4
+    },
+    {
+      "field": "salary_max_vnd_capped",
+      "fill_pct_in": 62.1,
+      "fill_pct_out": 62.1
+    },
+    {
+      "field": "log_salary_min",
+      "fill_pct_in": 59.4,
+      "fill_pct_out": 59.4
+    },
+    {
+      "field": "log_salary_max",
+      "fill_pct_in": 62.1,
+      "fill_pct_out": 62.1
+    },
+    {
+      "field": "is_outlier_salary",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "model": "jev-1.13-free",
+    "calls": 0,
+    "cache_hits": 0,
+    "cost_usd": 0.0,
+    "total_spent_usd": 0.0,
+    "global_cap_usd": 0.95,
+    "errors": 0,
+    "reason": "không bật --use-api",
+    "max_cost_usd": 0.3
+  },
+  "extra": {
+    "seniority_distribution": {
+      "Junior": 387,
+      "Mới tốt nghiệp": 376,
+      "Thực tập": 137,
+      "Trưởng nhóm/Quản lý": 129,
+      "Middle": 105,
+      "Senior": 57
+    },
+    "job_family_distribution": {
+      "Khác": 531,
+      "Backend": 124,
+      "Data/AI": 97,
+      "Kiểm thử (QA/QC)": 75,
+      "Phân tích nghiệp vụ (BA)": 75,
+      "DevOps/Cloud": 68,
+      "Quản lý sản phẩm/dự án": 59,
+      "Hệ thống/Mạng": 49,
+      "Thiết kế UI/UX": 32,
+      "Fullstack": 28,
+      "Mobile": 25,
+      "Bảo mật": 18,
+      "Frontend": 15
+    },
+    "salary_outliers": 24
+  }
+}
