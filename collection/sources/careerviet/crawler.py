@@ -34,20 +34,17 @@ from collection.common.http_client import DelayConfig, HttpClient
 from collection.common.schema import JobRecord
 from collection.common.url_ledger import (
     UrlLedger,
-    calculate_container_html_hash,
     calculate_json_canonical_hash,
     calculate_json_field_hashes,
-    diff_json_versions,
 )
 from collection.common.utils import (
     clean_text,
     detect_language,
     parse_salary_detail,
-    strip_html_tags,
     text_to_clean_lines,
     classify_job_tags,
 )
-from collection.common.minio_raw_pipeline import MinioRawStore
+from collection.common.r2_raw_pipeline import R2RawStore
 
 log = logging.getLogger("careerviet.crawler")
 
@@ -92,31 +89,6 @@ def _el_text(el) -> str:
     return _normalize_ws(el.get_text(" ", strip=True))
 
 
-def extract_job_posting_jsonld(soup: BeautifulSoup) -> Any | None:
-    """Bóc JSON-LD JobPosting nguyên bản. Không bao giờ raise; thiếu/hỏng -> None."""
-    try:
-        jp_script = soup.find("script", id="job-posting-schema")
-        if not jp_script:
-            for s in soup.find_all("script", type="application/ld+json"):
-                if s.string and '"JobPosting"' in s.string:
-                    jp_script = s
-                    break
-        if not jp_script or not jp_script.string:
-            return None
-
-        loaded = json.loads(jp_script.string.strip())
-        if isinstance(loaded, dict) and loaded.get("@type") == "JobPosting":
-            return loaded
-        if isinstance(loaded, list):
-            for el in loaded:
-                if isinstance(el, dict) and el.get("@type") == "JobPosting":
-                    return el
-            return loaded or None
-        return loaded
-    except Exception:
-        return None
-
-
 def _select_container(soup: BeautifulSoup, container_selector: str):
     """Chọn khối container băm hash, fallback body -> toàn bộ soup."""
     return soup.select_one(container_selector) or soup.body or soup
@@ -147,27 +119,6 @@ def _strip_volatile_labels(target) -> None:
             blk.decompose()
         except Exception:
             pass
-
-
-def container_text_for_hash(
-    html: str,
-    container_selector: str = CONTAINER_SELECTOR,
-    exclude_volatile_dates: bool = True,
-) -> str:
-    """Trả text mà calculate_container_html_hash sẽ băm sau khi làm sạch."""
-    if not html:
-        return ""
-    soup = BeautifulSoup(html, "html.parser")
-    target = _select_container(soup, container_selector)
-    _clean_container(target)
-    if exclude_volatile_dates:
-        _strip_volatile_labels(target)
-    return _normalize_ws(target.get_text(" ", strip=True))
-
-
-def hash_container_text(text: str) -> str:
-    """SHA-256 hex của chuỗi text đã làm sạch."""
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def build_raw_payload(html: str) -> dict[str, Any]:
@@ -300,7 +251,7 @@ class CareerVietCrawler(BaseCrawler):
         local_html_dir: str | None = None,
         ledger_dir: str | None = None,
         raw_dir: str | None = None,
-        sync_minio: bool = False,
+        sync_r2: bool = False,
     ) -> None:
         super().__init__(
             checkpoint_dir=checkpoint_dir,
@@ -320,25 +271,25 @@ class CareerVietCrawler(BaseCrawler):
         # khi instantiate (tranh phoi nhiễm data/ trong unit test cu).
         self.ledger_dir = ledger_dir or DEFAULT_LEDGER_DIR
         self.raw_dir = raw_dir or DEFAULT_RAW_DIR
-        self.sync_minio = sync_minio
+        self.sync_r2 = sync_r2
         self._ledger: UrlLedger | None = None
-        self._minio_store: MinioRawStore | None = None
+        self._r2_store: R2RawStore | None = None
 
-    def _get_minio_store(self) -> MinioRawStore | None:
-        """Trả về (lazy) instance MinioRawStore, None nếu không thể kết nối."""
-        if self._minio_store is None:
+    def _get_r2_store(self) -> R2RawStore | None:
+        """Trả về (lazy) instance R2RawStore, None nếu không thể kết nối."""
+        if self._r2_store is None:
             try:
-                self._minio_store = MinioRawStore()
+                self._r2_store = R2RawStore()
             except Exception as exc:
-                log.warning("[CareerViet] MinIO store khong kha dung: %s", exc)
-                self._minio_store = None
-        return self._minio_store
+                log.warning("[CareerViet] R2 store khong kha dung: %s", exc)
+                self._r2_store = None
+        return self._r2_store
 
-    def sync_raw_to_minio(self) -> int:
-        """Đồng bộ tất cả các raw envelope JSON từ local lên MinIO Lakehouse."""
-        store = self._get_minio_store()
+    def sync_raw_to_r2(self) -> int:
+        """Đồng bộ tất cả các raw envelope JSON từ local lên R2 Lakehouse."""
+        store = self._get_r2_store()
         if not store:
-            log.warning("[CareerViet] Khong the ket noi MinIO de sync raw.")
+            log.warning("[CareerViet] Khong the ket noi R2 de sync raw.")
             return 0
         raw_path = Path(self.raw_dir)
         if not raw_path.exists():
@@ -353,8 +304,8 @@ class CareerVietCrawler(BaseCrawler):
                 store.put_file(s3_key, f, content_type="application/json; charset=utf-8")
                 count += 1
             except Exception as exc:
-                log.warning("[CareerViet] Loi upload %s len MinIO: %s", s3_key, exc)
-        log.info("[CareerViet] Da sync %d file raw len MinIO.", count)
+                log.warning("[CareerViet] Loi upload %s len R2: %s", s3_key, exc)
+        log.info("[CareerViet] Da sync %d file raw len R2.", count)
         return count
 
     def _get_ledger(self) -> UrlLedger:
@@ -433,11 +384,6 @@ class CareerVietCrawler(BaseCrawler):
         if any(ph in body_txt for ph in phrases):
             return True, "thieu .job-detail-page + text hien thi co tu khoa chan"
         return False, ""
-
-    @classmethod
-    def _looks_blocked(cls, html: str) -> bool:
-        """Tuong thich nguoc: tra ve bool theo _detect_block."""
-        return cls._detect_block(html)[0]
 
     def _dump_blocked_page(self, job_id: str, html: str, reason: str):
         """Luu trang nghi chan ra data/careerviet/_blocked/<job_id>.html (KHONG ghi de,
@@ -826,18 +772,18 @@ class CareerVietCrawler(BaseCrawler):
         urls_dir: str | None = None,
         category_map_path: str | None = None,
         max_pages: int | None = None,
-        sync_minio: bool = False,
+        sync_r2: bool = False,
     ) -> int:
         """Phase 1: nap/nhat URL vao UrlLedger. Mac Dinh OFFLINE (khong goi mang).
 
         - offline: neu co urls_dir -> nap tu urls_*.json; nguoc lai giu ledger da nap
           o Buoc 1 (UrlLedger tu doc catalog_master.json khi khoi tao).
         - online (can co=False->True tuong minh): duyet danh muc IT qua _discover_online.
-        Ket thuc: save_catalog + export_daily_manifest (+ sync_minio neu bat).
+        Ket thuc: save_catalog + export_daily_manifest (+ sync_r2 neu bat).
         Tra ve tong so record trong ledger.
         """
-        if sync_minio:
-            self.sync_minio = True
+        if sync_r2:
+            self.sync_r2 = True
         ledger = self._get_ledger()
         if online:
             self._discover_online(max_pages=max_pages)
@@ -845,8 +791,8 @@ class CareerVietCrawler(BaseCrawler):
             self._register_from_urls_dir(Path(urls_dir), category_map_path=category_map_path)
         ledger.save_catalog()
         ledger.export_daily_manifest()
-        if sync_minio:
-            ledger.sync_to_minio()
+        if self.sync_r2:  # tham số sync_r2 chỉ bật thêm; run.py bật qua constructor
+            ledger.sync_final()
         log.info("[CareerViet] discover_urls hoan tat: %d record trong ledger.", len(ledger.records))
         return len(ledger.records)
 
@@ -912,15 +858,15 @@ class CareerVietCrawler(BaseCrawler):
         )
         dest = Path(self.raw_dir) / date_str / f"{jid}_v{new_ver}.json"
         written = self._atomic_write_json(dest, env)
-        if self.sync_minio:
-            store = self._get_minio_store()
+        if self.sync_r2:
+            store = self._get_r2_store()
             if store:
                 s3_key = f"raw/{self.source_name}/{date_str}/{jid}_v{new_ver}.json"
                 try:
                     store.put_json(s3_key, env)
-                    log.info("[CareerViet] Da luu thang vao MinIO: %s", s3_key)
+                    log.info("[CareerViet] Da luu thang vao R2: %s", s3_key)
                 except Exception as exc:
-                    log.warning("[CareerViet] Loi luu MinIO %s: %s", s3_key, exc)
+                    log.warning("[CareerViet] Loi luu R2 %s: %s", s3_key, exc)
         ledger.mark_done(rec["url_hash"], content_hash=content_hash, new_version=new_ver)
         return {
             "tag": "success",
@@ -972,7 +918,7 @@ class CareerVietCrawler(BaseCrawler):
         category_map_path: str | None = None,
         exclude_volatile_dates: bool = True,
         online: bool = False,
-        sync_minio: bool = False,
+        sync_r2: bool = False,
         source_categories: list[str] | None = None,
         shuffle: bool = False,
         seed: int | None = None,
@@ -984,15 +930,15 @@ class CareerVietCrawler(BaseCrawler):
           nam trong ledger; ngoai ledger -> bao ro, khong xu ly; trong ledger nhung
           chua den han (DONE <21d) -> bo qua.
         - ONLINE (can --online tuong minh): tai trang theo canonical_url cua ledger.
-          Neu co sync_minio: tu dong keo URL Ledger moi nhat tu MinIO truoc khi cao.
+          Neu co sync_r2: tu dong keo URL Ledger moi nhat tu R2 truoc khi cao.
         Safe Skip: loi 1 tin -> mark_failed roi tiep tuc, khong dung ca dot.
         """
-        if sync_minio:
-            self.sync_minio = True
+        if sync_r2:
+            self.sync_r2 = True
         ledger = self._get_ledger()
-        if self.sync_minio and online:
-            # Kéo URL Ledger mới nhất từ MinIO về máy để đảm bảo lấy URL từ MinIO
-            ledger.pull_from_minio()
+        if self.sync_r2 and online:
+            # Kéo URL Ledger mới nhất từ R2 về máy để đảm bảo lấy URL từ R2
+            ledger.pull_from_r2()
 
         cat_map = self._load_category_map(category_map_path)
         date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -1124,10 +1070,10 @@ class CareerVietCrawler(BaseCrawler):
                         else:
                             _tally(outcome)
                         # Checkpoint sync dinh ky moi 15 tin thanh cong
-                        if self.sync_minio and (stats["success"] > 0 and stats["success"] % 15 == 0):
+                        if self.sync_r2 and (stats["success"] > 0 and stats["success"] % 15 == 0):
                             ledger.save_catalog()
-                            ledger.sync_to_minio()
-                            log.info("[CareerViet] Checkpoint Sync: Da dong bo ledger len MinIO tai tin thu %d", stats["success"])
+                            ledger.sync_to_r2()
+                            log.info("[CareerViet] Checkpoint Sync: Da dong bo ledger len R2 tai tin thu %d", stats["success"])
                     except Exception as exc:
                         # 200 nhung dich loi -> gian doan chuoi 5xx; ban than tin nay FAILED
                         self._flush_5xx_buffer(ledger, buf, stats)
@@ -1145,17 +1091,17 @@ class CareerVietCrawler(BaseCrawler):
             return stats
 
         ledger.save_catalog()
-        if sync_minio:
-            ledger.sync_to_minio()
+        if self.sync_r2:  # tham số sync_r2 chỉ bật thêm; run.py bật qua constructor
+            ledger.sync_final()
         return stats
 
-    def sync_ledger_to_minio(self) -> bool:
-        """Chi dong bo ledger (catalog_master.json + manifests/*.jsonl) len MinIO.
+    def sync_ledger_to_r2(self) -> bool:
+        """Chi dong bo ledger (catalog_master.json + manifests/*.jsonl) len R2.
         KHONG chay Phase 1/2, KHONG goi mang ngoai truong careerviet.vn.
-        Dung khi ledger local da cap nhat va can day len MinIO ma khong cao lai.
-        Tra ve True/False theo UrlLedger.sync_to_minio()."""
+        Dung khi ledger local da cap nhat va can day len R2 ma khong cao lai.
+        Tra ve True/False theo UrlLedger.sync_to_r2()."""
         ledger = self._get_ledger()
-        return ledger.sync_to_minio()
+        return ledger.sync_to_r2()
 
     def view_ledger(self) -> dict[str, int]:
         """Tom tat trang thai ledger (dung cho CLI --phase view)."""
@@ -1173,7 +1119,7 @@ def main(argv: list[str] | None = None):
     parser.add_argument(
         "--phase", choices=["discovery", "details", "view", "sync"], default="details",
         help="Phase 1 (discovery) / Phase 2 (details) / xem ledger (view) / "
-             "dong bo ledger len MinIO (sync, khong goi mang ngoai truong)",
+             "dong bo ledger len R2 (sync, khong goi mang ngoai truong)",
     )
     parser.add_argument("--limit", type=int, default=None, help="So chi tiet toi da (details)")
     parser.add_argument("--local-html-dir", type=str, default=None,
@@ -1189,7 +1135,7 @@ def main(argv: list[str] | None = None):
     parser.add_argument("--max-pages", type=int, default=None, help="Gioi han trang khi --online discovery")
     parser.add_argument("--online", action="store_true", default=False,
                         help="Tuong minh cho phep GOI MANG (mac dinh KHONG)")
-    parser.add_argument("--sync-minio", action="store_true", default=False, help="Sync ledger len MinIO")
+    parser.add_argument("--sync-r2", "--sync-minio", action="store_true", default=False, help="Sync ledger len MinIO")
     parser.add_argument("--retry-failed", action="store_true", default=False, help="Cao lai cac URL trong Failed Queue")
     parser.add_argument("--exclude-volatile-dates", action=argparse.BooleanOptionalAction,
                         default=True,
@@ -1224,7 +1170,7 @@ def main(argv: list[str] | None = None):
         local_html_dir=args.local_html_dir,
         ledger_dir=args.ledger_dir,
         raw_dir=args.raw_dir,
-        sync_minio=args.sync_minio,
+        sync_r2=args.sync_r2,
     )
 
     if args.phase == "discovery":
@@ -1235,7 +1181,7 @@ def main(argv: list[str] | None = None):
             urls_dir=args.urls_dir,
             category_map_path=args.category_map,
             max_pages=args.max_pages,
-            sync_minio=args.sync_minio,
+            sync_r2=args.sync_r2,
         )
         print(f"[discovery] Tong so record trong ledger: {total} (online={args.online})")
     elif args.phase == "details":
@@ -1248,7 +1194,7 @@ def main(argv: list[str] | None = None):
             category_map_path=args.category_map,
             exclude_volatile_dates=args.exclude_volatile_dates,
             online=args.online,
-            sync_minio=args.sync_minio,
+            sync_r2=args.sync_r2,
             source_categories=args.source_categories,
             shuffle=args.shuffle,
             seed=args.seed,
@@ -1256,11 +1202,11 @@ def main(argv: list[str] | None = None):
         )
         print("[details] stats =", json.dumps(stats, ensure_ascii=False))
     elif args.phase == "sync":
-        ok_ledger = crawler.sync_ledger_to_minio()
-        count_raw = crawler.sync_raw_to_minio() if hasattr(crawler, "sync_raw_to_minio") else 0
-        print(f"[sync] ledger -> MinIO: {'OK' if ok_ledger else 'FAIL'}")
+        ok_ledger = crawler.sync_ledger_to_r2()
+        count_raw = crawler.sync_raw_to_r2() if hasattr(crawler, "sync_raw_to_r2") else 0
+        print(f"[sync] ledger -> R2: {'OK' if ok_ledger else 'FAIL'}")
         if count_raw:
-            print(f"[sync] raw envelopes -> MinIO: {count_raw} files uploaded")
+            print(f"[sync] raw envelopes -> R2: {count_raw} files uploaded")
     else:  # view
         crawler.view_ledger()
 

@@ -1,0 +1,244 @@
+{
+  "Python": [
+    "python",
+    "python3",
+    "django",
+    "fastapi",
+    "flask"
+  ],
+  "Java": [
+    "java",
+    "spring",
+    "springboot",
+    "spring boot",
+    "hibernate"
+  ],
+  "JavaScript": [
+    "javascript",
+    "js",
+    "ecmascript"
+  ],
+  "TypeScript": [
+    "typescript"
+  ],
+  "React": [
+    "react",
+    "reactjs",
+    "react.js",
+    "react native"
+  ],
+  "Vue": [
+    "vue",
+    "vuejs",
+    "vue.js",
+    "nuxt",
+    "nuxtjs"
+  ],
+  "Angular": [
+    "angular",
+    "angularjs"
+  ],
+  "Node.js": [
+    "node",
+    "nodejs",
+    "node.js",
+    "express",
+    "expressjs",
+    "nestjs"
+  ],
+  "C#": [
+    "c#",
+    "csharp",
+    ".net",
+    "dotnet",
+    ".net core",
+    "asp.net"
+  ],
+  "C++": [
+    "c++",
+    "cpp"
+  ],
+  "C": [
+    "ngôn ngữ c",
+    "lập trình c",
+    "c programming",
+    "c language",
+    "c/c++",
+    "c / c++",
+    "c, c++",
+    "embedded c"
+  ],
+  "Golang": [
+    "golang",
+    "go lang",
+    "go language",
+    "ngôn ngữ go",
+    "go developer",
+    "go engineer"
+  ],
+  "PHP": [
+    "php",
+    "laravel",
+    "symfony",
+    "codeigniter"
+  ],
+  "Ruby": [
+    "ruby",
+    "rails",
+    "ruby on rails"
+  ],
+  "Rust": [
+    "rust"
+  ],
+  "Swift": [
+    "swift",
+    "ios"
+  ],
+  "Kotlin": [
+    "kotlin",
+    "android"
+  ],
+  "Dart": [
+    "dart",
+    "flutter"
+  ],
+  "SQL": [
+    "sql",
+    "mysql",
+    "postgresql",
+    "postgres",
+    "sql server",
+    "ms sql",
+    "oracle",
+    "sqlite"
+  ],
+  "NoSQL": [
+    "nosql",
+    "mongodb",
+    "mongo",
+    "redis",
+    "elasticsearch",
+    "cassandra"
+  ],
+  "HTML/CSS": [
+    "html",
+    "html5",
+    "css",
+    "css3",
+    "sass",
+    "scss",
+    "tailwind",
+    "bootstrap"
+  ],
+  "Docker": [
+    "docker",
+    "container",
+    "containerization"
+  ],
+  "Kubernetes": [
+    "kubernetes",
+    "k8s"
+  ],
+  "AWS": [
+    "aws",
+    "amazon web services",
+    "ec2",
+    "s3",
+    "lambda"
+  ],
+  "Azure": [
+    "azure",
+    "microsoft azure"
+  ],
+  "GCP": [
+    "gcp",
+    "google cloud",
+    "google cloud platform"
+  ],
+  "CI/CD": [
+    "ci/cd",
+    "cicd",
+    "jenkins",
+    "gitlab ci",
+    "github actions"
+  ],
+  "Git": [
+    "git",
+    "github",
+    "gitlab",
+    "bitbucket"
+  ],
+  "Linux": [
+    "linux",
+    "ubuntu",
+    "centos",
+    "debian"
+  ],
+  "Kafka": [
+    "kafka",
+    "apache kafka"
+  ],
+  "RabbitMQ": [
+    "rabbitmq"
+  ],
+  "GraphQL": [
+    "graphql"
+  ],
+  "REST API": [
+    "rest",
+    "restful",
+    "rest api",
+    "api"
+  ],
+  "Microservices": [
+    "microservices",
+    "microservice"
+  ],
+  "Unit Test": [
+    "unit test",
+    "unit testing",
+    "junit",
+    "pytest",
+    "jest"
+  ],
+  "Automation Test": [
+    "automation test",
+    "selenium",
+    "cypress",
+    "playwright",
+    "appium"
+  ],
+  "Machine Learning": [
+    "machine learning",
+    "ml",
+    "deep learning",
+    "tensorflow",
+    "pytorch",
+    "scikit-learn",
+    "ai/ml",
+    "ai engineer",
+    "ai developer",
+    "trí tuệ nhân tạo",
+    "artificial intelligence",
+    "học máy"
+  ],
+  "Data Engineering": [
+    "data engineer",
+    "data engineering",
+    "spark",
+    "hadoop",
+    "airflow",
+    "etl"
+  ],
+  "Big Data": [
+    "big data",
+    "bigquery",
+    "snowflake"
+  ],
+  "Agile/Scrum": [
+    "agile",
+    "scrum",
+    "kanban",
+    "jira"
+  ]
+}

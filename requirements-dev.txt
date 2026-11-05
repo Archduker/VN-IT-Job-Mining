@@ -14,6 +14,7 @@ responses==0.25.7            # Mock HTTP requests trong tests
 # --- Code Quality ---
 ruff==0.11.8                 # Linting + formatting (PEP8)
 mypy==1.16.0                 # Static type checking
+vulture==2.14                # Tìm code chết (make quality)
 
 # --- Type stubs ---
 types-requests==2.32.0.20250328

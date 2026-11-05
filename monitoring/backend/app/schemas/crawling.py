@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Pydantic schemas cho Crawling Observatory."""
 
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 from pydantic import BaseModel, Field
 
 
@@ -20,6 +20,7 @@ class TriggerCrawlRequest(BaseModel):
     max_items: int = Field(default=30, ge=1, le=1000)
     max_pages: Optional[int] = Field(default=None, ge=1)
     engine: Optional[str] = Field(default=None, description="curl_cffi | playwright")
+    sync_r2: bool = Field(default=True, description="Đẩy raw cùng ledger lên R2 (run.py --sync-r2)")
 
 
 class CrawlJobResponse(BaseModel):

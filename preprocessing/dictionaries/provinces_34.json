@@ -1,0 +1,391 @@
+{
+ "_note": "34 tỉnh/thành sau sáp nhập (hiệu lực 01/07/2025). old = tỉnh cũ gộp vào (đủ 63); aliases = cách viết khác. Đặc tả: docs/preprocessing/spec/P4_normalization.md N1.",
+ "provinces": [
+  {
+   "key": "tuyen_quang",
+   "name": "Tuyên Quang",
+   "old": [
+    "Hà Giang",
+    "Tuyên Quang"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "cao_bang",
+   "name": "Cao Bằng",
+   "old": [
+    "Cao Bằng"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "lai_chau",
+   "name": "Lai Châu",
+   "old": [
+    "Lai Châu"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "lao_cai",
+   "name": "Lào Cai",
+   "old": [
+    "Lào Cai",
+    "Yên Bái"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "thai_nguyen",
+   "name": "Thái Nguyên",
+   "old": [
+    "Bắc Kạn",
+    "Thái Nguyên"
+   ],
+   "aliases": [
+    "Bắc Cạn"
+   ]
+  },
+  {
+   "key": "dien_bien",
+   "name": "Điện Biên",
+   "old": [
+    "Điện Biên"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "lang_son",
+   "name": "Lạng Sơn",
+   "old": [
+    "Lạng Sơn"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "son_la",
+   "name": "Sơn La",
+   "old": [
+    "Sơn La"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "phu_tho",
+   "name": "Phú Thọ",
+   "old": [
+    "Hòa Bình",
+    "Vĩnh Phúc",
+    "Phú Thọ"
+   ],
+   "aliases": [
+    "Hoà Bình"
+   ]
+  },
+  {
+   "key": "bac_ninh",
+   "name": "TP. Bắc Ninh",
+   "old": [
+    "Bắc Giang",
+    "Bắc Ninh"
+   ],
+   "aliases": [
+    "Bắc Ninh"
+   ]
+  },
+  {
+   "key": "quang_ninh",
+   "name": "TP. Quảng Ninh",
+   "old": [
+    "Quảng Ninh"
+   ],
+   "aliases": [
+    "Hạ Long",
+    "Quảng Ninh"
+   ]
+  },
+  {
+   "key": "ha_noi",
+   "name": "TP. Hà Nội",
+   "old": [
+    "Hà Nội"
+   ],
+   "aliases": [
+    "Hanoi",
+    "HN"
+   ]
+  },
+  {
+   "key": "hai_phong",
+   "name": "TP. Hải Phòng",
+   "old": [
+    "Hải Dương",
+    "Hải Phòng"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "hung_yen",
+   "name": "Hưng Yên",
+   "old": [
+    "Thái Bình",
+    "Hưng Yên"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "ninh_binh",
+   "name": "Ninh Bình",
+   "old": [
+    "Hà Nam",
+    "Ninh Bình",
+    "Nam Định"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "thanh_hoa",
+   "name": "Thanh Hóa",
+   "old": [
+    "Thanh Hóa"
+   ],
+   "aliases": [
+    "Thanh Hoá"
+   ]
+  },
+  {
+   "key": "nghe_an",
+   "name": "Nghệ An",
+   "old": [
+    "Nghệ An"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "ha_tinh",
+   "name": "Hà Tĩnh",
+   "old": [
+    "Hà Tĩnh"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "quang_tri",
+   "name": "Quảng Trị",
+   "old": [
+    "Quảng Bình",
+    "Quảng Trị"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "hue",
+   "name": "TP. Huế",
+   "old": [
+    "Thừa Thiên Huế"
+   ],
+   "aliases": [
+    "Huế",
+    "Thừa Thiên - Huế"
+   ]
+  },
+  {
+   "key": "da_nang",
+   "name": "TP. Đà Nẵng",
+   "old": [
+    "Quảng Nam",
+    "Đà Nẵng"
+   ],
+   "aliases": [
+    "Danang"
+   ]
+  },
+  {
+   "key": "quang_ngai",
+   "name": "Quảng Ngãi",
+   "old": [
+    "Quảng Ngãi",
+    "Kon Tum"
+   ],
+   "aliases": [
+    "Kontum"
+   ]
+  },
+  {
+   "key": "gia_lai",
+   "name": "Gia Lai",
+   "old": [
+    "Gia Lai",
+    "Bình Định"
+   ],
+   "aliases": [
+    "Quy Nhơn"
+   ]
+  },
+  {
+   "key": "dak_lak",
+   "name": "Đắk Lắk",
+   "old": [
+    "Phú Yên",
+    "Đắk Lắk"
+   ],
+   "aliases": [
+    "Đăk Lăk",
+    "Daklak",
+    "Buôn Ma Thuột"
+   ]
+  },
+  {
+   "key": "khanh_hoa",
+   "name": "Khánh Hòa",
+   "old": [
+    "Khánh Hòa",
+    "Ninh Thuận"
+   ],
+   "aliases": [
+    "Khánh Hoà",
+    "Nha Trang"
+   ]
+  },
+  {
+   "key": "lam_dong",
+   "name": "Lâm Đồng",
+   "old": [
+    "Đắk Nông",
+    "Lâm Đồng",
+    "Bình Thuận"
+   ],
+   "aliases": [
+    "Đăk Nông",
+    "Đà Lạt"
+   ]
+  },
+  {
+   "key": "dong_nai",
+   "name": "TP. Đồng Nai",
+   "old": [
+    "Bình Phước",
+    "Đồng Nai"
+   ],
+   "aliases": [
+    "Biên Hòa",
+    "Đồng Nai"
+   ]
+  },
+  {
+   "key": "ho_chi_minh",
+   "name": "TP. Hồ Chí Minh",
+   "old": [
+    "Bình Dương",
+    "Hồ Chí Minh",
+    "Bà Rịa - Vũng Tàu"
+   ],
+   "aliases": [
+    "HCM",
+    "TPHCM",
+    "Sài Gòn",
+    "Saigon",
+    "Vũng Tàu",
+    "Bà Rịa",
+    "Thủ Đức"
+   ]
+  },
+  {
+   "key": "tay_ninh",
+   "name": "Tây Ninh",
+   "old": [
+    "Long An",
+    "Tây Ninh"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "dong_thap",
+   "name": "Đồng Tháp",
+   "old": [
+    "Tiền Giang",
+    "Đồng Tháp"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "an_giang",
+   "name": "An Giang",
+   "old": [
+    "Kiên Giang",
+    "An Giang"
+   ],
+   "aliases": [
+    "Phú Quốc"
+   ]
+  },
+  {
+   "key": "vinh_long",
+   "name": "Vĩnh Long",
+   "old": [
+    "Bến Tre",
+    "Vĩnh Long",
+    "Trà Vinh"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "can_tho",
+   "name": "TP. Cần Thơ",
+   "old": [
+    "Sóc Trăng",
+    "Hậu Giang",
+    "Cần Thơ"
+   ],
+   "aliases": []
+  },
+  {
+   "key": "ca_mau",
+   "name": "Cà Mau",
+   "old": [
+    "Bạc Liêu",
+    "Cà Mau"
+   ],
+   "aliases": []
+  }
+ ],
+ "remote": [
+  "remote",
+  "làm việc từ xa",
+  "work from home",
+  "wfh",
+  "từ xa"
+ ],
+ "foreign": [
+  "singapore",
+  "japan",
+  "nhật bản",
+  "tokyo",
+  "osaka",
+  "korea",
+  "hàn quốc",
+  "seoul",
+  "usa",
+  "hoa kỳ",
+  "australia",
+  "germany",
+  "malaysia",
+  "thailand",
+  "thái lan",
+  "philippines",
+  "indonesia",
+  "china",
+  "trung quốc",
+  "taiwan",
+  "đài loan",
+  "hong kong",
+  "cambodia",
+  "campuchia",
+  "london",
+  "canada",
+  "dubai",
+  "europe",
+  "overseas",
+  "nước ngoài"
+ ]
+}

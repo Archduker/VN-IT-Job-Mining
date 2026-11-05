@@ -3,13 +3,13 @@ name: collection-submission
 description: >-
   Chuyên gia kiểm tra, thẩm định và hướng dẫn nộp hồ sơ thu thập dữ liệu tuyển dụng (Data Collection Deliverables).
   Quy định chuẩn bộ 3 file HTML thô + 3 file JSON tương ứng (kèm file .md mô tả),
-  cơ chế đồng bộ dữ liệu cào đa tầng lên MinIO Lakehouse và Cloudflare R2,
+  cơ chế đồng bộ dữ liệu cào đa tầng lên R2 Lakehouse và Cloudflare R2,
   và tự động chấm điểm tiêu chuẩn nghiệm thu (Definition of Done - DoD).
 ---
 
 # Collection Submission Skill (Hồ Sơ Nghiệm Thu Thu Thập Dữ Liệu)
 
-Kỹ năng này trang bị cho AI Agent và các thành viên dự án quy chuẩn nghiệm thu hoàn chỉnh cho công việc thu thập dữ liệu (Phase 1 & Phase 2), kiểm tra tự động bộ mẫu dữ liệu (Samples), đồng bộ đa đám mây (MinIO & Cloudflare R2) và hồ sơ báo cáo.
+Kỹ năng này trang bị cho AI Agent và các thành viên dự án quy chuẩn nghiệm thu hoàn chỉnh cho công việc thu thập dữ liệu (Phase 1 & Phase 2), kiểm tra tự động bộ mẫu dữ liệu (Samples), đồng bộ đa đám mây (R2 & Cloudflare R2) và hồ sơ báo cáo.
 
 ---
 
@@ -41,20 +41,14 @@ Khuyến khích và cho phép thành viên nộp thêm file Markdown ghi chú t�
 
 ---
 
-## 2. Quy Chuẩn Đồng Bộ Đa Đám Mây (MinIO & Cloudflare R2)
+## 2. Quy Chuẩn Đồng Bộ Đa Đám Mây (R2 & Cloudflare R2)
 
-Toàn bộ dữ liệu thu thập được ở cả 2 pha bắt buộc phải đồng bộ lên **cả MinIO Lakehouse cục bộ VÀ Cloudflare (Cloudflare R2 Object Storage)**:
+Toàn bộ dữ liệu thu thập được ở cả 2 pha bắt buộc phải đồng bộ lên **cả R2 Lakehouse cục bộ VÀ Cloudflare (Cloudflare R2 Object Storage)**:
 
 ### 2.1. Cấu hình biến môi trường (`.env`)
 Đảm bảo file `.env` đã điền đủ thông tin cho cả 2 đích:
 
 ```bash
-# --- MinIO Lakehouse (Local) ---
-MINIO_ENDPOINT=http://localhost:9000
-MINIO_ROOT_USER=minioadmin
-MINIO_ROOT_PASSWORD=minioadmin
-MINIO_BUCKET=vn-it-jobs
-
 # --- Cloudflare R2 Object Storage (Remote) ---
 R2_ACCOUNT_ID=your_cloudflare_account_id
 R2_ACCESS_KEY_ID=your_r2_access_key_id
@@ -82,7 +76,7 @@ vn-it-jobs/
 ### 2.3. Lệnh đồng bộ một chạm (One-Command Sync)
 Sau khi cào xong, chạy script đồng bộ tự động:
 ```bash
-# Đồng bộ toàn bộ dữ liệu cào cục bộ lên MinIO và Cloudflare R2
+# Đồng bộ toàn bộ dữ liệu cào cục bộ lên R2 và Cloudflare R2
 python3 scripts/sync_cloud_lakehouse.py
 ```
 
@@ -119,4 +113,4 @@ python3 .agents/skills/collection-submission/scripts/verify_submission.py --sour
 - [x] **Criterion 4 (Architecture Doc):** File `docs/crawl/<source>.md` tồn tại và có nội dung phân tích.
 - [x] **Criterion 5 (Inventory Report):** File `collection/reports/<source>_inventory.md` tồn tại.
 - [x] **Criterion 6 (EDA Report):** File `collection/reports/<source>_eda.md` tồn tại.
-- [x] **Criterion 7 (Storage Readiness):** Kiểm tra cấu hình kết nối MinIO và Cloudflare R2 trong môi trường.
+- [x] **Criterion 7 (Storage Readiness):** Kiểm tra cấu hình kết nối R2 và Cloudflare R2 trong môi trường.

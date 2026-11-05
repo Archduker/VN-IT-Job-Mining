@@ -1,0 +1,259 @@
+{
+  "step": "03_transformation",
+  "source": "careerviet",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:12:36+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 448
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 448
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 1316,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 136,
+      "examples": [
+        {
+          "job_id": "35C32FB4",
+          "field": "salary_min_max",
+          "before": "10 - 15 Triệu VND",
+          "after": "10000000.0 - 15000000.0 VND (header)",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+        },
+        {
+          "job_id": "35C8048D",
+          "field": "salary_min_max",
+          "before": "14 - 16 Triệu VND",
+          "after": "14000000.0 - 16000000.0 VND (header)",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/odoo-developer-fresher-junior.35C8048D.html"
+        },
+        {
+          "job_id": "35C805F0",
+          "field": "salary_min_max",
+          "before": "Lên đến 25 Triệu VND",
+          "after": "None - 25000000.0 VND (header)",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-trien-khai-phan-mem.35C805F0.html"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 438,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 399,
+      "examples": [
+        {
+          "job_id": "35C32FB4",
+          "field": "exp_min_max",
+          "before": "1 - 10 Năm",
+          "after": "1.0 - 10.0 years",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+        },
+        {
+          "job_id": "35C7AC66",
+          "field": "exp_min_max",
+          "before": "1 - 5 Năm",
+          "after": "1.0 - 5.0 years",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ats-software-development-engineer.35C7AC66.html"
+        },
+        {
+          "job_id": "35C80317",
+          "field": "exp_min_max",
+          "before": "Trên 5 Năm",
+          "after": "5.0 - None years",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/development-manager.35C80317.html"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 448,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 448,
+      "examples": [
+        {
+          "job_id": "35C32FB4",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "['C++', 'Python']",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+        },
+        {
+          "job_id": "35C7AC66",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "['C#', 'Git', 'Python']",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ats-software-development-engineer.35C7AC66.html"
+        },
+        {
+          "job_id": "35C80317",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "['AWS', 'Agile/Scrum', 'Azure', 'CI/CD', 'GCP']",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/development-manager.35C80317.html"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 448,
+      "examples": [
+        {
+          "job_id": "35C32FB4",
+          "field": "locations",
+          "before": "Long An",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': None, 'tinh_thanh': 'Tây Ninh', 'raw': 'Long An'}",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+        },
+        {
+          "job_id": "35C7AC66",
+          "field": "locations",
+          "before": "Hồ Chí Minh",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Hồ Chí Minh'}",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ats-software-development-engineer.35C7AC66.html"
+        },
+        {
+          "job_id": "35C80317",
+          "field": "locations",
+          "before": "Hồ Chí Minh",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Hồ Chí Minh'}",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/development-manager.35C80317.html"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 28.3,
+      "fill_pct_out": 28.3
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 30.4,
+      "fill_pct_out": 30.4
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 97.8,
+      "fill_pct_out": 97.8
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 97.8,
+      "fill_pct_out": 97.8
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 89.1,
+      "fill_pct_out": 89.1
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 58.7,
+      "fill_pct_out": 58.7
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 79.7,
+      "fill_pct_out": 79.7
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 96.9,
+      "fill_pct_out": 96.9
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 137,
+      "title": 0,
+      "jd": 0,
+      "none": 311
+    },
+    "salary_under_1m_count": 1,
+    "salary_from_x_count": 0,
+    "language_distribution": {
+      "vi": 383,
+      "en": 65
+    },
+    "experience_parsed_rate": 89.1
+  }
+}

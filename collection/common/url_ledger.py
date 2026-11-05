@@ -64,6 +64,21 @@ def file_lock(lock_path: Path, timeout: float = 10.0):
             pass
 
 
+def _r2_client_and_bucket(bucket_name=None, endpoint_url=None, access_key=None, secret_key=None):
+    """Client và bucket R2 lấy từ r2_storage, dùng chung với raw store và các script."""
+    from collection.common.r2_storage import get_r2_client, resolve_r2_bucket
+
+    return get_r2_client(endpoint_url, access_key, secret_key), resolve_r2_bucket(bucket_name)
+
+
+class LedgerSyncError(RuntimeError):
+    """Ledger không lên được R2 ở cuối một pha."""
+
+
+class DiscoveryError(RuntimeError):
+    """Pha discovery không lấy được trang danh sách nào (tiêu chuẩn C14)."""
+
+
 @dataclass
 class UrlLedgerRecord:
     url_hash: str
@@ -297,7 +312,7 @@ def is_due_for_recrawl(last_scraped_at: Optional[str], days: int = 21) -> bool:
 class UrlLedger:
     """
     Quản lý danh sách URL Manifests và State Catalog cho từng nguồn tuyển dụng.
-    Lưu trữ cục bộ dưới dạng JSONL và có thể sync lên MinIO.
+    Lưu trữ cục bộ dưới dạng JSONL và có thể sync lên R2.
     """
 
     def __init__(self, source: str, storage_dir: Optional[str] = None):
@@ -375,8 +390,15 @@ class UrlLedger:
                             disk_records[k] = v
                         else:
                             disk_rec = disk_records[k]
-                            # Nếu local đã cào xong (DONE), ưu tiên giữ DONE
-                            if v.get("status") == "DONE":
+                            mem_ts, disk_ts = v.get("updated_at"), disk_rec.get("updated_at")
+                            # Lần đổi trạng thái mới nhất thắng. Trước đây FAILED/CLOSED luôn thua bản PENDING trên
+                            # đĩa vì không có last_scraped_at mới, nên không bao giờ được lưu.
+                            if mem_ts and (not disk_ts or mem_ts >= disk_ts):
+                                disk_records[k] = v
+                            elif disk_ts:
+                                pass  # bản trên đĩa đổi trạng thái sau bản trong bộ nhớ
+                            # Bản ghi cũ chưa có updated_at: luật cũ, DONE thắng rồi last_scraped_at mới hơn thắng
+                            elif v.get("status") == "DONE":
                                 disk_records[k] = v
                             elif v.get("last_scraped_at") and (not disk_rec.get("last_scraped_at") or v["last_scraped_at"] > disk_rec.get("last_scraped_at", "")):
                                 disk_records[k] = v
@@ -638,6 +660,7 @@ class UrlLedger:
             if repost_of_url_hash:
                 rec["repost_of_url_hash"] = repost_of_url_hash
             rec["error_log"] = None
+            rec["updated_at"] = now_iso
 
     def mark_scraped(
         self,
@@ -658,11 +681,27 @@ class UrlLedger:
             rec["status"] = "FAILED"
             rec["error_log"] = str(error_message)
             rec["retry_count"] = rec.get("retry_count", 0) + 1
+            rec["updated_at"] = datetime.now(timezone.utc).isoformat()
 
     def mark_closed(self, url_hash: str):
         """Đánh dấu link đã bị gỡ hoặc 404."""
         if url_hash in self.records:
             self.records[url_hash]["status"] = "CLOSED"
+            self.records[url_hash]["updated_at"] = datetime.now(timezone.utc).isoformat()
+
+    @staticmethod
+    def next_version(record: Dict[str, Any], content_hash: str) -> tuple:
+        """(có đổi không, version) cho snapshot vừa cào của một bản ghi ledger (tiêu chuẩn C12).
+
+        Đã cào trước đó với cùng hash -> (False, version cũ): không ghi file mới. Ngược lại -> (True, cũ + 1).
+        Coi RECHECK_DUE như DONE: get_pending_or_due_records() đổi tin đến hạn sang RECHECK_DUE ngay trong bộ nhớ,
+        nên kiểm tra riêng status == "DONE" sẽ không bao giờ khớp khi cào lại.
+        """
+        old = int(record.get("latest_version") or 0)
+        if (record.get("status") in ("DONE", "RECHECK_DUE") and record.get("content_hash")
+                and record.get("content_hash") == content_hash):
+            return False, old
+        return True, old + 1
 
     def find_by_content_hash(self, content_hash: str) -> Optional[Dict[str, Any]]:
         """Tìm bài viết đã có content_hash tương tự để phát hiện Repost."""
@@ -673,7 +712,7 @@ class UrlLedger:
                 return rec
         return None
 
-    def sync_to_minio(
+    def sync_to_r2(
         self,
         bucket_name: Optional[str] = None,
         endpoint_url: Optional[str] = None,
@@ -681,73 +720,20 @@ class UrlLedger:
         secret_key: Optional[str] = None,
     ) -> bool:
         """
-        Đồng bộ URL Ledger (catalog_master.json và manifests/*.jsonl) lên MinIO / S3.
-        Đích: minio://{bucket_name}/url_ledger/{source}/
+        Đồng bộ URL Ledger (catalog_master.json và manifests/*.jsonl) lên R2.
+        Đích: r2://{bucket_name}/url_ledger/{source}/
         """
-        import os
+        # Một nguồn cấu hình duy nhất cho R2 (collection/common/r2_storage.py); thiếu cấu hình thì báo lỗi,
+        # không âm thầm kết nối localhost như trước
+        storage_label = "Cloudflare R2"
         try:
-            from dotenv import load_dotenv
-            load_dotenv()
-        except Exception:
-            pass
-
-        bucket = (
-            bucket_name
-            or os.getenv("S3_BUCKET_NAME")
-            or os.getenv("R2_BUCKET_NAME")
-            or os.getenv("MINIO_BUCKET")
-            or os.getenv("S3_BUCKET")
-            or "vn-it-jobs"
-        )
-        endpoint = (
-            endpoint_url
-            or os.getenv("S3_ENDPOINT_URL")
-            or os.getenv("R2_ENDPOINT_URL")
-            or os.getenv("MINIO_ENDPOINT")
-            or "http://localhost:9000"
-        )
-        ak = (
-            access_key
-            or os.getenv("AWS_ACCESS_KEY_ID")
-            or os.getenv("R2_ACCESS_KEY_ID")
-            or os.getenv("MINIO_ROOT_USER")
-            or "minioadmin"
-        )
-        sk = (
-            secret_key
-            or os.getenv("AWS_SECRET_ACCESS_KEY")
-            or os.getenv("R2_SECRET_ACCESS_KEY")
-            or os.getenv("MINIO_ROOT_PASSWORD")
-            or "minioadmin"
-        )
-        region = "auto" if "r2.cloudflarestorage.com" in endpoint else os.getenv("AWS_REGION", "us-east-1")
-
-        try:
-            import boto3
-            from botocore.client import Config
-
-            s3 = boto3.client(
-                "s3",
-                endpoint_url=endpoint,
-                aws_access_key_id=ak,
-                aws_secret_access_key=sk,
-                config=Config(signature_version="s3v4", connect_timeout=3, retries={"max_attempts": 2}),
-                region_name=region,
-            )
-
-            # Đảm bảo bucket tồn tại
-            try:
-                s3.head_bucket(Bucket=bucket)
-            except Exception:
-                try:
-                    s3.create_bucket(Bucket=bucket)
-                except Exception as b_exc:
-                    logger.debug(f"Bucket {bucket} create/head check: {b_exc}")
-
-            storage_label = "Cloudflare R2" if "r2.cloudflarestorage.com" in endpoint else "MinIO"
+            s3, bucket = _r2_client_and_bucket(bucket_name, endpoint_url, access_key, secret_key)
 
             # Upload catalog_master.json — guard: KHÔNG cho catalog RỖNG ghi đè catalog
-            # (đã có) trên MinIO, chống runner làm mất sổ cái của source khác/đã có dữ liệu.
+            # (đã có) trên R2, chống runner làm mất sổ cái của source khác/đã có dữ liệu.
+            # Ghi thay đổi trong bộ nhớ xuống đĩa trước, vì bước upload đọc file trên đĩa
+            if self.records:
+                self.save_catalog()
             local_records = self._load_catalog()
             if not local_records:
                 logger.warning(
@@ -777,10 +763,10 @@ class UrlLedger:
             logger.info(f"[{storage_label}] Đã đồng bộ thành công {manifest_count} manifests lên s3://{bucket}/url_ledger/{self.source}/manifests/")
             return True
         except Exception as exc:
-            logger.warning(f"[{storage_label}] Không thể đồng bộ URL Ledger lên ({endpoint}): {exc}. Dữ liệu cục bộ vẫn an toàn.")
+            logger.warning(f"[{storage_label}] Không thể đồng bộ URL Ledger {self.source} lên R2: {exc}. Dữ liệu cục bộ vẫn an toàn.")
             return False
 
-    def pull_from_minio(
+    def pull_from_r2(
         self,
         bucket_name: Optional[str] = None,
         endpoint_url: Optional[str] = None,
@@ -788,61 +774,14 @@ class UrlLedger:
         secret_key: Optional[str] = None,
     ) -> bool:
         """
-        Kéo URL Ledger (catalog_master.json) từ MinIO / S3 về máy cục bộ.
-        Nguồn: minio://{bucket_name}/url_ledger/{source}/catalog_master.json
-        Hợp nhất an toàn: nếu local chưa có hoặc MinIO có record mới thì cập nhật.
+        Kéo URL Ledger (catalog_master.json) từ R2 về máy cục bộ.
+        Nguồn: r2://{bucket_name}/url_ledger/{source}/catalog_master.json
+        Hợp nhất an toàn: nếu local chưa có hoặc R2 có record mới thì cập nhật.
         """
-        import os
+        # Một nguồn cấu hình duy nhất cho R2 (collection/common/r2_storage.py)
+        storage_label = "Cloudflare R2"
         try:
-            from dotenv import load_dotenv
-            load_dotenv()
-        except Exception:
-            pass
-
-        bucket = (
-            bucket_name
-            or os.getenv("S3_BUCKET_NAME")
-            or os.getenv("R2_BUCKET_NAME")
-            or os.getenv("MINIO_BUCKET")
-            or os.getenv("S3_BUCKET")
-            or "vn-it-jobs"
-        )
-        endpoint = (
-            endpoint_url
-            or os.getenv("S3_ENDPOINT_URL")
-            or os.getenv("R2_ENDPOINT_URL")
-            or os.getenv("MINIO_ENDPOINT")
-            or "http://localhost:9000"
-        )
-        ak = (
-            access_key
-            or os.getenv("AWS_ACCESS_KEY_ID")
-            or os.getenv("R2_ACCESS_KEY_ID")
-            or os.getenv("MINIO_ROOT_USER")
-            or "minioadmin"
-        )
-        sk = (
-            secret_key
-            or os.getenv("AWS_SECRET_ACCESS_KEY")
-            or os.getenv("R2_SECRET_ACCESS_KEY")
-            or os.getenv("MINIO_ROOT_PASSWORD")
-            or "minioadmin"
-        )
-        region = "auto" if "r2.cloudflarestorage.com" in endpoint else os.getenv("AWS_REGION", "us-east-1")
-        storage_label = "Cloudflare R2" if "r2.cloudflarestorage.com" in endpoint else "MinIO"
-
-        try:
-            import boto3
-            from botocore.client import Config
-
-            s3 = boto3.client(
-                "s3",
-                endpoint_url=endpoint,
-                aws_access_key_id=ak,
-                aws_secret_access_key=sk,
-                config=Config(signature_version="s3v4", connect_timeout=3, retries={"max_attempts": 2}),
-                region_name=region,
-            )
+            s3, bucket = _r2_client_and_bucket(bucket_name, endpoint_url, access_key, secret_key)
 
             key = f"url_ledger/{self.source}/catalog_master.json"
             try:
@@ -870,15 +809,21 @@ class UrlLedger:
             logger.info(f"[{storage_label}] Da keo {len(remote_records)} records tu s3://{bucket}/{key} ve local (cap nhat {merged_count}).")
             return True
         except Exception as exc:
-            logger.warning(f"[{storage_label}] Khong the keo catalog tu MinIO ({endpoint}): {exc}")
+            logger.warning(f"[{storage_label}] Không thể kéo catalog {self.source} từ R2: {exc}")
             return False
 
     def get_failed_records(self) -> List[Dict[str, Any]]:
         """Lấy danh sách các URL có trạng thái FAILED (Failed Queue)."""
         return [r for r in self.records.values() if r.get("status") == "FAILED"]
 
-    # Cloudflare R2 Aliases
-    sync_to_r2 = sync_to_minio
-    pull_from_r2 = pull_from_minio
+    def sync_final(self) -> None:
+        """Đồng bộ ledger ở cuối một pha; thất bại thì raise để lần chạy báo lỗi.
 
-
+        Checkpoint giữa chừng vẫn gọi sync_to_r2() và chỉ cảnh báo. Ở cuối pha mà ledger không lên được R2
+        thì raw và ledger lệch nhau, lần chạy sau sẽ cào lại (SCRAPE-4), nên không được im lặng.
+        """
+        if not self.sync_to_r2():
+            raise LedgerSyncError(
+                f"Không đồng bộ được URL Ledger {self.source} lên R2; raw đã cào có thể lệch với ledger. "
+                "Kiểm tra kết nối rồi chạy --phase sync."
+            )

@@ -1,5 +1,13 @@
 # Báo Cáo Kiến Trúc Thu Thập Dữ Liệu Crawler Glints (glints.com/vn)
 
+> **Hiện trạng 03/11/2026**
+>
+> - Crawler: `collection/sources/glints/crawler.py`, chạy qua `GlintsRawPipeline` (`raw_pipeline.py`), luôn ghi thẳng R2. Nghỉ 2.0–4.0 giây giữa tin (sơ đồ bên dưới còn ghi 3.5–6.0).
+> - Đã sửa: đóng tin bằng gán `status` trực tiếp, nay qua `mark_closed()` (L-02).
+> - Còn mở: chưa cào lại từ 20/10 (SCRAPE-7); trang 1 API chỉ có 4 tin ngoài IT nên discovery ra 0 URL (SCRAPE-12); chưa có contract test và C14.
+>
+> Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
+
 > **Dự án**: VN-IT-Job-Mining — Khai phá Dữ liệu Tuyển dụng IT Việt Nam  
 > **Nguồn phụ trách**: Glints Vietnam (`https://glints.com/vn`)  
 > **Tác giả phụ trách**: Khắc Duy (`duynkh9326-hub`) & Antigravity Pair-Programming  
@@ -64,7 +72,7 @@ Trong Pha 1 URL Discovery, crawler trích xuất trực tiếp `job_id` và `tit
 ```python
 clean_url = clean_canonical_url(f"https://glints.com/vn/opportunities/jobs/{slug}/{job_id}")
 ```
-URL tạo ra luôn sạch 100%, không chứa telemetry. Đồng thời, hàm `clean_canonical_url` trong `crawlers/common/url_ledger.py` đã được tích hợp bộ lọc `"traceinfo"` để loại bỏ token này nếu link được nạp từ bên ngoài.
+URL tạo ra luôn sạch 100%, không chứa telemetry. Đồng thời, hàm `clean_canonical_url` trong `collection/common/url_ledger.py` đã được tích hợp bộ lọc `"traceinfo"` để loại bỏ token này nếu link được nạp từ bên ngoài.
 
 ---
 

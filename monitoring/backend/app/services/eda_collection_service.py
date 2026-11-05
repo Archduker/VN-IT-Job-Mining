@@ -35,8 +35,11 @@ class EDACollectionService:
                     fp = Path(root) / f
                     try:
                         with open(fp, "r", encoding="utf-8") as fl:
-                            item = json.load(fl)
-                            # Trích xuất payload từ Envelope hoặc format chuẩn
+                            content = json.load(fl)
+                        # File batch chứa danh sách envelope, file lẻ chứa một envelope
+                        for item in content if isinstance(content, list) else [content]:
+                            if not isinstance(item, dict):
+                                continue
                             payload = item.get("raw_payload") or item.get("raw") or item
                             records.append(payload)
                             if len(records) >= max_records:
@@ -47,19 +50,13 @@ class EDACollectionService:
 
     def get_field_inventory(self, source: str) -> List[Dict[str, Any]]:
         """Sinh bảng kiểm kê trường và tỷ lệ khuyết thiếu (Field Inventory)."""
-        samples = self._load_raw_samples(source, max_records=200)
+        return self._inventory_from(self._load_raw_samples(source, max_records=200))
+
+    @staticmethod
+    def _inventory_from(samples: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Bảng kiểm kê tính từ các bản ghi raw đã đọc sẵn."""
         if not samples:
-            # Dữ liệu fallback chuẩn hóa nếu nguồn chưa có file trên máy
-            return [
-                {"field_name": "job_id", "data_type": "string", "null_count": 0, "null_rate_pct": 0.0, "unique_count": 150, "sample_value": f"{source}_10293"},
-                {"field_name": "title", "data_type": "string", "null_count": 0, "null_rate_pct": 0.0, "unique_count": 132, "sample_value": "Senior Backend Engineer (Python/Go)"},
-                {"field_name": "company", "data_type": "string", "null_count": 1, "null_rate_pct": 0.67, "unique_count": 85, "sample_value": "VNG Corporation"},
-                {"field_name": "salary_raw", "data_type": "string", "null_count": 22, "null_rate_pct": 14.67, "unique_count": 45, "sample_value": "25 - 45 triệu VND"},
-                {"field_name": "experience", "data_type": "string", "null_count": 15, "null_rate_pct": 10.0, "unique_count": 12, "sample_value": "3 năm"},
-                {"field_name": "location", "data_type": "string", "null_count": 4, "null_rate_pct": 2.67, "unique_count": 8, "sample_value": "Hồ Chí Minh"},
-                {"field_name": "skills", "data_type": "list", "null_count": 12, "null_rate_pct": 8.0, "unique_count": 95, "sample_value": "['Python', 'FastAPI', 'Docker']"},
-                {"field_name": "description_raw", "data_type": "string", "null_count": 0, "null_rate_pct": 0.0, "unique_count": 150, "sample_value": "<p>Mô tả công việc chi tiết...</p>"},
-            ]
+            return []
 
         df = pd.DataFrame(samples)
         total_rows = len(df)
@@ -95,55 +92,24 @@ class EDACollectionService:
         return sorted(inventory, key=lambda x: x["null_rate_pct"])
 
     def get_summary(self, source: str) -> Dict[str, Any]:
-        """Tóm tắt chất lượng tổng quan của nguồn."""
-        inventory = self.get_field_inventory(source)
-        samples = self._load_raw_samples(source)
-        total_rec = len(samples) if samples else 150
+        """Tóm tắt chất lượng của nguồn; số chưa đo được thì để None kèm lý do."""
+        from app.services.pipeline_report_service import pipeline_report_service
 
-        avg_null_rate = sum(item["null_rate_pct"] for item in inventory) / max(len(inventory), 1)
-        completeness = max(0.0, round(100.0 - avg_null_rate, 2))
-
-        return {
-            "source": source,
-            "total_records": total_rec,
-            "fields_count": len(inventory),
-            "completeness_score_pct": completeness,
-            "salary_parse_rate_pct": 82.5,
-            "negotiable_salary_pct": 17.5,
-        }
+        samples = self._load_raw_samples(source, max_records=200)
+        inventory = self._inventory_from(samples)
+        completeness = None
+        if inventory:
+            avg_null_rate = sum(item["null_rate_pct"] for item in inventory) / len(inventory)
+            completeness = max(0.0, round(100.0 - avg_null_rate, 2))
+        summary = pipeline_report_service.get_eda_summary(source, completeness)
+        summary["fields_count"] = len(inventory)
+        summary["sampled_records"] = len(samples)
+        return summary
 
     def get_charts_2d(self, source: str) -> Dict[str, Any]:
-        """Dữ liệu vẽ 5 họ biểu đồ 2D cho Giai đoạn 1."""
-        return {
-            "distribution": {
-                "bins": [10, 20, 30, 40, 50, 60, 70, 80, 100],
-                "counts": [15, 45, 62, 38, 22, 12, 6, 2],
-                "box": {"min": 8.0, "q1": 22.0, "median": 32.5, "q3": 48.0, "max": 85.0},
-            },
-            "correlation": {
-                "variables": ["Min Exp (Năm)", "Min Salary (Tr)", "Max Salary (Tr)", "Skills Count"],
-                "values": [
-                    [1.0, 0.68, 0.74, 0.42],
-                    [0.68, 1.0, 0.91, 0.38],
-                    [0.74, 0.91, 1.0, 0.45],
-                    [0.42, 0.38, 0.45, 1.0],
-                ],
-            },
-            "skills_pareto": [
-                {"label": "Python", "count": 120, "cumulative_pct": 28.5},
-                {"label": "Java", "count": 95, "cumulative_pct": 51.1},
-                {"label": "Docker", "count": 72, "cumulative_pct": 68.2},
-                {"label": "AWS", "count": 55, "cumulative_pct": 81.2},
-                {"label": "SQL", "count": 45, "cumulative_pct": 91.9},
-                {"label": "React", "count": 34, "cumulative_pct": 100.0},
-            ],
-            "locations": [
-                {"city": "Hồ Chí Minh", "count": 185},
-                {"city": "Hà Nội", "count": 130},
-                {"city": "Đà Nẵng", "count": 25},
-                {"city": "Remote", "count": 18},
-            ],
-        }
+        """Biểu đồ tính từ parquet staging thật; chưa có file thì trả available=False."""
+        from app.services.pipeline_report_service import pipeline_report_service
 
+        return pipeline_report_service.get_eda_charts(source)
 
 eda_collection_service = EDACollectionService()

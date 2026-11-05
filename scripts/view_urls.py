@@ -5,12 +5,12 @@ Công cụ kiểm tra & hiển thị danh sách URL đã lưu (URL Ledger) cho h
 
 Hỗ trợ:
 1. Xem dữ liệu cục bộ trong data/<source>/url_ledger/
-2. Xem dữ liệu trực tiếp trên MinIO Lakehouse: minio://vn-it-jobs/url_ledger/<source>/ (qua cờ --minio)
+2. Xem dữ liệu trực tiếp trên R2 Lakehouse: r2://vn-it-jobs/url_ledger/<source>/ (qua cờ --r2)
 3. Lọc theo trạng thái (PENDING, DONE, FAILED, RECHECK_DUE, CLOSED), hiển thị bảng trực quan và xuất file.
 
 Sử dụng:
     python scripts/view_urls.py --source topcv
-    python scripts/view_urls.py --source topcv --minio
+    python scripts/view_urls.py --source topcv --r2
     python scripts/view_urls.py --source topcv --status PENDING --limit 20
     python scripts/view_urls.py --source topcv --status FAILED --show-errors
 """
@@ -18,10 +18,8 @@ Sử dụng:
 import argparse
 import csv
 import json
-import os
 import sys
 from collections import Counter
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -70,47 +68,31 @@ def load_local_ledger(source: str) -> Dict[str, Any]:
         return {"records": {}, "source_path": str(target_path), "exists": False}
 
 
-def load_minio_ledger(
+def load_r2_ledger(
     source: str,
     bucket_name: Optional[str] = None,
     endpoint: Optional[str] = None,
     ak: Optional[str] = None,
     sk: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Tải catalog_master.json và manifests trực tiếp từ MinIO / Cloudflare R2 S3 Lakehouse."""
+    """Tải catalog_master.json và manifests trực tiếp từ Cloudflare R2 S3 Lakehouse."""
     try:
         from dotenv import load_dotenv
         load_dotenv()
     except Exception:
         pass
 
-    b_name = bucket_name or os.getenv("S3_BUCKET_NAME") or os.getenv("MINIO_BUCKET") or "vn-it-jobs"
-    ep = endpoint or os.getenv("S3_ENDPOINT_URL") or os.getenv("MINIO_ENDPOINT") or "http://localhost:9000"
-    is_localhost = "localhost" in ep or "127.0.0.1" in ep
-    if is_localhost:
-        access = ak or ("minioadmin" if os.getenv("MINIO_ROOT_USER") == os.getenv("AWS_ACCESS_KEY_ID") else os.getenv("MINIO_ROOT_USER", "minioadmin"))
-        secret = sk or ("minioadmin" if os.getenv("MINIO_ROOT_PASSWORD") == os.getenv("AWS_SECRET_ACCESS_KEY") else os.getenv("MINIO_ROOT_PASSWORD", "minioadmin"))
-    else:
-        access = ak or os.getenv("AWS_ACCESS_KEY_ID") or os.getenv("R2_ACCESS_KEY_ID") or os.getenv("MINIO_ROOT_USER") or "minioadmin"
-        secret = sk or os.getenv("AWS_SECRET_ACCESS_KEY") or os.getenv("R2_SECRET_ACCESS_KEY") or os.getenv("MINIO_ROOT_PASSWORD") or "minioadmin"
-    reg = "auto" if "r2.cloudflarestorage.com" in ep else os.getenv("AWS_REGION", "us-east-1")
+    from collection.common.r2_storage import get_r2_client, resolve_r2_bucket, resolve_r2_endpoint
+
+    b_name = resolve_r2_bucket(bucket_name)
+    ep = resolve_r2_endpoint(endpoint, required=False)
     is_r2 = "r2.cloudflarestorage.com" in ep
 
     try:
-        import boto3
-        from botocore.client import Config
-
-        s3 = boto3.client(
-            "s3",
-            endpoint_url=ep,
-            aws_access_key_id=access,
-            aws_secret_access_key=secret,
-            config=Config(signature_version="s3v4", connect_timeout=4, retries={"max_attempts": 2}),
-            region_name=reg,
-        )
+        s3 = get_r2_client(ep or None, ak, sk)
 
         catalog_key = f"url_ledger/{source}/catalog_master.json"
-        scheme = "r2" if is_r2 else "minio"
+        scheme = "r2"
         try:
             resp = s3.get_object(Bucket=b_name, Key=catalog_key)
             catalog_data = json.loads(resp["Body"].read().decode("utf-8"))
@@ -118,7 +100,7 @@ def load_minio_ledger(
                 "records": catalog_data,
                 "source_path": f"{scheme}://{b_name}/{catalog_key}",
                 "exists": True,
-                "from_minio": True,
+                "from_r2": True,
                 "is_r2": is_r2,
             }
         except Exception:
@@ -131,7 +113,7 @@ def load_minio_ledger(
                     "records": {},
                     "source_path": f"{scheme}://{b_name}/{prefix}",
                     "exists": False,
-                    "from_minio": True,
+                    "from_r2": True,
                     "is_r2": is_r2,
                 }
 
@@ -150,16 +132,13 @@ def load_minio_ledger(
                 "records": combined_records,
                 "source_path": f"{scheme}://{b_name}/{prefix} ({len(contents)} manifests)",
                 "exists": True,
-                "from_minio": True,
+                "from_r2": True,
                 "is_r2": is_r2,
             }
 
     except Exception as exc:
-        target_name = "Cloudflare R2" if is_r2 else "MinIO"
-        print(f"❌ Không thể kết nối tới {target_name} tại {ep}: {exc}", file=sys.stderr)
-        if not is_r2:
-            print("💡 Gợi ý: Chạy 'bash scripts/start_minio.sh' hoặc kiểm tra Docker container MinIO.", file=sys.stderr)
-        return {"records": {}, "source_path": f"s3://{b_name}/url_ledger/{source}/", "exists": False, "from_minio": True, "is_r2": is_r2}
+        print(f"❌ Không thể kết nối tới Cloudflare R2 tại {ep}: {exc}", file=sys.stderr)
+        return {"records": {}, "source_path": f"s3://{b_name}/url_ledger/{source}/", "exists": False, "from_r2": True, "is_r2": is_r2}
 
 
 def render_dashboard(
@@ -169,18 +148,18 @@ def render_dashboard(
     status_filter: Optional[str] = None,
     limit: int = 25,
     show_errors: bool = False,
-    is_minio: bool = False,
+    use_r2: bool = False,
 ):
     """Vẽ dashboard tóm tắt và bảng danh sách URL."""
     total = len(records)
     counts = Counter(r.get("status", "UNKNOWN") for r in records.values())
     repost_count = sum(1 for r in records.values() if r.get("repost_of_url_hash"))
 
-    if is_minio:
+    if use_r2:
         if "r2://" in source_path or "r2.cloudflarestorage.com" in source_path:
             storage_label = "☁️ [CLOUDFLARE R2 LAKEHOUSE]"
         else:
-            storage_label = "🌐 [MINIO S3 LAKEHOUSE]"
+            storage_label = "🌐 [R2 LAKEHOUSE]"
     else:
         storage_label = "💻 [LOCAL STORAGE]"
 
@@ -226,10 +205,8 @@ def render_dashboard(
             print(f"    └── ⚠️ Lỗi: {r.get('error_log')}")
 
     print("-" * 86)
-    if is_minio:
-        print("💡 Bạn có thể xem trực quan trên MinIO Web Console UI: http://localhost:9001 (User: minioadmin / Pass: minioadmin)")
-    else:
-        print("💡 Để xem dữ liệu lưu trên MinIO S3, chạy thêm cờ: --minio")
+    if not use_r2:
+        print("💡 Để xem dữ liệu lưu trên R2, chạy thêm cờ: --r2")
     print("=" * 86)
 
 
@@ -299,10 +276,10 @@ def audit_source_metadata(records: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def render_all_sources_audit(all_results: Dict[str, Dict[str, Any]], is_minio: bool = False):
+def render_all_sources_audit(all_results: Dict[str, Dict[str, Any]], use_r2: bool = False):
     """Vẽ bảng dashboard kiểm toán metadata toàn diện cho toàn bộ 8 nguồn tuyển dụng."""
-    if is_minio:
-        title_source = "☁️ [CLOUDFLARE R2 / MINIO CLOUD LAKEHOUSE]"
+    if use_r2:
+        title_source = "☁️ [CLOUDFLARE R2 LAKEHOUSE]"
     else:
         title_source = "💻 [LOCAL STORAGE]"
 
@@ -396,17 +373,17 @@ def export_data(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Xem và kiểm tra danh sách URL Ledger (Cục bộ & MinIO)")
+    parser = argparse.ArgumentParser(description="Xem và kiểm tra danh sách URL Ledger (Cục bộ & R2)")
     parser.add_argument("--source", type=str, default="topcv", help="Nguồn tuyển dụng (mặc định: topcv, dùng 'all' để xem tất cả)")
     parser.add_argument("--audit", action="store_true", default=False, help="Chạy chế độ kiểm toán chuẩn hóa metadata cho toàn bộ sàn")
-    parser.add_argument("--minio", action="store_true", default=False, help="Đọc trực tiếp từ MinIO / Cloudflare R2 S3 Lakehouse")
+    parser.add_argument("--r2", "--minio", action="store_true", default=False, help="Đọc trực tiếp từ Cloudflare R2")
     parser.add_argument("--status", type=str, default=None, help="Lọc theo trạng thái: PENDING, DONE, FAILED, RECHECK_DUE, CLOSED")
     parser.add_argument("--limit", type=int, default=25, help="Giới hạn số bài hiển thị (mặc định: 25, 0 = tất cả)")
     parser.add_argument("--show-errors", action="store_true", default=False, help="In chi tiết log lỗi cho các link FAILED")
     parser.add_argument("--export-json", type=str, default=None, help="Đường dẫn file xuất JSON")
     parser.add_argument("--export-csv", type=str, default=None, help="Đường dẫn file xuất CSV")
-    parser.add_argument("--endpoint", type=str, default=None, help="Endpoint MinIO/S3 (mặc định lấy từ .env hoặc http://localhost:9000)")
-    parser.add_argument("--bucket", type=str, default="vn-it-jobs", help="Tên bucket MinIO")
+    parser.add_argument("--endpoint", type=str, default=None, help="Endpoint R2 (mặc định lấy từ .env)")
+    parser.add_argument("--bucket", type=str, default="vn-it-jobs", help="Tên bucket R2")
 
     args = parser.parse_args()
 
@@ -414,8 +391,8 @@ def main():
     if args.source.lower() == "all" or args.audit:
         all_results = {}
         for s in ALL_SOURCES:
-            if args.minio:
-                res = load_minio_ledger(
+            if args.r2:
+                res = load_r2_ledger(
                     source=s,
                     bucket_name=args.bucket,
                     endpoint=args.endpoint,
@@ -424,11 +401,11 @@ def main():
                 res = load_local_ledger(source=s)
             all_results[s] = res
 
-        render_all_sources_audit(all_results, is_minio=args.minio)
+        render_all_sources_audit(all_results, use_r2=args.r2)
         return
 
-    if args.minio:
-        res = load_minio_ledger(
+    if args.r2:
+        res = load_r2_ledger(
             source=args.source,
             bucket_name=args.bucket,
             endpoint=args.endpoint,
@@ -438,8 +415,8 @@ def main():
 
     if not res["exists"] or not res["records"]:
         print(f"⚠️ Không tìm thấy bản ghi URL Ledger nào cho '{args.source}' tại: {res['source_path']}")
-        if not args.minio:
-            print(f"💡 Thử chạy với cờ '--minio' hoặc chạy Phase 1 Discovery: python -m collection.sources.{args.source}.crawler --phase discovery")
+        if not args.r2:
+            print(f"💡 Thử chạy với cờ '--r2' hoặc chạy Phase 1 Discovery: python -m collection.sources.{args.source}.crawler --phase discovery")
         return
 
     render_dashboard(
@@ -449,7 +426,7 @@ def main():
         status_filter=args.status,
         limit=args.limit,
         show_errors=args.show_errors,
-        is_minio=args.minio,
+        use_r2=args.r2,
     )
 
     if args.export_json or args.export_csv:

@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 """Endpoints cho phân hệ Collection EDA (Giai đoạn 1: Khám Phá Dữ Liệu Thô)."""
 
-from typing import Any, Dict, List
+from typing import List
 from fastapi import APIRouter, HTTPException
 
 from app.core.config import settings
 from app.services.eda_collection_service import eda_collection_service
+from app.services.pipeline_report_service import pipeline_report_service
 from app.schemas.eda import EDASummary, FieldInventoryItem
 
 router = APIRouter()
+
+
+@router.get("/compare", summary="So sánh độ đầy đủ giữa 8 nguồn từ báo cáo Integration")
+def get_cross_source_compare():
+    return pipeline_report_service.get_eda_compare()
 
 
 @router.get("/{source}/inventory", response_model=List[FieldInventoryItem], summary="Bảng kiểm kê trường DOM thô")

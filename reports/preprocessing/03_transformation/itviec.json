@@ -1,0 +1,259 @@
+{
+  "step": "03_transformation",
+  "source": "itviec",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:12:43+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 905
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 905
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 2960,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 232,
+      "examples": [
+        {
+          "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
+          "field": "salary_min_max",
+          "before": "1000 - 1300 USD",
+          "after": "25400000.0 - 33020000.0 VND (header)",
+          "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
+        },
+        {
+          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
+          "field": "salary_min_max",
+          "before": "3400 - 4500 USD",
+          "after": "86360000.0 - 114300000.0 VND (header)",
+          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
+        },
+        {
+          "job_id": "fintech-frontend-dev-javascript-react-new-wealth-2706",
+          "field": "salary_min_max",
+          "before": "1500 - 3000 USD",
+          "after": "38100000.0 - 76200000.0 VND (header)",
+          "url": "https://itviec.com/viec-lam-it/fintech-frontend-dev-javascript-react-new-wealth-2706"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 874,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 787,
+      "examples": [
+        {
+          "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
+          "field": "exp_min_max",
+          "before": "0.8 năm (10 tháng)",
+          "after": "0.07 - 0.07 years",
+          "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
+        },
+        {
+          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
+          "field": "exp_min_max",
+          "before": "5.1 năm (61 tháng)",
+          "after": "0.42 - 0.42 years",
+          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
+        },
+        {
+          "job_id": "cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720",
+          "field": "exp_min_max",
+          "before": "0.8 năm (10 tháng)",
+          "after": "0.07 - 0.07 years",
+          "url": "https://itviec.com/viec-lam-it/cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 905,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 905,
+      "examples": [
+        {
+          "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
+          "field": "skills_clean",
+          "before": "['AI' 'Python' 'AI, Python']",
+          "after": "['AWS', 'Azure', 'GCP', 'Git', 'Machine Learning']",
+          "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
+        },
+        {
+          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
+          "field": "skills_clean",
+          "before": "['MLOps' 'Python' 'DevOps' 'English' 'Leadership' 'AI'\n 'MLOps, Python, DevOps, English, Leadership, AI']",
+          "after": "['AWS', 'Azure', 'Docker', 'GCP', 'Kubernetes']",
+          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
+        },
+        {
+          "job_id": "business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345",
+          "field": "skills_clean",
+          "before": "['Business Analysis' 'Python' 'Tester' 'AI' 'Design' 'User flows'\n 'Internship Accepted'\n 'Business Analysis, Python, Tester, AI, Design, User flows, Internship Accepted']",
+          "after": "['Business Analysis', 'Python', 'Tester', 'AI', 'Design']",
+          "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 905,
+      "examples": [
+        {
+          "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
+          "field": "locations",
+          "before": "Quận Hải Châu",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': None, 'tinh_thanh': None, 'raw': 'Remote'}",
+          "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
+        },
+        {
+          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
+          "field": "locations",
+          "before": "Not Available",
+          "after": "{'dia_chi_cu_the': 'Block C, 4th floor, Waseco building, 10 Pho Quang', 'phuong_xa': None, 'tinh_thanh': None, 'raw': 'Block C, 4th floor, Waseco building, 10 Pho Quang,'}",
+          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
+        },
+        {
+          "job_id": "business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345",
+          "field": "locations",
+          "before": "Quận 7",
+          "after": "{'dia_chi_cu_the': 'Tầng 21, Phú Mỹ Hưng Tower, số 08 Hoàng Văn Thái', 'phuong_xa': 'Phường Tân Mỹ', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Tầng 21, Phú Mỹ Hưng Tower, số 08 Hoàng Văn Thái, Phường Tân Mỹ, TP. HCM.'}",
+          "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 24.2,
+      "fill_pct_out": 24.2
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 25.5,
+      "fill_pct_out": 25.5
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 96.6,
+      "fill_pct_out": 96.6
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 96.6,
+      "fill_pct_out": 96.6
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 87.0,
+      "fill_pct_out": 87.0
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 87.0,
+      "fill_pct_out": 87.0
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 94.8,
+      "fill_pct_out": 94.8
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 228,
+      "title": 4,
+      "jd": 1,
+      "none": 672
+    },
+    "salary_under_1m_count": 1,
+    "salary_from_x_count": 1,
+    "language_distribution": {
+      "vi": 301,
+      "en": 604
+    },
+    "experience_parsed_rate": 87.0
+  }
+}

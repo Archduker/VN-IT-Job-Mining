@@ -18,6 +18,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
 
+from collection.common.detail_schedule import WEEKDAY_EVENING_HOUR
 from collection.common.url_ledger import UrlLedger
 
 logger = logging.getLogger("collection.adaptive_router")
@@ -130,7 +131,7 @@ class AdaptiveWorkloadRouter:
         # Ban ngày tạm hoãn cào chi tiết để tiết kiệm EC2 On-Demand và dồn tải vào cuối tuần.
         # Chỉ duy nhất ca tối (sau 20:00 VN) chạy bảo trì 1 lần tối đa 30 tin.
         if not is_weekend:
-            if vn_hour < 20:
+            if vn_hour < WEEKDAY_EVENING_HOUR:
                 return {
                     "should_run": False,
                     "tier": "WEEKDAY_PAUSE",

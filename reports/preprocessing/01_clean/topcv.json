@@ -1,0 +1,291 @@
+{
+  "step": "01_clean",
+  "source": "topcv",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:11:41+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/topcv/raw",
+    "rows": 2749
+  },
+  "output": {
+    "path": "data/preprocessing/01_clean/topcv.jsonl",
+    "rows": 1561
+  },
+  "dropped": [
+    {
+      "rule": "C1",
+      "reason": "Giữ snapshot mới nhất của mỗi job_id",
+      "rows": 75
+    },
+    {
+      "rule": "C2",
+      "reason": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "rows": 0
+    },
+    {
+      "rule": "C3",
+      "reason": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "rows": 0
+    },
+    {
+      "rule": "C4c",
+      "reason": "Bỏ tin ngoài IT theo it_policy.json",
+      "rows": 935
+    },
+    {
+      "rule": "C5",
+      "reason": "Bỏ JD dưới 30 từ",
+      "rows": 163
+    },
+    {
+      "rule": "C6",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "rows": 15
+    },
+    {
+      "rule": "C7",
+      "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "rows": 0
+    }
+  ],
+  "rules": [
+    {
+      "id": "C1",
+      "name": "Giữ snapshot mới nhất của mỗi job_id",
+      "action": "drop",
+      "rows_affected": 75,
+      "examples": [
+        {
+          "job_id": "1714047",
+          "field": "snapshot_file",
+          "before": "2026-10-22/1714047_v1.json",
+          "after": "2026-11-01/1714047_v2.json",
+          "url": "https://www.topcv.vn/viec-lam/technical-support-night-shift/1714047.html"
+        },
+        {
+          "job_id": "1991304",
+          "field": "snapshot_file",
+          "before": "2026-10-22/1991304_v1.json",
+          "after": "2026-11-01/1991304_v2.json",
+          "url": "https://www.topcv.vn/brand/cmctelecom/tuyen-dung/ky-su-giam-sat-he-thong-fresher-system-admin-j1991304.html"
+        },
+        {
+          "job_id": "2001320",
+          "field": "snapshot_file",
+          "before": "2026-10-20/2001320_v1.json",
+          "after": "2026-11-01/2001320_v2.json",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-khong-yeu-cau-kinh-nghiem-luong-cung-up-to-11tr-35-hoa-hong-tai-quan-12/2001320.html"
+        }
+      ]
+    },
+    {
+      "id": "C2",
+      "name": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C3",
+      "name": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C4a",
+      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
+      "action": "flag",
+      "rows_affected": 935,
+      "examples": [
+        {
+          "job_id": "1065139",
+          "field": "job_title",
+          "before": "Nhân Viên Thiết Kế - Graphic Designer",
+          "after": "non_it",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke-graphic-designer/1065139.html"
+        },
+        {
+          "job_id": "1101574",
+          "field": "job_title",
+          "before": "Trưởng Phòng Kinh Doanh Công Nghệ Thông Tin",
+          "after": "non_it",
+          "url": "https://www.topcv.vn/viec-lam/truong-phong-kinh-doanh-cong-nghe-thong-tin/1101574.html"
+        },
+        {
+          "job_id": "1150334",
+          "field": "job_title",
+          "before": "Nhân Viên Kinh Doanh Online Fulltime",
+          "after": "non_it",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-kinh-doanh-online-fulltime/1150334.html"
+        }
+      ]
+    },
+    {
+      "id": "C4c",
+      "name": "Bỏ tin ngoài IT theo it_policy.json",
+      "action": "drop",
+      "rows_affected": 935,
+      "examples": [
+        {
+          "job_id": "1065139",
+          "field": "job_title",
+          "before": "Nhân Viên Thiết Kế - Graphic Designer",
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke-graphic-designer/1065139.html"
+        },
+        {
+          "job_id": "1101574",
+          "field": "job_title",
+          "before": "Trưởng Phòng Kinh Doanh Công Nghệ Thông Tin",
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/truong-phong-kinh-doanh-cong-nghe-thong-tin/1101574.html"
+        },
+        {
+          "job_id": "1150334",
+          "field": "job_title",
+          "before": "Nhân Viên Kinh Doanh Online Fulltime",
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-kinh-doanh-online-fulltime/1150334.html"
+        }
+      ]
+    },
+    {
+      "id": "C5",
+      "name": "Bỏ JD dưới 30 từ",
+      "action": "drop",
+      "rows_affected": 163,
+      "examples": [
+        {
+          "job_id": "1448528",
+          "field": "raw_description_text",
+          "before": null,
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/embedded-systems-engineer-mcu-rtos-linux-os/1448528.html"
+        },
+        {
+          "job_id": "1481975",
+          "field": "raw_description_text",
+          "before": null,
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/shopify-wordpress-developer/1481975.html"
+        },
+        {
+          "job_id": "1555870",
+          "field": "raw_description_text",
+          "before": null,
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/devops-engineer-team-lead/1555870.html"
+        }
+      ]
+    },
+    {
+      "id": "C6",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "action": "drop",
+      "rows_affected": 15,
+      "examples": [
+        {
+          "job_id": "1855721",
+          "field": "dedup_key",
+          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh|2026-W43",
+          "after": "giữ 1858313",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1855721.html"
+        },
+        {
+          "job_id": "1990674",
+          "field": "dedup_key",
+          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh|2026-W43",
+          "after": "giữ 1858313",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1990674.html"
+        },
+        {
+          "job_id": "2108717",
+          "field": "dedup_key",
+          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh|2026-W43",
+          "after": "giữ 1858313",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/2108717.html"
+        }
+      ]
+    },
+    {
+      "id": "C7",
+      "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    }
+  ],
+  "fields": [
+    {
+      "field": "job_title",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_name",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_location_text",
+      "fill_pct_in": 96.8,
+      "fill_pct_out": 99.6
+    },
+    {
+      "field": "raw_posted_date",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "raw_description_text",
+      "fill_pct_in": 88.9,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_list",
+      "fill_pct_in": 97.7,
+      "fill_pct_out": 99.7
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "it_levels": {
+      "tang_1_it": 1369,
+      "tang_1_non_it": 346,
+      "tang_2_non_it": 589,
+      "tang_2_it": 370
+    },
+    "it_status": {
+      "it": 1739,
+      "non_it": 935
+    },
+    "it_policy": {
+      "drop": [
+        "non_it"
+      ],
+      "approved_on": "2026-11-03",
+      "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 71 non_it (graphic designer, telesales, marketing...)"
+    },
+    "review": {
+      "file": "data/preprocessing/review/it_topcv.csv",
+      "rows": 80,
+      "labeled": 80,
+      "labeled_non_it": 71,
+      "rule_decided": 50,
+      "rule_correct": 50,
+      "status_non_it": 68,
+      "status_non_it_correct": 64,
+      "level2_labeled": 30,
+      "level2_correct": 19
+    }
+  }
+}

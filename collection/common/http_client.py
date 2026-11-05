@@ -405,7 +405,7 @@ class HttpClient:
             )
             time.sleep(delay)
 
-        ua = self._rotate_user_agent()
+        self._rotate_user_agent()
         request_headers = {**self._session.headers, **(headers or {})}
 
         try:

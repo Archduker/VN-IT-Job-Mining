@@ -1,0 +1,259 @@
+{
+  "step": "03_transformation",
+  "source": "vieclam24h",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:12:42+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 182
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 182
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 195,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 168,
+      "examples": [
+        {
+          "job_id": "200011696",
+          "field": "salary_min_max",
+          "before": "8 - 12 triệu",
+          "after": "8000000.0 - 12000000.0 VND (header)",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
+        },
+        {
+          "job_id": "200383662",
+          "field": "salary_min_max",
+          "before": "20 - 25 triệu",
+          "after": "20000000.0 - 25000000.0 VND (header)",
+          "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
+        },
+        {
+          "job_id": "200665507",
+          "field": "salary_min_max",
+          "before": "18 - 25 triệu",
+          "after": "18000000.0 - 25000000.0 VND (header)",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 182,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 182,
+      "examples": [
+        {
+          "job_id": "200011696",
+          "field": "exp_min_max",
+          "before": "2 năm",
+          "after": "2.0 - 2.0 years",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
+        },
+        {
+          "job_id": "200383662",
+          "field": "exp_min_max",
+          "before": "2 năm",
+          "after": "2.0 - 2.0 years",
+          "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
+        },
+        {
+          "job_id": "200665507",
+          "field": "exp_min_max",
+          "before": "4 năm",
+          "after": "4.0 - 4.0 years",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 182,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 182,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 182,
+      "examples": [
+        {
+          "job_id": "200011696",
+          "field": "skills_clean",
+          "before": "['it helpdesk' 'it support / it helpdesk' 'It' 'it officer' 'it engineer'\n 'it support' 'it manager' 'it tiếng anh' 'it system admin' 'it bệnh viện'\n 'Việc làm TP.HCM' 'IT Phần cứng - Mạng' 'Công Ty TNHH TM Dược ...']",
+          "after": "['it helpdesk', 'It', 'it officer', 'it engineer', 'it support']",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
+        },
+        {
+          "job_id": "200383662",
+          "field": "skills_clean",
+          "before": "['full-stack developer' 'java developer' 'Java' 'Developer' 'fresher java'\n 'lập trình java' 'front end developer' 'mobile developer' 'full time'\n 'net developer' 'IT Phần mềm' 'Công Ty Cổ Phần Ecoit']",
+          "after": "['CI/CD', 'Java', 'JavaScript', 'Kafka', 'Microservices']",
+          "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
+        },
+        {
+          "job_id": "200665507",
+          "field": "skills_clean",
+          "before": "['công nghệ thông tin' 'kỹ sư công nghệ thông tin'\n 'thực tập công nghệ thông tin' 'nhân viên dự án' 'Dự án'\n 'thực tập sinh công nghệ thông tin' 'nhân viên hỗ trợ dự án'\n 'nhân viên quản lý dự án' 'sale dự án' 'nhân viên công nghệ'\n 'Việc làm Hà Nội' 'IT Phần cứng - Mạng' 'Công Ty Cổ Phần Tư ...']",
+          "after": "['Dự án', 'sale dự án']",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 182,
+      "examples": [
+        {
+          "job_id": "200011696",
+          "field": "locations",
+          "before": "TP.HCM",
+          "after": "{'dia_chi_cu_the': '74/18 Trương Quốc Dung', 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': '74/18 Trương Quốc Dung, Phường 10, Quận Phú Nhuận, TP Hồ Chí Minh'}",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
+        },
+        {
+          "job_id": "200383662",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': '143 Nguyễn Tuân, Thanh Xuân', 'phuong_xa': None, 'tinh_thanh': 'TP. Hà Nội', 'raw': '143 Nguyễn Tuân, Thanh Xuân, Hà Nội'}",
+          "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
+        },
+        {
+          "job_id": "200665507",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': 'Số 9 tổ 3', 'phuong_xa': 'Phường Cầu Giấy', 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Số 9 tổ 3, Phường Cầu Giấy, TP Hà Nội'}",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 91.8,
+      "fill_pct_out": 91.8
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 92.3,
+      "fill_pct_out": 92.3
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 96.7,
+      "fill_pct_out": 96.7
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 169,
+      "title": 1,
+      "jd": 0,
+      "none": 12
+    },
+    "salary_under_1m_count": 2,
+    "salary_from_x_count": 0,
+    "language_distribution": {
+      "vi": 172,
+      "en": 10
+    },
+    "experience_parsed_rate": 100.0
+  }
+}

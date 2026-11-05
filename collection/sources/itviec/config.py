@@ -2,7 +2,7 @@
 """Cấu hình riêng cho crawler ITViec (nguồn: https://itviec.com).
 
 Giá trị được tách riêng để crawler.py / parser.py dùng chung và để đối chiếu
-dễ dàng khi kiểm thử selector. Credential MinIO KHÔNG đặt ở đây (lấy từ .env).
+dễ dàng khi kiểm thử selector. Credential R2 KHÔNG đặt ở đây (lấy từ .env).
 """
 
 import os
@@ -62,12 +62,12 @@ USER_AGENT = (
     "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 )
 
-# ── Đường dẫn lưu trữ cục bộ (khớp layout MinIO) ──────────────
+# ── Đường dẫn lưu trữ cục bộ (khớp layout R2) ──────────────
 # data/itviec/url_ledger/... và data/itviec/raw/YYYY-MM-DD/{job_id}_v{version}.json
 
-# ── MinIO key prefix (bucket lấy từ env MINIO_BUCKET / vn-it-jobs) ──
-MINIO_RAW_PREFIX = f"raw/{SOURCE}/"          # raw/itviec/YYYY-MM-DD/<job_id>_v<n>.json
-MINIO_HTML_PREFIX = f"raw_html/{SOURCE}/"    # raw_html/itviec/YYYY-MM-DD/<job_id>_v<n>.html
+# ── R2 key prefix (bucket lấy từ env R2_BUCKET_NAME / vn-it-jobs) ──
+R2_RAW_PREFIX = f"raw/{SOURCE}/"          # raw/itviec/YYYY-MM-DD/<job_id>_v<n>.json
+R2_HTML_PREFIX = f"raw_html/{SOURCE}/"    # raw_html/itviec/YYYY-MM-DD/<job_id>_v<n>.html
 
 # ── Nội dung tin để băm Clean Container (đã verify offline 3 layout 2026-10-17) ──
 JD_HASH_CONTAINER = "section.job-content"     # khối bao trọn JD + Yêu cầu + Quyền lợi + Lý do
@@ -81,6 +81,6 @@ HASH_JSONLD_FIELDS = [
 CONTENT_HASH_ALGO = "section.job-content+canonical-jsonld/v1"
 
 # ── D4/D5: đồng bộ HTML theo version + flush ledger định kỳ ──
-SYNC_HTML = os.getenv("ITVIEC_SYNC_HTML", "0") == "1"   # Mặc định KHÔNG push HTML lên MinIO (Lựa chọn 1)
+SYNC_HTML = os.getenv("ITVIEC_SYNC_HTML", "0") == "1"   # Mặc định KHÔNG push HTML lên R2 (Lựa chọn 1)
 LEDGER_FLUSH_EVERY = int(os.getenv("ITVIEC_LEDGER_FLUSH_EVERY", "10"))
-LEDGER_MINIO_SYNC_EVERY = int(os.getenv("ITVIEC_LEDGER_SYNC_EVERY", "50"))
+LEDGER_R2_SYNC_EVERY = int(os.getenv("ITVIEC_LEDGER_SYNC_EVERY", "50"))

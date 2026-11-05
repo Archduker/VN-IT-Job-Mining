@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Pydantic schemas cho Cloudflare R2 Cloud Lakehouse."""
 
-from typing import Any, Dict, List, Optional
+from typing import Dict, Optional
 from pydantic import BaseModel
 
 
@@ -13,13 +13,6 @@ class CloudHealthResponse(BaseModel):
     endpoint: str
     message: str
     error: Optional[str] = None
-
-
-class R2ObjectItem(BaseModel):
-    key: str
-    size: int
-    last_modified: str
-    etag: str
 
 
 class LayerMetric(BaseModel):
@@ -36,10 +29,3 @@ class StorageBreakdownResponse(BaseModel):
     layers: Dict[str, LayerMetric]
     error: Optional[str] = None
 
-
-class LocalCloudDiff(BaseModel):
-    source: str
-    local_files: int
-    cloud_files: int
-    unpushed_count: int
-    sync_status: str  # SYNCED | OUT_OF_SYNC | UNKNOWN

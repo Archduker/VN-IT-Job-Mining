@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Báo cáo theo nguồn cho trang Raw: 8 feature target, đơn biến, mẫu raw có chú thích."""
 
-from collections import Counter
 import json
 import logging
 import re
@@ -9,7 +8,7 @@ from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple
 
 from app.core.config import settings
 from app.core.data_paths import iter_raw_files, load_json_report, read_raw_envelopes
-from app.core.feature_targets import FEATURES, RAW_PATHS, SOURCE_DOMAINS, SOURCE_ISSUES
+from app.core.feature_targets import FEATURES, RAW_PATHS, SOURCE_DOMAINS, SOURCE_ISSUES, WARN_FEATURES
 from app.core.r2_client import r2_client
 from app.services.ledger_service import ledger_service
 
@@ -26,7 +25,12 @@ def _experience_years(text: Any) -> Optional[float]:
     value = str(text).lower()
     if "không yêu cầu" in value or "no experience" in value or "chưa có" in value:
         return 0.0
-    match = re.search(r"(\d+(?:[.,]\d+)?)\s*(?:\+\s*)?(?:năm|years?|yrs?)", value)
+    # Khoảng "1 - 10 năm", "2 đến 5 năm", "3~5 years": lấy cận dưới. Trước đây regex lấy số sát chữ "năm" nên ra 10.
+    unit = r"(?:năm|years?|yrs?)"
+    num = r"(\d+(?:[.,]\d+)?)"
+    match = re.search(num + r"\s*(?:-|–|~|đến|to)\s*\d+(?:[.,]\d+)?\s*" + unit, value)
+    if not match:
+        match = re.search(num + r"\s*(?:\+\s*)?" + unit, value)
     return float(match.group(1).replace(",", ".")) if match else None
 
 
@@ -393,8 +397,8 @@ def annotate_envelope(source: str, envelope: Dict[str, Any]) -> Dict[str, Any]:
             status = "fallback" if inferred or not found else "ok"
         elif found:
             status = "fail"
-        warning = overrides.get(code, {}).get("problem") if source == "careerviet" and code == "F7" else None
-        if warning and status == "ok":
+        warning = overrides.get(code, {}).get("problem") if (source, code) in WARN_FEATURES else None
+        if warning and status in ("ok", "fail"):
             status = "warn"
         notes.append({
             "code": code, "name": feature["name"], "status": status,

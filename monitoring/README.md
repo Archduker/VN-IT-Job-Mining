@@ -11,7 +11,7 @@ Hệ thống Giám sát & Đo lường Toàn diện cho nền tảng khai phá d
 | Collection | `/` | `GET /api/v1/monitor/collection?days=7\|14` | Tin theo ngày, lịch cào, các bước hôm nay, tiến độ so với kế hoạch |
 | Raw | `/raw` | `GET /api/v1/monitor/sources`, `/sources/{source}/report`, `/univariate/{F1..F8}`, `/samples`, `/samples/{id}` | 8 feature target, vấn đề và hướng xử lý, phân tích đơn biến, bản ghi raw có chú thích |
 
-Hai trang này chỉ hiện số thật, thiếu dữ liệu thì báo trống kèm lý do. Kế hoạch thu thập đặt bằng `TARGET_UNIQUE` và `TARGET_DATE` trong `.env`. Các trang EDA, Pre-processing, Processing, Master Dashboard và ML 3D nằm trong nhóm "Công cụ khác" và còn dùng số minh họa, có gắn nhãn "Số liệu mẫu".
+Hai trang này chỉ hiện số thật, thiếu dữ liệu thì báo trống kèm lý do. Kế hoạch thu thập đặt bằng `TARGET_UNIQUE` và `TARGET_DATE` trong `.env`. Các trang EDA, Pre-processing, Processing và Master Dashboard trong nhóm "Công cụ khác" cũng chỉ hiện số thật, đọc từ `reports/` và `data/staging/` qua `pipeline_report_service.py`. Trang ML 3D đã gỡ vì chưa có bước mining thật.
 
 ---
 
@@ -107,10 +107,19 @@ Hệ thống được chuẩn hóa kết hợp cùng các công cụ MCP:
 
 ## 🚀 Hướng Dẫn Khởi Chạy
 
+Cách nhanh nhất là chạy một lệnh ở thư mục gốc:
+
+```bash
+./start_monitoring.sh          # hoặc: make monitor
+./start_monitoring.sh --check  # chỉ kiểm tra .env, .venv, node_modules, docker, cổng
+```
+
+Script kiểm tra `.env` (không in giá trị), tạo `.venv` và chạy `npm ci` khi cần, bật PostgreSQL bằng docker cho các thẻ Airflow, chạy backend và frontend rồi mở trình duyệt. Log nằm trong `logs/monitoring/`. Script không bật Airflow scheduler. Có thể chạy tay từng phần như dưới đây.
+
 ### 1. Khởi chạy Backend API (FastAPI)
 ```bash
 cd monitoring/backend
-../../.venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+../../.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 - API Docs: `http://localhost:8000/docs`
 - Master Dashboard API: `http://localhost:8000/api/dashboard`

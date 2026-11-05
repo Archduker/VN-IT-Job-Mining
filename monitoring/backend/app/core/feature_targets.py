@@ -108,7 +108,7 @@ RAW_PATHS: Dict[str, Dict[str, List[Path]]] = {
         "F4": [("salary_raw",)],
         "F5": [("experience",)],
         "F6": [("general_info", "job_level")],
-        "F7": [],
+        "F7": [("occupations",)],
         "F8": [("general_info", "posted_date"), ("deadline_raw",)],
     },
     "topcv": {
@@ -126,10 +126,12 @@ RAW_PATHS: Dict[str, Dict[str, List[Path]]] = {
         "F2": [("company", "company_name"), ("company", "name"), ("company",)],
         "F3": [("addresses", "address_region_list")],
         "F4": [("salary_raw",), ("salary",)],
-        "F5": [],
-        "F6": [],
+        "F5": [("experience",), ("extra", "experience"), ("experiences_str",),
+               ("job_posting_jsonld", "experienceRequirements")],
+        "F6": [("seniority_text",), ("job_level",), ("job_levels_str",)],
         "F7": [("skills_arr",), ("skills_str",)],
-        "F8": [("recalled_at",), ("created_at",)],
+        # published.date có từ 2026-11-02 (DETAIL_FIELDS); date_posted chỉ có ở bản cào từ HTML
+        "F8": [("recalled_at",), ("created_at",), ("published", "date"), ("date_posted",), ("valid_through",)],
     },
     "vieclam24h": {
         "F1": [("title",)],
@@ -159,6 +161,9 @@ SOURCE_DOMAINS: Dict[str, str] = {
     "vieclam24h": "vieclam24h.vn", "vietnamworks": "vietnamworks.com",
 }
 
+# Feature mà pipeline đang lấy sai giá trị; trang Raw cảnh báo dù có dữ liệu (sửa ở bước pre-processing, PRE-6).
+WARN_FEATURES = {("careerviet", "F7"), ("jobsgo", "F7")}
+
 # Vấn đề đã kiểm chứng riêng cho từng nguồn; ghi đè nội dung mặc định của feature.
 SOURCE_ISSUES: Dict[str, Dict[str, Dict[str, str]]] = {
     "careerviet": {
@@ -173,15 +178,9 @@ SOURCE_ISSUES: Dict[str, Dict[str, Dict[str, str]]] = {
         "F6": {"problem": "Trang không có ô cấp bậc riêng", "where": "Luật chuẩn hóa",
                "fix": "Suy cấp bậc từ title"},
     },
-    "topdev": {
-        "F5": {"problem": "Flattener chưa lấy kinh nghiệm từ raw", "where": "Normalizer",
-               "fix": "Bổ sung trường kinh nghiệm vào _flatten_topdev"},
-        "F6": {"problem": "Flattener chưa lấy cấp bậc từ raw", "where": "Normalizer",
-               "fix": "Bổ sung trường cấp bậc hoặc suy từ title"},
-    },
     "jobsgo": {
-        "F7": {"problem": "Flattener chưa lấy kỹ năng; kỹ năng nằm trong phần yêu cầu", "where": "Normalizer",
-               "fix": "Quét từ điển kỹ năng trong yêu cầu công việc"},
+        "F7": {"problem": "Pipeline đang lấy occupations (ngành nghề) làm kỹ năng",
+               "where": "Normalizer", "fix": "Bỏ occupations, quét từ điển kỹ năng trong phần yêu cầu"},
     },
     "vietnamworks": {
         "F4": {"problem": "salaryMin/salaryMax bằng 0 khi lương ẩn, lúc đó chỉ còn prettySalary",

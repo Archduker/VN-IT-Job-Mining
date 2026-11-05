@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from collection.common.logger import get_logger
-from collection.common.schema import JobRecord, RawJobEnvelope, validate_record
+from collection.common.schema import RawJobEnvelope, validate_record
 
 logger = get_logger("data_quality")
 

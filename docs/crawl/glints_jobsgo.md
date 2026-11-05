@@ -1,5 +1,11 @@
 # Phân tích crawler Glints Vietnam và JobsGO
 
+> **Hiện trạng 03/11/2026**
+>
+> - Xem trạng thái từng nguồn ở `docs/crawl/glints.md` và `docs/crawl/jobsgo.md`.
+>
+> Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
+
 > Phụ trách: Duy — nhánh local `crawls/glints-jobsgo`
 > Nguyên tắc: Raw-As-Is, lưu trữ Cloudflare R2, tách Discovery/Detail, Safe Skip, CDC và re-crawl 21 ngày.
 
@@ -17,7 +23,7 @@ Hai nguồn chạy độc lập:
 ### 2.1. Discovery
 
 - Endpoint được crawler hiện tại dùng: `https://glints.com/api/v2-alc/graphql?op=searchJobsV3`.
-- Query dùng lại `SEARCH_QUERY` từ `crawlers/sources/glints/crawler.py`, gồm ID, tiêu đề, ngày tạo/cập nhật, công ty, quốc gia, địa điểm lồng nhau, lương, kỹ năng, loại việc, kinh nghiệm và category.
+- Query dùng lại `SEARCH_QUERY` từ `collection/sources/glints/crawler.py`, gồm ID, tiêu đề, ngày tạo/cập nhật, công ty, quốc gia, địa điểm lồng nhau, lương, kỹ năng, loại việc, kinh nghiệm và category.
 - Duyệt page theo `hasMore`; ghi page request/response JSON vào `raw/glints/_listing/<date>/`.
 - URL tin được tạo từ ID và slug tiêu đề; `url_hash`/canonical URL do hàm chung trong `crawlers.common.url_ledger` quản lý.
 

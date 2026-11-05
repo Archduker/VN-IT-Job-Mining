@@ -4,12 +4,12 @@
 from collections import Counter
 import json
 import logging
-import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from app.core.config import settings
 from app.core.data_paths import find_catalog_file
+from collection.common.url_ledger import is_due_for_recrawl
 
 logger = logging.getLogger("ledger_service")
 
@@ -109,6 +109,32 @@ class LedgerService:
             "by_source": by_source,
             "generated_at": datetime.now().isoformat(),
         }
+
+    def get_queue_summary(self, source: str, recheck_days: int = 21) -> Dict[str, int]:
+        """Hàng đợi Phase 2 tính đúng như UrlLedger.get_queue_summary mà router dùng."""
+        summary = {"pending": 0, "recheck_due": 0, "done": 0, "closed": 0, "failed": 0}
+        catalog_path = self._find_catalog_file(source)
+        if not catalog_path or not catalog_path.exists():
+            return summary
+        try:
+            with open(catalog_path, "r", encoding="utf-8") as f:
+                records = json.load(f)
+        except (OSError, ValueError):
+            return summary
+        for rec in records.values() if isinstance(records, dict) else []:
+            status = rec.get("status")
+            if status in ("PENDING", "NEW"):
+                summary["pending"] += 1
+            elif status == "RECHECK_DUE":
+                summary["recheck_due"] += 1
+            elif status == "DONE":
+                due = is_due_for_recrawl(rec.get("last_scraped_at") or rec.get("last_crawled_at"), days=recheck_days)
+                summary["recheck_due" if due else "done"] += 1
+            elif status == "CLOSED":
+                summary["closed"] += 1
+            elif status == "FAILED":
+                summary["failed"] += 1
+        return summary
 
     def get_ledger_summary(self, source: str) -> Dict[str, Any]:
         """Thống kê tổng số và phân loại trạng thái URL trong Ledger."""

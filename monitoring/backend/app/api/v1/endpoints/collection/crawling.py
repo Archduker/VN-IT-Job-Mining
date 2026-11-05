@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Endpoints cho phân hệ Crawling Observatory (Giai đoạn 1)."""
 
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Query
 from sse_starlette.sse import EventSourceResponse
 
@@ -111,6 +111,7 @@ async def trigger_crawl(source: str, req: TriggerCrawlRequest):
         max_items=req.max_items,
         max_pages=req.max_pages,
         engine=req.engine,
+        sync_r2=req.sync_r2,
     )
     return CrawlJobResponse(**res)
 

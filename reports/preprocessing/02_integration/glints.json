@@ -1,0 +1,189 @@
+{
+  "step": "02_integration",
+  "source": "glints",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:12:13+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/01_clean/glints.jsonl",
+    "rows": 271
+  },
+  "output": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 271
+  },
+  "dropped": [
+    {
+      "rule": "I0",
+      "reason": "dòng không đọc được JSON, cần xem lại file 01_clean",
+      "rows": 0
+    }
+  ],
+  "rules": [
+    {
+      "id": "I0",
+      "name": "Bỏ dòng JSON hỏng trong file Clean",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I1",
+      "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
+      "action": "modify",
+      "rows_affected": 271,
+      "examples": []
+    },
+    {
+      "id": "I2",
+      "name": "ITviec lấy ngày đăng từ JSON-LD datePosted",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I3",
+      "name": "TopDev lấy ngày đăng và kinh nghiệm từ published/JSON-LD",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I4",
+      "name": "Bỏ tag SEO và ngành nghề khỏi skills_list",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I5",
+      "name": "Chuyển chuỗi rỗng và container rỗng về null",
+      "action": "modify",
+      "rows_affected": 76,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "empty_value",
+          "before": "'' or []",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
+          "field": "empty_value",
+          "before": "'' or []",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
+        },
+        {
+          "job_id": "056aa512-f2b9-4256-8fd0-acf7d39a2af3",
+          "field": "empty_value",
+          "before": "'' or []",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/backend-cloud-developer/056aa512-f2b9-4256-8fd0-acf7d39a2af3"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "job_title",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_name",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_address",
+      "fill_pct_in": 86.7,
+      "fill_pct_out": 86.7
+    },
+    {
+      "field": "raw_category_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_location_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "working_locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_posted_date",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_deadline",
+      "fill_pct_in": 98.2,
+      "fill_pct_out": 98.2
+    },
+    {
+      "field": "raw_salary_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_employment_type",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_experience_text",
+      "fill_pct_in": 91.1,
+      "fill_pct_out": 91.1
+    },
+    {
+      "field": "raw_seniority_text",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "raw_education_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_headcount",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "skills_list",
+      "fill_pct_in": 88.2,
+      "fill_pct_out": 88.2
+    },
+    {
+      "field": "benefits_list",
+      "fill_pct_in": 82.7,
+      "fill_pct_out": 82.7
+    },
+    {
+      "field": "raw_description_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_requirements_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {}
+}

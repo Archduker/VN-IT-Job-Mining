@@ -73,6 +73,7 @@ airflow/webserver_config.py
 scratch/
 sample_htmls/
 
-# MinIO Lakehouse local storage & caches
-.minio.sys/
 vn-it-jobs/
+
+# Báo cáo audit chạy lại được bằng scripts/audit_raw_data.py, không đưa vào git
+reports/data_audit_*

@@ -9,7 +9,6 @@ Hỗ trợ:
 """
 
 import argparse
-import json
 import os
 import sys
 from pathlib import Path
@@ -17,7 +16,7 @@ from pathlib import Path
 try:
     import boto3
     from botocore.client import Config
-    from dotenv import load_dotenv
+    from dotenv import load_dotenv  # noqa: F401 (chỉ kiểm tra đã cài)
 except ImportError:
     print("[LỖI] Thiếu thư viện phụ thuộc. Vui lòng chạy: pip install boto3 python-dotenv")
     sys.exit(1)
@@ -104,20 +103,19 @@ def save_env_file(endpoint_url: str, access_key: str, secret_key: str, bucket_na
                     "S3_PROVIDER", "S3_ENDPOINT_URL", "MINIO_ENDPOINT",
                     "AWS_ACCESS_KEY_ID", "MINIO_ROOT_USER",
                     "AWS_SECRET_ACCESS_KEY", "MINIO_ROOT_PASSWORD",
-                    "S3_BUCKET_NAME", "MINIO_BUCKET", "AWS_REGION"
-                ]:
+                    "S3_BUCKET_NAME", "MINIO_BUCKET", "AWS_REGION",
+                    "R2_ENDPOINT_URL", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME",
+                ]:  # MINIO_* chỉ còn ở đây để xóa khỏi .env cũ
                     lines.append(line)
 
     lines.append("\n# --- Cloudflare R2 / S3 Lakehouse Cấu Hình Chung Cho Cả Team ---\n")
     lines.append("S3_PROVIDER=cloudflare_r2\n")
-    lines.append(f"S3_ENDPOINT_URL={endpoint_url}\n")
-    lines.append(f"MINIO_ENDPOINT={endpoint_url}\n")
-    lines.append(f"AWS_ACCESS_KEY_ID={access_key}\n")
-    lines.append(f"MINIO_ROOT_USER={access_key}\n")
-    lines.append(f"AWS_SECRET_ACCESS_KEY={secret_key}\n")
-    lines.append(f"MINIO_ROOT_PASSWORD={secret_key}\n")
-    lines.append(f"S3_BUCKET_NAME={bucket_name}\n")
-    lines.append(f"MINIO_BUCKET={bucket_name}\n")
+    # get_r2_client đọc R2_* trước, nên ghi cả R2_* để không còn bản cũ lệch với AWS_*/S3_*
+    for key, value in (("R2_ENDPOINT_URL", endpoint_url), ("S3_ENDPOINT_URL", endpoint_url),
+                       ("R2_ACCESS_KEY_ID", access_key), ("AWS_ACCESS_KEY_ID", access_key),
+                       ("R2_SECRET_ACCESS_KEY", secret_key), ("AWS_SECRET_ACCESS_KEY", secret_key),
+                       ("R2_BUCKET_NAME", bucket_name), ("S3_BUCKET_NAME", bucket_name)):
+        lines.append(f"{key}={value}\n")
     lines.append("AWS_REGION=auto\n")
 
     with open(env_path, "w", encoding="utf-8") as f:
@@ -188,7 +186,7 @@ def main():
     print("  1. Mọi crawler bạn chạy sẽ tự động đẩy URL và Raw data lên Cloud R2 chung.")
     print("  2. Đồng đội chỉ cần cấu hình cùng Endpoint & Key là thấy toàn bộ dữ liệu.")
     print("  3. Xem dữ liệu trên Cloud bất kỳ lúc nào bằng:")
-    print("     .venv/bin/python scripts/view_urls.py --source topcv --minio")
+    print("     .venv/bin/python scripts/view_urls.py --source topcv --r2")
     print("  4. Đồng bộ 2 chiều qua lệnh:")
     print("     .venv/bin/python scripts/sync_cloud_lakehouse.py --download")
     print("=" * 70)

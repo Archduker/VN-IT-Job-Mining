@@ -3,10 +3,21 @@ import {
   AirflowStatusResponse,
   CloudHealth,
   CollectionMonitor,
+  DashboardReport,
+  EdaCharts,
+  EdaCompare,
+  EdaSummary,
+  FieldInventoryItem,
+  PreprocessingReport,
+  ProcessingReport,
   RawSample,
   SampleList,
   SourceOverviewItem,
   SourceReport,
+  StepResponse,
+  StepRowsResponse,
+  StorageResponse,
+  StepSummary,
   Univariate,
 } from '../types'
 
@@ -26,4 +37,25 @@ export const api = {
     get<RawSample>(`/monitor/sources/${source}/samples/${encodeURIComponent(id)}`),
   r2Status: () => get<CloudHealth>('/cloud/r2/status'),
   airflowStatus: () => get<AirflowStatusResponse>('/orchestration/airflow/status'),
+  preprocessing: () => get<PreprocessingReport>('/preprocessing/metrics'),
+  preprocessingSteps: () => get<StepSummary[]>('/preprocessing/steps'),
+  preprocessingStep: (step: string) => get<StepResponse>(`/preprocessing/steps/${step}`),
+  preprocessingStepSource: (step: string, source: string) =>
+    get<StepResponse>(`/preprocessing/steps/${step}/${source}`),
+  preprocessingStorage: () => get<StorageResponse>('/preprocessing/storage'),
+  preprocessingRows: (step: string, q: { source?: string | null; offset: number; limit: number; origin: 'r2' | 'local' }) =>
+    get<StepRowsResponse>(
+      `/preprocessing/steps/${step}/rows?${new URLSearchParams({
+        ...(q.source ? { source: q.source } : {}),
+        offset: String(q.offset),
+        limit: String(q.limit),
+        origin: q.origin,
+      })}`,
+    ),
+  processing: () => get<ProcessingReport>('/processing/metrics'),
+  dashboard: () => get<DashboardReport>('/dashboard'),
+  edaInventory: (source: string) => get<FieldInventoryItem[]>(`/eda/${source}/inventory`),
+  edaSummary: (source: string) => get<EdaSummary>(`/eda/${source}/summary`),
+  edaCharts: (source: string) => get<EdaCharts>(`/eda/${source}/charts`),
+  edaCompare: () => get<EdaCompare>('/eda/compare'),
 }

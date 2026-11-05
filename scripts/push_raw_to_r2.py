@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Đẩy dữ liệu cào thô và manifests cục bộ lên Cloudflare R2 Cloud Lakehouse.
+"""Đẩy raw và URL Ledger cục bộ lên Cloudflare R2 Cloud Lakehouse.
 
-VN-IT-Job-Mining (R2-Exclusive Object Storage).
+Raw và ledger phải lên cùng nhau: chỉ đẩy raw thì ledger trên R2 không biết các tin đã cào, lần chạy sau
+cào lại và trang Crawling đếm thiếu (SCRAPE-4). Ledger chỉ được đẩy khi không cũ hơn bản trên R2.
 """
 
 import argparse
+import json
 import os
 import sys
+from typing import Any, Dict, Tuple
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -18,6 +21,56 @@ if str(PROJECT_ROOT) not in sys.path:
 load_dotenv(PROJECT_ROOT / ".env")
 
 from collection.common.r2_storage import get_r2_client, upload_file_to_r2
+
+
+def _latest_scrape(records: Dict[str, Any]) -> str:
+    stamps = [str(r.get("last_scraped_at") or "") for r in records.values() if isinstance(r, dict)]
+    return max(stamps, default="")
+
+
+def ledger_push_decision(local: Dict[str, Any], remote: Dict[str, Any] | None) -> Tuple[bool, str]:
+    """Có nên ghi ledger trên máy lên R2 không. Không bao giờ để bản cũ hoặc rỗng đè bản mới hơn."""
+    if not local:
+        return False, "ledger trên máy rỗng"
+    if remote:
+        local_last, remote_last = _latest_scrape(local), _latest_scrape(remote)
+        if remote_last > local_last:
+            return False, (f"ledger trên R2 mới hơn ({remote_last[:16]} > {local_last[:16]}); "
+                           "chạy crawler --phase sync hoặc kéo về và merge trước")
+        missing = len(set(remote) - set(local))
+        if missing:
+            return False, f"ledger trên R2 có {missing} URL mà máy không có; kéo về và merge trước"
+    return True, "ok"
+
+
+def push_ledger(src: str, s3, bucket: str, data_dir: Path, dry_run: bool) -> bool:
+    ledger_dir = data_dir / src / "url_ledger"
+    catalog = ledger_dir / "catalog_master.json"
+    if not catalog.exists():
+        print(f"  [LEDGER] {src}: không có {catalog.relative_to(data_dir)}, bỏ qua")
+        return False
+    local = json.loads(catalog.read_text(encoding="utf-8"))
+    key = f"url_ledger/{src}/catalog_master.json"
+    try:
+        remote = json.loads(s3.get_object(Bucket=bucket, Key=key)["Body"].read().decode("utf-8"))
+    except Exception:
+        remote = None
+    ok, reason = ledger_push_decision(local, remote)
+    if not ok:
+        print(f"  [LEDGER] {src}: KHÔNG đẩy, {reason}")
+        return False
+    files = [catalog, *sorted((ledger_dir / "manifests").glob("*.jsonl"))]
+    parquet = ledger_dir / "catalog_master.parquet"
+    if parquet.exists():
+        files.append(parquet)
+    for f in files:
+        object_key = f"url_ledger/{src}/{f.relative_to(ledger_dir).as_posix()}"
+        if dry_run:
+            print(f" [DRY-RUN] Sẽ upload: {object_key}")
+        else:
+            upload_file_to_r2(f, object_key, bucket_name=bucket)
+    print(f"  [LEDGER] {src}: {'sẽ đẩy' if dry_run else 'đã đẩy'} {len(files)} file ({len(local)} URL)")
+    return True
 
 
 def push_source_data(source: str = None, dry_run: bool = False):
@@ -71,6 +124,8 @@ def push_source_data(source: str = None, dry_run: bool = False):
                     print(f"  - Đã upload {total_uploaded} files...")
             except Exception as e:
                 print(f"  [LỖI] {object_key}: {e}")
+
+        push_ledger(src, s3, bucket, data_dir, dry_run)
 
     print("\n" + "=" * 70)
     print(f"Hoàn thành! Đã upload: {total_uploaded} files | Đã tồn tại (Bỏ qua): {total_skipped} files")

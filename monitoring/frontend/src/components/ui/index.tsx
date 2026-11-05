@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { AlertCircle, FlaskConical, Inbox, Loader2 } from 'lucide-react'
+import { AlertCircle, Inbox, Loader2 } from 'lucide-react'
 import { RunStatus } from '../../types'
 import { SOURCES } from '../../constants/sources'
 
@@ -15,7 +15,7 @@ export const Card: React.FC<{ className?: string; children: React.ReactNode }> =
 export const SectionTitle: React.FC<{ title: React.ReactNode; hint?: React.ReactNode }> = ({ title, hint }) => (
   <div>
     <h2 className="text-lg font-semibold text-ink">{title}</h2>
-    {hint && <p className="mt-1 text-ink-muted">{hint}</p>}
+    {hint && <p className="mt-1 text-ink-muted [overflow-wrap:anywhere]">{hint}</p>}
   </div>
 )
 
@@ -110,13 +110,6 @@ export const ErrorState: React.FC<{ message?: string }> = ({
   <div role="alert" className="flex items-center gap-2 p-4 rounded-xl bg-state-fail-bg text-state-fail-fg">
     <AlertCircle className="w-5 h-5 shrink-0" aria-hidden="true" />
     {message}
-  </div>
-)
-
-export const SampleDataNotice: React.FC = () => (
-  <div className="mb-5 flex items-center gap-2 p-3 rounded-xl bg-state-partial-bg text-state-partial-fg font-medium">
-    <FlaskConical className="w-4 h-4 shrink-0" aria-hidden="true" />
-    Số liệu mẫu: trang này còn dùng số minh họa, chưa phản ánh dữ liệu thật.
   </div>
 )
 

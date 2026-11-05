@@ -2,16 +2,16 @@
 """Crawler ITViec — Two-Phase Decoupled (URL Discovery -> Detail Extraction), RAW-FIRST.
 
 Tuân thủ nghiêm ngặt chuẩn Modern Data Stack (docs/crawler_output_checklist.md &
-docs/two_phase_minio_crawler_playbook.md):
+docs/two_phase_r2_crawler_playbook.md):
 1. Hai pha độc lập: Pha 1 discover_urls() & Pha 2 crawl_details().
 2. Pha 1: URL ban đầu hoàn toàn chưa có hash (content_hash = None, status = "PENDING").
-3. Pha 2: Kéo URL từ MinIO về máy trước khi lọc URL (ledger.pull_from_minio()).
+3. Pha 2: Kéo URL từ R2 về máy trước khi lọc URL (ledger.pull_from_r2()).
 4. Băm toàn vẹn Document JSON sau cào (calculate_json_canonical_hash & calculate_json_field_hashes).
 5. Lưu ngược lại hash vào cả URL trong Ledger lẫn file Raw Snapshot (metadata.content_hash, canonical_hash, field_hashes).
 6. Cơ chế Safe Skip & Failed Queue (ledger.mark_failed, cờ CLI --retry-failed).
-7. Checkpoint Sync định kỳ (mỗi 15 tin tự động lưu & sync MinIO Lakehouse).
+7. Checkpoint Sync định kỳ (mỗi 15 tin tự động lưu & sync R2 Lakehouse).
 8. Chống chặn bot: Polite sleep ngẫu nhiên 2.0s - 4.5s.
-9. Đầy đủ các cờ CLI chuẩn: --phase {discovery, details, sync, view}, --online, --sync-minio, --retry-failed, --limit, --local-html-dir.
+9. Đầy đủ các cờ CLI chuẩn: --phase {discovery, details, sync, view}, --online, --sync-r2, --retry-failed, --limit, --local-html-dir.
 """
 
 from __future__ import annotations
@@ -31,7 +31,6 @@ REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", 
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-from bs4 import BeautifulSoup
 
 from collection.base.base_crawler import BaseCrawler
 from collection.common.anti_blocking import (
@@ -41,7 +40,7 @@ from collection.common.anti_blocking import (
     polite_sleep,
 )
 from collection.common.http_client import DelayConfig, HttpClient, RetryConfig
-from collection.common.minio_raw_pipeline import MinioRawStore
+from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.url_ledger import (
     UrlLedger,
     calculate_json_canonical_hash,
@@ -76,7 +75,7 @@ class ItviecCrawler(BaseCrawler):
         browser_path: Optional[str] = C.BROWSER_PATH,
         ledger_dir: Optional[str] = None,
         raw_dir: Optional[str] = None,
-        sync_minio: bool = False,
+        sync_r2: bool = False,
         local_html_dir: Optional[str] = None,
         auth_file: Optional[str] = None,
         use_playwright: bool = False,
@@ -98,7 +97,7 @@ class ItviecCrawler(BaseCrawler):
         self.max_delay = max_delay
         self.browser_path = browser_path
         self.local_html_dir = local_html_dir
-        self.sync_minio = sync_minio
+        self.sync_r2 = sync_r2
         self.use_playwright = use_playwright
 
         self.ledger_dir = ledger_dir or os.path.join(self.output_dir, "url_ledger")
@@ -109,7 +108,7 @@ class ItviecCrawler(BaseCrawler):
         os.makedirs(os.path.dirname(self.auth_file), exist_ok=True)
 
         self._ledger = None
-        self._minio_store = None
+        self._r2_store = None
 
     def _load_session_cookies(self) -> list[dict[str, Any]]:
         """Nạp danh sách cookie phiên từ auth_file (định dạng Playwright storage_state)."""
@@ -189,14 +188,14 @@ class ItviecCrawler(BaseCrawler):
     def ledger(self) -> UrlLedger:
         return self._get_ledger()
 
-    def _get_minio_store(self) -> MinioRawStore:
-        if self._minio_store is None:
-            self._minio_store = MinioRawStore()
-        return self._minio_store
+    def _get_r2_store(self) -> R2RawStore:
+        if self._r2_store is None:
+            self._r2_store = R2RawStore()
+        return self._r2_store
 
-    def sync_ledger_to_minio(self) -> bool:
-        """Đồng bộ catalog_master và manifests lên MinIO Lakehouse."""
-        return self.ledger.sync_to_minio()
+    def sync_ledger_to_r2(self) -> bool:
+        """Đồng bộ catalog_master và manifests lên R2 Lakehouse."""
+        return self.ledger.sync_to_r2()
 
     def view_ledger(self) -> dict[str, int]:
         """Tóm tắt trạng thái URL Ledger hiện tại."""
@@ -354,9 +353,9 @@ class ItviecCrawler(BaseCrawler):
         self,
         online: bool = False,
         max_pages: Optional[int] = None,
-        sync_minio: bool = False,
+        sync_r2: bool = False,
     ) -> int:
-        """Pha 1: Quét danh mục và sitemap, URL ban đầu chưa có hash, đồng bộ MinIO."""
+        """Pha 1: Quét danh mục và sitemap, URL ban đầu chưa có hash, đồng bộ R2."""
         log.info("[ITViec] === PHA 1: URL DISCOVERY (Online=%s, MaxPages=%s) ===", online, max_pages)
         if not online:
             log.info("[ITViec] Discovery OFFLINE: Không gọi mạng. Số URL hiện có trong Ledger: %d", len(self.ledger.records))
@@ -410,8 +409,8 @@ class ItviecCrawler(BaseCrawler):
 
                 if curr % 5 == 0:
                     self.ledger.export_daily_manifest()
-                    if self.sync_minio or sync_minio:
-                        self.ledger.sync_to_minio()
+                    if self.sync_r2 or sync_r2:
+                        self.ledger.sync_to_r2()
 
                 curr += 1
                 polite_sleep(self.min_delay, self.max_delay, reason=f"Chuyển trang danh mục {curr}")
@@ -422,8 +421,8 @@ class ItviecCrawler(BaseCrawler):
 
         self.ledger.save_catalog()
         manifest = self.ledger.export_daily_manifest()
-        if self.sync_minio or sync_minio:
-            self.ledger.sync_to_minio()
+        if self.sync_r2 or sync_r2:
+            self.ledger.sync_final()
 
         log.info("[ITViec] Pha 1 hoàn thành. Tổng cộng %d URL trong Ledger (+%d mới). Manifest: %s",
                  len(self.ledger.records), total_new, manifest)
@@ -435,23 +434,23 @@ class ItviecCrawler(BaseCrawler):
         limit: Optional[int] = None,
         local_html_dir: Optional[str] = None,
         online: bool = False,
-        sync_minio: bool = False,
+        sync_r2: bool = False,
         retry_failed: bool = False,
         force: bool = False,
         only_job_ids: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
-        """Pha 2: Kéo URL từ MinIO về máy, cào chi tiết, băm Document JSON, lưu ngược hash."""
-        do_sync = self.sync_minio or sync_minio
-        log.info("[ITViec] === PHA 2: DETAIL EXTRACTION (Online=%s, SyncMinIO=%s, RetryFailed=%s, Limit=%s) ===",
+        """Pha 2: Kéo URL từ R2 về máy, cào chi tiết, băm Document JSON, lưu ngược hash."""
+        do_sync = self.sync_r2 or sync_r2
+        log.info("[ITViec] === PHA 2: DETAIL EXTRACTION (Online=%s, SyncR2=%s, RetryFailed=%s, Limit=%s) ===",
                  online, do_sync, retry_failed, limit)
 
-        # 1. Kéo Catalog mới nhất từ MinIO Lakehouse về máy
+        # 1. Kéo Catalog mới nhất từ R2 Lakehouse về máy
         if do_sync and online:
-            log.info("[ITViec] Đang kéo catalog mới nhất từ MinIO Lakehouse (pull_from_minio)...")
+            log.info("[ITViec] Đang kéo catalog mới nhất từ R2 Lakehouse (pull_from_r2)...")
             try:
-                self.ledger.pull_from_minio()
+                self.ledger.pull_from_r2()
             except Exception as exc:
-                log.warning("[ITViec] Không thể kéo ledger từ MinIO (%s), dùng ledger local hiện tại.", exc)
+                log.warning("[ITViec] Không thể kéo ledger từ R2 (%s), dùng ledger local hiện tại.", exc)
 
         # 2. Lọc danh sách cần cào
         if only_job_ids:
@@ -584,31 +583,31 @@ class ItviecCrawler(BaseCrawler):
                         with open(html_file, "w", encoding="utf-8") as f:
                             f.write(html)
 
-                    # Đẩy snapshot lên MinIO Lakehouse
+                    # Đẩy snapshot lên R2 Lakehouse
                     if do_sync:
                         s3_key = f"raw/{C.SOURCE}/{today}/{job_id}_v{new_ver}.json"
                         try:
-                            self._get_minio_store().put_json(s3_key, envelope)
+                            self._get_r2_store().put_json(s3_key, envelope)
                             if self.save_html:
-                                self._get_minio_store().put_bytes(
+                                self._get_r2_store().put_bytes(
                                     f"raw_html/{C.SOURCE}/{today}/{job_id}_v{new_ver}.html",
                                     html.encode("utf-8"),
                                     content_type="text/html; charset=utf-8",
                                 )
                         except Exception as sync_exc:
-                            log.warning("[ITViec] Bỏ qua sync MinIO file %s: %s (local file an toàn)", s3_key, sync_exc)
+                            log.warning("[ITViec] Bỏ qua sync R2 file %s: %s (local file an toàn)", s3_key, sync_exc)
 
                     # Lưu ngược lại mã hash vào URL trong Ledger
                     self.ledger.mark_done(url_hash, content_hash=canonical_hash, new_version=new_ver)
                     stats["crawled_new"] += 1
                     log.info("[ITViec] ĐÃ CÀO THÀNH CÔNG: job_id=%s -> %s (v%d)", job_id, os.path.basename(dest_file), new_ver)
 
-                    # Checkpoint Sync định kỳ: mỗi 15 tin tự động lưu & sync MinIO
+                    # Checkpoint Sync định kỳ: mỗi 15 tin tự động lưu & sync R2
                     if stats["crawled_new"] % 15 == 0:
                         self.ledger.save_catalog()
                         if do_sync:
-                            self.ledger.sync_to_minio()
-                            log.info("[ITViec] Checkpoint sync định kỳ: đã đồng bộ %d tin lên MinIO Lakehouse.", stats["crawled_new"])
+                            self.ledger.sync_to_r2()
+                            log.info("[ITViec] Checkpoint sync định kỳ: đã đồng bộ %d tin lên R2 Lakehouse.", stats["crawled_new"])
 
                     polite_sleep(self.min_delay, self.max_delay, reason=f"Nghỉ giữa 2 bài đăng ({idx})")
 
@@ -621,7 +620,7 @@ class ItviecCrawler(BaseCrawler):
         # Lưu catalog và đồng bộ lần cuối
         self.ledger.save_catalog()
         if do_sync:
-            self.ledger.sync_to_minio()
+            self.ledger.sync_final()
 
         log.info("[ITViec] === Tổng kết Pha 2: %s ===", stats)
         return stats
@@ -633,7 +632,7 @@ def main(argv: list[str] | None = None) -> None:
         "--phase",
         choices=["discovery", "details", "all", "sync", "view"],
         default="details",
-        help="Pha 1 (discovery) / Pha 2 (details) / đồng bộ MinIO (sync) / xem ledger (view) / toàn bộ (all)",
+        help="Pha 1 (discovery) / Pha 2 (details) / đồng bộ R2 (sync) / xem ledger (view) / toàn bộ (all)",
     )
     ap.add_argument("--login", action="store_true", default=False, help="Mở trình duyệt đăng nhập tương tác (Google/Email) và lưu session cookies")
     ap.add_argument("--auth-file", type=str, default=None, help="Đường dẫn file lưu session đăng nhập (mặc định data/itviec/auth/session.json)")
@@ -642,7 +641,7 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--max-items", type=int, default=None, help="Alias của --limit (tương thích ngược)")
     ap.add_argument("--max-pages", type=int, default=None, help="Số trang danh mục tối đa ở Pha 1 (mặc định: hết)")
     ap.add_argument("--online", action="store_true", default=False, help="Cho phép kết nối mạng bên ngoài")
-    ap.add_argument("--sync-minio", action="store_true", default=False, help="Đồng bộ URL Ledger và Raw Snapshots lên MinIO Lakehouse")
+    ap.add_argument("--sync-r2", "--sync-minio", action="store_true", default=False, help="Đồng bộ URL Ledger và Raw Snapshots lên MinIO Lakehouse")
     ap.add_argument("--retry-failed", action="store_true", default=False, help="Cào lại các URL trong hàng đợi lỗi (Failed Queue)")
     ap.add_argument("--local-html-dir", type=str, default=None, help="Thư mục chứa HTML cục bộ -> cào offline không cần mạng")
     ap.add_argument("--save-html", action="store_true", default=False, help="Lưu file HTML thô mỗi bài đăng (mặc định TẮT)")
@@ -670,7 +669,7 @@ def main(argv: list[str] | None = None) -> None:
         save_html=args.save_html,
         min_delay=args.min_delay,
         max_delay=args.max_delay,
-        sync_minio=args.sync_minio,
+        sync_r2=args.sync_r2,
         local_html_dir=args.local_html_dir,
         auth_file=args.auth_file,
         use_playwright=args.use_playwright,
@@ -684,7 +683,7 @@ def main(argv: list[str] | None = None) -> None:
         total = crawler.discover_urls(
             online=args.online,
             max_pages=args.max_pages,
-            sync_minio=args.sync_minio,
+            sync_r2=args.sync_r2,
         )
         print(f"[discovery] Tổng số record trong Ledger: {total} (online={args.online})")
     elif args.phase == "details":
@@ -693,20 +692,20 @@ def main(argv: list[str] | None = None) -> None:
             limit=limit_val,
             local_html_dir=args.local_html_dir,
             online=args.online,
-            sync_minio=args.sync_minio,
+            sync_r2=args.sync_r2,
             retry_failed=args.retry_failed,
             force=args.force,
             only_job_ids=only_ids,
         )
         print(f"[details] Kết quả hoàn thành: {json.dumps(stats, ensure_ascii=False)}")
     elif args.phase == "sync":
-        ok = crawler.sync_ledger_to_minio()
-        print(f"[sync] Đồng bộ URL Ledger lên MinIO: {'THÀNH CÔNG' if ok else 'THẤT BẠI'}")
+        ok = crawler.sync_ledger_to_r2()
+        print(f"[sync] Đồng bộ URL Ledger lên R2: {'THÀNH CÔNG' if ok else 'THẤT BẠI'}")
     elif args.phase == "view":
         crawler.view_ledger()
     elif args.phase == "all":
-        crawler.discover_urls(online=args.online, max_pages=args.max_pages or 1, sync_minio=args.sync_minio)
-        stats = crawler.crawl_details(limit=limit_val, online=args.online, sync_minio=args.sync_minio, force=args.force)
+        crawler.discover_urls(online=args.online, max_pages=args.max_pages or 1, sync_r2=args.sync_r2)
+        stats = crawler.crawl_details(limit=limit_val, online=args.online, sync_r2=args.sync_r2, force=args.force)
         print(f"[all] Kết quả hoàn thành: {json.dumps(stats, ensure_ascii=False)}")
 
 

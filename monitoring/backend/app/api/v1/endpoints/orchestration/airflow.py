@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Endpoints giám sát Apache Airflow Orchestration."""
 
-from typing import Any, Dict, List
 from fastapi import APIRouter
 
 from app.services.airflow_service import airflow_service

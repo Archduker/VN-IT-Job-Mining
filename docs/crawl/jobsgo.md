@@ -1,6 +1,15 @@
 # JobsGO Crawler — Kiến Trúc Kỹ Thuật & Vượt Rào Cản Cloudflare WAF
 
-> **Tài liệu tham chiếu:** [`cloudflare.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/cloudflare.md), [`docs/two_phase_r2_crawler_playbook.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/docs/two_phase_r2_crawler_playbook.md).
+> **Hiện trạng 03/11/2026**
+>
+> - Crawler: `collection/sources/jobsgo/crawler.py`. Engine mặc định thực tế là `nodriver` (mô tả `curl_cffi` mặc định bên dưới đã cũ). Nghỉ 1.5–3.0 giây, dưới chuẩn 2.0–4.5 (SCRAPE-13).
+> - Đã sửa: luôn ghi `_v1` (L-04).
+> - Còn mở: in `Event loop is closed` khi đóng nodriver (SCRAPE-12); chưa có contract test và C14.
+> - Cách chạy hiện tại: `python run.py --source jobsgo --phase all --max-pages 1 --max-items 2 --sync-r2`.
+>
+> Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
+
+> **Tài liệu tham chiếu:** `cloudflare.md` (file này không còn), [`docs/two_phase_r2_crawler_playbook.md`](../../docs/two_phase_r2_crawler_playbook.md).
 
 ---
 
@@ -17,7 +26,7 @@
 
 ## 2. Giải Pháp Vượt Cloudflare: Mô Hình Dual-Engine
 
-Theo tài liệu [`cloudflare.md`](file:///run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/cloudflare.md), crawler triển khai kiến trúc 2 tầng engine linh hoạt:
+Theo tài liệu `cloudflare.md` (file này không còn), crawler triển khai kiến trúc 2 tầng engine linh hoạt:
 
 1. **Engine 1: `curl_cffi` (Mặc định cho Batch & Airflow Pipelines):**
    - Giả lập trọn vẹn TLS/JA3/JA4 fingerprint của Chrome 124 (`impersonate="chrome124"`).
@@ -76,19 +85,19 @@ Theo đúng quy chuẩn dữ liệu và yêu cầu dự án:
 
 ```bash
 # 1. Quét URL danh mục Pha 1 (Discovery) đồng bộ lên Cloudflare R2
-.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase discovery --online --sync-r2 --max-pages 5
+.venv/bin/python collection/sources/jobsgo/crawler.py --phase discovery --online --sync-r2 --max-pages 5
 
 # 2. Cào chi tiết Pha 2 (Details) với động cơ curl_cffi mặc định
-.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase details --online --sync-r2 --limit 20
+.venv/bin/python collection/sources/jobsgo/crawler.py --phase details --online --sync-r2 --limit 20
 
 # 3. Cào chi tiết với động cơ Playwright
-.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase details --engine playwright --online --sync-r2 --limit 10
+.venv/bin/python collection/sources/jobsgo/crawler.py --phase details --engine playwright --online --sync-r2 --limit 10
 
 # 4. Cào lại các URL trong hàng đợi lỗi (Failed Queue)
-.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase details --retry-failed --online --sync-r2
+.venv/bin/python collection/sources/jobsgo/crawler.py --phase details --retry-failed --online --sync-r2
 
 # 5. Xem thống kê trạng thái URL Ledger
-.venv/bin/python crawlers/sources/jobsgo/crawler.py --phase view
+.venv/bin/python collection/sources/jobsgo/crawler.py --phase view
 
 # 6. Kiểm tra URL Ledger trực tiếp từ Cloudflare R2 Lakehouse
 .venv/bin/python scripts/view_urls.py --source jobsgo --r2

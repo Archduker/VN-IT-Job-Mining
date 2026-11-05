@@ -1,0 +1,42 @@
+{
+  "topdev": {
+    "drop": ["non_it"],
+    "approved_on": "2026-11-03",
+    "evidence": "C4b: Gán tay 80 tin, xác nhận 79 non_it (98.8%). Crawler kéo sai phạm vi: API bỏ qua category_ids=1 (14.572 tin)"
+  },
+  "vieclam24h": {
+    "drop": ["non_it"],
+    "approved_on": "2026-11-03",
+    "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 77 non_it (tài xế, shipper, telesales...)"
+  },
+  "jobsgo": {
+    "drop": ["non_it"],
+    "approved_on": "2026-11-03",
+    "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 73 non_it (kinh doanh, marketing, rượu vang...)"
+  },
+  "vietnamworks": {
+    "drop": ["non_it"],
+    "approved_on": "2026-11-03",
+    "evidence": "C4b: Gán tay 80 tin, 48/50 non_it theo luật đúng (96.0%), 72 non_it (kế toán, HR, cơ khí...)"
+  },
+  "topcv": {
+    "drop": ["non_it"],
+    "approved_on": "2026-11-03",
+    "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 71 non_it (graphic designer, telesales, marketing...)"
+  },
+  "careerviet": {
+    "drop": ["non_it"],
+    "approved_on": "2026-11-03",
+    "evidence": "C4b: Gán tay 77 tin, 42/47 non_it theo luật đúng (89.4%), 58 non_it (logistics, giáo viên, cơ khí...)"
+  },
+  "glints": {
+    "drop": ["non_it"],
+    "approved_on": "2026-11-03",
+    "evidence": "C4b: Gán tay 42 tin, 12/12 non_it theo luật đúng 100%, 29 non_it (xây dựng, may mặc, sơn, cơ khí...)"
+  },
+  "itviec": {
+    "drop": [],
+    "approved_on": "2026-11-03",
+    "note": "Giữ toàn bộ (drop=[]): ITviec là nguồn chuyên IT thuần túy, 21/22 tin mẫu là IT thực thụ"
+  }
+}

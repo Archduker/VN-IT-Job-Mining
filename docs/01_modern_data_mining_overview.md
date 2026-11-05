@@ -51,7 +51,7 @@ flowchart LR
             BU["Xác định SD1-SD5\n& KPI đo lường"]
         end
         subgraph Phase2["2. Data Collection (Raw ELT)"]
-            EXT["Crawl Raw As-Is\n(Two-Phase & Safe Skip)"] --> MINIO_RAW["Cloudflare R2: /raw & /url_ledger\n(Raw HTML & API Payload)"]
+            EXT["Crawl Raw As-Is\n(Two-Phase & Safe Skip)"] --> R2_RAW["Cloudflare R2: /raw & /url_ledger\n(Raw HTML & API Payload)"]
         end
         subgraph Phase3["3. Post-Crawl JSON CDC & EDA"]
             PARSE["Parse Structured JSON"] --> CDC["Post-Crawl JSON Hash\n(CDC Versioning)"]
@@ -63,8 +63,8 @@ flowchart LR
     subgraph FutureScope["GIAI ĐOẠN TIẾP THEO — NGOÀI PHẠM VI (FUTURE / OUT-OF-SCOPE)"]
         direction TB
         subgraph Phase4["4. Data Preparation & Clean"]
-            MINIO_STG["Cloudflare R2: /staging\n(Standardized Fields)"] --> AI_ENRICH["AI/ML Enrichment\n(LLM Skills, NLP Job Family)"]
-            AI_ENRICH --> MINIO_CUR["Cloudflare R2: /curated\n(Golden Dataset)"]
+            R2_STG["Cloudflare R2: /staging\n(Standardized Fields)"] --> AI_ENRICH["AI/ML Enrichment\n(LLM Skills, NLP Job Family)"]
+            AI_ENRICH --> R2_CUR["Cloudflare R2: /curated\n(Golden Dataset)"]
         end
         subgraph Phase5["5. Modeling & Analytics"]
             MODEL["Clustering, Co-occurrence,\nAnomaly Detection, Forecasting"]
@@ -131,6 +131,8 @@ flowchart TD
 > *"Nếu người ta sửa tin tuyển dụng mà hệ thống vẫn lọc duplicate theo job_id thì sao? Làm thế nào để biết tin đó đã thay đổi mức lương hay đổi yêu cầu kỹ năng?"*
 
 ### Giải pháp kỹ thuật chuẩn mực: Change Data Capture (CDC)
+
+> **Cập nhật 03/11/2026 (theo code):** `content_hash` là SHA-256 của toàn bộ `raw_payload` dạng JSON chuẩn hóa (`calculate_json_canonical_hash`), không chỉ 4 trường. Ledger chỉ có 5 trạng thái `PENDING`, `DONE`, `RECHECK_DUE`, `FAILED`, `CLOSED`; các nhãn NEW/UPDATED/UNCHANGED bên dưới là tên kịch bản, không phải giá trị `status`. Version do `UrlLedger.next_version()` quyết định. Xem `collection/CLAUDE.md`.
 Hệ thống không dùng cơ chế deduplicate thô bạo (gặp ID cũ thì bỏ qua). Thay vào đó, áp dụng cơ chế **Content Hashing Snapshotting**:
 
 1. **Sinh mã băm nội dung `content_hash`:**

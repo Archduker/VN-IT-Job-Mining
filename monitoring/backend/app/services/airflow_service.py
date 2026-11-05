@@ -205,5 +205,25 @@ class AirflowService:
             logger.error("[AirflowService] Lỗi đọc lịch sử dag_run: %s", exc)
             return None
 
+    def get_latest_discovery_states(self) -> Optional[Dict[str, Optional[str]]]:
+        """Trạng thái từng task của lần chạy dag_discovery_daily mới nhất; None nếu không đọc được."""
+        if not self._check_db_connection():
+            return None
+        try:
+            with self.engine.connect() as conn:
+                rows = conn.execute(
+                    text(
+                        "SELECT task_id, state FROM task_instance "
+                        "WHERE dag_id = :dag AND run_id = ("
+                        "SELECT run_id FROM dag_run WHERE dag_id = :dag "
+                        "ORDER BY start_date DESC NULLS LAST LIMIT 1)"
+                    ),
+                    {"dag": "dag_discovery_daily"},
+                ).fetchall()
+            return {r[0]: r[1] for r in rows}
+        except Exception as exc:
+            logger.error("[AirflowService] Lỗi đọc trạng thái discovery: %s", exc)
+            return None
+
 
 airflow_service = AirflowService()

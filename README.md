@@ -1,5 +1,7 @@
 # VN-IT-Job-Mining: Nền Tảng Thu Thập & Tiền Xử Lý Dữ Liệu Tuyển Dụng IT Việt Nam
 
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+
 > **Hệ thống Khai phá & Tích hợp Dữ liệu Tuyển dụng CNTT Chuẩn Modern Data Stack**  
 > Kiến trúc phân tầng **Two-Phase Decoupled Crawler** kết hợp **Cloudflare R2 Data Lakehouse**, điều phối tự động qua **Apache Airflow**, và chuỗi tiền xử lý tinh chế dữ liệu thông minh ứng dụng **GenAI (Gemini 1.5 Flash)** tạo nên **Bộ Dữ Liệu Vàng (Golden Master Dataset)**.
 
@@ -182,8 +184,8 @@ source .venv/bin/activate
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 
-# Cấu hình biến môi trường
-cp .env.example .env
+# Cấu hình biến môi trường: chỉ quản lý trong .env (repo không có file mẫu)
+touch .env
 # Điền thông tin Cloudflare R2 credentials (R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_ENDPOINT_URL)
 # Điền GEMINI_API_KEY để phục vụ tính năng bù khuyết GenAI
 ```
@@ -243,8 +245,8 @@ pytest tests/ -v
 
 ### 6. Khởi Động Dashboard Giám Sát (Monitoring UI)
 ```bash
-# Khởi chạy đồng thời FastAPI Backend (Port 8000) và React Frontend (Port 5173)
-./monitoring/run_all.sh
+# Kiểm tra .env, cài phụ thuộc khi cần, bật PostgreSQL, chạy Backend (8000) và Frontend (5173), mở trình duyệt
+./start_monitoring.sh          # hoặc: make monitor
 ```
 Truy cập giao diện điều khiển tại: `http://localhost:5173`  
 Tài liệu Swagger API tại: `http://localhost:8000/docs`

@@ -4,35 +4,52 @@
 
 ## 1. 🌟 Tại Sao Nhóm Sử Dụng Cloudflare R2?
 
-Trong dự án **VN-IT-Job-Mining**, các thành viên cào dữ liệu độc lập trên máy cá nhân theo 7 nguồn tuyển dụng khác nhau (TopCV, TopDev, ITViec, VietnamWorks, CareerViet, ViecLam24h, Glints). 
+Trong dự án **VN-IT-Job-Mining**, các thành viên cào dữ liệu độc lập trên máy cá nhân theo 8 nguồn tuyển dụng khác nhau (TopCV, TopDev, ITViec, VietnamWorks, CareerViet, ViecLam24h, Glints, JobsGO). 
 
 Để phối hợp nhóm hiệu quả, hệ thống phân định rạch ròi 2 trụ cột lưu trữ:
-- **MinIO Cục Bộ (`localhost:9000`)**: Chuyên dùng cho **Phase 1 (Up link & Quản lý Sổ cái URL Ledger)** để tốc độ cào nhanh nhất, không tốn băng thông mạng và chạy offline an toàn (Xem cẩm nang [`docs/minio_docker_setup_guide.md`](minio_docker_setup_guide.md)).
 - **Cloudflare R2 (Remote Cloud Data Lakehouse)**: Chuyên dùng làm **Kho Lưu Trữ Kết Quả `.json` Tập Trung** cho cả nhóm:
   - **Tương thích chuẩn Amazon S3 API**: Tương thích 100% với `boto3`, DuckDB và Apache Spark.
   - **Hoàn toàn miễn phí**: 10 GB lưu trữ miễn phí và **0đ phí tải về (Free Egress)** trọn đời.
   - **Tránh phình to mã nguồn Git**: Tuyệt đối không commit các file kết quả `.json` lớn hay hàng ngàn file HTML thô vào GitHub; toàn bộ kết quả cào sẽ được đẩy lên Cloudflare R2.
   - **Chia sẻ dữ liệu thời gian thực (24/7)**: Thành viên cào xong nguồn nào, dữ liệu lập tức có mặt trên Cloud R2 để các bạn làm EDA, tiền xử lý và tích hợp AI/ML tải về sử dụng.
 
+> **Cập nhật 03/11/2026.** Hệ thống chỉ dùng Cloudflare R2 (MinIO cục bộ đã bỏ). Mọi kết nối đi qua `collection/common/r2_storage.get_r2_client()`; thiếu cấu hình thì báo lỗi, không rơi về localhost. Layout `dt=YYYY-MM-DD/batch_XXX.json` và thư mục `samples/` trên R2 đã bỏ. Các lỗi đã gặp: `docs/issue_log.md` (L-01, L-10, L-11).
+
 ```mermaid
 flowchart TD
-    subgraph LocalMachine["💻 Máy Cá Nhân Của Từng Thành Viên"]
-        CrawlDiscovery["Pha 1: URL Discovery<br/>(Quét link danh mục)"] -->|"Lưu sổ cái URL"| MinIOLocal["🐳 MinIO Local (:9000)<br/>url_ledger/<source>/"]
-        CrawlDetail["Pha 2: Detail Extraction<br/>(Bóc tách chi tiết)"] -->|"Ghi kết quả chuẩn Schema"| JsonResults["📁 File Kết Quả .JSON<br/>- batch_XXX.json<br/>- test_5_jobs.json<br/>- sample_*.json"]
+    subgraph LocalMachine["💻 Máy chạy crawler"]
+        CrawlDiscovery["Pha 1: Discovery"] -->|"PENDING"| Ledger["data/&lt;source&gt;/url_ledger/catalog_master.json"]
+        Ledger --> CrawlDetail["Pha 2: Detail"]
+        CrawlDetail -->|"DONE + content_hash"| Ledger
+        CrawlDetail --> Raw["data/&lt;source&gt;/raw/&lt;YYYY-MM-DD&gt;/&lt;job_id&gt;_v&lt;N&gt;.json"]
     end
 
-    subgraph CloudLakehouse["☁️ Cloudflare R2 Lakehouse (vn-it-jobs)"]
-        JsonResults -->|"python scripts/upload_to_r2.py"| R2Bucket["🗄️ Bucket: vn-it-jobs"]
-        R2Bucket --> R2Raw["📁 raw/<source>/dt=.../"]
-        R2Bucket --> R2Samples["📁 samples/<source>/"]
-        R2Bucket --> R2Test["📁 test/<source>/"]
+    subgraph CloudLakehouse["☁️ Cloudflare R2 (bucket vn-it-jobs)"]
+        R2Ledger["url_ledger/&lt;source&gt;/"]
+        R2Raw["raw/&lt;source&gt;/&lt;YYYY-MM-DD&gt;/"]
+        R2Staging["staging/, curated/"]
     end
 
-    subgraph Downstream["👥 Cả Nhóm Cùng Khai Thác"]
-        R2Bucket -->|"python scripts/sync_cloud_lakehouse.py --download"| EDA["📊 Phân Tích Dữ Liệu (EDA)"]
-        R2Bucket --> Integration["🤖 Tiền Xử Lý & Mô Hình AI/ML"]
+    Ledger <-->|"--sync-r2: pull trước pha 2, sync_final() cuối pha"| R2Ledger
+    Raw -->|"--sync-r2: ghi từng tin"| R2Raw
+
+    subgraph Downstream["👥 Cả nhóm"]
+        R2Raw -->|"sync_cloud_lakehouse.py --download"| EDA["EDA, pre-processing, Monitoring"]
     end
 ```
+
+Bucket chỉ có 4 tầng: `url_ledger/`, `raw/`, `staging/`, `curated/`. `canonicalize_lakehouse_key` từ chối key không đúng layout.
+
+**Bố cục theo kiến trúc medallion (bronze → silver → gold):**
+
+| Tầng | Prefix trên R2 | Nội dung | Ai ghi |
+|---|---|---|---|
+| Quản lý URL | `url_ledger/<nguồn>/catalog_master.json` | Danh sách URL và trạng thái cào (nguồn sự thật của crawler) | crawler |
+| **Bronze** (thô, bất biến) | `raw/<nguồn>/<YYYY-MM-DD>/<job_id>_v<N>.json` | Mỗi tin một envelope JSON đúng như lúc cào; không bao giờ sửa | crawler, `push_raw_to_r2.py` |
+| **Silver** (đã làm sạch, theo từng bước) | `staging/<nguồn>/preprocessing/01_clean.jsonl` → `02_integration.parquet` → `03_transformation.parquet` → `04_normalization.parquet` | Output của 4 bước pre-processing; output bước trước là input bước sau. Từ bước 02 dữ liệu đã gộp 8 nguồn, trên R2 tách lại theo nguồn vì tầng `staging/` bắt buộc có tên nguồn ở cấp 2 | `push_preprocessing_to_r2.py` |
+| **Gold** (sẵn cho mô hình) | `curated/preprocessing/features.parquet`, `curated/preprocessing/encoding_dictionary.json` | Bảng đặc trưng số (bước 05 Encoding) và từ điển mã hóa | `push_preprocessing_to_r2.py` |
+
+Mỗi object silver/gold có metadata `step`, `generated-at` (thời điểm chạy bước, lấy từ `reports/preprocessing/<bước>/_all.json`) và `rows`. Script và trang Monitoring so từng key theo hai giá trị này để biết R2 khớp hay lệch với máy.
 
 ---
 
@@ -83,50 +100,45 @@ python scripts/setup_cloud_storage.py \
 
 ---
 
-## 4. 📤 Hướng Dẫn Tải & Lưu Trữ File Kết Quả `.json` Lên Cloudflare R2
+## 4. 📤 Đưa dữ liệu lên Cloudflare R2
 
-Dự án cung cấp công cụ chuyên dụng **`scripts/upload_to_r2.py`** để tự động xác thực cú pháp và đồng bộ các file kết quả `.json` lên Cloudflare R2.
+### 4.1. Cách chính: crawler tự đồng bộ
 
-### 4.1. Các loại file kết quả `.json` cần lưu lên R2
+Chạy crawler với `--sync-r2`. Crawler kéo ledger về trước pha 2, ghi từng file raw lên R2 ngay khi cào, đồng bộ ledger mỗi khoảng 15 tin, và gọi `sync_final()` cuối pha. Đồng bộ cuối pha lỗi thì crawler báo `LedgerSyncError`.
 
-| Loại file kết quả | Đường dẫn cục bộ | Vị trí phân tầng chuẩn trên R2 | Ý nghĩa nghiệp vụ |
-| :--- | :--- | :--- | :--- |
-| **Batch kết quả cào** | `data/<source>/dt=YYYY-MM-DD/batch_XXX.json` | `raw/<source>/dt=YYYY-MM-DD/batch_XXX.json` | Dữ liệu việc làm bóc tách chi tiết đã validate Schema v1. |
-| **Bộ mẫu thử nghiệm (DoD)** | `crawlers/sources/<source>/samples/sample_*.json` | `samples/<source>/sample_*.json` | Bộ 3 mẫu đại diện (chuẩn, VIP, lương đặc biệt) nộp hồ sơ nghiệm thu. |
-| **File kiểm thử 5 tin** | `crawlers/sources/<source>/test_5_jobs.json` | `test/<source>/test_5_jobs.json` | Dữ liệu mẫu kiểm thử nhanh của từng sàn. |
-| **Sổ cái URL Ledger** | `data/url_ledger/<source>/catalog_master.json` | `url_ledger/<source>/catalog_master.json` | Danh mục toàn bộ URL đã băm và phân loại trạng thái. |
-
-### 4.2. Các câu lệnh tải lên thông dụng
-
-#### 🔹 Trường hợp 1: Tải tất cả kết quả `.json` của 1 nguồn bạn phụ trách (Sau khi cào xong)
-Ví dụ sau khi cào xong nguồn **ViecLam24h**:
 ```bash
-python scripts/upload_to_r2.py --source vieclam24h
-```
-Script sẽ tự động quét thư mục `data/vieclam24h/`, file `test_5_jobs.json` và thư mục `samples/`, kiểm tra cú pháp JSON và đẩy lên R2.
-
-#### 🔹 Trường hợp 2: Tải 1 file kết quả cụ thể
-Ví dụ bạn vừa tạo xong file mẫu kiểm thử hoặc 1 batch dữ liệu:
-```bash
-# Tải file test_5_jobs.json của VietnamWorks
-python scripts/upload_to_r2.py --file crawlers/sources/vietnamworks/test_5_jobs.json
-
-# Tải 1 file mẫu nghiệm thu DoD
-python scripts/upload_to_r2.py --file crawlers/sources/topcv/samples/sample_standard_job.json
+python run.py --source topcv --phase all --max-pages 1 --max-items 2 --sync-r2
 ```
 
-#### 🔹 Trường hợp 3: Tải toàn bộ kết quả của cả 7 nguồn (Nhóm trưởng / Merge Data)
-```bash
-python scripts/upload_to_r2.py --all-results
-```
-*(Hoặc dùng lệnh ngắn: `make upload-r2`)*
+Airflow luôn bật đồng bộ (`sync_r2=True`). Trang Crawling trên Monitoring có ô "Đồng bộ R2", bật sẵn.
 
-#### 🔹 Trường hợp 4: Chạy thử nghiệm xem trước (Dry-Run)
-Nếu muốn kiểm tra file có hợp lệ và xem trước các khóa trên R2 mà không thực sự tải lên:
+### 4.2. Đẩy bù raw đã cào mà chưa lên R2
+
 ```bash
-python scripts/upload_to_r2.py --source topcv --dry-run
-python scripts/upload_to_r2.py --all-results --dry-run
+python scripts/push_raw_to_r2.py --source topcv --dry-run   # xem trước
+python scripts/push_raw_to_r2.py --source topcv             # đẩy raw, rồi đẩy ledger
 ```
+
+Script đẩy cả ledger sau raw (đẩy raw mà không đẩy ledger là nguyên nhân của L-01). Ledger không được đẩy khi catalog trên máy rỗng, bản trên R2 mới hơn, hoặc R2 có URL mà máy không có.
+
+### 4.3. Ledger lệch với raw
+
+```bash
+python scripts/audit_raw_data.py --r2                       # cột "Ledger chậm hơn raw"
+python scripts/reconcile_ledger_from_raw.py --source topcv  # chạy thử
+python scripts/reconcile_ledger_from_raw.py --source topcv --apply         # ghi trên máy
+python scripts/reconcile_ledger_from_raw.py --source topcv --push         # ghi trên máy, sao lưu bản R2 rồi đẩy
+```
+
+### 4.4. Dữ liệu sau pre-processing
+
+Pipeline 5 bước mới: `python scripts/push_preprocessing_to_r2.py` chạy thử (chỉ đọc R2, liệt kê key mới/lệch/khớp), thêm `--push` để ghi. Chỉ đẩy key chưa có hoặc lệch. Bố cục key: `preprocessing/common/r2_export.py`; trang Monitoring `/preprocessing` có khối "Lưu trữ" so từng key.
+
+Pipeline cũ: `python scripts/sync_cloud_lakehouse.py --upload` đẩy `data/` (gồm `staging/`, `curated/`); `python scripts/push_integration_to_r2.py` đẩy kết quả integration.
+
+> `scripts/upload_to_r2.py` (công cụ cũ cho layout `dt=YYYY-MM-DD/batch_XXX.json` và `samples/`) đã bị xóa ngày 03/11/2026; dùng `push_raw_to_r2.py`.
+
+**Mọi lệnh ghi hoặc xóa trên R2 đều chạy thử trước** và cần người phụ trách đồng ý.
 
 ---
 
@@ -138,15 +150,13 @@ Khi các thành viên khác đã cào xong và đẩy kết quả lên Cloudflar
 ```bash
 python scripts/sync_cloud_lakehouse.py --status
 ```
-*(Hoặc dùng lệnh: `make r2-status`)*  
-Màn hình sẽ hiển thị tổng số file, dung lượng và phân bổ theo các thư mục `raw`, `samples`, `url_ledger`.
+Màn hình sẽ hiển thị tổng số file, dung lượng và phân bổ theo các tầng `url_ledger`, `raw`, `staging`, `curated`.
 
 ### 5.2. Tải toàn bộ kết quả về máy:
 ```bash
 python scripts/sync_cloud_lakehouse.py --download
 ```
-*(Hoặc dùng lệnh: `make download-r2`)*  
-Toàn bộ dữ liệu của cả 7 nguồn sẽ được tải về thư mục `data/` trên máy bạn.
+Toàn bộ dữ liệu của cả 8 nguồn sẽ được tải về thư mục `data/` trên máy bạn. Lệnh này chỉ tải về, không ghi lên R2. Key theo layout cũ được đặt vào đúng thư mục nhờ `normalize_legacy_key`.
 
 ### 5.3. Tải kết quả của riêng 1 nguồn cụ thể:
 ```bash
@@ -161,37 +171,17 @@ python scripts/sync_cloud_lakehouse.py --download --source vietnamworks
 Bạn không bắt buộc phải tải file về ổ cứng mà có thể đọc trực tiếp từ Cloudflare R2 vào Pandas DataFrame:
 
 ```python
-import io
 import json
-import os
-import boto3
 import pandas as pd
-from botocore.client import Config
-from dotenv import load_dotenv
+from collection.common.r2_storage import get_r2_client, resolve_r2_bucket
 
-load_dotenv()
+s3 = get_r2_client()           # đọc .env, dùng đúng thứ tự khóa như crawler
+bucket = resolve_r2_bucket(None)
 
-# 1. Kết nối Cloudflare R2
-s3 = boto3.client(
-    "s3",
-    endpoint_url=os.getenv("S3_ENDPOINT_URL"),
-    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-    config=Config(signature_version="s3v4"),
-    region_name="auto",
-)
-
-# 2. Đọc trực tiếp file kết quả JSON từ R2
-bucket = os.getenv("S3_BUCKET_NAME", "vn-it-jobs")
-key = "raw/vietnamworks/raw/2026-10-16/raw_batch.json"
-
-response = s3.get_object(Bucket=bucket, Key=key)
-job_records = json.loads(response["Body"].read().decode("utf-8"))
-
-# 3. Phân tích dữ liệu bằng Pandas
-df = pd.DataFrame(job_records)
-print(f"✅ Đã nạp thành công {len(df)} bài đăng tuyển dụng từ Cloudflare R2!")
-print(df.head())
+key = "raw/vietnamworks/2026-11-01/<job_id>_v1.json"
+envelope = json.loads(s3.get_object(Bucket=bucket, Key=key)["Body"].read())
+df = pd.json_normalize(envelope["raw_payload"])
+print(envelope["metadata"]["content_hash"], df.shape)
 ```
 
 ---
@@ -203,10 +193,10 @@ print(df.head())
 2. **Chia sẻ khóa an toàn**:
    - Nhóm trưởng chia sẻ file `.env` mẫu qua kênh chat riêng (Zalo/Telegram/Discord).
 3. **Tiêu chuẩn nghiệm thu trước khi nộp (DoD Checklist)**:
-   - [x] Đã cào và tạo file kết quả `.json` tuân thủ Schema v1 (`_meta` và `raw`).
-   - [x] File JSON không rỗng và parse hợp lệ không có lỗi cú pháp.
-   - [x] Đã chạy `python scripts/upload_to_r2.py --source <tên_sàn>` thành công 100%.
-   - [x] Kiểm tra lại trên Cloud bằng `python scripts/sync_cloud_lakehouse.py --status`.
+   - [ ] Envelope có `metadata` (job_id, source, source_url, scraped_at, version, content_hash) và `raw_payload`.
+   - [ ] Đã chạy crawler với `--sync-r2` (hoặc `push_raw_to_r2.py`, đẩy cả ledger).
+   - [ ] `python scripts/audit_raw_data.py --r2`: không có key layout cũ, "Ledger chậm hơn raw" bằng 0.
+4. **Cấu hình chỉ nằm trong `.env`.** Không in giá trị khóa ra log hay chat; muốn so sánh hai khóa thì so hash.
 
 ---
 
@@ -215,9 +205,10 @@ print(df.head())
 | Mục tiêu thao tác | Lệnh thực hiện |
 | :--- | :--- |
 | **Cấu hình R2 1 chạm** | `python scripts/setup_cloud_storage.py` |
-| **Tải kết quả 1 nguồn lên R2** | `python scripts/upload_to_r2.py --source <source>` |
-| **Tải 1 file .json cụ thể** | `python scripts/upload_to_r2.py --file <path_to_json>` |
-| **Chạy thử nghiệm (Dry-Run)** | `python scripts/upload_to_r2.py --source <source> --dry-run` |
-| **Tải toàn bộ kết quả lên R2** | `make upload-r2` *(hoặc `--all-results`)* |
-| **Xem tình trạng Cloud R2** | `make r2-status` *(hoặc `sync_cloud_lakehouse.py --status`)* |
-| **Kéo kết quả cả nhóm về máy** | `make download-r2` *(hoặc `sync_cloud_lakehouse.py --download`)* |
+| **Kiểm tra kết nối** | `make check-r2` |
+| **Cào và đồng bộ** | `python run.py --source <source> --sync-r2` |
+| **Đẩy bù raw và ledger** | `python scripts/push_raw_to_r2.py --source <source> [--dry-run]` |
+| **Dựng lại ledger từ raw** | `python scripts/reconcile_ledger_from_raw.py --source <source> [--apply hoặc --push]` |
+| **Kiểm tra dữ liệu** | `python scripts/audit_raw_data.py --r2` |
+| **Xem tình trạng Cloud R2** | `python scripts/sync_cloud_lakehouse.py --status` |
+| **Kéo dữ liệu cả nhóm về máy** | `python scripts/sync_cloud_lakehouse.py --download [--source <source>]` |

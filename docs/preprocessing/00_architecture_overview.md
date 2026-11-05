@@ -1,5 +1,7 @@
 # TỔNG QUAN KIẾN TRÚC TIỀN XỬ LÝ DỮ LIỆU (PREPROCESSING ARCHITECTURE)
 
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+
 > **Tài liệu quy chuẩn số 00 (Preprocessing Core Document 00)**  
 > **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (**VN-IT-Job-Mining**)  
 > **Nguyên tắc cốt lõi:**  

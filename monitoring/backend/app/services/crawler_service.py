@@ -2,17 +2,62 @@
 """Service điều phối và giám sát tiến trình Crawler (Subprocess Runner & SSE Streamer)."""
 
 import asyncio
-from datetime import datetime, timezone
+from datetime import datetime, time, timedelta, timezone
 import logging
 import os
-from pathlib import Path
-import subprocess
 import sys
 from typing import Any, AsyncGenerator, Dict, Optional
 
 from app.core.config import settings
+from collection.common.adaptive_router import COOLDOWN_MINUTES_SURGE, MAX_ITEMS_PER_BATCH, VN_TZ
+from collection.common.detail_schedule import WEEKDAY_SLOT_HOURS, WEEKEND_SLOT_HOURS
 
 logger = logging.getLogger("crawler_service")
+
+
+# Lịch Phase 2 lấy từ collection/common/detail_schedule.py, dùng chung với DAG và router.
+DISCOVERY_SCHEDULE_TIME = "05:00 hằng ngày"
+
+
+def _hours(hours) -> str:
+    return ", ".join(f"{h:02d}" for h in hours) + "h"
+
+
+DETAIL_SCHEDULE_TIME = (
+    f"T2–T6: {_hours(WEEKDAY_SLOT_HOURS[:1])}"
+    + (f" ({_hours(WEEKDAY_SLOT_HOURS[1:])} nếu ca trước bỏ qua)" if len(WEEKDAY_SLOT_HOURS) > 1 else "")
+    + f" · T7, CN: {_hours(WEEKEND_SLOT_HOURS)}"
+)
+
+
+def next_detail_slot(now_vn: datetime) -> datetime:
+    """Ca Phase 2 kế tiếp mà router cho phép chạy, theo giờ Việt Nam."""
+    for offset in range(8):
+        day = (now_vn + timedelta(days=offset)).date()
+        slots = WEEKEND_SLOT_HOURS if day.weekday() >= 5 else WEEKDAY_SLOT_HOURS
+        for hour in slots:
+            slot = datetime.combine(day, time(hour), tzinfo=VN_TZ)
+            if slot > now_vn:
+                return slot
+    raise RuntimeError("Không tìm được ca kế tiếp")
+
+
+def _run_status(state: Optional[str]) -> str:
+    """Đổi trạng thái Airflow sang nhãn bảng lịch."""
+    if state == "success":
+        return "SUCCESS"
+    if state in ("failed", "upstream_failed"):
+        return "FAILED"
+    if state in ("running", "queued"):
+        return "RUNNING"
+    return "SCHEDULED"
+
+
+def _discovery_status(states: Optional[Dict[str, Optional[str]]], task_id: str) -> str:
+    """Đổi trạng thái task Airflow sang nhãn bảng Phase 1; không đọc được thì trả UNKNOWN."""
+    if states is None or task_id not in states:
+        return "UNKNOWN"
+    return _run_status(states[task_id])
 
 
 class CrawlerService:
@@ -21,6 +66,8 @@ class CrawlerService:
     def __init__(self):
         self.active_processes: Dict[str, asyncio.subprocess.Process] = {}
         self.log_buffers: Dict[str, list] = {}
+        self.log_dropped: Dict[str, int] = {}
+        self.log_done: Dict[str, bool] = {}  # True khi read_stream đã ghi dòng exit code
         self.job_status: Dict[str, Dict[str, Any]] = {}
 
     def get_source_status(self, source: str) -> Dict[str, Any]:
@@ -56,8 +103,12 @@ class CrawlerService:
         max_items: int = 30,
         max_pages: Optional[int] = None,
         engine: Optional[str] = None,
+        sync_r2: bool = True,
     ) -> Dict[str, Any]:
-        """Kích hoạt crawler nguồn chỉ định qua subprocess run.py."""
+        """Kích hoạt crawler nguồn chỉ định qua subprocess run.py.
+
+        sync_r2 mặc định bật: chạy mà không đồng bộ thì raw và ledger chỉ nằm trên máy, lần chạy sau lệch (SCRAPE-4).
+        """
         source = source.lower()
         if source not in settings.SUPPORTED_SOURCES:
             raise ValueError(f"Nguồn '{source}' không được hỗ trợ")
@@ -86,8 +137,12 @@ class CrawlerService:
             cmd.extend(["--max-pages", str(max_pages)])
         if engine and source in ["topcv", "jobsgo"]:
             cmd.extend(["--engine", engine])
+        if sync_r2:
+            cmd.append("--sync-r2")
 
         self.log_buffers[source] = []
+        self.log_dropped[source] = 0
+        self.log_done[source] = False
         now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         self.log_buffers[source].append(f"[{now_str}] Bắt đầu thực thi: {' '.join(cmd)}\n")
 
@@ -118,11 +173,13 @@ class CrawlerService:
                 # Giới hạn bộ đệm 2000 dòng gần nhất
                 if len(self.log_buffers[source]) > 2000:
                     self.log_buffers[source].pop(0)
+                    self.log_dropped[source] += 1
             await proc.wait()
             finish_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
             self.log_buffers[source].append(
                 f"[{finish_str}] Tiến trình kết thúc với exit code: {proc.returncode}\n"
             )
+            self.log_done[source] = True
 
         asyncio.create_task(read_stream())
 
@@ -151,180 +208,96 @@ class CrawlerService:
 
     async def stream_logs(self, source: str) -> AsyncGenerator[str, None]:
         """SSE Generator truyền log dòng lệnh theo thời gian thực."""
-        last_index = 0
+        sent = 0  # Tổng số dòng đã gửi, tính cả dòng đã bị cắt khỏi buffer
         while True:
-            buffer = self.log_buffers.get(source, [])
-            if last_index < len(buffer):
-                for idx in range(last_index, len(buffer)):
-                    clean_line = buffer[idx].rstrip("\r\n")
-                    yield f"data: {clean_line}\n\n"
-                last_index = len(buffer)
-
+            # Đọc trạng thái trước khi gửi, để dòng nào ghi trước lúc read_stream xong cũng được gửi
             proc = self.active_processes.get(source)
-            if proc is not None and proc.returncode is not None and last_index >= len(buffer):
-                # Tiến trình đã xong và đã gửi hết log
-                yield f"data: [EOF] Quá trình cào đã hoàn tất.\n\n"
+            finished = proc is not None and proc.returncode is not None and self.log_done.get(source, True)
+
+            buffer = self.log_buffers.get(source, [])
+            dropped = self.log_dropped.get(source, 0)
+            start = max(sent - dropped, 0)
+            chunk = buffer[start:]  # chụp lại trước khi yield; buffer có thể dài thêm trong lúc gửi
+            for line in chunk:
+                yield line.rstrip("\r\n")
+            sent = dropped + start + len(chunk)
+
+            if proc is None:
+                yield "[EOF] Nguồn này chưa có tiến trình đang chạy."
+                break
+            if finished:
+                yield "[EOF] Quá trình cào đã hoàn tất."
                 break
 
             await asyncio.sleep(0.5)
 
     def get_weekly_crawl_schedule(self) -> Dict[str, Any]:
-        """Tạo bảng kế hoạch điều phối 2 Pha (Pha 1 Discovery & Pha 2 Detail) cho 8 sàn tuyển dụng."""
+        """Lịch 2 pha theo đúng DAG và AdaptiveWorkloadRouter, trạng thái lấy từ Airflow."""
+        from app.services.airflow_service import airflow_service
         from app.services.ledger_service import ledger_service
 
-        # Định nghĩa 8 sàn tuyển dụng chuẩn
-        source_configs = [
-            {
-                "day_of_week": "Thứ Hai (Monday)",
-                "day_index": 1,
-                "focal_source": "topdev",
-                "engine": "curl_cffi (TLS Impersonation)",
-                "quota": 250,
-                "detail_time": "20:00 PM",
-                "recrawl_strategy": "Safe Skip + Re-crawl 21 ngày",
-            },
-            {
-                "day_of_week": "Thứ Ba (Tuesday)",
-                "day_index": 2,
-                "focal_source": "careerviet",
-                "engine": "curl_cffi (HTML Parser)",
-                "quota": 200,
-                "detail_time": "20:00 PM",
-                "recrawl_strategy": "Anti-403 + Fallback",
-            },
-            {
-                "day_of_week": "Thứ Tư (Wednesday)",
-                "day_index": 3,
-                "focal_source": "itviec",
-                "engine": "curl_cffi (Session Auth)",
-                "quota": 200,
-                "detail_time": "20:00 PM",
-                "recrawl_strategy": "JSON-LD & DOM Matcher",
-            },
-            {
-                "day_of_week": "Thứ Năm (Thursday)",
-                "day_index": 4,
-                "focal_source": "vietnamworks",
-                "engine": "curl_cffi (Algolia/API)",
-                "quota": 300,
-                "detail_time": "20:00 PM",
-                "recrawl_strategy": "IT Domain Filter",
-            },
-            {
-                "day_of_week": "Thứ Sáu (Friday)",
-                "day_index": 5,
-                "focal_source": "topcv",
-                "engine": "playwright (Cloudflare Bypass)",
-                "quota": 350,
-                "detail_time": "20:00 PM",
-                "recrawl_strategy": "Two-Phase Discovery/Detail",
-            },
-            {
-                "day_of_week": "Thứ Bảy (Saturday)",
-                "day_index": 6,
-                "focal_source": "vieclam24h",
-                "engine": "curl_cffi (Mobile UA)",
-                "quota": 250,
-                "detail_time": "20:00 PM",
-                "recrawl_strategy": "Safe Skip + CDC Hash",
-            },
-            {
-                "day_of_week": "Chủ Nhật S1 (Sunday)",
-                "day_index": 7,
-                "focal_source": "glints",
-                "engine": "curl_cffi + playwright",
-                "quota": 250,
-                "detail_time": "14:00 PM",
-                "recrawl_strategy": "Weekly Catch-up & Backup",
-            },
-            {
-                "day_of_week": "Chủ Nhật S2 (Sunday)",
-                "day_index": 8,
-                "focal_source": "jobsgo",
-                "engine": "curl_cffi (TLS Impersonation)",
-                "quota": 250,
-                "detail_time": "20:00 PM",
-                "recrawl_strategy": "Safe Skip + Re-crawl 21 ngày",
-            },
-        ]
+        discovery_states = airflow_service.get_latest_discovery_states()
+        history = airflow_service.get_run_history(days=14)
+        latest_runs: Dict[str, Dict[str, Any]] = {}
+        for run in history or []:
+            latest_runs[run["dag_id"]] = run  # history đã sắp theo start_date tăng dần
 
         phase1_discovery = []
         phase2_detail = []
-        total_projected = 0
         total_actual = 0
-        total_pending = 0
+        total_backlog = 0
 
-        for sc in source_configs:
-            src = sc["focal_source"]
+        for src in settings.SUPPORTED_SOURCES:
             st = self.get_source_status(src)
             ledger_st = ledger_service.get_ledger_summary(src)
-            counts = ledger_st.get("counts", {})
+            # Router xả PENDING và tin đến hạn cào lại, gồm cả DONE từ 21 ngày (UrlLedger.get_queue_summary)
+            queue = ledger_service.get_queue_summary(src)
+            backlog = queue["pending"] + queue["recheck_due"]
+            total_actual += st["total_raw"]
+            total_backlog += backlog
 
-            # Đã cào thực tế từ thư mục raw
-            actual_count = st["total_raw"]
-            # Số tin chờ cào (PENDING + NEW)
-            pending_count = counts.get("PENDING", 0) + counts.get("NEW", 0)
-            # Tổng số URLs trong ledger
-            total_urls = ledger_st.get("total", 0)
-
-            quota = sc["quota"]
-            total_projected += quota
-            total_actual += actual_count
-            total_pending += pending_count
-
-            progress = round((actual_count / max(quota, 1)) * 100, 1)
-
-            # Airflow status
-            if st["is_running"]:
-                status = "RUNNING"
-            elif actual_count >= quota or pending_count == 0:
-                status = "SUCCESS"
-            else:
-                status = "SCHEDULED"
-
-            # 1. Bảng Pha 1: Daily URL Discovery
-            phase1_entry = {
-                "day_of_week": sc["day_of_week"],
-                "day_index": sc["day_index"],
+            phase1_discovery.append({
                 "focal_source": src,
                 "dag_id": "dag_discovery_daily",
                 "task_id": f"discover_{src}",
-                "scheduled_time": "05:00 AM",
+                "scheduled_time": DISCOVERY_SCHEDULE_TIME,
                 "quota_pages": 2,
-                "total_discovered": total_urls,
-                "status": "SUCCESS",
-            }
-            phase1_discovery.append(phase1_entry)
+                "total_discovered": ledger_st.get("total", 0),
+                "status": _discovery_status(discovery_states, f"discover_{src}"),
+            })
 
-            # 2. Bảng Pha 2: Adaptive Detail Extraction
-            phase2_entry = {
-                "day_of_week": sc["day_of_week"],
-                "day_index": sc["day_index"],
+            dag_id = f"crawler_detail_{src}"
+            run = latest_runs.get(dag_id)
+            if st["is_running"]:
+                status = "RUNNING"
+            elif history is None:
+                status = "UNKNOWN"
+            else:
+                status = _run_status(run["state"] if run else None)
+            phase2_detail.append({
                 "focal_source": src,
-                "dag_id": f"crawler_detail_{src}",
-                "scheduled_time": sc["detail_time"],
-                "projected_quota": quota,
-                "actual_crawled": actual_count,
-                "uncrawled_pending": pending_count,
-                "progress_pct": progress,
-                "engine": sc["engine"],
-                "recrawl_strategy": sc["recrawl_strategy"],
+                "dag_id": dag_id,
+                "scheduled_time": DETAIL_SCHEDULE_TIME,
+                "batch_limit": MAX_ITEMS_PER_BATCH,
+                "actual_crawled": st["total_raw"],
+                "uncrawled_pending": backlog,
+                "batches_needed": -(-backlog // MAX_ITEMS_PER_BATCH),
+                "last_run_start": run["start_date"].isoformat() if run and run.get("start_date") else None,
+                "engine": st["engine"],
                 "status": status,
-            }
-            phase2_detail.append(phase2_entry)
-
-        overall_pct = round((total_actual / max(total_projected, 1)) * 100, 1)
+            })
 
         return {
             "phase1_discovery": phase1_discovery,
             "phase2_detail": phase2_detail,
-            "total_projected_weekly": total_projected,
+            "airflow_available": history is not None,
+            "batch_limit": MAX_ITEMS_PER_BATCH,
+            "cooldown_minutes": COOLDOWN_MINUTES_SURGE,
+            "next_detail_slot": next_detail_slot(datetime.now(VN_TZ)).isoformat(),
             "total_actual_crawled": total_actual,
-            "total_uncrawled_pending": total_pending,
-            "overall_progress_pct": overall_pct,
+            "total_uncrawled_pending": total_backlog,
             "days": phase2_detail,  # backward compatibility
             "generated_at": datetime.now().isoformat(),
         }
-
 
 crawler_service = CrawlerService()

@@ -32,7 +32,7 @@ from urllib3.util.retry import Retry
 from collection.base.base_crawler import BaseCrawler
 from collection.common.anti_blocking import polite_sleep
 from collection.common.http_client import DelayConfig, HttpClient
-from collection.common.minio_raw_pipeline import MinioRawStore
+from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags, RawJobEnvelope
 from collection.common.url_ledger import (
     UrlLedger,
@@ -41,6 +41,7 @@ from collection.common.url_ledger import (
     generate_url_hash,
 )
 from collection.common.utils import (
+    collapse_whitespace,
     detect_language,
     parse_salary_detail,
     text_to_clean_lines,
@@ -104,6 +105,14 @@ DETAIL_FIELDS = ",".join(
         "recruitment_process_original",
         "valid_through",
         "is_salary_visible",
+        # Pha detail lưu raw từ API này; thiếu các trường dưới thì raw không có kinh nghiệm,
+        # cấp bậc và ngày đăng (F5, F6, F8) dù trang và API listing đều có.
+        "job_levels_str",
+        "job_levels_arr",
+        "experiences_str",
+        "job_types_str",
+        "contract_types_str",
+        "published",  # không lấy "refreshed": đổi mỗi lần nhà tuyển dụng làm mới tin, làm hash CDC đổi theo
     )
 )
 COMPANY_FIELDS = "display_name"
@@ -205,11 +214,7 @@ def _cookie_header_from_environment(
     return cookie_header or None
 
 
-def _clean_text(value: Any) -> str | None:
-    if value is None:
-        return None
-    text = re.sub(r"\s+", " ", str(value)).strip()
-    return text or None
+_clean_text = collapse_whitespace  # collection/common/utils.py
 
 
 def _text_identity(value: str) -> str:
@@ -1451,6 +1456,10 @@ def build_raw_payload_from_api(item: dict[str, Any]) -> dict[str, Any]:
         salary_raw = _clean_text(salary_data or "Thỏa thuận")
     payload["salary_raw"] = salary_raw
     payload["salary"] = salary_raw
+    # "since" ("3 ngày trước") đổi theo ngày cào; giữ lại thì mọi lần cào lại đều ra hash mới
+    published = item.get("published")
+    if isinstance(published, dict):
+        payload["published"] = {k: v for k, v in published.items() if k != "since"}
     return payload
 
 
@@ -1493,17 +1502,17 @@ class TopDevCrawler(BaseCrawler):
     """Crawler TopDev — Two-Phase Decoupled (URL Discovery -> Detail Extraction), RAW-FIRST.
 
     Tuân thủ nghiêm ngặt chuẩn Modern Data Stack (docs/crawler_output_checklist.md &
-    docs/two_phase_minio_crawler_playbook.md):
+    docs/two_phase_r2_crawler_playbook.md):
     1. Hai pha độc lập: Pha 1 discover_urls() & Pha 2 crawl_details().
     2. Pha 1: URL ban đầu hoàn toàn chưa có hash (content_hash = None, status = "PENDING").
-    3. Pha 2: Kéo URL từ MinIO về máy trước khi lọc URL (ledger.pull_from_minio()).
+    3. Pha 2: Kéo URL từ R2 về máy trước khi lọc URL (ledger.pull_from_r2()).
     4. Băm duy nhất 1 trường content_hash trên document JSON sau cào (calculate_json_canonical_hash).
     5. Nhận diện ngôn ngữ tự động qua detect_language() lưu vào metadata.language.
     6. Bóc tách 100% trường dữ liệu theo neccessay.md & .html (Zero Information Loss).
     7. Cơ chế Safe Skip & Failed Queue (ledger.mark_failed, cờ CLI --retry-failed).
-    8. Checkpoint Sync định kỳ (mỗi 15 tin tự động lưu & sync MinIO Lakehouse).
+    8. Checkpoint Sync định kỳ (mỗi 15 tin tự động lưu & sync R2 Lakehouse).
     9. Chống chặn bot: Polite sleep ngẫu nhiên 2.0s - 4.5s.
-    10. Đầy đủ các cờ CLI chuẩn: --phase {discovery, details, sync, view}, --online, --sync-minio, --retry-failed, --limit, --local-html-dir.
+    10. Đầy đủ các cờ CLI chuẩn: --phase {discovery, details, sync, view}, --online, --sync-r2, --retry-failed, --limit, --local-html-dir.
     """
 
     source_name = "topdev"
@@ -1521,7 +1530,7 @@ class TopDevCrawler(BaseCrawler):
         page_size: int = PAGE_SIZE,
         keyword: str | None = None,
         category_ids: int = 1,
-        sync_minio: bool = False,
+        sync_r2: bool = False,
         ledger_dir: str | None = None,
         raw_dir: str | None = None,
         local_html_dir: str | Path | None = None,
@@ -1537,7 +1546,7 @@ class TopDevCrawler(BaseCrawler):
             max_items=effective_limit,
             checkpoint_interval=checkpoint_interval,
         )
-        self.sync_minio = sync_minio
+        self.sync_r2 = sync_r2
         self.category_ids = category_ids
         self.local_html_dir = local_html_dir
         self.ledger_dir = ledger_dir or os.path.join(self.output_dir, "url_ledger")
@@ -1570,13 +1579,13 @@ class TopDevCrawler(BaseCrawler):
             source=self.source_name,
             storage_dir=self.ledger_dir,
         )
-        self._minio_store: MinioRawStore | None = None
+        self._r2_store: R2RawStore | None = None
 
     @property
-    def minio_store(self) -> MinioRawStore:
-        if self._minio_store is None:
-            self._minio_store = MinioRawStore()
-        return self._minio_store
+    def r2_store(self) -> R2RawStore:
+        if self._r2_store is None:
+            self._r2_store = R2RawStore()
+        return self._r2_store
 
     def parse_raw_envelope(self, item: dict[str, Any]) -> RawJobEnvelope:
         """Parse raw envelope từ API item phục vụ interface tương thích."""
@@ -1603,7 +1612,7 @@ class TopDevCrawler(BaseCrawler):
         return RawJobEnvelope(metadata=metadata, raw_payload=raw_payload)
 
     def discover_urls(self, max_pages: int | None = None, category_ids: int | None = None) -> list[str]:
-        """Pha 1: Quét danh mục API TopDev, lấy toàn bộ Job URLs và lưu vào UrlLedger & MinIO."""
+        """Pha 1: Quét danh mục API TopDev, lấy toàn bộ Job URLs và lưu vào UrlLedger & R2."""
         log.info("[TopDev] === Bắt đầu Pha 1: URL Discovery ===")
         effective_max_pages = max_pages if max_pages is not None else 2
         discovered_urls: list[str] = []
@@ -1652,11 +1661,11 @@ class TopDevCrawler(BaseCrawler):
                 if page % 10 == 0:
                     log.info("[TopDev] Đang quét trang %d/%d (Đã phát hiện %d URLs)...", page, last_page, len(discovered_urls))
                     self.ledger.save_catalog()
-                    if self.sync_minio:
+                    if self.sync_r2:
                         try:
-                            self.ledger.sync_to_minio()
+                            self.ledger.sync_to_r2()
                         except Exception as e:
-                            log.warning("[TopDev] Checkpoint sync MinIO Pha 1 thất bại: %s", e)
+                            log.warning("[TopDev] Checkpoint sync R2 Pha 1 thất bại: %s", e)
 
                 polite_sleep(0.3, 0.7)
                 page += 1
@@ -1667,11 +1676,8 @@ class TopDevCrawler(BaseCrawler):
 
         self.ledger.save_catalog()
         self.ledger.export_daily_manifest()
-        if self.sync_minio:
-            try:
-                self.ledger.sync_to_minio()
-            except Exception as e:
-                log.warning("[TopDev] Đồng bộ MinIO Pha 1 thất bại: %s", e)
+        if self.sync_r2:
+            self.ledger.sync_final()
         log.info("[TopDev] Pha 1 hoàn thành: phát hiện %d URLs.", len(discovered_urls))
         return discovered_urls
 
@@ -1683,11 +1689,11 @@ class TopDevCrawler(BaseCrawler):
     ) -> dict[str, int]:
         """Pha 2: Bóc tách chi tiết tin từ URL Ledger với Safe Skip và chu kỳ Re-crawl 21 ngày."""
         log.info("[TopDev] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày) ===")
-        if self.sync_minio:
+        if self.sync_r2:
             try:
-                self.ledger.pull_from_minio()
+                self.ledger.pull_from_r2()
             except Exception as e:
-                log.warning("[TopDev] Kéo ledger từ MinIO thất bại: %s", e)
+                log.warning("[TopDev] Kéo ledger từ R2 thất bại: %s", e)
 
         if retry_failed:
             pending = [
@@ -1737,11 +1743,10 @@ class TopDevCrawler(BaseCrawler):
                     envelope = self.parse_raw_envelope(detail_resp)
 
                 content_hash = envelope.metadata["content_hash"]
-                old_hash = item.get("content_hash")
                 old_version = item.get("latest_version") or 0
 
                 # Đối chiếu hash: Nếu nội dung không đổi và tin đã DONE thì giữ nguyên version
-                if old_hash and old_hash == content_hash and item.get("status") == "DONE":
+                if not self.ledger.next_version(item, content_hash)[0]:
                     log.info("[TopDev] Bài đăng %s không đổi nội dung (hash match) -> Giữ nguyên v%d", job_id, old_version)
                     self.ledger.mark_done(url_hash=url_hash, content_hash=content_hash, new_version=old_version)
                     stats["success"] += 1
@@ -1759,13 +1764,13 @@ class TopDevCrawler(BaseCrawler):
                 with open(snapshot_file, "w", encoding="utf-8") as f:
                     json.dump(envelope.model_dump(mode="json"), f, ensure_ascii=False, indent=2)
 
-                # Đẩy lên MinIO nếu có cờ sync_minio
-                if self.sync_minio:
+                # Đẩy lên R2 nếu có cờ sync_r2
+                if self.sync_r2:
                     try:
                         s3_key = f"raw/{self.source_name}/{date_str}/{job_id}_v{new_version}.json"
-                        self.minio_store.put_json(s3_key, envelope.model_dump(mode="json"))
+                        self.r2_store.put_json(s3_key, envelope.model_dump(mode="json"))
                     except Exception as me:
-                        log.warning("[TopDev] Lỗi đẩy snapshot lên MinIO cho job %s: %s", job_id, me)
+                        log.warning("[TopDev] Lỗi đẩy snapshot lên R2 cho job %s: %s", job_id, me)
 
                 self.ledger.mark_done(url_hash=url_hash, content_hash=content_hash, new_version=new_version)
                 stats["success"] += 1
@@ -1775,11 +1780,11 @@ class TopDevCrawler(BaseCrawler):
                 if count % self.checkpoint_interval == 0:
                     log.info("[TopDev] Tiến độ Pha 2: Đã cào %d/%d tin chi tiết (Thành công: %d, Lỗi: %d)...", count, len(pending), stats["success"], stats["failed"])
                     self.ledger.save_catalog()
-                    if self.sync_minio:
+                    if self.sync_r2:
                         try:
-                            self.ledger.sync_to_minio()
+                            self.ledger.sync_to_r2()
                         except Exception as e:
-                            log.warning("[TopDev] Checkpoint sync MinIO thất bại: %s", e)
+                            log.warning("[TopDev] Checkpoint sync R2 thất bại: %s", e)
             except Exception as exc:
                 log.warning("[TopDev] Safe Skip lỗi cào chi tiết %s (ID %s): %s", url, job_id, exc)
                 self.ledger.mark_failed(url_hash=url_hash, error_message=str(exc))
@@ -1787,11 +1792,8 @@ class TopDevCrawler(BaseCrawler):
                 continue
 
         self.ledger.save_catalog()
-        if self.sync_minio:
-            try:
-                self.ledger.sync_to_minio()
-            except Exception as e:
-                log.warning("[TopDev] Sync MinIO hoàn tất Pha 2 thất bại: %s", e)
+        if self.sync_r2:
+            self.ledger.sync_final()
 
         log.info("[TopDev] Pha 2 hoàn tất: %s", stats)
         return stats
@@ -1910,10 +1912,10 @@ def _parse_args() -> argparse.Namespace:
         "--phase",
         choices=["discovery", "details", "sync", "view"],
         default="details",
-        help="Pha thực thi: discovery (Pha 1), details (Pha 2), sync (Đồng bộ MinIO), view (Xem URL Ledger).",
+        help="Pha thực thi: discovery (Pha 1), details (Pha 2), sync (Đồng bộ R2), view (Xem URL Ledger).",
     )
     parser.add_argument("--online", action="store_true", help="Chạy online tương tác trực tiếp với API/Web TopDev.")
-    parser.add_argument("--sync-minio", action="store_true", help="Tự động đồng bộ URL Ledger và Raw Snapshots lên MinIO Lakehouse.")
+    parser.add_argument("--sync-r2", "--sync-minio", action="store_true", help="Tự động đồng bộ URL Ledger và Raw Snapshots lên MinIO Lakehouse.")
     parser.add_argument("--retry-failed", action="store_true", help="Chỉ cào lại các URL trong hàng đợi lỗi (status=FAILED).")
     parser.add_argument("--limit", type=int, help="Giới hạn số lượng tin chi tiết cần cào.")
     parser.add_argument("--max-pages", type=int, help="Giới hạn số trang quét danh mục ở Pha 1.")
@@ -1941,7 +1943,7 @@ def main() -> int:
         keyword=args.keyword,
         category_ids=args.category_ids,
         checkpoint_interval=args.checkpoint_interval,
-        sync_minio=args.sync_minio,
+        sync_r2=args.sync_r2,
         local_html_dir=args.local_html_dir,
         timeout=args.timeout,
     )
@@ -1959,9 +1961,9 @@ def main() -> int:
         print(f"Pha 2 Details hoàn thành: {stats}")
         return 0 if stats["failed"] == 0 else 1
     elif args.phase == "sync":
-        print("Đồng bộ dữ liệu cục bộ lên MinIO Lakehouse...")
+        print("Đồng bộ dữ liệu cục bộ lên R2 Lakehouse...")
         crawler.ledger.save_catalog()
-        crawler.ledger.sync_to_minio()
+        crawler.ledger.sync_final()
         print("Đồng bộ hoàn tất.")
         return 0
     elif args.phase == "view":

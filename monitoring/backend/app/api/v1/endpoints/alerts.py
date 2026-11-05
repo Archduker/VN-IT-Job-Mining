@@ -4,7 +4,7 @@
 VN-IT-Job-Mining Central Observatory.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from typing import Any, Dict
 
 from app.services.alert_service import alert_service

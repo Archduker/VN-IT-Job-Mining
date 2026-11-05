@@ -1,6 +1,12 @@
 # Hướng Dẫn Vận Hành Apache Airflow & Lịch Cào Hai Pha Tối Ưu EC2 (VN-IT-Job-Mining)
 
-Tài liệu này được tổng hợp và đối chiếu trực tiếp từ kiến trúc hệ thống **VN-IT-Job-Mining** kết hợp tài liệu chuẩn của **[Apache Airflow Documentation](https://airflow.apache.org/docs/)**, thiết kế riêng cho việc vận hành trên hạ tầng **AWS EC2 On-Demand** và **Cloudflare R2 / Cloudflare R2**.
+Tài liệu này được tổng hợp và đối chiếu trực tiếp từ kiến trúc hệ thống **VN-IT-Job-Mining** kết hợp tài liệu chuẩn của **[Apache Airflow Documentation](https://airflow.apache.org/docs/)**, thiết kế riêng cho việc vận hành trên hạ tầng **AWS EC2 On-Demand** và **Cloudflare R2**.
+
+> **Cập nhật 03/11/2026.**
+> - Operator gọi `run_crawler(..., sync_r2=True)` trong `run.py`, nên mỗi task kéo ledger từ R2 trước pha 2 và đẩy raw cùng ledger lên R2. Trước 02/11 tham số này chưa có, Airflow không đẩy gì lên R2 (`docs/issue_log.md` L-01). Chữ ký `run_crawler` là API của Airflow: đổi thì sửa cả `airflow/plugins/crawler_operators.py`.
+> - Cuối pha, đồng bộ ledger thất bại thì task fail (`LedgerSyncError`). Discovery không tải được trang danh sách nào cũng fail (`DiscoveryError`, hiện mới áp dụng cho TopCV).
+> - Bật scheduler là cào thật và ghi lên R2. Khi chỉ cần xem Monitoring thì dùng `./start_monitoring.sh`, script này không bật scheduler.
+> - Airflow chạy trên PostgreSQL (`make db-up`), không dùng SQLite.
 
 ---
 
@@ -93,18 +99,18 @@ Hệ thống điều phối toàn diện **8 sàn tuyển dụng CNTT**: `topdev
 *(Role: Admin — toàn quyền xem log, kích hoạt DAG, kiểm tra XCom và trạng thái task).*
 
 ### 4.2. Khởi Động Trên Môi Trường Phát Triển / EC2
-Mở 2 phiên Terminal (hoặc chạy ngầm qua `systemd` / `supervisor` trên EC2):
+Cách ngắn: `make db-up`, `make airflow-webserver`, `make airflow-scheduler`. Hoặc mở 2 phiên Terminal (hoặc chạy ngầm qua `systemd` / `supervisor` trên EC2):
 
 ```bash
 # Terminal 1: Khởi động Scheduler (Bộ điều phối & lập lịch)
-cd /run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining
+cd <thư mục dự án>
 source .venv/bin/activate
 export AIRFLOW_HOME=$(pwd)/airflow
 export PYTHONPATH=.:$(pwd)/airflow/plugins
 airflow scheduler
 
 # Terminal 2: Khởi động Webserver (Giao diện điều khiển UI)
-cd /run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining
+cd <thư mục dự án>
 source .venv/bin/activate
 export AIRFLOW_HOME=$(pwd)/airflow
 export PYTHONPATH=.:$(pwd)/airflow/plugins
@@ -145,6 +151,7 @@ airflow tasks test dag_discovery_daily discover_topcv 2026-10-25
 airflow tasks test crawler_detail_topcv check_route_topcv 2026-10-25
 
 # 5. Chạy cào trực tiếp qua file điều phối chính run.py
-python run.py --source topcv --phase discover --max-pages 2 --online
-python run.py --source topcv --phase detail --max-items 30 --online
+python run.py --source topcv --phase discover --max-pages 2 --sync-r2
+python run.py --source topcv --phase detail --max-items 30 --sync-r2   # TopCV mặc định --engine curl_cffi
+# Không có --sync-r2 thì chỉ ghi trên máy; nhớ đẩy cả raw lẫn ledger (scripts/push_raw_to_r2.py)
 ```

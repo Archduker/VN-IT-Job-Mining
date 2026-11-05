@@ -14,8 +14,8 @@ import sys
 from pathlib import Path
 
 try:
-    import boto3
-    from botocore.client import Config
+    import boto3  # noqa: F401 (chỉ kiểm tra đã cài)
+    from botocore.client import Config  # noqa: F401
     from dotenv import load_dotenv
 except ImportError:
     print("[LỖI] Thiếu thư viện phụ thuộc. Vui lòng chạy: pip install boto3 python-dotenv")
@@ -25,42 +25,23 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(PROJECT_ROOT / ".env")
 
 
-def get_s3_client():
-    endpoint = (
-        os.getenv("S3_ENDPOINT_URL")
-        or os.getenv("R2_ENDPOINT_URL")
-        or os.getenv("MINIO_ENDPOINT")
-        or "http://localhost:9000"
-    )
-    ak = (
-        os.getenv("AWS_ACCESS_KEY_ID")
-        or os.getenv("R2_ACCESS_KEY_ID")
-        or os.getenv("MINIO_ROOT_USER")
-        or "minioadmin"
-    )
-    sk = (
-        os.getenv("AWS_SECRET_ACCESS_KEY")
-        or os.getenv("R2_SECRET_ACCESS_KEY")
-        or os.getenv("MINIO_ROOT_PASSWORD")
-        or "minioadmin"
-    )
-    region = "auto" if "r2.cloudflarestorage.com" in endpoint else "us-east-1"
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-    s3 = boto3.client(
-        "s3",
-        endpoint_url=endpoint,
-        aws_access_key_id=ak,
-        aws_secret_access_key=sk,
-        config=Config(signature_version="s3v4", connect_timeout=5, retries={"max_attempts": 2}),
-        region_name=region,
-    )
-    bucket = (
-        os.getenv("S3_BUCKET_NAME")
-        or os.getenv("R2_BUCKET_NAME")
-        or os.getenv("MINIO_BUCKET")
-        or "vn-it-jobs"
-    )
-    return s3, bucket, endpoint
+from collection.common.r2_storage import (  # noqa: E402
+    LAKEHOUSE_SOURCES,
+    canonicalize_lakehouse_key,
+    get_r2_client,
+    normalize_legacy_key,
+    resolve_r2_bucket,
+    resolve_r2_endpoint,
+)
+
+
+def get_s3_client():
+    """Client R2 dùng chung với crawler (collection/common/r2_storage.py)."""
+    endpoint = resolve_r2_endpoint()
+    return get_r2_client(endpoint), resolve_r2_bucket(), endpoint
 
 
 def show_status(s3, bucket: str, endpoint: str, filter_source: str = None):
@@ -111,19 +92,20 @@ def local_path_to_s3_key(local_path: Path, data_dir: Path) -> str | None:
     if parts[-1].endswith((".tmp", ".lock", ".swp")) or parts[-1] == "router_state.json":
         return None
 
-    if len(parts) >= 2 and parts[1] in ("raw", "url_ledger", "staging"):
-        source, layer = parts[0], parts[1]
-        rest = "/".join(parts[2:])
-        return f"{layer}/{source}/{rest}"
-    if parts[0] in ("raw", "url_ledger", "staging", "curated"):
-        return "/".join(parts)
-    return None
+    # Dùng chung luật với crawler: chuẩn hóa layout cũ, từ chối key không có tên nguồn hợp lệ
+    try:
+        return canonicalize_lakehouse_key("/".join(parts))
+    except ValueError:
+        return None
 
 
 def s3_key_to_local_path(s3_key: str, data_dir: Path) -> Path:
-    """Ánh xạ Lakehouse S3 key <layer>/<source>/... về đường dẫn local data/<source>/<layer>/..."""
-    parts = s3_key.split("/")
-    if len(parts) >= 2 and parts[0] in ("raw", "url_ledger", "staging"):
+    """Ánh xạ Lakehouse S3 key <layer>/<source>/... về đường dẫn local data/<source>/<layer>/...
+
+    Key theo layout cũ (raw/crawling/<ngày>/<nguồn>/...) được đưa về đúng thư mục của nguồn.
+    """
+    parts = normalize_legacy_key(s3_key).split("/")
+    if len(parts) >= 3 and parts[0] in ("raw", "url_ledger", "staging") and parts[1] in LAKEHOUSE_SOURCES:
         layer, source = parts[0], parts[1]
         rest = "/".join(parts[2:])
         return data_dir / source / layer / rest
@@ -182,6 +164,7 @@ def download_from_cloud(s3, bucket: str, filter_source: str = None):
         pages = paginator.paginate(Bucket=bucket, Prefix=prefix)
 
         count = 0
+        skipped = 0
         total_bytes = 0
 
         for page in pages:
@@ -192,7 +175,12 @@ def download_from_cloud(s3, bucket: str, filter_source: str = None):
                 if filter_source and not f"/{filter_source}/" in s3_key:
                     continue
 
+                if s3_key.rsplit("/", 1)[-1].startswith("."):
+                    continue  # file giữ chỗ như .keep
                 local_dest = s3_key_to_local_path(s3_key, data_dir)
+                if local_dest.exists() and local_dest.stat().st_size == size:
+                    skipped += 1
+                    continue  # đã tải ở lần trước, cho phép chạy lại để tải tiếp
                 local_dest.parent.mkdir(parents=True, exist_ok=True)
 
                 # Tải file về
@@ -204,7 +192,7 @@ def download_from_cloud(s3, bucket: str, filter_source: str = None):
                 except Exception as d_err:
                     print(f"  ❌ Lỗi tải xuống {s3_key}: {d_err}")
 
-        print(f"\n🎉 Đã tải xuống {count} tệp ({total_bytes / (1024 * 1024):.2f} MB) về máy cục bộ!")
+        print(f"\n🎉 Đã tải xuống {count} tệp ({total_bytes / (1024 * 1024):.2f} MB) về máy cục bộ, bỏ qua {skipped} tệp đã có.")
         print("💡 Bạn có thể xem ngay bằng lệnh: .venv/bin/python scripts/view_urls.py --source topcv")
 
     except Exception as exc:

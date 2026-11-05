@@ -10,7 +10,7 @@ Mọi crawler nguồn phải kế thừa class này để đảm bảo tính nh�
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Generator, List, Optional
+from typing import Any, Dict, Generator, Optional
 import logging
 
 from collection.common.checkpoint import CheckpointManager

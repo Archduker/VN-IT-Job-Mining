@@ -1,60 +1,5 @@
 // TypeScript Interfaces for VN-IT-Job-Mining Central Observatory
 
-export interface DatasetMetadata {
-  version: string
-  storage_layer: string
-  format: string
-  total_raw_scraped: number
-  total_preprocessed: number
-  total_golden_unique: number
-  deduplication_rate_pct: number
-  overall_completeness_score: number
-}
-
-export interface PlatformBreakdown {
-  source: string
-  raw_count: number
-  contributed_unique: number
-  share_pct: number
-}
-
-export interface MarketSalaryBenchmark {
-  currency: string
-  unit: string
-  p25: number
-  median: number
-  mean: number
-  p75: number
-  p90: number
-  min_valid: number
-  max_valid: number
-}
-
-export interface GoldenSkill {
-  skill: string
-  job_count: number
-  percentage: number
-}
-
-export interface DataLineage {
-  raw_input_files: number
-  preprocessed_records: number
-  filtered_spams: number
-  cross_platform_duplicates_merged: number
-  final_golden_records: number
-}
-
-export interface MasterDashboardData {
-  status: string
-  generated_at: string
-  dataset_metadata: DatasetMetadata
-  platform_breakdown: PlatformBreakdown[]
-  schema_convergence: Record<string, number>
-  market_salary_benchmark_vnd: MarketSalaryBenchmark
-  top_golden_skills: GoldenSkill[]
-  data_lineage: DataLineage
-}
-
 export interface SourceStatus {
   id: string
   name: string
@@ -71,31 +16,6 @@ export interface FieldInventoryItem {
   null_rate_pct: number
   unique_count: number
   sample_value: string | null
-}
-
-export interface SemanticVectorPoint3D {
-  id: string
-  title: string
-  company: string
-  job_family: string
-  salary_vnd?: number
-  x: number
-  y: number
-  z: number
-  is_anomaly: boolean
-  skills: string[]
-}
-
-export interface Spatial3DData {
-  algorithm: string
-  total_points: number
-  points: SemanticVectorPoint3D[]
-  decision_boundary_mesh?: {
-    x: number[][]
-    y: number[][]
-    z: number[][]
-    threshold_score: number
-  }
 }
 
 export interface CloudHealth {
@@ -204,30 +124,26 @@ export interface EnumStatusSummary {
 }
 
 export interface Phase1DiscoveryItem {
-  day_of_week: string
-  day_index: number
   focal_source: string
   dag_id: string
   task_id: string
   scheduled_time: string
   quota_pages: number
   total_discovered: number
-  status: 'SUCCESS' | 'RUNNING' | 'SCHEDULED' | 'FAILED' | string
+  status: 'SUCCESS' | 'RUNNING' | 'SCHEDULED' | 'FAILED' | 'UNKNOWN' | string
 }
 
 export interface Phase2DetailItem {
-  day_of_week: string
-  day_index: number
   focal_source: string
   dag_id: string
   scheduled_time: string
-  projected_quota: number
+  batch_limit: number
   actual_crawled: number
   uncrawled_pending: number
-  progress_pct: number
+  batches_needed: number
+  last_run_start: string | null
   engine: string
-  recrawl_strategy: string
-  status: 'SUCCESS' | 'RUNNING' | 'SCHEDULED' | 'FAILED' | string
+  status: 'SUCCESS' | 'RUNNING' | 'SCHEDULED' | 'FAILED' | 'UNKNOWN' | string
 }
 
 // Backward-compatibility alias
@@ -236,10 +152,12 @@ export type WeeklyScheduleDay = Phase2DetailItem
 export interface WeeklyScheduleResponse {
   phase1_discovery?: Phase1DiscoveryItem[]
   phase2_detail?: Phase2DetailItem[]
-  total_projected_weekly: number
+  airflow_available: boolean
+  batch_limit: number
+  cooldown_minutes: number
+  next_detail_slot: string
   total_actual_crawled: number
   total_uncrawled_pending?: number
-  overall_progress_pct: number
   days?: Phase2DetailItem[]
   generated_at?: string
 }
@@ -287,58 +205,6 @@ export interface CloudSyncOverview {
   last_synced_at?: string
 }
 
-
-export interface ParsingRuleItem {
-  rule_name: string
-  target_field: string
-  total_attempted: number
-  successfully_parsed: number
-  success_rate_pct: number
-  failed_samples: string[]
-}
-
-export interface NullReductionItem {
-  field: string
-  raw_null_pct: number
-  clean_null_pct: number
-  improvement_pct: number
-}
-
-export interface PreprocessingMetricsData {
-  total_records_processed?: number
-  parsing_rules: ParsingRuleItem[]
-  null_reduction_comparison: NullReductionItem[]
-}
-
-export interface CrossPlatformPair {
-  pair: string
-  duplicates_found: number
-  pct: number
-}
-
-export interface DeduplicationMetrics {
-  similarity_threshold: number
-  total_comparisons: number
-  detected_duplicates: number
-  deduplication_rate_pct: number
-  similarity_score_distribution: {
-    ranges: string[]
-    pairs_count: number[]
-  }
-  top_cross_platform_pairs: CrossPlatformPair[]
-}
-
-export interface SchemaMappingItem {
-  target_field: string
-  data_type: string
-  unified_pct: number
-  status: string
-}
-
-export interface ProcessingMetricsData {
-  deduplication_metrics: DeduplicationMetrics
-  schema_mapping_inventory: SchemaMappingItem[]
-}
 
 export interface AlertItem {
   id: string
@@ -515,4 +381,219 @@ export interface RawSample {
   highlights: SampleHighlight[]
   notes: SampleNote[]
   features_in_raw: number
+}
+
+// ── Số liệu pipeline thật: /preprocessing/metrics, /processing/metrics, /dashboard, /eda ──
+
+export interface RankItem {
+  label: string
+  count: number
+}
+
+export interface PreprocessingSource {
+  source: string
+  available: boolean
+  audit_timestamp?: string | null
+  raw_envelopes?: number | null
+  stub_removed?: number | null
+  clean_records?: number | null
+  salary_coverage_pct?: number | null
+  salary_jd_hits?: number | null
+  imputed_records?: number | null
+  imputation_rate_pct?: number | null
+  language_distribution?: Record<string, number>
+}
+
+export interface PreprocessingReport {
+  available: boolean
+  unavailable_reason: string | null
+  generated_at: string | null
+  sources: PreprocessingSource[]
+  totals: {
+    raw_envelopes: number | null
+    stub_removed: number | null
+    clean_records: number | null
+    imputed_records: number | null
+  }
+}
+
+export interface FieldCompletenessItem {
+  field: string
+  filled: number | null
+  missing: number | null
+  completeness_pct: number | null
+}
+
+export interface ProcessingReport {
+  available: boolean
+  unavailable_reason: string | null
+  generated_at: string | null
+  integrated_records: number | null
+  dedup: {
+    input_records: number | null
+    golden_records: number | null
+    duplicates_removed: number | null
+    deduplication_rate_pct: number | null
+    cross_platform_clusters: number | null
+  } | null
+  field_completeness: FieldCompletenessItem[]
+  not_recorded: string[]
+}
+
+export interface DashboardReport {
+  available: boolean
+  unavailable_reason: string | null
+  generated_at: string | null
+  totals: {
+    integrated_records: number | null
+    staging_records: number | null
+    golden_records: number
+    deduplication_rate_pct: number | null
+    salary_coverage_pct: number | null
+  } | null
+  platform_breakdown: { source: string; golden_records: number; share_pct: number | null }[]
+  salary_vnd_million: { p1: number | null; q1: number | null; median: number | null; q3: number | null; p99: number | null } | null
+  job_family: RankItem[]
+  seniority: RankItem[]
+  top_cities: RankItem[]
+  lineage: { step: string; records: number }[]
+}
+
+export interface EdaSummary {
+  source: string
+  total_records: number | null
+  sampled_records: number
+  fields_count: number
+  completeness_score_pct: number | null
+  salary_parse_rate_pct: number | null
+  negotiable_salary_pct: number | null
+  reason: string | null
+}
+
+export interface EdaCharts {
+  available: boolean
+  unavailable_reason: string | null
+  records: number
+  salary_records?: number
+  salary_histogram: { bin: string; count: number }[]
+  skills_pareto: { label: string; count: number; cumulative_pct: number }[]
+  locations: RankItem[]
+}
+
+export interface EdaCompareRow {
+  source: string
+  available: boolean
+  records: number | null
+  completeness_pct: number | null
+  salary_text_pct: number | null
+  salary_numeric_pct: number | null
+  experience_pct: number | null
+  seniority_pct: number | null
+}
+
+export interface EdaCompare {
+  available: boolean
+  unavailable_reason: string | null
+  sources: EdaCompareRow[]
+}
+
+// ---- Pre-processing theo bước (reports/preprocessing/<bước>/<nguồn>.json, schema P0 mục 4)
+export interface StepExample {
+  job_id: string
+  field: string
+  before: unknown
+  after: unknown
+  url?: string | null
+}
+
+export interface StepRule {
+  id: string
+  name: string
+  action: 'drop' | 'flag' | 'modify'
+  rows_affected: number
+  examples: StepExample[]
+  by_source?: Record<string, number>
+}
+
+export interface ItReview {
+  file: string
+  rows: number
+  labeled: number
+  labeled_non_it: number
+  rule_decided: number
+  rule_correct: number
+  status_non_it: number
+  status_non_it_correct: number
+  level2_labeled: number
+  level2_correct: number
+}
+
+export interface StepReportData {
+  step: string
+  source: string
+  mode: 'dry_run' | 'applied'
+  generated_at: string
+  code_version: string
+  input: { path: string | null; rows: number }
+  output: { path: string | null; rows: number }
+  dropped: { rule: string; reason: string; rows: number }[]
+  rules: StepRule[]
+  fields: { field: string; fill_pct_in?: number; fill_pct_out?: number }[]
+  checks: { rows_conserved: boolean | null; notes: string[] }
+  extra: {
+    it_status?: Record<string, number> | Record<string, Record<string, number>>
+    it_levels?: Record<string, number> | Record<string, Record<string, number>>
+    it_policy?: string | Record<string, unknown>
+    review?: ItReview | Record<string, ItReview>  // nguồn: một mục; _all: theo nguồn
+    sources?: Record<string, { input: number; output: number }>
+  }
+}
+
+export interface StepSummary {
+  step: string
+  name: string
+  available: boolean
+  command?: string
+  mode?: 'dry_run' | 'applied'
+  generated_at?: string
+  input_rows?: number
+  output_rows?: number
+  stale?: boolean
+}
+
+export interface StepResponse {
+  step: string
+  source?: string
+  available: boolean
+  command?: string
+  report?: StepReportData
+}
+
+export interface StorageItem {
+  step: string
+  source: string | null
+  key: string
+  local_rows: number | null
+  local_generated_at: string | null
+  status: 'khop' | 'lech' | 'chua_day' | 'khong_ro'
+  r2_rows: number | null
+  r2_size: number | null
+}
+
+export interface StorageResponse {
+  bucket: string
+  reason: string | null
+  items: StorageItem[]
+  command: string
+}
+
+export interface StepRowsResponse {
+  step: string
+  source: string | null
+  origin: 'r2' | 'local'
+  note: string | null
+  total: number
+  offset: number
+  limit: number
+  rows: Record<string, unknown>[]
 }

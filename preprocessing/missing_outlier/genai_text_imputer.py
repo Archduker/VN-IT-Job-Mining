@@ -1,24 +1,18 @@
 # -*- coding: utf-8 -*-
 """preprocessing.missing_outlier.genai_text_imputer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Module bù khuyết dữ liệu thông minh bằng GenAI (Gemini 1.5 Flash).
+Bù khuyết dữ liệu cho pipeline cũ (scripts/run_staging_integration_pipeline.py) bằng luật if-else trên JD.
 
-Nhiệm vụ:
-  - Đọc hiểu sâu văn bản mô tả (JD) và yêu cầu công việc.
-  - Bù khuyết các trường bị thiếu: min_experience_years, seniority, city, skills, lương ẩn.
-  - Hỗ trợ cả Gemini REST API chính thức và cơ chế heuristic fallback khi offline.
-  - Đảm bảo tính minh bạch: Bật cờ is_imputed_by_genai = True.
+Dự án không dùng model/LLM nào (04/11/2026, docs/issue_log.md L-28): đường gọi Gemini đã bỏ, chỉ còn luật.
+Tên lớp và cờ `is_imputed_by_genai`, `genai_*` giữ nguyên để báo cáo cũ và pipeline cũ không vỡ;
+nghĩa thật là "bù bằng luật".
 """
 
 from __future__ import annotations
 
-import json
 import logging
-import os
 import re
 from typing import Any, Dict, List, Optional
-
-import requests
 
 logger = logging.getLogger("genai_imputer")
 if not logger.handlers:
@@ -27,14 +21,11 @@ if not logger.handlers:
     logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
-GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
-
-
 class GenAITextImputer:
-    """Bộ bù khuyết dữ liệu thông minh dựa trên GenAI."""
+    """Bộ bù khuyết bằng luật if-else (tên cũ giữ cho tương thích)."""
 
-    def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    def __init__(self, api_key: Optional[str] = None):  # api_key bỏ qua: không gọi model
+        self.api_key = None
 
     def impute_job_record(self, flat_record: Dict[str, Any]) -> Dict[str, Any]:
         """Kiểm tra và bù khuyết các trường bị thiếu từ văn bản JD.
@@ -108,51 +99,11 @@ class GenAITextImputer:
         return record
 
     def _call_gemini_or_fallback(self, job_title: str, jd_text: str) -> Dict[str, Any]:
-        """Gọi Gemini API hoặc chạy bộ heuristic offline."""
-        if self.api_key:
-            try:
-                return self._call_gemini_api(job_title, jd_text)
-            except Exception as exc:
-                logger.warning("Lỗi gọi Gemini API (%s), chuyển sang bộ heuristic fallback", exc)
-
+        """Tên cũ; chỉ chạy luật."""
         return self._heuristic_fallback(job_title, jd_text)
 
-    def _call_gemini_api(self, job_title: str, jd_text: str) -> Dict[str, Any]:
-        prompt = (
-            "Bạn là chuyên gia phân tích thị trường lao động CNTT tại Việt Nam.\n"
-            "Hãy đọc văn bản tuyển dụng sau và trích xuất các thông tin dưới dạng JSON chuẩn:\n"
-            "{\n"
-            '  "min_experience_years": float | null,\n'
-            '  "job_seniority": "Intern" | "Fresher" | "Junior" | "Middle" | "Senior" | "Lead" | null,\n'
-            '  "primary_city": string | null,\n'
-            '  "hard_skills": list[string],\n'
-            '  "domain_skills": list[string],\n'
-            '  "implicit_salary_min_vnd": float | null,\n'
-            '  "implicit_salary_max_vnd": float | null,\n'
-            '  "confidence_score": float\n'
-            "}\n\n"
-            f"Tiêu đề: {job_title}\n"
-            f"Văn bản JD:\n{jd_text[:3000]}"
-        )
-
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"response_mime_type": "application/json", "temperature": 0.1},
-        }
-
-        resp = requests.post(
-            f"{GEMINI_API_ENDPOINT}?key={self.api_key}",
-            json=payload,
-            headers={"Content-Type": "application/json"},
-            timeout=15,
-        )
-        resp.raise_for_status()
-        data = resp.json()
-        raw_json_str = data["candidates"][0]["content"]["parts"][0]["text"]
-        return json.loads(raw_json_str)
-
     def _heuristic_fallback(self, job_title: str, jd_text: str) -> Dict[str, Any]:
-        """Bộ suy luận heuristic thông minh khi offline hoặc không có API key."""
+        """Bù bằng luật if-else trên tiêu đề và JD."""
         text = f"{job_title}\n{jd_text}".lower()
         res: Dict[str, Any] = {
             "min_experience_years": None,

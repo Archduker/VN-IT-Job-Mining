@@ -5,7 +5,7 @@
 Universal Lakehouse Raw Data Ingestion & Auto-Sync Module for VN-IT-Job-Mining.
 
 Provides seamless loading, intelligent multi-threaded caching, and live synchronization
-of raw job snapshots from Cloudflare R2 / MinIO Lakehouse across all 8 sources:
+of raw job snapshots from Cloudflare R2 Lakehouse across all 8 sources:
   - CareerViet
   - Glints
   - ITviec
@@ -26,10 +26,8 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
-import glob
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -40,6 +38,8 @@ from dotenv import load_dotenv
 # Setup project root and load environment variables
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(PROJECT_ROOT / ".env", override=False)
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 logger = logging.getLogger("lakehouse_loader")
 if not logger.handlers:
@@ -61,52 +61,26 @@ SUPPORTED_SOURCES = (
 
 
 def get_lakehouse_client() -> Tuple[Any, Optional[str], Optional[str], str]:
-    """Tạo kết nối tới Cloudflare R2 hoặc MinIO Lakehouse kèm kiểm tra kết nối nhanh (3s timeout).
+    """Tạo kết nối tới Cloudflare R2 hoặc R2 Lakehouse kèm kiểm tra kết nối nhanh (3s timeout).
 
     Returns:
         (s3_client, bucket_name, endpoint_url, connection_status)
     """
     try:
-        import boto3
-        from botocore.client import Config
+        import boto3  # noqa: F401 (chỉ kiểm tra đã cài)
+        from botocore.client import Config  # noqa: F401
     except ImportError:
         return None, None, None, "OFFLINE: Thiếu thư viện boto3"
 
-    endpoint = (
-        os.getenv("S3_ENDPOINT_URL")
-        or os.getenv("R2_ENDPOINT_URL")
-        or os.getenv("MINIO_ENDPOINT")
-        or "http://localhost:9000"
-    )
-    ak = (
-        os.getenv("AWS_ACCESS_KEY_ID")
-        or os.getenv("R2_ACCESS_KEY_ID")
-        or os.getenv("MINIO_ROOT_USER")
-        or "minioadmin"
-    )
-    sk = (
-        os.getenv("AWS_SECRET_ACCESS_KEY")
-        or os.getenv("R2_SECRET_ACCESS_KEY")
-        or os.getenv("MINIO_ROOT_PASSWORD")
-        or "minioadmin"
-    )
-    bucket = (
-        os.getenv("S3_BUCKET_NAME")
-        or os.getenv("R2_BUCKET_NAME")
-        or os.getenv("MINIO_BUCKET")
-        or "vn-it-jobs"
-    )
-    region = "auto" if "r2.cloudflarestorage.com" in endpoint else "us-east-1"
+    from collection.common.r2_storage import get_r2_client, resolve_r2_bucket, resolve_r2_endpoint
+
+    endpoint = resolve_r2_endpoint(required=False)
+    if not endpoint:
+        return None, None, None, "OFFLINE: chưa cấu hình R2 trong .env"
+    bucket = resolve_r2_bucket()
 
     try:
-        s3 = boto3.client(
-            "s3",
-            endpoint_url=endpoint,
-            aws_access_key_id=ak,
-            aws_secret_access_key=sk,
-            config=Config(signature_version="s3v4", connect_timeout=3, read_timeout=10, retries={"max_attempts": 1}),
-            region_name=region,
-        )
+        s3 = get_r2_client(endpoint)
         # Ping nhẹ kiểm tra quyền truy cập bucket
         s3.head_bucket(Bucket=bucket)
         return s3, bucket, endpoint, "CONNECTED"
@@ -215,7 +189,7 @@ def load_raw_source_dataframe(
 ) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """Tải và trải phẳng tập dữ liệu thô nguyên bản của một sàn tuyển dụng (pd.json_normalize).
 
-    Mặc định auto_sync=True: Tự động kiểm tra và kéo snapshot mới nhất từ Cloud R2 / MinIO.
+    Mặc định auto_sync=True: Tự động kiểm tra và kéo snapshot mới nhất từ Cloud R2 / R2.
     Nếu mất mạng hoặc offline: Tự động fallback về local cache trong 3 giây.
 
     Returns:

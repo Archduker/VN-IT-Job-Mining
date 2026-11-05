@@ -1,0 +1,361 @@
+{
+  "step": "04_normalization",
+  "source": "_all",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:13:07+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 5177
+  },
+  "output": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 5177
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "N1",
+      "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
+      "action": "modify",
+      "rows_affected": 4315,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "tinh_chinh",
+          "before": "Quận Một",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "tinh_chinh",
+          "before": "Long Thành",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "tinh_chinh",
+          "before": "Quận Thủ Đức",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        }
+      ],
+      "by_source": {
+        "topcv": 1554,
+        "topdev": 227,
+        "vietnamworks": 867,
+        "careerviet": 441,
+        "vieclam24h": 182,
+        "itviec": 187,
+        "glints": 178,
+        "jobsgo": 679
+      }
+    },
+    {
+      "id": "N2",
+      "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
+      "action": "modify",
+      "rows_affected": 4477,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Junior (kinh_nghiem)",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Thực tập (title)",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        },
+        {
+          "job_id": "02ab4af2-fa4b-4b73-9795-c9047f9b9dbc",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Middle (kinh_nghiem)",
+          "url": "https://glints.com/vn/opportunities/jobs/developer/02ab4af2-fa4b-4b73-9795-c9047f9b9dbc"
+        }
+      ],
+      "by_source": {
+        "topcv": 1554,
+        "topdev": 113,
+        "vietnamworks": 810,
+        "careerviet": 422,
+        "vieclam24h": 182,
+        "itviec": 471,
+        "glints": 243,
+        "jobsgo": 682
+      }
+    },
+    {
+      "id": "N3",
+      "name": "Phân loại 12 nhóm nghề IT",
+      "action": "modify",
+      "rows_affected": 4604,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "job_family",
+          "before": "Retail IT Executive (Infrastructure)",
+          "after": "DevOps/Cloud (title)",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "job_family",
+          "before": "[DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai",
+          "after": "Data/AI (skills)",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "job_family",
+          "before": "AI Applied Coordinator Intern",
+          "after": "Data/AI (skills)",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        }
+      ],
+      "by_source": {
+        "topcv": 1355,
+        "topdev": 210,
+        "vietnamworks": 816,
+        "careerviet": 392,
+        "vieclam24h": 140,
+        "itviec": 877,
+        "glints": 259,
+        "jobsgo": 555
+      }
+    },
+    {
+      "id": "N4",
+      "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
+      "action": "modify",
+      "rows_affected": 4765,
+      "examples": [],
+      "by_source": {
+        "topcv": 1523,
+        "topdev": 205,
+        "vietnamworks": 900,
+        "careerviet": 357,
+        "vieclam24h": 182,
+        "itviec": 905,
+        "glints": 266,
+        "jobsgo": 427
+      }
+    },
+    {
+      "id": "N5",
+      "name": "Chuẩn hóa tên công ty",
+      "action": "modify",
+      "rows_affected": 5174,
+      "examples": [],
+      "by_source": {
+        "topcv": 1560,
+        "topdev": 227,
+        "vietnamworks": 900,
+        "careerviet": 448,
+        "vieclam24h": 181,
+        "itviec": 905,
+        "glints": 271,
+        "jobsgo": 682
+      }
+    },
+    {
+      "id": "N2b",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
+      "action": "flag",
+      "rows_affected": 635,
+      "examples": [],
+      "by_source": {
+        "topcv": 38,
+        "topdev": 18,
+        "vietnamworks": 19,
+        "careerviet": 40,
+        "vieclam24h": 2,
+        "itviec": 364,
+        "glints": 4,
+        "jobsgo": 150
+      }
+    },
+    {
+      "id": "N6a",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 24,
+      "examples": [],
+      "by_source": {
+        "topcv": 2,
+        "topdev": 0,
+        "vietnamworks": 12,
+        "careerviet": 1,
+        "vieclam24h": 2,
+        "itviec": 1,
+        "glints": 5,
+        "jobsgo": 1
+      }
+    },
+    {
+      "id": "N6",
+      "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
+      "action": "modify",
+      "rows_affected": 113,
+      "examples": [],
+      "by_source": {
+        "topcv": 7,
+        "topdev": 1,
+        "vietnamworks": 40,
+        "careerviet": 1,
+        "vieclam24h": 0,
+        "itviec": 59,
+        "glints": 1,
+        "jobsgo": 4
+      }
+    },
+    {
+      "id": "N7",
+      "name": "Biến đổi log1p cho mức lương",
+      "action": "modify",
+      "rows_affected": 2278,
+      "examples": [],
+      "by_source": {
+        "topcv": 884,
+        "topdev": 61,
+        "vietnamworks": 235,
+        "careerviet": 136,
+        "vieclam24h": 168,
+        "itviec": 231,
+        "glints": 162,
+        "jobsgo": 401
+      }
+    }
+  ],
+  "fields": [
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "tinh_chinh",
+      "fill_pct_in": 82.9,
+      "fill_pct_out": 82.9
+    },
+    {
+      "field": "seniority",
+      "fill_pct_in": 86.5,
+      "fill_pct_out": 86.5
+    },
+    {
+      "field": "seniority_source",
+      "fill_pct_in": 86.5,
+      "fill_pct_out": 86.5
+    },
+    {
+      "field": "job_family",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_family_source",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_std",
+      "fill_pct_in": 92.1,
+      "fill_pct_out": 92.1
+    },
+    {
+      "field": "company_norm",
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
+    },
+    {
+      "field": "salary_min_vnd_capped",
+      "fill_pct_in": 39.8,
+      "fill_pct_out": 39.8
+    },
+    {
+      "field": "salary_max_vnd_capped",
+      "fill_pct_in": 44.0,
+      "fill_pct_out": 44.0
+    },
+    {
+      "field": "log_salary_min",
+      "fill_pct_in": 39.8,
+      "fill_pct_out": 39.8
+    },
+    {
+      "field": "log_salary_max",
+      "fill_pct_in": 44.0,
+      "fill_pct_out": 44.0
+    },
+    {
+      "field": "is_outlier_salary",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "sources": {
+      "topcv": {
+        "input": 1561,
+        "output": 1561
+      },
+      "topdev": {
+        "input": 227,
+        "output": 227
+      },
+      "vietnamworks": {
+        "input": 900,
+        "output": 900
+      },
+      "careerviet": {
+        "input": 448,
+        "output": 448
+      },
+      "vieclam24h": {
+        "input": 182,
+        "output": 182
+      },
+      "itviec": {
+        "input": 905,
+        "output": 905
+      },
+      "glints": {
+        "input": 271,
+        "output": 271
+      },
+      "jobsgo": {
+        "input": 683,
+        "output": 683
+      }
+    },
+    "global_salary_stats": {
+      "outlier_count": 113,
+      "salary_suspect_count": 0,
+      "iqr_bounds": {
+        "lower": 0.0,
+        "upper": 76000000.0
+      },
+      "winsorize_q01_min": 1804999.9999999998,
+      "winsorize_q99_min": 89328999.99999987,
+      "winsorize_q01_max": 2952620.0,
+      "winsorize_q99_max": 127000000.0
+    },
+    "total_jobs": 5177
+  }
+}

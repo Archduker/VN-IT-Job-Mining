@@ -807,7 +807,7 @@ class GlintsCrawler(BaseCrawler):
         headless: bool = True,
         chrome_path: str = "/usr/bin/google-chrome",
         use_playwright: bool = True,
-        sync_minio: bool = True,
+        sync_r2: bool = True,
     ):
         super().__init__(
             checkpoint_dir=checkpoint_dir,
@@ -818,8 +818,8 @@ class GlintsCrawler(BaseCrawler):
         self.headless = headless
         self.chrome_path = chrome_path
         self.use_playwright = use_playwright
-        self.sync_minio = sync_minio
-        self._minio_store_inst = None
+        self.sync_r2 = sync_r2
+        self._r2_store_inst = None
         self.http_client = http_client or HttpClient(
             source=self.source_name,
             delay_config=DelayConfig(min_seconds=1.5, max_seconds=3.0),
@@ -841,16 +841,16 @@ class GlintsCrawler(BaseCrawler):
             storage_dir=str(self.source_dir / "url_ledger"),
         )
 
-    def _get_minio_store(self):
-        """Trả về instance MinioRawStore (kết nối S3/MinIO bucket vn-it-jobs)."""
-        if self._minio_store_inst is None and self.sync_minio:
+    def _get_r2_store(self):
+        """Trả về instance R2RawStore (kết nối S3/R2 bucket vn-it-jobs)."""
+        if self._r2_store_inst is None and self.sync_r2:
             try:
-                from collection.common.minio_raw_pipeline import MinioRawStore
-                self._minio_store_inst = MinioRawStore()
+                from collection.common.r2_raw_pipeline import R2RawStore
+                self._r2_store_inst = R2RawStore()
             except Exception as e:
-                logging.warning("[Glints] Chưa thể khởi tạo MinioRawStore: %s", e)
-                self._minio_store_inst = None
-        return self._minio_store_inst
+                logging.warning("[Glints] Chưa thể khởi tạo R2RawStore: %s", e)
+                self._r2_store_inst = None
+        return self._r2_store_inst
 
     def _create_browser_context(self, playwright):
         """Khởi tạo browser context Playwright có bypass Cloudflare WAF."""
@@ -873,7 +873,7 @@ class GlintsCrawler(BaseCrawler):
         """Pha 1: Quét danh mục Glints bằng Playwright (tương tác trực tiếp Web UI + In-Browser GraphQL).
         Ghi nhận vào UrlLedger với status='PENDING' và content_hash=None (chưa có hash).
         Tự động phân trang sâu tới khi hết bài (hasMore=False hoặc 2 trang liên tiếp rỗng).
-        Sau đó UP URL LEDGER LÊN MINIO LAKEHOUSE.
+        Sau đó UP URL LEDGER LÊN R2 LAKEHOUSE.
         """
         logging.info("[Glints] === Bắt đầu Pha 1: URL Discovery (Playwright Web Interaction) ===")
         discovered_urls: list[str] = []
@@ -1012,29 +1012,29 @@ class GlintsCrawler(BaseCrawler):
         self.ledger.save_catalog()
         self.ledger.export_daily_manifest()
 
-        # UP TOÀN BỘ URL LEDGER LÊN MINIO LAKEHOUSE
-        if self.sync_minio:
-            logging.info("[Glints] Đang đẩy URL Ledger lên MinIO Lakehouse...")
-            self.ledger.sync_to_minio()
+        # UP TOÀN BỘ URL LEDGER LÊN R2 LAKEHOUSE
+        if self.sync_r2:
+            logging.info("[Glints] Đang đẩy URL Ledger lên R2 Lakehouse...")
+            self.ledger.sync_final()
 
-        logging.info("[Glints] Pha 1 hoàn tất: phát hiện %d URLs (đã đồng bộ MinIO).", len(discovered_urls))
+        logging.info("[Glints] Pha 1 hoàn tất: phát hiện %d URLs (đã đồng bộ R2).", len(discovered_urls))
         return discovered_urls
 
     def crawl_details(self, limit: int | None = None, retry_failed: bool = False) -> dict[str, int]:
         """Pha 2: Bóc tách bài đăng chi tiết.
-        1. Kéo URL từ MinIO về để lấy danh sách cần cào.
+        1. Kéo URL từ R2 về để lấy danh sách cần cào.
         2. Nếu cào lỗi -> đưa vào Queue lỗi (FAILED Queue) để bữa khác cào lại.
         3. Cào xong -> Băm Canonical JSON Hash trên document vừa cào (lúc này mới có hash).
         4. Lọc trùng Repost.
-        5. Checkpoint Sync định kỳ mỗi 15 bài cào thành công lên MinIO Lakehouse.
-        6. Lưu ngược hash vào Raw Snapshot (up lên MinIO) và URL Ledger (up lên MinIO).
+        5. Checkpoint Sync định kỳ mỗi 15 bài cào thành công lên R2 Lakehouse.
+        6. Lưu ngược hash vào Raw Snapshot (up lên R2) và URL Ledger (up lên R2).
         """
-        logging.info("[Glints] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày & MinIO Sync) ===")
+        logging.info("[Glints] === Bắt đầu Pha 2: Detail Extraction (Chu kỳ Re-crawl 21 ngày & R2 Sync) ===")
 
-        # BƯỚC 1: Kéo URL Ledger mới nhất từ MinIO về local
-        if self.sync_minio:
-            logging.info("[Glints] Đang kéo URL Ledger từ MinIO Lakehouse về...")
-            self.ledger.pull_from_minio()
+        # BƯỚC 1: Kéo URL Ledger mới nhất từ R2 về local
+        if self.sync_r2:
+            logging.info("[Glints] Đang kéo URL Ledger từ R2 Lakehouse về...")
+            self.ledger.pull_from_r2()
 
         # BƯỚC 2: Lấy danh sách cần cào
         if retry_failed:
@@ -1063,7 +1063,7 @@ class GlintsCrawler(BaseCrawler):
         today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         raw_storage_dir = self.source_dir / "raw" / today_str
         raw_storage_dir.mkdir(parents=True, exist_ok=True)
-        store = self._get_minio_store()
+        store = self._get_r2_store()
 
         playwright_obj = None
         browser = None
@@ -1136,7 +1136,7 @@ class GlintsCrawler(BaseCrawler):
                     new_ver = curr_ver if (item.get("content_hash") == new_hash and curr_ver > 0) else curr_ver + 1
                     envelope.metadata["version"] = new_ver
 
-                    # BƯỚC 7: Lưu snapshot raw cục bộ & UP TRỰC TIẾP LÊN MINIO
+                    # BƯỚC 7: Lưu snapshot raw cục bộ & UP TRỰC TIẾP LÊN R2
                     snapshot_file = raw_storage_dir / f"{job_id}_v{new_ver}.json"
                     with open(snapshot_file, "w", encoding="utf-8") as f:
                         json.dump(envelope.model_dump(), f, ensure_ascii=False, indent=2)
@@ -1145,20 +1145,20 @@ class GlintsCrawler(BaseCrawler):
                         s3_key = f"raw/{self.source_name}/{today_str}/{job_id}_v{new_ver}.json"
                         try:
                             store.put_json(s3_key, envelope.model_dump())
-                            logging.info("[Glints] Đã lưu snapshot trực tiếp lên MinIO: %s", s3_key)
+                            logging.info("[Glints] Đã lưu snapshot trực tiếp lên R2: %s", s3_key)
                         except Exception as s3_err:
-                            logging.warning("[Glints] Không thể lưu snapshot lên MinIO (%s): %s", s3_key, s3_err)
+                            logging.warning("[Glints] Không thể lưu snapshot lên R2 (%s): %s", s3_key, s3_err)
 
                     # BƯỚC 8: Lưu ngược hash và status='DONE' vào URL Ledger
                     self.ledger.mark_done(url_hash, content_hash=new_hash, new_version=new_ver)
                     stats["success"] += 1
                     count += 1
 
-                    # BƯỚC CHECKPOINT SYNC ĐỊNH KỲ: Cứ mỗi 15 bài đăng thành công, đồng bộ Ledger lên MinIO
-                    if self.sync_minio and count > 0 and count % 15 == 0:
-                        logging.info("[Glints] [Checkpoint Sync] Đã cào %d bài thành công, đồng bộ Ledger lên MinIO...", count)
+                    # BƯỚC CHECKPOINT SYNC ĐỊNH KỲ: Cứ mỗi 15 bài đăng thành công, đồng bộ Ledger lên R2
+                    if self.sync_r2 and count > 0 and count % 15 == 0:
+                        logging.info("[Glints] [Checkpoint Sync] Đã cào %d bài thành công, đồng bộ Ledger lên R2...", count)
                         self.ledger.save_catalog()
-                        self.ledger.sync_to_minio()
+                        self.ledger.sync_to_r2()
 
                     polite_sleep(2.0, 4.0, reason="Nghỉ giữa 2 bài chi tiết Glints")
                 except Exception as exc:
@@ -1179,36 +1179,14 @@ class GlintsCrawler(BaseCrawler):
                 except Exception:
                     pass
 
-        # BƯỚC 9: Lưu catalog master cục bộ & UP TOÀN BỘ SỔ CÁI ĐÃ CẬP NHẬT LÊN MINIO
+        # BƯỚC 9: Lưu catalog master cục bộ & UP TOÀN BỘ SỔ CÁI ĐÃ CẬP NHẬT LÊN R2
         self.ledger.save_catalog()
-        if self.sync_minio:
-            logging.info("[Glints] Đang đẩy URL Ledger đã cập nhật lên MinIO Lakehouse...")
-            self.ledger.sync_to_minio()
+        if self.sync_r2:
+            logging.info("[Glints] Đang đẩy URL Ledger đã cập nhật lên R2 Lakehouse...")
+            self.ledger.sync_final()
 
         logging.info("[Glints] Pha 2 hoàn tất: %s", stats)
         return stats
-
-    def crawl_single_url(self, url: str) -> RawJobEnvelope | None:
-        """Thử nghiệm bóc tách trực tiếp 1 URL đơn lẻ (hỗ trợ kiểm thử live probe)."""
-        clean_url = clean_canonical_url(url)
-        job_id = clean_url.split("/")[-1]
-        html_content = ""
-        if self.use_playwright:
-            from playwright.sync_api import sync_playwright
-            with sync_playwright() as p:
-                browser, context = self._create_browser_context(p)
-                page = context.new_page()
-                page.goto(clean_url, wait_until="domcontentloaded", timeout=30000)
-                human_like_interaction(page, scroll_times=1)
-                html_content = page.content()
-                browser.close()
-        else:
-            resp = self.http_client.get(clean_url)
-            html_content = resp.text
-
-        if not html_content:
-            return None
-        return extract_raw_envelope_from_html(html_content, job_id=job_id, url=clean_url)
 
     def parse_raw_envelope(self, item: Dict[str, Any]) -> RawJobEnvelope:
         """Ánh xạ một item thô (từ HTML hoặc API) thành RawJobEnvelope chuẩn SD1."""
@@ -1254,11 +1232,6 @@ class GlintsCrawler(BaseCrawler):
         fetched_count = 0
 
         while self.max_items is None or fetched_count < self.max_items:
-            remaining = (
-                PAGE_SIZE
-                if self.max_items is None
-                else max(1, min(PAGE_SIZE, self.max_items - fetched_count))
-            )
             payload = {
                 "operationName": "searchJobsV3",
                 "variables": {
@@ -1540,13 +1513,13 @@ if __name__ == "__main__":
     )
 
     parser = argparse.ArgumentParser(
-        description="Glints Two-Phase Crawler with Playwright UI & MinIO Lakehouse Sync"
+        description="Glints Two-Phase Crawler with Playwright UI & R2 Lakehouse Sync"
     )
     parser.add_argument(
         "--phase",
         choices=["discovery", "detail", "details", "sync", "view", "all"],
         default="all",
-        help="Pha thu thập dữ liệu (discovery: Pha 1 lấy URL; detail/details: Pha 2 cào chi tiết; sync: đồng bộ MinIO; view: xem thống kê; all: chạy trọn gói)",
+        help="Pha thu thập dữ liệu (discovery: Pha 1 lấy URL; detail/details: Pha 2 cào chi tiết; sync: đồng bộ R2; view: xem thống kê; all: chạy trọn gói)",
     )
     parser.add_argument(
         "--max-pages",
@@ -1585,18 +1558,19 @@ if __name__ == "__main__":
         help="Mở trực tiếp cửa sổ trình duyệt Chrome UI trên màn hình",
     )
     parser.add_argument(
+        "--no-r2",
         "--no-minio",
-        dest="sync_minio",
+        dest="sync_r2",
         action="store_false",
         default=True,
-        help="Tắt đồng bộ MinIO Lakehouse (chỉ lưu cục bộ)",
+        help="Tắt đồng bộ R2 Lakehouse (chỉ lưu cục bộ)",
     )
     args = parser.parse_args()
 
     crawler = GlintsCrawler(
         use_playwright=True,
         headless=args.headless,
-        sync_minio=args.sync_minio,
+        sync_r2=args.sync_r2,
     )
 
     if args.phase == "view":
@@ -1609,10 +1583,10 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if args.phase == "sync":
-        logging.info("[Glints] Đang đẩy Sổ cái URL Ledger lên MinIO Lakehouse...")
+        logging.info("[Glints] Đang đẩy Sổ cái URL Ledger lên R2 Lakehouse...")
         crawler.ledger.save_catalog()
-        crawler.ledger.sync_to_minio()
-        logging.info("[Glints] Đồng bộ MinIO hoàn tất.")
+        crawler.ledger.sync_final()
+        logging.info("[Glints] Đồng bộ R2 hoàn tất.")
         sys.exit(0)
 
     if args.phase in ("discovery", "all"):

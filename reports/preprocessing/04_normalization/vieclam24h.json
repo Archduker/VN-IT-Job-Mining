@@ -1,0 +1,247 @@
+{
+  "step": "04_normalization",
+  "source": "vieclam24h",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:13:05+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 182
+  },
+  "output": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 182
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "N1",
+      "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
+      "action": "modify",
+      "rows_affected": 182,
+      "examples": [
+        {
+          "job_id": "200011696",
+          "field": "tinh_chinh",
+          "before": "TP.HCM",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
+        },
+        {
+          "job_id": "200383662",
+          "field": "tinh_chinh",
+          "before": "Hà Nội",
+          "after": "TP. Hà Nội",
+          "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
+        },
+        {
+          "job_id": "200665507",
+          "field": "tinh_chinh",
+          "before": "Hà Nội",
+          "after": "TP. Hà Nội",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
+        }
+      ]
+    },
+    {
+      "id": "N2",
+      "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
+      "action": "modify",
+      "rows_affected": 182,
+      "examples": [
+        {
+          "job_id": "200011696",
+          "field": "seniority",
+          "before": "Nhân viên",
+          "after": "Junior (kinh_nghiem)",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
+        },
+        {
+          "job_id": "200383662",
+          "field": "seniority",
+          "before": "Nhân viên",
+          "after": "Junior (kinh_nghiem)",
+          "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
+        },
+        {
+          "job_id": "200665507",
+          "field": "seniority",
+          "before": "Nhân viên",
+          "after": "Middle (kinh_nghiem)",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
+        }
+      ]
+    },
+    {
+      "id": "N3",
+      "name": "Phân loại 12 nhóm nghề IT",
+      "action": "modify",
+      "rows_affected": 140,
+      "examples": [
+        {
+          "job_id": "200011696",
+          "field": "job_family",
+          "before": "IT Helpdesk",
+          "after": "Hệ thống/Mạng (title)",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
+        },
+        {
+          "job_id": "200383662",
+          "field": "job_family",
+          "before": "Full – Stack Java Developer (Onsite)",
+          "after": "Backend (title)",
+          "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
+        },
+        {
+          "job_id": "200687980",
+          "field": "job_family",
+          "before": "Long An - Kỹ Sư Hạ Tầng Viễn Thông",
+          "after": "DevOps/Cloud (title)",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/long-an-ky-su-ha-tang-vien-thong-c7p210000188id200687980.html"
+        }
+      ]
+    },
+    {
+      "id": "N4",
+      "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
+      "action": "modify",
+      "rows_affected": 182,
+      "examples": []
+    },
+    {
+      "id": "N5",
+      "name": "Chuẩn hóa tên công ty",
+      "action": "modify",
+      "rows_affected": 181,
+      "examples": []
+    },
+    {
+      "id": "N2b",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
+      "action": "flag",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "N6a",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "N6",
+      "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "N7",
+      "name": "Biến đổi log1p cho mức lương",
+      "action": "modify",
+      "rows_affected": 168,
+      "examples": []
+    }
+  ],
+  "fields": [
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "tinh_chinh",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "seniority",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "seniority_source",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_family",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_family_source",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_std",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_norm",
+      "fill_pct_in": 99.5,
+      "fill_pct_out": 99.5
+    },
+    {
+      "field": "salary_min_vnd_capped",
+      "fill_pct_in": 91.8,
+      "fill_pct_out": 91.8
+    },
+    {
+      "field": "salary_max_vnd_capped",
+      "fill_pct_in": 92.3,
+      "fill_pct_out": 92.3
+    },
+    {
+      "field": "log_salary_min",
+      "fill_pct_in": 91.8,
+      "fill_pct_out": 91.8
+    },
+    {
+      "field": "log_salary_max",
+      "fill_pct_in": 92.3,
+      "fill_pct_out": 92.3
+    },
+    {
+      "field": "is_outlier_salary",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "seniority_distribution": {
+      "Junior": 91,
+      "Mới tốt nghiệp": 41,
+      "Middle": 23,
+      "Thực tập": 12,
+      "Trưởng nhóm/Quản lý": 10,
+      "Senior": 5
+    },
+    "job_family_distribution": {
+      "Khác": 42,
+      "Backend": 26,
+      "Hệ thống/Mạng": 25,
+      "DevOps/Cloud": 25,
+      "Mobile": 14,
+      "Phân tích nghiệp vụ (BA)": 12,
+      "Data/AI": 10,
+      "Kiểm thử (QA/QC)": 10,
+      "Thiết kế UI/UX": 9,
+      "Fullstack": 4,
+      "Quản lý sản phẩm/dự án": 4,
+      "Frontend": 1
+    },
+    "salary_outliers": 0
+  }
+}

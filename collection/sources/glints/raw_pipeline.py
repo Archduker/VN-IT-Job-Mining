@@ -1,20 +1,16 @@
 # -*- coding: utf-8 -*-
-"""Glints two-phase raw crawler: GraphQL discovery -> MinIO -> HTML/CDC."""
+"""Glints two-phase raw crawler: GraphQL discovery -> R2 -> HTML/CDC."""
 from __future__ import annotations
 
 import os
 import json
 import base64
 import logging
-import random
-import re
-import time
 from typing import Any, Dict, Optional
-from urllib.parse import urljoin
 
 import requests
 
-from collection.common.minio_raw_pipeline import TwoPhaseRawCrawler
+from collection.common.r2_raw_pipeline import TwoPhaseRawCrawler
 from collection.common.url_ledger import clean_canonical_url
 from collection.sources.glints.crawler import (
     GRAPHQL_ENDPOINT,
