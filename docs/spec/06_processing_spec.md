@@ -237,6 +237,58 @@ flowchart TD
    \text{NaN} & \text{khi lương thỏa thuận}
    \end{cases}$$
 
+### 4.3. Quy Trình Dịch Thuật Bảo Toàn Thuật Ngữ IT (Term-Preserving Translation)
+
+Trong thị trường tuyển dụng IT Việt Nam, có khoảng $25\% - 35\%$ tin tuyển dụng được viết hoàn toàn bằng tiếng Anh (đặc biệt trên ITviec, VietnamWorks, Glints). Để phục vụ đối tượng nghiên cứu là **Sinh viên IT Việt Nam** và đồng nhất không gian văn bản TF-IDF, hệ thống tích hợp module dịch thuật máy tại Bước 3 (Transformation) chuyển đổi toàn bộ JD tiếng Anh sang tiếng Việt, nhưng **bắt buộc phải bảo toàn 100% các thuật ngữ kỹ thuật chuyên ngành**.
+
+```mermaid
+flowchart TD
+    RawJD["JD Tiếng Anh (English Job Description)"] --> DetectLang{"Nhận diện ngôn ngữ\n(fasttext / langdetect >= 0.85)"}
+    DetectLang -- "Tiếng Việt" --> Bypass["Giữ nguyên văn bản tiếng Việt"]
+    DetectLang -- "Tiếng Anh" --> ExtractTerms["3 KỸ THUẬT TRÍCH XUẤT THUẬT NGỮ"]
+
+    subgraph TermExtraction["Extraction Engine"]
+        direction TB
+        T1["1. Statistical Terminology: N-gram TF-IDF & C-Value (Multi-word terms)"]
+        T2["2. Syntactic POS-Tagging: spaCy (Adj|Noun)* Noun+ (Tech Noun Phrases)"]
+        T3["3. Layered Taxonomy Lookup: skills.json + it_policy.json (Standard Entities)"]
+        T1 --- T2 --- T3
+    end
+
+    ExtractTerms --> TermExtraction
+    TermExtraction --> Masking["Entity Masking:\nThay thế 'Spring Boot' -> '__TECH_TERM_0__'\n'Kubernetes cluster' -> '__TECH_TERM_1__'"]
+
+    Masking --> CacheCheck{"Kiểm tra Local Cache?\n(SHA-256 hash của đoạn văn)"}
+    CacheCheck -- "Đã có" --> FetchCache["Lấy bản dịch từ SQLite/JSON cache"]
+    CacheCheck -- "Chưa có" --> EnViT5["Model: VietAI/envit5-translation\n(Dịch tiếng Anh sang tiếng Việt)"]
+    EnViT5 --> SaveCache["Lưu vào Translation Cache"]
+
+    FetchCache --> Unmasking["Entity Unmasking:\nKhôi phục '__TECH_TERM_i__' -> Thuật ngữ tiếng Anh gốc"]
+    SaveCache --> Unmasking
+    Unmasking --> CleanedVN["JD Tiếng Việt Chuẩn Hóa\n(Bảo toàn nguyên vẹn từ khóa công nghệ)"]
+```
+
+#### 1. 3 Kỹ Thuật Trích Xuất Cụm Từ Chuyên Ngành Tiếng Anh
+Để không dịch sai các từ khóa kỹ thuật (tránh dịch *Java* thành *cà phê*, *Spring Boot* thành *giày bốt mùa xuân*, hay *Thread Pool* thành *hồ bơi chỉ sợi*), hệ thống kết hợp 3 lớp kỹ thuật trích xuất:
+1. **Statistical Terminology Extraction (N-gram TF-IDF & C-Value):** Nhận diện các thuật ngữ kỹ thuật đa từ lặp lại với tần suất cao trong ngữ cảnh tuyển dụng IT:
+   $$C\text{-Value}(a) = \begin{cases}
+   \log_2(|a|) \cdot f(a) & \text{nếu } a \text{ không nằm trong cụm dài hơn} \\
+   \log_2(|a|) \cdot \left( f(a) - \frac{1}{|T_a|} \sum_{b \in T_a} f(b) \right) & \text{ngược lại}
+   \end{cases}$$
+   (Với $|a|$ là số lượng từ trong cụm $a$, $f(a)$ là tần suất xuất hiện, $T_a$ là tập các cụm dài hơn chứa $a$). Giúp nhận diện chính xác các cụm như *"Deadlock Detection"*, *"Garbage Collection"*, *"Continuous Integration"*.
+2. **Syntactic POS-Tagging (Cụm Danh Từ Công Nghệ):** Sử dụng `spaCy` (mô hình `en_core_web_sm`) phân tích ngữ pháp với mẫu Regex:
+   $$\text{Pattern} = (\text{ADJ} \mid \text{NOUN})^* \ \text{NOUN}^+$$
+   Bắt chính xác các cụm danh từ chuyên biệt như *"microservice architecture"*, *"distributed transaction coordinator"*, *"load balancing algorithm"*.
+3. **Layered Taxonomy Lookup (Đối Chiếu Từ Điển Phân Tầng):** Quét toàn bộ từ điển 230 kỹ năng chuẩn (`preprocessing/dictionaries/skills.json`) và danh mục các từ khóa IT cốt lõi (`it_policy.json`), đảm bảo 100% các kỹ năng trong từ điển không bao giờ bị mô hình dịch can thiệp.
+
+#### 2. Kỹ Thuật Che Mặt Nạ (Entity Masking & Unmasking)
+- Trước khi đưa văn bản tiếng Anh vào mô hình dịch, toàn bộ các thuật ngữ kỹ thuật được trích xuất sẽ được đánh số và thay thế bằng chuỗi token giữ chỗ không bị dịch nhầm: `__TECH_TERM_0__`, `__TECH_TERM_1__`,...
+- Văn bản sau khi dịch qua `VietAI/envit5-translation` sẽ được thay thế ngược lại: Token `__TECH_TERM_i__` được thế lại bằng chính xác chuỗi tiếng Anh kỹ thuật ban đầu.
+
+#### 3. Tối Ưu Hiệu Năng & Cơ Chế Dự Phòng (Caching & Fallback Policy)
+- **Local Translation Cache:** Sử dụng bảng SQLite cục bộ `data/cache/translation_cache.db` (lưu trữ theo khóa băm `SHA-256(english_text)`). Nhờ đó, các đoạn mô tả tương đồng hoặc các câu lặp lại giữa các bài tuyển dụng chỉ cần dịch một lần duy nhất.
+- **Cờ CLI `--skip-translation`:** Khi chạy pipeline trên các máy cá nhân không trang bị GPU (chỉ chạy bằng CPU) hoặc trong môi trường test CI/CD, kỹ sư có thể thêm cờ `--skip-translation` để giữ nguyên trường văn bản gốc tiếng Anh mà không làm treo tiến trình tiền xử lý.
+
 ---
 
 ## 5. Sinh Ma Trận Kỹ Năng Cho Khai Phá Dữ Liệu (Feature Matrices Generation)

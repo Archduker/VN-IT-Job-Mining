@@ -112,6 +112,11 @@ flowchart TD
 - **Tầng 1 (Title Filter):** Khớp các từ khóa kỹ thuật cốt lõi trong chức danh công việc (`software`, `developer`, `engineer`, `programmer`, `devops`, `frontend`, `backend`, `fullstack`, `data analyst`, `qa`, `tester`, `sysadmin`, `flutter`, `golang`, v.v.).
 - **Tầng 2 (Context & Skill Gate):** Đối với các chức danh chung chung (như "Chuyên viên kỹ thuật", "Nhân viên dự án"), tin chỉ được chấp nhận là việc làm IT nếu danh mục nghề nghiệp thuộc nhóm Công nghệ thông tin **ĐỒNG THỜI** trích xuất được tối thiểu $\ge 2$ kỹ năng IT chuẩn từ bộ từ điển `skills.json` trong phần mô tả chi tiết công việc.
 
+### 2.5. Phân Loại Ngôn Ngữ & Chuẩn Bị Cho Module Dịch Thuật
+Sau khi làm sạch văn bản và lọc IT, hệ thống xác định ngôn ngữ chính của mô tả công việc (JD):
+1. **Thuật toán nhận diện ngôn ngữ:** Sử dụng `fasttext` (model `lid.176.bin`) hoặc `langdetect` để gán nhãn trường `detected_language` (`vi` hoặc `en`) với ngưỡng xác suất tin cậy $P(\text{lang}) \ge 0.85$.
+2. **Tiền xử lý trước dịch:** Với các bài đăng tiếng Anh (`en`), văn bản được tách câu (`sent_tokenize`), chuẩn hóa dấu cách và đưa vào cấu trúc sẵn sàng cho module **Dịch thuật bảo toàn thuật ngữ (Term-Preserving Translation với VietAI/envit5-translation)** tại Bước 3 (SPEC-06).
+
 ---
 
 ## 3. Khử Trùng Lặp 2 Tầng Toàn Diện (Two-Layer Deduplication Engine)

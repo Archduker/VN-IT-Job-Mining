@@ -134,25 +134,27 @@ Phân hệ Market Insights được thiết kế hướng tới đối tượng 
 ### 3.1. Bản Đồ Nhiệt Mức Lương (Salary Heatmap Matrix)
 Phân tích tương quan giữa Vị trí chuyên môn (**Job Family / Title**) và Số năm kinh nghiệm (**Seniority / Experience**):
 
-- **Trục Tung (Y-axis - 12 Nhóm Nghề Chuẩn):**
-  1. Backend Developer
-  2. Frontend Developer
-  3. Fullstack Developer
-  4. Mobile Developer (iOS/Android/Flutter/React Native)
-  5. DevOps / Cloud / SRE
-  6. Data Engineer
-  7. Data Scientist / AI / Machine Learning Engineer
-  8. Software QA / QC / Automation Tester
-  9. Information Security / Cyber Security
-  10. Product Management / IT Business Analyst (BA)
-  11. System / Network Engineer
-  12. Embedded Systems / IoT Engineer
+- **Trục Tung (Y-axis - 12 Nhóm Nghề Chuẩn Theo SPEC-06):**
+  1. **Backend** (Java, Spring Boot, Node.js, Go, Python, C#, PHP)
+  2. **Frontend** (React, Vue, Angular, JavaScript, TypeScript, HTML/CSS)
+  3. **Fullstack** (Yêu cầu đồng thời kỹ năng Backend và Frontend)
+  4. **Mobile** (Flutter, React Native, iOS, Android, Swift, Kotlin)
+  5. **Data/AI** (Data Engineer, Data Analyst, Data Scientist, Machine Learning, NLP)
+  6. **DevOps/Cloud** (Docker, Kubernetes, AWS, Terraform, CI/CD, Linux)
+  7. **Kiểm thử (QA/QC)** (Automation Test, Manual Test, Selenium, Postman, Cypress)
+  8. **Bảo mật (Security)** (SOC, Pentest, Cyber Security, DevSecOps, SIEM)
+  9. **Hệ thống/Mạng** (System/Network Engineer, Cisco, CCNA, Windows Server)
+  10. **Phân tích nghiệp vụ (BA)** (Business Analyst, System Analyst, BPMN, UML, SQL)
+  11. **Quản lý SP/DA (PM/PO)** (Product Manager, Project Manager, Scrum Master, Agile)
+  12. **Thiết kế UI/UX** (Figma, Adobe XD, UI/UX Designer, Prototyping)
+  *(Nhóm dự phòng: Khác / Other)*
 - **Trục Hoành (X-axis - Dải Kinh Nghiệm):**
-  - Intern / Fresher (< 1 năm)
+  - Thực tập / Intern (< 1 năm)
+  - Mới tốt nghiệp / Fresher (0 - 1 năm)
   - Junior (1 - 2 năm)
-  - Middle (3 - 4 năm)
+  - Middle (2 - 4 năm)
   - Senior (5+ năm)
-  - Lead / Technical Manager
+  - Trưởng nhóm / Quản lý (Lead / Manager)
 - **Giá trị hiển thị trên từng Cell:**
   - Mức lương trung vị (**Median Salary** - triệu VNĐ/tháng) nhằm tránh bị sai lệch bởi các giá trị ngoại lai cực đoan.
   - Khoảng tứ phân vị (**IQR:** 25% percentile - 75% percentile) khi di chuột hiển thị Tooltip.
@@ -169,18 +171,22 @@ Thay vì các biểu đồ tròn đơn giản đếm từng kỹ năng riêng l�
   - **Confidence ($P(B|A)$):** Xác suất nếu một JD đã yêu cầu kỹ năng $A$ thì chắc chắn sẽ yêu cầu thêm kỹ năng $B$.
   - **Lift ($\frac{P(A \cap B)}{P(A) \cdot P(B)}$):** Đo lường mức độ phụ thuộc tích cực giữa các kỹ năng. $Lift > 1.0$ thể hiện hai kỹ năng tương hỗ mạnh mẽ; $Lift > 2.5$ thể hiện bộ combo bắt buộc.
 - **Thành phần Trực quan hóa:**
-  - **Bảng Tra cứu Luật kết hợp:** Hỗ trợ sắp xếp theo Lift, Confidence, Support; cho phép lọc Antecedent (Kỹ năng sinh viên đã có) để xem Consequent (Kỹ năng sinh viên cần học bổ sung).
+  - **Bảng Tra cứu Luật kết hợp:** Hỗ trợ sắp xếp theo Lift, Confidence, Support; cho phép lọc Antecedent (Kỹ năng sinh viên đã có) để xem Consequent (Kỹ năng sinh viên cần học bổ sung). Hỗ trợ xem luật toàn ngành (Macro) hoặc xem luật vi mô theo từng Job Family.
   - **Network Graph (Đồ thị Liên kết Kỹ năng):** Các node biểu thị kỹ năng, kích thước node tương ứng độ phổ biến, đường nối giữa các node biểu thị giá trị Lift. Người dùng có thể click vào node để làm nổi bật cụm công nghệ liên quan (ví dụ cụm Python Data, cụm React Ecosystem, cụm Java Spring Enterprise).
 
-### 3.3. Biểu Đồ Phân Cụm Nghề Nghiệp (K-Means Clustering Scatter Plot)
+### 3.3. Biểu Đồ Phân Cụm Nghề Nghiệp 2D & 3D (K-Means & PCA Scatter Plot)
 Kiểm chứng thực tế: Các tin tuyển dụng trên thị trường tự động nhóm thành những cụm nào khi dựa trên không gian đặc trưng kỹ năng và dải lương?
 
-- **Giảm chiều dữ liệu:** Sử dụng thuật toán **PCA (Principal Component Analysis)** hoặc **t-SNE** để chiếu ma trận 230 chiều kỹ năng xuống không gian 2D ($PC_1$ và $PC_2$).
-- **Trực quan hóa Scatter Plot:**
-  - Mỗi điểm đại diện cho một tin tuyển dụng sạch trong bộ dữ liệu Gold.
+- **Giảm chiều dữ liệu PCA:**
+  - Chiếu ma trận đặc trưng xuống không gian 2D ($PC_1, PC_2$) cho biểu đồ phẳng.
+  - Chiếu ma trận đặc trưng xuống không gian 3D ($PC_1, PC_2, PC_3$) cho mô hình không gian khối tương tác.
+- **Trực quan hóa Scatter Plot (2D & 3D Mode Toggle):**
+  - **Chế độ 2D Scatter:** Trục $X = PC_1$, Trục $Y = PC_2$, mỗi điểm đại diện cho một tin tuyển dụng sạch trong bộ dữ liệu Gold.
+  - **Chế độ 3D Scatter (Plotly / Three.js Canvas):** Trục $X = PC_1$, Trục $Y = PC_2$, Trục $Z = PC_3$. Hỗ trợ thao tác xoay (Rotate 360°), zoom, pan để quan sát độ phân tách không gian giữa các cụm nghề nghiệp mà biểu đồ 2D bị chồng lấn.
   - Màu sắc đại diện cho Cụm được gán bởi K-Means ($k=6 \dots 8$).
   - Điểm Centroid của từng cụm được đánh dấu nổi bật kèm nhãn tóm tắt các kỹ năng đại diện nhất (ví dụ: *Cluster 1: Modern Frontend - TypeScript, React, Tailwind, Next.js*).
   - Hỗ trợ di chuột để xem chi tiết: Tên công việc, Công ty, Mức lương, Nguồn sàn và độ xa so với tâm cụm.
+  - Tích hợp điểm ngoại lai: Các tin bị Isolation Forest / HDBSCAN GLOSH đánh dấu ngoại lai (`is_outlier = True`) được hiển thị với hình dạng đặc biệt (hình tam giác xám mờ).
 
 ### 3.4. Hệ Thống Bộ Lọc Linh Hoạt Đa Chiều (Multi-Faceted Filtering)
 Toàn bộ biểu đồ và bảng phân tích trong phân hệ Insights liên kết động với thanh điều khiển bộ lọc:
@@ -277,6 +283,51 @@ class SkillCombosResponse(BaseModel):
     total_rules_mined: int
     rules: List[AssociationRuleItem]
 ```
+
+#### Schema: Phân Cụm Nghề Nghiệp 2D & 3D (`/api/v1/insights/clusters`)
+```python
+class JobClusterPoint(BaseModel):
+    job_id: str
+    job_title: str
+    job_family: str
+    cluster_id: int
+    cluster_name: str
+    pca_x: float
+    pca_y: float
+    pca_z: Optional[float] = None
+    is_outlier: bool = False
+    glosh_outlier_score: Optional[float] = None
+
+class JobClustersResponse(BaseModel):
+    total_points: int
+    n_clusters: int
+    silhouette_score: Optional[float] = None
+    points: List[JobClusterPoint]
+```
+
+### 4.3. Đặc Tả PostgreSQL Analytics Mart & Chuẩn Zero-Mock (Empty State Contract)
+
+Nhằm khắc phục triệt để vấn đề `VIZ-3` (phụ thuộc vào báo cáo tĩnh cũ) và tuân thủ nguyên tắc `Real Numbers Only`:
+
+#### 1. Cấu Trúc Bảng Dữ Liệu Trong PostgreSQL Data Mart (`vn_it_jobs`):
+- `curated_jobs`: Chứa toàn bộ việc làm IT đã chuẩn hóa (ID, Title, Company, 12 Job Family, Seniority, Lương min/max/avg, 34 Tỉnh thành, Mảng kỹ năng `skills_array TEXT[]`). Đánh B-Tree trên `job_family`, `seniority_level`, `province_norm` và GIN index trên `skills_array`.
+- `skill_rules`: Chứa danh sách luật kết hợp FP-Growth (`antecedents TEXT[]`, `consequents TEXT[]`, `support`, `confidence`, `lift`, `job_family_scope`). Đánh GIN trên `antecedents` và B-Tree trên `lift`.
+- `job_clusters`: Chứa dữ liệu phân cụm và tọa độ giảm chiều (`job_id`, `cluster_id`, `cluster_name`, `pca_x`, `pca_y`, `pca_z`, `is_outlier`, `glosh_outlier_score`).
+- `job_anomalies`: Chứa danh sách các bài đăng bất thường phát hiện bởi Isolation Forest và GLOSH score (`job_id`, `anomaly_score`, `reason_code`, `detected_by`).
+
+#### 2. Chính Sách Xử Lý Khi Chưa Có Dữ Liệu (Zero-Mock / Empty State):
+Khi các bảng trong Mart chưa được nạp dữ liệu (pipeline chưa chạy xong):
+- Backend FastAPI **tuyệt đối không trả số liệu ngẫu nhiên hay mock data**.
+- Backend trả về cấu trúc chuẩn:
+  ```json
+  {
+    "data": null,
+    "status": "EMPTY",
+    "reason": "NO_DATA",
+    "message": "Dữ liệu phân tích đang được tinh chế hoặc chưa hoàn tất nạp vào PostgreSQL Mart."
+  }
+  ```
+- Frontend nhận phản hồi trên và hiển thị component `EmptyStateCard` minh bạch, kèm nút "Làm mới dữ liệu" (Refresh).
 
 ---
 

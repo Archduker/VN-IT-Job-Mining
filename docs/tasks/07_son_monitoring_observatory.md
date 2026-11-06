@@ -26,16 +26,47 @@ Sơn chịu trách nhiệm về "Bộ mặt hiển thị trực quan" (Central O
    - *Nhiệm vụ:* Viết service kết nối FastAPI backend với **PostgreSQL Analytics Mart** (`vn_it_jobs` chạy trên Docker Compose cùng Airflow), truy vấn trực tiếp dữ liệu từ các bảng `curated_jobs`, `skill_rules`, `job_clusters` để hiển thị số liệu mới nhất.
 3. **Hoàn Thiện Phân Hệ 2: Market Insights Dashboard Dành Cho Sinh Viên IT:**
    - Hoàn thiện giao diện hiển thị 4 bài toán phân tích chiến lược:
-     * **Bản đồ nhiệt Lương (Salary Heatmap):** Ma trận 12 Job Family $\times$ 5 dải kinh nghiệm, hiển thị trung vị (Median) và khoảng tứ phân vị (IQR).
-     * **Top Combo Kỹ Năng (FP-Growth Rules):** Bảng hiển thị các tổ hợp công nghệ đi liền nhau, lọc động theo ngưỡng Support, Confidence và Lift.
-     * **Phân Cụm Việc Làm (K-Means 2D Scatter Plot):** Biểu đồ phân tán các bài đăng theo tọa độ PCA $(x, y)$, tô màu theo cụm nghề nghiệp.
+     * **Bản đồ nhiệt Lương (Salary Heatmap):** Ma trận 12 Job Family $\times$ 6 dải kinh nghiệm, hiển thị trung vị (Median) và khoảng tứ phân vị (IQR). Đơn vị hiển thị: Triệu VNĐ/tháng.
+     * **Top Combo Kỹ Năng (FP-Growth Rules):** Bảng hiển thị các tổ hợp công nghệ đi liền nhau, lọc động theo ngưỡng Support, Confidence và Lift. Hỗ trợ chuyển đổi giữa luật toàn thị trường (Macro) và theo từng Job Family.
+     * **Phân Cụm Việc Làm (K-Means 2D & 3D Scatter Plot):** Biểu đồ phân tán các bài đăng theo tọa độ PCA $(x, y)$ và chế độ **3D Scatter** $(x, y, z)$ tương tác (xoay, zoom góc nhìn), tô màu theo cụm nghề nghiệp.
      * **Bộ Lọc Đa Chiều:** Lọc theo Level, 34 tỉnh thành và Job Family.
 4. **Triệt Để Tuân Thủ Nguyên Tắc "Real Numbers Only" (Zero-Mock Policy):**
-   - Tuyệt đối không sinh số ngẫu nhiên `Math.random()`, không hardcode chỉ số giả. Nếu bước nào chưa có dữ liệu, trả về `null` kèm lý do và hiển thị **Empty State** minh bạch trên UI.
+   - Tuyệt đối không sinh số ngẫu nhiên `Math.random()`, không hardcode chỉ số giả. Nếu bước nào chưa có dữ liệu, backend trả về `null` kèm lý do cụ thể (`reason: "NO_DATA"`) và frontend hiển thị **Empty State** minh bạch trên UI.
 
 ---
 
-## 2. Khung Prompt Chuẩn Hóa Dành Cho AI Agent
+## 2. Giải Đáp Chính Thức 5 Nhóm Câu Hỏi Của Sơn (Q&A Clarifications)
+
+Dưới đây là các câu trả lời chính thức từ Trưởng nhóm (Team Lead) để giải tỏa toàn bộ thắc mắc của em:
+
+### Câu hỏi 1: PostgreSQL Analytics Mart
+- **Database `vn_it_jobs`:** Database này được khởi tạo trên service PostgreSQL có sẵn trong Docker Compose (`container_name: vn_it_jobs_postgres`, user `airflow`, pass `airflow`, port `5432`).
+- **File DDL Schema:** Đã cung cấp sẵn file SQL chuẩn tại [`scripts/sql/init_mart_schema.sql`](../../scripts/sql/init_mart_schema.sql) tạo đủ 4 bảng: `curated_jobs`, `skill_rules`, `job_clusters`, `job_anomalies` với đầy đủ indexes B-Tree và GIN.
+- **Môi trường kết nối:** Em kết nối PostgreSQL trên máy cá nhân bằng container Docker này. Biến môi trường đọc từ file `.env` mẫu (`POSTGRES_HOST=localhost`, `POSTGRES_PORT=5432`, `POSTGRES_DB=vn_it_jobs`, `POSTGRES_USER=airflow`, `POSTGRES_PASSWORD=airflow`).
+
+### Câu hỏi 2: Trách Nhiệm Nạp Dữ Liệu
+- **Phương án thống nhất:** Thống nhất theo **Phương án 1**: Sơn định nghĩa cấu trúc bảng (file DDL) và cung cấp script nạp mẫu [`scripts/load_mart_from_parquet.py`](../../scripts/load_mart_from_parquet.py). Phúc chịu trách nhiệm xuất các file Parquet đúng schema. Cloudflare R2 đóng vai trò là hub trung tâm để chia sẻ các file Parquet giữa các máy cá nhân.
+- **Phần việc của Sơn:** Sơn viết truy vấn SQL trong FastAPI backend đọc dữ liệu từ Mart phục vụ các router `/insights`. Đồng thời viết sẵn logic xử lý khi bảng chưa có dữ liệu (trả về `status: "EMPTY"`, `reason: "NO_DATA"` để frontend hiển thị Empty State trung thực).
+- **Khi nào có dữ liệu kiểm thử:** Em có thể dùng script `load_mart_from_parquet.py` để nạp thử file `curated_flat_golden_jobs.parquet` có sẵn ở máy hoặc test trước trạng thái Empty State. Khi Phúc đẩy artifacts lên R2, em chỉ cần kéo về và nạp vào Mart.
+
+### Câu hỏi 3: Phạm Vi Nghiệm Thu Giao Diện
+- **Checklist bắt buộc:** Nghiệm thu sprint này tập trung vào checklist trong cẩm nang này: Tái cấu trúc `CrawlingPage.tsx` thành 4 components con; hoàn thiện 4 biểu đồ Market Insights cốt lõi (Heatmap lương, Bảng luật kỹ năng, Scatter phân cụm 2D & 3D, Bộ lọc đa chiều).
+- **Tính năng mở rộng (Network Graph, Khuyến nghị sinh viên):** Được coi là Stretch Goals (mục tiêu cộng điểm). Ưu tiên làm xong và ổn định 4 biểu đồ cốt lõi trước; nếu còn thời gian trước deadline Chủ Nhật mới triển khai Network Graph.
+- **Phạm vi VIZ-3:** VIZ-3 chỉ yêu cầu chuyển các biểu đồ của **Market Insights** (`/insights`) từ file tĩnh sang đọc trực tiếp từ PostgreSQL Mart. Các trang báo cáo vận hành hoặc phân tích khác vẫn giữ nguyên theo thiết kế hiện tại.
+
+### Câu hỏi 4: Hợp Đồng Dữ Liệu
+- **12 Job Family chuẩn:** Thống nhất dùng danh mục tiếng Việt chuẩn theo SPEC-06: *Backend, Frontend, Fullstack, Mobile, Data/AI, DevOps/Cloud, Kiểm thử (QA/QC), Bảo mật (Security), Hệ thống/Mạng, Phân tích nghiệp vụ (BA), Quản lý SP/DA (PM/PO), Thiết kế UI/UX* (và fallback: *Khác*).
+- **Đơn vị lương:** Trong database lưu `salary_min_vnd`, `salary_max_vnd`, `salary_avg_vnd` (VNĐ). Khi hiển thị trên Heatmap và biểu đồ, API chia cho $1.000.000$ để hiển thị đơn vị thân thiện là **Triệu VNĐ/tháng**.
+- **Dữ liệu phân cụm từ Phúc:** File `job_clusters.parquet` từ Phúc sẽ có đầy đủ các cột: `job_id`, `job_title`, `job_family`, `cluster_id`, `cluster_name`, `pca_x`, `pca_y`, `pca_z`, `is_outlier`, `glosh_outlier_score`.
+- **Bộ lọc:** Bộ lọc tỉnh, level, job_family áp dụng chung cho Heatmap lương và Scatter phân cụm. Bảng luật kỹ năng hỗ trợ lọc theo tiền đề (Antecedent) hoặc theo `job_family_scope`.
+
+### Câu hỏi 5: Nhánh Git & Quyền Can Thiệp
+- **Nhánh Git:** Bắt đầu từ nhánh `sprint/pipeline-delivery`, checkout sang `feature/monitoring-observatory` để thực hiện, sau đó tạo PR merge lại vào `sprint/pipeline-delivery`.
+- **Quyền can thiệp file:** Ngoài thư mục `monitoring/`, em được phép chỉnh sửa các file test liên quan đến monitoring (`tests/integration/test_monitor*.py`), cấu hình Docker Compose nếu cần chỉnh sửa cổng/volume mart, và cập nhật tài liệu báo cáo của cá nhân. Không được can thiệp vào mã nguồn crawler (`collection/`) hay tiền xử lý của người khác.
+
+---
+
+## 3. Khung Prompt Chuẩn Hóa Dành Cho AI Agent
 
 Khi Sơn làm việc với AI Agent (Claude Code / Cursor / Antigravity), **hãy copy và sử dụng prompt mẫu sau**:
 
@@ -43,17 +74,17 @@ Khi Sơn làm việc với AI Agent (Claude Code / Cursor / Antigravity), **hãy
 Bạn là Kỹ sư Full-Stack & Giám Sát Hệ Thống (Monitoring & Observatory Engineer) phụ trách dự án VN-IT-Job-Mining.
 
 ### 1. NGỮ CẢNH & MỤC TIÊU:
-Nhiệm vụ của tôi là tái cấu trúc hệ thống giám sát Central Observatory: (1) Tách nhỏ file monolithic `CrawlingPage.tsx` thành các atomic components; (2) Kết nối FastAPI backend với PostgreSQL Data Mart để truy vấn dữ liệu thật thay cho báo cáo cũ (VIZ-3); (3) Hoàn thiện các trang phân tích thị trường Market Insights (Heatmap lương, Combo kỹ năng, Phân cụm việc làm). Tham khảo đặc tả kỹ thuật tại docs/spec/09_monitoring_spec.md và docs/spec/10_architecture.md.
+Nhiệm vụ của tôi là tái cấu trúc hệ thống giám sát Central Observatory: (1) Tách nhỏ file monolithic `CrawlingPage.tsx` thành các atomic components; (2) Kết nối FastAPI backend với PostgreSQL Data Mart (database `vn_it_jobs`, xem DDL tại scripts/sql/init_mart_schema.sql) để truy vấn dữ liệu thật thay cho báo cáo cũ (VIZ-3); (3) Hoàn thiện các trang phân tích thị trường Market Insights (Heatmap lương Triệu VNĐ/tháng, Combo kỹ năng FP-Growth, Phân cụm việc làm K-Means hỗ trợ cả 2D và 3D Scatter). Tham khảo đặc tả kỹ thuật tại docs/spec/09_monitoring_spec.md và cẩm nang docs/tasks/07_son_monitoring_observatory.md.
 
 ### 2. RÀNG BUỘC KỸ THUẬT (CONSTRAINTS):
-- Chỉ được can thiệp vào mã nguồn trong thư mục: `monitoring/` (cả `monitoring/backend/` và `monitoring/frontend/`).
+- Chỉ can thiệp vào mã nguồn trong thư mục: `monitoring/` và kiểm tra cấu hình kết nối DB.
 - 100% Strict TypeScript: Cấm sử dụng kiểu `any` tùy tiện, cấm file `.js`/`.jsx`. Kiểm tra build bằng `npm run build`.
-- Nguyên tắc Real Numbers Only: Tuyệt đối không dùng Math.random() hay dữ liệu giả; khi không có dữ liệu bắt buộc hiển thị Empty State trung thực.
+- Nguyên tắc Real Numbers Only: Tuyệt đối không dùng Math.random() hay dữ liệu giả; khi Mart chưa có dữ liệu bắt buộc trả null kèm reason: "NO_DATA" và hiển thị Empty State trung thực.
 - Thiết kế Zero-Auth: Không tạo màn hình đăng nhập / đăng xuất; mở trực tiếp vào dashboard.
-- Đảm bảo hiển thị chuẩn trên màn hình desktop và responsive tốt trên tablet/mobile.
+- Đảm bảo hiển thị chuẩn trên màn hình desktop (1440px) và responsive tốt trên mobile (390px).
 
 ### 3. HỢP ĐỒNG ĐẦU VÀO / ĐẦU RA:
-- Đầu vào: Cơ sở dữ liệu PostgreSQL `vn_it_jobs` (các bảng curated_jobs, skill_rules, job_clusters) và trạng thái URL Ledger/R2.
+- Đầu vào: Cơ sở dữ liệu PostgreSQL `vn_it_jobs` (các bảng curated_jobs, skill_rules, job_clusters, job_anomalies) và trạng thái URL Ledger/R2.
 - Đầu ra: FastAPI endpoints tại cổng :8000; Vite SPA Dashboard tại cổng :5173 hoạt động mượt mà, build không lỗi.
 
 ### 4. YÊU CẦU THỰC HIỆN:
@@ -62,7 +93,7 @@ Hãy phân tích file CrawlingPage.tsx và các router backend hiện tại, l�
 
 ---
 
-## 3. Checklist Thực Hiện & Tự Kiểm Chứng (Self-Verification)
+## 4. Checklist Thực Hiện & Tự Kiểm Chứng (Self-Verification)
 
 - [ ] **Bước 1 (Component Refactoring):** Tách `CrawlingPage.tsx` thành 4 component con trong `components/crawling/`; đảm bảo file `CrawlingPage.tsx` mới có dung lượng $< 200$ dòng.
 - [ ] **Bước 2 (Frontend Type-Check):** Chạy lệnh kiểm tra TypeScript và build frontend:
@@ -70,17 +101,17 @@ Hãy phân tích file CrawlingPage.tsx và các router backend hiện tại, l�
   cd monitoring/frontend && npm run build
   ```
   Xác nhận: Lệnh build thành công $100\%$ không có lỗi type error.
-- [ ] **Bước 3 (Backend PostgreSQL Connection):** Kiểm tra các endpoint `/api/v1/insights/...` trong FastAPI, đảm bảo truy vấn thành công dữ liệu từ PostgreSQL container mà không bị lỗi connection timeout.
+- [ ] **Bước 3 (Backend PostgreSQL Connection):** Kiểm tra các endpoint `/api/v1/insights/...` trong FastAPI, đảm bảo truy vấn thành công dữ liệu từ PostgreSQL container (`vn_it_jobs`) mà không bị lỗi connection timeout; xử lý đúng Empty State khi bảng rỗng.
 - [ ] **Bước 4 (Khởi động kiểm thử toàn trình Dashboard):**
   ```bash
   ./start_monitoring.sh --check
   ```
-  Mở trình duyệt kiểm tra: Giao diện trực quan, bảng điều khiển Vận hành và các biểu đồ Market Insights hiển thị số liệu thật, không có lỗi console.
+  Mở trình duyệt kiểm tra: Giao diện trực quan, bảng điều khiển Vận hành và các biểu đồ Market Insights hiển thị số liệu thật (hoặc Empty State nếu chưa nạp), hỗ trợ chuyển đổi Scatter 2D/3D mượt mà, không có lỗi console.
 - [ ] **Bước 5 (Linting Backend):** Chạy `ruff check monitoring/backend/`.
 
 ---
 
-## 4. Mẫu Báo Cáo Nghiệm Thu Bàn Giao (Delivery Report Template)
+## 5. Mẫu Báo Cáo Nghiệm Thu Bàn Giao (Delivery Report Template)
 
 *Sau khi hoàn thành, Sơn điền thông tin vào mẫu dưới đây và dán vào mô tả Pull Request khi merge vào `sprint/pipeline-delivery`:*
 

@@ -11,33 +11,39 @@
 
 ## 1. Tổng Quan Kiến Trúc Khai Phá (Mining Architecture Overview)
 
-Giai đoạn Mô hình hóa Khai phá (Data Mining) tiếp nhận dữ liệu đầu vào là ma trận đặc trưng `data/preprocessing/05_encoding/features.parquet` và bộ dữ liệu vàng `data/curated/curated_flat_golden_jobs.parquet` để giải quyết 3 trụ cột kỹ thuật:
+Giai đoạn Mô hình hóa Khai phá (Data Mining) tiếp nhận dữ liệu đầu vào là ma trận đặc trưng `data/preprocessing/05_encoding/features.parquet` và bộ dữ liệu vàng `data/curated/curated_flat_golden_jobs.parquet` để giải quyết **4 trụ cột kỹ thuật học máy không giám sát & giải thích tri thức**:
 
 ```mermaid
 flowchart TD
     InFeatures["Dữ Liệu Đầu Vào\nfeatures.parquet & curated_golden.parquet"] --> Engine1
     InFeatures --> Engine2
     InFeatures --> Engine3
+    InFeatures --> Engine4
 
-    subgraph MiningEngines["3 TRỤ CỘT THUẬT TOÁN KHAI PHÁ DỮ LIỆU"]
+    subgraph MiningEngines["4 TRỤ CỘT THUẬT TOÁN KHAI PHÁ DỮ LIỆU CHUẨN MỰC"]
         direction TB
         
-        subgraph Engine1["1. Khai Phá Mẫu Kỹ Năng Phổ Biến & Luật Kết Hợp"]
-            FP["Thuật toán FP-Growth (Frequent Pattern Growth)\n• Xây dựng FP-Tree\n• Sinh Frequent Itemsets\n• Trích xuất Association Rules\n(Support, Confidence, Lift, Conviction)"]
+        subgraph Engine1["1. Khai Phá Mẫu Kỹ Năng Phổ Biến & Luật Kết Hợp (Association Rules)"]
+            FP["Thuật toán FP-Growth Phân Tầng (Stratified FP-Growth)\n• Xây dựng FP-Tree\n• Khai phá Macro toàn ngành & Micro theo từng Job Family\n• Trích xuất Association Rules (Support, Confidence, Lift)"]
         end
 
-        subgraph Engine2["2. Phân Cụm Công Việc & Khám Phá Nhóm Nghề"]
-            CL["Phân Cụm Đa Chiều (K-Means & HDBSCAN)\n• Không gian Kỹ năng (Binary Multi-Hot) + TF-IDF JD\n• Tối ưu k bằng Elbow (WCSS) & Silhouette Analysis\n• HDBSCAN lọc nhiễu & phát hiện Niche Job Roles"]
+        subgraph Engine2["2. Phân Cụm Công Việc & Giảm Chiều Không Gian (Clustering & Dimensionality Reduction)"]
+            CL["Phân Cụm Đa Chiều (K-Means & HDBSCAN) + PCA 2D & 3D\n• Không gian Kỹ năng (Binary Multi-Hot) + TF-IDF JD\n• Tối ưu k bằng Elbow (WCSS) & Silhouette Analysis\n• Chiếu giảm chiều PCA ra (PC1, PC2) và (PC1, PC2, PC3)"]
         end
 
-        subgraph Engine3["3. Mô Hình Hóa Mức Lương & Định Lượng Kỹ Năng"]
-            RF["Hồi Quy Phi Tuyến & Giải Thích SHAP\n• Random Forest Regressor dự đoán log(Salary_VND)\n• TreeSHAP tính toán đóng góp biên (Marginal Value)\n• Quy đổi giá trị thặng dư kinh tế từng công nghệ (VNĐ)"]
+        subgraph Engine3["3. Mô Hình Hóa Mức Lương & Định Lượng Kỹ Năng (Supervised + Explainable AI)"]
+            RF["Hồi Quy Phi Tuyến & Giải Thích TreeSHAP\n• Random Forest Regressor dự đoán log(Salary_VND)\n• TreeSHAP tính toán đóng góp biên (Marginal Contribution)\n• Quy đổi giá trị thặng dư kinh tế từng công nghệ (VNĐ)"]
+        end
+
+        subgraph Engine4["4. Phát Hiện Ngoại Lai & Bất Thường Tuyển Dụng (Anomaly Detection)"]
+            AD["Phát Hiện Tin Tuyển Dụng Bất Thường & Ghost Jobs\n• Isolation Forest trên không gian kinh nghiệm x lương x số kỹ năng\n• HDBSCAN GLOSH (Global-Local Outlier Score from Hierarchies)\n• Nhận diện tin yêu cầu phi thực tế & bài đăng bất thường"]
         end
     end
 
-    Engine1 --> Out1["Bảng Combo Kỹ Năng & Khuyến Nghị ATS"]
-    Engine2 --> Out2["Bản Đồ Phân Cụm Công Việc Thị Trường"]
-    Engine3 --> Out3["Bảng Định Giá Biên Kỹ Năng (Skill Pricing Matrix)"]
+    Engine1 --> Out1["Bảng Combo Kỹ Năng & Khuyến Nghị Lộ Trình (skill_association_rules.parquet)"]
+    Engine2 --> Out2["Bản Đồ Phân Cụm Công Việc 2D & 3D (job_clusters.parquet)"]
+    Engine3 --> Out3["Bảng Định Giá Biên Kỹ Năng (skill_salary_shap_values.parquet)"]
+    Engine4 --> Out4["Danh Sách Tin Bất Thường / Outliers (job_anomalies.parquet)"]
 ```
 
 ---
@@ -123,6 +129,12 @@ Nhược điểm của K-Means là giả định các cụm có dạng hình c�
 - **Cơ chế:** Dựa trên khoảng cách tương hỗ (Mutual Reachability Distance) và xây dựng cây khung nhỏ nhất (Minimum Spanning Tree) để tìm các cụm có mật độ tập trung tự nhiên.
 - **Xử lý tin lai tạp & ngoại lai:** Các tin tuyển dụng "Fullstack kiêm DevOps kiêm Tester" hoặc các tin viết cẩu thả được HDBSCAN gán nhãn là điểm nhiễu ($Noise = -1$), giúp tinh lọc các cụm nghề cốt lõi có độ thuần khiết (Purity) cao nhất.
 
+### 3.4. Giảm Chiều Không Gian Bằng PCA (2D & 3D Dimensionality Reduction)
+Để trực quan hóa không gian phân cụm đa chiều (230 cột kỹ năng + 100 đặc trưng TF-IDF) lên bảng điều khiển Central Observatory, hệ thống áp dụng kỹ thuật **Principal Component Analysis (PCA)**:
+1. **PCA 2D ($PC_1, PC_2$):** Phục vụ vẽ biểu đồ phân tán 2D chuẩn trên Dashboard (`pca_x = PC_1`, `pca_y = PC_2`), cho phép sinh viên nhanh chóng nhìn thấy sự tách biệt giữa các nhóm nghề Backend, Frontend, Data, v.v.
+2. **PCA 3D ($PC_1, PC_2, PC_3$):** Phục vụ mô hình trực quan hóa không gian 3D tương tác (`pca_x = PC_1`, `pca_y = PC_2`, `pca_z = PC_3`) sử dụng thư viện Plotly / Three.js, giúp người dùng có thể xoay, phóng to/thu nhỏ góc nhìn để quan sát ranh giới giữa các cụm việc làm mà không gian 2D bị chồng lấn.
+3. **Tiêu chuẩn chất lượng giảm chiều:** Đảm bảo tỷ lệ phương sai giải thích tích lũy (Cumulative Explained Variance Ratio) của 3 thành phần chính đầu tiên đạt mức chấp nhận được, lưu giữ lại phần lớn cấu trúc phân tán của dữ liệu gốc.
+
 ---
 
 ## 4. Trụ Cột 3: Mô Hình Hóa Mức Lương & Định Lượng Kỹ Năng (Random Forest + SHAP)
@@ -167,9 +179,47 @@ $$\Delta Salary_{Go} = 25.000.000 \cdot (e^{0.12} - 1) \approx 3.187.000\text{ V
 
 ---
 
-## 5. Thiết Kế Thực Nghiệm & Pipeline Mã Nguồn Tham Chiếu (Reference Pipeline)
+## 5. Trụ Cột 4: Phát Hiện Ngoại Lai & Bất Thường Tuyển Dụng (Anomaly Detection)
 
-Dưới đây là thiết kế module mã nguồn Python chuẩn mực triển khai trọn vẹn 3 thuật toán khai phá:
+### 5.1. Động Lực Nghiệp Vụ & Thực Tiễn Thị Trường
+Trong thực tế thị trường tuyển dụng IT, tồn tại nhiều bài đăng mang tính chất bất thường:
+1. **Tin tuyển dụng ma (Ghost Jobs / Spam Jobs):** Tin đăng liên tục nhưng không có nhu cầu tuyển dụng thực, hoặc tin tuyển dụng đa cấp/lừa đảo lọt qua khâu kiểm duyệt.
+2. **Yêu cầu kỹ năng phi thực tế (Unrealistic Skill Demand):** Đăng tuyển vị trí *Intern* hoặc *Fresher* (0 năm kinh nghiệm) nhưng liệt kê danh sách đòi hỏi hơn 15 kỹ năng cấp cao (Docker, Kubernetes, Microservices, CI/CD, System Architecture,...).
+3. **Mức lương ngoại lai bất thường (Salary Outliers):** Mức lương quá cao vượt trội (ví dụ tuyển Junior lương $10.000\text{ USD/tháng}$) hoặc quá thấp so với khối lượng kỹ năng yêu cầu.
+
+### 5.2. Giải Thuật Đa Tầng Phát Hiện Bất Thường
+Hệ thống áp dụng kết hợp 2 phương pháp học máy không giám sát:
+
+#### 1. Isolation Forest (Cây Cô Lập Đa Chiều):
+- **Cơ chế:** Dựa trên nguyên lý các điểm ngoại lai ($Anomalies$) thường hiếm và có giá trị thuộc tính khác biệt lớn, do đó chúng bị cô lập rất nhanh (độ sâu cây $h(x)$ rất nông) trong các cây phân chia ngẫu nhiên.
+- **Không gian thuộc tính:**
+  $$\mathbf{x}_{\text{anomaly}} = [x_{\text{exp}}, x_{\text{salary\_midpoint}}, N_{\text{skills}}, R_{\text{seniority\_vs\_skills}}]$$
+  Trong đó $N_{\text{skills}}$ là số lượng kỹ năng yêu cầu trong tin, và $R_{\text{seniority\_vs\_skills}}$ là tỷ số giữa số kỹ năng và cấp bậc kinh nghiệm.
+- **Điểm bất thường (Anomaly Score):**
+  $$s(x, n) = 2^{-\frac{\mathbb{E}[h(x)]}{c(n)}}$$
+  - $s \to 1$: Điểm bất thường rõ rệt (gán nhãn `is_anomaly = True`).
+  - $s < 0.5$: Điểm dữ liệu bình thường.
+
+#### 2. HDBSCAN GLOSH Score (Global-Local Outlier Score from Hierarchies):
+- Đo lường mức độ ngoại lai cục bộ của bài đăng so với cụm mật độ tự nhiên mà bài đăng thuộc về:
+  $$GLOSH(x) = 1 - \frac{\lambda_{\text{death}}(x)}{\lambda_{\text{birth}}(C)}$$
+  Giúp phát hiện những bài đăng có tiêu đề là "Backend Developer" nhưng mô tả công việc và kỹ năng hoàn toàn không tương thích với bất kỳ cộng đồng công nghệ chuẩn mực nào.
+
+### 5.3. Hợp Đồng Đầu Ra Bàn Giao (Deliverable Parquet Artifacts)
+Kết quả của module Data Mining được lưu tại `mining/artifacts/` phục vụ nạp vào PostgreSQL Analytics Mart:
+
+| Tên File Parquet | Cấu Trúc Các Cột Cốt Lõi | Mục Đích Sử Dụng |
+|---|---|---|
+| `skill_association_rules.parquet` | `antecedents TEXT[]`, `consequents TEXT[]`, `support FLOAT`, `confidence FLOAT`, `lift FLOAT`, `job_family_scope VARCHAR` | Hiển thị bảng luật kết hợp và đồ thị mạng lưới kỹ năng trên Dashboard. |
+| `job_clusters.parquet` | `job_id VARCHAR`, `job_title TEXT`, `job_family VARCHAR`, `cluster_id INT`, `cluster_name VARCHAR`, `pca_x FLOAT`, `pca_y FLOAT`, `pca_z FLOAT`, `is_outlier BOOLEAN`, `glosh_outlier_score FLOAT` | Hiển thị biểu đồ phân cụm việc làm **2D và 3D Scatter Plot**. |
+| `job_anomalies.parquet` | `job_id VARCHAR`, `job_title TEXT`, `company_name TEXT`, `anomaly_score FLOAT`, `reason_code VARCHAR`, `detected_by VARCHAR` | Cảnh báo và lọc các tin tuyển dụng bất thường / ảo. |
+| `skill_salary_shap_values.parquet` | `skill_name VARCHAR`, `job_family VARCHAR`, `mean_shap_value FLOAT`, `marginal_dollar_vnd FLOAT`, `sample_size INT` | Định lượng giá trị thặng dư kinh tế biên của từng kỹ năng. |
+
+---
+
+## 6. Thiết Kế Thực Nghiệm & Pipeline Mã Nguồn Tham Chiếu (Reference Pipeline)
+
+Dưới đây là thiết kế module mã nguồn Python chuẩn mực triển khai trọn vẹn 4 trụ cột thuật toán khai phá:
 
 ```python
 """

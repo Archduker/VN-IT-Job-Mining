@@ -12,25 +12,24 @@
 
 ## 1. Mục Tiêu & Các Vấn Đề Cốt Lõi Cần Giải Quyết
 
-Phúc chịu trách nhiệm về "Bộ não tri thức" của toàn bộ đồ án tốt nghiệp: Triển khai bộ ba thuật toán Khai phá Dữ liệu học thuật chuẩn mực để chuyển đổi dữ liệu dạng bảng thành những hiểu biết thị trường (Market Intelligence) có giá trị thực tiễn cho sinh viên IT:
+Phúc chịu trách nhiệm về "Bộ não tri thức" của toàn bộ đồ án tốt nghiệp: Triển khai **bộ tứ thuật toán Học máy không giám sát (Unsupervised Learning)** kết hợp mô hình hóa giải thích mức lương (Explainable AI) để chuyển đổi dữ liệu dạng bảng thành những hiểu biết thị trường (Market Intelligence) có giá trị thực tiễn cho sinh viên IT:
 
-1. **Thuật Toán 1 — Khai Phá Luật Kết Hợp Kỹ Năng (FP-Growth Association Rule Mining):**
+1. **Thuật Toán 1 — Khai Phá Luật Kết Hợp Kỹ Năng Phân Tầng (Stratified FP-Growth):**
    - *Mục tiêu:* Tìm ra các "Combo kỹ năng" luôn đi kèm với nhau trong yêu cầu tuyển dụng (ví dụ: học React thì bắt buộc phải biết TypeScript và Next.js).
-   - *Thuật toán:* Dùng `fpgrowth` và `association_rules` từ thư viện `mlxtend`.
-   - *Ngưỡng tham số:*
-     * Ngưỡng Support vĩ mô: $min\_sup = 0.05$ (toàn thị trường) và vi mô $min\_sup = 0.02$ (theo từng nhóm nghề).
-     * Ngưỡng chất lượng luật: $Confidence \ge 0.60$ và $Lift > 1.20$ (chứng minh mối quan hệ tương hỗ thật sự, không phải ngẫu nhiên).
-2. **Thuật Toán 2 — Phân Cụm Vị Trí Nghề Nghiệp Khách Quan (K-Means Clustering + PCA):**
-   - *Mục tiêu:* Khám phá các cụm nghề nghiệp tự nhiên của thị trường dựa trên không gian vector kỹ năng và TF-IDF mô tả công việc (không bị bó hẹp bởi tiêu đề do nhà tuyển dụng tự đặt).
-   - *Tối ưu hóa:* Dùng phương pháp Elbow (WCSS/Inertia) và Silhouette Analysis để tìm số cụm tối ưu ($k \in [6, 12]$) đối chiếu với 12 Job Family.
-   - *Trực quan hóa:* Chiếu giảm chiều xuống không gian 2D bằng thuật toán **PCA** (Principal Component Analysis) để phục vụ vẽ biểu đồ phân tán cụm trên Dashboard.
+   - *Chiến lược phân tầng:* Chạy cả ở tầm vĩ mô toàn ngành ($min\_sup = 0.05$) và vi mô theo từng Job Family ($min\_sup = 0.02$) để không bỏ sót các combo công nghệ đặc thù (Data/AI, Mobile, DevOps).
+   - *Ngưỡng chất lượng luật:* $Confidence \ge 0.60$ và $Lift > 1.20$.
+2. **Thuật Toán 2 — Phân Cụm Việc Làm & Giảm Chiều Không Gian (K-Means & HDBSCAN + PCA 2D/3D):**
+   - *Mục tiêu:* Khám phá các cụm nghề nghiệp tự nhiên của thị trường dựa trên không gian vector kỹ năng (230 cột) và TF-IDF mô tả công việc.
+   - *Tối ưu hóa:* Dùng phương pháp Elbow và Silhouette Analysis để tìm số cụm tối ưu ($k \in [6, 12]$) đối chiếu với 12 Job Family. Kết hợp HDBSCAN để phát hiện các tin lai tạp/nhiễu.
+   - *Trực quan hóa đa chiều:* Chiếu giảm chiều dữ liệu bằng thuật toán **PCA** xuất ra cả tọa độ **2D (`pca_x, pca_y`)** và **3D (`pca_x, pca_y, pca_z`)** phục vụ trực quan hóa phân tán 3D trên Dashboard của Sơn.
 3. **Thuật Toán 3 — Hồi Quy Dự Báo Lương & Định Lượng Giá Trị Kỹ Năng (Random Forest Regressor + TreeSHAP):**
    - *Mục tiêu:* Trả lời câu hỏi quan trọng nhất của sinh viên: "Kỹ năng nào có giá trị đẩy mức lương lên cao nhất?".
    - *Dữ liệu huấn luyện:* Huấn luyện trên Subset có khoảng lương số cụ thể (~45% tin). Áp dụng hàm $\log(1 + \text{salary\_avg})$ để khắc phục độ lệch phải của phân phối lương.
-   - *Biến giải thích ($X$):* Số năm kinh nghiệm, Cấp bậc (Seniority), Địa phương (Hà Nội, TP.HCM, Khác) và 230 biến nhị phân kỹ năng.
-   - *Giải thích mô hình (Explainable AI - XAI):* Áp dụng **TreeSHAP** (`shap.TreeExplainer`) từ lý thuyết trò chơi hợp tác để tính toán đóng góp biên (Marginal Contribution) của từng kỹ năng:
+   - *Giải thích mô hình (TreeSHAP):* Áp dụng `shap.TreeExplainer` tính toán đóng góp biên (Marginal Contribution) của từng kỹ năng:
      $$\Delta \text{Salary}_{\text{VND}}(i) \approx \text{Baseline Salary} \times \left( e^{\phi_i} - 1 \right)$$
-     Chỉ ra cụ thể: Thành thạo Docker giúp lương tăng thêm bao nhiêu triệu VNĐ/tháng so với mặt bằng chung cùng số năm kinh nghiệm.
+4. **Thuật Toán 4 — Phát Hiện Bất Thường Tuyển Dụng (Anomaly Detection):**
+   - *Mục tiêu:* Nhận diện các tin tuyển dụng bất thường (Ghost jobs, tin rác, đòi hỏi phi thực tế như Fresher đòi 15 công nghệ cao cấp, hoặc lương ảo).
+   - *Thuật toán:* Áp dụng **Isolation Forest** trên không gian [kinh nghiệm, lương, số lượng kỹ năng] kết hợp điểm số ngoại lai mật độ **HDBSCAN GLOSH Score**.
 
 ---
 
@@ -42,26 +41,27 @@ Khi Phúc làm việc với AI Agent (Claude Code / Cursor / Antigravity), **hã
 Bạn là Nhà Khoa Học Dữ Liệu (Data Scientist & Mining Specialist) phụ trách dự án VN-IT-Job-Mining.
 
 ### 1. NGỮ CẢNH & MỤC TIÊU:
-Nhiệm vụ của tôi là triển khai trọn vẹn Bộ ba thuật toán Khai phá Dữ liệu học thuật: (1) FP-Growth trích xuất luật kết hợp kỹ năng (Support, Confidence, Lift); (2) K-Means + PCA phân cụm vị trí việc làm (Silhouette Score); (3) Random Forest Regressor + TreeSHAP mô hình hóa mức lương và định lượng giá trị kinh tế biên của từng kỹ năng. Tham khảo đặc tả kỹ thuật tại docs/spec/07_mining_spec.md và docs/spec/08_evaluation_spec.md.
+Nhiệm vụ của tôi là triển khai trọn vẹn 4 trụ cột Khai phá Dữ liệu học thuật: (1) Stratified FP-Growth trích xuất luật kết hợp kỹ năng (Support, Confidence, Lift); (2) K-Means + HDBSCAN phân cụm việc làm kết hợp PCA xuất tọa độ 2D và 3D (pca_x, pca_y, pca_z); (3) Random Forest Regressor + TreeSHAP mô hình hóa mức lương và định lượng giá trị kinh tế biên của từng kỹ năng; (4) Isolation Forest & HDBSCAN GLOSH score phát hiện tin bất thường và outliers. Tham khảo đặc tả kỹ thuật tại docs/spec/07_mining_spec.md và docs/spec/08_evaluation_spec.md.
 
 ### 2. RÀNG BUỘC KỸ THUẬT (CONSTRAINTS):
-- Chỉ được can thiệp vào mã nguồn trong thư mục: `mining/`.
+- Chỉ can thiệp vào mã nguồn trong thư mục: `mining/`.
 - Sử dụng các thư viện chuẩn mực: `mlxtend`, `scikit-learn`, `shap`, `pandas`, `numpy`.
 - Mô hình lương chỉ huấn luyện trên các tin có mức lương cụ thể (loại bỏ tin Thỏa thuận), dùng K-Fold Cross Validation (5 folds) để đánh giá.
-- Xuất kết quả luật kết hợp, nhãn phân cụm và giá trị SHAP ra định dạng Parquet/JSON tại `mining/artifacts/` để nạp vào PostgreSQL Data Mart và hiển thị biểu đồ trên Dashboard.
+- Xuất đầy đủ 4 tệp Parquet artifacts tại `mining/artifacts/` để nạp vào PostgreSQL Data Mart theo đúng schema đã thống nhất với Sơn.
 
 ### 3. HỢP ĐỒNG ĐẦU VÀO / ĐẦU RA:
 - Đầu vào:
   * `data/curated/curated_flat_golden_jobs.parquet` (Dữ liệu tuyển dụng vàng)
   * `data/preprocessing/05_encoding/features.parquet` (Ma trận 230 cột kỹ năng)
 - Đầu ra tại `mining/artifacts/`:
-  * `skill_association_rules.parquet` (Bảng luật kết hợp FP-Growth)
-  * `job_clusters.parquet` (Tọa độ PCA 2D và nhãn cụm K-Means)
-  * `skill_salary_shap_values.parquet` (Giá trị thặng dư kinh tế từng kỹ năng)
-  * `trained_salary_rf_model.joblib` (Mô hình Random Forest đã lưu)
+  * `skill_association_rules.parquet`: Cột [antecedents, consequents, support, confidence, lift, job_family_scope]
+  * `job_clusters.parquet`: Cột [job_id, job_title, job_family, cluster_id, cluster_name, pca_x, pca_y, pca_z, is_outlier, glosh_outlier_score]
+  * `job_anomalies.parquet`: Cột [job_id, job_title, company_name, anomaly_score, reason_code, detected_by]
+  * `skill_salary_shap_values.parquet`: Cột [skill_name, job_family, mean_shap_value, marginal_dollar_vnd, sample_size]
+  * `trained_salary_rf_model.joblib`: File lưu mô hình Random Forest
 
 ### 4. YÊU CẦU THỰC HIỆN:
-Hãy phân tích mã nguồn mẫu trong docs/spec/07_mining_spec.md, lập Plan thực thi lần lượt 3 thuật toán, chạy thực nghiệm và xuất các chỉ số đánh giá toán học (Lift, Silhouette, R2, MAE).
+Hãy phân tích mã nguồn mẫu trong docs/spec/07_mining_spec.md, lập Plan thực thi lần lượt 4 thuật toán, chạy thực nghiệm và xuất các chỉ số đánh giá toán học (Lift, Silhouette, R2, MAE, Anomaly Rate).
 ```
 
 ---
@@ -70,20 +70,21 @@ Hãy phân tích mã nguồn mẫu trong docs/spec/07_mining_spec.md, lập Plan
 
 - [ ] **Bước 1 (FP-Growth):**
   * Chạy thuật toán FP-Growth, trích xuất ít nhất 30 luật kết hợp có $Lift > 1.2$ và $Confidence \ge 0.6$.
-  * Kiểm tra tính hợp lý thực tế: Các luật tìm được phải mang ý nghĩa công nghệ rõ ràng (ví dụ: `{Flutter} => {Dart}`, `{Kubernetes, Docker} => {CI/CD}`).
-- [ ] **Bước 2 (K-Means & Silhouette):**
-  * Chạy vẽ đồ thị Elbow (Inertia) và Silhouette Score cho $k \in [4, 14]$.
-  * Chọn $k$ tối ưu có Silhouette Score cao nhất (mục tiêu: $\ge 0.28$).
-  * Chạy PCA 2D, lưu tọa độ $(x, y)$ và nhãn cụm của từng bài đăng.
-- [ ] **Bước 3 (Random Forest & SHAP):**
+  * Phân tách luật toàn thị trường (Macro) và luật theo từng Job Family (Micro).
+- [ ] **Bước 2 (K-Means, HDBSCAN & PCA 2D/3D):**
+  * Chạy đồ thị Elbow và Silhouette Score cho $k \in [4, 14]$, chọn $k$ tối ưu có Silhouette $\ge 0.28$.
+  * Chạy PCA giảm chiều, lưu đủ 3 cột tọa độ `pca_x`, `pca_y`, `pca_z` cùng nhãn cụm.
+- [ ] **Bước 3 (Random Forest & TreeSHAP):**
   * Huấn luyện mô hình Random Forest trên tập tin có lương: Đạt $R^2 \ge 0.60$ và $MAE \le 4.5\text{ triệu VNĐ}$ trên tập kiểm thử (Test Set 20%).
-  * Chạy TreeSHAP tính ma trận $\phi_{i, j}$; tổng hợp Top 15 kỹ năng có giá trị tăng lương cao nhất thị trường.
-- [ ] **Bước 4 (Chạy toàn trình Mining):**
+  * Chạy TreeSHAP tính ma trận $\phi_{i, j}$; tổng hợp Top 15 kỹ năng có giá trị tăng lương cao nhất.
+- [ ] **Bước 4 (Isolation Forest & Anomaly Detection):**
+  * Huấn luyện Isolation Forest, tính `anomaly_score` và trích xuất danh sách các tin ngoại lai / bất thường.
+- [ ] **Bước 5 (Chạy toàn trình Mining):**
   ```bash
   python mining/run_mining_pipeline.py
   ```
-  Xác nhận tất cả 4 tệp artifacts trong `mining/artifacts/` được sinh ra đầy đủ.
-- [ ] **Bước 5 (Linting):** Chạy `ruff check mining/`.
+  Xác nhận tất cả 4 tệp Parquet artifacts và file `.joblib` trong `mining/artifacts/` được sinh ra đầy đủ.
+- [ ] **Bước 6 (Linting):** Chạy `ruff check mining/`.
 
 ---
 
