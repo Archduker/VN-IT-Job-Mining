@@ -162,6 +162,7 @@ sequenceDiagram
     %% Feature & Mining Phase
     Note over Engine, Mining: GIAI ĐOẠN 3: BIẾN ĐỔI, ĐẶC TRƯNG & DATA MINING
     Engine->>Engine: Gán nhãn 12 Job Families & 6 Seniority Levels
+    Engine->>Engine: Dịch JD tiếng Anh -> tiếng Việt (VietAI/envit5-translation + Entity Masking)
     Engine->>Engine: Ánh xạ từ điển phân cấp kỹ năng IT (6 categories)
     Engine->>Engine: Chuẩn hóa lương (USD/VND, chu kỳ -> Triệu VNĐ/tháng)
     Engine->>Engine: Sinh ma trận One-hot, Co-occurrence, TF-IDF
@@ -169,10 +170,11 @@ sequenceDiagram
     
     Scheduler->>Mining: Kích hoạt huấn luyện mô hình Khai phá dữ liệu
     Mining->>R2_Gold: Đọc ma trận kỹ năng & Gold features
-    Mining->>Mining: Chạy Apriori/FP-Growth tìm luật kết hợp kỹ năng IT
-    Mining->>Mining: Phân cụm việc làm (Clustering) & phân tích đồ thị kỹ năng
-    Mining->>Mining: Huấn luyện mô hình dự báo lương IT
-    Mining->>R2_Gold: Lưu kết quả tri thức khai phá (Mining Artifacts)
+    Mining->>Mining: Chạy FP-Growth phân tầng tìm luật kết hợp kỹ năng IT
+    Mining->>Mining: Phân cụm việc làm (K-Means & HDBSCAN) + Giảm chiều PCA 2D/3D
+    Mining->>Mining: Huấn luyện mô hình Random Forest + TreeSHAP định lượng lương
+    Mining->>Mining: Chạy Isolation Forest & GLOSH score phát hiện tin bất thường
+    Mining->>R2_Gold: Lưu kết quả tri thức khai phá (4 Parquet Artifacts)
 
     %% Serving Phase
     Note over API, User: GIAI ĐOẠN 4: CUNG CẤP DỮ LIỆU & TRỰC QUAN HÓA
