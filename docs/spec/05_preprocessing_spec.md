@@ -172,6 +172,7 @@ $$\text{Cosine\_Similarity}(\mathbf{v}_A, \mathbf{v}_B) = \frac{\mathbf{v}_A \cd
 5. **Ngưỡng quyết định (Decision Threshold):**
    - Nếu $\text{Cosine\_Similarity} \ge 0.85$: Xác định $J_A$ và $J_B$ là cùng một công việc tuyển dụng thực tế (Duplicate Cross-platform Entity).
    - Nếu $\text{Cosine\_Similarity} < 0.85$: Giữ nguyên là 2 bài đăng riêng biệt.
+6. **Gộp bắc cầu (chấp nhận):** cụm trùng được tạo bằng Union-Find, nên A–B ≥ 0,85 và B–C ≥ 0,85 sẽ gộp A, B, C dù cosine A–C thấp hơn 0,85. Không yêu cầu mọi cặp trong cụm đạt ngưỡng. Mỗi bản bị loại nhờ liên kết gián tiếp được ghi một dòng `transitive-link` trong `duplicates_audit.csv` để người duyệt kiểm lại.
 
 #### Giai đoạn C: Thuật Toán Hợp Nhất Thành Golden Record (Golden Master Fusion)
 Khi phát hiện cụm tin trùng lặp $\{J_1, J_2, \dots, J_k\}$, hệ thống không xóa bỏ dữ liệu mà tiến hành hợp nhất (Merge & Fuse) thành một **Golden Record** duy nhất:

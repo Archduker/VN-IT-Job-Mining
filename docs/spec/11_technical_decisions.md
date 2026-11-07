@@ -225,6 +225,8 @@ flowchart TD
   Hệ thống **không ghi thêm file raw** vào disk, tiết kiệm dung lượng và tránh trùng lặp ngay từ gốc.
 
 #### Lớp 2: Inter-source Semantic Blocking & Dual Matching
+
+> **Cập nhật 11/2026:** Lớp 2 triển khai theo `docs/spec/05_preprocessing_spec.md` §3.2 (khóa chặn `Company_Location_TitleGroup`, TF-IDF Cosine ≥ 0,85), không dùng cặp ngưỡng Jaccard 0,80 và Cosine 0,75 mô tả dưới đây. SPEC-05 là chuẩn nghiệm thu; phần dưới giữ lại làm lịch sử quyết định.
 Do tập dữ liệu có $N \approx 14.000$ bản ghi, việc so sánh toàn bộ các cặp chéo đòi hỏi:
 $$\frac{N \times (N-1)}{2} \approx 98.000.000\text{ phép so sánh}$$
 Con số này là bất khả thi để tính toán nhanh. Nhóm áp dụng chiến lược **Blocking**:
@@ -304,5 +306,5 @@ flowchart TD
 | **ADR-01** | Cloudflare R2 Medallion Lakehouse | Thay thế hoàn toàn MinIO/Postgres Warehouse; định vị 4 tầng chuẩn `raw/`, `url_ledger/`, `staging/`, `curated/` | Đã triển khai |
 | **ADR-02** | Apache Parquet Columnar Storage | Áp dụng tại `preprocessing/02_integration/all.parquet` và `curated_flat_golden_jobs.parquet` | Đã triển khai |
 | **ADR-03** | Chống chặn Bot Đa Tầng | Tích hợp `curl_cffi`, Playwright Stealth, Sổ cái URL Ledger và Airflow Pools | Đã triển khai |
-| **ADR-04** | Khử trùng lặp 2 Lớp (CDC + Blocking) | Triển khai tại `url_ledger.py` (Lớp 1) và `preprocessing/clean/` (Lớp 2) | Đã triển khai |
+| **ADR-04** | Khử trùng lặp 2 Lớp (CDC + Blocking) | Triển khai tại `url_ledger.py` (CDC lúc thu thập) và `preprocessing/deduplication/` (Lớp 1 nội sàn và Lớp 2 liên sàn, theo SPEC-05 §3) | Đã triển khai |
 | **ADR-05** | Bộ ba FP-Growth, K-Means, RF/SHAP | Đặt nền tảng thuật toán cho phân hệ Data Mining và Báo cáo Đồ án tốt nghiệp | Đã triển khai |
