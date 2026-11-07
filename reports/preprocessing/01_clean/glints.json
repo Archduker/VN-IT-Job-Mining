@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:06+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-07T06:53:12+00:00",
+  "code_version": "c1555c0",
   "input": {
     "path": "data/glints/raw",
     "rows": 331
@@ -242,14 +242,14 @@
     "review": {
       "file": "data/preprocessing/review/it_glints.csv",
       "rows": 42,
-      "labeled": 42,
-      "labeled_non_it": 29,
-      "rule_decided": 11,
-      "rule_correct": 11,
-      "status_non_it": 28,
-      "status_non_it_correct": 26,
-      "level2_labeled": 31,
-      "level2_correct": 26
+      "labeled": 0,
+      "labeled_non_it": 0,
+      "rule_decided": 0,
+      "rule_correct": 0,
+      "status_non_it": 0,
+      "status_non_it_correct": 0,
+      "level2_labeled": 0,
+      "level2_correct": 0
     }
   }
 }

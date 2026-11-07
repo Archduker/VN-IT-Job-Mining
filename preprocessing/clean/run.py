@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Bước 01 Clean (docs/preprocessing/spec/P1_clean.md): khử trùng, bỏ rác, phân loại IT bằng luật 2 tầng ở cả 8 nguồn.
 
 Không bỏ tin ngoài IT khi chưa có preprocessing/clean/it_policy.json do người dùng duyệt (C4c).
@@ -7,13 +6,16 @@ Output giữ nguyên raw_payload, chỉ thêm metadata.clean.
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import random
 import re
+import sys
 from collections import Counter, defaultdict
+from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any
 
 from preprocessing.common import REPO_ROOT, SOURCES, province
 from preprocessing.common.it_filter import classify, classify_unknown
@@ -32,15 +34,15 @@ TEST_ID = re.compile(r"^job-[a-z]+-\d+$")
 REVIEW_NON_IT, REVIEW_LEVEL2, REVIEW_SEED = 50, 30, 42
 KEY_FIELDS = ("job_title", "company_name", "raw_location_text", "raw_posted_date", "raw_description_text", "skills_list")
 
-Item = Dict[str, Any]  # {"rel", "env", "origin", "flat"}
+Item = dict[str, Any]  # {"rel", "env", "origin", "flat"}
 
 
 # ---------------------------------------------------------------- khóa
 def _empty(v: Any) -> bool:
-    return v is None or (isinstance(v, (list, dict, str)) and not (v.strip() if isinstance(v, str) else v))
+    return v is None or (isinstance(v, list | dict | str) and not (v.strip() if isinstance(v, str) else v))
 
 
-def _day(value: Any) -> Optional[datetime]:
+def _day(value: Any) -> datetime | None:
     s = str(value or "").strip()
     m = re.match(r"(\d{1,2})/(\d{1,2})/(\d{4})", s)
     try:
@@ -49,16 +51,19 @@ def _day(value: Any) -> Optional[datetime]:
         return None
 
 
-def _week(flat: Dict[str, Any]) -> str:
+def _week(flat: dict[str, Any]) -> str:
     d = _day(flat.get("raw_posted_date")) or _day(flat.get("crawled_at"))  # TopCV, TopDev không có ngày đăng
-    return "%d-W%02d" % d.isocalendar()[:2] if d else ""
+    if not d:
+        return ""
+    iso = d.isocalendar()
+    return f"{iso.year}-W{iso.week:02d}"
 
 
 def company_norm(name: Any) -> str:
     return re.sub(r"^(cty|ctcp|cong ty|công ty)\s+", "", normalize_company_name(name if isinstance(name, str) else None))
 
 
-def dedup_key(flat: Dict[str, Any]) -> Optional[str]:
+def dedup_key(flat: dict[str, Any]) -> str | None:
     title = re.sub(r"\s+", " ", str(flat.get("job_title") or "").lower()).strip(" .,-:;!|")
     company = company_norm(flat.get("company_name"))
     if not title or not company:
@@ -67,12 +72,12 @@ def dedup_key(flat: Dict[str, Any]) -> Optional[str]:
     return "|".join([company, title, province.key(first) or "", _week(flat)])
 
 
-def jd_words(flat: Dict[str, Any]) -> int:
+def jd_words(flat: dict[str, Any]) -> int:
     text = f"{flat.get('raw_description_text') or ''} {flat.get('raw_requirements_text') or ''}"
     return len(re.findall(r"\b[\w\d_.-]+\b", text))
 
 
-def filled(flat: Dict[str, Any]) -> int:
+def filled(flat: dict[str, Any]) -> int:
     return sum(not _empty(v) for k, v in flat.items() if k not in {"job_id_global", "source_platform"})
 
 
@@ -81,22 +86,22 @@ def _job_id(item: Item) -> str:
     return str(item["env"]["metadata"].get("job_id") or "")
 
 
-def _ex(item: Item, field: str, before: Any, after: Any) -> Dict[str, Any]:
+def _ex(item: Item, field: str, before: Any, after: Any) -> dict[str, Any]:
     return {"job_id": _job_id(item), "field": field, "before": before, "after": after,
             "url": item["env"]["metadata"].get("source_url")}
 
 
-def _fill(items: Sequence[Item]) -> Dict[str, float]:
+def _fill(items: Sequence[Item]) -> dict[str, float]:
     n = len(items)
     return {f: round(100 * sum(not _empty(i["flat"].get(f)) for i in items) / n, 1) if n else 0.0 for f in KEY_FIELDS}
 
 
-def load_policy() -> Dict[str, Any]:
+def load_policy() -> dict[str, Any]:
     return json.loads(POLICY_PATH.read_text(encoding="utf-8")) if POLICY_PATH.exists() else {}
 
 
 # ---------------------------------------------------------------- C1–C6 trong một nguồn
-def clean_source(source: str, policy: Dict[str, Any], report: StepReport) -> Tuple[List[Item], List[Item]]:
+def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tuple[list[Item], list[Item]]:
     """Trả (tin giữ lại sau C6, mọi tin đã phân loại IT trước C4c — dùng để đo độ đúng trên nhãn tay)."""
     raw_dir = DATA_DIR / source / "raw"
     snapshots, batch, _ = read_raw(raw_dir)
@@ -111,8 +116,8 @@ def clean_source(source: str, policy: Dict[str, Any], report: StepReport) -> Tup
     items = [i for i in items if id(i) not in c3_ids]
 
     # C1: snapshot mới nhất theo job_id; tin trùng trong chính file batch cũng tính ở đây
-    best: Dict[str, Item] = {}
-    c1: List[Tuple[Item, Item]] = []
+    best: dict[str, Item] = {}
+    c1: list[tuple[Item, Item]] = []
     for it in (i for i in items if i["origin"] == "snapshot"):
         jid = _job_id(it)
         old = best.get(jid)
@@ -124,8 +129,8 @@ def clean_source(source: str, policy: Dict[str, Any], report: StepReport) -> Tup
         else:
             c1.append((it, old))
     # C2: tin trong file batch đã có file riêng
-    c2: List[Item] = []
-    batch_best: Dict[str, Item] = {}
+    c2: list[Item] = []
+    batch_best: dict[str, Item] = {}
     for it in (i for i in items if i["origin"] == "batch"):
         jid = _job_id(it)
         if jid in best:
@@ -189,12 +194,12 @@ def clean_source(source: str, policy: Dict[str, Any], report: StepReport) -> Tup
                  for i in c5])
 
     # C6: trùng trong cùng nguồn; giữ bản cào mới nhất, bằng nhau thì bản nhiều trường hơn
-    groups: Dict[str, List[Item]] = defaultdict(list)
+    groups: dict[str, list[Item]] = defaultdict(list)
     for it in items:
         k = it["env"]["metadata"]["clean"]["dedup_key"]
         if k:
             groups[k].append(it)
-    c6: List[Tuple[Item, Item]] = []
+    c6: list[tuple[Item, Item]] = []
     for g in groups.values():
         if len(g) > 1:
             g.sort(key=lambda i: (str(i["flat"].get("crawled_at") or ""), filled(i["flat"])), reverse=True)
@@ -208,16 +213,16 @@ def clean_source(source: str, policy: Dict[str, Any], report: StepReport) -> Tup
 
 
 # ---------------------------------------------------------------- C7 chéo nguồn
-def cross_source_dedup(kept: Dict[str, List[Item]], reports: Dict[str, StepReport]) -> Counter:
+def cross_source_dedup(kept: dict[str, list[Item]], reports: dict[str, StepReport]) -> Counter:
     """Trả số tin trùng theo cặp nguồn (giữ → bỏ) cho Monitoring."""
     order = {s: n for n, s in enumerate(SOURCES)}
-    groups: Dict[str, List[Tuple[str, Item]]] = defaultdict(list)
+    groups: dict[str, list[tuple[str, Item]]] = defaultdict(list)
     for src, items in kept.items():
         for it in items:
             k = it["env"]["metadata"]["clean"]["dedup_key"]
             if k:
                 groups[k].append((src, it))
-    dropped: Dict[str, List[Tuple[Item, str, Item]]] = defaultdict(list)
+    dropped: dict[str, list[tuple[Item, str, Item]]] = defaultdict(list)
     pairs: Counter = Counter()
     for g in groups.values():
         if len({s for s, _ in g}) < 2:
@@ -245,7 +250,7 @@ def _has_labels(path) -> bool:
         return any((r.get("nhan_tay") or "").strip() for r in csv.DictReader(fh))
 
 
-def review_sample(source: str, items: List[Item], report: StepReport) -> None:
+def review_sample(source: str, items: list[Item], report: StepReport) -> None:
     """Xuất mẫu; file đã có nhãn tay thì giữ nguyên, chỉ đọc nhãn để đo độ đúng. Chưa có nhãn nào thì xuất lại."""
     path = REVIEW_DIR / f"it_{source}.csv"
     by_id = {_job_id(i): i["env"]["metadata"]["clean"] for i in items}
@@ -281,11 +286,12 @@ def review_sample(source: str, items: List[Item], report: StepReport) -> None:
 
 
 # ---------------------------------------------------------------- chạy
-def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> Dict[str, StepReport]:
+def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, StepReport]:
+    full_run = len(sources) == len(SOURCES)
     policy = load_policy()
-    reports: Dict[str, StepReport] = {}
-    kept: Dict[str, List[Item]] = {}
-    classified: Dict[str, List[Item]] = {}
+    reports: dict[str, StepReport] = {}
+    kept: dict[str, list[Item]] = {}
+    classified: dict[str, list[Item]] = {}
     for src in sources:
         reports[src] = StepReport(STEP, src, dry_run)
         kept[src], classified[src] = clean_source(src, policy, reports[src])
@@ -297,6 +303,9 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> Dict[str, Ste
         for f in r.data["fields"]:
             f["fill_pct_out"] = out_fill[f["field"]]
         review_sample(src, classified[src], r)
+        if not full_run:  # ghi ngay vào báo cáo từng sàn để CLI và trang Monitoring cùng thấy cảnh báo
+            r.note(f"chạy lẻ {len(sources)}/{len(SOURCES)} sàn - C7 so trùng khác sàn chưa đủ dữ liệu"
+                   "; muốn số đúng toàn dự án: --source all")
         r.check_conserved()  # một nguồn sai thì dừng cả bước, chưa nguồn nào được ghi
     for src in sources:
         if not dry_run:
@@ -312,5 +321,35 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> Dict[str, Ste
     total.data["extra"]["cross_source_pairs"] = dict(pairs.most_common())
     total.data["extra"]["it_policy"] = {s: reports[s].data["extra"]["it_policy"] for s in sources}
     total.data["extra"]["it_levels"] = {s: reports[s].data["extra"]["it_levels"] for s in sources}
+    # `_all.json` là số Monitoring đọc: chạy lẻ một sàn mà ghi đè thì trang sẽ hiện số thiếu.
+    total.data["extra"]["partial_run"] = not full_run
+    if total.data["extra"]["partial_run"]:
+        total.note(f"_all chỉ tổng hợp {len(sources)}/{len(SOURCES)} sàn "
+                   f"({', '.join(sources)}) - muốn số toàn dự án phải chạy --source all")
     total.write()
     return reports
+
+
+def main(argv: list[str] | None = None) -> int:
+    """CLI chạy riêng bước 01 để kiểm tra nhanh (orchestrator chung của dự án vẫn là `scripts/`)."""
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--source", default="all", choices=[*SOURCES, "all"])
+    parser.add_argument("--dry-run", action="store_true", help="chỉ đo và ghi báo cáo, không ghi dữ liệu")
+    args = parser.parse_args(argv)
+    sources = list(SOURCES) if args.source == "all" else [args.source]
+    if len(sources) != len(SOURCES) and not args.dry_run:
+        parser.error("chạy lẻ một sàn chỉ hợp lệ với --dry-run: luật C7 so trùng khác sàn cần đủ 8 sàn,"
+                     " chạy applied một sàn sẽ ghi đè output 01_clean của sàn đó bằng kết quả thiếu"
+                     " (muốn làm lại toàn bộ: --source all)")
+    reports = run(sources, dry_run=args.dry_run)
+    for src, r in reports.items():
+        d = r.data
+        print(f"{STEP} {src}: input {d['input']['rows']} -> output {d['output']['rows']} ({d['mode']})"
+              f" -> reports/preprocessing/{STEP}/{src}.json")
+        for note in d["checks"]["notes"]:
+            print(f"    ⚠ {note}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,137 @@
+{
+  "step": "01b_deduplication",
+  "source": "vietnamworks",
+  "mode": "applied",
+  "generated_at": "2026-11-07T06:53:23+00:00",
+  "code_version": "c1555c0",
+  "input": {
+    "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
+    "rows": 800
+  },
+  "output": {
+    "path": "data/preprocessing/01b_deduplication/vietnamworks.jsonl",
+    "rows": 794
+  },
+  "dropped": [
+    {
+      "rule": "D2",
+      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "rows": 0
+    },
+    {
+      "rule": "D4",
+      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
+      "rows": 0
+    },
+    {
+      "rule": "D5",
+      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "rows": 6
+    }
+  ],
+  "rules": [
+    {
+      "id": "D1",
+      "name": "Kiểm toán chuỗi version CDC (cào lại có đổi nội dung thật không)",
+      "action": "flag",
+      "rows_affected": 728,
+      "examples": []
+    },
+    {
+      "id": "D2",
+      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D4",
+      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D5",
+      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "action": "drop",
+      "rows_affected": 6,
+      "examples": [
+        {
+          "job_id": "2100871",
+          "field": "dedup",
+          "before": "https://www.vietnamworks.com/chuyen-gia-phan-tich-du-lieu-khach-hang-va-djanh-gia-hieu-qua-2100871-jv",
+          "after": "https://topdev.vn/viec-lam/chuyen-gia-phan-tich-du-lieu-khach-hang-va-danh-gia-hieu-qua-cong-ty-co-phan-chung-khoan-ssi-2138456",
+          "url": "https://www.vietnamworks.com/chuyen-gia-phan-tich-du-lieu-khach-hang-va-djanh-gia-hieu-qua-2100871-jv"
+        },
+        {
+          "job_id": "2107147",
+          "field": "dedup",
+          "before": "https://www.vietnamworks.com/software-development-manager-2107147-jv",
+          "after": "https://topdev.vn/viec-lam/software-development-manager-ila-vietnam-2141962",
+          "url": "https://www.vietnamworks.com/software-development-manager-2107147-jv"
+        },
+        {
+          "job_id": "2114356",
+          "field": "dedup",
+          "before": "https://www.vietnamworks.com/database-engineer-dba-1790770265689383746-2114356-jv",
+          "after": "https://itviec.com/viec-lam-it/database-engineer-dba-lg-cns-viet-nam-3911",
+          "url": "https://www.vietnamworks.com/database-engineer-dba-1790770265689383746-2114356-jv"
+        }
+      ]
+    },
+    {
+      "id": "D6",
+      "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
+      "action": "flag",
+      "rows_affected": 7,
+      "examples": [
+        {
+          "job_id": "2104725",
+          "field": "master_id",
+          "before": "https://www.vietnamworks.com/truong-nhom-ha-tang-cong-nghe-thong-tin-thu-nhap-35-50-trieu-2104725-jv",
+          "after": "083bbb5f-103f-5dd2-ad79-1f6f2b1e77f9",
+          "url": "https://www.vietnamworks.com/truong-nhom-ha-tang-cong-nghe-thong-tin-thu-nhap-35-50-trieu-2104725-jv"
+        },
+        {
+          "job_id": "2109856",
+          "field": "master_id",
+          "before": "https://www.vietnamworks.com/chuyen-vien-phan-tich-du-lieu--2109856-jv",
+          "after": "e8c54ff7-91fc-5af7-a31a-2c5b16c9cff9",
+          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-du-lieu--2109856-jv"
+        },
+        {
+          "job_id": "2114694",
+          "field": "master_id",
+          "before": "https://www.vietnamworks.com/ky-su-it-1790836017984251728-2114694-jv",
+          "after": "59983229-9083-5425-9a3b-995e7aa900a0",
+          "url": "https://www.vietnamworks.com/ky-su-it-1790836017984251728-2114694-jv"
+        }
+      ]
+    }
+  ],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "cdc": {
+      "job_ids": 1219,
+      "chains_gt1": 723,
+      "hops": 728,
+      "hop_same_crawler_hash": 4,
+      "hop_same_canonical_hash": 5,
+      "hop_version_not_bumped": 3
+    },
+    "blocking_blocks": 612,
+    "d2_groups": 0,
+    "rule_totals": {
+      "D5": 6
+    }
+  }
+}

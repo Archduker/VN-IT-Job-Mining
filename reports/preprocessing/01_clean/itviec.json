@@ -2,11 +2,11 @@
   "step": "01_clean",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:05+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-07T06:53:10+00:00",
+  "code_version": "c1555c0",
   "input": {
     "path": "data/itviec/raw",
-    "rows": 911
+    "rows": 915
   },
   "output": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
@@ -26,7 +26,7 @@
     {
       "rule": "C3",
       "reason": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
-      "rows": 0
+      "rows": 4
     },
     {
       "rule": "C4c",
@@ -76,8 +76,30 @@
       "id": "C3",
       "name": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
       "action": "drop",
-      "rows_affected": 0,
-      "examples": []
+      "rows_affected": 4,
+      "examples": [
+        {
+          "job_id": "job-ba-300",
+          "field": "job_id",
+          "before": "job-ba-300",
+          "after": null,
+          "url": "https://itviec.com/viec-lam-it/job-ba-300"
+        },
+        {
+          "job_id": "job-bon-400",
+          "field": "job_id",
+          "before": "job-bon-400",
+          "after": null,
+          "url": "https://itviec.com/viec-lam-it/job-bon-400"
+        },
+        {
+          "job_id": "job-hai-200",
+          "field": "job_id",
+          "before": "job-hai-200",
+          "after": null,
+          "url": "https://itviec.com/viec-lam-it/job-hai-200"
+        }
+      ]
     },
     {
       "id": "C4a",
@@ -224,15 +246,15 @@
     },
     "review": {
       "file": "data/preprocessing/review/it_itviec.csv",
-      "rows": 22,
-      "labeled": 22,
-      "labeled_non_it": 1,
-      "rule_decided": 3,
-      "rule_correct": 3,
-      "status_non_it": 5,
-      "status_non_it_correct": 1,
-      "level2_labeled": 19,
-      "level2_correct": 15
+      "rows": 30,
+      "labeled": 0,
+      "labeled_non_it": 0,
+      "rule_decided": 0,
+      "rule_correct": 0,
+      "status_non_it": 0,
+      "status_non_it_correct": 0,
+      "level2_labeled": 0,
+      "level2_correct": 0
     }
   }
 }

@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:01+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-07T06:53:04+00:00",
+  "code_version": "c1555c0",
   "input": {
     "path": "data/careerviet/raw",
     "rows": 660
@@ -270,15 +270,15 @@
     },
     "review": {
       "file": "data/preprocessing/review/it_careerviet.csv",
-      "rows": 77,
-      "labeled": 77,
-      "labeled_non_it": 58,
-      "rule_decided": 46,
-      "rule_correct": 46,
-      "status_non_it": 63,
-      "status_non_it_correct": 57,
-      "level2_labeled": 31,
-      "level2_correct": 24
+      "rows": 71,
+      "labeled": 0,
+      "labeled_non_it": 0,
+      "rule_decided": 0,
+      "rule_correct": 0,
+      "status_non_it": 0,
+      "status_non_it_correct": 0,
+      "level2_labeled": 0,
+      "level2_correct": 0
     }
   }
 }

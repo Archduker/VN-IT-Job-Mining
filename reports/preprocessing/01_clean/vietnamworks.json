@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:11:57+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-07T06:52:58+00:00",
+  "code_version": "c1555c0",
   "input": {
     "path": "data/vietnamworks/raw",
-    "rows": 2878
+    "rows": 1947
   },
   "output": {
     "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
-    "rows": 900
+    "rows": 800
   },
   "dropped": [
     {
@@ -21,7 +21,7 @@
     {
       "rule": "C2",
       "reason": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
-      "rows": 725
+      "rows": 0
     },
     {
       "rule": "C3",
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 520
+      "rows": 415
     },
     {
       "rule": "C5",
@@ -41,7 +41,7 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
-      "rows": 5
+      "rows": 4
     },
     {
       "rule": "C7",
@@ -83,30 +83,8 @@
       "id": "C2",
       "name": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
       "action": "drop",
-      "rows_affected": 725,
-      "examples": [
-        {
-          "job_id": "2025655",
-          "field": "snapshot_file",
-          "before": "2026-10-16/raw_batch.json",
-          "after": "đã có file riêng",
-          "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
-        },
-        {
-          "job_id": "2085748",
-          "field": "snapshot_file",
-          "before": "2026-10-16/raw_batch.json",
-          "after": "đã có file riêng",
-          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
-        },
-        {
-          "job_id": "2092686",
-          "field": "snapshot_file",
-          "before": "2026-10-16/raw_batch.json",
-          "after": "đã có file riêng",
-          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "C3",
@@ -119,7 +97,7 @@
       "id": "C4a",
       "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 520,
+      "rows_affected": 415,
       "examples": [
         {
           "job_id": "1811606",
@@ -129,18 +107,18 @@
           "url": "https://www.vietnamworks.com/sales-engineer-1790752331072092706-1811606-jv"
         },
         {
-          "job_id": "1967585",
-          "field": "job_title",
-          "before": "Mechanical Design Engineer (Automation Machinery)",
-          "after": "non_it",
-          "url": "https://www.vietnamworks.com/mechanical-design-engineer-automation-machinery-1791879364316203764-1967585-jv"
-        },
-        {
           "job_id": "2025655",
           "field": "job_title",
           "before": "Junior ISO Consultant",
           "after": "non_it",
           "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
+        },
+        {
+          "job_id": "2071836",
+          "field": "job_title",
+          "before": "Kỹ Sư Thiết Kế Cơ Khí Tự Động Hóa (Automation Mechanical Design Engineer) - Thu Nhập Upto 30 Triệu/tháng",
+          "after": "non_it",
+          "url": "https://www.vietnamworks.com/ky-su-thiet-ke-co-khi-tu-djong-hoa-automation-mechanical-design-engineer-thu-nhap-upto-30-trieuthang-2071836-jv"
         }
       ]
     },
@@ -148,7 +126,7 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 520,
+      "rows_affected": 415,
       "examples": [
         {
           "job_id": "1811606",
@@ -158,18 +136,18 @@
           "url": "https://www.vietnamworks.com/sales-engineer-1790752331072092706-1811606-jv"
         },
         {
-          "job_id": "1967585",
-          "field": "job_title",
-          "before": "Mechanical Design Engineer (Automation Machinery)",
-          "after": null,
-          "url": "https://www.vietnamworks.com/mechanical-design-engineer-automation-machinery-1791879364316203764-1967585-jv"
-        },
-        {
           "job_id": "2025655",
           "field": "job_title",
           "before": "Junior ISO Consultant",
           "after": null,
           "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
+        },
+        {
+          "job_id": "2071836",
+          "field": "job_title",
+          "before": "Kỹ Sư Thiết Kế Cơ Khí Tự Động Hóa (Automation Mechanical Design Engineer) - Thu Nhập Upto 30 Triệu/tháng",
+          "after": null,
+          "url": "https://www.vietnamworks.com/ky-su-thiet-ke-co-khi-tu-djong-hoa-automation-mechanical-design-engineer-thu-nhap-upto-30-trieuthang-2071836-jv"
         }
       ]
     },
@@ -184,7 +162,7 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
       "action": "drop",
-      "rows_affected": 5,
+      "rows_affected": 4,
       "examples": [
         {
           "job_id": "2109884",
@@ -230,8 +208,8 @@
     },
     {
       "field": "raw_location_text",
-      "fill_pct_in": 74.0,
-      "fill_pct_out": 77.6
+      "fill_pct_in": 86.5,
+      "fill_pct_out": 87.2
     },
     {
       "field": "raw_posted_date",
@@ -259,14 +237,14 @@
   },
   "extra": {
     "it_levels": {
-      "tang_1_non_it": 169,
-      "tang_2_non_it": 351,
-      "tang_1_it": 686,
-      "tang_2_it": 219
+      "tang_1_non_it": 124,
+      "tang_2_non_it": 291,
+      "tang_1_it": 608,
+      "tang_2_it": 196
     },
     "it_status": {
-      "non_it": 520,
-      "it": 905
+      "non_it": 415,
+      "it": 804
     },
     "it_policy": {
       "drop": [
@@ -278,14 +256,14 @@
     "review": {
       "file": "data/preprocessing/review/it_vietnamworks.csv",
       "rows": 80,
-      "labeled": 80,
-      "labeled_non_it": 72,
-      "rule_decided": 48,
-      "rule_correct": 47,
-      "status_non_it": 70,
-      "status_non_it_correct": 68,
-      "level2_labeled": 32,
-      "level2_correct": 27
+      "labeled": 0,
+      "labeled_non_it": 0,
+      "rule_decided": 0,
+      "rule_correct": 0,
+      "status_non_it": 0,
+      "status_non_it_correct": 0,
+      "level2_labeled": 0,
+      "level2_correct": 0
     }
   }
 }

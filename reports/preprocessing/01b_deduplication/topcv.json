@@ -1,0 +1,137 @@
+{
+  "step": "01b_deduplication",
+  "source": "topcv",
+  "mode": "applied",
+  "generated_at": "2026-11-07T06:53:23+00:00",
+  "code_version": "c1555c0",
+  "input": {
+    "path": "data/preprocessing/01_clean/topcv.jsonl",
+    "rows": 1561
+  },
+  "output": {
+    "path": "data/preprocessing/01b_deduplication/topcv.jsonl",
+    "rows": 1550
+  },
+  "dropped": [
+    {
+      "rule": "D2",
+      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "rows": 0
+    },
+    {
+      "rule": "D4",
+      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
+      "rows": 0
+    },
+    {
+      "rule": "D5",
+      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "rows": 11
+    }
+  ],
+  "rules": [
+    {
+      "id": "D1",
+      "name": "Kiểm toán chuỗi version CDC (cào lại có đổi nội dung thật không)",
+      "action": "flag",
+      "rows_affected": 75,
+      "examples": []
+    },
+    {
+      "id": "D2",
+      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D4",
+      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D5",
+      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "action": "drop",
+      "rows_affected": 11,
+      "examples": [
+        {
+          "job_id": "1506721",
+          "field": "dedup",
+          "before": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html",
+          "after": "https://topdev.vn/viec-lam/business-analyst-cong-ty-co-phan-global-technology-solutions-viet-nam-2138328",
+          "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
+        },
+        {
+          "job_id": "2214894",
+          "field": "dedup",
+          "before": "https://www.topcv.vn/viec-lam/quan-ly-phat-hanh-pmo/2214894.html",
+          "after": "https://www.vietnamworks.com/pmo-specialist-1793328687263937730-2125642-jv",
+          "url": "https://www.topcv.vn/viec-lam/quan-ly-phat-hanh-pmo/2214894.html"
+        },
+        {
+          "job_id": "2258128",
+          "field": "dedup",
+          "before": "https://www.topcv.vn/viec-lam/secops-engineer/2258128.html",
+          "after": "https://itviec.com/viec-lam-it/secops-engineer-kubernetes-linux-iam-ztna-devsecops-con-cung-3623",
+          "url": "https://www.topcv.vn/viec-lam/secops-engineer/2258128.html"
+        }
+      ]
+    },
+    {
+      "id": "D6",
+      "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
+      "action": "flag",
+      "rows_affected": 86,
+      "examples": [
+        {
+          "job_id": "1317511",
+          "field": "master_id",
+          "before": "https://www.topcv.vn/viec-lam/nhan-vien-phan-tich-nghiep-vu/1317511.html",
+          "after": "58c73345-92f7-5371-b276-f4bc9a1da4ae",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-phan-tich-nghiep-vu/1317511.html"
+        },
+        {
+          "job_id": "1506755",
+          "field": "master_id",
+          "before": "https://www.topcv.vn/viec-lam/java-developer-lead-backend/1506755.html",
+          "after": "422c887c-2b6e-5319-bbff-b6ed8b890b2a",
+          "url": "https://www.topcv.vn/viec-lam/java-developer-lead-backend/1506755.html"
+        },
+        {
+          "job_id": "1637295",
+          "field": "master_id",
+          "before": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-it-network/1637295.html",
+          "after": "901e72fd-5c54-5042-8fae-85778eee01df",
+          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-it-network/1637295.html"
+        }
+      ]
+    }
+  ],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "cdc": {
+      "job_ids": 2674,
+      "chains_gt1": 75,
+      "hops": 75,
+      "hop_same_crawler_hash": 9,
+      "hop_same_canonical_hash": 11,
+      "hop_version_not_bumped": 9
+    },
+    "blocking_blocks": 1277,
+    "d2_groups": 0,
+    "rule_totals": {
+      "D5": 11
+    }
+  }
+}

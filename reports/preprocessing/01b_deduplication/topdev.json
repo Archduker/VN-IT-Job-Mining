@@ -1,0 +1,132 @@
+{
+  "step": "01b_deduplication",
+  "source": "topdev",
+  "mode": "applied",
+  "generated_at": "2026-11-07T06:53:23+00:00",
+  "code_version": "c1555c0",
+  "input": {
+    "path": "data/preprocessing/01_clean/topdev.jsonl",
+    "rows": 227
+  },
+  "output": {
+    "path": "data/preprocessing/01b_deduplication/topdev.jsonl",
+    "rows": 225
+  },
+  "dropped": [
+    {
+      "rule": "D2",
+      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "rows": 1
+    },
+    {
+      "rule": "D4",
+      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
+      "rows": 1
+    },
+    {
+      "rule": "D5",
+      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "rows": 0
+    }
+  ],
+  "rules": [
+    {
+      "id": "D1",
+      "name": "Kiểm toán chuỗi version CDC (cào lại có đổi nội dung thật không)",
+      "action": "flag",
+      "rows_affected": 1108,
+      "examples": []
+    },
+    {
+      "id": "D2",
+      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "action": "drop",
+      "rows_affected": 1,
+      "examples": [
+        {
+          "job_id": "2135002",
+          "field": "dedup",
+          "before": "https://topdev.vn/viec-lam/transportation-operation-executive-trucking-operation-cong-ty-tnhh-hanjin-global-logistics-viet-nam-2135002",
+          "after": "https://topdev.vn/viec-lam/transportation-operation-executive-trucking-operation-cong-ty-tnhh-hanjin-global-logistics-viet-nam-2142426",
+          "url": "https://topdev.vn/viec-lam/transportation-operation-executive-trucking-operation-cong-ty-tnhh-hanjin-global-logistics-viet-nam-2135002"
+        }
+      ]
+    },
+    {
+      "id": "D4",
+      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "action": "drop",
+      "rows_affected": 1,
+      "examples": [
+        {
+          "job_id": "2133354",
+          "field": "dedup",
+          "before": "https://topdev.vn/viec-lam/software-development-manager-ila-vietnam-2133354",
+          "after": "https://topdev.vn/viec-lam/software-development-manager-ila-vietnam-2141962",
+          "url": "https://topdev.vn/viec-lam/software-development-manager-ila-vietnam-2133354"
+        }
+      ]
+    },
+    {
+      "id": "D5",
+      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D6",
+      "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
+      "action": "flag",
+      "rows_affected": 4,
+      "examples": [
+        {
+          "job_id": "2134288",
+          "field": "master_id",
+          "before": "https://topdev.vn/viec-lam/ha-noi-fullstack-developer-c-net-vuejs-misa-software-2134288",
+          "after": "77796e08-b509-5f6b-bb36-5e5c3d068466",
+          "url": "https://topdev.vn/viec-lam/ha-noi-fullstack-developer-c-net-vuejs-misa-software-2134288"
+        },
+        {
+          "job_id": "2138328",
+          "field": "master_id",
+          "before": "https://topdev.vn/viec-lam/business-analyst-cong-ty-co-phan-global-technology-solutions-viet-nam-2138328",
+          "after": "b805e6bb-f183-5e68-b756-3dcdc5ed2503",
+          "url": "https://topdev.vn/viec-lam/business-analyst-cong-ty-co-phan-global-technology-solutions-viet-nam-2138328"
+        },
+        {
+          "job_id": "2138456",
+          "field": "master_id",
+          "before": "https://topdev.vn/viec-lam/chuyen-gia-phan-tich-du-lieu-khach-hang-va-danh-gia-hieu-qua-cong-ty-co-phan-chung-khoan-ssi-2138456",
+          "after": "5809136c-2288-59b5-aad5-64e8b7ff01cb",
+          "url": "https://topdev.vn/viec-lam/chuyen-gia-phan-tich-du-lieu-khach-hang-va-danh-gia-hieu-qua-cong-ty-co-phan-chung-khoan-ssi-2138456"
+        }
+      ]
+    }
+  ],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "cdc": {
+      "job_ids": 2782,
+      "chains_gt1": 1106,
+      "hops": 1108,
+      "hop_same_crawler_hash": 0,
+      "hop_same_canonical_hash": 0,
+      "hop_version_not_bumped": 3
+    },
+    "blocking_blocks": 156,
+    "d2_groups": 1,
+    "rule_totals": {
+      "D2": 1,
+      "D4": 1
+    }
+  }
+}

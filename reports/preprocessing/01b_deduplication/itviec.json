@@ -1,0 +1,137 @@
+{
+  "step": "01b_deduplication",
+  "source": "itviec",
+  "mode": "applied",
+  "generated_at": "2026-11-07T06:53:23+00:00",
+  "code_version": "c1555c0",
+  "input": {
+    "path": "data/preprocessing/01_clean/itviec.jsonl",
+    "rows": 905
+  },
+  "output": {
+    "path": "data/preprocessing/01b_deduplication/itviec.jsonl",
+    "rows": 885
+  },
+  "dropped": [
+    {
+      "rule": "D2",
+      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "rows": 20
+    },
+    {
+      "rule": "D4",
+      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
+      "rows": 0
+    },
+    {
+      "rule": "D5",
+      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "rows": 0
+    }
+  ],
+  "rules": [
+    {
+      "id": "D1",
+      "name": "Kiểm toán chuỗi version CDC (cào lại có đổi nội dung thật không)",
+      "action": "flag",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "D2",
+      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "action": "drop",
+      "rows_affected": 20,
+      "examples": [
+        {
+          "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-4137",
+          "field": "dedup",
+          "before": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-4137",
+          "after": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
+          "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-4137"
+        },
+        {
+          "job_id": "ai-expert-computer-vision-nlp-llm-mb-bank-4024",
+          "field": "dedup",
+          "before": "https://itviec.com/viec-lam-it/ai-expert-computer-vision-nlp-llm-mb-bank-4024",
+          "after": "https://itviec.com/viec-lam-it/ai-expert-computer-vision-nlp-llm-mb-bank-4706",
+          "url": "https://itviec.com/viec-lam-it/ai-expert-computer-vision-nlp-llm-mb-bank-4024"
+        },
+        {
+          "job_id": "ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5051",
+          "field": "dedup",
+          "before": "https://itviec.com/viec-lam-it/ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5051",
+          "after": "https://itviec.com/viec-lam-it/ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5434",
+          "url": "https://itviec.com/viec-lam-it/ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5051"
+        }
+      ]
+    },
+    {
+      "id": "D4",
+      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D5",
+      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D6",
+      "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
+      "action": "flag",
+      "rows_affected": 8,
+      "examples": [
+        {
+          "job_id": "ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
+          "field": "master_id",
+          "before": "https://itviec.com/viec-lam-it/ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
+          "after": "b180de63-11fe-5062-a2ea-ff0350bcf24a",
+          "url": "https://itviec.com/viec-lam-it/ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829"
+        },
+        {
+          "job_id": "canvas-lms-frontend-developer-reactjs-typescript-edufit-1518",
+          "field": "master_id",
+          "before": "https://itviec.com/viec-lam-it/canvas-lms-frontend-developer-reactjs-typescript-edufit-1518",
+          "after": "5f2f4131-f832-5dc5-b285-c2b0999b2553",
+          "url": "https://itviec.com/viec-lam-it/canvas-lms-frontend-developer-reactjs-typescript-edufit-1518"
+        },
+        {
+          "job_id": "database-engineer-dba-lg-cns-viet-nam-3911",
+          "field": "master_id",
+          "before": "https://itviec.com/viec-lam-it/database-engineer-dba-lg-cns-viet-nam-3911",
+          "after": "42e83b10-e585-5d1d-ac06-90bca5d70a93",
+          "url": "https://itviec.com/viec-lam-it/database-engineer-dba-lg-cns-viet-nam-3911"
+        }
+      ]
+    }
+  ],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "cdc": {
+      "job_ids": 914,
+      "chains_gt1": 1,
+      "hops": 1,
+      "hop_same_crawler_hash": 0,
+      "hop_same_canonical_hash": 0,
+      "hop_version_not_bumped": 0
+    },
+    "blocking_blocks": 703,
+    "d2_groups": 20,
+    "rule_totals": {
+      "D2": 20
+    }
+  }
+}
