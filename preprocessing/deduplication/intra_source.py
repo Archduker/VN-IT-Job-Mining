@@ -43,7 +43,7 @@ def cdc_chain_audit(source: str, raw_dir: Path) -> dict[str, Any]:
         if jid:
             chains[jid].append((rel, env))
 
-    hops = same_crawler = same_canonical = version_flat = 0
+    hops = same_crawler = same_canonical = version_flat = same_version = 0
     for entries in chains.values():
         if len(entries) < 2:
             continue
@@ -59,7 +59,9 @@ def cdc_chain_audit(source: str, raw_dir: Path) -> dict[str, Any]:
             if cc == cy:
                 same_canonical += 1
             if vc == vn:
-                version_flat += 1  # bản sau khác nội dung nhưng collection không bump version
+                same_version += 1
+                if cc != cy:
+                    version_flat += 1  # thay đổi nội dung theo canonical hash, không chỉ cùng version
     multi = sum(1 for e in chains.values() if len(e) > 1)
     return {
         "job_ids": len(chains),
@@ -67,6 +69,7 @@ def cdc_chain_audit(source: str, raw_dir: Path) -> dict[str, Any]:
         "hops": hops,
         "hop_same_crawler_hash": same_crawler,
         "hop_same_canonical_hash": same_canonical,
+        "hop_same_version": same_version,
         "hop_version_not_bumped": version_flat,
     }
 
@@ -92,6 +95,7 @@ def apply_d2(items: list[Item], reports_extra: dict[str, Any]) -> list[Item]:
             it["drop"] = {"rule": "D2", "kept_job_id": win["jid"], "kept_url": win["url"], "hash": it["chash"]}
             dropped.append(it)
         win.setdefault("reposts", []).extend(
-            {"job_id": i["jid"], "url": i["url"], "content_hash": i["chash"]} for i in g if i is not win)
+            {"source": i["src"], "job_id": i["jid"], "url": i["url"], "content_hash": i["chash"]}
+            for i in g if i is not win)
     reports_extra["d2_groups"] = len(groups)
     return dropped

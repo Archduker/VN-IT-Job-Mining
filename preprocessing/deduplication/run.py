@@ -31,7 +31,7 @@ from collections.abc import Sequence
 from typing import Any
 
 from preprocessing.clean.run import filled
-from preprocessing.common import REPO_ROOT, SOURCES
+from preprocessing.common import REPO_ROOT, SOURCES, step_report
 from preprocessing.common.step_report import StepReport, merge_reports
 from preprocessing.deduplication import inter_source as inter
 from preprocessing.deduplication.blocking import blocking_key
@@ -111,7 +111,12 @@ def pair_key(a: Item, b: Item) -> tuple[int, int]:
 
 # ---------------------------------------------------------------- chay
 def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, StepReport]:
-    full_run = len(sources) == len(SOURCES)
+    full_run = len(sources) == len(SOURCES) and set(sources) == set(SOURCES)
+    if len(set(sources)) != len(sources):
+        raise ValueError("sources không được lặp")
+    if not full_run and not dry_run:
+        raise ValueError("chạy thiếu sàn chỉ hợp lệ với dry_run=True")
+    report_root = None if full_run else step_report.REPORTS_ROOT / "_partial"
     suffix = artifact_suffix(full_run)
     reports = {src: StepReport(STEP, src, dry_run) for src in sources}
     items: list[Item] = []
@@ -136,7 +141,9 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, Ste
 
     # D4 + D5: so sánh trong block, lấy cả cặp sát ngưỡng để đưa vào audit
     scores: dict[tuple[int, int], float] = {}
-    for a, b, score in inter.exact_cross_pairs(survivors) + inter.cross_source_pairs(survivors, REVIEW_BAND):
+    cosine_stats: dict[str, int] = {}
+    for a, b, score in inter.exact_cross_pairs(survivors) + inter.cross_source_pairs(
+            survivors, REVIEW_BAND, stats=cosine_stats):
         key = pair_key(a, b)
         scores[key] = max(scores.get(key, 0.0), score)
     by_obj = {id(it): it for it in survivors}
@@ -184,7 +191,7 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, Ste
         it["env"]["metadata"]["dedup"] = {
             "content_hash_norm": it["chash"], "identity_hash": it["xhash"], "blocking_key": it["bkey"],
             "master_id": rec["master_id"], "cluster_size": rec["duplicate_count"], "merged_from": it["merged"],
-            "repost_records": it["reposts"] or None}
+            "repost_records": rec["repost_records"] or None}
     for d in dropped + cross_dropped:
         d["env"]["metadata"]["dedup"] = {
             "content_hash_norm": d["chash"], "identity_hash": d["xhash"], "blocking_key": d["bkey"],
@@ -228,7 +235,7 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, Ste
     write_audit(all_items, scores, by_obj, root_of, suffix, indirect)
 
     for src in sources:
-        reports[src].write()
+        reports[src].write(root=report_root)
     total = merge_reports(STEP, [reports[s] for s in sources], dry_run)
     total.data["extra"].update({
         "cosine_threshold": inter.COSINE_THRESHOLD, "feature": "TfidfVectorizer(char_wb, 3..5)",
@@ -240,6 +247,11 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, Ste
         "audit_review_band": sum(1 for v in scores.values() if v < inter.COSINE_THRESHOLD),
         "cdc": {s: reports[s].data["extra"]["cdc"] for s in sources},
         "blocking_blocks": sum(reports[s].data["extra"]["blocking_blocks"] for s in sources),
+        "blocking_unique_blocks": len({i["bkey"] for i in survivors}),
+        "repost_records": sum(len(m["repost_records"]) for m in masters),
+        "lineage_rows": sum(m["duplicate_count"] + len(m["repost_records"]) for m in masters),
+        "unparsed_dates": sum(len(m["unparsed_dates"]) for m in masters),
+        **cosine_stats,
     })
     # `_all.json` là số Monitoring đọc: chạy lẻ một sàn mà ghi đè thì trang sẽ hiện số thiếu.
     total.data["extra"]["partial_run"] = not full_run
@@ -247,7 +259,7 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, Ste
         total.note(f"_all chỉ tổng hợp {len(sources)}/{len(SOURCES)} sàn ({', '.join(sources)})"
                    " - muốn số toàn dự án phải chạy --source all")
         total.note("golden master và audit viết ra file hậu tố '.partial' để không đè bản đủ 8 sàn")
-    total.write()
+    total.write(root=report_root)
     return reports
 
 
@@ -312,7 +324,7 @@ def main(argv=None) -> int:
     for src, r in reports.items():
         d = r.data
         print(f"{STEP} {src}: input {d['input']['rows']} -> output {d['output']['rows']} ({d['mode']})"
-              f" -> reports/preprocessing/{STEP}/{src}.json")
+              f" -> reports/preprocessing/{'' if args.source == 'all' else '_partial/'}{STEP}/{src}.json")
         for note in d["checks"]["notes"]:
             print(f"    ⚠ {note}")
     return 0

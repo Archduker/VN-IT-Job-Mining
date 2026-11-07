@@ -18,6 +18,7 @@ import re
 import uuid
 from collections import defaultdict
 from collections.abc import Iterable, Sequence
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -95,9 +96,11 @@ def exact_cross_pairs(items: Sequence[Item]) -> list[tuple[Item, Item, float]]:
     return hits
 
 
-def cross_source_pairs(items: Sequence[Item], threshold: float = COSINE_THRESHOLD) -> list[tuple[Item, Item, float]]:
+def cross_source_pairs(items: Sequence[Item], threshold: float = COSINE_THRESHOLD,
+                       stats: dict[str, int] | None = None) -> list[tuple[Item, Item, float]]:
     """Mọi cặp khác nguồn trong cùng block có cosine >= threshold; trả kèm điểm để đưa vào audit."""
     hits: list[tuple[Item, Item, float]] = []
+    measured = {"cosine_blocks": 0, "cosine_pairs_computed": 0, "cross_pairs_evaluated": 0}
     for key, group in candidate_blocks(build_blocks(items)).items():
         texts = [g["jd"] for g in group]
         if all(len(t) < MIN_JD_CHARS for t in texts):
@@ -108,6 +111,8 @@ def cross_source_pairs(items: Sequence[Item], threshold: float = COSINE_THRESHOL
         except ValueError:  # block chỉ có chuỗi rỗng
             continue
         sim = cosine_similarity(mat)
+        measured["cosine_blocks"] += 1
+        measured["cosine_pairs_computed"] += len(group) * (len(group) - 1) // 2
         strict = len(block_slug(key)) < AMBIGUOUS_SLUG  # slug ngắn: đòi bằng chứng cùng công ty
         for i in range(len(group)):
             for j in range(i + 1, len(group)):
@@ -115,8 +120,11 @@ def cross_source_pairs(items: Sequence[Item], threshold: float = COSINE_THRESHOL
                     continue
                 if strict and not same_company(group[i], group[j]):
                     continue
+                measured["cross_pairs_evaluated"] += 1
                 if sim[i, j] >= threshold:
                     hits.append((group[i], group[j], float(sim[i, j])))
+    if stats is not None:
+        stats.update(measured)
     return hits
 
 
@@ -173,10 +181,35 @@ def _pick_salary(group: Sequence[Item]) -> tuple[Any, str]:
     return win["flat"].get("raw_salary_text"), win["src"]
 
 
+def parse_date(value: Any) -> datetime | None:
+    """ISO hoặc ngày VN; thời gian không offset được hiểu theo Asia/Ho_Chi_Minh (+07).
+
+    Giá trị không hiểu được không tham gia min/max; raw vẫn được giữ nguyên.
+    """
+    text = str(value or "").strip()
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        parsed = None
+        for fmt in ("%d/%m/%Y", "%d-%m-%Y"):
+            try:
+                parsed = datetime.strptime(text, fmt)
+                break
+            except ValueError:
+                continue
+    if parsed is None:
+        return None
+    return (parsed if parsed.tzinfo else parsed.replace(
+        tzinfo=timezone(timedelta(hours=7)))).astimezone(UTC)
+
+
 def _dates(group: Sequence[Item]) -> tuple[str, str]:
-    posted = sorted({str(g["flat"].get("raw_posted_date")) for g in group if g["flat"].get("raw_posted_date")})
-    seen = sorted({str(g["seen_at"]) for g in group if g["seen_at"]})
-    return (posted[0] if posted else "", seen[-1] if seen else "")
+    def select(values, latest=False):
+        valid = [(parsed, str(v)) for v in values if (parsed := parse_date(v)) is not None]
+        return (max(valid) if latest else min(valid))[1] if valid else ""
+
+    return (select(g["flat"].get("raw_posted_date") for g in group),
+            select((g["seen_at"] for g in group), latest=True))
 
 
 def fuse(cluster: Sequence[Item]) -> dict[str, Any]:
@@ -209,6 +242,16 @@ def fuse(cluster: Sequence[Item]) -> dict[str, Any]:
         "source_urls": [g["url"] for g in ordered],
         "blocking_key": ordered[0].get("bkey"),
         "content_hashes": [g["chash"] for g in ordered],
+        # Reposts đã loại ở D2 phải đi theo cả thành viên thua ở tầng liên sàn.
+        "repost_records": sorted(
+            (r for g in ordered for r in g.get("reposts", [])),
+            key=lambda r: (r["source"], r["job_id"])),
+        "unparsed_dates": [
+            {"source": g["src"], "job_id": g["jid"], "field": field, "value": str(value)}
+            for g in ordered
+            for field, value in (("raw_posted_date", g["flat"].get("raw_posted_date")),
+                                 ("scraped_at", g["seen_at"]))
+            if value and parse_date(value) is None],
         "first_posted_at": first_posted,
         "last_seen_at": last_seen,
         "duplicate_count": len(ordered),

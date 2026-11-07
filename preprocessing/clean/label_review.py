@@ -77,12 +77,28 @@ def status(path: Path) -> dict[str, int]:
 
 
 def precision(path: Path) -> float | None:
-    """Precision của bộ lọc trên phần đã nhãn: tin được giữ là `it` / tổng tin người cũng gọi là `it`."""
-    rows = [r for r in read_rows(path) if (r.get(FIELD) or "").strip() in ANSWER.values()]
-    kept_it = [r for r in rows if r["it_status"] == "it"]
-    if not kept_it:
-        return None
-    return sum(r[FIELD] == "it" for r in kept_it) / len(kept_it)
+    """Precision IT = đúng IT / tổng dự đoán IT trong phần có nhãn tay."""
+    return validation_metrics(read_rows(path))["precision_it"]
+
+
+def validation_metrics(rows: list[dict[str, str]]) -> dict[str, Any]:
+    """Chỉ đo từ nhãn từng tin; không dùng ghi chú tổng hợp trong it_policy.json."""
+    matrix = {"tp": 0, "fp": 0, "tn": 0, "fn": 0}
+    for row in rows:
+        actual, predicted = row.get(FIELD, "").strip(), row.get("it_status", "").strip()
+        if actual not in ANSWER.values() or predicted not in ANSWER.values():
+            continue
+        key = ("tp" if actual == "it" else "fp") if predicted == "it" else (
+            "fn" if actual == "it" else "tn")
+        matrix[key] += 1
+    tp, fp, tn, fn = (matrix[k] for k in ("tp", "fp", "tn", "fn"))
+    return {
+        **matrix, "labeled": sum(matrix.values()),
+        "precision_it": tp / (tp + fp) if tp + fp else None,
+        "precision_non_it": tn / (tn + fn) if tn + fn else None,
+        "recall_it": tp / (tp + fn) if tp + fn else None,
+        "reason": "NO_LABELS" if not sum(matrix.values()) else None,
+    }
 
 
 def show(row: dict[str, Any]) -> str:
@@ -137,7 +153,7 @@ def precision_counts(path: Path) -> tuple[int, int]:
     """(số tin người gọi là it, số tin bộ lọc giữ it) trên phần đã nhãn - để cộng dồn đa nguồn."""
     rows = [r for r in read_rows(path) if (r.get(FIELD) or "").strip() in ANSWER.values()]
     kept = [r for r in rows if r["it_status"] == "it"]
-    return sum(r[FIELD] == "it" for r in kept), len(kept)
+    return sum(r[FIELD].strip() == "it" for r in kept), len(kept)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -155,9 +171,11 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     if args.status:
         tot = {"rows": 0, "labeled": 0}
+        all_rows = []
         num = den = 0
         for s in sources:
             st = status(path_for(s))
+            all_rows.extend(read_rows(path_for(s)))
             hit, kept = precision_counts(path_for(s))
             num += hit
             den += kept
@@ -171,6 +189,13 @@ def main(argv: list[str] | None = None) -> int:
         print(f"TỔNG: {tot['labeled']}/{tot['rows']} dòng có nhãn tay | "
               f"Precision cộng dồn {'chưa đo được' if rate is None else f'{rate:.1%}'} ({num}/{den})"
               f" - ngưỡng nghiệm thu 95%")
+        metrics = validation_metrics(all_rows)
+        print(f"Confusion matrix (IT là lớp dương): TP={metrics['tp']} FP={metrics['fp']} "
+              f"TN={metrics['tn']} FN={metrics['fn']}")
+        for key in ("precision_it", "precision_non_it", "recall_it"):
+            value = metrics[key]
+            print(f"{key}: {'chưa đo được (mẫu số bằng 0)' if value is None else f'{value:.1%}'}")
+        print("Chỉ tiêu tính từ nhãn từng tin; ghi chú policy không thay thế bằng chứng nghiệm thu.")
         if tot["labeled"] < 100:
             print("-> cần >= 100 dòng theo docs/tasks/02 mục 3.4; chạy: "
                   "python -m preprocessing.clean.label_review --source <san>")

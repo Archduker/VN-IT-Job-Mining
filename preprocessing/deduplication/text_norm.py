@@ -89,7 +89,8 @@ def strip_html(raw: str) -> str:
 
 def clean_text(value: Any) -> str:
     """Bóc HTML + xóa ký tự điều khiển + lọc boilerplate + gom khoảng trắng, giữ nguyên dấu tiếng Việt."""
-    s = CONTROL_CHARS.sub(" ", strip_html(as_text(value)))
+    s = unicodedata.normalize("NFC", strip_html(as_text(value)))
+    s = CONTROL_CHARS.sub(" ", s)
     s = BOILERPLATE.sub(" ", s)
     s = unicodedata.normalize("NFC", s)
     s = re.sub(r"[ \t\u00a0]+", " ", s)

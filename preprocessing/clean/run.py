@@ -17,7 +17,8 @@ from collections.abc import Sequence
 from datetime import datetime
 from typing import Any
 
-from preprocessing.common import REPO_ROOT, SOURCES, province
+from preprocessing.clean.label_review import validation_metrics
+from preprocessing.common import REPO_ROOT, SOURCES, province, step_report
 from preprocessing.common.it_filter import classify, classify_unknown
 from preprocessing.common.raw_reader import read_raw, snapshot_order
 from preprocessing.common.step_report import StepReport, merge_reports
@@ -282,12 +283,19 @@ def review_sample(source: str, items: list[Item], report: StepReport) -> None:
         "labeled_non_it": sum(lab == "non_it" for lab, _ in labeled),
         "rule_decided": len(decided), "rule_correct": sum(lab == c["it_rule"] for lab, c in decided),
         "status_non_it": len(non_it), "status_non_it_correct": sum(lab == "non_it" for lab, _ in non_it),
-        "level2_labeled": len(level2), "level2_correct": sum(lab == c["it_status"] for lab, c in level2)}
+        "level2_labeled": len(level2), "level2_correct": sum(lab == c["it_status"] for lab, c in level2),
+        "validation": validation_metrics([
+            {"nhan_tay": lab, "it_status": c["it_status"]} for lab, c in labeled])}
 
 
 # ---------------------------------------------------------------- chạy
 def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, StepReport]:
-    full_run = len(sources) == len(SOURCES)
+    full_run = len(sources) == len(SOURCES) and set(sources) == set(SOURCES)
+    if len(set(sources)) != len(sources):
+        raise ValueError("sources không được lặp")
+    # API run() giữ hợp đồng với orchestrator (có thể cung cấp tập nguồn riêng).
+    # CLI chặn applied thiếu sàn; mọi phép thử dry-run lẻ được cách ly báo cáo.
+    report_root = step_report.REPORTS_ROOT / "_partial" if dry_run and not full_run else None
     policy = load_policy()
     reports: dict[str, StepReport] = {}
     kept: dict[str, list[Item]] = {}
@@ -314,7 +322,7 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, Ste
             with out_path.open("w", encoding="utf-8") as fh:
                 for it in kept[src]:
                     fh.write(json.dumps(it["env"], ensure_ascii=False) + "\n")
-        reports[src].write()
+        reports[src].write(root=report_root)
     total = merge_reports(STEP, list(reports.values()), dry_run)
     total.data["extra"]["it_status"] = {s: reports[s].data["extra"]["it_status"] for s in sources}
     total.data["extra"]["review"] = {s: reports[s].data["extra"]["review"] for s in sources}
@@ -326,7 +334,7 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, Ste
     if total.data["extra"]["partial_run"]:
         total.note(f"_all chỉ tổng hợp {len(sources)}/{len(SOURCES)} sàn "
                    f"({', '.join(sources)}) - muốn số toàn dự án phải chạy --source all")
-    total.write()
+    total.write(root=report_root)
     return reports
 
 
@@ -345,7 +353,7 @@ def main(argv: list[str] | None = None) -> int:
     for src, r in reports.items():
         d = r.data
         print(f"{STEP} {src}: input {d['input']['rows']} -> output {d['output']['rows']} ({d['mode']})"
-              f" -> reports/preprocessing/{STEP}/{src}.json")
+              f" -> reports/preprocessing/{'' if args.source == 'all' else '_partial/'}{STEP}/{src}.json")
         for note in d["checks"]["notes"]:
             print(f"    ⚠ {note}")
     return 0

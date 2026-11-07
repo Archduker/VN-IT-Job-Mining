@@ -12,9 +12,12 @@ Chạy:  pytest tests/unit/test_deduplication_step.py -q
 
 import csv
 import json
+import unicodedata
 
 import pytest
 
+from preprocessing.clean import label_review
+from preprocessing.clean import run as clean
 from preprocessing.common import step_report
 from preprocessing.deduplication import inter_source as inter
 from preprocessing.deduplication import run as dedup
@@ -212,7 +215,7 @@ def test_apply_d2_giữ_bản_đầy_đủ_nhất_rồi_mới_nhất_và_truy_v�
     assert [d["jid"] for d in dropped] == ["1"]
     assert dropped[0]["drop"] == {"rule": "D2", "kept_job_id": "2", "kept_url": new["url"],
                                   "hash": old["chash"]}
-    assert new["reposts"] == [{"job_id": "1", "url": old["url"], "content_hash": old["chash"]}]
+    assert new["reposts"] == [{"source": "src_x", "job_id": "1", "url": old["url"], "content_hash": old["chash"]}]
     assert extra["d2_groups"] == 1
 
 
@@ -228,7 +231,7 @@ def test_cdc_chain_audit_phân_loại_bước_nhảy_version(tmp_path):
         path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
     assert cdc_chain_audit("src_a", tmp_path) == {"job_ids": 2, "chains_gt1": 1, "hops": 2,
                                                   "hop_same_crawler_hash": 0, "hop_same_canonical_hash": 1,
-                                                  "hop_version_not_bumped": 1}
+                                                  "hop_version_not_bumped": 1, "hop_same_version": 1}
 
 
 def test_cdc_chain_audit_thiếu_thư_mục_raw_thì_trả_toàn_0(tmp_path):
@@ -247,7 +250,7 @@ def _thin(**drops):
 def test_pick_cross_winner_giữ_bản_cào_mới_nhất_khi_ngang_uy_tín_và_độ_đầy_đủ():
     """Hướng của tie-break thời gian: bản cũ không được thắng (SPEC-05 mục 3.1 "giữ version mới nhất").
 
-    Trên dữ liệu thật có 5 cụm chạm tới đúng tie-break này, nên hướng phải được test chặt.
+    Trên snapshot f693b30 có 3 cụm chạm tới đúng tie-break này, nên hướng phải được test chặt.
     """
     # 1) uy tín sàn là tiêu chí số 1, thắng cả thời gian
     old_top = item("itviec", "1", seen="2026-09-01T00:00:00+00:00")
@@ -450,7 +453,7 @@ def test_báo_cáo_hợp_gộp_cộng_số_theo_luật_và_đo_đạc_chỉ_ki�
     assert res["itviec"].data["extra"]["d2_groups"] == 1
     assert res["itviec"].data["extra"]["cdc"] == dict.fromkeys(
         ["job_ids", "chains_gt1", "hops", "hop_same_crawler_hash", "hop_same_canonical_hash",
-         "hop_version_not_bumped"], 0)
+         "hop_version_not_bumped", "hop_same_version"], 0)
 
 
 def test_run_dry_run_chỉ_đo_không_ghi_dữ_liệu(sandbox):
@@ -464,10 +467,10 @@ def test_run_dry_run_chỉ_đo_không_ghi_dữ_liệu(sandbox):
 
 def test_chạy_lẻ_một_sàn_đánh_dấu_partial_run_để_monitoring_không_đọc_nhầm(sandbox):
     dedup.run(["itviec"], dry_run=True)
-    total = json.loads((sandbox / "reports" / dedup.STEP / "_all.json").read_text(encoding="utf-8"))
+    total = json.loads((sandbox / "reports" / "_partial" / dedup.STEP / "_all.json").read_text(encoding="utf-8"))
     assert total["extra"]["partial_run"] is True and list(total["extra"]["sources"]) == ["itviec"]
     assert any("--source all" in n for n in total["checks"]["notes"])
-    anysrc = json.loads((sandbox / "reports" / dedup.STEP / "itviec.json").read_text(encoding="utf-8"))
+    anysrc = json.loads((sandbox / "reports" / "_partial" / dedup.STEP / "itviec.json").read_text(encoding="utf-8"))
     assert any(".partial" in n for n in anysrc["checks"]["notes"]), "phải cảnh báo ngay trong báo cáo từng sàn"
 
 
@@ -481,29 +484,26 @@ def test_chạy_lẻ_một_sàn_không_ghi_đè_file_toàn_dự_án(sandbox):
     assert not (out / "golden_master_jobs.partial.jsonl").exists(), "dry-run lẻ không ghi golden master"
 
 
-def test_audit_ghi_dòng_riêng_cho_bản_bị_loai_gian_tiếp(sandbox):
-    """A~B vượt ngưỡng, B~C chỉ 0.80: C vẫn bị loại dù không có cặp (A, C) nào được đo.
+def test_pipeline_transitive_audit(sandbox, monkeypatch):
+    """Kiểm quyết định merge và CSV; mock điểm biên, không gán sẵn trạng thái drop."""
+    a = item("itviec", "a")
+    b = item("jobsgo", "b", flat(jd=JD + " B"))
+    c = item("topcv", "c", flat(jd=JD + " C"))
+    # Dùng 3 nguồn để cả hai cạnh mạnh là liên sàn.
+    monkeypatch.setattr(dedup, "SOURCES", ["itviec", "jobsgo", "topcv"])
+    monkeypatch.setattr(dedup, "load_items", lambda src: [i for i in (a, b, c) if i["src"] == src])
+    monkeypatch.setattr(inter, "exact_cross_pairs", lambda _: [])
+    monkeypatch.setattr(inter, "cross_source_pairs",
+                        lambda *args, **kwargs: [(a, b, .85), (b, c, .9), (a, c, .8)])
+    dedup.run(dedup.SOURCES, dry_run=False)
+    gold = load_out(dedup.OUT_DIR / "golden_master_jobs.jsonl")
+    assert len(gold) == 1 and gold[0]["duplicate_count"] == 3
+    rows = list(csv.DictReader((dedup.OUT_DIR / "duplicates_audit.csv").open(encoding="utf-8-sig")))
+    tail = next(r for r in rows if r["kind"] == "transitive-dropped")
+    assert (tail["job_id_a"], tail["job_id_b"], tail["linked_via"], tail["cosine"]) == ("c", "a", "b", "0.9")
+    assert sum(r["kind"] == "dropped" for r in rows) == 2
+    assert sum(r["kind"] == "transitive-link" for r in rows) == 1
 
-    Nếu bỏ qua thì người duyệt mở CSV ra sẽ không thấy lý do của các bản bị loại nối gián tiếp,
-    nên mỗi bản bị loại bắt buộc phải có một dòng chiếu về bản giữ.
-    """
-    a, b, c = item("itviec", "1"), item("jobsgo", "2"), item("topcv", "3")
-    for loser in (b, c):
-        loser["drop"] = {"rule": "D5", "kept_job_id": a["jid"], "kept_url": a["url"],
-                         "kept_title": a["flat"]["job_title"], "cosine": 0.8,
-                         "linked_via": b["jid"], "kept_ref": a}
-    scores = {dedup.pair_key(a, b): 0.9, dedup.pair_key(b, c): 0.8}
-    root = {id(a): id(a), id(b): id(a), id(c): id(a)}
-    dedup.write_audit([a, b, c], scores, {id(x): x for x in (a, b, c)}, root, "", indirect=[c])
-
-    path = sandbox / "data" / "preprocessing" / dedup.STEP / "duplicates_audit.csv"
-    rows = list(csv.DictReader(path.open(encoding="utf-8-sig")))
-    assert [r["kind"] for r in rows] == ["dropped", "transitive-link", "transitive-dropped"]
-    tail = rows[-1]
-    assert (tail["job_id_a"], tail["job_id_b"], tail["rule"], tail["cosine"]) == ("3", "1", "D5", "0.8")
-    assert tail["linked_via"] == "2", "phải chỉ ra được bản trung gian nào là cầu nối"
-    assert all(r["linked_via"] == "" for r in rows[:2]), "cặp trực tiếp không có cầu nối"
-    assert tail["url_b"] == a["url"], "dòng gián tiếp phải chỉ đúng bản giữ để mở cả hai URL đối chiếu"
 
 
 def test_CLI_chặn_applied_khi_chạy_lẻ_một_sàn(sandbox):
@@ -522,3 +522,96 @@ def test_main_cli_in_báo_từng_nguồn_và_trả_exit_0(sandbox, capsys):
     assert dedup.main(["--source", "itviec", "--dry-run"]) == 0
     out = capsys.readouterr().out
     assert f"{dedup.STEP} itviec: input 3 -> output 2 (dry_run)" in out
+
+
+def test_nfc_before_boilerplate():
+    text = "Tải ứng dụng TopCV ngay hôm nay. Backend Python."
+    assert clean_text(unicodedata.normalize("NFD", text)) == clean_text(text)
+    assert "Tải ứng dụng" not in clean_text(text)
+
+
+def test_fusion_dates_chronological_and_invalid():
+    a = item("itviec", "a", flat(posted="10/10/2026"), seen="2026-11-07T08:00:00+07:00")
+    b = item("jobsgo", "b", flat(posted="28/09/2026"), seen="2026-11-07T02:00:00Z")
+    c = item("topcv", "c", flat(posted="vừa đăng"), seen="không rõ")
+    gold = inter.fuse([a, b, c])
+    assert gold["first_posted_at"] == "28/09/2026"
+    assert gold["last_seen_at"] == "2026-11-07T02:00:00Z"
+    assert len(gold["unparsed_dates"]) == 2
+    assert inter.fuse([c])["first_posted_at"] == ""
+    b["flat"]["raw_posted_date"] = "2026-09-09T08:59:43+07:00"
+    assert inter.fuse([a, b])["first_posted_at"] == "2026-09-09T08:59:43+07:00"
+
+
+def test_cdc_same_version_unchanged_is_not_violation(tmp_path):
+    for n, desc in enumerate(("same", "same", "changed")):
+        env = generic_env("7", f"2026-11-0{n + 1}T00:00:00Z", 1, desc=desc)
+        (tmp_path / f"{n}.json").write_text(json.dumps(env), encoding="utf-8")
+    report = cdc_chain_audit("src_a", tmp_path)
+    assert report["hop_same_version"] == 2
+    assert report["hop_version_not_bumped"] == 1
+    assert report["hop_same_canonical_hash"] == 1
+
+
+def test_reposts_follow_cross_source_loser(sandbox):
+    rows = [jobsgo_env("old", seen="2026-10-10T00:00:00Z"), jobsgo_env("new")]
+    (dedup.IN_DIR / "jobsgo.jsonl").write_text(
+        "\n".join(json.dumps(r) for r in rows), encoding="utf-8")
+    dedup.run(["itviec", "jobsgo"], dry_run=False)
+    gold = load_out(dedup.OUT_DIR / "golden_master_jobs.jsonl")
+    master = next(g for g in gold if "jobsgo:new" in g["source_job_ids"])
+    assert any(r["source"] == "jobsgo" and r["job_id"] == "old" for r in master["repost_records"])
+    output = load_out(dedup.OUT_DIR / "itviec.jsonl")
+    winner = next(e for e in output if e["metadata"]["dedup"]["master_id"] == master["master_id"])
+    assert winner["metadata"]["dedup"]["repost_records"] == master["repost_records"]
+    assert sum(g["duplicate_count"] + len(g["repost_records"]) for g in gold) == 5
+
+
+def test_partial_preserves_all_dedup_reports(sandbox):
+    dedup.run(["itviec", "jobsgo"], dry_run=False)
+    main = sandbox / "reports" / dedup.STEP
+    before = {p.name: p.read_bytes() for p in main.glob("*.json")}
+    dedup.main(["--source", "itviec", "--dry-run"])
+    assert before == {p.name: p.read_bytes() for p in main.glob("*.json")}
+    assert (sandbox / "reports" / "_partial" / dedup.STEP / "_all.json").exists()
+
+
+def test_partial_preserves_all_clean_reports(sandbox, monkeypatch):
+    monkeypatch.setattr(clean, "DATA_DIR", sandbox / "raw_data")
+    monkeypatch.setattr(clean, "OUT_DIR", sandbox / "clean_out")
+    monkeypatch.setattr(clean, "REVIEW_DIR", sandbox / "review")
+    monkeypatch.setattr(clean, "POLICY_PATH", sandbox / "policy.json")
+    monkeypatch.setattr(clean, "SOURCES", ["itviec", "jobsgo"])
+    for src, env in (("itviec", itviec_env("a")), ("jobsgo", jobsgo_env("b"))):
+        raw = clean.DATA_DIR / src / "raw"
+        raw.mkdir(parents=True)
+        (raw / "job.json").write_text(json.dumps(env), encoding="utf-8")
+    clean.run(clean.SOURCES, dry_run=False)
+    main = sandbox / "reports" / clean.STEP
+    before = {p.name: p.read_bytes() for p in main.glob("*.json")}
+    clean.main(["--source", "itviec", "--dry-run"])
+    assert before == {p.name: p.read_bytes() for p in main.glob("*.json")}
+    partial = json.loads((sandbox / "reports" / "_partial" / clean.STEP / "_all.json").read_text(encoding="utf-8"))
+    assert partial["extra"]["partial_run"] is True
+    with pytest.raises(SystemExit) as exc:
+        clean.main(["--source", "itviec"])
+    assert exc.value.code == 2
+
+
+def test_precision_metrics_distinguish_classes_and_no_labels():
+    rows = [{"it_status": predicted, "nhan_tay": actual} for predicted, actual in
+            [("it", "it"), ("it", "non_it"), ("non_it", "it"),
+             ("non_it", "non_it"), ("non_it", "non_it"), ("it", "")]]
+    metrics = label_review.validation_metrics(rows)
+    assert metrics == {"tp": 1, "fp": 1, "tn": 2, "fn": 1, "labeled": 5,
+                       "precision_it": .5, "precision_non_it": 2 / 3, "recall_it": .5,
+                       "reason": None}
+    empty = label_review.validation_metrics([{"it_status": "it", "nhan_tay": ""}])
+    assert empty["reason"] == "NO_LABELS" and empty["precision_it"] is None
+
+
+def test_cosine_stats_count_before_threshold():
+    a, b = item("itviec", "a"), item("jobsgo", "b", flat(jd="Completely unrelated document " * 4, req=""))
+    stats = {}
+    assert inter.cross_source_pairs([a, b], threshold=1.01, stats=stats) == []
+    assert stats == {"cosine_blocks": 1, "cosine_pairs_computed": 1, "cross_pairs_evaluated": 1}
