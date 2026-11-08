@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CommonTargetJobSchema",
+  "description": "Schema chuẩn thống nhất cho bài toán phân tích thị trường lao động IT Việt Nam (VN-IT-Job-Mining)",
+  "type": "object",
+  "required": [
+    "job_id_global",
+    "source_platform",
+    "job_title",
+    "company_name",
+    "job_description_raw",
+    "cdc_version",
+    "scraped_at"
+  ],
+  "properties": {
+    "job_id_global": {
+      "type": "string",
+      "description": "Định danh toàn cục: {source}_{original_id}"
+    },
+    "source_platform": {
+      "type": "string",
+      "enum": ["topcv", "topdev", "vietnamworks", "careerviet", "vieclam24h", "itviec", "glints", "jobsgo"]
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "job_title": {
+      "type": "string"
+    },
+    "standardized_job_family": {
+      "type": ["string", "null"],
+      "description": "1 trong 12 Job Family chuẩn (Backend, Frontend, Fullstack, Mobile, DevOps, Data/AI, QA, Security, BA/PM, UI/UX, Embedded...)"
+    },
+    "seniority_level": {
+      "type": ["string", "null"],
+      "enum": ["Intern", "Fresher", "Junior", "Middle", "Senior", "Lead / Manager", null]
+    },
+    "salary_min_vnd": {
+      "type": ["number", "null"],
+      "description": "Mức lương tối thiểu quy đổi triệu VNĐ/tháng"
+    },
+    "salary_max_vnd": {
+      "type": ["number", "null"],
+      "description": "Mức lương tối đa quy đổi triệu VNĐ/tháng"
+    },
+    "is_salary_negotiable": {
+      "type": "boolean"
+    },
+    "min_experience_years": {
+      "type": ["number", "null"],
+      "description": "Số năm kinh nghiệm tối thiểu"
+    },
+    "work_location_city": {
+      "type": ["string", "null"],
+      "description": "Thành phố chính (Hà Nội, TP.HCM, Đà Nẵng, Remote)"
+    },
+    "employment_type": {
+      "type": ["string", "null"],
+      "enum": ["Full-time", "Part-time", "Contract", "Freelance", "Internship", null]
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "raw_skill_tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "extracted_skills": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Kỹ năng được chuẩn hóa taxonomy ESCO"
+    },
+    "job_description_raw": {
+      "type": "string"
+    },
+    "posted_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "deadline_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "cdc_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "content_hash": {
+      "type": "string"
+    },
+    "scraped_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "extended_attributes": {
+      "type": "object",
+      "description": "Các thuộc tính đặc thù riêng biệt của từng sàn không có trong common schema"
+    }
+  }
+}

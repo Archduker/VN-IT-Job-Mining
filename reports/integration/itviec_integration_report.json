@@ -1,0 +1,189 @@
+{
+  "source_platform": "itviec",
+  "step": "integration",
+  "schema_version": "2.0-comprehensive-25-fields",
+  "timestamp": "2026-10-25T19:25:23.169598+00:00",
+  "total_files_scanned": 692,
+  "total_envelopes_parsed": 692,
+  "total_integrated_records": 691,
+  "total_fields_in_schema": 29,
+  "output_format": "json",
+  "output_file": "/run/media/billtran/Data/Archduker/Study/UTH/Core/DataMining/VN-IT-Job-Mining/data/integration/itviec/itviec_integrated_flat.json",
+  "field_completeness_audit": {
+    "job_id_global": {
+      "filled_count": 691,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "source_platform": {
+      "filled_count": 691,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "source_job_id": {
+      "filled_count": 691,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "source_url": {
+      "filled_count": 691,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "crawled_at": {
+      "filled_count": 691,
+      "missing_count": 0,
+      "completeness_pct": 100.0,
+      "null_diagnosis": "Đầy đủ 100%."
+    },
+    "job_title": {
+      "filled_count": 687,
+      "missing_count": 4,
+      "completeness_pct": 99.42,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "company_name": {
+      "filled_count": 683,
+      "missing_count": 8,
+      "completeness_pct": 98.84,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "company_address": {
+      "filled_count": 652,
+      "missing_count": 39,
+      "completeness_pct": 94.36,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "company_scale": {
+      "filled_count": 0,
+      "missing_count": 691,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Missing By Design: Trang chi tiết job không nhúng quy mô công ty."
+    },
+    "raw_category_text": {
+      "filled_count": 652,
+      "missing_count": 39,
+      "completeness_pct": 94.36,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_location_text": {
+      "filled_count": 683,
+      "missing_count": 8,
+      "completeness_pct": 98.84,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "working_locations": {
+      "filled_count": 652,
+      "missing_count": 39,
+      "completeness_pct": 94.36,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_posted_date": {
+      "filled_count": 652,
+      "missing_count": 39,
+      "completeness_pct": 94.36,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_updated_at": {
+      "filled_count": 0,
+      "missing_count": 691,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Missing By Design: Chỉ lưu posted_at và validThrough."
+    },
+    "raw_deadline": {
+      "filled_count": 656,
+      "missing_count": 35,
+      "completeness_pct": 94.93,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_working_time": {
+      "filled_count": 0,
+      "missing_count": 691,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Missing By Design: ITViec áp dụng cơ chế giờ làm việc linh hoạt đặc thù của ngành IT."
+    },
+    "raw_salary_text": {
+      "filled_count": 685,
+      "missing_count": 6,
+      "completeness_pct": 99.13,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_employment_type": {
+      "filled_count": 652,
+      "missing_count": 39,
+      "completeness_pct": 94.36,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_work_mode": {
+      "filled_count": 0,
+      "missing_count": 691,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Implicit text: Phân loại Remote/Hybrid được gắn qua tag công việc hoặc JD text."
+    },
+    "raw_experience_text": {
+      "filled_count": 589,
+      "missing_count": 102,
+      "completeness_pct": 85.24,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_seniority_text": {
+      "filled_count": 0,
+      "missing_count": 691,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_education_text": {
+      "filled_count": 0,
+      "missing_count": 691,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Skills-over-degree: Nền tảng chuyên IT không áp dụng ô chọn bằng cấp hàn lâm trên form tuyển dụng."
+    },
+    "raw_headcount": {
+      "filled_count": 0,
+      "missing_count": 691,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Confidential hiring: Sàn IT chuyên biệt không bắt buộc khai báo chỉ tiêu."
+    },
+    "raw_age_text": {
+      "filled_count": 0,
+      "missing_count": 691,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Anti-age discrimination: ITViec nghiêm cấm lọc ứng viên theo độ tuổi."
+    },
+    "raw_gender_text": {
+      "filled_count": 0,
+      "missing_count": 691,
+      "completeness_pct": 0.0,
+      "null_diagnosis": "Gender equality compliance: Tuyển dụng kỹ sư IT bình đẳng giới 100%."
+    },
+    "skills_list": {
+      "filled_count": 687,
+      "missing_count": 4,
+      "completeness_pct": 99.42,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "benefits_list": {
+      "filled_count": 683,
+      "missing_count": 8,
+      "completeness_pct": 98.84,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_description_text": {
+      "filled_count": 687,
+      "missing_count": 4,
+      "completeness_pct": 99.42,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    },
+    "raw_requirements_text": {
+      "filled_count": 683,
+      "missing_count": 8,
+      "completeness_pct": 98.84,
+      "null_diagnosis": "Trường tùy chọn, nhà tuyển dụng không khai báo trên form."
+    }
+  },
+  "duration_seconds": 0.16
+}

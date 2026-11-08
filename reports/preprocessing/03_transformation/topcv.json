@@ -1,0 +1,259 @@
+{
+  "step": "03_transformation",
+  "source": "topcv",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:12:13+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 1561
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 1561
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 2350,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 907,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "salary_min_max",
+          "before": "8 - 20 triệu",
+          "after": "8000000.0 - 20000000.0 VND (header)",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2305925",
+          "field": "salary_min_max",
+          "before": "30 - 40 triệu",
+          "after": "30000000.0 - 40000000.0 VND (header)",
+          "url": "https://www.topcv.vn/viec-lam/truong-nhom-phan-tich-nghiep-vu-business-analyst-leader-senior-business-analyst-tai-ha-noi-luong-tu-30-40-trieu/2305925.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "salary_min_max",
+          "before": "15 - 30 triệu",
+          "after": "15000000.0 - 30000000.0 VND (header)",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 1554,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 1554,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "exp_min_max",
+          "before": "Dưới 1 năm",
+          "after": "0.0 - 1.0 years",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2281042",
+          "field": "exp_min_max",
+          "before": "1 năm",
+          "after": "1.0 - 1.0 years",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "exp_min_max",
+          "before": "2 năm",
+          "after": "2.0 - 2.0 years",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 1554,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 1561,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 1560,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "skills_clean",
+          "before": "['Manual Tester' 'IT - Phần cứng và máy tính' 'IT - Phần mềm' 'Tài chính'\n 'Kỹ Năng Phân Tích Yêu Cầu' 'Kỹ Năng Viết Test Case']",
+          "after": "['SQL', 'Manual Tester', 'Tài chính']",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2281042",
+          "field": "skills_clean",
+          "before": "['Product Owner/Product Manager' 'IT - Phần cứng và máy tính' 'Viễn thông'\n 'Làm việc độc lập' 'Làm việc nhóm' 'Quản lý thời gian'\n 'Giao tiếp rõ ràng' 'Sử Dụng Phần Mềm Quản Lý Dự Án'\n 'Quản lý công việc khoa học']",
+          "after": "['Agile/Scrum', 'Product Owner/Product Manager', 'Viễn thông', 'Làm việc độc lập', 'Làm việc nhóm']",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "skills_clean",
+          "before": "['Product Owner/Product Manager' 'IT - Phần mềm' 'Game' 'Figma'\n 'Design System' 'Prototype' 'user flow' 'wireframe' 'UI/UX design'\n 'Analysis' 'Component' 'user-centric thinking' 'Variant' 'Handoff']",
+          "after": "['Kotlin', 'Swift', 'Product Owner/Product Manager', 'Game', 'Figma']",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 1561,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': 'Phường Phương Liệt', 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Hà Nội: 315 Trường Chinh, Phường Phương Liệt (Phường Phương Liệt thuộc quận Thanh Xuân cũ)'}",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2281042",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': 'Phường Nghĩa Đô', 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Hà Nội: ông ty VNPT Technology, số 124 Hoàng Quốc Việt, Phường Nghĩa Đô (Phường Nghĩa Đô có thể thuộc các quận Bắc Từ Liêm, Cầu Giấy cũ)'}",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "locations",
+          "before": "Hồ Chí Minh",
+          "after": "{'dia_chi_cu_the': None, 'phuong_xa': 'Phường Tân Bình', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Hồ Chí Minh: 62/6-8-10 Trương Công Định, Phường Tân Bình (Phường Tân Bình thuộc quận Tân Bình cũ)'}",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 48.9,
+      "fill_pct_out": 48.9
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 56.6,
+      "fill_pct_out": 56.6
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 95.3,
+      "fill_pct_out": 95.3
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 97.6,
+      "fill_pct_out": 97.6
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 97.5,
+      "fill_pct_out": 97.5
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 903,
+      "title": 8,
+      "jd": 0,
+      "none": 650
+    },
+    "salary_under_1m_count": 2,
+    "salary_from_x_count": 23,
+    "language_distribution": {
+      "vi": 1481,
+      "en": 80
+    },
+    "experience_parsed_rate": 99.6
+  }
+}

@@ -1,0 +1,248 @@
+{
+  "step": "04_normalization",
+  "source": "topdev",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:13:03+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 227
+  },
+  "output": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 227
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "N1",
+      "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
+      "action": "modify",
+      "rows_affected": 227,
+      "examples": [
+        {
+          "job_id": "2017763",
+          "field": "tinh_chinh",
+          "before": "Thành phố Hà Nội",
+          "after": "TP. Hà Nội",
+          "url": "https://topdev.vn/viec-lam/lap-trinh-vien-front-end-cong-ty-cp-phan-mem-mor-2-2017763"
+        },
+        {
+          "job_id": "2132757",
+          "field": "tinh_chinh",
+          "before": "Thành phố Hồ Chí Minh",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://topdev.vn/viec-lam/business-analyst-erp-implementation-cong-ty-co-phan-giai-phap-oris-2132757"
+        },
+        {
+          "job_id": "2132792",
+          "field": "tinh_chinh",
+          "before": "Thành phố Hà Nội",
+          "after": "TP. Hà Nội",
+          "url": "https://topdev.vn/viec-lam/ai-native-software-engineer-weeds-vina-2132792"
+        }
+      ]
+    },
+    {
+      "id": "N2",
+      "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
+      "action": "modify",
+      "rows_affected": 113,
+      "examples": [
+        {
+          "job_id": "2133063",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Senior (kinh_nghiem)",
+          "url": "https://topdev.vn/viec-lam/fullstack-ai-engineer-cong-ty-co-phan-cong-nghe-bookingcare-2133063"
+        },
+        {
+          "job_id": "2133352",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Trưởng nhóm/Quản lý (title)",
+          "url": "https://topdev.vn/viec-lam/technical-leader-domain-itsm-fpt-is-2133352"
+        },
+        {
+          "job_id": "2133353",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Trưởng nhóm/Quản lý (title)",
+          "url": "https://topdev.vn/viec-lam/senior-leader-design-verification-engineer-fpt-is-2133353"
+        }
+      ]
+    },
+    {
+      "id": "N3",
+      "name": "Phân loại 12 nhóm nghề IT",
+      "action": "modify",
+      "rows_affected": 210,
+      "examples": [
+        {
+          "job_id": "2017763",
+          "field": "job_family",
+          "before": "Lập trình viên Front-end",
+          "after": "Frontend (title)",
+          "url": "https://topdev.vn/viec-lam/lap-trinh-vien-front-end-cong-ty-cp-phan-mem-mor-2-2017763"
+        },
+        {
+          "job_id": "2132757",
+          "field": "job_family",
+          "before": "Business Analyst – ERP Implementation",
+          "after": "Phân tích nghiệp vụ (BA) (title)",
+          "url": "https://topdev.vn/viec-lam/business-analyst-erp-implementation-cong-ty-co-phan-giai-phap-oris-2132757"
+        },
+        {
+          "job_id": "2132792",
+          "field": "job_family",
+          "before": "AI-NATIVE SOFTWARE ENGINEER",
+          "after": "Backend (title)",
+          "url": "https://topdev.vn/viec-lam/ai-native-software-engineer-weeds-vina-2132792"
+        }
+      ]
+    },
+    {
+      "id": "N4",
+      "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
+      "action": "modify",
+      "rows_affected": 205,
+      "examples": []
+    },
+    {
+      "id": "N5",
+      "name": "Chuẩn hóa tên công ty",
+      "action": "modify",
+      "rows_affected": 227,
+      "examples": []
+    },
+    {
+      "id": "N2b",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
+      "action": "flag",
+      "rows_affected": 18,
+      "examples": []
+    },
+    {
+      "id": "N6a",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "N6",
+      "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
+      "action": "modify",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "N7",
+      "name": "Biến đổi log1p cho mức lương",
+      "action": "modify",
+      "rows_affected": 61,
+      "examples": []
+    }
+  ],
+  "fields": [
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "tinh_chinh",
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
+    },
+    {
+      "field": "seniority",
+      "fill_pct_in": 49.8,
+      "fill_pct_out": 49.8
+    },
+    {
+      "field": "seniority_source",
+      "fill_pct_in": 49.8,
+      "fill_pct_out": 49.8
+    },
+    {
+      "field": "job_family",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_family_source",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_std",
+      "fill_pct_in": 90.3,
+      "fill_pct_out": 90.3
+    },
+    {
+      "field": "company_norm",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "salary_min_vnd_capped",
+      "fill_pct_in": 24.2,
+      "fill_pct_out": 24.2
+    },
+    {
+      "field": "salary_max_vnd_capped",
+      "fill_pct_in": 26.9,
+      "fill_pct_out": 26.9
+    },
+    {
+      "field": "log_salary_min",
+      "fill_pct_in": 24.2,
+      "fill_pct_out": 24.2
+    },
+    {
+      "field": "log_salary_max",
+      "fill_pct_in": 26.9,
+      "fill_pct_out": 26.9
+    },
+    {
+      "field": "is_outlier_salary",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "seniority_distribution": {
+      "Senior": 46,
+      "Junior": 24,
+      "Trưởng nhóm/Quản lý": 23,
+      "Middle": 17,
+      "Thực tập": 2,
+      "Mới tốt nghiệp": 1
+    },
+    "job_family_distribution": {
+      "Backend": 43,
+      "Kiểm thử (QA/QC)": 37,
+      "Data/AI": 26,
+      "DevOps/Cloud": 23,
+      "Phân tích nghiệp vụ (BA)": 19,
+      "Quản lý sản phẩm/dự án": 18,
+      "Thiết kế UI/UX": 18,
+      "Khác": 17,
+      "Fullstack": 8,
+      "Bảo mật": 8,
+      "Hệ thống/Mạng": 5,
+      "Mobile": 3,
+      "Frontend": 2
+    },
+    "salary_outliers": 1
+  }
+}

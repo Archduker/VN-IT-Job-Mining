@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "shadcn-space": {
+      "command": "npx",
+      "args": ["-y", "shadcnspace-mcp@latest"]
+    },
+    "magic-ui": {
+      "command": "npx",
+      "args": ["-y", "@21st-dev/magic-mcp@latest"]
+    },
+    "puppeteer-ui-tester": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    }
+  }
+}

@@ -1,0 +1,668 @@
+{
+  "step": "01_clean",
+  "source": "_all",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:12:12+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": null,
+    "rows": 14292
+  },
+  "output": {
+    "path": null,
+    "rows": 5177
+  },
+  "dropped": [
+    {
+      "rule": "C1",
+      "reason": "Giữ snapshot mới nhất của mỗi job_id",
+      "rows": 1987
+    },
+    {
+      "rule": "C2",
+      "reason": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "rows": 1341
+    },
+    {
+      "rule": "C3",
+      "reason": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "rows": 0
+    },
+    {
+      "rule": "C4c",
+      "reason": "Bỏ tin ngoài IT theo it_policy.json",
+      "rows": 5514
+    },
+    {
+      "rule": "C5",
+      "reason": "Bỏ JD dưới 30 từ",
+      "rows": 188
+    },
+    {
+      "rule": "C6",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "rows": 72
+    },
+    {
+      "rule": "C7",
+      "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "rows": 13
+    }
+  ],
+  "rules": [
+    {
+      "id": "C1",
+      "name": "Giữ snapshot mới nhất của mỗi job_id",
+      "action": "drop",
+      "rows_affected": 1987,
+      "examples": [
+        {
+          "job_id": "1714047",
+          "field": "snapshot_file",
+          "before": "2026-10-22/1714047_v1.json",
+          "after": "2026-11-01/1714047_v2.json",
+          "url": "https://www.topcv.vn/viec-lam/technical-support-night-shift/1714047.html"
+        },
+        {
+          "job_id": "1991304",
+          "field": "snapshot_file",
+          "before": "2026-10-22/1991304_v1.json",
+          "after": "2026-11-01/1991304_v2.json",
+          "url": "https://www.topcv.vn/brand/cmctelecom/tuyen-dung/ky-su-giam-sat-he-thong-fresher-system-admin-j1991304.html"
+        },
+        {
+          "job_id": "2001320",
+          "field": "snapshot_file",
+          "before": "2026-10-20/2001320_v1.json",
+          "after": "2026-11-01/2001320_v2.json",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-khong-yeu-cau-kinh-nghiem-luong-cung-up-to-11tr-35-hoa-hong-tai-quan-12/2001320.html"
+        }
+      ],
+      "by_source": {
+        "topcv": 75,
+        "topdev": 1108,
+        "vietnamworks": 728,
+        "careerviet": 18,
+        "vieclam24h": 0,
+        "itviec": 1,
+        "glints": 0,
+        "jobsgo": 57
+      }
+    },
+    {
+      "id": "C2",
+      "name": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "action": "drop",
+      "rows_affected": 1341,
+      "examples": [
+        {
+          "job_id": "100160858",
+          "field": "snapshot_file",
+          "before": "2026-10-20/batch_001.json",
+          "after": "đã có file riêng",
+          "url": "https://vieclam24h.vn/marketing/nhan-vien-kinh-doanh-tu-van-giai-phap-luong-co-ban-12-15tr-c12p73id100160858.html"
+        },
+        {
+          "job_id": "200011696",
+          "field": "snapshot_file",
+          "before": "2026-10-20/batch_001.json",
+          "after": "đã có file riêng",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
+        },
+        {
+          "job_id": "200383662",
+          "field": "snapshot_file",
+          "before": "2026-10-20/batch_001.json",
+          "after": "đã có file riêng",
+          "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
+        }
+      ],
+      "by_source": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 725,
+        "careerviet": 0,
+        "vieclam24h": 616,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    },
+    {
+      "id": "C3",
+      "name": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": [],
+      "by_source": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    },
+    {
+      "id": "C4a",
+      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
+      "action": "flag",
+      "rows_affected": 5529,
+      "examples": [
+        {
+          "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
+          "field": "job_title",
+          "before": "HCM925-KỸ THUẬT VIÊN KHUÔN - KCX TÂN THUẬN (KHÔNG KINH NGHIỆM)",
+          "after": "non_it",
+          "url": "https://glints.com/vn/opportunities/jobs/hcm925-ky-thuat-vien-khuon-kcx-tan-thuan-khong-kinh-nghiem/0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd"
+        },
+        {
+          "job_id": "07ec34c7-ecce-40ee-8104-c3dc283a15d5",
+          "field": "job_title",
+          "before": "[BD651] Kỹ sư Cải tiến - Kỹ thuật/Cơ khí/Điện - KCN VSIP1",
+          "after": "non_it",
+          "url": "https://glints.com/vn/opportunities/jobs/bd651-ky-su-cai-tien-ky-thuat-co-khi-dien-kcn-vsip1/07ec34c7-ecce-40ee-8104-c3dc283a15d5"
+        },
+        {
+          "job_id": "092b1873-9996-4869-bc3b-ec6f377e531c",
+          "field": "job_title",
+          "before": "VT234 - Utilities Engineer – Kỹ sư hệ thống phụ trợ - KCN PHÚ MỸ",
+          "after": "non_it",
+          "url": "https://glints.com/vn/opportunities/jobs/vt234-utilities-engineer-ky-su-he-thong-phu-tro-kcn-phu-my/092b1873-9996-4869-bc3b-ec6f377e531c"
+        }
+      ],
+      "by_source": {
+        "topcv": 935,
+        "topdev": 2552,
+        "vietnamworks": 520,
+        "careerviet": 189,
+        "vieclam24h": 475,
+        "itviec": 15,
+        "glints": 56,
+        "jobsgo": 787
+      }
+    },
+    {
+      "id": "C4c",
+      "name": "Bỏ tin ngoài IT theo it_policy.json",
+      "action": "drop",
+      "rows_affected": 5514,
+      "examples": [
+        {
+          "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
+          "field": "job_title",
+          "before": "HCM925-KỸ THUẬT VIÊN KHUÔN - KCX TÂN THUẬN (KHÔNG KINH NGHIỆM)",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/hcm925-ky-thuat-vien-khuon-kcx-tan-thuan-khong-kinh-nghiem/0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd"
+        },
+        {
+          "job_id": "07ec34c7-ecce-40ee-8104-c3dc283a15d5",
+          "field": "job_title",
+          "before": "[BD651] Kỹ sư Cải tiến - Kỹ thuật/Cơ khí/Điện - KCN VSIP1",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/bd651-ky-su-cai-tien-ky-thuat-co-khi-dien-kcn-vsip1/07ec34c7-ecce-40ee-8104-c3dc283a15d5"
+        },
+        {
+          "job_id": "092b1873-9996-4869-bc3b-ec6f377e531c",
+          "field": "job_title",
+          "before": "VT234 - Utilities Engineer – Kỹ sư hệ thống phụ trợ - KCN PHÚ MỸ",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/vt234-utilities-engineer-ky-su-he-thong-phu-tro-kcn-phu-my/092b1873-9996-4869-bc3b-ec6f377e531c"
+        }
+      ],
+      "by_source": {
+        "topcv": 935,
+        "topdev": 2552,
+        "vietnamworks": 520,
+        "careerviet": 189,
+        "vieclam24h": 475,
+        "itviec": 0,
+        "glints": 56,
+        "jobsgo": 787
+      }
+    },
+    {
+      "id": "C5",
+      "name": "Bỏ JD dưới 30 từ",
+      "action": "drop",
+      "rows_affected": 188,
+      "examples": [
+        {
+          "job_id": "1448528",
+          "field": "raw_description_text",
+          "before": null,
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/embedded-systems-engineer-mcu-rtos-linux-os/1448528.html"
+        },
+        {
+          "job_id": "1481975",
+          "field": "raw_description_text",
+          "before": null,
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/shopify-wordpress-developer/1481975.html"
+        },
+        {
+          "job_id": "1555870",
+          "field": "raw_description_text",
+          "before": null,
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/devops-engineer-team-lead/1555870.html"
+        }
+      ],
+      "by_source": {
+        "topcv": 163,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 4,
+        "glints": 0,
+        "jobsgo": 21
+      }
+    },
+    {
+      "id": "C6",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "action": "drop",
+      "rows_affected": 72,
+      "examples": [
+        {
+          "job_id": "05decc01-d944-4958-8c7a-21697b2d32e8",
+          "field": "dedup_key",
+          "before": "kết nối nhân lực worklink|kỹ thuật viên it phần mềm - kcn long đức - đồng nai|ho_chi_minh|2026-W42",
+          "after": "giữ 83fe5651-5b24-4ee4-ba8e-52eef6615019",
+          "url": "https://glints.com/vn/opportunities/jobs/ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/05decc01-d944-4958-8c7a-21697b2d32e8"
+        },
+        {
+          "job_id": "160cfe51-8606-4eec-91e1-15a2cd5a1fc7",
+          "field": "dedup_key",
+          "before": "chuỗi bán lẻ mini min|tư vấn triển khai phần mềm b2b|ho_chi_minh|2026-W43",
+          "after": "giữ f8f06818-8693-4853-80d5-a6eb7ac201dc",
+          "url": "https://glints.com/vn/opportunities/jobs/tu-van-trien-khai-phan-mem-b2b/160cfe51-8606-4eec-91e1-15a2cd5a1fc7"
+        },
+        {
+          "job_id": "1855721",
+          "field": "dedup_key",
+          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh|2026-W43",
+          "after": "giữ 1858313",
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1855721.html"
+        }
+      ],
+      "by_source": {
+        "topcv": 15,
+        "topdev": 2,
+        "vietnamworks": 5,
+        "careerviet": 2,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 2,
+        "jobsgo": 46
+      }
+    },
+    {
+      "id": "C7",
+      "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "action": "drop",
+      "rows_affected": 13,
+      "examples": [
+        {
+          "job_id": "091b32f4-7c9f-4ae2-befa-e9f7880e07fa",
+          "field": "dedup_key",
+          "before": "kinh doanh f88|chuyên viên cao cấp rủi ro gian lận (fraud risk data analyst)|ho_chi_minh|2026-W43",
+          "after": "giữ jobsgo:29391080129",
+          "url": "https://glints.com/vn/opportunities/jobs/chuyen-vien-cao-cap-rui-ro-gian-lan-fraud-risk-data-analyst/091b32f4-7c9f-4ae2-befa-e9f7880e07fa"
+        },
+        {
+          "job_id": "200957562",
+          "field": "dedup_key",
+          "before": "giải pháp atom|site reliability engineer (sre) - đi làm ngay|ho_chi_minh|2026-W41",
+          "after": "giữ jobsgo:29226394017",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/site-reliability-engineer-sre-di-lam-ngay-c7p210000187id200957562.html"
+        },
+        {
+          "job_id": "200961159",
+          "field": "dedup_key",
+          "before": "truyền thông tập trung mặt trời vàng|chuyên viên ứng dụng ai (ai enablement associate) - tiếng trung|ho_chi_minh|2026-W41",
+          "after": "giữ jobsgo:29281416125",
+          "url": "https://vieclam24h.vn/it-phan-mem/chuyen-vien-ung-dung-ai-ai-enablement-associate-tieng-trung-c8p210000187id200961159.html"
+        }
+      ],
+      "by_source": {
+        "topcv": 0,
+        "topdev": 1,
+        "vietnamworks": 0,
+        "careerviet": 3,
+        "vieclam24h": 3,
+        "itviec": 1,
+        "glints": 2,
+        "jobsgo": 3
+      }
+    }
+  ],
+  "fields": [
+    {
+      "field": "job_title",
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_name",
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_location_text",
+      "fill_pct_in": 94.2,
+      "fill_pct_out": 95.8
+    },
+    {
+      "field": "raw_posted_date",
+      "fill_pct_in": 66.3,
+      "fill_pct_out": 66.0
+    },
+    {
+      "field": "raw_description_text",
+      "fill_pct_in": 96.4,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_list",
+      "fill_pct_in": 74.4,
+      "fill_pct_out": 76.7
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "sources": {
+      "topcv": {
+        "input": 2749,
+        "output": 1561
+      },
+      "topdev": {
+        "input": 3890,
+        "output": 227
+      },
+      "vietnamworks": {
+        "input": 2878,
+        "output": 900
+      },
+      "careerviet": {
+        "input": 660,
+        "output": 448
+      },
+      "vieclam24h": {
+        "input": 1276,
+        "output": 182
+      },
+      "itviec": {
+        "input": 911,
+        "output": 905
+      },
+      "glints": {
+        "input": 331,
+        "output": 271
+      },
+      "jobsgo": {
+        "input": 1597,
+        "output": 683
+      }
+    },
+    "it_status": {
+      "topcv": {
+        "it": 1739,
+        "non_it": 935
+      },
+      "topdev": {
+        "it": 230,
+        "non_it": 2552
+      },
+      "vietnamworks": {
+        "non_it": 520,
+        "it": 905
+      },
+      "careerviet": {
+        "it": 453,
+        "non_it": 189
+      },
+      "vieclam24h": {
+        "non_it": 475,
+        "it": 185
+      },
+      "itviec": {
+        "it": 895,
+        "non_it": 15
+      },
+      "glints": {
+        "it": 275,
+        "non_it": 56
+      },
+      "jobsgo": {
+        "non_it": 787,
+        "it": 753
+      }
+    },
+    "review": {
+      "topcv": {
+        "file": "data/preprocessing/review/it_topcv.csv",
+        "rows": 80,
+        "labeled": 80,
+        "labeled_non_it": 71,
+        "rule_decided": 50,
+        "rule_correct": 50,
+        "status_non_it": 68,
+        "status_non_it_correct": 64,
+        "level2_labeled": 30,
+        "level2_correct": 19
+      },
+      "topdev": {
+        "file": "data/preprocessing/review/it_topdev.csv",
+        "rows": 80,
+        "labeled": 80,
+        "labeled_non_it": 79,
+        "rule_decided": 51,
+        "rule_correct": 51,
+        "status_non_it": 78,
+        "status_non_it_correct": 78,
+        "level2_labeled": 29,
+        "level2_correct": 28
+      },
+      "vietnamworks": {
+        "file": "data/preprocessing/review/it_vietnamworks.csv",
+        "rows": 80,
+        "labeled": 80,
+        "labeled_non_it": 72,
+        "rule_decided": 48,
+        "rule_correct": 47,
+        "status_non_it": 70,
+        "status_non_it_correct": 68,
+        "level2_labeled": 32,
+        "level2_correct": 27
+      },
+      "careerviet": {
+        "file": "data/preprocessing/review/it_careerviet.csv",
+        "rows": 77,
+        "labeled": 77,
+        "labeled_non_it": 58,
+        "rule_decided": 46,
+        "rule_correct": 46,
+        "status_non_it": 63,
+        "status_non_it_correct": 57,
+        "level2_labeled": 31,
+        "level2_correct": 24
+      },
+      "vieclam24h": {
+        "file": "data/preprocessing/review/it_vieclam24h.csv",
+        "rows": 80,
+        "labeled": 80,
+        "labeled_non_it": 77,
+        "rule_decided": 48,
+        "rule_correct": 48,
+        "status_non_it": 77,
+        "status_non_it_correct": 75,
+        "level2_labeled": 32,
+        "level2_correct": 28
+      },
+      "itviec": {
+        "file": "data/preprocessing/review/it_itviec.csv",
+        "rows": 22,
+        "labeled": 22,
+        "labeled_non_it": 1,
+        "rule_decided": 3,
+        "rule_correct": 3,
+        "status_non_it": 5,
+        "status_non_it_correct": 1,
+        "level2_labeled": 19,
+        "level2_correct": 15
+      },
+      "glints": {
+        "file": "data/preprocessing/review/it_glints.csv",
+        "rows": 42,
+        "labeled": 42,
+        "labeled_non_it": 29,
+        "rule_decided": 11,
+        "rule_correct": 11,
+        "status_non_it": 28,
+        "status_non_it_correct": 26,
+        "level2_labeled": 31,
+        "level2_correct": 26
+      },
+      "jobsgo": {
+        "file": "data/preprocessing/review/it_jobsgo.csv",
+        "rows": 80,
+        "labeled": 80,
+        "labeled_non_it": 73,
+        "rule_decided": 47,
+        "rule_correct": 47,
+        "status_non_it": 77,
+        "status_non_it_correct": 72,
+        "level2_labeled": 33,
+        "level2_correct": 27
+      }
+    },
+    "cross_source_pairs": {
+      "jobsgo → vieclam24h": 3,
+      "topcv → jobsgo": 2,
+      "jobsgo → glints": 2,
+      "topcv → careerviet": 1,
+      "jobsgo → topdev": 1,
+      "vietnamworks → itviec": 1,
+      "vietnamworks → careerviet": 1,
+      "careerviet → jobsgo": 1,
+      "vieclam24h → careerviet": 1
+    },
+    "it_policy": {
+      "topcv": {
+        "drop": [
+          "non_it"
+        ],
+        "approved_on": "2026-11-03",
+        "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 71 non_it (graphic designer, telesales, marketing...)"
+      },
+      "topdev": {
+        "drop": [
+          "non_it"
+        ],
+        "approved_on": "2026-11-03",
+        "evidence": "C4b: Gán tay 80 tin, xác nhận 79 non_it (98.8%). Crawler kéo sai phạm vi: API bỏ qua category_ids=1 (14.572 tin)"
+      },
+      "vietnamworks": {
+        "drop": [
+          "non_it"
+        ],
+        "approved_on": "2026-11-03",
+        "evidence": "C4b: Gán tay 80 tin, 48/50 non_it theo luật đúng (96.0%), 72 non_it (kế toán, HR, cơ khí...)"
+      },
+      "careerviet": {
+        "drop": [
+          "non_it"
+        ],
+        "approved_on": "2026-11-03",
+        "evidence": "C4b: Gán tay 77 tin, 42/47 non_it theo luật đúng (89.4%), 58 non_it (logistics, giáo viên, cơ khí...)"
+      },
+      "vieclam24h": {
+        "drop": [
+          "non_it"
+        ],
+        "approved_on": "2026-11-03",
+        "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 77 non_it (tài xế, shipper, telesales...)"
+      },
+      "itviec": {
+        "drop": [],
+        "approved_on": "2026-11-03",
+        "note": "Giữ toàn bộ (drop=[]): ITviec là nguồn chuyên IT thuần túy, 21/22 tin mẫu là IT thực thụ"
+      },
+      "glints": {
+        "drop": [
+          "non_it"
+        ],
+        "approved_on": "2026-11-03",
+        "evidence": "C4b: Gán tay 42 tin, 12/12 non_it theo luật đúng 100%, 29 non_it (xây dựng, may mặc, sơn, cơ khí...)"
+      },
+      "jobsgo": {
+        "drop": [
+          "non_it"
+        ],
+        "approved_on": "2026-11-03",
+        "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 73 non_it (kinh doanh, marketing, rượu vang...)"
+      }
+    },
+    "it_levels": {
+      "topcv": {
+        "tang_1_it": 1369,
+        "tang_1_non_it": 346,
+        "tang_2_non_it": 589,
+        "tang_2_it": 370
+      },
+      "topdev": {
+        "tang_1_it": 162,
+        "tang_2_non_it": 1429,
+        "tang_2_it": 68,
+        "tang_1_non_it": 1123
+      },
+      "vietnamworks": {
+        "tang_1_non_it": 169,
+        "tang_2_non_it": 351,
+        "tang_1_it": 686,
+        "tang_2_it": 219
+      },
+      "careerviet": {
+        "tang_1_it": 396,
+        "tang_2_non_it": 148,
+        "tang_2_it": 57,
+        "tang_1_non_it": 41
+      },
+      "vieclam24h": {
+        "tang_1_non_it": 186,
+        "tang_1_it": 138,
+        "tang_2_non_it": 289,
+        "tang_2_it": 47
+      },
+      "itviec": {
+        "tang_1_it": 843,
+        "tang_2_non_it": 15,
+        "tang_2_it": 52
+      },
+      "glints": {
+        "tang_1_it": 244,
+        "tang_2_non_it": 44,
+        "tang_1_non_it": 12,
+        "tang_2_it": 31
+      },
+      "jobsgo": {
+        "tang_1_non_it": 235,
+        "tang_2_non_it": 552,
+        "tang_1_it": 709,
+        "tang_2_it": 44
+      }
+    }
+  }
+}

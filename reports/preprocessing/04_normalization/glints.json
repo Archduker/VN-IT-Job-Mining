@@ -1,0 +1,246 @@
+{
+  "step": "04_normalization",
+  "source": "glints",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:13:06+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 271
+  },
+  "output": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 271
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "N1",
+      "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
+      "action": "modify",
+      "rows_affected": 178,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "tinh_chinh",
+          "before": "Quận Một",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "tinh_chinh",
+          "before": "Long Thành",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "tinh_chinh",
+          "before": "Quận Thủ Đức",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        }
+      ]
+    },
+    {
+      "id": "N2",
+      "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
+      "action": "modify",
+      "rows_affected": 243,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Junior (kinh_nghiem)",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Thực tập (title)",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        },
+        {
+          "job_id": "02ab4af2-fa4b-4b73-9795-c9047f9b9dbc",
+          "field": "seniority",
+          "before": "nan",
+          "after": "Middle (kinh_nghiem)",
+          "url": "https://glints.com/vn/opportunities/jobs/developer/02ab4af2-fa4b-4b73-9795-c9047f9b9dbc"
+        }
+      ]
+    },
+    {
+      "id": "N3",
+      "name": "Phân loại 12 nhóm nghề IT",
+      "action": "modify",
+      "rows_affected": 259,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "job_family",
+          "before": "Retail IT Executive (Infrastructure)",
+          "after": "DevOps/Cloud (title)",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "job_family",
+          "before": "[DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai",
+          "after": "Data/AI (skills)",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "job_family",
+          "before": "AI Applied Coordinator Intern",
+          "after": "Data/AI (skills)",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        }
+      ]
+    },
+    {
+      "id": "N4",
+      "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
+      "action": "modify",
+      "rows_affected": 266,
+      "examples": []
+    },
+    {
+      "id": "N5",
+      "name": "Chuẩn hóa tên công ty",
+      "action": "modify",
+      "rows_affected": 271,
+      "examples": []
+    },
+    {
+      "id": "N2b",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
+      "action": "flag",
+      "rows_affected": 4,
+      "examples": []
+    },
+    {
+      "id": "N6a",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 5,
+      "examples": []
+    },
+    {
+      "id": "N6",
+      "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
+      "action": "modify",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "N7",
+      "name": "Biến đổi log1p cho mức lương",
+      "action": "modify",
+      "rows_affected": 162,
+      "examples": []
+    }
+  ],
+  "fields": [
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "tinh_chinh",
+      "fill_pct_in": 64.9,
+      "fill_pct_out": 64.9
+    },
+    {
+      "field": "seniority",
+      "fill_pct_in": 89.7,
+      "fill_pct_out": 89.7
+    },
+    {
+      "field": "seniority_source",
+      "fill_pct_in": 89.7,
+      "fill_pct_out": 89.7
+    },
+    {
+      "field": "job_family",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_family_source",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_std",
+      "fill_pct_in": 98.2,
+      "fill_pct_out": 98.2
+    },
+    {
+      "field": "company_norm",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "salary_min_vnd_capped",
+      "fill_pct_in": 59.4,
+      "fill_pct_out": 59.4
+    },
+    {
+      "field": "salary_max_vnd_capped",
+      "fill_pct_in": 59.8,
+      "fill_pct_out": 59.8
+    },
+    {
+      "field": "log_salary_min",
+      "fill_pct_in": 59.4,
+      "fill_pct_out": 59.4
+    },
+    {
+      "field": "log_salary_max",
+      "fill_pct_in": 59.8,
+      "fill_pct_out": 59.8
+    },
+    {
+      "field": "is_outlier_salary",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "seniority_distribution": {
+      "Junior": 84,
+      "Middle": 64,
+      "Thực tập": 37,
+      "Senior": 33,
+      "Trưởng nhóm/Quản lý": 21,
+      "Mới tốt nghiệp": 4
+    },
+    "job_family_distribution": {
+      "Kiểm thử (QA/QC)": 72,
+      "Backend": 49,
+      "Data/AI": 41,
+      "DevOps/Cloud": 28,
+      "Fullstack": 19,
+      "Khác": 12,
+      "Bảo mật": 11,
+      "Frontend": 11,
+      "Hệ thống/Mạng": 10,
+      "Mobile": 10,
+      "Quản lý sản phẩm/dự án": 8
+    },
+    "salary_outliers": 1
+  }
+}

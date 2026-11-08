@@ -1,0 +1,207 @@
+# -*- coding: utf-8 -*-
+"""Kiểm thử tự động các endpoints của Monitoring Backend API."""
+
+import pytest
+import sys
+from pathlib import Path
+from fastapi.testclient import TestClient
+
+BACKEND_DIR = Path(__file__).resolve().parents[2] / "monitoring" / "backend"
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+
+from app.main import app
+
+client = TestClient(app)
+
+
+@pytest.fixture
+def topcv_raw(tmp_path, monkeypatch):
+    """Một file raw TopCV trong thư mục tạm, để bảng kiểm kê không phụ thuộc data/ trên máy."""
+    import json
+
+    from app.services.eda_collection_service import eda_collection_service
+
+    folder = tmp_path / "topcv" / "raw" / "2026-11-01"
+    folder.mkdir(parents=True)
+    envelope = {"metadata": {"source": "topcv", "job_id": "1"},
+                "raw_payload": {"title": "Python Developer", "salary_raw": "", "location": "Hà Nội"}}
+    (folder / "1_v1.json").write_text(json.dumps(envelope, ensure_ascii=False), encoding="utf-8")
+    monkeypatch.setattr(eda_collection_service, "data_dir", tmp_path)
+    return tmp_path
+
+
+def test_root_health():
+    """Kiểm tra endpoint gốc."""
+    res = client.get("/")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "online"
+    assert "VN-IT-Job-Mining" in data["system"]
+
+
+def test_master_dashboard_endpoints():
+    """Kiểm tra endpoint api/Dashboard và /api/v1/dashboard."""
+    for url in ["/api/dashboard", "/api/v1/dashboard"]:
+        res = client.get(url)
+        assert res.status_code == 200
+        data = res.json()
+        assert {"available", "totals", "platform_breakdown", "salary_vnd_million", "lineage"} <= set(data)
+
+
+def test_collection_sources():
+    """Kiểm tra danh sách 8 nguồn cào."""
+    res = client.get("/api/v1/collection/crawling/sources")
+    assert res.status_code == 200
+    sources = res.json()
+    assert len(sources) == 8
+    source_ids = {s["id"] for s in sources}
+    assert "topcv" in source_ids
+    assert "itviec" in source_ids
+    assert "topdev" in source_ids
+
+
+def test_collection_eda_inventory(topcv_raw):
+    """Kiểm tra bảng kiểm kê trường dữ liệu thô."""
+    res = client.get("/api/v1/collection/eda/topcv/inventory")
+    assert res.status_code == 200
+    items = {item["field_name"]: item for item in res.json()}
+    assert set(items) == {"title", "salary_raw", "location"}
+    assert items["salary_raw"]["null_rate_pct"] == 100.0
+
+
+def test_eda_inventory_is_empty_without_raw(tmp_path, monkeypatch):
+    """Không có raw thì không dựng bảng kiểm kê mẫu."""
+    from app.services.eda_collection_service import eda_collection_service
+
+    monkeypatch.setattr(eda_collection_service, "data_dir", tmp_path)
+    assert client.get("/api/v1/eda/topcv/inventory").json() == []
+
+
+def test_preprocessing_metrics():
+    """Kiểm tra chỉ số tiền xử lý."""
+    res = client.get("/api/v1/preprocessing/metrics")
+    assert res.status_code == 200
+    data = res.json()
+    assert len(data["sources"]) == 8
+    assert {"raw_envelopes", "clean_records", "imputed_records"} <= set(data["totals"])
+
+
+def test_processing_metrics():
+    """Kiểm tra chỉ số tích hợp và khử trùng lặp."""
+    res = client.get("/api/v1/processing/metrics")
+    assert res.status_code == 200
+    data = res.json()
+    assert {"dedup", "field_completeness", "not_recorded"} <= set(data)
+
+
+def test_cloud_r2_status():
+    """Kiểm tra endpoint trạng thái Cloudflare R2."""
+    res = client.get("/api/v1/cloud/r2/status")
+    assert res.status_code == 200
+    data = res.json()
+    assert "configured" in data
+    assert data["bucket"] == "vn-it-jobs"
+
+
+def test_airflow_status():
+    """Kiểm tra endpoint trạng thái Airflow daemon."""
+    res = client.get("/api/v1/airflow/status")
+    assert res.status_code == 200
+    data = res.json()
+    assert "scheduler" in data
+    assert "webserver" in data
+    assert "database" in data
+    assert "active_dags_count" in data
+
+
+def test_airflow_dags():
+    """Kiểm tra danh sách DAGs xoay vòng."""
+    res = client.get("/api/v1/airflow/dags")
+    assert res.status_code == 200
+    dags = res.json()
+    assert isinstance(dags, list)
+    if len(dags) > 0:
+        dag = dags[0]
+        assert "dag_id" in dag
+        assert "source" in dag
+        assert "schedule_day" in dag
+
+
+def test_decoupled_routes(topcv_raw):
+    """Kiểm tra các route decoupled /crawling và /eda độc lập."""
+    crawl_res = client.get("/api/v1/crawling/sources")
+    assert crawl_res.status_code == 200
+    assert len(crawl_res.json()) >= 7
+
+    eda_res = client.get("/api/v1/eda/topcv/inventory")
+    assert eda_res.status_code == 200
+    assert len(eda_res.json()) > 0
+
+
+def test_cloud_r2_diff():
+    """Kiểm tra Diff Engine của Cloudflare R2."""
+    res = client.get("/api/v1/cloud/r2/diff/topcv")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["source"] == "topcv"
+    assert "local_count" in data
+    assert "cloud_count" in data
+    assert "synced_pct" in data
+
+
+@pytest.mark.needs_data(*[f"data/{s}/url_ledger/catalog_master.json" for s in ("topcv", "topdev", "itviec", "careerviet", "vieclam24h", "vietnamworks", "glints", "jobsgo")])
+def test_crawling_enum_summary():
+    """Kiểm tra endpoint thống kê định lượng 5 trạng thái Enum vòng đời URL."""
+    res = client.get("/api/v1/crawling/enum-summary")
+    assert res.status_code == 200
+    data = res.json()
+    assert "total" in data
+    assert data["total"] > 0
+    for st in ["pending", "done", "recheck_due", "closed", "failed"]:
+        assert st in data
+        assert "count" in data[st]
+        assert "pct" in data[st]
+    assert "by_source" in data
+    assert len(data["by_source"]) >= 8
+
+
+def test_crawling_weekly_schedule():
+    """Kiểm tra endpoint bảng lịch cào 7 ngày trong tuần."""
+    res = client.get("/api/v1/crawling/weekly-schedule")
+    assert res.status_code == 200
+    data = res.json()
+    assert len(data["phase2_detail"]) == 8
+    first = data["phase2_detail"][0]
+    assert first["batch_limit"] == 30
+    assert {"focal_source", "uncrawled_pending", "batches_needed", "status"} <= set(first)
+    assert "actual_crawled" in first
+
+
+def test_crawling_cloud_sync_status():
+    """Kiểm tra endpoint kiểm toán đồng bộ Cloudflare R2 trong phân hệ Crawling."""
+    res = client.get("/api/v1/crawling/cloud-sync-status")
+    assert res.status_code == 200
+    data = res.json()
+    assert "connected" in data
+    assert "overall_sync_pct" in data
+    assert "sources" in data
+    assert len(data["sources"]) >= 8
+
+
+def test_system_alerts():
+    """Kiểm tra endpoint cảnh báo trực tiếp trên Web Monitor."""
+    res = client.get("/api/v1/alerts")
+    assert res.status_code == 200
+    data = res.json()
+    assert "total_alerts" in data
+    assert "critical_count" in data
+    assert "warning_count" in data
+    assert "alerts" in data
+
+    if data["alerts"]:
+        first_alert = data["alerts"][0]
+        ack_res = client.post(f"/api/v1/alerts/{first_alert['id']}/acknowledge")
+        assert ack_res.status_code == 200
+        assert ack_res.json()["acknowledged"] is True
+

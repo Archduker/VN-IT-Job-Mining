@@ -1,0 +1,110 @@
+{
+ "id": 2133631,
+ "title": "Kỹ sư lập trình Backend (Java)",
+ "is_content_image": false,
+ "is_content_image_enabled": false,
+ "content": "<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>&bull; Số lượng tuyển:</strong> 05</span></p>\r\n<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>&bull; Lĩnh vực ng&agrave;nh nghề:</strong> CNTT Phần mềm.</span></p>\r\n<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>&bull; Địa điểm l&agrave;m việc:</strong> TP. H&agrave; Nội.</span></p>\r\n<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>&bull; T&iacute;nh chất c&ocirc;ng việc:</strong> Full time (Từ thứ 2 đến thứ 6)</span></p>",
+ "benefits_v2": [
+  {
+   "name": "",
+   "icon": "",
+   "description": "<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>Mức lương:</strong> Từ 15 đến 25 triệu</span></p>\r\n<p style=\"text-align: justify;\">&nbsp;</p>\r\n<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>Thời gian thử việc:</strong> 02 Th&aacute;ng.</span></p>\r\n<p style=\"text-align: justify;\">&nbsp;</p>\r\n<p style=\"text-align: justify;\"><strong><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&aacute;c chế độ kh&aacute;c </span></strong></p>\r\n<ul>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Được hỗ trợ ăn trưa.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Được đ&oacute;ng BHXH, BHYT, BHTN v&agrave; hưởng đầy đủ c&aacute;c quyền lợi theo Luật lao động Việt Nam.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Một năm c&oacute; thể đạt 15 đến 17 th&aacute;ng lương.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">X&eacute;t tăng lương theo quy định của C&ocirc;ng ty.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Trợ cấp tiền trang phục, sức khỏe h&agrave;ng năm</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Du lịch h&agrave;ng năm.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Được hướng dẫn, đ&agrave;o tạo v&agrave; l&agrave;m việc trong m&ocirc;i trường trẻ trung, chuy&ecirc;n nghiệp, c&oacute; cơ hội thăng tiến.</span></li>\r\n</ul>",
+   "id": ""
+  }
+ ],
+ "owned_id": 85551,
+ "company": {
+  "id": 85551,
+  "display_name": "CÔNG TY TNHH CUNG CẤP GIẢI PHÁP DỊCH VỤ GIÁ TRỊ GIA TĂNG (VIVAS)",
+  "image_logo": "https://assets.saramin.vn/images/2020/11/09/vivas-logo.png",
+  "slug": "cong-ty-tnhh-cung-cap-giai-phap-dich-vu-gia-tri-gia-tang-vivas",
+  "detail_url": "https://topdev.vn/nha-tuyen-dung/cong-ty-tnhh-cung-cap-giai-phap-dich-vu-gia-tri-gia-tang-vivas-85551",
+  "is_followed": false
+ },
+ "skills_str": "OOP, Java, Spring Boot",
+ "skills_arr": [
+  "OOP",
+  "Java",
+  "Spring Boot"
+ ],
+ "experiences_str": "2 năm",
+ "contract_types_str": "Fulltime",
+ "job_types_str": "Trực tiếp",
+ "job_levels_str": "Chuyên viên",
+ "job_levels_arr": [
+  "Chuyên viên"
+ ],
+ "addresses": {
+  "address_region_ids": [
+   "01"
+  ],
+  "address_region_array": [
+   "Thành phố Hà Nội"
+  ],
+  "collection_addresses": [
+   {
+    "province": {
+     "id": "01",
+     "value": "Thành phố Hà Nội"
+    },
+    "street": "115 Trần Duy Hưng",
+    "district": {
+     "id": "005",
+     "value": "Quận Cầu Giấy"
+    },
+    "latitude": null,
+    "id": 141840,
+    "ward": {
+     "id": "00175",
+     "value": "Phường Trung Hoà"
+    },
+    "full_address": "115 Trần Duy Hưng, Phường Trung Hoà, Quận Cầu Giấy, Thành phố Hà Nội",
+    "postal_code": "100000",
+    "longitude": null
+   }
+  ],
+  "full_addresses": [
+   "115 Trần Duy Hưng, Phường Trung Hoà, Quận Cầu Giấy, Thành phố Hà Nội"
+  ],
+  "sort_addresses": "Quận Cầu Giấy, Hà Nội",
+  "address_region_list": "Thành phố Hà Nội"
+ },
+ "detail_url": "https://topdev.vn/viec-lam/ky-su-lap-trinh-backend-java-cong-ty-tnhh-cung-cap-giai-phap-dich-vu-gia-tri-gia-tang-vivas-2133631",
+ "slug": "ky-su-lap-trinh-backend-java-cong-ty-tnhh-cung-cap-giai-phap-dich-vu-gia-tri-gia-tang-vivas",
+ "salary": {
+  "min_estimate": 0,
+  "currency_estimate": "VND",
+  "unit": "MONTH",
+  "min": "1*******",
+  "max": "2*******",
+  "min_filter": 15000000,
+  "is_negotiable": "0",
+  "currency": "VND",
+  "max_filter": 25000000,
+  "value": "1******* - 2******* VND",
+  "max_estimate": 0
+ },
+ "is_salary_visible": false,
+ "published": {
+  "date": "16-09-2026",
+  "datetime": "00:00:00 16-09-2026",
+  "since": "1 tháng trước"
+ },
+ "is_applied": false,
+ "is_followed": false,
+ "is_blacklisted": false,
+ "recalled_at": null,
+ "is_remove_cv": false,
+ "is_viewed": false,
+ "requirements_arr": [],
+ "responsibilities_original": "<ul>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif;\">Ph&acirc;n t&iacute;ch y&ecirc;u cầu, đề xuất giải ph&aacute;p kỹ thuật v&agrave; thiết kế, ph&aacute;t triển c&aacute;c ứng dụng/dịch vụ backend bằng Java (Spring Boot).</span></span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif;\">Thiết kế v&agrave; x&acirc;y dựng RESTful API; tham gia t&iacute;ch hợp hệ thống với c&aacute;c dịch vụ nội bộ v&agrave; b&ecirc;n thứ ba.</span></span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif;\">L&agrave;m việc với cơ sở dữ liệu SQL/NoSQL; thiết kế m&ocirc; h&igrave;nh dữ liệu, tối ưu truy vấn v&agrave; xử l&yacute; transaction.</span></span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif;\">Bảo tr&igrave;, n&acirc;ng cấp hệ thống hiện c&oacute;; chủ động xử l&yacute; lỗi v&agrave; cải thiện độ ổn định hệ thống.</span></span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif;\">Tham gia giải quyết c&aacute;c b&agrave;i to&aacute;n về hiệu năng, bảo mật, logging, monitoring, scalability v&agrave; high availability.</span></span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif;\">X&acirc;y dựng t&agrave;i liệu kỹ thuật v&agrave; hỗ trợ vận h&agrave;nh hệ thống.</span></span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif;\">Nghi&ecirc;n cứu, đề xuất v&agrave; &aacute;p dụng c&ocirc;ng nghệ ph&ugrave; hợp để n&acirc;ng cao hiệu quả ph&aacute;t triển v&agrave; chất lượng hệ thống.</span></span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif;\">Tham gia c&aacute;c b&agrave;i to&aacute;n t&iacute;ch hợp v&agrave; xử l&yacute; dữ liệu (data pipeline, ETL); l&agrave;m việc với Apache NiFi, ClickHouse hoặc hệ thống tương tự l&agrave; lợi thế.</span></span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif;\">Chủ động b&aacute;o c&aacute;o tiến độ c&ocirc;ng việc v&agrave; c&aacute;c vấn đề ph&aacute;t sinh trong qu&aacute; tr&igrave;nh ph&aacute;t triển.</span></span></li>\r\n</ul>",
+ "requirements_original": "<p style=\"text-align: justify;\"><strong><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Y&ecirc;u cầu:</span></strong></p>\r\n<ul>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Nắm vững Java Core, OOP v&agrave; c&oacute; khả năng &aacute;p dụng cấu tr&uacute;c dữ liệu, thuật to&aacute;n v&agrave;o giải quyết b&agrave;i to&aacute;n thực tế (tối ưu hiệu năng, xử l&yacute; dữ liệu).</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&oacute; kinh nghiệm l&agrave;m việc với Spring Boot (Spring MVC, Spring Data JPA, Spring Security).</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&oacute; kinh nghiệm x&acirc;y dựng RESTful API v&agrave; t&iacute;ch hợp hệ thống.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Hiểu về HTTP protocol v&agrave; API design (status code, authentication, pagination...).</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&oacute; kinh nghiệm l&agrave;m việc với SQL/NoSQL; thiết kế schema, tối ưu query v&agrave; xử l&yacute; transaction.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Hiểu v&agrave; &aacute;p dụng c&aacute;c nguy&ecirc;n tắc thiết kế hệ thống backend (layered architecture, clean code, separation of concerns).</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&oacute; hiểu biết v&agrave; &aacute;p dụng c&aacute;c design pattern phổ biến trong ph&aacute;t triển backend (dependency injection, repository pattern...).</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">-C&oacute; khả năng ph&acirc;n t&iacute;ch y&ecirc;u cầu v&agrave; l&agrave;m việc độc lập/nh&oacute;m</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&oacute; hiểu biết về performance, concurrency, logging, monitoring.</span></li>\r\n</ul>\r\n<p style=\"text-align: justify;\">&nbsp;</p>\r\n<p style=\"text-align: justify;\"><strong><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Điểm cộng:</span></strong></p>\r\n<ul>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&oacute; kinh nghiệm l&agrave;m frontend hoặc stack c&ocirc;ng nghệ kh&aacute;c như .Net</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&oacute; kinh nghiệm thiết kế hệ thống, tối ưu hiệu năng, xử l&yacute; concurrency, caching, queue/message broker.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&oacute; kinh nghiệm l&agrave;m việc với c&aacute;c hệ thống t&iacute;ch hợp v&agrave; xử l&yacute; dữ liệu (data pipeline, ETL...), ưu ti&ecirc;n đ&atilde; l&agrave;m với Apache NiFi, ClickHouse hoặc c&aacute;c hệ thống data flow tương đương.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&oacute; kinh nghiệm mentoring, điều phối c&ocirc;ng việc hoặc hỗ trợ th&agrave;nh vi&ecirc;n trong nh&oacute;m.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&oacute; kinh nghiệm n&acirc;ng cao hiệu suất l&agrave;m việc với c&aacute;c c&ocirc;ng cụ AI.</span></li>\r\n</ul>\r\n<p style=\"text-align: justify;\">&nbsp;</p>\r\n<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>Tr&igrave;nh độ:</strong> </span><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Tốt nghiệp Đại học c&aacute;c ng&agrave;nh li&ecirc;n quan đến CNTT hoặc tương đương.</span></p>\r\n<p style=\"text-align: justify;\">&nbsp;</p>\r\n<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>Kinh nghiệm:</strong> Tối thiểu 2 năm kinh nghiệm Backend</span></p>\r\n<p style=\"text-align: justify;\">&nbsp;</p>\r\n<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>H&igrave;nh thức l&agrave;m việc:</strong> Tại văn ph&ograve;ng C&ocirc;ng ty</span></p>\r\n<p style=\"text-align: justify;\">&nbsp;</p>\r\n<p style=\"text-align: justify;\"><strong><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Y&ecirc;u cầu hồ sơ</span></strong></p>\r\n<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">CV (Tiếng Việt hoặc Tiếng Anh), n&ecirc;u r&otilde;:</span></p>\r\n<ul>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Th&ocirc;ng tin c&aacute; nh&acirc;n (bao gồm git)</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Kinh nghiệm học tập / l&agrave;m việc.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&aacute;c dự &aacute;n đ&atilde; tham gia.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&aacute;c kỹ năng (li&ecirc;n quan đến chuy&ecirc;n m&ocirc;n, bao gồm kỹ năng mềm).</span></li>\r\n</ul>",
+ "benefits_original": [
+  {
+   "icon": null,
+   "value": "<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>Mức lương:</strong> Từ 15 đến 25 triệu</span></p>\r\n<p style=\"text-align: justify;\">&nbsp;</p>\r\n<p style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\"><strong>Thời gian thử việc:</strong> 02 Th&aacute;ng.</span></p>\r\n<p style=\"text-align: justify;\">&nbsp;</p>\r\n<p style=\"text-align: justify;\"><strong><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">C&aacute;c chế độ kh&aacute;c </span></strong></p>\r\n<ul>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Được hỗ trợ ăn trưa.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Được đ&oacute;ng BHXH, BHYT, BHTN v&agrave; hưởng đầy đủ c&aacute;c quyền lợi theo Luật lao động Việt Nam.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Một năm c&oacute; thể đạt 15 đến 17 th&aacute;ng lương.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">X&eacute;t tăng lương theo quy định của C&ocirc;ng ty.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Trợ cấp tiền trang phục, sức khỏe h&agrave;ng năm</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Du lịch h&agrave;ng năm.</span></li>\r\n<li style=\"text-align: justify;\"><span style=\"font-family: Roboto, Helvetica, Verdana, Arial, sans-serif; font-size: 15px;\">Được hướng dẫn, đ&agrave;o tạo v&agrave; l&agrave;m việc trong m&ocirc;i trường trẻ trung, chuy&ecirc;n nghiệp, c&oacute; cơ hội thăng tiến.</span></li>\r\n</ul>"
+  }
+ ],
+ "recruitment_process_original": [],
+ "promotions": []
+}

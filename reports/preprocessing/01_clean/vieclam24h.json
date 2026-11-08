@@ -1,0 +1,269 @@
+{
+  "step": "01_clean",
+  "source": "vieclam24h",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:12:03+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/vieclam24h/raw",
+    "rows": 1276
+  },
+  "output": {
+    "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
+    "rows": 182
+  },
+  "dropped": [
+    {
+      "rule": "C1",
+      "reason": "Giữ snapshot mới nhất của mỗi job_id",
+      "rows": 0
+    },
+    {
+      "rule": "C2",
+      "reason": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "rows": 616
+    },
+    {
+      "rule": "C3",
+      "reason": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "rows": 0
+    },
+    {
+      "rule": "C4c",
+      "reason": "Bỏ tin ngoài IT theo it_policy.json",
+      "rows": 475
+    },
+    {
+      "rule": "C5",
+      "reason": "Bỏ JD dưới 30 từ",
+      "rows": 0
+    },
+    {
+      "rule": "C6",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "rows": 0
+    },
+    {
+      "rule": "C7",
+      "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "rows": 3
+    }
+  ],
+  "rules": [
+    {
+      "id": "C1",
+      "name": "Giữ snapshot mới nhất của mỗi job_id",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C2",
+      "name": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "action": "drop",
+      "rows_affected": 616,
+      "examples": [
+        {
+          "job_id": "100160858",
+          "field": "snapshot_file",
+          "before": "2026-10-20/batch_001.json",
+          "after": "đã có file riêng",
+          "url": "https://vieclam24h.vn/marketing/nhan-vien-kinh-doanh-tu-van-giai-phap-luong-co-ban-12-15tr-c12p73id100160858.html"
+        },
+        {
+          "job_id": "200011696",
+          "field": "snapshot_file",
+          "before": "2026-10-20/batch_001.json",
+          "after": "đã có file riêng",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
+        },
+        {
+          "job_id": "200383662",
+          "field": "snapshot_file",
+          "before": "2026-10-20/batch_001.json",
+          "after": "đã có file riêng",
+          "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
+        }
+      ]
+    },
+    {
+      "id": "C3",
+      "name": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C4a",
+      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
+      "action": "flag",
+      "rows_affected": 475,
+      "examples": [
+        {
+          "job_id": "100160858",
+          "field": "job_title",
+          "before": "Nhân Viên Kinh Doanh - Tư Vấn Giải Pháp Lương Cơ Bản 12 - 15Tr",
+          "after": "non_it",
+          "url": "https://vieclam24h.vn/marketing/nhan-vien-kinh-doanh-tu-van-giai-phap-luong-co-ban-12-15tr-c12p73id100160858.html"
+        },
+        {
+          "job_id": "200452314",
+          "field": "job_title",
+          "before": "Nhân Viên Kinh Doanh",
+          "after": "non_it",
+          "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-kinh-doanh-c8p73id200452314.html"
+        },
+        {
+          "job_id": "200496877",
+          "field": "job_title",
+          "before": "Giám Sát Hệ Thống Điện Nhẹ",
+          "after": "non_it",
+          "url": "https://vieclam24h.vn/van-hanh-bao-tri-bao-duong/giam-sat-he-thong-dien-nhe-c10p122id200496877.html"
+        }
+      ]
+    },
+    {
+      "id": "C4c",
+      "name": "Bỏ tin ngoài IT theo it_policy.json",
+      "action": "drop",
+      "rows_affected": 475,
+      "examples": [
+        {
+          "job_id": "100160858",
+          "field": "job_title",
+          "before": "Nhân Viên Kinh Doanh - Tư Vấn Giải Pháp Lương Cơ Bản 12 - 15Tr",
+          "after": null,
+          "url": "https://vieclam24h.vn/marketing/nhan-vien-kinh-doanh-tu-van-giai-phap-luong-co-ban-12-15tr-c12p73id100160858.html"
+        },
+        {
+          "job_id": "200452314",
+          "field": "job_title",
+          "before": "Nhân Viên Kinh Doanh",
+          "after": null,
+          "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-kinh-doanh-c8p73id200452314.html"
+        },
+        {
+          "job_id": "200496877",
+          "field": "job_title",
+          "before": "Giám Sát Hệ Thống Điện Nhẹ",
+          "after": null,
+          "url": "https://vieclam24h.vn/van-hanh-bao-tri-bao-duong/giam-sat-he-thong-dien-nhe-c10p122id200496877.html"
+        }
+      ]
+    },
+    {
+      "id": "C5",
+      "name": "Bỏ JD dưới 30 từ",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C6",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C7",
+      "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "action": "drop",
+      "rows_affected": 3,
+      "examples": [
+        {
+          "job_id": "200957562",
+          "field": "dedup_key",
+          "before": "giải pháp atom|site reliability engineer (sre) - đi làm ngay|ho_chi_minh|2026-W41",
+          "after": "giữ jobsgo:29226394017",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/site-reliability-engineer-sre-di-lam-ngay-c7p210000187id200957562.html"
+        },
+        {
+          "job_id": "200961159",
+          "field": "dedup_key",
+          "before": "truyền thông tập trung mặt trời vàng|chuyên viên ứng dụng ai (ai enablement associate) - tiếng trung|ho_chi_minh|2026-W41",
+          "after": "giữ jobsgo:29281416125",
+          "url": "https://vieclam24h.vn/it-phan-mem/chuyen-vien-ung-dung-ai-ai-enablement-associate-tieng-trung-c8p210000187id200961159.html"
+        },
+        {
+          "job_id": "200968653",
+          "field": "dedup_key",
+          "before": "một thành viên hoàng khang giang|nhân viên it|da_nang|2026-W43",
+          "after": "giữ jobsgo:29401386590",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-it-c7p210000180id200968653.html"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "job_title",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_name",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_location_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_posted_date",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_description_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_list",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "it_levels": {
+      "tang_1_non_it": 186,
+      "tang_1_it": 138,
+      "tang_2_non_it": 289,
+      "tang_2_it": 47
+    },
+    "it_status": {
+      "non_it": 475,
+      "it": 185
+    },
+    "it_policy": {
+      "drop": [
+        "non_it"
+      ],
+      "approved_on": "2026-11-03",
+      "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 77 non_it (tài xế, shipper, telesales...)"
+    },
+    "review": {
+      "file": "data/preprocessing/review/it_vieclam24h.csv",
+      "rows": 80,
+      "labeled": 80,
+      "labeled_non_it": 77,
+      "rule_decided": 48,
+      "rule_correct": 48,
+      "status_non_it": 77,
+      "status_non_it_correct": 75,
+      "level2_labeled": 32,
+      "level2_correct": 28
+    }
+  }
+}

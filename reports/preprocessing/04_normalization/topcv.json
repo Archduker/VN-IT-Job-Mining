@@ -1,0 +1,248 @@
+{
+  "step": "04_normalization",
+  "source": "topcv",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:13:02+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 1561
+  },
+  "output": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 1561
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "N1",
+      "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
+      "action": "modify",
+      "rows_affected": 1554,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "tinh_chinh",
+          "before": "Hà Nội",
+          "after": "TP. Hà Nội",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2281042",
+          "field": "tinh_chinh",
+          "before": "Hà Nội",
+          "after": "TP. Hà Nội",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "tinh_chinh",
+          "before": "Hồ Chí Minh",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    },
+    {
+      "id": "N2",
+      "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
+      "action": "modify",
+      "rows_affected": 1554,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "seniority",
+          "before": "Nhân viên",
+          "after": "Mới tốt nghiệp (kinh_nghiem)",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2281042",
+          "field": "seniority",
+          "before": "Quản lý / Giám sát",
+          "after": "Trưởng nhóm/Quản lý (raw)",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "seniority",
+          "before": "Nhân viên",
+          "after": "Junior (kinh_nghiem)",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    },
+    {
+      "id": "N3",
+      "name": "Phân loại 12 nhóm nghề IT",
+      "action": "modify",
+      "rows_affected": 1355,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "job_family",
+          "before": "Manual Test Data [Hà Nội] - Mức Lương Upto 20 Triệu, Có Kinh Nghiệm Là 1 Lợi Thế Lớn",
+          "after": "Kiểm thử (QA/QC) (title)",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2281042",
+          "field": "job_family",
+          "before": "Kỹ Sư Quản Lý Dự Án – PC Junior",
+          "after": "Quản lý sản phẩm/dự án (title)",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "job_family",
+          "before": "UI/UX Designer - Mobile App- [HCM] - Thu Nhập Lên Đến 30 Triệu",
+          "after": "Mobile (title)",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
+    },
+    {
+      "id": "N4",
+      "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
+      "action": "modify",
+      "rows_affected": 1523,
+      "examples": []
+    },
+    {
+      "id": "N5",
+      "name": "Chuẩn hóa tên công ty",
+      "action": "modify",
+      "rows_affected": 1560,
+      "examples": []
+    },
+    {
+      "id": "N2b",
+      "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
+      "action": "flag",
+      "rows_affected": 38,
+      "examples": []
+    },
+    {
+      "id": "N6a",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "N6",
+      "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
+      "action": "modify",
+      "rows_affected": 7,
+      "examples": []
+    },
+    {
+      "id": "N7",
+      "name": "Biến đổi log1p cho mức lương",
+      "action": "modify",
+      "rows_affected": 884,
+      "examples": []
+    }
+  ],
+  "fields": [
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "tinh_chinh",
+      "fill_pct_in": 99.2,
+      "fill_pct_out": 99.2
+    },
+    {
+      "field": "seniority",
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
+    },
+    {
+      "field": "seniority_source",
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
+    },
+    {
+      "field": "job_family",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_family_source",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_std",
+      "fill_pct_in": 97.6,
+      "fill_pct_out": 97.6
+    },
+    {
+      "field": "company_norm",
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
+    },
+    {
+      "field": "salary_min_vnd_capped",
+      "fill_pct_in": 48.9,
+      "fill_pct_out": 48.9
+    },
+    {
+      "field": "salary_max_vnd_capped",
+      "fill_pct_in": 56.6,
+      "fill_pct_out": 56.6
+    },
+    {
+      "field": "log_salary_min",
+      "fill_pct_in": 48.9,
+      "fill_pct_out": 48.9
+    },
+    {
+      "field": "log_salary_max",
+      "fill_pct_in": 56.6,
+      "fill_pct_out": 56.6
+    },
+    {
+      "field": "is_outlier_salary",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "seniority_distribution": {
+      "Junior": 612,
+      "Trưởng nhóm/Quản lý": 362,
+      "Middle": 223,
+      "Mới tốt nghiệp": 175,
+      "Senior": 104,
+      "Thực tập": 78
+    },
+    "job_family_distribution": {
+      "Backend": 218,
+      "Khác": 206,
+      "Thiết kế UI/UX": 199,
+      "DevOps/Cloud": 164,
+      "Data/AI": 156,
+      "Kiểm thử (QA/QC)": 138,
+      "Quản lý sản phẩm/dự án": 114,
+      "Phân tích nghiệp vụ (BA)": 103,
+      "Mobile": 88,
+      "Hệ thống/Mạng": 64,
+      "Fullstack": 56,
+      "Bảo mật": 38,
+      "Frontend": 17
+    },
+    "salary_outliers": 7
+  }
+}

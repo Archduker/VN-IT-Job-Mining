@@ -1,0 +1,259 @@
+{
+  "step": "03_transformation",
+  "source": "jobsgo",
+  "mode": "applied",
+  "generated_at": "2026-11-03T17:12:56+00:00",
+  "code_version": "7dee2a4",
+  "input": {
+    "path": "data/preprocessing/02_integration/all.parquet",
+    "rows": 683
+  },
+  "output": {
+    "path": "data/preprocessing/03_transformation/all.parquet",
+    "rows": 683
+  },
+  "dropped": [],
+  "rules": [
+    {
+      "id": "T1",
+      "name": "Null trá hình thành null",
+      "action": "modify",
+      "rows_affected": 557,
+      "examples": []
+    },
+    {
+      "id": "T2",
+      "name": "Bóc tách dải số lương Cascade",
+      "action": "modify",
+      "rows_affected": 430,
+      "examples": [
+        {
+          "job_id": "27681538345",
+          "field": "salary_min_max",
+          "before": "12 - 20 triệu VNĐ",
+          "after": "12000000.0 - 20000000.0 VND (header)",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-solution-engineer-thu-nhap-12-20-trieu-27681538345.html"
+        },
+        {
+          "job_id": "27712444149",
+          "field": "salary_min_max",
+          "before": "Đến 20 triệu VNĐ",
+          "after": "None - 20000000.0 VND (header)",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-dinh-thu-phan-mem-qa-engineer-luong-10-20-trieu-27712444149.html"
+        },
+        {
+          "job_id": "28385786022",
+          "field": "salary_min_max",
+          "before": "20 - 25 triệu VNĐ",
+          "after": "20000000.0 - 25000000.0 VND (header)",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-presales-cntt-server-network-cctv-thu-nhap-20-25-trieu-28385786022.html"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
+      "action": "modify",
+      "rows_affected": 682,
+      "examples": []
+    },
+    {
+      "id": "T4",
+      "name": "Bóc tách số năm kinh nghiệm",
+      "action": "modify",
+      "rows_affected": 682,
+      "examples": [
+        {
+          "job_id": "27681538345",
+          "field": "exp_min_max",
+          "before": "1 - 2 năm",
+          "after": "1.0 - 2.0 years",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-solution-engineer-thu-nhap-12-20-trieu-27681538345.html"
+        },
+        {
+          "job_id": "27712444149",
+          "field": "exp_min_max",
+          "before": "Không yêu cầu",
+          "after": "0.0 - 0.0 years",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-dinh-thu-phan-mem-qa-engineer-luong-10-20-trieu-27712444149.html"
+        },
+        {
+          "job_id": "28385786022",
+          "field": "exp_min_max",
+          "before": "Trên 2 năm",
+          "after": "2.0 - None years",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-presales-cntt-server-network-cctv-thu-nhap-20-25-trieu-28385786022.html"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Bóc tách chỉ tiêu headcount",
+      "action": "modify",
+      "rows_affected": 398,
+      "examples": []
+    },
+    {
+      "id": "T2f",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "T6",
+      "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
+      "action": "modify",
+      "rows_affected": 683,
+      "examples": []
+    },
+    {
+      "id": "T7",
+      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "action": "modify",
+      "rows_affected": 677,
+      "examples": [
+        {
+          "job_id": "27681538345",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "[]",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-solution-engineer-thu-nhap-12-20-trieu-27681538345.html"
+        },
+        {
+          "job_id": "27712444149",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "['Agile/Scrum', 'Machine Learning']",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-dinh-thu-phan-mem-qa-engineer-luong-10-20-trieu-27712444149.html"
+        },
+        {
+          "job_id": "28385786022",
+          "field": "skills_clean",
+          "before": "None",
+          "after": "[]",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-presales-cntt-server-network-cctv-thu-nhap-20-25-trieu-28385786022.html"
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Bóc tách địa điểm 3 cấp",
+      "action": "modify",
+      "rows_affected": 683,
+      "examples": [
+        {
+          "job_id": "27681538345",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': '17 Đinh Núp, Cầu Giấy', 'phuong_xa': None, 'tinh_thanh': 'TP. Hà Nội', 'raw': '17 Đinh Núp, Cầu Giấy, Hà Nội (Trước sáp nhập:Cầu Giấy, Hà Nội |Sau sáp nhập:Yên Hòa, Hà Nội)'}",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-solution-engineer-thu-nhap-12-20-trieu-27681538345.html"
+        },
+        {
+          "job_id": "27712444149",
+          "field": "locations",
+          "before": "Hồ Chí Minh, Hà Nội",
+          "after": "{'dia_chi_cu_the': 'Hồ Chí Minh', 'phuong_xa': None, 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Hồ Chí Minh, Hà Nội'}",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-dinh-thu-phan-mem-qa-engineer-luong-10-20-trieu-27712444149.html"
+        },
+        {
+          "job_id": "28385786022",
+          "field": "locations",
+          "before": "Hà Nội",
+          "after": "{'dia_chi_cu_the': 'Biệt thự NV11, Khu Đô Thị Mễ Trì Hạ', 'phuong_xa': None, 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Biệt thự NV11, Khu Đô Thị Mễ Trì Hạ, Phường Mễ Trì, Quận Nam Từ Liêm, .Hà Nội (Trước sáp nhập:Nam Từ Liêm, Hà Nội |Sau sáp nhập:Từ Liêm, Hà Nội)'}",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-presales-cntt-server-network-cctv-thu-nhap-20-25-trieu-28385786022.html"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "field": "salary_min_vnd",
+      "fill_pct_in": 54.0,
+      "fill_pct_out": 54.0
+    },
+    {
+      "field": "salary_max_vnd",
+      "fill_pct_in": 58.7,
+      "fill_pct_out": 58.7
+    },
+    {
+      "field": "posted_date",
+      "fill_pct_in": 99.7,
+      "fill_pct_out": 99.7
+    },
+    {
+      "field": "deadline_date",
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
+    },
+    {
+      "field": "exp_max_years",
+      "fill_pct_in": 80.5,
+      "fill_pct_out": 80.5
+    },
+    {
+      "field": "headcount",
+      "fill_pct_in": 58.3,
+      "fill_pct_out": 58.3
+    },
+    {
+      "field": "job_title_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "description_clean",
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
+    },
+    {
+      "field": "skills_clean",
+      "fill_pct_in": 62.5,
+      "fill_pct_out": 62.5
+    },
+    {
+      "field": "benefits_std",
+      "fill_pct_in": 95.8,
+      "fill_pct_out": 95.8
+    },
+    {
+      "field": "locations",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "language",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "salary_source_distribution": {
+      "header": 424,
+      "title": 7,
+      "jd": 0,
+      "none": 252
+    },
+    "salary_under_1m_count": 1,
+    "salary_from_x_count": 28,
+    "language_distribution": {
+      "vi": 613,
+      "en": 70
+    },
+    "experience_parsed_rate": 99.9
+  }
+}
