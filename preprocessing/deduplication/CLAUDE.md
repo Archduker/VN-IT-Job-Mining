@@ -9,3 +9,5 @@
 - NFC phải chạy trước regex boilerplate. Test dạng NFD và NFC cùng văn bản.
 - Test writer với trạng thái drop dựng sẵn không thay thế test pipeline quyết định merge và truy vết.
 - `verify_delivery` tái chạy vào thư mục mới; không đụng raw, báo cáo chính, R2 hoặc scheduler.
+
+- Khi phân tích audit: cosine của transitive-dropped có thể là điểm qua linked_via, không phải điểm trực tiếp hai đầu dòng. Không suy số cụm tách/gộp từ số cạnh đổi điều kiện; phải chạy lại đồ thị.

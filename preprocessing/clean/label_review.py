@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import math
 import sys
 from pathlib import Path
 from typing import Any
@@ -26,6 +27,7 @@ from preprocessing.common import REPO_ROOT, SOURCES
 REVIEW_DIR = REPO_ROOT / "data" / "preprocessing" / "review"
 FIELD = "nhan_tay"
 ANSWER = {"i": "it", "n": "non_it"}
+Z95 = 1.9599639845400545  # z hai phía của khoảng tin cậy 95%
 
 RUBRIC = """Rubric (chỉ dựa vào tiêu đề + kỹ năng của chính tin đó, không mở web):
   it      - làm về phần mềm/dữ liệu/hạ tầng CNTT: developer, QA/tester, data, DevOps, security,
@@ -66,14 +68,19 @@ def write_rows(path: Path, rows: list[dict[str, str]]) -> None:
 
 def status(path: Path) -> dict[str, int]:
     if not path.is_file():
-        return {"rows": 0, "labeled": 0, "it": 0, "non_it": 0, "agree": 0, "disagree": 0}
+        return {"rows": 0, "labeled": 0, "it": 0, "non_it": 0, "agree": 0, "disagree": 0,
+                "l1_it": 0, "l1_it_labeled": 0}
     rows = read_rows(path)
     labeled = [r for r in rows if (r.get(FIELD) or "").strip() in ANSWER.values()]
     agree = sum((r.get(FIELD) or "").strip() == r["it_status"] for r in labeled)
+    # nhóm quyết định Precision IT: bộ lọc dự đoán `it` ngay ở tầng 1 (tiêu đề đủ từ khóa)
+    l1_it = [r for r in rows if r.get("it_rule_level") == "1" and r.get("it_status") == "it"]
     return {"rows": len(rows), "labeled": len(labeled),
             "it": sum(r[FIELD] == "it" for r in labeled),
             "non_it": sum(r[FIELD] == "non_it" for r in labeled),
-            "agree": agree, "disagree": len(labeled) - agree}
+            "agree": agree, "disagree": len(labeled) - agree,
+            "l1_it": len(l1_it),
+            "l1_it_labeled": sum((r.get(FIELD) or "").strip() in ANSWER.values() for r in l1_it)}
 
 
 def precision(path: Path) -> float | None:
@@ -81,8 +88,26 @@ def precision(path: Path) -> float | None:
     return validation_metrics(read_rows(path))["precision_it"]
 
 
+def wilson_ci(successes: int, total: int, z: float = Z95) -> tuple[float, float] | None:
+    """Khoảng tin cậy 95% kiểu Wilson cho một tỷ lệ đo trên mẫu nhỏ.
+
+    Đây là khoảng nhị thức tham khảo, không hiệu chỉnh thiết kế mẫu phân tầng,
+    trọng số hoặc thiếu phản hồi. Không dùng riêng nó để kết luận nghiệm thu dân số.
+    Trả None khi mẫu trống (mẫu số bằng 0) để phân biệt "chưa đo" với "đo được 0%".
+    """
+    if total < 0 or not 0 <= successes <= total or not math.isfinite(z) or z <= 0:
+        raise ValueError("cần 0 <= successes <= total và z hữu hạn, dương")
+    if total == 0:
+        return None
+    p = successes / total
+    den = 1 + z * z / total
+    centre = (p + z * z / (2 * total)) / den
+    half = z * math.sqrt(p * (1 - p) / total + z * z / (4 * total * total)) / den
+    return max(0.0, centre - half), min(1.0, centre + half)
+
+
 def validation_metrics(rows: list[dict[str, str]]) -> dict[str, Any]:
-    """Chỉ đo từ nhãn từng tin; không dùng ghi chú tổng hợp trong it_policy.json."""
+    """Thống kê mẫu đã trả lời, chưa có trọng số; không phải ước lượng toàn dân số."""
     matrix = {"tp": 0, "fp": 0, "tn": 0, "fn": 0}
     for row in rows:
         actual, predicted = row.get(FIELD, "").strip(), row.get("it_status", "").strip()
@@ -97,6 +122,9 @@ def validation_metrics(rows: list[dict[str, str]]) -> dict[str, Any]:
         "precision_it": tp / (tp + fp) if tp + fp else None,
         "precision_non_it": tn / (tn + fn) if tn + fn else None,
         "recall_it": tp / (tp + fn) if tp + fn else None,
+        "precision_it_ci": wilson_ci(tp, tp + fp),
+        "precision_non_it_ci": wilson_ci(tn, tn + fn),
+        "recall_it_ci": wilson_ci(tp, tp + fn),
         "reason": "NO_LABELS" if not sum(matrix.values()) else None,
     }
 
@@ -167,10 +195,10 @@ def main(argv: list[str] | None = None) -> int:
 
     missing = [s for s in sources if not path_for(s).is_file()]
     if missing:
-        print(f"chưa có mẫu cho {', '.join(missing)} - chay: python -m preprocessing.clean.run --source {missing[0]}")
+        print(f"chưa có mẫu cho {', '.join(missing)} - chay: python -m preprocessing.clean.run --resample-review --source {missing[0]}")
         return 1
     if args.status:
-        tot = {"rows": 0, "labeled": 0}
+        tot = {"rows": 0, "labeled": 0, "l1_it": 0, "l1_it_labeled": 0}
         all_rows = []
         num = den = 0
         for s in sources:
@@ -181,20 +209,35 @@ def main(argv: list[str] | None = None) -> int:
             den += kept
             tot["rows"] += st["rows"]
             tot["labeled"] += st["labeled"]
+            tot["l1_it"] += st["l1_it"]
+            tot["l1_it_labeled"] += st["l1_it_labeled"]
             p = hit / kept if kept else None
             print(f"{s:14s} dòng {st['rows']:3d} | đã nhãn {st['labeled']:3d} "
                   f"| it {st['it']:3d} non_it {st['non_it']:3d} | bộ lọc trùng người {st['agree']}/{st['labeled']}"
-                  f" | Precision {('n/a' if p is None else f'{p:.1%}')} ({hit}/{kept})")
+                  f" | Precision {('n/a' if p is None else f'{p:.1%}')} ({hit}/{kept})"
+                  f" | tầng 1 IT: {st['l1_it_labeled']}/{st['l1_it']}")
         rate = num / den if den else None
         print(f"TỔNG: {tot['labeled']}/{tot['rows']} dòng có nhãn tay | "
               f"Precision cộng dồn {'chưa đo được' if rate is None else f'{rate:.1%}'} ({num}/{den})"
               f" - ngưỡng nghiệm thu 95%")
+        print(f"Tầng 1 dự đoán IT (nhóm bắt buộc để đo Precision IT): "
+              f"{tot['l1_it_labeled']}/{tot['l1_it']} dòng đã nhãn")
         metrics = validation_metrics(all_rows)
         print(f"Confusion matrix (IT là lớp dương): TP={metrics['tp']} FP={metrics['fp']} "
               f"TN={metrics['tn']} FN={metrics['fn']}")
         for key in ("precision_it", "precision_non_it", "recall_it"):
-            value = metrics[key]
-            print(f"{key}: {'chưa đo được (mẫu số bằng 0)' if value is None else f'{value:.1%}'}")
+            value, ci = metrics[key], metrics[f"{key}_ci"]
+            if value is None:
+                print(f"{key}: chưa đo được (mẫu số bằng 0)")
+                continue
+            line = f"{key}: {value:.1%} | KTC 95% [{ci[0]:.1%}; {ci[1]:.1%}]"
+            if key != "recall_it":
+                line += (" -> cận dưới mẫu >= 95%" if ci[0] >= 0.95
+                         else " -> cận dưới mẫu < 95%")
+            print(line)
+        print("Chưa kết luận nghiệm thu toàn bộ: các tỷ lệ và KTC Wilson trên mẫu đã trả lời "
+              "chưa hiệu chỉnh phân tầng, trọng số và thiếu nhãn. "
+              "Lead cần chốt cách tổng hợp và đánh giá cả precision IT lẫn nhóm thực sự bị loại.")
         print("Chỉ tiêu tính từ nhãn từng tin; ghi chú policy không thay thế bằng chứng nghiệm thu.")
         if tot["labeled"] < 100:
             print("-> cần >= 100 dòng theo docs/tasks/02 mục 3.4; chạy: "

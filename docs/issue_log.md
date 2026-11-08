@@ -266,6 +266,55 @@ Kết quả chung sau đợt sửa:
   - N2b gắn cờ 635 tin.
   - R2 34/34 khớp.
   - Test `test_level2_needs_family_and_jd_skills`, `test_seniority_conflict_with_experience`, `test_e5_e8_*`; `make test`.
+
+### L-29. Audit Task #2 (Clean & Dedup) tìm 8 lỗi B1–B8 về báo cáo, lineage, CDC và nhãn (07–08/11/2026)
+
+Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4; đây là bản ghi cho toàn dự án.
+
+- **Lỗi:**
+  - B1: dry-run lẻ một sàn ghi đè báo cáo snapshot chung của 8 sàn.
+  - B2: 7 cụm có `first_posted_at` sai (so chuỗi "DD/MM/YYYY" lẫn ISO).
+  - B3: 3 tin repost mất khỏi Golden Master vì bản thua ở tầng liên sàn không được truyền.
+  - B4: CDC báo 15 vi phạm "không tăng version" trong khi chỉ 5 bước thực đổi nội dung.
+  - B5: điều kiện precision ≥95% được đánh dấu đạt bằng ghi chú trong `it_policy.json`, không phải nhãn từng tin; mẫu C4b thiếu tin tầng 1 dự đoán IT nên không đại diện đầy đủ cho precision IT.
+  - B6: regex xóa boilerplate chạy trước NFC nên văn bản NFD không khớp.
+  - B7: báo cáo nhầm `pairs_audited` với `cosine_pairs_computed`, block từng sàn với block toàn cục, non_IT trước/sau C5 (có tuyên bố "tăng 68000 lần" sai mẫu số).
+  - B8: test gộp bắc cầu dựng sẵn `drop` thay vì kiểm thuật toán.
+- **Nguyên nhân:**
+  - B1/B7: biến `partial` và tên counter chưa tách phạm vi, báo cáo tái dụng số của phép đo khác.
+  - B2/B3: khóa so sánh là chuỗi ngày và metadata tầng dưới không được gom từ toàn cụm.
+  - B4: định nghĩa vi phạm chỉ nhìn `version`, không nhìn nội dung.
+  - B5: công cụ kiểm định đọc `it_policy.json` (bản ghi quyết định) thay vì đọc nhãn theo `job_id`.
+  - B6: thứ tự NFC/regex đảo nhau.
+  - B8: fixture mô tả kết quả mong muốn thay vì đầu vào thuật toán.
+- **Cách xử lý:**
+  - B1: dry-run lẻ ghi sang `reports/preprocessing/_partial/<step>/`; test so byte toàn bộ báo cáo chính trước/sau cho cả Clean và Dedup.
+  - B2: parse ngày, quy timestamp không offset về +07 rồi so UTC; giữ biểu diễn ngày đã chọn; ngày không parse được để riêng trong `unparsed_dates`.
+  - B3: Golden Master và metadata bản giữ hợp `repost_records` từ toàn cụm (kèm source/job_id/url/hash); kiểm mỗi input ánh xạ đúng một master cuối.
+  - B4: tách hai chỉ số và đổi định nghĩa theo nội dung: **`hop_same_version` = 15** là số bước cùng version; **`hop_version_not_bumped` = 5** là số bước cùng version **nhưng canonical hash đổi** (định nghĩa "đổi nội dung" dùng canonical hash, không dùng hash của crawler). Hai trường không đồng nghĩa; 15 bước đó gồm 9 raw payload giống hệt, 6 đổi raw payload. Monitoring hiển thị cả hai.
+  - B5: bỏ đánh dấu nghiệm thu; `label_review` in TP/FP/TN/FN, `precision_it`, `precision_non_it`, `recall_it` chỉ từ nhãn từng tin, mẫu thiếu nhãn trả `null`/`NO_LABELS`; thiết kế lại mẫu C4b thành 3 tầng (non_IT tầng 1, mọi tin tầng 2, **100 tin tầng 1 dự đoán IT** chia theo sàn) qua `python -m preprocessing.clean.run --resample-review`. Báo Wilson nhị thức tham khảo trên mẫu đã trả lời. Đính chính ở L-30: không tự suy ra nghiệm thu từ cận dưới khi chưa hiệu chỉnh phân tầng; lead chưa yêu cầu dùng cận dưới làm tiêu chí. `--level1-it` cho phép đổi tổng mẫu trước khi gán.
+  - B6: đưa NFC lên trước regex; test cùng văn bản NFC/NFD.
+  - B7: thêm counter riêng (`cosine_pairs_computed`, `cosine_blocks`, `cross_pairs_evaluated`, `blocking_unique_blocks`, `lineage_rows`) và bỏ tuyên bố tốc độ sai mẫu số.
+  - B8: test pipeline với A–B=0,85; B–C=0,9; A–C=0,8 kiểm master và `transitive-link`; điểm số trong test là fixture biên, không phải đo sản xuất.
+- **Kiểm chứng:** 13.365 raw → 5.077 Clean → 4.897 Golden Master; 5.077 tham chiếu ánh xạ đúng một lần; 54 repost về lineage; 7 `first_posted_at` sửa, 0 sai min ngày; báo cáo chính giữ nguyên byte sau dry-run Glints; `test_deduplication_step.py` 55 đạt, Clean 31 đạt, `verify_delivery` chạy lại ở thư mục mới; toàn unit 176 đạt / 1 lỗi ngoài phạm vi (`KNOWN_ISSUED.md` SCRAPE-17); Ruff phạm vi bàn giao sạch; mẫu C4b dựng lại 643 dòng (543 cũ + 100 tầng 1 IT, phân bổ topcv 29/itviec 18/jobsgo 16/vnws 14/careerviet 9/glints 6/topdev 4/vieclam24h 4), hiện 0/643 nhãn.
+- **Còn lại:** điều kiện precision ≥95% **chưa đóng** vì mẫu cục bộ hiện chưa có nhãn; chưa xác minh kho nhãn lịch sử toàn dự án (mục B5; `data/` bị gitignore nên không khôi phục từ git — xem `KNOWN_ISSUED.md` PRE-12); category gate tầng 2 chờ chốt SPEC-05 §2.4 theo số liệu 08/11 (xem `KNOWN_ISSUED.md` PRE-13).
+
+### L-30. Kiểm chứng lại tạo mẫu và diễn giải bằng chứng Task #2 (08/11/2026)
+
+- **Lỗi:** `--resample-review --source glints` bỏ qua source, gọi tạo mẫu cho cả tám sàn; `--level1-it` âm hoặc dùng ngoài chế độ tạo mẫu không được chặn. CLI tự kết luận ĐẠT từ Wilson cộng dồn; tài liệu gán yêu cầu cận dưới cho lead và biến regex category thành nhãn/ngữ nghĩa thật.
+- **Nguyên nhân:** nhánh CLI gọi `resample_review` bằng mặc định SOURCES; chưa phân biệt thống kê mẫu phân tầng với dân số; probe tìm key và regex không phải bằng chứng nhãn tay.
+- **Cách xử lý:** truyền sources đã chọn, kiểm tra tham số trước khi ghi; Wilson kiểm tra miền đầu vào; giữ CI tham khảo nhưng bỏ kết luận nghiệm thu tự động. Sửa §5.8, PRE-12/PRE-13, SCRAPE-17 và trả lời lead trong `cauhoi.md`; thêm cảnh báo Clean/CLAUDE. Không thay bộ lọc, nhãn, raw hoặc snapshot.
+- **Kiểm chứng:** đầu lượt 176 đạt / 1 lỗi; sau sửa 180 đạt / 1 lỗi ledger ngoài phạm vi; Clean 35, Dedup 55, Ruff sạch. Test CLI kiểm tra nguồn và không gọi hàm ghi khi tham số sai. Đếm CSV 643/0 nhãn/100 tầng 1 IT; đếm raw pool 4.469. Category 842/101 rỗng/310 khớp/431 không khớp; regex mở rộng 428 khớp và chênh 118. Log `nov08_recheck`, lệnh trong task §5.7–5.8. Hash CSV review và JSON report được đối chiếu trước/sau.
+- **Còn lại:** PRE-12, PRE-13 và SCRAPE-17 vẫn mở; không xóa vì chưa giải quyết nhãn, quyết định Q3 hay lỗi Collection. Chờ commit đặc tả Q4, duyệt hai cặp Q5 và nối Integration sau merge Task #2.
+
+### L-31. Probe audit diễn giải sai điểm bắc cầu và độ dài JD (08/11/2026)
+
+- **Lỗi:** probe Q5 gọi độ dài JSON payload là độ dài JD, tra job_id đơn lẻ xuyên sàn; probe ADR dùng điểm bắc cầu như cosine trực tiếp và suy số cạnh thành kết quả tách/gộp cụm. Tài liệu gọi cùng tập token là giống từng byte và mở lại quyết định Q4 đã chốt.
+- **Nguyên nhân:** không đối chiếu ý nghĩa trường audit; chưa phân biệt đồ thị cụm với các cạnh hay payload với raw_description_text; tokenizer của probe bỏ thông tin.
+- **Cách xử lý:** sửa hai script drafts, lookup bằng URL + job_id và chặn trùng khóa; đo riêng payload/JD qua flattener; loại 7 lineage rows khỏi phép thử trực tiếp. Cập nhật task §5.8.3/5.8.5, PRE-14 và phụ lục cauhoi. Không sửa thuật toán hoặc dữ liệu.
+- **Kiểm chứng:** chạy lại hai script exit 0; 81/131 dropped, 14/55 review-band, 2/3 transitive-link đạt điều kiện kép của probe. JD Tinh Vân 826/382; Nasani 448/444/459 ký tự. 12 review-band bằng tập token, cosine 0,765–0,8426. Bảng Wilson tái hiện đủ tám cỡ mẫu. Hash 54 CSV review/JSON report không đổi. Log trong artifact nov08_recheck. Không chạy lại full unit vì chỉ sửa probe và tài liệu; 180 đạt/1 lỗi là kết quả lượt trước.
+- **Còn lại:** Q5 vẫn cần nhãn nghiệp vụ; PRE-14 cần đồng bộ ADR với chuẩn lead đã chọn. Không suy số cụm từ số cạnh, không dùng tokenizer probe làm luật merge.
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

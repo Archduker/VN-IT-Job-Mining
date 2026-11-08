@@ -605,9 +605,28 @@ def test_precision_metrics_distinguish_classes_and_no_labels():
     metrics = label_review.validation_metrics(rows)
     assert metrics == {"tp": 1, "fp": 1, "tn": 2, "fn": 1, "labeled": 5,
                        "precision_it": .5, "precision_non_it": 2 / 3, "recall_it": .5,
+                       "precision_it_ci": label_review.wilson_ci(1, 2),
+                       "precision_non_it_ci": label_review.wilson_ci(2, 3),
+                       "recall_it_ci": label_review.wilson_ci(1, 2),
                        "reason": None}
     empty = label_review.validation_metrics([{"it_status": "it", "nhan_tay": ""}])
     assert empty["reason"] == "NO_LABELS" and empty["precision_it"] is None
+    assert empty["precision_it_ci"] is None  # mẫu trống: "chưa đo", không phải 0%
+
+
+def test_wilson_ci_reports_small_sample_honestly():
+    ci = label_review.wilson_ci
+    assert ci(0, 0) is None
+    with pytest.raises(ValueError):
+        ci(5, 0)  # số đúng không thể lớn hơn tổng số đã đo
+    lo, hi = ci(1, 2)
+    assert 0.0 <= lo < 0.5 < hi <= 1.0                      # mẫu nhỏ thì khoảng rộng
+    assert ci(10, 10)[0] > ci(10, 20)[0]                    # thêm dòng siết cận dưới lại
+    assert ci(1, 100)[0] < 0.5 < ci(99, 100)[0] < 1.0       # hiếm khi gặp vẫn không âm
+    # Ý nghĩa nghiệp vụ (lead yêu cầu báo kèm KTC): mẫu 100 dòng tầng 1 IT chỉ KẾT LUẬN được
+    # "precision IT >= 95%" khi cả 100 dòng đều đúng; sai 1 dòng là cận dưới tụt dưới 95%.
+    assert ci(100, 100)[0] >= 0.95 and ci(99, 100)[0] < 0.95
+    assert ci(197, 200)[0] >= 0.95 and ci(196, 200)[0] < 0.95  # 200 dòng chịu được tối đa 3 lỗi
 
 
 def test_cosine_stats_count_before_threshold():
