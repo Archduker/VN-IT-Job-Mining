@@ -21,6 +21,7 @@ interface NavItem {
 }
 
 const MAIN: NavItem[] = [
+  { to: '/insights', label: 'Market Insights', icon: BarChart3 },
   { to: '/', label: 'Collection', icon: LayoutDashboard },
   { to: '/raw', label: 'Raw', icon: BarChart3 },
   { to: '/crawling', label: 'Cấu hình cào', icon: Settings2 },
