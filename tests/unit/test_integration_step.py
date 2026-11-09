@@ -121,6 +121,7 @@ def test_integration_output_contract_and_conservation(tmp_path, monkeypatch):
 
     test_in.mkdir(parents=True, exist_ok=True)
     monkeypatch.setattr(integration, "IN_DIR", test_in)
+    monkeypatch.setattr(integration, "OUT_DIR", test_out)
     monkeypatch.setattr(integration, "OUT_FILE", test_out / "all.parquet")
     monkeypatch.setattr(step_report, "REPORTS_ROOT", test_rep)
 
@@ -141,15 +142,16 @@ def test_integration_output_contract_and_conservation(tmp_path, monkeypatch):
 
     # 1. Kiểm tra bảo toàn dòng
     assert rep.data["input"]["rows"] == 4
-    assert rep.data["output"]["rows"] == 3
-    assert rep.data["dropped"] == [{"rule": "I0", "reason": "dòng không đọc được JSON, cần xem lại file 01_clean", "rows": 1}]
+    # I0 (zero-drop): dòng JSON hỏng được giữ lại thành 1 bản ghi, không bị loại
+    assert rep.data["output"]["rows"] == 4
+    assert rep.data["dropped"] == []
     assert rep.data["checks"]["rows_conserved"] is True
 
     # 2. Đọc file parquet lên kiểm tra Contract
     parquet_path = test_out / "all.parquet"
     assert parquet_path.exists()
     df = pd.read_parquet(parquet_path)
-    assert len(df) == 3
+    assert len(df) == 4
 
     # Assert đúng 28 cột
     assert list(df.columns) == list(integration.ALL_OUTPUT_COLUMNS)

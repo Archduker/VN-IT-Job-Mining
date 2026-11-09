@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """preprocessing.integration.json_flattener
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Module ép phẳng JSON (JSON Flattening) đa nguồn cho VN-IT-Job-Mining.
