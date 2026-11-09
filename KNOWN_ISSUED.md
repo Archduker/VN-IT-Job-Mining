@@ -1,6 +1,6 @@
 # Known Issues
 
-Danh sách việc còn tồn đọng, cập nhật ngày 03/11/2026 trên nhánh `fix/known-issues-p1`. Xử lý xong mục nào thì chuyển sang `docs/issue_log.md` theo khuôn Lỗi → Nguyên nhân → Cách xử lý → Kiểm chứng (xem `docs/CLAUDE.md`), rồi xóa khỏi đây.
+Danh sách việc còn tồn đọng, cập nhật ngày 09/11/2026 sau khi merge 7 nhánh thành viên vào `sprint/pipeline-delivery`. Danh sách việc phát sinh từ merge, người phụ trách và trạng thái xử lý: `docs/tasks/issues_merge.md`. Xử lý xong mục nào thì chuyển sang `docs/issue_log.md` theo khuôn Lỗi → Nguyên nhân → Cách xử lý → Kiểm chứng (xem `docs/CLAUDE.md`), rồi xóa khỏi đây.
 
 Thứ tự làm của dự án: **web scraping → trực quan hóa dữ liệu → pre-processing**.
 
@@ -28,9 +28,9 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 - Ví dụ: VietnamWorks `2118352` CLOSED ("page not found") từ 20/10, nhưng có raw ngày 01/11.
 - Cần xem: tin đăng lại hay crawler lưu raw trước khi kiểm tra tin đã đóng. Ledger giữ CLOSED theo quy tắc.
 
-**SCRAPE-11. Discovery lỗi toàn trang mà vẫn báo thành công (7 nguồn còn lại)**
+**SCRAPE-11. Discovery lỗi toàn trang mà vẫn báo thành công (5 nguồn còn lại)**
 
-- TopCV đã sửa ngày 03/11 (tiêu chuẩn C14, `DiscoveryError`). 7 nguồn còn lại chưa kiểm; làm cùng contract test của từng nguồn.
+- TopCV, TopDev, VietnamWorks đã có `DiscoveryError` (tiêu chuẩn C14; nhánh Khoa, VietnamWorks chưa có test). Còn CareerViet, Vieclam24h, ITviec, Glints, JobsGO chưa kiểm; làm cùng contract test của từng nguồn.
 
 **SCRAPE-12. Việc nhỏ thấy khi cào thử 03/11**
 
@@ -42,10 +42,11 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 - JobsGO 1.5–3.0 giây; VietnamWorks 1.2–2.2 giây và `time.sleep(0.3)` cố định giữa các trang; TopDev 1.0–2.5 giây (gọi API).
 - CareerViet nghỉ qua `HttpClient` (`DelayConfig` 2–5 giây), đúng chuẩn, nhưng `tests/contract/standards.check_random_pause` chỉ tìm lời gọi `polite_sleep` hoặc `uniform` nên sẽ báo nhầm.
 - Cần quyết: nâng lên chuẩn, hoặc ghi ngoại lệ có lý do cho nguồn gọi API. Làm cùng contract test của từng nguồn.
+- Cập nhật 09/11: `standards.check_random_pause` đã nhận `DelayConfig` nhưng chỉ kiểm tên hàm; TopDev, VietnamWorks, JobsGO vẫn dưới 2,0–4,5 giây.
 
 **SCRAPE-14. Contract test cho 6 nguồn còn lại**
 
-- Đã có: TopDev, TopCV. Còn: VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints, JobsGO. Mỗi nguồn cần 3 mẫu thật trong `tests/fixtures/<nguồn>/` (xem `tests/CLAUDE.md`).
+- Đã có: TopDev, TopCV. Nhánh Khoa (09/11) chỉ thêm test cấu trúc cho 8 nguồn, chưa có fixture/parser test cho 6 nguồn dưới. Còn: VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints, JobsGO. Mỗi nguồn cần 3 mẫu thật trong `tests/fixtures/<nguồn>/` (xem `tests/CLAUDE.md`).
 
 **SCRAPE-15. TopDev cào cả tin ngoài IT**
 
@@ -57,7 +58,12 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 
 - Raw của các tin này chỉ có tiêu đề, công ty, lương, địa điểm; không có trường mô tả hay yêu cầu nào (không phải lỗi làm phẳng: không có trường chữ nào dài hơn 300 ký tự). 244 tin là trang `/viec-lam/`, 53 tin là trang `/brand/`. Có cả tin IT thật (ví dụ "Embedded Systems Engineer").
 - Hiện tại: bước Clean bỏ các tin này theo luật C5 (JD dưới 30 từ).
+- Cập nhật 09/11: nhánh Khoa có fallback 4 tầng cho TopCV, chưa kiểm trên HTML thật, chưa có script backfill.
 - Cách xử lý: tìm vì sao crawler TopCV không lấy được JD trong 22–26/10, rồi đưa các tin này về `PENDING` để cào lại (chạy thử, gửi số liệu, chờ đồng ý vì ghi lên R2). Bản cào mới sẽ tự thay bản cũ qua luật C1.
+
+**SCRAPE-18. TopDev lọc IT bằng `it_filter` import ngược từ `preprocessing`** (mới, nhánh Khoa)
+
+- `collection` import từ `preprocessing` đảo chiều phụ thuộc; API `/td/v2/jobs` vẫn trả 14.572 tin dù lọc (liên quan SCRAPE-15). Chưa quyết: giữ bộ lọc ở thu thập hay chỉ lọc ở Clean.
 
 **SCRAPE-17. Test ledger còn lỗi trên máy cục bộ**
 
@@ -65,6 +71,7 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 - `save_catalog` dùng `mem_ts >= disk_ts`; khi timestamp bằng nhau, worker lưu sau có thể ghi đè trạng thái thay đổi sau. Test dùng `tmp_path`, không dùng raw của dự án.
 - Chưa đủ bằng chứng kết luận mọi Windows đều lỗi, đồng hồ luôn có độ phân giải 2,1 ms, hoặc rủi ro sản xuất thấp. Lead báo pass trên nhánh của lead; chưa tự kiểm chứng nhánh đó.
 - Ngoài Task #2, thuộc `collection/` – Task #1. Gửi log cho lead để tái hiện và quyết định xử lý; không sửa Collection trong lượt này.
+- Review 09/11 (GEN-6): trên Linux test pass, trên Windows fail; nguyên nhân gốc vẫn là `mem_ts >= disk_ts` ở trên.
 
 ## 2. Trực quan hóa dữ liệu
 
@@ -73,6 +80,15 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 - Vị trí: `reports/` trong git, đọc qua `monitoring/backend/app/services/pipeline_report_service.py`
 - Ảnh hưởng: số là thật, nhưng mang các lỗi của pre-processing cũ (xem mục 3). Mỗi trang có ghi giờ chạy pipeline.
 - Cách xử lý: tự hết khi làm xong mục 3 và chạy lại pipeline.
+- Cập nhật 09/11: Market Insights đã đọc PostgreSQL Mart (nhánh Sơn); các trang báo cáo cũ vẫn dùng `reports/` ngày 25/10. VIZ-5 đã xong, xóa.
+
+**VIZ-6. `/insights` chưa kiểm với dữ liệu Mart thật** (nhánh Sơn)
+
+- Mart rỗng, test mock query. Chưa chạy được với dữ liệu thật.
+
+**VIZ-7. Chưa kiểm giao diện sau merge** (nhánh Sơn)
+
+- Chưa chạy `./start_monitoring.sh --check` và kiểm 390 px; bundle JS 778 kB cần tách code (code-split).
 
 
 ## 3. Pre-processing
@@ -110,6 +126,109 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 - Không suy ra thêm 14 cụm hoặc tách 50 cặp: cần chạy lại blocking, TF-IDF và đồ thị. Q5 vẫn cần nhãn người đọc JD; chọn thuật toán không xác định trùng thật. Chi tiết task §5.8.5.
 - Chưa kiểm remote trong lượt này; file có trong HEAD không chứng minh bản cập nhật ADR/bắc cầu lead nói đã được xuất bản.
 
+**PRE-15. `it_policy.json` loại non_IT bằng bằng chứng tổng hợp** (Tài)
+
+- Loại 5.409 tin, chưa có nhãn từng tin. Quyết định 09/11: chấp nhận nguyên trạng. Kế hoạch sau: dùng model phân loại lại các tin bị loại để lấy lại tin IT bị loại nhầm. Chưa làm; trái với dòng "không dùng model" của `preprocessing/CLAUDE.md`, cần người dùng cho phép lại khi bắt đầu.
+
+**PRE-16. Integration chưa đọc đầu ra Dedup `01b_deduplication`** (Tài)
+
+- Báo cáo Integration 5.177 lệch 4.897 của Dedup. Cần nối đúng đầu vào hoặc ghi lý do.
+
+**PRE-17. Snapshot báo cáo của Tài là kết quả cũ** (Tài)
+
+- `reports/preprocessing/01_clean`, `01b_deduplication` ghi đè 17 file JSON bằng kết quả `f693b30`, không phải code đã sửa. Cần chạy lại pipeline trước khi tin các số đó.
+
+**PRE-18. I0 đổi từ "drop" sang "modify"** (Hoàng)
+
+- `preprocessing/integration/run.py:174-178`: dòng JSON hỏng thành một bản ghi giả (tiêu đề là 80 ký tự của dòng hỏng) thay vì bị loại, trái P2 §8. `run()` đổi `dry_run` mặc định thành False. Test đã sửa theo hành vi mới (305d017); cần quyết thiết kế cuối: giữ zero-drop hay trả lại "loại + ghi dropped".
+
+**PRE-19. `source_job_id` dùng `abs(hash(...))`** (Hoàng)
+
+- `hash()` của Python thay đổi theo mỗi lần chạy (PYTHONHASHSEED), nên id không ổn định. Đổi sang hàm băm cố định (hashlib).
+
+**PRE-20. Hai runner Integration trùng, thiếu test** (Hoàng)
+
+- `run.py` và `run_integration.py` trùng việc; thiếu test cho I2–I5; con số 5.177 vs 8.378 chưa giải thích.
+
+**PRE-21. Pipeline đặc trưng của Duy ghi trùng `04_normalization/all.parquet`** (Duy)
+
+- Chưa nối vào `run.py` của bước 4.
+
+**PRE-22. Lệch spec giữa cẩm nang Duy và SPEC-06/P4** (Duy)
+
+- Đã chốt: tên tỉnh "TP. Hồ Chí Minh" (theo spec). Chưa sửa code.
+- Cấp bậc, 6 cấp (SPEC-06 §2.2) so với 5 cấp (Duy, `experience_parser.py:61`):
+
+| Mã | 6 cấp (spec) | 5 cấp (Duy) |
+|---|---|---|
+| 0 | Thực tập | Intern/Fresher (gộp) |
+| 1 | Mới tốt nghiệp/Fresher | Junior |
+| 2 | Junior | Middle |
+| 3 | Middle | Senior |
+| 4 | Senior | Lead/Manager |
+| 5 | Trưởng nhóm/Quản lý | - |
+| -1 | Chưa rõ | Chưa rõ |
+
+  Mã từ Junior trở đi lệch một bậc, nên so sánh trực tiếp hai bản sẽ sai.
+- Đo độ bao quát 09/11/2026 (raw tải từ R2 về `data/`, bản mới nhất mỗi job, 10.758 tin của 8 nguồn, **trước khi lọc IT**). Chỉ dùng chữ (tiêu đề + nhãn cấp bậc của sàn), chưa dùng số năm kinh nghiệm. Cột 6 cấp là ánh xạ tạm do mình viết (từ khóa "thực tập/intern" → 0, "fresher/mới tốt nghiệp/graduate" → 1, còn lại theo luật của Duy dời một bậc), không phải code của ai trong nhóm:
+
+| Nhãn | 5 cấp (Duy) | 6 cấp (spec) |
+|---|---|---|
+| Chưa rõ (−1) | 7.249 (67,4%) | 7.229 (67,2%) |
+| Thực tập / Fresher gộp (5 cấp: 0) | 700 (6,5%) | - |
+| Thực tập (6 cấp: 0) | - | 587 (5,5%) |
+| Mới tốt nghiệp/Fresher (6 cấp: 1) | - | 140 (1,3%) |
+| Junior | 78 (0,7%) | 74 (0,7%) |
+| Middle | 99 (0,9%) | 99 (0,9%) |
+| Senior | 825 (7,7%) | 824 (7,7%) |
+| Lead/Quản lý | 1.807 (16,8%) | 1.805 (16,8%) |
+
+  Kết luận từ số đo, chưa chốt: hai cách bao quát gần như bằng nhau (cùng ~67% chưa rõ nếu chỉ dùng chữ); 6 cấp chỉ khác ở việc tách 700 tin thành 587 thực tập + 140 mới tốt nghiệp. Cấp "Mới tốt nghiệp" chỉ 1,3% tin, nhóm nhỏ cho mining. Phần "chưa rõ" giảm khi dùng năm kinh nghiệm (PRE-11 đo 13% sau bước này). Lý do chữ thiếu: nhãn sàn thường chung chung (TopCV "Nhân viên" 1.979/2.674; VietnamWorks "Nhân viên" 978/1.219; JobsGO "Nhân Viên/Chuyên Viên" 1.250/1.540); TopDev (2.780/2.782), ITviec và Glints (không có nhãn) gần như không có nhãn sàn. Lệch nhỏ 700 vs 587+140 do hai bộ luật khác nhau, cần kiểm lại khi chốt.
+  Không đo được: độ đúng của nhãn (không có nhãn tay), và tỷ lệ sau khi lọc IT và dùng năm kinh nghiệm. Script đo ở scratchpad phiên làm việc, chưa đưa vào repo.
+- Embedded và UI/UX: chưa đo, chưa chốt. Cần xem cách Duy và spec xếp hai nhóm này rồi đếm trên dữ liệu.
+
+**PRE-23. Lỗi parse tái hiện được** (Duy)
+
+- "tối thiểu 10 triệu", "2 tỷ", "Không yêu cầu", "Điện Biên Phủ" (bị hiểu thành tỉnh), Python/PHP Developer, UI/UX bị phân nhóm sai.
+
+**PRE-24. Test P3/P4 nằm ngoài `testpaths`** (Duy)
+
+- `make test` không chạy chúng; chạy chung gây lỗi `tests/conftest.py:42`.
+
+**PRE-25. `ledger.csv` bị `.gitignore` (`*.csv`)** (Phát)
+
+- `cohort.py`, `finalize_cohort.py` đọc nó nên clone sạch không chạy lại được.
+
+**PRE-26. `reports/preprocessing/05_encoding` phình git** (Phát)
+
+- 95 file (pickle ~2,3 MB, npz, notebook HTML, `profiling.json` 19k dòng), trái quy tắc về `reports/` trong `CLAUDE.md`. Người dùng chấp nhận tạm, dọn sau.
+
+**PRE-27. `tests/test_golden_field_preservation.py` lỗi collect** (Phát)
+
+- Import module không tồn tại. Có thêm 12 lỗi ruff UP038 dù báo cáo ghi "Ruff pass".
+
+**PRE-28. Cohort P5** (Phát)
+
+- Giữ 5.104/5.177 tin (62 bị loại, 11 cách ly); 5.092 tin chưa duyệt; 17,1% (873) không có kỹ năng nào trong bộ 230; độ thưa 98,15%, ngoài khoảng 95–98% của task 05. Số lấy từ báo cáo của Phát, chưa kiểm chứng. Chưa quyết: chấp nhận, hay chỉnh bộ lọc/bộ kỹ năng.
+
+## 3b. Data Mining
+
+**MINE-1. Mining chưa chạy trên dữ liệu thật** (Phúc)
+
+- Số liệu trong báo cáo là dữ liệu giả từ `mining/synthetic.py`.
+
+**MINE-2. Thư viện mining chưa cài trong venv**
+
+- `mlxtend`, `shap`, `hdbscan` đã khai trong `requirements.txt` (09/11); venv chưa cài nên 3 file test mining lỗi collect và 2 lỗi `salary_model`.
+
+**MINE-3. `test_outlier_ratio_follows_quantile` fail khi thiếu `hdbscan`** (rơi về fallback sklearn).
+
+**MINE-4. Khoảng k chưa thống nhất:** task 6–12, checklist 4–14, spec 07 3–15; code dùng 4–14.
+
+**MINE-5. `load_mart_from_parquet.py` biến cột list thành chuỗi;** chưa có bảng `skill_salary_shap_values`.
+
+**MINE-6. Ghi chú cho báo cáo đồ án:** SHAP không phải quan hệ nhân quả; `seniority_level` 0–4 gộp Thực tập và Mới tốt nghiệp (liên quan PRE-22).
+
 ## 4. Chung
 
 **GEN-1. Khoảng 1.300 lỗi ruff tồn đọng** ở `collection/` và `tests/`. Dọn thành một lượt riêng.
@@ -117,6 +236,14 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 **GEN-2. `README.md` và `docs/tasks/legacy_TASKS.md` lệch code.** Chi tiết ở mục "Known mismatches" trong `CLAUDE.md`.
 
 **GEN-3. Dọn code theo `docs/code_quality.md`.** Báo cáo (`make quality`) liệt kê import thừa, hàm không ai gọi, module không ai import, hàm trùng logic và trùng tên. Người dùng duyệt từng mục (xóa, gộp hay giữ) rồi mới sửa. Báo cáo không bắt được chỗ tự tạo `boto3.client(...)`; các chỗ đó đã chuyển qua `get_r2_client()` (`docs/issue_log.md` L-24).
+
+**GEN-6. Test ledger khác kết quả giữa Windows và Linux.** Cùng nguyên nhân SCRAPE-17.
+
+**GEN-7. Code tải R2 tự dựng trong `preprocessing/integration`.** Dùng boto3 riêng, prefix cũ, bucket gán cứng, không qua `get_r2_client()`. Sửa cùng quyết định GEN-4.
+
+**GEN-8. Mẫu báo cáo nghiệm thu chưa điền** ở `docs/tasks/` của Duy, Phúc, Sơn (mục 5 của mẫu).
+
+**GEN-9. Đường `features.parquet` chưa thống nhất.** Spec 10 ghi `gold/features.parquet`; Phát ghi local `data/preprocessing/05_encoding/features.parquet` và đẩy `curated/preprocessing/features.parquet`; Phúc đọc `data/curated/...` và `data/preprocessing/05_encoding/features.parquet`. Quyết định 09/11: chưa chốt, gộp vào GEN-4. Khi layout R2 đổi, hai bên sẽ lệch nhau.
 
 ## 5. Chưa chốt
 
