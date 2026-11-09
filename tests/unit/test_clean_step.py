@@ -5,6 +5,7 @@ import json
 
 import pytest
 
+from preprocessing.clean import label_review
 from preprocessing.clean import run as clean
 from preprocessing.common import province, step_report
 from preprocessing.common.it_filter import classify, classify_unknown
@@ -91,6 +92,131 @@ def test_review_file_kept_once_labeled(sandbox):
     report = clean.run(["src_a"], dry_run=True)["src_a"]
     assert report.data["extra"]["review"]["labeled"] == 1 and report.data["extra"]["review"]["rule_correct"] == 1
     assert path.read_text(encoding="utf-8-sig") == text  # không ghi đè nhãn tay
+
+
+def strata(rows):
+    """Đếm mẫu theo (tầng, it_status) - thiết kế 3 tầng của C4b."""
+    out = {}
+    for r in rows:
+        k = f"tang_{r['it_rule_level']}_{r['it_status']}"
+        out[k] = out.get(k, 0) + 1
+    return out
+
+
+def test_review_sample_includes_level1_it_rows(sandbox):
+    """Mẫu phải có tin tầng 1 dự đoán IT, nếu không thì Precision IT >=95% không đo được (Q1)."""
+    report = clean.run(["src_a"], dry_run=True)["src_a"]
+    path = sandbox / "data/preprocessing/review/it_src_a.csv"
+    rows = list(csv.DictReader(path.open(encoding="utf-8-sig")))
+    # "1 Senior Backend Developer", "3 Python Dev", "4 Senior Backend Developer", "9 QA Engineer": 4 tin tầng 1 IT
+    # ("4" bị C6 bỏ sau đó nhưng vẫn thuộc tập phân loại mà mẫu C4b cần phủ)
+    assert strata(rows) == {"tang_1_non_it": 1, "tang_1_it": 4}
+    assert report.data["extra"]["review"]["sample_strata"] == {"tang_1_non_it": 1, "tang_1_it": 4}
+    assert report.data["extra"]["review"]["level1_it_labeled"] == 0  # chưa ai gán -> chưa đo được precision
+    # mẫu ổn định theo seed: chạy lại không đổi tập tin đã chọn
+    ids = [r["job_id"] for r in rows]
+    clean.run(["src_a"], dry_run=True)
+    again = [r["job_id"] for r in csv.DictReader(path.open(encoding="utf-8-sig"))]
+    assert again == ids
+
+
+def test_level1_it_labeled_feeds_precision(sandbox):
+    """Nhãn tay của nhóm tầng 1 IT phải vào ô TP/FP của validation (Precision IT)."""
+    clean.run(["src_a"], dry_run=True)
+    path = sandbox / "data/preprocessing/review/it_src_a.csv"
+    rows = list(csv.DictReader(path.open(encoding="utf-8-sig")))
+    for r in rows:
+        if r["it_rule_level"] == "1" and r["it_status"] == "it":
+            r["nhan_tay"] = "it" if r["job_id"] == "1" else "non_it"
+    with path.open("w", encoding="utf-8-sig", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(rows)
+    rv = clean.run(["src_a"], dry_run=True)["src_a"].data["extra"]["review"]
+    assert rv["level1_it_labeled"] == 4 and rv["level1_it_correct"] == 1
+    v = rv["validation"]
+    assert (v["tp"], v["fp"]) == (1, 3)
+    assert v["precision_it"] == pytest.approx(0.25)
+
+
+@pytest.mark.parametrize("sizes,total,expected", [
+    ({"a": 500, "b": 300, "c": 200}, 100, {"a": 50, "b": 30, "c": 20}),
+    ({"a": 5, "b": 1000}, 100, {"a": 1, "b": 99}),          # sàn ít tin vẫn có đại diện, không bị lọt
+    ({"a": 40, "b": 40}, 100, {"a": 40, "b": 40}),          # tổng nhỏ hơn total -> nhận hết
+    ({"a": 0, "b": 10}, 100, {"a": 0, "b": 10}),            # sàn trống không được cấp suất
+    ({"a": 7, "b": 3}, 10, {"a": 7, "b": 3}),
+])
+def test_plan_level1_it_allocation(sizes, total, expected):
+    assert clean.plan_level1_it(sizes, total=total) == expected
+
+
+def test_plan_level1_it_never_over_pool():
+    quota = clean.plan_level1_it({"a": 120, "b": 80, "c": 1})
+    assert sum(quota.values()) == clean.REVIEW_LEVEL1_IT
+    assert quota["a"] <= 120 and quota["b"] <= 80 and quota["c"] <= 1
+    assert quota["a"] > quota["b"] > 0  # phân tầng theo sàn: sàn nhiều tin hơn lấy mẫu nhiều hơn
+
+
+def test_resample_review_writes_nothing_but_samples(sandbox):
+    """`--resample-review` chỉ dựng mẫu C4b: không đụng 01_clean, không ghi báo cáo chung (Q6)."""
+    info = clean.resample_review(["src_a"])
+    assert info["src_a"]["rows"] == 5 and info["src_a"]["strata"] == {"tang_1_non_it": 1, "tang_1_it": 4}
+    assert info["src_a"]["quota_tang1_it"] == 4  # chỉ có 4 tin tầng 1 IT -> cấp đúng số có
+    assert not (sandbox / "data/preprocessing/01_clean").exists()
+    assert not (sandbox / "reports").exists()
+
+
+def test_resample_cli_respects_source(monkeypatch):
+    calls = []
+    monkeypatch.setattr(clean, "resample_review", lambda sources, level1_it: (
+        calls.append((sources, level1_it)) or {}))
+    assert clean.main(["--resample-review", "--source", "glints", "--level1-it", "20"]) == 0
+    assert calls == [(["glints"], 20)]
+
+
+@pytest.mark.parametrize("args", [
+    ["--level1-it", "20"], ["--resample-review", "--level1-it", "-1"],
+])
+def test_invalid_sampling_cli_never_writes(monkeypatch, args):
+    def unexpected(*args, **kwargs):
+        pytest.fail("invalid arguments must be rejected before any write")
+    monkeypatch.setattr(clean, "resample_review", unexpected)
+    monkeypatch.setattr(clean, "run", unexpected)
+    with pytest.raises(SystemExit) as exc:
+        clean.main(args)
+    assert exc.value.code == 2
+
+
+def test_negative_sample_budget_rejected():
+    with pytest.raises(ValueError):
+        clean.plan_level1_it({"glints": 100}, total=-1)
+
+
+@pytest.mark.parametrize("n_sai,ket_luan", [
+    (0, "cận dưới mẫu >= 95%"),
+    (1, "cận dưới mẫu < 95%"),
+])
+def test_status_ket_luan_precision_bang_can_duoi(tmp_path, monkeypatch, capsys, n_sai, ket_luan):
+    """KTC tham khảo không được biến thành kết luận nghiệm thu toàn bộ."""
+    review = tmp_path / "review"
+    review.mkdir()
+    rows = [{"job_id": str(i), "source_url": f"https://x/src_a/{i}", "job_title": "Backend Developer",
+             "skills": "Python, Docker", "it_rule": "it", "it_rule_level": "1", "it_status": "it",
+             "nhan_tay": "non_it" if i < n_sai else "it"} for i in range(100)]
+    with (review / "it_src_a.csv").open("w", encoding="utf-8-sig", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(rows)
+    monkeypatch.setattr(label_review, "REVIEW_DIR", review)
+    monkeypatch.setattr(label_review, "SOURCES", ("src_a",))
+    assert label_review.main(["--source", "src_a", "--status"]) == 0
+    out = capsys.readouterr().out
+    assert f"precision_it: {(100 - n_sai) / 100:.1%}" in out
+    assert "KTC 95%" in out and f"{ket_luan}" in out
+    assert "Chưa kết luận nghiệm thu toàn bộ" in out
+    assert "ĐẠT ngưỡng" not in out
+    # đếm "đã nhãn" theo dòng có trả lời (kể cả đáp án trái bộ lọc), không theo đáp án đúng
+    assert "Tầng 1 dự đoán IT (nhóm bắt buộc để đo Precision IT): 100/100 dòng đã nhãn" in out
 
 
 @pytest.mark.parametrize("title,expected", [

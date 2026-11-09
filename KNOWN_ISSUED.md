@@ -59,6 +59,13 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 - Hiện tại: bước Clean bỏ các tin này theo luật C5 (JD dưới 30 từ).
 - Cách xử lý: tìm vì sao crawler TopCV không lấy được JD trong 22–26/10, rồi đưa các tin này về `PENDING` để cào lại (chạy thử, gửi số liệu, chờ đồng ý vì ghi lên R2). Bản cào mới sẽ tự thay bản cũ qua luật C1.
 
+**SCRAPE-17. Test ledger còn lỗi trên máy cục bộ**
+
+- Kiểm chứng 08/11: full unit và chạy riêng `tests/unit/test_url_ledger_dedup.py` đều lỗi tại dòng 229: mong DONE, nhận FAILED; chạy riêng 9 đạt / 1 lỗi. Log trong artifact `nov08_recheck/ledger.txt`.
+- `save_catalog` dùng `mem_ts >= disk_ts`; khi timestamp bằng nhau, worker lưu sau có thể ghi đè trạng thái thay đổi sau. Test dùng `tmp_path`, không dùng raw của dự án.
+- Chưa đủ bằng chứng kết luận mọi Windows đều lỗi, đồng hồ luôn có độ phân giải 2,1 ms, hoặc rủi ro sản xuất thấp. Lead báo pass trên nhánh của lead; chưa tự kiểm chứng nhánh đó.
+- Ngoài Task #2, thuộc `collection/` – Task #1. Gửi log cho lead để tái hiện và quyết định xử lý; không sửa Collection trong lượt này.
+
 ## 2. Trực quan hóa dữ liệu
 
 **VIZ-3. Các trang báo cáo đang hiện số của lần chạy pipeline ngày 25/10**
@@ -76,6 +83,32 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
 - Số đo 04/11/2026 trên `data/preprocessing/04_normalization/all.parquet` (5.177 tin): 55% thiếu lương (thỏa thuận), 17% tin IT do luật tầng 2 quyết (tầng 2 đúng 81,9% trên nhãn tay), 13% cấp bậc không rõ, 11% nhóm nghề "Khác", 74% tin ở Hà Nội + TP.HCM, ma trận kỹ năng thưa 97,2%.
 - Đã đưa thành 5 câu hỏi A/B ở slide cuối `docs/presentation/slides.html` để xin ý kiến thầy. Chưa chọn hướng nào.
+
+**PRE-12. Chưa có nhãn hợp lệ để nghiệm thu bộ lọc IT**
+
+- Đếm trực tiếp 08/11: 643 dòng review, 100 dòng tầng 1 dự đoán IT, 0 nhãn. Chưa kiểm tra R2 trong lượt này; không kết luận nhãn lịch sử đã mất toàn dự án.
+- Lead gán nhãn, AI không tự điền. Ghi chú policy 331/339 và 42/47 không thay nhãn từng tin.
+- Wilson cộng dồn chưa hiệu chỉnh phân tầng và thiếu nhãn; `--status` không tự kết luận nghiệm thu. Lead yêu cầu tỷ lệ ≥95% kèm khoảng tin cậy, chưa chốt điều kiện cận dưới ≥95%.
+- Cần chốt dân số, trọng số và cách đánh giá cả precision IT lẫn nhóm thực sự bị loại; dự đoán non_it không đồng nghĩa bị C4c loại khi `drop=[]`. Gán riêng 100 tin tầng 1 không đủ đóng hai chỉ tiêu.
+- Số học và lệnh tăng mẫu tại `docs/tasks/02_tai_clean_and_deduplication.md` §5.8.2. Giữ nguyên mẫu hiện tại chờ quyết định.
+
+**PRE-13. Tầng 2 dùng "nhóm nghề tự suy" thay cho chuyên mục sàn mà SPEC-05 §2.4 nêu**
+
+- `docs/spec/05_preprocessing_spec.md` §2.4 (dòng 107–109, 113): tin chức danh mơ hồ chỉ là IT khi **danh mục nghề nghiệp thuộc nhóm CNTT ĐỒNG THỜI ≥ 2 kỹ năng IT**; dòng 100 nêu lý do là sàn tổng hợp xếp nhầm tin kế toán/nhân sự/telesale vào mục IT → "danh mục" trong đặc tả là **chuyên mục do sàn cấp**.
+- Code (`preprocessing/common/it_filter.py:86-95`) thỏa đúng cấu trúc điều kiện nhưng vế thứ nhất lấy từ `classify_job_family_rule(title, skills)` (12 nhóm, suy từ tiêu đề + JD), **không đọc** `raw_category_text`. Vì hai tín hiệu khác nhau nên số của script lead (431/842 không khớp từ điển chuyên mục) không mô tả quyết định thực tế của bộ lọc; cần nhãn để biết chênh lệch thật là bao nhiêu.
+- Trở ngại nếu muốn dùng đúng chuyên mục sàn: `company_industry` của TopCV là trường công ty; ngữ nghĩa các trường industry khác còn phải kiểm theo nguồn. Chưa đo số loại nhầm bằng nhãn thật.
+- Lead chốt: (A) gate bằng chuyên mục sàn sau khi Integration chuẩn hóa trường này; (B) miễn trừ có ghi dấu trong §2.4 và dùng nhóm nghề tự suy cho tới khi có trường chuyên mục; hoặc (C) chuyên mục chỉ là tín hiệu ưu tiên, không dùng để loại.
+- Script lead trên 842 dự đoán IT tầng 2: 101 category rỗng, 310 khớp từ khóa, 431 không khớp. Regex mở rộng: 428 khớp, 313 không khớp; chênh 118, Glints góp 26.
+- Đây là phép dò từ khóa, không phải nhãn IT thật. 414 bị loại chỉ đúng nếu dùng chính regex mở rộng làm gate. Không khẳng định 5/8 sàn là ngành công ty, 366 là mã VSIC xác minh, hoặc 669 là độ phủ ngành nghề đúng.
+- Probe CareerViet tìm `industry` thấy 2/57, trong khi flattener lấy “Ngành nghề” có 55/57 giá trị. Bằng chứng và giới hạn ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.8.1.
+- Theo `traloi.md`, Tài giữ `common/it_filter` nếu lead chọn gate; Hoàng hỗ trợ schema nếu cần trường chuyên mục mới. Chưa thay bộ lọc/SPEC, chưa chạy lại snapshot.
+
+**PRE-14. Văn bản ADR-04 chưa thống nhất với chuẩn lead đã chọn**
+
+- Lead đã chọn SPEC-05 §3.2 và bắc cầu trong `traloi.md`; ADR-04 cục bộ vẫn mô tả blocking không Title_Group và Jaccard ≥0,80 AND cosine ≥0,75. Cần đồng bộ văn bản, không hỏi lại lựa chọn đã chốt.
+- Probe trên audit: 81/131 dropped, 14/55 review-band, 2/3 transitive-link đạt điều kiện kép với tokenizer của probe. Không áp dụng cho 7 transitive-dropped vì điểm cosine là điểm qua trung gian.
+- Không suy ra thêm 14 cụm hoặc tách 50 cặp: cần chạy lại blocking, TF-IDF và đồ thị. Q5 vẫn cần nhãn người đọc JD; chọn thuật toán không xác định trùng thật. Chi tiết task §5.8.5.
+- Chưa kiểm remote trong lượt này; file có trong HEAD không chứng minh bản cập nhật ADR/bắc cầu lead nói đã được xuất bản.
 
 ## 4. Chung
 

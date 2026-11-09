@@ -1,0 +1,115 @@
+{
+  "step": "01b_deduplication",
+  "source": "vieclam24h",
+  "mode": "applied",
+  "generated_at": "2026-11-07T06:53:23+00:00",
+  "code_version": "c1555c0",
+  "input": {
+    "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
+    "rows": 182
+  },
+  "output": {
+    "path": "data/preprocessing/01b_deduplication/vieclam24h.jsonl",
+    "rows": 170
+  },
+  "dropped": [
+    {
+      "rule": "D2",
+      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "rows": 0
+    },
+    {
+      "rule": "D4",
+      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
+      "rows": 0
+    },
+    {
+      "rule": "D5",
+      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "rows": 12
+    }
+  ],
+  "rules": [
+    {
+      "id": "D1",
+      "name": "Kiểm toán chuỗi version CDC (cào lại có đổi nội dung thật không)",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D2",
+      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D4",
+      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D5",
+      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "action": "drop",
+      "rows_affected": 12,
+      "examples": [
+        {
+          "job_id": "200789315",
+          "field": "dedup",
+          "before": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-thiet-ke-web-design-layout-web-c7p210000187id200789315.html",
+          "after": "https://jobsgo.vn/viec-lam/nhan-vien-thiet-ke-web-design-layout-web-29219590938.html",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-thiet-ke-web-design-layout-web-c7p210000187id200789315.html"
+        },
+        {
+          "job_id": "200944374",
+          "field": "dedup",
+          "before": "https://vieclam24h.vn/it-phan-mem/nhan-vien-ai-it-support-c8p210000187id200944374.html",
+          "after": "https://jobsgo.vn/viec-lam/nhan-vien-ai-it-support-28995632491.html",
+          "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-ai-it-support-c8p210000187id200944374.html"
+        },
+        {
+          "job_id": "200945606",
+          "field": "dedup",
+          "before": "https://vieclam24h.vn/it-phan-mem/manual-automation-tester-quality-analyst-qa-qc-c8p122id200945606.html",
+          "after": "https://itviec.com/viec-lam-it/manual-automation-tester-selenium-qa-qc-mitek-vietnam-0430",
+          "url": "https://vieclam24h.vn/it-phan-mem/manual-automation-tester-quality-analyst-qa-qc-c8p122id200945606.html"
+        }
+      ]
+    },
+    {
+      "id": "D6",
+      "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    }
+  ],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "cdc": {
+      "job_ids": 660,
+      "chains_gt1": 0,
+      "hops": 0,
+      "hop_same_crawler_hash": 0,
+      "hop_same_canonical_hash": 0,
+      "hop_version_not_bumped": 0
+    },
+    "blocking_blocks": 151,
+    "d2_groups": 0,
+    "rule_totals": {
+      "D5": 12
+    }
+  }
+}

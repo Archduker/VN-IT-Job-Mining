@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:11:41+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-07T06:52:33+00:00",
+  "code_version": "c1555c0",
   "input": {
     "path": "data/topcv/raw",
     "rows": 2749
@@ -278,14 +278,14 @@
     "review": {
       "file": "data/preprocessing/review/it_topcv.csv",
       "rows": 80,
-      "labeled": 80,
-      "labeled_non_it": 71,
-      "rule_decided": 50,
-      "rule_correct": 50,
-      "status_non_it": 68,
-      "status_non_it_correct": 64,
-      "level2_labeled": 30,
-      "level2_correct": 19
+      "labeled": 0,
+      "labeled_non_it": 0,
+      "rule_decided": 0,
+      "rule_correct": 0,
+      "status_non_it": 0,
+      "status_non_it_correct": 0,
+      "level2_labeled": 0,
+      "level2_correct": 0
     }
   }
 }

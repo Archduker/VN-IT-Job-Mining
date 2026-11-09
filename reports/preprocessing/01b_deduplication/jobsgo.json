@@ -1,0 +1,183 @@
+{
+  "step": "01b_deduplication",
+  "source": "jobsgo",
+  "mode": "applied",
+  "generated_at": "2026-11-07T06:53:23+00:00",
+  "code_version": "c1555c0",
+  "input": {
+    "path": "data/preprocessing/01_clean/jobsgo.jsonl",
+    "rows": 683
+  },
+  "output": {
+    "path": "data/preprocessing/01b_deduplication/jobsgo.jsonl",
+    "rows": 579
+  },
+  "dropped": [
+    {
+      "rule": "D2",
+      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "rows": 28
+    },
+    {
+      "rule": "D4",
+      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
+      "rows": 8
+    },
+    {
+      "rule": "D5",
+      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "rows": 68
+    }
+  ],
+  "rules": [
+    {
+      "id": "D1",
+      "name": "Kiểm toán chuỗi version CDC (cào lại có đổi nội dung thật không)",
+      "action": "flag",
+      "rows_affected": 57,
+      "examples": []
+    },
+    {
+      "id": "D2",
+      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "action": "drop",
+      "rows_affected": 28,
+      "examples": [
+        {
+          "job_id": "28897279794",
+          "field": "dedup",
+          "before": "https://jobsgo.vn/viec-lam/business-analyst-ba-28897279794.html",
+          "after": "https://jobsgo.vn/viec-lam/business-analyst-ba-28613695958.html",
+          "url": "https://jobsgo.vn/viec-lam/business-analyst-ba-28897279794.html"
+        },
+        {
+          "job_id": "29073263634",
+          "field": "dedup",
+          "before": "https://jobsgo.vn/viec-lam/account-manager-29073263634.html",
+          "after": "https://jobsgo.vn/viec-lam/account-manager-28972683981.html",
+          "url": "https://jobsgo.vn/viec-lam/account-manager-29073263634.html"
+        },
+        {
+          "job_id": "29135727034",
+          "field": "dedup",
+          "before": "https://jobsgo.vn/viec-lam/ky-su-an-ninh-mang-mid-senior-cyber-security-engineer-29135727034.html",
+          "after": "https://jobsgo.vn/viec-lam/ky-su-an-ninh-mang-mid-senior-cyber-security-engineer-29044408259.html",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-an-ninh-mang-mid-senior-cyber-security-engineer-29135727034.html"
+        }
+      ]
+    },
+    {
+      "id": "D4",
+      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "action": "drop",
+      "rows_affected": 8,
+      "examples": [
+        {
+          "job_id": "29149957826",
+          "field": "dedup",
+          "before": "https://jobsgo.vn/viec-lam/fullstack-dotnet-29149957826.html",
+          "after": "https://www.topcv.vn/viec-lam/fullstack-dotnet/2316696.html",
+          "url": "https://jobsgo.vn/viec-lam/fullstack-dotnet-29149957826.html"
+        },
+        {
+          "job_id": "29186498915",
+          "field": "dedup",
+          "before": "https://jobsgo.vn/viec-lam/data-engineer-29186498915.html",
+          "after": "https://www.topcv.vn/viec-lam/data-engineer/2283544.html",
+          "url": "https://jobsgo.vn/viec-lam/data-engineer-29186498915.html"
+        },
+        {
+          "job_id": "29194591999",
+          "field": "dedup",
+          "before": "https://jobsgo.vn/viec-lam/junior-middle-java-developer-banking-project-29194591999.html",
+          "after": "https://www.topcv.vn/viec-lam/junior-middle-java-developer-banking-project/2317270.html",
+          "url": "https://jobsgo.vn/viec-lam/junior-middle-java-developer-banking-project-29194591999.html"
+        }
+      ]
+    },
+    {
+      "id": "D5",
+      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "action": "drop",
+      "rows_affected": 68,
+      "examples": [
+        {
+          "job_id": "28962757732",
+          "field": "dedup",
+          "before": "https://jobsgo.vn/viec-lam/chuyen-vien-he-thong-chat-luong-cntt-28962757732.html",
+          "after": "https://www.topcv.vn/viec-lam/chuyen-vien-he-thong-chat-luong-cntt/2262684.html",
+          "url": "https://jobsgo.vn/viec-lam/chuyen-vien-he-thong-chat-luong-cntt-28962757732.html"
+        },
+        {
+          "job_id": "28967523961",
+          "field": "dedup",
+          "before": "https://jobsgo.vn/viec-lam/truong-phong-cong-nghe-lark-28967523961.html",
+          "after": "https://www.topcv.vn/viec-lam/truong-phong-cong-nghe/2307636.html",
+          "url": "https://jobsgo.vn/viec-lam/truong-phong-cong-nghe-lark-28967523961.html"
+        },
+        {
+          "job_id": "28973593774",
+          "field": "dedup",
+          "before": "https://jobsgo.vn/viec-lam/java-developer-lead-backend-28973593774.html",
+          "after": "https://www.topcv.vn/viec-lam/java-developer-lead-backend/1506755.html",
+          "url": "https://jobsgo.vn/viec-lam/java-developer-lead-backend-28973593774.html"
+        }
+      ]
+    },
+    {
+      "id": "D6",
+      "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
+      "action": "flag",
+      "rows_affected": 3,
+      "examples": [
+        {
+          "job_id": "28995632491",
+          "field": "master_id",
+          "before": "https://jobsgo.vn/viec-lam/nhan-vien-ai-it-support-28995632491.html",
+          "after": "0325db06-98cf-5aea-8b5e-6cc3f10948f0",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-ai-it-support-28995632491.html"
+        },
+        {
+          "job_id": "29219590938",
+          "field": "master_id",
+          "before": "https://jobsgo.vn/viec-lam/nhan-vien-thiet-ke-web-design-layout-web-29219590938.html",
+          "after": "6b33e9aa-85b0-5745-9452-af4fcc16373f",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-thiet-ke-web-design-layout-web-29219590938.html"
+        },
+        {
+          "job_id": "29274436519",
+          "field": "master_id",
+          "before": "https://jobsgo.vn/viec-lam/chuyen-vien-phan-tich-du-lieu-29274436519.html",
+          "after": "6151586e-9752-5cbb-b3eb-47d323869125",
+          "url": "https://jobsgo.vn/viec-lam/chuyen-vien-phan-tich-du-lieu-29274436519.html"
+        }
+      ]
+    }
+  ],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "cdc": {
+      "job_ids": 1540,
+      "chains_gt1": 51,
+      "hops": 57,
+      "hop_same_crawler_hash": 0,
+      "hop_same_canonical_hash": 7,
+      "hop_version_not_bumped": 0
+    },
+    "blocking_blocks": 472,
+    "d2_groups": 21,
+    "rule_totals": {
+      "D2": 28,
+      "D5": 68,
+      "D4": 8
+    }
+  }
+}
