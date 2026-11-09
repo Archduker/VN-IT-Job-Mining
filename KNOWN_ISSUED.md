@@ -133,6 +133,7 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 **PRE-16. Integration chưa đọc đầu ra Dedup `01b_deduplication`** (Tài)
 
 - Báo cáo Integration 5.177 lệch 4.897 của Dedup. Cần nối đúng đầu vào hoặc ghi lý do.
+- Đo lại 09/11: chạy `python -m preprocessing.clean.run --source all` trên raw đã tải từ R2 ra 5.077 tin (VietnamWorks 800), báo cáo Hoàng ghi 5.177 (VietnamWorks 900). Chênh 100 tin chưa giải thích; chưa đoán nguyên nhân.
 
 **PRE-17. Snapshot báo cáo của Tài là kết quả cũ** (Tài)
 
@@ -188,6 +189,7 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
   Kết luận từ số đo: hai cách bao quát gần như bằng nhau (cùng ~67% chưa rõ nếu chỉ dùng chữ); 6 cấp chỉ khác ở việc tách 700 tin thành 587 thực tập + 140 mới tốt nghiệp. Cấp "Mới tốt nghiệp" chỉ 1,3% tin, nhóm nhỏ cho mining. Phần "chưa rõ" giảm khi dùng năm kinh nghiệm (PRE-11 đo 13% sau bước này). Lý do chữ thiếu: nhãn sàn thường chung chung (TopCV "Nhân viên" 1.979/2.674; VietnamWorks "Nhân viên" 978/1.219; JobsGO "Nhân Viên/Chuyên Viên" 1.250/1.540); TopDev (2.780/2.782), ITviec và Glints (không có nhãn) gần như không có nhãn sàn. Lệch nhỏ 700 vs 587+140 do hai bộ luật khác nhau, cần kiểm lại khi chốt.
   Không đo được: độ đúng của nhãn (không có nhãn tay), và tỷ lệ sau khi lọc IT và dùng năm kinh nghiệm. Script đo ở scratchpad phiên làm việc, chưa đưa vào repo.
+- Số đo (09/11, 5.077 tin IT sau Clean, theo tiêu đề): UI/UX 48 tin (0,9%), Embedded/nhúng/firmware 71 tin (1,4%). Duy có nhóm Embedded + Product và không có UI/UX; spec gốc ngược lại. Xem `docs/tasks/cho_quyet_dinh.md` mục 2.
 - Embedded và UI/UX: chưa hiểu rõ vấn đề nên **chưa chốt** (người dùng 09/11), giữ mở. Cần giải thích lại và đo trên dữ liệu trước. Cần xem cách Duy và spec xếp hai nhóm này rồi đếm trên dữ liệu.
 
 **PRE-23. Lỗi parse tái hiện được** (Duy)
