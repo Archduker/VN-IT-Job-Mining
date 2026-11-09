@@ -121,3 +121,117 @@ Hãy phân tích mã nguồn mẫu trong docs/spec/07_mining_spec.md, lập Plan
 #### 5. Vấn Đề Còn Tồn Đọng (Remaining Issues / Blockers):
 - [Ghi rõ nếu có siêu tham số nào cần tinh chỉnh thêm, hoặc ghi "Không còn"]
 ```
+
+---
+
+## 5. Báo Cáo Bàn Giao (bản nháp 08/11/2026)
+
+> **Trạng thái:** đã xong code và test cho cả 4 thuật toán. Hiện mới chạy trên **dữ liệu giả** (`mining/synthetic.py`), vì `features.parquet` và bộ golden của bước Encoding chưa merge vào `sprint/pipeline-delivery`. Các ô `[chờ dữ liệu thật]` sẽ điền sau khi chạy `python mining/run_mining_pipeline.py` trên dữ liệu thật. Số liệu trên dữ liệu giả chỉ để chứng minh code chạy đúng, **không dùng để báo cáo thị trường**.
+
+### BÁO CÁO NGHIỆM THU: DATA MINING CORE ALGORITHMS
+- **Người thực hiện:** Phúc
+- **Nhánh làm việc:** `feature/mining-algorithms`
+- **Thư mục can thiệp:** `mining/`, `tests/unit/test_mining_*.py`
+
+#### Cấu trúc mã nguồn
+
+| File | Vai trò |
+|---|---|
+| `mining/config.py` | Đường dẫn, bảng alias tên cột, tham số và ngưỡng của từng thuật toán |
+| `mining/data_io.py` | Đọc golden và features, kiểm tra hợp đồng cột (thiếu khóa, trùng `job_id`, cột kỹ năng không phải 0/1, lệch dòng). Đưa về một schema chung (`MiningData`) |
+| `mining/association.py` | FP-Growth phân tầng: vĩ mô và vi mô theo từng `job_family` |
+| `mining/clustering.py` | Không gian kỹ năng + TF-IDF JD → TruncatedSVD → K-Means (quét k), HDBSCAN GLOSH, PCA 2D/3D |
+| `mining/salary_model.py` | Random Forest với log1p(lương), holdout 20%, 5-fold CV, baseline, TreeSHAP |
+| `mining/anomaly.py` | Isolation Forest + GLOSH, kèm mã lý do |
+| `mining/sanity.py` | Kiểm tra hợp lý S-01 đến S-06 theo spec 08 |
+| `mining/run_mining_pipeline.py` | Driver: ghi 4 file Parquet, model `.joblib` và `mining_metrics.json` |
+| `mining/synthetic.py` | Dữ liệu giả có cài sẵn quy luật đã biết, dùng cho test |
+
+Cách chạy:
+```bash
+python mining/run_mining_pipeline.py                         # dữ liệu thật -> mining/artifacts/
+python mining/run_mining_pipeline.py --synthetic             # dữ liệu giả -> mining/artifacts/_synthetic/
+python mining/run_mining_pipeline.py --only fp,cluster --dry-run
+pytest tests/unit/test_mining_*.py                           # 61 test
+```
+
+#### 1. Vấn Đề Gặp Phải
+- **Schema đầu vào chưa chốt:**
+  - Tiền tố cột kỹ năng: `skill_` hay `skill__`.
+  - Đơn vị lương: VNĐ hay triệu VNĐ/tháng.
+  - Thang cấp bậc có 3 dạng cùng tồn tại: `seniority_level` (0–4, Duy), nhãn chữ 6 mức, và `seniority_ord` (0–5, Encoding E1).
+  - "Nhiều địa điểm" và "Toàn quốc" bị lẫn vào nhóm "tỉnh khác".
+- **Mã mẫu trong spec 07 sai so với dữ liệu:** dùng sai tiền tố cột, và `features.parquet` không có cột lương.
+- **Mô hình lương không ổn định:** vài tin lương ảo (Junior 300–450 triệu) làm Std(R²) qua 5 fold lên 0,166, gấp 3 lần ngưỡng.
+- **SHAP lấy trung bình trên mọi tin** làm giá trị của kỹ năng hiếm gần bằng 0.
+- **K-Means luôn có xu hướng chọn k lớn nhất** trong khoảng quét.
+
+#### 2. Nguyên Nhân Gốc Rễ
+- Các bước trước làm song song nên tên và đơn vị cột chưa thống nhất.
+- Lương có phân phối lệch phải, và lương ảo nằm trong khoảng hợp lệ 1–500 triệu nên luật lọc khoảng giá trị không bắt được.
+- Kỹ năng ngách chỉ xuất hiện ở vài phần trăm số tin. Lấy trung bình φ trên toàn bộ dữ liệu thì phần lớn là các tin không có kỹ năng đó (φ ≈ 0).
+- Ma trận kỹ năng thưa và nhiều chiều, nên silhouette tăng dần theo k.
+
+#### 3. Giải Pháp Kỹ Thuật Đã Triển Khai
+- **Lớp hợp đồng dữ liệu (`data_io.py` + `COLUMN_ALIASES`):**
+  - Tự nhận tên cột cũ và mới, đơn vị lương (theo trung vị) và thang cấp bậc. Ưu tiên `seniority_ord` (0–5), rồi nhãn chữ, rồi `seniority_level` (0–4, đổi 0→1 … 4→5).
+  - Sai hợp đồng thì dừng với `MiningContractError`, không chạy tiếp với dữ liệu sai.
+- **FP-Growth phân tầng:**
+  - Vĩ mô `min_sup = 0,05` trên toàn bộ tin; vi mô `min_sup = 0,02` cho mỗi `job_family` có ≥ 100 tin.
+  - Lọc luật `Conf ≥ 0,60`, `Lift > 1,20`.
+  - Có thêm conviction và cosine. Conviction vô hạn được ghi là null để JSON và dashboard đọc được.
+  - Chỉ tính các tin có ít nhất 1 kỹ năng, để tin không có kỹ năng không làm loãng support.
+- **Phân cụm:**
+  - Kỹ năng (đã L2-normalize) + TF-IDF JD với trọng số 0,3 → TruncatedSVD giữ ~80% phương sai → K-Means quét k từ 4 đến 14.
+  - Chọn k có silhouette cao nhất trong số k ≥ 8, theo yêu cầu "≥ 8 cụm nghề" của spec 08.
+  - Kèm Davies-Bouldin, và ARI/NMI so với `job_family`.
+  - HDBSCAN GLOSH cho ra `is_outlier` và `glosh_outlier_score`. PCA 3D cho ra `pca_x`, `pca_y`, `pca_z`.
+- **Mô hình lương:**
+  - Subset A bỏ các tin "Thỏa thuận", tin bị đánh dấu `salary_suspect`, tin ngoài khoảng 1–500 triệu, và tin có lương > 3 lần hoặc < 1/3 trung vị cùng cấp bậc.
+  - Biến mục tiêu là `log1p(salary_avg)`.
+  - Chọn tham số trong một lưới 4 bộ bằng 5-fold CV. Tự dùng `GroupKFold` nếu có mã nhóm tin trùng.
+  - So với baseline chỉ dùng cấp bậc + kinh nghiệm.
+  - `assert_no_leakage` chặn mọi feature có chứa thông tin lương.
+- **TreeSHAP:**
+  - φ của mỗi kỹ năng được lấy **trung bình trên các tin có kỹ năng đó**, tính chung (`ALL`) và theo từng `job_family`.
+  - Giá trị biên = baseline × (e^φ − 1).
+  - `is_reliable` chỉ bật khi `sample_size ≥ 30`.
+- **Phát hiện bất thường:**
+  - Isolation Forest chạy trên [kinh nghiệm, cấp bậc, số kỹ năng, lương so với trung vị cùng cấp bậc], kết hợp với GLOSH.
+  - Mỗi tin bị gắn cờ có mã lý do: `FRESHER_TOO_MANY_SKILLS`, `SALARY_TOO_HIGH/LOW_FOR_LEVEL`, `EXP_SENIORITY_MISMATCH`, `TOO_MANY_SKILLS`, `SKILL_PROFILE_OUTLIER`, `ISOLATION_GENERIC`.
+  - `detected_by` cho biết tin bị bắt bởi isolation_forest, glosh hay cả hai.
+- **Tái lập kết quả:**
+  - `random_state = 42` ở mọi bước.
+  - `mining_metrics.json` ghi sha256 của file đầu vào, tham số, số dòng bị loại ở từng bước, thời gian chạy và `targets_summary`.
+
+#### 4. Bằng Chứng Tự Kiểm Chứng
+
+| Chỉ tiêu | Ngưỡng | Dữ liệu giả (1.500 tin) | Dữ liệu thật |
+|---|---|---|---|
+| Số luật hợp lệ | ≥ 30 | 798 (42 vĩ mô) | [chờ dữ liệu thật] |
+| Silhouette | ≥ 0,28 | 0,470 (k = 14) | [chờ dữ liệu thật] |
+| Davies-Bouldin | < 1,80 | 0,937 | [chờ dữ liệu thật] |
+| Số cụm | ≥ 8 | 14 | [chờ dữ liệu thật] |
+| R² (holdout, log) | ≥ 0,60 | 0,912 (baseline 0,692) | [chờ dữ liệu thật] |
+| MAE | ≤ 4,5 triệu | 3,77 triệu (RMSE 7,07) | [chờ dữ liệu thật] |
+| Std(R²) 5-fold | ≤ 0,05 | 0,0084 (trung bình 0,936) | [chờ dữ liệu thật] |
+| Sanity S-01 đến S-06 | Đạt cả 6 | 6/6 | [chờ dữ liệu thật] |
+| Tỉ lệ tin bất thường | (báo cáo) | 5,47% (82 tin) | [chờ dữ liệu thật] |
+
+- **Kiểm chứng với đáp án cài sẵn:**
+  - Tìm lại được đủ 3 luật đã cài: {Spring Boot} ⇒ {Java}, {Flutter} ⇒ {Dart}, {React} ⇒ {JavaScript}.
+  - Kubernetes và AWS đứng đầu bảng giá trị kỹ năng (+3,51 và +2,09 triệu, đúng hướng với mức cộng +20% và +12% đã cài).
+  - Bắt được 18/18 tin bất thường đã cài, với đúng mã lý do.
+- **Top 3 luật theo Lift:** [chờ dữ liệu thật].
+- **Top 5 kỹ năng tăng lương biên:** [chờ dữ liệu thật].
+- **Test:** `pytest tests/unit/test_mining_*.py`: 61 pass. Lệnh `ruff check mining tests/unit/test_mining_*.py` không báo lỗi.
+
+#### 5. Vấn Đề Còn Tồn Đọng
+- **Chờ dữ liệu đầu vào:** `features.parquet` và `encoding_dictionary.json` (bước Encoding) cùng bộ golden. Trong lúc chờ, mining tự dựng ma trận kỹ năng từ `skills_extracted` và tự tính TF-IDF.
+- **Khoảng k chưa thống nhất:** mục 1 ghi k từ 6 đến 12, checklist ghi từ 4 đến 14. Code đang quét từ 4 đến 14, cấu hình ở `ClusteringParams`.
+- **Cần lead xử lý:**
+  - `requirements.txt` chưa có `mlxtend`, `shap`, `hdbscan`.
+  - `scripts/load_mart_from_parquet.py` biến cột list (antecedents, consequents) đọc từ parquet thành chuỗi.
+  - Chưa có bảng mart cho `skill_salary_shap_values`.
+- **SHAP không thể hiện quan hệ nhân quả:** một kỹ năng hay đi cùng kỹ năng lương cao (ví dụ CI/CD đi cùng Kubernetes) cũng có φ dương.
+- **Thang cấp bậc:** Thực tập và Mới tốt nghiệp bị gộp trong `seniority_level` 0–4. Mining ưu tiên `seniority_ord` (0–5) hoặc nhãn chữ nếu có.
