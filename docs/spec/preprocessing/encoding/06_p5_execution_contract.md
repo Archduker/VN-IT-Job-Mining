@@ -1,6 +1,6 @@
 # P5 Execution Contract — cohort_v1, 09/11/2026
 
-Contract hiện hành theo quyết định Phát trong [authorization_agent07.md](../../../preprocessing/encoding/assets/cohort_v1/authorization_agent07.md). Bản 5.177 trước đây đã lưu nguyên bytes tại `data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/docs/preprocessing/encoding/06_p5_execution_contract.md`; evidence gốc không xóa.
+Contract hiện hành theo quyết định Phát trong [authorization_agent07.md](../../../preprocessing/encoding/assets/cohort_v1/authorization_agent07.md). Bản 5.177 trước đây đã lưu nguyên bytes tại `data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/docs/spec/preprocessing/encoding/06_p5_execution_contract.md`; evidence gốc không xóa.
 
 ## 1. Input, cohort và quyền áp policy
 

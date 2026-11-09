@@ -1,9 +1,0 @@
-{
-  "p5_tests": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider tests/unit/test_encoding_*.py tests/unit/test_vocabulary_comparison.py",
-  "lint": "/tmp/p5_review_tools/bin/ruff check --no-cache preprocessing/encoding/ tests/unit/test_encoding_*.py tests/unit/test_vocabulary_comparison.py",
-  "full_offline": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -p no:cacheprovider tests/",
-  "notebook": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/p5_review_tools .venv/bin/python -m preprocessing.encoding.build_cohort_notebook --output-dir /tmp/p5-refactor-eda-2026-11-09",
-  "temporary_entrypoint": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m preprocessing.encoding.run_encoding --input-manifest reports/preprocessing/05_encoding/snapshot_audit_2026-11-08/manifest.json --vocabulary preprocessing/encoding/assets/frozen_vocabulary_v1.json --stopwords preprocessing/encoding/assets/jd_stopwords_v1.json --cohort-ledger preprocessing/encoding/assets/cohort_v1/ledger.csv --decision-record preprocessing/encoding/assets/cohort_v1/decision_record.json --output-root /tmp/p5-refactor-output-2026-11-09 --evidence-root /tmp/p5-refactor-run-2026-11-09 --history-root data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2",
-  "temporary_directories_must_be_new": true,
-  "no_cloud_calls": true
-}

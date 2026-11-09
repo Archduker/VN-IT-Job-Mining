@@ -25,7 +25,7 @@ The hierarchy for current preprocessing policy is `AGENTS.md` and `preprocessing
 
 | Classification | Contract |
 |---|---|
-| **SPEC requirement** | P5 input is `data/preprocessing/04_normalization/all.parquet` (`docs/preprocessing/spec/P5_encoding.md` §2). |
+| **SPEC requirement** | P5 input is `data/preprocessing/04_normalization/all.parquet` (`docs/spec/preprocessing/spec/P5_encoding.md` §2). |
 | **Current repository state** | `preprocessing/encoding/run.py` uses exactly that path as `IN_FILE`. It reads with `pandas.read_parquet`. No input Parquet is present in the inspected workspace, so its physical Arrow schema was not verified. |
 | **Engineering recommendation** | Validate the Parquet schema before transformation and fail with an actionable missing-column/type report; do not infer a schema from missing values. |
 

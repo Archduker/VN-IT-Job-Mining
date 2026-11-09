@@ -375,7 +375,7 @@ def run_execution(manifest_path, vocabulary_path, stopwords, output_root, eviden
          ordered_id_sha256=ordered_ids_hash(df.job_id_global), head=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
          dirty_worktree=bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True)), source_sha256={str(p.relative_to(ROOT)): sha(p) for p in code_paths},
          environment=dict(python=platform.python_version(), numpy=np.__version__, pandas=pd.__version__, pyarrow=pa.__version__, scipy=scipy.__version__, sklearn=sklearn.__version__),
-         current_artifacts=files, contract="docs/preprocessing/encoding/06_p5_execution_contract.md")
+         current_artifacts=files, contract="docs/spec/preprocessing/encoding/06_p5_execution_contract.md")
     write_json(output_root / P5 / "artifact_manifest.json", manifest)
     write_json(evidence_root / "artifact_manifest.json", manifest)
     return metrics

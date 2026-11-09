@@ -9,7 +9,7 @@
 
 ## 1. Mục Đích & Căn Cứ Thiết Kế Kế Hoạch EDA
 
-- **[Fact] (Căn cứ: `docs/preprocessing/spec/P5_encoding.md` §2):** P5 nhận đầu vào là `all.parquet` từ P4.
+- **[Fact] (Căn cứ: `docs/spec/preprocessing/spec/P5_encoding.md` §2):** P5 nhận đầu vào là `all.parquet` từ P4.
 - **[Fact] (Căn cứ: Approved Decision 2026-11-07 trong `05_phat_encoding_implementation_contract.md` §2):** Chiều rộng ma trận kỹ năng $X$ bắt buộc phải có đúng 230 cột nhị phân, và ma trận đồng xuất hiện $C = X^T X$ kích thước $230 \times 230$.
 - **[Conflict]:** `SPEC-06 §5.1` quy định chọn top $K \in [100, 200]$ kỹ năng có tần suất $\ge 20$ lần. Trong khi đó, file từ điển `skills.json` hiện tại chỉ có 40 keys.
 - **[Recommendation]:** Đợt Data Profiling và EDA này có mục tiêu cung cấp căn cứ thực nghiệm (Empirical Evidence) từ dữ liệu thực tế để:

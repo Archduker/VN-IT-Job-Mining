@@ -6,7 +6,7 @@ Notebook cuối phải tự tìm repo root và thêm sys.path trước import pa
 `notebooks/` bằng kernel mới; không giả định cwd=repo root. Builder nhận --output-dir
 để kiểm vào thư mục tạm, không ghi đè cặp notebook/HTML đã có.
 
-Đọc `docs/preprocessing/encoding/06_p5_execution_contract.md` và execution report07.
+Đọc `docs/spec/preprocessing/encoding/06_p5_execution_contract.md` và execution report07.
 Runner đầy đủ là `python -m preprocessing.encoding.execute` với input manifest,
 frozen vocabulary, stopwords, cohort ledger, decision record, history root và explicit
 output/evidence roots. Runtime assets ở `preprocessing/encoding/assets/`, không đọc Downloads.

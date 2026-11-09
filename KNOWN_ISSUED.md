@@ -41,7 +41,7 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 
 - JobsGO 1.5–3.0 giây; VietnamWorks 1.2–2.2 giây và `time.sleep(0.3)` cố định giữa các trang; TopDev 1.0–2.5 giây (gọi API).
 - CareerViet nghỉ qua `HttpClient` (`DelayConfig` 2–5 giây), đúng chuẩn, nhưng `tests/contract/standards.check_random_pause` chỉ tìm lời gọi `polite_sleep` hoặc `uniform` nên sẽ báo nhầm.
-- Cần quyết: nâng lên chuẩn, hoặc ghi ngoại lệ có lý do cho nguồn gọi API. Làm cùng contract test của từng nguồn.
+- **Đã chốt 09/11/2026: nâng JobsGO, VietnamWorks, TopDev lên chuẩn 2,0–4,5 giây.** Làm cùng contract test của từng nguồn.
 - Cập nhật 09/11: `standards.check_random_pause` đã nhận `DelayConfig` nhưng chỉ kiểm tên hàm; TopDev, VietnamWorks, JobsGO vẫn dưới 2,0–4,5 giây.
 
 **SCRAPE-14. Contract test cho 6 nguồn còn lại**
@@ -63,6 +63,7 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 
 **SCRAPE-18. TopDev lọc IT bằng `it_filter` import ngược từ `preprocessing`** (mới, nhánh Khoa)
 
+- **Đã chốt 09/11/2026: bỏ lọc IT ở bước thu thập, để bước Clean lọc.** Còn việc xóa import và lọc ở `collection`.
 - `collection` import từ `preprocessing` đảo chiều phụ thuộc; API `/td/v2/jobs` vẫn trả 14.572 tin dù lọc (liên quan SCRAPE-15). Chưa quyết: giữ bộ lọc ở thu thập hay chỉ lọc ở Clean.
 
 **SCRAPE-17. Test ledger còn lỗi trên máy cục bộ**
@@ -102,6 +103,8 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
 **PRE-12. Chưa có nhãn hợp lệ để nghiệm thu bộ lọc IT**
 
+- Cập nhật 09/11/2026: người dùng đã gán đủ 643 nhãn (182 IT, 461 không IT). Độ đúng luật: tổng 92,4%; tầng 1 IT 97/100; tầng 2 IT 55/71. Mẫu phân tầng, chưa tính khoảng tin cậy. Chi tiết trong `docs/presentation/van_de_can_chot.html` mục 4.
+
 - Đếm trực tiếp 08/11: 643 dòng review, 100 dòng tầng 1 dự đoán IT, 0 nhãn. Chưa kiểm tra R2 trong lượt này; không kết luận nhãn lịch sử đã mất toàn dự án.
 - Lead gán nhãn, AI không tự điền. Ghi chú policy 331/339 và 42/47 không thay nhãn từng tin.
 - Wilson cộng dồn chưa hiệu chỉnh phân tầng và thiếu nhãn; `--status` không tự kết luận nghiệm thu. Lead yêu cầu tỷ lệ ≥95% kèm khoảng tin cậy, chưa chốt điều kiện cận dưới ≥95%.
@@ -128,7 +131,9 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
 **PRE-15. `it_policy.json` loại non_IT bằng bằng chứng tổng hợp** (Tài)
 
-- Loại 5.409 tin, chưa có nhãn từng tin. Quyết định 09/11: chấp nhận nguyên trạng. Kế hoạch sau: dùng model phân loại lại các tin bị loại để lấy lại tin IT bị loại nhầm. Chưa làm; trái với dòng "không dùng model" của `preprocessing/CLAUDE.md`, cần người dùng cho phép lại khi bắt đầu.
+- Đã có nhãn tay 09/11 (643 tin): luật dự đoán "không IT" nhưng người gán "IT" là 30/472 (6,4%), 26 tin ở tầng 2. Model dự kiến: OpenJev (đã cho phép trong `preprocessing/CLAUDE.md`, xem `docs/presentation/van_de_can_chot.html` mục 3).
+
+- Loại 5.409 tin, chưa có nhãn từng tin. Quyết định 09/11: chấp nhận nguyên trạng. Kế hoạch sau: dùng model phân loại lại các tin bị loại để lấy lại tin IT bị loại nhầm. Chưa làm. `preprocessing/CLAUDE.md` đã sửa 09/11 cho phép OpenJev làm tầng phụ.
 
 **PRE-16. Integration chưa đọc đầu ra Dedup `01b_deduplication`** (Tài)
 
@@ -140,6 +145,8 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 - `reports/preprocessing/01_clean`, `01b_deduplication` ghi đè 17 file JSON bằng kết quả `f693b30`, không phải code đã sửa. Cần chạy lại pipeline trước khi tin các số đó.
 
 **PRE-18. I0 đổi từ "drop" sang "modify"** (Hoàng)
+
+- **Đã chốt 09/11/2026: bỏ dòng JSON hỏng và ghi vào danh sách "đã bỏ"** (đúng P2 §8). Code và test của Hoàng còn giữ dòng hỏng thành bản ghi giả; cần sửa lại (F03).
 
 - `preprocessing/integration/run.py:174-178`: dòng JSON hỏng thành một bản ghi giả (tiêu đề là 80 ký tự của dòng hỏng) thay vì bị loại, trái P2 §8. `run()` đổi `dry_run` mặc định thành False. Test đã sửa theo hành vi mới (305d017); cần quyết thiết kế cuối: giữ zero-drop hay trả lại "loại + ghi dropped".
 
@@ -190,7 +197,7 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
   Kết luận từ số đo: hai cách bao quát gần như bằng nhau (cùng ~67% chưa rõ nếu chỉ dùng chữ); 6 cấp chỉ khác ở việc tách 700 tin thành 587 thực tập + 140 mới tốt nghiệp. Cấp "Mới tốt nghiệp" chỉ 1,3% tin, nhóm nhỏ cho mining. Phần "chưa rõ" giảm khi dùng năm kinh nghiệm (PRE-11 đo 13% sau bước này). Lý do chữ thiếu: nhãn sàn thường chung chung (TopCV "Nhân viên" 1.979/2.674; VietnamWorks "Nhân viên" 978/1.219; JobsGO "Nhân Viên/Chuyên Viên" 1.250/1.540); TopDev (2.780/2.782), ITviec và Glints (không có nhãn) gần như không có nhãn sàn. Lệch nhỏ 700 vs 587+140 do hai bộ luật khác nhau, cần kiểm lại khi chốt.
   Không đo được: độ đúng của nhãn (không có nhãn tay), và tỷ lệ sau khi lọc IT và dùng năm kinh nghiệm. Script đo ở scratchpad phiên làm việc, chưa đưa vào repo.
 - Số đo (09/11, 5.077 tin IT sau Clean, theo tiêu đề): UI/UX 48 tin (0,9%), Embedded/nhúng/firmware 71 tin (1,4%). Duy có nhóm Embedded + Product và không có UI/UX; spec gốc ngược lại. Xem `docs/tasks/cho_quyet_dinh.md` mục 2.
-- Embedded và UI/UX: chưa hiểu rõ vấn đề nên **chưa chốt** (người dùng 09/11), giữ mở. Cần giải thích lại và đo trên dữ liệu trước. Cần xem cách Duy và spec xếp hai nhóm này rồi đếm trên dữ liệu.
+- **Đã chốt 09/11/2026:** giữ 12 nhóm của Duy (có Embedded, Product), **không có nhóm UI/UX**; tin UI/UX chuyển vào Frontend. Cần sửa từ điển nhóm nghề của Duy (`preprocessing/transformation/job_family_classifier.py`) và SPEC-06 dòng 65 / P4 §3. Cột `seniority_level` (Duy) và `seniority_ord` (Phát) giữ cả hai tên, cùng thang 0–4. Cần xem cách Duy và spec xếp hai nhóm này rồi đếm trên dữ liệu.
 
 **PRE-23. Lỗi parse tái hiện được** (Duy)
 
@@ -214,6 +221,8 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
 **PRE-28. Cohort P5** (Phát)
 
+- Quyết định 09/11/2026: chấp nhận tạm (A). Lưu ý: 58% tin không có kỹ năng khi chỉ lấy từ thẻ của sàn, còn 12,2% khi lấy thêm từ tiêu đề + JD với từ điển 92 kỹ năng của Duy; nguyên nhân chính của "17,1% không có kỹ năng" có thể là cách khớp chỉ theo thẻ. Phân tích kỹ năng ở `docs/presentation/van_de_can_chot.html` mục 1.
+
 - Giữ 5.104/5.177 tin (62 bị loại, 11 cách ly); 5.092 tin chưa duyệt; 17,1% (873) không có kỹ năng nào trong bộ 230; độ thưa 98,15%, ngoài khoảng 95–98% của task 05. Số lấy từ báo cáo của Phát, chưa kiểm chứng. Chưa quyết: chấp nhận, hay chỉnh bộ lọc/bộ kỹ năng.
 
 ## 3b. Data Mining
@@ -228,7 +237,7 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
 **MINE-3. `test_outlier_ratio_follows_quantile` fail khi thiếu `hdbscan`** (rơi về fallback sklearn).
 
-**MINE-4. Khoảng k chưa thống nhất:** task 6–12, checklist 4–14, spec 07 3–15; code dùng 4–14.
+**MINE-4. Khoảng k chưa thống nhất:** task 6–12, checklist 4–14, spec 07 3–15; code dùng 4–14. Người dùng chưa quyết (09/11), đã đưa vào tài liệu trình bày nhóm.
 
 **MINE-5. `load_mart_from_parquet.py` biến cột list thành chuỗi;** chưa có bảng `skill_salary_shap_values`.
 

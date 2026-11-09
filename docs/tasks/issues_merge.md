@@ -25,13 +25,18 @@ Test sau merge (bỏ qua `tests/test_golden_field_preservation.py`): 440 pass, 6
 | Mã | Quyết định | Người quyết |
 |---|---|---|
 | D1 | Chấp nhận `it_policy.json` (Tài, 5.409 tin non_IT bị loại) nguyên trạng. Sau này dùng model phân loại lại các tin bị loại (PRE-15) | người dùng |
-| D2 | Tên tỉnh: "TP. Hồ Chí Minh". **Cấp bậc: 5 cấp của Duy (chốt 09/11, tài liệu đã sửa, code còn lệch: PRE-22)**. Embedded/UI-UX: chưa hiểu, chưa chốt | người dùng |
-| D3 | Cohort của Phát: chưa quyết (PRE-28) | - |
+| D2 | Tên tỉnh: "TP. Hồ Chí Minh". **Cấp bậc: 5 cấp của Duy (chốt 09/11, tài liệu đã sửa, code còn lệch: PRE-22)**. 12 nhóm của Duy, không có UI/UX (chuyển vào Frontend), giữ Embedded | người dùng |
+| D3 | Cohort của Phát: chấp nhận tạm (A), xem lại sau phân tích kỹ năng (PRE-28) | người dùng |
 | D4 | Đường `features.parquet`: chưa chốt, gắn GEN-4/GEN-9 | - |
 | D5 | Khoa: áp patch lên nhánh mới (đã làm) | người dùng |
 | D6 | Thêm `mlxtend`, `shap`, `hdbscan` vào `requirements.txt` (đã làm, 78bebfc) | người dùng |
 | D7 | Rủi ro chấp nhận: số liệu chưa kiểm chứng, git phình `reports/05_encoding`, cohort. Có kế hoạch dọn sau | người dùng |
 | D8 | Chưa ai ghi lên R2; mọi ghi/xóa R2 vẫn dry-run + chờ đồng ý | người dùng |
+| D9 | I0 (PRE-18): bỏ dòng JSON hỏng + ghi "đã bỏ" | người dùng 09/11 |
+| D10 | Tên cột cấp bậc: giữ cả `seniority_level` và `seniority_ord`, cùng thang 0–4 | người dùng 09/11 |
+| D11 | TopDev: bỏ lọc IT ở thu thập (SCRAPE-18); nghỉ giữa request nâng lên 2,0–4,5 s (SCRAPE-13) | người dùng 09/11 |
+| D12 | Cho phép OpenJev làm tầng phụ phân loại IT (đã sửa `preprocessing/CLAUDE.md`) | người dùng 09/11 |
+| D13 | Xóa nhánh `hotfix` (đã làm); push khi đặc tả xong; dời `docs/preprocessing/encoding` vào `docs/spec/preprocessing/encoding` (đã làm); PRE-11 và R2 đem ra nhóm | người dùng 09/11 |
 
 ## 3. Danh sách issue
 
@@ -43,8 +48,8 @@ Cột "Chờ" = cần quyết định nào trước khi sửa. "Mức": C chặn
 |---|---|---|---|---|---|
 | MERGE-1 | Nhiều thông báo merge thiếu dòng đồng tác giả (chỉ lịch sử, không sửa) | - | A | - | bỏ (ghi nhận) |
 | MERGE-2 | Đường dẫn docs cũ (`docs/preprocessing/...`) còn trong file mới của Tài, Hoàng, Phát | Tài, Hoàng, Phát | A | - | mở |
-| MERGE-3 | 3 file test mining lỗi collect và 2 lỗi `salary_model` vì venv chưa cài `mlxtend`/`shap`/`hdbscan` (đã khai trong requirements, chưa cài) | Phúc | C | cài vào venv | mở |
-| MERGE-4 | `test_outlier_ratio_follows_quantile` fail (thiếu `hdbscan`, rơi về fallback sklearn). Gộp với MINE-3 | Phúc | C | MERGE-3 | mở |
+| MERGE-3 | 3 file test mining lỗi collect và 2 lỗi `salary_model` vì venv chưa cài `mlxtend`/`shap`/`hdbscan` | Phúc | C | - | đã sửa 09/11: cài bằng `uv pip install --python .venv/bin/python`, cả bộ test 465 pass |
+| MERGE-4 | `test_outlier_ratio_follows_quantile` fail (thiếu `hdbscan`) | Phúc | C | - | đã sửa 09/11 (cùng MERGE-3) |
 | MERGE-5 | Hai file báo cáo của Hoàng đặt sai chỗ (gốc repo, `preprocessing/integration/`) | Hoàng | A | - | đã sửa (305d017: dời vào `docs/reports/03_hoang_bao_cao_integration.md`) |
 | MERGE-6 | `json_flattener.py` có BOM đầu file | Hoàng | A | - | đã sửa (305d017) |
 | MERGE-7 | Test `test_integration_output_contract_and_conservation` fail: test không patch `OUT_DIR`, và kỳ vọng I0 "loại dòng hỏng" trong khi code giữ dòng hỏng thành bản ghi (zero-drop) | Hoàng | C | PRE-18 | đã sửa phần test (305d017); phần thiết kế I0 còn ở PRE-18 |
@@ -74,8 +79,8 @@ Cột "Chờ" = cần quyết định nào trước khi sửa. "Mức": C chặn
 | PRE-27 | `tests/test_golden_field_preservation.py` import module không tồn tại; 12 lỗi ruff UP038 | Phát | C | - | mở |
 | PRE-28 | Cohort P5 5.104/5.177, 5.092 chưa duyệt, 17,1% không có kỹ năng, sparsity 98,15% | Phát | B | D3 | chờ quyết định |
 | MINE-1 | Mining chưa chạy trên dữ liệu thật; số liệu báo cáo là dữ liệu giả (`mining/synthetic.py`) | Phúc | B | - | mở |
-| MINE-2 | Thiếu thư viện trong requirements | Phúc | C | - | đã sửa (78bebfc); còn cài vào venv, xem MERGE-3 |
-| MINE-3 | `test_outlier_ratio_follows_quantile` phụ thuộc `hdbscan` | Phúc | C | MERGE-3 | mở |
+| MINE-2 | Thiếu thư viện trong requirements | Phúc | C | - | đã sửa (78bebfc) và đã cài vào venv |
+| MINE-3 | `test_outlier_ratio_follows_quantile` phụ thuộc `hdbscan` | Phúc | C | - | đã sửa 09/11 (cùng MERGE-3) |
 | MINE-4 | Khoảng k chưa thống nhất (task 6-12, checklist 4-14, spec 07 3-15); code dùng 4-14 | Phúc | B | - | chờ quyết định |
 | MINE-5 | `load_mart_from_parquet.py` biến cột list thành chuỗi; chưa có bảng `skill_salary_shap_values` | Phúc | B | - | mở |
 | MINE-6 | SHAP không phải nhân quả; `seniority_level` 0-4 gộp Thực tập và Mới tốt nghiệp (ghi chú báo cáo đồ án) | Phúc | A | PRE-22 | mở |
@@ -102,7 +107,7 @@ Không merge, không xóa (quyết định người dùng 09/11/2026: không cò
 | `feature/vietnamworks-raw-batch` | bỏ |
 | `pre-processing` | bỏ |
 | `preprocessing/transform` | bỏ |
-| `hotfix` (local, `83f8432`) | giữ, chưa quyết |
+| `hotfix` (local, `83f8432`) | đã xóa 09/11 (commit đã nằm trong sprint) |
 
 Đã nằm trong sprint từ trước: `crawls/*`, `feature/topdev-son`, `fix/known-issues-p1`.
 

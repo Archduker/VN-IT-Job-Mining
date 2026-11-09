@@ -1,6 +1,6 @@
 # P5 — bản đồ mã nguồn
 
-Bắt đầu ở [tài liệu bàn giao](../../docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md). Policy/schema ở contract06; số liệu và kiểm chứng ở report07. Manifest canonical xác định run hiện hành, không dùng tên script review để chọn input hoặc vocabulary.
+Bắt đầu ở [tài liệu bàn giao](../../docs/spec/preprocessing/encoding/05_p5_handoff_2026-11-08.md). Policy/schema ở contract06; số liệu và kiểm chứng ở report07. Manifest canonical xác định run hiện hành, không dùng tên script review để chọn input hoặc vocabulary.
 
 ## Luồng chạy hiện hành
 

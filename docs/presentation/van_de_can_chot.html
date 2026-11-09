@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vấn đề cần chốt - VN IT Job Mining</title>
+<style>
+:root{--bg:#fafaf8;--fg:#1c1c1a;--mut:#5f5e5a;--line:#d9d8d2;--card:#fff;--acc:#1d5fa8;--ok:#1e7a46;--warn:#9a5b00;--bad:#b3261e;--chip:#eef2f7}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecebe6;--mut:#a3a29c;--line:#34332f;--card:#1f1f1c;--acc:#7db3ee;--ok:#5cc58a;--warn:#e8b04a;--bad:#f2857d;--chip:#262a30}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header{padding:24px 0 8px}h1{font-size:1.7rem;margin:0 0 4px}h2{font-size:1.3rem;margin:36px 0 8px;padding-top:12px;border-top:1px solid var(--line)}h3{font-size:1.05rem;margin:20px 0 6px}
+p,li{max-width:70ch}.mut{color:var(--mut)}nav{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);padding:8px 0;z-index:5;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.9rem}
+nav a{color:var(--acc);text-decoration:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.chip{display:inline-block;background:var(--chip);border-radius:99px;padding:1px 10px;font-size:.8rem;margin-right:4px}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+table{border-collapse:collapse;width:100%;font-size:.9rem}th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{background:var(--chip);position:sticky;top:0}
+.num{text-align:right;font-variant-numeric:tabular-nums}.scroll{overflow-x:auto;max-height:520px;overflow-y:auto;border:1px solid var(--line);border-radius:8px}
+.bar{height:10px;background:var(--chip);border-radius:5px;overflow:hidden;min-width:120px}.bar i{display:block;height:100%;background:var(--acc)}
+input,select{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg)}
+code{background:var(--chip);padding:1px 5px;border-radius:4px;font-size:.88em}
+.q{border-left:4px solid var(--warn);padding:2px 12px;margin:8px 0}
+.dec{border-left:4px solid var(--ok);padding:2px 12px;margin:8px 0}
+details{margin:6px 0}summary{cursor:pointer;font-weight:600}
+@media (max-width:600px){h1{font-size:1.4rem}th,td{padding:5px 6px}}
+</style></head><body><div class="wrap">
+<header><h1>Vấn đề cần chốt sau khi merge 7 nhánh</h1>
+<p class="mut">Cập nhật 09/11/2026 · nhánh <code>sprint/pipeline-delivery</code> · số liệu đo trên raw tải từ R2 về máy (chỉ đọc). Dùng để trình bày với nhóm và hỏi ý kiến.</p></header>
+<nav><a href="#tomtat">Tóm tắt</a><a href="#skills">1. Kỹ năng</a><a href="#r2">2. Cấu trúc R2</a><a href="#model">3. Model OpenJev</a><a href="#nhan">4. Nhãn tay</a><a href="#cho">5. Còn chờ</a><a href="#chuanbi">6. Chuẩn bị trình bày</a></nav>
+
+<h2 id="tomtat">Tóm tắt</h2>
+<div class="card"><b>Đã chốt (bạn quyết 09/11):</b>
+<ul>
+<li><span class="ok">5 cấp bậc của Duy</span> (Intern/Fresher, Junior, Middle, Senior, Lead/Manager). Tài liệu đã sửa; code còn thang 6 cấp (việc F05).</li>
+<li>Dòng JSON hỏng ở Integration: <b>bỏ</b> và ghi vào danh sách "đã bỏ" (đúng tài liệu P2 §8). Code của Hoàng đang giữ lại, cần sửa lại.</li>
+<li>Nhóm nghề: <b>không có nhóm UI/UX</b>; tin UI/UX chuyển hẳn vào <b>Frontend</b>. Giữ 12 nhóm của Duy (có Embedded).</li>
+<li>Hai cột cấp bậc <code>seniority_level</code> (Duy) và <code>seniority_ord</code> (Phát): giữ cả hai tên, cùng thang 0–4.</li>
+<li>TopDev: bỏ lọc IT ở bước thu thập; để bước Clean lọc.</li>
+<li>Thời gian nghỉ khi cào: <b>nâng cả ba nguồn (JobsGO, VietnamWorks, TopDev) lên chuẩn 2,0–4,5 giây</b>.</li>
+<li>Cohort của Phát: chấp nhận tạm (nhưng xem mục 1 về kỹ năng: có thể cải thiện lớn).</li>
+<li>Tin non_IT bị loại: dùng model phân loại lại (OpenJev, mục 3).</li>
+<li>Nhánh <code>hotfix</code> xóa; chỉ push sau khi đặc tả xong hết.</li>
+</ul></div>
+<div class="card"><b>Đã làm hôm nay:</b> cài <code>mlxtend</code>, <code>shap</code>, <code>hdbscan</code> vào venv → chạy cả bộ test: <b>465 pass, 0 lỗi</b> (trước đó 440 pass, 2 fail, 5 error); xóa nhánh <code>hotfix</code> (đã nằm trong sprint); dời <code>docs/preprocessing/encoding/</code> sang <code>docs/spec/preprocessing/encoding/</code> và sửa đường dẫn trong code; xóa <code>reports/preprocessing/05_encoding/refactor_2026-11-09</code> (25 file, không code nào đọc); sửa <code>preprocessing/CLAUDE.md</code> cho phép OpenJev; gán nhãn tay xong 643 tin.</div>
+
+<h2 id="skills">1. Kỹ năng: 230 cột là gì, có đủ chưa, làm sao lấy hết?</h2>
+<h3>1.1 Hiện trạng (theo file đóng băng của Phát <code>frozen_vocabulary_v1.json</code>)</h3>
+<ul>
+<li>230 kỹ năng: <b>214 cứng (hard)</b>, <b>16 mềm (soft)</b>. Soft gồm Communication, Teamwork, Problem Solving, Leadership...; nhưng Communication chỉ xuất hiện ở 165 tin, các soft khác thấp hơn.</li>
+<li>Con số <b>230 không phải kết quả khám phá</b>. Nó là chỉ tiêu "Approved Decision 2" của task 05. Phát viết rõ trong <code>p5_input_k_decisions.md</code>: <i>"Chưa đủ căn cứ chọn K tối ưu. Giữ 230 vì contract hiện hành"</i>. Tăng 200→230 thêm 0,483 điểm% tin; 230→300 thêm 1,140 điểm%.</li>
+<li>SPEC-06 §5.1 yêu cầu mỗi kỹ năng xuất hiện <b>≥ 20 tin</b>. Thực tế: <b class="warn">chỉ 93/230 đạt</b>; 137 kỹ năng dưới 20 tin (22 kỹ năng dưới 5 tin, ví dụ ASP.NET Core, NumPy, DynamoDB chỉ 2 tin). Phát ghi trạng thái "proposed_below20_not_approved": chưa ai duyệt.</li>
+<li>Cách khớp của Phát: <code>whole_value_casefold_only</code>, tức chỉ so <b>nguyên giá trị thẻ kỹ năng</b> mà sàn đưa ra, không đọc mô tả công việc (JD).</li>
+</ul>
+<h3>1.2 Hai bộ từ điển kỹ năng đang tồn tại song song</h3>
+<div class="card"><table><tr><th>Bộ</th><th>Số kỹ năng</th><th>Cách lấy</th></tr>
+<tr><td>Duy: <code>skills_taxonomy.json</code> (dùng ở <code>skill_normalizer.extract_skills</code>)</td><td class="num">92</td><td>Tìm theo từ khóa/bí danh trong <b>tiêu đề + thẻ + JD</b>, có luật ngữ cảnh cho tên ngắn (C, R, Go)</td></tr>
+<tr><td>Phát: <code>frozen_vocabulary_v1.json</code></td><td class="num">230</td><td>Khớp nguyên giá trị thẻ của sàn</td></tr></table>
+<p>Trùng nhau chỉ <b>56</b> kỹ năng; Phát có 174 kỹ năng không có trong từ điển Duy. Hai bên chưa thống nhất.</p></div>
+<h3>1.3 Thử đo: lấy thêm từ JD thì được bao nhiêu? (5.077 tin IT sau bước Clean)</h3>
+<div class="card">
+<p>Dùng từ điển 92 kỹ năng của Duy:</p>
+<table><tr><th>Cách lấy</th><th class="num">Tin không có kỹ năng nào</th><th class="num">TB kỹ năng/tin</th></tr>
+<tr><td>Chỉ từ thẻ của sàn</td><td class="num bad">58,0 % (2.943 tin)</td><td class="num">1,23</td></tr>
+<tr><td>Thẻ + tiêu đề + JD (mô tả + yêu cầu)</td><td class="num ok">12,2 % (620 tin)</td><td class="num">5,34</td></tr></table>
+<p class="mut">Theo nguồn (không có kỹ năng, chỉ thẻ → thẻ + JD): CareerViet 100 % → 5,6 %; JobsGO 100 % → 21,8 %; TopCV 67,3 % → 15,3 %; VietnamWorks 42,0 % → 12,8 %; ITviec 8,1 % → 0,9 %. CareerViet và JobsGO gần như <b>không có thẻ kỹ năng</b>, nên cột kỹ năng của hai sàn này hiện gần như trống.</p>
+<p class="mut">Giới hạn: đây là số "có ít nhất một kỹ năng", chưa phải độ đúng. Chưa có nhãn kỹ năng gán tay để đo recall/precision. Từ điển Duy chỉ 92 kỹ năng nên 5,34 là mức tối thiểu.</p></div>
+<h3>1.4 Đề xuất để phát hiện và trích hết kỹ năng (để nhóm góp ý)</h3>
+<ol>
+<li><b>Trích từ JD, không chỉ từ thẻ.</b> Dùng hàm <code>extract_skills</code> đã có (luật ngữ cảnh cho C/R/Go). Một thay đổi, tăng ngay số tin có kỹ năng (58 % → 12 % không có).</li>
+<li><b>Hợp nhất hai từ điển</b> thành một: lấy 230 của Phát làm "tên chuẩn", thêm bí danh tiếng Việt/Anh của Duy. Mỗi kỹ năng có <code>canonical</code>, <code>aliases</code>, <code>type</code> (hard/soft), <code>group</code>.</li>
+<li><b>Tìm kỹ năng còn thiếu</b>: thống kê các cụm từ lặp lại nhiều trong thẻ và JD (n-gram 1–3 từ) mà <i>chưa</i> có trong từ điển, xếp theo số tin, người duyệt tay mục đầu danh sách. Lặp lại đến khi top mới ít thay đổi.</li>
+<li><b>Kỹ năng mềm riêng</b>: lập từ điển soft skills tiếng Việt và Anh (giao tiếp, làm việc nhóm, giải quyết vấn đề, tiếng Anh...). Hiện chỉ 16 soft, nhiều khả năng bỏ sót vì JD viết tiếng Việt.</li>
+<li><b>Đo độ phủ</b>: gán tay kỹ năng cho ~50 tin ngẫu nhiên, tính recall (tìm được bao nhiêu % kỹ năng thật) và precision. Mục tiêu do nhóm đặt.</li>
+<li><b>Ngưỡng ≥ 20 tin</b>: quyết giữ cố định 230 cột hay chọn theo ngưỡng (nếu theo ngưỡng thì có thể chỉ khoảng 93 cột, hoặc nhiều hơn sau khi trích từ JD).</li>
+</ol>
+<div class="q"><b>Câu hỏi cho nhóm:</b> (a) Phát: vì sao chọn 230 và khớp nguyên giá trị thẻ, có cho phép trích từ JD không? (b) Duy: từ điển 92 kỹ năng có hợp nhất với 230 của Phát được không? (c) Nhóm: kỹ năng mềm có phải mục tiêu phân tích không (SPEC-01 hướng tới sinh viên IT)? (d) Ngưỡng ≥ 20 hay 230 cố định?</div>
+<h3>1.5 Danh sách 230 kỹ năng (lọc được)</h3>
+<p><input id="q" placeholder="Tìm kỹ năng..." oninput="f()"> <select id="t" onchange="f()"><option value="">Cứng + mềm</option><option value="hard">Chỉ cứng</option><option value="soft">Chỉ mềm</option></select> <select id="n" onchange="f()"><option value="">Mọi tần suất</option><option value="hi">≥ 20 tin</option><option value="lo">&lt; 20 tin</option></select> <span id="cnt" class="mut"></span></p>
+<div class="scroll"><table id="sk"><tr><th>#</th><th>Kỹ năng</th><th>Loại</th><th>Nhóm</th><th>Kiểu</th><th class="num">Số tin</th><th>Ngưỡng</th></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>1</td><td>SQL</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">1762</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>2</td><td>REST API</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">1377</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>3</td><td>Python</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">1072</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="None"><td>4</td><td>Machine Learning</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">1016</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>5</td><td>Agile/Scrum</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>composite</td><td class="num">953</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>6</td><td>Git</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">856</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>7</td><td>CI/CD</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">785</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>8</td><td>Docker</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>tool</td><td class="num">736</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>9</td><td>Java</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">655</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>10</td><td>AWS</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technology</td><td class="num">619</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Databases &amp; Caching"><td>11</td><td>NoSQL</td><td>cứng</td><td>Databases &amp; Caching</td><td>technical_knowledge</td><td class="num">594</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>12</td><td>Linux</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technology</td><td class="num">581</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>13</td><td>JavaScript</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">579</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>14</td><td>Kubernetes</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>tool</td><td class="num">500</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>15</td><td>Microservices</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">492</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>16</td><td>Microsoft Azure</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technology</td><td class="num">457</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>17</td><td>C#</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">425</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>18</td><td>React</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">392</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>19</td><td>Google Cloud</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technology</td><td class="num">346</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>20</td><td>Node.js</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">322</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="None"><td>21</td><td>English</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">315</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>22</td><td>HTML/CSS</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>composite</td><td class="num">299</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>23</td><td>Kafka</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">299</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>24</td><td>TypeScript</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">296</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>25</td><td>Unit Testing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">268</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>26</td><td>C++</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">255</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>27</td><td>Kotlin</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">241</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>28</td><td>C</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">240</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>29</td><td>Automation Testing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">227</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>30</td><td>Swift</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">214</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>31</td><td>Business Analysis</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">171</td><td>≥20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>32</td><td>Communication</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">165</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>33</td><td>Data Analysis</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">161</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>34</td><td>PHP</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">157</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>35</td><td>Cybersecurity</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">155</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>36</td><td>Angular</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">146</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>37</td><td>RabbitMQ</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">140</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>38</td><td>Vue</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">126</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>39</td><td>Project Management</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">125</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>40</td><td>Go</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">123</td><td>≥20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>41</td><td>Teamwork</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">97</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>42</td><td>Dart</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">83</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>43</td><td>Adobe Illustrator</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">80</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>44</td><td>GraphQL</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">76</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>45</td><td>Power BI</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">75</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>46</td><td>Adobe Photoshop</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">72</td><td>≥20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>47</td><td>Problem Solving</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">66</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>48</td><td>UI/UX Design</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">64</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="None"><td>49</td><td>Large Language Models</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">61</td><td>≥20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>50</td><td>Team Management</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">58</td><td>≥20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>51</td><td>Leadership</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">56</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>52</td><td>Figma</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">54</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>53</td><td>Software Testing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">53</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>54</td><td>Information Security</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">48</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="None"><td>55</td><td>Natural Language Processing</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">46</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>56</td><td>Ruby</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">44</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>57</td><td>Software Architecture</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">44</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="None"><td>58</td><td>Computer Vision</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">41</td><td>≥20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>59</td><td>Creativity</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">40</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>60</td><td>AutoCAD</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">36</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>61</td><td>Microsoft Excel</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">36</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Databases &amp; Caching"><td>62</td><td>SQL Server</td><td>cứng</td><td>Databases &amp; Caching</td><td>technology</td><td class="num">36</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="None"><td>63</td><td>Japanese</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">35</td><td>≥20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>64</td><td>Logical Reasoning</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">35</td><td>≥20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>65</td><td>Stakeholder Management</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">34</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>66</td><td>System Administration</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">34</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>67</td><td>Data Modeling</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">32</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>68</td><td>Next.js</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">31</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>69</td><td>Adobe InDesign</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">30</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>70</td><td>Risk Management</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">30</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>71</td><td>Terraform</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>tool</td><td class="num">30</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>72</td><td>OOP</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">29</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>73</td><td>Penetration Testing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">29</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="None"><td>74</td><td>Data Warehousing</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">28</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>75</td><td>Design Systems</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">28</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>76</td><td>Cloud Security</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technical_knowledge</td><td class="num">27</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>77</td><td>Requirements Analysis</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">27</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>78</td><td>Network Security</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">26</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>79</td><td>System Architecture</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">26</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>80</td><td>Manual Testing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">25</td><td>≥20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>81</td><td>Presentation Skills</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">25</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>82</td><td>Regression Testing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">24</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>83</td><td>Solution Architecture</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">24</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>84</td><td>Tableau</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">24</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>85</td><td>VMware</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technology</td><td class="num">24</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="None"><td>86</td><td>Business Intelligence</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">23</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>87</td><td>Firewall</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">23</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>88</td><td>Rust</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">21</td><td>≥20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>89</td><td>Time Management</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">21</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>90</td><td>Unity</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>tool</td><td class="num">21</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>91</td><td>Defect Management</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">20</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>92</td><td>MLOps</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">20</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>93</td><td>Postman</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">20</td><td>≥20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>94</td><td>API Testing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">19</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>95</td><td>Generative AI</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">19</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>96</td><td>Troubleshooting</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">19</td><td><20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>97</td><td>jQuery</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">19</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>98</td><td>DevSecOps</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">18</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>99</td><td>Typography</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">18</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>100</td><td>Data Mining</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">16</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>101</td><td>Integration Testing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">16</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>102</td><td>AUTOSAR</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">15</td><td><20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>103</td><td>Analytical Skills</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">15</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>104</td><td>Ansible</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>tool</td><td class="num">15</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>105</td><td>Data Management</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">15</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>106</td><td>IT Governance</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">15</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>107</td><td>Windows Server</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technology</td><td class="num">15</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>108</td><td>IT Infrastructure</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technical_knowledge</td><td class="num">14</td><td><20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>109</td><td>Independent Working</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">14</td><td><20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>110</td><td>PowerShell</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">14</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>111</td><td>RAG</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">14</td><td><20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>112</td><td>Systems Thinking</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">14</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>113</td><td>Clean Architecture</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">13</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>114</td><td>DNS</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">13</td><td><20</td></tr>
+<tr data-t="hard" data-g="Databases &amp; Caching"><td>115</td><td>Oracle Database</td><td>cứng</td><td>Databases &amp; Caching</td><td>technology</td><td class="num">13</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>116</td><td>Windows</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technology</td><td class="num">13</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>117</td><td>Data Visualization</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">12</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>118</td><td>Functional Testing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">12</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>119</td><td>ISO 27001</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">12</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>120</td><td>MVVM</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">12</td><td><20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>121</td><td>Negotiation</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">12</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>122</td><td>Algorithms</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">11</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>123</td><td>Design Patterns</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">11</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>124</td><td>Enterprise Architecture</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">11</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>125</td><td>JSON</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">11</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>126</td><td>Microsoft 365</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>tool</td><td class="num">11</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>127</td><td>Pattern Recognition</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">11</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>128</td><td>Security Audit</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">11</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>129</td><td>DHCP</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">10</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>130</td><td>Firmware</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">10</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>131</td><td>Grafana</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>tool</td><td class="num">10</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>132</td><td>Microsoft Word</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">10</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>133</td><td>Network Troubleshooting</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">10</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>134</td><td>Neural Network</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">10</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>135</td><td>Odoo</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">10</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>136</td><td>Prompt Engineering</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">10</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>137</td><td>VPN</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">10</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>138</td><td>Data Governance</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">9</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>139</td><td>Hardware Maintenance</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">9</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>140</td><td>Power Automate</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">9</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>141</td><td>Sketch</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">9</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>142</td><td>Wireframing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">9</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>143</td><td>A/B Testing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>144</td><td>Active Directory</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technology</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>145</td><td>Application Security</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>146</td><td>Bash</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>147</td><td>PowerPoint</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>148</td><td>Process Improvement</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>149</td><td>Product Roadmapping</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>150</td><td>Product Strategy</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>151</td><td>Spring Boot</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>152</td><td>Statistics</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>153</td><td>TCP/IP</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">8</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>154</td><td>BPMN</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>155</td><td>Collaboration</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>156</td><td>Confluence</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>157</td><td>Data Integration</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>158</td><td>Debugging</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>159</td><td>ELT</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>160</td><td>Linux System Administration</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>161</td><td>Monitoring</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>162</td><td>OWASP</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>163</td><td>RTOS</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>164</td><td>Scala</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>165</td><td>VLAN</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>166</td><td>gRPC</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">7</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>167</td><td>Cloud Infrastructure</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technical_knowledge</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>168</td><td>Data Quality</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>169</td><td>Databricks</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>170</td><td>Entity Framework</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>171</td><td>IT Operations</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>172</td><td>Incident Response</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>173</td><td>MVC</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>174</td><td>Master Data Management</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Databases &amp; Caching"><td>175</td><td>Microsoft Azure SQL Database</td><td>cứng</td><td>Databases &amp; Caching</td><td>technology</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>176</td><td>PCI DSS</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>177</td><td>SOLID Principles</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>178</td><td>UML</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>179</td><td>VBA</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>180</td><td>Waterfall</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>181</td><td>WordPress</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>182</td><td>XML</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">6</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>183</td><td>AWS Lambda</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>technology</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>184</td><td>Adobe XD</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>185</td><td>Apache Spark</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>186</td><td>Change Management</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>187</td><td>Cloud-native Architecture</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>188</td><td>DBT</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>189</td><td>Data Structures</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>190</td><td>Disaster Recovery</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>191</td><td>Embedded Systems</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>192</td><td>Firebase</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>193</td><td>Google Sheets</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>194</td><td>Infrastructure as Code</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>195</td><td>Kubeflow</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>tool</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>196</td><td>PL/SQL</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>197</td><td>Project Planning</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>198</td><td>Prometheus</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>tool</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>199</td><td>Reinforcement Learning</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>200</td><td>Requirements Elicitation</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>201</td><td>Routing</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>202</td><td>SAP FICO</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>203</td><td>SAP Integration Suite</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technology</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>204</td><td>Technical Documentation</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>205</td><td>Technical Writing</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>206</td><td>Transformer</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>207</td><td>UAT</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>208</td><td>User Flow</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">5</td><td><20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>209</td><td>ABAP</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Cloud &amp; DevOps"><td>210</td><td>ArgoCD</td><td>cứng</td><td>Cloud &amp; DevOps</td><td>tool</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>211</td><td>Backlog Management</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>212</td><td>CNN</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Programming Languages"><td>213</td><td>COBOL</td><td>cứng</td><td>Programming Languages</td><td>technology</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>214</td><td>Continuous Improvement</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>215</td><td>GNN</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>216</td><td>Hardware Troubleshooting</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>217</td><td>JMeter</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="None"><td>218</td><td>KNN</td><td>cứng</td><td>None</td><td>technical_knowledge</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>219</td><td>LAN</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>technical_knowledge</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>220</td><td>Looker Studio</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Tools, Architecture &amp; Protocols"><td>221</td><td>MATLAB</td><td>cứng</td><td>Tools, Architecture &amp; Protocols</td><td>tool</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>222</td><td>Pandas</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Methodologies &amp; Soft Skills"><td>223</td><td>Prototyping</td><td>cứng</td><td>Methodologies &amp; Soft Skills</td><td>method_practice</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>224</td><td>TensorFlow Serving</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>tool</td><td class="num">4</td><td><20</td></tr>
+<tr data-t="soft" data-g="Methodologies &amp; Soft Skills"><td>225</td><td>Attention to Detail</td><td>mềm</td><td>Methodologies &amp; Soft Skills</td><td>soft_skill</td><td class="num">3</td><td><20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>226</td><td>Unreal Engine</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>tool</td><td class="num">3</td><td><20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>227</td><td>ASP.NET Core</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">2</td><td><20</td></tr>
+<tr data-t="hard" data-g="Databases &amp; Caching"><td>228</td><td>DynamoDB</td><td>cứng</td><td>Databases &amp; Caching</td><td>technology</td><td class="num">2</td><td><20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>229</td><td>NumPy</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">2</td><td><20</td></tr>
+<tr data-t="hard" data-g="Frameworks &amp; Libraries"><td>230</td><td>Nuxt.js</td><td>cứng</td><td>Frameworks &amp; Libraries</td><td>technology</td><td class="num">2</td><td><20</td></tr>
+</table></div>
+<p class="mut">Số tin theo file đóng băng của Phát (đếm theo thẻ kỹ năng của sàn). Nhóm "None" là 19 kỹ năng chưa được gán nhóm.</p>
+
+<h2 id="r2">2. Cấu trúc R2: trên đó có gì, muốn sửa thì làm sao</h2>
+<h3>2.1 Hiện có (liệt kê 09/11/2026, 12.989 object, 558 MB)</h3>
+<div class="card"><table><tr><th>Prefix</th><th class="num">Object</th><th>Là gì</th><th>Theo spec 10</th><th>Đề xuất</th></tr>
+<tr><td><code>raw/</code></td><td class="num">12.826</td><td>JSON thô theo <code>raw/&lt;nguồn&gt;/&lt;ngày&gt;/&lt;id&gt;_vN.json</code>, kèm <code>_manifest</code>, <code>_quality</code>, <code>_index</code>, <code>_listing</code></td><td class="ok">Bronze, giữ</td><td>Giữ nguyên</td></tr>
+<tr><td><code>url_ledger/</code></td><td class="num">64</td><td>Sổ cái URL: <code>catalog_master.json/.parquet</code>, manifest, snapshot</td><td class="ok">Bronze, giữ</td><td>Giữ nguyên</td></tr>
+<tr><td><code>staging/</code></td><td class="num">32</td><td>8 nguồn × 4 bước (<code>01_clean.jsonl</code> … <code>04_normalization.parquet</code>)</td><td class="warn">Silver chỉ có <code>silver/all.parquet</code></td><td>Bỏ 32 file; thay bằng 1 file gộp</td></tr>
+<tr><td><code>curated/</code></td><td class="num">2</td><td><code>curated/preprocessing/features.parquet</code> và <code>encoding_dictionary.json</code> (Phát)</td><td class="warn">Gold: <code>gold/features.parquet</code></td><td>Đổi tên prefix; vị trí cuối chờ nhóm</td></tr>
+<tr><td><code>silver/</code></td><td class="num">3</td><td>3 file JSON cũ: <code>silver_master_dataset.json</code> (36 MB), <code>silver_flat_jobs.json</code> (34 MB), health card</td><td class="warn">Cần parquet</td><td>Chuyển parquet hoặc bỏ (bạn chưa xem nội dung)</td></tr>
+<tr><td><code>integration/</code></td><td class="num">18</td><td>JSON phẳng từng nguồn + <code>integrated_flat_all_sources.json</code> (39,6 MB) + báo cáo</td><td class="bad">Ngoài 4 tầng</td><td>Xóa (đã quyết)</td></tr>
+<tr><td><code>quality/</code></td><td class="num">26</td><td><code>run_N.json</code> theo nguồn/ngày</td><td class="bad">Ngoài 4 tầng</td><td>Xóa (đã quyết)</td></tr>
+<tr><td><code>transformation/</code></td><td class="num">18</td><td>Kết quả bước 3 cũ</td><td class="bad">Ngoài 4 tầng</td><td>Xóa (đã quyết)</td></tr></table>
+<p class="mut">Spec 10 đích: <code>raw/</code>, <code>url_ledger/</code>, <code>silver/all.parquet</code>, <code>gold/{gold_master_jobs.parquet, features.parquet, matrices/}</code>. Chưa xác định: ai đang ghi vào <code>quality/</code>, <code>transformation/</code> và 3 file <code>silver/*.json</code>. Cần hỏi nhóm.</p></div>
+<h3>2.2 Code nào ghi vào đâu (đã đọc code)</h3>
+<ul>
+<li>Thu thập (<code>run.py --sync-r2</code>) → <code>raw/</code>, <code>url_ledger/</code>.</li>
+<li><code>scripts/push_integration_to_r2.py</code> → <code>integration/</code> (ngoài 4 tầng).</li>
+<li><code>scripts/push_preprocessing_to_r2.py</code> (<code>preprocessing/common/r2_export.py</code>) → 32 file <code>staging/&lt;nguồn&gt;/preprocessing/...</code> + <code>curated/preprocessing/features.parquet</code>.</li>
+<li><code>scripts/sync_cloud_lakehouse.py --upload</code> → đẩy mọi thứ trong <code>data/</code>.</li>
+<li>Đã sửa trong code (chưa chạy trên R2): <code>R2_LAYER_PREFIX</code> ánh xạ <code>staging→silver</code>, <code>curated→gold</code>; <code>migrate_lakehouse_layout.py --prefix-map</code> (mặc định chạy thử, chép rồi đối chiếu Size/ETag mới xóa).</li>
+</ul>
+<h3>2.3 Muốn sửa thì phải làm theo thứ tự</h3>
+<ol>
+<li><b>Hỏi nhóm</b> ai đọc/ghi prefix nào (trước khi động vào).</li>
+<li>Sửa code còn lệch: <code>canonicalize_lakehouse_key</code> hiện từ chối <code>silver/all.parquet</code>; <code>r2_export.py</code> + <code>push_preprocessing_to_r2.py</code> đẩy 1 file thay vì 32; tên gold theo spec; bỏ <code>push_integration_to_r2.py</code> hoặc đổi đích.</li>
+<li>Sửa tài liệu: SPEC-10, <code>docs/guides/cloud_r2_setup_guide.md</code>, <code>.agents/skills/r2-lakehouse-guide/SKILL.md</code>, <code>collection/CLAUDE.md</code>, <code>scripts/CLAUDE.md</code>, <code>AGENTS.md</code>.</li>
+<li><b>Chạy thử</b> (dry-run): <code>python scripts/migrate_lakehouse_layout.py --prefix-map</code> → in số object sẽ chuyển/xóa/trùng/xung đột. Gửi bảng này cho nhóm.</li>
+<li>Chờ bạn đồng ý bằng văn bản, rồi mới <code>--apply</code>. Xóa <code>quality/</code>, <code>integration/</code>, <code>transformation/</code> làm riêng sau khi sao lưu hoặc xác nhận không ai cần.</li>
+</ol>
+<div class="q"><b>Hỏi nhóm:</b> (a) Ai đang đọc <code>staging/</code>, <code>integration/</code>, <code>quality/</code>, <code>transformation/</code>, <code>silver/*.json</code>? (b) <code>features.parquet</code> nên ở <code>gold/features.parquet</code> (spec) — Phát và Phúc có đồng ý đổi đường đọc/ghi? (c) Có file nào trong <code>integration/</code> hoặc <code>quality/</code> cần giữ làm bằng chứng?</div>
+
+<h2 id="model">3. Dùng model OpenJev để phân loại tin: được không? (trả lời nhanh)</h2>
+<div class="card"><p><b>OpenJev</b> là model "quyết định": bạn viết câu hỏi + danh sách lựa chọn, model trả <b>xác suất cho từng lựa chọn</b> (phân loại zero-shot, không cần huấn luyện). Phù hợp với bài toán IT / không IT.</p>
+<table><tr><th>Điểm</th><th>Thông tin từ trang model</th><th>Ảnh hưởng</th></tr>
+<tr><td>Kích thước</td><td>27 tỷ tham số. Bản BF16 ~54 GB; FP8 ~29 GB cần GPU 80 GB; GGUF Q4 chạy được trên card 24 GB; MLX cho Mac</td><td class="warn">Cần máy mạnh; laptop thường không chạy được</td></tr>
+<tr><td>Giấy phép</td><td>CC BY-NC 4.0: chỉ phi thương mại, phải ghi nguồn</td><td>Ổn cho đồ án học thuật; ghi nguồn trong báo cáo</td></tr>
+<tr><td>Tiếng Việt</td><td class="bad">Trang gắn "6 languages" nhưng không nêu tiếng Việt</td><td>Chưa biết có đúng với JD tiếng Việt không → phải đo</td></tr>
+<tr><td>API</td><td>Nhắc tới API do bên thứ ba lưu trữ, nhưng cũng ghi chưa có nhà cung cấp suy luận nào triển khai</td><td>Chưa chắc có API dùng ngay</td></tr>
+<tr><td>Input</td><td>Tối đa 16.384 token, tối đa 52 lựa chọn/lượt</td><td>Một tin = một lượt, đủ cho tiêu đề + mô tả rút gọn</td></tr></table>
+<p><b>Kết luận nhanh:</b> được, với điều kiện đo độ đúng trước. Bạn đã có <b>643 nhãn tay</b> làm bộ đo (mục 4). Làm tầng phụ sau luật if-else qua cờ riêng, so với nhãn tay, rồi mới quyết có thay luật hay không. Mình đã sửa <code>preprocessing/CLAUDE.md</code> để cho phép.</p>
+<div class="q"><b>Cần nhóm xem:</b> (a) SPEC-02 ghi "Zero-LLM", cấm LLM thương mại trả phí trong production; OpenJev là mở trọng số, phi thương mại, nên có thể xếp vào ngoại lệ — nhóm có đồng ý sửa SPEC-02 không? (b) Ai có GPU để chạy, hay dùng bản GGUF 4-bit? (c) Trước đây dự án từng bỏ "JEV" (qua OpenCode): đã bỏ vì lý do gì? (đọc <code>docs/issue_log.md</code> L-28 để nhắc lại).</div></div>
+
+<h2 id="nhan">4. Nhãn tay: kết quả sau khi bạn gán 643 tin</h2>
+<div class="card"><p>643 tin: <b>182 IT</b>, <b>461 không IT</b>. So với luật if-else của Tài (<code>it_status</code>):</p>
+<table><tr><th>Luật dự đoán</th><th class="num">Số tin mẫu</th><th class="num">Đúng</th><th class="num">Tỷ lệ</th></tr>
+<tr><td>Là IT (cả hai tầng)</td><td class="num">171</td><td class="num">152</td><td class="num">88,9 %</td></tr>
+<tr><td>… trong đó tầng 1 (từ khóa tiêu đề)</td><td class="num">100</td><td class="num">97</td><td class="num ok">97,0 %</td></tr>
+<tr><td>… trong đó tầng 2</td><td class="num">71</td><td class="num">55</td><td class="num warn">77,5 %</td></tr>
+<tr><td>Là không IT (cả hai tầng)</td><td class="num">472</td><td class="num">442</td><td class="num">93,6 %</td></tr>
+<tr><td>… tầng 1</td><td class="num">303</td><td class="num">299</td><td class="num ok">98,7 %</td></tr>
+<tr><td>… tầng 2</td><td class="num">169</td><td class="num">143</td><td class="num warn">84,6 %</td></tr>
+<tr><td><b>Tổng</b></td><td class="num">643</td><td class="num">594</td><td class="num"><b>92,4 %</b></td></tr></table>
+<p><b>Điều đáng chú ý:</b> luật dự đoán "không IT" nhưng bạn gán "IT": <b>30 tin / 472 (6,4 %)</b>, trong đó 26 tin ở tầng 2. Tức là bộ lọc có loại nhầm tin IT. Task 02 đặt mục tiêu tầng 1 IT ≥ 95 %: <b>đạt 97/100</b> nhưng khoảng tin cậy dưới của 100 tin vẫn thấp hơn 95 % (chưa tính).</p>
+<p class="mut">Giới hạn: mẫu là mẫu phân tầng của Clean (không phải ngẫu nhiên toàn bộ), nên không suy trực tiếp ra toàn bộ 5.409 tin bị loại. Chưa tính khoảng tin cậy Wilson, chưa kiểm xem nhãn của bạn có nhất quán không.</p></div>
+
+<h2 id="cho">5. Vấn đề còn chờ (để nhóm trả lời)</h2>
+<div class="card"><table><tr><th>Mục</th><th>Chuyện gì</th><th>Giải thích và đề xuất</th></tr>
+<tr><td><b>MINE-4</b> khoảng k</td><td>Ba tài liệu ghi ba khoảng thử số cụm k</td><td>K-Means cần chọn số cụm k. Task: 6–12, checklist: 4–14, spec 07: 3–15; code đang thử 4–14. Đề xuất: giữ <b>4–14</b> (khớp code), sửa hai tài liệu kia. Chọn k bằng Silhouette; ghi giới hạn vào báo cáo. Hỏi Phúc vì sao chọn 4–14.</td></tr>
+<tr><td><b>PRE-18</b> (I0)</td><td>Dòng JSON hỏng</td><td>Đã chốt: bỏ + ghi "đã bỏ". Việc còn lại: sửa code Hoàng và test (F03).</td></tr>
+<tr><td><b>PRE-28</b> cohort</td><td>Phát giữ 5.104/5.177 tin; 5.092 chưa duyệt; 17,1 % không có kỹ năng; thưa 98,15 %</td><td>Nguyên nhân chính của "17,1 % không có kỹ năng" nhiều khả năng là mục 1 (chỉ khớp thẻ). Đề xuất: chờ kết quả trích từ JD rồi tính lại độ thưa trước khi quyết.</td></tr>
+<tr><td><b>PRE-15</b> tin bị loại</td><td>5.409 tin bị <code>it_policy.json</code> loại, chưa kiểm từng tin</td><td>Mục 4 cho thấy ~6 % dự đoán "không IT" là IT. Dùng OpenJev (mục 3) để xét lại các tin bị loại ở tầng 2 trước (nơi sai nhiều nhất).</td></tr>
+<tr><td><b>PRE-11</b> hướng mô hình</td><td>5 câu hỏi A/B ở slide cuối <code>docs/presentation/slides.html</code> gửi thầy, chưa có trả lời</td><td>Số liệu nền: 55 % thiếu lương, 17 % tin IT do tầng 2 quyết, 13 % chưa rõ cấp bậc, 11 % nhóm "Khác", 74 % ở Hà Nội + TP.HCM, ma trận kỹ năng thưa 97,2 %. Đem ra nhóm thống nhất trước khi hỏi lại thầy.</td></tr>
+<tr><td><b>PRE-26</b> reports/05_encoding</td><td>Còn 70 file, ~4,6 MB trong git</td><td>Đã xóa <code>refactor_2026-11-09</code> (25 file). Còn lại bị code của Phát đọc/kiểm hash (<code>scope_review</code>, <code>snapshot_audit</code>, <code>frozen_v2</code>, <code>approval_package</code>, <code>cohort_v1</code>), một vài thư mục chỉ có script phân tích một lần đọc. Dọn tiếp khi Phát xác nhận.</td></tr>
+<tr><td><b>F05</b> thang cấp bậc</td><td>Code còn thang 6 nhãn</td><td>Đã quyết cách làm; việc còn: sửa <code>encoding/run.py</code>, <code>normalization</code>, <code>mining</code>.</td></tr>
+<tr><td><b>Chờ Duy</b></td><td>Embedded</td><td>Giữ nhóm Embedded của Duy (71 tin, 1,4 %). Tin UI/UX (48 tin) chuyển vào Frontend: cần sửa từ điển nhóm nghề của Duy.</td></tr></table></div>
+
+<h2 id="chuanbi">6. Cần làm gì để trình bày lại cho nhóm</h2>
+<h3>Phần kỹ năng</h3>
+<ol>
+<li>Mở mục 1.5, lọc "&lt; 20 tin": đưa 137 kỹ năng này cho Phát/Duy xem, giữ hay bỏ.</li>
+<li>Hỏi Phát 3 câu: vì sao khớp nguyên giá trị thẻ; có làm được trích từ JD không; 230 là cố định hay theo ngưỡng.</li>
+<li>Thống nhất 1 từ điển (230 của Phát + bí danh của Duy). Giao người làm: Duy (từ điển), Phát (đóng băng lại vocabulary).</li>
+<li>Quyết có đưa kỹ năng mềm vào phân tích không; nếu có, lập từ điển soft skills riêng.</li>
+<li>Gán tay kỹ năng cho ~50 tin để đo recall/precision (việc của bạn hoặc nhóm).</li>
+</ol>
+<h3>Phần R2</h3>
+<ol>
+<li>Gửi nhóm bảng mục 2.1 và hỏi từng người dùng prefix nào.</li>
+<li>Chốt vị trí <code>features.parquet</code> và <code>gold/</code>.</li>
+<li>Nhờ mình chạy <code>migrate_lakehouse_layout.py --prefix-map</code> chạy thử để có bảng số cụ thể.</li>
+<li>Đặt ngày xóa <code>quality/</code>, <code>integration/</code>, <code>transformation/</code>, sau khi không ai phản đối.</li>
+</ol>
+<h3>Sau buổi họp</h3>
+<ul><li>Mình ghi quyết định vào <code>KNOWN_ISSUED.md</code> và <code>docs/spec/fixes/</code>, rồi viết prompt (Phase 4).</li>
+<li>Push nhánh <code>sprint/pipeline-delivery</code> khi toàn bộ đặc tả xong.</li></ul>
+<p class="mut" style="margin-top:32px">Nguồn số liệu: <code>frozen_vocabulary_v1.json</code>, <code>skills_taxonomy.json</code>, liệt kê R2 (chỉ đọc) 09/11/2026, 643 file nhãn <code>data/preprocessing/review/</code>, chạy lại <code>preprocessing.clean.run</code> trên raw tải về. Chưa kiểm: độ đúng của kỹ năng trích từ JD, nội dung 3 file <code>silver/*.json</code>, người dùng các prefix R2.</p>
+</div>
+<script>
+function f(){var q=document.getElementById('q').value.toLowerCase(),t=document.getElementById('t').value,n=document.getElementById('n').value,r=document.querySelectorAll('#sk tr[data-t]'),c=0;
+r.forEach(function(x){var ok=(!q||x.cells[1].textContent.toLowerCase().indexOf(q)>-1)&&(!t||x.dataset.t==t)&&(!n||(n=='hi'?x.cells[6].textContent=='≥20':x.cells[6].textContent=='<20'));x.style.display=ok?'':'none';if(ok)c++});
+document.getElementById('cnt').textContent=c+' / '+r.length+' kỹ năng'}f();
+</script></body></html>
