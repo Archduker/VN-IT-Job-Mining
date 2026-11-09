@@ -1,0 +1,62 @@
+[
+  {
+    "artifact": "curated/curated_flat_golden_jobs.parquet",
+    "path": "data/curated/curated_flat_golden_jobs.parquet",
+    "status": "CREATED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/data_quality.parquet",
+    "path": "data/preprocessing/05_encoding/data_quality.parquet",
+    "status": "CREATED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/encoding_dictionary.json",
+    "path": "data/preprocessing/05_encoding/encoding_dictionary.json",
+    "status": "CREATED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/features.parquet",
+    "path": "data/preprocessing/05_encoding/features.parquet",
+    "status": "CREATED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/skill_cooccurrence.parquet",
+    "path": "data/preprocessing/05_encoding/skill_cooccurrence.parquet",
+    "status": "CREATED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/skill_unmatched.parquet",
+    "path": "data/preprocessing/05_encoding/skill_unmatched.parquet",
+    "status": "CREATED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/tfidf_config.json",
+    "path": "data/preprocessing/05_encoding/tfidf_config.json",
+    "status": "CREATED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/tfidf_matrix.npz",
+    "path": "data/preprocessing/05_encoding/tfidf_matrix.npz",
+    "status": "CREATED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/tfidf_rows.parquet",
+    "path": "data/preprocessing/05_encoding/tfidf_rows.parquet",
+    "status": "CREATED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/tfidf_vocabulary.json",
+    "path": "data/preprocessing/05_encoding/tfidf_vocabulary.json",
+    "status": "CREATED+VALID",
+    "reuse_source": null
+  }
+]

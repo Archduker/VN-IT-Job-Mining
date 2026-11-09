@@ -1,0 +1,65 @@
+{
+  "removed": [
+    {
+      "path": "preprocessing/encoding/__pycache__/build_review_notebook.cpython-314.pyc",
+      "sha256": "169fd4a72ed8d404b43dfa8d1f95c54c0f8b5d21f2c2f8d01ab952980fe917ec",
+      "source": "preprocessing/encoding/build_review_notebook.py",
+      "recreation": "Python import or py_compile from the preserved source; compilation verified in /tmp"
+    },
+    {
+      "path": "preprocessing/encoding/__pycache__/candidate_lookup.cpython-314.pyc",
+      "sha256": "4d5ac2ea6b59171f0bb2ce9268cfc82f318c724fcf7f79a10a5bcfc03e98a3da",
+      "source": "preprocessing/encoding/candidate_lookup.py",
+      "recreation": "Python import or py_compile from the preserved source; compilation verified in /tmp"
+    },
+    {
+      "path": "preprocessing/encoding/__pycache__/compare_vocabulary.cpython-314.pyc",
+      "sha256": "67af04ebd71776f5dfb830e51549b5e51348cc9db9e5b4a9680bebe215bf3fea",
+      "source": "preprocessing/encoding/compare_vocabulary.py",
+      "recreation": "Python import or py_compile from the preserved source; compilation verified in /tmp"
+    },
+    {
+      "path": "preprocessing/encoding/__pycache__/execution_io.cpython-314.pyc",
+      "sha256": "6808626b46de2a46e78f92a4a2f9ee1a83f48f6e0f5b7595fb7a3d0ed26c85da",
+      "source": "preprocessing/encoding/execution_io.py",
+      "recreation": "Python import or py_compile from the preserved source; compilation verified in /tmp"
+    },
+    {
+      "path": "preprocessing/encoding/__pycache__/review_snapshot.cpython-314.pyc",
+      "sha256": "ff6f127b13930fa03a8aa7ea00fbadaddfff6db7144017dbd233a58a86cd7c48",
+      "source": "preprocessing/encoding/review_snapshot.py",
+      "recreation": "Python import or py_compile from the preserved source; compilation verified in /tmp"
+    },
+    {
+      "path": "preprocessing/encoding/__pycache__/run.cpython-314.pyc",
+      "sha256": "68322b3072897a47981ba6412289395cf70917f2f8987f67c3103a3c6c4d70b1",
+      "source": "preprocessing/encoding/run.py",
+      "recreation": "Python import or py_compile from the preserved source; compilation verified in /tmp"
+    },
+    {
+      "path": "preprocessing/encoding/__pycache__/run_encoding.cpython-314.pyc",
+      "sha256": "705f6edb49a3f8651785d93f8245aff68e2cb2b386776cd678910737f485e526",
+      "source": "preprocessing/encoding/run_encoding.py",
+      "recreation": "Python import or py_compile from the preserved source; compilation verified in /tmp"
+    },
+    {
+      "path": "preprocessing/encoding/__pycache__/short_candidate_review.cpython-314.pyc",
+      "sha256": "369b3e4c164e9034499408a2846718f34fea356dc905f4e445593bf74283bc0d",
+      "source": "preprocessing/encoding/short_candidate_review.py",
+      "recreation": "Python import or py_compile from the preserved source; compilation verified in /tmp"
+    },
+    {
+      "path": "preprocessing/encoding/__pycache__/skills_taxonomy_230.cpython-314.pyc",
+      "sha256": "290d4ba1cb23946dee14d711977cebb31fc66ec84198a791ce4f8bd5c78954a9",
+      "source": "preprocessing/encoding/skills_taxonomy_230.py",
+      "recreation": "Python import or py_compile from the preserved source; compilation verified in /tmp"
+    },
+    {
+      "path": "preprocessing/encoding/__pycache__/tfidf_extractor.cpython-314.pyc",
+      "sha256": "3a68228cddbc01bf914bc017ab67688726273389e6265035c2fa02539e36cdf6",
+      "source": "preprocessing/encoding/tfidf_extractor.py",
+      "recreation": "Python import or py_compile from the preserved source; compilation verified in /tmp"
+    }
+  ],
+  "kept_without_source_or_tracked": []
+}

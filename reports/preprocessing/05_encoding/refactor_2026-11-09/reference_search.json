@@ -1,0 +1,31 @@
+{
+  "command": [
+    "rg",
+    "-n",
+    "--hidden",
+    "-g",
+    "!.git/**",
+    "-g",
+    "!.venv/**",
+    "-g",
+    "!*.ipynb",
+    "-g",
+    "!*.html",
+    "-g",
+    "!*.parquet",
+    "-g",
+    "!*.csv",
+    "-g",
+    "!*.pkl",
+    "-g",
+    "!*.lock",
+    "-g",
+    "!reports/preprocessing/05_encoding/refactor_2026-11-09/**",
+    "preprocessing\\.encoding|preprocessing/encoding|05_p5_handoff|eda_p5_|p5_2026-11-09|04_normalization|05_encoding|test_approval_package",
+    "."
+  ],
+  "exit_code": 0,
+  "stderr": "",
+  "hits": 890,
+  "CI_directory_exists": false
+}

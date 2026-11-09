@@ -1,0 +1,1244 @@
+[
+  {
+    "job_id_global": "topcv_2301984",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "642751d8384a82d93fc89c6563943deb691c1b685ddf3ba1d74995d61b0b8c21",
+      "requirements_clean": "29bff16d66f1dad4e568f95912a96194a25c5224abc09e543ae598ba463efc2f",
+      "raw_description_text": "642751d8384a82d93fc89c6563943deb691c1b685ddf3ba1d74995d61b0b8c21",
+      "raw_requirements_text": "17e93bdc65b96265e416e5e925fcdef927db30177aa8d4b4d6441c1d4dcd90f2"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_1862730",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "774cb7f9c2e1c99a1c6ea02e4167afd4c30c40781606362aaa757817bf215bbe",
+      "requirements_clean": "c88f78cf821601c417fc58b996afbe48b473616126fc299d4ea1feed8b1a55d4",
+      "raw_description_text": "774cb7f9c2e1c99a1c6ea02e4167afd4c30c40781606362aaa757817bf215bbe",
+      "raw_requirements_text": "a8e9a3b45bcc8a84d7186aa6f6ef504be9f0e17268e0c8b80419572fd912667a"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2149408",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "e6459b696f1dcdf83e0f47a288b7578a3965918602de94e3f5a5837c962189e7",
+      "requirements_clean": "c3e8e7c0d8b831c701e63563e271a97086682a6a39fc90371d8b3e96caf1f4a9",
+      "raw_description_text": "9f1f9c0bb59a647a628109f427206cdcfcfbc001eab9b050b2ff5cb12bdd4423",
+      "raw_requirements_text": "e1e12480dc9fc703262c7ed5b43bf086d443547bba0133703e49e1192bc890d1"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topcv_2329663",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "30c52b550031ccd565715d69a2912cd70dca54134e0a5038d03729df6d4a932b",
+      "requirements_clean": "a2cd172a7af9134716118c4c75c0e0dd9c1b4f4a9c80d49b458c8ff1bd8a47a0",
+      "raw_description_text": "30c52b550031ccd565715d69a2912cd70dca54134e0a5038d03729df6d4a932b",
+      "raw_requirements_text": "4e3a55f71e117d422445715c3ab7a3a10d64e5ecef4626b37d231bd8c1b4094e"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topcv_1251851",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "0595838b10a30ef54e1e17d3a80bada07cc3329554e646ca9b0713cbe434c52b",
+      "requirements_clean": "fc3870154f5e292839f95dcd47f36cf2c82efddb44f710654f2cfde4abca796a",
+      "raw_description_text": "6a1fa746170e4b11d3cac3efb8a7cca01869afd043baad560bfbf195446ff956",
+      "raw_requirements_text": "a7497effd1ecbfb013d03313b70b058da4209814187ff134725ee200251a5a76"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2065468",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "2ca04168a6ed2084ccd4a851d1dcd0217f76ba6fa29a9cd1f0dec0aa90f71094",
+      "requirements_clean": "187e3996314c49eba9413e3a027d3884fc866fb6d64ce180970f1d7f390d0c27",
+      "raw_description_text": "2ca04168a6ed2084ccd4a851d1dcd0217f76ba6fa29a9cd1f0dec0aa90f71094",
+      "raw_requirements_text": "2ba4894adc27c9e75fe187d45c73eb2a0ec7e348711d63c34760453a3d3d9d83"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2118497",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "56f1ab9eaac4aa9963c30c267f1faab4cd178aa59149b405787352aaf5c7aa18",
+      "requirements_clean": "f5b3c9fdc454c7dabb8bb39581a2be557cd8cbd2170a81d3b7b4d3c027b21778",
+      "raw_description_text": "a539cbf52e2077bde90b35a9a242d0c65437670ca8742cbdc03fef5455326573",
+      "raw_requirements_text": "6acaa4d2900a378c2bfffa406613dea93985fd051db7b6ff9ad68298afac642c"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topcv_2180895",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "d1c74c7df7abadadadffbc23df98acf4ed20894e3689af94160b4d1f98aacb13",
+      "requirements_clean": "b98865da624a0bd28aaa2402ace2b3498762730614097f7d52c97693e2e59811",
+      "raw_description_text": "d1c74c7df7abadadadffbc23df98acf4ed20894e3689af94160b4d1f98aacb13",
+      "raw_requirements_text": "72604eafeb51d529fe4f3d53d22d184fa4ac563328be67a97e14b131f97d6548"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2180924",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "d1c74c7df7abadadadffbc23df98acf4ed20894e3689af94160b4d1f98aacb13",
+      "requirements_clean": "b71e8beef8e325262da3ceaf3f1961fd7b9dbfe6a9d0de4c595376b26de2019e",
+      "raw_description_text": "d1c74c7df7abadadadffbc23df98acf4ed20894e3689af94160b4d1f98aacb13",
+      "raw_requirements_text": "3d0ee68afa635695c7c0968791b22c69006234902db614c9ab9d8b3abff9c991"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2180986",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "d1c74c7df7abadadadffbc23df98acf4ed20894e3689af94160b4d1f98aacb13",
+      "requirements_clean": "4f2d944b1d4004d9e900d189a96bd88e4243109cde8f7d0acf1dcda23d9412ec",
+      "raw_description_text": "cc38ed099bd506d6a489d2718626a3fdae902bb9b189f8416a22c1962598bd79",
+      "raw_requirements_text": "9e8614e009b2ac7c954180ac8b17efadc2742e1715d9af91ecfb4f3fa50e607f"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2321477",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "23d34eacc75b11964c582df7807bfd342ec7b8f1ee830e195fa07ff754c58c5e",
+      "requirements_clean": "6c2b42f797c44094cf3507dced7c36aff02ab541211b5bd4739ca37e0615507d",
+      "raw_description_text": "afeebc051046b263d0a021f512eaa55c502cf39c9f1f03dc79dce170a3300bc8",
+      "raw_requirements_text": "6c2b42f797c44094cf3507dced7c36aff02ab541211b5bd4739ca37e0615507d"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2321737",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "b1b978ad9002dc45d2493dbfb41eea9141dc6406985caad90a29558a6e99054d",
+      "requirements_clean": "07f1b3eeb06e506ce2c9c6ab4a5230cfbac8a35837e1840a413bff2a0a574bdf",
+      "raw_description_text": "f5267c649fee1fb2a680e9ffc0ae10ce3de81cf61820a619d68ad7647ad0dc15",
+      "raw_requirements_text": "07f1b3eeb06e506ce2c9c6ab4a5230cfbac8a35837e1840a413bff2a0a574bdf"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_984442",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "7f0b9c8ba1dae8aa18f9027963f474696a1a10069e9c4e02295accfc7f538c6e",
+      "requirements_clean": "6c40f047a3fa2a65affa1bc7a808ccd2154221c8164175dd1b0178fc453c8d89",
+      "raw_description_text": "4b87f39431ee8de4eac94b14d035abe2935702a6f2223417136c0fef542ee6a8",
+      "raw_requirements_text": "6c40f047a3fa2a65affa1bc7a808ccd2154221c8164175dd1b0178fc453c8d89"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2024907",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "c556096dd4c26d4c3e7dd6028bdc4dbf9ce4c384e3c3fa8f2f225d2dc38a6547",
+      "requirements_clean": "39f7d211f99e2fd95c148400f615f6613fbec2174739af0c10308f1da842f75e",
+      "raw_description_text": "36c049b92959dfa9e1a5ac56ec04e8d337d801937c7ec32b8614415d6f66a745",
+      "raw_requirements_text": "a1300322c9d8e2ae8f5980041a835fe9620a7e73e247da25828e5424827d90b4"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2030706",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "b5a00c11eb78eedbf4869d1fbd7e58053cdb72b80af5698e985d52737e9e4e45",
+      "requirements_clean": "7b6e6d2b9a323075736dfa211314c4b1456e90cbd6136d43662ea89cd16e466e",
+      "raw_description_text": "b5a00c11eb78eedbf4869d1fbd7e58053cdb72b80af5698e985d52737e9e4e45",
+      "raw_requirements_text": "7b6e6d2b9a323075736dfa211314c4b1456e90cbd6136d43662ea89cd16e466e"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2123763",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "6e5e67a7b3b6b59d736d21606ebe9a4e0a439cde775d65245d16c8f5f9251a33",
+      "requirements_clean": "b4d06181a64da57b9e54d511e3ff652694efcca784d0e2441b729719751a5b9f",
+      "raw_description_text": "490ae9b47a3d7dbd499c1f0188c48166d33933ccdfd90046382ba4d9191e0eac",
+      "raw_requirements_text": "e4fc33780ef21355ee8ea4c9d6b11cbd970e3fc4624132e42b31e978a4bc0389"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topcv_963681",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "bdd59e24acef1049ab059fcec59383dce3e38815a2cf0b74c503b199f8d1f77f",
+      "requirements_clean": "f0b8ffc6d6ced65b1dc6c63b614e6cf172c911804114a1f56d520d89f2dd3811",
+      "raw_description_text": "bdd59e24acef1049ab059fcec59383dce3e38815a2cf0b74c503b199f8d1f77f",
+      "raw_requirements_text": "f0b8ffc6d6ced65b1dc6c63b614e6cf172c911804114a1f56d520d89f2dd3811"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topcv_2329891",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "83639c536dc4bdd5ea4206c02fa5013ba96668e5b4f9b3421ec7dc9f210dea6e",
+      "requirements_clean": "d3311ed54890de8be81ec5d6706de55f801536d8bdaf27cef7d7919458473239",
+      "raw_description_text": "83639c536dc4bdd5ea4206c02fa5013ba96668e5b4f9b3421ec7dc9f210dea6e",
+      "raw_requirements_text": "d3311ed54890de8be81ec5d6706de55f801536d8bdaf27cef7d7919458473239"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topdev_2137540",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "42a15628a5154a14bf93de54c4a0776e7a7abe7ae37fe89f993a4fb5e7880ea5",
+      "requirements_clean": "0b163c3586c5b23d4627884eeceb721ff163564f3e14f0abcf3003b53a25ed7e",
+      "raw_description_text": "fe77bbfada5d0a13cfdd49afd3eadbf3bd17cb9ac089b8d9060c2b707fc47fc2",
+      "raw_requirements_text": "0cb211a8883bc06f387c594d7919035d3496c3fc8a32308ad55fee318a059910"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topdev_2138775",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "316b5a5fc03727b243a59c71916b905ad9db4fba84a5488889e73ed2ca9b1f48",
+      "requirements_clean": "e795390c58b82c83ebcc2a58a24a364887abf30d1550da69a6f426e48ecd4991",
+      "raw_description_text": "316b5a5fc03727b243a59c71916b905ad9db4fba84a5488889e73ed2ca9b1f48",
+      "raw_requirements_text": "e795390c58b82c83ebcc2a58a24a364887abf30d1550da69a6f426e48ecd4991"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topdev_2139278",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "5df0deba794828237a722b994df8b918b75a3f9f164f1fd3a948f437c46e95a7",
+      "requirements_clean": "2c18c2c94aab38b09ad474fb16f1630368ba1c9fe82f5af361c516c95f0a5e31",
+      "raw_description_text": "5fe4d9f60a53d9f349df3d7fb0100928c099f50036264891211bd86731bd5707",
+      "raw_requirements_text": "efd9bd213dfc0afcecb0899b2cd05bdaf9d28c55e88f156955fcbda9d0a296ec"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topdev_2139387",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "88bb134ecf495e937186b0f725def68677f6bbe943ea636d1187be9c5c8e60c4",
+      "requirements_clean": "5d00786904333a9fb29303405cd66d3e22dd5af0c8972004bb57359f4d8d6fdd",
+      "raw_description_text": "88bb134ecf495e937186b0f725def68677f6bbe943ea636d1187be9c5c8e60c4",
+      "raw_requirements_text": "5d00786904333a9fb29303405cd66d3e22dd5af0c8972004bb57359f4d8d6fdd"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topdev_2139432",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "fb10b511494b43f02bda099c5fc1c40e81cecbc3fdaf85fb67a2987c07d56b7d",
+      "requirements_clean": "7f2012ab8ee8a1946bc939d339fa90dd3aac048a0e648c1ea8a816cef917edd0",
+      "raw_description_text": "fb10b511494b43f02bda099c5fc1c40e81cecbc3fdaf85fb67a2987c07d56b7d",
+      "raw_requirements_text": "7f2012ab8ee8a1946bc939d339fa90dd3aac048a0e648c1ea8a816cef917edd0"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topdev_2139461",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "b952c7664e2bc938c1653b357d7c1dc891f7aa4aaf74b092948e84846d7a66c4",
+      "requirements_clean": "31fdef2512986b13af83b2900713d4d4d42f7158a063e6478d0adb7527183706",
+      "raw_description_text": "b952c7664e2bc938c1653b357d7c1dc891f7aa4aaf74b092948e84846d7a66c4",
+      "raw_requirements_text": "31fdef2512986b13af83b2900713d4d4d42f7158a063e6478d0adb7527183706"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2096707",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "31eef92b5b6a2b95ddc81a17af7ece7deb4cc07ab9bfa4d5c31cee34bf3f8680",
+      "requirements_clean": "6e1a20d30e23051a0889531ad9cc32a3b4c505afdb46e88f73259abd695b5a18",
+      "raw_description_text": "31eef92b5b6a2b95ddc81a17af7ece7deb4cc07ab9bfa4d5c31cee34bf3f8680",
+      "raw_requirements_text": "92d1affe247a86133769238e0ba511aba4e3fb58a814695624942d046b186426"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2097667",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "51a2878a8faf136b49b624a19dd509c5d5ab34e3b82888cece770a9728d89d31",
+      "requirements_clean": "ae647d6b268db9b3f3126cee37c0b7dcdacc6f722aec383b78b262bfd5dce5bc",
+      "raw_description_text": "51a2878a8faf136b49b624a19dd509c5d5ab34e3b82888cece770a9728d89d31",
+      "raw_requirements_text": "ae647d6b268db9b3f3126cee37c0b7dcdacc6f722aec383b78b262bfd5dce5bc"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2109724",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "8d19090df94444703e079acc27bb6844888d06dce86a6c8ea611c712281c4760",
+      "requirements_clean": "f2a4d49336a892886299e285eed123dfeb18dde2ca00ab6f04be16cdd769bdaf",
+      "raw_description_text": "7978f9b39e6ba8f8c126e9b321a9a45818d5b77f339f93b1293543521524ef94",
+      "raw_requirements_text": "31a63e38f1a3f0ad78e8a47f69337ff98c3d95c76493817f80e82a345f6b3763"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2111632",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "adb6115b51efc3ef8bc6da2775995ef3b81e61c2e641ac90f1b7afe226f767aa",
+      "requirements_clean": "13a40ffd100935aaccdd772538ced06b1c4f41202793e3448c08566dfac3cf4e",
+      "raw_description_text": "adb6115b51efc3ef8bc6da2775995ef3b81e61c2e641ac90f1b7afe226f767aa",
+      "raw_requirements_text": "2b0cda41a9956735cd12bde962338976fd522569f121491c621bc0a88e770006"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2111637",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "9b65af93e6748717b5038da7eb94df003de5e1c7cf32b85bf96f9119eea7fce6",
+      "requirements_clean": "c62e022092c5041558ece19def45a8bb1a8952ea9d8541e72eed9147aeb5c89d",
+      "raw_description_text": "9b65af93e6748717b5038da7eb94df003de5e1c7cf32b85bf96f9119eea7fce6",
+      "raw_requirements_text": "0f95eb23aa6f304c47afbe2c019626e5cdcb5f63d5d13991119256c4c6810c2f"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2115888",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "46b7b85dc7e99b9fc5f665ef5cda0541c32daa0769845b161ef26f716dbc769f",
+      "requirements_clean": "76fe02fa17738c716c0201046385dc45fa837f5b9299d20d55b6635af3d42157",
+      "raw_description_text": "227b531520eaed9f44773d58dc6dc6bbdf07809a4c32097296b8048b0ebb029d",
+      "raw_requirements_text": "77f73958431997715088db68894a04bab5537c7936cf530f8600715679385983"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2116490",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "8f3faee8314ec19b0490c33af768e8839391d493b9091ab0538d9da413ffc27d",
+      "requirements_clean": "617ae055d4d9106208d3c65787861d5d8d92b23be94567257703c733fb67059e",
+      "raw_description_text": "6567a372d70aee10d4301fd96dd9f48be297e2c945000272e3f6bc60cbe32a3e",
+      "raw_requirements_text": "97c36383861ca701dbdf2f8d3ae782c0652ff854ccf904f21e514c3fb61e4b8a"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "vietnamworks_2118647",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "efb61db8abde8ab87878079d09d8f2097e2a008eef78818908d7e114ee6fb2c7",
+      "requirements_clean": "1233bf93d314ef08aa2573d454933771fc950e32c1082278ef33edba14954d96",
+      "raw_description_text": "54044f2dc39ff9edaf22c0813634e63af010d69a09033b3fd04d07ba7768ebb2",
+      "raw_requirements_text": "e7d2018d24e7371715d070ab166c7b8cb1cc65eb4bc6acdf4a600fd42aa663a0"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2118846",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "6a242d288880c641a354670b8c0d0b50ec43298dfe5da9ae9eca22fef603012f",
+      "requirements_clean": "fdaa7f2ad5af265c434b45d25c89b34074c2d13f20de659bddf3a94651502bca",
+      "raw_description_text": "068345fd9a06add273d29bc2dd1de98bab393cacf10be8216aac6a06ac17e379",
+      "raw_requirements_text": "a27021536c9ffa6bb699b62480d7360c57b21dbb0d5455dc2d90212e216f4a7c"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "vietnamworks_2119724",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "cc4b4e10f9dc306dd10987054f7072fddd5becdba66c4b1a6ba2b466b9157a4d",
+      "requirements_clean": "8b0d275a758f53aee456aacfc4c303315905be5bd512029b8923d113324da933",
+      "raw_description_text": "f80fccc17d64b1b0e257f4a5be541b0af97af5c1f803b69d8498414021f841d6",
+      "raw_requirements_text": "08878c57fb920ea6491f1a622651a9a636673abe4230106dfa590565b121b642"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2120222",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "d32dc32d98494835ada9ef56a228510e23a0f101d0ad8d1f587971fb2f842f29",
+      "requirements_clean": "8fe5cc7f0b3bc8beda792d7010c383e93f1cc47165acb883ccad7e29889e7155",
+      "raw_description_text": "58ddfd071beb29e9209405697e54e1a8e32f1e0cc31d81a3a66ad3387a9e446a",
+      "raw_requirements_text": "8fe5cc7f0b3bc8beda792d7010c383e93f1cc47165acb883ccad7e29889e7155"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2120824",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "48432c45fd3a04904a6537c50479937e046a159f32b84074ba58798d1c1fa77b",
+      "requirements_clean": "8e43afa88f41c11bddb3bfa029fcb328a6dfe46609fede29fb870b41930e0c58",
+      "raw_description_text": "a1de8b32174626aa56111a686793fa4a43ee0b71b3e823b41c4612c6e613c270",
+      "raw_requirements_text": "8e43afa88f41c11bddb3bfa029fcb328a6dfe46609fede29fb870b41930e0c58"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topcv_2326869",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "62ffb764b4d5484a1ba0ea48278c30b2d95757c1b4f7aa1d772216888c19bcd0",
+      "requirements_clean": "572e2ae0fd8e58e67fa744ff1128f2d097fe6e263873bc964c4d94fa03e5db59",
+      "raw_description_text": "62ffb764b4d5484a1ba0ea48278c30b2d95757c1b4f7aa1d772216888c19bcd0",
+      "raw_requirements_text": "572e2ae0fd8e58e67fa744ff1128f2d097fe6e263873bc964c4d94fa03e5db59"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topcv_2178117",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "a5b521e3f4ec81ccb2a54b417082a61729a7fdc8b24f5dfe5480fc3611e6c02a",
+      "requirements_clean": "55914d279404508b7b1b5369a0a8425401da6c20c9848ba4710cbafda6426603",
+      "raw_description_text": "e9b5fcf7ef91b4162801c92781f9c895bbea428519143a4d43cb8af0da969630",
+      "raw_requirements_text": "55914d279404508b7b1b5369a0a8425401da6c20c9848ba4710cbafda6426603"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topcv_2238406",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "05d0e851a013fe85224745ac19e10a1a45d2b85931c4aeb29e5af4802bee6335",
+      "requirements_clean": "de6ecd0d197931f8a59fcdbcf76e42760232b4f07b79d36c5e48ad33eb560318",
+      "raw_description_text": "0e0a546f159650965e7e686badf72114076fce7b1aeb8d7512488c65ad97a92d",
+      "raw_requirements_text": "2a2865e156b1d4c3d5e35b2b218bb8b6f85cbd790781e3e9590f512a6665aa86"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "topdev_2136553",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "cd026f91db095c78ea3250169e38bf1cb5295e248678a15c4eaa5ad294ce1a88",
+      "requirements_clean": "04160ce0823ffb8fc3c77d6b37f1bcbac3a45936b64d8e73a4a44028144e65aa",
+      "raw_description_text": "be913f57a57ac0ed777d04f484e64052c95f8119154089e15d70a942b865e1eb",
+      "raw_requirements_text": "0b49c31521552e387e51c3bac6a916557c593bbf813ed668c2d457533110c083"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "careerviet_35C84857",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "12b6a72f2e3676963e6803867a096f4bd249d5d3fdd2cc6c4c92894d469dcee6",
+      "requirements_clean": "da6abe9d690e6a37522eab6b98d5ffe923d76cce8a0c8579de77270aab9b0bb8",
+      "raw_description_text": "12b6a72f2e3676963e6803867a096f4bd249d5d3fdd2cc6c4c92894d469dcee6",
+      "raw_requirements_text": "da6abe9d690e6a37522eab6b98d5ffe923d76cce8a0c8579de77270aab9b0bb8"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "jobsgo_29014330774",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "020988a062cacc6b15eec6d438e0fd366b2665924abe63900a642c00d08955e0",
+      "requirements_clean": "8ef7665a114f3814800c1af2e9192bdce1f4a6ad4d8bc2393035ea0be6f1903f",
+      "raw_description_text": "020988a062cacc6b15eec6d438e0fd366b2665924abe63900a642c00d08955e0",
+      "raw_requirements_text": "8ef7665a114f3814800c1af2e9192bdce1f4a6ad4d8bc2393035ea0be6f1903f"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "topcv_1839052",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "764fe9d18d0136d18339fe839e403705f5ad4a55c77e1d71529e1f1d4372943e",
+      "requirements_clean": "07ce52cbd9f29719a9c0f40e264e1d04d8ba4d09872f8e216f500f1bff0012d0",
+      "raw_description_text": "764fe9d18d0136d18339fe839e403705f5ad4a55c77e1d71529e1f1d4372943e",
+      "raw_requirements_text": "07ce52cbd9f29719a9c0f40e264e1d04d8ba4d09872f8e216f500f1bff0012d0"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "careerviet_35C32FB4",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "fb80d8eb554b51c796c3136f2a05838320c5e465154d2642d426180dc3b8c13e",
+      "requirements_clean": "37f10146bf91f8459b788bf51fd27608ce989aa0b541521061e49e1d0458fd00",
+      "raw_description_text": "999830b4cee40957ce339420cd82df38f5df852c3cf3b8bdf0b2d32ad37ec896",
+      "raw_requirements_text": "37f10146bf91f8459b788bf51fd27608ce989aa0b541521061e49e1d0458fd00"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": false,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "glints_9509fef0-e8a3-497f-9444-9c800dfc87e9",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "6dbc007d97859b7533b1bb4f3d0bdd9589d079288491d6605d7056fdf1330b5b",
+      "requirements_clean": "31ac801825b7ea0cb4743e28ec1f20478fbceffadb583be9ea7b840a727b9323",
+      "raw_description_text": "162f5559e2571d88244d35d02e0ab0efd5c5c51358849db59d3698021c702ef3",
+      "raw_requirements_text": "4e21e0a1d8df6ac98979f00c1015cadf839c1da14603099a9af08c4cfea29ea1"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "glints_d8e0e752-7e09-4f9d-b6a8-c8c3e9fed581",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "e072bb217987ab0ee509f997e6003b0e0789f12092cdf860e83589aa1a79fd02",
+      "requirements_clean": "71376490d8f04879ab75d3f15a0649ae741507b3c53c3ea142d61ad451842a34",
+      "raw_description_text": "d39302b591fdaab372bf857f1dd7b5e7ba9f22eac9203476d681c883dcb37cb0",
+      "raw_requirements_text": "e28ff1f4226a54145a88e6622156da6593b021f7e97e220526c68e1a4fc720ab"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "jobsgo_29090237384",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "23dc21b90cf87220c0fd777faef11f0fdca27ac589a4783b248c669e48416342",
+      "requirements_clean": "c38008e690419c552e75d1823f26d0d1e57bdcd5b9be3b2ea150f71cc6fa9abe",
+      "raw_description_text": "23dc21b90cf87220c0fd777faef11f0fdca27ac589a4783b248c669e48416342",
+      "raw_requirements_text": "c38008e690419c552e75d1823f26d0d1e57bdcd5b9be3b2ea150f71cc6fa9abe"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "jobsgo_29238642275",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "8131113b90a83845db460e0c9efe2dd73e3a37473af4dfabf1564c65c0332f3d",
+      "requirements_clean": "32db40f8a1fc5b473e3eb8b2d08f457a46f42803551c6a5592635ef6e343503f",
+      "raw_description_text": "8131113b90a83845db460e0c9efe2dd73e3a37473af4dfabf1564c65c0332f3d",
+      "raw_requirements_text": "32db40f8a1fc5b473e3eb8b2d08f457a46f42803551c6a5592635ef6e343503f"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "vietnamworks_2106020",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "27afc52a045342d6a84a5d8c5263faf18f891297a21cb3020619ed37f2e794c2",
+      "requirements_clean": "9969c8695c6f9d152493170b9df64e9e5fba37b3ceb8dfe7d52c4e02b9ad1463",
+      "raw_description_text": "27afc52a045342d6a84a5d8c5263faf18f891297a21cb3020619ed37f2e794c2",
+      "raw_requirements_text": "a6a2974c953161fc5d0026fe2adbe01a5e4ab9f069c21097428f0c1ae205e490"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  },
+  {
+    "job_id_global": "vietnamworks_2111654",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "790f0fa659b041c1b9db4389c52ed877a1b74b605d2543b425d45b4b3358828b",
+      "requirements_clean": "5053a7b541347127195744b64c4264d3c9e573ba4a3dbd29d09fbea52e5e37f9",
+      "raw_description_text": "790f0fa659b041c1b9db4389c52ed877a1b74b605d2543b425d45b4b3358828b",
+      "raw_requirements_text": "5053a7b541347127195744b64c4264d3c9e573ba4a3dbd29d09fbea52e5e37f9"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2113565",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "bf768fbe836fbbdd9aa4c53fb0b39828a2fb1d996d3ef2d61851ab932b149358",
+      "requirements_clean": "29a0adc4cdb00f4a4ac5781411dee93a35567a467242c74728a1a978f6bf8c96",
+      "raw_description_text": "01fc9004742e7c41512bcf4ad55b1d98174867fa75ec6b893f71adf1e9aa3f29",
+      "raw_requirements_text": "475ced5e0c48456dfffaf75ea97ddf1bbca125f9f00857f85d76c001e7936b4b"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2118384",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "d817c7ae957e12ccb4b3c7f918e02552dec6732ec7edb3bdbb5c7b9f9d06da56",
+      "requirements_clean": "081dee17ee4eb733a6faa7ad8ca2ec7f3388cb5e22e38ff326232abcffb2f735",
+      "raw_description_text": "b6161be3b77af5b3b853039be37a4a729c87752124befa10aeaf232f6f8bd078",
+      "raw_requirements_text": "0835e81abf3afdb39db31c549160cce9dea5ef5c86d6c3a2c7f7353761c45406"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "vietnamworks_2120681",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "77e9802df7ed5797a66d8b43274eff027325ea32ea272c60c923cb47e626498e",
+      "requirements_clean": "92090c564ab2209a95badd5a80e14c69858bcc5c9896078adbecc950ed5c7720",
+      "raw_description_text": "b980f5ed6ecde713b7ae6ad49d27df1c5063d8c41bfb275889c82d20d1129815",
+      "raw_requirements_text": "0877f5e275246cc1e24aa07c9e008a2a6050f092fd4d0300431d9abcd67f3c39"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": true
+  },
+  {
+    "job_id_global": "careerviet_35C81470",
+    "full_available_fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "it_rule",
+      "job_family"
+    ],
+    "field_sha256": {
+      "description_clean": "e779b99b0e6245fd7431e20d8c0b430765500696d5c5630950011d717fe6d198",
+      "requirements_clean": "9c60dc69e6c9d5a6378c07944d4c58b72ec78781222248493f717695b8e6d000",
+      "raw_description_text": "e779b99b0e6245fd7431e20d8c0b430765500696d5c5630950011d717fe6d198",
+      "raw_requirements_text": "9c60dc69e6c9d5a6378c07944d4c58b72ec78781222248493f717695b8e6d000"
+    },
+    "raw_clean_content_equivalent_after_whitespace": {
+      "description_clean": true,
+      "requirements_clean": true
+    },
+    "source_contains_ellipsis": false
+  }
+]

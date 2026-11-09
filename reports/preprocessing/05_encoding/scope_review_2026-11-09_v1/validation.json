@@ -1,0 +1,10 @@
+{
+  "status": "PASS_REVIEW_ONLY",
+  "decision_fields_blank": true,
+  "artifact_hashes_unchanged": true,
+  "queue_unique": true,
+  "all_AutoCAD_reviewed": true,
+  "source_quotes_valid": true,
+  "impact_not_approved": true,
+  "p5_complete": false
+}

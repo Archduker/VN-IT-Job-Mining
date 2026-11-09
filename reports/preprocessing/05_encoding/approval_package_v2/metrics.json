@@ -1,0 +1,48 @@
+{
+  "jobs": 5177,
+  "eligible_observed_skills": 236,
+  "selected": 230,
+  "shortfall": 0,
+  "reserves": 6,
+  "zero_columns": 0,
+  "covered_jobs": 4277,
+  "job_coverage": 0.8261541433262507,
+  "selected_canonical_pairs": 21845,
+  "valid_curated_pool_canonical_pairs": 21854,
+  "canonical_pair_coverage_within_curated_valid_pool": 0.999588176077606,
+  "source_casefold_pairs": 33136,
+  "selected_matched_source_casefold_pairs": 21978,
+  "source_value_pair_coverage": 0.663266537904394,
+  "unmatched_source_casefold_pairs": 11158,
+  "sparsity": 0.9816538031930528,
+  "below20": 137,
+  "frequency_distribution": {
+    "1-1": 0,
+    "2-4": 22,
+    "5-9": 71,
+    "10-19": 44,
+    "20-49": 40,
+    "50-99": 13,
+    "100-5177": 40
+  },
+  "skill_types": {
+    "hard": 214,
+    "soft": 16
+  },
+  "six_group_distribution": {
+    "Programming Languages": 22,
+    "Frameworks & Libraries": 17,
+    "Databases & Caching": 5,
+    "Cloud & DevOps": 21,
+    "Tools, Architecture & Protocols": 55,
+    "Methodologies & Soft Skills": 91
+  },
+  "unassigned_task_group": 19,
+  "definitions": {
+    "job_coverage": "Jobs with >=1 selected bit / all 5177 input IDs, including empty skills",
+    "source_value_pairs": "Per-job distinct whole values after casefold; aliases can be separate values before canonical mapping",
+    "canonical_pairs": "Per-job owner union; denominator is retained observed curated pool, not all possible canonical skills",
+    "sparsity": "Zero bits / (5177 * actual selected width)",
+    "representation": "Frozen P4 skills_std; exact canonical and explicit alias casefold; no JD extraction"
+  }
+}

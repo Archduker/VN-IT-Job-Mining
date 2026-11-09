@@ -1,0 +1,26 @@
+{
+  "jobs": 5177,
+  "curated_observed_candidates": 244,
+  "selected_proposed": 230,
+  "shortfall": 0,
+  "reserves": 14,
+  "proposed_below20": 138,
+  "group_counts": {
+    "Programming Languages": 22,
+    "Tools, Architecture & Protocols": 97,
+    "Methodologies & Soft Skills": 49,
+    "Cloud & DevOps": 33,
+    "Databases & Caching": 18,
+    "Frameworks & Libraries": 11
+  },
+  "tensor_exact": 0,
+  "tensor_substring": 4,
+  "protected_sha256": {
+    "candidate_decisions.csv": "cba9dceec0a361912e4ea2543155472cc673a1609987451e32574e449379289d",
+    "candidate_generated.csv": "3a07620f3ef20e6cc50e62bc1486f47ffeddaa7b990775244dc04548d996b5d2"
+  },
+  "snapshot_manifest_sha256": "dd93db5c08b533725bd086315325c70ed37a8027b7149fc8327e5a6d3ca34ea4",
+  "source_script_sha256": "7a61874da21fc241c12428ebfbbaef9d64bea313328a89b69e72dff1878d659c",
+  "representation": "frozen snapshot skills_std with explicit proposed mappings; no JD extraction",
+  "production_changed": false
+}

@@ -1,0 +1,17 @@
+{
+  "version": "p5-cohort-policy-v1",
+  "status": "authorized_by_Phat_for_cohort_run",
+  "authority": "Phát",
+  "authorization_asset": "preprocessing/encoding/assets/cohort_v1/authorization_agent07.md",
+  "authorization_sha256": "ef95ab18ea3975e92db7bbcb63d5d427365d695d13a868d933bfcc9de8846c8d",
+  "approved_review_files": {
+    "scope_decisions_proposed.csv": "1ebb40b8f66daa58c38e34bd3a1d66d6a82fb6beb8e577277ee5e3fc39bd3b08",
+    "scope_review_queue.csv": "8a848bf1f4a2dbf0bf3b5605485127057a52c037fa11d80901eddf2ea961045e",
+    "annotations_proposed.json": "a91ea7c42e01dc64706dc83e00ee07f51486f0fabe2ccb52df26b4e60b5d7a97"
+  },
+  "snapshot_manifest_sha256": "dd93db5c08b533725bd086315325c70ed37a8027b7149fc8327e5a6d3ca34ea4",
+  "vocabulary_sha256": "583e9ba0c3662eb8c66d62a47fc6994d58f2d4b7e685b08dc0bf7f0c8e786602",
+  "policy_sections": "agent_07 §1/§3: approved27exclude/8retain; apply policy to19unresolved and31P1; retain410P2 and outsidequeue unreviewed",
+  "not_human_gold_labels": true,
+  "decision_reference": "preprocessing/encoding/assets/cohort_v1/authorization_agent07.md"
+}

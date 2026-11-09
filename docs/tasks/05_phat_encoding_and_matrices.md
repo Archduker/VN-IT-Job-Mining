@@ -51,7 +51,7 @@ Nhiệm vụ của tôi là hoàn thiện Bước 5 trong pipeline tiền xử l
 - Đầu vào: File Parquet tầng Normalization `data/preprocessing/04_normalization/all.parquet`.
 - Đầu ra:
   * `data/curated/curated_flat_golden_jobs.parquet` (Bảng dữ liệu vàng tích hợp)
-  * `data/preprocessing/05_encoding/features.parquet` (Bảng đặc trưng huấn luyện)
+  * `` (Bảng đặc trưng huấn luyện)
   * `data/preprocessing/05_encoding/skill_cooccurrence.parquet` (Ma trận 230x230)
   * `data/preprocessing/05_encoding/encoding_dictionary.json` (Bảng tra cứu)
 

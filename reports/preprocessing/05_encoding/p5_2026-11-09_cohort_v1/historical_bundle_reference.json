@@ -1,0 +1,152 @@
+{
+  "version": "historical-5177-v1",
+  "rows": 5177,
+  "prior_run_id": "p5_2026-11-09_frozen_v2",
+  "files": [
+    {
+      "original": "data/curated/curated_flat_golden_jobs.parquet",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/curated/curated_flat_golden_jobs.parquet",
+      "sha256": "c649e87935d568ce4dd3211517c9e8826ed89bd92a4ec498de5bad8173960106",
+      "bytes": 15005929
+    },
+    {
+      "original": "data/preprocessing/05_encoding/artifact_manifest.json",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/artifact_manifest.json",
+      "sha256": "f26c359ae461c44c00a09829b895f5c513abd163be2fa6054714f19ee1ba5c82",
+      "bytes": 59501
+    },
+    {
+      "original": "data/preprocessing/05_encoding/data_quality.parquet",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/data_quality.parquet",
+      "sha256": "08a079018711dc8a5d067813251715e2fb41f4843dc8a7d3d4a2048a12e35a08",
+      "bytes": 91301
+    },
+    {
+      "original": "data/preprocessing/05_encoding/encoding_dictionary.json",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/encoding_dictionary.json",
+      "sha256": "ef505e8e15c661cb3f19a54b69155d7e0d6ff2dbef4bd2ea24107e394e9d99a1",
+      "bytes": 248536
+    },
+    {
+      "original": "data/preprocessing/05_encoding/features.parquet",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/features.parquet",
+      "sha256": "5944fc914bd8eb06c4cac7b238908d4d848fc326cd6a4c3f71d5772f82841ebb",
+      "bytes": 333858
+    },
+    {
+      "original": "data/preprocessing/05_encoding/skill_cooccurrence.parquet",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/skill_cooccurrence.parquet",
+      "sha256": "d545af0ef8a01ef76871ec0ca1e150f8bf7c90f4de0e5651b843ab8b7d71e62a",
+      "bytes": 182011
+    },
+    {
+      "original": "data/preprocessing/05_encoding/skill_unmatched.parquet",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/skill_unmatched.parquet",
+      "sha256": "e2d3b9eca9fef1eb74ad18e46e51e00f0958c0679db314038c1cc3eeb79e15dc",
+      "bytes": 195201
+    },
+    {
+      "original": "data/preprocessing/05_encoding/tfidf_config.json",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/tfidf_config.json",
+      "sha256": "e1a825b8247fbac14cf20735eea23fedc557248d09a982c2ec9234c492eb627b",
+      "bytes": 2128
+    },
+    {
+      "original": "data/preprocessing/05_encoding/tfidf_matrix.npz",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/tfidf_matrix.npz",
+      "sha256": "21c2ab7e440a2d7706d8cb4aceaf2b4cd07503e686488c48b7932f12e7956ae1",
+      "bytes": 4712717
+    },
+    {
+      "original": "data/preprocessing/05_encoding/tfidf_rows.parquet",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/tfidf_rows.parquet",
+      "sha256": "467a508f3430abdc84b09709a6014d4ff09bbdc2aa60601935f78b8b4639e6a4",
+      "bytes": 103180
+    },
+    {
+      "original": "data/preprocessing/05_encoding/tfidf_vocabulary.json",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/tfidf_vocabulary.json",
+      "sha256": "19aec0b6894e09da8c3f548310ab9157dc95451f19c5fa27c8e1d43d7ce13083",
+      "bytes": 345331
+    },
+    {
+      "original": "data/preprocessing/05_encoding/validation_report.json",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/validation_report.json",
+      "sha256": "2df5415ef0c70bd428fb561c6dca1de1154510a48ff27b753f429a0661ffe0d4",
+      "bytes": 3683
+    },
+    {
+      "original": "docs/preprocessing/encoding/06_p5_execution_contract.md",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/docs/preprocessing/encoding/06_p5_execution_contract.md",
+      "sha256": "b4050bbd15ecacd278610bcd2759b8bec5556274b4e6cae1e37fe1dd48ae828b",
+      "bytes": 12857
+    },
+    {
+      "original": "docs/preprocessing/encoding/07_p5_execution_report.md",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/docs/preprocessing/encoding/07_p5_execution_report.md",
+      "sha256": "2d8c7128310f3a7760f691b283c818fdcecefecb687a23d5ac5b34516ef3e2ca",
+      "bytes": 13711
+    },
+    {
+      "original": "preprocessing/encoding/candidate_lookup.py",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/preprocessing/encoding/candidate_lookup.py",
+      "sha256": "b925815479cdabe2608a917f5c18339102789d2d2d3ca21753e711a7f2a43d0c",
+      "bytes": 3961
+    },
+    {
+      "original": "preprocessing/encoding/execute.py",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/preprocessing/encoding/execute.py",
+      "sha256": "d2f947c5e674aea3b78f627f832dbbd9b10eace0daa6d2eee49e5e8f1c5e8e17",
+      "bytes": 22863
+    },
+    {
+      "original": "preprocessing/encoding/execution_features.py",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/preprocessing/encoding/execution_features.py",
+      "sha256": "a64dc22155df330e876f7a0bf0ab4d68c3fd4c96fde5460285e7915a5c1ed634",
+      "bytes": 9302
+    },
+    {
+      "original": "preprocessing/encoding/execution_io.py",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/preprocessing/encoding/execution_io.py",
+      "sha256": "62182b744926fc59f34a444db60e70f60c40988cec55e096ac5dbde19b6761ba",
+      "bytes": 6943
+    },
+    {
+      "original": "preprocessing/encoding/execution_tfidf.py",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/preprocessing/encoding/execution_tfidf.py",
+      "sha256": "009bc32e2939bfb6c0cfd3870baca2b826fbc1b5281fa77f6fdd133bcfc7bf4e",
+      "bytes": 2105
+    },
+    {
+      "original": "preprocessing/encoding/run.py",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/preprocessing/encoding/run.py",
+      "sha256": "c6283115185837654c1f23e1e09538b513556ddadcee7f01617959bfa92ba1d0",
+      "bytes": 22514
+    },
+    {
+      "original": "preprocessing/encoding/run_encoding.py",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/preprocessing/encoding/run_encoding.py",
+      "sha256": "bf37bd406d367644cc8b6947257e48b0ec04326f40f2abb01ed25eeae7eaeb60",
+      "bytes": 2844
+    },
+    {
+      "original": "preprocessing/encoding/tfidf_extractor.py",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/preprocessing/encoding/tfidf_extractor.py",
+      "sha256": "e018bb42efa73475b0ef216e5f5dc33a1d66bb84f1ee508f2d7fef5ae5217652",
+      "bytes": 5141
+    },
+    {
+      "original": "tests/unit/test_encoding_safety.py",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/tests/unit/test_encoding_safety.py",
+      "sha256": "44f99bc79b4347bc557afbd99e4cf3865afa6482cbd9bc2e6338490e471ad54e",
+      "bytes": 3213
+    },
+    {
+      "original": "tests/unit/test_encoding_step.py",
+      "archived": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/tests/unit/test_encoding_step.py",
+      "sha256": "cda01e9f49bd0d94fbee0d830af3608b0699dcf8a7a3f869e7253a1e606afe05",
+      "bytes": 15467
+    }
+  ],
+  "purpose": "One immutable historical bundle; not current Mining cohort"
+}

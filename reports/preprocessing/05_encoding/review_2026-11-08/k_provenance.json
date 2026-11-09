@@ -1,0 +1,10 @@
+{
+  "snapshot_manifest_sha256": "dd93db5c08b533725bd086315325c70ed37a8027b7149fc8327e5a6d3ca34ea4",
+  "dictionary_sha256": "82172c6215cbb1513eb4e969ab089f43875181471c032698dfe46677b1cb5ca5",
+  "mapping_source": "shared canonical case-insensitive spelling only; no new synonyms",
+  "version": "p5-k-analysis-v1",
+  "analysis_code_sha256": "7d3fd5979a0991333af7eba95369baef904b7eb9c8b819bc401e9d4d77e99437",
+  "group_status": "prototype_crosswalk_proposed",
+  "approved_vocabulary": false,
+  "csv_input_checked": "all_candidates frequencies exactly equal snapshot job-dedup counts"
+}

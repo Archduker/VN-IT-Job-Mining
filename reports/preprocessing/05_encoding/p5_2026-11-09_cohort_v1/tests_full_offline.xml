@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="6" failures="0" skipped="0" tests="6" time="2.785" timestamp="2026-11-09T02:11:12.751309+07:00" hostname="phat-IdeaPad-Slim-3-15IAH8"><testcase classname="" name="tests.integration.test_known_issue_fixes" time="0.000"><error message="collection failure">ImportError while importing test module '/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/tests/integration/test_known_issue_fixes.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/integration/test_known_issue_fixes.py:13: in &lt;module&gt;
+    from app.services.airflow_service import airflow_service  # noqa: E402
+monitoring/backend/app/services/airflow_service.py:12: in &lt;module&gt;
+    from sqlalchemy import create_engine, text
+E   ModuleNotFoundError: No module named 'sqlalchemy'</error></testcase><testcase classname="" name="tests.integration.test_monitor_endpoints" time="0.000"><error message="collection failure">ImportError while importing test module '/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/tests/integration/test_monitor_endpoints.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/integration/test_monitor_endpoints.py:19: in &lt;module&gt;
+    from app.main import app  # noqa: E402
+monitoring/backend/app/main.py:17: in &lt;module&gt;
+    from app.api.v1.router import api_router
+monitoring/backend/app/api/v1/router.py:6: in &lt;module&gt;
+    from app.api.v1.endpoints import alerts, cloud_r2, dashboard, monitor
+monitoring/backend/app/api/v1/endpoints/alerts.py:10: in &lt;module&gt;
+    from app.services.alert_service import alert_service
+monitoring/backend/app/services/alert_service.py:11: in &lt;module&gt;
+    from sqlalchemy import text
+E   ModuleNotFoundError: No module named 'sqlalchemy'</error></testcase><testcase classname="" name="tests.integration.test_monitoring_api" time="0.000"><error message="collection failure">ImportError while importing test module '/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/tests/integration/test_monitoring_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/integration/test_monitoring_api.py:13: in &lt;module&gt;
+    from app.main import app
+monitoring/backend/app/main.py:17: in &lt;module&gt;
+    from app.api.v1.router import api_router
+monitoring/backend/app/api/v1/router.py:6: in &lt;module&gt;
+    from app.api.v1.endpoints import alerts, cloud_r2, dashboard, monitor
+monitoring/backend/app/api/v1/endpoints/alerts.py:10: in &lt;module&gt;
+    from app.services.alert_service import alert_service
+monitoring/backend/app/services/alert_service.py:11: in &lt;module&gt;
+    from sqlalchemy import text
+E   ModuleNotFoundError: No module named 'sqlalchemy'</error></testcase><testcase classname="" name="tests.integration.test_pipeline_reports" time="0.000"><error message="collection failure">ImportError while importing test module '/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/tests/integration/test_pipeline_reports.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/integration/test_pipeline_reports.py:15: in &lt;module&gt;
+    from app.main import app  # noqa: E402
+monitoring/backend/app/main.py:17: in &lt;module&gt;
+    from app.api.v1.router import api_router
+monitoring/backend/app/api/v1/router.py:6: in &lt;module&gt;
+    from app.api.v1.endpoints import alerts, cloud_r2, dashboard, monitor
+monitoring/backend/app/api/v1/endpoints/alerts.py:10: in &lt;module&gt;
+    from app.services.alert_service import alert_service
+monitoring/backend/app/services/alert_service.py:11: in &lt;module&gt;
+    from sqlalchemy import text
+E   ModuleNotFoundError: No module named 'sqlalchemy'</error></testcase><testcase classname="" name="tests.integration.test_preprocessing_steps_api" time="0.000"><error message="collection failure">ImportError while importing test module '/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/tests/integration/test_preprocessing_steps_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/integration/test_preprocessing_steps_api.py:15: in &lt;module&gt;
+    from app.main import app  # noqa: E402
+monitoring/backend/app/main.py:17: in &lt;module&gt;
+    from app.api.v1.router import api_router
+monitoring/backend/app/api/v1/router.py:6: in &lt;module&gt;
+    from app.api.v1.endpoints import alerts, cloud_r2, dashboard, monitor
+monitoring/backend/app/api/v1/endpoints/alerts.py:10: in &lt;module&gt;
+    from app.services.alert_service import alert_service
+monitoring/backend/app/services/alert_service.py:11: in &lt;module&gt;
+    from sqlalchemy import text
+E   ModuleNotFoundError: No module named 'sqlalchemy'</error></testcase><testcase classname="" name="tests.test_golden_field_preservation" time="0.000"><error message="collection failure">ImportError while importing test module '/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/tests/test_golden_field_preservation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_golden_field_preservation.py:25: in &lt;module&gt;
+    from preprocessing.normalization.target_schema_formatter import (
+E   ModuleNotFoundError: No module named 'preprocessing.normalization.target_schema_formatter'</error></testcase></testsuite></testsuites>

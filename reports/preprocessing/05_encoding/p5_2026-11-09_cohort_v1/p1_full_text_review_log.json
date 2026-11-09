@@ -1,0 +1,405 @@
+[
+  {
+    "job_id_global": "itviec_chuyen-vien-ho-tro-tich-hop-dich-vu-khoi-ngan-hang-so-mb-bank-2355",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "9404590c3f4a4b295dda2cd7f0254f26ef07537a15fc32c60d042459bf858f74",
+    "requirements_sha256": "2b9292641f8c80e9ef8ed260a66f874f793bab80577f355a69bf4282550090af"
+  },
+  {
+    "job_id_global": "jobsgo_29131680492",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "be9fe221fccf7e45f720bc817d1dc50c4b203a6586d240fde68c3275e1f28bb7",
+    "requirements_sha256": "623d74561164a4c4e7ac414959f86d60c8a43e679d39264c07453a9292a01a20"
+  },
+  {
+    "job_id_global": "topcv_2245042",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "581b7b9cbfc0e85a6d5178968e46c3cbb64c58d32b1b5b48177959ad403fe54d",
+    "requirements_sha256": "93ae91334237f3adb145a0999f33a7731ff89bd57c9d350c1c56f4a4a700068b"
+  },
+  {
+    "job_id_global": "topcv_2330075",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "c461940b3ee1bbed8ecdf5f2d1046f230aac5cdca20dd53fb21d884efafb92dd",
+    "requirements_sha256": "2323918d62b48b97d525778ad440ebc698bdb80005a1ec2787608b68def8127d"
+  },
+  {
+    "job_id_global": "topdev_2137252",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "6a7d49d10ad1790009b04eb85903f0be48b236ab8ef52c82c03c8bd4869a86d5",
+    "requirements_sha256": "b26883eca9fa7dd0a3a29e489c624f5cf3f9067eb9ef1f3933256c8e3842b878"
+  },
+  {
+    "job_id_global": "topdev_2139603",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "b95163061540c741fa5b079c136ef45823931c6bca8684ee836552122bf76bab",
+    "requirements_sha256": "2b9292641f8c80e9ef8ed260a66f874f793bab80577f355a69bf4282550090af"
+  },
+  {
+    "job_id_global": "vieclam24h_200953466",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "423393aa4841b9ee5b4ccc77ff5fd4a14f062105b82c40f21e7fa94aa5ca3574",
+    "requirements_sha256": "1f4e385eb1286372c949998a3352554f6695ec17571d07226959bb9f0d17729a"
+  },
+  {
+    "job_id_global": "vieclam24h_200957891",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "6c530a5a01bb12943b46abe2870e53ebae2b5b0423a29a87d5cf0d87f05f978b",
+    "requirements_sha256": "694323ac96032faa797321bb7b96f006ad50ddfebbfd5b076ccdd8642a1ac0f0"
+  },
+  {
+    "job_id_global": "vietnamworks_2102905",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "0669259a900da696ef433a56e6d5be6ef5049031a774b577365de577832827bb",
+    "requirements_sha256": "25bb07c41c1f1634ceaac19c1fd378f59088114fb28b702004b4445dfe653a8d"
+  },
+  {
+    "job_id_global": "vietnamworks_2103346",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "545037f2b6959fb1dd691c4fd51273cf859ef9c5ef554a3c3888b9f2cb30c7d3",
+    "requirements_sha256": "9b69509d500dcf0e0f3d00f9fbfd3eb276484ea495437cffb58340ab930bc2f6"
+  },
+  {
+    "job_id_global": "vietnamworks_2104122",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "fe127a002b6fb6740f5579e4ed22c059afee62f7f71365aa7bb5bb57dc0719c9",
+    "requirements_sha256": "f11be80ed002b227390efa78c0939c0607b3e828c586701d7a3a83d14aad1501"
+  },
+  {
+    "job_id_global": "vietnamworks_2109401",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "192eac7e20f6655ed830f1a52622224c93f4df1deba40472400508b53058fccf",
+    "requirements_sha256": "f1bd1c1aee0653b17380ad462d7967144039343c26f9af248eb791b949af50ed"
+  },
+  {
+    "job_id_global": "vietnamworks_2109533",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "99fd6e2ed9aee1c716a5388dc1f5392d17132fcafbe326c07f2639c1a9582bf1",
+    "requirements_sha256": "9119ec81714d2944e57e1425fd8cb12b7533478d8a5331496711b75e2bdcbcf6"
+  },
+  {
+    "job_id_global": "vietnamworks_2110041",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "04d4372a9c664024d0b11b788a20e542802079d65642763c588ebc310ec6ba4f",
+    "requirements_sha256": "61cbf4e542b0413968c3c39d7d6be08d0aecbe1ef8a1f208a9ec5e5462fa48e9"
+  },
+  {
+    "job_id_global": "vietnamworks_2110839",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "fa4127af86cfc9b94d8aede19ce618a4a92dd251059a0ce24e34d3b07a1fa2e7",
+    "requirements_sha256": "5f404e509761458e7bf57963f745370162db6ba25c067ade9cc4689546f4a9ab"
+  },
+  {
+    "job_id_global": "vietnamworks_2113254",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "95daeed14648c98769065ab0c368fba017b7d0343f91f89c5e1f3cf677146175",
+    "requirements_sha256": "dbca357ed02e3844ae4a03f060e5143ade3648cc54e0ac347ae89f4aec7fdf2e"
+  },
+  {
+    "job_id_global": "vietnamworks_2114052",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "ff7f80680d6eb4d8b9e2c8aa8dd60d44b2c9fd5b4914e4a8d1446ad19a502b8d",
+    "requirements_sha256": "a59eaef11c271bf3c2ac796a7f560eca9dca5eff217b352741706b588f1ed9d5"
+  },
+  {
+    "job_id_global": "vietnamworks_2114128",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "4faac568a006a8a03ba62b766605622f3a82ac849070a0259d8c311e4ebefb61",
+    "requirements_sha256": "6ecb1d1a645026167c037b472d3a97cb76aa57c8cd93a7e2f24152328bf262a0"
+  },
+  {
+    "job_id_global": "vietnamworks_2114137",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "c4276697af23be86eda0cbdda246882d276cd48317178842ae4b3a28d270a9ea",
+    "requirements_sha256": "6f7bb09cb281e4be22ca3d0572a6b48199329c4315eae3d86aa8d603a159b97b"
+  },
+  {
+    "job_id_global": "vietnamworks_2115383",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "4390ed27fe25b200306b9731d9062ab113bef8bc7cb181562432f513090b96d8",
+    "requirements_sha256": "9be59c2c2f813b75b9718ff01b82b4d238685e46564f63cf4c82714c0356c26f"
+  },
+  {
+    "job_id_global": "vietnamworks_2116713",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "3f2ff3887aeee67a274c3e2e630de1d996f114cfe6dda90a7bd79712b2415223",
+    "requirements_sha256": "4a3bf8934898867b5f93f98fd2b9df06623a13265465354b47d3b6e7a9e40c85"
+  },
+  {
+    "job_id_global": "vietnamworks_2117233",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "27f4304719247ff1283f965ccaf48d58983ce391359b24dd8a821322f62ebf35",
+    "requirements_sha256": "ed59e42ca6cf95ef7d592acedf8d8ab829872542562cb4525c28cb48a822e212"
+  },
+  {
+    "job_id_global": "vietnamworks_2117385",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "1b4a233a58ffffd2ef8bfa07de51767dc5cb51a5d891f97cebcc86e053a8c0db",
+    "requirements_sha256": "40b0b18a47688cf16a9c46f006f08a3b0addd2cbd456c85a67821001fccaae90"
+  },
+  {
+    "job_id_global": "vietnamworks_2117403",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "7ebb5b316c12bf8b99eb9c35e7efc8fb3bd3c37195e87153319d211a6a4d2a33",
+    "requirements_sha256": "d3ede428761b46025d03e407686a0ae1b2bc020dd1793eecaaf6ef2a4db76876"
+  },
+  {
+    "job_id_global": "vietnamworks_2118310",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "74d9f455d9bf864bee603264183017e1a303eea03d195263eef1ff4a55606e80",
+    "requirements_sha256": "892522b26f10e90a796c9f5588db0489300ee26379b2c62aea6fdd3e7431310e"
+  },
+  {
+    "job_id_global": "vietnamworks_2118478",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "19e4dbd28cfc7dca118946974240a87d9e31c92e1e6e918a6583767b159a356a",
+    "requirements_sha256": "ffb21acb657ae12e2389a972d6fa957948173f7171e4d4c8e0aced2116c9b973"
+  },
+  {
+    "job_id_global": "vietnamworks_2119890",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "2dcedf02f3e59525da4a951f5fa1b3d118a8241bc37a386627ad416e26c7909f",
+    "requirements_sha256": "d9a7ec19a8a55783942d807d698d0cf964f7b946b8e492b6436e0fe48cda67e9"
+  },
+  {
+    "job_id_global": "vietnamworks_2119970",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "00d39693149f0fd9da28a06a108f03809a0566967e5300f62296448019429592",
+    "requirements_sha256": "d8292e19afd81008f2cc7a53e70385cfb4b277ca4efc7260fc70ab925872273d"
+  },
+  {
+    "job_id_global": "vietnamworks_2120526",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "5863857aba487f49b41acbe58d20c5a8dd8dc9d7c001e2167258b4c9090ae86e",
+    "requirements_sha256": "819df2d81b087f8caed447071ab645ce685e012fba999b14eaf979fe49d7b243"
+  },
+  {
+    "job_id_global": "vietnamworks_2120849",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "01db86a9be2a1cd13e724b5fd8c51d369d077f73347e305a5e5501f0e607e351",
+    "requirements_sha256": "75dfed31847c3973c8ee752425f48f5a9b24fe842b4cb26b4b505163a9cacaf0"
+  },
+  {
+    "job_id_global": "vietnamworks_2126462",
+    "fields_reviewed": [
+      "job_title",
+      "description_clean",
+      "requirements_clean",
+      "skills_std",
+      "raw_category_text",
+      "job_family"
+    ],
+    "description_sha256": "5e03d21fa12d831b8bd03c6f5fe3c7cd5f436a1650239051607ecee6e4840947",
+    "requirements_sha256": "530817163d2f29d56989626a174ec8ede52e958426fd67d6f10a11ab05631a07"
+  }
+]

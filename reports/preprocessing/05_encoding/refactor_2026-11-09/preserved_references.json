@@ -1,0 +1,32 @@
+[
+  {
+    "original": "data/preprocessing/05_encoding/artifact_manifest.json",
+    "archived": "reports/preprocessing/05_encoding/refactor_2026-11-09/before/data/preprocessing/05_encoding/artifact_manifest.json",
+    "sha256": "346b72b1f26cf350b860d75382390cbbf8664c9a8c84df41021aa81f3aa41b06"
+  },
+  {
+    "original": "notebooks/eda_p5_final_cohort.html",
+    "archived": "reports/preprocessing/05_encoding/refactor_2026-11-09/before/notebooks/eda_p5_final_cohort.html",
+    "sha256": "a7bd86435ad951bd3e6d0238a0995e1fee384f1a0c05b159acc35342f6b4164d"
+  },
+  {
+    "original": "notebooks/eda_p5_final_cohort.ipynb",
+    "archived": "reports/preprocessing/05_encoding/refactor_2026-11-09/before/notebooks/eda_p5_final_cohort.ipynb",
+    "sha256": "e534eef4c88f6b4cfb918b449053ee36ca67f306603234bf954fc573ba644dde"
+  },
+  {
+    "original": "preprocessing/encoding/build_cohort_notebook.py",
+    "archived": "reports/preprocessing/05_encoding/refactor_2026-11-09/before/preprocessing/encoding/build_cohort_notebook.py",
+    "sha256": "f66f238e8c30e6482b2741cd07d17548f0f21602f1e64c12d648be59ddd01579"
+  },
+  {
+    "original": "reports/preprocessing/05_encoding/p5_2026-11-09_cohort_v1/artifact_manifest.json",
+    "archived": "reports/preprocessing/05_encoding/refactor_2026-11-09/before/reports/preprocessing/05_encoding/p5_2026-11-09_cohort_v1/artifact_manifest.json",
+    "sha256": "346b72b1f26cf350b860d75382390cbbf8664c9a8c84df41021aa81f3aa41b06"
+  },
+  {
+    "original": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+    "archived": "docs/preprocessing/encoding/05_p5_handoff_history_2026-11-09.md",
+    "sha256": "ef3b9cc21bdd996aa6e31ace613aa4c1e0a28e996d88185be1a9144e06ee08cc"
+  }
+]

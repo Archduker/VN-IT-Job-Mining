@@ -1,0 +1,62 @@
+{
+  "version": "p5-cohort-ledger-2026-11-09-v1",
+  "ledger_sha256": "62b575a7f9a8379c053724d1636acee55587f770a8f05d52e0b0895244f333d7",
+  "decision_record_sha256": "8857aae3a16c93c77aab2fc7fff5ec6cf2fd0f2c98a772fb1519d5b43c529d66",
+  "snapshot_manifest_sha256": "dd93db5c08b533725bd086315325c70ed37a8027b7149fc8327e5a6d3ca34ea4",
+  "partition_counts": {
+    "include": 5104,
+    "exclude": 62,
+    "quarantine": 11
+  },
+  "include_ordered_ids_sha256": "12bcd085e2736eacc91b232436f31e5866fcc08f86fec920dfe31caedc21b4ed",
+  "original_ordered_ids_sha256": "9b6ef258e71f39b6b1bbd356d5c5a666a85dd2b2657717c5f4379254814bf98c",
+  "review_status_counts": {
+    "retained_unreviewed": 5092,
+    "excluded_by_approved_policy": 62,
+    "retained_reviewed": 12,
+    "unresolved_quarantined": 11
+  },
+  "source_dispositions": {
+    "exclude": {
+      "careerviet": 2,
+      "glints": 2,
+      "itviec": 0,
+      "jobsgo": 2,
+      "topcv": 19,
+      "topdev": 6,
+      "vieclam24h": 0,
+      "vietnamworks": 31
+    },
+    "include": {
+      "careerviet": 446,
+      "glints": 269,
+      "itviec": 905,
+      "jobsgo": 681,
+      "topcv": 1542,
+      "topdev": 220,
+      "vieclam24h": 180,
+      "vietnamworks": 861
+    },
+    "quarantine": {
+      "careerviet": 0,
+      "glints": 0,
+      "itviec": 0,
+      "jobsgo": 0,
+      "topcv": 0,
+      "topdev": 1,
+      "vieclam24h": 2,
+      "vietnamworks": 8
+    }
+  },
+  "p1_assessment_source_sha256": "ebf79b8b0e28df6511e76a976d3c7785892c50585ec319ddfcdff6d31adba658",
+  "approved_review_hashes": {
+    "scope_decisions_proposed.csv": "1ebb40b8f66daa58c38e34bd3a1d66d6a82fb6beb8e577277ee5e3fc39bd3b08",
+    "scope_review_queue.csv": "8a848bf1f4a2dbf0bf3b5605485127057a52c037fa11d80901eddf2ea961045e",
+    "annotations_proposed.json": "a91ea7c42e01dc64706dc83e00ee07f51486f0fabe2ccb52df26b4e60b5d7a97"
+  },
+  "reviewed_ids": 85,
+  "retained_unreviewed_P2": 410,
+  "not_flagged_by_targeted_rules": 4682,
+  "applied_job_family_changes": false,
+  "history_manifest": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json"
+}

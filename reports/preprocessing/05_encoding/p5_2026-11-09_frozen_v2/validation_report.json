@@ -1,0 +1,136 @@
+{
+  "status": "PASS_TECHNICAL_REVIEW",
+  "rows": 5177,
+  "features_shape": [
+    5177,
+    314
+  ],
+  "skill_shape": [
+    5177,
+    230
+  ],
+  "cooccurrence_shape": [
+    230,
+    230
+  ],
+  "tfidf_shape": [
+    5177,
+    3000
+  ],
+  "golden_shape": [
+    5177,
+    292
+  ],
+  "tfidf_zero_rows": 0,
+  "checks": [
+    "input IDs/order",
+    "numeric feature schema/values",
+    "every X bit from strict lookup",
+    "independent C intersections/diagonal/bounds/int64/labels",
+    "Golden Arrow values/schema/null/nested",
+    "TF-IDF config/transform/CSR/row IDs/norms",
+    "Snappy compression"
+  ],
+  "acceptance": "PENDING_PHAT_AUTOCAD_SCOPE_REVIEW",
+  "p5_complete": false,
+  "logical_reproducibility": "PASS: E1-E8/sidecars/config exact; CSR float32 tolerance2e-6",
+  "final_checks": {
+    "status": "PASS_TECHNICAL_REVIEW",
+    "rows": 5177,
+    "features_shape": [
+      5177,
+      314
+    ],
+    "skill_shape": [
+      5177,
+      230
+    ],
+    "cooccurrence_shape": [
+      230,
+      230
+    ],
+    "tfidf_shape": [
+      5177,
+      3000
+    ],
+    "golden_shape": [
+      5177,
+      292
+    ],
+    "tfidf_zero_rows": 0,
+    "checks": [
+      "input IDs/order",
+      "numeric feature schema/values",
+      "every X bit from strict lookup",
+      "independent C intersections/diagonal/bounds/int64/labels",
+      "Golden Arrow values/schema/null/nested",
+      "TF-IDF config/transform/CSR/row IDs/norms",
+      "Snappy compression"
+    ],
+    "acceptance": "PENDING_PHAT_AUTOCAD_SCOPE_REVIEW",
+    "p5_complete": false
+  },
+  "metrics_file": "metrics.json",
+  "results": [
+    {
+      "artifact": "curated/curated_flat_golden_jobs.parquet",
+      "path": "data/curated/curated_flat_golden_jobs.parquet",
+      "status": "CREATED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/data_quality.parquet",
+      "path": "data/preprocessing/05_encoding/data_quality.parquet",
+      "status": "CREATED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/encoding_dictionary.json",
+      "path": "data/preprocessing/05_encoding/encoding_dictionary.json",
+      "status": "CREATED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/features.parquet",
+      "path": "data/preprocessing/05_encoding/features.parquet",
+      "status": "CREATED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/skill_cooccurrence.parquet",
+      "path": "data/preprocessing/05_encoding/skill_cooccurrence.parquet",
+      "status": "CREATED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/skill_unmatched.parquet",
+      "path": "data/preprocessing/05_encoding/skill_unmatched.parquet",
+      "status": "CREATED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/tfidf_config.json",
+      "path": "data/preprocessing/05_encoding/tfidf_config.json",
+      "status": "CREATED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/tfidf_matrix.npz",
+      "path": "data/preprocessing/05_encoding/tfidf_matrix.npz",
+      "status": "CREATED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/tfidf_rows.parquet",
+      "path": "data/preprocessing/05_encoding/tfidf_rows.parquet",
+      "status": "CREATED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/tfidf_vocabulary.json",
+      "path": "data/preprocessing/05_encoding/tfidf_vocabulary.json",
+      "status": "CREATED+VALID",
+      "reuse_source": null
+    }
+  ]
+}

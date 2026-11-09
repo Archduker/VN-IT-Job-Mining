@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "protected_files": 53,
+  "current_artifacts": 11,
+  "source_hashes_match": true,
+  "autocad_jobs": 36,
+  "acceptance": "PENDING",
+  "p5_complete": false
+}

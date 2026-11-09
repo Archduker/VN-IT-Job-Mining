@@ -1,0 +1,54 @@
+{
+  "snapshot_jobs": 5177,
+  "queue_jobs": 495,
+  "autocad_seed_jobs": 36,
+  "reviewed_jobs": 54,
+  "not_reviewed_jobs": 441,
+  "proposal_counts": {
+    "exclude_proposed": 27,
+    "unresolved": 19,
+    "retain_proposed": 8
+  },
+  "not_reviewed_by_priority": {
+    "P1_family_conflict_candidate": 31,
+    "P2_targeted_candidate": 410
+  },
+  "autocad_proposals": {
+    "exclude_proposed": 18,
+    "unresolved": 15,
+    "retain_proposed": 3
+  },
+  "family_statuses": {
+    "nonIT_activity_broad_Khac_not_informative": 1,
+    "UIUX_not_established_graphic_activity": 1,
+    "UIUX_not_established_prepress": 1,
+    "mismatch_nonIT_activity": 10,
+    "UIUX_not_established_advertising": 1,
+    "UIUX_not_established_branding": 2,
+    "UIUX_not_established_campaign_art": 3,
+    "supported_UI_design_mixed": 3,
+    "UIUX_not_established_brand_assets": 1,
+    "UIUX_not_established_print_graphics": 1,
+    "UIUX_not_established_visual_marketing": 1,
+    "UIUX_not_established_signage": 1,
+    "mismatch_nonIT_project_activity": 1,
+    "mismatch_civil_QA_not_software_QA": 11,
+    "Backend_not_established": 2,
+    "UIUX_mismatch_industrial_automation": 1,
+    "family_Khac_insufficient": 2,
+    "mismatch_physical_QC_not_software_QA": 1,
+    "mismatch_construction_QS_not_software_QA": 1,
+    "supported_software_QA": 1,
+    "mismatch_embedded_vs_Backend": 1,
+    "mismatch_admin_vs_Backend": 1,
+    "mismatch_software_lead_vs_QA": 1,
+    "supported_Backend": 1,
+    "needs_review_plugin_vs_Backend": 1,
+    "Backend_not_established_PLC": 1,
+    "mismatch_pharma_QA_not_software_QA": 1,
+    "software_QA_not_established": 1
+  },
+  "approved_decisions": 0,
+  "full_snapshot_clean": false,
+  "p5_complete": false
+}

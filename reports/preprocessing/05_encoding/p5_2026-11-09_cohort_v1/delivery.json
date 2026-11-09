@@ -1,0 +1,62 @@
+[
+  {
+    "artifact": "curated/curated_flat_golden_jobs.parquet",
+    "path": "data/curated/curated_flat_golden_jobs.parquet",
+    "status": "REPLACED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/data_quality.parquet",
+    "path": "data/preprocessing/05_encoding/data_quality.parquet",
+    "status": "REPLACED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/encoding_dictionary.json",
+    "path": "data/preprocessing/05_encoding/encoding_dictionary.json",
+    "status": "REPLACED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/features.parquet",
+    "path": "data/preprocessing/05_encoding/features.parquet",
+    "status": "REPLACED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/skill_cooccurrence.parquet",
+    "path": "data/preprocessing/05_encoding/skill_cooccurrence.parquet",
+    "status": "REPLACED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/skill_unmatched.parquet",
+    "path": "data/preprocessing/05_encoding/skill_unmatched.parquet",
+    "status": "REPLACED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/tfidf_config.json",
+    "path": "data/preprocessing/05_encoding/tfidf_config.json",
+    "status": "REPLACED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/tfidf_matrix.npz",
+    "path": "data/preprocessing/05_encoding/tfidf_matrix.npz",
+    "status": "REPLACED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/tfidf_rows.parquet",
+    "path": "data/preprocessing/05_encoding/tfidf_rows.parquet",
+    "status": "REPLACED+VALID",
+    "reuse_source": null
+  },
+  {
+    "artifact": "preprocessing/05_encoding/tfidf_vocabulary.json",
+    "path": "data/preprocessing/05_encoding/tfidf_vocabulary.json",
+    "status": "REPLACED+VALID",
+    "reuse_source": null
+  }
+]

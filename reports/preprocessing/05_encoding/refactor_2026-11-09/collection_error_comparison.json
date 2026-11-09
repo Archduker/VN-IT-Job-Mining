@@ -1,0 +1,23 @@
+{
+  "unchanged": true,
+  "errors": {
+    "tests.integration.test_known_issue_fixes": [
+      "ModuleNotFoundError: No module named 'sqlalchemy'"
+    ],
+    "tests.integration.test_monitor_endpoints": [
+      "ModuleNotFoundError: No module named 'sqlalchemy'"
+    ],
+    "tests.integration.test_monitoring_api": [
+      "ModuleNotFoundError: No module named 'sqlalchemy'"
+    ],
+    "tests.integration.test_pipeline_reports": [
+      "ModuleNotFoundError: No module named 'sqlalchemy'"
+    ],
+    "tests.integration.test_preprocessing_steps_api": [
+      "ModuleNotFoundError: No module named 'sqlalchemy'"
+    ],
+    "tests.test_golden_field_preservation": [
+      "ModuleNotFoundError: No module named 'preprocessing.normalization.target_schema_formatter'"
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "rows": {
+    "historical5177": 5177,
+    "current_include": 5104
+  },
+  "canonical_pairs": {
+    "historical5177": 21845,
+    "current_include": 21750
+  },
+  "source_value_pairs": {
+    "historical5177": 33136,
+    "current_include": 32793
+  },
+  "unmatched_source_pairs": {
+    "historical5177": 11158,
+    "current_include": 10911
+  },
+  "all_zero_jobs": {
+    "historical5177": 900,
+    "current_include": 873
+  },
+  "empty_skills": {
+    "historical5177": 412,
+    "current_include": 407
+  },
+  "sparsity": {
+    "historical5177": 0.9816538031930528,
+    "current_include": 0.9814723320158103
+  },
+  "zero_columns": {
+    "historical5177": 0,
+    "current_include": 0
+  },
+  "below20": {
+    "historical5177": 137,
+    "current_include": 138
+  },
+  "job_coverage": {
+    "historical5177": {
+      "numerator": 4277,
+      "denominator": 5177
+    },
+    "current_include": {
+      "numerator": 4231,
+      "denominator": 5104
+    }
+  }
+}

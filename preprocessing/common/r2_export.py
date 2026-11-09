@@ -27,8 +27,11 @@ def silver_key(step: str, source: str) -> str:
     return f"staging/{source}/preprocessing/{step}.{ext}"
 
 
-GOLD_KEYS = {"features.parquet": "curated/preprocessing/features.parquet",
-             "encoding_dictionary.json": "curated/preprocessing/encoding_dictionary.json"}
+GOLD_KEYS = {
+    "features.parquet": "curated/preprocessing/features.parquet",
+    "skill_cooccurrence.parquet": "curated/preprocessing/skill_cooccurrence.parquet",
+    "encoding_dictionary.json": "curated/preprocessing/encoding_dictionary.json",
+}
 
 
 def _generated_at(step: str) -> Optional[str]:
