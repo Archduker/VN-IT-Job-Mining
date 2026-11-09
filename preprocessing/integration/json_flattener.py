@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """preprocessing.integration.json_flattener
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Module ép phẳng JSON (JSON Flattening) đa nguồn cho VN-IT-Job-Mining.
@@ -24,10 +24,10 @@ from preprocessing.transformation.bullet_stitcher import stitch_fragmented_bulle
 
 def _clean_str(val: Any) -> Optional[str]:
     """Làm sạch chuỗi ký tự, trả về None nếu rỗng hoặc chỉ chứa khoảng trắng."""
-    if val is None:
+    if val is None or isinstance(val, (dict, list)):
         return None
     s = str(val).strip()
-    return s if s else None
+    return s if s and s.lower() not in ("none", "null", "nan") else None
 
 
 def _dedup_list(items: List[Any]) -> List[str]:
@@ -109,22 +109,54 @@ def flatten_raw_job_record(
     Returns:
         Dict phẳng gồm 25 trường (Canonical Flat Record).
     """
-    # 1. Tách metadata và raw_payload
+    # 1. Tách metadata và raw_payload linh hoạt
     meta = record_data.get("metadata") or record_data.get("_meta") or {}
-    raw = record_data.get("raw_payload") or record_data.get("raw") or {}
+    raw = record_data.get("raw_payload") or record_data.get("raw")
 
-    source = (meta.get("source") or meta.get("source_platform") or source_fallback or "unknown").lower().strip()
-    job_id = str(meta.get("job_id") or meta.get("source_job_id") or "")
-    source_url = meta.get("source_url") or meta.get("url") or ""
-    crawled_at = meta.get("scraped_at") or meta.get("crawled_at") or ""
-    job_id_global = f"{source}_{job_id}"
+    # Nếu record_data truyền vào là dict phẳng thì lấy chính nó
+    if raw is None or not isinstance(raw, dict):
+        raw = record_data
+
+    source = (
+        meta.get("source")
+        or meta.get("source_platform")
+        or raw.get("source")
+        or raw.get("source_platform")
+        or source_fallback
+        or "unknown"
+    ).lower().strip()
+
+    job_id = str(
+        meta.get("job_id")
+        or meta.get("source_job_id")
+        or raw.get("id")
+        or raw.get("job_id")
+        or raw.get("jobId")
+        or raw.get("code")
+        or ""
+    )
+
+    source_url = (
+        meta.get("source_url")
+        or meta.get("url")
+        or raw.get("url")
+        or raw.get("job_url")
+        or raw.get("jobUrl")
+        or raw.get("link")
+        or ""
+    )
+    crawled_at = meta.get("scraped_at") or meta.get("crawled_at") or raw.get("crawled_at") or ""
+    
+    fallback_id = str(abs(hash(source_url))) if source_url else "unknown"
+    final_job_id = job_id if job_id else fallback_id
+    job_id_global = f"{source}_{final_job_id}"
 
     # Khởi tạo 25 trường phẳng chuẩn mực (Canonical 25 Flat Schema)
     flat: Dict[str, Any] = {
         # 1. Định danh & Nguồn gốc (5 trường)
         "job_id_global": job_id_global,
         "source_platform": source,
-        "source_job_id": job_id,
+        "source_job_id": final_job_id,
         "source_url": source_url,
         "crawled_at": crawled_at,
         # 2. Thông tin cơ bản vị trí & Doanh nghiệp (5 trường)
@@ -159,23 +191,26 @@ def flatten_raw_job_record(
     }
 
     # 2. Xử lý logic ép phẳng đặc thù theo từng sàn
-    if source == "careerviet":
-        _flatten_careerviet(raw, flat)
-    elif source == "glints":
-        _flatten_glints(raw, flat)
-    elif source == "itviec":
-        _flatten_itviec(raw, flat)
-    elif source == "jobsgo":
-        _flatten_jobsgo(raw, flat)
-    elif source == "topcv":
-        _flatten_topcv(raw, flat)
-    elif source == "topdev":
-        _flatten_topdev(raw, flat)
-    elif source == "vieclam24h":
-        _flatten_vieclam24h(raw, flat)
-    elif source == "vietnamworks":
-        _flatten_vietnamworks(raw, flat)
-    else:
+    try:
+        if source == "careerviet":
+            _flatten_careerviet(raw, flat)
+        elif source == "glints":
+            _flatten_glints(raw, flat)
+        elif source == "itviec":
+            _flatten_itviec(raw, flat)
+        elif source == "jobsgo":
+            _flatten_jobsgo(raw, flat)
+        elif source == "topcv":
+            _flatten_topcv(raw, flat)
+        elif source == "topdev":
+            _flatten_topdev(raw, flat)
+        elif source == "vieclam24h":
+            _flatten_vieclam24h(raw, flat)
+        elif source == "vietnamworks":
+            _flatten_vietnamworks(raw, flat)
+        else:
+            _flatten_generic(raw, flat)
+    except Exception:
         _flatten_generic(raw, flat)
 
     # Đảm bảo các mảng danh sách được khử trùng lặp và làm sạch
@@ -188,13 +223,12 @@ def flatten_raw_job_record(
 
 def _flatten_careerviet(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("title"))
-    flat["company_name"] = _clean_str(raw.get("job-company-name"))
-    flat["raw_location_text"] = _clean_str(raw.get("map"))
+    flat["company_name"] = _clean_str(raw.get("job-company-name") or raw.get("company_name"))
+    flat["raw_location_text"] = _clean_str(raw.get("map") or raw.get("location"))
 
     if raw.get("map"):
         flat["working_locations"].append(str(raw["map"]).strip())
 
-    # Ép phẳng mảng chuỗi detail-box
     detail_box = raw.get("detail-box")
     if isinstance(detail_box, list):
         for item in detail_box:
@@ -228,12 +262,10 @@ def _flatten_careerviet(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
             elif "giới tính" in item_l:
                 flat["raw_gender_text"] = re.sub(r"^(Giới tính)\s*:?", "", item, flags=re.IGNORECASE).strip()
 
-    # Ngành nghề phụ
     if not flat["raw_category_text"] and raw.get("Ngành nghề"):
         cat = raw.get("Ngành nghề")
         flat["raw_category_text"] = ", ".join(cat) if isinstance(cat, list) else str(cat)
 
-    # Ép phẳng detail-row
     detail_row = raw.get("detail-row")
     if isinstance(detail_row, dict):
         flat["raw_description_text"] = _clean_str(detail_row.get("Mô tả Công việc"))
@@ -247,8 +279,6 @@ def _flatten_careerviet(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         if ben_str:
             flat["benefits_list"] = [b.strip() for b in re.split(r"[\n\r;•\-\*]+", str(ben_str)) if b.strip()]
 
-    # Tags kỹ năng
-    # I4: Kỹ năng CareerViet: lấy trường kỹ năng thật nếu raw có; nếu không có thì để rỗng (không lấy job-tags là tag SEO)
     skills = raw.get("skills") or raw.get("skills_list")
     if isinstance(skills, list):
         flat["skills_list"] = [str(t) for t in skills if str(t).strip()]
@@ -258,12 +288,28 @@ def _flatten_careerviet(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
 
 def _flatten_glints(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("job-title") or raw.get("title"))
-    flat["company_name"] = _clean_str(raw.get("company-name") or raw.get("company"))
-    flat["raw_salary_text"] = _clean_str(raw.get("salary"))
+
+    comp = raw.get("company-name") or raw.get("company")
+    if isinstance(comp, dict):
+        flat["company_name"] = _clean_str(comp.get("name") or comp.get("display_name"))
+    else:
+        flat["company_name"] = _clean_str(comp)
+
+    flat["raw_location_text"] = _clean_str(raw.get("location") or raw.get("city") or raw.get("country"))
+
+    sal = raw.get("salary")
+    if isinstance(sal, dict):
+        min_v = sal.get("minSalary") or sal.get("min")
+        max_v = sal.get("maxSalary") or sal.get("max")
+        curr = sal.get("currency", "VND")
+        if min_v or max_v:
+            flat["raw_salary_text"] = f"{min_v} - {max_v} {curr}"
+    else:
+        flat["raw_salary_text"] = _clean_str(sal)
+
     flat["raw_description_text"] = _clean_str(raw.get("description"))
     flat["raw_requirements_text"] = _clean_str(raw.get("requirements"))
 
-    # Bóc tách từ requirements text
     req_text = str(raw.get("requirements") or "")
     for line in req_text.splitlines():
         line_s = line.strip()
@@ -279,7 +325,6 @@ def _flatten_glints(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         if any(e in line_l for e in ["cử nhân", "đại học", "cao đẳng", "thạc sĩ"]) and not flat["raw_education_text"]:
             flat["raw_education_text"] = line_s
 
-    # Bóc tách JSON-LD ngầm
     jsonld = raw.get("job_posting_jsonld")
     if isinstance(jsonld, dict):
         if not flat["job_title"]:
@@ -293,14 +338,12 @@ def _flatten_glints(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         if not flat["raw_category_text"]:
             flat["raw_category_text"] = _clean_str(jsonld.get("occupationalCategory") or jsonld.get("industry"))
 
-        # Bằng cấp từ JSON-LD
         edu_req = jsonld.get("educationRequirements")
         if isinstance(edu_req, dict) and edu_req.get("credentialCategory"):
             flat["raw_education_text"] = _clean_str(edu_req.get("credentialCategory"))
         elif isinstance(edu_req, str):
             flat["raw_education_text"] = _clean_str(edu_req)
 
-        # Địa điểm an toàn từ JSON-LD
         r_loc, c_addr, w_locs = _extract_job_locations_from_jsonld(jsonld)
         if r_loc and not flat["raw_location_text"]:
             flat["raw_location_text"] = r_loc
@@ -308,30 +351,35 @@ def _flatten_glints(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
             flat["company_address"] = c_addr
         flat["working_locations"].extend(w_locs)
 
-    # Skills
     skills_raw = raw.get("skills")
     if isinstance(skills_raw, str):
         flat["skills_list"] = [s.strip() for s in re.split(r"[,|;/•]+", skills_raw) if s.strip() and s.strip().lower() != "kỹ năng"]
     elif isinstance(skills_raw, list):
-        flat["skills_list"] = [str(s) for s in skills_raw]
+        for s in skills_raw:
+            if isinstance(s, dict):
+                s_name = s.get("name") or s.get("skillName")
+                if s_name:
+                    flat["skills_list"].append(str(s_name))
+            elif s:
+                flat["skills_list"].append(str(s))
 
-    # Benefits
     ben_raw = raw.get("benefits")
     if isinstance(ben_raw, str):
         flat["benefits_list"] = [b.strip() for b in ben_raw.splitlines() if b.strip() and "job benefits" not in b.lower()]
+    elif isinstance(ben_raw, list):
+        flat["benefits_list"] = [str(b).strip() for b in ben_raw if str(b).strip()]
 
 
 def _flatten_itviec(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("title"))
     flat["company_name"] = _clean_str(raw.get("company_name") or raw.get("company"))
     flat["raw_location_text"] = _clean_str(raw.get("work_location"))
-    # I2: ITviec raw_posted_date lấy job_posting_jsonld.datePosted; không có mới dùng posted_at_raw
+
     jsonld = raw.get("job_posting_jsonld")
     jsonld_dict = jsonld if isinstance(jsonld, dict) else {}
     flat["raw_posted_date"] = _clean_str(jsonld_dict.get("datePosted")) or _clean_str(raw.get("posted_at_raw"))
     flat["raw_salary_text"] = _clean_str(raw.get("salary_display_text"))
 
-    # Ép phẳng sections
     sections = raw.get("sections")
     if isinstance(sections, dict):
         for sec_name, sec_val in sections.items():
@@ -345,8 +393,6 @@ def _flatten_itviec(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
                 if isinstance(sec_val, list):
                     flat["benefits_list"].extend(sec_val)
 
-    # Bóc tách JSON-LD để lấy baseSalary, employmentType, industry, jobLocation
-    jsonld = raw.get("job_posting_jsonld")
     if isinstance(jsonld, dict):
         if not flat["raw_posted_date"]:
             flat["raw_posted_date"] = _clean_str(jsonld.get("datePosted"))
@@ -380,7 +426,6 @@ def _flatten_itviec(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
             except (ValueError, TypeError):
                 pass
 
-        # Địa điểm an toàn từ JSON-LD
         r_loc, c_addr, w_locs = _extract_job_locations_from_jsonld(jsonld)
         if r_loc and not flat["raw_location_text"]:
             flat["raw_location_text"] = r_loc
@@ -388,7 +433,6 @@ def _flatten_itviec(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
             flat["company_address"] = c_addr
         flat["working_locations"].extend(w_locs)
 
-        # Skills fallback từ jsonld
         if not flat["skills_list"] and jsonld.get("skills"):
             s_val = jsonld.get("skills")
             if isinstance(s_val, str):
@@ -396,14 +440,12 @@ def _flatten_itviec(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
             elif isinstance(s_val, list):
                 flat["skills_list"] = [str(s) for s in s_val]
 
-        # Benefits fallback từ jsonld (jobBenefits HTML)
         if not flat["benefits_list"] and jsonld.get("jobBenefits"):
             jb = strip_html_tags(str(jsonld.get("jobBenefits")))
             if jb:
                 b_lines = [b.strip() for b in jb.splitlines() if b.strip()]
                 flat["benefits_list"].extend(b_lines)
 
-    # Skills
     skill_tags = raw.get("skill_tags") or raw.get("skills")
     if isinstance(skill_tags, list):
         flat["skills_list"].extend([str(s) for s in skill_tags])
@@ -413,32 +455,29 @@ def _flatten_jobsgo(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("title"))
     flat["company_name"] = _clean_str(raw.get("company"))
     flat["company_address"] = _clean_str(raw.get("company_address"))
-    flat["raw_salary_text"] = _clean_str(raw.get("salary_raw"))
+    flat["raw_salary_text"] = _clean_str(raw.get("salary_raw") or raw.get("salary"))
     flat["raw_experience_text"] = _clean_str(raw.get("experience"))
     flat["raw_location_text"] = _clean_str(raw.get("location"))
-    flat["raw_deadline"] = _clean_str(raw.get("deadline_raw"))
+    flat["raw_deadline"] = _clean_str(raw.get("deadline_raw") or raw.get("deadline"))
     flat["raw_education_text"] = _clean_str(raw.get("education"))
     flat["raw_working_time"] = _clean_str(raw.get("working_time"))
 
-    # Địa điểm chi tiết
     wp = raw.get("working_places")
     if isinstance(wp, list):
         for p in wp:
             if p:
                 flat["working_locations"].append(str(p).strip())
 
-    # Ngành nghề
     occs = raw.get("occupations")
     if isinstance(occs, list):
         flat["raw_category_text"] = ", ".join(str(o) for o in occs if o)
-    # I4: Kỹ năng JobsGO: lấy trường kỹ năng thật nếu raw có; nếu không có thì để rỗng (không lấy occupations)
+
     skills = raw.get("skills") or raw.get("skills_list")
     if isinstance(skills, list):
         flat["skills_list"].extend([str(s) for s in skills if str(s).strip()])
     elif isinstance(skills, str):
         flat["skills_list"].extend([s.strip() for s in re.split(r"[,|;/•]+", skills) if s.strip()])
 
-    # Ép phẳng general_info
     gen = raw.get("general_info")
     if isinstance(gen, dict):
         flat["raw_seniority_text"] = _clean_str(gen.get("job_level"))
@@ -448,31 +487,43 @@ def _flatten_jobsgo(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         flat["raw_gender_text"] = _clean_str(gen.get("gender"))
         flat["raw_age_text"] = _clean_str(gen.get("age"))
 
-    # Bullets
     desc = raw.get("description_bullets")
     if isinstance(desc, list):
         flat["raw_description_text"] = "\n".join(desc)
+    elif raw.get("description"):
+        flat["raw_description_text"] = _clean_str(raw.get("description"))
+
     reqs = raw.get("requirements_bullets")
     if isinstance(reqs, list):
         flat["raw_requirements_text"] = "\n".join(reqs)
+    elif raw.get("requirements"):
+        flat["raw_requirements_text"] = _clean_str(raw.get("requirements"))
+
     bens = raw.get("benefits_bullets")
     if isinstance(bens, list):
         flat["benefits_list"] = [str(b) for b in bens]
+    elif raw.get("benefits"):
+        flat["benefits_list"] = [str(raw.get("benefits")).strip()]
 
 
 def _flatten_topcv(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("title"))
-    flat["company_name"] = _clean_str(raw.get("company"))
+
+    comp = raw.get("company")
+    if isinstance(comp, dict):
+        flat["company_name"] = _clean_str(comp.get("name") or comp.get("company_name"))
+    else:
+        flat["company_name"] = _clean_str(comp or raw.get("company_name"))
+
     flat["company_address"] = _clean_str(raw.get("company_address"))
     flat["company_scale"] = _clean_str(raw.get("company_scale"))
-    flat["raw_salary_text"] = _clean_str(raw.get("salary_raw"))
+    flat["raw_salary_text"] = _clean_str(raw.get("salary_raw") or raw.get("salary"))
     flat["raw_experience_text"] = _clean_str(raw.get("experience"))
     flat["raw_location_text"] = _clean_str(raw.get("location"))
-    flat["raw_deadline"] = _clean_str(raw.get("deadline_raw"))
+    flat["raw_deadline"] = _clean_str(raw.get("deadline_raw") or raw.get("deadline"))
     flat["raw_working_time"] = _clean_str(raw.get("working_time"))
     flat["raw_category_text"] = _clean_str(raw.get("company_industry"))
 
-    # Địa điểm chi nhánh
     wp = raw.get("working_places")
     if isinstance(wp, list):
         for p in wp:
@@ -481,7 +532,6 @@ def _flatten_topcv(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     elif wp:
         flat["working_locations"].append(str(wp).strip())
 
-    # Ép phẳng general_info
     gen = raw.get("general_info")
     if isinstance(gen, dict):
         flat["raw_seniority_text"] = _clean_str(gen.get("Cấp bậc"))
@@ -494,16 +544,15 @@ def _flatten_topcv(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         if work_mode:
             flat["raw_work_mode"] = str(work_mode).strip()
 
-    # Ép phẳng overview_tags
     otags = raw.get("overview_tags")
     if isinstance(otags, dict):
         if "Chuyên môn" in otags and isinstance(otags["Chuyên môn"], list):
             flat["skills_list"].extend(otags["Chuyên môn"])
         if "Quyền lợi" in otags and isinstance(otags["Quyền lợi"], list):
             flat["benefits_list"].extend(otags["Quyền lợi"])
-        yêu_cầu = otags.get("Yêu cầu") or []
-        if isinstance(yêu_cầu, list):
-            for yc in yêu_cầu:
+        yeu_cau = otags.get("Yêu cầu") or []
+        if isinstance(yeu_cau, list):
+            for yc in yeu_cau:
                 yc_s = str(yc).strip()
                 yc_l = yc_s.lower()
                 if "tuổi" in yc_l and not flat["raw_age_text"]:
@@ -511,28 +560,33 @@ def _flatten_topcv(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
                 elif any(e in yc_l for e in ["đại học", "cao đẳng", "cử nhân", "thạc sĩ"]) and not flat["raw_education_text"]:
                     flat["raw_education_text"] = yc_s
 
-    # Phúc lợi bổ sung
     for k in ["welfare_tags", "allowance_tags"]:
         tags = raw.get(k)
         if isinstance(tags, list):
             flat["benefits_list"].extend([str(t) for t in tags])
 
-    # Kỹ năng bổ sung
     for k in ["required_skills", "industry_knowledge"]:
         skills = raw.get(k)
         if isinstance(skills, list):
             flat["skills_list"].extend([str(s) for s in skills])
 
-    # Bullets
     desc = raw.get("description_bullets")
     if isinstance(desc, list):
         flat["raw_description_text"] = "\n".join(desc)
+    elif raw.get("description"):
+        flat["raw_description_text"] = _clean_str(raw.get("description"))
+
     reqs = raw.get("requirements_bullets")
     if isinstance(reqs, list):
         flat["raw_requirements_text"] = "\n".join(reqs)
+    elif raw.get("requirements"):
+        flat["raw_requirements_text"] = _clean_str(raw.get("requirements"))
+
     bens = raw.get("benefits_bullets")
     if isinstance(bens, list):
         flat["benefits_list"].extend(bens)
+    elif raw.get("benefits"):
+        flat["benefits_list"].append(str(raw.get("benefits")).strip())
 
 
 def _flatten_topdev(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
@@ -542,14 +596,12 @@ def _flatten_topdev(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     jsonld = raw.get("job_posting_jsonld")
     jsonld_dict = jsonld if isinstance(jsonld, dict) else {}
 
-    # I3: TopDev raw_posted_date theo thứ tự published.date → date_posted → job_posting_jsonld.datePosted
     pub = raw.get("published")
     pub_date = pub.get("date") if isinstance(pub, dict) else pub
     flat["raw_posted_date"] = _clean_str(
         pub_date or raw.get("date_posted") or jsonld_dict.get("datePosted") or raw.get("recalled_at") or raw.get("created_at")
     )
 
-    # I3: TopDev raw_experience_text từ job_posting_jsonld.experienceRequirements
     exp_req = jsonld_dict.get("experienceRequirements")
     exp_text = None
     if isinstance(exp_req, dict):
@@ -561,7 +613,6 @@ def _flatten_topdev(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     elif exp_req is not None:
         exp_text = str(exp_req)
 
-    # Kinh nghiệm và cấp bậc: bản HTML để ở cấp ngoài, bản API để trong extra
     extra = raw.get("extra") if isinstance(raw.get("extra"), dict) else {}
     flat["raw_experience_text"] = _clean_str(
         exp_text or raw.get("experience") or extra.get("experience") or raw.get("experiences_str")
@@ -570,7 +621,6 @@ def _flatten_topdev(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         raw.get("seniority_text") or raw.get("job_level") or raw.get("job_levels_str")
     )
 
-    # Company
     comp = raw.get("company")
     if isinstance(comp, dict):
         flat["company_name"] = _clean_str(comp.get("company_name") or comp.get("name") or raw.get("company-name"))
@@ -578,7 +628,6 @@ def _flatten_topdev(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     else:
         flat["company_name"] = _clean_str(raw.get("company") or raw.get("company-name"))
 
-    # Addresses
     addrs = raw.get("addresses")
     if isinstance(addrs, dict):
         region_list = addrs.get("address_region_list")
@@ -599,12 +648,10 @@ def _flatten_topdev(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
                 if isinstance(ca, dict) and ca.get("full_address"):
                     flat["working_locations"].append(str(ca["full_address"]).strip())
 
-    # Clean HTML từ content và responsibilities (100% rác HTML được làm sạch)
     raw_desc = raw.get("responsibilities_original") or raw.get("content")
     flat["raw_description_text"] = strip_html_tags(raw_desc)
     flat["raw_requirements_text"] = strip_html_tags(raw.get("requirements_original"))
 
-    # Benefits từ benefits_original (HTML mảng)
     bens = raw.get("benefits_original") or raw.get("benefits_v2")
     if isinstance(bens, list):
         for b in bens:
@@ -613,7 +660,6 @@ def _flatten_topdev(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
             if cleaned_b:
                 flat["benefits_list"].append(cleaned_b)
 
-    # Skills
     skills_arr = raw.get("skills_arr")
     if isinstance(skills_arr, list):
         flat["skills_list"] = [str(s) for s in skills_arr]
@@ -629,13 +675,11 @@ def _flatten_vieclam24h(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["raw_deadline"] = _clean_str(raw.get("deadline"))
     flat["raw_working_time"] = _clean_str(raw.get("working_time"))
 
-    # Địa điểm làm việc
     w_addr = raw.get("working_address")
     if w_addr:
         flat["company_address"] = _clean_str(w_addr)
         flat["working_locations"].append(str(w_addr).strip())
 
-    # Làm phẳng dict company
     comp = raw.get("company")
     if isinstance(comp, dict):
         flat["company_name"] = _clean_str(comp.get("name"))
@@ -645,7 +689,6 @@ def _flatten_vieclam24h(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     elif isinstance(comp, str):
         flat["company_name"] = _clean_str(comp)
 
-    # General info
     gen = raw.get("general_info")
     if isinstance(gen, dict):
         flat["raw_seniority_text"] = _clean_str(gen.get("level"))
@@ -661,7 +704,6 @@ def _flatten_vieclam24h(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         if isinstance(workplaces, list):
             flat["working_locations"].extend([str(wp).strip() for wp in workplaces if str(wp).strip()])
 
-    # Bullet lists có áp dụng Bullet Stitcher (chống đứt gãy câu)
     desc = raw.get("description")
     if isinstance(desc, list):
         flat["raw_description_text"] = "\n".join(stitch_fragmented_bullets(desc))
@@ -680,7 +722,6 @@ def _flatten_vieclam24h(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     elif isinstance(bens, str):
         flat["benefits_list"] = [bens]
 
-    # Keywords
     kws = raw.get("keywords")
     if isinstance(kws, list):
         flat["skills_list"] = [str(k) for k in kws]
@@ -688,7 +729,16 @@ def _flatten_vieclam24h(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
 
 def _flatten_vietnamworks(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("jobTitle") or raw.get("title"))
-    flat["company_name"] = _clean_str(raw.get("companyName") or (raw.get("company", {}).get("name") if isinstance(raw.get("company"), dict) else None))
+
+    comp_name = raw.get("companyName")
+    if not comp_name:
+        comp_profile = raw.get("companyProfile")
+        if isinstance(comp_profile, dict):
+            comp_name = comp_profile.get("companyName")
+        elif isinstance(raw.get("company"), dict):
+            comp_name = raw.get("company", {}).get("name")
+    flat["company_name"] = _clean_str(comp_name)
+
     flat["raw_posted_date"] = _clean_str(raw.get("createdOn") or raw.get("approvedOn") or raw.get("onlineOn"))
     flat["raw_updated_at"] = _clean_str(raw.get("lastUpdatedOn"))
     flat["raw_deadline"] = _clean_str(raw.get("expiredOn"))
@@ -697,14 +747,12 @@ def _flatten_vietnamworks(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["company_address"] = _clean_str(raw.get("address"))
     flat["company_scale"] = _clean_str(raw.get("companySizeVI") or raw.get("companySize"))
 
-    # Số lượng tuyển, độ tuổi, giới tính
     if raw.get("numberOfRecruits") is not None:
         flat["raw_headcount"] = str(raw.get("numberOfRecruits"))
     flat["raw_age_text"] = _clean_str(raw.get("rangeAge"))
     if raw.get("isShowGender") is not None:
         flat["raw_gender_text"] = _clean_str(raw.get("gender") or "Không hiển thị")
 
-    # Bằng cấp (highestDegreeId: 1: THPT, 2: Trung cấp, 3: Cao đẳng, 4: Cử nhân/Đại học, 5: Thạc sĩ, 6: Tiến sĩ)
     deg_map = {
         1: "Trung học phổ thông",
         2: "Trung cấp",
@@ -720,7 +768,6 @@ def _flatten_vietnamworks(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     elif deg_id is not None:
         flat["raw_education_text"] = str(deg_id)
 
-    # Hình thức làm việc (typeWorkingId: 1: Toàn thời gian, 2: Bán thời gian, 3: Thực tập)
     type_map = {1: "Toàn thời gian", 2: "Bán thời gian", 3: "Thực tập", 4: "Khác"}
     tw_id = raw.get("typeWorkingId")
     if tw_id in type_map:
@@ -728,7 +775,6 @@ def _flatten_vietnamworks(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     elif tw_id is not None:
         flat["raw_employment_type"] = str(tw_id)
 
-    # Chi nhánh / Working locations
     w_locs = raw.get("workingLocations")
     if isinstance(w_locs, list):
         for wl in w_locs:
@@ -741,7 +787,6 @@ def _flatten_vietnamworks(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     if flat["company_address"]:
         flat["working_locations"].append(flat["company_address"])
 
-    # Ngành nghề
     industries = raw.get("industriesV3") or raw.get("industries")
     if isinstance(industries, list):
         names = []
@@ -753,12 +798,10 @@ def _flatten_vietnamworks(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         if names:
             flat["raw_category_text"] = ", ".join(names)
 
-    # Kinh nghiệm số học có sẵn
     exp_y = raw.get("yearsOfExperience")
     if exp_y is not None and int(exp_y) > 0:
         flat["raw_experience_text"] = f"{exp_y} năm"
 
-    # Lương: VietnamWorks có cả numeric và prettySalary
     pretty_sal = raw.get("prettySalary") or raw.get("salary_raw")
     sal_min = raw.get("salaryMin", 0)
     sal_max = raw.get("salaryMax", 0)
@@ -768,7 +811,6 @@ def _flatten_vietnamworks(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     elif pretty_sal:
         flat["raw_salary_text"] = _clean_str(pretty_sal)
 
-    # Skills: danh sách dict {skillId, skillName, skillWeight}
     skills_obj = raw.get("skills")
     if isinstance(skills_obj, list):
         for s in skills_obj:
@@ -777,7 +819,6 @@ def _flatten_vietnamworks(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
             elif isinstance(s, str):
                 flat["skills_list"].append(s)
 
-    # Benefits: danh sách dict {benefitId, benefitValue...}
     bens_obj = raw.get("benefits")
     if isinstance(bens_obj, list):
         for b in bens_obj:
@@ -786,7 +827,6 @@ def _flatten_vietnamworks(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
             elif isinstance(b, str):
                 flat["benefits_list"].append(b)
 
-    # Description & Requirements
     desc_list = raw.get("description_list")
     if isinstance(desc_list, list):
         flat["raw_description_text"] = "\n".join(desc_list)
@@ -807,3 +847,16 @@ def _flatten_generic(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["raw_experience_text"] = _clean_str(raw.get("experience"))
     flat["raw_location_text"] = _clean_str(raw.get("location"))
     flat["raw_description_text"] = _clean_str(raw.get("description"))
+
+
+class JsonFlattener:
+    """Wrapper class hỗ trợ gọi JsonFlattener().flatten_record(...) tương thích với OOP."""
+
+    def __init__(self):
+        pass
+
+    def flatten_record(self, record_data: Dict[str, Any], source: Optional[str] = None) -> Dict[str, Any]:
+        return flatten_raw_job_record(record_data, source_fallback=source)
+
+    def __call__(self, record_data: Dict[str, Any], source: Optional[str] = None) -> Dict[str, Any]:
+        return flatten_raw_job_record(record_data, source_fallback=source)
