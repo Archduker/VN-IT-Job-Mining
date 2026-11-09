@@ -354,6 +354,14 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 
 ## 4. Testing
 
+### L-29. EDA P5 lỗi khi mở từ thư mục notebooks (09/11/2026)
+
+- **Lỗi:** `eda_p5_final_cohort.ipynb` tìm `notebooks/data/preprocessing/05_encoding/artifact_manifest.json` và fail khi Restart Kernel → Run All từ `notebooks/`.
+- **Nguyên nhân:** dùng `root = Path.cwd()`; builder cũ khởi động kernel tại repo root và inject root vào PYTHONPATH nên che giả định cwd/import.
+- **Cách xử lý:** cell đầu tìm repo root từ ancestors, thêm root vào sys.path trước import, lấy run từ manifest. Builder nhận `--output-dir`/`--kernel-cwd`, không inject ROOT, bảo vệ output đã có. Tái tạo notebook và HTML đồng bộ, giữ bản trước cùng checksum.
+- **Kiểm chứng:** tái hiện lỗi từ `notebooks/` bằng namespace mới; sau sửa dùng Python 3.14.4, kernel mới tại `notebooks/`, chạy đủ 6 cells không lỗi và xuất HTML. 72 P5 tests và Ruff pass; 10 artifact tái tạo vào `/tmp` giống bytes canonical. Evidence tại `reports/preprocessing/05_encoding/refactor_2026-11-09/`; xem [report P5](preprocessing/encoding/07_p5_execution_report.md#p5-refactor).
+- **Còn lại:** không có mục tương ứng cần xóa trong KNOWN_ISSUED. Không thay các giới hạn nghiệm thu P5 về lineage, scope, Python 3.12 và whole-repo tests.
+
 ### L-20. Test không có cấu trúc, không có test cho crawler (PRE-5)
 
 - **Lỗi:** 12 file test nằm chung một thư mục, không marker, không `conftest.py`. 3 test đọc thẳng `data/` nên fail trên máy không có dữ liệu; 1 test qua mà không kiểm tra gì. Không có test nào cho 8 crawler.

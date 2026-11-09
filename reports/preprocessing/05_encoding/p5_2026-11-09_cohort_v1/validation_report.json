@@ -1,0 +1,160 @@
+{
+  "status": "PASS_TECHNICAL_REVIEW",
+  "rows": 5104,
+  "features_shape": [
+    5104,
+    314
+  ],
+  "skill_shape": [
+    5104,
+    230
+  ],
+  "cooccurrence_shape": [
+    230,
+    230
+  ],
+  "tfidf_shape": [
+    5104,
+    3000
+  ],
+  "golden_shape": [
+    5104,
+    292
+  ],
+  "tfidf_zero_rows": 0,
+  "checks": [
+    "input IDs/order",
+    "numeric feature schema/values",
+    "every X bit from strict lookup",
+    "independent C intersections/diagonal/bounds/int64/labels",
+    "Golden Arrow values/schema/null/nested",
+    "TF-IDF config/transform/CSR/row IDs/norms",
+    "Snappy compression"
+  ],
+  "acceptance": "TECHNICAL_CHECKS_PASS_ACCEPTANCE_RECORDED_SEPARATELY",
+  "p5_complete": false,
+  "logical_reproducibility": "PASS: E1-E8/sidecars/config exact; CSR float32 tolerance2e-6",
+  "ninput_p4": 5177,
+  "cohort": {
+    "version": "p5-cohort-ledger-2026-11-09-v1",
+    "ledger_path": "preprocessing/encoding/assets/cohort_v1/ledger.csv",
+    "ledger_sha256": "62b575a7f9a8379c053724d1636acee55587f770a8f05d52e0b0895244f333d7",
+    "decision_record_path": "preprocessing/encoding/assets/cohort_v1/decision_record.json",
+    "decision_record_sha256": "8857aae3a16c93c77aab2fc7fff5ec6cf2fd0f2c98a772fb1519d5b43c529d66",
+    "ninput_p4": 5177,
+    "partition_counts": {
+      "include": 5104,
+      "exclude": 62,
+      "quarantine": 11
+    },
+    "include_ordered_ids_sha256": "12bcd085e2736eacc91b232436f31e5866fcc08f86fec920dfe31caedc21b4ed",
+    "review_status_counts": {
+      "retained_unreviewed": 5092,
+      "excluded_by_approved_policy": 62,
+      "retained_reviewed": 12,
+      "unresolved_quarantined": 11
+    },
+    "snapshot_manifest_sha256": "dd93db5c08b533725bd086315325c70ed37a8027b7149fc8327e5a6d3ca34ea4",
+    "limitations": "Retained_unreviewed and outside-queue jobs are not verified IT; no upstream filter fix"
+  },
+  "conservation": "N_P4 = N_include + N_exclude + N_quarantine; output rows = N_include",
+  "final_checks": {
+    "status": "PASS_TECHNICAL_REVIEW",
+    "rows": 5104,
+    "features_shape": [
+      5104,
+      314
+    ],
+    "skill_shape": [
+      5104,
+      230
+    ],
+    "cooccurrence_shape": [
+      230,
+      230
+    ],
+    "tfidf_shape": [
+      5104,
+      3000
+    ],
+    "golden_shape": [
+      5104,
+      292
+    ],
+    "tfidf_zero_rows": 0,
+    "checks": [
+      "input IDs/order",
+      "numeric feature schema/values",
+      "every X bit from strict lookup",
+      "independent C intersections/diagonal/bounds/int64/labels",
+      "Golden Arrow values/schema/null/nested",
+      "TF-IDF config/transform/CSR/row IDs/norms",
+      "Snappy compression"
+    ],
+    "acceptance": "TECHNICAL_CHECKS_PASS_ACCEPTANCE_RECORDED_SEPARATELY",
+    "p5_complete": false
+  },
+  "metrics_file": "metrics.json",
+  "results": [
+    {
+      "artifact": "curated/curated_flat_golden_jobs.parquet",
+      "path": "data/curated/curated_flat_golden_jobs.parquet",
+      "status": "REPLACED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/data_quality.parquet",
+      "path": "data/preprocessing/05_encoding/data_quality.parquet",
+      "status": "REPLACED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/encoding_dictionary.json",
+      "path": "data/preprocessing/05_encoding/encoding_dictionary.json",
+      "status": "REPLACED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/features.parquet",
+      "path": "data/preprocessing/05_encoding/features.parquet",
+      "status": "REPLACED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/skill_cooccurrence.parquet",
+      "path": "data/preprocessing/05_encoding/skill_cooccurrence.parquet",
+      "status": "REPLACED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/skill_unmatched.parquet",
+      "path": "data/preprocessing/05_encoding/skill_unmatched.parquet",
+      "status": "REPLACED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/tfidf_config.json",
+      "path": "data/preprocessing/05_encoding/tfidf_config.json",
+      "status": "REPLACED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/tfidf_matrix.npz",
+      "path": "data/preprocessing/05_encoding/tfidf_matrix.npz",
+      "status": "REPLACED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/tfidf_rows.parquet",
+      "path": "data/preprocessing/05_encoding/tfidf_rows.parquet",
+      "status": "REPLACED+VALID",
+      "reuse_source": null
+    },
+    {
+      "artifact": "preprocessing/05_encoding/tfidf_vocabulary.json",
+      "path": "data/preprocessing/05_encoding/tfidf_vocabulary.json",
+      "status": "REPLACED+VALID",
+      "reuse_source": null
+    }
+  ]
+}

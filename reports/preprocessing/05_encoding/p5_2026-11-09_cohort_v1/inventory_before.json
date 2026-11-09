@@ -1,0 +1,182 @@
+[
+  {
+    "artifact": "features.parquet",
+    "path": "data/preprocessing/05_encoding/features.parquet",
+    "exists": true,
+    "input_version": "unknown until content validation",
+    "vocabulary_config": "unknown until content validation",
+    "validation": "pending",
+    "action": "inspect"
+  },
+  {
+    "artifact": "skill_cooccurrence.parquet",
+    "path": "data/preprocessing/05_encoding/skill_cooccurrence.parquet",
+    "exists": true,
+    "input_version": "unknown until content validation",
+    "vocabulary_config": "unknown until content validation",
+    "validation": "pending",
+    "action": "inspect"
+  },
+  {
+    "artifact": "encoding_dictionary.json",
+    "path": "data/preprocessing/05_encoding/encoding_dictionary.json",
+    "exists": true,
+    "input_version": "unknown until content validation",
+    "vocabulary_config": "unknown until content validation",
+    "validation": "pending",
+    "action": "inspect"
+  },
+  {
+    "artifact": "curated_flat_golden_jobs.parquet",
+    "path": "data/curated/curated_flat_golden_jobs.parquet",
+    "exists": true,
+    "input_version": "unknown until content validation",
+    "vocabulary_config": "unknown until content validation",
+    "validation": "pending",
+    "action": "inspect"
+  },
+  {
+    "artifact": "curated_flat_golden_jobs.parquet",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/curated/curated_flat_golden_jobs.parquet",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "artifact_manifest.json",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding/artifact_manifest.json",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "encoding_dictionary.json",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding/encoding_dictionary.json",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "features.parquet",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding/features.parquet",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "skill_cooccurrence.parquet",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding/skill_cooccurrence.parquet",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "tfidf_matrix.npz",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding/tfidf_matrix.npz",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "tfidf_rows.parquet",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding/tfidf_rows.parquet",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "curated_flat_golden_jobs.parquet",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/curated/curated_flat_golden_jobs.parquet",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "artifact_manifest.json",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/artifact_manifest.json",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "encoding_dictionary.json",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/encoding_dictionary.json",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "features.parquet",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/features.parquet",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "skill_cooccurrence.parquet",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/skill_cooccurrence.parquet",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "tfidf_matrix.npz",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/tfidf_matrix.npz",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "tfidf_rows.parquet",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/data/preprocessing/05_encoding/tfidf_rows.parquet",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "skill_matrix_review.npz",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/reports/preprocessing/05_encoding/approval_package_v2/skill_matrix_review.npz",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  },
+  {
+    "artifact": "artifact_manifest.json",
+    "path": "/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/artifact_manifest.json",
+    "exists": true,
+    "input_version": "inspect content",
+    "vocabulary_config": "inspect content",
+    "validation": "not assumed valid",
+    "action": "inspect"
+  }
+]

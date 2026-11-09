@@ -1,290 +1,321 @@
-# -*- coding: utf-8 -*-
-"""preprocessing.transformation.salary_parser
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Universal Salary Parser & Cascade Salary Extractor cho VN-IT-Job-Mining.
+"""Parse free-form job salaries into million VND per month.
 
-Tính năng:
-  - Bóc tách dải số lương (min, max, currency, period) từ mọi định dạng text sàn VN.
-  - T2a: Dấu phân cách hàng nghìn (2,000 -> 2000, 8.5 -> 8.5).
-  - T2b: "Từ X" chỉ gán min = X, max = None (khắc phục D3).
-  - T2c: "Up to X", "Tới X" chỉ gán max = X, min = None (khắc phục D4).
-  - T2d: Quy đổi USD sang VND tỷ giá chuẩn 25,400; chu kỳ /năm (/12), /giờ (*160), /ngày (*22).
-  - T2e: Cascade 3 tầng: header -> title -> jd -> none; bảo toàn cờ thỏa thuận.
-  - T2f: Gắn cờ salary_under_1m cho lương < 1 triệu VND.
+Accepts plain text, numeric values, dictionaries, and dictionaries serialized as
+Python/JSON strings. Negotiable salaries and unsupported periods are never imputed.
 """
-
 from __future__ import annotations
 
+import ast
+import json
+import math
+import numbers
 import re
-from typing import Any, Dict, Optional
+import unicodedata
+from collections.abc import Mapping
+from dataclasses import asdict, dataclass
+from typing import Any
 
-USD_VND_EXCHANGE_RATE = 25_400.0
-
-NEGOTIABLE_KEYWORDS = {
-    "thỏa thuận", "thoả thuận", "cạnh tranh", "thương lượng",
-    "đăng nhập để xem mức lương", "công ty không công khai thông tin này",
-    "negotiable", "competitive", "confidential", "open", "trao đổi khi phỏng vấn",
-    "thương lượng khi phỏng vấn", "deal"
-}
-
-
-def parse_number(num_str: str) -> float:
-    """T2a: Phân biệt dấu phân cách hàng nghìn (2,000 -> 2000) và số thập phân (8.5 -> 8.5)."""
-    s = str(num_str).strip()
-    # Dấu hàng nghìn: ví dụ 2,000 hoặc 2.000 hoặc 20,000,000 hoặc 20.000.000
-    if re.match(r"^\d{1,3}(?:[.,]\d{3})+$", s):
-        return float(re.sub(r"[.,]", "", s))
-    # Số thập phân: 8.5 hoặc 8,5
-    return float(s.replace(",", "."))
-
-
-# Đơn vị triệu phải đứng sát sau số: tránh "m" trong "from", "tr" trong "trưởng"
-_MILLION = re.compile(r"\d\s*(?:triệu|trieu|trđ|tr|m)(?![a-zà-ỹ])")
-
-
-class UniversalSalaryParser:
-    """Bộ bóc tách dải lương vạn năng từ chuỗi văn bản."""
-
-    @classmethod
-    def parse_text(cls, text: Optional[str]) -> Dict[str, Any]:
-        """Phân tích chuỗi lương thô ra cấu trúc số học."""
-        res: Dict[str, Any] = {
-            "salary_text_raw": text,
-            "salary_min_vnd": None,
-            "salary_max_vnd": None,
-            "salary_min_original": None,
-            "salary_max_original": None,
-            "salary_currency_original": "VND",
-            "pay_period": "month",
-            "is_negotiable": False,
-            "has_commission": False,
-            "salary_under_1m": False,
-        }
-
-        if not text or not str(text).strip():
-            res["is_negotiable"] = True
-            return res
-
-        s = str(text).strip()
-        s_lower = s.lower()
-
-        # Kiểm tra thỏa thuận
-        is_neg = False
-        for kw in NEGOTIABLE_KEYWORDS:
-            if kw in s_lower:
-                is_neg = True
-                break
-        res["is_negotiable"] = is_neg
-
-        # Nếu chỉ thuần túy thỏa thuận không kèm số
-        if is_neg and not re.search(r"\d+", s):
-            return res
-
-        # Kiểm tra hoa hồng
-        if any(w in s_lower for w in ["hoa hồng", "thưởng", "kpi", "commission", "bonus"]):
-            res["has_commission"] = True
-
-        # Nhận diện chu kỳ
-        period = "month"
-        if "năm" in s_lower or "year" in s_lower or "annual" in s_lower:
-            period = "year"
-        elif "giờ" in s_lower or "hour" in s_lower:
-            period = "hour"
-        elif "ngày" in s_lower or "day" in s_lower:
-            period = "day"
-        res["pay_period"] = period
-
-        # Nhận diện tiền tệ
-        curr = "VND"
-        if "usd" in s_lower or "$" in s:
-            curr = "USD"
-        res["salary_currency_original"] = curr
-
-        # Làm sạch chuỗi trước khi regex: bỏ ký hiệu tiền tệ
-        clean = re.sub(r"[₫$]|vnđ|vnd|usd", "", s, flags=re.IGNORECASE).strip()
-
-        # TH 1: Định dạng số đầy đủ có dấu phân cách hàng nghìn (ví dụ: 10.000.000 - 30.000.000)
-        full_num_match = re.search(
-            r"(\d{1,3}(?:[.,]\d{3}){1,3})\s*[-–—tođến]+\s*(\d{1,3}(?:[.,]\d{3}){1,3})", clean
-        )
-        if full_num_match:
-            min_raw = parse_number(full_num_match.group(1))
-            max_raw = parse_number(full_num_match.group(2))
-            return cls._apply_standardization(res, min_raw, max_raw, curr, period)
-
-        # TH 2: Dải số "Từ X đến Y" hoặc "X - Y"
-        range_match = re.search(
-            r"(\d{1,3}(?:[.,]\d{3})+(?![.,]?\d)|\d+(?:[.,]\d+)?)\s*[-–—tođến]+\s*(\d{1,3}(?:[.,]\d{3})+(?![.,]?\d)|\d+(?:[.,]\d+)?)\s*(?:triệu|tr|m|trđ)?", clean, re.IGNORECASE
-        )
-        if range_match:
-            v1 = parse_number(range_match.group(1))
-            v2 = parse_number(range_match.group(2))
-            if _MILLION.search(s_lower) or (curr == "VND" and v2 < 1000):
-                v1 = v1 * 1_000_000 if v1 < 1000 else v1
-                v2 = v2 * 1_000_000 if v2 < 1000 else v2
-            elif curr == "USD" or (v1 >= 100 and v2 <= 10000):
-                curr = "USD"
-                res["salary_currency_original"] = "USD"
-            return cls._apply_standardization(res, v1, v2, curr, period)
-
-        # TH 3: T2b - "Từ X" (không có cận trên)
-        from_match = re.search(r"(?:từ|tu|from|>=|>)\s*(\d{1,3}(?:[.,]\d{3})+(?![.,]?\d)|\d+(?:[.,]\d+)?)\s*(?:triệu|tr|m|trđ)?", clean, re.IGNORECASE)
-        if from_match and not re.search(r"[-–—]|(?:\bto\b)|(?:\bđến\b)", clean, re.IGNORECASE):
-            v = parse_number(from_match.group(1))
-            if _MILLION.search(s_lower) or (curr == "VND" and v < 1000):
-                v = v * 1_000_000
-            return cls._apply_standardization(res, v, None, curr, period)
-
-        # TH 4: T2c - "Up to X", "Tới X", "Lên đến X", "<= X" (không có cận dưới)
-        upto_match = re.search(r"(?:up\s*to|upto|tới|toi|lên\s*đến|đến|tối\s*đa|<|<=)\s*(\d{1,3}(?:[.,]\d{3})+(?![.,]?\d)|\d+(?:[.,]\d+)?)\s*(?:triệu|tr|m|trđ)?", clean, re.IGNORECASE)
-        if upto_match and not re.search(r"\d+\s*[-–—tođến]+\s*\d+", clean):
-            v = parse_number(upto_match.group(1))
-            if _MILLION.search(s_lower) or (curr == "VND" and v < 200):
-                v = v * 1_000_000
-            return cls._apply_standardization(res, None, v, curr, period)
-
-        # TH 5: Số đơn (ví dụ: 15 triệu, 400 triệu / năm)
-        single_match = re.search(r"(\d{1,3}(?:[.,]\d{3})+(?![.,]?\d)|\d+(?:[.,]\d+)?)\s*(?:triệu|tr|m|trđ)?", clean, re.IGNORECASE)
-        if single_match and single_match.group(1):
-            v = parse_number(single_match.group(1))
-            if v > 0:
-                if _MILLION.search(s_lower) or (curr == "VND" and v < 1000):
-                    v = v * 1_000_000
-                return cls._apply_standardization(res, v, v, curr, period)
-
-        return res
-
-    @classmethod
-    def _apply_standardization(
-        cls, res: Dict[str, Any], min_raw: Optional[float], max_raw: Optional[float], curr: str, period: str
-    ) -> Dict[str, Any]:
-        res["salary_min_original"] = min_raw
-        res["salary_max_original"] = max_raw
-
-        # 1. T2d: Quy đổi tỷ giá về VND (USD -> VND theo tỷ giá 25.400)
-        rate = USD_VND_EXCHANGE_RATE if curr == "USD" else 1.0
-        min_vnd = min_raw * rate if min_raw is not None else None
-        max_vnd = max_raw * rate if max_raw is not None else None
-
-        # 2. T2d: Quy đổi chu kỳ về tháng
-        if period == "year":
-            min_vnd = min_vnd / 12.0 if min_vnd else None
-            max_vnd = max_vnd / 12.0 if max_vnd else None
-        elif period == "hour":
-            min_vnd = min_vnd * 160.0 if min_vnd else None
-            max_vnd = max_vnd * 160.0 if max_vnd else None
-        elif period == "day":
-            min_vnd = min_vnd * 22.0 if min_vnd else None
-            max_vnd = max_vnd * 22.0 if max_vnd else None
-
-        res["salary_min_vnd"] = min_vnd
-        res["salary_max_vnd"] = max_vnd
-
-        # 3. T2f: Gắn cờ salary_under_1m nếu lương < 1.000.000 VND (loại trừ None)
-        under_1m = False
-        if min_vnd is not None and 0 < min_vnd < 1_000_000:
-            under_1m = True
-        if max_vnd is not None and 0 < max_vnd < 1_000_000:
-            under_1m = True
-        res["salary_under_1m"] = under_1m
-
-        return res
-
-
-_NUM = r"\d+(?:[.,]\d+)*"
-_UNIT = r"(?:triệu|trieu|trđ|tr|m|k|usd|vnđ|vnd|đ)(?![a-zà-ỹ])"
-_PREFIX = r"(?:(?:từ|from|up\s*to|upto|lên\s*(?:đến|tới)|tới|đến|tối\s*đa)\s*)?"
-# Chỉ nhận số có đơn vị tiền hoặc ký hiệu $: chặn mã tin "2026TD450981", "Microsoft 365", "Bậc 1"
-MONEY_RE = re.compile(
-    rf"{_PREFIX}(?:\$\s*{_NUM}(?:\s*{_UNIT})?(?:\s*(?:[-–—~]|to|đến)\s*\$?\s*{_NUM}(?:\s*{_UNIT})?)?"
-    rf"|{_NUM}\s*(?:{_UNIT}\s*)?(?:[-–—~]|to|đến)\s*{_NUM}\s*{_UNIT}"
-    rf"|{_NUM}\s*{_UNIT})",
-    re.IGNORECASE,
+# Backward compatibility for existing preprocessing modules.
+from .salary_parser_legacy import (
+    UniversalSalaryParser as UniversalSalaryParser,
 )
-_PERIOD_AFTER = re.compile(r"^\s*(?:/|per|mỗi|một)\s*(?:năm|year|tháng|month|giờ|hour|ngày|day)", re.IGNORECASE)
-MONTHLY_MIN_VND, MONTHLY_MAX_VND = 1_000_000, 500_000_000
+from .salary_parser_legacy import (
+    parse_salary_cascade as parse_salary_cascade,
+)
+
+MONTHLY_MIN_VND = 1_000_000
+MONTHLY_MAX_VND = 500_000_000
+USD_TO_VND = 25_400.0
+VND_PER_MILLION = 1_000_000.0
+HOURS_PER_MONTH = 160.0
+DAYS_PER_MONTH = 22.0
+_NUMBER = (r"(?:\d+(?:[.,]\d+)?[eE][+-]?\d+|"
+           r"\d{1,3}(?:[.,]\d{3})+(?:[.,]\d+)?|\d+(?:[.,]\d+)?)")
+_VALUE_RE = re.compile(
+    rf"(?<![\w])(?P<prefix>US\$|\$|USD\s*)?\s*(?P<number>{_NUMBER})"
+    r"(?P<scale>\s*(?:k|m|mn|bn|tr(?:iệu)?|triệu|million|billion))?"
+    r"(?P<suffix>\s*(?:USD|US\$|VND|VNĐ|đồng|đ))?", re.IGNORECASE,
+)
+_NEGOTIABLE_RE = re.compile(
+    r"\b(?:thoa\s+thuan|canh\s+tranh|negotiable|competitive(?:\s+salary)?|"
+    r"salary\s+negotiable|commensurate\s+with\s+experience|deal|thuong\s+luong|"
+    r"luong\s+hap\s+dan|trao\s+doi\s+khi\s+phong\s+van)\b", re.IGNORECASE,
+)
+_RANGE_SEP_RE = re.compile(r"^\s*(?:-|–|—|to|đến)\s*$", re.IGNORECASE)
+_UPPER_PREFIX_RE = re.compile(r"(?:up\s+to|max(?:imum)?|at\s+most|khong\s+qua|toi\s+da|len\s+toi|len\s+den)", re.I)
+_LOWER_PREFIX_RE = re.compile(r"(?:from|starting\s+(?:at|from)|at\s+least|min(?:imum)?|tu|it\s+nhat|tren|tu\s+tren)", re.I)
+_PROJECT_PERIOD_RE = re.compile(r"\b(?:per\s+project|/\s*project|project[- ]based|theo\s+du\s+an)\b", re.I)
+_UNSUPPORTED_PERIOD_RE = re.compile(r"(?:/\s*(?:week|weekly|tuan|quarter|shift)|per\s+(?:week|quarter|shift)|weekly|quarterly)", re.I)
+_UNSUPPORTED_CURRENCY_RE = re.compile(r"(?:\bEUR\b|\bSGD\b|\bJPY\b|\bAUD\b|\bGBP\b|\bCNY\b|\bCAD\b|€|£|¥)", re.I)
 
 
-def find_money_span(text: Optional[str]) -> Optional[str]:
-    """Cắt đúng cụm tiền trong câu (kèm '/năm' ngay sau nếu có) để parse_text không đọc nhầm số khác."""
+@dataclass(frozen=True)
+class SalaryParseResult:
+    salary_min: float | None
+    salary_max: float | None
+    salary_avg: float | None
+    is_negotiable: bool
+    parse_status: str = "parsed"
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+def _fold_vietnamese(value: str) -> str:
+    value = value.casefold().replace("đ", "d")
+    value = unicodedata.normalize("NFD", value)
+    return "".join(ch for ch in value if unicodedata.category(ch) != "Mn")
+
+
+def _parse_number(raw: str) -> float:
+    """Parse grouping/decimal separators and scientific notation."""
+    value = raw.strip().replace("\u00a0", "").replace(" ", "")
+    if re.search(r"[eE][+-]?\d+$", value):
+        mantissa, exponent = re.split(r"[eE]", value)
+        if "." in mantissa and "," in mantissa:
+            decimal = "." if mantissa.rfind(".") > mantissa.rfind(",") else ","
+            grouping = "," if decimal == "." else "."
+            mantissa = mantissa.replace(grouping, "").replace(decimal, ".")
+        elif "," in mantissa:
+            mantissa = mantissa.replace(",", ".")
+        result = float(f"{mantissa}e{exponent}")
+    elif "." in value and "," in value:
+        decimal = "." if value.rfind(".") > value.rfind(",") else ","
+        grouping = "," if decimal == "." else "."
+        result = float(value.replace(grouping, "").replace(decimal, "."))
+    elif "," in value or "." in value:
+        separator = "," if "," in value else "."
+        pieces = value.split(separator)
+        if len(pieces) > 2 and all(len(piece) == 3 for piece in pieces[1:]):
+            value = "".join(pieces)
+        elif len(pieces) == 2 and len(pieces[1]) == 3 and len(pieces[0]) <= 3:
+            value = "".join(pieces)
+        else:
+            value = value.replace(separator, ".")
+        result = float(value)
+    else:
+        result = float(value)
+    if not math.isfinite(result):
+        raise ValueError(f"Non-finite salary number: {raw!r}")
+    return result
+
+
+def _scale_multiplier(scale: str) -> float:
+    value = (scale or "").strip().casefold()
+    if value == "k":
+        return 1_000.0
+    if value in {"m", "mn", "tr", "triệu", "million"}:
+        return 1_000_000.0
+    if value in {"bn", "billion"}:
+        return 1_000_000_000.0
+    return 1.0
+
+
+def _period_factor(text: str, period_hint: Any = None) -> tuple[float, str]:
+    period = str(period_hint or "").strip().casefold()
+    normalized = re.sub(r"[^a-z]+", "", period)
+    combined = f"{text} {period}".casefold()
+    if normalized in {"project", "perproject", "duan"} or _PROJECT_PERIOD_RE.search(combined):
+        return 1.0, "project"
+    if normalized in {"year", "yearly", "annual", "annually", "peryear"} or re.search(
+        r"(?:/\s*(?:năm|nam|year)|per\s+year|per\s+annum|annually|yearly|hằng\s+năm|hang\s+nam)", combined
+    ):
+        return 1.0 / 12.0, "year"
+    if normalized in {"hour", "hourly", "perhour"} or re.search(r"(?:/\s*(?:giờ|gio|hour)|per\s+hour|hourly)", combined):
+        return float(HOURS_PER_MONTH), "hour"
+    if normalized in {"day", "daily", "perday"} or re.search(r"(?:/\s*(?:ngày|ngay|day)|per\s+day|daily)", combined):
+        return float(DAYS_PER_MONTH), "day"
+    if normalized in {"month", "monthly", "permonth", "thang"} or re.search(
+        r"(?:/\s*(?:tháng|thang|month)|per\s+month|monthly)", combined
+    ):
+        return 1.0, "month"
+    if _UNSUPPORTED_PERIOD_RE.search(combined) or normalized in {"week", "weekly", "perweek", "quarter", "quarterly", "shift"}:
+        return 1.0, "unsupported"
+    return 1.0, "unspecified"
+
+
+def _currency_is_usd(text: str, matches: list[re.Match[str]], currency_hint: Any = None) -> bool:
+    hint = str(currency_hint or "").strip().upper()
+    if hint in {"USD", "US$", "$", "US DOLLAR"}:
+        return True
+    if hint in {"VND", "VNĐ", "DONG"}:
+        return False
+    if re.search(r"US\$|\$|\bUSD\b|\bU\.S\.\s*dollars?\b|đô\s*la", text, re.I):
+        return True
+    return any((m.group("prefix") or "").strip().upper() in {"$", "US$", "USD"}
+               or (m.group("suffix") or "").strip().upper() in {"USD", "US$"} for m in matches)
+
+
+def _explicit_vnd(text: str, currency_hint: Any = None) -> bool:
+    hint = str(currency_hint or "").strip().upper()
+    return hint in {"VND", "VNĐ", "DONG"} or bool(re.search(r"\b(?:VND|VNĐ|đồng|đ)\b|₫", text, re.I))
+
+
+def _to_million_vnd(number: float, scale: str, is_usd: bool,
+                    explicit_vnd: bool, explicit_scale: bool) -> float:
+    amount = number * _scale_multiplier(scale)
+    if is_usd:
+        return amount * USD_TO_VND / VND_PER_MILLION
+    if explicit_scale or number >= 1_000 or explicit_vnd:
+        return amount / VND_PER_MILLION
+    # Vietnam salary-box heuristic for bare values such as 15 or 25 (million VND).
+    return amount
+
+
+def _convert_match(match: re.Match[str], is_usd: bool, text: str,
+                   common_scale: str = "", currency_hint: Any = None,
+                   period_multiplier: float = 1.0) -> float:
+    number = _parse_number(match.group("number"))
+    local_scale = (match.group("scale") or "").strip()
+    scale = local_scale or common_scale
+    amount = _to_million_vnd(number, scale, is_usd,
+                            _explicit_vnd(text, currency_hint), bool(local_scale or common_scale))
+    return amount * period_multiplier
+
+
+def _normalize_salary_input(raw_salary: Any) -> tuple[str, Any, Any, bool, Mapping[str, Any] | None]:
+    """Unwrap salary payloads safely; never execute the serialized string."""
+    if isinstance(raw_salary, Mapping):
+        payload: Mapping[str, Any] | None = raw_salary
+    elif isinstance(raw_salary, str):
+        candidate = raw_salary.strip()
+        payload = None
+        if candidate.startswith("{") and candidate.endswith("}"):
+            parsed: Any = None
+            try:
+                parsed = json.loads(candidate)
+            except (json.JSONDecodeError, TypeError):
+                try:
+                    parsed = ast.literal_eval(candidate)
+                except (ValueError, SyntaxError):
+                    parsed = None
+            if isinstance(parsed, Mapping):
+                payload = parsed
+        if payload is None:
+            return candidate, None, None, False, None
+    else:
+        return (str(raw_salary).strip() if raw_salary is not None else ""), None, None, False, None
+
+    text = payload.get("salary_text") or payload.get("raw_salary_text") or payload.get("text") or ""
+    return (str(text).strip(), payload.get("salary_currency") or payload.get("currency"),
+            payload.get("pay_period") or payload.get("period"),
+            bool(payload.get("is_negotiable", False)), payload)
+
+
+def _is_negotiable(text: str, declared_flag: bool = False) -> bool:
+    """Correct crawler False flags when the actual text says negotiable."""
+    return bool(declared_flag or _NEGOTIABLE_RE.search(_fold_vietnamese(text)))
+
+
+def _average(low: float | None, high: float | None) -> float | None:
+    if low is not None and high is not None:
+        return (low + high) / 2.0
+    return low if low is not None else high
+
+
+def _structured_numeric_fallback(payload: Mapping[str, Any], currency: Any,
+                                 period: Any) -> SalaryParseResult | None:
+    raw_min, raw_max = payload.get("salary_min"), payload.get("salary_max")
+    if raw_min is None and raw_max is None:
+        return None
+    period_multiplier, period_name = _period_factor("", period)
+    if period_name in {"project", "unsupported"}:
+        return SalaryParseResult(None, None, None, False, "unsupported_period")
+    currency_code = str(currency or "").strip().upper()
+    is_usd = currency_code in {"USD", "US$", "$"}
+    is_vnd = currency_code in {"VND", "VNĐ", "DONG"}
+    if currency_code and not (is_usd or is_vnd):
+        return SalaryParseResult(None, None, None, False, "unsupported_currency")
+
+    def convert(value: Any) -> float | None:
+        if value is None:
+            return None
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            return None
+        if not math.isfinite(number):
+            return None
+        if is_usd:
+            return number * USD_TO_VND / VND_PER_MILLION * period_multiplier
+        if is_vnd or abs(number) >= 1_000:
+            return number / VND_PER_MILLION * period_multiplier
+        return number * period_multiplier
+
+    low, high = convert(raw_min), convert(raw_max)
+    if low is None and high is None:
+        return None
+    if low is not None and high is not None and high < low:
+        low, high = high, low
+    return SalaryParseResult(low, high, _average(low, high), False, "structured_numeric")
+
+
+def parse_salary(raw_salary: Any) -> SalaryParseResult:
+    """Parse salary into million VND/month; negotiable/missing remain None."""
+    if raw_salary is None or raw_salary.__class__.__name__ in {"NAType", "NaTType"}:
+        return SalaryParseResult(None, None, None, False, "missing")
+    if isinstance(raw_salary, numbers.Real) and not isinstance(raw_salary, bool):
+        value = float(raw_salary)
+        if not math.isfinite(value):
+            return SalaryParseResult(None, None, None, False, "missing")
+        value = value if abs(value) < 1_000 else value / VND_PER_MILLION
+        return SalaryParseResult(value, value, value, False, "numeric_input")
+
+    text, currency_hint, period_hint, declared_negotiable, payload = _normalize_salary_input(raw_salary)
+    if _is_negotiable(text, declared_negotiable):
+        return SalaryParseResult(None, None, None, True, "negotiable")
+    period_multiplier, period_name = _period_factor(text, period_hint)
+    if period_name in {"project", "unsupported"}:
+        return SalaryParseResult(None, None, None, False, "unsupported_period")
+    currency_code = str(currency_hint or "").strip().upper()
+    if currency_code and currency_code not in {"USD", "US$", "$", "VND", "VNĐ", "DONG"}:
+        return SalaryParseResult(None, None, None, False, "unsupported_currency")
+    if not currency_code and _UNSUPPORTED_CURRENCY_RE.search(text):
+        return SalaryParseResult(None, None, None, False, "unsupported_currency")
+    if not text and payload is not None:
+        return (_structured_numeric_fallback(payload, currency_hint, period_hint)
+                or SalaryParseResult(None, None, None, False, "missing"))
     if not text:
-        return None
-    m = MONEY_RE.search(str(text))
-    if not m:
-        return None
-    rest = str(text)[m.end():]
-    period = _PERIOD_AFTER.match(rest)
-    return m.group(0) + (period.group(0) if period else "")
+        return SalaryParseResult(None, None, None, False, "missing")
+
+    matches = list(_VALUE_RE.finditer(text))
+    if not matches:
+        if payload is not None:
+            return (_structured_numeric_fallback(payload, currency_hint, period_hint)
+                    or SalaryParseResult(None, None, None, False, "unparsed"))
+        return SalaryParseResult(None, None, None, False, "unparsed")
+
+    is_usd = _currency_is_usd(text, matches, currency_hint)
+    first = matches[0]
+    second = matches[1] if len(matches) > 1 else None
+    between = text[first.end():second.start()] if second is not None else ""
+    if second is not None and _RANGE_SEP_RE.fullmatch(between):
+        trailing = text[second.end():]
+        shared_match = re.match(r"\s*(k|m|mn|bn|tr(?:iệu)?|triệu|million|billion)\b", trailing, re.I)
+        shared_scale = (second.group("scale") or "").strip()
+        if not shared_scale and shared_match:
+            shared_scale = shared_match.group(1)
+        low = _convert_match(first, is_usd, text, shared_scale, currency_hint, period_multiplier)
+        high = _convert_match(second, is_usd, text, shared_scale, currency_hint, period_multiplier)
+        if high < low:
+            low, high = high, low
+        return SalaryParseResult(low, high, _average(low, high), False, "range")
+
+    value = _convert_match(first, is_usd, text, currency_hint=currency_hint,
+                           period_multiplier=period_multiplier)
+    prefix = _fold_vietnamese(text[:first.start()])
+    if _UPPER_PREFIX_RE.search(prefix):
+        return SalaryParseResult(None, value, value, False, "upper_bound")
+    if _LOWER_PREFIX_RE.search(prefix):
+        return SalaryParseResult(value, None, value, False, "lower_bound")
+    suffix = _fold_vietnamese(text[first.end():])
+    if re.search(r"(?:tro\s+len|and\s+above|or\s+more|\+\s*$)", suffix):
+        return SalaryParseResult(value, None, value, False, "lower_bound")
+    if re.search(r"(?:tro\s+xuong|or\s+less|at\s+most)", suffix):
+        return SalaryParseResult(None, value, value, False, "upper_bound")
+    return SalaryParseResult(value, value, value, False, "single_value")
 
 
-def _has_value(res: Dict[str, Any]) -> bool:
-    return res.get("salary_min_vnd") is not None or res.get("salary_max_vnd") is not None
-
-
-def _apply_bounds(res: Dict[str, Any]) -> Dict[str, Any]:
-    """Lương tháng ngoài 1–500 triệu là đọc sai: bỏ số, gắn cờ salary_suspect. Số 0 ("0 - 30 triệu") là cận trống."""
-    for k in ("salary_min_vnd", "salary_max_vnd"):
-        if res.get(k) == 0:
-            res[k] = None
-    vals = [v for v in (res.get("salary_min_vnd"), res.get("salary_max_vnd")) if v is not None]
-    res["salary_suspect"] = any(v < MONTHLY_MIN_VND or v > MONTHLY_MAX_VND for v in vals)
-    if res["salary_suspect"]:
-        res["salary_min_vnd"] = res["salary_max_vnd"] = None
-    return res
-
-
-def scan_salary_in_jd_text(jd_text: Optional[str]) -> Optional[Dict[str, Any]]:
-    """Quét các câu trong JD có từ khóa lương; chỉ nhận cụm số có đơn vị tiền."""
-    if not jd_text or not str(jd_text).strip():
-        return None
-
-    lines = [line.strip() for line in re.split(r"[\n\r;]+|\.(?!\d)", str(jd_text)) if line.strip()]
-    salary_keywords = ("lương", "thu nhập", "salary", "package", "up to", "lên đến", "upto", "đãi ngộ")
-
-    for line in lines:
-        if any(kw in line.lower() for kw in salary_keywords):
-            span = find_money_span(line)
-            parsed = UniversalSalaryParser.parse_text(span) if span else {}
-            if _has_value(parsed):
-                parsed["salary_source"] = "jd"
-                parsed["extracted_line"] = line[:120]
-                return parsed
-
-    return None
-
-
-def parse_salary_cascade(
-    raw_salary_text: Optional[str],
-    title: Optional[str] = None,
-    jd_text: Optional[str] = None
-) -> Dict[str, Any]:
-    """T2e: header → tiêu đề → JD → none. Tiêu đề và JD chỉ nhận cụm có đơn vị tiền; mọi tầng qua ngưỡng 1–500 triệu/tháng."""
-    # Tương thích ngược: parse_salary_cascade(header, jd_text)
-    if jd_text is None and title and ("\n" in title or len(title) > 50 or "chúng tôi" in title.lower() or "mức thu nhập" in title.lower()):
-        jd_text = title
-        title = None
-
-    header_res = UniversalSalaryParser.parse_text(raw_salary_text)
-    if _has_value(header_res):
-        header_res["salary_source"] = "header"
-        return _apply_bounds(header_res)
-
-    span = find_money_span(title) if title else None
-    if span:
-        title_res = UniversalSalaryParser.parse_text(span)
-        if _has_value(title_res):
-            title_res["salary_source"] = "title"
-            title_res["is_negotiable"] = header_res.get("is_negotiable", False)
-            return _apply_bounds(title_res)
-
-    jd_res = scan_salary_in_jd_text(jd_text)
-    if jd_res:
-        jd_res["salary_source"] = "jd_regex"
-        jd_res["is_negotiable"] = header_res.get("is_negotiable", False)
-        jd_res["is_salary_negotiable_declared"] = True
-        return _apply_bounds(jd_res)
-
-    header_res["salary_source"] = "none"
-    header_res["is_negotiable"] = True
-    header_res["salary_suspect"] = False
-    return header_res
+def parse_salary_dict(raw_salary: Any) -> dict[str, Any]:
+    """Dictionary-returning wrapper kept for existing callers."""
+    return parse_salary(raw_salary).to_dict()

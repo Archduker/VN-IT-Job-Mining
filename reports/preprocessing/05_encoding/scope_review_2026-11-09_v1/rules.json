@@ -1,0 +1,51 @@
+{
+  "candidate_rules": [
+    {
+      "rule_id": "S01_CIVIL",
+      "pattern": "\\bcivil\\b|construction (?:site|engineering|work|quality)|thi công xây dựng|công trường|kỹ (?:sư|thuật) xây dựng|kết cấu (?:thép|bê tông)|hồ sơ (?:nghiệm thu|hoàn công)|vật liệu (?:xây dựng|thi công)"
+    },
+    {
+      "rule_id": "S02_MECHANICAL_HVAC",
+      "pattern": "thiết kế cơ khí|cơ khí chế tạo|chế tạo máy|khuôn mẫu|\\bmechanical\\b|\\bhvac\\b|hệ thống lạnh|điều hòa không khí|kỹ thuật nhiệt|sản phẩm cơ khí"
+    },
+    {
+      "rule_id": "S03_SPATIAL_CAD_BIM",
+      "pattern": "\\bbim\\b|\\bautocad\\b|\\bcad\\b|\\brevit\\b|\\barchitectural\\b|design engineer\\s*\\(architect\\)|kiến trúc sư(?! giải pháp| phần mềm| hệ thống)|cảnh quan|shop drawing|bản vẽ (?:chế tạo|lắp dựng|thi công)|booth|sân khấu|nội thất"
+    },
+    {
+      "rule_id": "S04_CNC_MANUFACTURING",
+      "pattern": "\\bcnc\\b|gia công (?:cơ khí|chi tiết|cắt)|máy (?:phay|tiện)|g-code|m-code|đường chạy dao|lập trình (?:máy|gia công)|chế tạo khuôn"
+    },
+    {
+      "rule_id": "S05_PLC_BOUNDARY",
+      "pattern": "\\bplc\\b|lập trình (?:điều khiển|hmi)|industrial automation|tự động hóa công nghiệp|biến tần|\\bscada\\b|\\bservo\\b"
+    },
+    {
+      "rule_id": "S06_TELECOM_SITE",
+      "pattern": "tower climber|site tower|antenna bracket|ran site|cột (?:ăng ten|anten)|thi công (?:trạm|cáp)|lắp đặt (?:trạm|anten)|base station|grounding (?:cable|bar)|\\b(?:BBU|RRU)\\b"
+    },
+    {
+      "rule_id": "S07_GRAPHICS_BOUNDARY",
+      "pattern": "\\bposm\\b|standee|brochure|bao bì|tem nhãn|nhận diện thương hiệu|ấn phẩm (?:quảng cáo|truyền thông|in ấn)|banner quảng cáo|\\bpackaging\\b|event décor|activation|biển hiệu"
+    }
+  ],
+  "it_counter_signals": [
+    {
+      "rule_id": "I01_SOFTWARE_ACTIVITY",
+      "pattern": "(?:phát triển|lập trình|kiểm thử).{0,45}(?:phần mềm|ứng dụng|website)|software (?:development|testing)|develop.{0,30}(?:application|software)|\\bbackend\\b|\\bfrontend\\b"
+    },
+    {
+      "rule_id": "I02_DIGITAL_INTERFACE",
+      "pattern": "thiết kế giao diện|giao diện (?:website|ứng dụng|landing)|ui/ux|user experience|user interface|wirefram|usability testing"
+    },
+    {
+      "rule_id": "I03_NETWORK_ACTIVITY",
+      "pattern": "quản trị.{0,30}(?:mạng|máy chủ)|network (?:security|administration|operation)|router|switching|cấu hình.{0,30}(?:mạng|router|firewall)"
+    },
+    {
+      "rule_id": "I04_EMBEDDED_ACTIVITY",
+      "pattern": "\\bfirmware\\b|\\bembedded\\b|vi điều khiển|\\bmicrocontroller\\b|lập trình nhúng|\\brtos\\b|board bring.up"
+    }
+  ],
+  "semantics": "candidate retrieval only; no automatic scope/family decisions"
+}

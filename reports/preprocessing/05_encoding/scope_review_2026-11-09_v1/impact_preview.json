@@ -1,0 +1,175 @@
+{
+  "status": "UNAPPROVED_RAM_ONLY_SCENARIO",
+  "ninput_p4": 5177,
+  "ncohort_proposed": 5150,
+  "nexcluded_proposed": 27,
+  "conservation_identity": "Ninput_P4 = Ncohort_proposed + Nexcluded_proposed",
+  "excluded_ids": [
+    "glints_9509fef0-e8a3-497f-9444-9c800dfc87e9",
+    "glints_d8e0e752-7e09-4f9d-b6a8-c8c3e9fed581",
+    "jobsgo_29090237384",
+    "jobsgo_29238642275",
+    "topcv_1839052",
+    "topcv_2118497",
+    "topcv_2238406",
+    "topcv_2301984",
+    "topcv_2329663",
+    "topdev_2137540",
+    "topdev_2138775",
+    "topdev_2139278",
+    "topdev_2139387",
+    "topdev_2139432",
+    "topdev_2139461",
+    "vietnamworks_2096707",
+    "vietnamworks_2097667",
+    "vietnamworks_2106020",
+    "vietnamworks_2111632",
+    "vietnamworks_2111637",
+    "vietnamworks_2111654",
+    "vietnamworks_2118647",
+    "vietnamworks_2118846",
+    "vietnamworks_2119724",
+    "vietnamworks_2120222",
+    "vietnamworks_2120681",
+    "vietnamworks_2120824"
+  ],
+  "skill_width": 230,
+  "columns_unchanged": true,
+  "source_counts": {
+    "careerviet": {
+      "before": 448,
+      "after": 448
+    },
+    "glints": {
+      "before": 271,
+      "after": 269
+    },
+    "itviec": {
+      "before": 905,
+      "after": 905
+    },
+    "jobsgo": {
+      "before": 683,
+      "after": 681
+    },
+    "topcv": {
+      "before": 1561,
+      "after": 1556
+    },
+    "topdev": {
+      "before": 227,
+      "after": 221
+    },
+    "vieclam24h": {
+      "before": 182,
+      "after": 182
+    },
+    "vietnamworks": {
+      "before": 900,
+      "after": 888
+    }
+  },
+  "skill_frequency_reductions": [
+    {
+      "canonical": "Agile/Scrum",
+      "column": "skill_agile_scrum",
+      "before": 953,
+      "after": 952,
+      "lost_jobs": 1
+    },
+    {
+      "canonical": "English",
+      "column": "skill_english",
+      "before": 315,
+      "after": 314,
+      "lost_jobs": 1
+    },
+    {
+      "canonical": "Automation Testing",
+      "column": "skill_automation_testing",
+      "before": 227,
+      "after": 226,
+      "lost_jobs": 1
+    },
+    {
+      "canonical": "Communication",
+      "column": "skill_communication",
+      "before": 165,
+      "after": 164,
+      "lost_jobs": 1
+    },
+    {
+      "canonical": "Adobe Photoshop",
+      "column": "skill_adobe_photoshop",
+      "before": 72,
+      "after": 71,
+      "lost_jobs": 1
+    },
+    {
+      "canonical": "Problem Solving",
+      "column": "skill_problem_solving",
+      "before": 66,
+      "after": 65,
+      "lost_jobs": 1
+    },
+    {
+      "canonical": "Team Management",
+      "column": "skill_team_management",
+      "before": 58,
+      "after": 57,
+      "lost_jobs": 1
+    },
+    {
+      "canonical": "Leadership",
+      "column": "skill_leadership",
+      "before": 56,
+      "after": 55,
+      "lost_jobs": 1
+    },
+    {
+      "canonical": "AutoCAD",
+      "column": "skill_autocad",
+      "before": 36,
+      "after": 18,
+      "lost_jobs": 18
+    },
+    {
+      "canonical": "Process Improvement",
+      "column": "skill_process_improvement",
+      "before": 8,
+      "after": 7,
+      "lost_jobs": 1
+    }
+  ],
+  "new_zero_columns": [],
+  "autocad_jobs": {
+    "before": 36,
+    "after": 18
+  },
+  "job_coverage": {
+    "before": {
+      "numerator": 4277,
+      "denominator": 5177
+    },
+    "after": {
+      "numerator": 4257,
+      "denominator": 5150
+    }
+  },
+  "sparsity": {
+    "before": 0.9816538031930528,
+    "after": 0.9815804136766568
+  },
+  "artifacts_requiring_recompute": [
+    "features",
+    "C",
+    "Golden",
+    "TF-IDF fit/rows/vocabulary/IDF",
+    "sidecars",
+    "dictionary/province cohort counts",
+    "manifest",
+    "cohort EDA"
+  ],
+  "canonical_artifacts_modified": false,
+  "decisions_approved": false
+}

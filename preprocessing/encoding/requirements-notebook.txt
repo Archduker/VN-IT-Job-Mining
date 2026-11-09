@@ -1,0 +1,5 @@
+# Optional notebook tooling; use with the project's Python and P5 dependencies.
+# Keep the artifact runtime's NumPy/Pandas versions; no review-environment pins here.
+nbformat==5.11.1
+nbclient==0.11.0
+nbconvert==7.17.2

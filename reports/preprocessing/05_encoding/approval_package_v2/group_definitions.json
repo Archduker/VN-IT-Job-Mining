@@ -1,0 +1,34 @@
+{
+  "status": "proposed",
+  "groups": {
+    "Programming Languages": {
+      "task_group": "Ngôn ngữ lập trình",
+      "definition": "Programming/query/scripting languages, not natural-language proficiency."
+    },
+    "Frameworks & Libraries": {
+      "task_group": "Frameworks",
+      "definition": "Application frameworks/libraries; legacy runtime/engine exceptions documented per item."
+    },
+    "Databases & Caching": {
+      "task_group": "Cơ sở dữ liệu",
+      "definition": "Database/cache engines and directly related data-system classes; excludes brokers, processing tools and general data practices."
+    },
+    "Cloud & DevOps": {
+      "task_group": "Cloud/DevOps",
+      "definition": "Cloud platforms/services, infrastructure/OS and operational tooling; delivery practices are crosswalked to methodologies."
+    },
+    "Tools, Architecture & Protocols": {
+      "task_group": "Công cụ",
+      "definition": "Named engineering/design/productivity tools and legacy architecture/protocol/notation bucket; method practices crosswalk to methodologies."
+    },
+    "Methodologies & Soft Skills": {
+      "task_group": "Kỹ năng mềm (legacy includes methodologies)",
+      "definition": "Two distinct types: hard methods/practices and behavioral soft skills; group never determines skill_type."
+    }
+  },
+  "unassigned_policy": "null is a metadata gap, not a seventh group or exclusion of a valid hard skill",
+  "group_not_job_family": true,
+  "quotas": false,
+  "metadata_never_model_features": true,
+  "legacy_limit": "Task soft-skill label and legacy methodologies bucket differ; hard methods are explicitly typed hard. Technical knowledge with no clean task bucket stays null."
+}

@@ -1,0 +1,38 @@
+{
+  "status": "PASS_REVIEW_EVIDENCE_ONLY",
+  "jobs": 5177,
+  "checked_partitions": 8,
+  "proposals": 244,
+  "selected": 230,
+  "reserves": 14,
+  "canonical_semantics_approved": false,
+  "p5_complete": false,
+  "checks": [
+    "snapshot SHA/rows/source/unique IDs",
+    "all CSVs equal recomputed job-union counts",
+    "all proposed entries observed",
+    "no alias/slug collision",
+    "manual files unchanged",
+    "all decision fields blank",
+    "original builder hash verified"
+  ],
+  "current_builder_sha256": "7d2be6da43e267f17e337d874ee21a73dd874c744547a3f6a7260570af5f6d11",
+  "original_source_note": "Archived source matches generation hash; current source only splits E702 statement",
+  "environment_note": "Python 3.14.4; Python 3.12 not validated",
+  "test_attempt_note": "test_results.xml: bad paths; pytest_validated.xml: repository hook rejects mixed test roots; pytest_review.xml and pytest_existing.xml are separate corrected runs",
+  "artifact_sha256": {
+    "all_curated_proposals.csv": "237806b1625f7f6f73c9c50cd773d8449e3cba94a06b3da2eb08cb2104642513",
+    "ambiguities_for_review.csv": "82105a5af7bcf124a527c8e905a0f7ecbf0da66fb2dd218eda663db442f89f35",
+    "mapping_proposed.json": "73e3b54e97163c9ea6e2b323da4f5d8ac9c2a4559499c7b07ae654a33310bf1f",
+    "proposal_builder_source.py.txt": "7a61874da21fc241c12428ebfbbaef9d64bea313328a89b69e72dff1878d659c",
+    "pytest_existing.xml": "93ac97df2d310c3a6646c9418ad39a63d72df89747bc779a330f0a32a50f65f1",
+    "pytest_review.xml": "0dacaff3650ce5f6cd45cd6bcf5650045ce1be3ee0c7977655134aa582c560d5",
+    "pytest_validated.xml": "8e7b2e71aeef009db0f69b53deef68273bd0ad5b069bc1bb7ac05e8710c805da",
+    "summary.json": "c64fed0bd10882493ed5e969902b37901b9b9723f26b4cdddb0c265ad17ad819",
+    "tensorflow_count_explanation.csv": "b184f02405e946935941e38a678e065a88e01844d9d4ec1b8389d25d8403a3ca",
+    "test_results.xml": "db249d022b0452df9a485c1655e4e0fedd2883f4615fad5822c3d1c324cf2b03",
+    "unresolved_observed_values.csv": "97ffd3740cecbe203cdc580910f2ab017cfe5566144c8af8a3ef5dcb0972b8fd",
+    "vocabulary_proposed.csv": "3b08ec489232ce95b61d25580abd73847cdd864b36b6e30802dfc773acdcb69f",
+    "vocabulary_reserves.csv": "0607c9c507a27c3a99da6bfed27a1fad2ee420c1ba90a1003c83bd3987c2319e"
+  }
+}

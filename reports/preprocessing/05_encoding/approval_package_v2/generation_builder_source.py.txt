@@ -1,0 +1,330 @@
+"""Deterministic scope review and strict-lookup evidence; no production writes."""
+
+import argparse
+import hashlib
+import json
+import platform
+import re
+import subprocess
+from collections import Counter
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import scipy
+from scipy import sparse
+
+from preprocessing.encoding.candidate_lookup import (
+    build_candidate_lookup,
+    encode_candidate_rows,
+    load_candidate_lookup,
+)
+from preprocessing.encoding.vocabulary_scope_v2 import (
+    DEFERRED_ALIASES,
+    ENTITY_NOTES,
+    EXTRA_RULES,
+    TO_TOOLS,
+    UNASSIGNED,
+)
+
+ROOT = Path(__file__).resolve().parents[2]
+BASE = ROOT / "reports/preprocessing/05_encoding"
+OUT = BASE / "approval_package_v2"
+CANONICAL_CHECKS = [
+    "Microsoft Azure", "Google Cloud", "Unit Testing", "Large Language Models",
+    "Natural Language Processing", "SQL Server", "Time Management", "Independent Working",
+    "Oracle", "Product Roadmapping", "Spring Boot", "Requirements Elicitation",
+]
+GROUPS = {
+    "Programming Languages": dict(task_group="Ngôn ngữ lập trình", definition="Programming/query/scripting languages, not natural-language proficiency."),
+    "Frameworks & Libraries": dict(task_group="Frameworks", definition="Application frameworks/libraries; legacy runtime/engine exceptions documented per item."),
+    "Databases & Caching": dict(task_group="Cơ sở dữ liệu", definition="Database/cache engines and directly related data-system classes; excludes brokers, processing tools and general data practices."),
+    "Cloud & DevOps": dict(task_group="Cloud/DevOps", definition="Cloud platforms/services, infrastructure/OS and operational tooling; delivery practices are crosswalked to methodologies."),
+    "Tools, Architecture & Protocols": dict(task_group="Công cụ", definition="Named engineering/design/productivity tools and legacy architecture/protocol/notation bucket; method practices crosswalk to methodologies."),
+    "Methodologies & Soft Skills": dict(task_group="Kỹ năng mềm (legacy includes methodologies)", definition="Two distinct types: hard methods/practices and behavioral soft skills; group never determines skill_type."),
+}
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def dump(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def csv(path, records):
+    pd.DataFrame(records).to_csv(path, index=False)
+
+
+def protected_hashes():
+    paths = list((BASE / "approval_package_v1").rglob("*"))
+    paths += [BASE / "review_2026-11-08" / name for name in ["candidate_generated.csv", "candidate_decisions.csv"]]
+    paths += [ROOT / name for name in [
+        "preprocessing/encoding/run.py", "preprocessing/encoding/skills_taxonomy_230.py",
+        "preprocessing/transformation/run.py", "preprocessing/normalization/run.py",
+        "preprocessing/dictionaries/skills.json", "preprocessing/dictionaries/skills_taxonomy.json",
+    ]]
+    return {str(path.relative_to(ROOT)): sha(path) for path in paths if path.is_file()}
+
+
+def snapshot():
+    folder = BASE / "snapshot_audit_2026-11-08"
+    manifest = json.loads((folder / "manifest.json").read_text())
+    frames = []
+    for entry in manifest:
+        source = entry["key"].split("/")[1]
+        path = folder / f"{source}.parquet"
+        if sha(path) != entry["sha256"]:
+            raise ValueError(f"Snapshot checksum failed: {source}")
+        frame = pd.read_parquet(path)
+        if len(frame) != entry["rows"] or set(frame.source_platform) != {source}:
+            raise ValueError(f"Snapshot counts/source failed: {source}")
+        frames.append(frame)
+    df = pd.concat(frames, ignore_index=True)
+    if len(df) != 5177 or df.job_id_global.isna().any() or not df.job_id_global.is_unique:
+        raise ValueError("Snapshot ID contract failed")
+    return df, manifest, sha(folder / "manifest.json")
+
+
+def load_scope_proposals():
+    old = pd.read_csv(BASE / "approval_package_v1/all_curated_proposals.csv", keep_default_na=False)
+    entries = []
+    for row in old.to_dict("records"):
+        entries.append(dict(canonical=row["canonical"], aliases=row["aliases"].split(" | "),
+                            old_group=row["group"], origin="v1", v1_jobs=int(row["jobs"])))
+    for name, (aliases, group) in EXTRA_RULES.items():
+        entries.append(dict(canonical=name, aliases=aliases, old_group=group,
+                            origin="new_explicit_observed_rule", v1_jobs=None))
+    for item in entries:
+        name = item["canonical"]
+        entity, reason = ENTITY_NOTES[name]  # missing per-item rationale is an error
+        deferred = DEFERRED_ALIASES.get(name, {})
+        item["aliases"] = sorted({alias for alias in item["aliases"]
+                                  if alias.casefold() != name.casefold() and alias.casefold() not in deferred})
+        item["entity_type"] = entity
+        item["reason"] = reason
+        item["skill_type"] = "soft" if entity == "soft_skill" else (
+            "unresolved" if entity in {"certification", "vendor", "document", "ambiguous", "role", "domain"} else "hard"
+        )
+        item["scope_decision"] = "exclude_proposed" if entity in {"certification", "document"} else (
+            "review" if item["skill_type"] == "unresolved" else "retain_proposed"
+        )
+        group = item["old_group"]
+        if entity == "method_practice" or entity == "soft_skill":
+            group = "Methodologies & Soft Skills"
+        if name in TO_TOOLS:
+            group = "Tools, Architecture & Protocols"
+        if name in UNASSIGNED:
+            group = None
+        item["group"] = group
+        item["group_status"] = "unassigned_crosswalk_needed" if group is None else "proposed"
+        item["status"], item["decision"] = "proposed", ""
+    return entries, old
+
+
+def evidence_context(df, entries):
+    terms = [item["canonical"] for item in entries if item["scope_decision"] != "retain_proposed"]
+    terms += ["Business Intelligence", "Adobe Illustrator", "Adobe Photoshop", "Adobe InDesign", "Adobe XD",
+              "Typography", "UI/UX", "Collaboration", "Cẩn thận", "Prototype", "ISO 27001", "PCI DSS", "OWASP"]
+    records = []
+    for term in dict.fromkeys(terms):
+        matched = df[[any(term.casefold() == value.casefold() for value in values) for values in df.skills_std]]
+        for row in matched.head(3).to_dict("records"):
+            selected = None
+            for field in ["description_clean", "requirements_clean", "raw_description_text", "raw_requirements_text"]:
+                text = row.get(field)
+                if not isinstance(text, str):
+                    continue
+                hit = re.search(re.escape(term), text, re.IGNORECASE)
+                if hit:
+                    start, end = max(0, hit.start() - 90), min(len(text), hit.end() + 170)
+                    selected = dict(field=field, excerpt=text[start:end], start=start, end=end,
+                                    context_status="literal_JD_context_found")
+                    break
+            if selected is None:
+                selected = dict(field="skills_std", excerpt=term, start=None, end=None,
+                                context_status="metadata_only_no_literal_JD_context_in_this_job")
+            records.append(dict(term=term, job_id_global=row["job_id_global"], source_platform=row["source_platform"],
+                                **selected, label_status="agent_review_evidence_not_Phat_label"))
+    return records
+
+
+def serialize_entries(entries):
+    records = []
+    for item in entries:
+        row = dict(item)
+        for key in ["aliases", "observed_source_values"]:
+            row[key] = json.dumps(row[key], ensure_ascii=False)
+        records.append(row)
+    return records
+
+
+def build():
+    if OUT.exists():
+        raise FileExistsError("Preserve existing v2 evidence; output directory already exists")
+    before = protected_hashes()
+    df, manifest, manifest_hash = snapshot()
+    entries, old = load_scope_proposals()
+    rows = df.skills_std.tolist()
+    lookup = build_candidate_lookup(entries)
+    all_encoded = encode_candidate_rows(rows, lookup)
+    source_values = sorted({value for row in rows for value in row})
+    for index, item in enumerate(entries):
+        item["jobs"] = int(all_encoded.matrix[:, index].sum())
+        item["observed_source_values"] = [v for v in source_values if lookup.owners.get(v.casefold()) == index]
+        item["frequency_exception"] = "proposed_below20_not_approved" if item["jobs"] < 20 else "not_needed"
+    # Unobserved proposals never become padding. Preserve them only in scope audit.
+    eligible = [item for item in entries if item["scope_decision"] == "retain_proposed" and item["jobs"] > 0]
+    eligible.sort(key=lambda item: (-item["jobs"], item["canonical"]))
+    selected, reserves = eligible[:230], eligible[230:260]
+    selected_lookup = build_candidate_lookup(selected)
+    encoded = encode_candidate_rows(rows, selected_lookup)
+    full_pool = encode_candidate_rows(rows, build_candidate_lookup(eligible))
+    for index, item in enumerate(selected):
+        item["index"], item["column"] = index, selected_lookup.columns[index]
+    OUT.mkdir()
+    csv(OUT / "scope_review_all_v1_and_new.csv", serialize_entries(entries))
+    csv(OUT / "vocabulary_proposed_v2.csv", serialize_entries(selected))
+    csv(OUT / "vocabulary_reserves_v2.csv", serialize_entries(reserves))
+    mapping = dict(version="p5-review-rules-v2", status="proposed_not_production", input_manifest_sha256=manifest_hash,
+                   normalization="whole_value_casefold_only", canonical_always_in_lookup=True,
+                   parent_propagation=False, expected_task_width=230, actual_proposed_width=len(selected), items=selected)
+    dump(OUT / "mapping_proposed_v2.json", mapping)
+    dump(OUT / "group_definitions.json", dict(status="proposed", groups=GROUPS,
+         unassigned_policy="null is a metadata gap, not a seventh group or exclusion of a valid hard skill",
+         group_not_job_family=True, quotas=False, metadata_never_model_features=True,
+         legacy_limit="Task soft-skill label and legacy methodologies bucket differ; hard methods are explicitly typed hard. Technical knowledge with no clean task bucket stays null."))
+    csv(OUT / "group_crosswalk.csv", [dict(canonical=item["canonical"], v1_group=item["old_group"],
+        proposed_group=item["group"], skill_type=item["skill_type"], entity_type=item["entity_type"],
+        group_status=item["group_status"], reason=item["reason"]) for item in entries])
+    csv(OUT / "certifications_separate.csv", serialize_entries([item for item in entries if item["entity_type"] == "certification"]))
+    contexts = evidence_context(df, entries)
+    csv(OUT / "context_evidence.csv", contexts)
+    ambiguous = [dict(canonical=item["canonical"], jobs=item["jobs"], entity_type=item["entity_type"],
+                      scope_decision=item["scope_decision"], reason=item["reason"], decision="",
+                      evidence_file="context_evidence.csv") for item in entries
+                 if item["scope_decision"] != "retain_proposed" or item["entity_type"] == "composite"
+                 or item["canonical"] in {"Machine Learning", "TensorFlow Serving", "Oracle", "Business Intelligence", "OWASP"}]
+    for owner, aliases in DEFERRED_ALIASES.items():
+        for alias, reason in aliases.items():
+            ids = [df.iloc[i].job_id_global for i, values in enumerate(rows) if alias in {v.casefold() for v in values}]
+            ambiguous.append(dict(canonical=owner, source_alias=alias, jobs=len(ids), entity_type="ambiguous",
+                                  scope_decision="review_alias_not_applied", reason=reason,
+                                  decision="", evidence_file="context_evidence.csv"))
+    csv(OUT / "ambiguities_for_review_v2.csv", ambiguous)
+    old_selected = pd.read_csv(BASE / "approval_package_v1/vocabulary_proposed.csv")
+    old_names, new_names = set(old_selected.canonical), {item["canonical"] for item in selected}
+    changes = []
+    for item in entries:
+        name = item["canonical"]
+        if name in old_names and name not in new_names:
+            changes.append(dict(canonical=name, action="removed_scope" if item["scope_decision"] != "retain_proposed" else "moved_to_reserve_by_rank",
+                                reason=item["reason"], jobs=item["jobs"], replacement_policy="ranked valid observed pool, not semantic substitution"))
+        if name not in old_names and name in new_names:
+            changes.append(dict(canonical=name, action="added_from_v1_reserve" if item["origin"] == "v1" else "added_observed_rule",
+                                reason=item["reason"], jobs=item["jobs"], replacement_policy="ranked valid observed pool, not semantic substitution"))
+    csv(OUT / "exclusions_and_replacements.csv", changes)
+    deltas = []
+    for name in CANONICAL_CHECKS:
+        previous = old[old.canonical.eq(name)].iloc[0]
+        aliases = {v.casefold() for v in previous.aliases.split(" | ")}
+        old_ids = {df.iloc[i].job_id_global for i, values in enumerate(rows) if {v.casefold() for v in values} & aliases}
+        new_ids = {df.iloc[i].job_id_global for i, values in enumerate(rows) if {v.casefold() for v in values} & (aliases | {name.casefold()})}
+        deltas.append(dict(canonical=name, canonical_in_v1_alias_keys=name.casefold() in aliases,
+                           alias_only_jobs=len(old_ids), canonical_plus_alias_jobs=len(new_ids),
+                           delta_jobs=len(new_ids - old_ids), added_job_ids=json.dumps(sorted(new_ids - old_ids))))
+    csv(OUT / "canonical_lookup_deltas.csv", deltas)
+    job_ids = df.job_id_global.tolist()
+    dump(OUT / "job_ids_by_canonical.json", {item["canonical"]: [job_ids[i] for i in np.flatnonzero(all_encoded.matrix[:, j])]
+                                            for j, item in enumerate(entries)})
+    csv(OUT / "job_rows.csv", [dict(row_index=i, job_id_global=value) for i, value in enumerate(job_ids)])
+    sparse.save_npz(OUT / "skill_matrix_review.npz", sparse.csr_matrix(encoded.matrix))
+    raw_pairs = sum(len({value.casefold() for value in row}) for row in rows)
+    matched_source_pairs = sum(sum(value in selected_lookup.owners for value in {v.casefold() for v in row}) for row in rows)
+    unknown = Counter(value for values in encoded.unmatched for value in values)
+    csv(OUT / "unmatched_source_values.csv", [dict(source_value_casefold=value, jobs=count,
+        status="unmatched_not_canonical_not_automatically_rejected") for value, count in sorted(unknown.items(), key=lambda pair: (-pair[1], pair[0]))])
+    frequencies = [item["jobs"] for item in selected]
+    bins = [(1, 1), (2, 4), (5, 9), (10, 19), (20, 49), (50, 99), (100, len(df))]
+    metrics = dict(jobs=len(df), eligible_observed_skills=len(eligible), selected=len(selected),
+        shortfall=max(0, 230-len(selected)), reserves=len(reserves), zero_columns=int((encoded.matrix.sum(axis=0) == 0).sum()),
+        covered_jobs=int(encoded.matrix.any(axis=1).sum()), job_coverage=float(encoded.matrix.any(axis=1).mean()),
+        selected_canonical_pairs=int(encoded.matrix.sum()), valid_curated_pool_canonical_pairs=int(full_pool.matrix.sum()),
+        canonical_pair_coverage_within_curated_valid_pool=float(encoded.matrix.sum() / full_pool.matrix.sum()),
+        source_casefold_pairs=raw_pairs, selected_matched_source_casefold_pairs=matched_source_pairs,
+        source_value_pair_coverage=matched_source_pairs/raw_pairs,
+        unmatched_source_casefold_pairs=sum(unknown.values()),
+        sparsity=1-float(encoded.matrix.mean()), below20=sum(n < 20 for n in frequencies),
+        frequency_distribution={f"{low}-{high}": sum(low <= n <= high for n in frequencies) for low, high in bins},
+        skill_types=dict(Counter(item["skill_type"] for item in selected)),
+        six_group_distribution={group: sum(item["group"] == group for item in selected) for group in GROUPS},
+        unassigned_task_group=sum(item["group"] is None for item in selected),
+        definitions=dict(job_coverage="Jobs with >=1 selected bit / all 5177 input IDs, including empty skills",
+                         source_value_pairs="Per-job distinct whole values after casefold; aliases can be separate values before canonical mapping",
+                         canonical_pairs="Per-job owner union; denominator is retained observed curated pool, not all possible canonical skills",
+                         sparsity="Zero bits / (5177 * actual selected width)",
+                         representation="Frozen P4 skills_std; exact canonical and explicit alias casefold; no JD extraction"))
+    dump(OUT / "metrics.json", metrics)
+    after = protected_hashes()
+    if before != after:
+        raise ValueError("Protected v1/manual/production files changed")
+    code_files = [Path(__file__), ROOT / "preprocessing/encoding/candidate_lookup.py", ROOT / "preprocessing/encoding/vocabulary_scope_v2.py"]
+    dump(OUT / "provenance.json", dict(input_manifest_sha256=manifest_hash, partitions=manifest,
+         protected_sha256=before, source_sha256={str(path.relative_to(ROOT)): sha(path) for path in code_files},
+         instruction_file_sha256=sha(Path("/home/phat/Downloads/Yêu cầu cho agent_04.md")),
+         head=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(), dirty_worktree=True,
+         environment=dict(python=platform.python_version(), numpy=np.__version__, pandas=pd.__version__, scipy=scipy.__version__),
+         status="proposed_not_production", automated_model_used=False, p4_or_production_modified=False))
+    validate()
+    print(json.dumps(metrics, ensure_ascii=False, indent=2))
+
+
+def validate():
+    df, _, manifest_hash = snapshot()
+    provenance = json.loads((OUT / "provenance.json").read_text())
+    if protected_hashes() != provenance["protected_sha256"]:
+        raise ValueError("Protected input changed")
+    assert manifest_hash == provenance["input_manifest_sha256"]
+    lookup = load_candidate_lookup(OUT / "mapping_proposed_v2.json")
+    encoded = encode_candidate_rows(df.skills_std, lookup)
+    saved = sparse.load_npz(OUT / "skill_matrix_review.npz")
+    np.testing.assert_array_equal(saved.toarray(), encoded.matrix)
+    assert saved.dtype == np.uint8
+    proposal = pd.read_csv(OUT / "vocabulary_proposed_v2.csv", keep_default_na=False)
+    assert proposal.canonical.tolist() == list(lookup.canonical)
+    assert proposal.jobs.tolist() == encoded.matrix.sum(axis=0).tolist()
+    assert proposal.jobs.gt(0).all() and proposal.decision.eq("").all()
+    assert proposal.skill_type.isin(["hard", "soft"]).all()
+    assert proposal.scope_decision.eq("retain_proposed").all()
+    assert proposal.status.eq("proposed").all()
+    ids = df.job_id_global.tolist()
+    assert pd.read_csv(OUT / "job_rows.csv").job_id_global.tolist() == ids
+    id_evidence = json.loads((OUT / "job_ids_by_canonical.json").read_text())
+    for index, name in enumerate(lookup.canonical):
+        assert id_evidence[name] == [ids[i] for i in np.flatnonzero(encoded.matrix[:, index])]
+    # Independently check each source value rather than trusting cached counts.
+    for _index, row in proposal.iterrows():
+        keys = {row.canonical.casefold(), *(v.casefold() for v in json.loads(row.aliases))}
+        expected_ids = [ids[i] for i, values in enumerate(df.skills_std) if keys & {v.casefold() for v in values}]
+        assert expected_ids == id_evidence[row.canonical]
+    # Every excerpt is byte-for-byte the named field slice, only in jobs carrying the tag.
+    for record in pd.read_csv(OUT / "context_evidence.csv", keep_default_na=False).to_dict("records"):
+        source = df[df.job_id_global.eq(record["job_id_global"])].iloc[0]
+        assert record["term"].casefold() in {v.casefold() for v in source.skills_std}
+        if record["field"] != "skills_std":
+            assert source[record["field"]][int(record["start"]):int(record["end"])] == record["excerpt"]
+    paths = [path for path in OUT.iterdir() if path.is_file() and path.name != "validation.json"]
+    dump(OUT / "validation.json", dict(status="PASS_REVIEW_ONLY", task_width_satisfied=len(lookup.canonical) == 230,
+         canonical_semantics_approved=False, frequency_exception_approved=False, p5_complete=False,
+         checks=["8 snapshot SHA/rows/source/IDs", "protected inputs unchanged", "saved bits equal strict loader result",
+                 "frequency CSV equals matrix and independent source/ID union", "all selected entries observed hard/soft proposals",
+                 "canonical/alias/slug collisions rejected", "blank manual decisions", "context excerpts verified against exact fields"],
+         artifact_sha256={path.name: sha(path) for path in sorted(paths)}))
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--validate", action="store_true", help="Recheck existing v2 without regenerating vocabulary")
+    args = parser.parse_args()
+    validate() if args.validate else build()

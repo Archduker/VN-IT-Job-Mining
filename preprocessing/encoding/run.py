@@ -1,40 +1,50 @@
 # -*- coding: utf-8 -*-
-"""Bước 05 Encoding (docs/spec/preprocessing/spec/P5_encoding.md).
+"""Bước 05 Encoding (docs/spec/preprocessing/spec/P5_encoding.md, SPEC-06, SPEC-07).
 
-Mã hóa bộ golden đã chuẩn hóa (04_normalization/all.parquet) thành bảng số học
-cho các mô hình Machine Learning:
+Nhiệm vụ của Phát: Mã hóa bộ dữ liệu đã chuẩn hóa thành bảng số học cho Machine Learning:
 - E1: Ordinal Seniority (0-5, -1 cho Chưa rõ).
 - E2: One-hot job_family, source_platform, employment_type.
 - E3: Multi-hot top 10 tỉnh/thành + tinh__other + is_remote + is_foreign.
-- E4: Multi-hot top K kỹ năng (count >= 20, tối đa 200) + skills__other_count.
+- E4: Multi-hot đúng 230 cột kỹ năng chuẩn (tiền tố skill_<slug>, uint8) + other_skills_count.
 - E5: Giữ cột số liên tục + thêm cột __missing (0/1).
 - E6: Binary flags (is_negotiable, is_outlier_salary).
 - E7: Đặc trưng thời gian (posted_month, days_to_deadline).
 - E8: Cờ của luật if-else (it_rule_level__2, seniority_can_kiem, job_family_can_kiem), 0/1.
-Xuất features.parquet và encoding_dictionary.json.
+
+Đồng thời tính toán ma trận đồng xuất hiện kỹ năng (Skill Co-occurrence Matrix) C = X^T @ X (230x230).
+Các output của runner hiện tại:
+- features.parquet (bảng đặc trưng số học)
+- skill_cooccurrence.parquet (ma trận vuông 230x230)
+- encoding_dictionary.json (từ điển tra cứu ánh xạ)
+TF-IDF được cung cấp bởi utility riêng; runner chưa xuất TF-IDF khi contract còn mở.
 """
 
 from __future__ import annotations
 
-import json
 import re
 from collections import Counter
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
+from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 import pandas as pd
 
 from preprocessing.common import REPO_ROOT, SOURCES
 from preprocessing.common.province import fold
-from preprocessing.common.step_report import StepReport, merge_reports
-from preprocessing.normalization.text_cleaner import JOB_FAMILIES, SENIORITY_LABELS
+from preprocessing.encoding.skills_taxonomy_230 import (
+    EXACT_SKILL_COUNT,
+    ORDERED_SKILL_COLUMNS,
+    SKILL_LOOKUP_MAP,
+    TAXONOMY_230,
+)
+from preprocessing.normalization.text_cleaner import JOB_FAMILIES
 
 STEP = "05_encoding"
 DATA_DIR = REPO_ROOT / "data"
 IN_FILE = DATA_DIR / "preprocessing" / "04_normalization" / "all.parquet"
 OUT_DIR = DATA_DIR / "preprocessing" / STEP
 OUT_FEATURES_FILE = OUT_DIR / "features.parquet"
+OUT_COOCCURRENCE_FILE = OUT_DIR / "skill_cooccurrence.parquet"
 OUT_DICT_FILE = OUT_DIR / "encoding_dictionary.json"
 
 SENIORITY_ORDER = [
@@ -49,8 +59,6 @@ SENIORITY_MAP = {lab: idx for idx, lab in enumerate(SENIORITY_ORDER)}
 SENIORITY_MAP["Chưa rõ"] = -1
 
 TOP_PROVINCES_K = 10
-SKILL_MIN_COUNT = 20
-SKILL_MAX_K = 200
 
 
 def to_col_slug(text: str) -> str:
@@ -75,14 +83,53 @@ def _normalize_employment_type(raw_val: Any) -> str:
     return "other"
 
 
+def compute_skill_cooccurrence(skill_matrix_df: pd.DataFrame) -> pd.DataFrame:
+    """Tính toán ma trận vuông đồng xuất hiện kỹ năng: C = X^T @ X.
+
+    Kích thước: đúng 230 x 230.
+    Tính chất:
+    - Đối xứng: C = C^T
+    - Đường chéo C[i, i] == sum(X[:, i])
+    - Tên cột và tên hàng khớp chính xác danh mục 230 kỹ năng chuẩn.
+    """
+    col_names = list(skill_matrix_df.columns)
+    if col_names != ORDERED_SKILL_COLUMNS or len(set(col_names)) != EXACT_SKILL_COUNT:
+        raise ValueError(
+            f"Skill matrix must have exactly {EXACT_SKILL_COUNT} columns, got {len(col_names)}"
+        )
+
+    if not skill_matrix_df.isin([0, 1]).all().all():
+        raise ValueError("Skill matrix must contain only binary values")
+    X = skill_matrix_df.to_numpy(dtype=np.int64)
+    C_mat = X.T @ X
+
+    # Kiểm tra tính chất toán học
+    if not np.array_equal(C_mat, C_mat.T):
+        raise ValueError("Co-occurrence matrix must be symmetric C == C^T")
+    if not np.array_equal(np.diag(C_mat), X.sum(axis=0)):
+        raise ValueError("Co-occurrence diagonal must equal individual skill frequencies")
+
+    return pd.DataFrame(C_mat, index=col_names, columns=col_names)
+
+
 def encode_dataset(
-    df: pd.DataFrame
-) -> Tuple[pd.DataFrame, Dict[str, Any], Dict[str, int]]:
+    df: pd.DataFrame,
+) -> tuple[pd.DataFrame, dict[str, Any], dict[str, int]]:
     """Thực hiện mã hóa toàn bộ tập dữ liệu thành ma trận số học."""
     total_rows = len(df)
-    rules_counts: Dict[str, int] = {}
-    dictionary: Dict[str, Any] = {}
-    cols: Dict[str, Any] = {}
+    rules_counts: dict[str, int] = {}
+    for field, element_type in [("skills_std", str), ("locations", dict)]:
+        for value in df[field]:
+            if value is None or (isinstance(value, float) and np.isnan(value)):
+                continue
+            if not isinstance(value, (list, tuple, np.ndarray)) or any(
+                not isinstance(v, element_type) for v in value
+            ):
+                raise ValueError(f"Malformed array in {field}")
+    if len(ORDERED_SKILL_COLUMNS) != 230 or len(set(ORDERED_SKILL_COLUMNS)) != 230:
+        raise ValueError("Vocabulary column collision or incorrect width")
+    dictionary: dict[str, Any] = {}
+    cols: dict[str, Any] = {}
 
     cols["job_id_global"] = df["job_id_global"].astype(str).values
 
@@ -99,7 +146,7 @@ def encode_dataset(
     }
 
     # -------------------------------------------------------------
-    # E2: One-hot job_family, source_platform, employment_type, it_status
+    # E2: One-hot job_family, source_platform, employment_type
     # -------------------------------------------------------------
     # job_family
     all_fams = JOB_FAMILIES + ["Khác"]
@@ -142,9 +189,9 @@ def encode_dataset(
     prov_counter = Counter()
     for locs in df["locations"]:
         if hasattr(locs, "__iter__"):
-            for l in locs:
-                if isinstance(l, dict) and l.get("tinh_key"):
-                    prov_counter[l["tinh_key"]] += 1
+            for location in locs:
+                if isinstance(location, dict) and location.get("tinh_key"):
+                    prov_counter[location["tinh_key"]] += 1
 
     top_provinces = [k for k, _ in prov_counter.most_common(TOP_PROVINCES_K)]
     top_prov_set = set(top_provinces)
@@ -158,19 +205,19 @@ def encode_dataset(
     for i, locs in enumerate(df["locations"]):
         row_has_loc = False
         if hasattr(locs, "__iter__"):
-            for l in locs:
-                if not isinstance(l, dict):
+            for location in locs:
+                if not isinstance(location, dict):
                     continue
                 row_has_loc = True
-                pk = l.get("tinh_key")
+                pk = location.get("tinh_key")
                 if pk in top_prov_set:
                     tinh_cols_data[pk][i] = 1
                 elif pk is not None:
                     tinh_other_data[i] = 1
 
-                if l.get("remote"):
+                if location.get("remote"):
                     remote_data[i] = 1
-                if l.get("ngoai_vn"):
+                if location.get("ngoai_vn"):
                     foreign_data[i] = 1
         if row_has_loc:
             e3_affected += 1
@@ -192,77 +239,91 @@ def encode_dataset(
     }
 
     # -------------------------------------------------------------
-    # E4: Top K kỹ năng (count >= 20, max 200) + skills__other_count
+    # E4: Multi-hot ĐÚNG 230 CỘT KỸ NĂNG CHUẨN (skill_<slug>) + other_skills_count
     # -------------------------------------------------------------
-    slug_counter = Counter()
-    slug_to_canonical: Dict[str, str] = {}
-
-    for sl in df["skills_std"]:
-        if hasattr(sl, "__iter__"):
-            seen_row_slugs = set()
-            for s in sl:
-                if not s:
-                    continue
-                slug = to_col_slug(s)
-                if not slug or slug in seen_row_slugs:
-                    continue
-                seen_row_slugs.add(slug)
-                slug_counter[slug] += 1
-                if slug not in slug_to_canonical or len(str(s)) > len(slug_to_canonical[slug]):
-                    slug_to_canonical[slug] = str(s).strip()
-
-    top_skill_slugs = [slug for slug, count in slug_counter.most_common(SKILL_MAX_K) if count >= SKILL_MIN_COUNT]
-    top_skill_set = set(top_skill_slugs)
-
-    skill_matrix = {slug: np.zeros(total_rows, dtype=np.uint8) for slug in top_skill_slugs}
-    other_skill_counts = np.zeros(total_rows, dtype=np.int32)
+    # Khởi tạo ma trận nhị phân 230 cột kỹ năng với kiểu np.uint8
+    skill_cols_data = {
+        col_name: np.zeros(total_rows, dtype=np.uint8) for col_name in ORDERED_SKILL_COLUMNS
+    }
+    other_skills_count = np.zeros(total_rows, dtype=np.int32)
     e4_affected = 0
 
     for i, sl in enumerate(df["skills_std"]):
+        row_matched_skills = 0
         if hasattr(sl, "__iter__"):
-            seen_in_row = set()
-            row_hits = 0
+            seen_in_row: set[str] = set()
             for s in sl:
                 if not s:
                     continue
-                slug = to_col_slug(s)
-                if not slug or slug in seen_in_row:
-                    continue
-                seen_in_row.add(slug)
-                if slug in top_skill_set:
-                    skill_matrix[slug][i] = 1
-                    row_hits += 1
-                else:
-                    other_skill_counts[i] += 1
-            if row_hits > 0 or other_skill_counts[i] > 0:
-                e4_affected += 1
+                s_str = str(s).strip()
+                s_lower = s_str.lower()
+                s_slug = to_col_slug(s_str)
 
-    for slug in top_skill_slugs:
-        cols[f"skill__{slug}"] = skill_matrix[slug]
-    cols["skills__other_count"] = other_skill_counts
+                # Tìm kiếm trong lookup map 230 kỹ năng
+                matched_slug = (
+                    SKILL_LOOKUP_MAP.get(s_lower)
+                    or SKILL_LOOKUP_MAP.get(s_slug)
+                    or SKILL_LOOKUP_MAP.get(s_str)
+                )
+
+                if matched_slug:
+                    target_col = f"skill_{matched_slug}"
+                    if target_col in skill_cols_data and target_col not in seen_in_row:
+                        seen_in_row.add(target_col)
+                        skill_cols_data[target_col][i] = 1
+                        row_matched_skills += 1
+                else:
+                    if s_slug not in seen_in_row:
+                        seen_in_row.add(s_slug)
+                        other_skills_count[i] += 1
+
+        if row_matched_skills > 0 or other_skills_count[i] > 0:
+            e4_affected += 1
+
+    # Nạp 230 cột kỹ năng theo đúng thứ tự cố định vào cols
+    for col_name in ORDERED_SKILL_COLUMNS:
+        cols[col_name] = skill_cols_data[col_name]
+
+    # Cột đếm kỹ năng ngoài top đặt tên là other_skills_count (không bắt đầu bằng skill_ để tránh FP-Growth dính nhầm)
+    cols["other_skills_count"] = other_skills_count
 
     rules_counts["E4"] = e4_affected
     dictionary["skills"] = {
         "source_column": "skills_std",
         "method": "multi-hot",
-        "threshold_min_count": SKILL_MIN_COUNT,
-        "max_k": SKILL_MAX_K,
-        "total_encoded": len(top_skill_slugs),
-        "skills_map": {slug: slug_to_canonical[slug] for slug in top_skill_slugs},
-        "other_count_column": "skills__other_count",
+        "total_encoded": EXACT_SKILL_COUNT,
+        "column_prefix": "skill_",
+        "ordered_columns": ORDERED_SKILL_COLUMNS,
+        "taxonomy": [
+            {
+                "index": entry.index,
+                "canonical": entry.canonical,
+                "slug": entry.slug,
+                "column_name": entry.column_name,
+                "group": entry.group,
+            }
+            for entry in TAXONOMY_230
+        ],
+        "other_count_column": "other_skills_count",
     }
 
     # -------------------------------------------------------------
     # E5: Cột số liên tục + missing indicators
     # -------------------------------------------------------------
     numeric_cols = [
-        "log_salary_min", "log_salary_max",
-        "exp_min_years", "exp_max_years",
-        "headcount"
+        "log_salary_min",
+        "log_salary_max",
+        "exp_min_years",
+        "exp_max_years",
+        "headcount",
     ]
     e5_affected = 0
     for col in numeric_cols:
-        s_vals = pd.to_numeric(df[col], errors="coerce")
+        s_vals = (
+            pd.to_numeric(df[col], errors="coerce")
+            if col in df.columns
+            else pd.Series(np.nan, index=df.index)
+        )
         cols[col] = s_vals.astype(np.float32).values
         cols[f"{col}__missing"] = s_vals.isna().astype(np.uint8).values
         e5_affected += int(s_vals.notna().sum())
@@ -276,16 +337,36 @@ def encode_dataset(
     # -------------------------------------------------------------
     # E6: Binary flags (is_negotiable, is_outlier_salary)
     # -------------------------------------------------------------
-    cols["is_negotiable"] = df["is_negotiable"].fillna(False).astype(bool).astype(np.uint8).values
-    cols["is_outlier_salary"] = df["is_outlier_salary"].fillna(False).astype(bool).astype(np.uint8).values
-    rules_counts["E6"] = int((cols["is_negotiable"] == 1).sum() + (cols["is_outlier_salary"] == 1).sum())
+    is_neg = (
+        df["is_negotiable"].fillna(False).astype(bool).astype(np.uint8).values
+        if "is_negotiable" in df.columns
+        else np.zeros(total_rows, dtype=np.uint8)
+    )
+    is_out = (
+        df["is_outlier_salary"].fillna(False).astype(bool).astype(np.uint8).values
+        if "is_outlier_salary" in df.columns
+        else np.zeros(total_rows, dtype=np.uint8)
+    )
+    cols["is_negotiable"] = is_neg
+    cols["is_outlier_salary"] = is_out
+    rules_counts["E6"] = int(
+        (cols["is_negotiable"] == 1).sum() + (cols["is_outlier_salary"] == 1).sum()
+    )
     dictionary["binary_flags"] = ["is_negotiable", "is_outlier_salary"]
 
     # -------------------------------------------------------------
     # E7: Đặc trưng thời gian (posted_month, days_to_deadline)
     # -------------------------------------------------------------
-    posted_dt = pd.to_datetime(df["posted_date"], errors="coerce")
-    deadline_dt = pd.to_datetime(df["deadline_date"], errors="coerce")
+    posted_dt = (
+        pd.to_datetime(df["posted_date"], errors="coerce")
+        if "posted_date" in df.columns
+        else pd.Series(pd.NaT, index=df.index)
+    )
+    deadline_dt = (
+        pd.to_datetime(df["deadline_date"], errors="coerce")
+        if "deadline_date" in df.columns
+        else pd.Series(pd.NaT, index=df.index)
+    )
 
     posted_month = posted_dt.dt.month
     cols["posted_month"] = posted_month.astype(np.float32).values
@@ -303,12 +384,18 @@ def encode_dataset(
     }
 
     # -------------------------------------------------------------
-    # E8: cờ của luật if-else (sau Clean mọi tin đều là IT nên it_status không còn thông tin; giữ tầng quyết)
+    # E8: Cờ của luật if-else
     # -------------------------------------------------------------
     flag_src = {
-        "it_rule_level__2": (pd.to_numeric(df["it_rule_level"], errors="coerce") == 2) if "it_rule_level" in df.columns else pd.Series(False, index=df.index),
-        "seniority_can_kiem": df["seniority_can_kiem"] if "seniority_can_kiem" in df.columns else pd.Series(False, index=df.index),
-        "job_family_can_kiem": df["job_family_can_kiem"] if "job_family_can_kiem" in df.columns else pd.Series(False, index=df.index),
+        "it_rule_level__2": (pd.to_numeric(df["it_rule_level"], errors="coerce") == 2)
+        if "it_rule_level" in df.columns
+        else pd.Series(False, index=df.index),
+        "seniority_can_kiem": df["seniority_can_kiem"]
+        if "seniority_can_kiem" in df.columns
+        else pd.Series(False, index=df.index),
+        "job_family_can_kiem": df["job_family_can_kiem"]
+        if "job_family_can_kiem" in df.columns
+        else pd.Series(False, index=df.index),
     }
     for col, ser in flag_src.items():
         cols[col] = ser.fillna(False).astype(bool).astype(np.uint8).values
@@ -321,70 +408,31 @@ def encode_dataset(
 
 def run(
     sources: Sequence[str] = SOURCES,
-    dry_run: bool = True
-) -> Dict[str, StepReport]:
-    report = StepReport(STEP, "_all", dry_run)
+    dry_run: bool = True,
+    *,
+    input_manifest=None,
+    vocabulary=None,
+    stopwords=None,
+    cohort_ledger=None,
+    decision_record=None,
+    output_root=None,
+    evidence_root=None,
+    history_root=None,
+) -> dict[str, Any]:
+    """Delegate explicit configurations; legacy driver calls fail before any IO."""
+    if set(sources) != set(SOURCES):
+        raise ValueError("P5 subset output contract is undefined; use all sources")
+    required = [input_manifest, vocabulary, stopwords, cohort_ledger, decision_record,
+                output_root, evidence_root, history_root]
+    if any(value is None for value in required):
+        raise ValueError(
+            "Legacy P5 writer is disabled: use python -m preprocessing.encoding.execute "
+            "with explicit --input-manifest --vocabulary --stopwords --cohort-ledger "
+            "--decision-record --output-root --evidence-root --history-root; "
+            "prototype output must not overwrite the canonical cohort bundle."
+        )
+    from preprocessing.encoding.execute import run_execution
 
-    if not IN_FILE.exists():
-        report.set_io(IN_FILE, 0, OUT_FEATURES_FILE, 0)
-        report.note(f"Không tìm thấy file đầu vào {IN_FILE}")
-        report.check_conserved()
-        report.write()
-        return {"_all": report}
-
-    df_in = pd.read_parquet(IN_FILE)
-    total_rows = len(df_in)
-    report.set_io(IN_FILE, total_rows, OUT_FEATURES_FILE, total_rows)
-
-    # Lọc nguồn nếu người dùng chỉ định một phần
-    selected_sources = set(sources)
-    if selected_sources != set(SOURCES) and len(selected_sources) < len(SOURCES):
-        df_target = df_in[df_in["source_platform"].isin(selected_sources)].copy()
-    else:
-        df_target = df_in
-
-    # Tiến hành mã hóa
-    features_df, dictionary, rules_counts = encode_dataset(df_target)
-
-    # Đăng ký rules vào báo cáo
-    report.rule("E1", "Mã hóa Ordinal cho Seniority (0-5, -1 cho Chưa rõ)", "modify", rules_counts.get("E1", 0))
-    report.rule("E2", "Mã hóa One-hot cho Job Family, Nền tảng, Hình thức", "modify", rules_counts.get("E2", 0))
-    report.rule("E3", "Mã hóa Multi-hot cho Top 10 tỉnh/thành, Remote, Ngoại quốc", "modify", rules_counts.get("E3", 0))
-    report.rule("E4", "Mã hóa Multi-hot cho Top K kỹ năng phổ biến", "modify", rules_counts.get("E4", 0))
-    report.rule("E5", "Bảo toàn số học và gắn cờ khuyết thiếu missing", "modify", rules_counts.get("E5", 0))
-    report.rule("E6", "Mã hóa nhị phân cờ lương", "modify", rules_counts.get("E6", 0))
-    report.rule("E7", "Bóc tách đặc trưng thời gian (tháng đăng, ngày tới hạn)", "modify", rules_counts.get("E7", 0))
-    report.rule("E8", "Mã hóa nhị phân cờ của luật if-else (tầng 2, nhãn mâu thuẫn)", "modify", rules_counts.get("E8", 0))
-
-    # Đo độ thưa của kỹ năng
-    skill_cols = [c for c in features_df.columns if c.startswith("skill__")]
-    if skill_cols:
-        skill_vals = features_df[skill_cols].to_numpy()
-        sparsity = float((skill_vals == 0).sum() / skill_vals.size)
-    else:
-        sparsity = 1.0
-
-    report.data["extra"] = {
-        "total_columns": features_df.shape[1],
-        "feature_types": {
-            "id_columns": ["job_id_global"],
-            "ordinal_columns": ["seniority_ord"],
-            "one_hot_columns": [c for c in features_df.columns if "__" in c and any(c.startswith(p) for p in ["job_family__", "source_platform__", "employment_type__"]) and not c.endswith("__missing")],
-            "multi_hot_columns": [c for c in features_df.columns if c.startswith("tinh__") or c.startswith("skill__") or c in ["is_remote", "is_foreign"]],
-            "continuous_numeric_columns": [c for c in features_df.columns if not c.endswith("__missing") and c in ["log_salary_min", "log_salary_max", "exp_min_years", "exp_max_years", "headcount", "posted_month", "days_to_deadline"]],
-            "missing_indicator_columns": [c for c in features_df.columns if c.endswith("__missing")],
-            "rule_flag_columns": ["it_rule_level__2", "seniority_can_kiem", "job_family_can_kiem"],
-        },
-        "skills_sparsity": round(sparsity * 100, 2),
-        "encoded_skills_count": len(skill_cols),
-    }
-
-    report.check_conserved()
-
-    if not dry_run:
-        OUT_DIR.mkdir(parents=True, exist_ok=True)
-        features_df.to_parquet(OUT_FEATURES_FILE, engine="pyarrow", index=False)
-        OUT_DICT_FILE.write_text(json.dumps(dictionary, ensure_ascii=False, indent=2), encoding="utf-8")
-
-    report.write()
-    return {"_all": report}
+    return run_execution(input_manifest, vocabulary, stopwords, output_root, evidence_root,
+                         dry_run=dry_run, publish=not dry_run, cohort_ledger=cohort_ledger,
+                         decision_record=decision_record, history_root=history_root)

@@ -1,0 +1,13 @@
+{
+  "rows": 5177,
+  "feature_columns": 291,
+  "skill_columns": 230,
+  "cooccurrence_shape": [
+    230,
+    230
+  ],
+  "exact_values_ids_order_schema_missing_equal": true,
+  "artifact_bytes_sha256_equal": true,
+  "dry_run_wrote_data": false,
+  "original_report_preserved": true
+}

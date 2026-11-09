@@ -1,0 +1,2638 @@
+{
+  "partitions": [
+    {
+      "source": "topcv",
+      "rows": 1561,
+      "schema": [
+        {
+          "name": "job_id_global",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_platform",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_job_id",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "crawled_at",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule_level",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "it_status",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "dedup_key",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "also_on",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "job_title",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_name",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_address",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_category_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_location_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "working_locations",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_deadline",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_salary_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_employment_type",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_experience_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_seniority_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_education_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_headcount",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_description_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_requirements_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "description_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "requirements_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_title_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "language",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_currency_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_period_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_negotiable",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_suspect",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "deadline_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "exp_min_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "exp_max_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "headcount",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "skills_clean",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "locations",
+          "type": "list<element: struct<dia_chi_cu_the: string, phuong_xa: string, tinh_thanh: string, raw: string, tinh_key: string, tinh_cu: null, remote: bool, ngoai_vn: bool>>",
+          "nullable": true
+        },
+        {
+          "name": "flags",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "tinh_chinh",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "seniority",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "job_family",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "company_norm",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_outlier_salary",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_min",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_max",
+          "type": "double",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "source": "topdev",
+      "rows": 227,
+      "schema": [
+        {
+          "name": "job_id_global",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_platform",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_job_id",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "crawled_at",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule_level",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "it_status",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "dedup_key",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "also_on",
+          "type": "list<element: null>",
+          "nullable": true
+        },
+        {
+          "name": "job_title",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_name",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_address",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_category_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_location_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "working_locations",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_deadline",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_salary_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_employment_type",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_experience_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_seniority_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_education_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_headcount",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_description_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_requirements_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "description_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "requirements_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_title_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "language",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_currency_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_period_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_negotiable",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_suspect",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "deadline_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "exp_min_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "exp_max_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "headcount",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "skills_clean",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "locations",
+          "type": "list<element: struct<dia_chi_cu_the: string, phuong_xa: string, tinh_thanh: string, raw: string, tinh_key: string, tinh_cu: null, remote: bool, ngoai_vn: bool>>",
+          "nullable": true
+        },
+        {
+          "name": "flags",
+          "type": "list<element: null>",
+          "nullable": true
+        },
+        {
+          "name": "tinh_chinh",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "seniority",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "job_family",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "company_norm",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_outlier_salary",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_min",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_max",
+          "type": "double",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "source": "vietnamworks",
+      "rows": 900,
+      "schema": [
+        {
+          "name": "job_id_global",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_platform",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_job_id",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "crawled_at",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule_level",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "it_status",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "dedup_key",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "also_on",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "job_title",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_name",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_address",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_category_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_location_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "working_locations",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_deadline",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_salary_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_employment_type",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_experience_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_seniority_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_education_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_headcount",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_description_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_requirements_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "description_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "requirements_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_title_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "language",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_currency_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_period_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_negotiable",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_suspect",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "deadline_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "exp_min_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "exp_max_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "headcount",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "skills_clean",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "locations",
+          "type": "list<element: struct<dia_chi_cu_the: string, phuong_xa: string, tinh_thanh: string, raw: string, tinh_key: string, tinh_cu: null, remote: bool, ngoai_vn: bool>>",
+          "nullable": true
+        },
+        {
+          "name": "flags",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "tinh_chinh",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "seniority",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "job_family",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "company_norm",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_outlier_salary",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_min",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_max",
+          "type": "double",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "source": "careerviet",
+      "rows": 448,
+      "schema": [
+        {
+          "name": "job_id_global",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_platform",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_job_id",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "crawled_at",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule_level",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "it_status",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "dedup_key",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "also_on",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "job_title",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_name",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_address",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_category_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_location_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "working_locations",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_deadline",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_salary_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_employment_type",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_experience_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_seniority_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_education_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_headcount",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_list",
+          "type": "null",
+          "nullable": true
+        },
+        {
+          "name": "benefits_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_description_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_requirements_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "description_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "requirements_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_title_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "language",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_currency_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_period_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_negotiable",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_suspect",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "deadline_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "exp_min_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "exp_max_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "headcount",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "skills_clean",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "locations",
+          "type": "list<element: struct<dia_chi_cu_the: string, phuong_xa: string, tinh_thanh: string, raw: string, tinh_key: string, tinh_cu: null, remote: bool, ngoai_vn: bool>>",
+          "nullable": true
+        },
+        {
+          "name": "flags",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "tinh_chinh",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "seniority",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "job_family",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "company_norm",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_outlier_salary",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_min",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_max",
+          "type": "double",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "source": "vieclam24h",
+      "rows": 182,
+      "schema": [
+        {
+          "name": "job_id_global",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_platform",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_job_id",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "crawled_at",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule_level",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "it_status",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "dedup_key",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "also_on",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "job_title",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_name",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_address",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_category_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_location_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "working_locations",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_deadline",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_salary_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_employment_type",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_experience_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_seniority_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_education_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_headcount",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_description_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_requirements_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "description_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "requirements_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_title_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "language",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_currency_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_period_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_negotiable",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_suspect",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "deadline_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "exp_min_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "exp_max_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "headcount",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "skills_clean",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "locations",
+          "type": "list<element: struct<dia_chi_cu_the: string, phuong_xa: string, tinh_thanh: string, raw: string, tinh_key: string, tinh_cu: null, remote: bool, ngoai_vn: bool>>",
+          "nullable": true
+        },
+        {
+          "name": "flags",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "tinh_chinh",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "seniority",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "job_family",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "company_norm",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_outlier_salary",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_min",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_max",
+          "type": "double",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "source": "itviec",
+      "rows": 905,
+      "schema": [
+        {
+          "name": "job_id_global",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_platform",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_job_id",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "crawled_at",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule_level",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "it_status",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "dedup_key",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "also_on",
+          "type": "list<element: null>",
+          "nullable": true
+        },
+        {
+          "name": "job_title",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_name",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_address",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_category_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_location_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "working_locations",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_deadline",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_salary_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_employment_type",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_experience_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_seniority_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_education_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_headcount",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_description_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_requirements_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "description_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "requirements_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_title_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "language",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_currency_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_period_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_negotiable",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_suspect",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "deadline_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "exp_min_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "exp_max_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "headcount",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "skills_clean",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "locations",
+          "type": "list<element: struct<dia_chi_cu_the: string, phuong_xa: string, tinh_thanh: string, raw: string, tinh_key: string, tinh_cu: null, remote: bool, ngoai_vn: bool>>",
+          "nullable": true
+        },
+        {
+          "name": "flags",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "tinh_chinh",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "seniority",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "job_family",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "company_norm",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_outlier_salary",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_min",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_max",
+          "type": "double",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "source": "glints",
+      "rows": 271,
+      "schema": [
+        {
+          "name": "job_id_global",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_platform",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_job_id",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "crawled_at",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule_level",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "it_status",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "dedup_key",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "also_on",
+          "type": "list<element: null>",
+          "nullable": true
+        },
+        {
+          "name": "job_title",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_name",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_address",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_category_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_location_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "working_locations",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_deadline",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_salary_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_employment_type",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_experience_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_seniority_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_education_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_headcount",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_description_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_requirements_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "description_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "requirements_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_title_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "language",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_currency_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_period_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_negotiable",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_suspect",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "deadline_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "exp_min_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "exp_max_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "headcount",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "skills_clean",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "locations",
+          "type": "list<element: struct<dia_chi_cu_the: string, phuong_xa: string, tinh_thanh: string, raw: string, tinh_key: string, tinh_cu: null, remote: bool, ngoai_vn: bool>>",
+          "nullable": true
+        },
+        {
+          "name": "flags",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "tinh_chinh",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "seniority",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "job_family",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "company_norm",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_outlier_salary",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_min",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_max",
+          "type": "double",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "source": "jobsgo",
+      "rows": 683,
+      "schema": [
+        {
+          "name": "job_id_global",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_platform",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_job_id",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "crawled_at",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "it_rule_level",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "it_status",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "dedup_key",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "also_on",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "job_title",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_name",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "company_address",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_category_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_location_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "working_locations",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_deadline",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_salary_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_employment_type",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_experience_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_seniority_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_education_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_headcount",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_list",
+          "type": "null",
+          "nullable": true
+        },
+        {
+          "name": "benefits_list",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "raw_description_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "raw_requirements_text",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "description_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "requirements_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_title_clean",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "language",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_currency_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_period_raw",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_negotiable",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "salary_suspect",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "posted_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "deadline_date",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "exp_min_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "exp_max_years",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "headcount",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "skills_clean",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "benefits_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "locations",
+          "type": "list<element: struct<dia_chi_cu_the: string, phuong_xa: string, tinh_thanh: string, raw: string, tinh_key: string, tinh_cu: null, remote: bool, ngoai_vn: bool>>",
+          "nullable": true
+        },
+        {
+          "name": "flags",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "tinh_chinh",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "skills_std",
+          "type": "list<element: string>",
+          "nullable": true
+        },
+        {
+          "name": "seniority",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "seniority_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "job_family",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_source",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "job_family_can_kiem",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "company_norm",
+          "type": "large_string",
+          "nullable": true
+        },
+        {
+          "name": "is_outlier_salary",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "salary_min_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "salary_max_vnd_capped",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_min",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "log_salary_max",
+          "type": "double",
+          "nullable": true
+        }
+      ]
+    }
+  ],
+  "schema_equal": false,
+  "rows": 5177,
+  "nulls": {
+    "job_id_global": 0,
+    "source_platform": 0,
+    "source_job_id": 0,
+    "source_url": 0,
+    "crawled_at": 0,
+    "it_rule": 0,
+    "it_rule_level": 0,
+    "it_status": 0,
+    "dedup_key": 4,
+    "also_on": 0,
+    "job_title": 1,
+    "company_name": 1,
+    "company_address": 672,
+    "raw_category_text": 365,
+    "raw_location_text": 220,
+    "working_locations": 68,
+    "raw_posted_date": 1760,
+    "raw_deadline": 276,
+    "raw_salary_text": 2050,
+    "raw_employment_type": 277,
+    "raw_experience_text": 519,
+    "raw_seniority_text": 1421,
+    "raw_education_text": 2015,
+    "raw_headcount": 2150,
+    "skills_list": 1204,
+    "benefits_list": 54,
+    "raw_description_text": 1,
+    "raw_requirements_text": 0,
+    "description_clean": 1,
+    "requirements_clean": 0,
+    "job_title_clean": 0,
+    "language": 0,
+    "salary_min_vnd": 3115,
+    "salary_max_vnd": 2899,
+    "salary_currency_raw": 0,
+    "salary_period_raw": 0,
+    "is_negotiable": 0,
+    "salary_source": 0,
+    "salary_suspect": 0,
+    "posted_date": 1760,
+    "deadline_date": 281,
+    "exp_min_years": 564,
+    "exp_max_years": 898,
+    "headcount": 2150,
+    "skills_clean": 0,
+    "benefits_std": 0,
+    "locations": 0,
+    "flags": 0,
+    "tinh_chinh": 883,
+    "skills_std": 0,
+    "seniority": 700,
+    "seniority_source": 700,
+    "seniority_can_kiem": 0,
+    "job_family": 0,
+    "job_family_source": 0,
+    "job_family_can_kiem": 0,
+    "company_norm": 0,
+    "is_outlier_salary": 0,
+    "salary_min_vnd_capped": 3115,
+    "salary_max_vnd_capped": 2899,
+    "log_salary_min": 3115,
+    "log_salary_max": 2899
+  },
+  "empty_arrays": {
+    "skills_std": 412,
+    "locations": 0
+  },
+  "anomalies": 9,
+  "snapshot_team_approval": "NO_EVIDENCE",
+  "upstream_details": {
+    "tensorflow": {
+      "skills_list": 27,
+      "raw_description_text": 8,
+      "raw_requirements_text": 81,
+      "skills_std": 4
+    },
+    "pytorch": {
+      "skills_list": 26,
+      "raw_description_text": 7,
+      "raw_requirements_text": 91,
+      "skills_std": 0
+    }
+  },
+  "metrics": {
+    "raw_top230": {
+      "jobs_with_any_candidate": 4550,
+      "jobs_denominator": 5177,
+      "job_skill_pairs_retained": 24654,
+      "pairs_denominator": 33136,
+      "sparsity": 0.9792947065196396,
+      "zero_columns": 0,
+      "status": "UNAPPROVED_EXACT_MATCH_EXPERIMENT"
+    },
+    "prototype_canonical_exact": {
+      "jobs_with_any_candidate": 3586,
+      "jobs_denominator": 5177,
+      "job_skill_pairs_retained": 13948,
+      "pairs_denominator": 33136,
+      "sparsity": 0.9882859806334036,
+      "zero_columns": 115,
+      "status": "UNAPPROVED_EXACT_MATCH_EXPERIMENT"
+    }
+  }
+}

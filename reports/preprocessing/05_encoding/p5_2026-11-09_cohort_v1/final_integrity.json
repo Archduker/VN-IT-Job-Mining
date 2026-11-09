@@ -1,0 +1,27 @@
+{
+  "status": "PASS_COHORT_HANDOFF_DATA_CHECKS",
+  "partition_counts": {
+    "include": 5104,
+    "exclude": 62,
+    "quarantine": 11
+  },
+  "included_rows": 5104,
+  "reviewed85": true,
+  "not_verified_IT_count": 5092,
+  "P2_unreviewed": 410,
+  "snapshot_and_prior_evidence_preserved": true,
+  "historical_archive_hashes_match": true,
+  "frozen_vocabulary_unchanged": true,
+  "zero_columns": 0,
+  "all_final_row_IDs_match_include": true,
+  "excluded_and_quarantine_absent": true,
+  "golden_P4_attributes_lossless": true,
+  "audit_not_recommended_predictors": true,
+  "notebook_code_cells": 6,
+  "notebook_errors": 0,
+  "html_synced": true,
+  "python312": "UNVERIFIED_NOT_FOUND_IN_CHECKED_ENVIRONMENTS",
+  "whole_repo": "6 pre-existing collection errors",
+  "scope_not_exhaustive": true,
+  "p5_complete": false
+}

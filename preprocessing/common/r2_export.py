@@ -28,8 +28,11 @@ def silver_key(step: str, source: str) -> str:
     return to_r2_key(f"staging/{source}/preprocessing/{step}.{ext}")
 
 
-GOLD_KEYS = {"features.parquet": to_r2_key("curated/preprocessing/features.parquet"),
-             "encoding_dictionary.json": to_r2_key("curated/preprocessing/encoding_dictionary.json")}
+GOLD_KEYS = {
+    "features.parquet": to_r2_key("curated/preprocessing/features.parquet"),
+    "skill_cooccurrence.parquet": to_r2_key("curated/preprocessing/skill_cooccurrence.parquet"),
+    "encoding_dictionary.json": to_r2_key("curated/preprocessing/encoding_dictionary.json"),
+}
 
 
 def _generated_at(step: str) -> Optional[str]:

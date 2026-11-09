@@ -1,0 +1,44 @@
+{
+  "graphics_vs_product": {
+    "include_option": "Include wider branding/advertising design",
+    "exclude_option": "Exclude marketing/print-only; retain explicit web/app interface roles",
+    "consequence": "Changes marketing designers' cohort and Adobe/soft-skill frequencies; never use company sector alone",
+    "recommendation": "Retain explicit interface activity proposals; ask Phát about mixed or marketing-only work"
+  },
+  "industrial_plc": {
+    "include_option": "Include PLC/HMI control programming within IT/OT",
+    "exclude_option": "Limit IT to software systems/embedded; exclude PLC-only industrial work",
+    "consequence": "PLC jobs may have real C++/Python; do not remove WMS software development with PLC integration",
+    "recommendation": "Keep software development clear cases; defer PLC-only policy to Phát"
+  },
+  "telecom_field_installation": {
+    "include_option": "Include RAN/tower installation in ICT scope",
+    "exclude_option": "Include software/network operations but exclude tower/site construction",
+    "consequence": "Affects installation/QC rows, not all telecommunications employers or network engineers",
+    "recommendation": "Phát decides physical site-installation scope; preserve both proposed IDs pending decision"
+  },
+  "embedded_vs_machining": {
+    "include_option": "Include software/firmware/embedded engineering",
+    "exclude_option": "Exclude CNC/CAM machine operation and physical mould design",
+    "consequence": "Distinguish firmware code from CNC toolpaths; no blanket hardware exclusion",
+    "recommendation": "Retain firmware developer; propose excluding clearly observed machining activities by ID"
+  },
+  "bim_vs_software": {
+    "include_option": "Include software plugin development for BIM/CAD",
+    "exclude_option": "Exclude structural drafting/modelling without software-development duties",
+    "consequence": "BIM domain alone cannot decide; source-truncated modeler remains unresolved",
+    "recommendation": "Retain actual Command/Plugin coding; obtain/decide missing role context for structural modeler"
+  },
+  "hardware_test_vs_software": {
+    "include_option": "Include equipment/hardware test engineering",
+    "exclude_option": "Limit testing to software/firmware testing",
+    "consequence": "Semiconductor equipment cycle test is not automatically software QA",
+    "recommendation": "Ask Phát to define hardware-test boundary; do not infer firmware duty from title Test Engineer"
+  },
+  "mechanical_vs_software": {
+    "include_option": "Include engineering automation where coding is a primary duty",
+    "exclude_option": "Exclude mechanical CAD/material development without such duties",
+    "consequence": "Python/VBA metadata does not establish the actual job activity, especially in truncated source",
+    "recommendation": "Keep this role unresolved until activity/scope is clear"
+  }
+}

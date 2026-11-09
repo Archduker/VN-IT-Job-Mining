@@ -1,0 +1,38 @@
+{
+  "method": "pandas.read_parquet; five warm reads; perf_counter median; no cold-cache claim",
+  "results": {
+    "data/curated/curated_flat_golden_jobs.parquet": {
+      "seconds": [
+        0.10511443199357018,
+        0.10912068499601446,
+        0.10939507900184253,
+        0.11264576199755538,
+        0.11187049000000115
+      ],
+      "median": 0.10939507900184253,
+      "bytes": 14830246
+    },
+    "data/preprocessing/05_encoding/features.parquet": {
+      "seconds": [
+        0.023473132998333313,
+        0.027554601001611445,
+        0.028800020001654048,
+        0.023362640997220296,
+        0.025231875995814335
+      ],
+      "median": 0.025231875995814335,
+      "bytes": 331995
+    },
+    "data/preprocessing/05_encoding/skill_cooccurrence.parquet": {
+      "seconds": [
+        0.01634179999382468,
+        0.015406409998831805,
+        0.016034676002163906,
+        0.01569012300024042,
+        0.016969399999652524
+      ],
+      "median": 0.016034676002163906,
+      "bytes": 181936
+    }
+  }
+}
