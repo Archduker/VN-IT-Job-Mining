@@ -24,7 +24,7 @@ details{margin:6px 0}summary{cursor:pointer;font-weight:600}
 </style></head><body><div class="wrap">
 <header><h1>Vấn đề cần chốt sau khi merge 7 nhánh</h1>
 <p class="mut">Cập nhật 09/11/2026 · nhánh <code>sprint/pipeline-delivery</code> · số liệu đo trên raw tải từ R2 về máy (chỉ đọc). Dùng để trình bày với nhóm và hỏi ý kiến.</p></header>
-<nav><a href="#tomtat">Tóm tắt</a><a href="#skills">1. Kỹ năng</a><a href="#r2">2. Cấu trúc R2</a><a href="#model">3. Model OpenJev</a><a href="#nhan">4. Nhãn tay</a><a href="#cho">5. Còn chờ</a><a href="#chuanbi">6. Chuẩn bị trình bày</a></nav>
+<nav><a href="#tomtat">Tóm tắt</a><a href="#skills">1. Kỹ năng</a><a href="#r2">2. Cấu trúc R2</a><a href="#model">3. Model OpenJev</a><a href="#nhan">4. Nhãn tay</a><a href="#cho">5. Còn chờ</a><a href="#ai">7. AI local</a><a href="#chuanbi">8. Chuẩn bị trình bày</a></nav>
 
 <h2 id="tomtat">Tóm tắt</h2>
 <div class="card"><b>Đã chốt (bạn quyết 09/11):</b>
@@ -373,6 +373,64 @@ details{margin:6px 0}summary{cursor:pointer;font-weight:600}
 <tr><td><b>F05</b> thang cấp bậc</td><td>Code còn thang 6 nhãn</td><td>Đã quyết cách làm; việc còn: sửa <code>encoding/run.py</code>, <code>normalization</code>, <code>mining</code>.</td></tr>
 <tr><td><b>Chờ Duy</b></td><td>Embedded</td><td>Giữ nhóm Embedded của Duy (71 tin, 1,4 %). Tin UI/UX (48 tin) chuyển vào Frontend: cần sửa từ điển nhóm nghề của Duy.</td></tr></table></div>
 
+<h2 id="ai">7. AI chạy local: chọn model nào, dịch, trích kỹ năng trên 4 máy</h2>
+<p class="mut">Đã đọc trang Laya (Flowtivity), tổ chức autotrust và VietAI/envit5-translation ngày 09/11/2026. Chưa chạy thử model nào vì máy này chưa cài Ollama; mọi con số tốc độ bên dưới là <b>kịch bản tính toán</b>, không phải số đo.</p>
+
+<h3>7.1 So sánh các lựa chọn cho việc phân loại IT / không IT</h3>
+<div class="card"><table><tr><th>Lựa chọn</th><th>Là gì</th><th>Điểm mạnh</th><th>Điểm yếu / chưa biết</th></tr>
+<tr><td><b>OpenJev</b> (mục 3)</td><td>27B, chọn đáp án có xác suất</td><td>Đúng loại bài toán; có xác suất để đặt ngưỡng</td><td>Rất nặng (GPU 24–80 GB); tiếng Việt chưa rõ; CC BY-NC</td></tr>
+<tr><td><b>autotrust</b></td><td>18 model; các bản phân loại: JEV-27B-v1.1, JEV-35B, JEV-35B-NVFP4 (20B), JEV-Gemma4-26B, GEV-26B-Decide</td><td>Cùng kiểu "chọn đáp án + xác suất"</td><td>Đều 20–36B (nặng hơn hoặc bằng OpenJev); trang <b>không ghi license</b>, không ghi tiếng Việt; nhiều bản build cho DGX Spark. Không có model nhỏ</td></tr>
+<tr><td><b>Laya</b> (Convai, Apache 2.0)</td><td>Họ model quyết định rất nhỏ: 421M (Anh), <b>322M đa ngôn ngữ</b>, 421M typed</td><td>Nhẹ (~0,8 GB), nhanh trên GPU (32,8 ms/câu hỏi trên T4), tự host miễn phí</td><td><b>Zero-shot chỉ 0,362</b>; tác giả tự nói cần fine-tune trên "vài nghìn ví dụ có nhãn"; bạn có 643 nhãn. Trên VPS 4 vCPU không GPU: <b>trung vị 49,4 giây/câu hỏi</b>. Tiếng Việt không được công bố. Bài viết so Laya với <i>Jev của TypeSafe AI</i>, không nhắc OpenJev, nên quan hệ giữa các "Jev" cần kiểm</td></tr>
+<tr><td><b>Qwen2.5:3b</b> qua Ollama</td><td>LLM sinh văn bản nhỏ, ~2 GB (lượng tử hóa 4-bit)</td><td>Một model làm được cả phân loại và trích kỹ năng; chạy được trên máy thường (máy này: Quadro T1000 4 GB, 12 nhân CPU, 30 GB RAM); đầu ra JSON</td><td>Chất lượng tiếng Việt ở cỡ 3B phải đo; có thể "bịa" kỹ năng; chậm hơn model phân loại chuyên dụng</td></tr></table>
+<p><b>Kết luận để nhóm thảo luận (ý kiến của mình):</b> với dữ liệu hiện có, <b>Qwen2.5:3b là lựa chọn thực tế nhất</b>: chạy được trên máy cá nhân, dùng chung cho phân loại và trích kỹ năng, đo được bằng 643 nhãn tay. OpenJev/autotrust cần phần cứng nhóm chưa có. Laya chỉ đáng thử nếu có thêm vài nghìn nhãn để fine-tune. Không có model nào trong đây được kiểm chứng trên tiếng Việt, nên <b>quyết định cuối phải dựa vào số đo trên nhãn tay</b>, không dựa vào trang giới thiệu.</p></div>
+
+<h3>7.2 "Trùng và không trùng" (khử trùng lặp)</h3>
+<div class="card"><p>Bước khử trùng của Tài đã dùng <b>Jaccard + TF-IDF cosine</b> (không cần model). Với tin tuyển dụng, đây là cách rẻ, nhanh và kiểm chứng được. Đề xuất: <b>không dùng AI cho toàn bộ</b>; chỉ đưa qua model những cặp nằm ở "vùng xám" (điểm gần ngưỡng) để hỏi "hai tin này có là một vị trí không?", rồi tự kiểm bằng nhãn tay cho ~100 cặp. Chưa có nhãn cặp trùng nên hiện chưa đo được. (Chi tiết ở PRE-14 trong KNOWN_ISSUED.)</p></div>
+
+<h3>7.3 Dịch Anh → Việt bằng VietAI/envit5-translation</h3>
+<div class="card">
+<p><b>Cần dịch bao nhiêu?</b> Đo 09/11 trên 5.077 tin IT (nhận diện "giống tiếng Anh" = ít chữ có dấu tiếng Việt, heuristic thô): <b>1.227 tin (24,2 %)</b>. Tập trung ở ITviec 604/905 (67 %) và VietnamWorks 347/800 (43 %).</p>
+<p><b>Ba nguyên tắc bạn nêu, mình hiểu như sau (hãy sửa nếu hiểu sai):</b></p>
+<table><tr><th>Nguyên tắc</th><th>Cách làm</th></tr>
+<tr><td>Theo lô (batch)</td><td>Gom nhiều đoạn một lượt (<code>padding=True</code>), sắp theo độ dài để đỡ lãng phí; lô nhỏ (ví dụ 8–16 đoạn) rồi chỉnh theo bộ nhớ</td></tr>
+<tr><td>Có giới hạn (limit)</td><td>Hai tầng: (1) độ dài: trang model dùng <code>max_length=512</code>, nên cắt JD thành đoạn/câu dưới 512 token trước khi dịch; (2) số lượng: mỗi lần chạy chỉ dịch tối đa N tin (và có thể dừng theo giờ) để chạy lại được. <i>"Limit" mình đang đoán là hai ý này.</i></td></tr>
+<tr><td>Tiền tố đầu vào</td><td>Mỗi câu phải bắt đầu bằng <code>"en: "</code>; kết quả trả về cũng có tiền tố <code>"vi: "</code> cần cắt đi</td></tr></table>
+<p><b>Lưu ý kỹ thuật:</b> pipeline <code>translation</code> của transformers không còn dùng được ở bản 5, nên dùng <code>transformers&lt;5</code> hoặc tải model trực tiếp (như ví dụ trên trang). License openrail. Số tham số và BLEU trang không nêu bằng chữ.</p>
+<div class="q"><b>Có nên dịch không?</b> Dự án từng <b>bỏ dịch JD</b> (<code>docs/issue_log.md</code> L-28) và dùng luật: kỹ năng công nghệ viết tiếng Anh (Python, Kubernetes...) vốn khớp được trong tin tiếng Anh, nên <b>dịch không cần cho trích kỹ năng cứng</b> và còn có nguy cơ làm hỏng tên công nghệ. Dịch chỉ có lợi nếu nhóm muốn từ điển/kỹ năng mềm chỉ viết bằng tiếng Việt, hoặc cần đọc JD thống nhất một ngôn ngữ. Đề xuất: <b>bỏ qua dịch, bổ sung từ điển song ngữ</b>; chỉ dịch nếu đo thấy kỹ năng mềm tiếng Anh bị bỏ sót nhiều.</div></div>
+
+<h3>7.4 Trích kỹ năng cứng và mềm bằng Qwen2.5:3b chạy trên 4 máy</h3>
+<div class="card">
+<p><b>Khối lượng (đo từ dữ liệu):</b> 5.077 tin; tổng ~10,4 triệu ký tự (tiêu đề + mô tả + yêu cầu); trung vị 1.746 ký tự/tin, p90 3.717, p99 6.848, dài nhất 12.927. Chia 4 máy ≈ <b>1.270 tin/máy</b>. Đổi ra token (ước lượng thô ~3 ký tự/token, chưa đo): trung vị ~600 token/tin, tổng khoảng 3,5 triệu token đầu vào.</p>
+<p><b>Thời gian là kịch bản, không phải số đo.</b> Mỗi máy 1.270 tin:</p>
+<table><tr><th>Nếu mỗi tin mất…</th><th class="num">5 giây</th><th class="num">15 giây</th><th class="num">30 giây</th></tr>
+<tr><td>Mỗi máy chạy khoảng</td><td class="num">1,8 giờ</td><td class="num">5,3 giờ</td><td class="num">10,6 giờ</td></tr>
+<tr><td>Một máy chạy cả 5.077 tin</td><td class="num">7 giờ</td><td class="num">21 giờ</td><td class="num">42 giờ</td></tr></table>
+<p class="mut">Số giây/tin thật phải đo ở bước 0 bên dưới, trên từng máy (CPU, GPU, RAM khác nhau). Máy nào chậm hơn thì nhận ít tin hơn.</p>
+
+<h4>Kế hoạch từng bước</h4>
+<table><tr><th>Bước</th><th>Việc</th><th>Cổng qua bước</th></tr>
+<tr><td><b>0. Chuẩn bị</b></td><td>Mỗi máy cài Ollama, <code>ollama pull qwen2.5:3b</code>; ghi <b>digest</b> của model (<code>ollama list</code>) để cả 4 máy dùng đúng một bản; cùng phiên bản prompt; <code>temperature=0</code>, cố định seed. Đo tốc độ: chạy 50 tin, ghi giây/tin, RAM/VRAM</td><td>Có bảng tốc độ 4 máy; lập tỷ lệ chia việc</td></tr>
+<tr><td><b>1. Nhãn chuẩn</b></td><td>Chọn ~50 tin ngẫu nhiên có seed cố định (đủ 8 nguồn, có cả tiếng Anh), gán tay kỹ năng cứng + mềm. Đây là bộ đo recall/precision</td><td>Nhóm chốt ngưỡng chấp nhận (ví dụ F1 ≥ ?)</td></tr>
+<tr><td><b>2. Thiết kế prompt</b></td><td>Đưa danh sách kỹ năng cho phép (từ điển hợp nhất, mục 1) và yêu cầu <b>trả JSON</b> gồm kỹ năng + <b>đoạn trích nguyên văn làm bằng chứng</b>. Cắt tin ở ~6.000 ký tự (phủ ~99 % tin)</td><td>Chạy thử 50 tin có nhãn, so với luật if-else (baseline)</td></tr>
+<tr><td><b>3. Kiểm tra chống "bịa"</b></td><td>Tự động loại kỹ năng mà đoạn trích không có trong văn bản gốc, hoặc không nằm trong từ điển; ghi lại số bị loại. Kỹ năng mới ngoài từ điển đưa vào hàng đợi duyệt tay, không tự thêm</td><td>Tỷ lệ bị loại và F1 ghi vào báo cáo</td></tr>
+<tr><td><b>4. Chạy thí điểm</b></td><td>200 tin trải đều 4 máy; so kết quả cùng một tin ở 2 máy khác nhau (để chắc chắn lặp lại được)</td><td>Hai máy cho kết quả giống nhau (hoặc lệch có giải thích)</td></tr>
+<tr><td><b>5. Chạy toàn bộ</b></td><td>Chia theo <code>job_id</code> (băm cố định, không dùng <code>hash()</code> của Python): máy k nhận các tin có băm mod 4 = k, hoặc chia theo tốc độ đo ở bước 0. Mỗi máy ghi một file <code>jsonl</code> (<code>job_id</code>, kỹ năng, bằng chứng, mã model, mã prompt). <b>Chạy lại được</b>: bỏ qua <code>job_id</code> đã xong. Giới hạn: tối đa N tin/lần, dừng khi quá thời gian</td><td>Đủ 5.077 tin; không tin nào trùng giữa hai máy</td></tr>
+<tr><td><b>6. Gộp và kiểm</b></td><td>Gộp theo <code>job_id</code> trên một máy, kiểm đủ/thiếu/trùng, tính lại độ thưa và số tin không có kỹ năng; so với baseline luật (12,2 % không có kỹ năng). Chưa đẩy lên R2; đẩy là việc riêng sau khi bạn đồng ý</td><td>Báo cáo trước/sau; nhóm duyệt</td></tr></table>
+
+<h4>Hai hướng, để nhóm chọn</h4>
+<table><tr><th></th><th>Hướng A: AI chạy toàn bộ 5.077 tin</th><th>Hướng B: luật trước, AI bổ sung</th></tr>
+<tr><td>Cách làm</td><td>Mọi tin qua Qwen</td><td>Trích bằng luật + từ điển (mục 1) trước; chỉ gửi Qwen các tin vẫn <b>không có kỹ năng</b> (620 tin với từ điển 92) và việc <b>kỹ năng mềm</b></td></tr>
+<tr><td>Khối lượng AI</td><td>5.077 tin</td><td>~620 tin cho kỹ năng cứng (+ tin cần kỹ năng mềm)</td></tr>
+<tr><td>Ưu điểm</td><td>Đơn giản về quy trình, một nguồn kết quả</td><td>Nhanh gấp nhiều lần, ít rủi ro bịa, luật đã kiểm chứng</td></tr>
+<tr><td>Rủi ro</td><td>Chậm; khó kiểm chứng từng kết quả</td><td>Kỹ năng mềm vẫn cần AI hoặc từ điển mềm riêng</td></tr></table>
+<p><b>Ý kiến của mình:</b> hướng B. Nó làm đúng một việc rẻ trước (luật), rồi dùng AI cho phần luật không với tới.</p>
+<h4>Rủi ro cần nhóm biết</h4>
+<ul><li>Chưa có số đo tiếng Việt của Qwen2.5:3b, nên chưa thể hứa độ đúng.</li>
+<li>Model nhỏ hay trả JSON sai định dạng: cần thử lại tối đa vài lần và ghi tin lỗi vào hàng đợi.</li>
+<li>Hai máy cấu hình khác nhau vẫn có thể ra kết quả hơi khác dù <code>temperature=0</code>; chia việc cố định và lưu mã model/prompt để truy vết.</li>
+<li>Nội dung tin tuyển dụng là dữ liệu công khai nhưng vẫn chạy local, không gửi ra ngoài.</li></ul>
+<div class="q"><b>Cần nhóm trả lời:</b> (a) Hướng A hay B? (b) Có ai có GPU lớn để thử OpenJev/autotrust không, hay chỉ dùng Qwen local? (c) Có dịch 24 % tin tiếng Anh không (mục 7.3)? (d) Ngưỡng chấp nhận (F1/recall) cho trích kỹ năng là bao nhiêu? (e) Bốn máy là máy nào, cấu hình ra sao? (f) "Limit" của dịch có đúng hai ý ở 7.3 không?</div></div>
+
 <h2 id="chuanbi">6. Cần làm gì để trình bày lại cho nhóm</h2>
 <h3>Phần kỹ năng</h3>
 <ol>
@@ -389,7 +447,7 @@ details{margin:6px 0}summary{cursor:pointer;font-weight:600}
 <li>Nhờ mình chạy <code>migrate_lakehouse_layout.py --prefix-map</code> chạy thử để có bảng số cụ thể.</li>
 <li>Đặt ngày xóa <code>quality/</code>, <code>integration/</code>, <code>transformation/</code>, sau khi không ai phản đối.</li>
 </ol>
-<h3>Sau buổi họp</h3>
+<h3>Phần AI local</h3><ol><li>Cho nhóm xem mục 7; chốt hướng A hoặc B và danh sách 4 máy.</li><li>Mỗi máy cài Ollama + <code>qwen2.5:3b</code> và chạy đo tốc độ 50 tin (bước 0).</li><li>Gán tay kỹ năng cho ~50 tin làm bộ đo.</li></ol><h3>Sau buổi họp</h3>
 <ul><li>Mình ghi quyết định vào <code>KNOWN_ISSUED.md</code> và <code>docs/spec/fixes/</code>, rồi viết prompt (Phase 4).</li>
 <li>Push nhánh <code>sprint/pipeline-delivery</code> khi toàn bộ đặc tả xong.</li></ul>
 <p class="mut" style="margin-top:32px">Nguồn số liệu: <code>frozen_vocabulary_v1.json</code>, <code>skills_taxonomy.json</code>, liệt kê R2 (chỉ đọc) 09/11/2026, 643 file nhãn <code>data/preprocessing/review/</code>, chạy lại <code>preprocessing.clean.run</code> trên raw tải về. Chưa kiểm: độ đúng của kỹ năng trích từ JD, nội dung 3 file <code>silver/*.json</code>, người dùng các prefix R2.</p>

@@ -243,6 +243,10 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
 **MINE-6. Ghi chú cho báo cáo đồ án:** SHAP không phải quan hệ nhân quả; `seniority_level` 0–4 gộp Thực tập và Mới tốt nghiệp (liên quan PRE-22).
 
+**PRE-29. Dùng AI local cho phân loại IT, dịch và trích kỹ năng (chưa chốt)**
+
+- Đề xuất: Qwen2.5:3b qua Ollama trên 4 máy; dịch bằng VietAI/envit5-translation (tin tiếng Anh ~24,2%); khử trùng giữ TF-IDF/Jaccard. Chưa chạy thử model nào (máy chưa cài Ollama), chưa có số đo tiếng Việt. So sánh OpenJev, autotrust, Laya và kế hoạch 6 bước trong `docs/presentation/van_de_can_chot.html` mục 7. Chờ nhóm chọn hướng A (AI toàn bộ) hay B (luật trước, AI bổ sung).
+
 ## 4. Chung
 
 **GEN-1. Khoảng 1.300 lỗi ruff tồn đọng** ở `collection/` và `tests/`. Dọn thành một lượt riêng.
