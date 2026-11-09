@@ -8,6 +8,7 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 |---|---|
 | `audit_raw_data.py [--r2]` | Báo cáo chất lượng raw và ledger ra `reports/data_audit_<ngày>.md` (không đưa vào git). Đọc kỹ cột "Ledger chậm hơn raw", "DONE thiếu raw" (đã trừ repost), "Raw ngoài ledger" |
 | `report_data_issues.py` | Thống kê vấn đề dữ liệu raw sau làm phẳng (trùng lặp, độ phủ trường, lương, ngày…), ghi `docs/spec/preprocessing/data_issues_2026-11-03.html`. `compute()` trả dict để Monitoring dùng lại |
+| `report_raw_problems_r2.py [--from-json]` | Đo vấn đề dữ liệu raw **trực tiếp trên R2** (chỉ `list_objects_v2` và `get_object`), ghi `docs/presentation/raw_problems_r2.json` và bộ slide `slides_raw_problems.html` (mục A vấn đề raw, mục B cách xử lý). `--from-json` dựng lại slide mà không gọi R2 |
 | `read_eda_diagnosis.py --source <nguồn>` | Đọc luật EDA từ notebook mà không mở notebook |
 | `view_urls.py [--r2] [--status]` | Xem ledger trên máy hoặc trên R2 |
 | `sync_cloud_lakehouse.py --status` | So máy với R2 |

@@ -1,0 +1,2326 @@
+{
+ "generated_on": "2026-11-09",
+ "bucket_read_only": true,
+ "total_jobs": 10758,
+ "sources": {
+  "topcv": {
+   "jobs": 2674,
+   "files": {
+    "snapshot": 2749,
+    "snapshot_v_lớn_hơn_1": 66
+   },
+   "fill": {
+    "job_title": 100.0,
+    "company_name": 100.0,
+    "company_address": 95.0,
+    "company_scale": 95.0,
+    "raw_category_text": 92.0,
+    "raw_location_text": 96.8,
+    "working_locations": 88.3,
+    "raw_posted_date": 0.0,
+    "raw_updated_at": 0.0,
+    "raw_deadline": 98.5,
+    "raw_working_time": 88.3,
+    "raw_salary_text": 97.5,
+    "raw_employment_type": 96.8,
+    "raw_work_mode": 96.8,
+    "raw_experience_text": 96.8,
+    "raw_seniority_text": 96.8,
+    "raw_education_text": 99.3,
+    "raw_headcount": 96.8,
+    "raw_age_text": 16.2,
+    "raw_gender_text": 0.0,
+    "skills_list": 97.7,
+    "benefits_list": 89.3,
+    "raw_description_text": 88.9,
+    "raw_requirements_text": 88.9
+   },
+   "sneaky_null": [],
+   "salary": {
+    "negotiable_pct": 39.1,
+    "usd_pct": 0.8,
+    "one_sided": 194,
+    "parsed_under_1m": 0,
+    "parsed_under_1m_examples": [],
+    "from_x_max_equals_min": 0,
+    "in_title": 119
+   },
+   "location": {
+    "distinct": 69,
+    "multi_city": 142,
+    "street_address": 45,
+    "working_locations_empty_pct": 11.7,
+    "top": [
+     [
+      "Hà Nội",
+      1454
+     ],
+     [
+      "Hồ Chí Minh",
+      743
+     ],
+     [
+      "Đà Nẵng",
+      52
+     ],
+     [
+      "Hà Nội, Hồ Chí Minh",
+      51
+     ]
+    ]
+   },
+   "experience": {
+    "distinct": 8,
+    "no_number": 348,
+    "range": 0,
+    "top": [
+     [
+      "1 năm",
+      614
+     ],
+     [
+      "2 năm",
+      589
+     ],
+     [
+      "3 năm",
+      505
+     ],
+     [
+      "Không yêu cầu",
+      348
+     ]
+    ]
+   },
+   "seniority": {
+    "distinct": 7,
+    "top": [
+     [
+      "Nhân viên",
+      1979
+     ],
+     [
+      "Trưởng nhóm",
+      307
+     ],
+     [
+      "Thực tập sinh",
+      163
+     ],
+     [
+      "Trưởng/Phó phòng",
+      71
+     ],
+     [
+      "Quản lý / Giám sát",
+      56
+     ]
+    ]
+   },
+   "skills": {
+    "empty_pct": 2.3,
+    "avg": 6.3,
+    "long_tags": 3771,
+    "top": [
+     [
+      "IT - Phần mềm",
+      1273
+     ],
+     [
+      "Thiết kế đồ họa (Graphic Design)",
+      406
+     ],
+     [
+      "B2B",
+      345
+     ],
+     [
+      "IT - Phần cứng và máy tính",
+      335
+     ],
+     [
+      "Marketing / Quảng cáo",
+      292
+     ],
+     [
+      "Kinh doanh phần mềm",
+      253
+     ]
+    ]
+   },
+   "dates": {
+    "posted_empty_pct": 100.0,
+    "posted_relative": 0,
+    "posted_older_90d": 0,
+    "deadline_empty_pct": 1.5,
+    "deadline_before_crawl": 523
+   },
+   "text": {
+    "jd_empty_pct": 11.1,
+    "jd_short": 49,
+    "html_left": 0,
+    "jd_same_head": 163
+   },
+   "title": {
+    "codes_brackets": 850,
+    "all_caps": 30,
+    "non_it_pct": 21.6,
+    "non_it_examples": [
+     {
+      "title": "Trưởng Nhóm Kinh Doanh - Sales Leader (Lương Cứng 12 – 15 Triệu/Tháng)",
+      "url": "https://www.topcv.vn/viec-lam/truong-nhom-kinh-doanh-sales-leader-luong-cung-12-15-trieu-thang/2277726.html"
+     },
+     {
+      "title": "Product Manager - Sản Phẩm Quản Lý Khách Hàng, Bán Hàng (CRM)",
+      "url": "https://www.topcv.vn/viec-lam/product-manager-san-pham-quan-ly-khach-hang-ban-hang-crm/2323114.html"
+     },
+     {
+      "title": "Nhân Viên Tư Vấn / Sales / Kinh Doanh Tại TPHCM , Thu Nhập 15 - 30 Triệu, Nghỉ T7 & CN - Tuyển Nữ",
+      "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-sales-kinh-doanh-tai-tphcm-thu-nhap-15-30-trieu-nghi-t7-cn-tuyen-nu/2327716.html"
+     },
+     {
+      "title": "Nhân Viên Hỗ Trợ Trước Bán Hàng (Pre-Sale) - Không Yêu Cầu Kinh Nghiệm, Chấp Nhận Fresher - Quận 7 (Đi Làm Ngay)",
+      "url": "https://www.topcv.vn/viec-lam/nhan-vien-ho-tro-truoc-ban-hang-pre-sale-khong-yeu-cau-kinh-nghiem-chap-nhan-fresher-quan-7-di-lam-ngay/2328719.html"
+     },
+     {
+      "title": "Sales Specialist (English Fluent - Rotating Shift)",
+      "url": "https://www.topcv.vn/viec-lam/sales-specialist-english-fluent-rotating-shift/2331298.html"
+     },
+     {
+      "title": "Trưởng Nhóm Kinh Doanh Dự Án",
+      "url": "https://www.topcv.vn/viec-lam/truong-nhom-kinh-doanh-du-an/1445804.html"
+     },
+     {
+      "title": "Chuyên Viên Kinh Doanh Khách Hàng Lớn (Account Manager)",
+      "url": "https://www.topcv.vn/viec-lam/chuyen-vien-kinh-doanh-khach-hang-lon-account-manager/1994536.html"
+     },
+     {
+      "title": "Nhân Viên Kinh Doanh Ca Đêm",
+      "url": "https://www.topcv.vn/viec-lam/nhan-vien-kinh-doanh-ca-dem/2072211.html"
+     }
+    ],
+    "non_it_by_crawl_day": {
+     "2026-10-20": [
+      62,
+      8
+     ],
+     "2026-10-22": [
+      324,
+      51
+     ],
+     "2026-10-23": [
+      727,
+      193
+     ],
+     "2026-10-24": [
+      31,
+      8
+     ],
+     "2026-10-25": [
+      776,
+      145
+     ],
+     "2026-10-26": [
+      603,
+      143
+     ],
+     "2026-11-01": [
+      149,
+      30
+     ]
+    }
+   },
+   "company": {
+    "same_company_variants": 12,
+    "example": [
+     "Công ty Cổ phần Công nghệ Sapo",
+     "Công ty cổ phần Công nghệ Sapo"
+    ]
+   },
+   "extra": {
+    "skills_tag_zero_pct": 75.1,
+    "skills_jd_zero_pct": 33.1,
+    "skills_jd_avg": 3.13,
+    "english_like_pct": 3.7,
+    "jd_under_30_words": 297,
+    "examples": {
+     "salary_neg": [
+      {
+       "job": "topcv_1037081",
+       "text": "Thoả thuận",
+       "url": "https://www.topcv.vn/viec-lam/chuyen-vien-du-lieu-lon-big-data/1037081.html"
+      },
+      {
+       "job": "topcv_1069670",
+       "text": "Thoả thuận",
+       "url": "https://www.topcv.vn/viec-lam/2d-game-artist/1069670.html"
+      }
+     ],
+     "salary_usd": [
+      {
+       "job": "topcv_1501245",
+       "text": "1,500 - 3,300 USD",
+       "url": "https://www.topcv.vn/viec-lam/ky-su-cau-noi-brse/1501245.html"
+      },
+      {
+       "job": "topcv_1614916",
+       "text": "Tới 1,500 USD",
+       "url": "https://www.topcv.vn/viec-lam/system-engineer/1614916.html"
+      }
+     ],
+     "location_multi": [
+      {
+       "job": "topcv_1333494",
+       "text": "Hà Nội, Hồ Chí Minh",
+       "url": "https://www.topcv.vn/viec-lam/chuyen-vien-kinh-doanh-phan-mem/1333494.html"
+      },
+      {
+       "job": "topcv_1401719",
+       "text": "Hà Nội, Hồ Chí Minh",
+       "url": "https://www.topcv.vn/viec-lam/chuyen-vien-kinh-doanh-phan-mem-y-te/1401719.html"
+      }
+     ],
+     "date_relative": [],
+     "html_left": [],
+     "seniority": [
+      {
+       "job": "topcv_1013348",
+       "text": "Trưởng/Phó phòng",
+       "url": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html"
+      },
+      {
+       "job": "topcv_1037081",
+       "text": "Nhân viên",
+       "url": "https://www.topcv.vn/viec-lam/chuyen-vien-du-lieu-lon-big-data/1037081.html"
+      }
+     ],
+     "no_skill": [
+      {
+       "job": "topcv_1890786",
+       "text": "2D Artist",
+       "url": "https://www.topcv.vn/viec-lam/2d-artist/1890786.html"
+      },
+      {
+       "job": "topcv_1912838",
+       "text": "Unity Developer",
+       "url": "https://www.topcv.vn/viec-lam/unity-developer/1912838.html"
+      }
+     ]
+    }
+   }
+  },
+  "topdev": {
+   "jobs": 2782,
+   "files": {
+    "snapshot": 3890,
+    "snapshot_v_lớn_hơn_1": 1105
+   },
+   "fill": {
+    "job_title": 100.0,
+    "company_name": 100.0,
+    "company_address": 0.0,
+    "company_scale": 0.0,
+    "raw_category_text": 0.0,
+    "raw_location_text": 99.9,
+    "working_locations": 100.0,
+    "raw_posted_date": 40.4,
+    "raw_updated_at": 0.0,
+    "raw_deadline": 0.0,
+    "raw_working_time": 0.0,
+    "raw_salary_text": 100.0,
+    "raw_employment_type": 0.0,
+    "raw_work_mode": 0.0,
+    "raw_experience_text": 29.8,
+    "raw_seniority_text": 0.1,
+    "raw_education_text": 0.0,
+    "raw_headcount": 0.0,
+    "raw_age_text": 0.0,
+    "raw_gender_text": 0.0,
+    "skills_list": 45.0,
+    "benefits_list": 89.1,
+    "raw_description_text": 100.0,
+    "raw_requirements_text": 99.9
+   },
+   "sneaky_null": [],
+   "salary": {
+    "negotiable_pct": 60.1,
+    "usd_pct": 1.9,
+    "one_sided": 85,
+    "parsed_under_1m": 0,
+    "parsed_under_1m_examples": [],
+    "from_x_max_equals_min": 0,
+    "in_title": 71
+   },
+   "location": {
+    "distinct": 112,
+    "multi_city": 185,
+    "street_address": 0,
+    "working_locations_empty_pct": 0.0,
+    "top": [
+     [
+      "Thành phố Hồ Chí Minh",
+      1165
+     ],
+     [
+      "Thành phố Hà Nội",
+      1058
+     ],
+     [
+      "Thành phố Hà Nội, Thành phố Hồ Chí Minh",
+      55
+     ],
+     [
+      "Tỉnh Hưng Yên",
+      54
+     ]
+    ]
+   },
+   "experience": {
+    "distinct": 14,
+    "no_number": 1,
+    "range": 0,
+    "top": [
+     [
+      "12 months",
+      297
+     ],
+     [
+      "24 months",
+      198
+     ],
+     [
+      "36 months",
+      159
+     ],
+     [
+      "60 months",
+      100
+     ]
+    ]
+   },
+   "seniority": {
+    "distinct": 2,
+    "top": [
+     [
+      "Nhân viên, Mới tốt nghiệp",
+      1
+     ],
+     [
+      "Nhân viên",
+      1
+     ]
+    ]
+   },
+   "skills": {
+    "empty_pct": 55.0,
+    "avg": 0.9,
+    "long_tags": 98,
+    "top": [
+     [
+      "Sales",
+      258
+     ],
+     [
+      "Marketing",
+      161
+     ],
+     [
+      "Business Development",
+      155
+     ],
+     [
+      "Business/Sales",
+      152
+     ],
+     [
+      "Kế toán",
+      107
+     ],
+     [
+      "Customer Service/Customer Support",
+      67
+     ]
+    ]
+   },
+   "dates": {
+    "posted_empty_pct": 59.6,
+    "posted_relative": 0,
+    "posted_older_90d": 0,
+    "deadline_empty_pct": 100.0,
+    "deadline_before_crawl": 0
+   },
+   "text": {
+    "jd_empty_pct": 0.0,
+    "jd_short": 60,
+    "html_left": 0,
+    "jd_same_head": 739
+   },
+   "title": {
+    "codes_brackets": 839,
+    "all_caps": 235,
+    "non_it_pct": 82.0,
+    "non_it_examples": [
+     {
+      "title": "Kế toán trưởng",
+      "url": "https://topdev.vn/viec-lam/ke-toan-truong-lotte-engineering-construction-co-ltd-nha-thau-thi-cong-xay-dung-moi-du-an-lotte-eco-smart-city-2133619"
+     },
+     {
+      "title": "Chuyên viên Kinh doanh kênh phân phối",
+      "url": "https://topdev.vn/viec-lam/chuyen-vien-kinh-doanh-kenh-phan-phoi-cong-ty-co-phan-ad-tek-2135255"
+     },
+     {
+      "title": "Nhân viên Kế toán Tổng hợp",
+      "url": "https://topdev.vn/viec-lam/nhan-vien-ke-toan-tong-hop-cong-ty-co-phan-ad-tek-2135256"
+     },
+     {
+      "title": "CHUYÊN VIÊN HÀNH CHÍNH-NHÂN SỰ TỔNG HỢP (TIẾNG ANH GIAO TIẾP)",
+      "url": "https://topdev.vn/viec-lam/chuyen-vien-hanh-chinh-nhan-su-tong-hop-tieng-anh-giao-tiep-cong-ty-tnhh-emct-2136086"
+     },
+     {
+      "title": "Assistant Sales Manager – Ha Noi",
+      "url": "https://topdev.vn/viec-lam/assistant-sales-manager-ha-noi-cong-ty-tnhh-autonics-vina-2136087"
+     },
+     {
+      "title": "NHÂN VIÊN KINH DOANH TOUR DU LỊCH INBOUND – GIAO TIẾP TỐT TIẾNG ANH",
+      "url": "https://topdev.vn/viec-lam/nhan-vien-kinh-doanh-tour-du-lich-inbound-giao-tiep-tot-tieng-anh-cong-ty-tnhh-du-lich-vietpower-2136172"
+     },
+     {
+      "title": "Chuyên viên Hỗ trợ bán hàng (Kỹ thuật)",
+      "url": "https://topdev.vn/viec-lam/chuyen-vien-ho-tro-ban-hang-ky-thuat-mobifone-it-2136574"
+     },
+     {
+      "title": "Nhân Viên Marketing",
+      "url": "https://topdev.vn/viec-lam/nhan-vien-marketing-cong-ty-co-phan-phat-trien-va-chuyen-giao-cong-nghe-kinh-bac-2136786"
+     }
+    ],
+    "non_it_by_crawl_day": {
+     "2026-10-20": [
+      1644,
+      1369
+     ],
+     "2026-11-01": [
+      1079,
+      867
+     ],
+     "2026-11-02": [
+      49,
+      35
+     ]
+    }
+   },
+   "company": {
+    "same_company_variants": 0,
+    "example": []
+   },
+   "extra": {
+    "skills_tag_zero_pct": 94.5,
+    "skills_jd_zero_pct": 52.4,
+    "skills_jd_avg": 0.94,
+    "english_like_pct": 7.8,
+    "jd_under_30_words": 0,
+    "examples": {
+     "salary_neg": [
+      {
+       "job": "topdev_2017763",
+       "text": "Thỏa thuận",
+       "url": "https://topdev.vn/viec-lam/lap-trinh-vien-front-end-cong-ty-cp-phan-mem-mor-2-2017763"
+      },
+      {
+       "job": "topdev_2132754",
+       "text": "Thỏa thuận",
+       "url": "https://topdev.vn/viec-lam/solution-consulting-manager-fc-manager-cong-ty-co-phan-giai-phap-oris-2132754"
+      }
+     ],
+     "salary_usd": [
+      {
+       "job": "topdev_2133822",
+       "text": "1.000 USD to 2.500 USD",
+       "url": "https://topdev.vn/viec-lam/remote-data-engineer-ai-data-platform-japan-python-salesnow-inc-2133822"
+      },
+      {
+       "job": "topdev_2137264",
+       "text": "2.500 USD to 3.200 USD",
+       "url": "https://topdev.vn/viec-lam/marketing-manager-cong-ty-co-phan-tap-doan-apec-group-2137264"
+      }
+     ],
+     "location_multi": [
+      {
+       "job": "topdev_2133353",
+       "text": "Thành phố Hà Nội, Thành phố Hồ Chí Minh",
+       "url": "https://topdev.vn/viec-lam/senior-leader-design-verification-engineer-fpt-is-2133353"
+      },
+      {
+       "job": "topdev_2135634",
+       "text": "Thành phố Hà Nội, Thành phố Hồ Chí Minh",
+       "url": "https://topdev.vn/viec-lam/mobile-app-executive-officer-aeon-finance-2135634"
+      }
+     ],
+     "date_relative": [],
+     "html_left": [],
+     "seniority": [
+      {
+       "job": "topdev_2142772",
+       "text": "Nhân viên, Mới tốt nghiệp",
+       "url": "https://topdev.vn/viec-lam/fresher-junior-php-developer-datanext-2142772"
+      },
+      {
+       "job": "topdev_2143194",
+       "text": "Nhân viên",
+       "url": "https://topdev.vn/viec-lam/sale-executive-b2b-cong-ty-co-phan-annalink-2143194"
+      }
+     ],
+     "no_skill": [
+      {
+       "job": "topdev_2134959",
+       "text": "NHÂN VIÊN THỦ TỤC HẢI QUAN - HỒ CHÍ MINH",
+       "url": "https://topdev.vn/viec-lam/nhan-vien-thu-tuc-hai-quan-ho-chi-minh-headway-2134959"
+      },
+      {
+       "job": "topdev_2136791",
+       "text": "Chuyên viên Giám sát Điều phối Dự Án Xây dựng",
+       "url": "https://topdev.vn/viec-lam/chuyen-vien-giam-sat-dieu-phoi-du-an-xay-dung-cong-ty-co-phan-cafe-katinat-2136791"
+      }
+     ]
+    }
+   }
+  },
+  "vietnamworks": {
+   "jobs": 1219,
+   "files": {
+    "snapshot": 1947,
+    "snapshot_v_lớn_hơn_1": 725
+   },
+   "fill": {
+    "job_title": 100.0,
+    "company_name": 100.0,
+    "company_address": 82.6,
+    "company_scale": 43.8,
+    "raw_category_text": 100.0,
+    "raw_location_text": 86.5,
+    "working_locations": 99.9,
+    "raw_posted_date": 100.0,
+    "raw_updated_at": 100.0,
+    "raw_deadline": 100.0,
+    "raw_working_time": 0.0,
+    "raw_salary_text": 100.0,
+    "raw_employment_type": 100.0,
+    "raw_work_mode": 0.0,
+    "raw_experience_text": 82.9,
+    "raw_seniority_text": 100.0,
+    "raw_education_text": 74.7,
+    "raw_headcount": 99.8,
+    "raw_age_text": 100.0,
+    "raw_gender_text": 100.0,
+    "skills_list": 100.0,
+    "benefits_list": 100.0,
+    "raw_description_text": 100.0,
+    "raw_requirements_text": 100.0
+   },
+   "sneaky_null": [
+    [
+     "raw_education_text = '0'",
+     309
+    ],
+    [
+     "raw_headcount = '0'",
+     2
+    ]
+   ],
+   "salary": {
+    "negotiable_pct": 71.0,
+    "usd_pct": 13.0,
+    "one_sided": 0,
+    "parsed_under_1m": 0,
+    "parsed_under_1m_examples": [],
+    "from_x_max_equals_min": 0,
+    "in_title": 44
+   },
+   "location": {
+    "distinct": 392,
+    "multi_city": 603,
+    "street_address": 463,
+    "working_locations_empty_pct": 0.1,
+    "top": [
+     [
+      "Ha Noi",
+      205
+     ],
+     [
+      "Ho Chi Minh",
+      135
+     ],
+     [
+      "Unit 512ResCo-work09, Level 5, M-Building, Lot C7B-02A, Zone A, No. 09 Street No. 08, Saigon South New Urban Area, Tan My Ward Ho Chi Minh City Vietnam",
+      31
+     ],
+     [
+      "Hanoi / HCMC",
+      23
+     ]
+    ]
+   },
+   "experience": {
+    "distinct": 11,
+    "no_number": 0,
+    "range": 0,
+    "top": [
+     [
+      "3 năm",
+      259
+     ],
+     [
+      "2 năm",
+      227
+     ],
+     [
+      "1 năm",
+      190
+     ],
+     [
+      "5 năm",
+      189
+     ]
+    ]
+   },
+   "seniority": {
+    "distinct": 4,
+    "top": [
+     [
+      "Nhân viên",
+      978
+     ],
+     [
+      "Trưởng phòng",
+      172
+     ],
+     [
+      "Mới Tốt Nghiệp",
+      46
+     ],
+     [
+      "Giám Đốc và Cấp Cao Hơn",
+      23
+     ]
+    ]
+   },
+   "skills": {
+    "empty_pct": 0.0,
+    "avg": 4.8,
+    "long_tags": 266,
+    "top": [
+     [
+      "PYTHON",
+      56
+     ],
+     [
+      "Sql",
+      34
+     ],
+     [
+      "Technical Support",
+      33
+     ],
+     [
+      "SQL",
+      30
+     ],
+     [
+      "Phân Tích Nghiệp Vụ",
+      29
+     ],
+     [
+      "Phân Tích Dữ Liệu",
+      29
+     ]
+    ]
+   },
+   "dates": {
+    "posted_empty_pct": 0.0,
+    "posted_relative": 0,
+    "posted_older_90d": 8,
+    "deadline_empty_pct": 0.0,
+    "deadline_before_crawl": 0
+   },
+   "text": {
+    "jd_empty_pct": 0.0,
+    "jd_short": 21,
+    "html_left": 8,
+    "jd_same_head": 137
+   },
+   "title": {
+    "codes_brackets": 528,
+    "all_caps": 3,
+    "non_it_pct": 23.3,
+    "non_it_examples": [
+     {
+      "title": "Chuyên Viên Cao Cấp Phân Tích Kinh Doanh, Phòng Kế Hoạch và Quản Lý Hiệu Quả Kinh Doanh, Khối Khách Hàng Cá Nhân",
+      "url": "https://www.vietnamworks.com/chuyen-vien-cao-cap-phan-tich-kinh-doanh-phong-ke-hoach-va-quan-ly-hieu-qua-kinh-doanh-khoi-khach-hang-ca-nhan-2091750-jv"
+     },
+     {
+      "title": "Chuyên Gia Quản Lý Hiệu Quả Kinh Doanh ( Tham Gia Dự Án Chuyên Trách), Phòng Kế Hoạch và Quản Lý Hiệu Quả Kinh Doanh, Trung Tâm Hỗ Trợ Kinh Doanh, Khối Khách Hàng Cá Nhân",
+      "url": "https://www.vietnamworks.com/chuyen-gia-quan-ly-hieu-qua-kinh-doanh-tham-gia-du-an-chuyen-trach-phong-ke-hoach-va-quan-ly-hieu-qua-kinh-doanh-trung-tam-ho-tro-kinh-doanh-khoi-khach-hang-ca-nhan-2094801-jv"
+     },
+     {
+      "title": "Nhân Viên Kinh Doanh Dự Án ICT (Nghỉ Thứ 7, Chủ Nhật | Đi Làm Ngay)",
+      "url": "https://www.vietnamworks.com/nhan-vien-kinh-doanh-du-an-ict-nghi-thu-7-chu-nhat-or-dji-lam-ngay-2097327-jv"
+     },
+     {
+      "title": "Senior Sales Project Management Specialist",
+      "url": "https://www.vietnamworks.com/senior-sales-project-management-specialist-2098110-jv"
+     },
+     {
+      "title": "Nhân Viên Kinh Doanh",
+      "url": "https://www.vietnamworks.com/nhan-vien-kinh-doanh-2101573-jv"
+     },
+     {
+      "title": "Senior Sales Staff (HCM) - Urgent!!!",
+      "url": "https://www.vietnamworks.com/senior-sales-staff-hcm-urgent-2104608-jv"
+     },
+     {
+      "title": "Trợ Lý Kinh Doanh Tổng Giám Đốc",
+      "url": "https://www.vietnamworks.com/tro-ly-kinh-doanh-tong-giam-doc-1789954715496624099-2109291-jv"
+     },
+     {
+      "title": "Chuyên Gia Quản Lý Hiệu Quả Kinh Doanh, Phòng Kế Hoạch và Quản Lý Hiệu Quả Kinh Doanh, Khối Khách Hàng Cá Nhân ( Tham Gia Dự Án DWH)",
+      "url": "https://www.vietnamworks.com/chuyen-gia-quan-ly-hieu-qua-kinh-doanh-phong-ke-hoach-va-quan-ly-hieu-qua-kinh-doanh-khoi-khach-hang-ca-nhan-tham-gia-du-an-dwh-1789959161486266646-2109326-jv"
+     }
+    ],
+    "non_it_by_crawl_day": {
+     "2026-10-20": [
+      438,
+      88
+     ],
+     "2026-11-01": [
+      778,
+      195
+     ]
+    }
+   },
+   "company": {
+    "same_company_variants": 16,
+    "example": [
+     "Công Ty TNHH Công Nghệ Thông Minh ICOMTECK",
+     "Công Ty TNHH Công Nghệ Thông Minh Icomteck"
+    ]
+   },
+   "extra": {
+    "skills_tag_zero_pct": 56.4,
+    "skills_jd_zero_pct": 20.6,
+    "skills_jd_avg": 2.9,
+    "english_like_pct": 46.1,
+    "jd_under_30_words": 1,
+    "examples": {
+     "salary_neg": [
+      {
+       "job": "vietnamworks_2085748",
+       "text": "Thương lượng",
+       "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
+      },
+      {
+       "job": "vietnamworks_2091750",
+       "text": "Thương lượng",
+       "url": "https://www.vietnamworks.com/chuyen-vien-cao-cap-phan-tich-kinh-doanh-phong-ke-hoach-va-quan-ly-hieu-qua-kinh-doanh-khoi-khach-hang-ca-nhan-2091750-jv"
+      }
+     ],
+     "salary_usd": [
+      {
+       "job": "vietnamworks_2025655",
+       "text": "7000000 - 9000000 USD",
+       "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
+      },
+      {
+       "job": "vietnamworks_2094563",
+       "text": "350 - 500 USD",
+       "url": "https://www.vietnamworks.com/nhan-vien-mua-hang-quoc-te-di-lam-ngay-2094563-jv"
+      }
+     ],
+     "location_multi": [
+      {
+       "job": "vietnamworks_2025655",
+       "text": "Tòa nhà Phương Nam, 219 Quốc lộ 13, Phường 26, Quận Bình Thạnh",
+       "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
+      },
+      {
+       "job": "vietnamworks_2094849",
+       "text": "Ho Chi Minh, Ha Noi, Da Nang",
+       "url": "https://www.vietnamworks.com/sap-fico-functional-consultant--2094849-jv"
+      }
+     ],
+     "date_relative": [],
+     "html_left": [
+      {
+       "job": "vietnamworks_2101234",
+       "text": "About the role:\nThis is a once-in-a-career opportunity to join Bosch Digital’s Global Product Team at a defini",
+       "url": "https://www.vietnamworks.com/senior-software-project-manager-cum-agile-team-coach-2101234-jv"
+      },
+      {
+       "job": "vietnamworks_2111343",
+       "text": "III. MÔ TẢ CÔNG VIỆC\nỨng viên đảm nhận vị trí này sẽ trực tiếp phụ trách toàn bộ quy trình phát triển phần cứn",
+       "url": "https://www.vietnamworks.com/hardware-development-engineer-fpga-asic-2111343-jv"
+      }
+     ],
+     "seniority": [
+      {
+       "job": "vietnamworks_1811606",
+       "text": "Nhân viên",
+       "url": "https://www.vietnamworks.com/sales-engineer-1790752331072092706-1811606-jv"
+      },
+      {
+       "job": "vietnamworks_2025655",
+       "text": "Mới Tốt Nghiệp",
+       "url": "https://www.vietnamworks.com/junior-iso-consultant-1791534347020006155-2025655-jv"
+      }
+     ],
+     "no_skill": []
+    }
+   }
+  },
+  "careerviet": {
+   "jobs": 642,
+   "files": {
+    "snapshot": 660,
+    "snapshot_v_lớn_hơn_1": 18
+   },
+   "fill": {
+    "job_title": 99.8,
+    "company_name": 100.0,
+    "company_address": 65.7,
+    "company_scale": 0.0,
+    "raw_category_text": 97.8,
+    "raw_location_text": 97.8,
+    "working_locations": 98.6,
+    "raw_posted_date": 97.8,
+    "raw_updated_at": 97.8,
+    "raw_deadline": 97.8,
+    "raw_working_time": 0.0,
+    "raw_salary_text": 97.8,
+    "raw_employment_type": 97.8,
+    "raw_work_mode": 0.0,
+    "raw_experience_text": 88.5,
+    "raw_seniority_text": 97.8,
+    "raw_education_text": 0.0,
+    "raw_headcount": 0.0,
+    "raw_age_text": 0.0,
+    "raw_gender_text": 0.0,
+    "skills_list": 0.0,
+    "benefits_list": 100.0,
+    "raw_description_text": 100.0,
+    "raw_requirements_text": 100.0
+   },
+   "sneaky_null": [],
+   "salary": {
+    "negotiable_pct": 64.2,
+    "usd_pct": 0.9,
+    "one_sided": 15,
+    "parsed_under_1m": 0,
+    "parsed_under_1m_examples": [],
+    "from_x_max_equals_min": 0,
+    "in_title": 1
+   },
+   "location": {
+    "distinct": 38,
+    "multi_city": 39,
+    "street_address": 0,
+    "working_locations_empty_pct": 1.4,
+    "top": [
+     [
+      "Hà Nội",
+      336
+     ],
+     [
+      "Hồ Chí Minh",
+      192
+     ],
+     [
+      "Bình Dương",
+      13
+     ],
+     [
+      "Hà Nội, Hồ Chí Minh",
+      12
+     ]
+    ]
+   },
+   "experience": {
+    "distinct": 55,
+    "no_number": 15,
+    "range": 351,
+    "top": [
+     [
+      "3 - 5 Năm",
+      76
+     ],
+     [
+      "Trên 3 Năm",
+      53
+     ],
+     [
+      "Trên 2 Năm",
+      47
+     ],
+     [
+      "2 - 3 Năm",
+      47
+     ]
+    ]
+   },
+   "seniority": {
+    "distinct": 6,
+    "top": [
+     [
+      "Nhân viên",
+      521
+     ],
+     [
+      "Trưởng nhóm / Giám sát",
+      44
+     ],
+     [
+      "Quản lý",
+      39
+     ],
+     [
+      "Sinh viên/ Thực tập sinh",
+      14
+     ],
+     [
+      "Giám đốc",
+      6
+     ]
+    ]
+   },
+   "skills": {
+    "empty_pct": 100.0,
+    "avg": 0.0,
+    "long_tags": 0,
+    "top": []
+   },
+   "dates": {
+    "posted_empty_pct": 2.2,
+    "posted_relative": 0,
+    "posted_older_90d": 0,
+    "deadline_empty_pct": 2.2,
+    "deadline_before_crawl": 42
+   },
+   "text": {
+    "jd_empty_pct": 0.0,
+    "jd_short": 1,
+    "html_left": 0,
+    "jd_same_head": 61
+   },
+   "title": {
+    "codes_brackets": 238,
+    "all_caps": 51,
+    "non_it_pct": 23.8,
+    "non_it_examples": [
+     {
+      "title": "Oversea Sales Logistics",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/oversea-sales-logistics.35C81C24.html"
+     },
+     {
+      "title": "Sales Logistics",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/sales-logistics.35C81C25.html"
+     },
+     {
+      "title": "Nhân Viên Kinh Doanh (B2B)",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-kinh-doanh-b2b.35C81FF9.html"
+     },
+     {
+      "title": "Giáo viên Tin học (THCS - THPT) - Pathway School",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/giao-vien-tin-hoc-thcs-thpt-pathway-school.35C820A5.html"
+     },
+     {
+      "title": "Nhân Viên Kinh Doanh",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-kinh-doanh.35C82E27.html"
+     },
+     {
+      "title": "Chuyên gia Đối tác nhân sự (HRBP) phụ trách Khối Chuyển đổi số",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-gia-doi-tac-nhan-su-hrbp-phu-trach-khoi-chuyen-doi-so.35C830E3.html"
+     },
+     {
+      "title": "Chuyên viên Phân tích nghiệp vụ Tài chính kế toán",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phan-tich-nghiep-vu-tai-chinh-ke-toan.35C847FF.html"
+     },
+     {
+      "title": "Trưởng phòng Điều hành kinh doanh",
+      "url": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-dieu-hanh-kinh-doanh.35C8598A.html"
+     }
+    ],
+    "non_it_by_crawl_day": {
+     "2026-10-20": [
+      581,
+      137
+     ],
+     "2026-11-01": [
+      59,
+      16
+     ]
+    }
+   },
+   "company": {
+    "same_company_variants": 0,
+    "example": []
+   },
+   "extra": {
+    "skills_tag_zero_pct": 100.0,
+    "skills_jd_zero_pct": 11.2,
+    "skills_jd_avg": 4.37,
+    "english_like_pct": 9.7,
+    "jd_under_30_words": 0,
+    "examples": {
+     "salary_neg": [
+      {
+       "job": "careerviet_35C3B2DA",
+       "text": "Cạnh tranh",
+       "url": "https://careerviet.vn/vi/tim-viec-lam/technical-specialist.35C3B2DA.html"
+      },
+      {
+       "job": "careerviet_35C7AC66",
+       "text": "Cạnh tranh",
+       "url": "https://careerviet.vn/vi/tim-viec-lam/ats-software-development-engineer.35C7AC66.html"
+      }
+     ],
+     "salary_usd": [
+      {
+       "job": "careerviet_35C87659",
+       "text": "Lên đến 800 USD",
+       "url": "https://careerviet.vn/vi/tim-viec-lam/operation-supervisor.35C87659.html"
+      },
+      {
+       "job": "careerviet_35C88A74",
+       "text": "100 - 150 USD",
+       "url": "https://careerviet.vn/vi/tim-viec-lam/devops-internship-remote.35C88A74.html"
+      }
+     ],
+     "location_multi": [
+      {
+       "job": "careerviet_35C81300",
+       "text": "Bà Rịa - Vũng Tàu, Hồ Chí Minh, Đồng Nai",
+       "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-hse.35C81300.html"
+      },
+      {
+       "job": "careerviet_35C8134B",
+       "text": "Bà Rịa - Vũng Tàu, Hồ Chí Minh, Đồng Nai",
+       "url": "https://careerviet.vn/vi/tim-viec-lam/legal-and-contract-specialist.35C8134B.html"
+      }
+     ],
+     "date_relative": [],
+     "html_left": [],
+     "seniority": [
+      {
+       "job": "careerviet_35C32FB4",
+       "text": "Nhân viên",
+       "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+      },
+      {
+       "job": "careerviet_35C3B2DA",
+       "text": "Nhân viên",
+       "url": "https://careerviet.vn/vi/tim-viec-lam/technical-specialist.35C3B2DA.html"
+      }
+     ],
+     "no_skill": [
+      {
+       "job": "careerviet_35C32FB4",
+       "text": "Kỹ Sư Điện Lập Trình PLC HMI",
+       "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+      },
+      {
+       "job": "careerviet_35C3B2DA",
+       "text": "Technical Specialist",
+       "url": "https://careerviet.vn/vi/tim-viec-lam/technical-specialist.35C3B2DA.html"
+      }
+     ]
+    }
+   }
+  },
+  "vieclam24h": {
+   "jobs": 660,
+   "files": {
+    "snapshot": 660,
+    "snapshot_v_lớn_hơn_1": 3,
+    "file_batch": 1,
+    "tin_trong_batch": 616
+   },
+   "fill": {
+    "job_title": 100.0,
+    "company_name": 100.0,
+    "company_address": 100.0,
+    "company_scale": 0.0,
+    "raw_category_text": 100.0,
+    "raw_location_text": 100.0,
+    "working_locations": 100.0,
+    "raw_posted_date": 100.0,
+    "raw_updated_at": 0.0,
+    "raw_deadline": 100.0,
+    "raw_working_time": 3.5,
+    "raw_salary_text": 100.0,
+    "raw_employment_type": 100.0,
+    "raw_work_mode": 0.0,
+    "raw_experience_text": 100.0,
+    "raw_seniority_text": 100.0,
+    "raw_education_text": 0.0,
+    "raw_headcount": 100.0,
+    "raw_age_text": 0.0,
+    "raw_gender_text": 0.0,
+    "skills_list": 100.0,
+    "benefits_list": 99.5,
+    "raw_description_text": 100.0,
+    "raw_requirements_text": 100.0
+   },
+   "sneaky_null": [],
+   "salary": {
+    "negotiable_pct": 4.7,
+    "usd_pct": 0.0,
+    "one_sided": 0,
+    "parsed_under_1m": 0,
+    "parsed_under_1m_examples": [],
+    "from_x_max_equals_min": 0,
+    "in_title": 77
+   },
+   "location": {
+    "distinct": 58,
+    "multi_city": 45,
+    "street_address": 0,
+    "working_locations_empty_pct": 0.0,
+    "top": [
+     [
+      "TP.HCM",
+      273
+     ],
+     [
+      "Hà Nội",
+      184
+     ],
+     [
+      "Đà Nẵng",
+      31
+     ],
+     [
+      "Tây Ninh",
+      16
+     ]
+    ]
+   },
+   "experience": {
+    "distinct": 8,
+    "no_number": 226,
+    "range": 0,
+    "top": [
+     [
+      "Chưa có kinh nghiệm",
+      226
+     ],
+     [
+      "1 năm",
+      181
+     ],
+     [
+      "Dưới 1 năm",
+      127
+     ],
+     [
+      "2 năm",
+      76
+     ]
+    ]
+   },
+   "seniority": {
+    "distinct": 6,
+    "top": [
+     [
+      "Nhân viên",
+      596
+     ],
+     [
+      "Cộng tác viên",
+      21
+     ],
+     [
+      "Trưởng phòng",
+      16
+     ],
+     [
+      "Chuyên gia",
+      14
+     ],
+     [
+      "Trưởng nhóm",
+      12
+     ]
+    ]
+   },
+   "skills": {
+    "empty_pct": 0.0,
+    "avg": 11.7,
+    "long_tags": 3398,
+    "top": [
+     [
+      "Công Ty Cổ Phần Viễn ...",
+      172
+     ],
+     [
+      "IT Phần cứng - Mạng",
+      151
+     ],
+     [
+      "Bán hàng - Kinh doanh",
+      135
+     ],
+     [
+      "nhân viên kỹ thuật",
+      107
+     ],
+     [
+      "nhân viên kinh doanh",
+      92
+     ],
+     [
+      "IT Phần mềm",
+      89
+     ]
+    ]
+   },
+   "dates": {
+    "posted_empty_pct": 0.0,
+    "posted_relative": 0,
+    "posted_older_90d": 1,
+    "deadline_empty_pct": 0.0,
+    "deadline_before_crawl": 4
+   },
+   "text": {
+    "jd_empty_pct": 0.0,
+    "jd_short": 20,
+    "html_left": 0,
+    "jd_same_head": 213
+   },
+   "title": {
+    "codes_brackets": 229,
+    "all_caps": 0,
+    "non_it_pct": 55.0,
+    "non_it_examples": [
+     {
+      "title": "Nhân Viên Kinh Doanh - Tư Vấn Giải Pháp Lương Cơ Bản 12 - 15Tr",
+      "url": "https://vieclam24h.vn/marketing/nhan-vien-kinh-doanh-tu-van-giai-phap-luong-co-ban-12-15tr-c12p73id100160858.html"
+     },
+     {
+      "title": "Nhân Viên Kinh Doanh",
+      "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-kinh-doanh-c8p73id200452314.html"
+     },
+     {
+      "title": "Thực Tập Sinh Digital Marketing",
+      "url": "https://vieclam24h.vn/marketing/thuc-tap-sinh-digital-marketing-c12p73id200521671.html"
+     },
+     {
+      "title": "Nhân Viên Sale Marketing (Nhân Viên Tư Vấn)",
+      "url": "https://vieclam24h.vn/marketing/nhan-vien-sale-marketing-nhan-vien-tu-van-c12p122id200658849.html"
+     },
+     {
+      "title": "Nhân Viên Chăm Sóc Khách Hàng",
+      "url": "https://vieclam24h.vn/cham-soc-khach-hang/nhan-vien-cham-soc-khach-hang-c30p210000187id200690244.html"
+     },
+     {
+      "title": "Nhân Viên Presales",
+      "url": "https://vieclam24h.vn/khoa-hoc-ky-thuat/nhan-vien-presales-c34p122id200722695.html"
+     },
+     {
+      "title": "Nhân Viên Kinh Doanh Sỉ / Phân Phối",
+      "url": "https://vieclam24h.vn/ban-si-ban-le-quan-ly-cua-hang/nhan-vien-kinh-doanh-si-phan-phoi-c6p210000187id200724202.html"
+     },
+     {
+      "title": "Nhân Viên Sales Kỹ Thuật",
+      "url": "https://vieclam24h.vn/ban-hang-kinh-doanh/nhan-vien-sales-ky-thuat-c13p210000187id200743518.html"
+     }
+    ],
+    "non_it_by_crawl_day": {
+     "2026-10-20": [
+      619,
+      344
+     ],
+     "2026-11-01": [
+      39,
+      18
+     ]
+    }
+   },
+   "company": {
+    "same_company_variants": 0,
+    "example": []
+   },
+   "extra": {
+    "skills_tag_zero_pct": 87.0,
+    "skills_jd_zero_pct": 56.5,
+    "skills_jd_avg": 1.27,
+    "english_like_pct": 2.1,
+    "jd_under_30_words": 0,
+    "examples": {
+     "salary_neg": [
+      {
+       "job": "vieclam24h_200872683",
+       "text": "Thoả thuận",
+       "url": "https://vieclam24h.vn/it-phan-cung-mang/network-engineer-c7p121id200872683.html"
+      },
+      {
+       "job": "vieclam24h_200945606",
+       "text": "Thoả thuận",
+       "url": "https://vieclam24h.vn/it-phan-mem/manual-automation-tester-quality-analyst-qa-qc-c8p122id200945606.html"
+      }
+     ],
+     "salary_usd": [],
+     "location_multi": [
+      {
+       "job": "vieclam24h_200496877",
+       "text": "TP.HCM , Long An , Ninh Thuận , + 1",
+       "url": "https://vieclam24h.vn/van-hanh-bao-tri-bao-duong/giam-sat-he-thong-dien-nhe-c10p122id200496877.html"
+      },
+      {
+       "job": "vieclam24h_200501353",
+       "text": "Hà Nội , Hưng Yên",
+       "url": "https://vieclam24h.vn/xay-dung/thu-kho-khoan-c31p73id200501353.html"
+      }
+     ],
+     "date_relative": [],
+     "html_left": [],
+     "seniority": [
+      {
+       "job": "vieclam24h_100160858",
+       "text": "Nhân viên",
+       "url": "https://vieclam24h.vn/marketing/nhan-vien-kinh-doanh-tu-van-giai-phap-luong-co-ban-12-15tr-c12p73id100160858.html"
+      },
+      {
+       "job": "vieclam24h_200011696",
+       "text": "Nhân viên",
+       "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
+      }
+     ],
+     "no_skill": []
+    }
+   }
+  },
+  "itviec": {
+   "jobs": 910,
+   "files": {
+    "snapshot": 911,
+    "snapshot_v_lớn_hơn_1": 1
+   },
+   "fill": {
+    "job_title": 99.6,
+    "company_name": 99.6,
+    "company_address": 96.2,
+    "company_scale": 0.0,
+    "raw_category_text": 96.2,
+    "raw_location_text": 99.6,
+    "working_locations": 96.2,
+    "raw_posted_date": 96.2,
+    "raw_updated_at": 0.0,
+    "raw_deadline": 96.2,
+    "raw_working_time": 0.0,
+    "raw_salary_text": 99.3,
+    "raw_employment_type": 96.2,
+    "raw_work_mode": 0.0,
+    "raw_experience_text": 86.6,
+    "raw_seniority_text": 0.0,
+    "raw_education_text": 0.0,
+    "raw_headcount": 0.0,
+    "raw_age_text": 0.0,
+    "raw_gender_text": 0.0,
+    "skills_list": 99.6,
+    "benefits_list": 99.6,
+    "raw_description_text": 99.6,
+    "raw_requirements_text": 99.6
+   },
+   "sneaky_null": [],
+   "salary": {
+    "negotiable_pct": 72.6,
+    "usd_pct": 24.7,
+    "one_sided": 8,
+    "parsed_under_1m": 0,
+    "parsed_under_1m_examples": [],
+    "from_x_max_equals_min": 0,
+    "in_title": 12
+   },
+   "location": {
+    "distinct": 418,
+    "multi_city": 888,
+    "street_address": 779,
+    "working_locations_empty_pct": 3.8,
+    "top": [
+     [
+      "Tòa nhà MB, số 18 Lê Văn Lương, Phường Yên Hòa, Hà Nội",
+      37
+     ],
+     [
+      "City, TP Hồ Chí Minh",
+      21
+     ],
+     [
+      "364 Cong Hoa street, Tân Bình, TP Hồ Chí Minh",
+      20
+     ],
+     [
+      "Tầng 15, tòa Keangnam Landmark 72, Mễ Trì, Yên Hòa, Hà Nội",
+      14
+     ]
+    ]
+   },
+   "experience": {
+    "distinct": 3,
+    "no_number": 0,
+    "range": 0,
+    "top": [
+     [
+      "3.1 năm (37 tháng)",
+      425
+     ],
+     [
+      "0.8 năm (10 tháng)",
+      318
+     ],
+     [
+      "5.1 năm (61 tháng)",
+      45
+     ]
+    ]
+   },
+   "seniority": {
+    "distinct": 0,
+    "top": []
+   },
+   "skills": {
+    "empty_pct": 0.4,
+    "avg": 5.3,
+    "long_tags": 12,
+    "top": [
+     [
+      "English",
+      260
+     ],
+     [
+      "Python",
+      181
+     ],
+     [
+      "AI",
+      163
+     ],
+     [
+      "SQL",
+      157
+     ],
+     [
+      "Java",
+      139
+     ],
+     [
+      "AWS",
+      110
+     ]
+    ]
+   },
+   "dates": {
+    "posted_empty_pct": 3.8,
+    "posted_relative": 0,
+    "posted_older_90d": 0,
+    "deadline_empty_pct": 3.8,
+    "deadline_before_crawl": 31
+   },
+   "text": {
+    "jd_empty_pct": 0.4,
+    "jd_short": 8,
+    "html_left": 0,
+    "jd_same_head": 139
+   },
+   "title": {
+    "codes_brackets": 630,
+    "all_caps": 0,
+    "non_it_pct": 5.6,
+    "non_it_examples": [
+     {
+      "title": "CV, CVCC Xây Dựng Mô Hình Phát Hiện Gian Lận",
+      "url": "https://itviec.com/viec-lam-it/cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720"
+     },
+     {
+      "title": "[Ho Chi Minh] Agile Delivery Manager",
+      "url": "https://itviec.com/viec-lam-it/ho-chi-minh-agile-delivery-manager-one-tech-stop-vietnam-company-ltd-0146"
+     },
+     {
+      "title": "Solution Architect",
+      "url": "https://itviec.com/viec-lam-it/solution-architect-hitachi-digital-services-5605"
+     },
+     {
+      "title": "2D Concept Artist All level",
+      "url": "https://itviec.com/viec-lam-it/2d-concept-artist-all-level-cong-ty-co-phan-sabogame-3212"
+     },
+     {
+      "title": "2D Concept Artist Senior",
+      "url": "https://itviec.com/viec-lam-it/2d-concept-artist-senior-cong-ty-co-phan-sabogame-4427"
+     },
+     {
+      "title": "Asso. Manager, SRE (5+yrs, English)",
+      "url": "https://itviec.com/viec-lam-it/asso-manager-sre-5-yrs-english-yum-digital-technology-0418"
+     },
+     {
+      "title": "BrSE/ Senior BrSE (tiếng Nhật N2)",
+      "url": "https://itviec.com/viec-lam-it/brse-senior-brse-tieng-nhat-n2-dts-software-vietnam-3535"
+     },
+     {
+      "title": "Business Project Associate (China Market Preferred)",
+      "url": "https://itviec.com/viec-lam-it/business-project-associate-china-market-preferred-athena-studio-1354"
+     }
+    ],
+    "non_it_by_crawl_day": {
+     "2026-10-20": [
+      669,
+      41
+     ],
+     "2026-11-01": [
+      221,
+      7
+     ]
+    }
+   },
+   "company": {
+    "same_company_variants": 0,
+    "example": []
+   },
+   "extra": {
+    "skills_tag_zero_pct": 8.6,
+    "skills_jd_zero_pct": 1.3,
+    "skills_jd_avg": 8.35,
+    "english_like_pct": 66.4,
+    "jd_under_30_words": 4,
+    "examples": {
+     "salary_neg": [
+      {
+       "job": "itviec_02-mid-senior-qc-tester-qa-qc-automation-test-rontech-2747",
+       "text": "Thỏa thuận từ 16tr",
+       "url": "https://itviec.com/viec-lam-it/02-mid-senior-qc-tester-qa-qc-automation-test-rontech-2747"
+      },
+      {
+       "job": "itviec_2d-game-vfx-artist-cocos-creator-photoshop-spine-cong-ty-co-phan-hermon-game-viet-nam-5339",
+       "text": "You'll love it",
+       "url": "https://itviec.com/viec-lam-it/2d-game-vfx-artist-cocos-creator-photoshop-spine-cong-ty-co-phan-hermon-game-viet-nam-5339"
+      }
+     ],
+     "salary_usd": [
+      {
+       "job": "itviec_2-senior-qa-qc-800-1800-rangstrup-it-vietnam-0056",
+       "text": "800 - 1800 USD",
+       "url": "https://itviec.com/viec-lam-it/2-senior-qa-qc-800-1800-rangstrup-it-vietnam-0056"
+      },
+      {
+       "job": "itviec_2d-concept-artist-all-level-cong-ty-co-phan-sabogame-3212",
+       "text": "200 - 900 USD",
+       "url": "https://itviec.com/viec-lam-it/2d-concept-artist-all-level-cong-ty-co-phan-sabogame-3212"
+      }
+     ],
+     "location_multi": [
+      {
+       "job": "itviec_02-mid-senior-qc-tester-qa-qc-automation-test-rontech-2747",
+       "text": "Tòa nhà Solaris, 191C Hoàng Văn Thụ, Phú Nhuận, TP Hồ Chí Minh",
+       "url": "https://itviec.com/viec-lam-it/02-mid-senior-qc-tester-qa-qc-automation-test-rontech-2747"
+      },
+      {
+       "job": "itviec_2-senior-qa-qc-800-1800-rangstrup-it-vietnam-0056",
+       "text": "19 Tan Canh, Tân Sơn Hòa, TP Hồ Chí Minh",
+       "url": "https://itviec.com/viec-lam-it/2-senior-qa-qc-800-1800-rangstrup-it-vietnam-0056"
+      }
+     ],
+     "date_relative": [],
+     "html_left": [],
+     "seniority": [],
+     "no_skill": [
+      {
+       "job": "itviec_css-3",
+       "text": "",
+       "url": "https://itviec.com/viec-lam-it/css-3"
+      },
+      {
+       "job": "itviec_frontend-developer-sqreem-technologies-vn-pte-ltd-2959",
+       "text": "",
+       "url": "https://itviec.com/viec-lam-it/frontend-developer-sqreem-technologies-vn-pte-ltd-2959"
+      }
+     ]
+    }
+   }
+  },
+  "glints": {
+   "jobs": 331,
+   "files": {
+    "snapshot": 331,
+    "snapshot_v_lớn_hơn_1": 0
+   },
+   "fill": {
+    "job_title": 100.0,
+    "company_name": 100.0,
+    "company_address": 87.9,
+    "company_scale": 0.0,
+    "raw_category_text": 100.0,
+    "raw_location_text": 100.0,
+    "working_locations": 100.0,
+    "raw_posted_date": 100.0,
+    "raw_updated_at": 0.0,
+    "raw_deadline": 97.6,
+    "raw_working_time": 0.0,
+    "raw_salary_text": 100.0,
+    "raw_employment_type": 100.0,
+    "raw_work_mode": 100.0,
+    "raw_experience_text": 88.8,
+    "raw_seniority_text": 0.0,
+    "raw_education_text": 100.0,
+    "raw_headcount": 0.0,
+    "raw_age_text": 0.0,
+    "raw_gender_text": 0.0,
+    "skills_list": 88.5,
+    "benefits_list": 81.0,
+    "raw_description_text": 100.0,
+    "raw_requirements_text": 100.0
+   },
+   "sneaky_null": [],
+   "salary": {
+    "negotiable_pct": 0.0,
+    "usd_pct": 0.0,
+    "one_sided": 0,
+    "parsed_under_1m": 0,
+    "parsed_under_1m_examples": [],
+    "from_x_max_equals_min": 0,
+    "in_title": 10
+   },
+   "location": {
+    "distinct": 51,
+    "multi_city": 0,
+    "street_address": 239,
+    "working_locations_empty_pct": 0.0,
+    "top": [
+     [
+      "Quận Một",
+      24
+     ],
+     [
+      "Long Thành",
+      22
+     ],
+     [
+      "Quận Nam Từ Liêm",
+      22
+     ],
+     [
+      "Quận Ba Đình",
+      20
+     ]
+    ]
+   },
+   "experience": {
+    "distinct": 4,
+    "no_number": 51,
+    "range": 243,
+    "top": [
+     [
+      "1 - 3 năm kinh nghiệm",
+      119
+     ],
+     [
+      "3 - 5 năm kinh nghiệm",
+      97
+     ],
+     [
+      "Dưới một năm kinh nghiệm",
+      51
+     ],
+     [
+      "5 - 10 năm kinh nghiệm",
+      27
+     ]
+    ]
+   },
+   "seniority": {
+    "distinct": 0,
+    "top": []
+   },
+   "skills": {
+    "empty_pct": 11.5,
+    "avg": 5.7,
+    "long_tags": 20,
+    "top": [
+     [
+      "Teamwork",
+      57
+     ],
+     [
+      "Quality Assurance",
+      50
+     ],
+     [
+      "Customer Service",
+      41
+     ],
+     [
+      "Microsoft SQL Server",
+      34
+     ],
+     [
+      "Microsoft Office",
+      34
+     ],
+     [
+      "JavaScript",
+      33
+     ]
+    ]
+   },
+   "dates": {
+    "posted_empty_pct": 0.0,
+    "posted_relative": 0,
+    "posted_older_90d": 101,
+    "deadline_empty_pct": 2.4,
+    "deadline_before_crawl": 0
+   },
+   "text": {
+    "jd_empty_pct": 0.0,
+    "jd_short": 0,
+    "html_left": 0,
+    "jd_same_head": 16
+   },
+   "title": {
+    "codes_brackets": 113,
+    "all_caps": 39,
+    "non_it_pct": 18.1,
+    "non_it_examples": [
+     {
+      "title": "[ Tân Phú ] Chăm Sóc Khách Hàng Tiếng Anh",
+      "url": "https://glints.com/vn/opportunities/jobs/tan-phu-cham-soc-khach-hang-tieng-anh/65e7e99a-2a89-45da-a56c-dd2330b5b39a"
+     },
+     {
+      "title": "TRƯỞNG PHÒNG KINH DOANH TMĐT (E-COMMERCE MANAGER)",
+      "url": "https://glints.com/vn/opportunities/jobs/truong-phong-kinh-doanh-tmdt-e-commerce-manager/8d101b02-f97e-46ff-82f7-189f245968a6"
+     },
+     {
+      "title": "KỸ SƯ HỖ TRỢ KỸ THUẬT",
+      "url": "https://glints.com/vn/opportunities/jobs/ky-su-ho-tro-ky-thuat/16d48404-8fea-45fb-9718-87cf115d9b1b"
+     },
+     {
+      "title": "[HCM541] Tổ trưởng Sản xuất - Tiếng Anh/Nhật - Linh Trung",
+      "url": "https://glints.com/vn/opportunities/jobs/hcm541-to-truong-san-xuat-tieng-anh-nhat-linh-trung/18104851-92f3-48ff-8022-56aede7f8cd3"
+     },
+     {
+      "title": "NHÂN VIÊN KỸ THUẬT - BÌNH DƯƠNG",
+      "url": "https://glints.com/vn/opportunities/jobs/nhan-vien-ky-thuat-binh-duong/1bf4d90d-0831-45cc-ba98-e4a41fc9cf7f"
+     },
+     {
+      "title": "Test leader/ Manager",
+      "url": "https://glints.com/vn/opportunities/jobs/test-leader-manager/218283fa-7dfa-4ab6-8e6d-ed3a5e004c6a"
+     },
+     {
+      "title": "Hybrid Infrastructure Analyst (AWS)",
+      "url": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-aws/21e095c8-2d39-42d3-b491-ebb48ec2430e"
+     },
+     {
+      "title": "[SNOWVN] ZEPETO Global Operation Intern",
+      "url": "https://glints.com/vn/opportunities/jobs/snowvn-zepeto-global-operation-intern/2202bcf9-bfad-474f-9fa7-b92d6abb2fa5"
+     }
+    ],
+    "non_it_by_crawl_day": {
+     "2026-10-20": [
+      331,
+      60
+     ]
+    }
+   },
+   "company": {
+    "same_company_variants": 0,
+    "example": []
+   },
+   "extra": {
+    "skills_tag_zero_pct": 40.8,
+    "skills_jd_zero_pct": 11.5,
+    "skills_jd_avg": 6.02,
+    "english_like_pct": 5.7,
+    "jd_under_30_words": 0,
+    "examples": {
+     "salary_neg": [],
+     "salary_usd": [],
+     "location_multi": [],
+     "date_relative": [],
+     "html_left": [],
+     "seniority": [],
+     "no_skill": [
+      {
+       "job": "glints_00151110-44ff-48bc-9dd9-752c8f632935",
+       "text": "Retail IT Executive (Infrastructure)",
+       "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+      },
+      {
+       "job": "glints_056aa512-f2b9-4256-8fd0-acf7d39a2af3",
+       "text": "Backend Cloud Developer",
+       "url": "https://glints.com/vn/opportunities/jobs/backend-cloud-developer/056aa512-f2b9-4256-8fd0-acf7d39a2af3"
+      }
+     ]
+    }
+   }
+  },
+  "jobsgo": {
+   "jobs": 1540,
+   "files": {
+    "không_phải_envelope": 1,
+    "snapshot": 1597,
+    "snapshot_v_lớn_hơn_1": 57
+   },
+   "fill": {
+    "job_title": 100.0,
+    "company_name": 99.9,
+    "company_address": 98.7,
+    "company_scale": 0.0,
+    "raw_category_text": 99.5,
+    "raw_location_text": 99.4,
+    "working_locations": 93.6,
+    "raw_posted_date": 99.5,
+    "raw_updated_at": 0.0,
+    "raw_deadline": 99.6,
+    "raw_working_time": 69.8,
+    "raw_salary_text": 99.6,
+    "raw_employment_type": 99.5,
+    "raw_work_mode": 0.0,
+    "raw_experience_text": 99.6,
+    "raw_seniority_text": 99.5,
+    "raw_education_text": 99.6,
+    "raw_headcount": 55.4,
+    "raw_age_text": 0.0,
+    "raw_gender_text": 0.0,
+    "skills_list": 0.0,
+    "benefits_list": 97.6,
+    "raw_description_text": 98.5,
+    "raw_requirements_text": 97.9
+   },
+   "sneaky_null": [],
+   "salary": {
+    "negotiable_pct": 32.8,
+    "usd_pct": 0.0,
+    "one_sided": 81,
+    "parsed_under_1m": 0,
+    "parsed_under_1m_examples": [],
+    "from_x_max_equals_min": 0,
+    "in_title": 209
+   },
+   "location": {
+    "distinct": 65,
+    "multi_city": 67,
+    "street_address": 2,
+    "working_locations_empty_pct": 6.4,
+    "top": [
+     [
+      "Hồ Chí Minh",
+      654
+     ],
+     [
+      "Hà Nội",
+      535
+     ],
+     [
+      "Đồng Nai",
+      87
+     ],
+     [
+      "Đà Nẵng",
+      24
+     ]
+    ]
+   },
+   "experience": {
+    "distinct": 24,
+    "no_number": 632,
+    "range": 495,
+    "top": [
+     [
+      "Không yêu cầu",
+      632
+     ],
+     [
+      "1 - 2 năm",
+      198
+     ],
+     [
+      "2 - 3 năm",
+      166
+     ],
+     [
+      "Dưới 1 năm",
+      98
+     ]
+    ]
+   },
+   "seniority": {
+    "distinct": 4,
+    "top": [
+     [
+      "Nhân Viên/Chuyên Viên",
+      1250
+     ],
+     [
+      "Thực Tập Sinh",
+      165
+     ],
+     [
+      "Trưởng Nhóm/Trưởng Phòng",
+      114
+     ],
+     [
+      "Giám Đốc Và Cấp Cao Hơn",
+      3
+     ]
+    ]
+   },
+   "skills": {
+    "empty_pct": 100.0,
+    "avg": 0.0,
+    "long_tags": 0,
+    "top": []
+   },
+   "dates": {
+    "posted_empty_pct": 0.5,
+    "posted_relative": 0,
+    "posted_older_90d": 15,
+    "deadline_empty_pct": 0.4,
+    "deadline_before_crawl": 7
+   },
+   "text": {
+    "jd_empty_pct": 1.5,
+    "jd_short": 90,
+    "html_left": 0,
+    "jd_same_head": 479
+   },
+   "title": {
+    "codes_brackets": 586,
+    "all_caps": 62,
+    "non_it_pct": 32.7,
+    "non_it_examples": [
+     {
+      "title": "B2B Sales Executive (Apple Products)",
+      "url": "https://jobsgo.vn/viec-lam/b2b-sales-executive-apple-products-15485124967.html"
+     },
+     {
+      "title": "Project Sales Vật liệu xây dựng 18096 - Upto 30tr - Đống Đa, HN",
+      "url": "https://jobsgo.vn/viec-lam/project-sales-vat-lieu-xay-dung-18096-upto-30tr-dong-da-hn-26320162121.html"
+     },
+     {
+      "title": "Nhân Viên Kinh Doanh - Thu Nhập Upto 25TR - Lương Cứng Không Phụ Thuộc Doanh Số",
+      "url": "https://jobsgo.vn/viec-lam/nhan-vien-kinh-doanh-thu-nhap-upto-25tr-luong-cung-khong-phu-thuoc-doanh-so-27526710587.html"
+     },
+     {
+      "title": "Nhân Viên Phát Triển Kinh Doanh (BD) – Mảng B2B & Đại Lý",
+      "url": "https://jobsgo.vn/viec-lam/nhan-vien-phat-trien-kinh-doanh-bd-mang-b2b-dai-ly-27753995889.html"
+     },
+     {
+      "title": "Nhân Viên Kinh Doanh/ Phát Triển Thị Trường / Sale B2B (CCTV/CNTT) - Lương Cứng 10 - 15 Triệu + Hoa Hồng + Thưởng Dự Án)",
+      "url": "https://jobsgo.vn/viec-lam/nhan-vien-kinh-doanh-phat-trien-thi-truong-sale-b2b-cctv-cntt-luong-cung-10-15-trieu-hoa-hong-thuong-du-an-27815644549.html"
+     },
+     {
+      "title": "Senior Sales Construction - Chuyên Viên Kinh Doanh Cấp Cao – Mảng Xây Dựng",
+      "url": "https://jobsgo.vn/viec-lam/senior-sales-construction-chuyen-vien-kinh-doanh-cap-cao-mang-xay-dung-28518561484.html"
+     },
+     {
+      "title": "Senior Sales Construction - Chuyên Viên Kinh Doanh Cấp Cao – Mảng Xây Dựng",
+      "url": "https://jobsgo.vn/viec-lam/senior-sales-construction-chuyen-vien-kinh-doanh-cap-cao-mang-xay-dung-28555469206.html"
+     },
+     {
+      "title": "Giáo Viên Tin Học (Ngành CNTT - Không Yêu Cầu Kinh Nghiệm)",
+      "url": "https://jobsgo.vn/viec-lam/giao-vien-tin-hoc-nganh-cntt-khong-yeu-cau-kinh-nghiem-28708952643.html"
+     }
+    ],
+    "non_it_by_crawl_day": {
+     "2026-10-20": [
+      1475,
+      482
+     ],
+     "2026-11-01": [
+      63,
+      20
+     ]
+    }
+   },
+   "company": {
+    "same_company_variants": 1,
+    "example": [
+     "CÔNG TY TNHH CÔNG NGHỆ PHẦN MỀM NASANI",
+     "Công Ty TNHH Công Nghệ Phần Mềm Nasani"
+    ]
+   },
+   "extra": {
+    "skills_tag_zero_pct": 100.0,
+    "skills_jd_zero_pct": 40.9,
+    "skills_jd_avg": 2.1,
+    "english_like_pct": 7.9,
+    "jd_under_30_words": 35,
+    "examples": {
+     "salary_neg": [
+      {
+       "job": "jobsgo_15485124967",
+       "text": "Thỏa thuận",
+       "url": "https://jobsgo.vn/viec-lam/b2b-sales-executive-apple-products-15485124967.html"
+      },
+      {
+       "job": "jobsgo_25613728225",
+       "text": "Thỏa thuận",
+       "url": "https://jobsgo.vn/viec-lam/ky-su-thiet-ke-he-thong-elv-25613728225.html"
+      }
+     ],
+     "salary_usd": [],
+     "location_multi": [
+      {
+       "job": "jobsgo_25544285219",
+       "text": "Hải Phòng, Hưng Yên, Ninh Bình, Quảng Ninh",
+       "url": "https://jobsgo.vn/viec-lam/nhan-vien-cong-trinh-25544285219.html"
+      },
+      {
+       "job": "jobsgo_27712444149",
+       "text": "Hồ Chí Minh, Hà Nội",
+       "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-dinh-thu-phan-mem-qa-engineer-luong-10-20-trieu-27712444149.html"
+      }
+     ],
+     "date_relative": [],
+     "html_left": [],
+     "seniority": [
+      {
+       "job": "jobsgo_15485124967",
+       "text": "Nhân Viên/Chuyên Viên",
+       "url": "https://jobsgo.vn/viec-lam/b2b-sales-executive-apple-products-15485124967.html"
+      },
+      {
+       "job": "jobsgo_25544285219",
+       "text": "Nhân Viên/Chuyên Viên",
+       "url": "https://jobsgo.vn/viec-lam/nhan-vien-cong-trinh-25544285219.html"
+      }
+     ],
+     "no_skill": [
+      {
+       "job": "jobsgo_15485124967",
+       "text": "B2B Sales Executive (Apple Products)",
+       "url": "https://jobsgo.vn/viec-lam/b2b-sales-executive-apple-products-15485124967.html"
+      },
+      {
+       "job": "jobsgo_25544285219",
+       "text": "Nhân Viên Công Trình",
+       "url": "https://jobsgo.vn/viec-lam/nhan-vien-cong-trinh-25544285219.html"
+      }
+     ]
+    }
+   }
+  }
+ },
+ "field_matrix": [
+  {
+   "field": "job_title",
+   "sources": 8,
+   "missing_in": []
+  },
+  {
+   "field": "company_name",
+   "sources": 8,
+   "missing_in": []
+  },
+  {
+   "field": "company_address",
+   "sources": 7,
+   "missing_in": [
+    "topdev"
+   ]
+  },
+  {
+   "field": "company_scale",
+   "sources": 1,
+   "missing_in": [
+    "topdev",
+    "vietnamworks",
+    "careerviet",
+    "vieclam24h",
+    "itviec",
+    "glints",
+    "jobsgo"
+   ]
+  },
+  {
+   "field": "raw_category_text",
+   "sources": 7,
+   "missing_in": [
+    "topdev"
+   ]
+  },
+  {
+   "field": "raw_location_text",
+   "sources": 8,
+   "missing_in": []
+  },
+  {
+   "field": "working_locations",
+   "sources": 8,
+   "missing_in": []
+  },
+  {
+   "field": "raw_posted_date",
+   "sources": 6,
+   "missing_in": [
+    "topcv",
+    "topdev"
+   ]
+  },
+  {
+   "field": "raw_updated_at",
+   "sources": 2,
+   "missing_in": [
+    "topcv",
+    "topdev",
+    "vieclam24h",
+    "itviec",
+    "glints",
+    "jobsgo"
+   ]
+  },
+  {
+   "field": "raw_deadline",
+   "sources": 7,
+   "missing_in": [
+    "topdev"
+   ]
+  },
+  {
+   "field": "raw_working_time",
+   "sources": 2,
+   "missing_in": [
+    "topdev",
+    "vietnamworks",
+    "careerviet",
+    "vieclam24h",
+    "itviec",
+    "glints"
+   ]
+  },
+  {
+   "field": "raw_salary_text",
+   "sources": 8,
+   "missing_in": []
+  },
+  {
+   "field": "raw_employment_type",
+   "sources": 7,
+   "missing_in": [
+    "topdev"
+   ]
+  },
+  {
+   "field": "raw_work_mode",
+   "sources": 2,
+   "missing_in": [
+    "topdev",
+    "vietnamworks",
+    "careerviet",
+    "vieclam24h",
+    "itviec",
+    "jobsgo"
+   ]
+  },
+  {
+   "field": "raw_experience_text",
+   "sources": 7,
+   "missing_in": [
+    "topdev"
+   ]
+  },
+  {
+   "field": "raw_seniority_text",
+   "sources": 5,
+   "missing_in": [
+    "topdev",
+    "itviec",
+    "glints"
+   ]
+  },
+  {
+   "field": "raw_education_text",
+   "sources": 4,
+   "missing_in": [
+    "topdev",
+    "careerviet",
+    "vieclam24h",
+    "itviec"
+   ]
+  },
+  {
+   "field": "raw_headcount",
+   "sources": 4,
+   "missing_in": [
+    "topdev",
+    "careerviet",
+    "itviec",
+    "glints"
+   ]
+  },
+  {
+   "field": "raw_age_text",
+   "sources": 1,
+   "missing_in": [
+    "topcv",
+    "topdev",
+    "careerviet",
+    "vieclam24h",
+    "itviec",
+    "glints",
+    "jobsgo"
+   ]
+  },
+  {
+   "field": "raw_gender_text",
+   "sources": 1,
+   "missing_in": [
+    "topcv",
+    "topdev",
+    "careerviet",
+    "vieclam24h",
+    "itviec",
+    "glints",
+    "jobsgo"
+   ]
+  },
+  {
+   "field": "skills_list",
+   "sources": 5,
+   "missing_in": [
+    "topdev",
+    "careerviet",
+    "jobsgo"
+   ]
+  },
+  {
+   "field": "benefits_list",
+   "sources": 8,
+   "missing_in": []
+  },
+  {
+   "field": "raw_description_text",
+   "sources": 8,
+   "missing_in": []
+  },
+  {
+   "field": "raw_requirements_text",
+   "sources": 8,
+   "missing_in": []
+  }
+ ],
+ "dedup": [
+  {
+   "step": "Tiêu đề + công ty",
+   "extra_jobs": 640,
+   "groups_same_source": 331,
+   "groups_cross_source": 171
+  },
+  {
+   "step": "+ thành phố",
+   "extra_jobs": 409,
+   "groups_same_source": 296,
+   "groups_cross_source": 9
+  },
+  {
+   "step": "+ tuần đăng (thiếu ngày đăng thì dùng tuần cào)",
+   "extra_jobs": 181,
+   "groups_same_source": 140,
+   "groups_cross_source": 2
+  }
+ ]
+}
