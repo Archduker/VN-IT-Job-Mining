@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from preprocessing.encoding.execution_tfidf import extract_tfidf_space
 from preprocessing.encoding.run import ORDERED_SKILL_COLUMNS, compute_skill_cooccurrence
-from preprocessing.encoding.tfidf_extractor import extract_tfidf_space
 
 
 def test_alias_and_slug_collisions():

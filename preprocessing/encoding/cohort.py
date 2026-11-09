@@ -49,7 +49,7 @@ def archive_history():
     paths.add(manifest_path)
     paths.update(ROOT / path for path in manifest["source_sha256"])
     paths.update(ROOT / path for path in ["docs/preprocessing/encoding/06_p5_execution_contract.md",
-        "docs/preprocessing/encoding/07_p5_execution_report.md", "preprocessing/encoding/run_encoding.py",
+        "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md", "preprocessing/encoding/run_encoding.py",
         "tests/unit/test_encoding_step.py", "tests/unit/test_encoding_safety.py"])
     HISTORY.mkdir(parents=True, exist_ok=False)
     records = []

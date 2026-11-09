@@ -366,7 +366,7 @@ def run_execution(manifest_path, vocabulary_path, stopwords, output_root, eviden
             record.update(shape=list(matrix.shape), dtype="float32", format="CSR")
         files.append(record)
     files.append(dict(path=str(output_root / P5 / "validation_report.json"), bytes=(output_root / P5 / "validation_report.json").stat().st_size, sha256=sha(output_root / P5 / "validation_report.json")))
-    code_paths = [Path(__file__), *[ROOT / "preprocessing/encoding" / name for name in ["cohort.py", "cohort_assessments.py", "execution_io.py", "execution_features.py", "execution_tfidf.py", "candidate_lookup.py", "run.py", "tfidf_extractor.py"]]]
+    code_paths = [Path(__file__), *[ROOT / "preprocessing/encoding" / name for name in ["cohort.py", "cohort_assessments.py", "execution_io.py", "execution_features.py", "execution_tfidf.py", "candidate_lookup.py", "run.py"]]]
     manifest = dict(schema_version="p5-artifact-manifest-v1", run_id=evidence_root.name, validation_status="PASS_TECHNICAL_REVIEW",
          acceptance_status="PENDING_ENVIRONMENT_AND_FINAL_HANDOFF_CHECKS", p5_complete=False, cohort=cohort_info,
          input_manifest_sha256=input_before, inputs=entries, merged_input_schema=str(table.schema), producer_commit=None,

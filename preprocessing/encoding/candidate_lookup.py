@@ -1,4 +1,4 @@
-"""Strict, review/candidate-only skill lookup; production encoder is unchanged.
+"""Strict whole-value canonical/alias lookup for the frozen runner and review tests.
 
 Canonical names are always keys. Slugs name columns, never act as lookup keys.
 There is no parent propagation, tokenization, fuzzy or substring matching.

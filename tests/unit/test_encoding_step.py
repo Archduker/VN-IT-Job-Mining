@@ -20,13 +20,13 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from preprocessing.encoding.execution_tfidf import extract_tfidf_space
 from preprocessing.encoding.run import (
     EXACT_SKILL_COUNT,
     ORDERED_SKILL_COLUMNS,
     compute_skill_cooccurrence,
     encode_dataset,
 )
-from preprocessing.encoding.tfidf_extractor import extract_tfidf_space
 
 
 @pytest.fixture

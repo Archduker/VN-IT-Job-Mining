@@ -36,7 +36,7 @@ def main(argv=None):
 Snapshot P4 5.177 → cohort theo ledger được Phát cho phép, không sửa upstream.
 85 ID được đánh giá trong review có giới hạn; 410 P2 và jobs ngoài queue vẫn **retained_unreviewed**.
 Không gọi toàn cohort là verified IT, không suy rộng thành thị trường Việt Nam, không phân tích K/ML.
-EDA 5.177 cũ ở `eda_p5_encoding.ipynb/.html` giữ làm historical evidence.
+So sánh lịch sử đọc parent metrics 5.177 được giữ lại; notebook 5.177 cũ đã retire theo _01.
 """), code("""import hashlib, json, platform, sys
 from pathlib import Path
 import numpy as np

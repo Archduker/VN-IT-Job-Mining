@@ -15,7 +15,9 @@ Các output của runner hiện tại:
 - features.parquet (bảng đặc trưng số học)
 - skill_cooccurrence.parquet (ma trận vuông 230x230)
 - encoding_dictionary.json (từ điển tra cứu ánh xạ)
-TF-IDF được cung cấp bởi utility riêng; runner chưa xuất TF-IDF khi contract còn mở.
+Các pure helpers giữ API prototype cho callers/tests cũ. Hàm run chỉ delegate
+về execute.py khi đủ explicit config; execute.py xuất full bundle theo frozen
+assets, gồm TF-IDF qua execution_tfidf.py. Prototype không phải publish path.
 """
 
 from __future__ import annotations

@@ -6,7 +6,7 @@ Notebook cuối phải tự tìm repo root và thêm sys.path trước import pa
 `notebooks/` bằng kernel mới; không giả định cwd=repo root. Builder nhận --output-dir
 để kiểm vào thư mục tạm, không ghi đè cặp notebook/HTML đã có.
 
-Đọc `docs/preprocessing/encoding/06_p5_execution_contract.md` và execution report07.
+Đọc handoff05 (đã gộp report07) và `docs/preprocessing/encoding/06_p5_execution_contract.md`.
 Runner đầy đủ là `python -m preprocessing.encoding.execute` với input manifest,
 frozen vocabulary, stopwords, cohort ledger, decision record, history root và explicit
 output/evidence roots. Runtime assets ở `preprocessing/encoding/assets/`, không đọc Downloads.
@@ -14,6 +14,10 @@ output/evidence roots. Runtime assets ở `preprocessing/encoding/assets/`, khô
 `run.py:run` chỉ delegate khi đủ explicit config; thiếu config fail trước IO.
 `run_encoding.py` delegate CLI mới; --apply/--source legacy bị chặn trước writes.
 Chỉ execute.py là implementation full-bundle. Không sửa P3/P4 hoặc exporter chung.
+TF-IDF hiện hành và API tương thích extract_tfidf_space ở execution_tfidf.py;
+không còn tfidf_extractor.py. Stopword asset giữ nguyên bytes/provenance lịch sử.
+Đợt dọn _01 không tạo file mới trong repo; mọi output tạm/log mới ở /tmp,
+chỉ cập nhật các evidence files hiện có. Không tái tạo script/EDA đã retire.
 
 Arrow Table.cast có thể lỗi khi nested-list/struct chứa null-only child và số location
 lớn hơn số job. Loader chỉ dựng lại cột cần null-type union theo values và so lossless;

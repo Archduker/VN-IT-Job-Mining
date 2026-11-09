@@ -23,9 +23,20 @@ def main():
     archived = {row["original"]: row for row in historical["files"]}
     assert all(sha(ROOT / row["archived"]) == row["sha256"] for row in historical["files"])
     prior_provenance = json.loads((ROOT / "reports/preprocessing/05_encoding/scope_review_2026-11-09_v1/provenance.json").read_text())
+    # The owner's _01 cleanup may retire superseded experiments. Retain their
+    # exact prior hashes in the existing manifest instead of keeping every file.
+    retired = manifest.get("refactor", {}).get("retired_paths", {})
+    updated = manifest.get("refactor", {}).get("updated_paths", {})
     for original, checksum in prior_provenance["protected_before_after_sha256"].items():
         path = ROOT / archived[original]["archived"] if original in archived else ROOT / original
-        assert sha(path) == checksum, original
+        if path.is_file():
+            if original not in archived and original in updated:
+                assert updated[original]["before_sha256"] == checksum, original
+                assert sha(path) == updated[original]["sha256"], original
+            else:
+                assert sha(path) == checksum, original
+        else:
+            assert retired.get(original, {}).get("sha256") == checksum, original
     for record in manifest["current_artifacts"]:
         assert sha(ROOT / record["path"]) == record["sha256"]
     assert all(sha(ROOT / path) == value for path, value in manifest["source_sha256"].items())
@@ -81,7 +92,8 @@ def main():
                 times.append(time.perf_counter()-start)
             measured[relative] = dict(seconds=times, median=float(np.median(times)), bytes=(ROOT / relative).stat().st_size)
         write_json(perf, dict(method="pandas.read_parquet; five warm reads; perf_counter median; no cold-cache claim", results=measured))
-    tests = ET.parse(REPORT / "tests_p5.xml").getroot().find("testsuite")
+    tests_path = ROOT / manifest.get("refactor", {}).get("tests_path", str((REPORT / "tests_p5.xml").relative_to(ROOT)))
+    tests = ET.parse(tests_path).getroot().find("testsuite")
     assert int(tests.attrib["failures"]) == 0 and int(tests.attrib["errors"]) == 0
     write_json(REPORT / "final_integrity.json", dict(status="PASS_COHORT_HANDOFF_DATA_CHECKS", partition_counts=info["partition_counts"],
         included_rows=len(included), reviewed85=True, not_verified_IT_count=5092, P2_unreviewed=410,

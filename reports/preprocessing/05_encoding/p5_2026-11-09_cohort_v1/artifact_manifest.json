@@ -145,15 +145,14 @@
   "head": "f43809001d77c77f31bdf18d898e0faea7e81a44",
   "dirty_worktree": true,
   "source_sha256": {
-    "preprocessing/encoding/execute.py": "c18f995518db5d2959afb6c3e82ef27babba0e5fd32a089e7ce9b21980f6dc69",
-    "preprocessing/encoding/cohort.py": "e4d6eafbfca5dff1d344ed835de82916fe6f474900f16b88e906abda388d21e2",
+    "preprocessing/encoding/execute.py": "bcaa261f65408baaae0ac83852865d0695409652ae08894a05b89d92a428171a",
+    "preprocessing/encoding/cohort.py": "10a520915571b3f2c4faa037e3be0c5cb37028da23ba153868555dce9c116418",
     "preprocessing/encoding/cohort_assessments.py": "ebf79b8b0e28df6511e76a976d3c7785892c50585ec319ddfcdff6d31adba658",
-    "preprocessing/encoding/execution_io.py": "62182b744926fc59f34a444db60e70f60c40988cec55e096ac5dbde19b6761ba",
+    "preprocessing/encoding/execution_io.py": "5dfb849bfd2f5693811b90a6717e802326981049c02457d1564c56b259b70025",
     "preprocessing/encoding/execution_features.py": "18971e3fc5338947896e3748146b301528471fd5c6f0b83f6a73d4da538af5e7",
-    "preprocessing/encoding/execution_tfidf.py": "009bc32e2939bfb6c0cfd3870baca2b826fbc1b5281fa77f6fdd133bcfc7bf4e",
-    "preprocessing/encoding/candidate_lookup.py": "b925815479cdabe2608a917f5c18339102789d2d2d3ca21753e711a7f2a43d0c",
-    "preprocessing/encoding/run.py": "e7aba1ff34205680d798a0197c6349dcb9bade2064a4708e7eb38cffd154df43",
-    "preprocessing/encoding/tfidf_extractor.py": "e018bb42efa73475b0ef216e5f5dc33a1d66bb84f1ee508f2d7fef5ae5217652"
+    "preprocessing/encoding/execution_tfidf.py": "72b7d8c175c5be2ba32b163323f5c46dbe1f8d60e862ed8f4d69ae638a972462",
+    "preprocessing/encoding/candidate_lookup.py": "6b0d3c74af9819e4d78e73792e2a93de8f4dbf31a5e5e968c8767178bb1845cf",
+    "preprocessing/encoding/run.py": "71d7666b511f0b1ef42275d544632224e192eeb0e763f2b79549d4507aa791e1"
   },
   "environment": {
     "python": "3.14.4",
@@ -277,7 +276,7 @@
     "cohort_authorization": "APPLIED",
     "data_checks": "PASS",
     "EDA": "EXECUTED_FRESH_KERNEL_HTML_SYNCED",
-    "related_tests": "68 PASSED",
+    "related_tests": "72 PASSED",
     "python312": "UNVERIFIED",
     "whole_repo": "6 pre-existing collection errors",
     "open_items": [
@@ -288,11 +287,12 @@
       "No verified-IT claim for5092 retained_unreviewed",
       "Upstream producer lineage not verified",
       "job_family not corrected"
-    ]
+    ],
+    "related_tests_reference": "reports/preprocessing/05_encoding/refactor_2026-11-09/tests_p5.xml"
   },
   "verification_source_sha256": {
-    "preprocessing/encoding/finalize_cohort.py": "d2ca686cb364838a3e245dfa183acf60763f588642603ed5268b75072de86dfa",
-    "preprocessing/encoding/build_cohort_notebook.py": "7592cde85cc9b1a2ff5bfeb0a879d64e7206b018b004739844fe766a50ec096e"
+    "preprocessing/encoding/finalize_cohort.py": "8a0ac16ab230e15eec6028409f9055c5bbac5abbff4895886cc4d10a25419b2a",
+    "preprocessing/encoding/build_cohort_notebook.py": "769c5e6e463b5d5092519d235afa1ad44dc72695e38608e24120a8d2374cb7a0"
   },
   "runtime_assets": {
     "preprocessing/encoding/assets/cohort_v1/ledger.csv": "62b575a7f9a8379c053724d1636acee55587f770a8f05d52e0b0895244f333d7",
@@ -306,9 +306,9 @@
   },
   "EDA": {
     "notebook": "notebooks/eda_p5_final_cohort.ipynb",
-    "notebook_sha256": "e4c2ce5ed154f1ca892ffa0fb9c293d012caf4b219206b965f1e7f5fa2e16513",
+    "notebook_sha256": "150beae351de30671bd93f633ee8d84b87b76706207378a3ce85b70401f3b74d",
     "html": "notebooks/eda_p5_final_cohort.html",
-    "html_sha256": "30402e83e4adc3ad890325234b53df32e56a86698e70016f6ad6cacedf0a875d",
+    "html_sha256": "ceba4c8d5d8f8f8504dea84287412e598038938200d18eb0c6ad7a3196fdebb5",
     "fresh_kernel": true,
     "executed_code_cells": 6
   },
@@ -324,33 +324,705 @@
     "final_integrity.json": "36641b2edfc9a772820196c4b15a02e08691d5bb6c7b9d5417f28ff2a6496ec4"
   },
   "refactor": {
-    "version": "p5-structure-refactor-2026-11-09",
-    "data_run_id": "p5_2026-11-09_cohort_v1",
-    "data_artifacts_reused_unchanged": true,
-    "baseline": "reports/preprocessing/05_encoding/refactor_2026-11-09/baseline.json",
-    "baseline_sha256": "38b4549a3717f87cefeadb0c047d685629872d94bcd8e80da60d14ec8f1b04b3",
-    "previous_manifest": "reports/preprocessing/05_encoding/refactor_2026-11-09/before/data/preprocessing/05_encoding/artifact_manifest.json",
-    "previous_manifest_sha256": "346b72b1f26cf350b860d75382390cbbf8664c9a8c84df41021aa81f3aa41b06",
-    "evidence_sha256": {
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/artifact_equivalence.json": "64fd194f258f8f58f5d8301342fdfe07926ec616d7b802b6342e4b663b4753dc",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/structure_inventory.json": "b64dec52d767a5451df48e9cf7122ab1c11065ddc36aa730ea4eace29978f0ba",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/cache_cleanup.json": "d68b2850aebcfbe4445397d330feeb42a31c175f4f75966ca6a6b7e083ee839b",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/tests_p5.xml": "a148edbf10ff1225e3b835d20161377c73fa209f192c08929def84fc833d9206",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/tests_full_offline.xml": "4d167d250c833d40ff1b1bb4b9cc9605266ced97aca15a1671aacc446f493420",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/notebook_execution_retry.log": "8befc284bfd421ef295cd388eefb01be39be4e6cb142610df9c9e5009474bd52",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/preserved_references.json": "b0a27433d56d5ad50b07ab8b3da27c6988e9a0fc93cc762d4641f01a75db4537",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json": "0cafc47c05b238a24a12dbf07a3eeb697ebcc087a5f2510a462b78309f4e3706",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/change_inventory.json": "8140ea0ee11fb794366b09ddeed2d862da210dd3d6bdb8796b291b4c30116316",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/collection_error_comparison.json": "049a3da01c89fca2521482ad6de053cc07166bf87a9e7baaea361930572ae5e9",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/commands.json": "f81c86d9d6b02ba0fbcaafca7bf66f3fe044727f3c0da230435421a08a304da9",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/authorization_refactor.md": "c7e81af5d6c691d5baa790eb3ee0470eb89203e6926901a95cb30eff597af1cd",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/reference_matches_all_surfaces.txt": "0336a50b46e790b94c77f61e9fe545b297193a583d43670a086df1745cce0692",
-      "reports/preprocessing/05_encoding/refactor_2026-11-09/reference_search_all_surfaces.json": "81a70c4b0cd597c4c3e4f693be5b8b7fc87d5e04cf3309cc0a2892808c6727eb"
+    "version": "p5-consolidation-01-2026-11-09",
+    "base_commit": "0e17b9c2780b14f7aa2022a2f7398b4a63a89804",
+    "status": "PASS_CONSOLIDATION_01",
+    "no_new_repo_files": true,
+    "previous_executed_source_sha256": {
+      "preprocessing/encoding/execute.py": "c18f995518db5d2959afb6c3e82ef27babba0e5fd32a089e7ce9b21980f6dc69",
+      "preprocessing/encoding/cohort.py": "e4d6eafbfca5dff1d344ed835de82916fe6f474900f16b88e906abda388d21e2",
+      "preprocessing/encoding/cohort_assessments.py": "ebf79b8b0e28df6511e76a976d3c7785892c50585ec319ddfcdff6d31adba658",
+      "preprocessing/encoding/execution_io.py": "62182b744926fc59f34a444db60e70f60c40988cec55e096ac5dbde19b6761ba",
+      "preprocessing/encoding/execution_features.py": "18971e3fc5338947896e3748146b301528471fd5c6f0b83f6a73d4da538af5e7",
+      "preprocessing/encoding/execution_tfidf.py": "009bc32e2939bfb6c0cfd3870baca2b826fbc1b5281fa77f6fdd133bcfc7bf4e",
+      "preprocessing/encoding/candidate_lookup.py": "b925815479cdabe2608a917f5c18339102789d2d2d3ca21753e711a7f2a43d0c",
+      "preprocessing/encoding/run.py": "e7aba1ff34205680d798a0197c6349dcb9bade2064a4708e7eb38cffd154df43",
+      "preprocessing/encoding/tfidf_extractor.py": "e018bb42efa73475b0ef216e5f5dc33a1d66bb84f1ee508f2d7fef5ae5217652"
     },
-    "status": "PASS_REFACTOR_CHECKS",
-    "python": "3.14.4",
-    "related_tests_passed": 72,
-    "notebook_fresh_kernel": true
+    "source_identity": "Byte-equivalent regeneration verifies current source_sha256; prior source is in baseline git commit",
+    "retired_paths": {
+      "preprocessing/encoding/analyze_p4_input_and_k.py": {
+        "sha256": "7a2e0993db08dcfb3085b816c69a72bde1ce553ec4afbb0bb464d31d437d7e38",
+        "reason": "Standalone pre-freeze/prototype workflow; no active Python caller; replaced by frozen runner/load_snapshot/finalize_cohort/current EDA and retained decisions",
+        "merged_into": "preprocessing/encoding/execute.py",
+        "tracked_at_baseline": true
+      },
+      "preprocessing/encoding/audit_p4_snapshot.py": {
+        "sha256": "08d017ebaf50cb3f9c9545961428f13612638127ba1548dadd7a145d906da2dc",
+        "reason": "Standalone pre-freeze/prototype workflow; no active Python caller; replaced by frozen runner/load_snapshot/finalize_cohort/current EDA and retained decisions",
+        "merged_into": "preprocessing/encoding/execute.py",
+        "tracked_at_baseline": true
+      },
+      "preprocessing/encoding/build_review_notebook.py": {
+        "sha256": "5c8399d35918b9d89e9eeca7056df49a37a20173bd1780b02502007f48991813",
+        "reason": "Standalone pre-freeze/prototype workflow; no active Python caller; replaced by frozen runner/load_snapshot/finalize_cohort/current EDA and retained decisions",
+        "merged_into": "preprocessing/encoding/build_cohort_notebook.py",
+        "tracked_at_baseline": true
+      },
+      "preprocessing/encoding/check_p5_cleanup_equivalence.py": {
+        "sha256": "372c9ac2ef4d378331477506e53c5eee235ad0689a0b4a20092a980469efaf2a",
+        "reason": "Standalone pre-freeze/prototype workflow; no active Python caller; replaced by frozen runner/load_snapshot/finalize_cohort/current EDA and retained decisions",
+        "merged_into": "preprocessing/encoding/execute.py",
+        "tracked_at_baseline": true
+      },
+      "preprocessing/encoding/finalize_execution_evidence.py": {
+        "sha256": "ec625258cea6b1d84a664dbc5c5ec40ba305d378897a4650e9fb1ffbe961a94e",
+        "reason": "Standalone pre-freeze/prototype workflow; no active Python caller; replaced by frozen runner/load_snapshot/finalize_cohort/current EDA and retained decisions",
+        "merged_into": "preprocessing/encoding/finalize_cohort.py",
+        "tracked_at_baseline": true
+      },
+      "preprocessing/encoding/review_snapshot.py": {
+        "sha256": "bca8944d0c513341e3a5bdf656ab196c94f18f53d9980032650e2cbd2b49ee49",
+        "reason": "Standalone pre-freeze/prototype workflow; no active Python caller; replaced by frozen runner/load_snapshot/finalize_cohort/current EDA and retained decisions",
+        "merged_into": "preprocessing/encoding/execute.py",
+        "tracked_at_baseline": true
+      },
+      "preprocessing/encoding/short_candidate_review.py": {
+        "sha256": "5b09902897c0f6a2cf0d427edb17050ee9f3e6c07a1bd3266c8305c3d2882063",
+        "reason": "Standalone pre-freeze/prototype workflow; no active Python caller; replaced by frozen runner/load_snapshot/finalize_cohort/current EDA and retained decisions",
+        "merged_into": "preprocessing/encoding/execute.py",
+        "tracked_at_baseline": true
+      },
+      "preprocessing/encoding/validate_approval_package.py": {
+        "sha256": "93ff115e25c1fd00af1742afb0f2cb08031c847f4d84df594b8823331fbd4677",
+        "reason": "Standalone pre-freeze/prototype workflow; no active Python caller; replaced by frozen runner/load_snapshot/finalize_cohort/current EDA and retained decisions",
+        "merged_into": "preprocessing/encoding/execute.py",
+        "tracked_at_baseline": true
+      },
+      "preprocessing/encoding/tfidf_extractor.py": {
+        "sha256": "e018bb42efa73475b0ef216e5f5dc33a1d66bb84f1ee508f2d7fef5ae5217652",
+        "reason": "Legacy API/constants moved without behavior change; common sklearn fit now shared",
+        "merged_into": "preprocessing/encoding/execution_tfidf.py;preprocessing/encoding/execution_io.py",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/08_p5_scope_review.md": {
+        "sha256": "1a0fa35bfa11e6ee8814f442c6f6537b624a31605898c7c8c024401edcce81d4",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/05_p5_handoff_history_2026-11-09.md": {
+        "sha256": "ef3b9cc21bdd996aa6e31ace613aa4c1e0a28e996d88185be1a9144e06ee08cc",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/05_p5_vocabulary_v2_review.md": {
+        "sha256": "5e59439ca619571be18be6264f069d428b74917d78bb23091522293a67427862",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/05_p5_eda_plan.md": {
+        "sha256": "25a240a51a9d359f299fe92c2dd3a5ddebce36f366b4535371892092905bf9f4",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/05_p5_unresolved_decisions.md": {
+        "sha256": "4f274e96c152ec8796ea223857cb9467cc25d4b2f93480e6f0cc18863634c6b1",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/05_p5_local_input_audit.md": {
+        "sha256": "56d22c2106ae614773cd85d945d444095e4bc4f5da00979b98b95ddf1083de85",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/07_p5_execution_report.md": {
+        "sha256": "9d9927d58d7e94ca36bb0eb0196493ce910c3d5b1d5dcb4898046be112cd3456",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/encoding_contract_draft_v1.md": {
+        "sha256": "d61f76a767705efff8dad916d8b2a82e297f0aec1162ed022940d419a70f3c05",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/05_p5_specification_analysis.md": {
+        "sha256": "6b9d499738ae91438f7514c7baaf8ed56236afa9eb781d0f4e4d2b4a07301582",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/p5_input_k_decisions.md": {
+        "sha256": "1c7975b5f8a63825a2dffe27cf11006a301db5f806d50ffa49983f1222adaeae",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/05_p5_existing_code_review.md": {
+        "sha256": "4f5edab66545c7851a49a7cb5af67ebc453b595dc96001ae4ed7079c7ebc32bf",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/05_p5_approval_package_v1.md": {
+        "sha256": "b999a3e7654989b6987e16431084a3f3c0648d142add3e79eb79de77fc06b834",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/preprocessing/encoding/05_p5_snapshot_review_2026-11-08.md": {
+        "sha256": "1118ace5248fa83641edbf643434df228abc262bd34d6188ac00c54976a45b53",
+        "reason": "Superseded draft/duplicate report; current decisions/limits/evidence folded into handoff and contract",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md;docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "docs/tasks/05_phat_encoding_implementation_contract.md": {
+        "sha256": "42f68631cb51b236d39408ce89e3c0e9c5386c251ab59d4182c68b2b7c5b4786",
+        "reason": "Old contract about missing P4/40-key taxonomy superseded by approved execution contract",
+        "merged_into": "docs/preprocessing/encoding/06_p5_execution_contract.md",
+        "tracked_at_baseline": true
+      },
+      "notebooks/eda_p5_encoding.ipynb": {
+        "sha256": "e3131c53fcd4bb07ced8d26995ed57cfbe1d38250bab9ec84376da12bee716e3",
+        "reason": "Pre-freeze 5177 EDA is superseded; final cohort EDA reads only parent metrics for historical comparison",
+        "merged_into": "notebooks/eda_p5_final_cohort.ipynb",
+        "tracked_at_baseline": true
+      },
+      "notebooks/eda_p5_encoding.html": {
+        "sha256": "ea4ea14539df1b91c717c31091d7e9eac0b7c67005a19b8c42234c4eb73adf1a",
+        "reason": "Pre-freeze 5177 EDA is superseded; final cohort EDA reads only parent metrics for historical comparison",
+        "merged_into": "notebooks/eda_p5_final_cohort.ipynb",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/cleanup_review_2026-11-08/p5_before_cleanup.pkl": {
+        "sha256": "44684f9d9b1b96114ea58d530f1eb157d9d627f223cb9d35be23b9942db85403",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/cleanup_review_2026-11-08/p5_cleanup_equivalence.json": {
+        "sha256": "c5692466d769da019e5eda0b0dd198d9b50ca383f06e737c4d88d4b340c98f98",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/cleanup_review_2026-11-08/p5_tests_before_cleanup.xml": {
+        "sha256": "e1de2e91175630abb41ec50d310ad7e4a90a2473f4436616e15bd3121f68e102",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/cleanup_review_2026-11-08/p5_tests_after_cleanup.xml": {
+        "sha256": "e65fd5463897b47871cdd164b00e4d319e9fe7ab48e7f0e63ecb9db443d2e00f",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/baseline_k_comparison.csv": {
+        "sha256": "5d57babf37adc12de79161e1c1b554b815e1ad0730d6d51755132a569b2a5756",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/baseline_thresholds.csv": {
+        "sha256": "0b56d874d8a366ed105eb9538b6ff9eb3345b901f6457059f328c5350d657faf",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/case_only_k_comparison.csv": {
+        "sha256": "b32dba6dbb4e992c3c3e58492792cefc1d06d07954285447e1635d190720e022",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/baseline_source_coverage.csv": {
+        "sha256": "0fe04fb57fee020a3efae0f52286f37acc069e3d794bf0e32c9996ea48240ac5",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/extractor_comparison_same_ids.csv": {
+        "sha256": "8a6f254957739ae395b97ec4d4ce9dabab462f3301edc5b9e059345ba623037e",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/case_only_thresholds.csv": {
+        "sha256": "2f5a6cec66c9e59b685da3cf7d89d2c75868bd5685439b9c6d435312d0f845a1",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/summary.json": {
+        "sha256": "a2a43f00970939c53e17ad480bfa8ba134823c3382ef0c1a7c2a65ede1af69d0",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/unreviewed_high_frequency.csv": {
+        "sha256": "d56ff306ffcd46cf8f12a9b3eaa639950e6089470ddc4168bac6c55d9adb635a",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/targeted_counts.csv": {
+        "sha256": "150a84d6e128a168098f4d7aacbc5ad22edbf843c717794ab535d9221e5449e5",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/targeted_examples.csv": {
+        "sha256": "7d03d92d53e93efdda472c5f0a1a6a3be200fcee64b7ffdc2a053a133e444c0e",
+        "reason": "Prototype/K experiment superseded by frozen230 owner policy and verified current bundle; current reproduction uses retained snapshot/frozen assets; tracked source versions are in baseline Git commit",
+        "merged_into": "docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/tests.xml": {
+        "sha256": "930422e6b923fb449118405a2e8e294d6f0af5ee34ad638238255a394d80cad3",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/duy_anomalies.csv": {
+        "sha256": "7c3224e571a1bcc18629ded73404f1bab653649a08c403937b92ab0eaf55b9df",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/priority_candidates.csv": {
+        "sha256": "2585362d78704a8df29cdd50634ede8c3c011919f6613f9393cfe73e16b8f61e",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/canonical_spelling_mapping.json": {
+        "sha256": "b84cb04ee7e8df4501bf7fe868e90f2f5f58d6b5ce2640236339c3b43266fcef",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/k_provenance.json": {
+        "sha256": "a8ef7c18e68bbde803856131017a4e2ae408fe05bbdb7157d3d41b196a2c18b0",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/all_candidates.csv": {
+        "sha256": "7bdea71d20bc68825565c1395d265eb284abad8cb7905477c048629af585d129",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/k_comparison.csv": {
+        "sha256": "4822b2f1e2483b9e0707682bff4740512e65d621212c7d38aafab89a3d7ab955",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/validation.json": {
+        "sha256": "34afcf769fadf6f13193a1850c3d1d2359d36564633e556fdc81826d69e3ca99",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/candidate_review_full.csv": {
+        "sha256": "d39fbddbb4e32afd5a38566cf88a3ae534dc24e7e22fc4dbdd333e41366c8109",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/k_source_coverage.csv": {
+        "sha256": "ae47c0b1128afd188c70033e1765d724d3d59882b7e924a85037ee6f42bdf4ef",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/scenario_metrics.csv": {
+        "sha256": "d5cb487a8e882b693dec1460c395adb64c885739f29d800ac12d8e30af3c9ef3",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/schema_diff.csv": {
+        "sha256": "11c8ccd883758b5bb1c14697007e1d9087057afe0f23f47f312e73b299748266",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/k_incremental.csv": {
+        "sha256": "a87628f129e6b13ca718d962aee703dae99f4e79dd1ccf4df622247a21cdb422",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/threshold_comparison.csv": {
+        "sha256": "0de03920b91cc85af6d34a683ae3e82bf08d490bc85fa63dc231f7bae60b83dc",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/anomalies_review.csv": {
+        "sha256": "3f2854b5635e54108dcee270a79cce8a4f354ebadc35596446892ce2f3da0ea4",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/candidate_review_priority.csv": {
+        "sha256": "da02db1ca183b89a1a5fc956e1715296dbaf9478c7528ca7c4ca157d06a4c602",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/short_review/reserves.csv": {
+        "sha256": "ddb67ed8fef53edf76d72895ca906800496ed197c1b8dae7b0e7d25ca6025c5c",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/short_review/ambiguous_and_exclusions.csv": {
+        "sha256": "9dceddb553bf163d8a630947281f02ed5c0946e98b3ad5ee9544d34a958ed8e1",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/short_review/canonical_shortlist.csv": {
+        "sha256": "a06f83796d5e780c1aa7fcbc53932dc56da976c11252c404f57b441fe5a2ebf6",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/review_2026-11-08/short_review/README.md": {
+        "sha256": "486937eb4438868b342febf760b00157177894d6dbab8665d4f4f8ae16c4a155",
+        "reason": "Pre-freeze candidate/K intermediate; original generated/manual decision files preserved; selection replaced by authorized frozen assets",
+        "merged_into": "preprocessing/encoding/assets/frozen_vocabulary_v1.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/approval_package_v1/pytest_review.xml": {
+        "sha256": "0dacaff3650ce5f6cd45cd6bcf5650045ce1be3ee0c7977655134aa582c560d5",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/approval_package_v1/pytest_validated.xml": {
+        "sha256": "8e7b2e71aeef009db0f69b53deef68273bd0ad5b069bc1bb7ac05e8710c805da",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/approval_package_v1/test_results.xml": {
+        "sha256": "db249d022b0452df9a485c1655e4e0fedd2883f4615fad5822c3d1c324cf2b03",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/approval_package_v1/pytest_existing.xml": {
+        "sha256": "93ac97df2d310c3a6646c9418ad39a63d72df89747bc779a330f0a32a50f65f1",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/approval_package_v2/job_rows.csv": {
+        "sha256": "36da4a49d4066e47e68b068e0a4a3e09bafb94836a3e39d7446583e4dd5688ad",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/approval_package_v2/tests_full_offline.xml": {
+        "sha256": "0fc2428a6bbbcedc579abd59fc71f27b2fa26c974100a58300c251b1a49a88e6",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/approval_package_v2/lint.log": {
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/approval_package_v2/tests_full_offline.log": {
+        "sha256": "07ccab98a3d2be78c0477bd2d4f0899c85e8a9af612d8d3c9c13a884c145ad60",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/approval_package_v2/validation_run.log": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/approval_package_v2/tests_p5.log": {
+        "sha256": "e4452ea26cfe0c8bc9abda33c0ffc0b062546b619503714bda821b3ad66f3a55",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/approval_package_v2/tests_p5.xml": {
+        "sha256": "036e18fa3c643697b00cf2f701cf5c3f84416c9fc0e443811ba5176b5f5ef536",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/approval_package_v2/skill_matrix_review.npz": {
+        "sha256": "74e5e8efdde8a0d0dbce0ddd69ef326973032ca115c5a7bf0cbe69bdaab978a6",
+        "reason": "Superseded test/debug output or 5177-row review matrix; current P5 tests and 5104 artifacts provide validation; frozen proposal/semantic evidence preserved",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/final_integrity.json": {
+        "sha256": "35a1ea5fe8a38edf8fc47d7efaa250c4546e928166a2b4162b9e9011fb5167ff",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/skill_frequencies.csv": {
+        "sha256": "4784af3540021f7cc89d4ab7d1f260fecb46c73784dd2674e9be8921afde0bd1",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/tests_full_offline.xml": {
+        "sha256": "6387daa3eb410bc3106f4aafde9970dea1810fb9b47109b718148a5f99df7a82",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/execution.log": {
+        "sha256": "06616d660777f37e7f32f908ffcc75a67a4c5ff0218d36cc7ad8b081beb5a82e",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/delivery.json": {
+        "sha256": "418508976971f40a5ccd25686056e22f39b819d7b580c4e67c2388f95920251d",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/lint.log": {
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/validation_report.json": {
+        "sha256": "2df5415ef0c70bd428fb561c6dca1de1154510a48ff27b753f429a0661ffe0d4",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/final_integrity.log": {
+        "sha256": "9a1fcca7d3f637c7b317e1723213ac9e3f0c028c93f9437cfbdb8a7f12e10d03",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/tests_full_offline.log": {
+        "sha256": "259d58fae1bc967c39b7b2c9cecd524421e276204dcfe8298bf242ee0d7a691b",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/tests_p5.log": {
+        "sha256": "83f73b2846b7a03ed6c3bea0f42743b29bf49162e19e2f9736a1e518fc0b9af6",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/artifact_manifest.json": {
+        "sha256": "f26c359ae461c44c00a09829b895f5c513abd163be2fa6054714f19ee1ba5c82",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/inventory_before.json": {
+        "sha256": "77414e7f6cde8724e42a3ff86cdc49766045a12dff7569d057f1be4f348283c6",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/performance_pandas.json": {
+        "sha256": "9000356f3c86acc87c1aba425eed45f3e4e04ff3db27aa22ad922472452f3847",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/p5_2026-11-09_frozen_v2/tests_p5.xml": {
+        "sha256": "ba37b5597b5734437072ddc1ccb5ae53e63c09fa5982579420ab37bb8f6dba0a",
+        "reason": "Superseded pre-cohort evidence/duplicate metadata; historical bundle with original manifest/source/data is preserved; parent metrics retained for EDA",
+        "merged_into": "data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/history_manifest.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/baseline.json": {
+        "sha256": "38b4549a3717f87cefeadb0c047d685629872d94bcd8e80da60d14ec8f1b04b3",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/reference_search_all_surfaces.json": {
+        "sha256": "81a70c4b0cd597c4c3e4f693be5b8b7fc87d5e04cf3309cc0a2892808c6727eb",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/artifact_verification.log": {
+        "sha256": "a184180a4d1f6fda21641cf6c061030079ff78e0232ee0792e8ba284d3d0fe73",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/notebook_root_regression_before.txt": {
+        "sha256": "cdcbe66797c0635cc8620b8c3e6c29ae636b9ed863696413051cbf0b2aecb597",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/reference_matches_all_surfaces.txt": {
+        "sha256": "0336a50b46e790b94c77f61e9fe545b297193a583d43670a086df1745cce0692",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/git_diff_before.patch": {
+        "sha256": "aff4062f82555a321cff97587938c791ac74a2a298364e7504b63d0a7e39996c",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/git_status_after.txt": {
+        "sha256": "d5a272a007d47d61b05d1d5363228e8129f322aa71fadae05ca833f49785f1eb",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/tests_full_offline.log": {
+        "sha256": "48106122a5b1dd0fe8ca0d517a48cf521b4cfe36fd2179e00e53670533eaa70d",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/references_before.txt": {
+        "sha256": "4e3b8089b755b4f200a72bb327d5a69b2f0c8c56c13a40547ef3165a5666d3bc",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/cache_cleanup.json": {
+        "sha256": "d68b2850aebcfbe4445397d330feeb42a31c175f4f75966ca6a6b7e083ee839b",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/collection_error_comparison.json": {
+        "sha256": "049a3da01c89fca2521482ad6de053cc07166bf87a9e7baaea361930572ae5e9",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/tests_p5.log": {
+        "sha256": "8af6584ab0da881cff092f0a08acfb80e86c6524b7d422207f8731fc10545bc7",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/document_links_before.json": {
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/preserved_references.json": {
+        "sha256": "b0a27433d56d5ad50b07ab8b3da27c6988e9a0fc93cc762d4641f01a75db4537",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/reference_search.json": {
+        "sha256": "e9c068537be1570314745213593e0d1542ef820b7d99af993182e2a4bfa0bba9",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/notebook_execution.log": {
+        "sha256": "f692f2063da16c190a15de0a04a1acdde038cb5aaf7044dd59a0408986ebe1be",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": false
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/git_status_before.txt": {
+        "sha256": "69783efe430edf80f88e8d6bc6f698f83582a37f8a7bb6b04d7afc250bb4ed0f",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/structure_inventory.json": {
+        "sha256": "b64dec52d767a5451df48e9cf7122ab1c11065ddc36aa730ea4eace29978f0ba",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/before/notebooks/eda_p5_final_cohort.html": {
+        "sha256": "a7bd86435ad951bd3e6d0238a0995e1fee384f1a0c05b159acc35342f6b4164d",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/before/notebooks/eda_p5_final_cohort.ipynb": {
+        "sha256": "e534eef4c88f6b4cfb918b449053ee36ca67f306603234bf954fc573ba644dde",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/before/reports/preprocessing/05_encoding/p5_2026-11-09_cohort_v1/artifact_manifest.json": {
+        "sha256": "346b72b1f26cf350b860d75382390cbbf8664c9a8c84df41021aa81f3aa41b06",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/before/preprocessing/encoding/build_cohort_notebook.py": {
+        "sha256": "f66f238e8c30e6482b2741cd07d17548f0f21602f1e64c12d648be59ddd01579",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": true
+      },
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/before/data/preprocessing/05_encoding/artifact_manifest.json": {
+        "sha256": "346b72b1f26cf350b860d75382390cbbf8664c9a8c84df41021aa81f3aa41b06",
+        "reason": "One-off refactor discovery/debug/backup superseded by current checks; only tracked prior content is available at baseline git commit",
+        "merged_into": "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json",
+        "tracked_at_baseline": false
+      },
+      "preprocessing/encoding/requirements-review.txt": {
+        "sha256": "1549ffb74c3eb6fd6cddce7791fc9e15baf38267245e9c7a6435dc0dd7a269d5",
+        "reason": "Obsolete broad review environment pins; retained final EDA tools merged, no Pandas/NumPy runtime upgrade",
+        "merged_into": "preprocessing/encoding/requirements-notebook.txt",
+        "tracked_at_baseline": true
+      }
+    },
+    "updated_paths": {
+      "reports/preprocessing/05_encoding/approval_package_v2/README.md": {
+        "before_sha256": "750631d95f0491bab831594545c728e3b707a53e5ca79bc142768dc2c5df9d7f",
+        "sha256": "98130ed59ebf3dba9e0b1e482169c4fca1d78b3b10c90baf9ded1409eb7402f4",
+        "reason": "Redirect retired review report link to the consolidated handoff"
+      }
+    },
+    "tests_path": "reports/preprocessing/05_encoding/refactor_2026-11-09/tests_p5.xml",
+    "authorization": "reports/preprocessing/05_encoding/refactor_2026-11-09/authorization_refactor.md",
+    "authorization_sha256": "e1fa2d5b3d4dc864a2eba9a4aa026be8f2ea7e21b59ce0388016dafd02a19d9a",
+    "evidence_sha256": {
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/notebook_execution_retry.log": "2adf8d8e7b6748e0309f571209af9e874d0e2b1664fd1100efbeb5753ade6e86",
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/tests_full_offline.xml": "cf97c92a41d071d000f179321b23f07ca99b4a6f61b140d2e11dece6e45bfb8e",
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/artifact_equivalence.json": "d5aab73530172ef4191c03938f00ff55660fa5300af6512f6dffe5c67a6d625c",
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/commands.json": "0651349be8c1c3bdba43ced96d8582f1665d37e4370cf69b18a0eb8706001adc",
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/change_inventory.json": "ddbb005d1323150ea5e5b800057d668d162fcf6829274db8084f049717237c84",
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/authorization_refactor.md": "e1fa2d5b3d4dc864a2eba9a4aa026be8f2ea7e21b59ce0388016dafd02a19d9a",
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/entrypoint_temporary_run.log": "cbd51c3f4318171eb3db4274b5e575e6e5d5dadb22ca5ea9e127978e0403b81a",
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/tests_p5.xml": "313582ba84b293724cfb443cea0772b0a3458669a6a37078a2079e3ecbfdcb23",
+      "reports/preprocessing/05_encoding/refactor_2026-11-09/post_refactor_integrity.json": "a7463b02670d13278d707f55b08e9945c37d4af12ad05a927bc712702e817d8d"
+    },
+    "tests_passed": 72,
+    "finalizer_current_run": "PASS",
+    "merged_symbols": {
+      "preprocessing.encoding.tfidf_extractor.extract_tfidf_space": "preprocessing.encoding.execution_tfidf.extract_tfidf_space",
+      "preprocessing.encoding.tfidf_extractor.COMMON_JD_STOPWORDS": "preprocessing.encoding.execution_io.COMMON_JD_STOPWORDS"
+    }
   }
 }

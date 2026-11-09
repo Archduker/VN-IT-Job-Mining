@@ -1,6 +1,6 @@
 # P5 Execution Contract — cohort_v1, 09/11/2026
 
-Contract hiện hành theo quyết định Phát trong [authorization_agent07.md](../../../preprocessing/encoding/assets/cohort_v1/authorization_agent07.md). Bản 5.177 trước đây đã lưu nguyên bytes tại `data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/docs/preprocessing/encoding/06_p5_execution_contract.md`; evidence gốc không xóa.
+Contract hiện hành theo quyết định Phát trong [authorization_agent07.md](../../../preprocessing/encoding/assets/cohort_v1/authorization_agent07.md). Điểm bắt đầu duy nhất là [handoff05](05_p5_handoff_2026-11-08.md), đã gộp report07 và các bản nháp. Bản 5.177 trước đây giữ nguyên trong history bundle; đợt _01 chỉ retire trial/debug/duplicate có hash và căn cứ, không đổi policy của contract.
 
 ## 1. Input, cohort và quyền áp policy
 
@@ -69,7 +69,7 @@ Bốn canonicalpaths:
 
 TF-IDF,unmatched,quality,validation,manifest cùng05_encoding. Agent_05§10/agent_07§5 cho phép đường dẫnGolden này dù preprocessing/CLAUDE cũ cấm legacydata/curated; ngoại lệ đã ghi, không đổi path ngầm.
 
-Một bản lịch sử5177cóchecksum ở `data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/`, gồm bundle,contract/report và executedsource trước sửa; history_manifest map original→archivedpaths. Không tạo thêm nhiều bộ trùng. Gói v1/v2/scope-review-v1/snapshot/quyết định cũ nguyênbytes; validator lịch sử cần resolve canonical cũ qua historymap.
+Một bản lịch sử5177cóchecksum ở `data/preprocessing/05_encoding_history/p5_2026-11-09_frozen_v2/`, gồm bundle,contract/report và executedsource trước sửa; history_manifest map original→archivedpaths. Giữ snapshot, decision files và semantic evidence nguyên bytes. Theo yêu cầu _01, trial/debug/duplicate đã được thay thế có thể retire; manifest.refactor.retired_paths ghi SHA trước xóa và đích gộp. Validator lịch sử resolve canonical cũ qua historymap; file retire chỉ được bỏ qua khi exact prior hash khớp retirement record. Thay đổi liên kết README tích hợp được ghi riêng trong updated_paths với cả before/after SHA; không sửa dữ liệu proposal/decision để vượt kiểm tra.
 
 Tempstage→validate toàn bộ→kiểm historicalchecksum→gỡ old successmanifest trước đổi file→destination-local temp+rename→validate canonical mới→manifest cuối. Không công bố bundle trộn cohort; failure không có successmanifest mới. File đúng giữ nguyên, file sai chỉ thay khi backup/historical checksum đã khớp. Dry-run không ghi datasets hoặc successreport/manifest, không đè report cũ.
 
@@ -83,6 +83,6 @@ Manifest ghi ledger/decision/cohort/input/vocabulary/config/stopword/orderedIDs 
 
 FP-Growth dùng Xbool với denominator5.104 hoặc cohort con được khai báo. Clustering ghép sparseTF-IDF/X theoID,không tự đổi thuật toán/weights ởP5. RF/SHAP không lấy quality/audit hoặc salarytarget/derivedsalary làm predictor; job_family không phải goldlabel.
 
-Notebook/HTML hiện hành `notebooks/eda_p5_final_cohort.ipynb/.html`, chạy kernelmới đủcells,provenance và datahash rõ. EDA5177 cũ giữ historical,không gọi là cohortcuối. Không phân tíchK/ML hoặc suy ra toàn thị trường.
+Notebook/HTML hiện hành `notebooks/eda_p5_final_cohort.ipynb/.html`, chạy kernelmới đủcells,provenance và datahash rõ. EDA5177 cũ đã retire theo _01; giữ parent metrics thực sự được notebook cuối đọc để so sánh. Không phân tíchK/ML hoặc suy ra toàn thị trường.
 
 Data validation,68P5tests,Ruff và EDA đã pass. Python3.12 **UNVERIFIED** do không có môi trường riêng khả dụng trong các paths kiểm; không tự nâng PASS. Fullrepo vẫn6collectionerrors sẵn có ngoàiP5. Phần artifact/cohort/EDA đã bàn giao,nhưng không tự đánh acceptance/P5complete khi chưa xử lý xác minh3.12/ngoại lệ nghiệm thu phù hợp. Scope chưa toàn diện và upstream lineage/jobfamily vẫn là giới hạn công khai, không được gọi là đã sửa upstreamfilter.

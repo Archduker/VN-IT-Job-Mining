@@ -1,6 +1,6 @@
 # Vocabulary v2 — proposal, not approved
 
-Báo cáo/đường dẫn gửi reviewer: [05_p5_vocabulary_v2_review.md](../../../../docs/preprocessing/encoding/05_p5_vocabulary_v2_review.md).
+Báo cáo/đường dẫn gửi reviewer: [05_p5_vocabulary_v2_review.md](../../../../docs/preprocessing/encoding/05_p5_handoff_2026-11-08.md).
 
 Đọc `vocabulary_proposed_v2.csv`, `ambiguities_for_review_v2.csv`, `context_evidence.csv`, `exclusions_and_replacements.csv`, `group_definitions.json` và `group_crosswalk.csv`; mapping máy đọc là `mapping_proposed_v2.json`. Có230proposals +6reserves;214hard/16soft,137mục<20,19group chưa khớp sạch. Decision trống, chưa approved.
 

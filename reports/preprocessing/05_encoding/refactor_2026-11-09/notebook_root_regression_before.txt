@@ -1,2 +1,0 @@
-Reproduced from notebooks/ with a new namespace:
-[Errno 2] No such file or directory: '/home/phat/Downloads/2026/Data_mining/Project_Data_Mining/VN-IT-Job-Mining/notebooks/data/preprocessing/05_encoding/artifact_manifest.json'
