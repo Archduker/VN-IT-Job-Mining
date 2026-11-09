@@ -33,6 +33,11 @@ matplotlib>=3.9.0
 scipy>=1.14.0
 scikit-learn>=1.4.0
 
+# --- Data Mining (mining/) ---
+mlxtend>=0.23.0      # FP-Growth
+shap>=0.45.0         # TreeSHAP cho mô hình lương
+hdbscan>=0.8.33      # GLOSH outlier; thiếu thì test_outlier_ratio_follows_quantile rơi về fallback sklearn
+
 # --- Scheduling / Orchestration ---
 # Airflow được cài riêng qua scripts/setup_airflow.sh
 # để tránh conflict với constraints
