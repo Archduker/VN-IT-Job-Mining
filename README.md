@@ -115,7 +115,7 @@ Khác với các pipeline truyền thống áp dụng công thức "mò mẫm" c
 |  * Cascade Salary Parser:              * Bullet Stitching: Nối dòng văn bản đứt gãy                |
 |    - Tầng 1: Header Regex              * Text Cleaner: Bỏ HTML rác, emoji, tag [HN], [HCM]         |
 |    - Tầng 2: JD Regex Scanner          * Taxonomy: Phân loại 12 Job Families chuẩn (SD2)           |
-|    - Tầng 3: GenAI Fallback            * Seniority: Chuẩn hóa 6 cấp bậc (Intern -> Lead/Mgr)       |
+|    - Tầng 3: GenAI Fallback            * Seniority: Chuẩn hóa 5 cấp bậc (Intern/Fresher -> Lead/Mgr)       |
 |  * Quy đổi USD->VND (25,400)           * ESCO IT Taxonomy: Chuẩn hóa biến thể kỹ năng (SD3)        |
 |  * Chuẩn hóa lương năm (/12), ngày ISO                                                             |
 |                     │                               │                                              |

@@ -23,7 +23,7 @@
 
 | Mã | Cột gốc | Cách | Ví dụ |
 |---|---|---|---|
-| E1 | `seniority` | ordinal 0–5 theo thứ tự Thực tập → Trưởng nhóm/Quản lý, "Chưa rõ" = -1 | "Junior" → 2 |
+| E1 | `seniority` | ordinal 0–4 theo thứ tự Intern/Fresher → Lead/Manager, "Chưa rõ" = -1 | "Junior" → 1 |
 | E2 | `job_family`, `source_platform`, `raw_employment_type` (đã chuẩn hóa) | one-hot; tên cột dùng mã không dấu, từ điển giữ nhãn tiếng Việt | "Backend" → `job_family__backend=1` |
 | E3 | `locations[].tinh_key` (34 tỉnh) | multi-hot cho 10 tỉnh nhiều tin nhất, còn lại `tinh__other`; thêm `remote`, `ngoai_vn` 0/1 | `["ha_noi","da_nang"]` → 2 cột = 1 |
 | E4 | `skills_std` | multi-hot cho K kỹ năng phổ biến nhất (đề xuất K = 200, hoặc kỹ năng có ≥ 20 tin), còn lại đếm vào `skills__other_count` | |

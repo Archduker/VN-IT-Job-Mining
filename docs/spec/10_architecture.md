@@ -113,7 +113,7 @@ Kiến trúc Medallion chia dữ liệu thành 3 tầng logic với mức độ 
 - **Định dạng:** Apache Parquet và JSON metadata từ điển.
 - **Đặc tính kỹ thuật:**
   - **Golden Master Jobs:** Dữ liệu hoàn chỉnh nhất của từng việc làm thực tế trên thị trường, đã được điền khuyết theo quy tắc hợp nhất uy tín, chuẩn hóa địa phương theo 34 tỉnh/thành phố sáp nhập mới.
-  - **Gán nhãn nghiệp vụ (Business Tagging):** Phân loại vào 12 Job Family chuẩn và 6 cấp bậc Seniority.
+  - **Gán nhãn nghiệp vụ (Business Tagging):** Phân loại vào 12 Job Family chuẩn và 5 cấp bậc Seniority.
   - **Chuẩn hóa mức lương (Salary Standardization):** Bóc tách dải lương, quy đổi ngoại tệ (USD $\rightarrow$ VND tỷ giá 25.400) về đơn vị duy nhất Triệu VNĐ/tháng.
   - **Ma trận khai phá dữ liệu (Mining Feature Matrices):** Sinh sẵn One-hot Matrix, Co-occurrence Matrix, và Vector Space TF-IDF để các mô hình Data Mining truy xuất với độ trễ thấp nhất.
 

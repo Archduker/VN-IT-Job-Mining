@@ -18,7 +18,7 @@ Bộ golden (P4) là bảng chữ đã chuẩn hóa. P5 đổi bộ golden sang 
 ## 3. Pseudo code
 
 ```text
-SENIORITY_ORDER = ["Thực tập","Mới tốt nghiệp","Junior","Middle","Senior","Trưởng nhóm/Quản lý"]   # "Chưa rõ" = -1
+SENIORITY_ORDER = ["Intern/Fresher","Junior","Middle","Senior","Lead/Manager"]   # "Chưa rõ" = -1
 
 run(dry_run):
     df = đọc all.parquet

@@ -77,19 +77,21 @@ Hệ thống sử dụng cơ chế luật kết hợp (Title Keyword Matching + 
   - Vị trí `Fullstack` yêu cầu trong phần mô tả công việc (JD) bắt buộc phải xuất hiện đồng thời kỹ năng thuộc nhóm Backend (ví dụ: `Node.js`, `Java`, `Go`) và Frontend (ví dụ: `React`, `Vue`, `TypeScript`). Nếu chỉ có kỹ năng phía máy chủ, tin sẽ tự động hạ cấp về `Backend`.
 
 ### 2.2. Chuẩn Hóa Cấp Bậc Kinh Nghiệm (Seniority Level Mapping)
-Cấp bậc được chuẩn hóa thành 6 nhãn theo thứ bậc thứ tự (Ordinal Encoding từ 0 đến 5, gán -1 cho "Chưa rõ"):
+Cấp bậc được chuẩn hóa thành 5 nhãn theo thứ bậc thứ tự (Ordinal Encoding từ 0 đến 4, gán -1 cho "Chưa rõ"). Chốt 09/11/2026 theo cài đặt của Duy (`preprocessing/transformation/experience_parser.py`); bản 6 nhãn cũ (tách Thực tập và Mới tốt nghiệp) đã bỏ:
 
-$$\text{Seniority} \in \{\text{Thực tập (0)}, \text{Mới tốt nghiệp/Fresher (1)}, \text{Junior (2)}, \text{Middle (3)}, \text{Senior (4)}, \text{Trưởng nhóm/Quản lý (5)}\}$$
+$$\text{Seniority} \in \{\text{Intern/Fresher (0)}, \text{Junior (1)}, \text{Middle (2)}, \text{Senior (3)}, \text{Lead/Manager (4)}\}$$
+
+Thứ tự áp dụng: luật theo từ trên `job_title` → trên `raw_seniority_text` → theo số năm kinh nghiệm tối thiểu (≥ 5 Senior, ≥ 2 Middle, > 0 Junior, = 0 Intern/Fresher) → -1 nếu không có căn cứ.
 
 ```python
-SENIORITY_RULES = [
-    ("Thực tập", [r"\bintern\b", r"\binternship\b", r"thực tập", r"thực tập sinh"]),
-    ("Mới tốt nghiệp", [r"\bfresher\b", r"mới tốt nghiệp", r"chưa có kinh nghiệm"]),
-    ("Junior", [r"\bjunior\b", r"\bjr\b", r"1\s*[-–]\s*2\s*năm"]),
-    ("Middle", [r"\bmiddle\b", r"\bmid\b", r"2\s*[-–]\s*4\s*năm"]),
-    ("Senior", [r"\bsenior\b", r"\bsr\b", r"chuyên viên cao cấp", r"5\+?\s*năm"]),
-    ("Trưởng nhóm/Quản lý", [r"\blead\b", r"\bleader\b", r"trưởng nhóm", r"\bmanager\b", r"quản lý", r"\bdirector\b", r"\bhead of\b"]),
-]
+SENIORITY_LEVELS = {"Intern/Fresher": 0, "Junior": 1, "Middle": 2, "Senior": 3, "Lead/Manager": 4}
+SENIORITY_TITLE_RULES = (  # kiểm theo thứ tự này, khớp đầu tiên thắng
+    (0, (r"\bintern\b", r"thuc tap", r"\bfresher\b", r"\bgraduate\b", r"moi tot nghiep")),
+    (4, (r"\blead\b", r"\bleader\b", r"\bmanager\b", r"\bdirector\b", r"\bhead\s+of\b", r"truong nhom", r"truong phong", r"quan ly", r"giam doc")),
+    (3, (r"\bsenior\b", r"\bsr\b")),
+    (2, (r"\bmiddle\b", r"\bmid\b")),
+    (1, (r"\bjunior\b", r"\bjr\b")),
+)  # văn bản được bỏ dấu và hạ chữ thường trước khi khớp
 ```
 
 ---

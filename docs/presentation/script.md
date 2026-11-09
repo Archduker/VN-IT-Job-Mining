@@ -306,7 +306,7 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - *Quận huyện đâu?*  
   Bỏ hẳn vì sau 2025 không còn cấp huyện.
 - *Cấp bậc chuẩn có mấy bậc?*  
-  6 bậc: Thực tập, Mới tốt nghiệp, Junior, Middle, Senior, Trưởng nhóm/Quản lý; không xác định thì để trống.
+  5 bậc: Intern/Fresher, Junior, Middle, Senior, Lead/Manager; không xác định thì ghi -1.
 
 **Lấy số ở đâu:**
 

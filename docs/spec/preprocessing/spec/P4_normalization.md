@@ -32,7 +32,7 @@ Code sửa PRE-1 (khớp từ nguyên vẹn) đã có test, đang ở git stash 
 |---|---|
 | `locations` (cập nhật) | mỗi phần tử thêm `tinh_thanh` chuẩn (1 trong 34), `tinh_cu` (tên trong raw, nếu khác), `tinh_key` (mã), cờ `ngoai_vn` / `remote` |
 | `tinh_chinh` | `tinh_thanh` của địa điểm đầu tiên |
-| `seniority` | 1 trong 6 nhãn: "Thực tập", "Mới tốt nghiệp", "Junior", "Middle", "Senior", "Trưởng nhóm/Quản lý"; không xác định được thì "Chưa rõ" |
+| `seniority` | 1 trong 5 nhãn: "Intern/Fresher", "Junior", "Middle", "Senior", "Lead/Manager" (`seniority_level` 0–4); không xác định được thì -1 ("Chưa rõ") |
 | `seniority_source`, `seniority_prob` | `raw` / `title` / `kinh_nghiem` / `jev`; xác suất khi dùng JEV |
 | `job_family` | 1 trong 12 nhóm nghề chuẩn (bảng dưới) hoặc "Khác" |
 | `job_family_source`, `job_family_prob` | như trên |
@@ -103,7 +103,7 @@ Luật:
 
 | Mã | Luật | Ví dụ trước → sau |
 |---|---|---|
-| N2 | Cấp bậc theo thứ tự: luật **theo từ nguyên vẹn** trên `raw_seniority_text` → trên tiêu đề → theo số năm kinh nghiệm (0 → Mới tốt nghiệp, 1–2 → Junior, 3–4 → Middle, ≥ 5 → Senior) → JEV `choice` 6 nhãn (chỉ khi các bước trước không ra, có `--use-api`). JEV prob < 0,5 → "Chưa rõ" | "Trưởng phòng" → "Trưởng nhóm/Quản lý" (`raw`); "Senior Java" → "Senior" (`title`) |
+| N2 | Cấp bậc theo thứ tự: luật theo từ nguyên vẹn trên `job_title` → trên `raw_seniority_text` → theo số năm kinh nghiệm tối thiểu (0 → Intern/Fresher, > 0 → Junior, ≥ 2 → Middle, ≥ 5 → Senior) → -1 nếu không có căn cứ. Không dùng model | "Trưởng phòng" → "Lead/Manager" (`raw`); "Senior Java" → "Senior" (`title`) |
 | N3 | Nhóm nghề: luật theo từ nguyên vẹn trên tiêu đề + `skills_std` (PRE-1) → JEV `choice` 12 nhóm + "Khác" khi luật không ra. prob < 0,5 → "Khác" | "Backend Developer" → "Backend", không còn ra BA |
 | N4 | Kỹ năng: ánh xạ về tên chuẩn bằng `skills.json` (P3), bỏ trùng | "ReactJS" → "React" |
 | N5 | Công ty: `company_norm` | "Cty CP A" / "CÔNG TY CỔ PHẦN A" → "a" |

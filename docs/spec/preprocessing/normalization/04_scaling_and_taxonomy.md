@@ -73,12 +73,24 @@ Toàn bộ các tiêu đề công việc tự do từ 8 sàn tuyển dụng đư
 
 ---
 
-## 4. Chuẩn Hóa 6 Bậc Nghề Nghiệp (Seniority Standardization)
+## 4. Chuẩn Hóa 5 Bậc Nghề Nghiệp (Seniority Standardization)
 
-Trường `raw_seniority_text` và kết quả suy luận từ JD được ánh xạ về **6 cấp bậc chuẩn**:
+Trường `raw_seniority_text` và kết quả suy luận từ JD được ánh xạ về **5 cấp bậc chuẩn** (chốt 09/11/2026, xem SPEC-06 §2.2):
 
 ```text
 +----------------------------------------------------------------------------------------------------+
+|                                  5 CẤP BẬC SENIORITY QUY CHUẨN                                     |
++----------------------------------------------------------------------------------------------------+
+| 0. INTERN/FRESHER : Thực tập sinh, Mới tốt nghiệp, chưa có kinh nghiệm.                            |
+| 1. JUNIOR         : Dưới 2 năm kinh nghiệm, làm việc có người hướng dẫn.                           |
+| 2. MIDDLE         : Từ 2 đến dưới 5 năm, làm việc độc lập.                                         |
+| 3. SENIOR         : Từ 5 năm, giải quyết bài toán kiến trúc, hướng dẫn junior.                     |
+| 4. LEAD/MANAGER   : Team Lead, Trưởng nhóm/phòng, Manager, Director.                               |
+| -1. CHƯA RÕ       : Không có căn cứ từ chữ hoặc số năm kinh nghiệm.                                |
++----------------------------------------------------------------------------------------------------+
+```
+
+----------------------------------------------------------------------------------------------------+
 |                                  6 CẤP BẬC SENIORITY QUY CHUẨN                                     |
 +----------------------------------------------------------------------------------------------------+
 | 1. INTERN    : Thực tập sinh, Sinh viên năm cuối, Intern Developer.                                |

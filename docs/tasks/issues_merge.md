@@ -25,7 +25,7 @@ Test sau merge (bỏ qua `tests/test_golden_field_preservation.py`): 440 pass, 6
 | Mã | Quyết định | Người quyết |
 |---|---|---|
 | D1 | Chấp nhận `it_policy.json` (Tài, 5.409 tin non_IT bị loại) nguyên trạng. Sau này dùng model phân loại lại các tin bị loại (PRE-15) | người dùng |
-| D2 | Tên tỉnh: "TP. Hồ Chí Minh". Cấp bậc 5 hay 6, Embedded hay UI/UX: chốt theo dữ liệu (PRE-22) | người dùng |
+| D2 | Tên tỉnh: "TP. Hồ Chí Minh". **Cấp bậc: 5 cấp của Duy (chốt 09/11, tài liệu đã sửa, code còn lệch: PRE-22)**. Embedded/UI-UX: chưa hiểu, chưa chốt | người dùng |
 | D3 | Cohort của Phát: chưa quyết (PRE-28) | - |
 | D4 | Đường `features.parquet`: chưa chốt, gắn GEN-4/GEN-9 | - |
 | D5 | Khoa: áp patch lên nhánh mới (đã làm) | người dùng |
@@ -61,12 +61,12 @@ Cột "Chờ" = cần quyết định nào trước khi sửa. "Mức": C chặn
 | PRE-16 | Integration chưa đọc đầu ra Dedup `01b_deduplication`; 5.177 lệch 4.897 | Tài | B | - | mở |
 | PRE-17 | Snapshot `reports/preprocessing/01_clean`, `01b_deduplication` là kết quả `f693b30`, không phải code đã sửa | Tài | B | - | mở |
 | GEN-6 | Test ledger `test_latest_status_change_wins_between_workers` fail trên Windows (liên quan SCRAPE-17) | Tài | B | - | mở |
-| PRE-18 | I0 đổi từ drop sang modify: dòng hỏng thành bản ghi giả, trái P2 §8; `run()` đổi `dry_run` mặc định | Hoàng | B | thiết kế I0 | chờ quyết định |
+| PRE-18 | I0 đổi từ drop sang modify: dòng hỏng thành bản ghi giả, trái P2 §8; `run()` đổi `dry_run` mặc định | Hoàng | B | thiết kế I0 (người dùng chưa hiểu, cần giải thích lại) | chờ quyết định |
 | PRE-19 | `source_job_id` dùng `abs(hash(...))`, không ổn định giữa các lần chạy | Hoàng | C | - | mở |
 | PRE-20 | Hai runner trùng (`run.py`, `run_integration.py`); thiếu test I2-I5; 5.177 vs 8.378 chưa giải thích | Hoàng | B | - | mở |
 | GEN-7 | Tải R2 tự dựng boto3, prefix cũ, bucket gán cứng trong `preprocessing/integration` | Hoàng | B | GEN-4 | chờ quyết định |
 | PRE-21 | Pipeline đặc trưng của Duy ghi trùng `04_normalization/all.parquet`; chưa nối vào `run.py` | Duy | B | - | mở |
-| PRE-22 | Lệch spec Duy: 5 vs 6 cấp bậc, Embedded vs UI/UX, tên tỉnh | Duy | B | D2 (đo dữ liệu) | chờ quyết định |
+| PRE-22 | Lệch spec Duy: đã chốt 5 cấp, tài liệu đã sửa; còn sửa code về thang 5 cấp; Embedded vs UI/UX chưa chốt | Duy | B | Embedded/UI-UX | mở (phần tài liệu xong) |
 | PRE-23 | Lỗi parse tái hiện được: "tối thiểu 10 triệu", "2 tỷ", "Không yêu cầu", "Điện Biên Phủ", Python/PHP Developer, UI/UX | Duy | B | - | mở |
 | PRE-24 | Test P3/P4 nằm ngoài `testpaths`, `make test` không chạy; chạy chung lỗi `tests/conftest.py:42` | Duy | C | - | mở |
 | PRE-25 | `ledger.csv` bị `.gitignore` nhưng `cohort.py`, `finalize_cohort.py` đọc nó | Phát | C | - | mở |

@@ -5,7 +5,7 @@
 ## 1. Ngữ cảnh
 
 Đọc trước:
-- `docs/spec/preprocessing/spec/P4_normalization.md`: N1–N9, bảng 34 tỉnh, 6 cấp bậc, 12 nhóm nghề.
+- `docs/spec/preprocessing/spec/P4_normalization.md`: N1–N9, bảng 34 tỉnh, 5 cấp bậc, 12 nhóm nghề.
 - `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6: JEV, cache, `--use-api`.
 - `preprocessing/common/province.py`, `preprocessing/dictionaries/provinces_34.json` (từ P1).
 - `preprocessing/normalization/text_cleaner.py`: `normalize_seniority`, `classify_job_family`.
@@ -25,7 +25,7 @@ Code sửa PRE-1 (khớp từ nguyên vẹn) đang ở git stash "preprocessing:
 ## 3. Pseudo code
 
 ```text
-SENIORITY = ["Thực tập","Mới tốt nghiệp","Junior","Middle","Senior","Trưởng nhóm/Quản lý"]   # không xác định → null (để trống)
+SENIORITY = ["Intern/Fresher","Junior","Middle","Senior","Lead/Manager"]   # không xác định → -1
 FAMILIES  = [12 nhóm trong đặc tả]                                                         # + "Khác"
 
 process_source_records(source, rows, jev, dry_run):     # rows = một nhóm source_platform của 03_transformation/all.parquet
@@ -73,7 +73,7 @@ run(sources, dry_run, use_api):
 | `"Hà Giang"` | `"Tuyên Quang"` |
 | `raw="Remote"` | `tinh_thanh=None`, `remote=true` |
 | `raw="Tokyo, Japan"` | `tinh_thanh=None`, `ngoai_vn=true` |
-| `raw_seniority_text="Trưởng phòng"` | "Trưởng nhóm/Quản lý", `seniority_source="raw"` |
+| `raw_seniority_text="Trưởng phòng"` | "Lead/Manager", `seniority_source="raw"` |
 | title "Senior Java Developer" | "Senior", `title` |
 | title "International Business Analyst", không có cấp bậc, không có số năm | `seniority=None` (để trống), không gọi JEV |
 | `raw_seniority_text="Nhân viên"`, title "Kế toán", không có số năm | `seniority=None` |

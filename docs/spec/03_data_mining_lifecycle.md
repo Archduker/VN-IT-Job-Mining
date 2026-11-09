@@ -108,7 +108,7 @@ flowchart LR
     Raw["Raw Envelope\nJSON"] --> B1["01 Clean\n(Lọc non-IT, rác, trùng nội sàn)"]
     B1 --> B2["02 Integration\n(Ép phẳng 18 trường, khử trùng chéo)"]
     B2 --> B3["03 Transformation\n(Ép kiểu số, chuẩn lương VND, ngày)"]
-    B3 --> B4["04 Normalization\n(34 tỉnh, 6 cấp bậc, 12 nhóm nghề, Skills)"]
+    B3 --> B4["04 Normalization\n(34 tỉnh, 5 cấp bậc, 12 nhóm nghề, Skills)"]
     B4 --> B5["05 Encoding\n(One-Hot ma trận kỹ năng, Ordinal)"]
     B4 --> Golden["Golden Dataset\n(curated_flat_golden_jobs.parquet)"]
     B5 --> Features["Features Matrix\n(features.parquet)"]
@@ -125,7 +125,7 @@ flowchart LR
    - Chuẩn hóa trường kinh nghiệm thành số thực năm (`experience_years`), phân tách trường hợp không đòi hỏi kinh nghiệm ($0$ năm) và tin ẩn lương có gắn cờ `is_salary_negotiable = True`.
 4. **Bước 04 - Normalization:**
    - Chuẩn hóa địa lý về danh mục 34 tỉnh/thành phố sau sáp nhập hành chính (Nghị quyết có hiệu lực từ 01/07/2025).
-   - Chuẩn hóa chức danh vào 1 trong 6 cấp bậc **Seniority**: *"Thực tập", "Mới tốt nghiệp", "Junior", "Middle", "Senior", "Trưởng nhóm/Quản lý"*.
+   - Chuẩn hóa chức danh vào 1 trong 5 cấp bậc **Seniority**: *"Intern/Fresher", "Junior", "Middle", "Senior", "Lead/Manager"*.
    - Chuẩn hóa vị trí vào 1 trong **12 Job Families** công nghệ.
    - Chuẩn hóa tên kỹ năng theo từ điển kỹ năng chuẩn `skills.json` (ví dụ: `reactjs`, `React.js`, `ReactJS` $\rightarrow$ `React`).
    - Xử lý ngoại lai lương qua kỹ thuật Winsorization tại phân vị 1% và 99%, tính toán $\log(1 + Salary)$.

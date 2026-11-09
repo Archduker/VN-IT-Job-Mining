@@ -156,6 +156,9 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
 **PRE-22. Lệch spec giữa cẩm nang Duy và SPEC-06/P4** (Duy)
 
+- **Đã chốt 09/11/2026: dùng 5 cấp của Duy** (Intern/Fresher 0, Junior 1, Middle 2, Senior 3, Lead/Manager 4, -1 chưa rõ). Tài liệu đã sửa theo: SPEC-03, SPEC-06 §2.2, SPEC-10, `docs/spec/preprocessing/spec/P4` và `P5`, `normalization/04_scaling_and_taxonomy.md`, `README.md`, `docs/presentation/script.md`, hai prompt nháp P4/P5. Chưa đụng vào code.
+- **Việc còn lại (code vẫn dùng thang 6 nhãn):** `preprocessing/encoding/run.py:50-58` (`SENIORITY_ORDER`, cột `seniority_ord` 0–5), `preprocessing/encoding/execution_features.py:40`, `preprocessing/normalization/run.py:103` và `text_cleaner.py:24` (nhãn "Trưởng nhóm/Quản lý"), `mining/config.py:81`, `mining/data_io.py` (adapter 0–4 → 0–5), `mining/synthetic.py`, `docs/tasks/06_phuc_data_mining_algorithms.md`. Phải thống nhất về `seniority_level` 0–4 trước khi chạy lại pipeline, nếu không `seniority_ord` (Phát) và `seniority_level` (Duy) lệch nhau.
+
 - Đã chốt: tên tỉnh "TP. Hồ Chí Minh" (theo spec). Chưa sửa code.
 - Cấp bậc, 6 cấp (SPEC-06 §2.2) so với 5 cấp (Duy, `experience_parser.py:61`):
 
@@ -183,9 +186,9 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 | Senior | 825 (7,7%) | 824 (7,7%) |
 | Lead/Quản lý | 1.807 (16,8%) | 1.805 (16,8%) |
 
-  Kết luận từ số đo, chưa chốt: hai cách bao quát gần như bằng nhau (cùng ~67% chưa rõ nếu chỉ dùng chữ); 6 cấp chỉ khác ở việc tách 700 tin thành 587 thực tập + 140 mới tốt nghiệp. Cấp "Mới tốt nghiệp" chỉ 1,3% tin, nhóm nhỏ cho mining. Phần "chưa rõ" giảm khi dùng năm kinh nghiệm (PRE-11 đo 13% sau bước này). Lý do chữ thiếu: nhãn sàn thường chung chung (TopCV "Nhân viên" 1.979/2.674; VietnamWorks "Nhân viên" 978/1.219; JobsGO "Nhân Viên/Chuyên Viên" 1.250/1.540); TopDev (2.780/2.782), ITviec và Glints (không có nhãn) gần như không có nhãn sàn. Lệch nhỏ 700 vs 587+140 do hai bộ luật khác nhau, cần kiểm lại khi chốt.
+  Kết luận từ số đo: hai cách bao quát gần như bằng nhau (cùng ~67% chưa rõ nếu chỉ dùng chữ); 6 cấp chỉ khác ở việc tách 700 tin thành 587 thực tập + 140 mới tốt nghiệp. Cấp "Mới tốt nghiệp" chỉ 1,3% tin, nhóm nhỏ cho mining. Phần "chưa rõ" giảm khi dùng năm kinh nghiệm (PRE-11 đo 13% sau bước này). Lý do chữ thiếu: nhãn sàn thường chung chung (TopCV "Nhân viên" 1.979/2.674; VietnamWorks "Nhân viên" 978/1.219; JobsGO "Nhân Viên/Chuyên Viên" 1.250/1.540); TopDev (2.780/2.782), ITviec và Glints (không có nhãn) gần như không có nhãn sàn. Lệch nhỏ 700 vs 587+140 do hai bộ luật khác nhau, cần kiểm lại khi chốt.
   Không đo được: độ đúng của nhãn (không có nhãn tay), và tỷ lệ sau khi lọc IT và dùng năm kinh nghiệm. Script đo ở scratchpad phiên làm việc, chưa đưa vào repo.
-- Embedded và UI/UX: chưa đo, chưa chốt. Cần xem cách Duy và spec xếp hai nhóm này rồi đếm trên dữ liệu.
+- Embedded và UI/UX: chưa hiểu rõ vấn đề nên **chưa chốt** (người dùng 09/11), giữ mở. Cần giải thích lại và đo trên dữ liệu trước. Cần xem cách Duy và spec xếp hai nhóm này rồi đếm trên dữ liệu.
 
 **PRE-23. Lỗi parse tái hiện được** (Duy)
 
