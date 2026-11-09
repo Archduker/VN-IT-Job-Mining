@@ -10,7 +10,7 @@
 
 Hệ thống được thiết kế theo mô hình **Modern ELT (Extract - Load - Transform)** kết hợp kiến trúc **Medallion Lakehouse** trên nền tảng **Cloudflare R2 Object Storage** và **PostgreSQL Analytics Data Mart** (tận dụng cụm PostgreSQL có sẵn trong Docker Compose của Apache Airflow). 
 
-Khác với các pipeline ETL cổ điển cố ép dữ liệu vào một schema định sẵn ngay khi cào, hệ thống duy trì tính bất biến của dữ liệu thô (Bronze Zone), sau đó tinh chế dữ liệu qua chuỗi tiền xử lý 5 bước không dùng mô hình ngôn ngữ lớn (LLM-Free Deterministic Preprocessing) để tạo ra tập dữ liệu **Golden Master Parquet** với 230 cột đặc trưng phục vụ các thuật toán Data Mining học thuật chuẩn mực, đồng thời nạp vào PostgreSQL Mart để phục vụ các API Dashboard và truy vấn SQL phân tích tốc độ cao.
+Khác với các pipeline ETL cổ điển cố ép dữ liệu vào một schema định sẵn ngay khi cào, hệ thống duy trì tính bất biến của dữ liệu thô (Bronze Zone), sau đó tinh chế dữ liệu qua quy trình chuẩn 4 giai đoạn (Collection → Pre-processing → Processing → Mining, xem mục *Quy trình chuẩn* bên dưới) để tạo ra tập dữ liệu **Golden Master Parquet** phục vụ các thuật toán Data Mining unsupervised, đồng thời nạp vào PostgreSQL Mart để phục vụ các API Dashboard và truy vấn SQL phân tích tốc độ cao.
 
 ```mermaid
 flowchart TD
@@ -33,19 +33,16 @@ flowchart TD
         Bronze --> Silver --> Gold
     end
 
-    subgraph Preprocessing["3. Chuỗi Tiền Xử Lý 5 Bước (preprocessing/)"]
-        P1["Bước 1: Clean (Lọc IT 2 tầng, bỏ rác, dedup C2)"]
-        P2["Bước 2: Integration (Flatten schema -> all.parquet)"]
-        P3["Bước 3: Transformation (Parse lương, exp, sạch HTML)"]
-        P4["Bước 4: Normalization (34 tỉnh thành, Taxonomy)"]
-        P5["Bước 5: Encoding (Multi-hot 230 kỹ năng)"]
-        P1 --> P2 --> P3 --> P4 --> P5
+    subgraph Preprocessing["2. Pre-processing (preprocessing/)"]
+        P1["Imputation · Deduplicate · Noise\nTypecasting · String standardization"]
     end
 
-    subgraph Mining["4. Khai Phá Dữ Liệu Học Thuật"]
-        M1["FP-Growth: Khai phá Top Combo Kỹ năng\n(Support, Confidence, Lift)"]
-        M2["K-Means + PCA: Phân cụm vị trí nghề nghiệp\n(Silhouette Score, 8 clusters)"]
-        M3["Random Forest + SHAP: Dự đoán lương &\nĐịnh lượng giá trị tăng thêm của kỹ năng"]
+    subgraph Processing["3. Processing (Feature Engineering)"]
+        F1["Selection → Extraction → Transformation → Construction\n+ Encoding"]
+    end
+
+    subgraph Mining["4. Mining (Unsupervised)"]
+        M1["Clustering"] & M2["Association Rules"] & M3["Anomaly Detection"] & M4["Dimensionality Reduction"]
     end
 
     subgraph Serving["5. PostgreSQL Analytics Mart & Central Observatory"]
@@ -58,12 +55,27 @@ flowchart TD
     Sources --> Collection
     Collection --> Bronze
     Bronze --> P1
-    P5 --> Gold
+    P1 --> F1
+    F1 --> Gold
     Gold --> Mining
     Gold --> PostgresMart
     Bronze & Airflow --> Ops
     Mining --> Insights
 ```
+
+### Quy trình chuẩn 4 giai đoạn & 5 tiêu chí chất lượng
+
+Dữ liệu đầu ra của pipeline phải thỏa **5 tiêu chí**: **Completeness** (đủ trường, đủ bản ghi), **Accuracy** (đúng giá trị so với nguồn), **Consistency** (cùng kiểu, cùng định dạng, cùng taxonomy giữa 8 sàn), **Timeliness** (đúng kỳ thu thập, ledger/CDC cập nhật), **Uniqueness** (không trùng bản ghi).
+
+| Giai đoạn | Việc phải làm | Tiêu chí chính |
+|---|---|---|
+| 1. Collection (`collection/`) | Cào, lọc, khử trùng (ledger, hash); đầu ra JSON chuẩn, đầy đủ trường của nguồn, raw bất biến | Completeness, Timeliness, Uniqueness |
+| 2. Pre-processing (`preprocessing/`) | Clean sơ bộ: imputation, deduplicate, noise, typecasting, string standardization | Accuracy, Consistency, Uniqueness |
+| 3. Processing | Feature Engineering 4 bước: feature selection, extraction, transformation, construction; kèm encoding | Consistency, Completeness |
+| 4. Mining (`mining/`) | Unsupervised learning: clustering, association rules, anomaly detection, dimensionality reduction | Dùng dữ liệu đã đạt 5 tiêu chí |
+
+- Được dùng model ML/AI hỗ trợ xử lý, nhưng phải chạy trên **dữ liệu thật**, không mock, kết quả tái lập được (xem Nguyên tắc 1).
+- Code hiện tại còn tổ chức theo `clean/ integration/ transformation/ normalization/ encoding/` và `mining/` có thể còn thuật toán supervised (Random Forest + SHAP): xem là lệch so với quy trình chuẩn, chưa phải chuẩn đích.
 
 ---
 
@@ -74,12 +86,12 @@ Toàn bộ hệ thống được đặc tả chi tiết qua 13 tài liệu chu�
 | Mã Đặc Tả | Tên Tài Liệu Đặc Tả | Đường Dẫn Tệp Trong Repo | Phạm Vi Nghiệp Vụ & Mục Tiêu Kỹ Thuật | Trạng Thái |
 |:---:|---|---|---|:---:|
 | **`SPEC-01`** | **Đặc tả Sản phẩm & Nghiên cứu Thị trường (Product Spec)** | [`docs/spec/01_product_spec.md`](docs/spec/01_product_spec.md) | Định nghĩa 5 mục tiêu chiến lược SD1-SD5, phạm vi thời gian tháng 10-11/2026, 8 sàn tuyển dụng, chân dung người dùng sinh viên CNTT | Hoàn tất |
-| **`SPEC-02`** | **Giới hạn Phạm vi & Ràng buộc Kỹ thuật (Out of Scope)** | [`docs/spec/02_out_of_scope.md`](docs/spec/02_out_of_scope.md) | Phân định ranh giới nghiệm thu đợt này, các thành phần ngoài phạm vi, chính sách phi LLM (Zero-LLM policy) | Hoàn tất |
+| **`SPEC-02`** | **Giới hạn Phạm vi & Ràng buộc Kỹ thuật (Out of Scope)** | [`docs/spec/02_out_of_scope.md`](docs/spec/02_out_of_scope.md) | Phân định ranh giới nghiệm thu đợt này, các thành phần ngoài phạm vi, chính sách dùng ML/AI (chỉ trên dữ liệu thật) | Hoàn tất |
 | **`SPEC-03`** | **Vòng đời Khai phá Dữ liệu (CRISP-DM & KDD Lifecycle)** | [`docs/spec/03_data_mining_lifecycle.md`](docs/spec/03_data_mining_lifecycle.md) | Tích hợp chuẩn CRISP-DM với mô hình Modern ELT, chuyển đổi từ Raw Lakehouse sang Golden Master | Hoàn tất |
 | **`SPEC-04`** | **Đặc tả Kỹ thuật Hạ tầng Thu thập Dữ liệu (Collection Spec)** | [`docs/spec/04_collection_spec.md`](docs/spec/04_collection_spec.md) | Kiến trúc Hai Pha (Discovery & Detail), URL Ledger contract, TLS Impersonation, Safe Skip trên 8 sàn | Hoàn tất |
-| **`SPEC-05`** | **Đặc tả Tiền xử lý & Chất lượng Dữ liệu (Preprocessing Spec)** | [`docs/spec/05_preprocessing_spec.md`](docs/spec/05_preprocessing_spec.md) | Quy trình Clean 5 bước, bộ lọc IT 2 tầng không dùng LLM, loại bỏ JD rỗng, khử trùng lặp nội sàn theo mã job_id | Hoàn tất |
-| **`SPEC-06`** | **Đặc tả Biến đổi Dữ liệu & Trích xuất Thuộc tính (Processing Spec)** | [`docs/spec/06_processing_spec.md`](docs/spec/06_processing_spec.md) | Hợp nhất 8 nguồn về Target Schema, `json_flattener.py`, chuẩn hóa 34 tỉnh, parse lương, Multi-Hot 230 cột | Hoàn tất |
-| **`SPEC-07`** | **Đặc tả Thuật toán & Khai phá Dữ liệu (Mining Spec)** | [`docs/spec/07_mining_spec.md`](docs/spec/07_mining_spec.md) | Chi tiết bộ 3 thuật toán: FP-Growth (Skill combos), K-Means Clustering + PCA (Job clusters), Random Forest + SHAP | Hoàn tất |
+| **`SPEC-05`** | **Đặc tả Tiền xử lý & Chất lượng Dữ liệu (Preprocessing Spec)** | [`docs/spec/05_preprocessing_spec.md`](docs/spec/05_preprocessing_spec.md) | Pre-processing: imputation, deduplicate, noise, typecasting, string standardization; bộ lọc IT 2 tầng, loại bỏ JD rỗng, khử trùng lặp nội sàn theo mã job_id | Hoàn tất |
+| **`SPEC-06`** | **Đặc tả Biến đổi Dữ liệu & Trích xuất Thuộc tính (Processing Spec)** | [`docs/spec/06_processing_spec.md`](docs/spec/06_processing_spec.md) | Hợp nhất 8 nguồn về Target Schema, `json_flattener.py`, Feature Engineering (selection, extraction, transformation, construction), encoding | Hoàn tất |
+| **`SPEC-07`** | **Đặc tả Thuật toán & Khai phá Dữ liệu (Mining Spec)** | [`docs/spec/07_mining_spec.md`](docs/spec/07_mining_spec.md) | Mining unsupervised: clustering (K-Means + PCA), association rules (FP-Growth), anomaly detection, dimensionality reduction | Hoàn tất |
 | **`SPEC-08`** | **Đặc tả Đánh giá & Kiểm chứng Tri thức (Evaluation Spec)** | [`docs/spec/08_evaluation_spec.md`](docs/spec/08_evaluation_spec.md) | Tiêu chí đánh giá Lift, Silhouette Score, $R^2$ hồi quy lương, đối chiếu tri thức thực tiễn cho sinh viên | Hoàn tất |
 | **`SPEC-09`** | **Đặc tả Phân hệ Giám sát & Bảng điều khiển (Monitoring Spec)** | [`docs/spec/09_monitoring_spec.md`](docs/spec/09_monitoring_spec.md) | Central Observatory: Data Pipeline Ops Cockpit + Market Insights Dashboard (Salary Heatmap, Skills, Clusters) | Hoàn tất |
 | **`SPEC-10`** | **Kiến trúc Tổng thể Hệ thống Lakehouse (Architecture Spec)** | [`docs/spec/10_architecture.md`](docs/spec/10_architecture.md) | Kiến trúc End-to-End Cloudflare R2 Medallion Lakehouse, Apache Airflow Postgres backend, Zero Egress | Hoàn tất |
@@ -141,17 +153,16 @@ VN-IT-Job-Mining/
 │   ├── itviec/                    # Crawler ITviec (HTML crawler)
 │   └── ...                        # careerviet, vieclam24h, glints, jobsgo
 │
-├── preprocessing/                 # PHÂN HỆ TIỀN XỬ LÝ DỮ LIỆU 5 BƯỚC
-│   ├── CLAUDE.md                  # Hợp đồng ranh giới các bước, phân loại IT 2 tầng không dùng LLM
-│   ├── clean/                     # Bước 1: Lọc IT 2 tầng, bỏ JD rỗng, khử trùng C2
-│   ├── integration/               # Bước 2: json_flattener.py làm phẳng 8 nguồn về all.parquet
-│   ├── transformation/            # Bước 3: salary_parser.py, kinh nghiệm, làm sạch HTML
-│   ├── normalization/             # Bước 4: 34 tỉnh thành, Taxonomy chuẩn hóa
-│   ├── encoding/                  # Bước 5: Multi-hot encoding ma trận 230 cột kỹ năng
+├── preprocessing/                 # GIAI ĐOẠN 2-3: PRE-PROCESSING + PROCESSING
+│   ├── CLAUDE.md                  # Hợp đồng ranh giới các bước, phân loại IT 2 tầng
+│   ├── clean/                     # Lọc IT 2 tầng, bỏ JD rỗng, khử trùng C2
+│   ├── integration/               # json_flattener.py làm phẳng 8 nguồn về all.parquet
+│   ├── transformation/            # salary_parser.py, kinh nghiệm, làm sạch HTML
+│   ├── normalization/             # 34 tỉnh thành, Taxonomy chuẩn hóa
+│   ├── encoding/                  # Multi-hot encoding ma trận kỹ năng
 │   └── dictionaries/              # provinces_34.json, skills.json, it_policy.json
 │
-├── preprocessing/                 # PHÂN HỆ TIỀN XỬ LÝ DỮ LIỆU 5 BƯỚC
-│   └── ...                        # careerviet, vieclam24h, glints, jobsgo
+├── mining/                        # GIAI ĐOẠN 4: MINING (clustering, rules, anomaly, giảm chiều)
 │
 ├── monitoring/                    # PHÂN HỆ GIÁM SÁT CENTRAL OBSERVATORY
 │   ├── CLAUDE.md                  # Quy tắc Zero-Auth, Real Numbers, palette tokens
@@ -170,7 +181,7 @@ VN-IT-Job-Mining/
 ├── scripts/                       # KỊCH BẢN VẬN HÀNH & KIỂM TOÁN DỮ LIỆU
 │   ├── sync_cloud_lakehouse.py    # Đồng bộ 2 chiều máy cá nhân <-> Cloudflare R2
 │   ├── audit_raw_data.py          # Kiểm toán chất lượng dữ liệu thô đối chiếu ledger
-│   └── run_preprocessing.py       # Driver chạy chuỗi 5 bước tiền xử lý
+│   └── run_preprocessing.py       # Driver chạy chuỗi tiền xử lý
 │
 └── tests/                         # HỆ THỐNG KIỂM THỬ PHÂN TẦNG
     ├── unit/                      # Test độc lập logic, hash, parsing, clean
