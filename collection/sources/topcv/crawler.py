@@ -134,47 +134,137 @@ def build_raw_payload(html_content: str) -> dict[str, Any]:
             seen: set[str] = set()
             overview_tags[gn] = [x for x in tags if not (x in seen or seen.add(x))]
 
-    # 5. Mô tả công việc (Job Description Bullets)
+    # 5. Mô tả công việc (Job Description Bullets - SCRAPE-16)
     desc_bullets: list[str] = []
-    desc_sec = soup.find(
-        lambda el: el.name == "div"
-        and el.select_one(".box-job-information-detail-item__title")
-        and "Mô tả công việc" in el.select_one(".box-job-information-detail-item__title").text
-    )
-    if desc_sec:
-        txt_el = desc_sec.select_one(".box-job-information-detail-item__text")
-        if txt_el:
-            desc_bullets = [clean_text(li.text) for li in txt_el.select("li")] or [
-                clean_text(line) for line in txt_el.get_text("\n").splitlines() if clean_text(line)
-            ]
+    # 5.1. Khớp theo container chuẩn .box-job-information-detail-item (không phân biệt hoa/thường)
+    for it in soup.select(".box-job-information-detail-item"):
+        t_el = it.select_one(".box-job-information-detail-item__title")
+        if t_el and any(k in clean_text(t_el.text).lower() for k in ("mô tả công việc", "mô tả", "job description")):
+            txt_el = it.select_one(".box-job-information-detail-item__text")
+            if txt_el:
+                desc_bullets = [clean_text(li.text) for li in txt_el.select("li")] or [
+                    clean_text(line) for line in txt_el.get_text("\n").splitlines() if clean_text(line)
+                ]
+                if desc_bullets:
+                    break
+
+    # 5.2. Khớp linh hoạt theo tiêu đề header (h2, h3, h4, .title)
     if not desc_bullets:
-        for legacy in soup.select(".job-description, #job-description, .job-detail__description"):
+        for h in soup.find_all(["h2", "h3", "h4", "div", "p"]):
+            h_txt = clean_text(h.text).lower()
+            if any(k in h_txt for k in ("mô tả công việc", "mô tả chi tiết", "job description")) and len(h_txt) < 50:
+                parent = h.find_parent(["div", "section"])
+                txt_el = parent.select_one(".box-job-information-detail-item__text, .job-description, .detail-content, .content") if parent else None
+                if txt_el:
+                    desc_bullets = [clean_text(li.text) for li in txt_el.select("li")] or [
+                        clean_text(line) for line in txt_el.get_text("\n").splitlines() if clean_text(line)
+                    ]
+                if not desc_bullets:
+                    sib = h.find_next_sibling(["div", "ul", "ol", "p"])
+                    if sib:
+                        desc_bullets = [clean_text(li.text) for li in sib.select("li")] or [
+                            clean_text(line) for line in sib.get_text("\n").splitlines() if clean_text(line)
+                        ]
+                if desc_bullets:
+                    break
+
+    # 5.3. Legacy selectors
+    if not desc_bullets:
+        for legacy in soup.select(".job-description, #job-description, .job-detail__description, .box-job-description, .job-data"):
             desc_bullets = [clean_text(li.text) for li in legacy.select("li")] or [
                 clean_text(line) for line in legacy.get_text("\n").splitlines() if clean_text(line)
             ]
             if desc_bullets:
                 break
 
-    # 6. Yêu cầu ứng viên (Candidate Requirements Bullets)
+    # 5.4. Fallback cuối: schema.org/JobPosting JSON-LD
+    if not desc_bullets:
+        for script in soup.find_all("script", type="application/ld+json"):
+            try:
+                data = json.loads(script.string or "")
+                if isinstance(data, dict) and data.get("@type") == "JobPosting":
+                    d_html = data.get("description", "")
+                    if d_html:
+                        js_soup = BeautifulSoup(d_html, "html.parser")
+                        h2_desc = js_soup.find(lambda el: el.name in ("h2", "h3", "strong", "b") and "mô tả" in el.text.lower())
+                        if h2_desc:
+                            sib = h2_desc.find_next_sibling(["ul", "ol", "div", "p"])
+                            if sib:
+                                desc_bullets = [clean_text(li.text) for li in sib.select("li")] or [
+                                    clean_text(line) for line in sib.get_text("\n").splitlines() if clean_text(line)
+                                ]
+                        if not desc_bullets:
+                            desc_bullets = [clean_text(li.text) for li in js_soup.select("li")] or [
+                                clean_text(line) for line in js_soup.get_text("\n").splitlines() if clean_text(line)
+                            ]
+                        if desc_bullets:
+                            break
+            except Exception:
+                pass
+
+    # 6. Yêu cầu ứng viên (Candidate Requirements Bullets - SCRAPE-16)
     req_bullets: list[str] = []
-    req_sec = soup.find(
-        lambda el: el.name == "div"
-        and el.select_one(".box-job-information-detail-item__title")
-        and "Yêu cầu ứng viên" in el.select_one(".box-job-information-detail-item__title").text
-    )
-    if req_sec:
-        txt_el = req_sec.select_one(".box-job-information-detail-item__text")
-        if txt_el:
-            req_bullets = [clean_text(li.text) for li in txt_el.select("li")] or [
-                clean_text(line) for line in txt_el.get_text("\n").splitlines() if clean_text(line)
-            ]
+    # 6.1. Khớp container chuẩn
+    for it in soup.select(".box-job-information-detail-item"):
+        t_el = it.select_one(".box-job-information-detail-item__title")
+        if t_el and any(k in clean_text(t_el.text).lower() for k in ("yêu cầu ứng viên", "yêu cầu công việc", "yêu cầu", "requirements")):
+            txt_el = it.select_one(".box-job-information-detail-item__text")
+            if txt_el:
+                req_bullets = [clean_text(li.text) for li in txt_el.select("li")] or [
+                    clean_text(line) for line in txt_el.get_text("\n").splitlines() if clean_text(line)
+                ]
+                if req_bullets:
+                    break
+
+    # 6.2. Khớp linh hoạt theo tiêu đề header
     if not req_bullets:
-        for legacy in soup.select(".job-requirement, #job-requirement, .job-detail__requirement"):
+        for h in soup.find_all(["h2", "h3", "h4", "div", "p"]):
+            h_txt = clean_text(h.text).lower()
+            if any(k in h_txt for k in ("yêu cầu ứng viên", "yêu cầu công việc", "yêu cầu chuyên môn")) and len(h_txt) < 50:
+                parent = h.find_parent(["div", "section"])
+                txt_el = parent.select_one(".box-job-information-detail-item__text, .job-requirement, .detail-content, .content") if parent else None
+                if txt_el:
+                    req_bullets = [clean_text(li.text) for li in txt_el.select("li")] or [
+                        clean_text(line) for line in txt_el.get_text("\n").splitlines() if clean_text(line)
+                    ]
+                if not req_bullets:
+                    sib = h.find_next_sibling(["div", "ul", "ol", "p"])
+                    if sib:
+                        req_bullets = [clean_text(li.text) for li in sib.select("li")] or [
+                            clean_text(line) for line in sib.get_text("\n").splitlines() if clean_text(line)
+                        ]
+                if req_bullets:
+                    break
+
+    # 6.3. Legacy selectors
+    if not req_bullets:
+        for legacy in soup.select(".job-requirement, #job-requirement, .job-detail__requirement, .box-job-requirement"):
             req_bullets = [clean_text(li.text) for li in legacy.select("li")] or [
                 clean_text(line) for line in legacy.get_text("\n").splitlines() if clean_text(line)
             ]
             if req_bullets:
                 break
+
+    # 6.4. Fallback JSON-LD
+    if not req_bullets:
+        for script in soup.find_all("script", type="application/ld+json"):
+            try:
+                data = json.loads(script.string or "")
+                if isinstance(data, dict) and data.get("@type") == "JobPosting":
+                    d_html = data.get("description", "")
+                    if d_html:
+                        js_soup = BeautifulSoup(d_html, "html.parser")
+                        h2_req = js_soup.find(lambda el: el.name in ("h2", "h3", "strong", "b") and "yêu cầu" in el.text.lower())
+                        if h2_req:
+                            sib = h2_req.find_next_sibling(["ul", "ol", "div", "p"])
+                            if sib:
+                                req_bullets = [clean_text(li.text) for li in sib.select("li")] or [
+                                    clean_text(line) for line in sib.get_text("\n").splitlines() if clean_text(line)
+                                ]
+                        if req_bullets:
+                            break
+            except Exception:
+                pass
 
     # 7. Thẻ yêu cầu: Kiến thức ngành & Kỹ năng cần có
     industry_knowledge: list[str] = []
@@ -190,26 +280,73 @@ def build_raw_payload(html_content: str) -> dict[str, Any]:
             elif "Kỹ năng cần có" in t_txt:
                 required_skills = vals
 
-    # 8. Quyền lợi ứng viên (Benefits Bullets)
+    # 8. Quyền lợi ứng viên (Benefits Bullets - SCRAPE-16)
     ben_bullets: list[str] = []
-    ben_sec = soup.find(
-        lambda el: el.name == "div"
-        and el.select_one(".box-job-information-detail-item__title")
-        and "Quyền lợi ứng viên" in el.select_one(".box-job-information-detail-item__title").text
-    )
-    if ben_sec:
-        txt_el = ben_sec.select_one(".box-job-information-detail-item__text")
-        if txt_el:
-            ben_bullets = [clean_text(li.text) for li in txt_el.select("li")] or [
-                clean_text(line) for line in txt_el.get_text("\n").splitlines() if clean_text(line)
-            ]
+    # 8.1. Khớp container chuẩn
+    for it in soup.select(".box-job-information-detail-item"):
+        t_el = it.select_one(".box-job-information-detail-item__title")
+        if t_el and any(k in clean_text(t_el.text).lower() for k in ("quyền lợi ứng viên", "quyền lợi", "chế độ", "benefits")):
+            txt_el = it.select_one(".box-job-information-detail-item__text")
+            if txt_el:
+                ben_bullets = [clean_text(li.text) for li in txt_el.select("li")] or [
+                    clean_text(line) for line in txt_el.get_text("\n").splitlines() if clean_text(line)
+                ]
+                if ben_bullets:
+                    break
+
+    # 8.2. Khớp linh hoạt theo tiêu đề header
     if not ben_bullets:
-        for legacy in soup.select(".job-benefit, #job-benefit, .job-detail__benefit"):
+        for h in soup.find_all(["h2", "h3", "h4", "div", "p"]):
+            h_txt = clean_text(h.text).lower()
+            if any(k in h_txt for k in ("quyền lợi", "chế độ đãi ngộ", "phúc lợi", "benefits")) and len(h_txt) < 50:
+                parent = h.find_parent(["div", "section"])
+                txt_el = parent.select_one(".box-job-information-detail-item__text, .job-benefit, .detail-content, .content") if parent else None
+                if txt_el:
+                    ben_bullets = [clean_text(li.text) for li in txt_el.select("li")] or [
+                        clean_text(line) for line in txt_el.get_text("\n").splitlines() if clean_text(line)
+                    ]
+                if not ben_bullets:
+                    sib = h.find_next_sibling(["div", "ul", "ol", "p"])
+                    if sib:
+                        ben_bullets = [clean_text(li.text) for li in sib.select("li")] or [
+                            clean_text(line) for line in sib.get_text("\n").splitlines() if clean_text(line)
+                        ]
+                if ben_bullets:
+                    break
+
+    # 8.3. Legacy selectors
+    if not ben_bullets:
+        for legacy in soup.select(".job-benefit, #job-benefit, .job-detail__benefit, .box-job-benefit"):
             ben_bullets = [clean_text(li.text) for li in legacy.select("li")] or [
                 clean_text(line) for line in legacy.get_text("\n").splitlines() if clean_text(line)
             ]
             if ben_bullets:
                 break
+
+    # 8.4. Fallback JSON-LD
+    if not ben_bullets:
+        for script in soup.find_all("script", type="application/ld+json"):
+            try:
+                data = json.loads(script.string or "")
+                if isinstance(data, dict) and data.get("@type") == "JobPosting":
+                    b_html = data.get("jobBenefits", "") or data.get("description", "")
+                    if b_html:
+                        js_soup = BeautifulSoup(b_html, "html.parser")
+                        h2_ben = js_soup.find(lambda el: el.name in ("h2", "h3", "strong", "b") and any(k in el.text.lower() for k in ("quyền lợi", "phúc lợi", "benefits")))
+                        if h2_ben:
+                            sib = h2_ben.find_next_sibling(["ul", "ol", "div", "p"])
+                            if sib:
+                                ben_bullets = [clean_text(li.text) for li in sib.select("li")] or [
+                                    clean_text(line) for line in sib.get_text("\n").splitlines() if clean_text(line)
+                                ]
+                        if not ben_bullets and data.get("jobBenefits"):
+                            ben_bullets = [clean_text(li.text) for li in js_soup.select("li")] or [
+                                clean_text(line) for line in js_soup.get_text("\n").splitlines() if clean_text(line)
+                            ]
+                        if ben_bullets:
+                            break
+            except Exception:
+                pass
 
     # 9. Thẻ quyền lợi bổ sung: Phúc lợi & Phụ cấp
     welfare_tags: list[str] = []

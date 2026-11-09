@@ -29,6 +29,7 @@ def items(fixtures_dir):
 def crawler(tmp_path, monkeypatch):
     monkeypatch.setattr(module, "polite_sleep", lambda *a, **k: None)
     monkeypatch.setattr(UrlLedger, "pull_from_r2", lambda self, *a, **k: True)
+    monkeypatch.setattr(UrlLedger, "sync_to_r2", lambda self, *a, **k: True)
     c = TopDevCrawler(output_dir=str(tmp_path), sync_r2=True)
     c._r2_store = standards.FakeR2Store()
     return c
@@ -88,3 +89,80 @@ def test_c9_ledger_sync_failure_is_reported(crawler, items, monkeypatch):
 
 def test_c10_random_pause():
     standards.check_random_pause(module)
+
+
+def test_scrape15_filter_non_it_jobs_in_discovery(crawler, monkeypatch):
+    """SCRAPE-15: Discovery lọc bỏ các tin ngoài IT (kế toán, tài xế) do API bỏ qua category_ids."""
+    listing_payload = {
+        "data": [
+            {
+                "id": 1001,
+                "title": "Senior Golang Backend Engineer",
+                "slug": "senior-golang-backend-engineer",
+                "detail_url": "https://topdev.vn/viec-lam/senior-golang-1001",
+                "skills_arr": [{"title": "Golang"}, {"title": "Docker"}],
+            },
+            {
+                "id": 1002,
+                "title": "Kế toán tổng hợp nội bộ",
+                "slug": "ke-toan-tong-hop-1002",
+                "detail_url": "https://topdev.vn/viec-lam/ke-toan-1002",
+                "skills_arr": [],
+                "skills_str": "kế toán, thuế",
+            },
+            {
+                "id": 1003,
+                "title": "Tài xế giao hàng xe máy",
+                "slug": "tai-xe-giao-hang-1003",
+                "detail_url": "https://topdev.vn/viec-lam/tai-xe-1003",
+                "skills_arr": [],
+            },
+        ],
+        "meta": {"current_page": 1, "last_page": 1, "total": 3},
+    }
+    monkeypatch.setattr(crawler.api_crawler, "_fetch_listing_with_retries", lambda page, **k: listing_payload)
+    discovered = crawler.discover_urls(max_pages=1)
+    assert len(discovered) == 1
+    assert "senior-golang-1001" in discovered[0]
+    # Kiểm tra catalog chỉ có đúng 1 tin IT
+    assert len(crawler.ledger.records) == 1
+    rec = next(iter(crawler.ledger.records.values()))
+    assert rec["job_id"] == "1001"
+
+
+def test_c14_discovery_fails_when_all_pages_fail(crawler, monkeypatch):
+    """C14: Pha discovery raise DiscoveryError khi không lấy được trang nào."""
+    from collection.common.url_ledger import DiscoveryError
+
+    def fail(*args, **kwargs):
+        raise module.TopDevAPIError("TopDev API 500 error")
+
+    monkeypatch.setattr(crawler.api_crawler, "_fetch_listing_with_retries", fail)
+    with pytest.raises(DiscoveryError):
+        crawler.discover_urls(max_pages=1)
+
+
+def test_c14_discovery_partial_failure_is_ok(crawler, monkeypatch):
+    """C14: Pha discovery thành công nếu lấy được ít nhất 1 trang."""
+    listing_payload = {
+        "data": [
+            {
+                "id": 2001,
+                "title": "Java Spring Boot Developer",
+                "slug": "java-spring-boot-2001",
+                "detail_url": "https://topdev.vn/viec-lam/java-2001",
+                "skills_arr": [{"title": "Java"}],
+            }
+        ],
+        "meta": {"current_page": 1, "last_page": 2, "total": 2},
+    }
+
+    def fetch(page, **kwargs):
+        if page == 1:
+            return listing_payload
+        raise module.TopDevAPIError("Page 2 timeout")
+
+    monkeypatch.setattr(crawler.api_crawler, "_fetch_listing_with_retries", fetch)
+    urls = crawler.discover_urls(max_pages=2)
+    assert len(urls) == 1
+    assert "java-2001" in urls[0]

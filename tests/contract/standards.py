@@ -84,11 +84,12 @@ def check_r2_keys(keys: Iterable[str], source: str) -> None:
 
 
 def check_random_pause(module: Any) -> None:
-    """C10: vòng detail có nghỉ ngẫu nhiên (polite_sleep hoặc random) giữa các request."""
+    """C10: vòng detail có nghỉ ngẫu nhiên (polite_sleep, uniform, hoặc DelayConfig/HttpClient) giữa các request."""
     tree = ast.parse(inspect.getsource(module))
     names = {n.func.attr if isinstance(n.func, ast.Attribute) else getattr(n.func, "id", "")
              for n in ast.walk(tree) if isinstance(n, ast.Call)}
-    assert "polite_sleep" in names or "uniform" in names, f"{module.__name__} không có nghỉ ngẫu nhiên giữa request"
+    has_pause = "polite_sleep" in names or "uniform" in names or "DelayConfig" in names
+    assert has_pause, f"{module.__name__} không có nghỉ ngẫu nhiên giữa request"
 
 
 def check_fixtures(folder: Path, expected: Iterable[str]) -> None:
