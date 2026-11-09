@@ -67,10 +67,6 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 - Ảnh hưởng: số là thật, nhưng mang các lỗi của pre-processing cũ (xem mục 3). Mỗi trang có ghi giờ chạy pipeline.
 - Cách xử lý: tự hết khi làm xong mục 3 và chạy lại pipeline.
 
-**VIZ-5. `CrawlingPage.tsx` quá dài**
-
-- Vị trí: `monitoring/frontend/src/pages/CrawlingPage.tsx` (khoảng 890 dòng)
-- Cách xử lý: tách thành các component trong `components/`.
 
 ## 3. Pre-processing
 

@@ -322,3 +322,11 @@ Kết quả chung sau đợt sửa:
 - **Nguyên nhân:** target `check` được viết trước khi có công cụ báo cáo chất lượng code.
 - **Cách xử lý:** thêm `scripts/report_code_quality.py` (ruff F401/F811/F841, vulture, so cây cú pháp tìm hàm trùng logic và trùng tên, tìm module không ai import), ghi `docs/code_quality.md`; thêm `make quality`; thêm `vulture==2.14` vào `requirements-dev.txt`. Báo cáo chỉ liệt kê, không xóa hay gộp gì.
 - **Kiểm chứng:** `tests/unit/test_report_code_quality.py` (5 test với project mẫu: trùng logic khác tên, trùng tên, module không ai import, hàm có người gọi không bị báo); `make check` chạy hết.
+
+### L-29. Tách trang Crawling và bổ sung Market Insights đọc PostgreSQL Mart
+
+- **Lỗi:** VIZ-5 dồn state, API, log và UI vào CrawlingPage; thiếu nhóm API `/insights` đọc Mart theo yêu cầu sprint.
+- **Nguyên nhân:** Trang Crawling phát triển theo một file; các trang báo cáo cũ phụ thuộc artifact tĩnh.
+- **Cách xử lý:** CrawlingPage còn 25 dòng điều phối, hook state/API và các presenter trong `components/crawling/`. Thêm truy vấn SQL chỉ đọc, heatmap median/P25/P75, luật Macro/Micro và scatter PCA 2D/3D. Không sinh dữ liệu thay thế.
+- **Kiểm chứng:** Frontend production build thành công; 6 test API Insights qua; 4 endpoint HTTP 200 `EMPTY/NO_DATA` trên PostgreSQL thật; UI Empty State toàn trình React/FastAPI/PostgreSQL không tràn tại 390px/1440px; hồi quy monitoring 32 passed, 1 skipped.
+- **Còn lại:** Chưa có dữ liệu Mart để xác minh biểu đồ có dữ liệu; xem báo cáo Sơn. VIZ-3 ở các trang cũ ngoài Insights vẫn được giữ theo phạm vi leader chốt.

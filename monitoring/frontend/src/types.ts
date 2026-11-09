@@ -597,3 +597,9 @@ export interface StepRowsResponse {
   limit: number
   rows: Record<string, unknown>[]
 }
+
+export interface InsightResponse<T> { status: 'OK' | 'EMPTY'; reason: string | null; data: T[] | null }
+export interface InsightOption { job_family: string; seniority_level: string | null; province_norm: string | null }
+export interface SalaryCell { job_family: string; seniority_level: string | null; median: number | null; q25: number | null; q75: number | null; sample_count: number; negotiable_count: number }
+export interface SkillRule { antecedents: string[]; consequents: string[]; support: number; confidence: number; lift: number; job_family_scope: string }
+export interface ClusterPoint { job_id: string; job_title: string; cluster_id: number; cluster_name: string | null; pca_x: number; pca_y: number; pca_z: number | null; company_name: string | null; salary_avg_vnd: number | null; source_platform: string | null }

@@ -1,3 +1,4 @@
+import { MarketInsightsPage } from './pages/MarketInsightsPage'
 import React, { useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Sidebar } from './components/layout/Sidebar'
@@ -21,6 +22,7 @@ const TITLES: Record<string, [string, string?]> = {
   '/eda': ['EDA', 'Kiểm kê trường raw và phân phối từ dữ liệu staging'],
   '/preprocessing': ['Pre-processing', '5 bước Clean → Integration → Transformation → Normalization → Encoding, đọc báo cáo từng bước'],
   '/processing': ['Processing', 'Integration và khử trùng lặp liên nguồn'],
+  '/insights': ['Market Insights', 'Lương, combo kỹ năng và phân cụm nghề nghiệp'],
   '/master': ['Master Dashboard', 'Bộ golden sau khử trùng lặp'],
 }
 
@@ -44,6 +46,7 @@ const Shell: React.FC = () => {
             <Route path="/eda" element={<EDAPage />} />
             <Route path="/preprocessing" element={<PreprocessingPage />} />
             <Route path="/processing" element={<ProcessingPage />} />
+            <Route path="/insights" element={<MarketInsightsPage />} />
             <Route path="/master" element={<MasterDashboardPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

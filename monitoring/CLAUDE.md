@@ -38,4 +38,10 @@ Kiểm giao diện không cần mở cửa sổ: Playwright chạy ẩn với Ch
 
 ## Còn mở
 
-`KNOWN_ISSUED.md`: VIZ-3 (các trang báo cáo hiện số pipeline ngày 25/10), VIZ-5 (`CrawlingPage.tsx` khoảng 890 dòng, cần tách component).
+`KNOWN_ISSUED.md`: VIZ-3 (các trang báo cáo hiện số pipeline ngày 25/10), VIZ-5 đã được tách thành hook và presenter trong `components/crawling/`, xem nhật ký lỗi.
+
+## Market Insights Mart
+- `/insights` đọc PostgreSQL qua `insights_service.py`; bảng rỗng trả `EMPTY/NO_DATA`, lỗi kết nối/schema trả HTTP 503 `MART_UNAVAILABLE` (không lộ thông tin đăng nhập).
+- Máy có PostgreSQL riêng có thể trùng cổng 5432. Docker hỗ trợ `POSTGRES_PUBLISHED_PORT`; cấu hình `POSTGRES_PORT` của backend cùng cổng publish (máy Sơn hiện dùng 15432). Không xóa volume để giải quyết xung đột cổng.
+- `pca_z` nullable: không thay bằng 0 để tạo điểm 3D. Chỉ điểm có đủ XYZ mới xuất hiện trong chế độ 3D; 2D vẫn giữ điểm XY.
+- Lương Mart tính bằng VNĐ/tháng; API trả trung vị/P25/P75 theo triệu VNĐ. Tin thỏa thuận và ngoài 1–500 triệu không tham gia tính lương.

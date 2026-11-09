@@ -95,13 +95,13 @@ Hãy phân tích file CrawlingPage.tsx và các router backend hiện tại, l�
 
 ## 4. Checklist Thực Hiện & Tự Kiểm Chứng (Self-Verification)
 
-- [ ] **Bước 1 (Component Refactoring):** Tách `CrawlingPage.tsx` thành 4 component con trong `components/crawling/`; đảm bảo file `CrawlingPage.tsx` mới có dung lượng $< 200$ dòng.
-- [ ] **Bước 2 (Frontend Type-Check):** Chạy lệnh kiểm tra TypeScript và build frontend:
+- [x] **Bước 1 (Component Refactoring):** Tách `CrawlingPage.tsx` thành 4 component con trong `components/crawling/`; đảm bảo file `CrawlingPage.tsx` mới có dung lượng $< 200$ dòng.
+- [x] **Bước 2 (Frontend Type-Check):** Chạy lệnh kiểm tra TypeScript và build frontend:
   ```bash
   cd monitoring/frontend && npm run build
   ```
   Xác nhận: Lệnh build thành công $100\%$ không có lỗi type error.
-- [ ] **Bước 3 (Backend PostgreSQL Connection):** Kiểm tra các endpoint `/api/v1/insights/...` trong FastAPI, đảm bảo truy vấn thành công dữ liệu từ PostgreSQL container (`vn_it_jobs`) mà không bị lỗi connection timeout; xử lý đúng Empty State khi bảng rỗng.
+- [x] **Bước 3 (Backend PostgreSQL Connection):** Kiểm tra các endpoint `/api/v1/insights/...` trong FastAPI, đảm bảo truy vấn thành công dữ liệu từ PostgreSQL container (`vn_it_jobs`) mà không bị lỗi connection timeout; xử lý đúng Empty State khi bảng rỗng.
 - [ ] **Bước 4 (Khởi động kiểm thử toàn trình Dashboard):**
   ```bash
   ./start_monitoring.sh --check
@@ -142,3 +142,17 @@ Hãy phân tích file CrawlingPage.tsx và các router backend hiện tại, l�
 #### 5. Vấn Đề Còn Tồn Đọng (Remaining Issues / Blockers):
 - [Ghi rõ nếu còn component nào cần làm đẹp thêm CSS, hoặc ghi "Không còn"]
 ```
+
+
+## 6. Báo cáo triển khai thực tế — 06/11/2026
+
+- **Nhánh:** `feature/monitoring-observatory` đã xác nhận trước khi sửa.
+- **Frontend:** CrawlingPage chỉ điều phối các presenter; có đủ CrawlTriggerCard, LedgerStatusTable, LakehouseHealthCard, RealtimeLogStream cùng hook và các component hỗ trợ lịch/nguồn/KPI. Trang `/insights` có heatmap, luật FP-Growth Macro/Micro, bộ lọc và scatter PCA 2D/3D kéo xoay/zoom. Z thiếu không được thay bằng tọa độ giả.
+- **Backend:** 4 endpoint `/api/v1/insights/{salary-heatmap,skill-combos,clusters,filters/options}`; SQL tham số hóa, kết nối read-only, timeout kết nối 3 giây/truy vấn 5 giây, đóng kết nối sau request. Bảng rỗng trả `EMPTY`, `NO_DATA`, `data: null`; lỗi DB trả 503 `MART_UNAVAILABLE`, không lộ DSN/secret.
+- **Cổng Mart local:** 5432 bị PostgreSQL cài sẵn sử dụng, 5433 cũng có dịch vụ. Docker dùng `POSTGRES_PUBLISHED_PORT=15432`, backend `POSTGRES_PORT=15432`; cấu hình local lưu trong `.env`, không commit. Compose vẫn mặc định 5432 trên máy khác và cho phép override. Volume được giữ nguyên; không bật Airflow scheduler.
+- **Đã kiểm chứng:** `npm run build` thành công. 6 test tại `tests/integration/test_monitor_insights.py` qua bằng unittest. 4 endpoint đọc Mart thật trả 200/EMPTY/NO_DATA. Playwright Edge headless kiểm tra Empty State tại 390px và 1440px: không tràn ngang, không có pageerror. Sau đó kiểm tra lại toàn trình React → FastAPI → PostgreSQL thật tại cả hai viewport, đủ 4 khối Empty State.
+- **Lint:** Hai module backend mới qua Ruff; toàn backend còn 355 findings ở code hiện có, không format diện rộng.
+- **Giới hạn:** Mart hiện rỗng, chưa kiểm chứng heatmap/rules/scatter bằng artifacts thật từ Phúc. Máy dùng Python 3.11 thay vì chuẩn 3.12 của repo. FastAPI app.main khởi động thành công tại :8000. Bộ hồi quy ba file test_monitor_endpoints.py, test_monitoring_api.py, test_monitor_insights.py: **32 passed, 1 skipped**, 14.91 giây. Chưa chạy start_monitoring.sh --check trên môi trường Linux/Python 3.12; chưa kiểm chứng scatter có dữ liệu thật.
+- **Phạm vi:** Không sửa crawler/preprocessing, không cào thật, không sync R2. Các trang báo cáo cũ giữ nguyên theo Q&A leader.
+
+- **Xem giao diện đang chạy:** http://127.0.0.1:5174/insights (Vite phiên kiểm chứng), Swagger http://127.0.0.1:8000/docs. Build có cảnh báo bundle >500kB, không có lỗi biên dịch.
