@@ -42,6 +42,7 @@ from collection.common.http_client import DelayConfig, HttpClient
 from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import JobRecord, RawJobEnvelope
 from collection.common.url_ledger import (
+    DiscoveryError,
     UrlLedger,
     calculate_json_canonical_hash,
     clean_canonical_url,
@@ -694,6 +695,8 @@ class VietnamWorksCrawler(BaseCrawler):
         discovered_urls: list[str] = []
         pages_to_query = max_pages if max_pages is not None else 2
         ledger = self._get_ledger()
+        pages_ok = 0
+        first_error: Exception | None = None
 
         # Đọc từ local file nếu có
         if not online and self.local_json_file and os.path.exists(self.local_json_file):
@@ -740,6 +743,7 @@ class VietnamWorksCrawler(BaseCrawler):
                 }
                 try:
                     resp = self.http_client.post(API_URL, json=payload, headers=headers)
+                    pages_ok += 1
                     data = resp.json() if hasattr(resp, "json") else json.loads(resp.text)
                     hits = data.get("data", [])
                     if not hits:
@@ -761,6 +765,7 @@ class VietnamWorksCrawler(BaseCrawler):
                         break
                     time.sleep(0.3)
                 except Exception as exc:
+                    first_error = first_error or exc
                     log.warning("[VietnamWorks] Lỗi quét jobFunction page %d: %s", page, exc)
                     continue
 
@@ -779,6 +784,7 @@ class VietnamWorksCrawler(BaseCrawler):
                     }
                     try:
                         resp = self.http_client.post(API_URL, json=payload, headers=headers)
+                        pages_ok += 1
                         data = resp.json() if hasattr(resp, "json") else json.loads(resp.text)
                         hits = data.get("data", [])
                         if not hits:
@@ -800,6 +806,7 @@ class VietnamWorksCrawler(BaseCrawler):
                             break
                         time.sleep(0.3)
                     except Exception as exc:
+                        first_error = first_error or exc
                         log.warning("[VietnamWorks] Lỗi quét industry %s page %d: %s", ind_id, page, exc)
                         continue
 
@@ -840,8 +847,13 @@ class VietnamWorksCrawler(BaseCrawler):
                                 break
                             time.sleep(0.3)
                         except Exception as exc:
+                            first_error = first_error or exc
                             log.warning("[VietnamWorks] Safe Skip query '%s' page %d: %s", query, page, exc)
                             continue
+
+        if online and pages_ok == 0 and first_error:
+            # Tiêu chuẩn C14: Toàn bộ trang discovery lỗi thì raise DiscoveryError
+            raise DiscoveryError(f"[VietnamWorks] Không lấy được trang danh sách nào: {first_error}")
 
         ledger.save_catalog()
         ledger.export_daily_manifest()

@@ -162,3 +162,57 @@ def test_c14_run_py_exit_code_on_discovery_error(tmp_path, monkeypatch):
     monkeypatch.setattr(run, "run_crawler", boom)
     monkeypatch.setattr(sys, "argv", ["run.py", "--source", "topcv", "--phase", "discover"])
     assert run.main() == 1
+
+
+def test_scrape16_empty_jd_fallback_recovery():
+    """SCRAPE-16: Khôi phục mô tả công việc (JD) khi DOM không có class chuẩn hoặc viết hoa."""
+    html_custom_dom = """
+    <html><body>
+        <h1 class="title">Embedded Systems Engineer</h1>
+        <div class="salary">20 - 35 triệu</div>
+        <h2>MÔ TẢ CÔNG VIỆC:</h2>
+        <div>
+            <p>- Thiết kế và phát triển firmware cho vi điều khiển STM32/ESP32.</p>
+            <p>- Giao tiếp các chuẩn UART, SPI, I2C, CAN bus.</p>
+        </div>
+        <h2>YÊU CẦU ỨNG VIÊN:</h2>
+        <ul>
+            <li>Tốt nghiệp ĐH chuyên ngành Điện tử, CNTT hoặc liên quan.</li>
+            <li>Có từ 2 năm kinh nghiệm lập trình C/C++ Embedded.</li>
+        </ul>
+        <h2>QUYỀN LỢI ĐƯỢC HƯỞNG:</h2>
+        <ul>
+            <li>Lương tháng 13 + thưởng hiệu quả dự án.</li>
+        </ul>
+    </body></html>
+    """
+    env = build_raw_envelope(html_custom_dom, job_id="9999", url="https://topcv.vn/viec-lam/embedded/9999.html")
+    assert len(env.raw_payload["description_bullets"]) >= 2
+    assert "STM32/ESP32" in env.raw_payload["description_bullets"][0]
+    assert len(env.raw_payload["requirements_bullets"]) >= 2
+    assert "C/C++" in env.raw_payload["requirements_bullets"][1]
+    assert len(env.raw_payload["benefits_bullets"]) >= 1
+
+
+def test_scrape16_jsonld_fallback():
+    """SCRAPE-16: Fallback trích xuất JD từ schema.org JobPosting JSON-LD khi body DOM bị rỗng."""
+    html_with_jsonld = """
+    <html><body>
+        <h1 class="box-header-job__title">Senior Python Developer</h1>
+        <script type="application/ld+json">
+        {
+            "@context": "http://schema.org/",
+            "@type": "JobPosting",
+            "title": "Senior Python Developer",
+            "description": "<h2>Mô tả công việc</h2><ul><li>Phát triển microservices bằng FastAPI và Python.</li><li>Thiết kế database PostgreSQL và Redis cache.</li></ul><h2>Yêu cầu ứng viên</h2><ul><li>3+ năm kinh nghiệm Python.</li><li>Thành thạo Docker, Kubernetes.</li></ul>",
+            "jobBenefits": "<ul><li>Thưởng quý và bảo hiểm sức khỏe VIP.</li></ul>"
+        }
+        </script>
+    </body></html>
+    """
+    env = build_raw_envelope(html_with_jsonld, job_id="8888", url="https://topcv.vn/viec-lam/python/8888.html")
+    assert len(env.raw_payload["description_bullets"]) == 2
+    assert "FastAPI" in env.raw_payload["description_bullets"][0]
+    assert len(env.raw_payload["requirements_bullets"]) == 2
+    assert "Docker" in env.raw_payload["requirements_bullets"][1]
+    assert len(env.raw_payload["benefits_bullets"]) == 1

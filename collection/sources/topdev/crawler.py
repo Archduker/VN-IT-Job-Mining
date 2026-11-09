@@ -35,11 +35,13 @@ from collection.common.http_client import DelayConfig, HttpClient
 from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags, RawJobEnvelope
 from collection.common.url_ledger import (
+    DiscoveryError,
     UrlLedger,
     calculate_json_canonical_hash,
     clean_canonical_url,
     generate_url_hash,
 )
+from preprocessing.common.it_filter import classify
 from collection.common.utils import (
     collapse_whitespace,
     detect_language,
@@ -1611,8 +1613,17 @@ class TopDevCrawler(BaseCrawler):
         }
         return RawJobEnvelope(metadata=metadata, raw_payload=raw_payload)
 
-    def discover_urls(self, max_pages: int | None = None, category_ids: int | None = None) -> list[str]:
-        """Pha 1: Quét danh mục API TopDev, lấy toàn bộ Job URLs và lưu vào UrlLedger & R2."""
+    def discover_urls(
+        self,
+        max_pages: int | None = None,
+        category_ids: int | None = None,
+        filter_it: bool = True,
+    ) -> list[str]:
+        """Pha 1: Quét danh mục API TopDev, lấy toàn bộ Job URLs và lưu vào UrlLedger & R2.
+
+        Hỗ trợ C14: Báo lỗi DiscoveryError khi không lấy được trang nào.
+        Hỗ trợ SCRAPE-15: Lọc bỏ tin ngoài IT trước khi đăng ký vào ledger.
+        """
         log.info("[TopDev] === Bắt đầu Pha 1: URL Discovery ===")
         effective_max_pages = max_pages if max_pages is not None else 2
         discovered_urls: list[str] = []
@@ -1621,24 +1632,38 @@ class TopDevCrawler(BaseCrawler):
         last_page = 1
         consecutive_known_jobs = 0
         early_stop_threshold = 10
+        pages_ok = 0
+        first_error: Exception | None = None
 
         while page <= last_page:
             if effective_max_pages and page > effective_max_pages:
                 break
             try:
                 payload = self.api_crawler._fetch_listing_with_retries(page, category_ids=target_category)
+                pages_ok += 1
                 jobs = payload.get("data", [])
                 meta = payload.get("meta", {})
                 last_page = _reported_page_count(meta, self.api_crawler.page_size)
 
                 for job in jobs:
+                    title = job.get("title", "")
+                    skills_arr = job.get("skills_arr") or []
+                    if isinstance(skills_arr, list):
+                        skills_val = [s.get("title") if isinstance(s, dict) else str(s) for s in skills_arr]
+                    else:
+                        skills_val = [s.strip() for s in str(job.get("skills_str") or "").split(",") if s.strip()]
+
+                    # SCRAPE-15: Chặn tin ngoài IT (kế toán, tài xế, telesales, tạp vụ...) đưa vào ledger
+                    if filter_it and classify(title, skills_val) == "non_it":
+                        log.debug("[TopDev] Bỏ qua tin ngoài IT (SCRAPE-15): %s", title)
+                        continue
+
                     job_id = str(job.get("id"))
                     raw_url = job.get("detail_url") or f"{SITE_BASE_URL}/detail-jobs/{job.get('slug')}-{job_id}"
                     clean_url = clean_canonical_url(raw_url)
                     url_hash = generate_url_hash(clean_url)
-                    title = job.get("title", "")
                     company = job.get("company", {}).get("name", "") if isinstance(job.get("company"), dict) else ""
-                    
+
                     # Kiểm tra xem tin đã tồn tại trong Ledger hay chưa
                     existing_rec = self.ledger.records.get(url_hash)
                     if existing_rec and existing_rec.get("status") == "DONE":
@@ -1670,9 +1695,14 @@ class TopDevCrawler(BaseCrawler):
                 polite_sleep(0.3, 0.7)
                 page += 1
             except Exception as exc:
+                first_error = first_error or exc
                 log.warning("[TopDev] Safe Skip trang listing %d: %s", page, exc)
                 page += 1
                 continue
+
+        if pages_ok == 0 and first_error:
+            # Tiêu chuẩn C14: Toàn bộ trang discovery lỗi thì raise DiscoveryError
+            raise DiscoveryError(f"[TopDev] Không lấy được trang danh sách nào: {first_error}")
 
         self.ledger.save_catalog()
         self.ledger.export_daily_manifest()
