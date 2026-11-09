@@ -85,6 +85,22 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
 **GEN-1. Khoảng 1.300 lỗi ruff tồn đọng** ở `collection/` và `tests/`. Dọn thành một lượt riêng.
 
-**GEN-2. `README.md` và `TASKS.md` lệch code.** Chi tiết ở mục "Known mismatches" trong `CLAUDE.md`.
+**GEN-2. `README.md` và `docs/tasks/legacy_TASKS.md` lệch code.** Chi tiết ở mục "Known mismatches" trong `CLAUDE.md`.
 
 **GEN-3. Dọn code theo `docs/code_quality.md`.** Báo cáo (`make quality`) liệt kê import thừa, hàm không ai gọi, module không ai import, hàm trùng logic và trùng tên. Người dùng duyệt từng mục (xóa, gộp hay giữ) rồi mới sửa. Báo cáo không bắt được chỗ tự tạo `boto3.client(...)`; các chỗ đó đã chuyển qua `get_r2_client()` (`docs/issue_log.md` L-24).
+
+## 5. Chưa chốt
+
+**GEN-4. Layout R2 chưa chốt (chờ biết các bạn trong nhóm đang lưu vào đâu)**
+
+- Hiện trạng (liệt kê R2 ngày 09/11/2026, 12.989 object): `raw/` 12.826, `url_ledger/` 64, `staging/` 32 (8 nguồn × 4 bước), `curated/` 2, và các prefix ngoài hệ thống bốn tầng: `quality/` 26, `integration/` 18, `transformation/` 18, `silver/` 3 file JSON.
+- Đích dự kiến theo `docs/spec/10_architecture.md`: giữ `raw/` và `url_ledger/` (Bronze); `silver/all.parquet`; `gold/gold_master_jobs.parquet`, `gold/features.parquet`, `gold/matrices/`. Chưa sửa tài liệu, chưa đụng R2.
+- Đã sửa trong code (chưa merge, chưa chạy trên R2): `R2_LAYER_PREFIX` trong `collection/common/r2_storage.py` ánh xạ `staging` → `silver`, `curated` → `gold`, giữ `raw` và `url_ledger`; `scripts/migrate_lakehouse_layout.py --prefix-map` (chạy thử mặc định, chép rồi đối chiếu Size/ETag mới xóa).
+- Còn lệch spec 10:
+  - `canonicalize_lakehouse_key` từ chối `silver/all.parquet` (tầng staging/silver bắt buộc có tên nguồn ở cấp 2).
+  - `preprocessing/common/r2_export.py` và `scripts/push_preprocessing_to_r2.py` vẫn đẩy 32 file theo nguồn thay vì một `silver/all.parquet`.
+  - Gold đang là `gold/preprocessing/features.parquet`, spec ghi `gold/features.parquet`.
+  - `scripts/push_integration_to_r2.py` ghi `integration/...` ngoài bốn tầng.
+- Đã quyết (người dùng): xóa `quality/`, `integration/`, `transformation/`; bỏ 32 file `staging/` trên R2, chỉ giữ `silver/all.parquet`; 3 file `silver/*.json` chuyển sang parquet (chưa mở xem nội dung, chưa biết file nào thay được `all.parquet`).
+- Cần quyết: các bạn khác đang đọc/ghi prefix nào (hỏi nhóm trước khi xóa hay chuyển); cách nhập `silver/all.parquet`; có đổi tên gold theo spec không.
+- Cách xử lý: chốt xong thì sửa code còn lệch, cập nhật `docs/spec/10_architecture.md`, `docs/guides/cloud_r2_setup_guide.md`, `.agents/skills/r2-lakehouse-guide/SKILL.md`, `collection/CLAUDE.md`, `scripts/CLAUDE.md`, `AGENTS.md`; chạy `migrate_lakehouse_layout.py --prefix-map` chạy thử, gửi số liệu, chờ đồng ý rồi mới `--apply`.

@@ -23,9 +23,9 @@ Nguồn tuyển dụng **ITviec** (`https://itviec.com`) là nền tảng chuyê
 
 Trong nhánh `origin/feature/itviec-crawler`, bạn Phát đã hoàn thành một đợt refactor toàn diện:
 - **Tách bạch trách nhiệm (Separation of Concerns)**:
-  - [`config.py`](../../collection/sources/itviec/config.py): Lưu hằng số, cấu hình URL, delay, retry, phiên bản crawler.
-  - [`parser.py`](../../collection/sources/itviec/parser.py): Chuyên trách bóc tách HTML thuần (Listing & Detail), trả về dict cấu trúc chuẩn.
-  - [`crawler.py`](../../collection/sources/itviec/crawler.py): Kế thừa `BaseCrawler`, quản lý kết nối HTTP, checkpoint, vòng lặp thu thập.
+  - [`config.py`](../../../collection/sources/itviec/config.py): Lưu hằng số, cấu hình URL, delay, retry, phiên bản crawler.
+  - [`parser.py`](../../../collection/sources/itviec/parser.py): Chuyên trách bóc tách HTML thuần (Listing & Detail), trả về dict cấu trúc chuẩn.
+  - [`crawler.py`](../../../collection/sources/itviec/crawler.py): Kế thừa `BaseCrawler`, quản lý kết nối HTTP, checkpoint, vòng lặp thu thập.
   - `tests/` (không còn trong repo): Bộ unit test ngoại tuyến độc lập.
 
 ### Sơ Đồ Khối Module ITviec

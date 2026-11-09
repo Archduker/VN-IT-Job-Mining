@@ -1,6 +1,6 @@
 # P5. Encoding: đổi bộ golden sang bảng số cho mô hình
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 > Trạng thái: **đặc tả, chờ duyệt** (sửa 03/11/2026: tỉnh theo 34 tỉnh mới, thêm cột xác suất JEV). Cần P4 xong trước.
 > Prompt: `docs/prompting/P5_encoding.md`.

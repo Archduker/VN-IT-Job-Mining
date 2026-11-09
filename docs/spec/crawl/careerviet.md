@@ -4,7 +4,7 @@
 >
 > - Crawler: `collection/sources/careerviet/crawler.py`, qua `HttpClient` (`DelayConfig` 2–5 giây khi online). Cần Python 3.12.
 > - Đã sửa: không đẩy ledger khi chạy qua `run.py --sync-r2` (L-06).
-> - Mục 13 (MinIO/AIStor cục bộ, `localhost:9000`) là lịch sử: hệ thống chỉ dùng Cloudflare R2, xem `docs/cloud_r2_setup_guide.md`.
+> - Mục 13 (MinIO/AIStor cục bộ, `localhost:9000`) là lịch sử: hệ thống chỉ dùng Cloudflare R2, xem `docs/guides/cloud_r2_setup_guide.md`.
 > - Còn mở: chưa có contract test và C14; nghỉ giữa tin do `HttpClient` tự áp nên kiểm tra C10 bằng AST chưa nhận ra (SCRAPE-13).
 >
 > Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
@@ -285,7 +285,7 @@ Kết quả quét **30/30** trang HTML trong `data/raw/careerviet/html/` (16/10/
 | tag row=5    | 5          | `35C833DD`        | `collection/sources/careerviet/samples/` (c37_digital_mkt) |
 | tag row=6    | 2          | `35C87378`        | `collection/sources/careerviet/samples/` (keyword:developer) |
 
-**DoD 4 (TASKS.md mục 4)** yêu cầu “3 mẫu HTML đại diện cho 3 layout khác nhau”. CareerViet **không có** 3 layout khác nhau (chỉ 1 template). **Đề xuất xin miễn DoD 4 (phần “3 layout”)** với lý do:
+**DoD 4 (docs/tasks/legacy_TASKS.md mục 4)** yêu cầu “3 mẫu HTML đại diện cho 3 layout khác nhau”. CareerViet **không có** 3 layout khác nhau (chỉ 1 template). **Đề xuất xin miễn DoD 4 (phần “3 layout”)** với lý do:
 
 - Nguồn SSR đồng nhất một template (không A/B, không badge hot/vip, không iframe) — bằng chứng: 30/30 mẫu trùng lặp selector.
 - Thay bằng nop **4 mẫu** ở bảng trên (3 trong `samples/` + 1 trong `data/`), minh họa đủ **4 tổ hợp biến thể** (tag × row). **KHÔNG cần cào thêm**.
@@ -434,7 +434,7 @@ Subset CareerViet + push_raw_to_r2 (lệnh:
 - `origin/crawls/careerviet = 4701af8` → local **đồng nhất** origin (`0 ahead / 0 behind`).
 - Chuỗi 8 commit đã push (xem `git log --oneline 719e05f^..HEAD`): `1470de0`, `74f643b`, `f977ffb`, `4bf8b1b`, `9e6462d`, `b9cca20`, `315a04c`, `4701af8`.
 - Working tree **chưa commit** (lượt 2026-10-18):
-  - Modified: `reports/careerviet_eda.md` (424 dòng — §4 dựng lại theo 16 biểu đồ + bảng §4.17), `reports/careerviet_inventory.md` (202 dòng), `docs/crawl/careerviet.md` (§9 + §9.4 + §10 + §11 + §12 cập nhật).
+  - Modified: `reports/careerviet_eda.md` (424 dòng — §4 dựng lại theo 16 biểu đồ + bảng §4.17), `reports/careerviet_inventory.md` (202 dòng), `docs/spec/crawl/careerviet.md` (§9 + §9.4 + §10 + §11 + §12 cập nhật).
   - Untracked: `scripts/careerviet_eda_charts.py` (1363 dòng — 16 biểu đồ, `decorate()` đo-lại-sau-`tight_layout`, `flat_text` đã vá `close()`), `tests/unit/test_careerviet_eda_charts.py` (694 dòng, 59 test), `reports/figures/careerviet/*.png` (16 file), `reports/careerviet_eda_charts.md` (136 dòng, script sinh).
 
 ---
@@ -470,7 +470,7 @@ Subset CareerViet + push_raw_to_r2 (lệnh:
 
 ## 13. Cloudflare R2 — Cấu Trúc Bucket, Đẩy Raw Envelope, Đồng Bộ Ledger
 
-Theo `docs/01_modern_data_mining_overview.md` §3 và `docs/02_crawling_architecture_guide.md` §3.1, bucket `vn-it-jobs` có 4 zone:
+Theo `docs/guides/01_modern_data_mining_overview.md` §3 và `docs/guides/02_crawling_architecture_guide.md` §3.1, bucket `vn-it-jobs` có 4 zone:
 
 ```
 s3://vn-it-jobs/

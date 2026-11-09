@@ -2,7 +2,7 @@
 
 > **Mã tài liệu:** `SPEC-13` | **Trạng thái:** Hoàn thiện & Hướng dẫn chính thức  
 > **Dự án:** VN-IT-Job-Mining — Hệ thống khai phá dữ liệu việc làm IT Việt Nam  
-> **Tài liệu liên quan:** [agents.md](../../agents.md), [09_monitoring_spec.md](09_monitoring_spec.md), [11_technical_decisions.md](11_technical_decisions.md), [12_coding_standards.md](12_coding_standards.md)
+> **Tài liệu liên quan:** [AGENTS.md](../../AGENTS.md), [09_monitoring_spec.md](09_monitoring_spec.md), [11_technical_decisions.md](11_technical_decisions.md), [12_coding_standards.md](12_coding_standards.md)
 
 ---
 

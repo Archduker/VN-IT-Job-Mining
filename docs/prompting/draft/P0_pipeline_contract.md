@@ -1,10 +1,10 @@
 # Prompt P0: khung pipeline 5 bước và báo cáo bước
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 ## 1. Ngữ cảnh
 
-Đọc trước: `docs/preprocessing/spec/P0_pipeline_contract.md` (luật), `preprocessing/CLAUDE.md`, `scripts/report_data_issues.py` (hàm `latest_envelopes`).
+Đọc trước: `docs/spec/preprocessing/spec/P0_pipeline_contract.md` (luật), `preprocessing/CLAUDE.md`, `scripts/report_data_issues.py` (hàm `latest_envelopes`).
 
 Pipeline cũ (`scripts/run_staging_integration_pipeline.py`) chạy một mạch, không thấy được từng bước. P0 dựng khung cho 5 bước Clean → Integration → Transformation → Normalization → Encoding và schema báo cáo chung. **Chưa viết luật nào của các bước.**
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Kiểm thử Bước 03 Transformation (docs/preprocessing/spec/P3_transformation.md).
+"""Kiểm thử Bước 03 Transformation (docs/spec/preprocessing/spec/P3_transformation.md).
 
 Kiểm định:
 - T2: Lương D2 (2,000 USD), D3 (Từ 15tr), D7 (title cascade), T2f (lương < 1M).

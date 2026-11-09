@@ -239,7 +239,7 @@ if sync_r2:
 
 ## 7. Tự Động Hóa Điều Phối Với Apache Airflow
 
-Chi tiết vận hành ở `docs/03_airflow_guide.md`. Tóm tắt:
+Chi tiết vận hành ở `docs/guides/03_airflow_guide.md`. Tóm tắt:
 
 - `dag_discovery_daily` (05:00 mỗi ngày) chạy discovery cho 8 nguồn, 2 luồng song song.
 - 8 DAG `crawler_detail_<nguồn>` chạy theo `DETAIL_CRON` (`collection/common/detail_schedule.py`): route check (`adaptive_router.py`, tối đa 30 tin, nghỉ 55 phút giữa các ca) → cào → kiểm tra chất lượng → tiền xử lý nhẹ.
@@ -255,4 +255,4 @@ Trước khi tạo Pull Request vào nhánh `crawls/<tenweb>`, thành viên ph�
 2. **Mẫu và contract test (C13):**
    - 3 trang thật (tin thường, tin VIP/hot, lương thỏa thuận) trong `tests/fixtures/<tenweb>/`.
    - `tests/contract/test_<tenweb>_contract.py` chạy offline, dùng `tests/contract/standards.py`.
-3. **File phân tích kiến trúc riêng:** Viết tại `docs/crawl/<tenweb>.md` giải thích chi tiết kiến trúc mạng, cách bóc tách `raw_payload` và các ngoại lệ của web mình.
+3. **File phân tích kiến trúc riêng:** Viết tại `docs/spec/crawl/<tenweb>.md` giải thích chi tiết kiến trúc mạng, cách bóc tách `raw_payload` và các ngoại lệ của web mình.

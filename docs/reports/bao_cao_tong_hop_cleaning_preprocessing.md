@@ -577,13 +577,13 @@ Các mã C-* chỉ căn cứ của phần Cleaning; P-* chỉ căn cứ của ph
 Ngày truy cập/đối chiếu: 05/11/2026. Tài liệu nội bộ được đọc tại commit khảo sát; timestamp riêng của báo cáo pipeline giữ nguyên.
 
 - **[C-P1]** IBM. *IBM SPSS Modeler CRISP-DM Guide*, phiên bản 18, chương 1–4. [Tài liệu chính thức](https://public.dhe.ibm.com/software/analytics/spss/documentation/modeler/18.0/en/ModelerCRISPDM.pdf).
-- **[C-N1]** [Tổng quan mục tiêu ban đầu](../01_modern_data_mining_overview.md) và [README](../../README.md). Dùng đối chiếu lịch sử định hướng, không làm chuẩn hành vi hiện tại.
-- **[C-N2]** [Ngữ cảnh preprocessing](../../preprocessing/CLAUDE.md), [C-P0](../preprocessing/spec/P0_pipeline_contract.md), [nhật ký thay đổi L-27/L-28](../issue_log.md).
+- **[C-N1]** [Tổng quan mục tiêu ban đầu](../guides/01_modern_data_mining_overview.md) và [README](../../README.md). Dùng đối chiếu lịch sử định hướng, không làm chuẩn hành vi hiện tại.
+- **[C-N2]** [Ngữ cảnh preprocessing](../../preprocessing/CLAUDE.md), [C-P0](../spec/preprocessing/spec/P0_pipeline_contract.md), [nhật ký thay đổi L-27/L-28](../issue_log.md).
 - **[C-N3]** [Driver hiện hành](../../scripts/run_preprocessing.py), [Clean](../../preprocessing/clean/run.py), [policy IT](../../preprocessing/clean/it_policy.json).
 - **[C-N4]** Tám notebook: [TopCV](../../collection/reports/EDA_topcv.ipynb), [TopDev](../../collection/reports/EDA_topdev.ipynb), [VietnamWorks](../../collection/reports/EDA_vietnamworks.ipynb), [CareerViet](../../collection/reports/EDA_careerviet.ipynb), [Vieclam24h](../../collection/reports/EDA_vieclam24h.ipynb), [ITviec](../../collection/reports/EDA_itviec.ipynb), [Glints](../../collection/reports/EDA_glints.ipynb), [JobsGO](../../collection/reports/EDA_jobsgo.ipynb). Đọc chẩn đoán qua [bộ trích xuất EDA](../../scripts/read_eda_diagnosis.py); không thực thi lại notebook.
 - **[C-N5]** [Bộ ánh xạ raw](../../preprocessing/integration/json_flattener.py), [Integration](../../preprocessing/integration/run.py).
 - **[C-N6]** [Báo cáo Clean gộp](../../reports/preprocessing/01_clean/_all.json) và các báo cáo từng nguồn cùng thư mục.
-- **[C-N7]** [Hồ sơ vấn đề ngày 03/11/2026](../preprocessing/data_issues_2026-11-03.md). Số liệu lịch sử, có mục đã được sửa về sau.
+- **[C-N7]** [Hồ sơ vấn đề ngày 03/11/2026](../spec/preprocessing/data_issues_2026-11-03.md). Số liệu lịch sử, có mục đã được sửa về sau.
 - **[C-N8]** [Transformation](../../preprocessing/transformation/run.py), [Normalization](../../preprocessing/normalization/run.py), [trích xuất kỹ năng](../../preprocessing/transformation/skill_extractor.py).
 - **[C-N9]** [Known Issues](../../KNOWN_ISSUED.md), đặc biệt SCRAPE-5, SCRAPE-15, SCRAPE-16 và PRE-11.
 
@@ -593,13 +593,13 @@ Ngày truy cập/đối chiếu: 05/11/2026. Các số liệu nội bộ là l�
 
 - **[P-P1]** IBM. *IBM SPSS Modeler CRISP-DM Guide*, phiên bản 18. [Tài liệu chính thức](https://public.dhe.ibm.com/software/analytics/spss/documentation/modeler/18.0/en/ModelerCRISPDM.pdf).
 - **[P-P2]** scikit-learn. *Common pitfalls and recommended practices*, mục Data leakage. [Tài liệu chính thức](https://scikit-learn.org/stable/common_pitfalls.html#data-leakage).
-- **[P-N1]** [Driver](../../scripts/run_preprocessing.py), [ngữ cảnh preprocessing](../../preprocessing/CLAUDE.md), [P-P0](../preprocessing/spec/P0_pipeline_contract.md).
+- **[P-N1]** [Driver](../../scripts/run_preprocessing.py), [ngữ cảnh preprocessing](../../preprocessing/CLAUDE.md), [P-P0](../spec/preprocessing/spec/P0_pipeline_contract.md).
 - **[P-N2]** [Flattener tám nguồn](../../preprocessing/integration/json_flattener.py), [Integration](../../preprocessing/integration/run.py).
 - **[P-N3]** [Transformation](../../preprocessing/transformation/run.py), [salary parser](../../preprocessing/transformation/salary_parser.py), [skill extractor](../../preprocessing/transformation/skill_extractor.py).
 - **[P-N4]** [Normalization](../../preprocessing/normalization/run.py), [taxonomy và chuẩn hóa text](../../preprocessing/normalization/text_cleaner.py), [các từ điển](../../preprocessing/dictionaries/).
 - **[P-N5]** [Encoding](../../preprocessing/encoding/run.py).
 - **[P-N6]** Báo cáo gộp: [Clean](../../reports/preprocessing/01_clean/_all.json), [Integration](../../reports/preprocessing/02_integration/_all.json), [Transformation](../../reports/preprocessing/03_transformation/_all.json), [Normalization](../../reports/preprocessing/04_normalization/_all.json), [Encoding](../../reports/preprocessing/05_encoding/_all.json).
-- **[P-N7]** [Known Issues](../../KNOWN_ISSUED.md), [hồ sơ ngày 03/11](../preprocessing/data_issues_2026-11-03.md), [nhật ký sửa lỗi](../issue_log.md).
+- **[P-N7]** [Known Issues](../../KNOWN_ISSUED.md), [hồ sơ ngày 03/11](../spec/preprocessing/data_issues_2026-11-03.md), [nhật ký sửa lỗi](../issue_log.md).
 - **[P-N8]** EDA tám nguồn: [TopCV](../../collection/reports/EDA_topcv.ipynb), [TopDev](../../collection/reports/EDA_topdev.ipynb), [VietnamWorks](../../collection/reports/EDA_vietnamworks.ipynb), [CareerViet](../../collection/reports/EDA_careerviet.ipynb), [Vieclam24h](../../collection/reports/EDA_vieclam24h.ipynb), [ITviec](../../collection/reports/EDA_itviec.ipynb), [Glints](../../collection/reports/EDA_glints.ipynb), [JobsGO](../../collection/reports/EDA_jobsgo.ipynb). Chẩn đoán có hướng xử lý cũ, không mặc định áp dụng GenAI hoặc capping từ notebook.
 
 ## 13. Phụ lục: hồ sơ quyết định, ví dụ và công việc cần thực hiện

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Bước 04 Normalization (docs/preprocessing/spec/P4_normalization.md).
+"""Bước 04 Normalization (docs/spec/preprocessing/spec/P4_normalization.md).
 
 Chuẩn hóa 34 tỉnh/thành sau sáp nhập, 6 cấp bậc tiếng Việt, 12 nhóm nghề IT (khớp từ nguyên vẹn),
 ánh xạ kỹ năng chuẩn, chuẩn hóa tên công ty, xử lý ngoại lai lương (IQR + Winsorize 1-99%),

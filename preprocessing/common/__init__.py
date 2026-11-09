@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Phần dùng chung của pipeline 5 bước (docs/preprocessing/spec/P0_pipeline_contract.md)."""
+"""Phần dùng chung của pipeline 5 bước (docs/spec/preprocessing/spec/P0_pipeline_contract.md)."""
 
 from pathlib import Path
 

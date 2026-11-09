@@ -27,7 +27,7 @@ for p in (ROOT, ROOT / "scripts"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from collection.common.r2_storage import normalize_legacy_key  # noqa: E402
+from collection.common.r2_storage import R2_LAYER_PREFIX, normalize_legacy_key, to_r2_key  # noqa: E402
 from sync_cloud_lakehouse import local_path_to_s3_key, s3_key_to_local_path  # noqa: E402
 
 LEGACY_R2_PREFIXES = ("raw/crawling/", "raw/url_ledger/")
@@ -103,18 +103,71 @@ def migrate_r2(apply: bool) -> Dict[str, object]:
     return {"stats": dict(stats), "conflicts": conflicts, "bucket": bucket}
 
 
+def migrate_prefixes(s3, bucket: str, apply: bool, layers: Dict[str, str] | None = None) -> Dict[str, object]:
+    """Đổi prefix tầng cũ (raw/, url_ledger/, staging/, curated/) sang prefix mới theo R2_LAYER_PREFIX.
+
+    Chép sang key mới, đối chiếu Size và ETag của bản chép với bản gốc, chỉ xóa key cũ khi khớp.
+    Đích đã có: giống hệt (ETag) thì xóa bản cũ, khác thì bỏ qua và báo. Không --apply thì chỉ đếm.
+    """
+    stats: Counter = Counter()
+    conflicts: List[str] = []
+    for old_layer in (layers or R2_LAYER_PREFIX):
+        for page in s3.get_paginator("list_objects_v2").paginate(Bucket=bucket, Prefix=old_layer + "/"):
+            for item in page.get("Contents", []):
+                old_key = item["Key"]
+                new_key = to_r2_key(normalize_legacy_key(old_key))
+                if new_key == old_key:
+                    stats["unmapped"] += 1
+                    continue
+                try:
+                    target = s3.head_object(Bucket=bucket, Key=new_key)
+                except Exception:  # noqa: BLE001 - không có đích
+                    target = None
+                if target is not None:
+                    if target["ETag"] == item["ETag"]:
+                        stats["duplicate_removed"] += 1
+                        if apply:
+                            s3.delete_object(Bucket=bucket, Key=old_key)
+                    else:
+                        stats["conflict_skipped"] += 1
+                        conflicts.append(f"{old_key} -> {new_key}")
+                    continue
+                stats["moved"] += 1
+                if not apply:
+                    continue
+                s3.copy_object(Bucket=bucket, Key=new_key, CopySource={"Bucket": bucket, "Key": old_key})
+                copied = s3.head_object(Bucket=bucket, Key=new_key)
+                if copied["ContentLength"] == item["Size"] and copied["ETag"] == item["ETag"]:
+                    s3.delete_object(Bucket=bucket, Key=old_key)
+                else:
+                    stats["moved"] -= 1
+                    stats["verify_failed_kept_old"] += 1
+                    conflicts.append(f"{old_key} -> {new_key} (chép xong nhưng Size/ETag lệch, giữ key cũ)")
+    return {"stats": dict(stats), "conflicts": conflicts, "bucket": bucket}
+
+
+def _prefix_map_cli(apply: bool) -> Dict[str, object]:
+    from sync_cloud_lakehouse import get_s3_client
+
+    s3, bucket, _ = get_s3_client()
+    return migrate_prefixes(s3, bucket, apply)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--local", action="store_true", help="Chuyển file trong data/crawling/")
     parser.add_argument("--r2", action="store_true", help="Chuyển key raw/crawling/ và raw/url_ledger/ trên R2")
+    parser.add_argument("--prefix-map", action="store_true",
+                        help="Đổi prefix R2 theo R2_LAYER_PREFIX (staging/ -> silver/, curated/ -> gold/; raw/ và url_ledger/ giữ nguyên); xóa key cũ sau khi đối chiếu bản chép")
     parser.add_argument("--apply", action="store_true", help="Thực hiện thật; không có cờ này thì chỉ chạy thử")
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data")
     args = parser.parse_args()
-    if not (args.local or args.r2):
-        parser.error("Chọn --local hoặc --r2")
+    if not (args.local or args.r2 or args.prefix_map):
+        parser.error("Chọn --local, --r2 hoặc --prefix-map")
     mode = "THỰC HIỆN" if args.apply else "CHẠY THỬ (thêm --apply để thực hiện)"
     for name, result in (("local", migrate_local(args.data_dir.resolve(), args.apply) if args.local else None),
-                         ("R2", migrate_r2(args.apply) if args.r2 else None)):
+                         ("R2", migrate_r2(args.apply) if args.r2 else None),
+                         ("R2 prefix-map", _prefix_map_cli(args.apply) if args.prefix_map else None)):
         if result is None:
             continue
         stats = result["stats"]

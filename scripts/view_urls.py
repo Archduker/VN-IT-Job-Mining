@@ -82,7 +82,7 @@ def load_r2_ledger(
     except Exception:
         pass
 
-    from collection.common.r2_storage import get_r2_client, resolve_r2_bucket, resolve_r2_endpoint
+    from collection.common.r2_storage import get_r2_client, resolve_r2_bucket, resolve_r2_endpoint, to_r2_key
 
     b_name = resolve_r2_bucket(bucket_name)
     ep = resolve_r2_endpoint(endpoint, required=False)
@@ -91,7 +91,7 @@ def load_r2_ledger(
     try:
         s3 = get_r2_client(ep or None, ak, sk)
 
-        catalog_key = f"url_ledger/{source}/catalog_master.json"
+        catalog_key = to_r2_key(f"url_ledger/{source}/catalog_master.json")
         scheme = "r2"
         try:
             resp = s3.get_object(Bucket=b_name, Key=catalog_key)
@@ -105,7 +105,7 @@ def load_r2_ledger(
             }
         except Exception:
             # Nếu catalog_master chưa có, quét các file manifest JSONL
-            prefix = f"url_ledger/{source}/manifests/"
+            prefix = to_r2_key(f"url_ledger/{source}/manifests/")
             objs = s3.list_objects_v2(Bucket=b_name, Prefix=prefix)
             contents = objs.get("Contents", [])
             if not contents:

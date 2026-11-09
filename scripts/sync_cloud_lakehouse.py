@@ -35,6 +35,8 @@ from collection.common.r2_storage import (  # noqa: E402
     normalize_legacy_key,
     resolve_r2_bucket,
     resolve_r2_endpoint,
+    to_logical_key,
+    to_r2_key,
 )
 
 
@@ -52,7 +54,7 @@ def show_status(s3, bucket: str, endpoint: str, filter_source: str = None):
 
     try:
         paginator = s3.get_paginator("list_objects_v2")
-        prefix = f"url_ledger/{filter_source}/" if filter_source else ""
+        prefix = to_r2_key(f"url_ledger/{filter_source}/") if filter_source else ""
         pages = paginator.paginate(Bucket=bucket, Prefix=prefix)
 
         total_files = 0
@@ -104,12 +106,12 @@ def s3_key_to_local_path(s3_key: str, data_dir: Path) -> Path:
 
     Key theo layout cũ (raw/crawling/<ngày>/<nguồn>/...) được đưa về đúng thư mục của nguồn.
     """
-    parts = normalize_legacy_key(s3_key).split("/")
+    parts = normalize_legacy_key(to_logical_key(s3_key)).split("/")
     if len(parts) >= 3 and parts[0] in ("raw", "url_ledger", "staging") and parts[1] in LAKEHOUSE_SOURCES:
         layer, source = parts[0], parts[1]
         rest = "/".join(parts[2:])
         return data_dir / source / layer / rest
-    return data_dir / s3_key
+    return data_dir / to_logical_key(s3_key)
 
 
 def upload_to_cloud(s3, bucket: str, filter_source: str = None):
@@ -160,7 +162,7 @@ def download_from_cloud(s3, bucket: str, filter_source: str = None):
 
     try:
         paginator = s3.get_paginator("list_objects_v2")
-        prefix = f"url_ledger/{filter_source}/" if filter_source else ""
+        prefix = to_r2_key(f"url_ledger/{filter_source}/") if filter_source else ""
         pages = paginator.paginate(Bucket=bucket, Prefix=prefix)
 
         count = 0

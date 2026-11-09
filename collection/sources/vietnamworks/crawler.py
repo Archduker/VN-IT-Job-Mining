@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Crawler nguồn VietnamWorks (https://www.vietnamworks.com) — Modern Data Stack Two-Phase Decoupled.
 
-Tuân thủ nghiêm ngặt chuẩn kiến trúc dự án VN-IT-Job-Mining (docs/crawler_output_checklist.md &
-docs/two_phase_r2_crawler_playbook.md):
+Tuân thủ nghiêm ngặt chuẩn kiến trúc dự án VN-IT-Job-Mining (docs/guides/crawler_output_checklist.md &
+docs/guides/two_phase_r2_crawler_playbook.md):
 1. Kiến trúc Hai Pha Độc Lập: Pha 1 discover_urls() & Pha 2 crawl_details().
 2. Pha 1 (Discovery): Thu thập URL vào UrlLedger, ban đầu content_hash = None, status = "PENDING".
 3. Pha 2 (Details): Kéo danh sách URL từ R2 về máy, cào chi tiết với Polite Sleep ngẫu nhiên 2.0s - 4.5s.

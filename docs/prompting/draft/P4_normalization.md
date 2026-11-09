@@ -1,12 +1,12 @@
 # Prompt P4: Normalization (34 tỉnh, nhãn tiếng Việt, JEV, outlier, log, gộp nguồn)
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 ## 1. Ngữ cảnh
 
 Đọc trước:
-- `docs/preprocessing/spec/P4_normalization.md`: N1–N9, bảng 34 tỉnh, 6 cấp bậc, 12 nhóm nghề.
-- `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6: JEV, cache, `--use-api`.
+- `docs/spec/preprocessing/spec/P4_normalization.md`: N1–N9, bảng 34 tỉnh, 6 cấp bậc, 12 nhóm nghề.
+- `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6: JEV, cache, `--use-api`.
 - `preprocessing/common/province.py`, `preprocessing/dictionaries/provinces_34.json` (từ P1).
 - `preprocessing/normalization/text_cleaner.py`: `normalize_seniority`, `classify_job_family`.
 - `preprocessing/missing_outlier/outlier_handler.py`, `preprocessing/normalization/log_transformer.py`, `cross_deduplicator.py`.

@@ -94,13 +94,13 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - *Phiên bản mới sinh ra khi nào?*  
   Khi hash JSON chuẩn hóa của tin đổi (CDC trong collection/common/url_ledger.py).
 - *Số theo từng nguồn đâu?*  
-  Bảng 'Số tin theo nguồn' trong docs/preprocessing/data_issues_2026-11-03.html.
+  Bảng 'Số tin theo nguồn' trong docs/spec/preprocessing/data_issues_2026-11-03.html.
 
 **Lấy số ở đâu:**
 
 - `docs/presentation/data/raw_issues_before.json → total_jobs, sources.<nguồn>.files`
 - `reports/preprocessing/01_clean/_all.json → input.rows`
-- `docs/preprocessing/data_issues_2026-11-03.html (bảng theo nguồn)`
+- `docs/spec/preprocessing/data_issues_2026-11-03.html (bảng theo nguồn)`
 
 *Chuyển ý → slide 4: Dữ liệu raw có 11 nhóm vấn đề*
 
@@ -118,14 +118,14 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - *Đo các số này thế nào?*  
   Script scripts/report_data_issues.py đọc raw, lấy bản mới nhất mỗi tin, làm phẳng rồi đếm; kết quả lưu ở raw_issues_before.json.
 - *Mức Cao/TB/Thấp dựa vào đâu?*  
-  Cao là làm sai kết quả phân tích; A1, A2, B, D theo docs/preprocessing/data_issues_2026-11-03.md, các nhóm còn lại do em đánh giá.
+  Cao là làm sai kết quả phân tích; A1, A2, B, D theo docs/spec/preprocessing/data_issues_2026-11-03.md, các nhóm còn lại do em đánh giá.
 - *Tin ngoài IT ước lượng thế nào?*  
   Theo từ khóa tiêu đề, nên chỉ để thấy độ lớn; phân loại thật làm ở bước Clean và kiểm bằng nhãn tay.
 
 **Lấy số ở đâu:**
 
 - `docs/presentation/data/raw_issues_before.json`
-- `docs/preprocessing/data_issues_2026-11-03.md, .html`
+- `docs/spec/preprocessing/data_issues_2026-11-03.md, .html`
 
 *Chuyển ý → slide 5: Ví dụ raw thật (1): sai phạm vi, sai giá trị*
 
@@ -147,7 +147,7 @@ Sinh bởi `python scripts/build_slides.py`, cùng số với `docs/presentation
 - *Sao không sửa ở lúc cào?*  
   Raw giữ nguyên để kiểm lại được; sửa ở pre-processing. Riêng phạm vi TopDev thì đã ghi việc sửa crawler.
 - *“Đăng 6 giờ trước” lấy đâu?*  
-  Trường posted_at_raw của ITviec; 855 tin có dạng này (docs/preprocessing/data_issues_2026-11-03.md, A2).
+  Trường posted_at_raw của ITviec; 855 tin có dạng này (docs/spec/preprocessing/data_issues_2026-11-03.md, A2).
 
 **Lấy số ở đâu:**
 

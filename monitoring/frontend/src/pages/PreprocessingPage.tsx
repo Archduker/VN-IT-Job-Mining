@@ -9,7 +9,7 @@ import { sourceName } from '../constants/sources'
 const date = (iso: string | null | undefined): string =>
   iso ? new Date(iso).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '—'
 
-/** Trang theo docs/monitoring/preprocessing_page_spec.md: dải 5 bước → tổng của bước.
+/** Trang theo docs/spec/monitoring/preprocessing_page_spec.md: dải 5 bước → tổng của bước.
  *  Bước Clean còn tách theo nguồn; từ Integration dữ liệu đã gộp nên chỉ xem tổng, nguồn chỉ là bộ lọc của bảng dòng. */
 export const PreprocessingPage: React.FC = () => {
   const [params, setParams] = useSearchParams()

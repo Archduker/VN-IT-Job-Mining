@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Bước 01 Clean (docs/preprocessing/spec/P1_clean.md): khử trùng, bỏ rác, phân loại IT bằng luật 2 tầng ở cả 8 nguồn.
+"""Bước 01 Clean (docs/spec/preprocessing/spec/P1_clean.md): khử trùng, bỏ rác, phân loại IT bằng luật 2 tầng ở cả 8 nguồn.
 
 Không bỏ tin ngoài IT khi chưa có preprocessing/clean/it_policy.json do người dùng duyệt (C4c).
 Output giữ nguyên raw_payload, chỉ thêm metadata.clean.

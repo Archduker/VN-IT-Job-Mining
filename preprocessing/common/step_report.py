@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Báo cáo bước theo schema chung (docs/preprocessing/spec/P0_pipeline_contract.md mục 4).
+"""Báo cáo bước theo schema chung (docs/spec/preprocessing/spec/P0_pipeline_contract.md mục 4).
 
 Monitoring chỉ đọc các file này, nên mọi số hiện trên trang Pre-processing phải đi qua đây.
 """

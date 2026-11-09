@@ -72,7 +72,33 @@ def get_r2_client(
     )
 
 
-CANONICAL_PREFIXES = ("url_ledger/", "raw/", "staging/", "curated/")
+# BẢNG ÁNH XẠ DUY NHẤT: tầng logic (tên cũ, cũng là tên thư mục local data/) -> prefix thật trên R2.
+# Đổi layout R2 chỉ cần sửa bảng này. Code crawler vẫn dùng khóa logic ``raw/<nguồn>/...``;
+# R2RawStore, UrlLedger và canonicalize_lakehouse_key đổi sang prefix R2 ở điểm chốt.
+R2_LAYER_PREFIX = {
+    "raw": "raw",
+    "url_ledger": "url_ledger",
+    "staging": "silver",
+    "curated": "gold",
+}
+CANONICAL_PREFIXES = tuple(f"{v}/" for v in R2_LAYER_PREFIX.values())
+
+
+def to_logical_key(key: str) -> str:
+    """Key R2 (prefix mới) -> khóa logic (tên tầng cũ). Key đã logic hoặc không khớp thì giữ nguyên."""
+    for layer, prefix in R2_LAYER_PREFIX.items():
+        if key.startswith(prefix + "/"):
+            return layer + key[len(prefix):]
+    return key
+
+
+def to_r2_key(key: str) -> str:
+    """Khóa logic hoặc key R2 -> key R2 theo bảng ánh xạ (idempotent). Không kiểm tra hợp lệ."""
+    key = to_logical_key(str(key).lstrip("/"))
+    layer, sep, rest = key.partition("/")
+    return f"{R2_LAYER_PREFIX[layer]}/{rest}" if sep and layer in R2_LAYER_PREFIX else key
+
+
 # Tầng có thư mục con theo nguồn: <tầng>/<nguồn>/...
 SOURCE_LAYERS = ("raw", "url_ledger", "staging")
 # Giữ khớp với SUPPORTED_SOURCES trong run.py
@@ -107,7 +133,7 @@ def canonicalize_lakehouse_key(object_key: str) -> str:
         * <source>/staging/...    -> staging/<source>/...
     - Từ chối tuyệt đối các tệp cache/tạm/nhạy cảm: .browser_profile, router_state.json, *.tmp, checkpoints.
     """
-    key = normalize_legacy_key(object_key)
+    key = normalize_legacy_key(to_logical_key(str(object_key).strip().replace("\\", "/").lstrip("/")))
     parts = key.split("/")
 
     # 1. Phát hiện file rác / ephemeral local cache
@@ -118,19 +144,19 @@ def canonicalize_lakehouse_key(object_key: str) -> str:
         raise ValueError(f"Không được phép upload tệp cache/tạm lên Lakehouse: {object_key}")
 
     # 2. Đã đúng chuẩn 4 tầng; tầng theo nguồn phải có tên nguồn thật ở cấp 2
-    if any(key.startswith(pfx) for pfx in CANONICAL_PREFIXES):
+    if parts[0] in R2_LAYER_PREFIX:
         if parts[0] in SOURCE_LAYERS and (len(parts) < 3 or parts[1] not in LAKEHOUSE_SOURCES):
             raise ValueError(f"Key thiếu tên nguồn hợp lệ ở cấp 2 (<tầng>/<nguồn>/...): {object_key}")
-        return key
+        return to_r2_key(key)
 
     # 3. Bị đảo ngược: <source>/<layer>/... (e.g. topcv/raw/... -> raw/topcv/...)
     if len(parts) >= 3 and parts[1] in SOURCE_LAYERS and parts[0] in LAKEHOUSE_SOURCES:
         source, layer = parts[0], parts[1]
         rest = "/".join(parts[2:])
-        return f"{layer}/{source}/{rest}"
+        return to_r2_key(f"{layer}/{source}/{rest}")
 
     raise ValueError(
-        f"Object key không hợp lệ với chuẩn 4 tầng Lakehouse (phải thuộc raw/, url_ledger/, staging/, curated/): {object_key}"
+        f"Object key không hợp lệ với chuẩn 4 tầng Lakehouse (phải thuộc raw/, url_ledger/, silver/, gold/; tên tầng cũ cũng được nhận): {object_key}"
     )
 
 

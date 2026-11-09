@@ -124,7 +124,7 @@ Báo cáo bước vẫn có khối `"api": {"used": false, "reason": "pipeline k
 
 ## 8. Monitoring thấy gì
 
-Báo cáo bước là nguồn số duy nhất. Đặc tả trang: `docs/monitoring/preprocessing_page_spec.md`.
+Báo cáo bước là nguồn số duy nhất. Đặc tả trang: `docs/spec/monitoring/preprocessing_page_spec.md`.
 
 ## 9. Tiêu chí xong
 

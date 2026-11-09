@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Bước 03 Transformation (docs/preprocessing/spec/P3_transformation.md).
+"""Bước 03 Transformation (docs/spec/preprocessing/spec/P3_transformation.md).
 
 Ép kiểu dữ liệu, bóc tách lương cascade, ngày, kinh nghiệm, headcount,
 làm sạch text và nhận ngôn ngữ JD (không dịch: kỹ năng rút song ngữ nên JD tiếng Anh vẫn dùng được),

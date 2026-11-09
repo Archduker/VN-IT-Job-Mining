@@ -1501,8 +1501,8 @@ def extract_raw_envelope_from_html(
 class TopDevCrawler(BaseCrawler):
     """Crawler TopDev — Two-Phase Decoupled (URL Discovery -> Detail Extraction), RAW-FIRST.
 
-    Tuân thủ nghiêm ngặt chuẩn Modern Data Stack (docs/crawler_output_checklist.md &
-    docs/two_phase_r2_crawler_playbook.md):
+    Tuân thủ nghiêm ngặt chuẩn Modern Data Stack (docs/guides/crawler_output_checklist.md &
+    docs/guides/two_phase_r2_crawler_playbook.md):
     1. Hai pha độc lập: Pha 1 discover_urls() & Pha 2 crawl_details().
     2. Pha 1: URL ban đầu hoàn toàn chưa có hash (content_hash = None, status = "PENDING").
     3. Pha 2: Kéo URL từ R2 về máy trước khi lọc URL (ledger.pull_from_r2()).

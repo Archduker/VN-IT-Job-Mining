@@ -86,7 +86,7 @@ Các cột của audit cần đọc kỹ:
 
 ## Tiêu chuẩn crawler
 
-Rút ra từ `docs/two_phase_r2_crawler_playbook.md` và `.agents/skills/crawling-architect/SKILL.md`, rồi chốt cùng người dùng ngày 02/11/2026. Khi tài liệu cũ mâu thuẫn với bảng dưới thì bảng dưới thắng.
+Rút ra từ `docs/guides/two_phase_r2_crawler_playbook.md` và `.agents/skills/crawling-architect/SKILL.md`, rồi chốt cùng người dùng ngày 02/11/2026. Khi tài liệu cũ mâu thuẫn với bảng dưới thì bảng dưới thắng.
 
 Các quyết định đã chốt:
 - **Nghỉ giữa 2 request:** mặc định 2.0–4.5 giây, ngẫu nhiên. Nguồn hay chặn bot (TopCV) được đặt chậm hơn trong crawler của nguồn đó. JobsGO, VietnamWorks, TopDev hiện còn nhanh hơn chuẩn (SCRAPE-13).

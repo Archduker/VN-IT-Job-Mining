@@ -8,7 +8,7 @@
 > - `tests/integration/` (Hệ thống kiểm thử tích hợp liên phân hệ)  
 > **Nhánh Git phụ trách:** `sprint/pipeline-delivery` (nhánh cơ sở tích hợp)  
 > **Nhánh hợp nhất cuối cùng (Final Release):** `main`  
-> **Tài liệu đặc tả đối chiếu:** [`docs/spec/08_evaluation_spec.md`](../spec/08_evaluation_spec.md), [`docs/spec/13_working_documentation.md`](../spec/13_working_documentation.md), [`agents.md`](../../agents.md)
+> **Tài liệu đặc tả đối chiếu:** [`docs/spec/08_evaluation_spec.md`](../spec/08_evaluation_spec.md), [`docs/spec/13_working_documentation.md`](../spec/13_working_documentation.md), [`agents.md`](../../AGENTS.md)
 
 ---
 

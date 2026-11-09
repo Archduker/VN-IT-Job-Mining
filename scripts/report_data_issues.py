@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Thống kê vấn đề dữ liệu raw (sau làm phẳng) và vẽ thành một file HTML tự chứa. Chỉ đọc dữ liệu.
 
-    python scripts/report_data_issues.py                       # ghi docs/preprocessing/data_issues_2026-11-03.html
+    python scripts/report_data_issues.py                       # ghi docs/spec/preprocessing/data_issues_2026-11-03.html
     python scripts/report_data_issues.py --out /tmp/x.html
 
 Mỗi tin lấy snapshot mới nhất; file batch cũ (list) và thư mục phụ bị bỏ qua. Làm phẳng bằng
@@ -293,7 +293,7 @@ def render_html(stats: Dict[str, Any]) -> str:
 <title>Vấn đề dữ liệu raw</title><style>{CSS}</style></head><body><main>
 <h1>Vấn đề dữ liệu raw trước khi refactor pre-processing</h1>
 <p class="muted">Sinh bởi <code>scripts/report_data_issues.py</code> ngày {_e(stats['generated_on'])}. Mỗi tin lấy snapshot mới nhất, làm phẳng bằng
-<code>flatten_raw_job_record</code> hiện tại. Chỉ đọc dữ liệu. Chi tiết việc cần làm: <code>docs/preprocessing/data_issues_2026-11-03.md</code>.</p>
+<code>flatten_raw_job_record</code> hiện tại. Chỉ đọc dữ liệu. Chi tiết việc cần làm: <code>docs/spec/preprocessing/data_issues_2026-11-03.md</code>.</p>
 <div class="kpis"><div class="kpi"><span class="muted">Tin (bản mới nhất)</span><b>{stats['total_jobs']:,}</b></div>
 <div class="kpi"><span class="muted">Nguồn</span><b>{len(S)}</b></div>
 <div class="kpi"><span class="muted">Trường giữ cho integration</span><b>{len(keep)}/{len(stats['field_matrix'])}</b></div>
@@ -401,7 +401,7 @@ Nguyên nhân chính: dấu phân cách hàng nghìn ("2,000", "4.000") bị đ�
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data")
-    parser.add_argument("--out", type=Path, default=ROOT / "docs" / "preprocessing" / "data_issues_2026-11-03.html")
+    parser.add_argument("--out", type=Path, default=ROOT / "docs" / "spec" / "preprocessing" / "data_issues_2026-11-03.html")
     args = parser.parse_args()
     stats = compute(args.data_dir)
     args.out.parent.mkdir(parents=True, exist_ok=True)

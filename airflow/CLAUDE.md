@@ -1,6 +1,6 @@
 # airflow/CLAUDE.md
 
-Ngữ cảnh khi làm việc với Airflow. Vận hành chi tiết: `docs/03_airflow_guide.md`. Crawler: `collection/CLAUDE.md`.
+Ngữ cảnh khi làm việc với Airflow. Vận hành chi tiết: `docs/guides/03_airflow_guide.md`. Crawler: `collection/CLAUDE.md`.
 
 ## Cấu trúc
 

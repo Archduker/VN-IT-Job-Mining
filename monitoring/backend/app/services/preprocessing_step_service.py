@@ -2,7 +2,7 @@
 """Đọc báo cáo từng bước pre-processing (reports/preprocessing/<bước>/<nguồn>.json).
 
 Chỉ đọc file do scripts/run_preprocessing.py ghi; không tính lại, không ước lượng.
-Đặc tả: docs/monitoring/preprocessing_page_spec.md, schema: docs/preprocessing/spec/P0_pipeline_contract.md mục 4.
+Đặc tả: docs/spec/monitoring/preprocessing_page_spec.md, schema: docs/spec/preprocessing/spec/P0_pipeline_contract.md mục 4.
 """
 
 from __future__ import annotations

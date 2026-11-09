@@ -254,7 +254,7 @@ class SourceReportService:
             if client:
                 try:
                     pages = client.get_paginator("list_objects_v2").paginate(
-                        Bucket=r2_client.bucket_name, Prefix=f"raw/{source}/", MaxKeys=MAX_SAMPLE_IDS)
+                        Bucket=r2_client.bucket_name, Prefix=_r2_key(f"raw/{source}/"), MaxKeys=MAX_SAMPLE_IDS)
                     for page in pages:
                         for obj in page.get("Contents", []):
                             stem = obj["Key"].rsplit("/", 1)[-1].removesuffix(".json")

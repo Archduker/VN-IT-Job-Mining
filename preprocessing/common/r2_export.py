@@ -15,6 +15,7 @@ import json
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
+from collection.common.r2_storage import to_r2_key
 from preprocessing.common import REPO_ROOT, SOURCES, STEPS
 
 DATA = REPO_ROOT / "data" / "preprocessing"
@@ -24,11 +25,11 @@ SILVER_STEPS = STEPS[:4]
 
 def silver_key(step: str, source: str) -> str:
     ext = "jsonl" if step == "01_clean" else "parquet"
-    return f"staging/{source}/preprocessing/{step}.{ext}"
+    return to_r2_key(f"staging/{source}/preprocessing/{step}.{ext}")
 
 
-GOLD_KEYS = {"features.parquet": "curated/preprocessing/features.parquet",
-             "encoding_dictionary.json": "curated/preprocessing/encoding_dictionary.json"}
+GOLD_KEYS = {"features.parquet": to_r2_key("curated/preprocessing/features.parquet"),
+             "encoding_dictionary.json": to_r2_key("curated/preprocessing/encoding_dictionary.json")}
 
 
 def _generated_at(step: str) -> Optional[str]:

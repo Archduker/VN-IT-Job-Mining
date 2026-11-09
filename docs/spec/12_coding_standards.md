@@ -2,7 +2,7 @@
 
 > **Mã tài liệu:** `SPEC-12` | **Trạng thái:** Bắt buộc tuân thủ (Mandatory)  
 > **Dự án:** VN-IT-Job-Mining — Nền tảng khai phá thị trường lao động IT Việt Nam  
-> **Tài liệu liên quan:** [agents.md](../../agents.md), [09_monitoring_spec.md](09_monitoring_spec.md), [11_technical_decisions.md](11_technical_decisions.md), [13_working_documentation.md](13_working_documentation.md)
+> **Tài liệu liên quan:** [AGENTS.md](../../AGENTS.md), [09_monitoring_spec.md](09_monitoring_spec.md), [11_technical_decisions.md](11_technical_decisions.md), [13_working_documentation.md](13_working_documentation.md)
 
 ---
 

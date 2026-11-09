@@ -1,15 +1,15 @@
 # Prompt P3: Transformation (lương, ngày, kinh nghiệm, chữ, địa điểm 3 cấp, dịch JD, kỹ năng và phúc lợi)
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 ## 1. Ngữ cảnh
 
 Đọc trước:
-- `docs/preprocessing/spec/P3_transformation.md`: luật T1–T9, cột mới.
+- `docs/spec/preprocessing/spec/P3_transformation.md`: luật T1–T9, cột mới.
 - `preprocessing/transformation/salary_parser.py`: `UniversalSalaryParser.parse_text`, `parse_salary_cascade`.
 - `preprocessing/missing_outlier/sneaky_null_detector.py`. Không dùng `genai_text_imputer.py` nữa (bỏ Gemini, xem P0 mục 6).
-- `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6: gọi Gemini (API Google, khóa `GEMINI_API_KEY`) để dịch, cache, `--use-api`.
-- `docs/preprocessing/spec/P4_normalization.md` mục N1: bảng 34 tỉnh (T8 dùng để nhận tên tỉnh).
+- `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6: gọi Gemini (API Google, khóa `GEMINI_API_KEY`) để dịch, cache, `--use-api`.
+- `docs/spec/preprocessing/spec/P4_normalization.md` mục N1: bảng 34 tỉnh (T8 dùng để nhận tên tỉnh).
 - `preprocessing/transformation/html_cleaner.py`, `bullet_stitcher.py`, `text_metrics.py`.
 
 Lỗi lương:

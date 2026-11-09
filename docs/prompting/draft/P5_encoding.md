@@ -2,7 +2,7 @@
 
 ## 1. Ngữ cảnh
 
-Đọc trước: `docs/preprocessing/spec/P5_encoding.md` (luật E1–E7).
+Đọc trước: `docs/spec/preprocessing/spec/P5_encoding.md` (luật E1–E7).
 
 Bộ golden (P4) là bảng chữ đã chuẩn hóa. P5 đổi bộ golden sang bảng toàn số, kèm từ điển để giải mã ngược. Bộ golden giữ nguyên.
 

@@ -3,7 +3,7 @@
 """
 Script gán nhãn tay chuyên sâu cho 541 tin review C4b trong data/preprocessing/review/it_<nguồn>.csv.
 
-Đặc tả: docs/preprocessing/spec/P1_clean.md
+Đặc tả: docs/spec/preprocessing/spec/P1_clean.md
 Tiêu chí:
 - 'it': Vị trí kỹ thuật hoặc sản phẩm công nghệ thông tin (Software, Data, Cloud/DevOps,
         Security, IT QA/QC, IT PO/PM/BA, IT Support/Helpdesk, UI/UX, Hardware/Embedded).

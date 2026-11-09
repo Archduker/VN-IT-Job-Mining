@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Bước 02 Integration (docs/preprocessing/spec/P2_integration.md).
+"""Bước 02 Integration (docs/spec/preprocessing/spec/P2_integration.md).
 
 Làm phẳng dữ liệu từ envelope 01_clean về 18 trường chung + khóa và metadata sạch.
 Gộp 8 nguồn vào một file data/preprocessing/02_integration/all.parquet (cột source_platform giữ nguồn).

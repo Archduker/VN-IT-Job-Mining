@@ -14,7 +14,7 @@ from typing import Any, Dict, Iterable, List
 
 from app.core.feature_targets import FEATURES, RAW_PATHS
 from app.services.source_report_service import _match_paths, _value_at
-from collection.common.r2_storage import canonicalize_lakehouse_key
+from collection.common.r2_storage import canonicalize_lakehouse_key, to_r2_key
 
 REQUIRED_METADATA = ("job_id", "source", "source_url", "scraped_at", "version", "content_hash")
 MIN_FEATURE_COVERAGE = 0.9  # C11: mỗi trường F1–F8 có ở >= 90% bản ghi
@@ -79,7 +79,7 @@ def check_r2_keys(keys: Iterable[str], source: str) -> None:
     keys = list(keys)
     assert keys, "không có key nào được ghi lên R2"
     for key in keys:
-        assert canonicalize_lakehouse_key(key) == key, f"key sai layout: {key}"
+        assert canonicalize_lakehouse_key(key) == to_r2_key(key), f"key sai layout: {key}"  # crawler phát khóa logic; R2RawStore đổi sang prefix R2
         assert key.split("/")[1] == source, f"key không thuộc nguồn {source}: {key}"
 
 

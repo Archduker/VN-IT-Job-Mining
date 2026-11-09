@@ -86,7 +86,7 @@ python3 scripts/sync_cloud_lakehouse.py
 
 Mỗi nhánh `crawls/<tenweb>` khi tạo Pull Request vào `main` phải có đủ 3 tài liệu:
 1. **Tài liệu phân tích kiến trúc web:**
-   `docs/crawl/<tenweb>.md` (phân tích SSR/SPA, cơ chế chống bot, Cloudflare WAF, container selector).
+   `docs/spec/crawl/<tenweb>.md` (phân tích SSR/SPA, cơ chế chống bot, Cloudflare WAF, container selector).
 2. **Báo cáo kiểm kê trường dữ liệu (Field Inventory):**
    `collection/reports/<tenweb>_inventory.md` (theo mẫu `templates/raw_crawl_inventory_template.md`).
 3. **Báo cáo phân tích dữ liệu sơ bộ (Preliminary EDA):**
@@ -110,7 +110,7 @@ python3 .agents/skills/collection-submission/scripts/verify_submission.py --sour
 - [x] **Criterion 1 (HTML Samples):** Tối thiểu 3 file `.html` trong `collection/sources/<source>/samples/`.
 - [x] **Criterion 2 (JSON Samples):** Tối thiểu 3 file `.json` tương ứng, parse hợp lệ không lỗi cú pháp.
 - [x] **Criterion 3 (Sample Docs):** Kiểm tra file `.md` mô tả sample nếu có.
-- [x] **Criterion 4 (Architecture Doc):** File `docs/crawl/<source>.md` tồn tại và có nội dung phân tích.
+- [x] **Criterion 4 (Architecture Doc):** File `docs/spec/crawl/<source>.md` tồn tại và có nội dung phân tích.
 - [x] **Criterion 5 (Inventory Report):** File `collection/reports/<source>_inventory.md` tồn tại.
 - [x] **Criterion 6 (EDA Report):** File `collection/reports/<source>_eda.md` tồn tại.
 - [x] **Criterion 7 (Storage Readiness):** Kiểm tra cấu hình kết nối R2 và Cloudflare R2 trong môi trường.

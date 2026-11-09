@@ -2,7 +2,7 @@
 
 > **Mã tài liệu:** `SPEC-11` | **Trạng thái:** Toàn diện & Phê duyệt  
 > **Dự án:** VN-IT-Job-Mining — Hệ thống tích hợp và khai phá dữ liệu việc làm IT tại Việt Nam  
-> **Tài liệu liên quan:** [agents.md](../../agents.md), [09_monitoring_spec.md](09_monitoring_spec.md), [12_coding_standards.md](12_coding_standards.md), [13_working_documentation.md](13_working_documentation.md)
+> **Tài liệu liên quan:** [AGENTS.md](../../AGENTS.md), [09_monitoring_spec.md](09_monitoring_spec.md), [12_coding_standards.md](12_coding_standards.md), [13_working_documentation.md](13_working_documentation.md)
 
 ---
 

@@ -14,6 +14,19 @@ from botocore.exceptions import ClientError, EndpointConnectionError
 
 from app.core.config import settings
 
+
+def _r2_key(key: str) -> str:
+    """Khóa logic (raw/<nguồn>/...) -> key thật trên R2 theo bảng R2_LAYER_PREFIX."""
+    from collection.common.r2_storage import to_r2_key
+
+    return to_r2_key(key)
+
+
+def _logical_key(key: str) -> str:
+    from collection.common.r2_storage import to_logical_key
+
+    return to_logical_key(key)
+
 logger = logging.getLogger("r2_client")
 
 
@@ -86,7 +99,7 @@ class CloudflareR2Client:
 
     def get_layers_summary(self) -> Dict[str, Any]:
         """Thống kê tổng số lượng object và dung lượng 4 phân tầng Lakehouse trên R2."""
-        layers = ["url_ledger/", "raw/", "staging/", "curated/"]
+        layers = ["url_ledger/", "raw/", "staging/", "curated/"]  # tên logic; liệt kê bằng prefix R2 thật
         client = self.get_client()
         result = {
             "bucket": self.bucket_name,
@@ -104,7 +117,7 @@ class CloudflareR2Client:
                 cnt = 0
                 sz = 0
                 paginator = client.get_paginator("list_objects_v2")
-                for page in paginator.paginate(Bucket=self.bucket_name, Prefix=layer):
+                for page in paginator.paginate(Bucket=self.bucket_name, Prefix=_r2_key(layer)):
                     for it in page.get("Contents", []):
                         cnt += 1
                         sz += it["Size"]
@@ -158,10 +171,10 @@ class CloudflareR2Client:
         if client:
             try:
                 paginator = client.get_paginator("list_objects_v2")
-                for prefix in [f"raw/{source}/", f"{source}/raw/"]:
+                for prefix in [_r2_key(f"raw/{source}/"), f"{source}/raw/"]:
                     for page in paginator.paginate(Bucket=self.bucket_name, Prefix=prefix):
                         for obj in page.get("Contents", []):
-                            k = obj["Key"]
+                            k = _logical_key(obj["Key"])
                             remote_keys.add(k)
                             # Bình thường hoá để so khớp:
                             # Nếu key trên cloud là raw/topcv/xxx.json -> map sang topcv/raw/xxx.json
@@ -211,7 +224,7 @@ class CloudflareR2Client:
         for rel in diff["missing_in_cloud"]:
             f_path = settings.DATA_DIR / rel
             rel_under_raw = f_path.relative_to(local_raw_dir).as_posix()
-            key = f"raw/{source}/{rel_under_raw}"
+            key = _r2_key(f"raw/{source}/{rel_under_raw}")
             try:
                 client.upload_file(str(f_path), self.bucket_name, key)
                 uploaded += 1
@@ -247,7 +260,7 @@ class CloudflareR2Client:
         # 1. Upload catalog_master.json
         cat_file = ledger_dir / "catalog_master.json"
         if cat_file.exists():
-            r2_key = f"url_ledger/{source}/catalog_master.json"
+            r2_key = _r2_key(f"url_ledger/{source}/catalog_master.json")
             try:
                 client.upload_file(str(cat_file), self.bucket_name, r2_key)
                 uploaded_files.append(r2_key)
@@ -258,7 +271,7 @@ class CloudflareR2Client:
         manifest_dir = ledger_dir / "manifests"
         if manifest_dir.exists():
             for f in manifest_dir.glob("*.jsonl"):
-                r2_key = f"url_ledger/{source}/manifests/{f.name}"
+                r2_key = _r2_key(f"url_ledger/{source}/manifests/{f.name}")
                 try:
                     client.upload_file(str(f), self.bucket_name, r2_key)
                     uploaded_files.append(r2_key)
@@ -299,7 +312,7 @@ class CloudflareR2Client:
                 paginator = client.get_paginator("list_objects_v2")
                 for page in paginator.paginate(Bucket=self.bucket_name, MaxKeys=1000):
                     for obj in page.get("Contents", []):
-                        k = obj["Key"]
+                        k = _logical_key(obj["Key"])
                         for s in settings.SUPPORTED_SOURCES:
                             if k.startswith(f"raw/{s}/"):
                                 r2_source_counts[s] += 1

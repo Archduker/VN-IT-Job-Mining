@@ -1,6 +1,6 @@
 # TỔNG QUAN KIẾN TRÚC TIỀN XỬ LÝ DỮ LIỆU (PREPROCESSING ARCHITECTURE)
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 > **Tài liệu quy chuẩn số 00 (Preprocessing Core Document 00)**  
 > **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (**VN-IT-Job-Mining**)  
@@ -34,7 +34,7 @@
 +----------------------------------------------------------------------------------------------------+
 |  * Mục tiêu: Chuyển đổi dữ liệu thô dị thể thành Bảng Phẳng Chuẩn Vàng (Golden Flat Table).       |
 |  * Tổ chức mã nguồn: preprocessing/ (tách rời hoàn toàn khỏi collection/).                         |
-|  * Tổ chức tài liệu: docs/preprocessing/ (chia cụ thể theo 4 bước công việc).                     |
+|  * Tổ chức tài liệu: docs/spec/preprocessing/ (chia cụ thể theo 4 bước công việc).                     |
 |  * 4 Bước tuần tự / thích ứng:                                                                     |
 |    1. Integration: Mapping lấy các trường chung & Ép phẳng JSON (JSON Flattening).                 |
 |    2. Transformation: Bóc tách dải lương (Cascade), đổi tiền tệ (USD->VND), chuẩn hóa ngày tháng.  |

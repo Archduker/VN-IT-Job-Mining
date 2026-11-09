@@ -115,7 +115,9 @@ def sync_source_from_lakehouse(source: str, max_workers: int = 8) -> Dict[str, A
         logger.info(sync_result["message"])
         return sync_result
 
-    prefix = f"raw/{source}/"
+    from collection.common.r2_storage import to_r2_key
+
+    prefix = to_r2_key(f"raw/{source}/")
     try:
         paginator = s3.get_paginator("list_objects_v2")
         cloud_keys = []

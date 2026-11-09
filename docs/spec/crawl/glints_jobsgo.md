@@ -2,7 +2,7 @@
 
 > **Hiện trạng 03/11/2026**
 >
-> - Xem trạng thái từng nguồn ở `docs/crawl/glints.md` và `docs/crawl/jobsgo.md`.
+> - Xem trạng thái từng nguồn ở `docs/spec/crawl/glints.md` và `docs/spec/crawl/jobsgo.md`.
 >
 > Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
 

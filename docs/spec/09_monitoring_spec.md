@@ -2,7 +2,7 @@
 
 > **Mã tài liệu:** `SPEC-09` | **Trạng thái:** Hoàn thành & Phê duyệt | **Phân hệ:** Trực quan hóa & Giám sát  
 > **Công nghệ lõi:** FastAPI (Python 3.12 Backend) + React 18 / TypeScript / Tailwind CSS (Vite Frontend)  
-> **Tài liệu liên quan:** [agents.md](../../agents.md), [11_technical_decisions.md](11_technical_decisions.md), [12_coding_standards.md](12_coding_standards.md), [13_working_documentation.md](13_working_documentation.md)
+> **Tài liệu liên quan:** [AGENTS.md](../../AGENTS.md), [11_technical_decisions.md](11_technical_decisions.md), [12_coding_standards.md](12_coding_standards.md), [13_working_documentation.md](13_working_documentation.md)
 
 ---
 

@@ -3,7 +3,7 @@
 ## 1. Ngữ cảnh
 
 Đọc trước:
-- `docs/preprocessing/spec/P2_integration.md`: luật I1–I5, danh sách 18 trường.
+- `docs/spec/preprocessing/spec/P2_integration.md`: luật I1–I5, danh sách 18 trường.
 - `preprocessing/integration/json_flattener.py`: các hàm `_flatten_itviec`, `_flatten_topdev`, `_flatten_careerviet`, `_flatten_jobsgo`.
 - `monitoring/backend/app/core/feature_targets.py`: `RAW_PATHS`.
 

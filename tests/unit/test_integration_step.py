@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Kiểm thử Bước 02 Integration (docs/preprocessing/spec/P2_integration.md).
+"""Kiểm thử Bước 02 Integration (docs/spec/preprocessing/spec/P2_integration.md).
 
 Kiểm định:
 - Output Contract: đúng 28 cột chuẩn (5 keys + 5 clean + 18 retained).

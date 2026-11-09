@@ -1,10 +1,10 @@
 # preprocessing/CLAUDE.md
 
-Ngữ cảnh khi làm việc với pre-processing. Thiết kế đầy đủ: `docs/preprocessing/00_architecture_overview.md` (đọc ma trận ranh giới các bước trước khi chuyển logic giữa các bước).
+Ngữ cảnh khi làm việc với pre-processing. Thiết kế đầy đủ: `docs/spec/preprocessing/00_architecture_overview.md` (đọc ma trận ranh giới các bước trước khi chuyển logic giữa các bước).
 
 Thứ tự làm của dự án là web scraping → trực quan hóa → pre-processing. **Phần này đang để sau:** chỉ sửa khi người dùng yêu cầu rõ.
 
-**Refactor đang đặc tả (03/11/2026):** 5 bước Clean → Integration → Transformation → Normalization → Encoding, output bước trước là input bước sau, mỗi bước ghi báo cáo cho Monitoring. Đặc tả: `docs/preprocessing/spec/`; prompt: `docs/prompting/`. Khi refactor xong, bảng "Cấu trúc" dưới đây sẽ thay đổi. Đã chốt: địa điểm theo 34 tỉnh sau sáp nhập (JSON 3 cấp); tin ngoài IT chỉ bỏ theo `preprocessing/clean/it_policy.json` do người dùng duyệt; **không dùng model/LLM nào** (04/11/2026): phân loại là luật if-else, không dịch JD.
+**Refactor đang đặc tả (03/11/2026):** 5 bước Clean → Integration → Transformation → Normalization → Encoding, output bước trước là input bước sau, mỗi bước ghi báo cáo cho Monitoring. Đặc tả: `docs/spec/preprocessing/spec/`; prompt: `docs/prompting/`. Khi refactor xong, bảng "Cấu trúc" dưới đây sẽ thay đổi. Đã chốt: địa điểm theo 34 tỉnh sau sáp nhập (JSON 3 cấp); tin ngoài IT chỉ bỏ theo `preprocessing/clean/it_policy.json` do người dùng duyệt; **không dùng model/LLM nào** (04/11/2026): phân loại là luật if-else, không dịch JD.
 
 ## Pipeline 5 bước (đang làm)
 

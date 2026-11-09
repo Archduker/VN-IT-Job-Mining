@@ -262,14 +262,14 @@ class DoDScorer:
         self.details["TC5_Lakehouse"] = log_items
 
     def _check_tc6_docs(self) -> None:
-        """TC6 (15đ): docs/crawl/<source>.md."""
+        """TC6 (15đ): docs/spec/crawl/<source>.md."""
         log_items = []
         score = 0
-        doc_path = Path("docs") / "crawl" / f"{self.source}.md"
+        doc_path = Path("docs") / "spec" / "crawl" / f"{self.source}.md"
 
         if doc_path.is_file():
             score += 5
-            log_items.append(f"{GREEN}[PASS]{RESET} Tồn tại file docs/crawl/{self.source}.md (+5đ)")
+            log_items.append(f"{GREEN}[PASS]{RESET} Tồn tại file docs/spec/crawl/{self.source}.md (+5đ)")
             size = doc_path.stat().st_size
             if size >= 500:
                 score += 5
@@ -284,7 +284,7 @@ class DoDScorer:
             else:
                 log_items.append(f"{YELLOW}[WARN]{RESET} Thiếu phân tích sâu về kiến trúc mạng/DOM (0/5đ)")
         else:
-            log_items.append(f"{RED}[FAIL]{RESET} Không tìm thấy docs/crawl/{self.source}.md (0/15đ)")
+            log_items.append(f"{RED}[FAIL]{RESET} Không tìm thấy docs/spec/crawl/{self.source}.md (0/15đ)")
 
         self.scores["TC6_ArchitectureDoc"] = score
         self.details["TC6_ArchitectureDoc"] = log_items

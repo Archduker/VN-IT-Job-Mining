@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Optional, Sequence
 
 from bs4 import BeautifulSoup
 
-from collection.common.r2_storage import resolve_r2_endpoint
+from collection.common.r2_storage import resolve_r2_endpoint, to_logical_key, to_r2_key
 from collection.common.url_ledger import (
     UrlLedger,
     clean_canonical_url,
@@ -192,7 +192,7 @@ class R2RawStore:
 
     def get_bytes(self, key: str) -> Optional[bytes]:
         try:
-            response = self.client.get_object(Bucket=self.bucket, Key=key)
+            response = self.client.get_object(Bucket=self.bucket, Key=to_r2_key(key))
             return response["Body"].read()
         except Exception as exc:
             if self._is_missing_error(exc):
@@ -208,7 +208,7 @@ class R2RawStore:
     def put_bytes(self, key: str, data: bytes, content_type: str = "application/octet-stream") -> None:
         self.client.put_object(
             Bucket=self.bucket,
-            Key=key,
+            Key=to_r2_key(key),  # khóa logic raw/... giữ nguyên
             Body=data,
             ContentType=content_type,
         )
@@ -227,9 +227,9 @@ class R2RawStore:
     def list_keys(self, prefix: str) -> List[str]:
         paginator = self.client.get_paginator("list_objects_v2")
         results: List[str] = []
-        for page in paginator.paginate(Bucket=self.bucket, Prefix=prefix):
+        for page in paginator.paginate(Bucket=self.bucket, Prefix=to_r2_key(prefix)):
             for item in page.get("Contents", []) or []:
-                results.append(str(item["Key"]))
+                results.append(to_logical_key(str(item["Key"])))
         return results
 
 

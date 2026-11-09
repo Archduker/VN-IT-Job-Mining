@@ -1,4 +1,4 @@
-"""Bước 01 Clean (docs/preprocessing/spec/P1_clean.md): C1–C7, chính sách IT, luật IT 2 tầng, tra tỉnh."""
+"""Bước 01 Clean (docs/spec/preprocessing/spec/P1_clean.md): C1–C7, chính sách IT, luật IT 2 tầng, tra tỉnh."""
 
 import csv
 import json

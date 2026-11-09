@@ -35,7 +35,7 @@ STEPS = ["01_clean", "02_integration", "03_transformation", "04_normalization", 
 STEP_VI = {"01_clean": "1. Clean", "02_integration": "2. Integration", "03_transformation": "3. Transformation",
            "04_normalization": "4. Normalization", "05_encoding": "5. Encoding"}
 
-# Vấn đề (docs/preprocessing/data_issues_2026-11-03.md) -> luật giải quyết. Mức C, E–I do nhóm đánh giá.
+# Vấn đề (docs/spec/preprocessing/data_issues_2026-11-03.md) -> luật giải quyết. Mức C, E–I do nhóm đánh giá.
 ISSUES = {
     "A1": ("Tin ngoài IT lẫn vào", "Cao"),
     "A2": ("ITviec ngày đăng dạng tương đối", "Cao"),
@@ -281,9 +281,9 @@ def build(raw: dict, raw_now: dict, reports: dict, after: dict, before: dict, st
          "Đây là lý do bước Clean phải giữ bản mới nhất trước khi làm gì khác."],
         [("Raw có bị sửa không?", "Không. Raw là bất biến; mọi sửa nằm ở pre-processing."),
          ("Phiên bản mới sinh ra khi nào?", "Khi hash JSON chuẩn hóa của tin đổi (CDC trong collection/common/url_ledger.py)."),
-         ("Số theo từng nguồn đâu?", "Bảng 'Số tin theo nguồn' trong docs/preprocessing/data_issues_2026-11-03.html.")],
+         ("Số theo từng nguồn đâu?", "Bảng 'Số tin theo nguồn' trong docs/spec/preprocessing/data_issues_2026-11-03.html.")],
         ["docs/presentation/data/raw_issues_before.json → total_jobs, sources.<nguồn>.files", "reports/preprocessing/01_clean/_all.json → input.rows",
-         "docs/preprocessing/data_issues_2026-11-03.html (bảng theo nguồn)"],
+         "docs/spec/preprocessing/data_issues_2026-11-03.html (bảng theo nguồn)"],
         conclusion=f"{n(clean['input']['rows'])} bản ghi nhưng chỉ {n(raw['total_jobs'])} tin khác nhau → phải giữ bản mới nhất và bỏ bản trùng trước."))
 
     # 3. Tổng quan vấn đề: bằng chứng là số thật, không có mã luật
@@ -317,9 +317,9 @@ def build(raw: dict, raw_now: dict, reports: dict, after: dict, before: dict, st
          "Bốn vấn đề mức Cao là tin ngoài IT, ngày đăng tương đối, trùng lặp và lương sai, vì chúng làm sai thẳng kết quả phân tích.",
          "Hai slide sau là ví dụ raw thật để thầy thấy tận mắt."],
         [("Đo các số này thế nào?", "Script scripts/report_data_issues.py đọc raw, lấy bản mới nhất mỗi tin, làm phẳng rồi đếm; kết quả lưu ở raw_issues_before.json."),
-         ("Mức Cao/TB/Thấp dựa vào đâu?", "Cao là làm sai kết quả phân tích; A1, A2, B, D theo docs/preprocessing/data_issues_2026-11-03.md, các nhóm còn lại do em đánh giá."),
+         ("Mức Cao/TB/Thấp dựa vào đâu?", "Cao là làm sai kết quả phân tích; A1, A2, B, D theo docs/spec/preprocessing/data_issues_2026-11-03.md, các nhóm còn lại do em đánh giá."),
          ("Tin ngoài IT ước lượng thế nào?", "Theo từ khóa tiêu đề, nên chỉ để thấy độ lớn; phân loại thật làm ở bước Clean và kiểm bằng nhãn tay.")],
-        ["docs/presentation/data/raw_issues_before.json", "docs/preprocessing/data_issues_2026-11-03.md, .html"]))
+        ["docs/presentation/data/raw_issues_before.json", "docs/spec/preprocessing/data_issues_2026-11-03.md, .html"]))
 
     # 3b. Ví dụ raw thật (1): sai phạm vi, sai giá trị
     nonit = P["topdev"]["title"]["non_it_examples"][:2]
@@ -344,7 +344,7 @@ def build(raw: dict, raw_now: dict, reports: dict, after: dict, before: dict, st
          "Tên công ty viết hoa khác nhau thì máy đếm thành hai công ty."],
         [("Kiểm ví dụ này ở đâu?", "Link gốc của tin ngoài IT nằm trong raw_issues_before.json → sources.topdev.title.non_it_examples; mở trang là thấy."),
          ("Sao không sửa ở lúc cào?", "Raw giữ nguyên để kiểm lại được; sửa ở pre-processing. Riêng phạm vi TopDev thì đã ghi việc sửa crawler."),
-         ("“Đăng 6 giờ trước” lấy đâu?", f"Trường posted_at_raw của ITviec; {n(P['itviec']['dates']['posted_relative'])} tin có dạng này (docs/preprocessing/data_issues_2026-11-03.md, A2).")],
+         ("“Đăng 6 giờ trước” lấy đâu?", f"Trường posted_at_raw của ITviec; {n(P['itviec']['dates']['posted_relative'])} tin có dạng này (docs/spec/preprocessing/data_issues_2026-11-03.md, A2).")],
         ["docs/presentation/data/raw_issues_before.json → title.non_it_examples, salary.parsed_under_1m_examples, company.example, sneaky_null"],
         conclusion="Không xử lý thì thống kê sẽ đếm cả việc kế toán, lương 2.000 USD thành 50 nghìn đồng, một công ty thành hai."))
 

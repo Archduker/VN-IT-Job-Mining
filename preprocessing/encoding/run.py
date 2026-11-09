@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Bước 05 Encoding (docs/preprocessing/spec/P5_encoding.md).
+"""Bước 05 Encoding (docs/spec/preprocessing/spec/P5_encoding.md).
 
 Mã hóa bộ golden đã chuẩn hóa (04_normalization/all.parquet) thành bảng số học
 cho các mô hình Machine Learning:

@@ -38,7 +38,7 @@ for p in (ROOT, ROOT / "scripts"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from collection.common.r2_storage import LAKEHOUSE_SOURCES  # noqa: E402
+from collection.common.r2_storage import LAKEHOUSE_SOURCES, to_r2_key  # noqa: E402
 from collection.common.url_ledger import UrlLedger, clean_canonical_url, generate_url_hash  # noqa: E402
 from collection.common.utils import parse_iso_utc  # noqa: E402
 
@@ -145,7 +145,7 @@ def backup_remote(source: str, ledger_dir: Path) -> Optional[Path]:
     from sync_cloud_lakehouse import get_s3_client
 
     s3, bucket, _ = get_s3_client()
-    key = f"url_ledger/{source}/catalog_master.json"
+    key = to_r2_key(f"url_ledger/{source}/catalog_master.json")
     try:
         body = s3.get_object(Bucket=bucket, Key=key)["Body"].read()
     except Exception as exc:

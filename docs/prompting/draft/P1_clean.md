@@ -1,13 +1,13 @@
 # Prompt P1: Clean sơ bộ (khử trùng, bỏ rác, phân loại IT ở cả 8 nguồn, chưa bỏ)
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 ## 1. Ngữ cảnh
 
 Đọc trước:
-- `docs/preprocessing/spec/P1_clean.md`: luật C1–C7, C4a/C4b/C4c, khóa trùng.
-- `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6: luật gọi JEV, cache, `--use-api`.
-- `docs/preprocessing/spec/P4_normalization.md` mục N1: bảng 34 tỉnh, dùng cho `tinh_key`.
+- `docs/spec/preprocessing/spec/P1_clean.md`: luật C1–C7, C4a/C4b/C4c, khóa trùng.
+- `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6: luật gọi JEV, cache, `--use-api`.
+- `docs/spec/preprocessing/spec/P4_normalization.md` mục N1: bảng 34 tỉnh, dùng cho `tinh_key`.
 - `scripts/report_data_issues.py`: `IT_WORDS`, `CLEAR_NON_IT`, `dedup_funnel`.
 - `preprocessing/normalization/cross_deduplicator.py`: `normalize_company_name`.
 - Tài liệu JEV: https://opencode.ai/v2/docs/console/models/ mục Jev (endpoint `POST https://opencode.ai/inference/systemone/v1/systemone`, model `jev-1.13-free`, câu hỏi kiểu `noul`).

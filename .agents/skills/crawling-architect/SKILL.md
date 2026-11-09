@@ -200,5 +200,5 @@ Agent kiểm tra các điều kiện tiên quyết trước khi nghiệm thu cra
 - [ ] Trạng thái cào thành công lưu là `DONE`, chu kỳ re-crawl kiểm tra mốc 21 ngày.
 - [ ] Có khối `try...except` bắt lỗi Safe Skip an toàn cho từng URL.
 - [ ] Có đủ thư mục `samples/` chứa ít nhất 3 cặp file HTML thô đa định dạng + JSON tương ứng.
-- [ ] Có file phân tích kiến trúc độc lập tại `docs/crawl/<tenweb>.md`.
+- [ ] Có file phân tích kiến trúc độc lập tại `docs/spec/crawl/<tenweb>.md`.
 

@@ -1,14 +1,14 @@
 # Monitoring: trang Pre-processing theo từng bước
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 > Trạng thái: **đặc tả, chờ duyệt** (03/11/2026). Làm ngay sau P1 (Clean), rồi mở rộng sau mỗi phase P2–P5.
-> Prompt: `docs/prompting/P6_monitoring_preprocessing.md`. Hợp đồng dữ liệu: `docs/preprocessing/spec/P0_pipeline_contract.md` mục 4.
+> Prompt: `docs/prompting/P6_monitoring_preprocessing.md`. Hợp đồng dữ liệu: `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 4.
 
 ## 1. Ngữ cảnh
 
 - Trang `/preprocessing` hiện tại (`monitoring/frontend/src/pages/PreprocessingPage.tsx`) chỉ có một bảng đọc health card cuối (`reports/<nguồn>/<nguồn>_quality_health_card.json`, qua `monitoring/backend/app/services/pipeline_report_service.py`). Trang không cho thấy bước nào làm gì.
-- Thống kê vấn đề dữ liệu 03/11 (`docs/preprocessing/data_issues_2026-11-03.html`) là bản chụp tay, không tự cập nhật.
+- Thống kê vấn đề dữ liệu 03/11 (`docs/spec/preprocessing/data_issues_2026-11-03.html`) là bản chụp tay, không tự cập nhật.
 - Yêu cầu:
   - Số liệu phải **đồng bộ với dữ liệu thật**.
   - Đi theo UX của trang Raw (`monitoring/frontend/src/pages/RawReportPage.tsx`): nhìn tổng trước, chọn nguồn để đi sâu.

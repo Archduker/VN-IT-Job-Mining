@@ -423,7 +423,9 @@ def list_r2_keys() -> List[str]:
     keys: List[str] = []
     for page in s3.get_paginator("list_objects_v2").paginate(Bucket=bucket):
         keys += [item["Key"] for item in page.get("Contents", [])]
-    return keys
+    from collection.common.r2_storage import to_logical_key  # noqa: E402
+
+    return [to_logical_key(k) for k in keys]  # audit kiểm theo tên tầng logic, không phụ thuộc prefix R2
 
 
 def run(data_dir: Path, out_dir: Path, with_r2: bool = False, today: Optional[date] = None) -> Dict[str, Any]:

@@ -5,7 +5,7 @@
     python scripts/run_preprocessing.py --step all --source all
 
 Mỗi bước ghi reports/preprocessing/<bước>/<nguồn>.json (Monitoring đọc). Chỉ ghi trên máy, không đụng R2. Không gọi model nào: mọi phân loại là luật if-else.
-Đặc tả: docs/preprocessing/spec/P0_pipeline_contract.md.
+Đặc tả: docs/spec/preprocessing/spec/P0_pipeline_contract.md.
 """
 
 from __future__ import annotations

@@ -1,5 +1,5 @@
 {
- "_note": "34 tỉnh/thành sau sáp nhập (hiệu lực 01/07/2025). old = tỉnh cũ gộp vào (đủ 63); aliases = cách viết khác. Đặc tả: docs/preprocessing/spec/P4_normalization.md N1.",
+ "_note": "34 tỉnh/thành sau sáp nhập (hiệu lực 01/07/2025). old = tỉnh cũ gộp vào (đủ 63); aliases = cách viết khác. Đặc tả: docs/spec/preprocessing/spec/P4_normalization.md N1.",
  "provinces": [
   {
    "key": "tuyen_quang",

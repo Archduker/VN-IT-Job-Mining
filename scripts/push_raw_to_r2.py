@@ -20,7 +20,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 load_dotenv(PROJECT_ROOT / ".env")
 
-from collection.common.r2_storage import get_r2_client, upload_file_to_r2
+from collection.common.r2_storage import get_r2_client, to_r2_key, upload_file_to_r2
 
 
 def _latest_scrape(records: Dict[str, Any]) -> str:
@@ -50,7 +50,7 @@ def push_ledger(src: str, s3, bucket: str, data_dir: Path, dry_run: bool) -> boo
         print(f"  [LEDGER] {src}: không có {catalog.relative_to(data_dir)}, bỏ qua")
         return False
     local = json.loads(catalog.read_text(encoding="utf-8"))
-    key = f"url_ledger/{src}/catalog_master.json"
+    key = to_r2_key(f"url_ledger/{src}/catalog_master.json")
     try:
         remote = json.loads(s3.get_object(Bucket=bucket, Key=key)["Body"].read().decode("utf-8"))
     except Exception:
@@ -64,7 +64,7 @@ def push_ledger(src: str, s3, bucket: str, data_dir: Path, dry_run: bool) -> boo
     if parquet.exists():
         files.append(parquet)
     for f in files:
-        object_key = f"url_ledger/{src}/{f.relative_to(ledger_dir).as_posix()}"
+        object_key = to_r2_key(f"url_ledger/{src}/{f.relative_to(ledger_dir).as_posix()}")
         if dry_run:
             print(f" [DRY-RUN] Sẽ upload: {object_key}")
         else:
@@ -102,7 +102,7 @@ def push_source_data(source: str = None, dry_run: bool = False):
 
         for f in raw_files:
             rel_under_raw = str(f.relative_to(src_raw)).replace("\\", "/")
-            object_key = f"raw/{src}/{rel_under_raw}"
+            object_key = to_r2_key(f"raw/{src}/{rel_under_raw}")
 
             if dry_run:
                 print(f" [DRY-RUN] Sẽ upload: {object_key}")

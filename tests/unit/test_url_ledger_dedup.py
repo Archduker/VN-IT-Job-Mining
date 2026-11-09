@@ -121,7 +121,18 @@ def test_canonicalize_lakehouse_key():
     # 2. Bị đảo ngược (nguồn trước, layer sau) -> tự động đưa layer lên đầu
     assert canonicalize_lakehouse_key("topcv/raw/2026-10-20/123_v1.json") == "raw/topcv/2026-10-20/123_v1.json"
     assert canonicalize_lakehouse_key("jobsgo/url_ledger/catalog_master.json") == "url_ledger/jobsgo/catalog_master.json"
-    assert canonicalize_lakehouse_key("itviec/staging/itviec_staging.parquet") == "staging/itviec/itviec_staging.parquet"
+    assert canonicalize_lakehouse_key("itviec/staging/itviec_staging.parquet") == "silver/itviec/itviec_staging.parquet"
+
+    # 2b. Tên tầng cũ và prefix mới đều được nhận, luôn ra prefix mới
+    assert canonicalize_lakehouse_key("raw/topcv/2026-10-20/123_v1.json") == "raw/topcv/2026-10-20/123_v1.json"
+    assert canonicalize_lakehouse_key("staging/topcv/preprocessing/02_integration.parquet") == "silver/topcv/preprocessing/02_integration.parquet"
+    assert canonicalize_lakehouse_key("silver/topcv/a.parquet") == "silver/topcv/a.parquet"
+    assert canonicalize_lakehouse_key("curated/preprocessing/features.parquet") == "gold/preprocessing/features.parquet"
+    assert canonicalize_lakehouse_key("gold/preprocessing/features.parquet") == "gold/preprocessing/features.parquet"
+    with pytest.raises(ValueError):
+        canonicalize_lakehouse_key("raw/unknown/a.json")
+    with pytest.raises(ValueError):
+        canonicalize_lakehouse_key("integration/x.json")
 
     # 3. Chặn tệp rác / cache
     with pytest.raises(ValueError):
@@ -154,6 +165,7 @@ def test_sync_paths_handle_legacy_layout(tmp_path):
     sync = importlib.import_module("sync_cloud_lakehouse")
 
     assert sync.s3_key_to_local_path("raw/crawling/2026-10-15/topcv/1_v1.json", tmp_path) == tmp_path / "topcv/raw/2026-10-15/1_v1.json"
+    assert sync.s3_key_to_local_path("raw/topcv/2026-10-15/1_v1.json", tmp_path) == tmp_path / "topcv/raw/2026-10-15/1_v1.json"
     assert sync.s3_key_to_local_path("raw/topcv/2026-10-15/1_v1.json", tmp_path) == tmp_path / "topcv/raw/2026-10-15/1_v1.json"
     assert sync.local_path_to_s3_key(tmp_path / "crawling/raw/2026-10-15/itviec/a_v1.json", tmp_path) == "raw/itviec/2026-10-15/a_v1.json"
     assert sync.local_path_to_s3_key(tmp_path / "topcv/raw/2026-10-15/a_v1.json", tmp_path) == "raw/topcv/2026-10-15/a_v1.json"
@@ -238,3 +250,59 @@ def test_records_without_updated_at_keep_old_merge_rule(tmp_path):
     led.records[h1].pop("updated_at", None)
     led.save_catalog()
     assert _disk(tmp_path)[h1]["status"] == "DONE"
+
+
+class _FakeS3:
+    """S3 trong bộ nhớ, đủ cho migrate_prefixes."""
+
+    def __init__(self, objects):
+        self.objects = dict(objects)
+        self.deleted = []
+
+    def get_paginator(self, _):
+        outer = self
+
+        class P:
+            def paginate(self, Bucket, Prefix):
+                yield {"Contents": [{"Key": k, "Size": len(v), "ETag": f'"{hash(v)}"'}
+                                    for k, v in sorted(outer.objects.items()) if k.startswith(Prefix)]}
+        return P()
+
+    def head_object(self, Bucket, Key):
+        if Key not in self.objects:
+            raise KeyError(Key)
+        v = self.objects[Key]
+        return {"ContentLength": len(v), "ETag": f'"{hash(v)}"'}
+
+    def copy_object(self, Bucket, Key, CopySource):
+        self.objects[Key] = self.objects[CopySource["Key"]]
+
+    def delete_object(self, Bucket, Key):
+        self.objects.pop(Key)
+        self.deleted.append(Key)
+
+
+def test_migrate_prefixes_dry_run_then_apply():
+    import importlib
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+    migrate = importlib.import_module("migrate_lakehouse_layout")
+
+    objs = {"raw/topcv/2026-10-15/a_v1.json": "A", "url_ledger/topcv/catalog_master.json": "L",
+            "staging/topcv/preprocessing/x.parquet": "S", "curated/preprocessing/f.parquet": "G",
+            "staging/itviec/preprocessing/b.parquet": "B", "silver/itviec/preprocessing/b.parquet": "B",      # đích trùng hệt
+            "staging/topdev/preprocessing/c.parquet": "C", "silver/topdev/preprocessing/c.parquet": "khác"}   # đích khác nội dung
+    s3 = _FakeS3(objs)
+    dry = migrate.migrate_prefixes(s3, "b", apply=False)
+    assert s3.objects == objs and not s3.deleted
+    assert dry["stats"] == {"moved": 2, "duplicate_removed": 1, "conflict_skipped": 1, "unmapped": 2}
+
+    migrate.migrate_prefixes(s3, "b", apply=True)
+    assert s3.objects["raw/topcv/2026-10-15/a_v1.json"] == "A"            # raw/ giữ nguyên
+    assert s3.objects["url_ledger/topcv/catalog_master.json"] == "L"      # url_ledger/ giữ nguyên
+    assert s3.objects["silver/topcv/preprocessing/x.parquet"] == "S"
+    assert s3.objects["gold/preprocessing/f.parquet"] == "G"
+    assert "staging/itviec/preprocessing/b.parquet" not in s3.objects
+    assert s3.objects["staging/topdev/preprocessing/c.parquet"] == "C"    # xung đột: giữ nguyên cả hai
+    assert s3.objects["silver/topdev/preprocessing/c.parquet"] == "khác"

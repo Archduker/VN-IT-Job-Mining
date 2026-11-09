@@ -64,6 +64,9 @@ def file_lock(lock_path: Path, timeout: float = 10.0):
             pass
 
 
+from collection.common.r2_storage import to_r2_key  # noqa: E402
+
+
 def _r2_client_and_bucket(bucket_name=None, endpoint_url=None, access_key=None, secret_key=None):
     """Client và bucket R2 lấy từ r2_storage, dùng chung với raw store và các script."""
     from collection.common.r2_storage import get_r2_client, resolve_r2_bucket
@@ -743,13 +746,13 @@ class UrlLedger:
                 return False
             if self.catalog_file.exists():
                 key = f"url_ledger/{self.source}/catalog_master.json"
-                s3.upload_file(str(self.catalog_file), bucket, key)
+                s3.upload_file(str(self.catalog_file), bucket, to_r2_key(key))
                 logger.info(f"[{storage_label}] Đã đồng bộ catalog ({len(local_records)} records) lên s3://{bucket}/{key}")
 
             parquet_file = self.base_dir / "catalog_master.parquet"
             if parquet_file.exists():
                 try:
-                    s3.upload_file(str(parquet_file), bucket, f"url_ledger/{self.source}/catalog_master.parquet")
+                    s3.upload_file(str(parquet_file), bucket, to_r2_key(f"url_ledger/{self.source}/catalog_master.parquet"))
                 except Exception as p_err:
                     logger.debug(f"Không thể upload parquet: {p_err}")
 
@@ -757,7 +760,7 @@ class UrlLedger:
             manifest_count = 0
             for m_path in self.manifests_dir.glob("*.jsonl"):
                 key = f"url_ledger/{self.source}/manifests/{m_path.name}"
-                s3.upload_file(str(m_path), bucket, key)
+                s3.upload_file(str(m_path), bucket, to_r2_key(key))
                 manifest_count += 1
 
             logger.info(f"[{storage_label}] Đã đồng bộ thành công {manifest_count} manifests lên s3://{bucket}/url_ledger/{self.source}/manifests/")
@@ -785,7 +788,7 @@ class UrlLedger:
 
             key = f"url_ledger/{self.source}/catalog_master.json"
             try:
-                resp = s3.get_object(Bucket=bucket, Key=key)
+                resp = s3.get_object(Bucket=bucket, Key=to_r2_key(key))
                 remote_records = json.loads(resp["Body"].read().decode("utf-8"))
             except Exception as get_exc:
                 logger.info(f"[{storage_label}] Khong tim thay {key} tren bucket {bucket} ({get_exc})")

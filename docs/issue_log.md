@@ -169,7 +169,7 @@ Kết quả chung sau đợt sửa:
 
 - **Lỗi:** `data/vietnamworks/raw/2026-10-16/raw_batch.json` (931 tin) và `data/vieclam24h/raw/2026-10-20/batch_001.json` (616 tin) gom nhiều tin trong một file; 1.341 tin trong đó đã có file riêng mới hơn, nên pipeline cũ đếm và xử lý trùng.
 - **Nguyên nhân:** layout cũ ghi theo lô; pipeline cũ đọc mọi file JSON mà không phân biệt file lô với file từng tin.
-- **Cách xử lý:** bước Clean mới (`preprocessing/clean/run.py`, đặc tả `docs/preprocessing/spec/P1_clean.md`) đọc riêng file lô (`preprocessing/common/raw_reader.read_raw`). Luật C2 bỏ tin trong file lô đã có file riêng; tin chỉ có trong file lô (206 tin VietnamWorks) được giữ đến khi cào lại có file riêng. Luật C1 giữ snapshot mới nhất của mỗi `job_id`.
+- **Cách xử lý:** bước Clean mới (`preprocessing/clean/run.py`, đặc tả `docs/spec/preprocessing/spec/P1_clean.md`) đọc riêng file lô (`preprocessing/common/raw_reader.read_raw`). Luật C2 bỏ tin trong file lô đã có file riêng; tin chỉ có trong file lô (206 tin VietnamWorks) được giữ đến khi cào lại có file riêng. Luật C1 giữ snapshot mới nhất của mỗi `job_id`.
 - **Kiểm chứng:** `tests/unit/test_clean_step.py::test_rules_c1_to_c7_and_conservation`; lần chạy 03/11/2026: C1 bỏ 1.987, C2 bỏ 1.341 (VietnamWorks 725, Vieclam24h 616), output 8.373 tin không trùng `job_id`.
 
 ### L-26. Output P2–P5 sai lương, kỹ năng, cấp bậc, ngôn ngữ, địa điểm (review 03/11/2026)
@@ -200,7 +200,7 @@ Kết quả chung sau đợt sửa:
   - Phường/xã đối chiếu `dictionaries/wards_34.json` (3.321 đơn vị mới), bỏ quận/huyện.
   - Gộp 8 nguồn ở Integration (`all.parquet`); luật I0 cho dòng JSON hỏng.
   - Bỏ bước chép đè file golden.
-  - Chi tiết ở mục 8 của `docs/preprocessing/spec/P2–P4`.
+  - Chi tiết ở mục 8 của `docs/spec/preprocessing/spec/P2–P4`.
 - **Kiểm chứng:**
   - `tests/unit/test_preprocessing_review_fixes.py` (các ví dụ sai ở trên), `make test`.
   - Chạy thật `scripts/run_preprocessing.py --step all`:

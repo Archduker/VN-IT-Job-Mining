@@ -4,7 +4,7 @@
 Công cụ gán nhãn tay IT / Non-IT cho bước review Clean C4b (VN-IT-Job-Mining).
 
 Tệp đích: data/preprocessing/review/it_<nguồn>.csv (cột 'nhan_tay' là 'it' hoặc 'non_it').
-Đặc tả: docs/preprocessing/spec/P1_clean.md & docs/prompting/P1_clean.md.
+Đặc tả: docs/spec/preprocessing/spec/P1_clean.md & docs/prompting/P1_clean.md.
 
 Tính năng:
 1. Terminal Interactive (TUI 1 phím bấm): Nhấn '1'/'i' (IT), '2'/'n' (Non-IT), không cần gõ Enter.

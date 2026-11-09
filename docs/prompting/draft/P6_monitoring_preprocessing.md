@@ -1,12 +1,12 @@
 # Prompt P6: trang Monitoring Pre-processing theo từng bước
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 ## 1. Ngữ cảnh
 
 Đọc trước:
-- `docs/monitoring/preprocessing_page_spec.md`: bố cục, API, nguyên tắc số thật.
-- `docs/preprocessing/spec/P0_pipeline_contract.md` mục 4: schema báo cáo.
+- `docs/spec/monitoring/preprocessing_page_spec.md`: bố cục, API, nguyên tắc số thật.
+- `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 4: schema báo cáo.
 - `monitoring/CLAUDE.md`: token màu, quy tắc 390px, quy tắc số thật.
 - `monitoring/frontend/src/pages/RawReportPage.tsx`: mẫu UX tổng → nguồn.
 

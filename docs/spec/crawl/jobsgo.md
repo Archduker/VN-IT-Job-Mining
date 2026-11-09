@@ -9,7 +9,7 @@
 >
 > Đường dẫn `crawlers/` cũ đã đổi thành `collection/`. Thư mục `samples/`, file `test_5_jobs.json`, `batch_001.json` và test riêng trong thư mục nguồn nhắc bên dưới là lịch sử, không còn trong repo; mẫu và test hiện ở `tests/fixtures/<nguồn>/` và `tests/contract/`. Tiêu chuẩn chung: `collection/CLAUDE.md`; lỗi đã sửa: `docs/issue_log.md`.
 
-> **Tài liệu tham chiếu:** `cloudflare.md` (file này không còn), [`docs/two_phase_r2_crawler_playbook.md`](../../docs/two_phase_r2_crawler_playbook.md).
+> **Tài liệu tham chiếu:** `cloudflare.md` (file này không còn), [`docs/guides/two_phase_r2_crawler_playbook.md`](../../guides/two_phase_r2_crawler_playbook.md).
 
 ---
 
