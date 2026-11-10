@@ -1,8 +1,8 @@
 # P5. Encoding: đổi bộ golden sang bảng số cho mô hình
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 10/11/2026: dự án bỏ JEV, OpenJev, Qwen và Gemini.** Phân loại và chuẩn hóa chỉ dùng luật if-else. Model duy nhất được dùng: `VietAI/envit5-translation` để dịch JD tiếng Anh sang tiếng Việt (P3 T6b), chạy local. Mọi đoạn nói về JEV, LLM, GenAI, `--use-api`, sổ tiền API đã hết hiệu lực. Xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
-> Trạng thái: **đặc tả, chờ duyệt** (sửa 03/11/2026: tỉnh theo 34 tỉnh mới, thêm cột xác suất JEV). Cần P4 xong trước.
+> Trạng thái: **đặc tả, chờ duyệt** (sửa 03/11/2026: tỉnh theo 34 tỉnh mới; 10/11/2026: bỏ cột xác suất JEV). Cần P4 xong trước.
 > Prompt: `docs/prompting/P5_encoding.md`.
 
 ## 1. Ngữ cảnh
@@ -34,6 +34,15 @@
 
 - Không bù NaN bằng mean/median ở bước này. Mô hình nào cần thì tự xử lý, và cột `__missing` cho biết chỗ thiếu.
 - Văn bản JD không mã hóa ở đây (TF-IDF/embedding làm ở phần phân tích).
+
+### 4b. Chọn đặc trưng và xây đặc trưng (Processing, thêm 10/11/2026)
+
+Giai đoạn Processing của dự án gồm 4 bước feature engineering (selection, extraction, transformation, construction) cùng encoding. Extraction và transformation đã nằm ở P3, P4; encoding là phần 4 ở trên. Hai bước còn lại:
+
+- **Chọn đặc trưng (feature selection):** bỏ kỹ năng xuất hiện dưới 5 lần. Tiêu chí chọn khác: chưa chốt.
+- **Xây đặc trưng (feature construction):** danh sách đặc trưng mới tạo: chưa chốt.
+
+Chi tiết từng bước nằm ở `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` (bước 10b, 10c, 10d).
 
 ## 5. Ranh giới
 

@@ -1,8 +1,8 @@
 # P1. Clean sơ bộ: khử trùng, bỏ rác, phân loại IT (chưa bỏ)
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 10/11/2026: dự án bỏ JEV, OpenJev, Qwen và Gemini.** Phân loại và chuẩn hóa chỉ dùng luật if-else. Model duy nhất được dùng: `VietAI/envit5-translation` để dịch JD tiếng Anh sang tiếng Việt (P3 T6b), chạy local. Mọi đoạn nói về JEV, LLM, GenAI, `--use-api`, sổ tiền API đã hết hiệu lực. Xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
-> Trạng thái: **đã làm, đã chạy thật 03/11/2026 bằng luật; còn chạy JEV (PRE-9)**. Kết quả và các điểm khác đặc tả: mục 9.
+> Trạng thái: **đã làm, đã chạy thật 03/11/2026 bằng luật; JEV đã bỏ (10/11/2026)**. Kết quả và các điểm khác đặc tả: mục 9.
 > Cần P0 xong trước. Prompt: `docs/prompting/P1_clean.md`.
 > Số liệu: `docs/spec/preprocessing/data_issues_2026-11-03.md`, đo lại ngày 03/11 bằng `scripts/report_data_issues.py`.
 
@@ -66,16 +66,16 @@ Mỗi tin có ba giá trị:
   - Là `non_it` khi tiêu đề có từ ngoài IT rõ ràng (kế toán, tài xế, giáo viên, kinh doanh, bán hàng…) và không có kỹ năng công nghệ.
   - Các trường hợp còn lại là `unknown`.
   - Bộ từ khởi đầu lấy từ `IT_WORDS`, `CLEAR_NON_IT` trong `scripts/report_data_issues.py`.
-- `it_prob`: JEV `noul` (P0 mục 6), chỉ khi chạy với `--use-api`. Câu hỏi: "Tin này tuyển một vị trí công việc thuộc ngành Công nghệ thông tin (phát triển phần mềm, dữ liệu, hạ tầng, kiểm thử, bảo mật, quản lý sản phẩm công nghệ)?". Đầu vào: tiêu đề + kỹ năng + 500 ký tự đầu JD. Không có API thì `null`.
+- Không dùng model (10/11/2026): cột `it_prob` luôn `null` hoặc bỏ.
 - `it_status` ∈ {`it`, `non_it`, `can_kiem`}:
-  - `it` hoặc `non_it` khi luật và JEV cùng kết luận (prob ≥ 0,7 là IT, ≤ 0,3 là ngoài IT).
-  - `can_kiem` khi hai bên lệch nhau, hoặc 0,3 < prob < 0,7, hoặc luật ra `unknown` mà chưa có JEV.
+  - `it` hoặc `non_it` khi luật 2 tầng kết luận (P0 mục 6).
+  - `can_kiem` khi luật vẫn ra `unknown`.
 
 ### C4b. Kiểm từng nguồn (bạn và mình cùng làm)
 
 - Với mỗi nguồn, xuất `data/preprocessing/review/it_<nguồn>.csv` gồm 50 tin `non_it` và 30 tin `can_kiem` (seed 42; nguồn có ít hơn thì lấy hết). Mỗi dòng có link tin, tiêu đề, kỹ năng, `it_rule`, `it_prob`, và cột `nhan_tay` để trống cho bạn điền.
 - Sau khi bạn gán nhãn, báo cáo ghi theo từng nguồn:
-  - độ đúng của luật và của JEV;
+  - độ đúng của luật;
   - **nguyên nhân** chiếm phần lớn:
     - (a) **crawler kéo sai phạm vi**: danh mục hoặc tham số lọc sai, như TopDev `category_ids`. Kiểm bằng cách đọc lại URL listing và tham số trong `collection/sources/<nguồn>/`;
     - (b) nguồn tự đăng lẫn tin ngoài IT;
@@ -87,7 +87,7 @@ Mỗi tin có ba giá trị:
 `preprocessing/clean/it_policy.json` (file mới, chỉ bạn quyết):
 
 ```json
-{"topdev": {"drop": ["non_it"], "approved_on": "…", "evidence": "C4b: JEV đúng 49/50"},
+{"topdev": {"drop": ["non_it"], "approved_on": "…", "evidence": "C4b: luật đúng 49/50"},
  "topcv":  {"drop": [], "note": "giữ, chờ sửa crawler"}}
 ```
 
@@ -119,12 +119,12 @@ Mỗi tin có ba giá trị:
 - Phễu toàn bộ: snapshot + batch → sau C1 → … → sau C7, theo từng nguồn.
 - **Khối "Kiểm tin ngoài IT"**:
   - theo nguồn: số `it`, `non_it`, `can_kiem`;
-  - độ đúng của luật và của JEV trên mẫu đã gán;
+  - độ đúng của luật trên mẫu đã gán;
   - nguyên nhân (a), (b), (c);
   - chính sách: "chưa duyệt" hoặc ngưỡng đã duyệt;
   - 3 ví dụ mỗi nhóm, kèm link.
 - Nhóm trùng khác nguồn: cặp nguồn nào trùng nhiều nhất.
-- Khối API: số lần gọi JEV, số lần trúng cache, chi phí.
+- Khối API: luôn `used: false` (bước này không dùng model).
 
 ## 7. Tiêu chí xong và cách review
 
@@ -133,7 +133,7 @@ Mỗi tin có ba giá trị:
 - Số khớp với lần đo trước: sau C1 + C2 còn 10.758 tin; C6 + C7 bỏ khoảng 188. Lệch hơn 5% thì giải thích.
 - Chưa có `it_policy.json` thì số tin ra = số tin vào trừ C1, C2, C3, C5, C6, C7. C4 bỏ 0 tin.
 - C4b: đủ 8 file review. Bạn gán nhãn xong thì báo cáo có độ đúng theo nguồn.
-- Test (mỗi luật một test, dữ liệu trong `tmp_path`, JEV mock):
+- Test (mỗi luật một test, dữ liệu trong `tmp_path`):
   - C1 lấy bản mới nhất;
   - C2 bỏ tin batch đã có file riêng;
   - C4a: "Kế toán trưởng" → `non_it`; "Backend Developer" → `it`; "International Sales" không thành `it` chỉ vì chữ "intern";

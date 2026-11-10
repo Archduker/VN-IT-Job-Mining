@@ -9,6 +9,21 @@
 
 ---
 
+## 0. Tiêu chí chất lượng đầu ra và quy trình 4 giai đoạn (cập nhật 10/11/2026)
+
+Dữ liệu đầu ra phải đạt 5 tiêu chí: **completeness, accuracy, consistency, timeliness, uniqueness**. Quy trình chuẩn của dự án có 4 giai đoạn:
+
+| Giai đoạn | Việc phải làm |
+|---|---|
+| Collection | Cào, lọc, khử trùng; đầu ra JSON đầy đủ trường của nguồn |
+| Pre-processing | Imputation, deduplicate, noise, typecasting, string standardization |
+| Processing | Feature selection, extraction, transformation, construction; encoding |
+| Mining | Chỉ unsupervised: clustering, association rules, anomaly detection, dimensionality reduction |
+
+- Không đặt số mẫu mục tiêu; báo cáo số tin đưa vào và số còn lại sau mỗi bước.
+- Chỉ dùng model để dịch JD tiếng Anh sang tiếng Việt (`VietAI/envit5-translation`, chạy local); phân loại và chuẩn hóa dùng luật. JEV, OpenJev, Qwen đã bỏ.
+- Thiết kế chi tiết từng bước, công cụ và bộ gold 100 JD: `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` (thư mục gốc repo).
+
 ## 1. Tổng Quan Pipeline Tiền Xử Lý (Preprocessing Overview)
 
 Dữ liệu thô thu thập từ 8 sàn tuyển dụng mang bản chất phi cấu trúc (Unstructured) hoặc bán cấu trúc (Semi-structured), chứa nhiều thẻ HTML, ký tự điều khiển, lỗi bảng mã Unicode tiếng Việt, cùng với nội dung quảng cáo và các bài đăng tuyển trùng lặp giữa nhiều nền tảng.

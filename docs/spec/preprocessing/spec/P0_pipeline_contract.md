@@ -44,6 +44,7 @@ raw envelope (data/<nguồn>/raw/)
 - `_all.json` là báo cáo gộp 8 nguồn của bước đó. Các bước có việc chéo nguồn (khử trùng chéo nguồn ở Clean, gộp ở Normalization, Encoding) ghi vào đây.
 - Bộ golden `data/curated/curated_flat_golden_jobs.parquet` (tên cũ, Monitoring đang đọc) = bản chép của `04_normalization/all.parquet`.
 - `data/preprocessing/` không đưa vào git; `reports/preprocessing/` đưa vào git như các báo cáo pipeline khác.
+- Trên R2 chỉ có 5 tiền tố `url_ledger/`, `raw/`, `staging/`, `curated/`, `pipeline/` (chốt 10/11/2026). Đầu ra và báo cáo từng bước đặt dưới `pipeline/<bước>/`; tên thư mục con chưa chốt. Chi tiết: `docs/spec/fixes/F13_r2_layout.md`.
 
 ## 4. Báo cáo bước (schema chung, mọi bước dùng)
 
@@ -99,18 +100,18 @@ Map thư mục cũ sang bước mới (chuyển dần trong từng phase, không
 
 `scripts/run_staging_integration_pipeline.py` giữ nguyên đến khi P5 xong và số liệu mới được duyệt, rồi mới xóa.
 
-## 6. Không dùng model (cập nhật 04/11/2026)
+## 6. Chỉ dùng model để dịch (cập nhật 10/11/2026)
 
-Pipeline không gọi model hay LLM nào. Mọi phân loại là luật if-else, mọi chuẩn hóa là từ điển; chạy lại cho cùng kết quả, không tốn tiền, không cần khóa API. JEV (OpenCode) và Gemini đã bỏ (`docs/issue_log.md` L-28).
+Phân loại và chuẩn hóa là luật if-else và từ điển; chạy lại cho cùng kết quả, không tốn tiền, không cần khóa API. **Model duy nhất được dùng: `VietAI/envit5-translation`** (chạy local, Hugging Face) để dịch toàn bộ JD tiếng Anh sang tiếng Việt ở 03 Transformation T6b. JEV, OpenJev, Qwen và Gemini đã bỏ (`docs/issue_log.md` L-28, quyết định 10/11/2026).
 
 | Việc trước dùng model | Nay làm bằng |
 |---|---|
 | 01 Clean C4a: JEV hỏi tin có phải IT | Luật 2 tầng trong `preprocessing/common/it_filter.py`: tầng 1 từ khóa tiêu đề (`classify`); tin tầng 1 ra `unknown` thì tầng 2 (`classify_unknown`) xếp IT khi tiêu đề thuộc 12 nhóm nghề và JD có ≥ 2 kỹ năng. Lưu `it_rule_level` |
-| 03 Transformation T6b, T6c: dịch JD tiếng Anh | Bỏ. Giữ `language`; kỹ năng rút bằng từ điển song ngữ |
+| 03 Transformation T6b: dịch JD tiếng Anh | `VietAI/envit5-translation` chạy local, chạy sau khử trùng, giữ cả cột gốc và cột dịch, kỹ năng và thuật ngữ được che bằng token giữ chỗ khi dịch (P3 T6b, spec 06 mục 4.3) |
 | 04 Normalization N2b: JEV kiểm nhãn | Luật mâu thuẫn: Senior/Trưởng nhóm mà kinh nghiệm < 2 năm, Thực tập/Mới tốt nghiệp mà ≥ 3 năm → `seniority_can_kiem`; có nhóm nghề mà JD không có kỹ năng → `job_family_can_kiem` |
 | 05 Encoding E8: xác suất JEV | Cờ 0/1 `it_rule_level__2`, `seniority_can_kiem`, `job_family_can_kiem` |
 
-Báo cáo bước vẫn có khối `"api": {"used": false, "reason": "pipeline không dùng model (luật if-else)"}` để Monitoring đọc như cũ. Độ đúng của luật đo bằng nhãn tay (`data/preprocessing/review/it_<nguồn>.csv`), ghi ở `extra.review` của báo cáo Clean.
+Báo cáo bước có khối `"api"`: bước 03 ghi `used: true`, tên và phiên bản model dịch; các bước khác `"used": false, "reason": "bước này không dùng model (luật if-else)"`. Độ đúng của luật đo bằng nhãn tay (`data/preprocessing/review/it_<nguồn>.csv`), ghi ở `extra.review` của báo cáo Clean.
 
 ## 7. Ranh giới
 

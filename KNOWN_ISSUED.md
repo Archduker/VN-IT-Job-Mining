@@ -94,7 +94,7 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 
 ## 3. Pre-processing
 
-PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_log.md` L-27); PRE-9, PRE-10 (JEV, dịch) hết vì đã bỏ model (L-28). Còn lại:
+PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_log.md` L-27); PRE-9 (JEV) hết vì đã bỏ model (L-28); PRE-10 (dịch) làm lại bằng `envit5-translation` (10/11). Còn lại:
 
 **PRE-11. Chờ chốt hướng cho bước mô hình**
 
@@ -131,9 +131,9 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
 **PRE-15. `it_policy.json` loại non_IT bằng bằng chứng tổng hợp** (Tài)
 
-- Đã có nhãn tay 09/11 (643 tin): luật dự đoán "không IT" nhưng người gán "IT" là 30/472 (6,4%), 26 tin ở tầng 2. Model dự kiến: OpenJev (đã cho phép trong `preprocessing/CLAUDE.md`, xem `docs/presentation/van_de_can_chot.html` mục 3).
+- Đã có nhãn tay 09/11 (643 tin): luật dự đoán "không IT" nhưng người gán "IT" là 30/472 (6,4%), 26 tin ở tầng 2. Quyết định 10/11: bỏ OpenJev, không dùng model để phân loại IT.
 
-- Loại 5.409 tin, chưa có nhãn từng tin. Quyết định 09/11: chấp nhận nguyên trạng. Kế hoạch sau: dùng model phân loại lại các tin bị loại để lấy lại tin IT bị loại nhầm. Chưa làm. `preprocessing/CLAUDE.md` đã sửa 09/11 cho phép OpenJev làm tầng phụ.
+- Loại 5.409 tin, chưa có nhãn từng tin. Quyết định 09/11: chấp nhận nguyên trạng. Quyết định 10/11: không dùng model để phân loại lại các tin bị loại.
 
 **PRE-16. Integration chưa đọc đầu ra Dedup `01b_deduplication`** (Tài)
 
@@ -243,9 +243,9 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 
 **MINE-6. Ghi chú cho báo cáo đồ án:** SHAP không phải quan hệ nhân quả; `seniority_level` 0–4 gộp Thực tập và Mới tốt nghiệp (liên quan PRE-22).
 
-**PRE-29. Dùng AI local cho phân loại IT, dịch và trích kỹ năng (chưa chốt)**
+**PRE-29. Dịch JD tiếng Anh bằng model local (đã chốt hướng 10/11, chưa làm)**
 
-- Đề xuất: Qwen2.5:3b qua Ollama trên 4 máy; dịch bằng VietAI/envit5-translation (tin tiếng Anh ~24,2%); khử trùng giữ TF-IDF/Jaccard. Chưa chạy thử model nào (máy chưa cài Ollama), chưa có số đo tiếng Việt. So sánh OpenJev, autotrust, Laya và kế hoạch 6 bước trong `docs/presentation/van_de_can_chot.html` mục 7. Chờ nhóm chọn hướng A (AI toàn bộ) hay B (luật trước, AI bổ sung).
+- Quyết định 10/11: chỉ dùng `VietAI/envit5-translation` để dịch toàn bộ JD tiếng Anh (~24,2% tin) sang tiếng Việt; bỏ Qwen, OpenJev, JEV; khử trùng giữ TF-IDF/Jaccard. Chưa chạy thử model, chưa có số đo chất lượng dịch. Thiết kế bước dịch ở bước 4b của `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md`.
 
 ## 4. Chung
 
@@ -268,8 +268,8 @@ PRE-1 đến PRE-7 đã hết khi chuyển sang pipeline 5 bước (`docs/issue_
 **GEN-4. Layout R2 chưa chốt (chờ biết các bạn trong nhóm đang lưu vào đâu)**
 
 - Hiện trạng (liệt kê R2 ngày 09/11/2026, 12.989 object): `raw/` 12.826, `url_ledger/` 64, `staging/` 32 (8 nguồn × 4 bước), `curated/` 2, và các prefix ngoài hệ thống bốn tầng: `quality/` 26, `integration/` 18, `transformation/` 18, `silver/` 3 file JSON.
-- Đích dự kiến theo `docs/spec/10_architecture.md`: giữ `raw/` và `url_ledger/` (Bronze); `silver/all.parquet`; `gold/gold_master_jobs.parquet`, `gold/features.parquet`, `gold/matrices/`. Chưa sửa tài liệu, chưa đụng R2.
-- Đã sửa trong code (chưa merge, chưa chạy trên R2): `R2_LAYER_PREFIX` trong `collection/common/r2_storage.py` ánh xạ `staging` → `silver`, `curated` → `gold`, giữ `raw` và `url_ledger`; `scripts/migrate_lakehouse_layout.py --prefix-map` (chạy thử mặc định, chép rồi đối chiếu Size/ETag mới xóa).
+- **Đã chốt 10/11/2026 (người dùng):** R2 chỉ còn 5 tiền tố `url_ledger/`, `raw/`, `staging/`, `curated/`, `pipeline/`; không dùng `silver/`, `gold/`. `docs/spec/10_architecture.md` và `docs/spec/fixes/F13_r2_layout.md` đã sửa theo. Chưa chạy gì trên R2.
+- Đã sửa trong code (10/11/2026, chưa chạy trên R2): `R2_LAYER_PREFIX` trong `collection/common/r2_storage.py` ánh xạ `staging` → `staging`, `curated` → `curated`, thêm `pipeline`; `silver/`, `gold/` là alias cũ (`LEGACY_LAYER_ALIASES`) đổi sang `staging/`, `curated/`. `scripts/migrate_lakehouse_layout.py --prefix-map` giờ đổi `silver/` → `staging/`, `gold/` → `curated/` (chạy thử mặc định, chép rồi đối chiếu Size/ETag mới xóa).
 - Còn lệch spec 10:
   - `canonicalize_lakehouse_key` từ chối `silver/all.parquet` (tầng staging/silver bắt buộc có tên nguồn ở cấp 2).
   - `preprocessing/common/r2_export.py` và `scripts/push_preprocessing_to_r2.py` vẫn đẩy 32 file theo nguồn thay vì một `silver/all.parquet`.

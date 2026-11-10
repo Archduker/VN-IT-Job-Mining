@@ -1,6 +1,6 @@
 # P4. Normalization: 34 tỉnh, nhãn tiếng Việt, outlier, log lương, gộp nguồn
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 10/11/2026: dự án bỏ JEV, OpenJev, Qwen và Gemini.** Phân loại và chuẩn hóa chỉ dùng luật if-else. Model duy nhất được dùng: `VietAI/envit5-translation` để dịch JD tiếng Anh sang tiếng Việt (P3 T6b), chạy local. Mọi đoạn nói về JEV, LLM, GenAI, `--use-api`, sổ tiền API đã hết hiệu lực. Xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 > Trạng thái: **đã làm, chạy thật 03/11/2026** (8.378 → 8.378, chưa gọi JEV). Sửa sau review 03/11 ở mục 8.
 > Cần P3 xong trước. Prompt: `docs/prompting/P4_normalization.md`.
@@ -10,7 +10,7 @@
 | Vấn đề | Số liệu | Mã |
 |---|---|---|
 | Phân loại theo chuỗi con | "ba" khớp "backend", "intern" khớp "international"; bộ golden cũ có 1.214 tin BA/Product, phần lớn xếp sai | PRE-1, F3 |
-| Chuẩn hóa chạy trước imputer | Không còn áp dụng: imputer Gemini đã bỏ ở P3. P4 tự xử lý ô thiếu bằng luật + JEV | PRE-2 |
+| Chuẩn hóa chạy trước imputer | Không còn áp dụng: imputer Gemini đã bỏ ở P3. P4 tự xử lý ô thiếu bằng luật | PRE-2 |
 | Tên tỉnh nhiều kiểu, còn dùng tên cũ | "Hà Nội" 2.111 / "Ha Noi" 509; "Hồ Chí Minh" 1.741 / "Ho Chi Minh" 351; raw còn tên tỉnh trước sáp nhập (Bình Dương, Quảng Nam…) | PRE-3, E4 |
 | Cấp bậc mỗi nguồn một bộ từ | VietnamWorks 4 giá trị, TopCV 7; ITviec, Glints, TopDev không có | F2 |
 | Cùng công ty khác cách viết | VietnamWorks 15 nhóm, TopCV 12 ("CÔNG TY CỔ PHẦN CÔNG NGHỆ KIOTVIET" / "Công ty Cổ phần Công nghệ KiotViet") | I4 |
@@ -33,7 +33,7 @@ Code sửa PRE-1 (khớp từ nguyên vẹn) đã có test, đang ở git stash 
 | `locations` (cập nhật) | mỗi phần tử thêm `tinh_thanh` chuẩn (1 trong 34), `tinh_cu` (tên trong raw, nếu khác), `tinh_key` (mã), cờ `ngoai_vn` / `remote` |
 | `tinh_chinh` | `tinh_thanh` của địa điểm đầu tiên |
 | `seniority` | 1 trong 5 nhãn: "Intern/Fresher", "Junior", "Middle", "Senior", "Lead/Manager" (`seniority_level` 0–4); không xác định được thì -1 ("Chưa rõ") |
-| `seniority_source`, `seniority_prob` | `raw` / `title` / `kinh_nghiem` / `jev`; xác suất khi dùng JEV |
+| `seniority_source`, `seniority_prob` | `raw` / `title` / `kinh_nghiem`; `seniority_prob` luôn null (không dùng model) |
 | `job_family` | 1 trong 12 nhóm nghề chuẩn (bảng dưới) hoặc "Khác" |
 | `job_family_source`, `job_family_prob` | như trên |
 | `skills_std` | kỹ năng theo tên chuẩn trong `skills.json` ("reactjs", "React.js" → "React") |
@@ -104,7 +104,7 @@ Luật:
 | Mã | Luật | Ví dụ trước → sau |
 |---|---|---|
 | N2 | Cấp bậc theo thứ tự: luật theo từ nguyên vẹn trên `job_title` → trên `raw_seniority_text` → theo số năm kinh nghiệm tối thiểu (0 → Intern/Fresher, > 0 → Junior, ≥ 2 → Middle, ≥ 5 → Senior) → -1 nếu không có căn cứ. Không dùng model | "Trưởng phòng" → "Lead/Manager" (`raw`); "Senior Java" → "Senior" (`title`) |
-| N3 | Nhóm nghề: luật theo từ nguyên vẹn trên tiêu đề + `skills_std` (PRE-1) → JEV `choice` 12 nhóm + "Khác" khi luật không ra. prob < 0,5 → "Khác" | "Backend Developer" → "Backend", không còn ra BA |
+| N3 | Nhóm nghề: luật theo từ nguyên vẹn trên tiêu đề + `skills_std` (PRE-1) → 12 nhóm; luật không ra thì "Khác" (Other) | "Backend Developer" → "Backend", không còn ra BA |
 | N4 | Kỹ năng: ánh xạ về tên chuẩn bằng `skills.json` (P3), bỏ trùng | "ReactJS" → "React" |
 | N5 | Công ty: `company_norm` | "Cty CP A" / "CÔNG TY CỔ PHẦN A" → "a" |
 | N6 | Outlier lương: sửa lỗi nhập (`fix_common_salary_input_errors`) → IQR để gắn cờ → winsorize 1–99% (`outlier_handler.py`). Không xóa dòng. Ngưỡng tính trên toàn bộ 8 nguồn | 2 tỷ/tháng → cap về mức 99% |
@@ -117,28 +117,26 @@ Luật:
 - Không bỏ dòng.
 - Không ghi đè cột `raw_*` hay cột của P3; luôn thêm cột mới. Riêng `locations` chỉ được thêm khóa vào từng phần tử, không xóa khóa cũ.
 - Không scale trước khi xử lý outlier (N6 trước N7).
-- JEV chỉ chọn trong danh sách nhãn đã duyệt. Không thêm nhãn mới.
 
 ## 6. Monitoring thấy gì
 
 - Tỉnh: bảng "chữ gốc → tỉnh chuẩn" theo số tin, trong đó tách riêng các dòng **tên cũ → tên mới**. Đếm số tin `remote`, `ngoai_vn`, không nhận được. Bản đồ cột 34 tỉnh.
-- Cấp bậc, nhóm nghề: phân bố theo nguồn và theo `*_source` (bao nhiêu do luật, bao nhiêu do JEV); so với bộ golden cũ (vd. BA/Product 1.214 → x).
+- Cấp bậc, nhóm nghề: phân bố theo nguồn và theo `*_source` (do luật); so với bộ golden cũ (vd. BA/Product 1.214 → x).
 - Lương: histogram trước/sau cap và sau log; số tin bị cap.
-- Khối API: số lần gọi JEV, số lần trúng cache, chi phí.
+- Khối API: luôn `used: false` (bước này không dùng model).
 - Đây là bước đầu tiên có view "toàn bộ dữ liệu gộp" thật.
 
 ## 7. Tiêu chí xong và cách review
 
 - `provinces_34.json` có đủ 34 tỉnh; mọi tỉnh cũ trong bảng trên đều tra ra đúng tỉnh mới.
 - Không còn cặp tên có dấu / không dấu riêng; không còn tên tỉnh cũ ở `tinh_thanh`.
-- Review nhóm nghề: 50 tin ngẫu nhiên (seed 42), bạn gán nhãn tay, đúng ≥ 90%. Tách độ đúng phần luật và phần JEV.
+- Review nhóm nghề: 50 tin ngẫu nhiên (seed 42), bạn gán nhãn tay, đúng ≥ 90%. Đo độ đúng của luật.
 - Review cấp bậc: bảng chéo `raw_seniority_text` × `seniority` cho VietnamWorks và TopCV.
-- Test (JEV mock):
+- Test:
   - "Ha Noi" = "Hà Nội";
   - "Bình Dương" → "TP. Hồ Chí Minh" và `tinh_cu="Bình Dương"`;
   - "Remote" → `remote=true`;
-  - N2 dùng luật trước JEV;
-  - JEV prob 0,4 → "Chưa rõ";
+  - N2 chỉ dùng luật, không ra thì null;
   - N6 không đổi số dòng;
   - N7 chạy sau N6.
 
@@ -149,6 +147,6 @@ Luật:
 | Input/Output | file theo nguồn, gộp ở N8 | đọc/ghi `all.parquet` (gộp từ P2) |
 | N1 tỉnh | `tinh_chinh` = phần tử đầu dù null; tên "Bắc Ninh", "Quảng Ninh", "Đồng Nai" | `tinh_chinh` = tỉnh đầu tiên khác null; theo danh mục chính thức (03/2026) ba tỉnh này là thành phố: "TP. Bắc Ninh", "TP. Quảng Ninh", "TP. Đồng Nai" |
 | N2 cấp bậc | "Nhân viên"/"Chuyên viên" → Middle: 54% tin là Middle | bỏ qua các nhãn này; không xác định → null. Middle còn 10,4%; 1.465 tin để trống |
-| N2b JEV | `choice` tự gán nhãn khi luật không ra | chỉ `noul` kiểm nhãn của luật; prob < 0,5 → `seniority_can_kiem` / `job_family_can_kiem` |
+| N2b kiểm nhãn | (bản đặc tả cũ dùng JEV) | luật mâu thuẫn: Senior/Trưởng nhóm mà kinh nghiệm < 2 năm, Thực tập/Mới tốt nghiệp mà ≥ 3 năm → `seniority_can_kiem`; có nhóm nghề mà JD không có kỹ năng → `job_family_can_kiem` |
 | N6 lương | winsorize để lại 2 tỷ/tháng và 0đ | N6a: ngoài 1–500 triệu/tháng → NaN + `salary_suspect` trước IQR. Sau cap: 3–101,6 triệu |
 | Ghi file | chép đè `data/curated/curated_flat_golden_jobs.parquet` | không chép; file golden cũ giữ nguyên |

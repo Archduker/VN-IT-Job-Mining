@@ -111,7 +111,7 @@ def silver(tmp_path, monkeypatch):
 
     buf = io.BytesIO()
     df[df.source_platform == "topcv"].to_parquet(buf, index=False)
-    fake = _FakeS3({"silver/topcv/preprocessing/02_integration.parquet":
+    fake = _FakeS3({"staging/topcv/preprocessing/02_integration.parquet":
                     (buf.getvalue(), {"generated-at": "2026-11-03T10:00:00+00:00", "rows": "2"})})
     monkeypatch.setattr(r2_client, "get_client", lambda: fake)
     return fake
@@ -119,8 +119,8 @@ def silver(tmp_path, monkeypatch):
 
 def test_storage_compares_each_key(silver):
     items = {i["key"]: i["status"] for i in client.get("/api/v1/preprocessing/storage").json()["items"]}
-    assert items == {"silver/topcv/preprocessing/02_integration.parquet": "khop",
-                     "silver/itviec/preprocessing/02_integration.parquet": "chua_day"}
+    assert items == {"staging/topcv/preprocessing/02_integration.parquet": "khop",
+                     "staging/itviec/preprocessing/02_integration.parquet": "chua_day"}
 
 
 def test_rows_from_r2_or_local_fallback(silver):

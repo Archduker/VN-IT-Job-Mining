@@ -121,14 +121,15 @@ def test_canonicalize_lakehouse_key():
     # 2. Bị đảo ngược (nguồn trước, layer sau) -> tự động đưa layer lên đầu
     assert canonicalize_lakehouse_key("topcv/raw/2026-10-20/123_v1.json") == "raw/topcv/2026-10-20/123_v1.json"
     assert canonicalize_lakehouse_key("jobsgo/url_ledger/catalog_master.json") == "url_ledger/jobsgo/catalog_master.json"
-    assert canonicalize_lakehouse_key("itviec/staging/itviec_staging.parquet") == "silver/itviec/itviec_staging.parquet"
+    assert canonicalize_lakehouse_key("itviec/staging/itviec_staging.parquet") == "staging/itviec/itviec_staging.parquet"
 
-    # 2b. Tên tầng cũ và prefix mới đều được nhận, luôn ra prefix mới
+    # 2b. Prefix cũ silver/gold vẫn được nhận, luôn ra staging/curated; pipeline/ hợp lệ
     assert canonicalize_lakehouse_key("raw/topcv/2026-10-20/123_v1.json") == "raw/topcv/2026-10-20/123_v1.json"
-    assert canonicalize_lakehouse_key("staging/topcv/preprocessing/02_integration.parquet") == "silver/topcv/preprocessing/02_integration.parquet"
-    assert canonicalize_lakehouse_key("silver/topcv/a.parquet") == "silver/topcv/a.parquet"
-    assert canonicalize_lakehouse_key("curated/preprocessing/features.parquet") == "gold/preprocessing/features.parquet"
-    assert canonicalize_lakehouse_key("gold/preprocessing/features.parquet") == "gold/preprocessing/features.parquet"
+    assert canonicalize_lakehouse_key("staging/topcv/preprocessing/02_integration.parquet") == "staging/topcv/preprocessing/02_integration.parquet"
+    assert canonicalize_lakehouse_key("silver/topcv/a.parquet") == "staging/topcv/a.parquet"
+    assert canonicalize_lakehouse_key("curated/preprocessing/features.parquet") == "curated/preprocessing/features.parquet"
+    assert canonicalize_lakehouse_key("gold/preprocessing/features.parquet") == "curated/preprocessing/features.parquet"
+    assert canonicalize_lakehouse_key("pipeline/04_dedup/report.json") == "pipeline/04_dedup/report.json"
     with pytest.raises(ValueError):
         canonicalize_lakehouse_key("raw/unknown/a.json")
     with pytest.raises(ValueError):
@@ -290,19 +291,19 @@ def test_migrate_prefixes_dry_run_then_apply():
     migrate = importlib.import_module("migrate_lakehouse_layout")
 
     objs = {"raw/topcv/2026-10-15/a_v1.json": "A", "url_ledger/topcv/catalog_master.json": "L",
-            "staging/topcv/preprocessing/x.parquet": "S", "curated/preprocessing/f.parquet": "G",
-            "staging/itviec/preprocessing/b.parquet": "B", "silver/itviec/preprocessing/b.parquet": "B",      # đích trùng hệt
-            "staging/topdev/preprocessing/c.parquet": "C", "silver/topdev/preprocessing/c.parquet": "khác"}   # đích khác nội dung
+            "silver/topcv/preprocessing/x.parquet": "S", "gold/preprocessing/f.parquet": "G",
+            "silver/itviec/preprocessing/b.parquet": "B", "staging/itviec/preprocessing/b.parquet": "B",      # đích trùng hệt
+            "silver/topdev/preprocessing/c.parquet": "C", "staging/topdev/preprocessing/c.parquet": "khác"}   # đích khác nội dung
     s3 = _FakeS3(objs)
     dry = migrate.migrate_prefixes(s3, "b", apply=False)
     assert s3.objects == objs and not s3.deleted
-    assert dry["stats"] == {"moved": 2, "duplicate_removed": 1, "conflict_skipped": 1, "unmapped": 2}
+    assert dry["stats"] == {"moved": 2, "duplicate_removed": 1, "conflict_skipped": 1, "unmapped": 4}
 
     migrate.migrate_prefixes(s3, "b", apply=True)
     assert s3.objects["raw/topcv/2026-10-15/a_v1.json"] == "A"            # raw/ giữ nguyên
     assert s3.objects["url_ledger/topcv/catalog_master.json"] == "L"      # url_ledger/ giữ nguyên
-    assert s3.objects["silver/topcv/preprocessing/x.parquet"] == "S"
-    assert s3.objects["gold/preprocessing/f.parquet"] == "G"
-    assert "staging/itviec/preprocessing/b.parquet" not in s3.objects
-    assert s3.objects["staging/topdev/preprocessing/c.parquet"] == "C"    # xung đột: giữ nguyên cả hai
-    assert s3.objects["silver/topdev/preprocessing/c.parquet"] == "khác"
+    assert s3.objects["staging/topcv/preprocessing/x.parquet"] == "S"
+    assert s3.objects["curated/preprocessing/f.parquet"] == "G"
+    assert "silver/itviec/preprocessing/b.parquet" not in s3.objects
+    assert s3.objects["silver/topdev/preprocessing/c.parquet"] == "C"    # xung đột: giữ nguyên cả hai
+    assert s3.objects["staging/topdev/preprocessing/c.parquet"] == "khác"

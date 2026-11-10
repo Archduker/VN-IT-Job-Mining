@@ -78,10 +78,13 @@ def get_r2_client(
 R2_LAYER_PREFIX = {
     "raw": "raw",
     "url_ledger": "url_ledger",
-    "staging": "silver",
-    "curated": "gold",
+    "staging": "staging",
+    "curated": "curated",
+    "pipeline": "pipeline",  # đầu ra và báo cáo từng bước, không chia theo nguồn
 }
 CANONICAL_PREFIXES = tuple(f"{v}/" for v in R2_LAYER_PREFIX.values())
+# Prefix cũ (silver/gold) vẫn đọc được và luôn đổi sang staging/curated.
+LEGACY_LAYER_ALIASES = {"silver": "staging", "gold": "curated"}
 
 
 def to_logical_key(key: str) -> str:
@@ -89,6 +92,9 @@ def to_logical_key(key: str) -> str:
     for layer, prefix in R2_LAYER_PREFIX.items():
         if key.startswith(prefix + "/"):
             return layer + key[len(prefix):]
+    for old, layer in LEGACY_LAYER_ALIASES.items():
+        if key.startswith(old + "/"):
+            return layer + key[len(old):]
     return key
 
 
@@ -125,7 +131,7 @@ def normalize_legacy_key(object_key: str) -> str:
 
 
 def canonicalize_lakehouse_key(object_key: str) -> str:
-    """Đảm bảo mọi object_key đẩy lên R2/R2 luôn tuân thủ chuẩn 4 phân tầng Lakehouse.
+    """Đảm bảo mọi object_key đẩy lên R2/R2 luôn tuân thủ chuẩn phân tầng Lakehouse (url_ledger/, raw/, staging/, curated/, pipeline/).
 
     - Tự động chuẩn hóa các key bị đảo ngược:
         * <source>/raw/...        -> raw/<source>/...
@@ -156,7 +162,7 @@ def canonicalize_lakehouse_key(object_key: str) -> str:
         return to_r2_key(f"{layer}/{source}/{rest}")
 
     raise ValueError(
-        f"Object key không hợp lệ với chuẩn 4 tầng Lakehouse (phải thuộc raw/, url_ledger/, silver/, gold/; tên tầng cũ cũng được nhận): {object_key}"
+        f"Object key không hợp lệ với chuẩn 4 tầng Lakehouse (phải thuộc url_ledger/, raw/, staging/, curated/, pipeline/): {object_key}"
     )
 
 
@@ -170,7 +176,7 @@ def upload_file_to_r2(
 ) -> str:
     """Upload a local file directly to Cloudflare R2 and return its r2:// URI.
 
-    Tự động chuẩn hóa object_key về chuẩn 4 phân tầng Lakehouse để ngăn ngừa tạo thư mục rác.
+    Tự động chuẩn hóa object_key về chuẩn phân tầng Lakehouse (url_ledger/, raw/, staging/, curated/, pipeline/) để ngăn ngừa tạo thư mục rác.
     """
     path = Path(file_path)
     if not path.is_file():

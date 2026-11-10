@@ -35,7 +35,7 @@ from collection.common.utils import parse_iso_utc  # noqa: E402
 SOURCES: List[str] = list(settings.SUPPORTED_SOURCES)
 # Thư mục cấp 1 hợp lệ trong data/ ngoài thư mục của 8 nguồn
 KNOWN_LAYERS = {"integration", "quality", "staging", "curated", "url_ledger"}
-CANONICAL_R2_LAYERS = {"raw", "url_ledger", "staging", "curated"}
+CANONICAL_R2_LAYERS = {"raw", "url_ledger", "staging", "curated", "pipeline"}
 BLOCK_MARKERS = ("just a moment", "captcha", "cf-chl", "access denied", "attention required", "verify you are human")
 MIN_TEXT_CHARS = 300  # tổng độ dài chữ trong payload dưới mức này coi là trang cào lỗi
 BLOCKED_MAX_CHARS = 1000  # JD thật có thể nhắc "captcha"; chỉ coi là trang chặn khi payload ngắn

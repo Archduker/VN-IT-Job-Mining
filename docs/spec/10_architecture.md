@@ -36,12 +36,12 @@ flowchart TB
             B2["raw/<source>/<YYYY-MM-DD>/<job_id>_v<N>.json\n(Immutable Raw Payloads)"]
         end
         subgraph Silver["SILVER LAYER (Staging / Curated Zone)"]
-            S_Parquet["silver/all.parquet\n- Flattened & Cleaned\n- 2-Layer IT Domain Filter\n- Deduplicated Inter-source"]
+            S_Parquet["staging/all.parquet\n- Flattened & Cleaned\n- 2-Layer IT Domain Filter\n- Deduplicated Inter-source"]
         end
         subgraph Gold["GOLD LAYER (Feature & Mart Zone)"]
-            G1["gold/gold_master_jobs.parquet\n(Golden Master IT Jobs)"]
-            G2["gold/features.parquet\n(Machine Learning Feature Table)"]
-            G3["gold/matrices/\n(One-Hot & Co-occurrence Matrices)"]
+            G1["curated/gold_master_jobs.parquet\n(Golden Master IT Jobs)"]
+            G2["curated/features.parquet\n(Machine Learning Feature Table)"]
+            G3["curated/matrices/\n(One-Hot & Co-occurrence Matrices)"]
         end
         Bronze --> Silver --> Gold
     end
@@ -100,7 +100,7 @@ Kiến trúc Medallion chia dữ liệu thành 3 tầng logic với mức độ 
   - **Quản lý danh bạ URL (URL Ledger):** File `catalog_master.json` quản lý trạng thái vòng đời của toàn bộ các liên kết từng được phát hiện (`PENDING`, `DONE`, `FAILED`, `CLOSED`, `RECHECK_DUE`).
 
 ### 2.2. Tầng Silver (Cleaned & Integrated Parquet)
-- **Vị trí lưu trữ:** `r2://vn-it-jobs/silver/all.parquet` (hoặc `data/preprocessing/04_normalization/all.parquet`).
+- **Vị trí lưu trữ:** `r2://vn-it-jobs/staging/all.parquet` (hoặc `data/preprocessing/04_normalization/all.parquet`).
 - **Định dạng:** Apache Parquet (Snappy Compression, Columnar Storage).
 - **Đặc tính kỹ thuật:**
   - **Làm phẳng cấu trúc (Unnesting & Schema Mapping):** Trích xuất các trường từ cấu trúc JSON lồng nhau phức tạp của 8 sàn về một lược đồ chung chuẩn hóa (Canonical Target Schema).
@@ -109,7 +109,7 @@ Kiến trúc Medallion chia dữ liệu thành 3 tầng logic với mức độ 
   - **Khử trùng lặp đa nguồn (Inter-source Deduplication):** Sử dụng kỹ thuật phân khối Blocking Key kết hợp độ tương đồng văn bản TF-IDF Cosine ($\ge 0.85$) để liên kết các bài đăng cùng tuyển 1 vị trí giữa các sàn khác nhau thành một thực thể duy nhất.
 
 ### 2.3. Tầng Gold (Curated Marts & Feature Store)
-- **Vị trí lưu trữ:** `r2://vn-it-jobs/gold/` (bao gồm `gold_master_jobs.parquet`, `features.parquet`, và thư mục ma trận `matrices/`).
+- **Vị trí lưu trữ:** `r2://vn-it-jobs/curated/` (bao gồm `gold_master_jobs.parquet`, `features.parquet`, và thư mục ma trận `matrices/`).
 - **Định dạng:** Apache Parquet và JSON metadata từ điển.
 - **Đặc tính kỹ thuật:**
   - **Golden Master Jobs:** Dữ liệu hoàn chỉnh nhất của từng việc làm thực tế trên thị trường, đã được điền khuyết theo quy tắc hợp nhất uy tín, chuẩn hóa địa phương theo 34 tỉnh/thành phố sáp nhập mới.
@@ -118,6 +118,11 @@ Kiến trúc Medallion chia dữ liệu thành 3 tầng logic với mức độ 
   - **Ma trận khai phá dữ liệu (Mining Feature Matrices):** Sinh sẵn One-hot Matrix, Co-occurrence Matrix, và Vector Space TF-IDF để các mô hình Data Mining truy xuất với độ trễ thấp nhất.
 
 ---
+
+### 2.4. Tiền tố `pipeline/` (đầu ra từng bước)
+- **Vị trí lưu trữ:** `r2://vn-it-jobs/pipeline/<bước>/`, không chia theo nguồn.
+- **Nội dung:** đầu ra và báo cáo của từng bước tiền xử lý, để xem lại và chạy lại riêng một bước. Tên thư mục con theo bước chưa chốt.
+- **Chốt 10/11/2026:** R2 chỉ còn 5 tiền tố `url_ledger/`, `raw/`, `staging/`, `curated/`, `pipeline/`. Tiền tố cũ `silver/`, `gold/` vẫn đọc được và được đổi sang `staging/`, `curated/` (`collection/common/r2_storage.py`). Tên file bên trong `staging/`, `curated/` (ví dụ `all.parquet`) chưa chốt, xem `fixes/F13_r2_layout.md`.
 
 ## 3. Sơ Đồ Dòng Dữ Liệu Chi Tiết (End-to-End Data Flow)
 
@@ -157,11 +162,11 @@ sequenceDiagram
     Engine->>Engine: Lọc bỏ boilerplate quảng cáo & áp dụng bộ lọc 2 tầng IT
     Engine->>Engine: Khử trùng lặp nội sàn (CDC) & Đa sàn (Blocking Key + TF-IDF >= 0.85)
     Engine->>Engine: Phân tầng xử lý lương Thỏa thuận (Subset A vs Subset B)
-    Engine->>R2_Silver: Lưu bảng tích hợp sạch (silver/all.parquet)
+    Engine->>R2_Silver: Lưu bảng tích hợp sạch (staging/all.parquet)
 
     %% Feature & Mining Phase
     Note over Engine, Mining: GIAI ĐOẠN 3: BIẾN ĐỔI, ĐẶC TRƯNG & DATA MINING
-    Engine->>Engine: Gán nhãn 12 Job Families & 6 Seniority Levels
+    Engine->>Engine: Gán nhãn 12 Job Families & 5 Seniority Levels
     Engine->>Engine: Dịch JD tiếng Anh -> tiếng Việt (VietAI/envit5-translation + Entity Masking)
     Engine->>Engine: Ánh xạ từ điển phân cấp kỹ năng IT (6 categories)
     Engine->>Engine: Chuẩn hóa lương (USD/VND, chu kỳ -> Triệu VNĐ/tháng)

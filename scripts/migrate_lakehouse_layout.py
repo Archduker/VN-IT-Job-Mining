@@ -27,7 +27,7 @@ for p in (ROOT, ROOT / "scripts"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from collection.common.r2_storage import R2_LAYER_PREFIX, normalize_legacy_key, to_r2_key  # noqa: E402
+from collection.common.r2_storage import LEGACY_LAYER_ALIASES, R2_LAYER_PREFIX, normalize_legacy_key, to_r2_key  # noqa: E402
 from sync_cloud_lakehouse import local_path_to_s3_key, s3_key_to_local_path  # noqa: E402
 
 LEGACY_R2_PREFIXES = ("raw/crawling/", "raw/url_ledger/")
@@ -104,14 +104,14 @@ def migrate_r2(apply: bool) -> Dict[str, object]:
 
 
 def migrate_prefixes(s3, bucket: str, apply: bool, layers: Dict[str, str] | None = None) -> Dict[str, object]:
-    """Đổi prefix tầng cũ (raw/, url_ledger/, staging/, curated/) sang prefix mới theo R2_LAYER_PREFIX.
+    """Đổi prefix tầng cũ (silver/, gold/) sang staging/, curated/ theo R2_LAYER_PREFIX và LEGACY_LAYER_ALIASES.
 
     Chép sang key mới, đối chiếu Size và ETag của bản chép với bản gốc, chỉ xóa key cũ khi khớp.
     Đích đã có: giống hệt (ETag) thì xóa bản cũ, khác thì bỏ qua và báo. Không --apply thì chỉ đếm.
     """
     stats: Counter = Counter()
     conflicts: List[str] = []
-    for old_layer in (layers or R2_LAYER_PREFIX):
+    for old_layer in (layers or (*R2_LAYER_PREFIX, *LEGACY_LAYER_ALIASES)):
         for page in s3.get_paginator("list_objects_v2").paginate(Bucket=bucket, Prefix=old_layer + "/"):
             for item in page.get("Contents", []):
                 old_key = item["Key"]
@@ -158,7 +158,7 @@ def main() -> int:
     parser.add_argument("--local", action="store_true", help="Chuyển file trong data/crawling/")
     parser.add_argument("--r2", action="store_true", help="Chuyển key raw/crawling/ và raw/url_ledger/ trên R2")
     parser.add_argument("--prefix-map", action="store_true",
-                        help="Đổi prefix R2 theo R2_LAYER_PREFIX (staging/ -> silver/, curated/ -> gold/; raw/ và url_ledger/ giữ nguyên); xóa key cũ sau khi đối chiếu bản chép")
+                        help="Đổi prefix R2 theo R2_LAYER_PREFIX (silver/ -> staging/, gold/ -> curated/; raw/, url_ledger/, pipeline/ giữ nguyên); xóa key cũ sau khi đối chiếu bản chép")
     parser.add_argument("--apply", action="store_true", help="Thực hiện thật; không có cờ này thì chỉ chạy thử")
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data")
     args = parser.parse_args()

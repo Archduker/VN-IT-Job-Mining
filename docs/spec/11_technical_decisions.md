@@ -35,7 +35,7 @@ Dự án `VN-IT-Job-Mining` thực hiện cào dữ liệu từ 8 sàn tuyển d
 **Lựa chọn Phương án D:** Toàn bộ hệ thống lưu trữ được chuẩn hóa độc quyền trên **Cloudflare R2** (`bucket: vn-it-jobs`), áp dụng kiến trúc **Medallion Lakehouse 3 tầng**:
 - **Tầng Bronze (`r2://vn-it-jobs/raw/` & `url_ledger/`):** Lưu trữ JSON nguyên bản không chỉnh sửa (Immutable Raw) và Sổ cái URL Ledger (`catalog_master.json`).
 - **Tầng Silver (`r2://vn-it-jobs/staging/`):** Lưu trữ dữ liệu đã làm phẳng (flattened), phân tích kiểu dữ liệu (typed), lọc rác và xử lý null.
-- **Tầng Gold (`r2://vn-it-jobs/curated/` & `gold/`):** Lưu trữ bộ dữ liệu Golden Master tích hợp 8 nguồn, mã hóa ma trận đặc trưng kỹ năng 230 chiều dạng Parquet. Đồng thời, nạp tự động vào **Data Mart PostgreSQL** (tận dụng máy chủ PostgreSQL có sẵn trong Docker Compose của Airflow, database `vn_it_jobs`) để phục vụ các câu truy vấn SQL phân tích, indexing B-Tree/GIN và cấp dữ liệu cho FastAPI Backend.
+- **Tầng Gold (`r2://vn-it-jobs/curated/`):** Lưu trữ bộ dữ liệu Golden Master tích hợp 8 nguồn, mã hóa ma trận đặc trưng kỹ năng 230 chiều dạng Parquet. Đồng thời, nạp tự động vào **Data Mart PostgreSQL** (tận dụng máy chủ PostgreSQL có sẵn trong Docker Compose của Airflow, database `vn_it_jobs`) để phục vụ các câu truy vấn SQL phân tích, indexing B-Tree/GIN và cấp dữ liệu cho FastAPI Backend.
 
 ```mermaid
 flowchart LR

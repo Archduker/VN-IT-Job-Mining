@@ -6,7 +6,7 @@ Issue: PRE-15, PRE-28, PRE-12, PRE-13. Trạng thái: **đặc tả chưa duyệ
 `it_policy.json` loại 5.409 tin non_IT bằng bằng chứng tổng hợp, chưa có nhãn từng tin. Cohort của Phát giữ 5.104/5.177, 5.092 tin chưa duyệt, 17,1% không có kỹ năng, độ thưa 98,15% (ngoài 95–98%).
 
 ## Các lựa chọn (không chọn thay người dùng)
-- PRE-15: (A) giữ nguyên; (B) dùng model phân loại lại các tin bị loại. Người dùng đã nói sẽ dùng model sau. `preprocessing/CLAUDE.md` ghi "không dùng model": cần người dùng đồng ý lại và dùng cờ riêng, không thay luật mặc định.
+- PRE-15: (A) giữ nguyên; (B) dùng model phân loại lại các tin bị loại: người dùng đã bỏ hướng này (10/11/2026, bỏ JEV/OpenJev), chỉ còn (A) hoặc sửa luật.
 - PRE-28: (A) chấp nhận cohort và độ thưa; (B) nới bộ lọc; (C) mở rộng bộ kỹ năng để giảm 17,1% tin không có kỹ năng.
 
 ## Trả lời câu hỏi "nhãn tay để làm gì"
