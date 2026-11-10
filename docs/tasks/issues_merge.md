@@ -55,6 +55,7 @@ Cột "Chờ" = cần quyết định nào trước khi sửa. "Mức": C chặn
 | MERGE-7 | Test `test_integration_output_contract_and_conservation` fail: test không patch `OUT_DIR`, và kỳ vọng I0 "loại dòng hỏng" trong khi code giữ dòng hỏng thành bản ghi (zero-drop) | Hoàng | C | PRE-18 | đã sửa phần test (305d017); phần thiết kế I0 còn ở PRE-18 |
 | MERGE-8 | Nhánh Khoa: 13 file chỉ đổi quyền thực thi và việc xóa `tests/data/test_integration_step.py` không đưa vào sprint | Khoa | A | - | bỏ (có chủ ý, ghi nhận) |
 | MERGE-9 | `sync_cloud_lakehouse.py --download --source X` chỉ tải `url_ledger/X`, không tải `raw/X` (prefix đặt cứng theo `url_ledger/`, `scripts/sync_cloud_lakehouse.py` ~dòng 164). Mô tả `CLAUDE.md` và `--help` ngụ ý tải cả nguồn | - | B | - | mở |
+| MERGE-10 | Sơn đẩy thêm `ef05bb8` (10/11: EDA và Collection đọc R2). Đã merge vào sprint (`2b6e35d`), không xung đột. Nhưng 4 test integration của chính nhánh Sơn fail (cũng fail khi chạy riêng trên nhánh của Sơn): `test_collection_without_data_has_no_invented_numbers` (KeyError `has_data`), `test_collection_counts_raw_and_merges_airflow_runs` (KeyError `days`), `test_eda_charts_from_staging_parquet` (3 so với 2), `test_monitor_eda_r2::test_empty_remote_has_no_local_fallback` (mong `NO_DATA`, code trả `NO_STAGING_DATA`). Test cũ chưa theo code mới | Sơn | C | hỏi Sơn sửa test hay code | mở |
 
 ### 3.2 Chuyển từ review (mã đề xuất trong KNOWN_ISSUED)
 
