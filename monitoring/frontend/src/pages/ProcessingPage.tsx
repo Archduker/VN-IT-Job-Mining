@@ -18,7 +18,7 @@ export const ProcessingPage: React.FC = () => {
         <StatCard label="Bản ghi sau Integration" value={fmt(data.integrated_records)} sub="master_integration_report.json" />
         <StatCard label="Đầu vào khử trùng lặp" value={fmt(dedup?.input_records)} sub={`Còn ${fmt(dedup?.golden_records)} bản ghi golden`} />
         <StatCard label="Bản ghi trùng đã gộp" value={fmt(dedup?.duplicates_removed)} sub={`Tỉ lệ trùng ${pct(dedup?.deduplication_rate_pct)}`} />
-        <StatCard label="Cụm trùng liên nguồn" value={fmt(dedup?.cross_platform_clusters)} sub="Jaccard + TF-IDF cosine" />
+        <StatCard label="Cụm trùng liên nguồn" value={fmt(dedup?.cross_platform_clusters)} sub="MinHash Jaccard" />
       </section>
 
       <Card>

@@ -1,5 +1,7 @@
 # Encoding Contract v1 — DRAFT, chờ Phát duyệt
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 > **09/11/2026 — superseded cho run đã thực thi:** đọc [06_p5_execution_contract.md](06_p5_execution_contract.md). Agent_05 đã duyệt các policy cần cho run và đường dẫn task; bản này giữ lịch sử, không dùng các mục “chưa duyệt” bên dưới để phủ định quyết định mới. Nghiệm thu vẫn chờ AutoCAD scope theo câu trả lời mới nhất của Phát.
 
 ## Cập nhật vocabulary v2 — 09/11/2026

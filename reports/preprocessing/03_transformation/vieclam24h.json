@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:42+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-10T09:09:28+00:00",
+  "code_version": "800b5e7",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 182
@@ -61,7 +61,7 @@
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 182,
+      "rows_affected": 180,
       "examples": [
         {
           "job_id": "200011696",
@@ -105,6 +105,34 @@
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
       "rows_affected": 182,
+      "examples": []
+    },
+    {
+      "id": "T6.1",
+      "name": "Bóc thẻ HTML và entity",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6.2",
+      "name": "Chuẩn hóa Unicode về NFC",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6.3",
+      "name": "Bỏ ký tự ẩn",
+      "action": "modify",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "T6.4",
+      "name": "Gạch ngang và bullet về một chuẩn",
+      "action": "modify",
+      "rows_affected": 63,
       "examples": []
     },
     {
@@ -189,13 +217,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 100.0,
-      "fill_pct_out": 100.0
+      "fill_pct_in": 98.9,
+      "fill_pct_out": 98.9
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 100.0,
-      "fill_pct_out": 100.0
+      "fill_pct_in": 98.9,
+      "fill_pct_out": 98.9
     },
     {
       "field": "headcount",
@@ -254,6 +282,22 @@
       "vi": 172,
       "en": 10
     },
-    "experience_parsed_rate": 100.0
+    "text_quality": {
+      "before": {
+        "html": 0,
+        "nfc": 0,
+        "hidden": 1
+      },
+      "residual_html_pct": 0.0,
+      "residual_nfd_pct": 0.0,
+      "residual_hidden_char_pct": 0.0,
+      "residual_rows": {
+        "residual_html": 0,
+        "residual_nfd": 0,
+        "residual_hidden": 0
+      },
+      "abbreviations_approved": 0
+    },
+    "experience_parsed_rate": 98.9
   }
 }

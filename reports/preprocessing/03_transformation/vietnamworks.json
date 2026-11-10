@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:28+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-10T09:09:18+00:00",
+  "code_version": "800b5e7",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 900
+    "rows": 800
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 900
+    "rows": 800
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1254,
+      "rows_affected": 1008,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 250,
+      "rows_affected": 221,
       "examples": [
         {
           "job_id": "2094849",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 900,
+      "rows_affected": 800,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 749,
+      "rows_affected": 674,
       "examples": [
         {
           "job_id": "2085748",
@@ -90,28 +90,56 @@
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 893,
+      "rows_affected": 799,
       "examples": []
     },
     {
       "id": "T2f",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 12,
+      "rows_affected": 10,
       "examples": []
     },
     {
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 900,
+      "rows_affected": 800,
+      "examples": []
+    },
+    {
+      "id": "T6.1",
+      "name": "Bóc thẻ HTML và entity",
+      "action": "modify",
+      "rows_affected": 9,
+      "examples": []
+    },
+    {
+      "id": "T6.2",
+      "name": "Chuẩn hóa Unicode về NFC",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6.3",
+      "name": "Bỏ ký tự ẩn",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6.4",
+      "name": "Gạch ngang và bullet về một chuẩn",
+      "action": "modify",
+      "rows_affected": 249,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 900,
+      "rows_affected": 800,
       "examples": [
         {
           "job_id": "2085748",
@@ -140,7 +168,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 900,
+      "rows_affected": 799,
       "examples": [
         {
           "job_id": "2085748",
@@ -169,13 +197,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 22.3,
-      "fill_pct_out": 22.3
+      "fill_pct_in": 22.8,
+      "fill_pct_out": 22.8
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 26.1,
-      "fill_pct_out": 26.1
+      "fill_pct_in": 26.0,
+      "fill_pct_out": 26.0
     },
     {
       "field": "posted_date",
@@ -189,18 +217,18 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 83.2,
-      "fill_pct_out": 83.2
+      "fill_pct_in": 84.2,
+      "fill_pct_out": 84.2
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 83.2,
-      "fill_pct_out": 83.2
+      "fill_pct_in": 84.2,
+      "fill_pct_out": 84.2
     },
     {
       "field": "headcount",
-      "fill_pct_in": 99.2,
-      "fill_pct_out": 99.2
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
     },
     {
       "field": "job_title_clean",
@@ -219,13 +247,13 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 90.8,
-      "fill_pct_out": 90.8
+      "fill_pct_in": 91.5,
+      "fill_pct_out": 91.5
     },
     {
       "field": "locations",
-      "fill_pct_in": 100.0,
-      "fill_pct_out": 100.0
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
     },
     {
       "field": "language",
@@ -243,17 +271,33 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 258,
+      "header": 227,
       "title": 2,
       "jd": 2,
-      "none": 638
+      "none": 569
     },
-    "salary_under_1m_count": 4,
+    "salary_under_1m_count": 3,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 500,
-      "en": 400
+      "vi": 448,
+      "en": 352
     },
-    "experience_parsed_rate": 83.2
+    "text_quality": {
+      "before": {
+        "html": 9,
+        "nfc": 0,
+        "hidden": 0
+      },
+      "residual_html_pct": 0.0,
+      "residual_nfd_pct": 0.0,
+      "residual_hidden_char_pct": 0.0,
+      "residual_rows": {
+        "residual_html": 0,
+        "residual_nfd": 0,
+        "residual_hidden": 0
+      },
+      "abbreviations_approved": 0
+    },
+    "experience_parsed_rate": 84.2
   }
 }

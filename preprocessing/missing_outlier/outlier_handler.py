@@ -5,7 +5,7 @@ Module kiểm định ngoại lai định lượng bằng phương pháp IQR và
 
 Quy tắc:
   - Áp dụng cho 2 biến liên tục: mức lương (VND/tháng) và số năm kinh nghiệm.
-  - Tự động nhận diện và sửa 3 lỗi nhập liệu số phổ biến.
+  - Không sửa số lương (PH6 N10b): chỉ gắn cờ ngoại lai (PH7).
   - Áp dụng Winsorization (capping tại phân vị 1% và 99%) thay vì xóa bỏ hàng,
     nhằm bảo toàn nguyên vẹn hồ sơ kỹ năng quý giá.
 """
@@ -58,27 +58,16 @@ def detect_iqr_outliers(series: pd.Series, multiplier: float = 1.5) -> Dict[str,
 
 
 def fix_common_salary_input_errors(salary_vnd: Optional[float], jd_text: str = "") -> Optional[float]:
-    """Nhận diện và sửa 3 lỗi nhập liệu số phổ biến:
+    """Trả đúng số lương vào (chữ ký giữ để không vỡ caller).
 
-    1. Gõ nhầm USD vào ô VNĐ (ví dụ: 1,500 - 3,000 VNĐ -> nhân 25,400).
-    2. Nhầm lương năm vào ô lương tháng (ví dụ: 360 triệu -> chia 12).
-    3. Gõ thừa số 0 (ví dụ: 500 triệu cho vị trí phổ thông).
+    PH6 N10b: bỏ hai nhánh sai. Chia 12 khi JD có chữ "năm" làm hỏng `8000 - 9000 USD`
+    (203,2-228,6 triệu/tháng thành 16,9-19,1 triệu): chữ "năm" có trong gần như mọi JD ("2 năm kinh nghiệm").
+    Nhân 25.400 khi 100..10.000 coi số VND nhỏ là USD một cách mù quáng. Đơn vị tiền và chu kỳ do bước 03
+    (salary_parser: salary_currency_raw, salary_period_raw, bằng chứng trong chính tin) quyết, không sửa ở đây.
     """
     if salary_vnd is None or np.isnan(salary_vnd):
         return None
-
-    val = float(salary_vnd)
-
-    # 1. Nhầm đơn vị USD vào VNĐ
-    if 100.0 <= val <= 10_000.0:
-        return val * 25_400.0
-
-    # 2. Nhầm lương năm thành tháng
-    jd_lower = jd_text.lower()
-    if val > 200_000_000.0 and ("năm" in jd_lower or "annual" in jd_lower or "year" in jd_lower):
-        return val / 12.0
-
-    return val
+    return float(salary_vnd)
 
 
 def winsorize_series(
@@ -96,3 +85,33 @@ def winsorize_series(
     p_high = valid.quantile(upper_pct)
 
     return series.clip(lower=p_low, upper=p_high)
+
+
+def iqr_flags_by_group(
+    values: pd.Series, groups: pd.Series, min_n: int = 30, multiplier: float = 1.5
+) -> pd.DataFrame:
+    """PH7 M6: cờ ngoại lai IQR theo nhóm (cấp bậc), dùng `detect_iqr_outliers`; không sửa số.
+
+    Cột: `outlier` (bool), `scope` in {level, pooled, not_enough_data} và cận dưới/trên đã dùng.
+    Nhóm có < min_n giá trị: not_enough_data (không cờ). Tin nhóm null: dùng IQR gộp (pooled) nếu gộp đủ min_n.
+    """
+    out = pd.DataFrame(
+        {"outlier": False, "scope": "not_enough_data", "lower": np.nan, "upper": np.nan}, index=values.index
+    )
+    pooled = detect_iqr_outliers(values, multiplier)
+    pooled_ok = pooled["total_records"] >= min_n
+    labels = groups.where(groups.notna(), None)
+    for key in labels.dropna().unique():
+        idx = labels.index[labels == key]
+        res = detect_iqr_outliers(values.loc[idx], multiplier)
+        if res["total_records"] >= min_n:
+            out.loc[idx, ["scope", "lower", "upper"]] = ["level", res["lower_bound"], res["upper_bound"]]
+    need_pooled = labels.isna()  # chỉ tin chưa có cấp mới dùng IQR gộp; cấp có < min_n tin: not_enough_data
+    if pooled_ok:
+        out.loc[need_pooled, ["scope", "lower", "upper"]] = ["pooled", pooled["lower_bound"], pooled["upper_bound"]]
+    has_bounds = out["scope"] != "not_enough_data"
+    out.loc[has_bounds, "outlier"] = (
+        (values[has_bounds] < out.loc[has_bounds, "lower"]) | (values[has_bounds] > out.loc[has_bounds, "upper"])
+    ).fillna(False)
+    out["outlier"] = out["outlier"].astype(bool)
+    return out

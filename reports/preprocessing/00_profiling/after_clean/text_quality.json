@@ -1,0 +1,106 @@
+{
+ "when": "after_clean",
+ "seed": 42,
+ "sample": 500,
+ "generated_at": "2026-11-10T09:14:08.675915+00:00",
+ "sizes": {
+  "topcv": {
+   "total": 1561,
+   "sampled": 500
+  },
+  "topdev": {
+   "total": 227,
+   "sampled": 227
+  },
+  "vietnamworks": {
+   "total": 800,
+   "sampled": 500
+  },
+  "careerviet": {
+   "total": 447,
+   "sampled": 447
+  },
+  "vieclam24h": {
+   "total": 182,
+   "sampled": 182
+  },
+  "itviec": {
+   "total": 905,
+   "sampled": 500
+  },
+  "glints": {
+   "total": 271,
+   "sampled": 271
+  },
+  "jobsgo": {
+   "total": 683,
+   "sampled": 500
+  }
+ },
+ "text_cols": [
+  "job_title",
+  "raw_description_text",
+  "raw_requirements_text"
+ ],
+ "no_diacritic_rule": "không có ký tự có dấu và có cụm tiếng Việt không dấu (heuristic)",
+ "by_source": {
+  "topcv": {
+   "n_texts": 1500,
+   "html": 0.0,
+   "nfd": 0.0,
+   "no_diacritic": 0.0
+  },
+  "topdev": {
+   "n_texts": 681,
+   "html": 0.0,
+   "nfd": 0.73,
+   "no_diacritic": 0.0
+  },
+  "vietnamworks": {
+   "n_texts": 1500,
+   "html": 0.4,
+   "nfd": 0.0,
+   "no_diacritic": 0.0
+  },
+  "careerviet": {
+   "n_texts": 1341,
+   "html": 0.0,
+   "nfd": 1.34,
+   "no_diacritic": 0.0
+  },
+  "vieclam24h": {
+   "n_texts": 546,
+   "html": 0.0,
+   "nfd": 0.0,
+   "no_diacritic": 0.0
+  },
+  "itviec": {
+   "n_texts": 1500,
+   "html": 0.0,
+   "nfd": 0.0,
+   "no_diacritic": 0.0
+  },
+  "glints": {
+   "n_texts": 813,
+   "html": 0.12,
+   "nfd": 2.95,
+   "no_diacritic": 0.0
+  },
+  "jobsgo": {
+   "n_texts": 1499,
+   "html": 0.0,
+   "nfd": 0.0,
+   "no_diacritic": 0.0
+  }
+ },
+ "ydata_profiling": {
+  "topcv": "ok",
+  "topdev": "ok",
+  "vietnamworks": "ok",
+  "careerviet": "ok",
+  "vieclam24h": "ok",
+  "itviec": "ok",
+  "glints": "bỏ: ValueError: Couldn't find space to draw. Either the Canvas size is too small or too much of the image is masked out.",
+  "jobsgo": "ok"
+ }
+}

@@ -177,7 +177,7 @@ sequenceDiagram
     Mining->>R2_Gold: Đọc ma trận kỹ năng & Gold features
     Mining->>Mining: Chạy FP-Growth phân tầng tìm luật kết hợp kỹ năng IT
     Mining->>Mining: Phân cụm việc làm (K-Means & HDBSCAN) + Giảm chiều PCA 2D/3D
-    Mining->>Mining: Huấn luyện mô hình Random Forest + TreeSHAP định lượng lương
+    Mining->>Mining: (Phần phụ, ngoại lệ supervised) Random Forest + TreeSHAP định lượng lương
     Mining->>Mining: Chạy Isolation Forest & GLOSH score phát hiện tin bất thường
     Mining->>R2_Gold: Lưu kết quả tri thức khai phá (4 Parquet Artifacts)
 

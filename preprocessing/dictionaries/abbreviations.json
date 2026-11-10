@@ -1,0 +1,123 @@
+{
+  "version": "0.1-candidates",
+  "note": "Mọi mục approved=false cho tới khi người dùng duyệt (PH2 C10). Số tin: đếm trên 5.077 tin 01_clean, 10/11/2026.",
+  "entries": [
+    {
+      "canonical": "kinh nghiệm",
+      "variants": [
+        "KN", "kn"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 11
+    },
+    {
+      "canonical": "đại học",
+      "variants": [
+        "ĐH"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 124
+    },
+    {
+      "canonical": "cao đẳng",
+      "variants": [
+        "CĐ"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 66
+    },
+    {
+      "canonical": "công nghệ thông tin",
+      "variants": [
+        "CNTT"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 1182
+    },
+    {
+      "canonical": "cơ sở dữ liệu",
+      "variants": [
+        "CSDL"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 134
+    },
+    {
+      "canonical": "bảo hiểm xã hội",
+      "variants": [
+        "BHXH", "bhxh"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 193
+    },
+    {
+      "canonical": "bảo hiểm y tế",
+      "variants": [
+        "BHYT", "bhyt"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 164
+    },
+    {
+      "canonical": "bảo hiểm thất nghiệp",
+      "variants": [
+        "BHTN", "bhtn"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 136
+    },
+    {
+      "canonical": "trách nhiệm hữu hạn",
+      "variants": [
+        "TNHH", "tnhh"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 49
+    },
+    {
+      "canonical": "cộng tác viên",
+      "variants": [
+        "CTV", "ctv"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 4
+    },
+    {
+      "canonical": "công ty",
+      "variants": [
+        "Cty", "cty"
+      ],
+      "case_sensitive": false,
+      "approved": false,
+      "docs_with_token": 6
+    },
+    {
+      "canonical": "backend",
+      "variants": [
+        "BE", "be"
+      ],
+      "case_sensitive": true,
+      "approved": false,
+      "docs_with_token": 39
+    },
+    {
+      "canonical": "frontend",
+      "variants": [
+        "FE"
+      ],
+      "case_sensitive": true,
+      "approved": false,
+      "docs_with_token": 17
+    }
+  ]
+}

@@ -255,3 +255,26 @@ def test_province_34():
     assert province.key("Tòa nhà MB, 18 Lê Văn Lương, Hà Nội") == "ha_noi"
     assert province.key("1 Nguyễn Huệ, Quận 1") is None  # tên đường, không phải TP. Huế
     assert province.is_remote("Remote") and province.is_foreign("Tokyo, Japan")
+
+
+# ---------------------------------------------------------------- PH3: ngưỡng JD 50 từ + C8 CTV/đa cấp
+def test_scope_reason_ctv_va_da_cap():
+    kw = json.loads(clean.SCOPE_PATH.read_text(encoding="utf-8"))
+    f = lambda t, d="": {"job_title": t, "raw_description_text": d}  # noqa: E731
+    assert clean.scope_reason(f("Cộng tác viên lập trình web"), kw) == "S3_CTV_TITLE"
+    assert clean.scope_reason(f("Backend Developer", "Mô hình kinh doanh đa cấp, thu nhập cao"), kw) == "S3_MULTI_LEVEL"
+    assert clean.scope_reason(f("Backend Developer", "Làm việc với đội ngũ ctv bên ngoài"), kw) is None  # CTV chỉ xét tiêu đề
+    assert clean.scope_reason(f("Python Developer"), kw) is None
+
+
+def test_c8_va_nguong_50_tu(sandbox):
+    jd = " ".join(f"tu{i}" for i in range(40))  # 40 từ: qua ngưỡng cũ 30, rớt ngưỡng 50
+    write(sandbox / "data" / "src_a" / "raw" / "2026-11-02" / "20_v1.json", env("src_a", "20", "Dev Java A", jd=jd))
+    write(sandbox / "data" / "src_a" / "raw" / "2026-11-02" / "21_v1.json",
+          env("src_a", "21", "Cộng tác viên viết code", company="Công ty ZZ"))
+    r = clean.run(["src_a"], dry_run=False)["src_a"]
+    assert clean.MIN_JD_WORDS == 50
+    assert rows(r, "C8") == 1 and r.data["extra"]["scope_c8_reasons"] == {"S3_CTV_TITLE": 1}
+    rej = [json.loads(x) for x in (sandbox / "data/preprocessing/rejected/01_clean/src_a.jsonl").read_text().splitlines()]
+    assert {(x["job_id"], x["rule"]) for x in rej} >= {("20", "C5"), ("21", "C8")}
+    r.check_conserved()

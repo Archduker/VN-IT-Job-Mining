@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gán nhãn gold</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1c2330;--mut:#667085;--line:#dfe3ea;--acc:#2f5bea;--ok:#12805c;--warn:#b54708;--sel:#fff3bf;
+--s1:#dbeafe;--s2:#dcfce7;--s3:#fef3c7;--s4:#fce7f3;--s5:#e5e7eb}
+@media (prefers-color-scheme:dark){:root{--bg:#12151b;--card:#1b2029;--ink:#e6e9ef;--mut:#9aa4b5;--line:#2c3340;--acc:#7f9cff;--ok:#4cc79a;--warn:#f2a65a;--sel:#5b4b00;
+--s1:#1e3a5f;--s2:#14432b;--s3:#4a3a0c;--s4:#5a1f43;--s5:#2d3340}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header h1{font-size:16px;margin:0}
+.bar{flex:1;min-width:140px;height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);width:0}
+button,select,input,textarea{font:inherit;color:inherit}
+button{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+button.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+input[type=text],input[type=number],select{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 10px;width:100%}
+main{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;padding:16px;max-width:1500px;margin:0 auto}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.meta{color:var(--mut);font-size:13px;margin-bottom:8px;overflow-wrap:anywhere}
+.meta a{color:var(--acc)}
+#jd{white-space:pre-wrap;overflow-wrap:anywhere;max-height:70vh;overflow:auto;border-top:1px solid var(--line);padding-top:10px;user-select:text}
+.sec-mo_ta{background:var(--s1)}.sec-yeu_cau{background:var(--s2)}.sec-uu_tien{background:var(--s3)}.sec-phuc_loi{background:var(--s4)}.sec-khac{background:var(--s5)}
+.field{border-top:1px solid var(--line);padding:10px 0}
+.field:first-child{border-top:0;padding-top:0}
+.fh{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-weight:600}
+.st{font-weight:400;font-size:12px;border-radius:10px;padding:1px 8px;background:var(--line);color:var(--mut)}
+.st.done{background:color-mix(in srgb,var(--ok) 20%,transparent);color:var(--ok)}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.row>*{flex:0 0 auto}
+.row input[type=number]{width:120px}
+.chip{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:2px 10px;font-size:13px;cursor:pointer}
+.chip.req{border-color:var(--ok);color:var(--ok)}.chip.pref{border-color:var(--warn);color:var(--warn)}
+.hint{color:var(--mut);font-size:12px}
+#nav{display:flex;gap:8px;margin-top:12px}
+#nav button{flex:1}
+.legend span{padding:1px 6px;border-radius:4px;font-size:12px;margin-right:4px}
+.empty{padding:40px 16px;text-align:center;color:var(--mut)}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:.95}
+</style>
+</head>
+<body>
+<header>
+  <h1>Gán nhãn gold</h1>
+  <span id="prog">0/0</span>
+  <div class="bar"><i id="barfill"></i></div>
+  <button id="bOpenSample">Nạp mẫu JD</button>
+  <button id="bOpenLabels">Nạp nhãn cũ</button>
+  <button id="bExport" class="primary">Xuất JSON</button>
+  <input id="fileSample" type="file" accept=".json" hidden>
+  <input id="fileLabels" type="file" accept=".json" hidden>
+</header>
+<div id="empty" class="empty">Chọn file <code>gold_sample.json</code> (tạo bằng <code>scripts/build_gold_sample.py</code>) để bắt đầu.<br>Nhãn tự lưu trong trình duyệt; bấm "Xuất JSON" để tải file nhãn về.</div>
+<main id="app" hidden>
+  <section class="card">
+    <div class="meta" id="meta"></div>
+    <div class="meta" id="rawinfo"></div>
+    <div class="legend meta">Bôi đen một đoạn rồi bấm section bên phải:
+      <span class="sec-mo_ta">mô tả</span><span class="sec-yeu_cau">yêu cầu</span><span class="sec-uu_tien">ưu tiên</span><span class="sec-phuc_loi">phúc lợi</span><span class="sec-khac">khác</span></div>
+    <div id="jd"></div>
+  </section>
+  <section class="card" id="form">
+    <div class="field" id="f-it"><div class="fh">IT hay không IT <span class="st" id="st-it"></span></div>
+      <div class="row"><button data-it="it">IT (1)</button><button data-it="non_it">Không IT (2)</button></div></div>
+
+    <div class="field" id="f-salary"><div class="fh">Lương <span class="st" id="st-salary"></span></div>
+      <div class="row"><button data-sk="negotiable">Thỏa thuận</button><button data-sk="not_stated">Không ghi</button><button data-sk="value">Có số</button></div>
+      <div class="row" id="salVals" style="margin-top:6px" hidden>
+        <input type="number" id="salMin" placeholder="Từ" min="0" step="any"><input type="number" id="salMax" placeholder="Đến" min="0" step="any">
+        <select id="salCur" style="width:auto"><option value="">Tiền tệ</option><option>VND</option><option>USD</option></select>
+        <select id="salPer" style="width:auto"><option value="">Kỳ</option><option value="month">tháng</option><option value="year">năm</option><option value="hour">giờ</option></select></div>
+      <div class="hint">Chỉ có "Từ X" thì để trống ô "Đến"; chỉ có "Up to" thì để trống ô "Từ". Giữ nguyên số trong JD (ví dụ 15 triệu = 15000000).</div></div>
+
+    <div class="field" id="f-exp"><div class="fh">Kinh nghiệm tối thiểu (năm) <span class="st" id="st-exp"></span></div>
+      <div class="row"><input type="number" id="expVal" min="0" step="0.5" placeholder="số năm"><button id="expNone">Không ghi</button></div></div>
+
+    <div class="field" id="f-sen"><div class="fh">Cấp bậc <span class="st" id="st-sen"></span></div><div class="row" id="senBtns"></div></div>
+
+    <div class="field" id="f-loc"><div class="fh">Địa điểm <span class="st" id="st-loc"></span></div>
+      <div class="row"><input type="text" id="provIn" list="provList" placeholder="Gõ tên tỉnh rồi Enter"><button id="provNone">Không ghi</button></div>
+      <datalist id="provList"></datalist><div class="row" id="provChips" style="margin-top:6px"></div>
+      <div class="row" id="modeBtns" style="margin-top:6px"></div></div>
+
+    <div class="field" id="f-sec"><div class="fh">Section <span class="st" id="st-sec"></span></div>
+      <div class="row" id="secBtns"></div><div class="row" style="margin-top:6px"><button id="secUndo">Xóa đoạn cuối</button><button id="secNone">JD không chia được</button></div>
+      <div class="hint" id="secInfo"></div></div>
+
+    <div class="field" id="f-skill"><div class="fh">Kỹ năng <span class="st" id="st-skill"></span></div>
+      <div class="row"><input type="text" id="skIn" list="skList" placeholder="Gõ kỹ năng rồi Enter"><button id="skLvl" data-lvl="required">Bắt buộc</button><button id="skNone">Không có</button></div>
+      <datalist id="skList"></datalist><div class="row" id="skChips" style="margin-top:6px"></div>
+      <div class="hint">Bấm một chip để đổi bắt buộc ↔ ưu tiên; bấm × để xóa.</div></div>
+
+    <div id="nav"><button id="bPrev">← Trước</button><button id="bNext" class="primary">Sau →</button></div>
+    <div class="hint" style="margin-top:8px">Phím: ← → đổi JD, 1 = IT, 2 = không IT (khi không đang gõ).</div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+<script id="dict-provinces" type="application/json">__PROVINCES__</script>
+<script id="dict-skills" type="application/json">__SKILLS__</script>
+<script>
+"use strict";
+const PROVINCES = JSON.parse(document.getElementById("dict-provinces").textContent);
+const SKILLS = JSON.parse(document.getElementById("dict-skills").textContent);
+const SENIORITY = ["Intern/Fresher","Junior","Middle","Senior","Lead/Manager","unknown"];
+const SEC = {mo_ta:"Mô tả",yeu_cau:"Yêu cầu",uu_tien:"Ưu tiên",phuc_loi:"Phúc lợi",khac:"Khác"};
+const MODES = {onsite:"Tại văn phòng",remote:"Remote",hybrid:"Hybrid",unknown:"Không ghi"};
+const $ = (id) => document.getElementById(id);
+let sample = null, labels = {}, idx = 0, skLevel = "required";
+
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+};
+const key = () => "goldLabels:" + (sample ? sample.seed + ":" + sample.items.length : "");
+function save(){ if(sample) store.set(key(), JSON.stringify(labels)); }
+function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),1800); }
+const cur = () => sample.items[idx];
+function lab(){ const id = cur().job_id; return labels[id] || (labels[id] = {}); }
+function change(fn){ fn(lab()); save(); render(false); }
+
+function numOrNull(v){ return v === "" || v == null ? null : Number(v); }
+function doneCount(l){ return ["it","salary","experience_years","seniority","location","sections","skills"].filter(f => l[f] != null).length; }
+function fullyDone(l){
+  return l.it!=null && l.salary!=null && l.experience_years!=null && l.seniority!=null && l.sections!=null && l.skills!=null
+    && l.location && l.location.provinces!=null && l.location.work_mode!=null;
+}
+
+function setStatus(id, ok, text){ const e=$(id); e.textContent = text; e.classList.toggle("done", ok); }
+
+function renderJD(){
+  const text = cur().text, secs = Array.isArray(lab().sections) ? lab().sections.slice().sort((a,b)=>a.start-b.start) : [];
+  const root = $("jd"); root.textContent = "";
+  let pos = 0;
+  const add = (s, cls) => { if(!s) return; if(cls){ const sp=document.createElement("span"); sp.className=cls; sp.textContent=s; root.appendChild(sp);} else root.appendChild(document.createTextNode(s)); };
+  for(const s of secs){ if(s.start < pos) continue; add(text.slice(pos,s.start)); add(text.slice(s.start,s.end),"sec-"+s.section); pos = s.end; }
+  add(text.slice(pos));
+}
+
+function render(full = true){
+  if(!sample) return;
+  const it = cur(), l = lab();
+  $("prog").textContent = `${idx+1}/${sample.items.length} · đủ 7 trường: ${sample.items.filter(i=>labels[i.job_id]&&fullyDone(labels[i.job_id])).length}`;
+  const total = sample.items.reduce((n,i)=>n+doneCount(labels[i.job_id]||{}),0);
+  $("barfill").style.width = (100*total/(7*sample.items.length)) + "%";
+  if(full){
+    $("meta").innerHTML = ""; const m=$("meta");
+    m.append(document.createTextNode(`${it.source} · ${it.company||"?"} · ${it.title||"?"} · `));
+    if(it.url){ const a=document.createElement("a"); a.href=it.url; a.target="_blank"; a.rel="noopener"; a.textContent="mở tin gốc"; m.append(a); }
+    const r = it.raw || {};
+    $("rawinfo").textContent = ["raw_salary_text","raw_experience_text","raw_seniority_text","raw_location_text","raw_work_mode"].map(k=>`${k.slice(4)}: ${r[k]??"—"}`).join(" · ");
+    $("jd").scrollTop = 0;
+  }
+  renderJD();
+  // IT
+  document.querySelectorAll("[data-it]").forEach(b=>b.classList.toggle("on", l.it===b.dataset.it));
+  setStatus("st-it", l.it!=null, l.it==null?"chưa gán":(l.it==="it"?"IT":"không IT"));
+  // lương
+  const s = l.salary || {};
+  document.querySelectorAll("[data-sk]").forEach(b=>b.classList.toggle("on", s.kind===b.dataset.sk));
+  $("salVals").hidden = s.kind !== "value";
+  if(full || s.kind!=="value"){ $("salMin").value = s.min ?? ""; $("salMax").value = s.max ?? ""; $("salCur").value = s.currency || ""; $("salPer").value = s.period || ""; }
+  const salOk = s.kind && (s.kind!=="value" || ((s.min!=null||s.max!=null) && s.currency && s.period));
+  setStatus("st-salary", !!salOk, !s.kind?"chưa gán":(s.kind==="value"?(salOk?"có số":"thiếu tiền tệ/kỳ/số"):s.kind==="negotiable"?"thỏa thuận":"không ghi"));
+  // kinh nghiệm
+  const e = l.experience_years;
+  if(full || e==="not_stated") $("expVal").value = typeof e==="number" ? e : "";
+  $("expNone").classList.toggle("on", e==="not_stated");
+  setStatus("st-exp", e!=null, e==null?"chưa gán":(e==="not_stated"?"không ghi":e+" năm"));
+  // cấp bậc
+  document.querySelectorAll("#senBtns button").forEach(b=>b.classList.toggle("on", l.seniority===b.dataset.v));
+  setStatus("st-sen", l.seniority!=null, l.seniority==null?"chưa gán":l.seniority);
+  // địa điểm
+  const loc = l.location || {};
+  const provs = Array.isArray(loc.provinces) ? loc.provinces : [];
+  $("provNone").classList.toggle("on", loc.provinces==="not_stated");
+  $("provChips").textContent = "";
+  provs.forEach(k=>{ const p=PROVINCES.find(x=>x.key===k); const c=chip(`${p?p.name:k} ×`,"",()=>change(x=>{ x.location.provinces = x.location.provinces.filter(q=>q!==k); })); $("provChips").append(c); });
+  document.querySelectorAll("#modeBtns button").forEach(b=>b.classList.toggle("on", loc.work_mode===b.dataset.v));
+  const locOk = loc.provinces!=null && loc.work_mode!=null && (loc.provinces==="not_stated" || provs.length>0);
+  setStatus("st-loc", locOk, locOk?"đủ":(loc.provinces==null&&loc.work_mode==null?"chưa gán":"thiếu tỉnh hoặc hình thức"));
+  // section
+  const secs = Array.isArray(l.sections) ? l.sections : [];
+  $("secNone").classList.toggle("on", l.sections==="none");
+  $("secInfo").textContent = l.sections==="none" ? "Đã đánh dấu: JD không chia được." : `${secs.length} đoạn đã gán.`;
+  setStatus("st-sec", l.sections!=null, l.sections==null?"chưa gán":(l.sections==="none"?"không chia":secs.length+" đoạn"));
+  // kỹ năng
+  const sk = Array.isArray(l.skills) ? l.skills : [];
+  $("skNone").classList.toggle("on", l.skills==="none");
+  $("skChips").textContent = "";
+  sk.forEach((x,i)=>{ const c = chip(`${x.name} · ${x.level==="required"?"bắt buộc":"ưu tiên"} ×`, x.level==="required"?"req":"pref",
+    (ev)=>{ if(ev.offsetX > ev.currentTarget.clientWidth-22) change(q=>q.skills.splice(i,1)); else change(q=>{ q.skills[i].level = q.skills[i].level==="required"?"preferred":"required"; }); }); $("skChips").append(c); });
+  setStatus("st-skill", l.skills!=null, l.skills==null?"chưa gán":(l.skills==="none"?"không có":sk.length+" kỹ năng"));
+}
+
+function chip(text, cls, onclick){ const c=document.createElement("span"); c.className="chip "+cls; c.textContent=text; c.onclick=onclick; return c; }
+
+// ---- sự kiện ----
+document.querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>change(l=>{ l.it = b.dataset.it; }));
+document.querySelectorAll("[data-sk]").forEach(b=>b.onclick=()=>change(l=>{ l.salary = Object.assign({}, l.salary, {kind:b.dataset.sk}); if(b.dataset.sk!=="value") l.salary = {kind:b.dataset.sk}; }));
+function salInput(){ change(l=>{ l.salary = {kind:"value", min:numOrNull($("salMin").value), max:numOrNull($("salMax").value), currency:$("salCur").value||null, period:$("salPer").value||null}; }); }
+["salMin","salMax"].forEach(i=>$(i).addEventListener("change",salInput)); ["salCur","salPer"].forEach(i=>$(i).addEventListener("change",salInput));
+$("expVal").addEventListener("change",()=>change(l=>{ const v=numOrNull($("expVal").value); l.experience_years = v==null?null:v; }));
+$("expNone").onclick=()=>change(l=>{ l.experience_years = "not_stated"; });
+SENIORITY.forEach(v=>{ const b=document.createElement("button"); b.dataset.v=v; b.textContent = v==="unknown"?"Không rõ":v; b.onclick=()=>change(l=>{ l.seniority=v; }); $("senBtns").append(b); });
+Object.entries(MODES).forEach(([v,t])=>{ const b=document.createElement("button"); b.dataset.v=v; b.textContent=t; b.onclick=()=>change(l=>{ l.location = Object.assign({provinces:null}, l.location, {work_mode:v}); }); $("modeBtns").append(b); });
+PROVINCES.forEach(p=>{ const o=document.createElement("option"); o.value=p.name; $("provList").append(o); });
+$("provIn").addEventListener("keydown",ev=>{ if(ev.key!=="Enter") return; const v=$("provIn").value.trim().toLowerCase(); const p=PROVINCES.find(x=>x.name.toLowerCase()===v);
+  if(!p){ toast("Tỉnh không có trong 34 tỉnh"); return; } $("provIn").value="";
+  change(l=>{ l.location = Object.assign({work_mode:null}, l.location); if(!Array.isArray(l.location.provinces)) l.location.provinces=[]; if(!l.location.provinces.includes(p.key)) l.location.provinces.push(p.key); }); });
+$("provNone").onclick=()=>change(l=>{ l.location = Object.assign({work_mode:null}, l.location, {provinces:"not_stated"}); });
+SKILLS.forEach(s=>{ const o=document.createElement("option"); o.value=s; $("skList").append(o); });
+$("skLvl").onclick=()=>{ skLevel = skLevel==="required"?"preferred":"required"; $("skLvl").dataset.lvl=skLevel; $("skLvl").textContent = skLevel==="required"?"Bắt buộc":"Ưu tiên"; };
+$("skIn").addEventListener("keydown",ev=>{ if(ev.key!=="Enter") return; const v=$("skIn").value.trim(); if(!v) return; $("skIn").value="";
+  change(l=>{ if(!Array.isArray(l.skills)) l.skills=[]; const f=l.skills.find(x=>x.name.toLowerCase()===v.toLowerCase()); if(f) f.level=skLevel; else l.skills.push({name:v,level:skLevel}); }); });
+$("skNone").onclick=()=>change(l=>{ l.skills="none"; });
+
+// section: tính vị trí ký tự của vùng bôi đen trong văn bản gốc
+function offsetIn(root, node, off){
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n=0, t;
+  while((t=w.nextNode())){ if(t===node) return n+off; n += t.length; }
+  if(node===root){ let c=0; for(let i=0;i<off;i++) c += root.childNodes[i].textContent.length; return c; }
+  return -1;
+}
+Object.entries(SEC).forEach(([v,t])=>{ const b=document.createElement("button"); b.textContent=t; b.className="sec-"+v;
+  b.onclick=()=>{ const sel=window.getSelection(); if(!sel.rangeCount||sel.isCollapsed){ toast("Hãy bôi đen một đoạn trong JD trước"); return; }
+    const r=sel.getRangeAt(0), root=$("jd");
+    if(!root.contains(r.startContainer)||!root.contains(r.endContainer)){ toast("Vùng chọn phải nằm trong JD"); return; }
+    let a=offsetIn(root,r.startContainer,r.startOffset), z=offsetIn(root,r.endContainer,r.endOffset);
+    if(a<0||z<0||a===z){ toast("Không xác định được vùng chọn"); return; } if(a>z) [a,z]=[z,a];
+    sel.removeAllRanges();
+    change(l=>{ const keep = (Array.isArray(l.sections)?l.sections:[]).filter(s=>s.end<=a||s.start>=z); keep.push({section:v,start:a,end:z}); l.sections = keep; }); };
+  $("secBtns").append(b); });
+$("secUndo").onclick=()=>change(l=>{ if(Array.isArray(l.sections)){ l.sections.pop(); if(!l.sections.length) l.sections=null; } });
+$("secNone").onclick=()=>change(l=>{ l.sections="none"; });
+
+// điều hướng
+function go(d){ idx = Math.max(0, Math.min(sample.items.length-1, idx+d)); store.set(key()+":idx", String(idx)); render(true); }
+$("bPrev").onclick=()=>go(-1); $("bNext").onclick=()=>go(1);
+document.addEventListener("keydown",ev=>{ if(!sample||/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if(ev.key==="ArrowRight") go(1); else if(ev.key==="ArrowLeft") go(-1);
+  else if(ev.key==="1") change(l=>{ l.it="it"; }); else if(ev.key==="2") change(l=>{ l.it="non_it"; }); });
+
+// nạp/xuất
+function readJSON(file, cb){ const r=new FileReader(); r.onload=()=>{ try{ cb(JSON.parse(r.result)); }catch(e){ toast("File JSON lỗi: "+e.message); } }; r.readAsText(file); }
+$("bOpenSample").onclick=()=>$("fileSample").click(); $("bOpenLabels").onclick=()=>$("fileLabels").click();
+$("fileSample").onchange=ev=>{ const f=ev.target.files[0]; if(!f) return; readJSON(f,d=>{
+  if(!d||!Array.isArray(d.items)||!d.items.length){ toast("File mẫu sai định dạng"); return; }
+  sample=d; labels={}; const old=store.get(key()); if(old){ try{ labels=JSON.parse(old)||{}; }catch(e){} }
+  idx=Math.min(Number(store.get(key()+":idx"))||0, sample.items.length-1);
+  $("empty").hidden=true; $("app").hidden=false; render(true); toast("Đã nạp "+sample.items.length+" JD"); }); ev.target.value=""; };
+$("fileLabels").onchange=ev=>{ const f=ev.target.files[0]; if(!f) return; readJSON(f,d=>{
+  if(!sample){ toast("Nạp file mẫu JD trước"); return; }
+  if(!d||d.version!==1||typeof d.labels!=="object"){ toast("File nhãn sai định dạng"); return; }
+  const ids=new Set(sample.items.map(i=>i.job_id)); let n=0;
+  for(const [id,l] of Object.entries(d.labels)) if(ids.has(id)){ labels[id]=l; n++; }
+  save(); render(true); toast(`Đã nạp nhãn của ${n} JD`); }); ev.target.value=""; };
+$("bExport").onclick=()=>{ if(!sample){ toast("Chưa nạp mẫu"); return; }
+  const out={version:1, sample_seed:sample.seed, exported_at:new Date().toISOString(), labels:{}};
+  for(const i of sample.items) if(labels[i.job_id] && Object.keys(labels[i.job_id]).length) out.labels[i.job_id]=labels[i.job_id];
+  const blob=new Blob([JSON.stringify(out,null,1)],{type:"application/json"}); const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download="gold_labels.json"; a.click(); URL.revokeObjectURL(a.href);
+  toast(`Đã xuất nhãn của ${Object.keys(out.labels).length} JD`); };
+</script>
+</body>
+</html>

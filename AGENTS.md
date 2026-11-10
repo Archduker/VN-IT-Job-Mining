@@ -29,7 +29,7 @@ flowchart TD
     subgraph Lakehouse["2. Cloudflare R2 Medallion Lakehouse (r2://vn-it-jobs/)"]
         Bronze["BRONZE ZONE\n• raw/<source>/<YYYY-MM-DD>/<id>_v<N>.json\n• url_ledger/<source>/catalog_master.json\n• Bất biến nguyên bản (Immutable)"]
         Silver["SILVER ZONE (staging/)\n• all.parquet (Làm phẳng 8 nguồn)\n• Parsed lương, kinh nghiệm, 34 tỉnh"]
-        Gold["GOLD ZONE (curated/ & gold/)\n• curated_flat_golden_jobs.parquet\n• features.parquet (230 cột kỹ năng)"]
+        Gold["GOLD ZONE (curated/; đầu ra từng bước: pipeline/)\n• curated_flat_golden_jobs.parquet\n• features.parquet (230 cột kỹ năng)"]
         Bronze --> Silver --> Gold
     end
 

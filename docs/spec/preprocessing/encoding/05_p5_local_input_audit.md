@@ -1,5 +1,7 @@
 # Kiểm tra input thật và khả năng tạo P4 — 08/11/2026
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 ## Kết luận
 
 Chưa tạo P4. Không có input P2/P3 Parquet chuẩn trên máy và chưa xác minh đầy đủ nguồn gốc ba JSON legacy. Không tải/sync R2, không chạy pipeline ghi dữ liệu, không sửa source P3/P4/P5. Những output và thay đổi có sẵn trong worktree được giữ nguyên.

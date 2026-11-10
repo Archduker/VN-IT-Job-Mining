@@ -5,7 +5,8 @@ Khử trùng lặp 2 lớp cho dữ liệu tuyển dụng IT (docs/spec/05_prepr
   - `text_norm`    : bóc HTML, chuẩn Unicode, lọc boilerplate, băm nội dung chuẩn hóa.
   - `blocking`     : Blocking Key = Slug(Company_Norm) + "_" + Location_Code + "_" + Title_Group.
   - `intra_source` : tầng 1 - nội sàn, kiểm toán chuỗi version CDC (D1) + repost (D2).
-  - `inter_source` : tầng 2 - liên sàn, TF-IDF Cosine >= 0.85 (D4, D5) + Golden Master Fusion (D6).
+  - `minhash`      : sha1(text_fold), shingle 5 từ, MinHash/LSH + Jaccard chính xác (PH4).
+  - `inter_source` : tầng 2 - liên sàn, sha1 + MinHash/Jaccard (D4, D5) + Golden Master Fusion (D6).
   - `run`          : điều phối, ghi `data/preprocessing/01b_deduplication/` và
                      `reports/preprocessing/01b_deduplication/` (chạy: python -m preprocessing.deduplication.run).
 
@@ -18,7 +19,7 @@ from preprocessing.deduplication.blocking import (
     location_code,
     title_group,
 )
-from preprocessing.deduplication.inter_source import COSINE_THRESHOLD, build_blocks, clusters, fuse
+from preprocessing.deduplication.inter_source import build_blocks, clusters, fuse
 from preprocessing.deduplication.text_norm import (
     canonical_hash,
     clean_text,
@@ -37,7 +38,6 @@ __all__ = [
     "location_code",
     "title_group",
     "blocking_key",
-    "COSINE_THRESHOLD",
     "build_blocks",
     "clusters",
     "fuse",

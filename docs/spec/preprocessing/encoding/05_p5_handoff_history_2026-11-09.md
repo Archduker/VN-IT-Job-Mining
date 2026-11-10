@@ -1,5 +1,7 @@
 # P5 — xác thực, candidate review và sửa lỗi kỹ thuật
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 ## Hiện hành — agent_07, cohort đã áp policy ngày 09/11/2026
 
 Đã xác minh đúng version và áp27exclude/8retain Phát duyệt; xử lý19unresolved và review đủ31P1 còn lại, không mở rộng410P2. Ledger giải trình toàn bộ **5177=5104include+62exclude+11quarantine**. Include có12reviewed+5092retained_unreviewed; không gọi là verified IT. Job_family/P4/upstreamfilter giữ nguyên.

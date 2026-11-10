@@ -29,6 +29,9 @@ R2_BUCKET_NAME=vn-it-jobs
 | Raw | `raw/<nguồn>/<YYYY-MM-DD>/<job_id>_v<N>.json` |
 | Staging | `staging/<nguồn>/...` |
 | Curated | `curated/...` |
+| Pipeline (đầu ra từng bước) | `pipeline/...` (chưa có object; tên thư mục con chưa chốt) |
+
+Bucket chỉ có 5 tiền tố (chốt 10/11/2026). `silver/`, `gold/` là tên cũ, nay đọc như `staging/`, `curated/`.
 
 `canonicalize_lakehouse_key` là luật duy nhất cho key. Layout cũ `raw/crawling/<ngày>/<nguồn>/` được `normalize_legacy_key` chuyển về layout chuẩn.
 

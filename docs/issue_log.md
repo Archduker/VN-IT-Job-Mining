@@ -414,3 +414,33 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **KNOWN_ISSUED:** Không có mục tương ứng cần xóa.
 - **Đối chiếu TopCV qua API đang chạy:** COMPLETE 2.755/2.755 object/bản ghi; 2.746 payload khác nhau, 9 bản ghi trùng dư trong 9 nhóm (0,33%); 2.680 ID filename và 75 object dư theo ID. Kết quả duplicate hiện đã có trong raw_scan của GET summary.
 - **Kiểm tra toàn trình:** Edge headless mở trang EDA đang chạy, dùng API backend thật và cache TopCV vừa quét: đã thấy Bản ghi trùng dư, thông báo chờ cũ không còn, không có pageerror.
+
+
+### L-33. Layout R2 lệch 5 tiền tố đã chốt (GEN-4, 10/11/2026)
+
+- **Lỗi:** Bucket có thêm `silver/` (3 object), `quality/` (26), `integration/` (18), `transformation/` (18) ngoài 5 tiền tố chốt `url_ledger/`, `raw/`, `staging/`, `curated/`, `pipeline/`.
+- **Nguyên nhân:** Các pipeline cũ ghi theo layout riêng; code chỉ biết 4 tầng và `silver/`, `gold/`.
+- **Cách xử lý:** Thêm `pipeline` vào `R2_LAYER_PREFIX` và alias `silver`→`staging`, `gold`→`curated` (`collection/common/r2_storage.py`, `scripts/migrate_lakehouse_layout.py`). Chạy thử rồi `--prefix-map --apply`: chép `silver/silver_dataset_health_card.json` sang `staging/`; 2 file lớn báo ETag khác (do multipart) nên đối chiếu SHA-256, trùng thì chép tay xong xóa key cũ. Xóa 62 object ở 3 prefix thừa (output cũ ngày 25-26/10 và 01/11, sinh lại được từ raw).
+- **Còn lại:** Tên thư mục con của `pipeline/`; tên file trong `staging/`, `curated/` (GEN-4).
+- **Kiểm chứng:** Liệt kê lại bucket: `curated` 2, `raw` 12.826, `staging` 35, `url_ledger` 64.
+- **KNOWN_ISSUED:** GEN-4 còn mở phần tên file; đã ghi việc đã làm vào GEN-4.
+
+### L-34. Làm sạch ký tự và schema bước 02 (PH2, 10/11/2026)
+
+- **Lỗi:** (1) `integration/run.py` giữ dòng JSON hỏng thành bản ghi giả; (2) id dự phòng của `json_flattener` dùng `hash()` đổi mỗi tiến trình; (3) `strip_html_tags` nuốt `<->`, để lại `&nbsp;` khi mã hóa hai lần, cắt đôi từ ở thẻ inline; (4) 42 tin còn NFD, ký tự ẩn còn sót, gạch ngang/bullet không thống nhất.
+- **Nguyên nhân:** Zero-drop áp cho cả dòng không phải bản ghi; `hash(str)` có hạt giống ngẫu nhiên; regex `<[^>]+>` quá rộng; chưa có bước NFC/ký tự ẩn.
+- **Cách xử lý:** `rejected/02_integration` (I0, I6 qua pydantic `JobRecord` gồm `job_title` rỗng, I7 qua `strict=True`); id `sha1(url)[:16]`; regex thẻ sửa, unescape tối đa 2 lần; `preprocessing/common/text_clean.py` (NFC, ký tự ẩn, gạch ngang, bullet `- `, lặp tối đa 3 lần khi còn HTML/NFD rồi chỉ cảnh báo) và cột `*_norm`, `*_fold`.
+- **Kiểm chứng:** `pytest tests/unit` 359 xanh; chạy khô trên 5.077 tin thật: HTML, NFD, ký tự ẩn còn lại đều 0 ở 8 nguồn; 1 tin careerviet thiếu `job_title` vào rejected.
+
+### L-35. Chuẩn hóa trường sai: chia 12, Backend hút Embedded, nhãn cấp bậc từ số năm không cờ (PH6/PH7, 10/11/2026)
+- **Lỗi:** (1) `fix_common_salary_input_errors` chia 12 khi JD có chữ "năm" (vietnamworks `8000 - 9000 USD` từ 203-229 triệu thành 16,9-19,1 triệu) và coi số 100..10.000 là USD; (2) nhãn USD gắn nhầm cho số VND (`7000000 - 10000000 USD`) làm lương bị bỏ; lương năm ghi trong JD (`Annual Salary: 22,000~36,000 USD`) bị bỏ; (3) `Backend` hút Embedded và mọi `developer`; `Nhân Viên Thiết Kế` ra UI/UX; (4) 44,4% nhãn cấp bậc do số năm tạo ra mà không có cờ; (5) N1 bỏ sót 712 tin có tỉnh trong `raw_location_text`; (6) 787 tin itviec và "Không yêu cầu"/"Dưới một năm"/"Lên đến N năm"/"Hơn N năm" không parse được kinh nghiệm.
+- **Nguyên nhân:** sửa lương dựa chữ "năm" rời rạc; bộ từ khóa Backend quá rộng; luật số năm nằm trong N2 không đánh dấu; N1 chỉ nhìn `locations`; `experience_parser` thiếu 5 dạng chuỗi.
+- **Cách xử lý:** hằng `USD_VND` một nơi (`preprocessing/common/constants.py`); bỏ hai nhánh sai; parser lương đọc lại nhãn USD khi số >= 100.000 và chỉ tính theo năm khi JD ghi đúng các số đó là lương năm; 5 cấp bậc, số năm chuyển sang PH7 (`level_inferred`); 12 nhóm SPEC-01 + `Other`; `job_title.py`, `company_key.py`, `missing_rules.py`; mọi cờ kèm `job_id` trong `anomalies.json`.
+- **Kiểm chứng:** `tests/unit/test_ph6_ph7_normalization.py` với chuỗi thật; đo trong bộ nhớ trên 5.076 tin (số trong báo cáo giao việc).
+
+### L-36. Dedup không nằm trong chuỗi, TF-IDF chỉ so khác sàn; thiếu lọc CTV/đa cấp và nhận diện ngôn ngữ (PH3/PH4, 10/11/2026)
+- **Lỗi:** (1) `01b_deduplication` ngoài `STEPS`, 02 đọc thẳng 01_clean nên đầu ra dedup không được dùng; (2) tin gần trùng cùng sàn chỉ bị bắt khi hash khớp tuyệt đối; (3) chưa lọc tin CTV/đa cấp, JD ngắn dùng 30 từ; (4) `language` do luật đếm dấu, không có độ tin cậy, không có nhãn `other`.
+- **Nguyên nhân:** pipeline dedup dựng riêng; thuật toán TF-IDF cosine trong block; ngôn ngữ là luật tạm.
+- **Cách xử lý:** `01b_deduplication` vào `STEPS`, 02 đọc 01b; tầng 2 sha1(text_fold) + cùng company_slug, tầng 3 MinHash/LSH rồi Jaccard chính xác >= 0.85 + cùng company_slug, cả cùng sàn lẫn khác sàn (`dedup_policy.json`); C8 bỏ CTV/đa cấp, JD ngắn 50 từ ở 01_clean; fastText lid.176 (`models/fasttext`, git-ignored) gắn `language`, `language_conf` ở 03.
+- **Kiểm chứng:** `pytest tests/unit` + `tests/integration/test_preprocessing_steps_api.py` xanh; 5.077 -> 4.826 sau dedup (D2 72, D4 11, D5 168), chạy 2 lần cho file giữ/loại giống hệt. Precision dedup và loại nhầm C8 chưa đo, chờ người dùng gán nhãn.
+- **KNOWN_ISSUED:** không có mục tương ứng.

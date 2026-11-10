@@ -1,19 +1,16 @@
 ﻿"""Tầng 2 - Khử trùng lặp đa sàn (Inter-Source Entity Resolution), docs/spec/05 mục 3.2.
 
-Ba giai đoạn đúng đặc tả:
-  A. Blocking Key Partitioning (`blocking.blocking_key`) - chỉ so các bài cùng block.
-  B. TF-IDF Cosine Similarity trên D = Clean_Title + Clean_Requirements + Clean_Description,
-     char n-gram 3..5 (mục 3.2.B.2 cho phép char 3-5 HOẶC word 1-2; chọn char vì tiếng Việt
-     không tách từ). Ngưỡng quyết định: cosine >= 0.85 (mục 3.2.B.5).
+Giai đoạn:
+  A. Blocking Key (`blocking.blocking_key`) - chỉ còn dùng làm khóa mô tả/audit.
+  B. Cặp trùng: sha1(text_fold) ở đây, MinHash/Jaccard ở `minhash.py` (PH4, thay TF-IDF cosine).
   C. Golden Record Master Fusion (bảng mục 3.2.C): hợp nhất thành một bản ghi vàng,
      không xóa dữ liệu - bản thua vẫn được ghi trong `merged_from` của bản thắng.
 
-Không dùng model/embedding nào (P0 mục 6): toàn bộ là TF-IDF của scikit-learn, tất định.
+Không dùng model/embedding nào (P0 mục 6): tất định.
 """
 
 from __future__ import annotations
 
-import math
 import re
 import uuid
 from collections import defaultdict
@@ -21,18 +18,10 @@ from collections.abc import Iterable, Sequence
 from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-
 from preprocessing.deduplication.blocking import blocking_key
 from preprocessing.deduplication.text_norm import clean_text, fold
 
-COSINE_THRESHOLD = 0.85  # SPEC-05 mục 3.2.B.5
-MIN_JD_CHARS = 40        # JD quá ngắn không đủ ngữ cảnh để so văn bản
-BLOCK_SUFFIX = (3, 5)    # char n-gram 3..5
 SALARY_NUMBER = re.compile(r"\d")
-MIN_COMPANY_SLUG = 3     # slug ngắn hơn mức này (kể cả rỗng) không đủ căn cứ nói hai tin cùng công ty
-AMBIGUOUS_SLUG = 4       # slug dưới mức này dễ trùng tên viết tắt của nhiều công ty khác nhau
 
 # Thứ tự uy tín tiêu đề khi hợp nhất: ITviec > TopDev > VietnamWorks > sàn khác (SPEC-05 mục 3.2.C)
 PLATFORM_AUTHORITY = ("itviec", "topdev", "vietnamworks", "topcv", "careerviet", "glints", "jobsgo", "vieclam24h")
@@ -50,41 +39,13 @@ def build_blocks(items: Sequence[Item]) -> dict[str, list[Item]]:
     return blocks
 
 
-def block_slug(key: str) -> str:
-    """Lấy lại phần Slug(Company) từ blocking key `slug_city_group`."""
-    return key.rsplit("_", 2)[0]
-
-
-def same_company(a: Item, b: Item) -> bool:
-    """Tên công ty (đã bỏ dấu) trùng nhau hoặc bao hàm nhau.
-
-    Dùng cho block có slug ngắn: `fpt` là slug của cả FPT Software lẫn FPT Telecom, nên nếu
-    chỉ trông chờ cosine thì hai vị trí của hai công ty con khác nhau dễ bị gộp nhầm.
-    """
-    na = fold(clean_text(a["flat"].get("company_name")))
-    nb = fold(clean_text(b["flat"].get("company_name")))
-    if not na or not nb:
-        return False
-    ta, tb = set(na.split()), set(nb.split())
-    return ta <= tb or tb <= ta
-
-
-def candidate_blocks(blocks: dict[str, list[Item]]) -> dict[str, list[Item]]:
-    """Chỉ giữ block có từ 2 sàn trở lên và slug công ty không rỗng/không quá ngắn.
-
-    Block slug ngắn vẫn được đưa vào so, nhưng từng cặp phải qua `same_company` (xem dưới).
-    """
-    return {key: g for key, g in blocks.items()
-            if len(g) > 1 and len({x["src"] for x in g}) > 1 and len(block_slug(key)) >= MIN_COMPANY_SLUG}
-
-
-# ---------------------------------------------------------------- B. cosine
+# ---------------------------------------------------------------- B. tầng 2 liên sàn
 def exact_cross_pairs(items: Sequence[Item]) -> list[tuple[Item, Item, float]]:
-    """Cặp khác nguồn trùng hash nhận dạng 100% - bằng chứng chắc nhất, tính trước khi so cosine (D4)."""
+    """Cặp khác nguồn trùng sha1(text_fold) và cùng company_slug (khóa `fkey`), tính trước MinHash (D4)."""
     by_hash: dict[str, list[Item]] = defaultdict(list)
     for it in items:
-        if it["xhash"]:
-            by_hash[it["xhash"]].append(it)
+        if it["fkey"]:
+            by_hash[it["fkey"]].append(it)
     hits: list[tuple[Item, Item, float]] = []
     for g in by_hash.values():
         if len({x["src"] for x in g}) < 2:
@@ -93,38 +54,6 @@ def exact_cross_pairs(items: Sequence[Item]) -> list[tuple[Item, Item, float]]:
             for j in range(i + 1, len(g)):
                 if g[i]["src"] != g[j]["src"]:
                     hits.append((g[i], g[j], 1.0))
-    return hits
-
-
-def cross_source_pairs(items: Sequence[Item], threshold: float = COSINE_THRESHOLD,
-                       stats: dict[str, int] | None = None) -> list[tuple[Item, Item, float]]:
-    """Mọi cặp khác nguồn trong cùng block có cosine >= threshold; trả kèm điểm để đưa vào audit."""
-    hits: list[tuple[Item, Item, float]] = []
-    measured = {"cosine_blocks": 0, "cosine_pairs_computed": 0, "cross_pairs_evaluated": 0}
-    for key, group in candidate_blocks(build_blocks(items)).items():
-        texts = [g["jd"] for g in group]
-        if all(len(t) < MIN_JD_CHARS for t in texts):
-            continue
-        vec = TfidfVectorizer(analyzer="char_wb", ngram_range=BLOCK_SUFFIX, min_df=1)
-        try:
-            mat = vec.fit_transform(texts)
-        except ValueError:  # block chỉ có chuỗi rỗng
-            continue
-        sim = cosine_similarity(mat)
-        measured["cosine_blocks"] += 1
-        measured["cosine_pairs_computed"] += len(group) * (len(group) - 1) // 2
-        strict = len(block_slug(key)) < AMBIGUOUS_SLUG  # slug ngắn: đòi bằng chứng cùng công ty
-        for i in range(len(group)):
-            for j in range(i + 1, len(group)):
-                if group[i]["src"] == group[j]["src"]:
-                    continue
-                if strict and not same_company(group[i], group[j]):
-                    continue
-                measured["cross_pairs_evaluated"] += 1
-                if sim[i, j] >= threshold:
-                    hits.append((group[i], group[j], float(sim[i, j])))
-    if stats is not None:
-        stats.update(measured)
     return hits
 
 
@@ -147,16 +76,6 @@ def clusters(items: Sequence[Item], pairs: Sequence[tuple[Item, Item, float]]) -
     for it in items:
         groups[find(id(it))].append(it)
     return [g for g in groups.values() if len(g) > 1]
-
-
-def max_cosine(cluster: Sequence[Item], scores: dict[tuple[int, int], float]) -> float:
-    """Điểm cosine cao nhất trong cụm, dùng cho báo cáo khi duyệt mẫu."""
-    best = math.nan
-    for a, b in zip(cluster, cluster[1:], strict=False):
-        key = (min(id(a), id(b)), max(id(a), id(b)))
-        if key in scores and (math.isnan(best) or scores[key] > best):
-            best = scores[key]
-    return best
 
 
 # ---------------------------------------------------------------- C. golden fusion

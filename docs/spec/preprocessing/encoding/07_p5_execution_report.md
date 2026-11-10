@@ -1,5 +1,7 @@
 # Báo cáo thực thi P5 — cohort_v1, ngày 09/11/2026
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 Đã áp quyết định của Phát, chạy lại đầy đủ P5 và EDA trên **5.104 job include**. Bộ canonical đã được thay sau validation; bản 5.177 job được lưu lịch sử có checksum. Không còn chờ quyết định cũ về 36 job AutoCAD.
 
 **Chưa tự xác nhận P5 complete:** Python 3.12 còn UNVERIFIED theo yêu cầu môi trường của SPEC. Sáu lỗi collection của toàn repo vẫn là giới hạn sẵn có ngoài P5, không phải regression mới. Xem [Contract hiện hành](06_p5_execution_contract.md) và manifest.acceptance_details.

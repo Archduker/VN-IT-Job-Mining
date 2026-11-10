@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "num_perm": 128,
+  "shingle_words": 5,
+  "threshold": 0.85,
+  "review_band": [0.70, 0.85],
+  "seed": 42,
+  "company_gate": "company_slug bằng nhau và không rỗng; title_key chỉ ghi cờ title_differs",
+  "manual_check": {"seed": 42, "removed_band": [0.85, 0.90], "not_removed_band": [0.80, 0.85], "per_group": 25}
+}

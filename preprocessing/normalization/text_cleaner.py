@@ -15,14 +15,12 @@ import pandas as pd
 
 from preprocessing.common import REPO_ROOT
 
-SENIORITY_LABELS = [
-    "Thực tập",
-    "Mới tốt nghiệp",
-    "Junior",
-    "Middle",
-    "Senior",
-    "Trưởng nhóm/Quản lý",
-]
+# PH6 N12: 5 cấp (đã chốt), seniority_level = vị trí trong danh sách; không xác định = null (K5)
+SENIORITY_LABELS = ["Intern/Fresher", "Junior", "Middle", "Senior", "Lead/Manager"]
+
+
+def seniority_level(label: Optional[str]) -> Optional[int]:
+    return SENIORITY_LABELS.index(label) if label in SENIORITY_LABELS else None
 
 JOB_FAMILIES = [
     "Backend",
@@ -153,40 +151,39 @@ def normalize_city(location_text: Optional[str]) -> str:
 def classify_seniority(
     raw_seniority: Optional[str] = None,
     title: Optional[str] = None,
-    exp_min_years: Optional[float] = None
+    exp_min_years: Optional[float] = None,  # giữ chữ ký cũ; bị bỏ qua: suy từ số năm là việc của PH7 (có cờ level_inferred)
 ) -> Tuple[Optional[str], Optional[str]]:
-    """Phân loại cấp bậc nghề nghiệp (N2) theo thứ tự ưu tiên:
-    1. Luật từ nguyên vẹn trên raw_seniority_text -> source = 'raw'
-    2. Luật từ nguyên vẹn trên job_title_clean -> source = 'title'
-    3. Phân loại theo số năm kinh nghiệm tối thiểu -> source = 'kinh_nghiem'
+    """Phân loại cấp bậc 5 cấp (N12), chỉ hai tầng đọc ra giá trị có trong tin:
+    1. raw_seniority_text -> source = 'raw'
+    2. job_title_clean -> source = 'title'
+    Project/Product Manager tính là Lead/Manager (K6, người dùng chốt 10/11/2026).
     """
     # 1. Tra trên raw_seniority_text
     if raw_seniority and str(raw_seniority).strip():
         s_raw = str(raw_seniority).strip()
         if has_term(s_raw, ["thực tập", "thực tập sinh", "sinh viên", "trainee", "intern", "internship"]):
-            return "Thực tập", "raw"
+            return "Intern/Fresher", "raw"
         if has_term(s_raw, ["mới tốt nghiệp", "fresher", "entry level"]):
-            return "Mới tốt nghiệp", "raw"
+            return "Intern/Fresher", "raw"
         if has_term(s_raw, ["trưởng nhóm", "trưởng/phó phòng", "trưởng phòng", "phó phòng", "quản lý", "giám sát", "lead", "leader", "manager", "giám đốc", "director", "head", "cto", "tech lead"]):
-            return "Trưởng nhóm/Quản lý", "raw"
+            return "Lead/Manager", "raw"
         if has_term(s_raw, ["senior", "chuyên viên cao cấp", "trên 4 năm", "trên 5 năm"]):
             return "Senior", "raw"
         if has_term(s_raw, ["junior", "dưới 2 năm"]):
             return "Junior", "raw"
-        # "Nhân viên"/"Chuyên viên" không nói cấp bậc: để luật tiêu đề và kinh nghiệm quyết
+        # "Nhân viên"/"Chuyên viên" không nói cấp bậc: để luật tiêu đề quyết
         if has_term(s_raw, ["middle", "mid", "mid-level"]):
             return "Middle", "raw"
 
     # 2. Tra trên job_title_clean
     if title and str(title).strip():
         s_title = str(title).strip()
-        if has_term(s_title, ["intern", "internship", "thực tập", "thực tập sinh", "trainee"]):
-            return "Thực tập", "title"
-        if has_term(s_title, ["fresher", "mới tốt nghiệp", "entry level"]):
-            return "Mới tốt nghiệp", "title"
-        # "quản lý" trong tiêu đề thường là tên việc ("Quản Lý Dự Án", "Quản Lý Vận Hành"), không phải cấp bậc
+        if has_term(s_title, ["intern", "internship", "thực tập", "thực tập sinh", "trainee", "fresher", "mới tốt nghiệp", "entry level"]):
+            return "Intern/Fresher", "title"
+        # "quản lý" trong tiêu đề thường là tên việc ("Quản Lý Dự Án", "Quản Lý Vận Hành"), không phải cấp bậc;
+        # "manager" (Project/Product/IT Manager) là Lead/Manager (K6)
         if has_term(s_title, ["lead", "leader", "tech lead", "team lead", "trưởng nhóm", "manager", "giám đốc", "director", "head of", "cto", "engineering manager", "trưởng phòng", "phó phòng"]):
-            return "Trưởng nhóm/Quản lý", "title"
+            return "Lead/Manager", "title"
         if has_term(s_title, ["senior", "chuyên viên cao cấp", "sr.", "sr"]):
             return "Senior", "title"
         if has_term(s_title, ["junior", "jr.", "jr"]):
@@ -194,22 +191,24 @@ def classify_seniority(
         if has_term(s_title, ["middle", "mid-level", "mid level", "mid"]):
             return "Middle", "title"
 
-    # 3. Theo số năm kinh nghiệm
-    if exp_min_years is not None and not (isinstance(exp_min_years, float) and pd.isna(exp_min_years)):
-        try:
-            y = float(exp_min_years)
-            if y == 0.0:
-                return "Mới tốt nghiệp", "kinh_nghiem"
-            elif 1.0 <= y <= 2.0:
-                return "Junior", "kinh_nghiem"
-            elif 3.0 <= y <= 4.0:
-                return "Middle", "kinh_nghiem"
-            elif y >= 5.0:
-                return "Senior", "kinh_nghiem"
-        except (ValueError, TypeError):
-            pass
-
     return None, None
+
+
+def level_by_years(exp_min_years: Any) -> Optional[str]:
+    """PH7 M3c / X6 (spec P4): 0 -> Intern/Fresher, (0,2) -> Junior, [2,5) -> Middle, >= 5 -> Senior. Lead/Manager không suy từ số năm."""
+    try:
+        y = float(exp_min_years)
+    except (TypeError, ValueError):
+        return None
+    if pd.isna(y) or y < 0:
+        return None
+    if y == 0:
+        return "Intern/Fresher"
+    if y < 2:
+        return "Junior"
+    if y < 5:
+        return "Middle"
+    return "Senior"
 
 
 def normalize_seniority(seniority_text: Optional[str], title_text: Optional[str] = "") -> str:

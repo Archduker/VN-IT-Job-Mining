@@ -5,7 +5,7 @@
 > **Dự án:** Phân tích thị trường việc làm IT Việt Nam (VN-IT-Job-Mining)  
 > **Phiên bản:** 2.0 — Cập nhật: Tháng 11/2026  
 > **Trạng thái:** Official Technical Specification  
-> **Phạm vi xử lý:** Tích hợp, làm sạch và khử trùng từ 8 nguồn dữ liệu thô (Bronze) sang tầng Silver chuẩn hóa.
+> **Phạm vi xử lý:** Tích hợp, làm sạch và khử trùng từ 8 nguồn dữ liệu thô (Bronze) sang tầng `staging/` (tên cũ: Silver) chuẩn hóa.
 
 ---
 
@@ -23,6 +23,33 @@ Dữ liệu đầu ra phải đạt 5 tiêu chí: **completeness, accuracy, cons
 - Không đặt số mẫu mục tiêu; báo cáo số tin đưa vào và số còn lại sau mỗi bước.
 - Chỉ dùng model để dịch JD tiếng Anh sang tiếng Việt (`VietAI/envit5-translation`, chạy local); phân loại và chuẩn hóa dùng luật. JEV, OpenJev, Qwen đã bỏ.
 - Thiết kế chi tiết từng bước, công cụ và bộ gold 100 JD: `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` (thư mục gốc repo).
+
+### 0.1. Ánh xạ 13 bước thiết kế sang 4 giai đoạn
+
+| Giai đoạn | Bước trong file thiết kế | Việc |
+|---|---|---|
+| Collection | 0 (chỉ đọc Bronze) | Cào, lọc, khử trùng; JSON đầy đủ trường |
+| Pre-processing | 0, 1, 2, 3, 4, 4b, 5, 6 | Imputation, deduplicate, noise, typecasting, string standardization (4b dịch JD tiếng Anh sau khử trùng, giữ cả cột gốc) |
+| Processing | 7, 8, 9, 10, 10b, 10c, 10d, 12 | Extraction (7, 8, 12), transformation (9, 10), selection (10b), construction (10c), encoding (10d) |
+| Mining | ngoài phạm vi | Unsupervised |
+
+Bước 11 (chia train/test) là tùy chọn vì Mining chỉ unsupervised. Nội dung chi tiết của **10b** (ngoài ngưỡng bỏ kỹ năng xuất hiện dưới 5 lần) và **10c** (đặc trưng mới tạo) **chưa chốt**; làm sau khi xong pre-processing. Chi tiết 13 bước: `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` mục 3.1b và 3.3.
+
+### 0.2. Công cụ (kiểm ngày 10/11/2026)
+
+| Công cụ | Bước | Đã có trong requirements |
+|---|---|---|
+| pydantic, scikit-learn, mlxtend, hdbscan | 1, 11, 12, Mining | Có |
+| ydata-profiling | 0 | Chưa |
+| fastText `lid.176` | 3 | Chưa |
+| datasketch (MinHash + LSH) | 4 | Chưa (khử trùng hiện tại là TF-IDF/Jaccard) |
+| rapidfuzz | 5 | Chưa |
+| pyahocorasick | 8 | Chưa |
+| underthesea | 9 | Chưa |
+| sentence-transformers (`multilingual-e5-base`, tùy chọn) | 12 | Chưa |
+| transformers + `VietAI/envit5-translation` | 4b | Chưa kiểm |
+
+Lương: 1 USD = 25.400 đ; dấu `.` và `,` trong số là phân cách hàng nghìn; "Từ X" chỉ có mức sàn, "Up to X" chỉ có mức trần, không gán min = max.
 
 ## 1. Tổng Quan Pipeline Tiền Xử Lý (Preprocessing Overview)
 

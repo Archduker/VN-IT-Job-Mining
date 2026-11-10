@@ -71,6 +71,7 @@ Each code folder has its own `CLAUDE.md` with the context for that area. Read it
 | `airflow/CLAUDE.md` | DAGs, operators, pools, adaptive router, `run_crawler` as an API |
 | `monitoring/CLAUDE.md` | backend and frontend layout, real-numbers rule, `feature_targets.py`, UI tokens, 390px checks |
 | `preprocessing/CLAUDE.md` | step boundaries, EDA-first, deliverables, open PRE items |
+| `processing/CLAUDE.md` | stage 3 skeleton (selection, extraction, transformation, construction, encoding); logic not built yet |
 | `scripts/CLAUDE.md` | which scripts only read, which write locally, which write or delete on R2 |
 | `tests/CLAUDE.md` | test pitfalls and how to write a contract test (process in `tests/README.md`) |
 | `docs/CLAUDE.md` | map of docs and how to log a fixed bug |
@@ -83,7 +84,7 @@ Collection (`collection/`, entry point `run.py`) → R2 (`url_ledger/`, `raw/`) 
 
 Crawlers are two-phase and decoupled; the URL Ledger (`collection/common/url_ledger.py`, `data/<source>/url_ledger/catalog_master.json`) is the contract between Discovery (registers `PENDING` URLs) and Detail (writes a `RawJobEnvelope` and a canonical JSON hash for CDC). The ledger on R2 is the source of truth. Seven sources subclass `BaseCrawler`; Glints runs through `GlintsRawPipeline`. `run.py` dispatches through hand-written `if/elif` branches and introspects `__code__.co_varnames` for an optional `online` argument, so a new source needs a branch there plus `SOURCES` lists in `scripts/run_staging_integration_pipeline.py`, `preprocessing/integration/run_integration.py`, `scripts/read_eda_diagnosis.py`, monitoring `config.py`, and a `_flatten_<source>` in `json_flattener.py`.
 
-**Storage is Cloudflare R2 only.** Every connection goes through `collection/common/r2_storage.get_r2_client()`; missing config raises instead of falling back to localhost. All MinIO names were renamed to R2 on 2026-11-02 (`--sync-minio` is kept as an alias of `--sync-r2`). `canonicalize_lakehouse_key` enforces the bucket layout `url_ledger/`, `raw/`, `staging/`, `curated/`.
+**Storage is Cloudflare R2 only.** Every connection goes through `collection/common/r2_storage.get_r2_client()`; missing config raises instead of falling back to localhost. All MinIO names were renamed to R2 on 2026-11-02 (`--sync-minio` is kept as an alias of `--sync-r2`). `canonicalize_lakehouse_key` enforces the bucket layout `url_ledger/`, `raw/`, `staging/`, `curated/`, `pipeline/` (decided 2026-11-10; the old `silver/`, `gold/` map to `staging/`, `curated/`). R2 was migrated on 2026-11-10: only these 5 prefixes remain.
 
 Raw data is immutable: fixes to parsed fields belong in preprocessing, not in stored raw files.
 
@@ -139,7 +140,7 @@ flowchart TD
     subgraph Lakehouse["2. Cloudflare R2 Medallion Lakehouse (r2://vn-it-jobs/)"]
         Bronze["BRONZE ZONE\n• raw/<source>/<YYYY-MM-DD>/<id>_v<N>.json\n• url_ledger/<source>/catalog_master.json\n• Bất biến nguyên bản (Immutable)"]
         Silver["SILVER ZONE (staging/)\n• all.parquet (Làm phẳng 8 nguồn)\n• Parsed lương, kinh nghiệm, 34 tỉnh"]
-        Gold["GOLD ZONE (curated/ & gold/)\n• curated_flat_golden_jobs.parquet\n• features.parquet (230 cột kỹ năng)"]
+        Gold["GOLD ZONE (curated/; đầu ra từng bước: pipeline/)\n• curated_flat_golden_jobs.parquet\n• features.parquet (230 cột kỹ năng)"]
         Bronze --> Silver --> Gold
     end
 

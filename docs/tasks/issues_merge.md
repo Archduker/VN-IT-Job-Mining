@@ -35,7 +35,7 @@ Test sau merge (bỏ qua `tests/test_golden_field_preservation.py`): 440 pass, 6
 | D9 | I0 (PRE-18): bỏ dòng JSON hỏng + ghi "đã bỏ" | người dùng 09/11 |
 | D10 | Tên cột cấp bậc: giữ cả `seniority_level` và `seniority_ord`, cùng thang 0–4 | người dùng 09/11 |
 | D11 | TopDev: bỏ lọc IT ở thu thập (SCRAPE-18); nghỉ giữa request nâng lên 2,0–4,5 s (SCRAPE-13) | người dùng 09/11 |
-| D12 | Cho phép OpenJev làm tầng phụ phân loại IT (đã sửa `preprocessing/CLAUDE.md`) | người dùng 09/11 |
+| D12 | ~~Cho phép OpenJev làm tầng phụ phân loại IT~~: **đảo ngược 10/11/2026**, bỏ JEV/OpenJev/Qwen; chỉ dùng `envit5-translation` để dịch | người dùng 09/11, đảo 10/11 |
 | D13 | Xóa nhánh `hotfix` (đã làm); push khi đặc tả xong; dời `docs/preprocessing/encoding` vào `docs/spec/preprocessing/encoding` (đã làm); PRE-11 và R2 đem ra nhóm | người dùng 09/11 |
 
 ## 3. Danh sách issue

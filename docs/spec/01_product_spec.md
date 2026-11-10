@@ -31,7 +31,7 @@ Bước sang quý 4 năm 2026, thị trường lao động Công nghệ Thông t
 flowchart TD
     RawData["8 Sàn Tuyển Dụng IT\n(9.000+ Raw Job Envelopes)"] --> Pipeline["Modern Data Mining Pipeline\n(ELT + 5-Step Preprocessing)"]
     Pipeline --> GoldenDS["Golden Master Dataset\n(curated_flat_golden_jobs.parquet)"]
-    GoldenDS --> MiningEngine["Data Mining Engines\n(FP-Growth, K-Means/HDBSCAN, RF + SHAP)"]
+    GoldenDS --> MiningEngine["Data Mining Engines\n(FP-Growth, K-Means/HDBSCAN, Anomaly; phần phụ: RF + SHAP)"]
     MiningEngine --> Value1["Khai phá Combo Kỹ năng"]
     MiningEngine --> Value2["Định giá Lương & Kỹ năng"]
     MiningEngine --> Value3["Thu hẹp Skill Gap"]
@@ -67,7 +67,7 @@ Dự án tập trung giải quyết triệt để 4 bài toán khoa học dữ l
 graph LR
     subgraph CoreProblems["4 BÀI TOÁN PHÂN TÍCH TRỌNG TÂM"]
         P1["1. Khai phá Combo Kỹ năng Đi liền nhau\n(Frequent Pattern & Association Mining)"]
-        P2["2. Định giá Mức lương theo Kỹ năng & Cấp bậc\n(Salary Regression & SHAP Marginal Value)"]
+        P2["2. Phân tích Mức lương theo Kỹ năng & Cấp bậc\n(lõi: thống kê mô tả + anomaly; phần phụ: RF + SHAP)"]
         P3["3. Phân tích Khoảng cách Kỹ năng Sinh viên\n(Intern/Fresher Market Skill Gap Analysis)"]
         P4["4. Bản đồ Việc làm theo Địa lý & Domain IT\n(Geospatial & Job Family Cluster Mapping)"]
     end
@@ -81,9 +81,10 @@ graph LR
   - Đánh giá chất lượng luật thông qua bộ tứ chỉ số: **Support**, **Confidence**, **Lift**, và **Conviction**.
 - **Giá trị nghiệp vụ:** Giúp ứng viên hiểu rằng khi học một công nghệ chính (core tech), bắt buộc phải học kèm các công nghệ vệ tinh nào để CV vượt qua vòng lọc hồ sơ tự động (ATS).
 
-### 4.2. Bài toán 2: Định giá mức lương theo kỹ năng & cấp bậc (Salary Modeling & Marginal Value)
+### 4.2. Bài toán 2: Phân tích mức lương theo kỹ năng & cấp bậc (lõi mô tả + phần phụ Salary Modeling)
 - **Đặt vấn đề:** Lương là thông tin nhạy cảm và thường bị ẩn dưới nhãn "Thỏa thuận" (Negotiable). Trong số các tin công khai lương, mức lương chịu ảnh hưởng phức tạp bởi số năm kinh nghiệm, cấp bậc (Seniority), địa bàn công tác và danh mục kỹ năng yêu cầu.
-- **Mục tiêu kỹ thuật:**
+- **Phạm vi (cập nhật 10/11/2026):** quy trình chuẩn của dự án chỉ khai phá **unsupervised** (clustering, association rules, anomaly detection, dimensionality reduction). Phần lõi của bài toán này là thống kê mô tả lương theo kỹ năng/cấp bậc/tỉnh và phát hiện lương ngoại lai (anomaly). Hồi quy Random Forest + SHAP dưới đây là **phần phụ (supervised, ngoại lệ so với quy trình chuẩn)**, đã chốt giữ lại, không thuộc tiêu chí nghiệm thu lõi.
+- **Mục tiêu kỹ thuật (phần phụ):**
   - Xây dựng mô hình hồi quy phi tuyến **Random Forest Regressor** dự đoán mức lương chuẩn hóa $\log(Salary\_VND)$.
   - Sử dụng phương pháp giải thích mô hình **SHAP (SHapley Additive exPlanations)** để tách biệt đóng góp biên (Marginal Contribution) của từng kỹ năng công nghệ độc lập với kinh nghiệm và địa lý.
 - **Giá trị nghiệp vụ:** Trả lời câu hỏi định lượng: *"Biết thêm Docker/Kubernetes giúp kỹ sư Backend tăng trung bình bao nhiêu triệu VNĐ/tháng?"* hoặc *"Kỹ năng nào có tỷ suất sinh lời cao nhất (Highest ROI Skill) hiện nay tại Việt Nam?"*.
@@ -117,7 +118,7 @@ flowchart LR
     subgraph CoreOutputs["DỮ LIỆU ĐẦU RA (OUTPUTS)"]
         D1["1. Golden Master Dataset\n(curated_flat_golden_jobs.parquet)"]
         D2["2. Encoded Features Matrix\n(features.parquet & dictionary)"]
-        D3["3. Kho Tri Thức Khai Phá\n(Rules, Clusters, SHAP Values)"]
+        D3["3. Kho Tri Thức Khai Phá\n(Rules, Clusters, Anomaly; phụ: SHAP Values)"]
         D4["4. Hồ Sơ Báo Cáo Nghiệm Thu\n(Market Intelligence & Web Monitor)"]
     end
 
@@ -146,7 +147,7 @@ flowchart LR
 | :---: | :--- | :--- | :--- |
 | **1** | **Golden Master Dataset** | `curated_flat_golden_jobs.parquet` | Bảng dữ liệu phẳng chuẩn hóa toàn diện sau 5 bước tiền xử lý; đã khử trùng lặp đa nguồn, loại bỏ tin phi IT, chuẩn hóa lương VND, chuẩn hóa 34 tỉnh thành và 12 Job Families. |
 | **2** | **Feature Encoded Matrix** | `features.parquet` & `encoding_dictionary.json` | Ma trận đặc trưng số hóa sẵn sàng cho Machine Learning: One-Hot/Multi-Hot kỹ năng, Ordinal Encoding cho Seniority, Binary flags, Log Salary. |
-| **3** | **Mining Knowledge Base** | JSON / CSV / Parquet | • Danh mục Frequent Itemsets & Association Rules (FP-Growth).<br>• Bảng phân cụm công việc và nhãn ngữ nghĩa (K-Means/HDBSCAN).<br>• Bảng hệ số tác động biên kỹ năng (SHAP Feature Values). |
+| **3** | **Mining Knowledge Base** | JSON / CSV / Parquet | • Danh mục Frequent Itemsets & Association Rules (FP-Growth).<br>• Bảng phân cụm công việc và nhãn ngữ nghĩa (K-Means/HDBSCAN).<br>• Danh sách tin bất thường (Anomaly).<br>• Phần phụ: bảng hệ số tác động biên kỹ năng (SHAP Feature Values). |
 | **4** | **Báo Cáo Phân Tích Chuyên Đề** | Markdown / PDF | Bộ báo cáo thị trường hoàn chỉnh phục vụ hội đồng chấm đồ án: tổng quan thị trường, phân tích 4 bài toán trọng tâm và khuyến nghị sinh viên. |
 | **5** | **Interactive Web Monitoring** | Streamlit Web Application | Dashboard tương tác trực quan hóa sức khỏe pipeline dữ liệu, phân phối tiền xử lý và kết quả mô hình khai phá. |
 

@@ -38,7 +38,7 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 | `migrate_lakehouse_layout.py --r2 --apply` | bỏ `--apply` | Chép key layout cũ sang layout chuẩn, **xóa** key cũ |
 | `sync_cloud_lakehouse.py --upload` | `--status` | Đẩy cả `data/` (gồm staging, curated) |
 | `push_integration_to_r2.py` | — | Đẩy kết quả integration |
-| `push_preprocessing_to_r2.py --push` | chạy không cờ | Đẩy output pipeline 5 bước: silver `staging/<nguồn>/preprocessing/<bước>.*` (bảng gộp tách theo nguồn), gold `curated/preprocessing/`. Chỉ đẩy key chưa có hoặc lệch (so `generated-at` và số dòng trong metadata). Bố cục: `preprocessing/common/r2_export.py` |
+| `push_preprocessing_to_r2.py --push` | chạy không cờ | Đẩy output pipeline 5 bước: `staging/<nguồn>/preprocessing/<bước>.*` (bảng gộp tách theo nguồn) và `curated/preprocessing/`. R2 chỉ có 5 tiền tố; `pipeline/` chưa có object (chốt 10/11/2026). Chỉ đẩy key chưa có hoặc lệch (so `generated-at` và số dòng trong metadata). Bố cục: `preprocessing/common/r2_export.py` |
 | `check_r2.py` (`make check-r2`) | — | Ghi rồi xóa ngay một key thử để kiểm quyền |
 | `setup_cloud_storage.py` | — | Ghi khóa R2 vào `.env`, tạo bucket nếu chưa có |
 

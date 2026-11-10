@@ -77,3 +77,6 @@ vn-it-jobs/
 
 # Báo cáo audit chạy lại được bằng scripts/audit_raw_data.py, không đưa vào git
 reports/data_audit_*
+
+# fastText model (PH3), tai tu URL chinh thuc, khong commit
+models/

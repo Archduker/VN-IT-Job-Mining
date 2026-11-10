@@ -1,5 +1,7 @@
 # QUY TRÌNH DATA MINING & THU THẬP DỮ LIỆU HIỆN ĐẠI (VN-IT-JOB-MINING)
 
+> **Cập nhật 10/11/2026:** dự án bỏ Gemini, JEV, OpenJev và Qwen. Model duy nhất: `VietAI/envit5-translation` (chạy local) để dịch JD tiếng Anh sang tiếng Việt. Phần nói về GenAI/LLM/JEV trong file này là lịch sử, không còn hiệu lực; xem `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` và `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6.
+
 > **Tài liệu quy trình cốt lõi số 1 (Core Document 01)**  
 > **Business Domain:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam.  
 > **Mục tiêu tối thượng của môn học:** Xây dựng bộ dữ liệu tuyển dụng IT hoàn chỉnh, chuẩn hóa và sâu sắc, tập trung vào **Kỹ năng (Skills)** và **Nghề nghiệp (Occupations)**, ứng dụng công nghệ hiện đại (Cloudflare R2, CDC, ELT, AI/ML).

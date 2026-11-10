@@ -11,6 +11,10 @@ import re
 from typing import Optional
 
 
+_BLOCK_TAG = re.compile(r"</?(?:br|p|div|li|ul|ol|tr|table|h[1-6]|hr|section|article)\b[^<>]*>", re.IGNORECASE)
+_ANY_TAG = re.compile(r"</?[A-Za-z!][^<>]*>")
+
+
 def strip_html_tags(raw_text: Optional[str]) -> Optional[str]:
     """Loại bỏ 100% thẻ HTML, inline CSS và giải mã các thực thể HTML entities."""
     if not raw_text or not str(raw_text).strip():
@@ -18,18 +22,17 @@ def strip_html_tags(raw_text: Optional[str]) -> Optional[str]:
 
     s = str(raw_text)
 
-    # 1. Thay thế các thẻ ngắt dòng bằng ký tự xuống dòng thực tế
-    s = re.sub(r"<\s*br\s*/?>", "\n", s, flags=re.IGNORECASE)
-    s = re.sub(r"<\s*/p\s*>", "\n", s, flags=re.IGNORECASE)
-    s = re.sub(r"<\s*/li\s*>", "\n", s, flags=re.IGNORECASE)
-    s = re.sub(r"<\s*/tr\s*>", "\n", s, flags=re.IGNORECASE)
-    s = re.sub(r"<\s*/div\s*>", "\n", s, flags=re.IGNORECASE)
+    # 1. Thẻ khối (mở hoặc đóng) -> xuống dòng; thẻ inline -> bỏ hẳn, không chèn khoảng trắng.
+    #    "<" chỉ là thẻ khi theo sau là chữ cái, "/" hoặc "!" (giữ "<->", "< 3", "a<b").
+    s = _BLOCK_TAG.sub("\n", s)
+    s = _ANY_TAG.sub("", s)
 
-    # 2. Xóa toàn bộ thẻ HTML còn lại (bao gồm cả thuộc tính style, class, data)
-    s = re.sub(r"<[^>]+>", " ", s)
-
-    # 3. Giải mã HTML entities: &nbsp; -> space, &amp; -> &, &lt; -> <, &gt; -> >
-    s = html.unescape(s)
+    # 2. Giải mã entity, lặp tối đa 2 lần cho entity mã hóa hai lần (&amp;nbsp;)
+    for _ in range(2):
+        u = html.unescape(s)
+        if u == s:
+            break
+        s = u
 
     # 4. Thay thế non-breaking spaces và ký tự lạ
     s = s.replace("\xa0", " ").replace("\u200b", "")

@@ -6,11 +6,15 @@ Thứ tự làm của dự án là web scraping → trực quan hóa → pre-pro
 
 **Refactor đang đặc tả (03/11/2026):** 5 bước Clean → Integration → Transformation → Normalization → Encoding, output bước trước là input bước sau, mỗi bước ghi báo cáo cho Monitoring. Đặc tả: `docs/spec/preprocessing/spec/`; prompt: `docs/prompting/`. Khi refactor xong, bảng "Cấu trúc" dưới đây sẽ thay đổi. Đã chốt: địa điểm theo 34 tỉnh sau sáp nhập (JSON 3 cấp); tin ngoài IT chỉ bỏ theo `preprocessing/clean/it_policy.json` do người dùng duyệt; **mặc định không dùng model/LLM** (04/11/2026): phân loại là luật if-else. **Ngoại lệ duy nhất (10/11/2026, người dùng chốt): dịch toàn bộ JD tiếng Anh sang tiếng Việt bằng model `VietAI/envit5-translation`** chạy local; giữ cột JD gốc, ghi tên và phiên bản model vào báo cáo. OpenJev, JEV, Qwen đã bỏ hẳn.
 
+## Vị trí trong quy trình 4 giai đoạn (10/11/2026)
+
+`preprocessing/` làm giai đoạn **Pre-processing** (imputation, deduplicate, noise, typecasting, string standardization) theo `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` (bước 0-6 và 4b dịch JD tiếng Anh bằng `VietAI/envit5-translation`, model duy nhất được dùng). Feature selection/extraction/transformation/construction và encoding thuộc giai đoạn **Processing** (`processing/`, mới dựng khung). Code Encoding hiện vẫn nằm ở `preprocessing/encoding/` và chưa được chuyển. Nội dung bước 10b, 10c chưa chốt.
+
 ## Pipeline 5 bước (đang làm)
 
 - Driver `scripts/run_preprocessing.py`; mỗi bước là `preprocessing/<bước>/run.py` với `run(sources, dry_run)`. Đủ 5 bước, chạy thật 04/11/2026: 14.292 bản ghi raw → 5.177 tin IT.
 - Bước Clean ghi theo nguồn (`01_clean/<nguồn>.jsonl`); **từ Integration dữ liệu gộp 8 nguồn trong một file `all.parquet`** (cột `source_platform`). Bước 03/04 `groupby` theo nguồn để báo cáo vẫn có số theo nguồn.
-- Không ghi vào `data/curated/` (file golden của pipeline cũ). Đẩy silver/gold lên R2 bằng `scripts/push_preprocessing_to_r2.py` (bố cục trong `common/r2_export.py`).
+- Không ghi vào `data/curated/` (file golden của pipeline cũ). Đẩy `staging/` và `curated/` lên R2 bằng `scripts/push_preprocessing_to_r2.py` (bố cục trong `common/r2_export.py`).
 - Phân loại IT là luật 2 tầng (`common/it_filter.py`: `classify` từ khóa tiêu đề, `classify_unknown` nhóm nghề + ≥ 2 kỹ năng JD); tầng 2 đúng khoảng 82% trên nhãn tay. Normalization gắn cờ `*_can_kiem` bằng luật mâu thuẫn. Ngoài `envit5-translation` cho dịch JD tiếng Anh, không thêm lời gọi model khác khi người dùng chưa yêu cầu.
 - Từ điển trong `dictionaries/`: `provinces_34.json`, `wards_34.json` (3.321 phường/xã mới, MIT, nguồn ghi trong file), `skills.json`, `benefits.json`. Tên kỹ năng ngắn (C, R, Go) chỉ được thêm kèm ngữ cảnh.
 - `common/`: `step_report.py` (schema báo cáo, luật bảo toàn input = output + bị bỏ), `raw_reader.py`, `province.py` + `dictionaries/provinces_34.json`, `it_filter.py`.

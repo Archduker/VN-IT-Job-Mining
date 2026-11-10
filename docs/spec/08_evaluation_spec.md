@@ -82,7 +82,9 @@ $$Noise\_Ratio = \frac{|\{j \in D \mid cluster(j) = -1\}|}{|D|} \le 0.15$$
 
 ---
 
-### 2.3. Đánh giá Mô Hình Hồi Quy Lương (Salary Model Performance)
+### 2.3. Đánh giá Mô Hình Hồi Quy Lương (phần phụ, supervised, ngoại lệ)
+
+> Cập nhật 10/11/2026: Mining lõi chỉ unsupervised; hồi quy lương RF + SHAP là phần phụ, đánh giá ở mục này không bắt buộc cho nghiệm thu lõi.
 
 Đánh giá mô hình hồi quy Random Forest Regressor trên tập kiểm thử độc lập (Test Set chiếm 20% dữ liệu) và thông qua kiểm định chéo **5-Fold Cross Validation**.
 
@@ -127,7 +129,7 @@ Hệ thống thiết lập một bộ quy tắc kiểm thử tính logic chuyên
 | **S-02** | Quan hệ phụ thuộc công nghệ Mobile | Luật `{Flutter} => {Dart}` phải có $Confidence \ge 0.90$. | Bắt buộc |
 | **S-03** | Quan hệ phụ thuộc công nghệ Frontend | Luật `{React} => {JavaScript}` hoặc `{TypeScript}` có $Confidence \ge 0.80$. | Bắt buộc |
 | **S-04** | Tính đơn điệu của mức lương theo Cấp bậc (Monotonic Seniority Salary) | $\text{Median}(Salary_{Senior}) > \text{Median}(Salary_{Middle}) > \text{Median}(Salary_{Junior}) > \text{Median}(Salary_{Fresher})$. | Bắt buộc |
-| **S-05** | Giá trị thặng dư kinh tế của kỹ năng Kiến trúc/Cloud | Giá trị biên SHAP của `AWS`, `Kubernetes`, hoặc `System Design` phải là số dương ($\phi > 0$). | Bắt buộc |
+| **S-05** | Giá trị thặng dư kinh tế của kỹ năng Kiến trúc/Cloud (phần phụ, chỉ khi chạy RF + SHAP) | Giá trị biên SHAP của `AWS`, `Kubernetes`, hoặc `System Design` phải là số dương ($\phi > 0$). | Tùy chọn |
 | **S-06** | Địa bàn trả lương cao nhất | Mức lương trung vị tại TP.HCM và Hà Nội phải cao hơn đáng kể ($> 20\%$) so với các tỉnh thành khác (ngoại trừ Remote). | Bắt buộc |
 
 ---
@@ -163,10 +165,11 @@ Một lộ trình học tập được xem là tối ưu nếu mang lại mức 
 
 | Hạng mục kiểm tra | Chỉ số mục tiêu | Phương pháp đo lường | Trọng số | Tiêu chuẩn đạt |
 | :--- | :--- | :--- | :---: | :---: |
-| **Tính hợp lệ dữ liệu** | 100% không chứa tin rác phi IT; Missing lương được gắn cờ rõ ràng. | Chạy kiểm thử tự động `pytest tests/test_data_integrity.py`. | 20% | Bắt buộc |
-| **Chất lượng luật kết hợp** | Ít nhất 20 luật kỹ năng có $Lift \ge 1.2$ và vượt qua toàn bộ 6 bài kiểm tra Sanity Check. | Báo cáo trích xuất từ FP-Growth. | 25% | Bắt buộc |
-| **Chất lượng phân cụm** | Hệ số Silhouette $\ge 0.28$; Tìm được tối thiểu 8 cụm nghề nghiệp có ranh giới rõ ràng. | Báo cáo Elbow & Silhouette của K-Means/HDBSCAN. | 15% | Đạt |
-| **Độ tin cậy mô hình lương** | $R^2 \ge 0.60$; $MAE \le 4.500.000\text{ VNĐ}$; Không có hiện tượng rò rỉ dữ liệu (Data Leakage). | Đánh giá trên Holdout Test Set và 5-Fold Cross Validation. | 25% | Bắt buộc |
+| **Tính hợp lệ dữ liệu** | 100% không chứa tin rác phi IT; Missing lương được gắn cờ rõ ràng. | Chạy kiểm thử tự động `pytest tests/test_data_integrity.py`. | 25% | Bắt buộc |
+| **Chất lượng luật kết hợp** | Ít nhất 20 luật kỹ năng có $Lift \ge 1.2$ và vượt qua toàn bộ 6 bài kiểm tra Sanity Check. | Báo cáo trích xuất từ FP-Growth. | 30% | Bắt buộc |
+| **Chất lượng phân cụm** | Hệ số Silhouette $\ge 0.28$; Tìm được tối thiểu 8 cụm nghề nghiệp có ranh giới rõ ràng. | Báo cáo Elbow & Silhouette của K-Means/HDBSCAN. | 20% | Đạt |
+| **Độ tin cậy mô hình lương (phần phụ, supervised)** | $R^2 \ge 0.60$; $MAE \le 4.500.000\text{ VNĐ}$; Không có hiện tượng rò rỉ dữ liệu (Data Leakage). | Đánh giá trên Holdout Test Set và 5-Fold Cross Validation. | 0% (đã chia lại cho hạng mục lõi, 10/11/2026) | Tùy chọn |
+| **Phát hiện bất thường (Anomaly)** | Chỉ tiêu và ngưỡng **chưa chốt**; ghi tỉ lệ tin bị cờ và kết quả xem lại tay một mẫu tin bị cờ. | Báo cáo `job_anomalies.parquet` (Isolation Forest / GLOSH). | 10% | Đạt |
 | **Khả năng ứng dụng sinh viên** | Xuất bản được Bảng khoảng cách kỹ năng (Skill Gap Matrix) và 4 bản đồ lộ trình học cho 4 vị trí phổ biến nhất. | Báo cáo đồ án chuyên đề `reports/skill_gap_report.md`. | 15% | Đạt |
 
 ---

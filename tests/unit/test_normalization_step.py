@@ -28,10 +28,10 @@ from preprocessing.normalization.run import (
 )
 from preprocessing.normalization.text_cleaner import (
     canonicalize_skills,
-    classify_job_family_rule,
     classify_seniority,
     has_term,
 )
+from preprocessing.normalization.job_title import build_title_dict, core_title, family_from_title, fold
 
 
 def test_n1_province_mapping_and_locations():
@@ -59,70 +59,39 @@ def test_n1_province_mapping_and_locations():
 
 
 def test_n2_seniority_classification_order_and_edge_cases():
-    """Kiểm tra N2: Thứ tự ưu tiên raw -> title -> exp_min_years, và không bị lỗi chuỗi con."""
-    # 1. raw_seniority_text
-    sen, src = classify_seniority(raw_seniority="Trưởng phòng", title="Software Engineer")
-    assert sen == "Trưởng nhóm/Quản lý"
-    assert src == "raw"
-
-    # 2. job_title_clean
-    sen, src = classify_seniority(raw_seniority=None, title="Senior Java Developer")
-    assert sen == "Senior"
-    assert src == "title"
-
-    # 3. International Business Analyst không được nhận thành "Thực tập"
-    sen, src = classify_seniority(raw_seniority=None, title="International Business Analyst", exp_min_years=None)
-    assert sen is None
-    assert src is None
-
-    # 4. Kinh nghiệm
-    assert classify_seniority(None, None, 0.0) == ("Mới tốt nghiệp", "kinh_nghiem")
-    assert classify_seniority(None, None, 1.5) == ("Junior", "kinh_nghiem")
-    assert classify_seniority(None, None, 3.0) == ("Middle", "kinh_nghiem")
-    assert classify_seniority(None, None, 5.0) == ("Senior", "kinh_nghiem")
+    """N2 (PH6 N12): 5 cấp, chỉ hai tầng raw -> title; số năm không còn tạo nhãn (chuyển PH7, có cờ)."""
+    assert classify_seniority(raw_seniority="Trưởng phòng", title="Software Engineer") == ("Lead/Manager", "raw")
+    assert classify_seniority(raw_seniority=None, title="Senior Java Developer") == ("Senior", "title")
+    assert classify_seniority(raw_seniority="Thực Tập Sinh") == ("Intern/Fresher", "raw")
+    assert classify_seniority(raw_seniority="Nhân viên", title="Senior DevOps Engineer") == ("Senior", "title")
+    # K6 (người dùng chốt): Project/Product Manager là Lead/Manager
+    assert classify_seniority(None, "Project Manager") == ("Lead/Manager", "title")
+    # International Business Analyst không bị nhận thành Intern (khớp từ nguyên vẹn)
+    assert classify_seniority(None, "International Business Analyst") == (None, None)
+    # Tham số số năm bị bỏ qua: không suy cấp ở PH6
+    assert classify_seniority("Nhân viên", "Backend Developer", 3.0) == (None, None)
 
 
-def test_n3_job_family_whole_word_matching_pre1():
-    """Kiểm tra N3: Sửa triệt để bug PRE-1 (khớp từ nguyên vẹn, không để 'backend' ra 'BA')."""
-    # "Backend Developer" -> Backend, KHÔNG ra BA
-    fam, src = classify_job_family_rule("Backend Developer")
-    assert fam == "Backend"
-    assert src == "title"
+def test_n3_job_family_12_groups_plus_other():
+    """N3 (PH6 N17, K9 phương án A): 12 nhóm SPEC-01 + Other; Backend không hút Embedded/developer chung chung."""
+    d = build_title_dict([])
 
-    # "International Business Analyst" -> Phân tích nghiệp vụ (BA)
-    fam, src = classify_job_family_rule("International Business Analyst")
-    assert fam == "Phân tích nghiệp vụ (BA)"
-    assert src == "title"
+    def fam(title, skills=()):
+        core, _, hint = core_title(title)
+        return family_from_title(fold(core), None, skills, d, hint)
 
-    # Lead QA Tester -> Kiểm thử (QA/QC)
-    fam, src = classify_job_family_rule("Lead QA Tester")
-    assert fam == "Kiểm thử (QA/QC)"
-    assert src == "title"
-
-    # DevOps Cloud Engineer -> DevOps/Cloud
-    fam, src = classify_job_family_rule("DevOps Cloud Engineer")
-    assert fam == "DevOps/Cloud"
-    assert src == "title"
-
-    # Data Scientist -> Data/AI
-    fam, src = classify_job_family_rule("Senior Data Scientist (AI/ML)")
-    assert fam == "Data/AI"
-    assert src == "title"
-
-    # UI/UX Designer -> Thiết kế UI/UX
-    fam, src = classify_job_family_rule("UI/UX Designer")
-    assert fam == "Thiết kế UI/UX"
-    assert src == "title"
-
-    # Product Owner -> Quản lý sản phẩm/dự án
-    fam, src = classify_job_family_rule("Product Owner")
-    assert fam == "Quản lý sản phẩm/dự án"
-    assert src == "title"
-
-    # Title chung chung nhưng có skills chuẩn -> nhận diện qua skills
-    fam, src = classify_job_family_rule("Technical Lead", skills_std=["React", "Vue"])
-    assert fam == "Frontend"
-    assert src == "skills"
+    assert fam("BackEnd Engineer (Java, Spring Boot)")[0] == "Backend"
+    assert fam("Middle/Senior Embedded Software Engineer (C++,C)")[0] == "Embedded/IoT"
+    assert fam("International Business Analyst")[0] == "Product/Project"
+    assert fam("Lead QA Tester")[0] == "QA/QC"
+    assert fam("DevOps Cloud Engineer")[0] == "DevOps/Cloud"
+    assert fam("Senior Data Scientist (AI/ML)")[0] == "Data Science/AI"
+    assert fam("Data Engineer")[0] == "Data Engineer"
+    assert fam("Product Owner")[0] == "Product/Project"
+    assert fam("Nhân Viên Thiết Kế") == ("Other", "none")      # thiết kế đồ họa không phải UI/UX
+    assert fam("Software Engineer") == ("Other", "none")        # từ chung: cần kỹ năng xác nhận
+    assert fam("Technical Lead", ["React", "Vue"]) == ("Frontend", "skills")
+    assert fam("Technical Lead", ["React", "Java"]) == ("Other", "none")  # hai nhóm hòa: K11
 
 
 def test_n4_canonical_skills():

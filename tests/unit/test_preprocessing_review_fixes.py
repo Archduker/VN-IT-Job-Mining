@@ -43,7 +43,8 @@ def test_single_letter_skill_needs_context():
 
 def test_nhan_vien_is_not_a_level():
     assert classify_seniority("Nhân viên", "Kế toán tổng hợp", None) == (None, None)
-    assert classify_seniority("Nhân Viên/Chuyên Viên", "Backend Developer", 3.0) == ("Middle", "kinh_nghiem")
+    # PH6: số năm không còn tạo nhãn ở N12 (nhãn cũ "Middle"/kinh_nghiem không cờ); PH7 M3c suy và gắn level_inferred
+    assert classify_seniority("Nhân Viên/Chuyên Viên", "Backend Developer", 3.0) == (None, None)
 
 
 def test_language_is_decided_on_jd_only():
@@ -81,7 +82,7 @@ def test_vietnamese_word_ai_is_not_machine_learning():
 
 
 @pytest.mark.parametrize("sen,lo,hi,expected", [
-    ("Senior", 0.0, 1.0, True), ("Senior", 5.0, None, False), ("Thực tập", 3.0, 5.0, True),
+    ("Senior", 0.0, 1.0, True), ("Senior", 5.0, None, False), ("Intern/Fresher", 3.0, 5.0, True),
     ("Junior", 0.0, 1.0, False), ("Senior", None, None, False),
 ])
 def test_seniority_conflict_with_experience(sen, lo, hi, expected):

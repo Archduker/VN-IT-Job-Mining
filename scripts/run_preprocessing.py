@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Driver pipeline pre-processing 5 bước: Clean → Integration → Transformation → Normalization → Encoding.
+"""Driver pipeline pre-processing 5 bước: Clean → Dedup (01b) → Integration → Transformation → Normalization → Encoding.
 
     python scripts/run_preprocessing.py --step clean --source glints --dry-run
     python scripts/run_preprocessing.py --step all --source all
@@ -23,6 +23,7 @@ from preprocessing.common import SOURCES, STEPS  # noqa: E402
 
 MODULES = {
     "01_clean": "preprocessing.clean.run",
+    "01b_deduplication": "preprocessing.deduplication.run",
     "02_integration": "preprocessing.integration.run",
     "03_transformation": "preprocessing.transformation.run",
     "04_normalization": "preprocessing.normalization.run",
@@ -31,7 +32,7 @@ MODULES = {
 
 
 def main(argv=None) -> int:
-    step_map = {s[3:]: s for s in STEPS}
+    step_map = {s.split("_", 1)[1]: s for s in STEPS}
     step_map.update({s: s for s in STEPS})
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--step", required=True, choices=[*step_map.keys(), "all"])

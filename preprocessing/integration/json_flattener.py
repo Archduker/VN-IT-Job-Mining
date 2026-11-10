@@ -14,6 +14,8 @@ Nguyên tắc:
 
 from __future__ import annotations
 
+import hashlib
+
 import json
 import re
 from typing import Any, Dict, List, Optional, Tuple
@@ -98,13 +100,14 @@ def _extract_job_locations_from_jsonld(jsonld: Dict[str, Any]) -> Tuple[Optional
 
 
 def flatten_raw_job_record(
-    record_data: Dict[str, Any], source_fallback: Optional[str] = None
+    record_data: Dict[str, Any], source_fallback: Optional[str] = None, strict: bool = False
 ) -> Dict[str, Any]:
     """Ép phẳng một bản ghi JSON thô từ bất kỳ nguồn nào về cấu trúc phẳng 25 trường chuẩn.
 
     Args:
         record_data: Dict chứa raw envelope (`metadata` + `raw_payload`) hoặc `_meta` + `raw`.
         source_fallback: Tên sàn dự phòng nếu metadata không khai báo.
+        strict: True thì lỗi trong `_flatten_<nguồn>` được ném ra (bước 02 ghi rejected I7).
 
     Returns:
         Dict phẳng gồm 25 trường (Canonical Flat Record).
@@ -147,7 +150,7 @@ def flatten_raw_job_record(
     )
     crawled_at = meta.get("scraped_at") or meta.get("crawled_at") or raw.get("crawled_at") or ""
     
-    fallback_id = str(abs(hash(source_url))) if source_url else "unknown"
+    fallback_id = hashlib.sha1(source_url.encode("utf-8")).hexdigest()[:16] if source_url else "unknown"
     final_job_id = job_id if job_id else fallback_id
     job_id_global = f"{source}_{final_job_id}"
 
@@ -211,6 +214,8 @@ def flatten_raw_job_record(
         else:
             _flatten_generic(raw, flat)
     except Exception:
+        if strict:
+            raise
         _flatten_generic(raw, flat)
 
     # Đảm bảo các mảng danh sách được khử trùng lặp và làm sạch

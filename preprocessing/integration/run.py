@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """Bước 02 Integration (docs/spec/preprocessing/spec/P2_integration.md).
 
-Làm phẳng dữ liệu từ envelope 01_clean về 18 trường chung + khóa và metadata sạch.
+Làm phẳng dữ liệu từ envelope 01b_deduplication (đầu ra dedup, PH4) về 18 trường chung + khóa và metadata sạch.
 Gộp 8 nguồn vào một file duy nhất: data/preprocessing/02_integration/all.parquet.
-Tự động đồng bộ tầng dữ liệu 01_clean từ Cloudflare R2 về local nếu máy chưa có.
 Báo cáo theo nguồn ở reports/preprocessing/02_integration/<source>.json, tổng ở _all.json.
 """
 
@@ -20,14 +19,17 @@ import pandas as pd
 from preprocessing.common import REPO_ROOT, SOURCES
 from preprocessing.common.step_report import StepReport, _rel, merge_reports
 from preprocessing.integration.json_flattener import flatten_raw_job_record
+from preprocessing.integration.schema import JobRecord
+from pydantic import ValidationError
 
 logger = logging.getLogger(__name__)
 
 STEP = "02_integration"
 DATA_DIR = REPO_ROOT / "data"
-IN_DIR = DATA_DIR / "preprocessing" / "01_clean"
+IN_DIR = DATA_DIR / "preprocessing" / "01b_deduplication"  # PH4: 02 đọc đầu ra dedup
 OUT_DIR = DATA_DIR / "preprocessing" / STEP
 OUT_FILE = OUT_DIR / "all.parquet"
+REJECTED_DIR = DATA_DIR / "preprocessing" / "rejected" / STEP
 
 KEYS = ("job_id_global", "source_platform", "source_job_id", "source_url", "crawled_at")
 CLEAN_META = ("it_rule", "it_rule_level", "it_status", "dedup_key", "also_on")
@@ -161,7 +163,7 @@ def process_source(source: str, dry_run: bool = True) -> tuple[List[Dict[str, An
     i3_examples = []
     i4_examples = []
     i5_examples = []
-    bad_lines: List[Dict[str, Any]] = []
+    rejected: List[Dict[str, Any]] = []
     n_in = 0
 
     with in_file.open("r", encoding="utf-8") as f:
@@ -170,21 +172,31 @@ def process_source(source: str, dry_run: bool = True) -> tuple[List[Dict[str, An
             if not line:
                 continue
             n_in += 1
+            def reject(rule: str, reason: str, job_id: Any = None) -> None:
+                rejected.append({"step": STEP, "source": source, "rule": rule, "reason": reason,
+                                 "job_id": job_id, "line_no": line_idx + 1, "raw_line": line})
+
             try:
                 env = json.loads(line)
-            except json.JSONDecodeError as exc:
-                # Đảm bảo Zero-drop contract: fallback parse an toàn để không mất bản ghi
-                env = {"raw_payload": {"title": line[:80], "description": line}, "metadata": {"source": source}}
-                bad_lines.append({"job_id": f"dòng {line_idx + 1}", "field": "json", "before": line[:80], "after": f"lỗi: {exc.msg}", "url": None})
+            except json.JSONDecodeError:
+                reject("I0", "JSON_INVALID", f"dòng {line_idx + 1}")
+                continue
+            if not isinstance(env, dict):
+                reject("I0", "JSON_INVALID", f"dòng {line_idx + 1}")
+                continue
 
             raw = env.get("raw_payload", {})
             meta = env.get("metadata", {})
             clean_info = meta.get("clean", {})
 
             # I1: Làm phẳng bằng flatten_raw_job_record
-            flat = flatten_raw_job_record(env)
+            try:
+                flat = flatten_raw_job_record(env, source, strict=True)
+            except Exception as exc:
+                reject("I7", f"FLATTEN_ERROR: {type(exc).__name__}", meta.get("job_id"))
+                continue
 
-            job_id = meta.get("job_id") or flat.get("job_id_global") or str(line_idx)
+            job_id = meta.get("job_id") or flat.get("job_id_global") or f"dòng {line_idx + 1}"
             url = meta.get("source_url") or flat.get("source_url")
 
             # I2: ITviec datePosted JSON-LD
@@ -277,19 +289,42 @@ def process_source(source: str, dry_run: bool = True) -> tuple[List[Dict[str, An
                         "url": url,
                     })
 
+            try:
+                JobRecord.model_validate(record)
+            except ValidationError as exc:
+                cols = sorted({str(e["loc"][0]) for e in exc.errors() if e["loc"]})
+                reject("I6", "SCHEMA: " + ",".join(cols), job_id)
+                continue
             rows.append(record)
 
     total_rows = len(rows)
     report.set_io(in_file, n_in, out_file, total_rows)
 
     # Đăng ký các luật đã thực thi
-    report.rule("I0", "Phục hồi dòng JSON lỗi để bảo toàn hợp đồng", "modify", len(bad_lines), bad_lines)
     report.rule("I1", "Làm phẳng envelope về 18 trường chuẩn + khóa", "modify", total_rows)
     report.rule("I2", "ITviec lấy ngày đăng từ JSON-LD datePosted", "modify", i2_count, i2_examples)
     report.rule("I3", "TopDev lấy ngày đăng và kinh nghiệm từ published/JSON-LD", "modify",
                 max(i3_date_count, i3_exp_count), i3_examples)
     report.rule("I4", "Bỏ tag SEO và ngành nghề khỏi skills_list", "modify", i4_count, i4_examples)
     report.rule("I5", "Chuyển chuỗi rỗng và container rỗng về null", "modify", i5_count, i5_examples)
+
+    # Luật drop: ví dụ không chứa raw_line (reports/ vào git)
+    for rid, name, reason_prefix in (("I0", "Dòng JSON hỏng không parse được", "JSON_INVALID"),
+                                     ("I6", "Bản ghi không qua JobRecord (khóa/kiểu/job_title)", "SCHEMA"),
+                                     ("I7", "Lỗi trong _flatten_<nguồn>", "FLATTEN_ERROR")):
+        rs = [r for r in rejected if r["rule"] == rid]
+        ex = [{"job_id": r["job_id"], "field": "line", "before": r["reason"], "after": None, "url": None} for r in rs]
+        report.rule(rid, name, "drop", len(rs), ex, reason=reason_prefix)
+    ids = [r["job_id_global"] for r in rows]
+    if len(ids) != len(set(ids)):
+        report.note(f"job_id_global trùng trong output: {len(ids) - len(set(ids))} (chỉ báo, khử trùng là việc của Clean)")
+    rej_file = REJECTED_DIR / f"{source}.jsonl"
+    if not dry_run:
+        if rejected:
+            REJECTED_DIR.mkdir(parents=True, exist_ok=True)
+            rej_file.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rejected), encoding="utf-8")
+        elif rej_file.exists():
+            rej_file.unlink()
 
     # Thống kê độ phủ 18 trường
     fields_stats = []
@@ -305,8 +340,7 @@ def process_source(source: str, dry_run: bool = True) -> tuple[List[Dict[str, An
 
 def run(sources: Sequence[str] = SOURCES, dry_run: bool = False) -> Dict[str, StepReport]:
     """Chạy toàn bộ pipeline P2 và xuất file all.parquet duy nhất."""
-    # Tự động đồng bộ từ R2 nếu local chưa có đủ dữ liệu
-    ensure_p1_data_from_r2(IN_DIR, sources)
+    # PH4: đầu vào là 01b_deduplication (chưa có trên R2) nên không tự tải 01_clean về thư mục này nữa
 
     reports: Dict[str, StepReport] = {}
     all_rows: List[Dict[str, Any]] = []
@@ -316,7 +350,7 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = False) -> Dict[str, St
         all_rows.extend(rows)
 
     total_rep = merge_reports(STEP, list(reports.values()), dry_run)
-    total_rep.data["input"]["path"] = "data/preprocessing/01_clean/<nguồn>.jsonl"
+    total_rep.data["input"]["path"] = "data/preprocessing/01b_deduplication/<nguồn>.jsonl"
     total_rep.data["output"]["path"] = _rel(OUT_FILE)
     total_rep.check_conserved()
     

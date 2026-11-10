@@ -1,5 +1,7 @@
 # Review P3–P4 sau cập nhật — tác động P5 (08/11/2026)
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 > Bản review lịch sử, nay được lưu trong repository. Các nhận định trạng thái worktree ở thời điểm review có thể đã thay đổi; xem [báo cáo đầu mối hiện hành](05_p5_handoff_2026-11-08.md).
 
 ## A. Phiên bản và phạm vi

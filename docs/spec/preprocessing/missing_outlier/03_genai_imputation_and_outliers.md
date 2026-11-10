@@ -1,5 +1,7 @@
 # BƯỚC 3: XỬ LÝ KHUYẾT THIẾU BẰNG GEN AI & KIỂM ĐỊNH NGOẠI LAI (GEN AI IMPUTATION & OUTLIER HANDLING)
 
+> **Cập nhật 10/11/2026:** dự án bỏ Gemini, JEV, OpenJev và Qwen. Model duy nhất: `VietAI/envit5-translation` (chạy local) để dịch JD tiếng Anh sang tiếng Việt. Phần nói về GenAI/LLM/JEV trong file này là lịch sử, không còn hiệu lực; xem `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` và `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6.
+
 > **Tài liệu quy chuẩn số 03 (Preprocessing Core Document 03 — Step 3: Missing & Outlier)**  
 > **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (**VN-IT-Job-Mining**)  
 > **Nhiệm vụ:** Bóc trần các Null Marker trá hình, ứng dụng GenAI (Gemini) đọc hiểu sâu văn bản JD để bù khuyết các trường bị thiếu, và áp dụng phương pháp phân vị IQR xử lý ngoại lai số học mà không làm mất thông tin kỹ năng.

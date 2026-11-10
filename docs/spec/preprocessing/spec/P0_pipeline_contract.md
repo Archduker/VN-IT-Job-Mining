@@ -113,6 +113,19 @@ Phân loại và chuẩn hóa là luật if-else và từ điển; chạy lại 
 
 Báo cáo bước có khối `"api"`: bước 03 ghi `used: true`, tên và phiên bản model dịch; các bước khác `"used": false, "reason": "bước này không dùng model (luật if-else)"`. Độ đúng của luật đo bằng nhãn tay (`data/preprocessing/review/it_<nguồn>.csv`), ghi ở `extra.review` của báo cáo Clean.
 
+### 6.1. Ánh xạ 13 bước của file thiết kế sang P0–P5 và 4 giai đoạn (10/11/2026)
+
+| Bước thiết kế (`Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md`) | Bước pipeline | Giai đoạn |
+|---|---|---|
+| 0 Profiling, 3 Lọc phạm vi, 4 Khử trùng lặp | 01 Clean (P1) | Pre-processing |
+| 1 Đồng nhất schema | 02 Integration (P2) | Pre-processing |
+| 2 Làm sạch ký tự, 4b Dịch Anh→Việt (envit5), 5 Chuẩn hoá trường (lương, kinh nghiệm), 6 Thiếu & ngoại lai | 03 Transformation (P3) | Pre-processing |
+| 5 (cấp bậc, tỉnh, nhóm nghề, công ty) | 04 Normalization (P4) | Pre-processing |
+| 7 Tách section, 8 Trích kỹ năng, 9 Tách từ, 10 Biến đổi, 10b Chọn đặc trưng, 10c Xây đặc trưng, 10d Encoding, 12 Vector hoá | 05 Encoding (P5) và `processing/` | Processing |
+| 11 Chia train/test | tùy chọn (Mining chỉ unsupervised) | Processing |
+
+10b, 10c chưa chốt nội dung. Dịch (4b) chạy sau khử trùng, giữ cả cột gốc và cột tiếng Việt. Tên bước pipeline (01–05) giữ nguyên để không vỡ báo cáo và Monitoring; việc chuyển phần Processing sang `processing/` làm dần theo phase.
+
 ## 7. Ranh giới
 
 | Bước | Được làm | Cấm |

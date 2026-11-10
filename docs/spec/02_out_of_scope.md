@@ -71,7 +71,7 @@ flowchart TD
 | **Ngành nghề** | Tin tuyển dụng phần mềm & CNTT thuộc 12 nhóm nghề chuẩn (Backend, Frontend, Fullstack, AI, DevOps...). | Bán hàng (Sales), Marketing phi công nghệ, Nhân sự (HR), Kế toán, Hành chính, Chăm sóc khách hàng, Lao động phổ thông. |
 | **Thời gian dữ liệu** | Lát cắt thời gian thực tế tháng 10 - tháng 11/2026 (Quý 4/2026). | Phân tích chuỗi thời gian lịch sử nhiều năm (2020 - 2025) hoặc dự báo thị trường dài hạn 2030. |
 | **Chế độ xử lý** | Batch Processing qua Apache Airflow DAGs và CLI Python. | Real-time Streaming (Apache Kafka, Apache Flink, WebSockets stream). |
-| **Xử lý ngôn ngữ** | Rule-based, Regex parsing, Dictionary mapping, ESCO Skill Taxonomy. | Gọi API LLM thương mại trả phí (OpenAI GPT-4, Anthropic Claude, Gemini API) trong luồng production. |
+| **Xử lý ngôn ngữ** | Rule-based, Regex parsing, Dictionary mapping, ESCO Skill Taxonomy; model duy nhất được dùng: `VietAI/envit5-translation` (chạy local) để dịch JD tiếng Anh sang tiếng Việt. | Gọi API LLM thương mại trả phí (OpenAI GPT-4, Anthropic Claude, Gemini API) trong luồng production. |
 | **Ứng dụng cuối** | Data Lakehouse (Parquet), Báo cáo chuyên đề (Markdown/PDF), Streamlit Analytics Dashboard. | Web portal tìm việc, mobile app nộp hồ sơ, tính năng match CV tự động cho người dùng. |
 | **Bảo vệ hệ thống sàn** | Safe Skip, Rate Limiting, HTTP Pooling, Adaptive Retry, User-Agent Rotation chuẩn mực. | Bẻ khóa tường lửa WAF, dịch vụ trả phí bypass Cloudflare Turnstile / CAPTCHA, tấn công xâm nhập mạng. |
 
@@ -110,7 +110,7 @@ graph LR
 ### 5.2. Ràng buộc về thời gian học thuật (Academic Time Constraints)
 - Toàn bộ chu trình từ thu thập, tiền xử lý, mô hình hóa và bảo vệ đồ án tốt nghiệp diễn ra trong phạm vi học kỳ tốt nghiệp. Do đó, các thuật toán khai phá được ưu tiên lựa chọn có độ phức tạp tính toán vừa phải:
   - Sử dụng **FP-Growth** thay cho **Apriori** để tránh hiện tượng bùng nổ tổ hợp ứng viên ($O(2^{|I|})$).
-  - Sử dụng **Random Forest** kết hợp **TreeSHAP** (tối ưu hóa $O(TLD^2)$) thay cho KernelSHAP để tính toán hệ số SHAP chỉ trong vài phút thay vì hàng chục giờ.
+  - (Phần phụ, cập nhật 10/11/2026: Mining lõi chỉ unsupervised; Random Forest + SHAP là phần phụ (supervised, ngoại lệ).) Sử dụng **Random Forest** kết hợp **TreeSHAP** (tối ưu hóa $O(TLD^2)$) thay cho KernelSHAP để tính toán hệ số SHAP chỉ trong vài phút thay vì hàng chục giờ.
 
 ### 5.3. Ràng buộc về pháp lý và đạo đức dữ liệu (Legal & Ethical Constraints)
 - Dữ liệu thu thập hoàn toàn là dữ liệu công khai trên mạng Internet (Publicly Available Job Postings).

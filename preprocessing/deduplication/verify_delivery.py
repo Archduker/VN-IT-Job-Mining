@@ -46,13 +46,15 @@ def main(argv=None):
     baseline = dedup.OUT_DIR / "golden_master_jobs.jsonl"
     original_gold = read_rows(baseline) if baseline.exists() else []
     hashes = source_hashes()
-    saved = (step_report.REPORTS_ROOT, clean.OUT_DIR, clean.REVIEW_DIR, dedup.IN_DIR, dedup.OUT_DIR)
+    saved = (step_report.REPORTS_ROOT, clean.OUT_DIR, clean.REVIEW_DIR, dedup.IN_DIR, dedup.OUT_DIR,
+             dedup.REJECTED_DIR)
     try:
         step_report.REPORTS_ROOT = output / "reports"
         clean.OUT_DIR = output / "01_clean"
         clean.REVIEW_DIR = output / "review"
         dedup.IN_DIR = clean.OUT_DIR
         dedup.OUT_DIR = output / dedup.STEP
+        dedup.REJECTED_DIR = output / "rejected"
         print("Replaying Clean from local raw...", flush=True)
         clean.run(SOURCES, dry_run=False)
         print("Replaying Dedup...", flush=True)
@@ -99,7 +101,7 @@ def main(argv=None):
               f"{len(changed_dates)} changed first-posted dates", flush=True)
     finally:
         (step_report.REPORTS_ROOT, clean.OUT_DIR, clean.REVIEW_DIR,
-         dedup.IN_DIR, dedup.OUT_DIR) = saved
+         dedup.IN_DIR, dedup.OUT_DIR, dedup.REJECTED_DIR) = saved
     return 0
 
 

@@ -38,7 +38,7 @@ flowchart TD
     end
 ```
 
-Bucket chỉ có 4 tầng: `url_ledger/`, `raw/`, `staging/`, `curated/`. `canonicalize_lakehouse_key` từ chối key không đúng layout.
+Bucket chỉ có 5 tiền tố (chốt 10/11/2026): `url_ledger/`, `raw/`, `staging/`, `curated/`, `pipeline/`. `silver/`, `gold/` là tên cũ, đã đổi sang `staging/`, `curated/`. `canonicalize_lakehouse_key` từ chối key không đúng layout.
 
 **Bố cục theo kiến trúc medallion (bronze → silver → gold):**
 

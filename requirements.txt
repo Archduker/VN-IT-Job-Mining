@@ -44,3 +44,14 @@ hdbscan>=0.8.33      # GLOSH outlier; thiếu thì test_outlier_ratio_follows_qu
 
 # --- Utilities ---
 python-slugify==8.0.4        # Normalize text
+
+# --- preprocessing/processing (PH0, ghim theo bản đã cài chạy được 10/11/2026) ---
+ydata-profiling==4.18.4  # import lỗi nếu thiếu pkg_resources (setuptools>=81); PH1 bỏ ydata, xem reports/preprocessing/00_profiling
+fasttext-wheel==0.9.2    # wheel cho Python 3.12; model lid.176.bin tải riêng (PH3)
+datasketch==2.0.0
+torch==2.15.0            # bản cu132 (CUDA) đã cài; cài lại bằng index PyTorch tương ứng nếu cần
+transformers==5.22.2
+sentencepiece==0.2.3
+rapidfuzz==3.14.6
+pyahocorasick==2.3.1
+underthesea==9.5.0

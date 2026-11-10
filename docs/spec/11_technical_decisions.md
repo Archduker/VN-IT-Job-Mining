@@ -248,6 +248,8 @@ Con số này là bất khả thi để tính toán nhanh. Nhóm áp dụng chi�
 
 ## ADR-05: Lựa chọn bộ ba thuật toán Data Mining (FP-Growth, K-Means, Random Forest/SHAP)
 
+> **Cập nhật 10/11/2026:** quy trình chuẩn chỉ khai phá unsupervised. Phần lõi gồm FP-Growth, K-Means/HDBSCAN + PCA và phát hiện bất thường. Random Forest + SHAP (mục 3.3) giữ như **phần phụ (supervised, ngoại lệ)**.
+
 ### 1. Ngữ Cảnh & Mục Tiêu Học Thuật (Academic Context)
 Đồ án tốt nghiệp đại học chuyên ngành Công nghệ thông tin / Khoa học dữ liệu yêu cầu các phương pháp khai phá dữ liệu phải có:
 1. Cơ sở toán học vững chắc, đã được cộng đồng học thuật kiểm chứng.

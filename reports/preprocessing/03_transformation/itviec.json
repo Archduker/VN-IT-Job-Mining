@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:43+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-10T09:09:29+00:00",
+  "code_version": "800b5e7",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 905
@@ -61,30 +61,8 @@
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 787,
-      "examples": [
-        {
-          "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
-          "field": "exp_min_max",
-          "before": "0.8 năm (10 tháng)",
-          "after": "0.07 - 0.07 years",
-          "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
-        },
-        {
-          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
-          "field": "exp_min_max",
-          "before": "5.1 năm (61 tháng)",
-          "after": "0.42 - 0.42 years",
-          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
-        },
-        {
-          "job_id": "cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720",
-          "field": "exp_min_max",
-          "before": "0.8 năm (10 tháng)",
-          "after": "0.07 - 0.07 years",
-          "url": "https://itviec.com/viec-lam-it/cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "T5",
@@ -105,6 +83,34 @@
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
       "rows_affected": 905,
+      "examples": []
+    },
+    {
+      "id": "T6.1",
+      "name": "Bóc thẻ HTML và entity",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6.2",
+      "name": "Chuẩn hóa Unicode về NFC",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6.3",
+      "name": "Bỏ ký tự ẩn",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6.4",
+      "name": "Gạch ngang và bullet về một chuẩn",
+      "action": "modify",
+      "rows_affected": 295,
       "examples": []
     },
     {
@@ -189,13 +195,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 87.0,
-      "fill_pct_out": 87.0
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 87.0,
-      "fill_pct_out": 87.0
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
     },
     {
       "field": "headcount",
@@ -254,6 +260,22 @@
       "vi": 301,
       "en": 604
     },
-    "experience_parsed_rate": 87.0
+    "text_quality": {
+      "before": {
+        "html": 0,
+        "nfc": 0,
+        "hidden": 0
+      },
+      "residual_html_pct": 0.0,
+      "residual_nfd_pct": 0.0,
+      "residual_hidden_char_pct": 0.0,
+      "residual_rows": {
+        "residual_html": 0,
+        "residual_nfd": 0,
+        "residual_hidden": 0
+      },
+      "abbreviations_approved": 0
+    },
+    "experience_parsed_rate": 0.0
   }
 }

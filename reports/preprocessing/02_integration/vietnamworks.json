@@ -2,36 +2,39 @@
   "step": "02_integration",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:12+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-10T09:09:05+00:00",
+  "code_version": "800b5e7",
   "input": {
     "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
-    "rows": 900
+    "rows": 800
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 900
+    "rows": 800
   },
   "dropped": [
     {
       "rule": "I0",
-      "reason": "dòng không đọc được JSON, cần xem lại file 01_clean",
+      "reason": "JSON_INVALID",
+      "rows": 0
+    },
+    {
+      "rule": "I6",
+      "reason": "SCHEMA",
+      "rows": 0
+    },
+    {
+      "rule": "I7",
+      "reason": "FLATTEN_ERROR",
       "rows": 0
     }
   ],
   "rules": [
     {
-      "id": "I0",
-      "name": "Bỏ dòng JSON hỏng trong file Clean",
-      "action": "drop",
-      "rows_affected": 0,
-      "examples": []
-    },
-    {
       "id": "I1",
       "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
       "action": "modify",
-      "rows_affected": 900,
+      "rows_affected": 800,
       "examples": []
     },
     {
@@ -69,6 +72,27 @@
           "url": "https://www.vietnamworks.com/senior-mobile-developer-android-ios-remote-1792131956562885199-2120295-jv"
         }
       ]
+    },
+    {
+      "id": "I0",
+      "name": "Dòng JSON hỏng không parse được",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I6",
+      "name": "Bản ghi không qua JobRecord (khóa/kiểu/job_title)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I7",
+      "name": "Lỗi trong _flatten_<nguồn>",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
     }
   ],
   "fields": [
@@ -94,8 +118,8 @@
     },
     {
       "field": "raw_location_text",
-      "fill_pct_in": 77.6,
-      "fill_pct_out": 77.6
+      "fill_pct_in": 87.2,
+      "fill_pct_out": 87.2
     },
     {
       "field": "working_locations",
@@ -124,8 +148,8 @@
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 83.2,
-      "fill_pct_out": 83.2
+      "fill_pct_in": 84.2,
+      "fill_pct_out": 84.2
     },
     {
       "field": "raw_seniority_text",

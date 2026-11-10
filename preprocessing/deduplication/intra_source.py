@@ -75,11 +75,11 @@ def cdc_chain_audit(source: str, raw_dir: Path) -> dict[str, Any]:
 
 
 def repost_groups(items: list[Item]) -> list[list[Item]]:
-    """Nhóm repost cùng sàn: cùng canonical_hash, khác job_id (D2)."""
+    """Nhóm repost cùng sàn: cùng sha1(text_fold) và company_slug, khác job_id (D2)."""
     by_hash: dict[str, list[Item]] = defaultdict(list)
     for it in items:
-        if it["chash"]:
-            by_hash[it["chash"]].append(it)
+        if it["fkey"]:  # sha1(text_fold) + company_slug (PH4)
+            by_hash[it["fkey"]].append(it)
     return [g for g in by_hash.values() if len({x["jid"] for x in g}) > 1]
 
 
@@ -92,7 +92,7 @@ def apply_d2(items: list[Item], reports_extra: dict[str, Any]) -> list[Item]:
         for it in g:
             if it is win:
                 continue
-            it["drop"] = {"rule": "D2", "kept_job_id": win["jid"], "kept_url": win["url"], "hash": it["chash"]}
+            it["drop"] = {"rule": "D2", "kept_job_id": win["jid"], "kept_url": win["url"], "hash": it["chash"], "jaccard": 1.0}
             dropped.append(it)
         win.setdefault("reposts", []).extend(
             {"source": i["src"], "job_id": i["jid"], "url": i["url"], "content_hash": i["chash"]}

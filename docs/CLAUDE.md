@@ -9,6 +9,7 @@ Bản đồ tài liệu. Khi tài liệu mâu thuẫn với code thì tin code; 
 | `spec/` | Đặc tả dự án `01_product_spec.md` … `13_working_documentation.md` | Chuẩn hiện hành của dự án |
 | `spec/crawl/<nguồn>.md` | Phân tích từng nguồn | Nhật ký lúc làm crawler. Ô "Hiện trạng 03/11/2026" ở đầu file là phần đúng với code; phần dưới có thể cũ |
 | `spec/preprocessing/` | Thiết kế pre-processing | `00_architecture_overview.md` là thiết kế cũ (4 bước). Refactor 5 bước Clean → Integration → Transformation → Normalization → Encoding: đặc tả trong `spec/preprocessing/spec/P0…P5` |
+| `../Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` | Thiết kế gốc 13 bước pre-processing/processing (thư mục gốc repo) | Spec `05`, `06`, `preprocessing/spec/P0–P5` bám theo file này; 10b, 10c chưa chốt |
 | `spec/monitoring/` | Đặc tả trang Pre-processing | `preprocessing_page_spec.md` |
 | `guides/` | Hướng dẫn kỹ thuật | `01_modern_data_mining_overview.md` (thiết kế ban đầu), `02_crawling_architecture_guide.md`, `two_phase_r2_crawler_playbook.md`, `crawler_output_checklist.md`, `crawler_analysis_methodology.md`, `cloud_r2_setup_guide.md`, `03_airflow_guide.md`, `03_eda_and_integration_guide.md`, `git_workflow.md` |
 | `tasks/` | Phân công và hướng dẫn theo người | `README.md` là mục lục; `legacy_TASKS.md` là kế hoạch gốc (cũ) |

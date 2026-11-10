@@ -1,5 +1,7 @@
 # P4 snapshot và rà soát P5 — 08/11/2026
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 ## Bằng chứng dữ liệu thật
 
 Đã LIST/HEAD 24 object P2/P3/P4 trên R2 và GET tám object P4 bằng điều kiện IfMatch ETag. Không ghi cloud. Dữ liệu tải về nằm riêng tại `reports/preprocessing/05_encoding/snapshot_audit_2026-11-08/`, không ghi đè input chuẩn hoặc output P5.

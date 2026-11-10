@@ -5,13 +5,14 @@
 > **Phiên bản:** `1.0.0`  
 > **Ngày cập nhật:** 05/11/2026  
 > **Trạng thái:** Chính thức ban hành  
-> **Nền tảng kỹ thuật:** Python 3.10+, Scikit-learn, Mlxtend, SHAP, Scipy, Pandas, PyArrow.
+> **Nền tảng kỹ thuật:** Python 3.10+, Scikit-learn, Mlxtend, Scipy, Pandas, PyArrow; SHAP (chỉ cho phần phụ).
+> **Cập nhật 10/11/2026:** quy trình chuẩn của dự án chỉ khai phá **unsupervised** (clustering, association rules, anomaly detection, dimensionality reduction). Random Forest + SHAP (trụ cột 3 / mục 4) được giữ lại như **phần phụ (supervised, ngoại lệ)**, không thuộc tiêu chí nghiệm thu lõi.
 
 ---
 
 ## 1. Tổng Quan Kiến Trúc Khai Phá (Mining Architecture Overview)
 
-Giai đoạn Mô hình hóa Khai phá (Data Mining) tiếp nhận dữ liệu đầu vào là ma trận đặc trưng `data/preprocessing/05_encoding/features.parquet` và bộ dữ liệu vàng `data/curated/curated_flat_golden_jobs.parquet` để giải quyết **4 trụ cột kỹ thuật học máy không giám sát & giải thích tri thức**:
+Giai đoạn Mô hình hóa Khai phá (Data Mining) tiếp nhận dữ liệu đầu vào là ma trận đặc trưng `data/preprocessing/05_encoding/features.parquet` và bộ dữ liệu vàng `data/curated/curated_flat_golden_jobs.parquet` để giải quyết **3 trụ cột lõi không giám sát (luật kết hợp, phân cụm + giảm chiều, phát hiện bất thường) và 1 phần phụ có giám sát (hồi quy lương + SHAP)**:
 
 ```mermaid
 flowchart TD
@@ -31,7 +32,7 @@ flowchart TD
             CL["Phân Cụm Đa Chiều (K-Means & HDBSCAN) + PCA 2D & 3D\n• Không gian Kỹ năng (Binary Multi-Hot) + TF-IDF JD\n• Tối ưu k bằng Elbow (WCSS) & Silhouette Analysis\n• Chiếu giảm chiều PCA ra (PC1, PC2) và (PC1, PC2, PC3)"]
         end
 
-        subgraph Engine3["3. Mô Hình Hóa Mức Lương & Định Lượng Kỹ Năng (Supervised + Explainable AI)"]
+        subgraph Engine3["3. PHẦN PHỤ (supervised, ngoại lệ): Mô Hình Hóa Mức Lương & Định Lượng Kỹ Năng"]
             RF["Hồi Quy Phi Tuyến & Giải Thích TreeSHAP\n• Random Forest Regressor dự đoán log(Salary_VND)\n• TreeSHAP tính toán đóng góp biên (Marginal Contribution)\n• Quy đổi giá trị thặng dư kinh tế từng công nghệ (VNĐ)"]
         end
 
@@ -137,7 +138,9 @@ Nhược điểm của K-Means là giả định các cụm có dạng hình c�
 
 ---
 
-## 4. Trụ Cột 3: Mô Hình Hóa Mức Lương & Định Lượng Kỹ Năng (Random Forest + SHAP)
+## 4. Phần phụ (supervised, ngoại lệ): Mô Hình Hóa Mức Lương & Định Lượng Kỹ Năng (Random Forest + SHAP)
+
+> Phần này không thuộc quy trình chuẩn (Mining chỉ unsupervised). Giữ lại theo quyết định 10/11/2026; chạy được độc lập, không chặn nghiệm thu lõi.
 
 ### 4.1. Thiết lập bài toán hồi quy định giá lương
 Mục tiêu là dự đoán giá trị trung vị của mức lương hàng tháng bằng VNĐ ($Salary\_Midpoint\_VND$). Do phân phối mức lương thực tế bị lệch phải mạnh (Right-skewed), biến mục tiêu được chuẩn hóa logarit:

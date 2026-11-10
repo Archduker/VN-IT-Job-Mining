@@ -1,6 +1,6 @@
 # VN-IT-Job-Mining: Nền Tảng Thu Thập & Tiền Xử Lý Dữ Liệu Tuyển Dụng IT Việt Nam
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 10/11/2026: dự án bỏ JEV, OpenJev, Qwen và Gemini; model duy nhất là `VietAI/envit5-translation` (chạy local) để dịch JD tiếng Anh.** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 > **Hệ thống Khai phá & Tích hợp Dữ liệu Tuyển dụng CNTT Chuẩn Modern Data Stack**  
 > Kiến trúc phân tầng **Two-Phase Decoupled Crawler** kết hợp **Cloudflare R2 Data Lakehouse**, điều phối tự động qua **Apache Airflow**, và chuỗi tiền xử lý tinh chế dữ liệu thông minh ứng dụng **GenAI (Gemini 1.5 Flash)** tạo nên **Bộ Dữ Liệu Vàng (Golden Master Dataset)**.
@@ -53,7 +53,7 @@ Hệ thống được thiết kế theo ranh giới đanh thép (**Ironclad Boun
 | **Điều Phối & Lập Lịch** | **Apache Airflow 2.8+** | Tự động hóa lịch cào Discovery hàng ngày & Detail định kỳ theo hạn ngạch |
 | **Công Cụ Thu Thập** | **Playwright**, **HTTPX**, **BeautifulSoup4**, **Selectolax** | Thu thập SSR DOM, Next.js hydration data, Algolia Search API, GraphQL API |
 | **Xử Lý Dữ Liệu & Query**| **DuckDB**, **Pandas**, **NumPy** | Đọc ghi Parquet tốc độ cao, xử lý vector hóa và ép phẳng dữ liệu quy mô lớn |
-| **AI / NLP & Text Mining**| **Google Gemini API (`gemini-1.5-flash`)**, **Scikit-learn (TF-IDF)** | Bù khuyết văn bản JD, trích xuất kỹ năng ngầm định, tính Cosine Similarity |
+| **AI / NLP & Text Mining**| **`VietAI/envit5-translation` (dịch, local)**, **Scikit-learn (TF-IDF)** | Dịch JD tiếng Anh sang tiếng Việt, trích xuất kỹ năng bằng từ điển, tính Cosine Similarity |
 | **Kiểm Định & Thống Kê** | **Scikit-learn**, **Tukey's IQR Fences**, **Pydantic v2**, **Pytest** | Phát hiện ngoại lai, kiểm soát hợp lệ Data Contract, kiểm thử toàn trình |
 | **Trung Tâm Giám Sát (UI)**| **FastAPI**, **React 18**, **Vite**, **Tailwind CSS**, **Recharts**, **Plotly 3D** | Dashboard điều hành kỹ thuật thời gian thực, trực quan hóa 2D/3D |
 
@@ -124,7 +124,7 @@ Khác với các pipeline truyền thống áp dụng công thức "mò mẫm" c
 |  [BƯỚC 4: MISSING VALUES & GENAI IMPUTATION]                                                       |
 |  * sneaky_null_detector.py: Bóc trần 9+ null markers ('thỏa thuận', '0', '[]', '…')                |
 |  * Missing Not At Random (MNAR): Lương thỏa thuận giữ NaN nhưng bật cờ is_salary_negotiable = 1    |
-|  * GenAI Imputer: Gemini 1.5 Flash đọc JD bù khuyết kinh nghiệm, cấp bậc, thành phố, kỹ năng       |
+|  * Imputer luật (không model): bù có cờ từ title/cấp bậc, còn lại giữ null            |
 |  * Gắn cờ kiểm toán: is_imputed_by_genai = True, confidence_score >= 0.85                          |
 |                                     │                                                              |
 |                                     ▼                                                              |

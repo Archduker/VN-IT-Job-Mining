@@ -1,5 +1,7 @@
 # Các vấn đề đang chờ bạn quyết định
 
+> **Cập nhật 10/11/2026:** mục 5 (cho phép OpenJev) bị đảo: bỏ JEV/OpenJev/Qwen, model duy nhất là `envit5-translation`.
+>
 > **Cập nhật 09/11/2026 (tối):** bạn đã trả lời mục 1, 2, 3, 4 (A, chờ phân tích kỹ năng), 5 (cho phép OpenJev), 7 (A), 9 (A), 10 (đã gán nhãn), 11. Các câu trả lời đã vào `KNOWN_ISSUED.md`. Mục còn mở (6 R2, 8 khoảng k, kỹ năng) đã đưa vào `docs/presentation/van_de_can_chot.html` để trình bày với nhóm.
 
 Cập nhật 09/11/2026. Viết cho người không cần đọc code. Mỗi mục có: chuyện gì đang xảy ra, các lựa chọn, mình nghiêng về đâu (**chỉ là ý kiến của mình**, chưa phải quyết định), và nếu bạn chưa quyết thì chuyện gì xảy ra. Sau khi bạn chọn, mình ghi vào `KNOWN_ISSUED.md` / `docs/spec/fixes/` và đặc tả tiếp.

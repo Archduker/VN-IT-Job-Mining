@@ -2,8 +2,8 @@
   "step": "02_integration",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:12+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-10T09:09:05+00:00",
+  "code_version": "800b5e7",
   "input": {
     "path": "data/preprocessing/01_clean/topdev.jsonl",
     "rows": 227
@@ -15,18 +15,21 @@
   "dropped": [
     {
       "rule": "I0",
-      "reason": "dòng không đọc được JSON, cần xem lại file 01_clean",
+      "reason": "JSON_INVALID",
+      "rows": 0
+    },
+    {
+      "rule": "I6",
+      "reason": "SCHEMA",
+      "rows": 0
+    },
+    {
+      "rule": "I7",
+      "reason": "FLATTEN_ERROR",
       "rows": 0
     }
   ],
   "rules": [
-    {
-      "id": "I0",
-      "name": "Bỏ dòng JSON hỏng trong file Clean",
-      "action": "drop",
-      "rows_affected": 0,
-      "examples": []
-    },
     {
       "id": "I1",
       "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
@@ -105,6 +108,27 @@
           "url": "https://topdev.vn/viec-lam/chuyen-vien-mo-hinh-quan-ly-rui-ro-hoi-so-tp-ho-chi-minh-ngan-hang-thuong-mai-co-phan-phat-trien-thanh-pho-ho-chi-minh-hdbank-2136861"
         }
       ]
+    },
+    {
+      "id": "I0",
+      "name": "Dòng JSON hỏng không parse được",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I6",
+      "name": "Bản ghi không qua JobRecord (khóa/kiểu/job_title)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "I7",
+      "name": "Lỗi trong _flatten_<nguồn>",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
     }
   ],
   "fields": [

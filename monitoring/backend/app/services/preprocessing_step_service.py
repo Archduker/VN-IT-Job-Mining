@@ -20,8 +20,9 @@ from app.core.data_paths import load_json_report
 from app.core.r2_client import r2_client
 from preprocessing.common import SOURCES, r2_export
 
-STEPS = ("01_clean", "02_integration", "03_transformation", "04_normalization", "05_encoding")
-STEP_NAMES = {"01_clean": "Clean", "02_integration": "Integration", "03_transformation": "Transformation",
+STEPS = ("01_clean", "01b_deduplication", "02_integration", "03_transformation", "04_normalization", "05_encoding")
+PER_SOURCE_STEPS = ("01_clean", "01b_deduplication")  # jsonl theo nguồn, các bước sau gộp all.parquet
+STEP_NAMES = {"01_clean": "Clean", "01b_deduplication": "Deduplication", "02_integration": "Integration", "03_transformation": "Transformation",
               "04_normalization": "Normalization", "05_encoding": "Encoding"}
 
 
@@ -30,7 +31,7 @@ def _root():
 
 
 def _command(step: str, source: str = "all") -> str:
-    return f"python scripts/run_preprocessing.py --step {step[3:]} --source {source} --dry-run"
+    return f"python scripts/run_preprocessing.py --step {step.split("_", 1)[1]} --source {source} --dry-run"
 
 
 def _require_step(step: str) -> str:
@@ -173,7 +174,7 @@ def _read_local(step: str, source: Optional[str]) -> List[Dict[str, Any]]:
     import pandas as pd
 
     base = r2_export.DATA / step
-    if step == "01_clean":
+    if step in PER_SOURCE_STEPS:
         p = base / f"{source}.jsonl"
         return _parse(p.read_bytes(), p.name) if p.exists() else []
     p = base / ("features.parquet" if step == "05_encoding" else "all.parquet")
@@ -191,7 +192,7 @@ def _read_local(step: str, source: Optional[str]) -> List[Dict[str, Any]]:
 def get_rows(step: str, source: Optional[str], offset: int, limit: int, origin: str) -> Dict[str, Any]:
     """Một trang dòng dữ liệu của một bước. origin=r2 đọc object trên R2 (tách theo nguồn), local đọc file trên máy."""
     step = _require_step(step)
-    if step == "01_clean" and not source:
+    if step in PER_SOURCE_STEPS and not source:
         raise HTTPException(status_code=400, detail="Bước Clean xem theo từng nguồn: cần tham số source")
     limit = max(1, min(limit, MAX_ROWS))
     offset = max(0, offset)

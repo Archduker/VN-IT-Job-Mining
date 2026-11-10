@@ -108,13 +108,9 @@ def test_sneaky_null_detector():
 
 def test_outlier_handling_and_winsorization():
     """Kiểm tra sửa lỗi nhập liệu số và kỹ thuật Winsorization."""
-    # Sửa lỗi nhầm USD vào ô VNĐ
-    fixed_usd = fix_common_salary_input_errors(2000.0)
-    assert fixed_usd == 2000.0 * 25_400.0
-
-    # Sửa lỗi lương năm vào ô lương tháng
-    fixed_annual = fix_common_salary_input_errors(360_000_000.0, "Thu nhập năm cho vị trí Senior")
-    assert fixed_annual == 30_000_000.0
+    # PH6 N10b: không còn nhân 25.400 / chia 12 theo chữ "năm" (làm hỏng 8000 - 9000 USD của vietnamworks)
+    assert fix_common_salary_input_errors(2000.0) == 2000.0
+    assert fix_common_salary_input_errors(203_200_000.0, "2 năm kinh nghiệm") == 203_200_000.0
 
     # Winsorization
     s = pd.Series([10_000_000, 15_000_000, 20_000_000, 25_000_000, 500_000_000])
@@ -135,6 +131,6 @@ def test_text_normalization():
     assert normalize_city("Làm việc từ xa (Remote)") == "Remote"
 
     # Normalize seniority
-    assert normalize_seniority("Thực tập sinh", "Intern Python") in ("Intern", "Thực tập")
+    assert normalize_seniority("Thực tập sinh", "Intern Python") in ("Intern", "Thực tập", "Intern/Fresher")  # PH6: 5 cấp
     assert normalize_seniority("Senior", "Senior Data Engineer") == "Senior"
     assert normalize_seniority("Trưởng nhóm", "Team Lead") in ("Lead/Manager", "Trưởng nhóm/Quản lý")

@@ -11,3 +11,9 @@
 - `verify_delivery` tái chạy vào thư mục mới; không đụng raw, báo cáo chính, R2 hoặc scheduler.
 
 - Khi phân tích audit: cosine của transitive-dropped có thể là điểm qua linked_via, không phải điểm trực tiếp hai đầu dòng. Không suy số cụm tách/gộp từ số cạnh đổi điều kiện; phải chạy lại đồ thị.
+
+## PH4 (10/11/2026)
+- Tầng 3 là MinHash/LSH chỉ để sinh ứng viên; mọi cặp phải qua `minhash.exact_jaccard`. Cặp J >= 0.85 chỉ bị loại khi cùng `company_slug` không rỗng; khác công ty vào audit D7.
+- Không dùng `id()` để suy thứ tự audit: cột a/b của một cặp phụ thuộc địa chỉ bộ nhớ (chỉ danh sách giữ/loại là tất định).
+- 02_integration đọc `01b_deduplication/`; nên chạy thật 01b trước 02, nếu không 02 báo thiếu file.
+- Tên khóa trong `metadata.dedup` đổi: `identity_hash` -> `text_fold_sha1`, `cosine` -> `jaccard`; `duplicate_of` ở bản bị loại.

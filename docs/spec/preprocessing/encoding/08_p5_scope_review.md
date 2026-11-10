@@ -1,5 +1,7 @@
 # P5 scope review — 09/11/2026, chờ Phát duyệt
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 Đã review **54 job**: đủ **36 job AutoCAD** và18ca ưu tiên ngoài nhóm này. Đề xuất **27 loại /8 giữ /19 chưa rõ**; riêng AutoCAD là **18 loại /3 giữ /15 chưa rõ**. Mọi `decision` trống, chưa có quyết định được duyệt. **Không loại toàn bộ36job, không bỏ cột AutoCAD, không sửa P4/job_family/vocabulary/artifact chuẩn. P5 vẫn pending acceptance.**
 
 Evidence run: `reports/preprocessing/05_encoding/scope_review_2026-11-09_v1/`.

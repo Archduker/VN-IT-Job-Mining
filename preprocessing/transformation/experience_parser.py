@@ -44,16 +44,21 @@ _UNIT = r"(?:years?|yrs?|nam)"
 _RANGE = re.compile(rf"(?<!\d)(?P<min>{_NUM})\s*(?:-|–|—|to|den)\s*(?P<max>{_NUM})\s*{_UNIT}\b", re.I)
 _AT_LEAST = re.compile(
     rf"(?:at\s+least|minimum(?:\s+of)?|min\.?|from|starting\s+from|"
-    rf"it\s+nhat|toi\s+thieu|tren|tu)\s*"
+    rf"it\s+nhat|toi\s+thieu|tren|hon|tu)\s*"
     rf"(?P<min>{_NUM})\s*(?:\+\s*)?{_UNIT}\b",
     re.I,
 )
 _PLUS = re.compile(rf"(?P<min>{_NUM})\s*\+\s*{_UNIT}\b", re.I)
 _UP_TO = re.compile(
     rf"(?:up\s+to|at\s+most|maximum(?:\s+of)?|toi\s+da|"
-    rf"khong\s+qua|duoi)\s*(?P<max>{_NUM})\s*{_UNIT}\b",
+    rf"khong\s+qua|duoi|len\s+den|len\s+toi)\s*(?P<max>{_NUM})\s*{_UNIT}\b",
     re.I,
 )
+# N11a-N11e (PH6): chuỗi thật của careerviet, glints, itviec, jobsgo, topcv
+_ZERO_ONLY = re.compile(r"^(?:khong\s+yeu\s+cau|khong\s+can|khong\s+doi\s+hoi)$")
+_UNDER_ONE_WORD = re.compile(r"\bduoi\s+mot\s+nam\b")
+# itviec "3.1 năm (37 tháng)": K4 chốt đọc phần nguyên của số năm (3.1 -> 3, 0.8 -> 0, 5.1 -> 5)
+_COMPOUND = re.compile(rf"^(?P<years>{_NUM})\s*{_UNIT}\s*\(\s*(?P<months>\d+)\s*(?:months?|thang)\s*\)$", re.I)
 _SINGLE = re.compile(rf"(?P<min>{_NUM})\s*{_UNIT}\s*(?:of\s+)?(?:experience|kinh\s+nghiem)?", re.I)
 _MONTHS = re.compile(r"(?P<months>\d+(?:[.,]\d+)?)\s*(?:months?|mos?\.?|thang)\b", re.I)
 _NO_EXPERIENCE = re.compile(r"(?:khong\s+yeu\s+cau\s+kinh\s+nghiem|khong\s+can\s+kinh\s+nghiem|khong\s+doi\s+hoi\s+kinh\s+nghiem|no\s+experience\s+(?:required|needed)|without\s+experience|fresh\s+graduate|entry[- ]level\s+no\s+experience)", re.I)
@@ -87,6 +92,14 @@ def parse_experience_range(*values: Any) -> tuple[float | None, float | None, st
         return None, None, "missing"
     folded_texts = [_fold(value) for value in raw_texts]
     text = " ".join(folded_texts)
+
+    compound = next((_COMPOUND.match(c) for c in folded_texts if _COMPOUND.match(c)), None)
+    if compound:
+        return float(int(_to_float(compound.group("years")))), None, "compound_years_months"
+    if _UNDER_ONE_WORD.search(text):
+        return 0.0, 1.0, "upper_bound"
+    if any(_ZERO_ONLY.match(c) for c in folded_texts):
+        return 0.0, None, "explicit_zero"
 
     if (
         _NO_EXPERIENCE.search(text)

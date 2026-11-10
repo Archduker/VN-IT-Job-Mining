@@ -1,5 +1,7 @@
 # Trình Phát quyết định: Input P4 và K — 08/11/2026
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 **Trạng thái:** phân tích/candidate, chưa approved. Source HEAD `f438090`; không sửa producer, shared dictionary, encoder width hoặc dữ liệu chuẩn. Bằng chứng kèm theo ở [thư mục CSV/JSON](../../../reports/preprocessing/05_encoding/p4_k_decision_evidence_v1/summary.json).
 
 ## Quyết định 1 — Input P4

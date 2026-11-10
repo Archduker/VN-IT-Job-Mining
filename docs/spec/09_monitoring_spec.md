@@ -108,7 +108,7 @@ Hệ thống giám sát định kỳ đối chiếu giữa hệ thống file tr�
    - Tầng 1: `url_ledger/<source>/` (Sổ cái URL & manifests).
    - Tầng 2: `raw/<source>/<YYYY-MM-DD>/` (Bronze raw JSON files).
    - Tầng 3: `staging/<source>/` (Silver integrated Parquet files).
-   - Tầng 4: `curated/` & `gold/` (Gold Golden Master Parquet datasets).
+   - Tầng 4: `curated/` (Golden Master Parquet); tầng 5: `pipeline/` (đầu ra từng bước).
 
 ### 2.3. Bảng Điều Khiển Apache Airflow Orchestration
 Truy vấn trực tiếp trạng thái tiến trình hệ điều hành và cơ sở dữ liệu PostgreSQL của Airflow:

@@ -1,0 +1,549 @@
+{
+ "version": 1,
+ "n_jobs_scanned": 5077,
+ "items": [
+  {
+   "alias": "asm",
+   "slug": "assembly",
+   "forms": [
+    "ASM"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 4,
+   "n_jobs_case_sensitive": 4
+  },
+  {
+   "alias": "aws",
+   "slug": "aws",
+   "forms": [
+    "AWS"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 589,
+   "n_jobs_case_sensitive": 585
+  },
+  {
+   "alias": "ba",
+   "slug": "business_analysis",
+   "forms": [
+    "BA"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 675,
+   "n_jobs_case_sensitive": 554
+  },
+  {
+   "alias": "bcp",
+   "slug": "disaster_recovery",
+   "forms": [
+    "BCP"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 14,
+   "n_jobs_case_sensitive": 14
+  },
+  {
+   "alias": "bdd",
+   "slug": "cucumber",
+   "forms": [
+    "BDD"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 9,
+   "n_jobs_case_sensitive": 9
+  },
+  {
+   "alias": "bi",
+   "slug": "bi",
+   "forms": [
+    "BI"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 1314,
+   "n_jobs_case_sensitive": 363
+  },
+  {
+   "alias": "c",
+   "slug": "c_lang",
+   "forms": [
+    "C"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 267,
+   "n_jobs_case_sensitive": 241
+  },
+  {
+   "alias": "cpp",
+   "slug": "cpp",
+   "forms": [
+    "CPP"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 6,
+   "n_jobs_case_sensitive": 1
+  },
+  {
+   "alias": "ddd",
+   "slug": "ddd",
+   "forms": [
+    "DDD"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 28,
+   "n_jobs_case_sensitive": 28
+  },
+  {
+   "alias": "dwh",
+   "slug": "data_warehouse",
+   "forms": [
+    "DWH"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 36,
+   "n_jobs_case_sensitive": 36
+  },
+  {
+   "alias": "ec2",
+   "slug": "ec2",
+   "forms": [
+    "EC2"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 41,
+   "n_jobs_case_sensitive": 41
+  },
+  {
+   "alias": "elk",
+   "slug": "elasticsearch",
+   "forms": [
+    "ELK"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 118,
+   "n_jobs_case_sensitive": 118
+  },
+  {
+   "alias": "es6",
+   "slug": "javascript",
+   "forms": [
+    "ES6"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 5,
+   "n_jobs_case_sensitive": 5
+  },
+  {
+   "alias": "etl",
+   "slug": "etl",
+   "forms": [
+    "ETL"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 182,
+   "n_jobs_case_sensitive": 182
+  },
+  {
+   "alias": "gcp",
+   "slug": "gcp",
+   "forms": [
+    "GCP"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 272,
+   "n_jobs_case_sensitive": 272
+  },
+  {
+   "alias": "gin",
+   "slug": "gin",
+   "forms": [
+    "GIN",
+    "Gin"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 4,
+   "n_jobs_case_sensitive": 3
+  },
+  {
+   "alias": "git",
+   "slug": "git",
+   "forms": [
+    "GIT",
+    "Git"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 591,
+   "n_jobs_case_sensitive": 576
+  },
+  {
+   "alias": "gpt",
+   "slug": "llm",
+   "forms": [
+    "GPT"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 27,
+   "n_jobs_case_sensitive": 26
+  },
+  {
+   "alias": "iac",
+   "slug": "terraform",
+   "forms": [
+    "IAC"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 86,
+   "n_jobs_case_sensitive": 0
+  },
+  {
+   "alias": "iam",
+   "slug": "iam",
+   "forms": [
+    "IAM"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 110,
+   "n_jobs_case_sensitive": 110
+  },
+  {
+   "alias": "ios",
+   "slug": "ios_sdk",
+   "forms": [
+    "IOS"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 195,
+   "n_jobs_case_sensitive": 9
+  },
+  {
+   "alias": "jpa",
+   "slug": "hibernate",
+   "forms": [
+    "JPA"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 44,
+   "n_jobs_case_sensitive": 44
+  },
+  {
+   "alias": "js",
+   "slug": "javascript",
+   "forms": [
+    "JS"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 271,
+   "n_jobs_case_sensitive": 34
+  },
+  {
+   "alias": "k8s",
+   "slug": "kubernetes",
+   "forms": [
+    "K8S"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 90,
+   "n_jobs_case_sensitive": 23
+  },
+  {
+   "alias": "llm",
+   "slug": "llm",
+   "forms": [
+    "LLM"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 318,
+   "n_jobs_case_sensitive": 318
+  },
+  {
+   "alias": "lua",
+   "slug": "lua",
+   "forms": [
+    "LUA",
+    "Lua"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 231,
+   "n_jobs_case_sensitive": 4
+  },
+  {
+   "alias": "mvc",
+   "slug": "mvc",
+   "forms": [
+    "MVC"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 109,
+   "n_jobs_case_sensitive": 109
+  },
+  {
+   "alias": "n1",
+   "slug": "japanese",
+   "forms": [
+    "N1"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 11,
+   "n_jobs_case_sensitive": 11
+  },
+  {
+   "alias": "n2",
+   "slug": "japanese",
+   "forms": [
+    "N2"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 54,
+   "n_jobs_case_sensitive": 54
+  },
+  {
+   "alias": "n3",
+   "slug": "japanese",
+   "forms": [
+    "N3"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 34,
+   "n_jobs_case_sensitive": 34
+  },
+  {
+   "alias": "nlp",
+   "slug": "nlp",
+   "forms": [
+    "NLP"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 98,
+   "n_jobs_case_sensitive": 98
+  },
+  {
+   "alias": "oop",
+   "slug": "oop",
+   "forms": [
+    "OOP"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 218,
+   "n_jobs_case_sensitive": 218
+  },
+  {
+   "alias": "php",
+   "slug": "php",
+   "forms": [
+    "PHP"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 132,
+   "n_jobs_case_sensitive": 131
+  },
+  {
+   "alias": "pmp",
+   "slug": "project_management",
+   "forms": [
+    "PMP"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 109,
+   "n_jobs_case_sensitive": 109
+  },
+  {
+   "alias": "py",
+   "slug": "python",
+   "forms": [
+    "PY"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 1,
+   "n_jobs_case_sensitive": 0
+  },
+  {
+   "alias": "qa",
+   "slug": "qa_qc",
+   "forms": [
+    "QA"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 605,
+   "n_jobs_case_sensitive": 605
+  },
+  {
+   "alias": "qc",
+   "slug": "qa_qc",
+   "forms": [
+    "QC"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 241,
+   "n_jobs_case_sensitive": 241
+  },
+  {
+   "alias": "r",
+   "slug": "r_lang",
+   "forms": [
+    "R"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 175,
+   "n_jobs_case_sensitive": 175
+  },
+  {
+   "alias": "rn",
+   "slug": "react_native",
+   "forms": [
+    "RN"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 0,
+   "n_jobs_case_sensitive": 0
+  },
+  {
+   "alias": "s3",
+   "slug": "s3",
+   "forms": [
+    "S3"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 85,
+   "n_jobs_case_sensitive": 85
+  },
+  {
+   "alias": "sh",
+   "slug": "bash",
+   "forms": [
+    "SH"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 1,
+   "n_jobs_case_sensitive": 1
+  },
+  {
+   "alias": "soc",
+   "slug": "soc",
+   "forms": [
+    "SOC"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 285,
+   "n_jobs_case_sensitive": 81
+  },
+  {
+   "alias": "sql",
+   "slug": "sql",
+   "forms": [
+    "SQL"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 1273,
+   "n_jobs_case_sensitive": 1266
+  },
+  {
+   "alias": "tf",
+   "slug": "tensorflow",
+   "forms": [
+    "TF"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 2,
+   "n_jobs_case_sensitive": 2
+  },
+  {
+   "alias": "ts",
+   "slug": "typescript",
+   "forms": [
+    "TS"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 7,
+   "n_jobs_case_sensitive": 7
+  },
+  {
+   "alias": "vb",
+   "slug": "visual_basic",
+   "forms": [
+    "VB"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 3,
+   "n_jobs_case_sensitive": 2
+  },
+  {
+   "alias": "vpn",
+   "slug": "vpn",
+   "forms": [
+    "VPN"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 177,
+   "n_jobs_case_sensitive": 177
+  },
+  {
+   "alias": "vue",
+   "slug": "vue",
+   "forms": [
+    "VUE",
+    "Vue"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 80,
+   "n_jobs_case_sensitive": 80
+  },
+  {
+   "alias": "waf",
+   "slug": "firewall",
+   "forms": [
+    "WAF"
+   ],
+   "ambiguous": false,
+   "approved": false,
+   "n_jobs_fold_noise": 61,
+   "n_jobs_case_sensitive": 61
+  }
+ ]
+}

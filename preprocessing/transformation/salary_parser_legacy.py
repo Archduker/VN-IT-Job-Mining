@@ -17,7 +17,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-USD_VND_EXCHANGE_RATE = 25_400.0
+from preprocessing.common.constants import USD_VND as USD_VND_EXCHANGE_RATE
 
 NEGOTIABLE_KEYWORDS = {
     "thỏa thuận", "thoả thuận", "cạnh tranh", "thương lượng",
@@ -25,6 +25,25 @@ NEGOTIABLE_KEYWORDS = {
     "negotiable", "competitive", "confidential", "open", "trao đổi khi phỏng vấn",
     "thương lượng khi phỏng vấn", "deal"
 }
+
+
+# Đơn vị tiền khác USD/VND: chưa có tỷ giá được duyệt nên không đổi, chỉ nhận diện và bỏ số (không đoán là VND)
+_OTHER_CURRENCY_RE = re.compile(
+    r"\b(EUR|SGD|JPY|AUD|GBP|CAD|CNY|KRW|THB|MYR|TWD|NZD|CHF)\b|[€£¥]", re.IGNORECASE
+)
+_SYMBOL_CODES = {"€": "EUR", "£": "GBP", "¥": "JPY"}
+# USD/tháng tối đa chấp nhận được: 100.000 USD (~2,5 tỷ đ) trở lên là số VND bị gắn nhầm nhãn USD (vietnamworks)
+USD_IMPLAUSIBLE_MONTHLY = 100_000.0
+USD_IMPLAUSIBLE_YEARLY = 1_000_000.0
+
+
+def detect_other_currency(text: str | None) -> str | None:
+    """Mã tiền tệ khác USD/VND trong chuỗi lương (EUR, SGD, JPY...), hoặc None."""
+    m = _OTHER_CURRENCY_RE.search(str(text or ""))
+    if not m:
+        return None
+    code = m.group(0)
+    return _SYMBOL_CODES.get(code, code.upper())
 
 
 def parse_number(num_str: str) -> float:
@@ -94,6 +113,11 @@ class UniversalSalaryParser:
         res["pay_period"] = period
 
         # Nhận diện tiền tệ
+        other = detect_other_currency(s)
+        if other and "usd" not in s_lower and "vnd" not in s_lower and "vnđ" not in s_lower:
+            res["salary_currency_original"] = other
+            res["currency_unsupported"] = True
+            return res
         curr = "VND"
         if "usd" in s_lower or "$" in s:
             curr = "USD"
@@ -160,6 +184,13 @@ class UniversalSalaryParser:
         res["salary_min_original"] = min_raw
         res["salary_max_original"] = max_raw
 
+        # Nhãn USD nhưng số quá lớn để là USD (7000000 - 10000000 USD): số là VND bị gắn nhầm nhãn, ghi cờ
+        biggest = max([v for v in (min_raw, max_raw) if v is not None], default=0)
+        if curr == "USD" and biggest >= (USD_IMPLAUSIBLE_YEARLY if period == "year" else USD_IMPLAUSIBLE_MONTHLY):
+            curr = "VND"
+            res["salary_currency_original"] = "VND"
+            res["currency_reinterpreted"] = "USD->VND"
+
         # 1. T2d: Quy đổi tỷ giá về VND (USD -> VND theo tỷ giá 25.400)
         rate = USD_VND_EXCHANGE_RATE if curr == "USD" else 1.0
         min_vnd = min_raw * rate if min_raw is not None else None
@@ -216,6 +247,33 @@ def find_money_span(text: str | None) -> str | None:
     return m.group(0) + (period.group(0) if period else "")
 
 
+_ANNUAL_RE = re.compile(r"annual|per\s+year|yearly|/\s*year|/\s*năm|hàng\s+năm|mỗi\s+năm|lương\s+năm|thu\s+nhập\s+năm", re.IGNORECASE)
+
+
+def _retry_annual_from_jd(res: dict[str, Any], jd_text: str | None) -> dict[str, Any]:
+    """Header ra lương tháng ngoài 1-500 triệu mà JD ghi chính các số đó là lương NĂM: tính lại theo năm.
+
+    Chỉ sửa khi có bằng chứng trong chính tin (câu JD chứa các số gốc và chữ annual / per year / năm),
+    không dựa vào chữ "năm" rời rạc (PH6 N10b).
+    """
+    vals = [v for v in (res.get("salary_min_vnd"), res.get("salary_max_vnd")) if v]
+    if not vals or not jd_text or not any(v < MONTHLY_MIN_VND or v > MONTHLY_MAX_VND for v in vals):
+        return res
+    if res.get("pay_period") == "year":
+        return res
+    origs = [o for o in (res.get("salary_min_original"), res.get("salary_max_original")) if o]
+    for line in re.split(r"[\n\r]+|\.(?!\d)", str(jd_text)):
+        digits = re.sub(r"[.,]", "", line)
+        if _ANNUAL_RE.search(line) and origs and all(str(int(o)) in digits for o in origs):
+            fixed = UniversalSalaryParser._apply_standardization(
+                dict(res), res.get("salary_min_original"), res.get("salary_max_original"),
+                res.get("salary_currency_original", "VND"), "year")
+            fixed["pay_period"] = "year"
+            fixed["period_from_jd"] = True
+            return fixed
+    return res
+
+
 def _has_value(res: dict[str, Any]) -> bool:
     return res.get("salary_min_vnd") is not None or res.get("salary_max_vnd") is not None
 
@@ -266,7 +324,7 @@ def parse_salary_cascade(
     header_res = UniversalSalaryParser.parse_text(raw_salary_text)
     if _has_value(header_res):
         header_res["salary_source"] = "header"
-        return _apply_bounds(header_res)
+        return _apply_bounds(_retry_annual_from_jd(header_res, jd_text))
 
     span = find_money_span(title) if title else None
     if span:

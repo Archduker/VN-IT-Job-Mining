@@ -7,7 +7,7 @@
 > **Nguyên tắc cốt lõi:**  
 > 1. Phân định rạch ròi 100% giữa giai đoạn Thu thập (Collection) và Tiền xử lý (Preprocessing).  
 > 2. Ép phẳng dữ liệu (JSON Flattening) về một bảng phẳng duy nhất (Single Flat Table) chuẩn Modern Data Mining.  
-> 3. Ứng dụng GenAI (Gemini) làm công cụ trọng tâm để xử lý văn bản và bù khuyết các trường bị thiếu (Missing Values).  
+> 3. (Đã thay 10/11/2026) Không dùng GenAI/Gemini; bù khuyết bằng luật có cờ, chỉ dùng `VietAI/envit5-translation` để dịch JD tiếng Anh.  
 > 4. Ranh giới đanh thép (Ironclad Boundaries) giữa 4 bước để ngăn chặn hoàn toàn Scope Creep của Agent.  
 > 5. Tuyệt đối không dùng sơ đồ Mermaid (sử dụng sơ đồ khối ASCII và bảng Markdown).
 

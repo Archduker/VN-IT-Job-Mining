@@ -31,7 +31,8 @@ DATA_DIR = REPO_ROOT / "data"
 OUT_DIR = DATA_DIR / "preprocessing" / STEP
 REVIEW_DIR = DATA_DIR / "preprocessing" / "review"
 POLICY_PATH = REPO_ROOT / "preprocessing" / "clean" / "it_policy.json"
-MIN_JD_WORDS = 30  # chính sách 1.B cũ (transformation/text_metrics.filter_valid_clean_records)
+MIN_JD_WORDS = 50  # người dùng chốt 10/11/2026 (PH3); trước đó 30
+SCOPE_PATH = REPO_ROOT / "preprocessing" / "clean" / "scope_keywords.json"
 TEST_ID = re.compile(r"^job-[a-z]+-\d+$")
 REVIEW_NON_IT, REVIEW_LEVEL2, REVIEW_SEED = 50, 30, 42
 # Bổ sung độ phủ tầng 1 dự đoán IT; mẫu cũ chỉ đại diện tầng 2 và non_it tầng 1.
@@ -98,6 +99,18 @@ def _ex(item: Item, field: str, before: Any, after: Any) -> dict[str, Any]:
 def _fill(items: Sequence[Item]) -> dict[str, float]:
     n = len(items)
     return {f: round(100 * sum(not _empty(i["flat"].get(f)) for i in items) / n, 1) if n else 0.0 for f in KEY_FIELDS}
+
+
+def scope_reason(flat: dict[str, Any], kw: dict[str, Any]) -> str | None:
+    """S3: mã lý do nếu tin là CTV (tiêu đề) hoặc đa cấp (tiêu đề + mô tả), ngược lại None."""
+    def hit(words, text):
+        return any(re.search(rf"(?<!\w){re.escape(w)}(?!\w)", text.lower()) for w in words)
+
+    title = str(flat.get("job_title") or "")
+    body = f"{title} {flat.get('raw_description_text') or ''} {flat.get('raw_requirements_text') or ''}"
+    if hit(kw.get("multi_level_any", []), body):
+        return "S3_MULTI_LEVEL"
+    return "S3_CTV_TITLE" if hit(kw.get("ctv_title", []), title) else None
 
 
 def load_policy() -> dict[str, Any]:
@@ -196,6 +209,24 @@ def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tup
     report.rule("C5", f"Bỏ JD dưới {MIN_JD_WORDS} từ", "drop", len(c5),
                 [_ex(i, "raw_description_text", (i["flat"].get("raw_description_text") or "")[:120] or None, None)
                  for i in c5])
+
+    # C8 (PH3 S3): CTV / đa cấp, giữ mẫu bị bỏ để kiểm tay
+    kw = json.loads(SCOPE_PATH.read_text(encoding="utf-8")) if SCOPE_PATH.exists() else {}
+    c8 = [(i, r) for i in items if (r := scope_reason(i["flat"], kw))]
+    c8_ids = {id(i) for i, _ in c8}
+    items = [i for i in items if id(i) not in c8_ids]
+    report.rule("C8", "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)", "drop", len(c8),
+                [_ex(i, "job_title", i["flat"].get("job_title"), r) for i, r in c8])
+    report.data["extra"]["scope_c8_reasons"] = dict(Counter(r for _, r in c8))
+    if report.data["mode"] == "applied":
+        rej_dir = DATA_DIR / "preprocessing" / "rejected" / STEP
+        rej_dir.mkdir(parents=True, exist_ok=True)
+        with (rej_dir / f"{source}.jsonl").open("w", encoding="utf-8") as fh:
+            for rule, rows_ in (("C5", [(i, "JD_SHORT") for i in c5]), ("C8", c8)):
+                for i, reason in rows_:
+                    fh.write(json.dumps({"source": source, "job_id": _job_id(i), "rule": rule, "reason": reason,
+                                         "source_url": i["env"]["metadata"].get("source_url"),
+                                         "job_title": i["flat"].get("job_title")}, ensure_ascii=False) + "\n")
 
     # C6: trùng trong cùng nguồn; giữ bản cào mới nhất, bằng nhau thì bản nhiều trường hơn
     groups: dict[str, list[Item]] = defaultdict(list)

@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:13+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-10T09:09:07+00:00",
+  "code_version": "800b5e7",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 1561
@@ -61,7 +61,7 @@
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 1554,
+      "rows_affected": 1411,
       "examples": [
         {
           "job_id": "2013194",
@@ -108,6 +108,34 @@
       "examples": []
     },
     {
+      "id": "T6.1",
+      "name": "Bóc thẻ HTML và entity",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6.2",
+      "name": "Chuẩn hóa Unicode về NFC",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6.3",
+      "name": "Bỏ ký tự ẩn",
+      "action": "modify",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "T6.4",
+      "name": "Gạch ngang và bullet về một chuẩn",
+      "action": "modify",
+      "rows_affected": 468,
+      "examples": []
+    },
+    {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
@@ -140,7 +168,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 1561,
+      "rows_affected": 1554,
       "examples": [
         {
           "job_id": "2013194",
@@ -189,13 +217,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 99.6,
-      "fill_pct_out": 99.6
+      "fill_pct_in": 90.4,
+      "fill_pct_out": 90.4
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 95.3,
-      "fill_pct_out": 95.3
+      "fill_pct_in": 86.2,
+      "fill_pct_out": 86.2
     },
     {
       "field": "headcount",
@@ -224,8 +252,8 @@
     },
     {
       "field": "locations",
-      "fill_pct_in": 100.0,
-      "fill_pct_out": 100.0
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "language",
@@ -254,6 +282,22 @@
       "vi": 1481,
       "en": 80
     },
-    "experience_parsed_rate": 99.6
+    "text_quality": {
+      "before": {
+        "html": 0,
+        "nfc": 0,
+        "hidden": 2
+      },
+      "residual_html_pct": 0.0,
+      "residual_nfd_pct": 0.0,
+      "residual_hidden_char_pct": 0.0,
+      "residual_rows": {
+        "residual_html": 0,
+        "residual_nfd": 0,
+        "residual_hidden": 0
+      },
+      "abbreviations_approved": 0
+    },
+    "experience_parsed_rate": 90.4
   }
 }

@@ -1,6 +1,6 @@
 # Monitoring: trang Pre-processing theo từng bước
 
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+> **Cập nhật 10/11/2026: dự án bỏ JEV, OpenJev, Qwen và Gemini; model duy nhất là `VietAI/envit5-translation` (chạy local) để dịch JD tiếng Anh ở bước 03.** Mọi đoạn trong file này nói về JEV, LLM, GenAI, `--use-api` hay sổ tiền API đã hết hiệu lực; phân loại và chuẩn hóa dùng luật if-else, còn khối "API" chỉ cần hiện tên và phiên bản model dịch (bước 03) hoặc "không dùng model". Xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 > Trạng thái: **đặc tả, chờ duyệt** (03/11/2026). Làm ngay sau P1 (Clean), rồi mở rộng sau mỗi phase P2–P5.
 > Prompt: `docs/prompting/P6_monitoring_preprocessing.md`. Hợp đồng dữ liệu: `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 4.
@@ -47,11 +47,11 @@
 - Chọn bước và chọn nguồn ghi lên URL (`/preprocessing?step=01_clean&source=topdev`) để gửi link được.
 - **Khối riêng của bước Clean: "Kiểm tin ngoài IT"** (đặc tả P1 mục C4b):
   - theo từng nguồn: số `it`, `non_it`, `can_kiem`;
-  - độ đúng của luật và của JEV trên mẫu bạn đã gán nhãn (chưa gán thì hiện "chưa có nhãn");
+  - độ đúng của luật trên mẫu bạn đã gán nhãn (chưa gán thì hiện "chưa có nhãn");
   - nguyên nhân chính: (a) crawler kéo sai, (b) nguồn đăng lẫn, (c) phân loại sai;
   - chính sách đang áp dụng: "chưa duyệt, không bỏ tin" hoặc ngưỡng và ngày duyệt;
   - 3 ví dụ mỗi nhóm, có link tin.
-- **Khối API**, ở mọi bước có gọi JEV hoặc LLM: model, số lần gọi, số lần trúng cache, chi phí. Không dùng API thì hiện lý do.
+- **Khối model**, ở bước 03 (dịch JD): tên và phiên bản model, số JD đã dịch, số trúng cache. Bước khác hiện "không dùng model (luật if-else)".
 - Gán nhãn tay làm ngoài trang, trong file CSV `data/preprocessing/review/`. Pipeline đọc nhãn rồi ghi kết quả vào báo cáo, trang chỉ đọc báo cáo. Nút gán nhãn trên trang để việc sau.
 - Mỗi bước có thêm khối riêng ghi trong đặc tả phase (mục 6 của P1–P5), ví dụ phễu Clean, bảng "chữ → số" kinh nghiệm ở P3, histogram lương ở P4. Khối riêng vẫn đọc từ báo cáo bước. Thiếu số thì pipeline ghi thêm vào `rules[].examples` hoặc khóa `extra` của báo cáo, không cho backend tự tính.
 
@@ -86,3 +86,11 @@
 - Nút "chạy bước này" trên trang: không làm. Trang chỉ đọc; chạy pipeline bằng lệnh.
 - Gán nhãn IT ngay trên trang: để sau, hiện dùng CSV.
 - Bảng "khai báo trường" ở trang Raw (thay phần phân tích đơn biến): việc riêng, chưa chốt.
+
+## 8. Yêu cầu bổ sung (10/11/2026): mọi bất thường mở được đúng tin
+
+Mọi cờ bất thường, ngoại lai và giá trị suy luận của bước 04 (lương ngoài 2-100 triệu, IQR gộp và IQR theo cấp bậc, `salary_suspect`, `salary_min_gt_max`, `salary_negotiable_with_value`, `level_inferred`, `exp_inferred`, `exp_out_of_range`, `tinh_unknown`, `currency_reinterpreted`, nhãn `*_can_kiem`...) phải kèm `job_id` và nguồn trong danh sách `reports/preprocessing/04_normalization/anomalies.json` (mỗi mục: `kind`, `source`, `job_id`, `job_id_global`, `url`, `field`, `value`, `detail`; không chứa nội dung JD). Hành vi giao diện:
+
+- Bấm một bất thường (ô trong bảng cờ, điểm lạc trên biểu đồ hộp lương, dòng ví dụ) thì mở đúng tin: hiện JD và `job_id` cùng nguồn, kèm giá trị gốc (`raw_salary_text`...) cạnh giá trị đã chuẩn hóa, và liên kết `url` của tin.
+- Áp dụng cho cả trang Monitoring và các hình trực quan trong slide: điểm ngoại lai trên biểu đồ phải truy được về `job_id`, không chỉ là số đếm.
+- Đây là đặc tả; chưa làm giao diện. Báo cáo bước 04 trỏ tới file qua `extra.anomalies_file`, số theo loại ở `extra.anomalies_by_kind`.

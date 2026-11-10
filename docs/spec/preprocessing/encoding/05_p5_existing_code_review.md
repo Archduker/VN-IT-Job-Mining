@@ -1,5 +1,7 @@
 # Báo Cáo Đánh Giá Hiện Trạng Mã Nguồn P5 & Kiểm Tra Taxonomy
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 > **Mã tài liệu:** `P5-CODE-REVIEW-02` (Phiên bản 2.0 — Hiệu chỉnh bằng chứng & Phân loại chuẩn xác)  
 > **Người thực hiện:** Hồng Phát (P5 Owner)  
 > **Giai đoạn:** Chuẩn bị & Phân tích (Analysis & EDA Preparation — No Implementation)  

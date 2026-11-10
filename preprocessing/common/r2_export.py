@@ -20,12 +20,22 @@ from preprocessing.common import REPO_ROOT, SOURCES, STEPS
 
 DATA = REPO_ROOT / "data" / "preprocessing"
 REPORTS = REPO_ROOT / "reports" / "preprocessing"
-SILVER_STEPS = STEPS[:4]
+SILVER_STEPS = ("01_clean", "02_integration", "03_transformation", "04_normalization")  # 01b chưa đẩy R2
 
 
 def silver_key(step: str, source: str) -> str:
     ext = "jsonl" if step == "01_clean" else "parquet"
     return to_r2_key(f"staging/{source}/preprocessing/{step}.{ext}")
+
+
+PIPELINE_STEPS = (*STEPS, "rejected", "translation")
+
+
+def pipeline_key(step: str, name: str) -> str:
+    """Key bảng gộp 8 nguồn: pipeline/<bước>/<tên file> (PH0). Chưa ghi gì lên R2."""
+    if step not in PIPELINE_STEPS:
+        raise ValueError(f"bước pipeline không hợp lệ: {step!r}; hợp lệ: {PIPELINE_STEPS}")
+    return to_r2_key(f"pipeline/{step}/{name}")
 
 
 GOLD_KEYS = {

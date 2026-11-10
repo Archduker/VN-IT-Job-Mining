@@ -1,5 +1,7 @@
 # P5 — bàn giao vocabulary v2 (09/11/2026)
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 **Đã hoàn thành gói review v2 theo yêu cầu agent_04 cập nhật.** Đủ **230 kỹ năng đề xuất**, từ pool236 kỹ năng có quan sát; còn6 dự phòng. Đây là **đề xuất của Agent**, không phải nhãn tay hoặc vocabulary đã được Phát duyệt. **P5 chưa hoàn thành.**
 
 Phát đã duyệt phạm vi hard/soft skill, giữ snapshot5177 và full driver contract, đúng230cột; chưa duyệt từng mục/alias/ngưỡng. Không thay P3/P4, shared dictionary, Mining, vocabulary production; không ghi cloud, commit/push hoặc đè artifact chuẩn. Gói v1 và quyết định thủ công giữ nguyên hashes.

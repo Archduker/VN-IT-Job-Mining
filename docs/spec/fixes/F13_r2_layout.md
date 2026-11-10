@@ -8,6 +8,8 @@ R2 hiện còn `raw/`, `url_ledger/`, `staging/`, `curated/`, `quality/`, `integ
 ## Trạng thái
 Người dùng chốt (10/11/2026): R2 chỉ còn 5 tiền tố `url_ledger/`, `raw/`, `staging/`, `curated/`, `pipeline/`. Không dùng `silver/`, `gold/`. Đã sửa `collection/common/r2_storage.py` (ánh xạ `staging`→`staging`, `curated`→`curated`, thêm `pipeline`; `silver/`, `gold/` là alias cũ đổi sang `staging/`, `curated/`) và test. Còn mở: tên file trong `staging/`, `curated/` (spec 10 ghi `all.parquet`, `gold_master_jobs.parquet`, `features.parquet`; code vẫn bắt `staging/<nguồn>/...`) và tên thư mục con của `pipeline/`.
 
+Đã ghi lên R2 (10/11/2026): chép `silver/` sang `staging/` (đối chiếu SHA-256 trùng) rồi xóa key cũ; xóa 62 object `quality/` (26), `integration/` (18), `transformation/` (18) là output cũ ngày 25–26/10 và 01/11, sinh lại được từ raw. Bucket nay có `raw` 12.826, `url_ledger` 64, `staging` 35, `curated` 2; `pipeline/` chưa có object.
+
 ## Các bước sau khi chốt (đã quyết một phần)
 1. Sửa code còn lệch: `canonicalize_lakehouse_key` còn bắt tên nguồn ở cấp 2 của `staging/`, nên `staging/all.parquet` bị từ chối; `r2_export.py` và `push_preprocessing_to_r2.py` đẩy một file; tên gold theo spec; `push_integration_to_r2.py`.
 2. Sửa tài liệu R2 (`docs/spec/10_architecture.md`, `docs/guides/cloud_r2_setup_guide.md`, `.agents/skills/r2-lakehouse-guide/SKILL.md`, `collection/CLAUDE.md`, `scripts/CLAUDE.md`, `AGENTS.md`).

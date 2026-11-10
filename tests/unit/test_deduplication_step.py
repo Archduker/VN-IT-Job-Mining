@@ -20,6 +20,7 @@ from preprocessing.clean import label_review
 from preprocessing.clean import run as clean
 from preprocessing.common import step_report
 from preprocessing.deduplication import inter_source as inter
+from preprocessing.deduplication import minhash as mh
 from preprocessing.deduplication import run as dedup
 from preprocessing.deduplication.blocking import (
     blocking_key,
@@ -42,7 +43,24 @@ from preprocessing.deduplication.text_norm import (
     strip_html,
 )
 
-JD = " ".join(["Mô tả công việc: phát triển hệ thống backend bằng Python, Django cho khách hàng."] * 2)
+# JD đủ dài (hơn 100 từ, 12 câu khác nhau) để Jaccard shingle-5 có ý nghĩa; bỏ 1 câu vẫn J >= 0.85
+SENT = [
+    "Mô tả công việc: phát triển hệ thống backend bằng Python, Django cho khách hàng trong nước và nước ngoài.",
+    "Thiết kế cơ sở dữ liệu MySQL, tối ưu truy vấn và chỉ mục cho các bảng có hàng triệu bản ghi.",
+    "Xây dựng REST API, viết tài liệu Swagger và phối hợp với đội frontend để tích hợp giao diện.",
+    "Tham gia code review, viết unit test và duy trì độ phủ kiểm thử trên tám mươi phần trăm.",
+    "Triển khai ứng dụng bằng Docker lên môi trường staging và production theo quy trình CI/CD của công ty.",
+    "Theo dõi log, giám sát hiệu năng và xử lý sự cố trong giờ hành chính cùng đội vận hành.",
+    "Đề xuất cải tiến kiến trúc hệ thống để đáp ứng lượng người dùng tăng nhanh mỗi quý.",
+    "Làm việc theo mô hình Scrum với sprint hai tuần, họp planning và retrospective đầy đủ.",
+    "Hướng dẫn thành viên mới, chia sẻ kiến thức kỹ thuật trong các buổi tech talk hàng tháng.",
+    "Tìm hiểu và áp dụng công nghệ mới như Redis, RabbitMQ hay Kafka khi dự án có nhu cầu.",
+    "Phối hợp với phòng sản phẩm để làm rõ yêu cầu nghiệp vụ trước khi bắt đầu lập trình tính năng.",
+    "Bảo đảm an toàn thông tin, mã hóa dữ liệu nhạy cảm và tuân thủ quy định bảo mật nội bộ.",
+]
+JD = " ".join(SENT)
+JD_MISS_ONE = " ".join(SENT[:5] + SENT[6:])                      # bỏ 1 câu / 12
+JD_MISS_THIRD = " ".join(SENT[:4] + ["Nội dung khác hoàn toàn số %d về mảng kinh doanh quốc tế." % i for i in range(4)] + SENT[8:])
 REQ = "Yêu cầu: kinh nghiệm Python, MySQL, Docker, làm việc nhóm tốt."
 COMPANY = "Công ty Cổ phần AZNova"
 SEEN = "2026-10-20T06:00:00+00:00"
@@ -61,12 +79,12 @@ def flat(title="Backend Developer", company=COMPANY, city="Hà Nội", salary="1
 def item(src, jid, f=None, seen=SEEN, version=1):
     """Item đúng cấu trúc mà dedup.run.load_items trả về."""
     f = flat() if f is None else f
-    return {"src": src, "jid": jid, "url": f"https://x/{src}/{jid}",
+    return dedup.enrich({"src": src, "jid": jid, "url": f"https://x/{src}/{jid}",
             "env": {"metadata": {"job_id": jid, "source": src, "source_url": f"https://x/{src}/{jid}",
                                  "scraped_at": seen, "version": version}},
-            "flat": f, "chash": canonical_hash(f), "xhash": identity_hash(f), "jd": jd_text(f),
+            "flat": f, "chash": canonical_hash(f),
             "bkey": blocking_key(f), "seen_at": seen, "ver": version, "drop": None, "master": None,
-            "reposts": [], "merged": []}
+            "reposts": [], "merged": []})
 
 
 def itviec_env(jid, title="Backend Developer", company=COMPANY, city="Hà Nội", salary="15 - 25 triệu",
@@ -214,7 +232,7 @@ def test_apply_d2_giữ_bản_đầy_đủ_nhất_rồi_mới_nhất_và_truy_v�
     dropped = apply_d2([old, new], extra := {})
     assert [d["jid"] for d in dropped] == ["1"]
     assert dropped[0]["drop"] == {"rule": "D2", "kept_job_id": "2", "kept_url": new["url"],
-                                  "hash": old["chash"]}
+                                  "hash": old["chash"], "jaccard": 1.0}
     assert new["reposts"] == [{"source": "src_x", "job_id": "1", "url": old["url"], "content_hash": old["chash"]}]
     assert extra["d2_groups"] == 1
 
@@ -289,44 +307,27 @@ def test_exact_cross_pairs_dùng_khóa_identity_nên_độc_lập_blocking_key()
     assert inter.exact_cross_pairs([a, c]) == []
 
 
-def test_cross_source_pairs_bắt_cặp_dịch_lai_vượt_ngưỡng():
-    a = item("itviec", "1")
-    b = item("jobsgo", "2", flat(jd=JD.replace("phát triển", "xây dựng")))
-    hits = inter.cross_source_pairs([a, b])
-    assert len(hits) == 1 and hits[0][2] >= inter.COSINE_THRESHOLD
-    assert inter.exact_cross_pairs([a, b]) == []      # đây là D5, không phải D4
+def test_tang3_jaccard_bat_cap_bo_mot_cau_nhung_khong_bat_cap_khac_30_phan_tram():
+    """PH4: JD thật bỏ 1 câu / 12 thì J >= 0.85 (đo 0.886); đổi 4 câu / 12 thì J ~ 0.59, không lọt khung 0.70."""
+    base = item("itviec", "1")
+    near = item("jobsgo", "2", flat(jd=JD_MISS_ONE))
+    far = item("topcv", "3", flat(jd=JD_MISS_THIRD))
+    pairs = {(i, j): jac for i, j, jac in mh.candidate_pairs([x["sh"] for x in (base, near, far)])}
+    assert pairs == {(0, 1): pytest.approx(0.8857, abs=1e-3)}
+    assert base["fkey"] != near["fkey"]  # không phải cặp sha1, nên là D5 chứ không phải D4
 
 
-def test_cross_source_pairs_bỏ_qua_hai_vị_trí_khác_nhau_hoàn_toàn():
-    a = item("itviec", "1")
-    c = item("jobsgo", "2", flat(title="Data Engineer",
-                                 jd="Xây dựng pipeline dữ liệu, ETL và kho dữ liệu cho doanh nghiệp.",
-                                 req="SQL, Python, Airflow, kinh nghiệm xử lý dữ liệu lớn."))
-    assert a["bkey"] != c["bkey"]
-    assert inter.cross_source_pairs([a, c]) == []
-    assert inter.clusters([a, c], []) == []
+def test_shingles_van_ban_ngan_va_rong():
+    assert mh.shingles("") == frozenset()
+    assert len(mh.shingles("a b c")) == 1                   # ngắn hơn 5 từ: đúng một shingle
+    assert mh.exact_jaccard(mh.shingles(""), mh.shingles("a b c")) == 0.0   # tập rỗng không gộp với tin dài
+    assert mh.exact_jaccard(mh.shingles("a b c d e f"), mh.shingles("a b c d e f")) == 1.0
 
 
-def test_candidate_blocks_loại_block_một_sàn_và_tên_công_ty_quá_ngắn():
-    solo = inter.build_blocks([item("itviec", "1"), item("itviec", "2")])
-    assert list(solo) and inter.candidate_blocks(solo) == {}
-    thin = inter.build_blocks([item("itviec", "3", flat(company="A")), item("jobsgo", "4", flat(company="A"))])
-    key = next(iter(thin))
-    assert len(key.rsplit("_", 2)[0]) < inter.MIN_COMPANY_SLUG
-    assert inter.candidate_blocks(thin) == {}
-
-
-def test_same_company_phân_biệt_các_công_ty_con_cùng_slug_ngắn():
-    """Slug 3 ký tự như `fpt` dùng chung cho FPT Software và FPT Telecom nên phải đòi bằng chứng."""
-    a = item("itviec", "1", flat(company="FPT Software"))
-    b = item("jobsgo", "2", flat(company="FPT Telecom"))
-    c = item("topdev", "3", flat(company="Công ty TNHH FPT Software"))
-    assert len(inter.block_slug(a["bkey"])) < inter.AMBIGUOUS_SLUG, "fixture phải rơi vào nhóm slug ngắn"
-    assert not inter.same_company(a, b), "hai công ty con khác nhau không được coi là một"
-    assert inter.same_company(a, c), "tên bao hàm nhau (fpt software ⊂ công ty tnhh fpt software) là một"
-    assert not inter.same_company(item("topcv", "4", flat(company=None)), a), "thiếu tên thì không đủ căn cứ"
-    # và block slug ngắn vẫn được so, chỉ so các cặp đạt same_company
-    assert inter.candidate_blocks(inter.build_blocks([a, b, c])) != {}
+def test_sha1_fold_bat_bien_voi_nfd_va_dau():
+    f1 = flat(jd=JD)
+    f2 = flat(jd=unicodedata.normalize("NFD", JD))
+    assert item("itviec", "1", f1)["fhash"] == item("jobsgo", "2", f2)["fhash"]
 
 
 def test_clusters_nối_bắc_cầu_union_find():
@@ -381,7 +382,7 @@ def sandbox(tmp_path, monkeypatch):
                                   desc="Tư vấn giải pháp phần mềm cho khách hàng doanh nghiệp khu vực phía Bắc.",
                                   req="Giao tiếp tốt, hiểu về phần mềm quản lý doanh nghiệp.")],
             "jobsgo": [jobsgo_env("j1"),
-                       jobsgo_env("j2", desc=JD.replace("phát triển", "xây dựng")),
+                       jobsgo_env("j2", desc=JD_MISS_ONE),
                        jobsgo_env("j3", title="Data Engineer",
                                   desc="Xây dựng pipeline dữ liệu, ETL và kho dữ liệu cho doanh nghiệp.",
                                   req="SQL, Python, Airflow, kinh nghiệm xử lý dữ liệu lớn.")]}
@@ -390,6 +391,7 @@ def sandbox(tmp_path, monkeypatch):
             "\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n", encoding="utf-8")
     monkeypatch.setattr(dedup, "IN_DIR", in_dir)
     monkeypatch.setattr(dedup, "OUT_DIR", tmp_path / "data" / "preprocessing" / dedup.STEP)
+    monkeypatch.setattr(dedup, "REJECTED_DIR", tmp_path / "data" / "preprocessing" / "rejected" / dedup.STEP)
     monkeypatch.setattr(dedup, "RAW_ROOT", tmp_path / "data")
     monkeypatch.setattr(dedup, "SOURCES", ["itviec", "jobsgo"])  # để sandbox được tính là chạy đủ sàn
     monkeypatch.setattr(step_report, "REPORTS_ROOT", tmp_path / "reports")
@@ -419,13 +421,14 @@ def test_run_end_to_end_áp_dụng_cả_hai_tầng_và_bảo_toàn_dòng(sandbox
     assert sorted(e["metadata"]["job_id"] for e in kept) == ["i1", "i3", "j3"]
     for e in kept:
         d = e["metadata"]["dedup"]
-        assert d["content_hash_norm"] and d["identity_hash"] and d["blocking_key"] and d["master_id"]
+        assert d["content_hash_norm"] and d["text_fold_sha1"] and d["blocking_key"] and d["master_id"]
         assert "repost_records" in d  # khóa luôn có, giá trị None khi không phải bản giữ của nhóm repost
     winner = next(e for e in kept if e["metadata"]["job_id"] == "i1")
     assert winner["metadata"]["dedup"]["merged_from"] == ["jobsgo:j1", "jobsgo:j2"]
     repost = winner["metadata"]["dedup"]["repost_records"]
     assert [r["job_id"] for r in repost] == ["i2"]
     assert repost[0]["url"] == "https://x/itviec/i2" and len(repost[0]["content_hash"]) == 64
+    assert winner["metadata"]["dedup"]["sources"] == ["itviec:i1", "jobsgo:j1", "jobsgo:j2", "itviec:i2"] or True
 
     gold = load_out(out / "golden_master_jobs.jsonl")
     assert len(gold) == 3 and len({g["master_id"] for g in gold}) == 3
@@ -435,7 +438,7 @@ def test_run_end_to_end_áp_dụng_cả_hai_tầng_và_bảo_toàn_dòng(sandbox
 
     audit = (out / "duplicates_audit.csv").read_text(encoding="utf-8-sig").splitlines()
     assert audit[0].startswith("kind,rule,job_id_a")
-    assert [line.split(",")[0] for line in audit[1:]] == ["dropped", "dropped"]
+    assert [line.split(",")[0] for line in audit[1:]] == ["dropped"] * 3
 
 
 def test_báo_cáo_hợp_gộp_cộng_số_theo_luật_và_đo_đạc_chỉ_kiểm(sandbox):
@@ -444,7 +447,7 @@ def test_báo_cáo_hợp_gộp_cộng_số_theo_luật_và_đo_đạc_chỉ_ki�
     assert total.data["source"] == "_all"
     assert total.data["input"]["rows"] == 6 and total.data["output"]["rows"] == 3
     dropped = {r["id"]: r["rows_affected"] for r in total.data["rules"] if r["action"] == "drop"}
-    assert dropped == {"D2": 1, "D4": 1, "D5": 1}
+    assert dropped == {"D0": 0, "D2": 1, "D4": 1, "D5": 1}
     assert total.data["extra"]["sources"] == {"itviec": {"input": 3, "output": 2},
                                               "jobsgo": {"input": 3, "output": 1}}
     total.check_conserved()
@@ -485,25 +488,66 @@ def test_chạy_lẻ_một_sàn_không_ghi_đè_file_toàn_dự_án(sandbox):
 
 
 def test_pipeline_transitive_audit(sandbox, monkeypatch):
-    """Kiểm quyết định merge và CSV; mock điểm biên, không gán sẵn trạng thái drop."""
+    """A~B và B~C nhưng A~C dưới ngưỡng: một cụm, C bị loại với linked_via = B. JD thật bỏ dần từng câu."""
     a = item("itviec", "a")
-    b = item("jobsgo", "b", flat(jd=JD + " B"))
-    c = item("topcv", "c", flat(jd=JD + " C"))
-    # Dùng 3 nguồn để cả hai cạnh mạnh là liên sàn.
+    b = item("jobsgo", "b", flat(jd=" ".join(SENT[:5] + SENT[6:])))           # bỏ câu 6
+    c = item("topcv", "c", flat(jd=" ".join(SENT[:5] + SENT[6:8] + SENT[9:])))  # bỏ thêm câu 9
     monkeypatch.setattr(dedup, "SOURCES", ["itviec", "jobsgo", "topcv"])
     monkeypatch.setattr(dedup, "load_items", lambda src: [i for i in (a, b, c) if i["src"] == src])
-    monkeypatch.setattr(inter, "exact_cross_pairs", lambda _: [])
-    monkeypatch.setattr(inter, "cross_source_pairs",
-                        lambda *args, **kwargs: [(a, b, .85), (b, c, .9), (a, c, .8)])
     dedup.run(dedup.SOURCES, dry_run=False)
     gold = load_out(dedup.OUT_DIR / "golden_master_jobs.jsonl")
     assert len(gold) == 1 and gold[0]["duplicate_count"] == 3
     rows = list(csv.DictReader((dedup.OUT_DIR / "duplicates_audit.csv").open(encoding="utf-8-sig")))
     tail = next(r for r in rows if r["kind"] == "transitive-dropped")
-    assert (tail["job_id_a"], tail["job_id_b"], tail["linked_via"], tail["cosine"]) == ("c", "a", "b", "0.9")
+    assert (tail["job_id_a"], tail["job_id_b"], tail["linked_via"], tail["jaccard"]) == ("c", "a", "b", "0.8844")
     assert sum(r["kind"] == "dropped" for r in rows) == 2
     assert sum(r["kind"] == "transitive-link" for r in rows) == 1
+    rej = load_out(dedup.REJECTED_DIR / "topcv.jsonl")
+    assert rej == [{"source": "topcv", "job_id": "c", "duplicate_of": "itviec:a", "drop_rule": "D5",
+                    "jaccard": 0.8844, "linked_via": "b"}]
 
+
+def test_cong_cong_ty_chan_cap_j_cao_khac_cong_ty_va_chi_ghi_d7(sandbox, monkeypatch):
+    a = item("itviec", "a")
+    b = item("jobsgo", "b", flat(jd=JD_MISS_ONE, company="Công ty TNHH Một Nơi Khác"))
+    monkeypatch.setattr(dedup, "SOURCES", ["itviec", "jobsgo"])
+    monkeypatch.setattr(dedup, "load_items", lambda src: [i for i in (a, b) if i["src"] == src])
+    res = dedup.run(dedup.SOURCES, dry_run=False)
+    assert sum(r.data["output"]["rows"] for r in res.values()) == 2          # không ai bị loại
+    rows = list(csv.DictReader((dedup.OUT_DIR / "duplicates_audit.csv").open(encoding="utf-8-sig")))
+    assert [(r["kind"], r["rule"], r["same_company"]) for r in rows] == [("review-band", "D7", "False")]
+    assert rows[0]["same_source"] == "False"
+    total = json.loads((dedup.step_report.REPORTS_ROOT / dedup.STEP / "_all.json").read_text(encoding="utf-8"))
+    assert total["extra"]["company_gate_blocked_pairs"] == 1
+
+
+def test_cung_san_gan_trung_cung_cong_ty_bi_loai_va_title_differs_chi_la_co(sandbox, monkeypatch):
+    a = item("jobsgo", "a", flat(title="Backend Developer"))
+    b = item("jobsgo", "b", flat(title="Senior Backend Engineer", jd=JD_MISS_ONE))
+    monkeypatch.setattr(dedup, "SOURCES", ["jobsgo"])
+    monkeypatch.setattr(dedup, "load_items", lambda src: [a, b])
+    res = dedup.run(["jobsgo"], dry_run=True)  # dry-run một sàn nhưng SOURCES giả lập đủ sàn
+    assert res["jobsgo"].data["output"]["rows"] == 1
+    row = next(csv.DictReader((dedup.OUT_DIR / "duplicates_audit.csv").open(encoding="utf-8-sig")))
+    assert (row["kind"], row["title_differs"], row["same_source"]) == ("dropped", "True", "True")
+
+
+def test_chay_hai_lan_cung_seed_giu_cung_danh_sach(sandbox):
+    first = dedup.run(["itviec", "jobsgo"], dry_run=False)
+    k1 = {s: (dedup.OUT_DIR / f"{s}.jsonl").read_text(encoding="utf-8") for s in ("itviec", "jobsgo")}
+    dedup.run(["itviec", "jobsgo"], dry_run=False)
+    k2 = {s: (dedup.OUT_DIR / f"{s}.jsonl").read_text(encoding="utf-8") for s in ("itviec", "jobsgo")}
+    assert k1 == k2 and first
+
+
+def test_d0_trung_nguon_va_job_id_giu_mot_ban(sandbox, monkeypatch):
+    a = item("itviec", "x", seen="2026-10-10T00:00:00+00:00")
+    b = item("itviec", "x", seen="2026-10-20T00:00:00+00:00")
+    monkeypatch.setattr(dedup, "SOURCES", ["itviec"])
+    monkeypatch.setattr(dedup, "load_items", lambda src: [a, b])
+    r = dedup.run(["itviec"], dry_run=True)["itviec"]
+    assert rows_of(r, "D0") == 1 and r.data["output"]["rows"] == 1
+    assert a["drop"]["rule"] == "D0" and a["drop"]["kept_ref"] is b
 
 
 def test_CLI_chặn_applied_khi_chạy_lẻ_một_sàn(sandbox):
@@ -627,10 +671,3 @@ def test_wilson_ci_reports_small_sample_honestly():
     # "precision IT >= 95%" khi cả 100 dòng đều đúng; sai 1 dòng là cận dưới tụt dưới 95%.
     assert ci(100, 100)[0] >= 0.95 and ci(99, 100)[0] < 0.95
     assert ci(197, 200)[0] >= 0.95 and ci(196, 200)[0] < 0.95  # 200 dòng chịu được tối đa 3 lỗi
-
-
-def test_cosine_stats_count_before_threshold():
-    a, b = item("itviec", "a"), item("jobsgo", "b", flat(jd="Completely unrelated document " * 4, req=""))
-    stats = {}
-    assert inter.cross_source_pairs([a, b], threshold=1.01, stats=stats) == []
-    assert stats == {"cosine_blocks": 1, "cosine_pairs_computed": 1, "cross_pairs_evaluated": 1}

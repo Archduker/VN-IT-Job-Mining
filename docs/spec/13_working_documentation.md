@@ -162,7 +162,7 @@ flowchart TD
 python scripts/read_eda_diagnosis.py --source topcv
 
 # Chạy trọn vẹn chuỗi 5 bước tiền xử lý:
-python scripts/run_preprocessing.py --all
+python scripts/run_preprocessing.py --step all --source all   # thêm --dry-run để chỉ đo
 
 # Hoặc chạy từng bước độc lập khi cần debug:
 python preprocessing/clean/run.py
@@ -171,8 +171,9 @@ python preprocessing/transformation/run.py
 python preprocessing/normalization/run.py
 python preprocessing/encoding/run.py
 
-# Đẩy kết quả Silver & Gold đã làm sạch lên Cloudflare R2:
-python scripts/push_preprocessing_to_r2.py --apply
+# Đẩy kết quả staging/ và curated/ lên Cloudflare R2:
+python scripts/push_preprocessing_to_r2.py          # chỉ so, không ghi
+# python scripts/push_preprocessing_to_r2.py --push   # ghi thật, chỉ khi đã được đồng ý
 ```
 
 ### 3.2. Quy Tắc Kiểm Tra Tính Bảo Toàn Dữ Liệu (Conservation Rule)
@@ -184,27 +185,14 @@ Nếu xuất hiện sự thất thoát dữ liệu không giải thích được
 
 ## 4. Quy Trình Huấn Luyện & Khai Phá Dữ Liệu (Data Mining Operations)
 
-Quy trình thực thi bộ 3 thuật toán khai phá dữ liệu học thuật trên tập dữ liệu Gold Master (5.177 bài đăng IT sạch, 230 cột đặc trưng):
+Quy trình thực thi bộ 3 thuật toán khai phá dữ liệu học thuật trên tập dữ liệu Golden Master (số bài đăng sau lọc: lấy từ báo cáo bước mới nhất, không ghi cứng):
 
 ```bash
-# 1. Chạy thuật toán Khai phá luật kết hợp kỹ năng (FP-Growth):
-python scripts/run_association_rules.py \
-    --input data/preprocessing/05_encoding/features.parquet \
-    --min-support 0.02 \
-    --min-confidence 0.50 \
-    --output reports/models/fp_growth_rules.json
+# Lõi unsupervised: luật kết hợp (fp), phân cụm + giảm chiều (cluster), bất thường (anomaly)
+python -m mining.run_mining_pipeline --only fp,cluster,anomaly --dry-run   # bỏ --dry-run để ghi file
 
-# 2. Chạy thuật toán Phân cụm công việc K-Means kết hợp PCA:
-python scripts/run_kmeans_clustering.py \
-    --input data/preprocessing/05_encoding/features.parquet \
-    --n-clusters 8 \
-    --output reports/models/kmeans_clusters.json
-
-# 3. Chạy thuật toán Dự đoán & Giải thích mức lương (Random Forest & SHAP):
-python scripts/run_salary_model.py \
-    --input data/curated/curated_flat_golden_jobs.parquet \
-    --calc-shap \
-    --output reports/models/salary_shap_summary.json
+# Phần phụ (supervised, ngoại lệ): hồi quy lương + SHAP
+python -m mining.run_mining_pipeline --only salary --dry-run
 ```
 
 ---

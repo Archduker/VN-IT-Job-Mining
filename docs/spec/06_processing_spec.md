@@ -5,11 +5,38 @@
 > **Dự án:** Phân tích thị trường việc làm IT Việt Nam (VN-IT-Job-Mining)  
 > **Phiên bản:** 2.0 — Cập nhật: Tháng 11/2026  
 > **Trạng thái:** Official Technical Specification  
-> **Phạm vi xử lý:** Chuyển đổi dữ liệu từ tầng Silver (Cleaned Tabular) sang tầng Gold (Curated Features & Mining Matrices).
+> **Phạm vi xử lý:** Chuyển đổi dữ liệu từ tầng `staging/` (Cleaned Tabular; tên cũ Silver) sang tầng `curated/` (Curated Features & Mining Matrices; tên cũ Gold).
 
 ---
 
-## 1. Tổng Quan Chuyển Đổi Silver $\rightarrow$ Gold
+## 0. Vị trí trong quy trình 4 giai đoạn (cập nhật 10/11/2026)
+
+Spec này mô tả giai đoạn **Processing** cộng một phần Pre-processing (chuẩn hóa lương, nhóm nghề, cấp bậc, dịch JD). Feature selection (10b) và feature construction (10c) **chưa chốt nội dung**.
+
+| Giai đoạn | Bước trong file thiết kế | Việc |
+|---|---|---|
+| Collection | 0 (chỉ đọc Bronze) | Cào, lọc, khử trùng; JSON đầy đủ trường |
+| Pre-processing | 0, 1, 2, 3, 4, 4b, 5, 6 | Imputation, deduplicate, noise, typecasting, string standardization (4b dịch JD tiếng Anh sau khử trùng, giữ cả cột gốc) |
+| Processing | 7, 8, 9, 10, 10b, 10c, 10d, 12 | Extraction (7, 8, 12), transformation (9, 10), selection (10b), construction (10c), encoding (10d) |
+| Mining | ngoài phạm vi | Unsupervised |
+
+Bước 11 (chia train/test) là tùy chọn vì Mining chỉ unsupervised. Nội dung chi tiết của **10b** (ngoài ngưỡng bỏ kỹ năng xuất hiện dưới 5 lần) và **10c** (đặc trưng mới tạo) **chưa chốt**; làm sau khi xong pre-processing. Chi tiết 13 bước: `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` mục 3.1b và 3.3.
+
+### 0.1. Công cụ
+
+| Công cụ | Bước | Đã có trong requirements |
+|---|---|---|
+| pydantic, scikit-learn, mlxtend, hdbscan | 1, 11, 12, Mining | Có |
+| ydata-profiling | 0 | Chưa |
+| fastText `lid.176` | 3 | Chưa |
+| datasketch (MinHash + LSH) | 4 | Chưa (khử trùng hiện tại là TF-IDF/Jaccard) |
+| rapidfuzz | 5 | Chưa |
+| pyahocorasick | 8 | Chưa |
+| underthesea | 9 | Chưa |
+| sentence-transformers (`multilingual-e5-base`, tùy chọn) | 12 | Chưa |
+| transformers + `VietAI/envit5-translation` | 4b | Chưa kiểm |
+
+## 1. Tổng Quan Chuyển Đổi `staging/` $\rightarrow$ `curated/` (tên cũ: Silver $\rightarrow$ Gold)
 
 Tầng Silver cung cấp dữ liệu dạng bảng sạch (`all.parquet`), đã giải quyết các vấn đề bóc tách HTML, khử trùng lặp nội sàn/đa sàn và sửa lỗi bảng mã Unicode. Tuy nhiên, các thuộc tính cốt lõi như kỹ năng, cấp bậc, nhóm nghề và mức lương vẫn đang tồn tại dưới dạng chuỗi văn bản tự do (Free-form text) hoặc mảng danh sách thô.
 
@@ -241,7 +268,7 @@ flowchart TD
 
 ### 4.3. Quy Trình Dịch Thuật Bảo Toàn Thuật Ngữ IT (Term-Preserving Translation)
 
-Trong thị trường tuyển dụng IT Việt Nam, có khoảng $25\% - 35\%$ tin tuyển dụng được viết hoàn toàn bằng tiếng Anh (đặc biệt trên ITviec, VietnamWorks, Glints). Để phục vụ đối tượng nghiên cứu là **Sinh viên IT Việt Nam** và đồng nhất không gian văn bản TF-IDF, hệ thống tích hợp module dịch thuật máy tại Bước 3 (Transformation) chuyển đổi toàn bộ JD tiếng Anh sang tiếng Việt, nhưng **bắt buộc phải bảo toàn 100% các thuật ngữ kỹ thuật chuyên ngành**.
+Trong thị trường tuyển dụng IT Việt Nam, có khoảng $24{,}2\%$ tin tuyển dụng (đo 03/11/2026, `data_issues_2026-11-03.md`) được viết hoàn toàn bằng tiếng Anh (đặc biệt trên ITviec, VietnamWorks, Glints). Để phục vụ đối tượng nghiên cứu là **Sinh viên IT Việt Nam** và đồng nhất không gian văn bản TF-IDF, hệ thống tích hợp module dịch thuật máy tại Bước 3 (Transformation) chuyển đổi toàn bộ JD tiếng Anh sang tiếng Việt, nhưng **bắt buộc phải bảo toàn 100% các thuật ngữ kỹ thuật chuyên ngành**.
 
 ```mermaid
 flowchart TD
@@ -269,6 +296,8 @@ flowchart TD
     SaveCache --> Unmasking
     Unmasking --> CleanedVN["JD Tiếng Việt Chuẩn Hóa\n(Bảo toàn nguyên vẹn từ khóa công nghệ)"]
 ```
+
+> **Chốt 10/11/2026:** dịch **toàn bộ** JD tiếng Anh, chạy **sau** lọc phạm vi và khử trùng (không dịch tin sắp bị loại), **trước** tách section và trích kỹ năng. Giữ nguyên cột JD gốc, thêm cột JD tiếng Việt; tính lại `text_norm`, `text_fold` trên bản dịch; ghi `<trường>_source` = `model` cùng tên và phiên bản model vào manifest. Giới hạn độ dài đầu vào của `envit5-translation` **chưa kiểm**; JD dài cần cắt theo bullet hoặc câu rồi ghép lại.
 
 #### 1. 3 Kỹ Thuật Trích Xuất Cụm Từ Chuyên Ngành Tiếng Anh
 Để không dịch sai các từ khóa kỹ thuật (tránh dịch *Java* thành *cà phê*, *Spring Boot* thành *giày bốt mùa xuân*, hay *Thread Pool* thành *hồ bơi chỉ sợi*), hệ thống kết hợp 3 lớp kỹ thuật trích xuất:

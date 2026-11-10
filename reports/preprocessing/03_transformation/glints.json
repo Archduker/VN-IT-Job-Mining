@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:53+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-10T09:09:36+00:00",
+  "code_version": "800b5e7",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 271
@@ -105,6 +105,34 @@
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
       "rows_affected": 271,
+      "examples": []
+    },
+    {
+      "id": "T6.1",
+      "name": "Bóc thẻ HTML và entity",
+      "action": "modify",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "T6.2",
+      "name": "Chuẩn hóa Unicode về NFC",
+      "action": "modify",
+      "rows_affected": 21,
+      "examples": []
+    },
+    {
+      "id": "T6.3",
+      "name": "Bỏ ký tự ẩn",
+      "action": "modify",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "T6.4",
+      "name": "Gạch ngang và bullet về một chuẩn",
+      "action": "modify",
+      "rows_affected": 145,
       "examples": []
     },
     {
@@ -253,6 +281,22 @@
     "language_distribution": {
       "vi": 165,
       "en": 106
+    },
+    "text_quality": {
+      "before": {
+        "html": 1,
+        "nfc": 21,
+        "hidden": 2
+      },
+      "residual_html_pct": 0.0,
+      "residual_nfd_pct": 0.0,
+      "residual_hidden_char_pct": 0.0,
+      "residual_rows": {
+        "residual_html": 0,
+        "residual_nfd": 0,
+        "residual_hidden": 0
+      },
+      "abbreviations_approved": 0
     },
     "experience_parsed_rate": 74.5
   }

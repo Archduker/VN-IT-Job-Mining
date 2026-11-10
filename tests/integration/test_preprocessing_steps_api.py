@@ -38,16 +38,16 @@ def reports(tmp_path, monkeypatch):
 def test_steps_in_order_and_missing(reports):
     reports("01_clean", "_all", "2026-11-03T10:00:00+00:00")
     data = client.get("/api/v1/preprocessing/steps").json()
-    assert [s["step"] for s in data] == ["01_clean", "02_integration", "03_transformation", "04_normalization",
+    assert [s["step"] for s in data] == ["01_clean", "01b_deduplication", "02_integration", "03_transformation", "04_normalization",
                                          "05_encoding"]
     assert data[0]["available"] and data[0]["output_rows"] == 8
-    assert not data[1]["available"] and "--step integration" in data[1]["command"]
+    assert not data[1]["available"] and "--step deduplication" in data[1]["command"]
 
 
 def test_stale_when_previous_step_newer(reports):
     reports("01_clean", "_all", "2026-11-03T12:00:00+00:00")
     reports("02_integration", "_all", "2026-11-03T11:00:00+00:00", inp=8, out=8)
-    assert client.get("/api/v1/preprocessing/steps").json()[1]["stale"] is True
+    assert client.get("/api/v1/preprocessing/steps").json()[2]["stale"] is True
 
 
 def test_unknown_step_or_source_is_404(reports):

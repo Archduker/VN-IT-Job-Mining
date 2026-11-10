@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:12:36+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-10T09:09:24+00:00",
+  "code_version": "800b5e7",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 448
+    "rows": 447
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 448
+    "rows": 447
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1316,
+      "rows_affected": 1306,
       "examples": []
     },
     {
@@ -61,7 +61,7 @@
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 399,
+      "rows_affected": 389,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -104,14 +104,42 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 448,
+      "rows_affected": 447,
+      "examples": []
+    },
+    {
+      "id": "T6.1",
+      "name": "Bóc thẻ HTML và entity",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "T6.2",
+      "name": "Chuẩn hóa Unicode về NFC",
+      "action": "modify",
+      "rows_affected": 17,
+      "examples": []
+    },
+    {
+      "id": "T6.3",
+      "name": "Bỏ ký tự ẩn",
+      "action": "modify",
+      "rows_affected": 26,
+      "examples": []
+    },
+    {
+      "id": "T6.4",
+      "name": "Gạch ngang và bullet về một chuẩn",
+      "action": "modify",
+      "rows_affected": 160,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 448,
+      "rows_affected": 447,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -140,7 +168,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 448,
+      "rows_affected": 441,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -169,8 +197,8 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 28.3,
-      "fill_pct_out": 28.3
+      "fill_pct_in": 28.4,
+      "fill_pct_out": 28.4
     },
     {
       "field": "salary_max_vnd",
@@ -179,23 +207,23 @@
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 97.8,
-      "fill_pct_out": 97.8
+      "fill_pct_in": 98.0,
+      "fill_pct_out": 98.0
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 97.8,
-      "fill_pct_out": 97.8
+      "fill_pct_in": 98.0,
+      "fill_pct_out": 98.0
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 89.1,
-      "fill_pct_out": 89.1
+      "fill_pct_in": 87.0,
+      "fill_pct_out": 87.0
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 58.7,
-      "fill_pct_out": 58.7
+      "fill_pct_in": 56.6,
+      "fill_pct_out": 56.6
     },
     {
       "field": "headcount",
@@ -214,8 +242,8 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 79.7,
-      "fill_pct_out": 79.7
+      "fill_pct_in": 79.6,
+      "fill_pct_out": 79.6
     },
     {
       "field": "benefits_std",
@@ -224,8 +252,8 @@
     },
     {
       "field": "locations",
-      "fill_pct_in": 100.0,
-      "fill_pct_out": 100.0
+      "fill_pct_in": 98.7,
+      "fill_pct_out": 98.7
     },
     {
       "field": "language",
@@ -246,14 +274,30 @@
       "header": 137,
       "title": 0,
       "jd": 0,
-      "none": 311
+      "none": 310
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 383,
+      "vi": 382,
       "en": 65
     },
-    "experience_parsed_rate": 89.1
+    "text_quality": {
+      "before": {
+        "html": 0,
+        "nfc": 17,
+        "hidden": 26
+      },
+      "residual_html_pct": 0.0,
+      "residual_nfd_pct": 0.0,
+      "residual_hidden_char_pct": 0.0,
+      "residual_rows": {
+        "residual_html": 0,
+        "residual_nfd": 0,
+        "residual_hidden": 0
+      },
+      "abbreviations_approved": 0
+    },
+    "experience_parsed_rate": 87.0
   }
 }

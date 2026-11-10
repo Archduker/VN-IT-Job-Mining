@@ -139,7 +139,7 @@ flowchart LR
 - Áp dụng các kỹ thuật khai phá dữ liệu tiên tiến trên ma trận đặc trưng chuẩn hóa:
   - **FP-Growth:** Dựng cây tiền tố FP-Tree nén giao dịch kỹ năng từ các tin tuyển dụng. Trích xuất các tập kỹ năng phổ biến với ngưỡng $min\_sup$ phù hợp và sinh luật kết hợp với $Lift > 1.2$.
   - **K-Means / HDBSCAN Clustering:** Tính toán khoảng cách trên không gian đa chiều (kỹ năng + TF-IDF văn bản), xác định số cụm tối ưu qua phân tích Silhouette Score và Elbow WCSS.
-  - **Random Forest Regressor & TreeSHAP:** Huấn luyện mô hình hồi quy dự đoán $\log(Salary)$, trích xuất giá trị đóng góp Shapley để phân tích giá trị kinh tế biên của từng kỹ năng.
+  - **(Phần phụ, supervised, ngoại lệ) Random Forest Regressor & TreeSHAP:** Huấn luyện mô hình hồi quy dự đoán $\log(Salary)$, trích xuất giá trị đóng góp Shapley để phân tích giá trị kinh tế biên của từng kỹ năng.
 
 ### 3.5. Giai đoạn 5: Đánh Giá & Diễn Giải Tri Thức (Evaluation / Interpretation)
 - Tiến hành thẩm định song song trên 2 phương diện:

@@ -25,7 +25,7 @@ from .salary_parser_legacy import (
 
 MONTHLY_MIN_VND = 1_000_000
 MONTHLY_MAX_VND = 500_000_000
-USD_TO_VND = 25_400.0
+from preprocessing.common.constants import USD_VND as USD_TO_VND  # noqa: E402
 VND_PER_MILLION = 1_000_000.0
 HOURS_PER_MONTH = 160.0
 DAYS_PER_MONTH = 22.0

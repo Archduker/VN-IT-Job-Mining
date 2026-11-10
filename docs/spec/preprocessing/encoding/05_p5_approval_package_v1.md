@@ -1,5 +1,7 @@
 # P5 — gói duyệt triển khai v1 (08/11/2026)
 
+> **Ghi chú 10/11/2026:** JEV, OpenJev và Qwen đã bỏ; cột xác suất `*_prob` không còn. Cờ thay thế: `it_rule_level`, `seniority_can_kiem`, `job_family_can_kiem` (xem `docs/spec/preprocessing/spec/P5_encoding.md`).
+
 **Khuyến nghị duy nhất:** dùng nguyên snapshot P4 5.177 job đã kiểm SHA, giữ producer/extractor của driver năm bước cho đợt này; P5 chỉ ánh xạ theo vocabulary riêng sau khi Phát duyệt. Không tích hợp extractor mới ở đợt này. Đây là gói đề xuất, **P5 chưa hoàn thành**.
 
 Đã duyệt qua yêu cầu agent_04: contract đầy đủ driver năm bước, đúng 230 cột kỹ năng, 230 không được coi là K tối ưu, bảo toàn evidence/quyết định tay, không sửa producer P4 hoặc vocabulary production. Mọi chính sách bổ sung bên dưới vẫn là **Engineering Recommendation / Unresolved Decision**. Các SPEC gốc không bị sửa.

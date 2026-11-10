@@ -1,5 +1,7 @@
 # HƯỚNG XỬ LÝ TỔNG THỂ SAU BƯỚC INTEGRATION (POST-INTEGRATION MASTER PIPELINE)
 
+> **Cập nhật 10/11/2026:** dự án bỏ Gemini, JEV, OpenJev và Qwen. Model duy nhất: `VietAI/envit5-translation` (chạy local) để dịch JD tiếng Anh sang tiếng Việt. Phần nói về GenAI/LLM/JEV trong file này là lịch sử, không còn hiệu lực; xem `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` và `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6.
+
 > **Tài liệu quy chuẩn số 05 (Preprocessing Core Document 05 — Post-Integration Roadmap)**  
 > **Dự án:** Phân tích thị trường lao động IT và nhu cầu kỹ năng nghề nghiệp tại Việt Nam (**VN-IT-Job-Mining**)  
 > **Sứ mệnh:** Định hình lộ trình chuyển hóa dữ liệu toàn diện sau khi đã hoàn tất bước Integration (Gom trường chung & Ép phẳng JSON), từ Bảng Phẳng Staging đến Bộ Dữ Liệu Vàng (Golden Master Dataset) phục vụ trọn vẹn 5 mục tiêu chiến lược SD1 — SD5.

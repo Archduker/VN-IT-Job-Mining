@@ -115,7 +115,7 @@ def test_i5_empty_values_to_none():
 
 def test_integration_output_contract_and_conservation(tmp_path, monkeypatch):
     """Kiểm định Contract 28 cột, cấm 6 trường, và bảo toàn số lượng bản ghi."""
-    test_in = tmp_path / "data" / "preprocessing" / "01_clean"
+    test_in = tmp_path / "data" / "preprocessing" / "01b_deduplication"
     test_out = tmp_path / "data" / "preprocessing" / "02_integration"
     test_rep = tmp_path / "reports" / "preprocessing"
 
@@ -123,6 +123,7 @@ def test_integration_output_contract_and_conservation(tmp_path, monkeypatch):
     monkeypatch.setattr(integration, "IN_DIR", test_in)
     monkeypatch.setattr(integration, "OUT_DIR", test_out)
     monkeypatch.setattr(integration, "OUT_FILE", test_out / "all.parquet")
+    monkeypatch.setattr(integration, "REJECTED_DIR", tmp_path / "rejected")
     monkeypatch.setattr(step_report, "REPORTS_ROOT", test_rep)
 
     # Tạo 3 bản ghi mẫu
@@ -142,16 +143,19 @@ def test_integration_output_contract_and_conservation(tmp_path, monkeypatch):
 
     # 1. Kiểm tra bảo toàn dòng
     assert rep.data["input"]["rows"] == 4
-    # I0 (zero-drop): dòng JSON hỏng được giữ lại thành 1 bản ghi, không bị loại
-    assert rep.data["output"]["rows"] == 4
-    assert rep.data["dropped"] == []
+    # I0: dòng JSON hỏng bị drop, vào rejected, không dựng dòng giả
+    assert rep.data["output"]["rows"] == 3
+    assert [d for d in rep.data["dropped"] if d["rows"]] == [{"rule": "I0", "reason": "JSON_INVALID", "rows": 1}]
     assert rep.data["checks"]["rows_conserved"] is True
+    rej = [json.loads(x) for x in (tmp_path / "rejected" / "glints.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert len(rej) == 1 and rej[0]["rule"] == "I0" and rej[0]["line_no"] == 4
+    assert "raw_line" not in json.dumps(rep.data, ensure_ascii=False)
 
     # 2. Đọc file parquet lên kiểm tra Contract
     parquet_path = test_out / "all.parquet"
     assert parquet_path.exists()
     df = pd.read_parquet(parquet_path)
-    assert len(df) == 4
+    assert len(df) == 3
 
     # Assert đúng 28 cột
     assert list(df.columns) == list(integration.ALL_OUTPUT_COLUMNS)
@@ -164,3 +168,51 @@ def test_integration_output_contract_and_conservation(tmp_path, monkeypatch):
     # Assert company rỗng ở g2 đã chuyển thành None/NaN (I5)
     row_g2 = df[df["source_job_id"] == "g2"].iloc[0]
     assert pd.isna(row_g2["company_name"])
+
+
+def _run_one(tmp_path, monkeypatch, lines, src="glints"):
+    d_in = tmp_path / "in"
+    d_in.mkdir()
+    monkeypatch.setattr(integration, "IN_DIR", d_in)
+    monkeypatch.setattr(integration, "OUT_DIR", tmp_path / "out")
+    monkeypatch.setattr(integration, "OUT_FILE", tmp_path / "out" / "all.parquet")
+    monkeypatch.setattr(integration, "REJECTED_DIR", tmp_path / "rejected")
+    monkeypatch.setattr(step_report, "REPORTS_ROOT", tmp_path / "rep")
+    (d_in / f"{src}.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return integration.run([src], dry_run=False)[src], tmp_path / "rejected" / f"{src}.jsonl"
+
+
+def test_i6_missing_crawled_at_and_empty_title_rejected(tmp_path, monkeypatch):
+    ok = _make_env("glints", "g1", {"title": "Dev 1"})
+    no_date = _make_env("glints", "g2", {"title": "Dev 2"})
+    del no_date["metadata"]["scraped_at"]
+    no_title = _make_env("glints", "g3", {"title": ""})
+    rep, rej = _run_one(tmp_path, monkeypatch, [json.dumps(e) for e in (ok, no_date, no_title)])
+    assert rep.data["output"]["rows"] == 1
+    reasons = sorted(json.loads(x)["reason"] for x in rej.read_text(encoding="utf-8").splitlines())
+    assert reasons == ["SCHEMA: crawled_at", "SCHEMA: job_title"]
+    assert rep.data["checks"]["rows_conserved"] is True
+
+
+def test_i7_flatten_error_rejected_not_swallowed(tmp_path, monkeypatch):
+    def boom(raw, flat):
+        raise KeyError("x")
+    from preprocessing.integration import json_flattener as jf
+    monkeypatch.setattr(jf, "_flatten_glints", boom)
+    rep, rej = _run_one(tmp_path, monkeypatch, [json.dumps(_make_env("glints", "g1", {"title": "Dev"}))])
+    assert rep.data["output"]["rows"] == 0
+    assert json.loads(rej.read_text(encoding="utf-8"))["reason"] == "FLATTEN_ERROR: KeyError"
+    # chế độ mặc định (các nơi gọi khác) vẫn rơi về generic
+    assert flatten_raw_job_record(_make_env("glints", "g1", {"title": "Dev"}))["job_title"] == "Dev"
+
+
+def test_fallback_id_deterministic_across_hash_seeds():
+    import os, subprocess, sys
+    code = ("from preprocessing.integration.json_flattener import flatten_raw_job_record as f;"
+            "print(f({'metadata':{'source':'glints','source_url':'https://glints.com/vn/opportunities/jobs/x'},'raw_payload':{'title':'t'}})['job_id_global'])")
+    outs = {subprocess.run([sys.executable, "-c", code], cwd=ROOT_DIR, capture_output=True, text=True,
+                           env={**os.environ, "PYTHONHASHSEED": s}).stdout for s in ("1", "2")}
+    assert len(outs) == 1 and next(iter(outs)).startswith("glints_")
+
+
+ROOT_DIR = Path(__file__).resolve().parents[2]

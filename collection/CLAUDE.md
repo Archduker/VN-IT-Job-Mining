@@ -35,7 +35,7 @@ Ngữ cảnh khi làm việc với crawler trong `collection/`. Root `CLAUDE.md`
 | Raw | `data/<nguồn>/raw/<YYYY-MM-DD>/<job_id>_v<N>.json` | `raw/<nguồn>/<YYYY-MM-DD>/<job_id>_v<N>.json` |
 | Ledger | `data/<nguồn>/url_ledger/catalog_master.json`, `manifests/` | `url_ledger/<nguồn>/...` |
 
-- `common/r2_storage.canonicalize_lakehouse_key` là luật duy nhất cho key. Hàm này từ chối key không có tên nguồn hợp lệ.
+- `common/r2_storage.canonicalize_lakehouse_key` là luật duy nhất cho key. Hàm này từ chối key không có tên nguồn hợp lệ. Bucket chỉ có 5 tiền tố `url_ledger/`, `raw/`, `staging/`, `curated/`, `pipeline/` (chốt 10/11/2026); `silver/`, `gold/` là tên cũ.
 - Layout cũ `raw/crawling/<ngày>/<nguồn>/` và `raw/url_ledger/<ngày>/<nguồn>/` được `normalize_legacy_key` chuyển về layout chuẩn.
 - Thư mục `_index/`, `_quality/`, `_listing/` trong `raw/` là file phụ, không phải envelope.
 - Các file `batch_001.json` và `raw_batch.json` cũ gom nhiều tin và trùng với file từng tin (PRE-8).
