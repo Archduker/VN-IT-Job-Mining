@@ -15,6 +15,7 @@ class FieldInventoryItem(BaseModel):
 
 
 class EDASummary(BaseModel):
+    raw_scan: Optional[dict] = None
     source: str
     total_records: Optional[int] = None
     sampled_records: int = 0

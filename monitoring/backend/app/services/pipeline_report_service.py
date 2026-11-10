@@ -14,10 +14,12 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
+import numpy as np
 import pandas as pd
 
 from app.core.config import settings
 from app.core.data_paths import load_json_report
+from app.services.eda_exploration_service import exploration
 
 PIPELINE_CMD = "python scripts/run_staging_integration_pipeline.py"
 INTEGRATION_CMD = "python preprocessing/integration/run_integration.py"
@@ -209,21 +211,23 @@ class PipelineReportService:
         }
 
     def get_eda_charts(self, source: str) -> Dict[str, Any]:
-        frame = staging_frame(source)
+        return self.eda_charts_from_frame(staging_frame(source), source)
+
+    @staticmethod
+    def eda_charts_from_frame(frame, source):
         if frame is None or frame.empty:
             return {
                 "available": False,
                 "unavailable_reason": f"Chưa có data/staging/{source}/{source}_flat_clean.parquet. Tải về từ R2 hoặc chạy {PIPELINE_CMD}.",
                 "salary_histogram": [], "skills_pareto": [], "locations": [], "records": 0,
             }
-        salary_cols = frame[[c for c in ("salary_min_vnd", "salary_max_vnd") if c in frame]]
-        salary_mid = salary_cols.where(salary_cols > 0).mean(axis=1).dropna() / 1e6  # 0 VND là lương ẩn
-        edges = [0, 10, 20, 30, 40, 50, 60, 80, 100, 150, float("inf")]
-        hist = pd.cut(salary_mid, bins=edges, right=False).value_counts(sort=False)
-        histogram = [
-            {"bin": f"{int(iv.left)}–{int(iv.right)}M" if iv.right != float("inf") else f"≥{int(iv.left)}M", "count": int(n)}
-            for iv, n in hist.items()
-        ]
+        salary_cols = frame[[c for c in ("salary_min_vnd", "salary_max_vnd") if c in frame]].apply(pd.to_numeric, errors="coerce")
+        salary_mid = salary_cols.replace([np.inf, -np.inf], np.nan).mean(axis=1).dropna() / 1e6
+        histogram = []
+        if not salary_mid.empty:
+            counts, edges = np.histogram(salary_mid.to_numpy(), bins=10)
+            histogram = [{"bin": f"{edges[i]:.4g}–{edges[i + 1]:.4g}M", "count": int(n)}
+                         for i, n in enumerate(counts)]
         skills = pd.Series(
             [str(s) for row in frame.get("skills_list", pd.Series(dtype=object)).dropna() for s in list(row) if str(s).strip()],
             dtype=object,
@@ -235,7 +239,13 @@ class PipelineReportService:
         for label, count in top.items():
             running += int(count)
             pareto.append({"label": label, "count": int(count), "cumulative_pct": round(100 * running / total_skills, 1)})
-        cities = frame["primary_city"].value_counts().head(8) if "primary_city" in frame else pd.Series(dtype=int)
+        # Normalization writes tinh_chinh; older staging uses primary_city.
+        city_values = pd.Series(pd.NA, index=frame.index, dtype="string")
+        for column in ("tinh_chinh", "primary_city"):
+            if column in frame:
+                values = frame[column].astype("string").str.strip().replace("", pd.NA)
+                city_values = city_values.fillna(values)
+        cities = city_values.value_counts().head(8)
         return {
             "available": True,
             "unavailable_reason": None,
@@ -244,6 +254,7 @@ class PipelineReportService:
             "salary_histogram": histogram,
             "skills_pareto": pareto,
             "locations": [{"label": str(k), "count": int(v)} for k, v in cities.items()],
+            "exploration": exploration(frame, city_values),
         }
 
     def get_eda_compare(self) -> Dict[str, Any]:

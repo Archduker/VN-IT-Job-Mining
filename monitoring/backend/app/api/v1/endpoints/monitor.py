@@ -12,7 +12,7 @@ from app.services.source_report_service import source_report_service
 router = APIRouter()
 
 
-@router.get("/collection", summary="Tin theo ngày, lịch chạy và tiến độ thu thập")
+@router.get("/collection", summary="Kiểm kê raw và URL Ledger trực tiếp trên R2")
 def get_collection(days: int = Query(14, ge=7, le=14)) -> Dict[str, Any]:
     return collection_monitor_service.get_collection(days)
 
