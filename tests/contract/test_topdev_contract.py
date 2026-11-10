@@ -91,8 +91,8 @@ def test_c10_random_pause():
     standards.check_random_pause(module)
 
 
-def test_scrape15_filter_non_it_jobs_in_discovery(crawler, monkeypatch):
-    """SCRAPE-15: Discovery lọc bỏ các tin ngoài IT (kế toán, tài xế) do API bỏ qua category_ids."""
+def test_discovery_registers_all_jobs_without_it_filter(crawler, monkeypatch):
+    """SCRAPE-15 (đã chốt 09/11): Discovery không lọc IT, bước Clean lọc; tin ngoài IT vẫn được đăng ký."""
     listing_payload = {
         "data": [
             {
@@ -122,12 +122,9 @@ def test_scrape15_filter_non_it_jobs_in_discovery(crawler, monkeypatch):
     }
     monkeypatch.setattr(crawler.api_crawler, "_fetch_listing_with_retries", lambda page, **k: listing_payload)
     discovered = crawler.discover_urls(max_pages=1)
-    assert len(discovered) == 1
-    assert "senior-golang-1001" in discovered[0]
-    # Kiểm tra catalog chỉ có đúng 1 tin IT
-    assert len(crawler.ledger.records) == 1
-    rec = next(iter(crawler.ledger.records.values()))
-    assert rec["job_id"] == "1001"
+    assert len(discovered) == 3
+    assert any("senior-golang-1001" in u for u in discovered)
+    assert {r["job_id"] for r in crawler.ledger.records.values()} == {"1001", "1002", "1003"}
 
 
 def test_c14_discovery_fails_when_all_pages_fail(crawler, monkeypatch):

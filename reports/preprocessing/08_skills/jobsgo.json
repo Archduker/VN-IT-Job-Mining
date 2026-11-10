@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 585
+    "rows": 549
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 585
+    "rows": 549
   },
   "dropped": [],
   "rules": [],
@@ -24,67 +24,59 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 2833,
-    "n_jobs_no_skill": 69,
+    "n_job_skill_rows": 2676,
+    "n_jobs_no_skill": 64,
     "top_skills": [
       {
         "skill": "communication",
-        "n_jobs": 258
+        "n_jobs": 244
       },
       {
         "skill": "english",
-        "n_jobs": 187
+        "n_jobs": 177
       },
       {
         "skill": "teamwork",
-        "n_jobs": 127
+        "n_jobs": 122
       },
       {
         "skill": "logical_thinking",
-        "n_jobs": 106
+        "n_jobs": 104
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 92
-      },
-      {
-        "skill": "machine_learning",
         "n_jobs": 88
       },
       {
+        "skill": "machine_learning",
+        "n_jobs": 85
+      },
+      {
         "skill": "python",
-        "n_jobs": 71
+        "n_jobs": 67
       },
       {
         "skill": "mysql",
-        "n_jobs": 56
-      },
-      {
-        "skill": "linux",
-        "n_jobs": 55
+        "n_jobs": 54
       },
       {
         "skill": "rest_api",
-        "n_jobs": 53
+        "n_jobs": 52
+      },
+      {
+        "skill": "linux",
+        "n_jobs": 51
       },
       {
         "skill": "agile_scrum",
-        "n_jobs": 48
-      },
-      {
-        "skill": "java",
-        "n_jobs": 48
+        "n_jobs": 46
       },
       {
         "skill": "sql_server",
         "n_jobs": 46
       },
       {
-        "skill": "japanese",
-        "n_jobs": 45
-      },
-      {
-        "skill": "data_analysis",
+        "skill": "java",
         "n_jobs": 45
       },
       {
@@ -92,60 +84,68 @@
         "n_jobs": 44
       },
       {
+        "skill": "data_analysis",
+        "n_jobs": 42
+      },
+      {
         "skill": "cicd",
-        "n_jobs": 43
+        "n_jobs": 41
+      },
+      {
+        "skill": "japanese",
+        "n_jobs": 40
       },
       {
         "skill": "docker",
-        "n_jobs": 41
-      },
-      {
-        "skill": "postgresql",
-        "n_jobs": 41
+        "n_jobs": 39
       },
       {
         "skill": "business_analysis",
         "n_jobs": 39
       },
       {
+        "skill": "postgresql",
+        "n_jobs": 37
+      },
+      {
         "skill": "csharp",
-        "n_jobs": 38
+        "n_jobs": 35
       },
       {
         "skill": "firewall",
-        "n_jobs": 33
-      },
-      {
-        "skill": "infosec",
-        "n_jobs": 33
-      },
-      {
-        "skill": "oracle_db",
-        "n_jobs": 32
+        "n_jobs": 31
       },
       {
         "skill": "dotnet",
         "n_jobs": 31
       },
       {
+        "skill": "infosec",
+        "n_jobs": 30
+      },
+      {
         "skill": "microservices",
         "n_jobs": 30
       },
       {
-        "skill": "project_management",
-        "n_jobs": 30
+        "skill": "jira",
+        "n_jobs": 28
       },
       {
-        "skill": "jira",
-        "n_jobs": 29
+        "skill": "oracle_db",
+        "n_jobs": 27
+      },
+      {
+        "skill": "project_management",
+        "n_jobs": 27
       },
       {
         "skill": "javascript",
-        "n_jobs": 27
+        "n_jobs": 25
       },
       {
-        "skill": "power_bi",
-        "n_jobs": 27
+        "skill": "android_sdk",
+        "n_jobs": 25
       }
     ],
     "short_forms_approved": 0,
@@ -153,34 +153,47 @@
   },
   "samples": [
     {
-      "job_id": "jobsgo_29410756100",
+      "job_id": "jobsgo_28947562831",
       "source": "jobsgo",
       "field": "skills",
       "before": null,
       "after": [
-        "infosec",
-        "japanese"
+        "communication",
+        "computer_vision",
+        "data_warehouse",
+        "english",
+        "flask",
+        "japanese",
+        "langchain",
+        "machine_learning",
+        "opencv",
+        "problem_solving",
+        "python",
+        "pytorch"
       ],
       "changed": true
     },
     {
-      "job_id": "jobsgo_29265515116",
+      "job_id": "jobsgo_29210900378",
       "source": "jobsgo",
       "field": "skills",
       "before": null,
       "after": [
-        "data_analysis",
-        "oop"
+        "agile_scrum",
+        "communication",
+        "ecommerce",
+        "qa_qc"
       ],
       "changed": true
     },
     {
-      "job_id": "jobsgo_28998837135",
+      "job_id": "jobsgo_29165492202",
       "source": "jobsgo",
       "field": "skills",
       "before": null,
       "after": [
-        "communication"
+        "problem_solving",
+        "teamwork"
       ],
       "changed": true
     }

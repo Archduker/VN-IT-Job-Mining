@@ -822,7 +822,7 @@ class GlintsCrawler(BaseCrawler):
         self._r2_store_inst = None
         self.http_client = http_client or HttpClient(
             source=self.source_name,
-            delay_config=DelayConfig(min_seconds=1.5, max_seconds=3.0),
+            delay_config=DelayConfig(min_seconds=2.0, max_seconds=4.5),
             timeout=25,
             extra_headers={
                 "Accept": "application/json, text/html, */*",
@@ -999,7 +999,7 @@ class GlintsCrawler(BaseCrawler):
 
                             logging.info("[Glints] Trang %d: ghi nhận %d jobs từ DOM/GraphQL (mới: %d)", page_idx, len(card_data), new_registered)
                             page_idx += 1
-                            polite_sleep(2.0, 3.8, reason="Chuyển trang danh mục Glints")
+                            polite_sleep(2.0, 4.5, reason="Chuyển trang danh mục Glints")
                         except Exception as exc:
                             logging.warning("[Glints] Safe Skip Playwright trang listing %d: %s", page_idx, exc)
                             page_idx += 1
@@ -1160,7 +1160,7 @@ class GlintsCrawler(BaseCrawler):
                         self.ledger.save_catalog()
                         self.ledger.sync_to_r2()
 
-                    polite_sleep(2.0, 4.0, reason="Nghỉ giữa 2 bài chi tiết Glints")
+                    polite_sleep(2.0, 4.5, reason="Nghỉ giữa 2 bài chi tiết Glints")
                 except Exception as exc:
                     # BƯỚC XỬ LÝ LỖI: Lưu vào Queue lỗi (FAILED Queue) để bữa khác cào lại
                     logging.warning("[Glints] Safe Skip lỗi cào chi tiết %s (ID %s): %s. Đưa vào Queue lỗi.", url, job_id, exc)

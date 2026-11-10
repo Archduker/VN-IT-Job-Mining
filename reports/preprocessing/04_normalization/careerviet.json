@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:12+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:24+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 421
+    "rows": 401
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 421
+    "rows": 401
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 416,
+      "rows_affected": 396,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -54,7 +54,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 398,
+      "rows_affected": 380,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -83,7 +83,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 12 nhóm SPEC-01 + Other",
       "action": "modify",
-      "rows_affected": 266,
+      "rows_affected": 253,
       "examples": [
         {
           "job_id": "35C80358",
@@ -119,35 +119,35 @@
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 336,
+      "rows_affected": 325,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 421,
+      "rows_affected": 401,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 42,
+      "rows_affected": 38,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 250,
+      "rows_affected": 241,
       "examples": []
     },
     {
       "id": "M4",
       "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
       "action": "flag",
-      "rows_affected": 14,
+      "rows_affected": 11,
       "examples": []
     },
     {
@@ -175,28 +175,28 @@
       "id": "M6",
       "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
       "action": "flag",
-      "rows_affected": 1,
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "M8",
       "name": "min > max, kinh nghiệm ngoài khoảng: chỉ cờ",
       "action": "flag",
-      "rows_affected": 1,
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 127,
+      "rows_affected": 120,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 421,
+      "rows_affected": 401,
       "examples": []
     }
   ],
@@ -213,8 +213,8 @@
     },
     {
       "field": "seniority",
-      "fill_pct_in": 94.5,
-      "fill_pct_out": 94.5
+      "fill_pct_in": 94.8,
+      "fill_pct_out": 94.8
     },
     {
       "field": "seniority_source",
@@ -233,8 +233,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 79.8,
-      "fill_pct_out": 79.8
+      "fill_pct_in": 81.0,
+      "fill_pct_out": 81.0
     },
     {
       "field": "company_norm",
@@ -243,23 +243,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 28.0,
-      "fill_pct_out": 28.0
+      "fill_pct_in": 27.7,
+      "fill_pct_out": 27.7
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 30.2,
-      "fill_pct_out": 30.2
+      "fill_pct_in": 29.9,
+      "fill_pct_out": 29.9
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 28.0,
-      "fill_pct_out": 28.0
+      "fill_pct_in": 27.7,
+      "fill_pct_out": 27.7
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 30.2,
-      "fill_pct_out": 30.2
+      "fill_pct_in": 29.9,
+      "fill_pct_out": 29.9
     },
     {
       "field": "is_outlier_salary",
@@ -303,8 +303,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 92.6,
-      "fill_pct_out": 92.6
+      "fill_pct_in": 92.8,
+      "fill_pct_out": 92.8
     },
     {
       "field": "exp_source",
@@ -332,76 +332,76 @@
   },
   "extra": {
     "seniority_distribution": {
-      "Middle": 166,
-      "Senior": 68,
-      "Lead/Manager": 66,
-      "Junior": 63,
-      "Intern/Fresher": 35,
-      "(trống)": 23
+      "Middle": 162,
+      "Senior": 67,
+      "Lead/Manager": 61,
+      "Junior": 59,
+      "Intern/Fresher": 31,
+      "(trống)": 21
     },
     "job_family_distribution": {
-      "Other": 155,
-      "Data Science/AI": 51,
-      "Product/Project": 48,
-      "DevOps/Cloud": 39,
-      "Backend": 31,
-      "QA/QC": 22,
-      "System/Network": 20,
-      "Data Engineer": 16,
-      "Security": 15,
+      "Other": 148,
+      "Data Science/AI": 50,
+      "Product/Project": 46,
+      "DevOps/Cloud": 38,
+      "Backend": 29,
+      "QA/QC": 21,
+      "System/Network": 19,
+      "Security": 13,
+      "Data Engineer": 13,
       "Frontend": 8,
       "Mobile": 7,
       "Fullstack": 7,
       "Embedded/IoT": 2
     },
     "job_family_source_distribution": {
-      "title": 216,
-      "none": 155,
-      "skills": 50
+      "title": 206,
+      "none": 148,
+      "skills": 47
     },
     "work_mode_distribution": {
-      "onsite": 415,
+      "onsite": 395,
       "unknown": 5,
       "remote": 1
     },
     "salary_status_distribution": {
-      "negotiable": 293,
-      "value": 127,
+      "negotiable": 280,
+      "value": 120,
       "not_stated": 1
     },
     "salary_outliers": 1,
     "inference": {
-      "level_inferred": 250,
-      "exp_inferred": 14
+      "level_inferred": 241,
+      "exp_inferred": 11
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 397,
-      "job_title_core_distinct": 305,
+      "job_title_clean_distinct": 381,
+      "job_title_core_distinct": 293,
       "title_canonical_source": {
-        "none": 421
+        "none": 401
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 250,
-      "seniority_can_kiem": 5,
+      "level_inferred": 241,
+      "seniority_can_kiem": 4,
       "salary_negotiable_with_value": 0,
       "tinh_unknown": 5,
-      "salary_iqr_outlier_by_level": 1,
-      "job_family_can_kiem": 37,
+      "salary_iqr_outlier_by_level": 0,
+      "job_family_can_kiem": 34,
       "salary_out_of_range": 0,
       "salary_iqr_outlier_pooled": 1,
       "salary_suspect": 1,
       "salary_period_year": 0,
-      "exp_inferred": 14,
+      "exp_inferred": 11,
       "salary_min_gt_max": 0,
-      "exp_out_of_range": 1,
+      "exp_out_of_range": 0,
       "currency_reinterpreted": 0
     }
   },
   "samples": [
     {
-      "job_id": "careerviet_35C81C51",
+      "job_id": "careerviet_35C8A5EE",
       "source": "careerviet",
       "field": "locations",
       "before": [
@@ -410,6 +410,12 @@
           "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
           "raw": "Hà Nội"
+        },
+        {
+          "dia_chi_cu_the": null,
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Địa điểm làm việc Hà Nội Tầng 6, Tòa nhà Trường Thịnh, Tràng An Complex, 01 Phùng Chí Kiên"
         }
       ],
       "after": [
@@ -422,12 +428,22 @@
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": null,
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Địa điểm làm việc Hà Nội Tầng 6, Tòa nhà Trường Thịnh, Tràng An Complex, 01 Phùng Chí Kiên",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
         }
       ],
       "changed": true
     },
     {
-      "job_id": "careerviet_35C87F54",
+      "job_id": "careerviet_35C88A74",
       "source": "careerviet",
       "field": "exp_min_years",
       "before": null,
@@ -435,7 +451,7 @@
       "changed": true
     },
     {
-      "job_id": "careerviet_35C89895",
+      "job_id": "careerviet_35C8A4C9",
       "source": "careerviet",
       "field": "exp_min_years",
       "before": null,

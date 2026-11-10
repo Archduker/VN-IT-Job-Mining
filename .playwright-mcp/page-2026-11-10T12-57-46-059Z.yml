@@ -1,0 +1,85 @@
+- generic [active] [ref=f3e1]:
+  - banner [ref=f3e2]:
+    - heading "Gán nhãn gold" [level=1] [ref=f3e3]
+    - generic [ref=f3e4]: 0/0
+    - button "Nạp mẫu JD" [ref=f3e6] [cursor=pointer]
+    - button "Nạp nhãn cũ" [ref=f3e7] [cursor=pointer]
+    - button "Xuất JSON" [ref=f3e8] [cursor=pointer]
+  - generic [ref=f3e9]:
+    - text: Chọn file
+    - code [ref=f3e10]: gold_sample.json
+    - text: (tạo bằng
+    - code [ref=f3e11]: scripts/build_gold_sample.py
+    - text: ) để bắt đầu.Nhãn tự lưu trong trình duyệt; bấm "Xuất JSON" để tải file nhãn về.
+  - main [ref=f3e12]:
+    - generic [ref=f3e13]: "Bôi đen một đoạn rồi bấm section bên phải: mô tảyêu cầuưu tiênphúc lợikhác"
+    - generic [ref=f3e16]:
+      - generic [ref=f3e17]:
+        - generic [ref=f3e18]: IT hay không IT
+        - generic [ref=f3e20]:
+          - button "IT (1)" [ref=f3e21] [cursor=pointer]
+          - button "Không IT (2)" [ref=f3e22] [cursor=pointer]
+      - generic [ref=f3e23]:
+        - generic [ref=f3e24]: Lương
+        - generic [ref=f3e26]:
+          - button "Thỏa thuận" [ref=f3e27] [cursor=pointer]
+          - button "Không ghi" [ref=f3e28] [cursor=pointer]
+          - button "Có số" [ref=f3e29] [cursor=pointer]
+        - generic [ref=f3e30]:
+          - spinbutton "Từ" [ref=f3e31]
+          - spinbutton "Đến" [ref=f3e32]
+          - generic [ref=f3e33]:
+            - button "VND" [ref=f3e34] [cursor=pointer]
+            - button "USD" [ref=f3e35] [cursor=pointer]
+          - generic [ref=f3e36]:
+            - button "tháng" [ref=f3e37] [cursor=pointer]
+            - button "năm" [ref=f3e38] [cursor=pointer]
+            - button "giờ" [ref=f3e39] [cursor=pointer]
+        - generic [ref=f3e40]: Chỉ có "Từ X" thì để trống ô "Đến"; chỉ có "Up to" thì để trống ô "Từ".
+      - generic [ref=f3e41]:
+        - generic [ref=f3e42]: Kinh nghiệm tối thiểu (năm)
+        - generic [ref=f3e44]:
+          - spinbutton "số năm" [ref=f3e45]
+          - button "Không ghi" [ref=f3e46] [cursor=pointer]
+      - generic [ref=f3e47]:
+        - generic [ref=f3e48]: Cấp bậc
+        - generic [ref=f3e50]:
+          - button "Intern/Fresher" [ref=f3e51] [cursor=pointer]
+          - button "Junior" [ref=f3e52] [cursor=pointer]
+          - button "Middle" [ref=f3e53] [cursor=pointer]
+          - button "Senior" [ref=f3e54] [cursor=pointer]
+          - button "Lead/Manager" [ref=f3e55] [cursor=pointer]
+          - button "Không rõ" [ref=f3e56] [cursor=pointer]
+      - generic [ref=f3e57]:
+        - generic [ref=f3e58]: Địa điểm
+        - generic [ref=f3e60]:
+          - combobox "Gõ tên tỉnh rồi Enter" [ref=f3e61]
+          - button "Không ghi" [ref=f3e62] [cursor=pointer]
+        - generic [ref=f3e63]:
+          - button "Tại văn phòng" [ref=f3e64] [cursor=pointer]
+          - button "Remote" [ref=f3e65] [cursor=pointer]
+          - button "Hybrid" [ref=f3e66] [cursor=pointer]
+          - button "Không ghi" [ref=f3e67] [cursor=pointer]
+      - generic [ref=f3e68]:
+        - generic [ref=f3e69]: Section
+        - generic [ref=f3e71]:
+          - button "Mô tả" [ref=f3e72] [cursor=pointer]
+          - button "Yêu cầu" [ref=f3e73] [cursor=pointer]
+          - button "Ưu tiên" [ref=f3e74] [cursor=pointer]
+          - button "Phúc lợi" [ref=f3e75] [cursor=pointer]
+          - button "Khác" [ref=f3e76] [cursor=pointer]
+        - generic [ref=f3e77]:
+          - button "Xóa đoạn cuối" [ref=f3e78] [cursor=pointer]
+          - button "JD không chia được" [ref=f3e79] [cursor=pointer]
+      - generic [ref=f3e80]:
+        - generic [ref=f3e81]: Kỹ năng
+        - generic [ref=f3e83]:
+          - combobox "Gõ kỹ năng rồi Enter" [ref=f3e84]
+          - button "Bắt buộc" [ref=f3e85] [cursor=pointer]
+          - button "Không có" [ref=f3e86] [cursor=pointer]
+        - generic [ref=f3e87]: Gõ nhiều kỹ năng cách nhau bằng dấu phẩy rồi Enter. Kỹ năng không có trong danh mục vẫn nhận (chip gạch nét đứt, ghi nhận là thiếu danh mục). Bấm chip để đổi bắt buộc ↔ ưu tiên, bấm × để xóa.
+      - generic [ref=f3e88]:
+        - button "Cần xem lại (F)" [ref=f3e89] [cursor=pointer]
+        - button "← Trước" [ref=f3e90] [cursor=pointer]
+        - button "Sau →" [ref=f3e91] [cursor=pointer]
+      - generic [ref=f3e92]: "Phím (khi không đang gõ): ← → đổi JD, N = tin chưa xong kế tiếp, F = cần xem lại, 1/2 = IT/không IT, 3–8 = cấp bậc (Intern/Fresher … Lead/Manager, Không rõ)."

@@ -612,7 +612,7 @@ class ViecLam24hCrawler(BaseCrawler):
         max_items: int | None = None,
         checkpoint_interval: int = 10,
         min_delay: float = 2.0,
-        max_delay: float = 4.0,
+        max_delay: float = 4.5,
         local_json_file: Path | str | None = None,
         sync_r2: bool = False,
         online: bool = False,
@@ -713,7 +713,7 @@ class ViecLam24hCrawler(BaseCrawler):
                 page_url = f"{BASE_URL}{cat_path}?page={page_idx}" if page_idx > 1 else f"{BASE_URL}{cat_path}"
                 try:
                     if is_online and page_idx > 1:
-                        polite_sleep(1.0, 2.0, reason=f"Nghỉ giữa các trang danh mục {cat_name}")
+                        polite_sleep(2.0, 4.5, reason=f"Nghỉ giữa các trang danh mục {cat_name}")
                     resp = self.client.get(page_url)
                     if resp.status_code >= 400:
                         log.warning("[Vieclam24h] HTTP Error %d tại trang %d danh mục %s", resp.status_code, page_idx, cat_name)
@@ -831,7 +831,7 @@ class ViecLam24hCrawler(BaseCrawler):
             try:
                 log.info("[Vieclam24h] [%d/%d] Đang tải chi tiết: %s", idx, len(candidates), url)
                 if is_online:
-                    polite_sleep(2.0, 4.0, reason="Nghỉ giữa 2 bài đăng Vieclam24h")
+                    polite_sleep(2.0, 4.5, reason="Nghỉ giữa 2 bài đăng Vieclam24h")
 
                 resp = self.client.get(url)
                 if resp.status_code >= 400:

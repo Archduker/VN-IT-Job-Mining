@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 786
+    "rows": 774
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 786
+    "rows": 774
   },
   "dropped": [],
   "rules": [],
@@ -24,16 +24,16 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 3998,
+    "n_job_skill_rows": 3972,
     "n_jobs_no_skill": 73,
     "top_skills": [
       {
         "skill": "english",
-        "n_jobs": 344
+        "n_jobs": 341
       },
       {
         "skill": "communication",
-        "n_jobs": 324
+        "n_jobs": 322
       },
       {
         "skill": "python",
@@ -41,7 +41,7 @@
       },
       {
         "skill": "teamwork",
-        "n_jobs": 145
+        "n_jobs": 144
       },
       {
         "skill": "machine_learning",
@@ -49,27 +49,27 @@
       },
       {
         "skill": "data_analysis",
-        "n_jobs": 119
-      },
-      {
-        "skill": "agile_scrum",
-        "n_jobs": 80
+        "n_jobs": 120
       },
       {
         "skill": "linux",
-        "n_jobs": 80
+        "n_jobs": 79
       },
       {
-        "skill": "project_management",
-        "n_jobs": 80
-      },
-      {
-        "skill": "business_analysis",
+        "skill": "agile_scrum",
         "n_jobs": 78
       },
       {
+        "skill": "project_management",
+        "n_jobs": 78
+      },
+      {
+        "skill": "business_analysis",
+        "n_jobs": 77
+      },
+      {
         "skill": "power_bi",
-        "n_jobs": 75
+        "n_jobs": 76
       },
       {
         "skill": "problem_solving",
@@ -81,18 +81,14 @@
       },
       {
         "skill": "rest_api",
-        "n_jobs": 69
+        "n_jobs": 68
       },
       {
         "skill": "oracle_db",
-        "n_jobs": 64
-      },
-      {
-        "skill": "clean_architecture",
         "n_jobs": 63
       },
       {
-        "skill": "java",
+        "skill": "clean_architecture",
         "n_jobs": 62
       },
       {
@@ -100,12 +96,16 @@
         "n_jobs": 62
       },
       {
+        "skill": "java",
+        "n_jobs": 61
+      },
+      {
         "skill": "cicd",
         "n_jobs": 59
       },
       {
         "skill": "logical_thinking",
-        "n_jobs": 56
+        "n_jobs": 57
       },
       {
         "skill": "azure",
@@ -120,11 +120,11 @@
         "n_jobs": 49
       },
       {
-        "skill": "sql_server",
-        "n_jobs": 46
+        "skill": "jira",
+        "n_jobs": 44
       },
       {
-        "skill": "jira",
+        "skill": "sql_server",
         "n_jobs": 44
       },
       {
@@ -133,11 +133,11 @@
       },
       {
         "skill": "cpp",
-        "n_jobs": 39
+        "n_jobs": 38
       },
       {
         "skill": "postgresql",
-        "n_jobs": 38
+        "n_jobs": 37
       },
       {
         "skill": "csharp",
@@ -153,52 +153,63 @@
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2112450",
+      "job_id": "vietnamworks_2112901",
       "source": "vietnamworks",
       "field": "skills",
       "before": [
-        "Network Infrastructure",
-        "Routing Protocol",
-        "Network Security",
-        "Data Center And Dr Environments"
+        "Python Dcc Automation",
+        "Unreal Engine/Unity Tools",
+        "Rest Apis And Relational Databases",
+        "Web Content Optimization"
       ],
       "after": [
-        "network_security"
+        "clean_architecture",
+        "cpp",
+        "csharp",
+        "python",
+        "rest_api"
       ],
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2119757",
+      "job_id": "vietnamworks_2102807",
       "source": "vietnamworks",
       "field": "skills",
       "before": [
-        "Giám Sát Chất Lượng Dịch Vụ",
-        "Giải Quyết Vấn Đề",
-        "Kiểm Soát Rủi Ro",
-        "Kiểm Soát Tuân Thủ",
-        "Cải Tiến Chất Lượng"
+        "Golang",
+        "TypeScript",
+        "Restful Api",
+        "Postgresql",
+        "problem-solving"
       ],
       "after": [
-        "communication",
-        "logical_thinking",
-        "problem_solving"
+        "docker",
+        "golang",
+        "linux",
+        "microservices",
+        "postgresql",
+        "rest_api",
+        "typescript"
       ],
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2113740",
+      "job_id": "vietnamworks_2109106",
       "source": "vietnamworks",
       "field": "skills",
       "before": [
-        "System Engineer",
-        "System security",
-        "System Administration",
-        "English Conversation",
-        "Systems Engineering"
+        "Ci/Cd Methodologies",
+        "Kubernetes",
+        "DevOps",
+        "Docker",
+        "MLOps"
       ],
       "after": [
-        "infosec",
-        "linux"
+        "cicd",
+        "docker",
+        "kubernetes",
+        "machine_learning",
+        "terraform"
       ],
       "changed": true
     }

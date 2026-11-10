@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 171
+    "rows": 166
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 171
+    "rows": 166
   },
   "dropped": [],
   "rules": [],
@@ -24,20 +24,20 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 714,
+    "n_job_skill_rows": 694,
     "n_jobs_no_skill": 20,
     "top_skills": [
       {
         "skill": "communication",
-        "n_jobs": 81
+        "n_jobs": 80
       },
       {
         "skill": "english",
-        "n_jobs": 48
+        "n_jobs": 47
       },
       {
         "skill": "teamwork",
-        "n_jobs": 35
+        "n_jobs": 34
       },
       {
         "skill": "problem_solving",
@@ -45,18 +45,14 @@
       },
       {
         "skill": "logical_thinking",
-        "n_jobs": 26
+        "n_jobs": 24
       },
       {
         "skill": "python",
-        "n_jobs": 23
+        "n_jobs": 21
       },
       {
         "skill": "machine_learning",
-        "n_jobs": 18
-      },
-      {
-        "skill": "data_analysis",
         "n_jobs": 18
       },
       {
@@ -64,23 +60,19 @@
         "n_jobs": 16
       },
       {
-        "skill": "docker",
-        "n_jobs": 15
+        "skill": "data_analysis",
+        "n_jobs": 16
       },
       {
         "skill": "postgresql",
         "n_jobs": 15
       },
       {
-        "skill": "linux",
-        "n_jobs": 13
+        "skill": "docker",
+        "n_jobs": 14
       },
       {
         "skill": "agile_scrum",
-        "n_jobs": 12
-      },
-      {
-        "skill": "project_management",
         "n_jobs": 12
       },
       {
@@ -92,7 +84,7 @@
         "n_jobs": 11
       },
       {
-        "skill": "javascript",
+        "skill": "linux",
         "n_jobs": 11
       },
       {
@@ -100,8 +92,16 @@
         "n_jobs": 11
       },
       {
-        "skill": "java",
+        "skill": "project_management",
+        "n_jobs": 11
+      },
+      {
+        "skill": "javascript",
         "n_jobs": 10
+      },
+      {
+        "skill": "java",
+        "n_jobs": 9
       },
       {
         "skill": "infosec",
@@ -116,10 +116,6 @@
         "n_jobs": 9
       },
       {
-        "skill": "power_bi",
-        "n_jobs": 9
-      },
-      {
         "skill": "oracle_db",
         "n_jobs": 8
       },
@@ -128,11 +124,7 @@
         "n_jobs": 8
       },
       {
-        "skill": "jira",
-        "n_jobs": 8
-      },
-      {
-        "skill": "business_analysis",
+        "skill": "power_bi",
         "n_jobs": 8
       },
       {
@@ -146,6 +138,14 @@
       {
         "skill": "csharp",
         "n_jobs": 7
+      },
+      {
+        "skill": "oop",
+        "n_jobs": 7
+      },
+      {
+        "skill": "jira",
+        "n_jobs": 7
       }
     ],
     "short_forms_approved": 0,
@@ -153,75 +153,96 @@
   },
   "samples": [
     {
-      "job_id": "vieclam24h_200966577",
+      "job_id": "vieclam24h_200946618",
       "source": "vieclam24h",
       "field": "skills",
       "before": [
-        "nghiên cứu phát triển sản phẩm",
-        "r&d",
-        "nhân viên nghiên cứu và phát triển sản phẩm",
-        "r&d staff",
-        "Kỹ sư công nghệ",
-        "r&d thực phẩm",
-        "Nghiên Cứu Sinh",
-        "nghiên cứu viên",
-        "nhân viên r&d",
-        "nghiên cứu sinh học",
-        "Bưu chính viễn thông",
-        "Công Ty Cổ Phần Viễn ..."
+        "Software",
+        "software tester",
+        "fpt software",
+        "software developer",
+        "Việc làm TP.HCM",
+        "IT Phần mềm",
+        "Công Ty TNHH Dịch Vụ ..."
       ],
       "after": [
         "communication",
-        "english",
-        "matlab",
-        "python"
+        "problem_solving",
+        "project_management",
+        "teamwork",
+        "time_management"
       ],
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200963700",
+      "job_id": "vieclam24h_200950600",
       "source": "vieclam24h",
       "field": "skills",
       "before": [
-        "senior architect",
-        "process engineer",
-        "construction engineer",
-        "senior merchandiser",
-        "instrument engineer",
-        "it engineer",
-        "senior copywriter",
-        "mechanical engineer",
-        "bridge engineer",
-        "system administrator",
-        "IT Phần cứng - Mạng",
-        "Chi Nhánh Công Ty Cổ ..."
+        "qc tester",
+        "qa qc",
+        "nhân viên qa",
+        "nhân viên tester",
+        "qa qc tại long an",
+        "nhân viên qc",
+        "qa qc tại bình dương",
+        "qa qc tại hồ chí minh",
+        "nhân viên qc thực phẩm",
+        "Tester",
+        "Việc làm Hà Nội",
+        "IT Phần mềm",
+        "Công Ty Cổ Phần Truyền ..."
       ],
       "after": [
-        "bash",
-        "linux"
+        "android_sdk",
+        "automation_test",
+        "bug_tracking",
+        "github",
+        "jira",
+        "logical_thinking",
+        "machine_learning",
+        "postman",
+        "qa_qc",
+        "rest_api"
       ],
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200960259",
+      "job_id": "vieclam24h_200963101",
       "source": "vieclam24h",
       "field": "skills",
       "before": [
-        "kỹ thuật viên",
-        "nhân viên kỹ thuật",
-        "Kỹ Thuật",
-        "kỹ thuật viên máy tính",
-        "kỹ thuật viên phòng lab",
-        "kỹ thuật viên âm thanh",
-        "kỹ thuật viên gây mê",
-        "kỹ thuật viên spa",
-        "kỹ thuật nhuộm",
-        "kỹ thuật hàn",
-        "Chăm sóc khách hàng",
-        "Công Ty Cổ Phần Viễn ..."
+        "Lập Trình",
+        "Trưởng Nhóm",
+        "lập trình python",
+        "lập trình unity",
+        "lập trình php",
+        "lập trình java",
+        "lập trình c",
+        "lập trình android",
+        "trưởng nhóm marketing",
+        "trưởng nhóm bán hàng",
+        "Giáo dục - Đào tạo",
+        "Trường Đại Học Kinh Tế ..."
       ],
       "after": [
-        "android_sdk"
+        "angular",
+        "c_lang",
+        "cicd",
+        "data_warehouse",
+        "docker",
+        "dotnet",
+        "elasticsearch",
+        "elk_stack",
+        "github",
+        "gitlab",
+        "microservices",
+        "mongodb",
+        "postgresql",
+        "react",
+        "redis",
+        "sql_server",
+        "vue"
       ],
       "changed": true
     }

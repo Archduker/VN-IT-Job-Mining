@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:12+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:23+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 207
+    "rows": 204
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 207
+    "rows": 204
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 207,
+      "rows_affected": 204,
       "examples": [
         {
           "job_id": "2017763",
@@ -54,7 +54,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 107,
+      "rows_affected": 105,
       "examples": [
         {
           "job_id": "2133063",
@@ -83,7 +83,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 12 nhóm SPEC-01 + Other",
       "action": "modify",
-      "rows_affected": 112,
+      "rows_affected": 110,
       "examples": [
         {
           "job_id": "2017763",
@@ -119,14 +119,14 @@
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 186,
+      "rows_affected": 183,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 207,
+      "rows_affected": 204,
       "examples": []
     },
     {
@@ -196,7 +196,7 @@
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 207,
+      "rows_affected": 204,
       "examples": []
     }
   ],
@@ -213,8 +213,8 @@
     },
     {
       "field": "seniority",
-      "fill_pct_in": 51.7,
-      "fill_pct_out": 51.7
+      "fill_pct_in": 51.5,
+      "fill_pct_out": 51.5
     },
     {
       "field": "seniority_source",
@@ -233,8 +233,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 89.9,
-      "fill_pct_out": 89.9
+      "fill_pct_in": 89.7,
+      "fill_pct_out": 89.7
     },
     {
       "field": "company_norm",
@@ -243,23 +243,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 24.6,
-      "fill_pct_out": 24.6
+      "fill_pct_in": 25.0,
+      "fill_pct_out": 25.0
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 27.5,
-      "fill_pct_out": 27.5
+      "fill_pct_in": 27.9,
+      "fill_pct_out": 27.9
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 24.6,
-      "fill_pct_out": 24.6
+      "fill_pct_in": 25.0,
+      "fill_pct_out": 25.0
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 27.5,
-      "fill_pct_out": 27.5
+      "fill_pct_in": 27.9,
+      "fill_pct_out": 27.9
     },
     {
       "field": "is_outlier_salary",
@@ -303,8 +303,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 28.5,
-      "fill_pct_out": 28.5
+      "fill_pct_in": 28.4,
+      "fill_pct_out": 28.4
     },
     {
       "field": "exp_source",
@@ -332,39 +332,39 @@
   },
   "extra": {
     "seniority_distribution": {
-      "(trống)": 100,
-      "Senior": 43,
+      "(trống)": 99,
+      "Senior": 42,
       "Middle": 27,
-      "Lead/Manager": 21,
+      "Lead/Manager": 20,
       "Junior": 14,
       "Intern/Fresher": 2
     },
     "job_family_distribution": {
-      "Other": 95,
+      "Other": 94,
       "Product/Project": 24,
       "QA/QC": 23,
-      "Data Science/AI": 16,
+      "Data Science/AI": 15,
       "Backend": 11,
       "DevOps/Cloud": 9,
       "Fullstack": 7,
       "System/Network": 6,
       "Data Engineer": 6,
-      "Security": 4,
       "Mobile": 4,
+      "Security": 3,
       "Frontend": 1,
       "Embedded/IoT": 1
     },
     "job_family_source_distribution": {
-      "title": 101,
-      "none": 95,
+      "title": 99,
+      "none": 94,
       "skills": 11
     },
     "work_mode_distribution": {
-      "onsite": 206,
+      "onsite": 203,
       "remote": 1
     },
     "salary_status_distribution": {
-      "negotiable": 149,
+      "negotiable": 146,
       "value": 58
     },
     "salary_outliers": 1,
@@ -373,10 +373,10 @@
       "exp_inferred": 1
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 205,
-      "job_title_core_distinct": 180,
+      "job_title_clean_distinct": 202,
+      "job_title_core_distinct": 177,
       "title_canonical_source": {
-        "none": 207
+        "none": 204
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
@@ -399,24 +399,24 @@
   },
   "samples": [
     {
-      "job_id": "topdev_2137915",
+      "job_id": "topdev_2138846",
       "source": "topdev",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Lô đất CN01, Khu công nghiệp Đồng Văn III",
-          "phuong_xa": "Phường Đồng Văn",
-          "tinh_thanh": "Ninh Bình",
-          "raw": "Lô đất CN01, Khu công nghiệp Đồng Văn III, Phường Đồng Văn, Thị xã Duy Tiên, Tỉnh Hà Nam"
+          "dia_chi_cu_the": "Từ Hồ",
+          "phuong_xa": null,
+          "tinh_thanh": "Hưng Yên",
+          "raw": "Từ Hồ, Xã Yên Phú, Huyện Yên Mỹ, Tỉnh Hưng Yên"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Lô đất CN01, Khu công nghiệp Đồng Văn III",
-          "phuong_xa": "Phường Đồng Văn",
-          "tinh_thanh": "Ninh Bình",
-          "raw": "Lô đất CN01, Khu công nghiệp Đồng Văn III, Phường Đồng Văn, Thị xã Duy Tiên, Tỉnh Hà Nam",
-          "tinh_key": "ninh_binh",
+          "dia_chi_cu_the": "Từ Hồ",
+          "phuong_xa": null,
+          "tinh_thanh": "Hưng Yên",
+          "raw": "Từ Hồ, Xã Yên Phú, Huyện Yên Mỹ, Tỉnh Hưng Yên",
+          "tinh_key": "hung_yen",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
@@ -433,24 +433,24 @@
       "changed": true
     },
     {
-      "job_id": "topdev_2137772",
+      "job_id": "topdev_2137765",
       "source": "topdev",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "43 – 45 – 47 Nguyễn Thị Minh Khai",
-          "phuong_xa": "Phường Sài Gòn",
-          "tinh_thanh": "TP. Hồ Chí Minh",
-          "raw": "43 – 45 – 47 Nguyễn Thị Minh Khai, Phường Sài Gòn, Thành phố Hồ Chí Minh"
+          "dia_chi_cu_the": "Khu công nghiệp Tràng Duệ, Khu kinh tế Đình Vũ, Cát Hải",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hải Phòng",
+          "raw": "Khu công nghiệp Tràng Duệ, Khu kinh tế Đình Vũ - Cát Hải, huyện An Dương, Thành phố Hải Phòng"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "43 – 45 – 47 Nguyễn Thị Minh Khai",
-          "phuong_xa": "Phường Sài Gòn",
-          "tinh_thanh": "TP. Hồ Chí Minh",
-          "raw": "43 – 45 – 47 Nguyễn Thị Minh Khai, Phường Sài Gòn, Thành phố Hồ Chí Minh",
-          "tinh_key": "ho_chi_minh",
+          "dia_chi_cu_the": "Khu công nghiệp Tràng Duệ, Khu kinh tế Đình Vũ, Cát Hải",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hải Phòng",
+          "raw": "Khu công nghiệp Tràng Duệ, Khu kinh tế Đình Vũ - Cát Hải, huyện An Dương, Thành phố Hải Phòng",
+          "tinh_key": "hai_phong",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false

@@ -10,8 +10,8 @@ import { ProcessingPage } from './pages/ProcessingPage'
 const TITLES: Record<string, [string, string?]> = {
   '/': ['Thu thập dữ liệu', '8 nguồn · kiểm kê raw và URL Ledger trực tiếp trên R2'],
   '/eda': ['EDA', 'Kiểm kê trường raw và phân phối từ dữ liệu staging'],
-  '/preprocessing': ['Pre-processing', '5 bước Clean → Integration → Transformation → Normalization → Encoding, đọc báo cáo từng bước'],
-  '/processing': ['Processing', 'Integration và khử trùng lặp liên nguồn'],
+  '/preprocessing': ['Pre-processing', 'Clean → Dedup → Integration → Transformation → Normalization → Encoding, đọc báo cáo từng bước'],
+  '/processing': ['Processing', 'Tách section, trích kỹ năng và tách từ (bước 07–09), đọc báo cáo từng bước'],
 }
 
 const Shell: React.FC = () => {

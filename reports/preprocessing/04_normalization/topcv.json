@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:11+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:22+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1533
+    "rows": 1518
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 1533
+    "rows": 1518
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 1526,
+      "rows_affected": 1511,
       "examples": [
         {
           "job_id": "2013194",
@@ -76,7 +76,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 1526,
+      "rows_affected": 1511,
       "examples": [
         {
           "job_id": "2013194",
@@ -105,7 +105,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 12 nhóm SPEC-01 + Other",
       "action": "modify",
-      "rows_affected": 860,
+      "rows_affected": 848,
       "examples": [
         {
           "job_id": "2013194",
@@ -141,28 +141,28 @@
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 1495,
+      "rows_affected": 1482,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 1532,
+      "rows_affected": 1517,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 33,
+      "rows_affected": 31,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 956,
+      "rows_affected": 951,
       "examples": []
     },
     {
@@ -211,14 +211,14 @@
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 869,
+      "rows_affected": 865,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 1532,
+      "rows_affected": 1517,
       "examples": []
     }
   ],
@@ -255,8 +255,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 97.5,
-      "fill_pct_out": 97.5
+      "fill_pct_in": 97.6,
+      "fill_pct_out": 97.6
     },
     {
       "field": "company_norm",
@@ -265,23 +265,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 48.9,
-      "fill_pct_out": 48.9
+      "fill_pct_in": 49.1,
+      "fill_pct_out": 49.1
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 56.7,
-      "fill_pct_out": 56.7
+      "fill_pct_in": 57.0,
+      "fill_pct_out": 57.0
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 48.9,
-      "fill_pct_out": 48.9
+      "fill_pct_in": 49.1,
+      "fill_pct_out": 49.1
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 56.7,
-      "fill_pct_out": 56.7
+      "fill_pct_in": 57.0,
+      "fill_pct_out": 57.0
     },
     {
       "field": "is_outlier_salary",
@@ -354,64 +354,64 @@
   },
   "extra": {
     "seniority_distribution": {
-      "Middle": 511,
-      "Lead/Manager": 354,
-      "Junior": 316,
-      "Intern/Fresher": 243,
-      "Senior": 102,
+      "Middle": 508,
+      "Lead/Manager": 350,
+      "Junior": 315,
+      "Intern/Fresher": 240,
+      "Senior": 98,
       "(trống)": 7
     },
     "job_family_distribution": {
-      "Other": 673,
-      "Product/Project": 190,
+      "Other": 670,
+      "Product/Project": 189,
       "QA/QC": 114,
-      "Backend": 98,
-      "Data Science/AI": 93,
+      "Backend": 97,
+      "Data Science/AI": 90,
       "System/Network": 84,
-      "DevOps/Cloud": 73,
+      "DevOps/Cloud": 68,
       "Mobile": 61,
-      "Fullstack": 53,
-      "Security": 35,
+      "Fullstack": 52,
+      "Security": 34,
       "Data Engineer": 24,
       "Embedded/IoT": 18,
       "Frontend": 17
     },
     "job_family_source_distribution": {
-      "title": 747,
-      "none": 673,
-      "skills": 113
+      "title": 740,
+      "none": 670,
+      "skills": 108
     },
     "work_mode_distribution": {
-      "onsite": 1518,
+      "onsite": 1503,
       "unknown": 7,
       "remote": 7,
       "hybrid": 1
     },
     "salary_status_distribution": {
-      "value": 891,
-      "negotiable": 638,
+      "value": 887,
+      "negotiable": 627,
       "not_stated": 4
     },
     "salary_outliers": 7,
     "inference": {
-      "level_inferred": 956,
+      "level_inferred": 951,
       "exp_inferred": 0
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 1343,
-      "job_title_core_distinct": 838,
+      "job_title_clean_distinct": 1332,
+      "job_title_core_distinct": 831,
       "title_canonical_source": {
-        "none": 1533
+        "none": 1518
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 956,
-      "seniority_can_kiem": 22,
+      "level_inferred": 951,
+      "seniority_can_kiem": 21,
       "salary_negotiable_with_value": 7,
       "tinh_unknown": 7,
       "salary_iqr_outlier_by_level": 19,
-      "job_family_can_kiem": 11,
+      "job_family_can_kiem": 10,
       "salary_out_of_range": 9,
       "salary_iqr_outlier_pooled": 2,
       "salary_suspect": 2,
@@ -424,39 +424,23 @@
   },
   "samples": [
     {
-      "job_id": "topcv_2287801",
+      "job_id": "topcv_2288745",
       "source": "topcv",
       "field": "locations",
       "before": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Hoàn Kiếm",
+          "phuong_xa": "Phường Tây Hồ",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: 210 Trần Quang Khải, Phường Hoàn Kiếm (Phường Hoàn Kiếm thuộc quận Hoàn Kiếm cũ)"
-        },
-        {
-          "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Cầu Giấy",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: 1 Phùng Chí Kiên, Phường Cầu Giấy (Phường Cầu Giấy thuộc quận Cầu Giấy cũ)"
+          "raw": "Hà Nội: Số 270 Thụy Khuê, Phường Tây Hồ (Phường Tây Hồ thuộc quận Tây Hồ cũ)"
         }
       ],
       "after": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Hoàn Kiếm",
+          "phuong_xa": "Phường Tây Hồ",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: 210 Trần Quang Khải, Phường Hoàn Kiếm (Phường Hoàn Kiếm thuộc quận Hoàn Kiếm cũ)",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        },
-        {
-          "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Cầu Giấy",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: 1 Phùng Chí Kiên, Phường Cầu Giấy (Phường Cầu Giấy thuộc quận Cầu Giấy cũ)",
+          "raw": "Hà Nội: Số 270 Thụy Khuê, Phường Tây Hồ (Phường Tây Hồ thuộc quận Tây Hồ cũ)",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
@@ -466,23 +450,23 @@
       "changed": true
     },
     {
-      "job_id": "topcv_2319235",
+      "job_id": "topcv_2319950",
       "source": "topcv",
       "field": "locations",
       "before": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Định Công",
+          "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Trục đường 2.5, đối diện hồ Đầm Hồng, Phường Định Công (Phường Định Công thuộc quận Hoàng Mai cũ)"
+          "raw": "Hà Nội: Ngô Sĩ Liên, Phường Văn Miếu - Quốc Tử Giám (Phường Văn Miếu - Quốc Tử Giám thuộc quận Đống Đa cũ)"
         }
       ],
       "after": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Định Công",
+          "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Trục đường 2.5, đối diện hồ Đầm Hồng, Phường Định Công (Phường Định Công thuộc quận Hoàng Mai cũ)",
+          "raw": "Hà Nội: Ngô Sĩ Liên, Phường Văn Miếu - Quốc Tử Giám (Phường Văn Miếu - Quốc Tử Giám thuộc quận Đống Đa cũ)",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
@@ -492,23 +476,23 @@
       "changed": true
     },
     {
-      "job_id": "topcv_2318213",
+      "job_id": "topcv_2332122",
       "source": "topcv",
       "field": "locations",
       "before": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Xuân Đỉnh",
+          "phuong_xa": "Phường Nghĩa Đô",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: 197 Phạm Văn Đồng, Phường Xuân Đỉnh (Phường Xuân Đỉnh thuộc quận Bắc Từ Liêm cũ)"
+          "raw": "Hà Nội: Số 1 Phùng Chí Kiên - Nghĩa Đô, Phường Nghĩa Đô (Phường Nghĩa Đô có thể thuộc các quận Bắc Từ Liêm, Cầu Giấy cũ)"
         }
       ],
       "after": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Xuân Đỉnh",
+          "phuong_xa": "Phường Nghĩa Đô",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: 197 Phạm Văn Đồng, Phường Xuân Đỉnh (Phường Xuân Đỉnh thuộc quận Bắc Từ Liêm cũ)",
+          "raw": "Hà Nội: Số 1 Phùng Chí Kiên - Nghĩa Đô, Phường Nghĩa Đô (Phường Nghĩa Đô có thể thuộc các quận Bắc Từ Liêm, Cầu Giấy cũ)",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,

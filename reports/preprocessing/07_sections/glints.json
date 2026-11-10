@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 260
+    "rows": 256
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 260
+    "rows": 256
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 7541,
+    "n_bullets": 7409,
     "bullets_by_section": {
-      "mo_ta": 6102,
-      "yeu_cau": 260,
-      "phuc_loi": 1179
+      "mo_ta": 5999,
+      "yeu_cau": 256,
+      "phuc_loi": 1154
     },
     "bullets_by_rule": {
-      "S7.2": 7541
+      "S7.2": 7409
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,36 +39,35 @@
   },
   "samples": [
     {
-      "job_id": "glints_e4c56f95-a21f-4c9c-a4ea-b5b813fe9128",
+      "job_id": "glints_58a4cb2c-afad-4839-890e-310dae25b826",
       "source": "glints",
       "field": "sections",
-      "before": "Chi tiết công việc Java Technical Lead tại Công ty TNHH Diksha Technologies\n1. Position Information Level: Senior / Technical Lead Experience: 5-7 years Onboarding: Within 2 weeks Location: Pico Cong …",
+      "before": "Chi tiết công việc QA Engineer (Automation Test) tại The Code Talent Co,. Ltd Job Responsibilities Champion shift-left testing by prioritizing early and frequent test automation.\nDevelop and maintain …",
+      "after": {
+        "mo_ta": 20,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "glints_87fe15be-b4d2-49ae-99a1-112a68563d68",
+      "source": "glints",
+      "field": "sections",
+      "before": "Chi tiết công việc Chief QA line lắp ráp - Tiếng Nhật - Lương upto22tr - BD (TN) tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM TÊN VỊ TRÍ QA/QC MANAGER MÔ TẢ CÔNG VIỆC\n- Quản lý QA line lắp ráp li…",
+      "after": {
+        "mo_ta": 20,
+        "phuc_loi": 8,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "glints_a05435d7-3750-455c-b4ae-3b874d125eec",
+      "source": "glints",
+      "field": "sections",
+      "before": "Chi tiết công việc IT Support tại Long Van System Solution\n1. Mô tả công việc\n- Triển khai và cấu hình các dịch vụ, hệ thống cho khách hàng (Hosting, VPS và các dịch vụ liên quan).\n- Tiếp nhận, hỗ trợ…",
       "after": {
         "mo_ta": 21,
-        "phuc_loi": 2,
-        "yeu_cau": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "glints_d53845ee-66df-4d37-a7d3-c839fc60e4c2",
-      "source": "glints",
-      "field": "sections",
-      "before": "Chi tiết công việc AI ENGINEER - GEN AI tại Viettel Cyber Security\n1. Mô tả công việc:\nThiết kế, triển khai các giải pháp ứng dụng AI trong các hệ thống an toàn thông tin. Xây dựng các phần mềm, hệ th…",
-      "after": {
-        "mo_ta": 19,
-        "yeu_cau": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "glints_2c6ab889-0599-444c-afcd-33bd3d057aac",
-      "source": "glints",
-      "field": "sections",
-      "before": "Chi tiết công việc NV Kỹ Thuật Máy CNC - 8.5-12tr + PC - Vsip 1 Bình Dương tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM Công ty sản xuất Nhật Bản Địa điểm : KCN VSIP1, Bình Dương\n- Vận hành, cài …",
-      "after": {
-        "mo_ta": 26,
-        "phuc_loi": 4,
         "yeu_cau": 1
       },
       "changed": true

@@ -32,8 +32,6 @@ def _root(step: str = ""):
 
 
 def _command(step: str, source: str = "all") -> str:
-    if step in PROCESSING_STEPS:
-        return ""  # driver bước 07-09 chưa chốt (PH9 D1), không bịa lệnh
     return f"python scripts/run_preprocessing.py --step {step.split("_", 1)[1]} --source {source} --dry-run"
 
 
@@ -69,7 +67,7 @@ def list_processing_steps() -> List[Dict[str, Any]]:
         r = _load(step, "_all")
         base = {"step": step, "name": STEP_NAMES[step]}
         if r is None:
-            out.append({**base, "available": False, "reason": "NO_DATA", "command": ""})
+            out.append({**base, "available": False, "reason": "NO_DATA", "command": _command(step)})
         else:
             out.append({**base, "available": True, "mode": r.get("mode"), "generated_at": r.get("generated_at"),
                         "input_rows": r["input"]["rows"], "output_rows": r["output"]["rows"], "stale": False})

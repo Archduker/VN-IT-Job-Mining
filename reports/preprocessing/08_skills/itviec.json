@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 835
+    "rows": 831
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 835
+    "rows": 831
   },
   "dropped": [],
   "rules": [],
@@ -24,36 +24,36 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 8844,
+    "n_job_skill_rows": 8795,
     "n_jobs_no_skill": 9,
     "top_skills": [
       {
         "skill": "english",
-        "n_jobs": 518
+        "n_jobs": 515
       },
       {
         "skill": "communication",
-        "n_jobs": 476
+        "n_jobs": 474
       },
       {
         "skill": "cicd",
-        "n_jobs": 287
+        "n_jobs": 285
       },
       {
         "skill": "python",
-        "n_jobs": 265
+        "n_jobs": 263
       },
       {
         "skill": "teamwork",
-        "n_jobs": 243
+        "n_jobs": 241
       },
       {
         "skill": "docker",
-        "n_jobs": 240
+        "n_jobs": 239
       },
       {
         "skill": "agile_scrum",
-        "n_jobs": 229
+        "n_jobs": 228
       },
       {
         "skill": "rest_api",
@@ -61,27 +61,27 @@
       },
       {
         "skill": "clean_architecture",
-        "n_jobs": 195
+        "n_jobs": 194
       },
       {
         "skill": "java",
-        "n_jobs": 188
+        "n_jobs": 187
       },
       {
         "skill": "kubernetes",
-        "n_jobs": 177
+        "n_jobs": 176
       },
       {
         "skill": "azure",
-        "n_jobs": 173
+        "n_jobs": 170
       },
       {
         "skill": "microservices",
-        "n_jobs": 153
+        "n_jobs": 152
       },
       {
         "skill": "postgresql",
-        "n_jobs": 147
+        "n_jobs": 146
       },
       {
         "skill": "javascript",
@@ -89,15 +89,15 @@
       },
       {
         "skill": "machine_learning",
-        "n_jobs": 116
-      },
-      {
-        "skill": "linux",
         "n_jobs": 115
       },
       {
-        "skill": "mysql",
+        "skill": "linux",
         "n_jobs": 114
+      },
+      {
+        "skill": "mysql",
+        "n_jobs": 113
       },
       {
         "skill": "typescript",
@@ -109,18 +109,18 @@
       },
       {
         "skill": "kafka",
-        "n_jobs": 101
+        "n_jobs": 100
       },
       {
         "skill": "jira",
         "n_jobs": 93
       },
       {
-        "skill": "terraform",
-        "n_jobs": 92
+        "skill": "business_analysis",
+        "n_jobs": 91
       },
       {
-        "skill": "business_analysis",
+        "skill": "terraform",
         "n_jobs": 91
       },
       {
@@ -128,15 +128,15 @@
         "n_jobs": 86
       },
       {
-        "skill": "fintech",
-        "n_jobs": 83
-      },
-      {
         "skill": "nodejs",
         "n_jobs": 83
       },
       {
         "skill": "project_management",
+        "n_jobs": 82
+      },
+      {
+        "skill": "fintech",
         "n_jobs": 82
       },
       {
@@ -153,63 +153,65 @@
   },
   "samples": [
     {
-      "job_id": "itviec_embedded-c-engineer-1-year-contract-bosch-global-software-technologies-company-limited-5848",
+      "job_id": "itviec_ai-solution-architect-ai-llm-python-microservices-finviet-3011",
       "source": "itviec",
       "field": "skills",
       "before": [
-        "C++",
-        "UML",
-        "Git",
-        "Embedded C",
-        "Embedded"
-      ],
-      "after": [
-        "c_lang",
-        "communication",
-        "cpp",
-        "english",
-        "unit_test"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "itviec_system-engineer-server-storage-san-shinhan-ds-4436",
-      "source": "itviec",
-      "field": "skills",
-      "before": [
-        "Linux",
-        "Hardware Troubleshooting",
-        "VMware",
-        "Bash Shell",
-        "System Admin",
-        "Python"
+        "Solution Architecture",
+        "Machine Learning",
+        "Microservices",
+        "Python",
+        "LLM",
+        "Generative AI"
       ],
       "after": [
         "communication",
-        "english",
-        "linux",
+        "fintech",
+        "genai",
+        "llm",
+        "machine_learning",
+        "microservices",
         "python"
       ],
       "changed": true
     },
     {
-      "job_id": "itviec_senior-security-operations-center-soc-specialist-vietbank-1951",
+      "job_id": "itviec_data-steward-sql-bi-data-quality-data-analysis-vietinbank-4317",
       "source": "itviec",
       "field": "skills",
       "before": [
-        "Cybersecurity",
-        "Application Security",
-        "SOAR",
-        "Data Catalog",
-        "SIEM",
-        "Cloud Security"
+        "Data Quality Tools",
+        "Business Intelligence",
+        "IT Governance",
+        "Data Analysis",
+        "SQL",
+        "Data Privacy / Compliance"
       ],
       "after": [
+        "bi",
+        "data_analysis"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_can-tho-fresher-php-good-english-communication-cong-ty-tnhh-nextedge-5902",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "PHP",
+        "JavaScript",
+        "HTML",
+        "Bootstrap",
+        "MySQL",
+        "Wordpress",
+        "Internship Accepted"
+      ],
+      "after": [
+        "bootstrap",
         "communication",
-        "cybersecurity",
-        "infosec",
-        "logical_thinking",
-        "siem"
+        "english",
+        "javascript",
+        "mysql"
       ],
       "changed": true
     }

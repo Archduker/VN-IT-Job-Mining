@@ -16,7 +16,7 @@ SENIORITY = ("Intern/Fresher", "Junior", "Middle", "Senior", "Lead/Manager", "un
 SECTIONS = ("mo_ta", "yeu_cau", "uu_tien", "phuc_loi", "khac")
 WORK_MODES = ("onsite", "remote", "hybrid", "unknown")
 SALARY_KINDS = ("negotiable", "not_stated", "value")
-FIELDS = ("it", "salary", "experience_years", "seniority", "location", "sections", "skills")
+FIELDS = ("it", "salary", "experience_years", "seniority", "location", "sections", "skills", "benefits")
 
 
 def _province_keys() -> set:
@@ -66,6 +66,9 @@ def validate_label(job_id: str, lab: Dict[str, Any], provinces: set | None = Non
         for s in secs:
             if s.get("section") not in SECTIONS or not (0 <= s.get("start", -1) < s.get("end", -1)):
                 raise _bad(job_id, "sections", f"đoạn sai {s!r}")
+    ben = lab.get("benefits")
+    if ben not in (None, "none") and not (isinstance(ben, list) and all(isinstance(b, str) and b.strip() for b in ben)):
+        raise _bad(job_id, "benefits", f"phải là danh sách tên phúc lợi hoặc none, nhận {ben!r}")
     skills = lab.get("skills")
     if skills not in (None, "none"):
         for s in skills:

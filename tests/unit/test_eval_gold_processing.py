@@ -28,3 +28,42 @@ def test_script_without_labels(tmp_path, capsys):
     import scripts.eval_gold_processing as s
     assert s.main(["--gold", str(tmp_path / "x.json")]) == 0
     assert "chưa có nhãn" in capsys.readouterr().out
+
+
+def test_build_gold_sample_from_processed_table(tmp_path):
+    import pandas as pd
+    from preprocessing.common import SOURCES
+    from scripts.build_gold_sample import build
+    rows = [{"job_id_global": f"{s}_{i}", "source_platform": s, "description_clean": f"Làm việc {i}", "requirements_clean": "Biết Docker"}
+            for s in SOURCES for i in range(20)]
+    p = tmp_path / "all.parquet"
+    pd.DataFrame(rows).to_parquet(p)
+    a, b = build(42, 100, p), build(42, 100, p)
+    assert len(a["items"]) == 100 and a["sample_id"] == b["sample_id"]
+    assert a["items"][0]["text"] == f"{a['items'][0]['description_clean']}\n\n{a['items'][0]['requirements_clean']}"
+
+
+def test_benefits_label_validated_and_scored():
+    import pytest
+    from preprocessing.common.gold import validate_label
+    validate_label("j", {"benefits": ["Bảo hiểm", "Thưởng"]}, set())
+    validate_label("j", {"benefits": "none"}, set())
+    with pytest.raises(ValueError):
+        validate_label("j", {"benefits": "Bảo hiểm"}, set())
+    from scripts.eval_gold_processing import benefits_prf
+    items = {"j": {"benefits_list": ["Bảo hiểm sức khỏe", "Du lịch hàng năm"], "description_clean": ""}}
+    r = benefits_prf({"j": {"benefits": ["Bảo hiểm", "Thưởng"]}}, items)
+    assert (r["tp"], r["fp"], r["fn"]) == (1, 1, 1)
+
+
+def test_benefits_label_validated_and_scored():
+    import pytest
+    from preprocessing.common.gold import validate_label
+    validate_label("j", {"benefits": ["Bảo hiểm", "Thưởng"]}, set())
+    validate_label("j", {"benefits": "none"}, set())
+    with pytest.raises(ValueError):
+        validate_label("j", {"benefits": "Bảo hiểm"}, set())
+    from scripts.eval_gold_processing import benefits_prf
+    items = {"j": {"benefits_list": ["Bảo hiểm sức khỏe", "Du lịch hàng năm"], "description_clean": ""}}
+    r = benefits_prf({"j": {"benefits": ["Bảo hiểm", "Thưởng"]}}, items)
+    assert (r["tp"], r["fp"], r["fn"]) == (1, 1, 1)

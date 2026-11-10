@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 786
+    "rows": 774
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 786
+    "rows": 774
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 15597,
+    "n_bullets": 15446,
     "bullets_by_section": {
-      "mo_ta": 5562,
-      "yeu_cau": 6139,
-      "phuc_loi": 3896
+      "mo_ta": 5532,
+      "yeu_cau": 6099,
+      "phuc_loi": 3815
     },
     "bullets_by_rule": {
-      "S7.2": 15597
+      "S7.2": 15446
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2113190",
+      "job_id": "vietnamworks_2112277",
       "source": "vietnamworks",
       "field": "sections",
-      "before": "Quản trị, vận hành và giám sát hệ thống máy chủ, mạng LAN/WAN, Wi-Fi, Firewall và các thiết bị CNTT của công ty.\nCài đặt, cấu hình, bảo trì và xử lý sự cố máy tính, máy in, thiết bị mạng và các thiết …",
+      "before": "Quản trị và vận hành toàn bộ hệ sinh thái Microsoft 365: Exchange Online, SharePoint Online, OneDrive, Teams, Azure AD (Entra ID)...\nĐảm bảo hệ thống hoạt động ổn định, bảo mật, tuân thủ chính sách CN…",
+      "after": {
+        "mo_ta": 3,
+        "yeu_cau": 3,
+        "phuc_loi": 3
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2111896",
+      "source": "vietnamworks",
+      "field": "sections",
+      "before": "Hạ tầng viễn thông: Quản lý hạ tầng, nhà trạm và hệ thống phụ trợ của hơn 1.700 trạm BTS (nguồn điện, máy phát điện, điều hòa, cột anten, điện mặt trời, PCCC); cập nhật dữ liệu Datasite; tổ chức sửa c…",
       "after": {
         "phuc_loi": 7,
-        "yeu_cau": 5,
-        "mo_ta": 3
+        "yeu_cau": 3,
+        "mo_ta": 2
       },
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2121158",
+      "job_id": "vietnamworks_2121518",
       "source": "vietnamworks",
       "field": "sections",
-      "before": "Define and own comprehensive test strategies, test plans, and test approaches for complex features and cross-platform initiatives, applying risk-based analysis to prioritize scope and optimize coverag…",
-      "after": {
-        "yeu_cau": 16,
-        "mo_ta": 11,
-        "phuc_loi": 5
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2117982",
-      "source": "vietnamworks",
-      "field": "sections",
-      "before": "About UOB United Overseas Bank Limited (UOB) is a leading bank in Asia with a global network of more than 500 branches and offices in 19 countries and territories in Asia Pacific, Europe and North Ame…",
+      "before": "Chủ động thực hiện threat hunting nhằm phát hiện sớm các dấu hiệu tấn công trên hệ thống doanh nghiệp, đặc biệt trên Microsoft Defender portal và Trellix EDR Rà soát, thu thập evidence, thực hiện fore…",
       "after": {
         "phuc_loi": 8,
-        "mo_ta": 6,
-        "yeu_cau": 4
+        "mo_ta": 1,
+        "yeu_cau": 1
       },
       "changed": true
     }

@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 421
+    "rows": 401
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 421
+    "rows": 401
   },
   "dropped": [],
   "rules": [],
@@ -24,124 +24,124 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 2997,
-    "n_jobs_no_skill": 7,
+    "n_job_skill_rows": 2859,
+    "n_jobs_no_skill": 5,
     "top_skills": [
       {
         "skill": "english",
-        "n_jobs": 195
+        "n_jobs": 190
       },
       {
         "skill": "communication",
-        "n_jobs": 193
+        "n_jobs": 188
       },
       {
         "skill": "machine_learning",
-        "n_jobs": 124
+        "n_jobs": 114
       },
       {
         "skill": "python",
-        "n_jobs": 109
+        "n_jobs": 104
       },
       {
         "skill": "teamwork",
-        "n_jobs": 87
-      },
-      {
-        "skill": "problem_solving",
-        "n_jobs": 78
+        "n_jobs": 86
       },
       {
         "skill": "data_analysis",
-        "n_jobs": 76
+        "n_jobs": 73
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 72
       },
       {
         "skill": "logical_thinking",
-        "n_jobs": 71
+        "n_jobs": 68
       },
       {
         "skill": "docker",
-        "n_jobs": 65
+        "n_jobs": 63
       },
       {
         "skill": "rest_api",
-        "n_jobs": 64
+        "n_jobs": 62
       },
       {
         "skill": "cicd",
-        "n_jobs": 61
-      },
-      {
-        "skill": "infosec",
-        "n_jobs": 59
-      },
-      {
-        "skill": "agile_scrum",
-        "n_jobs": 57
+        "n_jobs": 60
       },
       {
         "skill": "azure",
         "n_jobs": 57
       },
       {
+        "skill": "infosec",
+        "n_jobs": 56
+      },
+      {
+        "skill": "agile_scrum",
+        "n_jobs": 55
+      },
+      {
         "skill": "oracle_db",
-        "n_jobs": 54
+        "n_jobs": 51
       },
       {
         "skill": "linux",
-        "n_jobs": 52
+        "n_jobs": 49
       },
       {
         "skill": "postgresql",
-        "n_jobs": 50
+        "n_jobs": 48
       },
       {
         "skill": "sql_server",
         "n_jobs": 44
       },
       {
-        "skill": "business_analysis",
-        "n_jobs": 40
-      },
-      {
         "skill": "mysql",
         "n_jobs": 39
       },
       {
-        "skill": "microservices",
+        "skill": "business_analysis",
         "n_jobs": 38
       },
       {
         "skill": "java",
-        "n_jobs": 38
-      },
-      {
-        "skill": "kubernetes",
-        "n_jobs": 38
-      },
-      {
-        "skill": "jira",
         "n_jobs": 37
       },
       {
-        "skill": "power_bi",
-        "n_jobs": 34
+        "skill": "microservices",
+        "n_jobs": 36
       },
       {
-        "skill": "project_management",
+        "skill": "kubernetes",
+        "n_jobs": 36
+      },
+      {
+        "skill": "jira",
         "n_jobs": 33
       },
       {
-        "skill": "firewall",
-        "n_jobs": 29
+        "skill": "power_bi",
+        "n_jobs": 33
+      },
+      {
+        "skill": "project_management",
+        "n_jobs": 31
       },
       {
         "skill": "mongodb",
-        "n_jobs": 28
+        "n_jobs": 27
+      },
+      {
+        "skill": "firewall",
+        "n_jobs": 27
       },
       {
         "skill": "presentation",
-        "n_jobs": 28
+        "n_jobs": 26
       },
       {
         "skill": "nodejs",
@@ -153,59 +153,48 @@
   },
   "samples": [
     {
-      "job_id": "careerviet_35C88C7C",
+      "job_id": "careerviet_35C88A2E",
       "source": "careerviet",
       "field": "skills",
       "before": null,
       "after": [
-        "ansible",
-        "azure",
-        "bash",
-        "cybersecurity",
-        "disaster_recovery",
-        "firewall",
-        "incident_response",
-        "linux",
-        "network_security",
-        "powershell",
-        "python",
-        "siem",
-        "terraform"
+        "business_analysis",
+        "logical_thinking",
+        "oracle_db",
+        "problem_solving"
       ],
       "changed": true
     },
     {
-      "job_id": "careerviet_35C89459",
+      "job_id": "careerviet_35C8994C",
       "source": "careerviet",
       "field": "skills",
       "before": null,
       "after": [
-        "centos",
-        "disaster_recovery",
+        "communication",
         "english",
-        "firewall",
-        "infosec",
-        "linux",
-        "mysql",
-        "sql_server",
-        "ubuntu"
+        "problem_solving",
+        "qa_qc"
       ],
       "changed": true
     },
     {
-      "job_id": "careerviet_35C82ACD",
+      "job_id": "careerviet_35C83F05",
       "source": "careerviet",
       "field": "skills",
       "before": null,
       "after": [
-        "computer_vision",
-        "cpp",
-        "csharp",
+        "agile_scrum",
+        "communication",
+        "data_analysis",
+        "english",
+        "infosec",
+        "java",
+        "logical_thinking",
         "machine_learning",
-        "opencv",
         "python",
-        "pytorch",
-        "tensorflow"
+        "scala",
+        "teamwork"
       ],
       "changed": true
     }

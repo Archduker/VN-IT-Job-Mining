@@ -449,3 +449,19 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Lỗi:** (1) `dedup_key` của 01_clean có thành phần tuần nên tin đăng lại ở tuần khác không bị gộp; (2) `extract_benefits` so chuỗi con trên toàn JD, nên "máy tính", "laptop", "training" trong phần việc cũng thành phúc lợi "Thiết bị làm việc", "Đào tạo"; "chứng chỉ" (yêu cầu) bị tính là đào tạo.
 - **Cách xử lý:** bỏ tuần khỏi `dedup_key` (xóa `_week`); `extract_benefits` chỉ quét `benefits_list` và phần JD từ tiêu đề phúc lợi trở đi, khớp theo ranh giới từ; bỏ "máy tính", "chứng chỉ", "certifications" khỏi `benefits.json`.
 - **Kiểm chứng:** `tests/unit/test_pre_fixes.py` (3 test), `tests/unit` 441 qua. Đo trên 03_transformation (4.798 tin): nhãn phúc lợi 19.283 -> 17.769, "Thiết bị làm việc" 1.068 -> 706; dry-run 01_clean ra 4.836 (trước 5.050). Chưa đo precision/recall phúc lợi và precision dedup vì chưa có nhãn tay.
+
+### L-38. Rà lại `KNOWN_ISSUED.md` sau PH0–PH9: đóng mục đã sửa, gộp mục trùng (10/11/2026)
+- **Lỗi:** `KNOWN_ISSUED.md` còn nhiều mục đã sửa hoặc bị phương án mới thay, và nhiều mục trùng nhau.
+- **Nguyên nhân:** danh sách viết ngày 09/11 trước khi đợt PH0–PH9 đổi dedup (MinHash), dịch (envit5), cấp bậc (5), kỹ năng (taxonomy 230), layout R2 (5 tiền tố).
+- **Cách xử lý:** viết lại file; đóng PRE-16, 17, 18, 19, 22, 28, 29, MINE-2, MINE-3, VIZ-3, GEN-9, GEN-6 (gộp vào SCRAPE-17); gộp SCRAPE-5+7+16 và SCRAPE-15+18; gộp PRE-13 và PRE-15 vào PRE-12; PRE-14 viết lại; thêm PRE-32, PRE-33, GEN-10.
+- **Kiểm chứng (đã chạy 10/11):**
+  - PRE-16: `preprocessing/integration/run.py:29` `IN_DIR = .../01b_deduplication`.
+  - PRE-17: `reports/preprocessing/01_clean/_all.json` và `01b_deduplication/_all.json` ghi lại 10/11 19:25–19:26 bởi chuỗi PH9.
+  - PRE-18: `pytest tests/unit/test_integration_step.py -k "json or invalid or reject"` 2 qua; code `integration/run.py:180-186`.
+  - PRE-19: `grep "abs(hash(" preprocessing processing mining` không còn kết quả.
+  - PRE-22: `text_cleaner.SENIORITY_LABELS` 5 nhãn, `encoding/run.py:50` dùng chung; `job_family` có 12 nhóm + Other, không UI/UX; `pytest tests/unit tests/contract` 493 qua, 1 bỏ qua. Nhãn "Chưa rõ" chỉ còn ở đường cũ của `transformation/pipeline.py` (PRE-21).
+  - PRE-28, PRE-29: bị PH8 (taxonomy 230, `min_df`) và PH5 (`translator.py`) thay.
+  - MINE-2, MINE-3: `import mlxtend, shap, hdbscan` thành công trong `.venv`; test mining nằm trong 493 qua.
+  - VIZ-3: báo cáo `reports/preprocessing/*` ghi lại 10/11.
+  - Còn mở sau khi kiểm: PRE-23 (`tối thiểu 10 triệu` ra single_value, `2 tỷ` ra 2,0 triệu), PRE-27 (module `target_schema_formatter` không tồn tại), GEN-4 (`canonicalize_lakehouse_key("staging/all.parquet")` vẫn bị từ chối), PRE-26 (70 file, 4,6 MB).
+  - Chưa kiểm: nội dung hai mục PRE-16/17 mà người dùng nêu (trích xuất còn sót, kiểm định sau mining), chưa có tài liệu gốc nên chưa ghi vào file.

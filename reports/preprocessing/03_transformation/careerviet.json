@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:49:51+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T12:56:02+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 421
+    "rows": 401
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 421
+    "rows": 401
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1228,
+      "rows_affected": 1164,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 127,
+      "rows_affected": 120,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 413,
+      "rows_affected": 394,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 376,
+      "rows_affected": 361,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -104,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 421,
+      "rows_affected": 401,
       "examples": []
     },
     {
@@ -132,21 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 153,
+      "rows_affected": 142,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 0,
+      "rows_affected": 69,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 421,
+      "rows_affected": 397,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -159,7 +159,7 @@
           "job_id": "35C7AC66",
           "field": "skills_clean",
           "before": "None",
-          "after": "['C#', 'Git', 'Python']",
+          "after": "['C#', 'Git', 'Machine Learning', 'Python']",
           "url": "https://careerviet.vn/vi/tim-viec-lam/ats-software-development-engineer.35C7AC66.html"
         },
         {
@@ -175,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 416,
+      "rows_affected": 396,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -204,33 +204,33 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 28.0,
-      "fill_pct_out": 28.0
+      "fill_pct_in": 27.7,
+      "fill_pct_out": 27.7
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 30.2,
-      "fill_pct_out": 30.2
+      "fill_pct_in": 29.9,
+      "fill_pct_out": 29.9
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 98.1,
-      "fill_pct_out": 98.1
+      "fill_pct_in": 98.3,
+      "fill_pct_out": 98.3
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 98.1,
-      "fill_pct_out": 98.1
+      "fill_pct_in": 98.3,
+      "fill_pct_out": 98.3
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 89.3,
-      "fill_pct_out": 89.3
+      "fill_pct_in": 90.0,
+      "fill_pct_out": 90.0
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 59.6,
-      "fill_pct_out": 59.6
+      "fill_pct_in": 59.9,
+      "fill_pct_out": 59.9
     },
     {
       "field": "headcount",
@@ -249,13 +249,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 79.8,
-      "fill_pct_out": 79.8
+      "fill_pct_in": 81.0,
+      "fill_pct_out": 81.0
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 96.7,
-      "fill_pct_out": 96.7
+      "fill_pct_in": 91.0,
+      "fill_pct_out": 91.0
     },
     {
       "field": "locations",
@@ -278,15 +278,15 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 128,
+      "header": 121,
       "title": 0,
       "jd": 0,
-      "none": 293
+      "none": 280
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 351,
+      "vi": 331,
       "en": 69,
       "other": 1
     },
@@ -321,32 +321,61 @@
       },
       "abbreviations_approved": 0
     },
-    "translation": null,
-    "experience_parsed_rate": 89.3
+    "translation": {
+      "model_id": "VietAI/envit5-translation",
+      "model_revision": "840bc88104d5a4277af740eaedb024df8c3093e7",
+      "gen_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
+      "max_chunk_tokens": 200,
+      "fields": [
+        "description",
+        "requirements"
+      ],
+      "approved_terms": 0,
+      "device": "cuda",
+      "batch_size": 4,
+      "torch": "2.15.0+cu132",
+      "transformers": "5.22.2",
+      "peak_vram_mib": 1258,
+      "fell_back_to_cpu": false,
+      "rows_en": 546,
+      "rows_translated": 500,
+      "rows_failed": 46,
+      "chunks": 9870,
+      "cache_hits": 597,
+      "model_calls": 9332,
+      "retries": 59,
+      "failed_chunks": 59
+    },
+    "experience_parsed_rate": 90.0
   },
   "samples": [
     {
-      "job_id": "careerviet_35C88E11",
+      "job_id": "careerviet_35C894B1",
       "source": "careerviet",
       "field": "posted_date",
-      "before": "06/10/2026",
-      "after": "2026-10-06",
+      "before": "16/10/2026",
+      "after": "2026-10-16",
       "changed": true
     },
     {
-      "job_id": "careerviet_35C7AC66",
-      "source": "careerviet",
-      "field": "exp_min_years",
-      "before": "1 - 5 Năm",
-      "after": 1.0,
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C804AF",
+      "job_id": "careerviet_35C89125",
       "source": "careerviet",
       "field": "salary_min_vnd",
       "before": "Cạnh tranh",
       "after": null,
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C887F9",
+      "source": "careerviet",
+      "field": "exp_min_years",
+      "before": "3 - 6 Năm",
+      "after": 3.0,
       "changed": true
     }
   ]

@@ -22,11 +22,13 @@ Thứ tự làm của dự án là web scraping → trực quan hóa → pre-pro
 
 ## Cấu trúc (pipeline cũ)
 
+- `transformation/pipeline.py` và `run_transformation.py` (đường đặc trưng cũ của Duy) ghi `data/preprocessing/legacy_features/`, không phải `04_normalization/all.parquet`; không nằm trong chuỗi `run_preprocessing.py` (PRE-21).
+
 `preprocessing/` là thư viện các hàm theo bước; driver nằm ở `scripts/run_staging_integration_pipeline.py`, chạy từng nguồn rồi gộp:
 
 | Bước | Thư mục | Việc |
 |---|---|---|
-| Integration | `integration/` | `json_flattener.py` làm phẳng raw theo `_flatten_<nguồn>`; `run_integration.py` chỉ chạy bước này |
+| Integration | `integration/` | `json_flattener.py` làm phẳng raw theo `_flatten_<nguồn>`; `run.py` chạy bước này (`run_integration.py` đã xóa, PRE-20) |
 | Transformation | `transformation/` | parse lương (`salary_parser.py`), làm sạch HTML và bullet |
 | Missing / Outlier | `missing_outlier/` | null trá hình, bỏ JD rỗng, bù giá trị bằng luật (`genai_text_imputer.py`, tên cũ), cap outlier |
 | Normalization | `normalization/` | chuẩn hóa text, log transform, khử trùng chéo nguồn |
@@ -40,7 +42,7 @@ Mỗi nguồn ra 3 file: `<nguồn>_flat_clean.parquet`, `reports/<nguồn>/<ngu
 - Lương thỏa thuận giữ `NaN` kèm cờ (MNAR). Outlier được cap, không xóa. Giá trị bù (bằng luật, pipeline cũ) có cờ `is_imputed_by_genai` (tên cũ, không còn gọi Gemini).
 - **Raw là bất biến:** sửa cách đọc một trường thì sửa ở đây, không sửa file raw. Raw TopDev cũ thiếu F5, F6, F8 (SCRAPE-5) nên flattener phải chịu được trường vắng.
 - `_flatten_<nguồn>` phải khớp `monitoring/backend/app/core/feature_targets.py` (`RAW_PATHS`). Đổi tên trường ở một bên thì sửa cả bên kia.
-- Thêm nguồn mới: thêm `_flatten_<nguồn>` và tên nguồn vào `SOURCES` ở `run_staging_integration_pipeline.py`, `integration/run_integration.py`, `scripts/read_eda_diagnosis.py`.
+- Thêm nguồn mới: thêm `_flatten_<nguồn>` và tên nguồn vào `SOURCES` ở `run_staging_integration_pipeline.py`, `integration/run.py`, `scripts/read_eda_diagnosis.py`.
 
 ## Dữ liệu đầu vào
 

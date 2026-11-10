@@ -18,7 +18,6 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from preprocessing.common.gold import coverage, load_gold  # noqa: E402
-from preprocessing.common.text_clean import clean_text  # noqa: E402
 from processing import evaluate as E  # noqa: E402
 from processing.extraction import sections as S  # noqa: E402
 from processing.extraction.run import analyze, default_matcher  # noqa: E402
@@ -26,16 +25,21 @@ from processing.extraction.run import analyze, default_matcher  # noqa: E402
 GOLD_SAMPLE = ROOT / "data" / "preprocessing" / "gold" / "gold_sample.json"
 
 
-def _flat_by_id(ids):
-    from preprocessing.integration.json_flattener import flatten_raw_job_record
-    out = {}
-    for p in sorted((ROOT / "data" / "preprocessing" / "01_clean").glob("*.jsonl")):
-        for line in p.open(encoding="utf-8"):
-            r = json.loads(line)
-            f = flatten_raw_job_record(r)
-            if f.get("job_id_global") in ids:
-                out[f["job_id_global"]] = f
-    return out
+def benefits_prf(labels, items) -> dict:
+    """Precision/recall phúc lợi (micro) của extract_benefits so với nhãn tay; chỉ tính JD đã gán nhãn."""
+    from preprocessing.transformation.skill_extractor import extract_benefits
+    tp = fp = fn = n = 0
+    for jid, lab in labels.items():
+        gold = lab.get("benefits")
+        if gold is None:
+            continue
+        gold = set() if gold == "none" else set(gold)
+        it = items[jid]
+        pred = set(extract_benefits(it.get("benefits_list"), it.get("description_clean") or ""))
+        tp += len(pred & gold); fp += len(pred - gold); fn += len(gold - pred); n += 1
+    p = tp / (tp + fp) if tp + fp else None
+    r = tp / (tp + fn) if tp + fn else None
+    return {"jobs": n, "tp": tp, "fp": fp, "fn": fn, "precision": None if p is None else round(p, 4), "recall": None if r is None else round(r, 4)}
 
 
 def main(argv=None) -> int:
@@ -48,8 +52,8 @@ def main(argv=None) -> int:
         return 0
     labels = load_gold(a.gold)
     cov = coverage(labels)
-    if not cov["sections"] and not cov["skills"]:
-        print("chưa có nhãn sections/skills")
+    if not cov["sections"] and not cov["skills"] and not cov["benefits"]:
+        print("chưa có nhãn sections/skills/benefits")
         return 0
     items = {i["job_id"]: i for i in json.loads(a.sample.read_text(encoding="utf-8"))["items"]}
     labels = {j: l for j, l in labels.items() if j in items}
@@ -57,17 +61,15 @@ def main(argv=None) -> int:
     sources = {j: items[j]["source"] for j in labels}
     matcher, headings, cues = default_matcher(), S.load_headings(), S.load_cues()
 
-    flats = _flat_by_id(set(labels))
-
-    def run_one(jid):
-        f = flats.get(jid)  # tách đúng description/requirements; không có thì cả `text` coi là mô tả (số section kém tin cậy)
-        rec = ({"description_clean": clean_text(f.get("raw_description_text")), "requirements_clean": clean_text(f.get("raw_requirements_text"))}
-               if f else {"description_clean": items[jid]["text"], "requirements_clean": None})
+    def run_one(jid):  # đúng cột mà bước 07/08 đọc (mẫu lấy từ bảng 04)
+        it = items[jid]
+        rec = {"description_clean": it.get("description_clean") or it["text"], "requirements_clean": it.get("requirements_clean"),
+               "benefits_list": it.get("benefits_list"), "skills_list": it.get("skills_list")}
         return analyze(rec, matcher, headings, cues)
 
     cache = {}
     get = lambda j: cache.setdefault(j, run_one(j))  # noqa: E731
-    out = {"coverage": cov,
+    out = {"coverage": cov, "benefits": benefits_prf(labels, items),
            "section": E.section_accuracy(labels, texts, sources, lambda j: get(j)[0]),
            "skills": E.skills_f1(labels, sources, lambda j: get(j)[1], matcher),
            "note": f"{cov['sections']} JD có nhãn section, {cov['skills']} JD có nhãn skills; số đo tạm nếu gold chưa gán hết"}

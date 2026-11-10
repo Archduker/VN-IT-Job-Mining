@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 1533
+    "rows": 1518
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 1533
+    "rows": 1518
   },
   "dropped": [],
   "rules": [],
@@ -24,16 +24,16 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 9456,
+    "n_job_skill_rows": 9331,
     "n_jobs_no_skill": 175,
     "top_skills": [
       {
         "skill": "communication",
-        "n_jobs": 676
+        "n_jobs": 675
       },
       {
         "skill": "english",
-        "n_jobs": 462
+        "n_jobs": 461
       },
       {
         "skill": "teamwork",
@@ -41,79 +41,79 @@
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 291
-      },
-      {
-        "skill": "python",
-        "n_jobs": 263
+        "n_jobs": 289
       },
       {
         "skill": "logical_thinking",
         "n_jobs": 259
       },
       {
+        "skill": "python",
+        "n_jobs": 258
+      },
+      {
         "skill": "agile_scrum",
-        "n_jobs": 229
+        "n_jobs": 228
       },
       {
         "skill": "machine_learning",
-        "n_jobs": 218
+        "n_jobs": 213
       },
       {
         "skill": "rest_api",
-        "n_jobs": 199
+        "n_jobs": 195
       },
       {
         "skill": "docker",
-        "n_jobs": 199
+        "n_jobs": 192
       },
       {
         "skill": "cicd",
-        "n_jobs": 193
+        "n_jobs": 189
       },
       {
         "skill": "linux",
-        "n_jobs": 185
+        "n_jobs": 184
       },
       {
         "skill": "java",
-        "n_jobs": 172
+        "n_jobs": 170
       },
       {
         "skill": "data_analysis",
-        "n_jobs": 163
+        "n_jobs": 162
       },
       {
         "skill": "postgresql",
-        "n_jobs": 149
-      },
-      {
-        "skill": "cybersecurity",
         "n_jobs": 146
       },
       {
+        "skill": "cybersecurity",
+        "n_jobs": 143
+      },
+      {
         "skill": "project_management",
-        "n_jobs": 140
+        "n_jobs": 139
       },
       {
         "skill": "microservices",
-        "n_jobs": 140
-      },
-      {
-        "skill": "jira",
         "n_jobs": 137
       },
       {
-        "skill": "mysql",
-        "n_jobs": 131
+        "skill": "jira",
+        "n_jobs": 136
       },
       {
-        "skill": "ecommerce",
+        "skill": "mysql",
         "n_jobs": 130
       },
       {
+        "skill": "ecommerce",
+        "n_jobs": 129
+      },
+      {
         "skill": "kubernetes",
-        "n_jobs": 113
+        "n_jobs": 110
       },
       {
         "skill": "javascript",
@@ -125,19 +125,15 @@
       },
       {
         "skill": "oracle_db",
-        "n_jobs": 102
-      },
-      {
-        "skill": "infosec",
-        "n_jobs": 100
+        "n_jobs": 101
       },
       {
         "skill": "presentation",
         "n_jobs": 99
       },
       {
-        "skill": "firewall",
-        "n_jobs": 98
+        "skill": "infosec",
+        "n_jobs": 99
       },
       {
         "skill": "csharp",
@@ -145,7 +141,11 @@
       },
       {
         "skill": "redis",
-        "n_jobs": 96
+        "n_jobs": 95
+      },
+      {
+        "skill": "firewall",
+        "n_jobs": 95
       }
     ],
     "short_forms_approved": 0,
@@ -153,19 +153,44 @@
   },
   "samples": [
     {
-      "job_id": "topcv_2216283",
+      "job_id": "topcv_2321974",
       "source": "topcv",
       "field": "skills",
       "before": [
-        "Automation Tester",
-        "IT - Phần mềm"
+        "Game Developer",
+        "IT - Phần cứng và máy tính",
+        "IT - Phần mềm",
+        "Game"
       ],
       "after": [
-        "agile_scrum",
-        "automation_test",
-        "java",
-        "manual_test",
-        "selenium"
+        "android_sdk",
+        "communication",
+        "csharp",
+        "english",
+        "firebase",
+        "logical_thinking"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2326869",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Software Tester (Automation & Manual)",
+        "IT - Phần mềm",
+        "Ngân hàng",
+        "Kiến thức quy trình kiểm thử phần mềm (STLC)",
+        "Vòng đời phát triển hệ thống (SDLC)",
+        "Sử dụng công cụ quản lý lỗi (Jira hoặc tương đương)",
+        "Đọc hiểu tài liệu tiếng Anh"
+      ],
+      "after": [
+        "communication",
+        "english",
+        "infosec",
+        "jira",
+        "logical_thinking"
       ],
       "changed": true
     },
@@ -180,44 +205,6 @@
         "communication",
         "ecommerce",
         "time_management"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2323457",
-      "source": "topcv",
-      "field": "skills",
-      "before": [
-        "Backend Developer",
-        "IT - Phần mềm",
-        "Giáo dục / Đào tạo",
-        "Git",
-        "Linux",
-        "MVC",
-        "PostgreSQL",
-        "REST API",
-        "Ruby on Rails",
-        "RSpec",
-        "Ruby",
-        "API",
-        "Performance",
-        "OAuth2",
-        "Debugging",
-        "Authentication/Authorization",
-        "Query Optimization",
-        "indexing",
-        "caching",
-        "ActiveRecord"
-      ],
-      "after": [
-        "cicd",
-        "java",
-        "linux",
-        "machine_learning",
-        "postgresql",
-        "rails",
-        "rest_api",
-        "ruby"
       ],
       "changed": true
     }

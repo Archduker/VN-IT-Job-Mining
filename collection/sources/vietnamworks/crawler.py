@@ -38,6 +38,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from collection.base.base_crawler import BaseCrawler
+from collection.common.anti_blocking import polite_sleep
 from collection.common.http_client import DelayConfig, HttpClient
 from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import JobRecord, RawJobEnvelope
@@ -647,7 +648,7 @@ class VietnamWorksCrawler(BaseCrawler):
         self.queries = queries or IT_QUERIES
         self.http_client = http_client or HttpClient(
             source=self.source_name,
-            delay_config=DelayConfig(min_seconds=1.0, max_seconds=2.0),
+            delay_config=DelayConfig(min_seconds=2.0, max_seconds=4.5),
             timeout=25,
         )
         self.local_json_file = local_json_file
@@ -763,7 +764,7 @@ class VietnamWorksCrawler(BaseCrawler):
                         discovered_urls.append(clean_url)
                     if len(hits) < HITS_PER_PAGE:
                         break
-                    time.sleep(0.3)
+                    polite_sleep(2.0, 4.5)
                 except Exception as exc:
                     first_error = first_error or exc
                     log.warning("[VietnamWorks] Lỗi quét jobFunction page %d: %s", page, exc)
@@ -804,7 +805,7 @@ class VietnamWorksCrawler(BaseCrawler):
                             discovered_urls.append(clean_url)
                         if len(hits) < HITS_PER_PAGE:
                             break
-                        time.sleep(0.3)
+                        polite_sleep(2.0, 4.5)
                     except Exception as exc:
                         first_error = first_error or exc
                         log.warning("[VietnamWorks] Lỗi quét industry %s page %d: %s", ind_id, page, exc)
@@ -845,7 +846,7 @@ class VietnamWorksCrawler(BaseCrawler):
                                 discovered_urls.append(clean_url)
                             if len(hits) < HITS_PER_PAGE:
                                 break
-                            time.sleep(0.3)
+                            polite_sleep(2.0, 4.5)
                         except Exception as exc:
                             first_error = first_error or exc
                             log.warning("[VietnamWorks] Safe Skip query '%s' page %d: %s", query, page, exc)
@@ -921,9 +922,8 @@ class VietnamWorksCrawler(BaseCrawler):
 
                 # Chế độ cào online qua API / HttpClient
                 elif online:
-                    # Polite sleep ngẫu nhiên 1.2s - 2.2s
-                    sleep_time = random.uniform(1.2, 2.2)
-                    time.sleep(sleep_time)
+                    # Polite sleep ngẫu nhiên 2.0s - 4.5s (C10)
+                    sleep_time = polite_sleep(2.0, 4.5)
 
                     payload_filter = {
                         "filter": [{"field": "jobId", "value": str(job_id)}],

@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 207
+    "rows": 204
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 207
+    "rows": 204
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 5760,
+    "n_bullets": 5703,
     "bullets_by_section": {
-      "mo_ta": 1821,
-      "yeu_cau": 1996,
-      "phuc_loi": 1943
+      "mo_ta": 1803,
+      "yeu_cau": 1979,
+      "phuc_loi": 1921
     },
     "bullets_by_rule": {
-      "S7.2": 5760
+      "S7.2": 5703
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "topdev_2134271",
+      "job_id": "topdev_2136571",
       "source": "topdev",
       "field": "sections",
-      "before": "Tiếp nhận và xử lý yêu cầu hỗ trợ từ người dùng qua điện thoại, email hoặc hệ thống ticketing Tạo, theo dõi và cập nhật ticket đảm bảo giải quyết đúng SLA; escalate lên Level 2/3 khi cần Hỗ trợ cài đặ…",
+      "before": "Đề xuất xây dựng, quy hoạch, phát triển, sửa chữa tối ưu, mở rộng, làm chủ tính năng các hệ thống Cloud, Data Center; đề xuất xây dựng chính sách, quy trình, cấp phát tài nguyên Cloud và Data Center.\n…",
+      "after": {
+        "phuc_loi": 7,
+        "yeu_cau": 5,
+        "mo_ta": 4
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2138775",
+      "source": "topdev",
+      "field": "sections",
+      "before": "Tiếp nhận thực hiện thiết kế, shop drawing, lập định mức vật tư tủ điện MSB, ATS, hòa đồng bộ, tủ điện phân phối, tủ điện điều khiển, tủ điện hệ thống NLMT phù hợp với các tiêu chuẩn, quy chuẩn quốc g…",
       "after": {
         "phuc_loi": 10,
-        "yeu_cau": 3,
-        "mo_ta": 1
+        "mo_ta": 6,
+        "yeu_cau": 3
       },
       "changed": true
     },
     {
-      "job_id": "topdev_2138178",
+      "job_id": "topdev_2135498",
       "source": "topdev",
       "field": "sections",
-      "before": "Xây dựng các chương trình sản phẩm, xác định chiến lược sản phẩm Xây dựng, phát triển sản phẩm mới/hiện hữu theo chỉ đạo/ chiến lược của BLĐ Khối Lập kế hoạch và triển khai giới thiệu sản phẩm Phối hợ…",
+      "before": "Lead, plan, and execute IT projects from inception to completion.\nCoordinate cross-functional teams, ensuring that projects are delivered on-time, within scope, and within budget.\nDevelop detailed pro…",
       "after": {
-        "phuc_loi": 8,
-        "mo_ta": 2,
-        "yeu_cau": 2
-      },
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2139309",
-      "source": "topdev",
-      "field": "sections",
-      "before": "Requirement Analysis & Solution Proposal: Receive and analyze high-level business and functional requirements from stakeholders (Product Managers, clients, end users), and propose appropriate technica…",
-      "after": {
-        "phuc_loi": 11,
-        "yeu_cau": 8,
-        "mo_ta": 5
+        "mo_ta": 9,
+        "yeu_cau": 9,
+        "phuc_loi": 8
       },
       "changed": true
     }

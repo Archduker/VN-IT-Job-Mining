@@ -226,7 +226,7 @@ flowchart TD
 
 #### Lớp 2: Inter-source Semantic Blocking & Dual Matching
 
-> **Cập nhật 11/2026:** Lớp 2 triển khai theo `docs/spec/05_preprocessing_spec.md` §3.2 (khóa chặn `Company_Location_TitleGroup`, TF-IDF Cosine ≥ 0,85), không dùng cặp ngưỡng Jaccard 0,80 và Cosine 0,75 mô tả dưới đây. SPEC-05 là chuẩn nghiệm thu; phần dưới giữ lại làm lịch sử quyết định.
+> **Cập nhật 10/11/2026:** khử trùng lặp nay là bước `01b_deduplication` 3 tầng (`preprocessing/deduplication/`, tham số trong `preprocessing/dictionaries/dedup_policy.json`): (1) `nguồn + id`; (2) `sha1(text_fold)` giống hệt; (3) MinHash + LSH (shingle 5 từ, 128 hoán vị, seed 42) rồi Jaccard chính xác ≥ 0,85, chỉ gộp khi cùng `company_slug` (cả cùng sàn lẫn khác sàn; tiêu đề khác chỉ ghi cờ `title_differs`). Không dùng TF-IDF cosine hay cặp ngưỡng Jaccard 0,80 và cosine 0,75 mô tả dưới đây; phần dưới giữ lại làm lịch sử quyết định. Precision của bước này chờ 50 cặp người dùng chấm (`data/preprocessing/review/dedup_pairs_sample.csv`).
 Do tập dữ liệu có $N \approx 14.000$ bản ghi, việc so sánh toàn bộ các cặp chéo đòi hỏi:
 $$\frac{N \times (N-1)}{2} \approx 98.000.000\text{ phép so sánh}$$
 Con số này là bất khả thi để tính toán nhanh. Nhóm áp dụng chiến lược **Blocking**:

@@ -284,8 +284,8 @@ class JobsGoCrawler(BaseCrawler):
         raw_dir: Optional[str] = None,
         sync_r2: bool = False,
         local_html_dir: Optional[str] = None,
-        min_delay: float = 1.5,
-        max_delay: float = 3.0,
+        min_delay: float = 2.0,
+        max_delay: float = 4.5,
         **kwargs: Any,
     ) -> None:
         root = (output_dir or "data/jobsgo").rstrip(os.sep)

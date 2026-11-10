@@ -41,7 +41,6 @@ from collection.common.url_ledger import (
     clean_canonical_url,
     generate_url_hash,
 )
-from preprocessing.common.it_filter import classify
 from collection.common.utils import (
     collapse_whitespace,
     detect_language,
@@ -1567,7 +1566,7 @@ class TopDevCrawler(BaseCrawler):
         self.http_client = http_client or HttpClient(
             source=self.source_name,
             timeout=int(timeout),
-            delay_config=DelayConfig(min_seconds=1.5, max_seconds=3.0),
+            delay_config=DelayConfig(min_seconds=2.0, max_seconds=4.5),
             extra_headers=extra_headers,
         )
         self.api_crawler = TopDevAPICrawler(
@@ -1617,12 +1616,11 @@ class TopDevCrawler(BaseCrawler):
         self,
         max_pages: int | None = None,
         category_ids: int | None = None,
-        filter_it: bool = True,
     ) -> list[str]:
         """Pha 1: Quét danh mục API TopDev, lấy toàn bộ Job URLs và lưu vào UrlLedger & R2.
 
         Hỗ trợ C14: Báo lỗi DiscoveryError khi không lấy được trang nào.
-        Hỗ trợ SCRAPE-15: Lọc bỏ tin ngoài IT trước khi đăng ký vào ledger.
+        Không lọc IT ở đây (đã chốt 09/11): bước Clean (`preprocessing/clean`) lọc.
         """
         log.info("[TopDev] === Bắt đầu Pha 1: URL Discovery ===")
         effective_max_pages = max_pages if max_pages is not None else 2
@@ -1647,17 +1645,6 @@ class TopDevCrawler(BaseCrawler):
 
                 for job in jobs:
                     title = job.get("title", "")
-                    skills_arr = job.get("skills_arr") or []
-                    if isinstance(skills_arr, list):
-                        skills_val = [s.get("title") if isinstance(s, dict) else str(s) for s in skills_arr]
-                    else:
-                        skills_val = [s.strip() for s in str(job.get("skills_str") or "").split(",") if s.strip()]
-
-                    # SCRAPE-15: Chặn tin ngoài IT (kế toán, tài xế, telesales, tạp vụ...) đưa vào ledger
-                    if filter_it and classify(title, skills_val) == "non_it":
-                        log.debug("[TopDev] Bỏ qua tin ngoài IT (SCRAPE-15): %s", title)
-                        continue
-
                     job_id = str(job.get("id"))
                     raw_url = job.get("detail_url") or f"{SITE_BASE_URL}/detail-jobs/{job.get('slug')}-{job_id}"
                     clean_url = clean_canonical_url(raw_url)
@@ -1692,7 +1679,7 @@ class TopDevCrawler(BaseCrawler):
                         except Exception as e:
                             log.warning("[TopDev] Checkpoint sync R2 Pha 1 thất bại: %s", e)
 
-                polite_sleep(0.3, 0.7)
+                polite_sleep(2.0, 4.5)
                 page += 1
             except Exception as exc:
                 first_error = first_error or exc
@@ -1760,7 +1747,7 @@ class TopDevCrawler(BaseCrawler):
                     html_content = html_file.read_text(encoding="utf-8")
                     envelope = extract_raw_envelope_from_html(html_content, job_id=job_id, url=url)
                 else:
-                    polite_sleep(1.0, 2.5)
+                    polite_sleep(2.0, 4.5)
                     detail_resp = self.api_crawler._fetch_detail_with_retries(job_id)
                     
                     # Kiểm tra tin đã đóng tuyển dụng hoặc hết hạn

@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:49:46+00:00",
+  "generated_at": "2026-11-10T12:33:07+00:00",
   "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 786
+    "rows": 774
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 786
+    "rows": 774
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 991,
+      "rows_affected": 979,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 222,
+      "rows_affected": 218,
       "examples": [
         {
           "job_id": "2094849",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 786,
+      "rows_affected": 774,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 664,
+      "rows_affected": 654,
       "examples": [
         {
           "job_id": "2085748",
@@ -90,21 +90,21 @@
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 785,
+      "rows_affected": 773,
       "examples": []
     },
     {
       "id": "T2f",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 4,
+      "rows_affected": 3,
       "examples": []
     },
     {
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 786,
+      "rows_affected": 774,
       "examples": []
     },
     {
@@ -132,21 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 246,
+      "rows_affected": 245,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 0,
+      "rows_affected": 345,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 786,
+      "rows_affected": 774,
       "examples": [
         {
           "job_id": "2085748",
@@ -166,7 +166,7 @@
           "job_id": "2093859",
           "field": "skills_clean",
           "before": "['Amazon Web Services' 'AWS Architecture' 'Technical Sales'\n 'IT Solutions Planning' 'Cloud Solutions']",
-          "after": "['AWS', 'Azure', 'Amazon Web Services', 'AWS Architecture', 'Technical Sales']",
+          "after": "['AWS', 'Azure', 'Machine Learning', 'Amazon Web Services', 'AWS Architecture']",
           "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
         }
       ]
@@ -175,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 785,
+      "rows_affected": 773,
       "examples": [
         {
           "job_id": "2085748",
@@ -204,13 +204,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 23.3,
-      "fill_pct_out": 23.3
+      "fill_pct_in": 23.1,
+      "fill_pct_out": 23.1
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 26.6,
-      "fill_pct_out": 26.6
+      "fill_pct_in": 26.7,
+      "fill_pct_out": 26.7
     },
     {
       "field": "posted_date",
@@ -254,8 +254,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 91.3,
-      "fill_pct_out": 91.3
+      "fill_pct_in": 88.6,
+      "fill_pct_out": 88.6
     },
     {
       "field": "locations",
@@ -278,36 +278,34 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 222,
+      "header": 217,
       "title": 2,
       "jd": 2,
-      "none": 560
+      "none": 553
     },
-    "salary_under_1m_count": 3,
+    "salary_under_1m_count": 2,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 431,
-      "en": 352,
-      "other": 3
+      "vi": 427,
+      "en": 345,
+      "other": 2
     },
     "language_fasttext": {
       "model": "lid.176.bin",
       "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
       "conf_min": 0.6,
-      "disagree_with_old_rule": 10,
+      "disagree_with_old_rule": 8,
       "disagree_examples": [
         "2092686",
         "2098089",
         "2110677",
-        "2111427",
-        "2111784",
         "2111797",
         "2118846",
         "2121173",
         "2123254",
         "2125913"
       ],
-      "conf_lt_0_9": 196
+      "conf_lt_0_9": 191
     },
     "text_quality": {
       "before": {
@@ -325,32 +323,61 @@
       },
       "abbreviations_approved": 0
     },
-    "translation": null,
+    "translation": {
+      "model_id": "VietAI/envit5-translation",
+      "model_revision": "840bc88104d5a4277af740eaedb024df8c3093e7",
+      "gen_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
+      "max_chunk_tokens": 200,
+      "fields": [
+        "description",
+        "requirements"
+      ],
+      "approved_terms": 0,
+      "device": "cuda",
+      "batch_size": 4,
+      "torch": "2.15.0+cu132",
+      "transformers": "5.22.2",
+      "peak_vram_mib": 1258,
+      "fell_back_to_cpu": false,
+      "rows_en": 477,
+      "rows_translated": 444,
+      "rows_failed": 33,
+      "chunks": 8188,
+      "cache_hits": 467,
+      "model_calls": 7766,
+      "retries": 45,
+      "failed_chunks": 45
+    },
     "experience_parsed_rate": 84.5
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2110250",
+      "job_id": "vietnamworks_2094849",
       "source": "vietnamworks",
-      "field": "salary_min_vnd",
-      "before": "Thương lượng",
-      "after": null,
+      "field": "requirements_clean",
+      "before": "REQUIREMENTS\nBachelor/master's degree in accounting/finance/economics/IT.\n4+ years of experience in SAP FI and CO modules.\n3+ years of experience in SAP Maintenance projects.\nMandatory languages: Prof…",
+      "after": "REQUIREMENTS Bachelor/master's degree in accounting/finance/economics/IT.\n4+ years of experience in SAP FI and CO modules.\n3+ years of experience in SAP Maintenance projects.\nMandatory languages: Prof…",
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2121758",
+      "job_id": "vietnamworks_2116981",
       "source": "vietnamworks",
-      "field": "posted_date",
-      "before": "2026-10-21T11:18:30+07:00",
-      "after": "2026-10-21",
+      "field": "description_clean",
+      "before": "Xây dựng và quản trị Master Data ngành hàng\nChuẩn hóa và duy trì dữ liệu danh mục sản phẩm, NCC, mã hàng, nhóm ngành…\nLàm đầu mối quản trị các phân hệ liên quan đến danh mục trong hệ thống ERP.\nKiểm t…",
+      "after": "Xây dựng và quản trị Master Data ngành hàng Chuẩn hóa và duy trì dữ liệu danh mục sản phẩm, NCC, mã hàng, nhóm ngành… Làm đầu mối quản trị các phân hệ liên quan đến danh mục trong hệ thống ERP.\nKiểm t…",
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2119144",
+      "job_id": "vietnamworks_2116495",
       "source": "vietnamworks",
-      "field": "exp_min_years",
-      "before": "8 năm",
-      "after": 8.0,
+      "field": "headcount",
+      "before": "1",
+      "after": 1.0,
       "changed": true
     }
   ]

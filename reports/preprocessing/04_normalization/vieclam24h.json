@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:13+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:24+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 171
+    "rows": 166
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 171
+    "rows": 166
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 171,
+      "rows_affected": 166,
       "examples": [
         {
           "job_id": "200011696",
@@ -54,7 +54,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 171,
+      "rows_affected": 166,
       "examples": [
         {
           "job_id": "200011696",
@@ -83,7 +83,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 12 nhóm SPEC-01 + Other",
       "action": "modify",
-      "rows_affected": 77,
+      "rows_affected": 73,
       "examples": [
         {
           "job_id": "200011696",
@@ -119,14 +119,14 @@
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 171,
+      "rows_affected": 166,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 170,
+      "rows_affected": 165,
       "examples": []
     },
     {
@@ -140,7 +140,7 @@
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 147,
+      "rows_affected": 143,
       "examples": []
     },
     {
@@ -189,14 +189,14 @@
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 157,
+      "rows_affected": 153,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 170,
+      "rows_affected": 165,
       "examples": []
     }
   ],
@@ -243,23 +243,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 91.2,
-      "fill_pct_out": 91.2
+      "fill_pct_in": 91.6,
+      "fill_pct_out": 91.6
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 91.8,
-      "fill_pct_out": 91.8
+      "fill_pct_in": 92.2,
+      "fill_pct_out": 92.2
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 91.2,
-      "fill_pct_out": 91.2
+      "fill_pct_in": 91.6,
+      "fill_pct_out": 91.6
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 91.8,
-      "fill_pct_out": 91.8
+      "fill_pct_in": 92.2,
+      "fill_pct_out": 92.2
     },
     {
       "field": "is_outlier_salary",
@@ -332,18 +332,18 @@
   },
   "extra": {
     "seniority_distribution": {
-      "Junior": 56,
-      "Middle": 55,
-      "Intern/Fresher": 45,
+      "Junior": 55,
+      "Middle": 52,
+      "Intern/Fresher": 44,
       "Lead/Manager": 10,
       "Senior": 5
     },
     "job_family_distribution": {
-      "Other": 94,
-      "System/Network": 26,
+      "Other": 93,
+      "System/Network": 25,
       "Product/Project": 14,
-      "Data Science/AI": 9,
-      "QA/QC": 9,
+      "QA/QC": 8,
+      "Data Science/AI": 7,
       "Backend": 5,
       "Mobile": 5,
       "Fullstack": 4,
@@ -352,34 +352,34 @@
       "Data Engineer": 1
     },
     "job_family_source_distribution": {
-      "none": 94,
-      "title": 68,
+      "none": 93,
+      "title": 64,
       "skills": 9
     },
     "work_mode_distribution": {
-      "onsite": 170,
+      "onsite": 165,
       "hybrid": 1
     },
     "salary_status_distribution": {
-      "value": 157,
-      "negotiable": 12,
+      "value": 153,
+      "negotiable": 11,
       "not_stated": 2
     },
     "salary_outliers": 0,
     "inference": {
-      "level_inferred": 147,
+      "level_inferred": 143,
       "exp_inferred": 0
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 163,
-      "job_title_core_distinct": 137,
+      "job_title_clean_distinct": 159,
+      "job_title_core_distinct": 133,
       "title_canonical_source": {
-        "none": 171
+        "none": 166
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 147,
+      "level_inferred": 143,
       "seniority_can_kiem": 2,
       "salary_negotiable_with_value": 1,
       "tinh_unknown": 0,
@@ -397,97 +397,39 @@
   },
   "samples": [
     {
-      "job_id": "vieclam24h_200947887",
+      "job_id": "vieclam24h_200955645",
       "source": "vieclam24h",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch",
-          "phuong_xa": null,
+          "dia_chi_cu_the": "Số nhà 04, Dãy D Khu đấu giá đất Kiến Hưng",
+          "phuong_xa": "Phường Kiến Hưng",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch, Q.Cầu Giấy, Hà Nội, Việt Nam."
+          "raw": "Số nhà 04, Dãy D Khu đấu giá đất Kiến Hưng, Phường Kiến Hưng, Quận Hà Đông, Hà Nội"
         },
         {
-          "dia_chi_cu_the": "11 Trần Hưng Đạo",
-          "phuong_xa": null,
-          "tinh_thanh": "Đắk Lắk",
-          "raw": "Đắk Lắk : 11 Trần Hưng Đạo, Thành phố Buôn Ma Thuột"
-        },
-        {
-          "dia_chi_cu_the": "430 Giải Phóng",
-          "phuong_xa": null,
-          "tinh_thanh": "Đắk Lắk",
-          "raw": "Đắk Lắk : 430 Giải Phóng, Huyện Krông Pắc"
+          "dia_chi_cu_the": "15BT2 Trung Thư",
+          "phuong_xa": "Phường Đại Mỗ",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : 15BT2 Trung Thư, Phường Đại Mỗ (Quận Nam Từ Liêm, Hà Nội cũ)"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch",
-          "phuong_xa": null,
+          "dia_chi_cu_the": "Số nhà 04, Dãy D Khu đấu giá đất Kiến Hưng",
+          "phuong_xa": "Phường Kiến Hưng",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch, Q.Cầu Giấy, Hà Nội, Việt Nam.",
+          "raw": "Số nhà 04, Dãy D Khu đấu giá đất Kiến Hưng, Phường Kiến Hưng, Quận Hà Đông, Hà Nội",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
         },
         {
-          "dia_chi_cu_the": "11 Trần Hưng Đạo",
-          "phuong_xa": null,
-          "tinh_thanh": "Đắk Lắk",
-          "raw": "Đắk Lắk : 11 Trần Hưng Đạo, Thành phố Buôn Ma Thuột",
-          "tinh_key": "dak_lak",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        },
-        {
-          "dia_chi_cu_the": "430 Giải Phóng",
-          "phuong_xa": null,
-          "tinh_thanh": "Đắk Lắk",
-          "raw": "Đắk Lắk : 430 Giải Phóng, Huyện Krông Pắc",
-          "tinh_key": "dak_lak",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200948134",
-      "source": "vieclam24h",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": "Số 11, ngách 4, ngõ 362 Giải Phóng",
-          "phuong_xa": "Phường Định Công",
+          "dia_chi_cu_the": "15BT2 Trung Thư",
+          "phuong_xa": "Phường Đại Mỗ",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Số 11, ngách 4, ngõ 362 Giải Phóng, Phường Định Công, TP Hà Nội, Việt Nam"
-        },
-        {
-          "dia_chi_cu_the": "Số 64-B2 khu đô thị Đại Kim- Định Công",
-          "phuong_xa": "Phường Định Công",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội : Số 64-B2 khu đô thị Đại Kim- Định Công, Phường Định Công, Quận Hoàng Mai"
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": "Số 11, ngách 4, ngõ 362 Giải Phóng",
-          "phuong_xa": "Phường Định Công",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Số 11, ngách 4, ngõ 362 Giải Phóng, Phường Định Công, TP Hà Nội, Việt Nam",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        },
-        {
-          "dia_chi_cu_the": "Số 64-B2 khu đô thị Đại Kim- Định Công",
-          "phuong_xa": "Phường Định Công",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội : Số 64-B2 khu đô thị Đại Kim- Định Công, Phường Định Công, Quận Hoàng Mai",
+          "raw": "Hà Nội : 15BT2 Trung Thư, Phường Đại Mỗ (Quận Nam Từ Liêm, Hà Nội cũ)",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
@@ -497,40 +439,146 @@
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200962525",
+      "job_id": "vieclam24h_200950494",
       "source": "vieclam24h",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "288 Bis Nguyễn Văn Cừ",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Cần Thơ",
-          "raw": "288 Bis Nguyễn Văn Cừ - P. An Hòa - Q. Ninh Kiều - TP. Cần Thơ"
+          "dia_chi_cu_the": "Số 8 Biên Cương",
+          "phuong_xa": "Phường Quy Nhơn Nam",
+          "tinh_thanh": "Gia Lai",
+          "raw": "Số 8 Biên Cương, Phường Quy Nhơn Nam, Tỉnh Gia Lai, Việt Nam"
         },
         {
-          "dia_chi_cu_the": "Số 288 bis, Nguyễn Văn Cừ",
-          "phuong_xa": "Phường Cái Khế",
-          "tinh_thanh": "TP. Cần Thơ",
-          "raw": "Cần Thơ : Số 288 bis, Nguyễn Văn Cừ, Phường Cái Khế (Quận Ninh Kiều, Cần Thơ cũ)"
+          "dia_chi_cu_the": "Công trình thủy điện Nam Neun 1, Xiêng Khoảng, Lào, Thành phố Vinh",
+          "phuong_xa": null,
+          "tinh_thanh": "Nghệ An",
+          "raw": "Nghệ An : Công trình thủy điện Nam Neun 1 - Xiêng Khoảng, Lào (giáp Nghệ An), Thành phố Vinh"
+        },
+        {
+          "dia_chi_cu_the": "Công trình thủy điện Nam Neun 1, Xiêng Khoảng, Lào",
+          "phuong_xa": null,
+          "tinh_thanh": "Gia Lai",
+          "raw": "Bình Định : Công trình thủy điện Nam Neun 1 - Xiêng Khoảng, Lào (giáp Nghệ An), Thành phố Quy Nhơn"
+        },
+        {
+          "dia_chi_cu_the": "Công trình thủy điện Nam Neun 1, Xiêng Khoảng, Lào",
+          "phuong_xa": null,
+          "tinh_thanh": "Hà Tĩnh",
+          "raw": "Hà Tĩnh : Công trình thủy điện Nam Neun 1 - Xiêng Khoảng, Lào (giáp Nghệ An), Thành phố Hà Tĩnh"
+        },
+        {
+          "dia_chi_cu_the": "Công trình thủy điện Nam Neun 1, Xiêng Khoảng, Lào",
+          "phuong_xa": null,
+          "tinh_thanh": "Thanh Hóa",
+          "raw": "Thanh Hóa : Công trình thủy điện Nam Neun 1 - Xiêng Khoảng, Lào (giáp Nghệ An), Thành phố Thanh Hóa"
+        },
+        {
+          "dia_chi_cu_the": "Công trình thủy điện Nam Neun 1, Xiêng Khoảng, Lào, Thành phố Đồng Hới",
+          "phuong_xa": null,
+          "tinh_thanh": "Nghệ An",
+          "raw": "Quảng Bình : Công trình thủy điện Nam Neun 1 - Xiêng Khoảng, Lào (giáp Nghệ An), Thành phố Đồng Hới"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "288 Bis Nguyễn Văn Cừ",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Cần Thơ",
-          "raw": "288 Bis Nguyễn Văn Cừ - P. An Hòa - Q. Ninh Kiều - TP. Cần Thơ",
-          "tinh_key": "can_tho",
+          "dia_chi_cu_the": "Số 8 Biên Cương",
+          "phuong_xa": "Phường Quy Nhơn Nam",
+          "tinh_thanh": "Gia Lai",
+          "raw": "Số 8 Biên Cương, Phường Quy Nhơn Nam, Tỉnh Gia Lai, Việt Nam",
+          "tinh_key": "gia_lai",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
         },
         {
-          "dia_chi_cu_the": "Số 288 bis, Nguyễn Văn Cừ",
-          "phuong_xa": "Phường Cái Khế",
-          "tinh_thanh": "TP. Cần Thơ",
-          "raw": "Cần Thơ : Số 288 bis, Nguyễn Văn Cừ, Phường Cái Khế (Quận Ninh Kiều, Cần Thơ cũ)",
-          "tinh_key": "can_tho",
+          "dia_chi_cu_the": "Công trình thủy điện Nam Neun 1, Xiêng Khoảng, Lào, Thành phố Vinh",
+          "phuong_xa": null,
+          "tinh_thanh": "Nghệ An",
+          "raw": "Nghệ An : Công trình thủy điện Nam Neun 1 - Xiêng Khoảng, Lào (giáp Nghệ An), Thành phố Vinh",
+          "tinh_key": "nghe_an",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Công trình thủy điện Nam Neun 1, Xiêng Khoảng, Lào",
+          "phuong_xa": null,
+          "tinh_thanh": "Gia Lai",
+          "raw": "Bình Định : Công trình thủy điện Nam Neun 1 - Xiêng Khoảng, Lào (giáp Nghệ An), Thành phố Quy Nhơn",
+          "tinh_key": "gia_lai",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Công trình thủy điện Nam Neun 1, Xiêng Khoảng, Lào",
+          "phuong_xa": null,
+          "tinh_thanh": "Hà Tĩnh",
+          "raw": "Hà Tĩnh : Công trình thủy điện Nam Neun 1 - Xiêng Khoảng, Lào (giáp Nghệ An), Thành phố Hà Tĩnh",
+          "tinh_key": "ha_tinh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Công trình thủy điện Nam Neun 1, Xiêng Khoảng, Lào",
+          "phuong_xa": null,
+          "tinh_thanh": "Thanh Hóa",
+          "raw": "Thanh Hóa : Công trình thủy điện Nam Neun 1 - Xiêng Khoảng, Lào (giáp Nghệ An), Thành phố Thanh Hóa",
+          "tinh_key": "thanh_hoa",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Công trình thủy điện Nam Neun 1, Xiêng Khoảng, Lào, Thành phố Đồng Hới",
+          "phuong_xa": null,
+          "tinh_thanh": "Nghệ An",
+          "raw": "Quảng Bình : Công trình thủy điện Nam Neun 1 - Xiêng Khoảng, Lào (giáp Nghệ An), Thành phố Đồng Hới",
+          "tinh_key": "nghe_an",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200963700",
+      "source": "vieclam24h",
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": "Tầng 5, Tòa nhà Jea Building, Số 112 Lý Chính Thắng",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Tầng 5, Tòa nhà Jea Building, Số 112 Lý Chính Thắng, Phường Võ Thị Sáu, Quận 3, Thành phố Hồ Chí Minh, Việt Nam"
+        },
+        {
+          "dia_chi_cu_the": "IPH Xuân Thủy",
+          "phuong_xa": "Phường Cầu Giấy",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : IPH Xuân Thủy, Phường Cầu Giấy (Quận Cầu Giấy, Hà Nội cũ)"
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": "Tầng 5, Tòa nhà Jea Building, Số 112 Lý Chính Thắng",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Tầng 5, Tòa nhà Jea Building, Số 112 Lý Chính Thắng, Phường Võ Thị Sáu, Quận 3, Thành phố Hồ Chí Minh, Việt Nam",
+          "tinh_key": "ho_chi_minh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "IPH Xuân Thủy",
+          "phuong_xa": "Phường Cầu Giấy",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : IPH Xuân Thủy, Phường Cầu Giấy (Quận Cầu Giấy, Hà Nội cũ)",
+          "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false

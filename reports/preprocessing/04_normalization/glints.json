@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:13+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:24+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 260
+    "rows": 256
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 260
+    "rows": 256
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 188,
+      "rows_affected": 184,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -62,7 +62,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 251,
+      "rows_affected": 247,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -91,7 +91,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 12 nhóm SPEC-01 + Other",
       "action": "modify",
-      "rows_affected": 195,
+      "rows_affected": 192,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -127,14 +127,14 @@
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 255,
+      "rows_affected": 251,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 260,
+      "rows_affected": 256,
       "examples": []
     },
     {
@@ -148,7 +148,7 @@
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 162,
+      "rows_affected": 160,
       "examples": []
     },
     {
@@ -197,14 +197,14 @@
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 154,
+      "rows_affected": 153,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 260,
+      "rows_affected": 256,
       "examples": []
     }
   ],
@@ -216,8 +216,8 @@
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 71.5,
-      "fill_pct_out": 71.5
+      "fill_pct_in": 71.1,
+      "fill_pct_out": 71.1
     },
     {
       "field": "seniority",
@@ -241,8 +241,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 98.1,
-      "fill_pct_out": 98.1
+      "fill_pct_in": 98.0,
+      "fill_pct_out": 98.0
     },
     {
       "field": "company_norm",
@@ -251,23 +251,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 58.8,
-      "fill_pct_out": 58.8
+      "fill_pct_in": 59.4,
+      "fill_pct_out": 59.4
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 59.2,
-      "fill_pct_out": 59.2
+      "fill_pct_in": 59.8,
+      "fill_pct_out": 59.8
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 58.8,
-      "fill_pct_out": 58.8
+      "fill_pct_in": 59.4,
+      "fill_pct_out": 59.4
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 59.2,
-      "fill_pct_out": 59.2
+      "fill_pct_in": 59.8,
+      "fill_pct_out": 59.8
     },
     {
       "field": "is_outlier_salary",
@@ -311,8 +311,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 96.2,
-      "fill_pct_out": 96.2
+      "fill_pct_in": 96.1,
+      "fill_pct_out": 96.1
     },
     {
       "field": "exp_source",
@@ -340,20 +340,20 @@
   },
   "extra": {
     "seniority_distribution": {
-      "Junior": 82,
-      "Middle": 63,
+      "Junior": 81,
+      "Middle": 61,
       "Intern/Fresher": 54,
-      "Senior": 31,
+      "Senior": 30,
       "Lead/Manager": 21,
       "(trống)": 9
     },
     "job_family_distribution": {
-      "Other": 65,
-      "QA/QC": 62,
+      "Other": 64,
+      "QA/QC": 61,
       "Data Science/AI": 29,
-      "Backend": 28,
+      "Backend": 27,
       "Fullstack": 18,
-      "DevOps/Cloud": 14,
+      "DevOps/Cloud": 13,
       "System/Network": 12,
       "Security": 10,
       "Mobile": 8,
@@ -362,36 +362,36 @@
       "Product/Project": 2
     },
     "job_family_source_distribution": {
-      "title": 170,
-      "none": 65,
-      "skills": 25
+      "title": 168,
+      "none": 64,
+      "skills": 24
     },
     "work_mode_distribution": {
-      "onsite": 185,
+      "onsite": 181,
       "unknown": 73,
       "remote": 1,
       "hybrid": 1
     },
     "salary_status_distribution": {
-      "value": 155,
-      "negotiable": 100,
+      "value": 154,
+      "negotiable": 97,
       "not_stated": 5
     },
     "salary_outliers": 1,
     "inference": {
-      "level_inferred": 162,
+      "level_inferred": 160,
       "exp_inferred": 12
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 241,
-      "job_title_core_distinct": 185,
+      "job_title_clean_distinct": 239,
+      "job_title_core_distinct": 183,
       "title_canonical_source": {
-        "none": 260
+        "none": 256
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 162,
+      "level_inferred": 160,
       "seniority_can_kiem": 0,
       "salary_negotiable_with_value": 5,
       "tinh_unknown": 71,
@@ -409,24 +409,24 @@
   },
   "samples": [
     {
-      "job_id": "glints_aa241d18-2487-4dc7-9070-8c4435e52fe8",
+      "job_id": "glints_88edd0d4-a88e-4e06-9fd9-418d8b2c0f07",
       "source": "glints",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": null,
+          "dia_chi_cu_the": "Tầng 5, 71 Nguyễn Chí Thanh",
           "phuong_xa": null,
-          "tinh_thanh": null,
-          "raw": "Quận Ba Đình"
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Tầng 5, 71 Nguyễn Chí Thanh, Hà Nội"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": null,
+          "dia_chi_cu_the": "Tầng 5, 71 Nguyễn Chí Thanh",
           "phuong_xa": null,
-          "tinh_thanh": null,
-          "raw": "Quận Ba Đình",
-          "tinh_key": null,
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Tầng 5, 71 Nguyễn Chí Thanh, Hà Nội",
+          "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
@@ -435,7 +435,7 @@
       "changed": true
     },
     {
-      "job_id": "glints_e17b07e4-cc97-4c74-bcd7-b022ad432a07",
+      "job_id": "glints_0af63a55-b97f-4706-8d61-f0b52e201fc1",
       "source": "glints",
       "field": "exp_min_years",
       "before": null,
@@ -443,7 +443,7 @@
       "changed": true
     },
     {
-      "job_id": "glints_0af63a55-b97f-4706-8d61-f0b52e201fc1",
+      "job_id": "glints_51608510-68ac-4a56-b1cf-91f74e80cc6d",
       "source": "glints",
       "field": "exp_min_years",
       "before": null,

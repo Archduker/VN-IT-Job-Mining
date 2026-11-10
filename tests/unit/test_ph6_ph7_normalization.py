@@ -203,3 +203,10 @@ def test_anomalies_carry_job_id_and_source(tmp_path):
     data = json.loads(p.read_text(encoding="utf-8"))
     assert data["total"] == len(an) and data["by_kind"]["level_inferred"] == 1
     assert not math.isnan(out[0]["salary_max_vnd"])  # số không bị sửa hay xóa
+
+
+def test_salary_toi_thieu_and_ty():
+    from preprocessing.transformation.salary_parser import parse_salary
+    r = parse_salary("tối thiểu 10 triệu")
+    assert (r.salary_min, r.salary_max, r.parse_status) == (10.0, None, "lower_bound")
+    assert parse_salary("2 tỷ").salary_min == 2000.0

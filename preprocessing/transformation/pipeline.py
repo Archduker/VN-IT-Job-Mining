@@ -1,7 +1,7 @@
 """Consolidated Silver -> Transformation/Normalization pipeline.
 
 Input : data/preprocessing/02_integration/all.parquet
-Output: data/preprocessing/04_normalization/all.parquet
+Output: data/preprocessing/legacy_features/all.parquet (đường cũ của Duy, không dùng trong chuỗi; 04_normalization/all.parquet do bước 04 mới ghi, PRE-21)
 
 All Silver columns are retained. Ten feature columns from Duy's handbook are
 appended. Unknown seniority is -1; unknown salary/experience values remain NaN.
@@ -156,7 +156,7 @@ def partition_salary_subsets(dataframe: Any) -> tuple[Any, Any]:
 
 
 def run_pipeline(input_path: str | Path = "data/preprocessing/02_integration/all.parquet",
-                 output_path: str | Path = "data/preprocessing/04_normalization/all.parquet",
+                 output_path: str | Path = "data/preprocessing/legacy_features/all.parquet",
                  write_subsets: bool = True) -> dict[str, Any]:
     """Read Silver Parquet, append features, and persist full/stratified datasets."""
     try:
@@ -209,7 +209,7 @@ def run_pipeline(input_path: str | Path = "data/preprocessing/02_integration/all
 def main() -> None:
     parser = argparse.ArgumentParser(description="VN-IT-Job-Mining feature transformation pipeline")
     parser.add_argument("--input", default="data/preprocessing/02_integration/all.parquet")
-    parser.add_argument("--output", default="data/preprocessing/04_normalization/all.parquet")
+    parser.add_argument("--output", default="data/preprocessing/legacy_features/all.parquet")
     parser.add_argument("--no-subsets", action="store_true", help="Only write all.parquet")
     args = parser.parse_args()
     summary = run_pipeline(args.input, args.output, write_subsets=not args.no_subsets)

@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 835
+    "rows": 831
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 835
+    "rows": 831
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 30121,
+    "n_bullets": 29951,
     "bullets_by_section": {
-      "mo_ta": 8585,
-      "yeu_cau": 9157,
-      "phuc_loi": 12379
+      "mo_ta": 8554,
+      "yeu_cau": 9116,
+      "phuc_loi": 12281
     },
     "bullets_by_rule": {
-      "S7.2": 30121
+      "S7.2": 29951
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "itviec_embedded-c-engineer-1-year-contract-bosch-global-software-technologies-company-limited-5848",
+      "job_id": "itviec_ai-solution-architect-ai-llm-python-microservices-finviet-3011",
       "source": "itviec",
       "field": "sections",
-      "before": "Develop embedded based software (BSW) and application software for household appliance.\nParticipate in full development cycle (Requirement, Design, Coding, Testing) Analyzing requirements, design and …",
-      "after": {
-        "yeu_cau": 8,
-        "mo_ta": 6,
-        "phuc_loi": 4
-      },
-      "changed": true
-    },
-    {
-      "job_id": "itviec_system-integration-engineer-linux-security-savyint-group-4105",
-      "source": "itviec",
-      "field": "sections",
-      "before": "MỤC TIÊU VAI TRÒ Hỗ trợ đội ngũ dự án triển khai và tích hợp các sản phẩm chiến lược của công ty tại khách hàng (Ngân hàng/Fintech).\nNHIỆM VỤ VÀ TRÁCH NHIỆM CHI TIẾT (PHIÊN BẢN CHUYÊN SÂU)\n1. Hỗ trợ T…",
-      "after": {
-        "mo_ta": 26,
-        "phuc_loi": 24,
-        "yeu_cau": 21
-      },
-      "changed": true
-    },
-    {
-      "job_id": "itviec_technical-service-desk-agent-japanese-speaker-accenture-0032",
-      "source": "itviec",
-      "field": "sections",
-      "before": "We are looking for a customer-focused Technical Service Desk Agent with Japanese language proficiency to provide first-level technical support to clients. You will diagnose and resolve technical issue…",
+      "before": "Design end-to-end AI solution architectures aligned with business requirements and technology strategy.\nEvaluate and implement AI/ML, Generative AI, and Large Language Model (LLM) solutions for real-w…",
       "after": {
         "phuc_loi": 12,
-        "mo_ta": 10,
-        "yeu_cau": 9
+        "yeu_cau": 7,
+        "mo_ta": 6
+      },
+      "changed": true
+    },
+    {
+      "job_id": "itviec_data-steward-sql-bi-data-quality-data-analysis-vietinbank-4317",
+      "source": "itviec",
+      "field": "sections",
+      "before": "Mục tiêu công việc Là cầu nối giữa Đơn vị nghiệp vụ và Khối kỹ thuật/dữ liệu , triển khai các chính sách, quy trình và tiêu chuẩn quản trị dữ liệu tại đơn vị; đảm bảo dữ liệu chất lượng, nhất quán, bả…",
+      "after": {
+        "phuc_loi": 9,
+        "yeu_cau": 7,
+        "mo_ta": 4
+      },
+      "changed": true
+    },
+    {
+      "job_id": "itviec_can-tho-fresher-php-good-english-communication-cong-ty-tnhh-nextedge-5902",
+      "source": "itviec",
+      "field": "sections",
+      "before": "Analyze requirements and propose technical solutions.\nWrite detailed specifications and develop high-quality applications.\nTroubleshoot, test, and maintain the core product software and databases to e…",
+      "after": {
+        "phuc_loi": 16,
+        "yeu_cau": 10,
+        "mo_ta": 6
       },
       "changed": true
     }

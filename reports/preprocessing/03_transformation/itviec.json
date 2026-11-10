@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:49:57+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T13:03:53+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 835
+    "rows": 831
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 835
+    "rows": 831
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 2726,
+      "rows_affected": 2713,
       "examples": []
     },
     {
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 807,
+      "rows_affected": 803,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 729,
+      "rows_affected": 726,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -104,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 835,
+      "rows_affected": 831,
       "examples": []
     },
     {
@@ -132,21 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 281,
+      "rows_affected": 279,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 0,
+      "rows_affected": 555,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 835,
+      "rows_affected": 831,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -175,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 835,
+      "rows_affected": 831,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -204,13 +204,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 24.0,
-      "fill_pct_out": 24.0
+      "fill_pct_in": 24.1,
+      "fill_pct_out": 24.1
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 25.3,
-      "fill_pct_out": 25.3
+      "fill_pct_in": 25.4,
+      "fill_pct_out": 25.4
     },
     {
       "field": "posted_date",
@@ -224,8 +224,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 87.3,
-      "fill_pct_out": 87.3
+      "fill_pct_in": 87.4,
+      "fill_pct_out": 87.4
     },
     {
       "field": "exp_max_years",
@@ -254,8 +254,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 94.4,
-      "fill_pct_out": 94.4
+      "fill_pct_in": 93.0,
+      "fill_pct_out": 93.0
     },
     {
       "field": "locations",
@@ -281,13 +281,13 @@
       "header": 208,
       "title": 4,
       "jd": 1,
-      "none": 622
+      "none": 618
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 1,
     "language_distribution": {
       "vi": 276,
-      "en": 559,
+      "en": 555,
       "other": 0
     },
     "language_fasttext": {
@@ -296,7 +296,7 @@
       "conf_min": 0.6,
       "disagree_with_old_rule": 0,
       "disagree_examples": [],
-      "conf_lt_0_9": 261
+      "conf_lt_0_9": 260
     },
     "text_quality": {
       "before": {
@@ -314,28 +314,57 @@
       },
       "abbreviations_approved": 0
     },
-    "translation": null,
-    "experience_parsed_rate": 87.3
+    "translation": {
+      "model_id": "VietAI/envit5-translation",
+      "model_revision": "840bc88104d5a4277af740eaedb024df8c3093e7",
+      "gen_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
+      "max_chunk_tokens": 200,
+      "fields": [
+        "description",
+        "requirements"
+      ],
+      "approved_terms": 0,
+      "device": "cuda",
+      "batch_size": 4,
+      "torch": "2.15.0+cu132",
+      "transformers": "5.22.2",
+      "peak_vram_mib": 1258,
+      "fell_back_to_cpu": false,
+      "rows_en": 1111,
+      "rows_translated": 1010,
+      "rows_failed": 101,
+      "chunks": 22600,
+      "cache_hits": 1579,
+      "model_calls": 21137,
+      "retries": 116,
+      "failed_chunks": 116
+    },
+    "experience_parsed_rate": 87.4
   },
   "samples": [
     {
-      "job_id": "itviec_java-developer-springboot-oracle-kafka-postgresql-goline-corporation-0412",
+      "job_id": "itviec_backend-developer-shinhan-ds-4838",
       "source": "itviec",
       "field": "description_clean",
-      "before": "Thiết kế, phát triển và tối ưu các\nbackend services\nsử dụng Java/Spring Boot cho các hệ thống yêu cầu cao về hiệu năng, độ ổn định và khả năng mở rộng.\nTham gia\nphân tích yêu cầu, thiết kế giải pháp k…",
-      "after": "Thiết kế, phát triển và tối ưu các backend services sử dụng Java/Spring Boot cho các hệ thống yêu cầu cao về hiệu năng, độ ổn định và khả năng mở rộng.\nTham gia phân tích yêu cầu, thiết kế giải pháp k…",
+      "before": "Job description\nWe are looking for Middle/Senior Software Developers to join the Core Banking team at Shinhan Bank Vietnam. The candidate will be responsible for developing, maintaining, and enhancing…",
+      "after": "Job description We are looking for Middle/Senior Software Developers to join the Core Banking team at Shinhan Bank Vietnam. The candidate will be responsible for developing, maintaining, and enhancing…",
       "changed": true
     },
     {
-      "job_id": "itviec_middle-to-senior-data-analyst-saas-us-product-flodesk-1445",
+      "job_id": "itviec_senior-test-qa-qc-tester-english-vihat-technology-0019",
       "source": "itviec",
-      "field": "salary_min_vnd",
-      "before": "1500 - 4000 USD",
-      "after": 38100000.0,
+      "field": "requirements_clean",
+      "before": "English proficiency.\nBachelor’s degree in computer science.\nStrong attention to detail and multi-tasking skills\nAt least 5 years as Senior Test or above in a large foreign financial institution.\nExper…",
+      "after": "English proficiency.\nBachelor’s degree in computer science.\nStrong attention to detail and multi-tasking skills At least 5 years as Senior Test or above in a large foreign financial institution.\nExper…",
       "changed": true
     },
     {
-      "job_id": "itviec_senior-fullstack-engineer-grab-vietnam-ltd-3935",
+      "job_id": "itviec_senior-manual-qa-qc-testers-playwright-codehq-2705",
       "source": "itviec",
       "field": "exp_min_years",
       "before": "3.1 năm (37 tháng)",

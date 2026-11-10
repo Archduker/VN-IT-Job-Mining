@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Chọn 100 JD cho bộ gold (trước lọc IT, raw mới nhất mỗi job_id) -> data/preprocessing/gold/gold_sample.json.
+"""Chọn 100 JD cho bộ gold từ bảng đã xử lý 04_normalization -> data/preprocessing/gold/gold_sample.json.
 
 Đặc tả: docs/spec/preprocessing/spec/PH1_gold_va_profiling.md. Cùng --seed cho cùng danh sách job_id.
     python scripts/build_gold_sample.py --seed 42
@@ -7,21 +7,22 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import random
-import re
 import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
+import pandas as pd  # noqa: E402
+
 from preprocessing.common import SOURCES  # noqa: E402
-from preprocessing.common.raw_reader import latest_envelopes  # noqa: E402
-from preprocessing.integration.json_flattener import flatten_raw_job_record  # noqa: E402
 
 OUT = REPO_ROOT / "data" / "preprocessing" / "gold" / "gold_sample.json"
-TAG = re.compile(r"<[^>]+>")
+SRC = REPO_ROOT / "data" / "preprocessing" / "04_normalization" / "all.parquet"
+RAW_KEYS = ("raw_salary_text", "raw_experience_text", "raw_seniority_text", "raw_location_text", "raw_work_mode")
 
 
 def quota(total: int = 100) -> dict:
@@ -29,30 +30,49 @@ def quota(total: int = 100) -> dict:
     return {s: base + (i < extra) for i, s in enumerate(SOURCES)}
 
 
-def _text(flat: dict) -> str:
-    parts = [flat.get("raw_description_text"), flat.get("raw_requirements_text")]
-    text = "\n\n".join(str(p) for p in parts if p and str(p) != "None")
-    text = TAG.sub("\n", text).replace("\r", "")
-    return re.sub(r"\n{3,}", "\n\n", text).strip()
+def _s(v):
+    if v is None or (not hasattr(v, "__len__") and pd.isna(v)):
+        return None
+    return v.tolist() if hasattr(v, "tolist") else v
 
 
-def build(seed: int, total: int = 100) -> dict:
+def _list(v) -> list:
+    v = _s(v)
+    return [str(x) for x in v if str(x).strip()] if isinstance(v, list) else []
+
+
+def _text(row) -> str:
+    """Mô tả + yêu cầu + phúc lợi của sàn (cột riêng, bước 07 cũng nối đúng 3 phần này)."""
+    ben = "\n".join(_list(row.get("benefits_list")))
+    parts = [row.get("description_clean"), row.get("requirements_clean"), ben]
+    return "\n\n".join(str(p) for p in parts if isinstance(p, str) and p.strip())
+
+
+def build(seed: int, total: int = 100, src: Path = SRC) -> dict:
+    """Lấy mẫu từ bảng đã xử lý (04): job_id là tin còn lại sau lọc/khử trùng; `text` là văn bản đã làm sạch mà bước 07/08 xử lý."""
+    df = pd.read_parquet(src)
+    df = df[df.apply(lambda r: bool(_text(r)), axis=1)].sort_values("job_id_global")
     rng = random.Random(seed)
     items = []
     for source, n in quota(total).items():
-        envs, _ = latest_envelopes(REPO_ROOT / "data" / source / "raw")
-        flats = [flatten_raw_job_record(e) for e in sorted(envs, key=lambda e: str(e["metadata"].get("job_id")))]
-        flats = [f for f in flats if f.get("job_id_global") and _text(f)]
-        if len(flats) < n:
-            sys.exit(f"{source}: chỉ có {len(flats)} tin có văn bản, cần {n}; chạy sync_cloud_lakehouse.py --download trước")
-        for f in rng.sample(flats, n):
+        part = df[df["source_platform"] == source]
+        if len(part) < n:
+            sys.exit(f"{source}: chỉ có {len(part)} tin có văn bản, cần {n}; chạy lại pipeline trước")
+        for i in sorted(rng.sample(range(len(part)), n)):
+            r = part.iloc[i].to_dict()
             items.append({
-                "job_id": f["job_id_global"], "source": source, "url": f.get("source_url"),
-                "title": f.get("job_title"), "company": f.get("company_name"), "text": _text(f),
-                "raw": {k: (None if f.get(k) in (None, "None") else str(f.get(k)))
-                        for k in ("raw_salary_text", "raw_experience_text", "raw_seniority_text", "raw_location_text", "raw_work_mode")},
+                "job_id": r["job_id_global"], "source": source, "url": _s(r.get("source_url")),
+                "title": _s(r.get("job_title")), "company": _s(r.get("company_name")), "language": _s(r.get("language")),
+                "text": _text(r), "benefits_list": _list(r.get("benefits_list")), "skills_list": _list(r.get("skills_list")),
+                "description_clean": _s(r.get("description_clean")), "requirements_clean": _s(r.get("requirements_clean")),
+                "raw": {k: (None if _s(r.get(k)) in (None, "None") else str(r.get(k))) for k in RAW_KEYS},
+                # máy đoán: chỉ hiện sau khi người gán xong tin đó, để không bị lệch theo máy
+                "pipeline": {k: _s(r.get(k)) for k in (
+                    "title_canonical", "job_family", "seniority", "exp_min_years", "salary_min_vnd", "salary_max_vnd",
+                    "salary_currency_raw", "salary_period_raw", "salary_status", "tinh_chinh", "work_mode", "skills_std", "benefits_std")},
             })
-    return {"seed": seed, "items": items}
+    sid = hashlib.sha1("|".join(i["job_id"] for i in items).encode()).hexdigest()[:10]
+    return {"seed": seed, "sample_id": sid, "items": items}
 
 
 def main() -> None:

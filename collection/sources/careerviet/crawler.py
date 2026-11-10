@@ -261,7 +261,7 @@ class CareerVietCrawler(BaseCrawler):
         )
         self.http_client = http_client or HttpClient(
             source=self.source_name,
-            delay_config=DelayConfig(min_seconds=1.0, max_seconds=2.5),
+            delay_config=DelayConfig(min_seconds=2.0, max_seconds=4.5),
             timeout=25,
         )
         self.save_html = save_html

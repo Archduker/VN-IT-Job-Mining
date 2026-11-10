@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T11:50:20+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T14:05:32+00:00",
+  "code_version": "2877edf",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 207
+    "rows": 204
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 207
+    "rows": 204
   },
   "dropped": [],
   "rules": [],
@@ -24,7 +24,7 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 1357,
+    "n_job_skill_rows": 1350,
     "n_jobs_no_skill": 17,
     "top_skills": [
       {
@@ -52,10 +52,6 @@
         "n_jobs": 34
       },
       {
-        "skill": "data_analysis",
-        "n_jobs": 29
-      },
-      {
         "skill": "machine_learning",
         "n_jobs": 29
       },
@@ -64,12 +60,16 @@
         "n_jobs": 29
       },
       {
-        "skill": "cicd",
-        "n_jobs": 27
+        "skill": "data_analysis",
+        "n_jobs": 28
       },
       {
         "skill": "postgresql",
         "n_jobs": 27
+      },
+      {
+        "skill": "cicd",
+        "n_jobs": 26
       },
       {
         "skill": "problem_solving",
@@ -80,15 +80,15 @@
         "n_jobs": 24
       },
       {
-        "skill": "logical_thinking",
-        "n_jobs": 24
-      },
-      {
         "skill": "project_management",
         "n_jobs": 23
       },
       {
         "skill": "mysql",
+        "n_jobs": 23
+      },
+      {
+        "skill": "logical_thinking",
         "n_jobs": 23
       },
       {
@@ -184,14 +184,20 @@
       "changed": true
     },
     {
-      "job_id": "topdev_2138436",
+      "job_id": "topdev_2137713",
       "source": "topdev",
       "field": "skills",
       "before": [
-        "QA/QC"
+        "Product Manager",
+        "Product",
+        "Business Development"
       ],
       "after": [
-        "qa_qc"
+        "agile_scrum",
+        "business_analysis",
+        "ecommerce",
+        "english",
+        "fintech"
       ],
       "changed": true
     },

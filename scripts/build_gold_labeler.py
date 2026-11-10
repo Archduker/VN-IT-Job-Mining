@@ -13,9 +13,10 @@ def _js(obj) -> str:
 
 def main() -> None:
     provinces = [{"key": p["key"], "name": p["name"]} for p in json.loads((D / "provinces_34.json").read_text(encoding="utf-8"))["provinces"]]
-    skills = sorted(json.loads((D / "skills.json").read_text(encoding="utf-8")))
+    skills = sorted(x["canonical"] for x in json.loads((ROOT / "processing" / "dictionaries" / "skills_taxonomy_230.json").read_text(encoding="utf-8"))["skills"])
+    benefits = list(json.loads((D / "benefits.json").read_text(encoding="utf-8")))
     html = (ROOT / "scripts" / "gold_labeler_template.html").read_text(encoding="utf-8")
-    html = html.replace("__PROVINCES__", _js(provinces)).replace("__SKILLS__", _js(skills))
+    html = html.replace("__PROVINCES__", _js(provinces)).replace("__SKILLS__", _js(skills)).replace("__BENEFITS__", _js(benefits))
     (ROOT / "scripts" / "gold_labeler.html").write_text(html, encoding="utf-8")
     print(f"gold_labeler.html: {len(provinces)} tỉnh, {len(skills)} kỹ năng")
 

@@ -219,7 +219,7 @@ python scripts/read_eda_diagnosis.py --source all
 ### 4. Vận Hành Tiền Xử Lý & Tinh Chế Dữ Liệu (Giai Đoạn 2)
 ```bash
 # Chạy ép phẳng JSON thô và tích hợp dữ liệu
-python preprocessing/integration/run_integration.py
+python scripts/run_preprocessing.py --step integration --source all
 
 # Chạy toàn bộ chuỗi tiền xử lý (ép phẳng, parse lương, text cleaning, imputer, outlier, dedup)
 python scripts/run_staging_integration_pipeline.py

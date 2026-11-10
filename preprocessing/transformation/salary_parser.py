@@ -33,7 +33,7 @@ _NUMBER = (r"(?:\d+(?:[.,]\d+)?[eE][+-]?\d+|"
            r"\d{1,3}(?:[.,]\d{3})+(?:[.,]\d+)?|\d+(?:[.,]\d+)?)")
 _VALUE_RE = re.compile(
     rf"(?<![\w])(?P<prefix>US\$|\$|USD\s*)?\s*(?P<number>{_NUMBER})"
-    r"(?P<scale>\s*(?:k|m|mn|bn|tr(?:iệu)?|triệu|million|billion))?"
+    r"(?P<scale>\s*(?:k|m|mn|bn|tr(?:iệu)?|triệu|tỷ|tỉ|million|billion))?"
     r"(?P<suffix>\s*(?:USD|US\$|VND|VNĐ|đồng|đ))?", re.IGNORECASE,
 )
 _NEGOTIABLE_RE = re.compile(
@@ -43,7 +43,7 @@ _NEGOTIABLE_RE = re.compile(
 )
 _RANGE_SEP_RE = re.compile(r"^\s*(?:-|–|—|to|đến)\s*$", re.IGNORECASE)
 _UPPER_PREFIX_RE = re.compile(r"(?:up\s+to|max(?:imum)?|at\s+most|khong\s+qua|toi\s+da|len\s+toi|len\s+den)", re.I)
-_LOWER_PREFIX_RE = re.compile(r"(?:from|starting\s+(?:at|from)|at\s+least|min(?:imum)?|tu|it\s+nhat|tren|tu\s+tren)", re.I)
+_LOWER_PREFIX_RE = re.compile(r"(?:from|starting\s+(?:at|from)|at\s+least|min(?:imum)?|tu|it\s+nhat|toi\s+thieu|tren|tu\s+tren)", re.I)
 _PROJECT_PERIOD_RE = re.compile(r"\b(?:per\s+project|/\s*project|project[- ]based|theo\s+du\s+an)\b", re.I)
 _UNSUPPORTED_PERIOD_RE = re.compile(r"(?:/\s*(?:week|weekly|tuan|quarter|shift)|per\s+(?:week|quarter|shift)|weekly|quarterly)", re.I)
 _UNSUPPORTED_CURRENCY_RE = re.compile(r"(?:\bEUR\b|\bSGD\b|\bJPY\b|\bAUD\b|\bGBP\b|\bCNY\b|\bCAD\b|€|£|¥)", re.I)
@@ -106,7 +106,7 @@ def _scale_multiplier(scale: str) -> float:
         return 1_000.0
     if value in {"m", "mn", "tr", "triệu", "million"}:
         return 1_000_000.0
-    if value in {"bn", "billion"}:
+    if value in {"bn", "billion", "tỷ", "tỉ"}:
         return 1_000_000_000.0
     return 1.0
 

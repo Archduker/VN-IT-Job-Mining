@@ -1,20 +1,20 @@
 {
  "step": "04_normalization",
- "total": 3488,
+ "total": 3412,
  "by_kind": {
-  "level_inferred": 2725,
-  "seniority_can_kiem": 120,
+  "level_inferred": 2673,
+  "seniority_can_kiem": 116,
   "salary_negotiable_with_value": 26,
   "tinh_unknown": 104,
-  "salary_iqr_outlier_by_level": 126,
-  "job_family_can_kiem": 156,
+  "salary_iqr_outlier_by_level": 125,
+  "job_family_can_kiem": 142,
   "salary_out_of_range": 75,
   "salary_iqr_outlier_pooled": 29,
-  "salary_suspect": 16,
+  "salary_suspect": 15,
   "salary_period_year": 6,
-  "exp_inferred": 96,
+  "exp_inferred": 93,
   "salary_min_gt_max": 1,
-  "exp_out_of_range": 5,
+  "exp_out_of_range": 4,
   "currency_reinterpreted": 3
  },
  "anomalies": [
@@ -1037,16 +1037,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "topcv",
-   "job_id": "2292638",
-   "job_id_global": "topcv_2292638",
-   "url": "https://www.topcv.vn/viec-lam/nhan-vien-cntt-khong-yeu-cau-kinh-nghiem/2292638.html",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
   },
   {
    "kind": "level_inferred",
@@ -5059,16 +5049,6 @@
    "detail": "suy từ exp_min_years=0.0"
   },
   {
-   "kind": "seniority_can_kiem",
-   "source": "topcv",
-   "job_id": "2056186",
-   "job_id_global": "topcv_2056186",
-   "url": "https://www.topcv.vn/viec-lam/product-owner/2056186.html",
-   "field": "seniority",
-   "value": "Lead/Manager",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "topcv",
    "job_id": "2059698",
@@ -6801,16 +6781,6 @@
   {
    "kind": "level_inferred",
    "source": "topcv",
-   "job_id": "2315026",
-   "job_id_global": "topcv_2315026",
-   "url": "https://www.topcv.vn/viec-lam/devops-platform-engineer/2315026.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "topcv",
    "job_id": "2315056",
    "job_id_global": "topcv_2315056",
    "url": "https://www.topcv.vn/viec-lam/solution-consultant-kinh-nghiem-erp-implementation-consultant/2315056.html",
@@ -6857,26 +6827,6 @@
    "field": "seniority",
    "value": "Intern/Fresher",
    "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "topcv",
-   "job_id": "2315683",
-   "job_id_global": "topcv_2315683",
-   "url": "https://www.topcv.vn/brand/nganhangthuongmaicophanquandoi/tuyen-dung/ai-expert-khoi-cong-nghe-thong-tin-2026td450200-j2315683.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "topcv",
-   "job_id": "2315695",
-   "job_id_global": "topcv_2315695",
-   "url": "https://www.topcv.vn/brand/nganhangthuongmaicophanquandoi/tuyen-dung/agentic-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-j2315695.html",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
   },
   {
    "kind": "level_inferred",
@@ -9771,16 +9721,6 @@
   {
    "kind": "level_inferred",
    "source": "topcv",
-   "job_id": "2319551",
-   "job_id_global": "topcv_2319551",
-   "url": "https://www.topcv.vn/viec-lam/ky-su-it/2319551.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "topcv",
    "job_id": "2319590",
    "job_id_global": "topcv_2319590",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke-designer/2319590.html",
@@ -10327,16 +10267,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "topcv",
-   "job_id": "2345590",
-   "job_id_global": "topcv_2345590",
-   "url": "https://www.topcv.vn/viec-lam/technical-business-analyst/2345590.html",
-   "field": "job_family",
-   "value": "Product/Project",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -11447,6 +11377,16 @@
    "field": "seniority",
    "value": "Senior",
    "detail": "suy từ exp_min_years=5.0"
+  },
+  {
+   "kind": "level_inferred",
+   "source": "vietnamworks",
+   "job_id": "2100871",
+   "job_id_global": "vietnamworks_2100871",
+   "url": "https://www.vietnamworks.com/chuyen-gia-phan-tich-du-lieu-khach-hang-va-djanh-gia-hieu-qua-2100871-jv",
+   "field": "seniority",
+   "value": "Middle",
+   "detail": "suy từ exp_min_years=3.0"
   },
   {
    "kind": "level_inferred",
@@ -12569,16 +12509,6 @@
    "detail": "suy từ exp_min_years=3.0"
   },
   {
-   "kind": "level_inferred",
-   "source": "vietnamworks",
-   "job_id": "2110848",
-   "job_id_global": "vietnamworks_2110848",
-   "url": "https://www.vietnamworks.com/chuyen-vien-quan-tri-co-so-du-lieu-postgresql-1790156139292867076-2110848-jv",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
    "kind": "exp_inferred",
    "source": "vietnamworks",
    "job_id": "2110864",
@@ -12601,16 +12531,6 @@
   {
    "kind": "level_inferred",
    "source": "vietnamworks",
-   "job_id": "2110931",
-   "job_id_global": "vietnamworks_2110931",
-   "url": "https://www.vietnamworks.com/tro-ly-quan-ly-du-an-1790216825068937316-2110931-jv",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vietnamworks",
    "job_id": "2110935",
    "job_id_global": "vietnamworks_2110935",
    "url": "https://www.vietnamworks.com/campaign-optimization-specialist-2110935-jv",
@@ -12627,16 +12547,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vietnamworks",
-   "job_id": "2110975",
-   "job_id_global": "vietnamworks_2110975",
-   "url": "https://www.vietnamworks.com/chuyen-vien-kiem-thu-phan-mem-performance-tester-1790213120718371089-2110975-jv",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
   },
   {
    "kind": "level_inferred",
@@ -12667,26 +12577,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vietnamworks",
-   "job_id": "2111077",
-   "job_id_global": "vietnamworks_2111077",
-   "url": "https://www.vietnamworks.com/ky-su-tu-van-giai-phap-network-1790222408033031490-2111077-jv",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "tinh_unknown",
-   "source": "vietnamworks",
-   "job_id": "2111138",
-   "job_id_global": "vietnamworks_2111138",
-   "url": "https://www.vietnamworks.com/chuyen-vien-ocs-2111138-jv",
-   "field": "raw_location_text",
-   "value": "International",
-   "detail": ""
   },
   {
    "kind": "salary_out_of_range",
@@ -12887,16 +12777,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vietnamworks",
-   "job_id": "2111719",
-   "job_id_global": "vietnamworks_2111719",
-   "url": "https://www.vietnamworks.com/c-plus-plus-software-engineer-upto-2000-automotive-domain-1790311246865111869-2111719-jv",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
   },
   {
    "kind": "level_inferred",
@@ -13521,16 +13401,6 @@
   {
    "kind": "level_inferred",
    "source": "vietnamworks",
-   "job_id": "2114078",
-   "job_id_global": "vietnamworks_2114078",
-   "url": "https://www.vietnamworks.com/ky-su-phat-trien-he-thong-kiem-thu-tde-test-development-engineer-1790764089032370619-2114078-jv",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vietnamworks",
    "job_id": "2114131",
    "job_id_global": "vietnamworks_2114131",
    "url": "https://www.vietnamworks.com/cvcc-cg-kiem-dinh-mo-hinh-rui-ro-digital-credit-risk-model-validation-tnex-4b065-1790764803915816226-2114131-jv",
@@ -13627,16 +13497,6 @@
    "field": "seniority",
    "value": "Senior",
    "detail": "suy từ exp_min_years=8.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vietnamworks",
-   "job_id": "2114356",
-   "job_id_global": "vietnamworks_2114356",
-   "url": "https://www.vietnamworks.com/database-engineer-dba-1790770265689383746-2114356-jv",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
   },
   {
    "kind": "level_inferred",
@@ -13857,26 +13717,6 @@
    "field": "seniority",
    "value": "Senior",
    "detail": ""
-  },
-  {
-   "kind": "salary_suspect",
-   "source": "vietnamworks",
-   "job_id": "2115302",
-   "job_id_global": "vietnamworks_2115302",
-   "url": "https://www.vietnamworks.com/network-engineer-1790937953227510979-2115302-jv",
-   "field": "raw_salary_text",
-   "value": "1 - 2 USD",
-   "detail": "ngoài 1-500 triệu, số bị bỏ (NaN)"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vietnamworks",
-   "job_id": "2115302",
-   "job_id_global": "vietnamworks_2115302",
-   "url": "https://www.vietnamworks.com/network-engineer-1790937953227510979-2115302-jv",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
   },
   {
    "kind": "level_inferred",
@@ -16421,6 +16261,26 @@
   {
    "kind": "level_inferred",
    "source": "vietnamworks",
+   "job_id": "2126091",
+   "job_id_global": "vietnamworks_2126091",
+   "url": "https://www.vietnamworks.com/database-engineer-dba-1793350262883574971-2126091-jv",
+   "field": "seniority",
+   "value": "Junior",
+   "detail": "suy từ exp_min_years=1.0"
+  },
+  {
+   "kind": "tinh_unknown",
+   "source": "vietnamworks",
+   "job_id": "2126091",
+   "job_id_global": "vietnamworks_2126091",
+   "url": "https://www.vietnamworks.com/database-engineer-dba-1793350262883574971-2126091-jv",
+   "field": "raw_location_text",
+   "value": null,
+   "detail": ""
+  },
+  {
+   "kind": "level_inferred",
+   "source": "vietnamworks",
    "job_id": "2126348",
    "job_id_global": "vietnamworks_2126348",
    "url": "https://www.vietnamworks.com/ky-su-phat-trien-he-thong-kiem-thu-tde-test-development-engineer-1793360081615166973-2126348-jv",
@@ -16794,16 +16654,6 @@
    "job_id": "35C82B79",
    "job_id_global": "careerviet_35C82B79",
    "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-quan-tri-he-thong-phan-mem.35C82B79.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "careerviet",
-   "job_id": "35C82C6D",
-   "job_id_global": "careerviet_35C82C6D",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-tu-van-giai-phap-cntt-vmware-network-sercurity.35C82C6D.html",
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=2.0"
@@ -17391,16 +17241,6 @@
   {
    "kind": "level_inferred",
    "source": "careerviet",
-   "job_id": "35C868D6",
-   "job_id_global": "careerviet_35C868D6",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-quan-tri-he-thong-it-system.35C868D6.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "careerviet",
    "job_id": "35C86B5C",
    "job_id_global": "careerviet_35C86B5C",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-support.35C86B5C.html",
@@ -17446,16 +17286,6 @@
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-business-analyst-erp-trien-khai-quan-tri-he-thong-lam-viec-tai-khu-ngoai-giao-doan.35C86C63.html",
    "field": "job_family",
    "value": "Product/Project",
-   "detail": ""
-  },
-  {
-   "kind": "exp_out_of_range",
-   "source": "careerviet",
-   "job_id": "35C86C83",
-   "job_id_global": "careerviet_35C86C83",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/pho-tong-giam-doc-khoi-cong-nghe.35C86C83.html",
-   "field": "exp_min_years",
-   "value": 10.0,
    "detail": ""
   },
   {
@@ -17541,16 +17371,6 @@
   {
    "kind": "level_inferred",
    "source": "careerviet",
-   "job_id": "35C878CB",
-   "job_id_global": "careerviet_35C878CB",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/business-analyst-chuyen-vien-phan-tich-nghiep-vu-chung-khoan.35C878CB.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "careerviet",
    "job_id": "35C87912",
    "job_id_global": "careerviet_35C87912",
    "url": "https://careerviet.vn/vi/tim-viec-lam/cv-cvc-cvcc-quan-tri-co-so-du-lieu-database-administrator-dba.35C87912.html",
@@ -17607,16 +17427,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=4.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "careerviet",
-   "job_id": "35C87B2E",
-   "job_id_global": "careerviet_35C87B2E",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/it-administrative-officer.35C87B2E.html",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
   },
   {
    "kind": "level_inferred",
@@ -17929,16 +17739,6 @@
    "detail": "suy từ exp_min_years=1.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C88490",
-   "job_id_global": "careerviet_35C88490",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/ai-engineering-director-education.35C88490.html",
-   "field": "job_family",
-   "value": "Data Science/AI",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "careerviet",
    "job_id": "35C884BD",
@@ -17947,16 +17747,6 @@
    "field": "seniority",
    "value": "Senior",
    "detail": "suy từ exp_min_years=5.0"
-  },
-  {
-   "kind": "seniority_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C884E0",
-   "job_id_global": "careerviet_35C884E0",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/truong-nhom-an-ninh-mang-nghien-cuu-bao-mat.35C884E0.html",
-   "field": "seniority",
-   "value": "Lead/Manager",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -18037,36 +17827,6 @@
    "field": "job_family",
    "value": "Data Science/AI",
    "detail": ""
-  },
-  {
-   "kind": "salary_iqr_outlier_by_level",
-   "source": "careerviet",
-   "job_id": "35C88768",
-   "job_id_global": "careerviet_35C88768",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/all-level-backend-engineer-java-spring-boot-khoi-cong-nghe-thong-tin-2025td1785.35C88768.html",
-   "field": "salary_vnd",
-   "value": "20000000.0 - 50000000.0 | 20 - 50 Triệu VND",
-   "detail": "scope=level, cấp=Junior"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "careerviet",
-   "job_id": "35C88768",
-   "job_id_global": "careerviet_35C88768",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/all-level-backend-engineer-java-spring-boot-khoi-cong-nghe-thong-tin-2025td1785.35C88768.html",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "exp_inferred",
-   "source": "careerviet",
-   "job_id": "35C8876A",
-   "job_id_global": "careerviet_35C8876A",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/mb-trainee-ai-engineer-fresher-intern-khoi-cong-nghe-thong-tin-2025td924.35C8876A.html",
-   "field": "exp_min_years",
-   "value": 0.0,
-   "detail": "level_intern_fresher"
   },
   {
    "kind": "level_inferred",
@@ -18247,16 +18007,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "careerviet",
-   "job_id": "35C88B89",
-   "job_id_global": "careerviet_35C88B89",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-it-trien-khai.35C88B89.html",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
   },
   {
    "kind": "level_inferred",
@@ -18459,16 +18209,6 @@
    "detail": "suy từ exp_min_years=0.0"
   },
   {
-   "kind": "exp_inferred",
-   "source": "careerviet",
-   "job_id": "35C89221",
-   "job_id_global": "careerviet_35C89221",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/thuc-tap-sinh-an-ninh-mang-cyber-security-intern.35C89221.html",
-   "field": "exp_min_years",
-   "value": 0.0,
-   "detail": "level_intern_fresher"
-  },
-  {
    "kind": "level_inferred",
    "source": "careerviet",
    "job_id": "35C8924B",
@@ -18529,16 +18269,6 @@
    "detail": "suy từ exp_min_years=3.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C8947B",
-   "job_id_global": "careerviet_35C8947B",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-chinh-phan-tich-nghiep-vu-senior-business-analyst.35C8947B.html",
-   "field": "job_family",
-   "value": "Product/Project",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "careerviet",
    "job_id": "35C894B1",
@@ -18557,16 +18287,6 @@
    "field": "seniority",
    "value": "Junior",
    "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "exp_inferred",
-   "source": "careerviet",
-   "job_id": "35C895FD",
-   "job_id_global": "careerviet_35C895FD",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/thuc-tap-sinh-ky-thuat-ai-agents-team.35C895FD.html",
-   "field": "exp_min_years",
-   "value": 0.0,
-   "detail": "level_intern_fresher"
   },
   {
    "kind": "level_inferred",
@@ -18597,26 +18317,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "careerviet",
-   "job_id": "35C89833",
-   "job_id_global": "careerviet_35C89833",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/master-data-engineer.35C89833.html",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C89833",
-   "job_id_global": "careerviet_35C89833",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/master-data-engineer.35C89833.html",
-   "field": "job_family",
-   "value": "Data Engineer",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -18907,16 +18607,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "careerviet",
-   "job_id": "35C89F86",
-   "job_id_global": "careerviet_35C89F86",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-kiem-thu-tu-dong-automation-test.35C89F86.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
   },
   {
    "kind": "level_inferred",
@@ -19501,16 +19191,6 @@
   {
    "kind": "level_inferred",
    "source": "careerviet",
-   "job_id": "35C890B4",
-   "job_id_global": "careerviet_35C890B4",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phan-tich-du-lieu.35C890B4.html",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "careerviet",
    "job_id": "35C8B6A1",
    "job_id_global": "careerviet_35C8B6A1",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-business-analyst.35C8B6A1.html",
@@ -19841,16 +19521,6 @@
   {
    "kind": "level_inferred",
    "source": "vieclam24h",
-   "job_id": "200928170",
-   "job_id_global": "vieclam24h_200928170",
-   "url": "https://vieclam24h.vn/it-phan-mem/qa-manual-tester-bank-finance-c8p210000160id200928170.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vieclam24h",
    "job_id": "200933284",
    "job_id_global": "vieclam24h_200933284",
    "url": "https://vieclam24h.vn/phan-tich-thong-ke-du-lieu/nhan-vien-phan-tich-nghiep-vu-ba-c33p210000160id200933284.html",
@@ -19884,16 +19554,6 @@
    "job_id": "200941545",
    "job_id_global": "vieclam24h_200941545",
    "url": "https://vieclam24h.vn/it-phan-cung-mang/ky-su-kiem-thu-phan-mem-c7p73id200941545.html",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vieclam24h",
-   "job_id": "200944374",
-   "job_id_global": "vieclam24h_200944374",
-   "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-ai-it-support-c8p210000187id200944374.html",
    "field": "seniority",
    "value": "Junior",
    "detail": "suy từ exp_min_years=1.0"
@@ -20481,16 +20141,6 @@
   {
    "kind": "level_inferred",
    "source": "vieclam24h",
-   "job_id": "200958337",
-   "job_id_global": "vieclam24h_200958337",
-   "url": "https://vieclam24h.vn/it-phan-mem/chuyen-vien-phan-tich-du-lieu-c8p210000188id200958337.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vieclam24h",
    "job_id": "200958348",
    "job_id_global": "vieclam24h_200958348",
    "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-ho-tro-van-hanh-he-thong-erp-c7p210000188id200958348.html",
@@ -20757,16 +20407,6 @@
    "field": "seniority",
    "value": "Junior",
    "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "vieclam24h",
-   "job_id": "200963296",
-   "job_id_global": "vieclam24h_200963296",
-   "url": "https://vieclam24h.vn/it-phan-cung-mang/ky-su-t-c-va-software-c7p210000187id200963296.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
   },
   {
    "kind": "level_inferred",
@@ -21414,16 +21054,6 @@
    "job_id": "ai-engineer-beyondsoft-technology-vietnam-company-limited-3859",
    "job_id_global": "itviec_ai-engineer-beyondsoft-technology-vietnam-company-limited-3859",
    "url": "https://itviec.com/viec-lam-it/ai-engineer-beyondsoft-technology-vietnam-company-limited-3859",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "itviec",
-   "job_id": "ai-engineer-bosch-global-software-technologies-company-limited-4016",
-   "job_id_global": "itviec_ai-engineer-bosch-global-software-technologies-company-limited-4016",
-   "url": "https://itviec.com/viec-lam-it/ai-engineer-bosch-global-software-technologies-company-limited-4016",
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
@@ -22587,16 +22217,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "itviec",
-   "job_id": "devops-engineer-lg-cns-viet-nam-2447",
-   "job_id_global": "itviec_devops-engineer-lg-cns-viet-nam-2447",
-   "url": "https://itviec.com/viec-lam-it/devops-engineer-lg-cns-viet-nam-2447",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
   },
   {
    "kind": "salary_iqr_outlier_by_level",
@@ -24897,16 +24517,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "itviec",
-   "job_id": "solution-architect-banking-fintech-itviec-recruitment-consulting-5512",
-   "job_id_global": "itviec_solution-architect-banking-fintech-itviec-recruitment-consulting-5512",
-   "url": "https://itviec.com/viec-lam-it/solution-architect-banking-fintech-itviec-recruitment-consulting-5512",
-   "field": "seniority",
-   "value": "Senior",
-   "detail": "suy từ exp_min_years=5.0"
   },
   {
    "kind": "level_inferred",
@@ -28149,16 +27759,6 @@
    "detail": ""
   },
   {
-   "kind": "level_inferred",
-   "source": "glints",
-   "job_id": "7234bf88-a192-4242-b35d-d5d95417c966",
-   "job_id_global": "glints_7234bf88-a192-4242-b35d-d5d95417c966",
-   "url": "https://glints.com/vn/opportunities/jobs/devops-engineer/7234bf88-a192-4242-b35d-d5d95417c966",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
-  },
-  {
    "kind": "tinh_unknown",
    "source": "glints",
    "job_id": "74aa7ba9-7323-4735-a021-e76dd0654e50",
@@ -28577,16 +28177,6 @@
    "field": "seniority",
    "value": "Junior",
    "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "glints",
-   "job_id": "a4e32cb8-d378-4f01-b491-0303e67be4e7",
-   "job_id_global": "glints_a4e32cb8-d378-4f01-b491-0303e67be4e7",
-   "url": "https://glints.com/vn/opportunities/jobs/java-developer/a4e32cb8-d378-4f01-b491-0303e67be4e7",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
   },
   {
    "kind": "level_inferred",
@@ -29691,26 +29281,6 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "28563670922",
-   "job_id_global": "jobsgo_28563670922",
-   "url": "https://jobsgo.vn/viec-lam/ai-engineer-pcb-section-production-28563670922.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "28563670922",
-   "job_id_global": "jobsgo_28563670922",
-   "url": "https://jobsgo.vn/viec-lam/ai-engineer-pcb-section-production-28563670922.html",
-   "field": "job_family",
-   "value": "Data Science/AI",
-   "detail": ""
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "28613695958",
    "job_id_global": "jobsgo_28613695958",
    "url": "https://jobsgo.vn/viec-lam/business-analyst-ba-28613695958.html",
@@ -29754,16 +29324,6 @@
    "job_id": "28666029424",
    "job_id_global": "jobsgo_28666029424",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-thu-phan-mem-tester-luong-13-18-trieu-28666029424.html",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "28742737195",
-   "job_id_global": "jobsgo_28742737195",
-   "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28742737195.html",
    "field": "seniority",
    "value": "Junior",
    "detail": "suy từ exp_min_years=1.0"
@@ -29887,16 +29447,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "28962757732",
-   "job_id_global": "jobsgo_28962757732",
-   "url": "https://jobsgo.vn/viec-lam/chuyen-vien-he-thong-chat-luong-cntt-28962757732.html",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
   },
   {
    "kind": "salary_out_of_range",
@@ -30061,26 +29611,6 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "28987593723",
-   "job_id_global": "jobsgo_28987593723",
-   "url": "https://jobsgo.vn/viec-lam/nhan-vien-phan-tich-nghiep-vu-28987593723.html",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "28987593723",
-   "job_id_global": "jobsgo_28987593723",
-   "url": "https://jobsgo.vn/viec-lam/nhan-vien-phan-tich-nghiep-vu-28987593723.html",
-   "field": "job_family",
-   "value": "Product/Project",
-   "detail": ""
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "28988462779",
    "job_id_global": "jobsgo_28988462779",
    "url": "https://jobsgo.vn/viec-lam/data-controller-nhan-vien-kiem-soat-du-lieu-28988462779.html",
@@ -30234,16 +29764,6 @@
    "job_id": "28995632491",
    "job_id_global": "jobsgo_28995632491",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-ai-it-support-28995632491.html",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "28998551976",
-   "job_id_global": "jobsgo_28998551976",
-   "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-28998551976.html",
    "field": "seniority",
    "value": "Intern/Fresher",
    "detail": "suy từ exp_min_years=0.0"
@@ -30407,16 +29927,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "29010691602",
-   "job_id_global": "jobsgo_29010691602",
-   "url": "https://jobsgo.vn/viec-lam/lap-trinh-nhung-29010691602.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
   },
   {
    "kind": "level_inferred",
@@ -30601,26 +30111,6 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "29020821536",
-   "job_id_global": "jobsgo_29020821536",
-   "url": "https://jobsgo.vn/viec-lam/tu-van-giai-phap-website-mobile-app-29020821536.html",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29020821536",
-   "job_id_global": "jobsgo_29020821536",
-   "url": "https://jobsgo.vn/viec-lam/tu-van-giai-phap-website-mobile-app-29020821536.html",
-   "field": "job_family",
-   "value": "Mobile",
-   "detail": ""
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "29020943747",
    "job_id_global": "jobsgo_29020943747",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-qa-he-thong-danh-gia-noi-bo-29020943747.html",
@@ -30741,16 +30231,6 @@
   {
    "kind": "job_family_can_kiem",
    "source": "jobsgo",
-   "job_id": "29034604221",
-   "job_id_global": "jobsgo_29034604221",
-   "url": "https://jobsgo.vn/viec-lam/erp-business-analyst-binh-dinh-29034604221.html",
-   "field": "job_family",
-   "value": "Product/Project",
-   "detail": ""
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
    "job_id": "29036844756",
    "job_id_global": "jobsgo_29036844756",
    "url": "https://jobsgo.vn/viec-lam/tuyen-senior-it-full-stack-developer-29036844756.html",
@@ -30834,16 +30314,6 @@
    "job_id": "29048794276",
    "job_id_global": "jobsgo_29048794276",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-quan-ly-du-lieu-29048794276.html",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "29050301545",
-   "job_id_global": "jobsgo_29050301545",
-   "url": "https://jobsgo.vn/viec-lam/nhan-vien-tu-van-phan-mem-29050301545.html",
    "field": "seniority",
    "value": "Intern/Fresher",
    "detail": "suy từ exp_min_years=0.0"
@@ -30957,16 +30427,6 @@
    "field": "salary_vnd",
    "value": "nan - 1000000.0 | Đến 1 triệu VNĐ",
    "detail": "ngoài 2-100 triệu/tháng"
-  },
-  {
-   "kind": "seniority_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29065347077",
-   "job_id_global": "jobsgo_29065347077",
-   "url": "https://jobsgo.vn/viec-lam/senior-infra-engineer-29065347077.html",
-   "field": "seniority",
-   "value": "Senior",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -31141,19 +30601,9 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "29077717546",
-   "job_id_global": "jobsgo_29077717546",
-   "url": "https://jobsgo.vn/viec-lam/chuyen-vien-quan-tri-mang-it-network-29077717546.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "29079129762",
-   "job_id_global": "jobsgo_29079129762",
-   "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-system-network-29079129762.html",
+   "job_id": "29080134608",
+   "job_id_global": "jobsgo_29080134608",
+   "url": "https://jobsgo.vn/viec-lam/business-analyst-chuyen-vien-phan-tich-nghiep-vu-chung-khoan-29080134608.html",
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=2.0"
@@ -31381,16 +30831,6 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "29094025925",
-   "job_id_global": "jobsgo_29094025925",
-   "url": "https://jobsgo.vn/viec-lam/chuyen-vien-ha-tang-vien-thong-cntt-29094025925.html",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "29095397404",
    "job_id_global": "jobsgo_29095397404",
    "url": "https://jobsgo.vn/viec-lam/it-support-engineer-29095397404.html",
@@ -31497,26 +30937,6 @@
    "field": "seniority",
    "value": "Intern/Fresher",
    "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "29103001644",
-   "job_id_global": "jobsgo_29103001644",
-   "url": "https://jobsgo.vn/viec-lam/ai-engineer-pcb-section-production-29103001644.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29103001644",
-   "job_id_global": "jobsgo_29103001644",
-   "url": "https://jobsgo.vn/viec-lam/ai-engineer-pcb-section-production-29103001644.html",
-   "field": "job_family",
-   "value": "Data Science/AI",
-   "detail": ""
   },
   {
    "kind": "salary_negotiable_with_value",
@@ -31771,16 +31191,6 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "29126764894",
-   "job_id_global": "jobsgo_29126764894",
-   "url": "https://jobsgo.vn/viec-lam/chuyen-vien-phan-tich-du-lieu-29126764894.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "29126859947",
    "job_id_global": "jobsgo_29126859947",
    "url": "https://jobsgo.vn/viec-lam/it-support-29126859947.html",
@@ -31977,16 +31387,6 @@
    "field": "salary_vnd",
    "value": "nan - 1000000.0 | Đến 1 triệu VNĐ",
    "detail": "ngoài 2-100 triệu/tháng"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29159300178",
-   "job_id_global": "jobsgo_29159300178",
-   "url": "https://jobsgo.vn/viec-lam/junior-business-analyst-hanoi-29159300178.html",
-   "field": "job_family",
-   "value": "Product/Project",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -32781,16 +32181,6 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "29229150554",
-   "job_id_global": "jobsgo_29229150554",
-   "url": "https://jobsgo.vn/viec-lam/chuyen-vien-kiem-thu-phan-mem-hop-dong-thoi-vu-29229150554.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "29229232028",
    "job_id_global": "jobsgo_29229232028",
    "url": "https://jobsgo.vn/viec-lam/it-helpdesk-da-nang-29229232028.html",
@@ -32971,16 +32361,6 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "29246273673",
-   "job_id_global": "jobsgo_29246273673",
-   "url": "https://jobsgo.vn/viec-lam/chuyen-gia-phan-tich-nghiep-vu-so-29246273673.html",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "29249383264",
    "job_id_global": "jobsgo_29249383264",
    "url": "https://jobsgo.vn/viec-lam/business-analyst-ai-internal-solutions-29249383264.html",
@@ -32994,16 +32374,6 @@
    "job_id": "29256254238",
    "job_id_global": "jobsgo_29256254238",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-it-officer-29256254238.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "29256743082",
-   "job_id_global": "jobsgo_29256743082",
-   "url": "https://jobsgo.vn/viec-lam/chuyen-vien-ha-tang-cong-nghe-thong-tin-29256743082.html",
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=2.0"
@@ -33161,16 +32531,6 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "29274436519",
-   "job_id_global": "jobsgo_29274436519",
-   "url": "https://jobsgo.vn/viec-lam/chuyen-vien-phan-tich-du-lieu-29274436519.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "29276364737",
    "job_id_global": "jobsgo_29276364737",
    "url": "https://jobsgo.vn/viec-lam/ai-engineer-salary-35-50-million-vnd-28716-ba-dinh-hanoi-29276364737.html",
@@ -33211,42 +32571,12 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "29280913702",
-   "job_id_global": "jobsgo_29280913702",
-   "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-helpdesk-29280913702.html",
-   "field": "seniority",
-   "value": "Junior",
-   "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29280913702",
-   "job_id_global": "jobsgo_29280913702",
-   "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-helpdesk-29280913702.html",
-   "field": "job_family",
-   "value": "System/Network",
-   "detail": ""
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "29282230865",
    "job_id_global": "jobsgo_29282230865",
    "url": "https://jobsgo.vn/viec-lam/qa-engineer-29282230865.html",
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29284905928",
-   "job_id_global": "jobsgo_29284905928",
-   "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-kiem-thu-phan-mem-29284905928.html",
-   "field": "job_family",
-   "value": "QA/QC",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -33661,16 +32991,6 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "29316056154",
-   "job_id_global": "jobsgo_29316056154",
-   "url": "https://jobsgo.vn/viec-lam/chuyen-vien-phan-tich-du-lieu-bi-29316056154.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "29316354892",
    "job_id_global": "jobsgo_29316354892",
    "url": "https://jobsgo.vn/viec-lam/lap-trinh-vien-full-stack-java-developer-onsite-29316354892.html",
@@ -33861,16 +33181,6 @@
   {
    "kind": "level_inferred",
    "source": "jobsgo",
-   "job_id": "29340878566",
-   "job_id_global": "jobsgo_29340878566",
-   "url": "https://jobsgo.vn/viec-lam/ky-su-lap-trinh-c-29340878566.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
    "job_id": "29341000777",
    "job_id_global": "jobsgo_29341000777",
    "url": "https://jobsgo.vn/viec-lam/chuyen-vien-trien-khai-giai-phap-erp-thu-nhap-hap-dan-thuong-kpi-29341000777.html",
@@ -34057,16 +33367,6 @@
    "field": "job_family",
    "value": "System/Network",
    "detail": ""
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "29353262614",
-   "job_id_global": "jobsgo_29353262614",
-   "url": "https://jobsgo.vn/viec-lam/devops-engineer-29353262614.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
   },
   {
    "kind": "level_inferred",
@@ -34327,26 +33627,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "29375613648",
-   "job_id_global": "jobsgo_29375613648",
-   "url": "https://jobsgo.vn/viec-lam/erp-pmo-consultant-29375613648.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29375613648",
-   "job_id_global": "jobsgo_29375613648",
-   "url": "https://jobsgo.vn/viec-lam/erp-pmo-consultant-29375613648.html",
-   "field": "job_family",
-   "value": "Product/Project",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -34669,26 +33949,6 @@
    "detail": "suy từ exp_min_years=0.0"
   },
   {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "29407021875",
-   "job_id_global": "jobsgo_29407021875",
-   "url": "https://jobsgo.vn/viec-lam/ai-engineer-pcb-section-production-29407021875.html",
-   "field": "seniority",
-   "value": "Middle",
-   "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29407021875",
-   "job_id_global": "jobsgo_29407021875",
-   "url": "https://jobsgo.vn/viec-lam/ai-engineer-pcb-section-production-29407021875.html",
-   "field": "job_family",
-   "value": "Data Science/AI",
-   "detail": ""
-  },
-  {
    "kind": "job_family_can_kiem",
    "source": "jobsgo",
    "job_id": "29407089770",
@@ -34737,26 +33997,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "level_inferred",
-   "source": "jobsgo",
-   "job_id": "29410756100",
-   "job_id_global": "jobsgo_29410756100",
-   "url": "https://jobsgo.vn/viec-lam/nhan-vien-phong-du-lieu-tieng-nhat-n2-29410756100.html",
-   "field": "seniority",
-   "value": "Intern/Fresher",
-   "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "seniority_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29412711476",
-   "job_id_global": "jobsgo_29412711476",
-   "url": "https://jobsgo.vn/viec-lam/truong-bo-phan-kiem-soat-dau-thau-va-mua-sam-mang-cntt-29412711476.html",
-   "field": "seniority",
-   "value": "Lead/Manager",
-   "detail": ""
   },
   {
    "kind": "level_inferred",

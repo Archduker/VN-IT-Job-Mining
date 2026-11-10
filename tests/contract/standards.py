@@ -83,13 +83,40 @@ def check_r2_keys(keys: Iterable[str], source: str) -> None:
         assert key.split("/")[1] == source, f"key không thuộc nguồn {source}: {key}"
 
 
+MIN_PAUSE, MAX_PAUSE = 2.0, 4.5  # C10
+_PAUSE_PARAMS = ({"min_delay", "min_seconds"}, {"max_delay", "max_seconds"})
+
+
+def _num(node: Any) -> float | None:
+    return float(node.value) if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)) else None
+
+
 def check_random_pause(module: Any) -> None:
-    """C10: vòng detail có nghỉ ngẫu nhiên (polite_sleep, uniform, hoặc DelayConfig/HttpClient) giữa các request."""
+    """C10: vòng detail có nghỉ ngẫu nhiên (polite_sleep, uniform, hoặc DelayConfig/HttpClient) giữa các request,
+    và mọi khoảng nghỉ viết bằng hằng số (polite_sleep, DelayConfig, giá trị mặc định min_/max_delay) phải >= 2,0–4,5 giây."""
     tree = ast.parse(inspect.getsource(module))
     names = {n.func.attr if isinstance(n.func, ast.Attribute) else getattr(n.func, "id", "")
              for n in ast.walk(tree) if isinstance(n, ast.Call)}
     has_pause = "polite_sleep" in names or "uniform" in names or "DelayConfig" in names
     assert has_pause, f"{module.__name__} không có nghỉ ngẫu nhiên giữa request"
+
+    pairs: list[tuple[float, float, int]] = []  # (min, max, dòng)
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Call) and getattr(n.func, "id", getattr(n.func, "attr", "")) in {"polite_sleep", "DelayConfig"}:
+            vals = [_num(a) for a in n.args[:2]] + [None] * 2
+            kw = {k.arg: _num(k.value) for k in n.keywords}
+            lo = vals[0] if vals[0] is not None else next((kw[k] for k in _PAUSE_PARAMS[0] if kw.get(k) is not None), None)
+            hi = vals[1] if vals[1] is not None else next((kw[k] for k in _PAUSE_PARAMS[1] if kw.get(k) is not None), None)
+            if lo is not None and hi is not None:
+                pairs.append((lo, hi, n.lineno))
+        elif isinstance(n, ast.FunctionDef):
+            defaults = dict(zip([a.arg for a in n.args.args][-len(n.args.defaults):] if n.args.defaults else [], n.args.defaults))
+            lo = next((_num(defaults[k]) for k in _PAUSE_PARAMS[0] if k in defaults), None)
+            hi = next((_num(defaults[k]) for k in _PAUSE_PARAMS[1] if k in defaults), None)
+            if lo is not None and hi is not None:
+                pairs.append((lo, hi, n.lineno))
+    bad = [(lo, hi, line) for lo, hi, line in pairs if lo < MIN_PAUSE or hi < MAX_PAUSE]
+    assert not bad, f"{module.__name__}: nghỉ dưới chuẩn {MIN_PAUSE}-{MAX_PAUSE}s (min, max, dòng): {bad}"
 
 
 def check_fixtures(folder: Path, expected: Iterable[str]) -> None:
