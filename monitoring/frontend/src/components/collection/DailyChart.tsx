@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts'
 import { SOURCES } from '../../constants/sources'
-import { CollectionDay } from '../../types'
+import { R2CollectionDay } from '../../types'
 import { Card, ChartTooltipBox, EmptyState, SectionTitle, SourcePills, dayMonth, fmt } from '../ui'
 
-const DayTooltip: React.FC<TooltipProps<number, string> & { focus: string | null; days: CollectionDay[] }> = ({
+const DayTooltip: React.FC<TooltipProps<number, string> & { focus: string | null; days: R2CollectionDay[] }> = ({
   active,
   label,
   focus,
@@ -43,7 +43,7 @@ const DayTooltip: React.FC<TooltipProps<number, string> & { focus: string | null
   )
 }
 
-export const DailyChart: React.FC<{ days: CollectionDay[]; hasData: boolean }> = ({ days, hasData }) => {
+export const DailyChart: React.FC<{ days: R2CollectionDay[]; hasData: boolean }> = ({ days, hasData }) => {
   const [focus, setFocus] = useState<string | null>(null)
   const rows = days.map((d) => ({
     date: d.date,
@@ -52,8 +52,8 @@ export const DailyChart: React.FC<{ days: CollectionDay[]; hasData: boolean }> =
   return (
     <Card>
       <SectionTitle
-        title="Tin cào được theo ngày"
-        hint="Mỗi cột là một ngày, chia màu theo nguồn. Di chuột vào cột để xem chi tiết; bấm vào tên nguồn để làm nổi bật nguồn đó."
+        title="Object raw JSON theo ngày phân vùng"
+        hint="Mỗi cột đếm object raw thuộc ngày trong key R2, chia màu theo nguồn; gồm các phiên bản. Di chuột vào cột để xem chi tiết; bấm vào tên nguồn để làm nổi bật nguồn đó."
       />
       <SourcePills label="Làm nổi bật nguồn" selected={focus} onSelect={(id) => setFocus(focus === id ? null : id)} />
       {hasData ? (
@@ -71,7 +71,7 @@ export const DailyChart: React.FC<{ days: CollectionDay[]; hasData: boolean }> =
           </ResponsiveContainer>
         </div>
       ) : (
-        <EmptyState message="Chưa có URL Ledger hay file raw trên máy này. Chạy python scripts/sync_cloud_lakehouse.py --download để lấy dữ liệu từ R2." />
+        <EmptyState message="Chưa có object raw JSON trên R2." />
       )}
     </Card>
   )

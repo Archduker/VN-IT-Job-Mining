@@ -2,7 +2,7 @@ import axios from 'axios'
 import {
   AirflowStatusResponse,
   CloudHealth,
-  CollectionMonitor,
+  R2Collection,
   DashboardReport,
   EdaCharts,
   EdaCompare,
@@ -27,7 +27,7 @@ const get = async <T,>(url: string, params?: Record<string, string | number>): P
   (await http.get<T>(url, { params })).data
 
 export const api = {
-  collection: (days: number) => get<CollectionMonitor>('/monitor/collection', { days }),
+  collection: (days: number) => get<R2Collection>('/monitor/collection', { days }),
   sources: () => get<SourceOverviewItem[]>('/monitor/sources'),
   report: (source: string) => get<SourceReport>(`/monitor/sources/${source}/report`),
   univariate: (source: string, code: string) =>
@@ -54,8 +54,9 @@ export const api = {
     ),
   processing: () => get<ProcessingReport>('/processing/metrics'),
   dashboard: () => get<DashboardReport>('/dashboard'),
-  edaInventory: (source: string) => get<FieldInventoryItem[]>(`/eda/${source}/inventory`),
-  edaSummary: (source: string) => get<EdaSummary>(`/eda/${source}/summary`),
-  edaCharts: (source: string) => get<EdaCharts>(`/eda/${source}/charts`),
-  edaCompare: () => get<EdaCompare>('/eda/compare'),
+  refreshEdaScan: (source: string) => http.post(`/eda/${source}/scan`),
+  edaInventory: (source: string, origin: 'local' | 'r2' = 'local') => get<FieldInventoryItem[]>(`/eda/${source}/inventory`, { origin }),
+  edaSummary: (source: string, origin: 'local' | 'r2' = 'local') => get<EdaSummary>(`/eda/${source}/summary`, { origin }),
+  edaCharts: (source: string, origin: 'local' | 'r2' = 'local') => get<EdaCharts>(`/eda/${source}/charts`, { origin }),
+  edaCompare: (origin: 'local' | 'r2' = 'local') => get<EdaCompare>('/eda/compare', { origin }),
 }

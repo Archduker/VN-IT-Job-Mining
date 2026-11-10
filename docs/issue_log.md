@@ -387,3 +387,30 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Cách xử lý:** CrawlingPage còn 25 dòng điều phối, hook state/API và các presenter trong `components/crawling/`. Thêm truy vấn SQL chỉ đọc, heatmap median/P25/P75, luật Macro/Micro và scatter PCA 2D/3D. Không sinh dữ liệu thay thế.
 - **Kiểm chứng:** Frontend production build thành công; 6 test API Insights qua; 4 endpoint HTTP 200 `EMPTY/NO_DATA` trên PostgreSQL thật; UI Empty State toàn trình React/FastAPI/PostgreSQL không tràn tại 390px/1440px; hồi quy monitoring 32 passed, 1 skipped.
 - **Còn lại:** Chưa có dữ liệu Mart để xác minh biểu đồ có dữ liệu; xem báo cáo Sơn. VIZ-3 ở các trang cũ ngoài Insights vẫn được giữ theo phạm vi leader chốt.
+
+### L-30. EDA phụ thuộc raw và staging local dù dữ liệu đã có trên R2
+
+- **Lỗi:** Không xem được EDA trên máy chưa đồng bộ dữ liệu.
+- **Nguyên nhân:** EDA chỉ đọc data/<source>/raw và Parquet staging local.
+- **Cách xử lý:** Thêm origin=r2, đọc object vào RAM bằng client R2 chung, cache 60 giây, bộ chọn Local/R2. Tách tính biểu đồ từ DataFrame để dùng chung hai nguồn. Lỗi đọc không bị đổi thành số 0 hoặc fallback local.
+- **Kiểm chứng:** 16 test qua; build frontend thành công; đọc thật TopCV trên R2 được 1.561 dòng staging và 200 raw mẫu.
+- **Còn lại:** Chưa đối soát 8 nguồn; object >128 MiB cần hướng truy vấn Parquet theo range hoặc artifact nhỏ hơn. Xem báo cáo Sơn mục 7.
+
+### L-31. EDA hiện trống tỉnh/thành dù Parquet R2 có địa điểm (09/11/2026)
+
+- **Lỗi:** Khối tỉnh/thành trên `/eda` báo chưa có số liệu với TopCV.
+- **Nguyên nhân:** `pipeline_report_service.eda_charts_from_frame` chỉ đọc `primary_city`, nhưng `04_normalization.parquet` hiện dùng `tinh_chinh` (1.548/1.561 dòng TopCV có giá trị).
+- **Cách xử lý:** Ưu tiên `tinh_chinh`, fallback `primary_city` theo dòng còn thiếu; loại null/chuỗi trắng trước khi đếm Top 8. Áp dụng chung cho R2 và Local. Không thay đổi dữ liệu R2. Không có mục tương ứng trong `KNOWN_ISSUED.md` cần xóa.
+- **Kiểm chứng:** Đọc Parquet TopCV thật từ R2 vào RAM và gọi hàm biểu đồ đã sửa; danh sách 8 nhóm khớp `value_counts().head(8)` của cột nguồn, gồm Hà Nội 1.033 và TP. Hồ Chí Minh 351 tin.
+- **Còn lại:** Chưa đối soát 8 nguồn và chưa kiểm lại trình duyệt; xem báo cáo Sơn mục 7.
+
+
+### L-32. Duplicate EDA chờ mãi dù kiểm kê raw đã hoàn tất (10/11/2026)
+
+- **Lỗi:** TopCV đã có missing/inventory nhưng khối duplicate vẫn báo chờ quét hoàn tất.
+- **Nguyên nhân đã xác nhận:** GET summary trên backend cổng 8000 trả raw_scan COMPLETE với 2.755 bản ghi nhưng không có key duplicates; tiến trình Uvicorn vẫn chạy code trước khi thêm duplicate. UI dùng cùng Empty State cho đang quét và COMPLETE thiếu dữ liệu.
+- **Cách xử lý:** Restart đúng Uvicorn Monitoring ở cổng 8000 để nạp code mới; không bật scheduler. `scan()` phát hiện cache COMPLETE thiếu duplicates để tự dựng lại. UI phân biệt đang quét, quét lỗi và COMPLETE thiếu kết quả (hướng dẫn restart backend).
+- **Kiểm chứng:** Tái hiện response thiếu duplicates của backend cũ; backend mới khởi động thành công. 3 unit test quét raw qua, có test cache COMPLETE cũ cần tự quét lại. Quét Glints thật hoàn tất 334 bản ghi, 333 payload khác nhau, 1 bản ghi trùng dư (0,30%), 2 object dư theo ID filename. Đang đối chiếu lại TopCV qua API backend mới.
+- **KNOWN_ISSUED:** Không có mục tương ứng cần xóa.
+- **Đối chiếu TopCV qua API đang chạy:** COMPLETE 2.755/2.755 object/bản ghi; 2.746 payload khác nhau, 9 bản ghi trùng dư trong 9 nhóm (0,33%); 2.680 ID filename và 75 object dư theo ID. Kết quả duplicate hiện đã có trong raw_scan của GET summary.
+- **Kiểm tra toàn trình:** Edge headless mở trang EDA đang chạy, dùng API backend thật và cache TopCV vừa quét: đã thấy Bản ghi trùng dư, thông báo chờ cũ không còn, không có pageerror.

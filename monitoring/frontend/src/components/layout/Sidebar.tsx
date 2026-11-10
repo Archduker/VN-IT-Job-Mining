@@ -1,18 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import {
-  BarChart3,
-  Cloud,
-  Cpu,
-  Database,
-  FileCheck2,
-  GitMerge,
-  LayoutDashboard,
-  LucideIcon,
-  Radio,
-  Settings2,
-  Table2,
-} from 'lucide-react'
+import { Database, FileCheck2, GitMerge, LayoutDashboard, LucideIcon, Radio } from 'lucide-react'
 
 interface NavItem {
   to: string
@@ -21,19 +9,10 @@ interface NavItem {
 }
 
 const MAIN: NavItem[] = [
-  { to: '/insights', label: 'Market Insights', icon: BarChart3 },
   { to: '/', label: 'Collection', icon: LayoutDashboard },
-  { to: '/raw', label: 'Raw', icon: BarChart3 },
-  { to: '/crawling', label: 'Cấu hình cào', icon: Settings2 },
-]
-
-const TOOLS: NavItem[] = [
-  { to: '/airflow', label: 'Airflow', icon: Cpu },
-  { to: '/cloud', label: 'Cloudflare R2', icon: Cloud },
   { to: '/eda', label: 'EDA', icon: Radio },
   { to: '/preprocessing', label: 'Pre-processing', icon: FileCheck2 },
   { to: '/processing', label: 'Processing', icon: GitMerge },
-  { to: '/master', label: 'Master Dashboard', icon: Table2 },
 ]
 
 const linkClass = ({ isActive }: { isActive: boolean }): string =>
@@ -63,10 +42,6 @@ export const Sidebar: React.FC = () => (
       </div>
     </div>
     {MAIN.map((item) => (
-      <Item key={item.to} item={item} />
-    ))}
-    <p className="hidden lg:block mt-5 mb-1 px-3 text-xs font-semibold text-[#A9A6BD]">Công cụ khác</p>
-    {TOOLS.map((item) => (
       <Item key={item.to} item={item} />
     ))}
   </nav>

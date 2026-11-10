@@ -45,3 +45,16 @@ Kiểm giao diện không cần mở cửa sổ: Playwright chạy ẩn với Ch
 - Máy có PostgreSQL riêng có thể trùng cổng 5432. Docker hỗ trợ `POSTGRES_PUBLISHED_PORT`; cấu hình `POSTGRES_PORT` của backend cùng cổng publish (máy Sơn hiện dùng 15432). Không xóa volume để giải quyết xung đột cổng.
 - `pca_z` nullable: không thay bằng 0 để tạo điểm 3D. Chỉ điểm có đủ XYZ mới xuất hiện trong chế độ 3D; 2D vẫn giữ điểm XY.
 - Lương Mart tính bằng VNĐ/tháng; API trả trung vị/P25/P75 theo triệu VNĐ. Tin thỏa thuận và ngoài 1–500 triệu không tham gia tính lương.
+
+## EDA R2
+- Collection (`/`) từ 10/11/2026 dùng `collection_r2_service.py`: list raw JSON và đọc Ledger trên R2, cache 60 giây, không query Airflow/local. Đếm object gồm version, ngày biểu đồ theo phân vùng trong key; LastModified chỉ là lần upload/ghi gần nhất. Không suy ra số tin unique, lịch sử DAG hoặc tỷ lệ chạy thành công từ inventory.
+- Phạm vi UI leader chốt ngày 09/11/2026: chỉ Collection, EDA, Pre-processing, Processing. EDA dùng R2 trực tiếp, không phân tích theo ngày; line chart là phân phối lương tích lũy. `eda_exploration_service.py` tính scatter, box/IQR, heatmap và Pearson từ staging; không bù giá trị thiếu hoặc tự xóa ngoại lai. Các báo cáo Pre-processing/Processing vẫn theo API pipeline hiện có.
+- Parquet sau Normalization hiện dùng `tinh_chinh` cho tỉnh/thành; EDA ưu tiên cột này và fallback `primary_city` của staging cũ cho dòng còn thiếu. Không dùng địa chỉ raw để giả lập tỉnh/thành đã chuẩn hóa (L-31).
+- `/eda` gọi origin=r2 trực tiếp. API vẫn hỗ trợ local để tương thích client cũ; origin=r2 chỉ đọc R2 và không fallback local. Raw lấy tối đa 200 mẫu đầu tiên (không ngẫu nhiên); staging đọc 04_normalization.parquet trên R2 vào RAM, cache 60 giây, mỗi object tối đa 128 MiB. Không lưu cache dữ liệu xuống đĩa.
+- Thiếu object và lỗi quyền/kết nối là hai trạng thái khác nhau; không nuốt ClientError thành Empty State. Không ghi exception SDK hoặc credentials vào response.
+
+- EDA raw R2 từ 10/11/2026 quét toàn bộ trong nền (`eda_raw_scan_service.py`), tối đa 2 nguồn đồng thời, gồm mọi version. Không còn cap 200 ở R2; staging đọc riêng, không chờ raw. Chỉ COMPLETE mới có inventory/độ đầy đủ. Cache raw giữ đến quét lại/restart; POST `/api/v1/eda/<source>/scan` quét lại. Local API cũ còn mẫu 200. Điều này thay thế mô tả giới hạn raw trước đó.
+
+- EDA duplicate so payload canonical SHA-256 trong từng nguồn, riêng với object dư theo ID filename; chỉ COMPLETE công bố. Histogram dùng toàn bộ lương số hữu hạn trong staging, kể cả 0/âm, không chặn outlier và 10 bins phủ min–max. Mỗi dòng lấy trung bình cận có số; các phân tích lương khác vẫn chỉ dùng cận dương.
+
+- Khi frontend mới cần field duplicate nhưng summary COMPLETE không có key `duplicates`, kiểm tra backend đã restart để nạp code mới chưa. UI không được biểu diễn trường hợp này thành đang quét; cache COMPLETE thiếu duplicate tự quét lại (L-32).

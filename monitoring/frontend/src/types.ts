@@ -460,6 +460,7 @@ export interface DashboardReport {
 }
 
 export interface EdaSummary {
+  raw_scan?: { status: 'QUEUED' | 'RUNNING' | 'COMPLETE' | 'ERROR'; records: number; objects: number; reason: string | null; completed_at: string | null; scope: string; duplicates?: { records: number; unique_payloads: number; duplicate_records: number; duplicate_groups: number; duplicate_pct: number | null; filename_ids: number; extra_version_objects: number } | null }
   source: string
   total_records: number | null
   sampled_records: number
@@ -471,6 +472,7 @@ export interface EdaSummary {
 }
 
 export interface EdaCharts {
+  exploration?: EdaExploration
   available: boolean
   unavailable_reason: string | null
   records: number
@@ -478,6 +480,16 @@ export interface EdaCharts {
   salary_histogram: { bin: string; count: number }[]
   skills_pareto: { label: string; count: number; cumulative_pct: number }[]
   locations: RankItem[]
+}
+
+export interface EdaExploration {
+  scatter: { experience: number; salary: number }[]
+  scatter_total: number
+  scatter_limit: number
+  salary_curve: { salary: number; cumulative_pct: number }[]
+  boxes: { label: string; count: number; low: number; high: number; q1: number; median: number; q3: number; lower_fence: number; upper_fence: number; outliers: number }[]
+  heatmap: { x: string; y: string; value: number }[]
+  correlation: { x: string; y: string; value: number | null; count: number }[]
 }
 
 export interface EdaCompareRow {
@@ -601,5 +613,24 @@ export interface StepRowsResponse {
 export interface InsightResponse<T> { status: 'OK' | 'EMPTY'; reason: string | null; data: T[] | null }
 export interface InsightOption { job_family: string; seniority_level: string | null; province_norm: string | null }
 export interface SalaryCell { job_family: string; seniority_level: string | null; median: number | null; q25: number | null; q75: number | null; sample_count: number; negotiable_count: number }
-export interface SkillRule { antecedents: string[]; consequents: string[]; support: number; confidence: number; lift: number; job_family_scope: string }
+export interface SkillRule { antecedents: string[]; consequents: string[]; support: number; confidence: number; lift: number; job_family_scope: string; duplicates?: { records: number; unique_payloads: number; duplicate_records: number; duplicate_groups: number; duplicate_pct: number | null; filename_ids: number; extra_version_objects: number } | null }
 export interface ClusterPoint { job_id: string; job_title: string; cluster_id: number; cluster_name: string | null; pca_x: number; pca_y: number; pca_z: number | null; company_name: string | null; salary_avg_vnd: number | null; source_platform: string | null }
+
+export interface R2CollectionDay {
+  date: string
+  dow: string
+  total: number
+  by_source: Record<string, { count: number }>
+}
+export interface R2Collection {
+  origin: 'r2'
+  generated_at: string
+  cache_age_seconds: number
+  days: R2CollectionDay[]
+  raw_objects: number
+  bytes: number
+  undated_objects: number
+  has_data: boolean
+  unavailable_reason: string | null
+  sources: { source: string; raw_objects: number; bytes: number; undated_objects: number; latest_upload: string | null; ledger: Record<string, number> | null; ledger_reason: string | null }[]
+}
