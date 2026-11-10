@@ -1,0 +1,78 @@
+{
+  "step": "07_sections",
+  "source": "topcv",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 1533
+  },
+  "output": {
+    "path": "data/processing/07_sections/all.parquet",
+    "rows": 1533
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_bullets": 40120,
+    "bullets_by_section": {
+      "mo_ta": 12088,
+      "yeu_cau": 12207,
+      "phuc_loi": 15825
+    },
+    "bullets_by_rule": {
+      "S7.2": 40120
+    },
+    "n_jobs_no_bullet": 0,
+    "headings_approved": 0,
+    "cues_approved": 0
+  },
+  "samples": [
+    {
+      "job_id": "topcv_2324811",
+      "source": "topcv",
+      "field": "sections",
+      "before": "Thiết kế và phát triển script tự động (Python/Bash) để kiểm tra trạng thái thiết bị, đối chiếu dữ liệu giao dịch, trích xuất báo cáo và phát hiện bất thường.\nRà soát các tác vụ thủ công lặp lại trong …",
+      "after": {
+        "phuc_loi": 14,
+        "mo_ta": 12,
+        "yeu_cau": 6
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2325984",
+      "source": "topcv",
+      "field": "sections",
+      "before": "Nghiên cứu thị trường, xác định chân dung và nguồn khách hàng tiềm năng tại các thị trường mục tiêu.\nChủ động tìm kiếm, tiếp cận và phát triển khách hàng mới qua LinkedIn, email, cold call, nền tảng B…",
+      "after": {
+        "mo_ta": 6,
+        "yeu_cau": 5,
+        "phuc_loi": 3
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2314180",
+      "source": "topcv",
+      "field": "sections",
+      "before": "Giám sát, phân tích và xác thực cảnh báo ATTT trên SIEM/EDR/NDR/Firewall.\nThực hiện triage, phân tích, phối hợp điều tra và xử lý sự cố Phân tích log, IOC/IOA, network traffic và tương quan sự kiện từ…",
+      "after": {
+        "yeu_cau": 8,
+        "phuc_loi": 8,
+        "mo_ta": 6
+      },
+      "changed": true
+    }
+  ]
+}

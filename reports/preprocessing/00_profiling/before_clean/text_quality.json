@@ -2,7 +2,7 @@
  "when": "before_clean",
  "seed": 42,
  "sample": 500,
- "generated_at": "2026-11-10T09:10:43.694952+00:00",
+ "generated_at": "2026-11-10T11:46:01.292898+00:00",
  "sizes": {
   "topcv": {
    "total": 2674,
@@ -98,7 +98,7 @@
   "topdev": "ok",
   "vietnamworks": "ok",
   "careerviet": "ok",
-  "vieclam24h": "bỏ: ValueError: Couldn't find space to draw. Either the Canvas size is too small or too much of the image is masked out.",
+  "vieclam24h": "ok",
   "itviec": "ok",
   "glints": "ok",
   "jobsgo": "ok"

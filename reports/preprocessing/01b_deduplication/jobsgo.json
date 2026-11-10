@@ -2,31 +2,36 @@
   "step": "01b_deduplication",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:23+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:58+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
-    "rows": 683
+    "rows": 588
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/jobsgo.jsonl",
-    "rows": 579
+    "rows": 549
   },
   "dropped": [
     {
+      "rule": "D0",
+      "reason": "Tầng 1: trùng (nguồn, job_id)",
+      "rows": 0
+    },
+    {
       "rule": "D2",
-      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
-      "rows": 28
+      "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+      "rows": 0
     },
     {
       "rule": "D4",
-      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
-      "rows": 8
+      "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
+      "rows": 0
     },
     {
       "rule": "D5",
-      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
-      "rows": 68
+      "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+      "rows": 39
     }
   ],
   "rules": [
@@ -38,89 +43,52 @@
       "examples": []
     },
     {
-      "id": "D2",
-      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "id": "D0",
+      "name": "Tầng 1: trùng (nguồn, job_id)",
       "action": "drop",
-      "rows_affected": 28,
-      "examples": [
-        {
-          "job_id": "28897279794",
-          "field": "dedup",
-          "before": "https://jobsgo.vn/viec-lam/business-analyst-ba-28897279794.html",
-          "after": "https://jobsgo.vn/viec-lam/business-analyst-ba-28613695958.html",
-          "url": "https://jobsgo.vn/viec-lam/business-analyst-ba-28897279794.html"
-        },
-        {
-          "job_id": "29073263634",
-          "field": "dedup",
-          "before": "https://jobsgo.vn/viec-lam/account-manager-29073263634.html",
-          "after": "https://jobsgo.vn/viec-lam/account-manager-28972683981.html",
-          "url": "https://jobsgo.vn/viec-lam/account-manager-29073263634.html"
-        },
-        {
-          "job_id": "29135727034",
-          "field": "dedup",
-          "before": "https://jobsgo.vn/viec-lam/ky-su-an-ninh-mang-mid-senior-cyber-security-engineer-29135727034.html",
-          "after": "https://jobsgo.vn/viec-lam/ky-su-an-ninh-mang-mid-senior-cyber-security-engineer-29044408259.html",
-          "url": "https://jobsgo.vn/viec-lam/ky-su-an-ninh-mang-mid-senior-cyber-security-engineer-29135727034.html"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D2",
+      "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "D4",
-      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
-      "rows_affected": 8,
-      "examples": [
-        {
-          "job_id": "29149957826",
-          "field": "dedup",
-          "before": "https://jobsgo.vn/viec-lam/fullstack-dotnet-29149957826.html",
-          "after": "https://www.topcv.vn/viec-lam/fullstack-dotnet/2316696.html",
-          "url": "https://jobsgo.vn/viec-lam/fullstack-dotnet-29149957826.html"
-        },
-        {
-          "job_id": "29186498915",
-          "field": "dedup",
-          "before": "https://jobsgo.vn/viec-lam/data-engineer-29186498915.html",
-          "after": "https://www.topcv.vn/viec-lam/data-engineer/2283544.html",
-          "url": "https://jobsgo.vn/viec-lam/data-engineer-29186498915.html"
-        },
-        {
-          "job_id": "29194591999",
-          "field": "dedup",
-          "before": "https://jobsgo.vn/viec-lam/junior-middle-java-developer-banking-project-29194591999.html",
-          "after": "https://www.topcv.vn/viec-lam/junior-middle-java-developer-banking-project/2317270.html",
-          "url": "https://jobsgo.vn/viec-lam/junior-middle-java-developer-banking-project-29194591999.html"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "D5",
-      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 68,
+      "rows_affected": 39,
       "examples": [
         {
-          "job_id": "28962757732",
+          "job_id": "28969520074",
           "field": "dedup",
-          "before": "https://jobsgo.vn/viec-lam/chuyen-vien-he-thong-chat-luong-cntt-28962757732.html",
-          "after": "https://www.topcv.vn/viec-lam/chuyen-vien-he-thong-chat-luong-cntt/2262684.html",
-          "url": "https://jobsgo.vn/viec-lam/chuyen-vien-he-thong-chat-luong-cntt-28962757732.html"
+          "before": "https://jobsgo.vn/viec-lam/nhan-vien-it-dong-nai-15-18-trieu-28969520074.html",
+          "after": "https://jobsgo.vn/viec-lam/nhan-vien-it-kcn-long-duc-dong-nai-khong-ngoai-ngu-28980722749.html",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-dong-nai-15-18-trieu-28969520074.html"
         },
         {
-          "job_id": "28967523961",
+          "job_id": "28973783880",
           "field": "dedup",
-          "before": "https://jobsgo.vn/viec-lam/truong-phong-cong-nghe-lark-28967523961.html",
-          "after": "https://www.topcv.vn/viec-lam/truong-phong-cong-nghe/2307636.html",
-          "url": "https://jobsgo.vn/viec-lam/truong-phong-cong-nghe-lark-28967523961.html"
+          "before": "https://jobsgo.vn/viec-lam/dna650-nv-it-kcn-long-duc-dong-nai-28973783880.html",
+          "after": "https://jobsgo.vn/viec-lam/nhan-vien-it-phan-mem-khong-ngoai-ngu-kcn-long-duc-dong-nai-29173422338.html",
+          "url": "https://jobsgo.vn/viec-lam/dna650-nv-it-kcn-long-duc-dong-nai-28973783880.html"
         },
         {
-          "job_id": "28973593774",
+          "job_id": "28995469543",
           "field": "dedup",
-          "before": "https://jobsgo.vn/viec-lam/java-developer-lead-backend-28973593774.html",
-          "after": "https://www.topcv.vn/viec-lam/java-developer-lead-backend/1506755.html",
-          "url": "https://jobsgo.vn/viec-lam/java-developer-lead-backend-28973593774.html"
+          "before": "https://jobsgo.vn/viec-lam/nhan-vien-it-phan-mem-co-kinh-nghiem-mes-hoac-erp-15-trieu-hoac-thoa-thuan-28995469543.html",
+          "after": "https://jobsgo.vn/viec-lam/nhan-vien-it-biet-sql-server-va-mysql-kcn-long-duc-dong-nai-luong-15-trieu-28989834258.html",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phan-mem-co-kinh-nghiem-mes-hoac-erp-15-trieu-hoac-thoa-thuan-28995469543.html"
         }
       ]
     },
@@ -128,28 +96,57 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 3,
+      "rows_affected": 21,
       "examples": [
         {
-          "job_id": "28995632491",
+          "job_id": "28974204829",
           "field": "master_id",
-          "before": "https://jobsgo.vn/viec-lam/nhan-vien-ai-it-support-28995632491.html",
-          "after": "0325db06-98cf-5aea-8b5e-6cc3f10948f0",
-          "url": "https://jobsgo.vn/viec-lam/nhan-vien-ai-it-support-28995632491.html"
+          "before": "https://jobsgo.vn/viec-lam/backend-engineer-middle-senior-thu-nhap-30-45-trieu-gross-thuong-du-an-kpi-28974204829.html",
+          "after": "8f1df0d8-2aec-552a-83e7-c0f74ae34a27",
+          "url": "https://jobsgo.vn/viec-lam/backend-engineer-middle-senior-thu-nhap-30-45-trieu-gross-thuong-du-an-kpi-28974204829.html"
         },
         {
-          "job_id": "29219590938",
+          "job_id": "28980722749",
           "field": "master_id",
-          "before": "https://jobsgo.vn/viec-lam/nhan-vien-thiet-ke-web-design-layout-web-29219590938.html",
-          "after": "6b33e9aa-85b0-5745-9452-af4fcc16373f",
-          "url": "https://jobsgo.vn/viec-lam/nhan-vien-thiet-ke-web-design-layout-web-29219590938.html"
+          "before": "https://jobsgo.vn/viec-lam/nhan-vien-it-kcn-long-duc-dong-nai-khong-ngoai-ngu-28980722749.html",
+          "after": "d734ac64-499e-59f3-89df-972126ba463d",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-kcn-long-duc-dong-nai-khong-ngoai-ngu-28980722749.html"
         },
         {
-          "job_id": "29274436519",
+          "job_id": "28989834258",
           "field": "master_id",
-          "before": "https://jobsgo.vn/viec-lam/chuyen-vien-phan-tich-du-lieu-29274436519.html",
-          "after": "6151586e-9752-5cbb-b3eb-47d323869125",
-          "url": "https://jobsgo.vn/viec-lam/chuyen-vien-phan-tich-du-lieu-29274436519.html"
+          "before": "https://jobsgo.vn/viec-lam/nhan-vien-it-biet-sql-server-va-mysql-kcn-long-duc-dong-nai-luong-15-trieu-28989834258.html",
+          "after": "d7a3e1bd-3645-5566-85b3-055bfc928b63",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-biet-sql-server-va-mysql-kcn-long-duc-dong-nai-luong-15-trieu-28989834258.html"
+        }
+      ]
+    },
+    {
+      "id": "D7",
+      "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
+      "action": "flag",
+      "rows_affected": 77,
+      "examples": [
+        {
+          "job_id": "28856040371",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7137,
+          "url": "https://jobsgo.vn/viec-lam/chuyen-vien-trien-khai-van-hanh-28856040371.html"
+        },
+        {
+          "job_id": "28967523961",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7095,
+          "url": "https://jobsgo.vn/viec-lam/truong-phong-cong-nghe-lark-28967523961.html"
+        },
+        {
+          "job_id": "28969234915",
+          "field": "jaccard",
+          "before": null,
+          "after": 1.0,
+          "url": "https://jobsgo.vn/viec-lam/account-manager-28969234915.html"
         }
       ]
     }
@@ -170,14 +167,39 @@
       "hops": 57,
       "hop_same_crawler_hash": 0,
       "hop_same_canonical_hash": 7,
+      "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 472,
-    "d2_groups": 21,
+    "blocking_blocks": 432,
+    "d2_groups": 0,
     "rule_totals": {
-      "D2": 28,
-      "D5": 68,
-      "D4": 8
+      "D5": 39
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "29131490386",
+      "source": "jobsgo",
+      "field": "duplicate_of",
+      "before": "29131490386",
+      "after": "DROPPED D5 -> jobsgo:29055149248",
+      "changed": true
+    },
+    {
+      "job_id": "28969520074",
+      "source": "jobsgo",
+      "field": "duplicate_of",
+      "before": "28969520074",
+      "after": "DROPPED D5 -> jobsgo:28980722749",
+      "changed": true
+    },
+    {
+      "job_id": "29406940401",
+      "source": "jobsgo",
+      "field": "duplicate_of",
+      "before": "29406940401",
+      "after": "DROPPED D5 -> jobsgo:29161282712",
+      "changed": true
+    }
+  ]
 }

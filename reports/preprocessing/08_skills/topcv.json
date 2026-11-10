@@ -1,0 +1,225 @@
+{
+  "step": "08_skills",
+  "source": "topcv",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 1533
+  },
+  "output": {
+    "path": "data/processing/08_skills/all.parquet",
+    "rows": 1533
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_job_skill_rows": 9456,
+    "n_jobs_no_skill": 175,
+    "top_skills": [
+      {
+        "skill": "communication",
+        "n_jobs": 676
+      },
+      {
+        "skill": "english",
+        "n_jobs": 462
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 354
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 291
+      },
+      {
+        "skill": "python",
+        "n_jobs": 263
+      },
+      {
+        "skill": "logical_thinking",
+        "n_jobs": 259
+      },
+      {
+        "skill": "agile_scrum",
+        "n_jobs": 229
+      },
+      {
+        "skill": "machine_learning",
+        "n_jobs": 218
+      },
+      {
+        "skill": "rest_api",
+        "n_jobs": 199
+      },
+      {
+        "skill": "docker",
+        "n_jobs": 199
+      },
+      {
+        "skill": "cicd",
+        "n_jobs": 193
+      },
+      {
+        "skill": "linux",
+        "n_jobs": 185
+      },
+      {
+        "skill": "java",
+        "n_jobs": 172
+      },
+      {
+        "skill": "data_analysis",
+        "n_jobs": 163
+      },
+      {
+        "skill": "postgresql",
+        "n_jobs": 149
+      },
+      {
+        "skill": "cybersecurity",
+        "n_jobs": 146
+      },
+      {
+        "skill": "project_management",
+        "n_jobs": 140
+      },
+      {
+        "skill": "microservices",
+        "n_jobs": 140
+      },
+      {
+        "skill": "jira",
+        "n_jobs": 137
+      },
+      {
+        "skill": "mysql",
+        "n_jobs": 131
+      },
+      {
+        "skill": "ecommerce",
+        "n_jobs": 130
+      },
+      {
+        "skill": "kubernetes",
+        "n_jobs": 113
+      },
+      {
+        "skill": "javascript",
+        "n_jobs": 109
+      },
+      {
+        "skill": "business_analysis",
+        "n_jobs": 104
+      },
+      {
+        "skill": "oracle_db",
+        "n_jobs": 102
+      },
+      {
+        "skill": "infosec",
+        "n_jobs": 100
+      },
+      {
+        "skill": "presentation",
+        "n_jobs": 99
+      },
+      {
+        "skill": "firewall",
+        "n_jobs": 98
+      },
+      {
+        "skill": "csharp",
+        "n_jobs": 97
+      },
+      {
+        "skill": "redis",
+        "n_jobs": 96
+      }
+    ],
+    "short_forms_approved": 0,
+    "alias_conflicts_dropped": 1
+  },
+  "samples": [
+    {
+      "job_id": "topcv_2216283",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Automation Tester",
+        "IT - Phần mềm"
+      ],
+      "after": [
+        "agile_scrum",
+        "automation_test",
+        "java",
+        "manual_test",
+        "selenium"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2298290",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Digital Marketing"
+      ],
+      "after": [
+        "communication",
+        "ecommerce",
+        "time_management"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2323457",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Backend Developer",
+        "IT - Phần mềm",
+        "Giáo dục / Đào tạo",
+        "Git",
+        "Linux",
+        "MVC",
+        "PostgreSQL",
+        "REST API",
+        "Ruby on Rails",
+        "RSpec",
+        "Ruby",
+        "API",
+        "Performance",
+        "OAuth2",
+        "Debugging",
+        "Authentication/Authorization",
+        "Query Optimization",
+        "indexing",
+        "caching",
+        "ActiveRecord"
+      ],
+      "after": [
+        "cicd",
+        "java",
+        "linux",
+        "machine_learning",
+        "postgresql",
+        "rails",
+        "rest_api",
+        "ruby"
+      ],
+      "changed": true
+    }
+  ]
+}

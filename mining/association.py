@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 from mlxtend.frequent_patterns import association_rules, fpgrowth
 
-from mining.config import AssociationParams
+from mining.config import JOB_FAMILY_OTHER, AssociationParams
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +82,7 @@ def mine_stratified_rules(
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     """Vĩ mô (ALL) + vi mô theo từng job_family. Trả (bảng luật, metrics)."""
     p = params or AssociationParams()
-    job_family = pd.Series(job_family).reset_index(drop=True).fillna("Khác").astype(str)
+    job_family = pd.Series(job_family).reset_index(drop=True).fillna(JOB_FAMILY_OTHER).astype(str)
     has_skill = skills.sum(axis=1).to_numpy() > 0
 
     frames = [mine_rules(skills, p.macro_min_support, p.min_confidence, p.min_lift, p.max_len, MACRO_SCOPE)]

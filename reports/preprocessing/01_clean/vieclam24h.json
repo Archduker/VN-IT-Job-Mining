@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:07+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:32+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/vieclam24h/raw",
     "rows": 1276
   },
   "output": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
-    "rows": 182
+    "rows": 175
   },
   "dropped": [
     {
@@ -35,18 +35,23 @@
     },
     {
       "rule": "C5",
-      "reason": "Bỏ JD dưới 30 từ",
+      "reason": "Bỏ JD dưới 50 từ",
       "rows": 0
     },
     {
+      "rule": "C8",
+      "reason": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
+      "rows": 1
+    },
+    {
       "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
       "rows": 0
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 3
+      "rows": 9
     }
   ],
   "rules": [
@@ -153,14 +158,29 @@
     },
     {
       "id": "C5",
-      "name": "Bỏ JD dưới 30 từ",
+      "name": "Bỏ JD dưới 50 từ",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
+      "id": "C8",
+      "name": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
+      "action": "drop",
+      "rows_affected": 1,
+      "examples": [
+        {
+          "job_id": "200954508",
+          "field": "job_title",
+          "before": "Cộng Tác Viên Embedded Technical Writer",
+          "after": "S3_CTV_TITLE",
+          "url": "https://vieclam24h.vn/it-phan-mem/cong-tac-vien-embedded-technical-writer-c8p210000180id200954508.html"
+        }
+      ]
+    },
+    {
       "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
@@ -169,28 +189,28 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 3,
+      "rows_affected": 9,
       "examples": [
+        {
+          "job_id": "200928170",
+          "field": "dedup_key",
+          "before": "công nghệ thiên hoàng|qa manual tester (bank, finance)|ha_noi",
+          "after": "giữ topcv:2164938",
+          "url": "https://vieclam24h.vn/it-phan-mem/qa-manual-tester-bank-finance-c8p210000160id200928170.html"
+        },
+        {
+          "job_id": "200944374",
+          "field": "dedup_key",
+          "before": "hạo phương|nhân viên ai & it support|ho_chi_minh",
+          "after": "giữ jobsgo:28995632491",
+          "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-ai-it-support-c8p210000187id200944374.html"
+        },
         {
           "job_id": "200957562",
           "field": "dedup_key",
-          "before": "giải pháp atom|site reliability engineer (sre) - đi làm ngay|ho_chi_minh|2026-W41",
+          "before": "giải pháp atom|site reliability engineer (sre) - đi làm ngay|ho_chi_minh",
           "after": "giữ jobsgo:29226394017",
           "url": "https://vieclam24h.vn/it-phan-cung-mang/site-reliability-engineer-sre-di-lam-ngay-c7p210000187id200957562.html"
-        },
-        {
-          "job_id": "200961159",
-          "field": "dedup_key",
-          "before": "truyền thông tập trung mặt trời vàng|chuyên viên ứng dụng ai (ai enablement associate) - tiếng trung|ho_chi_minh|2026-W41",
-          "after": "giữ jobsgo:29281416125",
-          "url": "https://vieclam24h.vn/it-phan-mem/chuyen-vien-ung-dung-ai-ai-enablement-associate-tieng-trung-c8p210000187id200961159.html"
-        },
-        {
-          "job_id": "200968653",
-          "field": "dedup_key",
-          "before": "một thành viên hoàng khang giang|nhân viên it|da_nang|2026-W43",
-          "after": "giữ jobsgo:29401386590",
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-it-c7p210000180id200968653.html"
         }
       ]
     }
@@ -250,20 +270,64 @@
       "drop": [
         "non_it"
       ],
-      "approved_on": "2026-11-03",
-      "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 77 non_it (tài xế, shipper, telesales...)"
+      "approved_on": "2026-11-09",
+      "evidence": "C4b: Gán tay 84 tin, xác nhận 79 non_it (94.0%). Nguồn đăng lẫn tin ngoài IT"
+    },
+    "scope_c8_reasons": {
+      "S3_CTV_TITLE": 1
     },
     "review": {
       "file": "data/preprocessing/review/it_vieclam24h.csv",
-      "rows": 80,
-      "labeled": 0,
-      "labeled_non_it": 0,
-      "rule_decided": 0,
-      "rule_correct": 0,
-      "status_non_it": 0,
-      "status_non_it_correct": 0,
-      "level2_labeled": 0,
-      "level2_correct": 0
+      "rows": 84,
+      "labeled": 84,
+      "sample_strata": {
+        "tang_1_non_it": 50,
+        "tang_2_non_it": 26,
+        "tang_2_it": 4,
+        "tang_1_it": 4
+      },
+      "labeled_non_it": 79,
+      "rule_decided": 54,
+      "rule_correct": 54,
+      "status_non_it": 76,
+      "status_non_it_correct": 75,
+      "level2_labeled": 30,
+      "level2_correct": 25,
+      "level1_it_labeled": 4,
+      "level1_it_correct": 4,
+      "validation": {
+        "tp": 4,
+        "fp": 4,
+        "tn": 75,
+        "fn": 1,
+        "labeled": 84,
+        "precision_it": 0.5,
+        "precision_non_it": 0.9868421052631579,
+        "recall_it": 0.8,
+        "precision_it_ci": [
+          0.2152160622138775,
+          0.7847839377861225
+        ],
+        "precision_non_it_ci": [
+          0.9291632524821557,
+          0.9976735199544208
+        ],
+        "recall_it_ci": [
+          0.3755346297625252,
+          0.9637758913675698
+        ],
+        "reason": null
+      }
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "200954508",
+      "source": "vieclam24h",
+      "field": "job_title",
+      "before": "Cộng Tác Viên Embedded Technical Writer",
+      "after": "DROPPED C8: S3_CTV_TITLE",
+      "changed": true
+    }
+  ]
 }

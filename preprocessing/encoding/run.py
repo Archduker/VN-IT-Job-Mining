@@ -2,7 +2,7 @@
 """Bước 05 Encoding (docs/spec/preprocessing/spec/P5_encoding.md, SPEC-06, SPEC-07).
 
 Nhiệm vụ của Phát: Mã hóa bộ dữ liệu đã chuẩn hóa thành bảng số học cho Machine Learning:
-- E1: Ordinal Seniority (0-5, -1 cho Chưa rõ).
+- E1: Ordinal Seniority (0-4, -1 cho null).
 - E2: One-hot job_family, source_platform, employment_type.
 - E3: Multi-hot top 10 tỉnh/thành + tinh__other + is_remote + is_foreign.
 - E4: Multi-hot đúng 230 cột kỹ năng chuẩn (tiền tố skill_<slug>, uint8) + other_skills_count.
@@ -37,7 +37,7 @@ from preprocessing.encoding.skills_taxonomy_230 import (
     SKILL_LOOKUP_MAP,
     TAXONOMY_230,
 )
-from preprocessing.normalization.text_cleaner import JOB_FAMILIES
+from preprocessing.normalization.job_title import JOB_FAMILIES_12, OTHER
 
 STEP = "05_encoding"
 DATA_DIR = REPO_ROOT / "data"
@@ -47,16 +47,8 @@ OUT_FEATURES_FILE = OUT_DIR / "features.parquet"
 OUT_COOCCURRENCE_FILE = OUT_DIR / "skill_cooccurrence.parquet"
 OUT_DICT_FILE = OUT_DIR / "encoding_dictionary.json"
 
-SENIORITY_ORDER = [
-    "Thực tập",
-    "Mới tốt nghiệp",
-    "Junior",
-    "Middle",
-    "Senior",
-    "Trưởng nhóm/Quản lý",
-]
+from preprocessing.normalization.text_cleaner import SENIORITY_LABELS as SENIORITY_ORDER  # noqa: E402  null -> -1
 SENIORITY_MAP = {lab: idx for idx, lab in enumerate(SENIORITY_ORDER)}
-SENIORITY_MAP["Chưa rõ"] = -1
 
 TOP_PROVINCES_K = 10
 
@@ -149,7 +141,7 @@ def encode_dataset(
     # E2: One-hot job_family, source_platform, employment_type
     # -------------------------------------------------------------
     # job_family
-    all_fams = JOB_FAMILIES + ["Khác"]
+    all_fams = JOB_FAMILIES_12 + [OTHER]
     fam_slug_map = {f: f"job_family__{to_col_slug(f)}" for f in all_fams}
     for fam, col_name in fam_slug_map.items():
         cols[col_name] = (df["job_family"] == fam).astype(np.uint8).values

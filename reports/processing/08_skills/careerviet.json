@@ -1,0 +1,213 @@
+{
+  "step": "08_skills",
+  "source": "careerviet",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 421
+  },
+  "output": {
+    "path": "data/processing/08_skills/all.parquet",
+    "rows": 421
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_job_skill_rows": 2997,
+    "n_jobs_no_skill": 7,
+    "top_skills": [
+      {
+        "skill": "english",
+        "n_jobs": 195
+      },
+      {
+        "skill": "communication",
+        "n_jobs": 193
+      },
+      {
+        "skill": "machine_learning",
+        "n_jobs": 124
+      },
+      {
+        "skill": "python",
+        "n_jobs": 109
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 87
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 78
+      },
+      {
+        "skill": "data_analysis",
+        "n_jobs": 76
+      },
+      {
+        "skill": "logical_thinking",
+        "n_jobs": 71
+      },
+      {
+        "skill": "docker",
+        "n_jobs": 65
+      },
+      {
+        "skill": "rest_api",
+        "n_jobs": 64
+      },
+      {
+        "skill": "cicd",
+        "n_jobs": 61
+      },
+      {
+        "skill": "infosec",
+        "n_jobs": 59
+      },
+      {
+        "skill": "agile_scrum",
+        "n_jobs": 57
+      },
+      {
+        "skill": "azure",
+        "n_jobs": 57
+      },
+      {
+        "skill": "oracle_db",
+        "n_jobs": 54
+      },
+      {
+        "skill": "linux",
+        "n_jobs": 52
+      },
+      {
+        "skill": "postgresql",
+        "n_jobs": 50
+      },
+      {
+        "skill": "sql_server",
+        "n_jobs": 44
+      },
+      {
+        "skill": "business_analysis",
+        "n_jobs": 40
+      },
+      {
+        "skill": "mysql",
+        "n_jobs": 39
+      },
+      {
+        "skill": "microservices",
+        "n_jobs": 38
+      },
+      {
+        "skill": "java",
+        "n_jobs": 38
+      },
+      {
+        "skill": "kubernetes",
+        "n_jobs": 38
+      },
+      {
+        "skill": "jira",
+        "n_jobs": 37
+      },
+      {
+        "skill": "power_bi",
+        "n_jobs": 34
+      },
+      {
+        "skill": "project_management",
+        "n_jobs": 33
+      },
+      {
+        "skill": "firewall",
+        "n_jobs": 29
+      },
+      {
+        "skill": "mongodb",
+        "n_jobs": 28
+      },
+      {
+        "skill": "presentation",
+        "n_jobs": 28
+      },
+      {
+        "skill": "nodejs",
+        "n_jobs": 25
+      }
+    ],
+    "short_forms_approved": 0,
+    "alias_conflicts_dropped": 1
+  },
+  "samples": [
+    {
+      "job_id": "careerviet_35C88C7C",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "ansible",
+        "azure",
+        "bash",
+        "cybersecurity",
+        "disaster_recovery",
+        "firewall",
+        "incident_response",
+        "linux",
+        "network_security",
+        "powershell",
+        "python",
+        "siem",
+        "terraform"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C89459",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "centos",
+        "disaster_recovery",
+        "english",
+        "firewall",
+        "infosec",
+        "linux",
+        "mysql",
+        "sql_server",
+        "ubuntu"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C82ACD",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "computer_vision",
+        "cpp",
+        "csharp",
+        "machine_learning",
+        "opencv",
+        "python",
+        "pytorch",
+        "tensorflow"
+      ],
+      "changed": true
+    }
+  ]
+}

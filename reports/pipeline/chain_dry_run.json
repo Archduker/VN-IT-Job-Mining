@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-11-10T12:17:37+00:00",
+  "sources": [
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "careerviet",
+    "vieclam24h",
+    "itviec",
+    "glints",
+    "jobsgo"
+  ],
+  "translate": false,
+  "steps": [
+    {
+      "step": "01_clean",
+      "status": "OK",
+      "missing": [],
+      "input": 13361,
+      "output": 4836,
+      "dropped": 8525,
+      "conserved": true,
+      "mode": "dry_run",
+      "rejected": {
+        "topcv": 1210,
+        "topdev": 3672,
+        "vietnamworks": 1164,
+        "careerviet": 248,
+        "vieclam24h": 1101,
+        "itviec": 54,
+        "glints": 67,
+        "jobsgo": 1009
+      }
+    }
+  ]
+}

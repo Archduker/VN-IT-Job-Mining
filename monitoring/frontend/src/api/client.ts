@@ -18,6 +18,8 @@ import {
   StepRowsResponse,
   StorageResponse,
   StepSummary,
+  AnomalyResponse,
+  JobLookup,
   Univariate,
 } from '../types'
 
@@ -42,6 +44,18 @@ export const api = {
   preprocessingStep: (step: string) => get<StepResponse>(`/preprocessing/steps/${step}`),
   preprocessingStepSource: (step: string, source: string) =>
     get<StepResponse>(`/preprocessing/steps/${step}/${source}`),
+  processingSteps: () => get<StepSummary[]>('/preprocessing/processing-steps'),
+  anomalies: (q: { kind?: string | null; source?: string | null; offset: number; limit: number }) =>
+    get<AnomalyResponse>(
+      `/preprocessing/anomalies?${new URLSearchParams({
+        ...(q.kind ? { kind: q.kind } : {}),
+        ...(q.source ? { source: q.source } : {}),
+        offset: String(q.offset),
+        limit: String(q.limit),
+      })}`,
+    ),
+  job: (source: string, jobId: string, global?: string | null) =>
+    get<JobLookup>(`/preprocessing/jobs/${source}/${encodeURIComponent(jobId)}${global ? `?job_id_global=${encodeURIComponent(global)}` : ''}`),
   preprocessingStorage: () => get<StorageResponse>('/preprocessing/storage'),
   preprocessingRows: (step: string, q: { source?: string | null; offset: number; limit: number; origin: 'r2' | 'local' }) =>
     get<StepRowsResponse>(

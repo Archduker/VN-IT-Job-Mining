@@ -1,0 +1,298 @@
+{
+  "step": "01_clean",
+  "source": "glints",
+  "mode": "dry_run",
+  "generated_at": "2026-11-10T11:41:16+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/glints/raw",
+    "rows": 331
+  },
+  "output": {
+    "path": "data/preprocessing/01_clean/glints.jsonl",
+    "rows": 272
+  },
+  "dropped": [
+    {
+      "rule": "C1",
+      "reason": "Giữ snapshot mới nhất của mỗi job_id",
+      "rows": 0
+    },
+    {
+      "rule": "C2",
+      "reason": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "rows": 0
+    },
+    {
+      "rule": "C3",
+      "reason": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "rows": 0
+    },
+    {
+      "rule": "C4c",
+      "reason": "Bỏ tin ngoài IT theo it_policy.json",
+      "rows": 56
+    },
+    {
+      "rule": "C5",
+      "reason": "Bỏ JD dưới 50 từ",
+      "rows": 0
+    },
+    {
+      "rule": "C8",
+      "reason": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
+      "rows": 1
+    },
+    {
+      "rule": "C6",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "rows": 2
+    },
+    {
+      "rule": "C7",
+      "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "rows": 0
+    }
+  ],
+  "rules": [
+    {
+      "id": "C1",
+      "name": "Giữ snapshot mới nhất của mỗi job_id",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C2",
+      "name": "Bỏ tin trong file batch cũ đã có file riêng (PRE-8)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C3",
+      "name": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C4a",
+      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
+      "action": "flag",
+      "rows_affected": 56,
+      "examples": [
+        {
+          "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
+          "field": "job_title",
+          "before": "HCM925-KỸ THUẬT VIÊN KHUÔN - KCX TÂN THUẬN (KHÔNG KINH NGHIỆM)",
+          "after": "non_it",
+          "url": "https://glints.com/vn/opportunities/jobs/hcm925-ky-thuat-vien-khuon-kcx-tan-thuan-khong-kinh-nghiem/0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd"
+        },
+        {
+          "job_id": "07ec34c7-ecce-40ee-8104-c3dc283a15d5",
+          "field": "job_title",
+          "before": "[BD651] Kỹ sư Cải tiến - Kỹ thuật/Cơ khí/Điện - KCN VSIP1",
+          "after": "non_it",
+          "url": "https://glints.com/vn/opportunities/jobs/bd651-ky-su-cai-tien-ky-thuat-co-khi-dien-kcn-vsip1/07ec34c7-ecce-40ee-8104-c3dc283a15d5"
+        },
+        {
+          "job_id": "092b1873-9996-4869-bc3b-ec6f377e531c",
+          "field": "job_title",
+          "before": "VT234 - Utilities Engineer – Kỹ sư hệ thống phụ trợ - KCN PHÚ MỸ",
+          "after": "non_it",
+          "url": "https://glints.com/vn/opportunities/jobs/vt234-utilities-engineer-ky-su-he-thong-phu-tro-kcn-phu-my/092b1873-9996-4869-bc3b-ec6f377e531c"
+        }
+      ]
+    },
+    {
+      "id": "C4c",
+      "name": "Bỏ tin ngoài IT theo it_policy.json",
+      "action": "drop",
+      "rows_affected": 56,
+      "examples": [
+        {
+          "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
+          "field": "job_title",
+          "before": "HCM925-KỸ THUẬT VIÊN KHUÔN - KCX TÂN THUẬN (KHÔNG KINH NGHIỆM)",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/hcm925-ky-thuat-vien-khuon-kcx-tan-thuan-khong-kinh-nghiem/0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd"
+        },
+        {
+          "job_id": "07ec34c7-ecce-40ee-8104-c3dc283a15d5",
+          "field": "job_title",
+          "before": "[BD651] Kỹ sư Cải tiến - Kỹ thuật/Cơ khí/Điện - KCN VSIP1",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/bd651-ky-su-cai-tien-ky-thuat-co-khi-dien-kcn-vsip1/07ec34c7-ecce-40ee-8104-c3dc283a15d5"
+        },
+        {
+          "job_id": "092b1873-9996-4869-bc3b-ec6f377e531c",
+          "field": "job_title",
+          "before": "VT234 - Utilities Engineer – Kỹ sư hệ thống phụ trợ - KCN PHÚ MỸ",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/vt234-utilities-engineer-ky-su-he-thong-phu-tro-kcn-phu-my/092b1873-9996-4869-bc3b-ec6f377e531c"
+        }
+      ]
+    },
+    {
+      "id": "C5",
+      "name": "Bỏ JD dưới 50 từ",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C8",
+      "name": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
+      "action": "drop",
+      "rows_affected": 1,
+      "examples": [
+        {
+          "job_id": "79140db9-bdf3-43c5-9695-8c2a1aecaabb",
+          "field": "job_title",
+          "before": "CTV Kiểm thử (Full-time)",
+          "after": "S3_CTV_TITLE",
+          "url": "https://glints.com/vn/opportunities/jobs/ctv-kiem-thu-full-time/79140db9-bdf3-43c5-9695-8c2a1aecaabb"
+        }
+      ]
+    },
+    {
+      "id": "C6",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "action": "drop",
+      "rows_affected": 2,
+      "examples": [
+        {
+          "job_id": "05decc01-d944-4958-8c7a-21697b2d32e8",
+          "field": "dedup_key",
+          "before": "kết nối nhân lực worklink|kỹ thuật viên it phần mềm - kcn long đức - đồng nai|ho_chi_minh|2026-W42",
+          "after": "giữ 83fe5651-5b24-4ee4-ba8e-52eef6615019",
+          "url": "https://glints.com/vn/opportunities/jobs/ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/05decc01-d944-4958-8c7a-21697b2d32e8"
+        },
+        {
+          "job_id": "160cfe51-8606-4eec-91e1-15a2cd5a1fc7",
+          "field": "dedup_key",
+          "before": "chuỗi bán lẻ mini min|tư vấn triển khai phần mềm b2b|ho_chi_minh|2026-W43",
+          "after": "giữ f8f06818-8693-4853-80d5-a6eb7ac201dc",
+          "url": "https://glints.com/vn/opportunities/jobs/tu-van-trien-khai-phan-mem-b2b/160cfe51-8606-4eec-91e1-15a2cd5a1fc7"
+        }
+      ]
+    },
+    {
+      "id": "C7",
+      "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    }
+  ],
+  "fields": [
+    {
+      "field": "job_title",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "company_name",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_location_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_posted_date",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "raw_description_text",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "skills_list",
+      "fill_pct_in": 88.5,
+      "fill_pct_out": 87.9
+    }
+  ],
+  "checks": {
+    "rows_conserved": true,
+    "notes": [
+      "chạy lẻ 1/8 sàn - C7 so trùng khác sàn chưa đủ dữ liệu; muốn số đúng toàn dự án: --source all"
+    ]
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "it_levels": {
+      "tang_1_it": 244,
+      "tang_2_non_it": 44,
+      "tang_1_non_it": 12,
+      "tang_2_it": 31
+    },
+    "it_status": {
+      "it": 275,
+      "non_it": 56
+    },
+    "it_policy": {
+      "drop": [
+        "non_it"
+      ],
+      "approved_on": "2026-11-09",
+      "evidence": "C4b: Gán tay 48 tin, xác nhận 28 non_it (58.3%). Nguồn đăng lẫn tin ngoài IT"
+    },
+    "scope_c8_reasons": {
+      "S3_CTV_TITLE": 1
+    },
+    "review": {
+      "file": "data/preprocessing/review/it_glints.csv",
+      "rows": 48,
+      "labeled": 48,
+      "sample_strata": {
+        "tang_1_non_it": 12,
+        "tang_2_non_it": 17,
+        "tang_2_it": 13,
+        "tang_1_it": 6
+      },
+      "labeled_non_it": 28,
+      "rule_decided": 18,
+      "rule_correct": 17,
+      "status_non_it": 29,
+      "status_non_it_correct": 27,
+      "level2_labeled": 30,
+      "level2_correct": 28,
+      "level1_it_labeled": 6,
+      "level1_it_correct": 6,
+      "validation": {
+        "tp": 18,
+        "fp": 1,
+        "tn": 27,
+        "fn": 2,
+        "labeled": 48,
+        "precision_it": 0.9473684210526315,
+        "precision_non_it": 0.9310344827586207,
+        "recall_it": 0.9,
+        "precision_it_ci": [
+          0.7536126883310121,
+          0.9906480059376996
+        ],
+        "precision_non_it_ci": [
+          0.7803541984972432,
+          0.9808787338305668
+        ],
+        "recall_it_ci": [
+          0.6989663547715127,
+          0.9721335187862318
+        ],
+        "reason": null
+      }
+    }
+  },
+  "samples": [],
+  "samples_reason": "DRY_RUN_NO_OUTPUT"
+}

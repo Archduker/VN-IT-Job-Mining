@@ -1,0 +1,78 @@
+{
+  "step": "07_sections",
+  "source": "jobsgo",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 585
+  },
+  "output": {
+    "path": "data/processing/07_sections/all.parquet",
+    "rows": 585
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_bullets": 13006,
+    "bullets_by_section": {
+      "mo_ta": 4285,
+      "yeu_cau": 4479,
+      "phuc_loi": 4242
+    },
+    "bullets_by_rule": {
+      "S7.2": 13006
+    },
+    "n_jobs_no_bullet": 0,
+    "headings_approved": 0,
+    "cues_approved": 0
+  },
+  "samples": [
+    {
+      "job_id": "jobsgo_29194795684",
+      "source": "jobsgo",
+      "field": "sections",
+      "before": "Nhận các nhiệm vụ từ Ban Lãnh đạo, Trưởng phòng phòng kỹ thuật, cụ thể:\nLàm việc với các đối tác, nhà cung cấp theo dự án được phân công nhằm đưa ra giải pháp, sản phẩm, dịch vụ phù hợp với nhu cầu củ…",
+      "after": {
+        "phuc_loi": 10,
+        "mo_ta": 6,
+        "yeu_cau": 6
+      },
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29210180691",
+      "source": "jobsgo",
+      "field": "sections",
+      "before": "Tiếp nhận thông tin khách hàng.\nTư vấn triển khai phần mềm Website cho khách hàng.\nTriển khai về bố cục, màu sắc, chức năng, Website.\nLên ý tưởng, bảng Demo Website cho khách hàng.\nTương tác bộ phận k…",
+      "after": {
+        "mo_ta": 8,
+        "phuc_loi": 4,
+        "yeu_cau": 3
+      },
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29290799214",
+      "source": "jobsgo",
+      "field": "sections",
+      "before": "Tiếp nhận thông tin khách hàng.\nTư vấn triển khai phần mềm Website cho khách hàng.\nTriển khai thiết kế về bố cục, màu sắc, chức năng, Website.\nLên ý tưởng, bảng Demo Website cho khách hàng.\nTương tác …",
+      "after": {
+        "mo_ta": 8,
+        "phuc_loi": 4,
+        "yeu_cau": 3
+      },
+      "changed": true
+    }
+  ]
+}

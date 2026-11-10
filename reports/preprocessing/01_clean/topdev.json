@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:52:42+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:24:31+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/topdev/raw",
     "rows": 3890
   },
   "output": {
     "path": "data/preprocessing/01_clean/topdev.jsonl",
-    "rows": 227
+    "rows": 218
   },
   "dropped": [
     {
@@ -35,18 +35,23 @@
     },
     {
       "rule": "C5",
-      "reason": "Bỏ JD dưới 30 từ",
+      "reason": "Bỏ JD dưới 50 từ",
       "rows": 0
     },
     {
-      "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "rule": "C8",
+      "reason": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
       "rows": 2
+    },
+    {
+      "rule": "C6",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "rows": 6
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 1
+      "rows": 4
     }
   ],
   "rules": [
@@ -153,30 +158,59 @@
     },
     {
       "id": "C5",
-      "name": "Bỏ JD dưới 30 từ",
+      "name": "Bỏ JD dưới 50 từ",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
-      "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "id": "C8",
+      "name": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
       "action": "drop",
       "rows_affected": 2,
       "examples": [
         {
-          "job_id": "2141079",
-          "field": "dedup_key",
-          "before": "công nghệ bookingcare|fullstack ai engineer|ha_noi|2026-W44",
-          "after": "giữ 2133063",
-          "url": "https://topdev.vn/viec-lam/fullstack-ai-engineer-cong-ty-co-phan-cong-nghe-bookingcare-2141079"
+          "job_id": "2137244",
+          "field": "job_title",
+          "before": "Cộng Tác Viên Thiết Kế Part-Time",
+          "after": "S3_CTV_TITLE",
+          "url": "https://topdev.vn/viec-lam/cong-tac-vien-thiet-ke-part-time-cong-ty-co-phan-cong-nghe-giao-duc-edte-2137244"
         },
         {
-          "job_id": "2141955",
+          "job_id": "2139506",
+          "field": "job_title",
+          "before": "CTV Phát triển Cộng đồng & Đối tác Game (Guild/Admin/Mod)",
+          "after": "S3_CTV_TITLE",
+          "url": "https://topdev.vn/viec-lam/ctv-phat-trien-cong-dong-doi-tac-game-guild-admin-mod-cong-ty-co-phan-funtap-2139506"
+        }
+      ]
+    },
+    {
+      "id": "C6",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "action": "drop",
+      "rows_affected": 6,
+      "examples": [
+        {
+          "job_id": "2133353",
           "field": "dedup_key",
-          "before": "salesnow|remote data engineer - ai data platform japan (python)||2026-W44",
-          "after": "giữ 2133822",
-          "url": "https://topdev.vn/viec-lam/remote-data-engineer-ai-data-platform-japan-python-salesnow-inc-2141955"
+          "before": "fpt is|senior/leader design verification engineer|ha_noi",
+          "after": "giữ 2141565",
+          "url": "https://topdev.vn/viec-lam/senior-leader-design-verification-engineer-fpt-is-2133353"
+        },
+        {
+          "job_id": "2133354",
+          "field": "dedup_key",
+          "before": "ila|software development manager|ho_chi_minh",
+          "after": "giữ 2141962",
+          "url": "https://topdev.vn/viec-lam/software-development-manager-ila-vietnam-2133354"
+        },
+        {
+          "job_id": "2133819",
+          "field": "dedup_key",
+          "before": "tài chính tín dụng tiêu dùng trách nhiệm hữu hạn một thành viên sfinance|expert/senior/middle software engineer (java, spring boot, postgresql)|ha_noi",
+          "after": "giữ 2141521",
+          "url": "https://topdev.vn/viec-lam/expert-senior-middle-software-engineer-java-spring-boot-postgresql-cong-ty-tai-chinh-tin-dung-tieu-dung-trach-nhiem-huu-han-mot-thanh-vien-sfinance-2133819"
         }
       ]
     },
@@ -184,12 +218,26 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 1,
+      "rows_affected": 4,
       "examples": [
+        {
+          "job_id": "2136566",
+          "field": "dedup_key",
+          "before": "cyberlogitec|system security engineer (senior)|ho_chi_minh",
+          "after": "giữ vietnamworks:2117609",
+          "url": "https://topdev.vn/viec-lam/system-security-engineer-senior-cyberlogitec-vietnam-co-ltd-2136566"
+        },
+        {
+          "job_id": "2138456",
+          "field": "dedup_key",
+          "before": "chứng khoán ssi|chuyên gia phân tích dữ liệu khách hàng và đánh giá hiệu quả|ha_noi",
+          "after": "giữ vietnamworks:2100871",
+          "url": "https://topdev.vn/viec-lam/chuyen-gia-phan-tich-du-lieu-khach-hang-va-danh-gia-hieu-qua-cong-ty-co-phan-chung-khoan-ssi-2138456"
+        },
         {
           "job_id": "2138890",
           "field": "dedup_key",
-          "before": "88|nhân viên kỹ thuật phần mềm|ha_noi|2026-W42",
+          "before": "88|nhân viên kỹ thuật phần mềm|ha_noi",
           "after": "giữ jobsgo:29373631114",
           "url": "https://topdev.vn/viec-lam/nhan-vien-ky-thuat-phan-mem-cong-ty-co-phan-88-group-viet-nam-2138890"
         }
@@ -215,7 +263,7 @@
     {
       "field": "raw_posted_date",
       "fill_pct_in": 40.4,
-      "fill_pct_out": 31.3
+      "fill_pct_out": 31.2
     },
     {
       "field": "raw_description_text",
@@ -225,7 +273,7 @@
     {
       "field": "skills_list",
       "fill_pct_in": 45.0,
-      "fill_pct_out": 83.7
+      "fill_pct_out": 83.0
     }
   ],
   "checks": {
@@ -251,20 +299,72 @@
       "drop": [
         "non_it"
       ],
-      "approved_on": "2026-11-03",
-      "evidence": "C4b: Gán tay 80 tin, xác nhận 79 non_it (98.8%). Crawler kéo sai phạm vi: API bỏ qua category_ids=1 (14.572 tin)"
+      "approved_on": "2026-11-09",
+      "evidence": "C4b: Gán tay 84 tin, phát hiện 78 non_it (92.9%). Crawler kéo sai phạm vi (API bỏ qua category_ids=1)"
+    },
+    "scope_c8_reasons": {
+      "S3_CTV_TITLE": 2
     },
     "review": {
       "file": "data/preprocessing/review/it_topdev.csv",
-      "rows": 80,
-      "labeled": 0,
-      "labeled_non_it": 0,
-      "rule_decided": 0,
-      "rule_correct": 0,
-      "status_non_it": 0,
-      "status_non_it_correct": 0,
-      "level2_labeled": 0,
-      "level2_correct": 0
+      "rows": 84,
+      "labeled": 84,
+      "sample_strata": {
+        "tang_1_non_it": 50,
+        "tang_2_non_it": 29,
+        "tang_2_it": 1,
+        "tang_1_it": 4
+      },
+      "labeled_non_it": 78,
+      "rule_decided": 54,
+      "rule_correct": 54,
+      "status_non_it": 79,
+      "status_non_it_correct": 78,
+      "level2_labeled": 30,
+      "level2_correct": 29,
+      "level1_it_labeled": 4,
+      "level1_it_correct": 4,
+      "validation": {
+        "tp": 5,
+        "fp": 0,
+        "tn": 78,
+        "fn": 1,
+        "labeled": 84,
+        "precision_it": 1.0,
+        "precision_non_it": 0.9873417721518988,
+        "recall_it": 0.8333333333333334,
+        "precision_it_ci": [
+          0.5655175352168252,
+          1.0
+        ],
+        "precision_non_it_ci": [
+          0.9317242812303406,
+          0.9977620061449501
+        ],
+        "recall_it_ci": [
+          0.43649717781352965,
+          0.9699466302516933
+        ],
+        "reason": null
+      }
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "2139506",
+      "source": "topdev",
+      "field": "job_title",
+      "before": "CTV Phát triển Cộng đồng & Đối tác Game (Guild/Admin/Mod)",
+      "after": "DROPPED C8: S3_CTV_TITLE",
+      "changed": true
+    },
+    {
+      "job_id": "2137244",
+      "source": "topdev",
+      "field": "job_title",
+      "before": "Cộng Tác Viên Thiết Kế Part-Time",
+      "after": "DROPPED C8: S3_CTV_TITLE",
+      "changed": true
+    }
+  ]
 }

@@ -2,31 +2,36 @@
   "step": "01b_deduplication",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:23+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:58+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
-    "rows": 448
+    "rows": 412
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/careerviet.jsonl",
-    "rows": 424
+    "rows": 402
   },
   "dropped": [
     {
+      "rule": "D0",
+      "reason": "Tầng 1: trùng (nguồn, job_id)",
+      "rows": 0
+    },
+    {
       "rule": "D2",
-      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
-      "rows": 5
+      "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+      "rows": 1
     },
     {
       "rule": "D4",
-      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
+      "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "rows": 0
     },
     {
       "rule": "D5",
-      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
-      "rows": 19
+      "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+      "rows": 9
     }
   ],
   "rules": [
@@ -38,67 +43,60 @@
       "examples": []
     },
     {
-      "id": "D2",
-      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "id": "D0",
+      "name": "Tầng 1: trùng (nguồn, job_id)",
       "action": "drop",
-      "rows_affected": 5,
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D2",
+      "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+      "action": "drop",
+      "rows_affected": 1,
       "examples": [
         {
-          "job_id": "35C82ACC",
+          "job_id": "35C85B2F",
           "field": "dedup",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-nang-cao-chat-luong-thu-hoi-no-qua-callbot-ai-id5740.35C82ACC.html",
-          "after": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-nang-cao-chat-luong-thu-hoi-no-qua-callbot-ai-id5740.35C8C17B.html",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-nang-cao-chat-luong-thu-hoi-no-qua-callbot-ai-id5740.35C82ACC.html"
-        },
-        {
-          "job_id": "35C8469B",
-          "field": "dedup",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cao-cap-mang-va-bao-mat.35C8469B.html",
-          "after": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cao-cap-mang-va-bao-mat.35C80358.html",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cao-cap-mang-va-bao-mat.35C8469B.html"
-        },
-        {
-          "job_id": "35C86FFD",
-          "field": "dedup",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-van-hanh-co-so-du-lieu.35C86FFD.html",
-          "after": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-van-hanh-co-so-du-lieu.35C813C6.html",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-van-hanh-co-so-du-lieu.35C86FFD.html"
+          "before": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C85B2F.html",
+          "after": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C83A56.html",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C85B2F.html"
         }
       ]
     },
     {
       "id": "D4",
-      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
       "id": "D5",
-      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 19,
+      "rows_affected": 9,
       "examples": [
         {
-          "job_id": "35C81054",
+          "job_id": "35C846A8",
           "field": "dedup",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phat-trien-san-pham-product-owner.35C81054.html",
-          "after": "https://www.topcv.vn/viec-lam/product-owner-du-an-meey-chat/2303362.html",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phat-trien-san-pham-product-owner.35C81054.html"
+          "before": "https://careerviet.vn/vi/tim-viec-lam/senior-it-business-analyst-chuyen-vien-phan-tich-nghiep-vu-domain-fintech.35C846A8.html",
+          "after": "https://careerviet.vn/vi/tim-viec-lam/business-analyst-team-lead-truong-nhom-phan-tich-nghiep-vu-domain-fintech.35C85499.html",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/senior-it-business-analyst-chuyen-vien-phan-tich-nghiep-vu-domain-fintech.35C846A8.html"
         },
         {
-          "job_id": "35C82A35",
+          "job_id": "35C84AFF",
           "field": "dedup",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/it-manager.35C82A35.html",
-          "after": "https://www.vietnamworks.com/it-manager--2119686-jv",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/it-manager.35C82A35.html"
+          "before": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td45098.35C84AFF.html",
+          "after": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td450983.35C84B08.html",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td45098.35C84AFF.html"
         },
         {
-          "job_id": "35C8604B",
+          "job_id": "35C88F77",
           "field": "dedup",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/devops.35C8604B.html",
-          "after": "https://www.topcv.vn/viec-lam/devops/1768051.html",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/devops.35C8604B.html"
+          "before": "https://careerviet.vn/vi/tim-viec-lam/tro-ly-cong-nghe-senior-ai-engineer.35C88F77.html",
+          "after": "https://careerviet.vn/vi/tim-viec-lam/senior-ai-engineer.35C88F76.html",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/tro-ly-cong-nghe-senior-ai-engineer.35C88F77.html"
         }
       ]
     },
@@ -106,28 +104,57 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 4,
+      "rows_affected": 9,
       "examples": [
         {
-          "job_id": "35C868D6",
+          "job_id": "35C84AFD",
           "field": "master_id",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-quan-tri-he-thong-it-system.35C868D6.html",
-          "after": "90af96cb-fafc-539e-a1c4-693e3ca8441b",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-quan-tri-he-thong-it-system.35C868D6.html"
+          "before": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cao-cap-bao-mat-du-lieu-senior-data-security-khoi-du-lieu-2026td450980.35C84AFD.html",
+          "after": "28260b6d-b174-557a-a16e-c3eb4c0c60da",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cao-cap-bao-mat-du-lieu-senior-data-security-khoi-du-lieu-2026td450980.35C84AFD.html"
         },
         {
-          "job_id": "35C878CB",
+          "job_id": "35C84B08",
           "field": "master_id",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/business-analyst-chuyen-vien-phan-tich-nghiep-vu-chung-khoan.35C878CB.html",
-          "after": "40e2542e-288a-5073-be85-50ca9c25116a",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/business-analyst-chuyen-vien-phan-tich-nghiep-vu-chung-khoan.35C878CB.html"
+          "before": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td450983.35C84B08.html",
+          "after": "6dac034f-62c9-55fd-bbc0-23ca9840a72f",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td450983.35C84B08.html"
         },
         {
-          "job_id": "35C89833",
+          "job_id": "35C85499",
           "field": "master_id",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/master-data-engineer.35C89833.html",
-          "after": "39a0ee79-1f51-57dd-bfc7-d90c594d2c4b",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/master-data-engineer.35C89833.html"
+          "before": "https://careerviet.vn/vi/tim-viec-lam/business-analyst-team-lead-truong-nhom-phan-tich-nghiep-vu-domain-fintech.35C85499.html",
+          "after": "157e1e60-f1dd-564d-b918-3c2cb38b2b45",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/business-analyst-team-lead-truong-nhom-phan-tich-nghiep-vu-domain-fintech.35C85499.html"
+        }
+      ]
+    },
+    {
+      "id": "D7",
+      "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
+      "action": "flag",
+      "rows_affected": 13,
+      "examples": [
+        {
+          "job_id": "35C813C6",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8998,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-van-hanh-co-so-du-lieu.35C813C6.html"
+        },
+        {
+          "job_id": "35C83731",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.913,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-quan-tri-mang-network.35C83731.html"
+        },
+        {
+          "job_id": "35C839DA",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7314,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/master-data-senior-specialist.35C839DA.html"
         }
       ]
     }
@@ -148,13 +175,40 @@
       "hops": 18,
       "hop_same_crawler_hash": 0,
       "hop_same_canonical_hash": 0,
+      "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 305,
-    "d2_groups": 5,
+    "blocking_blocks": 292,
+    "d2_groups": 1,
     "rule_totals": {
-      "D2": 5,
-      "D5": 19
+      "D2": 1,
+      "D5": 9
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "35C84AFF",
+      "source": "careerviet",
+      "field": "duplicate_of",
+      "before": "35C84AFF",
+      "after": "DROPPED D5 -> careerviet:35C84B08",
+      "changed": true
+    },
+    {
+      "job_id": "35C846A8",
+      "source": "careerviet",
+      "field": "duplicate_of",
+      "before": "35C846A8",
+      "after": "DROPPED D5 -> careerviet:35C85499",
+      "changed": true
+    },
+    {
+      "job_id": "35C8B3C4",
+      "source": "careerviet",
+      "field": "duplicate_of",
+      "before": "35C8B3C4",
+      "after": "DROPPED D5 -> careerviet:35C88655",
+      "changed": true
+    }
+  ]
 }

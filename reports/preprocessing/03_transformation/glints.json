@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T09:09:36+00:00",
-  "code_version": "800b5e7",
+  "generated_at": "2026-11-10T11:50:04+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 271
+    "rows": 260
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 271
+    "rows": 260
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 571,
+      "rows_affected": 547,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 163,
+      "rows_affected": 155,
       "examples": [
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 271,
+      "rows_affected": 260,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 202,
+      "rows_affected": 238,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -71,18 +71,18 @@
           "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
         },
         {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "exp_min_max",
+          "before": "Dưới một năm kinh nghiệm",
+          "after": "0.0 - 1.0 years",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        },
+        {
           "job_id": "02ab4af2-fa4b-4b73-9795-c9047f9b9dbc",
           "field": "exp_min_max",
           "before": "3 - 5 năm kinh nghiệm",
           "after": "3.0 - 5.0 years",
           "url": "https://glints.com/vn/opportunities/jobs/developer/02ab4af2-fa4b-4b73-9795-c9047f9b9dbc"
-        },
-        {
-          "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
-          "field": "exp_min_max",
-          "before": "1 - 3 năm kinh nghiệm",
-          "after": "1.0 - 3.0 years",
-          "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
         }
       ]
     },
@@ -104,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 271,
+      "rows_affected": 260,
       "examples": []
     },
     {
@@ -118,7 +118,7 @@
       "id": "T6.2",
       "name": "Chuẩn hóa Unicode về NFC",
       "action": "modify",
-      "rows_affected": 21,
+      "rows_affected": 17,
       "examples": []
     },
     {
@@ -132,14 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 145,
+      "rows_affected": 137,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
+      "action": "modify",
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 271,
+      "rows_affected": 260,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -168,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 271,
+      "rows_affected": 260,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -197,13 +204,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 59.4,
-      "fill_pct_out": 59.4
+      "fill_pct_in": 58.8,
+      "fill_pct_out": 58.8
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 59.8,
-      "fill_pct_out": 59.8
+      "fill_pct_in": 59.2,
+      "fill_pct_out": 59.2
     },
     {
       "field": "posted_date",
@@ -212,18 +219,18 @@
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 98.2,
-      "fill_pct_out": 98.2
+      "fill_pct_in": 98.1,
+      "fill_pct_out": 98.1
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 74.5,
-      "fill_pct_out": 74.5
+      "fill_pct_in": 91.5,
+      "fill_pct_out": 91.5
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 74.5,
-      "fill_pct_out": 74.5
+      "fill_pct_in": 91.5,
+      "fill_pct_out": 91.5
     },
     {
       "field": "headcount",
@@ -242,13 +249,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 98.2,
-      "fill_pct_out": 98.2
+      "fill_pct_in": 98.1,
+      "fill_pct_out": 98.1
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 93.0,
-      "fill_pct_out": 93.0
+      "fill_pct_in": 92.7,
+      "fill_pct_out": 92.7
     },
     {
       "field": "locations",
@@ -271,21 +278,41 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 163,
+      "header": 155,
       "title": 0,
       "jd": 5,
-      "none": 103
+      "none": 100
     },
     "salary_under_1m_count": 5,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 165,
-      "en": 106
+      "vi": 144,
+      "en": 116,
+      "other": 0
+    },
+    "language_fasttext": {
+      "model": "lid.176.bin",
+      "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
+      "conf_min": 0.6,
+      "disagree_with_old_rule": 14,
+      "disagree_examples": [
+        "00151110-44ff-48bc-9dd9-752c8f632935",
+        "39f88183-41e7-457b-9a5b-d6377dbf85dc",
+        "444caf8c-6984-4852-aa0f-835f97b1778b",
+        "9a66c736-2718-44fd-ba72-a52670f68244",
+        "a4e32cb8-d378-4f01-b491-0303e67be4e7",
+        "b1c8877b-8c5c-4ac1-937f-6c03f96ee58c",
+        "becc6671-92ff-4e5e-a9af-99a2c17c6cb3",
+        "c0446e35-3da9-4cb1-b011-60802f2d8a65",
+        "c9b23479-2048-47b3-a537-93adf4aab8a6",
+        "cdc02b62-a002-4ffc-8a37-a5d88118c265"
+      ],
+      "conf_lt_0_9": 78
     },
     "text_quality": {
       "before": {
         "html": 1,
-        "nfc": 21,
+        "nfc": 17,
         "hidden": 2
       },
       "residual_html_pct": 0.0,
@@ -298,6 +325,33 @@
       },
       "abbreviations_approved": 0
     },
-    "experience_parsed_rate": 74.5
-  }
+    "translation": null,
+    "experience_parsed_rate": 91.5
+  },
+  "samples": [
+    {
+      "job_id": "glints_369ac781-8635-42bc-ad68-465845f4178b",
+      "source": "glints",
+      "field": "requirements_clean",
+      "before": "Mô tả công việc\nLàm tại công ty\n5 - 10 năm kinh nghiệm\nTối thiểu Cử Nhân",
+      "after": "Mô tả công việc Làm tại công ty 5 - 10 năm kinh nghiệm Tối thiểu Cử Nhân",
+      "changed": true
+    },
+    {
+      "job_id": "glints_e2cb1f15-0f4d-4f32-9432-443e49b292c7",
+      "source": "glints",
+      "field": "posted_date",
+      "before": "2026-09-22T04:48:56.483Z",
+      "after": "2026-09-22",
+      "changed": true
+    },
+    {
+      "job_id": "glints_00b4d332-8e6e-4714-9853-e816085f7d01",
+      "source": "glints",
+      "field": "description_clean",
+      "before": "Chi tiết công việc [DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM\nTÊN VỊ TRÍ: KỸ THUẬT VIÊN IT PHẦN MỀM (Thuộc Phòng Tổng Vụ)\nĐỊA ĐIỂM L…",
+      "after": "Chi tiết công việc [DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM TÊN VỊ TRÍ: KỸ THUẬT VIÊN IT PHẦN MỀM (Thuộc Phòng Tổng Vụ) ĐỊA ĐIỂM L…",
+      "changed": true
+    }
+  ]
 }

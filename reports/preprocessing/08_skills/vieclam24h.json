@@ -1,0 +1,229 @@
+{
+  "step": "08_skills",
+  "source": "vieclam24h",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 171
+  },
+  "output": {
+    "path": "data/processing/08_skills/all.parquet",
+    "rows": 171
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_job_skill_rows": 714,
+    "n_jobs_no_skill": 20,
+    "top_skills": [
+      {
+        "skill": "communication",
+        "n_jobs": 81
+      },
+      {
+        "skill": "english",
+        "n_jobs": 48
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 35
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 29
+      },
+      {
+        "skill": "logical_thinking",
+        "n_jobs": 26
+      },
+      {
+        "skill": "python",
+        "n_jobs": 23
+      },
+      {
+        "skill": "machine_learning",
+        "n_jobs": 18
+      },
+      {
+        "skill": "data_analysis",
+        "n_jobs": 18
+      },
+      {
+        "skill": "android_sdk",
+        "n_jobs": 16
+      },
+      {
+        "skill": "docker",
+        "n_jobs": 15
+      },
+      {
+        "skill": "postgresql",
+        "n_jobs": 15
+      },
+      {
+        "skill": "linux",
+        "n_jobs": 13
+      },
+      {
+        "skill": "agile_scrum",
+        "n_jobs": 12
+      },
+      {
+        "skill": "project_management",
+        "n_jobs": 12
+      },
+      {
+        "skill": "cicd",
+        "n_jobs": 11
+      },
+      {
+        "skill": "rest_api",
+        "n_jobs": 11
+      },
+      {
+        "skill": "javascript",
+        "n_jobs": 11
+      },
+      {
+        "skill": "mysql",
+        "n_jobs": 11
+      },
+      {
+        "skill": "java",
+        "n_jobs": 10
+      },
+      {
+        "skill": "infosec",
+        "n_jobs": 9
+      },
+      {
+        "skill": "presentation",
+        "n_jobs": 9
+      },
+      {
+        "skill": "sql_server",
+        "n_jobs": 9
+      },
+      {
+        "skill": "power_bi",
+        "n_jobs": 9
+      },
+      {
+        "skill": "oracle_db",
+        "n_jobs": 8
+      },
+      {
+        "skill": "redis",
+        "n_jobs": 8
+      },
+      {
+        "skill": "jira",
+        "n_jobs": 8
+      },
+      {
+        "skill": "business_analysis",
+        "n_jobs": 8
+      },
+      {
+        "skill": "microservices",
+        "n_jobs": 7
+      },
+      {
+        "skill": "react",
+        "n_jobs": 7
+      },
+      {
+        "skill": "csharp",
+        "n_jobs": 7
+      }
+    ],
+    "short_forms_approved": 0,
+    "alias_conflicts_dropped": 1
+  },
+  "samples": [
+    {
+      "job_id": "vieclam24h_200966577",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "nghiên cứu phát triển sản phẩm",
+        "r&d",
+        "nhân viên nghiên cứu và phát triển sản phẩm",
+        "r&d staff",
+        "Kỹ sư công nghệ",
+        "r&d thực phẩm",
+        "Nghiên Cứu Sinh",
+        "nghiên cứu viên",
+        "nhân viên r&d",
+        "nghiên cứu sinh học",
+        "Bưu chính viễn thông",
+        "Công Ty Cổ Phần Viễn ..."
+      ],
+      "after": [
+        "communication",
+        "english",
+        "matlab",
+        "python"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200963700",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "senior architect",
+        "process engineer",
+        "construction engineer",
+        "senior merchandiser",
+        "instrument engineer",
+        "it engineer",
+        "senior copywriter",
+        "mechanical engineer",
+        "bridge engineer",
+        "system administrator",
+        "IT Phần cứng - Mạng",
+        "Chi Nhánh Công Ty Cổ ..."
+      ],
+      "after": [
+        "bash",
+        "linux"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200960259",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "kỹ thuật viên",
+        "nhân viên kỹ thuật",
+        "Kỹ Thuật",
+        "kỹ thuật viên máy tính",
+        "kỹ thuật viên phòng lab",
+        "kỹ thuật viên âm thanh",
+        "kỹ thuật viên gây mê",
+        "kỹ thuật viên spa",
+        "kỹ thuật nhuộm",
+        "kỹ thuật hàn",
+        "Chăm sóc khách hàng",
+        "Công Ty Cổ Phần Viễn ..."
+      ],
+      "after": [
+        "android_sdk"
+      ],
+      "changed": true
+    }
+  ]
+}

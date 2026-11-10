@@ -23,7 +23,7 @@ def _old_schema_golden() -> pd.DataFrame:
         "job_title_clean": ["Java Dev", "React Dev", "Tester"],
         "company_name": ["X", "Y", "Z"],
         "job_family": ["Backend", "Frontend", None],
-        "seniority": ["Junior", "Senior", "Chưa rõ"],
+        "seniority": ["Junior", "Senior", None],
         "exp_min_years": [1.0, None, 3.0],
         "tinh_chinh": ["ha_noi", "ho_chi_minh", "da_nang"],
         "skills_std": [["Java", "SQL"], ["React", "JavaScript"], []],
@@ -41,9 +41,9 @@ def test_old_schema_salary_converted_to_million_and_skills_built_from_lists():
     m = data.meta
     assert m["salary_avg_mil"].tolist()[:2] == [15.0, 40.0]
     assert np.isnan(m["salary_avg_mil"].iloc[2])
-    assert m["seniority_ord"].tolist() == [2, 4, -1]
+    assert m["seniority_ord"].tolist() == [1, 3, -1]
     assert m["location_group"].tolist() == ["ha_noi", "ho_chi_minh", "khac"]
-    assert m["job_family"].iloc[2] == "Khác"
+    assert m["job_family"].iloc[2] == "Other"
     assert set(data.skills.columns) == {"Java", "SQL", "React", "JavaScript"}
     assert m["n_skills"].tolist() == [2, 2, 0]
     assert any("vnd" in n for n in data.notes)
@@ -87,8 +87,8 @@ def test_contract_errors_are_explicit():
 
 
 @pytest.mark.parametrize("label,expected", [
-    ("Thực tập", 0), ("Mới tốt nghiệp", 1), ("Fresher", 1), ("junior", 2), ("Middle", 3),
-    ("Senior", 4), ("Trưởng nhóm/Quản lý", 5), ("Chưa rõ", -1), (None, -1), (3, 3),
+    ("Intern/Fresher", 0), ("Fresher", 0), ("junior", 1), ("Middle", 2),
+    ("Senior", 3), ("Lead/Manager", 4), ("Chưa rõ", -1), (None, -1), (3, 3), (5, -1),
 ])
 def test_seniority_to_ordinal(label, expected):
     assert seniority_to_ordinal(label) == expected
@@ -110,13 +110,13 @@ def test_location_group_falls_back_to_locations_list():
 
 def _duy_schema_golden(with_label: bool) -> pd.DataFrame:
     """Output 04_normalization của Duy (nhánh feature/p3-p4-transform-normalize, 9b33a05):
-    seniority_level là int 0-4 (-1 chưa rõ), city_normalized có "Nhiều địa điểm"/"Toàn quốc",
+    seniority_level 0-4 (null = chưa rõ), city_normalized có "Nhiều địa điểm"/"Toàn quốc",
     salary_avg đã ở triệu VNĐ/tháng."""
     g = pd.DataFrame({
         "job_id_global": ["a", "b", "c", "d", "e", "f"],
         "job_title": ["Intern", "Junior Dev", "Mid Dev", "Senior Dev", "Tech Lead", "Dev"],
         "job_family": ["Backend"] * 6,
-        "seniority_level": pd.Series([0, 1, 2, 3, 4, -1], dtype="int64"),
+        "seniority_level": pd.Series([0, 1, 2, 3, 4, None], dtype="float64"),
         "exp_min_years": [0.0, 1.0, 2.0, 4.0, 6.0, None],
         "city_normalized": ["Hà Nội", "Hồ Chí Minh", "Nhiều địa điểm", "Toàn quốc", "Remote", "Đà Nẵng"],
         "skills_extracted": [["Java"], ["Java", "SQL"], ["SQL"], ["Java"], ["Java", "SQL"], []],
@@ -124,30 +124,30 @@ def _duy_schema_golden(with_label: bool) -> pd.DataFrame:
         "is_negotiable": [False] * 5 + [True],
     })
     if with_label:
-        g["seniority"] = ["Thực tập", "Junior", "Middle", "Senior", "Trưởng nhóm/Quản lý", "Chưa rõ"]
+        g["seniority"] = ["Intern/Fresher", "Junior", "Middle", "Senior", "Lead/Manager", None]
     return g
 
 
 def test_duy_schema_int_seniority_level_maps_0_4_to_ordinal_scale():
     data = prepare_mining_data(_duy_schema_golden(with_label=False))
     m = data.meta
-    # 0 Intern/Fresher -> 1, 1 Junior -> 2, 2 Middle -> 3, 3 Senior -> 4, 4 Lead -> 5, -1 -> -1
-    assert m["seniority_ord"].tolist() == [1, 2, 3, 4, 5, -1]
-    assert m["seniority"].tolist() == ["Mới tốt nghiệp", "Junior", "Middle", "Senior", "Trưởng nhóm/Quản lý", "Chưa rõ"]
+    # thang 0-4 dùng nguyên, null -> -1
+    assert m["seniority_ord"].tolist() == [0, 1, 2, 3, 4, -1]
+    assert m["seniority"].tolist() == ["Intern/Fresher", "Junior", "Middle", "Senior", "Lead/Manager", "Chưa rõ"]
     assert any("seniority_level (dạng level_0_4)" in n for n in data.notes)
     assert m["location_group"].tolist() == ["ha_noi", "ho_chi_minh", "nhieu_dia_diem", "toan_quoc", "remote", "khac"]
     assert m["salary_avg_mil"].tolist()[:5] == [5.0, 15.0, 25.0, 40.0, 55.0]
 
 
 def test_duy_schema_prefers_text_label_over_int_level():
-    """Có cả nhãn chữ thì dùng nhãn (giữ được Thực tập = 0, thang 0-4 gộp mất)."""
+    """Có cả nhãn chữ thì dùng nhãn; kết quả trùng thang 0-4."""
     m = prepare_mining_data(_duy_schema_golden(with_label=True)).meta
-    assert m["seniority_ord"].tolist() == [0, 2, 3, 4, 5, -1]
+    assert m["seniority_ord"].tolist() == [0, 1, 2, 3, 4, -1]
 
 
 def test_seniority_ord_from_encoding_takes_priority():
     g = _duy_schema_golden(with_label=True)
-    g["seniority_ord"] = [0, 1, 2, 3, 4, -1]  # E1 của bước Encoding, thang 0-5
+    g["seniority_ord"] = [0, 1, 2, 3, 4, -1]  # E1 của bước Encoding, thang 0-4
     m = prepare_mining_data(g).meta
     assert m["seniority_ord"].tolist() == [0, 1, 2, 3, 4, -1]
 

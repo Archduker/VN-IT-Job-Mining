@@ -1,7 +1,7 @@
 """tests.unit.test_encoding_step
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Kiểm thử Bước 05 Encoding theo đặc tả SPEC-06, SPEC-07 và Task 05 của Phát:
-- E1: Ordinal Seniority (0-5, -1 cho Chưa rõ)
+- E1: Ordinal Seniority (0-4, -1 cho null)
 - E2: One-hot job_family, source_platform, employment_type
 - E3: Multi-hot top 10 tỉnh/thành + tinh__other + remote/ngoai_vn
 - E4: Multi-hot ĐÚNG 230 cột kỹ năng chuẩn (skill_<slug>, uint8) + other_skills_count
@@ -60,8 +60,8 @@ def mock_golden_df():
         {
             "job_id_global": "job_02",
             "source_platform": "topcv",
-            "seniority": "Chưa rõ",
-            "job_family": "Khác",
+            "seniority": None,
+            "job_family": "Other",
             "raw_employment_type": None,
             "it_status": "it",
             "locations": [{"tinh_key": "unknown_province", "remote": True, "ngoai_vn": False}],
@@ -148,21 +148,21 @@ def test_legacy_full_run_is_blocked_before_any_write(mock_golden_df, tmp_path, m
 def test_e1_ordinal_seniority(mock_golden_df):
     features_df, dictionary, _ = encode_dataset(mock_golden_df)
     assert "seniority_ord" in features_df.columns
-    # Row 1: Junior -> 2
-    assert features_df.loc[0, "seniority_ord"] == 2
-    # Row 2: Chưa rõ -> -1
+    # Row 1: Junior -> 1
+    assert features_df.loc[0, "seniority_ord"] == 1
+    # Row 2: null -> -1
     assert features_df.loc[1, "seniority_ord"] == -1
-    assert dictionary["seniority_ord"]["mapping"]["Junior"] == 2
-    assert dictionary["seniority_ord"]["mapping"]["Chưa rõ"] == -1
+    assert dictionary["seniority_ord"]["mapping"]["Junior"] == 1
+    assert "Chưa rõ" not in dictionary["seniority_ord"]["mapping"]
 
 
 def test_e2_one_hot_encodings(mock_golden_df):
     features_df, dictionary, _ = encode_dataset(mock_golden_df)
     # job_family
     assert features_df.loc[0, "job_family__backend"] == 1
-    assert features_df.loc[0, "job_family__khac"] == 0
+    assert features_df.loc[0, "job_family__other"] == 0
     assert features_df.loc[1, "job_family__backend"] == 0
-    assert features_df.loc[1, "job_family__khac"] == 1
+    assert features_df.loc[1, "job_family__other"] == 1
 
     # employment_type
     assert features_df.loc[0, "employment_type__full_time"] == 1

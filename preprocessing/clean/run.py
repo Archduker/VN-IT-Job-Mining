@@ -56,14 +56,6 @@ def _day(value: Any) -> datetime | None:
         return None
 
 
-def _week(flat: dict[str, Any]) -> str:
-    d = _day(flat.get("raw_posted_date")) or _day(flat.get("crawled_at"))  # TopCV, TopDev không có ngày đăng
-    if not d:
-        return ""
-    iso = d.isocalendar()
-    return f"{iso.year}-W{iso.week:02d}"
-
-
 def company_norm(name: Any) -> str:
     return re.sub(r"^(cty|ctcp|cong ty|công ty)\s+", "", normalize_company_name(name if isinstance(name, str) else None))
 
@@ -74,7 +66,7 @@ def dedup_key(flat: dict[str, Any]) -> str | None:
     if not title or not company:
         return None
     first = (flat.get("working_locations") or [None])[0] or flat.get("raw_location_text")
-    return "|".join([company, title, province.key(first) or "", _week(flat)])
+    return "|".join([company, title, province.key(first) or ""])
 
 
 def jd_words(flat: dict[str, Any]) -> int:
@@ -241,7 +233,7 @@ def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tup
             c6 += [(d, g[0]) for d in g[1:]]
     c6_ids = {id(d) for d, _ in c6}
     items = [i for i in items if id(i) not in c6_ids]
-    report.rule("C6", "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)", "drop", len(c6),
+    report.rule("C6", "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)", "drop", len(c6),
                 [_ex(d, "dedup_key", d["env"]["metadata"]["clean"]["dedup_key"], f"giữ {_job_id(k)}") for d, k in c6])
     report.data["fields"] = [{"field": f, "fill_pct_in": fill_in[f]} for f in KEY_FIELDS]
     return items, classified

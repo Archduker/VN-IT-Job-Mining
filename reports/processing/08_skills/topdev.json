@@ -1,0 +1,216 @@
+{
+  "step": "08_skills",
+  "source": "topdev",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 207
+  },
+  "output": {
+    "path": "data/processing/08_skills/all.parquet",
+    "rows": 207
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_job_skill_rows": 1357,
+    "n_jobs_no_skill": 17,
+    "top_skills": [
+      {
+        "skill": "english",
+        "n_jobs": 105
+      },
+      {
+        "skill": "communication",
+        "n_jobs": 104
+      },
+      {
+        "skill": "python",
+        "n_jobs": 41
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 37
+      },
+      {
+        "skill": "agile_scrum",
+        "n_jobs": 35
+      },
+      {
+        "skill": "docker",
+        "n_jobs": 34
+      },
+      {
+        "skill": "data_analysis",
+        "n_jobs": 29
+      },
+      {
+        "skill": "machine_learning",
+        "n_jobs": 29
+      },
+      {
+        "skill": "rest_api",
+        "n_jobs": 29
+      },
+      {
+        "skill": "cicd",
+        "n_jobs": 27
+      },
+      {
+        "skill": "postgresql",
+        "n_jobs": 27
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 25
+      },
+      {
+        "skill": "java",
+        "n_jobs": 24
+      },
+      {
+        "skill": "logical_thinking",
+        "n_jobs": 24
+      },
+      {
+        "skill": "project_management",
+        "n_jobs": 23
+      },
+      {
+        "skill": "mysql",
+        "n_jobs": 23
+      },
+      {
+        "skill": "microservices",
+        "n_jobs": 21
+      },
+      {
+        "skill": "presentation",
+        "n_jobs": 21
+      },
+      {
+        "skill": "qa_qc",
+        "n_jobs": 20
+      },
+      {
+        "skill": "clean_architecture",
+        "n_jobs": 20
+      },
+      {
+        "skill": "oracle_db",
+        "n_jobs": 20
+      },
+      {
+        "skill": "jira",
+        "n_jobs": 19
+      },
+      {
+        "skill": "linux",
+        "n_jobs": 18
+      },
+      {
+        "skill": "business_analysis",
+        "n_jobs": 18
+      },
+      {
+        "skill": "ecommerce",
+        "n_jobs": 17
+      },
+      {
+        "skill": "kubernetes",
+        "n_jobs": 15
+      },
+      {
+        "skill": "sql_server",
+        "n_jobs": 15
+      },
+      {
+        "skill": "javascript",
+        "n_jobs": 14
+      },
+      {
+        "skill": "kafka",
+        "n_jobs": 14
+      },
+      {
+        "skill": "redis",
+        "n_jobs": 14
+      }
+    ],
+    "short_forms_approved": 0,
+    "alias_conflicts_dropped": 1
+  },
+  "samples": [
+    {
+      "job_id": "topdev_2133822",
+      "source": "topdev",
+      "field": "skills",
+      "before": [
+        "SQL",
+        "Python",
+        "Scala"
+      ],
+      "after": [
+        "airflow",
+        "cicd",
+        "communication",
+        "elasticsearch",
+        "english",
+        "fastapi",
+        "github",
+        "github_actions",
+        "japanese",
+        "lambda",
+        "milvus",
+        "mysql",
+        "opensearch",
+        "postgresql",
+        "python",
+        "scala",
+        "spark",
+        "terraform"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2138436",
+      "source": "topdev",
+      "field": "skills",
+      "before": [
+        "QA/QC"
+      ],
+      "after": [
+        "qa_qc"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2134271",
+      "source": "topdev",
+      "field": "skills",
+      "before": [
+        "Linux",
+        "IT Helpdesk",
+        "Network",
+        "Windows"
+      ],
+      "after": [
+        "communication",
+        "linux",
+        "logical_thinking"
+      ],
+      "changed": true
+    }
+  ]
+}

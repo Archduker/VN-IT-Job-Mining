@@ -322,7 +322,7 @@ def run(
         rep.write()
 
     total_rep = merge_reports(STEP, list(reports.values()), dry_run)
-    total_rep.set_io(IN_FILE, len(df_in), OUT_FILE, len(all_rows))
+    total_rep.set_io(IN_FILE, int(df_in['source_platform'].isin(list(sources)).sum()), OUT_FILE, len(all_rows))
     total_rep.data["extra"]["language_distribution"] = {k: sum(1 for r in all_rows if r.get("language") == k) for k in ("vi", "en", "other")}
     tqs = [r.data["extra"]["text_quality"] for r in reports.values()]
     n_all = len(all_rows)

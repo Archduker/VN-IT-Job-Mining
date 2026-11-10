@@ -1,0 +1,121 @@
+{
+  "step": "09_tokens",
+  "source": "vieclam24h",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:51:43+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": null,
+    "rows": 171
+  },
+  "output": {
+    "path": "data/processing/09_tokens/all.parquet",
+    "rows": 171
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "mean_tokens_per_job": 246.57,
+    "df_threshold": 0.6,
+    "n_general_stopwords": 91,
+    "model": "không dùng model"
+  },
+  "samples": [
+    {
+      "job_id": "vieclam24h_200967644",
+      "source": "vieclam24h",
+      "field": "tokens_nostop",
+      "before": "Công việc:\nTham gia thiết kế, lập trình sản phẩm phần mềm quản lý doanh nghiệp ( ERP ) Hệ thống phần mềm nên nền tảng Odoo , ngôn ngữ lập trình Python, Java, PHP, HTML, CSS, mobile app, Embedded, IoT.…",
+      "after": [
+        "công việc",
+        "tham gia",
+        "thiết kế",
+        "lập trình",
+        "sản phẩm",
+        "phần mềm",
+        "quản lý",
+        "doanh nghiệp",
+        "erp",
+        "hệ thống",
+        "phần mềm",
+        "nên",
+        "nền tảng",
+        "odoo",
+        "ngôn ngữ",
+        "lập trình",
+        "sk_python",
+        "sk_java",
+        "php",
+        "html"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200964916",
+      "source": "vieclam24h",
+      "field": "tokens_nostop",
+      "before": "Digital Solutions & Automation Development - 45%\n- Analyze business needs and propose digitalization solutions for different departments.\n- Develop applications and automated workflows using Power App…",
+      "after": [
+        "digital",
+        "solutions",
+        "automation",
+        "development",
+        "45",
+        "analyze",
+        "business needs",
+        "and propose",
+        "digitalization",
+        "solutions",
+        "different",
+        "departments",
+        "develop",
+        "applications and",
+        "automated",
+        "workflows",
+        "using",
+        "power apps",
+        "power automate",
+        "sharepoint"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200960512",
+      "source": "vieclam24h",
+      "field": "tokens_nostop",
+      "before": "- Theo dõi, kiểm tra và quản lý dữ liệu đào tạo thực hành lái xe trên hệ thống DAT.\n- Kiểm tra thời gian, quãng đường và các thông tin liên quan đến quá trình học thực hành của học viên.\n- Theo dõi dữ…",
+      "after": [
+        "theo dõi",
+        "kiểm tra",
+        "quản lý",
+        "dữ liệu",
+        "đào tạo",
+        "thực hành",
+        "lái xe",
+        "trên",
+        "hệ thống",
+        "dat",
+        "kiểm tra",
+        "thời gian",
+        "quãng",
+        "đường",
+        "thông tin",
+        "liên quan",
+        "đến",
+        "quá trình",
+        "học",
+        "thực hành"
+      ],
+      "changed": true
+    }
+  ]
+}

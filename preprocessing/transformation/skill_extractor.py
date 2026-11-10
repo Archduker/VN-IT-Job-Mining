@@ -124,6 +124,16 @@ def extract_skills(
     return result
 
 
+_BENEFIT_HEADING = re.compile(
+    r"^\W*(quyền lợi|quyen loi|phúc lợi|phuc loi|chế độ|che do|benefits?|perks|why you|what we offer)", re.I | re.M)
+
+
+def _benefit_zone(jd_text: str) -> str:
+    """Chỉ quét phần JD từ tiêu đề phúc lợi trở đi; mô tả công việc có "máy tính", "training"... không phải phúc lợi."""
+    m = _BENEFIT_HEADING.search(jd_text or "")
+    return jd_text[m.start():] if m else ""
+
+
 def extract_benefits(
     benefits_list: Any,
     jd_text: str,
@@ -137,13 +147,12 @@ def extract_benefits(
             b_items = [str(x) for x in benefits_list if str(x).strip()]
         elif hasattr(benefits_list, "tolist"):
             b_items = [str(x) for x in benefits_list.tolist() if str(x).strip()]
-    combined_text = " ".join([*b_items, jd_text]).lower()
+    combined_text = " ".join([*b_items, _benefit_zone(jd_text)]).lower()
 
     matched: List[str] = []
     for std_name, patterns in benefits_dict.items():
         for pat in patterns:
-            pat_l = pat.lower()
-            if pat_l in combined_text:
+            if re.search(rf"(?<!\w){re.escape(pat.lower())}(?!\w)", combined_text):
                 matched.append(std_name)
                 break
 

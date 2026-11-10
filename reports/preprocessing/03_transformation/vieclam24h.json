@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-10T09:09:28+00:00",
-  "code_version": "800b5e7",
+  "generated_at": "2026-11-10T11:49:56+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 182
+    "rows": 171
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 182
+    "rows": 171
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 195,
+      "rows_affected": 184,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 168,
+      "rows_affected": 157,
       "examples": [
         {
           "job_id": "200011696",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 182,
+      "rows_affected": 171,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 180,
+      "rows_affected": 171,
       "examples": [
         {
           "job_id": "200011696",
@@ -90,7 +90,7 @@
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 182,
+      "rows_affected": 171,
       "examples": []
     },
     {
@@ -104,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 182,
+      "rows_affected": 171,
       "examples": []
     },
     {
@@ -132,14 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 63,
+      "rows_affected": 58,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
+      "action": "modify",
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 182,
+      "rows_affected": 171,
       "examples": [
         {
           "job_id": "200011696",
@@ -168,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 182,
+      "rows_affected": 171,
       "examples": [
         {
           "job_id": "200011696",
@@ -197,13 +204,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 91.8,
-      "fill_pct_out": 91.8
+      "fill_pct_in": 91.2,
+      "fill_pct_out": 91.2
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 92.3,
-      "fill_pct_out": 92.3
+      "fill_pct_in": 91.8,
+      "fill_pct_out": 91.8
     },
     {
       "field": "posted_date",
@@ -217,13 +224,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 98.9,
-      "fill_pct_out": 98.9
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 98.9,
-      "fill_pct_out": 98.9
+      "fill_pct_in": 98.8,
+      "fill_pct_out": 98.8
     },
     {
       "field": "headcount",
@@ -247,8 +254,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 96.7,
-      "fill_pct_out": 96.7
+      "fill_pct_in": 97.1,
+      "fill_pct_out": 97.1
     },
     {
       "field": "locations",
@@ -271,7 +278,7 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 169,
+      "header": 158,
       "title": 1,
       "jd": 0,
       "none": 12
@@ -279,8 +286,17 @@
     "salary_under_1m_count": 2,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 172,
-      "en": 10
+      "vi": 161,
+      "en": 10,
+      "other": 0
+    },
+    "language_fasttext": {
+      "model": "lid.176.bin",
+      "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
+      "conf_min": 0.6,
+      "disagree_with_old_rule": 0,
+      "disagree_examples": [],
+      "conf_lt_0_9": 7
     },
     "text_quality": {
       "before": {
@@ -298,6 +314,33 @@
       },
       "abbreviations_approved": 0
     },
-    "experience_parsed_rate": 98.9
-  }
+    "translation": null,
+    "experience_parsed_rate": 100.0
+  },
+  "samples": [
+    {
+      "job_id": "vieclam24h_200946997",
+      "source": "vieclam24h",
+      "field": "salary_min_vnd",
+      "before": "12 - 15 triệu",
+      "after": 12000000.0,
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200978346",
+      "source": "vieclam24h",
+      "field": "headcount",
+      "before": "3",
+      "after": 3.0,
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200963455",
+      "source": "vieclam24h",
+      "field": "exp_min_years",
+      "before": "3 năm",
+      "after": 3.0,
+      "changed": true
+    }
+  ]
 }

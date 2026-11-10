@@ -1,0 +1,121 @@
+{
+  "step": "09_tokens",
+  "source": "careerviet",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:51:43+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": null,
+    "rows": 421
+  },
+  "output": {
+    "path": "data/processing/09_tokens/all.parquet",
+    "rows": 421
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "mean_tokens_per_job": 361.61,
+    "df_threshold": 0.6,
+    "n_general_stopwords": 91,
+    "model": "không dùng model"
+  },
+  "samples": [
+    {
+      "job_id": "careerviet_35C87974",
+      "source": "careerviet",
+      "field": "tokens_nostop",
+      "before": "Mô tả Công việc 1.Pre-Sales & Requirements Discovery - Support pre-sales discussions by understanding partner and business needs, clarifying business models and requirements, and developing product pr…",
+      "after": [
+        "mô tả",
+        "công việc",
+        "1",
+        "pre-sales",
+        "discovery",
+        "support",
+        "pre-sales",
+        "discussions",
+        "understanding",
+        "partner and",
+        "business needs",
+        "clarifying",
+        "business models",
+        "and requirements",
+        "and developing",
+        "product",
+        "proposals",
+        "user",
+        "journeys and",
+        "business"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C88768",
+      "source": "careerviet",
+      "field": "tokens_nostop",
+      "before": "Mô tả Công việc MB là ngân hàng sở hữu hệ sinh thái Số hàng đầu tại Việt Nam, với định hướng trở thành “Doanh nghiệp số, Tập đoàn tài chính dẫn đầu”, công nghệ tại MB hiện được thúc đẩy dựa trên 5 trụ…",
+      "after": [
+        "mô tả",
+        "công việc",
+        "mb",
+        "là",
+        "ngân hàng",
+        "sở hữu hệ sinh thái số",
+        "hàng đầu",
+        "việt nam",
+        "định hướng",
+        "trở thành",
+        "doanh nghiệp",
+        "số",
+        "tập đoàn",
+        "tài chính",
+        "dẫn đầu",
+        "công nghệ",
+        "mb",
+        "thúc đẩy",
+        "dựa",
+        "trên"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C8A3B2",
+      "source": "careerviet",
+      "field": "tokens_nostop",
+      "before": "Mô tả Công việc Thiết kế, phát triển và duy trì các dịch vụ phụ trợ bằng Laravel và ecosystem của Laravel . Tối ưu hóa truy vấn cơ sở dữ liệu để đảm bảo hiệu suất và khả năng mở rộng của hệ thống. Tri…",
+      "after": [
+        "mô tả",
+        "công việc",
+        "thiết kế",
+        "phát triển",
+        "duy trì",
+        "dịch vụ",
+        "phụ trợ",
+        "bằng",
+        "sk_laravel",
+        "ecosystem",
+        "sk_laravel",
+        "tối",
+        "ưu hóa",
+        "truy vấn",
+        "cơ sở dữ liệu",
+        "đảm bảo",
+        "hiệu suất",
+        "khả năng",
+        "mở rộng",
+        "hệ thống"
+      ],
+      "changed": true
+    }
+  ]
+}

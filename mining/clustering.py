@@ -30,7 +30,7 @@ from sklearn.metrics import (
 )
 from sklearn.preprocessing import normalize
 
-from mining.config import RANDOM_STATE, ClusteringParams
+from mining.config import JOB_FAMILY_OTHER, RANDOM_STATE, ClusteringParams
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +146,7 @@ def profile_clusters(
     """Mô tả cụm: kỹ năng đặc trưng (theo lift so với toàn bộ), nhóm nghề chiếm đa số, lương trung vị."""
     S = skills.to_numpy(dtype=float)
     p_all = S.mean(axis=0)
-    fam = pd.Series(job_family).reset_index(drop=True).fillna("Khác").astype(str)
+    fam = pd.Series(job_family).reset_index(drop=True).fillna(JOB_FAMILY_OTHER).astype(str)
     sal = pd.Series(salary_mil).reset_index(drop=True) if salary_mil is not None else None
     profiles = []
     used_names: dict[str, int] = {}
@@ -160,7 +160,7 @@ def profile_clusters(
         top = [{"skill": skills.columns[j], "share": round(float(p_c[j]), 3), "lift": round(float(lift[j]), 2)}
                for j in order[:top_n]]
         fam_counts = fam[mask].value_counts()
-        dominant = str(fam_counts.index[0]) if len(fam_counts) else "Khác"
+        dominant = str(fam_counts.index[0]) if len(fam_counts) else JOB_FAMILY_OTHER
         purity = float(fam_counts.iloc[0] / mask.sum()) if len(fam_counts) else 0.0
         head = "/".join(t["skill"] for t in top[:2]) or "không kỹ năng"
         name = f"{dominant} · {head}"
@@ -208,7 +208,7 @@ def cluster_jobs(
     profiles = profile_clusters(labels, skills, meta["job_family"], meta.get("salary_avg_mil"),
                                 p.top_skills_per_cluster)
     names = {pr["cluster_id"]: pr["cluster_name"] for pr in profiles}
-    fam = meta["job_family"].fillna("Khác").astype(str).to_numpy()
+    fam = meta["job_family"].fillna(JOB_FAMILY_OTHER).astype(str).to_numpy()
 
     out = pd.DataFrame({
         "job_id": meta["job_id"].astype(str).to_numpy(),

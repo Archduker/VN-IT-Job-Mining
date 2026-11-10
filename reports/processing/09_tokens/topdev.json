@@ -1,0 +1,121 @@
+{
+  "step": "09_tokens",
+  "source": "topdev",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:51:43+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": null,
+    "rows": 207
+  },
+  "output": {
+    "path": "data/processing/09_tokens/all.parquet",
+    "rows": 207
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "mean_tokens_per_job": 358.83,
+    "df_threshold": 0.6,
+    "n_general_stopwords": 91,
+    "model": "không dùng model"
+  },
+  "samples": [
+    {
+      "job_id": "topdev_2134271",
+      "source": "topdev",
+      "field": "tokens_nostop",
+      "before": "Tiếp nhận và xử lý yêu cầu hỗ trợ từ người dùng qua điện thoại, email hoặc hệ thống ticketing Tạo, theo dõi và cập nhật ticket đảm bảo giải quyết đúng SLA; escalate lên Level 2/3 khi cần Hỗ trợ cài đặ…",
+      "after": [
+        "tiếp nhận",
+        "xử lý",
+        "yêu cầu",
+        "hỗ trợ",
+        "từ",
+        "dùng",
+        "qua",
+        "điện thoại",
+        "email",
+        "hoặc",
+        "hệ thống",
+        "ticketing tạo",
+        "theo dõi",
+        "cập nhật",
+        "ticket",
+        "đảm bảo",
+        "giải quyết",
+        "đúng",
+        "sla",
+        "escalate"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2138178",
+      "source": "topdev",
+      "field": "tokens_nostop",
+      "before": "Xây dựng các chương trình sản phẩm, xác định chiến lược sản phẩm Xây dựng, phát triển sản phẩm mới/hiện hữu theo chỉ đạo/ chiến lược của BLĐ Khối Lập kế hoạch và triển khai giới thiệu sản phẩm Phối hợ…",
+      "after": [
+        "xây dựng",
+        "chương trình",
+        "sản phẩm",
+        "xác định",
+        "chiến lược",
+        "sản phẩm",
+        "xây dựng",
+        "phát triển",
+        "sản phẩm",
+        "mới",
+        "hiện hữu",
+        "chỉ đạo",
+        "chiến lược",
+        "blđ khối",
+        "lập",
+        "kế hoạch",
+        "triển khai",
+        "giới thiệu",
+        "sản phẩm",
+        "phối hợp"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2139309",
+      "source": "topdev",
+      "field": "tokens_nostop",
+      "before": "Requirement Analysis & Solution Proposal: Receive and analyze high-level business and functional requirements from stakeholders (Product Managers, clients, end users), and propose appropriate technica…",
+      "after": [
+        "requirement",
+        "analysis",
+        "solution proposal",
+        "receive and",
+        "analyze",
+        "high-level business",
+        "and functional",
+        "stakeholders",
+        "product managers",
+        "clients",
+        "end",
+        "users",
+        "and propose",
+        "appropriate technical",
+        "and functional",
+        "solutions",
+        "aligned with",
+        "business goals",
+        "documentation",
+        "implementation support"
+      ],
+      "changed": true
+    }
+  ]
+}

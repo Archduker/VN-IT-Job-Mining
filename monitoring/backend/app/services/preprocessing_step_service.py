@@ -21,27 +21,30 @@ from app.core.r2_client import r2_client
 from preprocessing.common import SOURCES, r2_export
 
 STEPS = ("01_clean", "01b_deduplication", "02_integration", "03_transformation", "04_normalization", "05_encoding")
+PROCESSING_STEPS = ("07_sections", "08_skills", "09_tokens")  # báo cáo ở reports/processing/<bước>/ (PH9 D4)
 PER_SOURCE_STEPS = ("01_clean", "01b_deduplication")  # jsonl theo nguồn, các bước sau gộp all.parquet
-STEP_NAMES = {"01_clean": "Clean", "01b_deduplication": "Deduplication", "02_integration": "Integration", "03_transformation": "Transformation",
+STEP_NAMES = {"07_sections": "Sections", "08_skills": "Skills", "09_tokens": "Tokens", "01_clean": "Clean", "01b_deduplication": "Deduplication", "02_integration": "Integration", "03_transformation": "Transformation",
               "04_normalization": "Normalization", "05_encoding": "Encoding"}
 
 
-def _root():
-    return settings.ROOT_DIR / "reports" / "preprocessing"
+def _root(step: str = ""):
+    return settings.ROOT_DIR / "reports" / ("processing" if step in PROCESSING_STEPS else "preprocessing")
 
 
 def _command(step: str, source: str = "all") -> str:
+    if step in PROCESSING_STEPS:
+        return ""  # driver bước 07-09 chưa chốt (PH9 D1), không bịa lệnh
     return f"python scripts/run_preprocessing.py --step {step.split("_", 1)[1]} --source {source} --dry-run"
 
 
 def _require_step(step: str) -> str:
-    if step not in STEPS:  # chặn giá trị lạ trước khi ghép vào đường dẫn
+    if step not in STEPS + PROCESSING_STEPS:  # chặn giá trị lạ trước khi ghép vào đường dẫn
         raise HTTPException(status_code=404, detail=f"Bước '{step}' không tồn tại")
     return step
 
 
 def _load(step: str, source: str) -> Optional[Dict[str, Any]]:
-    return load_json_report(_root() / step / f"{source}.json")
+    return load_json_report(_root(step) / step / f"{source}.json")
 
 
 def list_steps() -> List[Dict[str, Any]]:
@@ -59,11 +62,25 @@ def list_steps() -> List[Dict[str, Any]]:
     return out
 
 
+def list_processing_steps() -> List[Dict[str, Any]]:
+    """Bước 07-09: chưa có reports/processing/ thì Empty State (reason NO_DATA), không điền 0."""
+    out: List[Dict[str, Any]] = []
+    for step in PROCESSING_STEPS:
+        r = _load(step, "_all")
+        base = {"step": step, "name": STEP_NAMES[step]}
+        if r is None:
+            out.append({**base, "available": False, "reason": "NO_DATA", "command": ""})
+        else:
+            out.append({**base, "available": True, "mode": r.get("mode"), "generated_at": r.get("generated_at"),
+                        "input_rows": r["input"]["rows"], "output_rows": r["output"]["rows"], "stale": False})
+    return out
+
+
 def get_step(step: str) -> Dict[str, Any]:
     step = _require_step(step)
     total = _load(step, "_all")
     if total is None:
-        return {"step": step, "available": False, "command": _command(step)}
+        return {"step": step, "available": False, "reason": "NO_DATA", "command": _command(step)}
     return {"step": step, "available": True, "report": total}
 
 
@@ -71,8 +88,61 @@ def get_step_source(step: str, source: str) -> Dict[str, Any]:
     step = _require_step(step)
     report = _load(step, source)
     if report is None:
-        return {"step": step, "source": source, "available": False, "command": _command(step, source)}
+        return {"step": step, "source": source, "available": False, "reason": "NO_DATA", "command": _command(step, source)}
     return {"step": step, "source": source, "available": True, "report": report}
+
+
+# ---- Bất thường bước 04 và tra tin theo job_id ------------------------------------------------
+
+ANOMALY_MAX = 200
+
+
+def get_anomalies(kind: Optional[str], source: Optional[str], offset: int, limit: int) -> Dict[str, Any]:
+    """Danh sách trong reports/preprocessing/04_normalization/anomalies.json, lọc theo loại/nguồn; chưa có file thì NO_DATA."""
+    path = _root("04_normalization") / "04_normalization" / "anomalies.json"
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        data = None
+    items = data.get("anomalies", data.get("items")) if isinstance(data, dict) else data
+    if not isinstance(items, list):
+        return {"available": False, "reason": "NO_DATA", "by_kind": {}, "total": 0, "items": []}
+    items = [i for i in items if isinstance(i, dict)]
+    by_kind: Dict[str, int] = {}
+    for i in items:
+        if source is None or i.get("source") == source:
+            by_kind[str(i.get("kind"))] = by_kind.get(str(i.get("kind")), 0) + 1
+    sel = [i for i in items if (kind is None or i.get("kind") == kind) and (source is None or i.get("source") == source)]
+    limit = max(1, min(limit, ANOMALY_MAX))
+    return {"available": True, "reason": None, "by_kind": dict(sorted(by_kind.items(), key=lambda kv: -kv[1])),
+            "total": len(sel), "offset": offset, "limit": limit, "items": sel[max(0, offset): max(0, offset) + limit]}
+
+
+# Sau 04 mới có cột chuẩn hóa; bước trước vẫn giữ JD và giá trị gốc. Bước cuối có tin thì dùng bước đó.
+_LOOKUP_ORDER = ("04_normalization", "03_transformation", "02_integration")
+
+
+def find_job(source: str, job_id: str, job_id_global: Optional[str] = None) -> Dict[str, Any]:
+    """Tìm tin theo job_id (mã nguồn) hoặc job_id_global trong parquet trên máy, chỉ đọc, không gọi R2."""
+    import pandas as pd
+
+    for step in _LOOKUP_ORDER:
+        p = r2_export.DATA / step / "all.parquet"
+        if not p.exists():
+            continue
+        cached = _local_frames.get(p)
+        if not cached or cached[0] != p.stat().st_mtime:
+            cached = _local_frames[p] = (p.stat().st_mtime, pd.read_parquet(p))
+        df = cached[1]
+        hit = pd.Series(False, index=df.index)
+        if job_id_global and "job_id_global" in df.columns:
+            hit = df["job_id_global"].astype(str) == job_id_global
+        if not hit.any() and "source_job_id" in df.columns:
+            hit = (df["source_job_id"].astype(str) == str(job_id)) & (df["source_platform"] == source)
+        if hit.any():
+            row = _safe(df[hit].iloc[0].to_dict())
+            return {"available": True, "step": step, "source": source, "job_id": str(job_id), "row": row}
+    return {"available": False, "reason": "NO_DATA", "source": source, "job_id": str(job_id), "step": None, "row": None}
 
 
 # ---- Lưu trữ (máy ↔ R2) và bảng dòng silver -------------------------------------------------

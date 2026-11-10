@@ -2,31 +2,36 @@
   "step": "01b_deduplication",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:23+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:58+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/01_clean/glints.jsonl",
-    "rows": 271
+    "rows": 264
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/glints.jsonl",
-    "rows": 270
+    "rows": 256
   },
   "dropped": [
     {
+      "rule": "D0",
+      "reason": "Tầng 1: trùng (nguồn, job_id)",
+      "rows": 0
+    },
+    {
       "rule": "D2",
-      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
       "rows": 0
     },
     {
       "rule": "D4",
-      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
+      "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "rows": 0
     },
     {
       "rule": "D5",
-      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
-      "rows": 1
+      "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+      "rows": 8
     }
   ],
   "rules": [
@@ -38,31 +43,52 @@
       "examples": []
     },
     {
+      "id": "D0",
+      "name": "Tầng 1: trùng (nguồn, job_id)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
       "id": "D2",
-      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
       "id": "D4",
-      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
       "id": "D5",
-      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 1,
+      "rows_affected": 8,
       "examples": [
         {
-          "job_id": "cca798d1-4d63-419c-81cd-a37a07641e08",
+          "job_id": "1ddb2d5c-abcf-45b2-9477-67cebaeded0f",
           "field": "dedup",
-          "before": "https://glints.com/vn/opportunities/jobs/chuyen-vien-ung-dung-ai-ai-enablement-associate/cca798d1-4d63-419c-81cd-a37a07641e08",
-          "after": "https://itviec.com/viec-lam-it/ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
-          "url": "https://glints.com/vn/opportunities/jobs/chuyen-vien-ung-dung-ai-ai-enablement-associate/cca798d1-4d63-419c-81cd-a37a07641e08"
+          "before": "https://glints.com/vn/opportunities/jobs/dna769-ky-thuat-vien-it-phan-mem-khong-yeu-cau-kinh-nghiem/1ddb2d5c-abcf-45b2-9477-67cebaeded0f",
+          "after": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01",
+          "url": "https://glints.com/vn/opportunities/jobs/dna769-ky-thuat-vien-it-phan-mem-khong-yeu-cau-kinh-nghiem/1ddb2d5c-abcf-45b2-9477-67cebaeded0f"
+        },
+        {
+          "job_id": "21e095c8-2d39-42d3-b491-ebb48ec2430e",
+          "field": "dedup",
+          "before": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-aws/21e095c8-2d39-42d3-b491-ebb48ec2430e",
+          "after": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-azure/3c8011a7-4614-47c8-9dda-2b9a4c8fc9a9",
+          "url": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-aws/21e095c8-2d39-42d3-b491-ebb48ec2430e"
+        },
+        {
+          "job_id": "23c1df11-b548-4e00-8771-ac586d650ddf",
+          "field": "dedup",
+          "before": "https://glints.com/vn/opportunities/jobs/nhan-vien-qa-1-nam-kinh-nghiem-thu-thua/23c1df11-b548-4e00-8771-ac586d650ddf",
+          "after": "https://glints.com/vn/opportunities/jobs/nhan-vien-qa-may-mac-1-nam-kinh-nghiem-long-an/55b76248-a402-4626-a0ee-a4291b09a25e",
+          "url": "https://glints.com/vn/opportunities/jobs/nhan-vien-qa-1-nam-kinh-nghiem-thu-thua/23c1df11-b548-4e00-8771-ac586d650ddf"
         }
       ]
     },
@@ -70,14 +96,57 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 1,
+      "rows_affected": 5,
       "examples": [
         {
-          "job_id": "a6d5e76c-8a2d-4bfa-9197-9badec1125be",
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
           "field": "master_id",
-          "before": "https://glints.com/vn/opportunities/jobs/hcm834-to-pho-it-helpdesk-thu-duc-anh-nhat/a6d5e76c-8a2d-4bfa-9197-9badec1125be",
-          "after": "d7dca46b-0116-5e6d-98fd-9840d4b6dff0",
-          "url": "https://glints.com/vn/opportunities/jobs/hcm834-to-pho-it-helpdesk-thu-duc-anh-nhat/a6d5e76c-8a2d-4bfa-9197-9badec1125be"
+          "before": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01",
+          "after": "0879983d-7ff6-5dd4-81a9-d63509dfe448",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "3c8011a7-4614-47c8-9dda-2b9a4c8fc9a9",
+          "field": "master_id",
+          "before": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-azure/3c8011a7-4614-47c8-9dda-2b9a4c8fc9a9",
+          "after": "b629b7a5-7d36-544f-b25b-ee6ba3ca105d",
+          "url": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-azure/3c8011a7-4614-47c8-9dda-2b9a4c8fc9a9"
+        },
+        {
+          "job_id": "498ff70a-cacb-4970-a14a-3e2793e3a285",
+          "field": "master_id",
+          "before": "https://glints.com/vn/opportunities/jobs/chuyen-vien-giam-sat-soc-tier-1/498ff70a-cacb-4970-a14a-3e2793e3a285",
+          "after": "febb6f3c-f0ca-50cf-b42b-062028d83aeb",
+          "url": "https://glints.com/vn/opportunities/jobs/chuyen-vien-giam-sat-soc-tier-1/498ff70a-cacb-4970-a14a-3e2793e3a285"
+        }
+      ]
+    },
+    {
+      "id": "D7",
+      "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
+      "action": "flag",
+      "rows_affected": 9,
+      "examples": [
+        {
+          "job_id": "1db0e1f6-3468-4269-bcbf-bca4d55db8f8",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7029,
+          "url": "https://glints.com/vn/opportunities/jobs/it-specialist-good-english/1db0e1f6-3468-4269-bcbf-bca4d55db8f8"
+        },
+        {
+          "job_id": "27b3e9be-5e45-41d3-b5d8-e220a9f46c30",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.9085,
+          "url": "https://glints.com/vn/opportunities/jobs/giam-sat-du-an-erp-va-chuyen-doi-so-luong-20-30-trieu-thang/27b3e9be-5e45-41d3-b5d8-e220a9f46c30"
+        },
+        {
+          "job_id": "3dddfc91-fe4b-4fc6-bfe9-80a1b6338ea2",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8108,
+          "url": "https://glints.com/vn/opportunities/jobs/ky-su-tu-van-giai-phap-cntt-vmware-network-sercurity/3dddfc91-fe4b-4fc6-bfe9-80a1b6338ea2"
         }
       ]
     }
@@ -98,12 +167,39 @@
       "hops": 0,
       "hop_same_crawler_hash": 0,
       "hop_same_canonical_hash": 0,
+      "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 185,
+    "blocking_blocks": 182,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 1
+      "D5": 8
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "d0776e19-95a7-4539-b036-1ac8ec92af2b",
+      "source": "glints",
+      "field": "duplicate_of",
+      "before": "d0776e19-95a7-4539-b036-1ac8ec92af2b",
+      "after": "DROPPED D5 -> glints:00b4d332-8e6e-4714-9853-e816085f7d01",
+      "changed": true
+    },
+    {
+      "job_id": "f9db664c-ea55-4fa3-95eb-9f2fcfc2ee9c",
+      "source": "glints",
+      "field": "duplicate_of",
+      "before": "f9db664c-ea55-4fa3-95eb-9f2fcfc2ee9c",
+      "after": "DROPPED D5 -> glints:9a290361-d15e-4797-8091-536d53f3a33f",
+      "changed": true
+    },
+    {
+      "job_id": "65c229e6-033d-4caa-983f-f33e3e11e2ca",
+      "source": "glints",
+      "field": "duplicate_of",
+      "before": "65c229e6-033d-4caa-983f-f33e3e11e2ca",
+      "after": "DROPPED D5 -> glints:55b76248-a402-4626-a0ee-a4291b09a25e",
+      "changed": true
+    }
+  ]
 }

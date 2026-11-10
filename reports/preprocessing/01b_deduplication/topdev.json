@@ -2,31 +2,36 @@
   "step": "01b_deduplication",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:23+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:58+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/01_clean/topdev.jsonl",
-    "rows": 227
+    "rows": 218
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/topdev.jsonl",
-    "rows": 225
+    "rows": 204
   },
   "dropped": [
     {
+      "rule": "D0",
+      "reason": "Tầng 1: trùng (nguồn, job_id)",
+      "rows": 0
+    },
+    {
       "rule": "D2",
-      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
-      "rows": 1
+      "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+      "rows": 0
     },
     {
       "rule": "D4",
-      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
-      "rows": 1
+      "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
+      "rows": 0
     },
     {
       "rule": "D5",
-      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
-      "rows": 0
+      "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+      "rows": 14
     }
   ],
   "rules": [
@@ -38,47 +43,60 @@
       "examples": []
     },
     {
-      "id": "D2",
-      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
-      "action": "drop",
-      "rows_affected": 1,
-      "examples": [
-        {
-          "job_id": "2135002",
-          "field": "dedup",
-          "before": "https://topdev.vn/viec-lam/transportation-operation-executive-trucking-operation-cong-ty-tnhh-hanjin-global-logistics-viet-nam-2135002",
-          "after": "https://topdev.vn/viec-lam/transportation-operation-executive-trucking-operation-cong-ty-tnhh-hanjin-global-logistics-viet-nam-2142426",
-          "url": "https://topdev.vn/viec-lam/transportation-operation-executive-trucking-operation-cong-ty-tnhh-hanjin-global-logistics-viet-nam-2135002"
-        }
-      ]
-    },
-    {
-      "id": "D4",
-      "name": "Trùng liên sàn: hash nội dung khớp 100%",
-      "action": "drop",
-      "rows_affected": 1,
-      "examples": [
-        {
-          "job_id": "2133354",
-          "field": "dedup",
-          "before": "https://topdev.vn/viec-lam/software-development-manager-ila-vietnam-2133354",
-          "after": "https://topdev.vn/viec-lam/software-development-manager-ila-vietnam-2141962",
-          "url": "https://topdev.vn/viec-lam/software-development-manager-ila-vietnam-2133354"
-        }
-      ]
-    },
-    {
-      "id": "D5",
-      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "id": "D0",
+      "name": "Tầng 1: trùng (nguồn, job_id)",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
+      "id": "D2",
+      "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D4",
+      "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D5",
+      "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+      "action": "drop",
+      "rows_affected": 14,
+      "examples": [
+        {
+          "job_id": "2134265",
+          "field": "dedup",
+          "before": "https://topdev.vn/viec-lam/chuyen-gia-van-hanh-ung-dung-ha-noi-ngan-hang-tmcp-thinh-vuong-va-phat-trien-pgbank-2134265",
+          "after": "https://itviec.com/viec-lam-it/ky-su-van-hanh-devops-engineer-ngan-hang-tmcp-thinh-vuong-va-phat-trien-pgbank-0220",
+          "url": "https://topdev.vn/viec-lam/chuyen-gia-van-hanh-ung-dung-ha-noi-ngan-hang-tmcp-thinh-vuong-va-phat-trien-pgbank-2134265"
+        },
+        {
+          "job_id": "2134501",
+          "field": "dedup",
+          "before": "https://topdev.vn/viec-lam/agentic-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-mbbank-2134501",
+          "after": "https://topdev.vn/viec-lam/ai-software-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-mbbank-2134502",
+          "url": "https://topdev.vn/viec-lam/agentic-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-mbbank-2134501"
+        },
+        {
+          "job_id": "2135502",
+          "field": "dedup",
+          "before": "https://topdev.vn/viec-lam/mb-trainee-information-security-grc-fresher-intern-khoi-cong-nghe-thong-tin-2026td457289-mbbank-2135502",
+          "after": "https://itviec.com/viec-lam-it/mb-trainee-information-security-grc-fresher-intern-mb-bank-4338",
+          "url": "https://topdev.vn/viec-lam/mb-trainee-information-security-grc-fresher-intern-khoi-cong-nghe-thong-tin-2026td457289-mbbank-2135502"
+        }
+      ]
+    },
+    {
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 4,
+      "rows_affected": 7,
       "examples": [
         {
           "job_id": "2134288",
@@ -88,18 +106,47 @@
           "url": "https://topdev.vn/viec-lam/ha-noi-fullstack-developer-c-net-vuejs-misa-software-2134288"
         },
         {
-          "job_id": "2138328",
+          "job_id": "2134502",
           "field": "master_id",
-          "before": "https://topdev.vn/viec-lam/business-analyst-cong-ty-co-phan-global-technology-solutions-viet-nam-2138328",
-          "after": "b805e6bb-f183-5e68-b756-3dcdc5ed2503",
-          "url": "https://topdev.vn/viec-lam/business-analyst-cong-ty-co-phan-global-technology-solutions-viet-nam-2138328"
+          "before": "https://topdev.vn/viec-lam/ai-software-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-mbbank-2134502",
+          "after": "bea97834-b00a-5dc2-86b4-6267905aeced",
+          "url": "https://topdev.vn/viec-lam/ai-software-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-mbbank-2134502"
         },
         {
-          "job_id": "2138456",
+          "job_id": "2136022",
           "field": "master_id",
-          "before": "https://topdev.vn/viec-lam/chuyen-gia-phan-tich-du-lieu-khach-hang-va-danh-gia-hieu-qua-cong-ty-co-phan-chung-khoan-ssi-2138456",
-          "after": "5809136c-2288-59b5-aad5-64e8b7ff01cb",
-          "url": "https://topdev.vn/viec-lam/chuyen-gia-phan-tich-du-lieu-khach-hang-va-danh-gia-hieu-qua-cong-ty-co-phan-chung-khoan-ssi-2138456"
+          "before": "https://topdev.vn/viec-lam/chuyen-vien-phat-trien-he-thong-aeon-finance-2136022",
+          "after": "2cf42044-f4fa-5bf9-9748-e361ab3f920b",
+          "url": "https://topdev.vn/viec-lam/chuyen-vien-phat-trien-he-thong-aeon-finance-2136022"
+        }
+      ]
+    },
+    {
+      "id": "D7",
+      "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
+      "action": "flag",
+      "rows_affected": 6,
+      "examples": [
+        {
+          "job_id": "2134501",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7861,
+          "url": "https://topdev.vn/viec-lam/agentic-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-mbbank-2134501"
+        },
+        {
+          "job_id": "2134502",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7901,
+          "url": "https://topdev.vn/viec-lam/ai-software-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-mbbank-2134502"
+        },
+        {
+          "job_id": "2136585",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8211,
+          "url": "https://topdev.vn/viec-lam/ky-su-du-lieu-data-engineer-khoi-du-lieu-2026td450985-mbbank-2136585"
         }
       ]
     }
@@ -120,13 +167,39 @@
       "hops": 1108,
       "hop_same_crawler_hash": 0,
       "hop_same_canonical_hash": 0,
+      "hop_same_version": 3,
       "hop_version_not_bumped": 3
     },
-    "blocking_blocks": 156,
-    "d2_groups": 1,
+    "blocking_blocks": 152,
+    "d2_groups": 0,
     "rule_totals": {
-      "D2": 1,
-      "D4": 1
+      "D5": 14
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "2138373",
+      "source": "topdev",
+      "field": "duplicate_of",
+      "before": "2138373",
+      "after": "DROPPED D5 -> topdev:2138376",
+      "changed": true
+    },
+    {
+      "job_id": "2136587",
+      "source": "topdev",
+      "field": "duplicate_of",
+      "before": "2136587",
+      "after": "DROPPED D5 -> itviec:data-quality-management-specialist-data-division-mb-bank-0217",
+      "changed": true
+    },
+    {
+      "job_id": "2135502",
+      "source": "topdev",
+      "field": "duplicate_of",
+      "before": "2135502",
+      "after": "DROPPED D5 -> itviec:mb-trainee-information-security-grc-fresher-intern-mb-bank-4338",
+      "changed": true
+    }
+  ]
 }

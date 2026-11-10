@@ -1,0 +1,121 @@
+{
+  "step": "09_tokens",
+  "source": "topcv",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:51:43+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": null,
+    "rows": 1533
+  },
+  "output": {
+    "path": "data/processing/09_tokens/all.parquet",
+    "rows": 1533
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "mean_tokens_per_job": 315.79,
+    "df_threshold": 0.6,
+    "n_general_stopwords": 91,
+    "model": "không dùng model"
+  },
+  "samples": [
+    {
+      "job_id": "topcv_2324811",
+      "source": "topcv",
+      "field": "tokens_nostop",
+      "before": "Thiết kế và phát triển script tự động (Python/Bash) để kiểm tra trạng thái thiết bị, đối chiếu dữ liệu giao dịch, trích xuất báo cáo và phát hiện bất thường.\nRà soát các tác vụ thủ công lặp lại trong …",
+      "after": [
+        "thiết kế",
+        "phát triển",
+        "script",
+        "tự động",
+        "sk_python",
+        "sk_bash",
+        "kiểm tra",
+        "trạng thái",
+        "thiết bị",
+        "đối chiếu",
+        "dữ liệu",
+        "giao dịch",
+        "trích xuất",
+        "báo cáo",
+        "phát hiện",
+        "bất thường",
+        "rà soát",
+        "tác vụ",
+        "thủ công lặp",
+        "lại"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2325984",
+      "source": "topcv",
+      "field": "tokens_nostop",
+      "before": "Nghiên cứu thị trường, xác định chân dung và nguồn khách hàng tiềm năng tại các thị trường mục tiêu.\nChủ động tìm kiếm, tiếp cận và phát triển khách hàng mới qua LinkedIn, email, cold call, nền tảng B…",
+      "after": [
+        "nghiên cứu",
+        "thị trường",
+        "xác định",
+        "chân dung",
+        "nguồn",
+        "khách hàng",
+        "tiềm năng",
+        "thị trường",
+        "mục tiêu",
+        "chủ động",
+        "tìm kiếm",
+        "tiếp cận",
+        "phát triển",
+        "khách hàng",
+        "mới",
+        "qua",
+        "linkedin",
+        "email",
+        "cold call",
+        "nền tảng"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2314180",
+      "source": "topcv",
+      "field": "tokens_nostop",
+      "before": "Giám sát, phân tích và xác thực cảnh báo ATTT trên SIEM/EDR/NDR/Firewall.\nThực hiện triage, phân tích, phối hợp điều tra và xử lý sự cố Phân tích log, IOC/IOA, network traffic và tương quan sự kiện từ…",
+      "after": [
+        "giám sát",
+        "phân tích",
+        "xác thực",
+        "cảnh báo",
+        "attt",
+        "trên",
+        "sk_siem",
+        "edr",
+        "ndr",
+        "sk_firewall",
+        "thực hiện",
+        "triage",
+        "phân tích",
+        "phối hợp",
+        "điều tra",
+        "xử lý",
+        "sự cố",
+        "phân tích",
+        "log",
+        "ioc"
+      ],
+      "changed": true
+    }
+  ]
+}

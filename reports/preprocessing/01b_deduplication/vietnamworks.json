@@ -2,31 +2,36 @@
   "step": "01b_deduplication",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:23+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:58+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
-    "rows": 800
+    "rows": 783
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/vietnamworks.jsonl",
-    "rows": 794
+    "rows": 774
   },
   "dropped": [
     {
+      "rule": "D0",
+      "reason": "Tầng 1: trùng (nguồn, job_id)",
+      "rows": 0
+    },
+    {
       "rule": "D2",
-      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
       "rows": 0
     },
     {
       "rule": "D4",
-      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
+      "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "rows": 0
     },
     {
       "rule": "D5",
-      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
-      "rows": 6
+      "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+      "rows": 9
     }
   ],
   "rules": [
@@ -38,45 +43,52 @@
       "examples": []
     },
     {
+      "id": "D0",
+      "name": "Tầng 1: trùng (nguồn, job_id)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
       "id": "D2",
-      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
       "id": "D4",
-      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
       "id": "D5",
-      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 6,
+      "rows_affected": 9,
       "examples": [
         {
-          "job_id": "2100871",
+          "job_id": "2100265",
           "field": "dedup",
-          "before": "https://www.vietnamworks.com/chuyen-gia-phan-tich-du-lieu-khach-hang-va-djanh-gia-hieu-qua-2100871-jv",
-          "after": "https://topdev.vn/viec-lam/chuyen-gia-phan-tich-du-lieu-khach-hang-va-danh-gia-hieu-qua-cong-ty-co-phan-chung-khoan-ssi-2138456",
-          "url": "https://www.vietnamworks.com/chuyen-gia-phan-tich-du-lieu-khach-hang-va-djanh-gia-hieu-qua-2100871-jv"
+          "before": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td45098-2100265-jv",
+          "after": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td450983-2100274-jv",
+          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td45098-2100265-jv"
         },
         {
-          "job_id": "2107147",
+          "job_id": "2105838",
           "field": "dedup",
-          "before": "https://www.vietnamworks.com/software-development-manager-2107147-jv",
-          "after": "https://topdev.vn/viec-lam/software-development-manager-ila-vietnam-2141962",
-          "url": "https://www.vietnamworks.com/software-development-manager-2107147-jv"
+          "before": "https://www.vietnamworks.com/senior-devops-and-infrastructure-engineer-2105838-jv",
+          "after": "https://itviec.com/viec-lam-it/senior-devops-infrastructure-engineer-reclub-vietnam-1352",
+          "url": "https://www.vietnamworks.com/senior-devops-and-infrastructure-engineer-2105838-jv"
         },
         {
-          "job_id": "2114356",
+          "job_id": "2110214",
           "field": "dedup",
-          "before": "https://www.vietnamworks.com/database-engineer-dba-1790770265689383746-2114356-jv",
-          "after": "https://itviec.com/viec-lam-it/database-engineer-dba-lg-cns-viet-nam-3911",
-          "url": "https://www.vietnamworks.com/database-engineer-dba-1790770265689383746-2114356-jv"
+          "before": "https://www.vietnamworks.com/ai-software-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-2110214-jv",
+          "after": "https://www.vietnamworks.com/agentic-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-2110213-jv",
+          "url": "https://www.vietnamworks.com/ai-software-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-2110214-jv"
         }
       ]
     },
@@ -84,28 +96,57 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 7,
+      "rows_affected": 5,
       "examples": [
         {
-          "job_id": "2104725",
+          "job_id": "2099082",
           "field": "master_id",
-          "before": "https://www.vietnamworks.com/truong-nhom-ha-tang-cong-nghe-thong-tin-thu-nhap-35-50-trieu-2104725-jv",
-          "after": "083bbb5f-103f-5dd2-ad79-1f6f2b1e77f9",
-          "url": "https://www.vietnamworks.com/truong-nhom-ha-tang-cong-nghe-thong-tin-thu-nhap-35-50-trieu-2104725-jv"
+          "before": "https://www.vietnamworks.com/chuyen-vien-cao-cap-phan-tich-du-lieu--2099082-jv",
+          "after": "d422c76d-8e9e-59f9-8770-c87c28ea155c",
+          "url": "https://www.vietnamworks.com/chuyen-vien-cao-cap-phan-tich-du-lieu--2099082-jv"
         },
         {
-          "job_id": "2109856",
+          "job_id": "2100274",
           "field": "master_id",
-          "before": "https://www.vietnamworks.com/chuyen-vien-phan-tich-du-lieu--2109856-jv",
-          "after": "e8c54ff7-91fc-5af7-a31a-2c5b16c9cff9",
-          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-du-lieu--2109856-jv"
+          "before": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td450983-2100274-jv",
+          "after": "239f7217-3303-5632-8c3f-2aae70161a70",
+          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td450983-2100274-jv"
         },
         {
-          "job_id": "2114694",
+          "job_id": "2108194",
           "field": "master_id",
-          "before": "https://www.vietnamworks.com/ky-su-it-1790836017984251728-2114694-jv",
-          "after": "59983229-9083-5425-9a3b-995e7aa900a0",
-          "url": "https://www.vietnamworks.com/ky-su-it-1790836017984251728-2114694-jv"
+          "before": "https://www.vietnamworks.com/business-analyst-ba-chuyen-vien-phan-tich-nghiep-vu-1789615589156347035-2108194-jv",
+          "after": "4fcbb6a1-1697-59e2-9e3f-403365389ec6",
+          "url": "https://www.vietnamworks.com/business-analyst-ba-chuyen-vien-phan-tich-nghiep-vu-1789615589156347035-2108194-jv"
+        }
+      ]
+    },
+    {
+      "id": "D7",
+      "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
+      "action": "flag",
+      "rows_affected": 8,
+      "examples": [
+        {
+          "job_id": "2100226",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.707,
+          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-khach-hang-ca-nhan-data-analyst-retail-banking-khoi-du-lieu-2026td453678-2100226-jv"
+        },
+        {
+          "job_id": "2110327",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8438,
+          "url": "https://www.vietnamworks.com/ai-software-engineer-python-go-c-c-plus-plus-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-1790071949682767373-2110327-jv"
+        },
+        {
+          "job_id": "2110333",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.708,
+          "url": "https://www.vietnamworks.com/middle-senior-backend-engineer-java-spring-boot-khoi-cong-nghe-thong-tin-2025td923-1790072068546875013-2110333-jv"
         }
       ]
     }
@@ -126,12 +167,39 @@
       "hops": 728,
       "hop_same_crawler_hash": 4,
       "hop_same_canonical_hash": 5,
-      "hop_version_not_bumped": 3
+      "hop_same_version": 3,
+      "hop_version_not_bumped": 2
     },
-    "blocking_blocks": 612,
+    "blocking_blocks": 607,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 6
+      "D5": 9
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "2110214",
+      "source": "vietnamworks",
+      "field": "duplicate_of",
+      "before": "2110214",
+      "after": "DROPPED D5 -> vietnamworks:2110213",
+      "changed": true
+    },
+    {
+      "job_id": "2115752",
+      "source": "vietnamworks",
+      "field": "duplicate_of",
+      "before": "2115752",
+      "after": "DROPPED D5 -> vietnamworks:2099082",
+      "changed": true
+    },
+    {
+      "job_id": "2119934",
+      "source": "vietnamworks",
+      "field": "duplicate_of",
+      "before": "2119934",
+      "after": "DROPPED D5 -> itviec:senior-odoo-software-engineer-python-cong-ty-tnhh-wir-group-0900",
+      "changed": true
+    }
+  ]
 }

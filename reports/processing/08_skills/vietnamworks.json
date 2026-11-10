@@ -1,0 +1,206 @@
+{
+  "step": "08_skills",
+  "source": "vietnamworks",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 786
+  },
+  "output": {
+    "path": "data/processing/08_skills/all.parquet",
+    "rows": 786
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_job_skill_rows": 3998,
+    "n_jobs_no_skill": 73,
+    "top_skills": [
+      {
+        "skill": "english",
+        "n_jobs": 344
+      },
+      {
+        "skill": "communication",
+        "n_jobs": 324
+      },
+      {
+        "skill": "python",
+        "n_jobs": 164
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 145
+      },
+      {
+        "skill": "machine_learning",
+        "n_jobs": 127
+      },
+      {
+        "skill": "data_analysis",
+        "n_jobs": 119
+      },
+      {
+        "skill": "agile_scrum",
+        "n_jobs": 80
+      },
+      {
+        "skill": "linux",
+        "n_jobs": 80
+      },
+      {
+        "skill": "project_management",
+        "n_jobs": 80
+      },
+      {
+        "skill": "business_analysis",
+        "n_jobs": 78
+      },
+      {
+        "skill": "power_bi",
+        "n_jobs": 75
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 74
+      },
+      {
+        "skill": "infosec",
+        "n_jobs": 72
+      },
+      {
+        "skill": "rest_api",
+        "n_jobs": 69
+      },
+      {
+        "skill": "oracle_db",
+        "n_jobs": 64
+      },
+      {
+        "skill": "clean_architecture",
+        "n_jobs": 63
+      },
+      {
+        "skill": "java",
+        "n_jobs": 62
+      },
+      {
+        "skill": "presentation",
+        "n_jobs": 62
+      },
+      {
+        "skill": "cicd",
+        "n_jobs": 59
+      },
+      {
+        "skill": "logical_thinking",
+        "n_jobs": 56
+      },
+      {
+        "skill": "azure",
+        "n_jobs": 55
+      },
+      {
+        "skill": "cybersecurity",
+        "n_jobs": 50
+      },
+      {
+        "skill": "docker",
+        "n_jobs": 49
+      },
+      {
+        "skill": "sql_server",
+        "n_jobs": 46
+      },
+      {
+        "skill": "jira",
+        "n_jobs": 44
+      },
+      {
+        "skill": "microservices",
+        "n_jobs": 43
+      },
+      {
+        "skill": "cpp",
+        "n_jobs": 39
+      },
+      {
+        "skill": "postgresql",
+        "n_jobs": 38
+      },
+      {
+        "skill": "csharp",
+        "n_jobs": 36
+      },
+      {
+        "skill": "kubernetes",
+        "n_jobs": 35
+      }
+    ],
+    "short_forms_approved": 0,
+    "alias_conflicts_dropped": 1
+  },
+  "samples": [
+    {
+      "job_id": "vietnamworks_2112450",
+      "source": "vietnamworks",
+      "field": "skills",
+      "before": [
+        "Network Infrastructure",
+        "Routing Protocol",
+        "Network Security",
+        "Data Center And Dr Environments"
+      ],
+      "after": [
+        "network_security"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2119757",
+      "source": "vietnamworks",
+      "field": "skills",
+      "before": [
+        "Giám Sát Chất Lượng Dịch Vụ",
+        "Giải Quyết Vấn Đề",
+        "Kiểm Soát Rủi Ro",
+        "Kiểm Soát Tuân Thủ",
+        "Cải Tiến Chất Lượng"
+      ],
+      "after": [
+        "communication",
+        "logical_thinking",
+        "problem_solving"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2113740",
+      "source": "vietnamworks",
+      "field": "skills",
+      "before": [
+        "System Engineer",
+        "System security",
+        "System Administration",
+        "English Conversation",
+        "Systems Engineering"
+      ],
+      "after": [
+        "infosec",
+        "linux"
+      ],
+      "changed": true
+    }
+  ]
+}

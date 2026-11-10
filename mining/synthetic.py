@@ -7,7 +7,7 @@ mining/artifacts/_synthetic/ và mining_metrics.json có "synthetic": true.
 - Luật: {Spring Boot} => {Java} (conf = 1), {Flutter} => {Dart} (conf = 1), {React} => {JavaScript} (~0.95).
 - 8 nhóm nghề có bộ kỹ năng tách biệt -> phân cụm phải tìm được cấu trúc.
 - Lương tăng theo cấp bậc, HN/HCM cao hơn tỉnh khác, Kubernetes +20%, AWS +12%.
-- Tin bất thường: Thực tập/Mới tốt nghiệp đòi 18 kỹ năng; Junior lương 300–450 triệu.
+- Tin bất thường: Intern/Fresher đòi 18 kỹ năng; Junior lương 300–450 triệu.
 """
 
 from __future__ import annotations
@@ -38,7 +38,7 @@ FAMILIES: list[tuple[str, float, list[list[tuple[str, float]]], str, float]] = [
         [("Kotlin", 1.0), ("Android", 1.0), ("Java", 0.35)],
         [("Swift", 1.0), ("iOS", 1.0), ("Xcode", 0.5)],
     ], "ứng dụng di động mobile app store", 1.0),
-    ("Data/AI", 0.12, [
+    ("Data Science/AI", 0.12, [
         [("Python", 1.0), ("Machine Learning", 0.85), ("PyTorch", 0.5), ("TensorFlow", 0.35), ("SQL", 0.5), ("Pandas", 0.6)],
         [("SQL", 1.0), ("Power BI", 0.7), ("Excel", 0.6), ("Python", 0.4), ("Spark", 0.25)],
     ], "dữ liệu mô hình phân tích data pipeline ai", 1.12),
@@ -61,15 +61,13 @@ FAMILIES: list[tuple[str, float, list[list[tuple[str, float]]], str, float]] = [
 GENERAL_SKILLS = [("Git", 0.45), ("English", 0.25), ("Agile", 0.2), ("Docker", 0.12)]
 SKILL_PREMIUM = {"Kubernetes": 0.20, "AWS": 0.12, "Golang": 0.12, "Kafka": 0.08, "Machine Learning": 0.08}
 
-SENIORITY_PROBS = [0.06, 0.10, 0.28, 0.28, 0.20, 0.08]
-SENIORITY_BASE_MIL = [5.0, 9.0, 15.0, 25.0, 40.0, 55.0]
-EXP_BASE = [0, 0, 1, 2, 4, 6]
+SENIORITY_PROBS = [0.14, 0.28, 0.28, 0.22, 0.08]
+SENIORITY_BASE_MIL = [7.0, 15.0, 25.0, 40.0, 55.0]
+EXP_BASE = [0, 1, 2, 4, 6]
 
 LOCATIONS = [("Hà Nội", 0.40, 1.25), ("Hồ Chí Minh", 0.38, 1.30), ("Đà Nẵng", 0.09, 0.85),
              ("Remote", 0.03, 1.15), ("Cần Thơ", 0.04, 0.80), ("Hải Phòng", 0.03, 0.82),
              ("Bình Dương", 0.03, 0.84), ("Nhiều địa điểm", 0.03, 1.10), ("Toàn quốc", 0.01, 1.00)]
-# Thang 6 mức -> thang 0-4 của Duy (cột seniority_level): Thực tập & Mới tốt nghiệp gộp thành 0.
-ORD_TO_DUY_LEVEL = {-1: -1, 0: 0, 1: 0, 2: 1, 3: 2, 4: 3, 5: 4}
 SOURCES = ["topcv", "topdev", "vietnamworks", "careerviet", "vieclam24h", "itviec", "glints", "jobsgo"]
 
 
@@ -110,9 +108,9 @@ def make_synthetic_jobs(
         skills += [s for s, p in GENERAL_SKILLS if rng.random() < p and s not in skills]
 
         if rng.random() < 0.02:
-            sen_ord, sen_label = -1, "Chưa rõ"
+            sen_ord, sen_label = -1, None
         else:
-            sen_ord = int(rng.choice(6, p=SENIORITY_PROBS))
+            sen_ord = int(rng.choice(5, p=SENIORITY_PROBS))
             sen_label = SENIORITY_ORDER_LABELS[sen_ord]
         exp = float(EXP_BASE[max(sen_ord, 0)] + rng.integers(0, 2)) if rng.random() > 0.15 else np.nan
 
@@ -149,8 +147,7 @@ def make_synthetic_jobs(
     for j, idx in enumerate(picks):
         r = rows[idx]
         if j < n_fresher_anomalies:
-            sen_ord = int(rng.integers(0, 2))
-            r["seniority"] = SENIORITY_ORDER_LABELS[sen_ord]
+            r["seniority"] = SENIORITY_ORDER_LABELS[0]
             r["exp_min_years"] = 0.0
             r["skills_extracted"] = list(rng.choice(all_skills, size=18, replace=False))
             r["job_requirements"] = "Yêu cầu: " + ", ".join(r["skills_extracted"]) + "."
@@ -163,9 +160,8 @@ def make_synthetic_jobs(
             r["_anomaly"] = "SALARY_TOO_HIGH_FOR_LEVEL"
 
     golden = pd.DataFrame(rows)
-    # Cả hai cột như output 04_normalization của Duy: nhãn chữ 6 mức + seniority_level số 0-4.
-    ord6 = golden["seniority"].map({lab: i for i, lab in enumerate(SENIORITY_ORDER_LABELS)}).fillna(-1).astype(int)
-    golden["seniority_level"] = ord6.map(ORD_TO_DUY_LEVEL).astype("int64")
+    # Như output 04_normalization: nhãn chữ 5 mức + seniority_level số 0-4 (null = chưa rõ).
+    golden["seniority_level"] = golden["seniority"].map({lab: float(i) for i, lab in enumerate(SENIORITY_ORDER_LABELS)})
     truth = {
         "rules": [("Spring Boot", "Java"), ("Flutter", "Dart"), ("React", "JavaScript")],
         "positive_salary_skills": ["Kubernetes", "AWS"],

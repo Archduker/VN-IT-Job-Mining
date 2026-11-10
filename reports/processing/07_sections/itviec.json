@@ -1,0 +1,78 @@
+{
+  "step": "07_sections",
+  "source": "itviec",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 835
+  },
+  "output": {
+    "path": "data/processing/07_sections/all.parquet",
+    "rows": 835
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_bullets": 30121,
+    "bullets_by_section": {
+      "mo_ta": 8585,
+      "yeu_cau": 9157,
+      "phuc_loi": 12379
+    },
+    "bullets_by_rule": {
+      "S7.2": 30121
+    },
+    "n_jobs_no_bullet": 0,
+    "headings_approved": 0,
+    "cues_approved": 0
+  },
+  "samples": [
+    {
+      "job_id": "itviec_embedded-c-engineer-1-year-contract-bosch-global-software-technologies-company-limited-5848",
+      "source": "itviec",
+      "field": "sections",
+      "before": "Develop embedded based software (BSW) and application software for household appliance.\nParticipate in full development cycle (Requirement, Design, Coding, Testing) Analyzing requirements, design and …",
+      "after": {
+        "yeu_cau": 8,
+        "mo_ta": 6,
+        "phuc_loi": 4
+      },
+      "changed": true
+    },
+    {
+      "job_id": "itviec_system-integration-engineer-linux-security-savyint-group-4105",
+      "source": "itviec",
+      "field": "sections",
+      "before": "MỤC TIÊU VAI TRÒ Hỗ trợ đội ngũ dự án triển khai và tích hợp các sản phẩm chiến lược của công ty tại khách hàng (Ngân hàng/Fintech).\nNHIỆM VỤ VÀ TRÁCH NHIỆM CHI TIẾT (PHIÊN BẢN CHUYÊN SÂU)\n1. Hỗ trợ T…",
+      "after": {
+        "mo_ta": 26,
+        "phuc_loi": 24,
+        "yeu_cau": 21
+      },
+      "changed": true
+    },
+    {
+      "job_id": "itviec_technical-service-desk-agent-japanese-speaker-accenture-0032",
+      "source": "itviec",
+      "field": "sections",
+      "before": "We are looking for a customer-focused Technical Service Desk Agent with Japanese language proficiency to provide first-level technical support to clients. You will diagnose and resolve technical issue…",
+      "after": {
+        "phuc_loi": 12,
+        "mo_ta": 10,
+        "yeu_cau": 9
+      },
+      "changed": true
+    }
+  ]
+}

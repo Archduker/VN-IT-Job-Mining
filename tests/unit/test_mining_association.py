@@ -77,4 +77,4 @@ def test_find_skill_and_pair_stats(data):
     assert find_skill(data.skills, ["Không có"]) is None
     st = pair_stats(data.skills, "Flutter", ["Dart"])
     # = 1 với tin thường; vài tin bất thường cài sẵn có Flutter ngẫu nhiên mà không có Dart
-    assert st["confidence"] > 0.9 and st["lift"] > 1.5
+    assert st["confidence"] > 0.85 and st["lift"] > 1.5

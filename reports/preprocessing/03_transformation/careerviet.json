@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T09:09:24+00:00",
-  "code_version": "800b5e7",
+  "generated_at": "2026-11-10T11:49:51+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 447
+    "rows": 421
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 447
+    "rows": 421
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1306,
+      "rows_affected": 1228,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 136,
+      "rows_affected": 127,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 438,
+      "rows_affected": 413,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 389,
+      "rows_affected": 376,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -104,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 447,
+      "rows_affected": 421,
       "examples": []
     },
     {
@@ -118,28 +118,35 @@
       "id": "T6.2",
       "name": "Chuẩn hóa Unicode về NFC",
       "action": "modify",
-      "rows_affected": 17,
+      "rows_affected": 14,
       "examples": []
     },
     {
       "id": "T6.3",
       "name": "Bỏ ký tự ẩn",
       "action": "modify",
-      "rows_affected": 26,
+      "rows_affected": 23,
       "examples": []
     },
     {
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 160,
+      "rows_affected": 153,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
+      "action": "modify",
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 447,
+      "rows_affected": 421,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -168,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 441,
+      "rows_affected": 416,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -197,33 +204,33 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 28.4,
-      "fill_pct_out": 28.4
+      "fill_pct_in": 28.0,
+      "fill_pct_out": 28.0
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 30.4,
-      "fill_pct_out": 30.4
+      "fill_pct_in": 30.2,
+      "fill_pct_out": 30.2
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 98.0,
-      "fill_pct_out": 98.0
+      "fill_pct_in": 98.1,
+      "fill_pct_out": 98.1
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 98.0,
-      "fill_pct_out": 98.0
+      "fill_pct_in": 98.1,
+      "fill_pct_out": 98.1
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 87.0,
-      "fill_pct_out": 87.0
+      "fill_pct_in": 89.3,
+      "fill_pct_out": 89.3
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 56.6,
-      "fill_pct_out": 56.6
+      "fill_pct_in": 59.6,
+      "fill_pct_out": 59.6
     },
     {
       "field": "headcount",
@@ -242,18 +249,18 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 79.6,
-      "fill_pct_out": 79.6
+      "fill_pct_in": 79.8,
+      "fill_pct_out": 79.8
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 96.9,
-      "fill_pct_out": 96.9
+      "fill_pct_in": 96.7,
+      "fill_pct_out": 96.7
     },
     {
       "field": "locations",
-      "fill_pct_in": 98.7,
-      "fill_pct_out": 98.7
+      "fill_pct_in": 98.8,
+      "fill_pct_out": 98.8
     },
     {
       "field": "language",
@@ -271,22 +278,38 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 137,
+      "header": 128,
       "title": 0,
       "jd": 0,
-      "none": 310
+      "none": 293
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 382,
-      "en": 65
+      "vi": 351,
+      "en": 69,
+      "other": 1
+    },
+    "language_fasttext": {
+      "model": "lid.176.bin",
+      "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
+      "conf_min": 0.6,
+      "disagree_with_old_rule": 6,
+      "disagree_examples": [
+        "35C8807F",
+        "35C88082",
+        "35C89632",
+        "35C89B11",
+        "35C8AEAD",
+        "35C8C434"
+      ],
+      "conf_lt_0_9": 45
     },
     "text_quality": {
       "before": {
         "html": 0,
-        "nfc": 17,
-        "hidden": 26
+        "nfc": 14,
+        "hidden": 23
       },
       "residual_html_pct": 0.0,
       "residual_nfd_pct": 0.0,
@@ -298,6 +321,33 @@
       },
       "abbreviations_approved": 0
     },
-    "experience_parsed_rate": 87.0
-  }
+    "translation": null,
+    "experience_parsed_rate": 89.3
+  },
+  "samples": [
+    {
+      "job_id": "careerviet_35C88E11",
+      "source": "careerviet",
+      "field": "posted_date",
+      "before": "06/10/2026",
+      "after": "2026-10-06",
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C7AC66",
+      "source": "careerviet",
+      "field": "exp_min_years",
+      "before": "1 - 5 Năm",
+      "after": 1.0,
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C804AF",
+      "source": "careerviet",
+      "field": "salary_min_vnd",
+      "before": "Cạnh tranh",
+      "after": null,
+      "changed": true
+    }
+  ]
 }

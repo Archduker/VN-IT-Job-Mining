@@ -45,7 +45,7 @@ def test_clusters_recover_planted_structure(result):
     assert m["silhouette"] > 0.28
     assert m["nmi_vs_job_family"] > 0.6
     names = " ".join(c["cluster_name"] for c in m["clusters"])
-    assert "Mobile" in names and "Data/AI" in names
+    assert "Mobile" in names and "Data Science/AI" in names
     assert sum(c["size"] for c in m["clusters"]) == 900
     assert len({c["cluster_name"] for c in m["clusters"]}) == len(m["clusters"])
 

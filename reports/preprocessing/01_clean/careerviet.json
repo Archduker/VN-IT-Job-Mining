@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:04+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:26+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/careerviet/raw",
     "rows": 660
   },
   "output": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
-    "rows": 448
+    "rows": 412
   },
   "dropped": [
     {
@@ -35,18 +35,23 @@
     },
     {
       "rule": "C5",
-      "reason": "Bỏ JD dưới 30 từ",
+      "reason": "Bỏ JD dưới 50 từ",
+      "rows": 0
+    },
+    {
+      "rule": "C8",
+      "reason": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
       "rows": 0
     },
     {
       "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
-      "rows": 2
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "rows": 18
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 3
+      "rows": 23
     }
   ],
   "rules": [
@@ -153,30 +158,44 @@
     },
     {
       "id": "C5",
-      "name": "Bỏ JD dưới 30 từ",
+      "name": "Bỏ JD dưới 50 từ",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "C8",
+      "name": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
       "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
       "action": "drop",
-      "rows_affected": 2,
+      "rows_affected": 18,
       "examples": [
         {
-          "job_id": "35C88574",
+          "job_id": "35C82ACC",
           "field": "dedup_key",
-          "before": "phát triển công nghệ điện tử bình anh|chuyên viên phân tích dữ liệu|ha_noi|2026-W42",
-          "after": "giữ 35C89455",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-phan-tich-du-lieu.35C88574.html"
+          "before": "ngân hàng tmcp thịnh vượng vpbank|chuyên viên nâng cao chất lượng thu hồi nợ qua callbot ai - id5740|ha_noi",
+          "after": "giữ 35C8C17B",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-nang-cao-chat-luong-thu-hoi-no-qua-callbot-ai-id5740.35C82ACC.html"
         },
         {
-          "job_id": "35C8A197",
+          "job_id": "35C82C6D",
           "field": "dedup_key",
-          "before": "vacxin|[đại phước nhơn trạch] chuyên viên it|ho_chi_minh|2026-W42",
-          "after": "giữ 35C89DA2",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/dai-phuoc-nhon-trach-chuyen-vien-it.35C8A197.html"
+          "before": "viettel cht|kỹ sư tư vấn giải pháp cntt (vmware/network/sercurity)|da_nang",
+          "after": "giữ 35C841B6",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-tu-van-giai-phap-cntt-vmware-network-sercurity.35C82C6D.html"
+        },
+        {
+          "job_id": "35C8469B",
+          "field": "dedup_key",
+          "before": "lotte finance|chuyên viên cao cấp mạng và bảo mật|ha_noi",
+          "after": "giữ 35C80358",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cao-cap-mang-va-bao-mat.35C8469B.html"
         }
       ]
     },
@@ -184,28 +203,28 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 3,
+      "rows_affected": 23,
       "examples": [
         {
-          "job_id": "35C8995E",
+          "job_id": "35C81DB3",
           "field": "dedup_key",
-          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm website|ho_chi_minh|2026-W43",
-          "after": "giữ topcv:2320402",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-tu-van-trien-khai-phan-mem-website.35C8995E.html"
+          "before": "coda resources|it erp & applications specialist|tay_ninh",
+          "after": "giữ vietnamworks:2095967",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/it-erp-applications-specialist.35C81DB3.html"
         },
         {
-          "job_id": "35C8A493",
+          "job_id": "35C82A35",
           "field": "dedup_key",
-          "before": "dược hậu giang|[cần thơ] chuyên gia về ứng dụng, dự án sap|can_tho|2026-W42",
-          "after": "giữ vieclam24h:200962525",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/can-tho-chuyen-gia-ve-ung-dung-du-an-sap.35C8A493.html"
+          "before": "easia travel|it manager|ha_noi",
+          "after": "giữ vietnamworks:2119686",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/it-manager.35C82A35.html"
         },
         {
-          "job_id": "35C8B3BB",
+          "job_id": "35C837FD",
           "field": "dedup_key",
-          "before": "easia travel|senior full-stack developer|ha_noi|2026-W43",
-          "after": "giữ vietnamworks:2122905",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/senior-full-stack-developer.35C8B3BB.html"
+          "before": "ngân hàng tmcp lộc phát lpbank|[hà nội] phó phòng dữ liệu và phân tích|ha_noi",
+          "after": "giữ vietnamworks:2111014",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/ha-noi-pho-phong-du-lieu-va-phan-tich.35C837FD.html"
         }
       ]
     }
@@ -265,20 +284,54 @@
       "drop": [
         "non_it"
       ],
-      "approved_on": "2026-11-03",
-      "evidence": "C4b: Gán tay 77 tin, 42/47 non_it theo luật đúng (89.4%), 58 non_it (logistics, giáo viên, cơ khí...)"
+      "approved_on": "2026-11-09",
+      "evidence": "C4b: Gán tay 80 tin, xác nhận 60 non_it (75.0%). Nguồn đăng lẫn tin ngoài IT"
     },
+    "scope_c8_reasons": {},
     "review": {
       "file": "data/preprocessing/review/it_careerviet.csv",
-      "rows": 71,
-      "labeled": 0,
-      "labeled_non_it": 0,
-      "rule_decided": 0,
-      "rule_correct": 0,
-      "status_non_it": 0,
-      "status_non_it_correct": 0,
-      "level2_labeled": 0,
-      "level2_correct": 0
+      "rows": 80,
+      "labeled": 80,
+      "sample_strata": {
+        "tang_1_non_it": 41,
+        "tang_2_non_it": 22,
+        "tang_2_it": 8,
+        "tang_1_it": 9
+      },
+      "labeled_non_it": 60,
+      "rule_decided": 50,
+      "rule_correct": 47,
+      "status_non_it": 63,
+      "status_non_it_correct": 55,
+      "level2_labeled": 30,
+      "level2_correct": 20,
+      "level1_it_labeled": 9,
+      "level1_it_correct": 7,
+      "validation": {
+        "tp": 12,
+        "fp": 5,
+        "tn": 55,
+        "fn": 8,
+        "labeled": 80,
+        "precision_it": 0.7058823529411765,
+        "precision_non_it": 0.873015873015873,
+        "recall_it": 0.6,
+        "precision_it_ci": [
+          0.4686688993346016,
+          0.8672001038970478
+        ],
+        "precision_non_it_ci": [
+          0.7689296552173034,
+          0.9342267514386328
+        ],
+        "recall_it_ci": [
+          0.3865815007622531,
+          0.781193467627183
+        ],
+        "reason": null
+      }
     }
-  }
+  },
+  "samples": [],
+  "samples_reason": "NO_ROWS_CHANGED"
 }

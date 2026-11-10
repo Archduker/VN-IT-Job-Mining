@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:52:33+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:24:11+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/topcv/raw",
     "rows": 2749
   },
   "output": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
-    "rows": 1561
+    "rows": 1539
   },
   "dropped": [
     {
@@ -35,18 +35,23 @@
     },
     {
       "rule": "C5",
-      "reason": "Bỏ JD dưới 30 từ",
-      "rows": 163
+      "reason": "Bỏ JD dưới 50 từ",
+      "rows": 164
+    },
+    {
+      "rule": "C8",
+      "reason": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
+      "rows": 5
     },
     {
       "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
-      "rows": 15
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "rows": 18
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 0
+      "rows": 13
     }
   ],
   "rules": [
@@ -153,9 +158,9 @@
     },
     {
       "id": "C5",
-      "name": "Bỏ JD dưới 30 từ",
+      "name": "Bỏ JD dưới 50 từ",
       "action": "drop",
-      "rows_affected": 163,
+      "rows_affected": 164,
       "examples": [
         {
           "job_id": "1448528",
@@ -181,31 +186,60 @@
       ]
     },
     {
-      "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "id": "C8",
+      "name": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
       "action": "drop",
-      "rows_affected": 15,
+      "rows_affected": 5,
+      "examples": [
+        {
+          "job_id": "1251851",
+          "field": "job_title",
+          "before": "Cộng Tác Viên Thiết Kế",
+          "after": "S3_CTV_TITLE",
+          "url": "https://www.topcv.vn/viec-lam/cong-tac-vien-thiet-ke/1251851.html"
+        },
+        {
+          "job_id": "1911605",
+          "field": "job_title",
+          "before": "Cộng Tác Viên Xử Lý Dữ Liệu Hình Ảnh",
+          "after": "S3_CTV_TITLE",
+          "url": "https://www.topcv.vn/viec-lam/cong-tac-vien-xu-ly-du-lieu-hinh-anh/1911605.html"
+        },
+        {
+          "job_id": "2202781",
+          "field": "job_title",
+          "before": "CTV Xử Lý Dữ Liệu Hình Ảnh",
+          "after": "S3_CTV_TITLE",
+          "url": "https://www.topcv.vn/viec-lam/ctv-xu-ly-du-lieu-hinh-anh/2202781.html"
+        }
+      ]
+    },
+    {
+      "id": "C6",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "action": "drop",
+      "rows_affected": 18,
       "examples": [
         {
           "job_id": "1855721",
           "field": "dedup_key",
-          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh|2026-W43",
+          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh",
           "after": "giữ 1858313",
           "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1855721.html"
         },
         {
           "job_id": "1990674",
           "field": "dedup_key",
-          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh|2026-W43",
+          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh",
           "after": "giữ 1858313",
           "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1990674.html"
         },
         {
-          "job_id": "2108717",
+          "job_id": "2056186",
           "field": "dedup_key",
-          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh|2026-W43",
-          "after": "giữ 1858313",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/2108717.html"
+          "before": "infinity technologies global|product owner|ha_noi",
+          "after": "giữ 2316026",
+          "url": "https://www.topcv.vn/viec-lam/product-owner/2056186.html"
         }
       ]
     },
@@ -213,8 +247,30 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 0,
-      "examples": []
+      "rows_affected": 13,
+      "examples": [
+        {
+          "job_id": "2313245",
+          "field": "dedup_key",
+          "before": "ngân hàng tmcp quân đội mbbank|chuyên viên cao cấp công nghệ mô hình - senior machine learning engineer - khối dữ liệu (2026td456629)|ha_noi",
+          "after": "giữ vietnamworks:2110215",
+          "url": "https://www.topcv.vn/brand/nganhangthuongmaicophanquandoi/tuyen-dung/chuyen-vien-cao-cap-cong-nghe-mo-hinh-senior-machine-learning-engineer-khoi-du-lieu-2026td456629-j2313245.html"
+        },
+        {
+          "job_id": "2313250",
+          "field": "dedup_key",
+          "before": "ngân hàng tmcp quân đội mbbank|phó phòng công nghệ mô hình - deputy head of machine learning engineering - khối dữ liệu (2026td456609)|ha_noi",
+          "after": "giữ vietnamworks:2109877",
+          "url": "https://www.topcv.vn/brand/nganhangthuongmaicophanquandoi/tuyen-dung/pho-phong-cong-nghe-mo-hinh-deputy-head-of-machine-learning-engineering-khoi-du-lieu-2026td456609-j2313250.html"
+        },
+        {
+          "job_id": "2315026",
+          "field": "dedup_key",
+          "before": "kinh doanh f88|devops/platform engineer|ha_noi",
+          "after": "giữ vietnamworks:2112397",
+          "url": "https://www.topcv.vn/viec-lam/devops-platform-engineer/2315026.html"
+        }
+      ]
     }
   ],
   "fields": [
@@ -231,7 +287,7 @@
     {
       "field": "raw_location_text",
       "fill_pct_in": 96.8,
-      "fill_pct_out": 99.6
+      "fill_pct_out": 99.5
     },
     {
       "field": "raw_posted_date",
@@ -272,20 +328,80 @@
       "drop": [
         "non_it"
       ],
-      "approved_on": "2026-11-03",
-      "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 71 non_it (graphic designer, telesales, marketing...)"
+      "approved_on": "2026-11-09",
+      "evidence": "C4b: Gán tay 109 tin, xác nhận 71 non_it (65.1%). Nguồn đăng lẫn tin ngoài IT"
+    },
+    "scope_c8_reasons": {
+      "S3_CTV_TITLE": 5
     },
     "review": {
       "file": "data/preprocessing/review/it_topcv.csv",
-      "rows": 80,
-      "labeled": 0,
-      "labeled_non_it": 0,
-      "rule_decided": 0,
-      "rule_correct": 0,
-      "status_non_it": 0,
-      "status_non_it_correct": 0,
-      "level2_labeled": 0,
-      "level2_correct": 0
+      "rows": 109,
+      "labeled": 109,
+      "sample_strata": {
+        "tang_1_non_it": 50,
+        "tang_2_it": 8,
+        "tang_2_non_it": 22,
+        "tang_1_it": 29
+      },
+      "labeled_non_it": 71,
+      "rule_decided": 79,
+      "rule_correct": 78,
+      "status_non_it": 72,
+      "status_non_it_correct": 66,
+      "level2_labeled": 30,
+      "level2_correct": 20,
+      "level1_it_labeled": 29,
+      "level1_it_correct": 28,
+      "validation": {
+        "tp": 32,
+        "fp": 5,
+        "tn": 66,
+        "fn": 6,
+        "labeled": 109,
+        "precision_it": 0.8648648648648649,
+        "precision_non_it": 0.9166666666666666,
+        "recall_it": 0.8421052631578947,
+        "precision_it_ci": [
+          0.7202258821599021,
+          0.9408670557426799
+        ],
+        "precision_non_it_ci": [
+          0.8298764477932348,
+          0.9612475750430503
+        ],
+        "recall_it_ci": [
+          0.6958318822077686,
+          0.9255613658484106
+        ],
+        "reason": null
+      }
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "2315153",
+      "source": "topcv",
+      "field": "job_title",
+      "before": "Manual QC Engineer (Japanese)",
+      "after": "DROPPED C5: JD_SHORT",
+      "changed": true
+    },
+    {
+      "job_id": "2315430",
+      "source": "topcv",
+      "field": "job_title",
+      "before": "Senior UI/UX Designer (E-Commerce)",
+      "after": "DROPPED C5: JD_SHORT",
+      "changed": true
+    },
+    {
+      "job_id": "2325100",
+      "source": "topcv",
+      "field": "job_title",
+      "before": "DevOps Engineer",
+      "after": "DROPPED C5: JD_SHORT",
+      "changed": true
+    }
+  ]
 }

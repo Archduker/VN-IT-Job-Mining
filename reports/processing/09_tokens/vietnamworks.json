@@ -1,0 +1,121 @@
+{
+  "step": "09_tokens",
+  "source": "vietnamworks",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:51:43+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": null,
+    "rows": 786
+  },
+  "output": {
+    "path": "data/processing/09_tokens/all.parquet",
+    "rows": 786
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "mean_tokens_per_job": 283.25,
+    "df_threshold": 0.6,
+    "n_general_stopwords": 91,
+    "model": "không dùng model"
+  },
+  "samples": [
+    {
+      "job_id": "vietnamworks_2113190",
+      "source": "vietnamworks",
+      "field": "tokens_nostop",
+      "before": "Quản trị, vận hành và giám sát hệ thống máy chủ, mạng LAN/WAN, Wi-Fi, Firewall và các thiết bị CNTT của công ty.\nCài đặt, cấu hình, bảo trì và xử lý sự cố máy tính, máy in, thiết bị mạng và các thiết …",
+      "after": [
+        "quản trị",
+        "vận hành",
+        "giám sát",
+        "hệ thống",
+        "máy chủ",
+        "mạng",
+        "lan",
+        "wan",
+        "wi-fi",
+        "sk_firewall",
+        "thiết bị",
+        "cntt",
+        "công ty",
+        "cài đặt",
+        "cấu hình",
+        "bảo trì",
+        "xử lý",
+        "sự cố",
+        "máy tính",
+        "máy in"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2121158",
+      "source": "vietnamworks",
+      "field": "tokens_nostop",
+      "before": "Define and own comprehensive test strategies, test plans, and test approaches for complex features and cross-platform initiatives, applying risk-based analysis to prioritize scope and optimize coverag…",
+      "after": [
+        "define",
+        "and own",
+        "comprehensive",
+        "test",
+        "strategies",
+        "test",
+        "plans",
+        "and test",
+        "approaches",
+        "complex features",
+        "and cross-platform",
+        "initiatives",
+        "applying",
+        "risk-based",
+        "analysis",
+        "prioritize scope",
+        "optimize",
+        "coverage",
+        "design",
+        "and execute"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2117982",
+      "source": "vietnamworks",
+      "field": "tokens_nostop",
+      "before": "About UOB United Overseas Bank Limited (UOB) is a leading bank in Asia with a global network of more than 500 branches and offices in 19 countries and territories in Asia Pacific, Europe and North Ame…",
+      "after": [
+        "about",
+        "uob united",
+        "overseas bank",
+        "limited",
+        "uob",
+        "leading",
+        "bank",
+        "asia",
+        "global",
+        "network",
+        "of more",
+        "than",
+        "500",
+        "branches",
+        "and offices",
+        "19",
+        "countries and",
+        "territories",
+        "asia pacific",
+        "europe and"
+      ],
+      "changed": true
+    }
+  ]
+}

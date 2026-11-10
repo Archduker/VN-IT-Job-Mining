@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T09:09:06+00:00",
-  "code_version": "800b5e7",
+  "generated_at": "2026-11-10T12:26:48+00:00",
+  "code_version": "e168601",
   "input": {
-    "path": "data/preprocessing/01_clean/glints.jsonl",
-    "rows": 271
+    "path": "data/preprocessing/01b_deduplication/glints.jsonl",
+    "rows": 256
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 271
+    "rows": 256
   },
   "dropped": [
     {
@@ -34,7 +34,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
       "action": "modify",
-      "rows_affected": 271,
+      "rows_affected": 256,
       "examples": []
     },
     {
@@ -62,7 +62,7 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 76,
+      "rows_affected": 75,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -122,8 +122,8 @@
     },
     {
       "field": "company_address",
-      "fill_pct_in": 86.7,
-      "fill_pct_out": 86.7
+      "fill_pct_in": 86.3,
+      "fill_pct_out": 86.3
     },
     {
       "field": "raw_category_text",
@@ -147,8 +147,8 @@
     },
     {
       "field": "raw_deadline",
-      "fill_pct_in": 98.2,
-      "fill_pct_out": 98.2
+      "fill_pct_in": 98.0,
+      "fill_pct_out": 98.0
     },
     {
       "field": "raw_salary_text",
@@ -162,8 +162,8 @@
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 91.1,
-      "fill_pct_out": 91.1
+      "fill_pct_in": 91.4,
+      "fill_pct_out": 91.4
     },
     {
       "field": "raw_seniority_text",
@@ -182,13 +182,13 @@
     },
     {
       "field": "skills_list",
-      "fill_pct_in": 88.2,
-      "fill_pct_out": 88.2
+      "fill_pct_in": 87.9,
+      "fill_pct_out": 87.9
     },
     {
       "field": "benefits_list",
-      "fill_pct_in": 82.7,
-      "fill_pct_out": 82.7
+      "fill_pct_in": 81.6,
+      "fill_pct_out": 81.6
     },
     {
       "field": "raw_description_text",
@@ -209,5 +209,7 @@
     "used": false,
     "reason": "pipeline không dùng model (luật if-else)"
   },
-  "extra": {}
+  "extra": {},
+  "samples": [],
+  "samples_reason": "NO_ROWS_CHANGED"
 }

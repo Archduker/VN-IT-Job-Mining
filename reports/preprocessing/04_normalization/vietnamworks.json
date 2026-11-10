@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:13:04+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-10T11:50:12+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 900
+    "rows": 786
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 900
+    "rows": 786
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 867,
+      "rows_affected": 777,
       "examples": [
         {
           "job_id": "2085748",
@@ -44,10 +44,39 @@
       ]
     },
     {
-      "id": "N2",
-      "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
+      "id": "N13",
+      "name": "Tỉnh từ raw_location_text/company_address khi locations không ra tỉnh",
       "action": "modify",
-      "rows_affected": 810,
+      "rows_affected": 9,
+      "examples": [
+        {
+          "job_id": "2098344",
+          "field": "tinh_chinh",
+          "before": "Ha Noi",
+          "after": "TP. Hà Nội",
+          "url": "https://www.vietnamworks.com/spa-it-chuyen-vien-chinh-data-engineerai-2098344-jv"
+        },
+        {
+          "job_id": "2109404",
+          "field": "tinh_chinh",
+          "before": "Ho Chi Minh",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://www.vietnamworks.com/nhan-vien-bao-hanh-linh-vuc-cctv-camera-it-1789964092999971519-2109404-jv"
+        },
+        {
+          "job_id": "2110864",
+          "field": "tinh_chinh",
+          "before": "Ha Noi",
+          "after": "TP. Hà Nội",
+          "url": "https://www.vietnamworks.com/du-an-giong-noi-ai-nguoi-noi-tieng-viet-co-hoi-lam-viec-tu-xa-2110864-jv"
+        }
+      ]
+    },
+    {
+      "id": "N2",
+      "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
+      "action": "modify",
+      "rows_affected": 712,
       "examples": [
         {
           "job_id": "2085748",
@@ -67,22 +96,22 @@
           "job_id": "2093859",
           "field": "seniority",
           "before": "Nhân viên",
-          "after": "Trưởng nhóm/Quản lý (title)",
+          "after": "Lead/Manager (title)",
           "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
         }
       ]
     },
     {
       "id": "N3",
-      "name": "Phân loại 12 nhóm nghề IT",
+      "name": "Nhóm nghề: 12 nhóm SPEC-01 + Other",
       "action": "modify",
-      "rows_affected": 816,
+      "rows_affected": 469,
       "examples": [
         {
           "job_id": "2085748",
           "field": "job_family",
           "before": "Pentest (Good English)",
-          "after": "Bảo mật (title)",
+          "after": "Security (title)",
           "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
         },
         {
@@ -96,74 +125,123 @@
           "job_id": "2094338",
           "field": "job_family",
           "before": "Java Tech Lead (AEM Or Mulesoft)",
-          "after": "Backend (title)",
+          "after": "Backend (skills)",
           "url": "https://www.vietnamworks.com/java-tech-lead-aem-or-mulesoft-2094338-jv"
         }
       ]
     },
     {
+      "id": "N16",
+      "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 900,
+      "rows_affected": 786,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 900,
+      "rows_affected": 786,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 19,
+      "rows_affected": 13,
+      "examples": []
+    },
+    {
+      "id": "M3c",
+      "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
+      "action": "flag",
+      "rows_affected": 430,
+      "examples": []
+    },
+    {
+      "id": "M4",
+      "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
+      "action": "flag",
+      "rows_affected": 17,
       "examples": []
     },
     {
       "id": "N6a",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 12,
+      "rows_affected": 4,
       "examples": []
     },
     {
       "id": "N6",
-      "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
+      "name": "Gắn cờ ngoại lai lương IQR gộp và Winsorize 1-99% (cột *_capped)",
       "action": "modify",
-      "rows_affected": 40,
+      "rows_affected": 36,
+      "examples": []
+    },
+    {
+      "id": "M5",
+      "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
+      "action": "flag",
+      "rows_affected": 22,
+      "examples": []
+    },
+    {
+      "id": "M6",
+      "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
+      "action": "flag",
+      "rows_affected": 35,
+      "examples": []
+    },
+    {
+      "id": "M8",
+      "name": "min > max, kinh nghiệm ngoài khoảng: chỉ cờ",
+      "action": "flag",
+      "rows_affected": 4,
       "examples": []
     },
     {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 235,
+      "rows_affected": 209,
+      "examples": []
+    },
+    {
+      "id": "N18",
+      "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
+      "action": "modify",
+      "rows_affected": 786,
       "examples": []
     }
   ],
   "fields": [
     {
       "field": "locations",
-      "fill_pct_in": 100.0,
-      "fill_pct_out": 100.0
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 96.0,
-      "fill_pct_out": 96.0
+      "fill_pct_in": 98.9,
+      "fill_pct_out": 98.9
     },
     {
       "field": "seniority",
-      "fill_pct_in": 90.0,
-      "fill_pct_out": 90.0
+      "fill_pct_in": 90.6,
+      "fill_pct_out": 90.6
     },
     {
       "field": "seniority_source",
-      "fill_pct_in": 90.0,
-      "fill_pct_out": 90.0
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "job_family",
@@ -187,26 +265,81 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 22.3,
-      "fill_pct_out": 22.3
+      "fill_pct_in": 23.3,
+      "fill_pct_out": 23.3
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 26.1,
-      "fill_pct_out": 26.1
+      "fill_pct_in": 26.6,
+      "fill_pct_out": 26.6
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 22.3,
-      "fill_pct_out": 22.3
+      "fill_pct_in": 23.3,
+      "fill_pct_out": 23.3
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 26.1,
-      "fill_pct_out": 26.1
+      "fill_pct_in": 26.6,
+      "fill_pct_out": 26.6
     },
     {
       "field": "is_outlier_salary",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_title_core",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "title_canonical",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "company_key",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "work_mode",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "tinh_status",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "salary_status",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "level_inferred",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 86.6,
+      "fill_pct_out": 86.6
+    },
+    {
+      "field": "exp_source",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "salary_out_of_range",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "salary_iqr_outlier_by_level",
       "fill_pct_in": 100.0,
       "fill_pct_out": 100.0
     }
@@ -221,28 +354,147 @@
   },
   "extra": {
     "seniority_distribution": {
-      "Junior": 232,
-      "Senior": 199,
-      "Middle": 178,
-      "Trưởng nhóm/Quản lý": 176,
-      "Mới tốt nghiệp": 24,
-      "Thực tập": 1
+      "Middle": 266,
+      "Senior": 169,
+      "Lead/Manager": 148,
+      "Junior": 109,
+      "(trống)": 74,
+      "Intern/Fresher": 20
     },
     "job_family_distribution": {
-      "Data/AI": 174,
-      "Backend": 148,
-      "DevOps/Cloud": 127,
-      "Kiểm thử (QA/QC)": 103,
-      "Khác": 84,
-      "Quản lý sản phẩm/dự án": 74,
-      "Phân tích nghiệp vụ (BA)": 56,
-      "Bảo mật": 45,
-      "Hệ thống/Mạng": 28,
-      "Thiết kế UI/UX": 22,
-      "Fullstack": 16,
-      "Mobile": 15,
-      "Frontend": 8
+      "Other": 317,
+      "Product/Project": 91,
+      "QA/QC": 83,
+      "Data Science/AI": 78,
+      "DevOps/Cloud": 45,
+      "Backend": 41,
+      "Security": 37,
+      "System/Network": 34,
+      "Fullstack": 18,
+      "Data Engineer": 17,
+      "Embedded/IoT": 13,
+      "Frontend": 6,
+      "Mobile": 6
     },
-    "salary_outliers": 40
-  }
+    "job_family_source_distribution": {
+      "title": 408,
+      "none": 317,
+      "skills": 61
+    },
+    "work_mode_distribution": {
+      "onsite": 769,
+      "remote": 9,
+      "unknown": 8
+    },
+    "salary_status_distribution": {
+      "negotiable": 560,
+      "value": 222,
+      "not_stated": 4
+    },
+    "salary_outliers": 36,
+    "inference": {
+      "level_inferred": 430,
+      "exp_inferred": 17
+    },
+    "title_taxonomy": {
+      "job_title_clean_distinct": 741,
+      "job_title_core_distinct": 599,
+      "title_canonical_source": {
+        "none": 786
+      }
+    },
+    "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
+    "anomalies_by_kind": {
+      "level_inferred": 430,
+      "seniority_can_kiem": 13,
+      "salary_negotiable_with_value": 4,
+      "tinh_unknown": 8,
+      "salary_iqr_outlier_by_level": 35,
+      "job_family_can_kiem": 0,
+      "salary_out_of_range": 22,
+      "salary_iqr_outlier_pooled": 7,
+      "salary_suspect": 4,
+      "salary_period_year": 3,
+      "exp_inferred": 17,
+      "salary_min_gt_max": 0,
+      "exp_out_of_range": 4,
+      "currency_reinterpreted": 3
+    }
+  },
+  "samples": [
+    {
+      "job_id": "vietnamworks_2109798",
+      "source": "vietnamworks",
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": "Số 63, đường 10, Khu Sala, An Khánh",
+          "phuong_xa": null,
+          "tinh_thanh": null,
+          "raw": "Số 63, đường 10, Khu Sala, An Khánh"
+        },
+        {
+          "dia_chi_cu_the": "17 Đường Nguyễn Gia Thiều, Xuân Hòa",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "17 Đường Nguyễn Gia Thiều, Xuân Hòa, Hồ Chí Minh, Việt Nam"
+        },
+        {
+          "dia_chi_cu_the": "63, Đường 10, Khu Sala",
+          "phuong_xa": "Phường An Khánh",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "63, Đường 10, Khu Sala, P. An Khánh, TP HCM"
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": "Số 63, đường 10, Khu Sala, An Khánh",
+          "phuong_xa": null,
+          "tinh_thanh": null,
+          "raw": "Số 63, đường 10, Khu Sala, An Khánh",
+          "tinh_key": null,
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "17 Đường Nguyễn Gia Thiều, Xuân Hòa",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "17 Đường Nguyễn Gia Thiều, Xuân Hòa, Hồ Chí Minh, Việt Nam",
+          "tinh_key": "ho_chi_minh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "63, Đường 10, Khu Sala",
+          "phuong_xa": "Phường An Khánh",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "63, Đường 10, Khu Sala, P. An Khánh, TP HCM",
+          "tinh_key": "ho_chi_minh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2111010",
+      "source": "vietnamworks",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 0.0,
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2106045",
+      "source": "vietnamworks",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 0.0,
+      "changed": true
+    }
+  ]
 }

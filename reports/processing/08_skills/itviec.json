@@ -1,0 +1,217 @@
+{
+  "step": "08_skills",
+  "source": "itviec",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 835
+  },
+  "output": {
+    "path": "data/processing/08_skills/all.parquet",
+    "rows": 835
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_job_skill_rows": 8844,
+    "n_jobs_no_skill": 9,
+    "top_skills": [
+      {
+        "skill": "english",
+        "n_jobs": 518
+      },
+      {
+        "skill": "communication",
+        "n_jobs": 476
+      },
+      {
+        "skill": "cicd",
+        "n_jobs": 287
+      },
+      {
+        "skill": "python",
+        "n_jobs": 265
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 243
+      },
+      {
+        "skill": "docker",
+        "n_jobs": 240
+      },
+      {
+        "skill": "agile_scrum",
+        "n_jobs": 229
+      },
+      {
+        "skill": "rest_api",
+        "n_jobs": 197
+      },
+      {
+        "skill": "clean_architecture",
+        "n_jobs": 195
+      },
+      {
+        "skill": "java",
+        "n_jobs": 188
+      },
+      {
+        "skill": "kubernetes",
+        "n_jobs": 177
+      },
+      {
+        "skill": "azure",
+        "n_jobs": 173
+      },
+      {
+        "skill": "microservices",
+        "n_jobs": 153
+      },
+      {
+        "skill": "postgresql",
+        "n_jobs": 147
+      },
+      {
+        "skill": "javascript",
+        "n_jobs": 121
+      },
+      {
+        "skill": "machine_learning",
+        "n_jobs": 116
+      },
+      {
+        "skill": "linux",
+        "n_jobs": 115
+      },
+      {
+        "skill": "mysql",
+        "n_jobs": 114
+      },
+      {
+        "skill": "typescript",
+        "n_jobs": 111
+      },
+      {
+        "skill": "react",
+        "n_jobs": 107
+      },
+      {
+        "skill": "kafka",
+        "n_jobs": 101
+      },
+      {
+        "skill": "jira",
+        "n_jobs": 93
+      },
+      {
+        "skill": "terraform",
+        "n_jobs": 92
+      },
+      {
+        "skill": "business_analysis",
+        "n_jobs": 91
+      },
+      {
+        "skill": "logical_thinking",
+        "n_jobs": 86
+      },
+      {
+        "skill": "fintech",
+        "n_jobs": 83
+      },
+      {
+        "skill": "nodejs",
+        "n_jobs": 83
+      },
+      {
+        "skill": "project_management",
+        "n_jobs": 82
+      },
+      {
+        "skill": "redis",
+        "n_jobs": 80
+      },
+      {
+        "skill": "csharp",
+        "n_jobs": 78
+      }
+    ],
+    "short_forms_approved": 0,
+    "alias_conflicts_dropped": 1
+  },
+  "samples": [
+    {
+      "job_id": "itviec_embedded-c-engineer-1-year-contract-bosch-global-software-technologies-company-limited-5848",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "C++",
+        "UML",
+        "Git",
+        "Embedded C",
+        "Embedded"
+      ],
+      "after": [
+        "c_lang",
+        "communication",
+        "cpp",
+        "english",
+        "unit_test"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_system-engineer-server-storage-san-shinhan-ds-4436",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "Linux",
+        "Hardware Troubleshooting",
+        "VMware",
+        "Bash Shell",
+        "System Admin",
+        "Python"
+      ],
+      "after": [
+        "communication",
+        "english",
+        "linux",
+        "python"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-security-operations-center-soc-specialist-vietbank-1951",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "Cybersecurity",
+        "Application Security",
+        "SOAR",
+        "Data Catalog",
+        "SIEM",
+        "Cloud Security"
+      ],
+      "after": [
+        "communication",
+        "cybersecurity",
+        "infosec",
+        "logical_thinking",
+        "siem"
+      ],
+      "changed": true
+    }
+  ]
+}

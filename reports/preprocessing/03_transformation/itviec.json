@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-10T09:09:29+00:00",
-  "code_version": "800b5e7",
+  "generated_at": "2026-11-10T11:49:57+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 905
+    "rows": 835
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 905
+    "rows": 835
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 2960,
+      "rows_affected": 2726,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 232,
+      "rows_affected": 212,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -54,15 +54,37 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 874,
+      "rows_affected": 807,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 0,
-      "examples": []
+      "rows_affected": 729,
+      "examples": [
+        {
+          "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
+          "field": "exp_min_max",
+          "before": "0.8 năm (10 tháng)",
+          "after": "0.0 - None years",
+          "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
+        },
+        {
+          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
+          "field": "exp_min_max",
+          "before": "5.1 năm (61 tháng)",
+          "after": "5.0 - None years",
+          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
+        },
+        {
+          "job_id": "cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720",
+          "field": "exp_min_max",
+          "before": "0.8 năm (10 tháng)",
+          "after": "0.0 - None years",
+          "url": "https://itviec.com/viec-lam-it/cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720"
+        }
+      ]
     },
     {
       "id": "T5",
@@ -82,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 905,
+      "rows_affected": 835,
       "examples": []
     },
     {
@@ -110,14 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 295,
+      "rows_affected": 281,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
+      "action": "modify",
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 905,
+      "rows_affected": 835,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -146,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 905,
+      "rows_affected": 835,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -175,13 +204,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 24.2,
-      "fill_pct_out": 24.2
+      "fill_pct_in": 24.0,
+      "fill_pct_out": 24.0
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 25.5,
-      "fill_pct_out": 25.5
+      "fill_pct_in": 25.3,
+      "fill_pct_out": 25.3
     },
     {
       "field": "posted_date",
@@ -195,8 +224,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 0.0,
-      "fill_pct_out": 0.0
+      "fill_pct_in": 87.3,
+      "fill_pct_out": 87.3
     },
     {
       "field": "exp_max_years",
@@ -225,8 +254,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 94.8,
-      "fill_pct_out": 94.8
+      "fill_pct_in": 94.4,
+      "fill_pct_out": 94.4
     },
     {
       "field": "locations",
@@ -249,16 +278,25 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 228,
+      "header": 208,
       "title": 4,
       "jd": 1,
-      "none": 672
+      "none": 622
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 1,
     "language_distribution": {
-      "vi": 301,
-      "en": 604
+      "vi": 276,
+      "en": 559,
+      "other": 0
+    },
+    "language_fasttext": {
+      "model": "lid.176.bin",
+      "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
+      "conf_min": 0.6,
+      "disagree_with_old_rule": 0,
+      "disagree_examples": [],
+      "conf_lt_0_9": 261
     },
     "text_quality": {
       "before": {
@@ -276,6 +314,33 @@
       },
       "abbreviations_approved": 0
     },
-    "experience_parsed_rate": 0.0
-  }
+    "translation": null,
+    "experience_parsed_rate": 87.3
+  },
+  "samples": [
+    {
+      "job_id": "itviec_java-developer-springboot-oracle-kafka-postgresql-goline-corporation-0412",
+      "source": "itviec",
+      "field": "description_clean",
+      "before": "Thiết kế, phát triển và tối ưu các\nbackend services\nsử dụng Java/Spring Boot cho các hệ thống yêu cầu cao về hiệu năng, độ ổn định và khả năng mở rộng.\nTham gia\nphân tích yêu cầu, thiết kế giải pháp k…",
+      "after": "Thiết kế, phát triển và tối ưu các backend services sử dụng Java/Spring Boot cho các hệ thống yêu cầu cao về hiệu năng, độ ổn định và khả năng mở rộng.\nTham gia phân tích yêu cầu, thiết kế giải pháp k…",
+      "changed": true
+    },
+    {
+      "job_id": "itviec_middle-to-senior-data-analyst-saas-us-product-flodesk-1445",
+      "source": "itviec",
+      "field": "salary_min_vnd",
+      "before": "1500 - 4000 USD",
+      "after": 38100000.0,
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-fullstack-engineer-grab-vietnam-ltd-3935",
+      "source": "itviec",
+      "field": "exp_min_years",
+      "before": "3.1 năm (37 tháng)",
+      "after": 3.0,
+      "changed": true
+    }
+  ]
 }

@@ -1,0 +1,192 @@
+{
+  "step": "01b_deduplication",
+  "source": "glints",
+  "mode": "dry_run",
+  "generated_at": "2026-11-10T11:41:18+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/01_clean/glints.jsonl",
+    "rows": 271
+  },
+  "output": {
+    "path": "data/preprocessing/01b_deduplication/glints.jsonl",
+    "rows": 261
+  },
+  "dropped": [
+    {
+      "rule": "D0",
+      "reason": "Tầng 1: trùng (nguồn, job_id)",
+      "rows": 0
+    },
+    {
+      "rule": "D2",
+      "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+      "rows": 1
+    },
+    {
+      "rule": "D4",
+      "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
+      "rows": 0
+    },
+    {
+      "rule": "D5",
+      "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+      "rows": 9
+    }
+  ],
+  "rules": [
+    {
+      "id": "D1",
+      "name": "Kiểm toán chuỗi version CDC (cào lại có đổi nội dung thật không)",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D0",
+      "name": "Tầng 1: trùng (nguồn, job_id)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D2",
+      "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+      "action": "drop",
+      "rows_affected": 1,
+      "examples": [
+        {
+          "job_id": "a82ede9d-f519-4e2c-b547-54764c6668f0",
+          "field": "dedup",
+          "before": "https://glints.com/vn/opportunities/jobs/devsecops-engineer-iiot/a82ede9d-f519-4e2c-b547-54764c6668f0",
+          "after": "https://glints.com/vn/opportunities/jobs/devsecops-engineer-iiot/b07ba86b-1265-4bba-8eab-7ef74ca482e8",
+          "url": "https://glints.com/vn/opportunities/jobs/devsecops-engineer-iiot/a82ede9d-f519-4e2c-b547-54764c6668f0"
+        }
+      ]
+    },
+    {
+      "id": "D4",
+      "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D5",
+      "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+      "action": "drop",
+      "rows_affected": 9,
+      "examples": [
+        {
+          "job_id": "1ddb2d5c-abcf-45b2-9477-67cebaeded0f",
+          "field": "dedup",
+          "before": "https://glints.com/vn/opportunities/jobs/dna769-ky-thuat-vien-it-phan-mem-khong-yeu-cau-kinh-nghiem/1ddb2d5c-abcf-45b2-9477-67cebaeded0f",
+          "after": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01",
+          "url": "https://glints.com/vn/opportunities/jobs/dna769-ky-thuat-vien-it-phan-mem-khong-yeu-cau-kinh-nghiem/1ddb2d5c-abcf-45b2-9477-67cebaeded0f"
+        },
+        {
+          "job_id": "21e095c8-2d39-42d3-b491-ebb48ec2430e",
+          "field": "dedup",
+          "before": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-aws/21e095c8-2d39-42d3-b491-ebb48ec2430e",
+          "after": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-azure/3c8011a7-4614-47c8-9dda-2b9a4c8fc9a9",
+          "url": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-aws/21e095c8-2d39-42d3-b491-ebb48ec2430e"
+        },
+        {
+          "job_id": "23c1df11-b548-4e00-8771-ac586d650ddf",
+          "field": "dedup",
+          "before": "https://glints.com/vn/opportunities/jobs/nhan-vien-qa-1-nam-kinh-nghiem-thu-thua/23c1df11-b548-4e00-8771-ac586d650ddf",
+          "after": "https://glints.com/vn/opportunities/jobs/nhan-vien-qa-may-mac-1-nam-kinh-nghiem-long-an/55b76248-a402-4626-a0ee-a4291b09a25e",
+          "url": "https://glints.com/vn/opportunities/jobs/nhan-vien-qa-1-nam-kinh-nghiem-thu-thua/23c1df11-b548-4e00-8771-ac586d650ddf"
+        }
+      ]
+    },
+    {
+      "id": "D6",
+      "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
+      "action": "flag",
+      "rows_affected": 6,
+      "examples": [
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "master_id",
+          "before": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01",
+          "after": "0879983d-7ff6-5dd4-81a9-d63509dfe448",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "368dee4e-440c-4dee-b5b4-92b2563f3502",
+          "field": "master_id",
+          "before": "https://glints.com/vn/opportunities/jobs/backend-engineer-golang/368dee4e-440c-4dee-b5b4-92b2563f3502",
+          "after": "2c7e96b6-dec1-581f-b3da-85cb0809c2ee",
+          "url": "https://glints.com/vn/opportunities/jobs/backend-engineer-golang/368dee4e-440c-4dee-b5b4-92b2563f3502"
+        },
+        {
+          "job_id": "3c8011a7-4614-47c8-9dda-2b9a4c8fc9a9",
+          "field": "master_id",
+          "before": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-azure/3c8011a7-4614-47c8-9dda-2b9a4c8fc9a9",
+          "after": "b629b7a5-7d36-544f-b25b-ee6ba3ca105d",
+          "url": "https://glints.com/vn/opportunities/jobs/hybrid-infrastructure-analyst-azure/3c8011a7-4614-47c8-9dda-2b9a4c8fc9a9"
+        }
+      ]
+    },
+    {
+      "id": "D7",
+      "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
+      "action": "flag",
+      "rows_affected": 4,
+      "examples": [
+        {
+          "job_id": "703416e9-0550-4ba6-bb9c-4e691a88c64a",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.9085,
+          "url": "https://glints.com/vn/opportunities/jobs/transformation-and-erp-project-supervisor-muc-luong-20-30-trieu/703416e9-0550-4ba6-bb9c-4e691a88c64a"
+        },
+        {
+          "job_id": "7da83cf6-f384-4b3b-8cc8-d6e0c7bcc955",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.9706,
+          "url": "https://glints.com/vn/opportunities/jobs/fullstack-developer-react-golang/7da83cf6-f384-4b3b-8cc8-d6e0c7bcc955"
+        },
+        {
+          "job_id": "cd1e8902-89f2-43c8-bbbd-fee8b150fcb0",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.9602,
+          "url": "https://glints.com/vn/opportunities/jobs/qc-engineer-manual-automation/cd1e8902-89f2-43c8-bbbd-fee8b150fcb0"
+        }
+      ]
+    }
+  ],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": [
+      "chạy lẻ 1/8 sàn - khử trùng liên sàn cần đủ 8 sàn; file golden master/audit lần này mang hậu tố '.partial'"
+    ]
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "cdc": {
+      "job_ids": 331,
+      "chains_gt1": 0,
+      "hops": 0,
+      "hop_same_crawler_hash": 0,
+      "hop_same_canonical_hash": 0,
+      "hop_same_version": 0,
+      "hop_version_not_bumped": 0
+    },
+    "blocking_blocks": 185,
+    "d2_groups": 1,
+    "rule_totals": {
+      "D2": 1,
+      "D5": 9
+    }
+  },
+  "samples": [],
+  "samples_reason": "DRY_RUN_NO_OUTPUT"
+}

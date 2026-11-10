@@ -472,7 +472,7 @@ def run(
         rep.write()
 
     total_rep = merge_reports(STEP, list(reports.values()), dry_run)
-    total_rep.set_io(IN_FILE, len(df_in), OUT_FILE, len(all_normalized))
+    total_rep.set_io(IN_FILE, int(df_in['source_platform'].isin(list(sources)).sum()), OUT_FILE, len(all_normalized))
     total_rep.data["extra"].update({"global_salary_stats": salary_stats, "total_jobs": len(all_normalized),
                                     "anomalies_total": len(anomalies), "anomalies_by_kind": by_kind,
                                     "anomalies_file": ANOMALIES_FILE.relative_to(REPO_ROOT).as_posix(),

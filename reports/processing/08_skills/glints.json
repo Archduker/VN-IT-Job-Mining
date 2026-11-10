@@ -1,0 +1,213 @@
+{
+  "step": "08_skills",
+  "source": "glints",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 260
+  },
+  "output": {
+    "path": "data/processing/08_skills/all.parquet",
+    "rows": 260
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_job_skill_rows": 2291,
+    "n_jobs_no_skill": 13,
+    "top_skills": [
+      {
+        "skill": "english",
+        "n_jobs": 129
+      },
+      {
+        "skill": "communication",
+        "n_jobs": 102
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 98
+      },
+      {
+        "skill": "java",
+        "n_jobs": 58
+      },
+      {
+        "skill": "python",
+        "n_jobs": 58
+      },
+      {
+        "skill": "rest_api",
+        "n_jobs": 54
+      },
+      {
+        "skill": "agile_scrum",
+        "n_jobs": 52
+      },
+      {
+        "skill": "qa_qc",
+        "n_jobs": 48
+      },
+      {
+        "skill": "postgresql",
+        "n_jobs": 45
+      },
+      {
+        "skill": "javascript",
+        "n_jobs": 43
+      },
+      {
+        "skill": "sql_server",
+        "n_jobs": 43
+      },
+      {
+        "skill": "cicd",
+        "n_jobs": 43
+      },
+      {
+        "skill": "mysql",
+        "n_jobs": 42
+      },
+      {
+        "skill": "docker",
+        "n_jobs": 41
+      },
+      {
+        "skill": "japanese",
+        "n_jobs": 40
+      },
+      {
+        "skill": "machine_learning",
+        "n_jobs": 38
+      },
+      {
+        "skill": "react",
+        "n_jobs": 36
+      },
+      {
+        "skill": "mongodb",
+        "n_jobs": 35
+      },
+      {
+        "skill": "nodejs",
+        "n_jobs": 33
+      },
+      {
+        "skill": "clean_architecture",
+        "n_jobs": 33
+      },
+      {
+        "skill": "logical_thinking",
+        "n_jobs": 31
+      },
+      {
+        "skill": "redis",
+        "n_jobs": 31
+      },
+      {
+        "skill": "automation_test",
+        "n_jobs": 31
+      },
+      {
+        "skill": "linux",
+        "n_jobs": 29
+      },
+      {
+        "skill": "microservices",
+        "n_jobs": 29
+      },
+      {
+        "skill": "data_analysis",
+        "n_jobs": 29
+      },
+      {
+        "skill": "typescript",
+        "n_jobs": 26
+      },
+      {
+        "skill": "azure",
+        "n_jobs": 25
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 25
+      },
+      {
+        "skill": "cybersecurity",
+        "n_jobs": 24
+      }
+    ],
+    "short_forms_approved": 0,
+    "alias_conflicts_dropped": 1
+  },
+  "samples": [
+    {
+      "job_id": "glints_58a4cb2c-afad-4839-890e-310dae25b826",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Automation Testing",
+        "Selenium WebDriver",
+        "Java"
+      ],
+      "after": [
+        "agile_scrum",
+        "automation_test",
+        "cicd",
+        "communication",
+        "confluence",
+        "cypress",
+        "english",
+        "java",
+        "javascript",
+        "jira",
+        "postman",
+        "selenium",
+        "testng",
+        "typescript"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_87fe15be-b4d2-49ae-99a1-112a68563d68",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Leadership",
+        "Quality Assurance",
+        "Team Management"
+      ],
+      "after": [
+        "japanese",
+        "qa_qc"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_a05435d7-3750-455c-b4ae-3b874d125eec",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Technical Support",
+        "IT Support",
+        "Customer Service"
+      ],
+      "after": [
+        "communication",
+        "english"
+      ],
+      "changed": true
+    }
+  ]
+}

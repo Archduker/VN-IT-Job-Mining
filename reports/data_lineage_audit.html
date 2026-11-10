@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo Cáo Kiểm Toán Tiến Trình Dữ Liệu (Data Lineage Audit) - VN-IT-Job-Mining</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --card-border: #334155;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --primary: #38bdf8;
+    --accent: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --code-bg: #090d16;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+  body { background: var(--bg); color: var(--text-main); line-height: 1.6; padding: 24px; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  
+  header { margin-bottom: 24px; border-bottom: 1px solid var(--card-border); padding-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; }
+  h1 { font-size: 24px; font-weight: 700; color: #fff; }
+  .badge-tag { display: inline-block; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; background: #0284c7; color: white; margin-left: 8px; }
+  .meta-sub { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+  
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; }
+  .stat-label { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .stat-value { font-size: 26px; font-weight: 700; color: #fff; margin: 6px 0; }
+  .stat-desc { font-size: 13px; color: var(--accent); }
+
+  .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; }
+  .tab-btn { background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; }
+  .tab-btn:hover { background: #334155; color: #fff; }
+  .tab-btn.active { background: #0284c7; color: #fff; border-color: #38bdf8; }
+  
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .job-header { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .job-title-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+  .job-title { font-size: 20px; font-weight: 700; color: #38bdf8; }
+  .live-link { display: inline-flex; align-items: center; gap: 6px; background: #2563eb; color: #fff; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; }
+  .live-link:hover { background: #1d4ed8; }
+
+  .paths-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; background: var(--code-bg); padding: 14px; border-radius: 8px; border: 1px solid #1e293b; font-size: 13px; }
+  .path-item { word-break: break-all; }
+  .path-item span { color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 2px; font-size: 11px; text-transform: uppercase; }
+  .path-item a { color: #7dd3fc; text-decoration: none; }
+  .path-item a:hover { text-decoration: underline; }
+
+  .diff-table-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+  .table-title { padding: 16px 20px; font-size: 16px; font-weight: 700; background: #1e293b; border-bottom: 1px solid var(--card-border); display: flex; align-items: center; gap: 8px; }
+  table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+  th { background: #0f172a; padding: 12px 16px; font-weight: 600; color: var(--text-muted); border-bottom: 1px solid var(--card-border); }
+  td { padding: 14px 16px; border-bottom: 1px solid #334155; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+  .badge-stage { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+  .badge-raw { background: #475569; color: #f1f5f9; }
+  .badge-clean { background: #0369a1; color: #e0f2fe; }
+  .badge-integ { background: #0d9488; color: #ccfbf1; }
+  .badge-trans { background: #16a34a; color: #dcfce7; }
+
+  .val-box { background: var(--code-bg); padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 13px; color: #e2e8f0; max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
+  .val-box.highlight { border-left: 3px solid #10b981; }
+  .val-box.raw-box { border-left: 3px solid #f59e0b; color: #cbd5e1; }
+  .note-text { font-size: 13px; color: #38bdf8; }
+
+  .side-by-side { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+  @media (max-width: 900px) { .side-by-side { grid-template-columns: 1fr; } }
+  .panel-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; }
+  .panel-header { font-weight: 700; margin-bottom: 10px; font-size: 14px; color: var(--text-muted); text-transform: uppercase; }
+</style>
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('btn-' + id).classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+</script>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>Kiểm Toán Đối Chiếu Dữ Liệu (Data Lineage Audit) <span class="badge-tag">GIAI ĐOẠN 01 → 03</span></h1>
+      <div class="meta-sub">Dự án: VN-IT-Job-Mining | Xác thực tính nguyên vẹn từ Raw Lakehouse đến Parquet Chuẩn Hóa | Thời điểm: 10/11/2026</div>
+    </div>
+    <div>
+      <span class="badge-tag" style="background:#10b981;">ĐÃ XÁC MINH TRÊN ĐĨA THỰC TẾ</span>
+    </div>
+  </header>
+
+  <!-- SUMMARY STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Tổng Bản Ghi Sau Bước 03</div>
+      <div class="stat-value">5,076</div>
+      <div class="stat-desc">Đầy đủ 8 sàn tuyển dụng IT</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Lương Đã Chuẩn Hóa (VND/Tháng)</div>
+      <div class="stat-value">2,319 <span style="font-size:16px;font-weight:400;color:var(--text-muted);">(45.7%)</span></div>
+      <div class="stat-desc">Quy đổi USD (25.400đ) & Lương năm</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Kinh Nghiệm Đã Parse (Năm)</div>
+      <div class="stat-value">3,346 <span style="font-size:16px;font-weight:400;color:var(--text-muted);">(65.9%)</span></div>
+      <div class="stat-desc">exp_min_years & exp_max_years</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Chất Lượng Ký Tự Text</div>
+      <div class="stat-value">100% NFC</div>
+      <div class="stat-desc">0% HTML thừa, 0% ký tự ẩn</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button id="btn-topcv" class="tab-btn active" onclick="showTab('topcv')">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#00b14f;"></span>
+      TopCV (topcv_2321616)
+    </button>
+    <button id="btn-itviec" class="tab-btn " onclick="showTab('itviec')">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ea1e30;"></span>
+      ITviec (itviec_ai-engineer-remote-alpha-bravo-development-4157)
+    </button>
+    <button id="btn-vietnamworks" class="tab-btn " onclick="showTab('vietnamworks')">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#005aff;"></span>
+      VietnamWorks (vietnamworks_2085748)
+    </button>
+  </div>
+
+  <div id="tab-topcv" class="tab-content active">
+    <div class="job-header">
+      <div class="job-title-row">
+        <div>
+          <span class="badge-stage" style="background:#00b14f;color:white;">TopCV</span>
+          <span style="font-size:14px;color:var(--text-muted);margin-left:8px;">ID: <code>topcv_2321616</code></span>
+          <div class="job-title" style="margin-top:6px;">UI/UX Designer - Mobile App- [HCM] - Thu Nhập Lên Đến 30 Triệu</div>
+        </div>
+        <div>
+          <a href="https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html" target="_blank" class="live-link">
+            Mở Link Gốc Trên Sàn Tuyển Dụng &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="paths-grid">
+        <div class="path-item">
+          <span>1. Tầng Bronze (Raw JSON)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/topcv/raw/2026-11-01/2321616_v2.json">data/topcv/raw/2026-11-01/2321616_v2.json</a>
+        </div>
+        <div class="path-item">
+          <span>2. Bước 01 (Clean JSONL)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/preprocessing/01_clean/topcv.jsonl">data/preprocessing/01_clean/topcv.jsonl (Line 1)</a>
+        </div>
+        <div class="path-item">
+          <span>3. Bước 02 (Integration Parquet)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/preprocessing/02_integration/all.parquet">data/preprocessing/02_integration/all.parquet</a>
+        </div>
+        <div class="path-item">
+          <span>4. Bước 03 (Transformation Parquet)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/preprocessing/03_transformation/all.parquet">data/preprocessing/03_transformation/all.parquet</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIFF TABLE -->
+    <div class="diff-table-card">
+      <div class="table-title">
+        Bảng Đối Chiếu Biến Đổi Dữ Liệu Từng Trường (Field Transformation Diff)
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 15%;">Thuộc Tính (Field)</th>
+            <th style="width: 30%;">Trước Xử Lý (Raw Payload / Integration)</th>
+            <th style="width: 35%;">Sau Xử Lý Bước 03 (Transformed Output)</th>
+            <th style="width: 20%;">Ý Nghĩa Biến Đổi & Chuẩn Hóa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Mức Lương (Salary)</strong></td>
+            <td>
+              <div class="val-box raw-box">raw_salary_text: 15 - 30 triệu</div>
+            </td>
+            <td>
+              <div class="val-box highlight">
+salary_min_vnd: 15000000.0
+salary_max_vnd: 30000000.0
+is_negotiable: False
+=> Hiển thị: 15,000,000 - 30,000,000 VND/tháng</div>
+            </td>
+            <td>
+              <div class="note-text">Chuẩn hóa về VNĐ/Tháng. Tỷ giá USD = 25.400đ. Phân tách rõ lương thỏa thuận vs có khoảng số.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Kinh Nghiệm (Experience)</strong></td>
+            <td>
+              <div class="val-box raw-box">raw_experience_text: 2 năm</div>
+            </td>
+            <td>
+              <div class="val-box highlight">
+exp_min_years: 2.0
+exp_max_years: 2.0
+=> Hiển thị: 2.0 - 2.0 năm</div>
+            </td>
+            <td>
+              <div class="note-text">Regex trích xuất số năm chuẩn (float), loại bỏ teencode ("kn", "năm", "tháng").</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Tiêu Đề Công Việc (Job Title)</strong></td>
+            <td>
+              <div class="val-box raw-box">UI/UX Designer - Mobile App- [HCM] - Thu Nhập Lên Đến 30 Triệu</div>
+            </td>
+            <td>
+              <div class="val-box highlight">
+job_title_clean: UI/UX Designer - Mobile App- [HCM] - Thu Nhập Lên Đến 30 Triệu
+job_title_fold: ui/ux designer - mobile app- [hcm] - thu nhap len den 30 trieu</div>
+            </td>
+            <td>
+              <div class="note-text">Khử NFD, gộp khoảng trắng thừa; tạo cột <code>_fold</code> không dấu chữ thường để tra cứu nhanh.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Ngôn Ngữ JD (Language)</strong></td>
+            <td>
+              <div class="val-box raw-box">Chưa có (Phụ thuộc metadata sàn ghi sai hoặc thiếu)</div>
+            </td>
+            <td>
+              <div class="val-box highlight">language: <strong>vi</strong></div>
+            </td>
+            <td>
+              <div class="note-text">Nhận diện ngôn ngữ chuẩn (fastText lid.176) phục vụ dịch máy EnViT5 ở các bước sau.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Kỹ Năng Thu Thập Từ Sàn</strong></td>
+            <td>
+              <div class="val-box raw-box">skills_list: [&#x27;Product Owner/Product Manager&#x27; &#x27;IT - Phần mềm&#x27; &#x27;Game&#x27; &#x27;Figma&#x27;
+ &#x27;Design System&#x27; &#x27;Prototype&#x27; &#x27;user flow&#x27; &#x27;wireframe&#x27; &#x27;UI/UX design&#x27;
+ &#x27;Analysis&#x27; &#x27;Component&#x27; &#x27;user-centric thinking&#x27; &#x27;Variant&#x27; &#x27;Handoff&#x27;]</div>
+            </td>
+            <td>
+              <div class="val-box highlight">skills_clean: [&#x27;Kotlin&#x27; &#x27;Swift&#x27; &#x27;Product Owner/Product Manager&#x27; &#x27;Game&#x27; &#x27;Figma&#x27;
+ &#x27;Design System&#x27; &#x27;Prototype&#x27; &#x27;user flow&#x27; &#x27;wireframe&#x27; &#x27;UI/UX design&#x27;
+ &#x27;Analysis&#x27; &#x27;Component&#x27; &#x27;user-centric thinking&#x27; &#x27;Variant&#x27; &#x27;Handoff&#x27;]</div>
+            </td>
+            <td>
+              <div class="note-text">Chuẩn hóa tên thẻ tag, chuẩn bị cho bước Aho-Corasick trích xuất toàn bộ văn bản.</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SIDE BY SIDE TEXT CLEAN DIFF -->
+    <div class="side-by-side">
+      <div class="panel-box">
+        <div class="panel-header" style="color:#f59e0b;">1. Văn Bản Thô (Raw Description - Chứa Thẻ HTML / Dấu Rác)</div>
+        <div class="val-box" style="height: 350px;">Thiết kế và tối ưu UI/UX cho Mobile App, Website và Responsive Web, đảm bảo sản phẩm dễ sử dụng, trực quan và nhất quán.
+Phối hợp với Product Owner/Product Manager phân tích Business/User Requirement và nhu cầu người dùng.
+Xây dựng User Flow, Information Architecture, Wireframe, Interaction Flow và Prototype cho các tính năng sản phẩm.
+Phân tích hành vi người dùng, phát hiện vấn đề UX và đề xuất giải pháp cải thiện trải nghiệm.
+Thiết kế giao diện cho iOS, Android và Web, đảm bảo responsive và đầy đủ các trạng thái UI.
+Xây dựng, duy trì và phát triển Design System, quản lý Component/Variant trên Figma và đảm bảo tính nhất quán trong thiết kế.
+Tham khảo Benchmark/Competitor để cập nhật xu hướng và đề xuất giải pháp phù hợp.
+Phối hợp với Developer trong quá trình Handoff và Design QA, đảm bảo thiết kế được triển khai chính xác.
+Liên tục đánh giá và tối ưu UI/UX nhằm nâng cao trải nghiệm người dùng và hỗ trợ mục tiêu sản phẩm/kinh doanh....</div>
+      </div>
+      <div class="panel-box">
+        <div class="panel-header" style="color:#10b981;">2. Văn Bản Đã Làm Sạch (description_clean - Chuẩn NFC, Bullet '-')</div>
+        <div class="val-box" style="height: 350px;">Thiết kế và tối ưu UI/UX cho Mobile App, Website và Responsive Web, đảm bảo sản phẩm dễ sử dụng, trực quan và nhất quán.
+Phối hợp với Product Owner/Product Manager phân tích Business/User Requirement và nhu cầu người dùng.
+Xây dựng User Flow, Information Architecture, Wireframe, Interaction Flow và Prototype cho các tính năng sản phẩm.
+Phân tích hành vi người dùng, phát hiện vấn đề UX và đề xuất giải pháp cải thiện trải nghiệm.
+Thiết kế giao diện cho iOS, Android và Web, đảm bảo responsive và đầy đủ các trạng thái UI.
+Xây dựng, duy trì và phát triển Design System, quản lý Component/Variant trên Figma và đảm bảo tính nhất quán trong thiết kế.
+Tham khảo Benchmark/Competitor để cập nhật xu hướng và đề xuất giải pháp phù hợp.
+Phối hợp với Developer trong quá trình Handoff và Design QA, đảm bảo thiết kế được triển khai chính xác.
+Liên tục đánh giá và tối ưu UI/UX nhằm nâng cao trải nghiệm người dùng và hỗ trợ mục tiêu sản phẩm/kinh doanh....</div>
+      </div>
+    </div>
+  </div>
+  <div id="tab-itviec" class="tab-content ">
+    <div class="job-header">
+      <div class="job-title-row">
+        <div>
+          <span class="badge-stage" style="background:#ea1e30;color:white;">ITviec</span>
+          <span style="font-size:14px;color:var(--text-muted);margin-left:8px;">ID: <code>itviec_ai-engineer-remote-alpha-bravo-development-4157</code></span>
+          <div class="job-title" style="margin-top:6px;">AI Engineer (Remote)</div>
+        </div>
+        <div>
+          <a href="https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157" target="_blank" class="live-link">
+            Mở Link Gốc Trên Sàn Tuyển Dụng &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="paths-grid">
+        <div class="path-item">
+          <span>1. Tầng Bronze (Raw JSON)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/itviec/raw/2026-10-19/ai-engineer-remote-alpha-bravo-development-4157_v1.json">data/itviec/raw/2026-10-19/ai-engineer-remote-alpha-bravo-development-4157_v1.json</a>
+        </div>
+        <div class="path-item">
+          <span>2. Bước 01 (Clean JSONL)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/preprocessing/01_clean/itviec.jsonl">data/preprocessing/01_clean/itviec.jsonl (Line 1)</a>
+        </div>
+        <div class="path-item">
+          <span>3. Bước 02 (Integration Parquet)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/preprocessing/02_integration/all.parquet">data/preprocessing/02_integration/all.parquet</a>
+        </div>
+        <div class="path-item">
+          <span>4. Bước 03 (Transformation Parquet)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/preprocessing/03_transformation/all.parquet">data/preprocessing/03_transformation/all.parquet</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIFF TABLE -->
+    <div class="diff-table-card">
+      <div class="table-title">
+        Bảng Đối Chiếu Biến Đổi Dữ Liệu Từng Trường (Field Transformation Diff)
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 15%;">Thuộc Tính (Field)</th>
+            <th style="width: 30%;">Trước Xử Lý (Raw Payload / Integration)</th>
+            <th style="width: 35%;">Sau Xử Lý Bước 03 (Transformed Output)</th>
+            <th style="width: 20%;">Ý Nghĩa Biến Đổi & Chuẩn Hóa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Mức Lương (Salary)</strong></td>
+            <td>
+              <div class="val-box raw-box">raw_salary_text: 1000 - 1300 USD</div>
+            </td>
+            <td>
+              <div class="val-box highlight">
+salary_min_vnd: 25400000.0
+salary_max_vnd: 33020000.0
+is_negotiable: False
+=> Hiển thị: 25,400,000 - 33,020,000 VND/tháng</div>
+            </td>
+            <td>
+              <div class="note-text">Chuẩn hóa về VNĐ/Tháng. Tỷ giá USD = 25.400đ. Phân tách rõ lương thỏa thuận vs có khoảng số.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Kinh Nghiệm (Experience)</strong></td>
+            <td>
+              <div class="val-box raw-box">raw_experience_text: 0.8 năm (10 tháng)</div>
+            </td>
+            <td>
+              <div class="val-box highlight">
+exp_min_years: nan
+exp_max_years: nan
+=> Hiển thị: Không yêu cầu / Chưa xác định</div>
+            </td>
+            <td>
+              <div class="note-text">Regex trích xuất số năm chuẩn (float), loại bỏ teencode ("kn", "năm", "tháng").</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Tiêu Đề Công Việc (Job Title)</strong></td>
+            <td>
+              <div class="val-box raw-box">AI Engineer (Remote)</div>
+            </td>
+            <td>
+              <div class="val-box highlight">
+job_title_clean: AI Engineer (Remote)
+job_title_fold: ai engineer (remote)</div>
+            </td>
+            <td>
+              <div class="note-text">Khử NFD, gộp khoảng trắng thừa; tạo cột <code>_fold</code> không dấu chữ thường để tra cứu nhanh.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Ngôn Ngữ JD (Language)</strong></td>
+            <td>
+              <div class="val-box raw-box">Chưa có (Phụ thuộc metadata sàn ghi sai hoặc thiếu)</div>
+            </td>
+            <td>
+              <div class="val-box highlight">language: <strong>en</strong></div>
+            </td>
+            <td>
+              <div class="note-text">Nhận diện ngôn ngữ chuẩn (fastText lid.176) phục vụ dịch máy EnViT5 ở các bước sau.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Kỹ Năng Thu Thập Từ Sàn</strong></td>
+            <td>
+              <div class="val-box raw-box">skills_list: [&#x27;AI&#x27; &#x27;Python&#x27; &#x27;AI, Python&#x27;]</div>
+            </td>
+            <td>
+              <div class="val-box highlight">skills_clean: [&#x27;AWS&#x27; &#x27;Azure&#x27; &#x27;GCP&#x27; &#x27;Git&#x27; &#x27;Machine Learning&#x27; &#x27;Python&#x27; &#x27;AI&#x27; &#x27;AI, Python&#x27;]</div>
+            </td>
+            <td>
+              <div class="note-text">Chuẩn hóa tên thẻ tag, chuẩn bị cho bước Aho-Corasick trích xuất toàn bộ văn bản.</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SIDE BY SIDE TEXT CLEAN DIFF -->
+    <div class="side-by-side">
+      <div class="panel-box">
+        <div class="panel-header" style="color:#f59e0b;">1. Văn Bản Thô (Raw Description - Chứa Thẻ HTML / Dấu Rác)</div>
+        <div class="val-box" style="height: 350px;">About Alpha Bravo Development
+Alpha Bravo Development is a fast-growing US-based software development agency specializing in fully custom software solutions for service-based businesses. We help clients develop centralized platforms that match each client’s unique workflow, giving them full ownership, customization, and long-term cost efficiency.
+With a strong reputation for quality, reliability, and innovation, we&#x27;re expanding our global footprint and building an elite development team in Vietnam to help drive our next phase of growth.
+Overview
+We are looking for a skilled and motivated AI Engineer to join our Vietnam engineering team.
+You will collaborate closely with our US and international teams to build and integrate AI-powered features and solutions that support our web and mobile applications.
+This role is ideal for someone who is interested in AI, automation, and modern software development, enjoys solving practical problems, and is eager to contribute to a growing global product team....</div>
+      </div>
+      <div class="panel-box">
+        <div class="panel-header" style="color:#10b981;">2. Văn Bản Đã Làm Sạch (description_clean - Chuẩn NFC, Bullet '-')</div>
+        <div class="val-box" style="height: 350px;">About Alpha Bravo Development Alpha Bravo Development is a fast-growing US-based software development agency specializing in fully custom software solutions for service-based businesses. We help clients develop centralized platforms that match each client’s unique workflow, giving them full ownership, customization, and long-term cost efficiency.
+With a strong reputation for quality, reliability, and innovation, we&#x27;re expanding our global footprint and building an elite development team in Vietnam to help drive our next phase of growth.
+Overview We are looking for a skilled and motivated AI Engineer to join our Vietnam engineering team.
+You will collaborate closely with our US and international teams to build and integrate AI-powered features and solutions that support our web and mobile applications.
+This role is ideal for someone who is interested in AI, automation, and modern software development, enjoys solving practical problems, and is eager to contribute to a growing global product team....</div>
+      </div>
+    </div>
+  </div>
+  <div id="tab-vietnamworks" class="tab-content ">
+    <div class="job-header">
+      <div class="job-title-row">
+        <div>
+          <span class="badge-stage" style="background:#005aff;color:white;">VietnamWorks</span>
+          <span style="font-size:14px;color:var(--text-muted);margin-left:8px;">ID: <code>vietnamworks_2085748</code></span>
+          <div class="job-title" style="margin-top:6px;">Pentest (Good English)</div>
+        </div>
+        <div>
+          <a href="https://www.vietnamworks.com/pentest-good-english-2085748-jv" target="_blank" class="live-link">
+            Mở Link Gốc Trên Sàn Tuyển Dụng &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="paths-grid">
+        <div class="path-item">
+          <span>1. Tầng Bronze (Raw JSON)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/vietnamworks/raw/2026-10-20/2085748_v1.json">data/vietnamworks/raw/2026-10-20/2085748_v1.json</a>
+        </div>
+        <div class="path-item">
+          <span>2. Bước 01 (Clean JSONL)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/preprocessing/01_clean/vietnamworks.jsonl">data/preprocessing/01_clean/vietnamworks.jsonl (Line 1)</a>
+        </div>
+        <div class="path-item">
+          <span>3. Bước 02 (Integration Parquet)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/preprocessing/02_integration/all.parquet">data/preprocessing/02_integration/all.parquet</a>
+        </div>
+        <div class="path-item">
+          <span>4. Bước 03 (Transformation Parquet)</span>
+          <a href="file:///home/billtran/Desktop/Project/VN-IT-Job-Mining/data/preprocessing/03_transformation/all.parquet">data/preprocessing/03_transformation/all.parquet</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIFF TABLE -->
+    <div class="diff-table-card">
+      <div class="table-title">
+        Bảng Đối Chiếu Biến Đổi Dữ Liệu Từng Trường (Field Transformation Diff)
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 15%;">Thuộc Tính (Field)</th>
+            <th style="width: 30%;">Trước Xử Lý (Raw Payload / Integration)</th>
+            <th style="width: 35%;">Sau Xử Lý Bước 03 (Transformed Output)</th>
+            <th style="width: 20%;">Ý Nghĩa Biến Đổi & Chuẩn Hóa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Mức Lương (Salary)</strong></td>
+            <td>
+              <div class="val-box raw-box">raw_salary_text: Thương lượng</div>
+            </td>
+            <td>
+              <div class="val-box highlight">
+salary_min_vnd: nan
+salary_max_vnd: nan
+is_negotiable: True
+=> Hiển thị: Thỏa thuận</div>
+            </td>
+            <td>
+              <div class="note-text">Chuẩn hóa về VNĐ/Tháng. Tỷ giá USD = 25.400đ. Phân tách rõ lương thỏa thuận vs có khoảng số.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Kinh Nghiệm (Experience)</strong></td>
+            <td>
+              <div class="val-box raw-box">raw_experience_text: 5 năm</div>
+            </td>
+            <td>
+              <div class="val-box highlight">
+exp_min_years: 5.0
+exp_max_years: 5.0
+=> Hiển thị: 5.0 - 5.0 năm</div>
+            </td>
+            <td>
+              <div class="note-text">Regex trích xuất số năm chuẩn (float), loại bỏ teencode ("kn", "năm", "tháng").</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Tiêu Đề Công Việc (Job Title)</strong></td>
+            <td>
+              <div class="val-box raw-box">Pentest (Good English)</div>
+            </td>
+            <td>
+              <div class="val-box highlight">
+job_title_clean: Pentest (Good English)
+job_title_fold: pentest (good english)</div>
+            </td>
+            <td>
+              <div class="note-text">Khử NFD, gộp khoảng trắng thừa; tạo cột <code>_fold</code> không dấu chữ thường để tra cứu nhanh.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Ngôn Ngữ JD (Language)</strong></td>
+            <td>
+              <div class="val-box raw-box">Chưa có (Phụ thuộc metadata sàn ghi sai hoặc thiếu)</div>
+            </td>
+            <td>
+              <div class="val-box highlight">language: <strong>en</strong></div>
+            </td>
+            <td>
+              <div class="note-text">Nhận diện ngôn ngữ chuẩn (fastText lid.176) phục vụ dịch máy EnViT5 ở các bước sau.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Kỹ Năng Thu Thập Từ Sàn</strong></td>
+            <td>
+              <div class="val-box raw-box">skills_list: [&#x27;Artificial Intelligence&#x27; &#x27;Security Analysis&#x27; &#x27;AWS&#x27; &#x27;Azure&#x27;
+ &#x27;Security Audit&#x27;]</div>
+            </td>
+            <td>
+              <div class="val-box highlight">skills_clean: [&#x27;Artificial Intelligence&#x27; &#x27;Security Analysis&#x27; &#x27;AWS&#x27; &#x27;Azure&#x27;
+ &#x27;Security Audit&#x27;]</div>
+            </td>
+            <td>
+              <div class="note-text">Chuẩn hóa tên thẻ tag, chuẩn bị cho bước Aho-Corasick trích xuất toàn bộ văn bản.</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SIDE BY SIDE TEXT CLEAN DIFF -->
+    <div class="side-by-side">
+      <div class="panel-box">
+        <div class="panel-header" style="color:#f59e0b;">1. Văn Bản Thô (Raw Description - Chứa Thẻ HTML / Dấu Rác)</div>
+        <div class="val-box" style="height: 350px;">&lt;p&gt;- Working with a diverse range of colleagues to define security testing activities (scope) across target applications and infrastructure &lt;/p&gt;&lt;p&gt;- Continuous improvement and best practices to promote continuous improvement of penetration testing methodologies and processes &lt;/p&gt;&lt;p&gt;- Delivery of technical reports and documentation &lt;/p&gt;&lt;p&gt;- Communication of security vulnerabilities and exposures to internal stakeholders &lt;/p&gt;&lt;p&gt;- Perform......</div>
+      </div>
+      <div class="panel-box">
+        <div class="panel-header" style="color:#10b981;">2. Văn Bản Đã Làm Sạch (description_clean - Chuẩn NFC, Bullet '-')</div>
+        <div class="val-box" style="height: 350px;">Working with a diverse range of colleagues to define security testing activities (scope) across target applications and infrastructure Continuous improvement and best practices to promote continuous improvement of penetration testing methodologies and processes Delivery of technical reports and documentation Communication of security vulnerabilities and exposures to internal stakeholders Perform......</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

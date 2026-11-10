@@ -1,0 +1,121 @@
+{
+  "step": "09_tokens",
+  "source": "itviec",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:51:43+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": null,
+    "rows": 835
+  },
+  "output": {
+    "path": "data/processing/09_tokens/all.parquet",
+    "rows": 835
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "mean_tokens_per_job": 441.95,
+    "df_threshold": 0.6,
+    "n_general_stopwords": 91,
+    "model": "không dùng model"
+  },
+  "samples": [
+    {
+      "job_id": "itviec_embedded-c-engineer-1-year-contract-bosch-global-software-technologies-company-limited-5848",
+      "source": "itviec",
+      "field": "tokens_nostop",
+      "before": "Develop embedded based software (BSW) and application software for household appliance.\nParticipate in full development cycle (Requirement, Design, Coding, Testing) Analyzing requirements, design and …",
+      "after": [
+        "develop",
+        "embedded",
+        "based",
+        "software",
+        "bsw",
+        "and application",
+        "software",
+        "household",
+        "appliance",
+        "participate",
+        "full",
+        "development",
+        "cycle",
+        "requirement",
+        "design",
+        "coding",
+        "testing",
+        "analyzing requirements",
+        "design and",
+        "develop"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_system-integration-engineer-linux-security-savyint-group-4105",
+      "source": "itviec",
+      "field": "tokens_nostop",
+      "before": "MỤC TIÊU VAI TRÒ Hỗ trợ đội ngũ dự án triển khai và tích hợp các sản phẩm chiến lược của công ty tại khách hàng (Ngân hàng/Fintech).\nNHIỆM VỤ VÀ TRÁCH NHIỆM CHI TIẾT (PHIÊN BẢN CHUYÊN SÂU)\n1. Hỗ trợ T…",
+      "after": [
+        "mục tiêu",
+        "vai trò",
+        "hỗ trợ",
+        "đội ngũ",
+        "dự án",
+        "triển khai",
+        "tích hợp",
+        "sản phẩm",
+        "chiến lược",
+        "công ty",
+        "khách hàng",
+        "ngân hàng",
+        "sk_fintech",
+        "nhiệm vụ",
+        "trách nhiệm",
+        "chi tiết",
+        "phiên bản",
+        "chuyên sâu",
+        "1",
+        "hỗ trợ"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_technical-service-desk-agent-japanese-speaker-accenture-0032",
+      "source": "itviec",
+      "field": "tokens_nostop",
+      "before": "We are looking for a customer-focused Technical Service Desk Agent with Japanese language proficiency to provide first-level technical support to clients. You will diagnose and resolve technical issue…",
+      "after": [
+        "looking",
+        "a customer-focused",
+        "technical",
+        "service desk",
+        "agent",
+        "sk_japanese",
+        "language",
+        "proficiency",
+        "provide",
+        "first-level",
+        "technical",
+        "support",
+        "clients",
+        "will diagnose",
+        "and resolve",
+        "technical",
+        "issues",
+        "maintain",
+        "accurate",
+        "service"
+      ],
+      "changed": true
+    }
+  ]
+}

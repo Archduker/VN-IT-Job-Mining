@@ -1,0 +1,188 @@
+{
+  "step": "08_skills",
+  "source": "jobsgo",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 585
+  },
+  "output": {
+    "path": "data/processing/08_skills/all.parquet",
+    "rows": 585
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_job_skill_rows": 2833,
+    "n_jobs_no_skill": 69,
+    "top_skills": [
+      {
+        "skill": "communication",
+        "n_jobs": 258
+      },
+      {
+        "skill": "english",
+        "n_jobs": 187
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 127
+      },
+      {
+        "skill": "logical_thinking",
+        "n_jobs": 106
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 92
+      },
+      {
+        "skill": "machine_learning",
+        "n_jobs": 88
+      },
+      {
+        "skill": "python",
+        "n_jobs": 71
+      },
+      {
+        "skill": "mysql",
+        "n_jobs": 56
+      },
+      {
+        "skill": "linux",
+        "n_jobs": 55
+      },
+      {
+        "skill": "rest_api",
+        "n_jobs": 53
+      },
+      {
+        "skill": "agile_scrum",
+        "n_jobs": 48
+      },
+      {
+        "skill": "java",
+        "n_jobs": 48
+      },
+      {
+        "skill": "sql_server",
+        "n_jobs": 46
+      },
+      {
+        "skill": "japanese",
+        "n_jobs": 45
+      },
+      {
+        "skill": "data_analysis",
+        "n_jobs": 45
+      },
+      {
+        "skill": "react",
+        "n_jobs": 44
+      },
+      {
+        "skill": "cicd",
+        "n_jobs": 43
+      },
+      {
+        "skill": "docker",
+        "n_jobs": 41
+      },
+      {
+        "skill": "postgresql",
+        "n_jobs": 41
+      },
+      {
+        "skill": "business_analysis",
+        "n_jobs": 39
+      },
+      {
+        "skill": "csharp",
+        "n_jobs": 38
+      },
+      {
+        "skill": "firewall",
+        "n_jobs": 33
+      },
+      {
+        "skill": "infosec",
+        "n_jobs": 33
+      },
+      {
+        "skill": "oracle_db",
+        "n_jobs": 32
+      },
+      {
+        "skill": "dotnet",
+        "n_jobs": 31
+      },
+      {
+        "skill": "microservices",
+        "n_jobs": 30
+      },
+      {
+        "skill": "project_management",
+        "n_jobs": 30
+      },
+      {
+        "skill": "jira",
+        "n_jobs": 29
+      },
+      {
+        "skill": "javascript",
+        "n_jobs": 27
+      },
+      {
+        "skill": "power_bi",
+        "n_jobs": 27
+      }
+    ],
+    "short_forms_approved": 0,
+    "alias_conflicts_dropped": 1
+  },
+  "samples": [
+    {
+      "job_id": "jobsgo_29410756100",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "infosec",
+        "japanese"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29265515116",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "data_analysis",
+        "oop"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_28998837135",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "communication"
+      ],
+      "changed": true
+    }
+  ]
+}

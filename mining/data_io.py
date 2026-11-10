@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 
 from mining.config import (
+    JOB_FAMILY_OTHER,
     COLUMN_ALIASES,
     SALARY_VND_DETECT_THRESHOLD,
     SENIORITY_LEVEL_TO_ORD,
@@ -105,11 +106,11 @@ def _as_list(val: Any) -> list[Any]:
 
 
 def seniority_to_ordinal(label: Any) -> int:
-    """Nhãn cấp bậc -> 0..5, không rõ -> -1."""
+    """Nhãn cấp bậc -> 0..4, không rõ -> -1."""
     if label is None or (isinstance(label, float) and np.isnan(label)):
         return -1
     if isinstance(label, int | np.integer):
-        return int(label) if 0 <= int(label) <= 5 else -1
+        return int(label) if 0 <= int(label) <= 4 else -1
     raw = str(label).strip().lower()
     if raw in SENIORITY_ORDINAL:
         return SENIORITY_ORDINAL[raw]
@@ -118,7 +119,7 @@ def seniority_to_ordinal(label: Any) -> int:
 
 
 def seniority_level_to_ordinal(level: Any, mapping: dict[int, int] | None = None) -> int:
-    """Thang 0-4 của Duy (seniority_level) -> thang 0-5 của Mining; -1/không rõ -> -1."""
+    """seniority_level (0-4, cùng thang với Mining); null/ngoài khoảng -> -1."""
     m = SENIORITY_LEVEL_TO_ORD if mapping is None else mapping
     v = pd.to_numeric(pd.Series([level]), errors="coerce").iloc[0]
     if pd.isna(v) or float(v) != int(v):
@@ -127,7 +128,7 @@ def seniority_level_to_ordinal(level: Any, mapping: dict[int, int] | None = None
 
 
 def _seniority_from_column(s: pd.Series, numeric_scale: str) -> tuple[np.ndarray, str]:
-    """Đổi một cột cấp bậc sang 0-5. Cột số dùng thang `numeric_scale` ("ord" 0-5 hoặc "level" 0-4).
+    """Đổi một cột cấp bậc sang 0-4. Cột số dùng thang `numeric_scale`.
 
     Cột chữ (kể cả seniority_level của bản cũ, chứa nhãn) đọc theo nhãn.
     """
@@ -136,7 +137,7 @@ def _seniority_from_column(s: pd.Series, numeric_scale: str) -> tuple[np.ndarray
         if numeric_scale == "level":
             return np.array([seniority_level_to_ordinal(v) for v in num], dtype=int), "level_0_4"
         out = num.fillna(-1).astype(int)
-        return out.where(out.between(0, 5), -1).to_numpy(), "ord_0_5"
+        return out.where(out.between(0, 4), -1).to_numpy(), "ord_0_4"
     return s.map(seniority_to_ordinal).astype(int).to_numpy(), "label"
 
 
@@ -203,9 +204,9 @@ def build_meta(golden: pd.DataFrame, notes: list[str]) -> tuple[pd.DataFrame, di
     for logical in ("job_title", "company_name", "source_platform", "job_family"):
         s = col(logical)
         meta[logical] = s.astype("string").to_numpy() if s is not None else pd.array([pd.NA] * n, dtype="string")
-    meta["job_family"] = meta["job_family"].fillna("Khác")
+    meta["job_family"] = meta["job_family"].fillna(JOB_FAMILY_OTHER)
 
-    # Cấp bậc: seniority_ord (0-5) > nhãn chữ > seniority_level (0-4 của Duy)
+    # Cấp bậc: seniority_ord (0-4) > nhãn chữ > seniority_level (0-4)
     for logical, scale in (("seniority_ord", "ord"), ("seniority", "ord"), ("seniority_level", "level")):
         if resolved.get(logical) is not None:
             meta["seniority_ord"], how = _seniority_from_column(col(logical), scale)

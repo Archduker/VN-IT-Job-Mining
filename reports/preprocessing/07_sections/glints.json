@@ -1,0 +1,77 @@
+{
+  "step": "07_sections",
+  "source": "glints",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": "data/preprocessing/04_normalization/all.parquet",
+    "rows": 260
+  },
+  "output": {
+    "path": "data/processing/07_sections/all.parquet",
+    "rows": 260
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_bullets": 7541,
+    "bullets_by_section": {
+      "mo_ta": 6102,
+      "yeu_cau": 260,
+      "phuc_loi": 1179
+    },
+    "bullets_by_rule": {
+      "S7.2": 7541
+    },
+    "n_jobs_no_bullet": 0,
+    "headings_approved": 0,
+    "cues_approved": 0
+  },
+  "samples": [
+    {
+      "job_id": "glints_e4c56f95-a21f-4c9c-a4ea-b5b813fe9128",
+      "source": "glints",
+      "field": "sections",
+      "before": "Chi tiết công việc Java Technical Lead tại Công ty TNHH Diksha Technologies\n1. Position Information Level: Senior / Technical Lead Experience: 5-7 years Onboarding: Within 2 weeks Location: Pico Cong …",
+      "after": {
+        "mo_ta": 21,
+        "phuc_loi": 2,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "glints_d53845ee-66df-4d37-a7d3-c839fc60e4c2",
+      "source": "glints",
+      "field": "sections",
+      "before": "Chi tiết công việc AI ENGINEER - GEN AI tại Viettel Cyber Security\n1. Mô tả công việc:\nThiết kế, triển khai các giải pháp ứng dụng AI trong các hệ thống an toàn thông tin. Xây dựng các phần mềm, hệ th…",
+      "after": {
+        "mo_ta": 19,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "glints_2c6ab889-0599-444c-afcd-33bd3d057aac",
+      "source": "glints",
+      "field": "sections",
+      "before": "Chi tiết công việc NV Kỹ Thuật Máy CNC - 8.5-12tr + PC - Vsip 1 Bình Dương tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM Công ty sản xuất Nhật Bản Địa điểm : KCN VSIP1, Bình Dương\n- Vận hành, cài …",
+      "after": {
+        "mo_ta": 26,
+        "phuc_loi": 4,
+        "yeu_cau": 1
+      },
+      "changed": true
+    }
+  ]
+}

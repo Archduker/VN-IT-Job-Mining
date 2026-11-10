@@ -5,6 +5,7 @@ import { api } from '../../api/client'
 import { SOURCES, sourceName } from '../../constants/sources'
 import { ItReview, StepReportData, StepRule, StepSummary, StorageItem } from '../../types'
 import { PctBar, TableShell, pct } from '../reports'
+import { AnomaliesPanel, ExtraBlocks, SamplesTable } from './extras'
 import { Card, EmptyState, ErrorState, LoadingState, SectionTitle, StatCard, fmt, useAsync } from '../ui'
 
 const RULE_COLORS = ['#5B4CE6', '#E08A1E', '#2F7D5B', '#C2362F', '#14A3A3', '#9C2F7A', '#2F6FD6', '#D4A72C']
@@ -40,7 +41,7 @@ export const StepStrip: React.FC<{ steps: StepSummary[]; selected: string; onSel
   selected,
   onSelect,
 }) => (
-  <nav aria-label="Các bước pre-processing" className="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
+  <nav aria-label="Các bước pre-processing" className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-6 gap-2.5">
     {steps.map((s, i) => {
       const on = s.step === selected
       const label = stepLabel(s)
@@ -54,7 +55,7 @@ export const StepStrip: React.FC<{ steps: StepSummary[]; selected: string; onSel
             on ? 'bg-white border-2 border-brand-500 shadow-md' : 'bg-white border border-line-strong'
           }`}
         >
-          <span className="text-xs text-ink-muted">Bước {i + 1}</span>
+          <span className="text-xs text-ink-muted">Bước {s.step.split('_')[0]}</span>
           <span className="font-semibold text-ink">{s.name}</span>
           <span className="text-[13px] tabular-nums text-ink-soft">
             {s.available ? `${fmt(s.input_rows)} → ${fmt(s.output_rows)}` : '—'}
@@ -157,14 +158,14 @@ export const StepOverview: React.FC<{ step: string }> = ({ step }) => {
   if (!data.available || !data.report)
     return (
       <Card>
-        <EmptyState message="Bước này chưa có báo cáo. Chạy lệnh dưới để tạo bản chạy thử." />
+        <EmptyState message={`Bước này chưa có báo cáo (${data.reason ?? "NO_DATA"}).${data.command ? " Chạy lệnh dưới để tạo bản chạy thử." : ""}`} />
         <Command text={data.command} />
       </Card>
     )
   const r = data.report
   const dropped = r.dropped.reduce((n, d) => n + d.rows, 0)
   const flagged = r.rules.filter((x) => x.action === 'flag').reduce((n, x) => n + x.rows_affected, 0)
-  const merged = step !== '01_clean' 
+  const merged = step !== '01_clean' && step !== '01b_deduplication'
   return (
     <>
       <section aria-label="Tổng của bước" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -177,6 +178,9 @@ export const StepOverview: React.FC<{ step: string }> = ({ step }) => {
         <StatCard label="Bị bỏ" value={fmt(dropped)} sub={r.checks.rows_conserved ? 'Input = output + bị bỏ ✓' : 'Chưa kiểm bảo toàn'} />
         <StatCard label="Lượt gắn cờ cần xem" value={fmt(flagged)} sub="Không bỏ, đi tiếp sang bước sau; xem cột cờ ở bảng dòng" />
       </section>
+      <SamplesTable samples={r.samples} />
+      <ExtraBlocks step={step} extra={r.extra} />
+      {step === '04_normalization' && <AnomaliesPanel />}
       <Card>
         <SectionTitle title="Dòng bị bỏ theo luật và nguồn" hint="Mỗi màu là một luật. Di chuột lên cột để xem số." />
         <DropChart rules={r.rules} />
@@ -235,6 +239,7 @@ export const SourceDetail: React.FC<{
           <p key={n} className="m-0 px-3 py-2 rounded-lg bg-state-partial-bg text-state-partial-fg">{n}</p>
         ))}
       </Card>
+      <SamplesTable samples={r.samples} />
       <RuleExamples rules={r.rules} hint="Tối đa 3 ví dụ mỗi luật, chọn ổn định theo job_id." />
       <FieldCoverage fields={r.fields} />
     </>
@@ -347,6 +352,7 @@ const pick = (row: Record<string, unknown>, path: string): unknown =>
 
 // Cột hiện trong bảng dòng theo từng bước; cột cờ tô cam khi bật
 const COLUMNS: Record<string, [string, string][]> = {
+  '01b_deduplication': [['metadata.source_job_id', 'Mã tin'], ['raw_payload.title', 'Tiêu đề'], ['metadata.clean.dedup_key', 'Khóa trùng']],
   '01_clean': [['metadata.source_job_id', 'Mã tin'], ['raw_payload.title', 'Tiêu đề'], ['metadata.clean.it_status', 'IT'], ['metadata.clean.dedup_key', 'Khóa trùng']],
   '02_integration': [['source_platform', 'Nguồn'], ['job_title', 'Tiêu đề'], ['company_name', 'Công ty'], ['raw_salary_text', 'Lương (chữ)'], ['raw_location_text', 'Địa điểm (chữ)'], ['it_status', 'IT']],
   '03_transformation': [['source_platform', 'Nguồn'], ['job_title_clean', 'Tiêu đề'], ['salary_min_vnd', 'Lương từ'], ['salary_max_vnd', 'Lương đến'], ['salary_source', 'Lấy lương từ'], ['language', 'Ngôn ngữ'], ['locations', 'Tỉnh'], ['salary_suspect', 'Nghi sai lương']],
@@ -383,7 +389,7 @@ export const RowSample: React.FC<{ step: string; source: string | null; onSource
   }, [step, source])
   const { data, error, loading } = useAsync(() => api.preprocessingRows(step, { source, offset, limit, origin: 'r2' }), [step, source, offset])
   const cols = COLUMNS[step] ?? []
-  const needSource = step === '01_clean'
+  const needSource = step === '01_clean' || step === '01b_deduplication'
   return (
     <Card>
       <SectionTitle

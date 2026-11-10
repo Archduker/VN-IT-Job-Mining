@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:13+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:44+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/jobsgo/raw",
     "rows": 1597
   },
   "output": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
-    "rows": 683
+    "rows": 588
   },
   "dropped": [
     {
@@ -35,18 +35,23 @@
     },
     {
       "rule": "C5",
-      "reason": "Bỏ JD dưới 30 từ",
-      "rows": 21
+      "reason": "Bỏ JD dưới 50 từ",
+      "rows": 22
+    },
+    {
+      "rule": "C8",
+      "reason": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
+      "rows": 3
     },
     {
       "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
-      "rows": 46
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "rows": 91
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 3
+      "rows": 49
     }
   ],
   "rules": [
@@ -153,9 +158,9 @@
     },
     {
       "id": "C5",
-      "name": "Bỏ JD dưới 30 từ",
+      "name": "Bỏ JD dưới 50 từ",
       "action": "drop",
-      "rows_affected": 21,
+      "rows_affected": 22,
       "examples": [
         {
           "job_id": "28963205839",
@@ -181,31 +186,60 @@
       ]
     },
     {
-      "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "id": "C8",
+      "name": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
       "action": "drop",
-      "rows_affected": 46,
+      "rows_affected": 3,
+      "examples": [
+        {
+          "job_id": "29077201544",
+          "field": "job_title",
+          "before": "Cộng Tác Viên Triển Khai Phần Mềm Part-time – Không Cần Kinh Nghiệm",
+          "after": "S3_CTV_TITLE",
+          "url": "https://jobsgo.vn/viec-lam/cong-tac-vien-trien-khai-phan-mem-part-time-khong-can-kinh-nghiem-29077201544.html"
+        },
+        {
+          "job_id": "29108609771",
+          "field": "job_title",
+          "before": "Cộng Tác Viên Kiểm Thử (Full-time)",
+          "after": "S3_CTV_TITLE",
+          "url": "https://jobsgo.vn/viec-lam/cong-tac-vien-kiem-thu-full-time-29108609771.html"
+        },
+        {
+          "job_id": "29400422481",
+          "field": "job_title",
+          "before": "Cộng Tác Viên Hỗ Trợ Công Nghệ Hiện Trường (Part - Time)",
+          "after": "S3_CTV_TITLE",
+          "url": "https://jobsgo.vn/viec-lam/cong-tac-vien-ho-tro-cong-nghe-hien-truong-part-time-29400422481.html"
+        }
+      ]
+    },
+    {
+      "id": "C6",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "action": "drop",
+      "rows_affected": 91,
       "examples": [
         {
           "job_id": "28514569258",
           "field": "dedup_key",
-          "before": "tư vấn nhân sự kokoro|it staff (programming engineer)|dong_nai|2026-W34",
+          "before": "tư vấn nhân sự kokoro|it staff (programming engineer)|dong_nai",
           "after": "giữ 28495354973",
           "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28514569258.html"
         },
         {
-          "job_id": "28564309135",
+          "job_id": "28563670922",
           "field": "dedup_key",
-          "before": "tư vấn nhân sự kokoro|it staff (programming engineer)|dong_nai|2026-W34",
-          "after": "giữ 28495354973",
-          "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28564309135.html"
+          "before": "tư vấn nhân sự kokoro|ai engineer (pcb section – production)|dong_nai",
+          "after": "giữ 29351538081",
+          "url": "https://jobsgo.vn/viec-lam/ai-engineer-pcb-section-production-28563670922.html"
         },
         {
-          "job_id": "28657664760",
+          "job_id": "28564309135",
           "field": "dedup_key",
-          "before": "tư vấn nhân sự kokoro|kỹ sư trí tuệ nhân tạo/ai engineer|dong_nai|2026-W35",
-          "after": "giữ 28649205043",
-          "url": "https://jobsgo.vn/viec-lam/ky-su-tri-tue-nhan-tao-ai-engineer-28657664760.html"
+          "before": "tư vấn nhân sự kokoro|it staff (programming engineer)|dong_nai",
+          "after": "giữ 28495354973",
+          "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28564309135.html"
         }
       ]
     },
@@ -213,28 +247,28 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 3,
+      "rows_affected": 49,
       "examples": [
         {
-          "job_id": "29354987147",
+          "job_id": "28962757732",
           "field": "dedup_key",
-          "before": "tà lùng quang minh|nhân viên it|cao_bang|2026-W42",
-          "after": "giữ careerviet:35C879C1",
-          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-29354987147.html"
+          "before": "dược phẩm và trang thiết bị y tế hoàng đức|chuyên viên hệ thống chất lượng cntt|ho_chi_minh",
+          "after": "giữ topcv:2262684",
+          "url": "https://jobsgo.vn/viec-lam/chuyen-vien-he-thong-chat-luong-cntt-28962757732.html"
         },
         {
-          "job_id": "29387522431",
+          "job_id": "28973593774",
           "field": "dedup_key",
-          "before": "công nghệ vcs|nhân viên phân tích nghiệp vụ|ha_noi|2026-W43",
-          "after": "giữ topcv:1317511",
-          "url": "https://jobsgo.vn/viec-lam/nhan-vien-phan-tich-nghiep-vu-29387522431.html"
+          "before": "global technology solutions|java developer lead (backend)|ha_noi",
+          "after": "giữ topcv:1506755",
+          "url": "https://jobsgo.vn/viec-lam/java-developer-lead-backend-28973593774.html"
         },
         {
-          "job_id": "29397828892",
+          "job_id": "28973648090",
           "field": "dedup_key",
-          "before": "beyondnet|nhân viên network engineer|ha_noi|2026-W43",
-          "after": "giữ topcv:2321078",
-          "url": "https://jobsgo.vn/viec-lam/nhan-vien-network-engineer-29397828892.html"
+          "before": "global technology solutions|software tester lead|ha_noi",
+          "after": "giữ topcv:2244120",
+          "url": "https://jobsgo.vn/viec-lam/software-tester-lead-28973648090.html"
         }
       ]
     }
@@ -248,12 +282,12 @@
     {
       "field": "company_name",
       "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_out": 99.8
     },
     {
       "field": "raw_location_text",
       "fill_pct_in": 99.4,
-      "fill_pct_out": 99.9
+      "fill_pct_out": 99.8
     },
     {
       "field": "raw_posted_date",
@@ -263,7 +297,7 @@
     {
       "field": "raw_description_text",
       "fill_pct_in": 98.5,
-      "fill_pct_out": 99.9
+      "fill_pct_out": 99.8
     },
     {
       "field": "skills_list",
@@ -294,20 +328,80 @@
       "drop": [
         "non_it"
       ],
-      "approved_on": "2026-11-03",
-      "evidence": "C4b: Gán tay 80 tin, 50/50 non_it theo luật đúng 100%, 73 non_it (kinh doanh, marketing, rượu vang...)"
+      "approved_on": "2026-11-09",
+      "evidence": "C4b: Gán tay 96 tin, xác nhận 77 non_it (80.2%). Nguồn đăng lẫn tin ngoài IT"
+    },
+    "scope_c8_reasons": {
+      "S3_CTV_TITLE": 3
     },
     "review": {
       "file": "data/preprocessing/review/it_jobsgo.csv",
-      "rows": 80,
-      "labeled": 0,
-      "labeled_non_it": 0,
-      "rule_decided": 0,
-      "rule_correct": 0,
-      "status_non_it": 0,
-      "status_non_it_correct": 0,
-      "level2_labeled": 0,
-      "level2_correct": 0
+      "rows": 96,
+      "labeled": 96,
+      "sample_strata": {
+        "tang_1_non_it": 50,
+        "tang_2_non_it": 29,
+        "tang_2_it": 1,
+        "tang_1_it": 16
+      },
+      "labeled_non_it": 77,
+      "rule_decided": 66,
+      "rule_correct": 66,
+      "status_non_it": 79,
+      "status_non_it_correct": 76,
+      "level2_labeled": 30,
+      "level2_correct": 26,
+      "level1_it_labeled": 16,
+      "level1_it_correct": 16,
+      "validation": {
+        "tp": 16,
+        "fp": 1,
+        "tn": 76,
+        "fn": 3,
+        "labeled": 96,
+        "precision_it": 0.9411764705882353,
+        "precision_non_it": 0.9620253164556962,
+        "recall_it": 0.8421052631578947,
+        "precision_it_ci": [
+          0.7301796936242458,
+          0.9895395990150023
+        ],
+        "precision_non_it_ci": [
+          0.8941993723231529,
+          0.9870019131105641
+        ],
+        "recall_it_ci": [
+          0.6243452472967091,
+          0.9447952836146586
+        ],
+        "reason": null
+      }
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "28964115632",
+      "source": "jobsgo",
+      "field": "job_title",
+      "before": "IT Project Manager (Tiếng Nhật N2) – 40–70 triệu VNĐ [28797 - Quận 1, TP. Hồ Chí Minh]",
+      "after": "DROPPED C5: JD_SHORT",
+      "changed": true
+    },
+    {
+      "job_id": "29412249790",
+      "source": "jobsgo",
+      "field": "job_title",
+      "before": "IT Project Manager (Tiếng Nhật N2) – 40–70 triệu VNĐ [28797 - Quận 1, TP. Hồ Chí Minh]",
+      "after": "DROPPED C5: JD_SHORT",
+      "changed": true
+    },
+    {
+      "job_id": "29108609771",
+      "source": "jobsgo",
+      "field": "job_title",
+      "before": "Cộng Tác Viên Kiểm Thử (Full-time)",
+      "after": "DROPPED C8: S3_CTV_TITLE",
+      "changed": true
+    }
+  ]
 }

@@ -1,0 +1,121 @@
+{
+  "step": "09_tokens",
+  "source": "jobsgo",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:51:43+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": null,
+    "rows": 585
+  },
+  "output": {
+    "path": "data/processing/09_tokens/all.parquet",
+    "rows": 585
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "mean_tokens_per_job": 246.66,
+    "df_threshold": 0.6,
+    "n_general_stopwords": 91,
+    "model": "không dùng model"
+  },
+  "samples": [
+    {
+      "job_id": "jobsgo_29194795684",
+      "source": "jobsgo",
+      "field": "tokens_nostop",
+      "before": "Nhận các nhiệm vụ từ Ban Lãnh đạo, Trưởng phòng phòng kỹ thuật, cụ thể:\nLàm việc với các đối tác, nhà cung cấp theo dự án được phân công nhằm đưa ra giải pháp, sản phẩm, dịch vụ phù hợp với nhu cầu củ…",
+      "after": [
+        "nhận",
+        "nhiệm vụ",
+        "từ",
+        "ban",
+        "lãnh đạo",
+        "trưởng phòng",
+        "phòng",
+        "kỹ thuật",
+        "cụ thể",
+        "đối tác",
+        "nhà cung cấp",
+        "dự án",
+        "phân công",
+        "nhằm",
+        "đưa",
+        "ra",
+        "giải pháp",
+        "sản phẩm",
+        "dịch vụ",
+        "phù hợp"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29210180691",
+      "source": "jobsgo",
+      "field": "tokens_nostop",
+      "before": "Tiếp nhận thông tin khách hàng.\nTư vấn triển khai phần mềm Website cho khách hàng.\nTriển khai về bố cục, màu sắc, chức năng, Website.\nLên ý tưởng, bảng Demo Website cho khách hàng.\nTương tác bộ phận k…",
+      "after": [
+        "tiếp nhận",
+        "thông tin",
+        "khách hàng",
+        "tư vấn",
+        "triển khai",
+        "phần mềm",
+        "website",
+        "khách hàng",
+        "triển khai",
+        "bố cục",
+        "màu sắc",
+        "chức năng",
+        "website",
+        "lên",
+        "ý tưởng",
+        "bảng",
+        "demo website",
+        "khách hàng",
+        "tương tác",
+        "bộ phận"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29290799214",
+      "source": "jobsgo",
+      "field": "tokens_nostop",
+      "before": "Tiếp nhận thông tin khách hàng.\nTư vấn triển khai phần mềm Website cho khách hàng.\nTriển khai thiết kế về bố cục, màu sắc, chức năng, Website.\nLên ý tưởng, bảng Demo Website cho khách hàng.\nTương tác …",
+      "after": [
+        "tiếp nhận",
+        "thông tin",
+        "khách hàng",
+        "tư vấn",
+        "triển khai",
+        "phần mềm",
+        "website",
+        "khách hàng",
+        "triển khai",
+        "thiết kế",
+        "bố cục",
+        "màu sắc",
+        "chức năng",
+        "website",
+        "lên",
+        "ý tưởng",
+        "bảng",
+        "demo website",
+        "khách hàng",
+        "tương tác"
+      ],
+      "changed": true
+    }
+  ]
+}

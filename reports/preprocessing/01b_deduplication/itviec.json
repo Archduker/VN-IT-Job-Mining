@@ -2,31 +2,36 @@
   "step": "01b_deduplication",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:23+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:58+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
-    "rows": 905
+    "rows": 857
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/itviec.jsonl",
-    "rows": 885
+    "rows": 831
   },
   "dropped": [
     {
+      "rule": "D0",
+      "reason": "Tầng 1: trùng (nguồn, job_id)",
+      "rows": 0
+    },
+    {
       "rule": "D2",
-      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
-      "rows": 20
+      "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+      "rows": 2
     },
     {
       "rule": "D4",
-      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
+      "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "rows": 0
     },
     {
       "rule": "D5",
-      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
-      "rows": 0
+      "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+      "rows": 24
     }
   ],
   "rules": [
@@ -38,53 +43,75 @@
       "examples": []
     },
     {
-      "id": "D2",
-      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "id": "D0",
+      "name": "Tầng 1: trùng (nguồn, job_id)",
       "action": "drop",
-      "rows_affected": 20,
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "D2",
+      "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+      "action": "drop",
+      "rows_affected": 2,
       "examples": [
         {
-          "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-4137",
+          "job_id": "application-consultant-java-python-sql-avenue-5116",
           "field": "dedup",
-          "before": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-4137",
-          "after": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
-          "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-4137"
+          "before": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-5116",
+          "after": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-3829",
+          "url": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-5116"
         },
         {
-          "job_id": "ai-expert-computer-vision-nlp-llm-mb-bank-4024",
+          "job_id": "business-analyst-banking-finance-shinhan-ds-5152",
           "field": "dedup",
-          "before": "https://itviec.com/viec-lam-it/ai-expert-computer-vision-nlp-llm-mb-bank-4024",
-          "after": "https://itviec.com/viec-lam-it/ai-expert-computer-vision-nlp-llm-mb-bank-4706",
-          "url": "https://itviec.com/viec-lam-it/ai-expert-computer-vision-nlp-llm-mb-bank-4024"
-        },
-        {
-          "job_id": "ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5051",
-          "field": "dedup",
-          "before": "https://itviec.com/viec-lam-it/ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5051",
-          "after": "https://itviec.com/viec-lam-it/ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5434",
-          "url": "https://itviec.com/viec-lam-it/ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5051"
+          "before": "https://itviec.com/viec-lam-it/business-analyst-banking-finance-shinhan-ds-5152",
+          "after": "https://itviec.com/viec-lam-it/business-analyst-banking-finance-shinhan-ds-4637",
+          "url": "https://itviec.com/viec-lam-it/business-analyst-banking-finance-shinhan-ds-5152"
         }
       ]
     },
     {
       "id": "D4",
-      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
       "id": "D5",
-      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 0,
-      "examples": []
+      "rows_affected": 24,
+      "examples": [
+        {
+          "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
+          "field": "dedup",
+          "before": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
+          "after": "https://itviec.com/viec-lam-it/ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5434",
+          "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127"
+        },
+        {
+          "job_id": "android-developer-kotlin-jetpack-compose-mvvm-uplive-vn-3827",
+          "field": "dedup",
+          "before": "https://itviec.com/viec-lam-it/android-developer-kotlin-jetpack-compose-mvvm-uplive-vn-3827",
+          "after": "https://itviec.com/viec-lam-it/middle-android-developer-kotlin-uplive-vn-4249",
+          "url": "https://itviec.com/viec-lam-it/android-developer-kotlin-jetpack-compose-mvvm-uplive-vn-3827"
+        },
+        {
+          "job_id": "backend-developer-java-spring-boot-sql-kafka-t2-soft-company-limited-0016",
+          "field": "dedup",
+          "before": "https://itviec.com/viec-lam-it/backend-developer-java-spring-boot-sql-kafka-t2-soft-company-limited-0016",
+          "after": "https://itviec.com/viec-lam-it/mid-sen-backend-developer-java-spring-boot-sql-kafka-t2-soft-company-limited-0557",
+          "url": "https://itviec.com/viec-lam-it/backend-developer-java-spring-boot-sql-kafka-t2-soft-company-limited-0016"
+        }
+      ]
     },
     {
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 8,
+      "rows_affected": 42,
       "examples": [
         {
           "job_id": "ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
@@ -94,18 +121,47 @@
           "url": "https://itviec.com/viec-lam-it/ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829"
         },
         {
-          "job_id": "canvas-lms-frontend-developer-reactjs-typescript-edufit-1518",
+          "job_id": "ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5434",
           "field": "master_id",
-          "before": "https://itviec.com/viec-lam-it/canvas-lms-frontend-developer-reactjs-typescript-edufit-1518",
-          "after": "5f2f4131-f832-5dc5-b285-c2b0999b2553",
-          "url": "https://itviec.com/viec-lam-it/canvas-lms-frontend-developer-reactjs-typescript-edufit-1518"
+          "before": "https://itviec.com/viec-lam-it/ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5434",
+          "after": "7e546eb0-ac83-5eb6-87c9-789cbe0d39ec",
+          "url": "https://itviec.com/viec-lam-it/ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5434"
         },
         {
-          "job_id": "database-engineer-dba-lg-cns-viet-nam-3911",
+          "job_id": "all-level-backend-engineer-java-springboot-mb-bank-3947",
           "field": "master_id",
-          "before": "https://itviec.com/viec-lam-it/database-engineer-dba-lg-cns-viet-nam-3911",
-          "after": "42e83b10-e585-5d1d-ac06-90bca5d70a93",
-          "url": "https://itviec.com/viec-lam-it/database-engineer-dba-lg-cns-viet-nam-3911"
+          "before": "https://itviec.com/viec-lam-it/all-level-backend-engineer-java-springboot-mb-bank-3947",
+          "after": "ab4f2a2e-2bf2-5e1b-a358-c422d0fdaf0d",
+          "url": "https://itviec.com/viec-lam-it/all-level-backend-engineer-java-springboot-mb-bank-3947"
+        }
+      ]
+    },
+    {
+      "id": "D7",
+      "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
+      "action": "flag",
+      "rows_affected": 28,
+      "examples": [
+        {
+          "job_id": "6-business-analyst-trung-tam-cong-nghe-thong-tin-mobifone-5459",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.9722,
+          "url": "https://itviec.com/viec-lam-it/6-business-analyst-trung-tam-cong-nghe-thong-tin-mobifone-5459"
+        },
+        {
+          "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8075,
+          "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127"
+        },
+        {
+          "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8037,
+          "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127"
         }
       ]
     }
@@ -121,17 +177,45 @@
   },
   "extra": {
     "cdc": {
-      "job_ids": 914,
+      "job_ids": 910,
       "chains_gt1": 1,
       "hops": 1,
       "hop_same_crawler_hash": 0,
       "hop_same_canonical_hash": 0,
+      "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 703,
-    "d2_groups": 20,
+    "blocking_blocks": 695,
+    "d2_groups": 2,
     "rule_totals": {
-      "D2": 20
+      "D2": 2,
+      "D5": 24
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "junior-senior-fullstack-developer-mb-bank-5509",
+      "source": "itviec",
+      "field": "duplicate_of",
+      "before": "junior-senior-fullstack-developer-mb-bank-5509",
+      "after": "DROPPED D5 -> itviec:junior-senior-fullstack-developer-java-go-mb-bank-5929",
+      "changed": true
+    },
+    {
+      "job_id": "middle-senior-fullstack-developer-mb-bank-0047",
+      "source": "itviec",
+      "field": "duplicate_of",
+      "before": "middle-senior-fullstack-developer-mb-bank-0047",
+      "after": "DROPPED D5 -> itviec:middle-senior-fullstack-developer-java-go-mb-bank-0143",
+      "changed": true
+    },
+    {
+      "job_id": "middle-senior-software-engineer-ai-augmented-flinters-vietnam-0958",
+      "source": "itviec",
+      "field": "duplicate_of",
+      "before": "middle-senior-software-engineer-ai-augmented-flinters-vietnam-0958",
+      "after": "DROPPED D5 -> itviec:middle-senior-fullstack-developer-ai-java-python-flinters-vietnam-1842",
+      "changed": true
+    }
+  ]
 }

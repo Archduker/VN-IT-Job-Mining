@@ -22,7 +22,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import GroupKFold, GroupShuffleSplit, KFold, train_test_split
 
-from mining.config import LOCATION_FEATURE_GROUPS, RANDOM_STATE, SalaryParams
+from mining.config import JOB_FAMILY_OTHER, LOCATION_FEATURE_GROUPS, RANDOM_STATE, SalaryParams
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +103,7 @@ def build_salary_features(meta: pd.DataFrame, skills: pd.DataFrame) -> pd.DataFr
     X["exp_min_years__missing"] = exp.isna().astype(np.uint8).to_numpy()
     for g in LOCATION_FEATURE_GROUPS:
         X[f"{LOC_FEATURE_PREFIX}{g}"] = (meta["location_group"] == g).astype(np.uint8).to_numpy()
-    fam = meta["job_family"].fillna("Khác").astype(str)
+    fam = meta["job_family"].fillna(JOB_FAMILY_OTHER).astype(str)
     for f in sorted(fam.unique()):
         X[f"{JF_FEATURE_PREFIX}{f}"] = (fam == f).astype(np.uint8).to_numpy()
     assert_no_leakage(list(X.columns))
@@ -158,7 +158,7 @@ def skill_values_from_shap(
     """Bảng giá trị biên của kỹ năng theo phạm vi ALL và từng job_family."""
     skill_cols = [c for c in X.columns if c.startswith(SKILL_FEATURE_PREFIX)]
     col_idx = {c: X.columns.get_loc(c) for c in skill_cols}
-    fam = pd.Series(job_family).reset_index(drop=True).fillna("Khác").astype(str).to_numpy()
+    fam = pd.Series(job_family).reset_index(drop=True).fillna(JOB_FAMILY_OTHER).astype(str).to_numpy()
     scopes = [(ALL_SCOPE, np.ones(len(X), dtype=bool))] + [(f, fam == f) for f in sorted(set(fam))]
     rows = []
     for scope, smask in scopes:

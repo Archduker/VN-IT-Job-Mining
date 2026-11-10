@@ -118,7 +118,7 @@ def silver(tmp_path, monkeypatch):
 
 
 def test_storage_compares_each_key(silver):
-    items = {i["key"]: i["status"] for i in client.get("/api/v1/preprocessing/storage").json()["items"]}
+    items = {i["key"]: i["status"] for i in client.get("/api/v1/preprocessing/storage").json()["items"] if i["key"].startswith("staging/")}
     assert items == {"staging/topcv/preprocessing/02_integration.parquet": "khop",
                      "staging/itviec/preprocessing/02_integration.parquet": "chua_day"}
 
@@ -132,3 +132,54 @@ def test_rows_from_r2_or_local_fallback(silver):
     assert client.get("/api/v1/preprocessing/steps/02_integration/rows?source=abc").status_code == 404
     assert client.get("/api/v1/preprocessing/steps/02_integration/rows?limit=999").status_code == 422
     assert client.get("/api/v1/preprocessing/steps/01_clean/rows").status_code == 400
+
+
+# ---- samples, anomalies, bước processing 07-09 (fixture dạng hợp đồng, ghi trong tmp_path)
+
+def test_samples_block_passes_through(reports, tmp_path):
+    reports("01b_deduplication", "topcv", "2026-11-10T10:00:00+00:00")
+    path = tmp_path / "reports" / "preprocessing" / "01b_deduplication" / "topcv.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    data["samples"] = [{"job_id": "1", "source": "topcv", "field": "title", "before": "A", "after": "B"}]
+    path.write_text(json.dumps(data), encoding="utf-8")
+    got = client.get("/api/v1/preprocessing/steps/01b_deduplication/topcv").json()
+    assert got["report"]["samples"][0]["job_id"] == "1"
+
+
+def test_anomalies_no_data_then_filter(reports, tmp_path):
+    assert client.get("/api/v1/preprocessing/anomalies").json() == {
+        "available": False, "reason": "NO_DATA", "by_kind": {}, "total": 0, "items": []}
+    d = tmp_path / "reports" / "preprocessing" / "04_normalization"
+    d.mkdir(parents=True)
+    rows = [{"kind": "salary_suspect", "source": "topcv", "job_id": "1", "job_id_global": "g1", "url": "u", "field": "f", "value": 1, "detail": ""},
+            {"kind": "salary_suspect", "source": "topdev", "job_id": "2", "job_id_global": "g2", "url": "u", "field": "f", "value": 2, "detail": ""},
+            {"kind": "tinh_unknown", "source": "topcv", "job_id": "3", "job_id_global": "g3", "url": "u", "field": "f", "value": 3, "detail": ""}]
+    (d / "anomalies.json").write_text(json.dumps(rows), encoding="utf-8")
+    got = client.get("/api/v1/preprocessing/anomalies", params={"kind": "salary_suspect"}).json()
+    assert got["total"] == 2 and got["by_kind"] == {"salary_suspect": 2, "tinh_unknown": 1}
+    assert client.get("/api/v1/preprocessing/anomalies", params={"source": "topcv"}).json()["by_kind"] == {"salary_suspect": 1, "tinh_unknown": 1}
+    assert client.get("/api/v1/preprocessing/anomalies", params={"source": "bogus"}).status_code == 404
+
+
+def test_job_lookup_by_id(tmp_path, monkeypatch):
+    import pandas as pd
+    from preprocessing.common import r2_export
+    monkeypatch.setattr(r2_export, "DATA", tmp_path)
+    (tmp_path / "02_integration").mkdir()
+    pd.DataFrame([{"job_id_global": "g1", "source_platform": "topcv", "source_job_id": "77", "job_title": "Dev", "raw_description_text": "JD"}]
+                 ).to_parquet(tmp_path / "02_integration" / "all.parquet")
+    got = client.get("/api/v1/preprocessing/jobs/topcv/77").json()
+    assert got["available"] and got["row"]["raw_description_text"] == "JD" and got["step"] == "02_integration"
+    assert client.get("/api/v1/preprocessing/jobs/topcv/nope").json()["reason"] == "NO_DATA"
+
+
+def test_processing_steps_empty_then_present(reports, tmp_path):
+    data = client.get("/api/v1/preprocessing/processing-steps").json()
+    assert [s["step"] for s in data] == ["07_sections", "08_skills", "09_tokens"]
+    assert all(not s["available"] and s["reason"] == "NO_DATA" for s in data)
+    p = tmp_path / "reports" / "processing" / "07_sections"
+    p.mkdir(parents=True)
+    (p / "_all.json").write_text(json.dumps(report("07_sections", "_all", "2026-11-10T10:00:00+00:00")), encoding="utf-8")
+    assert client.get("/api/v1/preprocessing/processing-steps").json()[0]["output_rows"] == 8
+    assert client.get("/api/v1/preprocessing/steps/07_sections").json()["available"] is True
+    assert client.get("/api/v1/preprocessing/steps/99_x").status_code == 404

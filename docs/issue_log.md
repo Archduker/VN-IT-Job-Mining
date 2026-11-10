@@ -444,3 +444,8 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Cách xử lý:** `01b_deduplication` vào `STEPS`, 02 đọc 01b; tầng 2 sha1(text_fold) + cùng company_slug, tầng 3 MinHash/LSH rồi Jaccard chính xác >= 0.85 + cùng company_slug, cả cùng sàn lẫn khác sàn (`dedup_policy.json`); C8 bỏ CTV/đa cấp, JD ngắn 50 từ ở 01_clean; fastText lid.176 (`models/fasttext`, git-ignored) gắn `language`, `language_conf` ở 03.
 - **Kiểm chứng:** `pytest tests/unit` + `tests/integration/test_preprocessing_steps_api.py` xanh; 5.077 -> 4.826 sau dedup (D2 72, D4 11, D5 168), chạy 2 lần cho file giữ/loại giống hệt. Precision dedup và loại nhầm C8 chưa đo, chờ người dùng gán nhãn.
 - **KNOWN_ISSUED:** không có mục tương ứng.
+
+### L-37. Khóa C6 có tuần cào; phúc lợi quét cả mô tả công việc (10/11/2026)
+- **Lỗi:** (1) `dedup_key` của 01_clean có thành phần tuần nên tin đăng lại ở tuần khác không bị gộp; (2) `extract_benefits` so chuỗi con trên toàn JD, nên "máy tính", "laptop", "training" trong phần việc cũng thành phúc lợi "Thiết bị làm việc", "Đào tạo"; "chứng chỉ" (yêu cầu) bị tính là đào tạo.
+- **Cách xử lý:** bỏ tuần khỏi `dedup_key` (xóa `_week`); `extract_benefits` chỉ quét `benefits_list` và phần JD từ tiêu đề phúc lợi trở đi, khớp theo ranh giới từ; bỏ "máy tính", "chứng chỉ", "certifications" khỏi `benefits.json`.
+- **Kiểm chứng:** `tests/unit/test_pre_fixes.py` (3 test), `tests/unit` 441 qua. Đo trên 03_transformation (4.798 tin): nhãn phúc lợi 19.283 -> 17.769, "Thiết bị làm việc" 1.068 -> 706; dry-run 01_clean ra 4.836 (trước 5.050). Chưa đo precision/recall phúc lợi và precision dedup vì chưa có nhãn tay.

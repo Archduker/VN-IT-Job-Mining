@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T09:09:42+00:00",
-  "code_version": "800b5e7",
+  "generated_at": "2026-11-10T11:50:10+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 5076
+    "rows": 4798
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 5076
+    "rows": 4798
   },
   "dropped": [],
   "rules": [
@@ -18,24 +18,24 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 10798,
+      "rows_affected": 10139,
       "examples": [],
       "by_source": {
-        "topcv": 2350,
-        "topdev": 1851,
-        "vietnamworks": 1008,
-        "careerviet": 1306,
-        "vieclam24h": 195,
-        "itviec": 2960,
-        "glints": 571,
-        "jobsgo": 557
+        "topcv": 2305,
+        "topdev": 1679,
+        "vietnamworks": 991,
+        "careerviet": 1228,
+        "vieclam24h": 184,
+        "itviec": 2726,
+        "glints": 547,
+        "jobsgo": 479
       }
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 2319,
+      "rows_affected": 2191,
       "examples": [
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
@@ -60,38 +60,38 @@
         }
       ],
       "by_source": {
-        "topcv": 907,
-        "topdev": 62,
-        "vietnamworks": 221,
-        "careerviet": 136,
-        "vieclam24h": 168,
-        "itviec": 232,
-        "glints": 163,
-        "jobsgo": 430
+        "topcv": 891,
+        "topdev": 58,
+        "vietnamworks": 222,
+        "careerviet": 127,
+        "vieclam24h": 157,
+        "itviec": 212,
+        "glints": 155,
+        "jobsgo": 369
       }
     },
     {
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 4872,
+      "rows_affected": 4614,
       "examples": [],
       "by_source": {
-        "topcv": 1554,
-        "topdev": 71,
-        "vietnamworks": 800,
-        "careerviet": 438,
-        "vieclam24h": 182,
-        "itviec": 874,
-        "glints": 271,
-        "jobsgo": 682
+        "topcv": 1526,
+        "topdev": 67,
+        "vietnamworks": 786,
+        "careerviet": 413,
+        "vieclam24h": 171,
+        "itviec": 807,
+        "glints": 260,
+        "jobsgo": 584
       }
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 3346,
+      "rows_affected": 4346,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -101,58 +101,58 @@
           "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
         },
         {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "exp_min_max",
+          "before": "Dưới một năm kinh nghiệm",
+          "after": "0.0 - 1.0 years",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        },
+        {
           "job_id": "02ab4af2-fa4b-4b73-9795-c9047f9b9dbc",
           "field": "exp_min_max",
           "before": "3 - 5 năm kinh nghiệm",
           "after": "3.0 - 5.0 years",
           "url": "https://glints.com/vn/opportunities/jobs/developer/02ab4af2-fa4b-4b73-9795-c9047f9b9dbc"
-        },
-        {
-          "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
-          "field": "exp_min_max",
-          "before": "1 - 3 năm kinh nghiệm",
-          "after": "1.0 - 3.0 years",
-          "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
         }
       ],
       "by_source": {
-        "topcv": 1411,
+        "topcv": 1526,
         "topdev": 58,
-        "vietnamworks": 674,
-        "careerviet": 389,
-        "vieclam24h": 180,
-        "itviec": 0,
-        "glints": 202,
-        "jobsgo": 432
+        "vietnamworks": 664,
+        "careerviet": 376,
+        "vieclam24h": 171,
+        "itviec": 729,
+        "glints": 238,
+        "jobsgo": 584
       }
     },
     {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 2933,
+      "rows_affected": 2821,
       "examples": [],
       "by_source": {
-        "topcv": 1554,
+        "topcv": 1526,
         "topdev": 0,
-        "vietnamworks": 799,
+        "vietnamworks": 785,
         "careerviet": 0,
-        "vieclam24h": 182,
+        "vieclam24h": 171,
         "itviec": 0,
         "glints": 0,
-        "jobsgo": 398
+        "jobsgo": 339
       }
     },
     {
       "id": "T2f",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 22,
+      "rows_affected": 16,
       "examples": [],
       "by_source": {
         "topcv": 2,
         "topdev": 0,
-        "vietnamworks": 10,
+        "vietnamworks": 4,
         "careerviet": 1,
         "vieclam24h": 2,
         "itviec": 1,
@@ -164,17 +164,17 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 5076,
+      "rows_affected": 4798,
       "examples": [],
       "by_source": {
-        "topcv": 1561,
-        "topdev": 227,
-        "vietnamworks": 800,
-        "careerviet": 447,
-        "vieclam24h": 182,
-        "itviec": 905,
-        "glints": 271,
-        "jobsgo": 683
+        "topcv": 1533,
+        "topdev": 207,
+        "vietnamworks": 786,
+        "careerviet": 421,
+        "vieclam24h": 171,
+        "itviec": 835,
+        "glints": 260,
+        "jobsgo": 585
       }
     },
     {
@@ -198,16 +198,16 @@
       "id": "T6.2",
       "name": "Chuẩn hóa Unicode về NFC",
       "action": "modify",
-      "rows_affected": 43,
+      "rows_affected": 35,
       "examples": [],
       "by_source": {
         "topcv": 0,
-        "topdev": 5,
+        "topdev": 4,
         "vietnamworks": 0,
-        "careerviet": 17,
+        "careerviet": 14,
         "vieclam24h": 0,
         "itviec": 0,
-        "glints": 21,
+        "glints": 17,
         "jobsgo": 0
       }
     },
@@ -215,13 +215,13 @@
       "id": "T6.3",
       "name": "Bỏ ký tự ẩn",
       "action": "modify",
-      "rows_affected": 31,
+      "rows_affected": 28,
       "examples": [],
       "by_source": {
         "topcv": 2,
         "topdev": 0,
         "vietnamworks": 0,
-        "careerviet": 26,
+        "careerviet": 23,
         "vieclam24h": 1,
         "itviec": 0,
         "glints": 2,
@@ -232,24 +232,41 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 1642,
+      "rows_affected": 1573,
       "examples": [],
       "by_source": {
-        "topcv": 468,
-        "topdev": 84,
-        "vietnamworks": 249,
-        "careerviet": 160,
-        "vieclam24h": 63,
-        "itviec": 295,
-        "glints": 145,
-        "jobsgo": 178
+        "topcv": 461,
+        "topdev": 77,
+        "vietnamworks": 246,
+        "careerviet": 153,
+        "vieclam24h": 58,
+        "itviec": 281,
+        "glints": 137,
+        "jobsgo": 160
+      }
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": [],
+      "by_source": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
       }
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 5069,
+      "rows_affected": 4791,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -274,21 +291,21 @@
         }
       ],
       "by_source": {
-        "topcv": 1560,
-        "topdev": 227,
-        "vietnamworks": 800,
-        "careerviet": 447,
-        "vieclam24h": 182,
-        "itviec": 905,
-        "glints": 271,
-        "jobsgo": 677
+        "topcv": 1532,
+        "topdev": 207,
+        "vietnamworks": 786,
+        "careerviet": 421,
+        "vieclam24h": 171,
+        "itviec": 835,
+        "glints": 260,
+        "jobsgo": 579
       }
     },
     {
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 5061,
+      "rows_affected": 4784,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -313,52 +330,52 @@
         }
       ],
       "by_source": {
-        "topcv": 1554,
-        "topdev": 227,
-        "vietnamworks": 799,
-        "careerviet": 441,
-        "vieclam24h": 182,
-        "itviec": 905,
-        "glints": 271,
-        "jobsgo": 682
+        "topcv": 1526,
+        "topdev": 207,
+        "vietnamworks": 785,
+        "careerviet": 416,
+        "vieclam24h": 171,
+        "itviec": 835,
+        "glints": 260,
+        "jobsgo": 584
       }
     }
   ],
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 40.3,
-      "fill_pct_out": 40.3
+      "fill_pct_in": 40.2,
+      "fill_pct_out": 40.2
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 44.3,
-      "fill_pct_out": 44.3
+      "fill_pct_in": 44.4,
+      "fill_pct_out": 44.4
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 65.4,
-      "fill_pct_out": 65.4
+      "fill_pct_in": 64.3,
+      "fill_pct_out": 64.3
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 94.5,
-      "fill_pct_out": 94.5
+      "fill_pct_in": 94.6,
+      "fill_pct_out": 94.6
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 65.9,
-      "fill_pct_out": 65.9
+      "fill_pct_in": 90.6,
+      "fill_pct_out": 90.6
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 59.3,
-      "fill_pct_out": 59.3
+      "fill_pct_in": 69.1,
+      "fill_pct_out": 69.1
     },
     {
       "field": "headcount",
-      "fill_pct_in": 57.8,
-      "fill_pct_out": 57.8
+      "fill_pct_in": 58.8,
+      "fill_pct_out": 58.8
     },
     {
       "field": "job_title_clean",
@@ -372,13 +389,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 91.9,
-      "fill_pct_out": 91.9
+      "fill_pct_in": 92.3,
+      "fill_pct_out": 92.3
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 95.4,
-      "fill_pct_out": 95.4
+      "fill_pct_in": 95.2,
+      "fill_pct_out": 95.2
     },
     {
       "field": "locations",
@@ -402,47 +419,48 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1561,
-        "output": 1561
+        "input": 1533,
+        "output": 1533
       },
       "topdev": {
-        "input": 227,
-        "output": 227
+        "input": 207,
+        "output": 207
       },
       "vietnamworks": {
-        "input": 800,
-        "output": 800
+        "input": 786,
+        "output": 786
       },
       "careerviet": {
-        "input": 447,
-        "output": 447
+        "input": 421,
+        "output": 421
       },
       "vieclam24h": {
-        "input": 182,
-        "output": 182
+        "input": 171,
+        "output": 171
       },
       "itviec": {
-        "input": 905,
-        "output": 905
+        "input": 835,
+        "output": 835
       },
       "glints": {
-        "input": 271,
-        "output": 271
+        "input": 260,
+        "output": 260
       },
       "jobsgo": {
-        "input": 683,
-        "output": 683
+        "input": 585,
+        "output": 585
       }
     },
     "language_distribution": {
-      "vi": 3729,
-      "en": 1347
+      "vi": 3485,
+      "en": 1305,
+      "other": 8
     },
     "text_quality": {
       "before": {
         "html": 10,
-        "nfc": 43,
-        "hidden": 31
+        "nfc": 35,
+        "hidden": 28
       },
       "residual_rows": {
         "residual_html": 0,
@@ -453,5 +471,199 @@
       "residual_nfd_pct": 0.0,
       "residual_hidden_char_pct": 0.0
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "topcv_2266514",
+      "source": "topcv",
+      "field": "exp_min_years",
+      "before": "2 năm",
+      "after": 2.0,
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2322537",
+      "source": "topcv",
+      "field": "salary_min_vnd",
+      "before": "Thoả thuận",
+      "after": null,
+      "changed": true
+    },
+    {
+      "job_id": "topcv_1671064",
+      "source": "topcv",
+      "field": "headcount",
+      "before": "1 người",
+      "after": 1.0,
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2138343",
+      "source": "topdev",
+      "field": "salary_min_vnd",
+      "before": "From 18.000.000 VND",
+      "after": 18000000.0,
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2142369",
+      "source": "topdev",
+      "field": "exp_min_years",
+      "before": "24 months",
+      "after": 2.0,
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2134507",
+      "source": "topdev",
+      "field": "requirements_clean",
+      "before": "Tốt nghiệp Đại học các chuyên ngành: Công nghệ thông tin, Kỹ thuật phần mềm, Khoa học máy tính và liên quan\nCó kinh nghiệm làm việc thực tế tối thiểu 1,5 năm tại các công ty hoặc dự án về lập trình Ba…",
+      "after": "Tốt nghiệp Đại học các chuyên ngành: Công nghệ thông tin, Kỹ thuật phần mềm, Khoa học máy tính và liên quan Có kinh nghiệm làm việc thực tế tối thiểu 1,5 năm tại các công ty hoặc dự án về lập trình Ba…",
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2110250",
+      "source": "vietnamworks",
+      "field": "salary_min_vnd",
+      "before": "Thương lượng",
+      "after": null,
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2121758",
+      "source": "vietnamworks",
+      "field": "posted_date",
+      "before": "2026-10-21T11:18:30+07:00",
+      "after": "2026-10-21",
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2119144",
+      "source": "vietnamworks",
+      "field": "exp_min_years",
+      "before": "8 năm",
+      "after": 8.0,
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C88E11",
+      "source": "careerviet",
+      "field": "posted_date",
+      "before": "06/10/2026",
+      "after": "2026-10-06",
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C7AC66",
+      "source": "careerviet",
+      "field": "exp_min_years",
+      "before": "1 - 5 Năm",
+      "after": 1.0,
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C804AF",
+      "source": "careerviet",
+      "field": "salary_min_vnd",
+      "before": "Cạnh tranh",
+      "after": null,
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200946997",
+      "source": "vieclam24h",
+      "field": "salary_min_vnd",
+      "before": "12 - 15 triệu",
+      "after": 12000000.0,
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200978346",
+      "source": "vieclam24h",
+      "field": "headcount",
+      "before": "3",
+      "after": 3.0,
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200963455",
+      "source": "vieclam24h",
+      "field": "exp_min_years",
+      "before": "3 năm",
+      "after": 3.0,
+      "changed": true
+    },
+    {
+      "job_id": "itviec_java-developer-springboot-oracle-kafka-postgresql-goline-corporation-0412",
+      "source": "itviec",
+      "field": "description_clean",
+      "before": "Thiết kế, phát triển và tối ưu các\nbackend services\nsử dụng Java/Spring Boot cho các hệ thống yêu cầu cao về hiệu năng, độ ổn định và khả năng mở rộng.\nTham gia\nphân tích yêu cầu, thiết kế giải pháp k…",
+      "after": "Thiết kế, phát triển và tối ưu các backend services sử dụng Java/Spring Boot cho các hệ thống yêu cầu cao về hiệu năng, độ ổn định và khả năng mở rộng.\nTham gia phân tích yêu cầu, thiết kế giải pháp k…",
+      "changed": true
+    },
+    {
+      "job_id": "itviec_middle-to-senior-data-analyst-saas-us-product-flodesk-1445",
+      "source": "itviec",
+      "field": "salary_min_vnd",
+      "before": "1500 - 4000 USD",
+      "after": 38100000.0,
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-fullstack-engineer-grab-vietnam-ltd-3935",
+      "source": "itviec",
+      "field": "exp_min_years",
+      "before": "3.1 năm (37 tháng)",
+      "after": 3.0,
+      "changed": true
+    },
+    {
+      "job_id": "glints_369ac781-8635-42bc-ad68-465845f4178b",
+      "source": "glints",
+      "field": "requirements_clean",
+      "before": "Mô tả công việc\nLàm tại công ty\n5 - 10 năm kinh nghiệm\nTối thiểu Cử Nhân",
+      "after": "Mô tả công việc Làm tại công ty 5 - 10 năm kinh nghiệm Tối thiểu Cử Nhân",
+      "changed": true
+    },
+    {
+      "job_id": "glints_e2cb1f15-0f4d-4f32-9432-443e49b292c7",
+      "source": "glints",
+      "field": "posted_date",
+      "before": "2026-09-22T04:48:56.483Z",
+      "after": "2026-09-22",
+      "changed": true
+    },
+    {
+      "job_id": "glints_00b4d332-8e6e-4714-9853-e816085f7d01",
+      "source": "glints",
+      "field": "description_clean",
+      "before": "Chi tiết công việc [DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM\nTÊN VỊ TRÍ: KỸ THUẬT VIÊN IT PHẦN MỀM (Thuộc Phòng Tổng Vụ)\nĐỊA ĐIỂM L…",
+      "after": "Chi tiết công việc [DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM TÊN VỊ TRÍ: KỸ THUẬT VIÊN IT PHẦN MỀM (Thuộc Phòng Tổng Vụ) ĐỊA ĐIỂM L…",
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29229232028",
+      "source": "jobsgo",
+      "field": "exp_min_years",
+      "before": "1 - 2 năm",
+      "after": 1.0,
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29091296546",
+      "source": "jobsgo",
+      "field": "headcount",
+      "before": "2",
+      "after": 2.0,
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29075219010",
+      "source": "jobsgo",
+      "field": "salary_min_vnd",
+      "before": "15 - 18 triệu VNĐ",
+      "after": 15000000.0,
+      "changed": true
+    }
+  ]
 }

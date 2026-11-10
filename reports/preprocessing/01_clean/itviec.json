@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:10+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:39+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/itviec/raw",
-    "rows": 915
+    "rows": 911
   },
   "output": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
-    "rows": 905
+    "rows": 857
   },
   "dropped": [
     {
@@ -26,27 +26,32 @@
     {
       "rule": "C3",
       "reason": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
-      "rows": 4
+      "rows": 0
     },
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 0
+      "rows": 15
     },
     {
       "rule": "C5",
-      "reason": "Bỏ JD dưới 30 từ",
-      "rows": 4
+      "reason": "Bỏ JD dưới 50 từ",
+      "rows": 0
+    },
+    {
+      "rule": "C8",
+      "reason": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
+      "rows": 1
     },
     {
       "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
-      "rows": 0
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "rows": 33
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 1
+      "rows": 4
     }
   ],
   "rules": [
@@ -76,30 +81,8 @@
       "id": "C3",
       "name": "Bỏ bản ghi test, thiếu job_id/source_url hoặc sai nguồn",
       "action": "drop",
-      "rows_affected": 4,
-      "examples": [
-        {
-          "job_id": "job-ba-300",
-          "field": "job_id",
-          "before": "job-ba-300",
-          "after": null,
-          "url": "https://itviec.com/viec-lam-it/job-ba-300"
-        },
-        {
-          "job_id": "job-bon-400",
-          "field": "job_id",
-          "before": "job-bon-400",
-          "after": null,
-          "url": "https://itviec.com/viec-lam-it/job-bon-400"
-        },
-        {
-          "job_id": "job-hai-200",
-          "field": "job_id",
-          "before": "job-hai-200",
-          "after": null,
-          "url": "https://itviec.com/viec-lam-it/job-hai-200"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "C4a",
@@ -134,57 +117,108 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
+      "rows_affected": 15,
+      "examples": [
+        {
+          "job_id": "2d-concept-artist-all-level-cong-ty-co-phan-sabogame-3212",
+          "field": "job_title",
+          "before": "2D Concept Artist All level",
+          "after": null,
+          "url": "https://itviec.com/viec-lam-it/2d-concept-artist-all-level-cong-ty-co-phan-sabogame-3212"
+        },
+        {
+          "job_id": "2d-concept-artist-senior-cong-ty-co-phan-sabogame-4427",
+          "field": "job_title",
+          "before": "2D Concept Artist Senior",
+          "after": null,
+          "url": "https://itviec.com/viec-lam-it/2d-concept-artist-senior-cong-ty-co-phan-sabogame-4427"
+        },
+        {
+          "job_id": "avvc-events-engineer-tech-lounge-av-hanoi-nab-innovation-centre-vietnam-0637",
+          "field": "job_title",
+          "before": "AVVC Events Engineer - Tech Lounge & AV (Hanoi)",
+          "after": null,
+          "url": "https://itviec.com/viec-lam-it/avvc-events-engineer-tech-lounge-av-hanoi-nab-innovation-centre-vietnam-0637"
+        }
+      ]
+    },
+    {
+      "id": "C5",
+      "name": "Bỏ JD dưới 50 từ",
+      "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
-      "id": "C5",
-      "name": "Bỏ JD dưới 30 từ",
+      "id": "C8",
+      "name": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
       "action": "drop",
-      "rows_affected": 4,
+      "rows_affected": 1,
       "examples": [
         {
-          "job_id": "css-3",
-          "field": "raw_description_text",
-          "before": null,
-          "after": null,
-          "url": "https://itviec.com/viec-lam-it/css-3"
-        },
-        {
-          "job_id": "frontend-developer-sqreem-technologies-vn-pte-ltd-2959",
-          "field": "raw_description_text",
-          "before": null,
-          "after": null,
-          "url": "https://itviec.com/viec-lam-it/frontend-developer-sqreem-technologies-vn-pte-ltd-2959"
-        },
-        {
-          "job_id": "iso-27001",
-          "field": "raw_description_text",
-          "before": null,
-          "after": null,
-          "url": "https://itviec.com/viec-lam-it/iso-27001"
+          "job_id": "c-c-unity-cong-tac-vien-lam-viec-fulltime-tai-vp-dts-software-vietnam-4148",
+          "field": "job_title",
+          "before": "C++/ C# Unity (Cộng tác viên làm việc fulltime tại VP)",
+          "after": "S3_CTV_TITLE",
+          "url": "https://itviec.com/viec-lam-it/c-c-unity-cong-tac-vien-lam-viec-fulltime-tai-vp-dts-software-vietnam-4148"
         }
       ]
     },
     {
       "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh + tuần)",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
       "action": "drop",
-      "rows_affected": 0,
-      "examples": []
+      "rows_affected": 33,
+      "examples": [
+        {
+          "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-4137",
+          "field": "dedup_key",
+          "before": "mb bank|agentic engineer (python/go/c/c++ backend & ai agents)|",
+          "after": "giữ agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
+          "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-4137"
+        },
+        {
+          "job_id": "ai-engineer-bosch-global-software-technologies-company-limited-4016",
+          "field": "dedup_key",
+          "before": "bosch global software technologies company limited|ai engineer|",
+          "after": "giữ ai-engineer-bosch-global-software-technologies-company-limited-4106",
+          "url": "https://itviec.com/viec-lam-it/ai-engineer-bosch-global-software-technologies-company-limited-4016"
+        },
+        {
+          "job_id": "ai-expert-computer-vision-nlp-llm-mb-bank-4024",
+          "field": "dedup_key",
+          "before": "mb bank|ai expert (computer vision/nlp/llm)|",
+          "after": "giữ ai-expert-computer-vision-nlp-llm-mb-bank-4706",
+          "url": "https://itviec.com/viec-lam-it/ai-expert-computer-vision-nlp-llm-mb-bank-4024"
+        }
+      ]
     },
     {
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 1,
+      "rows_affected": 4,
       "examples": [
         {
-          "job_id": "remote-mobile-game-developer-upto-2-000-ateam-viet-nam-3401",
+          "job_id": "database-engineer-dba-lg-cns-viet-nam-3911",
           "field": "dedup_key",
-          "before": "ateam|[remote] mobile game developer (upto $2,000)||2026-W40",
-          "after": "giữ vietnamworks:2113891",
-          "url": "https://itviec.com/viec-lam-it/remote-mobile-game-developer-upto-2-000-ateam-viet-nam-3401"
+          "before": "lg cns|database engineer (dba)|",
+          "after": "giữ vietnamworks:2126091",
+          "url": "https://itviec.com/viec-lam-it/database-engineer-dba-lg-cns-viet-nam-3911"
+        },
+        {
+          "job_id": "devops-engineer-lg-cns-viet-nam-2447",
+          "field": "dedup_key",
+          "before": "lg cns|devops engineer|",
+          "after": "giữ vietnamworks:2114388",
+          "url": "https://itviec.com/viec-lam-it/devops-engineer-lg-cns-viet-nam-2447"
+        },
+        {
+          "job_id": "middle-unity-developer-mitek-vietnam-5022",
+          "field": "dedup_key",
+          "before": "mitek|middle unity developer|ho_chi_minh",
+          "after": "giữ vietnamworks:2106644",
+          "url": "https://itviec.com/viec-lam-it/middle-unity-developer-mitek-vietnam-5022"
         }
       ]
     }
@@ -208,7 +242,7 @@
     {
       "field": "raw_posted_date",
       "fill_pct_in": 96.2,
-      "fill_pct_out": 96.6
+      "fill_pct_out": 96.5
     },
     {
       "field": "raw_description_text",
@@ -240,21 +274,66 @@
       "non_it": 15
     },
     "it_policy": {
-      "drop": [],
-      "approved_on": "2026-11-03",
-      "note": "Giữ toàn bộ (drop=[]): ITviec là nguồn chuyên IT thuần túy, 21/22 tin mẫu là IT thực thụ"
+      "drop": [
+        "non_it"
+      ],
+      "approved_on": "2026-11-09",
+      "evidence": "C4b: Gán tay 48 tin (IT: 47, Non-IT: 1)"
+    },
+    "scope_c8_reasons": {
+      "S3_CTV_TITLE": 1
     },
     "review": {
       "file": "data/preprocessing/review/it_itviec.csv",
-      "rows": 30,
-      "labeled": 0,
-      "labeled_non_it": 0,
-      "rule_decided": 0,
-      "rule_correct": 0,
-      "status_non_it": 0,
-      "status_non_it_correct": 0,
-      "level2_labeled": 0,
-      "level2_correct": 0
+      "rows": 48,
+      "labeled": 48,
+      "sample_strata": {
+        "tang_2_it": 24,
+        "tang_2_non_it": 6,
+        "tang_1_it": 18
+      },
+      "labeled_non_it": 1,
+      "rule_decided": 18,
+      "rule_correct": 18,
+      "status_non_it": 6,
+      "status_non_it_correct": 1,
+      "level2_labeled": 30,
+      "level2_correct": 25,
+      "level1_it_labeled": 18,
+      "level1_it_correct": 18,
+      "validation": {
+        "tp": 42,
+        "fp": 0,
+        "tn": 1,
+        "fn": 5,
+        "labeled": 48,
+        "precision_it": 1.0,
+        "precision_non_it": 0.16666666666666666,
+        "recall_it": 0.8936170212765957,
+        "precision_it_ci": [
+          0.916201209134296,
+          0.9999999999999999
+        ],
+        "precision_non_it_ci": [
+          0.030053369748306635,
+          0.5635028221864703
+        ],
+        "recall_it_ci": [
+          0.7740573065626163,
+          0.9536952178189183
+        ],
+        "reason": null
+      }
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "c-c-unity-cong-tac-vien-lam-viec-fulltime-tai-vp-dts-software-vietnam-4148",
+      "source": "itviec",
+      "field": "job_title",
+      "before": "C++/ C# Unity (Cộng tác viên làm việc fulltime tại VP)",
+      "after": "DROPPED C8: S3_CTV_TITLE",
+      "changed": true
+    }
+  ]
 }

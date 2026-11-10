@@ -2,31 +2,36 @@
   "step": "01b_deduplication",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-07T06:53:23+00:00",
-  "code_version": "c1555c0",
+  "generated_at": "2026-11-10T12:25:58+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
-    "rows": 1561
+    "rows": 1539
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/topcv.jsonl",
-    "rows": 1550
+    "rows": 1518
   },
   "dropped": [
     {
+      "rule": "D0",
+      "reason": "Tầng 1: trùng (nguồn, job_id)",
+      "rows": 0
+    },
+    {
       "rule": "D2",
-      "reason": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
       "rows": 0
     },
     {
       "rule": "D4",
-      "reason": "Trùng liên sàn: hash nội dung khớp 100%",
-      "rows": 0
+      "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
+      "rows": 1
     },
     {
       "rule": "D5",
-      "reason": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
-      "rows": 11
+      "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+      "rows": 20
     }
   ],
   "rules": [
@@ -38,25 +43,47 @@
       "examples": []
     },
     {
+      "id": "D0",
+      "name": "Tầng 1: trùng (nguồn, job_id)",
+      "action": "drop",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
       "id": "D2",
-      "name": "Repost cùng sàn có nội dung chuẩn hóa trùng nhau (canonical hash)",
+      "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
     },
     {
       "id": "D4",
-      "name": "Trùng liên sàn: hash nội dung khớp 100%",
+      "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
-      "rows_affected": 0,
-      "examples": []
+      "rows_affected": 1,
+      "examples": [
+        {
+          "job_id": "2321161",
+          "field": "dedup",
+          "before": "https://www.topcv.vn/viec-lam/servicenow-itsm-developer/2321161.html",
+          "after": "https://itviec.com/viec-lam-it/servicenow-itsm-developer-lg-cns-viet-nam-1435",
+          "url": "https://www.topcv.vn/viec-lam/servicenow-itsm-developer/2321161.html"
+        }
+      ]
     },
     {
       "id": "D5",
-      "name": "Trùng liên sàn: TF-IDF Cosine >= ngưỡng (cosine >= 0.85)",
+      "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 11,
+      "rows_affected": 20,
       "examples": [
+        {
+          "job_id": "1013348",
+          "field": "dedup",
+          "before": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html",
+          "after": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html",
+          "url": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html"
+        },
         {
           "job_id": "1506721",
           "field": "dedup",
@@ -65,18 +92,11 @@
           "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
         },
         {
-          "job_id": "2214894",
+          "job_id": "1839052",
           "field": "dedup",
-          "before": "https://www.topcv.vn/viec-lam/quan-ly-phat-hanh-pmo/2214894.html",
-          "after": "https://www.vietnamworks.com/pmo-specialist-1793328687263937730-2125642-jv",
-          "url": "https://www.topcv.vn/viec-lam/quan-ly-phat-hanh-pmo/2214894.html"
-        },
-        {
-          "job_id": "2258128",
-          "field": "dedup",
-          "before": "https://www.topcv.vn/viec-lam/secops-engineer/2258128.html",
-          "after": "https://itviec.com/viec-lam-it/secops-engineer-kubernetes-linux-iam-ztna-devsecops-con-cung-3623",
-          "url": "https://www.topcv.vn/viec-lam/secops-engineer/2258128.html"
+          "before": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html",
+          "after": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
+          "url": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html"
         }
       ]
     },
@@ -84,28 +104,57 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 86,
+      "rows_affected": 20,
       "examples": [
         {
-          "job_id": "1317511",
+          "job_id": "1629932",
           "field": "master_id",
-          "before": "https://www.topcv.vn/viec-lam/nhan-vien-phan-tich-nghiep-vu/1317511.html",
-          "after": "58c73345-92f7-5371-b276-f4bc9a1da4ae",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-phan-tich-nghiep-vu/1317511.html"
+          "before": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html",
+          "after": "dc5ddf91-f4fc-519c-a2ce-7b074b2c45e5",
+          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html"
         },
         {
-          "job_id": "1506755",
+          "job_id": "1832499",
           "field": "master_id",
-          "before": "https://www.topcv.vn/viec-lam/java-developer-lead-backend/1506755.html",
-          "after": "422c887c-2b6e-5319-bbff-b6ed8b890b2a",
-          "url": "https://www.topcv.vn/viec-lam/java-developer-lead-backend/1506755.html"
+          "before": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
+          "after": "25b609ec-a899-524d-9361-74a916ad0bc8",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html"
         },
         {
-          "job_id": "1637295",
+          "job_id": "2119759",
           "field": "master_id",
-          "before": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-it-network/1637295.html",
-          "after": "901e72fd-5c54-5042-8fae-85778eee01df",
-          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-it-network/1637295.html"
+          "before": "https://www.topcv.vn/viec-lam/product-owner-tu-6-thang-kinh-nghiem/2119759.html",
+          "after": "6d5c0c7b-da6b-5ebf-ab5d-ff2eacebab38",
+          "url": "https://www.topcv.vn/viec-lam/product-owner-tu-6-thang-kinh-nghiem/2119759.html"
+        }
+      ]
+    },
+    {
+      "id": "D7",
+      "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
+      "action": "flag",
+      "rows_affected": 30,
+      "examples": [
+        {
+          "job_id": "2045641",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8841,
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke/2045641.html"
+        },
+        {
+          "job_id": "2124498",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.9578,
+          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-cao-cap-mang-va-bao-mat/2124498.html"
+        },
+        {
+          "job_id": "2180924",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.9786,
+          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-thiet-ke/2180924.html"
         }
       ]
     }
@@ -126,12 +175,40 @@
       "hops": 75,
       "hop_same_crawler_hash": 9,
       "hop_same_canonical_hash": 11,
-      "hop_version_not_bumped": 9
+      "hop_same_version": 9,
+      "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 1277,
+    "blocking_blocks": 1270,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 11
+      "D4": 1,
+      "D5": 20
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "2322531",
+      "source": "topcv",
+      "field": "duplicate_of",
+      "before": "2322531",
+      "after": "DROPPED D5 -> topcv:2303888",
+      "changed": true
+    },
+    {
+      "job_id": "2043180",
+      "source": "topcv",
+      "field": "duplicate_of",
+      "before": "2043180",
+      "after": "DROPPED D5 -> itviec:penetration-tester-lg-cns-viet-nam-0840",
+      "changed": true
+    },
+    {
+      "job_id": "2321161",
+      "source": "topcv",
+      "field": "duplicate_of",
+      "before": "2321161",
+      "after": "DROPPED D4 -> itviec:servicenow-itsm-developer-lg-cns-viet-nam-1435",
+      "changed": true
+    }
+  ]
 }

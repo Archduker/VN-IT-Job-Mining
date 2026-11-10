@@ -518,6 +518,44 @@ export interface StepExample {
   url?: string | null
 }
 
+export interface StepSample {
+  job_id: string
+  source: string
+  field: string
+  before: unknown
+  after: unknown
+}
+
+export interface Anomaly {
+  kind: string
+  source: string
+  job_id: string
+  job_id_global?: string | null
+  url?: string | null
+  field: string
+  value: unknown
+  detail?: string | null
+}
+
+export interface AnomalyResponse {
+  available: boolean
+  reason: string | null
+  by_kind: Record<string, number>
+  total: number
+  offset?: number
+  limit?: number
+  items: Anomaly[]
+}
+
+export interface JobLookup {
+  available: boolean
+  reason?: string
+  step: string | null
+  source: string
+  job_id: string
+  row: Record<string, unknown> | null
+}
+
 export interface StepRule {
   id: string
   name: string
@@ -550,6 +588,7 @@ export interface StepReportData {
   output: { path: string | null; rows: number }
   dropped: { rule: string; reason: string; rows: number }[]
   rules: StepRule[]
+  samples?: StepSample[]  // chưa có ở báo cáo cũ: hiện Empty State
   fields: { field: string; fill_pct_in?: number; fill_pct_out?: number }[]
   checks: { rows_conserved: boolean | null; notes: string[] }
   extra: {
@@ -558,6 +597,10 @@ export interface StepReportData {
     it_policy?: string | Record<string, unknown>
     review?: ItReview | Record<string, ItReview>  // nguồn: một mục; _all: theo nguồn
     sources?: Record<string, { input: number; output: number }>
+    translation?: Record<string, unknown> | null
+    language_fasttext?: Record<string, unknown>
+    anomalies_by_kind?: Record<string, number>
+    [key: string]: unknown
   }
 }
 
@@ -566,6 +609,7 @@ export interface StepSummary {
   name: string
   available: boolean
   command?: string
+  reason?: string
   mode?: 'dry_run' | 'applied'
   generated_at?: string
   input_rows?: number
@@ -577,6 +621,7 @@ export interface StepResponse {
   step: string
   source?: string
   available: boolean
+  reason?: string
   command?: string
   report?: StepReportData
 }

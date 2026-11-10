@@ -24,17 +24,17 @@ export const PreprocessingPage: React.FC = () => {
   if (steps.error && !steps.data) return <ErrorState />
   if (!steps.data) return <LoadingState />
   const i = steps.data.findIndex((s) => s.step === step)
-  const perSource = step === '01_clean'
+  const perSource = step === '01_clean' || step === '01b_deduplication'
   const cleanSource = source ?? 'topdev'
 
   return (
     <div className="flex flex-col gap-6">
-      <StepStrip steps={steps.data} selected={step} onSelect={(s) => set({ step: s, source: s === '01_clean' ? source : null })} />
+      <StepStrip steps={steps.data} selected={step} onSelect={(s) => set({ step: s, source: s === '01_clean' || s === '01b_deduplication' ? source : null })} />
       <StepOverview step={step} />
       {perSource && (
         <>
           <Card>
-            <SectionTitle title="Đi sâu một nguồn" hint="Bước Clean chạy riêng từng nguồn. Từ bước Integration dữ liệu gộp 8 nguồn thành một bảng." />
+            <SectionTitle title="Đi sâu một nguồn" hint="Bước Clean và Deduplication chạy riêng từng nguồn. Từ bước Integration dữ liệu gộp 8 nguồn thành một bảng." />
             <SourcePills label="Chọn nguồn" selected={cleanSource} onSelect={(s) => set({ source: s })} />
           </Card>
           <SourceDetail

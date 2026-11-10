@@ -12,7 +12,7 @@ import pyarrow.parquet as pq
 
 from preprocessing.encoding.run import SENIORITY_MAP
 from preprocessing.encoding.skills_taxonomy_230 import TAXONOMY_230
-from preprocessing.normalization.text_cleaner import JOB_FAMILIES
+from preprocessing.normalization.job_title import JOB_FAMILIES_12, OTHER
 
 
 def main():
@@ -64,7 +64,7 @@ def main():
         counts.update(skills)
         for field, allowed in [
             ("seniority", set(SENIORITY_MAP)),
-            ("job_family", set(JOB_FAMILIES) | {"Khác"}),
+            ("job_family", set(JOB_FAMILIES_12) | {OTHER}),
         ]:
             if pd.notna(row[field]) and row[field] not in allowed:
                 issue(field, row[field], "unknown label")

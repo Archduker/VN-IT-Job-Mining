@@ -1,6 +1,6 @@
 {
-  "version": "0.1-candidates",
-  "note": "Chỉ mục approved=true bị che khi dịch (PH5). Ứng viên từ skills_list tin tiếng Anh.",
+  "version": "0.2-proposed",
+  "note": "Chỉ mục approved=true bị che khi dịch (PH5). Ứng viên từ skills_list tin tiếng Anh. Đề xuất: giữ nguyên tên công cụ/công nghệ/chuẩn/viết tắt; bỏ cụm tiếng Anh chung, kỹ năng mềm, ngôn ngữ, mục tiếng Việt.",
   "docs_en_total": 1347,
   "entries": [
     {
@@ -11,52 +11,52 @@
     {
       "term": "Python",
       "docs_en": 156,
-      "approved": false
+      "approved": true
     },
     {
       "term": "AI",
       "docs_en": 121,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Java",
       "docs_en": 116,
-      "approved": false
+      "approved": true
     },
     {
       "term": "SQL",
       "docs_en": 111,
-      "approved": false
+      "approved": true
     },
     {
       "term": "AWS",
       "docs_en": 102,
-      "approved": false
+      "approved": true
     },
     {
       "term": "DevOps",
       "docs_en": 68,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Agile",
       "docs_en": 61,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Business Analysis",
       "docs_en": 60,
-      "approved": false
+      "approved": true
     },
     {
       "term": "CI/CD",
       "docs_en": 58,
-      "approved": false
+      "approved": true
     },
     {
       "term": "TypeScript",
       "docs_en": 57,
-      "approved": false
+      "approved": true
     },
     {
       "term": "IT - Phần mềm",
@@ -66,17 +66,17 @@
     {
       "term": "JavaScript",
       "docs_en": 53,
-      "approved": false
+      "approved": true
     },
     {
       "term": "QA QC",
       "docs_en": 53,
-      "approved": false
+      "approved": true
     },
     {
       "term": "ReactJS",
       "docs_en": 52,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Cloud",
@@ -86,7 +86,7 @@
     {
       "term": "UI/UX",
       "docs_en": 49,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Project Management",
@@ -96,27 +96,27 @@
     {
       "term": "Automation Test",
       "docs_en": 48,
-      "approved": false
+      "approved": true
     },
     {
       "term": "NodeJS",
       "docs_en": 46,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Tester",
       "docs_en": 46,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Kubernetes",
       "docs_en": 45,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Linux",
       "docs_en": 42,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Machine Learning",
@@ -126,37 +126,37 @@
     {
       "term": "API",
       "docs_en": 41,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Golang",
       "docs_en": 40,
-      "approved": false
+      "approved": true
     },
     {
       "term": "C++",
       "docs_en": 40,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Docker",
       "docs_en": 39,
-      "approved": false
+      "approved": true
     },
     {
       "term": "MySQL",
       "docs_en": 39,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Azure",
       "docs_en": 39,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Spring Boot",
       "docs_en": 38,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data Analysis",
@@ -166,12 +166,12 @@
     {
       "term": "Scrum",
       "docs_en": 35,
-      "approved": false
+      "approved": true
     },
     {
       "term": "LLM",
       "docs_en": 35,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Database",
@@ -181,17 +181,17 @@
     {
       "term": "PostgreSql",
       "docs_en": 34,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Microservices",
       "docs_en": 32,
-      "approved": false
+      "approved": true
     },
     {
       "term": "C#",
       "docs_en": 32,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Team Management",
@@ -201,17 +201,17 @@
     {
       "term": "PYTHON",
       "docs_en": 28,
-      "approved": false
+      "approved": true
     },
     {
       "term": "ERP",
       "docs_en": 27,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Embedded",
       "docs_en": 27,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Leadership",
@@ -221,7 +221,7 @@
     {
       "term": "Software Architecture",
       "docs_en": 27,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Product Management",
@@ -231,67 +231,67 @@
     {
       "term": ".NET",
       "docs_en": 26,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Internship Accepted",
       "docs_en": 26,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Product Owner",
       "docs_en": 24,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Fresher Accepted",
       "docs_en": 24,
-      "approved": false
+      "approved": true
     },
     {
       "term": "MongoDB",
       "docs_en": 23,
-      "approved": false
+      "approved": true
     },
     {
       "term": "IT Support",
       "docs_en": 22,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Jira",
       "docs_en": 22,
-      "approved": false
+      "approved": true
     },
     {
       "term": "SAP",
       "docs_en": 22,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Power BI",
       "docs_en": 21,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data Engineer",
       "docs_en": 21,
-      "approved": false
+      "approved": true
     },
     {
       "term": "System Admin",
       "docs_en": 21,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Terraform",
       "docs_en": 21,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Kotlin",
       "docs_en": 21,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Stakeholder management",
@@ -301,12 +301,12 @@
     {
       "term": "System Architecture",
       "docs_en": 19,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Oracle",
       "docs_en": 19,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Quality Assurance",
@@ -316,32 +316,32 @@
     {
       "term": "Playwright",
       "docs_en": 19,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Cybersecurity",
       "docs_en": 18,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Kafka",
       "docs_en": 18,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Redis",
       "docs_en": 18,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Automation Testing",
       "docs_en": 17,
-      "approved": false
+      "approved": true
     },
     {
       "term": "GCP",
       "docs_en": 17,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Deep Learning",
@@ -361,12 +361,12 @@
     {
       "term": "Design Systems",
       "docs_en": 17,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Networking",
       "docs_en": 16,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Artificial Intelligence",
@@ -376,7 +376,7 @@
     {
       "term": "PHP",
       "docs_en": 16,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Tài chính",
@@ -386,72 +386,72 @@
     {
       "term": "Computer Vision",
       "docs_en": 15,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Selenium",
       "docs_en": 15,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Business Intelligence",
       "docs_en": 15,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Spring",
       "docs_en": 15,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Generative AI",
       "docs_en": 15,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Microsoft SQL Server",
       "docs_en": 15,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Jenkins",
       "docs_en": 15,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Penetration Testing",
       "docs_en": 14,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Network Security",
       "docs_en": 14,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Cloud Security",
       "docs_en": 14,
-      "approved": false
+      "approved": true
     },
     {
       "term": "AUTOSAR",
       "docs_en": 14,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Angular",
       "docs_en": 14,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Android",
       "docs_en": 14,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Fullstack",
       "docs_en": 14,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Ngân hàng",
@@ -461,42 +461,42 @@
     {
       "term": "PostgreSQL",
       "docs_en": 13,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Microsoft Office",
       "docs_en": 13,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Sql",
       "docs_en": 13,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data Engineering",
       "docs_en": 13,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Solution Architecture",
       "docs_en": 13,
-      "approved": false
+      "approved": true
     },
     {
       "term": "UI-UX",
       "docs_en": 13,
-      "approved": false
+      "approved": true
     },
     {
       "term": "QA Testing",
       "docs_en": 13,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Node.js",
       "docs_en": 12,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data Science",
@@ -506,17 +506,17 @@
     {
       "term": "CRM",
       "docs_en": 12,
-      "approved": false
+      "approved": true
     },
     {
       "term": "REST API",
       "docs_en": 12,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Ruby on Rails",
       "docs_en": 12,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Customer Service",
@@ -526,22 +526,22 @@
     {
       "term": "HTML",
       "docs_en": 12,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Embedded C",
       "docs_en": 12,
-      "approved": false
+      "approved": true
     },
     {
       "term": "React.js",
       "docs_en": 12,
-      "approved": false
+      "approved": true
     },
     {
       "term": "NLP",
       "docs_en": 11,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Communication skills",
@@ -561,12 +561,12 @@
     {
       "term": "Regression Testing",
       "docs_en": 11,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Swift",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Software Testing",
@@ -576,17 +576,17 @@
     {
       "term": "Git",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Clean Architecture",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Business Analyst",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "IT Infrastructure",
@@ -596,12 +596,12 @@
     {
       "term": "Postman",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Power Bi",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "communication",
@@ -611,27 +611,27 @@
     {
       "term": "Microservices Architecture",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "ETL",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "NextJS",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Test Plan",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Defect Management",
       "docs_en": 10,
-      "approved": false
+      "approved": true
     },
     {
       "term": "IT - Phần cứng và máy tính",
@@ -651,7 +651,7 @@
     {
       "term": "Agentic AI",
       "docs_en": 9,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Mobile Apps",
@@ -661,17 +661,17 @@
     {
       "term": "MVVM",
       "docs_en": 9,
-      "approved": false
+      "approved": true
     },
     {
       "term": "iOS",
       "docs_en": 9,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Amazon Web Services (AWS)",
       "docs_en": 9,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Communication",
@@ -686,7 +686,7 @@
     {
       "term": "Restful Api",
       "docs_en": 8,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Japanese",
@@ -696,27 +696,27 @@
     {
       "term": "Business analysis",
       "docs_en": 8,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Ci/Cd Methodologies",
       "docs_en": 8,
-      "approved": false
+      "approved": true
     },
     {
       "term": "DevSecOps",
       "docs_en": 8,
-      "approved": false
+      "approved": true
     },
     {
       "term": "PyTorch",
       "docs_en": 8,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Information Security",
       "docs_en": 8,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data Mining",
@@ -726,7 +726,7 @@
     {
       "term": "Enterprise Architecture",
       "docs_en": 8,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Design",
@@ -736,12 +736,12 @@
     {
       "term": "NestJS",
       "docs_en": 8,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Laravel",
       "docs_en": 8,
-      "approved": false
+      "approved": true
     },
     {
       "term": "English Language",
@@ -751,7 +751,7 @@
     {
       "term": "MLOps",
       "docs_en": 7,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Analytical Skills",
@@ -771,7 +771,7 @@
     {
       "term": "LINUX",
       "docs_en": 7,
-      "approved": false
+      "approved": true
     },
     {
       "term": "problem-solving",
@@ -781,7 +781,7 @@
     {
       "term": "Python programming",
       "docs_en": 7,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data Modeling",
@@ -791,22 +791,22 @@
     {
       "term": "VMware",
       "docs_en": 7,
-      "approved": false
+      "approved": true
     },
     {
       "term": "PowerShell",
       "docs_en": 7,
-      "approved": false
+      "approved": true
     },
     {
       "term": "CSS",
       "docs_en": 7,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Figma",
       "docs_en": 7,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Games",
@@ -816,17 +816,17 @@
     {
       "term": "VueJS",
       "docs_en": 7,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Ruby",
       "docs_en": 7,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Natural Language Processing (NLP)",
       "docs_en": 7,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Neural Network",
@@ -841,7 +841,7 @@
     {
       "term": "Microsoft Excel",
       "docs_en": 6,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Thương mại điện tử",
@@ -856,12 +856,12 @@
     {
       "term": "FastAPI",
       "docs_en": 6,
-      "approved": false
+      "approved": true
     },
     {
       "term": "OOP",
       "docs_en": 6,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Network",
@@ -871,7 +871,7 @@
     {
       "term": "C/C++",
       "docs_en": 6,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Software Development",
@@ -881,7 +881,7 @@
     {
       "term": "IT Governance",
       "docs_en": 6,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Project management",
@@ -891,7 +891,7 @@
     {
       "term": "Django",
       "docs_en": 6,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Manual Testing",
@@ -916,27 +916,27 @@
     {
       "term": "Tableau",
       "docs_en": 6,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Microsoft Azure",
       "docs_en": 6,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Unit test",
       "docs_en": 6,
-      "approved": false
+      "approved": true
     },
     {
       "term": ".Net Core",
       "docs_en": 6,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Active Directory",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Điện toán đám mây (Cloud)",
@@ -951,17 +951,17 @@
     {
       "term": "Microsoft 365",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Windows",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Application Security",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Communication Skills",
@@ -971,7 +971,7 @@
     {
       "term": "IT Helpdesk",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "IT Security",
@@ -981,17 +981,17 @@
     {
       "term": "RTOS",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "NoSQL",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Flutter",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Business Development",
@@ -1001,7 +1001,7 @@
     {
       "term": "Security Audit",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "analytical skills",
@@ -1011,42 +1011,42 @@
     {
       "term": "IT Risk Management",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Oracle Database",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Master Data Management",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Security Infrastructure",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Devops",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "React Native",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Power Automate",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Unity",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "IT Phần cứng - Mạng",
@@ -1056,7 +1056,7 @@
     {
       "term": "TensorFlow",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Japanese IT Communication",
@@ -1066,17 +1066,17 @@
     {
       "term": "Integration test",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "C language",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "User story",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data-driven",
@@ -1086,7 +1086,7 @@
     {
       "term": "SOLID Principles",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Presale",
@@ -1096,7 +1096,7 @@
     {
       "term": "Microsoft Azure SQL Database",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data modeling",
@@ -1106,17 +1106,17 @@
     {
       "term": "Data Warehousing",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Cypress",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "GraphQL",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Product roadmap",
@@ -1126,12 +1126,12 @@
     {
       "term": "CI",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "CD",
       "docs_en": 5,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Game",
@@ -1151,37 +1151,37 @@
     {
       "term": "CEH",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "SOC",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "PQA",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "TestRail",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "QA",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Salesforce",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Illustrator",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Korean",
@@ -1196,7 +1196,7 @@
     {
       "term": "ISO 27001",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Consulting",
@@ -1206,17 +1206,17 @@
     {
       "term": "Product Development",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "IT System Administration",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Windows Operating Systems",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Chinese",
@@ -1226,7 +1226,7 @@
     {
       "term": "MS SQL",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Software",
@@ -1236,12 +1236,12 @@
     {
       "term": "Windows Server",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data Integration",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Infrastructure",
@@ -1251,22 +1251,22 @@
     {
       "term": "SAP Integration Suite",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "business analyst",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Network Automation",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Technical Lead",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data analysis",
@@ -1276,27 +1276,27 @@
     {
       "term": "Agile Methodologies",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Cloud Infrastructure",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Network Infrastructure",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Manage ERP Software",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Qa",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Full Stack Development",
@@ -1316,7 +1316,7 @@
     {
       "term": "Firewall",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "IT Phần mềm",
@@ -1326,7 +1326,7 @@
     {
       "term": "HTML5",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "IT Communication/Translation",
@@ -1336,12 +1336,12 @@
     {
       "term": "Grafana",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Rust",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Algorithms",
@@ -1351,17 +1351,17 @@
     {
       "term": "Cloud-native Architecture",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "AWS Lambda",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Firmware",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Hardware Troubleshooting",
@@ -1371,12 +1371,12 @@
     {
       "term": "Appium",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "OWASP",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Product strategy",
@@ -1386,7 +1386,7 @@
     {
       "term": "jQuery",
       "docs_en": 4,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Analytical thinking",
@@ -1401,42 +1401,42 @@
     {
       "term": "OCR",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Agile Development",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Product Owner/Product Manager",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "System Engineer",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Solution Architect",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "React",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "ASP.NET",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "DLP",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Kiểm Soát Chất Lượng",
@@ -1446,17 +1446,17 @@
     {
       "term": "Linux OS",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Embedded Systems",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "API Testing",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Technical Documentation",
@@ -1486,17 +1486,17 @@
     {
       "term": "Cisco",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "System Integration",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "SAP Consulting",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Analytical Thinking",
@@ -1506,22 +1506,22 @@
     {
       "term": "C/C++ Programming",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Test Automation",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Data Warehouse",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Scrum Master",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Problem Solving",
@@ -1536,17 +1536,17 @@
     {
       "term": "AngularJS",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "DBA",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Azure Devops",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Information Systems",
@@ -1561,17 +1561,17 @@
     {
       "term": ".Net",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "API Integration",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "It Support",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Quality Management",
@@ -1586,17 +1586,17 @@
     {
       "term": "MS SQL DBA",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Linux System Administration",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Network Protocols",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Big Data",
@@ -1606,12 +1606,12 @@
     {
       "term": "Artificial Intelligence (AI)",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "ERP Migration",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "English fluency",
@@ -1621,17 +1621,17 @@
     {
       "term": "Vue.js",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Software Quality Assurance",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "RESTful API",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Collaboration",
@@ -1641,22 +1641,22 @@
     {
       "term": "Infrastructure As Code",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Network Routing",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Qc",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Databricks",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Strategic Thinking",
@@ -1666,7 +1666,7 @@
     {
       "term": "Process Quality Assurance",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Việc làm TP.HCM",
@@ -1691,27 +1691,27 @@
     {
       "term": "User flows",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Prometheus",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Zephyr",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "SRS",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "BPMN",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Market research",
@@ -1721,37 +1721,37 @@
     {
       "term": "Web API",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "PCI DSS",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Google Cloud",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "SIEM",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Flask",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Governance, Risk & Compliance",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Risk & Compliance",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Governance",
@@ -1761,22 +1761,22 @@
     {
       "term": "Ansible",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "ITIL Foundation",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Microsoft Dynamics 365",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "ELT",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Process Improvement",
@@ -1791,7 +1791,7 @@
     {
       "term": "Go",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     },
     {
       "term": "Frontend Development",
@@ -1801,7 +1801,7 @@
     {
       "term": "Microsoft Word",
       "docs_en": 3,
-      "approved": false
+      "approved": true
     }
   ]
 }

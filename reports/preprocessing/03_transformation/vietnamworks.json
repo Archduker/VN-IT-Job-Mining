@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T09:09:18+00:00",
-  "code_version": "800b5e7",
+  "generated_at": "2026-11-10T11:49:46+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 800
+    "rows": 786
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 800
+    "rows": 786
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1008,
+      "rows_affected": 991,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 221,
+      "rows_affected": 222,
       "examples": [
         {
           "job_id": "2094849",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 800,
+      "rows_affected": 786,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 674,
+      "rows_affected": 664,
       "examples": [
         {
           "job_id": "2085748",
@@ -90,21 +90,21 @@
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 799,
+      "rows_affected": 785,
       "examples": []
     },
     {
       "id": "T2f",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 10,
+      "rows_affected": 4,
       "examples": []
     },
     {
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 800,
+      "rows_affected": 786,
       "examples": []
     },
     {
@@ -132,14 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 249,
+      "rows_affected": 246,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
+      "action": "modify",
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 800,
+      "rows_affected": 786,
       "examples": [
         {
           "job_id": "2085748",
@@ -168,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 799,
+      "rows_affected": 785,
       "examples": [
         {
           "job_id": "2085748",
@@ -197,13 +204,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 22.8,
-      "fill_pct_out": 22.8
+      "fill_pct_in": 23.3,
+      "fill_pct_out": 23.3
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 26.0,
-      "fill_pct_out": 26.0
+      "fill_pct_in": 26.6,
+      "fill_pct_out": 26.6
     },
     {
       "field": "posted_date",
@@ -217,13 +224,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 84.2,
-      "fill_pct_out": 84.2
+      "fill_pct_in": 84.5,
+      "fill_pct_out": 84.5
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 84.2,
-      "fill_pct_out": 84.2
+      "fill_pct_in": 84.5,
+      "fill_pct_out": 84.5
     },
     {
       "field": "headcount",
@@ -247,8 +254,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 91.5,
-      "fill_pct_out": 91.5
+      "fill_pct_in": 91.3,
+      "fill_pct_out": 91.3
     },
     {
       "field": "locations",
@@ -271,16 +278,36 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 227,
+      "header": 222,
       "title": 2,
       "jd": 2,
-      "none": 569
+      "none": 560
     },
     "salary_under_1m_count": 3,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 448,
-      "en": 352
+      "vi": 431,
+      "en": 352,
+      "other": 3
+    },
+    "language_fasttext": {
+      "model": "lid.176.bin",
+      "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
+      "conf_min": 0.6,
+      "disagree_with_old_rule": 10,
+      "disagree_examples": [
+        "2092686",
+        "2098089",
+        "2110677",
+        "2111427",
+        "2111784",
+        "2111797",
+        "2118846",
+        "2121173",
+        "2123254",
+        "2125913"
+      ],
+      "conf_lt_0_9": 196
     },
     "text_quality": {
       "before": {
@@ -298,6 +325,33 @@
       },
       "abbreviations_approved": 0
     },
-    "experience_parsed_rate": 84.2
-  }
+    "translation": null,
+    "experience_parsed_rate": 84.5
+  },
+  "samples": [
+    {
+      "job_id": "vietnamworks_2110250",
+      "source": "vietnamworks",
+      "field": "salary_min_vnd",
+      "before": "Thương lượng",
+      "after": null,
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2121758",
+      "source": "vietnamworks",
+      "field": "posted_date",
+      "before": "2026-10-21T11:18:30+07:00",
+      "after": "2026-10-21",
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2119144",
+      "source": "vietnamworks",
+      "field": "exp_min_years",
+      "before": "8 năm",
+      "after": 8.0,
+      "changed": true
+    }
+  ]
 }

@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-10T09:09:06+00:00",
-  "code_version": "800b5e7",
+  "generated_at": "2026-11-10T12:26:47+00:00",
+  "code_version": "e168601",
   "input": {
-    "path": "data/preprocessing/01_clean/itviec.jsonl",
-    "rows": 905
+    "path": "data/preprocessing/01b_deduplication/itviec.jsonl",
+    "rows": 831
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 905
+    "rows": 831
   },
   "dropped": [
     {
@@ -34,14 +34,14 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
       "action": "modify",
-      "rows_affected": 905,
+      "rows_affected": 831,
       "examples": []
     },
     {
       "id": "I2",
       "name": "ITviec lấy ngày đăng từ JSON-LD datePosted",
       "action": "modify",
-      "rows_affected": 874,
+      "rows_affected": 803,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -84,15 +84,8 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 31,
+      "rows_affected": 28,
       "examples": [
-        {
-          "job_id": "application-consultant-java-python-sql-avenue-5116",
-          "field": "empty_value",
-          "before": "'' or []",
-          "after": null,
-          "url": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-5116"
-        },
         {
           "job_id": "back-end-engineer-python-or-ruby-infrastructure-the-umdenken-0924",
           "field": "empty_value",
@@ -106,6 +99,13 @@
           "before": "'' or []",
           "after": null,
           "url": "https://itviec.com/viec-lam-it/bridge-system-engineer-japanese-n1-n2-itviec-recruitment-consulting-3458"
+        },
+        {
+          "job_id": "business-analyst-data-analyst-seven-system-vietnam-4804",
+          "field": "empty_value",
+          "before": "'' or []",
+          "after": null,
+          "url": "https://itviec.com/viec-lam-it/business-analyst-data-analyst-seven-system-vietnam-4804"
         }
       ]
     },
@@ -184,8 +184,8 @@
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 87.0,
-      "fill_pct_out": 87.0
+      "fill_pct_in": 87.4,
+      "fill_pct_out": 87.4
     },
     {
       "field": "raw_seniority_text",
@@ -231,5 +231,7 @@
     "used": false,
     "reason": "pipeline không dùng model (luật if-else)"
   },
-  "extra": {}
+  "extra": {},
+  "samples": [],
+  "samples_reason": "NO_ROWS_CHANGED"
 }

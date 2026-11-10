@@ -31,7 +31,7 @@ def vocab():
 def frame():
     values = dict(job_id_global=["a", "b", "c", "d"], source_platform=[SOURCES[0]]*4,
         skills_std=[None, [], [TAXONOMY_230[0].canonical], ["unmatched"]], locations=[None, [], [], []],
-        seniority=[None, "not a label", "Junior", "Chưa rõ"], job_family=[None, "unknown", "Khác", "Khác"],
+        seniority=[None, "not a label", "Junior", "Chưa rõ"], job_family=[None, "unknown", "Other", "Other"],
         raw_employment_type=[None, "full time", "unknown", "internship"],
         posted_date=["2026-11-09", "bad", None, "2026-11-01"],
         deadline_date=["2026-11-01", None, None, "2026-11-10"],
@@ -56,7 +56,7 @@ def test_null_empty_unknown_boolean_category_and_anomaly_policies():
     assert encoded.deadline_before_posted.tolist() == [1, 0, 0, 0]
     assert np.isnan(encoded.days_to_deadline.iloc[0])
     assert encoded.job_family__unknown.tolist() == [0, 1, 0, 0]
-    assert encoded.seniority_ord.tolist() == [-1, -1, 2, -1]
+    assert encoded.seniority_ord.tolist() == [-1, -1, 1, -1]
     assert dictionary["employment_source"] == "raw_employment_type"
     assert unmatched.normalized_value.tolist() == ["unmatched"]
     assert "deadline_before_posted" in quality.reason.tolist()

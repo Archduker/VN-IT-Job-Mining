@@ -1,0 +1,187 @@
+{
+  "generated_at": "2026-11-10T11:51:44+00:00",
+  "sources": [
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "careerviet",
+    "vieclam24h",
+    "itviec",
+    "glints",
+    "jobsgo"
+  ],
+  "translate": false,
+  "steps": [
+    {
+      "step": "01_clean",
+      "status": "OK",
+      "missing": [],
+      "input": 13361,
+      "output": 5050,
+      "dropped": 8311,
+      "conserved": true,
+      "mode": "applied",
+      "rejected": {
+        "topcv": 1194,
+        "topdev": 3665,
+        "vietnamworks": 1148,
+        "careerviet": 212,
+        "vieclam24h": 1095,
+        "itviec": 18,
+        "glints": 61,
+        "jobsgo": 918
+      }
+    },
+    {
+      "step": "01b_deduplication",
+      "status": "OK",
+      "missing": [],
+      "input": 5050,
+      "output": 4799,
+      "dropped": 251,
+      "conserved": true,
+      "mode": "applied",
+      "rejected": {
+        "topcv": 22,
+        "topdev": 18,
+        "vietnamworks": 13,
+        "careerviet": 26,
+        "vieclam24h": 10,
+        "itviec": 58,
+        "glints": 10,
+        "jobsgo": 94
+      }
+    },
+    {
+      "step": "02_integration",
+      "status": "OK",
+      "missing": [],
+      "input": 4799,
+      "output": 4798,
+      "dropped": 1,
+      "conserved": true,
+      "mode": "applied",
+      "rejected": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 1,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    },
+    {
+      "step": "03_transformation",
+      "status": "OK",
+      "missing": [],
+      "input": 4798,
+      "output": 4798,
+      "dropped": 0,
+      "conserved": true,
+      "mode": "applied",
+      "rejected": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    },
+    {
+      "step": "04_normalization",
+      "status": "OK",
+      "missing": [],
+      "input": 4798,
+      "output": 4798,
+      "dropped": 0,
+      "conserved": true,
+      "mode": "applied",
+      "rejected": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    },
+    {
+      "step": "05_encoding",
+      "status": "SKIPPED",
+      "missing": [],
+      "input": null,
+      "output": null,
+      "dropped": null,
+      "conserved": null,
+      "mode": "applied",
+      "note": "Legacy P5 writer is disabled: use python -m preprocessing.encoding.execute with explicit --input-manifest --vocabulary --stopwords --cohort-ledger --decision-re"
+    },
+    {
+      "step": "07_sections",
+      "status": "OK",
+      "missing": [],
+      "input": 4798,
+      "output": 4798,
+      "dropped": 0,
+      "conserved": true,
+      "mode": "applied",
+      "rejected": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    },
+    {
+      "step": "08_skills",
+      "status": "OK",
+      "missing": [],
+      "input": 4798,
+      "output": 4798,
+      "dropped": 0,
+      "conserved": true,
+      "mode": "applied",
+      "rejected": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    },
+    {
+      "step": "09_tokens",
+      "status": "OK",
+      "missing": [],
+      "input": 4798,
+      "output": 4798,
+      "dropped": 0,
+      "conserved": true,
+      "mode": "applied",
+      "rejected": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    }
+  ]
+}

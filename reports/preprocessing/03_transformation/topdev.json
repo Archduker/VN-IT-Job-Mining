@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T09:09:17+00:00",
-  "code_version": "800b5e7",
+  "generated_at": "2026-11-10T11:49:44+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 227
+    "rows": 207
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 227
+    "rows": 207
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1851,
+      "rows_affected": 1679,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 62,
+      "rows_affected": 58,
       "examples": [
         {
           "job_id": "2133063",
@@ -54,7 +54,7 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 71,
+      "rows_affected": 67,
       "examples": []
     },
     {
@@ -104,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 227,
+      "rows_affected": 207,
       "examples": []
     },
     {
@@ -118,7 +118,7 @@
       "id": "T6.2",
       "name": "Chuẩn hóa Unicode về NFC",
       "action": "modify",
-      "rows_affected": 5,
+      "rows_affected": 4,
       "examples": []
     },
     {
@@ -132,14 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 84,
+      "rows_affected": 77,
+      "examples": []
+    },
+    {
+      "id": "T6b",
+      "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
+      "action": "modify",
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 227,
+      "rows_affected": 207,
       "examples": [
         {
           "job_id": "2017763",
@@ -168,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 227,
+      "rows_affected": 207,
       "examples": [
         {
           "job_id": "2017763",
@@ -197,18 +204,18 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 24.2,
-      "fill_pct_out": 24.2
+      "fill_pct_in": 24.6,
+      "fill_pct_out": 24.6
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 26.9,
-      "fill_pct_out": 26.9
+      "fill_pct_in": 27.5,
+      "fill_pct_out": 27.5
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 31.3,
-      "fill_pct_out": 31.3
+      "fill_pct_in": 32.4,
+      "fill_pct_out": 32.4
     },
     {
       "field": "deadline_date",
@@ -217,13 +224,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 25.6,
-      "fill_pct_out": 25.6
+      "fill_pct_in": 28.0,
+      "fill_pct_out": 28.0
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 25.6,
-      "fill_pct_out": 25.6
+      "fill_pct_in": 28.0,
+      "fill_pct_out": 28.0
     },
     {
       "field": "headcount",
@@ -242,13 +249,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 90.3,
-      "fill_pct_out": 90.3
+      "fill_pct_in": 89.9,
+      "fill_pct_out": 89.9
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 93.8,
-      "fill_pct_out": 93.8
+      "fill_pct_in": 94.2,
+      "fill_pct_out": 94.2
     },
     {
       "field": "locations",
@@ -271,21 +278,33 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 62,
+      "header": 58,
       "title": 0,
       "jd": 0,
-      "none": 165
+      "none": 149
     },
     "salary_under_1m_count": 0,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 167,
-      "en": 60
+      "vi": 149,
+      "en": 57,
+      "other": 1
+    },
+    "language_fasttext": {
+      "model": "lid.176.bin",
+      "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
+      "conf_min": 0.6,
+      "disagree_with_old_rule": 2,
+      "disagree_examples": [
+        "2137252",
+        "2139753"
+      ],
+      "conf_lt_0_9": 38
     },
     "text_quality": {
       "before": {
         "html": 0,
-        "nfc": 5,
+        "nfc": 4,
         "hidden": 0
       },
       "residual_html_pct": 0.0,
@@ -298,6 +317,33 @@
       },
       "abbreviations_approved": 0
     },
-    "experience_parsed_rate": 25.6
-  }
+    "translation": null,
+    "experience_parsed_rate": 28.0
+  },
+  "samples": [
+    {
+      "job_id": "topdev_2138343",
+      "source": "topdev",
+      "field": "salary_min_vnd",
+      "before": "From 18.000.000 VND",
+      "after": 18000000.0,
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2142369",
+      "source": "topdev",
+      "field": "exp_min_years",
+      "before": "24 months",
+      "after": 2.0,
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2134507",
+      "source": "topdev",
+      "field": "requirements_clean",
+      "before": "Tốt nghiệp Đại học các chuyên ngành: Công nghệ thông tin, Kỹ thuật phần mềm, Khoa học máy tính và liên quan\nCó kinh nghiệm làm việc thực tế tối thiểu 1,5 năm tại các công ty hoặc dự án về lập trình Ba…",
+      "after": "Tốt nghiệp Đại học các chuyên ngành: Công nghệ thông tin, Kỹ thuật phần mềm, Khoa học máy tính và liên quan Có kinh nghiệm làm việc thực tế tối thiểu 1,5 năm tại các công ty hoặc dự án về lập trình Ba…",
+      "changed": true
+    }
+  ]
 }

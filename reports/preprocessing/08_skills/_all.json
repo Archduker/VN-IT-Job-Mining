@@ -1,0 +1,566 @@
+{
+  "step": "08_skills",
+  "source": "_all",
+  "mode": "applied",
+  "generated_at": "2026-11-10T11:50:20+00:00",
+  "code_version": "e168601",
+  "input": {
+    "path": null,
+    "rows": 4798
+  },
+  "output": {
+    "path": null,
+    "rows": 4798
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "sources": {
+      "topcv": {
+        "input": 1533,
+        "output": 1533
+      },
+      "topdev": {
+        "input": 207,
+        "output": 207
+      },
+      "vietnamworks": {
+        "input": 786,
+        "output": 786
+      },
+      "careerviet": {
+        "input": 421,
+        "output": 421
+      },
+      "vieclam24h": {
+        "input": 171,
+        "output": 171
+      },
+      "itviec": {
+        "input": 835,
+        "output": 835
+      },
+      "glints": {
+        "input": 260,
+        "output": 260
+      },
+      "jobsgo": {
+        "input": 585,
+        "output": 585
+      }
+    },
+    "sparsity": {
+      "config": {
+        "merge_map_size": 0,
+        "min_df": null,
+        "mode": "family"
+      },
+      "before": {
+        "n_jobs": 4798,
+        "nnz": 32490,
+        "n_cols_used": 220,
+        "density_used_cols": 0.03078,
+        "density_universe": 0.029442,
+        "mean_skills_per_job": 6.772,
+        "median_skills_per_job": 5.0,
+        "jobs_with_zero_skills": 307,
+        "cols_below_df": {
+          "3": 15,
+          "5": 25,
+          "10": 41,
+          "20": 63,
+          "50": 102
+        }
+      },
+      "after": {
+        "n_jobs": 4798,
+        "nnz": 32490,
+        "n_cols_used": 220,
+        "density_used_cols": 0.03078,
+        "density_universe": null,
+        "mean_skills_per_job": 6.772,
+        "median_skills_per_job": 5.0,
+        "jobs_with_zero_skills": 307,
+        "cols_below_df": {
+          "3": 15,
+          "5": 25,
+          "10": 41,
+          "20": 63,
+          "50": 102
+        }
+      },
+      "n_skills_folded": 0,
+      "folded_into": {}
+    }
+  },
+  "samples": [
+    {
+      "job_id": "topcv_2216283",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Automation Tester",
+        "IT - Phần mềm"
+      ],
+      "after": [
+        "agile_scrum",
+        "automation_test",
+        "java",
+        "manual_test",
+        "selenium"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2298290",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Digital Marketing"
+      ],
+      "after": [
+        "communication",
+        "ecommerce",
+        "time_management"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2323457",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Backend Developer",
+        "IT - Phần mềm",
+        "Giáo dục / Đào tạo",
+        "Git",
+        "Linux",
+        "MVC",
+        "PostgreSQL",
+        "REST API",
+        "Ruby on Rails",
+        "RSpec",
+        "Ruby",
+        "API",
+        "Performance",
+        "OAuth2",
+        "Debugging",
+        "Authentication/Authorization",
+        "Query Optimization",
+        "indexing",
+        "caching",
+        "ActiveRecord"
+      ],
+      "after": [
+        "cicd",
+        "java",
+        "linux",
+        "machine_learning",
+        "postgresql",
+        "rails",
+        "rest_api",
+        "ruby"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2133822",
+      "source": "topdev",
+      "field": "skills",
+      "before": [
+        "SQL",
+        "Python",
+        "Scala"
+      ],
+      "after": [
+        "airflow",
+        "cicd",
+        "communication",
+        "elasticsearch",
+        "english",
+        "fastapi",
+        "github",
+        "github_actions",
+        "japanese",
+        "lambda",
+        "milvus",
+        "mysql",
+        "opensearch",
+        "postgresql",
+        "python",
+        "scala",
+        "spark",
+        "terraform"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2138436",
+      "source": "topdev",
+      "field": "skills",
+      "before": [
+        "QA/QC"
+      ],
+      "after": [
+        "qa_qc"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2134271",
+      "source": "topdev",
+      "field": "skills",
+      "before": [
+        "Linux",
+        "IT Helpdesk",
+        "Network",
+        "Windows"
+      ],
+      "after": [
+        "communication",
+        "linux",
+        "logical_thinking"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2112450",
+      "source": "vietnamworks",
+      "field": "skills",
+      "before": [
+        "Network Infrastructure",
+        "Routing Protocol",
+        "Network Security",
+        "Data Center And Dr Environments"
+      ],
+      "after": [
+        "network_security"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2119757",
+      "source": "vietnamworks",
+      "field": "skills",
+      "before": [
+        "Giám Sát Chất Lượng Dịch Vụ",
+        "Giải Quyết Vấn Đề",
+        "Kiểm Soát Rủi Ro",
+        "Kiểm Soát Tuân Thủ",
+        "Cải Tiến Chất Lượng"
+      ],
+      "after": [
+        "communication",
+        "logical_thinking",
+        "problem_solving"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2113740",
+      "source": "vietnamworks",
+      "field": "skills",
+      "before": [
+        "System Engineer",
+        "System security",
+        "System Administration",
+        "English Conversation",
+        "Systems Engineering"
+      ],
+      "after": [
+        "infosec",
+        "linux"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C88C7C",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "ansible",
+        "azure",
+        "bash",
+        "cybersecurity",
+        "disaster_recovery",
+        "firewall",
+        "incident_response",
+        "linux",
+        "network_security",
+        "powershell",
+        "python",
+        "siem",
+        "terraform"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C89459",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "centos",
+        "disaster_recovery",
+        "english",
+        "firewall",
+        "infosec",
+        "linux",
+        "mysql",
+        "sql_server",
+        "ubuntu"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C82ACD",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "computer_vision",
+        "cpp",
+        "csharp",
+        "machine_learning",
+        "opencv",
+        "python",
+        "pytorch",
+        "tensorflow"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200966577",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "nghiên cứu phát triển sản phẩm",
+        "r&d",
+        "nhân viên nghiên cứu và phát triển sản phẩm",
+        "r&d staff",
+        "Kỹ sư công nghệ",
+        "r&d thực phẩm",
+        "Nghiên Cứu Sinh",
+        "nghiên cứu viên",
+        "nhân viên r&d",
+        "nghiên cứu sinh học",
+        "Bưu chính viễn thông",
+        "Công Ty Cổ Phần Viễn ..."
+      ],
+      "after": [
+        "communication",
+        "english",
+        "matlab",
+        "python"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200963700",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "senior architect",
+        "process engineer",
+        "construction engineer",
+        "senior merchandiser",
+        "instrument engineer",
+        "it engineer",
+        "senior copywriter",
+        "mechanical engineer",
+        "bridge engineer",
+        "system administrator",
+        "IT Phần cứng - Mạng",
+        "Chi Nhánh Công Ty Cổ ..."
+      ],
+      "after": [
+        "bash",
+        "linux"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200960259",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "kỹ thuật viên",
+        "nhân viên kỹ thuật",
+        "Kỹ Thuật",
+        "kỹ thuật viên máy tính",
+        "kỹ thuật viên phòng lab",
+        "kỹ thuật viên âm thanh",
+        "kỹ thuật viên gây mê",
+        "kỹ thuật viên spa",
+        "kỹ thuật nhuộm",
+        "kỹ thuật hàn",
+        "Chăm sóc khách hàng",
+        "Công Ty Cổ Phần Viễn ..."
+      ],
+      "after": [
+        "android_sdk"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_embedded-c-engineer-1-year-contract-bosch-global-software-technologies-company-limited-5848",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "C++",
+        "UML",
+        "Git",
+        "Embedded C",
+        "Embedded"
+      ],
+      "after": [
+        "c_lang",
+        "communication",
+        "cpp",
+        "english",
+        "unit_test"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_system-engineer-server-storage-san-shinhan-ds-4436",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "Linux",
+        "Hardware Troubleshooting",
+        "VMware",
+        "Bash Shell",
+        "System Admin",
+        "Python"
+      ],
+      "after": [
+        "communication",
+        "english",
+        "linux",
+        "python"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-security-operations-center-soc-specialist-vietbank-1951",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "Cybersecurity",
+        "Application Security",
+        "SOAR",
+        "Data Catalog",
+        "SIEM",
+        "Cloud Security"
+      ],
+      "after": [
+        "communication",
+        "cybersecurity",
+        "infosec",
+        "logical_thinking",
+        "siem"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_58a4cb2c-afad-4839-890e-310dae25b826",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Automation Testing",
+        "Selenium WebDriver",
+        "Java"
+      ],
+      "after": [
+        "agile_scrum",
+        "automation_test",
+        "cicd",
+        "communication",
+        "confluence",
+        "cypress",
+        "english",
+        "java",
+        "javascript",
+        "jira",
+        "postman",
+        "selenium",
+        "testng",
+        "typescript"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_87fe15be-b4d2-49ae-99a1-112a68563d68",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Leadership",
+        "Quality Assurance",
+        "Team Management"
+      ],
+      "after": [
+        "japanese",
+        "qa_qc"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_a05435d7-3750-455c-b4ae-3b874d125eec",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Technical Support",
+        "IT Support",
+        "Customer Service"
+      ],
+      "after": [
+        "communication",
+        "english"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29410756100",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "infosec",
+        "japanese"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29265515116",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "data_analysis",
+        "oop"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_28998837135",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "communication"
+      ],
+      "changed": true
+    }
+  ]
+}

@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-03T17:13:05+00:00",
-  "code_version": "7dee2a4",
+  "generated_at": "2026-11-10T11:50:13+00:00",
+  "code_version": "e168601",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 182
+    "rows": 171
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 182
+    "rows": 171
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 182,
+      "rows_affected": 171,
       "examples": [
         {
           "job_id": "200011696",
@@ -44,23 +44,30 @@
       ]
     },
     {
-      "id": "N2",
-      "name": "Chuẩn hóa cấp bậc nghề nghiệp 6 bậc",
+      "id": "N13",
+      "name": "Tỉnh từ raw_location_text/company_address khi locations không ra tỉnh",
       "action": "modify",
-      "rows_affected": 182,
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "N2",
+      "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
+      "action": "modify",
+      "rows_affected": 171,
       "examples": [
         {
           "job_id": "200011696",
           "field": "seniority",
           "before": "Nhân viên",
-          "after": "Junior (kinh_nghiem)",
+          "after": "Middle (kinh_nghiem)",
           "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
         },
         {
           "job_id": "200383662",
           "field": "seniority",
           "before": "Nhân viên",
-          "after": "Junior (kinh_nghiem)",
+          "after": "Middle (kinh_nghiem)",
           "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
         },
         {
@@ -74,45 +81,52 @@
     },
     {
       "id": "N3",
-      "name": "Phân loại 12 nhóm nghề IT",
+      "name": "Nhóm nghề: 12 nhóm SPEC-01 + Other",
       "action": "modify",
-      "rows_affected": 140,
+      "rows_affected": 77,
       "examples": [
         {
           "job_id": "200011696",
           "field": "job_family",
           "before": "IT Helpdesk",
-          "after": "Hệ thống/Mạng (title)",
+          "after": "System/Network (title)",
           "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
         },
         {
           "job_id": "200383662",
           "field": "job_family",
-          "before": "Full – Stack Java Developer (Onsite)",
-          "after": "Backend (title)",
+          "before": "Full - Stack Java Developer (Onsite)",
+          "after": "Backend (skills)",
           "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
         },
         {
-          "job_id": "200687980",
+          "job_id": "200792353",
           "field": "job_family",
-          "before": "Long An - Kỹ Sư Hạ Tầng Viễn Thông",
-          "after": "DevOps/Cloud (title)",
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/long-an-ky-su-ha-tang-vien-thong-c7p210000188id200687980.html"
+          "before": "Web System Engineer",
+          "after": "System/Network (title)",
+          "url": "https://vieclam24h.vn/it-phan-mem/web-system-engineer-c8p210000160id200792353.html"
         }
       ]
+    },
+    {
+      "id": "N16",
+      "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 182,
+      "rows_affected": 171,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 181,
+      "rows_affected": 170,
       "examples": []
     },
     {
@@ -120,6 +134,20 @@
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
       "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "M3c",
+      "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
+      "action": "flag",
+      "rows_affected": 147,
+      "examples": []
+    },
+    {
+      "id": "M4",
+      "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
+      "action": "flag",
+      "rows_affected": 0,
       "examples": []
     },
     {
@@ -131,8 +159,29 @@
     },
     {
       "id": "N6",
-      "name": "Gắn cờ ngoại lai lương IQR và Winsorize 1-99%",
+      "name": "Gắn cờ ngoại lai lương IQR gộp và Winsorize 1-99% (cột *_capped)",
       "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "M5",
+      "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
+      "action": "flag",
+      "rows_affected": 2,
+      "examples": []
+    },
+    {
+      "id": "M6",
+      "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
+      "action": "flag",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "M8",
+      "name": "min > max, kinh nghiệm ngoài khoảng: chỉ cờ",
+      "action": "flag",
       "rows_affected": 0,
       "examples": []
     },
@@ -140,7 +189,14 @@
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 168,
+      "rows_affected": 157,
+      "examples": []
+    },
+    {
+      "id": "N18",
+      "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
+      "action": "modify",
+      "rows_affected": 170,
       "examples": []
     }
   ],
@@ -182,31 +238,86 @@
     },
     {
       "field": "company_norm",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.4,
+      "fill_pct_out": 99.4
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 91.8,
-      "fill_pct_out": 91.8
+      "fill_pct_in": 91.2,
+      "fill_pct_out": 91.2
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 92.3,
-      "fill_pct_out": 92.3
-    },
-    {
-      "field": "log_salary_min",
       "fill_pct_in": 91.8,
       "fill_pct_out": 91.8
     },
     {
+      "field": "log_salary_min",
+      "fill_pct_in": 91.2,
+      "fill_pct_out": 91.2
+    },
+    {
       "field": "log_salary_max",
-      "fill_pct_in": 92.3,
-      "fill_pct_out": 92.3
+      "fill_pct_in": 91.8,
+      "fill_pct_out": 91.8
     },
     {
       "field": "is_outlier_salary",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "job_title_core",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "title_canonical",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "company_key",
+      "fill_pct_in": 99.4,
+      "fill_pct_out": 99.4
+    },
+    {
+      "field": "work_mode",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "tinh_status",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "salary_status",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "level_inferred",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "exp_min_years",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "exp_source",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "salary_out_of_range",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "salary_iqr_outlier_by_level",
       "fill_pct_in": 100.0,
       "fill_pct_out": 100.0
     }
@@ -221,27 +332,211 @@
   },
   "extra": {
     "seniority_distribution": {
-      "Junior": 91,
-      "Mới tốt nghiệp": 41,
-      "Middle": 23,
-      "Thực tập": 12,
-      "Trưởng nhóm/Quản lý": 10,
+      "Junior": 56,
+      "Middle": 55,
+      "Intern/Fresher": 45,
+      "Lead/Manager": 10,
       "Senior": 5
     },
     "job_family_distribution": {
-      "Khác": 42,
-      "Backend": 26,
-      "Hệ thống/Mạng": 25,
-      "DevOps/Cloud": 25,
-      "Mobile": 14,
-      "Phân tích nghiệp vụ (BA)": 12,
-      "Data/AI": 10,
-      "Kiểm thử (QA/QC)": 10,
-      "Thiết kế UI/UX": 9,
+      "Other": 94,
+      "System/Network": 26,
+      "Product/Project": 14,
+      "Data Science/AI": 9,
+      "QA/QC": 9,
+      "Backend": 5,
+      "Mobile": 5,
       "Fullstack": 4,
-      "Quản lý sản phẩm/dự án": 4,
-      "Frontend": 1
+      "DevOps/Cloud": 3,
+      "Security": 1,
+      "Data Engineer": 1
     },
-    "salary_outliers": 0
-  }
+    "job_family_source_distribution": {
+      "none": 94,
+      "title": 68,
+      "skills": 9
+    },
+    "work_mode_distribution": {
+      "onsite": 170,
+      "hybrid": 1
+    },
+    "salary_status_distribution": {
+      "value": 157,
+      "negotiable": 12,
+      "not_stated": 2
+    },
+    "salary_outliers": 0,
+    "inference": {
+      "level_inferred": 147,
+      "exp_inferred": 0
+    },
+    "title_taxonomy": {
+      "job_title_clean_distinct": 163,
+      "job_title_core_distinct": 137,
+      "title_canonical_source": {
+        "none": 171
+      }
+    },
+    "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
+    "anomalies_by_kind": {
+      "level_inferred": 147,
+      "seniority_can_kiem": 2,
+      "salary_negotiable_with_value": 1,
+      "tinh_unknown": 0,
+      "salary_iqr_outlier_by_level": 0,
+      "job_family_can_kiem": 0,
+      "salary_out_of_range": 2,
+      "salary_iqr_outlier_pooled": 0,
+      "salary_suspect": 2,
+      "salary_period_year": 0,
+      "exp_inferred": 0,
+      "salary_min_gt_max": 0,
+      "exp_out_of_range": 0,
+      "currency_reinterpreted": 0
+    }
+  },
+  "samples": [
+    {
+      "job_id": "vieclam24h_200947887",
+      "source": "vieclam24h",
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch, Q.Cầu Giấy, Hà Nội, Việt Nam."
+        },
+        {
+          "dia_chi_cu_the": "11 Trần Hưng Đạo",
+          "phuong_xa": null,
+          "tinh_thanh": "Đắk Lắk",
+          "raw": "Đắk Lắk : 11 Trần Hưng Đạo, Thành phố Buôn Ma Thuột"
+        },
+        {
+          "dia_chi_cu_the": "430 Giải Phóng",
+          "phuong_xa": null,
+          "tinh_thanh": "Đắk Lắk",
+          "raw": "Đắk Lắk : 430 Giải Phóng, Huyện Krông Pắc"
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch, Q.Cầu Giấy, Hà Nội, Việt Nam.",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "11 Trần Hưng Đạo",
+          "phuong_xa": null,
+          "tinh_thanh": "Đắk Lắk",
+          "raw": "Đắk Lắk : 11 Trần Hưng Đạo, Thành phố Buôn Ma Thuột",
+          "tinh_key": "dak_lak",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "430 Giải Phóng",
+          "phuong_xa": null,
+          "tinh_thanh": "Đắk Lắk",
+          "raw": "Đắk Lắk : 430 Giải Phóng, Huyện Krông Pắc",
+          "tinh_key": "dak_lak",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200948134",
+      "source": "vieclam24h",
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": "Số 11, ngách 4, ngõ 362 Giải Phóng",
+          "phuong_xa": "Phường Định Công",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Số 11, ngách 4, ngõ 362 Giải Phóng, Phường Định Công, TP Hà Nội, Việt Nam"
+        },
+        {
+          "dia_chi_cu_the": "Số 64-B2 khu đô thị Đại Kim- Định Công",
+          "phuong_xa": "Phường Định Công",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Số 64-B2 khu đô thị Đại Kim- Định Công, Phường Định Công, Quận Hoàng Mai"
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": "Số 11, ngách 4, ngõ 362 Giải Phóng",
+          "phuong_xa": "Phường Định Công",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Số 11, ngách 4, ngõ 362 Giải Phóng, Phường Định Công, TP Hà Nội, Việt Nam",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Số 64-B2 khu đô thị Đại Kim- Định Công",
+          "phuong_xa": "Phường Định Công",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Số 64-B2 khu đô thị Đại Kim- Định Công, Phường Định Công, Quận Hoàng Mai",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200962525",
+      "source": "vieclam24h",
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": "288 Bis Nguyễn Văn Cừ",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Cần Thơ",
+          "raw": "288 Bis Nguyễn Văn Cừ - P. An Hòa - Q. Ninh Kiều - TP. Cần Thơ"
+        },
+        {
+          "dia_chi_cu_the": "Số 288 bis, Nguyễn Văn Cừ",
+          "phuong_xa": "Phường Cái Khế",
+          "tinh_thanh": "TP. Cần Thơ",
+          "raw": "Cần Thơ : Số 288 bis, Nguyễn Văn Cừ, Phường Cái Khế (Quận Ninh Kiều, Cần Thơ cũ)"
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": "288 Bis Nguyễn Văn Cừ",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Cần Thơ",
+          "raw": "288 Bis Nguyễn Văn Cừ - P. An Hòa - Q. Ninh Kiều - TP. Cần Thơ",
+          "tinh_key": "can_tho",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Số 288 bis, Nguyễn Văn Cừ",
+          "phuong_xa": "Phường Cái Khế",
+          "tinh_thanh": "TP. Cần Thơ",
+          "raw": "Cần Thơ : Số 288 bis, Nguyễn Văn Cừ, Phường Cái Khế (Quận Ninh Kiều, Cần Thơ cũ)",
+          "tinh_key": "can_tho",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
+      "changed": true
+    }
+  ]
 }

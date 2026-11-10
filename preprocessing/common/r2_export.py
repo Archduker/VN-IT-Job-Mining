@@ -28,7 +28,8 @@ def silver_key(step: str, source: str) -> str:
     return to_r2_key(f"staging/{source}/preprocessing/{step}.{ext}")
 
 
-PIPELINE_STEPS = (*STEPS, "rejected", "translation")
+PIPELINE_STEPS = (*STEPS, "07_sections", "08_skills", "09_tokens", "rejected", "translation")
+PROCESSING_FILES = {"07_sections": ("all.parquet",), "08_skills": ("job_skills.parquet",), "09_tokens": ("all.parquet",)}
 
 
 def pipeline_key(step: str, name: str) -> str:
@@ -89,6 +90,18 @@ def plan_objects(build: bool = True) -> List[Dict[str, Any]]:
             out.append({"step": step, "source": src, "key": silver_key(step, src), "rows": rows,
                         "generated_at": gen, "content_type": "application/vnd.apache.parquet",
                         "build": _parquet_part(p, src) if build else None})
+    # pipeline/<bước>/<tên file>: bảng gộp 8 nguồn (PH9); chỉ liệt kê file có trên máy
+    tables = {s: ("all.parquet",) for s in SILVER_STEPS[1:]}
+    tables.update({s: f for s, f in PROCESSING_FILES.items()})
+    for step, names in tables.items():
+        for name in names:
+            p = (DATA.parent / "processing" if step in PROCESSING_FILES else DATA) / step / name
+            if p.exists():
+                import pyarrow.parquet as pq
+                out.append({"step": step, "source": None, "key": pipeline_key(step, name),
+                            "rows": pq.ParquetFile(p).metadata.num_rows, "generated_at": _generated_at(step),
+                            "content_type": "application/vnd.apache.parquet",
+                            "build": (lambda p=p: p.read_bytes()) if build else None})
     gen = _generated_at("05_encoding")
     for name, key in GOLD_KEYS.items():
         p = DATA / "05_encoding" / name

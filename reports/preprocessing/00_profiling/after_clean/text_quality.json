@@ -2,45 +2,45 @@
  "when": "after_clean",
  "seed": 42,
  "sample": 500,
- "generated_at": "2026-11-10T09:14:08.675915+00:00",
+ "generated_at": "2026-11-10T11:54:50.986639+00:00",
  "sizes": {
   "topcv": {
-   "total": 1561,
+   "total": 1533,
    "sampled": 500
   },
   "topdev": {
-   "total": 227,
-   "sampled": 227
+   "total": 207,
+   "sampled": 207
   },
   "vietnamworks": {
-   "total": 800,
+   "total": 786,
    "sampled": 500
   },
   "careerviet": {
-   "total": 447,
-   "sampled": 447
+   "total": 421,
+   "sampled": 421
   },
   "vieclam24h": {
-   "total": 182,
-   "sampled": 182
+   "total": 171,
+   "sampled": 171
   },
   "itviec": {
-   "total": 905,
+   "total": 835,
    "sampled": 500
   },
   "glints": {
-   "total": 271,
-   "sampled": 271
+   "total": 260,
+   "sampled": 260
   },
   "jobsgo": {
-   "total": 683,
+   "total": 585,
    "sampled": 500
   }
  },
  "text_cols": [
-  "job_title",
-  "raw_description_text",
-  "raw_requirements_text"
+  "job_title_clean",
+  "description_clean",
+  "requirements_clean"
  ],
  "no_diacritic_rule": "không có ký tự có dấu và có cụm tiếng Việt không dấu (heuristic)",
  "by_source": {
@@ -51,25 +51,25 @@
    "no_diacritic": 0.0
   },
   "topdev": {
-   "n_texts": 681,
+   "n_texts": 621,
    "html": 0.0,
-   "nfd": 0.73,
+   "nfd": 0.0,
    "no_diacritic": 0.0
   },
   "vietnamworks": {
    "n_texts": 1500,
-   "html": 0.4,
+   "html": 0.0,
    "nfd": 0.0,
    "no_diacritic": 0.0
   },
   "careerviet": {
-   "n_texts": 1341,
+   "n_texts": 1263,
    "html": 0.0,
-   "nfd": 1.34,
+   "nfd": 0.0,
    "no_diacritic": 0.0
   },
   "vieclam24h": {
-   "n_texts": 546,
+   "n_texts": 513,
    "html": 0.0,
    "nfd": 0.0,
    "no_diacritic": 0.0
@@ -81,9 +81,9 @@
    "no_diacritic": 0.0
   },
   "glints": {
-   "n_texts": 813,
-   "html": 0.12,
-   "nfd": 2.95,
+   "n_texts": 780,
+   "html": 0.13,
+   "nfd": 0.0,
    "no_diacritic": 0.0
   },
   "jobsgo": {
@@ -100,7 +100,7 @@
   "careerviet": "ok",
   "vieclam24h": "ok",
   "itviec": "ok",
-  "glints": "bỏ: ValueError: Couldn't find space to draw. Either the Canvas size is too small or too much of the image is masked out.",
+  "glints": "ok",
   "jobsgo": "ok"
  }
 }

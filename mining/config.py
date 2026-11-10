@@ -43,7 +43,7 @@ COLUMN_ALIASES: dict[str, list[str]] = {
     "company_name": ["company_name", "company_norm"],
     "source_platform": ["source_platform"],
     "job_family": ["job_family"],
-    # Cấp bậc có 3 dạng, ưu tiên: seniority_ord (0-5, Phát E1) > nhãn chữ > seniority_level (0-4, Duy).
+    # Cấp bậc có 3 dạng, ưu tiên: seniority_ord (0-4, bước Encoding E1) > nhãn chữ > seniority_level (0-4, 04_normalization).
     "seniority_ord": ["seniority_ord"],
     "seniority": ["seniority", "seniority_label"],
     "seniority_level": ["seniority_level"],
@@ -69,21 +69,21 @@ SKILL_EXCLUDE_COLUMNS = {"skills__other_count", "skill_count", "skills_count"}
 # Lương lớn hơn ngưỡng này được hiểu là VNĐ, nhỏ hơn là triệu VNĐ (lương tháng IT nằm trong 1–500 triệu).
 SALARY_VND_DETECT_THRESHOLD = 10_000.0
 
-# Cấp bậc -> thứ tự (spec 07 §4.1: Intern=0 ... Lead=5), nhận cả nhãn tiếng Việt lẫn tiếng Anh.
+# Cấp bậc -> thứ tự (spec 07 §4.1: Intern/Fresher=0 ... Lead/Manager=4), nhận cả nhãn tiếng Việt lẫn tiếng Anh.
 SENIORITY_ORDINAL: dict[str, int] = {
-    "thực tập": 0, "thuc tap": 0, "intern": 0, "internship": 0,
-    "mới tốt nghiệp": 1, "moi tot nghiep": 1, "fresher": 1, "entry": 1,
-    "junior": 2,
-    "middle": 3, "mid": 3,
-    "senior": 4,
-    "trưởng nhóm/quản lý": 5, "truong nhom/quan ly": 5, "lead": 5, "manager": 5, "leader": 5,
+    "intern/fresher": 0, "intern": 0, "internship": 0, "fresher": 0, "entry": 0,
+    "thực tập": 0, "thuc tap": 0, "mới tốt nghiệp": 0, "moi tot nghiep": 0,
+    "junior": 1,
+    "middle": 2, "mid": 2,
+    "senior": 3,
+    "lead/manager": 4, "lead": 4, "manager": 4, "leader": 4,
+    "trưởng nhóm/quản lý": 4, "truong nhom/quan ly": 4,
 }
-SENIORITY_ORDER_LABELS = ["Thực tập", "Mới tốt nghiệp", "Junior", "Middle", "Senior", "Trưởng nhóm/Quản lý"]
+SENIORITY_ORDER_LABELS = ["Intern/Fresher", "Junior", "Middle", "Senior", "Lead/Manager"]
+JOB_FAMILY_OTHER = "Other"  # nhãn dự phòng của job_title.OTHER (SPEC-01: 12 nhóm + Other)
 
-# Thang 5 mức của Duy (preprocessing/transformation, cột seniority_level):
-# 0 Intern/Fresher, 1 Junior, 2 Middle, 3 Senior, 4 Lead/Manager, -1 chưa rõ.
-# Đổi sang thang 6 mức ở trên; Intern/Fresher gộp nên đưa về "Mới tốt nghiệp" (1), mức phổ biến hơn.
-SENIORITY_LEVEL_TO_ORD: dict[int, int] = {0: 1, 1: 2, 2: 3, 3: 4, 4: 5}
+# Cột seniority_level của 04_normalization cùng thang 0-4 (null = chưa rõ), nên ánh xạ là đồng nhất.
+SENIORITY_LEVEL_TO_ORD: dict[int, int] = {i: i for i in range(5)}
 
 # Nhóm địa bàn cho mô hình lương (docs/tasks/06: Hà Nội, TP.HCM, Khác).
 # "Nhiều địa điểm" và "Toàn quốc" (location_normalizer của Duy) tách riêng, không gộp vào "khac",

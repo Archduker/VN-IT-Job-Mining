@@ -22,6 +22,24 @@ def list_steps():
     return steps.list_steps()
 
 
+@router.get("/processing-steps", summary="Bước 07-09 (reports/processing/), thiếu thì available=false, reason NO_DATA")
+def list_processing_steps():
+    return steps.list_processing_steps()
+
+
+@router.get("/anomalies", summary="Bất thường bước 04 (anomalies.json), lọc theo loại và nguồn")
+def get_anomalies(kind: Optional[str] = Query(None), source: Optional[str] = Query(None), offset: int = Query(0, ge=0),
+                  limit: int = Query(50, ge=1, le=steps.ANOMALY_MAX)):
+    if source is not None:
+        require_source(source)
+    return steps.get_anomalies(kind, source, offset, limit)
+
+
+@router.get("/jobs/{source}/{job_id}", summary="Mở đúng tin theo job_id (đọc parquet trên máy, không gọi R2)")
+def get_job(job_id: str, source: str = Depends(require_source), job_id_global: Optional[str] = Query(None)):
+    return steps.find_job(source, job_id, job_id_global)
+
+
 @router.get("/steps/{step}", summary="Báo cáo gộp 8 nguồn của một bước")
 def get_step(step: str):
     return steps.get_step(step)

@@ -2,7 +2,7 @@
 """Profiling 8 nguồn (PH1-A): tỉ lệ thiếu, chất lượng văn bản, heatmap, ydata-profiling nếu chạy được.
 
     python scripts/profile_sources.py --when both [--sample 500] [--seed 42] [--dry-run]
-before_clean: raw mới nhất mỗi job_id, làm phẳng. after_clean: data/preprocessing/02_integration/all.parquet.
+before_clean: raw mới nhất mỗi job_id, làm phẳng. after_clean: data/preprocessing/03_transformation/all.parquet (cột *_clean; 02 chỉ làm phẳng, còn HTML/NFD theo hợp đồng).
 Chỉ đọc; ghi vào reports/preprocessing/00_profiling/<when>/.
 """
 from __future__ import annotations
@@ -27,6 +27,7 @@ OUT = REPO_ROOT / "reports" / "preprocessing" / "00_profiling"
 EMPTY_TOKENS = {"", "0", "đang cập nhật", "none", "nan", "null"}
 CONVENTION = "rỗng = None/NaN, chuỗi rỗng, '0', 'Đang cập nhật', 'None', danh sách rỗng"
 TEXT_COLS = ["job_title", "raw_description_text", "raw_requirements_text"]
+AFTER_TEXT_COLS = ["job_title_clean", "description_clean", "requirements_clean"]  # đầu ra PH2 (03_transformation)
 TAG = re.compile(r"<[^>]+>|&[a-zA-Z]{2,8};|&#\d+;")
 VI_DIACRITIC = re.compile(r"[ăâđêôơưàáạảãèéẹẻẽìíịỉĩòóọỏõùúụủũỳýỵỷỹ]", re.I)
 # shortcut: heuristic từ khoá tiếng Việt không dấu, chưa nhận diện ngôn ngữ thật (PH3 làm), đổi khi có cột lang
@@ -48,9 +49,9 @@ def missing_rates(df: pd.DataFrame, cols) -> dict:
     return {c: round(float(sum(_is_empty(v) for v in df[c])) / n, 4) if c in df else 1.0 for c in cols}
 
 
-def text_quality(df: pd.DataFrame) -> dict:
+def text_quality(df: pd.DataFrame, cols=None) -> dict:
     """% giá trị văn bản (các cột TEXT_COLS có mặt, bỏ giá trị rỗng) còn HTML/entity, NFD, tiếng Việt không dấu."""
-    texts = [str(v) for c in TEXT_COLS if c in df for v in df[c] if not _is_empty(v)]
+    texts = [str(v) for c in (cols or TEXT_COLS) if c in df for v in df[c] if not _is_empty(v)]
     n = len(texts)
     if not n:
         return {"n_texts": 0, "html": None, "nfd": None, "no_diacritic": None}
@@ -73,7 +74,7 @@ def load_before(source: str) -> pd.DataFrame:
 
 
 def load_after(source: str) -> pd.DataFrame:
-    path = REPO_ROOT / "data" / "preprocessing" / "02_integration" / "all.parquet"
+    path = REPO_ROOT / "data" / "preprocessing" / "03_transformation" / "all.parquet"
     if not path.exists():
         return pd.DataFrame()
     return pd.read_parquet(path, filters=[("source_platform", "==", source)])
@@ -107,7 +108,7 @@ def run(when: str, sample: int, seed: int, dry: bool) -> None:
         df = loader(src)
         sizes[src] = {"total": len(df)}
         if df.empty:
-            missing[src], text[src] = {}, text_quality(df)
+            missing[src], text[src] = {}, text_quality(df, AFTER_TEXT_COLS if when == "after_clean" else None)
             ydata[src] = "không có dữ liệu"
             print(f"[{when}] {src}: 0 dòng (không có dữ liệu)")
             continue
@@ -117,13 +118,14 @@ def run(when: str, sample: int, seed: int, dry: bool) -> None:
         if dry:
             continue
         cols = [c for c in df.columns if c != "source_platform"]
-        missing[src], text[src] = missing_rates(df, cols), text_quality(df)
+        missing[src], text[src] = missing_rates(df, cols), text_quality(df, AFTER_TEXT_COLS if when == "after_clean" else None)
         try:
             from ydata_profiling import ProfileReport
 
+            # words=False (cat+text): wordcloud ném ValueError "Couldn't find space to draw" khi cột chữ toàn từ bị lọc (vieclam24h before, glints after)
             flat = df.drop(columns=[c for c in df if df[c].map(lambda v: isinstance(v, (list, dict))).any()])
             out.mkdir(parents=True, exist_ok=True)
-            ProfileReport(flat, minimal=True, title=f"{src} {when}").to_file(out / f"profile_{src}.html")
+            ProfileReport(flat, minimal=True, title=f"{src} {when}", vars={"cat": {"words": False}, "text": {"words": False}}).to_file(out / f"profile_{src}.html")
             ydata[src] = "ok"
         except Exception as e:  # ghi lý do, không hạ pandas
             ydata[src] = f"bỏ: {type(e).__name__}: {str(e)[:200]}"
@@ -131,13 +133,13 @@ def run(when: str, sample: int, seed: int, dry: bool) -> None:
         print("dry-run: không ghi file")
         return
     if not any(missing.values()):
-        print(f"[{when}] không nguồn nào có dữ liệu: không ghi báo cáo (after_clean cần chạy Integration để có 02_integration/all.parquet)")
+        print(f"[{when}] không nguồn nào có dữ liệu: không ghi báo cáo (after_clean cần chạy Transformation để có 03_transformation/all.parquet)")
         return
     out.mkdir(parents=True, exist_ok=True)
     meta = {"when": when, "seed": seed, "sample": sample, "generated_at": datetime.now(timezone.utc).isoformat(), "sizes": sizes}
     dump = lambda name, obj: (out / name).write_text(json.dumps(obj, ensure_ascii=False, indent=1), encoding="utf-8")  # noqa: E731
     dump("missing_matrix.json", {**meta, "convention": CONVENTION, "missing_rate": missing})
-    dump("text_quality.json", {**meta, "text_cols": TEXT_COLS, "no_diacritic_rule": "không có ký tự có dấu và có cụm tiếng Việt không dấu (heuristic)", "by_source": text, "ydata_profiling": ydata})
+    dump("text_quality.json", {**meta, "text_cols": AFTER_TEXT_COLS if when == "after_clean" else TEXT_COLS, "no_diacritic_rule": "không có ký tự có dấu và có cụm tiếng Việt không dấu (heuristic)", "by_source": text, "ydata_profiling": ydata})
     present = {s: m for s, m in missing.items() if m}
     (out / "missing_heatmap.html").write_text(heatmap_html(present, f"Tỉ lệ thiếu {when}"), encoding="utf-8")
     print(f"Đã ghi {out}")

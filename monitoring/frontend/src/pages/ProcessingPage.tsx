@@ -1,9 +1,12 @@
 import React from 'react'
 import { api } from '../api/client'
+import { StepOverview, StepStrip } from '../components/preprocessing'
 import { PctBar, ReportStamp, TableShell, pct } from '../components/reports'
 import { Card, EmptyState, ErrorState, LoadingState, SectionTitle, StatCard, fmt, useAsync } from '../components/ui'
 
 export const ProcessingPage: React.FC = () => {
+  const [step, setStep] = React.useState('07_sections')
+  const proc = useAsync(() => api.processingSteps(), [])
   const { data, error, loading } = useAsync(() => api.processing(), [])
   if (error && !data) return <ErrorState />
   if (loading && !data) return <LoadingState />
@@ -43,6 +46,12 @@ export const ProcessingPage: React.FC = () => {
           <EmptyState message="Chưa có báo cáo Integration nên chưa có độ đầy đủ theo trường." />
         )}
       </Card>
+
+      <Card>
+        <SectionTitle title="Các bước Processing 07–09" hint="Đọc reports/processing/<bước>/. Bước chưa có báo cáo hiện trạng thái trống (NO_DATA)." />
+        {proc.data ? <StepStrip steps={proc.data} selected={step} onSelect={setStep} /> : <LoadingState />}
+      </Card>
+      <StepOverview step={step} />
 
       <Card>
         <SectionTitle title="Chỉ số pipeline chưa ghi ra" hint="Muốn hiện các số này, cần bổ sung vào báo cáo của pipeline trước." />
