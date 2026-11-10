@@ -310,10 +310,10 @@ File JSON thô bao gồm hai phần tách biệt: `metadata` (thông tin phục 
    - Tuyệt đối không hash các chuỗi như "Đăng 3 giờ trước", "Cập nhật hôm nay", hay trường HTML thô chứa script động (`exclude_keys=["raw_html", "scraped_at", "relative_time"]`).
 2. **Sắp xếp thứ tự các khóa (Key Sorting):**
    - Đảm bảo tính toán trên chuỗi JSON được chuẩn hóa chuẩn RFC-8785: các key được sắp xếp theo thứ tự từ điển (Lexicographical order).
-3. **Mã hóa chuỗi và tính toán MD5:**
-   - Chuyển JSON đã sắp xếp thành chuỗi byte UTF-8 và tính mã băm MD5 hoặc SHA-256.
+3. **Mã hóa UTF-8 và tính SHA-256”:**
+   - Chuyển JSON đã sắp xếp thành chuỗi byte UTF-8 và tính mã băm SHA-256.
 
-$$\text{content\_hash} = \text{MD5}(\text{json.dumps}(\text{raw\_payload}, \text{sort\_keys}=\text{True}, \text{ensure\_ascii}=\text{False}))$$
+$$\text{content\_hash} = \text{SHA-256}(\text{json.dumps}(\text{raw\_payload}, \text{sort\_keys}=\text{True}, \text{ensure\_ascii}=\text{False}))$$
 
 ### 5.3. Bố Cục Lưu Trữ Trên Cloudflare R2 (R2 Storage Layout)
 
