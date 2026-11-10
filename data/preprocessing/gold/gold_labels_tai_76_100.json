@@ -1,0 +1,2564 @@
+{
+  "version": 1,
+  "sample_seed": 42,
+  "sample_id": "e58bceb3a5",
+  "exported_at": "2026-11-10T17:36:41.242386+00:00",
+  "flags": [
+    "jobsgo_28967523961",
+    "jobsgo_29163944196",
+    "jobsgo_29212815017",
+    "jobsgo_29273404515",
+    "jobsgo_28990472471"
+  ],
+  "labels": {
+    "itviec_techinical-lead-net-vinsmart-future-2229": {
+      "it": "it",
+      "salary": {
+        "kind": "not_stated"
+      },
+      "experience_years": 8,
+      "seniority": "Lead/Manager",
+      "location": {
+        "provinces": [
+          "ho_chi_minh"
+        ],
+        "work_mode": "hybrid"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 552
+        },
+        {
+          "section": "mo_ta",
+          "start": 553,
+          "end": 1538
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1540,
+          "end": 2770
+        },
+        {
+          "section": "phuc_loi",
+          "start": 2772,
+          "end": 3961
+        }
+      ],
+      "skills": [
+        {
+          "name": "C#",
+          "level": "required"
+        },
+        {
+          "name": ".NET",
+          "level": "required"
+        },
+        {
+          "name": "ASP.NET Core",
+          "level": "required"
+        },
+        {
+          "name": "RESTful API",
+          "level": "required"
+        },
+        {
+          "name": "Microservices",
+          "level": "required"
+        },
+        {
+          "name": "Distributed Systems",
+          "level": "required"
+        },
+        {
+          "name": "Design Patterns",
+          "level": "required"
+        },
+        {
+          "name": "Performance Optimization",
+          "level": "required"
+        },
+        {
+          "name": "Relational Databases",
+          "level": "required"
+        },
+        {
+          "name": "NoSQL General",
+          "level": "required"
+        },
+        {
+          "name": "React",
+          "level": "required"
+        },
+        {
+          "name": "JavaScript",
+          "level": "required"
+        },
+        {
+          "name": "TypeScript",
+          "level": "required"
+        },
+        {
+          "name": "State Management",
+          "level": "required"
+        },
+        {
+          "name": "Responsive UI",
+          "level": "required"
+        },
+        {
+          "name": "AWS và/hoặc Azure",
+          "level": "required"
+        },
+        {
+          "name": "CI/CD",
+          "level": "required"
+        },
+        {
+          "name": "DevSecOps",
+          "level": "required"
+        },
+        {
+          "name": "Secure Coding",
+          "level": "required"
+        },
+        {
+          "name": "Software Architecture",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Thưởng",
+        "Đào tạo",
+        "Làm việc linh hoạt",
+        "Bảo hiểm",
+        "Khám sức khỏe",
+        "Nghỉ phép",
+        "Phụ cấp ăn uống",
+        "Ưu đãi dịch vụ Vingroup",
+        "Teambuilding"
+      ]
+    },
+    "glints_2401fa77-6f87-49f3-917b-fffd8099bbc8": {
+      "it": "it",
+      "salary": {
+        "kind": "value",
+        "min": 8500000.0,
+        "max": 9000000,
+        "currency": "VND",
+        "period": "month"
+      },
+      "experience_years": 0,
+      "seniority": "Intern/Fresher",
+      "location": {
+        "provinces": [
+          "dong_nai"
+        ],
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 214
+        },
+        {
+          "section": "mo_ta",
+          "start": 215,
+          "end": 1244
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1245,
+          "end": 1494
+        },
+        {
+          "section": "uu_tien",
+          "start": 1495,
+          "end": 1610
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1611,
+          "end": 1855
+        },
+        {
+          "section": "uu_tien",
+          "start": 1856,
+          "end": 1932
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1933,
+          "end": 1999
+        },
+        {
+          "section": "phuc_loi",
+          "start": 2000,
+          "end": 2412
+        },
+        {
+          "section": "khac",
+          "start": 2413,
+          "end": 2538
+        }
+      ],
+      "skills": [
+        {
+          "name": "Java / C#/.NET / Python hoặc tương đương (ít nhất một)",
+          "level": "required"
+        },
+        {
+          "name": "SQL Server / MySQL hoặc tương đương",
+          "level": "required"
+        },
+        {
+          "name": "Đọc hiểu mã nguồn",
+          "level": "required"
+        },
+        {
+          "name": "Problem Solving",
+          "level": "required"
+        },
+        {
+          "name": "Logical Thinking",
+          "level": "required"
+        },
+        {
+          "name": "Chỉnh sửa/phát triển chức năng phần mềm",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Thưởng",
+        "Bảo hiểm",
+        "Khám sức khỏe",
+        "Du lịch",
+        "Quà lễ, Tết và sinh nhật"
+      ]
+    },
+    "glints_35bdddd8-ec74-4991-93d1-d4b89cc10bab": {
+      "it": "it",
+      "salary": {
+        "kind": "value",
+        "min": 50000000,
+        "max": 60000000,
+        "currency": "VND",
+        "period": "month"
+      },
+      "experience_years": 7,
+      "seniority": "Lead/Manager",
+      "location": {
+        "provinces": [
+          "ho_chi_minh"
+        ],
+        "work_mode": "hybrid"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 292
+        },
+        {
+          "section": "mo_ta",
+          "start": 293,
+          "end": 1382
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1383,
+          "end": 2246
+        },
+        {
+          "section": "khac",
+          "start": 2248,
+          "end": 2311
+        },
+        {
+          "section": "phuc_loi",
+          "start": 2313,
+          "end": 2336
+        }
+      ],
+      "skills": [
+        {
+          "name": "Java và/hoặc React",
+          "level": "required"
+        },
+        {
+          "name": "RESTful API",
+          "level": "required"
+        },
+        {
+          "name": "Microservices",
+          "level": "required"
+        },
+        {
+          "name": "AWS hoặc Azure",
+          "level": "required"
+        },
+        {
+          "name": "Cloud Computing",
+          "level": "required"
+        },
+        {
+          "name": "Unit Testing",
+          "level": "required"
+        },
+        {
+          "name": "Integration Testing",
+          "level": "required"
+        },
+        {
+          "name": "Amazon ECS",
+          "level": "required"
+        },
+        {
+          "name": "Kubernetes",
+          "level": "required"
+        },
+        {
+          "name": "Docker",
+          "level": "required"
+        },
+        {
+          "name": "AWS Lambda",
+          "level": "required"
+        },
+        {
+          "name": "English Proficiency",
+          "level": "required"
+        },
+        {
+          "name": "Agile/Scrum",
+          "level": "required"
+        },
+        {
+          "name": "Problem Solving",
+          "level": "required"
+        },
+        {
+          "name": "Analytical Skills",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Nghỉ phép",
+        "Nghỉ ốm"
+      ]
+    },
+    "glints_537fc2c8-800a-4251-a2f0-bf00e47e2e7e": {
+      "it": "it",
+      "salary": {
+        "kind": "not_stated"
+      },
+      "experience_years": 1,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "ho_chi_minh"
+        ],
+        "work_mode": "hybrid"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 66
+        },
+        {
+          "section": "mo_ta",
+          "start": 67,
+          "end": 1515
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1516,
+          "end": 2133
+        },
+        {
+          "section": "phuc_loi",
+          "start": 2134,
+          "end": 2552
+        },
+        {
+          "section": "khac",
+          "start": 2553,
+          "end": 2829
+        },
+        {
+          "section": "phuc_loi",
+          "start": 2831,
+          "end": 2860
+        }
+      ],
+      "skills": [
+        {
+          "name": "English Proficiency",
+          "level": "required"
+        },
+        {
+          "name": "Microsoft Office",
+          "level": "required"
+        },
+        {
+          "name": "Microsoft Excel",
+          "level": "required"
+        },
+        {
+          "name": "Power BI / Looker Studio",
+          "level": "required"
+        },
+        {
+          "name": "Data Analysis",
+          "level": "required"
+        },
+        {
+          "name": "KPI",
+          "level": "required"
+        },
+        {
+          "name": "Business Metrics",
+          "level": "required"
+        },
+        {
+          "name": "Data Visualization",
+          "level": "required"
+        },
+        {
+          "name": "Automation",
+          "level": "required"
+        },
+        {
+          "name": "AI Tools",
+          "level": "required"
+        },
+        {
+          "name": "Problem Solving",
+          "level": "required"
+        },
+        {
+          "name": "Presentation Skills",
+          "level": "required"
+        },
+        {
+          "name": "Teamwork",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Thưởng",
+        "Bảo hiểm",
+        "Phụ cấp ăn uống",
+        "Khám sức khỏe",
+        "Du lịch",
+        "Nghỉ phép",
+        "Câu lạc bộ thể thao",
+        "Teambuilding"
+      ]
+    },
+    "glints_55b76248-a402-4626-a0ee-a4291b09a25e": {
+      "it": "non_it",
+      "salary": {
+        "kind": "negotiable"
+      },
+      "experience_years": 1,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "tay_ninh"
+        ],
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 249
+        },
+        {
+          "section": "mo_ta",
+          "start": 250,
+          "end": 1097
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1098,
+          "end": 1314
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1315,
+          "end": 1494
+        },
+        {
+          "section": "khac",
+          "start": 1495,
+          "end": 1639
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1641,
+          "end": 1661
+        }
+      ],
+      "skills": [
+        {
+          "name": "English Proficiency",
+          "level": "required"
+        },
+        {
+          "name": "Microsoft Word",
+          "level": "required"
+        },
+        {
+          "name": "Microsoft Excel",
+          "level": "required"
+        },
+        {
+          "name": "Microsoft PowerPoint",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Bảo hiểm",
+        "Nghỉ phép",
+        "Thưởng",
+        "Lương tháng 13",
+        "Phụ cấp chuyên cần",
+        "Hoa hồng bán hàng"
+      ]
+    },
+    "glints_703416e9-0550-4ba6-bb9c-4e691a88c64a": {
+      "it": "it",
+      "salary": {
+        "kind": "value",
+        "min": 20000000,
+        "max": 30000000,
+        "currency": "VND",
+        "period": "month"
+      },
+      "experience_years": 5,
+      "seniority": "Lead/Manager",
+      "location": {
+        "provinces": [
+          "ho_chi_minh"
+        ],
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 560
+        },
+        {
+          "section": "mo_ta",
+          "start": 561,
+          "end": 2483
+        },
+        {
+          "section": "yeu_cau",
+          "start": 2484,
+          "end": 2869
+        },
+        {
+          "section": "uu_tien",
+          "start": 2870,
+          "end": 2981
+        },
+        {
+          "section": "yeu_cau",
+          "start": 2982,
+          "end": 3206
+        },
+        {
+          "section": "uu_tien",
+          "start": 3207,
+          "end": 3274
+        },
+        {
+          "section": "yeu_cau",
+          "start": 3275,
+          "end": 3427
+        },
+        {
+          "section": "phuc_loi",
+          "start": 3428,
+          "end": 4232
+        },
+        {
+          "section": "khac",
+          "start": 4233,
+          "end": 4520
+        }
+      ],
+      "skills": [
+        {
+          "name": "Data Analysis",
+          "level": "required"
+        },
+        {
+          "name": "Dashboard",
+          "level": "required"
+        },
+        {
+          "name": "Microsoft 365",
+          "level": "required"
+        },
+        {
+          "name": "Presentation Skills",
+          "level": "required"
+        },
+        {
+          "name": "Odoo",
+          "level": "preferred"
+        },
+        {
+          "name": "Power BI",
+          "level": "preferred"
+        },
+        {
+          "name": "Power Query",
+          "level": "preferred"
+        },
+        {
+          "name": "Power Automate",
+          "level": "preferred"
+        },
+        {
+          "name": "ERP / MIS / quản lý dự án / phân tích nghiệp vụ / cải tiến quy trình",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Lương tháng 13",
+        "Thưởng",
+        "Bảo hiểm",
+        "Đào tạo",
+        "Du lịch",
+        "Teambuilding"
+      ]
+    },
+    "glints_89b94605-7b4e-4065-9d15-5ffe5903c25c": {
+      "it": "it",
+      "salary": {
+        "kind": "value",
+        "min": 13000000,
+        "max": 25000000,
+        "currency": "VND",
+        "period": "month"
+      },
+      "experience_years": 1,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "ha_noi"
+        ],
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 115
+        },
+        {
+          "section": "mo_ta",
+          "start": 116,
+          "end": 908
+        },
+        {
+          "section": "phuc_loi",
+          "start": 909,
+          "end": 2240
+        },
+        {
+          "section": "yeu_cau",
+          "start": 2241,
+          "end": 2737
+        },
+        {
+          "section": "uu_tien",
+          "start": 2738,
+          "end": 2940
+        },
+        {
+          "section": "khac",
+          "start": 2942,
+          "end": 3013
+        }
+      ],
+      "skills": [
+        {
+          "name": "Software Development Life Cycle",
+          "level": "required"
+        },
+        {
+          "name": "Project Management",
+          "level": "required"
+        },
+        {
+          "name": "CMMI",
+          "level": "required"
+        },
+        {
+          "name": "ISO 27000",
+          "level": "required"
+        },
+        {
+          "name": "ISO 9000",
+          "level": "required"
+        },
+        {
+          "name": "Data Analysis",
+          "level": "required"
+        },
+        {
+          "name": "Time Management",
+          "level": "required"
+        },
+        {
+          "name": "Planning",
+          "level": "required"
+        },
+        {
+          "name": "Document Writing",
+          "level": "required"
+        },
+        {
+          "name": "Communication",
+          "level": "required"
+        },
+        {
+          "name": "Teamwork",
+          "level": "required"
+        },
+        {
+          "name": "Logical Thinking",
+          "level": "required"
+        },
+        {
+          "name": "English Proficiency",
+          "level": "preferred"
+        },
+        {
+          "name": "5 Why",
+          "level": "preferred"
+        },
+        {
+          "name": "Fishbone",
+          "level": "preferred"
+        },
+        {
+          "name": "CAR",
+          "level": "preferred"
+        },
+        {
+          "name": "Control Chart",
+          "level": "preferred"
+        },
+        {
+          "name": "Cause & Effect Diagram",
+          "level": "preferred"
+        },
+        {
+          "name": "Pareto Chart",
+          "level": "preferred"
+        },
+        {
+          "name": "Agile/Scrum",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Thưởng",
+        "Lương tháng 13",
+        "Bảo hiểm",
+        "Nghỉ phép",
+        "Làm việc linh hoạt",
+        "Du lịch",
+        "Đào tạo",
+        "Lương làm thêm giờ",
+        "Đồ uống miễn phí",
+        "Teambuilding"
+      ]
+    },
+    "glints_9509fef0-e8a3-497f-9444-9c800dfc87e9": {
+      "it": "non_it",
+      "salary": {
+        "kind": "negotiable"
+      },
+      "experience_years": 2,
+      "seniority": "Lead/Manager",
+      "location": {
+        "provinces": [
+          "tay_ninh"
+        ],
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 294
+        },
+        {
+          "section": "mo_ta",
+          "start": 295,
+          "end": 2927
+        },
+        {
+          "section": "yeu_cau",
+          "start": 2928,
+          "end": 3249
+        },
+        {
+          "section": "phuc_loi",
+          "start": 3250,
+          "end": 3890
+        },
+        {
+          "section": "khac",
+          "start": 3892,
+          "end": 3974
+        },
+        {
+          "section": "phuc_loi",
+          "start": 3976,
+          "end": 4020
+        }
+      ],
+      "skills": [
+        {
+          "name": "English Proficiency",
+          "level": "required"
+        },
+        {
+          "name": "GMP",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Bảo hiểm",
+        "Phụ cấp ăn uống",
+        "Khám sức khỏe",
+        "Du lịch",
+        "Đào tạo",
+        "Thưởng",
+        "Lương tháng 13",
+        "Nghỉ phép",
+        "Xe đưa đón",
+        "Công tác phí",
+        "Teambuilding"
+      ]
+    },
+    "glints_b6d1ef43-e579-4a89-ba37-47f6366f580e": {
+      "it": "it",
+      "salary": {
+        "kind": "value",
+        "min": 8500000.0,
+        "max": 9000000,
+        "currency": "VND",
+        "period": "month"
+      },
+      "experience_years": 0,
+      "seniority": "Intern/Fresher",
+      "location": {
+        "provinces": [
+          "dong_nai"
+        ],
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 261
+        },
+        {
+          "section": "mo_ta",
+          "start": 262,
+          "end": 1238
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1239,
+          "end": 1528
+        },
+        {
+          "section": "uu_tien",
+          "start": 1529,
+          "end": 1649
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1650,
+          "end": 1664
+        },
+        {
+          "section": "uu_tien",
+          "start": 1665,
+          "end": 1733
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1734,
+          "end": 1947
+        },
+        {
+          "section": "uu_tien",
+          "start": 1948,
+          "end": 2015
+        },
+        {
+          "section": "yeu_cau",
+          "start": 2016,
+          "end": 2207
+        },
+        {
+          "section": "phuc_loi",
+          "start": 2208,
+          "end": 2496
+        },
+        {
+          "section": "khac",
+          "start": 2497,
+          "end": 2630
+        },
+        {
+          "section": "phuc_loi",
+          "start": 2632,
+          "end": 2752
+        }
+      ],
+      "skills": [
+        {
+          "name": "Java / C#/.NET / Python (ít nhất một)",
+          "level": "required"
+        },
+        {
+          "name": "SQL Server / MySQL",
+          "level": "required"
+        },
+        {
+          "name": "Đọc hiểu mã nguồn",
+          "level": "required"
+        },
+        {
+          "name": "Logical Thinking",
+          "level": "required"
+        },
+        {
+          "name": "Problem Solving",
+          "level": "required"
+        },
+        {
+          "name": "Teamwork",
+          "level": "required"
+        },
+        {
+          "name": "Communication",
+          "level": "required"
+        },
+        {
+          "name": "Chỉnh sửa/phát triển chức năng phần mềm",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Thưởng",
+        "Bảo hiểm",
+        "Khám sức khỏe",
+        "Du lịch",
+        "Phụ cấp ăn uống",
+        "Đào tạo",
+        "Phụ cấp đi lại",
+        "Hoa hồng bán hàng",
+        "Quà lễ, Tết và sinh nhật"
+      ]
+    },
+    "glints_bb24b93e-33a4-4a27-a09b-0df069e8af61": {
+      "it": "it",
+      "salary": {
+        "kind": "value",
+        "min": 14000000,
+        "max": 21000000,
+        "currency": "VND",
+        "period": "month"
+      },
+      "experience_years": 1,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "ha_noi"
+        ],
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 66
+        },
+        {
+          "section": "mo_ta",
+          "start": 67,
+          "end": 374
+        },
+        {
+          "section": "yeu_cau",
+          "start": 375,
+          "end": 762
+        },
+        {
+          "section": "uu_tien",
+          "start": 763,
+          "end": 803
+        },
+        {
+          "section": "yeu_cau",
+          "start": 804,
+          "end": 931
+        },
+        {
+          "section": "phuc_loi",
+          "start": 932,
+          "end": 3031
+        },
+        {
+          "section": "khac",
+          "start": 3032,
+          "end": 3234
+        }
+      ],
+      "skills": [
+        {
+          "name": "SOC",
+          "level": "required"
+        },
+        {
+          "name": "C / C++ / C# / PHP / Java (một ngôn ngữ)",
+          "level": "required"
+        },
+        {
+          "name": "Information Security",
+          "level": "required"
+        },
+        {
+          "name": "SIEM",
+          "level": "required"
+        },
+        {
+          "name": "SOAR",
+          "level": "required"
+        },
+        {
+          "name": "EDR",
+          "level": "required"
+        },
+        {
+          "name": "NSM",
+          "level": "required"
+        },
+        {
+          "name": "Email Security",
+          "level": "required"
+        },
+        {
+          "name": "WAF",
+          "level": "required"
+        },
+        {
+          "name": "Cloudrity",
+          "level": "required"
+        },
+        {
+          "name": "Teamwork",
+          "level": "required"
+        },
+        {
+          "name": "Information Search",
+          "level": "required"
+        },
+        {
+          "name": "CEH",
+          "level": "preferred"
+        },
+        {
+          "name": "OSCP",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Đào tạo",
+        "Thưởng",
+        "Làm việc linh hoạt",
+        "Du lịch",
+        "Gym miễn phí",
+        "Đồ uống miễn phí",
+        "Teambuilding"
+      ]
+    },
+    "glints_be4ab682-f17d-49e4-a5e3-f4b727150d52": {
+      "it": "it",
+      "salary": {
+        "kind": "value",
+        "min": 2000000,
+        "max": 2000000,
+        "currency": "VND",
+        "period": "month"
+      },
+      "experience_years": "not_stated",
+      "seniority": "Intern/Fresher",
+      "location": {
+        "provinces": [
+          "ho_chi_minh"
+        ],
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 76
+        },
+        {
+          "section": "mo_ta",
+          "start": 77,
+          "end": 858
+        },
+        {
+          "section": "yeu_cau",
+          "start": 859,
+          "end": 1264
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1265,
+          "end": 1456
+        },
+        {
+          "section": "khac",
+          "start": 1457,
+          "end": 1585
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1587,
+          "end": 1621
+        }
+      ],
+      "skills": [
+        {
+          "name": "WordPress",
+          "level": "required"
+        },
+        {
+          "name": "ACF",
+          "level": "required"
+        },
+        {
+          "name": "WooCommerce",
+          "level": "required"
+        },
+        {
+          "name": "Laravel",
+          "level": "required"
+        },
+        {
+          "name": "CodeIgniter",
+          "level": "required"
+        },
+        {
+          "name": "Git",
+          "level": "required"
+        },
+        {
+          "name": "PHP",
+          "level": "required"
+        },
+        {
+          "name": "MySQL",
+          "level": "required"
+        },
+        {
+          "name": "OOP",
+          "level": "required"
+        },
+        {
+          "name": "MVC Architecture",
+          "level": "required"
+        },
+        {
+          "name": "RESTful API",
+          "level": "required"
+        },
+        {
+          "name": "HTML",
+          "level": "required"
+        },
+        {
+          "name": "Bootstrap",
+          "level": "required"
+        },
+        {
+          "name": "JavaScript",
+          "level": "required"
+        },
+        {
+          "name": "Responsive Design",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Đào tạo",
+        "Phụ cấp thực tập",
+        "Dấu mộc thực tập",
+        "Hỗ trợ nhu yếu phẩm"
+      ]
+    },
+    "glints_c4709a1c-3395-4386-af56-aaaf6661b8cc": {
+      "it": "it",
+      "salary": {
+        "kind": "value",
+        "min": 10000000,
+        "max": 15000000,
+        "currency": "VND",
+        "period": "month"
+      },
+      "experience_years": 1,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "ha_noi"
+        ],
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 62
+        },
+        {
+          "section": "yeu_cau",
+          "start": 63,
+          "end": 564
+        },
+        {
+          "section": "uu_tien",
+          "start": 565,
+          "end": 896
+        },
+        {
+          "section": "mo_ta",
+          "start": 897,
+          "end": 1305
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1306,
+          "end": 2155
+        },
+        {
+          "section": "khac",
+          "start": 2157,
+          "end": 2228
+        },
+        {
+          "section": "phuc_loi",
+          "start": 2230,
+          "end": 2384
+        }
+      ],
+      "skills": [
+        {
+          "name": "Shopify",
+          "level": "required"
+        },
+        {
+          "name": "HTML",
+          "level": "required"
+        },
+        {
+          "name": "CSS",
+          "level": "required"
+        },
+        {
+          "name": "JavaScript",
+          "level": "required"
+        },
+        {
+          "name": "jQuery",
+          "level": "required"
+        },
+        {
+          "name": "Responsive Design",
+          "level": "required"
+        },
+        {
+          "name": "English Proficiency",
+          "level": "required"
+        },
+        {
+          "name": "Communication",
+          "level": "required"
+        },
+        {
+          "name": "Teamwork",
+          "level": "required"
+        },
+        {
+          "name": "E-Commerce",
+          "level": "preferred"
+        },
+        {
+          "name": "Git",
+          "level": "preferred"
+        },
+        {
+          "name": "Shell/Bash",
+          "level": "preferred"
+        },
+        {
+          "name": "Agile/Scrum",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Lương tháng 13",
+        "Thưởng",
+        "Bảo hiểm",
+        "Nghỉ phép",
+        "Phụ cấp ăn uống",
+        "Du lịch",
+        "Phụ cấp đi lại",
+        "Hoa hồng bán hàng",
+        "Đào tạo",
+        "Teambuilding",
+        "Đồ uống miễn phí"
+      ]
+    },
+    "glints_e17b07e4-cc97-4c74-bcd7-b022ad432a07": {
+      "it": "it",
+      "salary": {
+        "kind": "value",
+        "min": 1000000,
+        "max": 2000000,
+        "currency": "VND",
+        "period": "month"
+      },
+      "experience_years": "not_stated",
+      "seniority": "Intern/Fresher",
+      "location": {
+        "provinces": [
+          "ho_chi_minh"
+        ],
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "khac",
+          "start": 0,
+          "end": 80
+        },
+        {
+          "section": "mo_ta",
+          "start": 81,
+          "end": 809
+        },
+        {
+          "section": "phuc_loi",
+          "start": 810,
+          "end": 1271
+        },
+        {
+          "section": "khac",
+          "start": 1273,
+          "end": 1323
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1325,
+          "end": 1359
+        }
+      ],
+      "skills": [
+        {
+          "name": "OCR",
+          "level": "required"
+        },
+        {
+          "name": "KYC",
+          "level": "required"
+        },
+        {
+          "name": "Google AppSheet",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Đào tạo",
+        "Làm việc linh hoạt",
+        "Hoa hồng",
+        "Dấu mộc và số liệu thực tập",
+        "Chứng chỉ đào tạo"
+      ]
+    },
+    "jobsgo_28967523961": {
+      "it": "it",
+      "salary": null,
+      "experience_years": 3,
+      "seniority": "Lead/Manager",
+      "location": {
+        "provinces": [
+          "ha_noi"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 1059
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1061,
+          "end": 1519
+        },
+        {
+          "section": "uu_tien",
+          "start": 1520,
+          "end": 1769
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1771,
+          "end": 2070
+        }
+      ],
+      "skills": [
+        {
+          "name": "API",
+          "level": "required"
+        },
+        {
+          "name": "Data Modeling",
+          "level": "required"
+        },
+        {
+          "name": "Microsoft Excel / Google Sheets",
+          "level": "required"
+        },
+        {
+          "name": "Cross-functional Coordination",
+          "level": "required"
+        },
+        {
+          "name": "ERP/OMS/CRM/Kế toán hoặc workflow nội bộ",
+          "level": "required"
+        },
+        {
+          "name": "Pancake",
+          "level": "preferred"
+        },
+        {
+          "name": "Nhanh.vn",
+          "level": "preferred"
+        },
+        {
+          "name": "MISA",
+          "level": "preferred"
+        },
+        {
+          "name": "SQL",
+          "level": "preferred"
+        },
+        {
+          "name": "Business Intelligence",
+          "level": "preferred"
+        },
+        {
+          "name": "Power BI / Metabase / Looker Studio",
+          "level": "preferred"
+        },
+        {
+          "name": "BPMN",
+          "level": "preferred"
+        },
+        {
+          "name": "Make / Zapier",
+          "level": "preferred"
+        },
+        {
+          "name": "Product / BA / PM công nghệ",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Lương tháng 13",
+        "Thưởng",
+        "Du lịch",
+        "Bảo hiểm",
+        "Đào tạo",
+        "Teambuilding",
+        "Nghỉ lễ, Tết"
+      ]
+    },
+    "jobsgo_28990472471": {
+      "it": "non_it",
+      "salary": {
+        "kind": "value",
+        "min": null,
+        "max": 30000,
+        "currency": "USD",
+        "period": "year"
+      },
+      "experience_years": 4,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "ha_noi"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 3745
+        },
+        {
+          "section": "yeu_cau",
+          "start": 3747,
+          "end": 3848
+        },
+        {
+          "section": "uu_tien",
+          "start": 3849,
+          "end": 3927
+        },
+        {
+          "section": "yeu_cau",
+          "start": 3928,
+          "end": 4436
+        },
+        {
+          "section": "phuc_loi",
+          "start": 4438,
+          "end": 5063
+        }
+      ],
+      "skills": [
+        {
+          "name": "Apparel Quality Assurance",
+          "level": "required"
+        },
+        {
+          "name": "Bra Construction",
+          "level": "required"
+        },
+        {
+          "name": "Apparel Materials",
+          "level": "required"
+        },
+        {
+          "name": "Sewing Techniques",
+          "level": "required"
+        },
+        {
+          "name": "Tech Pack Reading",
+          "level": "required"
+        },
+        {
+          "name": "Apparel Testing",
+          "level": "required"
+        },
+        {
+          "name": "Problem Solving",
+          "level": "required"
+        },
+        {
+          "name": "Communication",
+          "level": "required"
+        },
+        {
+          "name": "Teamwork",
+          "level": "required"
+        },
+        {
+          "name": "Intimate Apparel Experience",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Lương tháng 13",
+        "Bảo hiểm",
+        "Nghỉ phép",
+        "Đào tạo",
+        "Đồ ăn, đồ uống miễn phí",
+        "Teambuilding",
+        "Ngày nghỉ sức khỏe"
+      ]
+    },
+    "jobsgo_29071647733": {
+      "it": "it",
+      "salary": {
+        "kind": "not_stated"
+      },
+      "experience_years": 0,
+      "seniority": "Intern/Fresher",
+      "location": {
+        "provinces": [
+          "ho_chi_minh"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 451
+        },
+        {
+          "section": "yeu_cau",
+          "start": 453,
+          "end": 524
+        },
+        {
+          "section": "uu_tien",
+          "start": 525,
+          "end": 555
+        },
+        {
+          "section": "yeu_cau",
+          "start": 556,
+          "end": 586
+        },
+        {
+          "section": "uu_tien",
+          "start": 587,
+          "end": 634
+        },
+        {
+          "section": "yeu_cau",
+          "start": 635,
+          "end": 791
+        },
+        {
+          "section": "uu_tien",
+          "start": 792,
+          "end": 885
+        },
+        {
+          "section": "yeu_cau",
+          "start": 886,
+          "end": 968
+        },
+        {
+          "section": "phuc_loi",
+          "start": 970,
+          "end": 1197
+        }
+      ],
+      "skills": [
+        {
+          "name": "Programming",
+          "level": "required"
+        },
+        {
+          "name": "Databases",
+          "level": "required"
+        },
+        {
+          "name": "SQL",
+          "level": "required"
+        },
+        {
+          "name": "Problem Solving",
+          "level": "required"
+        },
+        {
+          "name": "Teamwork",
+          "level": "required"
+        },
+        {
+          "name": "Fullstack",
+          "level": "preferred"
+        },
+        {
+          "name": "AI",
+          "level": "preferred"
+        },
+        {
+          "name": "Java / C# / Python",
+          "level": "preferred"
+        },
+        {
+          "name": "Git / Visual Studio",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Đào tạo",
+        "Dấu mộc thực tập",
+        "Cơ hội trở thành nhân viên chính thức"
+      ]
+    },
+    "jobsgo_29106233446": {
+      "it": "it",
+      "salary": {
+        "kind": "not_stated"
+      },
+      "experience_years": 2,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "ho_chi_minh"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 2917
+        },
+        {
+          "section": "yeu_cau",
+          "start": 2919,
+          "end": 4115
+        },
+        {
+          "section": "uu_tien",
+          "start": 4116,
+          "end": 4201
+        },
+        {
+          "section": "yeu_cau",
+          "start": 4202,
+          "end": 4429
+        },
+        {
+          "section": "uu_tien",
+          "start": 4430,
+          "end": 4672
+        },
+        {
+          "section": "phuc_loi",
+          "start": 4674,
+          "end": 4905
+        }
+      ],
+      "skills": [
+        {
+          "name": "FinTech",
+          "level": "required"
+        },
+        {
+          "name": "Business Analysis",
+          "level": "required"
+        },
+        {
+          "name": "BRD",
+          "level": "required"
+        },
+        {
+          "name": "PRD",
+          "level": "required"
+        },
+        {
+          "name": "English Proficiency",
+          "level": "required"
+        },
+        {
+          "name": "Microsoft Excel / Google Sheets",
+          "level": "required"
+        },
+        {
+          "name": "AI Tools",
+          "level": "required"
+        },
+        {
+          "name": "Data Analysis",
+          "level": "required"
+        },
+        {
+          "name": "Task Management",
+          "level": "required"
+        },
+        {
+          "name": "Communication",
+          "level": "required"
+        },
+        {
+          "name": "SQL",
+          "level": "preferred"
+        },
+        {
+          "name": "Power BI / Tableau",
+          "level": "preferred"
+        },
+        {
+          "name": "Zapier / Make",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Lương tháng 13",
+        "Thưởng",
+        "Cổ phiếu ESOP",
+        "Bảo hiểm",
+        "Nghỉ phép",
+        "Du lịch"
+      ]
+    },
+    "jobsgo_29118101492": {
+      "it": "it",
+      "salary": {
+        "kind": "not_stated"
+      },
+      "experience_years": 3.5,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "ha_noi"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 651
+        },
+        {
+          "section": "uu_tien",
+          "start": 652,
+          "end": 694
+        },
+        {
+          "section": "mo_ta",
+          "start": 695,
+          "end": 780
+        },
+        {
+          "section": "yeu_cau",
+          "start": 782,
+          "end": 1244
+        },
+        {
+          "section": "uu_tien",
+          "start": 1245,
+          "end": 1293
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1294,
+          "end": 1492
+        },
+        {
+          "section": "uu_tien",
+          "start": 1493,
+          "end": 1521
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1523,
+          "end": 3103
+        }
+      ],
+      "skills": [
+        {
+          "name": "Manual Testing",
+          "level": "required"
+        },
+        {
+          "name": "Automation Testing",
+          "level": "required"
+        },
+        {
+          "name": "Software Development Life Cycle",
+          "level": "required"
+        },
+        {
+          "name": "Agile/Scrum",
+          "level": "required"
+        },
+        {
+          "name": "Requirement Analysis",
+          "level": "required"
+        },
+        {
+          "name": "Test Case Design",
+          "level": "required"
+        },
+        {
+          "name": "Playwright",
+          "level": "required"
+        },
+        {
+          "name": "Cypress",
+          "level": "required"
+        },
+        {
+          "name": "English Proficiency",
+          "level": "required"
+        },
+        {
+          "name": "Communication",
+          "level": "required"
+        },
+        {
+          "name": "Jest",
+          "level": "preferred"
+        },
+        {
+          "name": "Unit Testing",
+          "level": "preferred"
+        },
+        {
+          "name": "IELTS",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Làm việc linh hoạt",
+        "Du lịch",
+        "Đào tạo",
+        "Bảo hiểm",
+        "Thưởng",
+        "Lương tháng 13",
+        "Khám sức khỏe",
+        "Phụ cấp ăn uống",
+        "Phụ cấp đi lại",
+        "Thiết bị làm việc",
+        "Nghỉ phép",
+        "Quà sinh nhật",
+        "Đồ uống miễn phí",
+        "Teambuilding",
+        "Phụ cấp câu lạc bộ"
+      ]
+    },
+    "jobsgo_29131327438": {
+      "it": "it",
+      "salary": {
+        "kind": "negotiable"
+      },
+      "experience_years": 1,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "ha_noi"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 386
+        },
+        {
+          "section": "yeu_cau",
+          "start": 388,
+          "end": 1196
+        },
+        {
+          "section": "uu_tien",
+          "start": 1197,
+          "end": 1686
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1688,
+          "end": 2299
+        },
+        {
+          "section": "khac",
+          "start": 2300,
+          "end": 2417
+        }
+      ],
+      "skills": [
+        {
+          "name": "C#",
+          "level": "required"
+        },
+        {
+          "name": "OOP",
+          "level": "required"
+        },
+        {
+          "name": "Windows Forms hoặc WPF",
+          "level": "required"
+        },
+        {
+          "name": "SQL",
+          "level": "required"
+        },
+        {
+          "name": "Git",
+          "level": "required"
+        },
+        {
+          "name": "Logical Thinking",
+          "level": "required"
+        },
+        {
+          "name": "C# async/await",
+          "level": "preferred"
+        },
+        {
+          "name": "UI/UX hoặc Figma",
+          "level": "preferred"
+        },
+        {
+          "name": "Unit Testing",
+          "level": "preferred"
+        },
+        {
+          "name": "xUnit / NUnit / MSTest",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Đào tạo",
+        "Thưởng",
+        "Bảo hiểm"
+      ]
+    },
+    "jobsgo_29163944196": {
+      "it": "it",
+      "salary": null,
+      "experience_years": 5,
+      "seniority": "Lead/Manager",
+      "location": {
+        "provinces": [
+          "hai_phong"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 1140
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1142,
+          "end": 1537
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1539,
+          "end": 2090
+        }
+      ],
+      "skills": [
+        {
+          "name": "IT Systems Management",
+          "level": "required"
+        },
+        {
+          "name": "Vendor Management",
+          "level": "required"
+        },
+        {
+          "name": "English Proficiency",
+          "level": "required"
+        },
+        {
+          "name": "CCNP",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Bảo hiểm",
+        "Thưởng",
+        "Du lịch",
+        "Phụ cấp ngoại ngữ",
+        "Xe đưa đón"
+      ]
+    },
+    "jobsgo_29212815017": {
+      "it": "it",
+      "salary": null,
+      "experience_years": 0,
+      "seniority": "Intern/Fresher",
+      "location": {
+        "provinces": null,
+        "work_mode": "onsite"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 569
+        },
+        {
+          "section": "yeu_cau",
+          "start": 571,
+          "end": 1000
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1002,
+          "end": 1262
+        }
+      ],
+      "skills": [
+        {
+          "name": "English Proficiency",
+          "level": "required"
+        },
+        {
+          "name": "Self Learning",
+          "level": "required"
+        },
+        {
+          "name": "Problem Solving",
+          "level": "required"
+        },
+        {
+          "name": "Teamwork",
+          "level": "required"
+        },
+        {
+          "name": "Java",
+          "level": "required"
+        },
+        {
+          "name": "CSS",
+          "level": "required"
+        },
+        {
+          "name": "SQL",
+          "level": "required"
+        },
+        {
+          "name": "Web Development",
+          "level": "required"
+        }
+      ],
+      "benefits": [
+        "Hỗ trợ CV và phỏng vấn",
+        "Hỗ trợ thủ tục visa",
+        "Tư vấn 1-1"
+      ]
+    },
+    "jobsgo_29273404515": {
+      "it": "it",
+      "salary": null,
+      "experience_years": 5,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "ha_noi"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 1595
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1597,
+          "end": 2597
+        },
+        {
+          "section": "uu_tien",
+          "start": 2598,
+          "end": 3065
+        },
+        {
+          "section": "phuc_loi",
+          "start": 3067,
+          "end": 3527
+        }
+      ],
+      "skills": [
+        {
+          "name": "Business Analysis",
+          "level": "required"
+        },
+        {
+          "name": "HRM Domain Knowledge",
+          "level": "required"
+        },
+        {
+          "name": "User Story",
+          "level": "required"
+        },
+        {
+          "name": "Acceptance Criteria",
+          "level": "required"
+        },
+        {
+          "name": "BPMN",
+          "level": "required"
+        },
+        {
+          "name": "UML",
+          "level": "required"
+        },
+        {
+          "name": "Wireframe: Figma / Axure / Balsamiq hoặc tương đương",
+          "level": "required"
+        },
+        {
+          "name": "SQL",
+          "level": "required"
+        },
+        {
+          "name": "API / Swagger",
+          "level": "required"
+        },
+        {
+          "name": "Agile/Scrum",
+          "level": "required"
+        },
+        {
+          "name": "Jira / Azure DevOps",
+          "level": "required"
+        },
+        {
+          "name": "Presentation Skills",
+          "level": "required"
+        },
+        {
+          "name": "Negotiation",
+          "level": "required"
+        },
+        {
+          "name": "Critical Thinking",
+          "level": "required"
+        },
+        {
+          "name": "HRM: SAP SuccessFactors / Workday / Oracle HCM hoặc nội địa",
+          "level": "preferred"
+        },
+        {
+          "name": "CBAP / PMI-PBA / PSPO hoặc tương đương",
+          "level": "preferred"
+        },
+        {
+          "name": "English Proficiency",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Thưởng",
+        "Bảo hiểm",
+        "Phụ cấp"
+      ]
+    },
+    "jobsgo_29328616729": {
+      "it": "it",
+      "salary": {
+        "kind": "not_stated"
+      },
+      "experience_years": 1,
+      "seniority": "unknown",
+      "location": {
+        "provinces": [
+          "ha_noi"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 406
+        },
+        {
+          "section": "yeu_cau",
+          "start": 408,
+          "end": 666
+        },
+        {
+          "section": "uu_tien",
+          "start": 666,
+          "end": 680
+        },
+        {
+          "section": "yeu_cau",
+          "start": 680,
+          "end": 1019
+        },
+        {
+          "section": "uu_tien",
+          "start": 1020,
+          "end": 1435
+        },
+        {
+          "section": "yeu_cau",
+          "start": 1436,
+          "end": 1704
+        },
+        {
+          "section": "phuc_loi",
+          "start": 1706,
+          "end": 2341
+        }
+      ],
+      "skills": [
+        {
+          "name": "Java",
+          "level": "required"
+        },
+        {
+          "name": "OOP",
+          "level": "required"
+        },
+        {
+          "name": "Spring Boot",
+          "level": "required"
+        },
+        {
+          "name": "Spring Web",
+          "level": "required"
+        },
+        {
+          "name": "Spring Data JPA",
+          "level": "required"
+        },
+        {
+          "name": "Dependency Injection",
+          "level": "required"
+        },
+        {
+          "name": "SQL",
+          "level": "required"
+        },
+        {
+          "name": "Hibernate",
+          "level": "required"
+        },
+        {
+          "name": "RESTful API",
+          "level": "required"
+        },
+        {
+          "name": "JSON",
+          "level": "required"
+        },
+        {
+          "name": "Jackson / Gson",
+          "level": "required"
+        },
+        {
+          "name": "Git",
+          "level": "required"
+        },
+        {
+          "name": "Maven",
+          "level": "required"
+        },
+        {
+          "name": "Microservices",
+          "level": "required"
+        },
+        {
+          "name": "Communication",
+          "level": "required"
+        },
+        {
+          "name": "Oracle DB",
+          "level": "preferred"
+        },
+        {
+          "name": "Apache Kafka / Redis / MongoDB",
+          "level": "preferred"
+        },
+        {
+          "name": "Docker",
+          "level": "preferred"
+        },
+        {
+          "name": "Kubernetes",
+          "level": "preferred"
+        },
+        {
+          "name": "Jenkins",
+          "level": "preferred"
+        },
+        {
+          "name": "Spring Security",
+          "level": "preferred"
+        },
+        {
+          "name": "JWT",
+          "level": "preferred"
+        },
+        {
+          "name": "eKYC / ngân hàng / định danh hoặc tích hợp API",
+          "level": "preferred"
+        },
+        {
+          "name": "APM",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Thưởng",
+        "Đào tạo",
+        "Du lịch",
+        "Trợ cấp thai sản",
+        "Khám sức khỏe",
+        "Bảo hiểm"
+      ]
+    },
+    "jobsgo_29391080129": {
+      "it": "it",
+      "salary": {
+        "kind": "not_stated"
+      },
+      "experience_years": 3,
+      "seniority": "Senior",
+      "location": {
+        "provinces": [
+          "ho_chi_minh"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 347
+        },
+        {
+          "section": "yeu_cau",
+          "start": 349,
+          "end": 718
+        },
+        {
+          "section": "uu_tien",
+          "start": 719,
+          "end": 907
+        },
+        {
+          "section": "phuc_loi",
+          "start": 909,
+          "end": 1551
+        }
+      ],
+      "skills": [
+        {
+          "name": "Data Analysis",
+          "level": "required"
+        },
+        {
+          "name": "Time Management",
+          "level": "required"
+        },
+        {
+          "name": "Power BI",
+          "level": "required"
+        },
+        {
+          "name": "Tableau",
+          "level": "required"
+        },
+        {
+          "name": "SQL",
+          "level": "required"
+        },
+        {
+          "name": "Problem Solving",
+          "level": "required"
+        },
+        {
+          "name": "Critical Thinking",
+          "level": "required"
+        },
+        {
+          "name": "Logical Thinking",
+          "level": "required"
+        },
+        {
+          "name": "Fraud Control hoặc Credit Risk",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Thưởng",
+        "Nghỉ phép",
+        "Bảo hiểm",
+        "Khám sức khỏe",
+        "Du lịch",
+        "Nghỉ sinh nhật"
+      ]
+    },
+    "jobsgo_29407089770": {
+      "it": "it",
+      "salary": {
+        "kind": "not_stated"
+      },
+      "experience_years": 0,
+      "seniority": "Intern/Fresher",
+      "location": {
+        "provinces": [
+          "ha_noi"
+        ],
+        "work_mode": "unknown"
+      },
+      "sections": [
+        {
+          "section": "mo_ta",
+          "start": 0,
+          "end": 351
+        },
+        {
+          "section": "yeu_cau",
+          "start": 353,
+          "end": 539
+        },
+        {
+          "section": "uu_tien",
+          "start": 540,
+          "end": 578
+        },
+        {
+          "section": "yeu_cau",
+          "start": 579,
+          "end": 644
+        },
+        {
+          "section": "phuc_loi",
+          "start": 646,
+          "end": 878
+        }
+      ],
+      "skills": [
+        {
+          "name": "Microsoft Excel / Google Sheets",
+          "level": "required"
+        },
+        {
+          "name": "Logical Thinking",
+          "level": "required"
+        },
+        {
+          "name": "Hàm xử lý dữ liệu",
+          "level": "preferred"
+        }
+      ],
+      "benefits": [
+        "Đào tạo",
+        "Thưởng",
+        "Cơ hội cộng tác lâu dài hoặc chính thức"
+      ]
+    }
+  }
+}
