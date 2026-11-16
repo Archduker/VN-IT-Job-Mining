@@ -19,7 +19,7 @@ from datetime import datetime
 from typing import Any
 
 from preprocessing.clean.label_review import validation_metrics
-from preprocessing.common import REPO_ROOT, SOURCES, province, step_report
+from preprocessing.common import REPO_ROOT, SOURCES, step_report
 from preprocessing.common.it_filter import classify, classify_unknown
 from preprocessing.common.raw_reader import read_raw, snapshot_order
 from preprocessing.common.step_report import StepReport, merge_reports
@@ -65,8 +65,7 @@ def dedup_key(flat: dict[str, Any]) -> str | None:
     company = company_norm(flat.get("company_name"))
     if not title or not company:
         return None
-    first = (flat.get("working_locations") or [None])[0] or flat.get("raw_location_text")
-    return "|".join([company, title, province.key(first) or ""])
+    return "|".join([company, title])  # không có tỉnh: người dùng chốt 11/11, tin thiếu tỉnh từng lọt qua khóa
 
 
 def jd_words(flat: dict[str, Any]) -> int:
@@ -233,7 +232,7 @@ def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tup
             c6 += [(d, g[0]) for d in g[1:]]
     c6_ids = {id(d) for d, _ in c6}
     items = [i for i in items if id(i) not in c6_ids]
-    report.rule("C6", "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)", "drop", len(c6),
+    report.rule("C6", "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)", "drop", len(c6),
                 [_ex(d, "dedup_key", d["env"]["metadata"]["clean"]["dedup_key"], f"giữ {_job_id(k)}") for d, k in c6])
     report.data["fields"] = [{"field": f, "fill_pct_in": fill_in[f]} for f in KEY_FIELDS]
     return items, classified

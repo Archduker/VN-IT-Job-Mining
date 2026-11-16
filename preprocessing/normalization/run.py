@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Bước 04 Normalization (docs/spec/preprocessing/spec/P4_normalization.md).
 
-Chuẩn hóa 34 tỉnh/thành sau sáp nhập, 5 cấp bậc (Intern/Fresher..Lead/Manager), 12 nhóm nghề SPEC-01 + Other
+Chuẩn hóa 34 tỉnh/thành sau sáp nhập, 5 cấp bậc (Intern/Fresher..Lead/Manager), 16 nhóm nghề + Other
 (chức danh lõi -> chức danh chuẩn -> nhóm), ánh xạ kỹ năng chuẩn, company_key (rapidfuzz), PH7 thiếu/ngoại lai có cờ
 (IQR theo cấp bậc, khoảng lương 2-100 triệu), Winsorize 1-99% cột riêng, log1p lương. Mọi cờ ngoại lai/suy luận
 kèm job_id và nguồn trong anomalies.json. Nhãn mâu thuẫn được gắn cờ bằng luật if-else, không gọi model. Đọc và ghi một file all.parquet (đã gộp 8 nguồn từ bước Integration).
@@ -264,7 +264,7 @@ def process_source_records(
     report.rule("N1", "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập", "modify", cnt["n1"], ex["n1"])
     report.rule("N13", "Tỉnh từ raw_location_text/company_address khi locations không ra tỉnh", "modify", cnt["n13"], ex["n13"])
     report.rule("N2", "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)", "modify", cnt["n2"], ex["n2"])
-    report.rule("N3", "Nhóm nghề: 12 nhóm SPEC-01 + Other", "modify", cnt["n3"], ex["n3"])
+    report.rule("N3", "Nhóm nghề: 16 nhóm + Other", "modify", cnt["n3"], ex["n3"])
     report.rule("N16", "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)", "modify", cnt["n16"])
     report.rule("N4", "Ánh xạ kỹ năng chuẩn theo từ điển", "modify", cnt["n4"])
     report.rule("N5", "Chuẩn hóa tên công ty", "modify", cnt["n5"])

@@ -33,6 +33,7 @@ from collection.base.base_crawler import BaseCrawler
 from collection.common.http_client import DelayConfig, HttpClient
 from collection.common.schema import JobRecord
 from collection.common.url_ledger import (
+    DiscoveryError,
     UrlLedger,
     calculate_json_canonical_hash,
     calculate_json_field_hashes,
@@ -726,6 +727,7 @@ class CareerVietCrawler(BaseCrawler):
         }
         pages = max_pages or MAX_PAGES
         added = 0
+        pages_ok, first_error = 0, None
         categories = [("c1", "CNTT - Phần mềm"), ("c61", "CNTT - Phần cứng / Mạng")]
         try:
             for cat_code, cat_name in categories:
@@ -736,10 +738,12 @@ class CareerVietCrawler(BaseCrawler):
                         html = client.get_html(page_url, headers=headers)
                     except Exception as exc:
                         log.error("[CareerViet] Discovery %s page %d loi (%s) -> dung an toan.", cat_code, page, exc)
+                        first_error = first_error or f"{cat_code} trang {page}: {exc}"
                         break
                     low = (html or "").lower()
                     if not html or any(k in low for k in ("access denied", "too many requests")) or ("captcha" in low and "job-item" not in low):
                         log.warning("[CareerViet] Chan/bot nghi ngo %s page %d -> dung an toan.", cat_code, page)
+                        first_error = first_error or f"{cat_code} trang {page}: bị chặn hoặc rỗng"
                         break
                     soup = BeautifulSoup(html, "html.parser")
                     pairs = []
@@ -753,7 +757,9 @@ class CareerVietCrawler(BaseCrawler):
                             pairs.append((urljoin(BASE_URL, href), ttl))
                     if not pairs:
                         log.info("[CareerViet] Khong con job o %s page %d -> chuyen danh muc tiep theo.", cat_code, page)
+                        first_error = first_error or f"{cat_code} trang {page}: không có tin"
                         break
+                    pages_ok += 1
                     seen_page = set()
                     for lu, ttl in pairs:
                         jid = extract_job_id(lu)
@@ -764,6 +770,8 @@ class CareerVietCrawler(BaseCrawler):
                     log.info("[CareerViet] Discovery %s page %d: da nhan dien %d URLs.", cat_code, page, len(seen_page))
         finally:
             client.close()
+        if pages_ok == 0 and first_error:
+            raise DiscoveryError(f"[CareerViet] Không lấy được trang danh sách nào: {first_error}")  # C14
         return added
 
     def discover_urls(

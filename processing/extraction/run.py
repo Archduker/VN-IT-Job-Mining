@@ -35,6 +35,19 @@ def analyze(row, matcher, headings, cues):
     benefits = "\n".join(map(str, _list(row.get("benefits_list")))) or None
     bullets = S.split_sections(row.get("description_clean"), row.get("requirements_clean"), benefits, headings, cues)
     rows, hits = K.extract_skills(bullets, matcher, _list(row.get("skills_list")))
+    if row.get("translation_status") == "translated":  # phương án B: quét thêm bản dịch, bullet/hits vẫn theo bản gốc
+        vi_bullets = S.split_sections(row.get("description_vi"), row.get("requirements_vi"), None, headings, cues)
+        vi_rows, _ = K.extract_skills(vi_bullets, matcher)
+        by = {r["slug"]: r for r in rows}
+        for r in vi_rows:
+            cur = by.get(r["slug"])
+            if cur is None:
+                rows.append({**r, "via": "text_vi"})
+            else:
+                cur["n_mentions"] += r["n_mentions"]
+                if K.LEVEL_RANK[r["level"]] > K.LEVEL_RANK[cur["level"]]:
+                    cur.update(level=r["level"], weight=r["weight"], section=r["section"])
+        rows.sort(key=lambda r: r["slug"])
     return bullets, rows, hits
 
 
@@ -63,7 +76,7 @@ def run(sources=SOURCES, dry_run: bool = True, df: Optional[pd.DataFrame] = None
         st = per_src.setdefault(src, {"jobs": 0, "no_bullet": 0, "no_skill": 0, "rule": {}, "sec": {}, "blocked": 0})
         st["jobs"] += 1
         st["no_bullet"] += not bullets
-        st["no_skill"] += not any(r["via"] == "text" for r in srows)
+        st["no_skill"] += not any(r["via"] in ("text", "text_vi") for r in srows)
         for b in bullets:
             bullet_rows.append({"job_id_global": jid, "source_platform": src, "bullet_idx": b.idx,
                                 "section": b.section, "text": b.text, "section_rule": b.rule})

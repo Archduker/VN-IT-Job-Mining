@@ -64,7 +64,7 @@ def test_runs_from_parquet_files(tmp_path, schema):
     golden.to_parquet(gp, index=False)
     feats.to_parquet(fp, index=False)
     out = tmp_path / "out"
-    rc = rmp.main(["--golden", str(gp), "--features", str(fp), "--encoding-dict", str(tmp_path / "none.json"),
+    rc = rmp.main(["--golden", str(gp), "--features", str(fp), "--encoding-dict", str(tmp_path / "none.json"), "--e5", str(tmp_path / "none.npz"),
                    "--out", str(out), "--only", "fp,salary", "--no-shap"])
     assert rc == 0
     m = json.loads((out / ARTIFACT_FILES["metrics"]).read_text(encoding="utf-8"))

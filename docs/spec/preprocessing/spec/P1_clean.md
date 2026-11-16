@@ -32,7 +32,7 @@ Clean chạy trước mọi bước để các bước sau xử lý ít dòng h�
 ```json
 {"metadata": {"job_id": "…", "source": "topcv", "…": "…",
               "clean": {"it_rule": "non_it", "it_prob": 0.12, "it_status": "non_it",
-                        "dedup_key": "cong ty a|python developer|ha_noi|2026-W44",
+                        "dedup_key": "cong ty a|python developer",
                         "also_on": ["jobsgo:123"], "snapshot_file": "raw/2026-11-01/123_v2.json"}},
  "raw_payload": {"…": "nguyên bản"}}
 ```
@@ -96,16 +96,11 @@ Mỗi tin có ba giá trị:
 
 ### Khóa trùng (C6, C7)
 
-`dedup_key = company_norm | title_norm | tinh_key | week`:
+`dedup_key = company_norm | title_norm` (đổi 11/11/2026: bỏ `tinh_key` và `week`; cùng công ty và cùng tiêu đề là trùng, kể cả khác tỉnh hoặc thiếu tỉnh. Trước đó khóa có tỉnh làm sót 40 tin, xem L-40):
 
 - `company_norm`: dùng lại `normalize_company_name` trong `preprocessing/normalization/cross_deduplicator.py` ("CÔNG TY CỔ PHẦN A" = "Cty A").
 - `title_norm`: chữ thường, gộp khoảng trắng, bỏ dấu câu ở đầu và cuối.
-- `tinh_key`: mã tỉnh trong **34 tỉnh/thành sau sáp nhập**, qua `preprocessing/common/province.py` (file mới), đọc bảng `preprocessing/dictionaries/provinces_34.json` (file mới, định nghĩa ở P4 mục N1).
-  - Tên cũ được gộp về tên mới: "Bình Dương" → `ho_chi_minh`, "Quảng Nam" → `da_nang`.
-  - Lấy tỉnh đầu tiên của `working_locations`, không có thì lấy từ `raw_location_text`.
-  - Bước 04 dùng lại module này.
-  - Nếu không chuẩn hóa tỉnh, nhóm trùng khác nguồn tụt từ 171 xuống 9 chỉ vì cách viết tên khác nhau.
-- `week`: tuần ISO của ngày đăng. Thiếu ngày đăng (TopCV, TopDev) thì dùng tuần cào.
+- Không dùng tỉnh và tuần: tin đăng lại ở tuần khác hoặc thiếu địa điểm vẫn được gộp (L-37, L-40). Rủi ro: cùng tên vị trí ở hai tỉnh bị coi là một.
 - Không dùng trụ sở công ty, vì TopDev 0% có địa chỉ.
 
 ## 5. Ranh giới

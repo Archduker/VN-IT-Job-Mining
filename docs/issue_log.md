@@ -465,3 +465,60 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
   - VIZ-3: báo cáo `reports/preprocessing/*` ghi lại 10/11.
   - Còn mở sau khi kiểm: PRE-23 (`tối thiểu 10 triệu` ra single_value, `2 tỷ` ra 2,0 triệu), PRE-27 (module `target_schema_formatter` không tồn tại), GEN-4 (`canonicalize_lakehouse_key("staging/all.parquet")` vẫn bị từ chối), PRE-26 (70 file, 4,6 MB).
   - Chưa kiểm: nội dung hai mục PRE-16/17 mà người dùng nêu (trích xuất còn sót, kiểm định sau mining), chưa có tài liệu gốc nên chưa ghi vào file.
+
+### L-39. Cấp bậc và kinh nghiệm quy đổi hai chiều theo khoảng người dùng chốt (PH7, 11/2026)
+- **Lỗi:** luật cũ `>= 5 năm -> Senior` ngược với dữ liệu (Senior thật có trung vị 3 năm); thiếu kinh nghiệm chỉ được điền cho Intern/Fresher (349 tin vẫn `unknown`).
+- **Nguyên nhân:** ngưỡng X6 lấy từ spec P4 và code cũ, chưa có khoảng người dùng duyệt.
+- **Cách xử lý:** `level_by_years` (`preprocessing/normalization/text_cleaner.py`): [0,1) Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior, từ 5 năm để trống. `infer_experience_from_level` (`preprocessing/missing_outlier/missing_rules.py`): thiếu kinh nghiệm thì điền cận dưới theo cấp (0/1/2/4/5) khi cấp từ raw hoặc title, `exp_source="level_<cấp>"`, vẫn chặn vòng. Cập nhật spec và prompt PH7.
+- **Kiểm chứng:** `tests/unit/test_ph6_ph7_normalization.py` 30 qua; `tests/unit` 512 qua, 1 bỏ qua.
+- **KNOWN_ISSUED:** không có mục tương ứng. Mâu thuẫn cấp bậc-kinh nghiệm vẫn dùng ngưỡng cũ của `seniority_conflict` (Senior < 2 năm, Fresher >= 3 năm).
+
+### L-40. Khóa trùng tên còn tỉnh nên sót tin cùng công ty và cùng tiêu đề; bỏ ghi chú trùng khác ngôn ngữ (PH3/PH4, 11/2026)
+- **Lỗi:** sau dedup còn 40 tin có cùng `company_key` và tiêu đề chuẩn hóa với tin khác (29 cặp cùng tỉnh nhưng một bên thiếu tỉnh nên khóa lệch, 11 cặp khác tỉnh).
+- **Nguyên nhân:** `dedup_key` (`preprocessing/clean/run.py`) ghép thêm khóa tỉnh của địa điểm đầu tiên.
+- **Cách xử lý:** khóa chỉ gồm công ty và tiêu đề (người dùng chốt 11/11). Bỏ khóa `cross_language_dupes` trong báo cáo 01b và đóng C9 trong spec PH4: trùng khác ngôn ngữ không xử lý. Lớp so JD (sha1 và MinHash >= 0,85 cùng công ty) giữ nguyên.
+- **Kiểm chứng:** `tests/unit/test_pre_fixes.py::test_dedup_key_is_company_and_title_only` và `test_clean_step.py` 41 qua; chạy lại chuỗi 11/11: 4.699 → 4.671 tin (giảm 28; ước tính trước đó là 40); `tests/unit tests/contract` 571 qua, 1 bỏ qua.
+- **KNOWN_ISSUED:** không có mục tương ứng. Rủi ro: tin cùng tên ở hai tỉnh khác nhau bị coi là một.
+
+### L-41. Discovery lỗi toàn trang vẫn báo thành công ở 5 nguồn; tin CLOSED; nodriver; thế hòa ledger (Collection, 11/2026)
+- **Lỗi:** (a) CareerViet, Vieclam24h, ITviec, JobsGO không raise khi không lấy được trang danh sách nào, Glints raise `RuntimeError` thường; Airflow không báo đỏ (SCRAPE-11). (b) JobsGO in `RuntimeError: Event loop is closed` lúc đóng nodriver (SCRAPE-12). (c) Test `test_latest_status_change_wins_between_workers` fail trên Windows (SCRAPE-17). (d) Báo cáo "tin CLOSED vẫn có raw mới" của VietnamWorks (SCRAPE-8).
+- **Nguyên nhân:** (a) chỉ TopCV, TopDev, VietnamWorks có đếm `pages_ok`. (b) `asyncio.run` đóng loop trước khi transport tiến trình con của nodriver đóng xong. (c) đồng hồ Windows thô nên hai lần `mark_*` liền nhau có cùng `updated_at`, luật `mem_ts >= disk_ts` để bản lưu sau thắng. (d) không phải lỗi hiện tại: `get_pending_or_due_records` đã loại `CLOSED` và crawler không ghi raw khi tin đóng; ca 20/10 và 01/11 do lỗi ledger cũ trước 03/11 không lưu được `CLOSED` (L-24).
+- **Cách xử lý:** (a) thêm `pages_ok`/`first_error` và `raise DiscoveryError` (C14) ở CareerViet, Vieclam24h, ITviec (chỉ khi sitemap cũng không thêm được gì), JobsGO; Glints raise `DiscoveryError` khi không có trang nào (vẫn là `RuntimeError` nên chỗ bắt cũ chạy); VietnamWorks tầng 3 thêm đếm `pages_ok`. (b) `await asyncio.sleep(0.5)` sau `browser.stop()`. (c) `_change_ts()` trong `collection/common/url_ledger.py` bảo đảm `updated_at` tăng nghiêm ngặt trong một tiến trình. (d) thêm test khóa hành vi.
+- **Kiểm chứng:** `tests/contract/test_discovery_error_c14.py` 6 qua (offline); `tests/unit/test_url_ledger_dedup.py` 13 qua gồm `test_closed_record_never_selected_for_detail` và `test_change_timestamps_strictly_increase`; `tests/contract` đầy đủ qua. Chưa chạy được trên Windows và chưa cào thật để xem lỗi nodriver hết.
+- **KNOWN_ISSUED:** SCRAPE-8, 11, 17 đã xóa; SCRAPE-12 đã xóa. Phần Glints (trang 1 API chỉ trả 4 tin ngoài IT nên discovery đăng ký 0 URL) bị bỏ theo quyết định người dùng 11/11, không gọi API thật để xem.
+
+### L-42. Dọn các mục PRE đã xử lý: runner trùng, ghi trùng 04, parse lương, test ngoài testpaths, test hỏng, ADR-04 (11/2026)
+- **Lỗi:** các mục PRE-14, 20, 21, 23, 24, 27 còn ghi trong `KNOWN_ISSUED.md` dù code đã đổi.
+- **Cách xử lý và bằng chứng (kiểm 11/11):** PRE-20 `preprocessing/integration/run_integration.py` không còn; PRE-21 `preprocessing/transformation/pipeline.py` ghi `data/preprocessing/legacy_features/all.parquet`, không còn đụng `04_normalization`; PRE-23 `parse_salary("tối thiểu 10 triệu")` ra `lower_bound` min 10 max rỗng, `"2 tỷ"` ra 2000 triệu (test ở `test_normalization_step.py`, `test_ph6_ph7_normalization.py`); PRE-24 thư mục `preprocessing/transformation/tests/` không còn file test; PRE-27 xóa `tests/test_golden_field_preservation.py` (import module không tồn tại); PRE-14 thêm ghi chú 11/11 vào ADR-04 (`docs/spec/11_technical_decisions.md`).
+- **KNOWN_ISSUED:** sáu mục đã xóa.
+
+### L-43. Nhóm nghề mở rộng từ 12 lên 16 nhóm + Other; bỏ Data Engineer; duyệt `job_titles.json` (PH6, 11/2026)
+- **Lỗi:** nhóm Other chiếm 38% (1.793/4.699) vì `job_titles.json` chưa duyệt và chưa có nhóm cho các tin "Developer", "Lập Trình", "CNTT", thiết kế, game, CSDL, ERP.
+- **Nguyên nhân:** taxonomy cũ (SPEC-01) chỉ có 12 nhóm, không có nhóm cho nhóm tin chung chung.
+- **Cách xử lý:** người dùng sửa 53 mục trong `preprocessing/dictionaries/job_titles.json` và chốt 11/11: bỏ Data Engineer (gộp Data Science/AI, kể cả Data Analyst/BI), thêm Software Engineering, Game Development, Design, Database, Enterprise Software. Mình đặt `approved: true` cho 53 mục đó (so với bản đã commit), 87 mục còn lại `false` nên không nạp. `JOB_FAMILIES_12` đổi tên thành `JOB_FAMILIES` (16 nhóm) ở 6 file; luật tiêu đề và kỹ năng cổng của Data Engineer gộp vào Data Science/AI. Spec PH6, P4, SPEC-01 ghi chú ngày 11/11.
+- **Kiểm chứng:** `test_job_titles_json_families_are_known` (mục duyệt phải có nhóm hợp lệ) và `test_normalization_step.py` 36 qua; sau chạy lại 04: Other 707/4.671 (15,1%), trước 1.793/4.699 (38%); nhóm lớn nhất Software Engineering 938, Fullstack 608, Product/Project 517.
+- **KNOWN_ISSUED:** PRE-34 bỏ dòng "Other 38%" khi có số mới.
+
+### L-44. Thêm bước 10–12 (10_features, 12_tfidf) vào chuỗi và đóng encoding bước 05 (Processing, 11/2026)
+- **Lỗi:** chưa có ma trận đặc trưng số cho Mining; bước 05 encoding cũ (`preprocessing/encoding/execute.py`) cần 7 tham số xuất bản nên bị `SKIPPED` trong chuỗi (PRE-32).
+- **Cách xử lý:** `processing/transformation/discretize.py`, `construction/features.py`, `encoding/features.py` (gộp 10, 10b, 10c, 10d), `extraction/vectorize.py` (12); nối vào `scripts/run_preprocessing.py`. Lương thỏa thuận và không ghi thành `salary_status__unknown` (không điền). `min_df=15`. Bước 11 bỏ, e5 làm sau.
+- **Kiểm chứng (chạy thật 11/11):** `10_features` 4.671 → 4.671 dòng, 249 cột sau khi làm đủ E1–E5, E7 của P5 (171 cột kỹ năng, mật độ 4,1%, 292 tin không có kỹ năng; `emp__unknown` 317 tin, `tinh__unknown` 102 tin); lương có số 2.140, unknown 2.531; cấp bậc chưa rõ 388, cờ mâu thuẫn 115. `12_tfidf` ma trận 4.671 × 20.000, 1.205.812 phần tử khác 0. `tests/unit tests/contract` qua (xem dòng kết quả cuối phiên); `tests/unit/test_processing_10_12.py` 5 test.
+- **KNOWN_ISSUED:** PRE-32 đã xóa; PRE-34 còn phần đánh giá và e5.
+
+### L-45. Thêm bước 12_e5: embedding bullet bằng multilingual-e5-base (Processing, 11/2026)
+- **Lỗi:** Processing chưa có biểu diễn ngữ nghĩa của JD, chỉ có TF-IDF.
+- **Cách xử lý:** `processing/extraction/embed.py` (bước `12_e5`, nối vào `scripts/run_preprocessing.py`): vector từng bullet (tiền tố `passage: `, fp16, GPU), cache theo `sha1(text)`; vector JD = trung bình mọi bullet + trung bình theo 3 section. `sentence-transformers==6.2.0` ghim vào `requirements.txt`.
+- **Kiểm chứng (chạy thật, xong 04:13 ngày 11/11):** `bullet_emb.npy` 114.008 × 768 (fp16), `job_emb.npz` 4.671 JD (không JD nào có vector 0), thứ tự bullet khớp `07_sections`; `tests/unit tests/contract`: 580 qua, 1 bỏ qua; `test_embed.py` 3 test.
+- **Còn lại:** phân loại bullet zero-shot chưa làm (không có nhãn vàng để đo); PRE-34.
+
+### L-46. Mining đọc đúng đầu ra Processing và dùng vector e5 (Mining, 11/2026)
+- **Lỗi:** `mining/config.py` trỏ `data/preprocessing/05_encoding/features.parquet` (không còn); cột `skill__other_skill` bị tính là kỹ năng thật.
+- **Cách xử lý:** trỏ sang `data/processing/10_features/` và `12_e5/job_emb.npz`; `SKILL_EXCLUDE_COLUMNS` thêm `skill__other_skill`; `load_e5` (thiếu job thì báo lỗi, không bịa vector); `build_vector_space` thêm khối e5 (`e5_weight=0.3`); k quét 5–12; driver in so sánh có/không e5; `scripts/plot_clusters_3d.py` vẽ HTML 3D từ `job_clusters.parquet`.
+- **Kiểm chứng (chạy thật 11/11, `--only fp,cluster,anomaly`, 4.671 tin, bước `salary` RF+SHAP không chạy vì là supervised):** K-Means k=11, Silhouette 0,0912 (không e5: 0,0862, k=12), Davies-Bouldin 2,63, ARI với nhóm nghề 0,056; PCA 3D giữ 20,5% phương sai; 29.193 luật (26 vĩ mô); 279 tin bất thường (5,97%). Kiểm tra hợp lý: 4/6 mục fail (xem MINE-1). Test mới trong `test_mining_clustering.py`, `test_mining_data_io.py`, `test_plot_clusters_3d.py`.
+- **Còn lại:** cụm yếu so với mục tiêu (Silhouette ≥ 0,28; DB < 1,80); MINE-1.
+
+### L-47. Nhóm nghề gộp từ 16 xuống 10 nhóm + Other; Mining K-Means k=10 (PH6, Mining, 11/2026)
+- **Lỗi:** 16 nhóm (L-43) chia sai: "Software" thực chất gồm backend, frontend, fullstack; các nhóm nhỏ (Mobile 30, Database 15, Enterprise 16) quá ít tin.
+- **Cách xử lý:** người dùng chốt 10 nhóm: Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI (+ Other, không ép tin vào nhóm). `FAMILY_MAP` trong `preprocessing/normalization/job_title.py` gộp nhóm cũ về 10 nhóm ở đầu ra `family_from_title` (Backend/Frontend/Fullstack/Software Engineering → Web; Product/Project, Enterprise Software → Bridge; QA/QC → Tester; Security, System/Network → Security; Embedded/IoT → IoT; Data Science/AI, Database → Data/AI); `job_titles.json` cập nhật theo bảng (140 mục, `approved` giữ nguyên 53). Tên đổi (Tester, IoT, Data/AI, Bridge) là theo cách người dùng viết. Mining: `ClusteringParams` k cố định 10, K-Means, không gian kỹ năng .5 + e5 .5 (bỏ TF-IDF), quét k=2–20 để báo Elbow/Silhouette; ARI/NMI chỉ tính trên tin khác Other.
+- **Kiểm chứng (chạy thật 11/11):** `04_normalization` 4.671 → 4.671: Web 1.853, Other 707, Bridge 533, Data/AI 430, Tester 429, DevOps/Cloud 258, Security 254, Design 78, Game 61, IoT 38, Mobile 30; `10_features` 4.671 × 243 (11 cột `fam__*`). Mining k=10: Silhouette 0,1015, Davies-Bouldin 2,49, ARI 0,071 và NMI 0,144 trên 3.964 tin khác Other; không dùng e5: Silhouette 0,1055, ARI 0,096; 13.514 luật; 282 tin bất thường (6,04%). Test: `test_family_map_covers_old_families_and_targets_ten_groups`, `test_fixed_k_overrides_selection_and_scan_still_reported`, `test_family_agreement_ignores_other`.
+- **Còn lại:** Web 40% có thể lẫn tin Software Engineer chung không phải web; Security gồm cả hạ tầng/mạng; cụm 1 chứa 292/293 tin không có kỹ năng và cụm 9 là cụm nhiều kỹ năng (trung vị 15), tức phân cụm một phần tách theo số kỹ năng (MINE-1).

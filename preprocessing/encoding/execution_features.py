@@ -9,7 +9,7 @@ from preprocessing.common import SOURCES
 from preprocessing.encoding.candidate_lookup import build_candidate_lookup, encode_candidate_rows
 from preprocessing.encoding.execution_io import BOOLEANS, NUMERIC, is_null, validate_frame
 from preprocessing.encoding.run import SENIORITY_MAP, _normalize_employment_type, to_col_slug
-from preprocessing.normalization.job_title import JOB_FAMILIES_12, OTHER
+from preprocessing.normalization.job_title import JOB_FAMILIES, OTHER
 
 
 def build_features(df, vocabulary):
@@ -40,7 +40,7 @@ def build_features(df, vocabulary):
     add("seniority_ord", df.seniority.map(SENIORITY_MAP).fillna(-1), "int8", "seniority", "frozen SENIORITY_MAP; unknown=-1")
     flag("seniority__missing", df.seniority.isna(), "seniority", "missing")
     flag("seniority__unknown", df.seniority.notna() & ~df.seniority.isin(list(SENIORITY_MAP)), "seniority", "unknown_label")
-    families = list(dict.fromkeys([*JOB_FAMILIES_12, OTHER]))
+    families = list(dict.fromkeys([*JOB_FAMILIES, OTHER]))
     categorical("job_family", families)
     categorical("source_platform", list(SOURCES))
     employment = df.raw_employment_type.map(_normalize_employment_type)

@@ -38,3 +38,17 @@ def test_tokens_have_placeholders(tmp_path):
     assert [x for x in t.loc["b_1", "tokens"] if x.startswith("sk_")] and "js" not in list(t.loc["b_1", "tokens"])
     assert "sk_docker" in list(t.loc["a_1", "tokens_nostop"])
     assert reps["_all"].data["checks"]["rows_conserved"] is True
+
+
+def test_translated_text_adds_skills_via_text_vi():
+    """Phương án B: tin đã dịch quét thêm bản dịch; tin failed hoặc không cần dịch chỉ quét bản gốc."""
+    base = {"job_id_global": "t_1", "source_platform": "topcv", "description_clean": "- Build services",
+            "requirements_clean": "- Python", "description_vi": "- Xây dựng dịch vụ", "requirements_vi": "- Biết Docker và Python"}
+    cases = {"translated": {"python", "docker"}, "failed": {"python"}, "not_needed": {"python"}}
+    for status, want in cases.items():
+        _, rows, _ = R.analyze({**base, "translation_status": status}, M, {}, [])
+        assert {r["slug"] for r in rows} == want, status
+    _, rows, _ = R.analyze({**base, "translation_status": "translated"}, M, {}, [])
+    by = {r["slug"]: r for r in rows}
+    assert by["docker"]["via"] == "text_vi" and by["python"]["via"] == "text"
+    assert by["python"]["n_mentions"] == 2  # một lần ở bản gốc, một lần ở bản dịch

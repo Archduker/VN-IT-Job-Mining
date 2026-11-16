@@ -26,7 +26,7 @@ Input: bảng sau luật PH6 trong bước 04. Output: `data/preprocessing/04_no
 3. `normalization/run.py`: sau vòng luật PH6 và **trước** N7 (log), gọi các hàm trên:
    - M1, M2: `salary_negotiable` (bản sao của `is_negotiable`, X2), `salary_status`, cờ `salary_negotiable_with_value`.
    - M3c: cấp bậc trống + `exp_min_years` có -> `seniority` theo ngưỡng X6, `level_inferred=True`, `seniority_source="kinh_nghiem"`. **Chỉ chạy khi `seniority` null.** Cấp từ raw/title: `level_inferred=False`.
-   - M4: `exp_min_years` null và `seniority == "Intern/Fresher"` với `seniority_source in {"raw","title"}` -> `exp_min_years=0`, `exp_inferred=True`, `exp_source="level_intern_fresher"`; cấp khác: `exp_source="unknown"`, không điền. **Không** dùng cấp có `seniority_source="kinh_nghiem"`.
+   - M4: `exp_min_years` null và cấp bậc từ `seniority_source in {"raw","title"}` -> điền cận dưới (Intern/Fresher 0, Junior 1, Middle 2, Senior 4, Lead/Manager 5), `exp_inferred=True`, `exp_source="level_<cấp>"`; không có cấp: `exp_source="unknown"`. **Không** dùng cấp có `seniority_source="kinh_nghiem"`.
    - M5: `salary_out_of_range` (ngoài 2-200 triệu, X3), giữ N6a (NaN hóa ngoài 1-500, `salary_suspect`). Không sửa số.
    - M6: `salary_iqr_outlier_by_level`, `salary_iqr_scope` in {`level`, `pooled`, `not_enough_data`}. Giữ `is_outlier_salary` và `*_capped` (X4).
    - M7: `tinh_status` in {`ok`, `remote`, `foreign`, `unknown`}.
@@ -49,13 +49,13 @@ for rec in rows:                                     # M1, M2
     # M3c  cấp bậc trống -> số năm (ngưỡng X6)
     rec.level_inferred = False
     if rec.seniority is None and notna(rec.exp_min_years):
-        rec.seniority = level_by_years(rec.exp_min_years)   # 0 Intern/Fresher; 1 Junior; 2-4 Middle; >=5 Senior  (X6)
+        rec.seniority = level_by_years(rec.exp_min_years)   # [0,1) Fresher; [1,2) Junior; [2,4) Middle; [4,5) Senior; >=5 None  (X6)
         rec.seniority_source, rec.level_inferred = "kinh_nghiem", True
 
     # M4  kinh nghiệm trống
     rec.exp_inferred, rec.exp_source = False, ("given" if notna(rec.exp_min_years) else "unknown")
-    if isnull(rec.exp_min_years) and rec.seniority == "Intern/Fresher" and rec.seniority_source in ("raw","title"):
-        rec.exp_min_years, rec.exp_inferred, rec.exp_source = 0.0, True, "level_intern_fresher"
+    if isnull(rec.exp_min_years) and rec.seniority in LEVEL_MIN_YEARS and rec.seniority_source in ("raw","title"):
+        rec.exp_min_years, rec.exp_inferred, rec.exp_source = LEVEL_MIN_YEARS[rec.seniority], True, "level_" + rec.seniority.split("/")[0].lower()
 
     rec.tinh_status = "remote" if rec.work_mode=="remote" else ("foreign" if any ngoai_vn else ("ok" if rec.tinh_chinh else "unknown"))
 

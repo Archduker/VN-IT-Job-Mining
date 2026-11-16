@@ -26,6 +26,7 @@ from collection.common.http_client import DelayConfig, HttpClient, RetryConfig
 from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import JobMetadata, JobRaw, JobRecord, JobSalary, JobTags
 from collection.common.url_ledger import (
+    DiscoveryError,
     UrlLedger,
     calculate_json_canonical_hash,
     calculate_json_field_hashes,
@@ -698,6 +699,7 @@ class ViecLam24hCrawler(BaseCrawler):
         """Quét toàn bộ danh mục IT Vieclam24h, ghi nhận vào UrlLedger (content_hash=None) và đẩy lên R2."""
         log.info("[Vieclam24h] === Bắt đầu Pha 1: URL Discovery ===")
         total_discovered = 0
+        pages_ok, first_error = 0, None
         is_online = online or self.online
 
         for category in TARGET_CATEGORIES:
@@ -717,6 +719,7 @@ class ViecLam24hCrawler(BaseCrawler):
                     resp = self.client.get(page_url)
                     if resp.status_code >= 400:
                         log.warning("[Vieclam24h] HTTP Error %d tại trang %d danh mục %s", resp.status_code, page_idx, cat_name)
+                        first_error = first_error or f"{cat_name} trang {page_idx}: HTTP {resp.status_code}"
                         break
 
                     html = resp.text
@@ -737,6 +740,7 @@ class ViecLam24hCrawler(BaseCrawler):
                     script = soup.find("script", id="__NEXT_DATA__")
                     if not script or not script.string:
                         log.warning("[Vieclam24h] Không tìm thấy __NEXT_DATA__ tại trang %d", page_idx)
+                        first_error = first_error or f"{cat_name} trang {page_idx}: thiếu __NEXT_DATA__"
                         break
 
                     next_data = json.loads(script.string)
@@ -745,7 +749,9 @@ class ViecLam24hCrawler(BaseCrawler):
 
                     if not listing_items:
                         log.info("[Vieclam24h] Hết tin tại trang %d ngành %s", page_idx, cat_name)
+                        first_error = first_error or f"{cat_name} trang {page_idx}: không có tin"
                         break
+                    pages_ok += 1
 
                     for item in listing_items:
                         jid = str(item.get("id", ""))
@@ -782,12 +788,15 @@ class ViecLam24hCrawler(BaseCrawler):
                     page_idx += 1
                 except Exception as exc:
                     log.error("[Vieclam24h] Lỗi quét danh mục trang %d ngành %s: %s", page_idx, cat_name, exc)
+                    first_error = first_error or f"{cat_name} trang {page_idx}: {exc}"
                     break
 
         self.ledger.save_catalog()
         manifest_file = self.ledger.export_daily_manifest()
         if self.sync_r2:
             self.ledger.sync_final()
+        if pages_ok == 0 and first_error:
+            raise DiscoveryError(f"[Vieclam24h] Không lấy được trang danh sách nào: {first_error}")  # C14
         log.info("[Vieclam24h] Hoàn thành Pha 1. Tổng cộng %d URL trong Ledger (%s)", len(self.ledger.records), manifest_file)
         return len(self.ledger.records)
 

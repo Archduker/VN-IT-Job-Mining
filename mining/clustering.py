@@ -19,8 +19,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 from scipy import sparse
-from sklearn.cluster import KMeans
+from sklearn.cluster import AgglomerativeClustering, KMeans
 from sklearn.decomposition import PCA, TruncatedSVD
+from sklearn.mixture import GaussianMixture
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import (
     adjusted_rand_score,
@@ -69,13 +70,20 @@ def build_vector_space(
     skills: pd.DataFrame,
     tfidf: sparse.spmatrix | None = None,
     tfidf_weight: float = 0.3,
+    e5: np.ndarray | None = None,
+    e5_weight: float = 0.3,
 ) -> sparse.csr_matrix:
-    """[kỹ năng L2 * sqrt(1-w) || tfidf L2 * sqrt(w)] rồi chuẩn hóa L2 từng dòng."""
+    """[kỹ năng L2 * sqrt(1-w) || tfidf L2 * sqrt(w) || e5 L2 * sqrt(we)] rồi chuẩn hóa L2 từng dòng."""
     s = normalize(sparse.csr_matrix(skills.to_numpy(dtype=np.float32)))
-    if tfidf is None or tfidf.shape[1] == 0:
+    blocks = []
+    if tfidf is not None and tfidf.shape[1] > 0:
+        blocks.append((normalize(sparse.csr_matrix(tfidf, dtype=np.float32)), tfidf_weight))
+    if e5 is not None:
+        blocks.append((normalize(sparse.csr_matrix(np.asarray(e5, dtype=np.float32))), e5_weight))
+    if not blocks:
         return normalize(s).tocsr()
-    t = normalize(sparse.csr_matrix(tfidf, dtype=np.float32))
-    v = sparse.hstack([s * np.sqrt(1 - tfidf_weight), t * np.sqrt(tfidf_weight)]).tocsr()
+    w_skill = 1 - sum(w for _, w in blocks)
+    v = sparse.hstack([s * np.sqrt(w_skill)] + [b * np.sqrt(w) for b, w in blocks]).tocsr()
     return normalize(v).tocsr()
 
 
@@ -92,17 +100,27 @@ def reduce_svd(X: sparse.spmatrix, variance_target: float, max_components: int,
                 "svd_max_components": n_comp}
 
 
+def fit_labels(Z: np.ndarray, k: int, algorithm: str = "kmeans",
+               random_state: int = RANDOM_STATE) -> tuple[np.ndarray, float | None]:
+    """Nhãn cụm và inertia (chỉ K-Means có inertia; Ward trả None)."""
+    if algorithm == "agglomerative":
+        return AgglomerativeClustering(n_clusters=k, linkage="ward").fit_predict(Z), None
+    if algorithm == "gmm":  # hiệp phương sai chéo: SVD nhiều chiều, đủ dữ liệu cho ma trận đầy đủ là không chắc
+        return GaussianMixture(n_components=k, covariance_type="diag", n_init=3, random_state=random_state).fit_predict(Z), None
+    km = KMeans(n_clusters=k, n_init=10, random_state=random_state)
+    return km.fit_predict(Z), float(km.inertia_)
+
+
 def scan_k(Z: np.ndarray, k_min: int, k_max: int, sample_size: int,
-           random_state: int = RANDOM_STATE) -> pd.DataFrame:
+           random_state: int = RANDOM_STATE, algorithm: str = "kmeans") -> pd.DataFrame:
     rows = []
     k_max = min(k_max, len(Z) - 1)
     for k in range(k_min, k_max + 1):
-        km = KMeans(n_clusters=k, n_init=10, random_state=random_state)
-        labels = km.fit_predict(Z)
+        labels, inertia = fit_labels(Z, k, algorithm, random_state)
         if len(set(labels)) < 2:
             continue
         sil = silhouette_score(Z, labels, sample_size=min(sample_size, len(Z)), random_state=random_state)
-        rows.append({"k": k, "inertia": float(km.inertia_), "silhouette": float(sil),
+        rows.append({"k": k, "inertia": inertia, "silhouette": float(sil),
                      "davies_bouldin": float(davies_bouldin_score(Z, labels))})
     return pd.DataFrame(rows)
 
@@ -183,19 +201,25 @@ def cluster_jobs(
     params: ClusteringParams | None = None,
     tfidf: sparse.spmatrix | None = None,
     random_state: int = RANDOM_STATE,
+    e5: np.ndarray | None = None,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     """Chạy toàn bộ phần phân cụm. Trả (bảng job_clusters, metrics)."""
     p = params or ClusteringParams()
     tfidf_terms: list[str] = []
-    if tfidf is None:
+    if tfidf is None and p.tfidf_weight > 0:
         tfidf, tfidf_terms = build_tfidf(meta.get("jd_text", pd.Series([""] * len(meta))), p.tfidf_max_features)
-    X = build_vector_space(skills, tfidf)
+    elif tfidf is None:
+        tfidf = sparse.csr_matrix((len(meta), 0))
+    X = build_vector_space(skills, tfidf, p.tfidf_weight, e5=e5, e5_weight=p.e5_weight)
 
     Z, svd_info = reduce_svd(X, p.svd_variance_target, p.svd_max_components, random_state)
-    scan = scan_k(Z, p.k_min, p.k_max, p.silhouette_sample_size, random_state)
-    best_k, reason = choose_k(scan, p.preferred_min_k)
-    km = KMeans(n_clusters=best_k, n_init=10, random_state=random_state)
-    labels = km.fit_predict(Z)
+    k_lo, k_hi = (min(p.k_min, p.k_fixed), max(p.k_max, p.k_fixed)) if p.k_fixed else (p.k_min, p.k_max)
+    scan = scan_k(Z, k_lo, k_hi, p.silhouette_sample_size, random_state, p.algorithm)
+    if p.k_fixed:
+        best_k, reason = int(p.k_fixed), f"k cố định = {p.k_fixed} theo người dùng (Silhouette chỉ để báo cáo)"
+    else:
+        best_k, reason = choose_k(scan, p.preferred_min_k)
+    labels, _ = fit_labels(Z, best_k, p.algorithm, random_state)
     best_row = scan[scan["k"] == best_k].iloc[0]
 
     hdb_labels, glosh, glosh_method = run_hdbscan(Z, p.hdbscan_min_cluster_size)
@@ -209,6 +233,7 @@ def cluster_jobs(
                                 p.top_skills_per_cluster)
     names = {pr["cluster_id"]: pr["cluster_name"] for pr in profiles}
     fam = meta["job_family"].fillna(JOB_FAMILY_OTHER).astype(str).to_numpy()
+    known = fam != JOB_FAMILY_OTHER  # tin Other (chưa xếp được nhóm) không dùng để so với family
 
     out = pd.DataFrame({
         "job_id": meta["job_id"].astype(str).to_numpy(),
@@ -229,9 +254,11 @@ def cluster_jobs(
                                              "tfidf_max_features", "hdbscan_min_cluster_size",
                                              "glosh_outlier_quantile")},
         "vector_space": {"n_skill_features": int(skills.shape[1]), "n_tfidf_features": int(tfidf.shape[1]),
+                         "n_e5_dims": 0 if e5 is None else int(np.asarray(e5).shape[1]),
                          "tfidf_terms_sample": tfidf_terms[:20], **svd_info,
                          "silhouette_space": f"TruncatedSVD {svd_info['svd_components']} chiều, chuẩn hóa L2"},
         "k_scan": scan.round(4).to_dict(orient="records"),
+        "algorithm": {"agglomerative": "agglomerative(ward)", "gmm": "gmm(diag)"}.get(p.algorithm, "kmeans"),
         "best_k": best_k, "best_k_reason": reason,
         "silhouette": round(float(best_row["silhouette"]), 4),
         "davies_bouldin": round(float(best_row["davies_bouldin"]), 4),
@@ -239,8 +266,9 @@ def cluster_jobs(
         "davies_bouldin_target": p.davies_bouldin_target,
         "meets_davies_bouldin_target": bool(best_row["davies_bouldin"] < p.davies_bouldin_target),
         "meets_min_clusters": bool(best_k >= p.preferred_min_k),
-        "ari_vs_job_family": round(float(adjusted_rand_score(fam, labels)), 4),
-        "nmi_vs_job_family": round(float(normalized_mutual_info_score(fam, labels)), 4),
+        "ari_vs_job_family": round(float(adjusted_rand_score(fam[known], labels[known])), 4),
+        "nmi_vs_job_family": round(float(normalized_mutual_info_score(fam[known], labels[known])), 4),
+        "n_eval_family": int(known.sum()), "n_family_other_excluded": int((~known).sum()),
         "pca_explained_variance": [round(float(v), 4) for v in pca.explained_variance_ratio_],
         "pca_cumulative_variance_3d": round(float(pca.explained_variance_ratio_.sum()), 4),
         "hdbscan": {"method": glosh_method, "n_clusters": int(len(set(hdb_labels) - {-1})),

@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 549
+    "rows": 547
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 549
+    "rows": 547
   },
   "dropped": [],
   "rules": [],
@@ -24,55 +24,17 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 12142,
+    "n_bullets": 12108,
     "bullets_by_section": {
-      "mo_ta": 4047,
-      "yeu_cau": 4159,
-      "phuc_loi": 3936
+      "mo_ta": 4036,
+      "yeu_cau": 4151,
+      "phuc_loi": 3921
     },
     "bullets_by_rule": {
-      "S7.2": 12142
+      "S7.2": 12108
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
     "cues_approved": 0
-  },
-  "samples": [
-    {
-      "job_id": "jobsgo_29354118091",
-      "source": "jobsgo",
-      "field": "sections",
-      "before": "Cài đặt, cấu hình và hỗ trợ vận hành các phần mềm quản lý nội bộ, đảm bảo phần mềm hoạt động ổn định và đáp ứng nhu cầu sử dụng.\nTiếp nhận, kiểm tra và xử lý các lỗi phần mềm phát sinh; phối hợp với c…",
-      "after": {
-        "mo_ta": 10,
-        "yeu_cau": 8,
-        "phuc_loi": 6
-      },
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_28898705589",
-      "source": "jobsgo",
-      "field": "sections",
-      "before": "Tiếp nhận, cập nhật kịp thời hiện trạng phòng máy ở các đơn vị.\nPhối hợp, điều động nhân viên IT bảo trì hệ thống phòng máy tại các đơn vị.\nSắp xếp lịch làm việc cho nhân viên IT.\nTrực tiếp liên hệ, p…",
-      "after": {
-        "mo_ta": 6,
-        "yeu_cau": 5,
-        "phuc_loi": 5
-      },
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_29341000777",
-      "source": "jobsgo",
-      "field": "sections",
-      "before": "Quản trị hệ thống ERP:\nQuản lý hệ thống danh mục cho phần mềm ERP (KH, NCC, VTHH, giá mua, giá bán, ...).\nXử lý, khắc phục sự cố, đảm bảo hệ thống ERP hoạt động thông suốt, hiệu quả.\nPhối hợp với nhân…",
-      "after": {
-        "yeu_cau": 18,
-        "mo_ta": 16,
-        "phuc_loi": 7
-      },
-      "changed": true
-    }
-  ]
+  }
 }

@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:28:56+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T19:43:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 204
+    "rows": 202
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 204
+    "rows": 202
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1654,
+      "rows_affected": 1636,
       "examples": []
     },
     {
@@ -104,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 204,
+      "rows_affected": 202,
       "examples": []
     },
     {
@@ -132,21 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 77,
+      "rows_affected": 76,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 55,
+      "rows_affected": 53,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 204,
+      "rows_affected": 202,
       "examples": [
         {
           "job_id": "2017763",
@@ -175,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 204,
+      "rows_affected": 202,
       "examples": [
         {
           "job_id": "2017763",
@@ -204,18 +204,18 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 25.0,
-      "fill_pct_out": 25.0
+      "fill_pct_in": 25.2,
+      "fill_pct_out": 25.2
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 27.9,
-      "fill_pct_out": 27.9
+      "fill_pct_in": 28.2,
+      "fill_pct_out": 28.2
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 32.4,
-      "fill_pct_out": 32.4
+      "fill_pct_in": 32.7,
+      "fill_pct_out": 32.7
     },
     {
       "field": "deadline_date",
@@ -224,13 +224,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 27.9,
-      "fill_pct_out": 27.9
+      "fill_pct_in": 28.2,
+      "fill_pct_out": 28.2
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 27.9,
-      "fill_pct_out": 27.9
+      "fill_pct_in": 28.2,
+      "fill_pct_out": 28.2
     },
     {
       "field": "headcount",
@@ -249,13 +249,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 89.7,
-      "fill_pct_out": 89.7
+      "fill_pct_in": 89.6,
+      "fill_pct_out": 89.6
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 92.2,
-      "fill_pct_out": 92.2
+      "fill_pct_in": 92.1,
+      "fill_pct_out": 92.1
     },
     {
       "field": "locations",
@@ -281,13 +281,13 @@
       "header": 58,
       "title": 0,
       "jd": 0,
-      "none": 146
+      "none": 144
     },
     "salary_under_1m_count": 0,
     "salary_from_x_count": 0,
     "language_distribution": {
       "vi": 148,
-      "en": 55,
+      "en": 53,
       "other": 1
     },
     "language_fasttext": {
@@ -299,7 +299,7 @@
         "2137252",
         "2139753"
       ],
-      "conf_lt_0_9": 38
+      "conf_lt_0_9": 37
     },
     "text_quality": {
       "before": {
@@ -331,27 +331,35 @@
         "description",
         "requirements"
       ],
-      "approved_terms": 0,
+      "approved_terms": 249,
       "device": "cuda",
       "batch_size": 4,
       "torch": "2.15.0+cu132",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1214,
+      "peak_vram_mib": 1099,
       "fell_back_to_cpu": false,
-      "rows_en": 132,
-      "rows_translated": 124,
-      "rows_failed": 8,
-      "chunks": 2741,
-      "cache_hits": 96,
-      "model_calls": 2654,
-      "retries": 9,
-      "failed_chunks": 9
+      "rows_en": 133,
+      "rows_translated": 117,
+      "rows_failed": 16,
+      "chunks": 2806,
+      "cache_hits": 2788,
+      "model_calls": 36,
+      "retries": 18,
+      "failed_chunks": 18
     },
-    "experience_parsed_rate": 27.9
+    "experience_parsed_rate": 28.2
   },
   "samples": [
     {
-      "job_id": "topdev_2138226",
+      "job_id": "topdev_2135944",
+      "source": "topdev",
+      "field": "requirements_clean",
+      "before": "Experience\nTối thiểu 4 năm kinh nghiệm trong Software QA/Testing.\nCó kinh nghiệm trong các dự án hệ thống quy mô lớn, ưu tiên:\nBanking / Finance\nCore Banking\nPayment\nLending\nDigital Banking\nData / Rep…",
+      "after": "Experience Tối thiểu 4 năm kinh nghiệm trong Software QA/Testing.\nCó kinh nghiệm trong các dự án hệ thống quy mô lớn, ưu tiên:\nBanking / Finance Core Banking Payment Lending Digital Banking Data / Rep…",
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2137775",
       "source": "topdev",
       "field": "salary_min_vnd",
       "before": "Thỏa thuận",
@@ -359,19 +367,11 @@
       "changed": true
     },
     {
-      "job_id": "topdev_2138613",
+      "job_id": "topdev_2138377",
       "source": "topdev",
       "field": "description_clean",
-      "before": "Quản lý đội ngũ thiết kế đa phương tiện và đảm bảo chất lượng, tiến độ dự án\nLàm việc với các bộ phận liên quan để xây dựng chiến lược phù hợp với mục tiêu và thông điệp của Công ty\nGiám sát và quản l…",
-      "after": "Quản lý đội ngũ thiết kế đa phương tiện và đảm bảo chất lượng, tiến độ dự án Làm việc với các bộ phận liên quan để xây dựng chiến lược phù hợp với mục tiêu và thông điệp của Công ty Giám sát và quản l…",
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2135944",
-      "source": "topdev",
-      "field": "requirements_clean",
-      "before": "Experience\nTối thiểu 4 năm kinh nghiệm trong Software QA/Testing.\nCó kinh nghiệm trong các dự án hệ thống quy mô lớn, ưu tiên:\nBanking / Finance\nCore Banking\nPayment\nLending\nDigital Banking\nData / Rep…",
-      "after": "Experience Tối thiểu 4 năm kinh nghiệm trong Software QA/Testing.\nCó kinh nghiệm trong các dự án hệ thống quy mô lớn, ưu tiên:\nBanking / Finance Core Banking Payment Lending Digital Banking Data / Rep…",
+      "before": "1. Nghiên cứu thị trường & đề xuất sản phẩm\nHoạt động chính: Khảo sát nhu cầu theo phân khúc (HKD/Micro/SME/USME), phân tích cạnh tranh, xây dựng business case, BRD cho các sản phẩm mới/ nâng cấp sản …",
+      "after": "1. Nghiên cứu thị trường & đề xuất sản phẩm Hoạt động chính: Khảo sát nhu cầu theo phân khúc (HKD/Micro/SME/USME), phân tích cạnh tranh, xây dựng business case, BRD cho các sản phẩm mới/ nâng cấp sản …",
       "changed": true
     }
   ]

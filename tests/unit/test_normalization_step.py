@@ -73,24 +73,24 @@ def test_n2_seniority_classification_order_and_edge_cases():
 
 
 def test_n3_job_family_12_groups_plus_other():
-    """N3 (PH6 N17, K9 phương án A): 12 nhóm SPEC-01 + Other; Backend không hút Embedded/developer chung chung."""
+    """N3 (PH6 N17): 10 nhóm (Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI) + Other."""
     d = build_title_dict([])
 
     def fam(title, skills=()):
         core, _, hint = core_title(title)
         return family_from_title(fold(core), None, skills, d, hint)
 
-    assert fam("BackEnd Engineer (Java, Spring Boot)")[0] == "Backend"
-    assert fam("Middle/Senior Embedded Software Engineer (C++,C)")[0] == "Embedded/IoT"
-    assert fam("International Business Analyst")[0] == "Product/Project"
-    assert fam("Lead QA Tester")[0] == "QA/QC"
+    assert fam("BackEnd Engineer (Java, Spring Boot)")[0] == "Web"
+    assert fam("Middle/Senior Embedded Software Engineer (C++,C)")[0] == "IoT"
+    assert fam("International Business Analyst")[0] == "Bridge"
+    assert fam("Lead QA Tester")[0] == "Tester"
     assert fam("DevOps Cloud Engineer")[0] == "DevOps/Cloud"
-    assert fam("Senior Data Scientist (AI/ML)")[0] == "Data Science/AI"
-    assert fam("Data Engineer")[0] == "Data Engineer"
-    assert fam("Product Owner")[0] == "Product/Project"
+    assert fam("Senior Data Scientist (AI/ML)")[0] == "Data/AI"
+    assert fam("Data Engineer")[0] == "Data/AI"
+    assert fam("Product Owner")[0] == "Bridge"
     assert fam("Nhân Viên Thiết Kế") == ("Other", "none")      # thiết kế đồ họa không phải UI/UX
     assert fam("Software Engineer") == ("Other", "none")        # từ chung: cần kỹ năng xác nhận
-    assert fam("Technical Lead", ["React", "Vue"]) == ("Frontend", "skills")
+    assert fam("Technical Lead", ["React", "Vue"]) == ("Web", "skills")
     assert fam("Technical Lead", ["React", "Java"]) == ("Other", "none")  # hai nhóm hòa: K11
 
 

@@ -195,20 +195,17 @@ def classify_seniority(
 
 
 def level_by_years(exp_min_years: Any) -> Optional[str]:
-    """PH7 M3c / X6 (spec P4): 0 -> Intern/Fresher, (0,2) -> Junior, [2,5) -> Middle, >= 5 -> Senior. Lead/Manager không suy từ số năm."""
+    """PH7 M3c (người dùng chốt 11/11): [0,1) Intern/Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior; >= 5 mơ hồ giữa Senior và Lead nên trả None."""
     try:
         y = float(exp_min_years)
     except (TypeError, ValueError):
         return None
     if pd.isna(y) or y < 0:
         return None
-    if y == 0:
-        return "Intern/Fresher"
-    if y < 2:
-        return "Junior"
-    if y < 5:
-        return "Middle"
-    return "Senior"
+    for upper, level in ((1, "Intern/Fresher"), (2, "Junior"), (4, "Middle"), (5, "Senior")):
+        if y < upper:
+            return level
+    return None
 
 
 def normalize_seniority(seniority_text: Optional[str], title_text: Optional[str] = "") -> str:

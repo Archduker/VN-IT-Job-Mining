@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:33:07+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T19:43:16+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 774
@@ -18,7 +18,7 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 979,
+      "rows_affected": 980,
       "examples": []
     },
     {
@@ -132,14 +132,14 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 245,
+      "rows_affected": 246,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 345,
+      "rows_affected": 344,
       "examples": []
     },
     {
@@ -286,8 +286,8 @@
     "salary_under_1m_count": 2,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 427,
-      "en": 345,
+      "vi": 428,
+      "en": 344,
       "other": 2
     },
     "language_fasttext": {
@@ -305,7 +305,7 @@
         "2123254",
         "2125913"
       ],
-      "conf_lt_0_9": 191
+      "conf_lt_0_9": 190
     },
     "text_quality": {
       "before": {
@@ -337,21 +337,21 @@
         "description",
         "requirements"
       ],
-      "approved_terms": 0,
+      "approved_terms": 249,
       "device": "cuda",
       "batch_size": 4,
       "torch": "2.15.0+cu132",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1258,
+      "peak_vram_mib": 1146,
       "fell_back_to_cpu": false,
       "rows_en": 477,
-      "rows_translated": 444,
-      "rows_failed": 33,
-      "chunks": 8188,
-      "cache_hits": 467,
-      "model_calls": 7766,
-      "retries": 45,
-      "failed_chunks": 45
+      "rows_translated": 419,
+      "rows_failed": 58,
+      "chunks": 8289,
+      "cache_hits": 8213,
+      "model_calls": 152,
+      "retries": 76,
+      "failed_chunks": 76
     },
     "experience_parsed_rate": 84.5
   },

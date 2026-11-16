@@ -42,6 +42,7 @@ from collection.common.anti_blocking import (
 from collection.common.http_client import DelayConfig, HttpClient, RetryConfig
 from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.url_ledger import (
+    DiscoveryError,
     UrlLedger,
     calculate_json_canonical_hash,
     calculate_json_field_hashes,
@@ -364,6 +365,7 @@ class ItviecCrawler(BaseCrawler):
         total_new = 0
         curr = 1
         consecutive_empty = 0
+        pages_ok, first_error = 0, None
         with self._fetcher(use_playwright=False) as fetch:
             while True:
                 if max_pages and curr > max_pages:
@@ -375,6 +377,7 @@ class ItviecCrawler(BaseCrawler):
                     jobs = parser.parse_listing(html)
                 except Exception as exc:
                     log.error("[ITViec] Lỗi đọc trang danh mục %d: %s", curr, exc)
+                    first_error = first_error or f"trang {curr}: {exc}"
                     jobs = []
 
                 if not jobs:
@@ -385,6 +388,7 @@ class ItviecCrawler(BaseCrawler):
                     curr += 1
                     continue
                 consecutive_empty = 0
+                pages_ok += 1
 
                 page_new = 0
                 for j in jobs:
@@ -424,6 +428,9 @@ class ItviecCrawler(BaseCrawler):
         if self.sync_r2 or sync_r2:
             self.ledger.sync_final()
 
+        if pages_ok == 0 and s_new == 0:
+            # Sitemap cũng không bổ sung được gì thì cả pha thất bại để Airflow báo đỏ (C14)
+            raise DiscoveryError(f"[ITViec] Không lấy được trang danh sách nào: {first_error or 'trang 1 trống'}")
         log.info("[ITViec] Pha 1 hoàn thành. Tổng cộng %d URL trong Ledger (+%d mới). Manifest: %s",
                  len(self.ledger.records), total_new, manifest)
         return len(self.ledger.records)

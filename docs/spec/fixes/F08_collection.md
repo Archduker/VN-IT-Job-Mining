@@ -1,6 +1,6 @@
 # F08. Thu thập: SCRAPE-18, ledger, sync --source
 
-Issue: SCRAPE-11, SCRAPE-13, SCRAPE-14, SCRAPE-17/GEN-6, SCRAPE-18, MERGE-9. Trạng thái: **đặc tả chưa duyệt** (viết 09/11/2026). Theo dõi ở `docs/tasks/issues_merge.md`.
+Issue: SCRAPE-11, SCRAPE-13, SCRAPE-14, SCRAPE-17/GEN-6, SCRAPE-18, MERGE-9. Trạng thái: **đặc tả chưa duyệt** (viết 09/11/2026). Cập nhật 11/11/2026: SCRAPE-11 (DiscoveryError 8/8 nguồn, test `tests/contract/test_discovery_error_c14.py`) và SCRAPE-17/GEN-6 (`_change_ts()` trong `url_ledger.py`) đã làm, xem `docs/issue_log.md` L-41. Theo dõi ở `docs/tasks/issues_merge.md`.
 
 ## Vấn đề
 1. `collection` import ngược `preprocessing.common.it_filter` (SCRAPE-18).

@@ -2,15 +2,15 @@
   "step": "09_tokens",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:06:49+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:56:21+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": null,
-    "rows": 401
+    "rows": 400
   },
   "output": {
     "path": "data/processing/09_tokens/all.parquet",
-    "rows": 401
+    "rows": 400
   },
   "dropped": [],
   "rules": [],
@@ -24,7 +24,7 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "mean_tokens_per_job": 363.31,
+    "mean_tokens_per_job": 363.49,
     "df_threshold": 0.6,
     "n_general_stopwords": 91,
     "model": "không dùng model"
@@ -89,7 +89,7 @@
       "changed": true
     },
     {
-      "job_id": "careerviet_35C83F04",
+      "job_id": "careerviet_35C83F05",
       "source": "careerviet",
       "field": "tokens_nostop",
       "before": "Mô tả Công việc Để đảm bảo hồ sơ được tiếp nhận xử lý, ứng viên cần nộp hồ sơ ứng tuyển trên website tuyển dụng chính thức của Vietcombank tại địa chỉ: tuyendung.vietcombank.com.vn [TT KT&KHDL]_Chuyên…",

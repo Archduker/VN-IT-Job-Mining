@@ -2,8 +2,8 @@
   "step": "07_sections",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:54:57+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 774
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 15446,
+    "n_bullets": 15501,
     "bullets_by_section": {
-      "mo_ta": 5532,
-      "yeu_cau": 6099,
-      "phuc_loi": 3815
+      "mo_ta": 5554,
+      "yeu_cau": 6135,
+      "phuc_loi": 3812
     },
     "bullets_by_rule": {
-      "S7.2": 15446
+      "S7.2": 15501
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2112277",
+      "job_id": "vietnamworks_2112247",
       "source": "vietnamworks",
       "field": "sections",
-      "before": "Quản trị và vận hành toàn bộ hệ sinh thái Microsoft 365: Exchange Online, SharePoint Online, OneDrive, Teams, Azure AD (Entra ID)...\nĐảm bảo hệ thống hoạt động ổn định, bảo mật, tuân thủ chính sách CN…",
+      "before": "Xây dựng và hoàn thiện khung Quản trị dữ liệu Tham mưu và vận hành cơ chế Hội đồng dữ liệu Quản trị chất lượng dữ liệu Quản trị Metadata và Data Dictionary Quản trị cấu trúc dữ liệu, dữ liệu chủ và dữ…",
       "after": {
-        "mo_ta": 3,
+        "phuc_loi": 10,
         "yeu_cau": 3,
-        "phuc_loi": 3
+        "mo_ta": 1
       },
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2111896",
+      "job_id": "vietnamworks_2111856",
       "source": "vietnamworks",
       "field": "sections",
-      "before": "Hạ tầng viễn thông: Quản lý hạ tầng, nhà trạm và hệ thống phụ trợ của hơn 1.700 trạm BTS (nguồn điện, máy phát điện, điều hòa, cột anten, điện mặt trời, PCCC); cập nhật dữ liệu Datasite; tổ chức sửa c…",
+      "before": "Xây dựng, vận hành và cải tiến quy trình kiểm soát chất lượng (QC) từ nguyên liệu đầu vào (bare PCB), qua các công đoạn sản xuất đến thành phẩm.\nĐảm bảo toàn bộ quá trình sản xuất tuân thủ tiêu chuẩn …",
       "after": {
-        "phuc_loi": 7,
+        "phuc_loi": 6,
         "yeu_cau": 3,
         "mo_ta": 2
       },
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2121518",
+      "job_id": "vietnamworks_2121517",
       "source": "vietnamworks",
       "field": "sections",
-      "before": "Chủ động thực hiện threat hunting nhằm phát hiện sớm các dấu hiệu tấn công trên hệ thống doanh nghiệp, đặc biệt trên Microsoft Defender portal và Trellix EDR Rà soát, thu thập evidence, thực hiện fore…",
+      "before": "For this position, minimum works are as follows, Manage security policies for endpoints;\nDevelop plan, implement change process, manage implement policy process of security solution for user;\nExchange…",
       "after": {
-        "phuc_loi": 8,
-        "mo_ta": 1,
-        "yeu_cau": 1
+        "yeu_cau": 15,
+        "phuc_loi": 9,
+        "mo_ta": 5
       },
       "changed": true
     }

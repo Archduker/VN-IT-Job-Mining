@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:24:11+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:16:05+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/topcv/raw",
     "rows": 2749
   },
   "output": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
-    "rows": 1539
+    "rows": 1537
   },
   "dropped": [
     {
@@ -45,8 +45,8 @@
     },
     {
       "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
-      "rows": 18
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
+      "rows": 20
     },
     {
       "rule": "C7",
@@ -216,28 +216,28 @@
     },
     {
       "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 18,
+      "rows_affected": 20,
       "examples": [
         {
           "job_id": "1855721",
           "field": "dedup_key",
-          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh",
+          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm",
           "after": "giữ 1858313",
           "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1855721.html"
         },
         {
           "job_id": "1990674",
           "field": "dedup_key",
-          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm|ho_chi_minh",
+          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm",
           "after": "giữ 1858313",
           "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1990674.html"
         },
         {
           "job_id": "2056186",
           "field": "dedup_key",
-          "before": "infinity technologies global|product owner|ha_noi",
+          "before": "infinity technologies global|product owner",
           "after": "giữ 2316026",
           "url": "https://www.topcv.vn/viec-lam/product-owner/2056186.html"
         }
@@ -252,21 +252,21 @@
         {
           "job_id": "2313245",
           "field": "dedup_key",
-          "before": "ngân hàng tmcp quân đội mbbank|chuyên viên cao cấp công nghệ mô hình - senior machine learning engineer - khối dữ liệu (2026td456629)|ha_noi",
+          "before": "ngân hàng tmcp quân đội mbbank|chuyên viên cao cấp công nghệ mô hình - senior machine learning engineer - khối dữ liệu (2026td456629)",
           "after": "giữ vietnamworks:2110215",
           "url": "https://www.topcv.vn/brand/nganhangthuongmaicophanquandoi/tuyen-dung/chuyen-vien-cao-cap-cong-nghe-mo-hinh-senior-machine-learning-engineer-khoi-du-lieu-2026td456629-j2313245.html"
         },
         {
           "job_id": "2313250",
           "field": "dedup_key",
-          "before": "ngân hàng tmcp quân đội mbbank|phó phòng công nghệ mô hình - deputy head of machine learning engineering - khối dữ liệu (2026td456609)|ha_noi",
+          "before": "ngân hàng tmcp quân đội mbbank|phó phòng công nghệ mô hình - deputy head of machine learning engineering - khối dữ liệu (2026td456609)",
           "after": "giữ vietnamworks:2109877",
           "url": "https://www.topcv.vn/brand/nganhangthuongmaicophanquandoi/tuyen-dung/pho-phong-cong-nghe-mo-hinh-deputy-head-of-machine-learning-engineering-khoi-du-lieu-2026td456609-j2313250.html"
         },
         {
           "job_id": "2315026",
           "field": "dedup_key",
-          "before": "kinh doanh f88|devops/platform engineer|ha_noi",
+          "before": "kinh doanh f88|devops/platform engineer",
           "after": "giữ vietnamworks:2112397",
           "url": "https://www.topcv.vn/viec-lam/devops-platform-engineer/2315026.html"
         }

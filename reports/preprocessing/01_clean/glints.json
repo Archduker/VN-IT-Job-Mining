@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:42+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:16+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/glints/raw",
     "rows": 331
   },
   "output": {
     "path": "data/preprocessing/01_clean/glints.jsonl",
-    "rows": 264
+    "rows": 254
   },
   "dropped": [
     {
@@ -45,13 +45,13 @@
     },
     {
       "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "rows": 6
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 4
+      "rows": 14
     }
   ],
   "rules": [
@@ -158,28 +158,28 @@
     },
     {
       "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
       "rows_affected": 6,
       "examples": [
         {
           "job_id": "05decc01-d944-4958-8c7a-21697b2d32e8",
           "field": "dedup_key",
-          "before": "kết nối nhân lực worklink|kỹ thuật viên it phần mềm - kcn long đức - đồng nai|ho_chi_minh",
+          "before": "kết nối nhân lực worklink|kỹ thuật viên it phần mềm - kcn long đức - đồng nai",
           "after": "giữ 83fe5651-5b24-4ee4-ba8e-52eef6615019",
           "url": "https://glints.com/vn/opportunities/jobs/ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/05decc01-d944-4958-8c7a-21697b2d32e8"
         },
         {
           "job_id": "160cfe51-8606-4eec-91e1-15a2cd5a1fc7",
           "field": "dedup_key",
-          "before": "chuỗi bán lẻ mini min|tư vấn triển khai phần mềm b2b|ho_chi_minh",
+          "before": "chuỗi bán lẻ mini min|tư vấn triển khai phần mềm b2b",
           "after": "giữ f8f06818-8693-4853-80d5-a6eb7ac201dc",
           "url": "https://glints.com/vn/opportunities/jobs/tu-van-trien-khai-phan-mem-b2b/160cfe51-8606-4eec-91e1-15a2cd5a1fc7"
         },
         {
           "job_id": "7234bf88-a192-4242-b35d-d5d95417c966",
           "field": "dedup_key",
-          "before": "nextedge|devops engineer|ho_chi_minh",
+          "before": "nextedge|devops engineer",
           "after": "giữ 46ebfdd9-98a7-45bf-a130-b8922feaa060",
           "url": "https://glints.com/vn/opportunities/jobs/devops-engineer/7234bf88-a192-4242-b35d-d5d95417c966"
         }
@@ -189,28 +189,28 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 4,
+      "rows_affected": 14,
       "examples": [
         {
           "job_id": "091b32f4-7c9f-4ae2-befa-e9f7880e07fa",
           "field": "dedup_key",
-          "before": "kinh doanh f88|chuyên viên cao cấp rủi ro gian lận (fraud risk data analyst)|ho_chi_minh",
+          "before": "kinh doanh f88|chuyên viên cao cấp rủi ro gian lận (fraud risk data analyst)",
           "after": "giữ jobsgo:29391080129",
           "url": "https://glints.com/vn/opportunities/jobs/chuyen-vien-cao-cap-rui-ro-gian-lan-fraud-risk-data-analyst/091b32f4-7c9f-4ae2-befa-e9f7880e07fa"
         },
         {
-          "job_id": "5806f3c5-f2aa-43bd-bbb3-608c4221929f",
+          "job_id": "0e32e3c9-82f5-4fcd-ad2e-0f2fafad8ca2",
           "field": "dedup_key",
-          "before": "foxts|senior qa/ automation engineer|ha_noi",
-          "after": "giữ topcv:2238387",
-          "url": "https://glints.com/vn/opportunities/jobs/senior-qa-automation-engineer/5806f3c5-f2aa-43bd-bbb3-608c4221929f"
+          "before": "w2solution|thực tập sinh kiểm thử phần mềm",
+          "after": "giữ topcv:2321991",
+          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-kiem-thu-phan-mem/0e32e3c9-82f5-4fcd-ad2e-0f2fafad8ca2"
         },
         {
-          "job_id": "ceba21b2-ef17-4ef0-ab1e-b5458aa1f1a6",
+          "job_id": "1ae183bd-9394-4be8-bea1-4ac9a5021710",
           "field": "dedup_key",
-          "before": "kết nối nhân lực worklink|nhân viên it (helpdesk) - tiếng nhật n4 - quận 7, tp.hcm|ho_chi_minh",
-          "after": "giữ jobsgo:29405080078",
-          "url": "https://glints.com/vn/opportunities/jobs/nhan-vien-it-helpdesk-tieng-nhat-n4-quan-7-tp-hcm/ceba21b2-ef17-4ef0-ab1e-b5458aa1f1a6"
+          "before": "tma solutions|thực tập sinh công nghệ thông tin",
+          "after": "giữ jobsgo:29326389773",
+          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-cong-nghe-thong-tin/1ae183bd-9394-4be8-bea1-4ac9a5021710"
         }
       ]
     }
@@ -244,7 +244,7 @@
     {
       "field": "skills_list",
       "fill_pct_in": 88.5,
-      "fill_pct_out": 88.3
+      "fill_pct_out": 88.2
     }
   ],
   "checks": {

@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:58+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:31+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
-    "rows": 588
+    "rows": 586
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/jobsgo.jsonl",
-    "rows": 549
+    "rows": 547
   },
   "dropped": [
     {
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 77,
+      "rows_affected": 75,
       "examples": [
         {
           "job_id": "28856040371",
@@ -135,18 +135,18 @@
           "url": "https://jobsgo.vn/viec-lam/chuyen-vien-trien-khai-van-hanh-28856040371.html"
         },
         {
+          "job_id": "28928592968",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7803,
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phu-trach-ai-he-thong-cong-nghe-thong-tin-thu-nhap-den-20-trieu-thang-28928592968.html"
+        },
+        {
           "job_id": "28967523961",
           "field": "jaccard",
           "before": null,
           "after": 0.7095,
           "url": "https://jobsgo.vn/viec-lam/truong-phong-cong-nghe-lark-28967523961.html"
-        },
-        {
-          "job_id": "28969234915",
-          "field": "jaccard",
-          "before": null,
-          "after": 1.0,
-          "url": "https://jobsgo.vn/viec-lam/account-manager-28969234915.html"
         }
       ]
     }
@@ -170,7 +170,7 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 432,
+    "blocking_blocks": 431,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 39

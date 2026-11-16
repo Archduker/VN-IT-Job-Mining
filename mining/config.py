@@ -17,8 +17,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_GOLDEN = REPO_ROOT / "data" / "curated" / "curated_flat_golden_jobs.parquet"
 # Pipeline 5 bước hiện tại chưa ghi data/curated/; dùng output Normalization khi thiếu file golden.
 FALLBACK_GOLDEN = REPO_ROOT / "data" / "preprocessing" / "04_normalization" / "all.parquet"
-DEFAULT_FEATURES = REPO_ROOT / "data" / "preprocessing" / "05_encoding" / "features.parquet"
-DEFAULT_ENCODING_DICT = REPO_ROOT / "data" / "preprocessing" / "05_encoding" / "encoding_dictionary.json"
+DEFAULT_FEATURES = REPO_ROOT / "data" / "processing" / "10_features" / "features.parquet"
+DEFAULT_ENCODING_DICT = REPO_ROOT / "data" / "processing" / "10_features" / "encoding_dictionary.json"
+DEFAULT_E5 = REPO_ROOT / "data" / "processing" / "12_e5" / "job_emb.npz"
 ARTIFACTS_DIR = REPO_ROOT / "mining" / "artifacts"
 SYNTHETIC_ARTIFACTS_DIR = ARTIFACTS_DIR / "_synthetic"
 
@@ -64,7 +65,7 @@ COLUMN_ALIASES: dict[str, list[str]] = {
 
 # Tiền tố cột kỹ năng nhị phân (Phát: "skill_" theo docs/tasks/05; code hiện tại: "skill__").
 SKILL_PREFIXES: tuple[str, ...] = ("skill__", "skill_")
-SKILL_EXCLUDE_COLUMNS = {"skills__other_count", "skill_count", "skills_count"}
+SKILL_EXCLUDE_COLUMNS = {"skills__other_count", "skill_count", "skills_count", "skill__other_skill"}
 
 # Lương lớn hơn ngưỡng này được hiểu là VNĐ, nhỏ hơn là triệu VNĐ (lương tháng IT nằm trong 1–500 triệu).
 SALARY_VND_DETECT_THRESHOLD = 10_000.0
@@ -105,14 +106,18 @@ class AssociationParams:
 
 @dataclass
 class ClusteringParams:
-    k_min: int = 4
-    k_max: int = 14
-    preferred_min_k: int = 8  # spec 08: tối thiểu 8 cụm nghề
+    algorithm: str = "kmeans"  # "kmeans" | "agglomerative" (Ward) | "gmm"; K-Means có Silhouette và độ ổn định tốt nhất (đo 11/11)
+    k_fixed: int | None = 10  # người dùng chốt k=10; None thì chọn theo Silhouette trong [k_min, k_max]
+    k_min: int = 2  # quét 2–20 để báo Elbow và Silhouette
+    k_max: int = 20
+    preferred_min_k: int = 5
     silhouette_target: float = 0.28
     davies_bouldin_target: float = 1.80  # docs/tasks/08 (Thuận): DBI < 1.80
     svd_variance_target: float = 0.80
     svd_max_components: int = 60
     tfidf_max_features: int = 100
+    tfidf_weight: float = 0.0  # kỹ năng .5 + e5 .5, bỏ TF-IDF (đo 11/11: ít chồng lấn hơn)
+    e5_weight: float = 0.5  # tỉ lệ năng lượng của khối vector e5 trong không gian phân cụm
     silhouette_sample_size: int = 3000
     hdbscan_min_cluster_size: int = 25
     glosh_outlier_quantile: float = 0.97

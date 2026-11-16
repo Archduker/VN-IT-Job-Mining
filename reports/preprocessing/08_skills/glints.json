@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 256
+    "rows": 246
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 256
+    "rows": 246
   },
   "dropped": [],
   "rules": [],
@@ -24,36 +24,44 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 2255,
-    "n_jobs_no_skill": 13,
+    "n_job_skill_rows": 2231,
+    "n_jobs_no_skill": 12,
     "top_skills": [
       {
         "skill": "english",
-        "n_jobs": 127
+        "n_jobs": 123
       },
       {
         "skill": "communication",
-        "n_jobs": 100
+        "n_jobs": 102
       },
       {
         "skill": "teamwork",
-        "n_jobs": 96
+        "n_jobs": 91
       },
       {
-        "skill": "java",
+        "skill": "machine_learning",
         "n_jobs": 57
       },
       {
         "skill": "python",
-        "n_jobs": 57
+        "n_jobs": 56
+      },
+      {
+        "skill": "java",
+        "n_jobs": 55
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 55
       },
       {
         "skill": "rest_api",
-        "n_jobs": 54
+        "n_jobs": 52
       },
       {
         "skill": "agile_scrum",
-        "n_jobs": 51
+        "n_jobs": 49
       },
       {
         "skill": "qa_qc",
@@ -61,59 +69,51 @@
       },
       {
         "skill": "postgresql",
-        "n_jobs": 45
-      },
-      {
-        "skill": "javascript",
-        "n_jobs": 43
-      },
-      {
-        "skill": "sql_server",
         "n_jobs": 42
       },
       {
-        "skill": "mysql",
+        "skill": "sql_server",
         "n_jobs": 41
+      },
+      {
+        "skill": "mysql",
+        "n_jobs": 39
       },
       {
         "skill": "cicd",
-        "n_jobs": 41
+        "n_jobs": 39
       },
       {
-        "skill": "docker",
-        "n_jobs": 40
-      },
-      {
-        "skill": "japanese",
-        "n_jobs": 40
-      },
-      {
-        "skill": "machine_learning",
+        "skill": "javascript",
         "n_jobs": 38
       },
       {
-        "skill": "react",
-        "n_jobs": 36
+        "skill": "docker",
+        "n_jobs": 38
+      },
+      {
+        "skill": "japanese",
+        "n_jobs": 37
       },
       {
         "skill": "mongodb",
-        "n_jobs": 35
+        "n_jobs": 34
       },
       {
-        "skill": "nodejs",
-        "n_jobs": 33
+        "skill": "react",
+        "n_jobs": 34
       },
       {
         "skill": "clean_architecture",
         "n_jobs": 32
       },
       {
-        "skill": "logical_thinking",
+        "skill": "nodejs",
         "n_jobs": 31
       },
       {
-        "skill": "redis",
-        "n_jobs": 31
+        "skill": "logical_thinking",
+        "n_jobs": 30
       },
       {
         "skill": "automation_test",
@@ -121,7 +121,7 @@
       },
       {
         "skill": "data_analysis",
-        "n_jobs": 29
+        "n_jobs": 30
       },
       {
         "skill": "linux",
@@ -132,20 +132,20 @@
         "n_jobs": 28
       },
       {
-        "skill": "typescript",
-        "n_jobs": 26
-      },
-      {
-        "skill": "problem_solving",
-        "n_jobs": 25
-      },
-      {
-        "skill": "azure",
-        "n_jobs": 24
+        "skill": "redis",
+        "n_jobs": 28
       },
       {
         "skill": "cybersecurity",
         "n_jobs": 24
+      },
+      {
+        "skill": "typescript",
+        "n_jobs": 24
+      },
+      {
+        "skill": "azure",
+        "n_jobs": 23
       }
     ],
     "short_forms_approved": 0,
@@ -153,67 +153,81 @@
   },
   "samples": [
     {
-      "job_id": "glints_71775262-2a8b-4439-b1cd-3faf25939432",
+      "job_id": "glints_3dddfc91-fe4b-4fc6-bfe9-80a1b6338ea2",
       "source": "glints",
       "field": "skills",
       "before": [
-        "MongoDB",
+        "Cloud Computing",
+        "Data Center",
+        "Customer Service",
+        "Public Speaking",
+        "Presentation Skills",
+        "IT Security",
+        "DepOps",
+        "Communication",
+        "Analytical Skills"
+      ],
+      "after": [
+        "communication",
+        "firewall",
+        "kubernetes",
+        "linux",
+        "machine_learning",
+        "microservices",
+        "presentation"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_00b4d332-8e6e-4714-9853-e816085f7d01",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "React.js",
         "jQuery",
-        "C++",
-        "JavaScript",
-        "PostgreSQL",
-        "Microsoft SQL Server",
         "Laravel",
+        "MongoDB",
+        "PostgreSQL",
+        "C++",
         "MySQL",
         "Node.js",
-        "React.js"
+        "Microsoft SQL Server",
+        "JavaScript"
       ],
       "after": [
         "communication",
         "cpp",
+        "csharp",
+        "dotnet",
+        "java",
         "javascript",
         "jquery",
         "laravel",
+        "logical_thinking",
+        "machine_learning",
         "mongodb",
         "mysql",
         "nodejs",
         "postgresql",
+        "python",
         "react",
-        "sql_server"
+        "sql_server",
+        "teamwork"
       ],
       "changed": true
     },
     {
-      "job_id": "glints_87fe15be-b4d2-49ae-99a1-112a68563d68",
+      "job_id": "glints_55495809-808b-47e7-85a6-693fabff90a4",
       "source": "glints",
       "field": "skills",
       "before": [
-        "Leadership",
         "Quality Assurance",
-        "Team Management"
+        "Team Management",
+        "Leadership"
       ],
       "after": [
         "japanese",
         "qa_qc"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "glints_9feeeb45-5e38-4285-afec-8b6828032c1e",
-      "source": "glints",
-      "field": "skills",
-      "before": [
-        "Microsoft Office",
-        "IT Security",
-        "Communication Skills"
-      ],
-      "after": [
-        "cicd",
-        "communication",
-        "cybersecurity",
-        "design_patterns",
-        "devsecops",
-        "microservices"
       ],
       "changed": true
     }

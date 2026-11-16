@@ -13,7 +13,7 @@ import re
 import time
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
@@ -72,6 +72,20 @@ def _r2_client_and_bucket(bucket_name=None, endpoint_url=None, access_key=None, 
     from collection.common.r2_storage import get_r2_client, resolve_r2_bucket
 
     return get_r2_client(endpoint_url, access_key, secret_key), resolve_r2_bucket(bucket_name)
+
+
+_last_change_ts = datetime.min.replace(tzinfo=timezone.utc)
+
+
+def _change_ts() -> str:
+    """Mốc updated_at tăng nghiêm ngặt trong tiến trình: Windows có đồng hồ thô nên hai lần đổi liên tiếp có thể trùng mốc,
+    khi đó save_catalog không phân được bên nào đổi sau (SCRAPE-17). Chỉ bảo đảm trong một tiến trình."""
+    global _last_change_ts
+    now = datetime.now(timezone.utc)
+    if now <= _last_change_ts:
+        now = _last_change_ts + timedelta(microseconds=1)
+    _last_change_ts = now
+    return now.isoformat()
 
 
 class LedgerSyncError(RuntimeError):
@@ -653,7 +667,7 @@ class UrlLedger:
     ):
         """Cập nhật trạng thái link thành DONE."""
         if url_hash in self.records:
-            now_iso = datetime.now(timezone.utc).isoformat()
+            now_iso = _change_ts()
             rec = self.records[url_hash]
             rec["status"] = "DONE"
             rec["last_scraped_at"] = now_iso
@@ -684,13 +698,13 @@ class UrlLedger:
             rec["status"] = "FAILED"
             rec["error_log"] = str(error_message)
             rec["retry_count"] = rec.get("retry_count", 0) + 1
-            rec["updated_at"] = datetime.now(timezone.utc).isoformat()
+            rec["updated_at"] = _change_ts()
 
     def mark_closed(self, url_hash: str):
         """Đánh dấu link đã bị gỡ hoặc 404."""
         if url_hash in self.records:
             self.records[url_hash]["status"] = "CLOSED"
-            self.records[url_hash]["updated_at"] = datetime.now(timezone.utc).isoformat()
+            self.records[url_hash]["updated_at"] = _change_ts()
 
     @staticmethod
     def next_version(record: Dict[str, Any], content_hash: str) -> tuple:

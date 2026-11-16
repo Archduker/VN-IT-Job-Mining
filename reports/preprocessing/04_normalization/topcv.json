@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:22+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T22:25:10+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1518
+    "rows": 1520
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 1518
+    "rows": 1520
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 1511,
+      "rows_affected": 1513,
       "examples": [
         {
           "job_id": "2013194",
@@ -76,7 +76,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 1511,
+      "rows_affected": 1483,
       "examples": [
         {
           "job_id": "2013194",
@@ -103,29 +103,29 @@
     },
     {
       "id": "N3",
-      "name": "Nhóm nghề: 12 nhóm SPEC-01 + Other",
+      "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 848,
+      "rows_affected": 1312,
       "examples": [
         {
           "job_id": "2013194",
           "field": "job_family",
           "before": "Manual Test Data [Hà Nội] - Mức Lương Upto 20 Triệu, Có Kinh Nghiệm Là 1 Lợi Thế Lớn",
-          "after": "QA/QC (title)",
+          "after": "Tester (title)",
           "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
         },
         {
           "job_id": "2281042",
           "field": "job_family",
           "before": "Kỹ Sư Quản Lý Dự Án - PC Junior",
-          "after": "Product/Project (title)",
+          "after": "Bridge (title)",
           "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
         },
         {
           "job_id": "2321616",
           "field": "job_family",
           "before": "UI/UX Designer - Mobile App- [HCM] - Thu Nhập Lên Đến 30 Triệu",
-          "after": "Mobile (skills)",
+          "after": "Design (canonical)",
           "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
         }
       ]
@@ -134,35 +134,35 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 0,
+      "rows_affected": 763,
       "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 1482,
+      "rows_affected": 1484,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 1517,
+      "rows_affected": 1519,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 31,
+      "rows_affected": 50,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 951,
+      "rows_affected": 922,
       "examples": []
     },
     {
@@ -197,7 +197,7 @@
       "id": "M6",
       "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
       "action": "flag",
-      "rows_affected": 19,
+      "rows_affected": 23,
       "examples": []
     },
     {
@@ -211,14 +211,14 @@
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 865,
+      "rows_affected": 864,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 1517,
+      "rows_affected": 1519,
       "examples": []
     }
   ],
@@ -235,8 +235,8 @@
     },
     {
       "field": "seniority",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 97.6,
+      "fill_pct_out": 97.6
     },
     {
       "field": "seniority_source",
@@ -265,23 +265,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 49.1,
-      "fill_pct_out": 49.1
+      "fill_pct_in": 49.0,
+      "fill_pct_out": 49.0
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 57.0,
-      "fill_pct_out": 57.0
+      "fill_pct_in": 56.8,
+      "fill_pct_out": 56.8
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 49.1,
-      "fill_pct_out": 49.1
+      "fill_pct_in": 49.0,
+      "fill_pct_out": 49.0
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 57.0,
-      "fill_pct_out": 57.0
+      "fill_pct_in": 56.8,
+      "fill_pct_out": 56.8
     },
     {
       "field": "is_outlier_salary",
@@ -295,8 +295,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 0.0,
-      "fill_pct_out": 0.0
+      "fill_pct_in": 50.2,
+      "fill_pct_out": 50.2
     },
     {
       "field": "company_key",
@@ -354,64 +354,66 @@
   },
   "extra": {
     "seniority_distribution": {
-      "Middle": 508,
+      "Middle": 486,
       "Lead/Manager": 350,
-      "Junior": 315,
+      "Junior": 316,
       "Intern/Fresher": 240,
-      "Senior": 98,
-      "(trống)": 7
+      "Senior": 91,
+      "(trống)": 37
     },
     "job_family_distribution": {
-      "Other": 670,
-      "Product/Project": 189,
-      "QA/QC": 114,
-      "Backend": 97,
-      "Data Science/AI": 90,
-      "System/Network": 84,
-      "DevOps/Cloud": 68,
-      "Mobile": 61,
-      "Fullstack": 52,
-      "Security": 34,
-      "Data Engineer": 24,
-      "Embedded/IoT": 18,
-      "Frontend": 17
+      "Web": 602,
+      "Bridge": 209,
+      "Other": 208,
+      "Tester": 115,
+      "Data/AI": 99,
+      "Security": 78,
+      "DevOps/Cloud": 66,
+      "Design": 63,
+      "Game": 49,
+      "IoT": 16,
+      "Mobile": 15
     },
     "job_family_source_distribution": {
-      "title": 740,
-      "none": 670,
-      "skills": 108
+      "canonical": 763,
+      "title": 500,
+      "none": 208,
+      "skills": 49
     },
     "work_mode_distribution": {
-      "onsite": 1503,
+      "onsite": 1505,
       "unknown": 7,
       "remote": 7,
       "hybrid": 1
     },
     "salary_status_distribution": {
-      "value": 887,
-      "negotiable": 627,
+      "value": 886,
+      "negotiable": 630,
       "not_stated": 4
     },
     "salary_outliers": 7,
     "inference": {
-      "level_inferred": 951,
+      "level_inferred": 922,
       "exp_inferred": 0
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 1332,
-      "job_title_core_distinct": 831,
+      "job_title_clean_distinct": 1335,
+      "job_title_core_distinct": 832,
       "title_canonical_source": {
-        "none": 1518
+        "none": 757,
+        "alias": 442,
+        "exact": 275,
+        "fuzzy": 46
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 951,
+      "level_inferred": 922,
       "seniority_can_kiem": 21,
+      "job_family_can_kiem": 29,
       "salary_negotiable_with_value": 7,
       "tinh_unknown": 7,
-      "salary_iqr_outlier_by_level": 19,
-      "job_family_can_kiem": 10,
+      "salary_iqr_outlier_by_level": 23,
       "salary_out_of_range": 9,
       "salary_iqr_outlier_pooled": 2,
       "salary_suspect": 2,
@@ -424,23 +426,23 @@
   },
   "samples": [
     {
-      "job_id": "topcv_2288745",
+      "job_id": "topcv_2310960",
       "source": "topcv",
       "field": "locations",
       "before": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Tây Hồ",
+          "phuong_xa": "Phường Vĩnh Tuy",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Số 270 Thụy Khuê, Phường Tây Hồ (Phường Tây Hồ thuộc quận Tây Hồ cũ)"
+          "raw": "Hà Nội: 458 Minh Khai, Timescity, Phường Vĩnh Tuy (Phường Vĩnh Tuy có thể thuộc các quận Hai Bà Trưng, Hoàng Mai cũ)"
         }
       ],
       "after": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Tây Hồ",
+          "phuong_xa": "Phường Vĩnh Tuy",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Số 270 Thụy Khuê, Phường Tây Hồ (Phường Tây Hồ thuộc quận Tây Hồ cũ)",
+          "raw": "Hà Nội: 458 Minh Khai, Timescity, Phường Vĩnh Tuy (Phường Vĩnh Tuy có thể thuộc các quận Hai Bà Trưng, Hoàng Mai cũ)",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
@@ -450,7 +452,7 @@
       "changed": true
     },
     {
-      "job_id": "topcv_2319950",
+      "job_id": "topcv_2281862",
       "source": "topcv",
       "field": "locations",
       "before": [
@@ -458,7 +460,7 @@
           "dia_chi_cu_the": null,
           "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Ngô Sĩ Liên, Phường Văn Miếu - Quốc Tử Giám (Phường Văn Miếu - Quốc Tử Giám thuộc quận Đống Đa cũ)"
+          "raw": "Hà Nội: Phường Láng (Phường Láng thuộc quận Đống Đa cũ) - Phạm vi làm việc trên toàn khu vực trên."
         }
       ],
       "after": [
@@ -466,7 +468,7 @@
           "dia_chi_cu_the": null,
           "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Ngô Sĩ Liên, Phường Văn Miếu - Quốc Tử Giám (Phường Văn Miếu - Quốc Tử Giám thuộc quận Đống Đa cũ)",
+          "raw": "Hà Nội: Phường Láng (Phường Láng thuộc quận Đống Đa cũ) - Phạm vi làm việc trên toàn khu vực trên.",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
@@ -476,24 +478,24 @@
       "changed": true
     },
     {
-      "job_id": "topcv_2332122",
+      "job_id": "topcv_2277469",
       "source": "topcv",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Nghĩa Đô",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Số 1 Phùng Chí Kiên - Nghĩa Đô, Phường Nghĩa Đô (Phường Nghĩa Đô có thể thuộc các quận Bắc Từ Liêm, Cầu Giấy cũ)"
+          "dia_chi_cu_the": "Bắc Ninh: Số 89 đường Hữu Nghị",
+          "phuong_xa": "Phường Từ Sơn",
+          "tinh_thanh": "TP. Bắc Ninh",
+          "raw": "Bắc Ninh: Số 89 đường Hữu Nghị, KCN VSIP Bắc Ninh tỉnh Bắc Ninh, VN, Phường Từ Sơn (Phường Từ Sơn thuộc Thành phố Từ Sơn cũ)"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Nghĩa Đô",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Số 1 Phùng Chí Kiên - Nghĩa Đô, Phường Nghĩa Đô (Phường Nghĩa Đô có thể thuộc các quận Bắc Từ Liêm, Cầu Giấy cũ)",
-          "tinh_key": "ha_noi",
+          "dia_chi_cu_the": "Bắc Ninh: Số 89 đường Hữu Nghị",
+          "phuong_xa": "Phường Từ Sơn",
+          "tinh_thanh": "TP. Bắc Ninh",
+          "raw": "Bắc Ninh: Số 89 đường Hữu Nghị, KCN VSIP Bắc Ninh tỉnh Bắc Ninh, VN, Phường Từ Sơn (Phường Từ Sơn thuộc Thành phố Từ Sơn cũ)",
+          "tinh_key": "bac_ninh",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false

@@ -12,7 +12,7 @@ from mining.clustering import (
     cluster_jobs,
     profile_clusters,
 )
-from mining.config import ClusteringParams
+from mining.config import JOB_FAMILY_OTHER, ClusteringParams
 from mining.data_io import prepare_mining_data
 from mining.synthetic import make_synthetic_jobs
 
@@ -81,3 +81,54 @@ def test_profile_top_skills_by_lift():
     prof = profile_clusters(np.array([0, 0, 1, 1]), sk, pd.Series(["Backend"] * 2 + ["Frontend"] * 2))
     assert prof[0]["top_skills"][0]["skill"] == "Java"
     assert prof[1]["dominant_job_family"] == "Frontend" and prof[1]["job_family_purity"] == 1.0
+
+
+def test_vector_space_with_e5_block_is_l2_and_has_all_columns():
+    skills = pd.DataFrame(np.eye(4, dtype=np.uint8), columns=list("abcd"))
+    tfidf = sparse.csr_matrix(np.array([[1, 0], [0, 1], [1, 1], [0, 0]], dtype=float))
+    e5 = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0]], dtype=np.float32)  # dòng 4: JD không có bullet
+    X = build_vector_space(skills, tfidf, 0.3, e5=e5, e5_weight=0.3)
+    assert X.shape == (4, 4 + 2 + 3)
+    norms = np.sqrt(np.asarray(X.multiply(X).sum(axis=1)).ravel())
+    assert np.allclose(norms, 1.0)
+    # không có e5 thì hành vi cũ không đổi
+    assert build_vector_space(skills, tfidf, 0.3).shape == (4, 6)
+
+
+def test_agglomerative_ward_clusters_and_reports_algorithm():
+    b = make_synthetic_jobs(n_jobs=600, seed=3)
+    data = prepare_mining_data(b.golden, b.features, b.encoding_dict["skills"]["skills_map"])
+    out, m = cluster_jobs(data.skills, data.meta, ClusteringParams(k_min=4, k_max=8, algorithm="agglomerative"))
+    assert m["algorithm"] == "agglomerative(ward)" and len(out) == data.n_jobs
+    assert out["cluster_id"].nunique() == m["best_k"]
+    out2, _ = cluster_jobs(data.skills, data.meta, ClusteringParams(k_min=4, k_max=8, algorithm="agglomerative"))
+    assert (out["cluster_id"].to_numpy() == out2["cluster_id"].to_numpy()).all()  # tái lập
+
+
+def test_gmm_clusters_reproducible_and_reports_algorithm():
+    b = make_synthetic_jobs(n_jobs=600, seed=3)
+    data = prepare_mining_data(b.golden, b.features, b.encoding_dict["skills"]["skills_map"])
+    prm = ClusteringParams(k_min=4, k_max=6, algorithm="gmm")
+    out, m = cluster_jobs(data.skills, data.meta, prm)
+    out2, _ = cluster_jobs(data.skills, data.meta, prm)
+    assert m["algorithm"] == "gmm(diag)" and len(out) == data.n_jobs
+    assert (out["cluster_id"].to_numpy() == out2["cluster_id"].to_numpy()).all()
+
+
+def test_fixed_k_overrides_selection_and_scan_still_reported():
+    b = make_synthetic_jobs(n_jobs=600, seed=3)
+    data = prepare_mining_data(b.golden, b.features, b.encoding_dict["skills"]["skills_map"])
+    out, m = cluster_jobs(data.skills, data.meta, ClusteringParams(k_fixed=6, k_min=4, k_max=8))
+    assert m["best_k"] == 6 and out["cluster_id"].nunique() == 6 and "cố định" in m["best_k_reason"]
+    assert [r["k"] for r in m["k_scan"]] == [4, 5, 6, 7, 8] and all("inertia" in r for r in m["k_scan"])
+    out2, m2 = cluster_jobs(data.skills, data.meta, ClusteringParams(k_fixed=12, k_min=4, k_max=8))  # k ngoài khoảng quét
+    assert m2["best_k"] == 12 and 12 in [r["k"] for r in m2["k_scan"]]
+
+
+def test_family_agreement_ignores_other():
+    b = make_synthetic_jobs(n_jobs=600, seed=3)
+    data = prepare_mining_data(b.golden, b.features, b.encoding_dict["skills"]["skills_map"])
+    meta = data.meta.copy()
+    meta.loc[meta.index[:100], "job_family"] = JOB_FAMILY_OTHER
+    _, m = cluster_jobs(data.skills, meta, ClusteringParams(k_fixed=5, k_min=4, k_max=6))
+    assert m["n_eval_family"] == 500 and m["n_family_other_excluded"] == 100

@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-10T13:03:53+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:47:02+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 831
+    "rows": 818
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 831
+    "rows": 818
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 2713,
+      "rows_affected": 2662,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 212,
+      "rows_affected": 210,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 803,
+      "rows_affected": 792,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 726,
+      "rows_affected": 717,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -104,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 831,
+      "rows_affected": 818,
       "examples": []
     },
     {
@@ -132,21 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 279,
+      "rows_affected": 273,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 555,
+      "rows_affected": 547,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 831,
+      "rows_affected": 818,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -175,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 831,
+      "rows_affected": 818,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -204,28 +204,28 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 24.1,
-      "fill_pct_out": 24.1
+      "fill_pct_in": 24.2,
+      "fill_pct_out": 24.2
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 25.4,
-      "fill_pct_out": 25.4
+      "fill_pct_in": 25.6,
+      "fill_pct_out": 25.6
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 96.6,
-      "fill_pct_out": 96.6
+      "fill_pct_in": 96.8,
+      "fill_pct_out": 96.8
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 96.6,
-      "fill_pct_out": 96.6
+      "fill_pct_in": 96.8,
+      "fill_pct_out": 96.8
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 87.4,
-      "fill_pct_out": 87.4
+      "fill_pct_in": 87.7,
+      "fill_pct_out": 87.7
     },
     {
       "field": "exp_max_years",
@@ -254,8 +254,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 93.0,
-      "fill_pct_out": 93.0
+      "fill_pct_in": 92.9,
+      "fill_pct_out": 92.9
     },
     {
       "field": "locations",
@@ -278,16 +278,16 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 208,
+      "header": 206,
       "title": 4,
       "jd": 1,
-      "none": 618
+      "none": 607
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 1,
     "language_distribution": {
-      "vi": 276,
-      "en": 555,
+      "vi": 271,
+      "en": 547,
       "other": 0
     },
     "language_fasttext": {
@@ -296,7 +296,7 @@
       "conf_min": 0.6,
       "disagree_with_old_rule": 0,
       "disagree_examples": [],
-      "conf_lt_0_9": 260
+      "conf_lt_0_9": 256
     },
     "text_quality": {
       "before": {
@@ -328,43 +328,43 @@
         "description",
         "requirements"
       ],
-      "approved_terms": 0,
+      "approved_terms": 249,
       "device": "cuda",
       "batch_size": 4,
       "torch": "2.15.0+cu132",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1258,
+      "peak_vram_mib": 1156,
       "fell_back_to_cpu": false,
-      "rows_en": 1111,
-      "rows_translated": 1010,
-      "rows_failed": 101,
-      "chunks": 22600,
-      "cache_hits": 1579,
-      "model_calls": 21137,
-      "retries": 116,
-      "failed_chunks": 116
+      "rows_en": 1103,
+      "rows_translated": 915,
+      "rows_failed": 188,
+      "chunks": 22664,
+      "cache_hits": 22433,
+      "model_calls": 462,
+      "retries": 231,
+      "failed_chunks": 231
     },
-    "experience_parsed_rate": 87.4
+    "experience_parsed_rate": 87.7
   },
   "samples": [
     {
-      "job_id": "itviec_backend-developer-shinhan-ds-4838",
+      "job_id": "itviec_da-nang-tech-lead-ai-agent-products-doraverse-jsc-tech-ai-3653",
       "source": "itviec",
-      "field": "description_clean",
-      "before": "Job description\nWe are looking for Middle/Senior Software Developers to join the Core Banking team at Shinhan Bank Vietnam. The candidate will be responsible for developing, maintaining, and enhancing…",
-      "after": "Job description We are looking for Middle/Senior Software Developers to join the Core Banking team at Shinhan Bank Vietnam. The candidate will be responsible for developing, maintaining, and enhancing…",
+      "field": "salary_min_vnd",
+      "before": "1,700 - 2,100 USD",
+      "after": 43180000.0,
       "changed": true
     },
     {
-      "job_id": "itviec_senior-test-qa-qc-tester-english-vihat-technology-0019",
+      "job_id": "itviec_cv-cvcc-business-analyst-ngan-hang-tnhh-mtv-viet-nam-hien-dai-mbv-1658",
       "source": "itviec",
       "field": "requirements_clean",
-      "before": "English proficiency.\nBachelor’s degree in computer science.\nStrong attention to detail and multi-tasking skills\nAt least 5 years as Senior Test or above in a large foreign financial institution.\nExper…",
-      "after": "English proficiency.\nBachelor’s degree in computer science.\nStrong attention to detail and multi-tasking skills At least 5 years as Senior Test or above in a large foreign financial institution.\nExper…",
+      "before": "JUNIOR BUSINESS ANALYST\nMô tả công việc & Yêu cầu:\nKinh nghiệm:\n1 – 2 năm kinh nghiệm ở vị trí BA hoặc vị trí phân tích tương đương.\nMức độ độc lập:\nThực hiện công việc theo phạm vi được giao, nhận hư…",
+      "after": "JUNIOR BUSINESS ANALYST Mô tả công việc & Yêu cầu:\nKinh nghiệm:\n1 - 2 năm kinh nghiệm ở vị trí BA hoặc vị trí phân tích tương đương.\nMức độ độc lập:\nThực hiện công việc theo phạm vi được giao, nhận hư…",
       "changed": true
     },
     {
-      "job_id": "itviec_senior-manual-qa-qc-testers-playwright-codehq-2705",
+      "job_id": "itviec_apo-leader-japanese-it-comtor-bridge-engineer-brse-mynavi-techtus-vietnam-5000",
       "source": "itviec",
       "field": "exp_min_years",
       "before": "3.1 năm (37 tháng)",

@@ -1,0 +1,33 @@
+{
+  "step": "10_features",
+  "source": "vietnamworks",
+  "mode": "applied",
+  "generated_at": "2026-11-10T22:25:23+00:00",
+  "code_version": "37bb865",
+  "input": {
+    "path": null,
+    "rows": 774
+  },
+  "output": {
+    "path": "data/processing/10_features/features.parquet",
+    "rows": 774
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "n_cols": 242,
+    "min_df": 15,
+    "model": "không dùng model"
+  },
+  "samples": [],
+  "samples_reason": "NO_ROWS_CHANGED"
+}

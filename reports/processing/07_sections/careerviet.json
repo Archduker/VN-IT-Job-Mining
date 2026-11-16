@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 401
+    "rows": 400
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 401
+    "rows": 400
   },
   "dropped": [],
   "rules": [],
@@ -24,55 +24,17 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 1204,
+    "n_bullets": 1201,
     "bullets_by_section": {
-      "mo_ta": 401,
-      "yeu_cau": 401,
-      "phuc_loi": 402
+      "mo_ta": 400,
+      "yeu_cau": 400,
+      "phuc_loi": 401
     },
     "bullets_by_rule": {
-      "S7.2": 1204
+      "S7.2": 1201
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
     "cues_approved": 0
-  },
-  "samples": [
-    {
-      "job_id": "careerviet_35C87E30",
-      "source": "careerviet",
-      "field": "sections",
-      "before": "Mô tả Công việc -Chịu trách nhiệm rà soát cuối cùng và chỉnh sửa các KPI quan trọng của nhà máy như là tỉ lệ hiệu suất, sản lượng cắt giảm, tính khả dụng của nhà máy, bức xạ mặt trời, sản lượng điện. …",
-      "after": {
-        "mo_ta": 1,
-        "yeu_cau": 1,
-        "phuc_loi": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C88EE5",
-      "source": "careerviet",
-      "field": "sections",
-      "before": "Mô tả Công việc Phân tích yêu cầu & Lập kế hoạch kiểm thử: Độc lập đọc hiểu, phân tích tài liệu yêu cầu (BRD, User Story, Solution Design) của dự án Salesforce; chủ động phát hiện gap, điểm chưa rõ ho…",
-      "after": {
-        "mo_ta": 1,
-        "yeu_cau": 1,
-        "phuc_loi": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C83F04",
-      "source": "careerviet",
-      "field": "sections",
-      "before": "Mô tả Công việc Để đảm bảo hồ sơ được tiếp nhận xử lý, ứng viên cần nộp hồ sơ ứng tuyển trên website tuyển dụng chính thức của Vietcombank tại địa chỉ: tuyendung.vietcombank.com.vn [TT KT&KHDL]_Chuyên…",
-      "after": {
-        "mo_ta": 1,
-        "yeu_cau": 1,
-        "phuc_loi": 1
-      },
-      "changed": true
-    }
-  ]
+  }
 }

@@ -2,11 +2,11 @@
   "step": "01b_deduplication",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:58+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:31+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
-    "rows": 783
+    "rows": 781
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/vietnamworks.jsonl",
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 9
+      "rows": 7
     }
   ],
   "rules": [
@@ -67,7 +67,7 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 9,
+      "rows_affected": 7,
       "examples": [
         {
           "job_id": "2100265",
@@ -77,18 +77,18 @@
           "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td45098-2100265-jv"
         },
         {
-          "job_id": "2105838",
-          "field": "dedup",
-          "before": "https://www.vietnamworks.com/senior-devops-and-infrastructure-engineer-2105838-jv",
-          "after": "https://itviec.com/viec-lam-it/senior-devops-infrastructure-engineer-reclub-vietnam-1352",
-          "url": "https://www.vietnamworks.com/senior-devops-and-infrastructure-engineer-2105838-jv"
-        },
-        {
           "job_id": "2110214",
           "field": "dedup",
           "before": "https://www.vietnamworks.com/ai-software-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-2110214-jv",
           "after": "https://www.vietnamworks.com/agentic-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-2110213-jv",
           "url": "https://www.vietnamworks.com/ai-software-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-2110214-jv"
+        },
+        {
+          "job_id": "2110323",
+          "field": "dedup",
+          "before": "https://www.vietnamworks.com/agentic-engineer-python-go-c-c-plus-plus-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-1790071689220836869-2110323-jv",
+          "after": "https://www.vietnamworks.com/agentic-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-2110213-jv",
+          "url": "https://www.vietnamworks.com/agentic-engineer-python-go-c-c-plus-plus-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-1790071689220836869-2110323-jv"
         }
       ]
     },
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 8,
+      "rows_affected": 10,
       "examples": [
         {
           "job_id": "2100226",
@@ -135,18 +135,18 @@
           "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-khach-hang-ca-nhan-data-analyst-retail-banking-khoi-du-lieu-2026td453678-2100226-jv"
         },
         {
+          "job_id": "2110112",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7804,
+          "url": "https://www.vietnamworks.com/java-developer-ai-driven-development-2110112-jv"
+        },
+        {
           "job_id": "2110327",
           "field": "jaccard",
           "before": null,
           "after": 0.8438,
           "url": "https://www.vietnamworks.com/ai-software-engineer-python-go-c-c-plus-plus-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-1790071949682767373-2110327-jv"
-        },
-        {
-          "job_id": "2110333",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.708,
-          "url": "https://www.vietnamworks.com/middle-senior-backend-engineer-java-spring-boot-khoi-cong-nghe-thong-tin-2025td923-1790072068546875013-2110333-jv"
         }
       ]
     }
@@ -170,10 +170,10 @@
       "hop_same_version": 3,
       "hop_version_not_bumped": 2
     },
-    "blocking_blocks": 607,
+    "blocking_blocks": 605,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 9
+      "D5": 7
     }
   },
   "samples": [
@@ -194,11 +194,11 @@
       "changed": true
     },
     {
-      "job_id": "2119934",
+      "job_id": "2110323",
       "source": "vietnamworks",
       "field": "duplicate_of",
-      "before": "2119934",
-      "after": "DROPPED D5 -> itviec:senior-odoo-software-engineer-python-cong-ty-tnhh-wir-group-0900",
+      "before": "2110323",
+      "after": "DROPPED D5 -> vietnamworks:2110213",
       "changed": true
     }
   ]

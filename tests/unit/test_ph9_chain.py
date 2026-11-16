@@ -11,7 +11,8 @@ from scripts.profile_sources import AFTER_TEXT_COLS, text_quality
 
 def test_chain_order_covers_processing():
     assert D.CHAIN == ("01_clean", "01b_deduplication", "02_integration", "03_transformation",
-                       "04_normalization", "05_encoding", "07_sections", "08_skills", "09_tokens")
+                       "04_normalization", "05_encoding", "07_sections", "08_skills", "09_tokens",
+                       "10_features", "12_tfidf", "12_e5")
 
 
 def test_missing_inputs_listed_not_zero(tmp_path):
@@ -21,6 +22,7 @@ def test_missing_inputs_listed_not_zero(tmp_path):
     (p / "all.parquet").write_bytes(b"x")
     assert D.missing_inputs("04_normalization", ["glints"], tmp_path) == []
     assert D.missing_inputs("09_tokens", ["glints"], tmp_path)  # đọc 04, chưa có
+    assert len(D.missing_inputs("10_features", ["glints"], tmp_path)) == 3  # thiếu 04, 09, 08
 
 
 def test_dry_run_chain_marks_input_missing(tmp_path):

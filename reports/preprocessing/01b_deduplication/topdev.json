@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:58+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:31+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/01_clean/topdev.jsonl",
-    "rows": 218
+    "rows": 216
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/topdev.jsonl",
-    "rows": 204
+    "rows": 202
   },
   "dropped": [
     {
@@ -125,8 +125,15 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 6,
+      "rows_affected": 7,
       "examples": [
+        {
+          "job_id": "2134501",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8075,
+          "url": "https://topdev.vn/viec-lam/agentic-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-mbbank-2134501"
+        },
         {
           "job_id": "2134501",
           "field": "jaccard",
@@ -138,15 +145,8 @@
           "job_id": "2134502",
           "field": "jaccard",
           "before": null,
-          "after": 0.7901,
+          "after": 0.8037,
           "url": "https://topdev.vn/viec-lam/ai-software-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-mbbank-2134502"
-        },
-        {
-          "job_id": "2136585",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.8211,
-          "url": "https://topdev.vn/viec-lam/ky-su-du-lieu-data-engineer-khoi-du-lieu-2026td450985-mbbank-2136585"
         }
       ]
     }

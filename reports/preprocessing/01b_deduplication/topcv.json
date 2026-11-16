@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:58+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:31+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
-    "rows": 1539
+    "rows": 1537
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/topcv.jsonl",
-    "rows": 1518
+    "rows": 1520
   },
   "dropped": [
     {
@@ -26,12 +26,12 @@
     {
       "rule": "D4",
       "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
-      "rows": 1
+      "rows": 0
     },
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 20
+      "rows": 17
     }
   ],
   "rules": [
@@ -60,22 +60,14 @@
       "id": "D4",
       "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
-      "rows_affected": 1,
-      "examples": [
-        {
-          "job_id": "2321161",
-          "field": "dedup",
-          "before": "https://www.topcv.vn/viec-lam/servicenow-itsm-developer/2321161.html",
-          "after": "https://itviec.com/viec-lam-it/servicenow-itsm-developer-lg-cns-viet-nam-1435",
-          "url": "https://www.topcv.vn/viec-lam/servicenow-itsm-developer/2321161.html"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 20,
+      "rows_affected": 17,
       "examples": [
         {
           "job_id": "1013348",
@@ -181,33 +173,32 @@
     "blocking_blocks": 1270,
     "d2_groups": 0,
     "rule_totals": {
-      "D4": 1,
-      "D5": 20
+      "D5": 17
     }
   },
   "samples": [
     {
-      "job_id": "2322531",
+      "job_id": "2323097",
       "source": "topcv",
       "field": "duplicate_of",
-      "before": "2322531",
-      "after": "DROPPED D5 -> topcv:2303888",
+      "before": "2323097",
+      "after": "DROPPED D5 -> topdev:2134288",
       "changed": true
     },
     {
-      "job_id": "2043180",
+      "job_id": "2318761",
       "source": "topcv",
       "field": "duplicate_of",
-      "before": "2043180",
-      "after": "DROPPED D5 -> itviec:penetration-tester-lg-cns-viet-nam-0840",
+      "before": "2318761",
+      "after": "DROPPED D5 -> topcv:2329037",
       "changed": true
     },
     {
-      "job_id": "2321161",
+      "job_id": "2327269",
       "source": "topcv",
       "field": "duplicate_of",
-      "before": "2321161",
-      "after": "DROPPED D4 -> itviec:servicenow-itsm-developer-lg-cns-viet-nam-1435",
+      "before": "2327269",
+      "after": "DROPPED D5 -> itviec:ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
       "changed": true
     }
   ]

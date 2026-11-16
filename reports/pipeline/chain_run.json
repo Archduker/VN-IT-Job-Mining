@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-10T14:06:50+00:00",
+  "generated_at": "2026-11-10T22:25:23+00:00",
   "sources": [
     "topcv",
     "topdev",
@@ -10,165 +10,14 @@
     "glints",
     "jobsgo"
   ],
-  "translate": true,
+  "translate": false,
   "steps": [
     {
-      "step": "01_clean",
+      "step": "10_features",
       "status": "OK",
       "missing": [],
-      "input": 13361,
-      "output": 4836,
-      "dropped": 8525,
-      "conserved": true,
-      "mode": "applied",
-      "rejected": {
-        "topcv": 1210,
-        "topdev": 3672,
-        "vietnamworks": 1164,
-        "careerviet": 248,
-        "vieclam24h": 1101,
-        "itviec": 54,
-        "glints": 67,
-        "jobsgo": 1009
-      }
-    },
-    {
-      "step": "01b_deduplication",
-      "status": "OK",
-      "missing": [],
-      "input": 4836,
-      "output": 4700,
-      "dropped": 136,
-      "conserved": true,
-      "mode": "applied",
-      "rejected": {
-        "topcv": 21,
-        "topdev": 14,
-        "vietnamworks": 9,
-        "careerviet": 10,
-        "vieclam24h": 9,
-        "itviec": 26,
-        "glints": 8,
-        "jobsgo": 39
-      }
-    },
-    {
-      "step": "02_integration",
-      "status": "OK",
-      "missing": [],
-      "input": 4700,
-      "output": 4699,
-      "dropped": 1,
-      "conserved": true,
-      "mode": "applied",
-      "rejected": {
-        "topcv": 0,
-        "topdev": 0,
-        "vietnamworks": 0,
-        "careerviet": 1,
-        "vieclam24h": 0,
-        "itviec": 0,
-        "glints": 0,
-        "jobsgo": 0
-      }
-    },
-    {
-      "step": "03_transformation",
-      "status": "OK",
-      "missing": [],
-      "input": 4699,
-      "output": 4699,
-      "dropped": 0,
-      "conserved": true,
-      "mode": "applied",
-      "rejected": {
-        "topcv": 0,
-        "topdev": 0,
-        "vietnamworks": 0,
-        "careerviet": 0,
-        "vieclam24h": 0,
-        "itviec": 0,
-        "glints": 0,
-        "jobsgo": 0
-      }
-    },
-    {
-      "step": "04_normalization",
-      "status": "OK",
-      "missing": [],
-      "input": 4699,
-      "output": 4699,
-      "dropped": 0,
-      "conserved": true,
-      "mode": "applied",
-      "rejected": {
-        "topcv": 0,
-        "topdev": 0,
-        "vietnamworks": 0,
-        "careerviet": 0,
-        "vieclam24h": 0,
-        "itviec": 0,
-        "glints": 0,
-        "jobsgo": 0
-      }
-    },
-    {
-      "step": "05_encoding",
-      "status": "SKIPPED",
-      "missing": [],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "applied",
-      "note": "Legacy P5 writer is disabled: use python -m preprocessing.encoding.execute with explicit --input-manifest --vocabulary --stopwords --cohort-ledger --decision-re"
-    },
-    {
-      "step": "07_sections",
-      "status": "OK",
-      "missing": [],
-      "input": 4699,
-      "output": 4699,
-      "dropped": 0,
-      "conserved": true,
-      "mode": "applied",
-      "rejected": {
-        "topcv": 0,
-        "topdev": 0,
-        "vietnamworks": 0,
-        "careerviet": 0,
-        "vieclam24h": 0,
-        "itviec": 0,
-        "glints": 0,
-        "jobsgo": 0
-      }
-    },
-    {
-      "step": "08_skills",
-      "status": "OK",
-      "missing": [],
-      "input": 4699,
-      "output": 4699,
-      "dropped": 0,
-      "conserved": true,
-      "mode": "applied",
-      "rejected": {
-        "topcv": 0,
-        "topdev": 0,
-        "vietnamworks": 0,
-        "careerviet": 0,
-        "vieclam24h": 0,
-        "itviec": 0,
-        "glints": 0,
-        "jobsgo": 0
-      }
-    },
-    {
-      "step": "09_tokens",
-      "status": "OK",
-      "missing": [],
-      "input": 4699,
-      "output": 4699,
+      "input": 4671,
+      "output": 4671,
       "dropped": 0,
       "conserved": true,
       "mode": "applied",

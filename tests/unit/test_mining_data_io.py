@@ -165,3 +165,25 @@ def test_salary_features_have_new_location_groups():
 def test_skills_from_lists_dedups_within_row():
     m = skills_from_lists([["A", "A", "B"], "B, C", None])
     assert m.loc[0, "A"] == 1 and m.sum().to_dict() == {"B": 2, "A": 1, "C": 1}
+
+
+def test_other_skill_bucket_is_not_a_real_skill():
+    from mining.data_io import find_skill_columns
+
+    cols = ["job_id_global", "skill__python", "skill__other_skill", "skill_count"]
+    assert find_skill_columns(cols) == ["skill__python"]
+
+
+def test_load_e5_aligns_to_meta_order(tmp_path):
+    import numpy as np
+
+    from mining.data_io import load_e5
+
+    p = tmp_path / "job_emb.npz"
+    np.savez(p, ids=np.array(["b", "a", "c"]), all=np.array([[0, 1], [1, 0], [1, 1]], dtype=np.float16))
+    out = load_e5(p, pd.Series(["a", "b"]))
+    assert out.tolist() == [[1, 0], [0, 1]]
+    import pytest
+
+    with pytest.raises(Exception):
+        load_e5(p, pd.Series(["a", "zzz"]))  # thiếu job thì báo lỗi, không bịa vector

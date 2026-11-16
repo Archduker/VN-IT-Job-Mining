@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:24+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T22:25:16+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 256
+    "rows": 246
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 256
+    "rows": 246
   },
   "dropped": [],
   "rules": [
@@ -62,7 +62,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 247,
+      "rows_affected": 227,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -89,29 +89,29 @@
     },
     {
       "id": "N3",
-      "name": "Nhóm nghề: 12 nhóm SPEC-01 + Other",
+      "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 192,
+      "rows_affected": 224,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
           "field": "job_family",
           "before": "Retail IT Executive (Infrastructure)",
-          "after": "DevOps/Cloud (skills)",
+          "after": "Web (canonical)",
           "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
         },
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
           "field": "job_family",
           "before": "[DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai",
-          "after": "Backend (skills)",
+          "after": "Security (canonical)",
           "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
         },
         {
           "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
           "field": "job_family",
           "before": "AI Applied Coordinator Intern",
-          "after": "Data Science/AI (title)",
+          "after": "Data/AI (title)",
           "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
         }
       ]
@@ -120,42 +120,42 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 0,
+      "rows_affected": 109,
       "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 251,
+      "rows_affected": 241,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 256,
+      "rows_affected": 246,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 3,
+      "rows_affected": 4,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 160,
+      "rows_affected": 147,
       "examples": []
     },
     {
       "id": "M4",
       "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
       "action": "flag",
-      "rows_affected": 12,
+      "rows_affected": 11,
       "examples": []
     },
     {
@@ -197,14 +197,14 @@
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 153,
+      "rows_affected": 149,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 256,
+      "rows_affected": 246,
       "examples": []
     }
   ],
@@ -216,13 +216,13 @@
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 71.1,
-      "fill_pct_out": 71.1
+      "fill_pct_in": 74.0,
+      "fill_pct_out": 74.0
     },
     {
       "field": "seniority",
-      "fill_pct_in": 96.5,
-      "fill_pct_out": 96.5
+      "fill_pct_in": 92.3,
+      "fill_pct_out": 92.3
     },
     {
       "field": "seniority_source",
@@ -251,23 +251,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 59.4,
-      "fill_pct_out": 59.4
+      "fill_pct_in": 60.2,
+      "fill_pct_out": 60.2
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 59.8,
-      "fill_pct_out": 59.8
+      "fill_pct_in": 60.6,
+      "fill_pct_out": 60.6
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 59.4,
-      "fill_pct_out": 59.4
+      "fill_pct_in": 60.2,
+      "fill_pct_out": 60.2
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 59.8,
-      "fill_pct_out": 59.8
+      "fill_pct_in": 60.6,
+      "fill_pct_out": 60.6
     },
     {
       "field": "is_outlier_salary",
@@ -281,8 +281,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 0.0,
-      "fill_pct_out": 0.0
+      "fill_pct_in": 44.3,
+      "fill_pct_out": 44.3
     },
     {
       "field": "company_key",
@@ -311,8 +311,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 96.1,
-      "fill_pct_out": 96.1
+      "fill_pct_in": 96.3,
+      "fill_pct_out": 96.3
     },
     {
       "field": "exp_source",
@@ -340,68 +340,68 @@
   },
   "extra": {
     "seniority_distribution": {
-      "Junior": 81,
-      "Middle": 61,
-      "Intern/Fresher": 54,
-      "Senior": 30,
-      "Lead/Manager": 21,
-      "(trống)": 9
+      "Junior": 80,
+      "Middle": 59,
+      "Intern/Fresher": 50,
+      "Lead/Manager": 20,
+      "(trống)": 19,
+      "Senior": 18
     },
     "job_family_distribution": {
-      "Other": 64,
-      "QA/QC": 61,
-      "Data Science/AI": 29,
-      "Backend": 27,
-      "Fullstack": 18,
-      "DevOps/Cloud": 13,
-      "System/Network": 12,
-      "Security": 10,
-      "Mobile": 8,
-      "Data Engineer": 6,
-      "Frontend": 6,
-      "Product/Project": 2
+      "Web": 109,
+      "Tester": 59,
+      "Data/AI": 27,
+      "Other": 22,
+      "Security": 18,
+      "DevOps/Cloud": 6,
+      "Bridge": 3,
+      "Mobile": 2
     },
     "job_family_source_distribution": {
-      "title": 168,
-      "none": 64,
-      "skills": 24
+      "canonical": 109,
+      "title": 109,
+      "none": 22,
+      "skills": 6
     },
     "work_mode_distribution": {
       "onsite": 181,
-      "unknown": 73,
+      "unknown": 63,
       "remote": 1,
       "hybrid": 1
     },
     "salary_status_distribution": {
-      "value": 154,
-      "negotiable": 97,
+      "value": 150,
+      "negotiable": 91,
       "not_stated": 5
     },
     "salary_outliers": 1,
     "inference": {
-      "level_inferred": 160,
-      "exp_inferred": 12
+      "level_inferred": 147,
+      "exp_inferred": 11
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 239,
-      "job_title_core_distinct": 183,
+      "job_title_clean_distinct": 231,
+      "job_title_core_distinct": 179,
       "title_canonical_source": {
-        "none": 256
+        "none": 137,
+        "alias": 72,
+        "exact": 27,
+        "fuzzy": 10
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 160,
+      "level_inferred": 147,
       "seniority_can_kiem": 0,
+      "job_family_can_kiem": 4,
       "salary_negotiable_with_value": 5,
-      "tinh_unknown": 71,
+      "tinh_unknown": 61,
       "salary_iqr_outlier_by_level": 2,
-      "job_family_can_kiem": 3,
       "salary_out_of_range": 7,
       "salary_iqr_outlier_pooled": 0,
       "salary_suspect": 5,
       "salary_period_year": 2,
-      "exp_inferred": 12,
+      "exp_inferred": 11,
       "salary_min_gt_max": 0,
       "exp_out_of_range": 0,
       "currency_reinterpreted": 0
@@ -409,23 +409,23 @@
   },
   "samples": [
     {
-      "job_id": "glints_88edd0d4-a88e-4e06-9fd9-418d8b2c0f07",
+      "job_id": "glints_e5683ff4-e7eb-403d-83a5-c451530d0e72",
       "source": "glints",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Tầng 5, 71 Nguyễn Chí Thanh",
+          "dia_chi_cu_the": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng",
           "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 5, 71 Nguyễn Chí Thanh, Hà Nội"
+          "raw": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng, Phường Mễ Trì, Quận Nam Từ Liêm, Thành phố Hà Nội, Việt Nam"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Tầng 5, 71 Nguyễn Chí Thanh",
+          "dia_chi_cu_the": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng",
           "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 5, 71 Nguyễn Chí Thanh, Hà Nội",
+          "raw": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng, Phường Mễ Trì, Quận Nam Từ Liêm, Thành phố Hà Nội, Việt Nam",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
@@ -443,7 +443,7 @@
       "changed": true
     },
     {
-      "job_id": "glints_51608510-68ac-4a56-b1cf-91f74e80cc6d",
+      "job_id": "glints_1fe247ca-f7d3-420c-b678-137fb203e5f4",
       "source": "glints",
       "field": "exp_min_years",
       "before": null,

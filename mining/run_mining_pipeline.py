@@ -35,6 +35,7 @@ from mining.clustering import cluster_jobs  # noqa: E402
 from mining.config import (  # noqa: E402
     ARTIFACT_FILES,
     ARTIFACTS_DIR,
+    DEFAULT_E5,
     DEFAULT_ENCODING_DICT,
     DEFAULT_FEATURES,
     DEFAULT_GOLDEN,
@@ -109,7 +110,10 @@ def run_pipeline(
     glosh = glosh_flag = None
     if "cluster" in steps:
         t = time.perf_counter()
-        clusters, m = cluster_jobs(skills, meta, p.clustering, random_state=p.random_state)
+        clusters, m = cluster_jobs(skills, meta, p.clustering, random_state=p.random_state, e5=data.e5)
+        if data.e5 is not None:  # so sánh không dùng e5; báo cả hai, không chọn ngầm
+            _, m0 = cluster_jobs(skills, meta, p.clustering, random_state=p.random_state)
+            m["without_e5"] = {k: m0[k] for k in ("best_k", "silhouette", "davies_bouldin", "ari_vs_job_family", "nmi_vs_job_family")}
         outputs["clusters"], metrics["clustering"] = clusters, m
         glosh, glosh_flag = clusters["glosh_outlier_score"].to_numpy(), clusters["is_outlier"].to_numpy()
         timings["cluster"] = time.perf_counter() - t
@@ -194,6 +198,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--golden", type=Path, default=None, help=f"mặc định {DEFAULT_GOLDEN}, thiếu thì {FALLBACK_GOLDEN}")
     ap.add_argument("--features", type=Path, default=DEFAULT_FEATURES)
     ap.add_argument("--encoding-dict", type=Path, default=DEFAULT_ENCODING_DICT)
+    ap.add_argument("--e5", type=Path, default=DEFAULT_E5, help="job_emb.npz; thiếu file thì phân cụm không dùng e5")
     ap.add_argument("--out", type=Path, default=None, help=f"mặc định {ARTIFACTS_DIR}")
     ap.add_argument("--only", type=str, default=",".join(STEPS), help="các bước, cách nhau dấu phẩy: fp,cluster,anomaly,salary")
     ap.add_argument("--synthetic", action="store_true", help="chạy trên dữ liệu giả (mining/synthetic.py)")
@@ -232,7 +237,7 @@ def main(argv: list[str] | None = None) -> int:
             logger.error("Không tìm thấy bộ golden (%s hoặc %s). Chạy preprocessing trước, hoặc dùng --synthetic.",
                          DEFAULT_GOLDEN, FALLBACK_GOLDEN)
             return 2
-        data = load_mining_data(golden, args.features, args.encoding_dict)
+        data = load_mining_data(golden, args.features, args.encoding_dict, args.e5)
         out_dir = args.out or ARTIFACTS_DIR
         extra["inputs"] = {
             "golden": {"path": Path(golden).as_posix(), "sha256_16": _sha256(golden)},

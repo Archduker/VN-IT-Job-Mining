@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": null,
-    "rows": 4699
+    "rows": 4671
   },
   "output": {
     "path": null,
-    "rows": 4699
+    "rows": 4671
   },
   "dropped": [],
   "rules": [],
@@ -26,36 +26,36 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1518,
-        "output": 1518
+        "input": 1520,
+        "output": 1520
       },
       "topdev": {
-        "input": 204,
-        "output": 204
+        "input": 202,
+        "output": 202
       },
       "vietnamworks": {
         "input": 774,
         "output": 774
       },
       "careerviet": {
-        "input": 401,
-        "output": 401
+        "input": 400,
+        "output": 400
       },
       "vieclam24h": {
-        "input": 166,
-        "output": 166
+        "input": 164,
+        "output": 164
       },
       "itviec": {
-        "input": 831,
-        "output": 831
+        "input": 818,
+        "output": 818
       },
       "glints": {
-        "input": 256,
-        "output": 256
+        "input": 246,
+        "output": 246
       },
       "jobsgo": {
-        "input": 549,
-        "output": 549
+        "input": 547,
+        "output": 547
       }
     },
     "sparsity": {
@@ -65,36 +65,36 @@
         "mode": "family"
       },
       "before": {
-        "n_jobs": 4699,
-        "nnz": 31932,
+        "n_jobs": 4671,
+        "nnz": 32637,
         "n_cols_used": 219,
-        "density_used_cols": 0.03103,
-        "density_universe": 0.029546,
-        "mean_skills_per_job": 6.795,
+        "density_used_cols": 0.031905,
+        "density_universe": 0.030379,
+        "mean_skills_per_job": 6.987,
         "median_skills_per_job": 5,
-        "jobs_with_zero_skills": 300,
+        "jobs_with_zero_skills": 292,
         "cols_below_df": {
           "3": 14,
           "5": 24,
-          "10": 40,
-          "20": 63,
+          "10": 42,
+          "20": 65,
           "50": 101
         }
       },
       "after": {
-        "n_jobs": 4699,
-        "nnz": 31932,
+        "n_jobs": 4671,
+        "nnz": 32637,
         "n_cols_used": 219,
-        "density_used_cols": 0.03103,
+        "density_used_cols": 0.031905,
         "density_universe": null,
-        "mean_skills_per_job": 6.795,
+        "mean_skills_per_job": 6.987,
         "median_skills_per_job": 5,
-        "jobs_with_zero_skills": 300,
+        "jobs_with_zero_skills": 292,
         "cols_below_df": {
           "3": 14,
           "5": 24,
-          "10": 40,
-          "20": 63,
+          "10": 42,
+          "20": 65,
           "50": 101
         }
       },
@@ -104,7 +104,51 @@
   },
   "samples": [
     {
-      "job_id": "topcv_2321974",
+      "job_id": "topcv_2216283",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Automation Tester",
+        "IT - Phần mềm"
+      ],
+      "after": [
+        "agile_scrum",
+        "automation_test",
+        "java",
+        "manual_test",
+        "selenium"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2242556",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Business Analyst (Phân tích nghiệp vụ)",
+        "IT - Phần mềm",
+        "Giao tiếp",
+        "Phân tích dữ liệu",
+        "Phân Tích Nghiệp Vụ",
+        "Thu Thập Yêu Cầu",
+        "Mô Hình Hóa Quy Trình"
+      ],
+      "after": [
+        "bug_tracking",
+        "business_analysis",
+        "communication",
+        "confluence",
+        "data_analysis",
+        "fintech",
+        "jira",
+        "oracle_db",
+        "project_management",
+        "time_management"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2320154",
       "source": "topcv",
       "field": "skills",
       "before": [
@@ -117,45 +161,7 @@
         "android_sdk",
         "communication",
         "csharp",
-        "english",
-        "firebase",
-        "logical_thinking"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2326869",
-      "source": "topcv",
-      "field": "skills",
-      "before": [
-        "Software Tester (Automation & Manual)",
-        "IT - Phần mềm",
-        "Ngân hàng",
-        "Kiến thức quy trình kiểm thử phần mềm (STLC)",
-        "Vòng đời phát triển hệ thống (SDLC)",
-        "Sử dụng công cụ quản lý lỗi (Jira hoặc tương đương)",
-        "Đọc hiểu tài liệu tiếng Anh"
-      ],
-      "after": [
-        "communication",
-        "english",
-        "infosec",
-        "jira",
-        "logical_thinking"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2298290",
-      "source": "topcv",
-      "field": "skills",
-      "before": [
-        "Digital Marketing"
-      ],
-      "after": [
-        "communication",
-        "ecommerce",
-        "time_management"
+        "english"
       ],
       "changed": true
     },
@@ -191,20 +197,18 @@
       "changed": true
     },
     {
-      "job_id": "topdev_2137713",
+      "job_id": "topdev_2137729",
       "source": "topdev",
       "field": "skills",
-      "before": [
-        "Product Manager",
-        "Product",
-        "Business Development"
-      ],
+      "before": null,
       "after": [
         "agile_scrum",
         "business_analysis",
+        "data_analysis",
         "ecommerce",
         "english",
-        "fintech"
+        "python",
+        "tableau"
       ],
       "changed": true
     },
@@ -226,376 +230,386 @@
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2112901",
+      "job_id": "vietnamworks_2112056",
       "source": "vietnamworks",
       "field": "skills",
       "before": [
-        "Python Dcc Automation",
-        "Unreal Engine/Unity Tools",
-        "Rest Apis And Relational Databases",
-        "Web Content Optimization"
+        "Application Development",
+        "Computer Science",
+        "System Integration",
+        "Salesforce",
+        "Rest Api"
       ],
       "after": [
-        "clean_architecture",
-        "cpp",
-        "csharp",
-        "python",
+        "machine_learning",
         "rest_api"
       ],
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2102807",
+      "job_id": "vietnamworks_2121103",
       "source": "vietnamworks",
       "field": "skills",
       "before": [
-        "Golang",
-        "TypeScript",
-        "Restful Api",
-        "Postgresql",
-        "problem-solving"
+        "Phân Tích Nghiệp Vụ",
+        "Business analysis",
+        "Credit Risk Management",
+        "IT Business Analysis"
       ],
-      "after": [
-        "docker",
-        "golang",
-        "linux",
-        "microservices",
-        "postgresql",
-        "rest_api",
-        "typescript"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2109106",
-      "source": "vietnamworks",
-      "field": "skills",
-      "before": [
-        "Ci/Cd Methodologies",
-        "Kubernetes",
-        "DevOps",
-        "Docker",
-        "MLOps"
-      ],
-      "after": [
-        "cicd",
-        "docker",
-        "kubernetes",
-        "machine_learning",
-        "terraform"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C88A2E",
-      "source": "careerviet",
-      "field": "skills",
-      "before": null,
       "after": [
         "business_analysis",
-        "logical_thinking",
-        "oracle_db",
-        "problem_solving"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C8994C",
-      "source": "careerviet",
-      "field": "skills",
-      "before": null,
-      "after": [
         "communication",
         "english",
-        "problem_solving",
-        "qa_qc"
+        "jira"
       ],
       "changed": true
     },
     {
-      "job_id": "careerviet_35C83F05",
-      "source": "careerviet",
+      "job_id": "vietnamworks_2100871",
+      "source": "vietnamworks",
       "field": "skills",
-      "before": null,
+      "before": [
+        "Chứng khoán",
+        "Fintech",
+        "Phân Tích Dữ Liệu",
+        "Quản Lý Sản Phẩm",
+        "Power Bi"
+      ],
       "after": [
-        "agile_scrum",
-        "communication",
         "data_analysis",
-        "english",
-        "infosec",
-        "java",
-        "logical_thinking",
-        "machine_learning",
-        "python",
-        "scala",
-        "teamwork"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200946618",
-      "source": "vieclam24h",
-      "field": "skills",
-      "before": [
-        "Software",
-        "software tester",
-        "fpt software",
-        "software developer",
-        "Việc làm TP.HCM",
-        "IT Phần mềm",
-        "Công Ty TNHH Dịch Vụ ..."
-      ],
-      "after": [
-        "communication",
-        "problem_solving",
-        "project_management",
-        "teamwork",
-        "time_management"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200950600",
-      "source": "vieclam24h",
-      "field": "skills",
-      "before": [
-        "qc tester",
-        "qa qc",
-        "nhân viên qa",
-        "nhân viên tester",
-        "qa qc tại long an",
-        "nhân viên qc",
-        "qa qc tại bình dương",
-        "qa qc tại hồ chí minh",
-        "nhân viên qc thực phẩm",
-        "Tester",
-        "Việc làm Hà Nội",
-        "IT Phần mềm",
-        "Công Ty Cổ Phần Truyền ..."
-      ],
-      "after": [
-        "android_sdk",
-        "automation_test",
-        "bug_tracking",
-        "github",
-        "jira",
-        "logical_thinking",
-        "machine_learning",
-        "postman",
-        "qa_qc",
-        "rest_api"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200963101",
-      "source": "vieclam24h",
-      "field": "skills",
-      "before": [
-        "Lập Trình",
-        "Trưởng Nhóm",
-        "lập trình python",
-        "lập trình unity",
-        "lập trình php",
-        "lập trình java",
-        "lập trình c",
-        "lập trình android",
-        "trưởng nhóm marketing",
-        "trưởng nhóm bán hàng",
-        "Giáo dục - Đào tạo",
-        "Trường Đại Học Kinh Tế ..."
-      ],
-      "after": [
-        "angular",
-        "c_lang",
-        "cicd",
-        "data_warehouse",
-        "docker",
-        "dotnet",
-        "elasticsearch",
-        "elk_stack",
-        "github",
-        "gitlab",
-        "microservices",
-        "mongodb",
-        "postgresql",
-        "react",
-        "redis",
-        "sql_server",
-        "vue"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "itviec_ai-solution-architect-ai-llm-python-microservices-finviet-3011",
-      "source": "itviec",
-      "field": "skills",
-      "before": [
-        "Solution Architecture",
-        "Machine Learning",
-        "Microservices",
-        "Python",
-        "LLM",
-        "Generative AI"
-      ],
-      "after": [
-        "communication",
         "fintech",
+        "logical_thinking",
+        "power_bi"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C88AC6",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "azure",
+        "chromadb",
+        "cicd",
+        "docker",
+        "gcp",
         "genai",
+        "hugging_face",
+        "infosec",
+        "iso_27001",
+        "kubernetes",
+        "langchain",
         "llm",
         "machine_learning",
-        "microservices",
-        "python"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "itviec_data-steward-sql-bi-data-quality-data-analysis-vietinbank-4317",
-      "source": "itviec",
-      "field": "skills",
-      "before": [
-        "Data Quality Tools",
-        "Business Intelligence",
-        "IT Governance",
-        "Data Analysis",
-        "SQL",
-        "Data Privacy / Compliance"
-      ],
-      "after": [
-        "bi",
-        "data_analysis"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "itviec_can-tho-fresher-php-good-english-communication-cong-ty-tnhh-nextedge-5902",
-      "source": "itviec",
-      "field": "skills",
-      "before": [
-        "PHP",
-        "JavaScript",
-        "HTML",
-        "Bootstrap",
-        "MySQL",
-        "Wordpress",
-        "Internship Accepted"
-      ],
-      "after": [
-        "bootstrap",
-        "communication",
-        "english",
-        "javascript",
-        "mysql"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "glints_71775262-2a8b-4439-b1cd-3faf25939432",
-      "source": "glints",
-      "field": "skills",
-      "before": [
-        "MongoDB",
-        "jQuery",
-        "C++",
-        "JavaScript",
-        "PostgreSQL",
-        "Microsoft SQL Server",
-        "Laravel",
-        "MySQL",
-        "Node.js",
-        "React.js"
-      ],
-      "after": [
-        "communication",
-        "cpp",
-        "javascript",
-        "jquery",
-        "laravel",
-        "mongodb",
-        "mysql",
-        "nodejs",
-        "postgresql",
-        "react",
-        "sql_server"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "glints_87fe15be-b4d2-49ae-99a1-112a68563d68",
-      "source": "glints",
-      "field": "skills",
-      "before": [
-        "Leadership",
-        "Quality Assurance",
-        "Team Management"
-      ],
-      "after": [
-        "japanese",
-        "qa_qc"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "glints_9feeeb45-5e38-4285-afec-8b6828032c1e",
-      "source": "glints",
-      "field": "skills",
-      "before": [
-        "Microsoft Office",
-        "IT Security",
-        "Communication Skills"
-      ],
-      "after": [
-        "cicd",
-        "communication",
-        "cybersecurity",
-        "design_patterns",
-        "devsecops",
-        "microservices"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_28947562831",
-      "source": "jobsgo",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "communication",
-        "computer_vision",
-        "data_warehouse",
-        "english",
-        "flask",
-        "japanese",
-        "langchain",
-        "machine_learning",
-        "opencv",
-        "problem_solving",
+        "milvus",
+        "nlp",
+        "numpy",
+        "pandas",
+        "pinecone",
         "python",
         "pytorch"
       ],
       "changed": true
     },
     {
-      "job_id": "jobsgo_29210900378",
-      "source": "jobsgo",
+      "job_id": "careerviet_35C8A19A",
+      "source": "careerviet",
       "field": "skills",
       "before": null,
       "after": [
-        "agile_scrum",
+        "infosec",
+        "linux",
+        "mysql",
+        "nginx",
+        "ubuntu"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C83F06",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
         "communication",
-        "ecommerce",
+        "data_analysis",
+        "english",
+        "infosec",
+        "logical_thinking",
+        "machine_learning",
+        "matlab",
+        "python"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200946697",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "lập trình game mobile",
+        "Mobile",
+        "mobile developer",
+        "Mobile Apps",
+        "Game",
+        "game designer",
+        "recruitment executive",
+        "Mobile App",
+        "procurement executive",
+        "admin executive",
+        "Việc làm Hà Nội",
+        "IT Phần mềm",
+        "Công Ty TNHH Adtirex"
+      ],
+      "after": [
+        "communication",
+        "data_analysis",
+        "english",
+        "waterfall"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200951552",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "nhân viên triển khai phần mềm erp",
+        "nhân viên triển khai phần mềm",
+        "it phần mềm",
+        "Phần Mềm",
+        "Trưởng Nhóm",
+        "kinh doanh phần mềm",
+        "kỹ sư phần mềm",
+        "trưởng nhóm marketing",
+        "trưởng nhóm bán hàng",
+        "trưởng nhóm marketing online",
+        "Việc làm TP.HCM",
+        "Công Ty Cổ Phần Asoft"
+      ],
+      "after": [
+        "communication",
+        "problem_solving"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200963483",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "nhân viên it",
+        "nhân viên it support",
+        "nhân viên it phần mềm",
+        "It",
+        "it support / it helpdesk",
+        "it officer",
+        "it engineer",
+        "it support",
+        "it manager",
+        "it tiếng anh",
+        "IT Phần cứng - Mạng",
+        "Công Ty TNHH Kỹ Thuật ..."
+      ],
+      "after": [
+        "cybersecurity"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_project-manager-java-chinese-english-mysql-sql-cong-ty-tnhh-clever-creations-tech-2329",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "Java",
+        "Spring Boot",
+        "MySQL",
+        "Project Management",
+        "SQL",
+        "English"
+      ],
+      "after": [
+        "communication",
+        "english",
+        "java",
+        "mysql",
+        "project_management",
+        "spring_boot",
+        "spring_mvc"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_product-manager-data-driven-annam-software-company-0823",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "Product Management",
+        "CRM",
+        "Data Analysis",
+        "Team Management",
+        "SQL",
+        "English"
+      ],
+      "after": [
+        "agile_scrum",
+        "confluence",
+        "data_analysis",
+        "electron",
+        "english",
+        "graphql",
+        "nextjs",
+        "nodejs",
+        "rest_api"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_ai-engineer-remote-alpha-bravo-development-4157",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "AI",
+        "Python",
+        "AI, Python"
+      ],
+      "after": [
+        "azure",
+        "communication",
+        "english",
+        "genai",
+        "langchain",
+        "nextjs",
+        "python"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_3dddfc91-fe4b-4fc6-bfe9-80a1b6338ea2",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Cloud Computing",
+        "Data Center",
+        "Customer Service",
+        "Public Speaking",
+        "Presentation Skills",
+        "IT Security",
+        "DepOps",
+        "Communication",
+        "Analytical Skills"
+      ],
+      "after": [
+        "communication",
+        "firewall",
+        "kubernetes",
+        "linux",
+        "machine_learning",
+        "microservices",
+        "presentation"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_00b4d332-8e6e-4714-9853-e816085f7d01",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "React.js",
+        "jQuery",
+        "Laravel",
+        "MongoDB",
+        "PostgreSQL",
+        "C++",
+        "MySQL",
+        "Node.js",
+        "Microsoft SQL Server",
+        "JavaScript"
+      ],
+      "after": [
+        "communication",
+        "cpp",
+        "csharp",
+        "dotnet",
+        "java",
+        "javascript",
+        "jquery",
+        "laravel",
+        "logical_thinking",
+        "machine_learning",
+        "mongodb",
+        "mysql",
+        "nodejs",
+        "postgresql",
+        "python",
+        "react",
+        "sql_server",
+        "teamwork"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_55495809-808b-47e7-85a6-693fabff90a4",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Quality Assurance",
+        "Team Management",
+        "Leadership"
+      ],
+      "after": [
+        "japanese",
         "qa_qc"
       ],
       "changed": true
     },
     {
-      "job_id": "jobsgo_29165492202",
+      "job_id": "jobsgo_28976445364",
       "source": "jobsgo",
       "field": "skills",
       "before": null,
       "after": [
+        "communication",
+        "cybersecurity",
+        "disaster_recovery",
+        "english",
+        "firewall",
+        "incident_response",
+        "infosec",
+        "iso_27001",
+        "linux",
+        "logical_thinking",
+        "siem"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_28953320327",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "android_sdk",
+        "communication",
+        "machine_learning",
+        "mysql",
+        "nestjs",
+        "postgresql",
         "problem_solving",
-        "teamwork"
+        "sql_server"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29399825005",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "bug_tracking",
+        "infosec",
+        "jira"
       ],
       "changed": true
     }

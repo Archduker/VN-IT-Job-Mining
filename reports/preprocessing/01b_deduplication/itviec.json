@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:58+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:31+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
-    "rows": 857
+    "rows": 842
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/itviec.jsonl",
-    "rows": 831
+    "rows": 818
   },
   "dropped": [
     {
@@ -21,7 +21,7 @@
     {
       "rule": "D2",
       "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
-      "rows": 2
+      "rows": 0
     },
     {
       "rule": "D4",
@@ -53,23 +53,8 @@
       "id": "D2",
       "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
-      "rows_affected": 2,
-      "examples": [
-        {
-          "job_id": "application-consultant-java-python-sql-avenue-5116",
-          "field": "dedup",
-          "before": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-5116",
-          "after": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-3829",
-          "url": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-5116"
-        },
-        {
-          "job_id": "business-analyst-banking-finance-shinhan-ds-5152",
-          "field": "dedup",
-          "before": "https://itviec.com/viec-lam-it/business-analyst-banking-finance-shinhan-ds-5152",
-          "after": "https://itviec.com/viec-lam-it/business-analyst-banking-finance-shinhan-ds-4637",
-          "url": "https://itviec.com/viec-lam-it/business-analyst-banking-finance-shinhan-ds-5152"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "D4",
@@ -111,7 +96,7 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 42,
+      "rows_affected": 36,
       "examples": [
         {
           "job_id": "ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
@@ -140,28 +125,28 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 28,
+      "rows_affected": 20,
       "examples": [
         {
-          "job_id": "6-business-analyst-trung-tam-cong-nghe-thong-tin-mobifone-5459",
+          "job_id": "chuyen-vien-quan-ly-du-an-phan-mem-trung-tam-cong-nghe-thong-tin-mobifone-5846",
           "field": "jaccard",
           "before": null,
-          "after": 0.9722,
-          "url": "https://itviec.com/viec-lam-it/6-business-analyst-trung-tam-cong-nghe-thong-tin-mobifone-5459"
+          "after": 1.0,
+          "url": "https://itviec.com/viec-lam-it/chuyen-vien-quan-ly-du-an-phan-mem-trung-tam-cong-nghe-thong-tin-mobifone-5846"
         },
         {
-          "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
+          "job_id": "cvcc-chuyen-gia-phan-tich-du-lieu-data-analyst-sql-abbank-3801",
           "field": "jaccard",
           "before": null,
-          "after": 0.8075,
-          "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127"
+          "after": 0.8299,
+          "url": "https://itviec.com/viec-lam-it/cvcc-chuyen-gia-phan-tich-du-lieu-data-analyst-sql-abbank-3801"
         },
         {
-          "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
+          "job_id": "data-quality-management-specialist-data-division-mb-bank-0217",
           "field": "jaccard",
           "before": null,
-          "after": 0.8037,
-          "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127"
+          "after": 0.8068,
+          "url": "https://itviec.com/viec-lam-it/data-quality-management-specialist-data-division-mb-bank-0217"
         }
       ]
     }
@@ -185,10 +170,9 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 695,
-    "d2_groups": 2,
+    "blocking_blocks": 685,
+    "d2_groups": 0,
     "rule_totals": {
-      "D2": 2,
       "D5": 24
     }
   },
@@ -210,11 +194,11 @@
       "changed": true
     },
     {
-      "job_id": "middle-senior-software-engineer-ai-augmented-flinters-vietnam-0958",
+      "job_id": "senior-golang-developer-backend-aws-mysql-andpad-vietnam-co-ltd-4446",
       "source": "itviec",
       "field": "duplicate_of",
-      "before": "middle-senior-software-engineer-ai-augmented-flinters-vietnam-0958",
-      "after": "DROPPED D5 -> itviec:middle-senior-fullstack-developer-ai-java-python-flinters-vietnam-1842",
+      "before": "senior-golang-developer-backend-aws-mysql-andpad-vietnam-co-ltd-4446",
+      "after": "DROPPED D5 -> itviec:senior-golang-engineer-backend-aws-mysql-andpad-vietnam-co-ltd-3524",
       "changed": true
     }
   ]

@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:26:48+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:18:19+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/01b_deduplication/glints.jsonl",
-    "rows": 256
+    "rows": 246
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 256
+    "rows": 246
   },
   "dropped": [
     {
@@ -34,7 +34,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
       "action": "modify",
-      "rows_affected": 256,
+      "rows_affected": 246,
       "examples": []
     },
     {
@@ -62,7 +62,7 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 75,
+      "rows_affected": 74,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -122,8 +122,8 @@
     },
     {
       "field": "company_address",
-      "fill_pct_in": 86.3,
-      "fill_pct_out": 86.3
+      "fill_pct_in": 88.6,
+      "fill_pct_out": 88.6
     },
     {
       "field": "raw_category_text",
@@ -162,8 +162,8 @@
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 91.4,
-      "fill_pct_out": 91.4
+      "fill_pct_in": 91.9,
+      "fill_pct_out": 91.9
     },
     {
       "field": "raw_seniority_text",
@@ -182,13 +182,13 @@
     },
     {
       "field": "skills_list",
-      "fill_pct_in": 87.9,
-      "fill_pct_out": 87.9
+      "fill_pct_in": 87.8,
+      "fill_pct_out": 87.8
     },
     {
       "field": "benefits_list",
-      "fill_pct_in": 81.6,
-      "fill_pct_out": 81.6
+      "fill_pct_in": 80.9,
+      "fill_pct_out": 80.9
     },
     {
       "field": "raw_description_text",

@@ -104,7 +104,7 @@ Mã luật `M1`-`M9`. Mỗi luật `flag` hoặc `impute` ghi số tin và 3 ví
 |---|---|---|
 | M3a | Cấp bậc đã có từ PH6 (`raw`, `title`): giữ, `level_inferred = False` | |
 | M3b | Cấp bậc trống: **suy từ `job_title_core`/tiêu đề** (PH6 đã thử và không ra thì tới đây thử luật mở rộng nếu có, ví dụ `IT Manager` -> Lead/Manager nếu PH6 K6 chốt như vậy). Nếu PH6 đã dùng đủ luật tiêu đề thì M3b không thêm gì: ghi vào báo cáo "0 tin thêm" | `level_inferred=True`, `seniority_source="title_inferred"` |
-| M3c | Còn trống: suy từ số năm tối thiểu (`exp_min_years`) theo bảng ngưỡng X6: `level_inferred=True`, `seniority_source="kinh_nghiem"` | Đây là luật đang chạy ở N2 tầng 3 (2.256 tin), chuyển sang PH7 và gắn cờ |
+| M3c | Còn trống: suy từ số năm tối thiểu (`exp_min_years`) theo ngưỡng X6 ([0,1) Intern/Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior; từ 5 năm trở lên mơ hồ Senior/Lead nên để trống (người dùng chốt 11/11/2026)): `level_inferred=True`, `seniority_source="kinh_nghiem"` | Đây là luật đang chạy ở N2 tầng 3 (2.256 tin), chuyển sang PH7 và gắn cờ |
 | M3d | Còn trống: `seniority = null`, `seniority_source = "none"`, `level_inferred = False` (không phải "đã suy", mà là "không suy được") | Đo: 899 tin null sau cả 3 tầng cũ |
 
 **Luật chống vòng:** M4 (kinh nghiệm từ cấp bậc) **không dùng** cấp bậc có `seniority_source = "kinh_nghiem"` (nó vốn sinh ra từ kinh nghiệm), tránh vòng "kinh nghiệm -> cấp bậc -> kinh nghiệm".
@@ -114,8 +114,8 @@ Mã luật `M1`-`M9`. Mỗi luật `flag` hoặc `impute` ghi số tin và 3 ví
 | Mã | Luật | Ghi chú |
 |---|---|---|
 | M4a | `exp_min_years` đã có: giữ, `exp_inferred = False` | |
-| M4b | `exp_min_years` null và cấp bậc `Intern/Fresher` **từ raw hoặc title**: `exp_min_years = 0`, `exp_inferred=True`, `exp_source="level_intern_fresher"` | Dữ liệu chống đỡ: Thực tập 37 tin trung vị 0 (0-0), Mới tốt nghiệp 22 tin 0,5 (0-1). Chưa kiểm 100%, nên chỉ điền **0** (cận dưới), không điền 0,5 |
-| M4c | Các cấp khác (`Junior`, `Middle`, `Senior`, `Lead/Manager`): **không điền số**; `exp_min_years = null`, `exp_source = "unknown"` | Dữ liệu cho thấy khoảng rộng (Senior 3-5, tối đa 7; Lead 3-5, tối đa 20), điền một số sẽ sai; "unknown" đúng với file thiết kế ("suy từ cấp bậc **hoặc** unknown") |
+| M4b | `exp_min_years` null và cấp bậc từ **raw hoặc title** (không phải cấp suy từ số năm): điền cận dưới theo cấp (Intern/Fresher 0, Junior 1, Middle 2, Senior 4, Lead/Manager 5), `exp_inferred=True`, `exp_source="level_<cấp>"` (ví dụ `level_senior`) | Người dùng chốt 11/11/2026 khoảng theo cấp: Fresher 0-1, Junior 1-2, Middle 2-4, Senior 4-5, Lead từ 5; chỉ điền cận dưới |
+| M4c | Không có cấp bậc, hoặc cấp suy từ số năm (`seniority_source="kinh_nghiem"`): **không điền số**; `exp_min_years = null`, `exp_source = "unknown"` | Tránh vòng kinh nghiệm -> cấp bậc -> kinh nghiệm |
 | M4d | Cột bổ trợ **[ĐỀ XUẤT]** `exp_level_range` (chuỗi, ví dụ `"2-3"`, Q1-Q3 của cấp trong dữ liệu có `exp` thật) **không** thêm ở đợt này | Vì phân phối theo cấp chỉ mô tả, không phải luật; thêm khi Processing cần (feature construction 10c còn mở) |
 
 Đo tác động: cấp bậc thật (raw/title) mà thiếu kinh nghiệm: 831 tin. Sau M4b chỉ điền được phần thuộc Intern/Fresher (con số thật ghi vào báo cáo; mình chưa đo riêng vì cần nhãn 5 cấp của PH6).
@@ -173,7 +173,7 @@ Bảng này lấy số từ ma trận thật, không để tay.
 | X3 | Khoảng hợp lệ lương: 2-200 (thiết kế) hay 1-500 (code), và hành vi: NaN hóa hay chỉ cờ? | NaN hóa 1-500 (giữ N6a); thêm cờ `salary_out_of_range` cho ngoài 2-200 |
 | X4 | Winsorize 1-99% (N6, cột `*_capped`): giữ, hay bỏ vì thiết kế nói IQR "chỉ gắn cờ"? | Giữ làm cột riêng cho log/N7; nêu rõ nó không thay cột gốc. Bạn xem có muốn bỏ |
 | X5 | Số tin tối thiểu mỗi cấp để tính IQR riêng | 30 |
-| X6 | Ngưỡng đổi số năm sang cấp bậc (M3c): spec P4 (`0 -> Intern/Fresher, > 0 -> Junior, >= 2 -> Middle, >= 5 -> Senior`) hay code (`1-2 Junior, 3-4 Middle, >= 5 Senior`) hay theo dữ liệu (xem 2.4)? Quyết định đổi nhãn hơn 800 tin | Dùng spec P4 (0 -> Intern/Fresher; 1 -> Junior; 2-4 -> Middle; >= 5 -> Senior); mình thấy `Lead/Manager` không suy từ số năm. Bạn chốt vì mình không biết quy ước thực tế |
+| X6 | Ngưỡng đổi số năm sang cấp bậc (M3c) | **Đã chốt 11/11/2026:** [0,1) Intern/Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior; từ 5 năm trở lên mơ hồ Senior/Lead nên để trống (người dùng chốt 11/11/2026) |
 | X7 | Tin `raw_salary_text = "Công ty không công khai thông tin này"` mà có `salary_max = 50 triệu` (nguồn khác trong cùng tin?): giữ số hay bỏ? | Kiểm 5 tin trước; ghi nguyên nhân |
 | X8 | `min > max`: hoán đổi hay chỉ cờ? | Chỉ cờ (1 tin) |
 | X9 | `Intern/Fresher` thiếu kinh nghiệm điền 0: chấp nhận hay giữ `unknown`? | Điền 0 (có cờ) |
@@ -204,5 +204,5 @@ Không điền lương, không điền kinh nghiệm cho Junior/Middle/Senior/Le
 ## 10. Quyết định đã chốt (10/11/2026, người dùng)
 
 - **X3:** khoảng lương hợp lệ 2-100 triệu/tháng cho cờ `salary_out_of_range` (không sửa số); N6a NaN hóa ngoài 1-500 triệu giữ như cũ (agent hiểu theo đề xuất; cần xác nhận nếu muốn NaN hóa cả ngoài 2-100). Mọi chuyển đổi USD dùng 25.400, không coi số lớn là VND một cách mù quáng (xem PH6 mục 10).
-- **X4:** giữ winsorize 1-99% (cột `*_capped`). **X6:** ngưỡng số năm theo spec P4: 0 Intern/Fresher, (0,2) Junior, [2,5) Middle, >= 5 Senior, có `level_inferred`; Lead/Manager không suy từ số năm. Các X còn lại theo [ĐỀ XUẤT].
+- **X4:** giữ winsorize 1-99% (cột `*_capped`). **X6:** [0,1) Intern/Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior; từ 5 năm trở lên mơ hồ Senior/Lead nên để trống (người dùng chốt 11/11/2026), có `level_inferred`. Các X còn lại theo [ĐỀ XUẤT].
 - **Yêu cầu mới:** mọi cờ/bất thường/ngoại lai/suy luận kèm `job_id` và nguồn trong `reports/preprocessing/04_normalization/anomalies.json` (xem `docs/spec/monitoring/preprocessing_page_spec.md` mục 8).

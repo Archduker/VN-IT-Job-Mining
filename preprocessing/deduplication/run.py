@@ -334,7 +334,6 @@ def run(sources: Sequence[str] = SOURCES, dry_run: bool = True) -> dict[str, Ste
         "repost_records": sum(len(m["repost_records"]) for m in masters),
         "lineage_rows": sum(m["duplicate_count"] + len(m["repost_records"]) for m in masters),
         "unparsed_dates": sum(len(m["unparsed_dates"]) for m in masters),
-        "cross_language_dupes": "không đo được: PH4 chạy trước dịch (PH5), shingle khác ngôn ngữ không chung nhau",
     })
     if prev and "cosine_threshold" in (prev.get("extra") or {}):  # báo cáo của thuật toán TF-IDF cũ
         total.data["extra"]["previous_tfidf_run"] = {

@@ -1,25 +1,23 @@
 {
-  "version": "0.1-candidates",
-  "note": "Mọi mục approved=false cho tới khi người dùng duyệt; chỉ mục approved=true được nạp. Đếm chức danh lõi (N15) với min-count=5. `family` là gợi ý của luật, cần xác nhận.",
+  "version": "0.2-approved-by-user-edits",
+  "note": "Mục approved=true là mục người dùng đã sửa và duyệt (11/11/2026); mục approved=false chưa được nạp. `family` phải thuộc `families`. Nhóm nghề gộp về 10 nhóm + Other ngày 11/11/2026 (FAMILY_MAP trong job_title.py); `approved` giữ nguyên.",
   "families": [
-    "Backend",
-    "Frontend",
-    "Fullstack",
+    "Web",
     "Mobile",
+    "Game",
+    "Bridge",
     "DevOps/Cloud",
-    "Data Engineer",
-    "Data Science/AI",
-    "QA/QC",
+    "Tester",
     "Security",
-    "Product/Project",
-    "System/Network",
-    "Embedded/IoT",
+    "IoT",
+    "Design",
+    "Data/AI",
     "Other"
   ],
   "entries": [
     {
       "canonical": "Business Analyst",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "business analyst"
       ],
@@ -28,16 +26,16 @@
     },
     {
       "canonical": "IT",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "it"
       ],
       "docs_with_title": 99,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "AI Engineer",
-      "family": "Data Science/AI",
+      "family": "Data/AI",
       "aliases": [
         "ai engineer"
       ],
@@ -55,7 +53,7 @@
     },
     {
       "canonical": "Product Owner",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "product owner"
       ],
@@ -64,7 +62,7 @@
     },
     {
       "canonical": "Backend Developer",
-      "family": "Backend",
+      "family": "Web",
       "aliases": [
         "backend developer"
       ],
@@ -73,16 +71,16 @@
     },
     {
       "canonical": "Data Engineer",
-      "family": "Data Engineer",
+      "family": "Data/AI",
       "aliases": [
         "data engineer"
       ],
       "docs_with_title": 61,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Fullstack Developer",
-      "family": "Fullstack",
+      "family": "Web",
       "aliases": [
         "fullstack developer"
       ],
@@ -91,16 +89,16 @@
     },
     {
       "canonical": "Thiết Kế",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "thiet ke"
       ],
       "docs_with_title": 55,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Data Analyst",
-      "family": "Data Science/AI",
+      "family": "Data/AI",
       "aliases": [
         "data analyst"
       ],
@@ -109,7 +107,7 @@
     },
     {
       "canonical": "Backend Engineer",
-      "family": "Backend",
+      "family": "Web",
       "aliases": [
         "backend engineer"
       ],
@@ -118,16 +116,16 @@
     },
     {
       "canonical": "Software Engineer",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "software engineer"
       ],
       "docs_with_title": 42,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Phân Tích Nghiệp Vụ",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "phan tich nghiep vu"
       ],
@@ -136,7 +134,7 @@
     },
     {
       "canonical": "IT Helpdesk",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "it helpdesk"
       ],
@@ -145,7 +143,7 @@
     },
     {
       "canonical": "Project Manager",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "project manager"
       ],
@@ -154,7 +152,7 @@
     },
     {
       "canonical": "Tester",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "tester"
       ],
@@ -163,7 +161,7 @@
     },
     {
       "canonical": "Manual Tester",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "manual tester"
       ],
@@ -172,16 +170,16 @@
     },
     {
       "canonical": "Java Developer",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "java developer"
       ],
       "docs_with_title": 29,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Network Engineer",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "network engineer"
       ],
@@ -190,7 +188,7 @@
     },
     {
       "canonical": "QA",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "qa"
       ],
@@ -199,7 +197,7 @@
     },
     {
       "canonical": "Phân Tích Dữ Liệu",
-      "family": "Data Science/AI",
+      "family": "Data/AI",
       "aliases": [
         "phan tich du lieu"
       ],
@@ -208,16 +206,16 @@
     },
     {
       "canonical": "Game Designer",
-      "family": null,
+      "family": "Game",
       "aliases": [
         "game designer"
       ],
       "docs_with_title": 23,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Kiểm Thử Phần Mềm",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "kiem thu phan mem"
       ],
@@ -226,7 +224,7 @@
     },
     {
       "canonical": "IT Support",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "it support"
       ],
@@ -235,25 +233,25 @@
     },
     {
       "canonical": "Công Nghệ Thông Tin",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "cong nghe thong tin"
       ],
       "docs_with_title": 21,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Solution Architect",
-      "family": null,
+      "family": "DevOps/Cloud",
       "aliases": [
         "solution architect"
       ],
       "docs_with_title": 21,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "QA Engineer",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "qa engineer"
       ],
@@ -262,16 +260,16 @@
     },
     {
       "canonical": "Unity Developer",
-      "family": null,
+      "family": "Game",
       "aliases": [
         "unity developer"
       ],
       "docs_with_title": 19,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Fullstack Engineer",
-      "family": "Fullstack",
+      "family": "Web",
       "aliases": [
         "fullstack engineer"
       ],
@@ -280,7 +278,7 @@
     },
     {
       "canonical": "System Engineer",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "system engineer"
       ],
@@ -289,16 +287,16 @@
     },
     {
       "canonical": "Lập Trình",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "lap trinh"
       ],
       "docs_with_title": 17,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "IT Business Analyst",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "it business analyst"
       ],
@@ -325,34 +323,34 @@
     },
     {
       "canonical": "IT Manager",
-      "family": null,
+      "family": "Bridge",
       "aliases": [
         "it manager"
       ],
       "docs_with_title": 15,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "UI/UX Designer",
-      "family": null,
+      "family": "Design",
       "aliases": [
         "ui/ux designer"
       ],
       "docs_with_title": 14,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Software Developer",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "software developer"
       ],
       "docs_with_title": 14,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Product Manager",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "product manager"
       ],
@@ -361,7 +359,7 @@
     },
     {
       "canonical": "Full-Stack Developer",
-      "family": "Fullstack",
+      "family": "Web",
       "aliases": [
         "full-stack developer"
       ],
@@ -370,7 +368,7 @@
     },
     {
       "canonical": "AI",
-      "family": "Data Science/AI",
+      "family": "Data/AI",
       "aliases": [
         "ai"
       ],
@@ -379,7 +377,7 @@
     },
     {
       "canonical": "Frontend Developer",
-      "family": "Frontend",
+      "family": "Web",
       "aliases": [
         "frontend developer"
       ],
@@ -388,7 +386,7 @@
     },
     {
       "canonical": "Data Scientist",
-      "family": "Data Science/AI",
+      "family": "Data/AI",
       "aliases": [
         "data scientist"
       ],
@@ -397,7 +395,7 @@
     },
     {
       "canonical": "Quản Lý Dự Án",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "quan ly du an"
       ],
@@ -406,16 +404,16 @@
     },
     {
       "canonical": "Technical",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "technical"
       ],
       "docs_with_title": 13,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "IT Project Manager",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "it project manager"
       ],
@@ -433,16 +431,16 @@
     },
     {
       "canonical": ".Net Developer",
-      "family": null,
+      "family": "Web",
       "aliases": [
         ".net developer"
       ],
       "docs_with_title": 12,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Automation Tester",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "automation tester"
       ],
@@ -451,7 +449,7 @@
     },
     {
       "canonical": "AI Expert",
-      "family": "Data Science/AI",
+      "family": "Data/AI",
       "aliases": [
         "ai expert"
       ],
@@ -496,12 +494,12 @@
     },
     {
       "canonical": "Developer",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "developer"
       ],
       "docs_with_title": 10,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Cloud Engineer",
@@ -514,16 +512,16 @@
     },
     {
       "canonical": "Phát Triển Phần Mềm",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "phat trien phan mem"
       ],
       "docs_with_title": 10,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Full Stack Developer",
-      "family": "Fullstack",
+      "family": "Web",
       "aliases": [
         "full stack developer"
       ],
@@ -532,7 +530,7 @@
     },
     {
       "canonical": "QC Engineer",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "qc engineer"
       ],
@@ -541,7 +539,7 @@
     },
     {
       "canonical": "Kỹ sư Dữ liệu",
-      "family": "Data Engineer",
+      "family": "Data/AI",
       "aliases": [
         "ky su du lieu"
       ],
@@ -550,7 +548,7 @@
     },
     {
       "canonical": "Kiểm Thử",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "kiem thu"
       ],
@@ -559,16 +557,16 @@
     },
     {
       "canonical": "Database Administrator",
-      "family": null,
+      "family": "Data/AI",
       "aliases": [
         "database administrator"
       ],
       "docs_with_title": 9,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "AI Software Engineer",
-      "family": "Data Science/AI",
+      "family": "Data/AI",
       "aliases": [
         "ai software engineer"
       ],
@@ -577,7 +575,7 @@
     },
     {
       "canonical": "Embedded Software Engineer",
-      "family": "Embedded/IoT",
+      "family": "IoT",
       "aliases": [
         "embedded software engineer"
       ],
@@ -586,7 +584,7 @@
     },
     {
       "canonical": "Software Tester",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "software tester"
       ],
@@ -604,12 +602,12 @@
     },
     {
       "canonical": "Designer",
-      "family": null,
+      "family": "Design",
       "aliases": [
         "designer"
       ],
       "docs_with_title": 8,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Tư Vấn Giải Pháp CNTT",
@@ -640,16 +638,16 @@
     },
     {
       "canonical": "Java",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "java"
       ],
       "docs_with_title": 8,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Quản Trị Mạng",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "quan tri mang"
       ],
@@ -658,7 +656,7 @@
     },
     {
       "canonical": "Fullstack",
-      "family": "Fullstack",
+      "family": "Web",
       "aliases": [
         "fullstack"
       ],
@@ -667,34 +665,34 @@
     },
     {
       "canonical": "Game Design",
-      "family": null,
+      "family": "Design",
       "aliases": [
         "game design"
       ],
       "docs_with_title": 8,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Kỹ Thuật",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "ky thuat"
       ],
       "docs_with_title": 8,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Trưởng Phòng Công Nghệ Thông Tin",
-      "family": null,
+      "family": "Bridge",
       "aliases": [
         "truong phong cong nghe thong tin"
       ],
       "docs_with_title": 8,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "BA",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "ba"
       ],
@@ -712,43 +710,43 @@
     },
     {
       "canonical": "Kỹ Sư IT",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "ky su it"
       ],
       "docs_with_title": 7,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "UI UX Designer",
-      "family": null,
+      "family": "Design",
       "aliases": [
         "ui ux designer"
       ],
       "docs_with_title": 7,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "SAP Consultant",
-      "family": null,
+      "family": "Bridge",
       "aliases": [
         "sap consultant"
       ],
       "docs_with_title": 7,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Quản Lý Chất Lượng",
-      "family": null,
+      "family": "Tester",
       "aliases": [
         "quan ly chat luong"
       ],
       "docs_with_title": 7,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Scrum Master",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "scrum master"
       ],
@@ -757,7 +755,7 @@
     },
     {
       "canonical": "QA Automation Engineer",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "qa automation engineer"
       ],
@@ -766,7 +764,7 @@
     },
     {
       "canonical": "Java Backend Developer",
-      "family": "Backend",
+      "family": "Web",
       "aliases": [
         "java backend developer"
       ],
@@ -775,25 +773,25 @@
     },
     {
       "canonical": "Agentic Engineer",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "agentic engineer"
       ],
       "docs_with_title": 7,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Account Manager",
-      "family": null,
+      "family": "Bridge",
       "aliases": [
         "account manager"
       ],
       "docs_with_title": 7,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Full-Stack Engineer",
-      "family": "Fullstack",
+      "family": "Web",
       "aliases": [
         "full-stack engineer"
       ],
@@ -802,7 +800,7 @@
     },
     {
       "canonical": "QC",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "qc"
       ],
@@ -811,21 +809,21 @@
     },
     {
       "canonical": "IT Staff",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "it staff"
       ],
       "docs_with_title": 7,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Database Engineer",
-      "family": null,
+      "family": "Data/AI",
       "aliases": [
         "database engineer"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "IOS Developer",
@@ -838,34 +836,34 @@
     },
     {
       "canonical": "Lập Trình Viên",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "lap trinh vien"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Lập Trình CNC",
-      "family": null,
+      "family": "IoT",
       "aliases": [
         "lap trinh cnc"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "BrSE",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "brse"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Bridge System Engineer",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "bridge system engineer"
       ],
@@ -874,7 +872,7 @@
     },
     {
       "canonical": "Backend",
-      "family": "Backend",
+      "family": "Web",
       "aliases": [
         "backend"
       ],
@@ -883,7 +881,7 @@
     },
     {
       "canonical": "QA/QC Engineer",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "qa/qc engineer"
       ],
@@ -892,7 +890,7 @@
     },
     {
       "canonical": "System Admin",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "system admin"
       ],
@@ -901,16 +899,16 @@
     },
     {
       "canonical": "Trưởng Phòng IT",
-      "family": null,
+      "family": "Bridge",
       "aliases": [
         "truong phong it"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Technical Project Manager",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "technical project manager"
       ],
@@ -919,7 +917,7 @@
     },
     {
       "canonical": "Quản Trị Hệ Thống",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "quan tri he thong"
       ],
@@ -937,7 +935,7 @@
     },
     {
       "canonical": "Kỹ Sư Lập Trình Nhúng",
-      "family": "Embedded/IoT",
+      "family": "IoT",
       "aliases": [
         "ky su lap trinh nhung"
       ],
@@ -946,7 +944,7 @@
     },
     {
       "canonical": "Automation QA Engineer",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "automation qa engineer"
       ],
@@ -955,43 +953,43 @@
     },
     {
       "canonical": "Kỹ Sư Tư Vấn Giải Pháp CNTT",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "ky su tu van giai phap cntt"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "IT Engineer",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "it engineer"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Software Development Manager",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "software development manager"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "PHP Developer",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "php developer"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Fullstack Java Developer",
-      "family": "Fullstack",
+      "family": "Web",
       "aliases": [
         "fullstack java developer"
       ],
@@ -1000,7 +998,7 @@
     },
     {
       "canonical": "Frontend Engineer",
-      "family": "Frontend",
+      "family": "Web",
       "aliases": [
         "frontend engineer"
       ],
@@ -1009,7 +1007,7 @@
     },
     {
       "canonical": "Machine Learning Engineer",
-      "family": "Data Science/AI",
+      "family": "Data/AI",
       "aliases": [
         "machine learning engineer"
       ],
@@ -1018,30 +1016,30 @@
     },
     {
       "canonical": "CNTT",
-      "family": null,
+      "family": "Web",
       "aliases": [
         "cntt"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "KỸ THUẬT VIÊN IT PHẦN MỀM",
-      "family": null,
+      "family": "Security",
       "aliases": [
         "ky thuat vien it phan mem"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Phòng Dữ Liệu",
-      "family": null,
+      "family": "Data/AI",
       "aliases": [
         "phong du lieu"
       ],
       "docs_with_title": 6,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Tư vấn Thiết Kế Website",
@@ -1054,34 +1052,34 @@
     },
     {
       "canonical": "2D Game Artist",
-      "family": null,
+      "family": "Game",
       "aliases": [
         "2d game artist"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Kỹ Sư Lập Trình PLC",
-      "family": null,
+      "family": "IoT",
       "aliases": [
         "ky su lap trinh plc"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Thiết Kế 2D",
-      "family": null,
+      "family": "Bridge",
       "aliases": [
         "thiet ke 2d"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Kiểm Thử Tự Động",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "kiem thu tu dong"
       ],
@@ -1090,34 +1088,34 @@
     },
     {
       "canonical": "Designer POD",
-      "family": null,
+      "family": "Bridge",
       "aliases": [
         "designer pod"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Kỹ Thuật IT",
-      "family": null,
+      "family": "Security",
       "aliases": [
         "ky thuat it"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Quản Trị Cơ Sở Dữ Liệu DBA",
-      "family": null,
+      "family": "DevOps/Cloud",
       "aliases": [
         "quan tri co so du lieu dba"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Process Quality Assurance",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "process quality assurance"
       ],
@@ -1126,16 +1124,16 @@
     },
     {
       "canonical": "Cao Cấp Công Nghệ Mô Hình",
-      "family": null,
+      "family": "IoT",
       "aliases": [
         "cao cap cong nghe mo hinh"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Angular Developer",
-      "family": "Frontend",
+      "family": "Web",
       "aliases": [
         "angular developer"
       ],
@@ -1144,7 +1142,7 @@
     },
     {
       "canonical": "Quality Control",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "quality control"
       ],
@@ -1153,7 +1151,7 @@
     },
     {
       "canonical": "Technical Business Analyst",
-      "family": "Product/Project",
+      "family": "Bridge",
       "aliases": [
         "technical business analyst"
       ],
@@ -1162,16 +1160,16 @@
     },
     {
       "canonical": "Product Designer",
-      "family": null,
+      "family": "Bridge",
       "aliases": [
         "product designer"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Network & System Administrator",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "network & system administrator"
       ],
@@ -1189,7 +1187,7 @@
     },
     {
       "canonical": "Kỹ Sư Hệ Thống",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "ky su he thong"
       ],
@@ -1198,7 +1196,7 @@
     },
     {
       "canonical": "QA/QC",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "qa/qc"
       ],
@@ -1207,7 +1205,7 @@
     },
     {
       "canonical": "IT Support Engineer",
-      "family": "System/Network",
+      "family": "Security",
       "aliases": [
         "it support engineer"
       ],
@@ -1216,7 +1214,7 @@
     },
     {
       "canonical": "Test Engineer",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "test engineer"
       ],
@@ -1225,25 +1223,25 @@
     },
     {
       "canonical": "IT Specialist",
-      "family": null,
+      "family": "Bridge",
       "aliases": [
         "it specialist"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Odoo Developer",
-      "family": null,
+      "family": "DevOps/Cloud",
       "aliases": [
         "odoo developer"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Master Data Engineer",
-      "family": "Data Engineer",
+      "family": "Data/AI",
       "aliases": [
         "master data engineer"
       ],
@@ -1252,16 +1250,16 @@
     },
     {
       "canonical": "Technical Architect",
-      "family": null,
+      "family": "DevOps/Cloud",
       "aliases": [
         "technical architect"
       ],
       "docs_with_title": 5,
-      "approved": false
+      "approved": true
     },
     {
       "canonical": "Kỹ Sư QA",
-      "family": "QA/QC",
+      "family": "Tester",
       "aliases": [
         "ky su qa"
       ],

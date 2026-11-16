@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:02:42+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:54:23+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 549
+    "rows": 547
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 549
+    "rows": 547
   },
   "dropped": [],
   "rules": [
@@ -25,7 +25,7 @@
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 349,
+      "rows_affected": 347,
       "examples": [
         {
           "job_id": "27681538345",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 548,
+      "rows_affected": 546,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 548,
+      "rows_affected": 546,
       "examples": [
         {
           "job_id": "27681538345",
@@ -90,7 +90,7 @@
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 325,
+      "rows_affected": 323,
       "examples": []
     },
     {
@@ -104,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 549,
+      "rows_affected": 547,
       "examples": []
     },
     {
@@ -146,7 +146,7 @@
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 541,
+      "rows_affected": 539,
       "examples": [
         {
           "job_id": "27681538345",
@@ -175,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 548,
+      "rows_affected": 546,
       "examples": [
         {
           "job_id": "27681538345",
@@ -204,13 +204,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 54.5,
-      "fill_pct_out": 54.5
+      "fill_pct_in": 54.3,
+      "fill_pct_out": 54.3
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 59.4,
-      "fill_pct_out": 59.4
+      "fill_pct_in": 59.2,
+      "fill_pct_out": 59.2
     },
     {
       "field": "posted_date",
@@ -229,13 +229,13 @@
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 82.0,
-      "fill_pct_out": 82.0
+      "fill_pct_in": 81.9,
+      "fill_pct_out": 81.9
     },
     {
       "field": "headcount",
-      "fill_pct_in": 59.2,
-      "fill_pct_out": 59.2
+      "fill_pct_in": 59.0,
+      "fill_pct_out": 59.0
     },
     {
       "field": "job_title_clean",
@@ -249,13 +249,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 64.1,
-      "fill_pct_out": 64.1
+      "fill_pct_in": 64.4,
+      "fill_pct_out": 64.4
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 94.4,
-      "fill_pct_out": 94.4
+      "fill_pct_in": 94.3,
+      "fill_pct_out": 94.3
     },
     {
       "field": "locations",
@@ -278,7 +278,7 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 345,
+      "header": 343,
       "title": 5,
       "jd": 0,
       "none": 199
@@ -286,7 +286,7 @@
     "salary_under_1m_count": 1,
     "salary_from_x_count": 22,
     "language_distribution": {
-      "vi": 484,
+      "vi": 482,
       "en": 64,
       "other": 1
     },
@@ -332,43 +332,43 @@
         "description",
         "requirements"
       ],
-      "approved_terms": 0,
+      "approved_terms": 249,
       "device": "cuda",
       "batch_size": 4,
       "torch": "2.15.0+cu132",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1258,
+      "peak_vram_mib": 1167,
       "fell_back_to_cpu": false,
-      "rows_en": 1288,
-      "rows_translated": 1156,
-      "rows_failed": 132,
-      "chunks": 26825,
-      "cache_hits": 2539,
-      "model_calls": 24442,
-      "retries": 156,
-      "failed_chunks": 156
+      "rows_en": 1274,
+      "rows_translated": 1052,
+      "rows_failed": 222,
+      "chunks": 26727,
+      "cache_hits": 26450,
+      "model_calls": 554,
+      "retries": 277,
+      "failed_chunks": 277
     },
     "experience_parsed_rate": 99.8
   },
   "samples": [
     {
-      "job_id": "jobsgo_29082130721",
+      "job_id": "jobsgo_29330246209",
       "source": "jobsgo",
       "field": "salary_min_vnd",
-      "before": "Đến 1 triệu VNĐ",
-      "after": null,
+      "before": "7 - 20 triệu VNĐ",
+      "after": 7000000.0,
       "changed": true
     },
     {
-      "job_id": "jobsgo_29296556710",
+      "job_id": "jobsgo_29120817292",
       "source": "jobsgo",
-      "field": "exp_min_years",
-      "before": "4 - 5 năm",
-      "after": 4.0,
+      "field": "posted_date",
+      "before": "30/09/2026",
+      "after": "2026-09-30",
       "changed": true
     },
     {
-      "job_id": "jobsgo_29131327438",
+      "job_id": "jobsgo_29348496385",
       "source": "jobsgo",
       "field": "headcount",
       "before": "1",

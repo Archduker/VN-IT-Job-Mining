@@ -1,0 +1,70 @@
+{
+  "step": "12_tfidf",
+  "source": "_all",
+  "mode": "applied",
+  "generated_at": "2026-11-10T19:56:52+00:00",
+  "code_version": "37bb865",
+  "input": {
+    "path": null,
+    "rows": 4671
+  },
+  "output": {
+    "path": null,
+    "rows": 4671
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "sources": {
+      "topcv": {
+        "input": 1520,
+        "output": 1520
+      },
+      "topdev": {
+        "input": 202,
+        "output": 202
+      },
+      "vietnamworks": {
+        "input": 774,
+        "output": 774
+      },
+      "careerviet": {
+        "input": 400,
+        "output": 400
+      },
+      "vieclam24h": {
+        "input": 164,
+        "output": 164
+      },
+      "itviec": {
+        "input": 818,
+        "output": 818
+      },
+      "glints": {
+        "input": 246,
+        "output": 246
+      },
+      "jobsgo": {
+        "input": 547,
+        "output": 547
+      }
+    },
+    "vocab_size": 20000,
+    "nnz": 1205812,
+    "shape": [
+      4671,
+      20000
+    ]
+  },
+  "samples": [],
+  "samples_reason": "NO_ROWS_CHANGED"
+}

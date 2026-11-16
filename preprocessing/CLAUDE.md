@@ -6,6 +6,10 @@ Thứ tự làm của dự án là web scraping → trực quan hóa → pre-pro
 
 **Refactor đang đặc tả (03/11/2026):** 5 bước Clean → Integration → Transformation → Normalization → Encoding, output bước trước là input bước sau, mỗi bước ghi báo cáo cho Monitoring. Đặc tả: `docs/spec/preprocessing/spec/`; prompt: `docs/prompting/`. Khi refactor xong, bảng "Cấu trúc" dưới đây sẽ thay đổi. Đã chốt: địa điểm theo 34 tỉnh sau sáp nhập (JSON 3 cấp); tin ngoài IT chỉ bỏ theo `preprocessing/clean/it_policy.json` do người dùng duyệt; **mặc định không dùng model/LLM** (04/11/2026): phân loại là luật if-else. **Ngoại lệ duy nhất (10/11/2026, người dùng chốt): dịch toàn bộ JD tiếng Anh sang tiếng Việt bằng model `VietAI/envit5-translation`** chạy local; giữ cột JD gốc, ghi tên và phiên bản model vào báo cáo. OpenJev, JEV, Qwen đã bỏ hẳn.
 
+## Nhóm nghề (cập nhật 11/11/2026)
+
+`JOB_FAMILIES` (`normalization/job_title.py`) có 10 nhóm + `Other` từ 11/11/2026 (L-47): Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI. Luật từ khóa, kỹ năng cổng và `job_titles.json` vẫn ghi tên nhóm cũ; `FAMILY_MAP` gộp về 10 nhóm ở đầu ra `family_from_title`. Muốn đổi nhóm chỉ sửa `FAMILY_MAP`, rồi chạy lại 04, `10_features` và Mining.
+
 ## Vị trí trong quy trình 4 giai đoạn (10/11/2026)
 
 `preprocessing/` làm giai đoạn **Pre-processing** (imputation, deduplicate, noise, typecasting, string standardization) theo `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` (bước 0-6 và 4b dịch JD tiếng Anh bằng `VietAI/envit5-translation`, model duy nhất được dùng). Feature selection/extraction/transformation/construction và encoding thuộc giai đoạn **Processing** (`processing/`, mới dựng khung). Code Encoding hiện vẫn nằm ở `preprocessing/encoding/` và chưa được chuyển. Nội dung bước 10b, 10c chưa chốt.
@@ -18,6 +22,7 @@ Thứ tự làm của dự án là web scraping → trực quan hóa → pre-pro
 - Phân loại IT là luật 2 tầng (`common/it_filter.py`: `classify` từ khóa tiêu đề, `classify_unknown` nhóm nghề + ≥ 2 kỹ năng JD); tầng 2 đúng khoảng 82% trên nhãn tay. Normalization gắn cờ `*_can_kiem` bằng luật mâu thuẫn. Ngoài `envit5-translation` cho dịch JD tiếng Anh, không thêm lời gọi model khác khi người dùng chưa yêu cầu.
 - Từ điển trong `dictionaries/`: `provinces_34.json`, `wards_34.json` (3.321 phường/xã mới, MIT, nguồn ghi trong file), `skills.json`, `benefits.json`. Tên kỹ năng ngắn (C, R, Go) chỉ được thêm kèm ngữ cảnh.
 - `common/`: `step_report.py` (schema báo cáo, luật bảo toàn input = output + bị bỏ), `raw_reader.py`, `province.py` + `dictionaries/provinces_34.json`, `it_filter.py`.
+- Khóa trùng tên (C6, C7) chỉ gồm công ty + tiêu đề (L-40). Cấp bậc ↔ kinh nghiệm quy đổi hai chiều: [0,1) Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior, từ 5 năm để trống; thiếu kinh nghiệm thì điền cận dưới theo cấp raw/title (L-39). Không xử lý trùng khác ngôn ngữ (PH4 C9).
 - File mẫu gán nhãn `data/preprocessing/review/it_<nguồn>.csv` đã có nhãn tay thì không bao giờ bị ghi đè.
 
 ## Cấu trúc (pipeline cũ)

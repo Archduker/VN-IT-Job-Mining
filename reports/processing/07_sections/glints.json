@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 256
+    "rows": 246
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 256
+    "rows": 246
   },
   "dropped": [],
   "rules": [],
@@ -24,53 +24,17 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 7409,
+    "n_bullets": 7094,
     "bullets_by_section": {
-      "mo_ta": 5999,
-      "yeu_cau": 256,
-      "phuc_loi": 1154
+      "mo_ta": 5751,
+      "yeu_cau": 246,
+      "phuc_loi": 1097
     },
     "bullets_by_rule": {
-      "S7.2": 7409
+      "S7.2": 7094
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
     "cues_approved": 0
-  },
-  "samples": [
-    {
-      "job_id": "glints_58a4cb2c-afad-4839-890e-310dae25b826",
-      "source": "glints",
-      "field": "sections",
-      "before": "Chi tiết công việc QA Engineer (Automation Test) tại The Code Talent Co,. Ltd Job Responsibilities Champion shift-left testing by prioritizing early and frequent test automation.\nDevelop and maintain …",
-      "after": {
-        "mo_ta": 20,
-        "yeu_cau": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "glints_87fe15be-b4d2-49ae-99a1-112a68563d68",
-      "source": "glints",
-      "field": "sections",
-      "before": "Chi tiết công việc Chief QA line lắp ráp - Tiếng Nhật - Lương upto22tr - BD (TN) tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM TÊN VỊ TRÍ QA/QC MANAGER MÔ TẢ CÔNG VIỆC\n- Quản lý QA line lắp ráp li…",
-      "after": {
-        "mo_ta": 20,
-        "phuc_loi": 8,
-        "yeu_cau": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "glints_a05435d7-3750-455c-b4ae-3b874d125eec",
-      "source": "glints",
-      "field": "sections",
-      "before": "Chi tiết công việc IT Support tại Long Van System Solution\n1. Mô tả công việc\n- Triển khai và cấu hình các dịch vụ, hệ thống cho khách hàng (Hosting, VPS và các dịch vụ liên quan).\n- Tiếp nhận, hỗ trợ…",
-      "after": {
-        "mo_ta": 21,
-        "yeu_cau": 1
-      },
-      "changed": true
-    }
-  ]
+  }
 }

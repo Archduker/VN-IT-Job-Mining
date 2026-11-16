@@ -831,6 +831,7 @@ class VietnamWorksCrawler(BaseCrawler):
                             hits = data.get("data", [])
                             if not hits:
                                 break
+                            pages_ok += 1
                             for hit in hits:
                                 if not is_it_job(hit):
                                     continue

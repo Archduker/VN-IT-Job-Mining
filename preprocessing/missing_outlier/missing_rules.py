@@ -33,12 +33,17 @@ def infer_level_from_experience(seniority: Optional[str], exp_min: Any) -> Dict[
     return {"seniority": None, "level_inferred": False, "from_years": False}
 
 
+# Cận dưới số năm theo cấp bậc (người dùng chốt 11/11: Fresher 0–1, Junior 1–2, Middle 2–4, Senior 4–5, Lead từ 5).
+LEVEL_MIN_YEARS = {"Intern/Fresher": 0.0, "Junior": 1.0, "Middle": 2.0, "Senior": 4.0, "Lead/Manager": 5.0}
+
+
 def infer_experience_from_level(exp_min: Any, seniority: Optional[str], seniority_source: Optional[str]) -> Dict[str, Any]:
-    """M4: chỉ Intern/Fresher từ raw/title mới được điền 0 (có cờ). Cấp suy từ số năm bị từ chối (chống vòng)."""
+    """M4: thiếu kinh nghiệm thì điền cận dưới theo cấp bậc, có cờ. Cấp suy từ số năm bị từ chối (chống vòng)."""
     if _has(exp_min):
         return {"exp_min_years": exp_min, "exp_inferred": False, "exp_source": "given"}
-    if seniority == "Intern/Fresher" and seniority_source in ("raw", "title"):
-        return {"exp_min_years": 0.0, "exp_inferred": True, "exp_source": "level_intern_fresher"}
+    if seniority in LEVEL_MIN_YEARS and seniority_source in ("raw", "title"):
+        slug = seniority.split("/")[0].lower()
+        return {"exp_min_years": LEVEL_MIN_YEARS[seniority], "exp_inferred": True, "exp_source": f"level_{slug}"}
     return {"exp_min_years": None, "exp_inferred": False, "exp_source": "unknown"}
 
 

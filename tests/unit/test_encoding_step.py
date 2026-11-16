@@ -37,7 +37,7 @@ def mock_golden_df():
             "job_id_global": "job_01",
             "source_platform": "itviec",
             "seniority": "Junior",
-            "job_family": "Backend",
+            "job_family": "Web",
             "raw_employment_type": "Toàn thời gian",
             "it_status": "it",
             "locations": [{"tinh_key": "ha_noi", "remote": False, "ngoai_vn": False}],
@@ -91,7 +91,7 @@ def mock_golden_df():
                 "job_id_global": f"job_dummy_{i}",
                 "source_platform": "vietnamworks",
                 "seniority": "Middle",
-                "job_family": "Frontend",
+                "job_family": "Web",
                 "raw_employment_type": "FULL_TIME",
                 "it_status": "it",
                 "locations": [
@@ -159,9 +159,9 @@ def test_e1_ordinal_seniority(mock_golden_df):
 def test_e2_one_hot_encodings(mock_golden_df):
     features_df, dictionary, _ = encode_dataset(mock_golden_df)
     # job_family
-    assert features_df.loc[0, "job_family__backend"] == 1
+    assert features_df.loc[0, "job_family__web"] == 1
     assert features_df.loc[0, "job_family__other"] == 0
-    assert features_df.loc[1, "job_family__backend"] == 0
+    assert features_df.loc[1, "job_family__web"] == 0
     assert features_df.loc[1, "job_family__other"] == 1
 
     # employment_type

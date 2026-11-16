@@ -1,5 +1,7 @@
 # P5. Encoding: đổi bộ golden sang bảng số cho mô hình
 
+> **Cập nhật 11/11/2026:** E1–E5, E7 đã làm ở bước `10_features` (`processing/encoding/features.py`, 249 cột); E2 loại hình làm việc dùng luật từ khóa trên chuỗi gốc (chưa chuẩn hóa ở bước 04); E3 multi-hot theo mọi `locations[].tinh_key`, thiếu thì dùng `tinh_chinh`. E6 `it_status` bỏ (cột hằng `it`), E8 `*_prob` không có trong bảng 04. Không dùng `preprocessing/encoding/execute.py`.
+
 > **Cập nhật 10/11/2026: dự án bỏ JEV, OpenJev, Qwen và Gemini.** Phân loại và chuẩn hóa chỉ dùng luật if-else. Model duy nhất được dùng: `VietAI/envit5-translation` để dịch JD tiếng Anh sang tiếng Việt (P3 T6b), chạy local. Mọi đoạn nói về JEV, LLM, GenAI, `--use-api`, sổ tiền API đã hết hiệu lực. Xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
 > Trạng thái: **đặc tả, chờ duyệt** (sửa 03/11/2026: tỉnh theo 34 tỉnh mới; 10/11/2026: bỏ cột xác suất JEV). Cần P4 xong trước.

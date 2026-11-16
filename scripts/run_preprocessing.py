@@ -26,7 +26,7 @@ if str(ROOT) not in sys.path:
 
 from preprocessing.common import SOURCES, STEPS  # noqa: E402
 
-PROCESSING_STEPS = ("07_sections", "08_skills", "09_tokens")
+PROCESSING_STEPS = ("07_sections", "08_skills", "09_tokens", "10_features", "12_tfidf", "12_e5")
 CHAIN = (*STEPS, *PROCESSING_STEPS)
 MODULES = {
     "01_clean": "preprocessing.clean.run",
@@ -38,6 +38,9 @@ MODULES = {
     "07_sections": "processing.extraction.run",  # 07 và 08 do cùng một lần gọi
     "08_skills": "processing.extraction.run",
     "09_tokens": "processing.transformation.run",
+    "10_features": "processing.encoding.features",  # 10, 10b, 10c, 10d gộp một bước (bước 11 bỏ có chủ đích)
+    "12_tfidf": "processing.extraction.vectorize",
+    "12_e5": "processing.extraction.embed",  # cần GPU và model multilingual-e5-base
 }
 # 03 → 04: cột chung; 03 đọc từ 02: cặp (trường, cột trước, cột sau)
 PAIRS03 = [("description_clean", "raw_description_text", "description_clean"),
@@ -58,6 +61,13 @@ def missing_inputs(step: str, sources, root: Path = ROOT) -> list[str]:
         need = [P / "01_clean" / f"{s}.jsonl" for s in sources]
     elif step == "02_integration":
         need = [P / "01b_deduplication" / f"{s}.jsonl" for s in sources]
+    elif step == "12_e5":
+        need = [root / "data" / "processing" / "07_sections" / "all.parquet"]
+    elif step in ("10_features", "12_tfidf"):
+        O = root / "data" / "processing"
+        need = [P / "04_normalization" / "all.parquet", O / "09_tokens" / "all.parquet"]
+        if step == "10_features":
+            need.append(O / "08_skills" / "job_skills.parquet")
     else:
         prev = {"03_transformation": "02_integration"}.get(step, "03_transformation" if step == "04_normalization" else "04_normalization")
         need = [P / prev / "all.parquet"]

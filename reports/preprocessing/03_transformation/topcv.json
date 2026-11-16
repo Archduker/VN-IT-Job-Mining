@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:21:26+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T19:42:27+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 1518
+    "rows": 1520
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1518
+    "rows": 1520
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 2269,
+      "rows_affected": 2274,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 887,
+      "rows_affected": 886,
       "examples": [
         {
           "job_id": "2013194",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 1511,
+      "rows_affected": 1513,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 1511,
+      "rows_affected": 1513,
       "examples": [
         {
           "job_id": "2013194",
@@ -90,7 +90,7 @@
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 1511,
+      "rows_affected": 1513,
       "examples": []
     },
     {
@@ -104,7 +104,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 1518,
+      "rows_affected": 1520,
       "examples": []
     },
     {
@@ -132,21 +132,21 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 458,
+      "rows_affected": 457,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 77,
+      "rows_affected": 80,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 1517,
+      "rows_affected": 1519,
       "examples": [
         {
           "job_id": "2013194",
@@ -175,7 +175,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 1511,
+      "rows_affected": 1513,
       "examples": [
         {
           "job_id": "2013194",
@@ -204,13 +204,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 49.1,
-      "fill_pct_out": 49.1
+      "fill_pct_in": 49.0,
+      "fill_pct_out": 49.0
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 57.0,
-      "fill_pct_out": 57.0
+      "fill_pct_in": 56.8,
+      "fill_pct_out": 56.8
     },
     {
       "field": "posted_date",
@@ -278,16 +278,16 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 884,
+      "header": 883,
       "title": 7,
       "jd": 0,
-      "none": 627
+      "none": 630
     },
     "salary_under_1m_count": 2,
     "salary_from_x_count": 22,
     "language_distribution": {
-      "vi": 1439,
-      "en": 77,
+      "vi": 1438,
+      "en": 80,
       "other": 2
     },
     "language_fasttext": {
@@ -299,7 +299,7 @@
         "2323457",
         "2309919"
       ],
-      "conf_lt_0_9": 51
+      "conf_lt_0_9": 54
     },
     "text_quality": {
       "before": {
@@ -331,27 +331,35 @@
         "description",
         "requirements"
       ],
-      "approved_terms": 0,
+      "approved_terms": 249,
       "device": "cuda",
       "batch_size": 4,
       "torch": "2.15.0+cu132",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1214,
+      "peak_vram_mib": 1099,
       "fell_back_to_cpu": false,
-      "rows_en": 77,
-      "rows_translated": 72,
-      "rows_failed": 5,
-      "chunks": 1608,
-      "cache_hits": 86,
-      "model_calls": 1527,
-      "retries": 5,
-      "failed_chunks": 5
+      "rows_en": 80,
+      "rows_translated": 68,
+      "rows_failed": 12,
+      "chunks": 1685,
+      "cache_hits": 1672,
+      "model_calls": 26,
+      "retries": 13,
+      "failed_chunks": 13
     },
     "experience_parsed_rate": 99.5
   },
   "samples": [
     {
-      "job_id": "topcv_2295531",
+      "job_id": "topcv_2315697",
+      "source": "topcv",
+      "field": "exp_min_years",
+      "before": "2 năm",
+      "after": 2.0,
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2013821",
       "source": "topcv",
       "field": "headcount",
       "before": "1 người",
@@ -359,19 +367,11 @@
       "changed": true
     },
     {
-      "job_id": "topcv_2328927",
+      "job_id": "topcv_2315423",
       "source": "topcv",
-      "field": "salary_min_vnd",
-      "before": "15 - 20 triệu",
-      "after": 15000000.0,
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2114543",
-      "source": "topcv",
-      "field": "exp_min_years",
-      "before": "Không yêu cầu",
-      "after": 0.0,
+      "field": "description_clean",
+      "before": "Bộ phận Công nghệ thông tin / An toàn thông tin\nBáo cáo cho Security Lead / Information Security Manager\n1. Tổng quan vị trí\nVị trí thuộc Giai đoạn 1 (06 tháng) của roadmap xây dựng năng lực ATTT cho …",
+      "after": "Bộ phận Công nghệ thông tin / An toàn thông tin Báo cáo cho Security Lead / Information Security Manager\n1. Tổng quan vị trí Vị trí thuộc Giai đoạn 1 (06 tháng) của roadmap xây dựng năng lực ATTT cho …",
       "changed": true
     }
   ]

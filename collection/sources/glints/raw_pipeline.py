@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 import requests
 
 from collection.common.r2_raw_pipeline import TwoPhaseRawCrawler
-from collection.common.url_ledger import clean_canonical_url
+from collection.common.url_ledger import DiscoveryError, clean_canonical_url
 from collection.sources.glints.crawler import (
     GRAPHQL_ENDPOINT,
     LISTING_URL,
@@ -213,6 +213,7 @@ class GlintsRawPipeline(TwoPhaseRawCrawler):
         skipped_out_of_scope = 0
         full_scan = False
         scan_error: Optional[str] = None
+        pages_ok = 0
         self._discovered_hashes.clear()
         self._manifest_entries.clear()
 
@@ -309,6 +310,7 @@ class GlintsRawPipeline(TwoPhaseRawCrawler):
                     "not marking the scan complete.", page
                 )
                 break
+            pages_ok += 1
             jobs = result.get("jobsInPage") or []
 
             logger.info(
@@ -396,7 +398,8 @@ class GlintsRawPipeline(TwoPhaseRawCrawler):
             closure_scan_safe,
         )
         if scan_error:
-            raise RuntimeError(
+            # Không lấy được trang nào thì là DiscoveryError (C14, kế thừa RuntimeError nên chỗ bắt cũ vẫn chạy)
+            raise (RuntimeError if pages_ok else DiscoveryError)(
                 f"Glints discovery incomplete after {len(self._discovered_hashes)} URL(s): {scan_error}"
             )
         return len(self._discovered_hashes)

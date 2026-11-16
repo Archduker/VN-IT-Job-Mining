@@ -1,0 +1,68 @@
+{
+  "step": "12_e5",
+  "source": "_all",
+  "mode": "applied",
+  "generated_at": "2026-11-10T21:13:25+00:00",
+  "code_version": "37bb865",
+  "input": {
+    "path": null,
+    "rows": 114008
+  },
+  "output": {
+    "path": null,
+    "rows": 114008
+  },
+  "dropped": [],
+  "rules": [],
+  "fields": [],
+  "checks": {
+    "rows_conserved": true,
+    "notes": []
+  },
+  "api": {
+    "used": false,
+    "reason": "pipeline không dùng model (luật if-else)"
+  },
+  "extra": {
+    "sources": {
+      "topcv": {
+        "input": 39867,
+        "output": 39867
+      },
+      "topdev": {
+        "input": 5675,
+        "output": 5675
+      },
+      "vietnamworks": {
+        "input": 15501,
+        "output": 15501
+      },
+      "careerviet": {
+        "input": 1201,
+        "output": 1201
+      },
+      "vieclam24h": {
+        "input": 3229,
+        "output": 3229
+      },
+      "itviec": {
+        "input": 29333,
+        "output": 29333
+      },
+      "glints": {
+        "input": 7094,
+        "output": 7094
+      },
+      "jobsgo": {
+        "input": 12108,
+        "output": 12108
+      }
+    },
+    "bullets": 114008,
+    "dim": 768,
+    "model": "intfloat/multilingual-e5-base",
+    "jobs": 4671
+  },
+  "samples": [],
+  "samples_reason": "NO_ROWS_CHANGED"
+}

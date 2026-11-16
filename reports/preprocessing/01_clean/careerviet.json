@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:26+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:03+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/careerviet/raw",
     "rows": 660
   },
   "output": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
-    "rows": 412
+    "rows": 410
   },
   "dropped": [
     {
@@ -45,13 +45,13 @@
     },
     {
       "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
-      "rows": 18
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
+      "rows": 19
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 23
+      "rows": 24
     }
   ],
   "rules": [
@@ -172,30 +172,30 @@
     },
     {
       "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 18,
+      "rows_affected": 19,
       "examples": [
         {
           "job_id": "35C82ACC",
           "field": "dedup_key",
-          "before": "ngân hàng tmcp thịnh vượng vpbank|chuyên viên nâng cao chất lượng thu hồi nợ qua callbot ai - id5740|ha_noi",
+          "before": "ngân hàng tmcp thịnh vượng vpbank|chuyên viên nâng cao chất lượng thu hồi nợ qua callbot ai - id5740",
           "after": "giữ 35C8C17B",
           "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-nang-cao-chat-luong-thu-hoi-no-qua-callbot-ai-id5740.35C82ACC.html"
         },
         {
           "job_id": "35C82C6D",
           "field": "dedup_key",
-          "before": "viettel cht|kỹ sư tư vấn giải pháp cntt (vmware/network/sercurity)|da_nang",
+          "before": "viettel cht|kỹ sư tư vấn giải pháp cntt (vmware/network/sercurity)",
           "after": "giữ 35C841B6",
           "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-tu-van-giai-phap-cntt-vmware-network-sercurity.35C82C6D.html"
         },
         {
-          "job_id": "35C8469B",
+          "job_id": "35C83A56",
           "field": "dedup_key",
-          "before": "lotte finance|chuyên viên cao cấp mạng và bảo mật|ha_noi",
-          "after": "giữ 35C80358",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cao-cap-mang-va-bao-mat.35C8469B.html"
+          "before": "lotte finance|trưởng phòng mua sắm công nghệ thông tin",
+          "after": "giữ 35C85B2F",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C83A56.html"
         }
       ]
     },
@@ -203,26 +203,26 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 23,
+      "rows_affected": 24,
       "examples": [
         {
           "job_id": "35C81DB3",
           "field": "dedup_key",
-          "before": "coda resources|it erp & applications specialist|tay_ninh",
+          "before": "coda resources|it erp & applications specialist",
           "after": "giữ vietnamworks:2095967",
           "url": "https://careerviet.vn/vi/tim-viec-lam/it-erp-applications-specialist.35C81DB3.html"
         },
         {
           "job_id": "35C82A35",
           "field": "dedup_key",
-          "before": "easia travel|it manager|ha_noi",
+          "before": "easia travel|it manager",
           "after": "giữ vietnamworks:2119686",
           "url": "https://careerviet.vn/vi/tim-viec-lam/it-manager.35C82A35.html"
         },
         {
           "job_id": "35C837FD",
           "field": "dedup_key",
-          "before": "ngân hàng tmcp lộc phát lpbank|[hà nội] phó phòng dữ liệu và phân tích|ha_noi",
+          "before": "ngân hàng tmcp lộc phát lpbank|[hà nội] phó phòng dữ liệu và phân tích",
           "after": "giữ vietnamworks:2111014",
           "url": "https://careerviet.vn/vi/tim-viec-lam/ha-noi-pho-phong-du-lieu-va-phan-tich.35C837FD.html"
         }

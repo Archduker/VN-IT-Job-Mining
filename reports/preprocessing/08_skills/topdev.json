@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 204
+    "rows": 202
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 204
+    "rows": 202
   },
   "dropped": [],
   "rules": [],
@@ -24,20 +24,28 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 1350,
+    "n_job_skill_rows": 1392,
     "n_jobs_no_skill": 17,
     "top_skills": [
       {
-        "skill": "english",
-        "n_jobs": 105
+        "skill": "communication",
+        "n_jobs": 109
       },
       {
-        "skill": "communication",
-        "n_jobs": 104
+        "skill": "english",
+        "n_jobs": 103
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 43
       },
       {
         "skill": "python",
         "n_jobs": 41
+      },
+      {
+        "skill": "machine_learning",
+        "n_jobs": 40
       },
       {
         "skill": "teamwork",
@@ -52,16 +60,12 @@
         "n_jobs": 34
       },
       {
-        "skill": "machine_learning",
-        "n_jobs": 29
+        "skill": "data_analysis",
+        "n_jobs": 32
       },
       {
         "skill": "rest_api",
         "n_jobs": 29
-      },
-      {
-        "skill": "data_analysis",
-        "n_jobs": 28
       },
       {
         "skill": "postgresql",
@@ -72,7 +76,11 @@
         "n_jobs": 26
       },
       {
-        "skill": "problem_solving",
+        "skill": "project_management",
+        "n_jobs": 25
+      },
+      {
+        "skill": "logical_thinking",
         "n_jobs": 25
       },
       {
@@ -80,23 +88,15 @@
         "n_jobs": 24
       },
       {
-        "skill": "project_management",
-        "n_jobs": 23
-      },
-      {
         "skill": "mysql",
         "n_jobs": 23
       },
       {
-        "skill": "logical_thinking",
-        "n_jobs": 23
+        "skill": "presentation",
+        "n_jobs": 22
       },
       {
         "skill": "microservices",
-        "n_jobs": 21
-      },
-      {
-        "skill": "presentation",
         "n_jobs": 21
       },
       {
@@ -184,20 +184,18 @@
       "changed": true
     },
     {
-      "job_id": "topdev_2137713",
+      "job_id": "topdev_2137729",
       "source": "topdev",
       "field": "skills",
-      "before": [
-        "Product Manager",
-        "Product",
-        "Business Development"
-      ],
+      "before": null,
       "after": [
         "agile_scrum",
         "business_analysis",
+        "data_analysis",
         "ecommerce",
         "english",
-        "fintech"
+        "python",
+        "tableau"
       ],
       "changed": true
     },

@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:44+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:18+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/jobsgo/raw",
     "rows": 1597
   },
   "output": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
-    "rows": 588
+    "rows": 586
   },
   "dropped": [
     {
@@ -45,13 +45,13 @@
     },
     {
       "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
-      "rows": 91
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
+      "rows": 92
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 49
+      "rows": 50
     }
   ],
   "rules": [
@@ -216,28 +216,28 @@
     },
     {
       "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 91,
+      "rows_affected": 92,
       "examples": [
         {
           "job_id": "28514569258",
           "field": "dedup_key",
-          "before": "tư vấn nhân sự kokoro|it staff (programming engineer)|dong_nai",
+          "before": "tư vấn nhân sự kokoro|it staff (programming engineer)",
           "after": "giữ 28495354973",
           "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28514569258.html"
         },
         {
           "job_id": "28563670922",
           "field": "dedup_key",
-          "before": "tư vấn nhân sự kokoro|ai engineer (pcb section – production)|dong_nai",
+          "before": "tư vấn nhân sự kokoro|ai engineer (pcb section – production)",
           "after": "giữ 29351538081",
           "url": "https://jobsgo.vn/viec-lam/ai-engineer-pcb-section-production-28563670922.html"
         },
         {
           "job_id": "28564309135",
           "field": "dedup_key",
-          "before": "tư vấn nhân sự kokoro|it staff (programming engineer)|dong_nai",
+          "before": "tư vấn nhân sự kokoro|it staff (programming engineer)",
           "after": "giữ 28495354973",
           "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28564309135.html"
         }
@@ -247,26 +247,26 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 49,
+      "rows_affected": 50,
       "examples": [
         {
           "job_id": "28962757732",
           "field": "dedup_key",
-          "before": "dược phẩm và trang thiết bị y tế hoàng đức|chuyên viên hệ thống chất lượng cntt|ho_chi_minh",
+          "before": "dược phẩm và trang thiết bị y tế hoàng đức|chuyên viên hệ thống chất lượng cntt",
           "after": "giữ topcv:2262684",
           "url": "https://jobsgo.vn/viec-lam/chuyen-vien-he-thong-chat-luong-cntt-28962757732.html"
         },
         {
           "job_id": "28973593774",
           "field": "dedup_key",
-          "before": "global technology solutions|java developer lead (backend)|ha_noi",
+          "before": "global technology solutions|java developer lead (backend)",
           "after": "giữ topcv:1506755",
           "url": "https://jobsgo.vn/viec-lam/java-developer-lead-backend-28973593774.html"
         },
         {
           "job_id": "28973648090",
           "field": "dedup_key",
-          "before": "global technology solutions|software tester lead|ha_noi",
+          "before": "global technology solutions|software tester lead",
           "after": "giữ topcv:2244120",
           "url": "https://jobsgo.vn/viec-lam/software-tester-lead-28973648090.html"
         }

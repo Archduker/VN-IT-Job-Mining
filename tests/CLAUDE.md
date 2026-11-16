@@ -13,7 +13,7 @@ Quy trình test, chỗ đặt test và luật chung nằm ở `tests/README.md`;
 - Chạy offline: monkeypatch `polite_sleep`, `UrlLedger.pull_from_r2`, `UrlLedger.sync_to_r2`; thay `_r2_store` bằng `standards.FakeR2Store()`.
 - C11 đọc `RAW_PATHS` từ Monitoring. Trường biết trước là thiếu ở một nguồn thì truyền `allow_missing={"F7": "lý do"}`, không hạ ngưỡng 90%.
 - Mẫu trong `fixtures/<nguồn>/` là trang thật đã cắt script/style/svg. Sau khi cắt phải ra đúng `content_hash` như trang gốc; ghi ngày lấy mẫu trong docstring của file test.
-- Còn thiếu contract test cho 6 nguồn: vietnamworks, careerviet, vieclam24h, itviec, glints, jobsgo (SCRAPE-11 trong `KNOWN_ISSUED.md`). CareerViet nghỉ giữa tin qua `HttpClient` nên `check_random_pause` (tìm lời gọi `polite_sleep` hoặc `uniform`) sẽ không nhận ra.
+- `contract/test_discovery_error_c14.py` gom test C14 (DiscoveryError) của 6 nguồn không có file contract riêng (L-41). Contract đầy đủ C1–C13 cho 6 nguồn đó vẫn còn thiếu (SCRAPE-14). CareerViet nghỉ giữa tin qua `HttpClient` nên `check_random_pause` (tìm lời gọi `polite_sleep` hoặc `uniform`) sẽ không nhận ra.
 
 ## Test version (C12)
 

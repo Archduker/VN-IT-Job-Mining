@@ -47,6 +47,7 @@ from collection.common.http_client import DelayConfig, HttpClient, RetryConfig
 from collection.common.r2_raw_pipeline import R2RawStore
 from collection.common.schema import RawJobEnvelope
 from collection.common.url_ledger import (
+    DiscoveryError,
     UrlLedger,
     calculate_json_canonical_hash,
     clean_canonical_url,
@@ -396,6 +397,7 @@ class JobsGoCrawler(BaseCrawler):
         page = 1
         max_p = max_pages or 100
         min_len = 50 if self._http_client is not None else 2000
+        pages_ok, first_error = 0, None
 
         while page <= max_p:
             page_url = f"{START_URL}?page={page}" if page > 1 else START_URL
@@ -404,6 +406,7 @@ class JobsGoCrawler(BaseCrawler):
                 html = self._get_page_content(page_url)
                 if not html or len(html) < min_len:
                     log.warning("[JobsGO] Nội dung trang %d rỗng hoặc quá ngắn, dừng quét.", page)
+                    first_error = first_error or f"trang {page}: nội dung rỗng"
                     break
 
                 soup = BeautifulSoup(html, "html.parser")
@@ -434,6 +437,7 @@ class JobsGoCrawler(BaseCrawler):
                         new_on_page += 1
                         discovered_urls.append(clean_url)
 
+                pages_ok += 1
                 log.info("[JobsGO] Trang %d: phát hiện %d URL mới.", page, new_on_page)
 
                 # Kiểm tra phân trang tiếp theo
@@ -459,6 +463,7 @@ class JobsGoCrawler(BaseCrawler):
                         })
                     raise
                 log.warning("[JobsGO] Safe Skip lỗi trang danh mục %s: %s", page_url, exc)
+                first_error = first_error or f"trang {page}: {exc}"
                 page += 1
                 continue
 
@@ -467,6 +472,8 @@ class JobsGoCrawler(BaseCrawler):
         if self.sync_r2:
             ledger.sync_final()
 
+        if pages_ok == 0 and first_error:
+            raise DiscoveryError(f"[JobsGO] Không lấy được trang danh sách nào: {first_error}")  # C14
         log.info("[JobsGO] Hoàn thành Pha 1. Tổng URL ghi nhận: %d.", len(ledger.records))
         return discovered_urls
 
@@ -620,6 +627,9 @@ class JobsGoCrawler(BaseCrawler):
                         browser.stop()
                     except Exception:
                         pass
+                    # Để loop kịp đóng transport tiến trình con của nodriver trước khi asyncio.run đóng loop
+                    # (nếu không in "RuntimeError: Event loop is closed")
+                    await asyncio.sleep(0.5)
 
         asyncio.run(_run())
         return stats

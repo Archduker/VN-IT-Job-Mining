@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 831
+    "rows": 818
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 831
+    "rows": 818
   },
   "dropped": [],
   "rules": [],
@@ -24,84 +24,88 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 8795,
-    "n_jobs_no_skill": 9,
+    "n_job_skill_rows": 9105,
+    "n_jobs_no_skill": 6,
     "top_skills": [
       {
         "skill": "english",
-        "n_jobs": 515
+        "n_jobs": 507
       },
       {
         "skill": "communication",
-        "n_jobs": 474
+        "n_jobs": 491
       },
       {
         "skill": "cicd",
-        "n_jobs": 285
+        "n_jobs": 282
       },
       {
         "skill": "python",
-        "n_jobs": 263
+        "n_jobs": 259
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 247
+      },
+      {
+        "skill": "machine_learning",
+        "n_jobs": 244
+      },
+      {
+        "skill": "docker",
+        "n_jobs": 242
       },
       {
         "skill": "teamwork",
         "n_jobs": 241
       },
       {
-        "skill": "docker",
-        "n_jobs": 239
-      },
-      {
         "skill": "agile_scrum",
-        "n_jobs": 228
+        "n_jobs": 225
       },
       {
         "skill": "rest_api",
-        "n_jobs": 197
+        "n_jobs": 196
       },
       {
         "skill": "clean_architecture",
-        "n_jobs": 194
+        "n_jobs": 193
       },
       {
         "skill": "java",
-        "n_jobs": 187
+        "n_jobs": 186
       },
       {
         "skill": "kubernetes",
-        "n_jobs": 176
+        "n_jobs": 174
       },
       {
         "skill": "azure",
-        "n_jobs": 170
+        "n_jobs": 169
       },
       {
         "skill": "microservices",
-        "n_jobs": 152
+        "n_jobs": 151
       },
       {
         "skill": "postgresql",
-        "n_jobs": 146
+        "n_jobs": 143
       },
       {
         "skill": "javascript",
         "n_jobs": 121
       },
       {
-        "skill": "machine_learning",
-        "n_jobs": 115
-      },
-      {
         "skill": "linux",
-        "n_jobs": 114
-      },
-      {
-        "skill": "mysql",
         "n_jobs": 113
       },
       {
+        "skill": "mysql",
+        "n_jobs": 112
+      },
+      {
         "skill": "typescript",
-        "n_jobs": 111
+        "n_jobs": 110
       },
       {
         "skill": "react",
@@ -109,43 +113,39 @@
       },
       {
         "skill": "kafka",
-        "n_jobs": 100
-      },
-      {
-        "skill": "jira",
-        "n_jobs": 93
-      },
-      {
-        "skill": "business_analysis",
-        "n_jobs": 91
-      },
-      {
-        "skill": "terraform",
-        "n_jobs": 91
+        "n_jobs": 99
       },
       {
         "skill": "logical_thinking",
-        "n_jobs": 86
-      },
-      {
-        "skill": "nodejs",
-        "n_jobs": 83
+        "n_jobs": 96
       },
       {
         "skill": "project_management",
-        "n_jobs": 82
+        "n_jobs": 92
+      },
+      {
+        "skill": "jira",
+        "n_jobs": 91
+      },
+      {
+        "skill": "automation_test",
+        "n_jobs": 90
+      },
+      {
+        "skill": "business_analysis",
+        "n_jobs": 90
+      },
+      {
+        "skill": "terraform",
+        "n_jobs": 89
+      },
+      {
+        "skill": "nodejs",
+        "n_jobs": 84
       },
       {
         "skill": "fintech",
         "n_jobs": 82
-      },
-      {
-        "skill": "redis",
-        "n_jobs": 80
-      },
-      {
-        "skill": "csharp",
-        "n_jobs": 78
       }
     ],
     "short_forms_approved": 0,
@@ -153,65 +153,70 @@
   },
   "samples": [
     {
-      "job_id": "itviec_ai-solution-architect-ai-llm-python-microservices-finviet-3011",
+      "job_id": "itviec_project-manager-java-chinese-english-mysql-sql-cong-ty-tnhh-clever-creations-tech-2329",
       "source": "itviec",
       "field": "skills",
       "before": [
-        "Solution Architecture",
-        "Machine Learning",
-        "Microservices",
-        "Python",
-        "LLM",
-        "Generative AI"
-      ],
-      "after": [
-        "communication",
-        "fintech",
-        "genai",
-        "llm",
-        "machine_learning",
-        "microservices",
-        "python"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "itviec_data-steward-sql-bi-data-quality-data-analysis-vietinbank-4317",
-      "source": "itviec",
-      "field": "skills",
-      "before": [
-        "Data Quality Tools",
-        "Business Intelligence",
-        "IT Governance",
-        "Data Analysis",
-        "SQL",
-        "Data Privacy / Compliance"
-      ],
-      "after": [
-        "bi",
-        "data_analysis"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "itviec_can-tho-fresher-php-good-english-communication-cong-ty-tnhh-nextedge-5902",
-      "source": "itviec",
-      "field": "skills",
-      "before": [
-        "PHP",
-        "JavaScript",
-        "HTML",
-        "Bootstrap",
+        "Java",
+        "Spring Boot",
         "MySQL",
-        "Wordpress",
-        "Internship Accepted"
+        "Project Management",
+        "SQL",
+        "English"
       ],
       "after": [
-        "bootstrap",
         "communication",
         "english",
-        "javascript",
-        "mysql"
+        "java",
+        "mysql",
+        "project_management",
+        "spring_boot",
+        "spring_mvc"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_product-manager-data-driven-annam-software-company-0823",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "Product Management",
+        "CRM",
+        "Data Analysis",
+        "Team Management",
+        "SQL",
+        "English"
+      ],
+      "after": [
+        "agile_scrum",
+        "confluence",
+        "data_analysis",
+        "electron",
+        "english",
+        "graphql",
+        "nextjs",
+        "nodejs",
+        "rest_api"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_ai-engineer-remote-alpha-bravo-development-4157",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "AI",
+        "Python",
+        "AI, Python"
+      ],
+      "after": [
+        "azure",
+        "communication",
+        "english",
+        "genai",
+        "langchain",
+        "nextjs",
+        "python"
       ],
       "changed": true
     }

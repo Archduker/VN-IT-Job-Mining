@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": null,
-    "rows": 4699
+    "rows": 4671
   },
   "output": {
     "path": null,
-    "rows": 4699
+    "rows": 4671
   },
   "dropped": [],
   "rules": [],
@@ -26,325 +26,37 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1518,
-        "output": 1518
+        "input": 1520,
+        "output": 1520
       },
       "topdev": {
-        "input": 204,
-        "output": 204
+        "input": 202,
+        "output": 202
       },
       "vietnamworks": {
         "input": 774,
         "output": 774
       },
       "careerviet": {
-        "input": 401,
-        "output": 401
+        "input": 400,
+        "output": 400
       },
       "vieclam24h": {
-        "input": 166,
-        "output": 166
+        "input": 164,
+        "output": 164
       },
       "itviec": {
-        "input": 831,
-        "output": 831
+        "input": 818,
+        "output": 818
       },
       "glints": {
-        "input": 256,
-        "output": 256
+        "input": 246,
+        "output": 246
       },
       "jobsgo": {
-        "input": 549,
-        "output": 549
+        "input": 547,
+        "output": 547
       }
     }
-  },
-  "samples": [
-    {
-      "job_id": "topcv_2277882",
-      "source": "topcv",
-      "field": "sections",
-      "before": "Thiết kế và phát triển hệ thống MES.\nPhát triển các chức năng liên quan đến kế hoạch sản xuất, lệnh sản xuất, công đoạn, kết quả sản xuất, LOT/Serial, WIP, chất lượng và quản lý vật tư.\nPhát triển Bac…",
-      "after": {
-        "mo_ta": 10,
-        "phuc_loi": 9,
-        "yeu_cau": 6
-      },
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2252024",
-      "source": "topcv",
-      "field": "sections",
-      "before": "Là người định hướng và phát triển sản phẩm phù hợp với nhu cầu thị trường và mục tiêu chiến lược của công ty.\nLà cầu nối giữa các bộ phận Business, BA, UI/UX, Engineering, Marketing và người dùng, đảm…",
-      "after": {
-        "mo_ta": 16,
-        "phuc_loi": 16,
-        "yeu_cau": 12
-      },
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2188055",
-      "source": "topcv",
-      "field": "sections",
-      "before": "Thực hiện kiểm thử chức năng, luồng nghiệp vụ và trải nghiệm người dùng để phát hiện các lỗi hoặc sự không phù hợp trong sản phẩm Xây dựng và thực hiện các kế hoạch kiểm thử (test plan) và kịch bản ki…",
-      "after": {
-        "phuc_loi": 6,
-        "yeu_cau": 2,
-        "mo_ta": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2136571",
-      "source": "topdev",
-      "field": "sections",
-      "before": "Đề xuất xây dựng, quy hoạch, phát triển, sửa chữa tối ưu, mở rộng, làm chủ tính năng các hệ thống Cloud, Data Center; đề xuất xây dựng chính sách, quy trình, cấp phát tài nguyên Cloud và Data Center.\n…",
-      "after": {
-        "phuc_loi": 7,
-        "yeu_cau": 5,
-        "mo_ta": 4
-      },
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2138775",
-      "source": "topdev",
-      "field": "sections",
-      "before": "Tiếp nhận thực hiện thiết kế, shop drawing, lập định mức vật tư tủ điện MSB, ATS, hòa đồng bộ, tủ điện phân phối, tủ điện điều khiển, tủ điện hệ thống NLMT phù hợp với các tiêu chuẩn, quy chuẩn quốc g…",
-      "after": {
-        "phuc_loi": 10,
-        "mo_ta": 6,
-        "yeu_cau": 3
-      },
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2135498",
-      "source": "topdev",
-      "field": "sections",
-      "before": "Lead, plan, and execute IT projects from inception to completion.\nCoordinate cross-functional teams, ensuring that projects are delivered on-time, within scope, and within budget.\nDevelop detailed pro…",
-      "after": {
-        "mo_ta": 9,
-        "yeu_cau": 9,
-        "phuc_loi": 8
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2112277",
-      "source": "vietnamworks",
-      "field": "sections",
-      "before": "Quản trị và vận hành toàn bộ hệ sinh thái Microsoft 365: Exchange Online, SharePoint Online, OneDrive, Teams, Azure AD (Entra ID)...\nĐảm bảo hệ thống hoạt động ổn định, bảo mật, tuân thủ chính sách CN…",
-      "after": {
-        "mo_ta": 3,
-        "yeu_cau": 3,
-        "phuc_loi": 3
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2111896",
-      "source": "vietnamworks",
-      "field": "sections",
-      "before": "Hạ tầng viễn thông: Quản lý hạ tầng, nhà trạm và hệ thống phụ trợ của hơn 1.700 trạm BTS (nguồn điện, máy phát điện, điều hòa, cột anten, điện mặt trời, PCCC); cập nhật dữ liệu Datasite; tổ chức sửa c…",
-      "after": {
-        "phuc_loi": 7,
-        "yeu_cau": 3,
-        "mo_ta": 2
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2121518",
-      "source": "vietnamworks",
-      "field": "sections",
-      "before": "Chủ động thực hiện threat hunting nhằm phát hiện sớm các dấu hiệu tấn công trên hệ thống doanh nghiệp, đặc biệt trên Microsoft Defender portal và Trellix EDR Rà soát, thu thập evidence, thực hiện fore…",
-      "after": {
-        "phuc_loi": 8,
-        "mo_ta": 1,
-        "yeu_cau": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C87E30",
-      "source": "careerviet",
-      "field": "sections",
-      "before": "Mô tả Công việc -Chịu trách nhiệm rà soát cuối cùng và chỉnh sửa các KPI quan trọng của nhà máy như là tỉ lệ hiệu suất, sản lượng cắt giảm, tính khả dụng của nhà máy, bức xạ mặt trời, sản lượng điện. …",
-      "after": {
-        "mo_ta": 1,
-        "yeu_cau": 1,
-        "phuc_loi": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C88EE5",
-      "source": "careerviet",
-      "field": "sections",
-      "before": "Mô tả Công việc Phân tích yêu cầu & Lập kế hoạch kiểm thử: Độc lập đọc hiểu, phân tích tài liệu yêu cầu (BRD, User Story, Solution Design) của dự án Salesforce; chủ động phát hiện gap, điểm chưa rõ ho…",
-      "after": {
-        "mo_ta": 1,
-        "yeu_cau": 1,
-        "phuc_loi": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C83F04",
-      "source": "careerviet",
-      "field": "sections",
-      "before": "Mô tả Công việc Để đảm bảo hồ sơ được tiếp nhận xử lý, ứng viên cần nộp hồ sơ ứng tuyển trên website tuyển dụng chính thức của Vietcombank tại địa chỉ: tuyendung.vietcombank.com.vn [TT KT&KHDL]_Chuyên…",
-      "after": {
-        "mo_ta": 1,
-        "yeu_cau": 1,
-        "phuc_loi": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200967133",
-      "source": "vieclam24h",
-      "field": "sections",
-      "before": "Tham gia phát triển, mở rộng và bảo trì các tính năng Backend bằng Java và Spring Boot dưới sự hướng dẫn trực tiếp của mentor.\nXây dựng, thiết kế và làm việc với RESTful API phục vụ cho các ứng dụng W…",
-      "after": {
-        "yeu_cau": 7,
-        "mo_ta": 5,
-        "phuc_loi": 4
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200953015",
-      "source": "vieclam24h",
-      "field": "sections",
-      "before": "- Xử lý các sự cố kỹ thuật liên quan đến hệ thống công nghệ thông tin phát sinh cho người sử dụng tại văn phòng và các Điểm giới thiệu dịch vụ (“SIP”)\n- Định kỳ kiểm tra, bảo trì máy móc, đảm bảo tất …",
-      "after": {
-        "mo_ta": 7,
-        "phuc_loi": 7,
-        "yeu_cau": 3
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200974220",
-      "source": "vieclam24h",
-      "field": "sections",
-      "before": "1. Giám sát thực thi, hỗ trợ TGĐ điều hành\n- Theo dõi các chỉ đạo, kết luận họp, kế hoạch và cam kết của các phòng/ban, công ty thành viên, nhà máy và dự án.\n- Kiểm tra tiến độ, đối chiếu báo cáo với …",
-      "after": {
-        "mo_ta": 12,
-        "yeu_cau": 7,
-        "phuc_loi": 5
-      },
-      "changed": true
-    },
-    {
-      "job_id": "itviec_ai-solution-architect-ai-llm-python-microservices-finviet-3011",
-      "source": "itviec",
-      "field": "sections",
-      "before": "Design end-to-end AI solution architectures aligned with business requirements and technology strategy.\nEvaluate and implement AI/ML, Generative AI, and Large Language Model (LLM) solutions for real-w…",
-      "after": {
-        "phuc_loi": 12,
-        "yeu_cau": 7,
-        "mo_ta": 6
-      },
-      "changed": true
-    },
-    {
-      "job_id": "itviec_data-steward-sql-bi-data-quality-data-analysis-vietinbank-4317",
-      "source": "itviec",
-      "field": "sections",
-      "before": "Mục tiêu công việc Là cầu nối giữa Đơn vị nghiệp vụ và Khối kỹ thuật/dữ liệu , triển khai các chính sách, quy trình và tiêu chuẩn quản trị dữ liệu tại đơn vị; đảm bảo dữ liệu chất lượng, nhất quán, bả…",
-      "after": {
-        "phuc_loi": 9,
-        "yeu_cau": 7,
-        "mo_ta": 4
-      },
-      "changed": true
-    },
-    {
-      "job_id": "itviec_can-tho-fresher-php-good-english-communication-cong-ty-tnhh-nextedge-5902",
-      "source": "itviec",
-      "field": "sections",
-      "before": "Analyze requirements and propose technical solutions.\nWrite detailed specifications and develop high-quality applications.\nTroubleshoot, test, and maintain the core product software and databases to e…",
-      "after": {
-        "phuc_loi": 16,
-        "yeu_cau": 10,
-        "mo_ta": 6
-      },
-      "changed": true
-    },
-    {
-      "job_id": "glints_58a4cb2c-afad-4839-890e-310dae25b826",
-      "source": "glints",
-      "field": "sections",
-      "before": "Chi tiết công việc QA Engineer (Automation Test) tại The Code Talent Co,. Ltd Job Responsibilities Champion shift-left testing by prioritizing early and frequent test automation.\nDevelop and maintain …",
-      "after": {
-        "mo_ta": 20,
-        "yeu_cau": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "glints_87fe15be-b4d2-49ae-99a1-112a68563d68",
-      "source": "glints",
-      "field": "sections",
-      "before": "Chi tiết công việc Chief QA line lắp ráp - Tiếng Nhật - Lương upto22tr - BD (TN) tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM TÊN VỊ TRÍ QA/QC MANAGER MÔ TẢ CÔNG VIỆC\n- Quản lý QA line lắp ráp li…",
-      "after": {
-        "mo_ta": 20,
-        "phuc_loi": 8,
-        "yeu_cau": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "glints_a05435d7-3750-455c-b4ae-3b874d125eec",
-      "source": "glints",
-      "field": "sections",
-      "before": "Chi tiết công việc IT Support tại Long Van System Solution\n1. Mô tả công việc\n- Triển khai và cấu hình các dịch vụ, hệ thống cho khách hàng (Hosting, VPS và các dịch vụ liên quan).\n- Tiếp nhận, hỗ trợ…",
-      "after": {
-        "mo_ta": 21,
-        "yeu_cau": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_29354118091",
-      "source": "jobsgo",
-      "field": "sections",
-      "before": "Cài đặt, cấu hình và hỗ trợ vận hành các phần mềm quản lý nội bộ, đảm bảo phần mềm hoạt động ổn định và đáp ứng nhu cầu sử dụng.\nTiếp nhận, kiểm tra và xử lý các lỗi phần mềm phát sinh; phối hợp với c…",
-      "after": {
-        "mo_ta": 10,
-        "yeu_cau": 8,
-        "phuc_loi": 6
-      },
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_28898705589",
-      "source": "jobsgo",
-      "field": "sections",
-      "before": "Tiếp nhận, cập nhật kịp thời hiện trạng phòng máy ở các đơn vị.\nPhối hợp, điều động nhân viên IT bảo trì hệ thống phòng máy tại các đơn vị.\nSắp xếp lịch làm việc cho nhân viên IT.\nTrực tiếp liên hệ, p…",
-      "after": {
-        "mo_ta": 6,
-        "yeu_cau": 5,
-        "phuc_loi": 5
-      },
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_29341000777",
-      "source": "jobsgo",
-      "field": "sections",
-      "before": "Quản trị hệ thống ERP:\nQuản lý hệ thống danh mục cho phần mềm ERP (KH, NCC, VTHH, giá mua, giá bán, ...).\nXử lý, khắc phục sự cố, đảm bảo hệ thống ERP hoạt động thông suốt, hiệu quả.\nPhối hợp với nhân…",
-      "after": {
-        "yeu_cau": 18,
-        "mo_ta": 16,
-        "phuc_loi": 7
-      },
-      "changed": true
-    }
-  ]
+  }
 }

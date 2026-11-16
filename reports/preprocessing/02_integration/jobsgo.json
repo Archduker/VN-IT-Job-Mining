@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:26:48+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:18:19+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/01b_deduplication/jobsgo.jsonl",
-    "rows": 549
+    "rows": 547
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 549
+    "rows": 547
   },
   "dropped": [
     {
@@ -34,7 +34,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
       "action": "modify",
-      "rows_affected": 549,
+      "rows_affected": 547,
       "examples": []
     },
     {
@@ -55,7 +55,7 @@
       "id": "I4",
       "name": "Bỏ tag SEO và ngành nghề khỏi skills_list",
       "action": "modify",
-      "rows_affected": 547,
+      "rows_affected": 545,
       "examples": [
         {
           "job_id": "27681538345",
@@ -84,7 +84,7 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 549,
+      "rows_affected": 547,
       "examples": [
         {
           "job_id": "27681538345",
@@ -159,8 +159,8 @@
     },
     {
       "field": "working_locations",
-      "fill_pct_in": 96.4,
-      "fill_pct_out": 96.4
+      "fill_pct_in": 96.5,
+      "fill_pct_out": 96.5
     },
     {
       "field": "raw_posted_date",
@@ -199,8 +199,8 @@
     },
     {
       "field": "raw_headcount",
-      "fill_pct_in": 59.2,
-      "fill_pct_out": 59.2
+      "fill_pct_in": 59.0,
+      "fill_pct_out": 59.0
     },
     {
       "field": "skills_list",

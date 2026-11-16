@@ -101,7 +101,7 @@ graph LR
 - **Đặt vấn đề:** Cơ cấu việc làm IT phân hóa mạnh mẽ giữa các trung tâm kinh tế: Hà Nội thiên về khối cơ quan nhà nước, viễn thông, fintech và doanh nghiệp sản xuất; TP. Hồ Chí Minh dẫn đầu về product công nghệ, outsourcing toàn cầu, e-commerce và startup; Đà Nẵng nổi lên như một cứ điểm outsourcing lớn.
 - **Mục tiêu kỹ thuật:**
   - Chuẩn hóa địa lý về 34 tỉnh thành sau sáp nhập hành chính (tập trung 3 đầu tàu: Hà Nội, TP.HCM, Đà Nẵng) và hình thức làm việc Remote/Hybrid.
-  - Phân loại tin tuyển dụng vào 12 nhóm nghề chuẩn (**12 Job Families**): Backend, Frontend, Fullstack, Mobile, DevOps/Cloud, Data Engineer, Data Science/AI, QA/QC, Security, Product/Project, System/Network, Embedded/IoT.
+  - Phân loại tin tuyển dụng vào nhóm nghề chuẩn (**12 Job Families** theo thiết kế ban đầu; từ 11/11/2026 pipeline dùng 10 nhóm + Other: Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI, xem PH6 và L-47): Backend, Frontend, Fullstack, Mobile, DevOps/Cloud, Data Engineer, Data Science/AI, QA/QC, Security, Product/Project, System/Network, Embedded/IoT.
   - Ứng dụng phân cụm **K-Means / HDBSCAN** trên không gian vector kết hợp giữa kỹ năng và văn bản mô tả để tìm kiếm các cụm công việc đặc thù (Niche Job Clusters).
 - **Giá trị nghiệp vụ:** Cung cấp bức tranh toàn cảnh giúp người lao động lựa chọn địa điểm làm việc và định vị chuyên môn phù hợp với xu thế dịch chuyển của thị trường.
 

@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:58+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:31+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/01_clean/glints.jsonl",
-    "rows": 264
+    "rows": 254
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/glints.jsonl",
-    "rows": 256
+    "rows": 246
   },
   "dropped": [
     {
@@ -142,11 +142,11 @@
           "url": "https://glints.com/vn/opportunities/jobs/giam-sat-du-an-erp-va-chuyen-doi-so-luong-20-30-trieu-thang/27b3e9be-5e45-41d3-b5d8-e220a9f46c30"
         },
         {
-          "job_id": "3dddfc91-fe4b-4fc6-bfe9-80a1b6338ea2",
+          "job_id": "3a5f7b15-db25-4be0-b944-86d142c2b33c",
           "field": "jaccard",
           "before": null,
-          "after": 0.8108,
-          "url": "https://glints.com/vn/opportunities/jobs/ky-su-tu-van-giai-phap-cntt-vmware-network-sercurity/3dddfc91-fe4b-4fc6-bfe9-80a1b6338ea2"
+          "after": 0.7512,
+          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-ai/3a5f7b15-db25-4be0-b944-86d142c2b33c"
         }
       ]
     }
@@ -170,7 +170,7 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 182,
+    "blocking_blocks": 175,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 8

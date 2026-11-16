@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:32+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:07+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/vieclam24h/raw",
     "rows": 1276
   },
   "output": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
-    "rows": 175
+    "rows": 173
   },
   "dropped": [
     {
@@ -45,13 +45,13 @@
     },
     {
       "rule": "C6",
-      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "rows": 0
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 9
+      "rows": 11
     }
   ],
   "rules": [
@@ -180,7 +180,7 @@
     },
     {
       "id": "C6",
-      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề + tỉnh, không phân biệt tuần cào)",
+      "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
       "rows_affected": 0,
       "examples": []
@@ -189,28 +189,28 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 9,
+      "rows_affected": 11,
       "examples": [
+        {
+          "job_id": "200903136",
+          "field": "dedup_key",
+          "before": "viễn thông fpt|design verification intern",
+          "after": "giữ topcv:2262435",
+          "url": "https://vieclam24h.vn/it-phan-mem/design-verification-intern-c8p210000187id200903136.html"
+        },
         {
           "job_id": "200928170",
           "field": "dedup_key",
-          "before": "công nghệ thiên hoàng|qa manual tester (bank, finance)|ha_noi",
+          "before": "công nghệ thiên hoàng|qa manual tester (bank, finance)",
           "after": "giữ topcv:2164938",
           "url": "https://vieclam24h.vn/it-phan-mem/qa-manual-tester-bank-finance-c8p210000160id200928170.html"
         },
         {
           "job_id": "200944374",
           "field": "dedup_key",
-          "before": "hạo phương|nhân viên ai & it support|ho_chi_minh",
+          "before": "hạo phương|nhân viên ai & it support",
           "after": "giữ jobsgo:28995632491",
           "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-ai-it-support-c8p210000187id200944374.html"
-        },
-        {
-          "job_id": "200957562",
-          "field": "dedup_key",
-          "before": "giải pháp atom|site reliability engineer (sre) - đi làm ngay|ho_chi_minh",
-          "after": "giữ jobsgo:29226394017",
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/site-reliability-engineer-sre-di-lam-ngay-c7p210000187id200957562.html"
         }
       ]
     }

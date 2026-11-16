@@ -14,7 +14,7 @@ Bước 5 của file thiết kế: đưa mọi trường về một dạng chu�
 | Kinh nghiệm | số năm tối thiểu |
 | Cấp bậc | **5 cấp**: Intern/Fresher, Junior, Middle, Senior, Lead/Manager |
 | Địa điểm | **34 tỉnh/thành** sau sáp nhập (`provinces_34.json`); Remote/Hybrid là cột hình thức làm việc riêng |
-| Nhóm nghề | **12 nhóm + Other** (luật từ khóa tiêu đề và kỹ năng) |
+| Nhóm nghề | **10 nhóm + Other** từ 11/11/2026 (L-47: Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI; trước đó 16 nhóm, ban đầu 12 nhóm; luật từ khóa tiêu đề, kỹ năng và từ điển `job_titles.json`) |
 | Công ty | `company_key` + `rapidfuzz` >= 90 |
 | Ngày | tuyệt đối theo `crawled_at` |
 | **Chức danh (yêu cầu mới 10/11)** | `job_title_clean` -> chức danh chuẩn `title_canonical` -> nhóm nghề; luật if-else + `rapidfuzz`, không dùng model |
@@ -348,6 +348,7 @@ Không sửa raw; không sửa `job_title_clean`; không điền hay suy giá tr
 
 ## 10. Quyết định đã chốt (10/11/2026, người dùng)
 
+- **Cập nhật 11/11/2026 (người dùng chốt):** nhóm nghề thành 16 nhóm + `Other`: bỏ Data Engineer (gộp vào Data Science/AI; Data Analyst/BI cũng vào Data Science/AI) và thêm Software Engineering, Game Development, Design, Database, Enterprise Software (chỉ gán qua `job_titles.json` đã duyệt). `JOB_FAMILIES` thay `JOB_FAMILIES_12` trong `preprocessing/normalization/job_title.py`. Phần dưới là lịch sử.
 - **K9 = A:** đúng 12 nhóm SPEC-01 (Backend, Frontend, Fullstack, Mobile, DevOps/Cloud, Data Engineer, Data Science/AI, QA/QC, Security, Product/Project, System/Network, Embedded/IoT) + `Other`; BA vào Product/Project; UI/UX và thiết kế đồ họa vào `Other`. K9c: nhãn tiếng Anh. **K9b (agent chọn, người dùng xem lại):** Data Analyst, BI, "phân tích dữ liệu" vào Data Science/AI.
 - **K4:** itviec `3.1 năm (37 tháng)` đọc phần nguyên: 3 năm (`0.8 -> 0`, `5.1 -> 5`), status `compound_years_months`. Hệ quả cần xem: `0.8 năm` cho `exp_min = 0` nên PH7 M3c suy `Intern/Fresher` (có cờ `level_inferred`) cho 317 tin itviec.
 - **K5:** cấp bậc không xác định là null (không dùng -1). **K6:** Project/Product Manager tính là Lead/Manager (đổi so với đề xuất cũ).

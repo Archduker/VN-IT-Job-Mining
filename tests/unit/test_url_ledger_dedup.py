@@ -307,3 +307,27 @@ def test_migrate_prefixes_dry_run_then_apply():
     assert "silver/itviec/preprocessing/b.parquet" not in s3.objects
     assert s3.objects["silver/topdev/preprocessing/c.parquet"] == "C"    # xung đột: giữ nguyên cả hai
     assert s3.objects["staging/topdev/preprocessing/c.parquet"] == "khác"
+
+
+def test_closed_record_never_selected_for_detail(temp_ledger: UrlLedger):
+    """SCRAPE-8: tin CLOSED không vào hàng đợi Detail, kể cả khi quá 21 ngày."""
+    rec = temp_ledger.register_url("https://example.com/job/9", job_id="9", preliminary_title="Closed Job")
+    temp_ledger.mark_closed(rec.url_hash)
+    temp_ledger.records[rec.url_hash]["last_scraped_at"] = (datetime.now(timezone.utc) - timedelta(days=60)).isoformat()
+    assert temp_ledger.get_pending_or_due_records(recheck_days=21) == []
+
+
+def test_change_timestamps_strictly_increase(monkeypatch):
+    """SCRAPE-17: đồng hồ thô (Windows) trả cùng một mốc thì updated_at vẫn tăng, để save_catalog phân được bên đổi sau."""
+    import collection.common.url_ledger as ul
+
+    frozen = datetime(2026, 11, 11, tzinfo=timezone.utc)
+
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return frozen
+
+    monkeypatch.setattr(ul, "datetime", Clock)
+    a, b = ul._change_ts(), ul._change_ts()
+    assert a < b

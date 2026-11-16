@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:21+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:54:39+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 4699
+    "rows": 4671
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 4699
+    "rows": 4671
   },
   "dropped": [],
   "rules": [
@@ -18,16 +18,16 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 9937,
+      "rows_affected": 9854,
       "examples": [],
       "by_source": {
-        "topcv": 2269,
-        "topdev": 1654,
-        "vietnamworks": 979,
-        "careerviet": 1164,
-        "vieclam24h": 178,
-        "itviec": 2713,
-        "glints": 539,
+        "topcv": 2274,
+        "topdev": 1636,
+        "vietnamworks": 980,
+        "careerviet": 1168,
+        "vieclam24h": 176,
+        "itviec": 2662,
+        "glints": 517,
         "jobsgo": 441
       }
     },
@@ -35,7 +35,7 @@
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 2151,
+      "rows_affected": 2140,
       "examples": [
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
@@ -60,38 +60,38 @@
         }
       ],
       "by_source": {
-        "topcv": 887,
+        "topcv": 886,
         "topdev": 58,
         "vietnamworks": 218,
         "careerviet": 120,
-        "vieclam24h": 153,
-        "itviec": 212,
-        "glints": 154,
-        "jobsgo": 349
+        "vieclam24h": 151,
+        "itviec": 210,
+        "glints": 150,
+        "jobsgo": 347
       }
     },
     {
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 4518,
+      "rows_affected": 4493,
       "examples": [],
       "by_source": {
-        "topcv": 1511,
+        "topcv": 1513,
         "topdev": 66,
         "vietnamworks": 774,
-        "careerviet": 394,
-        "vieclam24h": 166,
-        "itviec": 803,
-        "glints": 256,
-        "jobsgo": 548
+        "careerviet": 392,
+        "vieclam24h": 164,
+        "itviec": 792,
+        "glints": 246,
+        "jobsgo": 546
       }
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 4257,
+      "rows_affected": 4236,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -116,31 +116,31 @@
         }
       ],
       "by_source": {
-        "topcv": 1511,
+        "topcv": 1513,
         "topdev": 57,
         "vietnamworks": 654,
-        "careerviet": 361,
-        "vieclam24h": 166,
-        "itviec": 726,
-        "glints": 234,
-        "jobsgo": 548
+        "careerviet": 359,
+        "vieclam24h": 164,
+        "itviec": 717,
+        "glints": 226,
+        "jobsgo": 546
       }
     },
     {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 2775,
+      "rows_affected": 2773,
       "examples": [],
       "by_source": {
-        "topcv": 1511,
+        "topcv": 1513,
         "topdev": 0,
         "vietnamworks": 773,
         "careerviet": 0,
-        "vieclam24h": 166,
+        "vieclam24h": 164,
         "itviec": 0,
         "glints": 0,
-        "jobsgo": 325
+        "jobsgo": 323
       }
     },
     {
@@ -164,17 +164,17 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 4699,
+      "rows_affected": 4671,
       "examples": [],
       "by_source": {
-        "topcv": 1518,
-        "topdev": 204,
+        "topcv": 1520,
+        "topdev": 202,
         "vietnamworks": 774,
-        "careerviet": 401,
-        "vieclam24h": 166,
-        "itviec": 831,
-        "glints": 256,
-        "jobsgo": 549
+        "careerviet": 400,
+        "vieclam24h": 164,
+        "itviec": 818,
+        "glints": 246,
+        "jobsgo": 547
       }
     },
     {
@@ -198,7 +198,7 @@
       "id": "T6.2",
       "name": "Chuẩn hóa Unicode về NFC",
       "action": "modify",
-      "rows_affected": 35,
+      "rows_affected": 34,
       "examples": [],
       "by_source": {
         "topcv": 0,
@@ -207,7 +207,7 @@
         "careerviet": 14,
         "vieclam24h": 0,
         "itviec": 0,
-        "glints": 17,
+        "glints": 16,
         "jobsgo": 0
       }
     },
@@ -232,16 +232,16 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 1540,
+      "rows_affected": 1526,
       "examples": [],
       "by_source": {
-        "topcv": 458,
-        "topdev": 77,
-        "vietnamworks": 245,
+        "topcv": 457,
+        "topdev": 76,
+        "vietnamworks": 246,
         "careerviet": 142,
         "vieclam24h": 57,
-        "itviec": 279,
-        "glints": 134,
+        "itviec": 273,
+        "glints": 127,
         "jobsgo": 148
       }
     },
@@ -249,16 +249,16 @@
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 1288,
+      "rows_affected": 1274,
       "examples": [],
       "by_source": {
-        "topcv": 77,
-        "topdev": 55,
-        "vietnamworks": 345,
+        "topcv": 80,
+        "topdev": 53,
+        "vietnamworks": 344,
         "careerviet": 69,
         "vieclam24h": 10,
-        "itviec": 555,
-        "glints": 113,
+        "itviec": 547,
+        "glints": 107,
         "jobsgo": 64
       }
     },
@@ -266,7 +266,7 @@
       "id": "T7",
       "name": "Rút kỹ năng và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 4685,
+      "rows_affected": 4657,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -291,21 +291,21 @@
         }
       ],
       "by_source": {
-        "topcv": 1517,
-        "topdev": 204,
+        "topcv": 1519,
+        "topdev": 202,
         "vietnamworks": 774,
-        "careerviet": 397,
-        "vieclam24h": 166,
-        "itviec": 831,
-        "glints": 255,
-        "jobsgo": 541
+        "careerviet": 396,
+        "vieclam24h": 164,
+        "itviec": 818,
+        "glints": 245,
+        "jobsgo": 539
       }
     },
     {
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 4685,
+      "rows_affected": 4656,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -330,14 +330,14 @@
         }
       ],
       "by_source": {
-        "topcv": 1511,
-        "topdev": 204,
+        "topcv": 1513,
+        "topdev": 202,
         "vietnamworks": 773,
-        "careerviet": 396,
-        "vieclam24h": 166,
-        "itviec": 831,
-        "glints": 256,
-        "jobsgo": 548
+        "careerviet": 394,
+        "vieclam24h": 164,
+        "itviec": 818,
+        "glints": 246,
+        "jobsgo": 546
       }
     }
   ],
@@ -354,28 +354,28 @@
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 64.0,
-      "fill_pct_out": 64.0
+      "fill_pct_in": 63.8,
+      "fill_pct_out": 63.8
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 94.6,
-      "fill_pct_out": 94.6
+      "fill_pct_in": 94.7,
+      "fill_pct_out": 94.7
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 90.6,
-      "fill_pct_out": 90.6
+      "fill_pct_in": 90.7,
+      "fill_pct_out": 90.7
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 69.1,
-      "fill_pct_out": 69.1
+      "fill_pct_in": 69.3,
+      "fill_pct_out": 69.3
     },
     {
       "field": "headcount",
-      "fill_pct_in": 59.0,
-      "fill_pct_out": 59.0
+      "fill_pct_in": 59.4,
+      "fill_pct_out": 59.4
     },
     {
       "field": "job_title_clean",
@@ -419,47 +419,47 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1518,
-        "output": 1518
+        "input": 1520,
+        "output": 1520
       },
       "topdev": {
-        "input": 204,
-        "output": 204
+        "input": 202,
+        "output": 202
       },
       "vietnamworks": {
         "input": 774,
         "output": 774
       },
       "careerviet": {
-        "input": 401,
-        "output": 401
+        "input": 400,
+        "output": 400
       },
       "vieclam24h": {
-        "input": 166,
-        "output": 166
+        "input": 164,
+        "output": 164
       },
       "itviec": {
-        "input": 831,
-        "output": 831
+        "input": 818,
+        "output": 818
       },
       "glints": {
-        "input": 256,
-        "output": 256
+        "input": 246,
+        "output": 246
       },
       "jobsgo": {
-        "input": 549,
-        "output": 549
+        "input": 547,
+        "output": 547
       }
     },
     "language_distribution": {
-      "vi": 3404,
-      "en": 1288,
+      "vi": 3390,
+      "en": 1274,
       "other": 7
     },
     "text_quality": {
       "before": {
         "html": 10,
-        "nfc": 35,
+        "nfc": 34,
         "hidden": 28
       },
       "residual_rows": {
@@ -474,7 +474,15 @@
   },
   "samples": [
     {
-      "job_id": "topcv_2295531",
+      "job_id": "topcv_2315697",
+      "source": "topcv",
+      "field": "exp_min_years",
+      "before": "2 năm",
+      "after": 2.0,
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2013821",
       "source": "topcv",
       "field": "headcount",
       "before": "1 người",
@@ -482,35 +490,11 @@
       "changed": true
     },
     {
-      "job_id": "topcv_2328927",
+      "job_id": "topcv_2315423",
       "source": "topcv",
-      "field": "salary_min_vnd",
-      "before": "15 - 20 triệu",
-      "after": 15000000.0,
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2114543",
-      "source": "topcv",
-      "field": "exp_min_years",
-      "before": "Không yêu cầu",
-      "after": 0.0,
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2138226",
-      "source": "topdev",
-      "field": "salary_min_vnd",
-      "before": "Thỏa thuận",
-      "after": null,
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2138613",
-      "source": "topdev",
       "field": "description_clean",
-      "before": "Quản lý đội ngũ thiết kế đa phương tiện và đảm bảo chất lượng, tiến độ dự án\nLàm việc với các bộ phận liên quan để xây dựng chiến lược phù hợp với mục tiêu và thông điệp của Công ty\nGiám sát và quản l…",
-      "after": "Quản lý đội ngũ thiết kế đa phương tiện và đảm bảo chất lượng, tiến độ dự án Làm việc với các bộ phận liên quan để xây dựng chiến lược phù hợp với mục tiêu và thông điệp của Công ty Giám sát và quản l…",
+      "before": "Bộ phận Công nghệ thông tin / An toàn thông tin\nBáo cáo cho Security Lead / Information Security Manager\n1. Tổng quan vị trí\nVị trí thuộc Giai đoạn 1 (06 tháng) của roadmap xây dựng năng lực ATTT cho …",
+      "after": "Bộ phận Công nghệ thông tin / An toàn thông tin Báo cáo cho Security Lead / Information Security Manager\n1. Tổng quan vị trí Vị trí thuộc Giai đoạn 1 (06 tháng) của roadmap xây dựng năng lực ATTT cho …",
       "changed": true
     },
     {
@@ -519,6 +503,22 @@
       "field": "requirements_clean",
       "before": "Experience\nTối thiểu 4 năm kinh nghiệm trong Software QA/Testing.\nCó kinh nghiệm trong các dự án hệ thống quy mô lớn, ưu tiên:\nBanking / Finance\nCore Banking\nPayment\nLending\nDigital Banking\nData / Rep…",
       "after": "Experience Tối thiểu 4 năm kinh nghiệm trong Software QA/Testing.\nCó kinh nghiệm trong các dự án hệ thống quy mô lớn, ưu tiên:\nBanking / Finance Core Banking Payment Lending Digital Banking Data / Rep…",
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2137775",
+      "source": "topdev",
+      "field": "salary_min_vnd",
+      "before": "Thỏa thuận",
+      "after": null,
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2138377",
+      "source": "topdev",
+      "field": "description_clean",
+      "before": "1. Nghiên cứu thị trường & đề xuất sản phẩm\nHoạt động chính: Khảo sát nhu cầu theo phân khúc (HKD/Micro/SME/USME), phân tích cạnh tranh, xây dựng business case, BRD cho các sản phẩm mới/ nâng cấp sản …",
+      "after": "1. Nghiên cứu thị trường & đề xuất sản phẩm Hoạt động chính: Khảo sát nhu cầu theo phân khúc (HKD/Micro/SME/USME), phân tích cạnh tranh, xây dựng business case, BRD cho các sản phẩm mới/ nâng cấp sản …",
       "changed": true
     },
     {
@@ -546,71 +546,71 @@
       "changed": true
     },
     {
-      "job_id": "careerviet_35C894B1",
+      "job_id": "careerviet_35C8B374",
       "source": "careerviet",
+      "field": "salary_min_vnd",
+      "before": "1.000 - 1.500 USD",
+      "after": 25400000.0,
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C87608",
+      "source": "careerviet",
+      "field": "exp_min_years",
+      "before": "2 - 5 Năm",
+      "after": 2.0,
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C8B34E",
+      "source": "careerviet",
+      "field": "requirements_clean",
+      "before": "Yêu Cầu Công Việc Làm ngoài giờ và trực hệ thống. ﻿Công việc có thể phát sinh ngoài giờ hành chính khi xử lý sự cố hoặc triển khai thay đổi cần khung giờ thấp điểm. Ứng viên cần sẵn sàng trực hệ thống…",
+      "after": "Yêu Cầu Công Việc Làm ngoài giờ và trực hệ thống. Công việc có thể phát sinh ngoài giờ hành chính khi xử lý sự cố hoặc triển khai thay đổi cần khung giờ thấp điểm. Ứng viên cần sẵn sàng trực hệ thống …",
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200923764",
+      "source": "vieclam24h",
+      "field": "salary_min_vnd",
+      "before": "45 - 60 triệu",
+      "after": 45000000.0,
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200956399",
+      "source": "vieclam24h",
+      "field": "exp_min_years",
+      "before": "Chưa có kinh nghiệm",
+      "after": 0.0,
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200974220",
+      "source": "vieclam24h",
       "field": "posted_date",
-      "before": "16/10/2026",
-      "after": "2026-10-16",
+      "before": "26/10/2026",
+      "after": "2026-10-26",
       "changed": true
     },
     {
-      "job_id": "careerviet_35C89125",
-      "source": "careerviet",
-      "field": "salary_min_vnd",
-      "before": "Cạnh tranh",
-      "after": null,
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C887F9",
-      "source": "careerviet",
-      "field": "exp_min_years",
-      "before": "3 - 6 Năm",
-      "after": 3.0,
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200955584",
-      "source": "vieclam24h",
-      "field": "exp_min_years",
-      "before": "Hơn 5 năm",
-      "after": 5.0,
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200383662",
-      "source": "vieclam24h",
-      "field": "job_title_clean",
-      "before": "Full – Stack Java Developer (Onsite)",
-      "after": "Full - Stack Java Developer (Onsite)",
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200966589",
-      "source": "vieclam24h",
-      "field": "salary_min_vnd",
-      "before": "25 - 45 triệu",
-      "after": 25000000.0,
-      "changed": true
-    },
-    {
-      "job_id": "itviec_backend-developer-shinhan-ds-4838",
+      "job_id": "itviec_da-nang-tech-lead-ai-agent-products-doraverse-jsc-tech-ai-3653",
       "source": "itviec",
-      "field": "description_clean",
-      "before": "Job description\nWe are looking for Middle/Senior Software Developers to join the Core Banking team at Shinhan Bank Vietnam. The candidate will be responsible for developing, maintaining, and enhancing…",
-      "after": "Job description We are looking for Middle/Senior Software Developers to join the Core Banking team at Shinhan Bank Vietnam. The candidate will be responsible for developing, maintaining, and enhancing…",
+      "field": "salary_min_vnd",
+      "before": "1,700 - 2,100 USD",
+      "after": 43180000.0,
       "changed": true
     },
     {
-      "job_id": "itviec_senior-test-qa-qc-tester-english-vihat-technology-0019",
+      "job_id": "itviec_cv-cvcc-business-analyst-ngan-hang-tnhh-mtv-viet-nam-hien-dai-mbv-1658",
       "source": "itviec",
       "field": "requirements_clean",
-      "before": "English proficiency.\nBachelor’s degree in computer science.\nStrong attention to detail and multi-tasking skills\nAt least 5 years as Senior Test or above in a large foreign financial institution.\nExper…",
-      "after": "English proficiency.\nBachelor’s degree in computer science.\nStrong attention to detail and multi-tasking skills At least 5 years as Senior Test or above in a large foreign financial institution.\nExper…",
+      "before": "JUNIOR BUSINESS ANALYST\nMô tả công việc & Yêu cầu:\nKinh nghiệm:\n1 – 2 năm kinh nghiệm ở vị trí BA hoặc vị trí phân tích tương đương.\nMức độ độc lập:\nThực hiện công việc theo phạm vi được giao, nhận hư…",
+      "after": "JUNIOR BUSINESS ANALYST Mô tả công việc & Yêu cầu:\nKinh nghiệm:\n1 - 2 năm kinh nghiệm ở vị trí BA hoặc vị trí phân tích tương đương.\nMức độ độc lập:\nThực hiện công việc theo phạm vi được giao, nhận hư…",
       "changed": true
     },
     {
-      "job_id": "itviec_senior-manual-qa-qc-testers-playwright-codehq-2705",
+      "job_id": "itviec_apo-leader-japanese-it-comtor-bridge-engineer-brse-mynavi-techtus-vietnam-5000",
       "source": "itviec",
       "field": "exp_min_years",
       "before": "3.1 năm (37 tháng)",
@@ -618,23 +618,7 @@
       "changed": true
     },
     {
-      "job_id": "glints_3a5f7b15-db25-4be0-b944-86d142c2b33c",
-      "source": "glints",
-      "field": "requirements_clean",
-      "before": "Mô tả công việc\nLàm tại công ty\nDưới một năm kinh nghiệm\nTối thiểu Cao Đẳng",
-      "after": "Mô tả công việc Làm tại công ty Dưới một năm kinh nghiệm Tối thiểu Cao Đẳng",
-      "changed": true
-    },
-    {
-      "job_id": "glints_e2cb1f15-0f4d-4f32-9432-443e49b292c7",
-      "source": "glints",
-      "field": "description_clean",
-      "before": "Chi tiết công việc Senior DevOps/Data Engineer tại Panasonic Việt Nam\nLocation: Lotte Tower, 54 Lieu Giai, Ba Dinh, Ha Noi\nJob Description\nLộ trình phát triển sự nghiệp đa chiều\nCơ hội đào tạo, công t…",
-      "after": "Chi tiết công việc Senior DevOps/Data Engineer tại Panasonic Việt Nam Location: Lotte Tower, 54 Lieu Giai, Ba Dinh, Ha Noi Job Description Lộ trình phát triển sự nghiệp đa chiều Cơ hội đào tạo, công t…",
-      "changed": true
-    },
-    {
-      "job_id": "glints_c4709a1c-3395-4386-af56-aaaf6661b8cc",
+      "job_id": "glints_81129b1a-9c66-4974-8c6b-06f0a7cbf15c",
       "source": "glints",
       "field": "exp_min_years",
       "before": "1 - 3 năm kinh nghiệm",
@@ -642,23 +626,39 @@
       "changed": true
     },
     {
-      "job_id": "jobsgo_29082130721",
-      "source": "jobsgo",
+      "job_id": "glints_00b4d332-8e6e-4714-9853-e816085f7d01",
+      "source": "glints",
+      "field": "requirements_clean",
+      "before": "Mô tả công việc\nLàm tại công ty\nTối thiểu Cử Nhân",
+      "after": "Mô tả công việc Làm tại công ty Tối thiểu Cử Nhân",
+      "changed": true
+    },
+    {
+      "job_id": "glints_0ceab25f-5c69-4803-bfda-db338198f092",
+      "source": "glints",
       "field": "salary_min_vnd",
-      "before": "Đến 1 triệu VNĐ",
+      "before": "Công ty không công khai thông tin này",
       "after": null,
       "changed": true
     },
     {
-      "job_id": "jobsgo_29296556710",
+      "job_id": "jobsgo_29330246209",
       "source": "jobsgo",
-      "field": "exp_min_years",
-      "before": "4 - 5 năm",
-      "after": 4.0,
+      "field": "salary_min_vnd",
+      "before": "7 - 20 triệu VNĐ",
+      "after": 7000000.0,
       "changed": true
     },
     {
-      "job_id": "jobsgo_29131327438",
+      "job_id": "jobsgo_29120817292",
+      "source": "jobsgo",
+      "field": "posted_date",
+      "before": "30/09/2026",
+      "after": "2026-09-30",
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29348496385",
       "source": "jobsgo",
       "field": "headcount",
       "before": "1",

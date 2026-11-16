@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Chức danh -> chức danh chuẩn -> nhóm nghề (PH6 N15-N17). Luật if-else + rapidfuzz, không dùng model.
 
-Nhóm nghề: đúng 12 nhóm của SPEC-01 mục 4.4 + `Other` (người dùng chốt phương án A, 10/11/2026).
+Nhóm nghề: 10 nhóm + `Other` (người dùng chốt 11/11/2026). Luật từ khóa, kỹ năng cổng và từ điển `job_titles.json` vẫn dùng tên
+nhóm cũ (16 nhóm); `FAMILY_MAP` gộp về 10 nhóm ở đầu ra của `family_from_title`, nên đổi nhóm chỉ cần sửa `FAMILY_MAP`.
 `job_title_clean` không bao giờ bị đổi: mọi hàm ở đây chỉ trả giá trị mới.
 Từ điển `preprocessing/dictionaries/job_titles.json`: chỉ nạp mục `approved: true` (người dùng duyệt).
 """
@@ -21,10 +22,20 @@ OTHER = "Other"
 FUZZY_CUTOFF = 90  # K10: điểm khởi đầu, đo lại trên dữ liệu rồi mới chốt
 FUZZY_MIN_LEN = 8  # tránh "ba", "qa", "it" khớp lung tung
 
-JOB_FAMILIES_12 = [
-    "Backend", "Frontend", "Fullstack", "Mobile", "DevOps/Cloud", "Data Engineer", "Data Science/AI",
-    "QA/QC", "Security", "Product/Project", "System/Network", "Embedded/IoT",
-]
+JOB_FAMILIES = ["Web", "Mobile", "Game", "Bridge", "DevOps/Cloud", "Tester", "Security", "IoT", "Design", "Data/AI"]
+
+# Nhóm cũ (luật, kỹ năng cổng, từ điển) -> 10 nhóm mới. Idempotent: tên mới ánh xạ về chính nó.
+FAMILY_MAP = {
+    "Backend": "Web", "Frontend": "Web", "Fullstack": "Web", "Software Engineering": "Web",
+    "Mobile": "Mobile", "Game Development": "Game",
+    "Product/Project": "Bridge", "Enterprise Software": "Bridge",
+    "DevOps/Cloud": "DevOps/Cloud", "QA/QC": "Tester",
+    "Security": "Security", "System/Network": "Security",
+    "Embedded/IoT": "IoT", "Design": "Design",
+    "Data Science/AI": "Data/AI", "Database": "Data/AI",
+    **{f: f for f in ("Web", "Game", "Bridge", "Tester", "IoT", "Data/AI")},
+    "Other": "Other",
+}
 
 
 def fold(text: Any) -> str:
@@ -46,8 +57,7 @@ _RULES_RAW: List[Tuple[str, List[str]]] = [
     ("DevOps/Cloud", ["devops", "cloud", "sre", "infrastructure engineer", "ci/cd", "platform engineer", "site reliability", "kubernetes", "k8s"]),
     ("System/Network", ["network engineer", "system engineer", "systems engineer", "quản trị mạng", "quản trị hệ thống", "helpdesk", "help desk", "it support",
                         "cisco", "mạng máy tính", "network admin", "network administrator", "system admin", "system administrator", "sysadmin", "kỹ sư hệ thống"]),
-    ("Data Engineer", ["data engineer", "big data", "etl", "data warehouse", "dwh", "kỹ sư dữ liệu", "data platform", "dataops"]),
-    ("Data Science/AI", ["data scientist", "data science", "machine learning", "ai engineer", "ai developer", "ai researcher", "ml engineer", "deep learning",
+    ("Data Science/AI", ["data engineer", "big data", "etl", "data warehouse", "dwh", "kỹ sư dữ liệu", "data platform", "dataops", "data scientist", "data science", "machine learning", "ai engineer", "ai developer", "ai researcher", "ml engineer", "deep learning",
                          "nlp", "computer vision", "trí tuệ nhân tạo", "khoa học dữ liệu", "data analyst", "data analytics", "phân tích dữ liệu",
                          "bi analyst", "bi developer", "business intelligence", "power bi", "tableau", "genai", "llm", "ai"]),
     ("Mobile", ["mobile", "flutter", "react native", "ios", "android", "swift", "kotlin"]),
@@ -65,8 +75,7 @@ _SKILL_GATES: List[Tuple[str, set]] = [
     ("Product/Project", {"Agile/Scrum", "Agile / Scrum", "Roadmapping", "UML", "BPMN", "User Story", "BRD"}),
     ("DevOps/Cloud", {"Docker", "Kubernetes", "AWS", "Google Cloud", "Microsoft Azure", "Azure", "GCP", "CI/CD", "Terraform", "Linux"}),
     ("System/Network", {"Cisco", "CCNA", "TCP/IP", "Windows Server", "Routing", "Switching"}),
-    ("Data Engineer", {"Spark", "Kafka", "Airflow", "Hadoop", "ETL", "Data Engineering", "Big Data"}),
-    ("Data Science/AI", {"Machine Learning", "Artificial Intelligence", "Natural Language Processing", "TensorFlow", "PyTorch", "Power BI", "Tableau"}),
+    ("Data Science/AI", {"Spark", "Kafka", "Airflow", "Hadoop", "ETL", "Data Engineering", "Big Data", "Machine Learning", "Artificial Intelligence", "Natural Language Processing", "TensorFlow", "PyTorch", "Power BI", "Tableau"}),
     ("Mobile", {"Flutter", "React Native", "Swift", "Kotlin", "iOS", "Android", "Dart"}),
     ("Frontend", {"React", "Vue", "Vue.js", "Angular", "HTML/CSS", "Next.js", "TypeScript", "Svelte"}),
     ("Backend", {"Java", "Spring Boot", "Node.js", ".NET Core", "Django", "FastAPI", "Flask", "PHP", "Laravel", "Golang", "C#",
@@ -205,12 +214,12 @@ def family_from_title(core_fold: str, canonical: Optional[str], skills_std: Opti
     if canonical:
         fam = title_dict["family_of"].get(canonical)
         if fam:
-            return fam, "canonical"
+            return FAMILY_MAP.get(fam, fam), "canonical"
     for family, terms in FAMILY_RULES_V2:
         if has_term(core_fold, terms):
-            return family, "title"
+            return FAMILY_MAP[family], "title"
     skills = set(skills_std or []) | set(tech_hint or [])
     hits = [fam for fam, gate in _SKILL_GATES if len(skills & gate) >= 2]
     if len(hits) == 1:
-        return hits[0], "skills"
+        return FAMILY_MAP[hits[0]], "skills"
     return OTHER, "none"

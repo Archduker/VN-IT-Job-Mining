@@ -55,6 +55,7 @@ Ngữ cảnh khi làm việc với crawler trong `collection/`. Root `CLAUDE.md`
 - **TopCV, JobsGO:** trước 02/11 luôn ghi `_v1`. Giờ mọi crawler quyết định version qua `UrlLedger.next_version(record, hash)`.
 - **`get_pending_or_due_records()` đổi tin đến hạn sang `RECHECK_DUE` ngay trong bộ nhớ.** Đừng so `status == "DONE"` để biết tin đã cào; TopDev và VietnamWorks từng vì thế mà ghi version mới cho nội dung không đổi.
 - **`run.py` chỉ đồng bộ R2 khi có `--sync-r2`;** Airflow luôn truyền `sync_r2=True`. Trước 02/11 `run_crawler()` không truyền tham số này nên Airflow không đẩy raw lẫn ledger (SCRAPE-4). Glints chạy qua `GlintsRawPipeline`, luôn ghi thẳng R2.
+- **Cả 8 nguồn raise `DiscoveryError` (C14)** khi không lấy được trang danh sách nào; ITviec chỉ raise khi sitemap cũng không bổ sung được gì (L-41). `updated_at` của ledger lấy từ `_change_ts()` (tăng nghiêm ngặt trong một tiến trình, tránh thế hòa trên đồng hồ Windows).
 - **ITviec:** không có chốt chặn ghi đè catalog riêng (các hàm cũ không ai gọi đã xóa, `docs/issue_log.md` L-24). Bảo vệ là cơ chế chung của ledger: `ledger_push_decision()` và luật gộp theo `updated_at`.
 - **ITviec:** R2 từng có 4 bản ghi test (`job-mot-100` …). Test không được ghi vào `data/` thật hay bucket thật.
 

@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 166
+    "rows": 164
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 166
+    "rows": 164
   },
   "dropped": [],
   "rules": [],
@@ -24,12 +24,12 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 694,
-    "n_jobs_no_skill": 20,
+    "n_job_skill_rows": 700,
+    "n_jobs_no_skill": 19,
     "top_skills": [
       {
         "skill": "communication",
-        "n_jobs": 80
+        "n_jobs": 82
       },
       {
         "skill": "english",
@@ -41,7 +41,7 @@
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 29
+        "n_jobs": 33
       },
       {
         "skill": "logical_thinking",
@@ -49,11 +49,11 @@
       },
       {
         "skill": "python",
-        "n_jobs": 21
+        "n_jobs": 20
       },
       {
         "skill": "machine_learning",
-        "n_jobs": 18
+        "n_jobs": 20
       },
       {
         "skill": "android_sdk",
@@ -76,6 +76,10 @@
         "n_jobs": 12
       },
       {
+        "skill": "project_management",
+        "n_jobs": 12
+      },
+      {
         "skill": "cicd",
         "n_jobs": 11
       },
@@ -89,10 +93,6 @@
       },
       {
         "skill": "mysql",
-        "n_jobs": 11
-      },
-      {
-        "skill": "project_management",
         "n_jobs": 11
       },
       {
@@ -140,11 +140,11 @@
         "n_jobs": 7
       },
       {
-        "skill": "oop",
+        "skill": "jira",
         "n_jobs": 7
       },
       {
-        "skill": "jira",
+        "skill": "business_analysis",
         "n_jobs": 7
       }
     ],
@@ -153,96 +153,76 @@
   },
   "samples": [
     {
-      "job_id": "vieclam24h_200946618",
+      "job_id": "vieclam24h_200946697",
       "source": "vieclam24h",
       "field": "skills",
       "before": [
-        "Software",
-        "software tester",
-        "fpt software",
-        "software developer",
-        "Việc làm TP.HCM",
+        "lập trình game mobile",
+        "Mobile",
+        "mobile developer",
+        "Mobile Apps",
+        "Game",
+        "game designer",
+        "recruitment executive",
+        "Mobile App",
+        "procurement executive",
+        "admin executive",
+        "Việc làm Hà Nội",
         "IT Phần mềm",
-        "Công Ty TNHH Dịch Vụ ..."
+        "Công Ty TNHH Adtirex"
       ],
       "after": [
         "communication",
-        "problem_solving",
-        "project_management",
-        "teamwork",
-        "time_management"
+        "data_analysis",
+        "english",
+        "waterfall"
       ],
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200950600",
+      "job_id": "vieclam24h_200951552",
       "source": "vieclam24h",
       "field": "skills",
       "before": [
-        "qc tester",
-        "qa qc",
-        "nhân viên qa",
-        "nhân viên tester",
-        "qa qc tại long an",
-        "nhân viên qc",
-        "qa qc tại bình dương",
-        "qa qc tại hồ chí minh",
-        "nhân viên qc thực phẩm",
-        "Tester",
-        "Việc làm Hà Nội",
-        "IT Phần mềm",
-        "Công Ty Cổ Phần Truyền ..."
-      ],
-      "after": [
-        "android_sdk",
-        "automation_test",
-        "bug_tracking",
-        "github",
-        "jira",
-        "logical_thinking",
-        "machine_learning",
-        "postman",
-        "qa_qc",
-        "rest_api"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200963101",
-      "source": "vieclam24h",
-      "field": "skills",
-      "before": [
-        "Lập Trình",
+        "nhân viên triển khai phần mềm erp",
+        "nhân viên triển khai phần mềm",
+        "it phần mềm",
+        "Phần Mềm",
         "Trưởng Nhóm",
-        "lập trình python",
-        "lập trình unity",
-        "lập trình php",
-        "lập trình java",
-        "lập trình c",
-        "lập trình android",
+        "kinh doanh phần mềm",
+        "kỹ sư phần mềm",
         "trưởng nhóm marketing",
         "trưởng nhóm bán hàng",
-        "Giáo dục - Đào tạo",
-        "Trường Đại Học Kinh Tế ..."
+        "trưởng nhóm marketing online",
+        "Việc làm TP.HCM",
+        "Công Ty Cổ Phần Asoft"
       ],
       "after": [
-        "angular",
-        "c_lang",
-        "cicd",
-        "data_warehouse",
-        "docker",
-        "dotnet",
-        "elasticsearch",
-        "elk_stack",
-        "github",
-        "gitlab",
-        "microservices",
-        "mongodb",
-        "postgresql",
-        "react",
-        "redis",
-        "sql_server",
-        "vue"
+        "communication",
+        "problem_solving"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200963483",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "nhân viên it",
+        "nhân viên it support",
+        "nhân viên it phần mềm",
+        "It",
+        "it support / it helpdesk",
+        "it officer",
+        "it engineer",
+        "it support",
+        "it manager",
+        "it tiếng anh",
+        "IT Phần cứng - Mạng",
+        "Công Ty TNHH Kỹ Thuật ..."
+      ],
+      "after": [
+        "cybersecurity"
       ],
       "changed": true
     }

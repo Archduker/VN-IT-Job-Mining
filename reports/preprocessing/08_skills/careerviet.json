@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 401
+    "rows": 400
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 401
+    "rows": 400
   },
   "dropped": [],
   "rules": [],
@@ -24,24 +24,28 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 2859,
+    "n_job_skill_rows": 2900,
     "n_jobs_no_skill": 5,
     "top_skills": [
+      {
+        "skill": "communication",
+        "n_jobs": 195
+      },
       {
         "skill": "english",
         "n_jobs": 190
       },
       {
-        "skill": "communication",
-        "n_jobs": 188
-      },
-      {
         "skill": "machine_learning",
-        "n_jobs": 114
+        "n_jobs": 131
       },
       {
         "skill": "python",
         "n_jobs": 104
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 86
       },
       {
         "skill": "teamwork",
@@ -49,11 +53,7 @@
       },
       {
         "skill": "data_analysis",
-        "n_jobs": 73
-      },
-      {
-        "skill": "problem_solving",
-        "n_jobs": 72
+        "n_jobs": 74
       },
       {
         "skill": "logical_thinking",
@@ -88,11 +88,11 @@
         "n_jobs": 51
       },
       {
-        "skill": "linux",
-        "n_jobs": 49
+        "skill": "postgresql",
+        "n_jobs": 48
       },
       {
-        "skill": "postgresql",
+        "skill": "linux",
         "n_jobs": 48
       },
       {
@@ -113,11 +113,11 @@
       },
       {
         "skill": "microservices",
-        "n_jobs": 36
+        "n_jobs": 35
       },
       {
         "skill": "kubernetes",
-        "n_jobs": 36
+        "n_jobs": 35
       },
       {
         "skill": "jira",
@@ -141,7 +141,7 @@
       },
       {
         "skill": "presentation",
-        "n_jobs": 26
+        "n_jobs": 27
       },
       {
         "skill": "nodejs",
@@ -153,48 +153,62 @@
   },
   "samples": [
     {
-      "job_id": "careerviet_35C88A2E",
+      "job_id": "careerviet_35C88AC6",
       "source": "careerviet",
       "field": "skills",
       "before": null,
       "after": [
-        "business_analysis",
-        "logical_thinking",
-        "oracle_db",
-        "problem_solving"
+        "azure",
+        "chromadb",
+        "cicd",
+        "docker",
+        "gcp",
+        "genai",
+        "hugging_face",
+        "infosec",
+        "iso_27001",
+        "kubernetes",
+        "langchain",
+        "llm",
+        "machine_learning",
+        "milvus",
+        "nlp",
+        "numpy",
+        "pandas",
+        "pinecone",
+        "python",
+        "pytorch"
       ],
       "changed": true
     },
     {
-      "job_id": "careerviet_35C8994C",
+      "job_id": "careerviet_35C8A19A",
       "source": "careerviet",
       "field": "skills",
       "before": null,
       "after": [
-        "communication",
-        "english",
-        "problem_solving",
-        "qa_qc"
+        "infosec",
+        "linux",
+        "mysql",
+        "nginx",
+        "ubuntu"
       ],
       "changed": true
     },
     {
-      "job_id": "careerviet_35C83F05",
+      "job_id": "careerviet_35C83F06",
       "source": "careerviet",
       "field": "skills",
       "before": null,
       "after": [
-        "agile_scrum",
         "communication",
         "data_analysis",
         "english",
         "infosec",
-        "java",
         "logical_thinking",
         "machine_learning",
-        "python",
-        "scala",
-        "teamwork"
+        "matlab",
+        "python"
       ],
       "changed": true
     }

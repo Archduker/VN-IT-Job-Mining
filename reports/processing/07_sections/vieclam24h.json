@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:55:04+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 166
+    "rows": 164
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 166
+    "rows": 164
   },
   "dropped": [],
   "rules": [],
@@ -24,55 +24,17 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 3255,
+    "n_bullets": 3229,
     "bullets_by_section": {
-      "mo_ta": 1216,
-      "yeu_cau": 1160,
-      "phuc_loi": 879
+      "mo_ta": 1204,
+      "yeu_cau": 1153,
+      "phuc_loi": 872
     },
     "bullets_by_rule": {
-      "S7.2": 3255
+      "S7.2": 3229
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
     "cues_approved": 0
-  },
-  "samples": [
-    {
-      "job_id": "vieclam24h_200967133",
-      "source": "vieclam24h",
-      "field": "sections",
-      "before": "Tham gia phát triển, mở rộng và bảo trì các tính năng Backend bằng Java và Spring Boot dưới sự hướng dẫn trực tiếp của mentor.\nXây dựng, thiết kế và làm việc với RESTful API phục vụ cho các ứng dụng W…",
-      "after": {
-        "yeu_cau": 7,
-        "mo_ta": 5,
-        "phuc_loi": 4
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200953015",
-      "source": "vieclam24h",
-      "field": "sections",
-      "before": "- Xử lý các sự cố kỹ thuật liên quan đến hệ thống công nghệ thông tin phát sinh cho người sử dụng tại văn phòng và các Điểm giới thiệu dịch vụ (“SIP”)\n- Định kỳ kiểm tra, bảo trì máy móc, đảm bảo tất …",
-      "after": {
-        "mo_ta": 7,
-        "phuc_loi": 7,
-        "yeu_cau": 3
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200974220",
-      "source": "vieclam24h",
-      "field": "sections",
-      "before": "1. Giám sát thực thi, hỗ trợ TGĐ điều hành\n- Theo dõi các chỉ đạo, kết luận họp, kế hoạch và cam kết của các phòng/ban, công ty thành viên, nhà máy và dự án.\n- Kiểm tra tiến độ, đối chiếu báo cáo với …",
-      "after": {
-        "mo_ta": 12,
-        "yeu_cau": 7,
-        "phuc_loi": 5
-      },
-      "changed": true
-    }
-  ]
+  }
 }

@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:54:57+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": null,
-    "rows": 4699
+    "rows": 4671
   },
   "output": {
     "path": null,
-    "rows": 4699
+    "rows": 4671
   },
   "dropped": [],
   "rules": [],
@@ -26,71 +26,71 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1518,
-        "output": 1518
+        "input": 1520,
+        "output": 1520
       },
       "topdev": {
-        "input": 204,
-        "output": 204
+        "input": 202,
+        "output": 202
       },
       "vietnamworks": {
         "input": 774,
         "output": 774
       },
       "careerviet": {
-        "input": 401,
-        "output": 401
+        "input": 400,
+        "output": 400
       },
       "vieclam24h": {
-        "input": 166,
-        "output": 166
+        "input": 164,
+        "output": 164
       },
       "itviec": {
-        "input": 831,
-        "output": 831
+        "input": 818,
+        "output": 818
       },
       "glints": {
-        "input": 256,
-        "output": 256
+        "input": 246,
+        "output": 246
       },
       "jobsgo": {
-        "input": 549,
-        "output": 549
+        "input": 547,
+        "output": 547
       }
     }
   },
   "samples": [
     {
-      "job_id": "topcv_2277882",
+      "job_id": "topcv_2133230",
       "source": "topcv",
       "field": "sections",
-      "before": "Thiết kế và phát triển hệ thống MES.\nPhát triển các chức năng liên quan đến kế hoạch sản xuất, lệnh sản xuất, công đoạn, kết quả sản xuất, LOT/Serial, WIP, chất lượng và quản lý vật tư.\nPhát triển Bac…",
+      "before": "Cơ hội làm việc tại công ty công nghệ hàng đầu Việt Nam về giải pháp POS,Cơ hội hợp tác với quản lý cấp cao của các thương hiệu lớn ngành F&B.Lộ trình thăng tiến rõ ràng theo cơ chế cấp bậc và năng lự…",
       "after": {
-        "mo_ta": 10,
-        "phuc_loi": 9,
+        "phuc_loi": 14,
+        "mo_ta": 6,
         "yeu_cau": 6
       },
       "changed": true
     },
     {
-      "job_id": "topcv_2252024",
+      "job_id": "topcv_2235932",
       "source": "topcv",
       "field": "sections",
-      "before": "Là người định hướng và phát triển sản phẩm phù hợp với nhu cầu thị trường và mục tiêu chiến lược của công ty.\nLà cầu nối giữa các bộ phận Business, BA, UI/UX, Engineering, Marketing và người dùng, đảm…",
+      "before": "Làm việc trực tiếp với khách hàng, tổ chức workshop, phỏng vấn stakeholder.\nPhân tích pain point, khai thác và làm rõ yêu cầu; xác định business objective.\nMô hình hóa quy trình As-is và đề xuất To-be…",
       "after": {
-        "mo_ta": 16,
         "phuc_loi": 16,
-        "yeu_cau": 12
+        "mo_ta": 9,
+        "yeu_cau": 5
       },
       "changed": true
     },
     {
-      "job_id": "topcv_2188055",
+      "job_id": "topcv_2276123",
       "source": "topcv",
       "field": "sections",
-      "before": "Thực hiện kiểm thử chức năng, luồng nghiệp vụ và trải nghiệm người dùng để phát hiện các lỗi hoặc sự không phù hợp trong sản phẩm Xây dựng và thực hiện các kế hoạch kiểm thử (test plan) và kịch bản ki…",
+      "before": "Enhance daily IT operations Lead and coordinate the troubleshooting process Find opportunities for further optimize the IT infrastructure and operations Enhance Back up for System Administrators in cr…",
       "after": {
-        "phuc_loi": 6,
+        "phuc_loi": 14,
         "yeu_cau": 2,
         "mo_ta": 1
       },
@@ -109,14 +109,13 @@
       "changed": true
     },
     {
-      "job_id": "topdev_2138775",
+      "job_id": "topdev_2138779",
       "source": "topdev",
       "field": "sections",
-      "before": "Tiếp nhận thực hiện thiết kế, shop drawing, lập định mức vật tư tủ điện MSB, ATS, hòa đồng bộ, tủ điện phân phối, tủ điện điều khiển, tủ điện hệ thống NLMT phù hợp với các tiêu chuẩn, quy chuẩn quốc g…",
+      "before": "Thực hiện các công tác kiểm thử:\nXây dựng kế hoạch kiểm thử, Phân tích user stories/use case/ các yêu cầu nghiệp vụ để xác định tính hợp lệ/ khả thi để thực hiện kiểm thử; Phối hợp với BA đề xuất phươ…",
       "after": {
-        "phuc_loi": 10,
-        "mo_ta": 6,
-        "yeu_cau": 3
+        "yeu_cau": 17,
+        "mo_ta": 8
       },
       "changed": true
     },
@@ -133,38 +132,38 @@
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2112277",
+      "job_id": "vietnamworks_2112247",
       "source": "vietnamworks",
       "field": "sections",
-      "before": "Quản trị và vận hành toàn bộ hệ sinh thái Microsoft 365: Exchange Online, SharePoint Online, OneDrive, Teams, Azure AD (Entra ID)...\nĐảm bảo hệ thống hoạt động ổn định, bảo mật, tuân thủ chính sách CN…",
+      "before": "Xây dựng và hoàn thiện khung Quản trị dữ liệu Tham mưu và vận hành cơ chế Hội đồng dữ liệu Quản trị chất lượng dữ liệu Quản trị Metadata và Data Dictionary Quản trị cấu trúc dữ liệu, dữ liệu chủ và dữ…",
       "after": {
-        "mo_ta": 3,
+        "phuc_loi": 10,
         "yeu_cau": 3,
-        "phuc_loi": 3
+        "mo_ta": 1
       },
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2111896",
+      "job_id": "vietnamworks_2111856",
       "source": "vietnamworks",
       "field": "sections",
-      "before": "Hạ tầng viễn thông: Quản lý hạ tầng, nhà trạm và hệ thống phụ trợ của hơn 1.700 trạm BTS (nguồn điện, máy phát điện, điều hòa, cột anten, điện mặt trời, PCCC); cập nhật dữ liệu Datasite; tổ chức sửa c…",
+      "before": "Xây dựng, vận hành và cải tiến quy trình kiểm soát chất lượng (QC) từ nguyên liệu đầu vào (bare PCB), qua các công đoạn sản xuất đến thành phẩm.\nĐảm bảo toàn bộ quá trình sản xuất tuân thủ tiêu chuẩn …",
       "after": {
-        "phuc_loi": 7,
+        "phuc_loi": 6,
         "yeu_cau": 3,
         "mo_ta": 2
       },
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2121518",
+      "job_id": "vietnamworks_2121517",
       "source": "vietnamworks",
       "field": "sections",
-      "before": "Chủ động thực hiện threat hunting nhằm phát hiện sớm các dấu hiệu tấn công trên hệ thống doanh nghiệp, đặc biệt trên Microsoft Defender portal và Trellix EDR Rà soát, thu thập evidence, thực hiện fore…",
+      "before": "For this position, minimum works are as follows, Manage security policies for endpoints;\nDevelop plan, implement change process, manage implement policy process of security solution for user;\nExchange…",
       "after": {
-        "phuc_loi": 8,
-        "mo_ta": 1,
-        "yeu_cau": 1
+        "yeu_cau": 15,
+        "phuc_loi": 9,
+        "mo_ta": 5
       },
       "changed": true
     },
@@ -193,7 +192,7 @@
       "changed": true
     },
     {
-      "job_id": "careerviet_35C83F04",
+      "job_id": "careerviet_35C83F05",
       "source": "careerviet",
       "field": "sections",
       "before": "Mô tả Công việc Để đảm bảo hồ sơ được tiếp nhận xử lý, ứng viên cần nộp hồ sơ ứng tuyển trên website tuyển dụng chính thức của Vietcombank tại địa chỉ: tuyendung.vietcombank.com.vn [TT KT&KHDL]_Chuyên…",
@@ -205,26 +204,26 @@
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200967133",
+      "job_id": "vieclam24h_200969055",
       "source": "vieclam24h",
       "field": "sections",
-      "before": "Tham gia phát triển, mở rộng và bảo trì các tính năng Backend bằng Java và Spring Boot dưới sự hướng dẫn trực tiếp của mentor.\nXây dựng, thiết kế và làm việc với RESTful API phục vụ cho các ứng dụng W…",
+      "before": "Thời gian làm việc:\nTrao đổi, hỗ trợ trực tiếp khách hàng về thiết kế website PHP Thiết kế website PHP (Laravel) Kiểm thử, bảo trì, nâng cấp và xử lý lỗi cho các website, dự án đang vận hành.\nCó thể l…",
       "after": {
-        "yeu_cau": 7,
-        "mo_ta": 5,
-        "phuc_loi": 4
+        "yeu_cau": 6,
+        "mo_ta": 3,
+        "phuc_loi": 2
       },
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200953015",
+      "job_id": "vieclam24h_200953169",
       "source": "vieclam24h",
       "field": "sections",
-      "before": "- Xử lý các sự cố kỹ thuật liên quan đến hệ thống công nghệ thông tin phát sinh cho người sử dụng tại văn phòng và các Điểm giới thiệu dịch vụ (“SIP”)\n- Định kỳ kiểm tra, bảo trì máy móc, đảm bảo tất …",
+      "before": "Phân tích nghiệp vụ và xây dựng các tài liệu đặc tả Tham gia triển khai và kiểm thử hệ thống/ phần mềm Viết tài liệu, đào tạo, chuyển giao sản phẩm cho khách hàng Hỗ trợ người dùng trong quá trình vận…",
       "after": {
-        "mo_ta": 7,
-        "phuc_loi": 7,
-        "yeu_cau": 3
+        "yeu_cau": 4,
+        "phuc_loi": 2,
+        "mo_ta": 1
       },
       "changed": true
     },
@@ -241,84 +240,86 @@
       "changed": true
     },
     {
-      "job_id": "itviec_ai-solution-architect-ai-llm-python-microservices-finviet-3011",
+      "job_id": "itviec_backend-developer-java-mysql-postgresql-dosoftpro-4517",
       "source": "itviec",
       "field": "sections",
-      "before": "Design end-to-end AI solution architectures aligned with business requirements and technology strategy.\nEvaluate and implement AI/ML, Generative AI, and Large Language Model (LLM) solutions for real-w…",
+      "before": "Phân tích thiết kế và xây dựng các module Back-end và REST API Áp dụng CI/CD để deploy code lên server test hàng ngày Báo cáo kết quả công việc cho PM",
       "after": {
-        "phuc_loi": 12,
-        "yeu_cau": 7,
-        "mo_ta": 6
-      },
-      "changed": true
-    },
-    {
-      "job_id": "itviec_data-steward-sql-bi-data-quality-data-analysis-vietinbank-4317",
-      "source": "itviec",
-      "field": "sections",
-      "before": "Mục tiêu công việc Là cầu nối giữa Đơn vị nghiệp vụ và Khối kỹ thuật/dữ liệu , triển khai các chính sách, quy trình và tiêu chuẩn quản trị dữ liệu tại đơn vị; đảm bảo dữ liệu chất lượng, nhất quán, bả…",
-      "after": {
-        "phuc_loi": 9,
-        "yeu_cau": 7,
-        "mo_ta": 4
-      },
-      "changed": true
-    },
-    {
-      "job_id": "itviec_can-tho-fresher-php-good-english-communication-cong-ty-tnhh-nextedge-5902",
-      "source": "itviec",
-      "field": "sections",
-      "before": "Analyze requirements and propose technical solutions.\nWrite detailed specifications and develop high-quality applications.\nTroubleshoot, test, and maintain the core product software and databases to e…",
-      "after": {
-        "phuc_loi": 16,
-        "yeu_cau": 10,
-        "mo_ta": 6
-      },
-      "changed": true
-    },
-    {
-      "job_id": "glints_58a4cb2c-afad-4839-890e-310dae25b826",
-      "source": "glints",
-      "field": "sections",
-      "before": "Chi tiết công việc QA Engineer (Automation Test) tại The Code Talent Co,. Ltd Job Responsibilities Champion shift-left testing by prioritizing early and frequent test automation.\nDevelop and maintain …",
-      "after": {
-        "mo_ta": 20,
+        "phuc_loi": 6,
+        "mo_ta": 1,
         "yeu_cau": 1
       },
       "changed": true
     },
     {
-      "job_id": "glints_87fe15be-b4d2-49ae-99a1-112a68563d68",
+      "job_id": "itviec_deputy-head-of-machine-learning-engineering-mb-bank-0210",
+      "source": "itviec",
+      "field": "sections",
+      "before": "2026TD456609 - Phó phòng Công nghệ Mô hình Chịu trách nhiệm đảm bảo việc thiết kế, xây dựng và chuyển đổi hệ thống sang nền tảng MLOps lai (hybrid) tiên tiến. Trực tiếp dẫn dắt các pipeline đưa cụm mô…",
+      "after": {
+        "phuc_loi": 17,
+        "yeu_cau": 6,
+        "mo_ta": 2
+      },
+      "changed": true
+    },
+    {
+      "job_id": "itviec_ai-engineer-llm-training-fine-tuning-officience-5421",
+      "source": "itviec",
+      "field": "sections",
+      "before": "We are looking for a skilled AI Engineer with a strong foundation in Machine Learning, Deep Learning, and NLP. The ideal candidate has hands-on experience in LLM fine-tuning, OCR & Document Understand…",
+      "after": {
+        "yeu_cau": 17,
+        "phuc_loi": 17,
+        "mo_ta": 8
+      },
+      "changed": true
+    },
+    {
+      "job_id": "glints_ea2295e2-8c5b-49cd-9bd5-8e94850792f1",
       "source": "glints",
       "field": "sections",
-      "before": "Chi tiết công việc Chief QA line lắp ráp - Tiếng Nhật - Lương upto22tr - BD (TN) tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM TÊN VỊ TRÍ QA/QC MANAGER MÔ TẢ CÔNG VIỆC\n- Quản lý QA line lắp ráp li…",
+      "before": "Chi tiết công việc Senior Backend Developer tại Unit Technology Corporation Responsibilities:\nDesign, develop, and maintain scalable back-end solutions using Java Spring Boot and Microservices archite…",
       "after": {
-        "mo_ta": 20,
+        "mo_ta": 25,
         "phuc_loi": 8,
         "yeu_cau": 1
       },
       "changed": true
     },
     {
-      "job_id": "glints_a05435d7-3750-455c-b4ae-3b874d125eec",
+      "job_id": "glints_a68e5dc1-67b6-435f-9ed9-ae7cdf912202",
       "source": "glints",
       "field": "sections",
-      "before": "Chi tiết công việc IT Support tại Long Van System Solution\n1. Mô tả công việc\n- Triển khai và cấu hình các dịch vụ, hệ thống cho khách hàng (Hosting, VPS và các dịch vụ liên quan).\n- Tiếp nhận, hỗ trợ…",
+      "before": "Chi tiết công việc Golang Developer tại SotaTek Location:\nCIC Tower, No.2 Nguyen Thi Due, Yen Hoa, Cau Giay, Ha Noi MB Sunny Tower, No.259 Tran Hung Dao, Cau Ong Lanh, HCM City G8, Golden Building, Số…",
       "after": {
-        "mo_ta": 21,
+        "mo_ta": 18,
+        "phuc_loi": 14,
         "yeu_cau": 1
       },
       "changed": true
     },
     {
-      "job_id": "jobsgo_29354118091",
+      "job_id": "glints_9ff6e38f-648b-4ba9-928e-f8c99d86b24a",
+      "source": "glints",
+      "field": "sections",
+      "before": "Chi tiết công việc [Quận Nam Từ Liêm, Hà Nội] IT HELPDESK SUPPORT (Thời vụ 5 tháng) tại CÔNG TY TNHH NÉT VIỆT Địa chỉ: Tòa nhà Handico, Khu đô thị mới Mễ Trì Hạ, đường Phạm Hùng, Quận Nam Từ Liêm, Hà …",
+      "after": {
+        "mo_ta": 8,
+        "phuc_loi": 3,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29080134608",
       "source": "jobsgo",
       "field": "sections",
-      "before": "Cài đặt, cấu hình và hỗ trợ vận hành các phần mềm quản lý nội bộ, đảm bảo phần mềm hoạt động ổn định và đáp ứng nhu cầu sử dụng.\nTiếp nhận, kiểm tra và xử lý các lỗi phần mềm phát sinh; phối hợp với c…",
+      "before": "Thu thập, phân tích và làm rõ yêu cầu nghiệp vụ từ các đơn vị kinh doanh (Môi giới, Dịch vụ khách hàng, Vận hành, Quản lý rủi ro, Nguồn vốn...).\nKhảo sát và đánh giá quy trình hiện tại, đề xuất giải p…",
       "after": {
         "mo_ta": 10,
-        "yeu_cau": 8,
-        "phuc_loi": 6
+        "phuc_loi": 7,
+        "yeu_cau": 4
       },
       "changed": true
     },
@@ -335,14 +336,14 @@
       "changed": true
     },
     {
-      "job_id": "jobsgo_29341000777",
+      "job_id": "jobsgo_29101657323",
       "source": "jobsgo",
       "field": "sections",
-      "before": "Quản trị hệ thống ERP:\nQuản lý hệ thống danh mục cho phần mềm ERP (KH, NCC, VTHH, giá mua, giá bán, ...).\nXử lý, khắc phục sự cố, đảm bảo hệ thống ERP hoạt động thông suốt, hiệu quả.\nPhối hợp với nhân…",
+      "before": "Tham gia phát triển và tối ưu các dự án Game Mobile trên nền tảng iOS và Android; xây dựng tính năng, xử lý lỗi và phối hợp với các thành viên trong team để đảm bảo chất lượng và tiến độ dự án.",
       "after": {
-        "yeu_cau": 18,
-        "mo_ta": 16,
-        "phuc_loi": 7
+        "phuc_loi": 11,
+        "yeu_cau": 7,
+        "mo_ta": 1
       },
       "changed": true
     }

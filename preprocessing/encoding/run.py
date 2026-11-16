@@ -37,7 +37,7 @@ from preprocessing.encoding.skills_taxonomy_230 import (
     SKILL_LOOKUP_MAP,
     TAXONOMY_230,
 )
-from preprocessing.normalization.job_title import JOB_FAMILIES_12, OTHER
+from preprocessing.normalization.job_title import JOB_FAMILIES, OTHER
 
 STEP = "05_encoding"
 DATA_DIR = REPO_ROOT / "data"
@@ -141,7 +141,7 @@ def encode_dataset(
     # E2: One-hot job_family, source_platform, employment_type
     # -------------------------------------------------------------
     # job_family
-    all_fams = JOB_FAMILIES_12 + [OTHER]
+    all_fams = JOB_FAMILIES + [OTHER]
     fam_slug_map = {f: f"job_family__{to_col_slug(f)}" for f in all_fams}
     for fam, col_name in fam_slug_map.items():
         cols[col_name] = (df["job_family"] == fam).astype(np.uint8).values

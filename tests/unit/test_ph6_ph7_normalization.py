@@ -111,7 +111,18 @@ def test_title_dictionary_exact_alias_fuzzy_and_short_guard():
     assert (canon, src) == ("Business Analyst", "fuzzy") and score >= 90
     assert canonical_title("ba", d)[:2] == ("Business Analyst", "exact")   # chỉ exact, độ dài 2 không đi fuzzy
     assert canonical_title("bb", d)[0] is None
-    assert family_from_title(fold("x"), "Business Analyst", [], d) == ("Product/Project", "canonical")
+    assert family_from_title(fold("x"), "Business Analyst", [], d) == ("Bridge", "canonical")  # Product/Project cũ -> Bridge qua FAMILY_MAP
+
+
+def test_family_map_covers_old_families_and_targets_ten_groups():
+    from preprocessing.normalization.job_title import FAMILY_MAP, JOB_FAMILIES, OTHER
+    assert JOB_FAMILIES == ["Web", "Mobile", "Game", "Bridge", "DevOps/Cloud", "Tester", "Security", "IoT", "Design", "Data/AI"]
+    old = ["Backend", "Frontend", "Fullstack", "Mobile", "DevOps/Cloud", "Data Science/AI", "QA/QC", "Security", "Product/Project",
+           "System/Network", "Embedded/IoT", "Software Engineering", "Game Development", "Design", "Database", "Enterprise Software"]
+    assert all(FAMILY_MAP[o] in JOB_FAMILIES for o in old)
+    assert {FAMILY_MAP[o] for o in old} == set(JOB_FAMILIES)  # đủ 10 nhóm, không nhóm nào bỏ trống
+    assert FAMILY_MAP["System/Network"] == "Security" and FAMILY_MAP["Database"] == "Data/AI" and FAMILY_MAP["Enterprise Software"] == "Bridge"
+    assert FAMILY_MAP[OTHER] == OTHER
 
 
 def test_unapproved_dictionary_entries_are_not_loaded(tmp_path):
@@ -122,10 +133,15 @@ def test_unapproved_dictionary_entries_are_not_loaded(tmp_path):
     assert list(load_title_dict(f)["exact"]) == ["c d"]
 
 
-def test_job_titles_json_candidates_all_unapproved():
+def test_job_titles_json_families_are_known():
+    """Mục đã duyệt (approved: true) phải có nhóm nghề thuộc JOB_FAMILIES (hoặc chưa gán); mục chưa duyệt không bị nạp."""
     from preprocessing.common import REPO_ROOT
+    from preprocessing.normalization.job_title import JOB_FAMILIES, OTHER
     data = json.loads((REPO_ROOT / "preprocessing/dictionaries/job_titles.json").read_text(encoding="utf-8"))
-    assert data["entries"] and all(e["approved"] is False for e in data["entries"])
+    assert data["entries"]
+    bad = [e["canonical"] for e in data["entries"] if e["approved"] is True and e.get("family") not in (None, OTHER, *JOB_FAMILIES)]
+    assert not bad, bad
+    assert set(data["families"]) <= {*JOB_FAMILIES, OTHER}
 
 
 # ------------------------------------------------------------------ địa điểm, công ty
@@ -159,14 +175,23 @@ def test_salary_status_rules():
 
 
 def test_level_and_experience_inference_with_flags():
+    # kinh nghiệm -> cấp bậc: [0,1) Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior, >=5 mơ hồ (Senior/Lead) nên để trống
     assert infer_level_from_experience(None, 1) == {"seniority": "Junior", "level_inferred": True, "from_years": True}
     assert infer_level_from_experience(None, 0)["seniority"] == "Intern/Fresher"
+    assert infer_level_from_experience(None, 0.5)["seniority"] == "Intern/Fresher"
     assert infer_level_from_experience(None, 3)["seniority"] == "Middle"
-    assert infer_level_from_experience(None, 5)["seniority"] == "Senior"
+    assert infer_level_from_experience(None, 4)["seniority"] == "Senior"
+    assert infer_level_from_experience(None, 5)["seniority"] is None
     assert infer_level_from_experience("Senior", 1) == {"seniority": "Senior", "level_inferred": False, "from_years": False}
     assert infer_level_from_experience(None, None)["seniority"] is None
-    assert infer_experience_from_level(None, "Intern/Fresher", "raw")["exp_min_years"] == 0.0
-    assert infer_experience_from_level(None, "Senior", "title")["exp_source"] == "unknown"
+    # cấp bậc -> kinh nghiệm: cận dưới của khoảng, chỉ khi cấp đến từ raw/title
+    expected = {"Intern/Fresher": 0.0, "Junior": 1.0, "Middle": 2.0, "Senior": 4.0, "Lead/Manager": 5.0}
+    for level, years in expected.items():
+        r = infer_experience_from_level(None, level, "title")
+        assert (r["exp_min_years"], r["exp_inferred"]) == (years, True)
+    assert infer_experience_from_level(None, "Senior", "title")["exp_source"] == "level_senior"
+    assert infer_experience_from_level(3.0, "Senior", "title") == {"exp_min_years": 3.0, "exp_inferred": False, "exp_source": "given"}
+    assert infer_experience_from_level(None, None, "none")["exp_source"] == "unknown"
     # chống vòng: cấp suy từ số năm không dùng để suy ngược kinh nghiệm
     assert infer_experience_from_level(None, "Intern/Fresher", "kinh_nghiem")["exp_min_years"] is None
 

@@ -1,6 +1,7 @@
 # PH1. Bộ gold 100 JD và báo cáo profiling (bước 0 + mục 4.1)
 
 > Trạng thái: **đã chốt các điểm cần hỏi (10/11/2026)**; prompt: `docs/prompting/PH1_gold_va_profiling.md`, chờ bạn duyệt. Chưa có code.
+> **Cập nhật 11/11/2026:** người dùng đã gán đủ 100 JD (4 file mỗi file 25 nhãn, file 26–50 đổi schema). Gộp thành `data/preprocessing/gold/gold_labels.json`, đúng mẫu `e58bceb3a5`; **không dựng lại `gold_sample.json`** vì nhãn gắn với mẫu này. Số đo sơ bộ bằng `scripts/eval_gold_processing.py`: section 84,5%, phúc lợi P 0,97/R 0,60, kỹ năng F1 0,27 (cần xem lại cách so khớp tên kỹ năng). File gốc ở `data/preprocessing/gold/inputs/`.
 > **[ĐỀ XUẤT]** = mình đoán. **[CẦN CHỐT]** = mình không biết.
 
 ## 1. Mục tiêu

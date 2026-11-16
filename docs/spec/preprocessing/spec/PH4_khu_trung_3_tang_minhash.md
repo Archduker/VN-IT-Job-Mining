@@ -54,7 +54,7 @@ Báo cáo hiện có (`reports/preprocessing/01b_deduplication/_all.json`, tạo
 - **[CẦN CHỐT] C6. Tham số.** Shingle 5 từ trên `text_fold` tách theo khoảng trắng; 128 perm; ngưỡng 0.85; `seed` của MinHash cố định để chạy lại ra cùng kết quả. **[ĐỀ XUẤT]** giữ đúng giá trị file thiết kế, hằng số nằm trong `preprocessing/dictionaries/dedup_policy.json` (version vào báo cáo) thay vì hardcode; không đổi ngưỡng cho tới khi có kết quả chấm.
 - **[CẦN CHỐT] C7. Đoạn mở đầu JD giống nhau.** File thiết kế (B5) nêu 300 ký tự đầu giống hệt ở TopDev 739, JobsGO 479, Vieclam24h 213 tin (số của đợt đo trước, mình chưa đo lại trên 5.077 tin). Boilerplate này làm tăng Jaccard giữa các tin khác nhau của cùng công ty. **[ĐỀ XUẤT]** chưa cắt boilerplate ở PH4 (cắt là xóa nội dung, thuộc PH tách section); xem kết quả chấm trước, nếu precision < 95% thì cân nhắc.
 - **[CẦN CHỐT] C8. Tên cột.** **[ĐỀ XUẤT]** bản giữ có `sources` (list `"<nguồn>:<id>"` của mọi thành viên, kể cả bản giữ) và `duplicate_count`; bản bị loại vào `data/preprocessing/rejected/01b_deduplication/<nguồn>.jsonl` với `duplicate_of` (`"<nguồn>:<id>"` bản giữ), `drop_rule`, `jaccard`; không nhét thêm cột vào envelope ngoài `metadata.dedup` (đã có).
-- **[CẦN CHỐT] C9. Trùng khác ngôn ngữ.** Cùng một tin đăng bản tiếng Anh ở sàn này và tiếng Việt ở sàn kia sẽ **không** bị MinHash bắt (không chung shingle). PH4 chạy trước dịch (PH5). **[ĐỀ XUẤT]** chấp nhận và ghi vào báo cáo (không đo được); không dịch trước chỉ để khử trùng.
+- **C9. Trùng khác ngôn ngữ (đã chốt 11/11/2026): không xử lý và không ghi vào báo cáo.** Tin cùng công ty và cùng tiêu đề đã bị loại ở khóa tên (C6, C7 của bước 01); không dịch trước chỉ để khử trùng.
 
 ## 4. Luật (mã luật dùng tiền tố D để khỏi đổi Monitoring)
 

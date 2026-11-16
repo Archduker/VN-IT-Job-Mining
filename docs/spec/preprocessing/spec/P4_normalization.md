@@ -34,7 +34,7 @@ Code sửa PRE-1 (khớp từ nguyên vẹn) đã có test, đang ở git stash 
 | `tinh_chinh` | `tinh_thanh` của địa điểm đầu tiên |
 | `seniority` | 1 trong 5 nhãn: "Intern/Fresher", "Junior", "Middle", "Senior", "Lead/Manager" (`seniority_level` 0–4); không xác định được thì -1 ("Chưa rõ") |
 | `seniority_source`, `seniority_prob` | `raw` / `title` / `kinh_nghiem`; `seniority_prob` luôn null (không dùng model) |
-| `job_family` | 1 trong 12 nhóm nghề chuẩn (bảng dưới) hoặc "Khác" |
+| `job_family` | 1 trong 16 nhóm nghề + `Other` (từ 11/11/2026; bảng 12 nhóm bên dưới là lịch sử, xem PH6) |
 | `job_family_source`, `job_family_prob` | như trên |
 | `skills_std` | kỹ năng theo tên chuẩn trong `skills.json` ("reactjs", "React.js" → "React") |
 | `company_norm` | tên công ty chuẩn hóa (`normalize_company_name`) |

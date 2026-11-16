@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:26:47+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:18:18+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": null,
-    "rows": 4836
+    "rows": 4799
   },
   "output": {
     "path": null,
-    "rows": 4700
+    "rows": 4672
   },
   "dropped": [
     {
@@ -21,17 +21,17 @@
     {
       "rule": "D2",
       "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
-      "rows": 3
+      "rows": 0
     },
     {
       "rule": "D4",
       "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
-      "rows": 1
+      "rows": 0
     },
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 132
+      "rows": 127
     }
   ],
   "rules": [
@@ -73,37 +73,15 @@
       "id": "D2",
       "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
-      "rows_affected": 3,
-      "examples": [
-        {
-          "job_id": "35C85B2F",
-          "field": "dedup",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C85B2F.html",
-          "after": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C83A56.html",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C85B2F.html"
-        },
-        {
-          "job_id": "application-consultant-java-python-sql-avenue-5116",
-          "field": "dedup",
-          "before": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-5116",
-          "after": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-3829",
-          "url": "https://itviec.com/viec-lam-it/application-consultant-java-python-sql-avenue-5116"
-        },
-        {
-          "job_id": "business-analyst-banking-finance-shinhan-ds-5152",
-          "field": "dedup",
-          "before": "https://itviec.com/viec-lam-it/business-analyst-banking-finance-shinhan-ds-5152",
-          "after": "https://itviec.com/viec-lam-it/business-analyst-banking-finance-shinhan-ds-4637",
-          "url": "https://itviec.com/viec-lam-it/business-analyst-banking-finance-shinhan-ds-5152"
-        }
-      ],
+      "rows_affected": 0,
+      "examples": [],
       "by_source": {
         "topcv": 0,
         "topdev": 0,
         "vietnamworks": 0,
-        "careerviet": 1,
+        "careerviet": 0,
         "vieclam24h": 0,
-        "itviec": 2,
+        "itviec": 0,
         "glints": 0,
         "jobsgo": 0
       }
@@ -112,18 +90,10 @@
       "id": "D4",
       "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
-      "rows_affected": 1,
-      "examples": [
-        {
-          "job_id": "2321161",
-          "field": "dedup",
-          "before": "https://www.topcv.vn/viec-lam/servicenow-itsm-developer/2321161.html",
-          "after": "https://itviec.com/viec-lam-it/servicenow-itsm-developer-lg-cns-viet-nam-1435",
-          "url": "https://www.topcv.vn/viec-lam/servicenow-itsm-developer/2321161.html"
-        }
-      ],
+      "rows_affected": 0,
+      "examples": [],
       "by_source": {
-        "topcv": 1,
+        "topcv": 0,
         "topdev": 0,
         "vietnamworks": 0,
         "careerviet": 0,
@@ -137,7 +107,7 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 132,
+      "rows_affected": 127,
       "examples": [
         {
           "job_id": "1013348",
@@ -162,9 +132,9 @@
         }
       ],
       "by_source": {
-        "topcv": 20,
+        "topcv": 17,
         "topdev": 14,
-        "vietnamworks": 9,
+        "vietnamworks": 7,
         "careerviet": 9,
         "vieclam24h": 9,
         "itviec": 24,
@@ -176,7 +146,7 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 114,
+      "rows_affected": 108,
       "examples": [
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
@@ -206,7 +176,7 @@
         "vietnamworks": 5,
         "careerviet": 9,
         "vieclam24h": 5,
-        "itviec": 42,
+        "itviec": 36,
         "glints": 5,
         "jobsgo": 21
       }
@@ -215,7 +185,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 175,
+      "rows_affected": 168,
       "examples": [
         {
           "job_id": "1db0e1f6-3468-4269-bcbf-bca4d55db8f8",
@@ -241,13 +211,13 @@
       ],
       "by_source": {
         "topcv": 30,
-        "topdev": 6,
-        "vietnamworks": 8,
+        "topdev": 7,
+        "vietnamworks": 10,
         "careerviet": 13,
         "vieclam24h": 4,
-        "itviec": 28,
+        "itviec": 20,
         "glints": 9,
-        "jobsgo": 77
+        "jobsgo": 75
       }
     }
   ],
@@ -263,36 +233,36 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1539,
-        "output": 1518
+        "input": 1537,
+        "output": 1520
       },
       "topdev": {
-        "input": 218,
-        "output": 204
+        "input": 216,
+        "output": 202
       },
       "vietnamworks": {
-        "input": 783,
+        "input": 781,
         "output": 774
       },
       "careerviet": {
-        "input": 412,
-        "output": 402
+        "input": 410,
+        "output": 401
       },
       "vieclam24h": {
-        "input": 175,
-        "output": 166
+        "input": 173,
+        "output": 164
       },
       "itviec": {
-        "input": 857,
-        "output": 831
+        "input": 842,
+        "output": 818
       },
       "glints": {
-        "input": 264,
-        "output": 256
+        "input": 254,
+        "output": 246
       },
       "jobsgo": {
-        "input": 588,
-        "output": 549
+        "input": 586,
+        "output": 547
       }
     },
     "dedup": {
@@ -309,32 +279,28 @@
     },
     "jaccard_threshold": 0.85,
     "tier_counts": {
-      "D2": 3,
-      "D4": 1,
-      "D5": 132
+      "D5": 127
     },
     "pairs_by_band": {
-      "[0.85,1]": 222,
-      "[0.80,0.90)": 92,
-      "[0.7,0.85)": 106
+      "[0.85,1]": 216,
+      "[0.80,0.90)": 89,
+      "[0.7,0.85)": 99
     },
     "same_source_pairs": 119,
-    "cross_source_pairs": 34,
+    "cross_source_pairs": 28,
     "company_gate_blocked_pairs": 69,
     "hit_pairs_title_differs": 144,
-    "pairs_audited": 328,
-    "pairs_over_threshold": 153,
-    "clusters": 114,
-    "golden_rows": 4700,
-    "cross_platform_clusters": 33,
+    "pairs_audited": 315,
+    "pairs_over_threshold": 147,
+    "clusters": 108,
+    "golden_rows": 4672,
+    "cross_platform_clusters": 27,
     "rule_totals": {
-      "D2": 3,
-      "D4": 1,
-      "D5": 132
+      "D5": 127
     },
-    "cross_dropped": 133,
+    "cross_dropped": 127,
     "audit_rows_indirect": 5,
-    "audit_review_band": 175,
+    "audit_review_band": 168,
     "cdc": {
       "topcv": {
         "job_ids": 2674,
@@ -409,37 +375,36 @@
         "hop_version_not_bumped": 0
       }
     },
-    "blocking_blocks": 3774,
-    "blocking_unique_blocks": 3604,
-    "repost_records": 3,
-    "lineage_rows": 4836,
+    "blocking_blocks": 3752,
+    "blocking_unique_blocks": 3584,
+    "repost_records": 0,
+    "lineage_rows": 4799,
     "unparsed_dates": 0,
-    "cross_language_dupes": "không đo được: PH4 chạy trước dịch (PH5), shingle khác ngôn ngữ không chung nhau",
     "partial_run": false
   },
   "samples": [
     {
-      "job_id": "2322531",
+      "job_id": "2323097",
       "source": "topcv",
       "field": "duplicate_of",
-      "before": "2322531",
-      "after": "DROPPED D5 -> topcv:2303888",
+      "before": "2323097",
+      "after": "DROPPED D5 -> topdev:2134288",
       "changed": true
     },
     {
-      "job_id": "2043180",
+      "job_id": "2318761",
       "source": "topcv",
       "field": "duplicate_of",
-      "before": "2043180",
-      "after": "DROPPED D5 -> itviec:penetration-tester-lg-cns-viet-nam-0840",
+      "before": "2318761",
+      "after": "DROPPED D5 -> topcv:2329037",
       "changed": true
     },
     {
-      "job_id": "2321161",
+      "job_id": "2327269",
       "source": "topcv",
       "field": "duplicate_of",
-      "before": "2321161",
-      "after": "DROPPED D4 -> itviec:servicenow-itsm-developer-lg-cns-viet-nam-1435",
+      "before": "2327269",
+      "after": "DROPPED D5 -> itviec:ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
       "changed": true
     },
     {
@@ -483,11 +448,11 @@
       "changed": true
     },
     {
-      "job_id": "2119934",
+      "job_id": "2110323",
       "source": "vietnamworks",
       "field": "duplicate_of",
-      "before": "2119934",
-      "after": "DROPPED D5 -> itviec:senior-odoo-software-engineer-python-cong-ty-tnhh-wir-group-0900",
+      "before": "2110323",
+      "after": "DROPPED D5 -> vietnamworks:2110213",
       "changed": true
     },
     {
@@ -507,11 +472,11 @@
       "changed": true
     },
     {
-      "job_id": "35C8B3C4",
+      "job_id": "35C8B905",
       "source": "careerviet",
       "field": "duplicate_of",
-      "before": "35C8B3C4",
-      "after": "DROPPED D5 -> careerviet:35C88655",
+      "before": "35C8B905",
+      "after": "DROPPED D5 -> careerviet:35C8B92D",
       "changed": true
     },
     {
@@ -555,11 +520,11 @@
       "changed": true
     },
     {
-      "job_id": "middle-senior-software-engineer-ai-augmented-flinters-vietnam-0958",
+      "job_id": "senior-golang-developer-backend-aws-mysql-andpad-vietnam-co-ltd-4446",
       "source": "itviec",
       "field": "duplicate_of",
-      "before": "middle-senior-software-engineer-ai-augmented-flinters-vietnam-0958",
-      "after": "DROPPED D5 -> itviec:middle-senior-fullstack-developer-ai-java-python-flinters-vietnam-1842",
+      "before": "senior-golang-developer-backend-aws-mysql-andpad-vietnam-co-ltd-4446",
+      "after": "DROPPED D5 -> itviec:senior-golang-engineer-backend-aws-mysql-andpad-vietnam-co-ltd-3524",
       "changed": true
     },
     {

@@ -2,15 +2,15 @@
   "step": "09_tokens",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:06:49+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:56:21+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": null,
-    "rows": 204
+    "rows": 202
   },
   "output": {
     "path": "data/processing/09_tokens/all.parquet",
-    "rows": 204
+    "rows": 202
   },
   "dropped": [],
   "rules": [],
@@ -24,7 +24,7 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "mean_tokens_per_job": 359.71,
+    "mean_tokens_per_job": 361.68,
     "df_threshold": 0.6,
     "n_general_stopwords": 91,
     "model": "không dùng model"
@@ -60,31 +60,31 @@
       "changed": true
     },
     {
-      "job_id": "topdev_2138775",
+      "job_id": "topdev_2138779",
       "source": "topdev",
       "field": "tokens_nostop",
-      "before": "Tiếp nhận thực hiện thiết kế, shop drawing, lập định mức vật tư tủ điện MSB, ATS, hòa đồng bộ, tủ điện phân phối, tủ điện điều khiển, tủ điện hệ thống NLMT phù hợp với các tiêu chuẩn, quy chuẩn quốc g…",
+      "before": "Thực hiện các công tác kiểm thử:\nXây dựng kế hoạch kiểm thử, Phân tích user stories/use case/ các yêu cầu nghiệp vụ để xác định tính hợp lệ/ khả thi để thực hiện kiểm thử; Phối hợp với BA đề xuất phươ…",
       "after": [
-        "tiếp nhận",
         "thực hiện",
-        "thiết kế",
-        "shop drawing",
-        "lập",
-        "định mức",
-        "vật tư",
-        "tủ",
-        "điện msb",
-        "ats",
-        "hòa",
-        "đồng bộ",
-        "tủ điện",
-        "phân phối",
-        "tủ điện",
-        "điều khiển",
-        "tủ điện",
-        "hệ thống",
-        "nlmt",
-        "phù hợp"
+        "công tác",
+        "kiểm thử",
+        "xây dựng",
+        "kế hoạch",
+        "kiểm thử",
+        "phân tích",
+        "user",
+        "stories",
+        "use",
+        "case",
+        "yêu cầu",
+        "nghiệp vụ",
+        "xác định",
+        "tính",
+        "hợp lệ",
+        "khả thi",
+        "thực hiện",
+        "kiểm thử",
+        "phối hợp"
       ],
       "changed": true
     },

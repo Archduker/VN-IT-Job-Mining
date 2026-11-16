@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-10T14:05:32+00:00",
-  "code_version": "2877edf",
+  "generated_at": "2026-11-10T19:54:57+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 549
+    "rows": 547
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 549
+    "rows": 547
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 12142,
+    "n_bullets": 12108,
     "bullets_by_section": {
-      "mo_ta": 4047,
-      "yeu_cau": 4159,
-      "phuc_loi": 3936
+      "mo_ta": 4036,
+      "yeu_cau": 4151,
+      "phuc_loi": 3921
     },
     "bullets_by_rule": {
-      "S7.2": 12142
+      "S7.2": 12108
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,14 +39,14 @@
   },
   "samples": [
     {
-      "job_id": "jobsgo_29354118091",
+      "job_id": "jobsgo_29080134608",
       "source": "jobsgo",
       "field": "sections",
-      "before": "Cài đặt, cấu hình và hỗ trợ vận hành các phần mềm quản lý nội bộ, đảm bảo phần mềm hoạt động ổn định và đáp ứng nhu cầu sử dụng.\nTiếp nhận, kiểm tra và xử lý các lỗi phần mềm phát sinh; phối hợp với c…",
+      "before": "Thu thập, phân tích và làm rõ yêu cầu nghiệp vụ từ các đơn vị kinh doanh (Môi giới, Dịch vụ khách hàng, Vận hành, Quản lý rủi ro, Nguồn vốn...).\nKhảo sát và đánh giá quy trình hiện tại, đề xuất giải p…",
       "after": {
         "mo_ta": 10,
-        "yeu_cau": 8,
-        "phuc_loi": 6
+        "phuc_loi": 7,
+        "yeu_cau": 4
       },
       "changed": true
     },
@@ -63,14 +63,14 @@
       "changed": true
     },
     {
-      "job_id": "jobsgo_29341000777",
+      "job_id": "jobsgo_29101657323",
       "source": "jobsgo",
       "field": "sections",
-      "before": "Quản trị hệ thống ERP:\nQuản lý hệ thống danh mục cho phần mềm ERP (KH, NCC, VTHH, giá mua, giá bán, ...).\nXử lý, khắc phục sự cố, đảm bảo hệ thống ERP hoạt động thông suốt, hiệu quả.\nPhối hợp với nhân…",
+      "before": "Tham gia phát triển và tối ưu các dự án Game Mobile trên nền tảng iOS và Android; xây dựng tính năng, xử lý lỗi và phối hợp với các thành viên trong team để đảm bảo chất lượng và tiến độ dự án.",
       "after": {
-        "yeu_cau": 18,
-        "mo_ta": 16,
-        "phuc_loi": 7
+        "phuc_loi": 11,
+        "yeu_cau": 7,
+        "mo_ta": 1
       },
       "changed": true
     }

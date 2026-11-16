@@ -42,6 +42,7 @@ class MiningContractError(ValueError):
 class MiningData:
     meta: pd.DataFrame
     skills: pd.DataFrame
+    e5: np.ndarray | None = None  # vector e5 của JD, cùng thứ tự meta
     resolved_columns: dict[str, str | None] = field(default_factory=dict)
     row_log: list[dict[str, Any]] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
@@ -360,10 +361,21 @@ def prepare_mining_data(
     return data
 
 
+def load_e5(path: Path, job_ids: pd.Series) -> np.ndarray:
+    """Vector e5 'all' của từng JD, xếp theo job_ids. Thiếu job thì báo lỗi, không bịa vector."""
+    z = np.load(path, allow_pickle=True)
+    pos = {str(j): i for i, j in enumerate(z["ids"])}
+    miss = [j for j in job_ids.astype(str) if j not in pos]
+    if miss:
+        raise MiningContractError(f"{len(miss)} tin không có vector e5 (ví dụ {miss[0]}).")
+    return z["all"][[pos[j] for j in job_ids.astype(str)]].astype(np.float32)
+
+
 def load_mining_data(
     golden_path: Path,
     features_path: Path | None = None,
     encoding_dict_path: Path | None = None,
+    e5_path: Path | None = None,
 ) -> MiningData:
     golden_path = Path(golden_path)
     if not golden_path.exists():
@@ -375,5 +387,8 @@ def load_mining_data(
     elif features_path:
         logger.warning("Không thấy %s, dựng ma trận kỹ năng từ golden.", features_path)
     data = prepare_mining_data(golden, features, load_skills_map(encoding_dict_path))
+    if e5_path and Path(e5_path).exists():
+        data.e5 = load_e5(Path(e5_path), data.meta["job_id"])
+        data.notes.append(f"Vector e5: {data.e5.shape}")
     data.notes.insert(0, f"golden={golden_path.as_posix()}, features={Path(features_path).as_posix() if features is not None else None}")
     return data

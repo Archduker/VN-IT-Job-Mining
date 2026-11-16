@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import pandas as pd  # noqa: E402
 
 from preprocessing.common import REPO_ROOT  # noqa: E402
-from preprocessing.normalization.job_title import DICT_PATH, FAMILY_RULES_V2, JOB_FAMILIES_12, core_title, fold  # noqa: E402
+from preprocessing.normalization.job_title import DICT_PATH, FAMILY_MAP, FAMILY_RULES_V2, JOB_FAMILIES, core_title, fold  # noqa: E402
 from preprocessing.normalization.text_cleaner import has_term  # noqa: E402
 
 
@@ -34,7 +34,7 @@ def count_candidates(titles, min_count: int = 5):
     for f, n in counts.most_common():
         if n < min_count:
             break
-        family = next((fam for fam, terms in FAMILY_RULES_V2 if has_term(f, terms)), None)
+        family = next((FAMILY_MAP[fam] for fam, terms in FAMILY_RULES_V2 if has_term(f, terms)), None)
         out.append({"canonical": forms[f].most_common(1)[0][0], "family": family, "aliases": [f],
                     "docs_with_title": n, "approved": False})
     return out
@@ -57,7 +57,7 @@ def main() -> None:
         DICT_PATH.write_text(json.dumps({
             "version": "0.1-candidates",
             "note": f"Mọi mục approved=false cho tới khi người dùng duyệt; chỉ mục approved=true được nạp. Đếm chức danh lõi (N15) với min-count={a.min_count}. `family` là gợi ý của luật, cần xác nhận.",
-            "families": JOB_FAMILIES_12 + ["Other"], "entries": entries}, ensure_ascii=False, indent=2), encoding="utf-8")
+            "families": JOB_FAMILIES + ["Other"], "entries": entries}, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

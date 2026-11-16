@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T12:25:58+00:00",
-  "code_version": "e168601",
+  "generated_at": "2026-11-10T18:17:31+00:00",
+  "code_version": "37bb865",
   "input": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
-    "rows": 412
+    "rows": 410
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/careerviet.jsonl",
-    "rows": 402
+    "rows": 401
   },
   "dropped": [
     {
@@ -21,7 +21,7 @@
     {
       "rule": "D2",
       "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
-      "rows": 1
+      "rows": 0
     },
     {
       "rule": "D4",
@@ -53,16 +53,8 @@
       "id": "D2",
       "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
       "action": "drop",
-      "rows_affected": 1,
-      "examples": [
-        {
-          "job_id": "35C85B2F",
-          "field": "dedup",
-          "before": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C85B2F.html",
-          "after": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C83A56.html",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C85B2F.html"
-        }
-      ]
+      "rows_affected": 0,
+      "examples": []
     },
     {
       "id": "D4",
@@ -178,10 +170,9 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 292,
-    "d2_groups": 1,
+    "blocking_blocks": 291,
+    "d2_groups": 0,
     "rule_totals": {
-      "D2": 1,
       "D5": 9
     }
   },
@@ -203,11 +194,11 @@
       "changed": true
     },
     {
-      "job_id": "35C8B3C4",
+      "job_id": "35C8B905",
       "source": "careerviet",
       "field": "duplicate_of",
-      "before": "35C8B3C4",
-      "after": "DROPPED D5 -> careerviet:35C88655",
+      "before": "35C8B905",
+      "after": "DROPPED D5 -> careerviet:35C8B92D",
       "changed": true
     }
   ]
