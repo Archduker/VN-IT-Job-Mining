@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T18:17:31+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-17T17:04:24+00:00",
+  "code_version": "055769e",
   "input": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
     "rows": 1537
@@ -125,28 +125,28 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 30,
+      "rows_affected": 63,
       "examples": [
+        {
+          "job_id": "1975529",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.856,
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem-co-dao-tao/1975529.html"
+        },
+        {
+          "job_id": "2002662",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.913,
+          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-network/2002662.html"
+        },
         {
           "job_id": "2045641",
           "field": "jaccard",
           "before": null,
           "after": 0.8841,
           "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke/2045641.html"
-        },
-        {
-          "job_id": "2124498",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.9578,
-          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-cao-cap-mang-va-bao-mat/2124498.html"
-        },
-        {
-          "job_id": "2180924",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.9786,
-          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-thiet-ke/2180924.html"
         }
       ]
     }

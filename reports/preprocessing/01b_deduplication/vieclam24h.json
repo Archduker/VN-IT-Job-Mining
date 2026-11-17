@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-10T18:17:31+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-17T17:04:24+00:00",
+  "code_version": "055769e",
   "input": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
     "rows": 173
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 4,
+      "rows_affected": 5,
       "examples": [
         {
           "job_id": "200945606",
@@ -135,18 +135,18 @@
           "url": "https://vieclam24h.vn/it-phan-mem/manual-automation-tester-quality-analyst-qa-qc-c8p122id200945606.html"
         },
         {
-          "job_id": "200959709",
+          "job_id": "200946306",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.74,
+          "url": "https://vieclam24h.vn/it-phan-mem/chuyen-vien-lap-trinh-c8p73id200946306.html"
+        },
+        {
+          "job_id": "200948494",
           "field": "jaccard",
           "before": null,
           "after": 0.7823,
-          "url": "https://vieclam24h.vn/dien-dien-tu-dien-lanh/nhan-vien-ky-thuat-ha-tang-vien-thong-toan-ho-chi-minh-c41p210000187id200959709.html"
-        },
-        {
-          "job_id": "200959709",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.7491,
-          "url": "https://vieclam24h.vn/dien-dien-tu-dien-lanh/nhan-vien-ky-thuat-ha-tang-vien-thong-toan-ho-chi-minh-c41p210000187id200959709.html"
+          "url": "https://vieclam24h.vn/buu-chinh-vien-thong/nhan-vien-ky-thuat-ha-tang-toan-ho-chi-minh-c38p122id200948494.html"
         }
       ]
     }

@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-10T18:17:31+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-17T17:04:25+00:00",
+  "code_version": "055769e",
   "input": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
     "rows": 586
@@ -125,28 +125,28 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 75,
+      "rows_affected": 48,
       "examples": [
-        {
-          "job_id": "28856040371",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.7137,
-          "url": "https://jobsgo.vn/viec-lam/chuyen-vien-trien-khai-van-hanh-28856040371.html"
-        },
         {
           "job_id": "28928592968",
           "field": "jaccard",
           "before": null,
-          "after": 0.7803,
+          "after": 0.7307,
           "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phu-trach-ai-he-thong-cong-nghe-thong-tin-thu-nhap-den-20-trieu-thang-28928592968.html"
         },
         {
-          "job_id": "28967523961",
+          "job_id": "28972683981",
           "field": "jaccard",
           "before": null,
-          "after": 0.7095,
-          "url": "https://jobsgo.vn/viec-lam/truong-phong-cong-nghe-lark-28967523961.html"
+          "after": 1.0,
+          "url": "https://jobsgo.vn/viec-lam/account-manager-28972683981.html"
+        },
+        {
+          "job_id": "29006645060",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8013,
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-kinh-nghiem-he-thong-server-1-nam-kinh-nghiem-long-duc-dong-nai-luong-15-trieu-t-29006645060.html"
         }
       ]
     }

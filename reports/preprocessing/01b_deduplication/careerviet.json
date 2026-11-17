@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T18:17:31+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-17T17:04:24+00:00",
+  "code_version": "055769e",
   "input": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
     "rows": 410
@@ -125,28 +125,28 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 13,
+      "rows_affected": 6,
       "examples": [
         {
-          "job_id": "35C813C6",
+          "job_id": "35C8806F",
           "field": "jaccard",
           "before": null,
-          "after": 0.8998,
-          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-van-hanh-co-so-du-lieu.35C813C6.html"
+          "after": 0.9194,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/senior-technical-engineer-sre-ops-ai.35C8806F.html"
         },
         {
-          "job_id": "35C83731",
+          "job_id": "35C889C5",
           "field": "jaccard",
           "before": null,
-          "after": 0.913,
-          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-quan-tri-mang-network.35C83731.html"
+          "after": 0.9421,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/quan-ly-du-an-phan-mem-y-te-his-lis-ris-pacs-emr.35C889C5.html"
         },
         {
-          "job_id": "35C839DA",
+          "job_id": "35C89816",
           "field": "jaccard",
           "before": null,
-          "after": 0.7314,
-          "url": "https://careerviet.vn/vi/tim-viec-lam/master-data-senior-specialist.35C839DA.html"
+          "after": 0.86,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/qa-engineer.35C89816.html"
         }
       ]
     }

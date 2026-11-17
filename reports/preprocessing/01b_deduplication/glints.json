@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T18:17:31+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-17T17:04:24+00:00",
+  "code_version": "055769e",
   "input": {
     "path": "data/preprocessing/01_clean/glints.jsonl",
     "rows": 254
@@ -125,28 +125,28 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 9,
+      "rows_affected": 4,
       "examples": [
         {
-          "job_id": "1db0e1f6-3468-4269-bcbf-bca4d55db8f8",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.7029,
-          "url": "https://glints.com/vn/opportunities/jobs/it-specialist-good-english/1db0e1f6-3468-4269-bcbf-bca4d55db8f8"
-        },
-        {
-          "job_id": "27b3e9be-5e45-41d3-b5d8-e220a9f46c30",
+          "job_id": "703416e9-0550-4ba6-bb9c-4e691a88c64a",
           "field": "jaccard",
           "before": null,
           "after": 0.9085,
-          "url": "https://glints.com/vn/opportunities/jobs/giam-sat-du-an-erp-va-chuyen-doi-so-luong-20-30-trieu-thang/27b3e9be-5e45-41d3-b5d8-e220a9f46c30"
+          "url": "https://glints.com/vn/opportunities/jobs/transformation-and-erp-project-supervisor-muc-luong-20-30-trieu/703416e9-0550-4ba6-bb9c-4e691a88c64a"
         },
         {
-          "job_id": "3a5f7b15-db25-4be0-b944-86d142c2b33c",
+          "job_id": "7da83cf6-f384-4b3b-8cc8-d6e0c7bcc955",
           "field": "jaccard",
           "before": null,
-          "after": 0.7512,
-          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-ai/3a5f7b15-db25-4be0-b944-86d142c2b33c"
+          "after": 0.9706,
+          "url": "https://glints.com/vn/opportunities/jobs/fullstack-developer-react-golang/7da83cf6-f384-4b3b-8cc8-d6e0c7bcc955"
+        },
+        {
+          "job_id": "cd1e8902-89f2-43c8-bbbd-fee8b150fcb0",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.9602,
+          "url": "https://glints.com/vn/opportunities/jobs/qc-engineer-manual-automation/cd1e8902-89f2-43c8-bbbd-fee8b150fcb0"
         }
       ]
     }

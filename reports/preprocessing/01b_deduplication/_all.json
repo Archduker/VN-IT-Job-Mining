@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T18:18:18+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-17T17:06:05+00:00",
+  "code_version": "055769e",
   "input": {
     "path": null,
     "rows": 4799
@@ -188,11 +188,18 @@
       "rows_affected": 168,
       "examples": [
         {
-          "job_id": "1db0e1f6-3468-4269-bcbf-bca4d55db8f8",
+          "job_id": "1975529",
           "field": "jaccard",
           "before": null,
-          "after": 0.7029,
-          "url": "https://glints.com/vn/opportunities/jobs/it-specialist-good-english/1db0e1f6-3468-4269-bcbf-bca4d55db8f8"
+          "after": 0.856,
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem-co-dao-tao/1975529.html"
+        },
+        {
+          "job_id": "2002662",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.913,
+          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-network/2002662.html"
         },
         {
           "job_id": "200945606",
@@ -200,24 +207,17 @@
           "before": null,
           "after": 0.7541,
           "url": "https://vieclam24h.vn/it-phan-mem/manual-automation-tester-quality-analyst-qa-qc-c8p122id200945606.html"
-        },
-        {
-          "job_id": "200959709",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.7823,
-          "url": "https://vieclam24h.vn/dien-dien-tu-dien-lanh/nhan-vien-ky-thuat-ha-tang-vien-thong-toan-ho-chi-minh-c41p210000187id200959709.html"
         }
       ],
       "by_source": {
-        "topcv": 30,
-        "topdev": 7,
-        "vietnamworks": 10,
-        "careerviet": 13,
-        "vieclam24h": 4,
-        "itviec": 20,
-        "glints": 9,
-        "jobsgo": 75
+        "topcv": 63,
+        "topdev": 11,
+        "vietnamworks": 19,
+        "careerviet": 6,
+        "vieclam24h": 5,
+        "itviec": 12,
+        "glints": 4,
+        "jobsgo": 48
       }
     }
   ],

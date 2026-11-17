@@ -9,7 +9,7 @@
   },
   {
    "step": "01b_deduplication",
-   "fresh": false,
+   "fresh": true,
    "input": 4799,
    "output": 4672,
    "prev_output": 4672
@@ -37,17 +37,17 @@
   }
  ],
  "profiles": {
-  "01_clean": {
-   "rows": 4799,
+  "01b_deduplication": {
+   "rows": 4672,
    "rows_by_source": {
-    "topcv": 1537,
-    "topdev": 216,
-    "vietnamworks": 781,
-    "careerviet": 410,
-    "vieclam24h": 173,
-    "itviec": 842,
-    "glints": 254,
-    "jobsgo": 586
+    "topcv": 1520,
+    "topdev": 202,
+    "vietnamworks": 774,
+    "careerviet": 401,
+    "vieclam24h": 164,
+    "itviec": 818,
+    "glints": 246,
+    "jobsgo": 547
    },
    "fill": [
     [
@@ -136,25 +136,25 @@
     ],
     [
      "company_address",
-     87.5,
+     87.6,
      {
       "topcv": 97.5,
       "topdev": 0.0,
-      "vietnamworks": 83.6,
-      "careerviet": 61.0,
+      "vietnamworks": 83.5,
+      "careerviet": 61.3,
       "vieclam24h": 100.0,
-      "itviec": 96.9,
-      "glints": 89.0,
-      "jobsgo": 99.7
+      "itviec": 96.8,
+      "glints": 88.6,
+      "jobsgo": 99.6
      }
     ],
     [
      "company_scale",
-     38.4,
+     39.1,
      {
       "topcv": 97.5,
       "topdev": 0.0,
-      "vietnamworks": 44.3,
+      "vietnamworks": 44.4,
       "careerviet": 0.0,
       "vieclam24h": 0.0,
       "itviec": 0.0,
@@ -164,16 +164,16 @@
     ],
     [
      "raw_category_text",
-     93.0,
+     93.2,
      {
-      "topcv": 94.6,
+      "topcv": 94.7,
       "topdev": 0.0,
       "vietnamworks": 100.0,
       "careerviet": 97.8,
       "vieclam24h": 100.0,
-      "itviec": 96.9,
+      "itviec": 96.8,
       "glints": 100.0,
-      "jobsgo": 99.7
+      "jobsgo": 99.6
      }
     ],
     [
@@ -182,7 +182,7 @@
      {
       "topcv": 99.5,
       "topdev": 100.0,
-      "vietnamworks": 87.1,
+      "vietnamworks": 87.0,
       "careerviet": 97.8,
       "vieclam24h": 100.0,
       "itviec": 100.0,
@@ -199,28 +199,28 @@
       "vietnamworks": 99.9,
       "careerviet": 98.3,
       "vieclam24h": 100.0,
-      "itviec": 96.9,
+      "itviec": 96.8,
       "glints": 100.0,
-      "jobsgo": 96.6
+      "jobsgo": 96.5
      }
     ],
     [
      "raw_posted_date",
-     64.1,
+     63.8,
      {
       "topcv": 0.0,
-      "topdev": 31.5,
+      "topdev": 32.7,
       "vietnamworks": 100.0,
       "careerviet": 97.8,
       "vieclam24h": 100.0,
-      "itviec": 96.9,
+      "itviec": 96.8,
       "glints": 100.0,
-      "jobsgo": 99.7
+      "jobsgo": 99.6
      }
     ],
     [
      "raw_updated_at",
-     24.6,
+     25.0,
      {
       "topcv": 0.0,
       "topdev": 0.0,
@@ -234,30 +234,30 @@
     ],
     [
      "raw_deadline",
-     94.6,
+     94.8,
      {
       "topcv": 99.9,
       "topdev": 0.0,
       "vietnamworks": 100.0,
       "careerviet": 97.8,
       "vieclam24h": 100.0,
-      "itviec": 96.9,
+      "itviec": 96.8,
       "glints": 98.0,
       "jobsgo": 99.8
      }
     ],
     [
      "raw_working_time",
-     41.2,
+     41.3,
      {
       "topcv": 99.5,
       "topdev": 0.0,
       "vietnamworks": 0.0,
       "careerviet": 0.0,
-      "vieclam24h": 2.9,
+      "vieclam24h": 3.0,
       "itviec": 0.0,
       "glints": 0.0,
-      "jobsgo": 75.8
+      "jobsgo": 75.0
      }
     ],
     [
@@ -276,21 +276,21 @@
     ],
     [
      "raw_employment_type",
-     94.6,
+     94.7,
      {
       "topcv": 99.5,
       "topdev": 0.0,
       "vietnamworks": 100.0,
       "careerviet": 97.8,
       "vieclam24h": 100.0,
-      "itviec": 96.9,
+      "itviec": 96.8,
       "glints": 100.0,
-      "jobsgo": 99.7
+      "jobsgo": 99.6
      }
     ],
     [
      "raw_work_mode",
-     37.2,
+     37.6,
      {
       "topcv": 99.5,
       "topdev": 0.0,
@@ -304,21 +304,21 @@
     ],
     [
      "raw_experience_text",
-     90.4,
+     90.7,
      {
       "topcv": 99.5,
-      "topdev": 26.4,
-      "vietnamworks": 84.3,
-      "careerviet": 89.3,
+      "topdev": 28.2,
+      "vietnamworks": 84.5,
+      "careerviet": 89.5,
       "vieclam24h": 100.0,
-      "itviec": 87.8,
-      "glints": 91.3,
+      "itviec": 87.7,
+      "glints": 91.9,
       "jobsgo": 99.8
      }
     ],
     [
      "raw_seniority_text",
-     72.3,
+     72.5,
      {
       "topcv": 99.5,
       "topdev": 0.5,
@@ -327,12 +327,12 @@
       "vieclam24h": 100.0,
       "itviec": 0.0,
       "glints": 0.0,
-      "jobsgo": 99.7
+      "jobsgo": 99.6
      }
     ],
     [
      "raw_education_text",
-     65.8,
+     66.1,
      {
       "topcv": 100.0,
       "topdev": 0.0,
@@ -346,7 +346,7 @@
     ],
     [
      "raw_headcount",
-     59.1,
+     59.4,
      {
       "topcv": 99.5,
       "topdev": 0.0,
@@ -355,12 +355,12 @@
       "vieclam24h": 100.0,
       "itviec": 0.0,
       "glints": 0.0,
-      "jobsgo": 59.7
+      "jobsgo": 59.0
      }
     ],
     [
      "raw_age_text",
-     20.7,
+     21.1,
      {
       "topcv": 13.9,
       "topdev": 0.0,
@@ -374,7 +374,7 @@
     ],
     [
      "raw_gender_text",
-     16.3,
+     16.6,
      {
       "topcv": 0.0,
       "topdev": 0.0,
@@ -388,15 +388,15 @@
     ],
     [
      "skills_list",
-     77.8,
+     78.3,
      {
       "topcv": 99.7,
-      "topdev": 82.9,
+      "topdev": 83.2,
       "vietnamworks": 100.0,
       "careerviet": 0.0,
       "vieclam24h": 100.0,
       "itviec": 100.0,
-      "glints": 88.2,
+      "glints": 87.8,
       "jobsgo": 0.0
      }
     ],
@@ -405,12 +405,12 @@
      98.9,
      {
       "topcv": 100.0,
-      "topdev": 97.2,
+      "topdev": 97.5,
       "vietnamworks": 100.0,
       "careerviet": 100.0,
       "vieclam24h": 100.0,
       "itviec": 100.0,
-      "glints": 81.5,
+      "glints": 80.9,
       "jobsgo": 99.8
      }
     ],
@@ -446,60 +446,60 @@
    "note": "Đo trên envelope đầu ra, làm phẳng bằng json_flattener (cùng bộ của bước 02) chỉ để đo; chưa qua bước 03 nên lương, kinh nghiệm vẫn là chữ gốc.",
    "clean_meta": {
     "topcv": {
-     "it_rule=it": 1191,
-     "it_rule_level=1": 1191,
-     "it_status=it": 1537,
-     "it_rule=unknown": 346,
-     "it_rule_level=2": 346
+     "it_rule=it": 1176,
+     "it_rule_level=1": 1176,
+     "it_status=it": 1520,
+     "it_rule=unknown": 344,
+     "it_rule_level=2": 344
     },
     "topdev": {
-     "it_rule=it": 152,
-     "it_rule_level=1": 152,
-     "it_status=it": 216,
-     "it_rule=unknown": 64,
-     "it_rule_level=2": 64
+     "it_rule=it": 142,
+     "it_rule_level=1": 142,
+     "it_status=it": 202,
+     "it_rule=unknown": 60,
+     "it_rule_level=2": 60
     },
     "vietnamworks": {
-     "it_rule=it": 590,
-     "it_rule_level=1": 590,
-     "it_status=it": 781,
+     "it_rule=it": 583,
+     "it_rule_level=1": 583,
+     "it_status=it": 774,
      "it_rule=unknown": 191,
      "it_rule_level=2": 191
     },
     "careerviet": {
-     "it_rule=it": 355,
-     "it_rule_level=1": 355,
-     "it_status=it": 410,
+     "it_rule=it": 346,
+     "it_rule_level=1": 346,
+     "it_status=it": 401,
      "it_rule=unknown": 55,
      "it_rule_level=2": 55
     },
     "vieclam24h": {
-     "it_rule=it": 127,
-     "it_rule_level=1": 127,
-     "it_status=it": 173,
-     "it_rule=unknown": 46,
-     "it_rule_level=2": 46
+     "it_rule=it": 124,
+     "it_rule_level=1": 124,
+     "it_status=it": 164,
+     "it_rule=unknown": 40,
+     "it_rule_level=2": 40
     },
     "itviec": {
-     "it_rule=it": 792,
-     "it_rule_level=1": 792,
-     "it_status=it": 842,
-     "it_rule=unknown": 50,
-     "it_rule_level=2": 50
+     "it_rule=it": 769,
+     "it_rule_level=1": 769,
+     "it_status=it": 818,
+     "it_rule=unknown": 49,
+     "it_rule_level=2": 49
     },
     "glints": {
-     "it_rule=it": 224,
-     "it_rule_level=1": 224,
-     "it_status=it": 254,
-     "it_rule=unknown": 30,
-     "it_rule_level=2": 30
+     "it_rule=it": 218,
+     "it_rule_level=1": 218,
+     "it_status=it": 246,
+     "it_rule=unknown": 28,
+     "it_rule_level=2": 28
     },
     "jobsgo": {
-     "it_rule=it": 551,
-     "it_rule_level=1": 551,
-     "it_status=it": 586,
-     "it_rule=unknown": 35,
-     "it_rule_level=2": 35
+     "it_rule=it": 514,
+     "it_rule_level=1": 514,
+     "it_status=it": 547,
+     "it_rule=unknown": 33,
+     "it_rule_level=2": 33
     }
    }
   }
