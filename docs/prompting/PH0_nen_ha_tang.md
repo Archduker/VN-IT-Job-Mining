@@ -1,5 +1,7 @@
 # Prompt PH0: nền hạ tầng (R2 `pipeline/`, gói cài, thử model dịch)
 
+> **17/11/2026:** đặc tả gốc của prompt này (`docs/spec/preprocessing/spec/...`) đã gộp vào `docs/spec/05_preprocessing_spec.md` và bị xóa. Đọc spec 05 theo bảng trong `docs/prompting/README.md`; các đường dẫn cũ bên dưới chỉ còn giá trị lịch sử.
+
 ## 1. Ngữ cảnh
 
 Đọc trước:

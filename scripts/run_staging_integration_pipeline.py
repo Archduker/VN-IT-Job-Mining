@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """scripts.run_staging_integration_pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+PIPELINE CŨ (đánh dấu 17/11/2026): không dùng cho việc mới. Chuỗi chuẩn là
+`scripts/run_preprocessing.py` (01->04 rồi 07->12_e5, spec 05, 06), bảng sạch
+`data/preprocessing/04_normalization/all.parquet`. Script này dùng nhãn cũ
+(12 Job Family, 6 bậc, 63 tỉnh) và ghi `data/curated/curated_flat_golden_jobs.parquet`
+(PRE-39). Giữ lại để đối chiếu, chưa xóa.
+
 Pipeline vận hành toàn diện quy trình Preprocessing sau bước Integration:
   1. Đọc và ép phẳng toàn bộ dữ liệu thô (JSON Flattening) từ 8 sàn tuyển dụng.
   2. Bóc tách dải lương Cascade 3 tầng (Header Regex -> Title -> JD Regex Scanner).

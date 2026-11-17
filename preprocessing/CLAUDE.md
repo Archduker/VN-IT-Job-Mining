@@ -1,62 +1,51 @@
 # preprocessing/CLAUDE.md
 
-Ngữ cảnh khi làm việc với pre-processing. Thiết kế đầy đủ: `docs/spec/preprocessing/00_architecture_overview.md` (đọc ma trận ranh giới các bước trước khi chuyển logic giữa các bước).
+Ngữ cảnh khi làm việc với giai đoạn **Pre-processing** (bước 00–04). Đặc tả chính thức: `docs/spec/05_preprocessing_spec.md`. Mã bước và vị trí của bước trong quy trình: `docs/spec/03_data_mining_lifecycle.md` mục 3.1. Đọc mục tiêu SD1–SD5 ở `docs/target/` trước khi đổi luật, vì mọi SD đều đọc bảng sạch của bước 04.
 
-Thứ tự làm của dự án là web scraping → trực quan hóa → pre-processing. **Phần này đang để sau:** chỉ sửa khi người dùng yêu cầu rõ.
+## Chuỗi bước
 
-**Refactor đang đặc tả (03/11/2026):** 5 bước Clean → Integration → Transformation → Normalization → Encoding, output bước trước là input bước sau, mỗi bước ghi báo cáo cho Monitoring. Đặc tả: `docs/spec/preprocessing/spec/`; prompt: `docs/prompting/`. Khi refactor xong, bảng "Cấu trúc" dưới đây sẽ thay đổi. Đã chốt: địa điểm theo 34 tỉnh sau sáp nhập (JSON 3 cấp); tin ngoài IT chỉ bỏ theo `preprocessing/clean/it_policy.json` do người dùng duyệt; **mặc định không dùng model/LLM** (04/11/2026): phân loại là luật if-else. **Ngoại lệ duy nhất (10/11/2026, người dùng chốt): dịch toàn bộ JD tiếng Anh sang tiếng Việt bằng model `VietAI/envit5-translation`** chạy local; giữ cột JD gốc, ghi tên và phiên bản model vào báo cáo. OpenJev, JEV, Qwen đã bỏ hẳn.
-
-## Nhóm nghề (cập nhật 11/11/2026)
-
-`JOB_FAMILIES` (`normalization/job_title.py`) có 10 nhóm + `Other` từ 11/11/2026 (L-47): Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI. Luật từ khóa, kỹ năng cổng và `job_titles.json` vẫn ghi tên nhóm cũ; `FAMILY_MAP` gộp về 10 nhóm ở đầu ra `family_from_title`. Muốn đổi nhóm chỉ sửa `FAMILY_MAP`, rồi chạy lại 04, `10_features` và Mining.
-
-## Vị trí trong quy trình 4 giai đoạn (10/11/2026)
-
-`preprocessing/` làm giai đoạn **Pre-processing** (imputation, deduplicate, noise, typecasting, string standardization) theo `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` (bước 0-6 và 4b dịch JD tiếng Anh bằng `VietAI/envit5-translation`, model duy nhất được dùng). Feature selection/extraction/transformation/construction và encoding thuộc giai đoạn **Processing** (`processing/`, mới dựng khung). Code Encoding hiện vẫn nằm ở `preprocessing/encoding/` và chưa được chuyển. Nội dung bước 10b, 10c chưa chốt.
-
-## Pipeline 5 bước (đang làm)
-
-- Driver `scripts/run_preprocessing.py`; mỗi bước là `preprocessing/<bước>/run.py` với `run(sources, dry_run)`. Đủ 5 bước, chạy thật 04/11/2026: 14.292 bản ghi raw → 5.177 tin IT.
-- Bước Clean ghi theo nguồn (`01_clean/<nguồn>.jsonl`); **từ Integration dữ liệu gộp 8 nguồn trong một file `all.parquet`** (cột `source_platform`). Bước 03/04 `groupby` theo nguồn để báo cáo vẫn có số theo nguồn.
-- Không ghi vào `data/curated/` (file golden của pipeline cũ). Đẩy `staging/` và `curated/` lên R2 bằng `scripts/push_preprocessing_to_r2.py` (bố cục trong `common/r2_export.py`).
-- Phân loại IT là luật 2 tầng (`common/it_filter.py`: `classify` từ khóa tiêu đề, `classify_unknown` nhóm nghề + ≥ 2 kỹ năng JD); tầng 2 đúng khoảng 82% trên nhãn tay. Normalization gắn cờ `*_can_kiem` bằng luật mâu thuẫn. Ngoài `envit5-translation` cho dịch JD tiếng Anh, không thêm lời gọi model khác khi người dùng chưa yêu cầu.
-- Từ điển trong `dictionaries/`: `provinces_34.json`, `wards_34.json` (3.321 phường/xã mới, MIT, nguồn ghi trong file), `skills.json`, `benefits.json`. Tên kỹ năng ngắn (C, R, Go) chỉ được thêm kèm ngữ cảnh.
-- `common/`: `step_report.py` (schema báo cáo, luật bảo toàn input = output + bị bỏ), `raw_reader.py`, `province.py` + `dictionaries/provinces_34.json`, `it_filter.py`.
-- Khóa trùng tên (C6, C7) chỉ gồm công ty + tiêu đề (L-40). Cấp bậc ↔ kinh nghiệm quy đổi hai chiều: [0,1) Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior, từ 5 năm để trống; thiếu kinh nghiệm thì điền cận dưới theo cấp raw/title (L-39). Không xử lý trùng khác ngôn ngữ (PH4 C9).
-- File mẫu gán nhãn `data/preprocessing/review/it_<nguồn>.csv` đã có nhãn tay thì không bao giờ bị ghi đè.
-
-## Cấu trúc (pipeline cũ)
-
-- `transformation/pipeline.py` và `run_transformation.py` (đường đặc trưng cũ của Duy) ghi `data/preprocessing/legacy_features/`, không phải `04_normalization/all.parquet`; không nằm trong chuỗi `run_preprocessing.py` (PRE-21).
-
-`preprocessing/` là thư viện các hàm theo bước; driver nằm ở `scripts/run_staging_integration_pipeline.py`, chạy từng nguồn rồi gộp:
+Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <nguồn>|all [--dry-run] [--translate]`. Mỗi bước là `preprocessing/<thư mục>/run.py` có `run(sources, dry_run)`.
 
 | Bước | Thư mục | Việc |
 |---|---|---|
-| Integration | `integration/` | `json_flattener.py` làm phẳng raw theo `_flatten_<nguồn>`; `run.py` chạy bước này (`run_integration.py` đã xóa, PRE-20) |
-| Transformation | `transformation/` | parse lương (`salary_parser.py`), làm sạch HTML và bullet |
-| Missing / Outlier | `missing_outlier/` | null trá hình, bỏ JD rỗng, bù giá trị bằng luật (`genai_text_imputer.py`, tên cũ), cap outlier |
-| Normalization | `normalization/` | chuẩn hóa text, log transform, khử trùng chéo nguồn |
+| 00 profiling | `scripts/profile_sources.py` | Đo trước và sau làm sạch (chỉ đọc) |
+| 01 clean | `clean/`, `common/it_filter.py`, `common/raw_reader.py` | Snapshot mới nhất, lọc IT 2 tầng theo `it_policy.json`, bỏ JD dưới 50 từ, bỏ CTV/đa cấp, khử trùng theo công ty + tiêu đề |
+| 01b deduplication | `deduplication/` | 3 tầng: (nguồn, id) → `sha1(text_fold)` → MinHash + Jaccard ≥ 0,85 cùng `company_slug` |
+| 02 integration | `integration/` | Làm phẳng về 18 trường `raw_*` + khóa, gộp 8 nguồn vào `all.parquet` |
+| 03 transformation | `transformation/`, `translation/`, `common/text_clean.py`, `common/lang_id.py` | Làm sạch ký tự, parse lương/ngày/kinh nghiệm, fastText ngôn ngữ, dịch EN→VI (envit5), rút kỹ năng và phúc lợi, tách địa điểm |
+| 04 normalization | `normalization/`, `missing_outlier/` | 34 tỉnh, 5 cấp bậc, 10 nhóm nghề + Other, `company_key`, kỹ năng chuẩn; thiếu và ngoại lai chỉ gắn cờ |
 
-Mỗi nguồn ra 3 file: `<nguồn>_flat_clean.parquet`, `reports/<nguồn>/<nguồn>_quality_health_card.json`, `reports/<nguồn>/<nguồn>_transformation_manifest.md`. Bộ golden là `data/curated/curated_flat_golden_jobs.parquet`.
+- `05_encoding` (`encoding/`) đã được bước 10 của `processing/` thay thế, nhưng vẫn còn trong `STEPS` (PRE-39). Không thêm logic mới vào `encoding/`.
+- Bảng sạch cuối là `data/preprocessing/04_normalization/all.parquet` (spec 05 mục 4.1, duyệt 17/11). Chuỗi mới không ghi `data/curated/`; các script còn đọc `curated_flat_golden_jobs.parquet` sẽ đổi theo PRE-39.
+- Từ bước 02 dữ liệu 8 nguồn nằm chung một `all.parquet` (cột `source_platform`). Chạy thật 02–04 phải dùng `--source all`, nếu không sẽ ghi đè bằng một phần dữ liệu.
+- Report: `reports/preprocessing/<bước>/<nguồn>.json` và `_all.json` (`common/step_report.py`). Luật bảo toàn `input = output + dropped`; sai thì cả bước dừng.
+- `transformation/pipeline.py`, `run_transformation.py`, `normalization/run_normalization.py` và `scripts/run_staging_integration_pipeline.py` là pipeline cũ, không nằm trong chuỗi. Không sửa chúng khi sửa luật của chuỗi mới.
 
 ## Quy tắc
 
-- **Ranh giới bước là hợp đồng.** Integration không parse lương, không đổi tiền tệ, không bỏ dòng, không bù giá trị. Transformation không xóa outlier, không bù. Missing/Outlier không bù bằng mean hoặc median. Normalization không scale trước khi xử lý outlier.
-- **EDA trước.** Luật của từng nguồn rút từ `collection/reports/EDA_<nguồn>.ipynb`. Đọc bằng `python scripts/read_eda_diagnosis.py --source <nguồn>`, không mở notebook (chứa ảnh base64 rất lớn).
-- Lương thỏa thuận giữ `NaN` kèm cờ (MNAR). Outlier được cap, không xóa. Giá trị bù (bằng luật, pipeline cũ) có cờ `is_imputed_by_genai` (tên cũ, không còn gọi Gemini).
-- **Raw là bất biến:** sửa cách đọc một trường thì sửa ở đây, không sửa file raw. Raw TopDev cũ thiếu F5, F6, F8 (SCRAPE-5) nên flattener phải chịu được trường vắng.
+- **Ranh giới bước là hợp đồng** (spec 05 mục 2.4). 02 không parse, không đổi tiền, không bù. 03 không bỏ dòng, không cap ngoại lai, không log. 04 không bỏ dòng, không ghi đè cột gốc, không bù lương bằng trung bình hay trung vị. Cap ngoại lai (N6) trước log (N7).
+- **Không dùng model để phân loại hay chuẩn hóa.** Chỉ có hai model: fastText `lid.176` (nhận diện ngôn ngữ, 03) và `VietAI/envit5-translation` (dịch, 03 T6b, chỉ khi có `--translate`). Giữ cột JD gốc; kỹ năng rút từ bản gốc. Thêm model khác phải được người dùng đồng ý.
+- **Lương thỏa thuận** giữ NaN kèm `is_negotiable` (MNAR). Giá trị suy ra luôn có cờ (`level_inferred`, `exp_inferred`, `*_source`).
+- **Ngày đăng:** bảng sạch dùng `posted_month` + `posted_month_source`, không dùng `posted_date` (PRE-37). Tháng phải lấy từ lần cào **đầu tiên**, không phải snapshot mới nhất mà 01 chọn.
+- **Raw là bất biến:** sửa cách đọc một trường thì sửa ở đây, không sửa file raw. Raw TopDev cũ thiếu một số trường, nên flattener phải chịu được trường vắng.
 - `_flatten_<nguồn>` phải khớp `monitoring/backend/app/core/feature_targets.py` (`RAW_PATHS`). Đổi tên trường ở một bên thì sửa cả bên kia.
-- Thêm nguồn mới: thêm `_flatten_<nguồn>` và tên nguồn vào `SOURCES` ở `run_staging_integration_pipeline.py`, `integration/run.py`, `scripts/read_eda_diagnosis.py`.
+- Khớp từ khóa và kỹ năng **theo từ nguyên vẹn**, không theo chuỗi con ("intern" từng khớp "international", "ba" khớp "backend"). Tên kỹ năng ngắn (C, R, Go) chỉ thêm kèm ngữ cảnh.
+- Khóa trùng ở 01 (C6, C7) chỉ gồm công ty + tiêu đề (L-40).
+- Nhóm nghề: muốn đổi nhóm thì chỉ sửa `FAMILY_MAP` trong `normalization/job_title.py`, rồi chạy lại 04, `10_features` và Mining (L-47).
+- Cấp bậc ↔ kinh nghiệm: [0,1) Intern/Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior, từ 5 năm để trống (L-39).
+- File mẫu gán nhãn `data/preprocessing/review/it_<nguồn>.csv` đã có nhãn tay thì không bao giờ bị ghi đè. Bộ gold `data/preprocessing/gold/gold_labels.json` gắn với mẫu `e58bceb3a5`; không dựng lại mẫu.
+- Thêm nguồn mới: thêm `_flatten_<nguồn>` và tên nguồn vào `SOURCES` ở `common/__init__.py`, `VALID_SOURCES` ở `scripts/read_eda_diagnosis.py`, và monitoring `config.py`.
+- Bẫy riêng của từng bước: `clean/CLAUDE.md`, `deduplication/CLAUDE.md`, `encoding/CLAUDE.md`.
 
 ## Dữ liệu đầu vào
 
 - Đọc `data/<nguồn>/raw/`, nên chạy `python scripts/sync_cloud_lakehouse.py --download` trước.
-- File batch cũ `data/vieclam24h/raw/2026-10-20/batch_001.json` và `data/vietnamworks/raw/2026-10-16/raw_batch.json` gom nhiều tin, trùng với file từng tin. Bước Clean đã khử trùng theo `job_id`, ưu tiên file từng tin (luật C2, `docs/issue_log.md` L-25).
+- File batch cũ `data/vieclam24h/raw/2026-10-20/batch_001.json` và `data/vietnamworks/raw/2026-10-16/raw_batch.json` gom nhiều tin, trùng với file từng tin. Bước 01 bỏ theo luật C2, ưu tiên file từng tin (L-25).
 - Repost không có file raw; ledger ghi `repost_of_url_hash`.
+- EDA theo nguồn: `python scripts/read_eda_diagnosis.py --source <nguồn>`, không mở notebook (chứa ảnh base64 rất lớn).
 
 ## Việc còn mở
 
-`KNOWN_ISSUED.md` mục 3: PRE-11 (chờ chốt hướng cho mô hình). PRE-9 (JEV) hết vì đã bỏ model (L-28); PRE-10 (dịch) làm lại bằng `envit5-translation` (10/11). PRE-1 đến PRE-7 của pipeline cũ đã hết (`docs/issue_log.md` L-27).
+`docs/KNOWN_ISSUED.md` mục 3: PRE-12 (bộ lọc IT 92,4%, chưa đạt 95%), PRE-33 (việc chờ người dùng), PRE-34 (222 tin dịch hỏng), PRE-35 (dữ liệu chưa sạch cho SD1–SD5), PRE-37 (`posted_month`), PRE-38 (tỉnh lấy từ trụ sở), PRE-39 (dọn code theo spec 05).
 
-Chạy lại pipeline thì so số trước và sau, rồi mới đẩy lên R2 (`scripts/push_integration_to_r2.py`, `scripts/sync_cloud_lakehouse.py --upload`; cả hai đều ghi lên R2).
+Chạy lại pipeline thì so số trước và sau, rồi mới đẩy lên R2 bằng `scripts/push_preprocessing_to_r2.py` (chạy thử trước, người dùng duyệt rồi mới `--push`).

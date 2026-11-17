@@ -1,11 +1,11 @@
 # ĐẶC TẢ SẢN PHẨM (PRODUCT SPECIFICATION)
-## DỰ ÁN: HỆ THỐNG KHAI PHÁ DỮ LIỆU TUYỂN DỤNG IT VIỆT NAM (VN-IT-JOB-MINING)
+## ĐỀ TÀI: TÍCH HỢP VÀ KHAI PHÁ DỮ LIỆU THỊ TRƯỜNG LAO ĐỘNG PHỤC VỤ PHÂN TÍCH NGHỀ NGHIỆP VÀ KỸ NĂNG TRONG IT (repo: VN-IT-Job-Mining)
 
 > **Mã tài liệu:** `SPEC-01`  
-> **Phiên bản:** `1.0.0`  
-> **Ngày cập nhật:** 05/11/2026  
+> **Phiên bản:** `1.1.0`  
+> **Ngày cập nhật:** 16/11/2026 (đổi tên đề tài; thay "4 bài toán" bằng 5 mục tiêu SD1–SD5 định nghĩa ở [`docs/target/`](../target/00_de_tai.md))  
 > **Trạng thái:** Chính thức ban hành  
-> **Phạm vi dữ liệu:** 8 sàn tuyển dụng CNTT tại Việt Nam (TopCV, TopDev, VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints, JobsGO) trong giai đoạn tháng 10 – tháng 11/2026.
+> **Phạm vi dữ liệu:** 8 sàn tuyển dụng CNTT tại Việt Nam (TopCV, TopDev, VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints, JobsGO) trong giai đoạn tháng 9 – tháng 11/2026: tin đăng từ tháng 9, được thu thập trong tháng 10–11/2026. Thời gian được tính theo tháng (`posted_month`).
 
 ---
 
@@ -31,11 +31,10 @@ Bước sang quý 4 năm 2026, thị trường lao động Công nghệ Thông t
 flowchart TD
     RawData["8 Sàn Tuyển Dụng IT\n(9.000+ Raw Job Envelopes)"] --> Pipeline["Modern Data Mining Pipeline\n(ELT + 5-Step Preprocessing)"]
     Pipeline --> GoldenDS["Golden Master Dataset\n(curated_flat_golden_jobs.parquet)"]
-    GoldenDS --> MiningEngine["Data Mining Engines\n(FP-Growth, K-Means/HDBSCAN, Anomaly; phần phụ: RF + SHAP)"]
-    MiningEngine --> Value1["Khai phá Combo Kỹ năng"]
-    MiningEngine --> Value2["Định giá Lương & Kỹ năng"]
-    MiningEngine --> Value3["Thu hẹp Skill Gap"]
-    MiningEngine --> Value4["Bản đồ Thị trường Lao động"]
+    GoldenDS --> SD1["SD1 · BI\nBức tranh toàn cảnh thị trường"]
+    GoldenDS --> UNS["SD2, SD3 · Không giám sát\nFP-Growth, K-Means/HDBSCAN, Isolation Forest"]
+    GoldenDS --> MOD["SD4, SD5 · Train model\nRandom Forest + SHAP, lộ trình học"]
+    SD1 --> UNS --> MOD
 ```
 
 ### 2.1. Tầm nhìn sản phẩm (Product Vision)
@@ -44,7 +43,9 @@ flowchart TD
 ### 2.2. Mục tiêu chiến lược (Strategic Objectives)
 1. **Chuẩn hóa dữ liệu quy mô lớn (Data Modernization):** Thu thập toàn diện, khử trùng lặp đa sàn, chuẩn hóa từ điển danh mục (Taxonomy) và xuất bản bộ dữ liệu sạch đạt chuẩn **Golden Master Dataset**.
 2. **Khai phá tri thức chiều sâu (Deep Knowledge Discovery):** Khám phá các mẫu kỹ năng đồng xuất hiện thường xuyên, phân nhóm công việc tự nhiên và giải mã giá trị kinh tế biên của từng kỹ năng công nghệ đối với mức lương.
-3. **Tính ứng dụng cao (High Actionability):** Cung cấp các khuyến nghị lộ trình học tập cụ thể, chỉ ra chính xác các kỹ năng sinh viên còn thiếu hụt so với chuẩn mực thị trường.
+3. **Tính ứng dụng cao (High Actionability):** Cung cấp khuyến nghị kỹ năng ưu tiên và thứ tự học cho người mới vào từng nghề, dựa trên những gì thị trường đòi (dữ liệu chỉ có tin tuyển dụng, không đo được người học đang thiếu gì).
+
+Mục 1 (chuẩn hóa dữ liệu) là **nền tảng dữ liệu**, không phải mục tiêu khai phá. Mục 2 và 3 được cụ thể hóa thành 5 mục tiêu SD1–SD5 ở mục 4.
 
 ---
 
@@ -52,58 +53,28 @@ flowchart TD
 
 | Nhóm đối tượng (Persona) | Đặc điểm & Nỗi đau (Pain points) | Đề xuất giá trị của sản phẩm (Value Proposition) |
 | :--- | :--- | :--- |
-| **Sinh viên IT chuẩn bị tốt nghiệp / Fresher** | • Bối rối không biết nên học thêm công nghệ nào để dễ xin việc.<br>• CV rải nhiều nơi nhưng không nhận được phản hồi.<br>• Không biết mức lương bao nhiêu là hợp lý để deal với nhà tuyển dụng.<br>• Chưa nắm rõ combo kỹ năng nào bắt buộc phải đi kèm nhau. | • Cung cấp bản đồ kỹ năng (Skill Matrix) theo từng nhóm nghề cụ thể.<br>• Báo cáo chỉ số khoảng cách kỹ năng (Skill Gap Index) cho cấp độ Intern/Fresher.<br>• Mô hình ước tính lương theo kỹ năng giúp tự tin đàm phán mức lương kỳ vọng. |
+| **Sinh viên IT chuẩn bị tốt nghiệp / Fresher** | • Bối rối không biết nên học thêm công nghệ nào để dễ xin việc.<br>• CV rải nhiều nơi nhưng không nhận được phản hồi.<br>• Không biết mức lương bao nhiêu là hợp lý để deal với nhà tuyển dụng.<br>• Chưa nắm rõ combo kỹ năng nào bắt buộc phải đi kèm nhau. | • Cung cấp bản đồ kỹ năng (Skill Matrix) theo từng nhóm nghề cụ thể.<br>• Số liệu thị trường đòi gì ở tin cho Intern/Fresher/Junior (SD1) và lộ trình kỹ năng theo nghề (SD5).<br>• Mô hình ước tính lương theo kỹ năng giúp tự tin đàm phán mức lương kỳ vọng. |
 | **Giảng viên & Hội đồng Chấm Đồ án** | • Cần thẩm định tính nghiêm túc, tính mới và độ tin cậy khoa học của đồ án tốt nghiệp.<br>• Yêu cầu kiểm chứng quy trình Data Science chuẩn mực, không chấp nhận việc "nặn" số liệu hoặc quy trình chắp vá.<br>• Đánh giá năng lực xử lý dữ liệu thực tế và kỹ năng giải quyết vấn đề của sinh viên. | • Quy trình CRISP-DM + KDD khép kín, minh bạch, kiểm chứng được mã nguồn và dữ liệu.<br>• Áp dụng thuật toán khai phá nâng cao (FP-Growth, K-Means/HDBSCAN, Random Forest + SHAP) có cơ sở toán học.<br>• Báo cáo đánh giá (Evaluation Spec) chuẩn mực với các chỉ số thống kê định lượng. |
-| **Nhà trường & Ban chủ nhiệm Khoa CNTT** | • Khung chương trình đào tạo đại học thường chậm cập nhật so với tốc độ biến đổi của công nghệ doanh nghiệp.<br>• Thiếu số liệu thực tế để thuyết minh việc bổ sung môn học mới. | • Báo cáo đối chiếu yêu cầu thực tế doanh nghiệp với khung môn học đại học.<br>• Dự báo các kỹ năng mới nổi (Emerging Skills) giúp điều chỉnh giáo trình đào tạo bắt kịp thị trường. |
+| **Nhà trường & Ban chủ nhiệm Khoa CNTT** (người dùng phụ) | • Khung chương trình đào tạo đại học thường chậm cập nhật so với tốc độ biến đổi của công nghệ doanh nghiệp.<br>• Thiếu số liệu thực tế để thuyết minh việc bổ sung môn học mới. | • Số liệu về kỹ năng thị trường đòi ở tin cho người mới (SD1, SD2) và lộ trình kỹ năng theo nghề (SD5) để nhà trường tự đối chiếu với chương trình của mình.<br>• Dự án **không** so sánh với chương trình đào tạo, vì dữ liệu không có chương trình đào tạo. |
 | **Nhà tuyển dụng IT & HR Specialist** | • Khó khăn trong việc định giá lương cạnh tranh cho các vị trí tuyển dụng.<br>• Viết JD theo khuôn mẫu cũ, đòi hỏi các kỹ năng không ăn khớp hoặc phi thực tế. | • Bảng tham chiếu giá trị biên của kỹ năng (Marginal Skill Pricing).<br>• Tham khảo các combo kỹ năng tiêu chuẩn thị trường để xây dựng JD thực tế, hấp dẫn ứng viên. |
 
 ---
 
-## 4. Bốn Bài Toán Khai Phá Dữ Liệu Trọng Tâm (Core Mining Problems)
+## 4. Năm Mục Tiêu Khai Phá (SD1–SD5)
 
-Dự án tập trung giải quyết triệt để 4 bài toán khoa học dữ liệu mang tính thời sự cao:
+> Cập nhật 16/11/2026: mục này thay cho "4 bài toán trọng tâm" cũ. Định nghĩa đầy đủ (câu hỏi, dữ liệu, cách trả lời, tiêu chí đánh giá, giới hạn) ở [`docs/target/`](../target/00_de_tai.md). Khi mâu thuẫn thì `docs/target/` thắng.
 
-```mermaid
-graph LR
-    subgraph CoreProblems["4 BÀI TOÁN PHÂN TÍCH TRỌNG TÂM"]
-        P1["1. Khai phá Combo Kỹ năng Đi liền nhau\n(Frequent Pattern & Association Mining)"]
-        P2["2. Phân tích Mức lương theo Kỹ năng & Cấp bậc\n(lõi: thống kê mô tả + anomaly; phần phụ: RF + SHAP)"]
-        P3["3. Phân tích Khoảng cách Kỹ năng Sinh viên\n(Intern/Fresher Market Skill Gap Analysis)"]
-        P4["4. Bản đồ Việc làm theo Địa lý & Domain IT\n(Geospatial & Job Family Cluster Mapping)"]
-    end
-```
+Thứ tự: **BI → khai phá không giám sát → train model**. Tầng sau dùng kết quả của tầng trước.
 
-### 4.1. Bài toán 1: Khai phá tập combo kỹ năng đi liền nhau (Frequent Skillsets & Association Rules)
-- **Đặt vấn đề:** Một lập trình viên không bao giờ làm việc với một kỹ năng đơn lẻ. Doanh nghiệp luôn tuyển dụng theo các "gói kỹ năng" (Skill Bundles) bổ trợ lẫn nhau (ví dụ: Spring Boot đi kèm Java, Hibernate, Docker, Microservices, PostgreSQL).
-- **Mục tiêu kỹ thuật:**
-  - Áp dụng thuật toán **FP-Growth (Frequent Pattern Growth)** để tìm các tập kỹ năng phổ biến ($Frequent\ Itemsets$) xuất hiện đồng thời trong các tin tuyển dụng.
-  - Khai phá các luật kết hợp dạng: $\{Skill_A, Skill_B\} \Rightarrow \{Skill_C\}$.
-  - Đánh giá chất lượng luật thông qua bộ tứ chỉ số: **Support**, **Confidence**, **Lift**, và **Conviction**.
-- **Giá trị nghiệp vụ:** Giúp ứng viên hiểu rằng khi học một công nghệ chính (core tech), bắt buộc phải học kèm các công nghệ vệ tinh nào để CV vượt qua vòng lọc hồ sơ tự động (ATS).
+| SD | Tầng | Mục tiêu | Thay cho bài toán cũ |
+|---|---|---|---|
+| **SD1** | BI | Bức tranh toàn cảnh thị trường IT Việt Nam T9–T11/2026: nghề, cấp, tỉnh, hình thức làm việc, lương công khai và tỷ lệ "thỏa thuận", yêu cầu với người mới, phúc lợi | Bài toán 4 (bản đồ địa lý và nhóm nghề), phần mô tả của bài toán 2, phần "yêu cầu với Intern/Fresher" của bài toán 3 |
+| **SD2** | Không giám sát | Gói kỹ năng hay đi cùng nhau và kỹ năng hiếm (FP-Growth) | Bài toán 1 |
+| **SD3** | Không giám sát | Nhóm việc thật sự theo nội dung tin, so với nhóm nghề gán bằng luật, và tin khác hoặc mới (K-Means/HDBSCAN, Isolation Forest) | Phần phân cụm của bài toán 4 |
+| **SD4** | Train model | Kỹ năng nào đáng tiền khi giữ nguyên nghề, cấp, kinh nghiệm, tỉnh; ước tính lương cho tin "thỏa thuận" (Random Forest + SHAP; dự phòng là đoán khung lương) | Phần Salary Modeling của bài toán 2, nay là bước chính thức |
+| **SD5** | Train model + tổng hợp | Kỹ năng ưu tiên và thứ tự học cho người mới vào từng nghề | Thay phần "đối chiếu với khung chương trình đại học" của bài toán 3 |
 
-### 4.2. Bài toán 2: Phân tích mức lương theo kỹ năng & cấp bậc (lõi mô tả + phần phụ Salary Modeling)
-- **Đặt vấn đề:** Lương là thông tin nhạy cảm và thường bị ẩn dưới nhãn "Thỏa thuận" (Negotiable). Trong số các tin công khai lương, mức lương chịu ảnh hưởng phức tạp bởi số năm kinh nghiệm, cấp bậc (Seniority), địa bàn công tác và danh mục kỹ năng yêu cầu.
-- **Phạm vi (cập nhật 10/11/2026):** quy trình chuẩn của dự án chỉ khai phá **unsupervised** (clustering, association rules, anomaly detection, dimensionality reduction). Phần lõi của bài toán này là thống kê mô tả lương theo kỹ năng/cấp bậc/tỉnh và phát hiện lương ngoại lai (anomaly). Hồi quy Random Forest + SHAP dưới đây là **phần phụ (supervised, ngoại lệ so với quy trình chuẩn)**, đã chốt giữ lại, không thuộc tiêu chí nghiệm thu lõi.
-- **Mục tiêu kỹ thuật (phần phụ):**
-  - Xây dựng mô hình hồi quy phi tuyến **Random Forest Regressor** dự đoán mức lương chuẩn hóa $\log(Salary\_VND)$.
-  - Sử dụng phương pháp giải thích mô hình **SHAP (SHapley Additive exPlanations)** để tách biệt đóng góp biên (Marginal Contribution) của từng kỹ năng công nghệ độc lập với kinh nghiệm và địa lý.
-- **Giá trị nghiệp vụ:** Trả lời câu hỏi định lượng: *"Biết thêm Docker/Kubernetes giúp kỹ sư Backend tăng trung bình bao nhiêu triệu VNĐ/tháng?"* hoặc *"Kỹ năng nào có tỷ suất sinh lời cao nhất (Highest ROI Skill) hiện nay tại Việt Nam?"*.
-
-### 4.3. Bài toán 3: Phân tích khoảng cách kỹ năng thị trường vs Sinh viên mới ra trường (Intern/Fresher Skill Gap)
-- **Đặt vấn đề:** Sinh viên mới ra trường thường chỉ được trang bị kiến thức nền tảng trong trường đại học (C++, Java core, cấu trúc dữ liệu, thuật toán, cơ sở dữ liệu lý thuyết), trong khi doanh nghiệp tuyển Intern/Fresher hiện nay đòi hỏi cả kiến thức thực chiến (Git workflow, CI/CD cơ bản, RESTful API, Docker, kiểm thử đơn vị Unit Test).
-- **Mục tiêu kỹ thuật:**
-  - Lọc phân tập dữ liệu tuyển dụng dành riêng cho cấp bậc **"Thực tập" (Intern)** và **"Mới tốt nghiệp" (Fresher)**.
-  - Đối chiếu tần suất xuất hiện của các kỹ năng thực tế trên thị trường với khung chương trình chuẩn khối ngành CNTT (Benchmark Đại học).
-  - Tính toán chỉ số thâm hụt kỹ năng (**Skill Deficit Score**) và mức độ khắt khe của thị trường đối với nhân sự đầu vào.
-- **Giá trị nghiệp vụ:** Chỉ rõ cho sinh viên các "lỗ hổng tử huyệt" cần bù đắp trước khi ứng tuyển, tránh tâm lý ảo tưởng hoặc hoang mang khi phỏng vấn.
-
-### 4.4. Bài toán 4: Bản đồ việc làm theo miền địa lý & domain IT (Geographic & Job Family Mapping)
-- **Đặt vấn đề:** Cơ cấu việc làm IT phân hóa mạnh mẽ giữa các trung tâm kinh tế: Hà Nội thiên về khối cơ quan nhà nước, viễn thông, fintech và doanh nghiệp sản xuất; TP. Hồ Chí Minh dẫn đầu về product công nghệ, outsourcing toàn cầu, e-commerce và startup; Đà Nẵng nổi lên như một cứ điểm outsourcing lớn.
-- **Mục tiêu kỹ thuật:**
-  - Chuẩn hóa địa lý về 34 tỉnh thành sau sáp nhập hành chính (tập trung 3 đầu tàu: Hà Nội, TP.HCM, Đà Nẵng) và hình thức làm việc Remote/Hybrid.
-  - Phân loại tin tuyển dụng vào nhóm nghề chuẩn (**12 Job Families** theo thiết kế ban đầu; từ 11/11/2026 pipeline dùng 10 nhóm + Other: Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI, xem PH6 và L-47): Backend, Frontend, Fullstack, Mobile, DevOps/Cloud, Data Engineer, Data Science/AI, QA/QC, Security, Product/Project, System/Network, Embedded/IoT.
-  - Ứng dụng phân cụm **K-Means / HDBSCAN** trên không gian vector kết hợp giữa kỹ năng và văn bản mô tả để tìm kiếm các cụm công việc đặc thù (Niche Job Clusters).
-- **Giá trị nghiệp vụ:** Cung cấp bức tranh toàn cảnh giúp người lao động lựa chọn địa điểm làm việc và định vị chuyên môn phù hợp với xu thế dịch chuyển của thị trường.
+Đã bỏ: so sánh kỹ năng thị trường với chương trình đào tạo đại học (bài toán 3 cũ, SD4 cũ "Education–Industry Skill Gap"). Lý do là dữ liệu chỉ có tin tuyển dụng, không có chương trình đào tạo hay CV, nên không kiểm chứng được.
 
 ---
 
@@ -118,7 +89,7 @@ flowchart LR
     subgraph CoreOutputs["DỮ LIỆU ĐẦU RA (OUTPUTS)"]
         D1["1. Golden Master Dataset\n(curated_flat_golden_jobs.parquet)"]
         D2["2. Encoded Features Matrix\n(features.parquet & dictionary)"]
-        D3["3. Kho Tri Thức Khai Phá\n(Rules, Clusters, Anomaly; phụ: SHAP Values)"]
+        D3["3. Kho Tri Thức Khai Phá\n(Rules, Clusters, tin khác hoặc mới, SHAP Values, lương ước tính)"]
         D4["4. Hồ Sơ Báo Cáo Nghiệm Thu\n(Market Intelligence & Web Monitor)"]
     end
 
@@ -147,8 +118,8 @@ flowchart LR
 | :---: | :--- | :--- | :--- |
 | **1** | **Golden Master Dataset** | `curated_flat_golden_jobs.parquet` | Bảng dữ liệu phẳng chuẩn hóa toàn diện sau 5 bước tiền xử lý; đã khử trùng lặp đa nguồn, loại bỏ tin phi IT, chuẩn hóa lương VND, chuẩn hóa 34 tỉnh thành và 12 Job Families. |
 | **2** | **Feature Encoded Matrix** | `features.parquet` & `encoding_dictionary.json` | Ma trận đặc trưng số hóa sẵn sàng cho Machine Learning: One-Hot/Multi-Hot kỹ năng, Ordinal Encoding cho Seniority, Binary flags, Log Salary. |
-| **3** | **Mining Knowledge Base** | JSON / CSV / Parquet | • Danh mục Frequent Itemsets & Association Rules (FP-Growth).<br>• Bảng phân cụm công việc và nhãn ngữ nghĩa (K-Means/HDBSCAN).<br>• Danh sách tin bất thường (Anomaly).<br>• Phần phụ: bảng hệ số tác động biên kỹ năng (SHAP Feature Values). |
-| **4** | **Báo Cáo Phân Tích Chuyên Đề** | Markdown / PDF | Bộ báo cáo thị trường hoàn chỉnh phục vụ hội đồng chấm đồ án: tổng quan thị trường, phân tích 4 bài toán trọng tâm và khuyến nghị sinh viên. |
+| **3** | **Mining Knowledge Base** | JSON / CSV / Parquet | • Danh mục Frequent Itemsets & Association Rules (FP-Growth).<br>• Bảng phân cụm công việc và nhãn ngữ nghĩa (K-Means/HDBSCAN).<br>• Danh sách tin khác hoặc mới (SD3).<br>• Bảng giá trị kỹ năng (SHAP) và lương ước tính cho tin "thỏa thuận" (SD4).<br>• Danh sách kỹ năng ưu tiên và lộ trình theo nghề (SD5). |
+| **4** | **Báo Cáo Phân Tích Chuyên Đề** | Markdown / PDF | Bộ báo cáo thị trường phục vụ hội đồng chấm đồ án: trả lời câu hỏi của 5 mục tiêu SD1–SD5 (`docs/target/`). |
 | **5** | **Interactive Web Monitoring** | Streamlit Web Application | Dashboard tương tác trực quan hóa sức khỏe pipeline dữ liệu, phân phối tiền xử lý và kết quả mô hình khai phá. |
 
 ---

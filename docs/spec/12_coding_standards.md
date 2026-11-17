@@ -1,6 +1,6 @@
 # TIÊU CHUẨN LẬP TRÌNH & QUY TẮC AN TOÀN MÃ NGUỒN (CODING STANDARDS & QUALITY ASSURANCE)
 
-> **Mã tài liệu:** `SPEC-12` | **Trạng thái:** Bắt buộc tuân thủ (Mandatory)  
+> **Mã tài liệu:** `SPEC-12` | **Phiên bản:** 1.1.0 (17/11/2026: mục 4 thêm `processing/`, `mining/`; mục 2 crawler không đổi) | **Trạng thái:** Bắt buộc tuân thủ; bản sửa đã duyệt 17/11/2026 (chặng 5)  
 > **Dự án:** VN-IT-Job-Mining — Nền tảng khai phá thị trường lao động IT Việt Nam  
 > **Tài liệu liên quan:** [AGENTS.md](../../AGENTS.md), [09_monitoring_spec.md](09_monitoring_spec.md), [11_technical_decisions.md](11_technical_decisions.md), [13_working_documentation.md](13_working_documentation.md)
 
@@ -159,6 +159,9 @@ flowchart TD
 ### 4.1. Phân Tầng Thư Mục Tests
 1. **`tests/unit/` (Unit Tests):**
    - Kiểm tra các hàm logic độc lập: hàm băm canonical hash, hàm parse lương (`salary_parser.py`), chuẩn hóa tên tỉnh thành 34 tỉnh, bộ lọc IT 2 tầng.
+   - **Processing** (`processing/`, spec 06): trích kỹ năng, đặc trưng bước 10 (ví dụ `test_skills_ac.py`, `test_feature_engineering.py`, `test_processing_10_12.py`, `test_processing_skeleton.py`).
+   - **Mining** (`mining/`, spec 07): mỗi module có một file `test_mining_<module>.py` (`association`, `clustering`, `anomaly`, `salary_model`, `data_io`, `sanity`, `pipeline`). Test mining được dùng dữ liệu tổng hợp nhỏ của `mining/synthetic.py` để kiểm logic; kết quả báo cáo và số trong spec thì phải chạy trên dữ liệu thật (Nguyên tắc 1). Khi thêm M1 (`mining/bi.py`) và M6 (`mining/recommend.py`) phải thêm `test_mining_bi.py`, `test_mining_recommend.py` (MINE-7).
+   - Test cần model lớn (fastText, envit5, e5) hoặc file trong `data/` phải dùng `@pytest.mark.needs_data(...)` để tự bỏ qua khi máy không có.
    - Thời gian thực thi toàn bộ unit tests phải dưới 5 giây (`make test-fast`).
 2. **`tests/contract/` (Contract Tests):**
    - Đảm bảo 8 crawler tuân thủ đầy đủ tiêu chuẩn C1 – C14.
@@ -169,6 +172,7 @@ flowchart TD
 4. **`tests/data/` (Data Quality Tests):**
    - Kiểm tra chất lượng dữ liệu trên file Parquet: kiểm tra kiểu dữ liệu, các ràng buộc không null, và quy tắc bảo toàn dòng dữ liệu qua các bước tiền xử lý:
      $$\text{Input Rows} = \text{Output Rows} + \text{Dropped Rows}$$
+   - Áp dụng cho cả bước Processing (07–12_e5) và đầu vào Mining (M3 ghi `n_dropped_no_skill`).
 
 ### 4.2. Chính Sách Cách Ly Mạng Tuyệt Đối (Zero-Network Policy)
 - **Cơ chế Chặn Socket:** File `tests/conftest.py` cài đặt socket blocker can thiệp vào tầng hệ điều hành. Mọi lệnh gọi mạng ra ngoài localhost (`127.0.0.1`) trong lúc chạy test suite đều tự động bị ngắt và raise lỗi `NetworkBlockedError`.
@@ -189,8 +193,8 @@ Khi phát hiện và sửa chữa bất kỳ lỗi phát sinh nào trong mã ngu
    - **Lỗi:** Hiện tượng quan sát thấy, vị trí phát sinh, số liệu cụ thể.
    - **Nguyên nhân:** Giải thích bản chất kỹ thuật, chỉ rõ file và dòng mã gây lỗi.
    - **Cách xử lý:** Mô tả phương án sửa mã; cách dữ liệu được cập nhật lại.
-   - **Còn lại:** Những việc tồn đọng (nếu có, trỏ về KNOWN_ISSUED.md).
+   - **Còn lại:** Những việc tồn đọng (nếu có, trỏ về `docs/KNOWN_ISSUED.md`).
    - **Kiểm chứng:** Tên test case hoặc lệnh CLI chứng minh lỗi đã được khắc phục hoàn toàn.
    ```
-2. **Cập nhật việc tồn đọng:** Xóa bỏ mục lỗi tương ứng trong `KNOWN_ISSUED.md`.
+2. **Cập nhật việc tồn đọng:** Xóa bỏ mục lỗi tương ứng trong `docs/KNOWN_ISSUED.md`.
 3. **Bổ sung bẫy phòng ngừa:** Nếu lỗi thuộc dạng dễ tái diễn, bắt buộc bổ sung một dòng cảnh báo vào file `CLAUDE.md` của thư mục chứa lỗi đó.

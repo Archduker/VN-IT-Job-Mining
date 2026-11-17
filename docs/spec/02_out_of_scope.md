@@ -2,9 +2,9 @@
 ## DỰ ÁN: HỆ THỐNG KHAI PHÁ DỮ LIỆU TUYỂN DỤNG IT VIỆT NAM (VN-IT-JOB-MINING)
 
 > **Mã tài liệu:** `SPEC-02`  
-> **Phiên bản:** `1.0.0`  
-> **Ngày cập nhật:** 05/11/2026  
-> **Trạng thái:** Chính thức ban hành  
+> **Phiên bản:** `1.1.0`  
+> **Ngày cập nhật:** 17/11/2026 (theo 5 mục tiêu SD1–SD5 ở [`docs/target/`](../target/00_de_tai.md); phần crawl giữ nguyên)  
+> **Trạng thái:** Đã duyệt 17/11/2026 (chặng 5)  
 > **Mục đích:** Thiết lập ranh giới đanh thép (*Ironclad Boundaries*) cho đồ án tốt nghiệp, phân định rõ ràng giữa những gì hệ thống giải quyết và những gì nằm ngoài phạm vi thực hiện nhằm tránh phân tán nguồn lực và đảm bảo tính khả thi cao nhất.
 
 ---
@@ -27,6 +27,8 @@ flowchart TD
         O2["2. Nền Tảng Ứng Tuyển / Job Portal Thực Tế\n(No Job Board / Application Portal)"]
         O3["3. Xử Lý Dữ Liệu Thời Gian Thực\n(No Real-time Streaming / Kafka / Flink)"]
         O4["4. Dịch Vụ Giải CAPTCHA Trả Phí & Tấn Công Hệ Thống\n(No Paid Captcha Solvers / Zero Exploit)"]
+        O5["5. Phía ứng viên và đào tạo\n(CV, chương trình học, Skill Gap)"]
+        O6["6. Dự báo xu hướng và kết luận nhân quả"]
     end
 ```
 
@@ -35,7 +37,7 @@ flowchart TD
 - **Quyết định ngoài phạm vi:**
   - Hệ thống **KHÔNG** phân tích, lưu trữ hoặc mô hình hóa các tin tuyển dụng phi CNTT.
   - Các tin này bị chặn đứng và đào thải ngay tại bước đầu tiên của chuỗi tiền xử lý (**Bước 01 Clean**) bằng bộ quy tắc lọc nghiêm ngặt (Keyword Blacklist + Regex Domain Guard).
-  - Không xây dựng các mô hình khai phá cho các ngành nghề kinh doanh tổng hợp ngoài 12 nhóm nghề IT chuẩn.
+  - Không xây dựng các mô hình khai phá cho các ngành nghề ngoài 10 nhóm nghề IT + Other (`job_family`, chốt ở L-47; spec 05 mục 3.5).
 
 ### 2.2. Không xây dựng Nền tảng Tìm việc / Job Portal Người dùng cuối (No Operational Job Portal)
 - **Mô tả:** Đồ án không phải là một website thương mại điện tử tuyển dụng (như TopCV thu nhỏ hay ITViec clone).
@@ -59,6 +61,19 @@ flowchart TD
   - **KHÔNG** thực hiện các hành vi tấn công từ chối dịch vụ (DDoS), brute-force IP, hay bẻ khóa hạ tầng bảo mật của sàn đối tác.
   - **Cơ chế thay thế chuẩn mực:** Áp dụng giao thức **Safe Skip** và **Exponential Backoff**: Khi gặp trang chặn CAPTCHA hoặc lỗi HTTP 403/429, hệ thống tự động ghi nhận mã lỗi vào URL Ledger, đánh dấu trạng thái `FAILED` và an toàn chuyển sang URL tiếp theo mà không làm tê liệt toàn bộ pipeline. Tốc độ thu thập được điều tiết lịch sự, tôn trọng tệp `robots.txt` của sàn đối tác.
 
+### 2.5. Không phân tích phía ứng viên và phía đào tạo
+- **Mô tả:** Dữ liệu chỉ có tin tuyển dụng. Không có CV, hồ sơ ứng viên hay chương trình đào tạo của trường.
+- **Quyết định ngoài phạm vi:**
+  - **KHÔNG** có mục tiêu nào hỏi về ứng viên hay giáo dục: không so kỹ năng thị trường với chương trình học, không đo "thâm hụt kỹ năng" (Skill Gap Matrix, chỉ số SDS), không giả lập lọc CV (ATS). Các mục này đã bỏ khỏi spec 08 ngày 17/11/2026.
+  - Lộ trình học ở SD5 chỉ dựa trên đòi hỏi của tin tuyển dụng (`docs/target/05_sd5_lo_trinh_hoc.md`), không khẳng định học theo lộ trình thì xin được việc.
+
+### 2.6. Không dự báo xu hướng và không kết luận nhân quả
+- **Mô tả:** Dữ liệu là một lát cắt ngắn: tin đăng từ tháng 9, cào trong tháng 10–11/2026. Số tin theo tháng phụ thuộc lịch cào (tháng 9 chỉ có tin từ các nguồn ghi ngày đăng).
+- **Quyết định ngoài phạm vi:**
+  - **KHÔNG** dự báo nhu cầu hay lương ở các tháng sau, không phân tích chuỗi thời gian.
+  - **KHÔNG** so tổng số tin giữa các tháng như là thị trường tăng hay giảm. BI theo `posted_month` chỉ so **cơ cấu** trong từng tháng và tách theo `posted_month_source` (SD1, spec 05 mục 4.2).
+  - Giá trị SHAP ở SD4 cho biết model gắn kỹ năng với mức lương bao nhiêu, **không phải** "học kỹ năng X thì lương tăng Y" theo nghĩa nhân quả (MINE-6).
+
 
 
 ---
@@ -68,11 +83,12 @@ flowchart TD
 | Lĩnh vực | Thuộc phạm vi dự án (IN SCOPE) | Nằm ngoài phạm vi dự án (OUT OF SCOPE) |
 | :--- | :--- | :--- |
 | **Nguồn dữ liệu** | 8 sàn tuyển dụng lớn tại VN: TopCV, TopDev, VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints, JobsGO. | LinkedIn, Facebook Groups, Telegram Channels, Diễn đàn sinh viên Voz/Reddit, Website tuyển dụng nội bộ từng công ty. |
-| **Ngành nghề** | Tin tuyển dụng phần mềm & CNTT thuộc 12 nhóm nghề chuẩn (Backend, Frontend, Fullstack, AI, DevOps...). | Bán hàng (Sales), Marketing phi công nghệ, Nhân sự (HR), Kế toán, Hành chính, Chăm sóc khách hàng, Lao động phổ thông. |
-| **Thời gian dữ liệu** | Lát cắt thời gian thực tế tháng 10 - tháng 11/2026 (Quý 4/2026). | Phân tích chuỗi thời gian lịch sử nhiều năm (2020 - 2025) hoặc dự báo thị trường dài hạn 2030. |
+| **Ngành nghề** | Tin tuyển dụng CNTT thuộc 10 nhóm nghề + Other (Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI). | Bán hàng (Sales), Marketing phi công nghệ, Nhân sự (HR), Kế toán, Hành chính, Chăm sóc khách hàng, Lao động phổ thông. |
+| **Thời gian dữ liệu** | Tin đăng từ tháng 9, cào trong tháng 10–11/2026. Tháng của tin là `posted_month` (lấy từ ngày đăng; nguồn không có thì lấy từ lần cào đầu tiên; `posted_month_source` ghi rõ). | Chuỗi thời gian nhiều năm, dự báo xu hướng, so tổng số tin giữa các tháng (mục 2.6). |
 | **Chế độ xử lý** | Batch Processing qua Apache Airflow DAGs và CLI Python. | Real-time Streaming (Apache Kafka, Apache Flink, WebSockets stream). |
-| **Xử lý ngôn ngữ** | Rule-based, Regex parsing, Dictionary mapping, ESCO Skill Taxonomy; model duy nhất được dùng: `VietAI/envit5-translation` (chạy local) để dịch JD tiếng Anh sang tiếng Việt. | Gọi API LLM thương mại trả phí (OpenAI GPT-4, Anthropic Claude, Gemini API) trong luồng production. |
-| **Ứng dụng cuối** | Data Lakehouse (Parquet), Báo cáo chuyên đề (Markdown/PDF), Streamlit Analytics Dashboard. | Web portal tìm việc, mobile app nộp hồ sơ, tính năng match CV tự động cho người dùng. |
+| **Xử lý ngôn ngữ** | Luật, regex, từ điển đã duyệt (taxonomy 230 kỹ năng). Model chạy local, có ghi tên trong report: fastText `lid.176` (nhận diện ngôn ngữ, bước 03), `VietAI/envit5-translation` (dịch EN→VI, bước 03), `intfloat/multilingual-e5-base` (embedding, bước 12_e5). Không dùng model để phân loại hay chuẩn hóa trường. | Gọi API LLM thương mại trả phí (OpenAI GPT-4, Anthropic Claude, Gemini API) trong luồng production. |
+| **Phân tích** | 5 mục tiêu SD1–SD5: BI (SD1) → khai phá không giám sát (SD2 FP-Growth; SD3 K-Means/HDBSCAN + Isolation Forest) → train model (SD4 Random Forest + SHAP; SD5 lộ trình học). | So với CV hay chương trình đào tạo, Skill Gap, dự báo, kết luận nhân quả (mục 2.5, 2.6). |
+| **Ứng dụng cuối** | Data Lakehouse (Parquet), báo cáo đồ án, Monitoring (FastAPI + React): trang vận hành pipeline và trang Insights theo SD1–SD5 (spec 09). | Web portal tìm việc, mobile app nộp hồ sơ, tính năng match CV tự động cho người dùng. |
 | **Bảo vệ hệ thống sàn** | Safe Skip, Rate Limiting, HTTP Pooling, Adaptive Retry, User-Agent Rotation chuẩn mực. | Bẻ khóa tường lửa WAF, dịch vụ trả phí bypass Cloudflare Turnstile / CAPTCHA, tấn công xâm nhập mạng. |
 
 ---
@@ -80,9 +96,9 @@ flowchart TD
 ## 4. Các Giả Định Kỹ Thuật (Technical Assumptions)
 
 1. **Giả định về tính đại diện của mẫu dữ liệu (Sample Representativeness):**
-   - 8 sàn tuyển dụng được lựa chọn chiếm hơn 85% thị phần tin tuyển dụng CNTT công khai tại Việt Nam. Tập dữ liệu thu thập được trong tháng 10-11/2026 phản ánh chính xác cấu trúc nhu cầu và mặt bằng lương hiện hữu của thị trường.
+   - 8 sàn được chọn là các sàn lớn đăng tin CNTT công khai tại Việt Nam. Dự án chưa đo thị phần, nên không dùng con số thị phần làm lập luận. Kết quả chỉ mô tả **tin đăng công khai trên 8 sàn** (đăng từ tháng 9, cào trong tháng 10–11/2026), không suy ra cho tuyển dụng nội bộ hay qua mạng xã hội.
 2. **Giả định về tính khuyết thiếu của mức lương (Missing Not At Random - MNAR):**
-   - Các tin ghi mức lương "Thỏa thuận" (Negotiable) là một hành vi có chủ đích của doanh nghiệp (thường rơi vào các vị trí cấp cao, bảo mật nội bộ, hoặc phụ thuộc hoàn toàn vào năng lực ứng viên). Hệ thống giả định rằng việc tách biệt nhóm tin có lương cụ thể để xây dựng mô hình hồi quy vẫn giữ được tính khách quan nếu có kiểm soát biến số cấp bậc và kinh nghiệm.
+   - Lương công khai chỉ có ở khoảng 40–45% số tin (PRE-35). Ghi "Thỏa thuận" là lựa chọn có chủ đích của doanh nghiệp, nên phần thiếu không ngẫu nhiên. Mọi số lương ở SD1 ghi là "lương công khai". Model SD4 train trên tập có lương, có kiểm soát cấp bậc, kinh nghiệm và nghề. Trước khi ước tính lương cho tin thỏa thuận (câu 4.4) phải so phân bố cấp, nghề, nguồn giữa hai tập, và ghi rõ giá trị là **ước tính** (`salary_is_estimated`).
 3. **Giả định về sự ổn định cấu trúc HTML/API:**
    - Trong suốt thời gian thu thập của đồ án (tháng 10 - 11/2026), cấu trúc DOM HTML hoặc endpoint API công khai của 8 sàn đối tác không có những thay đổi mang tính đảo lộn hoàn toàn (breaking architectural rewrite).
 
@@ -110,7 +126,7 @@ graph LR
 ### 5.2. Ràng buộc về thời gian học thuật (Academic Time Constraints)
 - Toàn bộ chu trình từ thu thập, tiền xử lý, mô hình hóa và bảo vệ đồ án tốt nghiệp diễn ra trong phạm vi học kỳ tốt nghiệp. Do đó, các thuật toán khai phá được ưu tiên lựa chọn có độ phức tạp tính toán vừa phải:
   - Sử dụng **FP-Growth** thay cho **Apriori** để tránh hiện tượng bùng nổ tổ hợp ứng viên ($O(2^{|I|})$).
-  - (Phần phụ, cập nhật 10/11/2026: Mining lõi chỉ unsupervised; Random Forest + SHAP là phần phụ (supervised, ngoại lệ).) Sử dụng **Random Forest** kết hợp **TreeSHAP** (tối ưu hóa $O(TLD^2)$) thay cho KernelSHAP để tính toán hệ số SHAP chỉ trong vài phút thay vì hàng chục giờ.
+  - Từ 16/11/2026, train model là bước chính thức của SD4 và SD5 (ADR-06). Sử dụng **Random Forest** kết hợp **TreeSHAP** (tối ưu hóa $O(TLD^2)$) thay cho KernelSHAP để tính toán hệ số SHAP chỉ trong vài phút thay vì hàng chục giờ.
 
 ### 5.3. Ràng buộc về pháp lý và đạo đức dữ liệu (Legal & Ethical Constraints)
 - Dữ liệu thu thập hoàn toàn là dữ liệu công khai trên mạng Internet (Publicly Available Job Postings).

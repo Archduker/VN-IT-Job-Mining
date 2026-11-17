@@ -1,20 +1,25 @@
-# docs/prompting: prompt cho từng phase refactor pre-processing
-
-> **Cập nhật 04/11/2026: dự án bỏ hẳn model/LLM (JEV qua OpenCode, Gemini).** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
+# docs/prompting: prompt cho agent theo từng phase
 
 Mỗi file là một prompt dán cho agent (Claude Code) để làm một phase. Prompt **trỏ về đặc tả**, không chép lại: đặc tả là luật, prompt là cách làm.
 
-| Phase | Prompt | Đặc tả |
-|---|---|---|
-| P0 | `P0_pipeline_contract.md` | `docs/spec/preprocessing/spec/P0_pipeline_contract.md` (đã làm 03/11/2026) |
-| P1 | `P1_clean.md` | `docs/spec/preprocessing/spec/P1_clean.md` (đã làm 03/11/2026, còn JEV: PRE-9) |
-| P6 | `P6_monitoring_preprocessing.md` | `docs/spec/monitoring/preprocessing_page_spec.md` (đã làm phần khung và bước Clean 03/11/2026) |
-| P2 | `P2_integration.md` | `docs/spec/preprocessing/spec/P2_integration.md` |
-| P3 | `P3_transformation.md` | `docs/spec/preprocessing/spec/P3_transformation.md` |
-| P4 | `P4_normalization.md` | `docs/spec/preprocessing/spec/P4_normalization.md` |
-| P5 | `P5_encoding.md` | `docs/spec/preprocessing/spec/P5_encoding.md` |
+## Đặc tả hiện hành
 
-Thứ tự làm: P0 → P1 → P6 → P2 → P3 → P4 → P5. Sau mỗi phase, cập nhật trang Monitoring cho bước đó (cùng schema báo cáo, thường chỉ thêm khối riêng).
+Từ 17/11/2026, đặc tả các phase nằm trong bộ spec chính, không còn file đặc tả riêng cho từng phase:
+
+| Phase | Prompt | Đặc tả hiện hành | Trạng thái |
+|---|---|---|---|
+| PH0 nền hạ tầng | `PH0_nen_ha_tang.md` | `docs/spec/05_preprocessing_spec.md` mục 2 | Đã làm |
+| PH1 gold và profiling | `PH1_gold_va_profiling.md` | spec 05 mục 3.0 (bước 00), mục 2.2 (bộ gold) | Đã làm |
+| PH2 schema và làm sạch ký tự | `PH2_schema_va_lam_sach_ky_tu.md` | spec 05 mục 3.3 (bước 02), 3.4 (T6) | Đã làm |
+| PH3 lọc phạm vi và ngôn ngữ | `PH3_loc_pham_vi_va_ngon_ngu.md` | spec 05 mục 3.1 (bước 01), 3.4 (T6) | Đã làm |
+| PH4 khử trùng 3 tầng | `PH4_khu_trung_3_tang_minhash.md` | spec 05 mục 3.2 (bước 01b) | Đã làm |
+| PH5 dịch EN→VI | `PH5_dich_anh_viet_envit5.md` | spec 05 mục 3.4 (T6b) | Đã làm, còn PRE-34 |
+| PH6 chuẩn hóa trường | `PH6_chuan_hoa_truong.md` | spec 05 mục 3.5 (bước 04) | Đã làm |
+| PH7 thiếu và ngoại lai | `PH7_thieu_va_ngoai_lai.md` | spec 05 mục 3.5 (luật M), mục 4.3 | Đã làm |
+| PH8 section, kỹ năng, tách từ | `PH8_tach_section_ky_nang_tach_tu.md` | `docs/spec/06_processing_spec.md` | Đã làm |
+| PH9 nối pipeline, nghiệm thu | `PH9_noi_pipeline_nghiem_thu.md` | spec 05 mục 2, spec 06 | Đã làm |
+
+Các prompt PH0–PH9 viết ngày 10/11, khi đặc tả còn nằm ở `docs/spec/preprocessing/spec/`. Các file đó đã gộp vào spec 05 và 06 và bị xóa ngày 17/11. Đường dẫn cũ trong thân prompt chỉ còn giá trị lịch sử; đọc spec 05 theo bảng trên.
 
 ## Khuôn prompt
 
@@ -29,25 +34,24 @@ Thứ tự làm: P0 → P1 → P6 → P2 → P3 → P4 → P5. Sau mỗi phase, 
 
 ## Quy trình mỗi phase
 
-1. Bạn duyệt đặc tả.
+1. Bạn duyệt đặc tả (mục tương ứng trong spec 05, 06, 07).
 2. Bạn duyệt prompt, chủ yếu là pseudo code và ví dụ.
 3. Agent viết test trước theo mục "Ví dụ", rồi viết code.
 4. Agent chạy `--dry-run` trên `glints` rồi trên cả 8 nguồn, gửi bảng số.
-5. Cùng review theo mục 6 của prompt. Đạt thì chạy thật, ghi `docs/issue_log.md`, xóa mục PRE tương ứng trong `KNOWN_ISSUED.md`.
+5. Cùng review theo mục 6 của prompt. Đạt thì chạy thật, ghi `docs/issue_log.md`, xóa mục tương ứng trong `docs/KNOWN_ISSUED.md`.
 
 ## Các cách review dùng chung
 
 | Cách | Làm thế nào | Dùng khi |
 |---|---|---|
-| Đối chiếu số | `input.rows = output.rows + bỏ`; so với số đo trước trong `docs/spec/preprocessing/data_issues_2026-11-03.md`; lệch > 5% phải giải thích | mọi phase |
+| Đối chiếu số | `input.rows = output.rows + bỏ`; so với lần chạy trước (report `_all.json`); lệch > 5% phải giải thích | mọi phase |
 | Xem mẫu | Lấy ngẫu nhiên với seed cố định 10–50 dòng bị bỏ hoặc bị sửa và 10 dòng giữ nguyên; bạn gán nhãn tay đúng/sai | luật có phán đoán (lọc IT, nhóm nghề, cấp bậc) |
 | Trước → sau | Đặt cột `raw_*` cạnh cột mới cho 20 dòng | parse lương, ngày, kinh nghiệm |
-| Chạy nhỏ trước | `glints` (331 tin) → một nguồn lớn → cả 8 | mọi phase |
+| Chạy nhỏ trước | `glints` → một nguồn lớn → cả 8 | mọi phase |
 | Test từng luật | Mỗi luật một test, dữ liệu nhỏ trong `tmp_path`; `make test` xanh | mọi phase |
-| Xem trên trang | Trang `/preprocessing` ở 1440px và 390px; số trên trang khớp file JSON | sau P1 trở đi |
-| Gán nhãn IT theo nguồn | Mỗi nguồn 50 tin `non_it` + 30 tin `can_kiem` trong `data/preprocessing/review/it_<nguồn>.csv`; bạn điền `nhan_tay`; đo độ đúng luật và JEV, tìm nguyên nhân (crawler / nguồn / phân loại) | P1 |
-| Chấm bản dịch | 30 JD tiếng Anh, 2 model, bạn chấm 1–5 trong `translate_30.csv`; kiểm thuật ngữ không bị dịch | P3 |
-| Ước tính tiền API | `--dry-run --use-api` ra số lần gọi và tiền; bạn duyệt rồi mới chạy thật | P1, P3, P4 |
+| Xem trên trang | Trang `/preprocessing` ở 1440px và 390px; số trên trang khớp file JSON | mọi phase có report |
+| Gán nhãn IT theo nguồn | `data/preprocessing/review/it_<nguồn>.csv`; bạn điền `nhan_tay`; đo độ đúng luật, tìm nguyên nhân (crawler / nguồn / phân loại) | bước 01 |
+| Kiểm bản dịch | 50 JD dịch (`scripts/build_translation_review_sample.py`); kỹ năng và số liệu không bị đổi | bước 03 T6b |
 | Hai lần chạy giống nhau | Chạy `--dry-run` hai lần, báo cáo giống nhau (trừ `generated_at`) | mọi phase |
 
 ## Luật chung cho mọi prompt
@@ -56,4 +60,4 @@ Thứ tự làm: P0 → P1 → P6 → P2 → P3 → P4 → P5. Sau mỗi phase, 
 - Config chỉ trong `.env`, không in giá trị.
 - Raw bất biến: không sửa `data/<nguồn>/raw/`.
 - Không bật Airflow scheduler.
-- JEV và LLM chỉ gọi khi có `--use-api`, có cache, khóa trong `.env`: `OPENCODE_API_KEY` (JEV qua OpenCode Console), `GEMINI_API_KEY` (dịch bằng Gemini). Chỉ gửi nội dung tin tuyển dụng.
+- Không dùng model để phân loại hay chuẩn hóa. Chỉ có fastText `lid.176` (ngôn ngữ) và `VietAI/envit5-translation` (dịch), cả hai chạy local (spec 05 mục 2.5).

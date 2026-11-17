@@ -1,6 +1,6 @@
 # CÁC BẢN GHI QUYẾT ĐỊNH KIẾN TRÚC (ARCHITECTURAL DECISION RECORDS - ADR)
 
-> **Mã tài liệu:** `SPEC-11` | **Trạng thái:** Toàn diện & Phê duyệt  
+> **Mã tài liệu:** `SPEC-11` | **Phiên bản:** 1.1.0 (17/11/2026: sửa ADR-02, 04, 05; thêm ADR-06, ADR-07; ADR-03 không đổi) | **Trạng thái:** Đã duyệt 17/11/2026 (chặng 5)  
 > **Dự án:** VN-IT-Job-Mining — Hệ thống tích hợp và khai phá dữ liệu việc làm IT tại Việt Nam  
 > **Tài liệu liên quan:** [AGENTS.md](../../AGENTS.md), [09_monitoring_spec.md](09_monitoring_spec.md), [12_coding_standards.md](12_coding_standards.md), [13_working_documentation.md](13_working_documentation.md)
 
@@ -13,6 +13,8 @@
 - [ADR-03: Giải pháp chống chặn bot khi cào tự động 8 sàn tuyển dụng](#adr-03-giải-pháp-chống-chặn-bot-khi-cào-tự-động-8-sàn-tuyển-dụng)
 - [ADR-04: Chiến lược khử trùng lặp dữ liệu 2 lớp (Intra-source CDC vs Inter-source Blocking)](#adr-04-chiến-lược-khử-trùng-lặp-dữ-liệu-2-lớp-intra-source-cdc-vs-inter-source-blocking)
 - [ADR-05: Lựa chọn bộ ba thuật toán Data Mining (FP-Growth, K-Means, Random Forest/SHAP)](#adr-05-lựa-chọn-bộ-ba-thuật-toán-data-mining-fp-growth-k-means-random-forestshap)
+- [ADR-06: Đổi sang 5 mục tiêu SD1–SD5 và đưa train model thành bước chính thức](#adr-06-đổi-sang-5-mục-tiêu-sd1sd5-và-đưa-train-model-thành-bước-chính-thức)
+- [ADR-07: Dùng `posted_month` thay `posted_date` trong bảng sạch](#adr-07-dùng-posted_month-thay-posted_date-trong-bảng-sạch)
 
 ---
 
@@ -35,7 +37,7 @@ Dự án `VN-IT-Job-Mining` thực hiện cào dữ liệu từ 8 sàn tuyển d
 **Lựa chọn Phương án D:** Toàn bộ hệ thống lưu trữ được chuẩn hóa độc quyền trên **Cloudflare R2** (`bucket: vn-it-jobs`), áp dụng kiến trúc **Medallion Lakehouse 3 tầng**:
 - **Tầng Bronze (`r2://vn-it-jobs/raw/` & `url_ledger/`):** Lưu trữ JSON nguyên bản không chỉnh sửa (Immutable Raw) và Sổ cái URL Ledger (`catalog_master.json`).
 - **Tầng Silver (`r2://vn-it-jobs/staging/`):** Lưu trữ dữ liệu đã làm phẳng (flattened), phân tích kiểu dữ liệu (typed), lọc rác và xử lý null.
-- **Tầng Gold (`r2://vn-it-jobs/curated/`):** Lưu trữ bộ dữ liệu Golden Master tích hợp 8 nguồn, mã hóa ma trận đặc trưng kỹ năng 230 chiều dạng Parquet. Đồng thời, nạp tự động vào **Data Mart PostgreSQL** (tận dụng máy chủ PostgreSQL có sẵn trong Docker Compose của Airflow, database `vn_it_jobs`) để phục vụ các câu truy vấn SQL phân tích, indexing B-Tree/GIN và cấp dữ liệu cho FastAPI Backend.
+- **Tầng Gold (`r2://vn-it-jobs/curated/`):** Lưu bảng sạch cuối tích hợp 8 nguồn (`curated/preprocessing/`, nguồn trên máy là `data/preprocessing/04_normalization/all.parquet`) và ma trận đặc trưng kỹ năng dạng Parquet (bước 10, spec 06). Đường dẫn chi tiết ở spec 10 mục 2. Đồng thời, nạp tự động vào **Data Mart PostgreSQL** (tận dụng máy chủ PostgreSQL có sẵn trong Docker Compose của Airflow, database `vn_it_jobs`) để phục vụ các câu truy vấn SQL phân tích, indexing B-Tree/GIN và cấp dữ liệu cho FastAPI Backend.
 
 ```mermaid
 flowchart LR
@@ -46,7 +48,7 @@ flowchart LR
     subgraph R2_Medallion["Cloudflare R2 Lakehouse Architecture"]
         Bronze["BRONZE LAYER\n(r2://vn-it-jobs/raw/)\n• JSON As-Is lồng nhau\n• Bất biến (Immutable)\n• URL Ledger CDC"]
         Silver["SILVER LAYER\n(r2://vn-it-jobs/staging/)\n• Parquet theo cột\n• Parsed lương, exp\n• Làm sạch HTML"]
-        Gold["GOLD LAYER\n(r2://vn-it-jobs/curated/)\n• Golden Master Parquet\n• 230 cột đặc trưng kỹ năng\n• Khử trùng lặp liên sàn"]
+        Gold["GOLD LAYER\n(r2://vn-it-jobs/curated/)\n• Bảng sạch cuối (bước 04)\n• Ma trận kỹ năng (bước 10)\n• Đã khử trùng 3 tầng"]
     end
 
     subgraph Consumers["Các Phân Hệ Sử Dụng"]
@@ -91,7 +93,7 @@ Khi bước vào giai đoạn Phân tích khám phá (EDA), Tích hợp liên s�
 ### 3. Quyết Định Kiến Trúc (Decision Outcome)
 **Lựa chọn Phương án C:** Bắt buộc chuyển đổi 100% dữ liệu từ tầng Staging (Silver) và Curated/Gold sang định dạng **Apache Parquet**:
 - Tại tầng Silver: Gộp 8 nguồn thành `data/preprocessing/02_integration/all.parquet`.
-- Tại tầng Gold: Xuất file đặc trưng phục vụ mô hình tại `data/preprocessing/05_encoding/features.parquet` và bộ dữ liệu hoàn chỉnh `data/curated/curated_flat_golden_jobs.parquet`.
+- Tại tầng Gold: bảng sạch cuối `data/preprocessing/04_normalization/all.parquet` và file đặc trưng `data/processing/10_features/features.parquet` (sửa 17/11/2026: `05_encoding` đã thay bằng bước 10; tên `curated_flat_golden_jobs.parquet` không dùng nữa, PRE-39).
 
 ### 4. So Sánh Hiệu Năng Thực Tế (Benchmark Evaluation)
 
@@ -190,21 +192,17 @@ Nếu không khử trùng lặp triệt để:
 
 ### 2. Quyết Định Kiến Trúc: Khử Trùng Lặp 2 Lớp (Two-Tier Deduplication Strategy)
 
+> Sơ đồ vẽ lại 17/11/2026 theo code hiện tại (spec 05 mục 3.2). Lớp 2 trong bản đầu dùng Jaccard tiêu đề + TF-IDF cosine; phần mô tả cũ giữ ở mục 3 làm lịch sử.
+
 ```mermaid
 flowchart TD
-    RawData["Dữ liệu Thu thập từ 8 sàn"] --> Tier1["LỚP 1: NỘI SÀN (Intra-source CDC Hash)\n• Tính Canonical SHA-256 trên raw_payload\n• Bỏ qua raw_html và trường thời gian động\n• Trùng hash: Đánh dấu 'repost_of_url_hash'\n• Kết quả: KHÔNG SINH FILE RAW MỚI"]
-    
-    Tier1 --> Staging["Dữ liệu Đã Làm Phẳng & Chuẩn Hóa\n(data/preprocessing/02_integration/)"]
-    
-    Staging --> Tier2Block["LỚP 2: LIÊN SÀN (Inter-source Blocking)\n• Nhóm theo Block: (tinh_key, normalized_company_name)\n• Giảm không gian so sánh từ O(N^2) xuống từng cụm nhỏ"]
-    
-    Tier2Block --> SimilarityCheck{"Đánh giá Độ Tương Đồng Kép\n(Dual Similarity Threshold)"}
-    
-    SimilarityCheck -->|"Jaccard(Title) >= 0.8\nVÀ Cosine(TF-IDF JD) >= 0.75"| DuplicateFound["XÁC NHẬN TRÙNG LẶP LIÊN SÀN\n• Tính Richness Score (Độ đầy đủ)\n• Giữ bản ghi giàu thông tin nhất làm Master\n• Đánh dấu bản ghi phụ là Duplicate"]
-    SimilarityCheck -->|Không thỏa ngưỡng| KeepUnique["BẢN GHI ĐỘC BẢN DUY NHẤT"]
-    
-    DuplicateFound --> GoldenDataset["BỘ DỮ LIỆU GOLDEN MASTER\n(curated_flat_golden_jobs.parquet)"]
-    KeepUnique --> GoldenDataset
+    RawData["Dữ liệu thu thập từ 8 sàn"] --> Tier1["LỚP 1: LÚC THU THẬP (CDC hash)\n• SHA-256 canonical trên raw_payload\n• Bỏ raw_html và trường thời gian động\n• Trùng hash: không ghi file raw mới"]
+
+    Tier1 --> Step01["Bước 01 (lọc IT, chọn snapshot)\n• Loại tin cùng công ty + tiêu đề"]
+
+    Step01 --> Tier2["LỚP 2: BƯỚC 01b (3 tầng)\n(1) nguồn + job_id\n(2) sha1(text_fold) giống hệt\n(3) MinHash/LSH → Jaccard chính xác >= 0.85\n    và cùng company_slug"]
+
+    Tier2 --> Clean["data/preprocessing/01b_deduplication/\n→ 02 → 03 → 04_normalization/all.parquet"]
 ```
 
 ### 3. Chi Tiết Triển Khai Kỹ Thuật
@@ -242,31 +240,31 @@ Con số này là bất khả thi để tính toán nhanh. Nhóm áp dụng chi�
 
 ### 4. Kết Quả Thực Nghiệm (Empirical Results)
 - Lớp 1 (Intra-source CDC): Phát hiện và xử lý **139 tin repost** nội sàn mà không gây phình to kho lưu trữ.
-- Lớp 2 (Inter-source Dedup): Từ 14.292 bản ghi thô ban đầu, sau khi loại bỏ tin ngoài ngành IT và khử trùng lặp xuyên sàn, tập dữ liệu tinh chế đạt **5.177 tin IT sạch độc bản**.
+- Lớp 2: lần chạy 10/11/2026 (report `reports/preprocessing/`): 13.361 tin thô → 4.799 sau bước 01 → 4.672 sau bước 01b (loại 127 tin bằng MinHash) → 4.671 trong bảng sạch. Con số 14.292 → 5.177 của bản đầu là lần chạy cũ, không còn dùng.
 
 ---
 
 ## ADR-05: Lựa chọn bộ ba thuật toán Data Mining (FP-Growth, K-Means, Random Forest/SHAP)
 
-> **Cập nhật 10/11/2026:** quy trình chuẩn chỉ khai phá unsupervised. Phần lõi gồm FP-Growth, K-Means/HDBSCAN + PCA và phát hiện bất thường. Random Forest + SHAP (mục 3.3) giữ như **phần phụ (supervised, ngoại lệ)**.
+> **Cập nhật 17/11/2026:** ADR này được ADR-06 bổ sung. Bộ thuật toán nay gắn với 5 mục tiêu: FP-Growth (SD2), K-Means/HDBSCAN + PCA và Isolation Forest cho tin "khác hoặc mới" (SD3), Random Forest + SHAP (SD4, SD5). Từ 16/11/2026, Random Forest + SHAP là **bước chính thức**. Ghi chú ngày 10/11 ("RF là ngoại lệ") đã bị thay. Các con số ví dụ trong mục 3 của bản đầu (luật Conf 78,4%, k = 7–8 với Silhouette 0,38–0,44, SHAP AWS +4,8 triệu) không có lần chạy nào đi kèm nên đã bỏ; số thật nằm trong `mining/artifacts/mining_metrics.json` và spec 07.
 
 ### 1. Ngữ Cảnh & Mục Tiêu Học Thuật (Academic Context)
 Đồ án tốt nghiệp đại học chuyên ngành Công nghệ thông tin / Khoa học dữ liệu yêu cầu các phương pháp khai phá dữ liệu phải có:
 1. Cơ sở toán học vững chắc, đã được cộng đồng học thuật kiểm chứng.
 2. Khả năng giải quyết trọn vẹn 3 câu hỏi nghiên cứu cốt lõi của đề tài:
    - *Câu hỏi 1 (Kỹ năng):* Những công nghệ nào luôn được tuyển dụng đi kèm với nhau?
-   - *Câu hỏi 2 (Nghề nghiệp):* Thị trường thực tế tự phân chia thành các cụm công việc nào? Có khớp với 12 Job Family lý thuyết không?
-   - *Câu hỏi 3 (Mức lương & Định giá):* Kỹ năng hoặc thuộc tính nào đóng góp nhiều nhất vào việc gia tăng mức lương cho sinh viên mới ra trường?
+   - *Câu hỏi 2 (Nghề nghiệp):* Thị trường thực tế tự phân chia thành các cụm công việc nào? Có khớp với 10 nhóm nghề + Other gán bằng luật không? (SD3)
+   - *Câu hỏi 3 (Mức lương):* Kỹ năng nào gắn với lương công khai cao hơn, và lương ước tính cho tin "thỏa thuận" là bao nhiêu? (SD4; không kết luận nhân quả, MINE-6)
 
 ### 2. Quyết Định Kiến Trúc: Bộ Ba Thuật Toán Khai Phá Dữ Liệu
 
 ```mermaid
 flowchart TD
-    Dataset["Bộ Dữ Liệu IT Sạch (5.177 tin, 230 cột đặc trưng)"] --> Branch1["BÀI TOÁN 1: KHAI PHÁ LUẬT KẾT HỢP\nThuật toán: FP-GROWTH\n• Xây dựng cây tiền tố FP-Tree\n• 2 lần quét dữ liệu, không sinh ứng viên rác\n• Tìm Top Skill Combos (Support, Conf, Lift)"]
+    Dataset["Bảng sạch + đặc trưng (4.671 tin, ma trận kỹ năng bước 10)"] --> Branch1["SD2: GÓI KỸ NĂNG\nFP-GROWTH (M2)\n• FP-Tree, 2 lần quét\n• Luật theo từng nhóm nghề (support, confidence, lift)"]
     
-    Dataset --> Branch2["BÀI TOÁN 2: PHÂN CỤM NGHỀ NGHIỆP\nThuật toán: K-MEANS + PCA\n• Giảm chiều 230D -> 2D\n• Tối ưu số cụm k bằng Elbow & Silhouette\n• Định danh ranh giới các Job Clusters"]
+    Dataset --> Branch2["SD3: NHÓM VIỆC\nK-MEANS k=10 + HDBSCAN + PCA (M3)\nISOLATION FOREST + GLOSH (M4)\n• Tin khác hoặc mới"]
     
-    Dataset --> Branch3["BÀI TOÁN 3: DỰ ĐOÁN & GIẢI THÍCH LƯƠNG\nThuật toán: RANDOM FOREST + SHAP (XAI)\n• Hồi quy mức lương phi tuyến\n• SHapley Additive exPlanations định lượng\ngiá trị tăng thêm (Salary Premium) của từng kỹ năng"]
+    Dataset --> Branch3["SD4, SD5: GIÁ TRỊ KỸ NĂNG\nRANDOM FOREST + SHAP (M5)\n• Lương công khai, chia train/test theo công ty\n• Lương ước tính cho tin thỏa thuận\n• Đầu vào cho lộ trình học (M6)"]
 ```
 
 ### 3. Phân Tích & Biện Luận Từng Thuật Toán
@@ -278,17 +276,15 @@ flowchart TD
   - Chỉ quét cơ sở dữ liệu đúng **2 lần duy nhất**.
   - Khai phá các tập phổ biến thông qua phân chia đệ quy các cây điều kiện (Conditional FP-Trees).
   - Tốc độ thực thi nhanh hơn Apriori từ $15\text{x} - 40\text{x}$ trên tập dữ liệu kỹ năng thưa.
-- **Tiêu chuẩn nghiệm thu:** Thiết lập ngưỡng $Min\_Support = 0.02$ ($2\%$), $Min\_Confidence = 0.50$ ($50\%$), và $Lift > 1.5$. Khai phá thành công các luật giá trị như:
-  $$\{\text{React, TypeScript}\} \Longrightarrow \{\text{Next.js}\} \quad (Conf = 78.4\%, Lift = 3.12)$$
-  $$\{\text{Docker, Kubernetes}\} \Longrightarrow \{\text{CI/CD, Cloud}\} \quad (Conf = 82.1\%, Lift = 2.95)$$
+- **Tham số hiện tại** (`mining/config.py`): min support 0,05 toàn thị trường, 0,02 trong từng nhóm nghề; min confidence 0,60; min lift 1,20. Ngưỡng nghiệm thu ở spec 08 và PRE-36.
 
 #### 3.2. Thuật toán 2: K-Means Clustering kết hợp PCA
 - **Mục đích:** Khám phá cấu trúc tiềm ẩn của các bài đăng tuyển dụng trên không gian kỹ năng mà không dựa vào nhãn có sẵn của nhà tuyển dụng.
 - **Phương pháp luận:**
   1. Sử dụng kỹ thuật chuẩn hóa dữ liệu `StandardScaler` trên các biến số (lương, kinh nghiệm) và ma trận kỹ năng nhị phân.
-  2. Xác định số cụm tối ưu $k$ thông qua kết hợp 2 phương pháp: **Phương pháp Điểm uốn (Elbow Method với WCSS)** và **Chỉ số Silhouette Score**. Thử nghiệm $k \in [3, 12]$, giá trị $k=7$ hoặc $k=8$ cho Silhouette Score đạt đỉnh ($S \approx 0.38 - 0.44$).
-  3. Chiếu không gian 230 chiều xuống 2 chiều chính ($PC_1, PC_2$) bằng PCA để trực quan hóa trên giao diện Monitoring.
-- **Giá trị học thuật:** Kết quả phân cụm chứng minh sự phân tách rõ rệt giữa các nhóm nghề (Frontend, Enterprise Java/Backend, Data/AI, Cloud/DevOps), đồng thời phát hiện vùng giao thoa lớn giữa Fullstack Developer và Mobile Developer.
+  2. Số cụm: người dùng chốt $k = 10$ (`k_fixed`, MINE-4 đóng 17/11, L-48); vẫn quét $k \in [2, 20]$ để báo Silhouette. Vector đầu vào là embedding e5 ghép ma trận kỹ năng, giảm chiều bằng SVD; không dùng TF-IDF (bỏ 17/11). Tin không trích được kỹ năng nào bị loại khỏi phân cụm.
+  3. Chiếu xuống 2 chiều bằng PCA để vẽ scatter.
+- **Kết quả hiện có:** Silhouette chỉ khoảng 0,10 với $k = 10$ và cụm còn tách theo số kỹ năng (MINE-1, L-47). Chưa có kết luận về nhóm nghề nào tách rõ; xem spec 07 mục M3.
 
 #### 3.3. Thuật toán 3: Random Forest Regressor kết hợp SHAP (Explainable AI)
 - **Lý do chọn Random Forest thay vì Hồi quy Tuyến tính (Linear Regression) hoặc Mạng Nơ-ron (Neural Network):**
@@ -297,7 +293,46 @@ flowchart TD
 - **Ứng dụng SHAP (SHapley Additive exPlanations):**
   - Đồ án đại học cần vượt qua mức "Hộp đen" (Black-box model). SHAP kế thừa từ Lý thuyết Trò chơi (Game Theory), phân rã giá trị dự đoán mức lương thành tổng đóng góp cận biên của từng thuộc tính:
     $$\hat{y}_i = \phi_0 + \sum_{j=1}^{M} \phi_j(x_i)$$
-  - Giúp trả lời trực tiếp cho sinh viên: *"Học thêm AWS Cloud giúp mức lương trung bình tăng bao nhiêu triệu đồng/tháng so với mặt bằng chung?"* (Ví dụ: SHAP value của AWS đóng góp $+4.8\text{ triệu VNĐ/tháng}$ vào mức lương dự đoán).
+  - Giúp trả lời cho sinh viên: *"Trong tin có lương công khai, kỹ năng X gắn với mức lương dự đoán cao hơn bao nhiêu triệu/tháng?"* SHAP mô tả model, không chứng minh học X thì lương tăng (MINE-6). Chưa có số thật vì M5 chưa chạy trên dữ liệu hiện tại (MINE-5).
+
+---
+
+## ADR-06: Đổi sang 5 mục tiêu SD1–SD5 và đưa train model thành bước chính thức
+
+### 1. Ngữ cảnh
+- Bản đầu của đề tài có "4 bài toán" và nhóm mục tiêu "Skill Gap". Skill Gap cần dữ liệu CV hoặc chương trình đào tạo, mà dự án chỉ có tin tuyển dụng.
+- Ngày 10/11/2026 quy trình chuẩn được ghi là "Mining chỉ unsupervised, RF + SHAP là phần ngoại lệ". Nhưng câu hỏi "kỹ năng nào đáng tiền" và "lương ước tính cho tin thỏa thuận" không trả lời được nếu không train model.
+
+### 2. Quyết định (16/11/2026)
+- Đề tài phục vụ 5 mục tiêu, theo thứ tự **BI → khai phá không giám sát → train model** ([`docs/target/`](../target/00_de_tai.md)):
+  - SD1 (BI): bức tranh thị trường.
+  - SD2 (không giám sát): gói kỹ năng, kỹ năng hiếm (FP-Growth).
+  - SD3 (không giám sát): nhóm việc theo nội dung, tin "khác hoặc mới" (phân cụm, Isolation Forest).
+  - SD4 (train model): giá trị kỹ năng, lương ước tính (Random Forest + SHAP; dự phòng: phân lớp theo dải lương).
+  - SD5 (model + tổng hợp): lộ trình học cho người mới theo từng nghề.
+- Random Forest + SHAP là **bước chính thức** của Mining (M5), không còn là phần phụ. Bước 11 (chia train/test theo công ty) chuyển từ Processing sang M5.
+- Không mục tiêu nào hỏi về phía ứng viên hay đào tạo (spec 02 mục 2.5).
+
+### 3. Hệ quả
+- Spec 03, 05–09 viết lại theo SD (17/11/2026). Mining có 6 bước M1–M6 (spec 07).
+- Cần thêm code M1 (`mining/bi.py`) và M6 (`mining/recommend.py`), thêm `bi`, `recommend` vào `STEPS` (MINE-7).
+- Ngưỡng nghiệm thu từng SD gom ở PRE-36.
+
+## ADR-07: Dùng `posted_month` thay `posted_date` trong bảng sạch
+
+### 1. Ngữ cảnh
+- `posted_date` chỉ có ở 63,8% tin; topcv (nguồn lớn nhất) 0%, topdev 32,7%. `crawled_at` có ở mọi tin.
+- Tin đăng từ tháng 9 nhưng chỉ được cào trong tháng 10–11/2026.
+
+### 2. Quyết định (17/11/2026)
+- Bảng sạch bỏ `posted_date`, thay bằng `posted_month` (`YYYY-MM`) và `posted_month_source` ∈ {`posted`, `crawled`}.
+- `posted_month` lấy tháng của `posted_date` nếu nguồn có; nếu không thì lấy tháng của **lần cào đầu tiên** (`first_crawled_at`, bản `_v1`), không phải lần cào gần nhất.
+- Bước 01b vẫn dùng `raw_posted_date` ở tầng trung gian; chỉ bảng sạch cuối bỏ cột ngày.
+
+### 3. Hệ quả
+- BI theo tháng (SD1) chỉ so **cơ cấu** trong từng tháng, tách theo `posted_month_source`; không so tổng số tin giữa các tháng, vì số tin phản ánh lịch cào.
+- Tháng 9 chỉ có tin từ các nguồn có ngày đăng.
+- Không ảnh hưởng SD2–SD5. Việc code ghi ở PRE-37.
 
 ---
 
@@ -306,7 +341,9 @@ flowchart TD
 | Mã ADR | Chủ Đề Quyết Định | Tác Động Hạ Tầng & Mã Nguồn | Trạng Thái |
 |---|---|---|---|
 | **ADR-01** | Cloudflare R2 Medallion Lakehouse | Thay thế hoàn toàn MinIO/Postgres Warehouse; định vị 4 tầng chuẩn `raw/`, `url_ledger/`, `staging/`, `curated/` | Đã triển khai |
-| **ADR-02** | Apache Parquet Columnar Storage | Áp dụng tại `preprocessing/02_integration/all.parquet` và `curated_flat_golden_jobs.parquet` | Đã triển khai |
+| **ADR-02** | Apache Parquet Columnar Storage | Áp dụng từ `data/preprocessing/02_integration/all.parquet` tới bảng sạch `04_normalization/all.parquet` và `data/processing/10_features/features.parquet` | Đã triển khai |
 | **ADR-03** | Chống chặn Bot Đa Tầng | Tích hợp `curl_cffi`, Playwright Stealth, Sổ cái URL Ledger và Airflow Pools | Đã triển khai |
 | **ADR-04** | Khử trùng lặp 2 Lớp (CDC + Blocking) | Triển khai tại `url_ledger.py` (CDC lúc thu thập) và `preprocessing/deduplication/` (Lớp 1 nội sàn và Lớp 2 liên sàn, theo SPEC-05 §3) | Đã triển khai |
-| **ADR-05** | Bộ ba FP-Growth, K-Means, RF/SHAP | Đặt nền tảng thuật toán cho phân hệ Data Mining và Báo cáo Đồ án tốt nghiệp | Đã triển khai |
+| **ADR-05** | Bộ ba FP-Growth, K-Means, RF/SHAP | `mining/association.py`, `mining/clustering.py`, `mining/anomaly.py`, `mining/salary_model.py` | Có code; M5 chưa chạy thật (MINE-5) |
+| **ADR-06** | 5 mục tiêu SD1–SD5, train model chính thức | `docs/target/`, spec 03, 05–09; M1 và M6 chưa có code (MINE-7) | Đã chốt 16/11, code còn thiếu |
+| **ADR-07** | `posted_month` thay `posted_date` | Bước 02, 03, 04 và `processing/encoding/features.py` (PRE-37) | Đã chốt 17/11, chưa code |

@@ -1,5 +1,7 @@
 # Prompt PH9: nối pipeline, Monitoring, chạy thử/chạy thật, nghiệm thu, đẩy `pipeline/` lên R2
 
+> **17/11/2026:** đặc tả gốc của prompt này (`docs/spec/preprocessing/spec/...`) đã gộp vào `docs/spec/06_processing_spec.md` (PH8) và `docs/spec/05_preprocessing_spec.md` mục 2 (PH9), rồi bị xóa. Các đường dẫn cũ bên dưới chỉ còn giá trị lịch sử.
+
 > **Nháp, chờ bạn duyệt.** Các điểm **[CẦN CHỐT]** D1–D6 (và P1, P2 của PH8) phải chốt trước khi giao prompt. Chỗ ghi "[ĐỀ XUẤT]" là mặc định nếu bạn không đổi. **Prompt này chỉ cho phép ghi R2 sau khi người dùng đồng ý bằng lời cho đúng danh sách key đã liệt kê.**
 
 ## 1. Ngữ cảnh

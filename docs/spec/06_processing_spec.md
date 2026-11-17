@@ -1,369 +1,258 @@
-# ĐẶC TẢ BIẾN ĐỔI DỮ LIỆU & TRÍCH XUẤT ĐẶC TRƯNG
-## MODULE 06: DATA TRANSFORMATION & FEATURE ENGINEERING SPECIFICATION
+# ĐẶC TẢ PROCESSING (bước 07–12)
 
-> **Tài liệu đặc tả kỹ thuật hệ thống (System Specification Document)**  
-> **Dự án:** Phân tích thị trường việc làm IT Việt Nam (VN-IT-Job-Mining)  
-> **Phiên bản:** 2.0 — Cập nhật: Tháng 11/2026  
-> **Trạng thái:** Official Technical Specification  
-> **Phạm vi xử lý:** Chuyển đổi dữ liệu từ tầng `staging/` (Cleaned Tabular; tên cũ Silver) sang tầng `curated/` (Curated Features & Mining Matrices; tên cũ Gold).
+> **Dự án:** VN-IT-Job-Mining. Đề tài: "Tích hợp và khai phá dữ liệu thị trường lao động phục vụ phân tích nghề nghiệp và kỹ năng trong IT".
+> **Phiên bản:** 3.0.1, ngày 17/11/2026. **Trạng thái:** đã duyệt 17/11/2026 (chặng 3); 3.0.1 ghi quyết định bỏ 12_tfidf (chặng 4).
+> **Thay cho:** bản 2.0 (viết theo thiết kế 13 bước, lẫn cả phần pre-processing), các file P5, PH8, PH9 và nhật ký P5 trong `docs/spec/preprocessing/`.
+> **Quan hệ với tài liệu khác:** mã bước, thư mục và đường dẫn lấy theo [spec 03](03_data_mining_lifecycle.md) mục 3.2. Đầu vào là bảng sạch của [spec 05](05_preprocessing_spec.md) mục 4. Bên dùng đầu ra là Mining ([spec 07](07_mining_spec.md)). Mục tiêu: [`docs/target/`](../target/00_de_tai.md).
 
----
+## 0. Cách đọc
 
-## 0. Vị trí trong quy trình 4 giai đoạn (cập nhật 10/11/2026)
+- **Nguồn sự thật:** code (`scripts/run_preprocessing.py` `PROCESSING_STEPS`, `processing/**`), rồi report chạy thật `reports/processing/<bước>/`, rồi đặc tả cũ (chỉ phần còn khớp code).
+- **Số liệu** lấy từ report chạy thật ngày 10–11/11/2026 (`code_version` 37bb865), trên 4.671 tin của bảng 04. Dữ liệu còn đang làm sạch (PRE-35), nên các số sẽ đổi.
+- **Mỗi bước** viết theo khuôn: Mục đích, Code, Đầu vào, Đầu ra, Report, Luật, Kiểm tra, Trạng thái, Việc mở.
+- Mã luật: `S7.x` (07 tách section), `K8.x` (08 kỹ năng), `W9.x` (09 tách từ). Bước 10 dùng tên bước con 10, 10b, 10c, 10d.
 
-Spec này mô tả giai đoạn **Processing** cộng một phần Pre-processing (chuẩn hóa lương, nhóm nghề, cấp bậc, dịch JD). Feature selection (10b) và feature construction (10c) **chưa chốt nội dung**.
+## 1. Processing phục vụ SD nào
 
-| Giai đoạn | Bước trong file thiết kế | Việc |
-|---|---|---|
-| Collection | 0 (chỉ đọc Bronze) | Cào, lọc, khử trùng; JSON đầy đủ trường |
-| Pre-processing | 0, 1, 2, 3, 4, 4b, 5, 6 | Imputation, deduplicate, noise, typecasting, string standardization (4b dịch JD tiếng Anh sau khử trùng, giữ cả cột gốc) |
-| Processing | 7, 8, 9, 10, 10b, 10c, 10d, 12 | Extraction (7, 8, 12), transformation (9, 10), selection (10b), construction (10c), encoding (10d) |
-| Mining | ngoài phạm vi | Unsupervised |
+Processing biến bảng sạch thành các **biểu diễn** mà Mining dùng: kỹ năng theo từng tin, ma trận đặc trưng số và vector văn bản. Processing không trả lời câu hỏi nào của SD.
 
-Bước 11 (chia train/test) là tùy chọn vì Mining chỉ unsupervised. Nội dung chi tiết của **10b** (ngoài ngưỡng bỏ kỹ năng xuất hiện dưới 5 lần) và **10c** (đặc trưng mới tạo) **chưa chốt**; làm sau khi xong pre-processing. Chi tiết 13 bước: `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` mục 3.1b và 3.3.
-
-### 0.1. Công cụ
-
-| Công cụ | Bước | Đã có trong requirements |
-|---|---|---|
-| pydantic, scikit-learn, mlxtend, hdbscan | 1, 11, 12, Mining | Có |
-| ydata-profiling | 0 | Chưa |
-| fastText `lid.176` | 3 | Chưa |
-| datasketch (MinHash + LSH) | 4 | Chưa (khử trùng hiện tại là TF-IDF/Jaccard) |
-| rapidfuzz | 5 | Chưa |
-| pyahocorasick | 8 | Chưa |
-| underthesea | 9 | Chưa |
-| sentence-transformers (`multilingual-e5-base`, tùy chọn) | 12 | Chưa |
-| transformers + `VietAI/envit5-translation` | 4b | Chưa kiểm |
-
-## 1. Tổng Quan Chuyển Đổi `staging/` $\rightarrow$ `curated/` (tên cũ: Silver $\rightarrow$ Gold)
-
-Tầng Silver cung cấp dữ liệu dạng bảng sạch (`all.parquet`), đã giải quyết các vấn đề bóc tách HTML, khử trùng lặp nội sàn/đa sàn và sửa lỗi bảng mã Unicode. Tuy nhiên, các thuộc tính cốt lõi như kỹ năng, cấp bậc, nhóm nghề và mức lương vẫn đang tồn tại dưới dạng chuỗi văn bản tự do (Free-form text) hoặc mảng danh sách thô.
-
-**Tầng Gold (Transformation & Feature Engineering)** chịu trách nhiệm:
-1. Chuẩn hóa phân loại vị trí công việc vào **12 Job Families chuẩn**.
-2. Phân cấp và đồng nhất kỹ năng IT qua **Taxonomy 6 nhóm cốt lõi** và từ điển Alias Normalization.
-3. Bóc tách và quy đổi chuẩn hóa mức lương về thang đo duy nhất (**Triệu VNĐ / Tháng**).
-4. Sinh các cấu trúc dữ liệu nâng cao phục vụ trực tiếp cho các thuật toán Khai phá dữ liệu (Data Mining):
-   - **One-Hot / Multi-Hot Binary Matrix:** Cho khai phá luật kết hợp (Association Rules: Apriori / FP-Growth).
-   - **Co-occurrence Matrix:** Cho phân tích đồ thị và tương quan cặp kỹ năng (Skill Graph Network).
-   - **TF-IDF Vector Space:** Cho phân cụm văn bản (Clustering: K-Means / HDBSCAN) và tìm kiếm ngữ nghĩa.
-
-```mermaid
-flowchart TD
-    Silver["Silver Layer: all.parquet\n(Cleaned & Curated Master Jobs)"] --> TransformEngine["ENGINE BIẾN ĐỔI & TRÍCH XUẤT ĐẶC TRƯNG"]
-    
-    subgraph FeatureEngineering["Transformation & Feature Pipeline"]
-        direction TB
-        F1["1. Domain & Job Role Tagging\n(12 Job Families + Seniority Levels)"]
-        F2["2. IT Skill Taxonomy & Alias Mapping\n(6 Categories + Boundary Disambiguation)"]
-        F3["3. Universal Salary Normalization\n(Regex Cascade + USD/VND 25,400 + Period Calc)"]
-        F4["4. Mining Matrices Generation\n(Multi-Hot + Co-occurrence + TF-IDF)"]
-        F1 --> F2 --> F3 --> F4
-    end
-    
-    TransformEngine --> FeatureEngineering
-    FeatureEngineering --> GoldTables["GOLD LAKEHOUSE LAYER"]
-    
-    subgraph GoldArtifacts["Gold Data Products"]
-        G1["gold_master_jobs.parquet\n(Bảng việc làm chuẩn hóa hoàn chỉnh)"]
-        G2["features.parquet\n(Bảng đặc trưng số học cho Machine Learning)"]
-        G3["matrix_skill_onehot.parquet\n(Ma trận nhị phân M jobs x N skills)"]
-        G4["matrix_skill_cooccurrence.parquet\n(Ma trận đồng xuất hiện N x N skills)"]
-    end
-    
-    GoldTables --> GoldArtifacts
-```
-
----
-
-## 2. Chuẩn Hóa & Gán Nhãn Nhóm Nghề IT (Domain & Job Role Classification)
-
-Để phân tích cơ cấu cung - cầu lao động, mọi tin tuyển dụng phải được gán nhãn vào một trong **12 Job Family chuẩn** của ngành CNTT tại Việt Nam, kết hợp cùng cấp bậc kinh nghiệm (**Seniority Level**).
-
-### 2.1. Phân Loại 12 Job Family Chuẩn
-Hệ thống sử dụng cơ chế luật kết hợp (Title Keyword Matching + JD Context/Skill Constraints) với thứ tự ưu tiên xác định:
-
-| STT | Job Family | Từ Khóa Nhận Diện Trong Tiêu Đề (`job_title`) | Kỹ Năng Ràng Buộc Trong JD |
+| Đầu ra | Bước | Bên đọc | SD |
 |---|---|---|---|
-| 1 | **Kiểm thử (QA/QC)** | `tester`, `qa`, `qc`, `quality assurance`, `automation test`, `manual test`, `kiểm thử`, `sqa` | `Selenium`, `Cypress`, `Postman`, `JMeter`, `Appium` |
-| 2 | **Bảo mật (Security)** | `security`, `soc`, `pentest`, `cyber`, `an ninh mạng`, `bảo mật`, `infosec`, `siem`, `devsecops` | `Penetration Testing`, `Firewall`, `SIEM`, `OWASP`, `CISSP` |
-| 3 | **Phân tích nghiệp vụ (BA)**| `business analyst`, `ba`, `phân tích nghiệp vụ`, `product analyst`, `system analyst` | `UML`, `BPMN`, `User Story`, `BRD`, `Jira`, `SQL` |
-| 4 | **Thiết kế UI/UX** | `ui/ux`, `ux/ui`, `ui designer`, `ux designer`, `product designer`, `thiết kế giao diện` | `Figma`, `Adobe XD`, `Sketch`, `Wireframing`, `Prototyping` |
-| 5 | **Quản lý SP/DA** | `product manager`, `project manager`, `scrum master`, `pm`, `po`, `product owner` | `Agile`, `Scrum`, `Sprint Planning`, `Kanban`, `Roadmapping` |
-| 6 | **DevOps/Cloud** | `devops`, `cloud`, `sre`, `infrastructure`, `ci/cd`, `sysadmin`, `site reliability` | `Docker`, `Kubernetes`, `AWS`, `Terraform`, `CI/CD`, `Linux` |
-| 7 | **Hệ thống/Mạng** | `system engineer`, `network engineer`, `kỹ sư hệ thống`, `quản trị mạng`, `helpdesk` | `Cisco`, `CCNA`, `Routing`, `Switching`, `TCP/IP`, `Windows Server` |
-| 8 | **Data/AI** | `data engineer`, `data analyst`, `data scientist`, `ai`, `machine learning`, `bi`, `nlp` | `Python`, `SQL`, `Spark`, `TensorFlow`, `PyTorch`, `Power BI` |
-| 9 | **Mobile** | `mobile`, `android`, `ios`, `flutter`, `react native`, `swift`, `kotlin developer` | `Flutter`, `React Native`, `iOS`, `Android`, `Swift`, `Kotlin` |
-| 10 | **Fullstack** | `fullstack`, `full stack`, `full-stack`, `toàn diện` | $\ge 1$ Backend Skill VÀ $\ge 1$ Frontend Skill |
-| 11 | **Frontend** | `frontend`, `front-end`, `front end`, `web client`, `reactjs developer`, `vue developer` | `React`, `Vue`, `Angular`, `JavaScript`, `HTML/CSS`, `TypeScript` |
-| 12 | **Backend** | `backend`, `back-end`, `back end`, `server-side`, `java dev`, `golang dev`, `.net dev` | `Java`, `Spring Boot`, `Node.js`, `Go`, `Python`, `C#`, `PHP` |
+| `07_sections/all.parquet` (bullet theo section) | 07 | 08, 09, 12_e5 | gián tiếp: SD2, SD3 |
+| `08_skills/job_skills.parquet` (tin × kỹ năng, mức bắt buộc hay ưu tiên) | 08 | 10; dự kiến M1 BI (nhu cầu kỹ năng của tin người mới) và M6, cả hai chưa có code | SD1 (câu về kỹ năng), SD2, SD4, SD5 |
+| `09_tokens/all.parquet` | 09 | 10c (`n_tokens`) | gián tiếp |
+| `10_features/features.parquet` + `encoding_dictionary.json` | 10 | M2 (cột `skill__*`), M3, M4, M5 | SD2, SD3, SD4, SD5 |
+| ~~`12_tfidf/`~~ | 12_tfidf | **Bỏ** (người dùng chốt 17/11, mục 3.5) | — |
+| `12_e5/job_emb.npz` | 12_e5 | M3 (phân cụm), M4 | SD3 |
 
-- **Giải quyết nhập nhằng (Disambiguation Logic):**
-  - Ưu tiên các nhóm nghề chuyên biệt hẹp trước (QA/QC, Security, BA, UI/UX, Quản lý) để tránh bị rơi nhầm vào nhóm lập trình chung.
-  - Vị trí `Fullstack` yêu cầu trong phần mô tả công việc (JD) bắt buộc phải xuất hiện đồng thời kỹ năng thuộc nhóm Backend (ví dụ: `Node.js`, `Java`, `Go`) và Frontend (ví dụ: `React`, `Vue`, `TypeScript`). Nếu chỉ có kỹ năng phía máy chủ, tin sẽ tự động hạ cấp về `Backend`.
+## 2. Hợp đồng chung
 
-### 2.2. Chuẩn Hóa Cấp Bậc Kinh Nghiệm (Seniority Level Mapping)
-Cấp bậc được chuẩn hóa thành 5 nhãn theo thứ bậc thứ tự (Ordinal Encoding từ 0 đến 4, gán -1 cho "Chưa rõ"). Chốt 09/11/2026 theo cài đặt của Duy (`preprocessing/transformation/experience_parser.py`); bản 6 nhãn cũ (tách Thực tập và Mới tốt nghiệp) đã bỏ:
+### 2.1. Chuỗi bước
 
-$$\text{Seniority} \in \{\text{Intern/Fresher (0)}, \text{Junior (1)}, \text{Middle (2)}, \text{Senior (3)}, \text{Lead/Manager (4)}\}$$
-
-Thứ tự áp dụng: luật theo từ trên `job_title` → trên `raw_seniority_text` → theo số năm kinh nghiệm tối thiểu (≥ 5 Senior, ≥ 2 Middle, > 0 Junior, = 0 Intern/Fresher) → -1 nếu không có căn cứ.
-
-```python
-SENIORITY_LEVELS = {"Intern/Fresher": 0, "Junior": 1, "Middle": 2, "Senior": 3, "Lead/Manager": 4}
-SENIORITY_TITLE_RULES = (  # kiểm theo thứ tự này, khớp đầu tiên thắng
-    (0, (r"\bintern\b", r"thuc tap", r"\bfresher\b", r"\bgraduate\b", r"moi tot nghiep")),
-    (4, (r"\blead\b", r"\bleader\b", r"\bmanager\b", r"\bdirector\b", r"\bhead\s+of\b", r"truong nhom", r"truong phong", r"quan ly", r"giam doc")),
-    (3, (r"\bsenior\b", r"\bsr\b")),
-    (2, (r"\bmiddle\b", r"\bmid\b")),
-    (1, (r"\bjunior\b", r"\bjr\b")),
-)  # văn bản được bỏ dấu và hạ chữ thường trước khi khớp
+```text
+data/preprocessing/04_normalization/all.parquet   (bảng sạch, spec 05)
+  ▼  07 sections   tách JD thành bullet, gán section
+  ▼  08 skills     trích kỹ năng trên từng bullet       (07 và 08 chạy trong cùng một lần gọi)
+  ▼  09 tokens     tách từ, bỏ stopword                 (đọc bảng 04, tự gọi lại analyze của 07–08)
+  ▼  10 features   10 rời rạc hóa → 10b chọn kỹ năng → 10c xây đặc trưng → 10d mã hóa
+  ▼  12_e5         embedding bullet của 07 bằng multilingual-e5-base (cần GPU)
+data/processing/<bước>/
 ```
 
----
+- Lệnh: `python scripts/run_preprocessing.py --step <bước>|all` (chạy chung chuỗi với pre-processing). Muốn chạy riêng một bước thì dùng tên bước, ví dụ `--step 10_features`.
+- **Không bỏ dòng.** Mọi bước giữ đúng 4.671 tin của bảng 04 (riêng 12_e5 đếm theo bullet: 114.008 dòng vào, 114.008 dòng ra).
+- **Không sửa giá trị đã chuẩn hóa** ở pre-processing, không đọc lại raw.
+- Report ghi ở `reports/processing/<bước>/`; driver chép thêm 07–09 sang `reports/preprocessing/<bước>/` cho trang Monitoring.
+- Processing chỉ ghi trên máy. Đẩy lên R2 thì theo spec 05 mục 2.1.
 
-## 3. Bộ Từ Điển Phân Cấp Kỹ Năng IT (IT Skill Taxonomy & Alias Normalization)
+### 2.2. Fit trên toàn bộ hay chỉ trên tập train
 
-Kỹ năng công nghệ là đơn vị phân tích trọng tâm (Atomic Analytical Unit) của đồ án tốt nghiệp. Do các nhà tuyển dụng sử dụng hàng nghìn cách viết hoa-thường, tên gọi thương mại, hoặc từ lóng khác nhau, hệ thống xây dựng cây phân cấp kỹ năng 3 tầng:
+- Các bước có fit (ngưỡng `min_df` ở 10b, bin đều tần suất ở 10, stopword theo DF ở 09) hiện **fit trên toàn bộ 4.671 tin**. Cách này đúng cho phần không giám sát (M2, M3, M4).
+- **Với SD4 (M5) thì khác:** đặc trưng nào được fit từ dữ liệu, nếu dùng làm đầu vào cho model lương, phải fit lại **chỉ trên tập train**, bên trong `sklearn.Pipeline` của M5. Bước 11 (chia train/test theo công ty) nằm ở M5, không nằm ở Processing (spec 03, mục 3.3). Cụ thể:
+  - `salary_bin_eqfreq5` và `salary_mid`, `salary_range_ratio` được tính từ chính biến mục tiêu, nên **không được làm đầu vào** của model lương.
+  - Cột `skill__*` được chọn bằng `min_df` trên toàn bộ dữ liệu. Có rò rỉ nhẹ (chỉ là số tin có kỹ năng, không dính tới lương). M5 phải ghi rõ chuyện này, hoặc tính lại `min_df` trên tập train.
 
-$$\text{Category (Nhóm)} \longrightarrow \text{Canonical Skill (Kỹ Năng Chuẩn)} \longrightarrow \text{Aliases (Biến Thể / Từ Đồng Nghĩa)}$$
+### 2.3. Dùng model và từ điển
 
-```mermaid
-graph TD
-    Taxonomy["IT Skill Taxonomy (6 Trục Cốt Lõi)"]
-    
-    Taxonomy --> C1["1. Programming Languages"]
-    Taxonomy --> C2["2. Frameworks & Libraries"]
-    Taxonomy --> C3["3. Databases & Caching"]
-    Taxonomy --> C4["4. Cloud & DevOps"]
-    Taxonomy --> C5["5. Tools, Protocols & Architecture"]
-    Taxonomy --> C6["6. Methodologies & Soft Skills"]
-    
-    C1 --> S1["Go / Golang"]
-    S1 --- A1["Aliases: 'go', 'golang', 'golang developer'"]
-    
-    C2 --> S2["React"]
-    S2 --- A2["Aliases: 'react', 'reactjs', 'react.js', 'react js'"]
-    
-    C4 --> S3["Kubernetes"]
-    S3 --- A3["Aliases: 'kubernetes', 'k8s', 'k8s cluster'"]
-```
+| Thứ dùng | Bước | Loại | Ghim phiên bản |
+|---|---|---|---|
+| `pyahocorasick` | 08 | Thuật toán (automaton), không phải model | Chưa ghim trong `requirements*.txt` |
+| `underthesea.word_tokenize` | 09 | Luật + CRF đóng gói sẵn, không tải gì khi chạy | Chưa ghim (máy dev dùng 9.5.0) |
+| `intfloat/multilingual-e5-base` | 12_e5 | Model embedding, chạy local trên GPU, fp16 | **Chưa ghim commit** (mục 6) |
 
-### 3.1. Bảng Tra Phân Cấp Kỹ Năng IT Chi Tiết (6 Nhóm Cốt Lõi)
+- **Từ điển phải được duyệt.** Code chỉ đọc `processing/dictionaries/section_headings.json`, `priority_cues.json`, `short_aliases.json`, và chỉ lấy mục `approved: true`. Các file `*_candidates.json` do script sinh ra, **code không bao giờ đọc**. Đến 17/11 cả ba file đã duyệt **chưa tồn tại**, nên 07 chỉ dùng luật S7.2 và 08 không dùng alias ngắn (mục 6).
+- Taxonomy kỹ năng của 08 là `processing/dictionaries/skills_taxonomy_230.json` (230 kỹ năng, 6 nhóm), khác với `preprocessing/dictionaries/skills.json` mà bước 03 T7 dùng (mục 6).
 
-#### Nhóm 1: Ngôn Ngữ Lập Trình (Programming Languages)
-- **Java:** `java`, `core java`, `java 8`, `java 11`, `java 17`, `java 21`
-- **Python:** `python`, `python3`, `py`
-- **JavaScript:** `javascript`, `js`, `ecmascript`, `es6`
-- **TypeScript:** `typescript`, `ts`
-- **Go:** `golang`, `go` (Yêu cầu Regex khớp biên từ `\bgo\b` kèm ngữ cảnh lập trình để tránh nhầm chữ "go" trong tiếng Anh)
-- **C#:** `c#`, `csharp`, `c sharp`, `.net c#`
-- **C++:** `c++`, `cpp`, `c/c++`
-- **PHP:** `php`, `php7`, `php8`
-- **Rust:** `rust`, `rustlang`
-- **Kotlin:** `kotlin`
-- **Swift:** `swift`
-- **SQL:** `sql`, `t-sql`, `pl/sql`
+## 3. Các bước
 
-#### Nhóm 2: Framework & Thư Viện (Frameworks & Libraries)
-- **React:** `react`, `reactjs`, `react.js`
-- **Next.js:** `next.js`, `nextjs`, `next`
-- **Vue.js:** `vue`, `vuejs`, `vue.js`, `vue 3`, `nuxt`, `nuxtjs`
-- **Angular:** `angular`, `angularjs`, `angular 2+`
-- **Spring Boot:** `spring`, `springboot`, `spring boot`, `spring framework`, `spring mvc`
-- **Node.js:** `node`, `nodejs`, `node.js`, `express`, `expressjs`, `nestjs`
-- **.NET Core:** `.net`, `.net core`, `asp.net`, `asp.net core`, `dotnet`
-- **Django / FastAPI:** `django`, `fastapi`, `flask`
-- **Laravel:** `laravel`, `symfony`
-- **Flutter:** `flutter`, `dart/flutter`
-- **React Native:** `react native`, `react-native`, `rn`
+### 3.1. Bước 07: Sections
 
-#### Nhóm 3: Cơ Sở Dữ Liệu & Bộ Nhớ Đệm (Databases & Caching)
-- **PostgreSQL:** `postgresql`, `postgres`, `psql`
-- **MySQL:** `mysql`, `mariadb`
-- **MongoDB:** `mongodb`, `mongo`, `nosql mongodb`
-- **Redis:** `redis`, `redis cache`
-- **Elasticsearch:** `elasticsearch`, `elastic search`, `elk`, `opensearch`
-- **SQL Server:** `sql server`, `mssql`, `ms sql`
-- **Oracle:** `oracle`, `oracle db`
-- **Kafka:** `kafka`, `apache kafka` (Message broker / Streaming)
-- **RabbitMQ:** `rabbitmq`, `message queue`
+| Mục | Nội dung |
+|---|---|
+| Mục đích | Tách JD thành bullet có nhãn section, để 08 biết kỹ năng nằm ở phần yêu cầu, phần ưu tiên hay phần phúc lợi, và để 12_e5 có đơn vị văn bản ngắn. Gián tiếp phục vụ SD2, SD5 (kỹ năng bắt buộc hay ưu tiên) và SD3 |
+| Code | `processing/extraction/sections.py` (`split_sections`, `load_headings`, `load_cues`), `processing/extraction/run.py` (`analyze`, `run`) |
+| Đầu vào | Bảng 04: `job_id_global`, `source_platform`, `description_clean`, `requirements_clean`, `benefits_list`, `skills_list`; với tin đã dịch thì thêm `description_vi`, `requirements_vi` |
+| Đầu ra | `data/processing/07_sections/all.parquet`: một dòng một bullet, cột `job_id_global`, `source_platform`, `bullet_idx`, `section` (`mo_ta`, `yeu_cau`, `uu_tien`, `phuc_loi`, `khac`), `text`, `section_rule` |
+| Report | `reports/processing/07_sections/`; `extra`: `n_bullets`, `bullets_by_section`, `bullets_by_rule`, `n_jobs_no_bullet`, `headings_approved`, `cues_approved` |
 
-#### Nhóm 4: Điện Toán Đám Mây & Vận Hành (Cloud & DevOps)
-- **Docker:** `docker`, `container`, `docker-compose`
-- **Kubernetes:** `kubernetes`, `k8s`, `k8s cluster`, `helm`
-- **AWS:** `aws`, `amazon web services`, `ec2`, `s3`, `lambda`, `ecs`, `rds`
-- **Google Cloud:** `gcp`, `google cloud`, `google cloud platform`, `bigquery`
-- **Microsoft Azure:** `azure`, `microsoft azure`
-- **CI/CD:** `ci/cd`, `cicd`, `jenkins`, `gitlab-ci`, `github actions`, `argocd`
-- **Terraform:** `terraform`, `iac`, `infrastructure as code`
-- **Linux:** `linux`, `ubuntu`, `centos`, `bash shell`
+**Luật:**
 
-#### Nhóm 5: Công Cụ, Kiến Trúc & Giao Thức (Tools, Architecture & Protocols)
-- **Git:** `git`, `github`, `gitlab`, `bitbucket`
-- **Microservices:** `microservices`, `micro-services`, `service-oriented`
-- **REST API:** `restful api`, `rest api`, `restful`, `rest`
-- **GraphQL:** `graphql`, `apollo`
-- **gRPC:** `grpc`, `protobuf`
-- **Design Patterns:** `design patterns`, `oop`, `solid`, `clean architecture`, `ddd`
+| Mã | Luật |
+|---|---|
+| S7.1 | Tách theo dòng. Dòng bắt đầu bằng `- ` là một bullet; dòng không có ký hiệu bullet cũng là một bullet, trừ khi nó là tiêu đề (S7.3). Bỏ dòng rỗng |
+| S7.2 | Section mặc định lấy theo trường nguồn: `description_clean` → `mo_ta`, `requirements_clean` → `yeu_cau`, `benefits_list` → `phuc_loi` |
+| S7.3 | Dòng là tiêu đề (khớp `section_headings.json` đã duyệt) thì đổi section cho các dòng sau, đến tiêu đề kế tiếp. Bản thân dòng tiêu đề không thành bullet |
+| S7.4 | Bullet hoặc tiêu đề mở đầu bằng cụm "ưu tiên" (theo `priority_cues.json` đã duyệt, ví dụ "ưu tiên", "nice to have", "là một lợi thế") → `uu_tien` |
+| S7.5 | Không khớp luật nào thì giữ section mặc định |
 
-#### Nhóm 6: Phương Pháp Luận & Kỹ Năng Mềm (Methodologies & Soft Skills)
-- **Agile / Scrum:** `agile`, `scrum`, `kanban`, `sprint`
-- **Giao tiếp tiếng Anh:** `tiếng anh`, `english`, `toeic`, `ielts`, `fluent english`
-- **Giải quyết vấn đề:** `problem solving`, `tư duy logic`, `critical thinking`
-- **Làm việc nhóm:** `teamwork`, `làm việc nhóm`, `collaboration`
+Kết quả 10/11: 114.008 bullet (`mo_ta` 39.153, `yeu_cau` 35.152, `phuc_loi` 39.703); 0 tin không có bullet. **100% bullet theo S7.2**, vì chưa có tiêu đề và cụm "ưu tiên" nào được duyệt. Do đó không có bullet nào ở `uu_tien` hay `khac`.
 
-### 3.2. Cơ Chế Khớp Kỹ Năng Tên Ngắn (Short-name Disambiguation)
-Các kỹ năng có tên rất ngắn như **C**, **R**, **Go**, **AI** rất dễ bị kích hoạt sai (False Positive) khi người tuyển dụng viết câu văn thông thường (ví dụ: "chữ **C** trong CEO", "take ca**r**e", "đi lại (**go**)", "b**ai** toán").
-- **Quy tắc phân giải ngữ cảnh (Context-Aware Regex):**
-  - Kỹ năng `Go`: Khớp `\b(golang|go\s+developer|lập trình\s+go|go\s+language)\b` hoặc `\bgo\b` khi xung quanh có các từ khóa: `backend`, `microservices`, `docker`, `kubernetes`.
-  - Kỹ năng `C`: Chỉ chấp nhận khi viết dưới dạng `\bc/c\+\+\b`, `lập trình c\b`, hoặc `c/embedded`.
-  - Kỹ năng `R`: Chỉ khớp khi nằm trong ngữ cảnh phân tích dữ liệu: `\br\s+programming\b`, `python/r`, `r\s+studio`.
+| Mục | Nội dung |
+|---|---|
+| Kiểm tra | Độ đúng theo bullet trên bộ gold (`processing/evaluate.py`, `scripts/eval_gold_processing.py`): so theo nội dung dòng, chỉ tính bullet nằm trong vùng đã gán nhãn. Đích theo thiết kế: ≥ 90% |
+| Trạng thái | Có code, đã chạy thật 10/11. Đo trên gold ngày 11/11: **84,5%**, chưa đạt |
+| Việc mở | PRE-33 (duyệt `section_headings`, `priority_cues`), PRE-34 (bullet careerviet thô: 399/400 tin chỉ có 3 bullet) |
 
----
+### 3.2. Bước 08: Skills
 
-## 4. Chuẩn Hóa Mức Lương (Universal Salary Normalization)
+| Mục | Nội dung |
+|---|---|
+| Mục đích | Mỗi tin có một danh sách kỹ năng chuẩn, kèm mức bắt buộc hay ưu tiên. Đây là nguyên liệu chính của SD2 (gói kỹ năng), SD4 (giá trị kỹ năng), SD5 (kỹ năng nên học), và của câu hỏi kỹ năng ở SD1 |
+| Code | `processing/extraction/skills.py` (`SkillMatcher`, `extract_skills`, `load_taxonomy`, `load_short_forms`), `processing/extraction/run.py`, `processing/selection/sparsity.py` |
+| Đầu vào | Bullet của 07 (tính trong cùng lần gọi) và `skills_list` của bảng 04 |
+| Đầu ra | `data/processing/08_skills/job_skills.parquet`: một dòng một cặp (tin, kỹ năng), cột `job_id_global`, `source_platform`, `slug`, `level` (`required`, `preferred`), `weight` (1 hoặc 0,5), `section`, `via` (`text`, `text_vi`, `meta`), `n_mentions`. Nếu chạy có `min_df` hoặc `merge_map` thì ghi thêm `job_skills_reduced.parquet` |
+| Report | `reports/processing/08_skills/`; `extra`: `n_job_skill_rows`, `n_jobs_no_skill`, `top_skills` (30), `short_forms_approved`, `alias_conflicts_dropped`, `sparsity` (ở `_all`) |
 
-Bài toán chuẩn hóa lương đối mặt với sự phân mảnh lớn: có tin ghi USD, có tin ghi triệu VND; có tin tính theo giờ, tháng, năm; có tin ghi dạng "Từ 15 triệu", "Up to $2,000", "15 - 25 triệu".
+**Luật:**
 
-### 4.1. Quy Chuẩn Đơn Vị Đích & Tỷ Giá Chuẩn
-- **Đơn vị đích duy nhất:** **Triệu VNĐ / Tháng** (`salary_min_mil_vnd`, `salary_max_mil_vnd`, `salary_avg_mil_vnd`).
-- **Tỷ giá ngoại tệ chuẩn (Standard FX Rate):**
-  $$1 \text{ USD} = 25.400 \text{ VNĐ}$$
-  (Tỷ giá liên ngân hàng tháng 10-11/2026, cố định phục vụ tính toán khoa học cho đồ án).
+| Mã | Luật |
+|---|---|
+| K8.1 | Dựng automaton Aho–Corasick một lần từ taxonomy 230. Khóa là `fold(alias)`, chỉ cho alias dài ≥ 4 ký tự hoặc có `#`, `+`, `.` (`c#`, `c++`, `.net`) |
+| K8.2 | Ranh giới từ: ký tự liền trước và liền sau chỗ khớp không thuộc `[a-z0-9_#+]` |
+| K8.3 | Alias ngắn hoặc dễ trùng từ thường (`bi`, `ba`, `soc`, `c`, `r`, `go`…) **không** quét trên văn bản fold. Chúng chỉ khớp phân biệt hoa thường trên văn bản gốc, và chỉ khi có trong `short_aliases.json` đã duyệt. Lý do: quét trên fold thì `bi` khớp 1.314 tin, so với 363 tin khi khớp hoa thường |
+| K8.4 | Quét riêng từng bullet để biết section của từng lần khớp |
+| K8.5 | Mức theo section: `yeu_cau`, `mo_ta`, `khac` → `required`, weight 1; `uu_tien` → `preferred`, weight 0,5; `phuc_loi` không quét. Cùng kỹ năng xuất hiện nhiều lần thì giữ mức cao nhất và cộng `n_mentions` |
+| K8.6 | Kỹ năng từ `skills_list` của nguồn ghi thêm với `via = meta`, `level = required`. F1 trên gold chỉ tính `via = text` |
+| K8.7 | Tin đã dịch (`translation_status = translated`): quét thêm bản dịch. Kỹ năng chỉ thấy trong bản dịch ghi `via = text_vi`; kỹ năng đã có thì chỉ cộng số lần nhắc |
 
-### 4.2. Giải Thuật Bóc Tách Đa Tầng (Cascade Regex Extractor)
+Kết quả 10/11: 32.637 cặp (tin, kỹ năng), 219 kỹ năng được dùng, trung bình 6,99 và trung vị 5 kỹ năng mỗi tin. 363 tin (7,8%) không có kỹ năng nào lấy từ văn bản; tính cả `meta` thì còn 292 tin. Số kỹ năng có DF dưới 3/5/10/20/50 tin lần lượt là 14/24/42/65/101.
 
-```mermaid
-flowchart TD
-    RawInput["Chuỗi Văn Bản Lương Thô"] --> CheckNegotiable{"Khớp từ khóa Thỏa thuận?\n(cạnh tranh, thỏa thuận, deal, negotiable)"}
-    CheckNegotiable -- "Đúng" --> SetFlag["is_salary_negotiable = True\nsalary_min = NaN, salary_max = NaN"]
-    CheckNegotiable -- "Sai" --> ParseCascade["Universal Salary Parser"]
-    
-    ParseCascade --> T2a["T2a: Phân biệt hàng nghìn vs thập phân\n(2,000 -> 2000 vs 8.5 -> 8.5)"]
-    T2a --> T2bc["T2b & T2c: Xử lý cận mở\n('Từ X' -> min=X, max=None)\n('Up to Y' -> min=None, max=Y)"]
-    T2bc --> T2d["T2d: Quy đổi chu kỳ & tiền tệ\n(Năm -> /12, Giờ -> *160, USD -> *25,400)"]
-    T2d --> T2f["T2f: Đưa về Triệu VNĐ\nsalary_avg = (min + max) / 2"]
-```
+- Vì chưa có cụm "ưu tiên" nào được duyệt, **mọi kỹ năng đều là `required`**. Mức bắt buộc hay ưu tiên (thiết kế: 1 và 0,5) hiện chưa có tác dụng.
+- Kỹ năng mềm và ngoại ngữ đứng đầu danh sách (ví dụ topcv: communication 677 tin, english 463, teamwork 356; python 258). SD2 và SD5 phải quyết có tách nhóm kỹ năng mềm khi xếp hạng hay không (spec 07).
 
-1. **Phân biệt dấu phân cách số (T2a):**
-   - Số hàng nghìn: `2,000` hoặc `2.000` hoặc `25,000,000` $\rightarrow$ loại bỏ ký tự ngăn cách, đưa về số nguyên.
-   - Số thập phân: `8.5` triệu hoặc `8,5` triệu $\rightarrow$ chuẩn hóa thành `8.5`.
-2. **Xử lý khoảng chặn một đầu (T2b, T2c):**
-   - Mẫu `"Từ X"` (ví dụ: "Từ 20 triệu"): Gán `salary_min = X`, `salary_max = NaN`.
-   - Mẫu `"Lên tới Y"`, `"Up to Y"` (ví dụ: "Up to $2,500"): Gán `salary_min = NaN`, `salary_max = Y`.
-   - Mẫu `"X - Y"` (ví dụ: "15 - 25 triệu"): Gán `salary_min = X`, `salary_max = Y`.
-3. **Quy đổi chu kỳ thời gian (Period Normalization):**
-   - Theo năm: $\text{Lương tháng} = \text{Lương năm} / 12$.
-   - Theo giờ: $\text{Lương tháng} = \text{Lương giờ} \times 160$ (chuẩn 160 giờ làm việc/tháng).
-   - Theo ngày: $\text{Lương tháng} = \text{Lương ngày} \times 22$ (chuẩn 22 ngày công/tháng).
-4. **Tính toán lương đại diện (Representative Salary):**
-   $$\text{salary\_avg} = \begin{cases} 
-   \frac{\text{salary\_min} + \text{salary\_max}}{2} & \text{khi cả hai đều có giá trị} \\
-   \text{salary\_min} & \text{khi chỉ có min} \\
-   \text{salary\_max} & \text{khi chỉ có max} \\
-   \text{NaN} & \text{khi lương thỏa thuận}
-   \end{cases}$$
+| Mục | Nội dung |
+|---|---|
+| Kiểm tra | P/R/F1 micro trên gold, theo cặp (tin, kỹ năng), chỉ tính `via = text`. Nhãn không ánh xạ được về taxonomy thì tính là FN và báo riêng. Đích theo thiết kế: F1 ≥ 0,85. Kiểm thủ công 20 tin ngẫu nhiên |
+| Trạng thái | Có code, đã chạy thật 10/11. F1 trên gold ngày 11/11: **0,27**, có thể một phần do cách so tên kỹ năng với `slug` |
+| Việc mở | PRE-33 (xem lại cách đo F1; duyệt `short_aliases`), PRE-35 (SD2: 7% tin không có kỹ năng, F1 thấp) |
 
-### 4.3. Quy Trình Dịch Thuật Bảo Toàn Thuật Ngữ IT (Term-Preserving Translation)
+### 3.3. Bước 09: Tokens
 
-Trong thị trường tuyển dụng IT Việt Nam, có khoảng $24{,}2\%$ tin tuyển dụng (đo 03/11/2026, `data_issues_2026-11-03.md`) được viết hoàn toàn bằng tiếng Anh (đặc biệt trên ITviec, VietnamWorks, Glints). Để phục vụ đối tượng nghiên cứu là **Sinh viên IT Việt Nam** và đồng nhất không gian văn bản TF-IDF, hệ thống tích hợp module dịch thuật máy tại Bước 3 (Transformation) chuyển đổi toàn bộ JD tiếng Anh sang tiếng Việt, nhưng **bắt buộc phải bảo toàn 100% các thuật ngữ kỹ thuật chuyên ngành**.
+| Mục | Nội dung |
+|---|---|
+| Mục đích | Biến văn bản thành token sạch để đo độ dài JD (`n_tokens`, 10c). Từ 17/11, khi bỏ 12_tfidf, đây là bên đọc duy nhất; nếu 10c không cần `n_tokens` thì có thể bỏ luôn bước 09 (PRE-34) |
+| Code | `processing/transformation/tokenize.py` (`tokenize`, `domain_stopwords`, `load_general_stopwords`, `remove_stopwords`), `processing/transformation/run.py` |
+| Đầu vào | Bảng 04. Bước này gọi lại `analyze` của 07–08 để lấy bullet và vị trí kỹ năng, không đọc file của 07 |
+| Đầu ra | `data/processing/09_tokens/all.parquet`: `job_id_global`, `source_platform`, `tokens`, `tokens_nostop`, `n_tokens` |
+| Report | `reports/processing/09_tokens/`; `extra`: `mean_tokens_per_job`, `df_threshold`, `n_general_stopwords`, `domain_stopwords` (token và DF) |
 
-```mermaid
-flowchart TD
-    RawJD["JD Tiếng Anh (English Job Description)"] --> DetectLang{"Nhận diện ngôn ngữ\n(fasttext / langdetect >= 0.85)"}
-    DetectLang -- "Tiếng Việt" --> Bypass["Giữ nguyên văn bản tiếng Việt"]
-    DetectLang -- "Tiếng Anh" --> ExtractTerms["3 KỸ THUẬT TRÍCH XUẤT THUẬT NGỮ"]
+**Luật:**
 
-    subgraph TermExtraction["Extraction Engine"]
-        direction TB
-        T1["1. Statistical Terminology: N-gram TF-IDF & C-Value (Multi-word terms)"]
-        T2["2. Syntactic POS-Tagging: spaCy (Adj|Noun)* Noun+ (Tech Noun Phrases)"]
-        T3["3. Layered Taxonomy Lookup: skills.json + it_policy.json (Standard Entities)"]
-        T1 --- T2 --- T3
-    end
+| Mã | Luật |
+|---|---|
+| W9.1 | Trước khi tách từ, thay mỗi kỹ năng đã khớp ở 08 bằng token giữ chỗ `sk_<slug>`, để tokenizer không cắt hỏng `C++` hay `Node.js` |
+| W9.2 | `underthesea.word_tokenize`, đưa về chữ thường (trừ token `sk_`). Token ghép giữ dấu cách bên trong |
+| W9.3 | Bỏ token chỉ gồm dấu câu hoặc ký hiệu; giữ số |
+| W9.4 | Bỏ stopword chung theo danh sách |
+| W9.5 | Bỏ stopword theo miền: token có mặt trong hơn 60% số tin. Token `sk_` không bao giờ bị coi là stopword |
+| W9.6 | Bullet `phuc_loi` vẫn được tách từ nhưng không thay kỹ năng |
 
-    ExtractTerms --> TermExtraction
-    TermExtraction --> Masking["Entity Masking:\nThay thế 'Spring Boot' -> '__TECH_TERM_0__'\n'Kubernetes cluster' -> '__TECH_TERM_1__'"]
+Kết quả 10/11: 10 stopword theo miền (các, có, của, kinh nghiệm, làm việc, năm, theo, trong, và, với). Trung bình số token mỗi tin theo nguồn từ 245 (jobsgo) đến 440 (itviec).
 
-    Masking --> CacheCheck{"Kiểm tra Local Cache?\n(SHA-256 hash của đoạn văn)"}
-    CacheCheck -- "Đã có" --> FetchCache["Lấy bản dịch từ SQLite/JSON cache"]
-    CacheCheck -- "Chưa có" --> EnViT5["Model: VietAI/envit5-translation\n(Dịch tiếng Anh sang tiếng Việt)"]
-    EnViT5 --> SaveCache["Lưu vào Translation Cache"]
+| Mục | Nội dung |
+|---|---|
+| Kiểm tra | Token `sk_` còn nguyên sau khi tách; danh sách stopword theo miền phải được người dùng xem |
+| Trạng thái | Có code, đã chạy thật 10/11 |
+| Việc mở | PRE-34 (đánh giá hiệu quả của 09–12) |
 
-    FetchCache --> Unmasking["Entity Unmasking:\nKhôi phục '__TECH_TERM_i__' -> Thuật ngữ tiếng Anh gốc"]
-    SaveCache --> Unmasking
-    Unmasking --> CleanedVN["JD Tiếng Việt Chuẩn Hóa\n(Bảo toàn nguyên vẹn từ khóa công nghệ)"]
-```
+### 3.4. Bước 10: Features (10, 10b, 10c, 10d)
 
-> **Chốt 10/11/2026:** dịch **toàn bộ** JD tiếng Anh, chạy **sau** lọc phạm vi và khử trùng (không dịch tin sắp bị loại), **trước** tách section và trích kỹ năng. Giữ nguyên cột JD gốc, thêm cột JD tiếng Việt; tính lại `text_norm`, `text_fold` trên bản dịch; ghi `<trường>_source` = `model` cùng tên và phiên bản model vào manifest. Giới hạn độ dài đầu vào của `envit5-translation` **chưa kiểm**; JD dài cần cắt theo bullet hoặc câu rồi ghép lại.
+| Mục | Nội dung |
+|---|---|
+| Mục đích | Một ma trận số, mỗi tin một dòng, dùng chung cho mọi bước Mining. Phục vụ SD2 (cột kỹ năng), SD3 (đầu vào phân cụm và Isolation Forest), SD4 (đặc trưng của model lương), SD5 |
+| Code | `processing/encoding/features.py` (`build_features`, `run`); `processing/transformation/discretize.py` (10); `processing/selection/sparsity.py` (10b); `processing/construction/features.py` (10c). Còn import `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` từ `preprocessing/encoding/run.py` |
+| Đầu vào | Bảng 04, `08_skills/job_skills.parquet`, `09_tokens/all.parquet` |
+| Đầu ra | `data/processing/10_features/features.parquet` (đúng 4.671 dòng, khóa `job_id_global`), `encoding_dictionary.json` (mỗi cột: cách mã hóa, cột nguồn) |
+| Report | `reports/processing/10_features/`; `extra`: `n_cols`, `min_df`, `n_skill_cols`, `n_skills_folded` |
 
-#### 1. 3 Kỹ Thuật Trích Xuất Cụm Từ Chuyên Ngành Tiếng Anh
-Để không dịch sai các từ khóa kỹ thuật (tránh dịch *Java* thành *cà phê*, *Spring Boot* thành *giày bốt mùa xuân*, hay *Thread Pool* thành *hồ bơi chỉ sợi*), hệ thống kết hợp 3 lớp kỹ thuật trích xuất:
-1. **Statistical Terminology Extraction (N-gram TF-IDF & C-Value):** Nhận diện các thuật ngữ kỹ thuật đa từ lặp lại với tần suất cao trong ngữ cảnh tuyển dụng IT:
-   $$C\text{-Value}(a) = \begin{cases}
-   \log_2(|a|) \cdot f(a) & \text{nếu } a \text{ không nằm trong cụm dài hơn} \\
-   \log_2(|a|) \cdot \left( f(a) - \frac{1}{|T_a|} \sum_{b \in T_a} f(b) \right) & \text{ngược lại}
-   \end{cases}$$
-   (Với $|a|$ là số lượng từ trong cụm $a$, $f(a)$ là tần suất xuất hiện, $T_a$ là tập các cụm dài hơn chứa $a$). Giúp nhận diện chính xác các cụm như *"Deadlock Detection"*, *"Garbage Collection"*, *"Continuous Integration"*.
-2. **Syntactic POS-Tagging (Cụm Danh Từ Công Nghệ):** Sử dụng `spaCy` (mô hình `en_core_web_sm`) phân tích ngữ pháp với mẫu Regex:
-   $$\text{Pattern} = (\text{ADJ} \mid \text{NOUN})^* \ \text{NOUN}^+$$
-   Bắt chính xác các cụm danh từ chuyên biệt như *"microservice architecture"*, *"distributed transaction coordinator"*, *"load balancing algorithm"*.
-3. **Layered Taxonomy Lookup (Đối Chiếu Từ Điển Phân Tầng):** Quét toàn bộ từ điển 230 kỹ năng chuẩn (`preprocessing/dictionaries/skills.json`) và danh mục các từ khóa IT cốt lõi (`it_policy.json`), đảm bảo 100% các kỹ năng trong từ điển không bao giờ bị mô hình dịch can thiệp.
+**10, rời rạc hóa** (thiếu giá trị thì -1, không điền trung bình):
 
-#### 2. Kỹ Thuật Che Mặt Nạ (Entity Masking & Unmasking)
-- Trước khi đưa văn bản tiếng Anh vào mô hình dịch, toàn bộ các thuật ngữ kỹ thuật được trích xuất sẽ được đánh số và thay thế bằng chuỗi token giữ chỗ không bị dịch nhầm: `__TECH_TERM_0__`, `__TECH_TERM_1__`,...
-- Văn bản sau khi dịch qua `VietAI/envit5-translation` sẽ được thay thế ngược lại: Token `__TECH_TERM_i__` được thế lại bằng chính xác chuỗi tiếng Anh kỹ thuật ban đầu.
+| Cột | Cách tính |
+|---|---|
+| `salary_bin_range` | Lương tham chiếu (trung bình hai cận có số, triệu/tháng) chia theo mốc 10, 20, 35, 60 triệu (`SALARY_EDGES_M`, đề xuất) |
+| `salary_bin_eqfreq5` | 5 nhóm đều tần suất trên tin có lương |
+| `exp_bin` | 0: dưới 1 năm; 1: 1–2; 2: 3–5; 3: trên 5 |
 
-#### 3. Tối Ưu Hiệu Năng & Cơ Chế Dự Phòng (Caching & Fallback Policy)
-- **Local Translation Cache:** Sử dụng bảng SQLite cục bộ `data/cache/translation_cache.db` (lưu trữ theo khóa băm `SHA-256(english_text)`). Nhờ đó, các đoạn mô tả tương đồng hoặc các câu lặp lại giữa các bài tuyển dụng chỉ cần dịch một lần duy nhất.
-- **Cờ CLI `--skip-translation`:** Khi chạy pipeline trên các máy cá nhân không trang bị GPU (chỉ chạy bằng CPU) hoặc trong môi trường test CI/CD, kỹ sư có thể thêm cờ `--skip-translation` để giữ nguyên trường văn bản gốc tiếng Anh mà không làm treo tiến trình tiền xử lý.
+**10b, chọn kỹ năng:** kỹ năng có DF < `min_df` = 15 tin (`MIN_DF`; người dùng đề xuất 10–20) bị gom vào `skill__other_skill`. Số tin không đổi. Lần chạy 10/11: còn 171 cột kỹ năng, 49 kỹ năng bị gom. Các tiêu chí chọn khác chưa chốt (PRE-34).
 
----
+**10c, xây đặc trưng** (thiếu thì NaN): `n_skills`, `n_required`, `required_ratio`, `n_tokens`, `n_benefits`, `salary_mid`, `salary_range_ratio`.
 
-## 5. Sinh Ma Trận Kỹ Năng Cho Khai Phá Dữ Liệu (Feature Matrices Generation)
+**10d, mã hóa:**
 
-Để các thuật toán Data Mining (Khai phá luật kết hợp Apriori/FP-Growth, Phân cụm K-Means, Phân tích đồ thị mạng xã hội kỹ năng) có thể hoạt động trực tiếp, hệ thống sinh ra 3 ma trận đặc trưng từ tập dữ liệu Gold.
+| Nhóm cột | Cách mã hóa |
+|---|---|
+| `skill__<slug>` | Multi-hot từ 08 (sau 10b) |
+| `seniority_ord` | Ordinal 0–4 theo 5 cấp; chưa rõ = -1 |
+| `fam__*` | One-hot 10 nhóm nghề + Other |
+| `src__*` | One-hot nguồn |
+| `wm__*` | One-hot `work_mode` (onsite, remote, hybrid, unknown) |
+| `emp__*` | Loại hình làm việc (full_time, part_time, intern, contract, unknown), luật từ khóa trên `raw_employment_type` |
+| `tinh__*`, `loc_remote`, `loc_ngoai_vn` | Multi-hot 10 tỉnh nhiều tin nhất, xét mọi địa điểm của tin (`TOP_PROVINCES_K`); còn lại là `tinh__other`; không có tỉnh là `tinh__unknown` |
+| `log_salary_min`, `log_salary_max`, `exp_min_years`, `exp_max_years`, `headcount` | Giữ số; thiếu thì NaN kèm cột `__missing` |
+| `posted_month`, `days_to_deadline`, `days_to_deadline__missing` | Ngày; `days_to_deadline` tính từ `crawled_at` |
+| `salary_status__value`, `salary_status__unknown`, `is_negotiable`, `is_outlier_salary`, `seniority_can_kiem` | Cờ 0/1. Lương thỏa thuận và lương không ghi gộp vào `salary_status__unknown` (người dùng chốt 11/11) |
 
-### 5.1. Ma Trận Nhị Phân Kỹ Năng (One-Hot / Multi-Hot Skill Matrix)
-- **Kích thước:** Ma trận $M \times K$, trong đó:
-  - $M$: Số lượng tin tuyển dụng IT hợp lệ ($M \approx 5.000 - 15.000$ bài đăng).
-  - $K$: Số lượng kỹ năng chuẩn hàng đầu (chọn top $K$ kỹ năng có tần suất xuất hiện $\ge 20$ lần, thường $K \in [100, 200]$ kỹ năng).
-- **Định nghĩa phần tử:**
-  $$X_{ij} = \begin{cases} 1 & \text{nếu công việc } i \text{ yêu cầu kỹ năng } j \\ 0 & \text{ngược lại} \end{cases}$$
-- **Ứng dụng khai phá:**
-  - Thuật toán **Apriori** và **FP-Growth** chạy trực tiếp trên ma trận nhị phân này để tìm các **Tập kỹ năng phổ biến (Frequent Itemsets)** và các **Luật kết hợp (Association Rules)**.
-  - Ví dụ phát hiện luật: $\{\text{React}\} \Rightarrow \{\text{TypeScript}\}$ (Độ tin cậy $\text{Confidence} = 78\%$, Độ nâng $\text{Lift} = 3.2$).
+- Không có cột `it_status` (mọi tin đều là `it`, nên là cột hằng) và không có `*_prob` (bảng 04 không có).
+- Cờ `seniority_can_kiem` được giữ thành cột, không bỏ dòng; Mining tự lọc.
 
-### 5.2. Ma Trận Kỹ Năng Đồng Xuất Hiện (Skill Co-occurrence Matrix)
-- **Kích thước:** Ma trận vuông đối xứng $K \times K$.
-- **Định nghĩa toán học:**
-  $$\mathbf{C} = \mathbf{X}^T \mathbf{X}$$
-  Trong đó phần tử $C_{jk}$ tại dòng $j$, cột $k$ đại diện cho số lượng bài đăng tuyển dụng yêu cầu **đồng thời cả hai kỹ năng $j$ và $k$**:
-  $$C_{jk} = \sum_{i=1}^M X_{ij} X_{ik}$$
-  - Đường chéo chính $C_{jj}$ chính là tần suất xuất hiện độc lập của kỹ năng $j$.
-- **Ứng dụng khai phá:**
-  - Xây dựng **Skill Graph Network**: Mỗi node là một kỹ năng, trọng số của cạnh (Edge weight) là $C_{jk}$.
-  - Thuật toán phát hiện cộng đồng (Community Detection - Louvain Algorithm) trên ma trận này để tự động gom cụm các hệ sinh thái công nghệ (ví dụ: Cụm Java Enterprise, Cụm Modern Web React/Node, Cụm Cloud Data Engineering).
+| Mục | Nội dung |
+|---|---|
+| Kiểm tra | Số dòng bằng bảng 04; mọi cột có trong `encoding_dictionary.json`; không có NaN ngoài các cột số đã ghi |
+| Trạng thái | Có code, đã chạy thật. Report 10/11 ghi 242 cột; L-47 (11/11, sau khi gộp 10 nhóm nghề) ghi 243 cột |
+| Việc mở | PRE-37 việc 4 (`posted_month` đang lấy tháng từ `posted_date`), PRE-34 (đánh giá: `min_df`, mốc bin lương, 10c có ích không), PRE-33 (chốt `min_df`) |
 
-```
-          Java   Spring  Docker  React  TypeScript
-Java      1250    980     620     110      85
-Spring     980   1020     580      90      70
-Docker     620    580    1450     450     520
-React      110     90     450    1800    1420
-TypeScript  85     70     520    1420    1650
-```
+### 3.5. Bước 12_tfidf: đã bỏ (17/11/2026)
 
-### 5.3. Không Gian Vector TF-IDF Của Mô Tả Tuyển Dụng (TF-IDF Vector Space)
-- **Mục đích:** Chuyển hóa toàn bộ nội dung văn bản mô tả công việc (JD) thành không gian vector số học nhằm phân cụm bài viết (Job Clustering) và phát hiện các bài tuyển dụng có nội dung tương tự.
-- **Tham số cấu hình:**
-  - Thư viện: `scikit-learn TfidfVectorizer`.
-  - Dải N-gram: $(1, 2)$ (từ đơn và từ ghép 2 từ).
-  - Tần suất tài liệu tối thiểu (`min_df = 5`): Loại bỏ các từ quá hiếm gặp.
-  - Tần suất tài liệu tối đa (`max_df = 0.8`): Loại bỏ các từ xuất hiện trong hơn 80% tài liệu (từ phổ thông, stop words).
-  - Kích thước không gian vector: Giới hạn `max_features = 3000` thuộc tính quan trọng nhất.
-- **Ứng dụng khai phá:**
-  - Sử dụng cho thuật toán phân cụm **K-Means / HDBSCAN** để tìm kiếm các phân khúc công việc ẩn (Latent Job Profiles) mà tiêu đề bài viết chưa phản ánh hết.
-  - Giảm chiều dữ liệu với **PCA / t-SNE / UMAP** để trực quan hóa toàn bộ thị trường lao động IT lên biểu đồ phân tán 2D trên Dashboard.
+- **Quyết định:** người dùng chốt ngày 17/11 bỏ TF-IDF khỏi dự án (spec 07 mục 4). Biểu diễn nội dung JD cho SD3 chỉ dùng e5 (12_e5).
+- **Lý do:** không bước Mining nào đọc `12_tfidf/`; M3 đã tắt TF-IDF tự dựng từ L-47 (`tfidf_weight` = 0) và chạy với kỹ năng + e5.
+- **Lần chạy cuối** (10/11): ma trận 4.671 × 20.000, 1.205.812 ô khác 0. Thông số cũ: `TfidfVectorizer` unigram + bigram, `min_df` 5, `sublinear_tf`, L2. Xem lại bằng `git show`.
+- **Việc code** (MINE-7): bỏ `12_tfidf` khỏi `PROCESSING_STEPS` trong `scripts/run_preprocessing.py`, xóa `processing/extraction/vectorize.py` cùng test của nó, xóa `data/processing/12_tfidf/` và `reports/processing/12_tfidf/`. Chưa làm.
+
+### 3.6. Bước 12_e5
+
+| Mục | Nội dung |
+|---|---|
+| Mục đích | Vector ngữ nghĩa của từng tin, đọc được cả tiếng Việt lẫn tiếng Anh, cho SD3 (phân cụm M3, tìm tin "khác hoặc mới" M4) |
+| Code | `processing/extraction/embed.py` |
+| Đầu vào | `07_sections/all.parquet` |
+| Đầu ra | `data/processing/12_e5/bullet_emb.npy` (float16, một dòng một bullet), `bullet_index.parquet`, `job_emb.npz` (vector tin = trung bình mọi bullet; thêm trung bình riêng theo `mo_ta`, `yeu_cau`, `phuc_loi`, và mảng `has` cho biết tin có section đó không; tin không có bullet thì vector 0), `meta.json`; cache theo `sha1(text)` chia shard ở `cache/` |
+| Report | `reports/processing/12_e5/`; `extra`: `bullets`, `dim`, `model`, `jobs` |
+| Luật | Thêm tiền tố `passage: `; độ dài tối đa 256 token; batch 64; vector chuẩn hóa; fp16 trên GPU. Chạy lại chỉ tính văn bản chưa có trong cache. Dry-run không gọi model |
+| Kiểm tra | Số bullet bằng 07; `dim` = 768 |
+| Trạng thái | Có code, đã chạy thật 10/11: 114.008 bullet, 4.671 tin, khoảng 40 ms mỗi bullet trên Quadro T1000 |
+| Việc mở | Mục 6: ghim phiên bản model; report ghi sai `api.used = false` |
+
+## 4. Bước 11 (chia train/test) không thuộc Processing
+
+- Thiết kế cũ coi bước 11 là tùy chọn, vì khi đó Mining chỉ có phần không giám sát. Từ 16/11 SD4 có model lương, nên **bước 11 là bắt buộc cho SD4** và được đặt trong M5 (spec 03 mục 3.3, spec 07).
+- Luật giữ từ thiết kế: chia theo **công ty** (`company_key` của bảng 04) bằng `GroupShuffleSplit`, 80/20, `random_state = 42`. Không công ty nào có mặt ở cả hai tập. Mọi bước fit của model nằm trong `sklearn.Pipeline`.
+- SD5 kiểm tách tập 80/20 trên tin người mới (`docs/target/05_sd5_lo_trinh_hoc.md` mục 6). Việc này cũng làm ở Mining.
+
+## 5. Kiểm tra chung
+
+- Mọi bước giữ đúng số tin (`checks.rows_conserved`).
+- Bộ gold 100 JD (`data/preprocessing/gold/gold_labels.json`) đo 07 và 08 bằng `scripts/eval_gold_processing.py`. Kết quả 11/11: section 84,5%; phúc lợi P 0,97 / R 0,60; kỹ năng F1 0,27.
+- File gold không có trong git và không có trên máy dùng để viết spec này ngày 17/11 (chỉ có `gold_labels_tai_76_100.json`). Muốn đo lại thì phải lấy file gộp từ máy đã chạy ngày 11/11.
+- Test: `tests/unit/test_sections.py`, `test_skills_ac.py`, `test_tokenize.py`, `test_ph8_run.py`, `test_processing_10_12.py`, `test_embed.py`, `test_eval_gold_processing.py`.
+
+## 6. Chỗ lệch cần biết
+
+| Chỗ lệch | Ảnh hưởng | Xử lý |
+|---|---|---|
+| Chưa có `section_headings.json`, `priority_cues.json`, `short_aliases.json` đã duyệt | 07 chỉ tách theo trường nguồn; không có `uu_tien`, nên mọi kỹ năng đều `required` (`required_ratio` gần như luôn 1); alias ngắn (C, R, Go, BI) không bao giờ được bắt | PRE-33: người dùng duyệt từ điển. SD2 và SD5 cần phân biệt bắt buộc và ưu tiên |
+| Hai từ điển kỹ năng: `preprocessing/dictionaries/skills.json` (03 T7 → `skills_std`) và `processing/dictionaries/skills_taxonomy_230.json` (08 → `skill__*`) | `skills_std` của bảng 04 và cột `skill__*` của bước 10 có thể khác nhau cho cùng một tin | PRE-40: chọn một nguồn kỹ năng cho SD1–SD5 (đề xuất: 08), hoặc đồng bộ hai từ điển |
+| Report 07, 08, 09, 10, 12 có `rules` rỗng; 12_e5 ghi `api.used = false` dù gọi e5; 07–09 ghi "pipeline không dùng model" | Monitoring không thấy luật nào; khối model sai cho 12_e5 | PRE-40: ghi luật S7, K8, W9, 10b vào `rules`; 12_e5 ghi tên model |
+| `intfloat/multilingual-e5-base` không ghim commit; `pyahocorasick`, `underthesea` chưa ghim phiên bản | Chạy lại trên máy khác có thể ra vector hoặc token khác | PRE-40 |
+| 10 lấy `posted_month` từ tháng của `posted_date` | Thiếu ở 36,2% số tin (topcv 0%) | PRE-37 việc 4 |
+| 10 import hằng số từ `preprocessing/encoding/run.py` | Không xóa được `preprocessing/encoding/` dù bước 05 đã bỏ | PRE-39: chuyển 3 hằng số sang `processing/` trước khi dọn `encoding/` |
+| 12_tfidf không có bên đọc | Tốn thời gian chạy; spec cũ ghi M3 dùng TF-IDF | Người dùng chốt bỏ 17/11 (mục 3.5); code chưa gỡ (MINE-7) |
+| `processing/CLAUDE.md` cũ ghi "16 nhóm + Other", "Mining chỉ unsupervised" | Hướng dẫn sai | Đã sửa cùng chặng 3 |
+
+## 7. Tài liệu đã gộp vào spec này
+
+Nội dung còn đúng của các file dưới đây đã nằm trong spec này hoặc spec 05. Người dùng duyệt và các file đã bị xóa ngày 17/11/2026; muốn xem bản cũ thì dùng `git show <commit>:<đường dẫn>`.
+
+- `docs/spec/preprocessing/spec/P5_encoding.md`, `PH8_tach_section_ky_nang_tach_tu.md`, `PH9_noi_pipeline_nghiem_thu.md` (phần driver và report đã ở spec 05 mục 2).
+- `docs/spec/preprocessing/encoding/` (16 file nhật ký P5, quy trình duyệt cũ của `preprocessing/encoding/`, đã được bước 10 thay).
+- `docs/prompting/draft/P5_encoding.md`, `docs/prompting/preprocessing/spec/P5_encoding.md`.
+- Bản 2.0 của spec này: mục nhóm nghề, cấp bậc, lương, dịch đã chuyển sang spec 05; mục taxonomy kỹ năng 6 nhóm nay nằm trong `skills_taxonomy_230.json`.

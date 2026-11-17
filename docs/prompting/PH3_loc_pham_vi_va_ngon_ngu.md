@@ -1,5 +1,7 @@
 # Prompt PH3: lọc phạm vi và gắn ngôn ngữ (fastText lid.176)
 
+> **17/11/2026:** đặc tả gốc của prompt này (`docs/spec/preprocessing/spec/...`) đã gộp vào `docs/spec/05_preprocessing_spec.md` và bị xóa. Đọc spec 05 theo bảng trong `docs/prompting/README.md`; các đường dẫn cũ bên dưới chỉ còn giá trị lịch sử.
+
 > **Nháp, chờ bạn duyệt.** Các điểm **[CẦN CHỐT]** (C1 đến C8) trong `docs/spec/preprocessing/spec/PH3_loc_pham_vi_va_ngon_ngu.md` phải chốt trước khi giao prompt này cho agent code. Chưa có code.
 
 ## 1. Ngữ cảnh

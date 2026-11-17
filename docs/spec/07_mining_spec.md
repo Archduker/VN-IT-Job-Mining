@@ -1,354 +1,207 @@
-# ĐẶC TẢ THUẬT TOÁN & PHƯƠNG PHÁP KHAI PHÁ DỮ LIỆU (MINING SPECIFICATION)
-## DỰ ÁN: HỆ THỐNG KHAI PHÁ DỮ LIỆU TUYỂN DỤNG IT VIỆT NAM (VN-IT-JOB-MINING)
+# ĐẶC TẢ MINING (M1–M6)
 
-> **Mã tài liệu:** `SPEC-07`  
-> **Phiên bản:** `1.0.0`  
-> **Ngày cập nhật:** 05/11/2026  
-> **Trạng thái:** Chính thức ban hành  
-> **Nền tảng kỹ thuật:** Python 3.10+, Scikit-learn, Mlxtend, Scipy, Pandas, PyArrow; SHAP (chỉ cho phần phụ).
-> **Cập nhật 10/11/2026:** quy trình chuẩn của dự án chỉ khai phá **unsupervised** (clustering, association rules, anomaly detection, dimensionality reduction). Random Forest + SHAP (trụ cột 3 / mục 4) được giữ lại như **phần phụ (supervised, ngoại lệ)**, không thuộc tiêu chí nghiệm thu lõi.
+> **Dự án:** VN-IT-Job-Mining. Đề tài: "Tích hợp và khai phá dữ liệu thị trường lao động phục vụ phân tích nghề nghiệp và kỹ năng trong IT".
+> **Phiên bản:** 3.0.0, ngày 17/11/2026. **Trạng thái:** đã duyệt 17/11/2026 (chặng 4), kèm 3 quyết định ở mục 4.
+> **Thay cho:** bản 2.0 ("Mining chỉ unsupervised", Random Forest là "phần phụ").
+> **Quan hệ với tài liệu khác:** mã bước M1–M6 lấy theo [spec 03](03_data_mining_lifecycle.md) mục 3.3. Câu hỏi, phương pháp và tiêu chí của từng SD nằm ở [`docs/target/`](../target/00_de_tai.md); spec này chỉ đặc tả **code làm việc đó thế nào** và **còn thiếu gì**. Tiêu chí nghiệm thu: [spec 08](08_evaluation_spec.md). Đầu vào: bảng sạch ([spec 05](05_preprocessing_spec.md) mục 4) và đầu ra Processing ([spec 06](06_processing_spec.md)).
 
----
+## 0. Cách đọc
 
-## 1. Tổng Quan Kiến Trúc Khai Phá (Mining Architecture Overview)
+- **Nguồn sự thật:** code `mining/` (`run_mining_pipeline.py` `STEPS`, `config.py`), rồi `mining/artifacts/mining_metrics.json` của lần chạy thật, rồi `docs/target/`.
+- **Số liệu chạy thật** lấy từ `docs/issue_log.md` L-46, L-47 (11/11/2026, 4.671 tin), vì `mining/artifacts/` không có trong git và không có trên máy dùng để viết spec này.
+- **Mỗi bước** viết theo khuôn: Mục đích, Code, Đầu vào, Đầu ra, Luật và tham số, Kiểm tra, Trạng thái, **Thiếu so với SD**, Việc mở.
+- **Ngưỡng:** tham số đang có trong `mining/config.py` ghi đúng giá trị code. Ngưỡng nghiệm thu chưa chốt thì trỏ về PRE-36, không ghi như đã chốt.
 
-Giai đoạn Mô hình hóa Khai phá (Data Mining) tiếp nhận dữ liệu đầu vào là ma trận đặc trưng `data/preprocessing/05_encoding/features.parquet` và bộ dữ liệu vàng `data/curated/curated_flat_golden_jobs.parquet` để giải quyết **3 trụ cột lõi không giám sát (luật kết hợp, phân cụm + giảm chiều, phát hiện bất thường) và 1 phần phụ có giám sát (hồi quy lương + SHAP)**:
+## 1. Ba tầng và sáu bước
 
-```mermaid
-flowchart TD
-    InFeatures["Dữ Liệu Đầu Vào\nfeatures.parquet & curated_golden.parquet"] --> Engine1
-    InFeatures --> Engine2
-    InFeatures --> Engine3
-    InFeatures --> Engine4
+| Tầng | Bước | Thuật toán | SD | Code |
+|---|---|---|---|---|
+| BI | M1 | Đếm, tỷ lệ, bảng chéo, trung vị, tứ phân vị | SD1 | **Chưa có** (đề xuất `mining/bi.py`) |
+| Không giám sát | M2 | FP-Growth, luật kết hợp | SD2 | `mining/association.py` |
+| Không giám sát | M3 | K-Means, HDBSCAN, giảm chiều SVD/PCA | SD3 (3.1, 3.2) | `mining/clustering.py` |
+| Không giám sát | M4 | Isolation Forest + điểm GLOSH của HDBSCAN | SD3 (3.3) | `mining/anomaly.py` |
+| Train model | M5 | Chia train/test theo công ty (bước 11 cũ), Random Forest + SHAP; phương án B phân lớp khung lương | SD4 | `mining/salary_model.py` |
+| Tổng hợp | M6 | Điểm ưu tiên, thứ tự học, coverage@N | SD5 | **Chưa có** (đề xuất `mining/recommend.py`) |
 
-    subgraph MiningEngines["4 TRỤ CỘT THUẬT TOÁN KHAI PHÁ DỮ LIỆU CHUẨN MỰC"]
-        direction TB
-        
-        subgraph Engine1["1. Khai Phá Mẫu Kỹ Năng Phổ Biến & Luật Kết Hợp (Association Rules)"]
-            FP["Thuật toán FP-Growth Phân Tầng (Stratified FP-Growth)\n• Xây dựng FP-Tree\n• Khai phá Macro toàn ngành & Micro theo từng Job Family\n• Trích xuất Association Rules (Support, Confidence, Lift)"]
-        end
+- **Thứ tự chạy** (đã duyệt ở spec 03 mục 7): `bi, fp, cluster, anomaly, salary, recommend`. Hiện `STEPS` chỉ có `fp, cluster, anomaly, salary`.
+  - M4 chạy sau M3 vì dùng điểm GLOSH của HDBSCAN.
+  - M6 chạy sau cùng vì cần kết quả của M1, M2, M5.
+- **Lệnh:** `python mining/run_mining_pipeline.py [--only fp,cluster] [--dry-run] [--e5 <job_emb.npz>]`. Chỉ đọc file trên máy, ghi vào `mining/artifacts/`; không đụng R2 hay PostgreSQL. Nạp vào Postgres cho trang Insights thì dùng `scripts/load_mart_from_parquet.py`, là việc riêng.
+- **`--synthetic`** chạy trên bộ dữ liệu giả `mining/synthetic.py`, ghi vào `mining/artifacts/_synthetic/`, metrics có `"synthetic": true`. **Không bao giờ dùng số từ chế độ này để báo cáo** (L-19).
+- `RANDOM_STATE = 42` cho mọi thuật toán.
 
-        subgraph Engine2["2. Phân Cụm Công Việc & Giảm Chiều Không Gian (Clustering & Dimensionality Reduction)"]
-            CL["Phân Cụm Đa Chiều (K-Means & HDBSCAN) + PCA 2D & 3D\n• Không gian Kỹ năng (Binary Multi-Hot) + TF-IDF JD\n• Tối ưu k bằng Elbow (WCSS) & Silhouette Analysis\n• Chiếu giảm chiều PCA ra (PC1, PC2) và (PC1, PC2, PC3)"]
-        end
+## 2. Đầu vào chung
 
-        subgraph Engine3["3. PHẦN PHỤ (supervised, ngoại lệ): Mô Hình Hóa Mức Lương & Định Lượng Kỹ Năng"]
-            RF["Hồi Quy Phi Tuyến & Giải Thích TreeSHAP\n• Random Forest Regressor dự đoán log(Salary_VND)\n• TreeSHAP tính toán đóng góp biên (Marginal Contribution)\n• Quy đổi giá trị thặng dư kinh tế từng công nghệ (VNĐ)"]
-        end
-
-        subgraph Engine4["4. Phát Hiện Ngoại Lai & Bất Thường Tuyển Dụng (Anomaly Detection)"]
-            AD["Phát Hiện Tin Tuyển Dụng Bất Thường & Ghost Jobs\n• Isolation Forest trên không gian kinh nghiệm x lương x số kỹ năng\n• HDBSCAN GLOSH (Global-Local Outlier Score from Hierarchies)\n• Nhận diện tin yêu cầu phi thực tế & bài đăng bất thường"]
-        end
-    end
-
-    Engine1 --> Out1["Bảng Combo Kỹ Năng & Khuyến Nghị Lộ Trình (skill_association_rules.parquet)"]
-    Engine2 --> Out2["Bản Đồ Phân Cụm Công Việc 2D & 3D (job_clusters.parquet)"]
-    Engine3 --> Out3["Bảng Định Giá Biên Kỹ Năng (skill_salary_shap_values.parquet)"]
-    Engine4 --> Out4["Danh Sách Tin Bất Thường / Outliers (job_anomalies.parquet)"]
-```
-
----
-
-## 2. Trụ Cột 1: Khai Phá Tập Phổ Biến & Luật Kết Hợp Kỹ Năng (FP-Growth)
-
-### 2.1. Động lực học thuật: Tại sao chọn FP-Growth thay vì Apriori?
-Trong bài toán khai phá giỏ thị trường kỹ năng tuyển dụng (Skill Market Basket Analysis), mỗi tin tuyển dụng được xem như một giao dịch ($Transaction$) chứa một tập hợp các kỹ năng ($Items$). 
-- **Hạn chế của thuật toán Apriori:** Apriori sử dụng nguyên lý sinh ứng viên tầng bậc ($Candidate\ Generation\ and\ Test$). Với danh mục hơn 300 kỹ năng công nghệ chuẩn hóa, số lượng tập ứng viên $k$-itemsets có thể bùng nổ tổ hợp lên tới $\binom{300}{k} \approx O(2^{|I|})$, đồng thời đòi hỏi quét lại toàn bộ cơ sở dữ liệu sau mỗi vòng lặp $k$. Điều này gây tắc nghẽn bộ nhớ và thời gian thực thi nghiêm trọng.
-- **Ưu thế vượt trội của FP-Growth (Frequent Pattern Growth):**
-  1. Chỉ quét cơ sở dữ liệu đúng **2 lần**: Lần 1 đếm tần suất đơn lẻ để sắp xếp thứ tự ưu tiên; Lần 2 nén toàn bộ giao dịch vào một cây tiền tố cấu trúc cao (**FP-Tree**).
-  2. Không sinh tập ứng viên trung gian: Khai phá trực tiếp các tập phổ biến thông qua việc phân chia cơ sở dữ liệu thành các cơ sở mẫu có điều kiện (**Conditional Pattern Bases**).
-  3. Tốc độ thực thi nhanh hơn Apriori từ 10 đến 100 lần trên tập dữ liệu tuyển dụng thưa.
-
-### 2.2. Cơ sở toán học & Các chỉ số đánh giá luật
-Gọi $I = \{i_1, i_2, \dots, i_m\}$ là tập hợp tất cả các kỹ năng chuẩn hóa. Cơ sở dữ liệu giao dịch $D = \{T_1, T_2, \dots, T_n\}$, trong đó mỗi giao dịch $T_k \subseteq I$. Một luật kết hợp có dạng:
-$$X \Rightarrow Y \quad \text{với } X, Y \subset I \text{ và } X \cap Y = \emptyset$$
-Trong đó $X$ là tiền đề (Antecedent) và $Y$ là hệ quả (Consequent).
-
-Chất lượng và độ tin cậy của luật được đo lường thông qua 4 chỉ số thống kê:
-
-#### 1. Độ hỗ trợ (Support)
-Tỷ lệ các tin tuyển dụng chứa đồng thời cả tập kỹ năng $X$ và $Y$:
-$$Support(X \Rightarrow Y) = P(X \cup Y) = \frac{|\{T \in D \mid (X \cup Y) \subseteq T\}|}{|D|}$$
-
-#### 2. Độ tin cậy (Confidence)
-Xác suất có điều kiện một tin tuyển dụng yêu cầu kỹ năng $Y$ khi đã biết tin đó yêu cầu kỹ năng $X$:
-$$Confidence(X \Rightarrow Y) = P(Y \mid X) = \frac{Support(X \cup Y)}{Support(X)}$$
-
-#### 3. Độ nâng (Lift)
-Tỷ số giữa độ tin cậy thực tế của luật so với độ tin cậy kỳ vọng nếu $X$ và $Y$ hoàn toàn độc lập thống kê:
-$$Lift(X \Rightarrow Y) = \frac{P(X \cup Y)}{P(X) \cdot P(Y)} = \frac{Confidence(X \Rightarrow Y)}{Support(Y)}$$
-- $Lift = 1$: $X$ và $Y$ hoàn toàn độc lập (xuất hiện cùng nhau chỉ là ngẫu nhiên).
-- $Lift < 1$: $X$ và $Y$ có quan hệ thay thế hoặc triệt tiêu lẫn nhau (Negative dependency).
-- $Lift > 1$: $X$ và $Y$ có quan hệ tương hỗ mạnh mẽ (Positive dependency). Trong bài toán kỹ năng IT, chỉ chấp nhận các luật có **$Lift \ge 1.2$**.
-
-#### 4. Độ tin chắc (Conviction)
-Tỷ số đo lường mức độ sai lệch của luật nếu giả định $X$ và $Y$ độc lập:
-$$Conviction(X \Rightarrow Y) = \frac{1 - Support(Y)}{1 - Confidence(X \Rightarrow Y)}$$
-- $Conviction = 1$: $X$ và $Y$ độc lập.
-- $Conviction \to \infty$: Mọi tin có $X$ đều luôn luôn xuất hiện $Y$ (Luật tất yếu hoàn hảo).
-
-### 2.3. Chiến lược phân tầng ngưỡng Support (Stratified Support Strategy)
-Do sự mất cân bằng tần suất tự nhiên giữa các nhóm công nghệ, hệ thống áp dụng chiến lược phân tầng hai cấp độ:
-1. **Phân tích Vĩ mô Toàn ngành (Macro Market):** Áp dụng $min\_sup = 0.05$ (5%), $min\_conf = 0.50$ để phát hiện các combo kỹ năng phổ quát cốt lõi (Core Industry Stacks).
-2. **Phân tích Vi mô theo Nhóm nghề (Domain Micro Analysis):** Chạy FP-Growth riêng rẽ trên từng phân tập của 12 Job Families với $min\_sup = 0.02$ (2%) để không bỏ sót các combo công nghệ chuyên sâu (ví dụ: trong mảng Data/AI: `{PyTorch, HuggingFace} => {Transformers}`).
-
----
-
-## 3. Trụ Cột 2: Phân Cụm Công Việc Đa Chiều (Job Clustering: K-Means & HDBSCAN)
-
-### 3.1. Không gian biểu diễn vector (Vector Feature Space)
-Mỗi tin tuyển dụng $j$ được ánh xạ thành một vector đặc trưng đa chiều $\mathbf{v}_j = [\mathbf{s}_j \parallel \mathbf{t}_j]$:
-- **Ma trận kỹ năng nhị phân $\mathbf{s}_j \in \{0, 1\}^M$:** Đại diện cho sự hiện diện của $M$ kỹ năng chuẩn hóa trong từ điển.
-- **Vector ngữ nghĩa văn bản $\mathbf{t}_j \in \mathbb{R}^K$:** Trích xuất từ trường mô tả công việc (JD Text) bằng kỹ thuật **TF-IDF (Term Frequency - Inverse Document Frequency)** kết hợp loại bỏ stopwords tiếng Việt và tiếng Anh kỹ thuật, giữ lại $K = 100$ đặc trưng n-gram quan trọng nhất.
-- Vector $\mathbf{v}_j$ được chuẩn hóa theo chuẩn L2: $\|\mathbf{v}_j\|_2 = 1$.
-
-### 3.2. Thuật toán K-Means & Tối ưu hóa số cụm $k$
-K-Means phân chia $N$ tin tuyển dụng thành $k$ cụm $C = \{C_1, C_2, \dots, C_k\}$ nhằm tối thiểu hóa tổng bình phương khoảng cách nội cụm (Within-Cluster Sum of Squares - WCSS hay Inertia):
-$$J(C) = \sum_{l=1}^k \sum_{\mathbf{v}_j \in C_l} \|\mathbf{v}_j - \boldsymbol{\mu}_l\|^2$$
-Trong đó $\boldsymbol{\mu}_l$ là trọng tâm (centroid) của cụm $C_l$.
-
-#### Phương pháp xác định số cụm tối ưu $k \in [3, 15]$:
-1. **Phương pháp Điểm gãy (Elbow Method):** Vẽ đồ thị đường cong $J(k)$ theo số cụm $k$. Điểm uốn nơi tốc độ giảm của WCSS chậm lại đáng kể được chọn làm ứng viên.
-2. **Phân tích Hệ số Silhouette (Silhouette Analysis):**
-   Với mỗi mẫu $i$, gọi $a(i)$ là khoảng cách trung bình từ $i$ đến các mẫu khác trong cùng cụm; $b(i)$ là khoảng cách trung bình từ $i$ đến các mẫu trong cụm gần nhất khác cụm của $i$:
-   $$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))}, \quad s(i) \in [-1, 1]$$
-   Hệ số Silhouette trung bình $\overline{s} = \frac{1}{N} \sum_{i=1}^N s(i)$. Giá trị $k$ tối ưu được chọn là giá trị tối đại hóa $\overline{s}$ và không có cụm nào bị điểm Silhouette âm chiếm đa số.
-
-```mermaid
-graph TD
-    Data["Vector Không Gian Kỹ Năng + TF-IDF"] --> Loop["Thực Nghiệm k từ 3 đến 15"]
-    Loop --> Metric1["Tính Toán WCSS (Elbow)"]
-    Loop --> Metric2["Tính Hệ Số Silhouette s(k)"]
-    Metric1 --> PickK["Xác Định k Tối Ưu (VD: k = 8 hoặc 12)"]
-    Metric2 --> PickK
-    PickK --> TrainKM["Huấn Luyện K-Means Cuối Cùng"]
-    TrainKM --> Profile["Gán Nhãn Ngữ Nghĩa Cụm (Cluster Profiling)"]
-```
-
-### 3.3. Thuật toán HDBSCAN: Phân cụm dựa trên mật độ phân cấp
-Nhược điểm của K-Means là giả định các cụm có dạng hình cầu đồng nhất và bắt buộc mọi điểm dữ liệu phải thuộc về một cụm, kể cả dữ liệu nhiễu. Dự án triển khai song song thuật toán **HDBSCAN (Hierarchical Density-Based Spatial Clustering of Applications with Noise)**:
-- **Cơ chế:** Dựa trên khoảng cách tương hỗ (Mutual Reachability Distance) và xây dựng cây khung nhỏ nhất (Minimum Spanning Tree) để tìm các cụm có mật độ tập trung tự nhiên.
-- **Xử lý tin lai tạp & ngoại lai:** Các tin tuyển dụng "Fullstack kiêm DevOps kiêm Tester" hoặc các tin viết cẩu thả được HDBSCAN gán nhãn là điểm nhiễu ($Noise = -1$), giúp tinh lọc các cụm nghề cốt lõi có độ thuần khiết (Purity) cao nhất.
-
-### 3.4. Giảm Chiều Không Gian Bằng PCA (2D & 3D Dimensionality Reduction)
-Để trực quan hóa không gian phân cụm đa chiều (230 cột kỹ năng + 100 đặc trưng TF-IDF) lên bảng điều khiển Central Observatory, hệ thống áp dụng kỹ thuật **Principal Component Analysis (PCA)**:
-1. **PCA 2D ($PC_1, PC_2$):** Phục vụ vẽ biểu đồ phân tán 2D chuẩn trên Dashboard (`pca_x = PC_1`, `pca_y = PC_2`), cho phép sinh viên nhanh chóng nhìn thấy sự tách biệt giữa các nhóm nghề Backend, Frontend, Data, v.v.
-2. **PCA 3D ($PC_1, PC_2, PC_3$):** Phục vụ mô hình trực quan hóa không gian 3D tương tác (`pca_x = PC_1`, `pca_y = PC_2`, `pca_z = PC_3`) sử dụng thư viện Plotly / Three.js, giúp người dùng có thể xoay, phóng to/thu nhỏ góc nhìn để quan sát ranh giới giữa các cụm việc làm mà không gian 2D bị chồng lấn.
-3. **Tiêu chuẩn chất lượng giảm chiều:** Đảm bảo tỷ lệ phương sai giải thích tích lũy (Cumulative Explained Variance Ratio) của 3 thành phần chính đầu tiên đạt mức chấp nhận được, lưu giữ lại phần lớn cấu trúc phân tán của dữ liệu gốc.
-
----
-
-## 4. Phần phụ (supervised, ngoại lệ): Mô Hình Hóa Mức Lương & Định Lượng Kỹ Năng (Random Forest + SHAP)
-
-> Phần này không thuộc quy trình chuẩn (Mining chỉ unsupervised). Giữ lại theo quyết định 10/11/2026; chạy được độc lập, không chặn nghiệm thu lõi.
-
-### 4.1. Thiết lập bài toán hồi quy định giá lương
-Mục tiêu là dự đoán giá trị trung vị của mức lương hàng tháng bằng VNĐ ($Salary\_Midpoint\_VND$). Do phân phối mức lương thực tế bị lệch phải mạnh (Right-skewed), biến mục tiêu được chuẩn hóa logarit:
-$$y = \log(1 + Salary\_Midpoint\_VND)$$
-Tập đặc trưng đầu vào bao gồm:
-$$\mathbf{x} = [\mathbf{s}_{skills}, x_{exp}, \mathbf{x}_{seniority}, \mathbf{x}_{location}, \mathbf{x}_{job\_family}]$$
-- $\mathbf{s}_{skills}$: Vector One-Hot/Multi-Hot của các kỹ năng công nghệ.
-- $x_{exp}$: Số năm kinh nghiệm yêu cầu (float).
-- $\mathbf{x}_{seniority}$: Cấp bậc tuyển dụng (Ordinal/One-Hot: Intern=0, Fresher=1, Junior=2, Middle=3, Senior=4, Lead=5).
-- $\mathbf{x}_{location}$: Địa bàn làm việc chính (One-Hot: Hà Nội, TP.HCM, Đà Nẵng, Remote...).
-- $\mathbf{x}_{job\_family}$: Nhóm nghề IT (One-Hot của 12 Job Families).
-
-### 4.2. Mô hình Random Forest Regressor
-Random Forest được lựa chọn vì những ưu điểm vượt bậc so với Hồi quy Tuyến tính (OLS) hay Mạng Neural trên dữ liệu bảng dạng này:
-1. Tự động nắm bắt các mối quan hệ phi tuyến tính và tương tác phức tạp giữa các đặc trưng (ví dụ: Kỹ năng `Kubernetes` đi kèm với `Senior` có giá trị vượt bậc, nhưng đi kèm với `Intern` thì không tác động nhiều).
-2. Cơ chế Bagging (Bootstrap Aggregating) kết hợp chọn tập con đặc trưng ngẫu nhiên giúp chống hiện tượng quá khớp (Overfitting) trên các ma trận kỹ năng thưa.
-3. Không đòi hỏi giả định phân phối chuẩn nghiêm ngặt đối với các biến độc lập.
-
-Hàm dự đoán là trung bình kết quả của $B$ cây quyết định độc lập:
-$$\hat{y}(\mathbf{x}) = \frac{1}{B} \sum_{b=1}^B T_b(\mathbf{x})$$
-
-### 4.3. Định lượng giá trị biên kỹ năng bằng lý thuyết trò chơi SHAP
-Để biến mô hình Random Forest từ một "hộp đen" thành công cụ định giá kinh tế minh bạch, hệ thống áp dụng phương pháp **SHAP (SHapley Additive exPlanations)** dựa trên lý thuyết trò chơi hợp tác của Lloyd Shapley (giải Nobel Kinh tế).
-
-#### Công thức tính giá trị Shapley:
-Giá trị đóng góp biên $\phi_i$ của đặc trưng (kỹ năng) thứ $i$ được tính bằng giá trị kỳ vọng đóng góp khi thêm $i$ vào tất cả các tập con đặc trưng có thể có $S \subseteq F \setminus \{i\}$:
-$$\phi_i(\mathbf{x}) = \sum_{S \subseteq F \setminus \{i\}} \frac{|S|!(|F| - |S| - 1)!}{|F|!} \left[ f_{\mathbf{x}}(S \cup \{i\}) - f_{\mathbf{x}}(S) \right]$$
-Trong đó $F$ là toàn bộ tập đặc trưng, và $f_{\mathbf{x}}(S)$ là dự đoán của mô hình khi chỉ có tập đặc trưng $S$.
-
-Mô hình đảm bảo tính chất cộng hoàn hảo (Additive Efficiency):
-$$\hat{y}(\mathbf{x}) = \phi_0 + \sum_{i=1}^{|F|} \phi_i(\mathbf{x})$$
-Với $\phi_0 = \mathbb{E}[f(\mathbf{x})]$ là giá trị dự đoán cơ sở (trung bình toàn tập dữ liệu).
-
-#### Quy đổi Giá trị Thặng dư Kinh tế (Marginal Dollar Value in VNĐ):
-Vì mô hình dự đoán theo thang đo logarit $\log(Salary)$, giá trị SHAP $\phi_i$ của một kỹ năng phản ánh tỷ lệ phần trăm thay đổi mức lương. Mức tăng lương thặng dư biên bằng tiền VNĐ được tính theo công thức:
-$$\Delta Salary_i = \mathbb{E}[Salary] \cdot \left( e^{\phi_i} - 1 \right)$$
-Ví dụ: Nếu một kỹ sư phần mềm nắm vững kỹ năng `Go` có giá trị SHAP trung bình $\phi_{Go} = +0.12$, với mức lương trung bình thị trường là $25.000.000\text{ VNĐ}$, thì giá trị thặng dư kinh tế biên của kỹ năng `Go` là:
-$$\Delta Salary_{Go} = 25.000.000 \cdot (e^{0.12} - 1) \approx 3.187.000\text{ VNĐ/tháng}$$
-
----
-
-## 5. Trụ Cột 4: Phát Hiện Ngoại Lai & Bất Thường Tuyển Dụng (Anomaly Detection)
-
-### 5.1. Động Lực Nghiệp Vụ & Thực Tiễn Thị Trường
-Trong thực tế thị trường tuyển dụng IT, tồn tại nhiều bài đăng mang tính chất bất thường:
-1. **Tin tuyển dụng ma (Ghost Jobs / Spam Jobs):** Tin đăng liên tục nhưng không có nhu cầu tuyển dụng thực, hoặc tin tuyển dụng đa cấp/lừa đảo lọt qua khâu kiểm duyệt.
-2. **Yêu cầu kỹ năng phi thực tế (Unrealistic Skill Demand):** Đăng tuyển vị trí *Intern* hoặc *Fresher* (0 năm kinh nghiệm) nhưng liệt kê danh sách đòi hỏi hơn 15 kỹ năng cấp cao (Docker, Kubernetes, Microservices, CI/CD, System Architecture,...).
-3. **Mức lương ngoại lai bất thường (Salary Outliers):** Mức lương quá cao vượt trội (ví dụ tuyển Junior lương $10.000\text{ USD/tháng}$) hoặc quá thấp so với khối lượng kỹ năng yêu cầu.
-
-### 5.2. Giải Thuật Đa Tầng Phát Hiện Bất Thường
-Hệ thống áp dụng kết hợp 2 phương pháp học máy không giám sát:
-
-#### 1. Isolation Forest (Cây Cô Lập Đa Chiều):
-- **Cơ chế:** Dựa trên nguyên lý các điểm ngoại lai ($Anomalies$) thường hiếm và có giá trị thuộc tính khác biệt lớn, do đó chúng bị cô lập rất nhanh (độ sâu cây $h(x)$ rất nông) trong các cây phân chia ngẫu nhiên.
-- **Không gian thuộc tính:**
-  $$\mathbf{x}_{\text{anomaly}} = [x_{\text{exp}}, x_{\text{salary\_midpoint}}, N_{\text{skills}}, R_{\text{seniority\_vs\_skills}}]$$
-  Trong đó $N_{\text{skills}}$ là số lượng kỹ năng yêu cầu trong tin, và $R_{\text{seniority\_vs\_skills}}$ là tỷ số giữa số kỹ năng và cấp bậc kinh nghiệm.
-- **Điểm bất thường (Anomaly Score):**
-  $$s(x, n) = 2^{-\frac{\mathbb{E}[h(x)]}{c(n)}}$$
-  - $s \to 1$: Điểm bất thường rõ rệt (gán nhãn `is_anomaly = True`).
-  - $s < 0.5$: Điểm dữ liệu bình thường.
-
-#### 2. HDBSCAN GLOSH Score (Global-Local Outlier Score from Hierarchies):
-- Đo lường mức độ ngoại lai cục bộ của bài đăng so với cụm mật độ tự nhiên mà bài đăng thuộc về:
-  $$GLOSH(x) = 1 - \frac{\lambda_{\text{death}}(x)}{\lambda_{\text{birth}}(C)}$$
-  Giúp phát hiện những bài đăng có tiêu đề là "Backend Developer" nhưng mô tả công việc và kỹ năng hoàn toàn không tương thích với bất kỳ cộng đồng công nghệ chuẩn mực nào.
-
-### 5.3. Hợp Đồng Đầu Ra Bàn Giao (Deliverable Parquet Artifacts)
-Kết quả của module Data Mining được lưu tại `mining/artifacts/` phục vụ nạp vào PostgreSQL Analytics Mart:
-
-| Tên File Parquet | Cấu Trúc Các Cột Cốt Lõi | Mục Đích Sử Dụng |
+| Đầu vào | Đường dẫn | Dùng ở |
 |---|---|---|
-| `skill_association_rules.parquet` | `antecedents TEXT[]`, `consequents TEXT[]`, `support FLOAT`, `confidence FLOAT`, `lift FLOAT`, `job_family_scope VARCHAR` | Hiển thị bảng luật kết hợp và đồ thị mạng lưới kỹ năng trên Dashboard. |
-| `job_clusters.parquet` | `job_id VARCHAR`, `job_title TEXT`, `job_family VARCHAR`, `cluster_id INT`, `cluster_name VARCHAR`, `pca_x FLOAT`, `pca_y FLOAT`, `pca_z FLOAT`, `is_outlier BOOLEAN`, `glosh_outlier_score FLOAT` | Hiển thị biểu đồ phân cụm việc làm **2D và 3D Scatter Plot**. |
-| `job_anomalies.parquet` | `job_id VARCHAR`, `job_title TEXT`, `company_name TEXT`, `anomaly_score FLOAT`, `reason_code VARCHAR`, `detected_by VARCHAR` | Cảnh báo và lọc các tin tuyển dụng bất thường / ảo. |
-| `skill_salary_shap_values.parquet` | `skill_name VARCHAR`, `job_family VARCHAR`, `mean_shap_value FLOAT`, `marginal_dollar_vnd FLOAT`, `sample_size INT` | Định lượng giá trị thặng dư kinh tế biên của từng kỹ năng. |
+| Bảng sạch | `data/preprocessing/04_normalization/all.parquet` (`mining/config.py` đang trỏ `DEFAULT_GOLDEN` về `data/curated/curated_flat_golden_jobs.parquet`, lấy bảng 04 làm dự phòng; đổi theo PRE-39) | M1–M6 |
+| Ma trận đặc trưng | `data/processing/10_features/features.parquet`, `encoding_dictionary.json` | M2 (cột `skill__*`), M3, M4, M5 |
+| Vector e5 | `data/processing/12_e5/job_emb.npz` (thiếu thì M3 chạy không có e5) | M3 |
+| Kỹ năng theo tin | `data/processing/08_skills/job_skills.parquet` | dự kiến M1, M6 (cần mức bắt buộc hay ưu tiên) |
 
----
+- `mining/data_io.py` (`load_mining_data`, `prepare_mining_data`) đổi tên cột về tên logic qua `COLUMN_ALIASES`, rồi kiểm hợp đồng cột (`MiningContractError`). Đổi tên cột ở bước trước thì chỉ sửa `COLUMN_ALIASES`.
+- **Nguồn kỹ năng của Mining là cột `skill__*` của bước 10** (bộ 230 kỹ năng, đã qua `min_df`). Không trộn với `skills_std` của bảng 04 (PRE-40). Bỏ `SKILL_EXCLUDE_COLUMNS` (`skill__other_skill`…).
+- Cấp bậc lấy theo thứ tự ưu tiên `seniority_ord` (bước 10) → nhãn chữ → `seniority_level` (bảng 04), cùng thang 0–4.
+- Lương tính bằng triệu VNĐ/tháng.
 
-## 6. Thiết Kế Thực Nghiệm & Pipeline Mã Nguồn Tham Chiếu (Reference Pipeline)
+## 3. Các bước
 
-Dưới đây là thiết kế module mã nguồn Python chuẩn mực triển khai trọn vẹn 4 trụ cột thuật toán khai phá:
+### 3.1. M1: BI (SD1)
 
-```python
-"""
-Module: src/mining/pipeline_runner.py
-Mục đích: Thực thi toàn diện chuỗi khai phá dữ liệu VN-IT-Job-Mining
-Thư viện: pandas, numpy, scikit-learn, mlxtend, shap
-"""
+| Mục | Nội dung |
+|---|---|
+| Mục đích | Trả lời câu 1.1–1.7 của SD1 bằng số đếm. Đây cũng là baseline cho M5 (trung vị lương cấp × nghề) và nguồn `demand(k)` cho M6 |
+| Code | **Chưa có.** Đề xuất `mining/bi.py`, mỗi câu một hàm |
+| Đầu vào | Bảng 04; `10_features`; `08_skills` cho câu 1.5 (số kỹ năng của tin người mới) |
+| Đầu ra | `mining/artifacts/sd1_<câu>.json`, mỗi bảng có kèm `n` và độ phủ. Monitoring chỉ đọc các file này, không tự tính |
+| Luật | Theo `docs/target/01_sd1_buc_tranh_thi_truong.md` mục 4: lương dùng trung vị và tứ phân vị trên tin có lương và không bị gắn cờ ngoại lai; ô có n < 30 ghi "ít dữ liệu" (PRE-36); câu 1.7 theo `posted_month`, tách theo `posted_month_source`, chỉ so cơ cấu; lương ước tính từ M5 chỉ hiện ở cột riêng có nhãn "ước tính" |
+| Kiểm tra | Tổng mỗi bảng khớp số tin của bảng 04; tỷ lệ cộng lại đủ 100%; chạy lại ra cùng số |
+| Trạng thái | Chưa có code. Trang Insights hiện đọc Postgres (`curated_jobs`) do `scripts/load_mart_from_parquet.py` nạp |
+| Việc mở | MINE-7, PRE-37 (`posted_month` chưa có, nên câu 1.7 chưa làm được), PRE-38 (tỉnh) |
 
-import json
-import logging
-from pathlib import Path
-import numpy as np
-import pandas as pd
-from mlxtend.frequent_patterns import fpgrowth, association_rules
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, mean_absolute_error, r2_score
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-import shap
+### 3.2. M2: Luật kết hợp kỹ năng (SD2)
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-logger = logging.getLogger(__name__)
+| Mục | Nội dung |
+|---|---|
+| Mục đích | SD2: top kỹ năng theo nghề (2.1), gói kỹ năng (2.2), khác biệt giữa nghề và cấp (2.3), kỹ năng hiếm (2.4). Luật của từng nghề còn là đầu vào cho M6 |
+| Code | `mining/association.py`: `mine_rules`, `mine_stratified_rules`, `format_rules`, `find_skill`, `pair_stats` (mlxtend FP-Growth) |
+| Đầu vào | Ma trận `skill__*` (một tin là một giỏ), `job_family` |
+| Đầu ra | `mining/artifacts/skill_association_rules.parquet` (cột `job_family_scope`, vế trái, vế phải, support, confidence, lift, conviction, cosine); `mining_metrics.json` khối `association` |
 
+**Luật và tham số** (`AssociationParams`):
 
-class MiningEngine:
-    def __init__(self, golden_path: str, features_path: str):
-        self.golden_df = pd.read_parquet(golden_path)
-        self.features_df = pd.read_parquet(features_path)
-        logger.info(f"Loaded Golden DF: {self.golden_df.shape}, Features DF: {self.features_df.shape}")
+| Tham số | Giá trị | Ý nghĩa |
+|---|---|---|
+| `macro_min_support` | 0,05 | Phạm vi toàn bộ tin (`ALL`) |
+| `micro_min_support` | 0,02 | Phạm vi từng nghề |
+| `min_confidence` | 0,60 | |
+| `min_lift` | 1,20 | |
+| `max_len` | 3 | Luật tối đa 3 kỹ năng (A, B ⇒ C) |
+| `min_group_size` | 100 | Nghề có ít hơn 100 tin thì không chạy vi mô, ghi `skipped` |
 
-    # =========================================================================
-    # 1. FP-GROWTH: KHAI PHÁ TẬP PHỔ BIẾN & LUẬT KẾT HỢP KỸ NĂNG
-    # =========================================================================
-    def run_fpgrowth(self, min_support: float = 0.03, min_confidence: float = 0.50):
-        logger.info(f"Starting FP-Growth with min_support={min_support}, min_confidence={min_confidence}...")
-        
-        # Lọc các cột kỹ năng nhị phân (tiền tố 'skill_')
-        skill_cols = [c for c in self.features_df.columns if c.startswith("skill_")]
-        skill_df = self.features_df[skill_cols].astype(bool)
-        # Đổi tên cột bỏ tiền tố 'skill_' để báo cáo trực quan
-        skill_df.columns = [c.replace("skill_", "") for c in skill_cols]
+- Tin không có kỹ năng nào không được tính là giỏ, vì sẽ làm loãng support. Số tin bị bỏ ghi trong metrics.
+- Mỗi luật có 4 chỉ số: support, confidence, lift, conviction, kèm cosine.
 
-        # 1. Sinh tập phổ biến bằng FP-Growth
-        frequent_itemsets = fpgrowth(skill_df, min_support=min_support, use_colnames=True)
-        frequent_itemsets["length"] = frequent_itemsets["itemsets"].apply(lambda x: len(x))
-        logger.info(f"Generated {len(frequent_itemsets)} frequent itemsets.")
+| Mục | Nội dung |
+|---|---|
+| Kiểm tra | Sanity S-01, S-02, S-03 (`mining/sanity.py`, spec 08). Mọi luật báo cáo có lift ≥ 1,20 và đủ support của phạm vi. Kiểm tay 20 luật mạnh nhất. Chạy lại với support thấp hơn và cao hơn một bậc: luật mạnh nhất không đổi lớn |
+| Trạng thái | Có code, đã chạy thật 11/11: 13.514 luật. S-02 (Flutter ⇒ Dart, conf 0,375) và S-03 (React ⇒ JS/TS, conf 0,654) **fail** |
+| Thiếu so với SD | **2.1:** chưa có bảng top 15 kỹ năng theo nghề (đề xuất: tính ở M1, dùng lại ở M2). **2.3:** chỉ chia theo nghề, chưa chia theo cấp bậc hay nghề × cấp. **2.4:** chưa có code tìm kỹ năng hiếm. Chưa có lần chạy đổi ngưỡng support để kiểm độ ổn định. Kỹ năng mềm và ngoại ngữ (communication, english, teamwork) đang đứng đầu; chưa tách nhóm riêng khi xếp hạng như quyết định 2 (mục 4) |
+| Việc mở | MINE-1 (sanity fail), MINE-7, PRE-33 (F1 kỹ năng 0,27), PRE-36 (ngưỡng kỹ năng hiếm), PRE-40 (chưa phân biệt bắt buộc và ưu tiên) |
 
-        # 2. Sinh luật kết hợp
-        rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=min_confidence)
-        # Lọc luật chất lượng cao với Lift >= 1.2
-        high_lift_rules = rules[rules["lift"] >= 1.2].sort_values(by="lift", ascending=False)
-        logger.info(f"Extracted {len(high_lift_rules)} association rules with Lift >= 1.2.")
+### 3.3. M3: Phân cụm việc làm (SD3, câu 3.1 và 3.2)
 
-        return frequent_itemsets, high_lift_rules
+| Mục | Nội dung |
+|---|---|
+| Mục đích | Tìm nhóm việc từ nội dung JD và kỹ năng, không dùng `job_family`; sau đó so với `job_family` để tìm nghề lai, nghề ngách, tin có vẻ bị gán sai |
+| Code | `mining/clustering.py`: `build_vector_space`, `reduce_svd`, `scan_k`, `choose_k`, `fit_labels`, `run_hdbscan`, `profile_clusters`, `cluster_jobs` |
+| Đầu vào | Ma trận `skill__*`, `job_emb.npz` (e5), `job_family` (chỉ để so sánh), các cột mô tả (cấp, lương, tiêu đề) |
+| Đầu ra | `mining/artifacts/job_clusters.parquet` (`job_id`, `cluster_id`, điểm GLOSH, `pca_x`, `pca_y`, `pca_z`); `mining_metrics.json` khối `clustering` (bảng quét k, Silhouette, Davies–Bouldin, ARI, NMI, hồ sơ cụm, kết quả không dùng e5) |
 
-    # =========================================================================
-    # 2. K-MEANS: PHÂN CỤM CÔNG VIỆC TRÊN KHÔNG GIAN KỸ NĂNG
-    # =========================================================================
-    def run_job_clustering(self, max_k: int = 12):
-        logger.info("Executing K-Means Clustering on Skill Features Space...")
-        skill_cols = [c for c in self.features_df.columns if c.startswith("skill_")]
-        X = self.features_df[skill_cols].values
+**Luật và tham số** (`ClusteringParams`):
 
-        metrics = []
-        best_k = 3
-        best_score = -1.0
+- **Tập tin đưa vào phân cụm:** chỉ tin có ít nhất một kỹ năng trích được từ JD (bước 08, cột `skill__*`). Tin không có kỹ năng nào bị loại khỏi M3, nên không có điểm GLOSH; M4 vẫn chạy Isolation Forest trên mọi tin. Số tin bị loại ghi trong metrics `clustering.n_dropped_no_skill` (quyết định 3, mục 4). Lần chạy 11/11 có 292 tin như vậy.
+- **Không gian vector:** khối kỹ năng (trọng số 0,5) ghép khối e5 (`e5_weight` 0,5), chuẩn hóa L2. **Không dùng TF-IDF** (quyết định 1, mục 4): code còn `build_tfidf` và `tfidf_weight` = 0 (tắt từ L-47), phải gỡ.
+- **Giảm chiều:** TruncatedSVD giữ khoảng 80% phương sai (`svd_variance_target`), tối đa 60 thành phần, rồi chuẩn hóa L2 lại. Silhouette và Davies–Bouldin đo trên chính không gian này.
+- **K-Means:** `k_fixed` = 10 (người dùng chốt 11/11). Vẫn quét k = 2–20 để báo Elbow và Silhouette. Có thể đổi thuật toán sang `agglomerative` hoặc `gmm`.
+- **HDBSCAN:** `min_cluster_size` = 25. Tin có điểm GLOSH trên phân vị 97% (`glosh_outlier_quantile`) bị gắn cờ ngoại lai. Nếu không có thư viện `hdbscan` thì dùng `sklearn.cluster.HDBSCAN` với `1 - probabilities_`, và ghi rõ điều này trong metrics.
+- **PCA 3 thành phần** trên không gian gốc (trước SVD), để vẽ 2D và 3D.
+- **Hồ sơ cụm:** kỹ năng đặc trưng (theo lift so với toàn bộ), nghề chiếm đa số, lương trung vị. Mỗi cụm lấy 8 kỹ năng.
+- ARI và NMI so với `job_family` chỉ tính trên tin khác `Other`.
 
-        for k in range(3, max_k + 1):
-            km = KMeans(n_clusters=k, random_state=42, n_init=10)
-            labels = km.fit_predict(X)
-            sil = silhouette_score(X, labels, sample_size=2000, random_state=42)
-            metrics.append({"k": k, "inertia": float(km.inertia_), "silhouette": float(sil)})
-            logger.info(f"Evaluated k={k}: Inertia={km.inertia_:.2f}, Silhouette={sil:.4f}")
+| Mục | Nội dung |
+|---|---|
+| Kiểm tra | Silhouette, Davies–Bouldin, độ ổn định qua 5 seed, kích thước cụm nhỏ nhất, trung vị số kỹ năng theo cụm (spec 08) |
+| Trạng thái | Có code, đã chạy thật 11/11 (L-47): k = 10, Silhouette 0,1015, Davies–Bouldin 2,49; ARI 0,071 và NMI 0,144 trên 3.964 tin khác Other. Không dùng e5: Silhouette 0,1055, ARI 0,096. **Cụm 1 chứa 292/293 tin không có kỹ năng; cụm 9 là cụm nhiều kỹ năng (trung vị 15)**, nghĩa là phân cụm một phần đang tách theo số kỹ năng |
+| Thiếu so với SD | Chưa chạy 5 seed để đo ARI ổn định. Chưa kiểm trung vị số kỹ năng theo cụm như một tiêu chí. Chưa xuất bảng chéo cụm × `job_family` thành artifact riêng. Chưa có luật đánh dấu nghề lai, nghề ngách, tin có vẻ bị gán sai (3.2). Chưa lọc tin không có kỹ năng trước khi phân cụm. Chưa gỡ `build_tfidf` |
+| Việc mở | MINE-1, MINE-7 |
 
-            if sil > best_score:
-                best_score = sil
-                best_k = k
+### 3.4. M4: Tin "khác hoặc mới" (SD3, câu 3.3)
 
-        # Huấn luyện mô hình tối ưu
-        final_km = KMeans(n_clusters=best_k, random_state=42, n_init=10)
-        self.features_df["cluster_label"] = final_km.fit_predict(X)
-        logger.info(f"Optimal cluster selected: k={best_k} (Silhouette: {best_score:.4f})")
+| Mục | Nội dung |
+|---|---|
+| Mục đích | Tìm tin khác mặt bằng (đòi hỏi bất thường so với cấp bậc, lương lệch) hoặc mới (tổ hợp nội dung chưa có nhóm), kèm lý do đọc được |
+| Code | `mining/anomaly.py`: `build_anomaly_space`, `_reason_codes`, `detect_anomalies` |
+| Đầu vào | Cột mô tả của tin (kinh nghiệm, lương, cấp, số kỹ năng); điểm và cờ GLOSH từ M3 |
+| Đầu ra | `mining/artifacts/job_anomalies.parquet` (cột theo `ANOMALY_COLUMNS`: `job_id`, `anomaly_score`, `reason_code`, `isolation_score`, `glosh_outlier_score`…); metrics khối `anomaly` |
 
-        return pd.DataFrame(metrics), final_km
+**Luật và tham số** (`AnomalyParams`):
 
-    # =========================================================================
-    # 3. RANDOM FOREST + SHAP: HỒI QUY ĐỊNH GIÁ LƯƠNG & GIÁ TRỊ BIÊN
-    # =========================================================================
-    def run_salary_valuation(self):
-        logger.info("Training Random Forest Regressor & Computing TreeSHAP values...")
-        
-        # Chỉ lấy các tin có mức lương cụ thể
-        salary_mask = self.features_df["salary_midpoint_vnd"].notnull() & (self.features_df["salary_midpoint_vnd"] > 0)
-        df_valid = self.features_df[salary_mask].copy()
-        
-        # Biến mục tiêu chuẩn hóa logarit
-        y = np.log1p(df_valid["salary_midpoint_vnd"].values)
-        
-        # Tập biến độc lập
-        feature_cols = [c for c in df_valid.columns if c.startswith(("skill_", "exp_", "sen_", "loc_", "jf_"))]
-        X = df_valid[feature_cols]
+- **Isolation Forest** (300 cây, `contamination` = 0,03) trên: kinh nghiệm, log lương, log lương lệch so với trung vị cùng cấp, số kỹ năng, số kỹ năng / (cấp + 1), cấp bậc. Khoảng 55% tin không có lương; các tin này **không được bù giá trị**, mà điền hằng số kèm cờ `salary__missing` để cây vẫn tách được.
+- `anomaly_score` = max(điểm Isolation Forest, điểm GLOSH × cờ GLOSH).
+- **Mã lý do**, xét theo thứ tự; luật sau ghi đè luật trước, nên luật cụ thể nhất đứng cuối:
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+  | Mã | Điều kiện |
+  |---|---|
+  | `ISOLATION_GENERIC` | Mặc định |
+  | `TOO_MANY_SKILLS` | Số kỹ năng trên phân vị 99% |
+  | `SALARY_TOO_LOW_FOR_LEVEL`, `SALARY_TOO_HIGH_FOR_LEVEL` | Lương < 1/3 hoặc > 3 lần trung vị cùng cấp (`salary_ratio_limit`) |
+  | `EXP_SENIORITY_MISMATCH` | Intern/Fresher hoặc Junior mà đòi ≥ 5 năm kinh nghiệm |
+  | `FRESHER_TOO_MANY_SKILLS` | Intern/Fresher hoặc Junior mà đòi > 15 kỹ năng |
 
-        rf = RandomForestRegressor(n_estimators=150, max_depth=15, random_state=42, n_jobs=-1)
-        rf.fit(X_train, y_train)
+| Mục | Nội dung |
+|---|---|
+| Kiểm tra | Kiểm tay 20 tin ngẫu nhiên: tỷ lệ tin đúng là khác hoặc mới thật, so với tin chỉ do parse lỗi (spec 08) |
+| Trạng thái | Có code, đã chạy thật 11/11: 282 tin bị gắn cờ (6,04%), gồm Isolation Forest 3% và GLOSH |
+| Thiếu so với SD | **Chưa chia hai loại "mới" và "khác"** như SD3 mục 4: tin HDBSCAN để riêng nhưng các trường bình thường là "mới"; tin có mã lý do về kỹ năng, kinh nghiệm hoặc lương là "khác". Hiện chỉ có `reason_code`; tin GLOSH không có lý do cụ thể đang mang `ISOLATION_GENERIC`. Chưa có quy trình kiểm tay 20 tin |
+| Việc mở | MINE-7, PRE-36 |
 
-        # Đánh giá trên tập test
-        y_pred = rf.predict(X_test)
-        mae = mean_absolute_error(np.expm1(y_test), np.expm1(y_pred))
-        r2 = r2_score(y_test, y_pred)
-        logger.info(f"Salary Model Trained -> MAE: {mae:,.0f} VND, R2 Score: {r2:.4f}")
+### 3.5. M5: Giá trị kỹ năng và lương ước tính (SD4)
 
-        # Tính toán giá trị TreeSHAP
-        explainer = shap.TreeExplainer(rf)
-        shap_values = explainer.shap_values(X_test)
+| Mục | Nội dung |
+|---|---|
+| Mục đích | SD4: yếu tố nào ảnh hưởng lương (4.1), mỗi kỹ năng cộng bao nhiêu triệu (4.2), model đúng tới đâu (4.3), ước tính lương cho tin thỏa thuận (4.4). Giá trị kỹ năng còn là `premium(k)` cho M6 |
+| Code | `mining/salary_model.py`: `select_training_subset`, `build_salary_features`, `assert_no_leakage`, `_groups`, `_cv_scores`, `train_salary_model`, `skill_values_from_shap` |
+| Đầu vào | Cột mô tả của tin; ma trận `skill__*` |
+| Đầu ra | `mining/artifacts/skill_salary_shap_values.parquet`, `trained_salary_rf_model.joblib`; metrics khối `salary` |
 
-        # Tính toán giá trị thặng dư biên trung bình của từng kỹ năng
-        mean_base_salary = np.mean(np.expm1(y_train))
-        shap_importance = pd.DataFrame({
-            "feature": feature_cols,
-            "mean_shap_value": np.mean(shap_values, axis=0),
-            "abs_mean_shap": np.mean(np.abs(shap_values), axis=0)
-        })
-        shap_importance["marginal_dollar_vnd"] = mean_base_salary * (np.exp(shap_importance["mean_shap_value"]) - 1)
-        shap_importance = shap_importance.sort_values(by="abs_mean_shap", ascending=False)
+**Luật và tham số** (`SalaryParams`):
 
-        return rf, shap_importance, {"mae_vnd": mae, "r2": r2}
-```
+- **Tập có lương:** lương > 0, không thỏa thuận, không `salary_suspect`, nằm trong khoảng lương hợp lệ; loại thêm tin lệch quá 3 lần so với trung vị cùng cấp (`level_ratio_limit` = 3,0). Số tin bị loại theo từng lý do ghi trong metrics.
+- **Mục tiêu:** `y = log(1 + lương trung bình)`, đơn vị triệu VNĐ/tháng.
+- **Đặc trưng:** `skill__*`, `seniority_ord`, `exp_min_years` (thiếu thì -1, kèm cờ `__missing`), nhóm địa điểm (`LOCATION_FEATURE_GROUPS`), one-hot `job_family`. `assert_no_leakage` chặn mọi cột mang thông tin lương. Theo spec 06 mục 2.2, `salary_bin_*`, `salary_mid`, `salary_range_ratio` không được đưa vào.
+- **Chia dữ liệu** (bước 11 cũ): giữ 20% làm tập test (`test_size`), CV 5 phần trên phần train. **SD4 yêu cầu chia theo công ty** (`company_key`), phân tầng theo cấp bậc.
+- **Random Forest:** chọn tham số trong 4 bộ (`param_grid`, 300 cây) bằng CV.
+- **SHAP:** TreeExplainer trên model fit lại bằng toàn bộ tập có lương, tối đa 3.000 dòng. Giá trị của kỹ năng i là trung bình φᵢ **trên các tin có kỹ năng i**; nếu lấy trung bình trên mọi tin thì giá trị bị kéo về gần 0, vì ma trận thưa khoảng 97%. Quy đổi ra tiền: Δ = lương nền × (e^φ − 1), với lương nền = expm1(E[f(x)]). Chỉ định giá kỹ năng có ≥ 30 tin trong tập có lương (`min_skill_sample`).
+- **Ngưỡng hiện có trong code:** R² ≥ 0,60, MAE ≤ 4,5 triệu, độ lệch chuẩn R² qua CV ≤ 0,05. Ngưỡng nghiệm thu của SD4 thì theo PRE-36.
+
+| Mục | Nội dung |
+|---|---|
+| Kiểm tra | So với baseline, CV theo công ty, sanity S-04, S-05, S-06, mức đóng góp của cấp bậc tăng dần, chiều của giá trị kỹ năng khớp chênh lệch trung vị thô ở M1 (spec 08) |
+| Trạng thái | Có code, **chưa chạy trên dữ liệu thật** (MINE-1). Sanity về lương chạy 11/11: S-04 (lương Senior < Middle) và S-06 (tỷ lệ lương HN/HCM) **fail** |
+| Thiếu so với SD | **Nhóm khi chia dữ liệu:** `_groups` dùng `dup_group_id` (nhóm tin trùng), không phải `company_key`; chưa phân tầng theo cấp bậc. **Baseline:** code so với model "cấp bậc + kinh nghiệm", SD4 yêu cầu trung vị lương theo cấp × nghề. **Phương án B** (phân lớp 4 khung lương, macro-F1) chưa có. **Câu 4.4** (`salary_estimated_vnd`, `salary_is_estimated`, khoảng P10–P90 từ các cây) chưa có. Chưa có MAE theo nghề, cấp, nguồn. Chưa so phân bố giữa tập có lương và tập thỏa thuận. Chưa xếp hạng yếu tố (4.1) |
+| Việc mở | MINE-1, MINE-5 (Mart chưa có bảng SHAP), MINE-6 (SHAP không phải nhân quả), MINE-7, PRE-35 (lương phủ 40–45%), PRE-36 |
+
+### 3.6. M6: Lộ trình học cho người mới (SD5)
+
+| Mục | Nội dung |
+|---|---|
+| Mục đích | SD5: với mỗi nghề có ≥ 30 tin cho người mới, xếp hạng kỹ năng nên học (5.1), thứ tự học (5.2), kỹ năng chưa nên đầu tư sớm (5.3), độ phủ coverage@N (5.4) |
+| Code | **Chưa có.** Đề xuất `mining/recommend.py`, dùng lại `mine_stratified_rules` (M2) và `skill_values_from_shap` (M5) |
+| Đầu vào | `demand(k)` từ M1 (tin Intern/Fresher và Junior của nghề), luật của nghề từ M2, `premium(k)` từ M5, tỷ lệ kỹ năng ở tin Senior/Lead |
+| Đầu ra | `mining/artifacts/sd5_<nghề>.json`: danh sách ưu tiên, lộ trình theo bậc kèm luật dẫn chứng, danh sách để sau, coverage@5/10/15 |
+| Luật | Kỹ năng kỹ thuật và kỹ năng mềm, ngoại ngữ xếp thành hai danh sách riêng (quyết định 2, mục 4). Theo `docs/target/05_sd5_lo_trinh_hoc.md` mục 4: `điểm(k) = demand(k) × (1 + premium_chuẩn_hóa(k))`; kỹ năng M5 không định giá được thì `premium` = 0; bậc 1 là kỹ năng nền không nằm ở vế sau của luật mạnh nào (confidence ≥ 0,60 và lift ≥ 1,20); B đứng sau A nếu có luật mạnh A ⇒ B. Ngưỡng 30 tin, 5%, gấp 3 lần, 70%, 10 điểm phần trăm theo PRE-36 |
+| Kiểm tra | coverage@10 cao hơn baseline "top 10 kỹ năng toàn thị trường"; tách tập 80/20; mọi kỹ năng truy được về `demand`, luật, giá trị SHAP; người làm nghề đọc lộ trình của 2 nghề (spec 08) |
+| Trạng thái | Chưa có code |
+| Thiếu so với SD | Toàn bộ. Phụ thuộc M1, M2 (luật theo nghề trên tin người mới), M5 |
+| Việc mở | MINE-7, PRE-35 (số tin người mới ít; khoảng 317 tin itviec "0,8 năm"), PRE-40 (chưa phân biệt bắt buộc và ưu tiên) |
+
+## 4. Quyết định đã chốt (người dùng duyệt 17/11/2026)
+
+1. **Bỏ TF-IDF.** Biểu diễn nội dung JD chỉ dùng e5. Gỡ `build_tfidf` và `tfidf_weight` khỏi `mining/clustering.py` và `ClusteringParams`; bỏ luôn bước 12_tfidf của Processing (spec 06 mục 3.5). Không làm phép so TF-IDF với e5.
+2. **Kỹ năng mềm và ngoại ngữ ở M1, M2 và M6.** Vẫn giữ trong ma trận `skill__*` (M2 vẫn tìm luật có các kỹ năng này, M5 vẫn định giá). Nhưng bảng xếp hạng (top 15 theo nghề, kỹ năng hiếm) và lộ trình học tách thành **hai danh sách**: kỹ năng kỹ thuật và kỹ năng mềm, ngoại ngữ. Nhóm sau gồm 8 slug: `communication`, `teamwork`, `problem_solving`, `logical_thinking`, `time_management`, `presentation`, `english`, `japanese`. Không lấy nguyên nhóm `methodologies_softskills_data` của `skills_taxonomy_230.json`, vì nhóm này lẫn cả Agile, BI, machine learning. Việc code: thêm trường đánh dấu (ví dụ `"soft": true`) cho 8 slug trong taxonomy (MINE-7). Nhờ vậy communication, english, teamwork không chiếm chỗ của kỹ năng kỹ thuật.
+3. **Tin không có kỹ năng ở M3.** Tin nào trích từ JD (bước 08) mà không ra kỹ năng nào thì **loại khỏi phân cụm** và ghi số tin bị loại. Chỉ loại sau khi đã trích từ JD; không loại chỉ vì nguồn không có thẻ kỹ năng. Lần chạy 11/11 có 292 tin như vậy (gom gần hết vào cụm 1). Con số sẽ đổi khi bước 08 tốt hơn (PRE-33: F1 kỹ năng 0,27; chưa có alias ngắn).
+
+## 5. Đầu ra và bên đọc
+
+| File trong `mining/artifacts/` | Bước | Bên đọc |
+|---|---|---|
+| `sd1_*.json` (đề xuất) | M1 | Monitoring Insights, M5 (baseline), M6 |
+| `skill_association_rules.parquet` | M2 | Monitoring, Mart (`load_mart_from_parquet.py`), M6 |
+| `job_clusters.parquet` | M3 | Monitoring, Mart, M4 |
+| `job_anomalies.parquet` | M4 | Monitoring, Mart |
+| `skill_salary_shap_values.parquet`, `trained_salary_rf_model.joblib` | M5 | Monitoring, M6 |
+| `sd5_*.json` (đề xuất) | M6 | Monitoring |
+| `mining_metrics.json` | tất cả | Monitoring, spec 08. Gồm metrics từng bước, `sanity_checks`, `targets_summary`, thời gian chạy, sha256 của file đầu vào |
+
+`mining/artifacts/` không đưa vào git. Muốn dẫn số vào báo cáo thì ghi kèm ngày chạy và sha256 đầu vào lấy từ `mining_metrics.json`.

@@ -1,6 +1,6 @@
 # ĐẶC TẢ PHÂN HỆ TRỰC QUAN HÓA & GIÁM SÁT (MONITORING & VISUALIZATION OBSERVATORY SPECIFICATION)
 
-> **Mã tài liệu:** `SPEC-09` | **Trạng thái:** Hoàn thành & Phê duyệt | **Phân hệ:** Trực quan hóa & Giám sát  
+> **Mã tài liệu:** `SPEC-09` | **Phiên bản:** 1.1.0, 17/11/2026 | **Trạng thái:** Đã duyệt 17/11/2026 (chặng 5: viết lại mục 3 theo SD1–SD5, sửa mục 2.4, 4, 5.2; phần crawl giữ nguyên) | **Phân hệ:** Trực quan hóa & Giám sát  
 > **Công nghệ lõi:** FastAPI (Python 3.12 Backend) + React 18 / TypeScript / Tailwind CSS (Vite Frontend)  
 > **Tài liệu liên quan:** [AGENTS.md](../../AGENTS.md), [11_technical_decisions.md](11_technical_decisions.md), [12_coding_standards.md](12_coding_standards.md), [13_working_documentation.md](13_working_documentation.md)
 
@@ -11,7 +11,9 @@
 Hệ thống Giám sát & Trực quan hóa (**Central Observatory**) của dự án `VN-IT-Job-Mining` đóng vai trò là "Bộ máy miêu tả hình ảnh thực tế" (**Visual Truth Engine**). Hệ thống phục vụ song song hai đối tượng người dùng với hai mục đích rõ rệt:
 
 1. **Kỹ sư Dữ liệu (Data Engineers & Tech Leads):** Cần một buồng lái vận hành (**Data Pipeline Cockpit**) theo dõi trực tiếp dòng chảy dữ liệu thực tế, kiểm soát sức khỏe thu thập trên 8 sàn tuyển dụng IT tại Việt Nam, tiến độ sổ cái URL (URL Ledger), trạng thái Cloudflare R2 Lakehouse, Apache Airflow DAG runs và hiệu quả khử trùng lặp qua từng giai đoạn.
-2. **Sinh viên & Nhà nghiên cứu (IT Students & Researchers):** Cần một bảng điều khiển phân tích thông minh (**Market Insights Dashboard**) để khám phá xu hướng kỹ năng, bản đồ nhiệt mức lương theo vị trí và thâm niên, các tổ hợp kỹ năng "vàng" từ thuật toán FP-Growth, và các cụm nghề nghiệp thực tế được phân nhóm bởi thuật toán K-Means.
+2. **Sinh viên IT và người mới vào nghề:** Cần trang **Market Insights** trả lời 5 mục tiêu SD1–SD5 (`docs/target/`): bức tranh thị trường, gói kỹ năng, nhóm việc và tin "khác hoặc mới", giá trị kỹ năng và lương ước tính, lộ trình học (mục 3).
+
+> **Phạm vi giao diện hiện tại** (leader chốt 09/11/2026, xem `monitoring/CLAUDE.md`): `App.tsx` chỉ gắn 4 route `/` (Collection), `/eda`, `/preprocessing`, `/processing`. `MarketInsightsPage.tsx` có file nhưng chưa gắn route. Các trang vận hành khác (`/crawling`, `/raw`, `/airflow`, R2) có file trang, không gắn route.
 
 ```mermaid
 flowchart TD
@@ -34,11 +36,12 @@ flowchart TD
             PageOps3["Airflow & Crawler Cockpit"]
             PageOps4["Deduplication Funnel"]
         end
-        subgraph SubSystem2["Phân Hệ 2: Market Insights"]
-            PageInsight1["Bản đồ nhiệt Lương (Heatmap)"]
-            PageInsight2["Top Combo Kỹ năng (FP-Growth)"]
-            PageInsight3["Phân cụm Nghề nghiệp (K-Means)"]
-            PageInsight4["Bộ lọc Đa chiều (Level/City/Domain)"]
+        subgraph SubSystem2["Phân Hệ 2: Market Insights (SD1–SD5)"]
+            PageInsight1["SD1 Thị trường"]
+            PageInsight2["SD2 Gói kỹ năng"]
+            PageInsight3["SD3 Nhóm việc · Tin khác hoặc mới"]
+            PageInsight4["SD4 Giá trị kỹ năng · Lương ước tính"]
+            PageInsight5["SD5 Lộ trình học"]
         end
     end
 
@@ -56,7 +59,7 @@ flowchart TD
 - **Zero-Auth Architecture:** Đây là hệ thống Cockpit nội bộ phục vụ nghiên cứu và đồ án kỹ thuật. Tuyệt đối không tạo màn hình đăng nhập (Login/Sign-in), đăng xuất (Logout) hay modal xác thực rườm rà. Hệ thống mở trực tiếp vào trang tổng quan khi khởi động.
 - **Phân tách Tuyệt đối giữa Vận hành (Ops) và Trực quan hóa (Insights):**
   - Trang Vận hành (`/crawling`, `/collection`, `/raw`, `/airflow`): Chỉ phục vụ kích hoạt batch, kiểm soát ledger, theo dõi log console thời gian thực, đo tỷ lệ lỗi mạng và độ trễ sync R2.
-  - Trang Khoa học & Thông tin chi tiết (`/insights`, `/eda`, `/preprocessing`): Chỉ phục vụ biểu đồ phân phối, bản đồ nhiệt, tương quan kỹ năng và phân cụm mô hình. Tuyệt đối không đặt nút bấm cào dữ liệu hay can thiệp tác vụ cào tại đây.
+  - Trang Khoa học & Thông tin chi tiết (`/insights`, `/eda`, `/preprocessing`, `/processing`): Chỉ phục vụ biểu đồ phân phối, bản đồ nhiệt, tương quan kỹ năng và phân cụm mô hình. Tuyệt đối không đặt nút bấm cào dữ liệu hay can thiệp tác vụ cào tại đây.
 - **100% Strict TypeScript:** Toàn bộ mã nguồn Frontend sử dụng TypeScript, định kiểu tường minh trong `types.ts`, không sử dụng kiểu `any` tùy tiện và cấm tuyệt đối file `.js` / `.jsx`.
 
 ---
@@ -119,81 +122,51 @@ Truy vấn trực tiếp trạng thái tiến trình hệ điều hành và cơ 
   - 8 DAGs cào chi tiết theo nguồn (`crawler_detail_<source>`): Chạy dồn dập cuối tuần với cơ chế Adaptive Batch (30 tin/batch, nghỉ 55 phút giữa các ca, độc quyền tài nguyên theo `pool_<source>`).
   - Lịch sử chạy 10 lần gần nhất kèm trạng thái (`success`, `running`, `failed`), thời gian thực thi (duration).
 
-### 2.4. Phễu Khử Trùng Lặp 3 Cấp (Deduplication Funnel Ops)
-Trực quan hóa số lượng bài đăng bị loại bỏ qua từng bước để chứng minh độ sạch của dữ liệu:
-1. **Cấp 1 - Intra-source CDC:** Khử trùng lặp nội sàn ngay khi cào bằng mã băm canonical JSON (loại bỏ bài đăng lặp, giữ lại 1 file raw duy nhất).
-2. **Cấp 2 - Clean Phase Dedup:** Khử trùng các file batch lịch sử trùng với file từng tin và trùng lặp mã tuyển dụng (`job_id`).
-3. **Cấp 3 - Inter-source Cross-platform Dedup:** Khử trùng xuyên sàn giữa 8 trang tuyển dụng bằng thuật toán Blocking kết hợp Jaccard từ khóa và Cosine TF-IDF mô tả công việc.
+### 2.4. Phễu Khử Trùng Lặp (Deduplication Funnel Ops)
+Trực quan hóa số tin bị loại qua từng chặng. Luật và số liệu theo [spec 05](05_preprocessing_spec.md) (sửa 17/11/2026; bản cũ ghi "Blocking + Jaccard + Cosine TF-IDF" là thiết kế đã thay):
+1. **Khi cào (Collection):** CDC trong từng sàn bằng hash canonical JSON; tin trùng hash ghi `repost`, không sinh file raw.
+2. **Bước 01 Clean:** bỏ file batch lịch sử trùng file từng tin và trùng (`nguồn`, `job_id`), giữ bản mới nhất.
+3. **Bước 01b Deduplication** (spec 05 mục 3.2), 3 tầng: (`nguồn`, `job_id`); `sha1(text_fold)` trùng và cùng `company_slug` (cùng sàn, khác sàn); MinHash/LSH sinh cặp ứng viên rồi Jaccard chính xác ≥ 0,85 và cùng `company_slug`.
+
+Trang Pre-processing (`/preprocessing`) đọc phễu từ report từng bước (`reports/preprocessing/<bước>/_all.json`). Phễu 10/11: 13.361 → 4.799 (01) → 4.672 (01b) → 4.671 (02, giữ nguyên qua 03 và 04).
 
 ---
 
-## 3. Phân Hệ 2: Market Insights Dashboard (Phân Tích Thị Trường)
+## 3. Phân Hệ 2: Market Insights theo 5 mục tiêu SD1–SD5
 
-Phân hệ Market Insights được thiết kế hướng tới đối tượng người dùng cuối là **sinh viên IT tại Việt Nam**, cung cấp các góc nhìn đa chiều về thị trường tuyển dụng trong giai đoạn tháng 10 - tháng 11/2026.
+> **Viết lại 17/11/2026** theo [`docs/target/`](../target/00_de_tai.md) và [spec 07](07_mining_spec.md). Bản cũ (bản đồ nhiệt 12 nhóm nghề × 6 dải kinh nghiệm, K-Means k = 6–8, bộ lọc "Domain/Industry") đã bỏ: nhóm nghề nay là 10 + Other, cấp bậc là 5 nhãn, k = 10, và dữ liệu không có cột lĩnh vực.
 
-### 3.1. Bản Đồ Nhiệt Mức Lương (Salary Heatmap Matrix)
-Phân tích tương quan giữa Vị trí chuyên môn (**Job Family / Title**) và Số năm kinh nghiệm (**Seniority / Experience**):
+### 3.1. Nguyên tắc riêng của Insights
 
-- **Trục Tung (Y-axis - 12 Nhóm Nghề Chuẩn Theo SPEC-06):**
-  1. **Backend** (Java, Spring Boot, Node.js, Go, Python, C#, PHP)
-  2. **Frontend** (React, Vue, Angular, JavaScript, TypeScript, HTML/CSS)
-  3. **Fullstack** (Yêu cầu đồng thời kỹ năng Backend và Frontend)
-  4. **Mobile** (Flutter, React Native, iOS, Android, Swift, Kotlin)
-  5. **Data/AI** (Data Engineer, Data Analyst, Data Scientist, Machine Learning, NLP)
-  6. **DevOps/Cloud** (Docker, Kubernetes, AWS, Terraform, CI/CD, Linux)
-  7. **Kiểm thử (QA/QC)** (Automation Test, Manual Test, Selenium, Postman, Cypress)
-  8. **Bảo mật (Security)** (SOC, Pentest, Cyber Security, DevSecOps, SIEM)
-  9. **Hệ thống/Mạng** (System/Network Engineer, Cisco, CCNA, Windows Server)
-  10. **Phân tích nghiệp vụ (BA)** (Business Analyst, System Analyst, BPMN, UML, SQL)
-  11. **Quản lý SP/DA (PM/PO)** (Product Manager, Project Manager, Scrum Master, Agile)
-  12. **Thiết kế UI/UX** (Figma, Adobe XD, UI/UX Designer, Prototyping)
-  *(Nhóm dự phòng: Khác / Other)*
-- **Trục Hoành (X-axis - Dải Kinh Nghiệm):**
-  - Thực tập / Intern (< 1 năm)
-  - Mới tốt nghiệp / Fresher (0 - 1 năm)
-  - Junior (1 - 2 năm)
-  - Middle (2 - 4 năm)
-  - Senior (5+ năm)
-  - Trưởng nhóm / Quản lý (Lead / Manager)
-- **Giá trị hiển thị trên từng Cell:**
-  - Mức lương trung vị (**Median Salary** - triệu VNĐ/tháng) nhằm tránh bị sai lệch bởi các giá trị ngoại lai cực đoan.
-  - Khoảng tứ phân vị (**IQR:** 25% percentile - 75% percentile) khi di chuột hiển thị Tooltip.
-  - Số lượng tin tuyển dụng đóng góp vào cell ($N_{samples}$).
-- **Quy tắc làm sạch & Cảnh báo:**
-  - Tin tuyển dụng ghi "Thỏa thuận" (MNAR - Missing Not At Random) được đưa vào bộ đếm riêng, không tính lương bằng 0.
-  - Mức lương ngoài khoảng 1 - 500 triệu VNĐ/tháng bị đánh cờ `salary_suspect` và loại khỏi ma trận tính toán.
+- **Người đọc:** sinh viên IT và người mới vào nghề. Mỗi số đi kèm một câu giải thích ngắn bằng lời thường.
+- **Monitoring chỉ đọc, không tự tính.** Số liệu lấy từ kết quả Mining (`mining/artifacts/*`, `mining_metrics.json`) hoặc từ PostgreSQL Mart nạp từ các file đó (spec 03 mục 7, spec 07 mục 5). Backend và frontend không tự tính chỉ số mới. Ngoại lệ hiện có: `insights_service.py` tính trung vị lương bằng SQL trên `curated_jobs`; khi M1 có code thì chuyển sang đọc `sd1_*.json` (MINE-7).
+- **Ghi nguồn số:** mỗi khối ghi n (số tin), ngày chạy và sha256 đầu vào lấy từ `mining_metrics.json`.
+- **Ô ít dữ liệu:** ô có n < 30 ghi "ít dữ liệu", không hiện số (ngưỡng theo PRE-36).
+- **Lương:** luôn ghi "lương công khai" và hiện số tin có lương cạnh biểu đồ. Tin "thỏa thuận" đếm riêng, không tính là lương 0. Lương ước tính của SD4 (câu 4.4) chỉ hiện ở cột hoặc màu riêng có nhãn "ước tính".
+- **Theo tháng:** dùng `posted_month`, tách theo `posted_month_source`, chỉ so cơ cấu trong từng tháng, không so tổng số tin (spec 02 mục 2.6).
+- **Kỹ năng:** kỹ năng kỹ thuật và kỹ năng mềm, ngoại ngữ xếp hai bảng riêng (spec 07 mục 4).
+- **Từ ngữ:** dùng "khác hoặc mới", không dùng "bất thường". Giá trị SHAP ghi là "model gắn với", không ghi là "làm tăng lương" (MINE-6).
+- **Thiếu dữ liệu:** trả và hiện Empty State theo mục 4.3, kèm lý do (ví dụ "M1 chưa chạy").
 
-### 3.2. Top Tổ Hợp Kỹ Năng "Vàng" Từ Luật Kết Hợp (FP-Growth Association Rules)
-Thay vì các biểu đồ tròn đơn giản đếm từng kỹ năng riêng lẻ, hệ thống áp dụng thuật toán **FP-Growth** trên ma trận đặc trưng kỹ năng (230 cột kỹ năng chuẩn hóa) để tìm ra các gói kỹ năng nhà tuyển dụng luôn yêu cầu đi kèm nhau:
+### 3.2. Các trang theo SD
 
-- **Các chỉ số cốt lõi:**
-  - **Support ($P(A \cap B)$):** Tỷ lệ phần trăm tin tuyển dụng yêu cầu đồng thời cả tập kỹ năng $A$ và $B$.
-  - **Confidence ($P(B|A)$):** Xác suất nếu một JD đã yêu cầu kỹ năng $A$ thì chắc chắn sẽ yêu cầu thêm kỹ năng $B$.
-  - **Lift ($\frac{P(A \cap B)}{P(A) \cdot P(B)}$):** Đo lường mức độ phụ thuộc tích cực giữa các kỹ năng. $Lift > 1.0$ thể hiện hai kỹ năng tương hỗ mạnh mẽ; $Lift > 2.5$ thể hiện bộ combo bắt buộc.
-- **Thành phần Trực quan hóa:**
-  - **Bảng Tra cứu Luật kết hợp:** Hỗ trợ sắp xếp theo Lift, Confidence, Support; cho phép lọc Antecedent (Kỹ năng sinh viên đã có) để xem Consequent (Kỹ năng sinh viên cần học bổ sung). Hỗ trợ xem luật toàn ngành (Macro) hoặc xem luật vi mô theo từng Job Family.
-  - **Network Graph (Đồ thị Liên kết Kỹ năng):** Các node biểu thị kỹ năng, kích thước node tương ứng độ phổ biến, đường nối giữa các node biểu thị giá trị Lift. Người dùng có thể click vào node để làm nổi bật cụm công nghệ liên quan (ví dụ cụm Python Data, cụm React Ecosystem, cụm Java Spring Enterprise).
+| Trang | SD | Câu hỏi | Nguồn dữ liệu | Nội dung chính | Trạng thái 17/11 |
+|---|---|---|---|---|---|
+| Thị trường | SD1 | 1.1–1.7 | `mining/artifacts/sd1_*.json` (M1) | Số tin và tỷ lệ theo nghề, theo sàn; cơ cấu 5 cấp bậc theo nghề; tỉnh và `work_mode`; tỷ lệ công khai lương; lương công khai nghề × cấp (trung vị, P25–P75, n); so tin người mới với tin Middle trở lên; top phúc lợi; cơ cấu theo `posted_month` | Chưa có: M1 chưa có code. API `/salary-heatmap` hiện tính từ Mart |
+| Gói kỹ năng | SD2 | 2.1–2.4 | `skill_association_rules.parquet` qua Mart `skill_rules`; top kỹ năng và kỹ năng hiếm từ M1, M2 | Top 15 kỹ năng mỗi nghề (2 bảng); bảng luật lọc theo `job_family_scope`, sắp theo lift, confidence, support; đồ thị kỹ năng (cạnh = lift); danh sách kỹ năng hiếm | Có API `/skill-combos`; chưa có trang |
+| Nhóm việc | SD3 (3.1, 3.2) | 3.1, 3.2 | `job_clusters.parquet` qua Mart `job_clusters`; `mining_metrics.json` khối `clustering` | Scatter PCA 2D/3D tô màu theo cụm (k = 10); hồ sơ cụm (8 kỹ năng đặc trưng, nghề chiếm đa số, lương trung vị); bảng chéo cụm × `job_family`; Silhouette, ARI ghi kèm | Có API `/clusters` và `CareerClusterScatterCard.tsx`; trang chưa gắn route |
+| Tin khác hoặc mới | SD3 (3.3) | 3.3 | `job_anomalies.parquet` qua Mart `job_anomalies` | Danh sách tin chia loại "mới" và "khác", mỗi tin có lý do đọc được (`reason_code`) | Chưa có API; M4 chưa chia hai loại |
+| Giá trị kỹ năng và lương ước tính | SD4 | 4.1–4.4 | `skill_salary_shap_values.parquet`, `mining_metrics.json` khối `salary` | Xếp hạng yếu tố; mỗi kỹ năng (n ≥ 30) gắn với bao nhiêu triệu/tháng; MAE so với baseline; lương ước tính cho tin thỏa thuận kèm khoảng P10–P90 | Chưa có: M5 chưa chạy thật, Mart chưa có bảng SHAP (MINE-5) |
+| Lộ trình học | SD5 | 5.1–5.4 | `mining/artifacts/sd5_<nghề>.json` (M6) | Chọn nghề → danh sách ưu tiên, bậc học kèm luật dẫn chứng, danh sách "để sau", coverage@5/10/15. Mỗi kỹ năng một câu giải thích kèm số | Chưa có: M6 chưa có code |
 
-### 3.3. Biểu Đồ Phân Cụm Nghề Nghiệp 2D & 3D (K-Means & PCA Scatter Plot)
-Kiểm chứng thực tế: Các tin tuyển dụng trên thị trường tự động nhóm thành những cụm nào khi dựa trên không gian đặc trưng kỹ năng và dải lương?
+### 3.3. Bộ lọc dùng chung
 
-- **Giảm chiều dữ liệu PCA:**
-  - Chiếu ma trận đặc trưng xuống không gian 2D ($PC_1, PC_2$) cho biểu đồ phẳng.
-  - Chiếu ma trận đặc trưng xuống không gian 3D ($PC_1, PC_2, PC_3$) cho mô hình không gian khối tương tác.
-- **Trực quan hóa Scatter Plot (2D & 3D Mode Toggle):**
-  - **Chế độ 2D Scatter:** Trục $X = PC_1$, Trục $Y = PC_2$, mỗi điểm đại diện cho một tin tuyển dụng sạch trong bộ dữ liệu Gold.
-  - **Chế độ 3D Scatter (Plotly / Three.js Canvas):** Trục $X = PC_1$, Trục $Y = PC_2$, Trục $Z = PC_3$. Hỗ trợ thao tác xoay (Rotate 360°), zoom, pan để quan sát độ phân tách không gian giữa các cụm nghề nghiệp mà biểu đồ 2D bị chồng lấn.
-  - Màu sắc đại diện cho Cụm được gán bởi K-Means ($k=6 \dots 8$).
-  - Điểm Centroid của từng cụm được đánh dấu nổi bật kèm nhãn tóm tắt các kỹ năng đại diện nhất (ví dụ: *Cluster 1: Modern Frontend - TypeScript, React, Tailwind, Next.js*).
-  - Hỗ trợ di chuột để xem chi tiết: Tên công việc, Công ty, Mức lương, Nguồn sàn và độ xa so với tâm cụm.
-  - Tích hợp điểm ngoại lai: Các tin bị Isolation Forest / HDBSCAN GLOSH đánh dấu ngoại lai (`is_outlier = True`) được hiển thị với hình dạng đặc biệt (hình tam giác xám mờ).
+1. **Nhóm nghề** (`job_family`): 10 nhóm + Other (Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI).
+2. **Cấp bậc** (`seniority`): Intern/Fresher, Junior, Middle, Senior, Lead/Manager (`SENIORITY_ORDER_LABELS` trong `mining/config.py`).
+3. **Tỉnh** (`tinh_chinh`): theo danh mục 34 tỉnh sau sáp nhập; remote và nước ngoài là giá trị riêng.
+4. **Sàn** (`source_platform`): bật tắt để so 8 sàn.
 
-### 3.4. Hệ Thống Bộ Lọc Linh Hoạt Đa Chiều (Multi-Faceted Filtering)
-Toàn bộ biểu đồ và bảng phân tích trong phân hệ Insights liên kết động với thanh điều khiển bộ lọc:
-1. **Cấp bậc tuyển dụng (Seniority Level):** Intern, Fresher, Junior, Middle, Senior, Lead/Manager.
-2. **Địa bàn Tỉnh/Thành phố:** Chuẩn hóa theo danh mục 34 tỉnh/thành phố sau sáp nhập (tập trung 5 đô thị hạt nhân: Hà Nội, TP.HCM, Đà Nẵng, Cần Thơ, Hải Phòng và hình thức Remote/Hybrid).
-3. **Lĩnh vực hoạt động (Domain / Industry):** Fintech, E-Commerce, EdTech, Game Development, AI Solutions, Software Outsourcing, Product Company.
-4. **Sàn tuyển dụng nguồn (Source Platform):** Cho phép bật/tắt để so sánh dữ liệu giữa các sàn.
+Bộ lọc chỉ lọc trên dữ liệu đã có trong file kết quả. Trang nào mà Mining không tính sẵn theo bộ lọc (ví dụ luật kết hợp chỉ có phạm vi nghề) thì ẩn bộ lọc đó, không tự tính lại.
 
 ---
 
@@ -214,10 +187,12 @@ Toàn bộ dịch vụ backend được cung cấp qua chuẩn RESTful API với
 | `GET` | `/api/v1/monitor/dedup/funnel` | Báo cáo số liệu phễu khử trùng lặp qua các bước | Không |
 | `POST` | `/api/v1/crawling/trigger` | Kích hoạt tác vụ cào dữ liệu batch | JSON Body: `{source, phase, max_items, sync_r2, engine}` |
 | `GET` | `/api/v1/crawling/logs/stream` | Server-Sent Events (SSE) stream log tiến trình | `task_id` |
-| `GET` | `/api/v1/insights/salary-heatmap` | Dữ liệu ma trận bản đồ nhiệt lương | `city`, `level`, `domain` |
-| `GET` | `/api/v1/insights/skill-combos` | Danh sách luật kết hợp kỹ năng (FP-Growth) | `min_support`, `min_confidence`, `min_lift`, `limit` |
-| `GET` | `/api/v1/insights/clusters` | Tọa độ 2D và nhãn cụm nghề nghiệp (K-Means) | `n_clusters`, `algorithm` (`pca` hoặc `tsne`) |
-| `GET` | `/api/v1/insights/filters/options` | Lấy danh mục các giá trị bộ lọc hợp lệ | Không |
+| `GET` | `/api/v1/insights/salary-heatmap` | Lương công khai nghề × cấp (SD1 câu 1.4), tính bằng SQL trên Mart `curated_jobs` | `city`, `level`, `job_family` |
+| `GET` | `/api/v1/insights/skill-combos` | Luật kết hợp kỹ năng (SD2), đọc Mart `skill_rules` | `min_support` (0,02), `min_confidence` (0,5), `min_lift` (1,2), `job_family_scope` (`ALL`), `antecedent`, `limit` (100) |
+| `GET` | `/api/v1/insights/clusters` | Tọa độ PCA và nhãn cụm (SD3), đọc Mart `job_clusters` | `city`, `level`, `job_family` |
+| `GET` | `/api/v1/insights/filters/options` | Giá trị hợp lệ của bộ lọc (`job_family`, `seniority_level`, `province_norm`) | Không |
+
+Bảng trên khớp `monitoring/backend/app/api/v1/endpoints/insights.py` ngày 17/11/2026. Mọi endpoint Insights trả HTTP 503 `MART_UNAVAILABLE` khi không kết nối được Mart. Endpoint cho SD1 (đọc `sd1_*.json`), tin khác hoặc mới (SD3 câu 3.3), SD4 và SD5 **chưa có**; khi thêm thì đọc file kết quả của Mining hoặc bảng Mart nạp từ đó (mục 3.1).
 
 ### 4.2. Đặc Tả Request & Response Schemas (Pydantic Models)
 
@@ -310,10 +285,11 @@ class JobClustersResponse(BaseModel):
 Nhằm khắc phục triệt để vấn đề `VIZ-3` (phụ thuộc vào báo cáo tĩnh cũ) và tuân thủ nguyên tắc `Real Numbers Only`:
 
 #### 1. Cấu Trúc Bảng Dữ Liệu Trong PostgreSQL Data Mart (`vn_it_jobs`):
-- `curated_jobs`: Chứa toàn bộ việc làm IT đã chuẩn hóa (ID, Title, Company, 12 Job Family, Seniority, Lương min/max/avg, 34 Tỉnh thành, Mảng kỹ năng `skills_array TEXT[]`). Đánh B-Tree trên `job_family`, `seniority_level`, `province_norm` và GIN index trên `skills_array`.
+- `curated_jobs`: Chứa toàn bộ việc làm IT đã chuẩn hóa (ID, Title, Company, `job_family` 10 nhóm + Other, `seniority` 5 nhãn, Lương min/max/avg, 34 Tỉnh thành, Mảng kỹ năng `skills_array TEXT[]`). Đánh B-Tree trên `job_family`, `seniority_level`, `province_norm` và GIN index trên `skills_array`.
 - `skill_rules`: Chứa danh sách luật kết hợp FP-Growth (`antecedents TEXT[]`, `consequents TEXT[]`, `support`, `confidence`, `lift`, `job_family_scope`). Đánh GIN trên `antecedents` và B-Tree trên `lift`.
 - `job_clusters`: Chứa dữ liệu phân cụm và tọa độ giảm chiều (`job_id`, `cluster_id`, `cluster_name`, `pca_x`, `pca_y`, `pca_z`, `is_outlier`, `glosh_outlier_score`).
-- `job_anomalies`: Chứa danh sách các bài đăng bất thường phát hiện bởi Isolation Forest và GLOSH score (`job_id`, `anomaly_score`, `reason_code`, `detected_by`).
+- `job_anomalies`: Chứa danh sách tin "khác hoặc mới" do Isolation Forest và GLOSH gắn cờ (`job_id`, `anomaly_score`, `reason_code`, `detected_by`).
+- **Nạp Mart:** `scripts/load_mart_from_parquet.py` (`--dry-run` trước). Script còn đọc `curated_jobs` từ `data/curated/curated_flat_golden_jobs.parquet`, tên cũ; bảng sạch cuối nay là `data/preprocessing/04_normalization/all.parquet` (spec 05 mục 4.1, PRE-39). Script biến cột list thành chuỗi và chưa có bảng SHAP (MINE-5). Chưa có bảng cho SD1 và SD5.
 
 #### 2. Chính Sách Xử Lý Khi Chưa Có Dữ Liệu (Zero-Mock / Empty State):
 Khi các bảng trong Mart chưa được nạp dữ liệu (pipeline chưa chạy xong):
@@ -403,17 +379,19 @@ Thay vì duy trì một file `CrawlingPage.tsx` khổng lồ, toàn bộ mã ngu
 7. **`CdcDiffModal.tsx`:** Hộp thoại pop-up so sánh nội dung khi có thay đổi version giữa các lần cào lại.
 
 ### 5.2. Cấu Trúc Thành Phần Phân Hệ Insights (Market Insights Components)
-Toàn bộ thành phần phân tích thị trường được tổ chức tại `monitoring/frontend/src/components/insights/`:
+Thành phần Insights đặt tại `monitoring/frontend/src/components/insights/`. Ngày 17/11/2026 thư mục này **chỉ có** `CareerClusterScatterCard.tsx` (scatter cụm, SD3); trang `pages/MarketInsightsPage.tsx` chưa gắn route. Cấu trúc dưới đây là **đề xuất**, mỗi file ứng với một trang ở mục 3.2:
 
 ```
 monitoring/frontend/src/components/insights/
-├── MarketInsightsContainer.tsx       # Container quản lý bộ lọc chung & nạp dữ liệu
-├── GlobalInsightFilterBar.tsx        # Thanh lọc: Level, 34 Tỉnh thành, Domain, Nguồn
-├── SalaryHeatmapCard.tsx             # Card ma trận nhiệt mức lương (Recharts / ECharts)
-├── SkillAssociationGraph.tsx         # Đồ thị mạng lưới liên kết kỹ năng (Force-directed)
-├── SkillRulesTable.tsx               # Bảng tra cứu luật kết hợp (Support, Conf, Lift)
-├── CareerClusterScatterCard.tsx      # Biểu đồ phân cụm nghề nghiệp K-Means (PCA 2D)
-└── StudentActionRecommendations.tsx  # Khối khuyến nghị lộ trình kỹ năng cho sinh viên
+├── InsightFilterBar.tsx         # Bộ lọc chung: nghề, cấp, tỉnh, sàn (mục 3.3)
+├── MarketOverview*.tsx          # SD1: cơ cấu nghề, cấp, tỉnh, lương công khai, tin người mới, theo tháng
+├── SkillTop15Table.tsx          # SD2: top 15 theo nghề, 2 bảng (kỹ thuật / mềm, ngoại ngữ)
+├── SkillRulesTable.tsx          # SD2: bảng luật (support, confidence, lift)
+├── SkillAssociationGraph.tsx    # SD2: đồ thị kỹ năng
+├── CareerClusterScatterCard.tsx # SD3: scatter PCA 2D/3D (đã có)
+├── OtherOrNewJobsTable.tsx      # SD3 câu 3.3: tin "mới" / "khác" kèm lý do
+├── SkillValueCard.tsx           # SD4: giá trị kỹ năng, lương ước tính
+└── LearningPathCard.tsx         # SD5: lộ trình học theo nghề
 ```
 
 ### 5.3. Tiêu Chuẩn Thẩm Mỹ & Responsive (Design Tokens)

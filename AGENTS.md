@@ -1,8 +1,14 @@
 # MASTER SYSTEM BLUEPRINT & AGENT OPERATIONAL PLAYBOOK
 
-> **Dự án:** VN-IT-Job-Mining — Hệ thống Tích hợp & Khai phá Dữ liệu Thị trường Lao động IT Việt Nam  
+> **Đề tài:** Tích hợp và khai phá dữ liệu thị trường lao động phục vụ phân tích nghề nghiệp và kỹ năng trong IT (repo: VN-IT-Job-Mining)  
 > **Thời điểm nghiên cứu:** Tháng 10 – Tháng 11/2026 trên 8 sàn tuyển dụng hàng đầu: **TopCV, TopDev, VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints, JobsGO**  
-> **Mục tiêu nghiên cứu:** Phân tích nhu cầu kỹ năng (Skills Intelligence) và định hình nghề nghiệp (Occupational Demand) trong ngành CNTT, hướng tới đối tượng người dùng là **Sinh viên IT Việt Nam**.
+> **Người dùng chính:** Sinh viên IT sắp ra trường và người mới vào nghề.  
+> **5 mục tiêu (SD1–SD5)**, xếp theo tầng BI → khai phá không giám sát → train model. Định nghĩa đầy đủ, câu hỏi và cách trả lời ở [`docs/target/`](docs/target/00_de_tai.md):
+> - **SD1 · BI:** bức tranh toàn cảnh thị trường IT T9–T11/2026 (nghề, cấp, tỉnh, lương công khai, yêu cầu với người mới).
+> - **SD2 · Không giám sát:** gói kỹ năng hay đi cùng nhau và kỹ năng hiếm (FP-Growth).
+> - **SD3 · Không giám sát:** nhóm việc thật sự theo nội dung tin, so với nhóm nghề, và tin khác hoặc mới (phân cụm, Isolation Forest).
+> - **SD4 · Train model:** kỹ năng nào đáng tiền, ước tính lương cho tin "thỏa thuận" (Random Forest + SHAP).
+> - **SD5 · Train model + tổng hợp:** người mới vào từng nghề nên học kỹ năng gì, theo thứ tự nào.
 
 ---
 
@@ -10,7 +16,7 @@
 
 Hệ thống được thiết kế theo mô hình **Modern ELT (Extract - Load - Transform)** kết hợp kiến trúc **Medallion Lakehouse** trên nền tảng **Cloudflare R2 Object Storage** và **PostgreSQL Analytics Data Mart** (tận dụng cụm PostgreSQL có sẵn trong Docker Compose của Apache Airflow). 
 
-Khác với các pipeline ETL cổ điển cố ép dữ liệu vào một schema định sẵn ngay khi cào, hệ thống duy trì tính bất biến của dữ liệu thô (Bronze Zone), sau đó tinh chế dữ liệu qua quy trình chuẩn 4 giai đoạn (Collection → Pre-processing → Processing → Mining, xem mục *Quy trình chuẩn* bên dưới) để tạo ra tập dữ liệu **Golden Master Parquet** phục vụ các thuật toán Data Mining unsupervised, đồng thời nạp vào PostgreSQL Mart để phục vụ các API Dashboard và truy vấn SQL phân tích tốc độ cao.
+Khác với các pipeline ETL cổ điển cố ép dữ liệu vào một schema định sẵn ngay khi cào, hệ thống duy trì tính bất biến của dữ liệu thô (Bronze Zone), sau đó tinh chế dữ liệu qua quy trình chuẩn 4 giai đoạn (Collection → Pre-processing → Processing → Mining, xem mục *Quy trình chuẩn* bên dưới) để tạo ra tập dữ liệu **Golden Master Parquet** phục vụ 5 mục tiêu SD1–SD5 (BI, khai phá không giám sát, train model), đồng thời nạp vào PostgreSQL Mart để phục vụ các API Dashboard và truy vấn SQL phân tích tốc độ cao.
 
 ```mermaid
 flowchart TD
@@ -41,8 +47,9 @@ flowchart TD
         F1["Selection → Extraction → Transformation → Construction\n+ Encoding"]
     end
 
-    subgraph Mining["4. Mining (Unsupervised)"]
+    subgraph Mining["4. Mining (lõi unsupervised + tầng train model)"]
         M1["Clustering"] & M2["Association Rules"] & M3["Anomaly Detection"] & M4["Dimensionality Reduction"]
+        M5["Train model: RF + SHAP (SD4, SD5)"]
     end
 
     subgraph Serving["5. PostgreSQL Analytics Mart & Central Observatory"]
@@ -72,10 +79,12 @@ Dữ liệu đầu ra của pipeline phải thỏa **5 tiêu chí**: **Completen
 | 1. Collection (`collection/`) | Cào, lọc, khử trùng (ledger, hash); đầu ra JSON chuẩn, đầy đủ trường của nguồn, raw bất biến | Completeness, Timeliness, Uniqueness |
 | 2. Pre-processing (`preprocessing/`) | Clean sơ bộ: imputation, deduplicate, noise, typecasting, string standardization | Accuracy, Consistency, Uniqueness |
 | 3. Processing | Feature Engineering 4 bước: feature selection, extraction, transformation, construction; kèm encoding | Consistency, Completeness |
-| 4. Mining (`mining/`) | Unsupervised learning: clustering, association rules, anomaly detection, dimensionality reduction | Dùng dữ liệu đã đạt 5 tiêu chí |
+| 4. Mining (`mining/`) | Lõi unsupervised: clustering, association rules, anomaly detection, dimensionality reduction (SD2, SD3). Tầng train model có giám sát: Random Forest + SHAP (SD4, SD5) | Dùng dữ liệu đã đạt 5 tiêu chí |
 
+- Thứ tự phân tích theo 5 mục tiêu là **BI (SD1) → khai phá không giám sát (SD2, SD3) → train model (SD4, SD5)**, xem `docs/target/`.
 - Được dùng model ML/AI hỗ trợ xử lý, nhưng phải chạy trên **dữ liệu thật**, không mock, kết quả tái lập được (xem Nguyên tắc 1).
-- Code hiện tại còn tổ chức theo `clean/ integration/ transformation/ normalization/ encoding/` và `mining/` có thể còn thuật toán supervised (Random Forest + SHAP): xem là lệch so với quy trình chuẩn, chưa phải chuẩn đích.
+- Từ 16/11/2026, train model (Random Forest + SHAP trong `mining/salary_model.py`) là bước **chính thức** phục vụ SD4 và SD5, không còn là phần phụ. Unsupervised vẫn là lõi của Mining.
+- Code hiện tại còn tổ chức theo `clean/ integration/ transformation/ normalization/ encoding/`: xem là lệch so với quy trình chuẩn, chưa phải chuẩn đích.
 
 ---
 
@@ -85,19 +94,19 @@ Toàn bộ hệ thống được đặc tả chi tiết qua 13 tài liệu chu�
 
 | Mã Đặc Tả | Tên Tài Liệu Đặc Tả | Đường Dẫn Tệp Trong Repo | Phạm Vi Nghiệp Vụ & Mục Tiêu Kỹ Thuật | Trạng Thái |
 |:---:|---|---|---|:---:|
-| **`SPEC-01`** | **Đặc tả Sản phẩm & Nghiên cứu Thị trường (Product Spec)** | [`docs/spec/01_product_spec.md`](docs/spec/01_product_spec.md) | Định nghĩa 5 mục tiêu chiến lược SD1-SD5, phạm vi thời gian tháng 10-11/2026, 8 sàn tuyển dụng, chân dung người dùng sinh viên CNTT | Hoàn tất |
-| **`SPEC-02`** | **Giới hạn Phạm vi & Ràng buộc Kỹ thuật (Out of Scope)** | [`docs/spec/02_out_of_scope.md`](docs/spec/02_out_of_scope.md) | Phân định ranh giới nghiệm thu đợt này, các thành phần ngoài phạm vi, chính sách dùng ML/AI (chỉ trên dữ liệu thật) | Hoàn tất |
+| **`SPEC-01`** | **Đặc tả Sản phẩm & Nghiên cứu Thị trường (Product Spec)** | [`docs/spec/01_product_spec.md`](docs/spec/01_product_spec.md) | Tên đề tài, bối cảnh, chân dung người dùng, phạm vi tháng 10–11/2026 và 8 sàn tuyển dụng. 5 mục tiêu SD1–SD5 định nghĩa ở `docs/target/` | Hoàn tất |
+| **`SPEC-02`** | **Giới hạn Phạm vi & Ràng buộc Kỹ thuật (Out of Scope)** | [`docs/spec/02_out_of_scope.md`](docs/spec/02_out_of_scope.md) | Ranh giới đợt này; ngoài phạm vi: phía ứng viên và đào tạo, dự báo xu hướng, kết luận nhân quả; ML/AI chỉ trên dữ liệu thật | v1.1.0, đã duyệt 17/11 |
 | **`SPEC-03`** | **Vòng đời Khai phá Dữ liệu (CRISP-DM & KDD Lifecycle)** | [`docs/spec/03_data_mining_lifecycle.md`](docs/spec/03_data_mining_lifecycle.md) | Tích hợp chuẩn CRISP-DM với mô hình Modern ELT, chuyển đổi từ Raw Lakehouse sang Golden Master | Hoàn tất |
 | **`SPEC-04`** | **Đặc tả Kỹ thuật Hạ tầng Thu thập Dữ liệu (Collection Spec)** | [`docs/spec/04_collection_spec.md`](docs/spec/04_collection_spec.md) | Kiến trúc Hai Pha (Discovery & Detail), URL Ledger contract, TLS Impersonation, Safe Skip trên 8 sàn | Hoàn tất |
-| **`SPEC-05`** | **Đặc tả Tiền xử lý & Chất lượng Dữ liệu (Preprocessing Spec)** | [`docs/spec/05_preprocessing_spec.md`](docs/spec/05_preprocessing_spec.md) | Pre-processing: imputation, deduplicate, noise, typecasting, string standardization; bộ lọc IT 2 tầng, loại bỏ JD rỗng, khử trùng lặp nội sàn theo mã job_id | Hoàn tất |
-| **`SPEC-06`** | **Đặc tả Biến đổi Dữ liệu & Trích xuất Thuộc tính (Processing Spec)** | [`docs/spec/06_processing_spec.md`](docs/spec/06_processing_spec.md) | Hợp nhất 8 nguồn về Target Schema, `json_flattener.py`, Feature Engineering (selection, extraction, transformation, construction), encoding | Hoàn tất |
-| **`SPEC-07`** | **Đặc tả Thuật toán & Khai phá Dữ liệu (Mining Spec)** | [`docs/spec/07_mining_spec.md`](docs/spec/07_mining_spec.md) | Mining unsupervised: clustering (K-Means + PCA), association rules (FP-Growth), anomaly detection, dimensionality reduction | Hoàn tất |
-| **`SPEC-08`** | **Đặc tả Đánh giá & Kiểm chứng Tri thức (Evaluation Spec)** | [`docs/spec/08_evaluation_spec.md`](docs/spec/08_evaluation_spec.md) | Tiêu chí đánh giá Lift, Silhouette Score, $R^2$ hồi quy lương, đối chiếu tri thức thực tiễn cho sinh viên | Hoàn tất |
-| **`SPEC-09`** | **Đặc tả Phân hệ Giám sát & Bảng điều khiển (Monitoring Spec)** | [`docs/spec/09_monitoring_spec.md`](docs/spec/09_monitoring_spec.md) | Central Observatory: Data Pipeline Ops Cockpit + Market Insights Dashboard (Salary Heatmap, Skills, Clusters) | Hoàn tất |
-| **`SPEC-10`** | **Kiến trúc Tổng thể Hệ thống Lakehouse (Architecture Spec)** | [`docs/spec/10_architecture.md`](docs/spec/10_architecture.md) | Kiến trúc End-to-End Cloudflare R2 Medallion Lakehouse, Apache Airflow Postgres backend, Zero Egress | Hoàn tất |
-| **`SPEC-11`** | **Các Bản ghi Quyết định Kiến trúc (Technical Decisions - ADR)** | [`docs/spec/11_technical_decisions.md`](docs/spec/11_technical_decisions.md) | Biện luận kỹ thuật ADR-01 đến ADR-05: R2 vs DWH, Parquet vs JSON, Chống bot, Khử trùng 2 lớp, Bộ 3 thuật toán | Hoàn tất |
-| **`SPEC-12`** | **Tiêu chuẩn Lập trình & Quy tắc An toàn Mã nguồn (Coding Standards)** | [`docs/spec/12_coding_standards.md`](docs/spec/12_coding_standards.md) | Chuẩn Python 3.12, 14 tiêu chuẩn Crawler C1-C14, Quy tắc bảo mật .env, Pytest phân tầng & Zero-Network | Hoàn tất |
-| **`SPEC-13`** | **Hướng dẫn Vận hành Hàng ngày & Sổ tay Sự cố (Working Documentation)** | [`docs/spec/13_working_documentation.md`](docs/spec/13_working_documentation.md) | Thiết lập môi trường từ 0, lệnh CLI Collection/Preprocessing/Mining/Monitoring, Runbook khắc phục 5 sự cố | Hoàn tất |
+| **`SPEC-05`** | **Đặc tả Tiền xử lý & Chất lượng Dữ liệu (Preprocessing Spec)** | [`docs/spec/05_preprocessing_spec.md`](docs/spec/05_preprocessing_spec.md) | Bước 00–04 theo khuôn chung (mục đích theo SD, code, đầu vào, đầu ra, report, luật, kiểm tra); bảng sạch cuối; `posted_month` thay `posted_date` | v3.0.0, đã duyệt 17/11 |
+| **`SPEC-06`** | **Đặc tả Biến đổi Dữ liệu & Trích xuất Thuộc tính (Processing Spec)** | [`docs/spec/06_processing_spec.md`](docs/spec/06_processing_spec.md) | Bước 07–12 (section, kỹ năng, tách từ, đặc trưng 10/10b/10c/10d, e5; TF-IDF đã bỏ) theo khuôn chung; bước 11 chuyển sang M5 | v3.0.0, đã duyệt 17/11 |
+| **`SPEC-07`** | **Đặc tả Thuật toán & Khai phá Dữ liệu (Mining Spec)** | [`docs/spec/07_mining_spec.md`](docs/spec/07_mining_spec.md) | M1–M6 theo 3 tầng (BI, không giám sát, train model RF + SHAP) và SD1–SD5; mỗi bước ghi phần còn thiếu so với SD | v3.0.0, đã duyệt 17/11 |
+| **`SPEC-08`** | **Đặc tả Đánh giá & Kiểm chứng Tri thức (Evaluation Spec)** | [`docs/spec/08_evaluation_spec.md`](docs/spec/08_evaluation_spec.md) | Nghiệm thu theo từng SD (ngưỡng chờ chốt PRE-36), chất lượng dữ liệu đầu vào, sanity S-01..S-06 | v3.0.0, đã duyệt 17/11 |
+| **`SPEC-09`** | **Đặc tả Phân hệ Giám sát & Bảng điều khiển (Monitoring Spec)** | [`docs/spec/09_monitoring_spec.md`](docs/spec/09_monitoring_spec.md) | Central Observatory: Ops Cockpit + Market Insights chia trang theo SD1–SD5 (đa số chưa có code) | v1.1.0, đã duyệt 17/11 |
+| **`SPEC-10`** | **Kiến trúc Tổng thể Hệ thống Lakehouse (Architecture Spec)** | [`docs/spec/10_architecture.md`](docs/spec/10_architecture.md) | R2 Medallion Lakehouse, đường dẫn thật từng tầng, Airflow chỉ cho crawl; pre-processing/processing/mining chạy bằng CLI | v2.1, đã duyệt 17/11 |
+| **`SPEC-11`** | **Các Bản ghi Quyết định Kiến trúc (Technical Decisions - ADR)** | [`docs/spec/11_technical_decisions.md`](docs/spec/11_technical_decisions.md) | ADR-01 đến ADR-07: R2, Parquet, chống bot, khử trùng, bộ thuật toán, 5 mục tiêu SD + train model chính thức, `posted_month` | v1.1.0, đã duyệt 17/11 |
+| **`SPEC-12`** | **Tiêu chuẩn Lập trình & Quy tắc An toàn Mã nguồn (Coding Standards)** | [`docs/spec/12_coding_standards.md`](docs/spec/12_coding_standards.md) | Chuẩn Python 3.12, 14 tiêu chuẩn Crawler C1-C14, Quy tắc bảo mật .env, Pytest phân tầng (gồm processing, mining) & Zero-Network | v1.1.0, đã duyệt 17/11 |
+| **`SPEC-13`** | **Hướng dẫn Vận hành Hàng ngày & Sổ tay Sự cố (Working Documentation)** | [`docs/spec/13_working_documentation.md`](docs/spec/13_working_documentation.md) | Thiết lập môi trường, lệnh CLI theo chuỗi 01→04→07→12_e5 và M1–M6, Monitoring, Runbook 5 sự cố | v1.1.0, đã duyệt 17/11 |
 
 ---
 
@@ -128,7 +137,7 @@ Khi làm việc trong repository này, các AI Agent (Claude Code, Google Antigr
 ### 6. Quy Trình Sửa Lỗi Chuẩn Mực
 - Khi khắc phục xong một sự cố, Agent phải:
   1. Ghi nhận lỗi vào `docs/issue_log.md` theo định dạng `L-<số tiếp theo>` (Lỗi $\rightarrow$ Nguyên nhân $\rightarrow$ Cách xử lý $\rightarrow$ Bằng chứng kiểm chứng).
-  2. Xóa mục lỗi tương ứng khỏi danh sách `KNOWN_ISSUED.md`.
+  2. Xóa mục lỗi tương ứng khỏi danh sách `docs/KNOWN_ISSUED.md`.
   3. Bổ sung cảnh báo vào file `CLAUDE.md` thuộc thư mục liên quan nếu đó là bẫy kỹ thuật dễ tái diễn.
 
 ---
@@ -139,7 +148,7 @@ Khi làm việc trong repository này, các AI Agent (Claude Code, Google Antigr
 VN-IT-Job-Mining/
 ├── AGENTS.md                      # [BẠN ĐANG Ở ĐÂY] Master Blueprint & Operational Playbook
 ├── CLAUDE.md                      # Hướng dẫn quy tắc ngắn gọn cho Claude Code CLI
-├── KNOWN_ISSUED.md                # Danh mục các vấn đề tồn đọng đang mở
+│   (việc đang mở: docs/KNOWN_ISSUED.md)
 ├── Makefile                       # Lệnh tắt chuẩn hóa: make test, make lint, make monitor
 ├── run.py                         # Điểm vào thực thi crawler: --phase discover|detail, --source <name>
 ├── start_monitoring.sh            # Script khởi động buồng lái giám sát FastAPI + Vite
@@ -162,7 +171,7 @@ VN-IT-Job-Mining/
 │   ├── encoding/                  # Multi-hot encoding ma trận kỹ năng
 │   └── dictionaries/              # provinces_34.json, skills.json, it_policy.json
 │
-├── mining/                        # GIAI ĐOẠN 4: MINING (clustering, rules, anomaly, giảm chiều)
+├── mining/                        # GIAI ĐOẠN 4: MINING (clustering, rules, anomaly, giảm chiều; salary_model cho SD4)
 │
 ├── monitoring/                    # PHÂN HỆ GIÁM SÁT CENTRAL OBSERVATORY
 │   ├── CLAUDE.md                  # Quy tắc Zero-Auth, Real Numbers, palette tokens
@@ -174,6 +183,7 @@ VN-IT-Job-Mining/
 │   └── dags/                      # dag_discovery_daily, crawler_detail_<source>
 │
 ├── docs/                          # TÀI LIỆU DỰ ÁN
+│   ├── target/                    # [ĐỌC TRƯỚC] Đề tài + 5 mục tiêu SD1–SD5 (00 đề tài, 01–05 từng SD)
 │   ├── spec/                      # [QUAN TRỌNG] 13 tài liệu đặc tả chuẩn mực (01 đến 13)
 │   ├── issue_log.md               # Nhật ký ghi nhận toàn bộ lỗi đã xử lý (L-01 đến L-28+)
 │   └── presentation/              # Slide báo cáo và thuyết trình đồ án tốt nghiệp

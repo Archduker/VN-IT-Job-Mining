@@ -6,21 +6,21 @@ Bản đồ tài liệu. Khi tài liệu mâu thuẫn với code thì tin code; 
 
 | Thư mục / file | Nội dung | Ghi chú |
 |---|---|---|
-| `spec/` | Đặc tả dự án `01_product_spec.md` … `13_working_documentation.md` | Chuẩn hiện hành của dự án |
+| `target/` | Đề tài và 5 mục tiêu SD1–SD5: `00_de_tai.md` (bối cảnh, vì sao chọn 5 SD), `01`–`05` (mỗi SD gồm câu hỏi, dữ liệu, cách trả lời, tiêu chí đánh giá) | **Đọc trước tiên.** Spec, code và báo cáo phải phục vụ các mục tiêu ở đây |
+| `spec/` | Đặc tả dự án `01_product_spec.md` … `13_working_documentation.md` | Chuẩn hiện hành. **`03_data_mining_lifecycle.md` là tài liệu mô tả quy trình**: nối SD1–SD5 với từng bước (mã bước, thư mục code, đầu vào, đầu ra). Spec 05 (pre-processing), 06 (processing), 07 (mining), 08 (đánh giá) đặc tả chi tiết từng bước và phải dùng đúng mã bước của spec 03 |
 | `spec/crawl/<nguồn>.md` | Phân tích từng nguồn | Nhật ký lúc làm crawler. Ô "Hiện trạng 03/11/2026" ở đầu file là phần đúng với code; phần dưới có thể cũ |
-| `spec/preprocessing/` | Thiết kế pre-processing | `00_architecture_overview.md` là thiết kế cũ (4 bước). Refactor 5 bước Clean → Integration → Transformation → Normalization → Encoding: đặc tả trong `spec/preprocessing/spec/P0…P5` |
-| `../Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` | Thiết kế gốc 13 bước pre-processing/processing (thư mục gốc repo) | Spec `05`, `06`, `preprocessing/spec/P0–P5` bám theo file này; 10b, 10c chưa chốt |
+| `spec/preprocessing/` | Chỉ còn `data_issues_2026-11-03.*` (do `scripts/report_data_issues.py` ghi, `scripts/build_slides.py` đọc) | Thiết kế P0–P5, PH0–PH9 và nhật ký P5 đã gộp vào spec 05, 06 và xóa 17/11/2026 |
 | `spec/monitoring/` | Đặc tả trang Pre-processing | `preprocessing_page_spec.md` |
+| `spec/fixes/` | Đề bài sửa lỗi F01–F13 | Thực chất là việc cần làm; về sau nên chuyển sang `tasks/` |
 | `guides/` | Hướng dẫn kỹ thuật | `01_modern_data_mining_overview.md` (thiết kế ban đầu), `02_crawling_architecture_guide.md`, `two_phase_r2_crawler_playbook.md`, `crawler_output_checklist.md`, `crawler_analysis_methodology.md`, `cloud_r2_setup_guide.md`, `03_airflow_guide.md`, `03_eda_and_integration_guide.md`, `git_workflow.md` |
 | `tasks/` | Phân công và hướng dẫn theo người | `README.md` là mục lục; `legacy_TASKS.md` là kế hoạch gốc (cũ) |
-| `prompting/` | Prompt cho agent, một prompt mỗi phase | Khuôn trong `prompting/README.md` |
+| `prompting/` | Prompt cho agent, một prompt mỗi phase (PH0–PH9) | Khuôn và bảng phase → mục spec trong `prompting/README.md` |
 | `reports/` | Báo cáo môn học (.md, .docx) | Sinh bằng `scripts/build_course_reports.py` |
 | `presentation/` | Slide và kịch bản | Sinh bằng `scripts/build_slides.py`; `slides_raw_problems.html` (vấn đề raw đo trên R2) sinh bằng `scripts/report_raw_problems_r2.py` |
-| `archive/` | Lịch sử | Không sửa, không dùng làm căn cứ |
 | `issue_log.md` | Nhật ký lỗi đã xử lý | Lỗi → Nguyên nhân → Cách xử lý → Kiểm chứng |
 | `code_quality.md` | Chất lượng code | Sinh tự động bằng `make quality`; không sửa tay |
 
-Việc còn mở nằm ở `KNOWN_ISSUED.md` (thư mục gốc), không nằm trong `docs/`.
+Việc còn mở nằm ở `docs/KNOWN_ISSUED.md`.
 
 ## Khi sửa xong một lỗi
 

@@ -1,5 +1,7 @@
 # Prompt PH7: dữ liệu thiếu và ngoại lai (bước 04, luật M1-M9)
 
+> **17/11/2026:** đặc tả gốc của prompt này (`docs/spec/preprocessing/spec/...`) đã gộp vào `docs/spec/05_preprocessing_spec.md` và bị xóa. Đọc spec 05 theo bảng trong `docs/prompting/README.md`; các đường dẫn cũ bên dưới chỉ còn giá trị lịch sử.
+
 > **Nháp, chờ bạn duyệt.** Làm sau khi PH6 được duyệt và code xong (cần 5 cấp bậc, `job_family`, `work_mode`, `tinh_chinh` đã sửa). Các điểm **[CẦN CHỐT]** `X1`-`X12` trong spec phải chốt trước, nhất là X3 (khoảng lương), X4 (winsorize), X6 (ngưỡng số năm sang cấp bậc). Chỗ nào ghi "[ĐỀ XUẤT]" là mặc định nếu bạn không đổi.
 
 ## 1. Ngữ cảnh

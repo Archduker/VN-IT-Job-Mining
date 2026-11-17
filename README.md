@@ -1,4 +1,6 @@
-# VN-IT-Job-Mining: Nền Tảng Thu Thập & Tiền Xử Lý Dữ Liệu Tuyển Dụng IT Việt Nam
+# Tích hợp và khai phá dữ liệu thị trường lao động phục vụ phân tích nghề nghiệp và kỹ năng trong IT
+
+> Repo: **VN-IT-Job-Mining**. Đề tài và 5 mục tiêu SD1–SD5 (BI → khai phá không giám sát → train model): xem [`docs/target/00_de_tai.md`](docs/target/00_de_tai.md). Nhãn SD trong các sơ đồ bên dưới đã đổi theo bộ mới: nhóm nghề thuộc SD1, chuẩn hóa kỹ năng thuộc SD2.
 
 > **Cập nhật 10/11/2026: dự án bỏ JEV, OpenJev, Qwen và Gemini; model duy nhất là `VietAI/envit5-translation` (chạy local) để dịch JD tiếng Anh.** Mọi đoạn trong file này nói về JEV, LLM, GenAI, dịch JD, `--use-api`, cache hay sổ tiền API đã hết hiệu lực. Thay bằng luật if-else: xem `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6 và `docs/issue_log.md` L-28.
 
@@ -29,7 +31,7 @@ Hệ thống được thiết kế theo ranh giới đanh thép (**Ironclad Boun
 |  * Giao thức EDA-First: Bắt buộc đọc Bệnh án EDA trước khi can thiệp mã nguồn                      |
 |  * Step 1: Schema Mapping & JSON Flattening -> Ép phẳng JSON về Single Flat Staging Table (20 cột) |
 |  * Step 2: Data Transformation -> Cascade Salary Parser (Regex + JD Scanner), USD->VND, Parse Date|
-|  * Step 3: Text & Skill Processing -> Bullet Stitching, 12 Job Families (SD2), ESCO Taxonomy (SD3) |
+|  * Step 3: Text & Skill Processing -> Bullet Stitching, 12 Job Families (SD1), ESCO Taxonomy (SD2) |
 |  * Step 4: Missing Values -> Bóc trần 9+ Sneaky Null Markers, bảo toàn MNAR, GenAI JD Imputer     |
 |  * Step 5: Outlier & Quality Rules -> Kiểm định IQR, sửa 3 lỗi nhập liệu số, Winsorization P1-P99  |
 |  * Step 6: Deduplication & Record Linkage -> Blocking + Cosine Semantic Match -> Golden Record    |
@@ -37,7 +39,7 @@ Hệ thống được thiết kế theo ranh giới đanh thép (**Ironclad Boun
 |                                     │                                                              |
 |                                     ▼                                                              |
 |  [ĐẦU RA CUỐI CÙNG: GOLDEN MASTER DATASET] (curated_flat_golden_jobs.parquet)                     |
-|  Sẵn sàng phục vụ trọn vẹn 5 bài toán khai phá chuyên sâu: SD1 - SD5                               |
+|  Phục vụ 5 mục tiêu SD1-SD5 (xem docs/target/00_de_tai.md)                                         |
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
 ```
@@ -114,9 +116,9 @@ Khác với các pipeline truyền thống áp dụng công thức "mò mẫm" c
 |  [BƯỚC 2: TRANSFORMATION]              [BƯỚC 3: TEXT & SKILL PROCESSING]                          |
 |  * Cascade Salary Parser:              * Bullet Stitching: Nối dòng văn bản đứt gãy                |
 |    - Tầng 1: Header Regex              * Text Cleaner: Bỏ HTML rác, emoji, tag [HN], [HCM]         |
-|    - Tầng 2: JD Regex Scanner          * Taxonomy: Phân loại 12 Job Families chuẩn (SD2)           |
+|    - Tầng 2: JD Regex Scanner          * Taxonomy: Phân loại 12 Job Families chuẩn (SD1)           |
 |    - Tầng 3: GenAI Fallback            * Seniority: Chuẩn hóa 5 cấp bậc (Intern/Fresher -> Lead/Mgr)       |
-|  * Quy đổi USD->VND (25,400)           * ESCO IT Taxonomy: Chuẩn hóa biến thể kỹ năng (SD3)        |
+|  * Quy đổi USD->VND (25,400)           * ESCO IT Taxonomy: Chuẩn hóa biến thể kỹ năng (SD2)        |
 |  * Chuẩn hóa lương năm (/12), ngày ISO                                                             |
 |                     │                               │                                              |
 |                     └───────────────┬───────────────┘                                              |

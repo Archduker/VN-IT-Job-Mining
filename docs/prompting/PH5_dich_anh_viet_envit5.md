@@ -1,5 +1,7 @@
 # Prompt PH5: dịch JD tiếng Anh sang tiếng Việt bằng `VietAI/envit5-translation` (bước 4b)
 
+> **17/11/2026:** đặc tả gốc của prompt này (`docs/spec/preprocessing/spec/...`) đã gộp vào `docs/spec/05_preprocessing_spec.md` và bị xóa. Đọc spec 05 theo bảng trong `docs/prompting/README.md`; các đường dẫn cũ bên dưới chỉ còn giá trị lịch sử.
+
 > **Nháp, chờ bạn duyệt.** Phụ thuộc: PH0 spike (chưa có báo cáo lúc viết), PH3 (`lang`), PH4 (khử trùng). Các điểm **[CẦN CHỐT]** C1-C12 trong spec phải được chốt trước. "[ĐỀ XUẤT]" là mặc định nếu bạn không đổi. Mọi con số về tốc độ, VRAM, giới hạn token: **lấy từ báo cáo spike**, nếu chưa có thì việc đầu tiên của agent là dừng và báo.
 
 ## 1. Ngữ cảnh

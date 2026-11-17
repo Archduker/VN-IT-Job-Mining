@@ -1,5 +1,7 @@
 # Prompt PH2: đồng nhất schema (bước 02) và làm sạch ký tự (bước 03, T6)
 
+> **17/11/2026:** đặc tả gốc của prompt này (`docs/spec/preprocessing/spec/...`) đã gộp vào `docs/spec/05_preprocessing_spec.md` và bị xóa. Đọc spec 05 theo bảng trong `docs/prompting/README.md`; các đường dẫn cũ bên dưới chỉ còn giá trị lịch sử.
+
 > **Đã chốt và đã thực hiện (10/11/2026).** Quyết định ở mục 0 của spec PH2 ghi đè mọi "[ĐỀ XUẤT]" bên dưới: C0 (làm sạch ở 03), C7 (giữ tên cột cũ, thêm `*_norm`/`*_fold`), C3/C4/C13 (regex sửa, bullet chuẩn `- ` gồm `+`, lặp bước khi còn HTML/NFD tối đa 3 lần rồi cảnh báo, không dừng), C2 (`job_title` rỗng bị loại ở 02, I6), C10 (từ điển viết tắt chỉ có mục `approved=false` cho tới khi duyệt). Code: `preprocessing/common/text_clean.py`, `integration/schema.py`, các sửa trong `html_cleaner.py`, `json_flattener.py`, `integration/run.py`, `transformation/run.py`; test `tests/unit/test_text_clean.py`, `test_integration_step.py`.
 
 ## 1. Ngữ cảnh

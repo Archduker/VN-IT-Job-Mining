@@ -1,5 +1,7 @@
 # Prompt PH6: chuẩn hóa trường (bước 04) và gom chức danh về nhóm nghề
 
+> **17/11/2026:** đặc tả gốc của prompt này (`docs/spec/preprocessing/spec/...`) đã gộp vào `docs/spec/05_preprocessing_spec.md` và bị xóa. Đọc spec 05 theo bảng trong `docs/prompting/README.md`; các đường dẫn cũ bên dưới chỉ còn giá trị lịch sử.
+
 > **Nháp, chờ bạn duyệt.** Các điểm **[CẦN CHỐT]** `K1`-`K15` trong spec phải được chốt trước khi giao prompt này cho agent code, **nhất là K9 (taxonomy 12 nhóm)**, K4 (itviec), K5, K6. Chỗ nào prompt ghi "[ĐỀ XUẤT]" là mặc định nếu bạn không đổi.
 
 ## 1. Ngữ cảnh

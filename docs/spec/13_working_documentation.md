@@ -1,6 +1,6 @@
 # HƯỚNG DẪN VẬN HÀNH HÀNG NGÀY & RUNBOOK KHẮC PHỤC SỰ CỐ (DAY-TO-DAY OPERATIONS & RUNBOOK)
 
-> **Mã tài liệu:** `SPEC-13` | **Trạng thái:** Hoàn thiện & Hướng dẫn chính thức  
+> **Mã tài liệu:** `SPEC-13` | **Phiên bản:** 1.1.0 (17/11/2026: viết lại mục 3, 4 theo spec 05–07; mục 2 crawl không đổi) | **Trạng thái:** Đã duyệt 17/11/2026 (chặng 5)  
 > **Dự án:** VN-IT-Job-Mining — Hệ thống khai phá dữ liệu việc làm IT Việt Nam  
 > **Tài liệu liên quan:** [AGENTS.md](../../AGENTS.md), [09_monitoring_spec.md](09_monitoring_spec.md), [11_technical_decisions.md](11_technical_decisions.md), [12_coding_standards.md](12_coding_standards.md)
 
@@ -144,37 +144,45 @@ python scripts/sync_cloud_lakehouse.py --upload --source topcv
 
 ## 3. Quy Trình Vận Hành Tiền Xử Lý Dữ Liệu (Preprocessing Operations)
 
-Quy trình tiền xử lý chuyển đổi dữ liệu thô từ tầng Bronze sang Silver (`staging/`) và Gold (`curated/`).
+Pre-processing (spec 05) và Processing (spec 06) chạy chung một driver `scripts/run_preprocessing.py`, ghi trên máy vào `data/preprocessing/<bước>/` và `data/processing/<bước>/`, report vào `reports/preprocessing/<bước>/`, `reports/processing/<bước>/`. Thứ tự bước là `CHAIN` trong script (spec 03 mục 3).
 
 ```mermaid
 flowchart TD
-    BronzeRaw["Dữ liệu Raw JSON (Bronze)"] --> Step1["Bước 1: Clean\n(Lọc IT 2 tầng, bỏ rác, khử trùng nội sàn)"]
-    Step1 --> Step2["Bước 2: Integration\n(Làm phẳng JSON 8 nguồn -> all.parquet)"]
-    Step2 --> Step3["Bước 3: Transformation\n(Parse lương, kinh nghiệm, làm sạch văn bản)"]
-    Step3 --> Step4["Bước 4: Normalization\n(Chuẩn hóa 34 tỉnh, Taxonomy kỹ năng)"]
-    Step4 --> Step5["Bước 5: Encoding\n(Multi-Hot 230 kỹ năng -> features.parquet)"]
-    Step5 --> Golden["Bộ Dữ Liệu Golden Master (curated_flat_golden_jobs.parquet)"]
+    Raw["data/<nguồn>/raw/ (tải từ R2)"] --> S00["00 profiling"]
+    S00 --> S01["01 clean\n(lọc IT 2 tầng, chọn snapshot)"]
+    S01 --> S01b["01b deduplication\n(3 tầng, MinHash + Jaccard >= 0.85)"]
+    S01b --> S02["02 integration\n(8 nguồn -> 18 trường)"]
+    S02 --> S03["03 transformation\n(lương, kinh nghiệm, ngôn ngữ, dịch EN→VI)"]
+    S03 --> S04["04 normalization\n(10 nhóm nghề + Other, 5 cấp, 34 tỉnh, cờ thiếu và ngoại lai)"]
+    S04 --> Clean["Bảng sạch: data/preprocessing/04_normalization/all.parquet"]
+    Clean --> P07["07 sections → 08 skills → 09 tokens"]
+    P07 --> P10["10 features (10b/10c/10d) → 12_e5"]
+    P10 --> Mining["Mining M1–M6 (mục 4)"]
 ```
 
-### 3.1. Các Lệnh Thực Thi Pipeline 5 Bước
+### 3.1. Các lệnh chạy
 ```bash
-# Bước chuẩn bị: Đọc kết quả chẩn đoán khám phá dữ liệu (EDA) trước khi xử lý
+# Đọc chẩn đoán EDA trước khi sửa preprocessing của một nguồn
 python scripts/read_eda_diagnosis.py --source topcv
 
-# Chạy trọn vẹn chuỗi 5 bước tiền xử lý:
-python scripts/run_preprocessing.py --step all --source all   # thêm --dry-run để chỉ đo
+# Chạy cả chuỗi (pre-processing + processing):
+python scripts/run_preprocessing.py --step all --source all              # thêm --dry-run để chỉ đo
+python scripts/run_preprocessing.py --step all --source all --translate  # bật dịch envit5 (mặc định tắt)
 
-# Hoặc chạy từng bước độc lập khi cần debug:
-python preprocessing/clean/run.py
-python preprocessing/integration/run.py
-python preprocessing/transformation/run.py
-python preprocessing/normalization/run.py
-python preprocessing/encoding/run.py
+# Chạy một bước: --step nhận mã đầy đủ hoặc phần sau dấu "_"
+python scripts/run_preprocessing.py --step 01b_deduplication --source all
+python scripts/run_preprocessing.py --step features
 
-# Đẩy kết quả staging/ và curated/ lên Cloudflare R2:
-python scripts/push_preprocessing_to_r2.py          # chỉ so, không ghi
-# python scripts/push_preprocessing_to_r2.py --push   # ghi thật, chỉ khi đã được đồng ý
+# Đẩy kết quả lên Cloudflare R2 (vào curated/preprocessing/):
+python scripts/push_preprocessing_to_r2.py            # chỉ so, không ghi
+# python scripts/push_preprocessing_to_r2.py --push   # ghi thật, chỉ khi người dùng đã đồng ý
 ```
+
+Lưu ý (17/11/2026):
+- `PROCESSING_STEPS` trong code vẫn còn `12_tfidf`; bước này đã bỏ, việc gỡ code thuộc MINE-7.
+- `05_encoding` đã thay bằng bước 10, nhưng vẫn nằm trong `STEPS` (`preprocessing/common/__init__.py`), nên `--step all` vẫn chạy nó; đầu ra của nó không ai dùng (PRE-39).
+- Bước 00 profiling không nằm trong `CHAIN`; chạy riêng theo spec 05 mục 3.0.
+- `scripts/run_staging_integration_pipeline.py` là driver cũ ghi `data/staging/`, `data/curated/`; chuỗi chuẩn là `scripts/run_preprocessing.py`.
 
 ### 3.2. Quy Tắc Kiểm Tra Tính Bảo Toàn Dữ Liệu (Conservation Rule)
 Sau mỗi lần chạy, kiểm tra file báo cáo tại `reports/preprocessing/<bước>/_all.json`. Bắt buộc phải thỏa mãn phương trình:
@@ -185,15 +193,34 @@ Nếu xuất hiện sự thất thoát dữ liệu không giải thích được
 
 ## 4. Quy Trình Huấn Luyện & Khai Phá Dữ Liệu (Data Mining Operations)
 
-Quy trình thực thi bộ 3 thuật toán khai phá dữ liệu học thuật trên tập dữ liệu Golden Master (số bài đăng sau lọc: lấy từ báo cáo bước mới nhất, không ghi cứng):
+Mining (spec 07) chạy trên bảng sạch, `features.parquet` và `job_emb.npz`, ghi vào `mining/artifacts/` và `mining_metrics.json`. Số tin lấy từ report bước mới nhất, không ghi cứng. Thứ tự theo 3 tầng: BI → không giám sát → train model.
+
+| Bước | SD | `--only` | Trạng thái 17/11 |
+|---|---|---|---|
+| M1 BI | SD1 | `bi` (đề xuất) | Chưa có code (MINE-7) |
+| M2 FP-Growth | SD2 | `fp` | Có code |
+| M3 phân cụm | SD3 | `cluster` | Có code; chưa loại tin không có kỹ năng (MINE-7) |
+| M4 tin khác hoặc mới | SD3 | `anomaly` | Có code; chưa chia loại "mới" và "khác" |
+| M5 Random Forest + SHAP | SD4 | `salary` | Có code; chưa chạy thật (MINE-5) |
+| M6 lộ trình học | SD5 | `recommend` (đề xuất) | Chưa có code (MINE-7) |
 
 ```bash
-# Lõi unsupervised: luật kết hợp (fp), phân cụm + giảm chiều (cluster), bất thường (anomaly)
+# Tầng không giám sát (SD2, SD3)
 python -m mining.run_mining_pipeline --only fp,cluster,anomaly --dry-run   # bỏ --dry-run để ghi file
 
-# Phần phụ (supervised, ngoại lệ): hồi quy lương + SHAP
+# Tầng train model (SD4): Random Forest + SHAP, bước chính thức từ 16/11/2026
 python -m mining.run_mining_pipeline --only salary --dry-run
+python -m mining.run_mining_pipeline --only salary --no-shap --dry-run     # chạy nhanh, bỏ TreeSHAP
+
+# Kiểm logic trên dữ liệu tổng hợp (ghi vào mining/artifacts/_synthetic/, KHÔNG dùng để báo cáo)
+python -m mining.run_mining_pipeline --synthetic
 ```
+
+- Đầu vào mặc định `--golden` trong `mining/config.py` vẫn là tên cũ `data/curated/curated_flat_golden_jobs.parquet`; khi không có file đó thì dùng `data/preprocessing/04_normalization/all.parquet` (PRE-39).
+- Nạp kết quả vào PostgreSQL Mart cho trang Insights (spec 09 mục 4.3): `--curated-path` mặc định cũng là tên cũ, nên truyền bảng sạch tường minh:
+  ```bash
+  python scripts/load_mart_from_parquet.py --curated-path data/preprocessing/04_normalization/all.parquet --dry-run
+  ```
 
 ---
 
@@ -281,7 +308,7 @@ Hệ thống cung cấp kịch bản khởi động tự động `./start_monito
 
 ### Kịch Bản 4: Lỗi Tràn Bộ Nhớ (Out-Of-Memory) Khi Chạy Preprocessing / Mining
 - **Hiện tượng:** Tiến trình Python bị hệ điều hành tắt đột ngột với thông báo `Killed`, hoặc xuất hiện lỗi `MemoryError` khi tạo ma trận đặc trưng.
-- **Nguyên nhân:** Đọc toàn bộ các trường văn bản dài (HTML, Job Description) cùng lúc vào bộ nhớ RAM khi thực hiện One-Hot Encoding 230 cột kỹ năng.
+- **Nguyên nhân:** Đọc toàn bộ các trường văn bản dài (HTML, Job Description) cùng lúc vào bộ nhớ RAM khi tạo ma trận kỹ năng (bước 10), embedding e5 (bước 12_e5) hoặc TreeSHAP (M5).
 - **Cách khắc phục:**
   1. Áp dụng kỹ thuật chọn lọc cột (**Projection Pushdown**) của Apache Parquet. Chỉ đọc các cột cần thiết cho mô hình:
      ```python

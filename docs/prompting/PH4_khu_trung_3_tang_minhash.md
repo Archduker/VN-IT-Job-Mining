@@ -1,5 +1,7 @@
 # Prompt PH4: khử trùng lặp 3 tầng với MinHash (bước 01b, bước 4 của file thiết kế)
 
+> **17/11/2026:** đặc tả gốc của prompt này (`docs/spec/preprocessing/spec/...`) đã gộp vào `docs/spec/05_preprocessing_spec.md` và bị xóa. Đọc spec 05 theo bảng trong `docs/prompting/README.md`; các đường dẫn cũ bên dưới chỉ còn giá trị lịch sử.
+
 > **Nháp, chờ bạn duyệt.** Các điểm **[CẦN CHỐT]** (C1-C9) trong spec phải được chốt trước khi giao prompt này cho agent code. Chỗ nào ghi "[ĐỀ XUẤT]" là mặc định nếu bạn không đổi.
 
 ## 1. Ngữ cảnh

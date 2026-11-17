@@ -7,7 +7,7 @@ Số liệu báo cáo của Phúc là dữ liệu giả (`mining/synthetic.py`);
 
 ## Giải pháp
 1. Sau F05 và F06 (thang cấp bậc, đường vào), chạy mining trên `features.parquet` thật với `data/`; thay số trong báo cáo, bỏ chữ "dữ liệu giả".
-2. MINE-4: người dùng chọn một khoảng k; ghi vào spec 07 và sửa hai tài liệu còn lại.
+2. MINE-4: đã đóng 17/11/2026 (L-48): `k_fixed` = 10, quét 2–20.
 3. MINE-5: đổi cột list sang JSON/ARRAY Postgres, thêm bảng SHAP theo `scripts/sql/init_mart_schema.sql`; kiểm bằng test với DB mock.
 4. MINE-6: thêm ghi chú giới hạn (SHAP không phải nhân quả) vào báo cáo đồ án.
 

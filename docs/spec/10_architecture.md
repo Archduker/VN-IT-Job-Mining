@@ -3,8 +3,8 @@
 
 > **Tài liệu đặc tả kiến trúc hệ thống (System Architecture Specification)**  
 > **Dự án:** Phân tích thị trường việc làm IT Việt Nam (VN-IT-Job-Mining)  
-> **Phiên bản:** 2.0 — Cập nhật: Tháng 11/2026  
-> **Trạng thái:** Official Architectural Blueprint  
+> **Phiên bản:** 2.1 — Cập nhật: 17/11/2026 (đường dẫn theo spec 03, 05, 06, 07; Mining theo SD1–SD5; phần crawl giữ nguyên)  
+> **Trạng thái:** Đã duyệt 17/11/2026 (chặng 5)  
 > **Công nghệ chủ đạo:** Cloudflare R2 Object Storage, Apache Airflow, PostgreSQL (Analytical Serving & Airflow DB), Polars/Pandas, Parquet, Scikit-learn, FastAPI, React + Tailwind CSS.
 
 ---
@@ -23,7 +23,7 @@ flowchart TB
     end
 
     subgraph Ingestion["INGESTION & ORCHESTRATION"]
-        Airflow["Apache Airflow 2.10\n- dag_discovery_daily\n- 8 x dag_crawler_detail_<source>\n- dag_preprocessing_pipeline"]
+        Airflow["Apache Airflow 2.10\n- dag_discovery_daily\n- 8 x dag_crawler_detail_<source>\n(chỉ crawl)"]
         Crawlers["Crawler Workers\n- Two-Phase Decoupled Spiders\n- curl_cffi / Playwright Stealth\n- Adaptive Batching & Backoff"]
         Airflow --> Crawlers
     end
@@ -35,36 +35,34 @@ flowchart TB
             B1["url_ledger/<source>/catalog_master.json"]
             B2["raw/<source>/<YYYY-MM-DD>/<job_id>_v<N>.json\n(Immutable Raw Payloads)"]
         end
-        subgraph Silver["SILVER LAYER (Staging / Curated Zone)"]
-            S_Parquet["staging/all.parquet\n- Flattened & Cleaned\n- 2-Layer IT Domain Filter\n- Deduplicated Inter-source"]
+        subgraph Silver["SILVER (staging/, pipeline/)"]
+            S_Parquet["Đầu ra từng bước 01–04\n(data/preprocessing/<bước>/)"]
         end
-        subgraph Gold["GOLD LAYER (Feature & Mart Zone)"]
-            G1["curated/gold_master_jobs.parquet\n(Golden Master IT Jobs)"]
-            G2["curated/features.parquet\n(Machine Learning Feature Table)"]
-            G3["curated/matrices/\n(One-Hot & Co-occurrence Matrices)"]
+        subgraph Gold["GOLD (curated/)"]
+            G1["Bảng sạch cuối\n04_normalization/all.parquet"]
+            G2["Đặc trưng và vector\n10_features, 12_e5"]
         end
         Bronze --> Silver --> Gold
     end
 
     Crawlers --> Bronze
 
-    subgraph Compute["PROCESSING & MINING ENGINE"]
-        Prep["Preprocessing Engine (Python 3.11)\n- Clean -> Integration -> Transform\n-> Normalize -> Encode"]
-        Mining["Data Mining & Analytics Core\n- Frequent Itemsets (Apriori/FP-Growth)\n- Skill Graph Community Detection\n- Salary Prediction & Outlier Modeling\n- Job Clustering (K-Means/TF-IDF)"]
-        Airflow -.-> Prep
-        Airflow -.-> Mining
+    subgraph Compute["PRE-PROCESSING · PROCESSING · MINING (chạy tay bằng CLI, trên máy)"]
+        Prep["Pre-processing 00→01→01b→02→03→04\nscripts/run_preprocessing.py"]
+        Proc["Processing 07→08→09→10→12_e5\n(cùng driver)"]
+        Mining["Mining M1–M6 theo SD1–SD5\nmining/run_mining_pipeline.py\nBI · FP-Growth · K-Means/HDBSCAN\nIsolation Forest · RF + SHAP · lộ trình học"]
         Bronze --> Prep --> Silver
-        Silver --> Prep --> Gold
-        Gold --> Mining
+        Prep --> Gold
+        Gold --> Proc --> Mining
     end
 
     subgraph Serving["SERVING & PRESENTATION TIER"]
-        PostgresMart[("PostgreSQL Analytics Mart\n- Docker Compose (vn_it_jobs)\n- Curated Jobs & Skills Mart\n- Indexes: B-Tree & GIN")]
-        FastAPI["FastAPI Analytics Backend\n- Monitoring APIs\n- Data Mining Insights API\n- SQLAlchemy / asyncpg Queries"]
-        Frontend["Modern React Dashboard\n- React 18 + Vite + TypeScript\n- Tailwind CSS + Lucide Icons\n- Recharts Analytics Visuals"]
-        Gold -->|Load Mart Tables| PostgresMart
+        PostgresMart[("PostgreSQL Analytics Mart\n- Docker Compose (vn_it_jobs)\n- curated_jobs, skill_rules,\n  job_clusters, job_anomalies")]
+        FastAPI["FastAPI Backend :8000\n- Monitoring APIs\n- Insights API"]
+        Frontend["React 18 + Vite + TypeScript\n+ Tailwind (:5173)"]
+        Mining -->|mining/artifacts/ → load_mart_from_parquet.py| PostgresMart
+        Gold -->|load_mart_from_parquet.py| PostgresMart
         PostgresMart --> FastAPI
-        Mining --> FastAPI
         FastAPI <--> Frontend
     end
 ```
@@ -82,12 +80,12 @@ Kiến trúc Medallion chia dữ liệu thành 3 tầng logic với mức độ 
                                          |
                                          v
 +-----------------------------------------------------------------------------------+
-| SILVER (Clean Zone)  : Parquet dạng bảng, unnest, lọc non-IT, khử trùng 2 tầng    |
+| SILVER (Clean Zone)  : đầu ra bước 01–03: lọc IT, khử trùng 3 tầng, làm phẳng      |
 +-----------------------------------------------------------------------------------+
                                          |
                                          v
 +-----------------------------------------------------------------------------------+
-| GOLD (Feature Store) : Golden Master Jobs, chuẩn hóa lương, ma trận kỹ năng       |
+| GOLD (Curated)       : bảng sạch cuối (04), đặc trưng (10), vector e5 (12_e5)      |
 +-----------------------------------------------------------------------------------+
 ```
 
@@ -99,23 +97,23 @@ Kiến trúc Medallion chia dữ liệu thành 3 tầng logic với mức độ 
   - **Bảo toàn nguyên bản (Zero Information Loss):** Giữ nguyên cấu trúc phân cấp, toàn bộ các thẻ HTML, dữ liệu rác, lỗi chính tả, thuộc tính riêng biệt của từng sàn tuyển dụng.
   - **Quản lý danh bạ URL (URL Ledger):** File `catalog_master.json` quản lý trạng thái vòng đời của toàn bộ các liên kết từng được phát hiện (`PENDING`, `DONE`, `FAILED`, `CLOSED`, `RECHECK_DUE`).
 
-### 2.2. Tầng Silver (Cleaned & Integrated Parquet)
-- **Vị trí lưu trữ:** `r2://vn-it-jobs/staging/all.parquet` (hoặc `data/preprocessing/04_normalization/all.parquet`).
-- **Định dạng:** Apache Parquet (Snappy Compression, Columnar Storage).
-- **Đặc tính kỹ thuật:**
-  - **Làm phẳng cấu trúc (Unnesting & Schema Mapping):** Trích xuất các trường từ cấu trúc JSON lồng nhau phức tạp của 8 sàn về một lược đồ chung chuẩn hóa (Canonical Target Schema).
-  - **Làm sạch văn bản (Text Cleansing):** Bóc tách HTML bảo toàn danh sách, chuẩn hóa Unicode UTF-8 NFC, lọc bỏ các chuỗi quảng cáo boilerplate.
-  - **Phân loại chuyên ngành (Domain IT Gatekeeper):** Sử dụng bộ luật 2 tầng loại bỏ triệt để các tin tuyển dụng không thuộc lĩnh vực IT.
-  - **Khử trùng lặp đa nguồn (Inter-source Deduplication):** Sử dụng kỹ thuật phân khối Blocking Key kết hợp độ tương đồng văn bản TF-IDF Cosine ($\ge 0.85$) để liên kết các bài đăng cùng tuyển 1 vị trí giữa các sàn khác nhau thành một thực thể duy nhất.
+> **Nguồn sự thật cho đường dẫn trên máy:** [spec 03](03_data_mining_lifecycle.md) mục 3 (bảng các bước), [spec 05](05_preprocessing_spec.md) mục 2.2, [spec 06](06_processing_spec.md), [spec 07](07_mining_spec.md) mục 5. Pre-processing, Processing và Mining **ghi trên máy** (`data/preprocessing/<bước>/`, `data/processing/<bước>/`, `mining/artifacts/`); đẩy lên R2 là việc riêng, chạy thử trước và cần người dùng duyệt. Tên Silver/Gold dưới đây chỉ là cách gọi tầng.
 
-### 2.3. Tầng Gold (Curated Marts & Feature Store)
-- **Vị trí lưu trữ:** `r2://vn-it-jobs/curated/` (bao gồm `gold_master_jobs.parquet`, `features.parquet`, và thư mục ma trận `matrices/`).
-- **Định dạng:** Apache Parquet và JSON metadata từ điển.
-- **Đặc tính kỹ thuật:**
-  - **Golden Master Jobs:** Dữ liệu hoàn chỉnh nhất của từng việc làm thực tế trên thị trường, đã được điền khuyết theo quy tắc hợp nhất uy tín, chuẩn hóa địa phương theo 34 tỉnh/thành phố sáp nhập mới.
-  - **Gán nhãn nghiệp vụ (Business Tagging):** Phân loại vào 12 Job Family chuẩn và 5 cấp bậc Seniority.
-  - **Chuẩn hóa mức lương (Salary Standardization):** Bóc tách dải lương, quy đổi ngoại tệ (USD $\rightarrow$ VND tỷ giá 25.400) về đơn vị duy nhất Triệu VNĐ/tháng.
-  - **Ma trận khai phá dữ liệu (Mining Feature Matrices):** Sinh sẵn One-hot Matrix, Co-occurrence Matrix, và Vector Space TF-IDF để các mô hình Data Mining truy xuất với độ trễ thấp nhất.
+### 2.2. Tầng Silver (đầu ra trung gian của Pre-processing)
+- **Trên máy:** `data/preprocessing/01_clean/`, `01b_deduplication/`, `02_integration/all.parquet`, `03_transformation/all.parquet`. Report ở `reports/preprocessing/<bước>/`.
+- **Trên R2:** `staging/` và `pipeline/<bước>/` (mục 2.4).
+- **Định dạng:** JSONL theo nguồn ở bước 01, 01b; Parquet gộp 8 nguồn từ bước 02.
+- **Nội dung:**
+  - **Lọc IT** (bước 01): luật 2 tầng trên tiêu đề và kỹ năng; không dùng model.
+  - **Khử trùng 3 tầng** (bước 01b): (`nguồn`, `job_id`); hash văn bản cùng công ty; MinHash/LSH sinh cặp ứng viên rồi Jaccard chính xác ≥ 0,85 và cùng `company_slug` (spec 05 mục 3.2).
+  - **Làm phẳng** (bước 02): 8 nguồn về 18 trường chung.
+  - **Làm sạch và parse** (bước 03): HTML, Unicode NFC, lương, kinh nghiệm, ngày; nhận ngôn ngữ (fastText `lid.176`) và dịch EN→VI (`VietAI/envit5-translation`).
+
+### 2.3. Tầng Gold (bảng sạch, đặc trưng, kết quả Mining)
+- **Bảng sạch cuối:** `data/preprocessing/04_normalization/all.parquet` (người dùng duyệt 17/11, spec 05 mục 4.1). Trên R2 đẩy vào `curated/preprocessing/` bằng `scripts/push_preprocessing_to_r2.py`. Tên cũ `curated/gold_master_jobs.parquet`, `data/curated/curated_flat_golden_jobs.parquet` không dùng nữa (PRE-39).
+- **Nội dung bảng sạch:** `job_family` 10 nhóm + Other, `seniority` 5 nhãn, 34 tỉnh sau sáp nhập (`tinh_chinh`), lương VNĐ/tháng có cờ ngoại lai, `posted_month` + `posted_month_source` thay `posted_date` (PRE-37). Thiếu dữ liệu xử lý bằng cờ, không điền giá trị (spec 05 mục 4.3).
+- **Đặc trưng và vector** (Processing, spec 06): `data/processing/10_features/features.parquet` (cột `skill__*`, `fam__*`, `seniority_ord`…), `encoding_dictionary.json`, `data/processing/12_e5/job_emb.npz`. TF-IDF đã bỏ 17/11.
+- **Kết quả Mining** (spec 07 mục 5): `mining/artifacts/` gồm `sd1_*.json` (đề xuất), `skill_association_rules.parquet`, `job_clusters.parquet`, `job_anomalies.parquet`, `skill_salary_shap_values.parquet`, `trained_salary_rf_model.joblib`, `sd5_*.json` (đề xuất), `mining_metrics.json`. Thư mục này không vào git và chưa có quy ước đẩy lên R2.
 
 ---
 
@@ -154,42 +152,31 @@ sequenceDiagram
     Crawler->>R2_Bronze: Ghi file Raw Envelope (raw/<source>/<date>/<job_id>_v<N>.json)
     Crawler->>R2_Bronze: Cập nhật trạng thái URL Ledger (status = DONE)
 
-    %% Preprocessing Phase
-    Note over Scheduler, Engine: GIAI ĐOẠN 2: TIỀN XỬ LÝ & LÀM SẠCH
-    Scheduler->>Engine: Kích hoạt dag_preprocessing_pipeline
-    Engine->>R2_Bronze: Đọc dữ liệu Raw Envelopes
-    Engine->>Engine: Bóc tách HTML, chuẩn hóa Unicode NFC tiếng Việt
-    Engine->>Engine: Lọc bỏ boilerplate quảng cáo & áp dụng bộ lọc 2 tầng IT
-    Engine->>Engine: Khử trùng lặp nội sàn (CDC) & Đa sàn (Blocking Key + TF-IDF >= 0.85)
-    Engine->>Engine: Phân tầng xử lý lương Thỏa thuận (Subset A vs Subset B)
-    Engine->>R2_Silver: Lưu bảng tích hợp sạch (staging/all.parquet)
+    %% Preprocessing Phase (chạy tay, không qua Airflow)
+    Note over Scheduler, Engine: GIAI ĐOẠN 2: PRE-PROCESSING (scripts/run_preprocessing.py, spec 05)
+    Engine->>R2_Bronze: Tải raw về máy (sync_cloud_lakehouse.py --download)
+    Engine->>Engine: 01 lọc IT 2 tầng, chọn snapshot · 01b khử trùng 3 tầng (MinHash + Jaccard >= 0.85)
+    Engine->>Engine: 02 làm phẳng 8 nguồn · 03 parse, nhận ngôn ngữ, dịch EN→VI (envit5)
+    Engine->>Engine: 04 chuẩn hóa 10 nhóm nghề + Other, 5 cấp, 34 tỉnh; cờ thiếu và ngoại lai
+    Engine->>Engine: Ghi data/preprocessing/04_normalization/all.parquet (bảng sạch)
+    Engine-->>R2_Silver: (tùy chọn, dry-run trước, người dùng duyệt) push_preprocessing_to_r2.py
 
-    %% Feature & Mining Phase
-    Note over Engine, Mining: GIAI ĐOẠN 3: BIẾN ĐỔI, ĐẶC TRƯNG & DATA MINING
-    Engine->>Engine: Gán nhãn 12 Job Families & 5 Seniority Levels
-    Engine->>Engine: Dịch JD tiếng Anh -> tiếng Việt (VietAI/envit5-translation + Entity Masking)
-    Engine->>Engine: Ánh xạ từ điển phân cấp kỹ năng IT (6 categories)
-    Engine->>Engine: Chuẩn hóa lương (USD/VND, chu kỳ -> Triệu VNĐ/tháng)
-    Engine->>Engine: Sinh ma trận One-hot, Co-occurrence, TF-IDF
-    Engine->>R2_Gold: Lưu Gold Master Jobs, Features, Matrices Parquet
-    
-    Scheduler->>Mining: Kích hoạt huấn luyện mô hình Khai phá dữ liệu
-    Mining->>R2_Gold: Đọc ma trận kỹ năng & Gold features
-    Mining->>Mining: Chạy FP-Growth phân tầng tìm luật kết hợp kỹ năng IT
-    Mining->>Mining: Phân cụm việc làm (K-Means & HDBSCAN) + Giảm chiều PCA 2D/3D
-    Mining->>Mining: (Phần phụ, ngoại lệ supervised) Random Forest + TreeSHAP định lượng lương
-    Mining->>Mining: Chạy Isolation Forest & GLOSH score phát hiện tin bất thường
-    Mining->>R2_Gold: Lưu kết quả tri thức khai phá (4 Parquet Artifacts)
+    %% Processing & Mining Phase
+    Note over Engine, Mining: GIAI ĐOẠN 3–4: PROCESSING (spec 06) VÀ MINING (spec 07)
+    Engine->>Engine: 07 tách section · 08 trích kỹ năng (taxonomy 230) · 09 tách từ
+    Engine->>Engine: 10 đặc trưng (skill__*, fam__*, seniority_ord…) · 12_e5 embedding
+    Mining->>Mining: M1 BI (SD1)
+    Mining->>Mining: M2 FP-Growth theo nghề (SD2)
+    Mining->>Mining: M3 K-Means k=10 + HDBSCAN, PCA (SD3) · M4 Isolation Forest + GLOSH: tin khác hoặc mới (SD3)
+    Mining->>Mining: M5 Random Forest + SHAP: giá trị kỹ năng, lương ước tính (SD4)
+    Mining->>Mining: M6 lộ trình học cho người mới (SD5)
+    Mining->>Mining: Ghi mining/artifacts/ + mining_metrics.json
 
     %% Serving Phase
-    Note over API, User: GIAI ĐOẠN 4: CUNG CẤP DỮ LIỆU & TRỰC QUAN HÓA
-    User->>Frontend: Người dùng truy cập Dashboard phân tích thị trường
-    Frontend->>API: HTTP GET /api/v1/market-overview
-    Frontend->>API: HTTP GET /api/v1/skills/association-rules
-    Frontend->>API: HTTP GET /api/v1/salary/benchmark
-    API->>DB_Postgres: Truy vấn Gold Analytics Tables qua PostgreSQL Engine (SQLAlchemy/asyncpg)
-    API-->>Frontend: Trả về JSON kết quả phân tích & biểu đồ
-    Frontend-->>User: Hiển thị Dashboard tương tác (Recharts, Tables, Heatmaps)
+    Note over API, User: GIAI ĐOẠN 5: PHỤC VỤ & TRỰC QUAN HÓA (spec 09)
+    Mining->>API: load_mart_from_parquet.py nạp Mart (curated_jobs, skill_rules, job_clusters, job_anomalies)
+    User->>API: GET /api/v1/insights/salary-heatmap, /skill-combos, /clusters, /filters/options
+    API-->>User: JSON; Mart rỗng thì EMPTY/NO_DATA, lỗi kết nối thì 503 MART_UNAVAILABLE
 ```
 
 ---
@@ -207,13 +194,10 @@ Toàn bộ hệ thống được tự động hóa thông qua hệ thống lập
    - Mỗi sàn có 1 DAG chi tiết chạy theo ca độc lập (ví dụ: mỗi 2 tiếng một ca).
    - Sử dụng **Airflow Pool** riêng biệt (`pool_topcv`, `pool_itviec`...) với `concurrency = 1` để đảm bảo không có 2 ca cào cùng lúc vào một sàn gây quá tải hoặc xung đột file Ledger.
    - Tham số hóa: `--batch-size 75 --sync-r2`.
-3. **`dag_preprocessing_pipeline`:**
-   - Kích hoạt tuần tự 5 công đoạn xử lý dữ liệu:
-     $$\text{Clean (P1)} \longrightarrow \text{Integration (P2)} \longrightarrow \text{Transformation (P3)} \longrightarrow \text{Normalization (P4)} \longrightarrow \text{Encoding (P5)}$$
-   - Tự động kiểm tra chất lượng (Data Quality Assertions) sau mỗi bước; nếu tỷ lệ lỗi schema $> 2\%$, DAG sẽ ngắt mạch (Pipeline Stop) và gửi cảnh báo.
-4. **`dag_data_mining_models`:**
-   - Chạy định kỳ sau khi pipeline tiền xử lý hoàn tất.
-   - Thực thi các notebook/script khai phá tri thức, trích xuất luật kết hợp và cập nhật báo cáo thị trường.
+3. **Pre-processing, Processing, Mining không chạy qua Airflow** (sửa 17/11/2026). `airflow/dags/` chỉ có `crawler_dags.py` (DAG discovery và DAG cào chi tiết). Thiết kế cũ có `dag_preprocessing_pipeline` (P1–P5) và `dag_data_mining_models`, nhưng chưa bao giờ được viết. Hiện chạy tay:
+   - `python scripts/run_preprocessing.py --step all --source all` (chuỗi 00→04 rồi 07→12_e5; spec 05 mục 2.1, spec 06 mục 2.1). Bước `05_encoding` đã thay bằng bước 10 (PRE-39).
+   - `python mining/run_mining_pipeline.py` (hiện `STEPS` = `fp, cluster, anomaly, salary`; đích là `bi, fp, cluster, anomaly, salary, recommend`, MINE-7).
+   - Kiểm tra chất lượng nằm trong report từng bước (`checks`, luật bảo toàn số dòng), không phải ngưỡng ngắt mạch của DAG.
 
 ---
 
@@ -221,23 +205,14 @@ Toàn bộ hệ thống được tự động hóa thông qua hệ thống lập
 
 ### 5.1. Backend API Dữ Liệu Tốc Độ Cao (FastAPI & PostgreSQL Data Mart)
 - **Tận dụng PostgreSQL Container cho Phân tích & Serving:**
-  - Hệ thống tận dụng máy chủ **PostgreSQL** (chạy sẵn trong Docker Compose cùng Airflow) để tạo database phân tích `vn_it_jobs`. Dữ liệu sau khi xử lý thành công ở tầng Gold được nạp tự động (bulk load qua COPY hoặc SQLAlchemy) vào các bảng dữ liệu chuẩn hóa (`curated_jobs`, `job_skills`, `skill_rules`, `market_metrics`).
-  - Thiết lập chỉ mục chuyên dụng: B-Tree Index cho `(domain, city, experience_level)` và GIN Index cho mảng kỹ năng `skills_array` giúp FastAPI thực thi các câu truy vấn phức tạp (Aggregation, Group by, Window functions) trong thời gian dưới 50ms.
-- **RESTful Endpoints phục vụ:**
-  - `/api/v1/overview`: Thống kê tổng số lượng việc làm, phân bổ theo nguồn, tỷ lệ tin tuyển dụng có lương.
-  - `/api/v1/jobs/roles`: Phân tích nhu cầu tuyển dụng theo 12 Job Family và cấp bậc.
-  - `/api/v1/skills/top`: Bảng xếp hạng các kỹ năng công nghệ được săn đón nhiều nhất.
-  - `/api/v1/skills/rules`: Danh sách các luật kết hợp kỹ năng (Support, Confidence, Lift).
-  - `/api/v1/salary/distribution`: Phân phối phổ lương theo công nghệ và số năm kinh nghiệm.
-  - `/api/v1/monitoring/health`: Giám sát sức khỏe hạ tầng cào, số lượng bản ghi của 8 sàn.
+  - Hệ thống tận dụng máy chủ **PostgreSQL** (chạy sẵn trong Docker Compose cùng Airflow) để tạo database phân tích `vn_it_jobs`. Mart được nạp **bằng tay** qua `scripts/load_mart_from_parquet.py` (`--dry-run` trước) vào 4 bảng: `curated_jobs`, `skill_rules`, `job_clusters`, `job_anomalies` (spec 09 mục 4.3).
+  - Chỉ mục: B-Tree trên `job_family`, `seniority_level`, `province_norm`, `lift`; GIN trên `skills_array`, `antecedents`.
+  - Chưa có bảng cho SHAP (SD4, MINE-5), cho SD1 (`sd1_*.json`) và SD5 (`sd5_*.json`).
+- **Endpoints:** danh sách đúng với code ở spec 09 mục 4.1. Các endpoint `/api/v1/overview`, `/jobs/roles`, `/skills/top`, `/salary/distribution` trong bản 2.0 chưa bao giờ có.
 
-### 5.2. Bảng Điều Khiển Trực Quan Hóa (React + Tailwind Dashboard)
-- **Giao diện hiện đại:** Được xây dựng bằng React 18, Vite, TypeScript và Tailwind CSS với chế độ Dark/Light mode tối ưu cho hiển thị báo cáo khoa học.
-- **Biểu đồ trực quan:** Sử dụng Recharts và Lucide Icons hiển thị:
-  - Phễu chuyển đổi dữ liệu qua các tầng Medallion (Bronze $\rightarrow$ Silver $\rightarrow$ Gold).
-  - Bản đồ nhiệt (Heatmap) ma trận đồng xuất hiện giữa các kỹ năng IT.
-  - Biểu đồ phân bổ mức lương Boxplot & Violin Plot theo từng vị trí công việc.
-  - Bản đồ địa lý phân bố việc làm IT giữa 34 tỉnh/thành phố tại Việt Nam.
+### 5.2. Giao diện (React + Tailwind)
+- React 18, Vite, TypeScript, Tailwind CSS (token màu và quy tắc 390px trong `monitoring/CLAUDE.md`).
+- Route đang gắn (leader chốt 09/11/2026): `/` Collection, `/eda`, `/preprocessing`, `/processing`. Trang Insights theo SD1–SD5 là đề xuất ở spec 09 mục 3.2.
 
 ---
 
@@ -253,6 +228,8 @@ Toàn bộ hệ thống được tự động hóa thông qua hệ thống lập
 |---|---|---|
 | **Tỷ lệ cào thành công (Crawl Success Rate)** | $\ge 98.5\%$ | Tự động Safe Skip, Exponential Backoff và Retry Queue. |
 | **Bảo toàn dữ liệu thô (Data Loss Prevention)** | $0\%$ thất thoát | Lưu trữ đa phiên bản (CDC Versioning) trên Cloudflare R2 Lakehouse. |
-| **Độ chính xác lọc tin IT (IT Domain Precision)** | $\ge 96.0\%$ | Bộ lọc 2 tầng (Title Keywords + Context $\ge 2$ Skills). |
-| **Độ chính xác khử trùng đa sàn (Inter-source Deduplication Precision)** | $\ge 92.0\%$ | Blocking Key kết hợp kiểm tra TF-IDF Cosine Similarity $\ge 0.85$. |
+| **Độ chính xác lọc tin IT (IT Domain Precision)** | Chưa chốt, chưa đo (PRE-12) | Bộ lọc 2 tầng (bước 01); đo bằng nhãn tay `data/preprocessing/review/it_<nguồn>.csv`. |
+| **Độ chính xác khử trùng đa sàn** | Chưa chốt, chưa đo | Bước 01b: MinHash/LSH + Jaccard chính xác $\ge 0.85$ và cùng `company_slug`; kiểm tay `duplicates_audit.csv`. |
+
+Ngưỡng chất lượng dữ liệu phục vụ 5 mục tiêu nằm ở [spec 08](08_evaluation_spec.md) và PRE-36; bảng trên chỉ giữ chỉ số vận hành. Hai con số 96% và 92% trong bản 2.0 không có số đo đi kèm nên đã bỏ.
 | **Thời gian phản hồi API (API Response Time)** | $P_{95} \le 150\text{ms}$ | Truy vấn tối ưu hóa bằng PostgreSQL Indexing (B-Tree + GIN). |
