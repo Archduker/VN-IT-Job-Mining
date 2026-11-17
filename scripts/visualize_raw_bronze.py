@@ -24,13 +24,14 @@ from typing import Any, Dict, List
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from preprocessing.common.raw_reader import read_raw, snapshot_order  # noqa: E402
 from preprocessing.integration.json_flattener import flatten_raw_job_record  # noqa: E402
 from preprocessing.transformation.date_parser import parse_date  # noqa: E402
+import _viz_html as V  # noqa: E402  (scripts/_viz_html.py)
 
 SOURCES = ("topcv", "topdev", "vietnamworks", "careerviet", "vieclam24h", "itviec", "glints", "jobsgo")
-TOP_N = 15
 TEXT_FIELDS = ("raw_salary_text", "raw_experience_text", "raw_seniority_text", "raw_employment_type",
                "raw_work_mode", "raw_category_text", "raw_education_text")
 
@@ -70,21 +71,9 @@ def _months(counter: collections.Counter) -> List[List[Any]]:
     return ([[f"trước {MONTH_FLOOR[5:]}/{MONTH_FLOOR[:4]}", old]] if old else []) + rows
 
 
-def _vn(x: Any) -> str:
-    return f"{x:,}".replace(",", ".") if isinstance(x, int) else f"{x:.1f}".replace(".", ",")
-
-
-def _top(counter: collections.Counter, n: int = TOP_N) -> List[List[Any]]:
-    return [[k, c] for k, c in counter.most_common(n)]
-
-
-def _hist(values: List[int], edges: List[int]) -> List[List[Any]]:
-    out = []
-    for i, lo in enumerate(edges):
-        hi = edges[i + 1] if i + 1 < len(edges) else None
-        label = (_vn(lo) if hi == lo + 1 else f"{_vn(lo)}–{_vn(hi - 1)}") if hi else f"≥ {_vn(lo)}"
-        out.append([label, sum(1 for v in values if v >= lo and (hi is None or v < hi))])
-    return out
+_vn = V.vn
+_top = V.top
+_hist = V.hist
 
 
 def profile_source(source: str, data_dir: Path) -> Dict[str, Any]:
@@ -186,92 +175,17 @@ def profile_source(source: str, data_dir: Path) -> Dict[str, Any]:
 
 # ─────────────────────────── HTML ───────────────────────────
 
-CSS = """
-:root{--surface:#fcfcfb;--surface-2:#f3f2ef;--border:#e4e2dc;--text:#0b0b0b;--text-2:#52514e;--muted:#7a7873;
---series-1:#2a78d6;--series-2:#eb6834;--series-3:#1baf7a;--grid:#e9e7e2;--accent:#2a78d6}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--surface:#1a1a19;--surface-2:#242422;--border:#3a3936;
---text:#f0efec;--text-2:#c3c2b7;--muted:#9a988f;--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70;--grid:#2f2e2b;--accent:#3987e5}}
-:root[data-theme="dark"]{--surface:#1a1a19;--surface-2:#242422;--border:#3a3936;--text:#f0efec;--text-2:#c3c2b7;--muted:#9a988f;
---series-1:#3987e5;--series-2:#d95926;--series-3:#199e70;--grid:#2f2e2b;--accent:#3987e5}
-*{box-sizing:border-box}body{margin:0;background:var(--surface);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:1080px;margin:0 auto;padding:24px 16px 64px}h1{font-size:26px;margin:0 0 4px}h2{font-size:18px;margin:36px 0 4px}
-.sub{color:var(--text-2);margin:0 0 16px}.note{color:var(--muted);font-size:13px;margin:4px 0 12px}
-nav{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 20px}nav a{padding:4px 10px;border:1px solid var(--border);border-radius:999px;color:var(--text-2);text-decoration:none;font-size:13px}
-nav a.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.tile{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
-.tile .v{font-size:24px;font-weight:650;font-variant-numeric:tabular-nums}.tile .k{color:var(--text-2);font-size:13px}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:20px}
-.card{border:1px solid var(--border);border-radius:10px;padding:14px;background:var(--surface);min-width:0}
-.card h3{font-size:15px;margin:0 0 2px}svg{display:block;width:100%;height:auto;overflow:visible}
-svg text{fill:var(--text-2);font-size:11px}svg .val{fill:var(--text);font-variant-numeric:tabular-nums}
-.bar{fill:var(--series-1)}.bar:hover,.bar.hl{opacity:.8}.gridline{stroke:var(--grid)}
-table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top}
-th{color:var(--text-2);font-weight:600}td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.scroll{overflow-x:auto}.tbox{max-height:520px;overflow:auto}.samp{color:var(--text-2);word-break:break-word}
-.meter{display:inline-block;width:70px;height:6px;background:var(--grid);border-radius:3px;vertical-align:middle;margin-right:6px}
-.meter i{display:block;height:100%;background:var(--series-1);border-radius:3px}
-details{margin-top:8px}summary{cursor:pointer;color:var(--text-2);font-size:13px}
-.empty{padding:24px;border:1px dashed var(--border);border-radius:10px;color:var(--text-2)}
-#tip{position:fixed;pointer-events:none;background:var(--text);color:var(--surface);padding:5px 8px;border-radius:6px;font-size:12px;opacity:0;transition:opacity .1s;max-width:320px;z-index:9}
-"""
-
-JS = r"""
-const tip=document.getElementById('tip');
-function showTip(e,t){tip.textContent=t;tip.style.opacity=1;tip.style.left=Math.min(e.clientX+12,innerWidth-330)+'px';tip.style.top=(e.clientY+12)+'px'}
-function hideTip(){tip.style.opacity=0}
-const fmt=n=>n.toLocaleString('vi-VN');
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-// Cột dọc (theo thời gian / thứ tự)
-function vbars(el,rows,unit){
-  if(!rows.length){el.innerHTML='<p class="note">Không có dữ liệu.</p>';return}
-  const W=480,H=200,L=40,B=40,T=14,max=Math.max(...rows.map(r=>r[1]));const bw=(W-L)/rows.length;
-  let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
-  for(let i=0;i<=4;i++){const y=T+(H-T-B)*(1-i/4);s+=`<line class="gridline" x1="${L}" x2="${W}" y1="${y}" y2="${y}"/><text x="${L-6}" y="${y+4}" text-anchor="end">${fmt(Math.round(max*i/4))}</text>`}
-  const step=Math.ceil(rows.length/12);
-  rows.forEach((r,i)=>{const h=(H-T-B)*r[1]/max,x=L+i*bw+1,w=Math.max(bw-2,1),y=H-B-h;
-    s+=`<path class="bar" d="M${x},${H-B}V${y+Math.min(4,h)}q0,-${Math.min(4,h)} ${Math.min(4,w/2)},-${Math.min(4,h)}H${x+w-Math.min(4,w/2)}q${Math.min(4,w/2)},0 ${Math.min(4,w/2)},${Math.min(4,h)}V${H-B}Z" data-t="${esc(r[0])}: ${fmt(r[1])} ${unit}"/>`;
-    if(i%step==0)s+=`<text x="${x+w/2}" y="${H-B+14}" text-anchor="end" transform="rotate(-35 ${x+w/2} ${H-B+14})">${esc(r[0])}</text>`});
-  el.innerHTML=s+'</svg>'+table(rows,unit);bind(el)}
-// Thanh ngang (xếp hạng)
-function hbars(el,rows,unit,total){
-  if(!rows.length){el.innerHTML='<p class="note">Không có dữ liệu.</p>';return}
-  const W=480,rh=22,L=190,H=rows.length*rh+4,max=Math.max(...rows.map(r=>r[1]));
-  let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
-  rows.forEach((r,i)=>{const w=Math.max((W-L-60)*r[1]/max,2),y=i*rh+3;const lab=String(r[0]).length>30?String(r[0]).slice(0,29)+'…':r[0];
-    const pct=total?` (${(100*r[1]/total).toFixed(1)}%)`:'';
-    s+=`<text x="${L-8}" y="${y+12}" text-anchor="end">${esc(lab)}</text><path class="bar" d="M${L},${y}H${L+w-4}q4,0 4,4V${y+12}q0,4 -4,4H${L}Z" data-t="${esc(r[0])}: ${fmt(r[1])} ${unit}${pct}"/><text class="val" x="${L+w+6}" y="${y+12}">${fmt(r[1])}</text>`});
-  el.innerHTML=s+'</svg>'+table(rows,unit);bind(el)}
-function table(rows,unit){return `<details><summary>Xem dạng bảng</summary><div class="scroll"><table><tr><th>Giá trị</th><th>Số ${unit}</th></tr>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td class="n">${fmt(r[1])}</td></tr>`).join('')}</table></div></details>`}
-function bind(el){el.querySelectorAll('.bar').forEach(b=>{b.addEventListener('mousemove',e=>showTip(e,b.dataset.t));b.addEventListener('mouseleave',hideTip)})}
-document.querySelectorAll('[data-chart]').forEach(el=>{const c=JSON.parse(el.dataset.chart);(c.kind==='v'?vbars:hbars)(el,c.rows,c.unit,c.total)});
-"""
-
-
-def _chart(kind: str, rows: List[List[Any]], unit: str = "tin", total: int | None = None) -> str:
-    return f"<div data-chart='{html.escape(json.dumps({'kind': kind, 'rows': rows, 'unit': unit, 'total': total}, ensure_ascii=False), quote=True)}'></div>"
-
-
-def _card(title: str, note: str, body: str) -> str:
-    return f'<div class="card"><h3>{html.escape(title)}</h3><p class="note">{note}</p>{body}</div>'
+_chart, _card, _tile = V.chart, V.card, V.tile
+FOOTER = ("Sinh bằng <code>scripts/visualize_raw_bronze.py</code> lúc {g}, từ dữ liệu Bronze trên máy "
+          "(data/&lt;nguồn&gt;/raw, url_ledger). Không có số giả định.")
 
 
 def _page(title: str, nav: str, body: str, generated: str) -> str:
-    return f"""<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{html.escape(title)}</title><style>{CSS}</style></head><body><main>{nav}{body}
-<p class="note" style="margin-top:40px">Sinh bằng <code>scripts/visualize_raw_bronze.py</code> lúc {generated}, từ dữ liệu Bronze trên máy (data/&lt;nguồn&gt;/raw, url_ledger). Không có số giả định.</p>
-</main><div id="tip"></div><script>{JS}</script></body></html>"""
+    return V.page(title, nav, body, FOOTER.format(g=generated))
 
 
 def _nav(active: str) -> str:
-    items = [("index", "Tổng hợp")] + [(s, s) for s in SOURCES]
-    return "<nav>" + "".join(
-        f'<a href="{k}.html" class="{"on" if k == active else ""}">{html.escape(v)}</a>' for k, v in items) + "</nav>"
-
-
-def _tile(v: Any, k: str) -> str:
-    vv = f"{v:,}".replace(",", ".") if isinstance(v, int) else html.escape(str(v))
-    return f'<div class="tile"><div class="v">{vv}</div><div class="k">{html.escape(k)}</div></div>'
+    return V.nav([("index", "Tổng hợp")] + [(s, s) for s in SOURCES], active)
 
 
 def render_source(p: Dict[str, Any], generated: str) -> str:

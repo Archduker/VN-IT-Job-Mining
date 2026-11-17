@@ -12,6 +12,7 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 | `read_eda_diagnosis.py --source <nguồn>` | Đọc luật EDA từ notebook mà không mở notebook |
 | `report_skills_overview.py [--out]` | Đọc bảng 04, so kỹ năng phương án A (chỉ văn bản gốc) với B (gốc + bản dịch), ghi HTML tĩnh `data/processing/skills_overview.html` (DF, độ phủ, mức cắt min_df) |
 | `visualize_raw_bronze.py [--source]` | Trực quan hóa Bronze trên máy (raw + ledger) của từng nguồn ra `docs/presentation/raw_bronze/<nguồn>.html` và `index.html`: tháng đăng, tháng cào, trạng thái ledger, khóa `raw_payload`, độ phủ 25 trường sau làm phẳng, top giá trị, phúc lợi, độ dài văn bản. Không gọi R2 |
+| `visualize_preprocessing_steps.py [--step]` | Trực quan hóa từng bước 01 → 04 ra `docs/presentation/preprocessing_steps/`: số dòng theo nguồn, luật (so với report trong git HEAD), độ phủ từng trường theo nguồn đo trên `data/preprocessing/<bước>/`, mẫu trước/sau, phần `extra` của report. Bước chưa có đầu ra trên máy ghi "chưa chạy lại". Khung HTML dùng chung ở `_viz_html.py` |
 | `view_urls.py [--r2] [--status]` | Xem ledger trên máy hoặc trên R2 |
 | `sync_cloud_lakehouse.py --status` | So máy với R2 |
 | `sync_cloud_lakehouse.py --download [--source]` | Tải R2 về `data/` (chỉ ghi trên máy). Có `--source` thì **chỉ tải ledger**, không tải raw (PRE-42) |

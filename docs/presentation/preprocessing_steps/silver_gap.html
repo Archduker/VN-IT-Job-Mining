@@ -1,0 +1,66 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Đối chiếu Silver</title><style>
+:root{--surface:#fcfcfb;--surface-2:#f3f2ef;--border:#e4e2dc;--text:#0b0b0b;--text-2:#52514e;--muted:#7a7873;
+--series-1:#2a78d6;--series-2:#eb6834;--series-3:#1baf7a;--grid:#e9e7e2;--accent:#2a78d6;--warn:#b35c00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--surface:#1a1a19;--surface-2:#242422;--border:#3a3936;
+--text:#f0efec;--text-2:#c3c2b7;--muted:#9a988f;--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70;--grid:#2f2e2b;--accent:#3987e5;--warn:#f0a050}}
+:root[data-theme="dark"]{--surface:#1a1a19;--surface-2:#242422;--border:#3a3936;--text:#f0efec;--text-2:#c3c2b7;--muted:#9a988f;
+--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70;--grid:#2f2e2b;--accent:#3987e5;--warn:#f0a050}
+*{box-sizing:border-box}body{margin:0;background:var(--surface);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:24px 16px 64px}h1{font-size:26px;margin:0 0 4px}h2{font-size:18px;margin:36px 0 4px}
+.sub{color:var(--text-2);margin:0 0 16px}.note{color:var(--muted);font-size:13px;margin:4px 0 12px}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 20px}nav a{padding:4px 10px;border:1px solid var(--border);border-radius:999px;color:var(--text-2);text-decoration:none;font-size:13px}
+nav a.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tile .v{font-size:24px;font-weight:650;font-variant-numeric:tabular-nums}.tile .k{color:var(--text-2);font-size:13px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:20px}
+.card{border:1px solid var(--border);border-radius:10px;padding:14px;background:var(--surface);min-width:0}
+.card h3{font-size:15px;margin:0 0 2px}svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{fill:var(--text-2);font-size:11px}svg .val{fill:var(--text);font-variant-numeric:tabular-nums}
+.bar{fill:var(--series-1)}.bar:hover,.bar.hl{opacity:.8}.gridline{stroke:var(--grid)}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--text-2);font-weight:600}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.scroll{overflow-x:auto}.tbox{max-height:520px;overflow:auto}.samp{color:var(--text-2);word-break:break-word}
+.meter{display:inline-block;width:70px;height:6px;background:var(--grid);border-radius:3px;vertical-align:middle;margin-right:6px}
+.meter i{display:block;height:100%;background:var(--series-1);border-radius:3px}
+td.heat{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge{display:inline-block;padding:1px 7px;border-radius:999px;font-size:12px;border:1px solid var(--border);color:var(--text-2)}
+.badge.drop{border-color:var(--series-2);color:var(--series-2)}.badge.modify{border-color:var(--series-1);color:var(--series-1)}
+.badge.flag{border-color:var(--series-3);color:var(--series-3)}.warn{color:var(--warn)}
+details{margin-top:8px}summary{cursor:pointer;color:var(--text-2);font-size:13px}
+pre{white-space:pre-wrap;word-break:break-word;font-size:12px;background:var(--surface-2);padding:10px;border-radius:8px;max-height:420px;overflow:auto}
+.empty{padding:24px;border:1px dashed var(--border);border-radius:10px;color:var(--text-2)}
+#tip{position:fixed;pointer-events:none;background:var(--text);color:var(--surface);padding:5px 8px;border-radius:6px;font-size:12px;opacity:0;transition:opacity .1s;max-width:320px;z-index:9}
+</style></head><body><main><nav><a href="index.html" class="">Tổng hợp</a><a href="01_clean.html" class="">01_clean</a><a href="01b_deduplication.html" class="">01b_deduplication</a><a href="02_integration.html" class="">02_integration</a><a href="03_transformation.html" class="">03_transformation</a><a href="04_normalization.html" class="">04_normalization</a><a href="silver_gap.html" class="on">Đối chiếu Silver</a></nav><h1>Đối chiếu Silver</h1><div class='empty'>Chưa có: trang này sinh sau khi chạy lại bước 04.</div>
+<p class="note" style="margin-top:40px">Sinh bằng <code>scripts/visualize_preprocessing_steps.py</code> lúc 17/11/2026 23:41. Số liệu lấy từ report của bước (<code>reports/preprocessing/&lt;bước&gt;/</code>) và đo trên đầu ra trong <code>data/preprocessing/</code>. Không có số giả định.</p>
+</main><div id="tip"></div><script>
+const tip=document.getElementById('tip');
+function showTip(e,t){tip.textContent=t;tip.style.opacity=1;tip.style.left=Math.min(e.clientX+12,innerWidth-330)+'px';tip.style.top=(e.clientY+12)+'px'}
+function hideTip(){tip.style.opacity=0}
+const fmt=n=>n.toLocaleString('vi-VN');
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+// Cột dọc (theo thời gian / thứ tự)
+function vbars(el,rows,unit){
+  if(!rows.length){el.innerHTML='<p class="note">Không có dữ liệu.</p>';return}
+  const W=480,H=200,L=40,B=40,T=14,max=Math.max(...rows.map(r=>r[1]),1);const bw=(W-L)/rows.length;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
+  for(let i=0;i<=4;i++){const y=T+(H-T-B)*(1-i/4);s+=`<line class="gridline" x1="${L}" x2="${W}" y1="${y}" y2="${y}"/><text x="${L-6}" y="${y+4}" text-anchor="end">${fmt(Math.round(max*i/4))}</text>`}
+  const step=Math.ceil(rows.length/12);
+  rows.forEach((r,i)=>{const h=(H-T-B)*r[1]/max,x=L+i*bw+1,w=Math.max(bw-2,1),y=H-B-h;
+    s+=`<path class="bar" d="M${x},${H-B}V${y+Math.min(4,h)}q0,-${Math.min(4,h)} ${Math.min(4,w/2)},-${Math.min(4,h)}H${x+w-Math.min(4,w/2)}q${Math.min(4,w/2)},0 ${Math.min(4,w/2)},${Math.min(4,h)}V${H-B}Z" data-t="${esc(r[0])}: ${fmt(r[1])} ${unit}"/>`;
+    if(i%step==0)s+=`<text x="${x+w/2}" y="${H-B+14}" text-anchor="end" transform="rotate(-35 ${x+w/2} ${H-B+14})">${esc(r[0])}</text>`});
+  el.innerHTML=s+'</svg>'+table(rows,unit);bind(el)}
+// Thanh ngang (xếp hạng)
+function hbars(el,rows,unit,total){
+  if(!rows.length){el.innerHTML='<p class="note">Không có dữ liệu.</p>';return}
+  const W=480,rh=22,L=190,H=rows.length*rh+4,max=Math.max(...rows.map(r=>r[1]),1);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
+  rows.forEach((r,i)=>{const w=Math.max((W-L-60)*r[1]/max,2),y=i*rh+3;const lab=String(r[0]).length>30?String(r[0]).slice(0,29)+'…':r[0];
+    const pct=total?` (${(100*r[1]/total).toFixed(1)}%)`:'';
+    s+=`<text x="${L-8}" y="${y+12}" text-anchor="end">${esc(lab)}</text><path class="bar" d="M${L},${y}H${L+w-4}q4,0 4,4V${y+12}q0,4 -4,4H${L}Z" data-t="${esc(r[0])}: ${fmt(r[1])} ${unit}${pct}"/><text class="val" x="${L+w+6}" y="${y+12}">${fmt(r[1])}</text>`});
+  el.innerHTML=s+'</svg>'+table(rows,unit);bind(el)}
+function table(rows,unit){return `<details><summary>Xem dạng bảng</summary><div class="scroll"><table><tr><th>Giá trị</th><th>Số ${unit}</th></tr>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td class="n">${fmt(r[1])}</td></tr>`).join('')}</table></div></details>`}
+function bind(el){el.querySelectorAll('.bar').forEach(b=>{b.addEventListener('mousemove',e=>showTip(e,b.dataset.t));b.addEventListener('mouseleave',hideTip)})}
+document.querySelectorAll('[data-chart]').forEach(el=>{const c=JSON.parse(el.dataset.chart);(c.kind==='v'?vbars:hbars)(el,c.rows,c.unit,c.total)});
+</script></body></html>

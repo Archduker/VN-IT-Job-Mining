@@ -1,0 +1,507 @@
+{
+ "summary": [
+  {
+   "step": "01_clean",
+   "fresh": true,
+   "input": 13361,
+   "output": 4799,
+   "prev_output": 4799
+  },
+  {
+   "step": "01b_deduplication",
+   "fresh": false,
+   "input": 4799,
+   "output": 4672,
+   "prev_output": 4672
+  },
+  {
+   "step": "02_integration",
+   "fresh": false,
+   "input": 4672,
+   "output": 4671,
+   "prev_output": 4671
+  },
+  {
+   "step": "03_transformation",
+   "fresh": false,
+   "input": 4671,
+   "output": 4671,
+   "prev_output": 4671
+  },
+  {
+   "step": "04_normalization",
+   "fresh": false,
+   "input": 4671,
+   "output": 4671,
+   "prev_output": 4671
+  }
+ ],
+ "profiles": {
+  "01_clean": {
+   "rows": 4799,
+   "rows_by_source": {
+    "topcv": 1537,
+    "topdev": 216,
+    "vietnamworks": 781,
+    "careerviet": 410,
+    "vieclam24h": 173,
+    "itviec": 842,
+    "glints": 254,
+    "jobsgo": 586
+   },
+   "fill": [
+    [
+     "job_id_global",
+     100.0,
+     {
+      "topcv": 100.0,
+      "topdev": 100.0,
+      "vietnamworks": 100.0,
+      "careerviet": 100.0,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 100.0,
+      "jobsgo": 100.0
+     }
+    ],
+    [
+     "source_job_id",
+     100.0,
+     {
+      "topcv": 100.0,
+      "topdev": 100.0,
+      "vietnamworks": 100.0,
+      "careerviet": 100.0,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 100.0,
+      "jobsgo": 100.0
+     }
+    ],
+    [
+     "source_url",
+     100.0,
+     {
+      "topcv": 100.0,
+      "topdev": 100.0,
+      "vietnamworks": 100.0,
+      "careerviet": 100.0,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 100.0,
+      "jobsgo": 100.0
+     }
+    ],
+    [
+     "crawled_at",
+     100.0,
+     {
+      "topcv": 100.0,
+      "topdev": 100.0,
+      "vietnamworks": 100.0,
+      "careerviet": 100.0,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 100.0,
+      "jobsgo": 100.0
+     }
+    ],
+    [
+     "job_title",
+     100.0,
+     {
+      "topcv": 100.0,
+      "topdev": 100.0,
+      "vietnamworks": 100.0,
+      "careerviet": 99.8,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 100.0,
+      "jobsgo": 100.0
+     }
+    ],
+    [
+     "company_name",
+     100.0,
+     {
+      "topcv": 100.0,
+      "topdev": 100.0,
+      "vietnamworks": 100.0,
+      "careerviet": 100.0,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 100.0,
+      "jobsgo": 99.8
+     }
+    ],
+    [
+     "company_address",
+     87.5,
+     {
+      "topcv": 97.5,
+      "topdev": 0.0,
+      "vietnamworks": 83.6,
+      "careerviet": 61.0,
+      "vieclam24h": 100.0,
+      "itviec": 96.9,
+      "glints": 89.0,
+      "jobsgo": 99.7
+     }
+    ],
+    [
+     "company_scale",
+     38.4,
+     {
+      "topcv": 97.5,
+      "topdev": 0.0,
+      "vietnamworks": 44.3,
+      "careerviet": 0.0,
+      "vieclam24h": 0.0,
+      "itviec": 0.0,
+      "glints": 0.0,
+      "jobsgo": 0.0
+     }
+    ],
+    [
+     "raw_category_text",
+     93.0,
+     {
+      "topcv": 94.6,
+      "topdev": 0.0,
+      "vietnamworks": 100.0,
+      "careerviet": 97.8,
+      "vieclam24h": 100.0,
+      "itviec": 96.9,
+      "glints": 100.0,
+      "jobsgo": 99.7
+     }
+    ],
+    [
+     "raw_location_text",
+     97.5,
+     {
+      "topcv": 99.5,
+      "topdev": 100.0,
+      "vietnamworks": 87.1,
+      "careerviet": 97.8,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 100.0,
+      "jobsgo": 99.8
+     }
+    ],
+    [
+     "working_locations",
+     98.7,
+     {
+      "topcv": 99.5,
+      "topdev": 100.0,
+      "vietnamworks": 99.9,
+      "careerviet": 98.3,
+      "vieclam24h": 100.0,
+      "itviec": 96.9,
+      "glints": 100.0,
+      "jobsgo": 96.6
+     }
+    ],
+    [
+     "raw_posted_date",
+     64.1,
+     {
+      "topcv": 0.0,
+      "topdev": 31.5,
+      "vietnamworks": 100.0,
+      "careerviet": 97.8,
+      "vieclam24h": 100.0,
+      "itviec": 96.9,
+      "glints": 100.0,
+      "jobsgo": 99.7
+     }
+    ],
+    [
+     "raw_updated_at",
+     24.6,
+     {
+      "topcv": 0.0,
+      "topdev": 0.0,
+      "vietnamworks": 100.0,
+      "careerviet": 97.8,
+      "vieclam24h": 0.0,
+      "itviec": 0.0,
+      "glints": 0.0,
+      "jobsgo": 0.0
+     }
+    ],
+    [
+     "raw_deadline",
+     94.6,
+     {
+      "topcv": 99.9,
+      "topdev": 0.0,
+      "vietnamworks": 100.0,
+      "careerviet": 97.8,
+      "vieclam24h": 100.0,
+      "itviec": 96.9,
+      "glints": 98.0,
+      "jobsgo": 99.8
+     }
+    ],
+    [
+     "raw_working_time",
+     41.2,
+     {
+      "topcv": 99.5,
+      "topdev": 0.0,
+      "vietnamworks": 0.0,
+      "careerviet": 0.0,
+      "vieclam24h": 2.9,
+      "itviec": 0.0,
+      "glints": 0.0,
+      "jobsgo": 75.8
+     }
+    ],
+    [
+     "raw_salary_text",
+     99.6,
+     {
+      "topcv": 99.5,
+      "topdev": 100.0,
+      "vietnamworks": 100.0,
+      "careerviet": 97.8,
+      "vieclam24h": 100.0,
+      "itviec": 99.8,
+      "glints": 100.0,
+      "jobsgo": 99.8
+     }
+    ],
+    [
+     "raw_employment_type",
+     94.6,
+     {
+      "topcv": 99.5,
+      "topdev": 0.0,
+      "vietnamworks": 100.0,
+      "careerviet": 97.8,
+      "vieclam24h": 100.0,
+      "itviec": 96.9,
+      "glints": 100.0,
+      "jobsgo": 99.7
+     }
+    ],
+    [
+     "raw_work_mode",
+     37.2,
+     {
+      "topcv": 99.5,
+      "topdev": 0.0,
+      "vietnamworks": 0.0,
+      "careerviet": 0.0,
+      "vieclam24h": 0.0,
+      "itviec": 0.0,
+      "glints": 100.0,
+      "jobsgo": 0.0
+     }
+    ],
+    [
+     "raw_experience_text",
+     90.4,
+     {
+      "topcv": 99.5,
+      "topdev": 26.4,
+      "vietnamworks": 84.3,
+      "careerviet": 89.3,
+      "vieclam24h": 100.0,
+      "itviec": 87.8,
+      "glints": 91.3,
+      "jobsgo": 99.8
+     }
+    ],
+    [
+     "raw_seniority_text",
+     72.3,
+     {
+      "topcv": 99.5,
+      "topdev": 0.5,
+      "vietnamworks": 100.0,
+      "careerviet": 97.8,
+      "vieclam24h": 100.0,
+      "itviec": 0.0,
+      "glints": 0.0,
+      "jobsgo": 99.7
+     }
+    ],
+    [
+     "raw_education_text",
+     65.8,
+     {
+      "topcv": 100.0,
+      "topdev": 0.0,
+      "vietnamworks": 100.0,
+      "careerviet": 0.0,
+      "vieclam24h": 0.0,
+      "itviec": 0.0,
+      "glints": 100.0,
+      "jobsgo": 99.8
+     }
+    ],
+    [
+     "raw_headcount",
+     59.1,
+     {
+      "topcv": 99.5,
+      "topdev": 0.0,
+      "vietnamworks": 100.0,
+      "careerviet": 0.0,
+      "vieclam24h": 100.0,
+      "itviec": 0.0,
+      "glints": 0.0,
+      "jobsgo": 59.7
+     }
+    ],
+    [
+     "raw_age_text",
+     20.7,
+     {
+      "topcv": 13.9,
+      "topdev": 0.0,
+      "vietnamworks": 100.0,
+      "careerviet": 0.0,
+      "vieclam24h": 0.0,
+      "itviec": 0.0,
+      "glints": 0.0,
+      "jobsgo": 0.0
+     }
+    ],
+    [
+     "raw_gender_text",
+     16.3,
+     {
+      "topcv": 0.0,
+      "topdev": 0.0,
+      "vietnamworks": 100.0,
+      "careerviet": 0.0,
+      "vieclam24h": 0.0,
+      "itviec": 0.0,
+      "glints": 0.0,
+      "jobsgo": 0.0
+     }
+    ],
+    [
+     "skills_list",
+     77.8,
+     {
+      "topcv": 99.7,
+      "topdev": 82.9,
+      "vietnamworks": 100.0,
+      "careerviet": 0.0,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 88.2,
+      "jobsgo": 0.0
+     }
+    ],
+    [
+     "benefits_list",
+     98.9,
+     {
+      "topcv": 100.0,
+      "topdev": 97.2,
+      "vietnamworks": 100.0,
+      "careerviet": 100.0,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 81.5,
+      "jobsgo": 99.8
+     }
+    ],
+    [
+     "raw_description_text",
+     100.0,
+     {
+      "topcv": 100.0,
+      "topdev": 100.0,
+      "vietnamworks": 100.0,
+      "careerviet": 100.0,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 100.0,
+      "jobsgo": 99.8
+     }
+    ],
+    [
+     "raw_requirements_text",
+     100.0,
+     {
+      "topcv": 100.0,
+      "topdev": 100.0,
+      "vietnamworks": 100.0,
+      "careerviet": 100.0,
+      "vieclam24h": 100.0,
+      "itviec": 100.0,
+      "glints": 100.0,
+      "jobsgo": 100.0
+     }
+    ]
+   ],
+   "note": "Đo trên envelope đầu ra, làm phẳng bằng json_flattener (cùng bộ của bước 02) chỉ để đo; chưa qua bước 03 nên lương, kinh nghiệm vẫn là chữ gốc.",
+   "clean_meta": {
+    "topcv": {
+     "it_rule=it": 1191,
+     "it_rule_level=1": 1191,
+     "it_status=it": 1537,
+     "it_rule=unknown": 346,
+     "it_rule_level=2": 346
+    },
+    "topdev": {
+     "it_rule=it": 152,
+     "it_rule_level=1": 152,
+     "it_status=it": 216,
+     "it_rule=unknown": 64,
+     "it_rule_level=2": 64
+    },
+    "vietnamworks": {
+     "it_rule=it": 590,
+     "it_rule_level=1": 590,
+     "it_status=it": 781,
+     "it_rule=unknown": 191,
+     "it_rule_level=2": 191
+    },
+    "careerviet": {
+     "it_rule=it": 355,
+     "it_rule_level=1": 355,
+     "it_status=it": 410,
+     "it_rule=unknown": 55,
+     "it_rule_level=2": 55
+    },
+    "vieclam24h": {
+     "it_rule=it": 127,
+     "it_rule_level=1": 127,
+     "it_status=it": 173,
+     "it_rule=unknown": 46,
+     "it_rule_level=2": 46
+    },
+    "itviec": {
+     "it_rule=it": 792,
+     "it_rule_level=1": 792,
+     "it_status=it": 842,
+     "it_rule=unknown": 50,
+     "it_rule_level=2": 50
+    },
+    "glints": {
+     "it_rule=it": 224,
+     "it_rule_level=1": 224,
+     "it_status=it": 254,
+     "it_rule=unknown": 30,
+     "it_rule_level=2": 30
+    },
+    "jobsgo": {
+     "it_rule=it": 551,
+     "it_rule_level=1": 551,
+     "it_status=it": 586,
+     "it_rule=unknown": 35,
+     "it_rule_level=2": 35
+    }
+   }
+  }
+ }
+}
