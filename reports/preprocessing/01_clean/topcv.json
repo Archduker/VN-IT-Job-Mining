@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T18:16:05+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-17T17:00:13+00:00",
+  "code_version": "09628de",
   "input": {
     "path": "data/topcv/raw",
     "rows": 2749
@@ -337,42 +337,42 @@
     "review": {
       "file": "data/preprocessing/review/it_topcv.csv",
       "rows": 109,
-      "labeled": 109,
+      "labeled": 98,
       "sample_strata": {
         "tang_1_non_it": 50,
         "tang_2_it": 8,
         "tang_2_non_it": 22,
         "tang_1_it": 29
       },
-      "labeled_non_it": 71,
-      "rule_decided": 79,
-      "rule_correct": 78,
-      "status_non_it": 72,
-      "status_non_it_correct": 66,
-      "level2_labeled": 30,
-      "level2_correct": 20,
+      "labeled_non_it": 67,
+      "rule_decided": 78,
+      "rule_correct": 73,
+      "status_non_it": 62,
+      "status_non_it_correct": 60,
+      "level2_labeled": 20,
+      "level2_correct": 16,
       "level1_it_labeled": 29,
-      "level1_it_correct": 28,
+      "level1_it_correct": 24,
       "validation": {
-        "tp": 32,
-        "fp": 5,
-        "tn": 66,
-        "fn": 6,
-        "labeled": 109,
-        "precision_it": 0.8648648648648649,
-        "precision_non_it": 0.9166666666666666,
-        "recall_it": 0.8421052631578947,
+        "tp": 29,
+        "fp": 7,
+        "tn": 60,
+        "fn": 2,
+        "labeled": 98,
+        "precision_it": 0.8055555555555556,
+        "precision_non_it": 0.967741935483871,
+        "recall_it": 0.9354838709677419,
         "precision_it_ci": [
-          0.7202258821599021,
-          0.9408670557426799
+          0.6497195700482261,
+          0.9024690458107127
         ],
         "precision_non_it_ci": [
-          0.8298764477932348,
-          0.9612475750430503
+          0.8897953040501456,
+          0.9911086285001833
         ],
         "recall_it_ci": [
-          0.6958318822077686,
-          0.9255613658484106
+          0.7928136326370187,
+          0.9821252164780855
         ],
         "reason": null
       }

@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T18:17:16+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-17T17:02:45+00:00",
+  "code_version": "09628de",
   "input": {
     "path": "data/glints/raw",
     "rows": 331
@@ -279,42 +279,42 @@
     "review": {
       "file": "data/preprocessing/review/it_glints.csv",
       "rows": 48,
-      "labeled": 48,
+      "labeled": 45,
       "sample_strata": {
         "tang_1_non_it": 12,
         "tang_2_non_it": 17,
         "tang_2_it": 13,
         "tang_1_it": 6
       },
-      "labeled_non_it": 28,
+      "labeled_non_it": 26,
       "rule_decided": 18,
-      "rule_correct": 17,
-      "status_non_it": 29,
-      "status_non_it_correct": 27,
-      "level2_labeled": 30,
-      "level2_correct": 28,
+      "rule_correct": 18,
+      "status_non_it": 27,
+      "status_non_it_correct": 26,
+      "level2_labeled": 27,
+      "level2_correct": 26,
       "level1_it_labeled": 6,
       "level1_it_correct": 6,
       "validation": {
         "tp": 18,
-        "fp": 1,
-        "tn": 27,
-        "fn": 2,
-        "labeled": 48,
-        "precision_it": 0.9473684210526315,
-        "precision_non_it": 0.9310344827586207,
-        "recall_it": 0.9,
+        "fp": 0,
+        "tn": 26,
+        "fn": 1,
+        "labeled": 45,
+        "precision_it": 1.0,
+        "precision_non_it": 0.9629629629629629,
+        "recall_it": 0.9473684210526315,
         "precision_it_ci": [
-          0.7536126883310121,
-          0.9906480059376996
+          0.8241207763533424,
+          1.0
         ],
         "precision_non_it_ci": [
-          0.7803541984972432,
-          0.9808787338305668
+          0.8171653406642414,
+          0.9934318540192149
         ],
         "recall_it_ci": [
-          0.6989663547715127,
-          0.9721335187862318
+          0.7536126883310121,
+          0.9906480059376996
         ],
         "reason": null
       }

@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T18:17:31+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-17T17:03:24+00:00",
+  "code_version": "09628de",
   "input": {
     "path": null,
     "rows": 13361
@@ -498,42 +498,42 @@
       "topcv": {
         "file": "data/preprocessing/review/it_topcv.csv",
         "rows": 109,
-        "labeled": 109,
+        "labeled": 98,
         "sample_strata": {
           "tang_1_non_it": 50,
           "tang_2_it": 8,
           "tang_2_non_it": 22,
           "tang_1_it": 29
         },
-        "labeled_non_it": 71,
-        "rule_decided": 79,
-        "rule_correct": 78,
-        "status_non_it": 72,
-        "status_non_it_correct": 66,
-        "level2_labeled": 30,
-        "level2_correct": 20,
+        "labeled_non_it": 67,
+        "rule_decided": 78,
+        "rule_correct": 73,
+        "status_non_it": 62,
+        "status_non_it_correct": 60,
+        "level2_labeled": 20,
+        "level2_correct": 16,
         "level1_it_labeled": 29,
-        "level1_it_correct": 28,
+        "level1_it_correct": 24,
         "validation": {
-          "tp": 32,
-          "fp": 5,
-          "tn": 66,
-          "fn": 6,
-          "labeled": 109,
-          "precision_it": 0.8648648648648649,
-          "precision_non_it": 0.9166666666666666,
-          "recall_it": 0.8421052631578947,
+          "tp": 29,
+          "fp": 7,
+          "tn": 60,
+          "fn": 2,
+          "labeled": 98,
+          "precision_it": 0.8055555555555556,
+          "precision_non_it": 0.967741935483871,
+          "recall_it": 0.9354838709677419,
           "precision_it_ci": [
-            0.7202258821599021,
-            0.9408670557426799
+            0.6497195700482261,
+            0.9024690458107127
           ],
           "precision_non_it_ci": [
-            0.8298764477932348,
-            0.9612475750430503
+            0.8897953040501456,
+            0.9911086285001833
           ],
           "recall_it_ci": [
-            0.6958318822077686,
-            0.9255613658484106
+            0.7928136326370187,
+            0.9821252164780855
           ],
           "reason": null
         }
@@ -541,7 +541,7 @@
       "topdev": {
         "file": "data/preprocessing/review/it_topdev.csv",
         "rows": 84,
-        "labeled": 84,
+        "labeled": 83,
         "sample_strata": {
           "tang_1_non_it": 50,
           "tang_2_non_it": 29,
@@ -551,9 +551,9 @@
         "labeled_non_it": 78,
         "rule_decided": 54,
         "rule_correct": 54,
-        "status_non_it": 79,
+        "status_non_it": 78,
         "status_non_it_correct": 78,
-        "level2_labeled": 30,
+        "level2_labeled": 29,
         "level2_correct": 29,
         "level1_it_labeled": 4,
         "level1_it_correct": 4,
@@ -561,22 +561,22 @@
           "tp": 5,
           "fp": 0,
           "tn": 78,
-          "fn": 1,
-          "labeled": 84,
+          "fn": 0,
+          "labeled": 83,
           "precision_it": 1.0,
-          "precision_non_it": 0.9873417721518988,
-          "recall_it": 0.8333333333333334,
+          "precision_non_it": 1.0,
+          "recall_it": 1.0,
           "precision_it_ci": [
             0.5655175352168252,
             1.0
           ],
           "precision_non_it_ci": [
-            0.9317242812303406,
-            0.9977620061449501
+            0.9530621902878058,
+            1.0
           ],
           "recall_it_ci": [
-            0.43649717781352965,
-            0.9699466302516933
+            0.5655175352168252,
+            1.0
           ],
           "reason": null
         }
@@ -584,7 +584,7 @@
       "vietnamworks": {
         "file": "data/preprocessing/review/it_vietnamworks.csv",
         "rows": 94,
-        "labeled": 94,
+        "labeled": 88,
         "sample_strata": {
           "tang_1_non_it": 50,
           "tang_2_non_it": 18,
@@ -592,34 +592,34 @@
           "tang_1_it": 14
         },
         "labeled_non_it": 67,
-        "rule_decided": 64,
-        "rule_correct": 62,
-        "status_non_it": 68,
-        "status_non_it_correct": 64,
-        "level2_labeled": 30,
-        "level2_correct": 25,
+        "rule_decided": 62,
+        "rule_correct": 59,
+        "status_non_it": 65,
+        "status_non_it_correct": 63,
+        "level2_labeled": 26,
+        "level2_correct": 23,
         "level1_it_labeled": 14,
-        "level1_it_correct": 14,
+        "level1_it_correct": 13,
         "validation": {
-          "tp": 23,
-          "fp": 3,
-          "tn": 64,
-          "fn": 4,
-          "labeled": 94,
-          "precision_it": 0.8846153846153846,
-          "precision_non_it": 0.9411764705882353,
-          "recall_it": 0.8518518518518519,
+          "tp": 19,
+          "fp": 4,
+          "tn": 63,
+          "fn": 2,
+          "labeled": 88,
+          "precision_it": 0.8260869565217391,
+          "precision_non_it": 0.9692307692307692,
+          "recall_it": 0.9047619047619048,
           "precision_it_ci": [
-            0.7102409678828635,
-            0.9599675537638938
+            0.6286235235977385,
+            0.9302134643693744
           ],
           "precision_non_it_ci": [
-            0.8582831156689853,
-            0.9768892344603642
+            0.8945729447642206,
+            0.9915210027635599
           ],
           "recall_it_ci": [
-            0.6752131457218702,
-            0.9408407222375568
+            0.7108586092608173,
+            0.9734812325619255
           ],
           "reason": null
         }
@@ -627,42 +627,42 @@
       "careerviet": {
         "file": "data/preprocessing/review/it_careerviet.csv",
         "rows": 80,
-        "labeled": 80,
+        "labeled": 76,
         "sample_strata": {
           "tang_1_non_it": 41,
           "tang_2_non_it": 22,
           "tang_2_it": 8,
           "tang_1_it": 9
         },
-        "labeled_non_it": 60,
+        "labeled_non_it": 58,
         "rule_decided": 50,
-        "rule_correct": 47,
-        "status_non_it": 63,
+        "rule_correct": 50,
+        "status_non_it": 60,
         "status_non_it_correct": 55,
-        "level2_labeled": 30,
-        "level2_correct": 20,
+        "level2_labeled": 26,
+        "level2_correct": 18,
         "level1_it_labeled": 9,
-        "level1_it_correct": 7,
+        "level1_it_correct": 9,
         "validation": {
-          "tp": 12,
-          "fp": 5,
+          "tp": 13,
+          "fp": 3,
           "tn": 55,
-          "fn": 8,
-          "labeled": 80,
-          "precision_it": 0.7058823529411765,
-          "precision_non_it": 0.873015873015873,
-          "recall_it": 0.6,
+          "fn": 5,
+          "labeled": 76,
+          "precision_it": 0.8125,
+          "precision_non_it": 0.9166666666666666,
+          "recall_it": 0.7222222222222222,
           "precision_it_ci": [
-            0.4686688993346016,
-            0.8672001038970478
+            0.5699111903802585,
+            0.9340840092857186
           ],
           "precision_non_it_ci": [
-            0.7689296552173034,
-            0.9342267514386328
+            0.8193105798166558,
+            0.9638795433982692
           ],
           "recall_it_ci": [
-            0.3865815007622531,
-            0.781193467627183
+            0.49127343439702553,
+            0.8750024662044602
           ],
           "reason": null
         }
@@ -670,42 +670,42 @@
       "vieclam24h": {
         "file": "data/preprocessing/review/it_vieclam24h.csv",
         "rows": 84,
-        "labeled": 84,
+        "labeled": 75,
         "sample_strata": {
           "tang_1_non_it": 50,
           "tang_2_non_it": 26,
           "tang_2_it": 4,
           "tang_1_it": 4
         },
-        "labeled_non_it": 79,
-        "rule_decided": 54,
-        "rule_correct": 54,
-        "status_non_it": 76,
-        "status_non_it_correct": 75,
-        "level2_labeled": 30,
-        "level2_correct": 25,
-        "level1_it_labeled": 4,
-        "level1_it_correct": 4,
+        "labeled_non_it": 72,
+        "rule_decided": 53,
+        "rule_correct": 53,
+        "status_non_it": 69,
+        "status_non_it_correct": 69,
+        "level2_labeled": 22,
+        "level2_correct": 19,
+        "level1_it_labeled": 3,
+        "level1_it_correct": 3,
         "validation": {
-          "tp": 4,
-          "fp": 4,
-          "tn": 75,
-          "fn": 1,
-          "labeled": 84,
+          "tp": 3,
+          "fp": 3,
+          "tn": 69,
+          "fn": 0,
+          "labeled": 75,
           "precision_it": 0.5,
-          "precision_non_it": 0.9868421052631579,
-          "recall_it": 0.8,
+          "precision_non_it": 1.0,
+          "recall_it": 1.0,
           "precision_it_ci": [
-            0.2152160622138775,
-            0.7847839377861225
+            0.18761630648265054,
+            0.8123836935173494
           ],
           "precision_non_it_ci": [
-            0.9291632524821557,
-            0.9976735199544208
+            0.9472627418109483,
+            1.0
           ],
           "recall_it_ci": [
-            0.3755346297625252,
-            0.9637758913675698
+            0.43850296824495444,
+            1.0
           ],
           "reason": null
         }
@@ -713,41 +713,41 @@
       "itviec": {
         "file": "data/preprocessing/review/it_itviec.csv",
         "rows": 48,
-        "labeled": 48,
+        "labeled": 46,
         "sample_strata": {
           "tang_2_it": 24,
           "tang_2_non_it": 6,
           "tang_1_it": 18
         },
-        "labeled_non_it": 1,
+        "labeled_non_it": 2,
         "rule_decided": 18,
-        "rule_correct": 18,
-        "status_non_it": 6,
+        "rule_correct": 17,
+        "status_non_it": 5,
         "status_non_it_correct": 1,
-        "level2_labeled": 30,
-        "level2_correct": 25,
+        "level2_labeled": 28,
+        "level2_correct": 24,
         "level1_it_labeled": 18,
-        "level1_it_correct": 18,
+        "level1_it_correct": 17,
         "validation": {
-          "tp": 42,
-          "fp": 0,
+          "tp": 40,
+          "fp": 1,
           "tn": 1,
-          "fn": 5,
-          "labeled": 48,
-          "precision_it": 1.0,
-          "precision_non_it": 0.16666666666666666,
-          "recall_it": 0.8936170212765957,
+          "fn": 4,
+          "labeled": 46,
+          "precision_it": 0.975609756097561,
+          "precision_non_it": 0.2,
+          "recall_it": 0.9090909090909091,
           "precision_it_ci": [
-            0.916201209134296,
-            0.9999999999999999
+            0.8740493794422575,
+            0.9956814684310875
           ],
           "precision_non_it_ci": [
-            0.030053369748306635,
-            0.5635028221864703
+            0.036224108632430196,
+            0.6244653702374748
           ],
           "recall_it_ci": [
-            0.7740573065626163,
-            0.9536952178189183
+            0.7884076083340138,
+            0.9640778067726837
           ],
           "reason": null
         }
@@ -755,42 +755,42 @@
       "glints": {
         "file": "data/preprocessing/review/it_glints.csv",
         "rows": 48,
-        "labeled": 48,
+        "labeled": 45,
         "sample_strata": {
           "tang_1_non_it": 12,
           "tang_2_non_it": 17,
           "tang_2_it": 13,
           "tang_1_it": 6
         },
-        "labeled_non_it": 28,
+        "labeled_non_it": 26,
         "rule_decided": 18,
-        "rule_correct": 17,
-        "status_non_it": 29,
-        "status_non_it_correct": 27,
-        "level2_labeled": 30,
-        "level2_correct": 28,
+        "rule_correct": 18,
+        "status_non_it": 27,
+        "status_non_it_correct": 26,
+        "level2_labeled": 27,
+        "level2_correct": 26,
         "level1_it_labeled": 6,
         "level1_it_correct": 6,
         "validation": {
           "tp": 18,
-          "fp": 1,
-          "tn": 27,
-          "fn": 2,
-          "labeled": 48,
-          "precision_it": 0.9473684210526315,
-          "precision_non_it": 0.9310344827586207,
-          "recall_it": 0.9,
+          "fp": 0,
+          "tn": 26,
+          "fn": 1,
+          "labeled": 45,
+          "precision_it": 1.0,
+          "precision_non_it": 0.9629629629629629,
+          "recall_it": 0.9473684210526315,
           "precision_it_ci": [
-            0.7536126883310121,
-            0.9906480059376996
+            0.8241207763533424,
+            1.0
           ],
           "precision_non_it_ci": [
-            0.7803541984972432,
-            0.9808787338305668
+            0.8171653406642414,
+            0.9934318540192149
           ],
           "recall_it_ci": [
-            0.6989663547715127,
-            0.9721335187862318
+            0.7536126883310121,
+            0.9906480059376996
           ],
           "reason": null
         }
@@ -798,42 +798,42 @@
       "jobsgo": {
         "file": "data/preprocessing/review/it_jobsgo.csv",
         "rows": 96,
-        "labeled": 96,
+        "labeled": 84,
         "sample_strata": {
           "tang_1_non_it": 50,
           "tang_2_non_it": 29,
           "tang_2_it": 1,
           "tang_1_it": 16
         },
-        "labeled_non_it": 77,
-        "rule_decided": 66,
-        "rule_correct": 66,
-        "status_non_it": 79,
-        "status_non_it_correct": 76,
-        "level2_labeled": 30,
-        "level2_correct": 26,
-        "level1_it_labeled": 16,
-        "level1_it_correct": 16,
+        "labeled_non_it": 67,
+        "rule_decided": 62,
+        "rule_correct": 61,
+        "status_non_it": 70,
+        "status_non_it_correct": 66,
+        "level2_labeled": 22,
+        "level2_correct": 18,
+        "level1_it_labeled": 13,
+        "level1_it_correct": 12,
         "validation": {
-          "tp": 16,
+          "tp": 13,
           "fp": 1,
-          "tn": 76,
-          "fn": 3,
-          "labeled": 96,
-          "precision_it": 0.9411764705882353,
-          "precision_non_it": 0.9620253164556962,
-          "recall_it": 0.8421052631578947,
+          "tn": 66,
+          "fn": 4,
+          "labeled": 84,
+          "precision_it": 0.9285714285714286,
+          "precision_non_it": 0.9428571428571428,
+          "recall_it": 0.7647058823529411,
           "precision_it_ci": [
-            0.7301796936242458,
-            0.9895395990150023
+            0.6853129557584887,
+            0.987277784752109
           ],
           "precision_non_it_ci": [
-            0.8941993723231529,
-            0.9870019131105641
+            0.8620804952516177,
+            0.9775562208992887
           ],
           "recall_it_ci": [
-            0.6243452472967091,
-            0.9447952836146586
+            0.5273820188043501,
+            0.9044495567791988
           ],
           "reason": null
         }
