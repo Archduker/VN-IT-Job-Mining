@@ -10,6 +10,14 @@ description: >-
 
 # Data Integration Miner Skill
 
+> **Cập nhật 17/11/2026:** playbook này viết theo thiết kế ban đầu. Trước khi làm, đọc `docs/target/` (SD1–SD5 hiện hành) và `docs/spec/03_data_mining_lifecycle.md`, `05`, `06`, `07`. Khác biệt chính so với nội dung bên dưới:
+> - Pipeline thật: `scripts/run_preprocessing.py` (01 → 01b → 02 → 03 → 04, rồi 07 → 12_e5); bảng sạch là `data/preprocessing/04_normalization/all.parquet`.
+> - `job_family` theo luật ở bước 04 (N3): **10 nhóm + Other** (Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI), không dùng Zero-shot. Luật không ra thì Other.
+> - `seniority`: **5 cấp** Intern/Fresher, Junior, Middle, Senior, Lead/Manager; không rõ thì null.
+> - Khử trùng ở bước 01b: 3 tầng (khóa chính xác, MinHash/Jaccard, TF-IDF cosine), không phải Levenshtein + ngưỡng ngày đăng.
+> - Kỹ năng: từ điển (bước 03 T7 và bước 08, xem PRE-40), không dùng LLM. TF-IDF bước 12 đã bỏ; vector văn bản là `multilingual-e5-base` (12_e5).
+> - Không có Gemini/LLM nào trong pipeline (bỏ 10/11/2026); model duy nhất ngoài e5 là `VietAI/envit5-translation` để dịch JD.
+
 Kỹ năng này trang bị cho AI Agent năng lực điều phối toàn bộ chuỗi giá trị từ dữ liệu thô đa nguồn sang Bộ dữ liệu Vàng (Golden Master Dataset), làm tiền đề giải quyết 5 mục tiêu chiến lược SD1 — SD5.
 
 ---
@@ -33,7 +41,7 @@ Kỹ năng này trang bị cho AI Agent năng lực điều phối toàn bộ ch
    - **Trụ cột 2 (Validity & Cascade Salary):** Kiểm tra sàn có lương ẩn trong JD không (ví dụ: TopCV có ~15% tin thỏa thuận chứa lương trong phần quyền lợi), tiền tệ USD hay VND, chu kỳ tháng hay năm để cấu hình `salary_parser.py`.
    - **Trụ cột 3 (Uniqueness & Duplication):** Tra cứu tỷ lệ trùng lặp URL và trùng lặp tiêu đề + công ty để thiết lập các khối Blocking và ngưỡng Cosine trong `record_linkage.py`.
    - **Trụ cột 4 (Distribution & Outliers):** Nắm rõ dải lương IQR Bounds, 3 lỗi nhập liệu số phổ biến đã được định vị tại sàn, và chỉ số Skewness để kích hoạt Log-transformation và Winsorization.
-   - **Trụ cột 5 (Bias & Class Balance):** Nắm rõ độ lệch cấp bậc (Seniority) và độ phủ địa lý để cân chỉnh bộ mapping 12 Job Family và 6 Seniorities trong `taxonomy_mapper.py`.
+   - **Trụ cột 5 (Bias & Class Balance):** Nắm rõ độ lệch cấp bậc (Seniority) và độ phủ địa lý để cân chỉnh luật 10 nhóm nghề + Other và 5 cấp bậc ở bước 04 (`preprocessing/normalization/`).
 
 ---
 
@@ -102,7 +110,9 @@ def normalize_skill(extracted_skill: str, standard_skills: list, threshold=0.88)
 
 ---
 
-## 3. Ứng Dụng NLP: Phân Loại 12 Job Family Chuẩn (SD2)
+## 3. (Lịch sử) Phân Loại 12 Job Family bằng NLP
+
+> Không còn dùng: hiện là 10 nhóm + Other theo luật (xem banner đầu file).
 
 Định nghĩa 12 nhóm nghề nghiệp chuẩn của ngành IT Việt Nam:
 1. `Backend Development`

@@ -1,6 +1,8 @@
 # 🏆 CẨM NANG NHIỆM VỤ: PIPELINE INTEGRATION & EVALUATION
 ## THÀNH VIÊN PHỤ TRÁCH: THUẬN (TECH LEAD)
 
+> **Cập nhật 17/11/2026:** cẩm nang này viết trước khi chốt SD1–SD5 mới (16/11) và bảng sạch mới (17/11). Mục tiêu hiện hành ở `docs/target/`, đặc tả ở `docs/spec/03`, `07`, `08`. Dữ liệu đầu vào chuẩn: `data/preprocessing/04_normalization/all.parquet`, `data/processing/10_features/features.parquet` + `encoding_dictionary.json`, `data/processing/12_e5/job_emb.npz` (không còn `data/curated/curated_flat_golden_jobs.parquet`, PRE-39). `job_family` là 10 nhóm + Other, `seniority` 5 cấp; TF-IDF bước 12 đã bỏ. Driver là `scripts/run_preprocessing.py --step all` rồi `python -m mining.run_mining_pipeline`; nghiệm thu theo từng SD (spec 08, ngưỡng PRE-36).
+
 > **Hạn chót hoàn thành (Deadline):** **19:00 PM Chủ Nhật**  
 > **Thư mục thực hiện chính (Folder Ownership):**  
 > - `docs/reports/` (Kho báo cáo tổng hợp, báo cáo đánh giá mô hình, audit logs)  
@@ -83,7 +85,7 @@ Hãy phân tích các nhánh hiện tại, lập kế hoạch tích hợp từng
   python scripts/run_staging_integration_pipeline.py
   python mining/run_mining_pipeline.py
   ```
-  Xác nhận: Dữ liệu chảy mượt từ raw $\rightarrow$ `curated_flat_golden_jobs.parquet` $\rightarrow$ nạp bảng PostgreSQL $\rightarrow$ sinh đủ mining artifacts.
+  Xác nhận: Dữ liệu chảy mượt từ raw $\rightarrow$ `04_normalization/all.parquet` + `10_features` $\rightarrow$ nạp bảng PostgreSQL $\rightarrow$ sinh đủ mining artifacts.
 - [ ] **Bước 4 (Tính toán chỉ số Module 08):**
   * Chạy script tính toán các chỉ số thống kê (Silhouette, $R^2$, MAE, Lift).
   * Chạy kiểm tra 6 Sanity Checks S-01 đến S-06; xác nhận đạt $6/6$ tiêu chí.

@@ -1,5 +1,7 @@
 # QUY TRÌNH DATA MINING & THU THẬP DỮ LIỆU HIỆN ĐẠI (VN-IT-JOB-MINING)
 
+> **Cập nhật 17/11/2026:** đây là thiết kế ban đầu (đợt nộp Data Collection). Bộ mục tiêu SD1–SD5 đã đổi ngày 16/11/2026: định nghĩa hiện hành nằm ở `docs/target/` (SD1 BI thị trường, SD2 cụm kỹ năng FP-Growth, SD3 nhóm việc từ nội dung tin, SD4 kỹ năng đáng tiền và ước tính lương, SD5 lộ trình cho người mới). Quy trình hiện hành ở `docs/spec/03_data_mining_lifecycle.md`. Mục 1 và mục 5 dưới đây (12 Job Family, Skill Gap với chương trình đào tạo, LLM/PhoBERT) không còn hiệu lực; phần CDC (mục 4) vẫn đúng.
+
 > **Cập nhật 10/11/2026:** dự án bỏ Gemini, JEV, OpenJev và Qwen. Model duy nhất: `VietAI/envit5-translation` (chạy local) để dịch JD tiếng Anh sang tiếng Việt. Phần nói về GenAI/LLM/JEV trong file này là lịch sử, không còn hiệu lực; xem `Tiền xử lý dữ liệu JD ngành IT cho Data Mining.md` và `docs/spec/preprocessing/spec/P0_pipeline_contract.md` mục 6.
 
 > **Tài liệu quy trình cốt lõi số 1 (Core Document 01)**  
@@ -14,30 +16,9 @@
 
 ---
 
-## 1. 5 Mục Tiêu Nghiệp Vụ Chiến Lược (SD1 — SD5)
+## 1. 5 Mục Tiêu Nghiệp Vụ (SD1 — SD5)
 
-Hệ thống được thiết kế xoay quanh 5 mục tiêu nghiệp vụ liên hoàn:
-
-```mermaid
-flowchart TD
-    SD1["SD1 — Labor Market Data Integration\nTích hợp dữ liệu đa nguồn (7 sàn), chuẩn hóa, CDC Versioning"]
-    SD2["SD2 — Occupational Demand Analysis\nPhân tích chức danh, Job Family, Seniority, Địa điểm, Xu hướng tuyển dụng"]
-    SD3["SD3 — Skill Intelligence\nTrích xuất kỹ năng bằng AI, phân loại Hard/Soft/Domain skills, xu hướng biến động"]
-    SD4["SD4 — Education–Industry Skill Gap Analysis\nĐối chiếu khung chương trình đào tạo ĐH với yêu cầu thực tế doanh nghiệp"]
-    SD5["SD5 — Career & Skill Development Recommendations\nKhuyến nghị lộ trình học tập, kỹ năng cần ưu tiên theo từng hướng sự nghiệp"]
-
-    SD1 --> SD2
-    SD1 --> SD3
-    SD2 --> SD4
-    SD3 --> SD4
-    SD4 --> SD5
-```
-
-- **SD1 — Labor Market Data Integration:** Thu thập thô nguyên bản từ 7 sàn tuyển dụng hàng đầu (TopDev, TopCV, VietnamWorks, CareerViet, Vieclam24h, ITViec, Glints & JobsGO), lưu trữ Cloudflare R2 Lakehouse, xử lý phiên bản thay đổi (CDC), làm sạch và hợp nhất thành Common Target Schema.
-- **SD2 — Occupational Demand Analysis:** Phân tích nhu cầu nghề nghiệp IT: phân loại vào 12 Job Family chuẩn (Backend, Frontend, Fullstack, Mobile, DevOps/Cloud, Data Engineer, Data Scientist/AI, QA/QC, Security, Product/Project, System/Network, Embedded/IoT), phân bổ cấp bậc (Intern, Junior, Middle, Senior, Lead, Manager) và địa bàn địa lý.
-- **SD3 — Skill Intelligence:** Phân tích kỹ năng chuyên sâu: Trích xuất kỹ năng ngầm định và tường minh từ JD, chuẩn hóa danh mục kỹ năng (Skill Taxonomy), ma trận đồng xuất hiện (Co-occurrence Matrix), mức độ khan hiếm và mức lương tương ứng.
-- **SD4 — Education–Industry Skill Gap Analysis:** Đối chiếu giữa chuẩn đầu ra của khối ngành Công nghệ thông tin tại các trường Đại học với yêu cầu thực tiễn của doanh nghiệp để xác định chính xác kỹ năng sinh viên còn thiếu hụt.
-- **SD5 — Career & Skill Development Recommendations:** Dự báo xu hướng kỹ năng mới nổi (Emerging Skills) và đề xuất lộ trình nâng cao năng lực cho người học và người lao động.
+Bộ SD1–SD5 cũ của file này (Data Integration, Occupational Demand với 12 Job Family, Skill Intelligence, Education–Industry Skill Gap, Recommendations kèm dự báo xu hướng) đã được thay ngày 16/11/2026. Tích hợp dữ liệu nay là phương tiện, không phải mục tiêu; đối chiếu chương trình đào tạo và dự báo xu hướng nằm ngoài phạm vi (`docs/spec/02_out_of_scope.md`). Xem `docs/target/00_de_tai.md` và `docs/target/01`–`05`.
 
 ---
 
@@ -153,6 +134,8 @@ Hệ thống không dùng cơ chế deduplicate thô bạo (gặp ID cũ thì b�
 ---
 
 ## 5. Bản Đồ Ứng Dụng AI & Machine Learning (Định Hướng Giai Đoạn Sau)
+
+> **Lịch sử (17/11/2026):** bảng này là định hướng ban đầu, không còn đúng với thiết kế hiện hành. Thực tế: khử trùng bằng MinHash/Jaccard + TF-IDF cosine (bước 01b), `job_family` theo luật (10 nhóm + Other), kỹ năng bằng từ điển (bước 08), vector `multilingual-e5-base` (bước 12_e5), mining gồm FP-Growth, clustering, Isolation Forest, Random Forest + SHAP. Xem `docs/spec/07_mining_spec.md`.
 
 > [!NOTE]
 > Bảng dưới đây thể hiện định hướng ứng dụng AI/ML cho các giai đoạn tiếp theo của đề tài (Integration, SD2–SD5). Trong đợt nghiệm thu Data Collection hiện tại, trọng tâm hoàn toàn tập trung vào việc thu thập thô bảo toàn thông tin (Raw As-Is) và phân tích EDA định lượng.

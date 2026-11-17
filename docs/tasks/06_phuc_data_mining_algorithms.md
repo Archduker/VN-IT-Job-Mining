@@ -1,6 +1,8 @@
 # 🧠 CẨM NANG NHIỆM VỤ: DATA MINING CORE ALGORITHMS
 ## THÀNH VIÊN PHỤ TRÁCH: PHÚC
 
+> **Cập nhật 17/11/2026:** cẩm nang này viết trước khi chốt SD1–SD5 mới (16/11) và bảng sạch mới (17/11). Mục tiêu hiện hành ở `docs/target/`, đặc tả ở `docs/spec/03`, `07`, `08`. Dữ liệu đầu vào chuẩn: `data/preprocessing/04_normalization/all.parquet`, `data/processing/10_features/features.parquet` + `encoding_dictionary.json`, `data/processing/12_e5/job_emb.npz` (không còn `data/curated/curated_flat_golden_jobs.parquet`, PRE-39). `job_family` là 10 nhóm + Other, `seniority` 5 cấp; TF-IDF bước 12 đã bỏ. Random Forest + SHAP là bước chính thức cho SD4, SD5 (không phải phần phụ).
+
 > **Hạn chót hoàn thành (Deadline):** **19:00 PM Chủ Nhật**  
 > **Thư mục thực hiện chính (Folder Ownership):**  
 > - `mining/` (Chứa toàn bộ mã nguồn thuật toán FP-Growth, K-Means, Random Forest + SHAP và các artifacts mô hình)  
@@ -19,8 +21,8 @@ Phúc chịu trách nhiệm về "Bộ não tri thức" của toàn bộ đồ �
    - *Chiến lược phân tầng:* Chạy cả ở tầm vĩ mô toàn ngành ($min\_sup = 0.05$) và vi mô theo từng Job Family ($min\_sup = 0.02$) để không bỏ sót các combo công nghệ đặc thù (Data/AI, Mobile, DevOps).
    - *Ngưỡng chất lượng luật:* $Confidence \ge 0.60$ và $Lift > 1.20$.
 2. **Thuật Toán 2 — Phân Cụm Việc Làm & Giảm Chiều Không Gian (K-Means & HDBSCAN + PCA 2D/3D):**
-   - *Mục tiêu:* Khám phá các cụm nghề nghiệp tự nhiên của thị trường dựa trên không gian vector kỹ năng (230 cột) và TF-IDF mô tả công việc.
-   - *Tối ưu hóa:* Dùng phương pháp Elbow và Silhouette Analysis để tìm số cụm tối ưu ($k \in [6, 12]$) đối chiếu với 12 Job Family. Kết hợp HDBSCAN để phát hiện các tin lai tạp/nhiễu.
+   - *Mục tiêu:* Khám phá các cụm nghề nghiệp tự nhiên của thị trường dựa trên không gian vector kỹ năng (230 cột) và vector e5 của JD (bước 12_e5; TF-IDF đã bỏ).
+   - *Tối ưu hóa:* Dùng phương pháp Elbow và Silhouette Analysis để tìm số cụm tối ưu (code quét k từ 4 đến 14, `mining/config.py` đang cố định `k_fixed` = 10) đối chiếu với 10 nhóm nghề + Other. Kết hợp HDBSCAN để phát hiện các tin lai tạp/nhiễu.
    - *Trực quan hóa đa chiều:* Chiếu giảm chiều dữ liệu bằng thuật toán **PCA** xuất ra cả tọa độ **2D (`pca_x, pca_y`)** và **3D (`pca_x, pca_y, pca_z`)** phục vụ trực quan hóa phân tán 3D trên Dashboard của Sơn.
 3. **Thuật Toán 3 — Hồi Quy Dự Báo Lương & Định Lượng Giá Trị Kỹ Năng (Random Forest Regressor + TreeSHAP):**
    - *Mục tiêu:* Trả lời câu hỏi quan trọng nhất của sinh viên: "Kỹ năng nào có giá trị đẩy mức lương lên cao nhất?".
@@ -51,8 +53,8 @@ Nhiệm vụ của tôi là triển khai trọn vẹn 4 trụ cột Khai phá D�
 
 ### 3. HỢP ĐỒNG ĐẦU VÀO / ĐẦU RA:
 - Đầu vào:
-  * `data/curated/curated_flat_golden_jobs.parquet` (Dữ liệu tuyển dụng vàng)
-  * `data/preprocessing/05_encoding/features.parquet` (Ma trận 230 cột kỹ năng)
+  * `data/preprocessing/04_normalization/all.parquet` (bảng sạch; `mining/config.py` còn mặc định tên cũ, PRE-39)
+  * `data/processing/10_features/features.parquet` (ma trận kỹ năng, thay `05_encoding`)
 - Đầu ra tại `mining/artifacts/`:
   * `skill_association_rules.parquet`: Cột [antecedents, consequents, support, confidence, lift, job_family_scope]
   * `job_clusters.parquet`: Cột [job_id, job_title, job_family, cluster_id, cluster_name, pca_x, pca_y, pca_z, is_outlier, glosh_outlier_score]

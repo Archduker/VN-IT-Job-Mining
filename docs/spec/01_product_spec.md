@@ -29,8 +29,8 @@ Bước sang quý 4 năm 2026, thị trường lao động Công nghệ Thông t
 
 ```mermaid
 flowchart TD
-    RawData["8 Sàn Tuyển Dụng IT\n(9.000+ Raw Job Envelopes)"] --> Pipeline["Modern Data Mining Pipeline\n(ELT + 5-Step Preprocessing)"]
-    Pipeline --> GoldenDS["Golden Master Dataset\n(curated_flat_golden_jobs.parquet)"]
+    RawData["8 Sàn Tuyển Dụng IT\n(13.361 tin thô, lần chạy 10/11/2026)"] --> Pipeline["Pre-processing 01→04\n+ Processing 07→12_e5"]
+    Pipeline --> GoldenDS["Bảng sạch + đặc trưng\n(04_normalization/all.parquet,\n10_features, 12_e5)"]
     GoldenDS --> SD1["SD1 · BI\nBức tranh toàn cảnh thị trường"]
     GoldenDS --> UNS["SD2, SD3 · Không giám sát\nFP-Growth, K-Means/HDBSCAN, Isolation Forest"]
     GoldenDS --> MOD["SD4, SD5 · Train model\nRandom Forest + SHAP, lộ trình học"]
@@ -41,7 +41,7 @@ flowchart TD
 > *"Trở thành nền tảng chuẩn mực về Khai phá Dữ liệu Thị trường Tuyển dụng CNTT Việt Nam, cung cấp hồ sơ tri thức minh bạch, định lượng và có khả năng hành động (Actionable Intelligence) nhằm hỗ trợ sinh viên định hướng nghề nghiệp, nhà trường tối ưu hóa khung đào tạo và doanh nghiệp hiểu rõ xu thế nguồn nhân lực."*
 
 ### 2.2. Mục tiêu chiến lược (Strategic Objectives)
-1. **Chuẩn hóa dữ liệu quy mô lớn (Data Modernization):** Thu thập toàn diện, khử trùng lặp đa sàn, chuẩn hóa từ điển danh mục (Taxonomy) và xuất bản bộ dữ liệu sạch đạt chuẩn **Golden Master Dataset**.
+1. **Chuẩn hóa dữ liệu quy mô lớn (Data Modernization):** Thu thập toàn diện, khử trùng lặp đa sàn, chuẩn hóa từ điển danh mục (Taxonomy) và xuất bản bộ dữ liệu sạch (bảng `04_normalization/all.parquet`, gọi chung là Golden Master) đủ chuẩn cho SD1–SD5.
 2. **Khai phá tri thức chiều sâu (Deep Knowledge Discovery):** Khám phá các mẫu kỹ năng đồng xuất hiện thường xuyên, phân nhóm công việc tự nhiên và giải mã giá trị kinh tế biên của từng kỹ năng công nghệ đối với mức lương.
 3. **Tính ứng dụng cao (High Actionability):** Cung cấp khuyến nghị kỹ năng ưu tiên và thứ tự học cho người mới vào từng nghề, dựa trên những gì thị trường đòi (dữ liệu chỉ có tin tuyển dụng, không đo được người học đang thiếu gì).
 
@@ -87,8 +87,8 @@ flowchart LR
     end
 
     subgraph CoreOutputs["DỮ LIỆU ĐẦU RA (OUTPUTS)"]
-        D1["1. Golden Master Dataset\n(curated_flat_golden_jobs.parquet)"]
-        D2["2. Encoded Features Matrix\n(features.parquet & dictionary)"]
+        D1["1. Bảng sạch\n(04_normalization/all.parquet)"]
+        D2["2. Đặc trưng và vector\n(features.parquet, encoding_dictionary.json, job_emb.npz)"]
         D3["3. Kho Tri Thức Khai Phá\n(Rules, Clusters, tin khác hoặc mới, SHAP Values, lương ước tính)"]
         D4["4. Hồ Sơ Báo Cáo Nghiệm Thu\n(Market Intelligence & Web Monitor)"]
     end
@@ -110,17 +110,17 @@ flowchart LR
   6. `itviec`: Sàn chất lượng cao chuyên biệt IT ("Ít nhưng mà chất"), lương cao, mô tả kỹ thuật chi tiết.
   7. `glints`: Nền tảng khu vực Đông Nam Á, nhiều cơ hội tuyển dụng xuyên biên giới, startup công nghệ.
   8. `jobsgo`: Ứng dụng tìm việc hiện đại, nhiều tin tuyển dụng sinh viên và fresher công nghệ.
-- **Dung lượng ước tính:** Hơn **9.000 tin tuyển dụng thô nguyên bản (Raw Job Envelopes)** lưu trữ dạng JSON có định danh content hash SHA-256 trên Cloudflare R2 Data Lakehouse.
+- **Dung lượng:** **13.361 tin thô** ở lần chạy pre-processing 10/11/2026 (còn 4.671 tin IT trong bảng sạch; số sẽ đổi khi chạy lại) lưu trữ dạng JSON có định danh content hash SHA-256 trên Cloudflare R2 Data Lakehouse.
 
 ### 5.2. Danh mục sản phẩm đầu ra (Deliverables Specification)
 
 | STT | Tên sản phẩm đầu ra | Định dạng | Mô tả chi tiết & Tiêu chuẩn kỹ thuật |
 | :---: | :--- | :--- | :--- |
-| **1** | **Golden Master Dataset** | `curated_flat_golden_jobs.parquet` | Bảng dữ liệu phẳng chuẩn hóa toàn diện sau 5 bước tiền xử lý; đã khử trùng lặp đa nguồn, loại bỏ tin phi IT, chuẩn hóa lương VND, chuẩn hóa 34 tỉnh thành và 12 Job Families. |
-| **2** | **Feature Encoded Matrix** | `features.parquet` & `encoding_dictionary.json` | Ma trận đặc trưng số hóa sẵn sàng cho Machine Learning: One-Hot/Multi-Hot kỹ năng, Ordinal Encoding cho Seniority, Binary flags, Log Salary. |
+| **1** | **Bảng sạch (bộ dữ liệu chuẩn cho SD1–SD5)** | `data/preprocessing/04_normalization/all.parquet` | Mỗi dòng một tin, sau bước 01→04 (spec 05 mục 4.1): đã lọc IT, khử trùng 3 tầng, lương VNĐ/tháng có cờ ngoại lai, 34 tỉnh, 10 nhóm nghề + Other, 5 cấp bậc, `posted_month` (PRE-37). Tên cũ `curated_flat_golden_jobs.parquet` không dùng nữa. |
+| **2** | **Đặc trưng và vector** | `data/processing/10_features/features.parquet`, `encoding_dictionary.json`, `data/processing/12_e5/job_emb.npz` | Kết quả Processing (spec 06): multi-hot kỹ năng `skill__*`, `seniority_ord`, cờ nhị phân, log lương; vector e5 của JD. |
 | **3** | **Mining Knowledge Base** | JSON / CSV / Parquet | • Danh mục Frequent Itemsets & Association Rules (FP-Growth).<br>• Bảng phân cụm công việc và nhãn ngữ nghĩa (K-Means/HDBSCAN).<br>• Danh sách tin khác hoặc mới (SD3).<br>• Bảng giá trị kỹ năng (SHAP) và lương ước tính cho tin "thỏa thuận" (SD4).<br>• Danh sách kỹ năng ưu tiên và lộ trình theo nghề (SD5). |
 | **4** | **Báo Cáo Phân Tích Chuyên Đề** | Markdown / PDF | Bộ báo cáo thị trường phục vụ hội đồng chấm đồ án: trả lời câu hỏi của 5 mục tiêu SD1–SD5 (`docs/target/`). |
-| **5** | **Interactive Web Monitoring** | Streamlit Web Application | Dashboard tương tác trực quan hóa sức khỏe pipeline dữ liệu, phân phối tiền xử lý và kết quả mô hình khai phá. |
+| **5** | **Interactive Web Monitoring** | FastAPI + React (spec 09) | Dashboard tương tác trực quan hóa sức khỏe pipeline dữ liệu, phân phối tiền xử lý và kết quả mô hình khai phá. |
 
 ---
 

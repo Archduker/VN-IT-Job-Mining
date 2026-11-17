@@ -1,6 +1,8 @@
 # 🖥️ CẨM NANG NHIỆM VỤ: MONITORING OBSERVATORY REFACTORING
 ## THÀNH VIÊN PHỤ TRÁCH: SƠN
 
+> **Cập nhật 17/11/2026:** cẩm nang này viết trước khi chốt SD1–SD5 mới (16/11) và bảng sạch mới (17/11). Mục tiêu hiện hành ở `docs/target/`, đặc tả ở `docs/spec/03`, `07`, `08`. Dữ liệu đầu vào chuẩn: `data/preprocessing/04_normalization/all.parquet`, `data/processing/10_features/features.parquet` + `encoding_dictionary.json`, `data/processing/12_e5/job_emb.npz` (không còn `data/curated/curated_flat_golden_jobs.parquet`, PRE-39). `job_family` là 10 nhóm + Other, `seniority` 5 cấp; TF-IDF bước 12 đã bỏ. Trang Insights chia theo SD1–SD5 (spec 09), không còn "4 bài toán".
+
 > **Hạn chót hoàn thành (Deadline):** **19:00 PM Chủ Nhật**  
 > **Thư mục thực hiện chính (Folder Ownership):**  
 > - `monitoring/` (Toàn bộ `monitoring/backend/` và `monitoring/frontend/`)  
@@ -25,8 +27,8 @@ Sơn chịu trách nhiệm về "Bộ mặt hiển thị trực quan" (Central O
    - *Hiện trạng:* Các trang phân tích hiện đang đọc các file báo cáo tĩnh từ lần chạy pipeline ngày 25/10 trong `reports/`.
    - *Nhiệm vụ:* Viết service kết nối FastAPI backend với **PostgreSQL Analytics Mart** (`vn_it_jobs` chạy trên Docker Compose cùng Airflow), truy vấn trực tiếp dữ liệu từ các bảng `curated_jobs`, `skill_rules`, `job_clusters` để hiển thị số liệu mới nhất.
 3. **Hoàn Thiện Phân Hệ 2: Market Insights Dashboard Dành Cho Sinh Viên IT:**
-   - Hoàn thiện giao diện hiển thị 4 bài toán phân tích chiến lược:
-     * **Bản đồ nhiệt Lương (Salary Heatmap):** Ma trận 12 Job Family $\times$ 6 dải kinh nghiệm, hiển thị trung vị (Median) và khoảng tứ phân vị (IQR). Đơn vị hiển thị: Triệu VNĐ/tháng.
+   - Hoàn thiện giao diện (nay chia theo SD1–SD5, xem spec 09); danh sách gốc:
+     * **Bản đồ nhiệt Lương (Salary Heatmap):** Ma trận 10 nhóm nghề + Other $\times$ 5 cấp bậc, hiển thị trung vị (Median) và khoảng tứ phân vị (IQR). Đơn vị hiển thị: Triệu VNĐ/tháng.
      * **Top Combo Kỹ Năng (FP-Growth Rules):** Bảng hiển thị các tổ hợp công nghệ đi liền nhau, lọc động theo ngưỡng Support, Confidence và Lift. Hỗ trợ chuyển đổi giữa luật toàn thị trường (Macro) và theo từng Job Family.
      * **Phân Cụm Việc Làm (K-Means 2D & 3D Scatter Plot):** Biểu đồ phân tán các bài đăng theo tọa độ PCA $(x, y)$ và chế độ **3D Scatter** $(x, y, z)$ tương tác (xoay, zoom góc nhìn), tô màu theo cụm nghề nghiệp.
      * **Bộ Lọc Đa Chiều:** Lọc theo Level, 34 tỉnh thành và Job Family.
@@ -47,7 +49,7 @@ Dưới đây là các câu trả lời chính thức từ Trưởng nhóm (Team
 ### Câu hỏi 2: Trách Nhiệm Nạp Dữ Liệu
 - **Phương án thống nhất:** Thống nhất theo **Phương án 1**: Sơn định nghĩa cấu trúc bảng (file DDL) và cung cấp script nạp mẫu [`scripts/load_mart_from_parquet.py`](../../scripts/load_mart_from_parquet.py). Phúc chịu trách nhiệm xuất các file Parquet đúng schema. Cloudflare R2 đóng vai trò là hub trung tâm để chia sẻ các file Parquet giữa các máy cá nhân.
 - **Phần việc của Sơn:** Sơn viết truy vấn SQL trong FastAPI backend đọc dữ liệu từ Mart phục vụ các router `/insights`. Đồng thời viết sẵn logic xử lý khi bảng chưa có dữ liệu (trả về `status: "EMPTY"`, `reason: "NO_DATA"` để frontend hiển thị Empty State trung thực).
-- **Khi nào có dữ liệu kiểm thử:** Em có thể dùng script `load_mart_from_parquet.py` để nạp thử file `curated_flat_golden_jobs.parquet` có sẵn ở máy hoặc test trước trạng thái Empty State. Khi Phúc đẩy artifacts lên R2, em chỉ cần kéo về và nạp vào Mart.
+- **Khi nào có dữ liệu kiểm thử:** Em có thể dùng script `load_mart_from_parquet.py` để nạp thử bảng sạch `data/preprocessing/04_normalization/all.parquet` (truyền `--curated-path`, vì mặc định còn tên cũ, PRE-39) hoặc test trước trạng thái Empty State. Khi Phúc đẩy artifacts lên R2, em chỉ cần kéo về và nạp vào Mart.
 
 ### Câu hỏi 3: Phạm Vi Nghiệm Thu Giao Diện
 - **Checklist bắt buộc:** Nghiệm thu sprint này tập trung vào checklist trong cẩm nang này: Tái cấu trúc `CrawlingPage.tsx` thành 4 components con; hoàn thiện 4 biểu đồ Market Insights cốt lõi (Heatmap lương, Bảng luật kỹ năng, Scatter phân cụm 2D & 3D, Bộ lọc đa chiều).
@@ -55,7 +57,7 @@ Dưới đây là các câu trả lời chính thức từ Trưởng nhóm (Team
 - **Phạm vi VIZ-3:** VIZ-3 chỉ yêu cầu chuyển các biểu đồ của **Market Insights** (`/insights`) từ file tĩnh sang đọc trực tiếp từ PostgreSQL Mart. Các trang báo cáo vận hành hoặc phân tích khác vẫn giữ nguyên theo thiết kế hiện tại.
 
 ### Câu hỏi 4: Hợp Đồng Dữ Liệu
-- **12 Job Family chuẩn:** Thống nhất dùng danh mục tiếng Việt chuẩn theo SPEC-06: *Backend, Frontend, Fullstack, Mobile, Data/AI, DevOps/Cloud, Kiểm thử (QA/QC), Bảo mật (Security), Hệ thống/Mạng, Phân tích nghiệp vụ (BA), Quản lý SP/DA (PM/PO), Thiết kế UI/UX* (và fallback: *Khác*).
+- **Nhóm nghề (cập nhật 17/11):** 10 nhóm + Other theo bước 04 N3: *Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI* (luật không ra thì *Other*). Danh mục 12 Job Family cũ không còn dùng.
 - **Đơn vị lương:** Trong database lưu `salary_min_vnd`, `salary_max_vnd`, `salary_avg_vnd` (VNĐ). Khi hiển thị trên Heatmap và biểu đồ, API chia cho $1.000.000$ để hiển thị đơn vị thân thiện là **Triệu VNĐ/tháng**.
 - **Dữ liệu phân cụm từ Phúc:** File `job_clusters.parquet` từ Phúc sẽ có đầy đủ các cột: `job_id`, `job_title`, `job_family`, `cluster_id`, `cluster_name`, `pca_x`, `pca_y`, `pca_z`, `is_outlier`, `glosh_outlier_score`.
 - **Bộ lọc:** Bộ lọc tỉnh, level, job_family áp dụng chung cho Heatmap lương và Scatter phân cụm. Bảng luật kỹ năng hỗ trợ lọc theo tiền đề (Antecedent) hoặc theo `job_family_scope`.
