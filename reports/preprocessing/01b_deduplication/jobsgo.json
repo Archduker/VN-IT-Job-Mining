@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:04:25+00:00",
-  "code_version": "055769e",
+  "generated_at": "2026-11-17T17:42:46+00:00",
+  "code_version": "863415c",
   "input": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
     "rows": 586
@@ -131,22 +131,22 @@
           "job_id": "28928592968",
           "field": "jaccard",
           "before": null,
+          "after": 0.7803,
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phu-trach-ai-he-thong-cong-nghe-thong-tin-thu-nhap-den-20-trieu-thang-28928592968.html"
+        },
+        {
+          "job_id": "28928592968",
+          "field": "jaccard",
+          "before": null,
           "after": 0.7307,
           "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phu-trach-ai-he-thong-cong-nghe-thong-tin-thu-nhap-den-20-trieu-thang-28928592968.html"
         },
         {
-          "job_id": "28972683981",
+          "job_id": "28969520074",
           "field": "jaccard",
           "before": null,
-          "after": 1.0,
-          "url": "https://jobsgo.vn/viec-lam/account-manager-28972683981.html"
-        },
-        {
-          "job_id": "29006645060",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.8013,
-          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-kinh-nghiem-he-thong-server-1-nam-kinh-nghiem-long-duc-dong-nai-luong-15-trieu-t-29006645060.html"
+          "after": 0.7101,
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-dong-nai-15-18-trieu-28969520074.html"
         }
       ]
     }

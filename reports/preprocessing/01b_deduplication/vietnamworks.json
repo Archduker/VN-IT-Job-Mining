@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:04:24+00:00",
-  "code_version": "055769e",
+  "generated_at": "2026-11-17T17:42:46+00:00",
+  "code_version": "863415c",
   "input": {
     "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
     "rows": 781
@@ -128,24 +128,24 @@
       "rows_affected": 19,
       "examples": [
         {
-          "job_id": "2100226",
+          "job_id": "2100210",
           "field": "jaccard",
           "before": null,
           "after": 0.707,
-          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-khach-hang-ca-nhan-data-analyst-retail-banking-khoi-du-lieu-2026td453678-2100226-jv"
+          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-khach-hang-doanh-nghiep-business-customer-data-analyst-khoi-du-lieu-2026td451020-2100210-jv"
+        },
+        {
+          "job_id": "2100263",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8068,
+          "url": "https://www.vietnamworks.com/chuyen-vien-quan-ly-chat-luong-du-lieu-data-quality-management-specialist-khoi-du-lieu-2026td450981-2100263-jv"
         },
         {
           "job_id": "2102612",
           "field": "jaccard",
           "before": null,
           "after": 0.7314,
-          "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
-        },
-        {
-          "job_id": "2102612",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.7913,
           "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
         }
       ]

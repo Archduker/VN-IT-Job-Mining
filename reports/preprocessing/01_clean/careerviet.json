@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:02:18+00:00",
-  "code_version": "09628de",
+  "generated_at": "2026-11-17T17:41:49+00:00",
+  "code_version": "863415c",
   "input": {
     "path": "data/careerviet/raw",
     "rows": 660
@@ -291,42 +291,42 @@
     "review": {
       "file": "data/preprocessing/review/it_careerviet.csv",
       "rows": 80,
-      "labeled": 76,
+      "labeled": 80,
       "sample_strata": {
         "tang_1_non_it": 41,
         "tang_2_non_it": 22,
         "tang_2_it": 8,
         "tang_1_it": 9
       },
-      "labeled_non_it": 58,
+      "labeled_non_it": 59,
       "rule_decided": 50,
       "rule_correct": 50,
-      "status_non_it": 60,
-      "status_non_it_correct": 55,
-      "level2_labeled": 26,
-      "level2_correct": 18,
+      "status_non_it": 63,
+      "status_non_it_correct": 56,
+      "level2_labeled": 30,
+      "level2_correct": 20,
       "level1_it_labeled": 9,
       "level1_it_correct": 9,
       "validation": {
-        "tp": 13,
+        "tp": 14,
         "fp": 3,
-        "tn": 55,
-        "fn": 5,
-        "labeled": 76,
-        "precision_it": 0.8125,
-        "precision_non_it": 0.9166666666666666,
-        "recall_it": 0.7222222222222222,
+        "tn": 56,
+        "fn": 7,
+        "labeled": 80,
+        "precision_it": 0.8235294117647058,
+        "precision_non_it": 0.8888888888888888,
+        "recall_it": 0.6666666666666666,
         "precision_it_ci": [
-          0.5699111903802585,
-          0.9340840092857186
+          0.5897054143116587,
+          0.93808873362379
         ],
         "precision_non_it_ci": [
-          0.8193105798166558,
-          0.9638795433982692
+          0.7879534424991748,
+          0.9451245133761628
         ],
         "recall_it_ci": [
-          0.49127343439702553,
-          0.8750024662044602
+          0.4537345197425524,
+          0.8280524739491653
         ],
         "reason": null
       }

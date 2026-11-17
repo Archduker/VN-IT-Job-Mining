@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:00:13+00:00",
-  "code_version": "09628de",
+  "generated_at": "2026-11-17T17:39:47+00:00",
+  "code_version": "863415c",
   "input": {
     "path": "data/topcv/raw",
     "rows": 2749
@@ -337,42 +337,42 @@
     "review": {
       "file": "data/preprocessing/review/it_topcv.csv",
       "rows": 109,
-      "labeled": 98,
+      "labeled": 109,
       "sample_strata": {
         "tang_1_non_it": 50,
         "tang_2_it": 8,
         "tang_2_non_it": 22,
         "tang_1_it": 29
       },
-      "labeled_non_it": 67,
-      "rule_decided": 78,
+      "labeled_non_it": 69,
+      "rule_decided": 79,
       "rule_correct": 73,
-      "status_non_it": 62,
-      "status_non_it_correct": 60,
-      "level2_labeled": 20,
-      "level2_correct": 16,
+      "status_non_it": 72,
+      "status_non_it_correct": 62,
+      "level2_labeled": 30,
+      "level2_correct": 19,
       "level1_it_labeled": 29,
       "level1_it_correct": 24,
       "validation": {
-        "tp": 29,
+        "tp": 30,
         "fp": 7,
-        "tn": 60,
-        "fn": 2,
-        "labeled": 98,
-        "precision_it": 0.8055555555555556,
-        "precision_non_it": 0.967741935483871,
-        "recall_it": 0.9354838709677419,
+        "tn": 62,
+        "fn": 10,
+        "labeled": 109,
+        "precision_it": 0.8108108108108109,
+        "precision_non_it": 0.8611111111111112,
+        "recall_it": 0.75,
         "precision_it_ci": [
-          0.6497195700482261,
-          0.9024690458107127
+          0.6579530307016159,
+          0.9052002126968799
         ],
         "precision_non_it_ci": [
-          0.8897953040501456,
-          0.9911086285001833
+          0.762868127494437,
+          0.9227726922970102
         ],
         "recall_it_ci": [
-          0.7928136326370187,
-          0.9821252164780855
+          0.5980603857923197,
+          0.858128813609037
         ],
         "reason": null
       }

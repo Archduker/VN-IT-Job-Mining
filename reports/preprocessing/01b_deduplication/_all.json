@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:06:05+00:00",
-  "code_version": "055769e",
+  "generated_at": "2026-11-17T17:43:46+00:00",
+  "code_version": "863415c",
   "input": {
     "path": null,
     "rows": 4799
@@ -211,11 +211,11 @@
       ],
       "by_source": {
         "topcv": 63,
-        "topdev": 11,
+        "topdev": 12,
         "vietnamworks": 19,
-        "careerviet": 6,
-        "vieclam24h": 5,
-        "itviec": 12,
+        "careerviet": 5,
+        "vieclam24h": 4,
+        "itviec": 13,
         "glints": 4,
         "jobsgo": 48
       }

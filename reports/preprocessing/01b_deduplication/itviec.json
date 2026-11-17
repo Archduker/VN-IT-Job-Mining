@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:04:24+00:00",
-  "code_version": "055769e",
+  "generated_at": "2026-11-17T17:42:46+00:00",
+  "code_version": "863415c",
   "input": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
     "rows": 842
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 12,
+      "rows_affected": 13,
       "examples": [
         {
           "job_id": "cv-cvcc-dich-vu-va-chinh-sach-cntt-ngan-hang-tnhh-mtv-viet-nam-hien-dai-mbv-3914",
@@ -142,11 +142,11 @@
           "url": "https://itviec.com/viec-lam-it/cvcc-cv-quan-tri-du-lieu-ngan-hang-tnhh-mtv-viet-nam-hien-dai-mbv-5112"
         },
         {
-          "job_id": "data-quality-management-specialist-data-division-mb-bank-0217",
+          "job_id": "devops-engineer-con-cung-4206",
           "field": "jaccard",
           "before": null,
-          "after": 0.8068,
-          "url": "https://itviec.com/viec-lam-it/data-quality-management-specialist-data-division-mb-bank-0217"
+          "after": 0.9058,
+          "url": "https://itviec.com/viec-lam-it/devops-engineer-con-cung-4206"
         }
       ]
     }

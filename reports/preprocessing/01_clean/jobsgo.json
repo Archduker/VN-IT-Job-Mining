@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:02:49+00:00",
-  "code_version": "09628de",
+  "generated_at": "2026-11-17T17:42:15+00:00",
+  "code_version": "863415c",
   "input": {
     "path": "data/jobsgo/raw",
     "rows": 1597
@@ -337,42 +337,42 @@
     "review": {
       "file": "data/preprocessing/review/it_jobsgo.csv",
       "rows": 96,
-      "labeled": 84,
+      "labeled": 96,
       "sample_strata": {
         "tang_1_non_it": 50,
         "tang_2_non_it": 29,
         "tang_2_it": 1,
         "tang_1_it": 16
       },
-      "labeled_non_it": 67,
-      "rule_decided": 62,
-      "rule_correct": 61,
-      "status_non_it": 70,
-      "status_non_it_correct": 66,
-      "level2_labeled": 22,
-      "level2_correct": 18,
-      "level1_it_labeled": 13,
+      "labeled_non_it": 75,
+      "rule_decided": 66,
+      "rule_correct": 62,
+      "status_non_it": 79,
+      "status_non_it_correct": 71,
+      "level2_labeled": 30,
+      "level2_correct": 22,
+      "level1_it_labeled": 16,
       "level1_it_correct": 12,
       "validation": {
         "tp": 13,
-        "fp": 1,
-        "tn": 66,
-        "fn": 4,
-        "labeled": 84,
-        "precision_it": 0.9285714285714286,
-        "precision_non_it": 0.9428571428571428,
-        "recall_it": 0.7647058823529411,
+        "fp": 4,
+        "tn": 71,
+        "fn": 8,
+        "labeled": 96,
+        "precision_it": 0.7647058823529411,
+        "precision_non_it": 0.8987341772151899,
+        "recall_it": 0.6190476190476191,
         "precision_it_ci": [
-          0.6853129557584887,
-          0.987277784752109
-        ],
-        "precision_non_it_ci": [
-          0.8620804952516177,
-          0.9775562208992887
-        ],
-        "recall_it_ci": [
           0.5273820188043501,
           0.9044495567791988
+        ],
+        "precision_non_it_ci": [
+          0.8127005885203686,
+          0.9477881920594147
+        ],
+        "recall_it_ci": [
+          0.4087865377511576,
+          0.7924898863143551
         ],
         "reason": null
       }
