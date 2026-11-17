@@ -1,0 +1,7728 @@
+[
+ {
+  "source": "topcv",
+  "has_raw": true,
+  "has_ledger": true,
+  "ledger_total": 3200,
+  "ledger_status": [
+   [
+    "DONE",
+    2890
+   ],
+   [
+    "PENDING",
+    302
+   ],
+   [
+    "RECHECK_DUE",
+    8
+   ]
+  ],
+  "ledger_discovered_by_day": [
+   [
+    "2026-10-15",
+    50
+   ],
+   [
+    "2026-10-16",
+    2742
+   ],
+   [
+    "2026-11-01",
+    32
+   ],
+   [
+    "2026-11-02",
+    5
+   ],
+   [
+    "2026-11-17",
+    371
+   ]
+  ],
+  "ledger_scraped_by_day": [
+   [
+    "2026-10-20",
+    70
+   ],
+   [
+    "2026-10-21",
+    3
+   ],
+   [
+    "2026-10-22",
+    336
+   ],
+   [
+    "2026-10-23",
+    755
+   ],
+   [
+    "2026-10-24",
+    31
+   ],
+   [
+    "2026-10-25",
+    820
+   ],
+   [
+    "2026-10-26",
+    656
+   ],
+   [
+    "2026-11-01",
+    153
+   ],
+   [
+    "2026-11-02",
+    3
+   ],
+   [
+    "2026-11-17",
+    71
+   ]
+  ],
+  "raw_counts": {
+   "snapshot": 2820,
+   "snapshot_v_lớn_hơn_1": 66
+  },
+  "raw_files": 2820,
+  "unique_jobs": 2745,
+  "versions_per_job": [
+   [
+    1,
+    2670
+   ],
+   [
+    2,
+    75
+   ]
+  ],
+  "scraped_by_day": [
+   [
+    "2026-10-15",
+    1
+   ],
+   [
+    "2026-10-20",
+    87
+   ],
+   [
+    "2026-10-22",
+    363
+   ],
+   [
+    "2026-10-23",
+    730
+   ],
+   [
+    "2026-10-24",
+    31
+   ],
+   [
+    "2026-10-25",
+    776
+   ],
+   [
+    "2026-10-26",
+    603
+   ],
+   [
+    "2026-11-01",
+    156
+   ],
+   [
+    "2026-11-02",
+    2
+   ],
+   [
+    "2026-11-17",
+    71
+   ]
+  ],
+  "first_crawl_month": [
+   [
+    "2026-10",
+    2582
+   ],
+   [
+    "2026-11",
+    163
+   ]
+  ],
+  "posted_month": [],
+  "no_posted_date": 2745,
+  "payload_keys": [
+   [
+    "company",
+    100.0,
+    "string",
+    "CÔNG TY TNHH FOXSCORE"
+   ],
+   [
+    "title",
+    100.0,
+    "string",
+    "UI/UX Designer - Mobile App- [HCM] - Thu Nhập Lên Đến 30 Triệu"
+   ],
+   [
+    "overview_tags",
+    99.3,
+    "object",
+    "{\"Yêu cầu\": [\"2 năm kinh nghiệm chuyên môn\", \"Đại Học trở lên\"], \"Quyền lợi\": [\"Bảo hiểm xã hội\", \"B…"
+   ],
+   [
+    "deadline_raw",
+    98.6,
+    "string",
+    "31/12/2026"
+   ],
+   [
+    "salary_raw",
+    97.6,
+    "string",
+    "15 - 30 triệu"
+   ],
+   [
+    "experience",
+    96.9,
+    "string",
+    "2 năm"
+   ],
+   [
+    "general_info",
+    96.9,
+    "object",
+    "{\"Mức độ cạnh tranh\": \"Trải nghiệm trên ứng dụng\", \"Cấp bậc\": \"Nhân viên\", \"Học vấn\": \"Đại Học trở l…"
+   ],
+   [
+    "location",
+    96.9,
+    "string",
+    "Hồ Chí Minh"
+   ],
+   [
+    "company_address",
+    95.1,
+    "string",
+    "62/8-10 Trương Công Định, Phường Tân Bình, TP HCM"
+   ],
+   [
+    "company_scale",
+    95.1,
+    "string",
+    "25-99 nhân viên"
+   ],
+   [
+    "company_industry",
+    92.1,
+    "string",
+    "Hoạt động các trang mạng xã hội và hoạt động phân phối nội dung khác"
+   ],
+   [
+    "benefits_bullets",
+    89.2,
+    "list",
+    "[\"Thu nhập: 15–30 triệu/tháng hoặc thỏa thuận theo năng lực và kinh nghiệm.\", \"BHXH, BHYT, BHTN theo…"
+   ],
+   [
+    "description_bullets",
+    89.2,
+    "list",
+    "[\"Thiết kế và tối ưu UI/UX cho Mobile App, Website và Responsive Web, đảm bảo sản phẩm dễ sử dụng, t…"
+   ],
+   [
+    "requirements_bullets",
+    89.2,
+    "list",
+    "[\"Có 2–4 năm kinh nghiệm UI/UX Design hoặc vị trí tương đương.\", \"Có kinh nghiệm thực tế trong quy t…"
+   ],
+   [
+    "apply_method",
+    88.2,
+    "string",
+    "Ứng viên nộp hồ sơ trực tuyến bằng cách bấm Ứng tuyển ngay dưới đây."
+   ],
+   [
+    "working_places",
+    88.2,
+    "list",
+    "[\"Hồ Chí Minh: 62/6-8-10 Trương Công Định, Phường Tân Bình (Phường Tân Bình thuộc quận Tân Bình cũ)\"…"
+   ],
+   [
+    "working_time",
+    88.2,
+    "string",
+    "Thứ 2 - Thứ 7 (từ 09:00 đến 18:00)"
+   ],
+   [
+    "industry_knowledge",
+    76.7,
+    "list",
+    "[\"IT - Phần mềm\", \"Game\"]"
+   ],
+   [
+    "required_skills",
+    52.5,
+    "list",
+    "[\"Figma\", \"Design System\", \"Prototype\", \"user flow\", \"wireframe\", \"UI/UX design\", \"Analysis\", \"Compo…"
+   ],
+   [
+    "welfare_tags",
+    24.1,
+    "list",
+    "[\"Bảo hiểm xã hội\", \"Bảo hiểm sức khỏe\", \"Thưởng tháng 13\", \"Team building\"]"
+   ],
+   [
+    "allowance_tags",
+    9.2,
+    "list",
+    "[\"Xăng xe\", \"Cước điện thoại\"]"
+   ],
+   [
+    "date_posted",
+    5.1,
+    "string",
+    "2026-10-06"
+   ],
+   [
+    "jd_source",
+    5.1,
+    "string",
+    "dom"
+   ],
+   [
+    "job_posting_jsonld",
+    5.1,
+    "object",
+    "{\"@context\": \"http://schema.org/\", \"@type\": \"JobPosting\", \"title\": \"UI/UX Designer - Mobile App- [HC…"
+   ],
+   [
+    "valid_through",
+    5.1,
+    "string",
+    "2026-11-05T23:59:59+07:00"
+   ]
+  ],
+  "flat_fill": [
+   [
+    "job_id_global",
+    100.0
+   ],
+   [
+    "source_job_id",
+    100.0
+   ],
+   [
+    "source_url",
+    100.0
+   ],
+   [
+    "job_title",
+    100.0
+   ],
+   [
+    "company_name",
+    100.0
+   ],
+   [
+    "company_address",
+    95.1
+   ],
+   [
+    "company_scale",
+    95.1
+   ],
+   [
+    "raw_category_text",
+    92.1
+   ],
+   [
+    "raw_location_text",
+    96.9
+   ],
+   [
+    "working_locations",
+    88.2
+   ],
+   [
+    "raw_posted_date",
+    0.0
+   ],
+   [
+    "raw_updated_at",
+    0.0
+   ],
+   [
+    "raw_deadline",
+    98.6
+   ],
+   [
+    "raw_working_time",
+    88.2
+   ],
+   [
+    "raw_salary_text",
+    97.6
+   ],
+   [
+    "raw_employment_type",
+    96.9
+   ],
+   [
+    "raw_work_mode",
+    96.9
+   ],
+   [
+    "raw_experience_text",
+    96.9
+   ],
+   [
+    "raw_seniority_text",
+    96.9
+   ],
+   [
+    "raw_education_text",
+    99.3
+   ],
+   [
+    "raw_headcount",
+    96.9
+   ],
+   [
+    "raw_age_text",
+    16.2
+   ],
+   [
+    "raw_gender_text",
+    0.0
+   ],
+   [
+    "skills_list",
+    97.7
+   ],
+   [
+    "benefits_list",
+    89.6
+   ],
+   [
+    "raw_description_text",
+    89.2
+   ],
+   [
+    "raw_requirements_text",
+    89.2
+   ]
+  ],
+  "tops": {
+   "raw_salary_text": [
+    [
+     "Thoả thuận",
+     1077
+    ],
+    [
+     "15 - 20 triệu",
+     72
+    ],
+    [
+     "10 - 15 triệu",
+     71
+    ],
+    [
+     "15 - 25 triệu",
+     57
+    ],
+    [
+     "20 - 30 triệu",
+     39
+    ],
+    [
+     "10 - 20 triệu",
+     33
+    ],
+    [
+     "12 - 15 triệu",
+     31
+    ],
+    [
+     "20 - 25 triệu",
+     29
+    ],
+    [
+     "15 - 30 triệu",
+     27
+    ],
+    [
+     "Tới 25 triệu",
+     23
+    ],
+    [
+     "8 - 10 triệu",
+     23
+    ],
+    [
+     "12 - 20 triệu",
+     22
+    ],
+    [
+     "8 - 12 triệu",
+     22
+    ],
+    [
+     "30 - 40 triệu",
+     21
+    ],
+    [
+     "Tới 30 triệu",
+     20
+    ]
+   ],
+   "raw_experience_text": [
+    [
+     "1 năm",
+     628
+    ],
+    [
+     "2 năm",
+     610
+    ],
+    [
+     "3 năm",
+     521
+    ],
+    [
+     "Không yêu cầu",
+     353
+    ],
+    [
+     "Dưới 1 năm",
+     226
+    ],
+    [
+     "5 năm",
+     128
+    ],
+    [
+     "Trên 5 năm",
+     99
+    ],
+    [
+     "4 năm",
+     95
+    ]
+   ],
+   "raw_seniority_text": [
+    [
+     "Nhân viên",
+     2036
+    ],
+    [
+     "Trưởng nhóm",
+     311
+    ],
+    [
+     "Thực tập sinh",
+     163
+    ],
+    [
+     "Trưởng/Phó phòng",
+     75
+    ],
+    [
+     "Quản lý / Giám sát",
+     62
+    ],
+    [
+     "Giám đốc",
+     12
+    ],
+    [
+     "Phó giám đốc",
+     1
+    ]
+   ],
+   "raw_employment_type": [
+    [
+     "Toàn thời gian",
+     2573
+    ],
+    [
+     "Thực tập",
+     51
+    ],
+    [
+     "Bán thời gian",
+     26
+    ],
+    [
+     "Thời vụ",
+     4
+    ],
+    [
+     "Khác",
+     4
+    ],
+    [
+     "Làm tại nhà",
+     2
+    ]
+   ],
+   "raw_work_mode": [
+    [
+     "Làm việc tại văn phòng / Onsite",
+     2524
+    ],
+    [
+     "Kết hợp tại văn phòng và từ xa (Hybrid)",
+     55
+    ],
+    [
+     "Làm việc tại văn phòng / Onsite, Kết hợp tại văn phòng và từ xa (Hybrid)",
+     25
+    ],
+    [
+     "Làm việc từ xa (Remote)",
+     24
+    ],
+    [
+     "Làm việc tại văn phòng / Onsite, Làm việc từ xa (Remote)",
+     16
+    ],
+    [
+     "Kết hợp tại văn phòng và từ xa (Hybrid), Làm việc tại văn phòng / Onsite",
+     7
+    ],
+    [
+     "Làm việc tại văn phòng / Onsite, Làm việc từ xa (Remote), Kết hợp tại văn phòng ",
+     3
+    ],
+    [
+     "Kết hợp tại văn phòng và từ xa (Hybrid), Làm việc từ xa (Remote)",
+     2
+    ],
+    [
+     "Làm việc từ xa (Remote), Làm việc tại văn phòng / Onsite",
+     2
+    ],
+    [
+     "Làm việc tại văn phòng / Onsite, Kết hợp tại văn phòng và từ xa (Hybrid), Làm vi",
+     1
+    ],
+    [
+     "Làm việc từ xa (Remote), Kết hợp tại văn phòng và từ xa (Hybrid), Làm việc tại v",
+     1
+    ]
+   ],
+   "raw_category_text": [
+    [
+     "Lập trình máy tính khác",
+     279
+    ],
+    [
+     "Lập trình máy tính",
+     255
+    ],
+    [
+     "Xuất bản phần mềm khác",
+     182
+    ],
+    [
+     "Hoạt động dịch vụ máy tính và công nghệ thông tin khác",
+     152
+    ],
+    [
+     "Xuất bản phần mềm",
+     148
+    ],
+    [
+     "Quảng cáo",
+     113
+    ],
+    [
+     "Tư vấn máy tính và quản lý cơ sở hạ tầng máy tính",
+     83
+    ],
+    [
+     "Bán buôn máy tính, thiết bị ngoại vi và phần mềm",
+     83
+    ],
+    [
+     "Cơ sở hạ tầng công nghệ thông tin, xử lý dữ liệu, lưu trữ và các hoạt động liên ",
+     51
+    ],
+    [
+     "Hoạt động viễn thông khác",
+     49
+    ],
+    [
+     "Bán buôn đồ dùng khác cho gia đình",
+     47
+    ],
+    [
+     "Hoạt động thiết kế chuyên dụng",
+     42
+    ],
+    [
+     "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi",
+     38
+    ],
+    [
+     "Hoạt động trung gian tiền tệ khác",
+     38
+    ],
+    [
+     "Bán buôn máy móc, thiết bị và phụ tùng máy khác",
+     38
+    ]
+   ],
+   "raw_education_text": [
+    [
+     "Đại Học trở lên",
+     1646
+    ],
+    [
+     "Cao Đẳng trở lên",
+     837
+    ],
+    [
+     "Trung cấp trở lên",
+     192
+    ],
+    [
+     "Trung học phổ thông (Cấp 3) trở lên",
+     38
+    ],
+    [
+     "Cao học trở lên",
+     6
+    ],
+    [
+     "Trung học cơ sở (Cấp 2) trở lên",
+     4
+    ],
+    [
+     "Sơ cấp trở lên",
+     4
+    ]
+   ]
+  },
+  "top_locations": [
+   [
+    "Hà Nội: (Tất cả các phường) - Phạm vi làm việc trên toàn khu vực trên.",
+    34
+   ],
+   [
+    "Hồ Chí Minh: (Tất cả các phường) - Phạm vi làm việc trên toàn khu vực trên.",
+    21
+   ],
+   [
+    "Hà Nội: Phường Cầu Giấy (Phường Cầu Giấy thuộc quận Cầu Giấy cũ) - Phạm vi làm v",
+    21
+   ],
+   [
+    "Hà Nội: Phường Hai Bà Trưng (Phường Hai Bà Trưng thuộc quận Hai Bà Trưng cũ) - P",
+    18
+   ],
+   [
+    "Hà Nội: Phường Thanh Xuân (Phường Thanh Xuân thuộc quận Thanh Xuân cũ) - Phạm vi",
+    17
+   ],
+   [
+    "Hồ Chí Minh: Phường Phú Nhuận (Phường Phú Nhuận thuộc quận Phú Nhuận cũ) - Phạm ",
+    13
+   ],
+   [
+    "Hồ Chí Minh: Lầu 1 Tòa nhà Saigon ICT, Lô 46 Công viên phần mềm Quang Trung, Phư",
+    12
+   ],
+   [
+    "Hà Nội: Tòa nhà Tasco, Lô HH2-2, đường Phạm Hùng, Phường Mễ Trì, Quận Nam Từ Liê",
+    12
+   ],
+   [
+    "Đà Nẵng: (Tất cả các phường) - Phạm vi làm việc trên toàn khu vực trên.",
+    11
+   ],
+   [
+    "Hà Nội: 127 Lò Đúc, Phường Hai Bà Trưng (Phường Hai Bà Trưng thuộc quận Hai Bà T",
+    11
+   ],
+   [
+    "Hà Nội: Phường Yên Hòa (Phường Yên Hòa thuộc quận Cầu Giấy cũ) - Phạm vi làm việ",
+    10
+   ],
+   [
+    "Hải Phòng: (Tất cả các phường) - Phạm vi làm việc trên toàn khu vực trên.",
+    10
+   ],
+   [
+    "Hà Nội: Tòa nhà Landmark 72, Phạm Hùng, Phường Từ Liêm (Phường Từ Liêm thuộc quậ",
+    9
+   ],
+   [
+    "Hà Nội: 15 Lê Văn Thiêm, Thanh Xuân, Phường Thanh Xuân (Phường Thanh Xuân thuộc ",
+    9
+   ],
+   [
+    "Huế: (Tất cả các phường) - Phạm vi làm việc trên toàn khu vực trên.",
+    9
+   ]
+  ],
+  "top_skills": [
+   [
+    "IT - Phần mềm",
+    1309
+   ],
+   [
+    "Thiết kế đồ họa (Graphic Design)",
+    417
+   ],
+   [
+    "B2B",
+    355
+   ],
+   [
+    "IT - Phần cứng và máy tính",
+    347
+   ],
+   [
+    "Marketing / Quảng cáo",
+    297
+   ],
+   [
+    "Kinh doanh phần mềm",
+    258
+   ],
+   [
+    "Thiết kế / Kiến trúc",
+    211
+   ],
+   [
+    "Direct Sales",
+    197
+   ],
+   [
+    "Giao tiếp",
+    161
+   ],
+   [
+    "Tài chính",
+    161
+   ],
+   [
+    "B2C",
+    157
+   ],
+   [
+    "Thương mại điện tử",
+    156
+   ],
+   [
+    "An ninh mạng",
+    149
+   ],
+   [
+    "Game",
+    145
+   ],
+   [
+    "Online Sales",
+    144
+   ],
+   [
+    "Telesales",
+    141
+   ],
+   [
+    "Ngân hàng",
+    119
+   ],
+   [
+    "Công nghệ kỹ thuật",
+    112
+   ],
+   [
+    "Illustrator",
+    111
+   ],
+   [
+    "Chuyên môn Công nghệ thông tin khác",
+    106
+   ]
+  ],
+  "top_benefits": [
+   [
+    "Bảo hiểm xã hội",
+    600
+   ],
+   [
+    "Thưởng tháng 13",
+    492
+   ],
+   [
+    "Team building",
+    477
+   ],
+   [
+    "Du lịch hàng năm",
+    444
+   ],
+   [
+    "Bảo hiểm sức khỏe",
+    353
+   ],
+   [
+    "Thưởng hiệu quả làm việc",
+    303
+   ],
+   [
+    "Khám sức khỏe định kỳ",
+    281
+   ],
+   [
+    "Ăn trưa",
+    218
+   ],
+   [
+    "Phụ cấp thâm niên",
+    133
+   ],
+   [
+    "Có hỗ trợ Data",
+    132
+   ],
+   [
+    "Xăng xe",
+    98
+   ],
+   [
+    "Cước điện thoại",
+    65
+   ],
+   [
+    "Khám sức khỏe định kỳ hàng năm.",
+    34
+   ],
+   [
+    "Bảo hiểm xã hội, bảo hiểm y tế, bảo hiểm thất nghiệp theo luật bảo hiểm.",
+    30
+   ],
+   [
+    "Bảo hiểm sức khỏe ngưởi thân",
+    28
+   ],
+   [
+    "Tham gia đầy đủ BHXH, BHYT, BHTN theo quy định.",
+    27
+   ],
+   [
+    "Được tham gia bảo hiểm xã hội, bảo hiểm y tế, bảo hiểm thất nghiệp theo Quy định của Pháp ",
+    26
+   ],
+   [
+    "Được hưởng đầy đủ các chế độ bảo hiểm theo quy định của pháp luật.",
+    24
+   ],
+   [
+    "Lương tháng 13.",
+    24
+   ],
+   [
+    "Bảo hiểm full lương",
+    22
+   ]
+  ],
+  "benefits_per_job": [
+   [
+    "0",
+    285
+   ],
+   [
+    "1–2",
+    15
+   ],
+   [
+    "3–5",
+    431
+   ],
+   [
+    "6–9",
+    935
+   ],
+   [
+    "10–14",
+    668
+   ],
+   [
+    "≥ 15",
+    411
+   ]
+  ],
+  "desc_len": [
+   [
+    "0",
+    297
+   ],
+   [
+    "1–499",
+    720
+   ],
+   [
+    "500–999",
+    1090
+   ],
+   [
+    "1.000–1.999",
+    539
+   ],
+   [
+    "2.000–3.999",
+    91
+   ],
+   [
+    "4.000–7.999",
+    7
+   ],
+   [
+    "≥ 8.000",
+    1
+   ]
+  ],
+  "req_len": [
+   [
+    "0",
+    297
+   ],
+   [
+    "1–299",
+    287
+   ],
+   [
+    "300–599",
+    920
+   ],
+   [
+    "600–1.199",
+    948
+   ],
+   [
+    "1.200–2.399",
+    272
+   ],
+   [
+    "2.400–4.799",
+    20
+   ],
+   [
+    "≥ 4.800",
+    1
+   ]
+  ],
+  "median_desc_len": 627
+ },
+ {
+  "source": "topdev",
+  "has_raw": true,
+  "has_ledger": true,
+  "ledger_total": 3723,
+  "ledger_status": [
+   [
+    "DONE",
+    2787
+   ],
+   [
+    "PENDING",
+    935
+   ],
+   [
+    "RECHECK_DUE",
+    1
+   ]
+  ],
+  "ledger_discovered_by_day": [
+   [
+    "2026-10-20",
+    2742
+   ],
+   [
+    "2026-10-21",
+    16
+   ],
+   [
+    "2026-11-01",
+    22
+   ],
+   [
+    "2026-11-02",
+    13
+   ],
+   [
+    "2026-11-17",
+    930
+   ]
+  ],
+  "ledger_scraped_by_day": [
+   [
+    "2026-10-20",
+    1646
+   ],
+   [
+    "2026-10-21",
+    4
+   ],
+   [
+    "2026-10-22",
+    7
+   ],
+   [
+    "2026-11-01",
+    1080
+   ],
+   [
+    "2026-11-02",
+    51
+   ]
+  ],
+  "raw_counts": {
+   "snapshot": 3890,
+   "snapshot_v_lớn_hơn_1": 1105
+  },
+  "raw_files": 3890,
+  "unique_jobs": 2782,
+  "versions_per_job": [
+   [
+    1,
+    1676
+   ],
+   [
+    2,
+    1104
+   ],
+   [
+    3,
+    2
+   ]
+  ],
+  "scraped_by_day": [
+   [
+    "2026-10-20",
+    2739
+   ],
+   [
+    "2026-10-21",
+    9
+   ],
+   [
+    "2026-10-22",
+    10
+   ],
+   [
+    "2026-11-01",
+    1083
+   ],
+   [
+    "2026-11-02",
+    49
+   ]
+  ],
+  "first_crawl_month": [
+   [
+    "2026-10",
+    2755
+   ],
+   [
+    "2026-11",
+    27
+   ]
+  ],
+  "posted_month": [
+   [
+    "2026-10",
+    1112
+   ],
+   [
+    "2026-11",
+    11
+   ]
+  ],
+  "no_posted_date": 1659,
+  "payload_keys": [
+   [
+    "addresses",
+    100.0,
+    "object",
+    "{\"address_region_ids\": [\"01\"], \"address_region_array\": [\"Thành phố Hà Nội\"], \"collection_addresses\":…"
+   ],
+   [
+    "benefits_original",
+    100.0,
+    "list",
+    "[{\"icon\": null, \"value\": \"<ul style=\\\"color: #212529;\\\">\\r\\n<li style=\\\"text-align: justify;\\\"><span…"
+   ],
+   [
+    "company",
+    100.0,
+    "string",
+    "Công Ty CP Phần Mềm MOR"
+   ],
+   [
+    "company-name",
+    100.0,
+    "string",
+    "Công Ty CP Phần Mềm MOR"
+   ],
+   [
+    "detail_url",
+    100.0,
+    "string",
+    "https://topdev.vn/viec-lam/lap-trinh-vien-front-end-cong-ty-cp-phan-mem-mor-2-2017763"
+   ],
+   [
+    "id",
+    100.0,
+    "number",
+    "2017763"
+   ],
+   [
+    "is_applied",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "is_blacklisted",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "is_content_image",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "is_content_image_enabled",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "is_followed",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "is_remove_cv",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "is_salary_visible",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "is_viewed",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "job-title",
+    100.0,
+    "string",
+    "Lập trình viên Front-end"
+   ],
+   [
+    "owned_id",
+    100.0,
+    "number",
+    "72263"
+   ],
+   [
+    "responsibilities_original",
+    100.0,
+    "string, null",
+    "<p style=\"text-align: justify;\"><span style=\"font-size: 15px; font-family: Roboto, Helvetica, Verdan…"
+   ],
+   [
+    "salary",
+    100.0,
+    "string",
+    "Thỏa thuận"
+   ],
+   [
+    "salary_raw",
+    100.0,
+    "string",
+    "Thỏa thuận"
+   ],
+   [
+    "slug",
+    100.0,
+    "string",
+    "lap-trinh-vien-front-end-cong-ty-cp-phan-mem-mor-2"
+   ],
+   [
+    "title",
+    100.0,
+    "string",
+    "Lập trình viên Front-end"
+   ],
+   [
+    "benefits_v2",
+    99.9,
+    "list",
+    "[{\"name\": \"Bonus\", \"icon\": \"fa-dollar\", \"description\": \"Mức lương: Junior: $500 ~ 1,000$. Senior: Up…"
+   ],
+   [
+    "requirements_original",
+    99.9,
+    "string, null",
+    "<ul> <li style=\"text-align: justify;\"><span style=\"font-size: 15px; font-family: Roboto, Helvetica, …"
+   ],
+   [
+    "skills_arr",
+    45.0,
+    "list",
+    "[\"JavaScript\", \"Front-End\", \"TypeScript\"]"
+   ],
+   [
+    "skills_str",
+    45.0,
+    "string",
+    "JavaScript, Front-End, TypeScript"
+   ],
+   [
+    "date_posted",
+    40.3,
+    "string",
+    "2026-10-26"
+   ],
+   [
+    "job_posting_jsonld",
+    40.3,
+    "object",
+    "{\"@context\": \"http://schema.org\", \"@type\": \"JobPosting\", \"industry\": \"Information Technology\", \"titl…"
+   ],
+   [
+    "salary_jsonld",
+    40.3,
+    "object",
+    "{\"currency\": \"VND\", \"unit\": \"MONTH\", \"min\": \"30000000\", \"max\": \"40000000\"}"
+   ],
+   [
+    "valid_through",
+    40.3,
+    "string",
+    "2026-10-26"
+   ],
+   [
+    "salary_api_masked",
+    39.9,
+    "string",
+    "3******* - 4******* VND"
+   ],
+   [
+    "content",
+    31.8,
+    "string",
+    "<p style=\"text-align: justify;\"><strong><span style=\"font-family: Roboto, Helvetica, Verdana, Arial,…"
+   ],
+   [
+    "contract_types_str",
+    0.1,
+    "string",
+    "Fulltime"
+   ],
+   [
+    "experiences_str",
+    0.1,
+    "string",
+    "2 năm"
+   ],
+   [
+    "job_levels_arr",
+    0.1,
+    "list",
+    "[\"Nhân viên\", \"Mới tốt nghiệp\"]"
+   ],
+   [
+    "job_levels_str",
+    0.1,
+    "string",
+    "Nhân viên, Mới tốt nghiệp"
+   ],
+   [
+    "job_types_str",
+    0.1,
+    "string",
+    "Trực tiếp"
+   ],
+   [
+    "published",
+    0.1,
+    "object",
+    "{\"date\": \"02-11-2026\", \"datetime\": \"00:00:00 02-11-2026\"}"
+   ],
+   [
+    "promotions",
+    0.0,
+    "list",
+    ""
+   ],
+   [
+    "recalled_at",
+    0.0,
+    "null",
+    ""
+   ],
+   [
+    "recruitment_process_original",
+    0.0,
+    "list",
+    ""
+   ],
+   [
+    "requirements_arr",
+    0.0,
+    "list",
+    "[{\"name\": \"Development Tools\", \"icon\": \"https://assets.saramin.vn/files/2025/02/06/9965.svg\", \"descr…"
+   ]
+  ],
+  "flat_fill": [
+   [
+    "job_id_global",
+    100.0
+   ],
+   [
+    "source_job_id",
+    100.0
+   ],
+   [
+    "source_url",
+    100.0
+   ],
+   [
+    "job_title",
+    100.0
+   ],
+   [
+    "company_name",
+    100.0
+   ],
+   [
+    "company_address",
+    0.0
+   ],
+   [
+    "company_scale",
+    0.0
+   ],
+   [
+    "raw_category_text",
+    0.0
+   ],
+   [
+    "raw_location_text",
+    99.9
+   ],
+   [
+    "working_locations",
+    100.0
+   ],
+   [
+    "raw_posted_date",
+    40.4
+   ],
+   [
+    "raw_updated_at",
+    0.0
+   ],
+   [
+    "raw_deadline",
+    0.0
+   ],
+   [
+    "raw_working_time",
+    0.0
+   ],
+   [
+    "raw_salary_text",
+    100.0
+   ],
+   [
+    "raw_employment_type",
+    0.0
+   ],
+   [
+    "raw_work_mode",
+    0.0
+   ],
+   [
+    "raw_experience_text",
+    29.8
+   ],
+   [
+    "raw_seniority_text",
+    0.1
+   ],
+   [
+    "raw_education_text",
+    0.0
+   ],
+   [
+    "raw_headcount",
+    0.0
+   ],
+   [
+    "raw_age_text",
+    0.0
+   ],
+   [
+    "raw_gender_text",
+    0.0
+   ],
+   [
+    "skills_list",
+    45.0
+   ],
+   [
+    "benefits_list",
+    89.1
+   ],
+   [
+    "raw_description_text",
+    100.0
+   ],
+   [
+    "raw_requirements_text",
+    99.9
+   ]
+  ],
+  "tops": {
+   "raw_salary_text": [
+    [
+     "Thỏa thuận",
+     1671
+    ],
+    [
+     "10.000.000 VND to 15.000.000 VND",
+     72
+    ],
+    [
+     "15.000.000 VND to 20.000.000 VND",
+     44
+    ],
+    [
+     "12.000.000 VND to 15.000.000 VND",
+     43
+    ],
+    [
+     "8.000.000 VND to 12.000.000 VND",
+     33
+    ],
+    [
+     "15.000.000 VND to 25.000.000 VND",
+     27
+    ],
+    [
+     "8.000.000 VND to 10.000.000 VND",
+     22
+    ],
+    [
+     "7.000.000 VND to 10.000.000 VND",
+     22
+    ],
+    [
+     "10.000.000 VND to 12.000.000 VND",
+     21
+    ],
+    [
+     "Up to 20.000.000 VND",
+     19
+    ],
+    [
+     "20.000.000 VND to 30.000.000 VND",
+     18
+    ],
+    [
+     "12.000.000 VND to 18.000.000 VND",
+     18
+    ],
+    [
+     "20.000.000 VND to 25.000.000 VND",
+     17
+    ],
+    [
+     "8.000.000 VND to 15.000.000 VND",
+     15
+    ],
+    [
+     "12.000.000 VND to 20.000.000 VND",
+     15
+    ]
+   ],
+   "raw_experience_text": [
+    [
+     "12 months",
+     297
+    ],
+    [
+     "24 months",
+     198
+    ],
+    [
+     "36 months",
+     159
+    ],
+    [
+     "60 months",
+     100
+    ],
+    [
+     "6 months",
+     29
+    ],
+    [
+     "48 months",
+     13
+    ],
+    [
+     "96 months",
+     7
+    ],
+    [
+     "120 months",
+     7
+    ],
+    [
+     "84 months",
+     6
+    ],
+    [
+     "72 months",
+     5
+    ],
+    [
+     "3 months",
+     4
+    ],
+    [
+     "132 months",
+     1
+    ],
+    [
+     "2 năm",
+     1
+    ],
+    [
+     "Không yêu cầu",
+     1
+    ]
+   ],
+   "raw_seniority_text": [
+    [
+     "Nhân viên, Mới tốt nghiệp",
+     1
+    ],
+    [
+     "Nhân viên",
+     1
+    ]
+   ],
+   "raw_employment_type": [],
+   "raw_work_mode": [],
+   "raw_category_text": [],
+   "raw_education_text": []
+  },
+  "top_locations": [
+   [
+    "Hồ Chí Minh, Thành phố Hồ Chí Minh",
+    214
+   ],
+   [
+    "Hà Nội, Thành phố Hà Nội",
+    203
+   ],
+   [
+    "Tầng 1, (Tầng Trệt) và Tầng 2 Tòa nhà Sailing Tower, Số 111A Pasteur, Phường Bến",
+    133
+   ],
+   [
+    "Lầu 7, Tòa nhà MWG Lô T2-1.2, Đường D1, Khu Công Nghệ Cao, Phường Tân Phú, Thành",
+    86
+   ],
+   [
+    "Tầng 5A, Tòa nhà Century, KĐT Times City, 458 Minh Khai - Vĩnh Tuy, Thành phố Hà",
+    69
+   ],
+   [
+    "25Bis Nguyễn Thị Minh Khai,, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh",
+    67
+   ],
+   [
+    "Tầng 3, tòa HH01A chung cư NewHorizon, số 87 Lĩnh Nam, Phường Vĩnh Tuy, Thành ph",
+    54
+   ],
+   [
+    "Tòa nhà The Nexus, 3A-3B Tôn Đức Thắng, Phường Bến Nghé, Quận 1, Thành phố Hồ Ch",
+    48
+   ],
+   [
+    "Văn phòng HCM, Thành phố Hồ Chí Minh",
+    39
+   ],
+   [
+    "198 Đường Trần Quang Khải, Lý Thái Tổ, Hoàn Kiếm, Thành phố Hà Nội",
+    39
+   ],
+   [
+    "Trụ sở chính: Tầng 2, tòa nhà Hanoi Aqua Central, 44 Yên Phụ, Ba Đình, Thành phố",
+    39
+   ],
+   [
+    "Lô D26 Khu đô thị mới Cầu Giấy, Phường Yên Hoà, Quận Cầu Giấy, Thành phố Hà Nội",
+    33
+   ],
+   [
+    "30 Bờ Bao Tân Thắng, Phường Tân Sơn Nhì, Quận Tân Phú, Thành phố Hồ Chí Minh",
+    33
+   ],
+   [
+    "91 Đồng Khởi, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh",
+    32
+   ],
+   [
+    "167-169 Võ Thành Trang , Bảy Hiền, Thành phố Hồ Chí Minh",
+    31
+   ]
+  ],
+  "top_skills": [
+   [
+    "Sales",
+    258
+   ],
+   [
+    "Marketing",
+    161
+   ],
+   [
+    "Business Development",
+    155
+   ],
+   [
+    "Business/Sales",
+    152
+   ],
+   [
+    "Kế toán",
+    107
+   ],
+   [
+    "Customer Service/Customer Support",
+    67
+   ],
+   [
+    "HR",
+    67
+   ],
+   [
+    "Giảng dạy",
+    48
+   ],
+   [
+    "Nhà hàng/Khách sạn/Du lịch",
+    37
+   ],
+   [
+    "Content",
+    34
+   ],
+   [
+    "English",
+    34
+   ],
+   [
+    "AutoCAD",
+    29
+   ],
+   [
+    "Chinese",
+    26
+   ],
+   [
+    "Consultant",
+    23
+   ],
+   [
+    "Python",
+    21
+   ],
+   [
+    "SQL",
+    21
+   ],
+   [
+    "E-commerce",
+    21
+   ],
+   [
+    "Japanese - N2",
+    21
+   ],
+   [
+    "Java",
+    20
+   ],
+   [
+    "Electricity / Electronics / Refrigeration / Industrial Elect",
+    20
+   ]
+  ],
+  "top_benefits": [
+   [
+    "Thu nhập hấp dẫn, lương thưởng cạnh tranh theo năng lực Thưởng các Ngày lễ, Tết (theo chín",
+    251
+   ],
+   [
+    "Mức thu nhập hấp dẫn và cạnh tranh trong ngành Ngân hàng và Dịch vụ tài chính: Lương thỏa ",
+    54
+   ],
+   [
+    "Lương tháng 13, thưởng ngày Lễ, Tết Khám sức khỏe định kỳ, BH chăm sóc sức khỏe Du lịch tr",
+    39
+   ],
+   [
+    "1. Chế độ Thưởng hấp dẫn: Thưởng dịp lễ tết Thưởng thành tích gắn với hiệu suất công việc/",
+    20
+   ],
+   [
+    "Chế độ bảo hiểm Du Lịch Chăm sóc sức khỏe Đào tạo Nghỉ phép năm Chế độ thưởng Tăng lương Đ",
+    20
+   ],
+   [
+    "Mức lương cạnh tranh, hấp dẫn (Thu nhập xứng đáng với ứng viên có năng lực) Thưởng hiệu su",
+    18
+   ],
+   [
+    "Thu nhập linh hoạt & Cạnh tranh: Nhận mức lương cố định tương xứng với năng lực và các kho",
+    14
+   ],
+   [
+    "Mức thu nhập hấp dẫn và cạnh tranh, bao gồm thu nhập cố định và thu nhập theo năng lực; Lư",
+    14
+   ],
+   [
+    "Thu nhập hấp dẫn, lương thưởng cạnh tranh theo năng lực; Thưởng các Ngày lễ, Tết (theo chí",
+    14
+   ],
+   [
+    "Thu nhập hấp dẫn, lương thưởng cạnh tranh theo năng lực. Thưởng các Ngày lễ, Tết (theo chí",
+    13
+   ],
+   [
+    "Trở thành nhân viên tại tập đoàn Bán lẻ số 1 Việt Nam Phúc lợi đa dạng ( bảo hiểm, thưởng ",
+    13
+   ],
+   [
+    "Làm việc tại tập đoàn bán lẻ hàng đầu Việt Nam Môi trường làm việc chuyên nghiệp, lớn mạnh",
+    13
+   ],
+   [
+    "Thu nhập cạnh tranh & thưởng kinh doanh hấp dẫn; Thưởng tháng lương thứ 13 và các gói lúc ",
+    13
+   ],
+   [
+    "Ăn trưa, đồng phục, quà Tết. Các hoạt động văn hóa, văn nghệ, thể thao dành cho CB-CNV. Bả",
+    13
+   ],
+   [
+    "Thu nhập cạnh tranh & thưởng kinh doanh hấp dẫn; Thưởng tháng lương thứ 13 và các gói phúc",
+    12
+   ],
+   [
+    "Lương thỏa thuận và nhận đúng hạn; Thưởng thâm niên, thưởng tháng 13; Hỗ trợ tiền ăn tại n",
+    12
+   ],
+   [
+    "Địa điểm làm việc Hồ Chí Minh: Kim Phong Technology Group, 62 Đường 64, Cát Lái, Hồ Chí Mi",
+    12
+   ],
+   [
+    "Được đi du lịch 2-3 lần trong 1 năm",
+    11
+   ],
+   [
+    "Thu nhập hấp dẫn, thỏa thuận tuỳ năng lực. Hưởng đầy đủ chế độ phúc lợi xã hội theo quy đị",
+    11
+   ],
+   [
+    "Lương cứng thỏa thuận theo năng lực + Phụ cấp Tiền xăng + Phụ cấp Tiền điện thoại + Phụ cấ",
+    11
+   ]
+  ],
+  "benefits_per_job": [
+   [
+    "0",
+    303
+   ],
+   [
+    "1–2",
+    2479
+   ],
+   [
+    "3–5",
+    0
+   ],
+   [
+    "6–9",
+    0
+   ],
+   [
+    "10–14",
+    0
+   ],
+   [
+    "≥ 15",
+    0
+   ]
+  ],
+  "desc_len": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–499",
+    687
+   ],
+   [
+    "500–999",
+    1084
+   ],
+   [
+    "1.000–1.999",
+    843
+   ],
+   [
+    "2.000–3.999",
+    163
+   ],
+   [
+    "4.000–7.999",
+    4
+   ],
+   [
+    "≥ 8.000",
+    1
+   ]
+  ],
+  "req_len": [
+   [
+    "0",
+    4
+   ],
+   [
+    "1–299",
+    497
+   ],
+   [
+    "300–599",
+    1196
+   ],
+   [
+    "600–1.199",
+    886
+   ],
+   [
+    "1.200–2.399",
+    188
+   ],
+   [
+    "2.400–4.799",
+    8
+   ],
+   [
+    "≥ 4.800",
+    3
+   ]
+  ],
+  "median_desc_len": 788
+ },
+ {
+  "source": "vietnamworks",
+  "has_raw": true,
+  "has_ledger": true,
+  "ledger_total": 2386,
+  "ledger_status": [
+   [
+    "PENDING",
+    1125
+   ],
+   [
+    "DONE",
+    820
+   ],
+   [
+    "CLOSED",
+    441
+   ]
+  ],
+  "ledger_discovered_by_day": [
+   [
+    "2026-10-20",
+    1158
+   ],
+   [
+    "2026-10-21",
+    28
+   ],
+   [
+    "2026-10-25",
+    24
+   ],
+   [
+    "2026-10-31",
+    48
+   ],
+   [
+    "2026-11-02",
+    250
+   ],
+   [
+    "2026-11-17",
+    878
+   ]
+  ],
+  "ledger_scraped_by_day": [
+   [
+    "2026-10-20",
+    449
+   ],
+   [
+    "2026-10-22",
+    1
+   ],
+   [
+    "2026-11-01",
+    807
+   ],
+   [
+    "2026-11-02",
+    3
+   ]
+  ],
+  "raw_counts": {
+   "snapshot": 1947,
+   "snapshot_v_lớn_hơn_1": 725
+  },
+  "raw_files": 1947,
+  "unique_jobs": 1219,
+  "versions_per_job": [
+   [
+    1,
+    496
+   ],
+   [
+    2,
+    718
+   ],
+   [
+    3,
+    5
+   ]
+  ],
+  "scraped_by_day": [
+   [
+    "2026-10-20",
+    1128
+   ],
+   [
+    "2026-10-22",
+    26
+   ],
+   [
+    "2026-11-01",
+    791
+   ],
+   [
+    "2026-11-02",
+    2
+   ]
+  ],
+  "first_crawl_month": [
+   [
+    "2026-10",
+    1152
+   ],
+   [
+    "2026-11",
+    67
+   ]
+  ],
+  "posted_month": [
+   [
+    "2024-08",
+    1
+   ],
+   [
+    "2026-03",
+    1
+   ],
+   [
+    "2026-06",
+    1
+   ],
+   [
+    "2026-07",
+    1
+   ],
+   [
+    "2026-08",
+    110
+   ],
+   [
+    "2026-09",
+    445
+   ],
+   [
+    "2026-10",
+    660
+   ]
+  ],
+  "no_posted_date": 0,
+  "payload_keys": [
+   [
+    "alias",
+    100.0,
+    "string",
+    "sales-engineer-1790752331072092706"
+   ],
+   [
+    "approvedOn",
+    100.0,
+    "string",
+    "2026-09-30T14:12:11+07:00"
+   ],
+   [
+    "approvedOnText",
+    100.0,
+    "string",
+    "Đăng 20 ngày trước"
+   ],
+   [
+    "benefits",
+    100.0,
+    "list",
+    "[{\"benefitId\": 4, \"benefitIconName\": \"fa-graduation-cap\", \"benefitName\": \"Training\", \"benefitNameVI\"…"
+   ],
+   [
+    "benefits_list",
+    100.0,
+    "list",
+    "[\"Đào tạo: Training is provided to support professional development.\", \"Khác: Registration for local…"
+   ],
+   [
+    "canonical",
+    100.0,
+    "string",
+    "sales-engineer-1790752331072092706-1811606-jv"
+   ],
+   [
+    "company",
+    100.0,
+    "object",
+    "{\"name\": \"MELCO INDUSTRIAL SUPPLIES (VIETNAM) COMPANY LIMITED\", \"address\": \"No. 30A, Street No.10, Q…"
+   ],
+   [
+    "companyColor",
+    100.0,
+    "string",
+    "#5F070B"
+   ],
+   [
+    "companyId",
+    100.0,
+    "number",
+    "392187"
+   ],
+   [
+    "companyName",
+    100.0,
+    "string",
+    "MELCO INDUSTRIAL SUPPLIES (VIETNAM) COMPANY LIMITED"
+   ],
+   [
+    "companySizeId",
+    100.0,
+    "number",
+    "0"
+   ],
+   [
+    "createdBy",
+    100.0,
+    "number",
+    "7646602"
+   ],
+   [
+    "createdOn",
+    100.0,
+    "string",
+    "2024-08-15T14:32:01+07:00"
+   ],
+   [
+    "description_list",
+    100.0,
+    "list",
+    "[\"Develop and execute sales action plans and business strategies.\", \"Maintain and establish good rel…"
+   ],
+   [
+    "expiredOn",
+    100.0,
+    "string",
+    "2026-10-30T23:59:59+07:00"
+   ],
+   [
+    "exposureStatus",
+    100.0,
+    "string",
+    "low_target"
+   ],
+   [
+    "exposureStatusUpdatedOn",
+    100.0,
+    "string",
+    "2026-10-20T19:36:55+07:00"
+   ],
+   [
+    "highestDegreeId",
+    100.0,
+    "number",
+    "4"
+   ],
+   [
+    "industriesV3",
+    100.0,
+    "list",
+    "[{\"industryV3Id\": 31, \"industryV3Name\": \"Mechanic/Machinery/Industrial Equipment\", \"industryV3NameVI…"
+   ],
+   [
+    "isActive",
+    100.0,
+    "bool",
+    "true"
+   ],
+   [
+    "isAdrLiteJob",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "isAnonymous",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "isApproved",
+    100.0,
+    "bool",
+    "true"
+   ],
+   [
+    "isCompleted",
+    100.0,
+    "bool",
+    "true"
+   ],
+   [
+    "isOnline",
+    100.0,
+    "bool",
+    "true"
+   ],
+   [
+    "isRefreshJob",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "isReposted",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "isSalaryVisible",
+    100.0,
+    "bool",
+    "true"
+   ],
+   [
+    "isShowAge",
+    100.0,
+    "number",
+    "1"
+   ],
+   [
+    "isShowContact",
+    100.0,
+    "bool",
+    "true"
+   ],
+   [
+    "isShowGender",
+    100.0,
+    "number",
+    "1"
+   ],
+   [
+    "isShowLogo",
+    100.0,
+    "bool",
+    "true"
+   ],
+   [
+    "isShowLogoInSearch",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "isShowMaritalStatus",
+    100.0,
+    "number",
+    "1"
+   ],
+   [
+    "isShowNationality",
+    100.0,
+    "number",
+    "1"
+   ],
+   [
+    "isShowNumberOfRecruits",
+    100.0,
+    "number",
+    "1"
+   ],
+   [
+    "isTopPriority",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "isTopPriorityM",
+    100.0,
+    "bool",
+    "true"
+   ],
+   [
+    "isUnpaidDisable",
+    100.0,
+    "number",
+    "0"
+   ],
+   [
+    "isUrgentJob",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "isUrgentJobM",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "jobFunction",
+    100.0,
+    "object",
+    "{\"parentId\": 21, \"parentName\": \"Sales\", \"parentNameVI\": \"Kinh Doanh\", \"children\": [{\"id\": 130, \"name…"
+   ],
+   [
+    "jobId",
+    100.0,
+    "number",
+    "1811606"
+   ],
+   [
+    "jobLevel",
+    100.0,
+    "string",
+    "Experienced (non-manager)"
+   ],
+   [
+    "jobLevelId",
+    100.0,
+    "number",
+    "5"
+   ],
+   [
+    "jobLevelVI",
+    100.0,
+    "string",
+    "Nhân viên"
+   ],
+   [
+    "jobRequirement",
+    100.0,
+    "string",
+    "<p>- Good command of spoken and written English. Mandarin (Chinese) is an advantage.</p><p>- Aggress…"
+   ],
+   [
+    "jobTitle",
+    100.0,
+    "string",
+    "Sales Engineer"
+   ],
+   [
+    "jobUrl",
+    100.0,
+    "string",
+    "https://www.vietnamworks.com/sales-engineer-1790752331072092706-1811606-jv"
+   ],
+   [
+    "job_info",
+    100.0,
+    "object",
+    "{\"NGÀY ĐĂNG\": \"2026-09-30T14:12:11+07:00\", \"CẤP BẬC\": \"Nhân viên\", \"NGÀNH NGHỀ\": \"{'parentId': 21, '…"
+   ],
+   [
+    "keywords",
+    100.0,
+    "list",
+    "[\"Communication skills\", \"Customer Management\", \"Inventory Checking\", \"Quality Control\", \"Sales Stra…"
+   ],
+   [
+    "languageId",
+    100.0,
+    "number",
+    "0"
+   ],
+   [
+    "languageSelectedId",
+    100.0,
+    "number",
+    "2"
+   ],
+   [
+    "lastSyncedOn",
+    100.0,
+    "string",
+    "2026-10-16T07:18:22+07:00"
+   ],
+   [
+    "lastUpdatedOn",
+    100.0,
+    "string",
+    "2026-09-30T14:23:18+07:00"
+   ],
+   [
+    "numOfApplications",
+    100.0,
+    "number",
+    "0"
+   ],
+   [
+    "numberOfRecruits",
+    100.0,
+    "number",
+    "1"
+   ],
+   [
+    "onlineOn",
+    100.0,
+    "string",
+    "2026-10-08T11:34:00+07:00"
+   ],
+   [
+    "prettySalary",
+    100.0,
+    "string",
+    "8tr-18tr ₫/tháng"
+   ],
+   [
+    "profilePublishedSiteMask",
+    100.0,
+    "number",
+    "0"
+   ],
+   [
+    "rangeAge",
+    100.0,
+    "string",
+    "20-60"
+   ],
+   [
+    "requiredCoverLetter",
+    100.0,
+    "number",
+    "0"
+   ],
+   [
+    "requiredResume",
+    100.0,
+    "bool",
+    "false"
+   ],
+   [
+    "requirements_list",
+    100.0,
+    "list",
+    "[\"Good command of spoken and written English. Mandarin (Chinese) is an advantage.\", \"Aggressive, sel…"
+   ],
+   [
+    "salary",
+    100.0,
+    "number",
+    "18000000"
+   ],
+   [
+    "salaryMax",
+    100.0,
+    "number",
+    "18000000"
+   ],
+   [
+    "salaryMin",
+    100.0,
+    "number",
+    "8000000"
+   ],
+   [
+    "salaryPeriodId",
+    100.0,
+    "number",
+    "1"
+   ],
+   [
+    "salaryRangeId",
+    100.0,
+    "number",
+    "0"
+   ],
+   [
+    "salary_raw",
+    100.0,
+    "string",
+    "8tr-18tr ₫/tháng"
+   ],
+   [
+    "skills",
+    100.0,
+    "list",
+    "[{\"skillId\": 1010652, \"skillWeight\": 100, \"skillName\": \"Communication skills\"}, {\"skillId\": 2294, \"s…"
+   ],
+   [
+    "title",
+    100.0,
+    "string",
+    "Sales Engineer"
+   ],
+   [
+    "typeWorkingId",
+    100.0,
+    "number",
+    "1"
+   ],
+   [
+    "userId",
+    100.0,
+    "number",
+    "7646602"
+   ],
+   [
+    "yearsOfExperience",
+    100.0,
+    "number",
+    "2"
+   ],
+   [
+    "jobDescription",
+    99.9,
+    "string",
+    "<p>- Develop and execute sales action plans and business strategies.</p><p>- Maintain and establish …"
+   ],
+   [
+    "workingLocations",
+    99.8,
+    "list, null",
+    "[{\"workingLocationId\": 168348, \"addressId\": 166363, \"cityId\": 29, \"districtId\": 0, \"address\": \"No. 3…"
+   ],
+   [
+    "companyLogo",
+    98.1,
+    "string",
+    "https://images.vietnamworks.com/pictureofcompany/97/11485823.png"
+   ],
+   [
+    "companyProfile",
+    97.3,
+    "string",
+    "Our Company Established in year 1971, committing to「Create Value, Pursue Excellence」, Melco provides…"
+   ],
+   [
+    "languageSelected",
+    97.0,
+    "string",
+    "English"
+   ],
+   [
+    "languageSelectedVI",
+    97.0,
+    "string",
+    "Tiếng Anh"
+   ],
+   [
+    "contactName",
+    96.6,
+    "string",
+    "Casey Hiu"
+   ],
+   [
+    "industries",
+    95.1,
+    "list, null",
+    "[{\"industryId\": 0, \"industryName\": \"\", \"industryNameVI\": \"\"}]"
+   ],
+   [
+    "services",
+    92.6,
+    "list, null",
+    "[{\"serviceCode\": \"TPM\", \"startOn\": \"2026-09-30T14:12:11+07:00\", \"expiredOn\": \"2026-10-30T23:59:59+07…"
+   ],
+   [
+    "location",
+    86.5,
+    "string",
+    "Ho Chi Minh"
+   ],
+   [
+    "address",
+    82.6,
+    "string",
+    "No. 30A, Street No.10, Quarter 2, Hiep Binh Ward"
+   ],
+   [
+    "refreshInfo",
+    75.5,
+    "list",
+    "[{\"refreshOn\": \"2026-10-08T11:34:00+07:00\", \"serviceCode\": \"\"}]"
+   ],
+   [
+    "priorityOrder",
+    71.1,
+    "string",
+    "2026-10-08T11:34:00"
+   ],
+   [
+    "exposureStatusUpdatedOnV2",
+    64.0,
+    "string",
+    "2026-11-01T15:58:58+07:00"
+   ],
+   [
+    "exposureStatusV2",
+    64.0,
+    "string",
+    "reach_target"
+   ],
+   [
+    "jobPriceVnd",
+    64.0,
+    "number",
+    "4140000"
+   ],
+   [
+    "approvedOnTextColor",
+    63.8,
+    "string",
+    "#333333"
+   ],
+   [
+    "checkBlacklist",
+    63.8,
+    "bool",
+    "false"
+   ],
+   [
+    "companyInfo",
+    63.8,
+    "object",
+    "{\"companyId\": 235115, \"jobImageURLs\": [\"https://images.vietnamworks.com/company_profile/67832.png\"],…"
+   ],
+   [
+    "detail_source",
+    63.8,
+    "string",
+    "page"
+   ],
+   [
+    "isBanned",
+    63.8,
+    "bool",
+    "false"
+   ],
+   [
+    "isBoldAndRed",
+    63.8,
+    "bool",
+    "false"
+   ],
+   [
+    "isBoldAndRedM",
+    63.8,
+    "bool",
+    "false"
+   ],
+   [
+    "isExpired",
+    63.8,
+    "bool",
+    "false"
+   ],
+   [
+    "isHeadHuntJob",
+    63.8,
+    "bool",
+    "false"
+   ],
+   [
+    "isPremiumJob",
+    63.8,
+    "bool",
+    "false"
+   ],
+   [
+    "isSavedJob",
+    63.8,
+    "bool",
+    "false"
+   ],
+   [
+    "isTopManagementJob",
+    63.8,
+    "bool",
+    "false"
+   ],
+   [
+    "jobInvitation",
+    63.8,
+    "object",
+    "{\"jobInvitationId\": 0, \"status\": 0}"
+   ],
+   [
+    "jobQuantity",
+    63.8,
+    "number",
+    "1"
+   ],
+   [
+    "notAppliedJob",
+    63.8,
+    "bool",
+    "true"
+   ],
+   [
+    "numOfViews",
+    63.8,
+    "number",
+    "392"
+   ],
+   [
+    "prettySalaryEN",
+    63.8,
+    "string",
+    "$$ 7m-9m /month"
+   ],
+   [
+    "prettySalaryVI",
+    63.8,
+    "string",
+    "$$ 7tr-9tr /tháng"
+   ],
+   [
+    "locations",
+    63.7,
+    "list, null",
+    "[29]"
+   ],
+   [
+    "working_addresses",
+    63.7,
+    "list",
+    "[\"Tòa nhà Phương Nam, 219 Quốc lộ 13, Phường 26, Quận Bình Thạnh, Hồ Chí Minh\"]"
+   ],
+   [
+    "emailAddress",
+    62.4,
+    "string",
+    "hr@tabviet.vn"
+   ],
+   [
+    "salaryCurrency",
+    53.4,
+    "string",
+    "VND"
+   ],
+   [
+    "workingDays",
+    52.7,
+    "string",
+    "T2 - T6"
+   ],
+   [
+    "workingToHour",
+    52.7,
+    "string",
+    "18:00"
+   ],
+   [
+    "workingFromHour",
+    52.5,
+    "string",
+    "09:00"
+   ],
+   [
+    "simpleServices",
+    50.2,
+    "list, null",
+    "[\"isUrgentJobM\"]"
+   ],
+   [
+    "companySize",
+    43.8,
+    "string",
+    "20,000-49,999"
+   ],
+   [
+    "companySizeVI",
+    43.8,
+    "string",
+    "20.000-49.999"
+   ],
+   [
+    "applicantSignal",
+    39.4,
+    "object",
+    "{\"value\": \"null\", \"badge\": \"\", \"color\": \"\"}"
+   ],
+   [
+    "durationDays",
+    36.2,
+    "number",
+    "30"
+   ],
+   [
+    "isBoldAndRedJob",
+    36.2,
+    "bool",
+    "false"
+   ],
+   [
+    "isMobileHotJob",
+    36.2,
+    "bool",
+    "true"
+   ],
+   [
+    "isMobileTopJob",
+    36.2,
+    "bool",
+    "true"
+   ],
+   [
+    "isTopPriorityV4",
+    36.2,
+    "bool",
+    "true"
+   ],
+   [
+    "onlineOnBgColor",
+    36.2,
+    "string",
+    "#F1F2F4"
+   ],
+   [
+    "onlineOnText",
+    36.2,
+    "string",
+    "Đăng 20 ngày trước"
+   ],
+   [
+    "onlineOnTextColor",
+    36.2,
+    "string",
+    "#333333"
+   ],
+   [
+    "prettyApprovedOn",
+    36.2,
+    "string",
+    "20 ngày trước"
+   ],
+   [
+    "prettyOnlineOn",
+    36.2,
+    "string",
+    "12 ngày trước"
+   ],
+   [
+    "priorityOrderText",
+    36.2,
+    "string",
+    "Đăng 20 ngày trước"
+   ],
+   [
+    "topPriorityType",
+    36.2,
+    "null, list",
+    "[\"tp_customer_buy_top_priority_service\"]"
+   ],
+   [
+    "visibilityDisplay",
+    36.2,
+    "bool",
+    "false"
+   ],
+   [
+    "nationalityId",
+    32.6,
+    "number",
+    "1"
+   ],
+   [
+    "genderId",
+    30.9,
+    "number",
+    "0"
+   ],
+   [
+    "maritalStatusId",
+    29.6,
+    "number",
+    "0"
+   ],
+   [
+    "ageMax",
+    19.9,
+    "number",
+    "60"
+   ],
+   [
+    "ageMin",
+    19.9,
+    "number",
+    "20"
+   ],
+   [
+    "onlineServiceCode",
+    14.1,
+    "string",
+    "RJ"
+   ],
+   [
+    "redirectTo",
+    0.5,
+    "string",
+    "https://rmit.wd3.myworkdayjobs.com/RMIT_Careers/job/Ho-Chi-Minh-City/Market-Intelligence---Data-Anal…"
+   ],
+   [
+    "companyUrl",
+    0.0,
+    "string",
+    ""
+   ],
+   [
+    "nearestGeoLoc",
+    0.0,
+    "null",
+    ""
+   ],
+   [
+    "summary",
+    0.0,
+    "null",
+    ""
+   ],
+   [
+    "topPriorityTypeV2",
+    0.0,
+    "null",
+    ""
+   ]
+  ],
+  "flat_fill": [
+   [
+    "job_id_global",
+    100.0
+   ],
+   [
+    "source_job_id",
+    100.0
+   ],
+   [
+    "source_url",
+    100.0
+   ],
+   [
+    "job_title",
+    100.0
+   ],
+   [
+    "company_name",
+    100.0
+   ],
+   [
+    "company_address",
+    82.6
+   ],
+   [
+    "company_scale",
+    43.8
+   ],
+   [
+    "raw_category_text",
+    100.0
+   ],
+   [
+    "raw_location_text",
+    86.5
+   ],
+   [
+    "working_locations",
+    99.9
+   ],
+   [
+    "raw_posted_date",
+    100.0
+   ],
+   [
+    "raw_updated_at",
+    100.0
+   ],
+   [
+    "raw_deadline",
+    100.0
+   ],
+   [
+    "raw_working_time",
+    0.0
+   ],
+   [
+    "raw_salary_text",
+    100.0
+   ],
+   [
+    "raw_employment_type",
+    100.0
+   ],
+   [
+    "raw_work_mode",
+    0.0
+   ],
+   [
+    "raw_experience_text",
+    82.9
+   ],
+   [
+    "raw_seniority_text",
+    100.0
+   ],
+   [
+    "raw_education_text",
+    100.0
+   ],
+   [
+    "raw_headcount",
+    100.0
+   ],
+   [
+    "raw_age_text",
+    100.0
+   ],
+   [
+    "raw_gender_text",
+    100.0
+   ],
+   [
+    "skills_list",
+    100.0
+   ],
+   [
+    "benefits_list",
+    100.0
+   ],
+   [
+    "raw_description_text",
+    100.0
+   ],
+   [
+    "raw_requirements_text",
+    100.0
+   ]
+  ],
+  "tops": {
+   "raw_salary_text": [
+    [
+     "Thương lượng",
+     866
+    ],
+    [
+     "1000 - 1500 USD",
+     9
+    ],
+    [
+     "15000000 - 25000000 VND",
+     8
+    ],
+    [
+     "1500 - 2000 USD",
+     8
+    ],
+    [
+     "500 - 1000 USD",
+     7
+    ],
+    [
+     "1000 - 2000 USD",
+     6
+    ],
+    [
+     "20000000 - 30000000 VND",
+     6
+    ],
+    [
+     "0 - 2500 USD",
+     6
+    ],
+    [
+     "0 - 30000000 VND",
+     6
+    ],
+    [
+     "25000000 - 30000000 VND",
+     6
+    ],
+    [
+     "20000000 - 50000000 VND",
+     6
+    ],
+    [
+     "1000 - 0 USD",
+     6
+    ],
+    [
+     "30000000 - 40000000 VND",
+     5
+    ],
+    [
+     "15000000 - 30000000 VND",
+     5
+    ],
+    [
+     "700 - 1500 USD",
+     5
+    ]
+   ],
+   "raw_experience_text": [
+    [
+     "3 năm",
+     259
+    ],
+    [
+     "2 năm",
+     227
+    ],
+    [
+     "1 năm",
+     190
+    ],
+    [
+     "5 năm",
+     189
+    ],
+    [
+     "4 năm",
+     55
+    ],
+    [
+     "7 năm",
+     31
+    ],
+    [
+     "8 năm",
+     28
+    ],
+    [
+     "10 năm",
+     17
+    ],
+    [
+     "6 năm",
+     9
+    ],
+    [
+     "15 năm",
+     4
+    ],
+    [
+     "20 năm",
+     1
+    ]
+   ],
+   "raw_seniority_text": [
+    [
+     "Nhân viên",
+     978
+    ],
+    [
+     "Trưởng phòng",
+     172
+    ],
+    [
+     "Mới Tốt Nghiệp",
+     46
+    ],
+    [
+     "Giám Đốc và Cấp Cao Hơn",
+     23
+    ]
+   ],
+   "raw_employment_type": [
+    [
+     "Toàn thời gian",
+     1120
+    ],
+    [
+     "6",
+     91
+    ],
+    [
+     "7",
+     4
+    ],
+    [
+     "5",
+     2
+    ],
+    [
+     "Bán thời gian",
+     1
+    ],
+    [
+     "Khác",
+     1
+    ]
+   ],
+   "raw_work_mode": [],
+   "raw_category_text": [
+    [
+     "Phần Mềm CNTT/Dịch vụ Phần mềm",
+     358
+    ],
+    [
+     "Ngân hàng",
+     129
+    ],
+    [
+     "Hệ thống CNTT & Thiết bị",
+     120
+    ],
+    [
+     "Viễn thông",
+     104
+    ],
+    [
+     "Sản xuất",
+     75
+    ],
+    [
+     "Điện/Điện tử",
+     56
+    ],
+    [
+     "Giáo dục/Đào Tạo",
+     40
+    ],
+    [
+     "Cơ khí/Máy móc/Thiết bị công nghiệp",
+     38
+    ],
+    [
+     "Tài Chính",
+     38
+    ],
+    [
+     "Kỹ thuật xây dựng/Cơ sở hạ tầng",
+     37
+    ],
+    [
+     "Chứng khoán",
+     21
+    ],
+    [
+     "Ô tô",
+     20
+    ],
+    [
+     "Bán lẻ/Bán sỉ",
+     15
+    ],
+    [
+     "Hàng tiêu dùng",
+     13
+    ],
+    [
+     "Vận tải",
+     13
+    ]
+   ],
+   "raw_education_text": [
+    [
+     "Cử nhân / Đại học",
+     821
+    ],
+    [
+     "0",
+     309
+    ],
+    [
+     "12",
+     71
+    ],
+    [
+     "Cao đẳng",
+     9
+    ],
+    [
+     "Thạc sĩ",
+     4
+    ],
+    [
+     "11",
+     4
+    ],
+    [
+     "Tiến sĩ",
+     1
+    ]
+   ]
+  },
+  "top_locations": [
+   [
+    "Hà Nội, Việt Nam",
+    64
+   ],
+   [
+    "Hà Nội, Vietnam",
+    61
+   ],
+   [
+    "Hà Nội",
+    42
+   ],
+   [
+    "Hanoi / HCMC",
+    37
+   ],
+   [
+    "Ho Chi Minh",
+    34
+   ],
+   [
+    "Hanoi",
+    31
+   ],
+   [
+    "Unit 512ResCo-work09, Level 5, M-Building, Lot C7B-02A, Zone A, No. 09 Street No",
+    31
+   ],
+   [
+    "Số 18 Lê Văn Lương, Phường Yên Hòa, Thành phố Hà Nội",
+    30
+   ],
+   [
+    "15th Floor, Taisei Square Hanoi, 289 Khuat Duy Tien street, Dai Mo Ward, Ha Noi",
+    26
+   ],
+   [
+    "Ho Chi Minh, Vietnam",
+    20
+   ],
+   [
+    "[HN] Tòa nhà FPT Cầu Giấy, phố Duy Tân, phường Cầu Giấy, Thành phố Hà Nội, Việt ",
+    16
+   ],
+   [
+    "Etown Building, 364 Cong Hoa Street, Tan Binh Ward, Ho Chi Minh City, Vietnam",
+    16
+   ],
+   [
+    "Số 22 Ngô Quyền - Hà Nội - Việt Nam",
+    14
+   ],
+   [
+    "Ha Noi",
+    12
+   ],
+   [
+    "Hanoi, Vietnam",
+    12
+   ]
+  ],
+  "top_skills": [
+   [
+    "PYTHON",
+    56
+   ],
+   [
+    "Sql",
+    34
+   ],
+   [
+    "Technical Support",
+    33
+   ],
+   [
+    "SQL",
+    30
+   ],
+   [
+    "Phân Tích Nghiệp Vụ",
+    29
+   ],
+   [
+    "Phân Tích Dữ Liệu",
+    29
+   ],
+   [
+    "English",
+    28
+   ],
+   [
+    "Python",
+    25
+   ],
+   [
+    "Java",
+    22
+   ],
+   [
+    "Power Bi",
+    22
+   ],
+   [
+    "Data Analysis",
+    22
+   ],
+   [
+    "Business Analysis",
+    21
+   ],
+   [
+    "Công Nghệ Thông Tin",
+    21
+   ],
+   [
+    "Quản Lý Dự Án",
+    20
+   ],
+   [
+    "Kiểm Soát Chất Lượng",
+    19
+   ],
+   [
+    "Project management",
+    17
+   ],
+   [
+    "Business Development",
+    17
+   ],
+   [
+    "Kubernetes",
+    17
+   ],
+   [
+    "Communication skills",
+    16
+   ],
+   [
+    "Oracle",
+    16
+   ]
+  ],
+  "top_benefits": [
+   [
+    "Phúc lợi toàn diện gồm 12 ngày nghỉ phép/năm, 8 triệu VNĐ hỗ trợ du lịch cá nhân, phụ cấp ",
+    30
+   ],
+   [
+    "MB cam kết nâng cao năng lực nhân sự với chương trình đào tạo chuẩn quốc tế. 100% nhân viê",
+    30
+   ],
+   [
+    "Đặc biệt, MBers được tham gia bảo hiểm sức khỏe MIC độc quyền dành riêng cho bản thân và n",
+    30
+   ],
+   [
+    "MB mở ra cơ hội thăng tiến rộng lớn với đội ngũ cán bộ quản lý trẻ nhất trong hệ thống ngâ",
+    30
+   ],
+   [
+    "MB tự hào mang đến chế độ lương thưởng cạnh tranh bậc nhất hệ thống ngân hàng TMCP, với mứ",
+    30
+   ],
+   [
+    "Participating in full insurance benefits (health insurance, social insurance, unemployment",
+    28
+   ],
+   [
+    "Providing compensation and programs that give our employees financial peace of mind, such ",
+    28
+   ],
+   [
+    "Keeping Googlers healthy is our priority, such as medical, dental, and vision insurance fo",
+    28
+   ],
+   [
+    "The time you need to recharge, and the flexibility to get your best work done, such as hyb",
+    28
+   ],
+   [
+    "Professional working environment, multinational company, good career development opportuni",
+    27
+   ],
+   [
+    "Theo quy định công ty",
+    25
+   ],
+   [
+    "Cultural and sports activities, taking care of employees' health and life are organized pe",
+    24
+   ],
+   [
+    "Đầy đủ các chế độ BHXH, BHYT, BHTN. Khám sức khỏe định kỳ hàng năm",
+    17
+   ],
+   [
+    "12++ ngày phép/năm, ngày phép tăng theo thâm niên làm việc",
+    17
+   ],
+   [
+    "Lương tháng 13",
+    16
+   ],
+   [
+    "Lộ trình thăng tiến rõ ràng. Được đào tạo và huấn luyện khi làm việc. Được tiếp cận với cá",
+    16
+   ],
+   [
+    "Premium Healthcare Insurance",
+    15
+   ],
+   [
+    "Short term and long-term award",
+    15
+   ],
+   [
+    "Healthcare Plan and Insurance package",
+    15
+   ],
+   [
+    "MBers còn nhận quà sinh nhật ý nghĩa, nghỉ nguyên lương 1 ngày và tham gia các sự kiện gắn",
+    14
+   ]
+  ],
+  "benefits_per_job": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–2",
+    186
+   ],
+   [
+    "3–5",
+    737
+   ],
+   [
+    "6–9",
+    290
+   ],
+   [
+    "10–14",
+    6
+   ],
+   [
+    "≥ 15",
+    0
+   ]
+  ],
+  "desc_len": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–499",
+    522
+   ],
+   [
+    "500–999",
+    231
+   ],
+   [
+    "1.000–1.999",
+    296
+   ],
+   [
+    "2.000–3.999",
+    145
+   ],
+   [
+    "4.000–7.999",
+    24
+   ],
+   [
+    "≥ 8.000",
+    1
+   ]
+  ],
+  "req_len": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–299",
+    224
+   ],
+   [
+    "300–599",
+    352
+   ],
+   [
+    "600–1.199",
+    320
+   ],
+   [
+    "1.200–2.399",
+    282
+   ],
+   [
+    "2.400–4.799",
+    38
+   ],
+   [
+    "≥ 4.800",
+    3
+   ]
+  ],
+  "median_desc_len": 699
+ },
+ {
+  "source": "careerviet",
+  "has_raw": true,
+  "has_ledger": true,
+  "ledger_total": 924,
+  "ledger_status": [
+   [
+    "DONE",
+    644
+   ],
+   [
+    "PENDING",
+    273
+   ],
+   [
+    "RECHECK_DUE",
+    6
+   ],
+   [
+    "CLOSED",
+    1
+   ]
+  ],
+  "ledger_discovered_by_day": [
+   [
+    "2026-10-20",
+    608
+   ],
+   [
+    "2026-10-31",
+    40
+   ],
+   [
+    "2026-11-02",
+    3
+   ],
+   [
+    "2026-11-17",
+    273
+   ]
+  ],
+  "ledger_scraped_by_day": [
+   [
+    "2026-10-20",
+    588
+   ],
+   [
+    "2026-11-01",
+    60
+   ],
+   [
+    "2026-11-02",
+    3
+   ]
+  ],
+  "raw_counts": {
+   "snapshot": 660,
+   "snapshot_v_lớn_hơn_1": 18
+  },
+  "raw_files": 660,
+  "unique_jobs": 642,
+  "versions_per_job": [
+   [
+    1,
+    624
+   ],
+   [
+    2,
+    18
+   ]
+  ],
+  "scraped_by_day": [
+   [
+    "2026-10-20",
+    599
+   ],
+   [
+    "2026-11-01",
+    59
+   ],
+   [
+    "2026-11-02",
+    2
+   ]
+  ],
+  "first_crawl_month": [
+   [
+    "2026-10",
+    599
+   ],
+   [
+    "2026-11",
+    43
+   ]
+  ],
+  "posted_month": [
+   [
+    "2026-09",
+    102
+   ],
+   [
+    "2026-10",
+    523
+   ],
+   [
+    "2026-11",
+    3
+   ]
+  ],
+  "no_posted_date": 14,
+  "payload_keys": [
+   [
+    "detail-row",
+    100.0,
+    "object",
+    "{\"Phúc lợi\": \"Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Phụ cấp Đồng phục Chế độ thưởng Chăm sóc sức k…"
+   ],
+   [
+    "job-company-name",
+    100.0,
+    "string",
+    "Công Ty Cổ Phần Trực Quan"
+   ],
+   [
+    "title",
+    99.8,
+    "string",
+    "Kỹ Sư Điện Lập Trình PLC HMI"
+   ],
+   [
+    "Ngành nghề",
+    97.8,
+    "list, null",
+    "[\"Cơ khí / Ô tô / Tự động hóa , Điện / Điện tử / Điện lạnh / Điện công nghiệp , CNTT - Phần mềm\"]"
+   ],
+   [
+    "detail-box",
+    97.8,
+    "list",
+    "[\"Ngày cập nhật 09/10/2026\", \"Ngành nghề Cơ khí / Ô tô / Tự động hóa , Điện / Điện tử / Điện lạnh / …"
+   ],
+   [
+    "map",
+    97.8,
+    "string, null",
+    "Long An"
+   ],
+   [
+    "job-tags",
+    79.1,
+    "list",
+    "[\"kỹ sư giám sát điện\", \"electrical engineer\", \"kỹ sư cơ điện công trình\", \"kỹ sư m&e\", \"m&e enginee…"
+   ],
+   [
+    "company_confidential",
+    7.8,
+    "bool",
+    "false"
+   ],
+   [
+    "date_posted",
+    7.8,
+    "string",
+    "2026-09-29T22:01:08.605Z"
+   ],
+   [
+    "is_removed",
+    7.8,
+    "bool",
+    "false"
+   ],
+   [
+    "jsonld",
+    7.8,
+    "object",
+    "{\"@context\": \"http://schema.org\", \"@type\": \"JobPosting\", \"inLanguage\": \"vi\", \"title\": \"ĐIỀU PHỐI VIÊ…"
+   ],
+   [
+    "valid_through",
+    7.8,
+    "string",
+    "2026-10-29T23:59:00Z"
+   ]
+  ],
+  "flat_fill": [
+   [
+    "job_id_global",
+    100.0
+   ],
+   [
+    "source_job_id",
+    100.0
+   ],
+   [
+    "source_url",
+    100.0
+   ],
+   [
+    "job_title",
+    99.8
+   ],
+   [
+    "company_name",
+    100.0
+   ],
+   [
+    "company_address",
+    65.7
+   ],
+   [
+    "company_scale",
+    0.0
+   ],
+   [
+    "raw_category_text",
+    97.8
+   ],
+   [
+    "raw_location_text",
+    97.8
+   ],
+   [
+    "working_locations",
+    98.6
+   ],
+   [
+    "raw_posted_date",
+    97.8
+   ],
+   [
+    "raw_updated_at",
+    97.8
+   ],
+   [
+    "raw_deadline",
+    97.8
+   ],
+   [
+    "raw_working_time",
+    0.0
+   ],
+   [
+    "raw_salary_text",
+    97.8
+   ],
+   [
+    "raw_employment_type",
+    97.8
+   ],
+   [
+    "raw_work_mode",
+    0.0
+   ],
+   [
+    "raw_experience_text",
+    88.5
+   ],
+   [
+    "raw_seniority_text",
+    97.8
+   ],
+   [
+    "raw_education_text",
+    0.0
+   ],
+   [
+    "raw_headcount",
+    0.0
+   ],
+   [
+    "raw_age_text",
+    0.0
+   ],
+   [
+    "raw_gender_text",
+    0.0
+   ],
+   [
+    "skills_list",
+    0.0
+   ],
+   [
+    "benefits_list",
+    100.0
+   ],
+   [
+    "raw_description_text",
+    100.0
+   ],
+   [
+    "raw_requirements_text",
+    100.0
+   ]
+  ],
+  "tops": {
+   "raw_salary_text": [
+    [
+     "Cạnh tranh",
+     412
+    ],
+    [
+     "15 - 20 Triệu VND",
+     13
+    ],
+    [
+     "15 - 25 Triệu VND",
+     13
+    ],
+    [
+     "20 - 30 Triệu VND",
+     11
+    ],
+    [
+     "10 - 15 Triệu VND",
+     9
+    ],
+    [
+     "20 - 40 Triệu VND",
+     5
+    ],
+    [
+     "Lên đến 45 Triệu VND",
+     5
+    ],
+    [
+     "25 - 30 Triệu VND",
+     5
+    ],
+    [
+     "18 - 22 Triệu VND",
+     5
+    ],
+    [
+     "20 - 50 Triệu VND",
+     5
+    ],
+    [
+     "12 - 20 Triệu VND",
+     4
+    ],
+    [
+     "10 - 12 Triệu VND",
+     4
+    ],
+    [
+     "30 - 40 Triệu VND",
+     4
+    ],
+    [
+     "12 - 15 Triệu VND",
+     4
+    ],
+    [
+     "18 - 25 Triệu VND",
+     4
+    ]
+   ],
+   "raw_experience_text": [
+    [
+     "3 - 5 Năm",
+     76
+    ],
+    [
+     "Trên 3 Năm",
+     53
+    ],
+    [
+     "Trên 2 Năm",
+     47
+    ],
+    [
+     "2 - 3 Năm",
+     47
+    ],
+    [
+     "1 - 3 Năm",
+     40
+    ],
+    [
+     "2 - 5 Năm",
+     40
+    ],
+    [
+     "Trên 1 Năm",
+     37
+    ],
+    [
+     "1 - 2 Năm",
+     36
+    ],
+    [
+     "Trên 5 Năm",
+     32
+    ],
+    [
+     "1 - 5 Năm",
+     17
+    ],
+    [
+     "Chưa có kinh nghiệm",
+     15
+    ],
+    [
+     "5 - 7 Năm",
+     13
+    ],
+    [
+     "Lên đến 1 Năm",
+     8
+    ],
+    [
+     "3 - 4 Năm",
+     8
+    ],
+    [
+     "3 - 10 Năm",
+     7
+    ]
+   ],
+   "raw_seniority_text": [
+    [
+     "Nhân viên",
+     521
+    ],
+    [
+     "Trưởng nhóm / Giám sát",
+     44
+    ],
+    [
+     "Quản lý",
+     39
+    ],
+    [
+     "Sinh viên/ Thực tập sinh",
+     14
+    ],
+    [
+     "Giám đốc",
+     6
+    ],
+    [
+     "Mới tốt nghiệp",
+     4
+    ]
+   ],
+   "raw_employment_type": [
+    [
+     "Nhân viên chính thức",
+     607
+    ],
+    [
+     "Thực tập",
+     8
+    ],
+    [
+     "Nhân viên chính thức , Thực tập",
+     6
+    ],
+    [
+     "Nhân viên chính thức , Bán thời gian",
+     4
+    ],
+    [
+     "Bán thời gian",
+     1
+    ],
+    [
+     "Bán thời gian , Thời vụ/ Nghề tự do , Thực tập",
+     1
+    ],
+    [
+     "Thời vụ/ Nghề tự do",
+     1
+    ]
+   ],
+   "raw_work_mode": [],
+   "raw_category_text": [
+    [
+     "CNTT - Phần mềm",
+     103
+    ],
+    [
+     "CNTT - Phần mềm , CNTT - Phần cứng / Mạng",
+     70
+    ],
+    [
+     "Ngân hàng , CNTT - Phần mềm , CNTT - Phần cứng / Mạng",
+     30
+    ],
+    [
+     "Ngân hàng , Tài chính / Đầu tư , CNTT - Phần mềm",
+     26
+    ],
+    [
+     "CNTT - Phần mềm , Ngân hàng , Tài chính / Đầu tư",
+     16
+    ],
+    [
+     "CNTT - Phần mềm , Ngân hàng",
+     13
+    ],
+    [
+     "CNTT - Phần mềm , Ngân hàng , CNTT - Phần cứng / Mạng",
+     12
+    ],
+    [
+     "Ngân hàng , CNTT - Phần mềm",
+     9
+    ],
+    [
+     "Xuất nhập khẩu , Vận chuyển / Giao nhận / Kho vận , Hàng hải",
+     8
+    ],
+    [
+     "CNTT - Phần cứng / Mạng , CNTT - Phần mềm",
+     8
+    ],
+    [
+     "CNTT - Phần mềm , CNTT - Phần cứng / Mạng , Bưu chính viễn thông",
+     7
+    ],
+    [
+     "Y tế / Chăm sóc sức khỏe / Thẩm mỹ / Làm đẹp , CNTT - Phần mềm",
+     7
+    ],
+    [
+     "CNTT - Phần mềm , CNTT - Phần cứng / Mạng , Sản xuất / Vận hành sản xuất",
+     6
+    ],
+    [
+     "Vận chuyển / Giao nhận / Kho vận , Xuất nhập khẩu , Hàng hải",
+     6
+    ],
+    [
+     "Vận chuyển / Giao nhận / Kho vận , Hàng hải , Xuất nhập khẩu",
+     6
+    ]
+   ],
+   "raw_education_text": []
+  },
+  "top_locations": [
+   [
+    "Hà Nội",
+    336
+   ],
+   [
+    "Hồ Chí Minh",
+    192
+   ],
+   [
+    "Địa điểm làm việc Hà Nội Tầng 16, Hapulico Center Building, Số 1 Nguyễn Huy Tưởn",
+    19
+   ],
+   [
+    "Bình Dương",
+    13
+   ],
+   [
+    "Hà Nội, Hồ Chí Minh",
+    12
+   ],
+   [
+    "Địa điểm làm việc Hà Nội 99 Láng Hạ, Đống Đa, Hà Nội",
+    10
+   ],
+   [
+    "Đồng Nai",
+    10
+   ],
+   [
+    "Bà Rịa - Vũng Tàu",
+    9
+   ],
+   [
+    "Địa điểm làm việc Hà Nội Số 412 Nguyễn Văn Cừ, P. Bồ Đề, Q.Long Biên, TP. Hà Nội",
+    8
+   ],
+   [
+    "Địa điểm làm việc Hà Nội 228 Ng. 192 Lê Trọng Tấn, Định Công, Hà Nội",
+    8
+   ],
+   [
+    "Long An",
+    7
+   ],
+   [
+    "Địa điểm làm việc Bà Rịa - Vũng Tàu Seahorse Marine and Energy Joint Stock Compa",
+    6
+   ],
+   [
+    "Địa điểm làm việc Hà Nội Tòa N03-T3A Khu Ngoại giao đoàn, Xuân Tảo, Bắc Từ Liêm,",
+    5
+   ],
+   [
+    "Bà Rịa - Vũng Tàu, Hồ Chí Minh, Đồng Nai",
+    4
+   ],
+   [
+    "Địa điểm làm việc Hà Nội Hanoi Center Point, 27 Lê Văn Lương, Thanh Xuân, Hà Nội",
+    4
+   ]
+  ],
+  "top_skills": [],
+  "top_benefits": [
+   [
+    "Phúc lợi Chế độ bảo hiểm Du Lịch Chế độ thưởng Chăm sóc sức khỏe Đào tạo Tăng lương",
+    94
+   ],
+   [
+    "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Phụ cấp Đồng phục Chế độ thưởng Chăm sóc sức khỏe ",
+    77
+   ],
+   [
+    "Phúc lợi Chế độ bảo hiểm Du Lịch Phụ cấp Đồng phục Chế độ thưởng Chăm sóc sức khỏe Đào tạo",
+    63
+   ],
+   [
+    "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Phụ cấp Du lịch nước ngoài Đồng phục Chế độ thưởng",
+    60
+   ],
+   [
+    "Phúc lợi",
+    48
+   ],
+   [
+    "Phúc lợi Chế độ bảo hiểm Du Lịch Phụ cấp Chế độ thưởng Chăm sóc sức khỏe Đào tạo Tăng lươn",
+    46
+   ],
+   [
+    "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Phụ cấp Chế độ thưởng Chăm sóc sức khỏe Đào tạo Tă",
+    45
+   ],
+   [
+    "Phúc lợi Chế độ bảo hiểm Du Lịch Chế độ thưởng Chăm sóc sức khỏe Đào tạo Tăng lương Nghỉ p",
+    22
+   ],
+   [
+    "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Đồng phục Chế độ thưởng Chăm sóc sức khỏe Đào tạo ",
+    17
+   ],
+   [
+    "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Phụ cấp Xe đưa đón Đồng phục Chế độ thưởng Chăm só",
+    16
+   ],
+   [
+    "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Chế độ thưởng Chăm sóc sức khỏe Đào tạo Tăng lương",
+    15
+   ],
+   [
+    "Phúc lợi Chế độ bảo hiểm Du Lịch Phụ cấp Xe đưa đón Đồng phục Chế độ thưởng Chăm sóc sức k",
+    9
+   ],
+   [
+    "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Phụ cấp Xe đưa đón Du lịch nước ngoài Đồng phục Ch",
+    9
+   ],
+   [
+    "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Phụ cấp Du lịch nước ngoài Chế độ thưởng Chăm sóc ",
+    8
+   ],
+   [
+    "Phúc lợi Chế độ bảo hiểm Du Lịch Chế độ thưởng Chăm sóc sức khỏe Đào tạo Tăng lương Công t",
+    8
+   ],
+   [
+    "Phúc lợi Chế độ bảo hiểm Phụ cấp Chế độ thưởng Chăm sóc sức khỏe Đào tạo Tăng lương Công t",
+    5
+   ],
+   [
+    "Phúc lợi Chế độ bảo hiểm Du Lịch Du lịch nước ngoài Đồng phục Chế độ thưởng Chăm sóc sức k",
+    4
+   ],
+   [
+    "Phúc lợi Chế độ bảo hiểm Du Lịch Phụ cấp Du lịch nước ngoài Đồng phục Chế độ thưởng Chăm s",
+    4
+   ],
+   [
+    "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Xe đưa đón Đồng phục Chế độ thưởng Chăm sóc sức kh",
+    4
+   ],
+   [
+    "Phúc lợi Chế độ bảo hiểm Du Lịch Đồng phục Chế độ thưởng Chăm sóc sức khỏe Đào tạo Tăng lư",
+    4
+   ]
+  ],
+  "benefits_per_job": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–2",
+    642
+   ],
+   [
+    "3–5",
+    0
+   ],
+   [
+    "6–9",
+    0
+   ],
+   [
+    "10–14",
+    0
+   ],
+   [
+    "≥ 15",
+    0
+   ]
+  ],
+  "desc_len": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–499",
+    62
+   ],
+   [
+    "500–999",
+    228
+   ],
+   [
+    "1.000–1.999",
+    236
+   ],
+   [
+    "2.000–3.999",
+    99
+   ],
+   [
+    "4.000–7.999",
+    17
+   ],
+   [
+    "≥ 8.000",
+    0
+   ]
+  ],
+  "req_len": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–299",
+    16
+   ],
+   [
+    "300–599",
+    117
+   ],
+   [
+    "600–1.199",
+    255
+   ],
+   [
+    "1.200–2.399",
+    205
+   ],
+   [
+    "2.400–4.799",
+    48
+   ],
+   [
+    "≥ 4.800",
+    1
+   ]
+  ],
+  "median_desc_len": 1061
+ },
+ {
+  "source": "vieclam24h",
+  "has_raw": true,
+  "has_ledger": true,
+  "ledger_total": 1096,
+  "ledger_status": [
+   [
+    "DONE",
+    668
+   ],
+   [
+    "PENDING",
+    415
+   ],
+   [
+    "RECHECK_DUE",
+    13
+   ]
+  ],
+  "ledger_discovered_by_day": [
+   [
+    "2026-10-20",
+    638
+   ],
+   [
+    "2026-10-31",
+    41
+   ],
+   [
+    "2026-11-02",
+    8
+   ],
+   [
+    "2026-11-17",
+    409
+   ]
+  ],
+  "ledger_scraped_by_day": [
+   [
+    "2026-10-20",
+    635
+   ],
+   [
+    "2026-11-01",
+    44
+   ],
+   [
+    "2026-11-02",
+    2
+   ]
+  ],
+  "raw_counts": {
+   "snapshot": 660,
+   "snapshot_v_lớn_hơn_1": 3,
+   "file_batch": 1,
+   "tin_trong_batch": 616
+  },
+  "raw_files": 660,
+  "unique_jobs": 660,
+  "versions_per_job": [
+   [
+    1,
+    660
+   ]
+  ],
+  "scraped_by_day": [
+   [
+    "2026-10-20",
+    619
+   ],
+   [
+    "2026-11-01",
+    39
+   ],
+   [
+    "2026-11-02",
+    2
+   ]
+  ],
+  "first_crawl_month": [
+   [
+    "2026-10",
+    619
+   ],
+   [
+    "2026-11",
+    41
+   ]
+  ],
+  "posted_month": [
+   [
+    "2026-07",
+    1
+   ],
+   [
+    "2026-09",
+    144
+   ],
+   [
+    "2026-10",
+    513
+   ],
+   [
+    "2026-11",
+    2
+   ]
+  ],
+  "no_posted_date": 0,
+  "payload_keys": [
+   [
+    "company",
+    100.0,
+    "object",
+    "{\"name\": \"Công Ty Cổ Phần Công Nghệ Ladipage Việt Nam\", \"address\": \"Tầng 24, tòa MHDI, 68 Nguyễn Cơ …"
+   ],
+   [
+    "deadline",
+    100.0,
+    "string",
+    "31/10/2026"
+   ],
+   [
+    "description",
+    100.0,
+    "list",
+    "[\"Tìm kiếm, phát triển và mở rộng tệp khách hàng doanh nghiệp (SME – Enterprise).\", \"Phân tích nhu c…"
+   ],
+   [
+    "experience_summary",
+    100.0,
+    "string",
+    "1 năm"
+   ],
+   [
+    "general_info",
+    100.0,
+    "object",
+    "{\"posted_date\": \"29/09/2026\", \"level\": \"Nhân viên\", \"hiring_quantity\": \"3\", \"working_type\": \"Toàn th…"
+   ],
+   [
+    "keywords",
+    100.0,
+    "list",
+    "[\"Tư Vấn\", \"nhân viên tư vấn visa\", \"nhân viên tư vấn khóa học\", \"nhân viên tư vấn\", \"lương 15 triệu…"
+   ],
+   [
+    "location_summary",
+    100.0,
+    "string",
+    "Hà Nội"
+   ],
+   [
+    "requirements",
+    100.0,
+    "list",
+    "[\"Tốt nghiệp Cao đẳng/Đại học các ngành Kinh tế, CNTT, Quản trị, Marketing,…\", \"Tối thiểu 1 năm kinh…"
+   ],
+   [
+    "salary",
+    100.0,
+    "string",
+    "12 - 20 triệu"
+   ],
+   [
+    "title",
+    100.0,
+    "string",
+    "Nhân Viên Kinh Doanh - Tư Vấn Giải Pháp Lương Cơ Bản 12 - 15Tr"
+   ],
+   [
+    "working_address",
+    100.0,
+    "string",
+    "Tầng 24, tòa MHDI, 68 Nguyễn Cơ Thạch, Mỹ Đình, Hà Nội"
+   ],
+   [
+    "benefits",
+    99.5,
+    "list",
+    "[\"Mức lương cơ bản:12.000.000 - 15.000.000 + phụ cấp ăn trưa + %HH\", \"KPI được áp dụng khi lên chính…"
+   ],
+   [
+    "date_posted",
+    4.5,
+    "string",
+    "2026-10-23"
+   ],
+   [
+    "job_posting_jsonld",
+    4.5,
+    "object",
+    "{\"occupationalCategory\": \"Nhân viên\", \"totalJobOpenings\": 2, \"@context\": \"https://schema.org/\", \"@ty…"
+   ],
+   [
+    "locations_jsonld",
+    4.5,
+    "list",
+    "[{\"street\": \"Số 33 Ngõ 165 Đường Cầu Giấy\", \"locality\": \"Cầu Giấy\", \"region\": \"Hà Nội\", \"country\": \"…"
+   ],
+   [
+    "valid_through",
+    4.5,
+    "string",
+    "2026-11-19T23:59:59+07:00"
+   ],
+   [
+    "working_time",
+    3.5,
+    "string",
+    "- Hưởng đầy đủ các chính sách theo quy định của Luật Lao Động, đóng BHXH, BHYT, BHTN. - Môi trường l…"
+   ]
+  ],
+  "flat_fill": [
+   [
+    "job_id_global",
+    100.0
+   ],
+   [
+    "source_job_id",
+    100.0
+   ],
+   [
+    "source_url",
+    100.0
+   ],
+   [
+    "job_title",
+    100.0
+   ],
+   [
+    "company_name",
+    100.0
+   ],
+   [
+    "company_address",
+    100.0
+   ],
+   [
+    "company_scale",
+    0.0
+   ],
+   [
+    "raw_category_text",
+    100.0
+   ],
+   [
+    "raw_location_text",
+    100.0
+   ],
+   [
+    "working_locations",
+    100.0
+   ],
+   [
+    "raw_posted_date",
+    100.0
+   ],
+   [
+    "raw_updated_at",
+    0.0
+   ],
+   [
+    "raw_deadline",
+    100.0
+   ],
+   [
+    "raw_working_time",
+    3.5
+   ],
+   [
+    "raw_salary_text",
+    100.0
+   ],
+   [
+    "raw_employment_type",
+    100.0
+   ],
+   [
+    "raw_work_mode",
+    0.0
+   ],
+   [
+    "raw_experience_text",
+    100.0
+   ],
+   [
+    "raw_seniority_text",
+    100.0
+   ],
+   [
+    "raw_education_text",
+    0.0
+   ],
+   [
+    "raw_headcount",
+    100.0
+   ],
+   [
+    "raw_age_text",
+    0.0
+   ],
+   [
+    "raw_gender_text",
+    0.0
+   ],
+   [
+    "skills_list",
+    100.0
+   ],
+   [
+    "benefits_list",
+    99.5
+   ],
+   [
+    "raw_description_text",
+    100.0
+   ],
+   [
+    "raw_requirements_text",
+    100.0
+   ]
+  ],
+  "tops": {
+   "raw_salary_text": [
+    [
+     "10 - 15 triệu",
+     46
+    ],
+    [
+     "8 - 12 triệu",
+     31
+    ],
+    [
+     "Thoả thuận",
+     31
+    ],
+    [
+     "8 - 15 triệu",
+     29
+    ],
+    [
+     "8 - 20 triệu",
+     28
+    ],
+    [
+     "10 - 20 triệu",
+     27
+    ],
+    [
+     "15 - 20 triệu",
+     27
+    ],
+    [
+     "8.5 - 20 triệu",
+     24
+    ],
+    [
+     "15 - 25 triệu",
+     21
+    ],
+    [
+     "10 - 12 triệu",
+     21
+    ],
+    [
+     "12 - 20 triệu",
+     17
+    ],
+    [
+     "10 - 18 triệu",
+     17
+    ],
+    [
+     "12 - 15 triệu",
+     16
+    ],
+    [
+     "7 - 20 triệu",
+     13
+    ],
+    [
+     "7 - 10 triệu",
+     12
+    ]
+   ],
+   "raw_experience_text": [
+    [
+     "Chưa có kinh nghiệm",
+     226
+    ],
+    [
+     "1 năm",
+     181
+    ],
+    [
+     "Dưới 1 năm",
+     127
+    ],
+    [
+     "2 năm",
+     76
+    ],
+    [
+     "3 năm",
+     40
+    ],
+    [
+     "5 năm",
+     6
+    ],
+    [
+     "Hơn 5 năm",
+     3
+    ],
+    [
+     "4 năm",
+     1
+    ]
+   ],
+   "raw_seniority_text": [
+    [
+     "Nhân viên",
+     596
+    ],
+    [
+     "Cộng tác viên",
+     21
+    ],
+    [
+     "Trưởng phòng",
+     16
+    ],
+    [
+     "Chuyên gia",
+     14
+    ],
+    [
+     "Trưởng nhóm",
+     12
+    ],
+    [
+     "Giám đốc",
+     1
+    ]
+   ],
+   "raw_employment_type": [
+    [
+     "Toàn thời gian cố định",
+     620
+    ],
+    [
+     "Thực tập",
+     17
+    ],
+    [
+     "Khác",
+     9
+    ],
+    [
+     "Bán thời gian cố định",
+     9
+    ],
+    [
+     "Toàn thời gian tạm thời",
+     2
+    ],
+    [
+     "Theo hợp đồng tư vấn",
+     2
+    ],
+    [
+     "Bán thời gian tạm thời",
+     1
+    ]
+   ],
+   "raw_work_mode": [],
+   "raw_category_text": [
+    [
+     "Bán hàng - Kinh doanh / Chăm sóc khách hàng / IT Phần cứng - Mạng",
+     28
+    ],
+    [
+     "IT Phần mềm",
+     26
+    ],
+    [
+     "IT Phần cứng - Mạng / IT Phần mềm",
+     21
+    ],
+    [
+     "IT Phần cứng - Mạng / IT Phần mềm / Khoa học - Kỹ thuật",
+     13
+    ],
+    [
+     "Bưu chính viễn thông / Điện - Điện tử - Điện lạnh / IT Phần cứng - Mạng",
+     13
+    ],
+    [
+     "IT Phần cứng - Mạng",
+     12
+    ],
+    [
+     "Bán hàng - Kinh doanh / Vận Tải - Lái xe - Giao nhận / Bưu chính viễn thông",
+     12
+    ],
+    [
+     "Bưu chính viễn thông",
+     11
+    ],
+    [
+     "Bưu chính viễn thông / Bán hàng - Kinh doanh",
+     11
+    ],
+    [
+     "Chăm sóc khách hàng / Bưu chính viễn thông",
+     9
+    ],
+    [
+     "Bán hàng - Kinh doanh / IT Phần cứng - Mạng / Bán sỉ - Bán lẻ - Quản lý cửa hàng",
+     9
+    ],
+    [
+     "Điện - Điện tử - Điện lạnh / IT Phần cứng - Mạng / IT Phần mềm",
+     9
+    ],
+    [
+     "Marketing / Bán hàng - Kinh doanh / IT Phần mềm",
+     8
+    ],
+    [
+     "IT Phần cứng - Mạng / Bưu chính viễn thông / Điện - Điện tử - Điện lạnh",
+     8
+    ],
+    [
+     "IT Phần mềm / IT Phần cứng - Mạng / Khoa học - Kỹ thuật",
+     8
+    ]
+   ],
+   "raw_education_text": []
+  },
+  "top_locations": [
+   [
+    "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch, Q.Cầu Giấy, Hà Nội, Việt Nam.",
+    160
+   ],
+   [
+    "Lầu 10, Tòa nhà Scetpa, 19A Cộng Hòa, Phường 12, Q.Tân Bình, TP.HCM",
+    25
+   ],
+   [
+    "TP.HCM : Tòa nhà Scetpa, 19A Cộng Hòa, Phường Bảy Hiền (Quận Tân Bình, TP.HCM cũ",
+    24
+   ],
+   [
+    "Số 01, đường Tân Xuân, Phường Đông Ngạc, Thành phố Hà Nội, Việt Nam",
+    12
+   ],
+   [
+    "Hà Nội : Số 01, đường Tân Xuân, Phường Đông Ngạc, TP Hà Nội, Việt Nam, Phường Đô",
+    11
+   ],
+   [
+    "Hà Nội : Số 64 Nguyễn Hy Quang, phường Ô Chợ Dừa, Hà Nội, Phường Ô Chợ Dừa (Quận",
+    11
+   ],
+   [
+    "Hà Nội : Số 566 đường Bưởi, phường Ngọc Hà, Hà Nội, Phường Ngọc Hà (Quận Ba Đình",
+    11
+   ],
+   [
+    "Cụm công nghiệp Lai Xá - Xã Kim Chung - Huyện Hoài Đức - Thành phố Hà Nội",
+    8
+   ],
+   [
+    "Tây Ninh : Khu phố Lộc An, Phường Trảng Bàng, Tây Ninh (cạnh trái Co.opmart Trản",
+    8
+   ],
+   [
+    "Số 6, ngách 18/5, tổ 9 phố Định Công, Phường Định Công, Thành phố Hà Nội, Việt N",
+    8
+   ],
+   [
+    "Số 14, ngõ 322E Lê Trọng Tấn, Phường Khương Mai, Quận Thanh Xuân, Thành phố Hà N",
+    8
+   ],
+   [
+    "352, Giải Phóng, Phường Phương Liệt, Quận Thanh Xuân, Hà Nội",
+    7
+   ],
+   [
+    "Hà Nội : 352 Giải Phóng, Phường Phương Liệt, Phường Hoàng Mai (Quận Hoàng Mai, H",
+    7
+   ],
+   [
+    "Vĩnh Long : 68/11A Phạm Thái Bường, Phước Hậu, Phường Phước Hậu (Thành phố Vĩnh ",
+    7
+   ],
+   [
+    "Vĩnh Long : 117 Lê Văn Dị, Phường Bình Minh, Phường Bình Minh (Thị xã Bình Minh,",
+    7
+   ]
+  ],
+  "top_skills": [
+   [
+    "Công Ty Cổ Phần Viễn ...",
+    172
+   ],
+   [
+    "IT Phần cứng - Mạng",
+    151
+   ],
+   [
+    "Bán hàng - Kinh doanh",
+    135
+   ],
+   [
+    "nhân viên kỹ thuật",
+    107
+   ],
+   [
+    "nhân viên kinh doanh",
+    92
+   ],
+   [
+    "IT Phần mềm",
+    89
+   ],
+   [
+    "Bưu chính viễn thông",
+    73
+   ],
+   [
+    "Việc làm TP.HCM",
+    70
+   ],
+   [
+    "nhân viên kinh doanh thị trường",
+    68
+   ],
+   [
+    "nhân viên phát triển kinh doanh",
+    59
+   ],
+   [
+    "Viễn Thông",
+    58
+   ],
+   [
+    "nhân viên kinh doanh hóa chất",
+    57
+   ],
+   [
+    "Việc làm Hà Nội",
+    56
+   ],
+   [
+    "nhân viên kỹ thuật điện",
+    55
+   ],
+   [
+    "Điện - Điện tử - Điện lạnh",
+    55
+   ],
+   [
+    "nhân viên kinh doanh mobifone",
+    52
+   ],
+   [
+    "mạng viễn thông",
+    50
+   ],
+   [
+    "Kỹ Thuật",
+    47
+   ],
+   [
+    "nhân viên kinh doanh online",
+    45
+   ],
+   [
+    "kỹ thuật viễn thông",
+    42
+   ]
+  ],
+  "top_benefits": [
+   [
+    "- Lương tháng 13",
+    25
+   ],
+   [
+    "- Xét tăng lương 1 lần/ năm, lộ trình thăng tiến rõ ràng",
+    24
+   ],
+   [
+    "- Tham gia đầy đủ chế độ bảo hiểm: BHXH, BHYT, BHTN",
+    24
+   ],
+   [
+    "- Quà cho nhân viên vào các dịp Lễ, Tết.",
+    24
+   ],
+   [
+    "- Nghỉ phép năm.",
+    24
+   ],
+   [
+    "- Các hoạt động team building hàng năm",
+    24
+   ],
+   [
+    "- Trang bị đầy đủ trang thiết bị làm việc (máy tính/ điện thoại)",
+    24
+   ],
+   [
+    "- Đào tạo nghiệp vụ và kỹ năng trước khi bắt đầu công việc",
+    24
+   ],
+   [
+    "Chế độ bảo hiểm: BHYT, BHXH, BHTN, BH tai nạn 24/24, khám sức khỏe định kỳ và an toàn lao ",
+    23
+   ],
+   [
+    "Văn hóa doanh nghiệp đặc sắc, sinh động bậc nhất với nhiều hoạt động hấp dẫn: Tân binh hội",
+    23
+   ],
+   [
+    "Đào tạo 1 kèm 1, cơ hội phát triển và thăng tiến.",
+    19
+   ],
+   [
+    "Cơ hội thăng tiến lên các vị trí Cán bộ quản lý của công ty.",
+    19
+   ],
+   [
+    "Khen thưởng: Lương tháng 13 và thưởng thi đua, thưởng top nhân viên xuất sắc của năm.",
+    18
+   ],
+   [
+    "Chế độ nghỉ phép: 12 ngày/năm và nghỉ mát, teambuilding cùng nhiều trải nghiệm với các CLB",
+    17
+   ],
+   [
+    "Môi trường làm việc thân thiện, chuyên nghiệp. năng động và trẻ trung.",
+    17
+   ],
+   [
+    "Các chế độ khác: Theo Luật Lao động Việt Nam và Quy định tài chính của công ty Thuộc biên ",
+    14
+   ],
+   [
+    "- Lương cứng 8.500.000 VND + Thưởng KPIs không giới hạn",
+    13
+   ],
+   [
+    "Đóng BHXH, BHYT, BHTN theo quy định ngay khi ký Hợp đồng.",
+    12
+   ],
+   [
+    "Thưởng các dịp Lễ: 8/3, 10/3, 30/4, 20/10, Trung thu, thành lập ngành, thành lập công ty,.",
+    12
+   ],
+   [
+    "Môi trường làm việc ổn định lâu dài, hỗ trợ khu vực làm việc gần nhà.",
+    11
+   ]
+  ],
+  "benefits_per_job": [
+   [
+    "0",
+    3
+   ],
+   [
+    "1–2",
+    66
+   ],
+   [
+    "3–5",
+    282
+   ],
+   [
+    "6–9",
+    264
+   ],
+   [
+    "10–14",
+    38
+   ],
+   [
+    "≥ 15",
+    7
+   ]
+  ],
+  "desc_len": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–499",
+    309
+   ],
+   [
+    "500–999",
+    270
+   ],
+   [
+    "1.000–1.999",
+    71
+   ],
+   [
+    "2.000–3.999",
+    9
+   ],
+   [
+    "4.000–7.999",
+    1
+   ],
+   [
+    "≥ 8.000",
+    0
+   ]
+  ],
+  "req_len": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–299",
+    134
+   ],
+   [
+    "300–599",
+    381
+   ],
+   [
+    "600–1.199",
+    132
+   ],
+   [
+    "1.200–2.399",
+    13
+   ],
+   [
+    "2.400–4.799",
+    0
+   ],
+   [
+    "≥ 4.800",
+    0
+   ]
+  ],
+  "median_desc_len": 529
+ },
+ {
+  "source": "itviec",
+  "has_raw": true,
+  "has_ledger": true,
+  "ledger_total": 1171,
+  "ledger_status": [
+   [
+    "DONE",
+    914
+   ],
+   [
+    "PENDING",
+    257
+   ]
+  ],
+  "ledger_discovered_by_day": [
+   [
+    "2026-10-19",
+    665
+   ],
+   [
+    "2026-10-20",
+    28
+   ],
+   [
+    "2026-10-31",
+    219
+   ],
+   [
+    "2026-11-02",
+    25
+   ],
+   [
+    "2026-11-17",
+    234
+   ]
+  ],
+  "ledger_scraped_by_day": [
+   [
+    "2026-10-19",
+    18
+   ],
+   [
+    "2026-10-20",
+    673
+   ],
+   [
+    "2026-11-01",
+    221
+   ],
+   [
+    "2026-11-02",
+    2
+   ]
+  ],
+  "raw_counts": {
+   "snapshot": 911,
+   "snapshot_v_lớn_hơn_1": 1
+  },
+  "raw_files": 911,
+  "unique_jobs": 910,
+  "versions_per_job": [
+   [
+    1,
+    909
+   ],
+   [
+    2,
+    1
+   ]
+  ],
+  "scraped_by_day": [
+   [
+    "2026-10-19",
+    18
+   ],
+   [
+    "2026-10-20",
+    670
+   ],
+   [
+    "2026-11-01",
+    221
+   ],
+   [
+    "2026-11-02",
+    2
+   ]
+  ],
+  "first_crawl_month": [
+   [
+    "2026-10",
+    687
+   ],
+   [
+    "2026-11",
+    223
+   ]
+  ],
+  "posted_month": [
+   [
+    "2026-09",
+    304
+   ],
+   [
+    "2026-10",
+    569
+   ],
+   [
+    "2026-11",
+    2
+   ]
+  ],
+  "no_posted_date": 35,
+  "payload_keys": [
+   [
+    "company_name",
+    99.6,
+    "string, null",
+    "Alpha Bravo Development"
+   ],
+   [
+    "company_url",
+    99.6,
+    "string, null",
+    "/nha-tuyen-dung/alpha-bravo-development"
+   ],
+   [
+    "sections",
+    99.6,
+    "object",
+    "{\"3 Lý do để gia nhập công ty\": [\"A transparent, supportive work culture.\", \"Remote flexibility,\", \"…"
+   ],
+   [
+    "skill_tags",
+    99.6,
+    "list",
+    "[\"AI, Python\"]"
+   ],
+   [
+    "title",
+    99.6,
+    "string, null",
+    "AI Engineer (Remote)"
+   ],
+   [
+    "salary_display_text",
+    99.3,
+    "string, null",
+    "Đăng nhập để xem mức lương"
+   ],
+   [
+    "company_details",
+    97.7,
+    "object",
+    "{\"rating\": \"4.4\", \"slogan\": \"Working with RITVN isn’t just a job! IT’S A PROVEN PATH TO SUCCESS IN I…"
+   ],
+   [
+    "industries",
+    97.7,
+    "list",
+    "[\"Thuê Ngoài Phát Triển Phần Mềm\", \"Sản Phẩm Phần Mềm và Dịch Vụ Web\"]"
+   ],
+   [
+    "specialization",
+    97.7,
+    "list",
+    "[\"Kiểm thử thủ công\"]"
+   ],
+   [
+    "work_location",
+    97.7,
+    "string",
+    "19 Tan Canh, Tân Sơn Hòa, TP Hồ Chí Minh"
+   ],
+   [
+    "salary_range_datalayer",
+    97.4,
+    "string, null",
+    "800 - 1,800 USD"
+   ],
+   [
+    "job_posting_jsonld",
+    96.2,
+    "object, null",
+    "{\"@context\": \"http://schema.org\", \"@type\": \"JobPosting\", \"industry\": \"Information Technology\", \"titl…"
+   ],
+   [
+    "work_model",
+    96.0,
+    "string, null",
+    "Linh hoạt"
+   ],
+   [
+    "posted_at_raw",
+    94.3,
+    "string, null",
+    "Đăng 6 ngày trước"
+   ],
+   [
+    "date_posted",
+    23.3,
+    "string",
+    "2026-10-29"
+   ],
+   [
+    "salary_is_placeholder",
+    23.3,
+    "bool",
+    "false"
+   ],
+   [
+    "valid_through",
+    23.3,
+    "string",
+    "2026-12-03"
+   ]
+  ],
+  "flat_fill": [
+   [
+    "job_id_global",
+    100.0
+   ],
+   [
+    "source_job_id",
+    100.0
+   ],
+   [
+    "source_url",
+    100.0
+   ],
+   [
+    "job_title",
+    99.6
+   ],
+   [
+    "company_name",
+    99.6
+   ],
+   [
+    "company_address",
+    96.2
+   ],
+   [
+    "company_scale",
+    0.0
+   ],
+   [
+    "raw_category_text",
+    96.2
+   ],
+   [
+    "raw_location_text",
+    99.6
+   ],
+   [
+    "working_locations",
+    96.2
+   ],
+   [
+    "raw_posted_date",
+    96.2
+   ],
+   [
+    "raw_updated_at",
+    0.0
+   ],
+   [
+    "raw_deadline",
+    96.2
+   ],
+   [
+    "raw_working_time",
+    0.0
+   ],
+   [
+    "raw_salary_text",
+    99.3
+   ],
+   [
+    "raw_employment_type",
+    96.2
+   ],
+   [
+    "raw_work_mode",
+    0.0
+   ],
+   [
+    "raw_experience_text",
+    86.6
+   ],
+   [
+    "raw_seniority_text",
+    0.0
+   ],
+   [
+    "raw_education_text",
+    0.0
+   ],
+   [
+    "raw_headcount",
+    0.0
+   ],
+   [
+    "raw_age_text",
+    0.0
+   ],
+   [
+    "raw_gender_text",
+    0.0
+   ],
+   [
+    "skills_list",
+    99.6
+   ],
+   [
+    "benefits_list",
+    99.6
+   ],
+   [
+    "raw_description_text",
+    99.6
+   ],
+   [
+    "raw_requirements_text",
+    99.6
+   ]
+  ],
+  "tops": {
+   "raw_salary_text": [
+    [
+     "You'll love it",
+     656
+    ],
+    [
+     "Đăng nhập để xem mức lương",
+     14
+    ],
+    [
+     "800 - 2000 USD",
+     9
+    ],
+    [
+     "1000 - 2000 USD",
+     9
+    ],
+    [
+     "1500 - 2500 USD",
+     9
+    ],
+    [
+     "800 - 1500 USD",
+     8
+    ],
+    [
+     "1000 - 1500 USD",
+     8
+    ],
+    [
+     "2000 - 4000 USD",
+     7
+    ],
+    [
+     "1500 - 3000 USD",
+     5
+    ],
+    [
+     "1000 - 3000 USD",
+     5
+    ],
+    [
+     "1500 - 2000 USD",
+     5
+    ],
+    [
+     "4000 - 5000 USD",
+     5
+    ],
+    [
+     "2000 - 3000 USD",
+     4
+    ],
+    [
+     "2500 - 3000 USD",
+     4
+    ],
+    [
+     "1300 - 1600 USD",
+     4
+    ]
+   ],
+   "raw_experience_text": [
+    [
+     "3.1 năm (37 tháng)",
+     425
+    ],
+    [
+     "0.8 năm (10 tháng)",
+     318
+    ],
+    [
+     "5.1 năm (61 tháng)",
+     45
+    ]
+   ],
+   "raw_seniority_text": [],
+   "raw_employment_type": [
+    [
+     "FULL_TIME",
+     875
+    ]
+   ],
+   "raw_work_mode": [],
+   "raw_category_text": [
+    [
+     "Information Technology",
+     875
+    ]
+   ],
+   "raw_education_text": []
+  },
+  "top_locations": [
+   [
+    "Tòa nhà MB, số 18 Lê Văn Lương, Phường Yên Hòa",
+    38
+   ],
+   [
+    "City",
+    23
+   ],
+   [
+    "364 Cong Hoa street",
+    19
+   ],
+   [
+    "Tầng 15, tòa Keangnam Landmark 72, Mễ Trì",
+    14
+   ],
+   [
+    "3rd Floor, Dong Nhan Building, 90 Nguyen Dinh Chieu, Tan Dinh Ward",
+    12
+   ],
+   [
+    "7F, Taisei Square Hanoi Building. No.289 Khuat Duy Tien Street, Dai Mo Ward",
+    12
+   ],
+   [
+    "C5 Building Tower, D’Capitale Tower, 119 Tran Duy Hung",
+    11
+   ],
+   [
+    "Tòa nhà E.Town Central, Số 11 Đoàn Văn Bơ",
+    9
+   ],
+   [
+    "Tầng 3-4 tòa nhà Phi Long, 52 Nguyễn Văn Linh",
+    9
+   ],
+   [
+    "Helios Bldg, Quang Trung Software City",
+    8
+   ],
+   [
+    "Tòa nhà Saigon Trade Center (37 Tôn Đức Thắng)",
+    8
+   ],
+   [
+    "Keangnam Landmark 72, E6 Pham Hung",
+    8
+   ],
+   [
+    "Số 6 Quang Trung, phường Trần Hưng Đạo",
+    8
+   ],
+   [
+    "Số 20 đường Sông Thao",
+    7
+   ],
+   [
+    "Floor 1st, STS Tower, No. 11B, Hoa Binh Street",
+    7
+   ]
+  ],
+  "top_skills": [
+   [
+    "English",
+    260
+   ],
+   [
+    "Python",
+    181
+   ],
+   [
+    "AI",
+    163
+   ],
+   [
+    "SQL",
+    157
+   ],
+   [
+    "Java",
+    139
+   ],
+   [
+    "AWS",
+    110
+   ],
+   [
+    "DevOps",
+    81
+   ],
+   [
+    "Cloud",
+    79
+   ],
+   [
+    "Agile",
+    77
+   ],
+   [
+    "Business Analysis",
+    76
+   ],
+   [
+    "CI/CD",
+    70
+   ],
+   [
+    "API",
+    68
+   ],
+   [
+    "ReactJS",
+    64
+   ],
+   [
+    "QA QC",
+    64
+   ],
+   [
+    "JavaScript",
+    61
+   ],
+   [
+    "TypeScript",
+    60
+   ],
+   [
+    "Tester",
+    57
+   ],
+   [
+    "PostgreSql",
+    56
+   ],
+   [
+    "Project Management",
+    55
+   ],
+   [
+    "Docker",
+    55
+   ]
+  ],
+  "top_benefits": [
+   [
+    "Mức lương cạnh tranh, hấp dẫn",
+    39
+   ],
+   [
+    "Môi trường làm việc chuyên nghiệp, thân thiện",
+    39
+   ],
+   [
+    "Được làm việc với các hệ thống hiện đại, tiên tiến",
+    38
+   ],
+   [
+    "Trải nghiệm Thu nhập hấp dẫn với gói đãi ngộ toàn diện:",
+    38
+   ],
+   [
+    "Thưởng thành tích tháng 13; Thưởng thành tích theo kết quả công việc 06 tháng, 1 năm ; Thư",
+    38
+   ],
+   [
+    "Du lịch nghỉ dưỡng hàng năm",
+    38
+   ],
+   [
+    "Khám sức khỏe định kì",
+    38
+   ],
+   [
+    "Gói bảo hiểm sức khỏe cá nhân và người thân (MIC)",
+    38
+   ],
+   [
+    "Quà tặng và ngày nghỉ sinh nhật hưởng nguyên lương",
+    38
+   ],
+   [
+    "Cơ hội nghề nghiệp và phát triển bản thân:",
+    38
+   ],
+   [
+    "Được thử sức với các nền tảng công nghệ mới, tham gia vào những dự án chuyển đổi lớn của n",
+    38
+   ],
+   [
+    "Có cơ hội học hỏi từ các Chuyên gia, Lãnh đạo nội bộ hàng đầu tại MB trong lĩnh vực IT, Tà",
+    38
+   ],
+   [
+    "Được trải nghiệm các phương pháp học tập mới và phát triển năng lực theo lộ trình công dan",
+    38
+   ],
+   [
+    "Hưởng các chính sách hỗ trợ, khuyến khích học tập, nâng cao trình độ và phát triển bản thâ",
+    38
+   ],
+   [
+    "Môi trường làm việc lý tưởng với:",
+    38
+   ],
+   [
+    "Những người cộng sự thân thiện và tài năng",
+    38
+   ],
+   [
+    "Cơ sở vật chất, không gian làm việc xanh và hiện đại.",
+    38
+   ],
+   [
+    "13th-month salary",
+    26
+   ],
+   [
+    "Committed 13th-mth bonus + attractive yearly bonus",
+    23
+   ],
+   [
+    "Premium Healthcare for you and 2 family members",
+    23
+   ]
+  ],
+  "benefits_per_job": [
+   [
+    "0",
+    4
+   ],
+   [
+    "1–2",
+    2
+   ],
+   [
+    "3–5",
+    47
+   ],
+   [
+    "6–9",
+    194
+   ],
+   [
+    "10–14",
+    238
+   ],
+   [
+    "≥ 15",
+    425
+   ]
+  ],
+  "desc_len": [
+   [
+    "0",
+    4
+   ],
+   [
+    "1–499",
+    85
+   ],
+   [
+    "500–999",
+    240
+   ],
+   [
+    "1.000–1.999",
+    364
+   ],
+   [
+    "2.000–3.999",
+    186
+   ],
+   [
+    "4.000–7.999",
+    30
+   ],
+   [
+    "≥ 8.000",
+    1
+   ]
+  ],
+  "req_len": [
+   [
+    "0",
+    4
+   ],
+   [
+    "1–299",
+    10
+   ],
+   [
+    "300–599",
+    106
+   ],
+   [
+    "600–1.199",
+    400
+   ],
+   [
+    "1.200–2.399",
+    341
+   ],
+   [
+    "2.400–4.799",
+    49
+   ],
+   [
+    "≥ 4.800",
+    0
+   ]
+  ],
+  "median_desc_len": 1274
+ },
+ {
+  "source": "glints",
+  "has_raw": true,
+  "has_ledger": true,
+  "ledger_total": 331,
+  "ledger_status": [
+   [
+    "DONE",
+    257
+   ],
+   [
+    "CLOSED",
+    74
+   ]
+  ],
+  "ledger_discovered_by_day": [
+   [
+    "2026-10-20",
+    331
+   ]
+  ],
+  "ledger_scraped_by_day": [
+   [
+    "2026-10-20",
+    331
+   ]
+  ],
+  "raw_counts": {
+   "snapshot": 331,
+   "snapshot_v_lớn_hơn_1": 0
+  },
+  "raw_files": 331,
+  "unique_jobs": 331,
+  "versions_per_job": [
+   [
+    1,
+    331
+   ]
+  ],
+  "scraped_by_day": [
+   [
+    "2026-10-20",
+    331
+   ]
+  ],
+  "first_crawl_month": [
+   [
+    "2026-10",
+    331
+   ]
+  ],
+  "posted_month": [
+   [
+    "2023-07",
+    4
+   ],
+   [
+    "2023-08",
+    1
+   ],
+   [
+    "2023-09",
+    1
+   ],
+   [
+    "2024-01",
+    2
+   ],
+   [
+    "2024-04",
+    1
+   ],
+   [
+    "2024-06",
+    2
+   ],
+   [
+    "2024-07",
+    1
+   ],
+   [
+    "2024-10",
+    2
+   ],
+   [
+    "2024-11",
+    2
+   ],
+   [
+    "2025-01",
+    1
+   ],
+   [
+    "2025-05",
+    4
+   ],
+   [
+    "2025-07",
+    7
+   ],
+   [
+    "2025-09",
+    2
+   ],
+   [
+    "2025-10",
+    6
+   ],
+   [
+    "2025-11",
+    1
+   ],
+   [
+    "2025-12",
+    4
+   ],
+   [
+    "2026-01",
+    2
+   ],
+   [
+    "2026-02",
+    2
+   ],
+   [
+    "2026-03",
+    5
+   ],
+   [
+    "2026-04",
+    6
+   ],
+   [
+    "2026-05",
+    14
+   ],
+   [
+    "2026-06",
+    10
+   ],
+   [
+    "2026-07",
+    13
+   ],
+   [
+    "2026-08",
+    25
+   ],
+   [
+    "2026-09",
+    67
+   ],
+   [
+    "2026-10",
+    146
+   ]
+  ],
+  "no_posted_date": 0,
+  "payload_keys": [
+   [
+    "company-name",
+    100.0,
+    "string",
+    "SKECHERS VIỆT NAM"
+   ],
+   [
+    "container_content",
+    100.0,
+    "string",
+    "TÌM VIỆC LÀM DANH SÁCH CÔNG TY Blog Tải App Ngay Tiếng Việt Tiếng Anh Tiếng Việt Đăng ký Đăng nhập D…"
+   ],
+   [
+    "description",
+    100.0,
+    "string",
+    "Chi tiết công việc Retail IT Executive (Infrastructure) tại SKECHERS VIỆT NAM Job Description 1. Inf…"
+   ],
+   [
+    "job-title",
+    100.0,
+    "string",
+    "Retail IT Executive (Infrastructure)"
+   ],
+   [
+    "job_posting_jsonld",
+    100.0,
+    "object",
+    "{\"@context\": \"https://schema.org/\", \"@type\": \"JobPosting\", \"title\": \"Retail IT Executive (Infrastruc…"
+   ],
+   [
+    "requirements",
+    100.0,
+    "string",
+    "Mô tả công việc Làm tại công ty 1 - 3 năm kinh nghiệm Tối thiểu Cử Nhân"
+   ],
+   [
+    "salary",
+    100.0,
+    "string",
+    "Công ty không công khai thông tin này"
+   ],
+   [
+    "skills",
+    88.5,
+    "string",
+    "Kỹ năng | React.js | jQuery | Laravel | MongoDB | PostgreSQL | C++ | MySQL | Node.js | Microsoft SQL…"
+   ],
+   [
+    "benefits",
+    81.0,
+    "string",
+    "Job Benefits Health Insurance Insurance Training/Certification Team-building events THR Employee Awa…"
+   ]
+  ],
+  "flat_fill": [
+   [
+    "job_id_global",
+    100.0
+   ],
+   [
+    "source_job_id",
+    100.0
+   ],
+   [
+    "source_url",
+    100.0
+   ],
+   [
+    "job_title",
+    100.0
+   ],
+   [
+    "company_name",
+    100.0
+   ],
+   [
+    "company_address",
+    87.9
+   ],
+   [
+    "company_scale",
+    0.0
+   ],
+   [
+    "raw_category_text",
+    100.0
+   ],
+   [
+    "raw_location_text",
+    100.0
+   ],
+   [
+    "working_locations",
+    100.0
+   ],
+   [
+    "raw_posted_date",
+    100.0
+   ],
+   [
+    "raw_updated_at",
+    0.0
+   ],
+   [
+    "raw_deadline",
+    97.6
+   ],
+   [
+    "raw_working_time",
+    0.0
+   ],
+   [
+    "raw_salary_text",
+    100.0
+   ],
+   [
+    "raw_employment_type",
+    100.0
+   ],
+   [
+    "raw_work_mode",
+    100.0
+   ],
+   [
+    "raw_experience_text",
+    88.8
+   ],
+   [
+    "raw_seniority_text",
+    0.0
+   ],
+   [
+    "raw_education_text",
+    100.0
+   ],
+   [
+    "raw_headcount",
+    0.0
+   ],
+   [
+    "raw_age_text",
+    0.0
+   ],
+   [
+    "raw_gender_text",
+    0.0
+   ],
+   [
+    "skills_list",
+    88.5
+   ],
+   [
+    "benefits_list",
+    81.0
+   ],
+   [
+    "raw_description_text",
+    100.0
+   ],
+   [
+    "raw_requirements_text",
+    100.0
+   ]
+  ],
+  "tops": {
+   "raw_salary_text": [
+    [
+     "Công ty không công khai thông tin này",
+     119
+    ],
+    [
+     "₫15.000.000-20.000.000/Tháng",
+     13
+    ],
+    [
+     "₫10.000.000-15.000.000/Tháng",
+     12
+    ],
+    [
+     "₫20.000.000-30.000.000/Tháng",
+     10
+    ],
+    [
+     "₫8.500.000-9.000.000/Tháng",
+     8
+    ],
+    [
+     "₫10.000.000-13.000.000/Tháng",
+     6
+    ],
+    [
+     "₫12.000.000-14.000.000/Tháng",
+     5
+    ],
+    [
+     "₫10.000.000-12.000.000/Tháng",
+     5
+    ],
+    [
+     "₫20.000.000-40.000.000/Tháng",
+     4
+    ],
+    [
+     "₫30.000.000-45.000.000/Tháng",
+     4
+    ],
+    [
+     "₫9.000.000-12.000.000/Tháng",
+     4
+    ],
+    [
+     "₫1.000.000-3.000.000/Tháng",
+     3
+    ],
+    [
+     "₫2.000.000-3.000.000/Tháng",
+     3
+    ],
+    [
+     "₫20.000.000-35.000.000/Tháng",
+     3
+    ],
+    [
+     "₫25.000.000-35.000.000/Tháng",
+     3
+    ]
+   ],
+   "raw_experience_text": [
+    [
+     "1 - 3 năm kinh nghiệm",
+     119
+    ],
+    [
+     "3 - 5 năm kinh nghiệm",
+     97
+    ],
+    [
+     "Dưới một năm kinh nghiệm",
+     51
+    ],
+    [
+     "5 - 10 năm kinh nghiệm",
+     27
+    ]
+   ],
+   "raw_seniority_text": [],
+   "raw_employment_type": [
+    [
+     "FULL_TIME",
+     296
+    ],
+    [
+     "INTERN",
+     29
+    ],
+    [
+     "CONTRACTOR",
+     5
+    ],
+    [
+     "PART_TIME",
+     1
+    ]
+   ],
+   "raw_work_mode": [
+    [
+     "Làm tại công ty / Onsite",
+     309
+    ],
+    [
+     "Hybrid",
+     16
+    ],
+    [
+     "Làm việc từ xa / Remote",
+     6
+    ]
+   ],
+   "raw_category_text": [
+    [
+     "QA Engineer",
+     49
+    ],
+    [
+     "Backend Developer",
+     39
+    ],
+    [
+     "Full Stack Developer",
+     35
+    ],
+    [
+     "IT Support",
+     32
+    ],
+    [
+     "QA Manager",
+     21
+    ],
+    [
+     "AI Engineer",
+     18
+    ],
+    [
+     "Data Analyst",
+     17
+    ],
+    [
+     "Other Technical Support Positions",
+     12
+    ],
+    [
+     "Technical Support Engineer",
+     11
+    ],
+    [
+     "Cybersecurity",
+     10
+    ],
+    [
+     "Frontend Developer",
+     8
+    ],
+    [
+     "Data Engineer",
+     7
+    ],
+    [
+     "Technical Manager",
+     7
+    ],
+    [
+     "Mobile Developer",
+     7
+    ],
+    [
+     "Devops Engineer",
+     7
+    ]
+   ],
+   "raw_education_text": [
+    [
+     "bachelor degree",
+     207
+    ],
+    [
+     "associate degree",
+     115
+    ],
+    [
+     "high school",
+     8
+    ],
+    [
+     "professional certificate",
+     1
+    ]
+   ]
+  },
+  "top_locations": [
+   [
+    "Tầng 2 tòa nhà MeKong Tower, số 235-241 Cộng Hòa, Phường 13, Quận Tân Bình, Tp H",
+    67
+   ],
+   [
+    "Quận 1, TP.HCM",
+    14
+   ],
+   [
+    "Tầng 41, Tòa nhà Landmark72, Mễ Trì, Nam Từ Liêm, Hà Nội",
+    12
+   ],
+   [
+    "Quận Ba Đình",
+    10
+   ],
+   [
+    "342, Mỹ Đình, Hà Nội",
+    10
+   ],
+   [
+    "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng, Phường Mễ Trì, Quận Nam Từ Liêm, Thành",
+    9
+   ],
+   [
+    "Quận Một",
+    8
+   ],
+   [
+    "Tòa CIC ( Số 2 Nguyễn Thị Duệ, Yên Hòa, Cầu Giấy, Hà Nội ) & Tòa Goden Park (Số ",
+    8
+   ],
+   [
+    "Tầng 28 & 18 - Tháp Đông, Tòa tháp Lotte Center Hà Nội, Số 54 đường Liễu Giai, p",
+    6
+   ],
+   [
+    "Tan Binh, HCMC",
+    6
+   ],
+   [
+    "MD Complex Tower, 68 đường Nguyễn Cơ Thạch",
+    5
+   ],
+   [
+    "Quận Mười",
+    5
+   ],
+   [
+    "Tầng 3, tòa nhà AGA, 72/24 Phan Đăng Lưu, phường 5, quận Phú Nhuận",
+    5
+   ],
+   [
+    "Trụ sở chính: Nikko Building, Tầng 5-6-7-8-9-10 374 Võ Văn Tần, Phường 5, Quận 3",
+    5
+   ],
+   [
+    "62 Phạm Ngọc Thạch, Phường Võ Thị Sáu, Quận 3, TP. HCMC",
+    5
+   ]
+  ],
+  "top_skills": [
+   [
+    "Teamwork",
+    57
+   ],
+   [
+    "Quality Assurance",
+    50
+   ],
+   [
+    "Customer Service",
+    41
+   ],
+   [
+    "Microsoft SQL Server",
+    34
+   ],
+   [
+    "Microsoft Office",
+    34
+   ],
+   [
+    "JavaScript",
+    33
+   ],
+   [
+    "React.js",
+    32
+   ],
+   [
+    "MongoDB",
+    31
+   ],
+   [
+    "Node.js",
+    29
+   ],
+   [
+    "MySQL",
+    28
+   ],
+   [
+    "Python",
+    26
+   ],
+   [
+    "PostgreSQL",
+    25
+   ],
+   [
+    "Troubleshooting",
+    25
+   ],
+   [
+    "Technical Support",
+    25
+   ],
+   [
+    "Java",
+    24
+   ],
+   [
+    "QA Testing",
+    23
+   ],
+   [
+    "Automation Testing",
+    23
+   ],
+   [
+    "Laravel",
+    22
+   ],
+   [
+    "SQL",
+    22
+   ],
+   [
+    "English Language",
+    21
+   ]
+  ],
+  "top_benefits": [
+   [
+    "Career Path",
+    215
+   ],
+   [
+    "Training/Certification",
+    167
+   ],
+   [
+    "Perform Bonus",
+    146
+   ],
+   [
+    "Health Insurance",
+    141
+   ],
+   [
+    "Work Insurance",
+    129
+   ],
+   [
+    "THR",
+    118
+   ],
+   [
+    "Transport Money",
+    87
+   ],
+   [
+    "Meal Allowance",
+    80
+   ],
+   [
+    "Team-building events",
+    65
+   ],
+   [
+    "Annual Leave",
+    65
+   ],
+   [
+    "Sales Commission",
+    55
+   ],
+   [
+    "Laptop Provided",
+    39
+   ],
+   [
+    "Employee Award",
+    27
+   ],
+   [
+    "Insurance",
+    26
+   ],
+   [
+    "Wellness Facilities",
+    26
+   ],
+   [
+    "Free Meals",
+    23
+   ],
+   [
+    "Flexible Hours",
+    18
+   ],
+   [
+    "Yearly Bonus",
+    12
+   ],
+   [
+    "Remote work options",
+    12
+   ],
+   [
+    "Near Public Transport",
+    11
+   ]
+  ],
+  "benefits_per_job": [
+   [
+    "0",
+    63
+   ],
+   [
+    "1–2",
+    39
+   ],
+   [
+    "3–5",
+    98
+   ],
+   [
+    "6–9",
+    108
+   ],
+   [
+    "10–14",
+    23
+   ],
+   [
+    "≥ 15",
+    0
+   ]
+  ],
+  "desc_len": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–499",
+    7
+   ],
+   [
+    "500–999",
+    31
+   ],
+   [
+    "1.000–1.999",
+    135
+   ],
+   [
+    "2.000–3.999",
+    127
+   ],
+   [
+    "4.000–7.999",
+    30
+   ],
+   [
+    "≥ 8.000",
+    1
+   ]
+  ],
+  "req_len": [
+   [
+    "0",
+    0
+   ],
+   [
+    "1–299",
+    331
+   ],
+   [
+    "300–599",
+    0
+   ],
+   [
+    "600–1.199",
+    0
+   ],
+   [
+    "1.200–2.399",
+    0
+   ],
+   [
+    "2.400–4.799",
+    0
+   ],
+   [
+    "≥ 4.800",
+    0
+   ]
+  ],
+  "median_desc_len": 1943
+ },
+ {
+  "source": "jobsgo",
+  "has_raw": true,
+  "has_ledger": true,
+  "ledger_total": 2021,
+  "ledger_status": [
+   [
+    "DONE",
+    1519
+   ],
+   [
+    "PENDING",
+    458
+   ],
+   [
+    "CLOSED",
+    44
+   ]
+  ],
+  "ledger_discovered_by_day": [
+   [
+    "2026-10-20",
+    1554
+   ],
+   [
+    "2026-10-31",
+    7
+   ],
+   [
+    "2026-11-02",
+    2
+   ],
+   [
+    "2026-11-17",
+    458
+   ]
+  ],
+  "ledger_scraped_by_day": [
+   [
+    "2026-10-20",
+    1496
+   ],
+   [
+    "2026-11-01",
+    65
+   ],
+   [
+    "2026-11-02",
+    2
+   ]
+  ],
+  "raw_counts": {
+   "không_phải_envelope": 1,
+   "snapshot": 1597,
+   "snapshot_v_lớn_hơn_1": 57
+  },
+  "raw_files": 1597,
+  "unique_jobs": 1540,
+  "versions_per_job": [
+   [
+    1,
+    1489
+   ],
+   [
+    2,
+    45
+   ],
+   [
+    3,
+    6
+   ]
+  ],
+  "scraped_by_day": [
+   [
+    "2026-10-20",
+    1520
+   ],
+   [
+    "2026-11-01",
+    75
+   ],
+   [
+    "2026-11-02",
+    2
+   ]
+  ],
+  "first_crawl_month": [
+   [
+    "2026-10",
+    1520
+   ],
+   [
+    "2026-11",
+    20
+   ]
+  ],
+  "posted_month": [
+   [
+    "2023-06",
+    1
+   ],
+   [
+    "2026-02",
+    2
+   ],
+   [
+    "2026-04",
+    1
+   ],
+   [
+    "2026-05",
+    1
+   ],
+   [
+    "2026-06",
+    6
+   ],
+   [
+    "2026-07",
+    3
+   ],
+   [
+    "2026-08",
+    15
+   ],
+   [
+    "2026-09",
+    567
+   ],
+   [
+    "2026-10",
+    936
+   ]
+  ],
+  "no_posted_date": 8,
+  "payload_keys": [
+   [
+    "general_info",
+    100.0,
+    "object",
+    "{\"employment_type\": \"Toàn thời gian\", \"job_level\": \"Nhân Viên/Chuyên Viên\", \"posted_date\": \"22/06/20…"
+   ],
+   [
+    "title",
+    100.0,
+    "string",
+    "B2B Sales Executive (Apple Products)"
+   ],
+   [
+    "company",
+    99.9,
+    "string",
+    "Công Ty TNHH Thakral One"
+   ],
+   [
+    "deadline_raw",
+    99.6,
+    "string",
+    "19/11/2026 (Còn 29 ngày)"
+   ],
+   [
+    "education",
+    99.6,
+    "string",
+    "Trung cấp trở lên"
+   ],
+   [
+    "experience",
+    99.6,
+    "string",
+    "2 - 5 năm"
+   ],
+   [
+    "salary_raw",
+    99.6,
+    "string",
+    "Thỏa thuận"
+   ],
+   [
+    "occupations",
+    99.5,
+    "list",
+    "[\"Phát Triển Kinh Doanh\", \"Sales Công Nghệ Thông Tin\", \"Bán Hàng Doanh Nghiệp - B2B\", \"Bán Hàng Kỹ T…"
+   ],
+   [
+    "location",
+    99.4,
+    "string",
+    "Hồ Chí Minh"
+   ],
+   [
+    "company_address",
+    98.7,
+    "string",
+    "Tòa nhà Ree Tower, Số 9, Đường Đoàn Văn Bơ , Phường 13, Quận 4, Thành phố Hồ Chí Minh, Việt Nam"
+   ],
+   [
+    "description_bullets",
+    98.5,
+    "list",
+    "[\"Chủ động tìm kiếm, tiếp cận và phát triển khách hàng mới là các doanh nghiệp vừa và nhỏ, tập đoàn,…"
+   ],
+   [
+    "company_field",
+    98.0,
+    "string",
+    "Tư vấn máy vi tính và quản trị hệ thống máy vi tính"
+   ],
+   [
+    "requirements_bullets",
+    97.9,
+    "list",
+    "[\"Có khả năng giao tiếp tiếng Anh tốt trong công việc.\", \"Có từ 2–4 năm kinh nghiệm Sales B2B, ưu ti…"
+   ],
+   [
+    "benefits_bullets",
+    97.6,
+    "list",
+    "[\"Thu nhập: Lương cạnh tranh + thưởng doanh số/hoa hồng theo chính sách công ty.\", \"Được làm việc vớ…"
+   ],
+   [
+    "working_places",
+    93.6,
+    "list",
+    "[\"Ree Tower, 9 Đoàn Văn Bơ, P. 13, Quận 4, Hồ Chí Minh (Trước sáp nhập:Quận 4, Hồ Chí Minh |Sau sáp …"
+   ],
+   [
+    "working_time",
+    69.8,
+    "string",
+    "Từ Thứ 2 đến Thứ 6 (08:30 - 17:30)"
+   ],
+   [
+    "is_expired",
+    4.1,
+    "bool",
+    "false"
+   ],
+   [
+    "jd_source",
+    4.1,
+    "string",
+    "dom"
+   ],
+   [
+    "date_posted",
+    3.8,
+    "string, null",
+    "2026-04-06T08:24:55+0700"
+   ],
+   [
+    "job_posting_jsonld",
+    3.8,
+    "object, null",
+    "{\"jobLocation\": [{\"@type\": \"Place\", \"address\": {\"@type\": \"PostalAddress\", \"addressLocality\": \"Đống Đ…"
+   ],
+   [
+    "valid_through",
+    3.8,
+    "string, null",
+    "2026-05-16T00:00:00+0700"
+   ]
+  ],
+  "flat_fill": [
+   [
+    "job_id_global",
+    100.0
+   ],
+   [
+    "source_job_id",
+    100.0
+   ],
+   [
+    "source_url",
+    100.0
+   ],
+   [
+    "job_title",
+    100.0
+   ],
+   [
+    "company_name",
+    99.9
+   ],
+   [
+    "company_address",
+    98.7
+   ],
+   [
+    "company_scale",
+    0.0
+   ],
+   [
+    "raw_category_text",
+    99.5
+   ],
+   [
+    "raw_location_text",
+    99.4
+   ],
+   [
+    "working_locations",
+    93.6
+   ],
+   [
+    "raw_posted_date",
+    99.5
+   ],
+   [
+    "raw_updated_at",
+    0.0
+   ],
+   [
+    "raw_deadline",
+    99.6
+   ],
+   [
+    "raw_working_time",
+    69.8
+   ],
+   [
+    "raw_salary_text",
+    99.6
+   ],
+   [
+    "raw_employment_type",
+    99.5
+   ],
+   [
+    "raw_work_mode",
+    0.0
+   ],
+   [
+    "raw_experience_text",
+    99.6
+   ],
+   [
+    "raw_seniority_text",
+    99.5
+   ],
+   [
+    "raw_education_text",
+    99.6
+   ],
+   [
+    "raw_headcount",
+    55.4
+   ],
+   [
+    "raw_age_text",
+    0.0
+   ],
+   [
+    "raw_gender_text",
+    0.0
+   ],
+   [
+    "skills_list",
+    0.0
+   ],
+   [
+    "benefits_list",
+    97.6
+   ],
+   [
+    "raw_description_text",
+    98.5
+   ],
+   [
+    "raw_requirements_text",
+    97.9
+   ]
+  ],
+  "tops": {
+   "raw_salary_text": [
+    [
+     "Thỏa thuận",
+     505
+    ],
+    [
+     "8 - 15 triệu VNĐ",
+     43
+    ],
+    [
+     "7 - 20 triệu VNĐ",
+     36
+    ],
+    [
+     "10 - 15 triệu VNĐ",
+     33
+    ],
+    [
+     "15 - 20 triệu VNĐ",
+     29
+    ],
+    [
+     "8 - 20 triệu VNĐ",
+     27
+    ],
+    [
+     "10 - 20 triệu VNĐ",
+     22
+    ],
+    [
+     "10 - 13 triệu VNĐ",
+     22
+    ],
+    [
+     "7 - 15 triệu VNĐ",
+     22
+    ],
+    [
+     "8 - 12 triệu VNĐ",
+     19
+    ],
+    [
+     "20 - 30 triệu VNĐ",
+     19
+    ],
+    [
+     "15 - 25 triệu VNĐ",
+     18
+    ],
+    [
+     "12 - 20 triệu VNĐ",
+     17
+    ],
+    [
+     "10 - 30 triệu VNĐ",
+     17
+    ],
+    [
+     "8 - 10 triệu VNĐ",
+     17
+    ]
+   ],
+   "raw_experience_text": [
+    [
+     "Không yêu cầu",
+     632
+    ],
+    [
+     "1 - 2 năm",
+     198
+    ],
+    [
+     "2 - 3 năm",
+     166
+    ],
+    [
+     "Dưới 1 năm",
+     98
+    ],
+    [
+     "3 - 4 năm",
+     87
+    ],
+    [
+     "Trên 1 năm",
+     85
+    ],
+    [
+     "Trên 2 năm",
+     74
+    ],
+    [
+     "Trên 3 năm",
+     70
+    ],
+    [
+     "Trên 5 năm",
+     48
+    ],
+    [
+     "4 - 5 năm",
+     24
+    ],
+    [
+     "Trên 6 năm",
+     13
+    ],
+    [
+     "Trên 4 năm",
+     8
+    ],
+    [
+     "2 - 5 năm",
+     6
+    ],
+    [
+     "1 - 3 năm",
+     5
+    ],
+    [
+     "Trên 0.5 năm",
+     3
+    ]
+   ],
+   "raw_seniority_text": [
+    [
+     "Nhân Viên/Chuyên Viên",
+     1250
+    ],
+    [
+     "Thực Tập Sinh",
+     165
+    ],
+    [
+     "Trưởng Nhóm/Trưởng Phòng",
+     114
+    ],
+    [
+     "Giám Đốc Và Cấp Cao Hơn",
+     3
+    ]
+   ],
+   "raw_employment_type": [
+    [
+     "Toàn thời gian",
+     1466
+    ],
+    [
+     "Toàn thời gian, Bán thời gian",
+     21
+    ],
+    [
+     "Bán thời gian",
+     10
+    ],
+    [
+     "Toàn thời gian, Xoay ca",
+     8
+    ],
+    [
+     "Toàn thời gian, Thời vụ",
+     7
+    ],
+    [
+     "Toàn thời gian, Bán thời gian, Thời vụ",
+     6
+    ],
+    [
+     "Toàn thời gian, Remote",
+     4
+    ],
+    [
+     "Toàn thời gian, Bán thời gian, Remote",
+     3
+    ],
+    [
+     "Remote",
+     2
+    ],
+    [
+     "Thực tập",
+     2
+    ],
+    [
+     "Toàn thời gian, Thời vụ, Remote",
+     1
+    ],
+    [
+     "Bán thời gian, Thời vụ",
+     1
+    ],
+    [
+     "Sinh viên/Thực tập",
+     1
+    ]
+   ],
+   "raw_work_mode": [],
+   "raw_category_text": [
+    [
+     "Lập Trình - Phát Triển Phần Mềm",
+     58
+    ],
+    [
+     "Sales Công Nghệ Thông Tin, Bán Hàng Doanh Nghiệp - B2B, Bán Hàng Cá Nhân - B2C, ",
+     39
+    ],
+    [
+     "Vận Hành IT - IT Helpdesk",
+     37
+    ],
+    [
+     "Quản Lý Dự Án IT",
+     33
+    ],
+    [
+     "Kiểm Thử Phần Mềm",
+     33
+    ],
+    [
+     "Dữ Liệu - AI - Học Máy",
+     27
+    ],
+    [
+     "Sales Công Nghệ Thông Tin, Bán Hàng Doanh Nghiệp - B2B, Phát Triển Kinh Doanh, B",
+     25
+    ],
+    [
+     "Dịch Vụ Khách Hàng, Telesales - Bán Hàng Online, Bán Hàng Cá Nhân - B2C, Nhà Hàn",
+     25
+    ],
+    [
+     "Phân Tích Nghiệp Vụ (BA)",
+     21
+    ],
+    [
+     "Sales Công Nghệ Thông Tin, Bán Hàng Doanh Nghiệp - B2B",
+     18
+    ],
+    [
+     "Hạ Tầng - Mạng, Vận Hành IT - IT Helpdesk, Phần Cứng - Lập Trình Nhúng, Dịch Vụ ",
+     15
+    ],
+    [
+     "Sales Công Nghệ Thông Tin",
+     15
+    ],
+    [
+     "Dịch Vụ Khách Hàng, Sales Viễn Thông, Sales Công Nghệ Thông Tin",
+     15
+    ],
+    [
+     "Hạ Tầng - Mạng, Vận Hành IT - IT Helpdesk",
+     13
+    ],
+    [
+     "Hạ Tầng - Mạng, Vận Hành IT - IT Helpdesk, Phần Cứng - Lập Trình Nhúng",
+     13
+    ]
+   ],
+   "raw_education_text": [
+    [
+     "Cao Đẳng trở lên",
+     527
+    ],
+    [
+     "Đại Học trở lên",
+     451
+    ],
+    [
+     "Trung cấp - Nghề trở lên",
+     241
+    ],
+    [
+     "Trung cấp trở lên",
+     169
+    ],
+    [
+     "THPT trở lên",
+     96
+    ],
+    [
+     "Không yêu cầu",
+     41
+    ],
+    [
+     "Chứng chỉ trở lên",
+     9
+    ]
+   ]
+  },
+  "top_locations": [
+   [
+    "158/2A Hoàng Hoa Thám, P. 12, Quận Tân Bình, Hồ Chí Minh (Trước sáp nhập:Tân Bìn",
+    25
+   ],
+   [
+    "Tầng 1,2,3, Tòa nhà SaigonTel, Lô 46, Công viên phần mềm Quang Trung, Phường Tân",
+    20
+   ],
+   [
+    "Hà Nội",
+    16
+   ],
+   [
+    "Số 73 Cầu Diễn, Hà Nội",
+    16
+   ],
+   [
+    "Số 158/2A - đường Hoàng Hoa Thám - phường 12 - Quận Tân Bình, Hồ Chí Minh (Trước",
+    15
+   ],
+   [
+    "Lô 46 Công viên phần mềm Quang Trung, Phường Trung Mỹ Tây, Hồ Chí Minh (Trước sá",
+    13
+   ],
+   [
+    "KCN Long Đức, Đồng Nai (Trước sáp nhập:Long Thành, Đồng Nai |Sau sáp nhập:An Phư",
+    12
+   ],
+   [
+    "Quận 1, Hồ Chí Minh",
+    12
+   ],
+   [
+    "Tòa nhà Saigon ICT, Lô 46 Công viên phần mềm Quang Trung, Phường Trung Mỹ Tây, H",
+    11
+   ],
+   [
+    "Bình Trị Đông B, Quận Bình Tân, Hồ Chí Minh (Trước sáp nhập:Bình Tân, Hồ Chí Min",
+    11
+   ],
+   [
+    "tòa nhà Sài Gòn Tel, Khu Công Viên Phần Mềm Quang Trung, Trung Mỹ Tây, Quận 12, ",
+    10
+   ],
+   [
+    "Tòa nhà Sài Gòn Tel, Khu Công Viên Phần Mềm Quang Trung, Phường Trung Mỹ Tây, Hồ",
+    9
+   ],
+   [
+    "Hồ Chí Minh",
+    8
+   ],
+   [
+    "Tòa nhà Dalico, Tầng 8- 24C Phan Đăng Lưu, P6, Bình Thạnh, HCM (Trước sáp nhập:B",
+    8
+   ],
+   [
+    "Tòa MDA, Y12 Hồng Lĩnh, Phường Hòa Hưng, Hồ Chí Minh (Trước sáp nhập:Quận 10, Hồ",
+    8
+   ]
+  ],
+  "top_skills": [],
+  "top_benefits": [
+   [
+    "Khám sức khỏe định kỳ hằng năm.",
+    49
+   ],
+   [
+    "Được tham gia đầy đủ bảo hiểm xã hội, bảo hiểm y tế, bảo hiểm thất nghiệp theo quy định.",
+    40
+   ],
+   [
+    "Lương tháng 13.",
+    33
+   ],
+   [
+    "Lương thỏa thuận theo năng lực và kinh nghiệm.",
+    33
+   ],
+   [
+    "Được hưởng đầy đủ chính sách phúc lợi của công ty.",
+    31
+   ],
+   [
+    "Tham gia đầy đủ BHXH, BHYT, BHTN theo quy định.",
+    30
+   ],
+   [
+    "Môi trường làm việc chuyên nghiệp và thân thiện.",
+    27
+   ],
+   [
+    "Được làm việc trong môi trường năng động.",
+    27
+   ],
+   [
+    "Khám sức khỏe định kỳ.",
+    26
+   ],
+   [
+    "Lương thâm niên: 200.000 - 400.000 VNĐ.",
+    25
+   ],
+   [
+    "Bảo hiểm tai nạn 24/24.",
+    25
+   ],
+   [
+    "Thưởng hiệu suất và thưởng theo kết quả kinh doanh.",
+    25
+   ],
+   [
+    "Xét tăng lương định kỳ.",
+    25
+   ],
+   [
+    "Cơ hội thăng tiến rõ ràng.",
+    24
+   ],
+   [
+    "Phúc lợi:",
+    24
+   ],
+   [
+    "Được đào tạo khi vào làm việc.",
+    24
+   ],
+   [
+    "Tham gia các hoạt động team building và du lịch công ty.",
+    23
+   ],
+   [
+    "Thưởng tháng 13 và thưởng lễ, Tết.",
+    22
+   ],
+   [
+    "Được đào tạo nội bộ và đào tạo nâng cao chuyên môn.",
+    22
+   ],
+   [
+    "Khám sức khỏe định kỳ hàng năm.",
+    20
+   ]
+  ],
+  "benefits_per_job": [
+   [
+    "0",
+    37
+   ],
+   [
+    "1–2",
+    11
+   ],
+   [
+    "3–5",
+    445
+   ],
+   [
+    "6–9",
+    812
+   ],
+   [
+    "10–14",
+    180
+   ],
+   [
+    "≥ 15",
+    55
+   ]
+  ],
+  "desc_len": [
+   [
+    "0",
+    23
+   ],
+   [
+    "1–499",
+    620
+   ],
+   [
+    "500–999",
+    638
+   ],
+   [
+    "1.000–1.999",
+    215
+   ],
+   [
+    "2.000–3.999",
+    40
+   ],
+   [
+    "4.000–7.999",
+    4
+   ],
+   [
+    "≥ 8.000",
+    0
+   ]
+  ],
+  "req_len": [
+   [
+    "0",
+    33
+   ],
+   [
+    "1–299",
+    353
+   ],
+   [
+    "300–599",
+    621
+   ],
+   [
+    "600–1.199",
+    441
+   ],
+   [
+    "1.200–2.399",
+    89
+   ],
+   [
+    "2.400–4.799",
+    3
+   ],
+   [
+    "≥ 4.800",
+    0
+   ]
+  ],
+  "median_desc_len": 578
+ }
+]

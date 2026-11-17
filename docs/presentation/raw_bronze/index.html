@@ -1,0 +1,61 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bronze tổng hợp</title><style>
+:root{--surface:#fcfcfb;--surface-2:#f3f2ef;--border:#e4e2dc;--text:#0b0b0b;--text-2:#52514e;--muted:#7a7873;
+--series-1:#2a78d6;--series-2:#eb6834;--series-3:#1baf7a;--grid:#e9e7e2;--accent:#2a78d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--surface:#1a1a19;--surface-2:#242422;--border:#3a3936;
+--text:#f0efec;--text-2:#c3c2b7;--muted:#9a988f;--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70;--grid:#2f2e2b;--accent:#3987e5}}
+:root[data-theme="dark"]{--surface:#1a1a19;--surface-2:#242422;--border:#3a3936;--text:#f0efec;--text-2:#c3c2b7;--muted:#9a988f;
+--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70;--grid:#2f2e2b;--accent:#3987e5}
+*{box-sizing:border-box}body{margin:0;background:var(--surface);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:24px 16px 64px}h1{font-size:26px;margin:0 0 4px}h2{font-size:18px;margin:36px 0 4px}
+.sub{color:var(--text-2);margin:0 0 16px}.note{color:var(--muted);font-size:13px;margin:4px 0 12px}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 20px}nav a{padding:4px 10px;border:1px solid var(--border);border-radius:999px;color:var(--text-2);text-decoration:none;font-size:13px}
+nav a.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tile .v{font-size:24px;font-weight:650;font-variant-numeric:tabular-nums}.tile .k{color:var(--text-2);font-size:13px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:20px}
+.card{border:1px solid var(--border);border-radius:10px;padding:14px;background:var(--surface);min-width:0}
+.card h3{font-size:15px;margin:0 0 2px}svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{fill:var(--text-2);font-size:11px}svg .val{fill:var(--text);font-variant-numeric:tabular-nums}
+.bar{fill:var(--series-1)}.bar:hover,.bar.hl{opacity:.8}.gridline{stroke:var(--grid)}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--text-2);font-weight:600}td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.scroll{overflow-x:auto}.tbox{max-height:520px;overflow:auto}.samp{color:var(--text-2);word-break:break-word}
+.meter{display:inline-block;width:70px;height:6px;background:var(--grid);border-radius:3px;vertical-align:middle;margin-right:6px}
+.meter i{display:block;height:100%;background:var(--series-1);border-radius:3px}
+details{margin-top:8px}summary{cursor:pointer;color:var(--text-2);font-size:13px}
+.empty{padding:24px;border:1px dashed var(--border);border-radius:10px;color:var(--text-2)}
+#tip{position:fixed;pointer-events:none;background:var(--text);color:var(--surface);padding:5px 8px;border-radius:6px;font-size:12px;opacity:0;transition:opacity .1s;max-width:320px;z-index:9}
+</style></head><body><main><nav><a href="index.html" class="on">Tổng hợp</a><a href="topcv.html" class="">topcv</a><a href="topdev.html" class="">topdev</a><a href="vietnamworks.html" class="">vietnamworks</a><a href="careerviet.html" class="">careerviet</a><a href="vieclam24h.html" class="">vieclam24h</a><a href="itviec.html" class="">itviec</a><a href="glints.html" class="">glints</a><a href="jobsgo.html" class="">jobsgo</a></nav><h1>Bronze · 8 nguồn</h1><p class='sub'>Tổng quan raw và URL ledger trước mọi bước xử lý.</p><div class='tiles'><div class="tile"><div class="v">12.816</div><div class="k">file raw</div></div><div class="tile"><div class="v">10.829</div><div class="k">tin duy nhất</div></div><div class="tile"><div class="v">14.852</div><div class="k">URL trong ledger</div></div></div><h2>Theo nguồn</h2><div class='card scroll'><table><tr><th>Nguồn</th><th>File raw</th><th>Tin duy nhất</th><th>URL ledger</th><th>DONE</th><th>PENDING</th><th>Có ngày đăng</th><th>Đăng tháng 9</th></tr><tr><td><a href='topcv.html'>topcv</a></td><td class='n'>2.820</td><td class='n'>2.745</td><td class='n'>3.200</td><td class='n'>2.890</td><td class='n'>302</td><td class='n'>0,0%</td><td class='n'>0</td></tr><tr><td><a href='topdev.html'>topdev</a></td><td class='n'>3.890</td><td class='n'>2.782</td><td class='n'>3.723</td><td class='n'>2.787</td><td class='n'>935</td><td class='n'>40,4%</td><td class='n'>0</td></tr><tr><td><a href='vietnamworks.html'>vietnamworks</a></td><td class='n'>1.947</td><td class='n'>1.219</td><td class='n'>2.386</td><td class='n'>820</td><td class='n'>1.125</td><td class='n'>100,0%</td><td class='n'>445</td></tr><tr><td><a href='careerviet.html'>careerviet</a></td><td class='n'>660</td><td class='n'>642</td><td class='n'>924</td><td class='n'>644</td><td class='n'>273</td><td class='n'>97,8%</td><td class='n'>102</td></tr><tr><td><a href='vieclam24h.html'>vieclam24h</a></td><td class='n'>660</td><td class='n'>660</td><td class='n'>1.096</td><td class='n'>668</td><td class='n'>415</td><td class='n'>100,0%</td><td class='n'>144</td></tr><tr><td><a href='itviec.html'>itviec</a></td><td class='n'>911</td><td class='n'>910</td><td class='n'>1.171</td><td class='n'>914</td><td class='n'>257</td><td class='n'>96,2%</td><td class='n'>304</td></tr><tr><td><a href='glints.html'>glints</a></td><td class='n'>331</td><td class='n'>331</td><td class='n'>331</td><td class='n'>257</td><td class='n'>0</td><td class='n'>100,0%</td><td class='n'>67</td></tr><tr><td><a href='jobsgo.html'>jobsgo</a></td><td class='n'>1.597</td><td class='n'>1.540</td><td class='n'>2.021</td><td class='n'>1.519</td><td class='n'>458</td><td class='n'>99,5%</td><td class='n'>567</td></tr></table></div><h2>Phân bố</h2><div class='grid2'><div class="card"><h3>Tin theo tháng đăng (gộp các nguồn)</h3><p class="note">Chỉ tin có ngày đăng parse được; topcv không ghi ngày đăng nên không có ở đây</p><div data-chart='{&quot;kind&quot;: &quot;v&quot;, &quot;rows&quot;: [[&quot;trước 08/2026&quot;, 112], [&quot;2026-08&quot;, 150], [&quot;2026-09&quot;, 1629], [&quot;2026-10&quot;, 4459], [&quot;2026-11&quot;, 18]], &quot;unit&quot;: &quot;tin&quot;, &quot;total&quot;: null}'></div></div><div class="card"><h3>Tin duy nhất theo nguồn</h3><p class="note"></p><div data-chart='{&quot;kind&quot;: &quot;h&quot;, &quot;rows&quot;: [[&quot;topdev&quot;, 2782], [&quot;topcv&quot;, 2745], [&quot;jobsgo&quot;, 1540], [&quot;vietnamworks&quot;, 1219], [&quot;itviec&quot;, 910], [&quot;vieclam24h&quot;, 660], [&quot;careerviet&quot;, 642], [&quot;glints&quot;, 331]], &quot;unit&quot;: &quot;tin&quot;, &quot;total&quot;: 10829}'></div></div></div>
+<p class="note" style="margin-top:40px">Sinh bằng <code>scripts/visualize_raw_bronze.py</code> lúc 17/11/2026 23:05, từ dữ liệu Bronze trên máy (data/&lt;nguồn&gt;/raw, url_ledger). Không có số giả định.</p>
+</main><div id="tip"></div><script>
+const tip=document.getElementById('tip');
+function showTip(e,t){tip.textContent=t;tip.style.opacity=1;tip.style.left=Math.min(e.clientX+12,innerWidth-330)+'px';tip.style.top=(e.clientY+12)+'px'}
+function hideTip(){tip.style.opacity=0}
+const fmt=n=>n.toLocaleString('vi-VN');
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+// Cột dọc (theo thời gian / thứ tự)
+function vbars(el,rows,unit){
+  if(!rows.length){el.innerHTML='<p class="note">Không có dữ liệu.</p>';return}
+  const W=480,H=200,L=40,B=40,T=14,max=Math.max(...rows.map(r=>r[1]));const bw=(W-L)/rows.length;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
+  for(let i=0;i<=4;i++){const y=T+(H-T-B)*(1-i/4);s+=`<line class="gridline" x1="${L}" x2="${W}" y1="${y}" y2="${y}"/><text x="${L-6}" y="${y+4}" text-anchor="end">${fmt(Math.round(max*i/4))}</text>`}
+  const step=Math.ceil(rows.length/12);
+  rows.forEach((r,i)=>{const h=(H-T-B)*r[1]/max,x=L+i*bw+1,w=Math.max(bw-2,1),y=H-B-h;
+    s+=`<path class="bar" d="M${x},${H-B}V${y+Math.min(4,h)}q0,-${Math.min(4,h)} ${Math.min(4,w/2)},-${Math.min(4,h)}H${x+w-Math.min(4,w/2)}q${Math.min(4,w/2)},0 ${Math.min(4,w/2)},${Math.min(4,h)}V${H-B}Z" data-t="${esc(r[0])}: ${fmt(r[1])} ${unit}"/>`;
+    if(i%step==0)s+=`<text x="${x+w/2}" y="${H-B+14}" text-anchor="end" transform="rotate(-35 ${x+w/2} ${H-B+14})">${esc(r[0])}</text>`});
+  el.innerHTML=s+'</svg>'+table(rows,unit);bind(el)}
+// Thanh ngang (xếp hạng)
+function hbars(el,rows,unit,total){
+  if(!rows.length){el.innerHTML='<p class="note">Không có dữ liệu.</p>';return}
+  const W=480,rh=22,L=190,H=rows.length*rh+4,max=Math.max(...rows.map(r=>r[1]));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
+  rows.forEach((r,i)=>{const w=Math.max((W-L-60)*r[1]/max,2),y=i*rh+3;const lab=String(r[0]).length>30?String(r[0]).slice(0,29)+'…':r[0];
+    const pct=total?` (${(100*r[1]/total).toFixed(1)}%)`:'';
+    s+=`<text x="${L-8}" y="${y+12}" text-anchor="end">${esc(lab)}</text><path class="bar" d="M${L},${y}H${L+w-4}q4,0 4,4V${y+12}q0,4 -4,4H${L}Z" data-t="${esc(r[0])}: ${fmt(r[1])} ${unit}${pct}"/><text class="val" x="${L+w+6}" y="${y+12}">${fmt(r[1])}</text>`});
+  el.innerHTML=s+'</svg>'+table(rows,unit);bind(el)}
+function table(rows,unit){return `<details><summary>Xem dạng bảng</summary><div class="scroll"><table><tr><th>Giá trị</th><th>Số ${unit}</th></tr>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td class="n">${fmt(r[1])}</td></tr>`).join('')}</table></div></details>`}
+function bind(el){el.querySelectorAll('.bar').forEach(b=>{b.addEventListener('mousemove',e=>showTip(e,b.dataset.t));b.addEventListener('mouseleave',hideTip)})}
+document.querySelectorAll('[data-chart]').forEach(el=>{const c=JSON.parse(el.dataset.chart);(c.kind==='v'?vbars:hbars)(el,c.rows,c.unit,c.total)});
+</script></body></html>
