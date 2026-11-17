@@ -36,7 +36,7 @@ SD1 chỉ **đếm, chia nhóm và so sánh**. Không có model. Các SD sau dù
 | 1.4 | `salary_status`, `salary_min_vnd_capped`, `salary_max_vnd_capped`, `is_outlier_salary` |
 | 1.5 | `seniority`, `exp_min_years`, số kỹ năng (đếm từ `skills_std`), `language`, lương như ở 1.4 |
 | 1.6 | `benefits_std` |
-| 1.7 | `posted_month` (`YYYY-MM`), `posted_month_source`, `job_family`, `seniority` |
+| 1.7 | `posted_month` (`YYYY-MM`), `source`, `job_family`, `seniority` |
 
 `posted_month` được tạo ở bước 03, thay cho `posted_date` trong dữ liệu sạch (PRE-37). Nguồn có ngày đăng thì lấy tháng đăng; nguồn không ghi ngày đăng (topcv, một phần topdev) thì lấy tháng của **lần cào đầu tiên**.
 
@@ -68,7 +68,7 @@ Mọi câu đều dùng cùng một cách: **đếm, tính tỷ lệ, lập bả
   - Lập bảng chéo top 5 phúc lợi × cấp bậc.
 - **1.7:**
   - Lập bảng tỷ lệ `job_family` và `seniority` trong từng `posted_month`.
-  - Tháng 9 chỉ có tin từ nguồn ghi ngày đăng, vì tháng 9 chưa cào. Khi so tháng 9 với tháng 10–11 thì chỉ dùng tin có `posted_month_source = posted`, hoặc tách hai bảng theo `posted_month_source`.
+  - Tháng 9 chỉ có tin từ nguồn ghi ngày đăng, vì tháng 9 chưa cào. Khi so tháng 9 với tháng 10–11 thì chỉ dùng các nguồn ghi ngày đăng cho gần hết tin (vietnamworks, careerviet, vieclam24h, itviec, glints, jobsgo: 96–100%); bỏ topcv (0%) và topdev (40,4%), vì tin thiếu ngày đăng của hai nguồn này mang tháng cào.
   - Không kết luận "tăng/giảm", vì số tin mỗi tháng phụ thuộc lịch cào.
 
 Quy tắc báo số áp dụng cho mọi bảng: ghi n và độ phủ; ô có n < 30 ghi "ít dữ liệu"; không nói về xu hướng theo thời gian. Lương ước tính của tin "thỏa thuận" (lấy từ SD4) chỉ được hiện ở một cột riêng có nhãn "ước tính".

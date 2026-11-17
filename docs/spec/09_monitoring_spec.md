@@ -143,7 +143,7 @@ Trang Pre-processing (`/preprocessing`) đọc phễu từ report từng bước
 - **Ghi nguồn số:** mỗi khối ghi n (số tin), ngày chạy và sha256 đầu vào lấy từ `mining_metrics.json`.
 - **Ô ít dữ liệu:** ô có n < 30 ghi "ít dữ liệu", không hiện số (ngưỡng theo PRE-36).
 - **Lương:** luôn ghi "lương công khai" và hiện số tin có lương cạnh biểu đồ. Tin "thỏa thuận" đếm riêng, không tính là lương 0. Lương ước tính của SD4 (câu 4.4) chỉ hiện ở cột hoặc màu riêng có nhãn "ước tính".
-- **Theo tháng:** dùng `posted_month`, tách theo `posted_month_source`, chỉ so cơ cấu trong từng tháng, không so tổng số tin (spec 02 mục 2.6).
+- **Theo tháng:** dùng `posted_month`; so tháng 9 với tháng 10–11 chỉ trên nguồn ghi ngày đăng (bỏ topcv, topdev); chỉ so cơ cấu trong từng tháng, không so tổng số tin (spec 02 mục 2.6).
 - **Kỹ năng:** kỹ năng kỹ thuật và kỹ năng mềm, ngoại ngữ xếp hai bảng riêng (spec 07 mục 4).
 - **Từ ngữ:** dùng "khác hoặc mới", không dùng "bất thường". Giá trị SHAP ghi là "model gắn với", không ghi là "làm tăng lương" (MINE-6).
 - **Thiếu dữ liệu:** trả và hiện Empty State theo mục 4.3, kèm lý do (ví dụ "M1 chưa chạy").

@@ -71,7 +71,7 @@ flowchart TD
 - **Mô tả:** Dữ liệu là một lát cắt ngắn: tin đăng từ tháng 9, cào trong tháng 10–11/2026. Số tin theo tháng phụ thuộc lịch cào (tháng 9 chỉ có tin từ các nguồn ghi ngày đăng).
 - **Quyết định ngoài phạm vi:**
   - **KHÔNG** dự báo nhu cầu hay lương ở các tháng sau, không phân tích chuỗi thời gian.
-  - **KHÔNG** so tổng số tin giữa các tháng như là thị trường tăng hay giảm. BI theo `posted_month` chỉ so **cơ cấu** trong từng tháng và tách theo `posted_month_source` (SD1, spec 05 mục 4.2).
+  - **KHÔNG** so tổng số tin giữa các tháng như là thị trường tăng hay giảm. BI theo `posted_month` chỉ so **cơ cấu** trong từng tháng; so tháng 9 với tháng 10–11 chỉ trên các nguồn ghi ngày đăng (SD1, spec 05 mục 4.2).
   - Giá trị SHAP ở SD4 cho biết model gắn kỹ năng với mức lương bao nhiêu, **không phải** "học kỹ năng X thì lương tăng Y" theo nghĩa nhân quả (MINE-6).
 
 
@@ -84,7 +84,7 @@ flowchart TD
 | :--- | :--- | :--- |
 | **Nguồn dữ liệu** | 8 sàn tuyển dụng lớn tại VN: TopCV, TopDev, VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints, JobsGO. | LinkedIn, Facebook Groups, Telegram Channels, Diễn đàn sinh viên Voz/Reddit, Website tuyển dụng nội bộ từng công ty. |
 | **Ngành nghề** | Tin tuyển dụng CNTT thuộc 10 nhóm nghề + Other (Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI). | Bán hàng (Sales), Marketing phi công nghệ, Nhân sự (HR), Kế toán, Hành chính, Chăm sóc khách hàng, Lao động phổ thông. |
-| **Thời gian dữ liệu** | Tin đăng từ tháng 9, cào trong tháng 10–11/2026. Tháng của tin là `posted_month` (lấy từ ngày đăng; nguồn không có thì lấy từ lần cào đầu tiên; `posted_month_source` ghi rõ). | Chuỗi thời gian nhiều năm, dự báo xu hướng, so tổng số tin giữa các tháng (mục 2.6). |
+| **Thời gian dữ liệu** | Tin đăng từ tháng 9, cào trong tháng 10–11/2026. Tháng của tin là `posted_month` (lấy từ ngày đăng; nguồn không có thì lấy từ lần cào đầu tiên). | Chuỗi thời gian nhiều năm, dự báo xu hướng, so tổng số tin giữa các tháng (mục 2.6). |
 | **Chế độ xử lý** | Batch Processing qua Apache Airflow DAGs và CLI Python. | Real-time Streaming (Apache Kafka, Apache Flink, WebSockets stream). |
 | **Xử lý ngôn ngữ** | Luật, regex, từ điển đã duyệt (taxonomy 230 kỹ năng). Model chạy local, có ghi tên trong report: fastText `lid.176` (nhận diện ngôn ngữ, bước 03), `VietAI/envit5-translation` (dịch EN→VI, bước 03), `intfloat/multilingual-e5-base` (embedding, bước 12_e5). Không dùng model để phân loại hay chuẩn hóa trường. | Gọi API LLM thương mại trả phí (OpenAI GPT-4, Anthropic Claude, Gemini API) trong luồng production. |
 | **Phân tích** | 5 mục tiêu SD1–SD5: BI (SD1) → khai phá không giám sát (SD2 FP-Growth; SD3 K-Means/HDBSCAN + Isolation Forest) → train model (SD4 Random Forest + SHAP; SD5 lộ trình học). | So với CV hay chương trình đào tạo, Skill Gap, dự báo, kết luận nhân quả (mục 2.5, 2.6). |

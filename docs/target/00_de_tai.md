@@ -31,7 +31,7 @@ Người dùng chính là **sinh viên IT sắp ra trường và người mới 
 | Kỹ năng yêu cầu (`skills_std`, ma trận kỹ năng ở `10_features`) | Chương trình đào tạo của các trường đại học |
 | Lương công khai (`salary_min_vnd`, `salary_max_vnd`), cờ "thỏa thuận" (`salary_status`) | Lương thật lúc nhận việc, số người ứng tuyển |
 | Tỉnh (`tinh_chinh`), hình thức làm việc (`work_mode`), ngôn ngữ JD (`language`), phúc lợi (`benefits_std`) | Chuỗi thời gian dài: chỉ có khoảng 3 tháng (T9–T11), nên không nói được xu hướng |
-| Tháng đăng `posted_month` (`YYYY-MM`), kèm nguồn tháng `posted_month_source` (`posted` = lấy từ ngày đăng; `crawled` = lấy từ lần cào đầu tiên khi trang không ghi ngày đăng) | Ngày đăng đầy đủ: dữ liệu sạch bỏ `posted_date` (PRE-37) |
+| Tháng đăng `posted_month` (`YYYY-MM`): lấy từ ngày đăng; trang không ghi ngày đăng thì lấy từ lần cào đầu tiên | Ngày đăng đầy đủ: dữ liệu sạch bỏ `posted_date` (PRE-37) |
 | Nội dung JD đã làm sạch, embedding e5 | Thông tin doanh nghiệp ngoài tên công ty |
 
 Từ bảng trên suy ra 5 mục tiêu:
@@ -126,7 +126,7 @@ Quy tắc chung cho mọi SD khi báo số:
 - Ô nào có n < 30 thì không kết luận, chỉ ghi "ít dữ liệu". Ngưỡng 30 là đề xuất, chờ chốt ở PRE-36.
 - Không nói "xu hướng tăng/giảm", vì dữ liệu chỉ có khoảng 3 tháng.
 - Số tin theo tháng phụ thuộc lịch cào, nên chỉ so **cơ cấu** trong từng tháng, không so tổng số tin giữa các tháng.
-- Tháng 9 chỉ có tin của những nguồn ghi ngày đăng (`posted_month_source = posted`), vì tháng 9 chưa cào. Khi so tháng 9 với tháng 10–11 phải tách theo `posted_month_source`.
+- Tháng 9 chỉ có tin của những nguồn ghi ngày đăng, vì tháng 9 chưa cào (đo trên Bronze 17/11: 1.629 tin). Khi so tháng 9 với tháng 10–11 thì chỉ dùng các nguồn ghi ngày đăng cho gần hết tin (vietnamworks, careerviet, vieclam24h, itviec, glints, jobsgo: 96–100%); bỏ topcv (0%) và topdev (40,4%), vì tin thiếu ngày đăng của hai nguồn này mang tháng cào.
 - Lương ước tính (từ SD4) luôn ghi nhãn "ước tính" và không trộn với lương công khai.
 
 ## 9. Tài liệu cần đối chiếu lại

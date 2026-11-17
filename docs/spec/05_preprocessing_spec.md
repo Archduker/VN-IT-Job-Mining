@@ -25,7 +25,7 @@ Pre-processing biến raw của 8 sàn thành **một bảng sạch**, mỗi dò
 | `seniority`, `seniority_level` (5 cấp) | 04 N2, M3c | SD1, SD2, SD4, SD5 (lọc tin người mới) |
 | `tinh_chinh` (34 tỉnh) | 04 N1, N13 | SD1, SD4 |
 | `work_mode` | 04 | SD1 |
-| `posted_month`, `posted_month_source` | 03 (chưa có, PRE-37) | SD1 |
+| `posted_month` | 03 (chưa có, PRE-37) | SD1 |
 | `salary_min_vnd`, `salary_max_vnd`, `is_negotiable`, `salary_status`, các cờ ngoại lai | 03 T2, 04 N6–M8 | SD1, SD4 |
 | `exp_min_years`, `exp_source` | 03 T4, 04 M4 | SD1, SD4, SD5 |
 | `skills_std` | 03 T7, 04 N4 | SD2, SD4, SD5 (Processing 08 rút lại kỹ năng từ JD) |
@@ -232,6 +232,19 @@ Kết quả 10/11: 4.672 vào, 4.671 ra.
 | Trạng thái | Có code, đã chạy thật 10/11. Chưa mang `first_crawled_at` |
 | Việc mở | PRE-37 (việc 1), GEN-7 (`integration/run.py` tự tạo `boto3.client`) |
 
+
+**Phúc lợi theo nguồn** (`benefits_list`, kiểm 17/11/2026 trên `integration/json_flattener.py` và trang `docs/presentation/raw_bronze/`). Mỗi phần tử của list phải là **một** phúc lợi:
+
+| Nguồn | Raw | Cách tách hiện tại | Đúng chưa |
+|---|---|---|---|
+| topdev, vietnamworks | list | 1 phần tử = 1 item | đúng |
+| itviec, topcv (`benefits_bullets`, tag "Quyền lợi") | list | 1 phần tử = 1 item | đúng |
+| glints | chuỗi hoặc list | chuỗi thì mỗi dòng 1 item | đúng |
+| careerviet | chuỗi "Phúc lợi" | tách theo `\n ; • - *` | **sai**: dấu `-` làm vỡ cụm ("Work-life balance"), và các item dính nhau thành "Phúc lợi Laptop Chế độ bảo hiểm…" (PRE-41) |
+| topcv (khi không có bullets), jobsgo, vieclam24h | chuỗi | cả chuỗi thành 1 item | **sai**: không tách dòng (PRE-41) |
+
+`benefits_std` (bước 03 T7) khớp từ khóa trên toàn bộ chuỗi nên ít bị ảnh hưởng bởi lỗi tách; cột `benefits` của bảng target lấy từ đây (mục 4.4).
+
 ### 3.4. Bước 03: Transformation
 
 | Mục | Nội dung |
@@ -248,7 +261,7 @@ Kết quả 10/11: 4.672 vào, 4.671 ra.
 |---|---|
 | `salary_min_vnd`, `salary_max_vnd`, `salary_currency_raw`, `salary_period_raw`, `is_negotiable`, `salary_source` (`header`, `title`, `jd`, `none`), `salary_suspect` | T2 |
 | `posted_date`, `deadline_date` | T3 (chỉ dùng ở tầng trung gian, xem mục 4.2) |
-| `posted_month`, `posted_month_source` | **Chưa có** (PRE-37, việc 2) |
+| `posted_month` | **Chưa có** (PRE-37, việc 2) |
 | `exp_min_years`, `exp_max_years` | T4 |
 | `headcount` | T5 |
 | `job_title_clean`, `description_clean`, `requirements_clean` và các bản `*_norm` (viết thường), `*_fold` (viết thường, bỏ dấu, chỉ để so khớp) | T6 |
@@ -366,11 +379,11 @@ Spec 03 mục 6 đã ghi theo quyết định này.
 - **Bảng sạch không có cột ngày đăng đầy đủ.** Bảng 04 bỏ `posted_date` và `raw_posted_date`. Hai cột này vẫn có ở bảng 02 và 03 để truy vết; bước 01b dùng ngày đăng trong envelope để chọn bản giữ.
 - **Cột thay thế** (tạo ở bước 03):
   - `posted_month` (`YYYY-MM`): tháng của `posted_date` nếu nguồn có; nếu không có thì lấy tháng của `first_crawled_at`.
-  - `posted_month_source` ∈ {`posted`, `crawled`}.
+  - Không có cột nguồn tháng: người dùng bỏ `posted_month_source` ngày 17/11 (mục 4.4).
 - **Phải là lần cào đầu tiên.** Bước 01 đang chọn snapshot mới nhất (`raw_reader.latest_envelopes`), nên một tin cào lại sau 21 ngày sẽ bị dời sang tháng sau. Vì vậy phải mang `first_crawled_at` qua bước 02.
-- **Phạm vi:** tin đăng từ tháng 9, cào trong tháng 10–11/2026. Tháng 9 chỉ có tin từ những nguồn ghi ngày đăng (topcv không có tin nào ở tháng 9), nên khi BI so tháng 9 với tháng 10–11 phải tách theo `posted_month_source`. Số tin mỗi tháng phụ thuộc lịch cào, nên chỉ so cơ cấu, không so tổng.
+- **Phạm vi:** tin đăng từ tháng 9, cào trong tháng 10–11/2026. Tháng 9 chỉ có tin từ những nguồn ghi ngày đăng (topcv không có tin nào ở tháng 9), nên khi BI so tháng 9 với tháng 10–11 thì chỉ dùng các nguồn ghi ngày đăng cho gần hết tin (vietnamworks, careerviet, vieclam24h, itviec, glints, jobsgo: 96–100%); bỏ topcv (0%) và topdev (40,4%), vì tin thiếu ngày đăng của hai nguồn này mang tháng cào. Đo trên Bronze 17/11: 1.629 tin đăng tháng 9 (vietnamworks 445, jobsgo 567, itviec 304, vieclam24h 144, careerviet 102, glints 67). Số tin mỗi tháng phụ thuộc lịch cào, nên chỉ so cơ cấu, không so tổng.
 - `crawled_at` (lần cào gần nhất) vẫn giữ. `days_to_deadline` ở Processing 10 tính từ cột này.
-- `deadline_date` vẫn giữ.
+- `deadline_date` vẫn giữ ở bảng 04, không vào bảng target (mục 4.4).
 
 ### 4.3. Thiếu dữ liệu: chiến lược
 
@@ -383,6 +396,52 @@ Spec 03 mục 6 đã ghi theo quyết định này.
 | Kỹ năng | Nguồn không có trường kỹ năng | Rút từ JD bằng từ điển (T7). Processing 08 rút lại trên từng section | |
 
 Mọi giá trị suy ra đều có cờ hoặc cột `*_source`. SD nào cần dữ liệu gốc thì tự lọc theo cờ.
+
+### 4.4. Bảng target (Silver) (người dùng chốt 17/11/2026)
+
+Bảng 04 là bảng làm việc: giữ mọi cột trung gian, cờ và bản sao để truy vết, nên có hàng trăm cột với tên lẫn Việt và Anh. Người dùng bảng sạch (BI, Monitoring, báo cáo) cần một bảng gọn hơn. Quyết định:
+
+- Thêm một bước cuối ghi `data/preprocessing/04_normalization/silver.parquet`: **chọn cột và đổi tên sang tiếng Anh**, không tính lại giá trị. Bảng 04 `all.parquet` giữ nguyên, vì Processing 07–10 và Mining đang đọc theo tên cột cũ; chuyển dần sang bảng target sau (PRE-39).
+- Tên trường tiếng Anh, ở dạng gốc và gọn nhất. Mỗi khái niệm một cột; cờ và bản phụ không vào bảng target.
+
+| Trường | Kiểu | Ý nghĩa | Lấy từ cột bảng 04 | SD |
+|---|---|---|---|---|
+| `job_id` | string | Mã tin, duy nhất, dạng `<nguồn>_<mã trên sàn>` | `job_id_global` | tất cả |
+| `source` | string | Sàn của tin | `source_platform` | SD1 |
+| `url` | string | Link gốc | `source_url` | truy vết |
+| `title` | string | Tiêu đề đã làm sạch | `job_title_clean` | SD1, SD3 |
+| `title_canonical` | string, null | Chức danh chuẩn theo `job_titles.json`; null nếu không khớp (55% tin, 10/11) | `title_canonical` | SD1 |
+| `job_family` | string | 10 nhóm + Other | `job_family` | tất cả |
+| `seniority` | string, null | Intern/Fresher, Junior, Middle, Senior, Lead/Manager; null nếu không rõ | `seniority` | SD1, SD4, SD5 |
+| `exp_min_years` | float, null | Năm kinh nghiệm tối thiểu; "Không yêu cầu" = 0 | `exp_min_years` | SD1, SD4, SD5 |
+| `exp_max_years` | float, null | Năm kinh nghiệm tối đa; "Trên 3 năm" = null | `exp_max_years` | SD1 |
+| `salary_min` | float, null | Lương thấp nhất, VND/tháng, đã đổi tiền tệ và chặn ngoại lai | `salary_min_vnd_capped` | SD1, SD4 |
+| `salary_max` | float, null | Lương cao nhất, VND/tháng | `salary_max_vnd_capped` | SD1, SD4 |
+| `salary_negotiable` | bool | Tin ghi "thỏa thuận"; khi đó min/max là null. Giữ để phân biệt với tin parse lương lỗi | `is_negotiable` | SD4 |
+| `province` | string, null | Tỉnh/thành chính, 34 tỉnh sau sáp nhập | `tinh_chinh` | SD1 |
+| `work_mode` | string | `onsite`, `hybrid`, `remote`, `unknown` | `work_mode` | SD1 |
+| `company` | string | Tên công ty đã chuẩn hóa | `company_norm` | SD1 |
+| `company_id` | string | Khóa gộp các cách viết của một công ty (rapidfuzz `token_sort` ≥ 90); dùng đếm công ty và chia train/test theo công ty ở SD4 | `company_key` | SD1, SD4 |
+| `skills` | list[string] | Kỹ năng chuẩn | `skills_std` (đổi sang nguồn bước 08 khi chốt PRE-40) | SD1–SD5 |
+| `benefits` | list[string] | Phúc lợi chuẩn theo `dictionaries/benefits.json` (mục 3.3, PRE-41) | `benefits_std` | SD1 |
+| `description` | string | Mô tả công việc, đã bỏ HTML | `description_clean` | SD3 |
+| `requirements` | string | Yêu cầu ứng viên, đã bỏ HTML | `requirements_clean` | SD3, SD5 |
+| `language` | string | Ngôn ngữ JD: `vi`, `en`, `other` | `language` | truy vết |
+| `posted_month` | string | Tháng đăng `YYYY-MM` (mục 4.2) | `posted_month` (PRE-37) | SD1 |
+
+**Trường ngoài target** (vẫn ở bảng 04 để truy vết, không vào `silver.parquet`):
+
+| Trường | Lý do |
+|---|---|
+| `headcount` | Chưa SD nào dùng; 2.773 tin có số (10/11) |
+| `deadline_date` | Là ngày tin đóng, không thay được ngày đăng (gộp vào `posted_month` sẽ dời tin sang tháng sau). Processing 10 vẫn đọc từ bảng 04 để tính `days_to_deadline` |
+| `posted_month_source` | Người dùng bỏ khỏi target 17/11. So tháng 9 với tháng 10–11 theo luật nguồn ở mục 4.2 |
+| `crawled_at` | Đã có `posted_month` |
+| `salary_min_vnd`, `salary_max_vnd` (chưa chặn), `log_salary_*`, `salary_currency_raw`, `salary_period_raw`, `salary_source`, `salary_suspect`, `salary_status`, `is_outlier_salary`, `salary_out_of_range`, `salary_iqr_*` | Bản trung gian và cờ chất lượng. Bản log do Processing 10 tự tính; cờ ngoại lai ghi ở `anomalies.json` |
+| `locations`, `tinh_cu`, `tinh_key`, `tinh_source`, `tinh_status`, `remote`, `ngoai_vn` | Chi tiết địa điểm; target chỉ cần `province` và `work_mode` |
+| `seniority_level`, `seniority_source`, `level_inferred`, `seniority_can_kiem`, `exp_inferred`, `exp_source` | Mã số và cờ suy ra |
+| `job_family_source`, `job_family_can_kiem`, `job_family_generic_title`, `job_title_core`, `title_match_score`, `title_tech_hint` | Cờ và bước trung gian của luật N3 |
+| `raw_*`, `*_norm`, `*_fold`, `*_vi*`, `translation_status`, `language_conf`, `language_rule`, `skills_list`, `skills_clean`, `benefits_list`, `flags` | Chữ gốc và bản phụ để so khớp, dịch, truy vết |
 
 ## 5. Kiểm tra chung
 

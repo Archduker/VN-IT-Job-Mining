@@ -325,12 +325,12 @@ flowchart TD
 - Tin đăng từ tháng 9 nhưng chỉ được cào trong tháng 10–11/2026.
 
 ### 2. Quyết định (17/11/2026)
-- Bảng sạch bỏ `posted_date`, thay bằng `posted_month` (`YYYY-MM`) và `posted_month_source` ∈ {`posted`, `crawled`}.
+- Bảng sạch bỏ `posted_date`, thay bằng `posted_month` (`YYYY-MM`). Không có cột nguồn tháng (`posted_month_source` bị bỏ 17/11).
 - `posted_month` lấy tháng của `posted_date` nếu nguồn có; nếu không thì lấy tháng của **lần cào đầu tiên** (`first_crawled_at`, bản `_v1`), không phải lần cào gần nhất.
 - Bước 01b vẫn dùng `raw_posted_date` ở tầng trung gian; chỉ bảng sạch cuối bỏ cột ngày.
 
 ### 3. Hệ quả
-- BI theo tháng (SD1) chỉ so **cơ cấu** trong từng tháng, tách theo `posted_month_source`; không so tổng số tin giữa các tháng, vì số tin phản ánh lịch cào.
+- BI theo tháng (SD1) chỉ so **cơ cấu** trong từng tháng; so tháng 9 với tháng 10–11 thì chỉ dùng các nguồn ghi ngày đăng cho gần hết tin (vietnamworks, careerviet, vieclam24h, itviec, glints, jobsgo: 96–100%); bỏ topcv (0%) và topdev (40,4%), vì tin thiếu ngày đăng của hai nguồn này mang tháng cào; không so tổng số tin giữa các tháng, vì số tin phản ánh lịch cào.
 - Tháng 9 chỉ có tin từ các nguồn có ngày đăng.
 - Không ảnh hưởng SD2–SD5. Việc code ghi ở PRE-37.
 

@@ -46,7 +46,7 @@ Các tiêu chí này lấy từ thiết kế 13 bước cũ, nay ghi ở spec 05
 | Mọi bảng có n và độ phủ; tổng khớp số tin bảng 04; tỷ lệ cộng đủ 100% | Test cho `mining/bi.py` | Bắt buộc | Chưa đo (chưa có code) |
 | Ô n < 30 ghi "ít dữ liệu" | Test | Bắt buộc | Chưa đo |
 | Câu 1.2 tách cấp bậc gốc và cấp bậc suy ra (`level_inferred`) | Đọc bảng | Bắt buộc | Chưa đo |
-| Câu 1.7 chỉ so cơ cấu; tháng 9 tách theo `posted_month_source` | Đọc bảng | Bắt buộc | Chưa đo (thiếu `posted_month`, PRE-37) |
+| Câu 1.7 chỉ so cơ cấu; so tháng 9 chỉ trên nguồn ghi ngày đăng (bỏ topcv, topdev) | Đọc bảng | Bắt buộc | Chưa đo (thiếu `posted_month`, PRE-37) |
 | Lương ước tính từ M5 không trộn với lương công khai | Cột riêng có nhãn "ước tính" | Bắt buộc | Chưa đo |
 | S-04, S-06 (mục 4) | `mining/sanity.py` | Pass, hoặc có giải thích | Chưa đạt: cả hai fail 11/11 |
 

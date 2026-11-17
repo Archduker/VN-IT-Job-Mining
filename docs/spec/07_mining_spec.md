@@ -54,7 +54,7 @@
 | Code | **Chưa có.** Đề xuất `mining/bi.py`, mỗi câu một hàm |
 | Đầu vào | Bảng 04; `10_features`; `08_skills` cho câu 1.5 (số kỹ năng của tin người mới) |
 | Đầu ra | `mining/artifacts/sd1_<câu>.json`, mỗi bảng có kèm `n` và độ phủ. Monitoring chỉ đọc các file này, không tự tính |
-| Luật | Theo `docs/target/01_sd1_buc_tranh_thi_truong.md` mục 4: lương dùng trung vị và tứ phân vị trên tin có lương và không bị gắn cờ ngoại lai; ô có n < 30 ghi "ít dữ liệu" (PRE-36); câu 1.7 theo `posted_month`, tách theo `posted_month_source`, chỉ so cơ cấu; lương ước tính từ M5 chỉ hiện ở cột riêng có nhãn "ước tính" |
+| Luật | Theo `docs/target/01_sd1_buc_tranh_thi_truong.md` mục 4: lương dùng trung vị và tứ phân vị trên tin có lương và không bị gắn cờ ngoại lai; ô có n < 30 ghi "ít dữ liệu" (PRE-36); câu 1.7 theo `posted_month`, so tháng 9 với tháng 10–11 chỉ trên nguồn ghi ngày đăng (bỏ topcv, topdev), chỉ so cơ cấu; lương ước tính từ M5 chỉ hiện ở cột riêng có nhãn "ước tính" |
 | Kiểm tra | Tổng mỗi bảng khớp số tin của bảng 04; tỷ lệ cộng lại đủ 100%; chạy lại ra cùng số |
 | Trạng thái | Chưa có code. Trang Insights hiện đọc Postgres (`curated_jobs`) do `scripts/load_mart_from_parquet.py` nạp |
 | Việc mở | MINE-7, PRE-37 (`posted_month` chưa có, nên câu 1.7 chưa làm được), PRE-38 (tỉnh) |

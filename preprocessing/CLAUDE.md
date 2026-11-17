@@ -26,7 +26,7 @@ Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <ngu�
 - **Ranh giới bước là hợp đồng** (spec 05 mục 2.4). 02 không parse, không đổi tiền, không bù. 03 không bỏ dòng, không cap ngoại lai, không log. 04 không bỏ dòng, không ghi đè cột gốc, không bù lương bằng trung bình hay trung vị. Cap ngoại lai (N6) trước log (N7).
 - **Không dùng model để phân loại hay chuẩn hóa.** Chỉ có hai model: fastText `lid.176` (nhận diện ngôn ngữ, 03) và `VietAI/envit5-translation` (dịch, 03 T6b, chỉ khi có `--translate`). Giữ cột JD gốc; kỹ năng rút từ bản gốc. Thêm model khác phải được người dùng đồng ý.
 - **Lương thỏa thuận** giữ NaN kèm `is_negotiable` (MNAR). Giá trị suy ra luôn có cờ (`level_inferred`, `exp_inferred`, `*_source`).
-- **Ngày đăng:** bảng sạch dùng `posted_month` + `posted_month_source`, không dùng `posted_date` (PRE-37). Tháng phải lấy từ lần cào **đầu tiên**, không phải snapshot mới nhất mà 01 chọn.
+- **Ngày đăng:** bảng sạch dùng `posted_month`, không dùng `posted_date` và không có `posted_month_source` (PRE-37, bỏ 17/11). Bảng target gọn tên tiếng Anh là `04_normalization/silver.parquet` (spec 05 mục 4.4, PRE-39). Tháng phải lấy từ lần cào **đầu tiên**, không phải snapshot mới nhất mà 01 chọn.
 - **Raw là bất biến:** sửa cách đọc một trường thì sửa ở đây, không sửa file raw. Raw TopDev cũ thiếu một số trường, nên flattener phải chịu được trường vắng.
 - `_flatten_<nguồn>` phải khớp `monitoring/backend/app/core/feature_targets.py` (`RAW_PATHS`). Đổi tên trường ở một bên thì sửa cả bên kia.
 - Khớp từ khóa và kỹ năng **theo từ nguyên vẹn**, không theo chuỗi con ("intern" từng khớp "international", "ba" khớp "backend"). Tên kỹ năng ngắn (C, R, Go) chỉ thêm kèm ngữ cảnh.

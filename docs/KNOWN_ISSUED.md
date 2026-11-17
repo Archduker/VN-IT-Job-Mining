@@ -128,16 +128,16 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 **PRE-37. `posted_month` thay `posted_date` trong dữ liệu sạch** (mở 17/11/2026)
 
 - **Người dùng đã chốt 17/11:**
-  - Dữ liệu sạch bỏ hẳn `posted_date` (ngày đầy đủ), chỉ giữ `posted_month` dạng `YYYY-MM` kèm `posted_month_source` ∈ {`posted`, `crawled`}.
+  - Dữ liệu sạch bỏ hẳn `posted_date` (ngày đầy đủ), chỉ giữ `posted_month` dạng `YYYY-MM`. Không có `posted_month_source` (người dùng bỏ 17/11).
   - Phạm vi thời gian là tin đăng từ tháng 9, cào trong tháng 10–11/2026.
 - **Lý do:** `posted_date` chỉ phủ 63,8% (topcv 0%, topdev 32,7%; `reports/preprocessing/03_transformation/<nguồn>.json`). Trong khi đó `crawled_at` có ở mọi tin, và BI chỉ cần phân biệt theo tháng.
 - **Việc code:**
   1. Mang `first_crawled_at` (lần cào đầu, bản `_v1`) qua bước 02. `preprocessing/common/raw_reader.py:46-50` đang chọn bản mới nhất, nên tin cào lại sau 21 ngày sẽ bị dời sang tháng sau.
-  2. Bước 03 tạo `posted_month` (tháng của `posted_date` nếu có, nếu không thì tháng của `first_crawled_at`) và `posted_month_source`.
+  2. Bước 03 tạo `posted_month` (tháng của `posted_date` nếu có, nếu không thì tháng của `first_crawled_at`).
   3. Bỏ `posted_date` khỏi bảng sạch sau bước 04. Bước 01b vẫn dùng `raw_posted_date` ở tầng trung gian.
   4. `processing/encoding/features.py:118` đổi đặc trưng `posted_month` sang cột mới. `days_to_deadline` (dòng 119) vẫn tính từ `crawled_at`, không đổi.
 - **Lưu ý khi dùng:**
-  - Tháng 9 chỉ có tin từ nguồn ghi ngày đăng, nên BI so tháng 9 với tháng 10–11 phải tách theo `posted_month_source`.
+  - Tháng 9 chỉ có tin từ nguồn ghi ngày đăng (Bronze 17/11: 1.629 tin). Khi so tháng 9 với tháng 10–11 thì chỉ dùng các nguồn ghi ngày đăng cho gần hết tin (vietnamworks, careerviet, vieclam24h, itviec, glints, jobsgo: 96–100%); bỏ topcv (0%) và topdev (40,4%), vì tin thiếu ngày đăng của hai nguồn này mang tháng cào.
   - Số tin mỗi tháng phụ thuộc lịch cào, nên chỉ so cơ cấu.
 
 **PRE-38. Tỉnh lấy từ trụ sở công ty có thể sai** (mở 17/11/2026)
@@ -155,6 +155,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
   - `mining/config.py` trỏ `DEFAULT_GOLDEN` về bảng 04 và bỏ `FALLBACK_GOLDEN`. `scripts/load_mart_from_parquet.py` và `scripts/create_golden_master_eda_notebook.py` đọc bảng 04.
   - Đổi `01b_deduplication/golden_master_jobs.*` thành `golden_records.*` (sửa `deduplication/run.py`, `verify_delivery.py`).
 - Sửa docstring sai: `transformation/run.py` ("không dịch, không gọi model"), `normalization/run.py` và tên luật N3 ("16 nhóm"). Đổi các trỏ tới `docs/spec/preprocessing/spec/P*.md` sang `docs/spec/05_preprocessing_spec.md`.
+- Bảng target (spec 05 mục 4.4, người dùng chốt 17/11): thêm bước ghi `data/preprocessing/04_normalization/silver.parquet` gồm 22 trường tên tiếng Anh, chỉ chọn cột và đổi tên. Làm sau PRE-37 (cần `posted_month`). Sau đó chuyển Monitoring, BI rồi Processing sang đọc bảng này.
 - `processing/encoding/features.py` còn import `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` từ `preprocessing/encoding/run.py`. Chuyển 3 hằng số này sang `processing/` trước khi dọn `preprocessing/encoding/` (spec 06 mục 6).
 
 **PRE-40. Processing: hai từ điển kỹ năng, report thiếu luật, chưa ghim phiên bản** (mở 17/11/2026)
@@ -163,6 +164,16 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 - **Report:** 07, 08, 09, 10, 12 có `rules` rỗng, nên Monitoring không thấy luật nào. 12_e5 ghi `api.used = false` dù có gọi model e5; 07–09 ghi "pipeline không dùng model". Cần ghi luật S7, K8, W9, 10b vào `rules`, và ghi tên model cho 12_e5.
 - **Tái lập:** `intfloat/multilingual-e5-base` chưa ghim commit (`processing/extraction/embed.py`). `pyahocorasick`, `underthesea` chưa có trong `requirements*.txt`.
 - **Phân biệt bắt buộc và ưu tiên chưa hoạt động:** chưa có `priority_cues.json` đã duyệt, nên không có bullet `uu_tien` và mọi kỹ năng đều `required`. Đây là việc duyệt từ điển (PRE-33), nhưng ảnh hưởng trực tiếp SD2 và SD5.
+
+**PRE-41. Phúc lợi: tách item sai ở bước 02, từ điển chỉ 10 nhóm** (mở 17/11/2026)
+
+- **Tách item** (spec 05 mục 3.3): careerviet tách theo `\n ; • - *`, dấu `-` làm vỡ cụm và item dính nhau ("Phúc lợi Laptop Chế độ bảo hiểm…", thấy trên `docs/presentation/raw_bronze/careerviet.html`); topcv (khi không có bullets), jobsgo, vieclam24h để cả chuỗi thành 1 item. Sửa ở `preprocessing/integration/json_flattener.py`, không sửa raw.
+- **Từ điển:** `preprocessing/dictionaries/benefits.json` chỉ có 10 nhóm, phúc lợi không khớp nhóm nào thì mất. Người dùng đồng ý mở rộng (17/11) để `benefits` kéo được hết phúc lợi. Cách làm: lấy top item của `benefits_list` theo nguồn, gom thành nhóm mới, người dùng duyệt danh sách nhóm.
+- **Độ phủ `benefits_std` 10/11:** glints 74,4%, các nguồn khác 88–97% (`reports/preprocessing/03_transformation/<nguồn>.json`).
+
+**PRE-42. `sync_cloud_lakehouse.py --download --source <nguồn>` chỉ tải ledger** (mở 17/11/2026)
+
+- Khi có `--source`, prefix là `url_ledger/<nguồn>/` nên raw không được tải; không có `--source` thì tải cả `staging/`, `curated/`, `pipeline/`. Chưa có cách tải riêng Bronze (`raw/` + `url_ledger/`). Ngày 17/11 đã tải Bronze bằng script tạm (12.246 file).
 
 ## 3b. Data Mining
 

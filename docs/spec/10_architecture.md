@@ -111,7 +111,7 @@ Kiến trúc Medallion chia dữ liệu thành 3 tầng logic với mức độ 
 
 ### 2.3. Tầng Gold (bảng sạch, đặc trưng, kết quả Mining)
 - **Bảng sạch cuối:** `data/preprocessing/04_normalization/all.parquet` (người dùng duyệt 17/11, spec 05 mục 4.1). Trên R2 đẩy vào `curated/preprocessing/` bằng `scripts/push_preprocessing_to_r2.py`. Tên cũ `curated/gold_master_jobs.parquet`, `data/curated/curated_flat_golden_jobs.parquet` không dùng nữa (PRE-39).
-- **Nội dung bảng sạch:** `job_family` 10 nhóm + Other, `seniority` 5 nhãn, 34 tỉnh sau sáp nhập (`tinh_chinh`), lương VNĐ/tháng có cờ ngoại lai, `posted_month` + `posted_month_source` thay `posted_date` (PRE-37). Thiếu dữ liệu xử lý bằng cờ, không điền giá trị (spec 05 mục 4.3).
+- **Nội dung bảng sạch:** `job_family` 10 nhóm + Other, `seniority` 5 nhãn, 34 tỉnh sau sáp nhập (`tinh_chinh`), lương VNĐ/tháng có cờ ngoại lai, `posted_month` thay `posted_date` (PRE-37; không có `posted_month_source`). Bảng target gọn tên tiếng Anh: `04_normalization/silver.parquet` (spec 05 mục 4.4). Thiếu dữ liệu xử lý bằng cờ, không điền giá trị (spec 05 mục 4.3).
 - **Đặc trưng và vector** (Processing, spec 06): `data/processing/10_features/features.parquet` (cột `skill__*`, `fam__*`, `seniority_ord`…), `encoding_dictionary.json`, `data/processing/12_e5/job_emb.npz`. TF-IDF đã bỏ 17/11.
 - **Kết quả Mining** (spec 07 mục 5): `mining/artifacts/` gồm `sd1_*.json` (đề xuất), `skill_association_rules.parquet`, `job_clusters.parquet`, `job_anomalies.parquet`, `skill_salary_shap_values.parquet`, `trained_salary_rf_model.joblib`, `sd5_*.json` (đề xuất), `mining_metrics.json`. Thư mục này không vào git và chưa có quy ước đẩy lên R2.
 

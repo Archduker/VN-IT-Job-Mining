@@ -11,9 +11,10 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 | `report_raw_problems_r2.py [--from-json]` | Đo vấn đề dữ liệu raw **trực tiếp trên R2** (chỉ `list_objects_v2` và `get_object`), ghi `docs/presentation/raw_problems_r2.json` và bộ slide `slides_raw_problems.html` (mục A vấn đề raw, mục B cách xử lý). `--from-json` dựng lại slide mà không gọi R2 |
 | `read_eda_diagnosis.py --source <nguồn>` | Đọc luật EDA từ notebook mà không mở notebook |
 | `report_skills_overview.py [--out]` | Đọc bảng 04, so kỹ năng phương án A (chỉ văn bản gốc) với B (gốc + bản dịch), ghi HTML tĩnh `data/processing/skills_overview.html` (DF, độ phủ, mức cắt min_df) |
+| `visualize_raw_bronze.py [--source]` | Trực quan hóa Bronze trên máy (raw + ledger) của từng nguồn ra `docs/presentation/raw_bronze/<nguồn>.html` và `index.html`: tháng đăng, tháng cào, trạng thái ledger, khóa `raw_payload`, độ phủ 25 trường sau làm phẳng, top giá trị, phúc lợi, độ dài văn bản. Không gọi R2 |
 | `view_urls.py [--r2] [--status]` | Xem ledger trên máy hoặc trên R2 |
 | `sync_cloud_lakehouse.py --status` | So máy với R2 |
-| `sync_cloud_lakehouse.py --download [--source]` | Tải R2 về `data/` (chỉ ghi trên máy) |
+| `sync_cloud_lakehouse.py --download [--source]` | Tải R2 về `data/` (chỉ ghi trên máy). Có `--source` thì **chỉ tải ledger**, không tải raw (PRE-42) |
 | `lakehouse_loader.py` | Nạp raw thành DataFrame, có thể tải bù từ R2 |
 | `migrate_lakehouse_layout.py [--r2]` | Không có `--apply` thì chỉ liệt kê key layout cũ sẽ được chuyển |
 | `reconcile_ledger_from_raw.py --source <nguồn>` | Không có `--apply`/`--push` thì chỉ in kế hoạch |
