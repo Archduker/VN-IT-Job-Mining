@@ -1,0 +1,283 @@
+# Lô 10: dòng 2701-3000 (18/11/2026)
+A 2701 cacti_solarwinds
+A 2702 git
+S 2703 spring_core backend p=spring n=Spring Core (IoC, DI)
+L spring_core spring core
+N combo 2704
+A 2705 relational_db
+S 2706 srv6 systems_network p=routing_switching n=SRv6
+S 2707 ssrs bi_analytics p=sql_server n=SSRS
+S 2708 starrocks data_engineering n=StarRocks
+N generic 2709
+N job_title 2710
+N combo 2711
+S 2712 systems_engineering systems_network n=Systems Engineering
+N generic 2713 2714
+S 2715 tcvn methodology_pm p=quality_management n=TCVN (tiêu chuẩn VN)
+N job_title 2716 2717
+A 2718 documentation
+A 2719 leadership
+N job_title 2720 2721 2722
+S 2723 telematics embedded_iot n=Telematics
+A 2724 test_plan
+A 2725 software_testing
+A 2726 aesthetic_sense
+S 2727 network_devices systems_network p=networking n=Thiết bị mạng
+L network_devices network devices;thiết bị mạng
+N degree 2728
+N job_title 2729 2730 2731 2732
+N generic 2733
+N industry 2734
+A 2735 ux_design
+N job_title 2736
+N generic 2737
+S 2738 software_deployment systems_network n=Triển khai phần mềm
+A 2739 triton
+A 2740 voice_ai
+A 2741 consulting
+N generic 2742
+A 2743 ui_ux
+N generic 2744 2745 2746 2747 2748
+A 2749 user_story
+N job_title 2750
+A 2751 ui_ux
+A 2752 esxi
+A 2753 vector_database
+S 2754 vendor_management methodology_pm n=Quản lý nhà cung cấp
+N industry 2755
+N entity 2756
+N generic 2757
+A 2758 vlan
+A 2759 virtual_machine
+N entity 2760
+N generic 2761
+S 2762 vscode dev_tools p=ide n=VS Code / IntelliJ IDEA
+L vscode visual studio code;intellij;intellij idea;pycharm;eclipse
+S 2763 vulnerability_assessment security n=Đánh giá lỗ hổng
+L vulnerability_assessment vulnerability management;quét lỗ hổng;vulnerability scanning
+A 2764 order_management
+S 2765 weblogic systems_network p=java n=WebLogic / WebSphere
+L weblogic websphere;jboss
+S 2766 webpack frontend n=Webpack / Vite
+L webpack vite
+N generic 2767 2768 2769 2770
+A 2771 windows
+A 2772 wireframe
+S 2773 workday enterprise_apps n=Workday
+N generic 2774 2775
+A 2776 xdr
+N generic 2777 2778
+S 2779 zoom office_tools n=Zoom / Google Meet
+F zoom Zoom
+L zoom google meet
+N job_title 2780
+A 2781 sap_s4hana
+N generic 2782
+S 2783 comptia_a certifications p=computer_hardware n=CompTIA A+
+L comptia_a comptia a+
+N generic 2784
+A 2785 uat
+S 2786 account_management digital_marketing n=Account management
+N job_title 2787
+S 2788 ap_ar enterprise_apps p=accounting_knowledge n=AP/AR, sổ cái (GL)
+L ap_ar accounts payable;accounts receivable;general ledger
+A 2789 ap_ar
+N combo 2790
+A 2791 appsflyer
+N job_title 2792
+N generic 2793 2794
+A 2795 after_effects
+A 2796 genai_image
+N industry 2797
+N entity 2798
+A 2799 ai_agent
+A 2800 agile
+N generic 2801
+A 2802 openai_api
+N generic 2803
+S 2804 ai_testing testing_qa n=Kiểm thử hệ thống AI
+N generic 2805 2806 2807
+A 2808 aws_aurora
+A 2809 aws
+A 2810 mixpanel
+N combo 2811
+N job_title 2812
+S 2813 antivirus security p=endpoint_security n=Antivirus
+L antivirus antivirus;kaspersky;phần mềm diệt virus
+N generic 2814 2815 2816 2817 2818 2819 2820
+S 2821 apple_search_ads digital_marketing n=Apple Search Ads
+A 2822 apple_search_ads
+A 2823 software_architecture
+N degree 2824
+A 2825 application_security
+N generic 2826
+N job_title 2827
+N generic 2828
+S 2829 asp_classic backend n=ASP classic
+F asp_classic ASP
+A 2830 aspnet
+N generic 2831
+S 2832 atlassian dev_tools n=Atlassian Suite
+N generic 2833
+N generic 2834 2835
+A 2836 aws_cdk
+A 2837 cloudformation
+A 2838 aws_s3
+N generic 2839
+A 2840 ms_dynamics
+A 2841 azure_cert
+N combo 2842
+A 2843 azure_cert
+N generic 2844
+A 2845 azure_cert
+N job_title 2846
+N combo 2847
+S 2848 backend_dev backend n=Backend development
+L backend_dev backend development;back-end development;lập trình backend
+S 2849 backstage devops p=platform_engineering n=Backstage
+N generic 2850
+A 2851 bcp
+N industry 2852
+N generic 2853 2854
+N combo 2855
+S 2856 bicep devops p=iac n=Bicep / ARM templates
+F bicep Bicep
+L bicep arm template;arm templates
+N generic 2857 2858
+A 2859 mrp
+N combo 2860 2861
+S 2862 autosar_bsw embedded_iot p=autosar n=AUTOSAR BSW/RTE/MCAL
+F autosar_bsw BSW;RTE;MCAL
+N combo 2863 2864
+N degree 2865
+N generic 2866
+S 2867 c4_model architecture_api p=software_architecture n=C4 model
+L c4_model c4 model
+N generic 2868 2869 2870 2871 2872 2873
+A 2874 caching
+S 2875 ip_camera systems_network p=cctv n=Camera IP
+L ip_camera camera ip;ip camera
+A 2876 can_bus
+A 2877 canoe
+S 2878 capacity_planning systems_network n=Capacity planning
+N generic 2879
+A 2880 sap_cds
+S 2881 databricks_cert certifications p=databricks n=Databricks Certified
+L databricks_cert databricks certified
+A 2882 2883 cka
+A 2884 pmi_acp
+N generic 2885
+A 2886 chatgpt
+N generic 2887
+S 2888 chromadb databases p=vector_database n=ChromaDB
+L chromadb chroma
+A 2889 chromadb
+N job_title 2890 2891 2892 2893
+A 2894 cka
+S 2895 cloud_architecture cloud n=Cloud architecture
+S 2896 cloud_networking cloud p=networking n=Cloud networking
+A 2897 ai
+A 2898 linux
+A 2899 networking
+A 2900 sql
+A 2901 mentoring
+N generic 2902 2903
+A 2904 networking
+N generic 2905 2906 2907 2908 2909
+N combo 2910
+N generic 2911
+N generic 2912
+A 2913 mysql
+A 2914 oracle_db
+A 2915 sql
+N generic 2916
+S 2917 work_under_pressure soft_skills n=Chịu áp lực công việc
+L work_under_pressure chịu áp lực;chịu được áp lực;áp lực cao;cường độ cao;work under pressure
+S 2918 dagster data_engineering n=Dagster / Prefect
+L dagster prefect
+N generic 2919
+A 2920 cnc
+A 2921 dashboard
+N job_title 2922
+N combo 2923
+N job_title 2924
+N generic 2925
+N generic 2926
+S 2927 sap_fiori enterprise_apps p=sap n=SAP Fiori / UI5
+L sap_fiori sap fiori;fiori;sapui5;ui5
+N combo 2928
+N job_title 2929
+N generic 2930
+N generic 2931
+K electronics embedded_iot n=Mạch điện tử
+L electronics mạch điện tử;thiết kế mạch;electronic circuits;analog circuits
+S 2932 diffusion_models ai_genai p=genai_image n=Diffusion models
+L diffusion_models diffusion model;diffusion models
+S 2933 digitalocean cloud n=DigitalOcean
+N combo 2934
+S 2935 reconciliation enterprise_apps n=Đối soát
+L reconciliation đối soát;reconciliation
+N generic 2936 2937
+S 2938 doip embedded_iot p=uds n=DoIP
+S 2939 dom frontend p=javascript n=DOM
+F dom DOM
+N generic 2940
+N industry 2941
+S 2942 dvc data_science_ml p=mlops n=DVC / Weights & Biases
+L dvc weights & biases;wandb
+A 2943 ms_dynamics
+N generic 2944
+N industry 2945
+N job_title 2946
+A 2947 kms_hsm
+A 2948 english
+A 2949 cad
+A 2950 erp
+A 2951 jetson
+N generic 2952
+A 2953 event_driven
+S 2954 expo mobile p=react_native n=Expo
+F expo Expo
+N generic 2955
+S 2956 fastify backend p=nodejs n=Fastify
+A 2957 firebase
+N generic 2958
+A 2959 sap_fico
+A 2960 firebase
+S 2961 flowise ai_genai p=ai_agent n=Flowise / Dify
+L flowise dify;langflow
+N combo 2962
+S 2963 fmea methodology_pm p=quality_management n=FMEA
+S 2964 forecasting data_science_ml n=Dự báo (forecasting)
+L forecasting time series;chuỗi thời gian;forecasting
+A 2965 istqb
+N generic 2966 2967 2968 2969 2970
+N job_title 2971
+S 2972 game_engine game_dev n=Game engine
+L game_engine game engine;godot
+N generic 2973 2974
+S 2975 getx mobile p=flutter n=GetX
+F getx GetX
+A 2976 gcp_certified
+A 2977 oscp
+S 2978 gps_rtk embedded_iot n=GPS/RTK
+L gps_rtk gps;rtk
+N generic 2979 2980 2981
+A 2982 telecom_network
+S 2983 sap_hana databases p=sap n=SAP HANA
+L sap_hana sap hana
+S 2984 hardening security p=system_security n=Hardening
+A 2985 computer_hardware
+N generic 2986
+A 2987 documentation
+N generic 2988
+A 2989 embedded
+A 2990 distributed_systems
+N generic 2991
+N job_title 2992 2993
+A 2994 layout_design
+S 2995 hilt mobile p=android n=Hilt / Dagger
+L hilt dagger
+N generic 2996
+A 2997 technical_support
+N generic 2998 2999 3000
