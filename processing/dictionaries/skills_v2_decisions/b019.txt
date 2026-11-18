@@ -1,0 +1,279 @@
+# Lô 19: dòng 5401-5700 (18/11/2026)
+N combo 5401
+A 5402 linux
+N generic 5403
+S 5404 monetization digital_marketing n=Monetization (doanh thu app/game)
+L monetization monetization;in-app purchase;iap
+N combo 5405
+A 5406 lms_canvas
+N generic 5407 5408
+A 5409 power_bi
+A 5410 database_admin
+A 5411 sql_server
+N generic 5412 5413 5414
+A 5415 5416 ai_agent
+A 5417 multithreading
+S 5418 multicast systems_network p=routing_switching n=Multicast
+S 5419 multimedia_design design_creative n=Thiết kế đa phương tiện
+L multimedia_design thiết kế đa phương tiện;multimedia design
+S 5420 multimodal_ai ai_genai p=llm n=Multimodal AI
+L multimodal_ai multimodal;đa phương thức
+A 5421 storage
+N generic 5422
+N combo 5423
+N generic 5424 5425
+A 5426 mvc
+S 5427 mvi architecture_api p=design_patterns n=MVI
+F mvi MVI
+S 5428 fine_arts design_creative n=Mỹ thuật
+L fine_arts mỹ thuật;fine arts
+N combo 5429 5430 5431
+S 5432 native_app mobile p=mobile_app_dev n=Native app (iOS/Android)
+L native_app native app;native ios;native android
+N job_title 5433
+N generic 5434
+A 5435 negotiation
+A 5436 information_security
+A 5437 network_architecture
+A 5438 monitoring
+A 5439 network_protocols
+A 5440 routing_switching
+N generic 5441 5442
+S 5443 npd methodology_pm p=product_management n=Phát triển sản phẩm mới (NPD)
+F npd NPD
+N generic 5444 5445
+A 5446 nextjs
+S 5447 nfc embedded_iot n=NFC / RFID
+F nfc NFC;RFID
+N industry 5448 5449 5450
+A 5451 erp
+N generic 5452
+A 5453 python
+A 5454 ruby
+S 5455 ngrx frontend p=angular n=NgRx
+N entity 5456 5457
+N job_title 5459-5473
+A 5458 ui_design
+S 5474 agility soft_skills n=Nhanh nhẹn
+L agility nhanh nhẹn
+S 5475 nhanh_vn enterprise_apps n=Nhanh.vn / Sapo (quản lý bán hàng)
+L nhanh_vn nhanh.vn
+N generic 5476 5477
+N generic 5478 5479 5480
+A 5481 nist
+A 5482 nodejs
+N entity 5483 5484
+A 5485 nosql
+N generic 5486
+S 5487 vmware_nsx systems_network p=vmware n=VMware NSX
+L vmware_nsx nsx;nsx-t
+S 5488 nunit testing_qa p=unit_test n=NUnit / xUnit
+L nunit xunit
+N generic 5489
+S 5490 o2c enterprise_apps p=erp n=O2C / P2P (quy trình ERP)
+F o2c O2C;P2P;R2R
+A 5491 ms_office
+A 5492 5493 oauth
+S 5494 obiee bi_analytics n=Oracle BI (OBIEE)
+F obiee OBIEE
+S 5495 object_pooling game_dev n=Object pooling
+L object_pooling object pooling
+A 5496 oop
+N combo 5497
+A 5498 design_patterns
+A 5499 oracle_cert
+A 5500 5501 odoo
+A 5502 oauth
+A 5503 okr
+S 5504 okta security p=iam n=Okta
+N combo 5505
+S 5506 user_lifecycle security p=iam n=Onboarding/offboarding tài khoản
+L user_lifecycle onboarding/offboarding
+N generic 5507
+S 5508 ooad architecture_api p=oop n=OOAD
+F ooad OOAD
+S 5509 open_banking enterprise_apps p=core_banking n=Open Banking / BaaS
+L open_banking open banking;baas
+A 5510 llama
+A 5511 openai_api
+S 5512 operational_resilience security p=disaster_recovery n=Operational resilience
+N generic 5513
+N job_title 5514
+N generic 5515
+A 5516 query_optimization
+N generic 5517
+A 5518 5519 oracle_cert
+A 5520 oracle_cloud
+A 5521 oracle_db
+A 5522 oracle_erp
+N generic 5523 5524
+A 5525 netsuite
+A 5526 oracle_cert
+A 5527 plsql
+A 5528 order_management
+A 5529 oop
+A 5530 orm
+N generic 5531 5532 5533 5534
+A 5535 owasp
+N combo 5536
+N industry 5537
+A 5538 ocr
+S 5539 pagination backend p=api_design n=Pagination
+S 5540 pain_points methodology_pm p=business_analysis n=Xác định pain points
+L pain_points pain point;pain points
+S 5541 pair_programming methodology_pm p=agile n=Pair programming
+A 5542 palo_alto
+S 5543 payment_gateway backend n=Cổng thanh toán (VNPay, MoMo, Stripe)
+L payment_gateway payment gateway;cổng thanh toán;vnpay;momo;stripe;paypal
+N generic 5544
+A 5545 pcb
+N generic 5546
+N job_title 5547
+N generic 5548 5549 5550
+A 5551 performance_optimization
+A 5552 performance_optimization
+S 5553 performance_marketing digital_marketing n=Performance marketing
+A 5554 performance_test
+N generic 5555
+S 5556 salesforce_security enterprise_apps p=salesforce n=Salesforce profiles/permission sets
+L salesforce_security permission set;permission sets
+S 5557 persona design_creative p=ux_research n=Persona
+F persona Persona;Personas
+L persona user persona
+A 5558 critical_thinking
+A 5559 5560 task_management
+A 5561 autocad
+N generic 5562
+A 5563 photoshop
+A 5564 data_analysis
+S 5565 strategic_thinking soft_skills n=Tư duy chiến lược
+L strategic_thinking phân tích chiến lược;tư duy chiến lược;strategic thinking
+N industry 5566
+A 5567 process_modeling
+A 5568 data_analysis
+A 5569 market_research
+A 5570 requirements_gathering
+N industry 5571 5572
+N generic 5573
+N entity 5574 5575
+N degree 5576
+S 5577 pinia frontend p=vuejs n=Pinia / Vuex
+L pinia vuex
+S 5578 legacy_modernization architecture_api n=Hiện đại hóa hệ thống cũ
+L legacy_modernization legacy modernization;platform modernization;legacy migration
+N combo 5579
+A 5580 app_store_publish
+A 5581 playwright
+N combo 5582 5583 5584
+S 5585 poc methodology_pm n=PoC (proof of concept)
+F poc PoC;POC
+N combo 5586
+S 5587 poe systems_network p=networking n=PoE
+F poe PoE
+S 5588 polarion testing_qa n=Polarion / Codebeamer (ALM)
+L polarion codebeamer
+N generic 5589
+S 5590 portfolio_management methodology_pm p=project_management n=Portfolio management
+N combo 5591
+A 5592 5593 postgresql
+A 5594 mixpanel
+S 5595 cspm security p=cloud_security n=CSPM / CNAPP
+F cspm CSPM;CNAPP
+A 5596 5597 power_bi
+N combo 5598 5599
+N job_title 5600
+N combo 5601
+N combo 5602
+N generic 5603
+N job_title 5604
+S 5605 print_server systems_network p=printer n=Print server
+N combo 5606
+A 5607 problem_solving
+A 5608 process_modeling
+A 5609 process_improvement
+A 5610 5611 process_modeling
+A 5612 quality_management
+N job_title 5613
+N generic 5614 5615
+N job_title 5616 5617
+A 5618 product_roadmap
+A 5619 market_research
+S 5620 product_security security p=application_security n=Product security
+N generic 5621 5622
+A 5623 application_support
+N generic 5624 5625 5626 5627
+A 5628 english
+A 5629 profiling
+N generic 5630 5631 5632
+N job_title 5633
+S 5634 projector systems_network p=computer_hardware n=Máy chiếu / thiết bị phòng họp
+N combo 5635
+A 5636 agile
+S 5637 sow methodology_pm p=rfp n=Proposal / SOW
+F sow SOW
+A 5638 postgresql
+N generic 5639 5640 5641
+N entity 5642
+A 5643 psm
+N entity 5644
+N generic 5645
+S 5646 pulsar messaging n=Apache Pulsar
+L pulsar apache pulsar
+A 5647 python
+N combo 5648
+N job_title 5649 5650 5651 5652 5653
+N combo 5654
+A 5655 software_testing
+S 5656 qac embedded_iot p=misra n=QAC / Polyspace / Coverity (phân tích tĩnh)
+F qac QAC
+L qac polyspace;coverity
+N job_title 5657
+A 5658 arcgis
+S 5660 qlik bi_analytics n=Qlik Sense / QlikView
+F qlik Qlik
+L qlik qlik sense;qlikview
+A 5661 qlik
+N generic 5659
+A 5662 lora_finetune
+A 5663 qt
+N generic 5664 5665
+A 5666 quality_control
+N job_title 5667
+N generic 5668
+S 5669 test_strategy testing_qa p=test_plan n=Test strategy
+L test_strategy test strategy;quality strategy;chiến lược kiểm thử
+S 5670 qualys security p=vulnerability_assessment n=Qualys / Rapid7
+F qualys Qualys
+L qualys rapid7
+A 5671 product_backlog
+S 5672 training_mgmt soft_skills p=teaching n=Quản lý đào tạo
+L training_mgmt quản lý đào tạo
+A 5673 team_management
+A 5674 it_infrastructure
+N generic 5675 5676
+A 5677 defect_management
+A 5678 git
+A 5679 git
+N industry 5680
+A 5681 state_management
+N generic 5682
+A 5683 active_directory
+A 5684 virtualization
+A 5685 system_administration
+A 5686 server_admin
+S 5687 account_admin systems_network p=iam n=Quản trị tài khoản người dùng
+L account_admin quản trị tài khoản;quản lý tài khoản người dùng
+N generic 5688
+S 5689 website_admin systems_network n=Quản trị website
+L website_admin quản trị website;quản trị web
+N generic 5690 5691 5692
+A 5693 uat
+A 5694 sdlc
+S 5695 decision_making soft_skills n=Ra quyết định
+L decision_making ra quyết định;decision making;decision-making
+A 5696 rabbitmq
+N generic 5697
+N generic 5698
+K sdr embedded_iot p=telecom_network n=SDR (software defined radio)
+L sdr gnu radio;software defined radio
+A 5699 5700 rag
