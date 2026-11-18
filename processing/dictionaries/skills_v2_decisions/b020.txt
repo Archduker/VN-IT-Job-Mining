@@ -1,0 +1,299 @@
+# Lô 20: dòng 5701-6000 (18/11/2026)
+A 5701 deepeval
+A 5702 random_forest
+S 5703 rate_limiting backend p=api_design n=Rate limiting
+L rate_limiting rate limit;throttling
+S 5704 rdp systems_network p=remote_support n=RDP / Remote Desktop
+F rdp RDP
+L rdp remote desktop
+S 5705 react_hooks frontend p=react n=React Hooks
+A 5706 react_native
+N combo 5707 5708 5709 5710
+A 5711 5712 rtos
+S 5713 realtime_systems embedded_iot n=Hệ thống thời gian thực
+L realtime_systems real-time systems;hệ thống thời gian thực
+S 5714 git_rebase dev_tools p=git n=Git merge/rebase
+L git_rebase git rebase;rebase;cherry-pick
+A 5715 d3js
+A 5716 disaster_recovery
+N generic 5717
+N combo 5718
+N generic 5719
+S 5720 regulatory_compliance security p=compliance n=Tuân thủ quy định (regulations)
+L regulatory_compliance regulatory compliance;regulatory requirements
+A 5721 reinforcement_learning
+S 5722 release_management devops n=Release management
+L release_management release management;quản lý phát hành;release cycle;release cycles;release notes
+A 5723 release_management
+S 5724 renesas embedded_iot p=mcu n=Renesas / NXP / TI (MCU)
+F renesas Renesas
+A 5725 technical_writing
+N generic 5726 5727
+A 5728 requirements_gathering
+N generic 5729
+A 5730 responsive_design
+N combo 5731 5732 5733
+A 5734 rest_api
+A 5735 api_integration
+N combo 5736 5737
+S 5738 retention_metrics bi_analytics p=product_metrics n=Retention / churn
+L retention_metrics retention rate;churn rate;churn analysis
+N generic 5739 5740
+S 5741 revenue_management enterprise_apps n=Revenue management
+N combo 5742
+S 5743 risk_assessment methodology_pm p=risk_management n=Đánh giá rủi ro
+L risk_assessment risk assessment
+A 5744 risk_management
+N generic 5745
+N entity 5746 5747
+N generic 5748 5749 5750 5751
+A 5752 sentry
+A 5753 rca
+S 5754 root_jailbreak_detection security p=mobile_security n=Root/jailbreak detection
+L root_jailbreak_detection jailbreak detection;root detection
+S 5755 route53 cloud p=aws n=AWS Route 53
+L route53 route 53;route53
+N combo 5756
+A 5757 modbus
+A 5758 risk_management
+S 5759 rxjava mobile p=android n=RxJava / RxKotlin
+L rxjava rxkotlin
+N degree 5760
+N combo 5761
+S 5762 sabsa architecture_api p=enterprise_architecture n=SABSA
+F sabsa SABSA
+S 5763 saga_pattern architecture_api p=microservices n=Saga pattern
+L saga_pattern saga pattern
+N generic 5764
+A 5765 salesforce_service_cloud
+N generic 5766
+S 5767 saml security p=sso n=SAML
+F saml SAML
+N entity 5768
+N generic 5769
+A 5770 storage
+N job_title 5771
+S 5772 sap_gui enterprise_apps p=sap n=SAP GUI
+A 5773 sap
+S 5774 ms_security_cert certifications n=Microsoft security cert (SC-200/SC-300)
+L ms_security_cert sc-200;sc-300;sc-100
+A 5775 scalability
+A 5776 wsus
+N combo 5777
+A 5778 database_design
+S 5779 scope_management methodology_pm p=project_management n=Scope management
+L scope_management scope management;quản lý phạm vi
+S 5780 scpi embedded_iot p=lab_instruments n=SCPI / VISA (điều khiển thiết bị đo)
+F scpi SCPI
+N combo 5781 5782
+A 5783 5784 5785 scrum
+N combo 5786
+A 5787 design_document
+N combo 5788
+N generic 5789
+A 5790 secrets_management
+S 5791 secure_element embedded_iot p=embedded n=Secure Element / TPM
+F secure_element TPM
+L secure_element secure element
+A 5792 vpn
+A 5793 security_audit
+N generic 5794 5795
+N job_title 5796
+A 5797 soc
+A 5798 cspm
+N generic 5799
+N generic 5800
+A 5801 aws_certified
+N generic 5802
+S 5803 segment_routing systems_network p=mpls n=Segment Routing
+A 5804 hardening
+N job_title 5805 5806 5807 5808 5809 5810 5811 5812 5813 5814 5815 5816 5817 5818 5819
+S 5820 sensor_tower digital_marketing p=aso n=Sensor Tower / data.ai
+A 5821 seo
+N combo 5822 5823 5824
+A 5825 slo_sli
+N job_title 5826
+S 5827 service_mesh devops p=kubernetes n=Service mesh
+L service_mesh service mesh;linkerd
+S 5828 service_request systems_network p=itsm n=Service request management
+N generic 5829
+N industry 5830
+S 5831 sfa enterprise_apps p=crm n=SFA / DMS (bán hàng)
+F sfa SFA
+S 5832 shading design_creative p=3d_modeling n=Shading / texturing
+L shading shading;texturing;shader graph
+A 5999 shading
+A 5833 google_workspace
+S 5834 shared_preferences mobile p=android n=SharedPreferences / DataStore
+L shared_preferences sharedpreferences;datastore
+N combo 5835
+A 5836 siem
+N combo 5837
+A 5838 sso
+S 5839 sap_mdg enterprise_apps p=sap n=SAP MDG
+F sap_mdg MDG
+N entity 5840
+A 5841 simulation
+A 5842 sso
+N generic 5843
+N combo 5844
+A 5845 vpn
+N generic 5846 5847
+N combo 5848
+A 5849 slo_sli
+S 5850 smpp backend p=sms_gateway n=SMPP
+F smpp SMPP
+N generic 5851
+A 5852 documentation
+N job_title 5853
+N generic 5854
+A 5855 voip
+A 5856 software_architecture
+A 5857 software_deployment
+A 5858 5859 software_testing
+A 5860 release_management
+A 5861 5863 software_testing
+A 5862 stlc
+A 5864 software_testing
+N generic 5865 5866
+A 5867 solidworks
+N job_title 5868
+A 5869 azure_cert
+N job_title 5870
+S 5871 som_module embedded_iot p=soc_chip n=SoM (System on Module)
+F som_module SoM;SOM
+N generic 5872
+A 5873 voice_ai
+S 5874 aspice_spice methodology_pm p=aspice n=Automotive SPICE
+N generic 5875
+A 5876 spring_boot
+A 5877 spring_data
+A 5878 spring_boot
+S 5879 sprint_planning methodology_pm p=scrum n=Sprint planning
+L sprint_planning sprint planning;sprint retrospective
+S 5880 sprite_animation game_dev n=Sprite / 2D animation
+L sprite_animation sprite;spritesheet;sprite sheet
+S 5881 spss bi_analytics p=statistics n=SPSS / Stata
+F spss SPSS
+L spss stata
+A 5882 database
+A 5883 5884 5885 sql_query
+A 5886 sql_server
+N combo 5887
+A 5888 sql_server
+N combo 5889
+A 5890 5891 sre
+A 5892 srs
+N generic 5893
+A 5894 sse
+N combo 5895
+A 5896 nextjs_rendering
+S 5897 ssrf security p=web_security n=SSRF / CSRF
+F ssrf SSRF;CSRF
+N generic 5898
+N generic 5899
+A 5900 5901 stakeholder_management
+N entity 5902
+N generic 5903
+S 5904 statefulset devops p=kubernetes n=Kubernetes workloads (Deployment, StatefulSet)
+F statefulset StatefulSet;DaemonSet
+S 5905 http_status backend p=http n=HTTP status codes
+L http_status status code;status codes;http status
+A 5906 data_stewardship
+A 5907 user_story
+N combo 5908
+S 5909 storybook frontend n=Storybook
+F storybook Storybook
+A 5910 strategic_thinking
+A 5911 streaming
+A 5912 payment_gateway
+A 5913 power_bi
+N entity 5914
+A 5915 autocad
+A 5916 confluence
+A 5917 jira
+A 5918 postman
+A 5919 photoshop
+A 5920 excel
+S 5921 computer_repair systems_network p=computer_hardware n=Sửa chữa máy tính, thiết bị
+L computer_repair sửa chữa máy tính;sửa chữa phần cứng;sửa chữa thiết bị
+A 5922 printer
+N generic 5923
+A 5924 agile
+N job_title 5925
+N generic 5926
+S 5927 suse systems_network p=linux n=SUSE Linux
+F suse SUSE;SuSe
+A 5928 swagger
+N combo 5929
+N combo 5930
+A 5931 routing_switching
+A 5932 routing_switching
+A 5933 system_administration
+S 5934 syslog systems_network p=logging n=Syslog
+F syslog Syslog;syslog
+S 5935 system_engineering systems_network n=System engineering
+A 5936 hardening
+A 5937 technical_support
+N combo 5938 5939
+A 5940 system_integration
+A 5941 t24
+A 5942 tableau
+N generic 5943
+S 5944 google_tag_manager digital_marketing p=google_analytics n=Google Tag Manager
+F google_tag_manager GTM
+L google_tag_manager google tag manager;tag manager
+N industry 5945 5946
+N entity 5947
+S 5948 talent_acquisition enterprise_apps n=Tuyển dụng (talent acquisition)
+N entity 5949 5950
+N generic 5951
+A 5952 tcp_ip
+N entity 5953
+S 5954 tde databases p=data_security n=TDE (mã hóa CSDL)
+F tde TDE
+A 5955 teaching
+N job_title 5956 5957
+A 5958 teamwork
+N job_title 5959
+S 5960 tech_radar architecture_api p=software_architecture n=Tech Radar
+N generic 5961
+N generic 5962
+N job_title 5963
+A 5964 consulting
+N generic 5965 5966
+A 5967 5968 program_management
+S 5969 technical_sales soft_skills p=consulting n=Technical sales / presales
+L technical_sales technical sales;presales;pre-sales
+N generic 5970
+N job_title 5971 5972 5973
+A 5974 it_operations
+N generic 5975
+A 5976 risk_management
+A 5977 product_roadmap
+A 5978 api_integration
+N industry 5979
+N degree 5980
+K telegram_bot backend n=Telegram Bot API
+L telegram_bot telegram bot;telegram api
+N generic 5981
+S 5982 telnet systems_network p=networking n=Telnet / SSH
+F telnet Telnet
+N generic 5983
+A 5984 onnx
+S 5985 teradata data_engineering p=data_warehouse n=Teradata
+N job_title 5986
+A 5987 test_design
+N generic 5988
+S 5989 test_execution testing_qa p=software_testing n=Test execution
+S 5990 test_management testing_qa p=software_testing n=Test management
+N job_title 5991
+A 5992 test_strategy
+A 5993 tdd
+N combo 5994
+A 5995 5996 stlc
+N generic 5997
+A 5998 uat
+N generic 6000
+K thai languages n=Tiếng Thái
+L thai tiếng thái
