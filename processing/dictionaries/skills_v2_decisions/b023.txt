@@ -1,0 +1,268 @@
+# Lô 23: dòng 6601-6900 (18/11/2026)
+N job_title 6601
+N combo 6602 6603
+N generic 6604
+S 6605 autonomous_driving embedded_iot p=adas n=Xe tự hành (autonomous driving)
+L autonomous_driving autonomous driving;autonomous systems;xe tự hành
+A 6606 autosar_bsw
+N combo 6607
+N entity 6608
+N combo 6609
+S 6610 aws_cli cloud p=aws n=AWS CLI / SDK
+L aws_cli aws cli;aws sdk;boto3
+A 6759 aws_cli
+A 6611 aws
+A 6612 aws_codebuild
+S 6613 aws_config cloud p=aws_security_services n=AWS Config
+L aws_config aws config
+N generic 6614
+A 6615 aws_ec2
+A 6616 aws_ecs
+A 6617 aws_glue
+A 6618 quicksight
+A 6619 6620 secrets_management
+A 6621 aws_certified
+N generic 6622
+A 6623 awx
+N combo 6624
+A 6625 azure_cert
+N generic 6626
+A 6627 entra_id
+A 6628 azure_ai_search
+N generic 6629
+A 6630 app_insights
+A 6631 azure_cert
+A 6632 bicep
+A 6633 6634 azure_blob
+S 6635 azure_cli cloud p=azure n=Azure CLI / PowerShell Az
+L azure_cli azure cli
+A 6636 cosmos_db
+A 6637 databricks
+N generic 6638
+A 6639 azure_cert
+A 6640 azure_devops
+A 6641 azure_pipelines
+N generic 6642
+S 6643 azure_event_hub cloud p=azure n=Azure Event Hubs / Event Grid
+L azure_event_hub event hubs;event hub;event grid
+S 6644 azure_ml data_science_ml p=azure n=Azure Machine Learning
+L azure_ml azure ml;azure machine learning
+S 6645 azure_security security p=azure n=Azure security (Defender, Sentinel)
+L azure_security azure security;microsoft defender for cloud;azure sentinel;microsoft sentinel
+S 6646 azure_synapse data_engineering p=azure n=Azure Synapse
+L azure_synapse azure synapse;synapse analytics
+N combo 6647
+N degree 6648
+N generic 6649 6650
+N job_title 6651
+N combo 6652 6653 6654 6655
+S 6656 babel frontend p=webpack n=Babel
+F babel Babel
+N entity 6657 6658
+A 6659 backend_dev
+A 6660 api_integration
+A 6661 java
+N combo 6662
+A 6663 6664 backend_dev
+A 6665 api_testing
+N combo 6666 6667 6668
+A 6669 6670 background_jobs
+A 6671 6672 product_backlog
+N generic 6673
+A 6674 backup
+N generic 6675
+A 6676 backup
+N combo 6677
+N generic 6678
+A 6679 sales_skills
+N generic 6680
+A 6681 autocad
+N generic 6682
+N entity 6683
+N generic 6684
+A 6685 core_banking
+N generic 6686
+N industry 6687
+N combo 6688
+S 6690 mobile_banking enterprise_apps p=core_banking n=Mobile / Internet banking
+L mobile_banking mobile banking;internet banking;digital banking;ngân hàng số
+N combo 6689
+N combo 6691
+A 6692 reporting
+A 6693 6694 defect_management
+A 6695 information_security
+N generic 6696
+A 6697 network_security
+N generic 6698 6699 6700
+A 6701 data_security
+N generic 6702 6703
+A 6704 basel
+A 6705 bash
+A 6706 networking
+A 6707 python
+N generic 6708
+N combo 6709
+N generic 6710 6711
+A 6712 conan_cpp
+N generic 6713
+N entity 6714
+S 6715 bff architecture_api p=microservices n=BFF (Backend for Frontend)
+F bff BFF
+L bff backend for frontend
+A 6716 bgp
+A 6717 bi
+N generic 6718
+A 6719 bi
+N combo 6720 6721 6722 6723 6724
+S 6725 microstrategy bi_analytics p=bi n=MicroStrategy
+N combo 6726 6727
+S 6728 ai_fairness ai_genai p=ai_safety n=AI fairness / bias
+L ai_fairness bias/fairness;fairness;model bias
+N entity 6729
+A 6730 big_data
+N generic 6731 6732
+A 6733 bigquery
+N combo 6734 6735
+N generic 6736 6737
+A 6738 reverse_engineering
+A 6739 aidl
+A 6740 aidl
+N entity 6741 6742
+N generic 6743
+S 6744 bldc embedded_iot p=motor_control n=BLDC / FOC
+F bldc BLDC;FOC
+N combo 6745
+N combo 6746 6747
+N entity 6748
+N combo 6749
+A 6750 6751 6752 blockchain
+N generic 6753
+S 6754 blue_green devops p=continuous_deployment n=Blue/green, canary deployment
+L blue_green blue/green;blue-green;canary deployment;canary release
+N combo 6755
+N generic 6756 6757 6758
+N entity 6760
+S 6761 bpm_platform enterprise_apps p=bpmn n=BPM platform (Camunda, Appian)
+L bpm_platform bpm platform;camunda;appian;bpm
+A 6876 bpm_platform
+N generic 6762 6763
+A 6764 git
+A 6765 brand_design
+A 6766 sms_gateway
+S 6767 braze digital_marketing p=marketing_automation n=Braze / CleverTap / MoEngage
+L braze clevertap;moengage
+N generic 6768
+N combo 6769 6770 6771
+N job_title 6772 6773
+N generic 6774
+N entity 6775
+N combo 6776
+N generic 6777
+A 6778 devtools
+S 6779 browser_fingerprinting security n=Browser fingerprinting / anti-bot
+L browser_fingerprinting browser fingerprinting;anti-bot;antidetect
+N combo 6780
+N generic 6781
+N combo 6782 6783 6784
+N generic 6785
+A 6786 bsp
+N job_title 6787
+A 6788 6789 budget_management
+A 6790 defect_management
+A 6791 defect_management
+N combo 6792 6793
+S 6794 bugsnag devops p=sentry n=Bugsnag
+N generic 6795 6796 6797 6798
+N job_title 6799
+S 6800 sap_bas enterprise_apps p=sap_btp n=SAP Business Application Studio
+L sap_bas business application studio
+A 6801 application_support
+N generic 6802
+N job_title 6803 6804
+A 6805 process_improvement
+S 6806 meta_business_suite digital_marketing p=facebook_ads n=Meta Business Suite
+L meta_business_suite business suite;meta business suite;business manager
+A 6807 6808 sap_btp
+N generic 6809 6810 6811 6812 6813
+N job_title 6814
+N entity 6815
+A 6816 c_lang
+A 6817 aspnet
+A 6818 csharp
+A 6819 aspnet
+N generic 6820
+A 6821 cpp
+N combo 6822 6823
+S 6824 c2_framework security p=red_team n=C2 framework (Cobalt Strike, Sliver)
+L c2_framework cobalt strike;command and control
+A 6825 c4_model
+N generic 6826 6827 6828
+A 6829 reporting
+S 6830 spc methodology_pm p=quality_management n=SPC (kiểm soát quá trình thống kê)
+F spc SPC
+L spc statistical process control
+A 6831 visio
+A 6832 axure
+A 6833 jira
+N generic 6834
+A 6835 containerization
+A 6836 junit
+N generic 6837
+A 6838 cloud_computing
+N industry 6839
+A 6840 spring
+A 6841 tensorflow
+N generic 6842
+A 6843 game_engine
+A 6844 operating_systems
+A 6845 backend_dev
+A 6846 lms_canvas
+N generic 6847
+A 6848 react_hooks
+N generic 6849
+A 6850 database
+A 6851 software_testing
+N generic 6852
+A 6853 ui_design
+N generic 6854
+A 6855 2d_art
+A 6856 ms_office
+A 6857 photoshop
+N generic 6858
+A 6859 agile
+A 6860 release_management
+N generic 6861 6862
+A 6863 hikvision
+N generic 6864 6865
+S 6866 ua_metrics digital_marketing p=user_acquisition n=CAC / CPA / CPI / ROAS
+F ua_metrics CAC;CPI;ROAS
+S 6867 task_estimation methodology_pm p=project_planning n=Ước lượng công việc (estimation)
+L task_estimation ước lượng;estimation;story point;story points;planning poker
+A 6868 software_installation
+A 6869 process_improvement
+A 6870 contact_center
+A 6871 cam_software
+A 6872 cctv
+A 6873 cctv
+S 6874 android_camera mobile p=android n=Camera2 / CameraX
+L android_camera camera2;camerax
+A 6875 android_camera
+S 6877 game_balancing game_dev p=game_design n=Cân bằng game (game balancing)
+L game_balancing cân bằng game;game balancing;game balance
+A 6878 can_bus
+N entity 6879
+S 6880 canape embedded_iot p=canoe n=CANape / INCA (calibration)
+F canape CANape;INCA
+N generic 6881 6882 6883
+A 6884 canoe
+N generic 6885
+A 6886 6887 lms_canvas
+N generic 6888
+N combo 6889
+N generic 6890
+A 6891 network_installation
+N generic 6892 6893 6894 6895
+A 6896 bash
+N generic 6897
+A 6898 6899 capacity_planning
+N combo 6900
