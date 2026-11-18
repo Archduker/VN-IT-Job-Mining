@@ -1,0 +1,278 @@
+# Lô 16: dòng 4501-4800 (18/11/2026)
+A 4501 it_operations
+N entity 4502
+S 4503 baseband embedded_iot p=telecom_network n=Baseband
+S 4504 basel enterprise_apps n=Basel II/III (quản trị rủi ro ngân hàng)
+L basel basel ii;basel iii
+A 4505 batch_processing
+S 4506 sap_bdc enterprise_apps p=abap n=SAP BDC / LSMW
+F sap_bdc BDC;LSMW
+N generic 4507 4508 4509 4510
+A 4511 evpn
+A 4512 power_bi
+N combo 4513 4514 4515 4516
+S 4517 bian enterprise_apps p=core_banking n=BIAN
+F bian BIAN
+A 4518 dvc
+N generic 4519
+A 4520 motor_control
+A 4521 japanese
+N combo 4522
+N generic 4523
+S 4524 bitbucket_pipelines devops p=cicd n=Bitbucket Pipelines
+L bitbucket_pipelines bitbucket pipelines
+A 4525 fastlane
+S 4526 bizagi methodology_pm p=bpmn n=Bizagi
+N entity 4527
+N generic 4528
+S 4529 bmc_helix systems_network p=itsm n=BMC Remedy / Helix
+F bmc_helix BMC
+L bmc_helix bmc remedy;bmc helix
+N generic 4530 4531
+N combo 4532
+N generic 4533
+N combo 4534
+N entity 4535
+N generic 4536
+S 4537 bug_bounty security p=pentest n=Bug bounty
+A 4545 bug_bounty
+N entity 4538 4539 4540
+S 4541 branching_strategy dev_tools p=git n=Branching strategy
+L branching_strategy branching strategy;trunk-based development
+N combo 4542 4543
+N generic 4544
+A 4546 defect_management
+N combo 4547
+S 4548 yocto embedded_iot p=embedded_linux n=Yocto / Buildroot
+L yocto yocto;buildroot
+S 4549 bullmq backend p=message_queue n=BullMQ / Sidekiq
+L bullmq sidekiq
+N combo 4550
+A 4551 erp
+N job_title 4552 4553
+S 4554 business_flow methodology_pm p=process_modeling n=Business flow
+N job_title 4555
+A 4556 4557 4558 4559 process_modeling
+A 4560 brd
+S 4561 business_rules methodology_pm p=business_analysis n=Business rules
+N job_title 4562
+S 4563 business_acumen soft_skills n=Tư duy kinh doanh
+L business_acumen business acumen;business thinking;tư duy kinh doanh;business mindset
+A 4564 business_acumen
+A 4565 c_lang
+A 4566 c4_model
+A 4567 jira
+N generic 4568
+A 4569 tcp_ip
+N generic 4570 4571
+A 4572 ide
+A 4573 test_design
+A 4574 message_queue
+N combo 4575 4577
+N generic 4576
+N combo 4578
+N generic 4579
+S 4580 software_installation systems_network n=Cài đặt phần mềm, hệ điều hành
+L software_installation cài đặt phần mềm;cài đặt hệ điều hành;cài win
+A 4581 process_improvement
+N generic 4582
+S 4583 cakephp backend p=php n=CakePHP
+S 4584 cam_software cad_engineering p=cnc n=CAM
+F cam_software CAM
+N generic 4585
+A 4586 apache_camel
+S 4587 campaign_management digital_marketing n=Quản lý chiến dịch
+N combo 4588
+A 4589 can_bus
+N generic 4590
+N combo 4591 4592
+N generic 4593
+S 4594 capm certifications p=project_management n=CAPM
+A 4595 telematics
+N generic 4596
+A 4597 uml
+N industry 4598
+N generic 4599
+S 4600 catia cad_engineering n=CATIA / NX / Creo
+F catia CATIA;Catia
+L catia siemens nx;ptc creo;creo
+N generic 4601 4602 4603
+A 4604 4605 ccie
+N combo 4606 4607
+A 4608 sap_cds
+A 4609 data_center
+N generic 4610 4611
+A 4612 4613 ccsp
+A 4614 4615 4616 4617 aws_certified
+A 4618 4619 cism
+A 4620 psm
+A 4621 4622 aws_sysops
+A 4623 customer_service
+A 4624 cdc
+A 4625 d3js
+N generic 4626
+A 4627 checkpoint
+N job_title 4628 4629 4630
+N generic 4631
+N industry 4632
+S 4633 photo_editing design_creative n=Chỉnh sửa ảnh
+L photo_editing chỉnh sửa hình ảnh;chỉnh sửa ảnh;photo editing;retouch
+A 4634 carefulness
+N generic 4635
+A 4636 ccna
+N job_title 4637 4638
+N generic 4639
+N combo 4640
+A 4641 cis_controls
+S 4642 cisco_meraki systems_network p=cisco n=Cisco Meraki
+L cisco_meraki meraki
+N job_title 4643
+N combo 4644
+S 4645 citrix systems_network p=virtualization n=Citrix
+F citrix Citrix;CITRIX
+N combo 4646 4647
+A 4648 cka
+A 4649 abap
+A 4650 clean_code
+N generic 4651
+A 4652 stakeholder_management
+N combo 4653
+S 4654 clip_studio design_creative n=Clip Studio Paint
+L clip_studio clip studio;clip studio paint
+S 4655 fcm mobile p=push_notification n=Firebase Cloud Messaging
+F fcm FCM
+L fcm firebase cloud messaging
+N generic 4656
+A 4657 ccsp
+A 4658 cloud_computing
+S 4659 cloudops cloud p=cloud_computing n=CloudOps
+N combo 4660
+A 4661 api
+A 4662 blockchain
+A 4663 oop
+A 4664 web_development
+A 4665 windows
+A 4666 authn_authz
+N industry 4667
+N generic 4668
+A 4669 mentoring
+S 4670 cobol programming_languages n=COBOL
+S 4671 cocoapods mobile p=ios n=CocoaPods / SPM
+L cocoapods cocoapods;swift package manager
+N generic 4672
+S 4673 aws_codebuild devops p=aws n=AWS CodeBuild / CodePipeline
+L aws_codebuild codebuild;codepipeline;codedeploy
+N entity 4674
+N generic 4675
+S 4676 cohort_analysis bi_analytics p=product_analytics n=Cohort analysis
+N entity 4677
+N generic 4678 4679
+A 4680 color_theory
+S 4681 communication_plan methodology_pm p=project_management n=Communication plan
+A 4682 network_protocols
+A 4683 cysa
+A 4684 computer_hardware
+A 4685 networking
+S 4686 conan_cpp programming_languages p=cpp n=Conan / Bazel (build C++)
+F conan_cpp Conan;Bazel
+N generic 4687
+S 4688 conflict_resolution soft_skills n=Giải quyết xung đột
+L conflict_resolution conflict resolution;giải quyết xung đột
+A 4689 automation_test
+A 4690 jira
+A 4691 ai
+N generic 4692 4693 4694
+N industry 4695
+S 4696 connection_pool databases n=Connection pool
+N generic 4697
+N industry 4698 4699 4700 4701
+S 4702 container_security security p=containerization n=Container security
+N combo 4703 4704
+S 4705 context_engineering ai_genai p=prompt_engineering n=Context engineering
+N combo 4706
+A 4707 process_improvement
+S 4708 contract_negotiation soft_skills p=negotiation n=Đàm phán hợp đồng
+A 4709 aws_organizations
+N generic 4710 4711
+A 4712 funnel_analysis
+A 4713 t24
+N generic 4714 4715 4716 4717
+A 4718 coreldraw
+N generic 4719
+A 4720 cosmos_db
+N combo 4721
+N job_title 4722
+N combo 4723 4724
+N generic 4725 4726 4727
+N industry 4728
+N generic 4729
+N combo 4730
+S 4731 cro digital_marketing n=CRO (tối ưu chuyển đổi)
+F cro CRO
+A 4732 communication
+S 4733 cross_platform mobile n=Cross-platform development
+L cross_platform cross-platform;cross platform;đa nền tảng
+A 4734 coordination
+S 4735 crud backend n=CRUD
+F crud CRUD
+A 4736 relational_db
+A 4737 k8s_networking
+S 4738 csr_rendering frontend p=ssr n=CSR
+F csr_rendering CSR
+N combo 4739
+A 4740 xss_sqli
+A 4741 css
+N generic 4742 4743 4744
+S 4745 customer_journey design_creative p=ux_design n=Customer journey map
+L customer_journey customer journey;customer journey map;user journey
+S 4746 customer_segmentation bi_analytics n=Customer segmentation (RFM)
+L customer_segmentation customer segmentation;rfm
+N generic 4747 4748 4749
+A 4750 ms_dynamics
+A 4751 srs
+A 4752 hilt
+A 4753 scrum
+N combo 4754
+A 4755 performance_optimization
+A 4756 cdmp
+A 4757 risk_management
+N generic 4758
+N industry 4759
+A 4760 4761 dashboard
+N combo 4762
+A 4763 data_analysis
+A 4764 azure_cert
+S 4765 data_annotation data_science_ml n=Gán nhãn dữ liệu (data annotation)
+L data_annotation data annotation;data labeling;gán nhãn dữ liệu
+N generic 4766
+A 4767 data_center
+S 4768 data_consistency databases p=db_transaction n=Data consistency
+N combo 4769
+A 4770 data_processing
+N generic 4771
+N combo 4772 4773
+A 4774 db_migration
+N generic 4775 4776
+A 4777 data_engineering
+A 4778 data_privacy
+N generic 4779
+A 4780 data_security
+S 4781 data_stewardship data_engineering p=data_governance n=Data stewardship
+A 4782 data_stewardship
+N generic 4783
+S 4784 data_testing testing_qa p=data_quality n=Data testing / validation
+L data_testing data testing;data validation;kiểm thử dữ liệu
+A 4785 data_testing
+A 4786 data_visualization
+A 4787 data_warehouse
+N combo 4788
+A 4789 data_warehouse
+N generic 4790
+N combo 4791 4792
+A 4793 database
+A 4794 dbfw
+A 4795 query_optimization
+A 4796 database
+N combo 4797
+N generic 4798 4799
+N industry 4800

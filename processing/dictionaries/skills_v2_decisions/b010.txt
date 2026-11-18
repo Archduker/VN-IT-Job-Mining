@@ -240,7 +240,7 @@ S 2954 expo mobile p=react_native n=Expo
 F expo Expo
 N generic 2955
 S 2956 fastify backend p=nodejs n=Fastify
-A 2957 firebase
+A 2957 fcm
 N generic 2958
 A 2959 sap_fico
 A 2960 firebase
