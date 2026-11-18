@@ -1,0 +1,282 @@
+# Lô 30: dòng 8701-9000 (18/11/2026)
+N combo 8701
+A 8702 software_testing
+A 8703 8704 mes
+N generic 8705
+S 8706 mapreduce data_engineering p=hadoop n=MapReduce
+A 8707 google_maps_api
+N generic 8708
+N combo 8709
+N generic 8710
+S 8711 market_data enterprise_apps p=trading_system n=Market data feeds
+L market_data market data;market data feeds;fix protocol
+S 8712 sf_marketing_cloud digital_marketing p=salesforce n=Salesforce Marketing Cloud
+L sf_marketing_cloud marketing cloud;salesforce marketing cloud
+N job_title 8713
+S 8714 martech digital_marketing n=MarTech
+L martech martech;marketing technology
+N combo 8715 8716 8717
+N generic 8718
+N generic 8719
+A 8720 mdm
+N generic 8721
+N generic 8722 8723
+N generic 8724
+N entity 8725
+A 8726 kms_hsm
+A 8727 sap
+A 8728 ant_design
+N generic 8729 8730
+N entity 8731
+S 8732 dotnet_maui mobile p=dotnet n=.NET MAUI / Xamarin
+L dotnet_maui maui;.net maui;xamarin
+A 8733 server_admin
+S 8734 welding cad_engineering n=Hàn (máy hàn)
+L welding máy hàn;welding;hàn mig;hàn tig
+A 8735 printer
+A 8736 computer_hardware
+A 8737 computer_hardware
+A 8738 computer_hardware
+N generic 8739
+N entity 8740 8741 8742
+A 8743 mcse
+A 8747 8748 mcse
+A 8744 8745 mcp
+N entity 8746
+A 8749 mcu
+N entity 8750
+A 8751 endpoint_management
+N generic 8752
+S 8753 iso_13485 methodology_pm p=quality_management n=ISO 13485 / MDSAP (thiết bị y tế)
+L iso_13485 iso 13485;mdsap
+A 8754 dashcam
+N entity 8755
+A 8756 appsflyer
+N generic 8757
+N degree 8758 8759
+S 8760 mediacodec mobile p=android n=MediaCodec
+L mediacodec mediacodec
+A 8761 media3
+S 8762 mediator_pattern architecture_api p=design_patterns n=Mediator / MediatR
+L mediator_pattern mediatr;mediator pattern
+N job_title 8763 8764 8765
+N entity 8766 8767 8768
+A 8769 memcached
+A 8770 memory_management
+A 8771 profiling
+S 8772 agent_memory ai_genai p=ai_agent n=Agent memory / context management
+L agent_memory agent memory;context management
+A 8773 mentoring
+N combo 8774 8775
+N generic 8776 8777
+A 8778 mentoring
+A 8779 cisco_meraki
+A 8780 git_rebase
+N combo 8781
+S 8782 mermaid dev_tools n=Mermaid / PlantUML (diagram as code)
+L mermaid mermaid;plantuml;diagram as code
+N generic 8783
+A 8784 data_mesh
+A 8785 message_queue
+A 8786 message_queue
+A 8787 message_queue
+N generic 8788
+A 8789 message_queue
+A 8790 message_queue
+N generic 8791
+A 8792 8793 meta_business_suite
+S 8794 method_statement cad_engineering n=Biện pháp thi công (method statement)
+L method_statement method statement;biện pháp thi công
+N entity 8795
+A 8796 pam
+S 8797 mfc backend p=cpp n=MFC / Win32
+F mfc MFC
+L mfc win32 api
+A 8798 8799 8800 8801 microservices
+N combo 8802
+N generic 8803
+A 8804 dotnet
+A 8805 ms_office
+A 8806 8807 active_directory
+A 8808 azure_sql
+A 8809 power_bi
+A 8810 mcse
+A 8811 azure
+A 8812 8813 ms_dynamics
+A 8814 ms_graph
+N combo 8815 8816
+A 8817 power_bi
+A 8818 purview
+A 8819 active_directory
+A 8820 windows
+A 8821 microstrategy
+A 8822 genai_image
+N generic 8823
+N generic 8824
+N entity 8825
+N job_title 8826
+A 8827 db_migration
+S 8828 milestone_review methodology_pm p=project_management n=Milestone review
+L milestone_review milestone review;milestones
+N generic 8829
+A 8830 ad_attacks
+N entity 8831
+A 8832 mini_app
+N generic 8833
+S 8834 mvp_product methodology_pm p=product_management n=MVP (sản phẩm khả dụng tối thiểu)
+L mvp_product minimum viable product;mvps
+A 8937 mvp_product
+K mips_risc embedded_iot n=Kiến trúc MIPS / RISC-V
+L mips_risc risc-v;mips
+N generic 8835
+A 8836 misa
+A 8837 8838 misra
+N generic 8839
+K oss_license dev_tools p=open_source n=Giấy phép mã nguồn mở (MIT, GPL)
+L oss_license gpl;lgpl;open source license;mit license
+N combo 8840
+N entity 8841
+A 8842 8843 8844 machine_learning
+S 8845 pqc security p=cryptography n=Post-quantum cryptography (ML-KEM, ML-DSA)
+L pqc ml-kem;ml-dsa;post-quantum;post-quantum cryptography
+A 8846 pqc
+N generic 8847
+N generic 8848
+A 8849 forecasting
+A 8850 microservices
+N entity 8851
+A 8852 release_management
+N combo 8853
+S 8854 mobile_architecture mobile p=mobile_app_dev n=Kiến trúc ứng dụng mobile
+L mobile_architecture mobile architecture;mobile application architecture
+A 8855 mobile_architecture
+A 8856 mobile_testing
+A 8857 mobile_banking
+S 8858 mobile_devops mobile n=Mobile DevOps / CI-CD cho app
+L mobile_devops mobile devops;mobile ci/cd
+A 8859 mobile_game_dev
+A 8860 8861 appsflyer
+S 8862 mobile_money enterprise_apps p=ewallet_integration n=Mobile Money
+L mobile_money mobile money
+N generic 8863
+A 8864 mobile_security
+S 8865 mobsf security p=mobile_security n=MobSF
+L mobsf mobsf;objection
+S 8866 mobx frontend p=state_management n=MobX
+S 8867 mockk testing_qa p=unit_test n=MockK / Moq / mocking
+L mockk mockk;moq;mocks;stubs;mocking
+A 8868 mockk
+A 8897 mockk
+A 8869 prototyping
+A 8870 8871 8872 modbus
+S 8873 model_validation data_science_ml p=model_evaluation n=Model validation (model risk)
+L model_validation model validation;model risk
+N combo 8874
+N generic 8875 8876
+A 8877 ai_assisted_dev
+N generic 8878
+N generic 8879
+A 8880 frontend_dev
+N generic 8881
+A 8882 web_api
+N generic 8883
+S 8884 sap_module_pool enterprise_apps p=abap n=Module Pool / Dialog programming
+L sap_module_pool module pool;dialog programming
+A 8885 braze
+N generic 8886 8887 8888
+A 8889 supply_chain
+N generic 8890
+N entity 8891
+N combo 8892
+N combo 8893
+N generic 8894 8895
+S 8896 mop_cutover systems_network p=change_management n=MOP / cutover plan
+F mop_cutover MOP
+L mop_cutover cutover plan;cutover;method of procedure
+N entity 8898
+N industry 8899
+N generic 8900 8901
+A 8902 motion_graphics
+A 8903 8904 motion_graphics
+N entity 8905
+K mvp_pattern architecture_api p=design_patterns n=MVP pattern (Model-View-Presenter)
+L mvp_pattern model-view-presenter;mvp pattern
+N generic 8906
+A 8907 mqtt
+A 8908 azure_synapse
+A 8909 8910 powerpoint
+S 8911 ms365_cert certifications n=Microsoft 365 certification (MS-900, MD-102)
+L ms365_cert ms-900;ms-102;md-102
+A 8912 ms_office
+S 8913 mssp security p=soc n=MSSP / managed security
+F mssp MSSP
+A 8914 sql_server
+S 8915 mstest testing_qa p=unit_test n=MSTest
+A 8916 sre
+N generic 8917
+A 8918 multithreading
+A 8919 ai_agent
+A 8920 8921 hybrid_cloud
+S 8922 multi_region cloud p=high_availability n=Multi-region / multi-AZ
+L multi_region multi-region;multi-az;multi region
+N combo 8923
+A 8924 multi_tenant
+A 8925 multithreading
+A 8926 multimedia_design
+S 8927 multiplayer game_dev p=game_server n=Multiplayer / netcode
+L multiplayer multiplayer;netcode;photon;mirror networking
+N generic 8928
+N generic 8929 8930 8931
+A 8932 8933 mvc
+N combo 8934 8935 8936
+N combo 8938
+N industry 8939
+N combo 8940
+A 8941 8942 8943 jlpt
+S 8944 nac security p=network_security n=NAC (Network Access Control)
+F nac NAC
+L nac cisco ise;forescout
+N entity 8945 8946 8947
+A 8948 ms_office
+A 8949 oop
+N entity 8950
+N generic 8951
+N generic 8952
+A 8953 storage
+A 8954 vpc
+N entity 8955 8956
+A 8957 8958 native_app
+A 8959 vietnamese
+N combo 8960
+A 8961 ms_dynamics
+N entity 8962 8963 8964
+A 8965 revit
+N generic 8966 8967
+A 8968 lgsp
+A 8969 ai
+A 8970 cloud_computing
+A 8971 crm
+A 8972 8973 dotnet
+S 8974 netapp systems_network p=storage n=NetApp / Dell EMC
+L netapp netapp;dell emc
+S 8975 netbox systems_network p=network_automation n=NetBox (IPAM/DCIM)
+L netbox netbox;ipam;dcim
+N entity 8976
+N generic 8977
+A 8978 ccna
+N combo 8979
+A 8980 ndr
+S 8981 network_lab systems_network p=networking n=Network lab (GNS3, EVE-NG)
+L network_lab gns3;eve-ng;packet tracer;network lab
+A 8982 monitoring
+A 8983 it_operations
+A 8984 network_programming
+N generic 8985
+A 8986 networking
+A 8987 networking
+N combo 8988 8989
+A 8990 networking
+N entity 8991
+N generic 8992 8993 8994 8995
+N entity 8996 8997 8998 8999
+N entity 9000
