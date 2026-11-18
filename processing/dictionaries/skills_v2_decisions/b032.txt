@@ -1,0 +1,267 @@
+# Lô 32: dòng 9301-9600 (18/11/2026)
+A 9301 php_cs_fixer
+N generic 9302
+N job_title 9303
+N entity 9304 9305 9306
+K apache_pig data_engineering p=hadoop n=Apache Pig
+L apache_pig apache pig
+N generic 9307
+N generic 9308
+A 9309 genai_image
+N entity 9310
+A 9311 pinot
+N generic 9312
+S 9313 pitr databases p=backup n=PITR (point-in-time recovery)
+F pitr PITR
+L pitr point-in-time recovery
+A 9314 excel_advanced
+S 9315 power_platform_cert certifications p=power_platform n=Power Platform cert (PL-200, PL-900)
+L power_platform_cert pl-200;pl-900;pl-300;pl-400
+A 9316 power_platform_cert
+S 9317 plpgsql databases p=postgresql n=PL/pgSQL
+L plpgsql pl/pgsql
+A 9318 9319 plsql
+N combo 9320
+N generic 9321
+N generic 9322
+A 9323 9324 salesforce_cert
+N generic 9325 9326
+A 9327 9328 salesforce_cert
+N job_title 9329 9330
+A 9331 salesforce
+N generic 9332
+N combo 9333
+A 9334 9335 omron
+A 9336 plc
+S 9337 hosting_panel systems_network p=web_server n=Hosting control panel (cPanel, Plesk)
+L hosting_panel plesk;cpanel;directadmin
+N combo 9338 9339 9340
+N entity 9341
+S 9342 product_market_fit methodology_pm p=product_strategy n=Product-market fit
+L product_market_fit product-market fit;pmf
+S 9343 pmo methodology_pm p=project_management n=PMO
+F pmo PMO
+N combo 9344 9345 9346 9347
+N generic 9348
+N combo 9349
+S 9350 print_on_demand digital_marketing n=Print on demand (POD)
+L print_on_demand print on demand;pod us
+N generic 9351
+N generic 9352
+A 9353 ftth
+N generic 9354
+A 9355 9356 portfolio_management
+N generic 9357 9358
+S 9359 posix systems_network p=linux n=POSIX / system programming
+F posix POSIX
+S 9360 post_processing design_creative p=video_production n=Hậu kỳ (post-processing)
+L post_processing post-processing;hậu kỳ;post production
+A 9361 postgresql
+A 9362 postgresql
+N generic 9363
+S 9364 postgis databases p=postgresql n=PostGIS
+L postgis postgis
+A 9365 database_design
+A 9366 postman
+N combo 9367
+A 9368 api_testing
+A 9369 power_bi
+N combo 9370
+S 9371 powerdesigner databases p=data_modeling n=SAP PowerDesigner / ER/Studio
+L powerdesigner power designer;powerdesigner;erwin;er/studio
+S 9372 power_pages enterprise_apps p=power_platform n=Power Pages
+N combo 9373
+A 9374 google_workspace
+S 9375 powerschool enterprise_apps p=lms_canvas n=PowerSchool
+N generic 9376
+A 9377 power_bi
+A 9378 prd
+A 9379 9380 technical_sales
+S 9381 ml_metrics data_science_ml p=model_evaluation n=Metric đánh giá (precision, recall, F1)
+L ml_metrics precision/recall;f1-score;f1 score;roc auc;auc-roc
+N generic 9382 9383 9384 9385
+N job_title 9386
+N combo 9387
+S 9388 prettier frontend n=Prettier
+N generic 9389 9390 9391 9392
+A 9393 angular_material
+N job_title 9394 9395 9396 9397 9398 9399 9400
+A 9401 printer
+A 9402 printer
+A 9403 data_privacy
+N generic 9404
+A 9405 data_privacy
+N job_title 9406
+A 9407 hybrid_cloud
+S 9408 privatelink cloud p=vpc n=PrivateLink / VPC endpoint
+L privatelink privatelink;private link;vpc endpoint
+A 9409 9410 pam
+A 9411 access_control
+A 9412 probability
+N degree 9413
+A 9414 system_integration
+N generic 9415
+A 9416 workflow_orchestration
+N generic 9417 9418
+A 9419 uat
+A 9420 product_management
+N generic 9421
+N job_title 9422
+A 9423 product_backlog
+N generic 9424 9425
+A 9426 product_management
+N industry 9427
+N job_title 9428
+S 9429 plm_lifecycle methodology_pm p=product_management n=Product lifecycle management
+L plm_lifecycle product lifecycle;product lifecycle management
+N combo 9430 9431 9432 9433 9434 9435
+N generic 9436
+S 9437 prioritization methodology_pm p=product_management n=Ưu tiên hóa (RICE, MoSCoW)
+L prioritization prioritization;product prioritization;moscow;rice framework
+A 9438 prd
+N generic 9439
+N combo 9440 9441 9442 9443 9444 9445 9446
+A 9447 application_support
+A 9448 debugging
+N combo 9449
+N generic 9450
+A 9451 monitoring
+A 9452 monitoring
+A 9453 9454 troubleshooting
+N generic 9455 9456
+N combo 9457
+N generic 9458 9459 9460
+S 9461 professional_skepticism soft_skills p=critical_thinking n=Hoài nghi nghề nghiệp (audit)
+L professional_skepticism professional skepticism
+N generic 9462
+A 9463 industrial_protocols
+N generic 9464
+N job_title 9465
+A 9466 sap_rap
+A 9467 app_hardening
+N generic 9468
+N job_title 9469
+A 9470 9471 project_closure
+A 9472 coordination
+N generic 9473
+A 9474 task_estimation
+A 9475 software_deployment
+N job_title 9476
+A 9477 9478 project_management
+N combo 9479 9480
+N generic 9481
+A 9482 progress_tracking
+A 9483 9484 prompt_engineering
+N combo 9485 9486 9487
+S 9488 property_management enterprise_apps n=Quản lý bất động sản (property management)
+L property_management property management;quản lý tòa nhà
+A 9489 sow
+S 9490 protobuf architecture_api p=grpc n=Protocol Buffers
+L protobuf protobuf;protocol buffers;flatbuffers
+A 9491 protobuf
+A 9492 9494 9495 prototyping
+N combo 9493
+N generic 9496 9497 9498 9499
+N generic 9500 9501
+A 9502 pull_request
+A 9503 photoshop
+A 9504 psm
+S 9505 ptc_creo cad_engineering n=PTC (Creo, Windchill)
+L ptc_creo windchill
+F ptc_creo PTC
+N generic 9506
+S 9507 pa_system systems_network p=elv n=Hệ thống âm thanh công cộng (PA)
+L pa_system public address;âm thanh công cộng
+N generic 9508
+A 9509 pull_request
+S 9510 procurement enterprise_apps n=Mua sắm (procurement)
+L procurement procurement;purchasing;mua sắm
+A 9511 php
+A 9512 cisa
+A 9513 push_notification
+N generic 9514 9515
+N entity 9516
+N generic 9517
+N entity 9518
+N combo 9519
+A 9520 python
+A 9521 python
+A 9522 9523 python
+A 9524 python
+A 9525 python
+N combo 9526
+N generic 9527 9528 9529
+A 9530 qa_qc
+N job_title 9531 9532 9533
+A 9534 software_testing
+A 9535 software_testing
+N job_title 9536
+N combo 9537
+S 9538 qbr enterprise_apps p=account_management n=QBR (business review)
+F qbr QBR
+N generic 9539
+A 9540 quality_control
+N job_title 9541 9542 9543
+A 9544 qc_tools
+A 9545 qa_qc
+N combo 9546
+S 9547 project_mgmt_construction methodology_pm n=Quản lý dự án xây dựng
+F project_mgmt_construction QLDA
+N generic 9548
+A 9549 qt
+S 9550 qradar security p=siem n=IBM QRadar / Splunk
+L qradar qradar
+A 9551 soc_chip
+A 9552 quality_management
+N generic 9553
+A 9554 quality_control
+N job_title 9555 9556
+A 9557 quality_control
+A 9558 quality_management
+A 9559 data_quality
+A 9560 information_security
+A 9561 quality_management
+A 9562 team_management
+N industry 9563
+A 9564 project_management
+N industry 9565 9566
+A 9567 project_management
+A 9568 quality_management
+S 9569 performance_management soft_skills p=team_management n=Quản lý hiệu suất nhân sự
+L performance_management quản lý hiệu suất;performance management
+A 9570 inventory_mgmt
+A 9571 kms_hsm
+A 9572 lending_bnpl
+S 9573 resource_management methodology_pm p=project_management n=Quản lý nguồn lực
+L resource_management quản lý nguồn lực;resource management;resource planning
+A 9574 vendor_management
+A 9575 server_admin
+A 9576 task_management
+A 9577 team_management
+S 9578 session_management security p=authn_authz n=Quản lý phiên (session)
+L session_management session management;quản lý phiên
+A 9579 product_backlog
+A 9580 ux_research
+A 9581 scope_management
+A 9582 stakeholder_management
+A 9583 incident_management
+A 9584 itsm
+N generic 9585
+A 9586 it_governance
+A 9587 database_admin
+N generic 9588
+A 9589 it_infrastructure
+A 9590 erp
+A 9591 system_administration
+A 9592 server_admin
+A 9593 digital_advertising
+K optics cad_engineering n=Quang học (optics)
+N generic 9594
+N entity 9595
+S 9596 quant_modeling data_science_ml p=statistics n=Mô hình định lượng (quant)
+L quant_modeling quantitative modeling;quantitative analysis;quant
+A 9597 sql_query
+A 9598 message_queue
+N entity 9599
+N generic 9600
+L optics quang học;optics
