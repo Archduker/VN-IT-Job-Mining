@@ -1,7 +1,7 @@
 # Prompt 01: Clean (chạy lại trên tập raw đang có trên R2, có nhãn C4b và lần cào đầu)
 
 > Đặc tả: [`docs/spec/preprocessing/01_clean.md`](../../spec/preprocessing/01_clean.md). Dữ liệu mẫu: `docs/spec/preprocessing/samples/01_clean.json`.
-> Prompt này viết lại ngày 18/11/2026 sao cho chạy lại ra **đúng kết quả lần chạy 18/11**: 13.361 → 4.799.
+> Prompt này viết lại ngày 18/11/2026 sao cho chạy lại ra **đúng kết quả lần chạy lại 18/11** (sau L-50): 13.361 → 4.621. Lần chạy đầu 18/11 (trước C9) ra 4.799.
 
 ## 1. Ngữ cảnh
 
@@ -35,6 +35,12 @@
    - Nhãn người dùng bổ sung ghi `nguoi_gan` = `nguoi_dung`; nhãn suy theo mẫu của người dùng ghi `claude_theo_mau_nguoi_dung`.
 3. **`first_scraped_at`.** Trong `clean_source`, sau C3 và trước C1: `first_seen[job_id]` = `scraped_at` nhỏ nhất trên mọi snapshot và file batch. Ghi vào `metadata.clean.first_scraped_at`.
 4. Chạy thật bước 01, rồi sinh trang `docs/presentation/preprocessing_steps/01_clean.html` (`scripts/visualize_preprocessing_steps.py --step 01_clean`).
+
+### Bổ sung 18/11 (L-50, người dùng chốt)
+
+1. **C9**: hằng `STUDY_START = "2026-09-01"`; `out_of_window(flat)` = `parse_date(raw_posted_date)` (hàm của bước 03) có giá trị và nhỏ hơn `STUDY_START`. Bỏ sau C8, trước C6; ghi vào `rejected/` với lý do `BEFORE_STUDY_WINDOW`. Tin không có ngày đăng thì giữ.
+2. **C7**: `c7_winner(group)` chọn bản giữ bằng luật chung với D5: `filled` lớn nhất → `authority(nguồn)` (`PLATFORM_AUTHORITY`) → `crawled_at` mới nhất → `job_id` nhỏ nhất.
+3. Bộ lọc IT (C4a) nhận `skills_list + category_tags`, vì nhãn chuyên môn TopCV đã chuyển sang `category_tags` ở flattener (prompt 02). Kết quả lọc phải giữ nguyên (C4a 5.424).
 
 ## 3. Pseudo code
 
@@ -86,7 +92,7 @@ Lấy từ dữ liệu thật ngày 18/11.
 |---|---|---|
 | Tập raw | Số file trên máy theo nguồn = số key `raw/` trên R2 | Bằng nhau ở 8 nguồn |
 | Dry-run | `python scripts/run_preprocessing.py --step clean --source all --dry-run` | Không lỗi, bảo toàn |
-| Chạy thật | `python scripts/run_preprocessing.py --step clean --source all` | 13.361 → 4.799; từng luật khớp bảng ở đặc tả mục 2 |
+| Chạy thật | `python scripts/run_preprocessing.py --step clean --source all` | 13.361 → 4.621; C9 197, C6 189, C7 127, C4a 5.424; từng luật khớp bảng ở đặc tả mục 2 |
 | So lần trước | `python scripts/visualize_preprocessing_steps.py --step 01_clean` (so với report trong git HEAD) | Lệch > 5% phải giải thích |
 | Lần cào đầu | Đếm tin có `first_scraped_at`; tin nhiều snapshot có `first_scraped_at` < `scraped_at` | 100% có |
 | Bộ lọc IT | `extra.review` trong `_all.json` | Ghi số; đích ≥ 95% (hiện 90,8% đúng chung, PRE-12) |
@@ -105,3 +111,8 @@ Lấy từ dữ liệu thật ngày 18/11.
 | 5 | Review, chạy thật | 18/11 | Nhãn C4b cũ đã mất. Người dùng chọn phương án (a): "oke làm (a) đi rồi chạy tiếp 01b". Claude gán 643 nhãn, lưu ở `data/preprocessing/gold/it_review/` | `055769e` |
 | 5 | (tiếp) | 18/11 | 48 tin để trống. Người dùng chỉ ra các tin IT: "#2,6,14,22,23,25,26,29,32,33,42,43,44,45,46,48 là các tin it rồi bạn tự bổ sung quy luật". Chạy lại 01: precision IT 86,5%, đúng chung 90,8% | `eb06083` |
 | 5 | (tiếp) | 18/11 | Chạy lại 01 có `first_scraped_at` (L-49). Trang `01_clean.html` | `77cac00` |
+| 1 | Duyệt đặc tả (bổ sung L-50) | 18/11 | Người dùng trả lời các chỗ thiếu PRE-43: "thêm 3 cờ vào silver đi rồi cập nhật lại tài liệu. có thể láy vô tháng. um bỏ nhãn it phần mềm. hmm bạn thấy cáo nào nó có hiệu quả hơn thì lấy cía đó. lấy các loại hợp đồng đó vào sliver đi. bỏ luôn 76 tin glint đó đi"; chọn "Mọi sàn, trước 09/2026" | — |
+| 2 | Duyệt prompt | 18/11 | Đi tắt: làm ngay theo câu duyệt ở bước 1; prompt này cập nhật để lưu log | — |
+| 3 | Test rồi code | 18/11 | Test trước: `test_c9_out_of_study_window` (6 ca), `test_c7_keeps_most_complete_then_most_authoritative`; đỏ rồi xanh | `591391b` |
+| 4 | Dry-run | 18/11 | Không dry-run riêng: dry-run 01b và 02 đọc đầu ra cũ của bước trước nên không đo được tác động. Chạy thật trên máy (không đụng R2), so report với git HEAD | — |
+| 5 | Review, chạy thật | 18/11 | Chạy thật 01 → 01b → 02. 01: 13.361 → 4.621; C9 bỏ 197 (glints 100, vietnamworks 82, jobsgo 13, topcv 1, vieclam24h 1); C4a giữ 5.424. L-50; PRE-43 đóng. Chờ người dùng xem | `591391b` + commit tài liệu |

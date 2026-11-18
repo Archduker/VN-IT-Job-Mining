@@ -1,7 +1,7 @@
 # Prompt 01b: Deduplication (chạy lại trên đầu ra 01 ngày 18/11)
 
 > Đặc tả: [`docs/spec/preprocessing/01b_deduplication.md`](../../spec/preprocessing/01b_deduplication.md). Dữ liệu mẫu: `docs/spec/preprocessing/samples/01b_deduplication.json`.
-> Prompt này viết lại ngày 18/11/2026 sao cho chạy lại ra **đúng kết quả lần chạy 18/11**: 4.799 → 4.672. Code khử trùng 3 tầng đã làm ở PH4 (10/11, `docs/prompting/PH4_khu_trung_3_tang_minhash.md`); lần này **không sửa luật**.
+> Prompt này viết lại ngày 18/11/2026 sao cho chạy lại ra **đúng kết quả lần chạy lại 18/11** (sau L-50): 4.621 → 4.496. Lần chạy đầu 18/11 ra 4.799 → 4.672. Code khử trùng 3 tầng đã làm ở PH4 (10/11, `docs/prompting/PH4_khu_trung_3_tang_minhash.md`); lần này **không sửa luật**.
 
 ## 1. Ngữ cảnh
 
@@ -33,6 +33,11 @@
 2. Chạy thật 8 nguồn.
 3. Sinh trang (`scripts/visualize_preprocessing_steps.py --step 01b_deduplication`).
 4. Gửi người dùng: số vào/ra theo nguồn, cụm khác sàn, cặp vùng xét lại. **Dừng chờ người dùng xem** trước khi chạy 02.
+
+### Bổ sung 18/11 (L-50, người dùng chốt)
+
+- `pick_cross_winner` đổi thứ tự tiêu chí thành: nhiều trường nhất → sàn uy tín → bản cào mới nhất → `job_id` nhỏ nhất, chung với C7 của bước 01. Trước đó uy tín xét trước độ đầy đủ.
+- Test cũ dựng tin jobsgo nhiều trường hơn tin itviec (có `exp`); cho `exp=None` để hai bản ngang nhau, giữ đúng ý test (cơ chế pipeline, luật uy tín khi ngang độ đầy đủ).
 
 ## 3. Pseudo code
 
@@ -79,8 +84,8 @@ Lấy từ dữ liệu thật ngày 18/11.
 | Kiểm | Lệnh / cách | Đạt |
 |---|---|---|
 | Dry-run | `python scripts/run_preprocessing.py --step deduplication --source all --dry-run` | Bảo toàn |
-| Chạy thật | `python scripts/run_preprocessing.py --step deduplication --source all` | 4.799 → 4.672, D5 127 |
-| Truy vết | `extra.lineage_rows` = số input | 4.799 |
+| Chạy thật | `python scripts/run_preprocessing.py --step deduplication --source all` | 4.621 → 4.496, D5 125, 106 cụm |
+| Truy vết | `extra.lineage_rows` = số input | 4.621 |
 | Ngày | `extra.unparsed_dates` | 0 |
 | Cặp gần ngưỡng | `python scripts/build_dedup_pairs_sample.py`, người dùng chấm 50 cặp | Precision ≥ 95% (chưa chấm) |
 | Test | `pytest tests/unit/test_deduplication_step.py -q` | Xanh |
@@ -96,3 +101,8 @@ Lấy từ dữ liệu thật ngày 18/11.
 | 4 | Dry-run | 18/11 | Dry-run 8 nguồn trên đầu ra 01 mới: 4.799 → 4.672, trùng lần 10/11 | — |
 | 5 | Review, chạy thật | 18/11 | Chạy thật sau khi người dùng duyệt 01 ("oke làm (a) đi rồi chạy tiếp 01b"). Trang `01b_deduplication.html` | `863415c` |
 | 5 | (tiếp) | 18/11 | Chạy lại sau khi bổ sung 48 nhãn C4b và `first_scraped_at`; số không đổi | `eb06083` |
+| 1 | Duyệt đặc tả (bổ sung L-50) | 18/11 | Người dùng trả lời các chỗ thiếu PRE-43: "thêm 3 cờ vào silver đi rồi cập nhật lại tài liệu. có thể láy vô tháng. um bỏ nhãn it phần mềm. hmm bạn thấy cáo nào nó có hiệu quả hơn thì lấy cía đó. lấy các loại hợp đồng đó vào sliver đi. bỏ luôn 76 tin glint đó đi"; chọn "Mọi sàn, trước 09/2026" | — |
+| 2 | Duyệt prompt | 18/11 | Đi tắt: làm ngay theo câu duyệt ở bước 1; prompt này cập nhật để lưu log | — |
+| 3 | Test rồi code | 18/11 | Test trước: `test_pick_cross_winner_độ_đầy_đủ_trước_uy_tín`; sửa fixture sandbox (`exp=None`) ở 2 test cũ | `591391b` |
+| 4 | Dry-run | 18/11 | Không dry-run riêng: dry-run 01b và 02 đọc đầu ra cũ của bước trước nên không đo được tác động. Chạy thật trên máy (không đụng R2), so report với git HEAD | — |
+| 5 | Review, chạy thật | 18/11 | Chạy thật 01 → 01b → 02. 01b: 4.621 → 4.496; D5 125 (itviec 28, topdev 16, topcv 13, vietnamworks 3); ví dụ topcv `1506721` nay được giữ thay topdev `2138328`. L-50; PRE-43 đóng. Chờ người dùng xem | `591391b` + commit tài liệu |

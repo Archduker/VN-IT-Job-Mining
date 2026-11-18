@@ -59,7 +59,7 @@
    - Sửa tên luật M4 trong report cho đúng code: "Thiếu kinh nghiệm điền cận dưới theo cấp bậc".
    - `exp_conflict` khi ô và JD lệch ≥ 1 năm.
    - Đổi nhãn `given` thành `raw` và tìm mọi nơi đọc `exp_source` (Processing 10, Mining, Monitoring) để sửa theo.
-5. **S1**: ghi `silver.parquet` theo spec 05 mục 4.4. Thiếu cột nguồn thì dừng và báo, không tạo cột rỗng. Sinh `silver_gap.html` (mỗi trường: có / thiếu cột / phủ thấp / lệch kiểu, bước gây ra, mã PRE).
+5. **S1**: ghi `silver.parquet` theo spec 05 mục 4.4: 26 cột, gồm `employment_type` (N19) và 3 cờ đổi tên từ bảng 04 (`level_inferred` → `seniority_inferred`, `exp_inferred`, `is_outlier_salary` → `salary_outlier`; bổ sung 18/11). Thiếu cột nguồn thì dừng và báo, không tạo cột rỗng. Sinh `silver_gap.html` (mỗi trường: có / thiếu cột / phủ thấp / lệch kiểu, bước gây ra, mã PRE).
 6. **00 Profiling**: `python scripts/profile_sources.py --when both`, điền mục 5 của `00_profiling.md`.
 7. Sinh trang 04, `samples/04_normalization.json`; điền mục 5 của `04_normalization.md`, `silver.md`, README tin mẫu.
 
@@ -88,7 +88,7 @@ ghi silver.parquet ; silver_gap.html
 - Không bỏ dòng. Không ghi đè cột `raw_*` hay cột parse của 03 (chép sang `*_parsed` trước khi chọn). N6 trước N7.
 - Không bù lương bằng trung bình hay trung vị. Lương thỏa thuận giữ NaN.
 - Không đổi nhóm nghề ngoài `FAMILY_MAP`.
-- `employment_type` **không vào** Silver cho tới khi trích được 100% tin (người dùng chốt 18/11). Chỉ báo độ phủ.
+- `employment_type` **vào** Silver; tin không rõ để null (người dùng đổi quyết định 18/11, bỏ điều kiện 100%). Báo độ phủ theo nguồn ở `silver_gap.html`.
 - Silver chỉ chọn cột và đổi tên, không tính lại.
 - Không đẩy R2 (`push_preprocessing_to_r2.py` chỉ chạy thử, khi người dùng yêu cầu). Không push git.
 
@@ -106,6 +106,8 @@ ghi silver.parquet ; silver_gap.html
 | ô null, JD null, `seniority` Intern/Fresher lấy từ tiêu đề | 0, `level_intern`, `exp_inferred` true |
 | Tiêu đề "Oracle Consultant Intern", raw FULL_TIME | `employment_type` internship; `seniority` Intern/Fresher nếu N2 chưa ra cấp |
 | Bảng 04 thiếu cột `posted_month` | S1 dừng, báo "thiếu cột posted_month (03 T3b)" |
+| Tin có `level_inferred` true, `is_outlier_salary` true | Silver `seniority_inferred` true, `salary_outlier` true, giá trị y như bảng 04 |
+| topdev không có loại hợp đồng ở ô của sàn và JD | Silver `employment_type` null |
 
 ## 6. Cách review
 
@@ -115,7 +117,7 @@ ghi silver.parquet ; silver_gap.html
 | Dry-run | `python scripts/run_preprocessing.py --step normalization --source all --dry-run` | Bảo toàn |
 | `work_mode` | Phân bố `work_mode` × `work_mode_source` × nguồn | Số `jd_over_raw` khớp số ca lệch strong ở 03; `unknown` được giải thích |
 | Kinh nghiệm | Phân bố `exp_source` × nguồn; topdev, itviec trước → sau | topdev tăng từ 28,2%; itviec phần lớn `jd` |
-| Silver | `silver.parquet`: 22 cột, số dòng = bảng 04, `job_id` duy nhất; `silver_gap.html` | Không còn "thiếu cột"; "phủ thấp" có giải thích |
+| Silver | `silver.parquet`: 26 cột, số dòng = bảng 04, `job_id` duy nhất; `silver_gap.html`; bảng 6b của `silver.md` (đủ 7 câu SD1) | Không còn "thiếu cột"; "phủ thấp" có giải thích |
 | Profiling | `reports/preprocessing/00_profiling/{before,after}_clean/` | 8/8 nguồn |
 | Trang | 04, `silver_gap` ở 1100px và 390px | Không tràn ngang |
 
@@ -124,6 +126,7 @@ ghi silver.parquet ; silver_gap.html
 | # | Bước quy trình | Ngày | Việc đã làm, số liệu, quyết định | Commit |
 |---|---|---|---|---|
 | — | Quyết định đầu vào | 17–18/11 | Bảng Silver 22 trường, bỏ `posted_month_source` (17/11). Quyết định chọn giá trị (18/11): itviec "Linh hoạt" → hybrid; tiêu đề và mẫu có số ngày thắng ô của sàn; itviec lấy kinh nghiệm từ JD trước; 7 nguồn còn lại giữ ô của sàn; `employment_type` chỉ vào Silver khi đủ 100% | `7aa63a2`, `adaa693` |
+| — | Quyết định bổ sung | 18/11 | Người dùng: "thêm 3 cờ vào silver" (Silver 26 trường), "lấy các loại hợp đồng đó vào sliver" (bỏ điều kiện 100%). Đầu vào 04 là bảng 03 chạy trên bảng 02 mới (4.495 tin, sau C9) | — |
 | 1 | Duyệt đặc tả | chưa | Đặc tả 04 mục 2.2, `silver.md` | — |
 | 2 | Duyệt prompt | chưa | Prompt này | — |
 | 3 | Test rồi code | chưa | | |

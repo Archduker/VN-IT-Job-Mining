@@ -90,7 +90,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
     - 2.516 tin có cấp bậc tự suy ra (`level_inferred`).
     - 94 tin không xác định được tỉnh (`tinh_unknown`).
     - 258 tin cần kiểm lại `job_family`.
-    - `posted_date` chỉ phủ 63,8%. Đã có cách thay: `posted_month` phủ 100% (dry-run 03 ngày 18/11, PRE-37); còn tin glints tháng cũ (PRE-43).
+    - `posted_date` chỉ phủ 63,8%. Đã có cách thay: `posted_month` phủ 100% (dry-run 03 ngày 18/11, PRE-37). Tin đăng trước 09/2026 đã bị bỏ ở bước 01 (C9, L-50).
     - `work_mode` đang mặc định onsite khi có tỉnh. Bước 03 T9a đã code; chờ N14 mới ở bước 04.
     - Bộ lọc IT đúng 92,4%, chưa đạt ≥ 95% (PRE-12).
   - **SD2:**
@@ -138,7 +138,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 - **Lý do:** `posted_date` chỉ phủ 63,8% (topcv 0%, topdev 32,7%; `reports/preprocessing/03_transformation/<nguồn>.json`). Trong khi đó `crawled_at` có ở mọi tin, và BI chỉ cần phân biệt theo tháng.
 - **Việc code:**
   1. ~~Mang `first_crawled_at` qua bước 02~~: **xong 18/11** (bước 01 ghi `first_scraped_at`, bước 02 xuất `first_crawled_at`; L-49).
-  2. ~~Bước 03 tạo `posted_month`~~: **code xong 18/11** (T3b; `first_crawled_at` đổi sang giờ Việt Nam). Dry-run 4.671 tin: 2.979 lấy từ ngày đăng, 1.692 từ lần cào đầu; 2026-10: 3.466, 2026-09: 943, 2026-08: 101, 2026-11: 81, trước 08/2026: 80 (76 là glints, PRE-43). Còn chạy thật cùng lượt dịch.
+  2. ~~Bước 03 tạo `posted_month`~~: **code xong 18/11** (T3b; `first_crawled_at` đổi sang giờ Việt Nam). Dry-run 4.671 tin: 2.979 lấy từ ngày đăng, 1.692 từ lần cào đầu; 2026-10: 3.466, 2026-09: 943, 2026-08: 101, 2026-11: 81, trước 08/2026: 80 (76 là glints). Từ 18/11 bước 01 bỏ mọi tin trước 09/2026 (C9, L-50), và TopCV đọc thêm `date_posted` (102 tin). Còn chạy thật cùng lượt dịch.
   3. Bỏ `posted_date` khỏi bảng sạch sau bước 04. Bước 01b vẫn dùng `raw_posted_date` ở tầng trung gian.
   4. `processing/encoding/features.py:118` đổi đặc trưng `posted_month` sang cột mới. `days_to_deadline` (dòng 119) vẫn tính từ `crawled_at`, không đổi.
 - **Lưu ý khi dùng:**
@@ -160,7 +160,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
   - `mining/config.py` trỏ `DEFAULT_GOLDEN` về bảng 04 và bỏ `FALLBACK_GOLDEN`. `scripts/load_mart_from_parquet.py` và `scripts/create_golden_master_eda_notebook.py` đọc bảng 04.
   - Đổi `01b_deduplication/golden_master_jobs.*` thành `golden_records.*` (sửa `deduplication/run.py`, `verify_delivery.py`).
 - Sửa docstring sai: ~~`transformation/run.py` ("không dịch, không gọi model")~~ (sửa 18/11), `normalization/run.py` và tên luật N3 ("16 nhóm"). Đổi các trỏ tới `docs/spec/preprocessing/spec/P*.md` sang `docs/spec/05_preprocessing_spec.md`.
-- Bảng target (spec 05 mục 4.4, người dùng chốt 17/11): thêm bước ghi `data/preprocessing/04_normalization/silver.parquet` gồm 22 trường tên tiếng Anh, chỉ chọn cột và đổi tên. Làm sau PRE-37 (cần `posted_month`). Sau đó chuyển Monitoring, BI rồi Processing sang đọc bảng này.
+- Bảng target (spec 05 mục 4.4, người dùng chốt 17/11): thêm bước ghi `data/preprocessing/04_normalization/silver.parquet` gồm 26 trường tên tiếng Anh (22 trường chốt 17/11, thêm `employment_type`, `seniority_inferred`, `exp_inferred`, `salary_outlier` ngày 18/11), chỉ chọn cột và đổi tên. Làm sau PRE-37 (cần `posted_month`). Sau đó chuyển Monitoring, BI rồi Processing sang đọc bảng này.
 - `processing/encoding/features.py` còn import `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` từ `preprocessing/encoding/run.py`. Chuyển 3 hằng số này sang `processing/` trước khi dọn `preprocessing/encoding/` (spec 06 mục 6).
 
 **PRE-40. Processing: hai từ điển kỹ năng, report thiếu luật, chưa ghim phiên bản** (mở 17/11/2026)
@@ -176,15 +176,6 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 - Làm sạch từng item (NFC, ký tự ẩn, khoảng trắng): bước 03 T6.5 code xong 18/11, ra cột `benefits_clean` (dry-run sửa 1.147 tin).
 - **Từ điển:** `preprocessing/dictionaries/benefits.json` chỉ có 10 nhóm, phúc lợi không khớp nhóm nào thì mất. Người dùng đồng ý mở rộng (17/11) để `benefits` kéo được hết phúc lợi. Cách làm: lấy top item của `benefits_list` theo nguồn, gom thành nhóm mới, người dùng duyệt danh sách nhóm.
 - **Độ phủ `benefits_std` 10/11:** glints 74,4%, các nguồn khác 88–97% (`reports/preprocessing/03_transformation/<nguồn>.json`).
-
-**PRE-43. Chỗ thiếu mới khi viết đặc tả từng bước, chờ người dùng quyết** (mở 18/11/2026)
-
-- **TopCV không đọc `date_posted`:** 102 tin topcv có trường này trong raw nhưng flattener bỏ qua, nên cả 1.520 tin topcv lấy tháng từ lần cào đầu. Sửa ở `_flatten_topcv` (bước 02) và `feature_targets.py`.
-- **TopCV `skills_list` gộp nhãn ngành:** `industry_knowledge` được đưa vào kỹ năng, ví dụ "IT - Phần mềm" ở 838 tin. Ảnh hưởng SD2.
-- **C7 (bước 01) và D5 (bước 01b) chọn bản giữ lại theo hai luật khác nhau** khi gặp tin trùng. Cần một luật chung.
-- **Glints: `posted_month` rơi ngoài kỳ nghiên cứu:** raw glints ghi `createdAt` là ngày tạo tin lần đầu; 76/246 tin trước 08/2026, sớm nhất 2023-07 (tin đăng lâu, vẫn mở). Chọn: giữ nguyên, lấy tháng cào cho glints, hay bước 04 gắn cờ tin ngoài kỳ (từ 09/2026).
-- **`employment_type` chưa đủ 100%:** ô của sàn trống ở 202/202 tin topdev và 67/774 tin vietnamworks; JD chỉ bù được một phần. Theo quyết định 18/11, chưa đưa vào Silver.
-- Đặc tả: `docs/spec/preprocessing/02_integration.md`, `01b_deduplication.md` mục 7.
 
 **PRE-42. `sync_cloud_lakehouse.py --download --source <nguồn>` chỉ tải ledger** (mở 17/11/2026)
 

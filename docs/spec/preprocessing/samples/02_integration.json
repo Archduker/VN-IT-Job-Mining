@@ -2,16 +2,16 @@
  "step": "02_integration",
  "trace_job": "topcv_2325743",
  "run": {
-  "generated_at": "2026-11-18T00:14:14+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:33:28+00:00",
+  "code_version": "591391b",
   "mode": "applied",
   "input": {
    "path": "data/preprocessing/01b_deduplication/<nguồn>.jsonl",
-   "rows": 4672
+   "rows": 4496
   },
   "output": {
    "path": "data/preprocessing/02_integration/all.parquet",
-   "rows": 4671
+   "rows": 4495
   },
   "dropped": [
    {
@@ -32,36 +32,36 @@
   ],
   "by_source": {
    "careerviet": {
-    "in": 400,
-    "out": 399
+    "in": 401,
+    "out": 400
    },
    "glints": {
-    "in": 246,
-    "out": 246
+    "in": 154,
+    "out": 154
    },
    "itviec": {
-    "in": 818,
-    "out": 818
+    "in": 814,
+    "out": 814
    },
    "jobsgo": {
-    "in": 548,
-    "out": 548
+    "in": 543,
+    "out": 543
    },
    "topcv": {
-    "in": 1520,
-    "out": 1520
+    "in": 1523,
+    "out": 1523
    },
    "topdev": {
-    "in": 202,
-    "out": 202
+    "in": 201,
+    "out": 201
    },
    "vieclam24h": {
-    "in": 164,
-    "out": 164
+    "in": 162,
+    "out": 162
    },
    "vietnamworks": {
-    "in": 774,
-    "out": 774
+    "in": 698,
+    "out": 698
    }
   },
   "checks": {
@@ -74,16 +74,16 @@
    "id": "I1",
    "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
    "action": "modify",
-   "rows": 4671,
+   "rows": 4495,
    "by_source": {
-    "topcv": 1520,
-    "topdev": 202,
-    "vietnamworks": 774,
-    "careerviet": 399,
-    "vieclam24h": 164,
-    "itviec": 818,
-    "glints": 246,
-    "jobsgo": 548
+    "topcv": 1523,
+    "topdev": 201,
+    "vietnamworks": 698,
+    "careerviet": 400,
+    "vieclam24h": 162,
+    "itviec": 814,
+    "glints": 154,
+    "jobsgo": 543
    },
    "examples": []
   },
@@ -91,14 +91,14 @@
    "id": "I2",
    "name": "ITviec lấy ngày đăng từ JSON-LD datePosted",
    "action": "modify",
-   "rows": 792,
+   "rows": 788,
    "by_source": {
     "topcv": 0,
     "topdev": 0,
     "vietnamworks": 0,
     "careerviet": 0,
     "vieclam24h": 0,
-    "itviec": 792,
+    "itviec": 788,
     "glints": 0,
     "jobsgo": 0
    },
@@ -130,10 +130,10 @@
    "id": "I3",
    "name": "TopDev lấy ngày đăng và kinh nghiệm từ published/JSON-LD",
    "action": "modify",
-   "rows": 66,
+   "rows": 65,
    "by_source": {
     "topcv": 0,
-    "topdev": 66,
+    "topdev": 65,
     "vietnamworks": 0,
     "careerviet": 0,
     "vieclam24h": 0,
@@ -167,40 +167,40 @@
   },
   {
    "id": "I4",
-   "name": "Bỏ tag SEO và ngành nghề khỏi skills_list",
+   "name": "Bỏ tag SEO, ngành nghề và nhãn chuyên môn khỏi skills_list",
    "action": "modify",
-   "rows": 855,
+   "rows": 2366,
    "by_source": {
-    "topcv": 0,
+    "topcv": 1516,
     "topdev": 0,
     "vietnamworks": 0,
     "careerviet": 309,
     "vieclam24h": 0,
     "itviec": 0,
     "glints": 0,
-    "jobsgo": 546
+    "jobsgo": 541
    },
    "examples": [
     {
-     "job_id": "27681538345",
+     "job_id": "2013194",
      "field": "skills_list",
-     "before": "['Quản Lý Dự Án IT', 'Kiểm Thử Phần Mềm', 'Dữ Liệu - AI - Học Máy']",
-     "after": "[]",
-     "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-solution-engineer-thu-nhap-12-20-trieu-27681538345.html"
+     "before": "['Manual Tester', 'IT - Phần cứng và máy tính', 'IT - Phần mềm']",
+     "after": "['Kỹ Năng Phân Tích Yêu Cầu', 'Kỹ Năng Viết Test Case']",
+     "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
     },
     {
-     "job_id": "27712444149",
+     "job_id": "2281042",
      "field": "skills_list",
-     "before": "['Kiểm Thử Phần Mềm', 'Vận Hành IT - IT Helpdesk', 'Triển Khai Giải Pháp IT']",
-     "after": "[]",
-     "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-dinh-thu-phan-mem-qa-engineer-luong-10-20-trieu-27712444149.html"
+     "before": "['Product Owner/Product Manager', 'IT - Phần cứng và máy tính', 'Viễn thông']",
+     "after": "['Làm việc độc lập', 'Làm việc nhóm', 'Quản lý thời gian', 'Giao tiếp rõ ràng', 'Sử Dụng Phần Mềm Quản Lý Dự Án', 'Quản lý công việc khoa học']",
+     "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
     },
     {
-     "job_id": "28385786022",
+     "job_id": "2321616",
      "field": "skills_list",
-     "before": "['Quản Lý Dự Án IT', 'Sales Công Nghệ Thông Tin', 'Điện Tử - Vi Mạch - Bán Dẫn']",
-     "after": "[]",
-     "url": "https://jobsgo.vn/viec-lam/ky-su-presales-cntt-server-network-cctv-thu-nhap-20-25-trieu-28385786022.html"
+     "before": "['Product Owner/Product Manager', 'IT - Phần mềm', 'Game']",
+     "after": "['Figma', 'Design System', 'Prototype', 'user flow', 'wireframe', 'UI/UX design', 'Analysis', 'Component', 'user-centric thinking', 'Variant', 'Handoff']",
+     "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
     }
    ]
   },
@@ -208,16 +208,16 @@
    "id": "I5",
    "name": "Chuyển chuỗi rỗng và container rỗng về null",
    "action": "modify",
-   "rows": 1097,
+   "rows": 1750,
    "by_source": {
-    "topcv": 11,
+    "topcv": 700,
     "topdev": 37,
     "vietnamworks": 1,
-    "careerviet": 400,
+    "careerviet": 401,
     "vieclam24h": 0,
     "itviec": 26,
-    "glints": 74,
-    "jobsgo": 548
+    "glints": 42,
+    "jobsgo": 543
    },
    "examples": [
     {
@@ -228,18 +228,18 @@
      "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
     },
     {
-     "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
-     "field": "empty_value",
-     "before": "'' or []",
-     "after": null,
-     "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
-    },
-    {
      "job_id": "056aa512-f2b9-4256-8fd0-acf7d39a2af3",
      "field": "empty_value",
      "before": "'' or []",
      "after": null,
      "url": "https://glints.com/vn/opportunities/jobs/backend-cloud-developer/056aa512-f2b9-4256-8fd0-acf7d39a2af3"
+    },
+    {
+     "job_id": "0af63a55-b97f-4706-8d61-f0b52e201fc1",
+     "field": "empty_value",
+     "before": "'' or []",
+     "after": null,
+     "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-lap-trinh-net/0af63a55-b97f-4706-8d61-f0b52e201fc1"
     }
    ]
   },
@@ -352,7 +352,7 @@
   {
    "column": "also_on",
    "dtype": "object",
-   "fill_pct": 2.7
+   "fill_pct": 2.6
   },
   {
    "column": "first_crawled_at",
@@ -372,17 +372,17 @@
   {
    "column": "company_address",
    "dtype": "object",
-   "fill_pct": 87.6
+   "fill_pct": 87.4
   },
   {
    "column": "raw_category_text",
    "dtype": "object",
-   "fill_pct": 93.2
+   "fill_pct": 92.9
   },
   {
    "column": "raw_location_text",
    "dtype": "object",
-   "fill_pct": 97.5
+   "fill_pct": 97.4
   },
   {
    "column": "working_locations",
@@ -392,12 +392,12 @@
   {
    "column": "raw_posted_date",
    "dtype": "object",
-   "fill_pct": 63.8
+   "fill_pct": 64.5
   },
   {
    "column": "raw_deadline",
    "dtype": "object",
-   "fill_pct": 94.8
+   "fill_pct": 94.7
   },
   {
    "column": "raw_salary_text",
@@ -407,42 +407,42 @@
   {
    "column": "raw_employment_type",
    "dtype": "object",
-   "fill_pct": 94.8
+   "fill_pct": 94.5
   },
   {
    "column": "raw_work_mode",
    "dtype": "object",
-   "fill_pct": 54.5
+   "fill_pct": 54.6
   },
   {
    "column": "raw_experience_text",
    "dtype": "object",
-   "fill_pct": 90.7
+   "fill_pct": 90.8
   },
   {
    "column": "raw_seniority_text",
    "dtype": "object",
-   "fill_pct": 72.6
+   "fill_pct": 73.6
   },
   {
    "column": "raw_education_text",
    "dtype": "object",
-   "fill_pct": 66.1
+   "fill_pct": 64.9
   },
   {
    "column": "raw_headcount",
    "dtype": "object",
-   "fill_pct": 59.4
+   "fill_pct": 60.0
   },
   {
    "column": "skills_list",
    "dtype": "object",
-   "fill_pct": 78.3
+   "fill_pct": 62.0
   },
   {
    "column": "benefits_list",
    "dtype": "object",
-   "fill_pct": 98.1
+   "fill_pct": 98.8
   },
   {
    "column": "raw_description_text",
@@ -477,7 +477,7 @@
    "working_locations": [
     "Hà Nội: Số 3 Lê Văn Hưu, Phường Hai Bà Trưng (Phường Hai Bà Trưng thuộc quận Hai Bà Trưng cũ)"
    ],
-   "raw_posted_date": null,
+   "raw_posted_date": "2026-10-08",
    "raw_deadline": "20/11/2026",
    "raw_salary_text": "400 - 900 USD",
    "raw_employment_type": "Toàn thời gian",
@@ -486,10 +486,7 @@
    "raw_seniority_text": "Nhân viên",
    "raw_education_text": "Đại Học trở lên",
    "raw_headcount": "2 người",
-   "skills_list": [
-    "IT - Phần mềm",
-    "Tài chính"
-   ],
+   "skills_list": null,
    "benefits_list": [
     "A 13th-month salary as an end-of-year bonus.",
     "A 14th-month salary depending on individual and company performance.",

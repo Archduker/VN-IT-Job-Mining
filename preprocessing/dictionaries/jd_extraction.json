@@ -257,7 +257,7 @@
    ]
   },
   "conflict_flag": "employment_type_conflict = True khi raw và jd đều có và khác nhau (vd. raw full_time, tiêu đề 'Intern').",
-  "_note": "Bảng Silver (spec 05 mục 4.4) chưa có employment_type. Người dùng chốt 18/11: chỉ thêm vào Silver nếu trích được cho 100% tin; đo 18/11 còn trống topdev 198/202, vietnamworks 66/774 nên chưa thêm. Cột ở bảng 03/04 để truy vết và cấp tín hiệu Intern cho seniority."
+  "_note": "employment_type vào bảng Silver (spec 05 mục 4.4; người dùng chốt 18/11, bỏ điều kiện 100%). Tin không rõ để null; đo 18/11 còn trống topdev 198/202, vietnamworks 66/774. Bước 04 N19 chọn giá trị cuối; cột T9 ở bảng 03 để truy vết và cấp tín hiệu Intern cho seniority."
  },
  "experience": {
   "priority": "exp_min_years parse từ raw_experience_text -> JD (7 nguồn: ô của sàn trước, ghi exp_conflict khi lệch >= 1 năm). itviec: JD trước, raw (monthsOfExperience JSON-LD, chỉ 3 mức 10/37/61 tháng) làm dự phòng. exp_source = raw | jd | jd_zero | itviec_jsonld.",
@@ -334,6 +334,12 @@
   {
    "q": "Thêm employment_type vào Silver",
    "a": "chỉ khi trích được 100% tin; đo lại sau khi chạy 03 mới",
+   "by": "người dùng",
+   "date": "2026-11-18"
+  },
+  {
+   "q": "Thêm employment_type vào Silver (đổi quyết định trên)",
+   "a": "thêm vào Silver; tin không rõ để null (đo 18/11: 6,6%, topdev 198/202)",
    "by": "người dùng",
    "date": "2026-11-18"
   }

@@ -2,7 +2,7 @@
 
 > Code: `preprocessing/clean/run.py` (`clean_source`, `cross_source_dedup`, `review_sample`, `run`); `preprocessing/common/it_filter.py` (`classify`, `classify_unknown`), `raw_reader.py` (`read_raw`, `snapshot_order`); chính sách `preprocessing/clean/it_policy.json`, `scope_keywords.json`.
 > Lệnh: `python scripts/run_preprocessing.py --step clean --source all [--dry-run]`.
-> Dữ liệu mẫu: [`samples/01_clean.json`](samples/01_clean.json) (lần chạy 18/11/2026, `code_version` eb06083).
+> Dữ liệu mẫu: [`samples/01_clean.json`](samples/01_clean.json) (chạy lại 18/11/2026 sau các quyết định L-50, code `591391b`).
 > Prompt: [`docs/prompting/preprocessing/01_clean.md`](../../prompting/preprocessing/01_clean.md).
 
 ## 1. Mục đích
@@ -14,37 +14,40 @@
 
 ## 2. Luật
 
-Số tin là của lần chạy 18/11.
+Số tin là của lần chạy lại 18/11 (sau khi thêm C9 và đổi luật chọn bản giữ của C7).
 
 | Mã | Điều kiện | Hành động | Số tin |
 |---|---|---|---|
 | C3 | Bản ghi test (`job-<chữ>-<số>`), thiếu `job_id` hoặc `source_url`, hoặc `metadata.source` khác nguồn đang đọc | drop | 0 |
 | C1 | Một `job_id` có nhiều snapshot: giữ bản lớn nhất theo `snapshot_order` (`scraped_at`, rồi `version`). Tin trùng ngay trong file batch cũng tính ở đây | drop | 1.987 |
 | C2 | Tin trong file batch cũ đã có file riêng thì bỏ bản batch. Chưa có file riêng thì giữ bản batch (L-25) | drop | 616 (toàn vieclam24h) |
-| C4a | Phân loại IT, chỉ gắn nhãn, hai tầng. **Tầng 1** (`classify`): từ khóa tiêu đề và kỹ năng, khớp theo từ nguyên vẹn, ra `it`, `non_it` hoặc `unknown`. **Tầng 2** (`classify_unknown`), chỉ chạy khi tầng 1 ra `unknown`: tiêu đề thuộc một nhóm nghề và JD có ít nhất 2 kỹ năng. Từ yếu đứng một mình ("kỹ thuật", "engineer", "security") không đủ để tính là IT | flag | 5.424 tin `non_it` |
+| C4a | Phân loại IT, chỉ gắn nhãn, hai tầng. **Tầng 1** (`classify`): từ khóa tiêu đề và kỹ năng (gồm cả nhãn chuyên môn của sàn ở `category_tags`, chỉ TopCV có), khớp theo từ nguyên vẹn, ra `it`, `non_it` hoặc `unknown`. **Tầng 2** (`classify_unknown`), chỉ chạy khi tầng 1 ra `unknown`: tiêu đề thuộc một nhóm nghề và JD có ít nhất 2 kỹ năng. Từ yếu đứng một mình ("kỹ thuật", "engineer", "security") không đủ để tính là IT | flag | 5.424 tin `non_it` |
 | C4c | Bỏ tin có `it_status` nằm trong `it_policy.json[<nguồn>].drop`. Chính sách được duyệt 09/11; cả 8 nguồn đều bỏ `non_it`. `can_kiem` không bao giờ bị bỏ tự động | drop | 5.424 |
 | C5 | JD (mô tả + yêu cầu) dưới **50 từ** (`MIN_JD_WORDS`, chốt 10/11) | drop | 187 |
 | C8 | CTV ở tiêu đề hoặc đa cấp ở tiêu đề + JD, theo `scope_keywords.json`. Mã lý do `S3_CTV_TITLE`, `S3_MULTI_LEVEL` | drop | 13 |
-| C6 | Trùng trong cùng nguồn theo `dedup_key` = `company_norm \| title_norm` (không có tỉnh và tuần cào, L-40). Giữ bản `crawled_at` mới nhất; nếu bằng nhau thì giữ bản có nhiều trường có giá trị hơn (`filled`) | drop | 200 |
-| C7 | Trùng khác nguồn theo cùng `dedup_key`. Giữ bản có `filled` lớn nhất (bằng nhau thì theo thứ tự `SOURCES`); bản bị bỏ ghi vào `also_on` của bản giữ, dạng `nguồn:job_id` | drop | 135 |
+| C9 | Ngày đăng (`raw_posted_date`, parse bằng `parse_date` của bước 03) trước `STUDY_START` = 2026-09-01: ngoài kỳ nghiên cứu "tin đăng từ tháng 9". Tin không có ngày đăng thì giữ. Người dùng chốt 18/11 (L-50). Mã lý do `BEFORE_STUDY_WINDOW` | drop | 197 |
+| C6 | Trùng trong cùng nguồn theo `dedup_key` = `company_norm \| title_norm` (không có tỉnh và tuần cào, L-40). Giữ bản `crawled_at` mới nhất; nếu bằng nhau thì giữ bản có nhiều trường có giá trị hơn (`filled`) | drop | 189 |
+| C7 | Trùng khác nguồn theo cùng `dedup_key`. Chọn bản giữ bằng `c7_winner`, chung luật với D5 của bước 01b (người dùng chốt 18/11): `filled` lớn nhất → sàn uy tín hơn (`PLATFORM_AUTHORITY`) → `crawled_at` mới nhất → `job_id` nhỏ nhất. Bản bị bỏ ghi vào `also_on` của bản giữ, dạng `nguồn:job_id` | drop | 127 |
 | C4b | Mẫu gán nhãn tay để đo độ đúng của C4a (mục 6). Không đổi dữ liệu | — | 643 nhãn |
 
 **Theo nguồn** (vào → ra):
 
-| Nguồn | Vào | C1 | C2 | C4c | C5 | C8 | C6 | C7 | Ra |
-|---|---|---|---|---|---|---|---|---|---|
-| careerviet | 660 | 18 | 0 | 189 | 0 | 0 | 19 | 25 | 409 |
-| glints | 331 | 0 | 0 | 56 | 0 | 1 | 6 | 14 | 254 |
-| itviec | 911 | 1 | 0 | 15 | 0 | 1 | 36 | 16 | 842 |
-| jobsgo | 1.597 | 57 | 0 | 787 | 22 | 3 | 92 | 49 | 587 |
-| topcv | 2.749 | 75 | 0 | 935 | 164 | 5 | 20 | 13 | 1.537 |
-| topdev | 3.890 | 1.108 | 0 | 2.552 | 0 | 2 | 6 | 6 | 216 |
-| vieclam24h | 1.276 | 0 | 616 | 475 | 0 | 1 | 0 | 11 | 173 |
-| vietnamworks | 1.947 | 728 | 0 | 415 | 1 | 0 | 21 | 1 | 781 |
-| **Tổng** | **13.361** | 1.987 | 616 | 5.424 | 187 | 13 | 200 | 135 | **4.799** |
+| Nguồn | Vào | C1 | C2 | C4c | C5 | C8 | C9 | C6 | C7 | Ra |
+|---|---|---|---|---|---|---|---|---|---|---|
+| careerviet | 660 | 18 | 0 | 189 | 0 | 0 | 0 | 19 | 24 | 410 |
+| glints | 331 | 0 | 0 | 56 | 0 | 1 | 100 | 4 | 8 | 162 |
+| itviec | 911 | 1 | 0 | 15 | 0 | 1 | 0 | 36 | 16 | 842 |
+| jobsgo | 1.597 | 57 | 0 | 787 | 22 | 3 | 13 | 85 | 48 | 582 |
+| topcv | 2.749 | 75 | 0 | 935 | 164 | 5 | 1 | 20 | 13 | 1.536 |
+| topdev | 3.890 | 1.108 | 0 | 2.552 | 0 | 2 | 0 | 6 | 5 | 217 |
+| vieclam24h | 1.276 | 0 | 616 | 475 | 0 | 1 | 1 | 0 | 12 | 171 |
+| vietnamworks | 1.947 | 728 | 0 | 415 | 1 | 0 | 82 | 19 | 1 | 701 |
+| **Tổng** | **13.361** | 1.987 | 616 | 5.424 | 187 | 13 | 197 | 189 | 127 | **4.621** |
 
 - TopDev bị bỏ 2.552/2.782 tin ở C4c: crawler kéo sai phạm vi, vì API bỏ qua `category_ids=1` (bằng chứng trong `it_policy.json`).
 - Cặp nguồn trùng nhiều nhất ở C7 là topcv → jobsgo: 43 tin.
+- C9 bỏ nhiều nhất ở glints (100 tin): glints ghi `createdAt` là ngày tạo tin lần đầu, có tin từ 07/2023 vẫn mở. vietnamworks 82 tin, phần lớn đăng tháng 8/2026.
+- So lần chạy đầu 18/11: C9 mới bỏ 197 tin; C6 còn 189 (trước 200) và C7 còn 127 (trước 135) vì tin ngoài kỳ bị bỏ trước khi khử trùng. C4a không đổi (5.424), vì nhãn chuyên môn TopCV vẫn được đưa vào bộ lọc qua `category_tags`.
 
 ## 3. Quy trình xử lý
 
@@ -56,9 +59,9 @@ Thứ tự thực thi trong `clean_source`. Report vẫn ghi luật theo thứ t
 4. **C1** chọn snapshot mới nhất. **C2** bỏ bản batch đã có file riêng.
 5. Làm phẳng trong bộ nhớ bằng `flatten_raw_job_record(env, nguồn)`, chỉ để đọc khóa. Không ghi ra file.
 6. **C4a** gắn khối `metadata.clean` cho mọi tin: `snapshot_file`, `it_rule`, `it_rule_level`, `it_status`, `dedup_key`, `also_on` = [], `first_scraped_at`.
-7. **C4c** bỏ theo chính sách. **C5** bỏ JD ngắn. **C8** bỏ CTV và đa cấp. Tin bị C5, C8 bỏ được ghi vào `data/preprocessing/rejected/01_clean/<nguồn>.jsonl`.
+7. **C4c** bỏ theo chính sách. **C5** bỏ JD ngắn. **C8** bỏ CTV và đa cấp. **C9** bỏ tin đăng trước kỳ nghiên cứu (đặt trước C6 để tin ngoài kỳ không được chọn làm bản giữ). Tin bị C5, C8, C9 bỏ được ghi vào `data/preprocessing/rejected/01_clean/<nguồn>.jsonl`.
 8. **C6** khử trùng trong nguồn.
-9. Sau khi xong cả 8 nguồn: **C7** (`cross_source_dedup`) khử trùng khác nguồn và điền `also_on`.
+9. Sau khi xong cả 8 nguồn: **C7** (`cross_source_dedup`, bản giữ do `c7_winner` chọn) khử trùng khác nguồn và điền `also_on`.
 10. **C4b** (`review_sample`): nếu file `data/preprocessing/review/it_<nguồn>.csv` chưa có nhãn thì xuất mẫu (seed 42); đã có nhãn thì chỉ đọc nhãn để đo, **không bao giờ ghi đè**.
 11. `check_conserved()` cho từng nguồn: `vào = ra + Σ bỏ`. Sai ở một nguồn thì dừng cả bước, chưa nguồn nào được ghi.
 12. Ghi `data/preprocessing/01_clean/<nguồn>.jsonl`, report từng nguồn và `_all.json`. Chạy lẻ một nguồn thì report vào `reports/preprocessing/_partial/`, và CLI từ chối chạy thật.
@@ -68,8 +71,8 @@ Thứ tự thực thi trong `clean_source`. Report vẫn ghi luật theo thứ t
 | | Đường dẫn | Định dạng | Số dòng 18/11 |
 |---|---|---|---|
 | Input | `data/<nguồn>/raw/<YYYY-MM-DD>/<id>_v<N>.json` (+ `batch_001.json` của vieclam24h, `raw_batch.json` của vietnamworks) | JSON envelope `{metadata, raw_payload}` | 13.361 bản ghi |
-| Output | `data/preprocessing/01_clean/<nguồn>.jsonl` | jsonl, mỗi dòng một envelope | 4.799 |
-| Bị loại (C5, C8) | `data/preprocessing/rejected/01_clean/<nguồn>.jsonl` | jsonl: `source`, `job_id`, `rule`, `reason`, `source_url`, `job_title` | 200 |
+| Output | `data/preprocessing/01_clean/<nguồn>.jsonl` | jsonl, mỗi dòng một envelope | 4.621 |
+| Bị loại (C5, C8, C9) | `data/preprocessing/rejected/01_clean/<nguồn>.jsonl` | jsonl: `source`, `job_id`, `rule`, `reason`, `source_url`, `job_title` | 397 |
 | Mẫu gán nhãn | `data/preprocessing/review/it_<nguồn>.csv`; bản lưu trong git ở `data/preprocessing/gold/it_review/` | csv: `job_id`, `source_url`, `job_title`, `skills`, `it_rule`, `it_rule_level`, `it_status`, `nhan_tay` | 643 |
 | Report | `reports/preprocessing/01_clean/<nguồn>.json`, `_all.json` | schema chung (spec 05 mục 2.3); `extra.review`, `extra.cross_source_pairs`, `extra.it_policy`, `extra.it_levels` | — |
 
@@ -129,6 +132,8 @@ Lấy từ `rules[].examples` của report.
 | C4a, C4c | glints `07ec34c7…` | "[BD651] Kỹ sư Cải tiến - Kỹ thuật/Cơ khí/Điện - KCN VSIP1" | `non_it` → bỏ |
 | C5 | topcv `1448528` (Embedded Systems Engineer) | JD rỗng | bỏ, lý do `JD_SHORT` |
 | C8 | topcv `1251851` | "Cộng Tác Viên Thiết Kế" | bỏ, `S3_CTV_TITLE` |
+| C9 | glints `02ab8190…` (Performance Tester) | `raw_posted_date` "2023-07-14T05:17:27.342Z" | bỏ, `BEFORE_STUDY_WINDOW` |
+| C9 | glints `10adb15c…` (Fullstack Developer) | "2026-05-13T07:14:13.131Z" | bỏ |
 | C6 | glints `05decc01…` | khóa `kết nối nhân lực worklink\|kỹ thuật viên it phần mềm - kcn long đức - đồng nai` | bỏ, giữ `83fe5651…` |
 | C7 | glints `091b32f4…` | khóa `kinh doanh f88\|chuyên viên cao cấp rủi ro gian lận (fraud risk data analyst)` | bỏ, giữ `jobsgo:29391080129` |
 
@@ -136,10 +141,10 @@ Lấy từ `rules[].examples` của report.
 
 | Kiểm tra | Cách | Kết quả 18/11 |
 |---|---|---|
-| Luật bảo toàn | `checks.rows_conserved` trong `_all.json` và từng nguồn | Đạt (13.361 = 4.799 + 8.562) |
+| Luật bảo toàn | `checks.rows_conserved` trong `_all.json` và từng nguồn | Đạt (13.361 = 4.621 + 8.740) |
 | So với lần trước | `scripts/visualize_preprocessing_steps.py` so luật với report trong git HEAD | Trùng lần chạy 10/11 |
 | Độ đúng bộ lọc IT (C4b) | 643 nhãn trong `data/preprocessing/review/it_<nguồn>.csv`, đo bằng `validation_metrics` | Xem bảng dưới |
-| Test | `pytest tests/unit/test_clean_step.py` | Xanh (gồm `first_scraped_at`) |
+| Test | `pytest tests/unit/test_clean_step.py` | Xanh (gồm `first_scraped_at`, `test_c9_out_of_study_window`, `test_c7_keeps_most_complete_then_most_authoritative`) |
 | Trang | `docs/presentation/preprocessing_steps/01_clean.html` | Có |
 
 **Độ đúng bộ lọc IT trên 643 nhãn:**
@@ -162,7 +167,7 @@ Lấy từ `rules[].examples` của report.
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- **Trạng thái:** có code; chạy thật 18/11 trên tập raw đang có trên R2.
+- **Trạng thái:** có code; chạy thật 18/11 trên tập raw đang có trên R2, chạy lại cùng ngày sau các quyết định L-50 (C9, luật bản giữ C7, `category_tags`).
 - **Chỗ thiếu so với bảng Silver:**
   - Bộ lọc IT chưa đạt 95%. Recall IT thấp ở jobsgo (61,9%) và careerviet (66,7%), tức là bỏ nhầm tin IT. Tầng 2 chưa đọc `raw_category_text` (PRE-12).
   - Khóa C6, C7 chỉ gồm công ty + tiêu đề, nên tin cùng công ty mà tên viết khác ("MBBANK" và "Ngân hàng TMCP Quân đội") vẫn lọt (PRE-33).

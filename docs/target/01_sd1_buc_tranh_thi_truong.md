@@ -26,17 +26,19 @@ SD1 chỉ **đếm, chia nhóm và so sánh**. Không có model. Các SD sau dù
 
 ## 3. Dữ liệu dùng
 
-Đầu vào là bảng sau bước `04_normalization` cộng `10_features`. Độ phủ hiện tại xem ở [00_de_tai.md mục 8](00_de_tai.md#8-ảnh-chụp-dữ-liệu-sẽ-đổi).
+Đầu vào là bảng Silver `data/preprocessing/04_normalization/silver.parquet` (26 trường, spec 05 mục 4.4; bổ sung 18/11 để đủ cho SD1). Độ phủ hiện tại xem ở [00_de_tai.md mục 8](00_de_tai.md#8-ảnh-chụp-dữ-liệu-sẽ-đổi).
 
-| Câu | Cột |
+| Câu | Trường Silver (cột bảng 04 tương ứng) |
 |---|---|
 | 1.1 | `job_family`, `source` |
-| 1.2 | `seniority` (5 nhãn: Intern/Fresher, Junior, Middle, Senior, Lead/Manager; xem `SENIORITY_ORDER_LABELS` trong `mining/config.py`), `level_inferred` |
-| 1.3 | `tinh_chinh`, `work_mode` |
-| 1.4 | `salary_status`, `salary_min_vnd_capped`, `salary_max_vnd_capped`, `is_outlier_salary` |
-| 1.5 | `seniority`, `exp_min_years`, số kỹ năng (đếm từ `skills_std`), `language`, lương như ở 1.4 |
-| 1.6 | `benefits_std` |
+| 1.2 | `seniority` (5 nhãn: Intern/Fresher, Junior, Middle, Senior, Lead/Manager; xem `SENIORITY_ORDER_LABELS` trong `mining/config.py`), `seniority_inferred` (`level_inferred`) |
+| 1.3 | `province` (`tinh_chinh`), `work_mode`, `employment_type` |
+| 1.4 | `salary_min`, `salary_max` (`salary_*_vnd_capped`), `salary_negotiable`, `salary_outlier` (`is_outlier_salary`). Trạng thái lương (có số / thỏa thuận / không rõ) suy từ 3 cột đầu |
+| 1.5 | `seniority`, `exp_min_years`, `exp_inferred`, số kỹ năng (đếm từ `skills`), `language`, lương như ở 1.4 |
+| 1.6 | `benefits` |
 | 1.7 | `posted_month` (`YYYY-MM`), `source`, `job_family`, `seniority` |
+
+Phạm vi: tin đăng trước 09/2026 đã bị bỏ ở bước 01 (luật C9, người dùng chốt 18/11). Tin không có ngày đăng thì giữ, tháng lấy từ lần cào đầu.
 
 `posted_month` được tạo ở bước 03, thay cho `posted_date` trong dữ liệu sạch (PRE-37). Nguồn có ngày đăng thì lấy tháng đăng; nguồn không ghi ngày đăng (topcv, một phần topdev) thì lấy tháng của **lần cào đầu tiên**.
 
@@ -59,7 +61,7 @@ Mọi câu đều dùng cùng một cách: **đếm, tính tỷ lệ, lập bả
   - Tỷ lệ công khai lương = số tin có lương ÷ tổng số tin, tách theo trang, nghề và cấp.
   - Với các tin có lương và không bị đánh dấu ngoại lai: lấy trung vị và khoảng tứ phân vị của lương min và lương max theo nghề × cấp bậc, rồi theo tỉnh.
 - **1.5:** chia hai nhóm "người mới" và "Middle trở lên", so 4 chỉ số:
-  - trung vị `exp_min_years`;
+  - trung vị `exp_min_years`, chỉ trên tin `exp_inferred` = false (tin còn lại có kinh nghiệm điền từ chính cấp bậc, so sẽ thành vòng tròn);
   - trung vị số kỹ năng;
   - tỷ lệ JD tiếng Anh;
   - trung vị lương công khai.
@@ -72,6 +74,13 @@ Mọi câu đều dùng cùng một cách: **đếm, tính tỷ lệ, lập bả
   - Không kết luận "tăng/giảm", vì số tin mỗi tháng phụ thuộc lịch cào.
 
 Quy tắc báo số áp dụng cho mọi bảng: ghi n và độ phủ; ô có n < 30 ghi "ít dữ liệu"; không nói về xu hướng theo thời gian. Lương ước tính của tin "thỏa thuận" (lấy từ SD4) chỉ được hiện ở một cột riêng có nhãn "ước tính".
+
+**Lương chỉ có ở khoảng một nửa số tin, không bỏ tin thiếu lương.** Đo bảng 03 ngày 18/11: 2.140/4.671 tin (45,8%) có số; 2.515 ghi "thỏa thuận"; 16 không có gì. Tỷ lệ công khai lương khác nhau nhiều giữa các sàn (itviec 25,7%, vieclam24h 92,1%).
+
+- Câu 1.4 hỏi chính tỷ lệ công khai lương, nên bỏ tin thiếu lương thì mất câu hỏi.
+- Bỏ tin thiếu lương thì các câu 1.1–1.3, 1.6, 1.7 mất hơn một nửa dữ liệu và lệch về các sàn hay ghi lương (vieclam24h, jobsgo, topcv), bớt itviec, vietnamworks, topdev.
+- Lương "thỏa thuận" thiếu không ngẫu nhiên (MNAR): tin cấp cao và công ty lớn hay giấu lương. Bù bằng trung vị hay trung bình sẽ kéo lệch kết quả, nên spec 05 cấm.
+- Cách làm: giữ mọi tin; câu lương chỉ tính trên tin có số (`salary_min` hoặc `salary_max` khác null, `salary_outlier` = false) và luôn ghi n kèm tỷ lệ phủ. Lương ước tính cho tin "thỏa thuận" do SD4 làm, chỉ hiện ở cột riêng có nhãn "ước tính".
 
 ## 5. Đầu ra
 

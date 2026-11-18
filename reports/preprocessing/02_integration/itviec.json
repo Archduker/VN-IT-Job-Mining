@@ -2,8 +2,8 @@
   "step": "02_integration",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:31:05+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-18T02:33:27+00:00",
+  "code_version": "591391b",
   "input": {
     "path": "data/preprocessing/01b_deduplication/itviec.jsonl",
     "rows": 814
@@ -75,7 +75,7 @@
     },
     {
       "id": "I4",
-      "name": "Bỏ tag SEO và ngành nghề khỏi skills_list",
+      "name": "Bỏ tag SEO, ngành nghề và nhãn chuyên môn khỏi skills_list",
       "action": "modify",
       "rows_affected": 0,
       "examples": []

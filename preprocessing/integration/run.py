@@ -252,6 +252,17 @@ def process_source(source: str, dry_run: bool = True) -> tuple[List[Dict[str, An
                         "after": str(flat.get("skills_list")),
                         "url": url,
                     })
+            elif source == "topcv" and flat.get("category_tags"):
+                # TopCV: nhãn ngành/vị trí (industry_knowledge, "Chuyên môn") ra khỏi skills_list (18/11, PRE-43)
+                i4_count += 1
+                if len(i4_examples) < 3:
+                    i4_examples.append({
+                        "job_id": job_id,
+                        "field": "skills_list",
+                        "before": str(flat.get("category_tags")[:3]),
+                        "after": str(flat.get("skills_list")),
+                        "url": url,
+                    })
 
             # Dựng record phẳng theo đúng contract 28 cột của P2
             record: Dict[str, Any] = {}
@@ -308,7 +319,7 @@ def process_source(source: str, dry_run: bool = True) -> tuple[List[Dict[str, An
     report.rule("I2", "ITviec lấy ngày đăng từ JSON-LD datePosted", "modify", i2_count, i2_examples)
     report.rule("I3", "TopDev lấy ngày đăng và kinh nghiệm từ published/JSON-LD", "modify",
                 max(i3_date_count, i3_exp_count), i3_examples)
-    report.rule("I4", "Bỏ tag SEO và ngành nghề khỏi skills_list", "modify", i4_count, i4_examples)
+    report.rule("I4", "Bỏ tag SEO, ngành nghề và nhãn chuyên môn khỏi skills_list", "modify", i4_count, i4_examples)
     report.rule("I5", "Chuyển chuỗi rỗng và container rỗng về null", "modify", i5_count, i5_examples)
 
     # Luật drop: ví dụ không chứa raw_line (reports/ vào git)

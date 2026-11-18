@@ -30,7 +30,9 @@ Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <ngu�
 - **Raw là bất biến:** sửa cách đọc một trường thì sửa ở đây, không sửa file raw. Raw TopDev cũ thiếu một số trường, nên flattener phải chịu được trường vắng.
 - `_flatten_<nguồn>` phải khớp `monitoring/backend/app/core/feature_targets.py` (`RAW_PATHS`). Đổi tên trường ở một bên thì sửa cả bên kia.
 - Khớp từ khóa và kỹ năng **theo từ nguyên vẹn**, không theo chuỗi con ("intern" từng khớp "international", "ba" khớp "backend"). Tên kỹ năng ngắn (C, R, Go) chỉ thêm kèm ngữ cảnh.
-- Khóa trùng ở 01 (C6, C7) chỉ gồm công ty + tiêu đề (L-40).
+- Khóa trùng ở 01 (C6, C7) chỉ gồm công ty + tiêu đề (L-40). C7 (`c7_winner`) và D5 (`pick_cross_winner`) chọn bản giữ cùng một luật: nhiều trường nhất → sàn uy tín → mới nhất → `job_id`. Sửa một bên thì sửa cả bên kia (L-50).
+- Kỳ nghiên cứu: C9 bỏ tin có ngày đăng trước `STUDY_START` (2026-09-01) ở bước 01; tin không có ngày đăng thì giữ (L-50).
+- Nhãn chuyên môn của sàn (TopCV `industry_knowledge`, `overview_tags["Chuyên môn"]`) không phải kỹ năng: flattener để ở `category_tags`, chỉ bộ lọc IT của 01 đọc. Đưa lại vào `skills_list` sẽ làm "IT - Phần mềm" thành kỹ năng; bỏ hẳn khỏi bộ lọc thì 55 tin IT bị xếp ngoài IT (L-50).
 - Nhóm nghề: muốn đổi nhóm thì chỉ sửa `FAMILY_MAP` trong `normalization/job_title.py`, rồi chạy lại 04, `10_features` và Mining (L-47).
 - Cấp bậc ↔ kinh nghiệm: [0,1) Intern/Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior, từ 5 năm để trống (L-39).
 - File mẫu gán nhãn `data/preprocessing/review/it_<nguồn>.csv` đã có nhãn tay thì không bao giờ bị ghi đè. Bộ gold `data/preprocessing/gold/gold_labels.json` gắn với mẫu `e58bceb3a5`; không dựng lại mẫu.
@@ -46,6 +48,6 @@ Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <ngu�
 
 ## Việc còn mở
 
-`docs/KNOWN_ISSUED.md` mục 3: PRE-12 (bộ lọc IT 90,8% sau khi chạy lại 18/11, chưa đạt 95%), PRE-33 (việc chờ người dùng), PRE-34 (222 tin dịch hỏng), PRE-35 (dữ liệu chưa sạch cho SD1–SD5), PRE-37 (`posted_month`), PRE-38 (tỉnh lấy từ trụ sở), PRE-39 (dọn code theo spec 05), PRE-43 (chỗ thiếu mới: TopCV `date_posted`, nhãn ngành trong kỹ năng TopCV, glints tháng cũ).
+`docs/KNOWN_ISSUED.md` mục 3: PRE-12 (bộ lọc IT 90,8% sau khi chạy lại 18/11, chưa đạt 95%), PRE-33 (việc chờ người dùng), PRE-34 (222 tin dịch hỏng), PRE-35 (dữ liệu chưa sạch cho SD1–SD5), PRE-37 (`posted_month`), PRE-38 (tỉnh lấy từ trụ sở), PRE-39 (dọn code theo spec 05).
 
 Chạy lại pipeline thì so số trước và sau, rồi mới đẩy lên R2 bằng `scripts/push_preprocessing_to_r2.py` (chạy thử trước, người dùng duyệt rồi mới `--push`).

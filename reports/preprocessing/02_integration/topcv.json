@@ -2,8 +2,8 @@
   "step": "02_integration",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:31:03+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-18T02:33:26+00:00",
+  "code_version": "591391b",
   "input": {
     "path": "data/preprocessing/01b_deduplication/topcv.jsonl",
     "rows": 1523
@@ -53,10 +53,32 @@
     },
     {
       "id": "I4",
-      "name": "Bỏ tag SEO và ngành nghề khỏi skills_list",
+      "name": "Bỏ tag SEO, ngành nghề và nhãn chuyên môn khỏi skills_list",
       "action": "modify",
-      "rows_affected": 0,
-      "examples": []
+      "rows_affected": 1516,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "skills_list",
+          "before": "['Manual Tester', 'IT - Phần cứng và máy tính', 'IT - Phần mềm']",
+          "after": "['Kỹ Năng Phân Tích Yêu Cầu', 'Kỹ Năng Viết Test Case']",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2281042",
+          "field": "skills_list",
+          "before": "['Product Owner/Product Manager', 'IT - Phần cứng và máy tính', 'Viễn thông']",
+          "after": "['Làm việc độc lập', 'Làm việc nhóm', 'Quản lý thời gian', 'Giao tiếp rõ ràng', 'Sử Dụng Phần Mềm Quản Lý Dự Án', 'Quản lý công việc khoa học']",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "skills_list",
+          "before": "['Product Owner/Product Manager', 'IT - Phần mềm', 'Game']",
+          "after": "['Figma', 'Design System', 'Prototype', 'user flow', 'wireframe', 'UI/UX design', 'Analysis', 'Component', 'user-centric thinking', 'Variant', 'Handoff']",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
     },
     {
       "id": "I5",

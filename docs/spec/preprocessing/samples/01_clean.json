@@ -2,8 +2,8 @@
  "step": "01_clean",
  "trace_job": "topcv_2325743",
  "run": {
-  "generated_at": "2026-11-18T00:12:34+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:29:22+00:00",
+  "code_version": "d61d9bf",
   "mode": "applied",
   "input": {
    "path": null,
@@ -11,7 +11,7 @@
   },
   "output": {
    "path": null,
-   "rows": 4799
+   "rows": 4621
   },
   "dropped": [
    {
@@ -45,24 +45,29 @@
     "rows": 13
    },
    {
+    "rule": "C9",
+    "reason": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
+    "rows": 197
+   },
+   {
     "rule": "C6",
     "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-    "rows": 200
+    "rows": 189
    },
    {
     "rule": "C7",
     "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-    "rows": 135
+    "rows": 127
    }
   ],
   "by_source": {
    "careerviet": {
     "in": 660,
-    "out": 409
+    "out": 410
    },
    "glints": {
     "in": 331,
-    "out": 254
+    "out": 162
    },
    "itviec": {
     "in": 911,
@@ -70,23 +75,23 @@
    },
    "jobsgo": {
     "in": 1597,
-    "out": 587
+    "out": 582
    },
    "topcv": {
     "in": 2749,
-    "out": 1537
+    "out": 1536
    },
    "topdev": {
     "in": 3890,
-    "out": 216
+    "out": 217
    },
    "vieclam24h": {
     "in": 1276,
-    "out": 173
+    "out": 171
    },
    "vietnamworks": {
     "in": 1947,
-    "out": 781
+    "out": 701
    }
   },
   "checks": {
@@ -347,19 +352,58 @@
    ]
   },
   {
+   "id": "C9",
+   "name": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
+   "action": "drop",
+   "rows": 197,
+   "by_source": {
+    "topcv": 1,
+    "topdev": 0,
+    "vietnamworks": 82,
+    "careerviet": 0,
+    "vieclam24h": 1,
+    "itviec": 0,
+    "glints": 100,
+    "jobsgo": 13
+   },
+   "examples": [
+    {
+     "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
+     "field": "raw_posted_date",
+     "before": "2023-07-14T05:17:27.342Z",
+     "after": null,
+     "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
+    },
+    {
+     "job_id": "0c350e09-11c0-4ec3-964a-1ade553de148",
+     "field": "raw_posted_date",
+     "before": "2025-01-20T10:22:55.418Z",
+     "after": null,
+     "url": "https://glints.com/vn/opportunities/jobs/wordpress-developer/0c350e09-11c0-4ec3-964a-1ade553de148"
+    },
+    {
+     "job_id": "10adb15c-82e1-4049-ae97-dc08850affab",
+     "field": "raw_posted_date",
+     "before": "2026-05-13T07:14:13.131Z",
+     "after": null,
+     "url": "https://glints.com/vn/opportunities/jobs/fullstack-developer/10adb15c-82e1-4049-ae97-dc08850affab"
+    }
+   ]
+  },
+  {
    "id": "C6",
    "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
    "action": "drop",
-   "rows": 200,
+   "rows": 189,
    "by_source": {
     "topcv": 20,
     "topdev": 6,
-    "vietnamworks": 21,
+    "vietnamworks": 19,
     "careerviet": 19,
     "vieclam24h": 0,
     "itviec": 36,
-    "glints": 6,
-    "jobsgo": 92
+    "glints": 4,
+    "jobsgo": 85
    },
    "examples": [
     {
@@ -389,16 +433,16 @@
    "id": "C7",
    "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
    "action": "drop",
-   "rows": 135,
+   "rows": 127,
    "by_source": {
     "topcv": 13,
-    "topdev": 6,
+    "topdev": 5,
     "vietnamworks": 1,
-    "careerviet": 25,
-    "vieclam24h": 11,
+    "careerviet": 24,
+    "vieclam24h": 12,
     "itviec": 16,
-    "glints": 14,
-    "jobsgo": 49
+    "glints": 8,
+    "jobsgo": 48
    },
    "examples": [
     {
@@ -416,11 +460,11 @@
      "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-kiem-thu-phan-mem/0e32e3c9-82f5-4fcd-ad2e-0f2fafad8ca2"
     },
     {
-     "job_id": "1ae183bd-9394-4be8-bea1-4ac9a5021710",
+     "job_id": "200903136",
      "field": "dedup_key",
-     "before": "tma solutions|thực tập sinh công nghệ thông tin",
-     "after": "giữ jobsgo:29326389773",
-     "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-cong-nghe-thong-tin/1ae183bd-9394-4be8-bea1-4ac9a5021710"
+     "before": "viễn thông fpt|design verification intern",
+     "after": "giữ topcv:2262435",
+     "url": "https://vieclam24h.vn/it-phan-mem/design-verification-intern-c8p210000187id200903136.html"
     }
    ]
   }

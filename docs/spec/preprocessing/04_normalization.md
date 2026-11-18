@@ -53,7 +53,7 @@ Các luật này dùng quyết định của người dùng ngày 18/11, ghi tro
 | **N19** | `employment_type`: tiêu đề có Intern (EI1) → internship; nếu không thì `employment_type_raw`; trống thì `employment_type_jd` | modify | `employment_type`, `employment_type_source` |
 | **N2 (bổ sung)** | Tiêu đề có Intern hoặc `employment_type` = internship mà N2 chưa ra cấp → Intern/Fresher, `seniority_source` = `employment_type` | modify | `seniority` |
 | **M4 (sửa)** | `exp_min_years` cuối: itviec lấy JD trước (`exp_min_years_jd`), ô JSON-LD làm dự phòng; 7 nguồn còn lại lấy ô của sàn trước, JD bù chỗ trống; còn trống thì điền cận dưới theo cấp bậc như M4 cũ. `exp_conflict` khi ô và JD lệch ≥ 1 năm. Giá trị parse của 03 giữ ở `exp_min_years_parsed` để truy vết | modify | `exp_min_years`, `exp_source` (`raw`, `jd`, `jd_zero`, `itviec_jsonld`, `level_*`, `unknown`; `raw` thay cho `given` cũ), `exp_conflict`, `exp_min_years_parsed` |
-| **S1** | Ghi `silver.parquet`: chọn cột, đổi tên sang tiếng Anh, không tính lại (xem [`silver.md`](silver.md)) | — | — |
+| **S1** | Ghi `silver.parquet` (26 cột, gồm `employment_type` và 3 cờ `seniority_inferred`, `exp_inferred`, `salary_outlier`; bổ sung 18/11): chọn cột, đổi tên sang tiếng Anh, không tính lại (xem [`silver.md`](silver.md)) | — | — |
 
 ## 3. Quy trình xử lý
 

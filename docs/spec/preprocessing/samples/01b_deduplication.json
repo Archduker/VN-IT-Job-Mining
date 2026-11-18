@@ -2,16 +2,16 @@
  "step": "01b_deduplication",
  "trace_job": "topcv_2325743",
  "run": {
-  "generated_at": "2026-11-18T00:13:49+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:31:00+00:00",
+  "code_version": "d61d9bf",
   "mode": "applied",
   "input": {
    "path": null,
-   "rows": 4799
+   "rows": 4621
   },
   "output": {
    "path": null,
-   "rows": 4672
+   "rows": 4496
   },
   "dropped": [
    {
@@ -32,41 +32,41 @@
    {
     "rule": "D5",
     "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-    "rows": 127
+    "rows": 125
    }
   ],
   "by_source": {
    "careerviet": {
-    "in": 409,
-    "out": 400
+    "in": 410,
+    "out": 401
    },
    "glints": {
-    "in": 254,
-    "out": 246
+    "in": 162,
+    "out": 154
    },
    "itviec": {
     "in": 842,
-    "out": 818
+    "out": 814
    },
    "jobsgo": {
-    "in": 587,
-    "out": 548
+    "in": 582,
+    "out": 543
    },
    "topcv": {
-    "in": 1537,
-    "out": 1520
+    "in": 1536,
+    "out": 1523
    },
    "topdev": {
-    "in": 216,
-    "out": 202
+    "in": 217,
+    "out": 201
    },
    "vieclam24h": {
-    "in": 173,
-    "out": 164
+    "in": 171,
+    "out": 162
    },
    "vietnamworks": {
-    "in": 781,
-    "out": 774
+    "in": 701,
+    "out": 698
    }
   },
   "checks": {
@@ -147,14 +147,14 @@
    "id": "D5",
    "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
    "action": "drop",
-   "rows": 127,
+   "rows": 125,
    "by_source": {
-    "topcv": 17,
-    "topdev": 14,
-    "vietnamworks": 7,
+    "topcv": 13,
+    "topdev": 16,
+    "vietnamworks": 3,
     "careerviet": 9,
     "vieclam24h": 9,
-    "itviec": 24,
+    "itviec": 28,
     "glints": 8,
     "jobsgo": 39
    },
@@ -167,18 +167,18 @@
      "url": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html"
     },
     {
-     "job_id": "1506721",
-     "field": "dedup",
-     "before": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html",
-     "after": "https://topdev.vn/viec-lam/business-analyst-cong-ty-co-phan-global-technology-solutions-viet-nam-2138328",
-     "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
-    },
-    {
      "job_id": "1839052",
      "field": "dedup",
      "before": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html",
      "after": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
      "url": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html"
+    },
+    {
+     "job_id": "1ddb2d5c-abcf-45b2-9477-67cebaeded0f",
+     "field": "dedup",
+     "before": "https://glints.com/vn/opportunities/jobs/dna769-ky-thuat-vien-it-phan-mem-khong-yeu-cau-kinh-nghiem/1ddb2d5c-abcf-45b2-9477-67cebaeded0f",
+     "after": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01",
+     "url": "https://glints.com/vn/opportunities/jobs/dna769-ky-thuat-vien-it-phan-mem-khong-yeu-cau-kinh-nghiem/1ddb2d5c-abcf-45b2-9477-67cebaeded0f"
     }
    ]
   },
@@ -186,14 +186,14 @@
    "id": "D6",
    "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
    "action": "flag",
-   "rows": 108,
+   "rows": 106,
    "by_source": {
-    "topcv": 20,
-    "topdev": 7,
+    "topcv": 24,
+    "topdev": 5,
     "vietnamworks": 5,
     "careerviet": 9,
     "vieclam24h": 5,
-    "itviec": 36,
+    "itviec": 32,
     "glints": 5,
     "jobsgo": 21
    },
@@ -206,18 +206,18 @@
      "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
     },
     {
+     "job_id": "1506721",
+     "field": "master_id",
+     "before": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html",
+     "after": "b805e6bb-f183-5e68-b756-3dcdc5ed2503",
+     "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
+    },
+    {
      "job_id": "1629932",
      "field": "master_id",
      "before": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html",
      "after": "dc5ddf91-f4fc-519c-a2ce-7b074b2c45e5",
      "url": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html"
-    },
-    {
-     "job_id": "1832499",
-     "field": "master_id",
-     "before": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
-     "after": "25b609ec-a899-524d-9361-74a916ad0bc8",
-     "url": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html"
     }
    ]
   },
@@ -225,16 +225,16 @@
    "id": "D7",
    "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
    "action": "flag",
-   "rows": 168,
+   "rows": 164,
    "by_source": {
     "topcv": 63,
-    "topdev": 11,
-    "vietnamworks": 20,
+    "topdev": 10,
+    "vietnamworks": 17,
     "careerviet": 5,
-    "vieclam24h": 5,
+    "vieclam24h": 4,
     "itviec": 12,
-    "glints": 5,
-    "jobsgo": 47
+    "glints": 4,
+    "jobsgo": 49
    },
    "examples": [
     {
@@ -322,7 +322,7 @@
    "first_scraped_at": "2026-10-20T18:44:44.698712+00:00"
   },
   "metadata_dedup": {
-   "content_hash_norm": "4496aeca26569c284c304e72f02e934099572704be9fc291ebe65ad6069b4894",
+   "content_hash_norm": "e9045a55ff710ba7938caeac6486827fa2a9f8638150e30f43259160ef3ba14b",
    "text_fold_sha1": "f909556b681b8ecec94b6ec8bab0e722fc523b46",
    "blocking_key": "eaera_HN_backend",
    "master_id": "61870720-f45c-5fe5-9bf7-dbdb3e78a4fa",

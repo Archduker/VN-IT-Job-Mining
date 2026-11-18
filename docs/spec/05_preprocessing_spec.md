@@ -176,12 +176,16 @@ Spec 03 mục 6 đã ghi theo quyết định này.
 
 Mọi giá trị suy ra đều có cờ hoặc cột `*_source`. SD nào cần dữ liệu gốc thì tự lọc theo cờ.
 
-### 4.4. Bảng target (Silver) (người dùng chốt 17/11/2026)
+### 4.4. Bảng target (Silver) (người dùng chốt 17/11/2026, bổ sung 18/11/2026)
 
 Bảng 04 là bảng làm việc: giữ mọi cột trung gian, cờ và bản sao để truy vết, nên có hàng trăm cột với tên lẫn Việt và Anh. Người dùng bảng sạch (BI, Monitoring, báo cáo) cần một bảng gọn hơn. Quyết định:
 
 - Thêm một bước cuối ghi `data/preprocessing/04_normalization/silver.parquet`: **chọn cột và đổi tên sang tiếng Anh**, không tính lại giá trị. Bảng 04 `all.parquet` giữ nguyên, vì Processing 07–10 và Mining đang đọc theo tên cột cũ; chuyển dần sang bảng target sau (PRE-39).
-- Tên trường tiếng Anh, ở dạng gốc và gọn nhất. Mỗi khái niệm một cột; cờ và bản phụ không vào bảng target.
+- Tên trường tiếng Anh, ở dạng gốc và gọn nhất. Mỗi khái niệm một cột; bản phụ không vào bảng target.
+- **Bổ sung 18/11 (người dùng chốt):** 26 trường thay 22.
+  - Thêm 3 cờ mà SD1 cần để báo số trung thực: `seniority_inferred` (câu 1.2), `exp_inferred` (câu 1.5: không so kinh nghiệm theo cấp bậc khi kinh nghiệm được điền từ chính cấp bậc), `salary_outlier` (câu 1.4: bỏ tin ngoại lai trước khi tính trung vị).
+  - Thêm `employment_type`, bỏ điều kiện "chỉ khi trích được 100%". Tin không rõ để null, BI hiện "Không rõ".
+  - Cả 4 cột chép thẳng từ bảng 04, không tính lại.
 
 | Trường | Kiểu | Ý nghĩa | Lấy từ cột bảng 04 | SD |
 |---|---|---|---|---|
@@ -192,13 +196,17 @@ Bảng 04 là bảng làm việc: giữ mọi cột trung gian, cờ và bản s
 | `title_canonical` | string, null | Chức danh chuẩn theo `job_titles.json`; null nếu không khớp (55% tin, 10/11) | `title_canonical` | SD1 |
 | `job_family` | string | 10 nhóm + Other | `job_family` | tất cả |
 | `seniority` | string, null | Intern/Fresher, Junior, Middle, Senior, Lead/Manager; null nếu không rõ | `seniority` | SD1, SD4, SD5 |
+| `seniority_inferred` | bool | true nếu cấp bậc do bước 04 suy ra (từ tiêu đề, kinh nghiệm, loại hợp đồng), không lấy từ ô của sàn | `level_inferred` | SD1 (1.2) |
 | `exp_min_years` | float, null | Năm kinh nghiệm tối thiểu; "Không yêu cầu" = 0 | `exp_min_years` | SD1, SD4, SD5 |
 | `exp_max_years` | float, null | Năm kinh nghiệm tối đa; "Trên 3 năm" = null | `exp_max_years` | SD1 |
+| `exp_inferred` | bool | true nếu `exp_min_years` được điền cận dưới theo cấp bậc (M4), không lấy từ ô của sàn hay JD | `exp_inferred` | SD1 (1.5), SD4 |
 | `salary_min` | float, null | Lương thấp nhất, VND/tháng, đã đổi tiền tệ và chặn ngoại lai | `salary_min_vnd_capped` | SD1, SD4 |
 | `salary_max` | float, null | Lương cao nhất, VND/tháng | `salary_max_vnd_capped` | SD1, SD4 |
-| `salary_negotiable` | bool | Tin ghi "thỏa thuận"; khi đó min/max là null. Giữ để phân biệt với tin parse lương lỗi | `is_negotiable` | SD4 |
+| `salary_negotiable` | bool | Tin ghi "thỏa thuận"; khi đó min/max là null. Giữ để phân biệt với tin parse lương lỗi | `is_negotiable` | SD1, SD4 |
+| `salary_outlier` | bool | true nếu lương ngoại lai theo IQR từng cấp bậc (N6). `salary_min/max` đã kẹp ở phân vị 1–99 nhưng tin ngoại lai vẫn còn, nên SD1 bỏ các tin này khi tính trung vị | `is_outlier_salary` | SD1 (1.4, 1.5), SD4 |
 | `province` | string, null | Tỉnh/thành chính, 34 tỉnh sau sáp nhập | `tinh_chinh` | SD1 |
 | `work_mode` | string | `onsite`, `hybrid`, `remote`, `unknown` | `work_mode` | SD1 |
+| `employment_type` | string, null | `full_time`, `part_time`, `contract`, `internship`; null nếu ô của sàn và JD đều không có (đo 18/11: 6,6%, gần hết topdev) | `employment_type` (04 N19) | SD1 |
 | `company` | string | Tên công ty đã chuẩn hóa | `company_norm` | SD1 |
 | `company_id` | string | Khóa gộp các cách viết của một công ty (rapidfuzz `token_sort` ≥ 90); dùng đếm công ty và chia train/test theo công ty ở SD4 | `company_key` | SD1, SD4 |
 | `skills` | list[string] | Kỹ năng chuẩn | `skills_std` (đổi sang nguồn bước 08 khi chốt PRE-40) | SD1–SD5 |
@@ -216,9 +224,9 @@ Bảng 04 là bảng làm việc: giữ mọi cột trung gian, cờ và bản s
 | `deadline_date` | Là ngày tin đóng, không thay được ngày đăng (gộp vào `posted_month` sẽ dời tin sang tháng sau). Processing 10 vẫn đọc từ bảng 04 để tính `days_to_deadline` |
 | `posted_month_source` | Người dùng bỏ khỏi target 17/11. So tháng 9 với tháng 10–11 theo luật nguồn ở mục 4.2 |
 | `crawled_at` | Đã có `posted_month` |
-| `salary_min_vnd`, `salary_max_vnd` (chưa chặn), `log_salary_*`, `salary_currency_raw`, `salary_period_raw`, `salary_source`, `salary_suspect`, `salary_status`, `is_outlier_salary`, `salary_out_of_range`, `salary_iqr_*` | Bản trung gian và cờ chất lượng. Bản log do Processing 10 tự tính; cờ ngoại lai ghi ở `anomalies.json` |
+| `salary_min_vnd`, `salary_max_vnd` (chưa chặn), `log_salary_*`, `salary_currency_raw`, `salary_period_raw`, `salary_source`, `salary_suspect`, `salary_status`, `salary_out_of_range`, `salary_iqr_*` | Bản trung gian và cờ chất lượng. Bản log do Processing 10 tự tính. `salary_status` suy được từ `salary_min/max` + `salary_negotiable`. `is_outlier_salary` đã vào target (`salary_outlier`) từ 18/11 |
 | `locations`, `tinh_cu`, `tinh_key`, `tinh_source`, `tinh_status`, `remote`, `ngoai_vn` | Chi tiết địa điểm; target chỉ cần `province` và `work_mode` |
-| `seniority_level`, `seniority_source`, `level_inferred`, `seniority_can_kiem`, `exp_inferred`, `exp_source` | Mã số và cờ suy ra |
+| `seniority_level`, `seniority_source`, `seniority_can_kiem`, `exp_source`, `exp_conflict`, `exp_min_years_parsed`, `work_mode_source`, `employment_type_source` | Mã số, nguồn giá trị và cờ phụ (`level_inferred`, `exp_inferred` đã vào target từ 18/11) |
 | `job_family_source`, `job_family_can_kiem`, `job_family_generic_title`, `job_title_core`, `title_match_score`, `title_tech_hint` | Cờ và bước trung gian của luật N3 |
 | `raw_*`, `*_norm`, `*_fold`, `*_vi*`, `translation_status`, `language_conf`, `language_rule`, `skills_list`, `skills_clean`, `benefits_list`, `flags` | Chữ gốc và bản phụ để so khớp, dịch, truy vết |
 

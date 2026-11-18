@@ -1,7 +1,7 @@
 # Prompt 02: Integration (sửa L-49: hình thức làm việc, lần cào đầu, tách phúc lợi)
 
 > Đặc tả: [`docs/spec/preprocessing/02_integration.md`](../../spec/preprocessing/02_integration.md). Dữ liệu mẫu: `docs/spec/preprocessing/samples/02_integration.json`.
-> Prompt này viết lại ngày 18/11/2026 sao cho làm lại ra **đúng kết quả lần chạy 18/11**: 4.672 → 4.671, 30 cột (L-49).
+> Prompt này viết lại ngày 18/11/2026 sao cho làm lại ra **đúng kết quả lần chạy lại 18/11** (L-49, rồi L-50): 4.496 → 4.495, 30 cột. Lần chạy đầu 18/11 ra 4.672 → 4.671.
 
 ## 1. Ngữ cảnh
 
@@ -40,6 +40,13 @@ Người dùng: "oke sửa bước 02 trước rồi chạy tiếp bước 03 nh
      - `benefits_original`: bỏ HTML, mỗi dòng 1 item, bỏ ký tự " -•*\t" ở đầu và cuối;
      - `benefits_v2`: lấy `value` → `description` → `name`; `name` là tên icon nên chỉ dùng khi không còn gì khác.
 3. Test. Chạy lại 01 → 01b → 02 (vì 01 thêm `first_scraped_at`). Sinh trang. Ghi `docs/issue_log.md` L-49, sửa `docs/KNOWN_ISSUED.md` (PRE-37 việc 1 xong; PRE-41 chỉ còn từ điển).
+
+### Bổ sung 18/11 (L-50, người dùng chốt)
+
+1. `_flatten_topcv`: `raw_posted_date` = `date_posted`.
+2. `_flatten_topcv`: `industry_knowledge` và `overview_tags["Chuyên môn"]` không vào `skills_list`, chuyển sang `flat["category_tags"]`. Bước 02 không xuất khóa này (không thuộc `KEEP_18`), bước 01 đưa nó vào bộ lọc IT.
+3. `run.py` I4 đếm thêm topcv có `category_tags`; tên luật "Bỏ tag SEO, ngành nghề và nhãn chuyên môn khỏi skills_list".
+4. `monitoring/backend/app/core/feature_targets.py` `RAW_PATHS["topcv"]`: F7 chỉ còn `required_skills`, F8 thêm `date_posted`.
 
 ## 3. Pseudo code
 
@@ -82,7 +89,7 @@ gộp 8 nguồn → all.parquet theo ALL_OUTPUT_COLUMNS
 |---|---|---|
 | Test | `pytest tests/unit/test_integration_step.py tests/unit/test_clean_step.py -q` | Xanh |
 | Dry-run | `python scripts/run_preprocessing.py --step integration --source all --dry-run` | Bảo toàn |
-| Chạy thật | 01 → 01b → 02, `--source all` | 4.672 → 4.671, 30 cột |
+| Chạy thật | 01 → 01b → 02, `--source all` | 4.496 → 4.495, 30 cột; I4 2.366 (topcv 1.516); TopCV `raw_posted_date` 102 tin; top kỹ năng TopCV không còn nhãn ngành |
 | `raw_work_mode` | Độ phủ theo nguồn | topcv 99,5%, glints 100%, itviec 96,5% |
 | Phúc lợi | Số item trung bình mỗi tin | careerviet ≈ 8,7; topdev ≈ 9,5 |
 | `first_crawled_at` | Độ phủ | 100% |
@@ -97,4 +104,9 @@ gộp 8 nguồn → all.parquet theo ALL_OUTPUT_COLUMNS
 | 3 | Test rồi code | 18/11 | 3 test mới + sửa `test_integration_output_contract_and_conservation` (30 cột) và `test_clean_step` (`first_scraped_at`) | `77cac00` |
 | 4 | Dry-run | 18/11 | 8 nguồn: 4.672 → 4.671 | — |
 | 5 | Review, chạy thật | 18/11 | Chạy thật 01 → 01b → 02. L-49 ghi vào `docs/issue_log.md`; PRE-37 việc 1 xong; PRE-41 thu về phần từ điển. Trang `02_integration.html` | `77cac00` |
-| — | Chỗ thiếu mới (chưa xử lý) | 18/11 | Khi viết đặc tả chi tiết thấy thêm: TopCV không đọc `date_posted` (102 tin có); `skills_list` TopCV gộp `industry_knowledge` (nhãn ngành). Chờ người dùng quyết | — |
+| — | Chỗ thiếu mới (đã xử lý ở L-50 bên dưới) | 18/11 | Khi viết đặc tả chi tiết thấy thêm: TopCV không đọc `date_posted` (102 tin có); `skills_list` TopCV gộp `industry_knowledge` (nhãn ngành). Chờ người dùng quyết | — |
+| 1 | Duyệt đặc tả (bổ sung L-50) | 18/11 | Người dùng trả lời các chỗ thiếu PRE-43: "thêm 3 cờ vào silver đi rồi cập nhật lại tài liệu. có thể láy vô tháng. um bỏ nhãn it phần mềm. hmm bạn thấy cáo nào nó có hiệu quả hơn thì lấy cía đó. lấy các loại hợp đồng đó vào sliver đi. bỏ luôn 76 tin glint đó đi"; chọn "Mọi sàn, trước 09/2026" | — |
+| 2 | Duyệt prompt | 18/11 | Đi tắt: làm ngay theo câu duyệt ở bước 1; prompt này cập nhật để lưu log | — |
+| 3 | Test rồi code | 18/11 | Test trước: `test_topcv_date_posted_and_skills_without_industry_labels`. Lần đầu bỏ hẳn nhãn khỏi bộ lọc thì 55 tin TopCV IT (IT PM, System Admin, UI/UX…) bị xếp ngoài IT; chuyển sang `category_tags` để bộ lọc giữ nguyên | `591391b` |
+| 4 | Dry-run | 18/11 | Không dry-run riêng: dry-run 01b và 02 đọc đầu ra cũ của bước trước nên không đo được tác động. Chạy thật trên máy (không đụng R2), so report với git HEAD | — |
+| 5 | Review, chạy thật | 18/11 | Chạy thật 01 → 01b → 02. 02: 4.496 → 4.495, 30 cột; `skills_list` TopCV 54% (chỉ `required_skills`). L-50; PRE-43 đóng. Chờ người dùng xem | `591391b` + commit tài liệu |
