@@ -126,7 +126,7 @@ Truy vấn trực tiếp trạng thái tiến trình hệ điều hành và cơ 
 Trực quan hóa số tin bị loại qua từng chặng. Luật và số liệu theo [spec 05](05_preprocessing_spec.md) (sửa 17/11/2026; bản cũ ghi "Blocking + Jaccard + Cosine TF-IDF" là thiết kế đã thay):
 1. **Khi cào (Collection):** CDC trong từng sàn bằng hash canonical JSON; tin trùng hash ghi `repost`, không sinh file raw.
 2. **Bước 01 Clean:** bỏ file batch lịch sử trùng file từng tin và trùng (`nguồn`, `job_id`), giữ bản mới nhất.
-3. **Bước 01b Deduplication** (spec 05 mục 3.2), 3 tầng: (`nguồn`, `job_id`); `sha1(text_fold)` trùng và cùng `company_slug` (cùng sàn, khác sàn); MinHash/LSH sinh cặp ứng viên rồi Jaccard chính xác ≥ 0,85 và cùng `company_slug`.
+3. **Bước 01b Deduplication** (`docs/spec/preprocessing/01b_deduplication.md`), 3 tầng: (`nguồn`, `job_id`); `sha1(text_fold)` trùng và cùng `company_slug` (cùng sàn, khác sàn); MinHash/LSH sinh cặp ứng viên rồi Jaccard chính xác ≥ 0,85 và cùng `company_slug`.
 
 Trang Pre-processing (`/preprocessing`) đọc phễu từ report từng bước (`reports/preprocessing/<bước>/_all.json`). Phễu 10/11: 13.361 → 4.799 (01) → 4.672 (01b) → 4.671 (02, giữ nguyên qua 03 và 04).
 

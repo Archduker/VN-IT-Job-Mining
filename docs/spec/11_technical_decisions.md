@@ -192,7 +192,7 @@ Nếu không khử trùng lặp triệt để:
 
 ### 2. Quyết Định Kiến Trúc: Khử Trùng Lặp 2 Lớp (Two-Tier Deduplication Strategy)
 
-> Sơ đồ vẽ lại 17/11/2026 theo code hiện tại (spec 05 mục 3.2). Lớp 2 trong bản đầu dùng Jaccard tiêu đề + TF-IDF cosine; phần mô tả cũ giữ ở mục 3 làm lịch sử.
+> Sơ đồ vẽ lại 17/11/2026 theo code hiện tại (`docs/spec/preprocessing/01b_deduplication.md`). Lớp 2 trong bản đầu dùng Jaccard tiêu đề + TF-IDF cosine; phần mô tả cũ giữ ở mục 3 làm lịch sử.
 
 ```mermaid
 flowchart TD

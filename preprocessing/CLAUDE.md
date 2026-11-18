@@ -1,6 +1,6 @@
 # preprocessing/CLAUDE.md
 
-Ngữ cảnh khi làm việc với giai đoạn **Pre-processing** (bước 00–04). Đặc tả chính thức: `docs/spec/05_preprocessing_spec.md`. Mã bước và vị trí của bước trong quy trình: `docs/spec/03_data_mining_lifecycle.md` mục 3.1. Đọc mục tiêu SD1–SD5 ở `docs/target/` trước khi đổi luật, vì mọi SD đều đọc bảng sạch của bước 04.
+Ngữ cảnh khi làm việc với giai đoạn **Pre-processing** (bước 00–04). Đặc tả chính thức: `docs/spec/05_preprocessing_spec.md` (hợp đồng chung, bảng Silver) và `docs/spec/preprocessing/<bước>.md` (luật, quy trình, input → output, dữ liệu mẫu của từng bước). Prompt làm từng bước: `docs/prompting/preprocessing/`. Mã bước và vị trí của bước trong quy trình: `docs/spec/03_data_mining_lifecycle.md` mục 3.1. Đọc mục tiêu SD1–SD5 ở `docs/target/` trước khi đổi luật, vì mọi SD đều đọc bảng sạch của bước 04.
 
 ## Chuỗi bước
 

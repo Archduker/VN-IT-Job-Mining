@@ -105,7 +105,7 @@ Kiến trúc Medallion chia dữ liệu thành 3 tầng logic với mức độ 
 - **Định dạng:** JSONL theo nguồn ở bước 01, 01b; Parquet gộp 8 nguồn từ bước 02.
 - **Nội dung:**
   - **Lọc IT** (bước 01): luật 2 tầng trên tiêu đề và kỹ năng; không dùng model.
-  - **Khử trùng 3 tầng** (bước 01b): (`nguồn`, `job_id`); hash văn bản cùng công ty; MinHash/LSH sinh cặp ứng viên rồi Jaccard chính xác ≥ 0,85 và cùng `company_slug` (spec 05 mục 3.2).
+  - **Khử trùng 3 tầng** (bước 01b): (`nguồn`, `job_id`); hash văn bản cùng công ty; MinHash/LSH sinh cặp ứng viên rồi Jaccard chính xác ≥ 0,85 và cùng `company_slug` (`docs/spec/preprocessing/01b_deduplication.md`).
   - **Làm phẳng** (bước 02): 8 nguồn về 18 trường chung.
   - **Làm sạch và parse** (bước 03): HTML, Unicode NFC, lương, kinh nghiệm, ngày; nhận ngôn ngữ (fastText `lid.176`) và dịch EN→VI (`VietAI/envit5-translation`).
 

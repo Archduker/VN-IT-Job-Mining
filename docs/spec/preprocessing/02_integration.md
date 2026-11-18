@@ -1,0 +1,158 @@
+# Bước 02: Integration
+
+> Code: `preprocessing/integration/run.py` (`process_source`, `run`; hằng `KEYS`, `CLEAN_META`, `KEEP_18`), `json_flattener.py` (`flatten_raw_job_record`, `_flatten_<nguồn>`, `split_careerviet_benefits`), `schema.py` (pydantic `JobRecord`).
+> Lệnh: `python scripts/run_preprocessing.py --step integration --source all [--dry-run]`. Phải chạy `--source all`, vì đầu ra là một file chung.
+> Dữ liệu mẫu: [`samples/02_integration.json`](samples/02_integration.json) (lần chạy 18/11/2026).
+> Prompt: [`docs/prompting/preprocessing/02_integration.md`](../../prompting/preprocessing/02_integration.md).
+
+## 1. Mục đích
+
+- Đưa 8 schema raw về **một schema chung**, một dòng một tin, gộp 8 nguồn vào một `all.parquet`. Nhờ vậy mọi bước sau và mọi SD so được giữa các sàn.
+- Tiêu chí: **consistency** (cùng tên, cùng kiểu), **completeness** (lấy đủ trường mà nguồn có, kể cả nguồn dự phòng như JSON-LD).
+- Ranh giới: bước này **không parse số, không đổi tiền, không bù giá trị**. Giá trị giữ dạng chữ như raw, với tiền tố `raw_`. Bước chỉ bỏ dòng hỏng JSON hoặc sai schema.
+
+## 2. Luật
+
+Số tin là của lần chạy 18/11.
+
+| Mã | Điều kiện | Hành động | Số tin |
+|---|---|---|---|
+| I1 | Làm phẳng envelope bằng `_flatten_<nguồn>` (`strict=True`) về 5 khóa, 6 trường từ 01 và 19 trường `raw_*` | modify | 4.671 |
+| I2 | ITviec: ngày đăng lấy từ `job_posting_jsonld.datePosted`, thay cho dạng tương đối "Đăng 6 giờ trước" | modify | 792 |
+| I3 | TopDev: ngày đăng lấy theo thứ tự `published.date` → `date_posted` → JSON-LD; kinh nghiệm lấy từ JSON-LD `experienceRequirements` | modify | 66 |
+| I4 | Bỏ tag SEO và ngành khỏi `skills_list`: CareerViet `job-tags`, JobsGO `occupations` | modify | 855 (careerviet 309, jobsgo 546) |
+| I5 | Chuỗi rỗng và container rỗng chuyển thành null | modify | 1.097 |
+| I0 | Dòng JSON hỏng | drop | 0 |
+| I6 | Không qua `JobRecord` (khóa, kiểu, `job_title` rỗng) | drop | 1 (careerviet `35C8A80A`, thiếu `job_title`) |
+| I7 | Lỗi trong `_flatten_<nguồn>` | drop | 0 |
+
+**Luật chọn trường:**
+
+- Một trường chỉ được giữ khi có ở ít nhất một nửa số nguồn. Theo luật này đã bỏ `company_scale`, `raw_age_text`, `raw_gender_text`, `raw_updated_at`, `raw_working_time`.
+- Ngoại lệ được người dùng duyệt 18/11: **`raw_work_mode`**. Trường này chỉ có ở 3/8 nguồn nhưng là trường của bảng Silver, và giá trị nguồn ghi sẵn đúng hơn giá trị suy từ địa điểm.
+
+**Tách phúc lợi theo nguồn** (`benefits_list`; số trong ngoặc là số item trung bình mỗi tin, đo 18/11). Mỗi phần tử của list phải là đúng một phúc lợi:
+
+| Nguồn | Raw | Cách tách |
+|---|---|---|
+| vietnamworks | list `benefitValue` | 1 phần tử = 1 item (4,1) |
+| itviec | list theo mục "Tại sao" / "Phúc lợi" | 1 phần tử = 1 item (14,7) |
+| topcv | list `benefits_bullets` + tag "Quyền lợi" | 1 phần tử = 1 item (10,3) |
+| jobsgo | list `benefits_bullets` | 1 phần tử = 1 item (7,2) |
+| vieclam24h | list, dòng bị ngắt giữa câu | nối dòng gãy bằng `stitch_fragmented_bullets` (5,3) |
+| glints | chuỗi hoặc list | chuỗi thì mỗi dòng 1 item (4,5) |
+| topdev | `benefits_original` là một khối HTML `<ul><li>`; nếu rỗng thì dùng `benefits_v2` | bỏ HTML rồi mỗi dòng 1 item; `benefits_v2` lấy `description`, bỏ `name` vì đó là tên icon (9,5; trước khi sửa 0,98) |
+| careerviet | chuỗi "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch …": các ô icon có nhãn cố định, dính liền | `split_careerviet_benefits`: tách theo 15 nhãn cố định, khớp nhãn dài trước, bỏ phần "Địa điểm …" lọt vào cuối (8,7; trước khi sửa 1,0) |
+
+## 3. Quy trình xử lý
+
+`process_source` chạy cho từng nguồn, rồi `run` gộp kết quả:
+
+1. Đọc từng dòng `data/preprocessing/01b_deduplication/<nguồn>.jsonl`. JSON hỏng → **I0**.
+2. `flatten_raw_job_record(env, nguồn, strict=True)` gọi `_flatten_<nguồn>`. Lỗi → **I7**.
+3. Đếm **I2** (itviec có `datePosted`), **I3** (topdev có ngày hoặc kinh nghiệm JSON-LD), **I4** (careerviet có `job-tags`, jobsgo có `occupations`). Các giá trị này đã được flattener lấy ở bước 2; ở đây chỉ đếm và lấy ví dụ.
+4. Dựng bản ghi theo thứ tự cột:
+   1. 5 khóa: `job_id_global` = `<nguồn>_<job_id>`, `source_platform`, `source_job_id`, `source_url`, `crawled_at`.
+   2. 6 trường từ `metadata.clean`: `it_rule`, `it_rule_level`, `it_status`, `dedup_key`, `also_on` (rỗng thì []). `first_crawled_at` = `first_scraped_at`; nếu thiếu thì lấy `crawled_at`.
+   3. 19 trường `KEEP_18`, mỗi giá trị qua `_clean_empty`. Có trường bị đổi về null thì tính **I5**.
+5. `JobRecord.model_validate(record)`. Lỗi → **I6**, ghi tên cột lỗi.
+6. Ghi các dòng bị loại vào `data/preprocessing/rejected/02_integration/<nguồn>.jsonl`. File có cả `raw_line` để truy vết. File này không vào git.
+7. Đo độ phủ 19 trường. Kiểm `job_id_global` không trùng (chỉ báo). `check_conserved()`.
+8. `run` gộp 8 nguồn, sắp cột theo `ALL_OUTPUT_COLUMNS`, ghi `all.parquet` bằng pyarrow.
+
+## 4. Input → Output
+
+| | Đường dẫn | Định dạng | Số dòng 18/11 |
+|---|---|---|---|
+| Input | `data/preprocessing/01b_deduplication/<nguồn>.jsonl` | jsonl envelope | 4.672 |
+| Output | `data/preprocessing/02_integration/all.parquet` | parquet, 30 cột | 4.671 |
+| Bị loại | `data/preprocessing/rejected/02_integration/<nguồn>.jsonl` | jsonl: `step`, `source`, `rule`, `reason`, `job_id`, `line_no`, `raw_line` | 1 |
+| Report | `reports/preprocessing/02_integration/` | `fields[]` là độ phủ 19 trường theo nguồn | — |
+
+**Schema đầu ra** (30 cột; độ phủ trên toàn bảng):
+
+| Nhóm | Cột (độ phủ) |
+|---|---|
+| Khóa | `job_id_global`, `source_platform`, `source_job_id`, `source_url`, `crawled_at` (đều 100%) |
+| Từ 01 | `it_rule`, `it_rule_level` (int), `it_status`, `dedup_key` (99,9%), `also_on` (list, 2,7% khác rỗng), `first_crawled_at` (100%) |
+| 19 trường `raw_*` | `job_title` 100%, `company_name` 100%, `company_address` 87,6%, `raw_category_text` 93,2%, `raw_location_text` 97,5%, `working_locations` (list) 98,7%, `raw_posted_date` 63,8%, `raw_deadline` 94,8%, `raw_salary_text` 99,6%, `raw_employment_type` 94,8%, `raw_work_mode` 54,5%, `raw_experience_text` 90,7%, `raw_seniority_text` 72,6%, `raw_education_text` 66,1%, `raw_headcount` 59,4%, `skills_list` (list) 78,3%, `benefits_list` (list) 98,1%, `raw_description_text` 100%, `raw_requirements_text` 100% |
+
+**Độ phủ theo nguồn của các trường mà bảng Silver cần** (%):
+
+| Nguồn | `raw_posted_date` | `raw_salary_text` | `raw_employment_type` | `raw_work_mode` | `raw_experience_text` | `raw_seniority_text` | `skills_list` | `benefits_list` |
+|---|---|---|---|---|---|---|---|---|
+| careerviet | 98,0 | 98,0 | 98,0 | 0 | 89,7 | 98,0 | 0 | 91,2 |
+| glints | 100 | 100 | 100 | 100 | 91,9 | 0 | 87,8 | 80,9 |
+| itviec | 96,8 | 99,8 | 96,8 | 96,5 | 87,7 | 0 | 100 | 100 |
+| jobsgo | 99,6 | 99,8 | 99,6 | 0 | 99,8 | 99,6 | 0 | 99,8 |
+| topcv | **0** | 99,5 | 99,5 | 99,5 | 99,5 | 99,5 | 99,7 | 100 |
+| topdev | 32,7 | 100 | **0** | 0 | **28,2** | 0,5 | 83,2 | 98,0 |
+| vieclam24h | 100 | 100 | 100 | 0 | 100 | 100 | 100 | 100 |
+| vietnamworks | 100 | 100 | 100 | 0 | 84,5 | 100 | 100 | 100 |
+
+## 5. Dữ liệu mẫu
+
+### 5a. Tin mẫu `topcv_2325743`
+
+Envelope ở 01b trở thành một dòng (trích):
+
+| Cột | Giá trị | Lấy từ raw |
+|---|---|---|
+| `job_id_global` | `topcv_2325743` | `metadata.job_id` |
+| `crawled_at` | 2026-11-01T15:04:01Z | snapshot v2 |
+| `first_crawled_at` | 2026-10-20T18:44:44Z | `metadata.clean.first_scraped_at` (v1) |
+| `job_title` | Backend Developer | `title` |
+| `company_name` | CÔNG TY TNHH EAERA VIỆT NAM | `company` |
+| `raw_category_text` | Lập trình máy tính | `company_industry` |
+| `raw_location_text` | Hà Nội | `location` |
+| `working_locations` | ["Hà Nội: Số 3 Lê Văn Hưu, Phường Hai Bà Trưng (…)"] | `working_places` |
+| `raw_posted_date` | **null** | raw có `date_posted` "2026-10-08", nhưng `_flatten_topcv` không đọc (mục 7) |
+| `raw_deadline` | 20/11/2026 | `deadline_raw` |
+| `raw_salary_text` | 400 - 900 USD | `salary_raw` |
+| `raw_employment_type` | Toàn thời gian | `general_info["Loại hình làm việc"]` |
+| `raw_work_mode` | Làm việc tại văn phòng / Onsite | `general_info["Hình thức làm việc"]` |
+| `raw_experience_text` | 1 năm | `experience` |
+| `raw_seniority_text` | Nhân viên | `general_info["Cấp bậc"]` |
+| `raw_education_text` | Đại Học trở lên | `general_info["Học vấn"]` |
+| `raw_headcount` | 2 người | `general_info["Số lượng tuyển"]` |
+| `skills_list` | ["IT - Phần mềm", "Tài chính"] | `industry_knowledge` (mục "Kiến thức ngành" của TopCV) + `required_skills` (tin này rỗng): là nhãn ngành, không phải kỹ năng (mục 7) |
+| `benefits_list` | 7 item, ví dụ "A 13th-month salary as an end-of-year bonus." | `benefits_bullets` |
+| `raw_description_text` | "At EAERA, we build and scale technology that powers modern fintech businesses…" | `description_bullets` |
+
+### 5b. Ví dụ theo luật
+
+| Luật | Tin | Trước | Sau |
+|---|---|---|---|
+| I2 | itviec `ai-engineer-remote-alpha-bravo-development-4157` | `posted_at_raw` tương đối | `raw_posted_date` 2026-09-29 |
+| I3 | topdev `2133063` | không có ngày ở trường thường | 2026-10-26 (từ `published`) |
+| I4 | jobsgo `27681538345` | ['Quản Lý Dự Án IT', 'Kiểm Thử Phần Mềm', 'Dữ Liệu - AI - Học Máy'] | `skills_list` [] → null |
+| I5 | glints `00151110…` | '' hoặc [] | null |
+| I6 | careerviet `35C8A80A` | `job_title` rỗng | bỏ, `SCHEMA: job_title` |
+| Phúc lợi careerviet | (mọi tin) | "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch …" | ["Laptop", "Chế độ bảo hiểm", "Du Lịch", …] |
+| Phúc lợi topdev | (mọi tin) | `<ul><li>Thưởng dự án</li>…</ul>` | ["Thưởng dự án", …] |
+
+## 6. Kiểm tra và nghiệm thu
+
+| Kiểm tra | Cách | Kết quả 18/11 |
+|---|---|---|
+| Luật bảo toàn | `checks.rows_conserved` | Đạt (4.672 = 4.671 + 1) |
+| Hợp đồng cột | `tests/unit/test_integration_step.py::test_integration_output_contract_and_conservation` (30 cột, không có cột cấm) | Xanh |
+| Tách phúc lợi, work mode | `::test_careerviet_benefits_split_by_fixed_labels`, `::test_topdev_benefits_html_list_one_item_per_line`, `::test_itviec_work_model_kept_as_raw_work_mode` | Xanh |
+| `first_crawled_at` | Mọi dòng có giá trị; tin nhiều snapshot có `first_crawled_at` < `crawled_at` | Đạt |
+| Heatmap độ phủ 19 trường × 8 nguồn | `docs/presentation/preprocessing_steps/02_integration.html` | Có |
+| Đồng bộ Monitoring | Đổi tên trường thì sửa cả `monitoring/backend/app/core/feature_targets.py` (`RAW_PATHS`) | — |
+
+## 7. Trạng thái, chỗ thiếu, việc mở
+
+- **Trạng thái:** có code; sửa và chạy thật lại 18/11 (L-49).
+- **Chỗ thiếu so với bảng Silver:**
+
+| Chỗ thiếu | Số liệu 18/11 | Ảnh hưởng | Hướng xử lý (chờ duyệt) |
+|---|---|---|---|
+| TopCV không có `raw_posted_date` | 0/1.520. Raw chỉ có `date_posted` ở 102 tin (cào gần đây) | `posted_month` của TopCV phải lấy từ `first_crawled_at` (PRE-37) | Cho `_flatten_topcv` đọc `date_posted` / JSON-LD `datePosted` khi có |
+| `skills_list` của TopCV lẫn nhãn ngành và vị trí | `_flatten_topcv` gộp `industry_knowledge` ("Kiến thức ngành") và `overview_tags["Chuyên môn"]` với `required_skills`. Top giá trị: "IT - Phần mềm" 838, "IT - Phần cứng và máy tính" 231, "Tài chính" 110, "Backend Developer" 61; kỹ năng thật như "Python" chỉ 67 | 03 T7 rút cả "Tài chính" thành kỹ năng; SD2, SD4 bị nhiễu | Chỉ lấy `required_skills` vào `skills_list`; đưa `industry_knowledge` sang trường riêng hoặc bỏ như I4 (PRE-40) |
+| TopDev thiếu loại hình và kinh nghiệm | `raw_employment_type` 0%, `raw_experience_text` 28,2% | `exp_min_years` thấp | Bước 03 lấy kinh nghiệm từ JD (từ điển `jd_extraction.json` đã duyệt 18/11) |
+| Glints, ITviec, TopDev không có `raw_seniority_text` | 0%, 0%, 0,5% | Bước 04 phải suy cấp bậc từ tiêu đề và kinh nghiệm | Đã có luật suy ở 04 |
+| `raw_work_mode` chỉ có ở 3 nguồn | 54,5% | `work_mode` của 5 nguồn còn lại phải lấy từ JD hoặc địa điểm | Bước 03 T-JD + 04 |
+
+- **Việc mở:** GEN-7 (`integration/run.py` tự tạo `boto3.client` trong `ensure_p1_data_from_r2`, không đi qua `get_r2_client()`), PRE-37, PRE-40.

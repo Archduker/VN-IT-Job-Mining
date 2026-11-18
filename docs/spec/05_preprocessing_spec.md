@@ -1,7 +1,7 @@
 # ĐẶC TẢ PRE-PROCESSING (bước 00–04)
 
 > **Dự án:** VN-IT-Job-Mining. Đề tài: "Tích hợp và khai phá dữ liệu thị trường lao động phục vụ phân tích nghề nghiệp và kỹ năng trong IT".
-> **Phiên bản:** 3.0.0, ngày 17/11/2026. **Trạng thái:** đã duyệt 17/11/2026 (chặng 2).
+> **Phiên bản:** 3.1.0, ngày 18/11/2026. **Trạng thái:** 3.0.0 đã duyệt 17/11/2026 (chặng 2). Bản 3.1.0 tách đặc tả chi tiết từng bước sang `docs/spec/preprocessing/`; các luật mới trong đó (03 T3b, T6.5, T9; 04 N14 sửa, N19, M4 sửa, S1) chờ duyệt.
 > **Thay cho:** bản 2.0 (đặc tả theo thiết kế 13 bước), các file P0–P4 và PH0–PH7 trong `docs/spec/preprocessing/spec/`, và các file thiết kế cũ trong `docs/spec/preprocessing/`.
 > **Quan hệ với tài liệu khác:** mã bước, thư mục và đường dẫn lấy theo [spec 03](03_data_mining_lifecycle.md) mục 3.1. Mục tiêu lấy theo [`docs/target/`](../target/00_de_tai.md). Processing (bước 07–12) đặc tả ở [spec 06](06_processing_spec.md).
 
@@ -11,8 +11,8 @@
   1. Code: `scripts/run_preprocessing.py` (`CHAIN`, `MODULES`), `preprocessing/common/__init__.py` (`STEPS`), `preprocessing/<bước>/run.py`.
   2. Report của lần chạy thật gần nhất: `reports/preprocessing/<bước>/_all.json`.
   3. Đặc tả cũ, chỉ lấy phần còn khớp với code.
-- **Số liệu trong file này** lấy từ report chạy thật ngày 10–11/11/2026 (`code_version` 37bb865), trừ khi ghi ngày khác. Dữ liệu đang được làm sạch tiếp (PRE-35), nên các số này sẽ đổi.
-- **Mỗi bước** được mô tả theo cùng một khuôn: Mục đích, Code, Đầu vào, Đầu ra, Report, Luật, Kiểm tra, Trạng thái, Việc mở.
+- **Số liệu trong file này** lấy từ report chạy thật ngày 10–11/11/2026 (`code_version` 37bb865), trừ khi ghi ngày khác. Số của lần chạy 18/11 nằm trong file từng bước. Dữ liệu đang được làm sạch tiếp (PRE-35), nên các số này sẽ đổi.
+- **Mỗi bước** có một file đặc tả chi tiết trong `docs/spec/preprocessing/`, theo cùng một khuôn 7 mục (mục 3). File này giữ hợp đồng chung (mục 2), bảng sạch cuối và bảng Silver (mục 4).
 - Mã luật có tiền tố theo bước: `C` (01), `D` (01b), `I` (02), `T` (03), `N` và `M` (04). `M` là các luật xử lý thiếu và ngoại lai, gộp vào 04.
 
 ## 1. Pre-processing phục vụ SD nào
@@ -107,251 +107,27 @@ Mọi bước ghi report theo một schema chung, dựng bằng `preprocessing/c
 
 ## 3. Các bước
 
-### 3.0. Bước 00: Profiling
+Từ 18/11/2026, đặc tả chi tiết của từng bước nằm trong `docs/spec/preprocessing/` ([mục lục](preprocessing/README.md)), mỗi bước một file theo cùng khuôn 7 mục:
 
-| Mục | Nội dung |
-|---|---|
-| Mục đích | Đo hiện trạng trước và sau làm sạch cho cả 8 nguồn, để báo cáo có bảng "trước và sau". Không SD nào đọc trực tiếp |
-| Code | `scripts/profile_sources.py --when before\|after\|both [--sample 500] [--seed 42]` (chỉ đọc) |
-| Đầu vào | `before_clean`: raw mới nhất của mỗi `job_id`, làm phẳng trong bộ nhớ. `after_clean`: `data/preprocessing/03_transformation/all.parquet` |
-| Đầu ra | Không có dữ liệu |
-| Report | `reports/preprocessing/00_profiling/<when>/`: `missing_matrix.json`, `missing_heatmap.html`, `text_quality.json` (tỷ lệ còn HTML, NFD, ký tự ẩn, không dấu), `profile_<nguồn>.html` (ydata-profiling) |
-| Luật | Lấy mẫu 500 tin mỗi nguồn với seed 42 (nguồn nhỏ hơn thì lấy hết). Nếu ydata-profiling không chạy được thì chỉ làm heatmap và các tỷ lệ bằng pandas |
-| Kiểm tra | Đủ 8 nguồn. Cùng seed thì ra cùng kết quả |
-| Trạng thái | Có code, đã chạy 10/11. **Bản `after_clean` chạy lúc 11:54 UTC, trước lần chạy 03 lúc 19:54 UTC**, nên đang đo trên bản 03 cũ (ví dụ topcv 1.533 tin so với 1.520 hiện tại). Phải chạy lại sau mỗi lần chạy lại 03 |
-| Việc mở | PRE-35 |
+1. Mục đích.
+2. Luật.
+3. Quy trình xử lý theo thứ tự trong code.
+4. Input → output.
+5. Dữ liệu mẫu của lần chạy thật, gồm tin mẫu xuyên suốt `topcv_2325743`.
+6. Kiểm tra.
+7. Chỗ thiếu.
 
-### 3.1. Bước 01: Clean
+Luật chi tiết chỉ ghi ở file của bước, không chép lại ở đây. Prompt để làm hoặc làm lại từng bước nằm trong `docs/prompting/preprocessing/`.
 
-| Mục | Nội dung |
-|---|---|
-| Mục đích | Chỉ giữ tin IT thật và còn nội dung, mỗi tin một snapshot. Tiêu chí: accuracy (phạm vi đúng), uniqueness. Phục vụ cả 5 SD, vì tin ngoài IT làm sai mọi tỷ lệ |
-| Code | `preprocessing/clean/run.py`; `preprocessing/common/it_filter.py` (`classify`, `classify_unknown`), `raw_reader.py`; `preprocessing/clean/it_policy.json`, `scope_keywords.json`, `label_review.py` |
-| Đầu vào | `data/<nguồn>/raw/**/*.json` (snapshot `<id>_v<N>.json` và file batch cũ), bỏ qua `_index`, `_quality`, `_listing`, `_listing_failures`. `input.rows` = số snapshot + số tin trong file batch |
-| Đầu ra | `data/preprocessing/01_clean/<nguồn>.jsonl`: mỗi dòng một envelope, **giữ nguyên `raw_payload`**, thêm khối `metadata.clean` (`it_rule`, `it_status`, `it_rule_level`, `dedup_key`, `also_on`, `snapshot_file`). Tin bị loại ghi vào `rejected/01_clean/` kèm lý do |
-| Report | `reports/preprocessing/01_clean/`; `extra.review` ghi độ đúng của luật IT trên nhãn tay theo nguồn; `extra.cross_source_pairs` |
-
-**Luật** (thứ tự chạy thật: C3 chạy trước C1, vì bản ghi thiếu `job_id` không gom được; report vẫn ghi theo thứ tự mã):
-
-| Mã | Luật | Hành động | Số dòng 10/11 |
-|---|---|---|---|
-| C1 | Mỗi `job_id` giữ snapshot mới nhất theo (`scraped_at`, `version`) | drop | 1.987 |
-| C2 | Tin trong file batch cũ đã có file riêng thì bỏ; chưa có thì giữ bản batch (L-25) | drop | 616 |
-| C3 | Bản ghi test, thiếu `job_id` hoặc `source_url`, sai nguồn | drop | 0 |
-| C4a | Phân loại IT bằng luật 2 tầng. Tầng 1: từ khóa tiêu đề, khớp theo từ nguyên vẹn (không theo chuỗi con, vì "intern" từng khớp "international"). Tầng 2, chỉ cho tin tầng 1 ra `unknown`: xếp IT khi tiêu đề thuộc một nhóm nghề và JD có ≥ 2 kỹ năng. Từ yếu đứng một mình ("kỹ thuật", "engineer", "security") không đủ để tính là IT | flag | 5.424 |
-| C4c | Bỏ tin `non_it` **chỉ ở nguồn có chính sách** trong `it_policy.json` do người dùng duyệt. `can_kiem` không bao giờ bị bỏ tự động | drop | 5.424 |
-| C5 | JD dưới 50 từ | drop | 187 |
-| C8 | Tin CTV, đa cấp theo `scope_keywords.json` (mã lý do `S3_*`) | drop | 13 |
-| C6 | Trùng trong cùng nguồn theo `dedup_key = company_norm \| title_norm` (không có tỉnh và tuần, L-40). Giữ bản cào mới nhất; nếu bằng nhau thì giữ bản có nhiều trường có giá trị hơn | drop | 200 |
-| C7 | Trùng khác nguồn theo cùng khóa: giữ bản có nhiều trường có giá trị nhất, các bản khác ghi vào `also_on` | drop | 135 |
-
-Kết quả 10/11: 13.361 bản ghi vào, 4.799 ra.
-
-| Mục | Nội dung |
-|---|---|
-| Kiểm tra | Luật bảo toàn ở 8 nguồn và ở `_all`. Độ đúng của luật IT đo trên nhãn tay `data/preprocessing/review/it_<nguồn>.csv`, báo riêng precision IT, precision non-IT, recall IT và TP/FP/TN/FN. Nếu không có nhãn thì trả `null` kèm `reason=NO_LABELS`. Đích theo thiết kế: kiểm tay 100 tin bị loại, loại nhầm dưới 5% |
-| Trạng thái | Có code, đã chạy thật 10/11. Có 643 nhãn tay; độ đúng 92,4%, chưa đạt ≥ 95% |
-| Việc mở | PRE-12 (nghiệm thu bộ lọc IT; tầng 2 chưa đọc `raw_category_text`), PRE-35 |
-
-### 3.2. Bước 01b: Deduplication
-
-| Mục | Nội dung |
-|---|---|
-| Mục đích | Mỗi vị trí tuyển dụng thật chỉ còn một dòng (tiêu chí uniqueness). Nếu còn trùng thì tần suất kỹ năng (SD1, SD2) bị đếm hai lần, và cùng một JD có thể nằm ở cả tập train lẫn test (SD4) |
-| Code | `preprocessing/deduplication/run.py`, `intra_source.py`, `inter_source.py`, `minhash.py`, `blocking.py`, `text_norm.py`; tham số trong `preprocessing/dictionaries/dedup_policy.json` |
-| Đầu vào | `data/preprocessing/01_clean/<nguồn>.jsonl` |
-| Đầu ra | `data/preprocessing/01b_deduplication/<nguồn>.jsonl`: bản ghi giữ lại, thêm `metadata.dedup` (`text_fold_sha1`, `jaccard`, `merged_from`). Thêm `golden_master_jobs.parquet` (bản hợp nhất) và `duplicates_audit.csv`, gồm mọi cặp trùng, cặp sát ngưỡng và một dòng truy vết cho mỗi bản bị loại qua liên kết gián tiếp |
-| Report | `reports/preprocessing/01b_deduplication/`; `extra` có `tier_counts`, `clusters`, `cross_platform_clusters`, `pairs_by_band`, `cdc`, `unparsed_dates` |
-
-**Luật:**
-
-| Mã | Luật | Hành động | Số dòng 10/11 |
-|---|---|---|---|
-| D0 | Tầng 1: trùng (`nguồn`, `job_id`). Đây là lưới an toàn, vì 01 đã khử | drop | 0 |
-| D1 | Kiểm chuỗi version CDC: lần cào lại có thật sự đổi nội dung không | flag | 1.987 |
-| D2 | Tầng 2, cùng sàn: `sha1(text_fold)` trùng và cùng `company_slug` | drop | 0 |
-| D3 | Gán blocking key | flag | — |
-| D4 | Tầng 2, khác sàn: như D2 | drop | 0 |
-| D5 | Tầng 3: MinHash/LSH (shingle 5 từ, 128 permutation, seed 42) chỉ để sinh cặp ứng viên. Mọi cặp phải qua Jaccard chính xác. Cặp có J ≥ 0,85 **và** cùng `company_slug` không rỗng thì bị loại, áp dụng cả cùng sàn lẫn khác sàn. Gộp bắc cầu bằng Union-Find | drop | 127 |
-| D6 | Hợp nhất golden record: bản giữ lại có `merged_from` | flag | 108 cụm (27 cụm khác sàn) |
-| D7 | Cặp có J từ 0,70 trở lên nhưng không bị loại (khác công ty hoặc dưới 0,85): chỉ ghi vào audit | flag | 168 |
-
-Kết quả 10/11: 4.799 vào, 4.672 ra.
-
-- **Chọn bản giữ:** giữ bản đầy đủ nhất. Khi so ngày thì parse ISO và `dd/mm/yyyy`, quy ngày không có múi giờ về +07 rồi so theo UTC; không sort chuỗi ngày. Giá trị không parse được ghi vào `unparsed_dates`.
-- **Bước 01b vẫn dùng `raw_posted_date`** để chọn bản giữ. Quyết định bỏ `posted_date` (mục 4.2) chỉ áp cho bảng sạch cuối.
-
-| Mục | Nội dung |
-|---|---|
-| Kiểm tra | Mọi input của 01 có đúng một tham chiếu trong `source_job_ids` hoặc `repost_records`. Đích theo thiết kế: precision ≥ 95% trên 50 cặp gần ngưỡng (mẫu sinh bằng `scripts/build_dedup_pairs_sample.py`; `manual_check` trong `dedup_policy.json`) |
-| Trạng thái | Có code, đã chạy thật 10/11. Người dùng duyệt 50 cặp ngày 11/11 ("ổn rồi"), nhưng chưa chấm từng cặp nên chưa có con số precision |
-| Việc mở | PRE-33 (chuẩn hóa tên công ty để bắt cặp khác nguồn, ví dụ MBBANK và Ngân hàng TMCP Quân đội). Mục 6: bước 01 cũng khử trùng (C6, C7) |
-
-### 3.3. Bước 02: Integration
-
-| Mục | Nội dung |
-|---|---|
-| Mục đích | Đưa 8 schema về một schema, để mọi bước sau và mọi SD so sánh được giữa các nguồn (tiêu chí consistency, completeness) |
-| Code | `preprocessing/integration/run.py`, `json_flattener.py` (`_flatten_<nguồn>`), `schema.py` (pydantic `JobRecord`) |
-| Đầu vào | `data/preprocessing/01b_deduplication/<nguồn>.jsonl`. Không đọc raw |
-| Đầu ra | `data/preprocessing/02_integration/all.parquet`: một dòng một tin, gộp 8 nguồn. Bản ghi bị loại ghi vào `rejected/02_integration/` kèm lý do |
-| Report | `reports/preprocessing/02_integration/`; `fields[]` là độ phủ 18 trường |
-
-**Cột đầu ra:**
-
-| Nhóm | Cột |
-|---|---|
-| Khóa (luôn có) | `job_id_global`, `source_platform`, `source_job_id`, `source_url`, `crawled_at` |
-| Từ 01 (`CLEAN_META`) | `it_rule`, `it_rule_level`, `it_status`, `dedup_key`, `also_on`, `first_crawled_at` (lần cào đầu của tin, bước 01 ghi `first_scraped_at` trước khi C1 bỏ snapshot cũ; có từ 18/11, PRE-37) |
-| 19 trường, giữ dạng chữ như raw (tiền tố `raw_`) | `job_title`, `company_name`, `company_address`, `raw_category_text`, `raw_location_text`, `working_locations`, `raw_posted_date`, `raw_deadline`, `raw_salary_text`, `raw_employment_type`, `raw_work_mode`, `raw_experience_text`, `raw_seniority_text`, `raw_education_text`, `raw_headcount`, `skills_list`, `benefits_list`, `raw_description_text`, `raw_requirements_text` |
-
-- Một trường chỉ được giữ khi có ở ít nhất một nửa số nguồn. Theo luật này đã bỏ 5 trường: `company_scale`, `raw_age_text`, `raw_gender_text`, `raw_updated_at`, `raw_working_time`.
-- **Ngoại lệ `raw_work_mode`** (người dùng duyệt 18/11): chỉ có ở 3/8 nguồn (topcv 99,5%, glints 100%, itviec 96,5% từ `work_model`) nhưng vẫn giữ, vì `work_mode` là trường của bảng target (mục 4.4) và giá trị nguồn ghi sẵn đúng hơn giá trị bước 04 suy từ địa điểm.
-- Đổi tên hoặc thêm trường thì phải sửa cả `monitoring/backend/app/core/feature_targets.py` (`RAW_PATHS`).
-
-**Luật:**
-
-| Mã | Luật | Hành động | Số dòng 10/11 |
-|---|---|---|---|
-| I1 | Làm phẳng envelope theo `_flatten_<nguồn>` về 19 trường, khóa và `first_crawled_at` | modify | 4.671 |
-| I2 | ITviec: lấy ngày đăng từ `job_posting_jsonld.datePosted`, thay cho dạng tương đối "Đăng 6 giờ trước" | modify | 792 |
-| I3 | TopDev: lấy ngày đăng theo thứ tự `published.date` → `date_posted` → JSON-LD; lấy kinh nghiệm từ JSON-LD `experienceRequirements` | modify | 66 |
-| I4 | Bỏ tag SEO và ngành nghề khỏi `skills_list` (CareerViet `job-tags`, JobsGO `occupations`) | modify | 855 |
-| I5 | Chuỗi rỗng và container rỗng chuyển thành null | modify | 1.098 |
-| I0 | Dòng JSON hỏng | drop | 0 |
-| I6 | Không qua `JobRecord` (khóa, kiểu, `job_title` rỗng) | drop | 1 |
-| I7 | Lỗi trong `_flatten_<nguồn>` | drop | 0 |
-
-Kết quả 10/11: 4.672 vào, 4.671 ra.
-
-- Độ phủ 10/11: `raw_posted_date` 63,8% (topcv 0%), `raw_salary_text` 99,6%, `raw_experience_text` 90,7%, `raw_seniority_text` 72,5%, `skills_list` 78,3%.
-
-| Mục | Nội dung |
-|---|---|
-| Kiểm tra | Luật bảo toàn. Ghép 19 trường × 8 nguồn ra một heatmap độ phủ (`docs/presentation/preprocessing_steps/02_integration.html`) |
-| Trạng thái | Có code, chạy thật lại 18/11 trên tập raw đang có trên R2: 4.672 vào, 4.671 ra, 30 cột |
-| Việc mở | GEN-7 (`integration/run.py` tự tạo `boto3.client`) |
-
-
-**Phúc lợi theo nguồn** (`benefits_list`, kiểm lại 18/11/2026 trên dữ liệu thật của bước 02; số item trung bình mỗi tin trong ngoặc). Mỗi phần tử của list phải là **một** phúc lợi:
-
-| Nguồn | Raw | Cách tách hiện tại | Đúng chưa |
-|---|---|---|---|
-| vietnamworks | list `benefitValue` | 1 phần tử = 1 item (4,1) | đúng |
-| itviec | list theo mục "Tại sao"/"Phúc lợi" | 1 phần tử = 1 item (14,7) | đúng |
-| topcv | list `benefits_bullets` (mọi tin đều có) + tag "Quyền lợi" | 1 phần tử = 1 item (10,3) | đúng |
-| jobsgo | list `benefits_bullets` | 1 phần tử = 1 item (7,2) | đúng |
-| vieclam24h | list, dòng bị ngắt giữa câu | nối dòng gãy (`stitch_fragmented_bullets`) (5,3) | đúng |
-| glints | chuỗi hoặc list | chuỗi thì mỗi dòng 1 item (4,5) | đúng |
-| topdev | `benefits_original`: 1 khối HTML `<ul><li>`; nếu rỗng thì `benefits_v2` | **sửa 18/11**: bỏ HTML rồi mỗi dòng 1 item; `benefits_v2` lấy `description` (bỏ `name`, là tên icon) (0,98 → 9,5) | đúng |
-| careerviet | chuỗi "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch …" (các ô icon có nhãn cố định, dính liền) | **sửa 18/11**: tách theo 15 nhãn cố định của CareerViet, khớp nhãn dài trước; bỏ phần "Địa điểm …" lọt vào cuối (`split_careerviet_benefits`) (1,0 → 8,7) | đúng |
-
-`benefits_std` (bước 03 T7) khớp từ khóa trên toàn bộ chuỗi nên ít bị ảnh hưởng bởi lỗi tách; cột `benefits` của bảng target lấy từ đây (mục 4.4).
-
-### 3.4. Bước 03: Transformation
-
-| Mục | Nội dung |
-|---|---|
-| Mục đích | Biến chữ thành giá trị dùng được: số lương VND/tháng, số năm kinh nghiệm, ngày, văn bản sạch một ngôn ngữ, danh sách kỹ năng. Tiêu chí: accuracy, consistency. Lương phục vụ SD1, SD4; kỹ năng phục vụ SD2, SD4, SD5; văn bản phục vụ SD3 |
-| Code | `preprocessing/transformation/run.py`; `salary_parser.py` (`parse_salary_cascade`), `date_parser.py`, `experience_parser.py`, `headcount_parser.py`, `location_parser.py`, `skill_extractor.py`; `preprocessing/common/text_clean.py`, `lang_id.py`; `preprocessing/missing_outlier/sneaky_null_detector.py`; `preprocessing/translation/` |
-| Đầu vào | `data/preprocessing/02_integration/all.parquet` |
-| Đầu ra | `data/preprocessing/03_transformation/all.parquet`: giữ mọi cột của 02, thêm các cột ở bảng dưới |
-| Report | `reports/preprocessing/03_transformation/`; `extra.language_distribution`, `extra.text_quality` (tỷ lệ HTML, NFD, ký tự ẩn còn lại) |
-
-**Cột thêm:**
-
-| Cột | Từ |
-|---|---|
-| `salary_min_vnd`, `salary_max_vnd`, `salary_currency_raw`, `salary_period_raw`, `is_negotiable`, `salary_source` (`header`, `title`, `jd`, `none`), `salary_suspect` | T2 |
-| `posted_date`, `deadline_date` | T3 (chỉ dùng ở tầng trung gian, xem mục 4.2) |
-| `posted_month` | **Chưa có** (PRE-37, việc 2) |
-| `exp_min_years`, `exp_max_years` | T4 |
-| `headcount` | T5 |
-| `job_title_clean`, `description_clean`, `requirements_clean` và các bản `*_norm` (viết thường), `*_fold` (viết thường, bỏ dấu, chỉ để so khớp) | T6 |
-| `language` (`vi`, `en`, `other`), `language_conf`, `language_rule` (luật cũ, để đối chiếu) | T6 |
-| `description_vi`, `requirements_vi` và `*_vi_norm`, `*_vi_fold`; `translation_status` (`translated`, `failed`); tên model dịch | T6b |
-| `skills_clean`, `benefits_std` | T7 |
-| `locations`: danh sách `{dia_chi_cu_the, phuong_xa, tinh_thanh, raw}`, chưa chuẩn hóa | T8 |
-| `flags` (ví dụ `deadline_before_crawl`) | nhiều luật |
-
-**Luật:**
-
-| Mã | Luật | Số dòng 10/11 |
-|---|---|---|
-| T1 | Null trá hình chuyển thành null ("0", "Đang cập nhật", "N/A") | 9.854 ô |
-| T2 | Lương, đọc lần lượt trường lương → tiêu đề → JD; tiêu đề và JD chỉ nhận cụm số có đơn vị tiền đứng sát số. `.` và `,` theo sau đủ 3 chữ số là dấu hàng nghìn ("2,000 USD" là 2000). "Từ X" chỉ đặt min; "Up to X", "Tới X" chỉ đặt max, không gán min = max. 1 USD = 25.400 đ; lương năm chia 12. Thỏa thuận thì `is_negotiable = true` và để số NaN (thiếu kiểu MNAR, không bù) | 2.140 |
-| T2f | Lương tháng ngoài khoảng 1–500 triệu: bỏ số, gắn `salary_suspect` | 15 |
-| T3 | Ngày dạng ISO và `dd/mm/yyyy` chuyển thành date. Hạn nộp trước ngày cào thì chỉ gắn cờ, không sửa | 4.493 |
-| T4 | Kinh nghiệm chuyển thành khoảng năm: "Không yêu cầu" → 0–0; "1 - 2 năm" → 1–2; "Trên 3 năm" → 3–null; "Dưới 1 năm" → 0–1 | 4.236 |
-| T5 | Số lượng tuyển chuyển thành số nguyên | 2.773 |
-| T6 | Làm sạch chữ: T6.1 bóc thẻ HTML và entity bằng regex (10 tin); T6.2 NFC (34); T6.3 bỏ ký tự ẩn `​`, `﻿`, `\xa0` (28); T6.4 đưa gạch ngang và bullet về một dạng (`- `) (1.526). Nếu còn HTML hoặc NFD thì lặp lại, tối đa 3 lần; hết lượt thì ghi vào `checks.notes`. Sau đó nhận ngôn ngữ bằng fastText `lid.176` trên 1.000 ký tự đầu; độ tin cậy dưới 0,6 thì ra `other` | 4.671 |
-| T6b | Dịch description và requirements của tin `language = en` bằng envit5. Thuật ngữ trong `dictionaries/no_translate.json` (kỹ năng, công cụ, chức danh kỹ thuật) được thay bằng token giữ chỗ trước khi dịch, dịch xong thì trả lại. Văn bản cắt thành đoạn tối đa 200 token. Bản dịch được kiểm (số liệu, token giữ chỗ, tỷ lệ độ dài 0,3–3,0); hỏng thì giữ bản gốc và ghi `failed`. Có cache theo hash văn bản. Cột gốc luôn được giữ. Chỉ chạy khi có cờ `--translate` | 1.274 |
-| T7 | Kỹ năng: bỏ tag dài hơn 4 từ, tag là danh mục ("Việc làm TP.HCM", "IT - Phần mềm") hoặc tên công ty; rút thêm từ JD bằng từ điển song ngữ `dictionaries/skills.json`, khớp theo từ nguyên vẹn trên **bản gốc**. Tên ngắn (C, R, Go) chỉ khớp khi có ngữ cảnh ("C/C++", "ngôn ngữ C"). Phúc lợi rút bằng `dictionaries/benefits.json` | 4.657 |
-| T8 | Địa điểm 3 cấp, lấy lần lượt từ `working_locations` → `raw_location_text` → `company_address`. Tỉnh nhận theo `provinces_34.json` (kể cả tên cũ). Phường/xã phải có trong `wards_34.json` (3.321 phường/xã mới); tên phường cũ để null. Bỏ cấp quận/huyện. Không chắc thì để null, không đoán | 4.656 |
-
-Kết quả 10/11: 4.671 vào, 4.671 ra. Ngôn ngữ: `vi` 3.390, `en` 1.274, `other` 7.
-
-- Bản dịch không thay bản gốc. Kỹ năng rút từ bản gốc. Bản dịch dùng cho phân tích văn bản tiếng Việt ở Processing (07, 09, 12).
-- Độ phủ sau 03, ngày 10/11: `salary_min_vnd` 40,2%, `salary_max_vnd` 44,5%, `posted_date` 63,8%, `exp_min_years` 90,7%, `skills_clean` 92,9%, `locations` 99,7%.
-
-| Mục | Nội dung |
-|---|---|
-| Kiểm tra | 0% còn HTML, 0% NFD, 0% ký tự ẩn sau làm sạch (đo 10/11: đạt). Đích theo thiết kế: mỗi parser (lương, kinh nghiệm, ngày, địa điểm) đúng ≥ 95% trên 50 chuỗi thật; kiểm tay 50 JD đã dịch, không được đổi kỹ năng hoặc số liệu (mẫu sinh bằng `scripts/build_translation_review_sample.py`) |
-| Trạng thái | Có code, đã chạy thật 10/11, có dịch. Chưa đo parser trên bộ gold. Chưa kiểm tay bản dịch. Chưa có `posted_month` |
-| Việc mở | PRE-34 (222/1.274 tin tiếng Anh dịch `failed`; model làm rơi dấu "+" trong "5+ years"), PRE-33 (kiểm tay 50 JD dịch), PRE-37 (việc 2), PRE-35 |
-
-### 3.5. Bước 04: Normalization
-
-| Mục | Nội dung |
-|---|---|
-| Mục đích | Đưa giá trị về danh mục chuẩn chung cho 8 sàn, để BI và mô hình đếm và so sánh được. Xử lý thiếu và ngoại lai bằng **cờ**, không bằng cách xóa dòng hay điền trung bình. Tiêu chí: consistency, completeness, accuracy. Phục vụ cả 5 SD |
-| Code | `preprocessing/normalization/run.py`; `location_normalizer.py`, `job_title.py` (`FAMILY_MAP`, `family_from_title`), `skill_normalizer.py`, `company_key.py`, `log_transformer.py`; `preprocessing/missing_outlier/missing_rules.py`, `outlier_handler.py`; từ điển `provinces_34.json`, `wards_34.json`, `job_titles.json`, `skills.json`, `skills_taxonomy.json` |
-| Đầu vào | `data/preprocessing/03_transformation/all.parquet` |
-| Đầu ra | `data/preprocessing/04_normalization/all.parquet` (bảng sạch, mục 4): giữ mọi cột trước đó, thêm cột ở bảng dưới. `anomalies.json` liệt kê mọi tin bị gắn cờ, kèm `job_id`, nguồn và loại cờ |
-| Report | `reports/preprocessing/04_normalization/`; `extra.global_salary_stats`, `extra.anomalies_by_kind`, `extra.company_pairs_pending` |
-
-**Cột thêm:**
-
-| Cột | Giá trị |
-|---|---|
-| `locations` (thêm khóa), `tinh_chinh`, `tinh_cu`, `tinh_key`, `tinh_source`, `tinh_status`, `remote`, `ngoai_vn` | 34 tỉnh/thành sau sáp nhập (hiệu lực 01/07/2025) |
-| `work_mode` | hình thức làm việc, suy từ địa điểm, tiêu đề và `raw_location_text` (luật N14; `tinh_status` là luật M7) |
-| `seniority`, `seniority_level`, `seniority_source`, `level_inferred`, `seniority_can_kiem` | 5 cấp: Intern/Fresher (0), Junior (1), Middle (2), Senior (3), Lead/Manager (4); không rõ thì null |
-| `job_family`, `job_family_source`, `job_family_can_kiem`, `job_family_generic_title`, `job_title_core`, `title_canonical`, `title_match_score`, `title_tech_hint` | 10 nhóm nghề + Other: Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI (L-47) |
-| `skills_std` | tên kỹ năng chuẩn theo `skills.json` |
-| `company_norm`, `company_key` | tên công ty chuẩn và khóa nhóm công ty |
-| `exp_min_years` (được điền thêm), `exp_inferred`, `exp_source` | |
-| `salary_min_vnd_capped`, `salary_max_vnd_capped`, `log_salary_min`, `log_salary_max`, `is_outlier_salary`, `salary_status`, `salary_out_of_range`, `salary_iqr_outlier_by_level`, `salary_iqr_scope`, `salary_iqr_upper` | lương sau xử lý ngoại lai |
-
-**Luật:**
-
-| Mã | Luật | Hành động | Số dòng 10/11 |
-|---|---|---|---|
-| N1 | Tỉnh: bỏ dấu, chữ thường, bỏ "tp", "tỉnh", "thành phố" rồi tra bí danh trong `provinces_34.json`. Tên cũ đổi sang tên mới, giữ tên cũ ở `tinh_cu` (Bình Dương → TP. Hồ Chí Minh). "Remote" → `remote = true`. Tên nước ngoài → `ngoai_vn = true`. `tinh_chinh` là tỉnh đầu tiên khác null | modify | 4.574 |
-| N13 | Khi `locations` không ra tỉnh thì lấy tỉnh từ `raw_location_text`, rồi từ `company_address` | modify | 656 |
-| N2 | Cấp bậc: từ `raw_seniority_text` → tiêu đề, theo từ nguyên vẹn. "Nhân viên", "Chuyên viên" không tính là cấp | modify | 4.283 |
-| M3c | Cấp bậc còn trống thì suy từ số năm kinh nghiệm: [0, 1) Intern/Fresher, [1, 2) Junior, [2, 4) Middle, [4, 5) Senior; từ 5 năm trở lên để trống. Gắn `level_inferred = true` | flag | 2.516 |
-| M4 | Intern/Fresher mà thiếu kinh nghiệm thì điền 0, gắn `exp_inferred` (L-39) | flag | 192 |
-| N2b | Nhãn mâu thuẫn: Senior/Trưởng nhóm mà kinh nghiệm < 2 năm, hoặc Thực tập/Mới tốt nghiệp mà ≥ 3 năm → `seniority_can_kiem`. Có nhóm nghề mà JD không có kỹ năng → `job_family_can_kiem` | flag | 371 (115 cấp bậc, 258 nhóm nghề) |
-| N16 | Chức danh chuẩn từ `job_titles.json` (khớp exact, alias, fuzzy) | modify | 2.091 |
-| N3 | Nhóm nghề: chức danh lõi → chức danh chuẩn → nhóm, rồi gộp về 10 nhóm qua `FAMILY_MAP`. Luật không ra thì Other, không ép tin vào nhóm | modify | 3.964 khác Other |
-| N4 | Kỹ năng về tên chuẩn ("ReactJS", "React.js" → "React"), bỏ trùng | modify | 4.337 |
-| N5 | `company_norm` (bỏ "Công ty Cổ phần", "TNHH"…) | modify | 4.668 |
-| N18 | `company_key`: gom tên công ty bằng rapidfuzz `token_sort_ratio` ≥ 90 và quan hệ tập con | modify | 4.668 |
-| N6a | Lương tháng ngoài 1–500 triệu: bỏ số, gắn `salary_suspect` (chạy trước IQR) | flag | 15 |
-| N6 | IQR trên toàn bộ tin để gắn `is_outlier_salary`; winsorize 1–99% ra cột `*_capped` riêng, cột gốc giữ nguyên | modify | 104 |
-| M5 | Lương ngoài 2–100 triệu/tháng: chỉ gắn cờ `salary_out_of_range` | flag | 74 |
-| M6 | IQR theo từng cấp bậc: chỉ gắn cờ `salary_iqr_outlier_by_level` | flag | 150 |
-| M8 | min > max, kinh nghiệm ngoài khoảng: chỉ gắn cờ | flag | 5 |
-| N7 | `log1p` lương, chạy **sau** N6 | modify | 2.081 |
-
-Kết quả 10/11: 4.671 vào, 4.671 ra. Nhóm nghề sau L-47 (11/11): Web 1.853, Other 707, Bridge 533, Data/AI 430, Tester 429, DevOps/Cloud 258, Security 254, Design 78, Game 61, IoT 38, Mobile 30.
-
-| Mục | Nội dung |
-|---|---|
-| Kiểm tra | Không bỏ dòng. N6 chạy trước N7. Mọi tỉnh cũ đều tra ra đúng tỉnh mới; không còn hai cách viết có dấu và không dấu của cùng một tỉnh. Đích theo thiết kế: nhóm nghề đúng ≥ 90% trên 50 tin gán tay (seed 42); bảng chéo `raw_seniority_text` × `seniority` cho VietnamWorks và TopCV |
-| Trạng thái | Có code, đã chạy thật 10–11/11. Chưa đo nhóm nghề trên nhãn tay. Độ phủ: `seniority` 91,7%, `tinh_chinh` 97,8%, `skills_std` 92,9% |
-| Việc mở | PRE-35 (8,3% thiếu cấp bậc, 94 tin `tinh_unknown`, 258 tin `job_family_can_kiem`), PRE-33 (87/140 mục `job_titles.json` chưa duyệt; ~317 tin itviec "0,8 năm"), PRE-38 (tỉnh lấy từ trụ sở công ty, mục 6), PRE-37 (việc 3) |
+| Bước | Mục đích | Code | Đầu vào → đầu ra | Lần chạy thật gần nhất | Đặc tả chi tiết |
+|---|---|---|---|---|---|
+| 00 Profiling | Đo thiếu và chất lượng chữ trước và sau làm sạch | `scripts/profile_sources.py` | raw, bảng 03 → `reports/preprocessing/00_profiling/` | 10/11 (chạy lại sau 03 mới) | [00_profiling.md](preprocessing/00_profiling.md) |
+| 01 Clean | Giữ tin IT, còn nội dung, mỗi tin một snapshot; ghi lần cào đầu | `preprocessing/clean/run.py` | `data/<nguồn>/raw/` → `01_clean/<nguồn>.jsonl` | 18/11: 13.361 → 4.799 | [01_clean.md](preprocessing/01_clean.md) |
+| 01b Deduplication | Khử trùng theo nội dung JD (3 tầng, MinHash + Jaccard ≥ 0,85, cùng công ty) | `preprocessing/deduplication/run.py` | `01_clean/` → `01b_deduplication/<nguồn>.jsonl` | 18/11: 4.799 → 4.672 | [01b_deduplication.md](preprocessing/01b_deduplication.md) |
+| 02 Integration | Làm phẳng 8 schema về 30 cột, gộp `all.parquet` | `preprocessing/integration/run.py` | `01b_deduplication/` → `02_integration/all.parquet` | 18/11: 4.672 → 4.671 | [02_integration.md](preprocessing/02_integration.md) |
+| 03 Transformation | Làm sạch chữ, ngôn ngữ, dịch, parse lương, ngày, kinh nghiệm, kỹ năng, phúc lợi, địa điểm; trích JD (T9, chờ duyệt) | `preprocessing/transformation/run.py` | `02_integration/` → `03_transformation/all.parquet` | 18/11 không dịch: 4.671 → 4.671 | [03_transformation.md](preprocessing/03_transformation.md) |
+| 04 Normalization | Danh mục chuẩn, chọn giá trị cuối, cờ thiếu và ngoại lai | `preprocessing/normalization/run.py` | `03_transformation/` → `04_normalization/all.parquet` | 10–11/11 | [04_normalization.md](preprocessing/04_normalization.md) |
+| Silver | Chọn cột, đổi tên tiếng Anh (mục 4.4) | chưa có (PRE-39) | bảng 04 → `silver.parquet` | — | [silver.md](preprocessing/silver.md) |
 
 ## 4. Bảng sạch cuối (Golden Master)
 
@@ -426,7 +202,7 @@ Bảng 04 là bảng làm việc: giữ mọi cột trung gian, cờ và bản s
 | `company` | string | Tên công ty đã chuẩn hóa | `company_norm` | SD1 |
 | `company_id` | string | Khóa gộp các cách viết của một công ty (rapidfuzz `token_sort` ≥ 90); dùng đếm công ty và chia train/test theo công ty ở SD4 | `company_key` | SD1, SD4 |
 | `skills` | list[string] | Kỹ năng chuẩn | `skills_std` (đổi sang nguồn bước 08 khi chốt PRE-40) | SD1–SD5 |
-| `benefits` | list[string] | Phúc lợi chuẩn theo `dictionaries/benefits.json` (mục 3.3, PRE-41) | `benefits_std` | SD1 |
+| `benefits` | list[string] | Phúc lợi chuẩn theo `dictionaries/benefits.json` ([02_integration.md](preprocessing/02_integration.md), PRE-41) | `benefits_std` | SD1 |
 | `description` | string | Mô tả công việc, đã bỏ HTML | `description_clean` | SD3 |
 | `requirements` | string | Yêu cầu ứng viên, đã bỏ HTML | `requirements_clean` | SD3, SD5 |
 | `language` | string | Ngôn ngữ JD: `vi`, `en`, `other` | `language` | truy vết |
@@ -476,6 +252,8 @@ Bảng 04 là bảng làm việc: giữ mọi cột trung gian, cờ và bản s
 | Bản 00 `after_clean` đo trên bản 03 cũ | Bảng "trước và sau" lệch vài chục tin | Chạy lại 00 sau mỗi lần chạy lại 03 |
 
 ## 7. Tài liệu đã gộp vào spec này
+
+**18/11/2026:** đặc tả chi tiết các bước 00–04 và bảng Silver tách lại thành file riêng trong `docs/spec/preprocessing/` (mục 3), theo yêu cầu của người dùng, để mỗi bước có quy trình, input → output và dữ liệu mẫu. Bảng luật cũ của mục 3 (bản 3.0.0) xem bằng `git show 7aa63a2:docs/spec/05_preprocessing_spec.md`.
 
 Nội dung còn đúng của các file dưới đây đã nằm trong spec này. Người dùng duyệt và các file đã bị xóa ngày 17/11/2026; muốn xem bản cũ thì dùng `git show <commit>:<đường dẫn>`. Cùng đợt đã xóa các bản sao P0–P4 trong `docs/prompting/draft/` và `docs/prompting/preprocessing/`.
 

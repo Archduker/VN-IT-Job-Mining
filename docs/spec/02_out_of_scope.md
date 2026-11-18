@@ -37,7 +37,7 @@ flowchart TD
 - **Quyết định ngoài phạm vi:**
   - Hệ thống **KHÔNG** phân tích, lưu trữ hoặc mô hình hóa các tin tuyển dụng phi CNTT.
   - Các tin này bị chặn đứng và đào thải ngay tại bước đầu tiên của chuỗi tiền xử lý (**Bước 01 Clean**) bằng bộ quy tắc lọc nghiêm ngặt (Keyword Blacklist + Regex Domain Guard).
-  - Không xây dựng các mô hình khai phá cho các ngành nghề ngoài 10 nhóm nghề IT + Other (`job_family`, chốt ở L-47; spec 05 mục 3.5).
+  - Không xây dựng các mô hình khai phá cho các ngành nghề ngoài 10 nhóm nghề IT + Other (`job_family`, chốt ở L-47; `docs/spec/preprocessing/04_normalization.md`).
 
 ### 2.2. Không xây dựng Nền tảng Tìm việc / Job Portal Người dùng cuối (No Operational Job Portal)
 - **Mô tả:** Đồ án không phải là một website thương mại điện tử tuyển dụng (như TopCV thu nhỏ hay ITViec clone).

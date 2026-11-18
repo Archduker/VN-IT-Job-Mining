@@ -1,0 +1,381 @@
+{
+ "step": "01b_deduplication",
+ "trace_job": "topcv_2325743",
+ "run": {
+  "generated_at": "2026-11-18T00:13:49+00:00",
+  "code_version": "eb06083",
+  "mode": "applied",
+  "input": {
+   "path": null,
+   "rows": 4799
+  },
+  "output": {
+   "path": null,
+   "rows": 4672
+  },
+  "dropped": [
+   {
+    "rule": "D0",
+    "reason": "Tầng 1: trùng (nguồn, job_id)",
+    "rows": 0
+   },
+   {
+    "rule": "D2",
+    "reason": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+    "rows": 0
+   },
+   {
+    "rule": "D4",
+    "reason": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
+    "rows": 0
+   },
+   {
+    "rule": "D5",
+    "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+    "rows": 127
+   }
+  ],
+  "by_source": {
+   "careerviet": {
+    "in": 409,
+    "out": 400
+   },
+   "glints": {
+    "in": 254,
+    "out": 246
+   },
+   "itviec": {
+    "in": 842,
+    "out": 818
+   },
+   "jobsgo": {
+    "in": 587,
+    "out": 548
+   },
+   "topcv": {
+    "in": 1537,
+    "out": 1520
+   },
+   "topdev": {
+    "in": 216,
+    "out": 202
+   },
+   "vieclam24h": {
+    "in": 173,
+    "out": 164
+   },
+   "vietnamworks": {
+    "in": 781,
+    "out": 774
+   }
+  },
+  "checks": {
+   "rows_conserved": true,
+   "notes": []
+  }
+ },
+ "rules": [
+  {
+   "id": "D1",
+   "name": "Kiểm toán chuỗi version CDC (cào lại có đổi nội dung thật không)",
+   "action": "flag",
+   "rows": 1987,
+   "by_source": {
+    "topcv": 75,
+    "topdev": 1108,
+    "vietnamworks": 728,
+    "careerviet": 18,
+    "vieclam24h": 0,
+    "itviec": 1,
+    "glints": 0,
+    "jobsgo": 57
+   },
+   "examples": []
+  },
+  {
+   "id": "D0",
+   "name": "Tầng 1: trùng (nguồn, job_id)",
+   "action": "drop",
+   "rows": 0,
+   "by_source": {
+    "topcv": 0,
+    "topdev": 0,
+    "vietnamworks": 0,
+    "careerviet": 0,
+    "vieclam24h": 0,
+    "itviec": 0,
+    "glints": 0,
+    "jobsgo": 0
+   },
+   "examples": []
+  },
+  {
+   "id": "D2",
+   "name": "Tầng 2 cùng sàn: sha1(text_fold) trùng và cùng company_slug",
+   "action": "drop",
+   "rows": 0,
+   "by_source": {
+    "topcv": 0,
+    "topdev": 0,
+    "vietnamworks": 0,
+    "careerviet": 0,
+    "vieclam24h": 0,
+    "itviec": 0,
+    "glints": 0,
+    "jobsgo": 0
+   },
+   "examples": []
+  },
+  {
+   "id": "D4",
+   "name": "Tầng 2 liên sàn: sha1(text_fold) trùng và cùng company_slug",
+   "action": "drop",
+   "rows": 0,
+   "by_source": {
+    "topcv": 0,
+    "topdev": 0,
+    "vietnamworks": 0,
+    "careerviet": 0,
+    "vieclam24h": 0,
+    "itviec": 0,
+    "glints": 0,
+    "jobsgo": 0
+   },
+   "examples": []
+  },
+  {
+   "id": "D5",
+   "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
+   "action": "drop",
+   "rows": 127,
+   "by_source": {
+    "topcv": 17,
+    "topdev": 14,
+    "vietnamworks": 7,
+    "careerviet": 9,
+    "vieclam24h": 9,
+    "itviec": 24,
+    "glints": 8,
+    "jobsgo": 39
+   },
+   "examples": [
+    {
+     "job_id": "1013348",
+     "field": "dedup",
+     "before": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html",
+     "after": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html",
+     "url": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html"
+    },
+    {
+     "job_id": "1506721",
+     "field": "dedup",
+     "before": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html",
+     "after": "https://topdev.vn/viec-lam/business-analyst-cong-ty-co-phan-global-technology-solutions-viet-nam-2138328",
+     "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
+    },
+    {
+     "job_id": "1839052",
+     "field": "dedup",
+     "before": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html",
+     "after": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
+     "url": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html"
+    }
+   ]
+  },
+  {
+   "id": "D6",
+   "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
+   "action": "flag",
+   "rows": 108,
+   "by_source": {
+    "topcv": 20,
+    "topdev": 7,
+    "vietnamworks": 5,
+    "careerviet": 9,
+    "vieclam24h": 5,
+    "itviec": 36,
+    "glints": 5,
+    "jobsgo": 21
+   },
+   "examples": [
+    {
+     "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+     "field": "master_id",
+     "before": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01",
+     "after": "0879983d-7ff6-5dd4-81a9-d63509dfe448",
+     "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+    },
+    {
+     "job_id": "1629932",
+     "field": "master_id",
+     "before": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html",
+     "after": "dc5ddf91-f4fc-519c-a2ce-7b074b2c45e5",
+     "url": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html"
+    },
+    {
+     "job_id": "1832499",
+     "field": "master_id",
+     "before": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
+     "after": "25b609ec-a899-524d-9361-74a916ad0bc8",
+     "url": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html"
+    }
+   ]
+  },
+  {
+   "id": "D7",
+   "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
+   "action": "flag",
+   "rows": 168,
+   "by_source": {
+    "topcv": 63,
+    "topdev": 11,
+    "vietnamworks": 20,
+    "careerviet": 5,
+    "vieclam24h": 5,
+    "itviec": 12,
+    "glints": 5,
+    "jobsgo": 47
+   },
+   "examples": [
+    {
+     "job_id": "1975529",
+     "field": "jaccard",
+     "before": null,
+     "after": 0.856,
+     "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem-co-dao-tao/1975529.html"
+    },
+    {
+     "job_id": "2002662",
+     "field": "jaccard",
+     "before": null,
+     "after": 0.913,
+     "url": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-network/2002662.html"
+    },
+    {
+     "job_id": "200945606",
+     "field": "jaccard",
+     "before": null,
+     "after": 0.7541,
+     "url": "https://vieclam24h.vn/it-phan-mem/manual-automation-tester-quality-analyst-qa-qc-c8p122id200945606.html"
+    }
+   ]
+  }
+ ],
+ "schema": {
+  "format": "jsonl, mỗi dòng một envelope",
+  "top_keys": [
+   "metadata",
+   "raw_payload"
+  ],
+  "metadata_keys": [
+   "clean",
+   "content_hash",
+   "dedup",
+   "job_id",
+   "language",
+   "scraped_at",
+   "scraper_version",
+   "source",
+   "source_url",
+   "version"
+  ],
+  "metadata_clean_keys": [
+   "also_on",
+   "dedup_key",
+   "first_scraped_at",
+   "it_rule",
+   "it_rule_level",
+   "it_status",
+   "snapshot_file"
+  ],
+  "metadata_dedup_keys": [
+   "blocking_key",
+   "cluster_size",
+   "content_hash_norm",
+   "duplicate_count",
+   "master_id",
+   "merged_from",
+   "repost_records",
+   "sources",
+   "text_fold_sha1"
+  ]
+ },
+ "trace": {
+  "present": true,
+  "metadata": {
+   "job_id": "2325743",
+   "source": "topcv",
+   "source_url": "https://www.topcv.vn/viec-lam/backend-developer/2325743.html",
+   "scraped_at": "2026-11-01T15:04:01.367765+00:00",
+   "scraper_version": "2.2.0",
+   "version": 2,
+   "language": "en",
+   "content_hash": "29d0469f98b6c26bd29017272f274fc7ad1fdb78bbbe32ff336d44d23a25f389"
+  },
+  "metadata_clean": {
+   "snapshot_file": "2026-11-01/2325743_v2.json",
+   "it_rule": "it",
+   "it_rule_level": 1,
+   "it_status": "it",
+   "dedup_key": "eaera|backend developer",
+   "also_on": [],
+   "first_scraped_at": "2026-10-20T18:44:44.698712+00:00"
+  },
+  "metadata_dedup": {
+   "content_hash_norm": "4496aeca26569c284c304e72f02e934099572704be9fc291ebe65ad6069b4894",
+   "text_fold_sha1": "f909556b681b8ecec94b6ec8bab0e722fc523b46",
+   "blocking_key": "eaera_HN_backend",
+   "master_id": "61870720-f45c-5fe5-9bf7-dbdb3e78a4fa",
+   "cluster_size": 1,
+   "merged_from": [],
+   "sources": [
+    "topcv:2325743"
+   ],
+   "duplicate_count": 1,
+   "repost_records": null
+  },
+  "raw_payload_keys": [
+   "allowance_tags",
+   "apply_method",
+   "benefits_bullets",
+   "company",
+   "company_address",
+   "company_industry",
+   "company_scale",
+   "date_posted",
+   "deadline_raw",
+   "description_bullets",
+   "experience",
+   "general_info",
+   "industry_knowledge",
+   "jd_source",
+   "job_posting_jsonld",
+   "location",
+   "overview_tags",
+   "required_skills",
+   "requirements_bullets",
+   "salary_raw",
+   "title",
+   "valid_through",
+   "welfare_tags",
+   "working_places",
+   "working_time"
+  ],
+  "raw_payload_excerpt": {
+   "apply_method": "Ứng viên nộp hồ sơ trực tuyến bằng cách bấm Ứng tuyển ngay dưới đây.",
+   "company": "CÔNG TY TNHH EAERA VIỆT NAM",
+   "company_address": "Phòng 301 và 101, Số nhà 03 Lê Văn Hưu, Phường Phạm Đình Hổ, Quận Hai Bà Trưng, Thành phố Hà Nội, Việt Nam",
+   "company_industry": "Lập trình máy tính",
+   "company_scale": "25-99 nhân viên",
+   "date_posted": "2026-10-08",
+   "deadline_raw": "20/11/2026",
+   "experience": "1 năm",
+   "jd_source": "dom",
+   "location": "Hà Nội",
+   "salary_raw": "400 - 900 USD",
+   "title": "Backend Developer",
+   "valid_through": "2026-11-07T23:59:59+07:00",
+   "working_time": "Thứ 2 - Thứ 6 (từ 09:00 đến 18:30)\nNghỉ trưa 1h30p"
+  }
+ }
+}

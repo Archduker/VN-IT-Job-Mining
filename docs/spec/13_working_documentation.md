@@ -181,7 +181,7 @@ python scripts/push_preprocessing_to_r2.py            # chỉ so, không ghi
 Lưu ý (17/11/2026):
 - `PROCESSING_STEPS` trong code vẫn còn `12_tfidf`; bước này đã bỏ, việc gỡ code thuộc MINE-7.
 - `05_encoding` đã thay bằng bước 10, nhưng vẫn nằm trong `STEPS` (`preprocessing/common/__init__.py`), nên `--step all` vẫn chạy nó; đầu ra của nó không ai dùng (PRE-39).
-- Bước 00 profiling không nằm trong `CHAIN`; chạy riêng theo spec 05 mục 3.0.
+- Bước 00 profiling không nằm trong `CHAIN`; chạy riêng theo `docs/spec/preprocessing/00_profiling.md`.
 - `scripts/run_staging_integration_pipeline.py` là driver cũ ghi `data/staging/`, `data/curated/`; chuỗi chuẩn là `scripts/run_preprocessing.py`.
 
 ### 3.2. Quy Tắc Kiểm Tra Tính Bảo Toàn Dữ Liệu (Conservation Rule)
