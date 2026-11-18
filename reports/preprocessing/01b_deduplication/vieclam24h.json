@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:12:38+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:29:27+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
-    "rows": 173
+    "rows": 171
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/vieclam24h.jsonl",
-    "rows": 164
+    "rows": 162
   },
   "dropped": [
     {
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 5,
+      "rows_affected": 4,
       "examples": [
         {
           "job_id": "200945606",
@@ -135,18 +135,18 @@
           "url": "https://vieclam24h.vn/it-phan-mem/manual-automation-tester-quality-analyst-qa-qc-c8p122id200945606.html"
         },
         {
-          "job_id": "200946306",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.74,
-          "url": "https://vieclam24h.vn/it-phan-mem/chuyen-vien-lap-trinh-c8p73id200946306.html"
-        },
-        {
           "job_id": "200948494",
           "field": "jaccard",
           "before": null,
           "after": 0.7823,
           "url": "https://vieclam24h.vn/buu-chinh-vien-thong/nhan-vien-ky-thuat-ha-tang-toan-ho-chi-minh-c38p122id200948494.html"
+        },
+        {
+          "job_id": "200955584",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7873,
+          "url": "https://vieclam24h.vn/it-phan-mem/mobile-game-developer-fullstack-5xp-java-c-c-php-c8p210000187id200955584.html"
         }
       ]
     }
@@ -170,7 +170,7 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 143,
+    "blocking_blocks": 141,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 9

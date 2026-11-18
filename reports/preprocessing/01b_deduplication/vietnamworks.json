@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:12:38+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:29:27+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
-    "rows": 781
+    "rows": 701
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/vietnamworks.jsonl",
-    "rows": 774
+    "rows": 698
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 7
+      "rows": 3
     }
   ],
   "rules": [
@@ -67,15 +67,8 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 7,
+      "rows_affected": 3,
       "examples": [
-        {
-          "job_id": "2100265",
-          "field": "dedup",
-          "before": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td45098-2100265-jv",
-          "after": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td450983-2100274-jv",
-          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td45098-2100265-jv"
-        },
         {
           "job_id": "2110214",
           "field": "dedup",
@@ -89,6 +82,13 @@
           "before": "https://www.vietnamworks.com/agentic-engineer-python-go-c-c-plus-plus-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-1790071689220836869-2110323-jv",
           "after": "https://www.vietnamworks.com/agentic-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-2110213-jv",
           "url": "https://www.vietnamworks.com/agentic-engineer-python-go-c-c-plus-plus-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-1790071689220836869-2110323-jv"
+        },
+        {
+          "job_id": "2110327",
+          "field": "dedup",
+          "before": "https://www.vietnamworks.com/ai-software-engineer-python-go-c-c-plus-plus-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-1790071949682767373-2110327-jv",
+          "after": "https://www.vietnamworks.com/agentic-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-2110213-jv",
+          "url": "https://www.vietnamworks.com/ai-software-engineer-python-go-c-c-plus-plus-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-1790071949682767373-2110327-jv"
         }
       ]
     },
@@ -99,25 +99,25 @@
       "rows_affected": 5,
       "examples": [
         {
-          "job_id": "2099082",
-          "field": "master_id",
-          "before": "https://www.vietnamworks.com/chuyen-vien-cao-cap-phan-tich-du-lieu--2099082-jv",
-          "after": "d422c76d-8e9e-59f9-8770-c87c28ea155c",
-          "url": "https://www.vietnamworks.com/chuyen-vien-cao-cap-phan-tich-du-lieu--2099082-jv"
-        },
-        {
-          "job_id": "2100274",
-          "field": "master_id",
-          "before": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td450983-2100274-jv",
-          "after": "239f7217-3303-5632-8c3f-2aae70161a70",
-          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-va-thiet-ke-mo-hinh-du-lieu-data-analyst-khoi-du-lieu-2026td450983-2100274-jv"
-        },
-        {
           "job_id": "2108194",
           "field": "master_id",
           "before": "https://www.vietnamworks.com/business-analyst-ba-chuyen-vien-phan-tich-nghiep-vu-1789615589156347035-2108194-jv",
           "after": "4fcbb6a1-1697-59e2-9e3f-403365389ec6",
           "url": "https://www.vietnamworks.com/business-analyst-ba-chuyen-vien-phan-tich-nghiep-vu-1789615589156347035-2108194-jv"
+        },
+        {
+          "job_id": "2110213",
+          "field": "master_id",
+          "before": "https://www.vietnamworks.com/agentic-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-2110213-jv",
+          "after": "b2cb1faf-b554-5360-b9f0-f685086aa2a9",
+          "url": "https://www.vietnamworks.com/agentic-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-2110213-jv"
+        },
+        {
+          "job_id": "2118222",
+          "field": "master_id",
+          "before": "https://www.vietnamworks.com/truong-phong-cong-nghe-thong-tin-it-manager--2118222-jv",
+          "after": "21dc5064-d1d4-5849-adda-5c925c5f6ab9",
+          "url": "https://www.vietnamworks.com/truong-phong-cong-nghe-thong-tin-it-manager--2118222-jv"
         }
       ]
     },
@@ -125,28 +125,28 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 20,
+      "rows_affected": 17,
       "examples": [
-        {
-          "job_id": "2100226",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.707,
-          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-khach-hang-ca-nhan-data-analyst-retail-banking-khoi-du-lieu-2026td453678-2100226-jv"
-        },
-        {
-          "job_id": "2100263",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.8068,
-          "url": "https://www.vietnamworks.com/chuyen-vien-quan-ly-chat-luong-du-lieu-data-quality-management-specialist-khoi-du-lieu-2026td450981-2100263-jv"
-        },
         {
           "job_id": "2102612",
           "field": "jaccard",
           "before": null,
           "after": 0.7314,
           "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
+        },
+        {
+          "job_id": "2102612",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7913,
+          "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
+        },
+        {
+          "job_id": "2110299",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.708,
+          "url": "https://www.vietnamworks.com/all-level-backend-engineer-java-spring-boot-khoi-cong-nghe-thong-tin-2025td1785-2110299-jv"
         }
       ]
     }
@@ -170,27 +170,19 @@
       "hop_same_version": 3,
       "hop_version_not_bumped": 2
     },
-    "blocking_blocks": 605,
+    "blocking_blocks": 561,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 7
+      "D5": 3
     }
   },
   "samples": [
     {
-      "job_id": "2110214",
+      "job_id": "2110327",
       "source": "vietnamworks",
       "field": "duplicate_of",
-      "before": "2110214",
+      "before": "2110327",
       "after": "DROPPED D5 -> vietnamworks:2110213",
-      "changed": true
-    },
-    {
-      "job_id": "2115752",
-      "source": "vietnamworks",
-      "field": "duplicate_of",
-      "before": "2115752",
-      "after": "DROPPED D5 -> vietnamworks:2099082",
       "changed": true
     },
     {
@@ -198,6 +190,14 @@
       "source": "vietnamworks",
       "field": "duplicate_of",
       "before": "2110323",
+      "after": "DROPPED D5 -> vietnamworks:2110213",
+      "changed": true
+    },
+    {
+      "job_id": "2110214",
+      "source": "vietnamworks",
+      "field": "duplicate_of",
+      "before": "2110214",
       "after": "DROPPED D5 -> vietnamworks:2110213",
       "changed": true
     }

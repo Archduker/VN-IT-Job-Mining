@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:12:38+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:29:27+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
-    "rows": 1537
+    "rows": 1536
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/topcv.jsonl",
-    "rows": 1520
+    "rows": 1523
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 17
+      "rows": 13
     }
   ],
   "rules": [
@@ -67,7 +67,7 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 17,
+      "rows_affected": 13,
       "examples": [
         {
           "job_id": "1013348",
@@ -77,18 +77,18 @@
           "url": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html"
         },
         {
-          "job_id": "1506721",
-          "field": "dedup",
-          "before": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html",
-          "after": "https://topdev.vn/viec-lam/business-analyst-cong-ty-co-phan-global-technology-solutions-viet-nam-2138328",
-          "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
-        },
-        {
           "job_id": "1839052",
           "field": "dedup",
           "before": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html",
           "after": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
           "url": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html"
+        },
+        {
+          "job_id": "2144442",
+          "field": "dedup",
+          "before": "https://www.topcv.vn/viec-lam/truong-nhom-kiem-thu-phan-mem/2144442.html",
+          "after": "https://www.topcv.vn/viec-lam/truong-nhom-tester-linh-vuc-cntt-ott/2165864.html",
+          "url": "https://www.topcv.vn/viec-lam/truong-nhom-kiem-thu-phan-mem/2144442.html"
         }
       ]
     },
@@ -96,8 +96,15 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 20,
+      "rows_affected": 24,
       "examples": [
+        {
+          "job_id": "1506721",
+          "field": "master_id",
+          "before": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html",
+          "after": "b805e6bb-f183-5e68-b756-3dcdc5ed2503",
+          "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
+        },
         {
           "job_id": "1629932",
           "field": "master_id",
@@ -111,13 +118,6 @@
           "before": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
           "after": "25b609ec-a899-524d-9361-74a916ad0bc8",
           "url": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html"
-        },
-        {
-          "job_id": "2119759",
-          "field": "master_id",
-          "before": "https://www.topcv.vn/viec-lam/product-owner-tu-6-thang-kinh-nghiem/2119759.html",
-          "after": "6d5c0c7b-da6b-5ebf-ab5d-ff2eacebab38",
-          "url": "https://www.topcv.vn/viec-lam/product-owner-tu-6-thang-kinh-nghiem/2119759.html"
         }
       ]
     },
@@ -173,32 +173,32 @@
     "blocking_blocks": 1270,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 17
+      "D5": 13
     }
   },
   "samples": [
     {
-      "job_id": "2323097",
+      "job_id": "2308003",
       "source": "topcv",
       "field": "duplicate_of",
-      "before": "2323097",
-      "after": "DROPPED D5 -> topdev:2134288",
+      "before": "2308003",
+      "after": "DROPPED D5 -> topcv:2319815",
       "changed": true
     },
     {
-      "job_id": "2318761",
+      "job_id": "1839052",
       "source": "topcv",
       "field": "duplicate_of",
-      "before": "2318761",
-      "after": "DROPPED D5 -> topcv:2329037",
+      "before": "1839052",
+      "after": "DROPPED D5 -> topcv:1832499",
       "changed": true
     },
     {
-      "job_id": "2327269",
+      "job_id": "2283253",
       "source": "topcv",
       "field": "duplicate_of",
-      "before": "2327269",
-      "after": "DROPPED D5 -> itviec:ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
+      "before": "2283253",
+      "after": "DROPPED D5 -> topcv:2315136",
       "changed": true
     }
   ]

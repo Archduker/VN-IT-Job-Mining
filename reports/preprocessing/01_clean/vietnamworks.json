@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:11:40+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:28:06+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/vietnamworks/raw",
     "rows": 1947
   },
   "output": {
     "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
-    "rows": 781
+    "rows": 701
   },
   "dropped": [
     {
@@ -44,9 +44,14 @@
       "rows": 0
     },
     {
+      "rule": "C9",
+      "reason": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
+      "rows": 82
+    },
+    {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-      "rows": 21
+      "rows": 19
     },
     {
       "rule": "C7",
@@ -179,31 +184,60 @@
       "examples": []
     },
     {
+      "id": "C9",
+      "name": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
+      "action": "drop",
+      "rows_affected": 82,
+      "examples": [
+        {
+          "job_id": "2085748",
+          "field": "raw_posted_date",
+          "before": "2026-07-23T14:52:41+07:00",
+          "after": null,
+          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
+        },
+        {
+          "job_id": "2092686",
+          "field": "raw_posted_date",
+          "before": "2026-08-07T14:03:49+07:00",
+          "after": null,
+          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+        },
+        {
+          "job_id": "2093859",
+          "field": "raw_posted_date",
+          "before": "2026-08-11T14:02:11+07:00",
+          "after": null,
+          "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
+        }
+      ]
+    },
+    {
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 21,
+      "rows_affected": 19,
       "examples": [
-        {
-          "job_id": "2099670",
-          "field": "dedup_key",
-          "before": "shinhan finance company limited|it project manager",
-          "after": "giữ 2110094",
-          "url": "https://www.vietnamworks.com/it-project-manager--2099670-jv"
-        },
-        {
-          "job_id": "2100783",
-          "field": "dedup_key",
-          "before": "viện nghiên cứu công nghệ chiến lược viettel vist|kỹ sư thiết kế thuật toán và mô phỏng (mạnh slam)",
-          "after": "giữ 2106002",
-          "url": "https://www.vietnamworks.com/ky-su-thiet-ke-thuat-toan-va-mo-phong-manh-slam-2100783-jv"
-        },
         {
           "job_id": "2109530",
           "field": "dedup_key",
           "before": "trace tec|senior ran automation engineer",
           "after": "giữ 2121672",
           "url": "https://www.vietnamworks.com/senior-ran-automation-engineer-2109530-jv"
+        },
+        {
+          "job_id": "2109884",
+          "field": "dedup_key",
+          "before": "ngân hàng tmcp quân đội mbbank|chuyên viên cao cấp công nghệ mô hình - senior machine learning engineer - khối dữ liệu (2026td456629)",
+          "after": "giữ 2110215",
+          "url": "https://www.vietnamworks.com/chuyen-vien-cao-cap-cong-nghe-mo-hinh-senior-machine-learning-engineer-khoi-du-lieu-2026td456629-1790045648171714627-2109884-jv"
+        },
+        {
+          "job_id": "2110848",
+          "field": "dedup_key",
+          "before": "chứng khoán ssi|chuyên viên quản trị cơ sở dữ liệu (postgresql)",
+          "after": "giữ 2123254",
+          "url": "https://www.vietnamworks.com/chuyen-vien-quan-tri-co-so-du-lieu-postgresql-1790156139292867076-2110848-jv"
         }
       ]
     },
@@ -237,7 +271,7 @@
     {
       "field": "raw_location_text",
       "fill_pct_in": 86.5,
-      "fill_pct_out": 87.1
+      "fill_pct_out": 85.7
     },
     {
       "field": "raw_posted_date",
@@ -328,11 +362,27 @@
   },
   "samples": [
     {
-      "job_id": "2118327",
+      "job_id": "2099670",
       "source": "vietnamworks",
       "field": "job_title",
-      "before": "Nhân Viên IT",
-      "after": "DROPPED C5: JD_SHORT",
+      "before": "IT Project Manager",
+      "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
+      "changed": true
+    },
+    {
+      "job_id": "2101781",
+      "source": "vietnamworks",
+      "field": "job_title",
+      "before": "Technical Product Developer (Merchandiser / Developer Background) Bags & Backpacks",
+      "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
+      "changed": true
+    },
+    {
+      "job_id": "2101570",
+      "source": "vietnamworks",
+      "field": "job_title",
+      "before": "Nhân Viên IT / IT Administration Staff",
+      "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
       "changed": true
     }
   ]

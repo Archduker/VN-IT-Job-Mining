@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:14:14+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:31:06+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/preprocessing/01b_deduplication/jobsgo.jsonl",
-    "rows": 548
+    "rows": 543
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 548
+    "rows": 543
   },
   "dropped": [
     {
@@ -34,7 +34,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
       "action": "modify",
-      "rows_affected": 548,
+      "rows_affected": 543,
       "examples": []
     },
     {
@@ -55,28 +55,28 @@
       "id": "I4",
       "name": "Bỏ tag SEO và ngành nghề khỏi skills_list",
       "action": "modify",
-      "rows_affected": 546,
+      "rows_affected": 541,
       "examples": [
         {
-          "job_id": "27681538345",
+          "job_id": "28732145575",
           "field": "skills_list",
-          "before": "['Quản Lý Dự Án IT', 'Kiểm Thử Phần Mềm', 'Dữ Liệu - AI - Học Máy']",
+          "before": "['Lập Trình - Phát Triển Phần Mềm', 'Phát Triển Kinh Doanh', 'Hành Chính Tổng Hợp']",
           "after": "[]",
-          "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-solution-engineer-thu-nhap-12-20-trieu-27681538345.html"
+          "url": "https://jobsgo.vn/viec-lam/ios-intern-28732145575.html"
         },
         {
-          "job_id": "27712444149",
+          "job_id": "28742737195",
           "field": "skills_list",
-          "before": "['Kiểm Thử Phần Mềm', 'Vận Hành IT - IT Helpdesk', 'Triển Khai Giải Pháp IT']",
+          "before": "['Lập Trình - Phát Triển Phần Mềm']",
           "after": "[]",
-          "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-dinh-thu-phan-mem-qa-engineer-luong-10-20-trieu-27712444149.html"
+          "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28742737195.html"
         },
         {
-          "job_id": "28385786022",
+          "job_id": "28761788532",
           "field": "skills_list",
-          "before": "['Quản Lý Dự Án IT', 'Sales Công Nghệ Thông Tin', 'Điện Tử - Vi Mạch - Bán Dẫn']",
+          "before": "['Dữ Liệu - AI - Học Máy', 'Lập Trình - Phát Triển Phần Mềm', 'Kỹ Thuật Sản Xuất - Bảo Trì']",
           "after": "[]",
-          "url": "https://jobsgo.vn/viec-lam/ky-su-presales-cntt-server-network-cctv-thu-nhap-20-25-trieu-28385786022.html"
+          "url": "https://jobsgo.vn/viec-lam/ky-su-tri-tue-nhan-tao-ai-engineer-28761788532.html"
         }
       ]
     },
@@ -84,28 +84,28 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 548,
+      "rows_affected": 543,
       "examples": [
         {
-          "job_id": "27681538345",
+          "job_id": "28732145575",
           "field": "empty_value",
           "before": "'' or []",
           "after": null,
-          "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-solution-engineer-thu-nhap-12-20-trieu-27681538345.html"
+          "url": "https://jobsgo.vn/viec-lam/ios-intern-28732145575.html"
         },
         {
-          "job_id": "27712444149",
+          "job_id": "28742737195",
           "field": "empty_value",
           "before": "'' or []",
           "after": null,
-          "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-dinh-thu-phan-mem-qa-engineer-luong-10-20-trieu-27712444149.html"
+          "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28742737195.html"
         },
         {
-          "job_id": "28385786022",
+          "job_id": "28761788532",
           "field": "empty_value",
           "before": "'' or []",
           "after": null,
-          "url": "https://jobsgo.vn/viec-lam/ky-su-presales-cntt-server-network-cctv-thu-nhap-20-25-trieu-28385786022.html"
+          "url": "https://jobsgo.vn/viec-lam/ky-su-tri-tue-nhan-tao-ai-engineer-28761788532.html"
         }
       ]
     },

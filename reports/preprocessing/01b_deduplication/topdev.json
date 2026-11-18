@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:12:38+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:29:27+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/preprocessing/01_clean/topdev.jsonl",
-    "rows": 216
+    "rows": 217
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/topdev.jsonl",
-    "rows": 202
+    "rows": 201
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 14
+      "rows": 16
     }
   ],
   "rules": [
@@ -67,7 +67,7 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 14,
+      "rows_affected": 16,
       "examples": [
         {
           "job_id": "2134265",
@@ -77,18 +77,18 @@
           "url": "https://topdev.vn/viec-lam/chuyen-gia-van-hanh-ung-dung-ha-noi-ngan-hang-tmcp-thinh-vuong-va-phat-trien-pgbank-2134265"
         },
         {
+          "job_id": "2134288",
+          "field": "dedup",
+          "before": "https://topdev.vn/viec-lam/ha-noi-fullstack-developer-c-net-vuejs-misa-software-2134288",
+          "after": "https://www.topcv.vn/viec-lam/fullstack-developer-c-net-vuejs-luong-upto-40-trieu-thang/2323097.html",
+          "url": "https://topdev.vn/viec-lam/ha-noi-fullstack-developer-c-net-vuejs-misa-software-2134288"
+        },
+        {
           "job_id": "2134501",
           "field": "dedup",
           "before": "https://topdev.vn/viec-lam/agentic-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-mbbank-2134501",
           "after": "https://topdev.vn/viec-lam/ai-software-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-mbbank-2134502",
           "url": "https://topdev.vn/viec-lam/agentic-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-mbbank-2134501"
-        },
-        {
-          "job_id": "2135502",
-          "field": "dedup",
-          "before": "https://topdev.vn/viec-lam/mb-trainee-information-security-grc-fresher-intern-khoi-cong-nghe-thong-tin-2026td457289-mbbank-2135502",
-          "after": "https://itviec.com/viec-lam-it/mb-trainee-information-security-grc-fresher-intern-mb-bank-4338",
-          "url": "https://topdev.vn/viec-lam/mb-trainee-information-security-grc-fresher-intern-khoi-cong-nghe-thong-tin-2026td457289-mbbank-2135502"
         }
       ]
     },
@@ -96,15 +96,8 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 7,
+      "rows_affected": 5,
       "examples": [
-        {
-          "job_id": "2134288",
-          "field": "master_id",
-          "before": "https://topdev.vn/viec-lam/ha-noi-fullstack-developer-c-net-vuejs-misa-software-2134288",
-          "after": "77796e08-b509-5f6b-bb36-5e5c3d068466",
-          "url": "https://topdev.vn/viec-lam/ha-noi-fullstack-developer-c-net-vuejs-misa-software-2134288"
-        },
         {
           "job_id": "2134502",
           "field": "master_id",
@@ -118,6 +111,13 @@
           "before": "https://topdev.vn/viec-lam/chuyen-vien-phat-trien-he-thong-aeon-finance-2136022",
           "after": "2cf42044-f4fa-5bf9-9748-e361ab3f920b",
           "url": "https://topdev.vn/viec-lam/chuyen-vien-phat-trien-he-thong-aeon-finance-2136022"
+        },
+        {
+          "job_id": "2137000",
+          "field": "master_id",
+          "before": "https://topdev.vn/viec-lam/cvcc-phan-tich-kinh-doanh-ha-noi-ta105-ngan-hang-tmcp-viet-nam-thinh-vuong-vpbank-2137000",
+          "after": "5f312cec-7b4e-52f7-b1ed-57292cc6f03d",
+          "url": "https://topdev.vn/viec-lam/cvcc-phan-tich-kinh-doanh-ha-noi-ta105-ngan-hang-tmcp-viet-nam-thinh-vuong-vpbank-2137000"
         }
       ]
     },
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 11,
+      "rows_affected": 10,
       "examples": [
         {
           "job_id": "2134501",
@@ -173,16 +173,24 @@
     "blocking_blocks": 152,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 14
+      "D5": 16
     }
   },
   "samples": [
     {
-      "job_id": "2138373",
+      "job_id": "2137945",
       "source": "topdev",
       "field": "duplicate_of",
-      "before": "2138373",
-      "after": "DROPPED D5 -> topdev:2138376",
+      "before": "2137945",
+      "after": "DROPPED D5 -> itviec:cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720",
+      "changed": true
+    },
+    {
+      "job_id": "2138328",
+      "source": "topdev",
+      "field": "duplicate_of",
+      "before": "2138328",
+      "after": "DROPPED D5 -> topcv:1506721",
       "changed": true
     },
     {
@@ -191,14 +199,6 @@
       "field": "duplicate_of",
       "before": "2136587",
       "after": "DROPPED D5 -> itviec:data-quality-management-specialist-data-division-mb-bank-0217",
-      "changed": true
-    },
-    {
-      "job_id": "2135502",
-      "source": "topdev",
-      "field": "duplicate_of",
-      "before": "2135502",
-      "after": "DROPPED D5 -> itviec:mb-trainee-information-security-grc-fresher-intern-mb-bank-4338",
       "changed": true
     }
   ]

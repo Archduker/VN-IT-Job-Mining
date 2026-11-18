@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:14:14+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:31:06+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/preprocessing/01b_deduplication/glints.jsonl",
-    "rows": 246
+    "rows": 154
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 246
+    "rows": 154
   },
   "dropped": [
     {
@@ -34,7 +34,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
       "action": "modify",
-      "rows_affected": 246,
+      "rows_affected": 154,
       "examples": []
     },
     {
@@ -62,7 +62,7 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 74,
+      "rows_affected": 42,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -72,18 +72,18 @@
           "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
         },
         {
-          "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
-          "field": "empty_value",
-          "before": "'' or []",
-          "after": null,
-          "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
-        },
-        {
           "job_id": "056aa512-f2b9-4256-8fd0-acf7d39a2af3",
           "field": "empty_value",
           "before": "'' or []",
           "after": null,
           "url": "https://glints.com/vn/opportunities/jobs/backend-cloud-developer/056aa512-f2b9-4256-8fd0-acf7d39a2af3"
+        },
+        {
+          "job_id": "0af63a55-b97f-4706-8d61-f0b52e201fc1",
+          "field": "empty_value",
+          "before": "'' or []",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-lap-trinh-net/0af63a55-b97f-4706-8d61-f0b52e201fc1"
         }
       ]
     },
@@ -122,8 +122,8 @@
     },
     {
       "field": "company_address",
-      "fill_pct_in": 88.6,
-      "fill_pct_out": 88.6
+      "fill_pct_in": 85.7,
+      "fill_pct_out": 85.7
     },
     {
       "field": "raw_category_text",
@@ -147,8 +147,8 @@
     },
     {
       "field": "raw_deadline",
-      "fill_pct_in": 98.0,
-      "fill_pct_out": 98.0
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "raw_salary_text",
@@ -167,8 +167,8 @@
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 91.9,
-      "fill_pct_out": 91.9
+      "fill_pct_in": 90.3,
+      "fill_pct_out": 90.3
     },
     {
       "field": "raw_seniority_text",
@@ -187,13 +187,13 @@
     },
     {
       "field": "skills_list",
-      "fill_pct_in": 87.8,
-      "fill_pct_out": 87.8
+      "fill_pct_in": 80.5,
+      "fill_pct_out": 80.5
     },
     {
       "field": "benefits_list",
-      "fill_pct_in": 80.9,
-      "fill_pct_out": 80.9
+      "fill_pct_in": 90.3,
+      "fill_pct_out": 90.3
     },
     {
       "field": "raw_description_text",

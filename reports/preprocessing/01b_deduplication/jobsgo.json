@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:12:38+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:29:28+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
-    "rows": 587
+    "rows": 582
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/jobsgo.jsonl",
-    "rows": 548
+    "rows": 543
   },
   "dropped": [
     {
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 47,
+      "rows_affected": 49,
       "examples": [
         {
           "job_id": "28928592968",
@@ -170,7 +170,7 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 432,
+    "blocking_blocks": 428,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 39

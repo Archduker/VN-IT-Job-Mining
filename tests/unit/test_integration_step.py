@@ -238,3 +238,18 @@ def test_topdev_benefits_html_list_one_item_per_line():
 def test_itviec_work_model_kept_as_raw_work_mode():
     env = _make_env("itviec", "i1", {"title": "Dev", "work_model": "Linh hoạt"})
     assert flatten_raw_job_record(env)["raw_work_mode"] == "Linh hoạt"
+
+
+def test_topcv_date_posted_and_skills_without_industry_labels():
+    """Người dùng chốt 18/11 (PRE-43): đọc `date_posted` của TopCV; bỏ nhãn ngành `industry_knowledge` khỏi kỹ năng."""
+    from preprocessing.integration.json_flattener import flatten_raw_job_record
+    env = {"metadata": {"job_id": "2325743", "source": "topcv", "source_url": "https://www.topcv.vn/x",
+                        "scraped_at": "2026-10-20T18:44:44Z"},
+           "raw_payload": {"title": "Backend Developer", "company": {"name": "Cty A"}, "date_posted": "2026-09-18",
+                           "industry_knowledge": ["IT - Phần mềm", "Tài chính"], "required_skills": ["Python", "SQL"],
+                           "overview_tags": {"Chuyên môn": ["IT - Phần mềm", "Backend Developer"]}}}
+    flat = flatten_raw_job_record(env, "topcv")
+    assert flat["raw_posted_date"] == "2026-09-18"
+    assert flat["skills_list"] == ["Python", "SQL"]
+    # nhãn vẫn còn cho bộ lọc IT của bước 01 (không đổi kết quả lọc), bước 02 không xuất khóa này
+    assert flat["category_tags"] == ["IT - Phần mềm", "Backend Developer", "IT - Phần mềm", "Tài chính"]

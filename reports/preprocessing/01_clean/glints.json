@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:12:13+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:28:55+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/glints/raw",
     "rows": 331
   },
   "output": {
     "path": "data/preprocessing/01_clean/glints.jsonl",
-    "rows": 254
+    "rows": 162
   },
   "dropped": [
     {
@@ -44,14 +44,19 @@
       "rows": 1
     },
     {
+      "rule": "C9",
+      "reason": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
+      "rows": 100
+    },
+    {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-      "rows": 6
+      "rows": 4
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 14
+      "rows": 8
     }
   ],
   "rules": [
@@ -157,10 +162,39 @@
       ]
     },
     {
+      "id": "C9",
+      "name": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
+      "action": "drop",
+      "rows_affected": 100,
+      "examples": [
+        {
+          "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
+          "field": "raw_posted_date",
+          "before": "2023-07-14T05:17:27.342Z",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
+        },
+        {
+          "job_id": "0c350e09-11c0-4ec3-964a-1ade553de148",
+          "field": "raw_posted_date",
+          "before": "2025-01-20T10:22:55.418Z",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/wordpress-developer/0c350e09-11c0-4ec3-964a-1ade553de148"
+        },
+        {
+          "job_id": "10adb15c-82e1-4049-ae97-dc08850affab",
+          "field": "raw_posted_date",
+          "before": "2026-05-13T07:14:13.131Z",
+          "after": null,
+          "url": "https://glints.com/vn/opportunities/jobs/fullstack-developer/10adb15c-82e1-4049-ae97-dc08850affab"
+        }
+      ]
+    },
+    {
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 6,
+      "rows_affected": 4,
       "examples": [
         {
           "job_id": "05decc01-d944-4958-8c7a-21697b2d32e8",
@@ -177,11 +211,11 @@
           "url": "https://glints.com/vn/opportunities/jobs/tu-van-trien-khai-phan-mem-b2b/160cfe51-8606-4eec-91e1-15a2cd5a1fc7"
         },
         {
-          "job_id": "7234bf88-a192-4242-b35d-d5d95417c966",
+          "job_id": "a4e32cb8-d378-4f01-b491-0303e67be4e7",
           "field": "dedup_key",
-          "before": "nextedge|devops engineer",
-          "after": "giữ 46ebfdd9-98a7-45bf-a130-b8922feaa060",
-          "url": "https://glints.com/vn/opportunities/jobs/devops-engineer/7234bf88-a192-4242-b35d-d5d95417c966"
+          "before": "diksha technologies|java developer",
+          "after": "giữ becc6671-92ff-4e5e-a9af-99a2c17c6cb3",
+          "url": "https://glints.com/vn/opportunities/jobs/java-developer/a4e32cb8-d378-4f01-b491-0303e67be4e7"
         }
       ]
     },
@@ -189,7 +223,7 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 14,
+      "rows_affected": 8,
       "examples": [
         {
           "job_id": "091b32f4-7c9f-4ae2-befa-e9f7880e07fa",
@@ -206,11 +240,11 @@
           "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-kiem-thu-phan-mem/0e32e3c9-82f5-4fcd-ad2e-0f2fafad8ca2"
         },
         {
-          "job_id": "1ae183bd-9394-4be8-bea1-4ac9a5021710",
+          "job_id": "51608510-68ac-4a56-b1cf-91f74e80cc6d",
           "field": "dedup_key",
-          "before": "tma solutions|thực tập sinh công nghệ thông tin",
-          "after": "giữ jobsgo:29326389773",
-          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-cong-nghe-thong-tin/1ae183bd-9394-4be8-bea1-4ac9a5021710"
+          "before": "w2solution|thực tập sinh .net developer ( asp.net , c#)",
+          "after": "giữ topcv:2321990",
+          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-net-developer-aspnet-c/51608510-68ac-4a56-b1cf-91f74e80cc6d"
         }
       ]
     }
@@ -244,7 +278,7 @@
     {
       "field": "skills_list",
       "fill_pct_in": 88.5,
-      "fill_pct_out": 88.2
+      "fill_pct_out": 81.5
     }
   ],
   "checks": {
@@ -322,11 +356,27 @@
   },
   "samples": [
     {
-      "job_id": "79140db9-bdf3-43c5-9695-8c2a1aecaabb",
+      "job_id": "e0eea956-6f09-4b67-934c-c3f035479897",
       "source": "glints",
       "field": "job_title",
-      "before": "CTV Kiểm thử (Full-time)",
-      "after": "DROPPED C8: S3_CTV_TITLE",
+      "before": "[Fresher/Experienced] Unity Game Developer",
+      "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
+      "changed": true
+    },
+    {
+      "job_id": "527d0a8a-08b9-419f-a402-ce0f5ca4a337",
+      "source": "glints",
+      "field": "job_title",
+      "before": "TRƯỞNG PHÒNG QA/QC - CÓ XE ĐƯA ĐÓN - LƯƠNG 20-40 TRIỆU",
+      "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
+      "changed": true
+    },
+    {
+      "job_id": "3043e7ba-8a6e-4124-816f-a155567b2f03",
+      "source": "glints",
+      "field": "job_title",
+      "before": "DevOps/IT Intern",
+      "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
       "changed": true
     }
   ]

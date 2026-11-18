@@ -289,6 +289,13 @@ def test_pick_cross_winner_giữ_bản_cào_mới_nhất_khi_ngang_uy_tín_và_�
     assert dedup.pick_cross_winner([new, elder_id]) is elder_id
 
 
+def test_pick_cross_winner_độ_đầy_đủ_trước_uy_tín():
+    """Người dùng chốt 18/11: D5 dùng chung luật với C7, bản nhiều trường thắng sàn uy tín hơn."""
+    thin_top = item("itviec", "1", _thin(fields=("raw_salary_text", "raw_experience_text")))
+    full_low = item("jobsgo", "2")
+    assert dedup.pick_cross_winner([thin_top, full_low]) is full_low
+
+
 def test_pick_winner_nội_sàn_ưu_tiên_độ_đầy_đủ_rồi_bản_mới_nhất():
     """Cùng chiều với D2 nhưng độ đầy đủ xét trước; repost trùng hash thì bản cào muộn hơn giữ."""
     old, new = (item("src_x", "1", seen="2026-08-01T00:00:00+00:00"),
@@ -381,9 +388,10 @@ def sandbox(tmp_path, monkeypatch):
                        itviec_env("i3", title="Chuyên viên Marketing",
                                   desc="Tư vấn giải pháp phần mềm cho khách hàng doanh nghiệp khu vực phía Bắc.",
                                   req="Giao tiếp tốt, hiểu về phần mềm quản lý doanh nghiệp.")],
-            "jobsgo": [jobsgo_env("j1"),
-                       jobsgo_env("j2", desc=JD_MISS_ONE),
-                       jobsgo_env("j3", title="Data Engineer",
+            # exp=None: bản jobsgo đầy đủ ngang bản itviec, để luật uy tín quyết định bản giữ (D5 xét độ đầy đủ trước, 18/11)
+            "jobsgo": [jobsgo_env("j1", exp=None),
+                       jobsgo_env("j2", desc=JD_MISS_ONE, exp=None),
+                       jobsgo_env("j3", exp=None, title="Data Engineer",
                                   desc="Xây dựng pipeline dữ liệu, ETL và kho dữ liệu cho doanh nghiệp.",
                                   req="SQL, Python, Airflow, kinh nghiệm xử lý dữ liệu lớn.")]}
     for name, rows in docs.items():
@@ -598,7 +606,7 @@ def test_cdc_same_version_unchanged_is_not_violation(tmp_path):
 
 
 def test_reposts_follow_cross_source_loser(sandbox):
-    rows = [jobsgo_env("old", seen="2026-10-10T00:00:00Z"), jobsgo_env("new")]
+    rows = [jobsgo_env("old", seen="2026-10-10T00:00:00Z", exp=None), jobsgo_env("new", exp=None)]  # đầy đủ ngang itviec
     (dedup.IN_DIR / "jobsgo.jsonl").write_text(
         "\n".join(json.dumps(r) for r in rows), encoding="utf-8")
     dedup.run(["itviec", "jobsgo"], dry_run=False)

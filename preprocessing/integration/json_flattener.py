@@ -558,6 +558,8 @@ def _flatten_topcv(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["raw_deadline"] = _clean_str(raw.get("deadline_raw") or raw.get("deadline"))
     flat["raw_working_time"] = _clean_str(raw.get("working_time"))
     flat["raw_category_text"] = _clean_str(raw.get("company_industry"))
+    # Ngày đăng: chỉ bản cào gần đây có `date_posted` (146 file); người dùng chốt đọc vào 18/11 (PRE-43)
+    flat["raw_posted_date"] = _clean_str(raw.get("date_posted"))
 
     wp = raw.get("working_places")
     if isinstance(wp, list):
@@ -581,8 +583,10 @@ def _flatten_topcv(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
 
     otags = raw.get("overview_tags")
     if isinstance(otags, dict):
-        if "Chuyên môn" in otags and isinstance(otags["Chuyên môn"], list):
-            flat["skills_list"].extend(otags["Chuyên môn"])
+        # "Chuyên môn" là nhãn ngành/vị trí ("IT - Phần mềm", "Backend Developer"), không phải kỹ năng (18/11, PRE-43).
+        # Không vào skills_list; giữ ở category_tags cho bộ lọc IT của bước 01, bước 02 không xuất khóa này.
+        if isinstance(otags.get("Chuyên môn"), list):
+            flat.setdefault("category_tags", []).extend(str(x) for x in otags["Chuyên môn"])
         if "Quyền lợi" in otags and isinstance(otags["Quyền lợi"], list):
             flat["benefits_list"].extend(otags["Quyền lợi"])
         yeu_cau = otags.get("Yêu cầu") or []
@@ -600,7 +604,11 @@ def _flatten_topcv(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
         if isinstance(tags, list):
             flat["benefits_list"].extend([str(t) for t in tags])
 
-    for k in ["required_skills", "industry_knowledge"]:
+    # `industry_knowledge` là nhãn ngành ("IT - Phần mềm"), không phải kỹ năng (người dùng chốt 18/11, PRE-43):
+    # chuyển sang category_tags như "Chuyên môn"
+    if isinstance(raw.get("industry_knowledge"), list):
+        flat.setdefault("category_tags", []).extend(str(x) for x in raw["industry_knowledge"])
+    for k in ["required_skills"]:
         skills = raw.get(k)
         if isinstance(skills, list):
             flat["skills_list"].extend([str(s) for s in skills])

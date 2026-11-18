@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:12:16+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:28:58+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/jobsgo/raw",
     "rows": 1597
   },
   "output": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
-    "rows": 587
+    "rows": 582
   },
   "dropped": [
     {
@@ -44,14 +44,19 @@
       "rows": 3
     },
     {
+      "rule": "C9",
+      "reason": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
+      "rows": 13
+    },
+    {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-      "rows": 92
+      "rows": 85
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 49
+      "rows": 48
     }
   ],
   "rules": [
@@ -215,31 +220,60 @@
       ]
     },
     {
+      "id": "C9",
+      "name": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
+      "action": "drop",
+      "rows_affected": 13,
+      "examples": [
+        {
+          "job_id": "27681538345",
+          "field": "raw_posted_date",
+          "before": "22/06/2026",
+          "after": null,
+          "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-solution-engineer-thu-nhap-12-20-trieu-27681538345.html"
+        },
+        {
+          "job_id": "27712444149",
+          "field": "raw_posted_date",
+          "before": "24/06/2026",
+          "after": null,
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-kiem-dinh-thu-phan-mem-qa-engineer-luong-10-20-trieu-27712444149.html"
+        },
+        {
+          "job_id": "28385786022",
+          "field": "raw_posted_date",
+          "before": "10/08/2026",
+          "after": null,
+          "url": "https://jobsgo.vn/viec-lam/ky-su-presales-cntt-server-network-cctv-thu-nhap-20-25-trieu-28385786022.html"
+        }
+      ]
+    },
+    {
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 92,
+      "rows_affected": 85,
       "examples": [
         {
-          "job_id": "28514569258",
-          "field": "dedup_key",
-          "before": "tư vấn nhân sự kokoro|it staff (programming engineer)",
-          "after": "giữ 28495354973",
-          "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28514569258.html"
-        },
-        {
-          "job_id": "28563670922",
+          "job_id": "28742356983",
           "field": "dedup_key",
           "before": "tư vấn nhân sự kokoro|ai engineer (pcb section – production)",
           "after": "giữ 29351538081",
-          "url": "https://jobsgo.vn/viec-lam/ai-engineer-pcb-section-production-28563670922.html"
+          "url": "https://jobsgo.vn/viec-lam/ai-engineer-pcb-section-production-28742356983.html"
         },
         {
-          "job_id": "28564309135",
+          "job_id": "28898148850",
           "field": "dedup_key",
-          "before": "tư vấn nhân sự kokoro|it staff (programming engineer)",
-          "after": "giữ 28495354973",
-          "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28564309135.html"
+          "before": "tư vấn nhân sự kokoro|kỹ sư trí tuệ nhân tạo/ ai engineer",
+          "after": "giữ 28947562831",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-tri-tue-nhan-tao-ai-engineer-28898148850.html"
+        },
+        {
+          "job_id": "28947589989",
+          "field": "dedup_key",
+          "before": "tư vấn nhân sự kokoro|kỹ sư trí tuệ nhân tạo/ ai engineer",
+          "after": "giữ 28947562831",
+          "url": "https://jobsgo.vn/viec-lam/ky-su-tri-tue-nhan-tao-ai-engineer-28947589989.html"
         }
       ]
     },
@@ -247,7 +281,7 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 49,
+      "rows_affected": 48,
       "examples": [
         {
           "job_id": "28962757732",
@@ -380,27 +414,27 @@
   },
   "samples": [
     {
-      "job_id": "28964115632",
+      "job_id": "29166985892",
       "source": "jobsgo",
       "field": "job_title",
-      "before": "IT Project Manager (Tiếng Nhật N2) – 40–70 triệu VNĐ [28797 - Quận 1, TP. Hồ Chí Minh]",
+      "before": "Trưởng nhóm IT (Tiếng Anh tốt - có xe đưa rước) – 15–30 triệu [29008 – Cẩm Giàng, Hải Dương]",
       "after": "DROPPED C5: JD_SHORT",
       "changed": true
     },
     {
-      "job_id": "29412249790",
+      "job_id": "29128285742",
       "source": "jobsgo",
       "field": "job_title",
-      "before": "IT Project Manager (Tiếng Nhật N2) – 40–70 triệu VNĐ [28797 - Quận 1, TP. Hồ Chí Minh]",
+      "before": "Tổ Phó IT - Phần Cứng - MSCV 52-29",
       "after": "DROPPED C5: JD_SHORT",
       "changed": true
     },
     {
-      "job_id": "29108609771",
+      "job_id": "28514569258",
       "source": "jobsgo",
       "field": "job_title",
-      "before": "Cộng Tác Viên Kiểm Thử (Full-time)",
-      "after": "DROPPED C8: S3_CTV_TITLE",
+      "before": "IT Staff (Programming Engineer)",
+      "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
       "changed": true
     }
   ]

@@ -102,7 +102,10 @@ def enrich(it: Item) -> Item:
 
 
 def pick_cross_winner(group: Sequence[Item]) -> Item:
-    """Bản giữ của cụm liên sàn: sàn uy tín nhất, đến bản đầy đủ trường, rồi bản cào MỚI NHẤT.
+    """Bản giữ của cụm liên sàn: bản đầy đủ trường nhất, đến sàn uy tín nhất, rồi bản cào MỚI NHẤT.
+
+    Đổi 18/11/2026 (người dùng chốt): cùng luật với C7 của bước 01, độ đầy đủ trước uy tín
+    (tiêu chí Completeness); trước đó uy tín sàn xét trước.
 
     Ưu tiên bản mới nhất cùng chiều với tầng nội sàn (D2) và đúng ý SPEC-05 mục 3.1
     ("giữ version mới nhất"): bản cũ có thể đã hết hạn nộp hoặc đổi mô tả. Muốn vậy phải xếp
@@ -111,7 +114,7 @@ def pick_cross_winner(group: Sequence[Item]) -> Item:
     """
     by_time = sorted(sorted(group, key=lambda it: it["jid"]),
                      key=lambda it: str(it["seen_at"]), reverse=True)
-    return min(by_time, key=lambda it: (inter.authority(it["src"]), -filled(it["flat"])))
+    return min(by_time, key=lambda it: (-filled(it["flat"]), inter.authority(it["src"])))
 
 
 def artifact_suffix(full_run: bool) -> str:

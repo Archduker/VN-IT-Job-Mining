@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:12:38+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:29:27+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
     "rows": 842
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/itviec.jsonl",
-    "rows": 818
+    "rows": 814
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 24
+      "rows": 28
     }
   ],
   "rules": [
@@ -67,7 +67,7 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 24,
+      "rows_affected": 28,
       "examples": [
         {
           "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
@@ -77,18 +77,18 @@
           "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127"
         },
         {
+          "job_id": "ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
+          "field": "dedup",
+          "before": "https://itviec.com/viec-lam-it/ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
+          "after": "https://www.topcv.vn/viec-lam/chuyen-vien-ung-dung-ai-ai-enablement-associate-tieng-trung/2327269.html",
+          "url": "https://itviec.com/viec-lam-it/ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829"
+        },
+        {
           "job_id": "android-developer-kotlin-jetpack-compose-mvvm-uplive-vn-3827",
           "field": "dedup",
           "before": "https://itviec.com/viec-lam-it/android-developer-kotlin-jetpack-compose-mvvm-uplive-vn-3827",
           "after": "https://itviec.com/viec-lam-it/middle-android-developer-kotlin-uplive-vn-4249",
           "url": "https://itviec.com/viec-lam-it/android-developer-kotlin-jetpack-compose-mvvm-uplive-vn-3827"
-        },
-        {
-          "job_id": "backend-developer-java-spring-boot-sql-kafka-t2-soft-company-limited-0016",
-          "field": "dedup",
-          "before": "https://itviec.com/viec-lam-it/backend-developer-java-spring-boot-sql-kafka-t2-soft-company-limited-0016",
-          "after": "https://itviec.com/viec-lam-it/mid-sen-backend-developer-java-spring-boot-sql-kafka-t2-soft-company-limited-0557",
-          "url": "https://itviec.com/viec-lam-it/backend-developer-java-spring-boot-sql-kafka-t2-soft-company-limited-0016"
         }
       ]
     },
@@ -96,15 +96,8 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 36,
+      "rows_affected": 32,
       "examples": [
-        {
-          "job_id": "ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
-          "field": "master_id",
-          "before": "https://itviec.com/viec-lam-it/ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829",
-          "after": "b180de63-11fe-5062-a2ea-ff0350bcf24a",
-          "url": "https://itviec.com/viec-lam-it/ai-application-prompt-engineering-rag-agentic-ai-cong-ty-co-phan-truyen-thong-tap-trung-mat-troi-vang-2829"
-        },
         {
           "job_id": "ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5434",
           "field": "master_id",
@@ -118,6 +111,13 @@
           "before": "https://itviec.com/viec-lam-it/all-level-backend-engineer-java-springboot-mb-bank-3947",
           "after": "ab4f2a2e-2bf2-5e1b-a358-c422d0fdaf0d",
           "url": "https://itviec.com/viec-lam-it/all-level-backend-engineer-java-springboot-mb-bank-3947"
+        },
+        {
+          "job_id": "backend-developer-web-api-bidv-securities-company-bsc-5807",
+          "field": "master_id",
+          "before": "https://itviec.com/viec-lam-it/backend-developer-web-api-bidv-securities-company-bsc-5807",
+          "after": "a5bac658-7ece-573a-8b1f-59884e2a0a2a",
+          "url": "https://itviec.com/viec-lam-it/backend-developer-web-api-bidv-securities-company-bsc-5807"
         }
       ]
     },
@@ -173,24 +173,24 @@
     "blocking_blocks": 685,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 24
+      "D5": 28
     }
   },
   "samples": [
     {
-      "job_id": "junior-senior-fullstack-developer-mb-bank-5509",
+      "job_id": "middle-senior-software-engineer-ai-augmented-flinters-vietnam-0958",
       "source": "itviec",
       "field": "duplicate_of",
-      "before": "junior-senior-fullstack-developer-mb-bank-5509",
-      "after": "DROPPED D5 -> itviec:junior-senior-fullstack-developer-java-go-mb-bank-5929",
+      "before": "middle-senior-software-engineer-ai-augmented-flinters-vietnam-0958",
+      "after": "DROPPED D5 -> itviec:middle-senior-fullstack-developer-ai-java-python-flinters-vietnam-1842",
       "changed": true
     },
     {
-      "job_id": "middle-senior-fullstack-developer-mb-bank-0047",
+      "job_id": "principal-java-kotlin-engineer-banking-project-money-forward-vietnam-co-ltd-4136",
       "source": "itviec",
       "field": "duplicate_of",
-      "before": "middle-senior-fullstack-developer-mb-bank-0047",
-      "after": "DROPPED D5 -> itviec:middle-senior-fullstack-developer-java-go-mb-bank-0143",
+      "before": "principal-java-kotlin-engineer-banking-project-money-forward-vietnam-co-ltd-4136",
+      "after": "DROPPED D5 -> itviec:principal-java-kotlin-engineer-banking-saas-money-forward-vietnam-co-ltd-5007",
       "changed": true
     },
     {

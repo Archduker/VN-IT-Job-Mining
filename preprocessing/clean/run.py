@@ -23,8 +23,10 @@ from preprocessing.common import REPO_ROOT, SOURCES, step_report
 from preprocessing.common.it_filter import classify, classify_unknown
 from preprocessing.common.raw_reader import read_raw, snapshot_order
 from preprocessing.common.step_report import StepReport, merge_reports
+from preprocessing.deduplication.inter_source import authority
 from preprocessing.integration.json_flattener import flatten_raw_job_record
 from preprocessing.normalization.cross_deduplicator import normalize_company_name
+from preprocessing.transformation.date_parser import parse_date
 
 STEP = "01_clean"
 DATA_DIR = REPO_ROOT / "data"
@@ -33,6 +35,8 @@ REVIEW_DIR = DATA_DIR / "preprocessing" / "review"
 POLICY_PATH = REPO_ROOT / "preprocessing" / "clean" / "it_policy.json"
 MIN_JD_WORDS = 50  # người dùng chốt 10/11/2026 (PH3); trước đó 30
 SCOPE_PATH = REPO_ROOT / "preprocessing" / "clean" / "scope_keywords.json"
+# C9: kỳ nghiên cứu là tin đăng từ tháng 9/2026 (SD1; người dùng chốt 18/11/2026). Tin không có ngày đăng thì giữ.
+STUDY_START = "2026-09-01"
 TEST_ID = re.compile(r"^job-[a-z]+-\d+$")
 REVIEW_NON_IT, REVIEW_LEVEL2, REVIEW_SEED = 50, 30, 42
 # Bổ sung độ phủ tầng 1 dự đoán IT; mẫu cũ chỉ đại diện tầng 2 và non_it tầng 1.
@@ -54,6 +58,20 @@ def _day(value: Any) -> datetime | None:
         return datetime(int(m[3]), int(m[2]), int(m[1])) if m else datetime.fromisoformat(s[:19]) if s else None
     except ValueError:
         return None
+
+
+def out_of_window(flat: dict[str, Any]) -> bool:
+    """C9: ngày đăng parse được (cùng `parse_date` với bước 03) và trước STUDY_START."""
+    d = parse_date(flat.get("raw_posted_date"))
+    return bool(d) and d < STUDY_START
+
+
+def c7_winner(group: Sequence[tuple[str, Item]]) -> tuple[str, Item]:
+    """Bản giữ khi trùng khác nguồn, cùng luật với D5 của bước 01b (người dùng chốt 18/11):
+    nhiều trường có giá trị nhất, rồi sàn uy tín hơn, rồi bản cào mới nhất, rồi job_id nhỏ nhất."""
+    by_id = sorted(group, key=lambda x: str(x[1].get("env", {}).get("metadata", {}).get("job_id") or ""))
+    by_time = sorted(by_id, key=lambda x: str(x[1]["flat"].get("crawled_at") or ""), reverse=True)
+    return min(by_time, key=lambda x: (-filled(x[1]["flat"]), authority(x[0])))
 
 
 def company_norm(name: Any) -> str:
@@ -173,11 +191,13 @@ def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tup
     status, levels = Counter(), Counter()
     for it in items:
         f = it["flat"]
-        rule = classify(f.get("job_title"), f.get("skills_list"))
+        # Nhãn chuyên môn của sàn (TopCV category_tags) vẫn là tín hiệu IT dù không còn nằm trong skills_list (18/11)
+        signals = list(f.get("skills_list") or []) + list(f.get("category_tags") or [])
+        rule = classify(f.get("job_title"), signals)
         level = 1
         if rule == "unknown":
             level = 2
-            st = classify_unknown(f.get("job_title"), f.get("skills_list"),
+            st = classify_unknown(f.get("job_title"), signals,
                                   f"{f.get('raw_description_text') or ''} {f.get('raw_requirements_text') or ''}", f.get("company_name"))
         else:
             st = rule
@@ -219,11 +239,19 @@ def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tup
     report.rule("C8", "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)", "drop", len(c8),
                 [_ex(i, "job_title", i["flat"].get("job_title"), r) for i, r in c8])
     report.data["extra"]["scope_c8_reasons"] = dict(Counter(r for _, r in c8))
+
+    # C9: tin đăng trước kỳ nghiên cứu (đặt trước C6 để tin ngoài kỳ không thắng khi khử trùng)
+    c9 = [i for i in items if out_of_window(i["flat"])]
+    c9_ids = {id(i) for i in c9}
+    items = [i for i in items if id(i) not in c9_ids]
+    report.rule("C9", f"Bỏ tin đăng trước {STUDY_START} (ngoài kỳ nghiên cứu)", "drop", len(c9),
+                [_ex(i, "raw_posted_date", i["flat"].get("raw_posted_date"), None) for i in c9])
     if report.data["mode"] == "applied":
         rej_dir = DATA_DIR / "preprocessing" / "rejected" / STEP
         rej_dir.mkdir(parents=True, exist_ok=True)
         with (rej_dir / f"{source}.jsonl").open("w", encoding="utf-8") as fh:
-            for rule, rows_ in (("C5", [(i, "JD_SHORT") for i in c5]), ("C8", c8)):
+            for rule, rows_ in (("C5", [(i, "JD_SHORT") for i in c5]), ("C8", c8),
+                                ("C9", [(i, "BEFORE_STUDY_WINDOW") for i in c9])):
                 for i, reason in rows_:
                     fh.write(json.dumps({"source": source, "job_id": _job_id(i), "rule": rule, "reason": reason,
                                          "source_url": i["env"]["metadata"].get("source_url"),
@@ -251,7 +279,6 @@ def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tup
 # ---------------------------------------------------------------- C7 chéo nguồn
 def cross_source_dedup(kept: dict[str, list[Item]], reports: dict[str, StepReport]) -> Counter:
     """Trả số tin trùng theo cặp nguồn (giữ → bỏ) cho Monitoring."""
-    order = {s: n for n, s in enumerate(SOURCES)}
     groups: dict[str, list[tuple[str, Item]]] = defaultdict(list)
     for src, items in kept.items():
         for it in items:
@@ -263,9 +290,8 @@ def cross_source_dedup(kept: dict[str, list[Item]], reports: dict[str, StepRepor
     for g in groups.values():
         if len({s for s, _ in g}) < 2:
             continue
-        g.sort(key=lambda x: (-filled(x[1]["flat"]), order.get(x[0], 99)))
-        win_src, win = g[0]
-        for src, it in g[1:]:
+        win_src, win = c7_winner(g)
+        for src, it in (x for x in g if x[1] is not win):
             win["env"]["metadata"]["clean"]["also_on"].append(f"{src}:{_job_id(it)}")
             dropped[src].append((it, win_src, win))
             pairs[f"{win_src} → {src}"] += 1

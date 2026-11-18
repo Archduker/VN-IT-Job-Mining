@@ -280,3 +280,27 @@ def test_c8_va_nguong_50_tu(sandbox):
     rej = [json.loads(x) for x in (sandbox / "data/preprocessing/rejected/01_clean/src_a.jsonl").read_text().splitlines()]
     assert {(x["job_id"], x["rule"]) for x in rej} >= {("20", "C5"), ("21", "C8")}
     r.check_conserved()
+
+
+# ------------------------------------------------------------------ C9 kỳ nghiên cứu, C7 bản giữ (người dùng chốt 18/11)
+@pytest.mark.parametrize("raw, out", [
+    ("2023-07-14T05:17:27.342Z", True),   # glints createdAt, tin đăng từ 2023 vẫn mở
+    ("2026-08-31", True),
+    ("2026-09-01", False),
+    ("18/09/2026", False),               # dd/mm/yyyy
+    (None, False),                        # không có ngày đăng (topcv cũ, một phần topdev): giữ
+    ("không rõ", False),
+])
+def test_c9_out_of_study_window(raw, out):
+    assert clean.out_of_window({"raw_posted_date": raw}) is out
+
+
+def test_c7_keeps_most_complete_then_most_authoritative(sandbox):
+    """C7 và D5 chung một luật: nhiều trường nhất, rồi sàn uy tín hơn, rồi bản cào mới nhất, rồi job_id nhỏ nhất."""
+    full = {"flat": {"job_title": "A", "company_name": "B", "raw_salary_text": "10 triệu", "crawled_at": "2026-10-01"}}
+    thin = {"flat": {"job_title": "A", "company_name": "B", "raw_salary_text": None, "crawled_at": "2026-11-01"}}
+    assert clean.c7_winner([("itviec", thin), ("jobsgo", full)]) == ("jobsgo", full)
+    same_a = {"flat": dict(full["flat"])}
+    assert clean.c7_winner([("jobsgo", full), ("itviec", same_a)]) == ("itviec", same_a)
+    newer = {"flat": {**full["flat"], "crawled_at": "2026-11-05"}}
+    assert clean.c7_winner([("topcv", full), ("topcv", newer)]) == ("topcv", newer)

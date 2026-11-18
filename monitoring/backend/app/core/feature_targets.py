@@ -118,8 +118,8 @@ RAW_PATHS: Dict[str, Dict[str, List[Path]]] = {
         "F4": [("salary_raw",)],
         "F5": [("experience",)],
         "F6": [("general_info", "Cấp bậc")],
-        "F7": [("overview_tags", "Chuyên môn"), ("required_skills",), ("industry_knowledge",)],
-        "F8": [("deadline_raw",)],
+        "F7": [("required_skills",)],  # industry_knowledge, overview_tags.Chuyên môn là nhãn ngành/vị trí, bỏ 18/11
+        "F8": [("date_posted",), ("deadline_raw",)],
     },
     "topdev": {
         "F1": [("title",), ("job-title",)],

@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:12:01+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:28:38+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/vieclam24h/raw",
     "rows": 1276
   },
   "output": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
-    "rows": 173
+    "rows": 171
   },
   "dropped": [
     {
@@ -44,6 +44,11 @@
       "rows": 1
     },
     {
+      "rule": "C9",
+      "reason": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
+      "rows": 1
+    },
+    {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "rows": 0
@@ -51,7 +56,7 @@
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 11
+      "rows": 12
     }
   ],
   "rules": [
@@ -179,6 +184,21 @@
       ]
     },
     {
+      "id": "C9",
+      "name": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
+      "action": "drop",
+      "rows_affected": 1,
+      "examples": [
+        {
+          "job_id": "200872683",
+          "field": "raw_posted_date",
+          "before": "03/07/2026",
+          "after": null,
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/network-engineer-c7p121id200872683.html"
+        }
+      ]
+    },
+    {
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
@@ -189,7 +209,7 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 11,
+      "rows_affected": 12,
       "examples": [
         {
           "job_id": "200903136",
@@ -327,6 +347,14 @@
       "field": "job_title",
       "before": "Cộng Tác Viên Embedded Technical Writer",
       "after": "DROPPED C8: S3_CTV_TITLE",
+      "changed": true
+    },
+    {
+      "job_id": "200872683",
+      "source": "vieclam24h",
+      "field": "job_title",
+      "before": "Network Engineer",
+      "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
       "changed": true
     }
   ]

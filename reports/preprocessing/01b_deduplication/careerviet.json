@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:12:38+00:00",
-  "code_version": "eb06083",
+  "generated_at": "2026-11-18T02:29:27+00:00",
+  "code_version": "d61d9bf",
   "input": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
-    "rows": 409
+    "rows": 410
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/careerviet.jsonl",
-    "rows": 400
+    "rows": 401
   },
   "dropped": [
     {
@@ -170,7 +170,7 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 290,
+    "blocking_blocks": 291,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 9
