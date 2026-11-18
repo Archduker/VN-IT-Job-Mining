@@ -1,0 +1,272 @@
+# Lô 33: dòng 9601-9900 (18/11/2026)
+A 9601 sales_skills
+A 9602 machining
+A 9603 sdlc
+A 9604 code_review
+A 9605 sdlc
+A 9606 llama
+N combo 9607
+A 9608 sap
+N generic 9609
+A 9610 cnc
+A 9611 rabbitmq
+N combo 9612
+N generic 9613
+N generic 9614
+A 9615 aaa_radius
+S 9616 rag_status methodology_pm p=project_management n=RAG status report
+L rag_status rag status;red/amber/green
+A 9662 rag_status
+A 9617 9618 rag
+A 9619 ruby_on_rails
+N entity 9620 9621 9622 9623 9624
+N generic 9625 9626
+A 9627 phishing
+A 9628 disaster_recovery
+A 9629 jetson
+A 9630 rate_limiting
+A 9631 cro
+S 9632 razor_pages backend p=aspnet n=Razor Pages
+L razor_pages razor pages;razor
+A 9633 rbac
+A 9634 relational_db
+A 9635 9636 relational_db
+A 9637 aws_rds
+A 9638 react
+N combo 9639
+S 9640 react_router frontend p=react n=React Router
+A 9641 react
+N combo 9642
+S 9643 reactive_programming programming_languages n=Reactive programming (Rx, Reactor)
+L reactive_programming reactive programming;project reactor;webflux;spring webflux
+A 9644 react
+N generic 9645
+A 9646 9647 oracle_data_guard
+A 9648 9649 streaming
+N combo 9650
+S 9651 realtime_messaging backend p=websocket n=Realtime messaging / chat
+L realtime_messaging realtime messaging;real-time messaging;chat realtime
+N combo 9652 9653
+S 9654 recommender data_science_ml p=machine_learning n=Hệ thống gợi ý (recommendation)
+L recommender recommendation system;recommendation systems;recommender system;hệ thống gợi ý
+A 9655 9656 recommender
+N generic 9657
+N job_title 9658
+A 9659 talent_acquisition
+A 9660 redhat
+A 9661 red_team
+N combo 9663
+N combo 9664
+N combo 9665
+N generic 9666
+A 9667 regulatory_compliance
+N industry 9668
+N generic 9669 9670 9671 9672
+A 9673 database_design
+A 9674 android_layout
+A 9675 9676 9677 release_management
+N combo 9678
+N job_title 9679
+A 9680 sre
+S 9681 remix_js frontend p=react n=Remix
+F remix_js Remix
+A 9682 rendering
+N generic 9683
+A 9684 ssrs
+N combo 9685 9686
+N generic 9687
+N entity 9688 9689
+N generic 9690 9691
+N generic 9692 9693 9694
+A 9695 9696 requirements_gathering
+S 9697 requirements_traceability methodology_pm p=requirements_gathering n=Requirements management / traceability
+L requirements_traceability requirement tracking;requirements management;requirements traceability;traceability matrix
+N combo 9698
+A 9699 requirements_gathering
+A 9700 srs
+A 9701 9702 requirements_gathering
+A 9703 requirements_traceability
+N generic 9704
+S 9705 reserved_instances cloud p=finops n=Reserved instances / savings plans
+L reserved_instances reserved instances;savings plans;spot instances
+A 9706 9707 high_availability
+N industry 9708
+N generic 9709 9710
+A 9711 incident_response
+N combo 9712
+A 9713 responsive_design
+A 9714 rest_api
+N generic 9715
+A 9716 rest_api
+N combo 9717 9718
+A 9719 soap
+A 9720 9721 sap_rap
+A 9722 9723 9724 rest_api
+N combo 9725 9726
+A 9727 rest_api
+A 9728 backup
+N industry 9729
+S 9730 pos_system enterprise_apps n=Hệ thống POS (bán lẻ)
+L pos_system pos;point of sale;retail pos;máy pos
+N combo 9731 9732
+N combo 9733
+N combo 9734
+A 9735 9736 rag
+S 9737 retrofit mobile p=android n=Retrofit / OkHttp
+L retrofit retrofit;okhttp
+A 9738 idempotency
+S 9739 revops enterprise_apps p=crm n=Revenue operations (RevOps)
+L revops revops;revenue operations
+N combo 9740
+S 9741 revenuecat mobile p=monetization n=RevenueCat (in-app subscription)
+A 9742 reverse_engineering
+A 9743 code_review
+N combo 9744
+A 9745 9746 9747 rfp
+A 9748 redhat
+N combo 9749
+S 9750 rigging design_creative p=3d_modeling n=Rigging (3D)
+A 9751 9752 risk_management
+A 9753 credit_scoring
+N entity 9754
+A 9755 lora_finetune
+N generic 9756
+A 9757 oracle_data_pump
+N generic 9758
+A 9759 ai_governance
+N entity 9760
+A 9761 neural_networks
+N entity 9762
+S 9763 roblox game_dev n=Roblox (Lua)
+A 9764 rpa
+A 9765 robotics
+A 9766 soc_chip
+A 9767 omron
+A 9768 9769 linux_server
+N entity 9770
+N generic 9771 9772
+A 9773 rollback_strategy
+A 9774 mobile_db
+A 9775 ruby_on_rails
+A 9776 routing_switching
+A 9777 routing_switching
+N combo 9778
+A 9779 telecom_network
+A 9780 rs485
+A 9781 cryptography
+A 9782 syslog
+A 9783 gps_rtk
+S 9784 rtl_design embedded_iot p=fpga n=RTL design (Verilog/VHDL)
+F rtl_design RTL
+N combo 9785
+S 9786 rtp_media systems_network p=voip n=RTP / SRTP (media)
+F rtp_media RTP;SRTP
+A 9787 modbus
+N combo 9788
+A 9789 9790 ruby_on_rails
+N generic 9791
+S 9792 runbook devops p=incident_management n=Runbook / playbook
+L runbook runbook;runbooks;playbook vận hành
+N generic 9793
+A 9794 genai_image
+N generic 9795 9796
+A 9797 sap_s4hana
+A 9798 9799 sap_s4hana
+A 9800 aws_s3
+A 9801 object_storage
+N combo 9802
+S 9803 saas_product methodology_pm p=product_management n=Sản phẩm SaaS
+L saas_product saas;b2b saas;saas platform
+S 9804 saas_implementation enterprise_apps n=Triển khai SaaS
+L saas_implementation saas implementation
+N combo 9805
+N generic 9806
+N generic 9807
+K safe_agile methodology_pm p=agile n=SAFe (Scaled Agile Framework)
+F safe_agile SAFe
+L safe_agile scaled agile;scaled agile framework
+N entity 9808 9809
+N job_title 9810 9811
+A 9812 forecasting
+S 9813 sales_funnel digital_marketing n=Sales funnel / pipeline
+L sales_funnel sales funnel;sales pipeline
+N job_title 9814
+A 9815 o2c
+N generic 9816 9817
+N combo 9818 9819
+A 9820 salesforce
+S 9821 salesforce_tools enterprise_apps p=salesforce n=Salesforce dev tools (Inspector, Workbench)
+L salesforce_tools salesforce inspector;workbench
+A 9822 salesforce_cert
+A 9823 9824 salesforce_service_cloud
+N industry 9825
+A 9826 9827 saml
+N generic 9828
+N generic 9829
+A 9830 storage
+A 9831 backup
+S 9832 sap_ams enterprise_apps p=sap n=SAP AMS (application management)
+L sap_ams sap ams
+A 9833 9834 sap_bas
+A 9835 sap
+A 9836 9837 sap_co
+A 9838 sap_fico
+A 9839 sap_fiori
+S 9840 sap_fm enterprise_apps p=sap_fico n=SAP FM (Funds Management)
+L sap_fm sap fm
+A 9841 sap_hana
+N generic 9842
+A 9843 sap_fico
+A 9884 sap_fico
+N generic 9844
+A 9845 sap
+A 9846 sap_fico
+A 9847 sap_s4hana
+S 9848 sapo enterprise_apps p=haravan n=Sapo
+F sapo Sapo
+A 9849 sap_fiori
+S 9850 sase security p=network_security n=SASE / SSE
+F sase SASE
+N generic 9851 9852
+A 9853 rest_api
+N generic 9854
+A 9855 9856 dast
+N combo 9857
+N combo 9858
+N generic 9859 9860
+A 9861 background_jobs
+A 9862 electrical_drawing
+N entity 9863
+N entity 9864 9865 9866
+N generic 9867
+A 9868 9869 scope_management
+N combo 9870 9871
+S 9872 web_scraping backend n=Web scraping / crawling (Scrapy)
+L web_scraping scrapy;web scraping;web crawling;crawler;beautifulsoup
+N generic 9873
+A 9874 scripting
+A 9875 9876 scripting
+A 9877 9878 9879 scrum
+N combo 9880
+A 9881 scss
+A 9882 sdn
+A 9883 sd_wan
+N generic 9885
+A 9886 sdn
+A 9887 sdr
+S 9888 sdv embedded_iot p=adas n=Software-defined vehicle (SDV)
+F sdv SDV
+L sdv software-defined vehicle;software defined vehicle
+A 9889 abap
+A 9890 matplotlib
+A 9891 search_console
+A 9892 vector_database
+N generic 9893
+A 9894 comptia_security
+A 9895 secrets_management
+A 9896 secrets_management
+A 9897 api_security
+A 9898 secure_coding
+A 9899 secure_element
+S 9900 secure_storage mobile p=mobile_security n=Lưu trữ bảo mật trên mobile
+L secure_storage secure storage;encrypted storage
