@@ -27,7 +27,7 @@
 | M7 | `tinh_status` (`ok`, `remote`, `ngoai_vn`, `unknown`) | flag | 94 unknown |
 | N2 | Cấp bậc lấy từ `raw_seniority_text`, rồi từ tiêu đề, theo từ nguyên vẹn. "Nhân viên", "Chuyên viên" không tính là cấp | modify | 4.283 |
 | M3c | Cấp bậc còn trống thì suy từ số năm kinh nghiệm: [0,1) Intern/Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior; từ 5 năm trở lên để trống (L-39). Gắn `level_inferred` | flag | 2.516 |
-| M4 | Intern/Fresher thiếu kinh nghiệm thì điền 0, gắn `exp_inferred` và `exp_source` = `level_*` | flag | 192 |
+| M4 | Thiếu kinh nghiệm thì điền cận dưới theo cấp bậc (Intern/Fresher 0, Junior 1, Middle 2, Senior 4, Lead/Manager 5), **chỉ khi cấp lấy từ ô của sàn hoặc tiêu đề**, không lấy cấp suy từ số năm (chống vòng với M3c). Gắn `exp_inferred`, `exp_source` = `level_<cấp>` (ví dụ `level_intern`); có sẵn thì `given`. Tên luật trong report vẫn ghi "Intern/Fresher … điền 0", hẹp hơn code (mục 7) | flag | 192 |
 | N2b | Senior hoặc Trưởng nhóm mà kinh nghiệm < 2 năm, hoặc Thực tập hoặc Mới tốt nghiệp mà ≥ 3 năm → `seniority_can_kiem`. Có nhóm nghề mà JD không có kỹ năng → `job_family_can_kiem` | flag | 115 + 258 |
 | N16 | Chức danh chuẩn từ `job_titles.json` (exact, alias, fuzzy) | modify | 2.091 |
 | N3 | Nhóm nghề: chức danh lõi → chức danh chuẩn → nhóm, gộp về 10 nhóm qua `FAMILY_MAP`. Luật không ra thì Other | modify | 3.964 khác Other |
@@ -52,7 +52,7 @@ Các luật này dùng quyết định của người dùng ngày 18/11, ghi tro
 | **N14 (sửa)** | `work_mode` lấy theo thứ tự: (1) `work_mode_raw`, nhưng nếu `work_mode_conflict` và `work_mode_jd_strong` thì lấy `work_mode_jd`; (2) `work_mode_jd`; (3) luật N14 cũ (địa điểm, tiêu đề); (4) `unknown` | modify | `work_mode`, `work_mode_source` (`raw`, `jd`, `jd_over_raw`, `location`, `unknown`) |
 | **N19** | `employment_type`: tiêu đề có Intern (EI1) → internship; nếu không thì `employment_type_raw`; trống thì `employment_type_jd` | modify | `employment_type`, `employment_type_source` |
 | **N2 (bổ sung)** | Tiêu đề có Intern hoặc `employment_type` = internship mà N2 chưa ra cấp → Intern/Fresher, `seniority_source` = `employment_type` | modify | `seniority` |
-| **M4 (sửa)** | `exp_min_years` cuối: itviec lấy JD trước (`exp_min_years_jd`), ô JSON-LD làm dự phòng; 7 nguồn còn lại lấy ô của sàn trước, JD bù chỗ trống; còn trống mà là Intern/Fresher thì điền 0 như cũ. `exp_conflict` khi ô và JD lệch ≥ 1 năm. Giá trị parse của 03 giữ ở `exp_min_years_parsed` để truy vết | modify | `exp_min_years`, `exp_source` (`raw`, `jd`, `jd_zero`, `itviec_jsonld`, `level_*`, `unknown`; `raw` thay cho `given` cũ), `exp_conflict`, `exp_min_years_parsed` |
+| **M4 (sửa)** | `exp_min_years` cuối: itviec lấy JD trước (`exp_min_years_jd`), ô JSON-LD làm dự phòng; 7 nguồn còn lại lấy ô của sàn trước, JD bù chỗ trống; còn trống thì điền cận dưới theo cấp bậc như M4 cũ. `exp_conflict` khi ô và JD lệch ≥ 1 năm. Giá trị parse của 03 giữ ở `exp_min_years_parsed` để truy vết | modify | `exp_min_years`, `exp_source` (`raw`, `jd`, `jd_zero`, `itviec_jsonld`, `level_*`, `unknown`; `raw` thay cho `given` cũ), `exp_conflict`, `exp_min_years_parsed` |
 | **S1** | Ghi `silver.parquet`: chọn cột, đổi tên sang tiếng Anh, không tính lại (xem [`silver.md`](silver.md)) | — | — |
 
 ## 3. Quy trình xử lý
@@ -124,4 +124,5 @@ Thứ tự trong `process_source` (đọc code khi viết phần mới):
   - 87/140 mục `job_titles.json` chưa duyệt;
   - tỉnh có thể lấy từ trụ sở công ty thay vì nơi làm việc (PRE-38);
   - `work_mode` mặc định onsite khi có tỉnh (sửa bằng N14 mới).
+- **Lệch tên luật:** report ghi M4 là "Intern/Fresher thiếu kinh nghiệm điền 0", nhưng `infer_experience_from_level` điền cận dưới cho mọi cấp. Sửa chuỗi tên luật khi chạy lại 04.
 - **Việc mở:** PRE-33, PRE-35, PRE-37 (việc 3), PRE-38, PRE-39.

@@ -2,6 +2,10 @@
 
 Mỗi file là một prompt dán cho agent (Claude Code) để làm một phase. Prompt **trỏ về đặc tả**, không chép lại: đặc tả là luật, prompt là cách làm.
 
+## Prompting log pre-processing (từ 18/11/2026)
+
+Prompt hiện hành cho các bước 01, 01b, 02, 03, 04 (kèm 00 Profiling và bảng Silver) nằm trong [`preprocessing/`](preprocessing/README.md). Mỗi bước một file, theo khuôn 6 phần bên dưới, cộng mục **Log** ghi bước đó đã đi qua quy trình 5 bước thế nào (ngày, số liệu, quyết định của bạn, commit). Bước đã làm thì prompt được viết sao cho chạy lại ra đúng kết quả đã có. Đặc tả đi kèm: `docs/spec/preprocessing/<bước>.md`. Các prompt PH0–PH9 dưới đây là lịch sử.
+
 ## Đặc tả hiện hành
 
 Từ 17/11/2026, đặc tả các phase nằm trong bộ spec chính, không còn file đặc tả riêng cho từng phase:
@@ -9,13 +13,13 @@ Từ 17/11/2026, đặc tả các phase nằm trong bộ spec chính, không cò
 | Phase | Prompt | Đặc tả hiện hành | Trạng thái |
 |---|---|---|---|
 | PH0 nền hạ tầng | `PH0_nen_ha_tang.md` | `docs/spec/05_preprocessing_spec.md` mục 2 | Đã làm |
-| PH1 gold và profiling | `PH1_gold_va_profiling.md` | spec 05 mục 3.0 (bước 00), mục 2.2 (bộ gold) | Đã làm |
-| PH2 schema và làm sạch ký tự | `PH2_schema_va_lam_sach_ky_tu.md` | spec 05 mục 3.3 (bước 02), 3.4 (T6) | Đã làm |
-| PH3 lọc phạm vi và ngôn ngữ | `PH3_loc_pham_vi_va_ngon_ngu.md` | spec 05 mục 3.1 (bước 01), 3.4 (T6) | Đã làm |
-| PH4 khử trùng 3 tầng | `PH4_khu_trung_3_tang_minhash.md` | spec 05 mục 3.2 (bước 01b) | Đã làm |
-| PH5 dịch EN→VI | `PH5_dich_anh_viet_envit5.md` | spec 05 mục 3.4 (T6b) | Đã làm, còn PRE-34 |
-| PH6 chuẩn hóa trường | `PH6_chuan_hoa_truong.md` | spec 05 mục 3.5 (bước 04) | Đã làm |
-| PH7 thiếu và ngoại lai | `PH7_thieu_va_ngoai_lai.md` | spec 05 mục 3.5 (luật M), mục 4.3 | Đã làm |
+| PH1 gold và profiling | `PH1_gold_va_profiling.md` | `docs/spec/preprocessing/00_profiling.md`; spec 05 mục 2.2 (bộ gold) | Đã làm |
+| PH2 schema và làm sạch ký tự | `PH2_schema_va_lam_sach_ky_tu.md` | `docs/spec/preprocessing/02_integration.md`, `03_transformation.md` (T6) | Đã làm |
+| PH3 lọc phạm vi và ngôn ngữ | `PH3_loc_pham_vi_va_ngon_ngu.md` | `docs/spec/preprocessing/01_clean.md`, `03_transformation.md` (T6) | Đã làm |
+| PH4 khử trùng 3 tầng | `PH4_khu_trung_3_tang_minhash.md` | `docs/spec/preprocessing/01b_deduplication.md` | Đã làm |
+| PH5 dịch EN→VI | `PH5_dich_anh_viet_envit5.md` | `docs/spec/preprocessing/03_transformation.md` (T6b) | Đã làm, còn PRE-34 |
+| PH6 chuẩn hóa trường | `PH6_chuan_hoa_truong.md` | `docs/spec/preprocessing/04_normalization.md` | Đã làm |
+| PH7 thiếu và ngoại lai | `PH7_thieu_va_ngoai_lai.md` | `docs/spec/preprocessing/04_normalization.md` (luật M); spec 05 mục 4.3 | Đã làm |
 | PH8 section, kỹ năng, tách từ | `PH8_tach_section_ky_nang_tach_tu.md` | `docs/spec/06_processing_spec.md` | Đã làm |
 | PH9 nối pipeline, nghiệm thu | `PH9_noi_pipeline_nghiem_thu.md` | spec 05 mục 2, spec 06 | Đã làm |
 
