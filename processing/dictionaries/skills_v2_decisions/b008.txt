@@ -1,0 +1,300 @@
+# Lô 8: dòng 2101-2400 (18/11/2026)
+S 2101 api_management architecture_api p=api_gateway n=API Management
+N combo 2102
+S 2103 application_support systems_network n=Application Support
+S 2104 asvs security p=owasp n=OWASP ASVS
+F asvs ASVS
+A 2105 async_programming
+N generic 2106
+A 2107 aws_lambda
+S 2108 azure_monitor devops p=azure n=Azure Monitor
+N combo 2109 2110
+S 2111 background_jobs backend n=Background jobs
+A 2112 bash
+N combo 2113 2114
+N generic 2115
+A 2116 bi
+A 2117 revit
+S 2118 azure_blob cloud p=azure n=Azure Blob Storage
+L azure_blob blob storage;azure blob
+A 2119 azure_blob
+N generic 2120 2121
+A 2122 english
+A 2123 cicd
+A 2124 cicd
+S 2125 cdmp certifications p=data_governance n=DAMA CDMP
+F cdmp CDMP
+L cdmp dama
+S 2126 sap_cds enterprise_apps p=abap n=ABAP CDS
+L sap_cds cds views;abap cds
+N generic 2127 2128
+A 2129 puppet
+S 2130 cis_controls security n=CIS Controls / CIS Benchmark
+L cis_controls cis controls;cis benchmark;cis benchmarks
+N generic 2131
+S 2132 cloud_native cloud p=cloud_computing n=Cloud Native
+A 2133 cloud_native
+S 2134 cloudtrail cloud p=aws n=CloudTrail
+S 2135 cmake embedded_iot p=cpp n=CMake / Makefile
+L cmake makefile
+N entity 2136
+A 2137 database
+N generic 2138
+A 2139 comptia_security
+S 2140 continuous_deployment devops p=cicd n=Continuous Deployment
+S 2141 copilot_studio ai_genai n=Copilot Studio
+A 2142 autogen
+S 2143 cste certifications p=software_testing n=CSTE
+S 2144 sql_cte databases p=sql n=CTE, subquery, window function
+F sql_cte CTE
+L sql_cte window function;window functions;subquery
+N generic 2145
+A 2146 crm
+N generic 2147
+A 2148 excel
+S 2149 hikvision systems_network p=cctv n=Hikvision / Dahua
+L hikvision dahua
+S 2150 dapper backend p=dotnet n=Dapper
+A 2151 data_governance
+S 2152 data_flow data_engineering n=Data flow
+S 2153 odi data_engineering p=etl n=Oracle Data Integrator
+L odi oracle data integrator
+A 2154 data_quality
+S 2155 dataops data_engineering n=DataOps
+S 2156 db2 databases p=sql n=IBM DB2
+A 2157 debugging
+A 2158 delta_lake
+S 2159 desktop_support systems_network p=technical_support n=Desktop Support
+N combo 2160 2161 2162
+S 2163 coordination soft_skills n=Điều phối
+N combo 2164
+S 2165 document_ai ai_genai n=Document AI
+L document_ai document understanding;idp
+N generic 2166 2167 2168 2169
+N combo 2170 2171
+S 2172 elv systems_network p=cctv n=ELV (điện nhẹ)
+S 2173 embeddings ai_genai p=llm n=Embeddings
+N combo 2174
+A 2175 exception_handling
+N generic 2176
+S 2177 event_sourcing architecture_api p=event_driven n=Event Sourcing
+L event_sourcing event sourcing
+A 2178 2179 expressjs
+S 2180 dimensional_modeling data_engineering p=data_modeling n=Dimensional modeling (fact/dimension, SCD)
+L dimensional_modeling star schema;snowflake schema;dimensional modeling;fact table;dimension table;kimball
+N combo 2181
+N generic 2182
+A 2183 firewall
+N job_title 2184
+S 2185 gdd game_dev p=game_design n=Game Design Document
+N generic 2186
+N combo 2187
+S 2188 gmp methodology_pm p=quality_management n=GMP/HACCP
+L gmp haccp
+A 2189 bigquery
+A 2190 gcp_certified
+A 2191 grc
+A 2192 group_policy
+A 2193 graphql
+S 2194 sql_query databases p=sql n=Truy vấn SQL (JOIN, GROUP BY)
+L sql_query sql join;group by;truy vấn sql;sql query;sql queries
+N entity 2195
+N generic 2196
+A 2197 networking
+A 2198 gmp
+S 2199 haproxy systems_network p=load_balancing n=HAProxy
+N generic 2200 2201 2202
+S 2203 hsk languages p=chinese n=HSK
+S 2204 apple_hig design_creative p=ui_design n=Apple Human Interface Guidelines
+A 2205 apple_hig
+N generic 2206
+S 2207 reverse_engineering security n=Reverse engineering (IDA Pro, Ghidra)
+L reverse_engineering ida pro;ghidra;reverse engineering;dịch ngược
+A 2208 reverse_engineering
+N generic 2209
+S 2210 image_segmentation data_science_ml p=computer_vision n=Image segmentation, object detection
+L image_segmentation object detection;yolo;image classification
+N generic 2211
+N degree 2212
+N generic 2213 2214
+N industry 2215
+A 2216 ids_ips
+A 2217 business_analysis
+N job_title 2218
+N industry 2219
+N generic 2220 2221
+A 2222 system_administration
+S 2223 japanese_it_comm languages p=japanese n=Tiếng Nhật chuyên ngành IT
+A 2224 java
+A 2225 jsp
+A 2226 jira_service_management
+N generic 2227
+S 2228 keras data_science_ml p=deep_learning n=Keras
+N generic 2229
+S 2230 kms_hsm security n=KMS/HSM, mã hóa
+F kms_hsm KMS;HSM
+L kms_hsm encryption;mã hóa;cryptography
+N combo 2231
+N generic 2232
+A 2233 java
+A 2234 plc
+N job_title 2235
+A 2236 llm
+N job_title 2237 2238
+A 2239 leadership
+S 2240 xgboost data_science_ml p=machine_learning n=XGBoost / LightGBM
+L xgboost lightgbm;catboost
+N industry 2241
+A 2242 system_administration
+N combo 2243
+N generic 2244 2245
+S 2246 lucidchart dev_tools n=Lucidchart
+A 2247 kms_hsm
+S 2248 magento backend p=php n=Magento
+S 2249 matplotlib data_science_ml p=python n=Matplotlib / Seaborn
+L matplotlib seaborn;plotly
+N generic 2250
+A 2251 microservices
+A 2252 ms_dynamics
+A 2253 entra_id
+S 2254 ms_teams office_tools p=ms_office n=Microsoft Teams
+S 2255 mikrotik systems_network p=networking n=MikroTik
+S 2256 mixpanel bi_analytics p=product_analytics n=Mixpanel / Amplitude
+L mixpanel amplitude
+A 2257 mobile_app_dev
+N combo 2258
+S 2259 mybatis backend p=java n=MyBatis
+N generic 2260
+A 2261 nlp
+N generic 2262
+A 2263 graph_database
+A 2264 zero_trust
+A 2265 it_infrastructure
+A 2266 troubleshooting
+N generic 2267
+N job_title 2268
+N generic 2269
+A 2270 low_code
+S 2271 noc systems_network p=monitoring n=NOC
+N entity 2272
+N generic 2273
+A 2274 monitoring
+A 2275 oracle_cert
+S 2276 odata architecture_api n=OData
+N generic 2277
+S 2278 olap data_engineering p=data_warehouse n=OLAP
+A 2279 oidc
+S 2280 oracle_linux systems_network p=linux n=Oracle Linux
+S 2281 order_management enterprise_apps n=Order Management (OMS)
+A 2282 owasp_zap
+S 2283 odoo_owl enterprise_apps p=odoo n=Odoo OWL / QWeb
+F odoo_owl OWL;QWeb
+N generic 2284
+N industry 2285
+N generic 2286 2287
+A 2288 problem_solving
+A 2289 problem_solving
+S 2290 pki security n=PKI
+N generic 2291
+N combo 2292 2293
+N generic 2294 2295 2296 2297 2298
+S 2299 product_strategy methodology_pm p=product_management n=Product strategy
+N generic 2300
+A 2301 gcp_certified
+S 2302 profiling dev_tools p=debugging n=Profiling
+L profiling profiler;memory profiling
+N combo 2303
+N generic 2304
+N combo 2305
+N job_title 2306
+S 2307 qt backend p=cpp n=Qt
+F qt Qt
+N job_title 2308
+A 2309 qa_qc
+A 2310 product_management
+S 2311 requirements_management methodology_pm p=business_analysis n=Quản lý yêu cầu
+S 2312 quicksight bi_analytics p=bi n=Amazon QuickSight
+N generic 2313
+A 2314 odoo_owl
+N generic 2315
+A 2316 testing_library
+N generic 2317
+N generic 2318
+N generic 2319
+A 2320 rest_assured
+S 2321 rfid embedded_iot n=RFID
+N generic 2322 2323
+N combo 2324
+S 2325 rpc architecture_api n=RPC
+S 2326 sap_b1 enterprise_apps p=sap n=SAP Business One
+L sap_b1 sap business one;sap b1
+N generic 2327
+N job_title 2328
+A 2329 sdlc
+S 2330 sdn systems_network p=networking n=SDN
+S 2331 secure_coding security p=application_security n=Secure coding
+L secure_coding secure coding;lập trình an toàn
+S 2332 security_audit security n=Security audit
+N job_title 2333 2334 2335
+S 2336 sentry devops p=monitoring n=Sentry
+A 2338 omron
+A 2339 kaizen
+N generic 2337
+N job_title 2340
+A 2341 srs
+N job_title 2342
+S 2343 struts backend p=java n=Struts / J2EE
+L struts j2ee;java ee;jakarta ee
+A 2344 voice_ai
+N generic 2345 2346 2347
+N industry 2348
+N generic 2349
+N industry 2350
+S 2351 model_serving data_science_ml p=mlops n=Model serving (TF Serving, Triton)
+L model_serving tensorflow serving;model serving;torchserve;vllm
+A 2352 test_plan
+A 2353 test_plan
+N combo 2354
+A 2355 sdlc
+N industry 2356
+S 2357 requirements_gathering methodology_pm p=business_analysis n=Thu thập yêu cầu
+L requirements_gathering requirement gathering;requirements gathering;thu thập yêu cầu;elicitation
+N job_title 2358 2359
+N generic 2360
+N industry 2361
+N generic 2362
+A 2363 triton
+A 2364 typescript
+N combo 2365
+A 2366 ui_ux
+A 2367 unity
+N generic 2368
+S 2369 usability_test testing_qa p=ux_research n=Usability testing
+N generic 2370 2371 2372 2373
+S 2374 web_services architecture_api n=Web services
+A 2375 blockchain
+A 2376 webhooks
+N generic 2377 2378
+N generic 2379
+A 2380 authn_authz
+S 2381 xray_test testing_qa p=test_plan n=Xray / Zephyr (quản lý test)
+L xray_test zephyr;zephyr scale
+S 2382 xss_sqli security p=web_security n=XSS, SQL injection
+L xss_sqli sql injection;sqli;csrf
+A 2383 xray_test
+A 2384 maya
+A 2385 ab_testing
+N entity 2386 2387
+N generic 2388
+A 2389 uml
+N generic 2390
+S 2391 adobe_cc design_creative n=Adobe Creative Suite
+L adobe_cc adobe creative suite;adobe creative cloud
+A 2392 adobe_cc
+A 2393 indesign
+N combo 2394
+S 2395 agv_amr embedded_iot p=robotics n=AGV/AMR
+N job_title 2396
+N generic 2397
+N combo 2398 2399
+N generic 2400

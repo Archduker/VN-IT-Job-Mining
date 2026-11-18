@@ -1,0 +1,324 @@
+# Lô 9: dòng 2401-2700 (18/11/2026)
+N job_title 2401
+N entity 2402
+N generic 2403 2404
+S 2405 api_security security p=application_security n=API security
+S 2406 app_insights devops p=azure_monitor n=Application Insights
+L app_insights application insights
+S 2407 apps_script office_tools p=google_workspace n=Google Apps Script
+L apps_script apps script;google apps script
+S 2408 arista systems_network p=networking n=Arista
+S 2409 asana dev_tools n=Asana
+S 2410 aso digital_marketing n=ASO (tối ưu cửa hàng ứng dụng)
+F aso ASO
+S 2411 apache_atlas data_engineering p=data_governance n=Apache Atlas
+L apache_atlas apache atlas
+S 2412 aws_aurora cloud p=aws_rds n=AWS Aurora
+L aws_aurora aws aurora;amazon aurora
+A 2413 2414 aws_certified
+S 2415 azure_cert certifications p=azure n=Chứng chỉ Azure (AZ-104, AZ-900...)
+L azure_cert az-104;az-900;az-305;az-400;az-500;dp-203
+N generic 2416
+A 2417 azure_service_bus
+N combo 2418
+A 2419 api_development
+N combo 2420
+N industry 2421
+S 2422 batch_processing data_engineering n=Batch processing
+N job_title 2423
+N generic 2424
+S 2425 boq methodology_pm n=BoQ, hồ sơ dự thầu
+F boq BoQ;BOQ
+S 2426 sap_btp enterprise_apps p=sap n=SAP BTP
+L sap_btp sap btp
+S 2427 budget_management methodology_pm n=Quản lý ngân sách
+S 2428 business_central enterprise_apps p=ms_dynamics n=Dynamics 365 Business Central
+N degree 2429
+A 2430 sap_b1
+N generic 2431 2432
+S 2433 network_protocols systems_network p=networking n=Giao thức mạng
+L network_protocols giao thức mạng;network protocols
+A 2434 cloud_computing
+S 2435 cacti_solarwinds devops p=monitoring n=Cacti / SolarWinds / Nagios
+F cacti_solarwinds Cacti
+L cacti_solarwinds solarwinds;solarwind;nagios
+A 2436 cad
+S 2437 html_canvas frontend n=Canvas / SVG
+L html_canvas html canvas;svg
+S 2438 capl embedded_iot p=canoe n=CAPL
+N generic 2439 2440
+N combo 2441
+N generic 2442
+S 2443 cdpse certifications p=data_privacy n=CDPSE
+N generic 2444
+S 2445 chfi certifications p=cybersecurity n=CHFI / GCIH (forensics)
+L chfi gcih;gcfa;digital forensics;forensics
+A 2446 devtools
+S 2447 proactiveness soft_skills n=Chủ động
+A 2448 cloud_computing
+A 2449 cloud_computing
+A 2450 cloud_computing
+S 2451 cloud_sql cloud p=gcp n=Google Cloud SQL
+L cloud_sql google cloud sql
+N generic 2452
+A 2453 cocos
+A 2454 code_review
+S 2455 java_collections backend p=java n=Java Collections
+N generic 2456 2457
+A 2458 cicd
+A 2459 consulting
+S 2460 container_orchestration devops p=containerization n=Container orchestration
+A 2461 core_banking
+N generic 2462
+A 2463 adobe_cc
+N combo 2464
+S 2465 cross_browser frontend n=Cross-browser compatibility
+L cross_browser cross-browser;cross browser
+S 2466 cubit mobile p=flutter_bloc n=Cubit
+F cubit Cubit
+S 2467 cdp_platform digital_marketing n=Customer Data Platform (CDP)
+L cdp_platform customer data platform
+A 2468 crm
+N generic 2469 2470
+S 2471 dashboard bi_analytics n=Dashboard
+L dashboard dashboards;báo cáo dashboard
+S 2472 data_entry office_tools n=Nhập liệu (Data Entry)
+L data_entry nhập liệu;data entry
+A 2473 spring_data
+S 2474 data_mapping data_engineering n=Data mapping
+S 2475 data_mesh data_engineering p=data_architecture n=Data Mesh
+A 2476 data_modeling
+N combo 2477
+S 2478 database_admin databases n=Quản trị cơ sở dữ liệu (DBA)
+L database_admin database administration;quản trị cơ sở dữ liệu;quản trị csdl
+S 2479 db_migration databases n=Database migration
+N generic 2480
+S 2481 dbfw security n=Database Firewall (DBFW)
+N combo 2482
+N generic 2483
+N job_title 2484
+S 2485 mdm_device systems_network n=Mobile Device Management
+L mdm_device mobile device management
+N industry 2486 2487
+N generic 2488 2489 2490
+N combo 2491
+S 2492 domain_controller systems_network p=active_directory n=Domain Controller
+S 2493 doors embedded_iot n=IBM DOORS (quản lý yêu cầu)
+F doors DOORS
+S 2494 druid data_engineering n=Apache Druid
+L druid apache druid
+N generic 2495
+S 2496 aws_ebs cloud p=aws n=AWS EBS
+F aws_ebs EBS
+S 2497 aws_ecr cloud p=aws n=AWS ECR
+F aws_ecr ECR
+A 2498 entity_framework
+N degree 2499 2500
+N generic 2501
+A 2502 2503 erp
+N job_title 2505
+N generic 2504
+N combo 2506
+N generic 2507
+N combo 2508
+N generic 2509
+A 2510 crashlytics
+S 2511 genai_image ai_genai n=AI tạo ảnh/video (Midjourney, Firefly)
+L genai_image midjourney;adobe firefly;stable diffusion;runway
+S 2512 dfd methodology_pm p=business_analysis n=Data Flow Diagram
+L dfd data flow diagram
+N generic 2513
+S 2514 fortinet_nse certifications p=fortinet n=Fortinet NSE
+L fortinet_nse fortinet nse
+N entity 2515
+A 2516 spring_boot
+S 2517 freshservice systems_network p=itsm n=Freshservice
+N generic 2518
+S 2519 frontend_dev frontend n=Frontend development
+L frontend_dev front-end development;frontend development;lập trình frontend
+S 2520 ftp systems_network p=network_protocols n=FTP/SFTP
+L ftp sftp
+N job_title 2521
+N generic 2522
+N job_title 2523
+S 2524 sensor_fusion embedded_iot p=robotics n=Sensor fusion
+L sensor_fusion sensor fusion
+A 2525 chfi
+S 2526 gdb dev_tools p=debugging n=GDB
+N combo 2527
+A 2528 reverse_engineering
+A 2529 network_protocols
+A 2530 communication
+A 2531 github_actions
+N combo 2532
+S 2533 gnn data_science_ml p=deep_learning n=GNN
+A 2534 oracle_data_guard
+A 2535 wazuh
+N job_title 2536
+S 2537 aws_security_services security p=aws n=AWS GuardDuty / Security Hub
+L aws_security_services guardduty;security hub;aws waf;aws inspector
+A 2538 oscp
+S 2539 android_hal embedded_iot p=embedded_linux n=Android HAL / Kernel
+F android_hal HAL
+N combo 2540
+N generic 2541
+A 2542 hashicorp_vault
+N generic 2543
+A 2544 teamwork
+A 2545 kms_hsm
+N generic 2546 2547
+S 2548 idempotency backend n=Idempotency, retry, circuit breaker
+L idempotency circuit breaker;idempotent
+A 2549 image_segmentation
+S 2550 imu embedded_iot p=sensor_fusion n=IMU
+S 2551 incident_management systems_network p=itsm n=Incident management
+A 2552 db_indexing
+N generic 2553
+A 2554 model_optimization
+A 2555 model_serving
+N degree 2556
+A 2557 it_infrastructure
+A 2558 iac
+N generic 2559 2560
+N combo 2561
+S 2562 isis systems_network p=routing_switching n=IS-IS
+A 2563 system_administration
+N job_title 2564 2565
+N combo 2566
+N generic 2567
+N generic 2568
+N combo 2569
+A 2570 struts
+A 2571 japanese
+A 2572 java
+N generic 2573
+N combo 2574
+N generic 2575 2576 2577 2578
+S 2579 jvm backend p=java n=JVM
+N generic 2580
+N generic 2581
+N generic 2582
+N degree 2583
+A 2584 data_science
+A 2585 api_testing
+A 2586 cka
+N job_title 2587
+N generic 2588
+S 2589 landing_zone cloud n=Landing Zone
+N combo 2590
+S 2591 langsmith ai_genai p=llmops n=LangSmith
+N job_title 2592 2593
+S 2594 lark office_tools n=Lark Suite
+F lark Lark
+N industry 2595
+A 2596 scss
+N generic 2597
+N combo 2598
+N generic 2599 2600
+S 2601 lte systems_network p=telecom_network n=LTE/4G/5G
+L lte 5g;4g
+N generic 2602
+A 2603 storage
+S 2604 playable_ads game_dev n=Playable Ads (LUNA)
+F playable_ads LUNA
+L playable_ads playable ads
+A 2605 kms_hsm
+N generic 2606
+S 2607 manageengine systems_network p=itsm n=ManageEngine
+A 2608 market_research
+S 2609 marketing_automation digital_marketing n=Marketing Automation
+N generic 2610 2611 2612
+A 2613 azure_sql
+A 2614 power_automate
+N entity 2615
+S 2616 mobile_testing testing_qa p=software_testing n=Mobile testing
+S 2617 model_monitoring data_science_ml p=mlops n=Model monitoring
+A 2618 visio
+N entity 2619
+N generic 2620
+A 2621 mysql
+A 2622 cacti_solarwinds
+N generic 2623
+S 2624 ndr security n=NDR
+F ndr NDR
+S 2625 network_automation systems_network p=networking n=Network automation
+A 2626 networking
+A 2627 networking
+N industry 2628
+N generic 2629
+S 2630 accounting_knowledge enterprise_apps n=Nghiệp vụ kế toán
+L accounting_knowledge nghiệp vụ kế toán
+A 2631 sql
+N job_title 2632
+N combo 2633
+A 2634 fortinet_nse
+S 2635 ntp systems_network p=network_protocols n=NTP
+F ntp NTP
+A 2636 cctv
+S 2637 object_storage cloud p=storage n=Object Storage
+N job_title 2638
+A 2639 swagger
+A 2640 oracle_data_guard
+A 2641 odi
+N combo 2642
+A 2643 oswe
+S 2644 open_source dev_tools n=Đóng góp mã nguồn mở (OSS)
+L open_source open source;mã nguồn mở;open-source
+N industry 2645
+S 2646 system_analysis methodology_pm p=business_analysis n=Phân tích hệ thống
+L system_analysis phân tích hệ thống;system analysis
+A 2647 business_analytics
+A 2648 coordination
+S 2649 ms_planner office_tools p=ms_office n=Microsoft Planner
+L ms_planner microsoft planner
+A 2650 oscp
+N job_title 2651 2652 2653
+A 2654 prd
+S 2655 product_roadmap methodology_pm p=product_management n=Product roadmap
+N job_title 2656
+A 2657 gcp_certified
+N job_title 2658
+N combo 2659
+A 2660 automation_test
+N job_title 2661
+S 2662 qos systems_network p=networking n=QoS
+A 2663 budget_management
+N generic 2664
+S 2665 ran systems_network p=telecom_network n=RAN
+F ran RAN
+A 2666 jetson
+A 2667 react
+N job_title 2668
+S 2669 new_relic devops p=apm n=New Relic
+L new_relic new relic
+S 2670 firebase_remote_config mobile p=firebase n=Firebase Remote Config
+L firebase_remote_config remote config
+A 2671 responsive_design
+N generic 2672
+S 2673 rfp methodology_pm n=RFI/RFP, hồ sơ thầu
+F rfp RFP;RFI;RFQ
+S 2674 risk_based_testing testing_qa p=test_design n=Risk-based testing
+A 2675 abap
+A 2676 sap_btp
+A 2677 sap_b1
+A 2678 sap_fico
+N combo 2679
+A 2680 scrum
+N generic 2681
+A 2682 secrets_management
+S 2683 secure_sdlc security p=secure_coding n=Secure SDLC
+A 2684 siem
+S 2685 semantic_kernel ai_genai p=ai_agent n=Semantic Kernel
+N job_title 2686 2687 2688 2689
+N generic 2690
+S 2691 sse backend n=Server-sent events
+L sse server-sent events;sse
+N generic 2692 2693
+A 2694 sre
+N generic 2695
+A 2696 kaizen
+N generic 2697
+S 2698 soc2 security n=SOC 2
+L soc2 soc 2;soc2
+A 2699 design_patterns
+A 2700 srs
