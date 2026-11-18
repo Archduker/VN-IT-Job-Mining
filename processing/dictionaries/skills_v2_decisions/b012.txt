@@ -1,0 +1,275 @@
+# Lô 12: dòng 3301-3600 (18/11/2026)
+S 3301 terraform_cert certifications p=terraform n=Terraform Associate
+N generic 3302
+S 3303 test_report testing_qa p=software_testing n=Test report
+N combo 3304
+N generic 3305
+A 3306 game_design
+N job_title 3307
+A 3308 carefulness
+A 3309 api_integration
+N generic 3310
+A 3311 task_management
+N industry 3312
+S 3313 tool_calling ai_genai p=llm n=Function/tool calling
+L tool_calling function calling;tool calling;tool use
+N generic 3314 3315
+A 3316 jaeger
+A 3317 db_transaction
+N generic 3318 3319
+S 3320 trellix security p=endpoint_security n=Trellix / McAfee
+L trellix mcafee
+S 3321 trino data_engineering n=Trino / Presto
+L trino presto
+N industry 3322 3323
+N combo 3324
+N generic 3325
+N combo 3326
+A 3327 uat
+A 3328 ux_design
+A 3329 cnc
+N generic 3330
+S 3331 vibe_coding ai_tools n=Vibe coding
+S 3332 video_analytics data_science_ml p=computer_vision n=Video Analytics
+N generic 3333
+A 3334 test_plan
+N generic 3335
+N entity 3336 3337
+N generic 3338
+S 3339 web_design design_creative n=Thiết kế web
+L web_design thiết kế web;thiết kế website;web design
+A 3340 web_development
+S 3341 web_server systems_network n=Web server
+L web_server web server;webserver
+A 3342 web_services
+N combo 3343 3344 3345
+N generic 3346 3347 3348
+A 3349 windows
+N combo 3350
+A 3351 wpf
+S 3352 workflow_orchestration data_engineering n=Workflow orchestration
+N generic 3353
+S 3354 wso2 architecture_api p=api_management n=WSO2 / MuleSoft
+L wso2 mulesoft
+S 3355 x_plus_plus enterprise_apps p=ms_dynamics n=X++ (Dynamics AX)
+S 3356 image_processing data_science_ml p=computer_vision n=Xử lý ảnh
+L image_processing xử lý ảnh;image processing;xử lý hình ảnh
+N generic 3357 3358 3359
+A 3360 zero_trust
+N combo 3361
+N job_title 3362
+N generic 3363 3364 3365
+S 3366 cisco_aci systems_network p=cisco n=Cisco ACI
+F cisco_aci ACI
+A 3367 acl
+A 3368 pmi_acp
+N generic 3369
+S 3370 ado_net backend p=dotnet n=ADO.NET
+A 3371 after_effects
+A 3372 premiere
+N generic 3373
+N combo 3374
+S 3375 agile_coaching methodology_pm p=agile n=Agile coaching
+A 3376 agile
+N generic 3377
+N combo 3378 3379
+N generic 3380
+A 3381 github_copilot
+N generic 3382 3383 3384 3385 3386 3387 3388
+N combo 3389 3390
+N entity 3391 3392
+S 3393 alibaba_cloud cloud n=Alibaba Cloud
+L alibaba_cloud alibaba cloud
+A 3394 aws
+N generic 3395 3396
+S 3397 android_framework mobile p=android n=Android Framework (AOSP)
+L android_framework aosp;android framework
+S 3398 angular_cli frontend p=angular n=Angular CLI
+A 3399 claude
+A 3400 antivirus
+S 3401 antigravity ai_tools n=Google Antigravity
+A 3402 work_under_pressure
+N generic 3403 3404
+A 3405 data_privacy
+S 3406 salesforce_apex enterprise_apps p=salesforce n=Salesforce Apex
+F salesforce_apex Apex
+A 3407 api_integration
+N combo 3408 3409
+N generic 3410
+A 3411 apple_hig
+A 3412 system_integration
+A 3413 weblogic
+N generic 3414
+A 3415 admob
+S 3417 archimate architecture_api p=enterprise_architecture n=ArchiMate
+N generic 3416 3418 3419 3420
+N combo 3421
+N entity 3422
+S 3423 artifactory devops n=JFrog Artifactory
+A 3424 ai
+N generic 3425
+A 3426 assembly
+A 3427 async_programming
+N generic 3428
+S 3429 atomic_design design_creative p=design_system n=Atomic Design
+L atomic_design atomic design
+A 3430 atomic_design
+N generic 3431 3432
+N industry 3433
+A 3434 ethernet
+N industry 3435
+A 3436 autosar
+N generic 3437
+N combo 3438
+A 3439 aws_certified
+A 3440 aws_rds
+A 3441 aws_sqs
+N combo 3442 3443 3444
+S 3445 awx devops p=ansible n=AWX / Ansible Tower
+F awx AWX
+A 3446 azure_cert
+S 3447 azure_app_service cloud p=azure n=Azure App Service
+L azure_app_service app service;azure app service
+A 3448 azure
+N generic 3449
+A 3450 azure_key_vault
+S 3451 azure_storage cloud p=azure n=Azure Storage
+N industry 3452
+N combo 3453
+S 3454 backbase enterprise_apps n=Backbase
+A 3455 software_architecture
+A 3456 application_security
+N combo 3457
+N generic 3458
+N entity 3459
+N industry 3460 3461 3462
+A 3463 reporting
+A 3464 sap_integration
+A 3465 bash
+A 3466 batch_processing
+N generic 3467
+S 3468 bms_battery embedded_iot n=Battery Management System
+L bms_battery battery management system
+N generic 3469 3470
+N combo 3471
+N generic 3472 3473
+S 3474 laravel_blade backend p=laravel n=Laravel Blade
+F laravel_blade Blade
+N industry 3475
+N combo 3476
+A 3477 bpmn
+S 3478 brand_design design_creative p=graphic_design n=Thiết kế thương hiệu
+L brand_design brand design;branding;nhận diện thương hiệu
+N combo 3479
+S 3480 wbs methodology_pm p=project_planning n=WBS
+F wbs WBS
+L wbs work breakdown structure
+S 3481 bsp embedded_iot p=embedded_linux n=BSP
+F bsp BSP
+N generic 3482
+A 3483 budget_management
+N generic 3484 3485 3486
+A 3487 business_analysis
+A 3488 3489 cpp
+A 3490 cpp
+A 3491 bi
+A 3492 etl
+N generic 3493
+A 3494 erp
+N generic 3495
+A 3496 voice_ai
+N entity 3497
+A 3498 can_bus
+N generic 3499
+S 3500 lms_canvas enterprise_apps n=LMS (Canvas, Moodle)
+L lms_canvas canvas lms;moodle
+N generic 3501 3502
+A 3503 xgboost
+N generic 3504
+A 3505 cdmp
+N generic 3506 3507
+A 3508 cism
+A 3509 enthusiasm
+N generic 3510 3511 3512
+A 3513 chatbot
+S 3514 checklist_test testing_qa p=test_plan n=Checklist kiểm thử
+S 3515 digital_signature security p=pki n=Chữ ký số
+L digital_signature chữ ký số;digital signature
+N generic 3516 3517
+N job_title 3518
+A 3519 cicd
+N combo 3520 3521
+S 3522 circleci devops p=cicd n=CircleCI / Travis CI
+L circleci travis ci
+S 3523 claude_api ai_genai p=llm n=Claude API
+S 3524 clickup dev_tools n=ClickUp
+A 3525 aws
+N generic 3526 3527
+S 3528 cloud_functions cloud p=gcp n=Google Cloud Functions / Cloud Run
+L cloud_functions cloud functions;cloud run
+A 3529 cloud_functions
+S 3530 cloud_storage cloud p=object_storage n=Cloud Storage
+N combo 3531
+S 3532 cloudera data_engineering p=hadoop n=Cloudera
+N generic 3533
+S 3534 k8s_networking devops p=kubernetes n=CNI/CSI, Ingress
+F k8s_networking CNI;CSI
+L k8s_networking ingress controller;ingress
+N combo 3535
+A 3536 cloud_computing
+A 3537 cocos
+S 3538 codeigniter backend p=php n=CodeIgniter
+A 3539 github_copilot
+A 3540 color_theory
+S 3541 comfyui ai_genai p=genai_image n=ComfyUI
+N generic 3542
+A 3543 design_patterns
+N generic 3544 3545 3546
+A 3547 3548 compliance
+N generic 3549
+S 3550 composition design_creative n=Bố cục (composition)
+A 3551 comptia_a
+A 3552 software_testing
+N generic 3553 3554 3555
+A 3556 3557 container_orchestration
+N generic 3558
+N combo 3559 3560
+S 3561 control_plan methodology_pm p=quality_management n=Control Plan
+N generic 3562
+A 3563 t24
+S 3564 capa methodology_pm p=quality_management n=CAPA
+F capa CAPA
+S 3565 cors security p=web_security n=CORS
+F cors CORS
+N generic 3566
+N generic 3567
+S 3568 crisc certifications p=risk_management n=CRISC
+N industry 3569
+N generic 3570
+S 3571 csv_data data_engineering n=CSV/JSON/XML data formats
+F csv_data CSV
+N generic 3572 3573 3574
+A 3575 nist
+S 3576 d3js frontend p=data_visualization n=D3.js / Recharts / Chart.js
+L d3js d3.js;recharts;chart.js;echarts
+A 3577 srs
+S 3578 airflow_dag data_engineering p=airflow n=DAG
+A 3579 azure_cert
+A 3580 data_flow
+N generic 3581
+A 3582 data_privacy
+A 3583 data_quality
+S 3584 data_storytelling bi_analytics p=data_visualization n=Data storytelling
+A 3585 data_structures
+S 3586 data_sync data_engineering n=Đồng bộ dữ liệu
+N generic 3587 3588
+N job_title 3589
+S 3590 datastage data_engineering p=etl n=IBM DataStage
+S 3591 dataverse enterprise_apps p=power_platform n=Dataverse
+N entity 3592 3593
+N generic 3594 3595
+S 3596 decision_table testing_qa p=test_design n=Decision table
+S 3597 deepeval ai_genai p=llm_eval n=DeepEval / Ragas
+L deepeval ragas
+N generic 3598 3599
+A 3600 design_patterns

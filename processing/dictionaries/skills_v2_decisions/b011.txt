@@ -1,0 +1,296 @@
+# Lô 11: dòng 3001-3300 (18/11/2026)
+S 3001 hotjar bi_analytics p=product_analytics n=Hotjar
+S 3002 hubspot enterprise_apps p=crm n=HubSpot
+N generic 3003
+N combo 3004 3005
+N generic 3006
+S 3007 sap_integration enterprise_apps p=sap n=SAP IDoc/BAPI/RFC, Integration Suite
+F sap_integration IDoc;BAPI
+L sap_integration sap integration suite;sap pi/po;sap cpi
+A 3008 xss_sqli
+N generic 3009 3010
+A 3011 talend
+N degree 3012
+N job_title 3013
+A 3014 integration_test
+N generic 3015
+A 3016 vscode
+A 3017 incident_response
+A 3018 iso_27001
+A 3019 iso_9001
+S 3020 nextjs_rendering frontend p=nextjs n=SSG/ISR
+F nextjs_rendering ISR;SSG
+A 3021 3022 istqb
+N job_title 3023
+S 3024 it_asset_management systems_network p=itsm n=Quản lý tài sản IT
+L it_asset_management it asset management
+A 3025 risk_management
+N generic 3026 3027 3028
+S 3029 jaeger devops p=opentelemetry n=Jaeger / distributed tracing
+L jaeger distributed tracing
+N combo 3030 3031
+A 3032 jlpt
+S 3033 juniper_cert certifications p=juniper n=JNCIA/JNCIP/JNCIE
+L juniper_cert jncia;jncip;jncie
+N generic 3034
+S 3035 linux_kernel embedded_iot p=embedded_linux n=Linux kernel / driver
+L linux_kernel linux kernel;kernel driver;device driver;u-boot
+N generic 3036
+A 3037 omron
+A 3038 troubleshooting
+N generic 3039
+A 3040 it_audit
+N generic 3041 3042
+A 3043 kong
+A 3044 mlflow
+A 3045 kubernetes
+N combo 3046
+A 3047 analytical_skills
+N job_title 3048 3049 3050 3051
+S 3052 labview embedded_iot n=LabVIEW
+N combo 3053 3054
+S 3055 active_listening soft_skills n=Lắng nghe
+L active_listening lắng nghe;active listening
+N generic 3056
+A 3057 android
+A 3058 cpp
+A 3059 embedded
+N job_title 3060 3061 3062
+N generic 3063 3064 3065 3066 3067 3068
+A 3069 3070 linux
+S 3071 llama_cpp ai_genai p=model_serving n=llama.cpp / vLLM / Ollama
+L llama_cpp llama.cpp;ollama
+A 3072 ai_agent
+S 3073 llm_apps ai_genai p=llm n=Phát triển ứng dụng LLM
+L llm_apps llm applications;llm application;ứng dụng llm
+S 3074 llm_eval ai_genai p=llmops n=Đánh giá LLM (LLM-as-judge, eval)
+L llm_eval llm-as-judge;llm evaluation;evals
+N combo 3075
+N generic 3076
+S 3077 logstash devops p=elk_stack n=Logstash / Fluentd
+L logstash fluentd;fluent bit
+N generic 3078 3079
+S 3080 mep cad_engineering n=MEP (cơ điện công trình)
+A 3081 message_queue
+N generic 3082 3083
+A 3084 mcu
+A 3085 ms_defender
+A 3086 intune
+N generic 3087
+S 3088 mini_app mobile n=Mini App (Zalo, Telegram)
+L mini_app mini app;zalo mini app;telegram mini app
+A 3089 llama
+N job_title 3090
+N combo 3091
+N industry 3092
+S 3093 process_modeling methodology_pm p=business_analysis n=Mô hình hóa quy trình
+L process_modeling process modeling;mô hình hóa quy trình;mô hình hoá quy trình
+A 3094 mvc
+N entity 3095
+N generic 3096
+A 3097 mdm_device
+N combo 3098
+S 3099 modular_monolith architecture_api n=Modular monolith
+N entity 3100
+N combo 3101
+N generic 3102
+A 3103 ms_word
+A 3104 ant_design
+A 3105 jlpt
+N generic 3106
+A 3107 data_privacy
+A 3108 nestjs
+N generic 3109
+A 3110 3111 networking
+A 3112 technical_support
+N combo 3113
+A 3114 networking
+S 3115 neural_networks data_science_ml p=deep_learning n=Neural Network
+L neural_networks neural network;neural networks;mạng nơ-ron;cnn;rnn;lstm
+A 3116 new_relic
+S 3117 ngfw security p=firewall n=NGFW
+L ngfw ngfw;next-gen firewall;next generation firewall
+S 3118 nfs systems_network p=storage n=NFS / iSCSI
+F nfs NFS
+L nfs iscsi
+N generic 3119 3120 3121 3122
+N job_title 3123 3124 3125 3126 3127 3128 3129
+S 3130 enthusiasm soft_skills n=Nhiệt tình, chăm chỉ
+L enthusiasm nhiệt tình;chăm chỉ;tinh thần trách nhiệm;trách nhiệm cao
+A 3131 low_code
+N generic 3132
+S 3133 npi enterprise_apps n=NPI (giới thiệu sản phẩm mới)
+F npi NPI
+N generic 3134
+S 3135 nutanix systems_network p=virtualization n=Nutanix
+A 3136 mcu
+S 3137 oracle_cloud cloud n=Oracle Cloud (OCI)
+F oracle_cloud OCI
+L oracle_cloud oracle cloud
+N generic 3138
+S 3139 okr methodology_pm n=OKR/KPI
+F okr OKR;OKRs
+A 3140 okr
+N generic 3141 3142
+A 3143 onnx
+S 3144 opc_ua embedded_iot p=scada n=OPC UA
+L opc_ua opc ua;opc-ua
+N generic 3145
+S 3146 opengl game_dev n=OpenGL / Vulkan / DirectX
+F opengl OpenGL
+L opengl vulkan;directx;shader
+A 3147 oracle_cert
+A 3148 plsql
+S 3149 otp security p=mfa n=OTP / 2FA
+F otp OTP
+L otp 2fa
+N generic 3150 3151
+A 3152 asvs
+N generic 3153
+S 3154 paas cloud p=cloud_computing n=PaaS/IaaS/SaaS
+F paas PaaS;IaaS
+N generic 3155 3156 3157
+S 3158 pattern_recognition data_science_ml p=machine_learning n=Pattern Recognition
+N industry 3159 3160
+A 3161 voip
+S 3162 pdm_plm cad_engineering n=PDM/PLM
+F pdm_plm PDM;PLM
+S 3163 pentaho data_engineering p=etl n=Pentaho
+S 3164 people_management soft_skills p=team_management n=Quản lý nhân sự đội nhóm
+N combo 3165
+A 3166 ms_office
+N combo 3167
+N generic 3168 3169
+A 3170 agile
+N generic 3171
+N job_title 3172
+N generic 3173
+A 3174 playable_ads
+N combo 3175 3176
+N generic 3177
+S 3178 newman testing_qa p=postman n=Newman
+F newman Newman
+N combo 3179
+S 3180 ppap methodology_pm p=quality_management n=PPAP / APQP
+L ppap apqp
+A 3181 dagster
+N job_title 3182
+N industry 3183
+A 3184 workflow_automation
+S 3185 pqa testing_qa p=qa_qc n=Process Quality Assurance (PQA)
+F pqa PQA
+N generic 3186
+S 3187 product_operations methodology_pm p=product_management n=Product Operations
+N job_title 3188
+N combo 3189
+A 3190 psm
+N generic 3191
+N combo 3192
+S 3193 project_planning methodology_pm p=project_management n=Lập kế hoạch dự án
+L project_planning project planning;lập kế hoạch dự án
+N combo 3194
+A 3195 psm
+N entity 3196
+S 3197 mcu_peripherals embedded_iot p=mcu n=Ngoại vi MCU (ADC/DAC, PWM, Timer, GPIO)
+F mcu_peripherals PWM;ADC;DAC;GPIO
+S 3198 pydantic backend p=python n=Pydantic
+N combo 3199 3200
+A 3201 sap_fico
+S 3202 qms methodology_pm p=quality_management n=QMS
+F qms QMS
+S 3203 qnx embedded_iot p=rtos n=QNX
+F qnx QNX
+N job_title 3204
+N generic 3205
+A 3206 vulnerability_assessment
+A 3207 team_management
+A 3208 change_management
+A 3209 message_queue
+A 3210 llama
+A 3211 ap_ar
+A 3212 backup
+N combo 3213
+A 3214 redis
+N generic 3215
+N combo 3216
+A 3217 web_services
+N combo 3218
+S 3219 rhino cad_engineering n=Rhino 3D
+F rhino Rhino
+N combo 3220
+N generic 3221 3222 3223
+S 3224 rs485 embedded_iot p=embedded_protocols n=RS485/RS232
+L rs485 rs232;rs-485;rs-232
+S 3225 video_streaming_protocols systems_network n=RTSP/ONVIF, streaming video
+F video_streaming_protocols RTSP;ONVIF;RTMP;HLS
+S 3226 ruijie systems_network p=networking n=Ruijie / UniFi
+L ruijie unifi
+N entity 3227 3228
+A 3229 backup
+A 3230 sap_integration
+N combo 3231
+N generic 3232 3233 3234
+S 3235 sbom security p=secure_sdlc n=SBOM / supply chain security
+F sbom SBOM
+L sbom software supply chain
+N generic 3236 3237
+A 3238 software_architecture
+N generic 3239
+A 3240 siem
+A 3241 information_security
+A 3242 soc
+N generic 3243 3244
+N job_title 3245 3246 3247 3248
+A 3249 prisma
+N generic 3250 3251
+N combo 3252
+A 3253 ftp
+S 3254 signalr backend p=dotnet n=SignalR
+S 3255 sil_hil embedded_iot n=SIL/HIL testing
+L sil_hil hil;sil;hardware-in-the-loop
+N combo 3256
+S 3257 slo_sli devops p=sre n=SLO/SLI
+F slo_sli SLO;SLI;SLOs
+A 3258 slo_sli
+N generic 3259
+S 3260 smartsheet dev_tools n=Smartsheet
+N combo 3261
+N generic 3262
+A 3263 3264 sdlc
+S 3265 solaris systems_network p=unix n=Solaris
+A 3266 sonarqube
+N entity 3267
+S 3268 spa frontend n=SPA
+F spa SPA
+N generic 3269
+S 3270 ssas bi_analytics p=sql_server n=SSAS
+N job_title 3271
+N generic 3272
+N combo 3273 3274
+S 3275 streaming data_engineering n=Xử lý luồng (streaming)
+L streaming stream processing;real-time streaming;data streaming
+A 3276 cpp
+A 3277 power_bi
+A 3278 ai
+N generic 3279
+A 3280 sql
+S 3281 substance design_creative p=3d_modeling n=Substance Painter
+L substance substance painter;substance 3d
+N generic 3282
+S 3283 supabase backend n=Supabase
+N job_title 3284 3285
+S 3286 symfony backend p=php n=Symfony
+S 3287 system_test testing_qa p=software_testing n=System testing
+A 3288 documentation
+N generic 3289
+A 3290 3291 react_query
+N generic 3292
+N entity 3293
+N generic 3294
+N job_title 3295
+N generic 3296
+S 3297 technical_writing soft_skills p=documentation n=Technical writing
+N generic 3298
+A 3299 t24
+S 3300 temporal backend n=Temporal (workflow engine)
+F temporal Temporal
