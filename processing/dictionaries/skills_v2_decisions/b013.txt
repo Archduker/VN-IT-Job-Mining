@@ -249,7 +249,7 @@ S 3858 lab_instruments embedded_iot n=Oscilloscope / Logic Analyzer
 L lab_instruments oscilloscope;logic analyzer;máy hiện sóng
 S 3859 lora_finetune ai_genai p=llm n=Fine-tuning (LoRA/QLoRA)
 F lora_finetune LoRA;QLoRA
-L lora_finetune fine-tuning;fine tuning;finetuning;peft;rlhf;dpo
+L lora_finetune fine-tuning;fine tuning;finetuning;peft;rlhf
 N entity 3860
 S 3861 lti enterprise_apps p=lms_canvas n=LTI
 F lti LTI

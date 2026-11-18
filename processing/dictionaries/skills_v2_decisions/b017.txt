@@ -1,0 +1,266 @@
+# Lô 17: dòng 4801-5100 (18/11/2026)
+S 4801 davinci_resolve design_creative n=DaVinci Resolve
+N generic 4802
+A 4803 cdc
+N generic 4804
+A 4805 data_privacy
+S 4806 deep_link mobile n=Deep link
+N generic 4807
+N entity 4808
+N job_title 4809 4810
+N generic 4811 4812
+A 4813 documentation
+A 4814 cicd
+N generic 4815 4816
+S 4817 detox testing_qa p=mobile_testing n=Detox
+F detox Detox
+N job_title 4818
+N combo 4819 4820 4821
+A 4822 api
+N generic 4823 4824 4825
+N combo 4826
+A 4827 rest_api
+N generic 4828 4829
+A 4830 devops
+A 4831 azure_pipelines
+N combo 4832
+S 4833 dfm cad_engineering n=DFM (thiết kế cho sản xuất)
+F dfm DFM
+N generic 4834 4835
+N entity 4836
+A 4837 flowise
+S 4839 digital_advertising digital_marketing n=Quảng cáo số (digital ads)
+A 4838 digital_advertising
+N generic 4840 4841 4842 4843 4844
+A 4845 product_management
+S 4846 aws_direct_connect cloud p=aws n=AWS Direct Connect / ExpressRoute
+L aws_direct_connect expressroute
+N generic 4847
+N job_title 4848
+A 4849 disaster_recovery
+A 4850 caching
+N generic 4851 4852
+N entity 4853
+N combo 4854
+A 4855 4856 4857 english
+A 4858 troubleshooting
+A 4859 docker
+S 4860 document_processing ai_genai p=ocr n=Xử lý tài liệu (IDP)
+S 4861 data_reconciliation data_engineering n=Đối chiếu dữ liệu
+L data_reconciliation data reconciliation
+N generic 4862
+A 4863 ddd
+N combo 4864
+A 4865 data_sync
+N industry 4866 4867
+N generic 4868 4869
+A 4870 disaster_recovery
+N combo 4871 4872
+N generic 4873
+A 4874 adas
+N generic 4875 4876
+N entity 4877 4878 4879
+N generic 4880
+S 4881 dwdm systems_network p=telecom_network n=DWDM / truyền dẫn quang
+F dwdm DWDM
+N combo 4882
+S 4883 dynatrace devops p=apm n=Dynatrace
+N generic 4884
+S 4885 sap_ecc enterprise_apps p=sap n=SAP ECC
+F sap_ecc ECC
+A 4886 vscode
+N generic 4887
+N combo 4888
+A 4889 edge_computing
+N generic 4890
+N industry 4891
+N combo 4892
+A 4893 elasticsearch
+N entity 4894
+N combo 4895
+N degree 4896
+S 4897 electron frontend n=Electron
+F electron Electron
+N combo 4898
+S 4899 mail_server systems_network n=Mail server
+L mail_server mail server;postfix
+A 4900 android_framework
+A 4901 4902 embedded
+A 4903 embeddings
+N combo 4904
+N entity 4905
+N generic 4906
+N job_title 4907
+N combo 4908 4909
+N job_title 4910
+A 4911 english
+N generic 4912 4913
+A 4914 english
+N combo 4915
+A 4916 esb
+N generic 4917 4918 4919 4920
+N industry 4921
+A 4922 4923 erp
+N combo 4924 4925 4926 4927
+N industry 4928
+S 4929 espresso testing_qa p=mobile_testing n=Espresso / UI Automator
+F espresso Espresso
+L espresso ui automator
+N generic 4930 4931
+S 4932 etherchannel systems_network p=routing_switching n=EtherChannel / LACP
+F etherchannel LACP
+N job_title 4933 4934
+A 4935 excel
+A 4936 vba
+N generic 4937 4938 4939
+A 4940 ux_design
+S 4941 exploratory_testing testing_qa p=software_testing n=Exploratory testing
+N generic 4942
+N entity 4943
+N generic 4944
+A 4945 scrum
+A 4946 workshop_facilitation
+N combo 4947
+A 4948 exception_handling
+S 4949 fanuc cad_engineering p=cnc n=Fanuc
+F fanuc Fanuc;FANUC
+N generic 4950
+N job_title 4951
+A 4952 feature_store
+N generic 4953 4954 4955
+A 4956 4957 figma
+N combo 4958
+S 4959 final_cut design_creative n=Final Cut Pro
+L final_cut final cut pro
+N industry 4960
+S 4961 financial_analysis bi_analytics n=Phân tích tài chính
+L financial_analysis phân tích tài chính
+N industry 4962 4963
+N generic 4964
+A 4965 fcm
+N generic 4966
+N combo 4967 4968
+N generic 4969
+A 4970 can_bus
+N generic 4971 4972
+N industry 4973
+N generic 4974
+N entity 4975
+N job_title 4976
+A 4977 azure_ai
+N entity 4978
+A 4979 unity_profiler
+N generic 4980 4981
+N entity 4982
+A 4983 erpnext
+S 4984 french languages n=Tiếng Pháp
+F french French
+L french tiếng pháp
+A 4985 zendesk
+N combo 4986
+N generic 4987
+A 4988 frontend_dev
+S 4989 ftth systems_network p=telecom_network n=FTTH / GPON
+F ftth FTTH;GPON
+N generic 4990
+N job_title 4991
+S 4992 functional_safety embedded_iot n=Functional Safety (ISO 26262)
+L functional_safety iso 26262
+N generic 4993
+A 4994 cnc
+N generic 4995 4996 4997
+A 4998 liveops
+N combo 4999 5000
+N industry 5001 5002
+N generic 5003
+A 5004 gcp_certified
+N combo 5005
+A 5006 google_ads
+N generic 5007
+N combo 5008
+A 5009 business_rules
+A 5010 contact_center
+N entity 5011
+N generic 5012
+N entity 5013
+N industry 5014
+A 5015 negotiation
+A 5016 communication
+N entity 5017
+N generic 5018
+A 5019 git
+A 5020 git_flow
+A 5021 branching_strategy
+N generic 5022
+A 5023 gitops
+N generic 5024 5025
+N job_title 5026
+N generic 5027
+N job_title 5028
+N generic 5029
+A 5030 excel
+A 5031 sql
+S 5032 google_adk ai_genai p=ai_agent n=Google ADK
+N generic 5033
+A 5034 apps_script
+N combo 5035
+S 5036 app_store_publish mobile n=Phát hành app (App Store, Google Play)
+L app_store_publish app store connect;google play console
+A 5037 google_sheets
+N generic 5038 5039
+A 5040 mcu_peripherals
+A 5041 gpu
+N generic 5042 5043
+N entity 5044
+N job_title 5045
+S 5046 groovy programming_languages n=Groovy
+A 5047 product_analytics
+S 5048 gstreamer embedded_iot n=GStreamer / FFmpeg
+L gstreamer ffmpeg
+N generic 5049
+A 5050 it_infrastructure
+A 5051 cloud_computing
+N entity 5052 5053
+N combo 5054 5055
+N entity 5056
+N generic 5057
+S 5058 haravan enterprise_apps n=Haravan
+N generic 5059
+N entity 5060 5061
+A 5062 hadoop
+A 5063 virtualization
+A 5064 backend_dev
+A 5065 crm
+A 5066 storage
+A 5067 microservices
+A 5068 monitoring
+A 5069 wifi
+A 5070 his_lis
+A 5071 helm
+N combo 5072
+A 5073 technical_support
+N combo 5074
+N generic 5075 5076 5077 5078 5079 5080
+A 5081 apple_hig
+A 5082 sil_hil
+S 5083 hipaa security p=compliance n=HIPAA
+F hipaa HIPAA
+N entity 5084 5085
+N combo 5086
+S 5087 cryptography security n=Mật mã (hash, HMAC, AES, RSA)
+L cryptography aes;rsa
+N industry 5088
+S 5089 eagerness_to_learn soft_skills n=Ham học hỏi
+L eagerness_to_learn ham học hỏi;tinh thần học hỏi;eager to learn;willingness to learn
+N industry 5090 5091
+N entity 5092
+N industry 5093
+A 5094 server_admin
+A 5095 auto_scaling
+S 5096 hpc systems_network n=HPC (tính toán hiệu năng cao)
+F hpc HPC
+S 5097 hris enterprise_apps n=HRIS / HRM
+L hris hrm;phần mềm nhân sự
+N combo 5098
+A 5099 web_server
+A 5100 hugging_face
