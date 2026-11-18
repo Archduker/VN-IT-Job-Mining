@@ -46,6 +46,6 @@ Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <ngu�
 
 ## Việc còn mở
 
-`docs/KNOWN_ISSUED.md` mục 3: PRE-12 (bộ lọc IT 92,4%, chưa đạt 95%), PRE-33 (việc chờ người dùng), PRE-34 (222 tin dịch hỏng), PRE-35 (dữ liệu chưa sạch cho SD1–SD5), PRE-37 (`posted_month`), PRE-38 (tỉnh lấy từ trụ sở), PRE-39 (dọn code theo spec 05).
+`docs/KNOWN_ISSUED.md` mục 3: PRE-12 (bộ lọc IT 90,8% sau khi chạy lại 18/11, chưa đạt 95%), PRE-33 (việc chờ người dùng), PRE-34 (222 tin dịch hỏng), PRE-35 (dữ liệu chưa sạch cho SD1–SD5), PRE-37 (`posted_month`), PRE-38 (tỉnh lấy từ trụ sở), PRE-39 (dọn code theo spec 05), PRE-43 (chỗ thiếu mới: TopCV `date_posted`, nhãn ngành trong kỹ năng TopCV, glints tháng cũ).
 
 Chạy lại pipeline thì so số trước và sau, rồi mới đẩy lên R2 bằng `scripts/push_preprocessing_to_r2.py` (chạy thử trước, người dùng duyệt rồi mới `--push`).

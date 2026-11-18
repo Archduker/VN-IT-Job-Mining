@@ -1,7 +1,7 @@
 # Prompt 03: Transformation (dịch EN→VI, `posted_month`, trích JD theo từ điển đã duyệt)
 
 > Đặc tả: [`docs/spec/preprocessing/03_transformation.md`](../../spec/preprocessing/03_transformation.md), mục 2.2–2.3 là luật mới. Từ điển: `preprocessing/dictionaries/jd_extraction.json` (`approved: true`, 18/11).
-> **Trạng thái:** viết ngày 18/11/2026, **chờ người dùng duyệt** cùng đặc tả (bước 1–2 của quy trình). Chưa viết code luật mới.
+> **Trạng thái:** người dùng duyệt đặc tả và prompt ngày 18/11/2026; code và dry-run xong (bước 3–4). Còn bước 5: chạy thật cùng lượt dịch, rồi review.
 
 ## 1. Ngữ cảnh
 
@@ -146,8 +146,8 @@ check_conserved ; ghi parquet ; report T9a/T9b/T9c + extra.jd_extraction
 | — | Chạy 03 không dịch (trước khi có luật mới) | 18/11 | Chạy thật trên bảng 02 đã sửa: 4.671 → 4.671. Trang `03_transformation.html`. Thấy thiếu `posted_month`, `work_mode`, kinh nghiệm topdev | `ee7d7ac` |
 | — | Lập từ điển (phương án A + Claude đọc JD) | 18/11 | `scripts/mine_jd_phrases.py` gom câu ứng viên; Claude đọc và lập mẫu; đo bằng `scripts/review_jd_dictionary.py`. Người dùng duyệt 7 quyết định: "1. đúng rồi 2. oke 3. oke luôn 4. có 5. giữ ô sàn 6. nếu trích xuất ra được 100% thì sẽ thêm vào" | `d5039db`, `adaa693` |
 | — | Dịch | 18/11 | Cài torch 2.14.1+cu130 (Quadro T1000 4 GB). Chạy `--translate` nền từ 07:42; khoảng 64 dòng/phút trên 24.670 dòng | — |
-| 1 | Duyệt đặc tả | chưa | Đặc tả 03 mục 2.2–2.3 | — |
-| 2 | Duyệt prompt | chưa | Prompt này | — |
-| 3 | Test rồi code | chưa | | |
-| 4 | Dry-run | chưa | | |
+| 1 | Duyệt đặc tả | 18/11 | Đặc tả 03 mục 2.2–2.3. "oke duyệt 03 luôn" | `7b555fd` |
+| 2 | Duyệt prompt | 18/11 | Duyệt cùng câu trên | `d52e589` |
+| 3 | Test rồi code | 18/11 | Test trước trong `tests/unit/test_transformation_step.py` (T3b, T6.5, T7, T9a–c, từ điển chưa duyệt thì dừng): 3 đỏ rồi xanh, 20/20. Code: `preprocessing/transformation/jd_extractor.py` (mới), `run.py` (T3b `posted_month`, T6.5 `benefits_clean`, T7 chỉ đọc bản gốc, T9, report `extra.posted_month_*`, `extra.jd_extraction`). `scripts/review_jd_dictionary.py` gọi `jd_extractor` (số đo khớp bản cũ). `make test-fast` 554 xanh (trừ test vulture, thiếu gói) | xem commit này |
+| 4 | Dry-run | 18/11 | Gọi `process_source` từng nguồn, không ghi report (dry-run của driver vẫn ghi `reports/`, trong lúc lượt dịch đang chạy). glints rồi 8 nguồn: 4.671 → 4.671. T3b 4.671 (2.979 từ ngày đăng, 1.692 từ lần cào đầu); T6.5 1.147; T9a 113 tin có hình thức từ JD, 12 lệch ô của sàn (8 tín hiệu mạnh); T9b 180 lệch (thực tập ghi Full-time); T9c 3.517 tin có kinh nghiệm từ JD, bù 257 tin trống. Số tin không có kỹ năng không đổi. Thấy glints `createdAt` từ 2023 (PRE-43) | — |
 | 5 | Review, chạy thật | chưa | | |

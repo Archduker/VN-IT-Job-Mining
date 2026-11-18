@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
-"""Bước 03 Transformation (docs/spec/preprocessing/spec/P3_transformation.md).
+"""Bước 03 Transformation (docs/spec/preprocessing/03_transformation.md).
 
-Ép kiểu dữ liệu, bóc tách lương cascade, ngày, kinh nghiệm, headcount,
-làm sạch text và nhận ngôn ngữ JD (không dịch: kỹ năng rút song ngữ nên JD tiếng Anh vẫn dùng được),
-rút kỹ năng/phúc lợi, tách địa điểm 3 cấp theo 34 tỉnh. Đọc và ghi một file all.parquet. Không gọi model nào.
+Ép kiểu, bóc tách lương cascade, ngày và tháng đăng (T3b), kinh nghiệm, headcount; làm sạch chữ (T6, T6.5);
+nhận ngôn ngữ bằng fastText lid.176; dịch EN→VI bằng envit5 khi có --translate (T6b, giữ cột gốc);
+rút kỹ năng (chỉ từ bản gốc) và phúc lợi; tách địa điểm 3 cấp theo 34 tỉnh; rút hình thức làm việc,
+loại hợp đồng, kinh nghiệm từ ô của sàn và JD (T9, chỉ ghi giá trị và cờ, bước 04 chọn).
+Đọc và ghi một file all.parquet. Không bỏ dòng.
 """
 
 from __future__ import annotations
 
+from collections import Counter
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Sequence
 
 import pandas as pd
@@ -19,6 +23,7 @@ from preprocessing.common import text_clean as tc
 from preprocessing.transformation.date_parser import process_dates
 from preprocessing.transformation.experience_parser import parse_experience
 from preprocessing.transformation.headcount_parser import parse_headcount
+from preprocessing.transformation import jd_extractor
 from preprocessing.transformation.location_parser import parse_locations
 from preprocessing.transformation.salary_parser import parse_salary_cascade
 from preprocessing.transformation.skill_extractor import extract_benefits, extract_skills
@@ -35,8 +40,71 @@ KEY_FIELDS = (
     "salary_min_vnd", "salary_max_vnd", "posted_date", "deadline_date",
     "exp_min_years", "exp_max_years", "headcount", "job_title_clean",
     "description_clean", "skills_clean", "benefits_std",
-    "locations", "language"
+    "locations", "language", "posted_month", "benefits_clean", "work_mode_raw", "work_mode_jd",
+    "employment_type_raw", "employment_type_jd", "exp_min_years_jd"
 )
+_VN_TZ = timezone(timedelta(hours=7))
+
+
+def posted_month(posted_date: Any, first_crawled_at: Any) -> Optional[str]:
+    """T3b (PRE-37): YYYY-MM của ngày đăng; không có thì của lần cào đầu đổi sang giờ Việt Nam (UTC+7)."""
+    if isinstance(posted_date, str) and len(posted_date) >= 7:
+        return posted_date[:7]
+    if not isinstance(first_crawled_at, str) or not first_crawled_at:
+        return None
+    try:
+        ts = datetime.fromisoformat(first_crawled_at.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if ts.tzinfo is None:  # không có múi giờ thì coi là UTC, như scraped_at của crawler
+        ts = ts.replace(tzinfo=timezone.utc)
+    return ts.astimezone(_VN_TZ).strftime("%Y-%m")
+
+
+def clean_benefits(items: Any) -> Optional[List[str]]:
+    """T6.5: làm sạch từng item phúc lợi như T6 (NFC, ký tự ẩn, khoảng trắng), bỏ item rỗng."""
+    if items is None or isinstance(items, (str, bytes)) or not hasattr(items, "__iter__"):
+        return None
+    out = []
+    for it in items:
+        s = tc.clean_text(it) if isinstance(it, str) else None
+        s = " ".join(tc._HIDDEN.sub("", s).split()) if s else ""
+        if s:
+            out.append(s)
+    return out or None
+
+
+def skill_source_text(rec: Dict[str, Any]) -> str:
+    """T7: văn bản để rút kỹ năng, chỉ bản gốc (preprocessing/CLAUDE.md); không đọc cột *_vi."""
+    return f"{rec.get('description_clean') or ''} {rec.get('requirements_clean') or ''}".strip()
+
+
+def _t9_tally(t9: Dict[str, Any], rec: Dict[str, Any], st: Dict[str, Counter],
+              ex: Dict[str, List[Dict[str, Any]]], job_id: Any, url: Any) -> None:
+    """Đếm cho report: số tin có giá trị JD, phân bố, ca lệch; tối đa 3 ví dụ mỗi luật (ưu tiên ca lệch)."""
+    st["wm_raw"][str(t9["work_mode_raw"])] += 1
+    st["wm_jd"][str(t9["work_mode_jd"])] += 1
+    st["et_raw"][str(t9["employment_type_raw"])] += 1
+    st["et_jd"][str(t9["employment_type_jd"])] += 1
+    st["exp_kind"][str(t9["exp_jd_kind"])] += 1
+    for pid in t9["work_mode_jd_rules"]:
+        st["wm_rules"][pid] += 1
+    if t9["work_mode_conflict"] and t9["work_mode_jd_strong"]:
+        st["conflict"]["T9a_strong"] += 1
+    for key, has, conflict, before, after in (
+        ("T9a", t9["work_mode_jd"], t9["work_mode_conflict"], rec.get("raw_work_mode"),
+         f"raw={t9['work_mode_raw']} jd={t9['work_mode_jd']} strong={t9['work_mode_jd_strong']}"),
+        ("T9b", t9["employment_type_jd"], t9["employment_type_conflict"], rec.get("raw_employment_type"),
+         f"raw={t9['employment_type_raw']} jd={t9['employment_type_jd']}"),
+        ("T9c", t9["exp_jd_kind"], False, rec.get("raw_experience_text"),
+         f"{t9['exp_min_years_jd']} - {t9['exp_max_years_jd']} «{t9['exp_jd_text']}»"),
+    ):
+        if has:
+            st[key]["jd"] += 1
+        if conflict:
+            st["conflict"][key] += 1
+        if has and len(ex[key]) < 3 and (conflict or key == "T9c"):
+            ex[key].append({"job_id": job_id, "field": key, "before": str(before), "after": after, "url": url})
 
 
 def _is_filled(val: Any) -> bool:
@@ -87,6 +155,11 @@ def process_source(
     abbrev = tc.load_abbreviations()
     tq = {k: 0 for k in _INFO_KEYS}
     t2_examples = []
+    t3b_src: Counter = Counter()
+    t65_count = 0
+    t9_stats: Dict[str, Counter] = {k: Counter() for k in (
+        "T9a", "T9b", "T9c", "wm_rules", "wm_raw", "wm_jd", "et_raw", "et_jd", "exp_kind", "conflict")}
+    t9_examples: Dict[str, List[Dict[str, Any]]] = {"T9a": [], "T9b": [], "T9c": []}
     t4_examples = []
     t7_examples = []
     t8_examples = []
@@ -135,7 +208,6 @@ def process_source(
             _, rec[f"{name}_vi_norm"], rec[f"{name}_vi_fold"] = tc._columns(tr[f"{name}_vi"], abbrev)
         if tr["translation_status"] in ("translated", "failed"):
             t6b_count += 1
-            combined_text = f"{combined_text} {tr['description_vi'] or ''} {tr['requirements_vi'] or ''}".strip()
 
         # T2: Parse lương Cascade 3 tầng
         raw_sal = rec.get("raw_salary_text")
@@ -182,6 +254,9 @@ def process_source(
             flags.append("deadline_before_crawl")
         if posted_d or deadline_d:
             t3_count += 1
+        # T3b: tháng đăng (bảng sạch dùng cột này thay posted_date, spec 05 mục 4.2)
+        rec["posted_month"] = posted_month(posted_d, rec.get("first_crawled_at"))
+        t3b_src["posted_date" if posted_d else ("first_crawled_at" if rec["posted_month"] else "none")] += 1
 
         # T4: Parse kinh nghiệm
         exp_min, exp_max = parse_experience(rec.get("raw_experience_text"))
@@ -203,10 +278,17 @@ def process_source(
         if rec["headcount"] is not None:
             t5_count += 1
 
-        # T7: Kỹ năng & Phúc lợi
-        skills_clean = extract_skills(rec.get("skills_list"), combined_text, rec.get("company_name"))
+        # T6.5: làm sạch từng item phúc lợi
+        raw_benefits = rec.get("benefits_list")
+        rec["benefits_clean"] = clean_benefits(raw_benefits)
+        if raw_benefits is not None and not isinstance(raw_benefits, str) \
+                and list(rec["benefits_clean"] or []) != [x for x in raw_benefits]:
+            t65_count += 1
+
+        # T7: Kỹ năng (chỉ bản gốc) & Phúc lợi
+        skills_clean = extract_skills(rec.get("skills_list"), skill_source_text(rec), rec.get("company_name"))
         rec["skills_clean"] = skills_clean
-        benefits_std = extract_benefits(rec.get("benefits_list"), desc_clean or "")
+        benefits_std = extract_benefits(rec["benefits_clean"], desc_clean or "")
         rec["benefits_std"] = benefits_std
         if skills_clean or benefits_std:
             t7_count += 1
@@ -235,6 +317,11 @@ def process_source(
                     "url": url,
                 })
 
+        # T9: hình thức làm việc, loại hợp đồng, kinh nghiệm từ ô của sàn và JD (chỉ ghi, bước 04 chọn)
+        t9 = jd_extractor.extract(rec)
+        rec.update(t9)
+        _t9_tally(t9, rec, t9_stats, t9_examples, job_id, url)
+
         rec["flags"] = flags
         transformed_rows.append(rec)
 
@@ -243,6 +330,8 @@ def process_source(
     report.rule("T2", "Bóc tách dải số lương Cascade", "modify", t2_count, t2_examples)
     report.rule("T3", "Bóc tách ngày chuẩn ISO/dd/mm/yyyy", "modify", t3_count)
     report.rule("T4", "Bóc tách số năm kinh nghiệm", "modify", t4_count, t4_examples)
+    report.rule("T3b", "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)", "modify",
+                t3b_src["posted_date"] + t3b_src["first_crawled_at"])
     report.rule("T5", "Bóc tách chỉ tiêu headcount", "modify", t5_count)
     report.rule("T2f", "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect", "flag", t2_suspect)
     report.rule("T6", "Làm sạch text HTML/bullet và phát hiện ngôn ngữ", "modify", t6_count)
@@ -254,8 +343,14 @@ def process_source(
         if tq[key]:
             report.note(f"CẢNH BÁO: {tq[key]} tin còn {label} sau {tc.MAX_RETRIES} lượt làm sạch (không dừng pipeline)")
     report.rule("T6b", "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)", "modify", t6b_count)
-    report.rule("T7", "Rút kỹ năng và phúc lợi song ngữ", "modify", t7_count, t7_examples)
+    report.rule("T6.5", "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)", "modify", t65_count)
+    report.rule("T7", "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ", "modify", t7_count, t7_examples)
     report.rule("T8", "Bóc tách địa điểm 3 cấp", "modify", t8_count, t8_examples)
+    report.rule("T9a", "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn", "flag",
+                t9_stats["T9a"]["jd"], t9_examples["T9a"])
+    report.rule("T9b", "Loại hợp đồng từ JD, cờ lệch với ô của sàn", "flag", t9_stats["T9b"]["jd"], t9_examples["T9b"])
+    report.rule("T9c", "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)", "flag",
+                t9_stats["T9c"]["jd"], t9_examples["T9c"])
 
     # Đo độ phủ trường
     fields_stats = []
@@ -283,6 +378,16 @@ def process_source(
         },
         "translation": translation.manifest() if translation else None,
         "experience_parsed_rate": round((t4_count / total_rows) * 100.0, 1) if total_rows > 0 else 0.0,
+        "posted_month_source": dict(t3b_src),
+        "posted_month_distribution": dict(Counter(str(r.get("posted_month")) for r in transformed_rows)),
+        "jd_extraction": {
+            "dictionary": str(jd_extractor.DICT_PATH.relative_to(REPO_ROOT)).replace("\\", "/"),
+            "work_mode_raw": dict(t9_stats["wm_raw"]), "work_mode_jd": dict(t9_stats["wm_jd"]),
+            "work_mode_jd_rules": dict(t9_stats["wm_rules"]),
+            "employment_type_raw": dict(t9_stats["et_raw"]), "employment_type_jd": dict(t9_stats["et_jd"]),
+            "exp_jd_kind": dict(t9_stats["exp_kind"]),
+            "conflicts": dict(t9_stats["conflict"]),
+        },
     }
 
     report.check_conserved()

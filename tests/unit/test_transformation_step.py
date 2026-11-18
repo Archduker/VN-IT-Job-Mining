@@ -197,3 +197,110 @@ def test_transformation_pipeline_integration(tmp_path, monkeypatch):
     # T8: Địa điểm
     assert len(row["locations"]) == 1
     assert "Hà Nội" in row["locations"][0]["tinh_thanh"]
+
+
+# ---------------------------------------------------------------- luật mới 18/11 (docs/spec/preprocessing/03_transformation.md mục 2.2)
+from preprocessing.transformation import jd_extractor as jx  # noqa: E402
+
+
+def test_t3b_posted_month_from_posted_date_or_first_crawl_in_vn_time():
+    # topcv_2325743: không có ngày đăng, cào lần đầu 2026-10-20T18:44Z (21/10 giờ Việt Nam)
+    assert transformation.posted_month(None, "2026-10-20T18:44:44.698712+00:00") == "2026-10"
+    # 31/10 18:30 UTC là 01/11 01:30 giờ Việt Nam
+    assert transformation.posted_month(None, "2026-10-31T18:30:00+00:00") == "2026-11"
+    # itviec: có ngày đăng thì lấy ngày đăng
+    assert transformation.posted_month("2026-09-29", "2026-10-20T00:00:00+00:00") == "2026-09"
+    assert transformation.posted_month(None, None) is None
+
+
+def test_t6_5_benefits_clean_nfc_and_drop_empty():
+    import unicodedata
+    nfd = unicodedata.normalize("NFD", "Bảo hiểm sức khỏe")
+    out = transformation.clean_benefits([nfd, "  ", "Lương​ tháng 13 "])
+    assert out == ["Bảo hiểm sức khỏe", "Lương tháng 13"]
+    assert all(unicodedata.is_normalized("NFC", x) for x in out)
+    assert transformation.clean_benefits(None) is None
+
+
+def _rec(**kw):
+    base = {"source_platform": "topcv", "job_title_clean": "", "description_clean": "", "requirements_clean": "",
+            "raw_work_mode": None, "raw_employment_type": None}
+    base.update(kw)
+    return base
+
+
+def test_t9a_title_signal_beats_raw_office():
+    # itviec "Remote - QA Engineer (Games)", ô ghi Tại văn phòng
+    out = jx.work_mode(_rec(source_platform="itviec", job_title_clean="Remote - QA Engineer (Games)", raw_work_mode="Tại văn phòng"))
+    assert (out["work_mode_raw"], out["work_mode_jd"], out["work_mode_jd_strong"], out["work_mode_conflict"]) == \
+        ("onsite", "remote", True, True)
+
+
+def test_t9a_wfh_days_per_week_is_strong_hybrid():
+    # glints "System/ Network Administration and Coordinator - French Speaking"
+    out = jx.work_mode(_rec(source_platform="glints", job_title_clean="System/ Network Administration and Coordinator",
+                            description_clean="Work from home 2 days/ week.", raw_work_mode="Làm tại công ty / Onsite"))
+    assert out["work_mode_jd"] == "hybrid" and out["work_mode_jd_strong"] and "WH4" in out["work_mode_jd_rules"]
+
+
+def test_t9a_noise_hybrid_cloud_and_factory_not_matched():
+    # topcv "Kỹ Sư Triển Khai Giải Pháp An Toàn Thông Tin"
+    a = jx.work_mode(_rec(requirements_clean="Có kinh nghiệm triển khai SOC trên On-Premise, Cloud hoặc Hybrid."))
+    # vietnamworks "Kỹ Sư IT": "tại nhà máy" không phải "tại nhà"
+    b = jx.work_mode(_rec(source_platform="vietnamworks",
+                          description_clean="Ứng viên có thể chọn địa điểm làm việc tại nhà máy Hà Nội hoặc Hưng Yên"))
+    assert a["work_mode_jd"] is None and b["work_mode_jd"] is None
+
+
+def test_t9a_raw_maps_itviec_flexible_and_jobsgo_remote_type():
+    assert jx.work_mode_raw("itviec", "Linh hoạt", None) == "hybrid"
+    assert jx.work_mode_raw("topcv", "Làm việc tại văn phòng / Onsite, Kết hợp tại văn phòng và từ xa (Hybrid)", None) == "hybrid"
+    assert jx.work_mode_raw("jobsgo", None, "Toàn thời gian, Remote") == "remote"
+    assert jx.work_mode_raw("vietnamworks", None, "7") == "remote"
+    assert jx.work_mode_raw("vietnamworks", None, "6") is None
+
+
+def test_t9b_intern_title_conflicts_with_full_time_raw():
+    out = jx.employment_type(_rec(source_platform="itviec", job_title_clean="Oracle Consultant Intern", raw_employment_type="FULL_TIME"))
+    assert (out["employment_type_raw"], out["employment_type_jd"], out["employment_type_conflict"]) == \
+        ("full_time", "internship", True)
+    # jobsgo: "Không Hỗ Trợ Mộc Thực Tập" là nhiễu, không phải tin thực tập
+    n = jx.employment_type(_rec(source_platform="jobsgo",
+                                job_title_clean="Tư Vấn Triển Khai Phần Mềm Website Fulltime (Không Hỗ Trợ Mộc Thực Tập)",
+                                raw_employment_type="Toàn thời gian"))
+    assert n["employment_type_jd"] != "internship"
+    # nhiều giá trị: giữ cả danh sách, bỏ Remote (là hình thức làm việc)
+    assert jx.employment_types_raw("Toàn thời gian, Bán thời gian, Remote") == ["full_time", "part_time"]
+    assert jx.employment_types_raw("6") == []
+
+
+@pytest.mark.parametrize("line, lo, hi, kind", [
+    ("Có tối thiểu 5 năm kinh nghiệm trong lĩnh vực an ninh mạng hoặc an toàn thông tin.", 5.0, None, "jd"),  # topdev
+    ("5+ years of professional experience as a Product Owner, Business Analyst.", 5.0, None, "jd"),  # itviec
+    ("Có từ 0-1 năm kinh nghiệm trong lĩnh vực An toàn thông tin, An ninh mạng.", 0.0, 1.0, "jd"),  # careerviet
+    ("Sinh viên năm 4, hoặc mới tốt nghiệp trong lĩnh vực lập trình.", 0.0, None, "jd_zero"),  # itviec Thực tập sinh DEV
+])
+def test_t9c_experience_from_jd(line, lo, hi, kind):
+    got = jx.experience_from_lines([line])
+    assert (got["exp_min_years_jd"], got["exp_max_years_jd"], got["exp_jd_kind"]) == (lo, hi, kind)
+
+
+def test_t9c_salary_review_years_is_noise():
+    assert jx.experience_from_lines(["Review lương định kì vào tháng 3 hàng năm, thưởng sau 2 năm làm việc."]) is None
+
+
+def test_t9_refuses_unapproved_dictionary(tmp_path):
+    import json
+    d = json.loads(jx.DICT_PATH.read_text(encoding="utf-8"))
+    d["_meta"]["approved"] = False
+    p = tmp_path / "jd.json"
+    p.write_text(json.dumps(d, ensure_ascii=False), encoding="utf-8")
+    with pytest.raises(jx.DictionaryNotApproved):
+        jx.load_rules(str(p))
+
+
+def test_t7_skills_from_original_text_only():
+    # Bản dịch không được thêm kỹ năng: code cũ nối *_vi vào văn bản rút kỹ năng
+    rec = {"description_clean": "We build backend services.", "requirements_clean": "Good communication.",
+           "description_vi": "Chúng tôi xây dựng dịch vụ backend bằng Docker.", "requirements_vi": None}
+    assert "Docker" not in transformation.skill_source_text(rec)
