@@ -209,7 +209,7 @@ Bảng 04 là bảng làm việc: giữ mọi cột trung gian, cờ và bản s
 | `employment_type` | string, null | `full_time`, `part_time`, `contract`, `internship`; null nếu ô của sàn và JD đều không có (đo 18/11: 6,6%, gần hết topdev) | `employment_type` (04 N19) | SD1 |
 | `company` | string | Tên công ty đã chuẩn hóa | `company_norm` | SD1 |
 | `company_id` | string | Khóa gộp các cách viết của một công ty (rapidfuzz `token_sort` ≥ 90); dùng đếm công ty và chia train/test theo công ty ở SD4 | `company_key` | SD1, SD4 |
-| `skills` | list[string] | Kỹ năng chuẩn | `skills_std` (đổi sang nguồn bước 08 khi chốt PRE-40) | SD1–SD5 |
+| `skills` | list[string] | Kỹ năng chuẩn | `skills_std` → **đổi sang bước 08** (`job_skills.parquet`, từ điển `skills_v2.json`; người dùng chốt K8.9 ngày 18/11). Vì vậy Silver được ghi sau bước 08 | SD1–SD5 |
 | `benefits` | list[string] | Phúc lợi chuẩn theo `dictionaries/benefits.json` ([02_integration.md](preprocessing/02_integration.md), PRE-41) | `benefits_std` | SD1 |
 | `description` | string | Mô tả công việc, đã bỏ HTML | `description_clean` | SD3 |
 | `requirements` | string | Yêu cầu ứng viên, đã bỏ HTML | `requirements_clean` | SD3, SD5 |

@@ -21,7 +21,7 @@
 
 ## 3. Quy trình xử lý
 
-1. Đọc `data/preprocessing/04_normalization/all.parquet`.
+1. Đọc `data/preprocessing/04_normalization/all.parquet`, và `data/processing/08_skills/job_skills.parquet` cho trường `skills` (K8.9, người dùng chốt 18/11: một nguồn kỹ năng). Vì vậy S1 chạy sau bước 08, không ngay sau bước 04.
 2. Với mỗi trường trong mục 4.4: lấy cột nguồn và đổi tên. Cột nguồn không tồn tại thì **dừng và báo**, không tạo cột rỗng. Đây là cách bảng Silver lộ ra chỗ thiếu.
 3. Ép kiểu: `posted_month` là chuỗi `YYYY-MM`; `salary_negotiable`, `salary_outlier`, `seniority_inferred`, `exp_inferred` là bool (không có null); `skills`, `benefits` là list chuỗi.
 4. Ghi `data/preprocessing/04_normalization/silver.parquet`.
@@ -86,7 +86,7 @@ Trước khi dựng bảng, ngày 18/11:
 | `posted_month` | Chưa có cột | 03 T3b | PRE-37 |
 | `work_mode` | Đang suy từ địa điểm, mặc định onsite | 03 T9a + 04 N14 | — |
 | `exp_min_years` | topdev 27,9%; itviec là mức gom | 03 T9c + 04 M4 | — |
-| `skills` | Nguồn đang là `skills_std` (PRE-40). Nhãn ngành TopCV đã bỏ ở 02 (18/11) | 04 | PRE-40 |
+| `skills` | Đổi nguồn sang bước 08 với từ điển mới `skills_v2.json` (K8.9, K8.11; đang làm, prompt `docs/prompting/processing/08_skills_v2.md`). Nhãn ngành TopCV đã bỏ ở 02 (18/11) | 08 | PRE-40 |
 | `employment_type` | Chưa có cột; 6,6% tin không rõ (topdev 198/202) | 04 N19 | — |
 | `seniority_inferred`, `exp_inferred`, `salary_outlier` | Có ở bảng 04 (tên cũ), chỉ cần S1 đổi tên | S1 | PRE-39 |
 | `benefits` | Từ điển 10 nhóm; phúc lợi tiếng Anh không khớp | 03 T7 | PRE-41 |

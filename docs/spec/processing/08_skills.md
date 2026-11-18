@@ -44,9 +44,30 @@ Hệ quả hiện tại:
 
 | Mã | Đề xuất | Lý do |
 |---|---|---|
-| **K8.8** | Thêm trường `"soft": true` cho 8 slug trong taxonomy: `communication`, `teamwork`, `problem_solving`, `logical_thinking`, `time_management`, `presentation`, `english`, `japanese`. Bước 08 thêm cột `is_soft` vào `job_skills.parquet` | Spec 07 mục 4 (quyết định 2, 17/11): M1, M2, M6 xếp hạng hai danh sách riêng. Không lấy nguyên nhóm `methodologies_softskills_data`, vì nhóm này lẫn Agile, BI, machine learning. Taxonomy hiện chưa có trường `soft` |
-| **K8.9** | Chốt nguồn kỹ năng duy nhất cho SD1–SD5 là bước 08; cột `skills` của Silver cũng lấy từ đây | PRE-40 |
+| **K8.8** (**duyệt 18/11**, thay bằng trường `kind` của K8.11) | Thêm trường `"soft": true` cho 8 slug trong taxonomy: `communication`, `teamwork`, `problem_solving`, `logical_thinking`, `time_management`, `presentation`, `english`, `japanese`. Bước 08 thêm cột `is_soft` vào `job_skills.parquet` | Spec 07 mục 4 (quyết định 2, 17/11): M1, M2, M6 xếp hạng hai danh sách riêng. Không lấy nguyên nhóm `methodologies_softskills_data`, vì nhóm này lẫn Agile, BI, machine learning. Taxonomy hiện chưa có trường `soft` |
+| **K8.9** (**duyệt 18/11**) | Chốt nguồn kỹ năng duy nhất cho SD1–SD5 là bước 08; cột `skills` của Silver cũng lấy từ đây. Hệ quả: Silver ghi sau bước 08 (đọc `job_skills.parquet`), không ngay sau bước 04 | PRE-40 |
 | **K8.10** | Duyệt `short_aliases.json` (bản ứng viên có 49 mục) và `priority_cues.json` | PRE-33; SD5 cần phân biệt bắt buộc và ưu tiên |
+
+### 2.3. Làm lại từ điển kỹ năng (đề xuất 18/11, **chờ người dùng duyệt**)
+
+Người dùng 18/11: tag kỹ năng của sàn "chỉ là các tag", muốn sâu hơn phải đọc JD rồi lấy kỹ năng, và phải đọc hết các kỹ năng. Làm việc này trước, rồi mới làm lại bộ lọc IT (bước 01 tầng 2 đếm kỹ năng theo từ điển), rồi chạy lại pre-processing.
+
+Quyết định đã có (18/11):
+
+| Câu hỏi | Quyết định |
+|---|---|
+| Mức chi tiết (MySQL và SQL, React Native và React) | Kỹ năng con là một kỹ năng riêng, có trường `parent` trỏ tới kỹ năng chung (kỹ năng cha) |
+| Kỹ năng mềm, ngoại ngữ | Giữ trong từ điển, gắn cờ (`kind`) để xếp hạng riêng |
+| Phạm vi đọc | Đọc hết mọi ứng viên có mặt ở **từ 2 tin trở lên** |
+
+| Mã | Luật | Lý do, số đo 18/11 |
+|---|---|---|
+| **K8.11** | Một từ điển duy nhất `processing/dictionaries/skills_v2.json`, thay `skills_taxonomy_230.json` (230 kỹ năng) và `preprocessing/dictionaries/skills.json` (40 kỹ năng; chỉ 27 trùng với taxonomy). Mỗi mục: `slug`, `name`, `group`, `kind` (`technical`, `soft`, `language`), `parent` (slug hoặc null), `aliases` (khớp trên văn bản fold), `short_aliases` (khớp phân biệt hoa thường, K8.3), `examples` (2 câu JD thật), `df`. Thêm danh sách `not_skill`: cụm hay bị nhầm là kỹ năng, kèm lý do (`job_title`, `industry`, `benefit`, `degree`, `generic`) | Hai từ điển lệch nhau làm SD1 và SD2–SD5 ra hai con số khác nhau cho cùng một câu hỏi |
+| **K8.12** | Gom ứng viên bằng script chỉ đọc `scripts/mine_skill_candidates.py` trên bảng 02 (văn bản gốc, mục yêu cầu + mô tả). Bốn nguồn: (a) tag của sàn (`skills_list`, gồm cả nhãn TopCV ở `category_tags` để đánh dấu `not_skill`); (b) token và cụm 1–3 từ "dáng công nghệ": có số hoặc ký hiệu `# + . /`, hoặc viết hoa giữa câu ở ≥ 60% số lần xuất hiện; (c) cụm sau từ báo hiệu ("kinh nghiệm với", "thành thạo", "experience with", "proficient in"…), tách theo dấu phẩy, "và", "/"; (d) mọi alias của hai từ điển cũ. Giữ ứng viên có DF ≥ 2 tin. Mỗi ứng viên ghi DF theo nguồn, DF theo sàn, 3 câu ví dụ (seed 42) | Đo thử 18/11: tag DF ≥ 2 là 1.655; token (b) sau lọc 4.087; hợp hai nguồn 5.432; cụm (c) 2.474 (trùng nhiều). Ước lượng 6.000–8.000 ứng viên |
+| **K8.13** | Claude đọc **hết** các ứng viên theo lô (khoảng 300 mục mỗi lô, sắp theo DF giảm dần) và xếp mỗi mục vào: kỹ năng mới (điền đủ trường của K8.11), alias của kỹ năng đã có, hoặc `not_skill` kèm lý do. Mục khó quyết ghi `can_hoi` để người dùng chọn. Bản nháp `approved: false` | Phương án A như từ điển JD (luật + từ điển, không dùng model) |
+| **K8.14** | Trang duyệt `docs/presentation/processing_steps/skills_v2.html`: theo nhóm, mỗi kỹ năng có alias, DF theo sàn, câu ví dụ; danh sách `not_skill`; danh sách `can_hoi`. Người dùng duyệt → `approved: true` | Quy trình 5 bước |
+| **K8.15** | Bước 08 dùng `skills_v2.json`. Tag của sàn chỉ được nhận khi khớp alias của một kỹ năng (`via = meta`); tag nằm trong `not_skill` bị bỏ. Ghi thêm cột `kind`, `parent` vào `job_skills.parquet`. Bước 03 T7 (`skills_std`) không còn là nguồn cho SD; Silver `skills` lấy từ 08 (K8.9) | Một nguồn duy nhất |
+| **K8.16** | Đo lại trước và sau: (1) sửa `scripts/eval_gold_processing.py` để so nhãn gold với tên chuẩn và alias của `skills_v2` (nghi F1 0,27 một phần do so tên với `slug`); (2) P/R/F1 trên 100 JD gold; (3) tỷ lệ tin không có kỹ năng; (4) top 15 kỹ năng mỗi nhóm nghề, người dùng xem có hợp lý không | Đích F1 ≥ 0,85 (mục 6) |
 
 ## 3. Quy trình xử lý
 
