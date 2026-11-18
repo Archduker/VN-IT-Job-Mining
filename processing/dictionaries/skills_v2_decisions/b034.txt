@@ -1,0 +1,269 @@
+# Lô 34: dòng 9901-10200 (18/11/2026)
+N generic 9901
+S 9902 swg security p=web_filtering n=Secure Web Gateway (SWG)
+F swg SWG
+L swg secure web gateway
+N industry 9903 9904
+A 9905 soar
+N generic 9906
+N job_title 9907
+A 9908 information_security
+A 9909 it_governance
+N job_title 9910
+N generic 9911
+N job_title 9912
+N generic 9913 9914
+A 9915 network_protocols
+A 9916 risk_management
+N combo 9917
+N job_title 9918
+N generic 9919
+A 9920 security_test
+A 9921 owasp
+A 9922 hardening
+N combo 9923
+A 9924 patch_management
+N combo 9925
+A 9926 hardening
+N generic 9927
+A 9928 selenium_grid
+A 9929 9930 selenium
+N generic 9931
+S 9932 semantic_layer bi_analytics p=data_modeling n=Semantic layer / semantic model
+L semantic_layer semantic layer;semantic layers;semantic model;semantic models
+A 9933 semantic_layer
+N entity 9934
+N job_title 9935 9936 9937 9938 9939 9940 9941 9942 9943 9944 9945 9946 9947 9948 9949 9950 9951 9952 9953
+N generic 9954
+N combo 9955 9956
+N generic 9957
+N generic 9958 9959
+N generic 9960 9961 9962
+N generic 9963
+A 9964 system_administration
+A 9965 nextjs_rendering
+A 9966 computer_hardware
+N combo 9967
+S 9968 server_authoritative game_dev p=game_server n=Server-authoritative netcode
+L server_authoritative server-authoritative;server authoritative
+A 9969 ssr
+N combo 9970
+N generic 9971
+N generic 9972
+A 9973 salesforce_service_cloud
+A 9974 9975 aws_organizations
+N job_title 9976
+A 9977 slo_sli
+A 9978 telecom_network
+N combo 9979
+N generic 9980
+N generic 9981 9982
+S 9983 service_transition systems_network p=itsm n=Service transition / takeover
+L service_transition service transition;service takeover;transition plan
+A 9984 system_integration
+N combo 9985 9986 9987 9988
+A 9989 service_desk
+A 9990 model_serving
+S 9991 aws_ses cloud p=aws n=AWS SES / SNS
+L aws_ses aws ses;amazon ses;aws sns;amazon sns
+A 10050 aws_ses
+A 9992 session_management
+S 9993 shopfloor_control enterprise_apps p=mes n=SFC / SFIS (shop floor control)
+F shopfloor_control SFC;SFIS
+A 9994 shopfloor_control
+S 9995 sglang data_science_ml p=model_serving n=SGLang / vLLM serving
+L sglang sglang
+N generic 9996
+S 9997 hashing security p=cryptography n=Hàm băm (SHA, bcrypt)
+F hashing SHA;SHA-2;SHA-3;SHA-256
+L hashing bcrypt;argon2;hash function
+A 9998 9999 hashing
+S 10000 shadcn frontend p=tailwind n=shadcn/ui / Radix UI
+L shadcn shadcn;shadcn/ui;radix ui
+A 10001 shadcn
+N generic 10002
+N combo 10003
+N entity 10004
+N combo 10005
+A 10006 bash
+N combo 10007 10008
+S 10009 shopify_apps enterprise_apps p=shopify n=Shopify apps / Liquid
+L shopify_apps shopify apps;shopify app;liquid template
+S 10010 shopware enterprise_apps p=ecommerce_platform n=Shopware
+N generic 10011
+N combo 10012
+N combo 10013
+A 10014 digital_signage
+N generic 10015
+N generic 10016
+N generic 10017
+A 10018 simulation
+A 10019 simulation
+N entity 10020 10021 10022 10023
+N combo 10024
+N combo 10025
+A 10026 sre
+A 10027 vpn
+N generic 10028
+N generic 10029
+A 10030 routing_switching
+N generic 10031 10032 10033
+N combo 10034
+A 10035 10036 slo_sli
+S 10037 smart_contract blockchain n=Smart contract
+L smart_contract smart contract;smart contracts
+A 10040 smart_contract
+A 10038 10039 smart_contract_audit
+A 10041 crm
+S 10042 smart_city embedded_iot p=iot n=Smart city
+L smart_city smart city;smartcity;thành phố thông minh
+A 10043 otp
+N entity 10044 10045
+A 10046 smoke_test
+A 10047 sms_gateway
+S 10048 email_protocols systems_network p=mail_server n=SMTP / IMAP / POP3
+F email_protocols SMTP;IMAP;POP3
+S 10049 snmp systems_network p=monitoring n=SNMP
+F snmp SNMP
+N generic 10051
+A 10052 soap
+N combo 10053
+A 10054 soc
+N combo 10055 10056
+A 10057 soc2
+A 10058 socketio
+N generic 10059 10060
+N generic 10061
+A 10062 it_audit
+N job_title 10063 10064
+N generic 10065
+A 10066 software_deployment
+N generic 10067
+A 10068 sdlc
+N job_title 10069
+A 10070 clean_code
+A 10071 software_installation
+A 10072 system_integration
+N industry 10073
+N job_title 10074
+A 10075 application_security
+N generic 10076
+A 10077 software_testing
+N job_title 10078
+A 10079 10080 software_testing
+A 10081 10082 sdv
+N combo 10083
+A 10084 cam_software
+S 10085 solidity blockchain p=smart_contract n=Solidity
+A 10086 elasticsearch
+S 10087 solution_selling soft_skills p=technical_sales n=Solution selling
+L solution_selling solution selling
+N combo 10088 10089 10090
+N generic 10091
+A 10092 aws_certified
+A 10093 10095 azure_cert
+N job_title 10094
+K son_network systems_network p=telecom_network n=SON (Self-Organizing Network)
+N generic 10096
+N entity 10097
+A 10098 sop
+S 10099 soql enterprise_apps p=salesforce n=SOQL / SOSL
+F soql SOQL;SOSL
+A 10100 code_review
+A 10101 git
+S 10102 sourcetree dev_tools p=git n=Sourcetree / Git GUI
+L sourcetree sourcetree;gitkraken
+A 10104 stp
+A 10188 stp
+N generic 10103
+N combo 10105
+A 10106 pyspark
+A 10107 spc
+S 10108 specflow testing_qa p=cucumber n=SpecFlow / Behave
+L specflow specflow;behave
+N generic 10109
+A 10110 functional_spec
+S 10111 spine_leaf systems_network p=data_center n=Spine-leaf architecture
+L spine_leaf spine-leaf;spine leaf
+A 10112 spine
+A 10113 spring_mvc
+S 10114 spring_ai backend p=spring n=Spring AI
+L spring_ai spring ai
+S 10115 spring_aop backend p=spring n=Spring AOP
+L spring_aop spring aop;aop
+A 10116 10117 10118 spring_boot
+A 10119 spring
+A 10120 sprint_planning
+A 10121 sprint_planning
+A 10122 sprite_animation
+N generic 10123
+N combo 10124 10125
+A 10126 data_testing
+A 10127 sql
+A 10128 sql
+A 10129 sql_query
+A 10130 sql_server
+N combo 10131 10132
+A 10133 query_optimization
+A 10134 relational_db
+A 10135 postgresql
+N combo 10136
+A 10137 dbt
+N combo 10138
+N combo 10139 10140 10141
+A 10142 xss_sqli
+S 10144 srm enterprise_apps p=procurement n=SRM (supplier relationship)
+F srm SRM
+A 10143 sre
+N generic 10145
+S 10146 ss7 systems_network p=telecom_network n=SS7 / SIGTRAN
+L ss7 sigtran
+F ss7 SS7
+A 10147 ssh
+N entity 10148
+S 10149 ssl_pinning mobile p=mobile_security n=SSL pinning
+L ssl_pinning ssl pinning;certificate pinning
+A 10150 10151 sso
+N generic 10152
+N job_title 10153
+N generic 10154
+N generic 10155
+N job_title 10156
+A 10157 stakeholder_management
+A 10158 stakeholder_management
+A 10159 stakeholder_management
+A 10160 daily_standup
+N generic 10161
+A 10162 runbook
+N generic 10163
+A 10164 dimensional_modeling
+N generic 10165
+S 10166 state_transition testing_qa p=test_design n=State transition testing
+L state_transition state transition;state transition testing
+A 10167 method_statement
+A 10168 static_routing
+N generic 10169
+A 10170 10171 statistics
+A 10172 10173 statistics
+N generic 10174
+N generic 10175
+S 10176 step_functions cloud p=aws n=AWS Step Functions
+L step_functions step functions
+N entity 10177
+A 10178 storage
+N combo 10179 10180
+S 10181 k8s_storage devops p=kubernetes n=Kubernetes storage (PV, PVC)
+F k8s_storage PVC
+L k8s_storage persistent volume;persistent volumes
+A 10182 stored_procedure
+S 10183 storekit mobile p=ios n=StoreKit (in-app purchase iOS)
+A 10184 user_story
+N generic 10185
+A 10186 10187 use_case
+N generic 10189 10190 10191 10192 10193
+N generic 10194
+A 10195 batch_processing
+N combo 10196
+N generic 10197 10198 10199
+N degree 10200
+L son_network self-organizing network
