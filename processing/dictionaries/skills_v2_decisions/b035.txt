@@ -1,0 +1,258 @@
+# Lô 35: dòng 10201-10500 (18/11/2026)
+A 10201 sql_server
+S 10202 android_keystore_hw mobile p=android_keystore n=StrongBox / hardware keystore
+L android_keystore_hw strongbox
+S 10203 structural_design cad_engineering n=Thiết kế kết cấu
+L structural_design thiết kế kết cấu;structural design
+A 10204 voice_ai
+A 10205 vscode
+A 10206 webrtc
+N entity 10207 10208
+N job_title 10209
+A 10210 excel
+A 10211 cam_software
+A 10212 power_bi
+A 10213 10214 10215 photoshop
+A 10216 ms_word
+A 10217 10218 10219 computer_repair
+N job_title 10220
+N generic 10221 10222
+A 10223 subnetting
+A 10224 sql_cte
+N generic 10225 10226 10227 10228
+N job_title 10229
+S 10230 supplier_quality methodology_pm p=quality_management n=Quản lý chất lượng nhà cung cấp
+L supplier_quality supplier quality;supplier quality management;sqe
+N industry 10231
+A 10232 supply_chain
+N job_title 10233
+N generic 10234
+A 10235 bcp
+A 10236 10237 exchange_online
+N generic 10238
+N job_title 10239
+N generic 10240 10241
+A 10242 poc
+N generic 10243
+A 10244 uat
+N combo 10245
+S 10246 svelte frontend p=javascript n=Svelte / SvelteKit
+L svelte svelte;sveltekit
+A 10247 software_architecture
+A 10248 swagger
+A 10249 docker_swarm
+N combo 10250
+S 10251 swd_debug embedded_iot p=jtag n=SWD (debug)
+F swd_debug SWD
+N entity 10252
+A 10253 10254 cocoapods
+A 10255 routing_switching
+A 10256 routing_switching
+A 10257 azure_synapse
+S 10258 time_sync systems_network p=telecom_network n=SyncE / PTP (đồng bộ thời gian)
+L time_sync synce;ptp;precision time protocol
+S 10259 synology systems_network p=storage n=Synology / QNAP NAS
+L synology synology;qnap
+N entity 10260
+A 10261 syslog
+A 10262 10263 aws_certified
+N job_title 10264
+A 10265 system_analysis
+A 10266 software_architecture
+N generic 10267
+N generic 10268 10269 10270
+A 10271 it_infrastructure
+A 10272 esb
+A 10273 it_operations
+A 10274 performance_optimization
+S 10275 android_system_services mobile p=android_framework n=Android System Services
+L android_system_services system services;android system services
+A 10276 software_testing
+A 10277 debugging
+N combo 10278 10279 10280 10281
+N generic 10282
+N job_title 10283 10284
+A 10285 information_security
+A 10286 cissp
+A 10287 cissp
+N degree 10288 10289
+S 10290 systemverilog embedded_iot p=fpga n=SystemVerilog / UVM
+L systemverilog systemverilog;uvm
+A 10291 temenos_transact
+N generic 10292 10293 10294
+N combo 10295
+A 10296 microstrategy
+A 10297 oracle_data_guard
+N industry 10298 10299
+A 10300 account_admin
+A 10301 documentation
+S 10302 talent_sourcing enterprise_apps p=talent_acquisition n=Talent sourcing
+L talent_sourcing talent sourcing;sourcing ứng viên
+N entity 10303
+N generic 10304
+S 10305 motivation_skills soft_skills p=leadership n=Tạo động lực cho đội
+L motivation_skills tạo động lực;motivate team
+A 10306 test_plan
+N generic 10307
+N generic 10308
+A 10309 coordination
+N generic 10310 10311 10312
+S 10313 large_scale_data data_engineering p=big_data n=Dữ liệu quy mô lớn (TB-scale)
+L large_scale_data tb-scale;petabyte;large-scale data
+N generic 10314 10315 10316 10317
+A 10318 teaching
+N generic 10319
+N generic 10320
+N job_title 10321
+S 10322 teamcity devops p=cicd n=TeamCity
+N entity 10323
+N generic 10324
+N combo 10325
+N generic 10326 10327 10328
+N combo 10329 10330
+N generic 10331
+S 10332 technical_artist game_dev n=Technical Artist (game)
+L technical_artist technical artist;tech art
+A 10333 communication
+A 10334 design_document
+N combo 10335
+N job_title 10336 10337
+N generic 10338 10339
+N job_title 10340 10341
+A 10342 leadership
+N job_title 10343
+A 10344 mentoring
+N generic 10345
+A 10346 technical_sales
+N job_title 10347
+N generic 10348
+A 10349 project_management
+N generic 10350 10351 10352
+A 10353 10354 scrum
+A 10355 seo
+N generic 10356
+A 10357 technical_support
+N combo 10358
+N generic 10359
+A 10360 consulting
+N generic 10361
+A 10362 leadership
+N generic 10363
+A 10364 cicd
+A 10365 system_integration
+S 10366 tekton devops p=cicd n=Tekton
+N generic 10367
+A 10368 telegram_bot
+A 10369 10370 telematics
+S 10371 video_conferencing systems_network n=Hội nghị truyền hình (video conferencing)
+L video_conferencing telepresence;video conferencing;hội nghị truyền hình;zoom room
+S 10372 telesales soft_skills p=sales_skills n=Telesales
+L telesales telesales;telesale
+A 10373 tensorflow
+A 10374 tensorflow
+N combo 10375
+N combo 10376 10377
+A 10378 api_testing
+A 10379 automation_test
+A 10380 automation_test
+A 10381 test_plan
+S 10382 test_data testing_qa p=test_design n=Test data management
+L test_data test data;test data management
+N generic 10383
+N combo 10384 10385
+A 10386 software_testing
+A 10387 software_testing
+N combo 10388
+A 10389 10390 defect_management
+N combo 10391 10392
+N combo 10393
+N combo 10394
+A 10395 firebase_app_distribution
+A 10396 software_testing
+N job_title 10397
+A 10398 junit
+A 10399 automation_test
+A 10400 software_testing
+N generic 10401
+N combo 10402 10403 10404 10405
+A 10406 testng
+N generic 10407
+A 10408 voice_ai
+N industry 10409
+N entity 10410 10411
+N generic 10412
+A 10413 java
+N generic 10414
+N industry 10415
+N generic 10416
+N generic 10417 10418 10419
+N generic 10420
+N generic 10421
+N generic 10422 10423
+N job_title 10424 10425 10426 10427
+N industry 10428 10429
+N job_title 10430
+N industry 10431
+N generic 10432 10433
+N generic 10434 10435
+N job_title 10436 10437
+A 10438 tcp_ip
+N generic 10439
+N combo 10440
+A 10441 progress_tracking
+A 10442 cctv
+A 10443 equipment_installation
+A 10444 network_installation
+N industry 10445
+N entity 10446
+A 10447 cctv
+A 10448 measuring_tools
+A 10449 computer_hardware
+A 10450 embedded
+N degree 10451
+A 10452 3d_modeling
+A 10453 database_design
+A 10454 electrical_systems
+A 10455 10456 10457 ui_design
+A 10458 electrical_systems
+A 10459 software_architecture
+S 10460 level_design game_dev p=game_design n=Thiết kế level (level design)
+L level_design thiết kế level;level design;level designer
+A 10461 electronics
+A 10462 print_on_demand
+A 10463 product_design
+A 10464 10465 ux_design
+A 10466 ui_design
+N job_title 10467
+A 10468 wireframe
+A 10469 business_rules
+N combo 10470 10471
+A 10472 api_integration
+A 10473 third_party_risk
+N combo 10474
+N generic 10475 10476
+N entity 10477
+N industry 10478
+N degree 10479
+A 10480 multithreading
+A 10481 webgl
+A 10482 performance_optimization
+S 10483 voc_analysis digital_marketing p=customer_experience n=Thu thập VOC (voice of customer)
+F voc_analysis VOC
+L voc_analysis voice of customer
+N generic 10484
+N industry 10485
+N job_title 10486 10487 10488
+A 10489 react
+S 10490 thunder_client testing_qa p=api_testing n=Thunder Client / Bruno
+L thunder_client thunder client;bruno
+A 10491 thunder_client
+A 10492 negotiation
+N entity 10493
+A 10494 pneumatics
+A 10495 persuasion
+A 10496 presentation
+S 10497 tibero databases n=Tibero
+A 10498 tibero
+A 10499 ticketing_system
+A 10500 cnc
