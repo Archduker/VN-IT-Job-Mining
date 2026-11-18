@@ -140,7 +140,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
   1. ~~Mang `first_crawled_at` qua bước 02~~: **xong 18/11** (bước 01 ghi `first_scraped_at`, bước 02 xuất `first_crawled_at`; L-49).
   2. ~~Bước 03 tạo `posted_month`~~: **code xong 18/11** (T3b; `first_crawled_at` đổi sang giờ Việt Nam). Dry-run 4.671 tin: 2.979 lấy từ ngày đăng, 1.692 từ lần cào đầu; 2026-10: 3.466, 2026-09: 943, 2026-08: 101, 2026-11: 81, trước 08/2026: 80 (76 là glints). Từ 18/11 bước 01 bỏ mọi tin trước 09/2026 (C9, L-50), và TopCV đọc thêm `date_posted` (102 tin). Còn chạy thật cùng lượt dịch.
   3. Bỏ `posted_date` khỏi bảng sạch sau bước 04. Bước 01b vẫn dùng `raw_posted_date` ở tầng trung gian.
-  4. `processing/encoding/features.py:118` đổi đặc trưng `posted_month` sang cột mới. `days_to_deadline` (dòng 119) vẫn tính từ `crawled_at`, không đổi.
+  4. `processing/encoding/features.py:118` đổi đặc trưng `posted_month` sang cột mới (người dùng duyệt F10.1 ngày 18/11: one-hot theo tháng `YYYY-MM`). `days_to_deadline` (dòng 119) vẫn tính từ `crawled_at`, không đổi.
 - **Lưu ý khi dùng:**
   - Tháng 9 chỉ có tin từ nguồn ghi ngày đăng (Bronze 17/11: 1.629 tin). Khi so tháng 9 với tháng 10–11 thì chỉ dùng các nguồn ghi ngày đăng cho gần hết tin (vietnamworks, careerviet, vieclam24h, itviec, glints, jobsgo: 96–100%); bỏ topcv (0%) và topdev (40,4%), vì tin thiếu ngày đăng của hai nguồn này mang tháng cào.
   - Số tin mỗi tháng phụ thuộc lịch cào, nên chỉ so cơ cấu.

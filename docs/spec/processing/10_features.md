@@ -66,10 +66,12 @@ Báo cáo 10/11 ghi 242 cột; L-47 (11/11, sau khi gộp 10 nhóm nghề) ghi 2
 
 | Mã | Đề xuất | Lý do |
 |---|---|---|
-| **F10.1** | `posted_month` đổi sang cột `posted_month` (`YYYY-MM`) của bảng 04, mã hóa thành số có tháng và năm (ví dụ `2026*12+tháng` hoặc one-hot T9, T10, T11) | PRE-37 việc 4: cột hiện tại lấy tháng từ `posted_date`, thiếu 36,2% (topcv 0%). Nếu chỉ lấy số tháng 1–12 thì mất thông tin năm |
+| **F10.1** (**người dùng duyệt 18/11**) | `posted_month` đổi sang cột `posted_month` (`YYYY-MM`) của bảng 04. Mã hóa one-hot `pm__2026_09`, `pm__2026_10`, `pm__2026_11` (từ 18/11 bước 01 đã bỏ tin trước 09/2026, C9) | PRE-37 việc 4: cột hiện tại lấy tháng từ `posted_date`, thiếu 36,2% (topcv 0%). Nếu chỉ lấy số tháng 1–12 thì mất thông tin năm. Người dùng: "tui thống nhất dùng cột bằng tháng đăng" |
 | **F10.2** | **Mở rộng 10b thành bước chọn đặc trưng thật:** (a) loại cột hằng hoặc gần hằng (một giá trị chiếm > 99,5% tin); (b) loại cột trùng thông tin (ví dụ `log_salary_min`/`log_salary_max` với `salary_mid`); (c) ghi `selected: true/false` kèm lý do cho từng cột vào `encoding_dictionary.json`. Không xóa cột khỏi file, chỉ đánh dấu, để Mining tự chọn theo SD | Hiện 10b chỉ gom kỹ năng DF < 15. Spec 06 mục 3.4 ghi các tiêu chí chọn khác chưa chốt (PRE-34). Ngưỡng 99,5% là đề xuất |
 | **F10.3** | Thêm cột `n_skills_technical` và `n_skills_soft` ở 10c, dùng cờ `soft` của bước 08 (K8.8) | `n_skills` hiện lẫn kỹ năng mềm (communication 677 tin) nên SD3 dễ phân cụm theo số kỹ năng (L-47) |
 | **F10.4** | Đặt hằng `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` vào `processing/` | PRE-39: để dọn được `preprocessing/encoding/` |
+| **F10.5** (chờ người dùng trả lời về thứ tự) | `emp__*` mã hóa one-hot từ cột `employment_type` của bảng 04 (luật N19: tiêu đề Intern → ô của sàn → JD), bỏ `employment_class` đoán lại bằng từ khóa trên `raw_employment_type`. Chưa rõ thì `emp__unknown` | Hiện loại hợp đồng được tính hai lần, bằng hai luật khác nhau: 180 tin tiêu đề thực tập mà ô của sàn ghi Full-time sẽ ra `internship` ở bảng 04/Silver nhưng `emp__full_time` ở bước 10 |
+| **F10.6** (chờ thí nghiệm, người dùng chưa chốt 18/11) | SD4: `exp_min_years` có phần được bước 04 điền từ cấp bậc (`exp_inferred`). So 3 phương án trên cùng cách chia train/test theo công ty: (A) giữ nguyên; (B) tin `exp_inferred` → NaN + cột `exp_min_years__inferred`; (C) bỏ `exp_min_years`. Chọn theo MAE/R² trên test và độ rõ của SHAP | Rừng ngẫu nhiên ít bị ảnh hưởng về độ chính xác bởi hai cột trùng thông tin, nhưng SHAP chia điểm quan trọng giữa cấp bậc và kinh nghiệm, nên SD4/SD5 có thể đọc sai "kinh nghiệm đáng tiền bao nhiêu". Làm sau khi chạy lại 04 và 10 |
 
 ### 2.3. Cột không được đưa vào model lương (SD4)
 
