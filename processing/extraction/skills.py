@@ -3,17 +3,22 @@
 
 - Đường an toàn: khóa = fold(alias) dài >= 4 ký tự hoặc có `# + .`, quét trên văn bản fold (độ dài từng ký tự giữ nguyên nên span ánh xạ về văn bản gốc).
 - Đường alias ngắn (K3): chỉ các dạng `approved: true` trong short_aliases.json, khớp phân biệt hoa thường trên văn bản gốc. Chưa duyệt = không dùng.
+- K8.15 (từ 18/11): từ điển `skills_v2.json` (`load_skills_v2`, `matcher_from_v2`). Thêm hai luật: chỗ khớp fold có dấu
+  phải đúng dạng có dấu của alias (`alias_forms`; "công nghệ" không khớp "nghe"); alias ngắn ≤ 3 ký tự đứng trước
+  "-" + chữ cái bị bỏ ("Go-live"). Cụm `not_skill` loại `degree` là cụm chặn: khớp dài nhất thắng rồi bị bỏ, nên
+  "học máy" trong "Khoa học máy tính" không ra kỹ năng.
 """
 
 from __future__ import annotations
 
 import json
 import re
+import unicodedata
 from collections import defaultdict
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, Iterable, List, Sequence, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 import ahocorasick
 
@@ -21,8 +26,11 @@ from preprocessing.deduplication.text_norm import fold
 from processing.extraction.sections import DICT_DIR, Bullet, load_approved
 
 TAXONOMY_PATH = DICT_DIR / "skills_taxonomy_230.json"
+SKILLS_V2_PATH = DICT_DIR / "skills_v2.json"
+BLOCK = "__block__"
 SHORT_ALIASES_PATH = DICT_DIR / "short_aliases.json"
 BOUNDARY = re.compile(r"[a-z0-9_#+]")
+GO_LIVE = re.compile(r"-[^\W\d_]")
 LEVEL_BY_SECTION = {"yeu_cau": ("required", 1.0), "mo_ta": ("required", 1.0), "khac": ("required", 1.0),
                     "uu_tien": ("preferred", 0.5)}  # phuc_loi: không quét (K8.5)
 LEVEL_RANK = {"preferred": 0, "required": 1}
@@ -57,6 +65,32 @@ def load_taxonomy(path: Path = TAXONOMY_PATH) -> List[dict]:
     return json.loads(Path(path).read_text(encoding="utf-8"))["skills"]
 
 
+def load_skills_v2(path: Path = SKILLS_V2_PATH) -> dict:
+    d = json.loads(Path(path).read_text(encoding="utf-8"))
+    if d.get("_meta", {}).get("approved") is not True:
+        raise ValueError(f"skills_v2.json chưa được duyệt ({path}): chạy scripts/review_skills_v2.py và chờ người dùng duyệt")
+    return d
+
+
+def matcher_from_v2(d: dict) -> "SkillMatcher":
+    """Matcher của bước 08 từ skills_v2 (K8.15). Cụm bằng cấp không trùng alias kỹ năng thành cụm chặn."""
+    tax = [{"slug": s["slug"], "name": s["name"], "group": s["group"], "kind": s["kind"], "parent": s.get("parent"),
+            "aliases": s["aliases"]} for s in d["skills"]]
+    skill_keys = {a for s in d["skills"] for a in s["aliases"]}
+    forms = {a: f for s in d["skills"] for a, f in s.get("alias_forms", {}).items()}
+    blockers = []
+    for n in d.get("not_skill", []):
+        if n["reason"] != "degree" or n["key"] in skill_keys:
+            continue
+        blockers.append(n["key"])
+        f = " ".join(unicodedata.normalize("NFC", n["display"]).lower().split())
+        if not f.isascii() and " ".join(fold(f).split()) == n["key"]:
+            forms[n["key"]] = f
+    tax.append({"slug": BLOCK, "name": BLOCK, "group": None, "kind": None, "parent": None, "aliases": blockers})
+    short = [(s["slug"], f) for s in d["skills"] for f in s["short_aliases"]]
+    return SkillMatcher(tax, short, forms)
+
+
 def load_short_forms(path: Path = SHORT_ALIASES_PATH) -> List[Tuple[str, str]]:
     return [(i["slug"], f) for i in load_approved(path) for f in i["forms"]]
 
@@ -64,13 +98,16 @@ def load_short_forms(path: Path = SHORT_ALIASES_PATH) -> List[Tuple[str, str]]:
 def alias_owners(taxonomy: Sequence[dict]) -> Dict[str, set]:
     owners: Dict[str, set] = defaultdict(set)
     for s in taxonomy:
-        for a in {s["canonical"], *s["aliases"]}:
+        for a in {*([s["canonical"]] if s.get("canonical") else []), *s["aliases"]}:
             owners[fold(a)].add(s["slug"])
     return owners
 
 
 class SkillMatcher:
-    def __init__(self, taxonomy: Sequence[dict], short_forms: Iterable[Tuple[str, str]] = ()):
+    def __init__(self, taxonomy: Sequence[dict], short_forms: Iterable[Tuple[str, str]] = (),
+                 forms: Optional[Dict[str, str]] = None):
+        """forms: alias fold -> dạng gốc có dấu (viết thường, NFC). None = không áp luật dấu (từ điển cũ)."""
+        self.forms = forms
         self.taxonomy = {s["slug"]: s for s in taxonomy}
         owners = alias_owners(taxonomy)
         self.conflicts = {k: sorted(v) for k, v in owners.items() if len(v) > 1}
@@ -97,17 +134,32 @@ class SkillMatcher:
                 s, e = end - len(key) + 1, end + 1
                 if (s > 0 and BOUNDARY.match(f[s - 1])) or (e < len(f) and BOUNDARY.match(f[e])):
                     continue
+                if self.forms is not None and not self._accent_ok(text[s:e], key):
+                    continue
                 cands.append(Hit(slug, s, e, "safe"))
         if self.short_re:
-            cands += [Hit(self.short_map[m.group()], m.start(), m.end(), "short") for m in self.short_re.finditer(text)]
+            for m in self.short_re.finditer(text):
+                if len(m.group()) <= 3 and GO_LIVE.match(text, m.end()):
+                    continue
+                cands.append(Hit(self.short_map[m.group()], m.start(), m.end(), "short"))
         kept: List[Hit] = []  # dài nhất trước, không chồng nhau
         for h in sorted(cands, key=lambda h: (-(h.end - h.start), h.start, h.path)):
             if all(h.end <= k.start or h.start >= k.end for k in kept):
                 kept.append(h)
-        return sorted(kept, key=lambda h: h.start)
+        return sorted((h for h in kept if h.slug != BLOCK), key=lambda h: h.start)
+
+    def _accent_ok(self, span: str, key: str) -> bool:
+        span = " ".join(unicodedata.normalize("NFC", span).lower().split())
+        return span.isascii() or span == self.forms.get(key)
 
     def meta_slug(self, name: str):
-        return self.safe.get(fold(name)) or self.short_map.get(name)
+        name = str(name).strip()
+        key = " ".join(fold(name).split())
+        slug = self.safe.get(key)
+        if slug and self.forms is not None and not self._accent_ok(name, key):
+            slug = None
+        slug = slug or self.short_map.get(name)
+        return None if slug == BLOCK else slug
 
 
 def short_alias_candidates(taxonomy: Sequence[dict]) -> List[dict]:
@@ -150,5 +202,7 @@ def extract_skills(bullets: Sequence[Bullet], matcher: SkillMatcher, meta: Itera
             agg[slug] = {"slug": slug, "level": "required", "weight": 1.0, "section": None, "via": "meta", "n_mentions": 1}
     rows = []
     for slug in sorted(agg):
-        rows.append({**agg[slug], "skill": matcher.taxonomy[slug]["canonical"]})
+        t = matcher.taxonomy[slug]
+        rows.append({**agg[slug], "skill": t.get("canonical") or t.get("name"), "kind": t.get("kind"),
+                     "parent": t.get("parent")})
     return rows, hits_by_bullet

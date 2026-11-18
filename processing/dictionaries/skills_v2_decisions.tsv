@@ -1024,7 +1024,7 @@ solidworks	SolidWorks	17	skill:solidworks
 sqlserver	Sqlserver	17	alias:sql_server
 ve	về	17	not_skill:generic
 viec lam ha noi	Việc làm Hà Nội	17	not_skill:generic
-wordpress	WordPress	17	not_skill:generic
+wordpress	WordPress	17	skill:wordpress
 about us	About Us	16	not_skill:generic
 access point	Access Point	16	skill:access_point
 agile methodologies	Agile methodologies	16	alias:agile
@@ -10905,7 +10905,7 @@ wm/ewm	WM/EWM	2	skill:sap_ewm
 wms implementations	WMS Implementations	2	alias:wms
 wms/tms/oms	WMS/TMS/OMS	2	not_skill:combo
 word/excel	word/excel	2	alias:ms_office
-wordpress development	WordPress Development	2	not_skill:generic
+wordpress development	WordPress Development	2	alias:wordpress
 work schedule	Work Schedule	2	not_skill:generic
 work style	Work Style	2	not_skill:generic
 worker	Worker	2	alias:background_jobs

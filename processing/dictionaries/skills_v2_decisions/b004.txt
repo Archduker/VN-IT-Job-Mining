@@ -118,7 +118,8 @@ S 1021 itsm methodology_pm p=itil n=IT Service Management (ITSM)
 L itsm itsm
 S 1022 solidworks cad_engineering n=SolidWorks
 A 1023 sql_server
-N generic 1024 1025 1026
+N generic 1024 1025
+S 1026 wordpress backend p=cms n=WordPress
 Q 1026 "WordPress" xếp generic do ví dụ là chức danh; xem lại: có thể là kỹ năng CMS
 N generic 1027
 S 1028 access_point systems_network p=networking n=Access Point
@@ -298,3 +299,4 @@ A 1198 it_infrastructure
 N entity 1199
 S 1200 itil_foundation certifications p=itil n=ITIL Foundation
 F azure_data_factory ADF
+# 18/11 người dùng duyệt can_hoi: WordPress là kỹ năng CMS

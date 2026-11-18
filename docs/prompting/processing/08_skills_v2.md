@@ -123,6 +123,7 @@ ghi job_skills.parquet (+ kind, parent)
 | 2 | Duyệt prompt | 18/11 | Như trên | — |
 | — | Đọc ứng viên (K8.12–K8.13) | 18/11 | 36 lô `skills_v2_decisions/b001–b036.txt`, đủ 10.985/10.985 dòng; build `skills_v2.json`: 2.113 kỹ năng, 5.146 not_skill, 11 câu hỏi | 84b1d7f … ae5e4c8 |
 | — | Trang duyệt (K8.14) | 18/11 | `scripts/review_skills_v2.py` → `docs/presentation/processing_steps/skills_v2.html`. Đo lại trên bảng 02 lộ 2 lỗi khớp: bỏ dấu làm "công nghệ" khớp "nghe" (1.210 tin), "bản về" khớp "bản vẽ"; "R" khớp "R&D", "Go" khớp "Go-live". Sửa: builder ghi `alias_forms` (dạng có dấu), trang duyệt áp luật đúng dấu + chặn "-chữ"; 23 alias chung chung ("báo cáo", "cải tiến", "quality", "integration", "join", "thị trường"…) chuyển not_skill. Sau sửa: 2.113 kỹ năng, 5.169 not_skill, 99,4% tin có ≥ 1 kỹ năng kỹ thuật, 9 kỹ năng không khớp tin nào. Chờ người dùng chốt 11 câu hỏi và hai luật mới cho K8.15 | (commit này) |
-| 3 | Test rồi code | chưa | | |
-| 4 | Dry-run | chưa | | |
+| — | Duyệt từ điển (K8.14) | 18/11 | Người dùng: "duyệt hết, làm tiếp K8.15 đi": 11 can_hoi theo đề xuất (WordPress thành kỹ năng CMS) + luật dấu + chặn "Go-live". Dấu duyệt: `skills_v2_decisions/approval.json` → `approved: true`, 2.114 kỹ năng | (commit này) |
+| 3 | Test rồi code | 18/11 | `tests/unit/test_skills_v2.py` (12 test: 7 ví dụ mục 5 + dấu, cụm bằng cấp, R&D, không dấu). Code: `skills.load_skills_v2`, `matcher_from_v2`, luật dấu, chặn "-chữ", cụm chặn, cột `kind`/`parent`; `run.default_matcher` đọc v2. Unit test 578 qua; 2 lỗi có sẵn từ trước (`test_encoding_execution` tfidf, `test_report_code_quality` vulture) | (commit này) |
+| 4 | Dry-run | 18/11 | `processing.extraction.run.run(dry_run=True)` trên bảng 03 (bảng 04 chưa chạy lại), 4.495 tin, bảo toàn số tin. Từ điển cũ → v2: dòng kỹ năng 31.291 → 121.325 (kỹ thuật 96.439, mềm 22.108, ngoại ngữ 2.778); tin không có kỹ năng 351 (7,8%) → 3 | — |
 | 5 | Review, chạy thật | chưa | | |

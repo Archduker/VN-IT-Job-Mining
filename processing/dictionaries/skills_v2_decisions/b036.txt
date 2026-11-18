@@ -372,7 +372,7 @@ S 10903 sap_ewm enterprise_apps p=sap n=SAP EWM / WM
 F sap_ewm EWM
 L sap_ewm sap ewm;sap wm
 A 10906 ms_office
-N generic 10907
+A 10907 wordpress
 N generic 10908 10909
 A 10910 background_jobs
 N generic 10911 10912 10913

@@ -52,7 +52,8 @@ def analyze(row, matcher, headings, cues):
 
 
 def default_matcher() -> K.SkillMatcher:
-    return K.SkillMatcher(K.load_taxonomy(), K.load_short_forms())
+    """K8.15: từ điển skills_v2.json đã duyệt (dừng nếu chưa duyệt). Từ điển cũ 230: K.load_taxonomy()."""
+    return K.matcher_from_v2(K.load_skills_v2())
 
 
 def run(sources=SOURCES, dry_run: bool = True, df: Optional[pd.DataFrame] = None, input_path=DEFAULT_INPUT,
@@ -65,7 +66,7 @@ def run(sources=SOURCES, dry_run: bool = True, df: Optional[pd.DataFrame] = None
     matcher = matcher or default_matcher()
     headings = S.load_headings() if headings is None else headings
     cues = S.load_cues() if cues is None else cues
-    groups = {s: v["group"] for s, v in matcher.taxonomy.items()}
+    groups = {s: v["group"] for s, v in matcher.taxonomy.items() if s != K.BLOCK}
     df = df.sort_values("job_id_global", kind="mergesort")
     df = df[df["source_platform"].isin(list(sources))]
 
@@ -96,6 +97,8 @@ def run(sources=SOURCES, dry_run: bool = True, df: Optional[pd.DataFrame] = None
                             "headings_approved": len(headings), "cues_approved": len(cues)}
         sk = [r for r in skill_rows if r["source_platform"] == src]
         r8.data["extra"] = {"n_job_skill_rows": len(sk), "n_jobs_no_skill": st["no_skill"],
+                            "rows_by_kind": dict(Counter(r.get("kind") for r in sk)),
+                            "dictionary": "skills_v2.json" if matcher.forms is not None else "skills_taxonomy_230.json",
                             "top_skills": [{"skill": s, "n_jobs": c} for s, c in
                                            Counter(r["slug"] for r in sk).most_common(30)],
                             "short_forms_approved": len(matcher.short_map), "alias_conflicts_dropped": len(matcher.conflicts)}

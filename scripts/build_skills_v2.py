@@ -309,10 +309,13 @@ def main() -> None:
         return
     for q in res["can_hoi"]:
         q["decision"] = res["covered"].get(q.pop("_row"), ("?",))[0]
+    appr_path = DEC_DIR / "approval.json"  # người dùng duyệt: ngày, câu duyệt; xóa file khi cần duyệt lại
+    appr = json.loads(appr_path.read_text(encoding="utf-8")) if appr_path.exists() else None
     doc = {
         "_meta": {
-            "version": "2.0.0-draft",
-            "approved": False,
+            "version": "2.0.0" if appr else "2.0.0-draft",
+            "approved": bool(appr),
+            "approval": appr,
             "updated": dt.date.today().isoformat(),
             "spec": "docs/spec/processing/08_skills.md mục 2.3 (K8.11–K8.16)",
             "candidates": "data/processing/skill_candidates/candidates.tsv (scripts/mine_skill_candidates.py, DF >= 2)",
@@ -321,7 +324,9 @@ def main() -> None:
             "n_decided": len(res["covered"]),
             "groups": GROUPS,
             "not_skill_reasons": REASONS,
-            "match": "aliases: khớp trên văn bản fold, nguyên từ; short_aliases: khớp phân biệt hoa thường trên văn bản gốc",
+            "match": ("aliases: khớp trên văn bản fold, nguyên từ; đoạn gốc có dấu phải đúng alias_forms; "
+                      "short_aliases: khớp phân biệt hoa thường trên văn bản gốc, bỏ khi đứng trước '-' + chữ cái (Go-live); "
+                      "not_skill degree: cụm chặn"),
         },
         "skills": res["skills"],
         "not_skill": res["not_skill"],

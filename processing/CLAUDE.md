@@ -27,6 +27,7 @@ Giai đoạn 3 của quy trình chuẩn: **Processing** (bước 07–12: tách 
 
 ## Bẫy
 
+- **Từ 18/11 bước 08 đọc `dictionaries/skills_v2.json`** (K8.15, `skills.load_skills_v2` + `matcher_from_v2`; dừng nếu `approved` khác true). Sửa từ điển: sửa lô ở `dictionaries/skills_v2_decisions/`, chạy `scripts/build_skills_v2.py`, đo lại bằng `scripts/review_skills_v2.py`; không sửa tay file JSON. `approval.json` trong thư mục lô là dấu duyệt của người dùng. Khớp fold phải đúng dấu (`alias_forms`): thiếu luật này thì "công nghệ" khớp "nghe" ở 1.210 tin. Từ điển cũ `skills_taxonomy_230.json` chỉ còn cho test cũ và `scripts/ph8_measure.py`; chưa xóa khi người dùng chưa đồng ý.
 - **Từ điển chỉ đọc bản đã duyệt.** Code đọc `dictionaries/section_headings.json`, `priority_cues.json`, `short_aliases.json`, chỉ mục `approved: true`. `*_candidates.json` không bao giờ được code đọc. Ba file đã duyệt hiện chưa tồn tại, nên chưa có section `uu_tien` và mọi kỹ năng đều `required` (PRE-40).
 - Quét kỹ năng trên văn bản fold với alias ngắn (`bi`, `ba`, `soc`, `c`) sinh nhiễu hàng loạt. Chỉ alias ≥ 4 ký tự hoặc có `# + .` đi đường fold; alias ngắn đi đường phân biệt hoa thường và phải `approved: true`.
 - Có hai từ điển kỹ năng: `preprocessing/dictionaries/skills.json` (bước 03 → `skills_std`) và `dictionaries/skills_taxonomy_230.json` (bước 08 → `skill__*`). Đừng trộn hai nguồn trong cùng một phân tích (PRE-40).

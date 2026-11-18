@@ -27,10 +27,9 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 import _viz_html as V  # noqa: E402
-from processing.extraction.skills import BOUNDARY, Hit, SkillMatcher, fold_aligned  # noqa: E402
+from processing.extraction.skills import BLOCK, matcher_from_v2  # noqa: E402
 
 DICT = ROOT / "processing" / "dictionaries" / "skills_v2.json"
-BLOCK = "__block__"
 SEED = 42
 
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -39,51 +38,8 @@ ap.add_argument("--out-json", default=str(ROOT / "data" / "processing" / "skill_
 ap.add_argument("--out-html", default=str(ROOT / "docs" / "presentation" / "processing_steps" / "skills_v2.html"))
 
 
-class DiacriticMatcher(SkillMatcher):
-    """SkillMatcher + luật dấu (K8.15 đề xuất): chỗ khớp trên văn bản fold chỉ được nhận khi đoạn gốc viết không dấu
-    hoặc đúng dạng có dấu của alias. Thiếu luật này thì "công nghệ" khớp alias "nghe", "bản về" khớp "bản vẽ"."""
-
-    def __init__(self, taxonomy, short_forms=(), forms=None):
-        super().__init__(taxonomy, short_forms)
-        self.forms = forms or {}
-
-    def find(self, text):
-        cands = []
-        if self.has_ac:
-            f = fold_aligned(text)
-            for end, (key, slug) in self.ac.iter(f):
-                s, e = end - len(key) + 1, end + 1
-                if (s > 0 and BOUNDARY.match(f[s - 1])) or (e < len(f) and BOUNDARY.match(f[e])):
-                    continue
-                span = " ".join(text[s:e].lower().split())
-                if not span.isascii() and span != self.forms.get(key):
-                    continue
-                cands.append(Hit(slug, s, e, "safe"))
-        if self.short_re:
-            for m in self.short_re.finditer(text):
-                # alias ngắn đứng trước "-" + chữ cái là một từ ghép khác ("Go-live", "C-level"): bỏ
-                if len(m.group()) <= 3 and re.match(r"-[^\W\d_]", text[m.end():m.end() + 2]):
-                    continue
-                cands.append(Hit(self.short_map[m.group()], m.start(), m.end(), "short"))
-        kept = []
-        for h in sorted(cands, key=lambda h: (-(h.end - h.start), h.start, h.path)):
-            if all(h.end <= k.start or h.start >= k.end for k in kept):
-                kept.append(h)
-        return sorted(kept, key=lambda h: h.start)
-
-
 def build_matcher(d):
-    tax = [{"slug": s["slug"], "canonical": "", "aliases": s["aliases"]} for s in d["skills"]]
-    skill_keys = {a for s in d["skills"] for a in s["aliases"]}
-    blockers = [n["key"] for n in d["not_skill"] if n["reason"] == "degree" and n["key"] not in skill_keys]
-    tax.append({"slug": BLOCK, "canonical": "", "aliases": blockers})
-    short = [(s["slug"], f) for s in d["skills"] for f in s["short_aliases"]]
-    forms = {a: f for s in d["skills"] for a, f in s.get("alias_forms", {}).items()}
-    for n in d["not_skill"]:
-        f = unicodedata.normalize("NFC", n["display"]).lower()
-        if n["reason"] == "degree" and n["key"] not in skill_keys and " ".join(fold_aligned(f).split()) == n["key"]:
-            forms[n["key"]] = f
-    return DiacriticMatcher(tax, short, forms)
+    return matcher_from_v2(d)  # đúng matcher của bước 08 (K8.15), không kiểm approved để đo được bản nháp
 
 
 def sentences(text):
@@ -242,7 +198,7 @@ table.sk td:first-child{{width:30%}}table.sk td:nth-child(2){{width:80px}}</styl
 <h1>Từ điển kỹ năng v2</h1>
 <p class="sub">Bước 08 (K8.11–K8.16). Claude đọc hết {V.vn(meta['n_candidates'])} ứng viên DF ≥ 2 (<code>scripts/mine_skill_candidates.py</code>)
 theo 36 lô, quyết định ghi ở <code>processing/dictionaries/skills_v2_decisions/</code>, build ra <code>processing/dictionaries/skills_v2.json</code>
-(<code>approved: {str(meta['approved']).lower()}</code>). <b>Chờ người dùng duyệt.</b>
+(<code>approved: {str(meta['approved']).lower()}</code>). <b>{"Người dùng đã duyệt " + e(meta["approval"]["date"]) + "." if meta.get("approved") else "Chờ người dùng duyệt."}</b>
 Số tin bên dưới đo lại bằng chính alias trong từ điển trên <code>data/preprocessing/02_integration/all.parquet</code>
 ({V.vn(N)} tin, mục yêu cầu + mô tả, văn bản gốc), khớp như bước 08 sẽ chạy: alias dài trên văn bản fold theo nguyên từ,
 alias ngắn phân biệt hoa thường, cụm bằng cấp (not_skill <code>degree</code>) chặn khớp lồng bên trong (ví dụ "học máy" trong "Khoa học máy tính"). Thêm hai luật đề xuất cho K8.15: chỗ khớp có dấu phải đúng dấu của alias ("công nghệ" không khớp "nghe", "bản về" không khớp "bản vẽ"); alias ngắn đứng trước "-" + chữ cái bị bỏ ("Go-live").</p>
@@ -278,7 +234,7 @@ Cột "ứng viên" là DF của cụm gốc lúc gom; cột "số tin" là DF �
 <p class="note">Bước 08 bỏ tag của sàn nằm trong danh sách này; mục <code>degree</code> dùng làm cụm chặn.</p>
 {ns_blocks}
 """
-    nav = V.nav([("../preprocessing_steps/index", "Pre-processing"), ("skills_v2", "Từ điển kỹ năng v2 (nháp)")], "skills_v2")
+    nav = V.nav([("../preprocessing_steps/index", "Pre-processing"), ("skills_v2", "Từ điển kỹ năng v2" + ("" if d["_meta"].get("approved") else " (nháp)"))], "skills_v2")
     return V.page("Từ điển kỹ năng v2", nav, body,
                   "Sinh bằng scripts/review_skills_v2.py từ skills_v2.json và bảng 02 trên máy.")
 

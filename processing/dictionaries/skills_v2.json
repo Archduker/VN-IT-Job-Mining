@@ -1,7 +1,13 @@
 {
  "_meta": {
-  "version": "2.0.0-draft",
-  "approved": false,
+  "version": "2.0.0",
+  "approved": true,
+  "approval": {
+   "date": "2026-11-18",
+   "by": "người dùng",
+   "quote": "duyệt hết, làm tiếp K8.15 đi",
+   "scope": "11 can_hoi theo đề xuất (WordPress thành kỹ năng CMS) + hai luật khớp mới: alias đúng dấu, alias ngắn trước '-' + chữ cái bị bỏ"
+  },
   "updated": "2026-11-18",
   "spec": "docs/spec/processing/08_skills.md mục 2.3 (K8.11–K8.16)",
   "candidates": "data/processing/skill_candidates/candidates.tsv (scripts/mine_skill_candidates.py, DF >= 2)",
@@ -49,7 +55,7 @@
    "combo": "cụm ghép nhiều kỹ năng (mỗi kỹ năng khớp riêng)",
    "entity": "tên công ty, sản phẩm, địa danh"
   },
-  "match": "aliases: khớp trên văn bản fold, nguyên từ; short_aliases: khớp phân biệt hoa thường trên văn bản gốc"
+  "match": "aliases: khớp trên văn bản fold, nguyên từ; đoạn gốc có dấu phải đúng alias_forms; short_aliases: khớp phân biệt hoa thường trên văn bản gốc, bỏ khi đứng trước '-' + chữ cái (Go-live); not_skill degree: cụm chặn"
  },
  "skills": [
   {
@@ -2561,6 +2567,24 @@
    ],
    "aliases": [
     "concurrency"
+   ],
+   "short_aliases": [],
+   "alias_forms": {}
+  },
+  {
+   "slug": "wordpress",
+   "name": "WordPress",
+   "group": "backend",
+   "kind": "technical",
+   "parent": "cms",
+   "df": 17,
+   "examples": [
+    "Chi tiết công việc Wordpress Developer intern tại Công ty TNHH Reputyze Asia",
+    "Have basic knowledge of WordPress is a big plus."
+   ],
+   "aliases": [
+    "wordpress",
+    "wordpress development"
    ],
    "short_aliases": [],
    "alias_forms": {}
@@ -45017,12 +45041,6 @@
    "df": 17
   },
   {
-   "key": "wordpress",
-   "display": "WordPress",
-   "reason": "generic",
-   "df": 17
-  },
-  {
    "key": "about us",
    "display": "About Us",
    "reason": "generic",
@@ -73421,12 +73439,6 @@
    "df": 2
   },
   {
-   "key": "wordpress development",
-   "display": "WordPress Development",
-   "reason": "generic",
-   "df": 2
-  },
-  {
    "key": "work schedule",
    "display": "Work Schedule",
    "reason": "generic",
@@ -73719,7 +73731,7 @@
    "display": "WordPress",
    "df": 17,
    "note": "\"WordPress\" xếp generic do ví dụ là chức danh; xem lại: có thể là kỹ năng CMS",
-   "decision": "not_skill:generic"
+   "decision": "skill:wordpress"
   }
  ]
 }
