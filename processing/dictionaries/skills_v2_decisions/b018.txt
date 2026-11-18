@@ -1,0 +1,290 @@
+# Lô 18: dòng 5101-5400 (18/11/2026)
+N generic 5101
+N industry 5102
+A 5103 hris
+N entity 5104
+A 5105 hybrid_cloud
+S 5106 i18n frontend n=Đa ngôn ngữ (i18n, l10n)
+L i18n i18n;l10n;internationalization;localization
+A 5107 5108 iatf
+A 5109 datastage
+A 5110 db2
+S 5111 ibm_spectrum systems_network p=storage n=IBM Spectrum (Protect/Scale)
+N generic 5112 5113
+S 5114 illustration design_creative n=Vẽ minh họa (illustration)
+L illustration minh họa;vẽ minh họa
+N job_title 5115
+A 5116 authn_authz
+N generic 5117 5118
+A 5119 5120 incident_management
+N combo 5121
+A 5122 db_indexing
+S 5123 industrial_design cad_engineering n=Thiết kế công nghiệp
+L industrial_design thiết kế công nghiệp
+S 5124 information_architecture design_creative p=ux_design n=Information architecture
+N generic 5125
+N job_title 5126
+S 5127 infotainment embedded_iot n=Infotainment (IVI)
+F infotainment IVI
+A 5128 it_operations
+A 5129 network_security
+N combo 5130
+N entity 5131 5132
+A 5133 api_integration
+A 5134 system_integration
+N combo 5135
+N generic 5136
+N generic 5137
+N job_title 5138
+N generic 5139
+N industry 5140 5141
+N entity 5142
+S 5143 autodesk_inventor cad_engineering n=Autodesk Inventor
+F autodesk_inventor Inventor;INVENTOR
+S 5144 inventory_mgmt enterprise_apps p=erp n=Quản lý kho (inventory)
+L inventory_mgmt quản lý kho;inventory management;quản lý tồn kho
+N industry 5145 5146 5147
+S 5148 invision design_creative n=InVision / Zeplin
+L invision zeplin
+N entity 5149
+N generic 5150 5151
+A 5152 functional_safety
+N combo 5153
+N generic 5154
+A 5155 istqb
+A 5156 enterprise_architecture
+S 5157 it_asset_mgmt systems_network p=itsm n=Quản lý tài sản CNTT (ITAM)
+F it_asset_mgmt ITAM
+L it_asset_mgmt it asset;quản lý tài sản it;quản lý tài sản cntt
+N job_title 5158 5159
+N combo 5160
+A 5161 technical_support
+A 5162 it_infrastructure
+A 5163 it_operations
+N generic 5164 5165
+N job_title 5166 5167
+N combo 5168
+S 5169 itgc security p=it_audit n=ITGC
+F itgc ITGC
+N combo 5170
+N generic 5171
+S 5172 ivr systems_network p=voip n=IVR / Call center
+F ivr IVR
+A 5173 can_bus
+A 5174 reverse_engineering
+A 5175 japanese
+A 5176 vitest
+A 5177 5178 java
+N combo 5179
+A 5180 5181 fullstack_dev
+A 5182 javascript
+A 5183 weblogic
+A 5184 jenkins
+N combo 5185 5186 5187 5188
+A 5189 5190 jetson
+A 5191 juniper_cert
+A 5192 5193 juniper_cert
+N entity 5194 5195 5196
+N generic 5197
+N job_title 5198 5199
+A 5200 junit
+S 5201 jupyter data_science_ml n=Jupyter Notebook
+L jupyter jupyter notebook;jupyterlab
+N combo 5202
+S 5203 k3s devops p=kubernetes n=K3s / MicroK8s
+F k3s K3s
+L k3s microk8s
+S 5204 kali_linux security p=pentest n=Kali Linux
+L kali_linux kali linux
+A 5205 kali_linux
+S 5206 kamailio systems_network p=voip n=Kamailio / OpenSIPS
+N generic 5207
+N generic 5208
+S 5209 keda devops p=kubernetes n=KEDA
+F keda KEDA
+N combo 5210
+N generic 5211 5212 5213
+N job_title 5214
+N combo 5215
+N generic 5216
+S 5217 android_keystore mobile p=android n=Android Keystore
+F android_keystore Keystore
+N combo 5218
+A 5219 teamwork
+A 5220 scalability
+N industry 5221 5222
+N degree 5223
+N generic 5224 5225
+N entity 5226
+A 5227 analytical_skills
+A 5228 it_audit
+S 5230 network_architecture systems_network p=networking n=Kiến trúc mạng
+L network_architecture network architecture;network design;thiết kế mạng
+N generic 5229 5231
+A 5232 computer_vision
+A 5233 linux
+A 5234 networking
+N generic 5235
+S 5236 kondor enterprise_apps p=core_banking n=Kondor+ (treasury)
+F kondor Kondor
+S 5237 kmp mobile p=kotlin n=Kotlin Multiplatform
+L kmp kotlin multiplatform;compose multiplatform
+F kmp KMP
+A 5238 reporting
+N combo 5239
+A 5240 okr
+A 5241 5242 kubernetes
+S 5243 k8s_security security p=kubernetes n=Kubernetes security
+A 5244 negotiation
+A 5245 leadership
+A 5246 active_listening
+A 5247 problem_solving
+A 5248 time_management
+S 5249 drawing design_creative n=Vẽ tay (hand drawing)
+L drawing vẽ tay;hand drawing;sketching
+A 5250 drawing
+A 5251 test_plan
+N job_title 5252 5253 5254 5255
+N degree 5256
+A 5257 test_design
+N generic 5258
+N job_title 5259
+N degree 5260
+A 5261 5262 kyc_aml
+N generic 5263
+A 5264 lakehouse
+A 5265 teamwork
+N generic 5266 5267
+A 5268 reporting
+S 5269 network_installation systems_network p=networking n=Lắp đặt mạng, đi dây
+L network_installation lắp đặt mạng;thi công mạng;bấm cáp;đi dây mạng
+N industry 5270
+A 5271 project_planning
+A 5272 5273 cnc
+S 5274 mobile_game_dev game_dev n=Lập trình game mobile
+A 5275 plsql
+S 5276 latency_optimization backend p=performance_optimization n=Low latency
+L latency_optimization low latency;low-latency
+N entity 5277
+S 5278 iso_lead_auditor certifications n=ISO Lead Auditor / Lead Implementer
+L iso_lead_auditor lead auditor;lead implementer
+A 5279 iso_lead_auditor
+N job_title 5280 5281 5282
+N generic 5283
+S 5285 leased_line systems_network p=networking n=Leased line / kênh thuê riêng
+L leased_line leased line;kênh thuê riêng
+N generic 5284
+N industry 5286
+N generic 5287
+A 5288 english
+A 5289 slo_sli
+N entity 5290 5291
+S 5292 lgsp architecture_api p=system_integration n=LGSP / NDXP (trục tích hợp chính phủ)
+F lgsp LGSP;NDXP
+N generic 5293
+N entity 5294 5295
+N industry 5296
+A 5297 bi
+A 5298 technical_support
+A 5299 software_testing
+N generic 5300
+N industry 5301
+N generic 5302 5303
+N industry 5304
+A 5305 embedded_linux
+A 5306 5307 linux
+S 5308 linux_cli systems_network p=linux n=Linux command line
+L linux_cli linux terminal;linux command;command line;dòng lệnh
+A 5309 5310 embedded_linux
+S 5311 liquibase databases p=db_migration n=Liquibase / Flyway
+L liquibase flyway
+N generic 5312
+A 5313 llm
+N combo 5314 5315
+A 5316 genai
+N combo 5317
+A 5318 load_balancing
+N generic 5319
+S 5320 loadrunner testing_qa p=performance_test n=LoadRunner
+A 5321 log_analytics
+N combo 5322
+A 5323 lora_finetune
+S 5324 lovable ai_tools n=Lovable / Bolt / v0
+F lovable Lovable
+N entity 5325
+N generic 5326
+S 5327 m_code cad_engineering p=cnc n=M-code
+A 5328 icd_coding
+N entity 5329 5330
+S 5331 maintainability architecture_api p=clean_code n=Maintainability
+S 5332 major_incident systems_network p=incident_management n=Major incident
+L major_incident major incident
+A 5333 zapier
+A 5334 cmake
+N generic 5335
+S 5336 managed_services systems_network n=Managed services
+N generic 5337
+N job_title 5338
+A 5339 chinese
+N generic 5340
+A 5341 storage
+A 5342 5343 tcp_ip
+A 5344 google_maps_api
+S 5345 markdown dev_tools n=Markdown
+F markdown Markdown
+N industry 5346
+N job_title 5347
+N combo 5348
+N industry 5349
+N entity 5350
+A 5351 ant_design
+N combo 5352
+N generic 5353
+S 5354 attendance_device systems_network n=Máy chấm công
+A 5355 cnc
+A 5356 machine_learning
+A 5357 autosar_bsw
+S 5358 mdr_service security p=soc n=MDR (managed detection and response)
+F mdr_service MDR
+N entity 5359 5360
+N generic 5361
+S 5362 media3 mobile p=android n=Media3 / ExoPlayer
+L media3 exoplayer
+N entity 5363
+S 5364 memory_management programming_languages n=Quản lý bộ nhớ
+L memory_management memory management;quản lý bộ nhớ
+N combo 5365
+A 5366 cisco_meraki
+N industry 5367
+N generic 5368
+A 5369 metadata_mgmt
+A 5370 microservices
+N combo 5371
+A 5372 ms_office
+A 5373 copilot_studio
+A 5374 5375 ms_dynamics
+A 5376 hyperv
+A 5377 visio
+N generic 5378 5379
+N job_title 5380 5381
+N combo 5382
+S 5383 mintegral digital_marketing p=admob n=Mintegral / ironSource
+L mintegral ironsource
+F mintegral Mintegral
+N combo 5384
+N generic 5385
+N combo 5386 5387
+S 5388 mobile_security security n=Bảo mật ứng dụng di động
+L mobile_security mobile security;mobile application security;mobile security testing;masvs
+A 5389 mobile_testing
+A 5390 mobile_app_dev
+N generic 5391
+A 5392 5393 mobile_security
+A 5394 vitest
+S 5395 model_deployment data_science_ml p=mlops n=Triển khai mô hình
+L model_deployment model deployment
+N generic 5396
+N combo 5397
+N combo 5398
+A 5399 devops
+A 5400 frontend_dev

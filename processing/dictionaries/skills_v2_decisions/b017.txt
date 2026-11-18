@@ -200,7 +200,7 @@ N job_title 5028
 N generic 5029
 A 5030 excel
 A 5031 sql
-S 5032 google_adk ai_genai p=ai_agent n=Google ADK
+A 5032 google_adk
 N generic 5033
 A 5034 apps_script
 N combo 5035
