@@ -175,7 +175,7 @@ L pa_system public address;âm thanh công cộng
 N generic 9508
 A 9509 pull_request
 S 9510 procurement enterprise_apps n=Mua sắm (procurement)
-L procurement procurement;purchasing;mua sắm
+L procurement procurement;purchasing
 A 9511 php
 A 9512 cisa
 A 9513 push_notification
@@ -212,7 +212,6 @@ A 9549 qt
 S 9550 qradar security p=siem n=IBM QRadar / Splunk
 L qradar qradar
 A 9551 soc_chip
-A 9552 quality_management
 N generic 9553
 A 9554 quality_control
 N job_title 9555 9556
@@ -265,3 +264,5 @@ A 9598 message_queue
 N entity 9599
 N generic 9600
 L optics quang học;optics
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 9552

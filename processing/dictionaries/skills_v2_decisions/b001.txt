@@ -142,7 +142,7 @@ S 131 dns systems_network p=networking n=DNS
 S 132 rag ai_genai p=llm n=RAG
 S 133 confluence dev_tools n=Confluence
 S 134 postman testing_qa n=Postman
-S 135 r_lang programming_languages n=R
+K r_lang programming_languages n=R
 Q 135 "R" dạng viết hoa vẫn khớp "R&D"; tạm chỉ nhận qua cụm "ngôn ngữ R", "R language", "RStudio"
 L r_lang ngôn ngữ r;r language;rstudio;r programming
 S 136 japanese languages n=Tiếng Nhật
@@ -316,3 +316,5 @@ L c_lang ngôn ngữ c;lập trình c;c language;embedded c;ansi c
 L networking mạng máy tính;networking;computer network;computer networks;quản trị mạng;network administration
 L monitoring monitoring;observability;giám sát hệ thống
 L virtualization virtualization;ảo hóa;ảo hoá;hypervisor
+# 18/11 duyệt lại sau đo K8.14: "R" một chữ cái khớp "R&D"; R chỉ nhận qua cụm (ngôn ngữ R, RStudio)
+N generic 135

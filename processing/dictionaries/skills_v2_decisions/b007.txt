@@ -301,7 +301,6 @@ N generic 2085
 A 2086 iam
 S 2087 acl systems_network p=networking n=ACL
 S 2088 admob digital_marketing n=AdMob
-A 2089 ai_agent
 N generic 2090
 N generic 2091
 N generic 2092
@@ -314,3 +313,5 @@ N combo 2097
 N generic 2098
 A 2099 iceberg
 A 2100 tomcat
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 2089

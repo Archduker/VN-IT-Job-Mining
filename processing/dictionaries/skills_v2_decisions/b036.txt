@@ -208,7 +208,6 @@ N generic 10728 10729
 N generic 10730
 A 10731 netbackup
 N combo 10732
-A 10733 vendor_management
 N generic 10734
 A 10735 10736 10737 git
 N entity 10738 10739
@@ -446,3 +445,5 @@ N entity 10984
 N combo 10985
 L zk_framework zk framework
 L tokenization_nlp tokenizer
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 10733

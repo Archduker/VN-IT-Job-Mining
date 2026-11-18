@@ -19,10 +19,10 @@ A 5716 disaster_recovery
 N generic 5717
 N combo 5718
 N generic 5719
-S 5720 regulatory_compliance security p=compliance n=Tuân thủ quy định (regulations)
+K regulatory_compliance security p=compliance n=Tuân thủ quy định (regulations)
 L regulatory_compliance regulatory compliance;regulatory requirements
 A 5721 reinforcement_learning
-S 5722 release_management devops n=Release management
+K release_management devops n=Release management
 L release_management release management;quản lý phát hành;release cycle;release cycles;release notes
 A 5723 release_management
 S 5724 renesas embedded_iot p=mcu n=Renesas / NXP / TI (MCU)
@@ -55,7 +55,6 @@ S 5755 route53 cloud p=aws n=AWS Route 53
 L route53 route 53;route53
 N combo 5756
 A 5757 modbus
-A 5758 risk_management
 S 5759 rxjava mobile p=android n=RxJava / RxKotlin
 L rxjava rxkotlin
 N degree 5760
@@ -297,3 +296,5 @@ A 5998 uat
 N generic 6000
 K thai languages n=Tiếng Thái
 L thai tiếng thái
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 5720 5722 5758

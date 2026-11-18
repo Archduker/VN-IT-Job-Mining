@@ -133,7 +133,7 @@ dns	DNS	141	skill:dns
 rag	RAG	141	skill:rag
 confluence	Confluence	140	skill:confluence
 postman	Postman	139	skill:postman
-r	R	139	skill:r_lang
+r	R	139	not_skill:generic
 tieng nhat	Tiếng Nhật	139	skill:japanese
 photoshop	Photoshop	138	skill:photoshop
 toeic	TOEIC	138	skill:toeic
@@ -713,7 +713,7 @@ intern	Intern	25	not_skill:job_title
 lakehouse	Lakehouse	25	skill:lakehouse
 large language models	Large Language Models	25	alias:llm
 life cycle	Life Cycle	25	not_skill:generic
-mau sac	màu sắc	25	skill:color_theory
+mau sac	màu sắc	25	not_skill:generic
 ms project	MS Project	25	not_skill:generic
 nha cung cap	nhà cung cấp	25	not_skill:generic
 ospf	OSPF	25	alias:routing_switching
@@ -739,7 +739,7 @@ ddd	DDD	24	skill:ddd
 dss	DSS	24	not_skill:generic
 gpu	GPU	24	skill:gpu
 hybrid cloud	Hybrid Cloud	24	skill:hybrid_cloud
-integration	integration	24	skill:integration_test
+integration	integration	24	not_skill:generic
 it engineer	it engineer	24	not_skill:job_title
 it infrastructure	IT Infrastructure	24	skill:it_infrastructure
 linux/windows	Linux/Windows	24	not_skill:combo
@@ -1531,7 +1531,7 @@ sub	Sub	11	not_skill:generic
 tailwindcss	TailwindCSS	11	alias:tailwind
 test automation	test automation	11	alias:automation_test
 tiktok shop	TikTok Shop	11	not_skill:entity
-transaction	transaction	11	skill:db_transaction
+transaction	transaction	11	not_skill:generic
 unix/linux	Unix/Linux	11	not_skill:combo
 usb	USB	11	skill:usb
 vcp	VCP	11	skill:vcp
@@ -1555,7 +1555,7 @@ b testing	B testing	10	not_skill:generic
 ba/po	BA/PO	10	not_skill:combo
 baas	BaaS	10	not_skill:industry
 ban le	bán lẻ	10	not_skill:industry
-bao cao	báo cáo	10	alias:reporting
+bao cao	báo cáo	10	not_skill:generic
 basel	Basel	10	not_skill:industry
 bi/data	BI/Data	10	not_skill:combo
 bluetooth	Bluetooth	10	alias:ble
@@ -1602,7 +1602,7 @@ language processing	Language Processing	10	not_skill:generic
 lap trinh unity	lập trình unity	10	not_skill:job_title
 lazada	Lazada	10	not_skill:entity
 linh vuc ai	lĩnh vực AI	10	not_skill:generic
-luu tru	lưu trữ	10	alias:storage
+luu tru	lưu trữ	10	not_skill:generic
 malaysia	Malaysia	10	not_skill:generic
 master data management	Master Data Management	10	alias:mdm
 may tinh	máy tính	10	not_skill:generic
@@ -2087,7 +2087,7 @@ xu ly van de	xử lý vấn đề	8	alias:problem_solving
 access management	access management	7	alias:iam
 acl	ACL	7	skill:acl
 admob	AdMob	7	skill:admob
-agent	Agent	7	alias:ai_agent
+agent	Agent	7	not_skill:generic
 ai api	AI API	7	not_skill:generic
 ai assistant	AI Assistant	7	not_skill:generic
 ai camera	AI Camera	7	not_skill:generic
@@ -3038,7 +3038,7 @@ key skills	Key Skills	5	not_skill:generic
 keyence	Keyence	5	alias:omron
 khac phuc su co	Khắc phục sự cố	5	alias:troubleshooting
 khach hang doanh nghiep	khách hàng doanh nghiệp	5	not_skill:generic
-kiem toan	kiểm toán	5	alias:it_audit
+kiem toan	kiểm toán	5	not_skill:generic
 kien truc	kiến trúc	5	not_skill:generic
 kinh doanh	Kinh doanh	5	not_skill:generic
 kong api	Kong API	5	alias:kong
@@ -4236,7 +4236,7 @@ truong nhom	Trưởng Nhóm	4	not_skill:job_title
 truy van sql	truy vấn SQL	4	alias:sql_query
 tu duy hinh anh	Tư Duy Hình Ảnh	4	alias:aesthetic_sense
 tu duy tot	tư duy tốt	4	not_skill:generic
-tuan thu	tuân thủ	4	alias:compliance
+tuan thu	tuân thủ	4	not_skill:generic
 tuong tu	tương tự	4	not_skill:generic
 tuyendung.vcbs.com.vn	tuyendung.vcbs.com.vn	4	not_skill:generic
 tvc	TVC	4	not_skill:generic
@@ -4632,7 +4632,7 @@ chief qa	Chief QA	3	not_skill:job_title
 chien luoc	chiến lược	3	not_skill:generic
 chinh phu dien tu	chính phủ điện tử	3	not_skill:industry
 chinh sua hinh anh	chỉnh sửa hình ảnh	3	skill:photo_editing
-chinh xac	chính xác	3	alias:carefulness
+chinh xac	chính xác	3	not_skill:generic
 christmas	Christmas	3	not_skill:generic
 chung chi ccna	Chứng chỉ CCNA	3	alias:ccna
 chuyen vien it	chuyên viên it	3	not_skill:job_title
@@ -5557,7 +5557,7 @@ permission management	Permission Management	3	not_skill:generic
 permission set	Permission Set	3	skill:salesforce_security
 persona	Persona	3	skill:persona
 phan bien	phản biện	3	alias:critical_thinking
-phan cong	phân công	3	alias:task_management
+phan cong	phân công	3	not_skill:generic
 phan cong cong viec	Phân công công việc	3	alias:task_management
 phan mem cad	phần mềm CAD	3	alias:autocad
 phan mem may tinh	phần mềm máy tính	3	not_skill:generic
@@ -5718,9 +5718,9 @@ recovery plan	Recovery Plan	3	alias:disaster_recovery
 recruitment team	Recruitment Team	3	not_skill:generic
 redux/zustand	Redux/Zustand	3	not_skill:combo
 regional it	Regional IT	3	not_skill:generic
-regulations	regulations	3	skill:regulatory_compliance
+regulations	regulations	3	not_skill:generic
 reinforcement learning agents	Reinforcement Learning Agents	3	alias:reinforcement_learning
-release	release	3	skill:release_management
+release	release	3	not_skill:generic
 release cycles	release cycles	3	alias:release_management
 renesas	Renesas	3	skill:renesas
 report writing	Report Writing	3	alias:technical_writing
@@ -5756,7 +5756,7 @@ root/jailbreak	root/jailbreak	3	skill:root_jailbreak_detection
 route53	Route53	3	skill:route53
 router/switch/firewall	Router/Switch/Firewall	3	not_skill:combo
 rtu	RTU	3	alias:modbus
-rui ro	rủi ro	3	alias:risk_management
+rui ro	rủi ro	3	not_skill:generic
 rxjava	RxJava	3	skill:rxjava
 s/master	s/Master	3	not_skill:degree
 s3/minio	S3/MinIO	3	not_skill:combo
@@ -6005,7 +6005,7 @@ the bloom	The Bloom	3	not_skill:entity
 the epm	The EPM	3	not_skill:generic
 the model context protocol	the Model Context Protocol	3	alias:mcp
 the software development process	the software development process	3	alias:sdlc
-thi truong	thị trường	3	alias:market_research
+thi truong	thị trường	3	not_skill:generic
 thiet bi dien	thiết bị điện	3	skill:electrical_equipment
 thiet bi ngoai vi	thiết bị ngoại vi	3	alias:computer_hardware
 thiet bi y te	thiết bị y tế	3	skill:medical_devices
@@ -6867,7 +6867,7 @@ cac vi tri ban	các vị trí bán	2	not_skill:generic
 cac/cpa	CAC/CPA	2	skill:ua_metrics
 cach uoc luong task	cách ước lượng task	2	skill:task_estimation
 cai dat he dieu hanh	Cài Đặt Hệ Điều Hành	2	alias:software_installation
-cai tien	cải tiến	2	alias:process_improvement
+cai tien	cải tiến	2	not_skill:generic
 call center	Call Center	2	alias:contact_center
 cam software	Cam Software)	2	alias:cam_software
 camera cctv	Camera CCTV	2	alias:cctv
@@ -8342,7 +8342,7 @@ jni/ndk	JNI/NDK	2	skill:android_ndk
 job and who	JOB AND WHO	2	not_skill:generic
 job objective	Job Objective	2	not_skill:generic
 job title	JOB TITLE	2	not_skill:generic
-join	JOIN	2	alias:sql_query
+join	JOIN	2	not_skill:generic
 join bgsv	Join BGSV	2	not_skill:entity
 jotai	Jotai	2	skill:jotai
 js/ts	JS/TS	2	not_skill:combo
@@ -8362,7 +8362,7 @@ karma	Karma	2	alias:vitest
 katalon studio	Katalon Studio	2	alias:katalon
 kcn vsip	KCN VSIP	2	not_skill:entity
 kcp	KCP	2	not_skill:generic
-ke hoach	kế hoạch	2	alias:project_planning
+ke hoach	kế hoạch	2	not_skill:generic
 ke hoach san xuat	kế hoạch sản xuất	2	skill:production_planning
 ke toan khong yeu cau kinh nghiem	kế toán không yêu cầu kinh nghiệm	2	not_skill:job_title
 kendo ui	Kendo UI	2	skill:kendo_ui
@@ -8768,7 +8768,7 @@ medlatec	MEDLATEC	2	not_skill:entity
 meets all specified requirements	meets all specified requirements	2	not_skill:entity
 megazone cloud	MEGAZONE CLOUD	2	not_skill:entity
 memcache	Memcache	2	alias:memcached
-memory	memory	2	alias:memory_management
+memory	memory	2	not_skill:generic
 memory profiler	Memory Profiler	2	alias:profiling
 memory/context	Memory/Context	2	skill:agent_memory
 mentor	Mentor	2	alias:mentoring
@@ -9258,7 +9258,7 @@ pg ha noi	pg hà nội	2	not_skill:job_title
 pgbank	PGBank	2	not_skill:entity
 pgmp	PgMP	2	skill:pgmp
 pham	Pham	2	not_skill:entity
-pham vi	phạm vi	2	alias:scope_management
+pham vi	phạm vi	2	not_skill:generic
 phan bien tot	phản biện tốt	2	alias:critical_thinking
 phan chia cong viec	phân chia công việc	2	alias:task_management
 phan mem autocad	phần mềm autocad	2	alias:autocad
@@ -9550,7 +9550,7 @@ qlrr	QLRR	2	not_skill:generic
 qml	QML	2	alias:qt
 qradar	QRadar	2	skill:qradar
 qualcomm	Qualcomm	2	alias:soc_chip
-quality	Quality	2	alias:quality_management
+quality	Quality	2	not_skill:generic
 quality advocacy	Quality Advocacy	2	not_skill:generic
 quality analysis	quality analysis	2	alias:quality_control
 quality analysts	Quality Analysts	2	not_skill:job_title
@@ -9866,7 +9866,7 @@ schola	SCHOLA	2	not_skill:entity
 schola limited	SCHOLA LIMITED	2	not_skill:entity
 schola limited company	SCHOLA LIMITED COMPANY	2	not_skill:entity
 scnp	SCNP	2	not_skill:generic
-scope	scope	2	alias:scope_management
+scope	scope	2	not_skill:generic
 scope du an	scope dự án	2	alias:scope_management
 scope l1/l2/l3	Scope L1/L2/L3	2	not_skill:combo
 scope/time/quality/customer	Scope/Time/Quality/Customer	2	not_skill:combo
@@ -10731,7 +10731,7 @@ vci	VCI	2	not_skill:generic
 ve thu thap	về thu thập	2	not_skill:generic
 veeam/commvault	Veeam/Commvault	2	alias:netbackup
 vendor/freelancer	vendor/freelancer	2	not_skill:combo
-vendors	vendors	2	alias:vendor_management
+vendors	vendors	2	not_skill:generic
 version	Version	2	not_skill:generic
 version control best practices	version control best practices	2	alias:git
 version control using git	version control using Git	2	alias:git

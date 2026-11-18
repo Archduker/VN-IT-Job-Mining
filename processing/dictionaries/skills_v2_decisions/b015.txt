@@ -33,7 +33,6 @@ N job_title 4234
 A 4235 sql_query
 A 4236 aesthetic_sense
 N generic 4237
-A 4238 compliance
 N generic 4239 4240 4241 4242 4243
 A 4244 rpa
 S 4245 ai_application ai_genai n=Ứng dụng AI vào công việc
@@ -261,3 +260,5 @@ N industry 4495 4496 4497
 A 4498 reporting
 A 4499 network_security
 A 4500 web_security
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 4238

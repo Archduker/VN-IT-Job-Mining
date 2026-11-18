@@ -217,7 +217,6 @@ N entity 9257
 S 9258 pgmp certifications p=program_management n=PgMP
 F pgmp PgMP;PGMP
 N entity 9259
-A 9260 scope_management
 A 9261 critical_thinking
 A 9262 task_management
 A 9263 autocad
@@ -258,3 +257,5 @@ N combo 9294
 A 9295 9296 php_cs_fixer
 A 9297 php_fpm
 N combo 9298 9299 9300
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 9260

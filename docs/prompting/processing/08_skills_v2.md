@@ -119,8 +119,10 @@ ghi job_skills.parquet (+ kind, parent)
 | # | Bước quy trình | Ngày | Việc đã làm, số liệu, quyết định | Commit |
 |---|---|---|---|---|
 | — | Quyết định đầu vào | 18/11 | Người dùng: làm lại chuẩn hóa kỹ năng bằng cách đọc JD, đọc hết ứng viên từ 2 tin trở lên; kỹ năng con trỏ về kỹ năng cha; kỹ năng mềm và ngoại ngữ gắn cờ; K8.9 một nguồn kỹ năng. Đo thử số ứng viên: tag DF ≥ 2 1.655, token 4.087, hợp 5.432, cụm sau từ báo hiệu 2.474 | — |
-| 1 | Duyệt đặc tả | chưa | Đặc tả 08 mục 2.3 | — |
-| 2 | Duyệt prompt | chưa | Prompt này | — |
+| 1 | Duyệt đặc tả | 18/11 | Người dùng: "TUi duyệt cả 2: đặc tả với prompt" (K8.11–K8.16), chọn đọc hết 10.985 ứng viên | — |
+| 2 | Duyệt prompt | 18/11 | Như trên | — |
+| — | Đọc ứng viên (K8.12–K8.13) | 18/11 | 36 lô `skills_v2_decisions/b001–b036.txt`, đủ 10.985/10.985 dòng; build `skills_v2.json`: 2.113 kỹ năng, 5.146 not_skill, 11 câu hỏi | 84b1d7f … ae5e4c8 |
+| — | Trang duyệt (K8.14) | 18/11 | `scripts/review_skills_v2.py` → `docs/presentation/processing_steps/skills_v2.html`. Đo lại trên bảng 02 lộ 2 lỗi khớp: bỏ dấu làm "công nghệ" khớp "nghe" (1.210 tin), "bản về" khớp "bản vẽ"; "R" khớp "R&D", "Go" khớp "Go-live". Sửa: builder ghi `alias_forms` (dạng có dấu), trang duyệt áp luật đúng dấu + chặn "-chữ"; 23 alias chung chung ("báo cáo", "cải tiến", "quality", "integration", "join", "thị trường"…) chuyển not_skill. Sau sửa: 2.113 kỹ năng, 5.169 not_skill, 99,4% tin có ≥ 1 kỹ năng kỹ thuật, 9 kỹ năng không khớp tin nào. Chờ người dùng chốt 11 câu hỏi và hai luật mới cho K8.15 | (commit này) |
 | 3 | Test rồi code | chưa | | |
 | 4 | Dry-run | chưa | | |
 | 5 | Review, chạy thật | chưa | | |

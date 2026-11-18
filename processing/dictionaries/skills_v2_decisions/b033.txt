@@ -239,7 +239,7 @@ A 9862 electrical_drawing
 N entity 9863
 N entity 9864 9865 9866
 N generic 9867
-A 9868 9869 scope_management
+A 9869 scope_management
 N combo 9870 9871
 S 9872 web_scraping backend n=Web scraping / crawling (Scrapy)
 L web_scraping scrapy;web scraping;web crawling;crawler;beautifulsoup
@@ -270,3 +270,5 @@ A 9898 secure_coding
 A 9899 secure_element
 S 9900 secure_storage mobile p=mobile_security n=Lưu trữ bảo mật trên mobile
 L secure_storage secure storage;encrypted storage
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 9868

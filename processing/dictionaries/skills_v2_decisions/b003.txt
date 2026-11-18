@@ -117,7 +117,7 @@ N job_title 711
 S 712 lakehouse data_engineering n=Lakehouse
 A 713 llm
 N generic 714
-S 715 color_theory design_creative n=Màu sắc
+K color_theory design_creative n=Màu sắc
 N generic 716
 Q 716 "MS Project": tạm bỏ (tên phần mềm); có thể thêm làm công cụ quản lý dự án
 N generic 717
@@ -143,7 +143,7 @@ S 737 ddd architecture_api n=DDD (Domain-Driven Design)
 N generic 738
 S 739 gpu data_science_ml n=GPU, CUDA
 S 740 hybrid_cloud cloud p=cloud_computing n=Hybrid Cloud
-S 741 integration_test testing_qa p=software_testing n=Integration test
+K integration_test testing_qa p=software_testing n=Integration test
 N job_title 742
 S 743 it_infrastructure systems_network n=Hạ tầng CNTT
 N combo 744
@@ -294,3 +294,5 @@ S 898 datadog devops p=monitoring n=Datadog
 N job_title 899
 N generic 900
 F dast DAST;SCA
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 715 741

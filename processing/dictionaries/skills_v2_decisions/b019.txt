@@ -141,7 +141,7 @@ S 5557 persona design_creative p=ux_research n=Persona
 F persona Persona;Personas
 L persona user persona
 A 5558 critical_thinking
-A 5559 5560 task_management
+A 5560 task_management
 A 5561 autocad
 N generic 5562
 A 5563 photoshop
@@ -277,3 +277,5 @@ N generic 5698
 K sdr embedded_iot p=telecom_network n=SDR (software defined radio)
 L sdr gnu radio;software defined radio
 A 5699 5700 rag
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 5559

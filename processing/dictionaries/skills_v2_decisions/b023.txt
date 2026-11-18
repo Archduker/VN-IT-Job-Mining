@@ -239,7 +239,6 @@ F ua_metrics CAC;CPI;ROAS
 S 6867 task_estimation methodology_pm p=project_planning n=Ước lượng công việc (estimation)
 L task_estimation ước lượng;estimation;story point;story points;planning poker
 A 6868 software_installation
-A 6869 process_improvement
 A 6870 contact_center
 A 6871 cam_software
 A 6872 cctv
@@ -266,3 +265,5 @@ A 6896 bash
 N generic 6897
 A 6898 6899 capacity_planning
 N combo 6900
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 6869

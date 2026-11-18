@@ -16,6 +16,7 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 | `mine_jd_phrases.py [--out]` | Gom câu ứng viên trong JD theo chủ đề (hình thức làm việc, loại hợp đồng, kinh nghiệm, giờ làm, lương) từ bảng 03 ra `data/preprocessing/jd_phrases/<chủ đề>.tsv`, để dựng từ điển |
 | `build_step_samples.py [--job] [--step]` | Dựng dữ liệu mẫu cho đặc tả từng bước: `docs/spec/preprocessing/samples/<bước>.json` (số vào/ra theo nguồn, luật kèm ví dụ, schema, trạng thái của tin mẫu `topcv_2325743` ở bước đó). Bỏ qua bước chưa có đầu ra trên máy |
 | `review_jd_dictionary.py` | Đo `preprocessing/dictionaries/jd_extraction.json` trên bảng 03 (số tin theo luật và nguồn, ca lệch raw ↔ JD) và sinh trang duyệt `docs/presentation/preprocessing_steps/jd_dictionary.html` |
+| `review_skills_v2.py` | Đo `processing/dictionaries/skills_v2.json` (kể cả bản nháp) trên bảng 02 bằng matcher như bước 08 (alias đúng dấu, chặn cụm bằng cấp, chặn "Go-live"), ghi `data/processing/skill_candidates/skills_v2_measure.json` và trang duyệt `docs/presentation/processing_steps/skills_v2.html`. `build_skills_v2.py` (ghi trên máy) dựng từ điển từ các lô quyết định |
 | `view_urls.py [--r2] [--status]` | Xem ledger trên máy hoặc trên R2 |
 | `sync_cloud_lakehouse.py --status` | So máy với R2 |
 | `sync_cloud_lakehouse.py --download [--source]` | Tải R2 về `data/` (chỉ ghi trên máy). Có `--source` thì **chỉ tải ledger**, không tải raw (PRE-42) |

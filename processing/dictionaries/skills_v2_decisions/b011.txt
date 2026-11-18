@@ -39,7 +39,6 @@ N generic 3036
 A 3037 omron
 A 3038 troubleshooting
 N generic 3039
-A 3040 it_audit
 N generic 3041 3042
 A 3043 kong
 A 3044 mlflow
@@ -294,3 +293,5 @@ N generic 3298
 A 3299 t24
 S 3300 temporal backend n=Temporal (workflow engine)
 F temporal Temporal
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 3040

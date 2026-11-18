@@ -221,7 +221,6 @@ S 8340 android_ndk mobile p=android n=Android NDK / JNI
 F android_ndk NDK;JNI
 L android_ndk android ndk
 N generic 8341 8342 8343
-A 8344 sql_query
 N entity 8345
 S 8346 jotai frontend p=state_management n=Jotai / Recoil / Zustand
 L jotai jotai;recoil
@@ -245,7 +244,6 @@ A 8360 vitest
 A 8361 katalon
 N entity 8362
 N generic 8363
-A 8364 project_planning
 S 8365 production_planning enterprise_apps p=erp n=Kế hoạch sản xuất (MRP)
 L production_planning kế hoạch sản xuất;production planning
 N job_title 8366
@@ -278,3 +276,6 @@ A 8397 data_warehouse
 A 8398 backup
 A 8399 altium
 N generic 8400
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 8344 8364
+F sql_query JOIN

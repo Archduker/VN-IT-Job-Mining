@@ -62,7 +62,6 @@ L mediator_pattern mediatr;mediator pattern
 N job_title 8763 8764 8765
 N entity 8766 8767 8768
 A 8769 memcached
-A 8770 memory_management
 A 8771 profiling
 S 8772 agent_memory ai_genai p=ai_agent n=Agent memory / context management
 L agent_memory agent memory;context management
@@ -280,3 +279,5 @@ N entity 8991
 N generic 8992 8993 8994 8995
 N entity 8996 8997 8998 8999
 N entity 9000
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 8770

@@ -29,6 +29,7 @@ from __future__ import annotations
 import argparse
 import csv
 import datetime as dt
+import unicodedata
 import json
 import re
 import sys
@@ -239,14 +240,21 @@ def build(cands, lines):
                     warns.append(f"{slug}: alias ngắn {k!r} chỉ có dạng chữ thường, bỏ")
                     continue
                 shorts.append(form)
-        s.pop("_forms")
+        forms = s.pop("_forms")
+        # dạng gốc có dấu của alias an toàn: matcher loại chỗ khớp có dấu khác ("nghệ" ≠ "nghe")
+        alias_forms = {}
+        for a in aliases:
+            f = unicodedata.normalize("NFC", forms.get(a, a)).lower()
+            if not f.isascii() and " ".join(fold(f).split()) == a:
+                alias_forms[a] = f
         for a in aliases:
             owner.setdefault(("safe", a), set()).add(slug)
         for f in shorts:
             owner.setdefault(("short", f), set()).add(slug)
         if s["parent"] and s["parent"] not in skills:
             errors.append(f"{slug}: parent chưa định nghĩa {s['parent']!r}")
-        out_skills.append({**s, "aliases": sorted(set(aliases)), "short_aliases": sorted(set(shorts))})
+        out_skills.append({**s, "aliases": sorted(set(aliases)), "short_aliases": sorted(set(shorts)),
+                           "alias_forms": dict(sorted(alias_forms.items()))})
     for (kind, a), owners in owner.items():
         if len(owners) > 1:
             errors.append(f"alias {a!r} ({kind}) thuộc nhiều kỹ năng: {sorted(owners)}")

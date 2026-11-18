@@ -117,7 +117,6 @@ N generic 4631
 N industry 4632
 S 4633 photo_editing design_creative n=Chỉnh sửa ảnh
 L photo_editing chỉnh sửa hình ảnh;chỉnh sửa ảnh;photo editing;retouch
-A 4634 carefulness
 N generic 4635
 A 4636 ccna
 N job_title 4637 4638
@@ -276,3 +275,5 @@ A 4796 database
 N combo 4797
 N generic 4798 4799
 N industry 4800
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 4634

@@ -33,7 +33,7 @@ N generic 1529
 A 1530 tailwind
 A 1531 automation_test
 N entity 1532
-S 1533 db_transaction databases n=Transaction (giao dịch CSDL)
+K db_transaction databases n=Transaction (giao dịch CSDL)
 N combo 1534
 S 1535 usb embedded_iot p=embedded_protocols n=USB
 S 1536 vcp certifications p=vmware n=VCP (VMware Certified Professional)
@@ -53,7 +53,6 @@ N job_title 1551
 N generic 1552 1553
 N combo 1554
 N industry 1555 1556
-A 1557 reporting
 N industry 1558
 N combo 1559
 A 1560 ble
@@ -100,7 +99,6 @@ N generic 1600
 N job_title 1601
 N entity 1602
 N generic 1603
-A 1604 storage
 N generic 1605
 A 1606 mdm
 N generic 1607
@@ -310,3 +308,5 @@ S 1797 red_team security p=pentest n=Red Team
 A 1798 reinforcement_learning
 N generic 1799
 S 1800 db_replication databases n=Replication (sao chép CSDL)
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 1533 1557 1604

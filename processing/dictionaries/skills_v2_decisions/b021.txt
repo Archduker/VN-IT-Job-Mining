@@ -5,7 +5,6 @@ N entity 6003
 N generic 6004
 A 6005 mcp
 A 6006 sdlc
-A 6007 market_research
 S 6008 electrical_equipment cad_engineering n=Thiết bị điện
 L electrical_equipment thiết bị điện;tủ điện
 A 6009 computer_hardware
@@ -281,3 +280,5 @@ A 6295 networking
 N generic 6296 6297
 N entity 6298 6299
 A 6300 cryptography
+# 18/11 duyệt lại sau đo K8.14: alias chung chung khớp sai ngữ cảnh, chuyển sang not_skill
+N generic 6007
