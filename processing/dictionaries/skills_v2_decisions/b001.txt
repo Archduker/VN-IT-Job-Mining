@@ -1,0 +1,318 @@
+# Lô 1: dòng 1-300 của candidates.tsv (18/11/2026)
+# Kỹ năng cha không đến từ một dòng
+K networking systems_network n=Mạng máy tính
+K monitoring devops n=Giám sát hệ thống (Monitoring)
+K virtualization systems_network n=Ảo hóa
+K dart programming_languages n=Dart
+L dart dart
+
+S 1 communication soft_skills n=Giao tiếp
+S 2 ai ai_genai n=AI (trí tuệ nhân tạo)
+S 3 bi bi_analytics n=BI
+S 4 sql databases n=SQL
+S 5 api architecture_api n=API
+S 6 english languages n=Tiếng Anh
+N generic 7
+N industry 8 12
+S 9 python programming_languages n=Python
+A 10 english
+A 11 communication
+S 13 cicd devops n=CI/CD
+S 14 teamwork soft_skills n=Làm việc nhóm
+N job_title 15
+S 16 problem_solving soft_skills n=Giải quyết vấn đề
+S 17 docker devops p=containerization n=Docker
+S 18 java programming_languages n=Java
+A 19 machine_learning
+Q 19 "học máy" khớp cả bên trong "Khoa học máy tính"; đề xuất bước 08 dùng not_skill loại degree làm cụm chặn (khớp dài nhất thắng)
+N generic 20
+S 21 logical_thinking soft_skills n=Tư duy logic
+S 22 git dev_tools n=Git
+S 23 aws cloud n=AWS
+S 24 linux systems_network n=Linux
+N job_title 25
+N generic 26
+S 27 postgresql databases p=sql n=PostgreSQL
+N job_title 28
+N generic 29
+S 30 agile methodology_pm n=Agile
+S 31 devops devops n=DevOps
+N generic 32
+S 33 azure cloud n=Azure
+S 34 kubernetes devops p=containerization n=Kubernetes
+S 35 mysql databases p=sql n=MySQL
+N degree 36
+A 37 api
+S 38 data_analysis bi_analytics n=Phân tích dữ liệu
+S 39 solid architecture_api n=SOLID
+F solid SOLID
+S 40 erp enterprise_apps n=ERP
+S 41 microservices architecture_api n=Microservices
+S 42 jira dev_tools n=Jira
+A 43 rest_api
+N job_title 44
+S 45 javascript programming_languages n=JavaScript
+N generic 46
+S 47 oracle_db databases p=sql n=Oracle Database
+Q 47 "Oracle" có thể là Oracle DB hoặc Oracle ERP/Cloud; tạm xếp Oracle Database
+A 48 cicd
+N generic 49
+N entity 50
+S 51 excel office_tools p=ms_office n=Excel
+N combo 52
+A 53 teamwork
+S 54 csharp programming_languages n=C#
+A 55 rest_api
+S 56 llm ai_genai n=LLM
+S 57 sql_server databases p=sql n=SQL Server
+S 58 scrum methodology_pm p=agile n=Scrum
+N job_title 59 60
+S 61 typescript programming_languages p=javascript n=TypeScript
+N entity 62
+S 63 kafka messaging n=Kafka
+S 64 redis databases p=nosql n=Redis
+S 65 project_management methodology_pm n=Quản lý dự án
+S 66 ui_ux design_creative n=UI/UX
+S 67 github dev_tools p=git n=GitHub
+S 68 information_security security n=An toàn thông tin
+S 69 windows systems_network n=Windows
+S 70 gcp cloud n=Google Cloud (GCP)
+N generic 71
+A 72 rest_api
+N industry 73
+N degree 74
+S 75 soc security n=SOC (Security Operations Center)
+S 76 crm enterprise_apps n=CRM
+N generic 77
+S 78 business_analysis methodology_pm n=Phân tích nghiệp vụ
+S 79 mongodb databases p=nosql n=MongoDB
+S 80 firewall security p=networking n=Firewall
+N generic 81
+S 82 uat testing_qa n=UAT
+S 83 dotnet backend p=csharp n=.NET
+N generic 84
+N generic 85
+S 86 react frontend p=javascript n=React
+N job_title 87
+N industry 88
+S 89 power_bi bi_analytics p=bi n=Power BI
+S 90 lua programming_languages n=Lua
+F lua Lua
+S 91 oop architecture_api n=Lập trình hướng đối tượng (OOP)
+N job_title 92
+A 93 teamwork
+S 94 android mobile n=Android
+S 95 css frontend n=CSS
+S 96 containerization devops n=Container
+S 97 claude ai_tools n=Claude
+S 98 tcp_ip systems_network p=networking n=TCP/IP
+S 99 machine_learning data_science_ml n=Machine Learning
+N generic 100
+S 101 presentation soft_skills n=Thuyết trình
+S 102 spring backend p=java n=Spring
+S 103 nodejs backend p=javascript n=Node.js
+S 104 spring_boot backend p=spring n=Spring Boot
+S 105 ios mobile n=iOS
+A 106 business_analysis
+S 107 jenkins devops p=cicd n=Jenkins
+S 108 nosql databases n=NoSQL
+S 109 cpp programming_languages n=C++
+N job_title 110
+S 111 figma design_creative n=Figma
+N generic 112
+N job_title 113
+S 114 etl data_engineering n=ETL/ELT
+S 115 html frontend n=HTML
+A 116 react
+S 117 cloud_computing cloud n=Cloud computing
+S 118 vpn systems_network p=networking n=VPN
+S 119 gitlab dev_tools p=git n=GitLab
+N job_title 120
+S 121 grafana devops p=monitoring n=Grafana
+A 122 project_management
+N generic 123
+N job_title 124
+S 125 terraform devops p=iac n=Terraform
+S 126 unit_test testing_qa n=Unit test
+N job_title 127
+N generic 128
+S 129 rest_api architecture_api p=api n=REST API
+S 130 bash programming_languages n=Bash/Shell script
+S 131 dns systems_network p=networking n=DNS
+S 132 rag ai_genai p=llm n=RAG
+S 133 confluence dev_tools n=Confluence
+S 134 postman testing_qa n=Postman
+S 135 r_lang programming_languages n=R
+Q 135 "R" dạng viết hoa vẫn khớp "R&D"; tạm chỉ nhận qua cụm "ngôn ngữ R", "R language", "RStudio"
+L r_lang ngôn ngữ r;r language;rstudio;r programming
+S 136 japanese languages n=Tiếng Nhật
+S 137 photoshop design_creative n=Photoshop
+S 138 toeic languages p=english n=TOEIC
+N combo 139
+N job_title 140
+N generic 141
+A 142 github_copilot
+N industry 143 144
+N job_title 145
+A 146 data_analysis
+S 147 prometheus devops p=monitoring n=Prometheus
+S 148 illustrator design_creative n=Illustrator
+S 149 data_warehouse data_engineering n=Data Warehouse
+N industry 150
+S 151 rabbitmq messaging n=RabbitMQ
+S 152 ux_design design_creative p=ui_ux n=UX
+S 153 angular frontend p=typescript n=Angular
+S 154 database databases n=Cơ sở dữ liệu
+S 155 time_management soft_skills n=Quản lý thời gian
+N generic 156
+S 157 sap enterprise_apps p=erp n=SAP
+N benefit 158
+S 159 gitlab_ci devops p=cicd n=GitLab CI
+N benefit 160
+S 161 design_patterns architecture_api n=Design Patterns
+A 162 nodejs
+S 163 php programming_languages n=PHP
+A 177 rest_api
+N generic 164 165
+N job_title 166
+N generic 167
+S 168 ansible devops p=iac n=Ansible
+A 169 machine_learning
+S 170 vmware systems_network p=virtualization n=VMware
+N benefit 171
+S 172 github_actions devops p=cicd n=GitHub Actions
+N generic 173
+N job_title 174
+S 175 golang programming_languages n=Go (Golang)
+N generic 176
+S 178 mvc architecture_api p=design_patterns n=MVC
+N combo 179
+A 180 database
+S 181 user_story methodology_pm p=business_analysis n=User Story
+N generic 182
+S 183 qa_qc testing_qa n=QA/QC (đảm bảo chất lượng phần mềm)
+S 184 srs methodology_pm p=business_analysis n=SRS (đặc tả yêu cầu)
+N generic 185
+A 186 golang
+Q 186 dạng "Go" phân biệt hoa thường vẫn khớp "Go-live"; bước 08 cần chặn dạng ngắn đứng trước dấu "-" + chữ
+S 187 elk_stack devops p=monitoring n=ELK Stack
+S 188 json architecture_api n=JSON
+S 189 windows_server systems_network p=windows n=Windows Server
+S 190 cybersecurity security n=An ninh mạng (Cybersecurity)
+S 191 iot embedded_iot n=IoT
+S 192 playwright testing_qa p=automation_test n=Playwright
+S 193 pmp certifications p=project_management n=PMP
+N generic 194
+S 195 automation_test testing_qa n=Automation test
+A 196 qa_qc
+S 197 selenium testing_qa p=automation_test n=Selenium
+N generic 198
+N entity 199
+S 200 ai_agent ai_genai p=llm n=AI Agent
+S 201 big_data data_engineering n=Big Data
+S 202 iac devops n=Infrastructure as Code (IaC)
+A 203 automation_test
+A 204 english
+A 205 microservices
+N generic 206
+S 207 tableau bi_analytics p=bi n=Tableau
+N generic 208
+Q 208 "C" một chữ cái: không nhận dạng ngắn (khớp "c." đầu mục, "Mục C"); chỉ nhận qua "ngôn ngữ C", "lập trình C", "C/C++" (cụm ghép)
+A 209 containerization
+S 210 lan_wan systems_network p=networking n=LAN/WAN
+S 211 disaster_recovery devops n=Disaster recovery
+A 212 etl
+S 213 fastapi backend p=python n=FastAPI
+S 214 iam security n=IAM
+S 215 waterfall methodology_pm n=Waterfall
+S 216 cursor ai_tools n=Cursor
+F cursor Cursor
+S 217 powerpoint office_tools p=ms_office n=PowerPoint
+S 218 vietnamese languages n=Tiếng Việt
+S 219 wifi systems_network p=networking n=Wi-Fi
+S 220 data_engineering data_engineering n=Data Engineering
+S 221 ms_office office_tools n=Tin học văn phòng (Microsoft Office)
+S 222 claude_code ai_tools p=claude n=Claude Code
+S 223 deep_learning data_science_ml p=machine_learning n=Deep Learning
+S 224 iso_27001 security n=ISO 27001
+S 225 computer_vision data_science_ml n=Computer Vision
+N degree 226
+N industry 227
+N generic 228
+S 229 gemini ai_tools n=Gemini
+S 230 incident_response security n=Incident Response
+A 231 ai
+N generic 232
+S 233 chatgpt ai_tools n=ChatGPT
+S 234 pytorch data_science_ml p=deep_learning n=PyTorch
+S 235 websocket architecture_api n=WebSocket
+N generic 236
+S 237 autocad cad_engineering n=AutoCAD
+N industry 238
+S 239 genai ai_genai n=Generative AI
+S 240 nlp data_science_ml p=machine_learning n=NLP (xử lý ngôn ngữ tự nhiên)
+S 241 spark data_engineering p=big_data n=Apache Spark
+N entity 242
+A 243 data_analysis
+S 244 github_copilot ai_tools n=GitHub Copilot
+A 245 gcp
+N job_title 246
+S 247 unity game_dev n=Unity
+S 248 active_directory systems_network n=Active Directory
+N industry 249
+S 250 devsecops security p=devops n=DevSecOps
+N generic 251
+A 252 oop
+S 253 ielts languages p=english n=IELTS
+A 254 kubernetes
+S 255 manual_test testing_qa n=Manual test
+S 256 http architecture_api n=HTTP
+A 257 presentation
+S 258 aws_s3 cloud p=aws n=AWS S3
+S 259 siem security n=SIEM
+S 260 ccna certifications p=networking n=CCNA
+S 261 data_science data_science_ml n=Data Science
+N job_title 262
+S 263 airflow data_engineering n=Apache Airflow
+A 264 cybersecurity
+N job_title 265
+S 266 nextjs frontend p=react n=Next.js
+N job_title 267 268
+N industry 269
+N generic 270
+S 271 clean_architecture architecture_api n=Clean Architecture
+A 272 information_security
+A 273 lan_wan
+N entity 274
+S 275 network_security security p=cybersecurity n=Network Security
+A 276 ms_office
+S 277 cisco systems_network p=networking n=Cisco
+A 278 iac
+N generic 279
+A 280 design_patterns
+A 281 qa_qc
+S 282 tensorflow data_science_ml p=deep_learning n=TensorFlow
+S 283 elasticsearch databases n=Elasticsearch
+N generic 284
+S 285 langchain ai_genai p=llm n=LangChain
+S 286 dotnet_core backend p=dotnet n=.NET Core
+N generic 287 288 289
+A 290 lan_wan
+S 291 ms_word office_tools p=ms_office n=Word
+F ms_word Word
+Q 291 "word" là từ tiếng Anh thường; chỉ nhận dạng viết hoa "Word" (vẫn có thể khớp đầu câu)
+S 292 dhcp systems_network p=networking n=DHCP
+S 293 nestjs backend p=nodejs n=NestJS
+S 294 powershell programming_languages n=PowerShell
+A 295 rest_api
+N generic 296
+S 297 ab_testing bi_analytics n=A/B testing
+L ab_testing a/b testing;ab testing;split testing
+S 298 flutter mobile p=dart n=Flutter
+S 299 graphql architecture_api n=GraphQL
+N generic 300
+K c_lang programming_languages n=C
+L c_lang ngôn ngữ c;lập trình c;c language;embedded c;ansi c
+L networking mạng máy tính;networking;computer network;computer networks;quản trị mạng;network administration
+L monitoring monitoring;observability;giám sát hệ thống
+L virtualization virtualization;ảo hóa;ảo hoá;hypervisor

@@ -1,0 +1,300 @@
+# Lô 4: dòng 901-1200 (18/11/2026)
+N generic 901 902 903
+N job_title 904
+A 905 chatgpt
+A 906 ids_ips
+N generic 907 908
+A 909 excel
+S 910 misa enterprise_apps n=MISA (phần mềm kế toán)
+N generic 911
+A 912 oop
+S 913 opensearch databases p=elasticsearch n=OpenSearch
+S 914 pam security p=iam n=PAM (quản lý truy cập đặc quyền)
+S 915 pyspark data_engineering p=spark n=PySpark
+S 916 rust programming_languages n=Rust
+A 917 sap_s4hana
+N entity 918
+S 919 shopify frontend n=Shopify
+N generic 920
+S 921 ssh systems_network n=SSH
+S 922 sso security p=authn_authz n=SSO
+S 923 swagger architecture_api p=api n=Swagger/OpenAPI
+L swagger openapi;open api
+A 924 routing_switching
+N generic 925
+S 926 graphic_design design_creative n=Thiết kế đồ họa
+S 927 togaf certifications p=software_architecture n=TOGAF
+A 928 virtualization
+N generic 929
+N combo 930
+N generic 931
+A 932 adobe_xd
+N generic 933
+N generic 934
+N entity 935
+A 936 rest_api
+N generic 937
+S 938 assembly programming_languages n=Assembly
+N industry 939
+N generic 940 941
+S 942 blender design_creative n=Blender (3D)
+N generic 943
+S 944 cisa certifications p=information_security n=CISA
+N generic 945
+S 946 cli systems_network n=Command line (CLI)
+S 947 endpoint_security security n=Endpoint Security
+S 948 flowchart methodology_pm p=business_analysis n=Flowchart
+N job_title 949
+S 950 gradle backend p=java n=Gradle
+A 951 windows
+A 952 http
+N generic 953
+N industry 954
+A 955 software_testing
+N generic 956
+N industry 957
+N generic 958
+S 959 loki devops p=monitoring n=Grafana Loki
+N generic 960
+N generic 961
+S 962 maven backend p=java n=Maven
+N degree 963
+S 964 metabase bi_analytics p=bi n=Metabase
+S 965 mitre_attack security n=MITRE ATT&CK
+L mitre_attack mitre att&ck;att&ck
+N job_title 966 967
+S 968 oscp certifications p=pentest n=OSCP
+A 969 authn_authz
+N generic 970 971
+S 972 stored_procedure databases p=sql n=Stored Procedure
+S 973 qdrant databases p=vector_database n=Qdrant
+A 974 data_governance
+N generic 975 976
+A 977 dast
+N generic 978
+A 979 system_integration
+N generic 980
+A 981 presentation
+N generic 982
+N combo 983
+A 984 spark
+N combo 985
+N generic 986
+N job_title 987
+S 988 concurrency backend n=Concurrency, đa luồng
+S 989 core_banking enterprise_apps n=Core Banking
+S 990 cve security n=CVE, quản lý lỗ hổng
+S 991 debugging dev_tools n=Debugging
+N generic 992
+S 993 dynamodb databases p=nosql n=DynamoDB
+N degree 994
+N generic 995
+N job_title 996
+S 997 operating_systems systems_network n=Hệ điều hành
+A 998 networking
+A 999 information_security
+N combo 1000
+S 1001 katalon testing_qa p=automation_test n=Katalon
+N generic 1002
+S 1003 mfa security p=authn_authz n=MFA
+S 1004 microsoft_certified certifications n=Microsoft Certified
+S 1005 milvus databases p=vector_database n=Milvus
+N generic 1006 1007
+N generic 1008
+S 1009 mpls systems_network p=networking n=MPLS
+S 1010 nessus security n=Nessus
+N generic 1011
+S 1012 outlook office_tools p=ms_office n=Outlook
+A 1013 postgresql
+S 1014 power_apps enterprise_apps p=power_platform n=Power Apps
+N job_title 1015
+A 1016 qa_qc
+A 1017 networking
+S 1018 redhat systems_network p=linux n=Red Hat Linux
+L redhat rhel;red hat enterprise linux;rhcsa;rhce
+S 1019 redshift data_engineering p=aws n=Amazon Redshift
+N generic 1020
+S 1021 itsm methodology_pm p=itil n=IT Service Management (ITSM)
+L itsm itsm
+S 1022 solidworks cad_engineering n=SolidWorks
+A 1023 sql_server
+N generic 1024 1025 1026
+Q 1026 "WordPress" xếp generic do ví dụ là chức danh; xem lại: có thể là kỹ năng CMS
+N generic 1027
+S 1028 access_point systems_network p=networking n=Access Point
+A 1029 agile
+N generic 1030
+A 1031 kafka
+S 1032 api_integration architecture_api p=api n=Tích hợp API
+S 1033 async_programming backend p=concurrency n=Async/await
+N generic 1034
+N generic 1035
+N generic 1036 1037
+A 1038 communication
+S 1039 data_management data_engineering n=Quản lý dữ liệu
+S 1040 data_quality data_engineering n=Chất lượng dữ liệu
+S 1041 data_visualization bi_analytics n=Trực quan hóa dữ liệu
+N generic 1042
+S 1043 ddos security n=DDoS
+N generic 1044
+N industry 1045
+A 1046 docker_compose
+N generic 1047
+S 1048 aws_ecs cloud p=aws n=AWS ECS
+N industry 1049
+S 1050 flink data_engineering n=Apache Flink
+F flink Flink
+N generic 1051
+A 1052 data_structures
+N generic 1053
+N degree 1055
+N entity 1054 1056
+N generic 1057
+A 1058 iam
+S 1059 db_indexing databases n=Indexing, tối ưu truy vấn
+S 1060 istio devops p=kubernetes n=Istio
+N combo 1061
+N generic 1062
+N industry 1063
+N generic 1064
+N combo 1065
+N generic 1066
+S 1067 linq backend p=dotnet n=LINQ
+A 1068 llm
+A 1069 lan_wan
+S 1070 printer systems_network p=computer_hardware n=Máy in
+N generic 1071 1072
+S 1073 nmap security p=pentest n=Nmap
+S 1074 numpy data_science_ml p=python n=NumPy
+S 1075 opencv data_science_ml p=computer_vision n=OpenCV
+N generic 1076
+A 1077 performance_test
+N job_title 1078
+A 1079 problem_solving
+S 1080 pytest testing_qa p=unit_test n=pytest
+S 1081 raid systems_network p=storage n=RAID
+A 1082 sap
+N generic 1083
+N industry 1084
+N generic 1085
+S 1086 splunk security p=siem n=Splunk
+N job_title 1087
+S 1088 technical_support systems_network n=Hỗ trợ kỹ thuật
+S 1089 test_plan testing_qa p=software_testing n=Test plan, test case
+L test_plan test case;testcase;test cases;kịch bản kiểm thử
+A 1090 db_indexing
+S 1091 use_case methodology_pm p=business_analysis n=Use Case
+N entity 1092
+N generic 1093 1094
+S 1095 visual_studio dev_tools n=Visual Studio
+S 1096 web_vitals frontend n=Core Web Vitals
+N entity 1097
+A 1098 web_vitals
+N generic 1099
+S 1100 abap enterprise_apps p=sap n=ABAP
+N industry 1101
+S 1102 algorithms architecture_api n=Giải thuật
+A 1103 virtualization
+A 1104 application_security
+A 1105 automation_test
+S 1106 autosar embedded_iot n=AUTOSAR
+S 1107 axure design_creative n=Axure
+S 1108 azure_data_factory data_engineering p=azure n=Azure Data Factory
+L azure_data_factory azure data factory;adf
+S 1109 bitbucket dev_tools p=git n=Bitbucket
+S 1110 cbap certifications p=business_analysis n=CBAP
+N combo 1111
+N generic 1112 1113 1114 1115
+S 1116 dax bi_analytics p=power_bi n=DAX
+S 1117 devtools dev_tools n=Chrome DevTools
+A 1118 ddd
+S 1119 e2e_test testing_qa p=software_testing n=E2E test
+N generic 1120
+S 1121 erd databases n=ERD (mô hình thực thể quan hệ)
+A 1122 event_driven
+A 1123 fortinet
+N generic 1124
+S 1125 graph_database databases p=nosql n=Graph Database
+L graph_database graph database;graph databases;neo4j
+A 1126 linux
+S 1127 his_lis enterprise_apps n=HIS/LIS (phần mềm bệnh viện)
+S 1128 iceberg data_engineering n=Apache Iceberg
+F iceberg Iceberg
+A 1129 ids_ips
+A 1130 iso_27001
+N generic 1131
+N combo 1132
+N generic 1133
+S 1134 k6 testing_qa p=performance_test n=k6
+F k6 k6
+A 1135 software_architecture
+N generic 1136
+A 1137 teamwork
+N generic 1138
+S 1139 lpi certifications p=linux n=LPI/LPIC
+N generic 1140
+S 1141 server_admin systems_network n=Quản trị máy chủ
+S 1142 mcse certifications p=windows_server n=MCSE
+A 1143 ms_word
+N generic 1144
+N combo 1145
+N generic 1146
+A 1147 nosql
+A 1148 pci_dss
+S 1149 prince2 certifications p=project_management n=PRINCE2
+N combo 1150
+S 1151 reporting bi_analytics n=Báo cáo (reporting)
+S 1152 responsive_design frontend n=Responsive design
+N generic 1153
+S 1154 slack dev_tools n=Slack
+F slack Slack
+S 1155 spine game_dev n=Spine 2D
+F spine Spine
+S 1156 sqlite databases p=sql n=SQLite
+A 1157 stored_procedure
+A 1158 python
+N generic 1159
+S 1160 testrail testing_qa p=software_testing n=TestRail
+A 1161 algorithms
+S 1162 aesthetic_sense soft_skills n=Tư duy thẩm mỹ
+A 1163 ui_ux
+N generic 1164
+N generic 1165
+A 1166 vector_database
+N generic 1167
+S 1168 3d_modeling design_creative n=Thiết kế 3D
+N combo 1169
+N generic 1170
+A 1171 argocd
+S 1172 autogen ai_genai p=ai_agent n=AutoGen / CrewAI
+L autogen crewai
+N combo 1173
+A 1174 cefr
+S 1175 business_analytics bi_analytics n=Business Analytics
+N industry 1176
+S 1177 caching backend n=Caching
+S 1178 ccie certifications p=networking n=CCIE
+S 1179 ceph systems_network p=storage n=Ceph
+S 1180 cloudflare cloud n=Cloudflare
+A 1181 mcp
+N generic 1182
+N generic 1183
+N generic 1184
+S 1185 data_mart data_engineering p=data_warehouse n=Data Mart
+S 1186 dbt data_engineering n=dbt
+F dbt dbt
+A 1187 entity_framework
+S 1188 esb architecture_api p=system_integration n=ESB
+S 1189 ms_fabric data_engineering p=azure n=Microsoft Fabric
+L ms_fabric microsoft fabric
+S 1190 facebook_ads digital_marketing n=Facebook Ads
+N industry 1191
+A 1192 english
+S 1193 ga4 digital_marketing p=google_analytics n=GA4
+N industry 1194
+N generic 1195 1196
+A 1197 graphic_design
+A 1198 it_infrastructure
+N entity 1199
+S 1200 itil_foundation certifications p=itil n=ITIL Foundation
+F azure_data_factory ADF

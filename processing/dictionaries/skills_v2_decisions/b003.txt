@@ -1,0 +1,296 @@
+# Lô 3: dòng 601-900 (18/11/2026)
+S 601 seo digital_marketing n=SEO
+S 602 soap architecture_api n=SOAP
+S 603 solution_architecture architecture_api n=Solution Architecture
+S 604 spi embedded_iot p=embedded_protocols n=SPI
+K embedded_protocols embedded_iot n=Giao thức nhúng (UART, SPI, I2C, CAN)
+L embedded_protocols giao thức nhúng;embedded protocols
+A 605 spring
+A 606 routing_switching
+S 607 system_administration systems_network n=Quản trị hệ thống
+S 608 system_integration architecture_api n=Tích hợp hệ thống
+N entity 609
+A 610 uat
+S 611 after_effects design_creative n=After Effects
+N generic 612
+S 613 bgp systems_network p=routing_switching n=BGP
+N job_title 614
+N generic 615
+S 616 cism certifications p=information_security n=CISM
+A 617 cloud_computing
+N generic 618 619
+S 620 distributed_systems architecture_api n=Hệ thống phân tán
+N combo 621
+A 622 data_warehouse
+S 623 ethernet embedded_iot p=embedded_protocols n=Ethernet
+N generic 624
+S 625 i2c embedded_iot p=embedded_protocols n=I2C
+A 626 spring_boot
+S 627 mvvm architecture_api p=design_patterns n=MVVM
+A 628 jlpt
+S 629 platform_engineering devops n=Platform Engineering
+N generic 630
+S 631 redux frontend p=react n=Redux
+N generic 632
+S 633 creativity soft_skills n=Sáng tạo
+A 634 time_management
+N job_title 635
+N entity 636
+N generic 637
+S 638 dlp security n=DLP
+A 639 elk_stack
+N combo 640
+A 641 spring
+S 642 jest testing_qa p=unit_test n=Jest
+S 643 llamaindex ai_genai p=llm n=LlamaIndex
+N generic 644
+A 645 storage
+N generic 646
+S 647 palo_alto security p=firewall n=Palo Alto
+A 648 system_administration
+N generic 649
+N combo 650
+N generic 651 652
+S 653 vpc cloud n=VPC
+N generic 654 655
+S 656 canva design_creative n=Canva
+N generic 657
+A 658 dart
+S 659 databricks data_engineering p=spark n=Databricks
+S 660 event_driven architecture_api n=Event-driven architecture
+N combo 661
+N generic 662
+N combo 663
+N job_title 664
+N industry 665
+A 666 looker
+N degree 667
+S 668 performance_optimization architecture_api n=Tối ưu hiệu năng
+N generic 669
+A 670 power_bi
+S 671 premiere design_creative n=Premiere Pro
+L premiere premiere pro;adobe premiere
+N job_title 672
+N combo 673
+N job_title 674
+N generic 675
+N entity 676
+N generic 677
+S 678 chinese languages n=Tiếng Trung
+A 679 data_warehouse
+A 680 etl
+S 681 embedded embedded_iot n=Lập trình nhúng (Embedded)
+N generic 682
+N entity 683
+N generic 684
+S 685 logging devops p=monitoring n=Logging
+N industry 686
+A 687 ms_dynamics
+S 688 mqtt embedded_iot p=iot n=MQTT
+S 689 pandas data_science_ml p=python n=Pandas
+S 690 pci_dss security n=PCI DSS
+A 691 pentest
+S 692 pubsub messaging n=Pub/Sub
+N generic 693
+S 694 redmine dev_tools n=Redmine
+S 695 rtos embedded_iot p=embedded n=RTOS
+S 696 sap_s4hana enterprise_apps p=sap n=SAP S/4HANA
+A 697 bash
+S 698 sketch design_creative n=Sketch
+F sketch Sketch
+S 699 spring_security backend p=spring n=Spring Security
+S 700 ssl_tls security n=SSL/TLS
+A 701 uat
+S 702 web_api backend n=Web API
+N entity 703
+S 704 clickhouse databases n=ClickHouse
+N generic 705
+S 706 docker_compose devops p=docker n=Docker Compose
+L docker_compose docker compose;docker-compose
+N entity 707
+N job_title 708
+A 709 english
+S 710 expressjs backend p=nodejs n=Express.js
+F expressjs Express
+L expressjs express.js;expressjs
+N job_title 711
+S 712 lakehouse data_engineering n=Lakehouse
+A 713 llm
+N generic 714
+S 715 color_theory design_creative n=Màu sắc
+N generic 716
+Q 716 "MS Project": tạm bỏ (tên phần mềm); có thể thêm làm công cụ quản lý dự án
+N generic 717
+A 718 routing_switching
+N generic 719
+S 720 plsql databases p=oracle_db n=PL/SQL
+S 721 power_platform enterprise_apps n=Microsoft Power Platform
+S 722 spring_data backend p=spring n=Spring Data
+S 723 superset bi_analytics p=bi n=Apache Superset
+S 724 svn dev_tools n=SVN
+N job_title 725
+A 726 ssl_tls
+N entity 727
+S 728 vba office_tools p=excel n=VBA
+N industry 729
+N combo 730
+N entity 731 732
+S 733 aws_certified certifications p=aws n=AWS Certified
+A 734 information_security
+S 735 cad cad_engineering n=CAD
+N job_title 736
+S 737 ddd architecture_api n=DDD (Domain-Driven Design)
+N generic 738
+S 739 gpu data_science_ml n=GPU, CUDA
+S 740 hybrid_cloud cloud p=cloud_computing n=Hybrid Cloud
+S 741 integration_test testing_qa p=software_testing n=Integration test
+N job_title 742
+S 743 it_infrastructure systems_network n=Hạ tầng CNTT
+N combo 744
+S 745 message_queue messaging n=Message Queue
+A 746 747 sql_server
+N generic 748
+N industry 749
+A 750 presentation
+A 751 ruby_on_rails
+S 752 rbac security p=authn_authz n=RBAC
+S 753 ruby_on_rails backend p=ruby n=Ruby on Rails
+N generic 754 755
+S 756 tailwind frontend p=css n=Tailwind CSS
+N generic 757 758 759 760
+N job_title 761
+A 762 information_security
+N industry 763
+N generic 764 765
+N job_title 766
+N generic 767
+S 768 quality_control testing_qa n=Kiểm soát chất lượng
+N generic 769
+N generic 770
+S 771 mdm data_engineering n=MDM (Master Data Management)
+S 772 notion dev_tools n=Notion
+A 773 monitoring
+A 774 oracle_db
+S 775 power_query bi_analytics p=power_bi n=Power Query
+N generic 776
+S 777 rca methodology_pm n=RCA (phân tích nguyên nhân gốc)
+N generic 778
+S 779 smoke_test testing_qa p=software_testing n=Smoke test
+L smoke_test smoke test;smoke testing
+N generic 780
+A 781 authn_authz
+N combo 782
+S 783 cefr languages p=english n=Khung tham chiếu (A2/B1/B2)
+S 784 data_structures architecture_api n=Cấu trúc dữ liệu và giải thuật
+S 785 cqrs architecture_api p=design_patterns n=CQRS
+S 786 negotiation soft_skills n=Đàm phán
+S 787 dast security p=security_test n=SAST/DAST
+L dast sast;sca
+S 788 data_architecture data_engineering n=Data Architecture
+S 789 defect_management testing_qa p=software_testing n=Quản lý lỗi (Defect/Bug tracking)
+S 790 entra_id security p=iam n=Microsoft Entra ID (Azure AD)
+L entra_id azure ad;azure active directory;microsoft entra
+S 791 es6 frontend p=javascript n=ES6+
+N generic 792
+A 793 gitlab_ci
+A 794 gcp
+N generic 795
+S 796 hmi embedded_iot n=HMI
+N combo 797
+A 798 microservices
+N generic 799
+S 800 linux_server systems_network p=linux n=Linux Server
+A 801 networking
+N generic 802
+N job_title 803
+S 804 openshift devops p=kubernetes n=OpenShift
+A 805 rag
+S 806 risk_management methodology_pm n=Quản lý rủi ro
+S 807 scikit_learn data_science_ml p=machine_learning n=scikit-learn
+N generic 808 809
+S 810 unix systems_network n=Unix
+S 811 data_processing data_engineering n=Xử lý dữ liệu
+A 812 troubleshooting
+S 813 zero_trust security n=Zero Trust
+N generic 814
+N industry 815
+S 816 application_security security n=Bảo mật ứng dụng
+N job_title 817
+A 818 defect_management
+S 819 clean_code architecture_api n=Clean Code
+N generic 820
+S 821 gdpr security n=GDPR
+S 822 google_ads digital_marketing n=Google Ads
+S 823 google_analytics digital_marketing n=Google Analytics
+N generic 824
+S 825 hugging_face data_science_ml p=deep_learning n=Hugging Face
+N entity 826
+N generic 827
+Q 827 "JLPT" có nguồn d: đã nằm trong alias của jlpt; dòng này chỉ là nguồn d nên để generic cho khỏi trùng
+N generic 828
+S 829 korean languages n=Tiếng Hàn
+A 830 python
+N industry 831 832
+A 833 sql_server
+S 834 computer_hardware systems_network n=Phần cứng máy tính
+N generic 835
+N combo 836
+S 837 product_backlog methodology_pm p=scrum n=Product Backlog
+S 838 regression_test testing_qa p=software_testing n=Regression test
+N generic 839
+N industry 840
+S 841 reverse_proxy systems_network p=proxy n=Reverse Proxy
+S 842 salesforce enterprise_apps p=crm n=Salesforce
+N generic 843 844
+A 845 english
+A 846 leadership
+S 847 consulting soft_skills n=Tư vấn
+A 848 airflow
+N generic 849 850
+S 851 burp_suite security p=pentest n=Burp Suite
+S 852 capcut design_creative n=CapCut
+S 853 cassandra databases p=nosql n=Cassandra
+A 854 design_system
+N generic 855
+S 856 sdlc methodology_pm n=SDLC (vòng đời phát triển phần mềm)
+S 857 documentation soft_skills n=Viết tài liệu
+S 858 file_server systems_network n=File Server
+N generic 859 860
+S 861 independent_work soft_skills n=Làm việc độc lập
+A 862 llm
+A 863 manual_test
+N entity 864
+N job_title 865
+S 866 opentelemetry devops p=monitoring n=OpenTelemetry
+S 867 pmi_acp certifications p=agile n=PMI-ACP
+N generic 868 869
+S 870 prd methodology_pm p=product_management n=PRD
+N job_title 871
+S 872 proxmox systems_network p=virtualization n=Proxmox
+A 873 sdlc
+S 874 serverless cloud n=Serverless
+N generic 875
+A 876 solid
+N generic 877
+A 878 ssl_tls
+A 879 storage
+S 880 system_design architecture_api n=System design
+A 881 tailwind
+N generic 882
+S 883 uart embedded_iot p=embedded_protocols n=UART
+N generic 884
+S 885 adobe_xd design_creative n=Adobe XD
+N combo 886
+N generic 887 888
+S 889 bootstrap frontend p=css n=Bootstrap
+S 890 bravo enterprise_apps p=erp n=Bravo
+N combo 891
+A 892 cicd
+S 893 cloudformation devops p=iac n=CloudFormation
+N generic 894 895
+S 896 customer_service soft_skills n=Chăm sóc khách hàng
+S 897 data_integration data_engineering n=Data Integration
+S 898 datadog devops p=monitoring n=Datadog
+N job_title 899
+N generic 900
+F dast DAST;SCA

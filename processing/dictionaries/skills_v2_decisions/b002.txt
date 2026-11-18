@@ -1,0 +1,289 @@
+# Lô 2: dòng 301-600 (18/11/2026)
+S 301 aspnet backend p=dotnet n=ASP.NET
+S 302 cypress testing_qa p=automation_test n=Cypress
+A 303 networking
+N combo 304
+N job_title 305
+N generic 306 307
+S 308 vlan systems_network p=networking n=VLAN
+N entity 309
+A 310 cicd
+N generic 311
+S 312 firebase backend n=Firebase
+S 313 grpc architecture_api n=gRPC
+A 314 logical_thinking
+N industry 315
+S 316 owasp security n=OWASP
+N job_title 317
+A 318 ui_ux
+A 319 html
+N entity 320
+N combo 321
+N entity 322
+S 323 routing_switching systems_network p=networking n=Routing & Switching
+S 324 software_testing testing_qa n=Kiểm thử phần mềm
+A 325 database
+A 326 genai
+S 327 kotlin programming_languages n=Kotlin
+A 328 problem_solving
+S 329 sre devops n=SRE
+N job_title 330
+S 331 api_gateway architecture_api p=api n=API Gateway
+S 332 bpmn methodology_pm p=business_analysis n=BPMN
+A 333 japanese
+N generic 334
+S 335 mlops data_science_ml p=machine_learning n=MLOps
+N generic 336
+N entity 337
+A 338 wifi
+S 339 team_management soft_skills n=Quản lý đội nhóm
+S 340 ubuntu systems_network p=linux n=Ubuntu
+A 341 photoshop
+N generic 342
+S 343 helm devops p=kubernetes n=Helm
+S 344 mes enterprise_apps n=MES
+A 345 tcp_ip
+N generic 346
+A 347 networking
+N generic 348 349
+N combo 350
+N generic 351
+S 352 indesign design_creative n=InDesign
+N industry 353
+A 354 monitoring
+A 355 react
+N job_title 356
+N generic 357
+S 358 swift programming_languages n=Swift
+N job_title 359
+A 360 database
+S 361 itil methodology_pm n=ITIL
+N generic 362
+S 363 laravel backend p=php n=Laravel
+S 364 odoo enterprise_apps p=erp n=Odoo
+N job_title 365
+S 366 pentest security n=Penetration testing
+S 367 software_architecture architecture_api n=Kiến trúc phần mềm
+N generic 368
+S 369 azure_devops devops p=azure n=Azure DevOps
+S 370 drawio dev_tools n=Draw.io
+N generic 371
+S 372 hibernate backend p=java n=Hibernate
+S 373 visio dev_tools n=Visio
+N generic 374
+S 375 ceh certifications p=pentest n=CEH
+N generic 376 377
+S 378 nginx systems_network n=Nginx
+N generic 379
+N job_title 380
+N generic 381
+N entity 382
+N industry 383
+A 384 automation_test
+S 385 jlpt languages p=japanese n=JLPT (N1–N5)
+L jlpt jlpt
+A 386 routing_switching
+S 387 waf security n=WAF
+N generic 388
+N entity 389
+N generic 390
+N job_title 391 392
+N generic 393
+N job_title 394
+S 395 vector_database databases n=Vector Database
+S 396 api_testing testing_qa p=software_testing n=API testing
+A 397 information_security
+S 398 authn_authz security n=Authentication/Authorization
+S 399 ccnp certifications p=networking n=CCNP
+S 400 jquery frontend p=javascript n=jQuery
+N generic 401 402
+S 403 uml methodology_pm n=UML
+S 404 bigquery data_engineering p=gcp n=BigQuery
+N generic 405
+N job_title 406
+N industry 407
+A 408 sql_server
+S 409 oauth security p=authn_authz n=OAuth 2.0
+N job_title 410
+S 411 typography design_creative n=Typography
+A 412 bi
+S 413 data_lake data_engineering n=Data Lake
+S 414 leadership soft_skills n=Lãnh đạo (Leadership)
+S 415 power_automate enterprise_apps n=Power Automate (RPA)
+N generic 416
+S 417 trello dev_tools n=Trello
+S 418 argocd devops p=gitops n=Argo CD
+S 419 data_modeling data_engineering n=Data Modeling
+N generic 420 421
+S 422 react_native mobile p=react n=React Native
+S 423 critical_thinking soft_skills n=Tư duy phản biện
+A 424 unit_test
+N generic 425 426
+S 427 data_pipeline data_engineering n=Data Pipeline
+N generic 428 429
+N entity 430
+A 431 sql_server
+N generic 432
+N job_title 433
+S 434 backup systems_network n=Backup/Restore
+N degree 435 436
+N job_title 437
+S 438 google_workspace office_tools n=Google Workspace
+S 439 mcsa certifications p=windows_server n=MCSA
+A 440 azure
+S 441 product_management methodology_pm n=Quản lý sản phẩm (Product Management)
+S 442 vuejs frontend p=javascript n=Vue.js
+S 443 design_system design_creative p=ui_ux n=Design System
+S 444 fortinet security p=firewall n=Fortinet
+N job_title 445
+S 446 jmeter testing_qa p=performance_test n=JMeter
+S 447 jwt security p=authn_authz n=JWT
+A 448 449 software_testing
+N industry 450
+A 451 ai
+N generic 452 453
+N industry 454
+A 455 english
+N generic 456
+S 457 jpa backend p=java n=JPA
+A 458 javascript
+N generic 459
+S 460 performance_test testing_qa p=software_testing n=Performance test
+S 461 plc embedded_iot n=PLC
+N job_title 462
+A 463 illustrator
+N job_title 464
+A 465 css
+N generic 466
+A 467 communication
+N generic 468
+S 469 nist security n=NIST
+N job_title 470
+S 471 security_test testing_qa p=software_testing n=Security testing
+A 472 bash
+N generic 473
+Q 473 "Vault" khớp cả "Data Vault" (mô hình dữ liệu); chỉ nhận "HashiCorp Vault"
+K hashicorp_vault devops n=HashiCorp Vault
+L hashicorp_vault hashicorp vault
+N job_title 474 475
+S 476 digital_marketing digital_marketing n=Digital Marketing
+N generic 477 478
+S 479 aws_lambda cloud p=aws n=AWS Lambda
+A 480 nextjs
+S 481 orm backend n=ORM
+A 482 owasp
+N industry 483
+A 484 485 vuejs
+N generic 486
+S 487 cloud_security security n=Cloud Security
+S 488 aws_ec2 cloud p=aws n=AWS EC2
+S 489 ids_ips security n=IDS/IPS
+N generic 490 491 492
+A 493 owasp
+S 494 sharepoint office_tools p=ms_office n=SharePoint
+N job_title 495 496
+N combo 497
+S 498 appium testing_qa p=automation_test n=Appium
+A 499 backup
+A 500 cybersecurity
+S 501 data_center systems_network n=Data Center
+A 502 disaster_recovery
+N industry 503
+S 504 entity_framework backend p=dotnet n=Entity Framework
+N generic 505 506
+S 507 juniper systems_network p=networking n=Juniper
+S 508 looker bi_analytics p=bi n=Looker / Looker Studio
+S 509 mariadb databases p=sql n=MariaDB
+S 510 mcp ai_genai p=llm n=MCP (Model Context Protocol)
+A 511 ms_office
+S 512 storage systems_network n=Lưu trữ (SAN/NAS)
+N job_title 513
+N generic 514
+A 515 aspnet
+N generic 516
+S 517 cctv systems_network n=CCTV, điện nhẹ
+A 518 cloud_computing
+A 519 critical_thinking
+S 520 django backend p=python n=Django
+N generic 521 522
+A 523 communication
+S 524 gitops devops p=cicd n=GitOps
+N generic 525
+Q 525 "mạng" fold thành "mang" (trùng "mang lại"); không nhận, mạng máy tính đi qua alias dài
+S 526 n8n dev_tools n=n8n
+N generic 527
+N combo 528
+S 529 codex ai_tools n=Codex
+A 530 cicd
+N generic 531
+K ms_dynamics enterprise_apps p=erp n=Microsoft Dynamics
+L ms_dynamics microsoft dynamics;dynamics 365;dynamics crm;dynamics ax;dynamics nav
+S 532 google_sheets office_tools p=google_workspace n=Google Sheets
+N entity 533
+N generic 534
+S 535 kanban methodology_pm p=agile n=Kanban
+S 536 langgraph ai_genai p=llm n=LangGraph
+S 537 proxy systems_network p=networking n=Proxy
+S 538 stakeholder_management soft_skills n=Quản lý các bên liên quan
+N generic 539
+S 540 zabbix devops p=monitoring n=Zabbix
+N job_title 541
+A 542 database
+S 543 edr security n=EDR
+N degree 544
+S 545 flask backend p=python n=Flask
+S 546 hyperv systems_network p=virtualization n=Hyper-V
+A 547 java
+S 548 junit testing_qa p=unit_test n=JUnit
+S 549 ruby programming_languages n=Ruby
+S 550 snowflake data_engineering n=Snowflake
+S 551 spring_mvc backend p=spring n=Spring MVC
+S 552 t24 enterprise_apps n=Temenos T24 (core banking)
+N combo 553
+S 554 blockchain blockchain n=Blockchain
+S 555 centos systems_network p=linux n=CentOS
+S 556 cissp certifications p=information_security n=CISSP
+N degree 557
+S 558 data_governance data_engineering n=Data Governance
+N degree 559
+A 560 http
+S 561 planning soft_skills n=Lập kế hoạch
+A 562 c_lang
+A 563 ms_office
+N generic 564
+S 565 requirements_analysis methodology_pm p=business_analysis n=Phân tích yêu cầu
+N job_title 566
+N generic 567
+A 568 software_architecture
+N generic 569
+S 570 xml architecture_api n=XML
+A 571 ai_agent
+A 572 authn_authz
+N generic 573
+S 574 cloudwatch cloud p=aws n=CloudWatch
+S 575 cnc cad_engineering n=CNC
+N degree 576
+N job_title 577
+S 578 game_design game_dev n=Game Design
+S 579 hadoop data_engineering p=big_data n=Hadoop
+N combo 580
+N generic 581
+S 582 ocr data_science_ml p=computer_vision n=OCR
+S 583 relational_db databases n=CSDL quan hệ (RDBMS)
+S 584 aws_rds cloud p=aws n=AWS RDS
+N generic 585
+S 586 statistics data_science_ml n=Thống kê
+S 587 troubleshooting systems_network n=Troubleshooting
+N entity 588 589
+N combo 590
+N generic 591
+N entity 592
+S 593 load_balancing systems_network p=networking n=Load balancing
+A 594 microservices
+S 595 nat systems_network p=networking n=NAT
+S 596 openstack cloud n=OpenStack
+S 597 prompt_engineering ai_genai p=llm n=Prompt Engineering
+A 598 relational_db
+S 599 scala programming_languages n=Scala
+S 600 comptia_security certifications p=information_security n=CompTIA Security+
+F n8n n8n
