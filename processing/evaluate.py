@@ -6,12 +6,13 @@ Chưa có nhãn thật thì hàm gọi không có gì để đo: script trả "c
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from typing import Callable, Dict, Iterable, List
 
 from preprocessing.common.text_clean import clean_text
 from preprocessing.deduplication.text_norm import fold
-from processing.extraction.skills import SkillMatcher, alias_owners
+from processing.extraction.skills import SkillMatcher
 
 
 def _line_key(line: str) -> str:
@@ -53,12 +54,36 @@ def _prf(tp: int, fp: int, fn: int) -> dict:
     return {"precision": p and round(p, 4), "recall": r and round(r, 4), "f1": f and round(f, 4), "tp": tp, "fp": fp, "fn": fn}
 
 
+def gold_slug(name: str, matcher: SkillMatcher):
+    """Tên kỹ năng gold -> slug (K8.16): khớp nguyên tên qua alias/dạng ngắn; không được thì một kỹ năng duy nhất
+    khớp trong tên và phủ ≥ 50% độ dài tên ("Kỹ năng giao tiếp tốt" -> communication). Không ra = ngoài từ điển."""
+    slug = matcher.meta_slug(name)
+    if slug:
+        return slug
+    hits = matcher.find(name)
+    if len({h.slug for h in hits}) == 1 and sum(h.end - h.start for h in hits) >= 0.5 * len(name.strip()):
+        return hits[0].slug
+    return None
+
+
+SPLIT = re.compile(r"\s*(?:/|,|;|\(|\)|\b(?:hoặc|và|or|and)\b)\s*", re.IGNORECASE)
+
+
+def gold_slugs(name: str, matcher: SkillMatcher) -> set:
+    """Nhãn gold có thể gộp ("Microsoft Excel / Google Sheets"): thử nguyên tên, không ra thì tách theo / , hoặc và."""
+    slug = gold_slug(name, matcher)
+    if slug:
+        return {slug}
+    return {x for part in SPLIT.split(name) if part.strip() for x in [gold_slug(part, matcher)] if x}
+
+
 def skills_f1(labels: Dict[str, dict], sources: Dict[str, str], predict: Callable[[str], List[dict]],
               matcher: SkillMatcher) -> dict:
     """predict(job_id) -> skill rows (extract_skills). Chỉ via=text. Nhãn ngoài taxonomy tính FN và liệt kê riêng (K5)."""
-    lookup = {k: next(iter(v)) for k, v in alias_owners(list(matcher.taxonomy.values())).items() if len(v) == 1}
     cnt = defaultdict(lambda: [0, 0, 0])
     lvl = defaultdict(lambda: [0, 0, 0])
+    tech = defaultdict(lambda: [0, 0, 0])  # chỉ kỹ năng kind=technical (từ điển v2), nhãn ngoài từ điển không tính
+    is_tech = lambda x: matcher.taxonomy.get(x, {}).get("kind") == "technical"  # noqa: E731
     outside: Dict[str, int] = defaultdict(int)
     n_jobs = 0
     for jid, lab in labels.items():
@@ -68,9 +93,9 @@ def skills_f1(labels: Dict[str, dict], sources: Dict[str, str], predict: Callabl
         n_jobs += 1
         gold, gold_lvl, miss = set(), set(), 0
         for s in [] if sk == "none" else sk:
-            slug = lookup.get(fold(s["name"]))
-            if slug:
-                gold.add(slug); gold_lvl.add((slug, s["level"]))
+            slugs = gold_slugs(s["name"], matcher)
+            if slugs:
+                gold |= slugs; gold_lvl |= {(x, s["level"]) for x in slugs}
             else:
                 miss += 1; outside[fold(s["name"])] += 1
         rows = [r for r in predict(jid) if r["via"] == "text"]
@@ -78,6 +103,9 @@ def skills_f1(labels: Dict[str, dict], sources: Dict[str, str], predict: Callabl
         for key in (sources[jid], "_all"):
             c = cnt[key]; c[0] += len(pred & gold); c[1] += len(pred - gold); c[2] += len(gold - pred) + miss
             l = lvl[key]; l[0] += len(pred_lvl & gold_lvl); l[1] += len(pred_lvl - gold_lvl); l[2] += len(gold_lvl - pred_lvl) + miss
+            pt, gt = {x for x in pred if is_tech(x)}, {x for x in gold if is_tech(x)}
+            t = tech[key]; t[0] += len(pt & gt); t[1] += len(pt - gt); t[2] += len(gt - pt)
     return {"n_jobs_labeled": n_jobs, "micro": {k: _prf(*v) for k, v in sorted(cnt.items())},
             "by_level_info": {k: _prf(*v) for k, v in sorted(lvl.items())},
+            "micro_technical": {k: _prf(*v) for k, v in sorted(tech.items())},
             "labels_outside_taxonomy": dict(sorted(outside.items(), key=lambda kv: -kv[1]))}

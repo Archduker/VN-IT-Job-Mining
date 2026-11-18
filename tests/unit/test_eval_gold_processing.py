@@ -67,3 +67,25 @@ def test_benefits_label_validated_and_scored():
     items = {"j": {"benefits_list": ["Bảo hiểm sức khỏe", "Du lịch hàng năm"], "description_clean": ""}}
     r = benefits_prf({"j": {"benefits": ["Bảo hiểm", "Thưởng"]}}, items)
     assert (r["tp"], r["fp"], r["fn"]) == (1, 1, 1)
+
+
+def test_gold_name_resolves_through_v2_aliases_and_phrases():
+    """K8.16: nhãn gold so qua alias/tên của skills_v2, không so với slug."""
+    from processing.evaluate import gold_slug
+    from processing.extraction.skills import load_skills_v2, matcher_from_v2
+    m = matcher_from_v2(load_skills_v2())
+    assert gold_slug("ReactJS", m) == "react"
+    assert gold_slug("RESTful API", m) == "rest_api"
+    assert gold_slug("Go", m) == "golang"
+    assert gold_slug("Kỹ năng giao tiếp tốt", m) == "communication"
+    assert gold_slug("Cobol xyz abc def", m) is None
+
+
+def test_gold_compound_label_splits_into_parts():
+    from processing.evaluate import gold_slugs
+    from processing.extraction.skills import load_skills_v2, matcher_from_v2
+    m = matcher_from_v2(load_skills_v2())
+    assert gold_slugs("Microsoft Excel / Google Sheets", m) == {"excel", "google_sheets"}
+    assert gold_slugs("Java / C#/.NET / Python hoặc tương đương (ít nhất một)", m) >= {"java", "csharp", "python"}
+    assert gold_slugs("CI/CD", m) == {"cicd"}
+    assert gold_slugs("Cobol xyz abc def", m) == set()

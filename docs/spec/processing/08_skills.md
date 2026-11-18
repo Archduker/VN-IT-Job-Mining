@@ -101,7 +101,7 @@ Thứ tự trong `analyze` và `run` (`processing/extraction/run.py`):
 | Kiểm tra | Cách | Đích | Kết quả gần nhất |
 |---|---|---|---|
 | Số tin được giữ | `checks.rows_conserved` | Bằng bảng 04 | Đạt (10/11) |
-| P/R/F1 micro theo cặp (tin, kỹ năng) | `python scripts/eval_gold_processing.py`; chỉ tính `via = text`; nhãn không ánh xạ được về taxonomy tính là FN và báo riêng | F1 ≥ 0,85 | **0,27** (11/11); có thể một phần do cách so tên kỹ năng với `slug` |
+| P/R/F1 micro theo cặp (tin, kỹ năng) | `python scripts/eval_gold_processing.py`; chỉ tính `via = text`; nhãn không ánh xạ được về taxonomy tính là FN và báo riêng | F1 ≥ 0,85 | **0,27** (11/11); có thể một phần do cách so tên kỹ năng với `slug`. **19/11 (K8.16)**, đo trên 20 JD gold còn file nhãn (76–100, 20/25 JD còn trong bảng 03), cách đo mới (nhãn qua alias v2, tách nhãn gộp "A / B"): từ điển 230 P 0,76 R 0,44 F1 0,56; **skills_v2 P 0,43 R 0,86 F1 0,57**, riêng kỹ năng kỹ thuật R 0,99 P 0,46. Xem 40 FP mẫu: khoảng 34–37 là kỹ năng có thật trong JD mà gold không ghi (Pub/Sub, NoSQL, ERP, UAT…), nên precision bị gold thiếu kéo xuống; chưa kết luận được ngưỡng 0,85 |
 | Kiểm thủ công | 20 tin ngẫu nhiên | Hợp lý | Chưa làm |
 | Test | `tests/unit/test_skills_ac.py`, `test_ph8_run.py` | Pass | — |
 
