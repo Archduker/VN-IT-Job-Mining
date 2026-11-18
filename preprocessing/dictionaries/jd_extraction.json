@@ -1,0 +1,303 @@
+{
+ "_meta": {
+  "version": "0.1-draft",
+  "approved": false,
+  "date": "2026-11-18",
+  "purpose": "Từ điển cho bước 03 (T-JD): rút hình thức làm việc, loại hợp đồng, kinh nghiệm tối thiểu từ giá trị nguồn và từ JD. Luật if-else + regex, không dùng model. Lập từ việc đọc câu ứng viên do scripts/mine_jd_phrases.py gom trên data/preprocessing/03_transformation/all.parquet.",
+  "regex_flags": "IGNORECASE, so khớp trên văn bản đã NFC và gộp khoảng trắng. Mọi từ khóa khớp theo từ nguyên vẹn (\\b), không theo chuỗi con.",
+  "scope": "Bước 03 chỉ rút và ghi cột *_raw, *_jd, *_source, cờ conflict; không bỏ dòng, không ghi đè cột gốc. Bước 04 mới chọn giá trị cuối theo thứ tự ưu tiên trong 'priority'."
+ },
+ "work_mode": {
+  "values": [
+   "onsite",
+   "hybrid",
+   "remote",
+   "unknown"
+  ],
+  "priority": "raw (topcv, glints, itviec; jobsgo/topcv/vietnamworks ghi ở ô loại hình) -> JD. Đề xuất: khi raw và JD lệch, JD thắng nếu tín hiệu nằm ở TIÊU ĐỀ hoặc là mẫu có số ngày cụ thể (WH4, WH5); đọc tay 11 ca lệch trên dữ liệu 18/11: JD đúng 9/11. Không có tín hiệu: bước 04 suy theo địa điểm như luật N14 hiện tại; không suy được thì 'unknown'.",
+  "raw_map": {
+   "làm việc tại văn phòng / onsite": "onsite",
+   "làm tại công ty / onsite": "onsite",
+   "tại văn phòng": "onsite",
+   "kết hợp tại văn phòng và từ xa (hybrid)": "hybrid",
+   "hybrid": "hybrid",
+   "linh hoạt": "hybrid",
+   "làm việc từ xa (remote)": "remote",
+   "làm việc từ xa / remote": "remote"
+  },
+  "raw_multi_value_rule": "topcv cho chọn nhiều giá trị, ngăn bởi dấu phẩy. Có cả onsite và remote/hybrid -> hybrid; chỉ một giá trị -> giá trị đó.",
+  "raw_from_employment_type": {
+   "_note": "Một số nguồn ghi hình thức làm việc vào ô loại hình. Đưa sang work_mode_raw, không tính là loại hợp đồng.",
+   "jobsgo: remote": "remote",
+   "topcv: làm tại nhà": "remote",
+   "vietnamworks: 7": "remote (3 tin, cả 3 đều có Remote trong tiêu đề; chưa có nhãn chính thức)"
+  },
+  "jd_patterns": {
+   "remote": [
+    {
+     "id": "WR1",
+     "where": "title",
+     "re": "\\b(?:remote|wfh|work from home|làm việc từ xa|làm từ xa)\\b"
+    },
+    {
+     "id": "WR2",
+     "where": "body",
+     "re": "\\b(?:hình thức|mô hình|chế độ) làm việc\\s*[:：\\-]?\\s*(?:100%\\s*)?(?:remote|từ xa|online|tại nhà(?! máy| xưởng))\\b(?!\\s*hoặc)"
+    },
+    {
+     "id": "WR3",
+     "where": "body",
+     "re": "\\b(?:100%|fully|full|toàn thời gian)\\s*(?:remote|từ xa)\\b|\\bremote\\s*(?:100%|hoàn toàn|toàn thời gian|full[- ]?time)|\\bwork (?:fully |100% )?remotely\\b|\\blàm việc (?:hoàn toàn |100% )từ xa\\b"
+    }
+   ],
+   "hybrid": [
+    {
+     "id": "WH1",
+     "where": "title",
+     "re": "\\bhybrid\\b"
+    },
+    {
+     "id": "WH2",
+     "where": "body",
+     "re": "\\b(?:hình thức|mô hình|chế độ) làm việc\\s*[:：\\-]?\\s*(?:hybrid|kết hợp|linh hoạt (?:giữa )?(?:văn phòng|onsite) và (?:từ xa|remote))\\b"
+    },
+    {
+     "id": "WH3",
+     "where": "body",
+     "re": "\\bhybrid (?:working|work|model|mode|schedule|policy)\\b|\\blàm việc hybrid\\b|\\bwork (?:in )?hybrid\\b"
+    },
+    {
+     "id": "WH4",
+     "where": "title+body",
+     "re": "\\b(?:wfh|work from home|remote|làm việc từ xa|làm từ xa)\\s*\\d+\\s*(?:days?|ngày|buổi)\\s*(?:/|per|mỗi|một|a)\\s*(?:week|tuần)\\b|\\b\\d+\\s*(?:days?|ngày|buổi)\\s*(?:/|per|mỗi|một|a)\\s*(?:week|tuần)\\s*(?:wfh|work from home|remote|làm việc từ xa|làm từ xa)\\b"
+    },
+    {
+     "id": "WH5",
+     "where": "body",
+     "re": "\\bkết hợp (?:làm việc )?(?:tại văn phòng|onsite) và (?:làm việc )?(?:từ xa|remote|online)\\b|\\bonsite tối thiểu \\d+"
+    },
+    {
+     "id": "WH7",
+     "where": "title+body",
+     "re": "\\b(?:làm việc|hình thức làm việc\\s*[:：]?|work)\\s*(?:remote|từ xa|wfh|tại văn phòng|onsite|tại office|in office)\\s*(?:/|hoặc|or)\\s*(?:tại\\s*)?(?:office|văn phòng|onsite|hybrid|remote|từ xa)\\b"
+    }
+   ],
+   "onsite": [
+    {
+     "id": "WO1",
+     "where": "body",
+     "re": "\\b(?:hình thức|mô hình|chế độ) làm việc\\s*[:：\\-]?\\s*(?:onsite|on-site|tại văn phòng|trực tiếp tại văn phòng|full[- ]?time tại văn phòng)\\b"
+    },
+    {
+     "id": "WO2",
+     "where": "body",
+     "re": "\\blàm việc (?:100% |trực tiếp |toàn thời gian )?tại văn phòng\\b|\\bwork (?:at|in|from) (?:our|the) office\\b|\\b(?:100%|fully|full[- ]?time) (?:onsite|on-site|in[- ]office)\\b"
+    },
+    {
+     "id": "WO3",
+     "where": "title",
+     "re": "\\b(?:onsite|on-site)\\b"
+    }
+   ]
+  },
+  "jd_noise": {
+   "_note": "Câu khớp nhưng chứa cụm sau thì bỏ (từ khóa nói về thứ khác).",
+   "hybrid": [
+    "hybrid cloud",
+    "hybrid search",
+    "hybrid app",
+    "hybrid mobile",
+    "hybrid casual",
+    "hybrid pm",
+    "hybrid agile",
+    "hybrid tester",
+    "hybrid testers",
+    "hybrid model (?:of|for) (?:ai|ml|rag)",
+    "hybrid retrieval",
+    "hybrid infrastructure",
+    "hybrid network",
+    "(?:agile|scrum|kanban|waterfall)\\W+hybrid",
+    "hybrid\\W+(?:agile|scrum|kanban|waterfall)",
+    "hybrid working environment after",
+    "\\bit hybrid\\b"
+   ],
+   "remote": [
+    "remote support",
+    "remote access",
+    "remote config",
+    "remote desktop",
+    "hỗ trợ từ xa",
+    "truy cập từ xa",
+    "điều khiển từ xa",
+    "remote locations",
+    "remote team(?:s)? (?:in|at|across)",
+    "remote sensing",
+    "trực tiếp hoặc từ xa",
+    "từ xa và tại chỗ"
+   ],
+   "onsite": [
+    "onsite (?:tại|ở|sang) (?:nhật|japan|hàn|korea|singapore|mỹ|us)",
+    "công tác onsite",
+    "đi onsite",
+    "onsite support",
+    "hỗ trợ onsite",
+    "tin học văn phòng",
+    "thiết bị văn phòng",
+    "phần mềm văn phòng",
+    "office 365",
+    "microsoft office",
+    "ms office",
+    "(?:cơ hội|opportunity)\\s*(?:đi\\s*)?onsite",
+    "onsite (?:tokyo|osaka|nhật bản)",
+    "không làm việc tại văn phòng",
+    "điều chỉnh sang hình thức làm việc tại văn phòng",
+    "from the office five days a week if preferred"
+   ]
+  },
+  "jd_noise_rule": "Xóa các cụm nhiễu khỏi câu (thay bằng khoảng trắng) rồi mới so mẫu. 'linh hoạt', 'flexible' đứng một mình không nằm trong mẫu nào nên không cần luật nhiễu.",
+  "jd_resolve": "Nhiều mode khớp: có hybrid -> hybrid; có cả remote và onsite -> hybrid; còn lại lấy mode duy nhất. Tín hiệu ở tiêu đề được xét trước thân bài.",
+  "conflict_flag": "work_mode_conflict = True khi work_mode_raw và work_mode_jd đều có và khác nhau."
+ },
+ "employment_type": {
+  "values": [
+   "full_time",
+   "part_time",
+   "internship",
+   "contract"
+  ],
+  "priority": "raw -> JD khi raw trống. Ngoại lệ đề xuất: tiêu đề có intern/thực tập sinh (EI1) thắng raw full_time (182 tin là thực tập toàn thời gian), ghi employment_type_conflict.",
+  "raw_map": {
+   "toàn thời gian": "full_time",
+   "toàn thời gian cố định": "full_time",
+   "nhân viên chính thức": "full_time",
+   "full_time": "full_time",
+   "bán thời gian": "part_time",
+   "bán thời gian cố định": "part_time",
+   "thực tập": "internship",
+   "intern": "internship",
+   "thời vụ": "contract",
+   "thời vụ/ nghề tự do": "contract",
+   "contractor": "contract",
+   "theo hợp đồng tư vấn": "contract",
+   "khác": null,
+   "remote": "-> work_mode_raw",
+   "làm tại nhà": "-> work_mode_raw",
+   "vietnamworks: 5": null,
+   "vietnamworks: 6": null,
+   "vietnamworks: 7": "-> work_mode_raw (xem open_questions)"
+  },
+  "raw_multi_value_rule": "Nhiều giá trị (jobsgo, careerviet): giữ cả danh sách ở employment_types; employment_type chính = giá trị đầu tiên sau khi bỏ remote.",
+  "jd_patterns": {
+   "internship": [
+    {
+     "id": "EI1",
+     "where": "title",
+     "re": "\\b(?:intern|internship|interns|thực tập sinh|thực tập|trainee)\\b"
+    }
+   ],
+   "part_time": [
+    {
+     "id": "EP1",
+     "where": "title",
+     "re": "\\b(?:part[- ]?time|bán thời gian)\\b"
+    },
+    {
+     "id": "EP2",
+     "where": "body",
+     "re": "\\b(?:hình thức|loại hình)(?: làm việc| công việc)?\\s*[:：\\-]?\\s*(?:part[- ]?time|bán thời gian)\\b"
+    }
+   ],
+   "contract": [
+    {
+     "id": "EC1",
+     "where": "title",
+     "re": "\\b(?:freelanc\\w*|contractor|cộng tác viên)\\b|\\(\\s*\\d+\\s*(?:months?|tháng)\\s*(?:contract|hợp đồng)?\\s*\\)"
+    },
+    {
+     "id": "EC2",
+     "where": "body",
+     "re": "\\b(?:hợp đồng|contract)\\s*(?:\\d+\\s*(?:tháng|months?)|ngắn hạn|short[- ]term|thời vụ|theo dự án|project[- ]based)\\b|\\b\\d+[- ]months? contract\\b"
+    }
+   ],
+   "full_time": [
+    {
+     "id": "EF1",
+     "where": "body",
+     "re": "\\b(?:làm việc |work )?(?:full[- ]?time|toàn thời gian)\\b"
+    }
+   ]
+  },
+  "jd_noise": {
+   "contract": [
+    "smart contract",
+    "hợp đồng thông minh",
+    "api contract",
+    "data contract",
+    "contract (?:management|negotiation)",
+    "đàm phán hợp đồng",
+    "quản lý hợp đồng",
+    "ký kết hợp đồng",
+    "theo hợp đồng lao động",
+    "employment contract",
+    "hợp đồng lao động",
+    "cam kết hợp đồng"
+   ],
+   "internship": [
+    "có thể tham gia thực tập",
+    "từng thực tập",
+    "intern(?:s)? mentoring",
+    "hướng dẫn thực tập sinh",
+    "(?:hỗ trợ|có|không hỗ trợ)?\\s*(?:mộc|dấu|giấy xác nhận) thực tập"
+   ],
+   "full_time": [
+    "thực tập toàn thời gian",
+    "fulltime là một lợi thế",
+    "ưu tiên full[- ]?time"
+   ]
+  },
+  "conflict_flag": "employment_type_conflict = True khi raw và jd đều có và khác nhau (vd. raw full_time, tiêu đề 'Intern').",
+  "_note": "Bảng Silver (spec 05 mục 4.4) KHÔNG có employment_type. Phần này giữ ở bảng 04 để truy vết, và cấp tín hiệu Intern cho seniority (Intern/Fresher)."
+ },
+ "experience": {
+  "priority": "exp_min_years parse từ raw_experience_text -> JD. NGOẠI LỆ itviec: raw là monthsOfExperience trong JSON-LD, chỉ có 3 mức 10/37/61 tháng (mức gom SEO, không phải yêu cầu thật; lệch JD ở 466/554 tin) -> itviec lấy JD trước, raw JSON-LD làm dự phòng. exp_source = raw | jd | jd_zero | itviec_jsonld.",
+  "grammar": {
+   "prefix": "(?:tối thiểu|ít nhất|từ|trên|hơn|có|minimum|min\\.?|at least|over|more than)?",
+   "number": "(\\d+(?:[.,]\\d+)?)\\s*\\+?\\s*(?:(?:-|–|~|đến|tới|to)\\s*(\\d+(?:[.,]\\d+)?)\\s*\\+?)?",
+   "unit": "(năm|years?|yrs?|tháng|months?)",
+   "context": "(?:kinh nghiệm|kn\\b|experience|exp\\b|làm việc|ở vị trí|trong lĩnh vực|working|hands-on|in (?:a |the )?(?:similar|related|relevant))",
+   "rule": "Cụm prefix + number + unit phải có context trong cùng câu, cách tối đa 6 từ (trước hoặc sau). Tháng đổi ra năm (/12). Khoảng 'a-b' lấy min=a, max=b. 'dưới N năm' -> min=0, max=N."
+  },
+  "zero_phrases": [
+   "không yêu cầu kinh nghiệm",
+   "chưa có kinh nghiệm",
+   "không cần kinh nghiệm",
+   "no (?:prior )?experience (?:required|needed)",
+   "mới tốt nghiệp",
+   "fresh graduates?",
+   "sinh viên năm cuối",
+   "sinh viên mới ra trường",
+   "final[- ]year students?"
+  ],
+  "zero_rule": "Câu có zero_phrase (và không có cụm số năm >0 trong cùng câu) -> exp_min_years = 0, exp_source = jd_zero.",
+  "noise": [
+   "lương|salary|thưởng|bonus|tăng lương|xét tăng",
+   "hợp đồng|contract",
+   "thành lập|founded|established|lịch sử|history|over \\d+ years of (?:history|operation)|hơn \\d+ năm (?:hình thành|phát triển|hoạt động)",
+   "bảo hành|warranty",
+   "nghỉ phép|annual leave|ngày phép",
+   "sau \\d+ năm|after \\d+ years?",
+   "tuổi|age\\b",
+   "thử việc|probation",
+   "cam kết|commit"
+  ],
+  "selection": "Lấy cụm hợp lệ đầu tiên trong requirements; không có thì đầu tiên trong description. Không lấy max hay min trên mọi cụm (JD hay liệt kê '3+ năm Java, 1 năm Docker': cụm đầu là yêu cầu chính).",
+  "sanity": "Bỏ giá trị > 20 năm. exp_min_years > exp_max_years thì bỏ max."
+ },
+ "open_questions": [
+  "vietnamworks typeWorkingId 5, 6: raw không có nhãn chữ, trang công khai render bằng JS nên chưa tra được. Mã 6 (62 tin) trông như tin toàn thời gian bình thường; mã 5 (1 tin). Đề xuất: không rõ, để JD quyết.",
+  "itviec 'Linh hoạt' (133 tin) map sang hybrid?",
+  "Tín hiệu ở tiêu đề thắng raw (work_mode và intern)?",
+  "itviec: lấy kinh nghiệm từ JD trước, bỏ ưu tiên mức gom JSON-LD?",
+  "employment_type có đưa vào bảng Silver không (hiện spec không có)?"
+ ]
+}
