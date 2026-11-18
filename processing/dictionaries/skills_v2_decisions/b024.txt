@@ -1,0 +1,288 @@
+# Lô 24: dòng 6901-7200 (18/11/2026)
+N industry 6901
+A 6902 infotainment
+N generic 6903
+S 6904 card_management enterprise_apps p=core_banking n=Hệ thống thẻ (card management)
+L card_management card management;card payment;card payment technology;hệ thống thẻ
+A 6905 card_management
+S 6906 smartvista enterprise_apps p=card_management n=SmartVista
+N generic 6907
+K ecommerce_features enterprise_apps n=Nghiệp vụ thương mại điện tử (cart, checkout)
+L ecommerce_features shopping cart;checkout flow
+N generic 6908
+S 6909 casb security p=cloud_security n=CASB
+F casb CASB
+N combo 6910
+A 6911 data_structures
+N generic 6912
+S 6913 cloudera_cert certifications p=cloudera n=Cloudera CCA/CCP
+A 7076 cloudera_cert
+S 6914 ccba certifications p=business_analysis n=CCBA / CBAP (IIBA)
+F ccba CCBA;CBAP;ECBA
+S 6915 ccda certifications p=cisco n=CCDA / CCDP
+F ccda CCDA;CCDP
+A 6916 6917 ccna
+A 6918 6919 ccnp
+N generic 6920
+A 6921 6922 6923 6924 6925 6926 6927 6928 cicd
+N generic 6929
+A 6930 6931 6932 cefr
+N combo 6933
+A 6934 data_center
+N combo 6935
+N generic 6936
+A 6937 6938 ai_security
+N generic 6939
+A 6940 acl_data
+A 6941 aws_certified
+A 6942 cdpse
+A 6943 6944 ceh
+N generic 6945
+A 6946 6947 ccna
+S 6948 salesforce_cert certifications p=salesforce n=Salesforce certification
+L salesforce_cert salesforce certified;platform developer i;platform developer ii
+A 6949 6950 sap
+A 6951 psm
+A 6952 6953 azure_cert
+N entity 6954
+S 6955 cfd cad_engineering p=simulation n=CFD (mô phỏng dòng chảy)
+F cfd CFD
+N generic 6956
+N entity 6957
+A 6958 app_store_publish
+S 6959 supply_chain enterprise_apps n=Chuỗi cung ứng (supply chain)
+L supply_chain supply chain;chuỗi cung ứng
+A 6993 supply_chain
+N industry 6960
+N generic 6961
+A 6962 change_management
+A 6963 cdc
+S 6964 rollback_strategy devops p=release_management n=Rollback strategy
+L rollback_strategy rollback;rollback plan
+N generic 6965
+N combo 6966
+A 6967 ms_project
+N generic 6968
+N industry 6969
+N combo 6970
+A 6971 6972 codex
+S 6973 chatops devops n=ChatOps
+F chatops ChatOps
+N generic 6974
+N job_title 6975 6976
+A 6977 chinese
+N generic 6978
+N generic 6979
+A 6980 work_under_pressure
+A 6981 enthusiasm
+N entity 6982
+S 6983 app_hardening security p=mobile_security n=Chống reverse engineering (obfuscation)
+L app_hardening obfuscation;code obfuscation;proguard;r8;app hardening
+N industry 6984
+A 6985 proactiveness
+N generic 6986
+N generic 6987
+S 6988 iso_20022 enterprise_apps p=core_banking n=ISO 20022 / SWIFT MT
+L iso_20022 iso 20022;iso20022;swift mt;swift mx
+A 6989 itil
+A 6990 json
+N generic 6991
+N industry 6992
+A 6994 6995 retention_metrics
+N generic 6996
+S 6997 data_conversion data_engineering p=db_migration n=Chuyển đổi dữ liệu (data conversion)
+L data_conversion chuyển đổi dữ liệu;data conversion
+N industry 6998
+N job_title 6999 7000 7001 7002
+N generic 7003
+A 7004 7005 7006 cicd
+N combo 7007 7008
+A 7009 subnetting
+N entity 7010
+S 7011 cimatron cad_engineering p=cnc n=Cimatron / NX CAM
+F cimatron Cimatron
+A 7013 circleci
+S 7014 circuit_analysis embedded_iot p=electronics n=Phân tích, kiểm tra mạch
+L circuit_analysis circuit analysis;circuit testing;phân tích mạch
+A 7015 circuit_analysis
+N generic 7012
+A 7016 cis_controls
+A 7017 7018 7019 ccna
+N generic 7020
+A 7021 mitre_attack
+N industry 7022
+N generic 7023
+A 7024 autosar_bsw
+N generic 7025
+A 7026 7027 agents_sdk
+N combo 7028 7029
+S 7030 clean_abap enterprise_apps p=abap n=Clean ABAP
+A 7031 braze
+A 7032 communication
+A 7033 technical_support
+S 7034 client_server architecture_api p=software_architecture n=Kiến trúc client-server
+L client_server client-server;client server;client/server
+A 7035 clip_studio
+S 7036 project_closure methodology_pm p=project_management n=Đóng dự án (closure report)
+L project_closure closure report;project closure
+A 7037 azure_ai
+A 7038 azure
+A 7039 7040 backup
+A 7041 ip_camera
+A 7042 data_center
+N generic 7043
+N job_title 7044
+A 7045 cloud_computing
+A 7046 devops
+S 7047 vmware_cloud_director systems_network p=vmware n=VMware Cloud Director
+L vmware_cloud_director cloud director;vcloud director
+A 7048 cloud_security
+S 7049 cloud_integration architecture_api p=system_integration n=Cloud integration (iPaaS)
+L cloud_integration cloud integration;ipaas
+N generic 7050
+N generic 7051
+S 7052 cloud_migration cloud p=cloud_computing n=Chuyển đổi lên cloud (cloud migration)
+L cloud_migration cloud migration;migrate to cloud
+A 7053 finops
+N generic 7054
+A 7055 7056 gcp_certified
+A 7057 pubsub
+N job_title 7058
+A 7059 7060 cloud_security
+S 7061 cloud_tasks cloud p=gcp n=Cloud Tasks / Cloud Scheduler
+L cloud_tasks cloud tasks;cloud scheduler
+A 7062 vmware
+S 7063 cwpp security p=cloud_security n=CWPP
+F cwpp CWPP
+A 7064 7065 7066 cloud_native
+N combo 7067 7068 7069
+A 7070 hybrid_cloud
+N combo 7071 7072 7073 7074 7075
+S 7077 k8s_admin devops p=kubernetes n=Quản trị cluster Kubernetes
+L k8s_admin cluster admin;cluster administration
+A 7078 cdmp
+A 7079 vng_cloud
+S 7080 cmm_measurement cad_engineering p=measuring_tools n=CMM (máy đo tọa độ)
+F cmm_measurement CMM
+N generic 7081
+A 7082 cnc
+N entity 7083
+N combo 7084 7085
+N generic 7086
+A 7087 agile
+A 7088 android
+A 7089 devops
+A 7090 docker
+A 7091 javascript
+A 7092 kubernetes
+N generic 7093
+A 7094 performance_test
+A 7095 networking
+N generic 7096
+S 7097 consensus_algorithms blockchain n=Cơ chế đồng thuận (consensus)
+L consensus_algorithms cơ chế đồng thuận;consensus algorithm;consensus mechanism;proof of stake;proof of work
+N degree 7098
+N generic 7099
+N degree 7100
+A 7101 relational_db
+A 7102 it_infrastructure
+S 7103 sap_co enterprise_apps p=sap_fico n=SAP CO / PS
+F sap_co CO/PS
+L sap_co sap co;sap ps
+N generic 7104
+S 7105 close_of_business enterprise_apps p=t24 n=COB (close of business)
+F close_of_business COB
+A 7106 it_governance
+S 7107 cockroachdb databases n=CockroachDB / TiDB / YugabyteDB
+L cockroachdb tidb;yugabytedb
+A 7108 code_review
+N generic 7109
+S 7110 code_quality dev_tools p=clean_code n=Chất lượng code (code quality)
+L code_quality code quality;chất lượng code;static code analysis
+S 7111 phpunit testing_qa p=unit_test n=PHPUnit
+L phpunit phpunit
+N combo 7112
+A 7113 configuration_management
+N combo 7114
+N generic 7115
+A 7116 ai_assisted_dev
+N generic 7117
+A 7118 azure_ai
+S 7119 collaborative_dev dev_tools p=git n=Cộng tác qua Git (collaborative development)
+L collaborative_dev collaborative development
+A 7169 collaborative_dev
+N generic 7120
+S 7121 collibra data_engineering p=data_governance n=Collibra / Alation / DataHub
+L collibra alation;datahub
+S 7123 columnar_db databases n=CSDL dạng cột (columnar)
+L columnar_db column-based database;columnar database;column store
+N generic 7122
+A 7124 rxswift
+A 7125 linux_cli
+N generic 7126
+N generic 7127 7128
+N generic 7129 7130
+A 7131 communication
+A 7132 communication
+A 7133 english
+N generic 7134
+K compilers programming_languages n=Compiler / LLVM
+L compilers compiler design;llvm;gcc;toolchain
+N generic 7135
+A 7136 compliance
+S 7137 component_design frontend n=Thiết kế component
+L component_design component design;component-based
+N combo 7138
+A 7139 dast
+N generic 7140 7141 7142 7143 7144
+A 7145 comptia_security
+N degree 7146
+N combo 7147
+S 7148 concept_art design_creative n=Concept art
+L concept_art concept art;concept artist
+S 7149 concept_drift data_science_ml p=model_monitoring n=Data / concept drift
+L concept_drift concept drift;data drift;model drift
+A 7150 api_testing
+S 7151 configuration_management devops n=Quản lý cấu hình (configuration management)
+L configuration_management configuration management;configuration control;quản lý cấu hình
+A 7152 7153 configuration_management
+A 7154 windows_server
+A 7155 confluence
+S 7156 confluent messaging p=kafka n=Confluent Platform
+N entity 7157
+A 7158 ai_application
+A 7159 information_security
+A 7160 bi
+A 7161 monitoring
+A 7162 jenkins
+A 7163 jira
+A 7164 ms_project
+A 7165 7166 containerization
+A 7167 redis
+N job_title 7168
+A 7170 payment_gateway
+N entity 7171 7172 7173 7174 7176 7177 7178 7179
+N industry 7175
+N generic 7180
+A 7181 jira
+N combo 7182
+S 7183 constraint_layout mobile p=android n=ConstraintLayout / XML layout
+L constraint_layout constraintlayout;constraitlayout
+N entity 7184
+N generic 7185 7186
+N industry 7187 7188
+A 7189 contact_center
+S 7190 azure_container_apps cloud p=azure n=Azure Container Apps
+L azure_container_apps container apps;azure container apps
+A 7191 docker
+A 7192 container_security
+A 7193 containerization
+N combo 7194
+S 7195 containerd devops p=containerization n=containerd / Podman / CRI-O
+L containerd containerd;podman;cri-o
+A 7196 7197 containerization
+S 7198 content_creation digital_marketing n=Sáng tạo nội dung (content)
+L content_creation content creation;content creator;sáng tạo nội dung;viết content
+S 7199 react_context frontend p=react n=React Context API
+L react_context context api
+A 7200 process_improvement
