@@ -1,0 +1,269 @@
+# Lô 29: dòng 8401-8700 (18/11/2026)
+N generic 8401
+N entity 8402
+S 8403 internal_control enterprise_apps p=it_audit n=Kiểm soát nội bộ
+L internal_control kiểm soát nội bộ;internal control;internal controls
+A 8404 progress_tracking
+A 8405 software_testing
+A 8406 game_testing
+A 8407 regression_test
+A 8408 itgc
+A 8409 software_testing
+A 8410 software_testing
+A 8411 data_testing
+S 8412 patience soft_skills n=Kiên nhẫn
+L patience kiên nhẫn;patience;patient
+N generic 8413
+A 8414 information_security
+A 8415 network_protocols
+A 8416 database
+A 8417 operating_systems
+A 8418 oop
+A 8419 computer_hardware
+N generic 8420
+A 8421 api_integration
+A 8422 backend_dev
+A 8423 clean_code
+A 8424 cyber_kill_chain
+S 8425 kinesis cloud p=aws n=AWS Kinesis / MSK
+L kinesis kinesis;amazon kinesis;aws msk;amazon msk
+A 8426 sales_skills
+N generic 8427
+N combo 8428 8429
+N generic 8430 8431
+A 8432 devsecops
+A 8433 dotnet
+N industry 8434
+N generic 8435 8436
+A 8437 rag_knowledge_assistant
+S 8438 kol_marketing digital_marketing n=KOL / KOC / influencer marketing
+F kol_marketing KOL;KOC;KOLs
+L kol_marketing influencer marketing;koc;kol
+A 8439 kol_marketing
+A 8440 kong
+A 8441 coroutines
+N entity 8442 8443
+S 8444 kserve data_science_ml p=model_serving n=KServe / Seldon / BentoML
+L kserve kserve;seldon;bentoml
+N generic 8445
+S 8446 knowledge_transfer methodology_pm n=Knowledge transfer (KT plan)
+L knowledge_transfer knowledge transfer;kt plan;chuyển giao kiến thức
+N job_title 8447
+A 8448 8449 8450 kubernetes
+N combo 8451
+S 8452 industrial_robot embedded_iot p=robotics n=Robot công nghiệp (Kuka, ABB, Fanuc)
+L industrial_robot kuka;robot công nghiệp;industrial robot;abb robot
+S 8453 kustomize devops p=kubernetes n=Kustomize
+A 8454 reporting
+A 8455 composition
+A 8456 software_installation
+N generic 8457
+A 8458 color_theory
+A 8459 task_management
+A 8460 team_management
+A 8461 project_management
+N generic 8462
+A 8463 consulting
+A 8464 drawing
+N job_title 8465 8466 8467 8468 8469 8470 8471 8472 8473
+A 8474 cctv
+A 8475 data_engineering
+A 8476 test_design
+S 8477 equipment_installation systems_network n=Lắp đặt thiết bị
+L equipment_installation lắp đặt thiết bị;kỹ thuật lắp đặt;lắp đặt camera
+A 8502 8503 equipment_installation
+N generic 8478
+A 8479 pentest
+N degree 8480
+N job_title 8481 8482
+S 8483 policy_as_code security p=k8s_security n=Policy as code (Kyverno, OPA)
+L policy_as_code kyverno;opa;open policy agent;gatekeeper;policy as code
+N combo 8484
+S 8485 on_call devops p=incident_management n=On-call / trực sự cố
+L on_call on-call;on call;trực sự cố;pagerduty;opsgenie
+N generic 8486
+A 8487 etherchannel
+N job_title 8488
+N industry 8489
+N generic 8490 8491
+A 8492 api_integration
+A 8493 aws
+N combo 8494
+N entity 8495 8496 8497 8498 8499 8500
+A 8501 leadership
+A 8504 budget_management
+A 8505 project_planning
+N generic 8506
+A 8507 oop
+A 8508 java
+A 8509 javascript
+S 8510 network_programming backend n=Lập trình mạng (socket)
+L network_programming lập trình mạng;network programming;socket programming;lập trình socket
+A 8511 mastercam
+A 8512 cnc
+N generic 8513
+A 8514 cloud_native
+A 8515 big_data
+N generic 8516
+S 8517 larksuite office_tools n=Larksuite / Lark
+L larksuite larksuite;lark suite
+N combo 8518
+S 8519 android_system_app mobile p=android_framework n=Android launcher / system app
+L android_system_app system app;launcher
+A 8520 android_system_app
+A 8521 8522 routing_switching
+A 8523 web_vitals
+N job_title 8524
+A 8525 iso_lead_auditor
+N job_title 8526 8527 8528 8529 8530 8531
+S 8532 lead_scoring digital_marketing p=crm n=Lead scoring
+L lead_scoring lead scoring
+N combo 8533
+A 8534 mentoring
+N job_title 8535
+N combo 8536 8537
+N job_title 8538 8539 8540
+A 8541 leadership
+N generic 8542 8543
+A 8544 lms_canvas
+A 8545 aws_certified
+N combo 8546 8547
+A 8548 api_led
+N generic 8549
+N entity 8550
+S 8551 lending_bnpl enterprise_apps n=Cho vay / BNPL (LOS, LMS)
+L lending_bnpl bnpl;loan origination;loan origination system;loan management;lending platform
+F lending_bnpl LOS
+A 8552 8553 genai_image
+S 8554 lettering design_creative n=Lettering / typography
+L lettering lettering;hand lettering
+N generic 8555
+A 8556 slo_sli
+N generic 8557
+A 8558 8559 ai_assisted_dev
+N entity 8560 8561
+K lgtm_stack devops p=monitoring n=LGTM stack (Loki, Grafana, Tempo, Mimir)
+L lgtm_stack lgtm stack;grafana tempo;mimir
+N generic 8562
+N generic 8563
+S 8564 license_mgmt systems_network p=it_asset_mgmt n=Quản lý license phần mềm
+L license_mgmt license management;quản lý license;software licensing
+A 8565 sdlc
+A 8566 defect_management
+A 8567 sdlc
+S 8568 salesforce_lwc enterprise_apps p=salesforce n=Salesforce Lightning (LWC, Aura)
+L salesforce_lwc lightning web components;lwc;salesforce lightning;aura components
+A 8569 salesforce_lwc
+S 8570 trading_charts frontend p=d3js n=TradingView / Lightweight Charts
+L trading_charts lightweight charts;tradingview
+S 8572 data_lineage data_engineering p=data_governance n=Data lineage
+L data_lineage data lineage;lineage
+N generic 8571
+S 8573 android_layout mobile p=android n=Android XML layout
+L android_layout linearlayout;relativelayout;recyclerview
+N industry 8574 8575 8576
+A 8577 information_security
+N industry 8578
+A 8579 graphic_design
+A 8580 networking
+A 8581 soc
+A 8582 software_testing
+N generic 8583
+A 8584 service_mesh
+A 8585 linux
+N combo 8586
+A 8587 8588 domain_join
+A 8589 linux
+A 8590 8591 hardening
+N generic 8592
+N combo 8593 8594 8595 8596
+A 8597 liquibase
+A 8598 sqlite
+A 8599 liveops
+S 8600 livekit architecture_api p=webrtc n=LiveKit / Agora
+L livekit livekit;agora
+A 8601 llamaindex
+N entity 8602
+A 8603 design_document
+A 8604 gdb
+A 8605 lora_finetune
+A 8606 llm_eval
+A 8607 llm
+N combo 8608 8609 8610
+A 8611 llmops
+A 8612 vulnerability_assessment
+A 8613 load_test
+A 8614 load_balancing
+N generic 8615
+A 8616 lending_bnpl
+A 8617 8618 lending_bnpl
+N generic 8619
+A 8620 mobile_db
+S 8621 lod_optimization game_dev n=LOD / tối ưu đồ họa game
+F lod_optimization LOD
+A 8622 monitoring
+A 8623 logging
+N combo 8624
+A 8625 classic_ml
+A 8626 supply_chain
+N generic 8627
+A 8628 supply_chain
+N combo 8629
+A 8630 opentelemetry
+A 8631 jira
+N generic 8632 8633
+N combo 8634
+N entity 8635 8636 8637
+S 8638 loyalty_program digital_marketing n=Loyalty program / app
+L loyalty_program loyalty program;loyalty app;chương trình khách hàng thân thiết
+S 8639 lpic certifications p=linux n=LPIC / RHCSA
+F lpic LPIC;LPIC-1;LPIC-2;LPIC-3
+A 8640 lpic
+N generic 8641
+A 8642 lti
+S 8643 procurement_law enterprise_apps n=Luật đấu thầu / mua sắm công
+L procurement_law luật đấu thầu;đấu thầu
+N job_title 8644
+N entity 8645 8646
+N generic 8647 8648
+N generic 8649 8650 8651 8652 8653 8654
+A 8655 data_flow
+A 8656 storage
+S 8657 lvm systems_network p=linux_server n=LVM / RAID
+F lvm LVM;RAID
+A 8658 m_code
+A 8659 infor_erp
+N generic 8660
+A 8661 electronics
+N generic 8662
+A 8663 aws_certified
+S 8664 machine_vision embedded_iot p=computer_vision n=Machine vision (thị giác máy công nghiệp)
+L machine_vision machine vision;thị giác máy;cognex;halcon
+A 8665 macos
+N combo 8666
+N generic 8667 8668
+N generic 8669 8670
+A 8671 sop
+A 8672 clean_code
+N generic 8673
+A 8674 etl
+N combo 8675
+A 8676 test_strategy
+N entity 8677
+A 8678 phishing
+A 8679 man_wan
+N generic 8680
+A 8681 risk_management
+S 8682 managed_identity cloud p=azure n=Managed Identity
+L managed_identity managed identity;managed identities
+A 8683 managed_services
+N generic 8684 8685 8686
+N combo 8687
+N combo 8688 8689 8690 8691 8692 8693
+N job_title 8694
+N generic 8695
+N generic 8696
+A 8697 chinese
+N industry 8698
+N generic 8699
+N combo 8700
