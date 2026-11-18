@@ -1,0 +1,282 @@
+# Lô 25: dòng 7201-7500 (18/11/2026)
+N generic 7201 7202
+A 7203 kaizen
+S 7204 smart_contract_audit blockchain p=blockchain n=Smart contract audit
+L smart_contract_audit smart contract audit;contract security auditing;smart contract security
+A 7205 smart_contract_audit
+N generic 7206
+A 7207 ecu
+A 7208 cro
+N job_title 7209
+N generic 7210
+A 7211 coordination
+N generic 7212
+A 7213 dotnet
+A 7214 aws
+A 7215 card_management
+N generic 7216
+A 7217 erp
+A 7218 routing_switching
+N generic 7219
+A 7220 core_switch
+A 7221 7222 t24
+N generic 7223
+A 7224 trading_system
+A 7225 dotnet
+N combo 7226 7227
+N generic 7228
+N generic 7229
+A 7230 7231 7232 pic_avr
+A 7233 cosmos_db
+A 7234 finops
+N entity 7235
+N combo 7236
+N entity 7237
+S 7238 ibm_cp4i architecture_api p=esb n=IBM Cloud Pak for Integration
+L ibm_cp4i cp4i;cloud pak for integration
+A 7239 spc
+N generic 7240
+S 7241 cpm_scheduling methodology_pm p=project_planning n=CPM / PERT (lập lịch dự án)
+F cpm_scheduling CPM;PERT
+A 7242 cqrs
+A 7243 change_management
+A 7244 brd
+A 7245 graphic_design
+N combo 7246
+N entity 7247
+N industry 7248 7249
+S 7250 credit_scoring data_science_ml n=Credit scoring
+L credit_scoring credit score;credit scoring;chấm điểm tín dụng
+S 7251 duck_creek enterprise_apps n=Duck Creek (bảo hiểm)
+L duck_creek duck creek
+A 7252 catia
+N generic 7253 7254
+N combo 7255
+N generic 7256
+N generic 7257 7258
+N generic 7259
+A 7260 cross_platform
+N generic 7261 7262
+S 7263 crowdstrike security p=endpoint_security n=CrowdStrike / SentinelOne
+L crowdstrike crowdstrike;sentinelone
+N generic 7264 7265
+A 7266 kms_hsm
+S 7267 php_cs_fixer backend p=php n=PHP CS Fixer / PHPStan
+L php_cs_fixer php cs fixer;phpstan;php_codesniffer
+N generic 7268
+A 7269 sql_server
+A 7270 cspm
+N combo 7271
+N generic 7272
+A 7273 sql_cte
+A 7274 ctf
+A 7275 ctf
+N job_title 7276
+A 7277 cucumber
+A 7278 7279 cursor
+A 7280 react_hooks
+S 7281 odoo_custom_module enterprise_apps p=odoo n=Odoo custom module
+L odoo_custom_module custom module
+N combo 7282
+A 7283 7284 lms_canvas
+A 7285 customer_segmentation
+A 7286 contact_center
+N generic 7287
+A 7288 communication
+A 7289 customer_experience
+N generic 7290
+N generic 7291
+N generic 7292
+S 7293 swift_csp security p=compliance n=SWIFT CSP (Customer Security Programme)
+L swift_csp swift csp;customer security programme
+A 7294 final_cut
+N generic 7295
+N entity 7296
+N generic 7297 7298
+A 7299 cwpp
+N entity 7300
+S 7301 cyber_kill_chain security p=threat_intelligence n=Cyber Kill Chain
+L cyber_kill_chain cyber kill chain;kill chain
+A 7302 cyber_kill_chain
+A 7303 risk_management
+N job_title 7304
+N generic 7305
+N generic 7306 7307 7308
+N generic 7309
+A 7310 retention_metrics
+A 7311 d3js
+N entity 7312
+N generic 7313
+N generic 7314
+A 7315 excel
+A 7316 agile
+A 7317 sql
+S 7318 static_routing systems_network p=routing_switching n=Static routing
+L static_routing static routing;định tuyến tĩnh
+N generic 7319 7320 7321
+S 7322 daily_standup methodology_pm p=scrum n=Daily stand-up
+L daily_standup daily standup;daily stand-up;daily meeting;stand-up meeting
+A 7323 qa_qc
+S 7324 message_reliability messaging p=message_queue n=Message reliability (exactly-once, DLQ)
+L message_reliability exactly-once;at-least-once;dead letter queue;dlq
+A 7327 passion_for_games
+S 7325 passion_for_games soft_skills n=Đam mê game
+L passion_for_games đam mê game;đam mê chơi game;passion for games
+S 7326 passion_for_tech soft_skills n=Đam mê công nghệ
+L passion_for_tech đam mê công nghệ;passion for technology
+A 7328 negotiation
+S 7329 dama_dmbok data_engineering p=data_governance n=DAMA-DMBOK / DCAM
+F dama_dmbok DAMA;DMBOK;DCAM
+A 7404 dama_dmbok
+A 7330 team_management
+N generic 7331
+A 7332 user_training
+A 7333 training_mgmt
+S 7334 plotly_dash bi_analytics p=data_visualization n=Plotly Dash / Streamlit
+L plotly_dash streamlit;plotly dash
+N combo 7335
+S 7336 dashcam embedded_iot n=Dashcam / camera hành trình
+L dashcam dashcam;camera hành trình
+N generic 7337
+A 7338 database_admin
+N generic 7339 7340 7341
+N combo 7342 7343 7344
+A 7345 backup
+A 7346 cdc
+A 7347 metadata_mgmt
+A 7348 data_center
+N combo 7349
+A 7350 data_modeling
+A 7351 concept_drift
+N combo 7352 7353
+N generic 7354
+N job_title 7355
+N generic 7356
+A 7357 dfd
+S 7358 salesforce_data_loader enterprise_apps p=salesforce n=Salesforce Data Loader
+L salesforce_data_loader data loader
+N job_title 7359
+N generic 7360
+N combo 7361 7362
+S 7363 data_masking security p=data_security n=Data masking / tokenization
+L data_masking data masking;tokenization;masking dữ liệu
+N combo 7364 7365
+N job_title 7366
+N generic 7367
+A 7368 data_privacy
+S 7369 oracle_data_pump databases p=oracle_db n=Oracle Data Pump / RMAN
+L oracle_data_pump data pump;expdp;impdp;rman
+A 7370 data_quality
+A 7371 data_quality
+A 7372 customer_segmentation
+N generic 7373 7374 7375
+N combo 7376
+S 7377 data_driven_decision soft_skills p=data_analysis n=Ra quyết định dựa trên dữ liệu
+L data_driven_decision data-driven decision;data-driven decision making;data-driven
+N combo 7378 7379
+A 7380 7381 database_admin
+A 7382 database_design
+A 7383 database
+A 7384 relational_db
+A 7385 database_design
+S 7386 db_security databases n=Bảo mật CSDL
+A 7387 db_security
+N generic 7388
+S 7389 oracle_db_vault databases p=db_security n=Oracle Database Vault
+L oracle_db_vault database vault
+A 7390 database
+A 7391 postgresql
+A 7392 7393 databricks_cert
+A 7394 data_lake
+N combo 7395 7396
+N generic 7397
+A 7398 data_warehouse
+N industry 7399
+A 7400 database_admin
+S 7401 dbaas cloud p=cloud_computing n=DBaaS / managed database
+L dbaas dbaas;managed database
+S 7402 dbc_file embedded_iot p=can_bus n=DBC file (CAN database)
+F dbc_file DBC
+N entity 7403
+N generic 7405 7406
+N entity 7407
+N generic 7408
+S 7409 dms_auto enterprise_apps n=Dealer Management System
+L dms_auto dealer management system;dealer management
+A 7410 7411 dms_auto
+N generic 7412 7413
+N industry 7414
+A 7415 debugging
+A 7416 debugging
+N combo 7417
+N generic 7418
+A 7419 deep_learning
+A 7420 deep_learning
+A 7421 deep_link
+A 7422 defect_management
+A 7423 defect_management
+N combo 7424
+N degree 7425
+N generic 7426 7427
+S 7428 delivery_management methodology_pm p=project_management n=Delivery management
+L delivery_management delivery management;quản lý giao hàng dự án
+N generic 7429
+A 7430 dependency_injection
+N job_title 7431
+N industry 7432 7433
+N job_title 7434 7435
+A 7436 api_design
+N job_title 7437
+N generic 7438
+A 7439 design_system
+S 7440 design_tokens design_creative p=design_system n=Design tokens
+L design_tokens design token;design tokens
+N generic 7441
+A 7442 web_design
+N combo 7443 7444
+N generic 7445 7446
+A 7447 windows_desktop_app
+N combo 7448 7449 7450 7451 7452 7453 7454 7455
+A 7456 etl
+A 7457 rest_api
+N combo 7458
+N generic 7459
+N job_title 7460 7461
+N combo 7462 7463 7464 7465
+N generic 7466
+N job_title 7467
+N combo 7468
+S 7469 dut_testing embedded_iot n=DUT (Device Under Test)
+L dut_testing device under test
+F dut_testing DUT
+A 7470 dut_testing
+N generic 7471
+S 7472 devin ai_tools n=Devin / AI coding agent
+L devin devin ai
+F devin Devin
+A 7473 devops
+N generic 7474
+A 7475 devops
+N job_title 7476
+N generic 7477
+N combo 7478 7479 7480
+N generic 7481
+A 7482 7483 devsecops
+A 7484 dfd
+S 7485 dfs_share systems_network p=windows_server n=DFS (Windows file share)
+F dfs_share DFS
+N industry 7486 7487 7488
+S 7489 dicom enterprise_apps p=his_lis n=DICOM / HL7 / FHIR
+F dicom DICOM
+N industry 7490
+N generic 7491
+N generic 7492
+A 7493 coordination
+N generic 7494
+A 7495 digital_marketing
+A 7496 product_design
+N generic 7497
+S 7498 digital_signage systems_network n=Digital signage
+L digital_signage digital signage
+N generic 7499
+A 7500 ewallet_integration
