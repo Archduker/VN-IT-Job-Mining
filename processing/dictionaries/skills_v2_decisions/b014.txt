@@ -1,0 +1,288 @@
+# Lô 14: dòng 3901-4200 (18/11/2026)
+N industry 3901
+N generic 3902
+N combo 3903
+N job_title 3904
+S 3905 model_evaluation data_science_ml p=machine_learning n=Đánh giá mô hình
+L model_evaluation model evaluation;đánh giá mô hình
+A 3906 3907 model_optimization
+N combo 3908
+N generic 3909
+A 3910 mongodb
+A 3911 monitoring
+S 3912 monolithic architecture_api n=Monolithic architecture
+S 3913 motor_control embedded_iot n=Điều khiển động cơ (motor control)
+L motor_control motor control;điều khiển động cơ;servo;biến tần
+N entity 3914
+N combo 3915
+A 3916 microservices
+S 3917 multi_tenant architecture_api n=Multi-tenant
+N generic 3918
+S 3919 dynamism soft_skills n=Năng động
+N entity 3920
+S 3921 nats messaging n=NATS
+F nats NATS
+N combo 3922
+A 3923 dotnet
+S 3924 netbackup systems_network p=backup n=NetBackup / Commvault
+L netbackup commvault
+A 3925 access_control
+A 3926 monitoring
+S 3927 network_segmentation security p=network_security n=Network segmentation
+A 3928 networking
+A 3929 newman
+N generic 3930 3931 3932
+N combo 3933
+A 3934 python
+A 3935 brand_design
+N job_title 3936 3937
+A 3938 data_entry
+A 3939 stakeholder_management
+N generic 3940
+S 3941 nuxtjs frontend p=vuejs n=Nuxt.js
+L nuxtjs nuxt.js;nuxt
+S 3942 zalo_oa digital_marketing n=Zalo OA / ZNS
+F zalo_oa ZNS
+L zalo_oa zalo oa
+S 3943 page_object_model testing_qa p=automation_test n=Page Object Model
+F page_object_model POM
+A 3944 3945 oop
+A 3946 objective_c
+N generic 3947
+A 3948 odoo
+A 3949 data_warehouse
+N industry 3950
+N generic 3951
+A 3952 ms_office
+A 3953 llama_cpp
+S 3954 omnichannel digital_marketing n=Omnichannel
+N entity 3955
+N generic 3956
+A 3957 opc_ua
+N generic 3958
+S 3959 oracle_erp enterprise_apps p=erp n=Oracle ERP / E-Business Suite
+L oracle_erp oracle erp;oracle ebs;oracle e-business suite;oracle fusion
+A 3960 oracle_data_guard
+N combo 3961 3962
+N generic 3963
+A 3964 osi_model
+N generic 3965 3966
+N combo 3967
+N generic 3968
+A 3969 3970 page_object_model
+S 3971 measuring_tools cad_engineering n=Dụng cụ đo (panme, thước cặp)
+L measuring_tools panme;thước cặp;đồng hồ so
+A 3972 3973 lora_finetune
+S 3974 parquet data_engineering n=Parquet / Avro / ORC
+L parquet avro
+S 3975 db_partitioning databases n=Partitioning / sharding
+L db_partitioning partitioning;sharding
+A 3976 ap_ar
+N generic 3977 3978
+S 3979 pdca methodology_pm p=process_improvement n=PDCA
+F pdca PDCA
+A 3980 lora_finetune
+A 3981 3982 3983 access_control
+A 3984 analytical_skills
+A 3985 rest_api
+N degree 3986
+S 3987 phishing security n=Phishing, malware
+L phishing malware;mã độc;ransomware
+A 3988 teamwork
+N combo 3989
+S 3990 php_fpm backend p=php n=PHP-FPM
+S 3991 pixijs game_dev n=PixiJS / Phaser
+L pixijs phaser
+N combo 3992
+N generic 3993
+A 3994 pdm_plm
+A 3995 pmp
+N combo 3996 3997
+N generic 3998 3999
+N job_title 4000
+A 4001 pam
+S 4002 procreate design_creative n=Procreate
+N job_title 4003
+S 4004 product_design design_creative n=Product design
+S 4005 product_marketing digital_marketing n=Product marketing
+S 4006 product_metrics bi_analytics p=product_analytics n=Product metrics
+N combo 4007
+N generic 4008
+A 4009 psm
+S 4010 program_management methodology_pm p=project_management n=Program management
+N job_title 4011
+N generic 4012
+N generic 4013
+A 4014 project_management
+N generic 4015
+A 4016 proxmox
+A 4017 deepeval
+A 4018 4019 model_optimization
+N generic 4020 4021
+A 4022 cloud_computing
+S 4023 pull_request dev_tools p=git n=Pull request / merge request
+L pull_request pull request;pull requests;merge request
+S 4024 purview security p=data_governance n=Microsoft Purview
+L purview microsoft purview
+N industry 4025 4026
+A 4027 python
+A 4028 pyspark
+N job_title 4029 4030
+N combo 4031
+N job_title 4032
+N generic 4033 4034
+N generic 4035
+A 4036 quality_management
+N generic 4037
+A 4038 system_administration
+S 4039 progress_tracking methodology_pm p=project_management n=Quản lý tiến độ
+L progress_tracking quản lý tiến độ;theo dõi tiến độ
+A 4040 database_admin
+A 4041 project_management
+A 4042 lan_wan
+A 4043 server_admin
+S 4044 quarkus backend p=java n=Quarkus / Micronaut
+L quarkus micronaut
+N generic 4045
+A 4046 4047 software_testing
+N generic 4048
+S 4049 raci methodology_pm p=project_management n=RACI
+F raci RACI
+A 4050 rag
+S 4051 sap_rap enterprise_apps p=abap n=SAP RAP
+F sap_rap RAP
+N combo 4052 4053 4054
+N generic 4055
+S 4056 mobile_db mobile n=Realm / Room / SQLite (mobile DB)
+F mobile_db Realm;Room
+A 4057 redis
+S 4058 reference_data data_engineering p=mdm n=Reference data
+N generic 4059
+S 4060 remote_support systems_network p=technical_support n=Remote support
+L remote_support remote support;hỗ trợ từ xa;teamviewer;ultraviewer;anydesk
+S 4061 rendering design_creative p=3d_modeling n=Rendering
+A 4062 4063 requirements_gathering
+N generic 4064 4065 4066
+A 4067 api_design
+A 4068 web_services
+N generic 4069 4070
+A 4071 code_review
+A 4072 4073 rfp
+S 4074 rhapsody embedded_iot n=IBM Rhapsody / Enterprise Architect (UML)
+F rhapsody Rhapsody
+A 4075 his_lis
+N combo 4076
+N entity 4077 4078
+S 4079 rpo_rto systems_network p=disaster_recovery n=RPO/RTO
+F rpo_rto RPO;RTO
+A 4080 rpo_rto
+A 4081 rs485
+S 4082 rspec testing_qa p=unit_test n=RSpec
+A 4083 4084 rpo_rto
+S 4085 rxswift mobile p=ios n=RxSwift / Combine
+L rxswift combine framework
+S 4086 sagemaker data_science_ml p=aws n=Amazon SageMaker
+N industry 4087
+A 4088 salesforce
+N generic 4089
+A 4090 task_management
+N combo 4091
+A 4092 secure_coding
+N job_title 4093
+S 4094 security_group cloud p=vpc n=Security group
+A 4095 hardening
+A 4096 aws_security_services
+S 4097 secops security p=soc n=Security Operations
+L secops secops;security operations
+N generic 4098
+N job_title 4099
+N generic 4100
+A 4101 compliance
+A 4102 selenium
+S 4103 self_supervised data_science_ml p=deep_learning n=Self-supervised learning
+L self_supervised self-supervised learning;self supervised learning;unsupervised learning;supervised learning
+A 4104 self_supervised
+N job_title 4105 4106 4107 4108
+N generic 4109
+A 4110 lidar
+N generic 4111
+N combo 4112 4113
+S 4114 salesforce_service_cloud enterprise_apps p=salesforce n=Salesforce Service/Sales Cloud
+L salesforce_service_cloud service cloud;sales cloud
+N combo 4115 4116
+A 4117 motor_control
+N generic 4118
+A 4119 bash
+N entity 4120
+N combo 4121 4122
+A 4123 sil_hil
+N generic 4124 4125
+S 4126 simulation embedded_iot n=Mô phỏng (simulation)
+L simulation mô phỏng;simulink;simulation
+N generic 4127
+S 4128 smart_building systems_network n=Smart building / BMS
+L smart_building smart building;bms
+N industry 4129
+S 4130 smartforms enterprise_apps p=abap n=SAP SmartForms / Adobe Forms
+L smartforms smartforms;adobe forms
+S 4131 sms_gateway backend n=SMS gateway / SMS brandname
+L sms_gateway sms gateway;sms brandname
+N combo 4132
+A 4133 websocket
+N generic 4134
+S 4135 soc_chip embedded_iot n=SoC (Qualcomm, NXP...)
+F soc_chip SoCs
+A 4136 design_patterns
+N job_title 4137
+A 4138 sdlc
+A 4139 4140 software_testing
+A 4141 cacti_solarwinds
+S 4142 solution_design architecture_api p=solution_architecture n=Thiết kế giải pháp
+L solution_design solution design
+N generic 4143 4144 4145
+S 4146 spark_streaming data_engineering p=spark n=Spark Streaming
+A 4147 4148 4149 voice_ai
+N generic 4150
+S 4151 spring_batch backend p=spring n=Spring Batch
+N combo 4152 4153 4154
+A 4155 query_optimization
+N combo 4156 4157
+S 4158 sqlalchemy backend p=python n=SQLAlchemy
+A 4159 nextjs_rendering
+N combo 4160
+A 4161 genai_image
+S 4162 cpp_stl programming_languages p=cpp n=C++ STL
+F cpp_stl STL
+N combo 4163 4164
+A 4165 excel
+A 4166 java
+A 4167 typescript
+N generic 4168
+S 4169 super_app mobile n=Super App
+N combo 4170
+S 4171 classic_ml data_science_ml p=machine_learning n=SVM / KNN / Clustering
+L classic_ml svm;knn;k-means;kmeans;clustering algorithms
+N generic 4172
+S 4173 core_switch systems_network p=routing_switching n=Core switch
+L core_switch switch core;core switch
+A 4174 aws_sysops
+N combo 4175
+S 4176 systemd systems_network p=linux n=systemd
+F systemd systemd
+N generic 4177 4178
+A 4179 4180 business_analysis
+N generic 4181
+A 4182 technical_support
+N generic 4183 4184 4185
+N combo 4186
+A 4187 test_design
+A 4188 test_plan
+N job_title 4189
+N combo 4190
+S 4191 testcontainers testing_qa p=integration_test n=Testcontainers
+A 4192 unit_test
+N generic 4193 4194
+S 4195 testlink testing_qa p=test_plan n=TestLink
+N generic 4196 4197 4198
+A 4199 progress_tracking
+N generic 4200

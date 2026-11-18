@@ -1,0 +1,292 @@
+# Lô 13: dòng 3601-3900 (18/11/2026)
+S 3601 design_thinking methodology_pm n=Design Thinking
+N generic 3602 3603 3604
+S 3605 devexpress backend p=dotnet n=DevExpress
+A 3606 endpoint_security
+N combo 3607
+S 3608 dfir security p=incident_response n=DFIR
+F dfir DFIR
+N generic 3609 3610 3611
+A 3612 elv
+A 3613 cloud_computing
+N industry 3614
+A 3615 3616 image_processing
+N generic 3617 3618
+N combo 3619
+A 3620 english
+A 3621 docker_compose
+N combo 3622
+S 3623 dockerfile devops p=docker n=Dockerfile
+N generic 3624 3625 3626
+A 3627 adas
+N generic 3628 3629 3630 3631
+A 3632 ms_dynamics
+N generic 3633 3634
+N industry 3635
+A 3636 ecu
+S 3637 edge_computing cloud n=Edge computing
+N industry 3638
+A 3639 elk_stack
+S 3640 eigrp systems_network p=routing_switching n=EIGRP
+N combo 3641
+S 3642 aws_elb cloud p=aws n=AWS ELB/ALB
+F aws_elb ELB;ALB
+N generic 3643 3644
+A 3645 etl
+A 3646 3647 endpoint_security
+N generic 3648
+S 3649 abap_enhancement enterprise_apps p=abap n=ABAP Enhancement Framework
+N generic 3650 3651
+S 3652 erpnext enterprise_apps p=erp n=ERPNext / Frappe
+L erpnext frappe
+A 3653 es6
+N generic 3654
+S 3655 ethical_hacking security p=pentest n=Ethical hacking
+N entity 3656
+S 3657 event_tracking bi_analytics p=product_analytics n=Event tracking
+N entity 3658
+N generic 3659 3660
+N generic 3661 3662 3663 3664
+S 3665 fastlane mobile n=Fastlane / Bitrise
+L fastlane bitrise
+S 3666 feature_engineering data_science_ml p=machine_learning n=Feature engineering
+N generic 3667
+N combo 3668
+A 3669 sap_fiori
+A 3670 ngfw
+N generic 3671
+S 3672 random_forest data_science_ml p=machine_learning n=Random Forest / Decision Tree
+L random_forest random forest;decision tree;cây quyết định
+S 3673 fpt_cloud cloud n=FPT Cloud / VNPT Cloud / Viettel Cloud
+L fpt_cloud fpt cloud;vnpt cloud;viettel cloud
+N generic 3674
+A 3675 erpnext
+S 3676 freeswitch systems_network p=voip n=Asterisk / FreeSWITCH
+L freeswitch asterisk
+N combo 3677
+A 3678 reverse_engineering
+A 3679 3680 frontend_dev
+N job_title 3681
+N combo 3682
+S 3683 fullstack_dev frontend n=Full-stack development
+L fullstack_dev full stack development;fullstack development;full-stack development
+A 3684 fullstack_dev
+A 3685 functional_spec
+N generic 3686
+S 3687 funnel_analysis bi_analytics p=product_analytics n=Funnel analysis
+N generic 3688
+N industry 3689
+S 3690 game_server game_dev n=Game server
+L game_server game server
+N industry 3691
+S 3692 gantt methodology_pm p=project_planning n=Gantt chart
+F gantt Gantt
+S 3693 gatling testing_qa p=performance_test n=Gatling / Locust
+L gatling locust
+A 3694 3695 chfi
+N generic 3696
+A 3697 gcp_certified
+N generic 3698 3699 3700
+A 3701 ap_ar
+S 3702 german languages n=Tiếng Đức
+F german German
+L german tiếng đức
+N generic 3703
+S 3704 machining cad_engineering p=cnc n=Gia công cơ khí
+N generic 3705
+A 3706 monitoring
+S 3707 teaching soft_skills n=Giảng dạy, đào tạo
+L teaching giảng dạy;teaching
+N industry 3708
+A 3709 english
+S 3710 gin_go backend p=golang n=Gin / Echo / Fiber (Go)
+F gin_go Gin
+L gin_go gin framework;echo framework;gofiber
+A 3711 git_flow
+S 3712 aws_glue data_engineering p=aws n=AWS Glue
+L aws_glue aws glue
+N entity 3713
+A 3714 debugging
+N generic 3715
+A 3716 gemini
+S 3717 google_maps_api frontend n=Google Maps API
+L google_maps_api google maps api;google maps;mapbox
+A 3718 3719 material_design
+N entity 3720
+A 3721 xgboost
+A 3722 graphql
+N generic 3723 3724
+S 3725 growth_marketing digital_marketing n=Growth marketing
+S 3726 ai_guardrails ai_genai p=ai_safety n=Guardrails
+N generic 3727
+S 3728 hardware_design embedded_iot n=Thiết kế phần cứng
+A 3729 computer_hardware
+A 3730 istqb
+N generic 3731
+A 3732 lan_wan
+A 3733 color_theory
+N generic 3734 3735
+S 3736 user_support systems_network p=technical_support n=Hỗ trợ người dùng
+L user_support hỗ trợ người dùng;user support;end-user support
+A 3737 deep_learning
+S 3738 vmware_horizon systems_network p=vmware n=VMware Horizon / VDI
+F vmware_horizon Horizon;VDI
+N combo 3739
+A 3740 http
+S 3741 game_ui game_dev n=Game UI/HUD
+F game_ui HUD
+S 3742 hudi data_engineering p=lakehouse n=Apache Hudi
+N entity 3743
+N generic 3744
+N degree 3745
+N generic 3746
+N entity 3747 3748
+N combo 3749
+S 3750 icd_coding enterprise_apps p=his_lis n=Mã hóa ICD
+F icd_coding ICD
+A 3751 iso_27001
+A 3752 image_processing
+A 3753 image_segmentation
+N generic 3754 3755
+A 3756 3757 imu
+N job_title 3758
+A 3759 it_infrastructure
+N generic 3760
+S 3761 insomnia testing_qa p=api_testing n=Insomnia
+N industry 3762
+A 3763 system_integration
+N combo 3764
+A 3765 vscode
+A 3766 it_audit
+S 3767 ioc_threat security p=threat_intelligence n=IOC
+F ioc_threat IOC;IOCs
+A 3768 ios
+A 3769 voip
+N generic 3770 3771
+A 3772 japanese_it_comm
+N job_title 3773
+A 3774 it_governance
+N job_title 3775
+A 3776 itsm
+S 3777 it_strategy methodology_pm p=it_governance n=Chiến lược CNTT
+N combo 3778
+N job_title 3779
+N combo 3780
+A 3781 japanese_it_comm
+A 3782 java
+A 3783 java
+N generic 3784
+A 3785 java
+N combo 3786
+A 3787 jlpt
+N generic 3788
+N combo 3789
+S 3790 jtag embedded_iot p=debugging n=JTAG / debugger
+F jtag JTAG
+S 3791 kaggle data_science_ml n=Kaggle
+A 3792 independent_work
+N generic 3793 3794 3795
+A 3796 data_mining
+N generic 3797
+A 3798 git
+A 3799 risk_management
+A 3800 quality_control
+N generic 3801
+A 3802 3803 networking
+A 3804 sql
+A 3805 microservices
+N generic 3806
+S 3807 kiro ai_tools n=Kiro / Windsurf
+F kiro Kiro
+L kiro windsurf
+S 3808 kiss_dry architecture_api p=clean_code n=KISS / DRY / YAGNI
+F kiss_dry KISS;DRY;YAGNI
+S 3809 knowledge_distillation data_science_ml p=model_optimization n=Knowledge distillation
+A 3810 knowledge_distillation
+A 3811 kong
+N entity 3812
+N combo 3813 3814
+S 3815 sales_skills soft_skills n=Kỹ năng bán hàng
+L sales_skills kỹ năng bán hàng;sales skills
+A 3816 communication
+A 3817 active_listening
+A 3818 problem_solving
+N job_title 3819 3820 3821 3822 3823 3824
+N degree 3825
+N generic 3826
+S 3827 l3vpn systems_network p=mpls n=L2VPN/L3VPN
+L l3vpn l2vpn;l3vpn
+A 3828 iso_27001
+N generic 3829
+S 3830 data_cleaning data_engineering p=data_quality n=Làm sạch dữ liệu
+L data_cleaning làm sạch dữ liệu;data cleaning;data cleansing
+N generic 3831
+N generic 3832 3833 3834
+A 3835 csharp
+A 3836 cpp
+N job_title 3837
+N combo 3838
+S 3839 lauterbach embedded_iot p=jtag n=Lauterbach TRACE32
+L lauterbach trace32
+A 3840 layout_design
+N generic 3841 3842 3843 3844 3845 3846
+A 3847 3848 kaizen
+N generic 3849
+S 3850 linear_tool dev_tools n=Linear (công cụ quản lý issue)
+F linear_tool Linear
+N generic 3851
+K adaptability soft_skills n=Thích ứng nhanh
+L adaptability thích ứng;thích nghi;adaptability;adaptable
+N generic 3852
+N combo 3853
+S 3854 load_test testing_qa p=performance_test n=Load test / stress test
+L load_test load testing;stress testing;load test;stress test
+S 3855 db_locking databases p=db_transaction n=Locking / concurrency control CSDL
+L db_locking deadlock;locking
+A 3856 gatling
+S 3857 log_analytics devops p=logging n=Log Analytics
+S 3858 lab_instruments embedded_iot n=Oscilloscope / Logic Analyzer
+L lab_instruments oscilloscope;logic analyzer;máy hiện sóng
+S 3859 lora_finetune ai_genai p=llm n=Fine-tuning (LoRA/QLoRA)
+F lora_finetune LoRA;QLoRA
+L lora_finetune fine-tuning;fine tuning;finetuning;peft;rlhf;dpo
+N entity 3860
+S 3861 lti enterprise_apps p=lms_canvas n=LTI
+F lti LTI
+A 3862 lti
+S 3863 lumion cad_engineering n=Lumion / V-Ray (render)
+L lumion v-ray;vray;enscape
+N generic 3864
+A 3865 ui_design
+A 3866 macos
+A 3867 machine_learning
+N generic 3868 3869
+A 3870 erp
+N degree 3871
+N generic 3872 3873 3874
+A 3875 networking
+N degree 3876
+N job_title 3877
+N combo 3878
+N industry 3879
+A 3880 material_design
+A 3881 matlab
+N entity 3882 3883
+N combo 3884
+N generic 3885 3886
+S 3887 metadata_mgmt data_engineering p=data_governance n=Metadata management
+L metadata_mgmt metadata management;data catalog;data dictionary
+N generic 3888 3889
+N combo 3890
+A 3891 ms_dynamics
+S 3892 ms_graph backend n=Microsoft Graph API
+L ms_graph microsoft graph
+A 3893 ms_office
+N generic 3894
+N generic 3895
+S 3896 minio cloud p=object_storage n=MinIO
+N generic 3897
+S 3898 misra embedded_iot p=c_lang n=MISRA C
+F misra MISRA
+A 3899 machine_learning
+N combo 3900
