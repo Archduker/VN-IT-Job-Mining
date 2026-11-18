@@ -1,0 +1,284 @@
+# Lô 27: dòng 7801-8100 (18/11/2026)
+N entity 7801
+N industry 7802
+A 7803 bldc
+S 7804 android_audio mobile p=android n=Android audio (focus, routing)
+L android_audio audio focus;audio routing
+A 7805 git
+N combo 7806
+N generic 7807
+N job_title 7808
+N entity 7809
+N combo 7810
+N entity 7811
+S 7812 fpa enterprise_apps p=financial_analysis n=FP&A
+F fpa FP&A
+S 7813 model_quantization data_science_ml p=model_optimization n=Quantization (FP8, INT8)
+L model_quantization fp8;int8;awq;gptq
+N entity 7814 7815 7816
+S 7817 manufacturing_kpi methodology_pm p=quality_management n=Chỉ số sản xuất (FPY, OEE)
+F manufacturing_kpi FPY;OEE
+A 7818 flutter
+A 7819 laravel
+A 7820 cocos
+N generic 7821
+A 7822 ruby_on_rails
+A 7823 php
+A 7824 nestjs
+N entity 7825 7826 7827
+S 7828 frankenphp backend p=php n=FrankenPHP / RoadRunner / Swoole
+L frankenphp frankenphp;roadrunner;swoole
+S 7829 fraud_detection security n=Phòng chống gian lận (fraud)
+L fraud_detection fraud detection;fraud management;fraud prevention;chống gian lận;fraud
+A 7830 fraud_detection
+N combo 7831
+A 7832 frontend_dev
+A 7833 frontend_dev
+A 7834 performance_optimization
+A 7835 frontend_dev
+N combo 7836
+N job_title 7837 7838
+A 7839 7840 7841 fullstack_dev
+N generic 7842
+N combo 7843
+N job_title 7844
+N generic 7845
+A 7846 tool_calling
+N generic 7847
+A 7848 checklist_test
+S 7849 functional_programming programming_languages n=Lập trình hàm (functional programming)
+L functional_programming functional programming;lập trình hàm
+A 7850 7851 7852 7853 functional_spec
+N generic 7854
+N generic 7855
+S 7856 fwa systems_network p=telecom_network n=FWA (fixed wireless access)
+N generic 7857
+N entity 7858
+S 7859 gaap enterprise_apps n=GAAP / IFRS / VAS (chuẩn mực kế toán)
+F gaap GAAP;IFRS;VAS
+N entity 7860 7861 7862
+A 7863 game_programming
+S 7864 game_client game_dev n=Game client programming
+L game_client game client
+N job_title 7865
+S 7866 game_programming game_dev n=Phát triển game
+L game_programming game development;lập trình game;phát triển game;game programming
+S 7867 game_jam game_dev n=Game Jam
+N job_title 7868
+S 7869 game_testing testing_qa n=Kiểm thử game
+L game_testing game testing;game tester;kiểm thử game;test game
+S 7870 gameanalytics game_dev n=GameAnalytics
+A 7871 7872 gantt
+N generic 7873
+N generic 7874
+N generic 7875
+S 7876 ios_concurrency mobile p=ios n=GCD / Swift Concurrency
+L ios_concurrency gcd;operationqueue;swift concurrency
+A 7877 ios_concurrency
+A 7878 gcp
+S 7879 gcti certifications p=threat_intelligence n=GIAC (GCTI, GCIH...)
+F gcti GIAC;GCTI;GCIH;GPEN
+A 7903 gcti
+S 7880 gxp_compliance methodology_pm p=quality_management n=GMP / GLP / GDP (GxP)
+F gxp_compliance GLP;GxP
+N entity 7881
+A 7882 gemini
+A 7883 llama
+A 7884 7885 7886 7887 genai
+N generic 7888
+N job_title 7889
+A 7890 technical_support
+A 7891 genai
+A 7892 llm
+N entity 7893
+S 7894 geopandas data_science_ml p=gis n=GeoPandas / Shapely
+L geopandas geopandas;shapely
+S 7895 gerrit dev_tools p=git n=Gerrit
+F gerrit Gerrit
+N entity 7896 7897
+A 7898 cucumber
+A 7899 logging
+N entity 7900
+N generic 7901
+N generic 7902
+N generic 7904
+A 7905 problem_solving
+A 7906 soc
+A 7907 cctv
+N generic 7908
+A 7909 responsive_design
+A 7910 voip
+A 7911 network_protocols
+A 7912 uart
+A 7913 presentation
+A 7914 communication
+A 7915 7916 gis
+A 7917 git
+A 7918 7919 git
+A 7920 collaborative_dev
+N combo 7921 7922 7923 7924
+A 7925 github
+A 7926 gitops
+N combo 7927
+N generic 7928
+N entity 7929
+N generic 7930 7931 7932
+A 7933 gxp_compliance
+S 7934 google_mobile_services mobile p=android n=Google Mobile Services (GMS)
+F google_mobile_services GMS
+A 7935 tiktok_ads
+A 7936 gnn
+A 7937 gps_rtk
+N generic 7938
+A 7939 golang
+N generic 7940
+N combo 7941
+N generic 7942
+A 7943 ga4
+A 7944 antigravity
+A 7945 gcp_certified
+N generic 7946
+A 7947 pubsub
+A 7948 cloud_sql
+S 7949 gdn digital_marketing p=google_ads n=Google Display Network
+L gdn google display network;google display
+A 7950 google_workspace
+A 7951 google_workspace
+A 7952 social_login
+A 7953 looker
+A 7954 google_maps_api
+N generic 7955 7956
+S 7957 search_console digital_marketing p=seo n=Google Search Console
+L search_console google search console;search console
+A 7958 google_sheets
+N generic 7959
+A 7960 google_tag_manager
+N generic 7961
+A 7962 vertex_ai
+A 7963 7964 google_workspace
+N generic 7965
+N industry 7966
+N entity 7967
+A 7968 ftth
+N combo 7969
+A 7970 ms_graph
+A 7971 7972 7973 graph_database
+N generic 7974
+S 7975 gre_ipsec systems_network p=vpn n=GRE / IPsec tunnel
+F gre_ipsec GRE;IPsec;IPSec
+N entity 7976
+S 7977 grok ai_tools n=Grok
+N generic 7978 7979 7980 7981
+N combo 7982
+N entity 7983 7984
+S 7985 gsm_cellular systems_network p=telecom_network n=GSM / 2G/3G/4G
+F gsm_cellular GSM
+N entity 7986 7987
+N generic 7988 7989
+N combo 7990
+N entity 7991
+A 7992 illustration
+N generic 7993
+S 7994 android_handler mobile p=android n=Handler / Looper (Android threading)
+L android_handler looper;handlerthread
+S 7995 design_handoff design_creative p=ui_design n=Design handoff (dev handoff)
+L design_handoff handoff;design handoff;dev handoff
+A 7996 llm
+A 7997 sql
+S 7998 queue_concepts messaging p=message_queue n=Hàng đợi (queue)
+L queue_concepts hàng đợi;queueing
+N industry 7999
+N generic 8000 8001
+A 8002 product_analytics
+N entity 8003 8004
+A 8005 computer_hardware
+A 8006 computer_hardware
+A 8007 8008 redhat
+N generic 8009
+A 8010 ccna
+A 8011 pmp
+N entity 8012
+N entity 8013
+N job_title 8014
+N generic 8015
+A 8016 8017 windows
+A 8018 database
+A 8019 cctv
+A 8020 core_banking
+A 8021 core_banking
+S 8022 electrical_systems cad_engineering p=electrical_equipment n=Hệ thống điện
+L electrical_systems hệ thống điện;electrical systems;điện công nghiệp
+A 8023 elv
+S 8024 dms_distribution enterprise_apps n=DMS (phân phối)
+A 8025 data_engineering
+A 8026 lms_canvas
+A 8027 iot
+N generic 8028
+S 8029 man_wan systems_network p=lan_wan n=Mạng MAN / metro
+L man_wan mạng man;metro ethernet
+A 8030 lan_wan
+A 8031 server_admin
+A 8032 mes
+A 8033 microservices
+N generic 8034
+N generic 8035
+N generic 8036
+A 8037 web_development
+N generic 8038
+N generic 8039
+N generic 8040 8041
+N industry 8042
+N entity 8043 8044 8045
+A 8046 technical_support
+N generic 8047
+N entity 8048
+A 8049 aidl
+N generic 8050
+A 8051 http
+N generic 8052
+A 8053 design_document
+S 8054 high_load backend p=performance_optimization n=High-load systems
+L high_load high-load;high load;highload;high traffic;high-traffic
+N generic 8055
+A 8056 his_lis
+N entity 8057
+A 8058 dicom
+A 8059 hmi
+N entity 8060
+A 8061 customer_service
+A 8062 software_deployment
+S 8063 einvoice enterprise_apps n=Hóa đơn điện tử
+L einvoice hóa đơn điện tử;e-invoice;einvoice
+N entity 8064
+A 8065 dynamism
+N generic 8066
+A 8067 2d_animation
+S 8068 react_hoc frontend p=react n=HOC / render props
+F react_hoc HOC
+L react_hoc higher-order component;render props
+A 8069 eagerness_to_learn
+N entity 8070
+N generic 8071
+A 8072 react_hooks
+N entity 8073
+N job_title 8074
+N generic 8075 8076
+N job_title 8077
+A 8078 hsk
+A 8079 hsk
+A 8080 html
+A 8081 rest_api
+A 8082 teaching
+S 8083 huawei_cloud cloud n=Huawei Cloud
+L huawei_cloud huawei cloud
+N generic 8084
+A 8085 hugging_face
+N entity 8086
+N industry 8087
+N entity 8088 8089 8090 8091 8092 8093 8094
+A 8095 hybrid_cloud
+N job_title 8096
+A 8097 hybrid_cloud
+N job_title 8098
+N generic 8099
+N entity 8100
