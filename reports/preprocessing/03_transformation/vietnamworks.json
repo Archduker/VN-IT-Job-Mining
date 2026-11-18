@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:43:16+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-18T00:16:19+00:00",
+  "code_version": "77cac00",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 774
@@ -18,7 +18,7 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 980,
+      "rows_affected": 1754,
       "examples": []
     },
     {
@@ -139,7 +139,7 @@
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 344,
+      "rows_affected": 0,
       "examples": []
     },
     {
@@ -166,7 +166,7 @@
           "job_id": "2093859",
           "field": "skills_clean",
           "before": "['Amazon Web Services' 'AWS Architecture' 'Technical Sales'\n 'IT Solutions Planning' 'Cloud Solutions']",
-          "after": "['AWS', 'Azure', 'Machine Learning', 'Amazon Web Services', 'AWS Architecture']",
+          "after": "['AWS', 'Azure', 'Amazon Web Services', 'AWS Architecture', 'Technical Sales']",
           "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
         }
       ]
@@ -323,36 +323,7 @@
       },
       "abbreviations_approved": 0
     },
-    "translation": {
-      "model_id": "VietAI/envit5-translation",
-      "model_revision": "840bc88104d5a4277af740eaedb024df8c3093e7",
-      "gen_params": {
-        "do_sample": false,
-        "num_beams": 1,
-        "max_new_tokens": 512,
-        "input_prefix": "en: "
-      },
-      "max_chunk_tokens": 200,
-      "fields": [
-        "description",
-        "requirements"
-      ],
-      "approved_terms": 249,
-      "device": "cuda",
-      "batch_size": 4,
-      "torch": "2.15.0+cu132",
-      "transformers": "5.22.2",
-      "peak_vram_mib": 1146,
-      "fell_back_to_cpu": false,
-      "rows_en": 477,
-      "rows_translated": 419,
-      "rows_failed": 58,
-      "chunks": 8289,
-      "cache_hits": 8213,
-      "model_calls": 152,
-      "retries": 76,
-      "failed_chunks": 76
-    },
+    "translation": null,
     "experience_parsed_rate": 84.5
   },
   "samples": [

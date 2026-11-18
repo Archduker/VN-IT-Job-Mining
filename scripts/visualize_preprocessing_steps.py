@@ -174,6 +174,8 @@ def _distribution(series) -> Dict[str, Any]:
         step = max((hi - lo) / 10, 1e-9)
         nice = 10 ** math.floor(math.log10(step))
         step = math.ceil(step / nice) * nice
+        if all(float(x).is_integer() for x in xs):  # số năm, số người: khoảng phải là số nguyên
+            step = max(1, math.ceil(step))
         start = math.floor(lo / step) * step
         edges = [round(start + i * step, 6) for i in range(11)]
         edges = [int(e) if float(e).is_integer() else e for e in edges]

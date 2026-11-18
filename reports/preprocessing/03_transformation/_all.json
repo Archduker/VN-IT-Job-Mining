@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:54:39+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-18T00:16:54+00:00",
+  "code_version": "77cac00",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 4671
@@ -18,17 +18,17 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 9854,
+      "rows_affected": 11976,
       "examples": [],
       "by_source": {
-        "topcv": 2274,
-        "topdev": 1636,
-        "vietnamworks": 980,
-        "careerviet": 1168,
-        "vieclam24h": 176,
-        "itviec": 2662,
+        "topcv": 2281,
+        "topdev": 1838,
+        "vietnamworks": 1754,
+        "careerviet": 1565,
+        "vieclam24h": 340,
+        "itviec": 2691,
         "glints": 517,
-        "jobsgo": 441
+        "jobsgo": 990
       }
     },
     {
@@ -63,11 +63,11 @@
         "topcv": 886,
         "topdev": 58,
         "vietnamworks": 218,
-        "careerviet": 120,
+        "careerviet": 119,
         "vieclam24h": 151,
         "itviec": 210,
         "glints": 150,
-        "jobsgo": 347
+        "jobsgo": 348
       }
     },
     {
@@ -80,11 +80,11 @@
         "topcv": 1513,
         "topdev": 66,
         "vietnamworks": 774,
-        "careerviet": 392,
+        "careerviet": 391,
         "vieclam24h": 164,
         "itviec": 792,
         "glints": 246,
-        "jobsgo": 546
+        "jobsgo": 547
       }
     },
     {
@@ -119,11 +119,11 @@
         "topcv": 1513,
         "topdev": 57,
         "vietnamworks": 654,
-        "careerviet": 359,
+        "careerviet": 358,
         "vieclam24h": 164,
         "itviec": 717,
         "glints": 226,
-        "jobsgo": 546
+        "jobsgo": 547
       }
     },
     {
@@ -170,11 +170,11 @@
         "topcv": 1520,
         "topdev": 202,
         "vietnamworks": 774,
-        "careerviet": 400,
+        "careerviet": 399,
         "vieclam24h": 164,
         "itviec": 818,
         "glints": 246,
-        "jobsgo": 547
+        "jobsgo": 548
       }
     },
     {
@@ -249,17 +249,17 @@
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 1274,
+      "rows_affected": 0,
       "examples": [],
       "by_source": {
-        "topcv": 80,
-        "topdev": 53,
-        "vietnamworks": 344,
-        "careerviet": 69,
-        "vieclam24h": 10,
-        "itviec": 547,
-        "glints": 107,
-        "jobsgo": 64
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
       }
     },
     {
@@ -286,7 +286,7 @@
           "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
           "field": "skills_clean",
           "before": "['Artificial Intelligence' 'Process Improvement'\n 'Research and Development (R&D)']",
-          "after": "['C', 'Machine Learning', 'Artificial Intelligence', 'Process Improvement', 'Research and Development (R&D)']",
+          "after": "['Machine Learning', 'Artificial Intelligence', 'Process Improvement', 'Research and Development (R&D)']",
           "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
         }
       ],
@@ -333,11 +333,11 @@
         "topcv": 1513,
         "topdev": 202,
         "vietnamworks": 773,
-        "careerviet": 394,
+        "careerviet": 393,
         "vieclam24h": 164,
         "itviec": 818,
         "glints": 246,
-        "jobsgo": 546
+        "jobsgo": 547
       }
     }
   ],
@@ -389,8 +389,8 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 92.9,
-      "fill_pct_out": 92.9
+      "fill_pct_in": 92.7,
+      "fill_pct_out": 92.7
     },
     {
       "field": "benefits_std",
@@ -431,8 +431,8 @@
         "output": 774
       },
       "careerviet": {
-        "input": 400,
-        "output": 400
+        "input": 399,
+        "output": 399
       },
       "vieclam24h": {
         "input": 164,
@@ -447,8 +447,8 @@
         "output": 246
       },
       "jobsgo": {
-        "input": 547,
-        "output": 547
+        "input": 548,
+        "output": 548
       }
     },
     "language_distribution": {
@@ -546,27 +546,27 @@
       "changed": true
     },
     {
-      "job_id": "careerviet_35C8B374",
+      "job_id": "careerviet_35C8945A",
       "source": "careerviet",
-      "field": "salary_min_vnd",
-      "before": "1.000 - 1.500 USD",
-      "after": 25400000.0,
+      "field": "posted_date",
+      "before": "15/10/2026",
+      "after": "2026-10-15",
       "changed": true
     },
     {
-      "job_id": "careerviet_35C87608",
+      "job_id": "careerviet_35C8806F",
       "source": "careerviet",
       "field": "exp_min_years",
-      "before": "2 - 5 Năm",
-      "after": 2.0,
+      "before": "5 - 8 Năm",
+      "after": 5.0,
       "changed": true
     },
     {
-      "job_id": "careerviet_35C8B34E",
+      "job_id": "careerviet_35C8AE29",
       "source": "careerviet",
-      "field": "requirements_clean",
-      "before": "Yêu Cầu Công Việc Làm ngoài giờ và trực hệ thống. ﻿Công việc có thể phát sinh ngoài giờ hành chính khi xử lý sự cố hoặc triển khai thay đổi cần khung giờ thấp điểm. Ứng viên cần sẵn sàng trực hệ thống…",
-      "after": "Yêu Cầu Công Việc Làm ngoài giờ và trực hệ thống. Công việc có thể phát sinh ngoài giờ hành chính khi xử lý sự cố hoặc triển khai thay đổi cần khung giờ thấp điểm. Ứng viên cần sẵn sàng trực hệ thống …",
+      "field": "salary_min_vnd",
+      "before": "Cạnh tranh",
+      "after": null,
       "changed": true
     },
     {
@@ -642,27 +642,27 @@
       "changed": true
     },
     {
-      "job_id": "jobsgo_29330246209",
+      "job_id": "jobsgo_29144091698",
+      "source": "jobsgo",
+      "field": "exp_min_years",
+      "before": "Không yêu cầu",
+      "after": 0.0,
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29065469288",
       "source": "jobsgo",
       "field": "salary_min_vnd",
-      "before": "7 - 20 triệu VNĐ",
-      "after": 7000000.0,
+      "before": "Thỏa thuận",
+      "after": null,
       "changed": true
     },
     {
-      "job_id": "jobsgo_29120817292",
+      "job_id": "jobsgo_29048794276",
       "source": "jobsgo",
       "field": "posted_date",
-      "before": "30/09/2026",
-      "after": "2026-09-30",
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_29348496385",
-      "source": "jobsgo",
-      "field": "headcount",
-      "before": "1",
-      "after": 1.0,
+      "before": "24/09/2026",
+      "after": "2026-09-24",
       "changed": true
     }
   ]

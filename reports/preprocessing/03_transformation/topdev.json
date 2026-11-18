@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:43:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-18T00:16:16+00:00",
+  "code_version": "77cac00",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 202
@@ -18,7 +18,7 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1636,
+      "rows_affected": 1838,
       "examples": []
     },
     {
@@ -139,7 +139,7 @@
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 53,
+      "rows_affected": 0,
       "examples": []
     },
     {
@@ -254,8 +254,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 92.1,
-      "fill_pct_out": 92.1
+      "fill_pct_in": 92.6,
+      "fill_pct_out": 92.6
     },
     {
       "field": "locations",
@@ -317,36 +317,7 @@
       },
       "abbreviations_approved": 0
     },
-    "translation": {
-      "model_id": "VietAI/envit5-translation",
-      "model_revision": "840bc88104d5a4277af740eaedb024df8c3093e7",
-      "gen_params": {
-        "do_sample": false,
-        "num_beams": 1,
-        "max_new_tokens": 512,
-        "input_prefix": "en: "
-      },
-      "max_chunk_tokens": 200,
-      "fields": [
-        "description",
-        "requirements"
-      ],
-      "approved_terms": 249,
-      "device": "cuda",
-      "batch_size": 4,
-      "torch": "2.15.0+cu132",
-      "transformers": "5.22.2",
-      "peak_vram_mib": 1099,
-      "fell_back_to_cpu": false,
-      "rows_en": 133,
-      "rows_translated": 117,
-      "rows_failed": 16,
-      "chunks": 2806,
-      "cache_hits": 2788,
-      "model_calls": 36,
-      "retries": 18,
-      "failed_chunks": 18
-    },
+    "translation": null,
     "experience_parsed_rate": 28.2
   },
   "samples": [
