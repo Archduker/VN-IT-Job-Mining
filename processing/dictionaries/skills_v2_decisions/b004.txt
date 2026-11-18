@@ -182,7 +182,7 @@ N job_title 1087
 S 1088 technical_support systems_network n=Hỗ trợ kỹ thuật
 S 1089 test_plan testing_qa p=software_testing n=Test plan, test case
 L test_plan test case;testcase;test cases;kịch bản kiểm thử
-A 1090 db_indexing
+A 1090 query_optimization
 S 1091 use_case methodology_pm p=business_analysis n=Use Case
 N entity 1092
 N generic 1093 1094

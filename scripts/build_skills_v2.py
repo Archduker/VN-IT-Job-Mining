@@ -216,7 +216,8 @@ def build(cands, lines):
         for a in al:
             k = " ".join(fold(a).split())
             skills[slug]["_keys"].append(k)
-            skills[slug]["_forms"].setdefault(k, a)
+            # alias ngắn viết thường trong lệnh L (bdd, hld) là viết tắt: khớp dạng chữ hoa
+            skills[slug]["_forms"].setdefault(k, a if is_safe_key(k) or a != a.lower() else a.upper())
     for slug in forced:
         if slug not in skills:
             errors.append(f"F: slug chưa định nghĩa {slug!r}")

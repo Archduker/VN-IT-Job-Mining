@@ -1,0 +1,319 @@
+# Lô 5: dòng 1201-1500 (18/11/2026)
+A 1201 jetpack_compose
+S 1202 kvm systems_network p=virtualization n=KVM
+A 1203 teamwork
+N job_title 1204
+S 1205 macos systems_network n=macOS
+N generic 1206
+S 1207 telecom_network systems_network p=networking n=Mạng viễn thông
+S 1208 material_design design_creative p=ui_ux n=Material Design
+A 1209 power_platform
+N generic 1210
+A 1211 mcp
+N job_title 1212
+A 1213 oauth
+S 1214 oracle_cert certifications p=oracle_db n=Oracle OCA/OCP
+L oracle_cert oracle oca;oracle ocp;oracle certified
+S 1215 osi_model systems_network p=networking n=Mô hình OSI
+N generic 1216
+S 1217 pinecone databases p=vector_database n=Pinecone
+A 1218 premiere
+S 1219 prtg devops p=monitoring n=PRTG
+S 1220 quality_management methodology_pm n=Quản lý chất lượng
+A 1221 risk_management
+S 1222 query_optimization databases p=sql n=Tối ưu truy vấn
+L query_optimization tối ưu hóa truy vấn;sql tuning
+N job_title 1223
+N generic 1224
+S 1225 soar security p=siem n=SOAR
+A 1226 sql
+S 1227 aws_sqs messaging p=aws n=AWS SQS
+A 1228 test_plan
+N generic 1229 1230
+S 1231 as_is_to_be methodology_pm p=business_analysis n=Mô hình AS-IS/TO-BE
+S 1232 systems_thinking soft_skills n=Tư duy hệ thống
+A 1233 ms_office
+N generic 1234
+S 1235 way4 enterprise_apps p=core_banking n=WAY4 (thẻ)
+S 1236 wireshark systems_network p=networking n=Wireshark
+N generic 1237
+S 1238 ai_security security n=AI Security
+S 1239 api_design architecture_api p=api n=Thiết kế API
+N generic 1240
+S 1241 aruba systems_network p=networking n=Aruba
+A 1242 as_is_to_be
+S 1243 azure_openai ai_genai p=llm n=Azure OpenAI
+A 1244 information_security
+N job_title 1245
+A 1246 big_data
+S 1247 flutter_bloc mobile p=flutter n=BLoC
+F flutter_bloc BLoC;Bloc;BLOC
+S 1248 can_bus embedded_iot p=embedded_protocols n=CAN bus
+F can_bus CAN
+L can_bus can bus;canbus;can protocol
+S 1249 cms backend n=CMS
+N generic 1250
+A 1251 html
+N generic 1252
+A 1253 nist
+N job_title 1254
+A 1255 lakehouse
+A 1256 data_structures
+N generic 1257
+A 1258 c_lang
+N combo 1259
+S 1260 exception_handling backend n=Exception handling
+N generic 1261
+A 1262 entity_framework
+N job_title 1263
+A 1264 google_sheets
+S 1265 high_availability systems_network n=High availability (HA/DR)
+N degree 1266
+S 1267 intune systems_network n=Microsoft Intune
+N job_title 1268 1269 1270
+N generic 1271
+N generic 1272 1273
+N combo 1274
+A 1275 llm
+S 1276 matlab programming_languages n=MATLAB
+A 1277 message_queue
+S 1278 ms_copilot ai_tools n=Microsoft Copilot
+S 1279 mockito testing_qa p=unit_test n=Mockito
+S 1280 napas enterprise_apps p=core_banking n=NAPAS, Citad (thanh toán liên ngân hàng)
+L napas citad
+A 1281 nlp
+N entity 1282
+A 1283 nist
+N generic 1284
+S 1285 onedrive office_tools p=ms_office n=OneDrive
+N industry 1286
+N generic 1287
+A 1288 performance_optimization
+N generic 1289
+A 1290 powerpoint
+S 1291 push_notification mobile n=Push Notification
+N generic 1292 1293
+A 1294 quality_management
+A 1295 team_management
+A 1296 redhat
+N generic 1297
+A 1298 scrum
+N generic 1299
+A 1300 spring_data
+S 1301 state_management frontend n=State management
+A 1302 system_design
+S 1303 tiktok_ads digital_marketing n=TikTok Ads
+A 1304 performance_optimization
+S 1305 tomcat systems_network p=java n=Apache Tomcat
+S 1306 transformer data_science_ml p=deep_learning n=Transformer
+A 1307 creativity
+N generic 1308
+N entity 1309
+S 1310 virtual_machine systems_network p=virtualization n=Máy ảo (VM)
+S 1311 webhooks architecture_api p=api n=Webhooks
+N generic 1312
+S 1313 analytical_skills soft_skills n=Tư duy phân tích
+L analytical_skills tư duy phân tích;kỹ năng phân tích;analytical thinking;analytical skills
+S 1314 ant_design frontend p=react n=Ant Design / MUI
+L ant_design material ui;mui
+N entity 1315
+A 1316 async_programming
+N job_title 1317
+A 1318 aws_certified
+S 1319 azure_sql databases p=sql_server n=Azure SQL
+A 1320 information_security
+S 1321 blazor frontend p=dotnet n=Blazor
+N entity 1322
+N generic 1323
+A 1324 burp_suite
+N generic 1325 1326
+S 1327 ccsp certifications p=cloud_security n=CCSP
+A 1328 cicd
+S 1329 cmmi methodology_pm p=quality_management n=CMMI
+S 1330 code_review dev_tools n=Code review
+S 1331 contact_center enterprise_apps n=Contact Center
+A 1332 web_vitals
+S 1333 coreldraw design_creative n=CorelDRAW
+S 1334 ctf security n=CTF
+N generic 1335
+A 1336 data_pipeline
+N generic 1337 1338 1339 1340
+A 1341 big_data
+S 1342 embedded_linux embedded_iot p=linux n=Embedded Linux
+N job_title 1343 1344
+S 1345 sap_fico enterprise_apps p=sap n=SAP FI/CO, MM, SD
+F sap_fico FICO
+L sap_fico sap fico;sap fi/co;sap mm;sap sd;sap pp
+S 1346 firmware embedded_iot p=embedded n=Firmware
+S 1347 functional_spec methodology_pm p=business_analysis n=Đặc tả chức năng (FSD/FRD)
+S 1348 group_policy systems_network p=active_directory n=Group Policy
+A 1349 erp
+N generic 1350
+A 1351 high_availability
+N generic 1352
+S 1353 iis systems_network n=IIS
+A 1354 integration_test
+S 1355 it_audit security n=IT Audit
+A 1356 itsm
+N job_title 1357
+N combo 1358
+S 1359 keycloak security p=iam n=Keycloak
+N generic 1360 1361
+N job_title 1362
+S 1363 kyc_aml enterprise_apps n=KYC/AML
+L kyc_aml aml;ekyc
+N generic 1364
+A 1365 leadership
+A 1366 his_lis
+N generic 1367
+A 1368 load_balancing
+N degree 1369
+S 1370 metasploit security p=pentest n=Metasploit
+S 1371 miro dev_tools n=Miro
+A 1372 agile
+N generic 1373 1374
+N combo 1375
+S 1376 objective_c programming_languages n=Objective-C
+S 1377 oidc security p=authn_authz n=OpenID Connect (OIDC)
+N generic 1378 1379
+N entity 1380
+N industry 1381
+S 1382 pcb embedded_iot n=Thiết kế PCB
+N generic 1383
+N job_title 1384
+S 1385 prototyping design_creative p=ui_ux n=Prototype
+N generic 1386
+A 1387 risk_management
+N generic 1388
+S 1389 reinforcement_learning data_science_ml p=machine_learning n=Reinforcement Learning
+L reinforcement_learning reinforcement learning;học tăng cường
+N generic 1390
+S 1391 riverpod mobile p=flutter n=Riverpod
+S 1392 robot_framework testing_qa p=automation_test n=Robot Framework
+S 1393 scss frontend p=css n=SCSS/SASS/LESS
+L scss sass;less css
+N job_title 1394
+N combo 1395
+S 1396 sketchup cad_engineering n=SketchUp
+S 1397 soapui testing_qa p=api_testing n=SoapUI
+S 1398 sonarqube devops n=SonarQube
+S 1399 sophos security n=Sophos
+N combo 1400
+S 1401 stm32 embedded_iot p=embedded n=STM32 (vi điều khiển)
+S 1402 stp systems_network p=networking n=STP
+A 1403 linux
+N industry 1404
+S 1405 test_design testing_qa p=software_testing n=Thiết kế test
+N entity 1406 1407
+N generic 1408
+S 1409 user_acquisition digital_marketing n=User Acquisition
+N generic 1410
+N combo 1411
+S 1412 webrtc architecture_api n=WebRTC
+A 1413 websocket
+S 1414 wireframe design_creative p=ui_ux n=Wireframe / Mockup
+L wireframe mockup;mock-up;wireframes
+S 1415 access_control security p=iam n=Access control
+S 1416 activemq messaging n=ActiveMQ
+A 1417 premiere
+N combo 1418
+A 1419 angular
+N combo 1420
+S 1421 appsflyer digital_marketing n=AppsFlyer, Adjust
+L appsflyer adjust sdk
+N industry 1422
+N generic 1423
+N combo 1424 1425
+N industry 1426 1427
+N generic 1428
+S 1429 bcp security p=disaster_recovery n=BCP (kế hoạch liên tục kinh doanh)
+N generic 1430
+S 1431 ble embedded_iot n=Bluetooth Low Energy (BLE)
+L ble bluetooth low energy;bluetooth
+N generic 1432
+N combo 1433
+N generic 1434
+A 1435 caching
+S 1436 cdc data_engineering p=data_pipeline n=CDC (Change Data Capture)
+L cdc change data capture
+S 1437 cdn cloud n=CDN
+S 1438 celery backend p=python n=Celery
+A 1439 aws_certified
+S 1440 checkpoint security p=firewall n=Check Point
+L checkpoint check point
+N generic 1441
+S 1442 cka certifications p=kubernetes n=CKA/CKAD/CKS
+L cka ckad;cks
+N job_title 1443 1444
+A 1445 cloud_computing
+S 1446 cloudfront cloud p=aws n=CloudFront
+A 1447 java
+N generic 1448
+S 1449 data_mining data_science_ml n=Data Mining
+A 1450 looker
+N combo 1451
+S 1452 database_design databases n=Thiết kế cơ sở dữ liệu
+S 1453 debian systems_network p=linux n=Debian
+S 1454 delta_lake data_engineering p=lakehouse n=Delta Lake
+L delta_lake delta lake
+N generic 1455
+A 1456 devops
+A 1457 deep_learning
+S 1458 xdr security p=edr n=XDR
+L xdr xdr
+A 1459 embedded
+A 1460 english
+S 1461 enterprise_architecture architecture_api p=software_architecture n=Enterprise Architecture
+S 1462 esxi systems_network p=vmware n=VMware ESXi/vSphere
+L esxi vsphere;vcenter
+S 1463 excel_advanced office_tools p=excel n=Excel nâng cao
+L excel_advanced pivot table;pivottable;excel nâng cao;advanced excel
+N job_title 1464
+S 1465 finops cloud n=FinOps
+A 1466 functional_spec
+S 1467 functional_test testing_qa p=software_testing n=Functional testing
+N generic 1468
+N generic 1469
+S 1470 hive data_engineering p=hadoop n=Apache Hive
+F hive Hive
+L hive apache hive;hiveql
+N generic 1471
+N job_title 1472
+S 1473 ipc systems_network p=operating_systems n=IPC (giao tiếp liên tiến trình)
+S 1474 it_governance methodology_pm n=IT Governance
+L it_governance cobit
+S 1475 it_operations systems_network n=Vận hành hệ thống IT
+N job_title 1476
+S 1477 jetpack_compose mobile p=android n=Jetpack Compose
+S 1478 azure_key_vault security p=azure n=Azure Key Vault
+S 1479 kibana devops p=elk_stack n=Kibana
+S 1480 kong architecture_api p=api_gateway n=Kong
+F kong Kong
+N generic 1481
+N job_title 1482
+S 1483 system_programming programming_languages n=Lập trình hệ thống
+N combo 1484
+N industry 1485
+A 1486 linux
+N combo 1487
+S 1488 llama ai_genai p=llm n=Llama, Qwen, Mistral (LLM mã mở)
+F llama Llama
+L llama qwen;mistral
+N generic 1489
+N combo 1490
+N job_title 1491
+S 1492 mastercam cad_engineering p=cnc n=Mastercam
+S 1493 mcu embedded_iot p=embedded n=Vi điều khiển (MCU)
+L mcu microcontroller;microcontrollers;vi điều khiển
+S 1494 memcached databases p=caching n=Memcached
+N combo 1495
+A 1496 agile
+S 1497 multithreading backend p=concurrency n=Multithreading
+L multithreading multi-threading;đa luồng
+N combo 1498
+N industry 1499
+S 1500 nifi data_engineering n=Apache NiFi
+F ant_design MUI
+F kyc_aml AML
+F cka CKS
+F xdr XDR

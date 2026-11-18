@@ -1,0 +1,312 @@
+# Lô 6: dòng 1501-1800 (18/11/2026)
+N generic 1501
+S 1502 onnx data_science_ml p=deep_learning n=ONNX / TensorRT
+L onnx onnx runtime;tensorrt
+S 1503 oswe certifications p=pentest n=OSWE/OSEP
+L oswe osep
+A 1504 his_lis
+N generic 1505 1506 1507 1508
+S 1509 product_analytics bi_analytics n=Product Analytics
+S 1510 product_discovery methodology_pm p=product_management n=Product Discovery
+S 1511 psm certifications p=scrum n=PSM/CSM (chứng chỉ Scrum)
+L psm csm;professional scrum master;certified scrummaster
+A 1512 quality_control
+S 1513 task_management soft_skills n=Quản lý công việc
+N generic 1514
+S 1515 react_query frontend p=react n=React Query / TanStack Query
+L react_query tanstack query
+A 1516 regression_test
+N generic 1517
+A 1518 backup
+A 1519 redhat
+N generic 1520
+S 1521 rpa enterprise_apps n=RPA
+L rpa uipath;robotic process automation
+N industry 1522
+N job_title 1523
+N combo 1524
+S 1525 service_desk systems_network p=itsm n=Service Desk
+S 1526 soa architecture_api n=SOA
+A 1527 sdlc
+A 1528 spring_boot
+N generic 1529
+A 1530 tailwind
+A 1531 automation_test
+N entity 1532
+S 1533 db_transaction databases n=Transaction (giao dịch CSDL)
+N combo 1534
+S 1535 usb embedded_iot p=embedded_protocols n=USB
+S 1536 vcp certifications p=vmware n=VCP (VMware Certified Professional)
+N generic 1537
+A 1538 git
+A 1539 documentation
+S 1540 zapier dev_tools n=Zapier / Make
+N generic 1541
+A 1542 github_copilot
+N combo 1543
+A 1544 kyc_aml
+S 1545 android_sdk mobile p=android n=Android SDK
+N generic 1546 1547 1548
+N combo 1549
+N generic 1550
+N job_title 1551
+N generic 1552 1553
+N combo 1554
+N industry 1555 1556
+A 1557 reporting
+N industry 1558
+N combo 1559
+A 1560 ble
+A 1561 c_lang
+N generic 1562 1563 1564 1565
+N job_title 1566
+S 1567 change_management methodology_pm n=Change Management
+N generic 1568
+N combo 1569
+N job_title 1570
+N entity 1571
+N job_title 1572
+A 1573 containerization
+N job_title 1574
+S 1575 crashlytics mobile p=firebase n=Firebase Crashlytics
+N job_title 1576
+S 1577 data_privacy security n=Bảo vệ dữ liệu cá nhân (Data Privacy)
+L data_privacy bảo vệ dữ liệu cá nhân;nghị định 13;pdpa
+S 1578 ms_defender security n=Microsoft Defender
+L ms_defender microsoft defender
+N generic 1579
+N degree 1580
+N generic 1581
+S 1582 technical_drawing cad_engineering n=Đọc bản vẽ kỹ thuật
+A 1583 his_lis
+S 1584 f5 systems_network p=load_balancing n=F5
+F f5 F5
+N generic 1585
+N industry 1586
+N entity 1587
+N generic 1588
+S 1589 git_flow dev_tools p=git n=Git Flow
+N combo 1590
+S 1591 grc security n=GRC (quản trị, rủi ro, tuân thủ)
+N generic 1592
+S 1593 iso_9001 methodology_pm p=quality_management n=ISO 9001
+S 1594 jetson embedded_iot p=embedded n=NVIDIA Jetson / Raspberry Pi / ESP32
+L jetson jetson nano;raspberry pi;esp32;arduino
+A 1595 communication
+N degree 1596
+N job_title 1597 1598
+N entity 1599
+N generic 1600
+N job_title 1601
+N entity 1602
+N generic 1603
+A 1604 storage
+N generic 1605
+A 1606 mdm
+N generic 1607
+S 1608 maya design_creative p=3d_modeling n=Autodesk Maya / 3ds Max
+F maya Maya
+L maya 3ds max;autodesk maya
+N job_title 1609
+S 1610 mentoring soft_skills n=Kèm cặp (Mentoring)
+A 1611 ms_fabric
+N entity 1612
+S 1613 mobile_app_dev mobile n=Phát triển ứng dụng di động
+L mobile_app_dev mobile app;mobile apps;ứng dụng di động;lập trình mobile;mobile development
+S 1614 modbus embedded_iot p=embedded_protocols n=Modbus
+A 1615 jlpt
+N generic 1616
+S 1617 netsuite enterprise_apps p=erp n=NetSuite
+N generic 1618
+A 1619 oracle_db
+S 1620 ota embedded_iot p=firmware n=OTA update
+N generic 1621 1622
+A 1623 computer_hardware
+S 1624 pmi_pba certifications p=business_analysis n=PMI-PBA
+N job_title 1625
+N generic 1626
+A 1627 prototyping
+S 1628 rancher devops p=kubernetes n=Rancher
+N generic 1629
+A 1630 sre
+S 1631 rest_assured testing_qa p=api_testing n=REST Assured
+S 1632 rxjs frontend p=angular n=RxJS
+N industry 1633
+N combo 1634
+S 1635 scada embedded_iot n=SCADA
+S 1636 scalability architecture_api n=Scalability
+S 1637 scripting programming_languages n=Scripting
+A 1638 sharepoint
+N combo 1639
+N generic 1640
+A 1641 smoke_test
+A 1642 qa_qc
+N generic 1643
+N generic 1644 1645
+A 1646 scrum
+S 1647 stlc testing_qa p=software_testing n=STLC
+N generic 1648 1649
+S 1650 tsql databases p=sql_server n=T-SQL
+N industry 1651
+N job_title 1652
+S 1653 testng testing_qa p=unit_test n=TestNG
+N generic 1654
+A 1655 computer_vision
+S 1656 triton data_science_ml p=mlops n=Triton Inference Server
+F triton Triton
+N combo 1657
+S 1658 uds embedded_iot p=autosar n=UDS (chẩn đoán ô tô)
+S 1659 ui_design design_creative p=ui_ux n=UI Design
+N entity 1660
+S 1661 unreal game_dev n=Unreal Engine
+F unreal Unreal
+L unreal unreal engine
+N generic 1662
+S 1663 veeam systems_network p=backup n=Veeam
+S 1664 vfx design_creative n=VFX
+A 1665 esxi
+S 1666 vxlan systems_network p=networking n=VXLAN
+N job_title 1667
+A 1668 wireframe
+N generic 1669
+S 1670 owasp_zap security p=pentest n=OWASP ZAP
+F owasp_zap ZAP
+L owasp_zap owasp zap
+S 1671 zustand frontend p=react n=Zustand
+S 1672 adas embedded_iot n=ADAS
+N generic 1673
+S 1674 ai_safety ai_genai n=AI Safety
+N combo 1675
+S 1676 aiops devops n=AIOps
+S 1677 aix systems_network p=unix n=IBM AIX
+S 1678 ajax frontend p=javascript n=AJAX
+F ajax AJAX;Ajax
+N generic 1679
+S 1680 android_studio mobile p=android n=Android Studio
+A 1681 nifi
+N combo 1682
+N generic 1683 1684
+S 1685 auto_layout design_creative p=figma n=Auto Layout
+A 1686 entra_id
+S 1687 azure_ai ai_genai p=azure n=Azure AI
+S 1688 azure_functions cloud p=azure n=Azure Functions
+N combo 1689 1690
+S 1691 balsamiq design_creative p=wireframe n=Balsamiq
+A 1692 english
+N generic 1693 1694
+N combo 1695
+S 1696 brd methodology_pm p=business_analysis n=BRD
+L brd business requirement document;business requirements document
+A 1697 defect_management
+N industry 1698
+N job_title 1699
+N generic 1700 1701
+S 1702 canoe embedded_iot p=can_bus n=CANoe / CANalyzer
+L canoe canalyzer
+N generic 1703 1704 1705
+N industry 1706
+A 1707 cicd
+N combo 1708
+N generic 1709
+A 1710 cloud_computing
+N combo 1711
+S 1712 cocos game_dev n=Cocos Creator
+L cocos cocos creator;cocos2d
+S 1713 comptia_network certifications p=networking n=CompTIA Network+
+L comptia_network network+
+N generic 1714 1715
+S 1716 coroutines mobile p=kotlin n=Kotlin Coroutines/Flow
+N generic 1717
+S 1718 cucumber testing_qa p=automation_test n=Cucumber / BDD
+L cucumber bdd;gherkin
+S 1719 cysa certifications p=cybersecurity n=CompTIA CySA+
+L cysa cysa+
+N combo 1720 1721
+S 1722 design_document methodology_pm n=Tài liệu thiết kế (HLD/LLD)
+L design_document hld;lld;tài liệu thiết kế;design document;technical design document
+N combo 1723
+N degree 1724
+A 1725 docker
+N generic 1726
+N industry 1727
+S 1728 edge_ai data_science_ml n=Edge AI
+N generic 1729
+S 1730 exchange_online systems_network p=ms_office n=Exchange Online
+L exchange_online microsoft exchange;exchange server
+N combo 1731
+N generic 1732
+N job_title 1733
+N generic 1734
+S 1735 gis data_engineering n=GIS
+A 1736 git_flow
+N generic 1737
+A 1738 looker
+N combo 1739
+A 1740 design_document
+N generic 1741
+N combo 1742
+N generic 1743
+S 1744 ide dev_tools n=IDE
+A 1745 english
+N generic 1746
+S 1747 istqb certifications p=software_testing n=ISTQB
+L istqb istqb;istqb foundation
+N generic 1748
+S 1749 jira_service_management systems_network p=itsm n=Jira Service Management
+L jira_service_management jira service management;jira service desk
+N combo 1750
+A 1751 software_architecture
+A 1752 problem_solving
+A 1753 presentation
+N job_title 1754
+N combo 1755
+S 1756 layout_design design_creative n=Layout, bố cục
+N job_title 1757
+N combo 1758
+S 1759 lidar embedded_iot n=LiDAR, cảm biến
+N generic 1760
+S 1761 liveops game_dev n=LiveOps
+S 1762 llmops ai_genai p=mlops n=LLMOps
+S 1763 low_code enterprise_apps n=Low-code / No-code
+A 1764 low_code
+N combo 1765
+A 1766 pmp
+N industry 1767
+N degree 1768
+A 1769 data_modeling
+A 1770 wireframe
+S 1771 ibm_mq messaging p=message_queue n=IBM MQ
+L ibm_mq ibm mq;websphere mq
+S 1772 mrp enterprise_apps p=erp n=MRP
+N combo 1773
+A 1774 comptia_network
+A 1775 c_lang
+N generic 1776
+N entity 1777
+S 1778 nx frontend n=Nx / Turborepo (monorepo)
+L nx turborepo;monorepo
+S 1779 omron embedded_iot p=plc n=PLC Omron/Mitsubishi/Siemens
+L omron mitsubishi plc;siemens plc;tia portal
+S 1780 openai_api ai_genai p=llm n=OpenAI API
+A 1781 swagger
+S 1782 perl programming_languages n=Perl
+N generic 1783
+N job_title 1784
+N generic 1785
+S 1786 pic_avr embedded_iot p=mcu n=PIC/AVR/ARM
+L pic_avr avr;arm cortex
+N generic 1787 1788
+A 1789 prd
+S 1790 prisma backend p=orm n=Prisma / TypeORM / Sequelize
+F prisma Prisma
+L prisma typeorm;sequelize
+S 1791 process_improvement methodology_pm n=Cải tiến quy trình
+S 1792 product_ownership methodology_pm p=product_management n=Product Ownership
+A 1793 python
+N job_title 1794
+A 1795 cicd
+N combo 1796
+S 1797 red_team security p=pentest n=Red Team
+A 1798 reinforcement_learning
+N generic 1799
+S 1800 db_replication databases n=Replication (sao chép CSDL)
