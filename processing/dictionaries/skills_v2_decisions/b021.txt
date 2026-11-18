@@ -1,0 +1,283 @@
+# Lô 21: dòng 6001-6300 (18/11/2026)
+A 6001 payment_gateway
+A 6002 agile
+N entity 6003
+N generic 6004
+A 6005 mcp
+A 6006 sdlc
+A 6007 market_research
+S 6008 electrical_equipment cad_engineering n=Thiết bị điện
+L electrical_equipment thiết bị điện;tủ điện
+A 6009 computer_hardware
+S 6010 medical_devices embedded_iot n=Thiết bị y tế
+N generic 6011
+A 6012 hardware_design
+A 6013 test_design
+A 6014 6015 web_design
+S 6016 third_party_risk security p=risk_management n=Third-party risk (TPRM)
+F third_party_risk TPRM
+L third_party_risk third-party risk;vendor risk
+N generic 6017
+N entity 6018 6019
+A 6020 test_execution
+N job_title 6021
+N entity 6022
+N industry 6023
+N entity 6024
+A 6025 persuasion
+N generic 6026
+A 6027 api_integration
+A 6028 jlpt
+N generic 6029
+N entity 6030 6031
+N generic 6032 6033
+A 6034 enthusiasm
+S 6035 titan_dms enterprise_apps n=Titan DMS (ngân hàng)
+A 6036 ssl_tls
+S 6037 pit_tax enterprise_apps n=Thuế TNCN (payroll)
+F pit_tax TNCN
+L pit_tax thuế tncn;thuế thu nhập cá nhân
+N generic 6038
+A 6039 query_optimization
+N entity 6040
+A 6041 inventory_mgmt
+N combo 6042 6043
+N degree 6044
+A 6045 design_patterns
+A 6046 sql
+N entity 6047 6048
+N generic 6049
+S 6050 traceroute systems_network p=networking n=Ping / traceroute (chẩn đoán mạng)
+L traceroute traceroute;tracert;nslookup
+N generic 6051
+S 6052 trading_system enterprise_apps n=Hệ thống giao dịch (trading)
+L trading_system trading system;trading systems;hệ thống giao dịch chứng khoán
+S 6053 customer_experience digital_marketing n=Trải nghiệm khách hàng (CX)
+L customer_experience trải nghiệm khách hàng;customer experience
+A 6054 lora_finetune
+N generic 6055
+S 6056 temenos_transact enterprise_apps p=t24 n=Temenos Transact
+L temenos_transact temenos transact
+N generic 6057
+A 6058 db_transaction
+S 6059 transit_gateway cloud p=vpc n=AWS Transit Gateway
+L transit_gateway transit gateway
+N entity 6060 6061
+A 6062 erp
+A 6063 presentation
+S 6064 trivy security p=container_security n=Trivy / Snyk
+L trivy snyk
+N generic 6065 6066
+S 6067 honesty soft_skills n=Trung thực
+L honesty trung thực;honesty
+N job_title 6068 6069
+A 6070 6071 zero_trust
+A 6072 sql_query
+N generic 6073
+N entity 6074
+N generic 6075
+A 6076 strategic_thinking
+A 6077 problem_solving
+A 6078 analytical_skills
+N entity 6079 6080
+A 6081 user_acquisition
+A 6082 uat
+N combo 6083
+S 6084 drone embedded_iot p=robotics n=Drone / UAV
+F drone UAV
+L drone drone;flight controller
+A 6085 6086 linux
+N generic 6087 6088
+N entity 6089 6090
+A 6091 ui_design
+N combo 6092 6093
+S 6094 uikit mobile p=ios n=UIKit
+A 6095 ruijie
+N entity 6096
+N generic 6097
+A 6098 unit_test
+N entity 6099 6100
+A 6101 unity
+A 6102 6103 unity_asset_store
+N job_title 6104
+A 6105 unity
+N combo 6106
+N generic 6107 6108
+N entity 6109 6110 6111
+A 6112 use_case
+A 6113 use_case
+A 6114 sql
+A 6115 use_case
+N generic 6116
+A 6117 sap_badi
+N generic 6118
+A 6119 ux_design
+A 6120 ux_design
+N generic 6121
+S 6122 value_engineering methodology_pm n=Value engineering
+N generic 6123
+A 6124 liveops
+A 6125 server_admin
+A 6126 cnc
+A 6127 routing_switching
+N generic 6128
+N generic 6129 6130 6131 6132
+N generic 6133
+A 6134 vba
+A 6135 canoe
+N generic 6136 6137
+A 6138 netbackup
+N entity 6139
+S 6140 video_production design_creative n=Sản xuất / dựng video
+L video_production video production;dựng video;edit video;biên tập video;video editing
+A 6141 brd
+S 6142 script_writing design_creative n=Viết kịch bản (video, game)
+L script_writing viết kịch bản;scriptwriting
+A 6143 prd
+A 6144 technical_writing
+N generic 6145
+N combo 6146
+N entity 6147
+A 6148 fpt_cloud
+N entity 6149 6150
+N generic 6151
+S 6152 viper architecture_api p=design_patterns n=VIPER
+F viper VIPER
+A 6153 virtualization
+N generic 6154
+S 6155 visual_basic programming_languages n=Visual Basic / VB.NET
+L visual_basic visual basic;vb.net;vb6
+A 6156 vscode
+A 6157 vcp
+N combo 6158
+A 6159 vcp
+A 6160 vmware
+A 6161 vcp
+S 6162 azure_vnet cloud p=azure n=Azure VNet
+F azure_vnet VNet
+N entity 6163
+S 6164 vng_cloud cloud n=VNG Cloud / BizFly Cloud
+L vng_cloud vng cloud;bizfly cloud
+N entity 6165
+N generic 6166
+S 6167 voice_ux design_creative p=ux_design n=Voice UX
+N entity 6168
+S 6169 vr_ar game_dev n=VR / AR
+F vr_ar VR;XR
+L vr_ar virtual reality;augmented reality;thực tế ảo;thực tế tăng cường
+A 6170 visual_studio
+N entity 6171
+A 6172 vulnerability_assessment
+N combo 6173
+A 6174 wbs
+A 6175 web_security
+S 6176 web_components frontend n=Web Components
+L web_components web components;shadow dom
+A 6177 php
+N combo 6178
+N generic 6179 6180 6181 6182 6183
+N combo 6184
+S 6185 windows_desktop_app backend p=dotnet n=Ứng dụng Windows desktop
+L windows_desktop_app windows application;windows applications;desktop application;ứng dụng desktop
+A 6186 6187 windows_server
+S 6188 windows_service backend p=dotnet n=Windows Service
+N combo 6189
+A 6190 jira
+S 6191 wlan systems_network p=wifi n=WLAN / Wireless controller
+F wlan WLAN
+S 6192 sop methodology_pm p=quality_management n=SOP / Work instruction
+F sop SOP;SOPs
+L sop work instruction;quy trình vận hành chuẩn
+N generic 6193
+S 6194 workmanager mobile p=android n=WorkManager
+N generic 6195
+N generic 6196
+A 6197 okr
+A 6198 statistics
+A 6199 ai_agent
+A 6200 api
+S 6201 relationship_building soft_skills n=Xây dựng mối quan hệ
+L relationship_building xây dựng mối quan hệ;relationship building
+N generic 6202
+A 6203 image_processing
+N generic 6204
+N entity 6205
+N generic 6206 6207
+S 6208 yii backend p=php n=Yii
+F yii Yii;Yii2
+L yii yii2
+N generic 6209 6210
+A 6211 zalo_oa
+S 6212 ewallet_integration backend p=payment_gateway n=Ví điện tử (ZaloPay, MoMo, VNPay)
+L ewallet_integration zalopay;ví điện tử;e-wallet
+S 6213 zbrush design_creative p=3d_modeling n=ZBrush (sculpting)
+L zbrush zbrush;sculpting
+S 6216 zoho enterprise_apps p=crm n=Zoho
+A 6214 zero_trust
+S 6215 zero_day security p=threat_intelligence n=Zero-day / exploit
+L zero_day zero-day;zero day;exploit development
+S 6217 san_zoning systems_network p=storage n=SAN zoning / LUN
+L san_zoning zoning;san switch
+S 6218 iso_14001 methodology_pm p=quality_management n=ISO 14001 / 45001
+L iso_14001 iso 14001;iso 45001;14001
+S 6219 2d_animation design_creative n=Animation 2D
+L 2d_animation 2d animation;animation 2d;hoạt hình 2d;2d animator
+S 6220 2d_art design_creative n=2D art
+L 2d_art 2d art;2d artist
+N job_title 6221
+A 6222 3d_modeling
+S 6223 qc_tools methodology_pm p=quality_management n=7 QC tools / 8D / 4M
+L qc_tools 7 qc tools;4m;5 why;5 whys
+F qc_tools 8D
+A 6224 6225 qc_tools
+N generic 6226 6227 6228 6229 6230
+N combo 6231
+A 6232 ab_testing
+N entity 6233 6234
+S 6235 aaa_radius security p=access_control n=AAA / RADIUS / TACACS+
+F aaa_radius AAA;RADIUS;TACACS
+A 6236 6237 abap
+N entity 6238 6239 6240 6241 6242 6243
+N generic 6244
+N entity 6245
+N generic 6246
+A 6247 access_control
+S 6248 access_network systems_network p=telecom_network n=Mạng truy nhập (access network)
+L access_network access network;mạng truy nhập
+A 6249 6250 accessibility
+N industry 6251 6252 6253
+N generic 6254
+S 6255 acf backend n=ACF (WordPress)
+F acf ACF
+N generic 6256
+S 6257 acl_data bi_analytics p=it_audit n=ACL / IDEA (phân tích dữ liệu kiểm toán)
+L acl_data acl certified data analyst;caseware idea
+A 6258 acl_data
+N generic 6259 6260
+A 6261 cdp_platform
+N generic 6262
+A 6263 6264 oracle_data_guard
+A 6265 6266 entra_id
+A 6267 orm
+N industry 6268 6269
+N combo 6270 6271
+S 6272 adb mobile p=android n=ADB (Android Debug Bridge)
+F adb ADB
+A 6273 mcu_peripherals
+S 6276 unity_addressables game_dev p=unity n=Unity Addressables
+L unity_addressables addressables;assetbundle
+N generic 6274 6275
+A 6277 azure_data_factory
+N generic 6278
+N job_title 6279
+N combo 6280
+N generic 6281 6282
+A 6283 smartforms
+A 6284 6285 premiere
+A 6286 facebook_ads
+N combo 6287 6288 6289 6290 6291 6292 6293
+A 6294 excel_advanced
+A 6295 networking
+N generic 6296 6297
+N entity 6298 6299
+A 6300 cryptography
