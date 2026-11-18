@@ -1,0 +1,260 @@
+# Lô 31: dòng 9001-9300 (18/11/2026)
+N industry 9001 9002 9003
+A 9004 active_listening
+A 9005 market_research
+N industry 9006
+A 9007 business_analysis
+N industry 9008
+A 9009 nginx
+N generic 9010
+A 9011 dart
+N generic 9012
+A 9013 sql
+N generic 9014 9015
+A 9016 clean_code
+A 9017 solid
+A 9018 ui_design
+N entity 9019 9020 9021 9022
+N job_title 9023 9024 9025 9026 9027 9028 9029 9030 9031 9032 9033 9034 9035 9036 9037 9038 9039 9040
+A 9041 adaptability
+N generic 9042 9043
+N entity 9044 9045 9046
+A 9047 reverse_engineering
+A 9048 9049 ai_governance
+A 9050 9051 nist
+N combo 9052
+S 9053 nng_ux certifications p=ux_design n=NN/g UX Certification
+L nng_ux nn/g ux certification;nielsen norman
+A 9054 9055 nng_ux
+S 9056 npu_ai embedded_iot p=edge_ai n=NPU / NNAPI (AI on-device)
+F npu_ai NPU;NNAPI
+L npu_ai on-device ai
+N generic 9057 9058
+A 9059 low_code
+N entity 9060
+N generic 9061 9062
+A 9063 nosql
+N generic 9064 9065 9066
+A 9067 9068 9069 nosql
+N generic 9070 9071
+A 9072 npu_ai
+N generic 9073
+S 9074 ntfs systems_network p=file_system n=NTFS permissions
+F ntfs NTFS
+N entity 9075 9076
+N generic 9077
+S 9078 nuclei security p=vulnerability_assessment n=Nuclei / Nmap
+L nuclei nuclei
+A 9079 nuxtjs
+N combo 9080
+S 9081 nvidia_dynamo data_science_ml p=model_serving n=NVIDIA Dynamo / Triton
+L nvidia_dynamo nvidia dynamo
+N generic 9082
+A 9083 cctv
+N generic 9084
+N combo 9085
+A 9086 9087 9088 oauth
+A 9089 image_segmentation
+N generic 9090
+A 9091 ooad
+A 9092 monitoring
+N entity 9093
+A 9094 9095 document_ai
+S 9096 odoo_orm enterprise_apps p=odoo n=Odoo ORM / framework
+L odoo_orm odoo orm
+N entity 9097 9098
+A 9099 manufacturing_kpi
+N generic 9100
+N combo 9101
+N generic 9102
+N combo 9103 9104
+N generic 9105
+N generic 9106
+N generic 9107
+N generic 9108
+N generic 9109
+N generic 9110
+N entity 9111
+A 9112 order_management
+N generic 9113
+A 9114 npu_ai
+S 9115 on_premise systems_network n=Hạ tầng on-premise
+L on_premise on-premise;on-prem;on premise;on-premises
+N entity 9116
+N generic 9117
+K ota_travel enterprise_apps n=OTA / hệ thống đặt phòng du lịch
+L ota_travel online travel agency
+N generic 9118
+N entity 9119
+A 9120 user_support
+N entity 9121
+N generic 9122
+A 9123 9124 policy_as_code
+A 9125 opentelemetry
+A 9126 9127 agents_sdk
+A 9128 openai_api
+N combo 9129
+A 9130 swagger
+A 9131 cfd
+A 9132 nessus
+A 9133 operating_systems
+N generic 9134
+A 9135 application_support
+A 9136 process_improvement
+A 9137 application_support
+N job_title 9138 9139
+A 9140 process_improvement
+N job_title 9141
+N generic 9142
+N generic 9143
+A 9144 manageengine
+N job_title 9145
+N generic 9146
+N combo 9147
+A 9148 oracle_cloud
+A 9149 oracle_db_vault
+A 9150 oracle_data_guard
+A 9151 oracle_cert
+A 9152 9153 query_optimization
+N generic 9154
+A 9155 oracle_data_guard
+A 9156 oracle_data_pump
+N combo 9157
+N entity 9158
+A 9159 altium
+A 9160 containerization
+A 9161 sql_query
+A 9162 lending_bnpl
+N generic 9163
+N combo 9164
+N generic 9165
+S 9166 osek embedded_iot p=autosar n=OSEK/VDX
+F osek OSEK
+A 9167 routing_switching
+N combo 9168
+S 9169 oss_bss systems_network p=telecom_network n=OSS/BSS (viễn thông)
+F oss_bss OSS/BSS
+L oss_bss oss/bss
+S 9170 ot_security security p=scada n=OT security
+L ot_security ot security;ics security;operational technology
+N generic 9171 9172 9173
+N generic 9174 9175 9176 9177
+N generic 9178 9179
+S 9180 ovn systems_network p=sdn n=OVN / Open vSwitch
+L ovn ovn;open vswitch;ovs
+A 9181 owasp
+A 9182 mobile_security
+N job_title 9183 9184 9185 9186 9187
+N entity 9188
+A 9189 o2c
+N generic 9190
+N generic 9191 9192
+N generic 9193
+N generic 9194
+S 9195 package_management dev_tools n=Package management (npm, pip, NuGet)
+L package_management package management
+A 9196 cocoapods
+N combo 9197
+S 9198 packer devops p=iac n=HashiCorp Packer
+F packer Packer
+S 9199 page_builder frontend n=Page builder (Elementor, Divi)
+L page_builder page builder;elementor;divi
+A 9200 web_vitals
+A 9201 on_call
+N generic 9202
+N generic 9203
+A 9204 palo_alto
+A 9205 9206 pam
+N generic 9207
+N generic 9208
+S 9209 parallel_run methodology_pm p=change_management n=Parallel run (chạy song song)
+L parallel_run parallel run
+S 9210 particle_effects game_dev n=Particle effects (VFX)
+L particle_effects particle;particles;particle system
+A 9211 particle_effects
+A 9212 excel
+A 9213 wifi
+N generic 9214
+A 9215 db_partitioning
+S 9216 partner_management enterprise_apps n=Quản lý đối tác
+L partner_management partner management;quản lý đối tác
+N job_title 9217
+A 9218 partner_management
+A 9219 ad_attacks
+S 9220 patch_management systems_network n=Patch management
+L patch_management patching;patch management;vá lỗi hệ thống
+N generic 9221
+S 9222 pattern_making design_creative p=fashion_design n=Thiết kế rập (pattern making)
+L pattern_making pattern making;thiết kế rập
+S 9223 payment_hub enterprise_apps p=core_banking n=Payment hub
+L payment_hub payment hub
+A 9224 pci_dss
+A 9229 pci_dss
+A 9225 payment_gateway
+N generic 9226 9227
+A 9228 pcb
+S 9230 pcie embedded_iot p=hardware_design n=PCIe / USB / DDR (high-speed interfaces)
+F pcie PCIe;DDR
+N generic 9231
+S 9232 people_analytics bi_analytics n=People analytics (HR analytics)
+L people_analytics people analytics;hr analytics
+S 9233 android_perf mobile p=android n=Android performance (Perfetto, Macrobenchmark)
+L android_perf perfetto;macrobenchmark;baseline profile
+A 9234 technical_support
+A 9235 performance_marketing
+A 9236 reporting
+N combo 9237
+A 9238 computer_hardware
+N generic 9239 9240 9241 9242 9243
+A 9244 data_privacy
+N generic 9245 9246 9247 9248 9249 9250 9251
+S 9252 personalization data_science_ml p=machine_learning n=Personalization
+L personalization personalization;cá nhân hóa
+N generic 9253
+N entity 9254
+N job_title 9255 9256
+N entity 9257
+S 9258 pgmp certifications p=program_management n=PgMP
+F pgmp PgMP;PGMP
+N entity 9259
+A 9260 scope_management
+A 9261 critical_thinking
+A 9262 task_management
+A 9263 autocad
+N generic 9264
+A 9265 erp
+S 9266 accounting_software enterprise_apps n=Phần mềm kế toán (MISA, Fast, Bravo)
+L accounting_software phần mềm kế toán;accounting software
+N generic 9267
+N entity 9268
+A 9269 access_control
+S 9270 game_analytics game_dev n=Phân tích game (game analytics)
+L game_analytics phân tích game;game analytics
+A 9271 fit_gap
+A 9272 log_analytics
+A 9273 rca
+S 9274 malware_analysis security p=reverse_engineering n=Phân tích mã độc
+L malware_analysis phân tích mã độc;malware analysis
+A 9275 data_analysis
+A 9276 code_review
+A 9277 financial_analysis
+A 9278 information_synthesis
+A 9279 ai_application
+A 9280 requirements_gathering
+A 9281 requirements_gathering
+N industry 9282
+N industry 9283
+A 9284 backend_dev
+A 9285 reporting
+A 9286 game_programming
+N generic 9287
+N job_title 9288
+S 9289 perspective_drawing design_creative n=Phối cảnh (perspective)
+L perspective_drawing phối cảnh;perspective drawing
+A 9290 coordination
+A 9291 9292 teamwork
+N generic 9293
+N combo 9294
+A 9295 9296 php_cs_fixer
+A 9297 php_fpm
+N combo 9298 9299 9300
