@@ -1,0 +1,448 @@
+# Lô 36: dòng 10501-10985 (18/11/2026)
+A 10501 english
+A 10502 jlpt
+A 10503 product_marketing
+N generic 10504
+A 10505 quality_management
+A 10506 10507 tiktok_ads
+S 10508 lead_generation digital_marketing n=Tìm kiếm khách hàng (lead generation)
+L lead_generation tìm kiếm khách hàng;lead generation;lead gen
+A 10509 idempotency
+N industry 10510
+A 10511 carefulness
+N generic 10512 10513
+S 10514 tinyml embedded_iot p=edge_ai n=TinyML
+L tinyml tinyml
+A 10515 10516 dms_auto
+N entity 10517 10518 10519 10520 10521
+S 10522 mathematics soft_skills n=Toán học
+L mathematics toán học;mathematics;toán rời rạc;đại số tuyến tính;linear algebra
+S 10523 toefl languages p=english n=TOEFL
+F toefl TOEFL
+A 10524 togaf
+N generic 10525
+A 10526 performance_optimization
+A 10527 jwt
+K tokenization_nlp ai_genai p=nlp n=Tokenization (NLP)
+N generic 10528
+A 10529 data_integration
+N generic 10530 10531 10532 10533
+A 10534 figma
+N generic 10535
+A 10536 10537 jira
+N generic 10538
+A 10539 model_serving
+A 10540 android
+A 10541 api
+N generic 10542
+A 10543 communication
+A 10544 color_theory
+A 10545 tcp_ip
+A 10546 oop
+A 10547 tcp_ip
+A 10548 sap_fico
+N combo 10549
+N entity 10550
+N generic 10551
+A 10552 10553 event_tracking
+A 10554 trading_system
+A 10555 trading_system
+A 10556 10557 trading_system
+N generic 10558
+N combo 10559 10560
+N entity 10561
+A 10562 db_transaction
+A 10563 db_transaction
+A 10564 db_locking
+A 10565 data_consistency
+A 10566 10567 service_transition
+N job_title 10568
+N industry 10569
+A 10570 tde
+N industry 10571 10572 10573
+A 10574 random_forest
+N generic 10575
+A 10576 infineon
+A 10577 software_deployment
+A 10578 presentation
+N generic 10579
+A 10580 ai_assisted_dev
+A 10581 troubleshooting
+A 10582 data_visualization
+A 10583 branching_strategy
+N job_title 10584 10585 10586 10587 10588 10589 10590 10591 10592 10593
+N entity 10594 10595 10596
+A 10597 sql_query
+A 10598 multimedia_design
+A 10599 digital_marketing
+S 10600 brand_communication digital_marketing n=Truyền thông thương hiệu
+L brand_communication truyền thông thương hiệu;brand communication
+N generic 10601 10602
+S 10603 ttp_threat security p=threat_intelligence n=TTP (tactics, techniques, procedures)
+F ttp_threat TTP;TTPs
+A 10604 logical_thinking
+A 10605 analytical_skills
+S 10606 product_thinking methodology_pm p=product_management n=Tư duy sản phẩm
+L product_thinking tư duy sản phẩm;product thinking;product mindset
+A 10607 aesthetic_sense
+A 10608 eagerness_to_learn
+A 10609 sales_skills
+A 10610 erp
+A 10611 consulting
+N industry 10612
+N generic 10613
+N industry 10614
+A 10615 customer_service
+N job_title 10616
+A 10617 compliance
+A 10618 query_optimization
+N generic 10619
+N generic 10620
+S 10621 tween_animation game_dev n=Tween animation (DOTween)
+L tween_animation dotween;tween;tweening
+S 10622 twilio backend p=sms_gateway n=Twilio
+N entity 10623 10624
+N combo 10625
+N combo 10626
+A 10627 linux_kernel
+A 10628 uat
+N combo 10629
+N entity 10630
+A 10631 linux
+N combo 10632
+S 10633 ucie embedded_iot p=pcie n=UCIe / chiplet interconnect
+F ucie UCIe
+N generic 10634
+S 10635 ugc digital_marketing n=UGC (user-generated content)
+F ugc UGC
+L ugc user-generated content
+S 10636 ui_animation frontend n=UI animation (Framer Motion, Lottie)
+L ui_animation ui animation;framer motion;lottie
+N job_title 10637
+N combo 10638
+A 10639 figma
+N combo 10640
+A 10641 ui_design
+A 10642 ux_design
+N generic 10643
+S 10644 underwriting enterprise_apps n=Underwriting (thẩm định bảo hiểm/tín dụng)
+L underwriting underwriting
+A 10645 llm_apps
+A 10646 web_development
+A 10647 unit_test
+A 10648 10649 unity
+S 10650 unity_animator game_dev p=unity n=Unity Animator / Mecanim
+L unity_animator unity animator;mecanim
+N combo 10651
+N entity 10652
+N degree 10653 10654
+A 10655 self_supervised
+N entity 10656 10657
+N combo 10658
+N generic 10659
+S 10660 file_upload backend n=Upload / xử lý file
+L file_upload file upload;upload file;xử lý file;upload/download
+A 10661 brd
+N combo 10662 10663
+A 10664 brd
+N generic 10665
+A 10666 cpp
+A 10667 docker
+A 10668 excel
+A 10669 redis
+N generic 10670
+A 10671 product_analytics
+A 10672 sap_badi
+A 10673 ux_design
+A 10674 ux_research
+A 10675 funnel_analysis
+A 10676 10677 brd
+A 10678 10679 user_story
+N combo 10680 10681 10682
+S 10683 user_centric_thinking soft_skills n=Tư duy lấy người dùng làm trung tâm
+L user_centric_thinking user-centric;user-centered;lấy người dùng làm trung tâm
+N combo 10684 10685 10686
+N generic 10687
+A 10688 ai_application
+A 10689 english
+S 10690 packet_capture systems_network p=network_troubleshooting n=Packet capture (Wireshark, tcpdump)
+L packet_capture packet capture;tcpdump;pcap
+A 10691 plsql
+A 10692 ai_assisted_dev
+A 10693 agile
+A 10694 python
+A 10695 systemverilog
+A 10696 nng_ux
+A 10697 usability_test
+N combo 10698 10699
+N job_title 10700
+A 10701 lovable
+N generic 10702 10703
+S 10704 vad_speech ai_genai p=voice_ai n=VAD (voice activity detection)
+F vad_speech VAD
+N generic 10705 10706 10707 10708
+S 10709 salesforce_validation enterprise_apps p=salesforce n=Salesforce validation rule / flow
+L salesforce_validation validation rule;validation rules;salesforce flow
+A 10710 evm
+A 10711 cnc
+A 10712 it_operations
+N generic 10713
+A 10714 service_desk
+N generic 10715
+A 10716 application_support
+A 10717 application_support
+N industry 10718
+N generic 10719
+N entity 10720
+N industry 10721
+S 10722 vapt security p=pentest n=VAPT
+F vapt VAPT
+N generic 10723
+N generic 10724
+S 10725 varnish backend p=caching n=Varnish / CDN cache
+L varnish varnish
+S 10726 tax_compliance enterprise_apps n=Thuế (VAT, WHT)
+L tax_compliance vat/wht;withholding tax;thuế gtgt
+A 10727 visual_basic
+N generic 10728 10729
+N generic 10730
+A 10731 netbackup
+N combo 10732
+A 10733 vendor_management
+N generic 10734
+A 10735 10736 10737 git
+N entity 10738 10739
+N generic 10740
+N entity 10741
+A 10742 webrtc
+S 10743 video_codec embedded_iot n=Video codec (H.264, H.265)
+L video_codec video codec;h.264;h.265;hevc;video container
+A 10744 video_codec
+N job_title 10745
+A 10746 infotainment
+A 10747 video_analytics
+N generic 10748
+N generic 10749
+A 10750 clean_code
+A 10751 sow
+A 10752 brd
+A 10753 test_plan
+N entity 10754 10755 10756 10757 10758 10759 10760 10761 10762 10763 10764
+A 10765 virtualization
+N combo 10766
+S 10767 vlm ai_genai p=multimodal_ai n=Vision-Language Models (VLM)
+F vlm VLM;VLMs
+L vlm vision-language model;vision-language models
+A 10768 10769 vlm
+S 10770 visionplus enterprise_apps p=card_management n=VisionPLUS / VisionPRO
+L visionplus visionplus;visionpro
+A 10771 10772 visionplus
+A 10773 graphic_design
+A 10774 ui_design
+S 10775 visual_hierarchy design_creative p=ui_design n=Visual hierarchy
+L visual_hierarchy visual hierarchy
+S 10776 visual_paradigm methodology_pm p=uml n=Visual Paradigm / StarUML
+L visual_paradigm visual paradigm;staruml
+A 10777 data_visualization
+A 10778 excel_advanced
+A 10779 subnetting
+N generic 10780
+A 10781 vcp
+A 10782 vmware_cloud_director
+A 10783 vmware
+A 10784 vmware_horizon
+S 10785 vrealize systems_network p=vmware n=VMware vRealize / Aria
+L vrealize vrealize;vmware aria
+N combo 10786 10787 10788 10789
+S 10790 vnc systems_network p=remote_support n=VNC
+F vnc VNC
+N entity 10791
+A 10792 fpt_cloud
+N entity 10793 10794
+A 10795 voc_analysis
+A 10796 docker
+N generic 10797 10798
+N generic 10799
+S 10800 voice_assistant ai_genai p=voice_ai n=Voice assistant (wake word)
+L voice_assistant voice assistant;wake word
+A 10836 voice_assistant
+N combo 10801
+A 10802 webrtc
+A 10803 voip
+A 10804 voip
+K memory_forensics security p=dfir n=Memory forensics (Volatility)
+L memory_forensics volatility framework;memory forensics
+N generic 10805
+A 10806 san_zoning
+A 10807 defect_management
+N entity 10808 10809 10810 10811 10812 10813
+A 10814 vpc
+A 10815 vpn
+S 10816 vsan systems_network p=vmware n=VMware vSAN
+L vsan vsan
+N generic 10817
+N entity 10818 10819
+N combo 10820 10821
+N generic 10822
+A 10823 pinia
+N entity 10824 10825
+A 10826 vulnerability_assessment
+A 10827 10828 vulnerability_assessment
+N combo 10829
+N generic 10830
+A 10831 clean_architecture
+A 10832 firebase
+A 10833 rest_api
+N generic 10834
+A 10835 evpn
+A 10837 lan_wan
+S 10838 wms enterprise_apps p=supply_chain n=WMS (Warehouse Management System)
+F wms WMS
+L wms warehouse management system;wms implementation;wms implementations
+A 10904 wms
+N combo 10905
+N combo 10839
+N generic 10840 10841
+S 10842 wasabi_storage cloud p=object_storage n=Wasabi / Backblaze B2
+L wasabi_storage wasabi;backblaze
+S 10843 wcf backend p=dotnet n=WCF
+F wcf WCF
+S 10844 wealth_management enterprise_apps n=Wealth management
+L wealth_management wealth management;quản lý tài sản cá nhân
+N generic 10845
+A 10846 web_development
+A 10847 web_development
+N job_title 10848
+A 10849 selenium
+A 10850 ecommerce_platform
+S 10851 web_game game_dev n=Web game (HTML5 game)
+L web_game web game;html5 game
+A 10852 swg
+A 10853 api_integration
+A 10854 responsive_design
+A 10855 websocket
+N generic 10856
+A 10857 web_development
+A 10858 web_security
+N combo 10859 10860
+A 10861 mobile_testing
+A 10862 web_api
+A 10863 web_development
+A 10864 10865 webhooks
+A 10866 webrtc
+A 10867 web_server
+N generic 10868
+A 10869 web_development
+N combo 10870
+A 10871 10872 websocket
+A 10873 welding
+S 10874 well_architected cloud p=cloud_computing n=AWS Well-Architected Framework
+L well_architected well-architected;well-architected framework
+A 10875 well_architected
+N generic 10876 10877 10878
+K whatsup_gold devops p=monitoring n=WhatsUp Gold
+L whatsup_gold whatsup gold
+N generic 10879
+S 10880 mediapipe ai_genai p=computer_vision n=MediaPipe / Whisper (on-device AI)
+L mediapipe mediapipe;whisper
+N combo 10881
+N generic 10882
+N industry 10883
+A 10884 sop
+A 10885 lan_wan
+A 10886 eagerness_to_learn
+N generic 10887
+A 10888 win_loss_analysis
+N entity 10889
+S 10890 windbg dev_tools p=debugging n=WinDbg
+L windbg windbg
+A 10891 windows
+A 10892 10893 active_directory
+S 10894 win32_api backend p=windows_desktop_app n=Windows API (Win32)
+L win32_api windows api;winapi
+A 10895 windows_server
+N generic 10896
+N combo 10897
+S 10898 wireless_chipset embedded_iot p=rf_wireless n=Wireless chipset
+L wireless_chipset wireless chipset;wireless chipsets
+A 10899 wlan
+A 10900 packet_capture
+N generic 10901
+N generic 10902
+S 10903 sap_ewm enterprise_apps p=sap n=SAP EWM / WM
+F sap_ewm EWM
+L sap_ewm sap ewm;sap wm
+A 10906 ms_office
+N generic 10907
+N generic 10908 10909
+A 10910 background_jobs
+N generic 10911 10912 10913
+A 10914 workflow_orchestration
+N combo 10915
+N generic 10916
+A 10917 user_training
+A 10918 technical_writing
+A 10919 sql_query
+A 10920 test_plan
+A 10921 english
+N entity 10922 10923
+S 10924 x509 security p=pki n=X.509 certificates
+L x509 x.509;x509
+A 10925 reverse_engineering
+A 10926 problem_solving
+A 10927 dashboard
+A 10928 team_management
+A 10929 process_improvement
+A 10930 product_roadmap
+A 10931 technical_writing
+N combo 10932
+N entity 10933 10934 10935
+A 10936 xgboost
+A 10937 10938 excel_advanced
+A 10939 xml
+A 10940 android_layout
+N generic 10941
+A 10942 authn_authz
+S 10943 conflict_resolution_git dev_tools p=git n=Xử lý conflict (merge conflict)
+L conflict_resolution_git merge conflict;resolve conflict;xử lý conflict
+A 10944 file_upload
+A 10945 debugging
+A 10946 information_synthesis
+N generic 10947
+N industry 10948
+N entity 10949 10950
+N generic 10951
+N entity 10952
+A 10953 yocto
+N generic 10954
+N entity 10955
+N generic 10956 10957 10958 10959 10960 10961 10962
+S 10963 short_video digital_marketing n=Short video (YouTube Shorts, Reels, TikTok)
+L short_video youtube shorts;reels;short video;video ngắn
+A 10964 zalo_oa
+A 10965 10966 mini_app
+N entity 10967
+N generic 10968
+N entity 10969
+S 10970 zend backend p=php n=Zend / Laminas
+F zend Zend
+L zend laminas
+S 10971 zenhub dev_tools n=ZenHub
+N generic 10972
+A 10973 invision
+A 10974 10975 blue_green
+S 10976 zfs systems_network p=storage n=ZFS
+F zfs ZFS
+A 10977 rf_wireless
+S 10978 zimbra systems_network p=mail_server n=Zimbra Mail
+A 10979 zimbra
+K zk_framework backend p=java n=ZK Framework
+N generic 10980
+A 10981 zalo_oa
+S 10982 zookeeper data_engineering p=kafka n=Apache ZooKeeper
+L zookeeper zookeeper
+A 10983 zoom
+N entity 10984
+N combo 10985
+L zk_framework zk framework
+L tokenization_nlp tokenizer
