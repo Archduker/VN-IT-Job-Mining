@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:16:19+00:00",
-  "code_version": "77cac00",
+  "generated_at": "2026-11-18T02:45:58+00:00",
+  "code_version": "a8dab25",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 774
+    "rows": 698
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 774
+    "rows": 698
   },
   "dropped": [],
   "rules": [
@@ -18,35 +18,35 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1754,
+      "rows_affected": 1589,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 218,
+      "rows_affected": 201,
       "examples": [
         {
-          "job_id": "2094849",
+          "job_id": "2102736",
           "field": "salary_min_max",
-          "before": "1000 - 2000 USD",
-          "after": "25400000.0 - 50800000.0 VND (header)",
-          "url": "https://www.vietnamworks.com/sap-fico-functional-consultant--2094849-jv"
+          "before": "500 - 1200 USD",
+          "after": "12700000.0 - 30480000.0 VND (header)",
+          "url": "https://www.vietnamworks.com/ky-su-mang-va-he-thong-network-system-engineer-2102736-jv"
         },
         {
-          "job_id": "2095514",
+          "job_id": "2102905",
           "field": "salary_min_max",
-          "before": "25000000 - 50000000 VND",
-          "after": "25000000.0 - 50000000.0 VND (header)",
-          "url": "https://www.vietnamworks.com/pho-truong-phong-phan-tich-nghiep-vu-ba--2095514-jv"
+          "before": "None",
+          "after": "None - 200000000.0 VND (jd)",
+          "url": "https://www.vietnamworks.com/nhan-vien-qc-lam-viec-tai-hung-yen--2102905-jv"
         },
         {
-          "job_id": "2096718",
+          "job_id": "2103346",
           "field": "salary_min_max",
-          "before": "0 - 40000000 VND",
-          "after": "None - 40000000.0 VND (header)",
-          "url": "https://www.vietnamworks.com/hn-dn-hcm-business-development-executive-it-outsourcing-salary-upto-40m-bonus-2096718-jv"
+          "before": "20000000 - 30000000 VND",
+          "after": "20000000.0 - 30000000.0 VND (header)",
+          "url": "https://www.vietnamworks.com/ky-su-qcqa-2103346-jv"
         }
       ]
     },
@@ -54,43 +54,50 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 774,
+      "rows_affected": 698,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 654,
+      "rows_affected": 593,
       "examples": [
         {
-          "job_id": "2085748",
-          "field": "exp_min_max",
-          "before": "5 năm",
-          "after": "5.0 - 5.0 years",
-          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
-        },
-        {
-          "job_id": "2092686",
+          "job_id": "2102610",
           "field": "exp_min_max",
           "before": "3 năm",
           "after": "3.0 - 3.0 years",
-          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+          "url": "https://www.vietnamworks.com/it-data-engineer-2102610-jv"
         },
         {
-          "job_id": "2093859",
+          "job_id": "2102612",
           "field": "exp_min_max",
-          "before": "3 năm",
-          "after": "3.0 - 3.0 years",
-          "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
+          "before": "2 năm",
+          "after": "2.0 - 2.0 years",
+          "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
+        },
+        {
+          "job_id": "2102736",
+          "field": "exp_min_max",
+          "before": "2 năm",
+          "after": "2.0 - 2.0 years",
+          "url": "https://www.vietnamworks.com/ky-su-mang-va-he-thong-network-system-engineer-2102736-jv"
         }
       ]
+    },
+    {
+      "id": "T3b",
+      "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
+      "action": "modify",
+      "rows_affected": 698,
+      "examples": []
     },
     {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 773,
+      "rows_affected": 697,
       "examples": []
     },
     {
@@ -104,14 +111,14 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 774,
+      "rows_affected": 698,
       "examples": []
     },
     {
       "id": "T6.1",
       "name": "Bóc thẻ HTML và entity",
       "action": "modify",
-      "rows_affected": 9,
+      "rows_affected": 8,
       "examples": []
     },
     {
@@ -132,42 +139,49 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 246,
+      "rows_affected": 230,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 0,
+      "rows_affected": 309,
+      "examples": []
+    },
+    {
+      "id": "T6.5",
+      "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
+      "action": "modify",
+      "rows_affected": 368,
       "examples": []
     },
     {
       "id": "T7",
-      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 774,
+      "rows_affected": 698,
       "examples": [
         {
-          "job_id": "2085748",
+          "job_id": "2102610",
           "field": "skills_clean",
-          "before": "['Artificial Intelligence' 'Security Analysis' 'AWS' 'Azure'\n 'Security Audit']",
-          "after": "['Artificial Intelligence', 'Security Analysis', 'AWS', 'Azure', 'Security Audit']",
-          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
+          "before": "['Sql' 'VBA Excel' 'Data Integration' 'PYTHON' 'Problem Solving']",
+          "after": "['Data Engineering', 'Git', 'Python', 'REST API', 'SQL']",
+          "url": "https://www.vietnamworks.com/it-data-engineer-2102610-jv"
         },
         {
-          "job_id": "2092686",
+          "job_id": "2102612",
           "field": "skills_clean",
-          "before": "['Application Development' 'Programning Languages' 'Kỹ Thuật Viên Bảo Trì'\n 'Technical' 'Kỹ sư bảo trì']",
-          "after": "['Application Development', 'Programning Languages', 'Technical', 'Kỹ sư bảo trì']",
-          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+          "before": "['SAP Master Data' 'Procurement System' 'Procurement Outsourcing'\n 'Procurement' 'Master Data Management']",
+          "after": "['SAP Master Data', 'Procurement System', 'Procurement Outsourcing', 'Procurement', 'Master Data Management']",
+          "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
         },
         {
-          "job_id": "2093859",
+          "job_id": "2102736",
           "field": "skills_clean",
-          "before": "['Amazon Web Services' 'AWS Architecture' 'Technical Sales'\n 'IT Solutions Planning' 'Cloud Solutions']",
-          "after": "['AWS', 'Azure', 'Amazon Web Services', 'AWS Architecture', 'Technical Sales']",
-          "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
+          "before": "['CCNA' 'ISP' 'Telecom Support' 'It Support']",
+          "after": "['CCNA', 'ISP', 'Telecom Support', 'It Support']",
+          "url": "https://www.vietnamworks.com/ky-su-mang-va-he-thong-network-system-engineer-2102736-jv"
         }
       ]
     },
@@ -175,28 +189,101 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 773,
+      "rows_affected": 697,
       "examples": [
         {
-          "job_id": "2085748",
+          "job_id": "2102610",
           "field": "locations",
-          "before": "Ho Chi Minh",
-          "after": "{'dia_chi_cu_the': 'F-Town 3, Lô E3 Võ Chí Công, Khu CNC', 'phuong_xa': 'Phường Tăng Nhơn Phú', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'F-Town 3, Lô E3 Võ Chí Công, Khu CNC, Phường Tăng Nhơn Phú, Thành phố Hồ Chí Minh, Việt Nam'}",
-          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
+          "before": "VIFON",
+          "after": "{'dia_chi_cu_the': '913 Trường Chinh, Tây Thạnh, Tân Phú', 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': '913 Trường Chinh, Tây Thạnh, Tân Phú, HCM'}",
+          "url": "https://www.vietnamworks.com/it-data-engineer-2102610-jv"
         },
         {
-          "job_id": "2092686",
+          "job_id": "2102612",
           "field": "locations",
-          "before": "Phu Yen",
-          "after": "{'dia_chi_cu_the': 'Khu Công Nghiệp An Phú', 'phuong_xa': None, 'tinh_thanh': 'Đắk Lắk', 'raw': 'Khu Công Nghiệp An Phú, Phú Yên'}",
-          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+          "before": "Lô K, CCN-TTCN Phong Nẫm, xã Lương Hòa, tỉnh Vĩnh Long",
+          "after": "{'dia_chi_cu_the': '63 Cao Thắng Phường, Ban Co, Bàn Cờ', 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': '63 Cao Thắng Phường, Ban Co, Bàn Cờ, Ho Chi Minh, Vietnam'}",
+          "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
         },
         {
-          "job_id": "2093859",
+          "job_id": "2102736",
           "field": "locations",
-          "before": "Ha Noi",
-          "after": "{'dia_chi_cu_the': None, 'phuong_xa': None, 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Hà Nội, Vietnam'}",
-          "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
+          "before": "Floor12, VOV, 7 Nguyen Thi Minh Khai Street, Sai Gon ward, HCMC",
+          "after": "{'dia_chi_cu_the': 'Floor 12, VOV, 7 Nguyen Thi Minh Khai Street, Sai Gon Ward', 'phuong_xa': None, 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Floor 12, VOV, 7 Nguyen Thi Minh Khai Street, Sai Gon Ward, HCMC'}",
+          "url": "https://www.vietnamworks.com/ky-su-mang-va-he-thong-network-system-engineer-2102736-jv"
+        }
+      ]
+    },
+    {
+      "id": "T9a",
+      "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
+      "action": "flag",
+      "rows_affected": 14,
+      "examples": [
+        {
+          "job_id": "2110354",
+          "field": "T9a",
+          "before": "None",
+          "after": "raw=remote jd=hybrid strong=True",
+          "url": "https://www.vietnamworks.com/ai-engineer-remote-fulltime-hybrid-onsite-2110354-jv"
+        }
+      ]
+    },
+    {
+      "id": "T9b",
+      "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
+      "action": "flag",
+      "rows_affected": 17,
+      "examples": [
+        {
+          "job_id": "2110304",
+          "field": "T9b",
+          "before": "Toàn thời gian",
+          "after": "raw=full_time jd=internship",
+          "url": "https://www.vietnamworks.com/mb-trainee-ai-engineer-fresher-intern-khoi-cong-nghe-thong-tin-2025td924-1790070839197542874-2110304-jv"
+        },
+        {
+          "job_id": "2112736",
+          "field": "T9b",
+          "before": "Toàn thời gian",
+          "after": "raw=full_time jd=internship",
+          "url": "https://www.vietnamworks.com/mb-trainee-information-security-grc-fresher-intern-khoi-cong-nghe-thong-tin-2026td457289-1790590413668087639-2112736-jv"
+        },
+        {
+          "job_id": "2114942",
+          "field": "T9b",
+          "before": "Toàn thời gian",
+          "after": "raw=full_time jd=internship",
+          "url": "https://www.vietnamworks.com/it-helpdesk-intern-1790910207774828055-2114942-jv"
+        }
+      ]
+    },
+    {
+      "id": "T9c",
+      "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
+      "action": "flag",
+      "rows_affected": 517,
+      "examples": [
+        {
+          "job_id": "2102610",
+          "field": "T9c",
+          "before": "3 năm",
+          "after": "3.0 - 4.0 «Tối thiểu 3-4 năm»",
+          "url": "https://www.vietnamworks.com/it-data-engineer-2102610-jv"
+        },
+        {
+          "job_id": "2102612",
+          "field": "T9c",
+          "before": "2 năm",
+          "after": "2.0 - None «2+ years»",
+          "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
+        },
+        {
+          "job_id": "2102736",
+          "field": "T9c",
+          "before": "2 năm",
+          "after": "2.0 - None «Từ 2 năm»",
+          "url": "https://www.vietnamworks.com/ky-su-mang-va-he-thong-network-system-engineer-2102736-jv"
         }
       ]
     }
@@ -204,13 +291,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 23.1,
-      "fill_pct_out": 23.1
+      "fill_pct_in": 23.9,
+      "fill_pct_out": 23.9
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 26.7,
-      "fill_pct_out": 26.7
+      "fill_pct_in": 27.2,
+      "fill_pct_out": 27.2
     },
     {
       "field": "posted_date",
@@ -224,13 +311,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 84.5,
-      "fill_pct_out": 84.5
+      "fill_pct_in": 85.0,
+      "fill_pct_out": 85.0
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 84.5,
-      "fill_pct_out": 84.5
+      "fill_pct_in": 85.0,
+      "fill_pct_out": 85.0
     },
     {
       "field": "headcount",
@@ -254,8 +341,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 88.6,
-      "fill_pct_out": 88.6
+      "fill_pct_in": 88.5,
+      "fill_pct_out": 88.5
     },
     {
       "field": "locations",
@@ -266,6 +353,41 @@
       "field": "language",
       "fill_pct_in": 100.0,
       "fill_pct_out": 100.0
+    },
+    {
+      "field": "posted_month",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "benefits_clean",
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
+    },
+    {
+      "field": "work_mode_raw",
+      "fill_pct_in": 0.4,
+      "fill_pct_out": 0.4
+    },
+    {
+      "field": "work_mode_jd",
+      "fill_pct_in": 2.0,
+      "fill_pct_out": 2.0
+    },
+    {
+      "field": "employment_type_raw",
+      "fill_pct_in": 91.0,
+      "fill_pct_out": 91.0
+    },
+    {
+      "field": "employment_type_jd",
+      "fill_pct_in": 2.4,
+      "fill_pct_out": 2.4
+    },
+    {
+      "field": "exp_min_years_jd",
+      "fill_pct_in": 74.1,
+      "fill_pct_out": 74.1
     }
   ],
   "checks": {
@@ -278,26 +400,24 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 217,
+      "header": 200,
       "title": 2,
       "jd": 2,
-      "none": 553
+      "none": 494
     },
     "salary_under_1m_count": 2,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 428,
-      "en": 344,
-      "other": 2
+      "vi": 388,
+      "en": 309,
+      "other": 1
     },
     "language_fasttext": {
       "model": "lid.176.bin",
       "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
       "conf_min": 0.6,
-      "disagree_with_old_rule": 8,
+      "disagree_with_old_rule": 6,
       "disagree_examples": [
-        "2092686",
-        "2098089",
         "2110677",
         "2111797",
         "2118846",
@@ -305,11 +425,11 @@
         "2123254",
         "2125913"
       ],
-      "conf_lt_0_9": 190
+      "conf_lt_0_9": 169
     },
     "text_quality": {
       "before": {
-        "html": 9,
+        "html": 8,
         "nfc": 0,
         "hidden": 0
       },
@@ -323,28 +443,107 @@
       },
       "abbreviations_approved": 0
     },
-    "translation": null,
-    "experience_parsed_rate": 84.5
+    "translation": {
+      "model_id": "VietAI/envit5-translation",
+      "model_revision": "840bc88104d5a4277af740eaedb024df8c3093e7",
+      "gen_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
+      "max_chunk_tokens": 200,
+      "fields": [
+        "description",
+        "requirements"
+      ],
+      "approved_terms": 249,
+      "device": "cuda",
+      "batch_size": 4,
+      "torch": "2.14.1+cu130",
+      "transformers": "5.22.2",
+      "peak_vram_mib": 1195,
+      "fell_back_to_cpu": false,
+      "rows_en": 442,
+      "rows_translated": 385,
+      "rows_failed": 57,
+      "chunks": 7916,
+      "cache_hits": 7266,
+      "model_calls": 725,
+      "retries": 75,
+      "failed_chunks": 75
+    },
+    "experience_parsed_rate": 85.0,
+    "posted_month_source": {
+      "posted_date": 698
+    },
+    "posted_month_distribution": {
+      "2026-09": 307,
+      "2026-10": 391
+    },
+    "jd_extraction": {
+      "dictionary": "preprocessing/dictionaries/jd_extraction.json",
+      "work_mode_raw": {
+        "None": 695,
+        "remote": 3
+      },
+      "work_mode_jd": {
+        "None": 684,
+        "remote": 8,
+        "onsite": 1,
+        "hybrid": 5
+      },
+      "work_mode_jd_rules": {
+        "WR1": 9,
+        "WR3": 2,
+        "WO2": 1,
+        "WH1": 2,
+        "WO3": 1,
+        "WH2": 1,
+        "WH3": 3,
+        "WH7": 1
+      },
+      "employment_type_raw": {
+        "full_time": 635,
+        "None": 63
+      },
+      "employment_type_jd": {
+        "None": 681,
+        "full_time": 11,
+        "internship": 3,
+        "contract": 3
+      },
+      "exp_jd_kind": {
+        "jd": 508,
+        "None": 181,
+        "jd_zero": 9
+      },
+      "conflicts": {
+        "T9b": 5,
+        "T9a_strong": 1,
+        "T9a": 1
+      }
+    }
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2094849",
+      "job_id": "vietnamworks_2112505",
       "source": "vietnamworks",
-      "field": "requirements_clean",
-      "before": "REQUIREMENTS\nBachelor/master's degree in accounting/finance/economics/IT.\n4+ years of experience in SAP FI and CO modules.\n3+ years of experience in SAP Maintenance projects.\nMandatory languages: Prof…",
-      "after": "REQUIREMENTS Bachelor/master's degree in accounting/finance/economics/IT.\n4+ years of experience in SAP FI and CO modules.\n3+ years of experience in SAP Maintenance projects.\nMandatory languages: Prof…",
+      "field": "salary_min_vnd",
+      "before": "Thương lượng",
+      "after": null,
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2116981",
+      "job_id": "vietnamworks_2121672",
       "source": "vietnamworks",
-      "field": "description_clean",
-      "before": "Xây dựng và quản trị Master Data ngành hàng\nChuẩn hóa và duy trì dữ liệu danh mục sản phẩm, NCC, mã hàng, nhóm ngành…\nLàm đầu mối quản trị các phân hệ liên quan đến danh mục trong hệ thống ERP.\nKiểm t…",
-      "after": "Xây dựng và quản trị Master Data ngành hàng Chuẩn hóa và duy trì dữ liệu danh mục sản phẩm, NCC, mã hàng, nhóm ngành… Làm đầu mối quản trị các phân hệ liên quan đến danh mục trong hệ thống ERP.\nKiểm t…",
+      "field": "posted_date",
+      "before": "2026-10-21T10:00:39+07:00",
+      "after": "2026-10-21",
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2116495",
+      "job_id": "vietnamworks_2113957",
       "source": "vietnamworks",
       "field": "headcount",
       "before": "1",

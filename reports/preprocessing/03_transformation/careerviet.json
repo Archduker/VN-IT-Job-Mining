@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:16:27+00:00",
-  "code_version": "77cac00",
+  "generated_at": "2026-11-18T02:59:31+00:00",
+  "code_version": "a8dab25",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 399
+    "rows": 400
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 399
+    "rows": 400
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1565,
+      "rows_affected": 1576,
       "examples": []
     },
     {
@@ -87,6 +87,13 @@
       ]
     },
     {
+      "id": "T3b",
+      "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
+      "action": "modify",
+      "rows_affected": 400,
+      "examples": []
+    },
+    {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
@@ -104,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 399,
+      "rows_affected": 400,
       "examples": []
     },
     {
@@ -132,21 +139,28 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 142,
+      "rows_affected": 143,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
+      "rows_affected": 69,
+      "examples": []
+    },
+    {
+      "id": "T6.5",
+      "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
+      "action": "modify",
       "rows_affected": 0,
       "examples": []
     },
     {
       "id": "T7",
-      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 396,
+      "rows_affected": 397,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -175,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 393,
+      "rows_affected": 394,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -199,13 +213,78 @@
           "url": "https://careerviet.vn/vi/tim-viec-lam/development-manager.35C80317.html"
         }
       ]
+    },
+    {
+      "id": "T9a",
+      "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
+      "action": "flag",
+      "rows_affected": 9,
+      "examples": []
+    },
+    {
+      "id": "T9b",
+      "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
+      "action": "flag",
+      "rows_affected": 16,
+      "examples": [
+        {
+          "job_id": "35C87F54",
+          "field": "T9b",
+          "before": "Bán thời gian , Thời vụ/ Nghề tự do , Thực tập",
+          "after": "raw=part_time jd=internship",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/it-ba-intern.35C87F54.html"
+        },
+        {
+          "job_id": "35C88A74",
+          "field": "T9b",
+          "before": "Nhân viên chính thức",
+          "after": "raw=full_time jd=internship",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/devops-internship-remote.35C88A74.html"
+        },
+        {
+          "job_id": "35C88AA4",
+          "field": "T9b",
+          "before": "Nhân viên chính thức",
+          "after": "raw=full_time jd=internship",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/mb-trainee-information-security-grc-fresher-intern-khoi-cong-nghe-thong-tin-2026td457289.35C88AA4.html"
+        }
+      ]
+    },
+    {
+      "id": "T9c",
+      "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
+      "action": "flag",
+      "rows_affected": 310,
+      "examples": [
+        {
+          "job_id": "35C80317",
+          "field": "T9c",
+          "before": "Trên 5 Năm",
+          "after": "5.0 - None «ít nhất 5 năm»",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/development-manager.35C80317.html"
+        },
+        {
+          "job_id": "35C80358",
+          "field": "T9c",
+          "before": "Trên 3 Năm",
+          "after": "3.0 - None «Tối thiểu 3 năm»",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cao-cap-mang-va-bao-mat.35C80358.html"
+        },
+        {
+          "job_id": "35C8048D",
+          "field": "T9c",
+          "before": "1 - 2 Năm",
+          "after": "0.5 - None «từ 6 tháng»",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/odoo-developer-fresher-junior.35C8048D.html"
+        }
+      ]
     }
   ],
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 27.6,
-      "fill_pct_out": 27.6
+      "fill_pct_in": 27.5,
+      "fill_pct_out": 27.5
     },
     {
       "field": "salary_max_vnd",
@@ -214,23 +293,23 @@
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 98.0,
-      "fill_pct_out": 98.0
+      "fill_pct_in": 97.8,
+      "fill_pct_out": 97.8
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 98.0,
-      "fill_pct_out": 98.0
+      "fill_pct_in": 97.8,
+      "fill_pct_out": 97.8
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 89.7,
-      "fill_pct_out": 89.7
+      "fill_pct_in": 89.5,
+      "fill_pct_out": 89.5
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 60.2,
-      "fill_pct_out": 60.2
+      "fill_pct_in": 60.0,
+      "fill_pct_out": 60.0
     },
     {
       "field": "headcount",
@@ -266,6 +345,41 @@
       "field": "language",
       "fill_pct_in": 100.0,
       "fill_pct_out": 100.0
+    },
+    {
+      "field": "posted_month",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "benefits_clean",
+      "fill_pct_in": 91.2,
+      "fill_pct_out": 91.2
+    },
+    {
+      "field": "work_mode_raw",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
+      "field": "work_mode_jd",
+      "fill_pct_in": 2.2,
+      "fill_pct_out": 2.2
+    },
+    {
+      "field": "employment_type_raw",
+      "fill_pct_in": 97.8,
+      "fill_pct_out": 97.8
+    },
+    {
+      "field": "employment_type_jd",
+      "fill_pct_in": 4.0,
+      "fill_pct_out": 4.0
+    },
+    {
+      "field": "exp_min_years_jd",
+      "fill_pct_in": 77.5,
+      "fill_pct_out": 77.5
     }
   ],
   "checks": {
@@ -281,12 +395,12 @@
       "header": 120,
       "title": 0,
       "jd": 0,
-      "none": 279
+      "none": 280
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 329,
+      "vi": 330,
       "en": 69,
       "other": 1
     },
@@ -321,32 +435,108 @@
       },
       "abbreviations_approved": 0
     },
-    "translation": null,
-    "experience_parsed_rate": 89.7
+    "translation": {
+      "model_id": "VietAI/envit5-translation",
+      "model_revision": "840bc88104d5a4277af740eaedb024df8c3093e7",
+      "gen_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
+      "max_chunk_tokens": 200,
+      "fields": [
+        "description",
+        "requirements"
+      ],
+      "approved_terms": 249,
+      "device": "cuda",
+      "batch_size": 4,
+      "torch": "2.14.1+cu130",
+      "transformers": "5.22.2",
+      "peak_vram_mib": 1261,
+      "fell_back_to_cpu": false,
+      "rows_en": 511,
+      "rows_translated": 437,
+      "rows_failed": 74,
+      "chunks": 9708,
+      "cache_hits": 7409,
+      "model_calls": 2393,
+      "retries": 94,
+      "failed_chunks": 94
+    },
+    "experience_parsed_rate": 89.5,
+    "posted_month_source": {
+      "posted_date": 391,
+      "first_crawled_at": 9
+    },
+    "posted_month_distribution": {
+      "2026-10": 327,
+      "2026-09": 71,
+      "2026-11": 2
+    },
+    "jd_extraction": {
+      "dictionary": "preprocessing/dictionaries/jd_extraction.json",
+      "work_mode_raw": {
+        "None": 400
+      },
+      "work_mode_jd": {
+        "None": 391,
+        "onsite": 6,
+        "hybrid": 2,
+        "remote": 1
+      },
+      "work_mode_jd_rules": {
+        "WO2": 4,
+        "WO3": 2,
+        "WH3": 1,
+        "WR1": 1,
+        "WH5": 1
+      },
+      "employment_type_raw": {
+        "full_time": 384,
+        "None": 9,
+        "internship": 6,
+        "part_time": 1
+      },
+      "employment_type_jd": {
+        "None": 384,
+        "full_time": 6,
+        "internship": 10
+      },
+      "exp_jd_kind": {
+        "None": 90,
+        "jd": 300,
+        "jd_zero": 10
+      },
+      "conflicts": {
+        "T9b": 3
+      }
+    }
   },
   "samples": [
     {
-      "job_id": "careerviet_35C8945A",
+      "job_id": "careerviet_35C8B374",
       "source": "careerviet",
-      "field": "posted_date",
-      "before": "15/10/2026",
-      "after": "2026-10-15",
+      "field": "salary_min_vnd",
+      "before": "1.000 - 1.500 USD",
+      "after": 25400000.0,
       "changed": true
     },
     {
-      "job_id": "careerviet_35C8806F",
+      "job_id": "careerviet_35C87497",
       "source": "careerviet",
       "field": "exp_min_years",
-      "before": "5 - 8 Năm",
+      "before": "5 - 7 Năm",
       "after": 5.0,
       "changed": true
     },
     {
-      "job_id": "careerviet_35C8AE29",
+      "job_id": "careerviet_35C8B34E",
       "source": "careerviet",
-      "field": "salary_min_vnd",
-      "before": "Cạnh tranh",
-      "after": null,
+      "field": "requirements_clean",
+      "before": "Yêu Cầu Công Việc Làm ngoài giờ và trực hệ thống. ﻿Công việc có thể phát sinh ngoài giờ hành chính khi xử lý sự cố hoặc triển khai thay đổi cần khung giờ thấp điểm. Ứng viên cần sẵn sàng trực hệ thống…",
+      "after": "Yêu Cầu Công Việc Làm ngoài giờ và trực hệ thống. Công việc có thể phát sinh ngoài giờ hành chính khi xử lý sự cố hoặc triển khai thay đổi cần khung giờ thấp điểm. Ứng viên cần sẵn sàng trực hệ thống …",
       "changed": true
     }
   ]

@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:15:57+00:00",
-  "code_version": "77cac00",
+  "generated_at": "2026-11-18T02:43:44+00:00",
+  "code_version": "a8dab25",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 1520
+    "rows": 1523
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1520
+    "rows": 1523
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 2281,
+      "rows_affected": 2185,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 886,
+      "rows_affected": 887,
       "examples": [
         {
           "job_id": "2013194",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 1513,
+      "rows_affected": 1523,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 1513,
+      "rows_affected": 1516,
       "examples": [
         {
           "job_id": "2013194",
@@ -87,10 +87,17 @@
       ]
     },
     {
+      "id": "T3b",
+      "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
+      "action": "modify",
+      "rows_affected": 1523,
+      "examples": []
+    },
+    {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 1513,
+      "rows_affected": 1516,
       "examples": []
     },
     {
@@ -104,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 1520,
+      "rows_affected": 1523,
       "examples": []
     },
     {
@@ -139,34 +146,41 @@
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 0,
+      "rows_affected": 80,
+      "examples": []
+    },
+    {
+      "id": "T6.5",
+      "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
+      "action": "modify",
+      "rows_affected": 393,
       "examples": []
     },
     {
       "id": "T7",
-      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 1519,
+      "rows_affected": 1515,
       "examples": [
         {
           "job_id": "2013194",
           "field": "skills_clean",
-          "before": "['Manual Tester' 'IT - Phần cứng và máy tính' 'IT - Phần mềm' 'Tài chính'\n 'Kỹ Năng Phân Tích Yêu Cầu' 'Kỹ Năng Viết Test Case']",
-          "after": "['SQL', 'Manual Tester', 'Tài chính']",
+          "before": "['Kỹ Năng Phân Tích Yêu Cầu' 'Kỹ Năng Viết Test Case']",
+          "after": "['SQL']",
           "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
         },
         {
           "job_id": "2281042",
           "field": "skills_clean",
-          "before": "['Product Owner/Product Manager' 'IT - Phần cứng và máy tính' 'Viễn thông'\n 'Làm việc độc lập' 'Làm việc nhóm' 'Quản lý thời gian'\n 'Giao tiếp rõ ràng' 'Sử Dụng Phần Mềm Quản Lý Dự Án'\n 'Quản lý công việc khoa học']",
-          "after": "['Agile/Scrum', 'Product Owner/Product Manager', 'Viễn thông', 'Làm việc độc lập', 'Làm việc nhóm']",
+          "before": "['Làm việc độc lập' 'Làm việc nhóm' 'Quản lý thời gian'\n 'Giao tiếp rõ ràng' 'Sử Dụng Phần Mềm Quản Lý Dự Án'\n 'Quản lý công việc khoa học']",
+          "after": "['Agile/Scrum', 'Làm việc độc lập', 'Làm việc nhóm', 'Quản lý thời gian', 'Giao tiếp rõ ràng']",
           "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
         },
         {
           "job_id": "2321616",
           "field": "skills_clean",
-          "before": "['Product Owner/Product Manager' 'IT - Phần mềm' 'Game' 'Figma'\n 'Design System' 'Prototype' 'user flow' 'wireframe' 'UI/UX design'\n 'Analysis' 'Component' 'user-centric thinking' 'Variant' 'Handoff']",
-          "after": "['Kotlin', 'Swift', 'Product Owner/Product Manager', 'Game', 'Figma']",
+          "before": "['Figma' 'Design System' 'Prototype' 'user flow' 'wireframe'\n 'UI/UX design' 'Analysis' 'Component' 'user-centric thinking' 'Variant'\n 'Handoff']",
+          "after": "['Kotlin', 'Swift', 'Figma', 'Design System', 'Prototype']",
           "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
         }
       ]
@@ -175,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 1513,
+      "rows_affected": 1516,
       "examples": [
         {
           "job_id": "2013194",
@@ -199,13 +213,86 @@
           "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
         }
       ]
+    },
+    {
+      "id": "T9a",
+      "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
+      "action": "flag",
+      "rows_affected": 26,
+      "examples": [
+        {
+          "job_id": "2330469",
+          "field": "T9a",
+          "before": "Làm việc tại văn phòng / Onsite, Làm việc từ xa (Remote), Kết hợp tại văn phòng và từ xa (Hybrid)",
+          "after": "raw=hybrid jd=remote strong=False",
+          "url": "https://www.topcv.vn/brand/transcosmoshochiminh/tuyen-dung/nhan-vien-thiet-ke-web-khoi-digital-marketing-offshore-khong-yeu-cau-kinh-nghiem-j2330469.html"
+        }
+      ]
+    },
+    {
+      "id": "T9b",
+      "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
+      "action": "flag",
+      "rows_affected": 78,
+      "examples": [
+        {
+          "job_id": "2324476",
+          "field": "T9b",
+          "before": "Toàn thời gian",
+          "after": "raw=full_time jd=internship",
+          "url": "https://www.topcv.vn/viec-lam/it-helpdesk-intern/2324476.html"
+        },
+        {
+          "job_id": "2324482",
+          "field": "T9b",
+          "before": "Toàn thời gian",
+          "after": "raw=full_time jd=internship",
+          "url": "https://www.topcv.vn/viec-lam/game-designer-intern/2324482.html"
+        },
+        {
+          "job_id": "2326861",
+          "field": "T9b",
+          "before": "Toàn thời gian",
+          "after": "raw=full_time jd=internship",
+          "url": "https://www.topcv.vn/viec-lam/thuc-tap-sinh-lap-trinh-vien/2326861.html"
+        }
+      ]
+    },
+    {
+      "id": "T9c",
+      "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
+      "action": "flag",
+      "rows_affected": 1177,
+      "examples": [
+        {
+          "job_id": "2013194",
+          "field": "T9c",
+          "before": "Dưới 1 năm",
+          "after": "1.0 - None «tối thiểu 1 năm»",
+          "url": "https://www.topcv.vn/viec-lam/manual-test-data-ha-noi-muc-luong-upto-20-trieu-co-kinh-nghiem-la-1-loi-the-lon/2013194.html"
+        },
+        {
+          "job_id": "2281042",
+          "field": "T9c",
+          "before": "1 năm",
+          "after": "1.0 - None «ít nhất 01 năm»",
+          "url": "https://www.topcv.vn/viec-lam/ky-su-quan-ly-du-an-pc-junior/2281042.html"
+        },
+        {
+          "job_id": "2321616",
+          "field": "T9c",
+          "before": "2 năm",
+          "after": "2.0 - 4.0 «Có 2-4 năm»",
+          "url": "https://www.topcv.vn/viec-lam/ui-ux-designer-mobile-app-hcm-thu-nhap-len-den-30-trieu/2321616.html"
+        }
+      ]
     }
   ],
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 49.0,
-      "fill_pct_out": 49.0
+      "fill_pct_in": 48.9,
+      "fill_pct_out": 48.9
     },
     {
       "field": "salary_max_vnd",
@@ -214,8 +301,8 @@
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 0.0,
-      "fill_pct_out": 0.0
+      "fill_pct_in": 6.7,
+      "fill_pct_out": 6.7
     },
     {
       "field": "deadline_date",
@@ -249,8 +336,8 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 97.6,
-      "fill_pct_out": 97.6
+      "fill_pct_in": 86.7,
+      "fill_pct_out": 86.7
     },
     {
       "field": "benefits_std",
@@ -266,6 +353,41 @@
       "field": "language",
       "fill_pct_in": 100.0,
       "fill_pct_out": 100.0
+    },
+    {
+      "field": "posted_month",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "benefits_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "work_mode_raw",
+      "fill_pct_in": 99.5,
+      "fill_pct_out": 99.5
+    },
+    {
+      "field": "work_mode_jd",
+      "fill_pct_in": 1.7,
+      "fill_pct_out": 1.7
+    },
+    {
+      "field": "employment_type_raw",
+      "fill_pct_in": 99.3,
+      "fill_pct_out": 99.3
+    },
+    {
+      "field": "employment_type_jd",
+      "fill_pct_in": 5.1,
+      "fill_pct_out": 5.1
+    },
+    {
+      "field": "exp_min_years_jd",
+      "fill_pct_in": 77.3,
+      "fill_pct_out": 77.3
     }
   ],
   "checks": {
@@ -279,14 +401,14 @@
   "extra": {
     "salary_source_distribution": {
       "header": 883,
-      "title": 7,
+      "title": 8,
       "jd": 0,
-      "none": 630
+      "none": 632
     },
     "salary_under_1m_count": 2,
     "salary_from_x_count": 22,
     "language_distribution": {
-      "vi": 1438,
+      "vi": 1441,
       "en": 80,
       "other": 2
     },
@@ -317,20 +439,96 @@
       },
       "abbreviations_approved": 0
     },
-    "translation": null,
-    "experience_parsed_rate": 99.5
+    "translation": {
+      "model_id": "VietAI/envit5-translation",
+      "model_revision": "840bc88104d5a4277af740eaedb024df8c3093e7",
+      "gen_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
+      "max_chunk_tokens": 200,
+      "fields": [
+        "description",
+        "requirements"
+      ],
+      "approved_terms": 249,
+      "device": "cuda",
+      "batch_size": 4,
+      "torch": "2.14.1+cu130",
+      "transformers": "5.22.2",
+      "peak_vram_mib": 1100,
+      "fell_back_to_cpu": false,
+      "rows_en": 80,
+      "rows_translated": 68,
+      "rows_failed": 12,
+      "chunks": 1685,
+      "cache_hits": 1672,
+      "model_calls": 26,
+      "retries": 13,
+      "failed_chunks": 13
+    },
+    "experience_parsed_rate": 99.5,
+    "posted_month_source": {
+      "posted_date": 102,
+      "first_crawled_at": 1421
+    },
+    "posted_month_distribution": {
+      "2026-10": 1500,
+      "2026-09": 14,
+      "2026-11": 9
+    },
+    "jd_extraction": {
+      "dictionary": "preprocessing/dictionaries/jd_extraction.json",
+      "work_mode_raw": {
+        "onsite": 1454,
+        "hybrid": 51,
+        "None": 7,
+        "remote": 11
+      },
+      "work_mode_jd": {
+        "None": 1497,
+        "onsite": 17,
+        "remote": 7,
+        "hybrid": 2
+      },
+      "work_mode_jd_rules": {
+        "WO2": 1,
+        "WO3": 16,
+        "WR1": 7,
+        "WH4": 1,
+        "WH1": 1,
+        "WR2": 1
+      },
+      "employment_type_raw": {
+        "full_time": 1478,
+        "part_time": 8,
+        "internship": 25,
+        "None": 10,
+        "contract": 2
+      },
+      "employment_type_jd": {
+        "None": 1445,
+        "part_time": 4,
+        "internship": 65,
+        "full_time": 7,
+        "contract": 2
+      },
+      "exp_jd_kind": {
+        "jd": 1092,
+        "None": 346,
+        "jd_zero": 85
+      },
+      "conflicts": {
+        "T9b": 47,
+        "T9a": 1
+      }
+    }
   },
   "samples": [
     {
-      "job_id": "topcv_2315697",
-      "source": "topcv",
-      "field": "exp_min_years",
-      "before": "2 năm",
-      "after": 2.0,
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2013821",
+      "job_id": "topcv_2305229",
       "source": "topcv",
       "field": "headcount",
       "before": "1 người",
@@ -338,11 +536,19 @@
       "changed": true
     },
     {
-      "job_id": "topcv_2315423",
+      "job_id": "topcv_2327543",
       "source": "topcv",
       "field": "description_clean",
-      "before": "Bộ phận Công nghệ thông tin / An toàn thông tin\nBáo cáo cho Security Lead / Information Security Manager\n1. Tổng quan vị trí\nVị trí thuộc Giai đoạn 1 (06 tháng) của roadmap xây dựng năng lực ATTT cho …",
-      "after": "Bộ phận Công nghệ thông tin / An toàn thông tin Báo cáo cho Security Lead / Information Security Manager\n1. Tổng quan vị trí Vị trí thuộc Giai đoạn 1 (06 tháng) của roadmap xây dựng năng lực ATTT cho …",
+      "before": "Lên ý tưởng và viết nội dung cho ngành thời trang, mỹ phẩm, thực phẩm\nNghiên cứu insight khách hàng và xu hướng thị trường để tối ưu nội dung.\nxây dựng concept nội dung cho chiến dịch marketing.\nTheo …",
+      "after": "Lên ý tưởng và viết nội dung cho ngành thời trang, mỹ phẩm, thực phẩm Nghiên cứu insight khách hàng và xu hướng thị trường để tối ưu nội dung.\nxây dựng concept nội dung cho chiến dịch marketing.\nTheo …",
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2303052",
+      "source": "topcv",
+      "field": "requirements_clean",
+      "before": "Tốt nghiệp đại học chuyên ngành Công nghệ Thông tin / Khoa học Máy tính hoặc các ngành tương đương\nCó từ 3 - 5 năm kinh nghiệm thực tế với Java/Spring Framework hoặc JavaScript/TypeScript\nThành thạo n…",
+      "after": "Tốt nghiệp đại học chuyên ngành Công nghệ Thông tin / Khoa học Máy tính hoặc các ngành tương đương Có từ 3 - 5 năm kinh nghiệm thực tế với Java/Spring Framework hoặc JavaScript/TypeScript Thành thạo n…",
       "changed": true
     }
   ]

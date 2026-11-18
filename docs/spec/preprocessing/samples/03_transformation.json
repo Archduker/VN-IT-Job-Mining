@@ -2,50 +2,50 @@
  "step": "03_transformation",
  "trace_job": "topcv_2325743",
  "run": {
-  "generated_at": "2026-11-18T00:16:54+00:00",
-  "code_version": "77cac00",
+  "generated_at": "2026-11-18T11:57:34+00:00",
+  "code_version": "8b56ea9",
   "mode": "applied",
   "input": {
    "path": "data/preprocessing/02_integration/all.parquet",
-   "rows": 4671
+   "rows": 4495
   },
   "output": {
    "path": "data/preprocessing/03_transformation/all.parquet",
-   "rows": 4671
+   "rows": 4495
   },
   "dropped": [],
   "by_source": {
    "careerviet": {
-    "in": 399,
-    "out": 399
+    "in": 400,
+    "out": 400
    },
    "glints": {
-    "in": 246,
-    "out": 246
+    "in": 154,
+    "out": 154
    },
    "itviec": {
-    "in": 818,
-    "out": 818
+    "in": 814,
+    "out": 814
    },
    "jobsgo": {
-    "in": 548,
-    "out": 548
+    "in": 543,
+    "out": 543
    },
    "topcv": {
-    "in": 1520,
-    "out": 1520
+    "in": 1523,
+    "out": 1523
    },
    "topdev": {
-    "in": 202,
-    "out": 202
+    "in": 201,
+    "out": 201
    },
    "vieclam24h": {
-    "in": 164,
-    "out": 164
+    "in": 162,
+    "out": 162
    },
    "vietnamworks": {
-    "in": 774,
-    "out": 774
+    "in": 698,
+    "out": 698
    }
   },
   "checks": {
@@ -58,16 +58,16 @@
    "id": "T1",
    "name": "Null trá hình thành null",
    "action": "modify",
-   "rows": 11976,
+   "rows": 11500,
    "by_source": {
-    "topcv": 2281,
-    "topdev": 1838,
-    "vietnamworks": 1754,
-    "careerviet": 1565,
-    "vieclam24h": 340,
-    "itviec": 2691,
-    "glints": 517,
-    "jobsgo": 990
+    "topcv": 2185,
+    "topdev": 1831,
+    "vietnamworks": 1589,
+    "careerviet": 1576,
+    "vieclam24h": 335,
+    "itviec": 2678,
+    "glints": 323,
+    "jobsgo": 983
    },
    "examples": []
   },
@@ -75,16 +75,16 @@
    "id": "T2",
    "name": "Bóc tách dải số lương Cascade",
    "action": "modify",
-   "rows": 2140,
+   "rows": 2062,
    "by_source": {
-    "topcv": 886,
-    "topdev": 58,
-    "vietnamworks": 218,
+    "topcv": 887,
+    "topdev": 57,
+    "vietnamworks": 201,
     "careerviet": 119,
-    "vieclam24h": 151,
-    "itviec": 210,
-    "glints": 150,
-    "jobsgo": 348
+    "vieclam24h": 150,
+    "itviec": 209,
+    "glints": 96,
+    "jobsgo": 343
    },
    "examples": [
     {
@@ -95,18 +95,18 @@
      "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
     },
     {
-     "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
-     "field": "salary_min_max",
-     "before": "₫20.000.000-40.000.000/Tháng",
-     "after": "20000000.0 - 40000000.0 VND (header)",
-     "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
-    },
-    {
      "job_id": "052cfb91-4006-4261-9541-f759695858ab",
      "field": "salary_min_max",
      "before": "₫15.000.000-18.000.000/Tháng",
      "after": "15000000.0 - 18000000.0 VND (header)",
      "url": "https://glints.com/vn/opportunities/jobs/nhan-vien-it-dong-nai-15-trieu/052cfb91-4006-4261-9541-f759695858ab"
+    },
+    {
+     "job_id": "05cd0c5e-ef41-40b1-9fe6-4768571f80d9",
+     "field": "salary_min_max",
+     "before": "₫45.000.000-65.000.000/Tháng",
+     "after": "45000000.0 - 65000000.0 VND (header)",
+     "url": "https://glints.com/vn/opportunities/jobs/senior-ai-engineer-remote/05cd0c5e-ef41-40b1-9fe6-4768571f80d9"
     }
    ]
   },
@@ -114,16 +114,16 @@
    "id": "T3",
    "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
    "action": "modify",
-   "rows": 4493,
+   "rows": 4323,
    "by_source": {
-    "topcv": 1513,
-    "topdev": 66,
-    "vietnamworks": 774,
+    "topcv": 1523,
+    "topdev": 65,
+    "vietnamworks": 698,
     "careerviet": 391,
-    "vieclam24h": 164,
-    "itviec": 792,
-    "glints": 246,
-    "jobsgo": 547
+    "vieclam24h": 162,
+    "itviec": 788,
+    "glints": 154,
+    "jobsgo": 542
    },
    "examples": []
   },
@@ -131,16 +131,16 @@
    "id": "T4",
    "name": "Bóc tách số năm kinh nghiệm",
    "action": "modify",
-   "rows": 4236,
+   "rows": 4080,
    "by_source": {
-    "topcv": 1513,
-    "topdev": 57,
-    "vietnamworks": 654,
+    "topcv": 1516,
+    "topdev": 56,
+    "vietnamworks": 593,
     "careerviet": 358,
-    "vieclam24h": 164,
-    "itviec": 717,
-    "glints": 226,
-    "jobsgo": 547
+    "vieclam24h": 162,
+    "itviec": 714,
+    "glints": 139,
+    "jobsgo": 542
    },
    "examples": [
     {
@@ -167,19 +167,36 @@
    ]
   },
   {
+   "id": "T3b",
+   "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
+   "action": "modify",
+   "rows": 4495,
+   "by_source": {
+    "topcv": 1523,
+    "topdev": 201,
+    "vietnamworks": 698,
+    "careerviet": 400,
+    "vieclam24h": 162,
+    "itviec": 814,
+    "glints": 154,
+    "jobsgo": 543
+   },
+   "examples": []
+  },
+  {
    "id": "T5",
    "name": "Bóc tách chỉ tiêu headcount",
    "action": "modify",
-   "rows": 2773,
+   "rows": 2695,
    "by_source": {
-    "topcv": 1513,
+    "topcv": 1516,
     "topdev": 0,
-    "vietnamworks": 773,
+    "vietnamworks": 697,
     "careerviet": 0,
-    "vieclam24h": 164,
+    "vieclam24h": 162,
     "itviec": 0,
     "glints": 0,
-    "jobsgo": 323
+    "jobsgo": 320
    },
    "examples": []
   },
@@ -187,7 +204,7 @@
    "id": "T2f",
    "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
    "action": "flag",
-   "rows": 15,
+   "rows": 13,
    "by_source": {
     "topcv": 2,
     "topdev": 0,
@@ -195,7 +212,7 @@
     "careerviet": 1,
     "vieclam24h": 2,
     "itviec": 1,
-    "glints": 5,
+    "glints": 3,
     "jobsgo": 1
    },
    "examples": []
@@ -204,16 +221,16 @@
    "id": "T6",
    "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
    "action": "modify",
-   "rows": 4671,
+   "rows": 4495,
    "by_source": {
-    "topcv": 1520,
-    "topdev": 202,
-    "vietnamworks": 774,
-    "careerviet": 399,
-    "vieclam24h": 164,
-    "itviec": 818,
-    "glints": 246,
-    "jobsgo": 548
+    "topcv": 1523,
+    "topdev": 201,
+    "vietnamworks": 698,
+    "careerviet": 400,
+    "vieclam24h": 162,
+    "itviec": 814,
+    "glints": 154,
+    "jobsgo": 543
    },
    "examples": []
   },
@@ -221,79 +238,11 @@
    "id": "T6.1",
    "name": "Bóc thẻ HTML và entity",
    "action": "modify",
-   "rows": 10,
+   "rows": 8,
    "by_source": {
     "topcv": 0,
     "topdev": 0,
-    "vietnamworks": 9,
-    "careerviet": 0,
-    "vieclam24h": 0,
-    "itviec": 0,
-    "glints": 1,
-    "jobsgo": 0
-   },
-   "examples": []
-  },
-  {
-   "id": "T6.2",
-   "name": "Chuẩn hóa Unicode về NFC",
-   "action": "modify",
-   "rows": 34,
-   "by_source": {
-    "topcv": 0,
-    "topdev": 4,
-    "vietnamworks": 0,
-    "careerviet": 14,
-    "vieclam24h": 0,
-    "itviec": 0,
-    "glints": 16,
-    "jobsgo": 0
-   },
-   "examples": []
-  },
-  {
-   "id": "T6.3",
-   "name": "Bỏ ký tự ẩn",
-   "action": "modify",
-   "rows": 28,
-   "by_source": {
-    "topcv": 2,
-    "topdev": 0,
-    "vietnamworks": 0,
-    "careerviet": 23,
-    "vieclam24h": 1,
-    "itviec": 0,
-    "glints": 2,
-    "jobsgo": 0
-   },
-   "examples": []
-  },
-  {
-   "id": "T6.4",
-   "name": "Gạch ngang và bullet về một chuẩn",
-   "action": "modify",
-   "rows": 1526,
-   "by_source": {
-    "topcv": 457,
-    "topdev": 76,
-    "vietnamworks": 246,
-    "careerviet": 142,
-    "vieclam24h": 57,
-    "itviec": 273,
-    "glints": 127,
-    "jobsgo": 148
-   },
-   "examples": []
-  },
-  {
-   "id": "T6b",
-   "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
-   "action": "modify",
-   "rows": 0,
-   "by_source": {
-    "topcv": 0,
-    "topdev": 0,
-    "vietnamworks": 0,
+    "vietnamworks": 8,
     "careerviet": 0,
     "vieclam24h": 0,
     "itviec": 0,
@@ -303,19 +252,104 @@
    "examples": []
   },
   {
-   "id": "T7",
-   "name": "Rút kỹ năng và phúc lợi song ngữ",
+   "id": "T6.2",
+   "name": "Chuẩn hóa Unicode về NFC",
    "action": "modify",
-   "rows": 4657,
+   "rows": 25,
    "by_source": {
-    "topcv": 1519,
-    "topdev": 202,
-    "vietnamworks": 774,
-    "careerviet": 396,
-    "vieclam24h": 164,
-    "itviec": 818,
-    "glints": 245,
-    "jobsgo": 539
+    "topcv": 0,
+    "topdev": 4,
+    "vietnamworks": 0,
+    "careerviet": 14,
+    "vieclam24h": 0,
+    "itviec": 0,
+    "glints": 7,
+    "jobsgo": 0
+   },
+   "examples": []
+  },
+  {
+   "id": "T6.3",
+   "name": "Bỏ ký tự ẩn",
+   "action": "modify",
+   "rows": 27,
+   "by_source": {
+    "topcv": 2,
+    "topdev": 0,
+    "vietnamworks": 0,
+    "careerviet": 23,
+    "vieclam24h": 1,
+    "itviec": 0,
+    "glints": 1,
+    "jobsgo": 0
+   },
+   "examples": []
+  },
+  {
+   "id": "T6.4",
+   "name": "Gạch ngang và bullet về một chuẩn",
+   "action": "modify",
+   "rows": 1460,
+   "by_source": {
+    "topcv": 457,
+    "topdev": 76,
+    "vietnamworks": 230,
+    "careerviet": 143,
+    "vieclam24h": 57,
+    "itviec": 272,
+    "glints": 81,
+    "jobsgo": 144
+   },
+   "examples": []
+  },
+  {
+   "id": "T6b",
+   "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
+   "action": "modify",
+   "rows": 1193,
+   "by_source": {
+    "topcv": 80,
+    "topdev": 53,
+    "vietnamworks": 309,
+    "careerviet": 69,
+    "vieclam24h": 10,
+    "itviec": 546,
+    "glints": 62,
+    "jobsgo": 64
+   },
+   "examples": []
+  },
+  {
+   "id": "T6.5",
+   "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
+   "action": "modify",
+   "rows": 1103,
+   "by_source": {
+    "topcv": 393,
+    "topdev": 42,
+    "vietnamworks": 368,
+    "careerviet": 0,
+    "vieclam24h": 29,
+    "itviec": 172,
+    "glints": 0,
+    "jobsgo": 99
+   },
+   "examples": []
+  },
+  {
+   "id": "T7",
+   "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
+   "action": "modify",
+   "rows": 4474,
+   "by_source": {
+    "topcv": 1515,
+    "topdev": 201,
+    "vietnamworks": 698,
+    "careerviet": 397,
+    "vieclam24h": 162,
+    "itviec": 814,
+    "glints": 153,
+    "jobsgo": 534
    },
    "examples": [
     {
@@ -345,16 +379,16 @@
    "id": "T8",
    "name": "Bóc tách địa điểm 3 cấp",
    "action": "modify",
-   "rows": 4656,
+   "rows": 4480,
    "by_source": {
-    "topcv": 1513,
-    "topdev": 202,
-    "vietnamworks": 773,
-    "careerviet": 393,
-    "vieclam24h": 164,
-    "itviec": 818,
-    "glints": 246,
-    "jobsgo": 547
+    "topcv": 1516,
+    "topdev": 201,
+    "vietnamworks": 697,
+    "careerviet": 394,
+    "vieclam24h": 162,
+    "itviec": 814,
+    "glints": 154,
+    "jobsgo": 542
    },
    "examples": [
     {
@@ -376,6 +410,123 @@
      "field": "locations",
      "before": "Quận Thủ Đức",
      "after": "{'dia_chi_cu_the': 'Tòa Nhà HQ, Số 201 Trần Não', 'phuong_xa': 'Phường An Khánh', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Tòa Nhà HQ, Số 201 Trần Não, Phường An Khánh, TP. Thủ Đức'}",
+     "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+    }
+   ]
+  },
+  {
+   "id": "T9a",
+   "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
+   "action": "flag",
+   "rows": 106,
+   "by_source": {
+    "topcv": 26,
+    "topdev": 5,
+    "vietnamworks": 14,
+    "careerviet": 9,
+    "vieclam24h": 4,
+    "itviec": 20,
+    "glints": 9,
+    "jobsgo": 19
+   },
+   "examples": [
+    {
+     "job_id": "07dd92ce-25c8-4e0d-828e-f85445cd18ac",
+     "field": "T9a",
+     "before": "Làm tại công ty / Onsite",
+     "after": "raw=onsite jd=hybrid strong=True",
+     "url": "https://glints.com/vn/opportunities/jobs/full-stack-developer-java-react-3-month-contract/07dd92ce-25c8-4e0d-828e-f85445cd18ac"
+    },
+    {
+     "job_id": "2110354",
+     "field": "T9a",
+     "before": "None",
+     "after": "raw=remote jd=hybrid strong=True",
+     "url": "https://www.vietnamworks.com/ai-engineer-remote-fulltime-hybrid-onsite-2110354-jv"
+    },
+    {
+     "job_id": "2330469",
+     "field": "T9a",
+     "before": "Làm việc tại văn phòng / Onsite, Làm việc từ xa (Remote), Kết hợp tại văn phòng và từ xa (Hybrid)",
+     "after": "raw=hybrid jd=remote strong=False",
+     "url": "https://www.topcv.vn/brand/transcosmoshochiminh/tuyen-dung/nhan-vien-thiet-ke-web-khoi-digital-marketing-offshore-khong-yeu-cau-kinh-nghiem-j2330469.html"
+    }
+   ]
+  },
+  {
+   "id": "T9b",
+   "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
+   "action": "flag",
+   "rows": 294,
+   "by_source": {
+    "topcv": 78,
+    "topdev": 4,
+    "vietnamworks": 17,
+    "careerviet": 16,
+    "vieclam24h": 13,
+    "itviec": 52,
+    "glints": 23,
+    "jobsgo": 91
+   },
+   "examples": [
+    {
+     "job_id": "200951800",
+     "field": "T9b",
+     "before": "Toàn thời gian cố định",
+     "after": "raw=full_time jd=internship",
+     "url": "https://vieclam24h.vn/it-phan-cung-mang/thuc-tap-sinh-it-phan-cung-co-luong-c7p210000160id200951800.html"
+    },
+    {
+     "job_id": "200961366",
+     "field": "T9b",
+     "before": "Toàn thời gian cố định",
+     "after": "raw=full_time jd=internship",
+     "url": "https://vieclam24h.vn/hanh-chinh-thu-ky/thuc-tap-sinh-data-di-lam-ngay-c1p210000188id200961366.html"
+    },
+    {
+     "job_id": "200962602",
+     "field": "T9b",
+     "before": "Toàn thời gian cố định",
+     "after": "raw=full_time jd=internship",
+     "url": "https://vieclam24h.vn/it-phan-mem/thuc-tap-co-phu-cap-va-ky-su-phan-mem-php-laravel-di-lam-ngay-thang-10-c8p210000187id200962602.html"
+    }
+   ]
+  },
+  {
+   "id": "T9c",
+   "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
+   "action": "flag",
+   "rows": 3379,
+   "by_source": {
+    "topcv": 1177,
+    "topdev": 154,
+    "vietnamworks": 517,
+    "careerviet": 310,
+    "vieclam24h": 101,
+    "itviec": 612,
+    "glints": 136,
+    "jobsgo": 372
+   },
+   "examples": [
+    {
+     "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+     "field": "T9c",
+     "before": "1 - 3 năm kinh nghiệm",
+     "after": "1.0 - 3.0 «1 - 3 năm»",
+     "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+    },
+    {
+     "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+     "field": "T9c",
+     "before": "None",
+     "after": "0.0 - None «mới tốt nghiệp»",
+     "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+    },
+    {
+     "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+     "field": "T9c",
+     "before": "Dưới một năm kinh nghiệm",
+     "after": "0.0 - None «Final-year student»",
      "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
     }
    ]
@@ -430,7 +581,7 @@
   {
    "column": "also_on",
    "dtype": "object",
-   "fill_pct": 2.7
+   "fill_pct": 2.6
   },
   {
    "column": "first_crawled_at",
@@ -450,17 +601,17 @@
   {
    "column": "company_address",
    "dtype": "object",
-   "fill_pct": 87.6
+   "fill_pct": 87.4
   },
   {
    "column": "raw_category_text",
    "dtype": "object",
-   "fill_pct": 93.2
+   "fill_pct": 92.9
   },
   {
    "column": "raw_location_text",
    "dtype": "object",
-   "fill_pct": 97.5
+   "fill_pct": 97.4
   },
   {
    "column": "working_locations",
@@ -470,57 +621,57 @@
   {
    "column": "raw_posted_date",
    "dtype": "object",
-   "fill_pct": 63.8
+   "fill_pct": 64.5
   },
   {
    "column": "raw_deadline",
    "dtype": "object",
-   "fill_pct": 94.8
+   "fill_pct": 94.7
   },
   {
    "column": "raw_salary_text",
    "dtype": "object",
-   "fill_pct": 60.7
+   "fill_pct": 60.4
   },
   {
    "column": "raw_employment_type",
    "dtype": "object",
-   "fill_pct": 94.8
+   "fill_pct": 94.5
   },
   {
    "column": "raw_work_mode",
    "dtype": "object",
-   "fill_pct": 54.5
+   "fill_pct": 54.6
   },
   {
    "column": "raw_experience_text",
    "dtype": "object",
-   "fill_pct": 90.7
+   "fill_pct": 90.8
   },
   {
    "column": "raw_seniority_text",
    "dtype": "object",
-   "fill_pct": 72.6
+   "fill_pct": 73.6
   },
   {
    "column": "raw_education_text",
    "dtype": "object",
-   "fill_pct": 61.8
+   "fill_pct": 60.7
   },
   {
    "column": "raw_headcount",
    "dtype": "object",
-   "fill_pct": 59.4
+   "fill_pct": 60.0
   },
   {
    "column": "skills_list",
    "dtype": "object",
-   "fill_pct": 78.3
+   "fill_pct": 62.0
   },
   {
    "column": "benefits_list",
    "dtype": "object",
-   "fill_pct": 98.1
+   "fill_pct": 98.8
   },
   {
    "column": "raw_description_text",
@@ -595,17 +746,17 @@
   {
    "column": "description_vi",
    "dtype": "object",
-   "fill_pct": 72.7
+   "fill_pct": 100.0
   },
   {
    "column": "requirements_vi",
    "dtype": "object",
-   "fill_pct": 72.7
+   "fill_pct": 100.0
   },
   {
    "column": "translated_by",
    "dtype": "object",
-   "fill_pct": 0.0
+   "fill_pct": 26.5
   },
   {
    "column": "translation_status",
@@ -620,22 +771,22 @@
   {
    "column": "description_vi_norm",
    "dtype": "object",
-   "fill_pct": 72.7
+   "fill_pct": 100.0
   },
   {
    "column": "description_vi_fold",
    "dtype": "object",
-   "fill_pct": 72.7
+   "fill_pct": 100.0
   },
   {
    "column": "requirements_vi_norm",
    "dtype": "object",
-   "fill_pct": 72.7
+   "fill_pct": 100.0
   },
   {
    "column": "requirements_vi_fold",
    "dtype": "object",
-   "fill_pct": 72.7
+   "fill_pct": 100.0
   },
   {
    "column": "salary_min_vnd",
@@ -675,37 +826,47 @@
   {
    "column": "posted_date",
    "dtype": "object",
-   "fill_pct": 63.8
+   "fill_pct": 64.5
   },
   {
    "column": "deadline_date",
    "dtype": "object",
-   "fill_pct": 94.7
+   "fill_pct": 94.6
+  },
+  {
+   "column": "posted_month",
+   "dtype": "object",
+   "fill_pct": 100.0
   },
   {
    "column": "exp_min_years",
    "dtype": "float64",
-   "fill_pct": 90.7
+   "fill_pct": 90.8
   },
   {
    "column": "exp_max_years",
    "dtype": "float64",
-   "fill_pct": 69.3
+   "fill_pct": 68.6
   },
   {
    "column": "headcount",
    "dtype": "float64",
-   "fill_pct": 59.4
+   "fill_pct": 60.0
+  },
+  {
+   "column": "benefits_clean",
+   "dtype": "object",
+   "fill_pct": 98.8
   },
   {
    "column": "skills_clean",
    "dtype": "object",
-   "fill_pct": 92.7
+   "fill_pct": 88.8
   },
   {
    "column": "benefits_std",
    "dtype": "object",
-   "fill_pct": 92.7
+   "fill_pct": 93.3
   },
   {
    "column": "locations",
@@ -713,9 +874,74 @@
    "fill_pct": 99.7
   },
   {
+   "column": "work_mode_raw",
+   "dtype": "object",
+   "fill_pct": 54.9
+  },
+  {
+   "column": "work_mode_jd",
+   "dtype": "object",
+   "fill_pct": 2.4
+  },
+  {
+   "column": "work_mode_jd_rules",
+   "dtype": "object",
+   "fill_pct": 2.4
+  },
+  {
+   "column": "work_mode_jd_strong",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "work_mode_conflict",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "employment_type_raw",
+   "dtype": "object",
+   "fill_pct": 93.0
+  },
+  {
+   "column": "employment_types_raw",
+   "dtype": "object",
+   "fill_pct": 93.0
+  },
+  {
+   "column": "employment_type_jd",
+   "dtype": "object",
+   "fill_pct": 6.5
+  },
+  {
+   "column": "employment_type_conflict",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "exp_min_years_jd",
+   "dtype": "float64",
+   "fill_pct": 75.2
+  },
+  {
+   "column": "exp_max_years_jd",
+   "dtype": "float64",
+   "fill_pct": 18.0
+  },
+  {
+   "column": "exp_jd_kind",
+   "dtype": "object",
+   "fill_pct": 75.2
+  },
+  {
+   "column": "exp_jd_text",
+   "dtype": "object",
+   "fill_pct": 75.2
+  },
+  {
    "column": "flags",
    "dtype": "object",
-   "fill_pct": 6.3
+   "fill_pct": 6.4
   }
  ],
  "trace": {
@@ -740,7 +966,7 @@
    "working_locations": [
     "Hà Nội: Số 3 Lê Văn Hưu, Phường Hai Bà Trưng (Phường Hai Bà Trưng thuộc quận Hai Bà Trưng cũ)"
    ],
-   "raw_posted_date": null,
+   "raw_posted_date": "2026-10-08",
    "raw_deadline": "20/11/2026",
    "raw_salary_text": "400 - 900 USD",
    "raw_employment_type": "Toàn thời gian",
@@ -749,10 +975,7 @@
    "raw_seniority_text": "Nhân viên",
    "raw_education_text": "Đại Học trở lên",
    "raw_headcount": "2 người",
-   "skills_list": [
-    "IT - Phần mềm",
-    "Tài chính"
-   ],
+   "skills_list": null,
    "benefits_list": [
     "A 13th-month salary as an end-of-year bonus.",
     "A 14th-month salary depending on individual and company performance.",
@@ -776,15 +999,15 @@
    "language_rule": "en",
    "language": "en",
    "language_conf": 0.9009,
-   "description_vi": null,
-   "requirements_vi": null,
-   "translated_by": null,
-   "translation_status": "not_run",
-   "translation_chunks": 0,
-   "description_vi_norm": null,
-   "description_vi_fold": null,
-   "requirements_vi_norm": null,
-   "requirements_vi_fold": null,
+   "description_vi": "Tại EAERA, chúng tôi xây dựng và mở rộng quy mô công nghệ cung cấp năng lượng cho các doanh nghiệp công nghệ tài chính hiện đại. Chúng tôi đang tìm kiếm các Kỹ sư hậu phương tận hưởng giải quyết các thách thức phức tạp, xây dựng các hệ thống đáng tin cậy và liên tục cải thiện chuyên môn kỹ thuật của… (+968 ký tự)",
+   "requirements_vi": "Yêu cầu công việc:\nPhải có:\nTrình độ mạnh trong Python hoặc Ruby on Rails, với sự sẵn sàng làm việc trên cả hai chồng.\nHiểu biết vững chắc về phát triển ứng dụng hậu phương và các API HTTP/REST.\nHiểu biết tốt về cơ sở dữ liệu quan hệ và SQL, bao gồm các giao dịch, chỉ mục, ràng buộc và tính nhất quá… (+2015 ký tự)",
+   "translated_by": "VietAI/envit5-translation@840bc881",
+   "translation_status": "translated",
+   "translation_chunks": 41,
+   "description_vi_norm": "tại eaera, chúng tôi xây dựng và mở rộng quy mô công nghệ cung cấp năng lượng cho các doanh nghiệp công nghệ tài chính hiện đại. chúng tôi đang tìm kiếm các kỹ sư hậu phương tận hưởng giải quyết các thách thức phức tạp, xây dựng các hệ thống đáng tin cậy và liên tục cải thiện chuyên môn kỹ thuật của… (+968 ký tự)",
+   "description_vi_fold": "tai eaera, chung toi xay dung va mo rong quy mo cong nghe cung cap nang luong cho cac doanh nghiep cong nghe tai chinh hien dai. chung toi dang tim kiem cac ky su hau phuong tan huong giai quyet cac thach thuc phuc tap, xay dung cac he thong dang tin cay va lien tuc cai thien chuyen mon ky thuat cua… (+968 ký tự)",
+   "requirements_vi_norm": "yêu cầu công việc:\nphải có:\ntrình độ mạnh trong python hoặc ruby on rails, với sự sẵn sàng làm việc trên cả hai chồng.\nhiểu biết vững chắc về phát triển ứng dụng hậu phương và các api http/rest.\nhiểu biết tốt về cơ sở dữ liệu quan hệ và sql, bao gồm các giao dịch, chỉ mục, ràng buộc và tính nhất quá… (+2015 ký tự)",
+   "requirements_vi_fold": "yeu cau cong viec: phai co: trinh do manh trong python hoac ruby on rails, voi su san sang lam viec tren ca hai chong. hieu biet vung chac ve phat trien ung dung hau phuong va cac api http/rest. hieu biet tot ve co so du lieu quan he va sql, bao gom cac giao dich, chi muc, rang buoc va tinh nhat qua… (+2015 ký tự)",
    "salary_min_vnd": 10160000.0,
    "salary_max_vnd": 22860000.0,
    "salary_currency_raw": "USD",
@@ -792,11 +1015,21 @@
    "is_negotiable": false,
    "salary_source": "header",
    "salary_suspect": false,
-   "posted_date": null,
+   "posted_date": "2026-10-08",
    "deadline_date": "2026-11-20",
+   "posted_month": "2026-10",
    "exp_min_years": 1.0,
    "exp_max_years": 1.0,
    "headcount": 2.0,
+   "benefits_clean": [
+    "A 13th-month salary as an end-of-year bonus.",
+    "A 14th-month salary depending on individual and company performance.",
+    "Annual performance reviews for salary adjustment and career development.",
+    "Technical training sessions and seminars to support continuous learning and self-improvement.",
+    "Attractive remuneration package.",
+    "A young, energetic, international, and multicultural working environment.",
+    "Strong career development opportunities within the company and the fintech industry."
+   ],
    "skills_clean": [
     "Agile/Scrum",
     "Azure",
@@ -813,7 +1046,7 @@
     "Ruby",
     "SQL",
     "TypeScript",
-    "… (+2 phần tử)"
+    "… (+1 phần tử)"
    ],
    "benefits_std": [
     "Lương tháng 13",
@@ -827,6 +1060,21 @@
      "raw": "Hà Nội: Số 3 Lê Văn Hưu, Phường Hai Bà Trưng (Phường Hai Bà Trưng thuộc quận Hai Bà Trưng cũ)"
     }
    ],
+   "work_mode_raw": "onsite",
+   "work_mode_jd": null,
+   "work_mode_jd_rules": [],
+   "work_mode_jd_strong": false,
+   "work_mode_conflict": false,
+   "employment_type_raw": "full_time",
+   "employment_types_raw": [
+    "full_time"
+   ],
+   "employment_type_jd": null,
+   "employment_type_conflict": false,
+   "exp_min_years_jd": 1.0,
+   "exp_max_years_jd": null,
+   "exp_jd_kind": "jd",
+   "exp_jd_text": "1+ years",
    "flags": []
   }
  }

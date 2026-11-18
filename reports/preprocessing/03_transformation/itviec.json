@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:16:35+00:00",
-  "code_version": "77cac00",
+  "generated_at": "2026-11-18T03:41:41+00:00",
+  "code_version": "a8dab25",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 818
+    "rows": 814
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 818
+    "rows": 814
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 2691,
+      "rows_affected": 2678,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 210,
+      "rows_affected": 209,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 792,
+      "rows_affected": 788,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 717,
+      "rows_affected": 714,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -87,6 +87,13 @@
       ]
     },
     {
+      "id": "T3b",
+      "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
+      "action": "modify",
+      "rows_affected": 814,
+      "examples": []
+    },
+    {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
@@ -104,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 818,
+      "rows_affected": 814,
       "examples": []
     },
     {
@@ -132,21 +139,28 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 273,
+      "rows_affected": 272,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 0,
+      "rows_affected": 546,
+      "examples": []
+    },
+    {
+      "id": "T6.5",
+      "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
+      "action": "modify",
+      "rows_affected": 172,
       "examples": []
     },
     {
       "id": "T7",
-      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 818,
+      "rows_affected": 814,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -175,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 818,
+      "rows_affected": 814,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -197,6 +211,86 @@
           "before": "Quận 7",
           "after": "{'dia_chi_cu_the': 'Tầng 21, Phú Mỹ Hưng Tower, số 08 Hoàng Văn Thái', 'phuong_xa': 'Phường Tân Mỹ', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': 'Tầng 21, Phú Mỹ Hưng Tower, số 08 Hoàng Văn Thái, Phường Tân Mỹ, TP. HCM.'}",
           "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+        }
+      ]
+    },
+    {
+      "id": "T9a",
+      "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
+      "action": "flag",
+      "rows_affected": 20,
+      "examples": [
+        {
+          "job_id": "mb-trainee-ai-engineer-fresher-intern-mb-bank-4409",
+          "field": "T9a",
+          "before": "Tại văn phòng",
+          "after": "raw=onsite jd=hybrid strong=True",
+          "url": "https://itviec.com/viec-lam-it/mb-trainee-ai-engineer-fresher-intern-mb-bank-4409"
+        },
+        {
+          "job_id": "remote-qa-engineer-games-xoai-5944",
+          "field": "T9a",
+          "before": "Tại văn phòng",
+          "after": "raw=onsite jd=remote strong=True",
+          "url": "https://itviec.com/viec-lam-it/remote-qa-engineer-games-xoai-5944"
+        }
+      ]
+    },
+    {
+      "id": "T9b",
+      "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
+      "action": "flag",
+      "rows_affected": 52,
+      "examples": [
+        {
+          "job_id": "ai-engineer-intern-8seneca-3514",
+          "field": "T9b",
+          "before": "FULL_TIME",
+          "after": "raw=full_time jd=internship",
+          "url": "https://itviec.com/viec-lam-it/ai-engineer-intern-8seneca-3514"
+        },
+        {
+          "job_id": "ai-native-full-stack-developer-intern-icon-consulting-group-1155",
+          "field": "T9b",
+          "before": "FULL_TIME",
+          "after": "raw=full_time jd=internship",
+          "url": "https://itviec.com/viec-lam-it/ai-native-full-stack-developer-intern-icon-consulting-group-1155"
+        },
+        {
+          "job_id": "business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345",
+          "field": "T9b",
+          "before": "FULL_TIME",
+          "after": "raw=full_time jd=internship",
+          "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+        }
+      ]
+    },
+    {
+      "id": "T9c",
+      "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
+      "action": "flag",
+      "rows_affected": 612,
+      "examples": [
+        {
+          "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
+          "field": "T9c",
+          "before": "0.8 năm (10 tháng)",
+          "after": "2.0 - None «2+ years»",
+          "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
+        },
+        {
+          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
+          "field": "T9c",
+          "before": "5.1 năm (61 tháng)",
+          "after": "5.0 - None «5+ years»",
+          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
+        },
+        {
+          "job_id": "fintech-frontend-dev-javascript-react-new-wealth-2706",
+          "field": "T9c",
+          "before": "0.8 năm (10 tháng)",
+          "after": "2.0 - 3.0 «At least 2-3 years»",
+          "url": "https://itviec.com/viec-lam-it/fintech-frontend-dev-javascript-react-new-wealth-2706"
         }
       ]
     }
@@ -266,6 +360,41 @@
       "field": "language",
       "fill_pct_in": 100.0,
       "fill_pct_out": 100.0
+    },
+    {
+      "field": "posted_month",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "benefits_clean",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "work_mode_raw",
+      "fill_pct_in": 96.4,
+      "fill_pct_out": 96.4
+    },
+    {
+      "field": "work_mode_jd",
+      "fill_pct_in": 2.5,
+      "fill_pct_out": 2.5
+    },
+    {
+      "field": "employment_type_raw",
+      "fill_pct_in": 96.8,
+      "fill_pct_out": 96.8
+    },
+    {
+      "field": "employment_type_jd",
+      "fill_pct_in": 6.4,
+      "fill_pct_out": 6.4
+    },
+    {
+      "field": "exp_min_years_jd",
+      "fill_pct_in": 75.2,
+      "fill_pct_out": 75.2
     }
   ],
   "checks": {
@@ -278,16 +407,16 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 206,
+      "header": 205,
       "title": 4,
       "jd": 1,
-      "none": 607
+      "none": 604
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 1,
     "language_distribution": {
-      "vi": 271,
-      "en": 547,
+      "vi": 268,
+      "en": 546,
       "other": 0
     },
     "language_fasttext": {
@@ -314,32 +443,112 @@
       },
       "abbreviations_approved": 0
     },
-    "translation": null,
-    "experience_parsed_rate": 87.7
+    "translation": {
+      "model_id": "VietAI/envit5-translation",
+      "model_revision": "840bc88104d5a4277af740eaedb024df8c3093e7",
+      "gen_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
+      "max_chunk_tokens": 200,
+      "fields": [
+        "description",
+        "requirements"
+      ],
+      "approved_terms": 249,
+      "device": "cuda",
+      "batch_size": 4,
+      "torch": "2.14.1+cu130",
+      "transformers": "5.22.2",
+      "peak_vram_mib": 1261,
+      "fell_back_to_cpu": false,
+      "rows_en": 1067,
+      "rows_translated": 880,
+      "rows_failed": 187,
+      "chunks": 22267,
+      "cache_hits": 8297,
+      "model_calls": 14200,
+      "retries": 230,
+      "failed_chunks": 230
+    },
+    "experience_parsed_rate": 87.7,
+    "posted_month_source": {
+      "posted_date": 788,
+      "first_crawled_at": 26
+    },
+    "posted_month_distribution": {
+      "2026-09": 255,
+      "2026-10": 557,
+      "2026-11": 2
+    },
+    "jd_extraction": {
+      "dictionary": "preprocessing/dictionaries/jd_extraction.json",
+      "work_mode_raw": {
+        "None": 29,
+        "hybrid": 133,
+        "onsite": 652
+      },
+      "work_mode_jd": {
+        "remote": 11,
+        "None": 794,
+        "hybrid": 8,
+        "onsite": 1
+      },
+      "work_mode_jd_rules": {
+        "WR1": 10,
+        "WR3": 1,
+        "WH3": 6,
+        "WO2": 1,
+        "WH1": 1,
+        "WH5": 1
+      },
+      "employment_type_raw": {
+        "full_time": 788,
+        "None": 26
+      },
+      "employment_type_jd": {
+        "None": 762,
+        "internship": 42,
+        "full_time": 9,
+        "contract": 1
+      },
+      "exp_jd_kind": {
+        "jd": 582,
+        "None": 202,
+        "jd_zero": 30
+      },
+      "conflicts": {
+        "T9b": 40,
+        "T9a_strong": 2,
+        "T9a": 2
+      }
+    }
   },
   "samples": [
     {
-      "job_id": "itviec_da-nang-tech-lead-ai-agent-products-doraverse-jsc-tech-ai-3653",
-      "source": "itviec",
-      "field": "salary_min_vnd",
-      "before": "1,700 - 2,100 USD",
-      "after": 43180000.0,
-      "changed": true
-    },
-    {
-      "job_id": "itviec_cv-cvcc-business-analyst-ngan-hang-tnhh-mtv-viet-nam-hien-dai-mbv-1658",
+      "job_id": "itviec_senior-project-manager-tpisoftware-co-ltd-3735",
       "source": "itviec",
       "field": "requirements_clean",
-      "before": "JUNIOR BUSINESS ANALYST\nMô tả công việc & Yêu cầu:\nKinh nghiệm:\n1 – 2 năm kinh nghiệm ở vị trí BA hoặc vị trí phân tích tương đương.\nMức độ độc lập:\nThực hiện công việc theo phạm vi được giao, nhận hư…",
-      "after": "JUNIOR BUSINESS ANALYST Mô tả công việc & Yêu cầu:\nKinh nghiệm:\n1 - 2 năm kinh nghiệm ở vị trí BA hoặc vị trí phân tích tương đương.\nMức độ độc lập:\nThực hiện công việc theo phạm vi được giao, nhận hư…",
+      "before": "Good English communication and interpersonal skills.\nFamiliarity with Waterfall, Agile, Scrum. Having PMP/ CSM/CSPO/PSM License is Plus.\nExperience with project management tools (e.g., Jira, MS Team)\n…",
+      "after": "Good English communication and interpersonal skills.\nFamiliarity with Waterfall, Agile, Scrum. Having PMP/ CSM/CSPO/PSM License is Plus.\nExperience with project management tools (e.g., Jira, MS Team) …",
       "changed": true
     },
     {
-      "job_id": "itviec_apo-leader-japanese-it-comtor-bridge-engineer-brse-mynavi-techtus-vietnam-5000",
+      "job_id": "itviec_product-engineer-fresher-junior-flexspace-technologies-inc-1334",
       "source": "itviec",
-      "field": "exp_min_years",
-      "before": "3.1 năm (37 tháng)",
-      "after": 3.0,
+      "field": "description_clean",
+      "before": "About Flexspace AI\nFlexspace AI is the e-commerce + AI revenue platform for coworking — / Shopify / Airbnb for flexible workspace. Seed-funded. We turn operators' websites into high-converting storefr…",
+      "after": "About Flexspace AI Flexspace AI is the e-commerce + AI revenue platform for coworking - / Shopify / Airbnb for flexible workspace. Seed-funded. We turn operators' websites into high-converting storefr…",
+      "changed": true
+    },
+    {
+      "job_id": "itviec_software-engineer-middle-senior-giftee-tech-vietnam-0201",
+      "source": "itviec",
+      "field": "salary_min_vnd",
+      "before": "Up to 2,500$",
+      "after": null,
       "changed": true
     }
   ]

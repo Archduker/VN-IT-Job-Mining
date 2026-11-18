@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-18T00:16:46+00:00",
-  "code_version": "77cac00",
+  "generated_at": "2026-11-18T10:15:26+00:00",
+  "code_version": "8b56ea9",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 246
+    "rows": 154
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 246
+    "rows": 154
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 517,
+      "rows_affected": 323,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 150,
+      "rows_affected": 96,
       "examples": [
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
@@ -35,18 +35,18 @@
           "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
         },
         {
-          "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
-          "field": "salary_min_max",
-          "before": "₫20.000.000-40.000.000/Tháng",
-          "after": "20000000.0 - 40000000.0 VND (header)",
-          "url": "https://glints.com/vn/opportunities/jobs/performance-tester/02ab8190-7a4d-4741-99d7-5ce8926057cb"
-        },
-        {
           "job_id": "052cfb91-4006-4261-9541-f759695858ab",
           "field": "salary_min_max",
           "before": "₫15.000.000-18.000.000/Tháng",
           "after": "15000000.0 - 18000000.0 VND (header)",
           "url": "https://glints.com/vn/opportunities/jobs/nhan-vien-it-dong-nai-15-trieu/052cfb91-4006-4261-9541-f759695858ab"
+        },
+        {
+          "job_id": "05cd0c5e-ef41-40b1-9fe6-4768571f80d9",
+          "field": "salary_min_max",
+          "before": "₫45.000.000-65.000.000/Tháng",
+          "after": "45000000.0 - 65000000.0 VND (header)",
+          "url": "https://glints.com/vn/opportunities/jobs/senior-ai-engineer-remote/05cd0c5e-ef41-40b1-9fe6-4768571f80d9"
         }
       ]
     },
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 246,
+      "rows_affected": 154,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 226,
+      "rows_affected": 139,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -87,6 +87,13 @@
       ]
     },
     {
+      "id": "T3b",
+      "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
+      "action": "modify",
+      "rows_affected": 154,
+      "examples": []
+    },
+    {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
@@ -97,56 +104,63 @@
       "id": "T2f",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 5,
+      "rows_affected": 3,
       "examples": []
     },
     {
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 246,
+      "rows_affected": 154,
       "examples": []
     },
     {
       "id": "T6.1",
       "name": "Bóc thẻ HTML và entity",
       "action": "modify",
-      "rows_affected": 1,
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "T6.2",
       "name": "Chuẩn hóa Unicode về NFC",
       "action": "modify",
-      "rows_affected": 16,
+      "rows_affected": 7,
       "examples": []
     },
     {
       "id": "T6.3",
       "name": "Bỏ ký tự ẩn",
       "action": "modify",
-      "rows_affected": 2,
+      "rows_affected": 1,
       "examples": []
     },
     {
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 127,
+      "rows_affected": 81,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
+      "rows_affected": 62,
+      "examples": []
+    },
+    {
+      "id": "T6.5",
+      "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
+      "action": "modify",
       "rows_affected": 0,
       "examples": []
     },
     {
       "id": "T7",
-      "name": "Rút kỹ năng và phúc lợi song ngữ",
+      "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 245,
+      "rows_affected": 153,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -175,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 246,
+      "rows_affected": 154,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -199,18 +213,105 @@
           "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
         }
       ]
+    },
+    {
+      "id": "T9a",
+      "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
+      "action": "flag",
+      "rows_affected": 9,
+      "examples": [
+        {
+          "job_id": "07dd92ce-25c8-4e0d-828e-f85445cd18ac",
+          "field": "T9a",
+          "before": "Làm tại công ty / Onsite",
+          "after": "raw=onsite jd=hybrid strong=True",
+          "url": "https://glints.com/vn/opportunities/jobs/full-stack-developer-java-react-3-month-contract/07dd92ce-25c8-4e0d-828e-f85445cd18ac"
+        },
+        {
+          "job_id": "53be00a7-e8d4-4e23-9e02-f6365447c3a7",
+          "field": "T9a",
+          "before": "Làm tại công ty / Onsite",
+          "after": "raw=onsite jd=hybrid strong=False",
+          "url": "https://glints.com/vn/opportunities/jobs/qc-engineer-manual-automation/53be00a7-e8d4-4e23-9e02-f6365447c3a7"
+        },
+        {
+          "job_id": "6fedd635-5d48-4722-a0fc-b30999e4d4a6",
+          "field": "T9a",
+          "before": "Làm tại công ty / Onsite",
+          "after": "raw=onsite jd=hybrid strong=True",
+          "url": "https://glints.com/vn/opportunities/jobs/software-developer-intern/6fedd635-5d48-4722-a0fc-b30999e4d4a6"
+        }
+      ]
+    },
+    {
+      "id": "T9b",
+      "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
+      "action": "flag",
+      "rows_affected": 23,
+      "examples": [
+        {
+          "job_id": "3a5f7b15-db25-4be0-b944-86d142c2b33c",
+          "field": "T9b",
+          "before": "FULL_TIME",
+          "after": "raw=full_time jd=internship",
+          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-ai/3a5f7b15-db25-4be0-b944-86d142c2b33c"
+        },
+        {
+          "job_id": "6caeae63-2ef0-4e44-b5b7-9e06f6b26952",
+          "field": "T9b",
+          "before": "FULL_TIME",
+          "after": "raw=full_time jd=internship",
+          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-blockchain/6caeae63-2ef0-4e44-b5b7-9e06f6b26952"
+        },
+        {
+          "job_id": "adb1e128-7425-4c8a-88c6-85bb086442bd",
+          "field": "T9b",
+          "before": "FULL_TIME",
+          "after": "raw=full_time jd=internship",
+          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-qc-tester/adb1e128-7425-4c8a-88c6-85bb086442bd"
+        }
+      ]
+    },
+    {
+      "id": "T9c",
+      "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
+      "action": "flag",
+      "rows_affected": 136,
+      "examples": [
+        {
+          "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+          "field": "T9c",
+          "before": "1 - 3 năm kinh nghiệm",
+          "after": "1.0 - 3.0 «1 - 3 năm»",
+          "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+        },
+        {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "T9c",
+          "before": "None",
+          "after": "0.0 - None «mới tốt nghiệp»",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
+          "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+          "field": "T9c",
+          "before": "Dưới một năm kinh nghiệm",
+          "after": "0.0 - None «Final-year student»",
+          "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+        }
+      ]
     }
   ],
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 60.2,
-      "fill_pct_out": 60.2
+      "fill_pct_in": 61.7,
+      "fill_pct_out": 61.7
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 60.6,
-      "fill_pct_out": 60.6
+      "fill_pct_in": 61.7,
+      "fill_pct_out": 61.7
     },
     {
       "field": "posted_date",
@@ -219,18 +320,18 @@
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 98.0,
-      "fill_pct_out": 98.0
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 91.9,
-      "fill_pct_out": 91.9
+      "fill_pct_in": 90.3,
+      "fill_pct_out": 90.3
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 91.9,
-      "fill_pct_out": 91.9
+      "fill_pct_in": 90.3,
+      "fill_pct_out": 90.3
     },
     {
       "field": "headcount",
@@ -249,13 +350,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 98.0,
-      "fill_pct_out": 98.0
+      "fill_pct_in": 96.8,
+      "fill_pct_out": 96.8
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 74.4,
-      "fill_pct_out": 74.4
+      "fill_pct_in": 79.2,
+      "fill_pct_out": 79.2
     },
     {
       "field": "locations",
@@ -266,6 +367,41 @@
       "field": "language",
       "fill_pct_in": 100.0,
       "fill_pct_out": 100.0
+    },
+    {
+      "field": "posted_month",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "benefits_clean",
+      "fill_pct_in": 90.3,
+      "fill_pct_out": 90.3
+    },
+    {
+      "field": "work_mode_raw",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "work_mode_jd",
+      "fill_pct_in": 5.8,
+      "fill_pct_out": 5.8
+    },
+    {
+      "field": "employment_type_raw",
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
+    },
+    {
+      "field": "employment_type_jd",
+      "fill_pct_in": 14.9,
+      "fill_pct_out": 14.9
+    },
+    {
+      "field": "exp_min_years_jd",
+      "fill_pct_in": 88.3,
+      "fill_pct_out": 88.3
     }
   ],
   "checks": {
@@ -278,42 +414,39 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 150,
+      "header": 97,
       "title": 0,
-      "jd": 5,
-      "none": 91
+      "jd": 2,
+      "none": 55
     },
-    "salary_under_1m_count": 5,
+    "salary_under_1m_count": 3,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 139,
-      "en": 107,
+      "vi": 92,
+      "en": 62,
       "other": 0
     },
     "language_fasttext": {
       "model": "lid.176.bin",
       "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
       "conf_min": 0.6,
-      "disagree_with_old_rule": 11,
+      "disagree_with_old_rule": 7,
       "disagree_examples": [
         "00151110-44ff-48bc-9dd9-752c8f632935",
         "39f88183-41e7-457b-9a5b-d6377dbf85dc",
         "9a66c736-2718-44fd-ba72-a52670f68244",
         "b1c8877b-8c5c-4ac1-937f-6c03f96ee58c",
         "becc6671-92ff-4e5e-a9af-99a2c17c6cb3",
-        "c0446e35-3da9-4cb1-b011-60802f2d8a65",
-        "c9b23479-2048-47b3-a537-93adf4aab8a6",
         "cdc02b62-a002-4ffc-8a37-a5d88118c265",
-        "e8f8433d-092c-4a52-84a1-4224b6c47262",
-        "f6af1fd9-25d9-4c0d-8155-b78950a43cad"
+        "fa3acc62-222f-41d8-9757-09e26584d598"
       ],
-      "conf_lt_0_9": 70
+      "conf_lt_0_9": 41
     },
     "text_quality": {
       "before": {
-        "html": 1,
-        "nfc": 16,
-        "hidden": 2
+        "html": 0,
+        "nfc": 7,
+        "hidden": 1
       },
       "residual_html_pct": 0.0,
       "residual_nfd_pct": 0.0,
@@ -325,32 +458,111 @@
       },
       "abbreviations_approved": 0
     },
-    "translation": null,
-    "experience_parsed_rate": 91.9
+    "translation": {
+      "model_id": "VietAI/envit5-translation",
+      "model_revision": "840bc88104d5a4277af740eaedb024df8c3093e7",
+      "gen_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
+      "max_chunk_tokens": 200,
+      "fields": [
+        "description",
+        "requirements"
+      ],
+      "approved_terms": 249,
+      "device": "cuda",
+      "batch_size": 4,
+      "torch": "2.14.1+cu130",
+      "transformers": "5.22.2",
+      "peak_vram_mib": 1261,
+      "fell_back_to_cpu": false,
+      "rows_en": 1129,
+      "rows_translated": 926,
+      "rows_failed": 203,
+      "chunks": 24076,
+      "cache_hits": 8661,
+      "model_calls": 15666,
+      "retries": 251,
+      "failed_chunks": 251
+    },
+    "experience_parsed_rate": 90.3,
+    "posted_month_source": {
+      "posted_date": 154
+    },
+    "posted_month_distribution": {
+      "2026-10": 104,
+      "2026-09": 50
+    },
+    "jd_extraction": {
+      "dictionary": "preprocessing/dictionaries/jd_extraction.json",
+      "work_mode_raw": {
+        "onsite": 143,
+        "remote": 4,
+        "hybrid": 7
+      },
+      "work_mode_jd": {
+        "None": 145,
+        "remote": 2,
+        "hybrid": 5,
+        "onsite": 2
+      },
+      "work_mode_jd_rules": {
+        "WR1": 1,
+        "WR3": 2,
+        "WH4": 3,
+        "WH7": 2,
+        "WO1": 3,
+        "WO2": 1
+      },
+      "employment_type_raw": {
+        "full_time": 140,
+        "internship": 12,
+        "contract": 2
+      },
+      "employment_type_jd": {
+        "None": 131,
+        "internship": 16,
+        "contract": 1,
+        "full_time": 6
+      },
+      "exp_jd_kind": {
+        "jd": 123,
+        "jd_zero": 13,
+        "None": 18
+      },
+      "conflicts": {
+        "T9a_strong": 3,
+        "T9a": 6,
+        "T9b": 4
+      }
+    }
   },
   "samples": [
     {
-      "job_id": "glints_81129b1a-9c66-4974-8c6b-06f0a7cbf15c",
+      "job_id": "glints_64eeadc9-c061-489d-9ade-dd4d726f7d7d",
       "source": "glints",
-      "field": "exp_min_years",
-      "before": "1 - 3 năm kinh nghiệm",
-      "after": 1.0,
+      "field": "posted_date",
+      "before": "2026-09-21T05:43:14.52Z",
+      "after": "2026-09-21",
       "changed": true
     },
     {
-      "job_id": "glints_00b4d332-8e6e-4714-9853-e816085f7d01",
-      "source": "glints",
-      "field": "requirements_clean",
-      "before": "Mô tả công việc\nLàm tại công ty\nTối thiểu Cử Nhân",
-      "after": "Mô tả công việc Làm tại công ty Tối thiểu Cử Nhân",
-      "changed": true
-    },
-    {
-      "job_id": "glints_0ceab25f-5c69-4803-bfda-db338198f092",
+      "job_id": "glints_0af63a55-b97f-4706-8d61-f0b52e201fc1",
       "source": "glints",
       "field": "salary_min_vnd",
       "before": "Công ty không công khai thông tin này",
       "after": null,
+      "changed": true
+    },
+    {
+      "job_id": "glints_af8b49dd-3fd2-4169-8dcc-12456f84cbba",
+      "source": "glints",
+      "field": "requirements_clean",
+      "before": "Mô tả công việc\nLàm tại công ty\n1 - 3 năm kinh nghiệm\nTối thiểu Cao Đẳng",
+      "after": "Mô tả công việc Làm tại công ty 1 - 3 năm kinh nghiệm Tối thiểu Cao Đẳng",
       "changed": true
     }
   ]
