@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:43:51+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:14:14+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": "data/preprocessing/01b_deduplication/jobsgo.jsonl",
-    "rows": 547
+    "rows": 548
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 547
+    "rows": 548
   },
   "dropped": [
     {
@@ -32,9 +32,9 @@
   "rules": [
     {
       "id": "I1",
-      "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
+      "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
       "action": "modify",
-      "rows_affected": 547,
+      "rows_affected": 548,
       "examples": []
     },
     {
@@ -55,7 +55,7 @@
       "id": "I4",
       "name": "Bỏ tag SEO và ngành nghề khỏi skills_list",
       "action": "modify",
-      "rows_affected": 545,
+      "rows_affected": 546,
       "examples": [
         {
           "job_id": "27681538345",
@@ -84,7 +84,7 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 547,
+      "rows_affected": 548,
       "examples": [
         {
           "job_id": "27681538345",
@@ -183,6 +183,11 @@
       "fill_pct_out": 99.6
     },
     {
+      "field": "raw_work_mode",
+      "fill_pct_in": 0.0,
+      "fill_pct_out": 0.0
+    },
+    {
       "field": "raw_experience_text",
       "fill_pct_in": 99.8,
       "fill_pct_out": 99.8
@@ -199,8 +204,8 @@
     },
     {
       "field": "raw_headcount",
-      "fill_pct_in": 59.0,
-      "fill_pct_out": 59.0
+      "fill_pct_in": 58.9,
+      "fill_pct_out": 58.9
     },
     {
       "field": "skills_list",

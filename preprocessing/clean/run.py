@@ -123,6 +123,15 @@ def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tup
     c3_ids = {id(i) for i in c3}
     items = [i for i in items if id(i) not in c3_ids]
 
+    # Lần cào đầu tiên của mỗi job_id (mọi snapshot và file batch), trước khi C1 bỏ snapshot cũ.
+    # Bước 02 mang sang thành first_crawled_at để tạo posted_month khi nguồn không ghi ngày đăng (PRE-37).
+    first_seen: dict[str, str] = {}
+    for it in items:
+        ts = str(it["env"]["metadata"].get("scraped_at") or "")
+        jid = _job_id(it)
+        if ts and (jid not in first_seen or ts < first_seen[jid]):
+            first_seen[jid] = ts
+
     # C1: snapshot mới nhất theo job_id; tin trùng trong chính file batch cũng tính ở đây
     best: dict[str, Item] = {}
     c1: list[tuple[Item, Item]] = []
@@ -175,7 +184,8 @@ def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tup
         status[st] += 1
         levels[f"tang_{level}_{st}"] += 1
         it["env"]["metadata"]["clean"] = {"snapshot_file": it["rel"], "it_rule": rule, "it_rule_level": level,
-                                          "it_status": st, "dedup_key": dedup_key(f), "also_on": []}
+                                          "it_status": st, "dedup_key": dedup_key(f), "also_on": [],
+                                          "first_scraped_at": first_seen.get(_job_id(it))}
     non_it = [i for i in items if i["env"]["metadata"]["clean"]["it_status"] == "non_it"]
     report.rule("C4a", "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
                 "flag", status["non_it"], [_ex(i, "job_title", i["flat"].get("job_title"), "non_it") for i in non_it])

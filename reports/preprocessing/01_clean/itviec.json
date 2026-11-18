@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:42:09+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:12:10+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": "data/itviec/raw",
     "rows": 911

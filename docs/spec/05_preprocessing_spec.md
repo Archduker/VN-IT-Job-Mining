@@ -202,18 +202,18 @@ Kết quả 10/11: 4.799 vào, 4.672 ra.
 | Nhóm | Cột |
 |---|---|
 | Khóa (luôn có) | `job_id_global`, `source_platform`, `source_job_id`, `source_url`, `crawled_at` |
-| Từ 01 (`CLEAN_META`) | `it_rule`, `it_rule_level`, `it_status`, `dedup_key`, `also_on` |
-| 18 trường, giữ dạng chữ như raw (tiền tố `raw_`) | `job_title`, `company_name`, `company_address`, `raw_category_text`, `raw_location_text`, `working_locations`, `raw_posted_date`, `raw_deadline`, `raw_salary_text`, `raw_employment_type`, `raw_experience_text`, `raw_seniority_text`, `raw_education_text`, `raw_headcount`, `skills_list`, `benefits_list`, `raw_description_text`, `raw_requirements_text` |
-| Chưa có, cần thêm (PRE-37) | `first_crawled_at`: thời điểm cào lần đầu của tin (bản `_v1`) |
+| Từ 01 (`CLEAN_META`) | `it_rule`, `it_rule_level`, `it_status`, `dedup_key`, `also_on`, `first_crawled_at` (lần cào đầu của tin, bước 01 ghi `first_scraped_at` trước khi C1 bỏ snapshot cũ; có từ 18/11, PRE-37) |
+| 19 trường, giữ dạng chữ như raw (tiền tố `raw_`) | `job_title`, `company_name`, `company_address`, `raw_category_text`, `raw_location_text`, `working_locations`, `raw_posted_date`, `raw_deadline`, `raw_salary_text`, `raw_employment_type`, `raw_work_mode`, `raw_experience_text`, `raw_seniority_text`, `raw_education_text`, `raw_headcount`, `skills_list`, `benefits_list`, `raw_description_text`, `raw_requirements_text` |
 
-- Một trường chỉ được giữ khi có ở ít nhất một nửa số nguồn. Theo luật này đã bỏ 6 trường: `company_scale`, `raw_age_text`, `raw_gender_text`, `raw_updated_at`, `raw_working_time`, `raw_work_mode`.
+- Một trường chỉ được giữ khi có ở ít nhất một nửa số nguồn. Theo luật này đã bỏ 5 trường: `company_scale`, `raw_age_text`, `raw_gender_text`, `raw_updated_at`, `raw_working_time`.
+- **Ngoại lệ `raw_work_mode`** (người dùng duyệt 18/11): chỉ có ở 3/8 nguồn (topcv 99,5%, glints 100%, itviec 96,5% từ `work_model`) nhưng vẫn giữ, vì `work_mode` là trường của bảng target (mục 4.4) và giá trị nguồn ghi sẵn đúng hơn giá trị bước 04 suy từ địa điểm.
 - Đổi tên hoặc thêm trường thì phải sửa cả `monitoring/backend/app/core/feature_targets.py` (`RAW_PATHS`).
 
 **Luật:**
 
 | Mã | Luật | Hành động | Số dòng 10/11 |
 |---|---|---|---|
-| I1 | Làm phẳng envelope theo `_flatten_<nguồn>` về 18 trường và khóa | modify | 4.671 |
+| I1 | Làm phẳng envelope theo `_flatten_<nguồn>` về 19 trường, khóa và `first_crawled_at` | modify | 4.671 |
 | I2 | ITviec: lấy ngày đăng từ `job_posting_jsonld.datePosted`, thay cho dạng tương đối "Đăng 6 giờ trước" | modify | 792 |
 | I3 | TopDev: lấy ngày đăng theo thứ tự `published.date` → `date_posted` → JSON-LD; lấy kinh nghiệm từ JSON-LD `experienceRequirements` | modify | 66 |
 | I4 | Bỏ tag SEO và ngành nghề khỏi `skills_list` (CareerViet `job-tags`, JobsGO `occupations`) | modify | 855 |
@@ -228,20 +228,23 @@ Kết quả 10/11: 4.672 vào, 4.671 ra.
 
 | Mục | Nội dung |
 |---|---|
-| Kiểm tra | Luật bảo toàn. Ghép 18 trường × 8 nguồn ra một heatmap độ phủ để Monitoring hiển thị |
-| Trạng thái | Có code, đã chạy thật 10/11. Chưa mang `first_crawled_at` |
-| Việc mở | PRE-37 (việc 1), GEN-7 (`integration/run.py` tự tạo `boto3.client`) |
+| Kiểm tra | Luật bảo toàn. Ghép 19 trường × 8 nguồn ra một heatmap độ phủ (`docs/presentation/preprocessing_steps/02_integration.html`) |
+| Trạng thái | Có code, chạy thật lại 18/11 trên tập raw đang có trên R2: 4.672 vào, 4.671 ra, 30 cột |
+| Việc mở | GEN-7 (`integration/run.py` tự tạo `boto3.client`) |
 
 
-**Phúc lợi theo nguồn** (`benefits_list`, kiểm 17/11/2026 trên `integration/json_flattener.py` và trang `docs/presentation/raw_bronze/`). Mỗi phần tử của list phải là **một** phúc lợi:
+**Phúc lợi theo nguồn** (`benefits_list`, kiểm lại 18/11/2026 trên dữ liệu thật của bước 02; số item trung bình mỗi tin trong ngoặc). Mỗi phần tử của list phải là **một** phúc lợi:
 
 | Nguồn | Raw | Cách tách hiện tại | Đúng chưa |
 |---|---|---|---|
-| topdev, vietnamworks | list | 1 phần tử = 1 item | đúng |
-| itviec, topcv (`benefits_bullets`, tag "Quyền lợi") | list | 1 phần tử = 1 item | đúng |
-| glints | chuỗi hoặc list | chuỗi thì mỗi dòng 1 item | đúng |
-| careerviet | chuỗi "Phúc lợi" | tách theo `\n ; • - *` | **sai**: dấu `-` làm vỡ cụm ("Work-life balance"), và các item dính nhau thành "Phúc lợi Laptop Chế độ bảo hiểm…" (PRE-41) |
-| topcv (khi không có bullets), jobsgo, vieclam24h | chuỗi | cả chuỗi thành 1 item | **sai**: không tách dòng (PRE-41) |
+| vietnamworks | list `benefitValue` | 1 phần tử = 1 item (4,1) | đúng |
+| itviec | list theo mục "Tại sao"/"Phúc lợi" | 1 phần tử = 1 item (14,7) | đúng |
+| topcv | list `benefits_bullets` (mọi tin đều có) + tag "Quyền lợi" | 1 phần tử = 1 item (10,3) | đúng |
+| jobsgo | list `benefits_bullets` | 1 phần tử = 1 item (7,2) | đúng |
+| vieclam24h | list, dòng bị ngắt giữa câu | nối dòng gãy (`stitch_fragmented_bullets`) (5,3) | đúng |
+| glints | chuỗi hoặc list | chuỗi thì mỗi dòng 1 item (4,5) | đúng |
+| topdev | `benefits_original`: 1 khối HTML `<ul><li>`; nếu rỗng thì `benefits_v2` | **sửa 18/11**: bỏ HTML rồi mỗi dòng 1 item; `benefits_v2` lấy `description` (bỏ `name`, là tên icon) (0,98 → 9,5) | đúng |
+| careerviet | chuỗi "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch …" (các ô icon có nhãn cố định, dính liền) | **sửa 18/11**: tách theo 15 nhãn cố định của CareerViet, khớp nhãn dài trước; bỏ phần "Địa điểm …" lọt vào cuối (`split_careerviet_benefits`) (1,0 → 8,7) | đúng |
 
 `benefits_std` (bước 03 T7) khớp từ khóa trên toàn bộ chuỗi nên ít bị ảnh hưởng bởi lỗi tách; cột `benefits` của bảng target lấy từ đây (mục 4.4).
 

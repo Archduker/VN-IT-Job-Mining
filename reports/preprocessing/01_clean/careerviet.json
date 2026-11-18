@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:41:49+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:11:54+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": "data/careerviet/raw",
     "rows": 660
   },
   "output": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
-    "rows": 410
+    "rows": 409
   },
   "dropped": [
     {
@@ -51,7 +51,7 @@
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 24
+      "rows": 25
     }
   ],
   "rules": [
@@ -203,7 +203,7 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 24,
+      "rows_affected": 25,
       "examples": [
         {
           "job_id": "35C81DB3",

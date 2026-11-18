@@ -132,7 +132,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
   - Phạm vi thời gian là tin đăng từ tháng 9, cào trong tháng 10–11/2026.
 - **Lý do:** `posted_date` chỉ phủ 63,8% (topcv 0%, topdev 32,7%; `reports/preprocessing/03_transformation/<nguồn>.json`). Trong khi đó `crawled_at` có ở mọi tin, và BI chỉ cần phân biệt theo tháng.
 - **Việc code:**
-  1. Mang `first_crawled_at` (lần cào đầu, bản `_v1`) qua bước 02. `preprocessing/common/raw_reader.py:46-50` đang chọn bản mới nhất, nên tin cào lại sau 21 ngày sẽ bị dời sang tháng sau.
+  1. ~~Mang `first_crawled_at` qua bước 02~~: **xong 18/11** (bước 01 ghi `first_scraped_at`, bước 02 xuất `first_crawled_at`; L-49).
   2. Bước 03 tạo `posted_month` (tháng của `posted_date` nếu có, nếu không thì tháng của `first_crawled_at`).
   3. Bỏ `posted_date` khỏi bảng sạch sau bước 04. Bước 01b vẫn dùng `raw_posted_date` ở tầng trung gian.
   4. `processing/encoding/features.py:118` đổi đặc trưng `posted_month` sang cột mới. `days_to_deadline` (dòng 119) vẫn tính từ `crawled_at`, không đổi.
@@ -165,9 +165,9 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 - **Tái lập:** `intfloat/multilingual-e5-base` chưa ghim commit (`processing/extraction/embed.py`). `pyahocorasick`, `underthesea` chưa có trong `requirements*.txt`.
 - **Phân biệt bắt buộc và ưu tiên chưa hoạt động:** chưa có `priority_cues.json` đã duyệt, nên không có bullet `uu_tien` và mọi kỹ năng đều `required`. Đây là việc duyệt từ điển (PRE-33), nhưng ảnh hưởng trực tiếp SD2 và SD5.
 
-**PRE-41. Phúc lợi: tách item sai ở bước 02, từ điển chỉ 10 nhóm** (mở 17/11/2026)
+**PRE-41. Phúc lợi: từ điển chỉ 10 nhóm** (mở 17/11/2026)
 
-- **Tách item** (spec 05 mục 3.3): careerviet tách theo `\n ; • - *`, dấu `-` làm vỡ cụm và item dính nhau ("Phúc lợi Laptop Chế độ bảo hiểm…", thấy trên `docs/presentation/raw_bronze/careerviet.html`); topcv (khi không có bullets), jobsgo, vieclam24h để cả chuỗi thành 1 item. Sửa ở `preprocessing/integration/json_flattener.py`, không sửa raw.
+- Phần tách item ở bước 02 đã sửa 18/11 (careerviet, topdev; L-49). Kiểm lại thì topcv, jobsgo, vieclam24h vốn đã tách đúng.
 - **Từ điển:** `preprocessing/dictionaries/benefits.json` chỉ có 10 nhóm, phúc lợi không khớp nhóm nào thì mất. Người dùng đồng ý mở rộng (17/11) để `benefits` kéo được hết phúc lợi. Cách làm: lấy top item của `benefits_list` theo nguồn, gom thành nhóm mới, người dùng duyệt danh sách nhóm.
 - **Độ phủ `benefits_std` 10/11:** glints 74,4%, các nguồn khác 88–97% (`reports/preprocessing/03_transformation/<nguồn>.json`).
 

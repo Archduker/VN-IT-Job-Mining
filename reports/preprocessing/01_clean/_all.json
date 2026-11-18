@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:42:34+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:12:34+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": null,
     "rows": 13361
@@ -377,11 +377,11 @@
         "topcv": 13,
         "topdev": 6,
         "vietnamworks": 1,
-        "careerviet": 24,
+        "careerviet": 25,
         "vieclam24h": 11,
         "itviec": 16,
         "glints": 14,
-        "jobsgo": 50
+        "jobsgo": 49
       }
     }
   ],
@@ -441,7 +441,7 @@
       },
       "careerviet": {
         "input": 660,
-        "output": 410
+        "output": 409
       },
       "vieclam24h": {
         "input": 1276,
@@ -457,7 +457,7 @@
       },
       "jobsgo": {
         "input": 1597,
-        "output": 586
+        "output": 587
       }
     },
     "it_status": {
@@ -845,10 +845,10 @@
       "topcv → careerviet": 10,
       "jobsgo → glints": 9,
       "vietnamworks → itviec": 8,
+      "jobsgo → careerviet": 7,
       "topcv → itviec": 6,
       "topcv → vieclam24h": 6,
       "vietnamworks → careerviet": 6,
-      "jobsgo → careerviet": 6,
       "topcv → glints": 4,
       "vietnamworks → topdev": 4,
       "vietnamworks → jobsgo": 4,
@@ -861,7 +861,6 @@
       "vietnamworks → glints": 1,
       "vietnamworks → vieclam24h": 1,
       "glints → careerviet": 1,
-      "careerviet → jobsgo": 1,
       "vieclam24h → careerviet": 1,
       "jobsgo → itviec": 1
     },

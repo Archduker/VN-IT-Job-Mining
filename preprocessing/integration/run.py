@@ -32,7 +32,7 @@ OUT_FILE = OUT_DIR / "all.parquet"
 REJECTED_DIR = DATA_DIR / "preprocessing" / "rejected" / STEP
 
 KEYS = ("job_id_global", "source_platform", "source_job_id", "source_url", "crawled_at")
-CLEAN_META = ("it_rule", "it_rule_level", "it_status", "dedup_key", "also_on")
+CLEAN_META = ("it_rule", "it_rule_level", "it_status", "dedup_key", "also_on", "first_crawled_at")
 KEEP_18 = (
     "job_title",
     "company_name",
@@ -44,6 +44,7 @@ KEEP_18 = (
     "raw_deadline",
     "raw_salary_text",
     "raw_employment_type",
+    "raw_work_mode",  # 17/11: giữ để 04 dùng hình thức làm việc nguồn ghi sẵn (topcv, glints, itviec)
     "raw_experience_text",
     "raw_seniority_text",
     "raw_education_text",
@@ -269,6 +270,8 @@ def process_source(source: str, dry_run: bool = True) -> tuple[List[Dict[str, An
             record["it_status"] = clean_info.get("it_status")
             record["dedup_key"] = clean_info.get("dedup_key")
             record["also_on"] = clean_info.get("also_on") or []
+            # Lần cào đầu tiên (bước 01 ghi trước khi bỏ snapshot cũ); thiếu thì lấy crawled_at (PRE-37)
+            record["first_crawled_at"] = clean_info.get("first_scraped_at") or record.get("crawled_at")
 
             # 3. 18 trường giữ
             for col in KEEP_18:
@@ -301,7 +304,7 @@ def process_source(source: str, dry_run: bool = True) -> tuple[List[Dict[str, An
     report.set_io(in_file, n_in, out_file, total_rows)
 
     # Đăng ký các luật đã thực thi
-    report.rule("I1", "Làm phẳng envelope về 18 trường chuẩn + khóa", "modify", total_rows)
+    report.rule("I1", "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at", "modify", total_rows)
     report.rule("I2", "ITviec lấy ngày đăng từ JSON-LD datePosted", "modify", i2_count, i2_examples)
     report.rule("I3", "TopDev lấy ngày đăng và kinh nghiệm từ published/JSON-LD", "modify",
                 max(i3_date_count, i3_exp_count), i3_examples)

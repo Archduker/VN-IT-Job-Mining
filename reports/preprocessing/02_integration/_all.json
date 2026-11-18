@@ -2,8 +2,8 @@
   "step": "02_integration",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:43:51+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:14:14+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": "data/preprocessing/01b_deduplication/<nguồn>.jsonl",
     "rows": 4672
@@ -32,7 +32,7 @@
   "rules": [
     {
       "id": "I1",
-      "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
+      "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
       "action": "modify",
       "rows_affected": 4671,
       "examples": [],
@@ -40,11 +40,11 @@
         "topcv": 1520,
         "topdev": 202,
         "vietnamworks": 774,
-        "careerviet": 400,
+        "careerviet": 399,
         "vieclam24h": 164,
         "itviec": 818,
         "glints": 246,
-        "jobsgo": 547
+        "jobsgo": 548
       }
     },
     {
@@ -157,18 +157,18 @@
         "topcv": 0,
         "topdev": 0,
         "vietnamworks": 0,
-        "careerviet": 310,
+        "careerviet": 309,
         "vieclam24h": 0,
         "itviec": 0,
         "glints": 0,
-        "jobsgo": 545
+        "jobsgo": 546
       }
     },
     {
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 1098,
+      "rows_affected": 1097,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -194,13 +194,13 @@
       ],
       "by_source": {
         "topcv": 11,
-        "topdev": 38,
+        "topdev": 37,
         "vietnamworks": 1,
-        "careerviet": 401,
+        "careerviet": 400,
         "vieclam24h": 0,
         "itviec": 26,
         "glints": 74,
-        "jobsgo": 547
+        "jobsgo": 548
       }
     },
     {
@@ -315,6 +315,11 @@
       "fill_pct_out": 94.7
     },
     {
+      "field": "raw_work_mode",
+      "fill_pct_in": 54.5,
+      "fill_pct_out": 54.5
+    },
+    {
       "field": "raw_experience_text",
       "fill_pct_in": 90.7,
       "fill_pct_out": 90.7
@@ -341,8 +346,8 @@
     },
     {
       "field": "benefits_list",
-      "fill_pct_in": 98.9,
-      "fill_pct_out": 98.9
+      "fill_pct_in": 98.1,
+      "fill_pct_out": 98.1
     },
     {
       "field": "raw_description_text",
@@ -378,8 +383,8 @@
         "output": 774
       },
       "careerviet": {
-        "input": 401,
-        "output": 400
+        "input": 400,
+        "output": 399
       },
       "vieclam24h": {
         "input": 164,
@@ -394,8 +399,8 @@
         "output": 246
       },
       "jobsgo": {
-        "input": 547,
-        "output": 547
+        "input": 548,
+        "output": 548
       }
     }
   },

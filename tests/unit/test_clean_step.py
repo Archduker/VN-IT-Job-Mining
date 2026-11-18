@@ -67,6 +67,8 @@ def test_rules_c1_to_c7_and_conservation(sandbox):
     survivor = next(e for e in kept_a if e["metadata"]["job_id"] == "1")
     assert survivor["raw_payload"]["title"] == "Senior Backend Developer"  # bản v2
     assert survivor["metadata"]["clean"]["also_on"] == ["src_b:7"]
+    # giữ bản v2 nhưng ghi lần cào đầu tiên là v1 (PRE-37: posted_month lấy từ lần cào đầu)
+    assert survivor["metadata"]["clean"]["first_scraped_at"] == "2026-10-20T06:00:00+00:00"
     for r in reports.values():
         assert r.data["checks"]["rows_conserved"] is True
     assert (sandbox / "reports/01_clean/_all.json").exists()

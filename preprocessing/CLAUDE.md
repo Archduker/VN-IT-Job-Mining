@@ -11,7 +11,7 @@ Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <ngu�
 | 00 profiling | `scripts/profile_sources.py` | Đo trước và sau làm sạch (chỉ đọc) |
 | 01 clean | `clean/`, `common/it_filter.py`, `common/raw_reader.py` | Snapshot mới nhất, lọc IT 2 tầng theo `it_policy.json`, bỏ JD dưới 50 từ, bỏ CTV/đa cấp, khử trùng theo công ty + tiêu đề |
 | 01b deduplication | `deduplication/` | 3 tầng: (nguồn, id) → `sha1(text_fold)` → MinHash + Jaccard ≥ 0,85 cùng `company_slug` |
-| 02 integration | `integration/` | Làm phẳng về 18 trường `raw_*` + khóa, gộp 8 nguồn vào `all.parquet` |
+| 02 integration | `integration/` | Làm phẳng về 19 trường `raw_*` (gồm `raw_work_mode`) + khóa + `first_crawled_at`, gộp 8 nguồn vào `all.parquet` |
 | 03 transformation | `transformation/`, `translation/`, `common/text_clean.py`, `common/lang_id.py` | Làm sạch ký tự, parse lương/ngày/kinh nghiệm, fastText ngôn ngữ, dịch EN→VI (envit5), rút kỹ năng và phúc lợi, tách địa điểm |
 | 04 normalization | `normalization/`, `missing_outlier/` | 34 tỉnh, 5 cấp bậc, 10 nhóm nghề + Other, `company_key`, kỹ năng chuẩn; thiếu và ngoại lai chỉ gắn cờ |
 

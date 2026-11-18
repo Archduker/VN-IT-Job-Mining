@@ -226,6 +226,35 @@ def flatten_raw_job_record(
     return flat
 
 
+# CareerViet hiển thị phúc lợi bằng các ô icon có nhãn cố định; crawler lấy text nên các nhãn dính liền
+# ("Phúc lợi Laptop Chế độ bảo hiểm Du Lịch ..."). Tách theo danh sách nhãn, khớp nhãn dài trước (17/11/2026, PRE-41).
+CAREERVIET_BENEFIT_LABELS = (
+    "Du lịch nước ngoài", "Phụ cấp thâm niên", "Chế độ bảo hiểm", "Chế độ thưởng", "Chăm sóc sức khỏe",
+    "Nghỉ phép năm", "CLB thể thao", "Công tác phí", "Xe đưa đón", "Tăng lương", "Đồng phục", "Đào tạo",
+    "Du Lịch", "Phụ cấp", "Laptop",
+)
+_CV_LABEL_RE = re.compile(
+    "|".join(re.escape(x) for x in sorted(CAREERVIET_BENEFIT_LABELS, key=len, reverse=True)), re.IGNORECASE)
+
+
+def split_careerviet_benefits(text: str) -> List[str]:
+    """Tách chuỗi phúc lợi CareerViet thành từng nhãn. Phần chữ không khớp nhãn nào giữ thành item riêng."""
+    s = re.sub(r"^\s*Phúc lợi\s*", "", " ".join(str(text).split()), flags=re.IGNORECASE)
+    s = re.split(r"\s*\bĐịa điểm\b", s, maxsplit=1, flags=re.IGNORECASE)[0]  # chữ của ô "Địa điểm" lọt vào cuối
+    out: List[str] = []
+    pos = 0
+    for m in _CV_LABEL_RE.finditer(s):
+        gap = s[pos:m.start()].strip(" ,;-•")
+        if gap:
+            out.append(gap)
+        out.append(m.group(0))
+        pos = m.end()
+    tail = s[pos:].strip(" ,;-•")
+    if tail:
+        out.append(tail)
+    return out
+
+
 def _flatten_careerviet(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("title"))
     flat["company_name"] = _clean_str(raw.get("job-company-name") or raw.get("company_name"))
@@ -282,7 +311,7 @@ def _flatten_careerviet(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
 
         ben_str = detail_row.get("Phúc lợi")
         if ben_str:
-            flat["benefits_list"] = [b.strip() for b in re.split(r"[\n\r;•\-\*]+", str(ben_str)) if b.strip()]
+            flat["benefits_list"] = split_careerviet_benefits(str(ben_str))
 
     skills = raw.get("skills") or raw.get("skills_list")
     if isinstance(skills, list):
@@ -379,6 +408,7 @@ def _flatten_itviec(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     flat["job_title"] = _clean_str(raw.get("title"))
     flat["company_name"] = _clean_str(raw.get("company_name") or raw.get("company"))
     flat["raw_location_text"] = _clean_str(raw.get("work_location"))
+    flat["raw_work_mode"] = _clean_str(raw.get("work_model"))  # 17/11/2026: trước đây bỏ sót
 
     jsonld = raw.get("job_posting_jsonld")
     jsonld_dict = jsonld if isinstance(jsonld, dict) else {}
@@ -660,10 +690,14 @@ def _flatten_topdev(raw: Dict[str, Any], flat: Dict[str, Any]) -> None:
     bens = raw.get("benefits_original") or raw.get("benefits_v2")
     if isinstance(bens, list):
         for b in bens:
-            b_text = b.get("value") if isinstance(b, dict) else str(b)
+            if isinstance(b, dict):  # benefits_original: {"value": html}; benefits_v2: {"name", "description"}
+                b_text = b.get("value") or b.get("description") or b.get("name")  # name là tên icon, không khớp nội dung
+            else:
+                b_text = str(b)
             cleaned_b = strip_html_tags(b_text)
-            if cleaned_b:
-                flat["benefits_list"].append(cleaned_b)
+            if cleaned_b:  # khối HTML nhiều <li> thành nhiều dòng: mỗi dòng một item (17/11/2026, PRE-41)
+                flat["benefits_list"].extend(
+                    x.strip(" -•*\t") for x in cleaned_b.splitlines() if x.strip(" -•*\t"))
 
     skills_arr = raw.get("skills_arr")
     if isinstance(skills_arr, list):

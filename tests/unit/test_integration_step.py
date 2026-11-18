@@ -27,8 +27,7 @@ PROHIBITED_FIELDS = (
     "raw_gender_text",
     "raw_updated_at",
     "raw_working_time",
-    "raw_work_mode",
-)
+)  # raw_work_mode được giữ từ 17/11/2026 (ngoại lệ luật nửa số nguồn, spec 05 mục 3.3)
 
 
 def _make_env(src, job_id, raw_payload, clean_meta=None):
@@ -157,11 +156,13 @@ def test_integration_output_contract_and_conservation(tmp_path, monkeypatch):
     df = pd.read_parquet(parquet_path)
     assert len(df) == 3
 
-    # Assert đúng 28 cột
+    # Assert đúng 30 cột (thêm first_crawled_at và raw_work_mode ngày 17/11/2026)
     assert list(df.columns) == list(integration.ALL_OUTPUT_COLUMNS)
-    assert len(df.columns) == 28
+    assert len(df.columns) == 30
+    # first_crawled_at: không có first_scraped_at trong metadata.clean thì lấy crawled_at
+    assert (df["first_crawled_at"] == df["crawled_at"]).all()
 
-    # Assert không có 6 trường cấm
+    # Assert không có 5 trường cấm
     for bad_col in PROHIBITED_FIELDS:
         assert bad_col not in df.columns
 
@@ -216,3 +217,24 @@ def test_fallback_id_deterministic_across_hash_seeds():
 
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
+
+
+def test_careerviet_benefits_split_by_fixed_labels():
+    from preprocessing.integration.json_flattener import split_careerviet_benefits
+    s = "Phúc lợi Laptop Chế độ bảo hiểm Du Lịch Phụ cấp Du lịch nước ngoài Phụ cấp thâm niên Nghỉ phép năm Địa điểm Hà Nội"
+    assert split_careerviet_benefits(s) == ["Laptop", "Chế độ bảo hiểm", "Du Lịch", "Phụ cấp", "Du lịch nước ngoài",
+                                            "Phụ cấp thâm niên", "Nghỉ phép năm"]
+
+
+def test_topdev_benefits_html_list_one_item_per_line():
+    env = _make_env("topdev", "t1", {"title": "Dev", "benefits_original": [
+        {"icon": None, "value": "<ul><li>Lương tháng 13</li><li>- Bảo hiểm sức khỏe</li></ul>"}]})
+    assert flatten_raw_job_record(env)["benefits_list"] == ["Lương tháng 13", "Bảo hiểm sức khỏe"]
+    env = _make_env("topdev", "t2", {"title": "Dev", "benefits_original": [], "benefits_v2": [
+        {"name": "Bonus", "description": "Thưởng dự án"}]})
+    assert flatten_raw_job_record(env)["benefits_list"] == ["Thưởng dự án"]
+
+
+def test_itviec_work_model_kept_as_raw_work_mode():
+    env = _make_env("itviec", "i1", {"title": "Dev", "work_model": "Linh hoạt"})
+    assert flatten_raw_job_record(env)["raw_work_mode"] == "Linh hoạt"

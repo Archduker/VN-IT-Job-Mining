@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:42:46+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:12:38+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
     "rows": 173
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 4,
+      "rows_affected": 5,
       "examples": [
         {
           "job_id": "200945606",

@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:41:29+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:11:40+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": "data/vietnamworks/raw",
     "rows": 1947

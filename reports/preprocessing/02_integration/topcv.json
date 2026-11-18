@@ -2,8 +2,8 @@
   "step": "02_integration",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:43:48+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:14:12+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": "data/preprocessing/01b_deduplication/topcv.jsonl",
     "rows": 1520
@@ -32,7 +32,7 @@
   "rules": [
     {
       "id": "I1",
-      "name": "Làm phẳng envelope về 18 trường chuẩn + khóa",
+      "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
       "action": "modify",
       "rows_affected": 1520,
       "examples": []
@@ -157,6 +157,11 @@
     },
     {
       "field": "raw_employment_type",
+      "fill_pct_in": 99.5,
+      "fill_pct_out": 99.5
+    },
+    {
+      "field": "raw_work_mode",
       "fill_pct_in": 99.5,
       "fill_pct_out": 99.5
     },

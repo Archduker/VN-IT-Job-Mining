@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:42:46+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:12:38+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
     "rows": 781
@@ -125,14 +125,14 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 19,
+      "rows_affected": 20,
       "examples": [
         {
-          "job_id": "2100210",
+          "job_id": "2100226",
           "field": "jaccard",
           "before": null,
           "after": 0.707,
-          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-khach-hang-doanh-nghiep-business-customer-data-analyst-khoi-du-lieu-2026td451020-2100210-jv"
+          "url": "https://www.vietnamworks.com/chuyen-vien-phan-tich-khach-hang-ca-nhan-data-analyst-retail-banking-khoi-du-lieu-2026td453678-2100226-jv"
         },
         {
           "job_id": "2100263",

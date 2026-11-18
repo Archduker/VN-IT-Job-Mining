@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:42:46+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:12:38+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
-    "rows": 586
+    "rows": 587
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/jobsgo.jsonl",
-    "rows": 547
+    "rows": 548
   },
   "dropped": [
     {
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 48,
+      "rows_affected": 47,
       "examples": [
         {
           "job_id": "28928592968",
@@ -142,11 +142,11 @@
           "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phu-trach-ai-he-thong-cong-nghe-thong-tin-thu-nhap-den-20-trieu-thang-28928592968.html"
         },
         {
-          "job_id": "28969520074",
+          "job_id": "28969234915",
           "field": "jaccard",
           "before": null,
-          "after": 0.7101,
-          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-dong-nai-15-18-trieu-28969520074.html"
+          "after": 1.0,
+          "url": "https://jobsgo.vn/viec-lam/account-manager-28969234915.html"
         }
       ]
     }
@@ -170,7 +170,7 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 431,
+    "blocking_blocks": 432,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 39

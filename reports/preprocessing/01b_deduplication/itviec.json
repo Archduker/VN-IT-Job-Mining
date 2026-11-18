@@ -2,8 +2,8 @@
   "step": "01b_deduplication",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-17T17:42:46+00:00",
-  "code_version": "863415c",
+  "generated_at": "2026-11-18T00:12:38+00:00",
+  "code_version": "eb06083",
   "input": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
     "rows": 842
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 13,
+      "rows_affected": 12,
       "examples": [
         {
           "job_id": "cv-cvcc-dich-vu-va-chinh-sach-cntt-ngan-hang-tnhh-mtv-viet-nam-hien-dai-mbv-3914",
