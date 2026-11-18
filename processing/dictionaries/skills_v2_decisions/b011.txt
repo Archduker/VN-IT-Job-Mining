@@ -271,7 +271,7 @@ S 3275 streaming data_engineering n=Xử lý luồng (streaming)
 L streaming stream processing;real-time streaming;data streaming
 A 3276 cpp
 A 3277 power_bi
-A 3278 ai
+A 3278 ai_application
 N generic 3279
 A 3280 sql
 S 3281 substance design_creative p=3d_modeling n=Substance Painter

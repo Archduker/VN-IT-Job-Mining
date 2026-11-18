@@ -1,0 +1,263 @@
+# Lô 15: dòng 4201-4500 (18/11/2026)
+N industry 4201
+A 4202 computer_hardware
+A 4203 graphic_design
+A 4204 api_design
+S 4205 threat_modeling security n=Threat modeling
+N generic 4206
+A 4207 machine_learning
+N job_title 4208 4209
+A 4210 data_integration
+S 4211 ticketing_system systems_network p=itsm n=Ticketing system
+L ticketing_system ticketing system;helpdesk ticketing
+N generic 4212
+A 4213 vietnamese
+N generic 4214 4215
+A 4216 independent_work
+N generic 4217
+A 4218 ssl_tls
+A 4219 performance_optimization
+A 4220 toeic
+S 4221 information_synthesis soft_skills n=Tổng hợp thông tin
+L information_synthesis tổng hợp thông tin;tổng hợp báo cáo
+A 4222 tool_calling
+N combo 4223
+N generic 4224 4225 4226
+A 4227 ai
+A 4228 linux
+N generic 4229
+A 4230 trino
+A 4231 triton
+N generic 4232 4233
+N job_title 4234
+A 4235 sql_query
+A 4236 aesthetic_sense
+N generic 4237
+A 4238 compliance
+N generic 4239 4240 4241 4242 4243
+A 4244 rpa
+S 4245 ai_application ai_genai n=Ứng dụng AI vào công việc
+L ai_application ứng dụng ai;áp dụng ai;công cụ ai
+S 4246 unity_ads digital_marketing p=admob n=Unity Ads / AppLovin
+L unity_ads unity ads;applovin
+A 4247 playable_ads
+S 4248 unity_profiler game_dev p=unity n=Unity Profiler
+N entity 4249
+A 4250 english
+N combo 4251
+A 4252 ux_research
+S 4253 user_training systems_network n=Đào tạo người dùng
+L user_training user training;đào tạo người dùng;hướng dẫn người dùng
+N combo 4254
+S 4255 v_model testing_qa p=sdlc n=V-Model
+N generic 4256 4257
+A 4258 vector_database
+S 4259 vercel cloud n=Vercel / Netlify
+L vercel netlify
+A 4260 git
+N generic 4261 4262
+A 4263 reporting
+A 4264 documentation
+A 4265 test_plan
+A 4266 user_story
+N generic 4267 4268
+A 4269 webpack
+S 4270 vitest testing_qa p=unit_test n=Vitest / Mocha / Jasmine
+L vitest mocha;jasmine;karma
+A 4271 hsrp
+A 4272 vuejs
+A 4273 vulnerability_assessment
+A 4274 waterfall
+N industry 4275
+S 4276 weaviate databases p=vector_database n=Weaviate / pgvector / FAISS
+L weaviate pgvector;faiss;elasticsearch vector
+A 4277 waf
+A 4278 web_development
+S 4279 web_filtering security n=Web filtering / proxy bảo mật
+L web_filtering web filtering;url filtering
+N generic 4280
+N combo 4281 4282
+A 4283 selenium
+A 4284 weblogic
+N combo 4285
+N generic 4286 4287 4288 4289 4290 4291
+A 4292 windows
+A 4293 wpf
+A 4294 4295 wbs
+N generic 4296
+S 4298 workshop_facilitation soft_skills n=Tổ chức workshop
+L workshop_facilitation workshop;facilitation
+N generic 4297 4299
+S 4300 wsus systems_network p=windows_server n=WSUS / SCCM
+F wsus WSUS;SCCM;MECM
+S 4301 probability data_science_ml p=statistics n=Xác suất
+L probability xác suất;probability
+A 4302 brd
+A 4303 solution_architecture
+N generic 4304
+A 4305 problem_solving
+S 4306 yaml dev_tools n=YAML / JSON config
+F yaml YAML
+N generic 4307
+S 4308 zachman architecture_api p=enterprise_architecture n=Zachman Framework
+S 4309 zendesk enterprise_apps p=crm n=Zendesk / Freshdesk
+L zendesk freshdesk
+N generic 4310 4311
+A 4312 4313 lte
+N entity 4314
+A 4315 ai
+S 4316 a2a_protocol ai_genai p=ai_agent n=A2A (agent-to-agent)
+S 4317 abac security p=access_control n=ABAC
+F abac ABAC
+S 4318 abap_dictionary enterprise_apps p=abap n=ABAP Dictionary / ALV
+F abap_dictionary ALV
+L abap_dictionary abap dictionary
+N entity 4319 4320 4321 4322 4323
+N generic 4324
+S 4325 acca certifications n=ACCA / CPA / CFA
+L acca acca;cfa
+A 4326 access_control
+S 4327 accessibility frontend n=Accessibility (a11y, WCAG)
+L accessibility wcag;a11y
+N combo 4328
+S 4329 acid databases p=db_transaction n=ACID
+F acid ACID
+N generic 4330
+A 4331 vulnerability_assessment
+N generic 4332 4333
+A 4334 mcu_peripherals
+N generic 4335 4336 4337
+A 4338 4339 windows_server
+S 4340 adr architecture_api p=software_architecture n=ADR (Architecture Decision Record)
+F adr ADR;ADRs
+A 4341 4342 adas
+A 4343 english
+A 4344 istqb
+N generic 4345
+S 4346 agent_assist ai_genai p=contact_center n=Agent Assist (contact center AI)
+A 4347 ai_agent
+S 4348 agents_sdk ai_genai p=ai_agent n=Agents SDK
+A 4349 4350 4351 agile
+N combo 4352
+A 4353 agv_amr
+S 4354 ai_governance ai_genai p=ai_safety n=AI governance (AI Act)
+L ai_governance ai governance;ai act;responsible ai
+N job_title 4355
+N generic 4356 4357
+A 4358 ai_governance
+N generic 4359 4360 4361 4362 4363
+A 4364 ai_testing
+N generic 4365
+S 4366 azure_ai_search ai_genai p=azure_ai n=Azure AI Search
+L azure_ai_search azure ai search;azure cognitive search
+A 4367 voice_ai
+N generic 4368
+N generic 4369
+N generic 4370 4371 4372 4373
+N combo 4374 4375 4376 4377 4378 4379 4380
+S 4381 airbyte data_engineering p=data_integration n=Airbyte / Fivetran
+L airbyte fivetran
+A 4382 aws_elb
+N entity 4383
+S 4384 alteryx bi_analytics n=Alteryx / KNIME
+L alteryx knime
+S 4385 altium embedded_iot p=pcb n=Altium / OrCAD / KiCad
+L altium altium designer;orcad;kicad
+A 4386 altium
+A 4387 palo_alto
+A 4388 abap_dictionary
+A 4389 aws_rds
+A 4390 redshift
+A 4391 aws
+N generic 4392
+A 4393 kyc_aml
+N combo 4394 4395 4396
+A 4397 analytical_skills
+A 4398 dashboard
+S 4399 analytics_engineering data_engineering n=Analytics engineering
+N generic 4400 4401
+A 4402 android
+N job_title 4403
+A 4404 angular
+S 4405 angular_material frontend p=angular n=Angular Material / PrimeNG
+L angular_material primeng
+S 4406 lighting_design design_creative n=Ánh sáng (lighting)
+N generic 4407 4408
+N combo 4409 4410
+N entity 4411
+A 4412 remote_support
+A 4413 ap_ar
+S 4414 apache_camel architecture_api p=esb n=Apache Camel
+L apache_camel apache camel
+A 4415 flink
+A 4416 4417 web_server
+A 4418 hudi
+N industry 4419
+A 4420 api_testing
+N combo 4421 4422 4423 4424 4425
+N job_title 4426
+N generic 4427 4428
+A 4429 waf
+S 4430 arcgis data_engineering p=gis n=ArcGIS / QGIS
+L arcgis qgis
+A 4431 4432 aws_certified
+N generic 4433
+N generic 4434
+A 4435 jetson
+N combo 4437
+N generic 4436
+A 4438 pic_avr
+N generic 4439 4440
+N combo 4441
+S 4442 unity_asset_store game_dev p=unity n=Unity Asset Store
+N generic 4443
+A 4444 transformer
+N generic 4445 4446
+S 4447 auto_scaling cloud n=Auto scaling
+L auto_scaling auto scaling;autoscaling;hpa
+A 4448 autocad
+A 4449 automation_test
+N degree 4450
+A 4451 autosar
+A 4452 aspice
+N generic 4453
+A 4454 ai_agent
+A 4455 autosar
+N generic 4456
+A 4457 pic_avr
+A 4458 aws_bedrock
+A 4459 4460 4461 4462 aws_certified
+S 4463 aws_dms databases p=db_migration n=AWS DMS
+F aws_dms DMS
+A 4464 aws_eks
+S 4465 aws_organizations cloud p=aws n=AWS Organizations / Control Tower
+L aws_organizations aws organizations;control tower
+A 4466 aws
+N combo 4467
+A 4468 4469 azure_cert
+N combo 4470
+A 4471 azure_app_service
+S 4472 cosmos_db databases p=nosql n=Azure Cosmos DB
+L cosmos_db cosmos db;cosmosdb
+A 4473 4474 azure_sql
+S 4475 azure_pipelines devops p=azure_devops n=Azure Pipelines
+L azure_pipelines azure pipelines
+A 4476 azure
+N combo 4477
+N industry 4478
+N generic 4479 4480 4481 4482 4483
+A 4484 backend_dev
+N combo 4485
+S 4486 sap_badi enterprise_apps p=abap_enhancement n=BADIs / User Exits
+F sap_badi BADI;BADIs
+N generic 4487
+S 4488 bamboo_ci devops p=cicd n=Bamboo
+F bamboo_ci Bamboo
+N industry 4489
+A 4490 4491 technical_drawing
+N generic 4492 4493
+A 4494 t24
+N industry 4495 4496 4497
+A 4498 reporting
+A 4499 network_security
+A 4500 web_security
