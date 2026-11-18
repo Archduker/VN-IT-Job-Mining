@@ -1,0 +1,289 @@
+# Lô 26: dòng 7501-7800 (18/11/2026)
+N generic 7501
+A 7502 dimensional_modeling
+A 7503 dimensional_modeling
+N generic 7504
+N generic 7505
+A 7506 7507 entra_id
+N generic 7508
+N industry 7509
+N generic 7510 7511
+S 7512 distributed_locking backend p=distributed_systems n=Distributed locking
+L distributed_locking distributed lock;distributed locking;redlock
+A 7513 7514 distributed_systems
+A 7515 jaeger
+N generic 7516
+N generic 7517 7518
+N job_title 7519
+N generic 7520
+N combo 7521
+N generic 7522 7523
+N combo 7524
+A 7525 7526 7528 technical_drawing
+S 7527 electrical_drawing cad_engineering n=Đọc sơ đồ điện
+L electrical_drawing sơ đồ điện;bản vẽ điện;electrical schematic;schematic
+N combo 7529
+A 7530 docker
+S 7531 docker_swarm devops p=docker n=Docker Swarm
+L docker_swarm docker swarm
+N combo 7532 7533
+A 7534 docker
+A 7535 docker
+A 7536 document_ai
+N combo 7537
+N generic 7538
+N generic 7539
+A 7540 data_reconciliation
+N generic 7541
+N industry 7542
+A 7543 ddd
+S 7544 domain_join systems_network p=active_directory n=Domain join
+L domain_join domain join
+N generic 7545
+N generic 7546
+N entity 7547 7548 7549
+N generic 7550
+K dora_metrics devops n=DORA metrics
+L dora_metrics dora metrics
+N generic 7551
+N generic 7552 7553 7554
+N generic 7555
+S 7556 memory_chips embedded_iot n=Bộ nhớ (DRAM, NAND, Flash)
+F memory_chips DRAM;NAND;SRAM;EEPROM
+N generic 7557
+A 7558 ddd
+A 7559 tdd
+K dropbox office_tools n=Dropbox / Box
+N generic 7560
+A 7561 disaster_recovery
+A 7562 kiss_dry
+N generic 7563
+A 7564 gis
+A 7565 duck_creek
+A 7566 video_production
+K dutch languages n=Tiếng Hà Lan
+N generic 7567
+N generic 7568
+A 7569 data_warehouse
+N combo 7570 7571
+A 7572 7573 ms_dynamics
+S 7574 ecommerce_platform enterprise_apps n=Nền tảng thương mại điện tử (Magento, WooCommerce)
+L ecommerce_platform e-commerce platform;woocommerce;prestashop
+N generic 7575
+A 7576 lms_canvas
+A 7577 lms_canvas
+S 7578 eoffice enterprise_apps n=E-Office / quản lý văn bản
+L eoffice e-office;eoffice;quản lý văn bản
+N generic 7579
+N generic 7580
+S 7581 evm methodology_pm p=project_management n=Earned Value Management (EVM)
+F evm EVM
+L evm earned value;earned value management
+A 7582 7583 evm
+A 7584 gin_go
+S 7585 ecm enterprise_apps n=ECM (quản lý nội dung doanh nghiệp)
+F ecm ECM
+N generic 7586
+N generic 7587
+N entity 7588
+N generic 7589 7590
+A 7591 cryptography
+S 7592 edi enterprise_apps n=EDI
+F edi EDI
+N combo 7593
+N generic 7594
+N entity 7595 7596
+N generic 7597
+A 7598 english
+A 7599 task_estimation
+N combo 7600
+A 7601 aws_eks
+A 7602 kyc_aml
+A 7603 7604 aws_elb
+N combo 7605
+S 7606 electronic_components embedded_iot p=electronics n=Linh kiện điện tử
+L electronic_components electronic components;linh kiện điện tử
+S 7607 eloquent backend p=laravel n=Eloquent ORM
+F eloquent Eloquent
+N entity 7608
+N generic 7609
+A 7610 mail_server
+N generic 7611
+N combo 7612
+A 7613 embedded
+S 7614 embedded_testing testing_qa p=embedded n=Kiểm thử nhúng
+L embedded_testing embedded testing;embedded software testing;kiểm thử nhúng
+A 7615 embedded_testing
+N generic 7616 7617 7618
+S 7619 emc_emi embedded_iot p=hardware_design n=EMI / EMC
+F emc_emi EMI;EMC
+N combo 7620
+N generic 7621
+N generic 7622
+N generic 7623
+A 7624 user_support
+N generic 7625
+S 7626 endpoint_management systems_network n=Endpoint management
+L endpoint_management endpoint management
+A 7627 endpoint_security
+N combo 7628
+N generic 7629
+N combo 7630
+N job_title 7631 7632 7633
+N generic 7634
+N generic 7635
+N combo 7636 7637
+N entity 7638
+N combo 7639
+A 7640 7641 english
+N generic 7642 7643 7644
+A 7645 english
+A 7646 english
+N generic 7647
+N combo 7648 7649
+N generic 7650
+N generic 7651
+A 7652 enterprise_architecture
+A 7653 data_architecture
+A 7654 redhat
+A 7655 networking
+N generic 7656
+A 7657 routing_switching
+N job_title 7658
+N generic 7659
+A 7660 storage
+A 7661 system_integration
+N generic 7662
+N generic 7663
+N entity 7664 7665
+N generic 7666
+S 7667 erlang programming_languages n=Erlang / Elixir
+L erlang erlang;elixir;erlang/otp
+A 7668 erlang
+A 7669 erp
+N job_title 7670
+A 7671 erp
+A 7672 erp
+N generic 7673
+N combo 7674
+A 7675 debugging
+A 7676 logging
+N combo 7677
+A 7678 esb
+S 7679 escalation_mgmt systems_network p=incident_management n=Escalation management
+L escalation_mgmt escalation;escalation management
+A 7680 escalation_mgmt
+S 7681 esd_control cad_engineering n=ESD (chống tĩnh điện)
+F esd_control ESD
+N generic 7682
+A 7683 entra_id
+N generic 7684
+A 7685 vmware
+N generic 7686
+S 7687 industrial_protocols embedded_iot n=Ethernet/IP, Profinet, EtherCAT
+L industrial_protocols ethernet/ip;profinet;ethercat;profibus
+A 7688 ceh
+A 7689 7690 7691 etl
+N generic 7692
+A 7693 7694 ai_governance
+A 7695 llm_eval
+N generic 7696
+N generic 7697
+A 7698 event_sourcing
+A 7699 7700 event_tracking
+A 7701 7702 event_driven
+N generic 7703
+N entity 7704 7705
+S 7706 exadata databases p=oracle_db n=Oracle Exadata
+N combo 7707
+N generic 7708
+A 7709 exchange_online
+N generic 7710
+A 7711 mes
+N generic 7712
+A 7713 7714 stakeholder_management
+S 7715 salesforce_experience_cloud enterprise_apps p=salesforce n=Salesforce Experience Cloud
+L salesforce_experience_cloud experience cloud
+N generic 7716
+A 7717 mcp
+N generic 7718
+N generic 7719
+N generic 7720 7721
+A 7722 ux_research
+A 7723 ab_testing
+N generic 7724
+S 7725 explainable_ai data_science_ml p=machine_learning n=Explainable AI (SHAP, LIME)
+L explainable_ai explainability;explainable ai;xai;shap;lime
+A 7726 expressjs
+N generic 7727 7728
+N entity 7729 7730 7731 7732
+A 7733 facebook_ads
+S 7734 factory_automation embedded_iot n=Tự động hóa nhà máy
+L factory_automation factory automation;tự động hóa nhà máy;industrial automation
+N combo 7735
+N generic 7736
+S 7737 fail2ban systems_network p=linux_server n=Fail2ban
+A 7738 rca
+A 7739 weaviate
+N generic 7740
+N generic 7741
+N generic 7742
+S 7743 aws_fargate cloud p=aws_ecs n=AWS Fargate
+L aws_fargate fargate
+N generic 7744
+S 7745 fashion_design design_creative n=Thiết kế thời trang
+L fashion_design fashion design;thiết kế thời trang
+N generic 7746 7747
+S 7748 fault_tolerance architecture_api p=high_availability n=Fault tolerance
+L fault_tolerance fault tolerance;fault-tolerant
+A 7749 facebook_ads
+N combo 7750 7751
+N entity 7752
+S 7753 fda_compliance methodology_pm p=quality_management n=FDA / GMP
+F fda_compliance FDA
+N generic 7754 7755
+A 7756 sap_fico
+S 7757 fido2 security p=authn_authz n=FIDO2 / WebAuthn / passkey
+F fido2 FIDO2
+L fido2 webauthn;passkey;passkeys
+N generic 7758
+A 7759 figma
+A 7760 7761 figma
+N combo 7762 7763 7764 7765
+A 7766 autocad
+S 7767 file_system systems_network p=operating_systems n=File system
+L file_system file system;filesystem;hệ thống tệp
+A 7768 file_server
+A 7769 video_production
+N job_title 7770
+A 7771 final_cut
+N combo 7772
+A 7773 financial_analysis
+N generic 7774 7775
+N combo 7776
+A 7777 browser_fingerprinting
+N generic 7778
+A 7779 7780 finops
+N generic 7781
+N combo 7782 7783 7784 7785
+A 7786 sap_fiori
+S 7787 fips security p=cryptography n=FIPS 140
+F fips FIPS
+A 7788 fcm
+A 7789 firewall
+S 7790 fis_banking enterprise_apps p=core_banking n=FIS / Fiserv
+F fis_banking FIS;Fiserv
+A 7791 qc_tools
+S 7792 fit_gap enterprise_apps p=erp n=Fit/gap analysis
+L fit_gap fit/gap;fit gap analysis;gap analysis
+A 7793 airbyte
+A 7794 php_cs_fixer
+S 7795 flexcube enterprise_apps p=core_banking n=Oracle Flexcube
+N generic 7796
+N combo 7797
+A 7798 vietnamese
+A 7799 devtools
+S 7800 flutter_test mobile p=flutter n=Flutter testing
+L flutter_test flutter test;widget test;integration_test
+L dropbox dropbox
+L dutch dutch;tiếng hà lan
