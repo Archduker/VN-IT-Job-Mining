@@ -1,11 +1,12 @@
 {
  "_meta": {
-  "version": "0.1-draft",
-  "approved": false,
+  "version": "1.0",
+  "approved": true,
   "date": "2026-11-18",
   "purpose": "Từ điển cho bước 03 (T-JD): rút hình thức làm việc, loại hợp đồng, kinh nghiệm tối thiểu từ giá trị nguồn và từ JD. Luật if-else + regex, không dùng model. Lập từ việc đọc câu ứng viên do scripts/mine_jd_phrases.py gom trên data/preprocessing/03_transformation/all.parquet.",
   "regex_flags": "IGNORECASE, so khớp trên văn bản đã NFC và gộp khoảng trắng. Mọi từ khóa khớp theo từ nguyên vẹn (\\b), không theo chuỗi con.",
-  "scope": "Bước 03 chỉ rút và ghi cột *_raw, *_jd, *_source, cờ conflict; không bỏ dòng, không ghi đè cột gốc. Bước 04 mới chọn giá trị cuối theo thứ tự ưu tiên trong 'priority'."
+  "scope": "Bước 03 chỉ rút và ghi cột *_raw, *_jd, *_source, cờ conflict; không bỏ dòng, không ghi đè cột gốc. Bước 04 mới chọn giá trị cuối theo thứ tự ưu tiên trong 'priority'.",
+  "approved_date": "2026-11-18"
  },
  "work_mode": {
   "values": [
@@ -14,7 +15,7 @@
    "remote",
    "unknown"
   ],
-  "priority": "raw (topcv, glints, itviec; jobsgo/topcv/vietnamworks ghi ở ô loại hình) -> JD. Đề xuất: khi raw và JD lệch, JD thắng nếu tín hiệu nằm ở TIÊU ĐỀ hoặc là mẫu có số ngày cụ thể (WH4, WH5); đọc tay 11 ca lệch trên dữ liệu 18/11: JD đúng 9/11. Không có tín hiệu: bước 04 suy theo địa điểm như luật N14 hiện tại; không suy được thì 'unknown'.",
+  "priority": "raw (topcv, glints, itviec; jobsgo/topcv/vietnamworks ghi ở ô loại hình) -> JD. Khi raw và JD lệch, JD thắng nếu tín hiệu nằm ở TIÊU ĐỀ hoặc là mẫu có số ngày cụ thể (WH4, WH5); ghi work_mode_conflict. Không có tín hiệu: bước 04 suy theo địa điểm như luật N14 hiện tại; không suy được thì 'unknown'.",
   "raw_map": {
    "làm việc tại văn phòng / onsite": "onsite",
    "làm tại công ty / onsite": "onsite",
@@ -30,7 +31,7 @@
    "_note": "Một số nguồn ghi hình thức làm việc vào ô loại hình. Đưa sang work_mode_raw, không tính là loại hợp đồng.",
    "jobsgo: remote": "remote",
    "topcv: làm tại nhà": "remote",
-   "vietnamworks: 7": "remote (3 tin, cả 3 đều có Remote trong tiêu đề; chưa có nhãn chính thức)"
+   "vietnamworks: 7": "remote"
   },
   "jd_patterns": {
    "remote": [
@@ -165,7 +166,7 @@
    "internship",
    "contract"
   ],
-  "priority": "raw -> JD khi raw trống. Ngoại lệ đề xuất: tiêu đề có intern/thực tập sinh (EI1) thắng raw full_time (182 tin là thực tập toàn thời gian), ghi employment_type_conflict.",
+  "priority": "raw -> JD khi raw trống hoặc không rõ. Tiêu đề có intern/thực tập sinh (EI1) thắng raw (thường là full_time: thực tập toàn thời gian); ghi employment_type_conflict.",
   "raw_map": {
    "toàn thời gian": "full_time",
    "toàn thời gian cố định": "full_time",
@@ -184,7 +185,7 @@
    "làm tại nhà": "-> work_mode_raw",
    "vietnamworks: 5": null,
    "vietnamworks: 6": null,
-   "vietnamworks: 7": "-> work_mode_raw (xem open_questions)"
+   "vietnamworks: 7": "-> work_mode_raw = remote; employment_type để JD quyết"
   },
   "raw_multi_value_rule": "Nhiều giá trị (jobsgo, careerviet): giữ cả danh sách ở employment_types; employment_type chính = giá trị đầu tiên sau khi bỏ remote.",
   "jd_patterns": {
@@ -256,10 +257,10 @@
    ]
   },
   "conflict_flag": "employment_type_conflict = True khi raw và jd đều có và khác nhau (vd. raw full_time, tiêu đề 'Intern').",
-  "_note": "Bảng Silver (spec 05 mục 4.4) KHÔNG có employment_type. Phần này giữ ở bảng 04 để truy vết, và cấp tín hiệu Intern cho seniority (Intern/Fresher)."
+  "_note": "Bảng Silver (spec 05 mục 4.4) chưa có employment_type. Người dùng chốt 18/11: chỉ thêm vào Silver nếu trích được cho 100% tin; đo 18/11 còn trống topdev 198/202, vietnamworks 66/774 nên chưa thêm. Cột ở bảng 03/04 để truy vết và cấp tín hiệu Intern cho seniority."
  },
  "experience": {
-  "priority": "exp_min_years parse từ raw_experience_text -> JD. NGOẠI LỆ itviec: raw là monthsOfExperience trong JSON-LD, chỉ có 3 mức 10/37/61 tháng (mức gom SEO, không phải yêu cầu thật; lệch JD ở 466/554 tin) -> itviec lấy JD trước, raw JSON-LD làm dự phòng. exp_source = raw | jd | jd_zero | itviec_jsonld.",
+  "priority": "exp_min_years parse từ raw_experience_text -> JD (7 nguồn: ô của sàn trước, ghi exp_conflict khi lệch >= 1 năm). itviec: JD trước, raw (monthsOfExperience JSON-LD, chỉ 3 mức 10/37/61 tháng) làm dự phòng. exp_source = raw | jd | jd_zero | itviec_jsonld.",
   "grammar": {
    "prefix": "(?:tối thiểu|ít nhất|từ|trên|hơn|có|minimum|min\\.?|at least|over|more than)?",
    "number": "(\\d+(?:[.,]\\d+)?)\\s*\\+?\\s*(?:(?:-|–|~|đến|tới|to)\\s*(\\d+(?:[.,]\\d+)?)\\s*\\+?)?",
@@ -293,11 +294,48 @@
   "selection": "Lấy cụm hợp lệ đầu tiên trong requirements; không có thì đầu tiên trong description. Không lấy max hay min trên mọi cụm (JD hay liệt kê '3+ năm Java, 1 năm Docker': cụm đầu là yêu cầu chính).",
   "sanity": "Bỏ giá trị > 20 năm. exp_min_years > exp_max_years thì bỏ max."
  },
- "open_questions": [
-  "vietnamworks typeWorkingId 5, 6: raw không có nhãn chữ, trang công khai render bằng JS nên chưa tra được. Mã 6 (62 tin) trông như tin toàn thời gian bình thường; mã 5 (1 tin). Đề xuất: không rõ, để JD quyết.",
-  "itviec 'Linh hoạt' (133 tin) map sang hybrid?",
-  "Tín hiệu ở tiêu đề thắng raw (work_mode và intern)?",
-  "itviec: lấy kinh nghiệm từ JD trước, bỏ ưu tiên mức gom JSON-LD?",
-  "employment_type có đưa vào bảng Silver không (hiện spec không có)?"
+ "decisions": [
+  {
+   "q": "vietnamworks typeWorkingId 5, 6 (không có nhãn chữ)",
+   "a": "không rõ -> để JD quyết",
+   "by": "người dùng",
+   "date": "2026-11-18"
+  },
+  {
+   "q": "vietnamworks typeWorkingId 7 (3 tin, cả 3 có Remote trong tiêu đề)",
+   "a": "work_mode remote",
+   "by": "người dùng",
+   "date": "2026-11-18"
+  },
+  {
+   "q": "itviec 'Linh hoạt' (133 tin)",
+   "a": "hybrid",
+   "by": "người dùng",
+   "date": "2026-11-18"
+  },
+  {
+   "q": "Tín hiệu ở tiêu đề và mẫu có số ngày thắng ô của sàn (work_mode, Intern)",
+   "a": "đồng ý",
+   "by": "người dùng",
+   "date": "2026-11-18"
+  },
+  {
+   "q": "itviec lấy kinh nghiệm từ JD trước, JSON-LD làm dự phòng",
+   "a": "đồng ý",
+   "by": "người dùng",
+   "date": "2026-11-18"
+  },
+  {
+   "q": "7 nguồn còn lại: ô của sàn hay JD trước (kinh nghiệm)",
+   "a": "giữ ô của sàn",
+   "by": "người dùng",
+   "date": "2026-11-18"
+  },
+  {
+   "q": "Thêm employment_type vào Silver",
+   "a": "chỉ khi trích được 100% tin; đo lại sau khi chạy 03 mới",
+   "by": "người dùng",
+   "date": "2026-11-18"
+  }
  ]
 }
