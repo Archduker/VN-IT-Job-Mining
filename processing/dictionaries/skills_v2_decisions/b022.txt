@@ -1,0 +1,245 @@
+# Lô 22: dòng 6301-6600 (18/11/2026)
+N entity 6301
+A 6302 after_effects
+N job_title 6303
+S 6304 agent_frameworks ai_genai p=ai_agent n=Agent frameworks (LangGraph, CrewAI, AutoGen)
+L agent_frameworks agent framework;agent frameworks;agent-based development frameworks
+N generic 6305
+A 6306 agents_sdk
+N generic 6307
+A 6308 agent_frameworks
+N generic 6309
+N combo 6310
+A 6311 ai_agent
+A 6312 6313 ai_assisted_dev
+N generic 6314 6315 6316
+A 6317 6318 pmi_acp
+A 6319 agile_coaching
+N generic 6320
+N job_title 6321
+N combo 6322
+A 6323 6324 ai_application
+S 6326 ai_builder ai_genai p=power_platform n=AI Builder (Power Platform)
+L ai_builder ai builder
+N job_title 6325
+A 6327 chatbot
+S 6328 ai_assisted_dev ai_tools n=Lập trình với trợ lý AI
+L ai_assisted_dev ai coding assistants;ai-assisted development;ai-assisted coding;agentic development
+N generic 6329
+A 6331 llm_eval
+N job_title 6330 6332
+S 6334 rag_knowledge_assistant ai_genai p=rag n=AI knowledge assistant
+N generic 6333
+N generic 6335 6336 6337
+N job_title 6338
+A 6339 nlp
+N generic 6340 6341 6342
+N job_title 6343
+N combo 6344 6345 6346
+A 6347 ai_testing
+A 6348 ai_governance
+A 6349 ai_security
+A 6350 6351 ai_security
+N generic 6352 6353 6354
+A 6355 genai_image
+N generic 6356
+A 6357 ai_agent
+A 6358 6359 ai_assisted_dev
+N generic 6360
+A 6361 ai_assisted_dev
+N generic 6362 6363 6364 6365
+N combo 6366
+A 6367 ocr
+N generic 6368
+A 6369 ai_testing
+A 6370 ai_assisted_dev
+N job_title 6371
+N combo 6372 6373 6374 6375 6376 6377 6378 6379 6380 6381
+S 6382 aidl mobile p=android_framework n=AIDL / Binder
+F aidl AIDL
+L aidl binder ipc
+S 6383 aiot embedded_iot p=iot n=AIoT
+F aiot AIoT
+N generic 6384
+A 6385 airflow_dag
+N industry 6386 6387
+N entity 6388 6389
+N combo 6390
+A 6391 algorithms
+S 6392 allegro_pcb embedded_iot p=pcb n=Cadence Allegro
+L allegro_pcb cadence allegro
+F allegro_pcb Allegro
+A 6393 omron
+N entity 6394
+A 6395 alteryx
+A 6396 networking
+A 6397 ui_design
+N generic 6398
+N entity 6399
+A 6400 aws_bedrock
+A 6401 aws_s3
+A 6402 aws_sqs
+N entity 6403
+A 6404 misa
+A 6405 agv_amr
+A 6406 application_support
+A 6407 6408 6409 information_security
+N generic 6410 6411
+A 6412 uat
+A 6413 business_analysis
+N generic 6414
+N job_title 6415
+N combo 6416
+A 6417 analytical_skills
+N combo 6418 6419
+S 6420 win_loss_analysis bi_analytics n=Win/loss analysis
+L win_loss_analysis win/loss analysis
+N generic 6421 6422 6423
+N combo 6424 6425 6426
+A 6427 gitops
+N combo 6428 6429 6430 6431 6432
+A 6433 socketio
+N combo 6434
+N entity 6435 6436
+N generic 6437
+S 6438 android_automotive mobile p=android_framework n=Android Automotive OS
+L android_automotive android automotive;aaos
+S 6439 android_tv mobile p=android n=Android TV / Android Box
+L android_tv android tv;android box
+N generic 6440
+N job_title 6441 6442
+S 6443 android_jetpack mobile p=android n=Android Jetpack
+L android_jetpack android jetpack
+A 6444 mobile_testing
+A 6445 angular
+A 6446 6447 6448 6449 angular
+A 6450 angular
+A 6451 2d_animation
+S 6452 motion_graphics design_creative n=Motion graphics
+L motion_graphics motion graphics;motion graphic;animation/motion
+N entity 6453 6454 6455 6456
+A 6457 data_annotation
+N generic 6458 6459
+N combo 6460
+S 6461 ansys cad_engineering p=simulation n=ANSYS (CAE)
+F ansys ANSYS;Ansys
+A 6462 6463 claude_api
+N combo 6464 6465
+N generic 6466
+A 6467 vmware
+S 6468 aoi_inspection cad_engineering n=AOI (kiểm tra quang học tự động)
+F aoi_inspection AOI
+A 6469 android_framework
+N generic 6470 6471
+A 6472 cassandra
+S 6473 pinot data_engineering n=Apache Pinot
+L pinot apache pinot
+N combo 6474
+S 6475 ibm_api_connect architecture_api p=api_management n=IBM API Connect
+L ibm_api_connect api connect
+S 6477 api_led architecture_api p=wso2 n=API-led connectivity
+L api_led api-led connectivity;api led connectivity
+A 6478 api_led
+A 6476 swagger
+N combo 6479
+N generic 6480
+N combo 6481
+A 6482 owasp
+A 6483 6484 api_testing
+A 6485 owasp
+A 6486 api
+N generic 6487
+N combo 6488 6489
+A 6490 6491 entity_framework
+N combo 6492
+N generic 6493
+S 6494 apollo_graphql frontend p=graphql n=Apollo GraphQL
+L apollo_graphql apollo client;apollo server;apollo graphql
+A 6495 sensor_tower
+N generic 6496
+S 6497 firebase_app_distribution mobile p=firebase n=Firebase App Distribution / TestFlight
+L firebase_app_distribution app distribution;testflight
+A 6498 azure_app_service
+N combo 6499
+S 6500 social_login security p=authn_authz n=Social login (Google, Apple)
+L social_login apple login;google login;sign in with apple;social login
+S 6501 app_backup systems_network p=backup n=Sao lưu ứng dụng
+A 6502 app_backup
+A 6503 oracle_data_guard
+N generic 6504
+N job_title 6505 6506 6507
+A 6508 6509 6510 sdlc
+S 6511 alm_tools testing_qa n=ALM (Application Lifecycle Management)
+F alm_tools ALM
+L alm_tools application lifecycle management
+N generic 6512
+A 6513 apm
+N job_title 6514
+N generic 6515 6516 6517
+A 6518 application_support
+N generic 6519
+A 6520 machine_learning
+A 6521 agile
+N generic 6522
+A 6523 clean_code
+N generic 6524
+A 6525 sensor_tower
+S 6526 aws_appsync cloud p=aws n=AWS AppSync / Amplify
+L aws_appsync appsync;amplify
+N entity 6527
+N job_title 6528 6529
+N generic 6530
+A 6531 design_patterns
+N generic 6532 6533
+S 6534 architecture_diagram architecture_api p=software_architecture n=Vẽ sơ đồ kiến trúc
+L architecture_diagram architecture diagram;architecture diagrams;sơ đồ kiến trúc
+N generic 6535
+N combo 6536 6537 6538 6539
+N generic 6540 6541 6542 6543
+A 6544 6545 pic_avr
+S 6546 game_kpi bi_analytics p=product_metrics n=Chỉ số game (ARPDAU, ARPU, LTV)
+F game_kpi ARPDAU;ARPU;ARPPU;LTV
+N generic 6547 6548
+N entity 6549
+N generic 6550
+N generic 6551
+N entity 6552
+N generic 6553
+A 6554 aspnet
+A 6555 voice_ai
+N combo 6556
+N generic 6557 6558 6559
+N generic 6560 6561 6562 6563 6564
+N job_title 6565
+A 6566 mobile_security
+S 6567 asyncapi architecture_api p=event_driven n=AsyncAPI
+A 6568 async_programming
+N entity 6569 6570 6571 6572 6573
+S 6574 attack_simulation security p=red_team n=Attack simulation (BAS)
+L attack_simulation attack simulation;breach and attack simulation
+A 6575 carefulness
+N generic 6576
+S 6577 audio_dsp embedded_iot p=dsp n=Xử lý âm thanh (audio DSP)
+L audio_dsp audio dsp;audio processing;xử lý âm thanh
+A 6578 6579 infotainment
+N combo 6580 6581
+S 6582 audit_logging security n=Audit logging
+L audit_logging audit logging;audit log;audit trail
+N job_title 6583
+N generic 6584
+A 6585 rag
+N generic 6586
+A 6587 jwt
+A 6588 authn_authz
+A 6589 autocad
+N generic 6590
+A 6591 autocad
+A 6592 continuous_deployment
+N generic 6593
+A 6594 rca
+N generic 6595 6596
+S 6597 oracle_asm databases p=oracle_db n=Oracle ASM
+L oracle_asm automatic storage management;oracle asm
+A 6598 rpa
+N job_title 6599
+N generic 6600
