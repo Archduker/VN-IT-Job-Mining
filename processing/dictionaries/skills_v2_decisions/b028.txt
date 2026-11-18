@@ -1,0 +1,280 @@
+# Lô 28: dòng 8101-8400 (18/11/2026)
+S 8101 hyper_casual game_dev n=Game hyper-casual / puzzle
+L hyper_casual hyper casual;hyper-casual;hypercasual
+A 8103 hyper_casual
+A 8102 hyperv
+N generic 8104 8105
+A 8106 iam
+N combo 8107
+S 8108 ibm_app_connect architecture_api p=esb n=IBM App Connect / IIB
+L ibm_app_connect app connect;appconnect;iib;integration bus
+A 8109 ibm_cp4i
+N generic 8110
+A 8111 doors
+A 8112 8113 ibm_mq
+A 8114 weblogic
+A 8115 webrtc
+N combo 8116
+S 8117 ideation methodology_pm p=design_thinking n=Ideation / brainstorming
+L ideation ideation;brainstorming
+N generic 8118
+A 8119 8120 iam
+S 8121 identity_provider security p=iam n=Identity provider / IdentityServer
+L identity_provider identity provider;identity server;identityserver
+A 8123 identity_provider
+N generic 8122
+A 8124 ids_ips
+A 8232 ids_ips
+N generic 8125
+A 8126 ielts
+S 8127 ifrs9 enterprise_apps p=risk_management n=IFRS 9 / ECL
+L ifrs9 ifrs9;ifrs 9;expected credit loss
+N generic 8128 8129
+S 8130 iiot embedded_iot p=iot n=IIoT
+F iiot IIoT;IIOT
+N generic 8131
+A 8132 docker
+S 8133 isp_camera embedded_iot p=image_processing n=Image Signal Processing (ISP)
+L isp_camera image signal processing
+A 8134 isp_camera
+N combo 8135
+S 8136 immutable_backup systems_network p=backup n=Immutable backup
+L immutable_backup immutable backup
+A 8137 immutable_backup
+N entity 8138
+S 8139 impala data_engineering p=hadoop n=Apache Impala / Hive
+L impala apache impala
+S 8140 imperva security p=waf n=Imperva
+A 8141 etl
+A 8142 iam
+A 8143 sre
+N generic 8144
+N generic 8145 8146
+N generic 8147 8148
+N generic 8149
+N generic 8150 8151 8152
+S 8153 inception_deck methodology_pm p=agile n=Inception deck
+A 8154 incident_response
+N combo 8155
+A 8156 ai_assisted_dev
+N generic 8157 8158 8159
+A 8160 routing_switching
+A 8161 performance_optimization
+A 8162 siem
+A 8163 machine_learning
+N generic 8164
+A 8165 factory_automation
+A 8166 industrial_protocols
+N combo 8167
+A 8168 iot
+N generic 8169 8170 8171 8172 8173 8174
+S 8175 infineon embedded_iot p=mcu n=Infineon AURIX / TriCore
+L infineon infineon;aurix;tricore
+A 8176 infineon
+S 8177 infisical security p=secrets_management n=Infisical / Doppler
+L infisical infisical;doppler
+K infor_erp enterprise_apps p=erp n=Infor ERP
+L infor_erp infor erp;infor ln;infor m3
+N generic 8178
+A 8179 information_security
+N degree 8180 8181
+N generic 8182
+A 8183 it_operations
+A 8184 it_infrastructure
+A 8185 iac
+A 8186 iac
+A 8187 consulting
+N generic 8188
+N combo 8189 8190 8191 8192
+A 8193 hardening
+N combo 8194
+A 8195 k8s_networking
+N generic 8196 8197
+N generic 8198
+N generic 8199 8200
+A 8201 quality_control
+A 8202 software_installation
+N generic 8203
+S 8204 instui frontend p=lms_canvas n=InstUI (Canvas UI)
+N industry 8205
+A 8206 awx
+A 8207 system_integration
+A 8208 system_integration
+N job_title 8209
+A 8210 system_integration
+A 8211 system_integration
+A 8212 esb
+A 8213 8214 cloud_integration
+A 8215 system_integration
+N job_title 8216
+A 8217 rpa
+S 8218 http_interceptor frontend n=HTTP interceptor / middleware
+L http_interceptor interceptor;interceptors;http interceptor
+N combo 8219
+A 8220 functional_spec
+S 8221 internal_dev_platform devops p=platform_engineering n=Internal Developer Platform (IDP)
+L internal_dev_platform internal developer platform
+A 8222 uat
+N generic 8223
+N combo 8224
+A 8225 mobile_banking
+A 8226 8227 leased_line
+N generic 8228
+N industry 8229
+S 8230 intranet enterprise_apps n=Intranet / cổng thông tin nội bộ
+L intranet intranet;cổng thông tin nội bộ
+N generic 8231
+N generic 8233 8234
+N generic 8235
+S 8236 ionic mobile n=Ionic / Capacitor / Cordova
+L ionic ionic;capacitor;cordova
+A 8237 ios
+A 8238 ios
+A 8239 iot
+A 8240 iot
+N combo 8241 8242 8243
+A 8244 8245 8246 tcp_ip
+A 8247 routing_switching
+S 8248 ip_transit systems_network p=telecom_network n=IP Transit / DIA
+L ip_transit ip transit
+N combo 8249
+S 8250 ip_rating cad_engineering n=Tiêu chuẩn IP (IP65/IP67)
+F ip_rating IP65;IP67;IP68
+A 8251 cloud_integration
+A 8252 vpn
+S 8253 iptv systems_network p=video_streaming_protocols n=IPTV / OTT
+F iptv IPTV;OTT
+A 8254 quality_control
+A 8255 cissp
+A 8256 8257 ai_security
+A 8258 isis
+N generic 8259
+A 8260 iso_27001
+S 8261 issap certifications p=cissp n=ISSAP / ISSEP / ISSMP
+F issap ISSAP;ISSEP;ISSMP
+N generic 8262
+A 8263 defect_management
+A 8264 istqb
+N generic 8265
+A 8266 rpa
+N job_title 8267
+A 8268 compliance
+A 8269 consulting
+A 8270 itgc
+N job_title 8271
+A 8272 computer_hardware
+N job_title 8273 8274
+A 8275 technical_support
+N combo 8276
+A 8277 8278 networking
+A 8279 relational_db
+N industry 8280
+A 8281 technical_sales
+N generic 8282
+A 8283 project_management
+A 8284 technical_sales
+N job_title 8285
+A 8286 itsm
+A 8287 release_management
+A 8288 consulting
+N generic 8289
+N job_title 8290
+N combo 8291
+N generic 8292
+N job_title 8293
+N combo 8294 8295 8296 8297 8298 8299
+A 8300 itil
+N generic 8301
+A 8302 itsm
+N combo 8303
+A 8304 game_jam
+S 8305 jamf systems_network p=endpoint_management n=Jamf (quản lý thiết bị Apple)
+A 8306 graph_database
+N generic 8307
+A 8308 japanese_it_comm
+A 8309 8310 java
+A 8311 struts
+N job_title 8312
+A 8313 java
+A 8314 8315 spring_boot
+N combo 8316
+A 8317 struts
+N combo 8318 8319 8320
+A 8321 javascript
+N combo 8322 8323
+A 8324 8325 javascript
+A 8326 es6
+N generic 8327
+N combo 8328 8329 8330 8331
+N generic 8332
+S 8333 jdk backend p=java n=JDK / JVM
+F jdk JDK
+L jdk jvm tuning;java virtual machine
+N entity 8334
+A 8335 artifactory
+S 8336 jira_automation dev_tools p=jira n=Jira automation / admin
+L jira_automation jira automation;jira admin;jira administration
+N combo 8337
+A 8338 jlpt
+N combo 8339
+S 8340 android_ndk mobile p=android n=Android NDK / JNI
+F android_ndk NDK;JNI
+L android_ndk android ndk
+N generic 8341 8342 8343
+A 8344 sql_query
+N entity 8345
+S 8346 jotai frontend p=state_management n=Jotai / Recoil / Zustand
+L jotai jotai;recoil
+N combo 8347
+S 8348 json_rpc architecture_api p=api n=JSON-RPC
+L json_rpc json-rpc;jsonrpc
+N generic 8349
+N job_title 8350 8351
+A 8352 juniper_cert
+N combo 8353
+A 8354 k8s_networking
+N entity 8355
+S 8356 kafka_connect messaging p=kafka n=Kafka Connect / Kafka Streams
+L kafka_connect kafka connect;kafka streams;ksqldb
+A 8357 kafka_connect
+N combo 8358
+S 8359 karate testing_qa p=api_testing n=Karate DSL
+L karate karate dsl;karate framework
+F karate Karate
+A 8360 vitest
+A 8361 katalon
+N entity 8362
+N generic 8363
+A 8364 project_planning
+S 8365 production_planning enterprise_apps p=erp n=Kế hoạch sản xuất (MRP)
+L production_planning kế hoạch sản xuất;production planning
+N job_title 8366
+S 8367 kendo_ui frontend n=Kendo UI / DevExtreme
+L kendo_ui kendo ui;devextreme
+S 8368 ad_attacks security p=pentest n=Tấn công Active Directory (Kerberoasting...)
+L ad_attacks kerberoasting;pass-the-hash;bloodhound;active directory attack
+N generic 8369
+N generic 8370 8371 8372 8373
+S 8374 ios_keychain mobile p=ios n=iOS Keychain
+L ios_keychain keychain
+N combo 8375 8376
+A 8377 8378 8379 eagerness_to_learn
+A 8380 analytical_skills
+A 8381 requirements_gathering
+A 8382 8383 aesthetic_sense
+A 8384 presentation
+S 8385 network_troubleshooting systems_network p=troubleshooting n=Xử lý sự cố mạng
+L network_troubleshooting khắc phục sự cố mạng;xử lý sự cố mạng
+A 8386 computer_repair
+N generic 8387
+A 8388 japanese_it_comm
+N generic 8389 8390
+A 8391 pentest
+N combo 8392 8393
+N entity 8394 8395
+S 8396 pneumatics cad_engineering n=Khí nén / thủy lực
+L pneumatics khí nén;thủy lực;pneumatic;hydraulic
+A 8397 data_warehouse
+A 8398 backup
+A 8399 altium
+N generic 8400
