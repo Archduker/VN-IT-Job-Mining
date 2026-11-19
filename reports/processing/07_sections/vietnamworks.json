@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:55:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 774
+    "rows": 583
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 774
+    "rows": 583
   },
   "dropped": [],
   "rules": [],
@@ -24,17 +24,55 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 15501,
+    "n_bullets": 11937,
     "bullets_by_section": {
-      "mo_ta": 5554,
-      "yeu_cau": 6135,
-      "phuc_loi": 3812
+      "mo_ta": 4383,
+      "yeu_cau": 4745,
+      "phuc_loi": 2809
     },
     "bullets_by_rule": {
-      "S7.2": 15501
+      "S7.2": 11937
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
     "cues_approved": 0
-  }
+  },
+  "samples": [
+    {
+      "job_id": "vietnamworks_2112949",
+      "source": "vietnamworks",
+      "field": "sections",
+      "before": "Phát triển giải pháp Computer Vision cho hệ thống kiểm tra tự động trong dây chuyền sản xuất.\nPhân tích yêu cầu dự án, đề xuất phương án kỹ thuật tối ưu về độ chính xác - tốc độ - chi phí.\nLựa chọn và…",
+      "after": {
+        "mo_ta": 3,
+        "phuc_loi": 3,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2115479",
+      "source": "vietnamworks",
+      "field": "sections",
+      "before": "Develop ETL/ELT jobs to ingest, transform, and load data from multiple source systems into Data Warehouse / Data Lake platforms based on the approved analysis and design documents.\nHands-on experience…",
+      "after": {
+        "mo_ta": 7,
+        "yeu_cau": 6,
+        "phuc_loi": 6
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2117929",
+      "source": "vietnamworks",
+      "field": "sections",
+      "before": "Evaluate and assess the effectiveness of the Bank’s processes on IT governance, risk management and internal controls.\nDevelop and contribute the annual internal audit plan.\nPerform, as a team leader,…",
+      "after": {
+        "mo_ta": 10,
+        "yeu_cau": 5,
+        "phuc_loi": 5
+      },
+      "changed": true
+    }
+  ]
 }

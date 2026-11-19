@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:54:57+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 1520
+    "rows": 1265
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 1520
+    "rows": 1265
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 39867,
+    "n_bullets": 34328,
     "bullets_by_section": {
-      "mo_ta": 12037,
-      "yeu_cau": 12159,
-      "phuc_loi": 15671
+      "mo_ta": 10524,
+      "yeu_cau": 10603,
+      "phuc_loi": 13201
     },
     "bullets_by_rule": {
-      "S7.2": 39867
+      "S7.2": 34328
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "topcv_2133230",
+      "job_id": "topcv_1763894",
       "source": "topcv",
       "field": "sections",
-      "before": "Cơ hội làm việc tại công ty công nghệ hàng đầu Việt Nam về giải pháp POS,Cơ hội hợp tác với quản lý cấp cao của các thương hiệu lớn ngành F&B.Lộ trình thăng tiến rõ ràng theo cơ chế cấp bậc và năng lự…",
+      "before": "Phân tích, điều tra, định danh, báo cáo về các cuộc tấn công APT và botnet.\nỨng phó, forensic sự cố APT.\nNghiên cứu sử dụng và phát triển các công cụ nội bộ phục vụ reverse/forensic.",
       "after": {
-        "phuc_loi": 14,
-        "mo_ta": 6,
-        "yeu_cau": 6
+        "phuc_loi": 12,
+        "yeu_cau": 6,
+        "mo_ta": 3
       },
       "changed": true
     },
     {
-      "job_id": "topcv_2235932",
+      "job_id": "topcv_2321841",
       "source": "topcv",
       "field": "sections",
-      "before": "Làm việc trực tiếp với khách hàng, tổ chức workshop, phỏng vấn stakeholder.\nPhân tích pain point, khai thác và làm rõ yêu cầu; xác định business objective.\nMô hình hóa quy trình As-is và đề xuất To-be…",
+      "before": "Hỗ trợ nhân viên các phòng ban (Kế toán, XNK, Mua hàng, Kho, Sản xuất...) xử lý các sự cố máy tính, email doanh nghiệp, kết nối mạng, cài đặt phần mềm chuyên môn.\nPhối hợp vận hành, phân quyền người d…",
       "after": {
-        "phuc_loi": 16,
-        "mo_ta": 9,
-        "yeu_cau": 5
+        "yeu_cau": 6,
+        "phuc_loi": 6,
+        "mo_ta": 5
       },
       "changed": true
     },
     {
-      "job_id": "topcv_2276123",
+      "job_id": "topcv_2329934",
       "source": "topcv",
       "field": "sections",
-      "before": "Enhance daily IT operations Lead and coordinate the troubleshooting process Find opportunities for further optimize the IT infrastructure and operations Enhance Back up for System Administrators in cr…",
+      "before": "Responsibilities As a DX Business Analyst for systems supporting audit operations, you will collaborate with business stakeholders to define solution requirements based on business needs, work closely…",
       "after": {
-        "phuc_loi": 14,
-        "yeu_cau": 2,
-        "mo_ta": 1
+        "phuc_loi": 7,
+        "mo_ta": 2,
+        "yeu_cau": 2
       },
       "changed": true
     }

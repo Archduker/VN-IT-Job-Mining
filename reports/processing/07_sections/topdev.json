@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:55:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 202
+    "rows": 166
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 202
+    "rows": 166
   },
   "dropped": [],
   "rules": [],
@@ -24,17 +24,55 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 5675,
+    "n_bullets": 4664,
     "bullets_by_section": {
-      "mo_ta": 1797,
-      "yeu_cau": 1972,
-      "phuc_loi": 1906
+      "mo_ta": 1416,
+      "yeu_cau": 1661,
+      "phuc_loi": 1587
     },
     "bullets_by_rule": {
-      "S7.2": 5675
+      "S7.2": 4664
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
     "cues_approved": 0
-  }
+  },
+  "samples": [
+    {
+      "job_id": "topdev_2137775",
+      "source": "topdev",
+      "field": "sections",
+      "before": "Nhiệm vụ chính:\nHỗ trợ người dùng xử lý các sự cố về máy tính, phần mềm, email, Microsoft 365, mạng và thiết bị văn phòng.\nCài đặt, cấu hình, bảo trì và quản lý máy tính, laptop, máy in và các thiết b…",
+      "after": {
+        "mo_ta": 9,
+        "phuc_loi": 9,
+        "yeu_cau": 2
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2138248",
+      "source": "topdev",
+      "field": "sections",
+      "before": "Design, develop & maintain high-performance C/C++ software Build software for wireless communication systems Translate complex technical specifications into robust software solutions Work with global …",
+      "after": {
+        "phuc_loi": 10,
+        "yeu_cau": 2,
+        "mo_ta": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2134271",
+      "source": "topdev",
+      "field": "sections",
+      "before": "Tiếp nhận và xử lý yêu cầu hỗ trợ từ người dùng qua điện thoại, email hoặc hệ thống ticketing Tạo, theo dõi và cập nhật ticket đảm bảo giải quyết đúng SLA; escalate lên Level 2/3 khi cần Hỗ trợ cài đặ…",
+      "after": {
+        "phuc_loi": 10,
+        "yeu_cau": 3,
+        "mo_ta": 1
+      },
+      "changed": true
+    }
+  ]
 }

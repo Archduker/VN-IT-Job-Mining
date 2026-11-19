@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:55:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 1520
+    "rows": 1265
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 1520
+    "rows": 1265
   },
   "dropped": [],
   "rules": [],
@@ -24,195 +24,137 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 9405,
-    "n_jobs_no_skill": 174,
+    "n_job_skill_rows": 34262,
+    "n_jobs_no_skill": 0,
+    "rows_by_kind": {
+      "soft": 6299,
+      "technical": 27377,
+      "language": 586
+    },
+    "dictionary": "skills_v2.json",
     "top_skills": [
       {
+        "skill": "coordination",
+        "n_jobs": 817
+      },
+      {
         "skill": "communication",
-        "n_jobs": 677
+        "n_jobs": 565
+      },
+      {
+        "skill": "proactiveness",
+        "n_jobs": 498
       },
       {
         "skill": "english",
-        "n_jobs": 463
+        "n_jobs": 414
       },
       {
-        "skill": "teamwork",
-        "n_jobs": 356
+        "skill": "information_security",
+        "n_jobs": 380
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 313
+        "n_jobs": 374
       },
       {
-        "skill": "logical_thinking",
-        "n_jobs": 261
+        "skill": "software_testing",
+        "n_jobs": 349
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 341
+      },
+      {
+        "skill": "enthusiasm",
+        "n_jobs": 331
+      },
+      {
+        "skill": "database",
+        "n_jobs": 308
+      },
+      {
+        "skill": "api",
+        "n_jobs": 283
+      },
+      {
+        "skill": "analytical_skills",
+        "n_jobs": 270
+      },
+      {
+        "skill": "sql",
+        "n_jobs": 269
+      },
+      {
+        "skill": "eagerness_to_learn",
+        "n_jobs": 265
+      },
+      {
+        "skill": "ai",
+        "n_jobs": 252
+      },
+      {
+        "skill": "troubleshooting",
+        "n_jobs": 251
+      },
+      {
+        "skill": "documentation",
+        "n_jobs": 240
       },
       {
         "skill": "python",
-        "n_jobs": 258
+        "n_jobs": 235
       },
       {
-        "skill": "machine_learning",
-        "n_jobs": 232
+        "skill": "networking",
+        "n_jobs": 233
       },
       {
-        "skill": "agile_scrum",
-        "n_jobs": 230
+        "skill": "logical_thinking",
+        "n_jobs": 223
       },
       {
-        "skill": "rest_api",
-        "n_jobs": 196
+        "skill": "ai_application",
+        "n_jobs": 211
       },
       {
-        "skill": "docker",
-        "n_jobs": 192
+        "skill": "agile",
+        "n_jobs": 200
+      },
+      {
+        "skill": "it_infrastructure",
+        "n_jobs": 200
       },
       {
         "skill": "cicd",
-        "n_jobs": 189
-      },
-      {
-        "skill": "linux",
-        "n_jobs": 183
-      },
-      {
-        "skill": "java",
-        "n_jobs": 171
-      },
-      {
-        "skill": "data_analysis",
-        "n_jobs": 165
-      },
-      {
-        "skill": "postgresql",
-        "n_jobs": 147
-      },
-      {
-        "skill": "cybersecurity",
-        "n_jobs": 143
-      },
-      {
-        "skill": "project_management",
-        "n_jobs": 140
-      },
-      {
-        "skill": "microservices",
-        "n_jobs": 138
-      },
-      {
-        "skill": "jira",
-        "n_jobs": 136
-      },
-      {
-        "skill": "mysql",
-        "n_jobs": 130
-      },
-      {
-        "skill": "ecommerce",
-        "n_jobs": 129
-      },
-      {
-        "skill": "kubernetes",
-        "n_jobs": 110
-      },
-      {
-        "skill": "javascript",
-        "n_jobs": 109
-      },
-      {
-        "skill": "business_analysis",
-        "n_jobs": 104
-      },
-      {
-        "skill": "oracle_db",
-        "n_jobs": 101
-      },
-      {
-        "skill": "infosec",
-        "n_jobs": 100
+        "n_jobs": 197
       },
       {
         "skill": "presentation",
-        "n_jobs": 99
+        "n_jobs": 188
       },
       {
-        "skill": "csharp",
-        "n_jobs": 97
+        "skill": "rest_api",
+        "n_jobs": 187
       },
       {
-        "skill": "firewall",
-        "n_jobs": 96
+        "skill": "cloud_computing",
+        "n_jobs": 179
       },
       {
-        "skill": "redis",
-        "n_jobs": 95
+        "skill": "performance_optimization",
+        "n_jobs": 178
+      },
+      {
+        "skill": "qa_qc",
+        "n_jobs": 176
+      },
+      {
+        "skill": "docker",
+        "n_jobs": 171
       }
     ],
-    "short_forms_approved": 0,
-    "alias_conflicts_dropped": 1
-  },
-  "samples": [
-    {
-      "job_id": "topcv_2216283",
-      "source": "topcv",
-      "field": "skills",
-      "before": [
-        "Automation Tester",
-        "IT - Phần mềm"
-      ],
-      "after": [
-        "agile_scrum",
-        "automation_test",
-        "java",
-        "manual_test",
-        "selenium"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2242556",
-      "source": "topcv",
-      "field": "skills",
-      "before": [
-        "Business Analyst (Phân tích nghiệp vụ)",
-        "IT - Phần mềm",
-        "Giao tiếp",
-        "Phân tích dữ liệu",
-        "Phân Tích Nghiệp Vụ",
-        "Thu Thập Yêu Cầu",
-        "Mô Hình Hóa Quy Trình"
-      ],
-      "after": [
-        "bug_tracking",
-        "business_analysis",
-        "communication",
-        "confluence",
-        "data_analysis",
-        "fintech",
-        "jira",
-        "oracle_db",
-        "project_management",
-        "time_management"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2320154",
-      "source": "topcv",
-      "field": "skills",
-      "before": [
-        "Game Developer",
-        "IT - Phần cứng và máy tính",
-        "IT - Phần mềm",
-        "Game"
-      ],
-      "after": [
-        "android_sdk",
-        "communication",
-        "csharp",
-        "english"
-      ],
-      "changed": true
-    }
-  ]
+    "short_forms_approved": 756,
+    "alias_conflicts_dropped": 0
+  }
 }

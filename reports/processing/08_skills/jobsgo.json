@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:55:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 547
+    "rows": 497
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 547
+    "rows": 497
   },
   "dropped": [],
   "rules": [],
@@ -24,182 +24,137 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 2718,
-    "n_jobs_no_skill": 63,
+    "n_job_skill_rows": 10467,
+    "n_jobs_no_skill": 0,
+    "rows_by_kind": {
+      "technical": 8039,
+      "language": 260,
+      "soft": 2168
+    },
+    "dictionary": "skills_v2.json",
     "top_skills": [
       {
+        "skill": "coordination",
+        "n_jobs": 281
+      },
+      {
         "skill": "communication",
-        "n_jobs": 244
+        "n_jobs": 209
       },
       {
         "skill": "english",
-        "n_jobs": 177
+        "n_jobs": 163
+      },
+      {
+        "skill": "proactiveness",
+        "n_jobs": 158
       },
       {
         "skill": "teamwork",
-        "n_jobs": 122
-      },
-      {
-        "skill": "logical_thinking",
-        "n_jobs": 106
+        "n_jobs": 137
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 106
+        "n_jobs": 133
       },
       {
-        "skill": "machine_learning",
+        "skill": "software_testing",
+        "n_jobs": 122
+      },
+      {
+        "skill": "information_security",
+        "n_jobs": 121
+      },
+      {
+        "skill": "eagerness_to_learn",
+        "n_jobs": 116
+      },
+      {
+        "skill": "database",
+        "n_jobs": 112
+      },
+      {
+        "skill": "enthusiasm",
+        "n_jobs": 108
+      },
+      {
+        "skill": "troubleshooting",
+        "n_jobs": 107
+      },
+      {
+        "skill": "analytical_skills",
         "n_jobs": 97
       },
       {
+        "skill": "documentation",
+        "n_jobs": 94
+      },
+      {
+        "skill": "logical_thinking",
+        "n_jobs": 94
+      },
+      {
+        "skill": "ai",
+        "n_jobs": 89
+      },
+      {
+        "skill": "sql",
+        "n_jobs": 85
+      },
+      {
+        "skill": "networking",
+        "n_jobs": 84
+      },
+      {
+        "skill": "carefulness",
+        "n_jobs": 82
+      },
+      {
+        "skill": "api",
+        "n_jobs": 73
+      },
+      {
+        "skill": "computer_hardware",
+        "n_jobs": 70
+      },
+      {
+        "skill": "erp",
+        "n_jobs": 65
+      },
+      {
+        "skill": "ms_office",
+        "n_jobs": 65
+      },
+      {
+        "skill": "debugging",
+        "n_jobs": 64
+      },
+      {
         "skill": "python",
-        "n_jobs": 67
+        "n_jobs": 64
+      },
+      {
+        "skill": "consulting",
+        "n_jobs": 59
+      },
+      {
+        "skill": "ai_application",
+        "n_jobs": 58
+      },
+      {
+        "skill": "requirements_analysis",
+        "n_jobs": 58
+      },
+      {
+        "skill": "independent_work",
+        "n_jobs": 55
       },
       {
         "skill": "mysql",
         "n_jobs": 54
-      },
-      {
-        "skill": "rest_api",
-        "n_jobs": 52
-      },
-      {
-        "skill": "linux",
-        "n_jobs": 51
-      },
-      {
-        "skill": "agile_scrum",
-        "n_jobs": 46
-      },
-      {
-        "skill": "sql_server",
-        "n_jobs": 46
-      },
-      {
-        "skill": "data_analysis",
-        "n_jobs": 46
-      },
-      {
-        "skill": "java",
-        "n_jobs": 45
-      },
-      {
-        "skill": "react",
-        "n_jobs": 44
-      },
-      {
-        "skill": "cicd",
-        "n_jobs": 41
-      },
-      {
-        "skill": "japanese",
-        "n_jobs": 40
-      },
-      {
-        "skill": "docker",
-        "n_jobs": 39
-      },
-      {
-        "skill": "business_analysis",
-        "n_jobs": 39
-      },
-      {
-        "skill": "postgresql",
-        "n_jobs": 37
-      },
-      {
-        "skill": "csharp",
-        "n_jobs": 35
-      },
-      {
-        "skill": "firewall",
-        "n_jobs": 31
-      },
-      {
-        "skill": "dotnet",
-        "n_jobs": 31
-      },
-      {
-        "skill": "infosec",
-        "n_jobs": 30
-      },
-      {
-        "skill": "microservices",
-        "n_jobs": 30
-      },
-      {
-        "skill": "jira",
-        "n_jobs": 28
-      },
-      {
-        "skill": "oracle_db",
-        "n_jobs": 27
-      },
-      {
-        "skill": "project_management",
-        "n_jobs": 27
-      },
-      {
-        "skill": "javascript",
-        "n_jobs": 25
-      },
-      {
-        "skill": "android_sdk",
-        "n_jobs": 25
       }
     ],
-    "short_forms_approved": 0,
-    "alias_conflicts_dropped": 1
-  },
-  "samples": [
-    {
-      "job_id": "jobsgo_28976445364",
-      "source": "jobsgo",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "communication",
-        "cybersecurity",
-        "disaster_recovery",
-        "english",
-        "firewall",
-        "incident_response",
-        "infosec",
-        "iso_27001",
-        "linux",
-        "logical_thinking",
-        "siem"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_28953320327",
-      "source": "jobsgo",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "android_sdk",
-        "communication",
-        "machine_learning",
-        "mysql",
-        "nestjs",
-        "postgresql",
-        "problem_solving",
-        "sql_server"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_29399825005",
-      "source": "jobsgo",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "bug_tracking",
-        "infosec",
-        "jira"
-      ],
-      "changed": true
-    }
-  ]
+    "short_forms_approved": 756,
+    "alias_conflicts_dropped": 0
+  }
 }

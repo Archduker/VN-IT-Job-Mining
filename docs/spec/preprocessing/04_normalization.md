@@ -126,7 +126,7 @@ Thứ tự trong `process_source` (đọc code khi viết phần mới):
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- **Trạng thái:** có code cho 2.1 và 2.2 (trừ S1). **Chạy thật 19/11:** 3.997 vào → `all.parquet` 3.916 + `quarantine.parquet` 81 (itviec 49, glints 9, vietnamworks 9, topcv 5, jobsgo 4, careerviet 3, topdev 2), bảo toàn đạt. Luật mới: N14 lấy từ ô 2.119 / JD 52 / JD thắng ô 7 / địa điểm 1.708 / unknown 30; N19 có giá trị 3.738 (trống 253, phần lớn topdev; internship 192); M4 nguồn: ô 2.919, JD 664, JSON-LD itviec 144, JD "không yêu cầu" 54, theo cấp 51, trống 84; `exp_conflict` 724 (itviec 424 vì JSON-LD chỉ 3 mức); N2c 0 (tin internship đều đã ra Intern/Fresher từ tiêu đề). `level_inferred` (Silver `seniority_inferred`) true ở 2.978/3.916 tin: cấp từ ô của sàn chỉ 653 tin. S1 (Silver) chờ bước 08.
+- **Trạng thái:** có code cho 2.1 và 2.2 (trừ S1). **Chạy thật 19/11:** 3.997 vào → `all.parquet` 3.916 + `quarantine.parquet` 81 (itviec 49, glints 9, vietnamworks 9, topcv 5, jobsgo 4, careerviet 3, topdev 2), bảo toàn đạt. Luật mới: N14 lấy từ ô 2.119 / JD 52 / JD thắng ô 7 / địa điểm 1.708 / unknown 30; N19 có giá trị 3.738 (trống 253, phần lớn topdev; internship 192); M4 nguồn: ô 2.919, JD 664, JSON-LD itviec 144, JD "không yêu cầu" 54, theo cấp 51, trống 84; `exp_conflict` 724 (itviec 424 vì JSON-LD chỉ 3 mức); N2c 0 (tin internship đều đã ra Intern/Fresher từ tiêu đề). `level_inferred` (Silver `seniority_inferred`) true ở 2.978/3.916 tin: cấp từ ô của sàn chỉ 653 tin. S1 (Silver) chạy sau bước 08: `python -m preprocessing.normalization.silver`, 3.916 dòng, 26 trường, kiểm đạt (19/11, `silver.md` mục 7).
 - **Chỗ thiếu (lần chạy 19/11):**
   - 285/3.916 tin (7,3%) thiếu cấp bậc;
   - 65 tin `tinh_unknown`;

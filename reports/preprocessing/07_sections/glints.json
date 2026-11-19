@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:54:57+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 246
+    "rows": 146
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 246
+    "rows": 146
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 7094,
+    "n_bullets": 4363,
     "bullets_by_section": {
-      "mo_ta": 5751,
-      "yeu_cau": 246,
-      "phuc_loi": 1097
+      "mo_ta": 3535,
+      "yeu_cau": 146,
+      "phuc_loi": 682
     },
     "bullets_by_rule": {
-      "S7.2": 7094
+      "S7.2": 4363
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,37 +39,37 @@
   },
   "samples": [
     {
-      "job_id": "glints_ea2295e2-8c5b-49cd-9bd5-8e94850792f1",
+      "job_id": "glints_1db0e1f6-3468-4269-bcbf-bca4d55db8f8",
       "source": "glints",
       "field": "sections",
-      "before": "Chi tiết công việc Senior Backend Developer tại Unit Technology Corporation Responsibilities:\nDesign, develop, and maintain scalable back-end solutions using Java Spring Boot and Microservices archite…",
+      "before": "Chi tiết công việc IT Specialist (Good English) tại iTechWX LOCATION:\n8th & 23rd Floor, Lancaster Luminaire Building, 1152-1154 Lang Road, Lang Thuong Ward, Dong Da District, Hanoi City Only accepting…",
       "after": {
-        "mo_ta": 25,
-        "phuc_loi": 8,
+        "mo_ta": 23,
+        "phuc_loi": 3,
         "yeu_cau": 1
       },
       "changed": true
     },
     {
-      "job_id": "glints_a68e5dc1-67b6-435f-9ed9-ae7cdf912202",
+      "job_id": "glints_3a46cca3-8a42-44f1-9950-e54d15d6e72e",
       "source": "glints",
       "field": "sections",
-      "before": "Chi tiết công việc Golang Developer tại SotaTek Location:\nCIC Tower, No.2 Nguyen Thi Due, Yen Hoa, Cau Giay, Ha Noi MB Sunny Tower, No.259 Tran Hung Dao, Cau Ong Lanh, HCM City G8, Golden Building, Số…",
+      "before": "Chi tiết công việc VT235 - QA SUPERVISOR - KCN PHÚ MỸ 3 VŨNG TÀU tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM Công ty sản xuất 100% vốn đầu tư của Nhật Địa chỉ: KCN Phú Mỹ 3 - Vũng Tàu (tư túc) M…",
       "after": {
         "mo_ta": 18,
-        "phuc_loi": 14,
+        "phuc_loi": 7,
         "yeu_cau": 1
       },
       "changed": true
     },
     {
-      "job_id": "glints_9ff6e38f-648b-4ba9-928e-f8c99d86b24a",
+      "job_id": "glints_537fc2c8-800a-4251-a2f0-bf00e47e2e7e",
       "source": "glints",
       "field": "sections",
-      "before": "Chi tiết công việc [Quận Nam Từ Liêm, Hà Nội] IT HELPDESK SUPPORT (Thời vụ 5 tháng) tại CÔNG TY TNHH NÉT VIỆT Địa chỉ: Tòa nhà Handico, Khu đô thị mới Mễ Trì Hạ, đường Phạm Hùng, Quận Nam Từ Liêm, Hà …",
+      "before": "Chi tiết công việc Data Analyst tại Công ty TNHH MTV CNTH Viễn Sơn THU THẬP VÀ XỬ LÝ DỮ LIỆU\n- Thu thập dữ liệu từ nhiều nguồn: ERP, CRM, Google Sheet, Excel, Database, phần mềm nội bộ\n- Làm sạch, chu…",
       "after": {
-        "mo_ta": 8,
-        "phuc_loi": 3,
+        "mo_ta": 43,
+        "phuc_loi": 2,
         "yeu_cau": 1
       },
       "changed": true

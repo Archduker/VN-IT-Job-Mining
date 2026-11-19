@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:55:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": null,
-    "rows": 4671
+    "rows": 3916
   },
   "output": {
     "path": null,
-    "rows": 4671
+    "rows": 3916
   },
   "dropped": [],
   "rules": [],
@@ -26,37 +26,326 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1520,
-        "output": 1520
+        "input": 1265,
+        "output": 1265
       },
       "topdev": {
-        "input": 202,
-        "output": 202
+        "input": 166,
+        "output": 166
       },
       "vietnamworks": {
-        "input": 774,
-        "output": 774
+        "input": 583,
+        "output": 583
       },
       "careerviet": {
-        "input": 400,
-        "output": 400
+        "input": 402,
+        "output": 402
       },
       "vieclam24h": {
-        "input": 164,
-        "output": 164
+        "input": 121,
+        "output": 121
       },
       "itviec": {
-        "input": 818,
-        "output": 818
+        "input": 736,
+        "output": 736
       },
       "glints": {
-        "input": 246,
-        "output": 246
+        "input": 146,
+        "output": 146
       },
       "jobsgo": {
-        "input": 547,
-        "output": 547
+        "input": 497,
+        "output": 497
       }
     }
-  }
+  },
+  "samples": [
+    {
+      "job_id": "topcv_1763894",
+      "source": "topcv",
+      "field": "sections",
+      "before": "Phân tích, điều tra, định danh, báo cáo về các cuộc tấn công APT và botnet.\nỨng phó, forensic sự cố APT.\nNghiên cứu sử dụng và phát triển các công cụ nội bộ phục vụ reverse/forensic.",
+      "after": {
+        "phuc_loi": 12,
+        "yeu_cau": 6,
+        "mo_ta": 3
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2321841",
+      "source": "topcv",
+      "field": "sections",
+      "before": "Hỗ trợ nhân viên các phòng ban (Kế toán, XNK, Mua hàng, Kho, Sản xuất...) xử lý các sự cố máy tính, email doanh nghiệp, kết nối mạng, cài đặt phần mềm chuyên môn.\nPhối hợp vận hành, phân quyền người d…",
+      "after": {
+        "yeu_cau": 6,
+        "phuc_loi": 6,
+        "mo_ta": 5
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2329934",
+      "source": "topcv",
+      "field": "sections",
+      "before": "Responsibilities As a DX Business Analyst for systems supporting audit operations, you will collaborate with business stakeholders to define solution requirements based on business needs, work closely…",
+      "after": {
+        "phuc_loi": 7,
+        "mo_ta": 2,
+        "yeu_cau": 2
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2137775",
+      "source": "topdev",
+      "field": "sections",
+      "before": "Nhiệm vụ chính:\nHỗ trợ người dùng xử lý các sự cố về máy tính, phần mềm, email, Microsoft 365, mạng và thiết bị văn phòng.\nCài đặt, cấu hình, bảo trì và quản lý máy tính, laptop, máy in và các thiết b…",
+      "after": {
+        "mo_ta": 9,
+        "phuc_loi": 9,
+        "yeu_cau": 2
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2138248",
+      "source": "topdev",
+      "field": "sections",
+      "before": "Design, develop & maintain high-performance C/C++ software Build software for wireless communication systems Translate complex technical specifications into robust software solutions Work with global …",
+      "after": {
+        "phuc_loi": 10,
+        "yeu_cau": 2,
+        "mo_ta": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2134271",
+      "source": "topdev",
+      "field": "sections",
+      "before": "Tiếp nhận và xử lý yêu cầu hỗ trợ từ người dùng qua điện thoại, email hoặc hệ thống ticketing Tạo, theo dõi và cập nhật ticket đảm bảo giải quyết đúng SLA; escalate lên Level 2/3 khi cần Hỗ trợ cài đặ…",
+      "after": {
+        "phuc_loi": 10,
+        "yeu_cau": 3,
+        "mo_ta": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2112949",
+      "source": "vietnamworks",
+      "field": "sections",
+      "before": "Phát triển giải pháp Computer Vision cho hệ thống kiểm tra tự động trong dây chuyền sản xuất.\nPhân tích yêu cầu dự án, đề xuất phương án kỹ thuật tối ưu về độ chính xác - tốc độ - chi phí.\nLựa chọn và…",
+      "after": {
+        "mo_ta": 3,
+        "phuc_loi": 3,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2115479",
+      "source": "vietnamworks",
+      "field": "sections",
+      "before": "Develop ETL/ELT jobs to ingest, transform, and load data from multiple source systems into Data Warehouse / Data Lake platforms based on the approved analysis and design documents.\nHands-on experience…",
+      "after": {
+        "mo_ta": 7,
+        "yeu_cau": 6,
+        "phuc_loi": 6
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2117929",
+      "source": "vietnamworks",
+      "field": "sections",
+      "before": "Evaluate and assess the effectiveness of the Bank’s processes on IT governance, risk management and internal controls.\nDevelop and contribute the annual internal audit plan.\nPerform, as a team leader,…",
+      "after": {
+        "mo_ta": 10,
+        "yeu_cau": 5,
+        "phuc_loi": 5
+      },
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C87E47",
+      "source": "careerviet",
+      "field": "sections",
+      "before": "Mô tả Công việc Mô tả công việc: Chúng tôi đang tìm kiếm một Automation Tester nhiều kinh nghiệm, chuyên sử dụng Playwright với TypeScript , để đảm bảo chất lượng cho hệ thống web enterprise của công …",
+      "after": {
+        "phuc_loi": 7,
+        "mo_ta": 1,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C89037",
+      "source": "careerviet",
+      "field": "sections",
+      "before": "Mô tả Công việc 1. Position Summary We are looking for a DevOps Engineer with strong expertise in cloud infrastructure and automation to design, deploy, operate, and continuously improve production-gr…",
+      "after": {
+        "phuc_loi": 11,
+        "mo_ta": 1,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C83F00",
+      "source": "careerviet",
+      "field": "sections",
+      "before": "Mô tả Công việc Để đảm bảo hồ sơ được tiếp nhận xử lý, ứng viên cần nộp hồ sơ ứng tuyển trên website tuyển dụng chính thức của Vietcombank tại địa chỉ: tuyendung.vietcombank.com.vn [TT KT&KHDL]_Chuyên…",
+      "after": {
+        "mo_ta": 1,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200961975",
+      "source": "vieclam24h",
+      "field": "sections",
+      "before": "Manage and maintain server infrastructure, including SAN/Storage, physical servers, and VMware environments, ensuring stable and efficient system operations.\nMonitor system capacity, perform security …",
+      "after": {
+        "mo_ta": 12,
+        "yeu_cau": 7,
+        "phuc_loi": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200956825",
+      "source": "vieclam24h",
+      "field": "sections",
+      "before": "- Giám sát hệ thống mạng hàng ngày, đảm bảo đường truyền internet luôn thông suốt và ổn định cho hơn 100 người dùng.\n- Hỗ trợ cài đặt, cấu hình máy tính, phần mềm cho nhân viên mới và xử lý các sự cố …",
+      "after": {
+        "mo_ta": 7,
+        "yeu_cau": 5,
+        "phuc_loi": 5
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200947793",
+      "source": "vieclam24h",
+      "field": "sections",
+      "before": "Phát triển và thiết kế từ ý tưởng đến các thành phẩm UX như storyboard, wireframe, sitemaps, flowcharts, mockups… Xây dựng giao diện người dùng (UI), gia tăng tính thẩm mỹ cho các nội dung số website,…",
+      "after": {
+        "yeu_cau": 10,
+        "mo_ta": 5,
+        "phuc_loi": 3
+      },
+      "changed": true
+    },
+    {
+      "job_id": "itviec_devops-engineer-vnggames-0837",
+      "source": "itviec",
+      "field": "sections",
+      "before": "Tham gia AI Transformation Team (AIT) của VNGGames - đội ngũ xây dựng và vận hành các giải pháp AI dùng chung, hỗ trợ VNGGames chuyển đổi thành tổ chức AI-Native. Bạn sẽ cùng team xây dựng và vận hành…",
+      "after": {
+        "yeu_cau": 15,
+        "mo_ta": 9,
+        "phuc_loi": 7
+      },
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-principal-ruby-on-rails-developer-aws-backend-andpad-vietnam-co-ltd-4221",
+      "source": "itviec",
+      "field": "sections",
+      "before": "We are looking for Senior/ Principal Ruby on Rails Developers (AWS, Backend) who can join our team and develop the application in cooperation with the product manager. Working in the form of Squad, a …",
+      "after": {
+        "phuc_loi": 14,
+        "mo_ta": 9,
+        "yeu_cau": 3
+      },
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-backend-engineer-python-django-aws-lhv-software-4327",
+      "source": "itviec",
+      "field": "sections",
+      "before": "We are looking for a Senior Backend Engineer to join a cloud-based financial reconciliation and data platform.\nThis position is suitable for an experienced backend engineer who has built reliable, lar…",
+      "after": {
+        "phuc_loi": 30,
+        "mo_ta": 4,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "glints_1db0e1f6-3468-4269-bcbf-bca4d55db8f8",
+      "source": "glints",
+      "field": "sections",
+      "before": "Chi tiết công việc IT Specialist (Good English) tại iTechWX LOCATION:\n8th & 23rd Floor, Lancaster Luminaire Building, 1152-1154 Lang Road, Lang Thuong Ward, Dong Da District, Hanoi City Only accepting…",
+      "after": {
+        "mo_ta": 23,
+        "phuc_loi": 3,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "glints_3a46cca3-8a42-44f1-9950-e54d15d6e72e",
+      "source": "glints",
+      "field": "sections",
+      "before": "Chi tiết công việc VT235 - QA SUPERVISOR - KCN PHÚ MỸ 3 VŨNG TÀU tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM Công ty sản xuất 100% vốn đầu tư của Nhật Địa chỉ: KCN Phú Mỹ 3 - Vũng Tàu (tư túc) M…",
+      "after": {
+        "mo_ta": 18,
+        "phuc_loi": 7,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "glints_537fc2c8-800a-4251-a2f0-bf00e47e2e7e",
+      "source": "glints",
+      "field": "sections",
+      "before": "Chi tiết công việc Data Analyst tại Công ty TNHH MTV CNTH Viễn Sơn THU THẬP VÀ XỬ LÝ DỮ LIỆU\n- Thu thập dữ liệu từ nhiều nguồn: ERP, CRM, Google Sheet, Excel, Database, phần mềm nội bộ\n- Làm sạch, chu…",
+      "after": {
+        "mo_ta": 43,
+        "phuc_loi": 2,
+        "yeu_cau": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29243218398",
+      "source": "jobsgo",
+      "field": "sections",
+      "before": "Cài đặt, cấu hình và hỗ trợ vận hành các phần mềm quản lý nội bộ.\nTiếp nhận, kiểm tra và xử lý lỗi phần mềm; phối hợp với các bộ phận hoặc nhà cung cấp để khắc phục.\nHỗ trợ chỉnh sửa, nâng cấp và phát…",
+      "after": {
+        "yeu_cau": 19,
+        "mo_ta": 11,
+        "phuc_loi": 11
+      },
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29318934902",
+      "source": "jobsgo",
+      "field": "sections",
+      "before": "Tham gia nghiên cứu, thiết kế, triển khai các sản phẩm giải pháp về phần mềm, ứng dụng, phần cứng, sao lưu, ảo hóa, giám sát hệ thống.\nTriển khai cài đặt & cấu hình phần cứng máy chủ, lưu trữ, sao lưu…",
+      "after": {
+        "yeu_cau": 5,
+        "phuc_loi": 5,
+        "mo_ta": 3
+      },
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29326389773",
+      "source": "jobsgo",
+      "field": "sections",
+      "before": "Thực tập theo mô hình project-based, mentor bởi các chuyên gia giàu kinh nghiệm từ các dự án của TMA (Subject Matter Expert).\nĐược đào tạo bài bản:Kỹ năng mềm, kỹ năng làm việc chuyên nghiệp.Quy trình…",
+      "after": {
+        "mo_ta": 13,
+        "phuc_loi": 3,
+        "yeu_cau": 2
+      },
+      "changed": true
+    }
+  ]
 }

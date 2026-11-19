@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:54:57+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 547
+    "rows": 497
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 547
+    "rows": 497
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 12108,
+    "n_bullets": 11281,
     "bullets_by_section": {
-      "mo_ta": 4036,
-      "yeu_cau": 4151,
-      "phuc_loi": 3921
+      "mo_ta": 3853,
+      "yeu_cau": 3803,
+      "phuc_loi": 3625
     },
     "bullets_by_rule": {
-      "S7.2": 12108
+      "S7.2": 11281
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "jobsgo_29080134608",
+      "job_id": "jobsgo_29243218398",
       "source": "jobsgo",
       "field": "sections",
-      "before": "Thu thập, phân tích và làm rõ yêu cầu nghiệp vụ từ các đơn vị kinh doanh (Môi giới, Dịch vụ khách hàng, Vận hành, Quản lý rủi ro, Nguồn vốn...).\nKhảo sát và đánh giá quy trình hiện tại, đề xuất giải p…",
+      "before": "Cài đặt, cấu hình và hỗ trợ vận hành các phần mềm quản lý nội bộ.\nTiếp nhận, kiểm tra và xử lý lỗi phần mềm; phối hợp với các bộ phận hoặc nhà cung cấp để khắc phục.\nHỗ trợ chỉnh sửa, nâng cấp và phát…",
       "after": {
-        "mo_ta": 10,
-        "phuc_loi": 7,
-        "yeu_cau": 4
+        "yeu_cau": 19,
+        "mo_ta": 11,
+        "phuc_loi": 11
       },
       "changed": true
     },
     {
-      "job_id": "jobsgo_28898705589",
+      "job_id": "jobsgo_29318934902",
       "source": "jobsgo",
       "field": "sections",
-      "before": "Tiếp nhận, cập nhật kịp thời hiện trạng phòng máy ở các đơn vị.\nPhối hợp, điều động nhân viên IT bảo trì hệ thống phòng máy tại các đơn vị.\nSắp xếp lịch làm việc cho nhân viên IT.\nTrực tiếp liên hệ, p…",
+      "before": "Tham gia nghiên cứu, thiết kế, triển khai các sản phẩm giải pháp về phần mềm, ứng dụng, phần cứng, sao lưu, ảo hóa, giám sát hệ thống.\nTriển khai cài đặt & cấu hình phần cứng máy chủ, lưu trữ, sao lưu…",
       "after": {
-        "mo_ta": 6,
         "yeu_cau": 5,
-        "phuc_loi": 5
+        "phuc_loi": 5,
+        "mo_ta": 3
       },
       "changed": true
     },
     {
-      "job_id": "jobsgo_29101657323",
+      "job_id": "jobsgo_29326389773",
       "source": "jobsgo",
       "field": "sections",
-      "before": "Tham gia phát triển và tối ưu các dự án Game Mobile trên nền tảng iOS và Android; xây dựng tính năng, xử lý lỗi và phối hợp với các thành viên trong team để đảm bảo chất lượng và tiến độ dự án.",
+      "before": "Thực tập theo mô hình project-based, mentor bởi các chuyên gia giàu kinh nghiệm từ các dự án của TMA (Subject Matter Expert).\nĐược đào tạo bài bản:Kỹ năng mềm, kỹ năng làm việc chuyên nghiệp.Quy trình…",
       "after": {
-        "phuc_loi": 11,
-        "yeu_cau": 7,
-        "mo_ta": 1
+        "mo_ta": 13,
+        "phuc_loi": 3,
+        "yeu_cau": 2
       },
       "changed": true
     }

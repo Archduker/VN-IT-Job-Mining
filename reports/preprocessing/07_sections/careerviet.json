@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:54:57+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 400
+    "rows": 402
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 400
+    "rows": 402
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 1201,
+    "n_bullets": 4311,
     "bullets_by_section": {
-      "mo_ta": 400,
-      "yeu_cau": 400,
-      "phuc_loi": 401
+      "mo_ta": 402,
+      "yeu_cau": 402,
+      "phuc_loi": 3507
     },
     "bullets_by_rule": {
-      "S7.2": 1201
+      "S7.2": 4311
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,37 @@
   },
   "samples": [
     {
-      "job_id": "careerviet_35C87E30",
+      "job_id": "careerviet_35C87E47",
       "source": "careerviet",
       "field": "sections",
-      "before": "Mô tả Công việc -Chịu trách nhiệm rà soát cuối cùng và chỉnh sửa các KPI quan trọng của nhà máy như là tỉ lệ hiệu suất, sản lượng cắt giảm, tính khả dụng của nhà máy, bức xạ mặt trời, sản lượng điện. …",
+      "before": "Mô tả Công việc Mô tả công việc: Chúng tôi đang tìm kiếm một Automation Tester nhiều kinh nghiệm, chuyên sử dụng Playwright với TypeScript , để đảm bảo chất lượng cho hệ thống web enterprise của công …",
       "after": {
+        "phuc_loi": 7,
         "mo_ta": 1,
-        "yeu_cau": 1,
-        "phuc_loi": 1
+        "yeu_cau": 1
       },
       "changed": true
     },
     {
-      "job_id": "careerviet_35C88EE5",
+      "job_id": "careerviet_35C89037",
       "source": "careerviet",
       "field": "sections",
-      "before": "Mô tả Công việc Phân tích yêu cầu & Lập kế hoạch kiểm thử: Độc lập đọc hiểu, phân tích tài liệu yêu cầu (BRD, User Story, Solution Design) của dự án Salesforce; chủ động phát hiện gap, điểm chưa rõ ho…",
+      "before": "Mô tả Công việc 1. Position Summary We are looking for a DevOps Engineer with strong expertise in cloud infrastructure and automation to design, deploy, operate, and continuously improve production-gr…",
       "after": {
+        "phuc_loi": 11,
         "mo_ta": 1,
-        "yeu_cau": 1,
-        "phuc_loi": 1
+        "yeu_cau": 1
       },
       "changed": true
     },
     {
-      "job_id": "careerviet_35C83F05",
+      "job_id": "careerviet_35C83F00",
       "source": "careerviet",
       "field": "sections",
       "before": "Mô tả Công việc Để đảm bảo hồ sơ được tiếp nhận xử lý, ứng viên cần nộp hồ sơ ứng tuyển trên website tuyển dụng chính thức của Vietcombank tại địa chỉ: tuyendung.vietcombank.com.vn [TT KT&KHDL]_Chuyên…",
       "after": {
         "mo_ta": 1,
-        "yeu_cau": 1,
-        "phuc_loi": 1
+        "yeu_cau": 1
       },
       "changed": true
     }

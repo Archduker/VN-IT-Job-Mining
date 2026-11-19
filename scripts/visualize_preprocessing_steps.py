@@ -362,6 +362,29 @@ def render_step(step: str, rep: Dict[str, Any], rep_by_src: Dict[str, Dict[str, 
     return V.page(f"Bước {step}", _nav(step), body, FOOTER.format(g=generated))
 
 
+def render_silver_gap(rep: Dict[str, Any], generated: str) -> str:
+    """Trang đối chiếu Silver (silver.md mục 3 bước 5) từ reports/preprocessing/04_normalization/silver.json."""
+    srcs = sorted({s for f in rep["fields"] for s in f["fill_pct_by_source"]})
+    head = "".join(f"<th>{html.escape(s)}</th>" for s in srcs)
+    rows = []
+    for f in rep["fields"]:
+        cells = "".join(V.heat(f["fill_pct_by_source"].get(s)) for s in srcs)
+        mark = "" if f["status"] == "có" else f" <span class='badge'>{html.escape(f['status'])}</span>"
+        rows.append(f"<tr><td><code>{html.escape(f['field'])}</code>{mark}</td><td><code>{html.escape(str(f['source_column']))}</code></td>"
+                    f"<td>{html.escape(f['dtype'])}</td>{V.heat(f['fill_pct'])}{cells}"
+                    f"<td>{'<br>'.join(html.escape(s) for s in f['samples'])}</td></tr>")
+    ok = rep["checks"]["passed"]
+    body = (f"<h1>Đối chiếu Silver</h1><p class='note'>Bảng <code>data/preprocessing/04_normalization/silver.parquet</code>: "
+            f"chọn cột của bảng 04 và đổi tên, không tính lại (silver.md). Tin cách ly ở bước 04 (Q1) không có ở đây.</p>"
+            f"<div class='tiles'>{V.tile(rep['rows'], 'dòng')}{V.tile(rep['n_fields'], 'trường')}"
+            f"{V.tile('đạt' if ok else 'lỗi', 'kiểm số dòng, khóa, giá trị')}</div>"
+            + V.card("Độ phủ từng trường (%)", f"Đánh dấu \"phủ thấp\" khi dưới 50%. Cờ bool luôn đủ. "
+                     f"<code>work_mode</code> = unknown tính là thiếu.",
+                     f"<div class='scroll'><table><tr><th>Trường</th><th>Cột nguồn</th><th>Kiểu</th><th>Tất cả</th>{head}<th>Mẫu</th></tr>"
+                     + "".join(rows) + "</table></div>"))
+    return V.page("Đối chiếu Silver", _nav("silver_gap"), body, FOOTER.format(g=generated))
+
+
 def render_index(summary: List[Dict[str, Any]], generated: str, local_only_note: str) -> str:
     rows, funnel = "", []
     for s in summary:
@@ -419,8 +442,11 @@ def main() -> None:
         f" {V.vn(n_local)} file raw chỉ có trên máy (cào 17/11, chưa đẩy R2) được để riêng ở "
         "<code>data/_local_only/</code> và không đi vào các bước này; trang raw_bronze vẫn tính chúng." if n_local else ""))
     (out / "index.html").write_text(render_index(summary, generated, note), encoding="utf-8")
-    if not (out / "silver_gap.html").exists():
-        msg = "<h1>Đối chiếu Silver</h1><div class='empty'>Chưa có: trang này sinh sau khi chạy lại bước 04.</div>"
+    silver_rep = _load(rep_dir / "04_normalization" / "silver.json")
+    if silver_rep:
+        (out / "silver_gap.html").write_text(render_silver_gap(silver_rep, generated), encoding="utf-8")
+    elif not (out / "silver_gap.html").exists():
+        msg = "<h1>Đối chiếu Silver</h1><div class='empty'>Chưa có: trang này sinh sau khi chạy bước 08 và <code>python -m preprocessing.normalization.silver</code>.</div>"
         (out / "silver_gap.html").write_text(V.page("Đối chiếu Silver", _nav("silver_gap"), msg, FOOTER.format(g=generated)), encoding="utf-8")
     (out / "profiles.json").write_text(json.dumps({"summary": summary, "profiles": profiles}, ensure_ascii=False, indent=1, default=str),
                                        encoding="utf-8")

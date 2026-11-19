@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:55:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:30+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": null,
-    "rows": 4671
+    "rows": 3916
   },
   "output": {
     "path": null,
-    "rows": 4671
+    "rows": 3916
   },
   "dropped": [],
   "rules": [],
@@ -26,36 +26,36 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1520,
-        "output": 1520
+        "input": 1265,
+        "output": 1265
       },
       "topdev": {
-        "input": 202,
-        "output": 202
+        "input": 166,
+        "output": 166
       },
       "vietnamworks": {
-        "input": 774,
-        "output": 774
+        "input": 583,
+        "output": 583
       },
       "careerviet": {
-        "input": 400,
-        "output": 400
+        "input": 402,
+        "output": 402
       },
       "vieclam24h": {
-        "input": 164,
-        "output": 164
+        "input": 121,
+        "output": 121
       },
       "itviec": {
-        "input": 818,
-        "output": 818
+        "input": 736,
+        "output": 736
       },
       "glints": {
-        "input": 246,
-        "output": 246
+        "input": 146,
+        "output": 146
       },
       "jobsgo": {
-        "input": 547,
-        "output": 547
+        "input": 497,
+        "output": 497
       }
     },
     "sparsity": {
@@ -65,553 +65,41 @@
         "mode": "family"
       },
       "before": {
-        "n_jobs": 4671,
-        "nnz": 32637,
-        "n_cols_used": 219,
-        "density_used_cols": 0.031905,
-        "density_universe": 0.030379,
-        "mean_skills_per_job": 6.987,
-        "median_skills_per_job": 5,
-        "jobs_with_zero_skills": 292,
+        "n_jobs": 3916,
+        "nnz": 111128,
+        "n_cols_used": 2077,
+        "density_used_cols": 0.013663,
+        "density_universe": 0.013424,
+        "mean_skills_per_job": 28.378,
+        "median_skills_per_job": 25.0,
+        "jobs_with_zero_skills": 1,
         "cols_below_df": {
-          "3": 14,
-          "5": 24,
-          "10": 42,
-          "20": 65,
-          "50": 101
+          "3": 281,
+          "5": 602,
+          "10": 965,
+          "20": 1326,
+          "50": 1641
         }
       },
       "after": {
-        "n_jobs": 4671,
-        "nnz": 32637,
-        "n_cols_used": 219,
-        "density_used_cols": 0.031905,
+        "n_jobs": 3916,
+        "nnz": 111128,
+        "n_cols_used": 2077,
+        "density_used_cols": 0.013663,
         "density_universe": null,
-        "mean_skills_per_job": 6.987,
-        "median_skills_per_job": 5,
-        "jobs_with_zero_skills": 292,
+        "mean_skills_per_job": 28.378,
+        "median_skills_per_job": 25.0,
+        "jobs_with_zero_skills": 1,
         "cols_below_df": {
-          "3": 14,
-          "5": 24,
-          "10": 42,
-          "20": 65,
-          "50": 101
+          "3": 281,
+          "5": 602,
+          "10": 965,
+          "20": 1326,
+          "50": 1641
         }
       },
       "n_skills_folded": 0,
       "folded_into": {}
     }
-  },
-  "samples": [
-    {
-      "job_id": "topcv_2216283",
-      "source": "topcv",
-      "field": "skills",
-      "before": [
-        "Automation Tester",
-        "IT - Phần mềm"
-      ],
-      "after": [
-        "agile_scrum",
-        "automation_test",
-        "java",
-        "manual_test",
-        "selenium"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2242556",
-      "source": "topcv",
-      "field": "skills",
-      "before": [
-        "Business Analyst (Phân tích nghiệp vụ)",
-        "IT - Phần mềm",
-        "Giao tiếp",
-        "Phân tích dữ liệu",
-        "Phân Tích Nghiệp Vụ",
-        "Thu Thập Yêu Cầu",
-        "Mô Hình Hóa Quy Trình"
-      ],
-      "after": [
-        "bug_tracking",
-        "business_analysis",
-        "communication",
-        "confluence",
-        "data_analysis",
-        "fintech",
-        "jira",
-        "oracle_db",
-        "project_management",
-        "time_management"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2320154",
-      "source": "topcv",
-      "field": "skills",
-      "before": [
-        "Game Developer",
-        "IT - Phần cứng và máy tính",
-        "IT - Phần mềm",
-        "Game"
-      ],
-      "after": [
-        "android_sdk",
-        "communication",
-        "csharp",
-        "english"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2133822",
-      "source": "topdev",
-      "field": "skills",
-      "before": [
-        "SQL",
-        "Python",
-        "Scala"
-      ],
-      "after": [
-        "airflow",
-        "cicd",
-        "communication",
-        "elasticsearch",
-        "english",
-        "fastapi",
-        "github",
-        "github_actions",
-        "japanese",
-        "lambda",
-        "milvus",
-        "mysql",
-        "opensearch",
-        "postgresql",
-        "python",
-        "scala",
-        "spark",
-        "terraform"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2137729",
-      "source": "topdev",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "agile_scrum",
-        "business_analysis",
-        "data_analysis",
-        "ecommerce",
-        "english",
-        "python",
-        "tableau"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2134271",
-      "source": "topdev",
-      "field": "skills",
-      "before": [
-        "Linux",
-        "IT Helpdesk",
-        "Network",
-        "Windows"
-      ],
-      "after": [
-        "communication",
-        "linux",
-        "logical_thinking"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2112056",
-      "source": "vietnamworks",
-      "field": "skills",
-      "before": [
-        "Application Development",
-        "Computer Science",
-        "System Integration",
-        "Salesforce",
-        "Rest Api"
-      ],
-      "after": [
-        "machine_learning",
-        "rest_api"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2121103",
-      "source": "vietnamworks",
-      "field": "skills",
-      "before": [
-        "Phân Tích Nghiệp Vụ",
-        "Business analysis",
-        "Credit Risk Management",
-        "IT Business Analysis"
-      ],
-      "after": [
-        "business_analysis",
-        "communication",
-        "english",
-        "jira"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2100871",
-      "source": "vietnamworks",
-      "field": "skills",
-      "before": [
-        "Chứng khoán",
-        "Fintech",
-        "Phân Tích Dữ Liệu",
-        "Quản Lý Sản Phẩm",
-        "Power Bi"
-      ],
-      "after": [
-        "data_analysis",
-        "fintech",
-        "logical_thinking",
-        "power_bi"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C88AC6",
-      "source": "careerviet",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "azure",
-        "chromadb",
-        "cicd",
-        "docker",
-        "gcp",
-        "genai",
-        "hugging_face",
-        "infosec",
-        "iso_27001",
-        "kubernetes",
-        "langchain",
-        "llm",
-        "machine_learning",
-        "milvus",
-        "nlp",
-        "numpy",
-        "pandas",
-        "pinecone",
-        "python",
-        "pytorch"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C8A19A",
-      "source": "careerviet",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "infosec",
-        "linux",
-        "mysql",
-        "nginx",
-        "ubuntu"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C83F06",
-      "source": "careerviet",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "communication",
-        "data_analysis",
-        "english",
-        "infosec",
-        "logical_thinking",
-        "machine_learning",
-        "matlab",
-        "python"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200946697",
-      "source": "vieclam24h",
-      "field": "skills",
-      "before": [
-        "lập trình game mobile",
-        "Mobile",
-        "mobile developer",
-        "Mobile Apps",
-        "Game",
-        "game designer",
-        "recruitment executive",
-        "Mobile App",
-        "procurement executive",
-        "admin executive",
-        "Việc làm Hà Nội",
-        "IT Phần mềm",
-        "Công Ty TNHH Adtirex"
-      ],
-      "after": [
-        "communication",
-        "data_analysis",
-        "english",
-        "waterfall"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200951552",
-      "source": "vieclam24h",
-      "field": "skills",
-      "before": [
-        "nhân viên triển khai phần mềm erp",
-        "nhân viên triển khai phần mềm",
-        "it phần mềm",
-        "Phần Mềm",
-        "Trưởng Nhóm",
-        "kinh doanh phần mềm",
-        "kỹ sư phần mềm",
-        "trưởng nhóm marketing",
-        "trưởng nhóm bán hàng",
-        "trưởng nhóm marketing online",
-        "Việc làm TP.HCM",
-        "Công Ty Cổ Phần Asoft"
-      ],
-      "after": [
-        "communication",
-        "problem_solving"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200963483",
-      "source": "vieclam24h",
-      "field": "skills",
-      "before": [
-        "nhân viên it",
-        "nhân viên it support",
-        "nhân viên it phần mềm",
-        "It",
-        "it support / it helpdesk",
-        "it officer",
-        "it engineer",
-        "it support",
-        "it manager",
-        "it tiếng anh",
-        "IT Phần cứng - Mạng",
-        "Công Ty TNHH Kỹ Thuật ..."
-      ],
-      "after": [
-        "cybersecurity"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "itviec_project-manager-java-chinese-english-mysql-sql-cong-ty-tnhh-clever-creations-tech-2329",
-      "source": "itviec",
-      "field": "skills",
-      "before": [
-        "Java",
-        "Spring Boot",
-        "MySQL",
-        "Project Management",
-        "SQL",
-        "English"
-      ],
-      "after": [
-        "communication",
-        "english",
-        "java",
-        "mysql",
-        "project_management",
-        "spring_boot",
-        "spring_mvc"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "itviec_product-manager-data-driven-annam-software-company-0823",
-      "source": "itviec",
-      "field": "skills",
-      "before": [
-        "Product Management",
-        "CRM",
-        "Data Analysis",
-        "Team Management",
-        "SQL",
-        "English"
-      ],
-      "after": [
-        "agile_scrum",
-        "confluence",
-        "data_analysis",
-        "electron",
-        "english",
-        "graphql",
-        "nextjs",
-        "nodejs",
-        "rest_api"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "itviec_ai-engineer-remote-alpha-bravo-development-4157",
-      "source": "itviec",
-      "field": "skills",
-      "before": [
-        "AI",
-        "Python",
-        "AI, Python"
-      ],
-      "after": [
-        "azure",
-        "communication",
-        "english",
-        "genai",
-        "langchain",
-        "nextjs",
-        "python"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "glints_3dddfc91-fe4b-4fc6-bfe9-80a1b6338ea2",
-      "source": "glints",
-      "field": "skills",
-      "before": [
-        "Cloud Computing",
-        "Data Center",
-        "Customer Service",
-        "Public Speaking",
-        "Presentation Skills",
-        "IT Security",
-        "DepOps",
-        "Communication",
-        "Analytical Skills"
-      ],
-      "after": [
-        "communication",
-        "firewall",
-        "kubernetes",
-        "linux",
-        "machine_learning",
-        "microservices",
-        "presentation"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "glints_00b4d332-8e6e-4714-9853-e816085f7d01",
-      "source": "glints",
-      "field": "skills",
-      "before": [
-        "React.js",
-        "jQuery",
-        "Laravel",
-        "MongoDB",
-        "PostgreSQL",
-        "C++",
-        "MySQL",
-        "Node.js",
-        "Microsoft SQL Server",
-        "JavaScript"
-      ],
-      "after": [
-        "communication",
-        "cpp",
-        "csharp",
-        "dotnet",
-        "java",
-        "javascript",
-        "jquery",
-        "laravel",
-        "logical_thinking",
-        "machine_learning",
-        "mongodb",
-        "mysql",
-        "nodejs",
-        "postgresql",
-        "python",
-        "react",
-        "sql_server",
-        "teamwork"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "glints_55495809-808b-47e7-85a6-693fabff90a4",
-      "source": "glints",
-      "field": "skills",
-      "before": [
-        "Quality Assurance",
-        "Team Management",
-        "Leadership"
-      ],
-      "after": [
-        "japanese",
-        "qa_qc"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_28976445364",
-      "source": "jobsgo",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "communication",
-        "cybersecurity",
-        "disaster_recovery",
-        "english",
-        "firewall",
-        "incident_response",
-        "infosec",
-        "iso_27001",
-        "linux",
-        "logical_thinking",
-        "siem"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_28953320327",
-      "source": "jobsgo",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "android_sdk",
-        "communication",
-        "machine_learning",
-        "mysql",
-        "nestjs",
-        "postgresql",
-        "problem_solving",
-        "sql_server"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_29399825005",
-      "source": "jobsgo",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "bug_tracking",
-        "infosec",
-        "jira"
-      ],
-      "changed": true
-    }
-  ]
+  }
 }

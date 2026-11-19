@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:54:57+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 164
+    "rows": 121
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 164
+    "rows": 121
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 3229,
+    "n_bullets": 2567,
     "bullets_by_section": {
-      "mo_ta": 1204,
-      "yeu_cau": 1153,
-      "phuc_loi": 872
+      "mo_ta": 964,
+      "yeu_cau": 938,
+      "phuc_loi": 665
     },
     "bullets_by_rule": {
-      "S7.2": 3229
+      "S7.2": 2567
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "vieclam24h_200969055",
+      "job_id": "vieclam24h_200961975",
       "source": "vieclam24h",
       "field": "sections",
-      "before": "Thời gian làm việc:\nTrao đổi, hỗ trợ trực tiếp khách hàng về thiết kế website PHP Thiết kế website PHP (Laravel) Kiểm thử, bảo trì, nâng cấp và xử lý lỗi cho các website, dự án đang vận hành.\nCó thể l…",
-      "after": {
-        "yeu_cau": 6,
-        "mo_ta": 3,
-        "phuc_loi": 2
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200953169",
-      "source": "vieclam24h",
-      "field": "sections",
-      "before": "Phân tích nghiệp vụ và xây dựng các tài liệu đặc tả Tham gia triển khai và kiểm thử hệ thống/ phần mềm Viết tài liệu, đào tạo, chuyển giao sản phẩm cho khách hàng Hỗ trợ người dùng trong quá trình vận…",
-      "after": {
-        "yeu_cau": 4,
-        "phuc_loi": 2,
-        "mo_ta": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200974220",
-      "source": "vieclam24h",
-      "field": "sections",
-      "before": "1. Giám sát thực thi, hỗ trợ TGĐ điều hành\n- Theo dõi các chỉ đạo, kết luận họp, kế hoạch và cam kết của các phòng/ban, công ty thành viên, nhà máy và dự án.\n- Kiểm tra tiến độ, đối chiếu báo cáo với …",
+      "before": "Manage and maintain server infrastructure, including SAN/Storage, physical servers, and VMware environments, ensuring stable and efficient system operations.\nMonitor system capacity, perform security …",
       "after": {
         "mo_ta": 12,
         "yeu_cau": 7,
+        "phuc_loi": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200956825",
+      "source": "vieclam24h",
+      "field": "sections",
+      "before": "- Giám sát hệ thống mạng hàng ngày, đảm bảo đường truyền internet luôn thông suốt và ổn định cho hơn 100 người dùng.\n- Hỗ trợ cài đặt, cấu hình máy tính, phần mềm cho nhân viên mới và xử lý các sự cố …",
+      "after": {
+        "mo_ta": 7,
+        "yeu_cau": 5,
         "phuc_loi": 5
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200947793",
+      "source": "vieclam24h",
+      "field": "sections",
+      "before": "Phát triển và thiết kế từ ý tưởng đến các thành phẩm UX như storyboard, wireframe, sitemaps, flowcharts, mockups… Xây dựng giao diện người dùng (UI), gia tăng tính thẩm mỹ cho các nội dung số website,…",
+      "after": {
+        "yeu_cau": 10,
+        "mo_ta": 5,
+        "phuc_loi": 3
       },
       "changed": true
     }

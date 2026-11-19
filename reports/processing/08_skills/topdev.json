@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:55:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 202
+    "rows": 166
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 202
+    "rows": 166
   },
   "dropped": [],
   "rules": [],
@@ -24,197 +24,137 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 1392,
-    "n_jobs_no_skill": 17,
+    "n_job_skill_rows": 4814,
+    "n_jobs_no_skill": 1,
+    "rows_by_kind": {
+      "technical": 3777,
+      "soft": 920,
+      "language": 117
+    },
+    "dictionary": "skills_v2.json",
     "top_skills": [
       {
+        "skill": "coordination",
+        "n_jobs": 107
+      },
+      {
         "skill": "communication",
-        "n_jobs": 109
+        "n_jobs": 82
       },
       {
         "skill": "english",
-        "n_jobs": 103
+        "n_jobs": 79
+      },
+      {
+        "skill": "proactiveness",
+        "n_jobs": 64
+      },
+      {
+        "skill": "software_testing",
+        "n_jobs": 49
+      },
+      {
+        "skill": "database",
+        "n_jobs": 45
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 43
+        "n_jobs": 44
       },
       {
-        "skill": "python",
+        "skill": "information_security",
+        "n_jobs": 44
+      },
+      {
+        "skill": "ai",
+        "n_jobs": 42
+      },
+      {
+        "skill": "documentation",
         "n_jobs": 41
       },
       {
-        "skill": "machine_learning",
-        "n_jobs": 40
+        "skill": "enthusiasm",
+        "n_jobs": 39
+      },
+      {
+        "skill": "analytical_skills",
+        "n_jobs": 38
+      },
+      {
+        "skill": "api",
+        "n_jobs": 37
       },
       {
         "skill": "teamwork",
         "n_jobs": 37
       },
       {
-        "skill": "agile_scrum",
-        "n_jobs": 35
+        "skill": "sql",
+        "n_jobs": 36
       },
       {
-        "skill": "docker",
+        "skill": "leadership",
+        "n_jobs": 36
+      },
+      {
+        "skill": "python",
         "n_jobs": 34
       },
       {
-        "skill": "data_analysis",
+        "skill": "reporting",
+        "n_jobs": 33
+      },
+      {
+        "skill": "eagerness_to_learn",
         "n_jobs": 32
       },
       {
-        "skill": "rest_api",
+        "skill": "presentation",
+        "n_jobs": 32
+      },
+      {
+        "skill": "ai_application",
+        "n_jobs": 30
+      },
+      {
+        "skill": "planning",
         "n_jobs": 29
       },
       {
+        "skill": "qa_qc",
+        "n_jobs": 28
+      },
+      {
+        "skill": "troubleshooting",
+        "n_jobs": 28
+      },
+      {
         "skill": "postgresql",
+        "n_jobs": 28
+      },
+      {
+        "skill": "uat",
         "n_jobs": 27
       },
       {
-        "skill": "cicd",
+        "skill": "carefulness",
+        "n_jobs": 27
+      },
+      {
+        "skill": "data_analysis",
         "n_jobs": 26
       },
       {
-        "skill": "project_management",
-        "n_jobs": 25
+        "skill": "docker",
+        "n_jobs": 26
       },
       {
-        "skill": "logical_thinking",
-        "n_jobs": 25
-      },
-      {
-        "skill": "java",
-        "n_jobs": 24
-      },
-      {
-        "skill": "mysql",
-        "n_jobs": 23
-      },
-      {
-        "skill": "presentation",
-        "n_jobs": 22
-      },
-      {
-        "skill": "microservices",
-        "n_jobs": 21
-      },
-      {
-        "skill": "qa_qc",
-        "n_jobs": 20
-      },
-      {
-        "skill": "clean_architecture",
-        "n_jobs": 20
-      },
-      {
-        "skill": "oracle_db",
-        "n_jobs": 20
-      },
-      {
-        "skill": "jira",
-        "n_jobs": 19
-      },
-      {
-        "skill": "linux",
-        "n_jobs": 18
-      },
-      {
-        "skill": "business_analysis",
-        "n_jobs": 18
-      },
-      {
-        "skill": "ecommerce",
-        "n_jobs": 17
-      },
-      {
-        "skill": "kubernetes",
-        "n_jobs": 15
-      },
-      {
-        "skill": "sql_server",
-        "n_jobs": 15
-      },
-      {
-        "skill": "javascript",
-        "n_jobs": 14
-      },
-      {
-        "skill": "kafka",
-        "n_jobs": 14
-      },
-      {
-        "skill": "redis",
-        "n_jobs": 14
+        "skill": "quality_control",
+        "n_jobs": 26
       }
     ],
-    "short_forms_approved": 0,
-    "alias_conflicts_dropped": 1
-  },
-  "samples": [
-    {
-      "job_id": "topdev_2133822",
-      "source": "topdev",
-      "field": "skills",
-      "before": [
-        "SQL",
-        "Python",
-        "Scala"
-      ],
-      "after": [
-        "airflow",
-        "cicd",
-        "communication",
-        "elasticsearch",
-        "english",
-        "fastapi",
-        "github",
-        "github_actions",
-        "japanese",
-        "lambda",
-        "milvus",
-        "mysql",
-        "opensearch",
-        "postgresql",
-        "python",
-        "scala",
-        "spark",
-        "terraform"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2137729",
-      "source": "topdev",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "agile_scrum",
-        "business_analysis",
-        "data_analysis",
-        "ecommerce",
-        "english",
-        "python",
-        "tableau"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2134271",
-      "source": "topdev",
-      "field": "skills",
-      "before": [
-        "Linux",
-        "IT Helpdesk",
-        "Network",
-        "Windows"
-      ],
-      "after": [
-        "communication",
-        "linux",
-        "logical_thinking"
-      ],
-      "changed": true
-    }
-  ]
+    "short_forms_approved": 756,
+    "alias_conflicts_dropped": 0
+  }
 }

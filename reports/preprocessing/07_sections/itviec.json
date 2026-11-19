@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:54:57+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:20:29+00:00",
+  "code_version": "8ce6be5",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 818
+    "rows": 736
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 818
+    "rows": 736
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 29333,
+    "n_bullets": 26131,
     "bullets_by_section": {
-      "mo_ta": 8374,
-      "yeu_cau": 8936,
-      "phuc_loi": 12023
+      "mo_ta": 7374,
+      "yeu_cau": 7979,
+      "phuc_loi": 10778
     },
     "bullets_by_rule": {
-      "S7.2": 29333
+      "S7.2": 26131
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "itviec_backend-developer-java-mysql-postgresql-dosoftpro-4517",
+      "job_id": "itviec_devops-engineer-vnggames-0837",
       "source": "itviec",
       "field": "sections",
-      "before": "Phân tích thiết kế và xây dựng các module Back-end và REST API Áp dụng CI/CD để deploy code lên server test hàng ngày Báo cáo kết quả công việc cho PM",
+      "before": "Tham gia AI Transformation Team (AIT) của VNGGames - đội ngũ xây dựng và vận hành các giải pháp AI dùng chung, hỗ trợ VNGGames chuyển đổi thành tổ chức AI-Native. Bạn sẽ cùng team xây dựng và vận hành…",
       "after": {
-        "phuc_loi": 6,
-        "mo_ta": 1,
+        "yeu_cau": 15,
+        "mo_ta": 9,
+        "phuc_loi": 7
+      },
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-principal-ruby-on-rails-developer-aws-backend-andpad-vietnam-co-ltd-4221",
+      "source": "itviec",
+      "field": "sections",
+      "before": "We are looking for Senior/ Principal Ruby on Rails Developers (AWS, Backend) who can join our team and develop the application in cooperation with the product manager. Working in the form of Squad, a …",
+      "after": {
+        "phuc_loi": 14,
+        "mo_ta": 9,
+        "yeu_cau": 3
+      },
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-backend-engineer-python-django-aws-lhv-software-4327",
+      "source": "itviec",
+      "field": "sections",
+      "before": "We are looking for a Senior Backend Engineer to join a cloud-based financial reconciliation and data platform.\nThis position is suitable for an experienced backend engineer who has built reliable, lar…",
+      "after": {
+        "phuc_loi": 30,
+        "mo_ta": 4,
         "yeu_cau": 1
-      },
-      "changed": true
-    },
-    {
-      "job_id": "itviec_deputy-head-of-machine-learning-engineering-mb-bank-0210",
-      "source": "itviec",
-      "field": "sections",
-      "before": "2026TD456609 - Phó phòng Công nghệ Mô hình Chịu trách nhiệm đảm bảo việc thiết kế, xây dựng và chuyển đổi hệ thống sang nền tảng MLOps lai (hybrid) tiên tiến. Trực tiếp dẫn dắt các pipeline đưa cụm mô…",
-      "after": {
-        "phuc_loi": 17,
-        "yeu_cau": 6,
-        "mo_ta": 2
-      },
-      "changed": true
-    },
-    {
-      "job_id": "itviec_ai-engineer-llm-training-fine-tuning-officience-5421",
-      "source": "itviec",
-      "field": "sections",
-      "before": "We are looking for a skilled AI Engineer with a strong foundation in Machine Learning, Deep Learning, and NLP. The ideal candidate has hands-on experience in LLM fine-tuning, OCR & Document Understand…",
-      "after": {
-        "yeu_cau": 17,
-        "phuc_loi": 17,
-        "mo_ta": 8
       },
       "changed": true
     }

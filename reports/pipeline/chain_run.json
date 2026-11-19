@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-19T04:18:50+00:00",
+  "generated_at": "2026-11-19T04:20:31+00:00",
   "sources": [
     "topcv",
     "topdev",
@@ -13,23 +13,23 @@
   "translate": false,
   "steps": [
     {
-      "step": "04_normalization",
+      "step": "07_sections",
       "status": "OK",
       "missing": [],
-      "input": 3997,
+      "input": 3916,
       "output": 3916,
-      "dropped": 81,
+      "dropped": 0,
       "conserved": true,
       "mode": "applied",
       "rejected": {
-        "topcv": 5,
-        "topdev": 2,
-        "vietnamworks": 9,
-        "careerviet": 3,
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
         "vieclam24h": 0,
-        "itviec": 49,
-        "glints": 9,
-        "jobsgo": 4
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
       }
     }
   ]

@@ -16,7 +16,7 @@ Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <ngu�
 | 04 normalization | `normalization/`, `missing_outlier/` | 34 tỉnh, 5 cấp bậc, 10 nhóm nghề + Other, `company_key`, kỹ năng chuẩn; thiếu và ngoại lai chỉ gắn cờ |
 
 - `05_encoding` (`encoding/`) đã được bước 10 của `processing/` thay thế, nhưng vẫn còn trong `STEPS` (PRE-39). Không thêm logic mới vào `encoding/`.
-- Bảng sạch cuối là `data/preprocessing/04_normalization/all.parquet` (spec 05 mục 4.1, duyệt 17/11). Chuỗi mới không ghi `data/curated/`; các script còn đọc `curated_flat_golden_jobs.parquet` sẽ đổi theo PRE-39.
+- Bảng sạch cuối là `data/preprocessing/04_normalization/all.parquet` (spec 05 mục 4.1, duyệt 17/11). Tin dịch hỏng bị cách ly sang `quarantine.parquet` (luật Q1, 19/11), nên Silver, Processing và Mining cùng một tập tin; đừng tự lọc thêm ở bên đọc. Silver (`silver.parquet`, 26 trường) ghi bằng `python -m preprocessing.normalization.silver` **sau bước 08**, vì `skills` lấy từ `job_skills.parquet`. Chuỗi mới không ghi `data/curated/`; các script còn đọc `curated_flat_golden_jobs.parquet` sẽ đổi theo PRE-39.
 - Từ bước 02 dữ liệu 8 nguồn nằm chung một `all.parquet` (cột `source_platform`). Chạy thật 02–04 phải dùng `--source all`, nếu không sẽ ghi đè bằng một phần dữ liệu.
 - Report: `reports/preprocessing/<bước>/<nguồn>.json` và `_all.json` (`common/step_report.py`). Luật bảo toàn `input = output + dropped`; sai thì cả bước dừng.
 - `transformation/pipeline.py`, `run_transformation.py`, `normalization/run_normalization.py` và `scripts/run_staging_integration_pipeline.py` là pipeline cũ, không nằm trong chuỗi. Không sửa chúng khi sửa luật của chuỗi mới.

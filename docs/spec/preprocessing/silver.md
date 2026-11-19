@@ -1,7 +1,7 @@
 # Bảng Silver (bảng target)
 
 > Danh sách trường, kiểu, ý nghĩa và cột nguồn của bảng 04 là **hợp đồng**, ghi ở [spec 05 mục 4.4](../05_preprocessing_spec.md) (người dùng chốt 17/11/2026, bổ sung 18/11/2026: 26 trường). File này chỉ đặc tả **cách dựng** và **cách kiểm** bảng đó.
-> Code: chưa có (luật S1 ở [`04_normalization.md`](04_normalization.md), PRE-39). Trang đối chiếu: `docs/presentation/preprocessing_steps/silver_gap.html` (hiện là trang giữ chỗ).
+> Code: `preprocessing/normalization/silver.py` (`SILVER_FIELDS`, `build_silver`, `check_silver`, `gap_report`, `run`); test `tests/unit/test_silver.py`. Lệnh: `python -m preprocessing.normalization.silver [--dry-run]` (chạy sau bước 08). Report `reports/preprocessing/04_normalization/silver.json`; trang đối chiếu `docs/presentation/preprocessing_steps/silver_gap.html` (`scripts/visualize_preprocessing_steps.py` dựng từ report).
 > Prompt: gộp vào [`docs/prompting/preprocessing/04_normalization.md`](../../prompting/preprocessing/04_normalization.md).
 
 ## 1. Mục đích
@@ -80,7 +80,13 @@
 
 ## 7. Chỗ thiếu đã biết
 
-Trước khi dựng bảng, ngày 18/11:
+**Chạy thật 19/11** (bảng 04 sau bộ lọc IT ba tầng, dịch lại và luật 2.2; kỹ năng từ bước 08 với `skills_v2.json`): **3.916 dòng, 26 trường, kiểm đạt** (số dòng, `job_id` duy nhất, giá trị trùng cột nguồn). 81 tin cách ly (Q1) không có trong Silver.
+
+- `skills`: slug kỹ năng của bước 08, mọi `via` (văn bản gốc, bản dịch, thẻ của sàn) và mọi loại (`technical`, `soft`, `language`), bỏ trùng, sắp xếp. Tin không có kỹ năng là list rỗng. Tách kỹ năng kỹ thuật và kỹ năng mềm là việc của Mining (spec 07 mục 4, quyết định 2), đọc `kind` ở `job_skills.parquet`.
+- Độ phủ (%): `title_canonical` 43,7, `salary_min` 38,3, `salary_max` 43,0 (ba trường **phủ thấp**, dưới 50%); `seniority` 92,7; `exp_min_years` 97,9; `exp_max_years` 67,3; `province` 98,2; `employment_type` 93,5; `work_mode` khác unknown 99,2; `skills` khác rỗng 100,0; `benefits` khác rỗng 93,4. Theo nguồn: xem trang đối chiếu.
+- `seniority_inferred` true ở 2.978 tin (76%), vì cấp bậc từ ô của sàn chỉ có ở 653 tin (đặc tả 04 mục 7). SD1 câu 1.2 phải báo riêng phần suy ra.
+
+Trước khi dựng bảng, ngày 18/11 (để so):
 
 | Trường | Chỗ thiếu | Bước | Mã |
 |---|---|---|---|
