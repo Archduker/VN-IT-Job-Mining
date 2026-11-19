@@ -3,7 +3,8 @@
 > Code: `preprocessing/clean/run.py` (`clean_source`, `cross_source_dedup`, `review_sample`, `run`); `preprocessing/common/it_filter.py` (`classify`, `classify_unknown`), `raw_reader.py` (`read_raw`, `snapshot_order`); chính sách `preprocessing/clean/it_policy.json`, `scope_keywords.json`.
 > Lệnh: `python scripts/run_preprocessing.py --step clean --source all [--dry-run]`.
 > Dữ liệu mẫu: [`samples/01_clean.json`](samples/01_clean.json) (chạy lại 18/11/2026 sau các quyết định L-50, code `591391b`).
-> Prompt: [`docs/prompting/preprocessing/01_clean.md`](../../prompting/preprocessing/01_clean.md).
+> Prompt: [`docs/prompting/preprocessing/01_clean.md`](../../prompting/preprocessing/01_clean.md); bộ lọc IT mới (19/11): [`01_clean_it_filter.md`](../../prompting/preprocessing/01_clean_it_filter.md).
+> **Bản sửa 19/11 (chờ người dùng duyệt):** C4a ba tầng theo định nghĩa "vai trò IT" (mục 2.1), dùng từ điển kỹ năng v2; nghiệm thu lấy precision IT làm chỉ số chính (mục 6). Số liệu ở mục 2, 6 vẫn là của luật cũ chạy 18/11 cho tới khi chạy lại.
 
 ## 1. Mục đích
 
@@ -21,7 +22,7 @@ Số tin là của lần chạy lại 18/11 (sau khi thêm C9 và đổi luật 
 | C3 | Bản ghi test (`job-<chữ>-<số>`), thiếu `job_id` hoặc `source_url`, hoặc `metadata.source` khác nguồn đang đọc | drop | 0 |
 | C1 | Một `job_id` có nhiều snapshot: giữ bản lớn nhất theo `snapshot_order` (`scraped_at`, rồi `version`). Tin trùng ngay trong file batch cũng tính ở đây | drop | 1.987 |
 | C2 | Tin trong file batch cũ đã có file riêng thì bỏ bản batch. Chưa có file riêng thì giữ bản batch (L-25) | drop | 616 (toàn vieclam24h) |
-| C4a | Phân loại IT, chỉ gắn nhãn, hai tầng. **Tầng 1** (`classify`): từ khóa tiêu đề và kỹ năng (gồm cả nhãn chuyên môn của sàn ở `category_tags`, chỉ TopCV có), khớp theo từ nguyên vẹn, ra `it`, `non_it` hoặc `unknown`. **Tầng 2** (`classify_unknown`), chỉ chạy khi tầng 1 ra `unknown`: tiêu đề thuộc một nhóm nghề và JD có ít nhất 2 kỹ năng. Từ yếu đứng một mình ("kỹ thuật", "engineer", "security") không đủ để tính là IT | flag | 5.424 tin `non_it` |
+| C4a | Phân loại IT, chỉ gắn nhãn, **ba tầng** (đặc tả 19/11; code đang chạy vẫn là hai tầng cũ). **Tầng 0** (`excluded_role`): tiêu đề thuộc nhóm **không phải IT, loại hoàn toàn** ở mục 2.1 (sales/marketing thuần, thiết kế đồ họa, kỹ sư điện/cơ khí) → `non_it`; tầng 1, tầng 2, chuyên mục sàn, tên công ty đều không được lật lại, trừ ngoại lệ đã duyệt ở mục 2.1. **Tầng 1** (`classify`): từ khóa tiêu đề và kỹ năng (gồm nhãn chuyên môn ở `category_tags`), khớp từ nguyên vẹn, ra `it`, `non_it`, `unknown`; danh sách từ khóa sửa theo định nghĩa mục 2.1 (thêm "an toàn thông tin", "an ninh thông tin", "pentest"…). **Tầng 2** (`classify_unknown`), chỉ khi tầng 1 ra `unknown`, dùng 4 tín hiệu: (a) số kỹ năng thuộc **nhóm lõi IT** của `processing/dictionaries/skills_v2.json` khớp trong JD (matcher của bước 08, `matcher_from_v2`); (b) số kỹ năng nhóm `security`; (c) nhóm nghề suy từ tiêu đề (`classify_job_family_rule`); (d) chuyên mục sàn (`raw_category_text`) có từ IT, **chỉ là tín hiệu phụ** (phương án C): chỉ cộng khi đi cùng (a). Danh sách nhóm lõi và các ngưỡng nằm trong `preprocessing/dictionaries/it_filter_v2.json` (`approved` = true mới dùng), chọn trên tập tune của C4b, **ưu tiên precision IT**. Danh sách `TECH_SKILLS` viết tay cũ bị bỏ | flag | Luật cũ 18/11: 5.424 tin `non_it`. Luật mới: chờ dry-run |
 | C4c | Bỏ tin có `it_status` nằm trong `it_policy.json[<nguồn>].drop`. Chính sách được duyệt 09/11; cả 8 nguồn đều bỏ `non_it`. `can_kiem` không bao giờ bị bỏ tự động | drop | 5.424 |
 | C5 | JD (mô tả + yêu cầu) dưới **50 từ** (`MIN_JD_WORDS`, chốt 10/11) | drop | 187 |
 | C8 | CTV ở tiêu đề hoặc đa cấp ở tiêu đề + JD, theo `scope_keywords.json`. Mã lý do `S3_CTV_TITLE`, `S3_MULTI_LEVEL` | drop | 13 |
@@ -49,6 +50,43 @@ Số tin là của lần chạy lại 18/11 (sau khi thêm C9 và đổi luật 
 - C9 bỏ nhiều nhất ở glints (100 tin): glints ghi `createdAt` là ngày tạo tin lần đầu, có tin từ 07/2023 vẫn mở. vietnamworks 82 tin, phần lớn đăng tháng 8/2026.
 - So lần chạy đầu 18/11: C9 mới bỏ 197 tin; C6 còn 189 (trước 200) và C7 còn 127 (trước 135) vì tin ngoài kỳ bị bỏ trước khi khử trùng. C4a không đổi (5.424), vì nhãn chuyên môn TopCV vẫn được đưa vào bộ lọc qua `category_tags`.
 
+### 2.1. Định nghĩa "tin IT" (người dùng chốt 19/11)
+
+- **Tin IT = vai trò IT:** người làm trực tiếp với hệ thống CNTT. Gồm lập trình, kiểm thử, dữ liệu, AI/ML, hạ tầng, mạng, cloud, DevOps, bảo mật, hỗ trợ kỹ thuật IT, BA/PM/PO của dự án IT, presales kỹ thuật IT.
+- **Không phải tin IT, loại hoàn toàn** (C4c bỏ, không giữ lại để gắn cờ), **kể cả khi công ty là công ty IT hay tin nằm trong chuyên mục IT**:
+  - sales, kinh doanh, marketing thuần (bán phần mềm, bán cloud mà không làm kỹ thuật);
+  - thiết kế đồ họa;
+  - kỹ sư điện, cơ khí.
+- Khi phải đổi chác giữa giữ tin IT và giữ dữ liệu sạch: **ưu tiên sạch** (precision IT).
+- Chuyên mục sàn chỉ là tín hiệu phụ: không tự quyết, không cứu được tin ở nhóm loại hoàn toàn.
+
+**Ca ranh giới** (tin thật trong 643 nhãn C4b). Cột "Theo định nghĩa" chỉ ghi ca mà định nghĩa đã nói rõ; ca chưa rõ để ở bảng câu hỏi, không tự suy diễn.
+
+| Tin | Nguồn | Theo định nghĩa |
+|---|---|---|
+| Postsale Security Engineer | careerviet | IT (bảo mật) |
+| Chuyên viên An Toàn Thông tin; Chuyên viên An ninh thông tin - Pentester | careerviet | IT (bảo mật) |
+| Nhân Viên Monitoring (SOC: firewall, IDS/IPS, EDR) | jobsgo | IT (bảo mật, vận hành) |
+| Trưởng Phòng IT (Sản xuất, Tiếng Trung) | jobsgo | IT (hạ tầng) |
+| Kỹ Sư Triển Khai Hệ Thống | jobsgo | IT (triển khai hệ thống) |
+| Quản Lý Dự Án Công Nghệ; Project Manager Assistant (dự án phần mềm) | jobsgo, careerviet | IT (PM dự án IT) |
+| Business Development (công ty phần mềm, bán AWS/Azure/GCP) | careerviet | Không IT, loại (sales thuần) |
+| Nhân Viên Thiết Kế; Chuyên Viên Thiết Kế (đồ họa, bao bì) | topcv | Không IT, loại (thiết kế đồ họa) |
+| Kỹ Sư Thiết Kế Điện; Nhân Viên Thiết Kế Hệ Thống Điện, Điện Nhẹ, BMS/SCADA | vieclam24h | Không IT, loại (kỹ sư điện) |
+
+**Câu hỏi chờ người dùng** (định nghĩa chưa nói rõ):
+
+| # | Tin | Nguồn | Vì sao chưa rõ |
+|---|---|---|---|
+| Q1 | Cloud Technical Sales / PreSales | jobsgo | Vừa "sales" (loại) vừa "presales kỹ thuật IT" (giữ) |
+| Q2 | Phụ Trách Bảo Vệ Dữ Liệu (DPO); Privacy Compliance – Junior | topcv | Pháp chế dữ liệu hay bảo mật thông tin |
+| Q3 | Kỹ Sư Cấu Hình triển khai hệ thống AV; AVVC Events Engineer - Tech Lounge & AV | vietnamworks, itviec | Thiết bị nghe nhìn: điện tử hay hạ tầng IT |
+| Q4 | Kỹ Sư IoT; Kỹ sư nhúng (firmware) | topcv | Gần kỹ sư điện tử; định nghĩa chưa nhắc nhúng/IoT |
+| Q5 | KỸ SƯ TỰ ĐỘNG HÓA (dùng C++, Python, SQL) | careerviet | Tự động hóa công nghiệp (cơ khí/điện) hay lập trình |
+| Q6 | Chuyên viên phân tích định lượng rủi ro (Python, MATLAB); Nhân viên Kế Hoạch Mạng Bay (Python, SQL) | careerviet, vietnamworks | Dùng công cụ dữ liệu nhưng vai trò là nghiệp vụ tài chính / hàng không |
+| Q7 | Research and Teaching Assistant in Business Analytics | vietnamworks | Giảng dạy + phân tích dữ liệu |
+| Q8 | Operations Manager; Senior/Lead Business Ownership (Product & Growth) ở công ty công nghệ | topcv, itviec | Quản lý vận hành/sản phẩm, không rõ có làm với hệ thống IT |
+
 ## 3. Quy trình xử lý
 
 Thứ tự thực thi trong `clean_source`. Report vẫn ghi luật theo thứ tự mã.
@@ -58,7 +96,7 @@ Thứ tự thực thi trong `clean_source`. Report vẫn ghi luật theo thứ t
 3. Ghi **lần cào đầu** của mỗi `job_id`: `first_seen[job_id]` = `scraped_at` nhỏ nhất trên mọi snapshot và file batch. Việc này phải làm trước C1, vì C1 bỏ snapshot cũ (PRE-37).
 4. **C1** chọn snapshot mới nhất. **C2** bỏ bản batch đã có file riêng.
 5. Làm phẳng trong bộ nhớ bằng `flatten_raw_job_record(env, nguồn)`, chỉ để đọc khóa. Không ghi ra file.
-6. **C4a** gắn khối `metadata.clean` cho mọi tin: `snapshot_file`, `it_rule`, `it_rule_level`, `it_status`, `dedup_key`, `also_on` = [], `first_scraped_at`.
+6. **C4a** (tầng 0 → tầng 1 → tầng 2, mục 2) gắn khối `metadata.clean` cho mọi tin: `snapshot_file`, `it_rule`, `it_rule_level`, `it_status`, `dedup_key`, `also_on` = [], `first_scraped_at`.
 7. **C4c** bỏ theo chính sách. **C5** bỏ JD ngắn. **C8** bỏ CTV và đa cấp. **C9** bỏ tin đăng trước kỳ nghiên cứu (đặt trước C6 để tin ngoài kỳ không được chọn làm bản giữ). Tin bị C5, C8, C9 bỏ được ghi vào `data/preprocessing/rejected/01_clean/<nguồn>.jsonl`.
 8. **C6** khử trùng trong nguồn.
 9. Sau khi xong cả 8 nguồn: **C7** (`cross_source_dedup`, bản giữ do `c7_winner` chọn) khử trùng khác nguồn và điền `also_on`.
@@ -86,7 +124,7 @@ Thứ tự thực thi trong `clean_source`. Report vẫn ghi luật theo thứ t
 |---|---|
 | `snapshot_file` | File raw đã chọn (`<ngày>/<id>_v<N>.json`) |
 | `it_rule` | Kết quả tầng 1: `it`, `non_it`, `unknown` |
-| `it_rule_level` | 1 hoặc 2 |
+| `it_rule_level` | 0, 1 hoặc 2 (0 = nhóm loại hoàn toàn, thêm 19/11) |
 | `it_status` | Nhãn cuối sau tầng 2 |
 | `dedup_key` | `company_norm\|title_norm` |
 | `also_on` | Danh sách `nguồn:job_id` bị C7 gộp vào tin này |
@@ -147,7 +185,15 @@ Lấy từ `rules[].examples` của report.
 | Test | `pytest tests/unit/test_clean_step.py` | Xanh (gồm `first_scraped_at`, `test_c9_out_of_study_window`, `test_c7_keeps_most_complete_then_most_authoritative`) |
 | Trang | `docs/presentation/preprocessing_steps/01_clean.html` | Có |
 
-**Độ đúng bộ lọc IT trên 643 nhãn:**
+**Nghiệm thu bộ lọc IT từ 19/11:**
+
+- Nhãn C4b được soát lại theo định nghĩa mục 2.1 (file nhãn đổi `data/preprocessing/gold/it_review/relabel_2026-11-19.csv`, người dùng duyệt trước khi áp).
+- Chia nhãn: tập **tune** 70% để chọn ngưỡng, tập **giữ lại** 30% để báo số nghiệm thu (phân tầng theo nguồn, seed 42).
+- Chỉ số chính: **precision IT** trên tập giữ lại, kèm khoảng tin cậy Wilson 95%. Báo kèm độ đúng chung, recall IT, precision non-IT, theo tầng và theo nguồn.
+- Đo bằng `scripts/eval_it_filter.py` (chỉ đọc), ghi `data/preprocessing/review/it_filter_eval.json`.
+- Đích ≥ 95%. Chưa đạt thì báo thật số cho người dùng quyết, không hạ đích.
+
+**Độ đúng bộ lọc IT trên 643 nhãn (luật cũ, 18/11):**
 
 - Ai gán nhãn: Claude gán theo rubric của `label_review.py`, chỉ nhìn tiêu đề và kỹ năng. Người dùng bổ sung 48 nhãn trống ngày 18/11.
 - Tổng: TP 148, FP 23, TN 436, FN 36.
@@ -171,4 +217,5 @@ Lấy từ `rules[].examples` của report.
 - **Chỗ thiếu so với bảng Silver:**
   - Bộ lọc IT chưa đạt 95%. Recall IT thấp ở jobsgo (61,9%) và careerviet (66,7%), tức là bỏ nhầm tin IT. Tầng 2 chưa đọc `raw_category_text` (PRE-12).
   - Khóa C6, C7 chỉ gồm công ty + tiêu đề, nên tin cùng công ty mà tên viết khác ("MBBANK" và "Ngân hàng TMCP Quân đội") vẫn lọt (PRE-33).
+- **Làm lại bộ lọc IT (19/11):** đo thử trên 240 tin tầng 2: luật cũ đúng 0,821; chỉ đếm kỹ năng kỹ thuật v2 đúng 0,40–0,80 (v2 có cả Excel, CAD, cơ khí); chỉ đếm nhóm lõi IT tối đa khoảng 0,82; luật cũ + "≥ 4 kỹ năng bảo mật" 0,85; chuyên mục sàn chỉ đáng tin ở itviec (24 IT / 1 không IT), vieclam24h 0 IT / 23 không IT. Vì vậy luật mới phối hợp 4 tín hiệu thay vì chỉ đếm kỹ năng.
 - **Việc mở:** PRE-12, PRE-33, PRE-35.

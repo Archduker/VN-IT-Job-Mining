@@ -9,6 +9,7 @@ Mỗi file là **một prompt dán cho agent** (Claude Code) để làm hoặc l
 | Bước | Prompt | Đặc tả | Trạng thái 18/11 |
 |---|---|---|---|
 | 01 Clean | [`01_clean.md`](01_clean.md) | [`01_clean.md`](../../spec/preprocessing/01_clean.md) | Đã chạy thật 18/11 |
+| 01 Clean: bộ lọc IT mới | [`01_clean_it_filter.md`](01_clean_it_filter.md) | [`01_clean.md`](../../spec/preprocessing/01_clean.md) C4a, mục 2.1 | Viết 19/11, chờ duyệt (bước 1–2) |
 | 01b Deduplication | [`01b_deduplication.md`](01b_deduplication.md) | [`01b_deduplication.md`](../../spec/preprocessing/01b_deduplication.md) | Đã chạy thật 18/11 |
 | 02 Integration | [`02_integration.md`](02_integration.md) | [`02_integration.md`](../../spec/preprocessing/02_integration.md) | Đã sửa (L-49), chạy thật 18/11 |
 | 03 Transformation | [`03_transformation.md`](03_transformation.md) | [`03_transformation.md`](../../spec/preprocessing/03_transformation.md) | Luật mới chờ duyệt (bước 1–2 của quy trình) |
