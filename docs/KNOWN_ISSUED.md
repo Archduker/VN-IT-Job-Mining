@@ -93,7 +93,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
   - **SD3:**
     - Phân cụm đang tách theo số lượng kỹ năng của tin, không theo nội dung (MINE-1, L-47).
     - Bullet careerviet thô hơn các sàn khác.
-    - 200 tin tiếng Anh dịch hỏng (`translation_status` = failed, giữ bản gốc; chạy lại 19/11).
+    - 81 tin tiếng Anh vẫn dịch hỏng sau cách thử lại mới (19/11, trước 200); bước 04 cách ly (Q1), không vào Silver, Processing, Mining.
   - **SD4:**
     - Lương chỉ phủ 40,2% (min) và 44,5% (max).
     - Lương ngoại lai: 150 tin theo IQR từng cấp, 74 tin ngoài khoảng, 15 tin đáng ngờ.

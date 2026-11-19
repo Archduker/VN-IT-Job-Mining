@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:58:13+00:00",
-  "code_version": "012c5d9",
+  "generated_at": "2026-11-19T03:49:09+00:00",
+  "code_version": "acccda1",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 155
@@ -467,7 +467,21 @@
         "max_new_tokens": 512,
         "input_prefix": "en: "
       },
+      "retry_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: ",
+        "retry": "split60+beam4"
+      },
+      "beam_params": {
+        "do_sample": false,
+        "num_beams": 4,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
       "max_chunk_tokens": 200,
+      "retry_max_tokens": 60,
       "fields": [
         "description",
         "requirements"
@@ -477,16 +491,19 @@
       "batch_size": 4,
       "torch": "2.14.1+cu130",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1204,
+      "peak_vram_mib": 1227,
       "fell_back_to_cpu": false,
       "rows_en": 1050,
-      "rows_translated": 854,
-      "rows_failed": 196,
+      "rows_translated": 973,
+      "rows_failed": 77,
       "chunks": 22531,
-      "cache_hits": 21946,
-      "model_calls": 823,
-      "retries": 238,
-      "failed_chunks": 238
+      "cache_hits": 22316,
+      "model_calls": 724,
+      "retries": 219,
+      "failed_chunks": 87,
+      "retry_pieces": 509,
+      "beam_calls": 142,
+      "rescued_chunks": 132
     },
     "experience_parsed_rate": 91.6,
     "posted_month_source": {

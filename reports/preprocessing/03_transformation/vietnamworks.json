@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:27:31+00:00",
-  "code_version": "012c5d9",
+  "generated_at": "2026-11-19T03:09:11+00:00",
+  "code_version": "db5e2f3",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 592
@@ -450,7 +450,21 @@
         "max_new_tokens": 512,
         "input_prefix": "en: "
       },
+      "retry_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: ",
+        "retry": "split60+beam4"
+      },
+      "beam_params": {
+        "do_sample": false,
+        "num_beams": 4,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
       "max_chunk_tokens": 200,
+      "retry_max_tokens": 60,
       "fields": [
         "description",
         "requirements"
@@ -460,16 +474,19 @@
       "batch_size": 4,
       "torch": "2.14.1+cu130",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1204,
+      "peak_vram_mib": 1227,
       "fell_back_to_cpu": false,
       "rows_en": 390,
-      "rows_translated": 340,
-      "rows_failed": 50,
+      "rows_translated": 374,
+      "rows_failed": 16,
       "chunks": 6961,
-      "cache_hits": 6707,
-      "model_calls": 316,
-      "retries": 62,
-      "failed_chunks": 62
+      "cache_hits": 6901,
+      "model_calls": 183,
+      "retries": 54,
+      "failed_chunks": 20,
+      "retry_pieces": 123,
+      "beam_calls": 34,
+      "rescued_chunks": 34
     },
     "experience_parsed_rate": 85.5,
     "posted_month_source": {

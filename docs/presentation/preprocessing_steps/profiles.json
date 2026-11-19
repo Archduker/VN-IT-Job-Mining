@@ -26,7 +26,7 @@
    "fresh": true,
    "input": 3997,
    "output": 3997,
-   "prev_output": 4495
+   "prev_output": 3997
   },
   {
    "step": "04_normalization",

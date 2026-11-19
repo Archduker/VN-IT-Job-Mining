@@ -2,8 +2,8 @@
   "step": "03_transformation",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:36:41+00:00",
-  "code_version": "012c5d9",
+  "generated_at": "2026-11-19T03:32:22+00:00",
+  "code_version": "db5e2f3",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
     "rows": 785
@@ -452,7 +452,21 @@
         "max_new_tokens": 512,
         "input_prefix": "en: "
       },
+      "retry_params": {
+        "do_sample": false,
+        "num_beams": 1,
+        "max_new_tokens": 512,
+        "input_prefix": "en: ",
+        "retry": "split60+beam4"
+      },
+      "beam_params": {
+        "do_sample": false,
+        "num_beams": 4,
+        "max_new_tokens": 512,
+        "input_prefix": "en: "
+      },
       "max_chunk_tokens": 200,
+      "retry_max_tokens": 60,
       "fields": [
         "description",
         "requirements"
@@ -462,16 +476,19 @@
       "batch_size": 4,
       "torch": "2.14.1+cu130",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1204,
+      "peak_vram_mib": 1227,
       "fell_back_to_cpu": false,
       "rows_en": 988,
-      "rows_translated": 809,
-      "rows_failed": 179,
+      "rows_translated": 920,
+      "rows_failed": 68,
       "chunks": 20734,
-      "cache_hits": 20189,
-      "model_calls": 761,
-      "retries": 216,
-      "failed_chunks": 216
+      "cache_hits": 20534,
+      "model_calls": 663,
+      "retries": 200,
+      "failed_chunks": 76,
+      "retry_pieces": 463,
+      "beam_calls": 122,
+      "rescued_chunks": 124
     },
     "experience_parsed_rate": 88.2,
     "posted_month_source": {
