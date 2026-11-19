@@ -6,7 +6,7 @@ Bản đồ tài liệu. Khi tài liệu mâu thuẫn với code thì tin code; 
 
 | Thư mục / file | Nội dung | Ghi chú |
 |---|---|---|
-| `target/` | Đề tài và 5 mục tiêu SD1–SD5: `00_de_tai.md` (bối cảnh, vì sao chọn 5 SD), `01`–`05` (mỗi SD gồm câu hỏi, dữ liệu, cách trả lời, tiêu chí đánh giá) | **Đọc trước tiên.** Spec, code và báo cáo phải phục vụ các mục tiêu ở đây |
+| `target/` | Đề tài và 5 mục tiêu SD1–SD5: `00_de_tai.md` (bối cảnh, vì sao chọn 5 SD), `01`–`05` (mỗi SD gồm câu hỏi, dữ liệu, cách trả lời, tiêu chí đánh giá), `06_yeu_cau_du_lieu.md` (điều kiện dữ liệu suy ngược từ 5 SD, ba góc nhìn kỹ năng) | **Đọc trước tiên.** Spec, code và báo cáo phải phục vụ các mục tiêu ở đây |
 | `spec/` | Đặc tả dự án `01_product_spec.md` … `13_working_documentation.md` | Chuẩn hiện hành. **`03_data_mining_lifecycle.md` là tài liệu mô tả quy trình**: nối SD1–SD5 với từng bước (mã bước, thư mục code, đầu vào, đầu ra). Spec 05 (pre-processing), 06 (processing), 07 (mining), 08 (đánh giá) đặc tả chi tiết từng bước và phải dùng đúng mã bước của spec 03 |
 | `spec/crawl/<nguồn>.md` | Phân tích từng nguồn | Nhật ký lúc làm crawler. Ô "Hiện trạng 03/11/2026" ở đầu file là phần đúng với code; phần dưới có thể cũ |
 | `spec/preprocessing/` | **Đặc tả chi tiết từng bước 00–04 và bảng Silver** (từ 18/11/2026), mỗi bước một file theo khuôn 7 mục; `samples/<bước>.json` là dữ liệu mẫu do `scripts/build_step_samples.py` sinh. `scripts/report_data_issues.py` cũng ghi `data_issues_2026-11-03.*` vào đây | Spec 05 giữ hợp đồng chung và bảng Silver; luật chi tiết chỉ ghi ở file bước. Thiết kế P0–P5, PH0–PH9 cũ đã xóa 17/11/2026 |

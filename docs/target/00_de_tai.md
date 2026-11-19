@@ -79,6 +79,8 @@ Tóm tắt:
 - **SD4:** train model lương trên các tin công khai lương, rồi đọc model để biết từng kỹ năng đáng bao nhiêu tiền.
 - **SD5:** gộp nhu cầu (SD1), gói kỹ năng (SD2) và giá trị kỹ năng (SD4) thành danh sách ưu tiên và thứ tự học cho người mới.
 
+Điều kiện dữ liệu suy ngược từ 5 SD (trường nào, điều kiện kiểm được, số đo, ba góc nhìn kỹ năng K-tool, K-concept, K-soft) nằm ở [06_yeu_cau_du_lieu.md](06_yeu_cau_du_lieu.md).
+
 ## 6. Nền tảng dữ liệu (không phải mục tiêu)
 
 Thu thập 2 pha, URL Ledger, CDC theo hash, lọc tin IT, khử trùng lặp và chuẩn hóa về một schema (`collection/`, `preprocessing/`, `processing/`) là **phương tiện để có dữ liệu**. Đây không phải câu hỏi khai phá. Phần này được đánh giá theo 5 tiêu chí chất lượng trong `CLAUDE.md`: completeness, accuracy, consistency, timeliness, uniqueness.
