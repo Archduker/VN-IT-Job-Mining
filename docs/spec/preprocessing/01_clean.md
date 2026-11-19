@@ -88,6 +88,22 @@ Số tin là của lần chạy lại 18/11 (sau khi thêm C9 và đổi luật 
 | Q7 | Research and Teaching Assistant in Business Analytics | vietnamworks | Giảng dạy + phân tích dữ liệu | Không IT |
 | Q8 | Operations Manager; Senior/Lead Business Ownership (Product & Growth) ở công ty công nghệ | topcv, itviec | Quản lý vận hành/sản phẩm, không rõ có làm với hệ thống IT | Không IT |
 
+**Ca ranh giới khi soát nhãn C4b** (người dùng trả lời 19/11: "H1,H6 IT, còn lại không IT"):
+
+| # | Nhóm | Chốt |
+|---|---|---|
+| H1 | UI/UX designer (thiết kế giao diện phần mềm) | IT |
+| H2 | Kiểm thử, thiết kế phần cứng, chip (Design Verification, FPGA) | Không IT |
+| H3 | Kỹ sư dịch vụ bảo trì máy | Không IT |
+| H4 | Kỹ thuật viên viễn thông lắp đặt wifi, cáp quang | Không IT |
+| H5 | Kỹ thuật viên sửa máy tính, laptop, IT phần cứng (khác IT helpdesk / IT support nội bộ) | Không IT |
+| H6 | Kỹ sư phần mềm nhúng cho tự động hóa (Q5 thắng Q4) | IT |
+| H7 | Lập kế hoạch, báo cáo tài chính có dùng SQL (không tính theo Q6) | Không IT |
+| H8 | Giám đốc quản lý tài sản nợ – có (ALM) ngân hàng | Không IT |
+| H9 | Product marketing kiêm Product Owner | Không IT |
+
+Lập trình PLC cho máy tự động không tính theo Q5 (người dùng bác đề xuất đổi nhãn, 19/11).
+
 ## 3. Quy trình xử lý
 
 Thứ tự thực thi trong `clean_source`. Report vẫn ghi luật theo thứ tự mã.

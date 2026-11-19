@@ -140,6 +140,7 @@ Tin thật trong 643 nhãn C4b. Ca Q1–Q8 theo câu trả lời của người 
 | — | Quyết định đầu vào | 19/11 | Người dùng: "oke làm lại lọc IT đi. Nhưng mà khi làm phải nhớ chỉnh lại tài liệu spec". Plan mode: chọn "Vai trò IT", "Tín hiệu phụ (C)", "Sạch (precision)". Góp ý kế hoạch: sales/marketing thuần, thiết kế đồ họa, kỹ sư điện/cơ khí "không phải là tin IT nha loại bỏ hoàn toàn"; "phải gọi là không tự suy diễn". Đo thử chỉ đọc trên 240 tin tầng 2 (số ở mục 1) | — |
 | 1 | Duyệt đặc tả | 19/11 | Người dùng: "duyệt cả 2, Q5 IT, Q6 IT, còn lại không IT". Đặc tả 01 C4a, mục 2.1 cập nhật theo câu trả lời: presales, DPO/privacy, AV, nhúng/IoT, giảng dạy, vận hành/product growth vào nhóm loại hoàn toàn; tự động hóa và phân tích dữ liệu ngành khác là IT | c876901 + (commit này) |
 | 2 | Duyệt prompt | 19/11 | Như trên | — |
+| — | G1 soát nhãn | 19/11 | Claude đọc lại 643 nhãn: 22 đề xuất đổi + 24 tin trong 9 nhóm hỏi (H1–H9). Người dùng: "đồng ý 21 nhãn, trừ cái nhãn mới là it mà đánh giá độ tin cậy là thấp. H1,H6 IT, còn lại không IT". Áp 26 nhãn vào `it_*.csv` (cả bản làm việc và bản lưu); còn 168 IT, 475 không IT. Chia tune 451 / giữ lại 192 (phân tầng nguồn × nhãn, seed 42) | 9f2a51c, fbf7f5c |
 | 3 | Test rồi code | chưa | | |
 | 4 | Dry-run | chưa | | |
 | 5 | Review, chạy thật | chưa | | |
