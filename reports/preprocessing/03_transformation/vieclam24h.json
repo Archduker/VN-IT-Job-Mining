@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-18T03:38:56+00:00",
-  "code_version": "a8dab25",
+  "generated_at": "2026-11-19T01:36:31+00:00",
+  "code_version": "012c5d9",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 162
+    "rows": 121
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 162
+    "rows": 121
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 335,
+      "rows_affected": 251,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 150,
+      "rows_affected": 110,
       "examples": [
         {
           "job_id": "200011696",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 162,
+      "rows_affected": 121,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 162,
+      "rows_affected": 121,
       "examples": [
         {
           "job_id": "200011696",
@@ -90,14 +90,14 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 162,
+      "rows_affected": 121,
       "examples": []
     },
     {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 162,
+      "rows_affected": 121,
       "examples": []
     },
     {
@@ -111,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 162,
+      "rows_affected": 121,
       "examples": []
     },
     {
@@ -139,7 +139,7 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 57,
+      "rows_affected": 40,
       "examples": []
     },
     {
@@ -153,14 +153,14 @@
       "id": "T6.5",
       "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
       "action": "modify",
-      "rows_affected": 29,
+      "rows_affected": 25,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 162,
+      "rows_affected": 121,
       "examples": [
         {
           "job_id": "200011696",
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 162,
+      "rows_affected": 121,
       "examples": [
         {
           "job_id": "200011696",
@@ -218,14 +218,14 @@
       "id": "T9a",
       "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 4,
+      "rows_affected": 3,
       "examples": []
     },
     {
       "id": "T9b",
       "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 13,
+      "rows_affected": 12,
       "examples": [
         {
           "job_id": "200951800",
@@ -254,7 +254,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 101,
+      "rows_affected": 85,
       "examples": [
         {
           "job_id": "200383662",
@@ -283,13 +283,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 92.0,
-      "fill_pct_out": 92.0
+      "fill_pct_in": 90.9,
+      "fill_pct_out": 90.9
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 92.6,
-      "fill_pct_out": 92.6
+      "fill_pct_in": 90.9,
+      "fill_pct_out": 90.9
     },
     {
       "field": "posted_date",
@@ -308,8 +308,8 @@
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 98.8,
-      "fill_pct_out": 98.8
+      "fill_pct_in": 98.3,
+      "fill_pct_out": 98.3
     },
     {
       "field": "headcount",
@@ -333,8 +333,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 95.7,
-      "fill_pct_out": 95.7
+      "fill_pct_in": 95.0,
+      "fill_pct_out": 95.0
     },
     {
       "field": "locations",
@@ -368,18 +368,18 @@
     },
     {
       "field": "employment_type_raw",
-      "fill_pct_in": 99.4,
-      "fill_pct_out": 99.4
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 8.0,
-      "fill_pct_out": 8.0
+      "fill_pct_in": 9.9,
+      "fill_pct_out": 9.9
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 62.3,
-      "fill_pct_out": 62.3
+      "fill_pct_in": 70.2,
+      "fill_pct_out": 70.2
     }
   ],
   "checks": {
@@ -392,15 +392,15 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 151,
-      "title": 1,
+      "header": 112,
+      "title": 0,
       "jd": 0,
-      "none": 10
+      "none": 9
     },
     "salary_under_1m_count": 2,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 152,
+      "vi": 111,
       "en": 10,
       "other": 0
     },
@@ -447,57 +447,55 @@
       "batch_size": 4,
       "torch": "2.14.1+cu130",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1261,
+      "peak_vram_mib": 1204,
       "fell_back_to_cpu": false,
-      "rows_en": 521,
-      "rows_translated": 446,
-      "rows_failed": 75,
-      "chunks": 9928,
-      "cache_hits": 7431,
-      "model_calls": 2592,
-      "retries": 95,
-      "failed_chunks": 95
+      "rows_en": 467,
+      "rows_translated": 400,
+      "rows_failed": 67,
+      "chunks": 8907,
+      "cache_hits": 8606,
+      "model_calls": 382,
+      "retries": 81,
+      "failed_chunks": 81
     },
     "experience_parsed_rate": 100.0,
     "posted_month_source": {
-      "posted_date": 162
+      "posted_date": 121
     },
     "posted_month_distribution": {
-      "2026-09": 33,
-      "2026-10": 128,
+      "2026-09": 23,
+      "2026-10": 97,
       "2026-11": 1
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "None": 162
+        "None": 121
       },
       "work_mode_jd": {
-        "None": 158,
-        "onsite": 3,
+        "None": 118,
+        "onsite": 2,
         "hybrid": 1
       },
       "work_mode_jd_rules": {
         "WO3": 1,
-        "WO2": 2,
+        "WO2": 1,
         "WH1": 1
       },
       "employment_type_raw": {
-        "full_time": 154,
+        "full_time": 115,
         "internship": 5,
-        "None": 1,
-        "part_time": 1,
         "contract": 1
       },
       "employment_type_jd": {
-        "None": 149,
-        "full_time": 4,
+        "None": 109,
+        "full_time": 3,
         "internship": 9
       },
       "exp_jd_kind": {
-        "None": 61,
-        "jd": 89,
-        "jd_zero": 12
+        "None": 36,
+        "jd": 77,
+        "jd_zero": 8
       },
       "conflicts": {
         "T9b": 4
@@ -506,27 +504,27 @@
   },
   "samples": [
     {
-      "job_id": "vieclam24h_200968223",
-      "source": "vieclam24h",
-      "field": "headcount",
-      "before": "1",
-      "after": 1.0,
-      "changed": true
-    },
-    {
       "job_id": "vieclam24h_200967175",
       "source": "vieclam24h",
-      "field": "exp_min_years",
-      "before": "1 năm",
-      "after": 1.0,
+      "field": "posted_date",
+      "before": "16/10/2026",
+      "after": "2026-10-16",
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200953184",
+      "job_id": "vieclam24h_200952163",
       "source": "vieclam24h",
-      "field": "requirements_clean",
-      "before": "Nam, có sức khỏe tốt, tuổi từ 20 - 35 Tốt nghiệp Trung cấp nghề trở lên các chuyên ngành Điện tử Viễn thông, Công nghệ thông tin, Mạng máy tính, Điện – Điện công nghiệp, Điện tử Công nghiệp.\nChăm chỉ,…",
-      "after": "Nam, có sức khỏe tốt, tuổi từ 20 - 35 Tốt nghiệp Trung cấp nghề trở lên các chuyên ngành Điện tử Viễn thông, Công nghệ thông tin, Mạng máy tính, Điện - Điện công nghiệp, Điện tử Công nghiệp.\nChăm chỉ,…",
+      "field": "description_clean",
+      "before": "1. Tư vấn và xây dựng giải pháp\n• Phối hợp với bộ phận Kinh doanh để khảo sát nhu cầu khách hàng.\n• Phân tích yêu cầu, thiết kế giải pháp, xây dựng danh mục thiết bị, bản đề xuất kỹ thuật, hồ sơ thầu.…",
+      "after": "1. Tư vấn và xây dựng giải pháp\n- Phối hợp với bộ phận Kinh doanh để khảo sát nhu cầu khách hàng.\n- Phân tích yêu cầu, thiết kế giải pháp, xây dựng danh mục thiết bị, bản đề xuất kỹ thuật, hồ sơ thầu.…",
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200948134",
+      "source": "vieclam24h",
+      "field": "headcount",
+      "before": "2",
+      "after": 2.0,
       "changed": true
     }
   ]

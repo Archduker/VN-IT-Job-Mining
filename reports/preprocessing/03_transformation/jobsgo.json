@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-18T10:49:32+00:00",
-  "code_version": "8b56ea9",
+  "generated_at": "2026-11-19T02:03:18+00:00",
+  "code_version": "012c5d9",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 543
+    "rows": 501
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 543
+    "rows": 501
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 983,
+      "rows_affected": 943,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 343,
+      "rows_affected": 301,
       "examples": [
         {
           "job_id": "28732145575",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 542,
+      "rows_affected": 499,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 542,
+      "rows_affected": 499,
       "examples": [
         {
           "job_id": "28732145575",
@@ -90,14 +90,14 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 543,
+      "rows_affected": 501,
       "examples": []
     },
     {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 320,
+      "rows_affected": 283,
       "examples": []
     },
     {
@@ -111,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 543,
+      "rows_affected": 501,
       "examples": []
     },
     {
@@ -125,7 +125,7 @@
       "id": "T6.2",
       "name": "Chuẩn hóa Unicode về NFC",
       "action": "modify",
-      "rows_affected": 0,
+      "rows_affected": 1,
       "examples": []
     },
     {
@@ -139,7 +139,7 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 144,
+      "rows_affected": 134,
       "examples": []
     },
     {
@@ -153,14 +153,14 @@
       "id": "T6.5",
       "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
       "action": "modify",
-      "rows_affected": 99,
+      "rows_affected": 91,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 534,
+      "rows_affected": 494,
       "examples": [
         {
           "job_id": "28732145575",
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 542,
+      "rows_affected": 499,
       "examples": [
         {
           "job_id": "28732145575",
@@ -218,7 +218,7 @@
       "id": "T9a",
       "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 19,
+      "rows_affected": 20,
       "examples": [
         {
           "job_id": "29403151860",
@@ -233,7 +233,7 @@
       "id": "T9b",
       "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 91,
+      "rows_affected": 75,
       "examples": [
         {
           "job_id": "28732145575",
@@ -262,7 +262,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 372,
+      "rows_affected": 355,
       "examples": [
         {
           "job_id": "28856040371",
@@ -291,38 +291,38 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 54.3,
-      "fill_pct_out": 54.3
+      "fill_pct_in": 51.5,
+      "fill_pct_out": 51.5
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 59.1,
-      "fill_pct_out": 59.1
+      "fill_pct_in": 55.9,
+      "fill_pct_out": 55.9
     },
     {
       "field": "posted_date",
+      "fill_pct_in": 99.4,
+      "fill_pct_out": 99.4
+    },
+    {
+      "field": "deadline_date",
       "fill_pct_in": 99.6,
       "fill_pct_out": 99.6
     },
     {
-      "field": "deadline_date",
-      "fill_pct_in": 99.8,
-      "fill_pct_out": 99.8
-    },
-    {
       "field": "exp_min_years",
-      "fill_pct_in": 99.8,
-      "fill_pct_out": 99.8
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 82.1,
-      "fill_pct_out": 82.1
+      "fill_pct_in": 79.4,
+      "fill_pct_out": 79.4
     },
     {
       "field": "headcount",
-      "fill_pct_in": 58.9,
-      "fill_pct_out": 58.9
+      "fill_pct_in": 56.5,
+      "fill_pct_out": 56.5
     },
     {
       "field": "job_title_clean",
@@ -336,18 +336,18 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 63.5,
-      "fill_pct_out": 63.5
+      "fill_pct_in": 67.3,
+      "fill_pct_out": 67.3
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 94.1,
-      "fill_pct_out": 94.1
+      "fill_pct_in": 94.4,
+      "fill_pct_out": 94.4
     },
     {
       "field": "locations",
-      "fill_pct_in": 99.8,
-      "fill_pct_out": 99.8
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "language",
@@ -361,33 +361,33 @@
     },
     {
       "field": "benefits_clean",
-      "fill_pct_in": 99.8,
-      "fill_pct_out": 99.8
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "work_mode_raw",
-      "fill_pct_in": 1.5,
-      "fill_pct_out": 1.5
+      "fill_pct_in": 1.6,
+      "fill_pct_out": 1.6
     },
     {
       "field": "work_mode_jd",
-      "fill_pct_in": 3.5,
-      "fill_pct_out": 3.5
+      "fill_pct_in": 4.0,
+      "fill_pct_out": 4.0
     },
     {
       "field": "employment_type_raw",
-      "fill_pct_in": 99.4,
-      "fill_pct_out": 99.4
+      "fill_pct_in": 99.2,
+      "fill_pct_out": 99.2
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 16.8,
-      "fill_pct_out": 16.8
+      "fill_pct_in": 15.0,
+      "fill_pct_out": 15.0
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 68.5,
-      "fill_pct_out": 68.5
+      "fill_pct_in": 70.9,
+      "fill_pct_out": 70.9
     }
   ],
   "checks": {
@@ -400,34 +400,35 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 339,
-      "title": 5,
-      "jd": 0,
+      "header": 299,
+      "title": 2,
+      "jd": 1,
       "none": 199
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 21,
     "language_distribution": {
-      "vi": 478,
+      "vi": 435,
       "en": 64,
-      "other": 1
+      "other": 2
     },
     "language_fasttext": {
       "model": "lid.176.bin",
       "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
       "conf_min": 0.6,
-      "disagree_with_old_rule": 3,
+      "disagree_with_old_rule": 4,
       "disagree_examples": [
         "28964998267",
         "29126859947",
+        "29198163276",
         "29350139444"
       ],
-      "conf_lt_0_9": 35
+      "conf_lt_0_9": 39
     },
     "text_quality": {
       "before": {
         "html": 0,
-        "nfc": 0,
+        "nfc": 1,
         "hidden": 0
       },
       "residual_html_pct": 0.0,
@@ -459,64 +460,63 @@
       "batch_size": 4,
       "torch": "2.14.1+cu130",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1261,
+      "peak_vram_mib": 1204,
       "fell_back_to_cpu": false,
-      "rows_en": 1193,
-      "rows_translated": 984,
-      "rows_failed": 209,
-      "chunks": 25121,
-      "cache_hits": 8832,
-      "model_calls": 16546,
-      "retries": 257,
-      "failed_chunks": 257
+      "rows_en": 1114,
+      "rows_translated": 914,
+      "rows_failed": 200,
+      "chunks": 23652,
+      "cache_hits": 22966,
+      "model_calls": 928,
+      "retries": 242,
+      "failed_chunks": 242
     },
-    "experience_parsed_rate": 99.8,
+    "experience_parsed_rate": 99.6,
     "posted_month_source": {
-      "posted_date": 541,
-      "first_crawled_at": 2
+      "posted_date": 498,
+      "first_crawled_at": 3
     },
     "posted_month_distribution": {
-      "2026-09": 230,
-      "2026-10": 313
+      "2026-09": 217,
+      "2026-10": 284
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "None": 535,
+        "None": 493,
         "remote": 8
       },
       "work_mode_jd": {
-        "None": 524,
+        "None": 481,
         "hybrid": 4,
         "remote": 3,
-        "onsite": 12
+        "onsite": 13
       },
       "work_mode_jd_rules": {
         "WH1": 3,
         "WR1": 4,
-        "WO3": 9,
+        "WO3": 10,
         "WH3": 1,
         "WO2": 6
       },
       "employment_type_raw": {
-        "full_time": 535,
-        "part_time": 4,
-        "None": 3,
+        "full_time": 493,
+        "part_time": 3,
+        "None": 4,
         "internship": 1
       },
       "employment_type_jd": {
-        "internship": 74,
-        "None": 452,
-        "full_time": 16,
-        "part_time": 1
+        "internship": 69,
+        "None": 426,
+        "full_time": 6
       },
       "exp_jd_kind": {
-        "None": 171,
-        "jd": 300,
-        "jd_zero": 72
+        "None": 146,
+        "jd": 301,
+        "jd_zero": 54
       },
       "conflicts": {
-        "T9b": 73,
+        "T9b": 68,
         "T9a_strong": 1,
         "T9a": 1
       }
@@ -524,27 +524,27 @@
   },
   "samples": [
     {
-      "job_id": "jobsgo_29219590938",
+      "job_id": "jobsgo_29106233446",
       "source": "jobsgo",
       "field": "exp_min_years",
-      "before": "1 - 2 năm",
-      "after": 1.0,
+      "before": "2 - 3 năm",
+      "after": 2.0,
       "changed": true
     },
     {
-      "job_id": "jobsgo_29302205574",
+      "job_id": "jobsgo_29174087709",
       "source": "jobsgo",
-      "field": "job_title_clean",
-      "before": "Senior Product Owner – CRM Domain",
-      "after": "Senior Product Owner - CRM Domain",
+      "field": "salary_min_vnd",
+      "before": "20 - 30 triệu VNĐ",
+      "after": 20000000.0,
       "changed": true
     },
     {
-      "job_id": "jobsgo_29210180691",
+      "job_id": "jobsgo_29377487550",
       "source": "jobsgo",
-      "field": "posted_date",
-      "before": "06/10/2026",
-      "after": "2026-10-06",
+      "field": "description_clean",
+      "before": "• Provide daily onsite and remote IT support to end users.\n• Troubleshoot hardware, software, network, and system-related issues.\n• Handle incidents and service requests through the ticketing system.\n…",
+      "after": "- Provide daily onsite and remote IT support to end users.\n- Troubleshoot hardware, software, network, and system-related issues.\n- Handle incidents and service requests through the ticketing system.\n…",
       "changed": true
     }
   ]

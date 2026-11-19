@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:45:25+00:00",
-  "code_version": "a8dab25",
+  "generated_at": "2026-11-19T01:25:55+00:00",
+  "code_version": "012c5d9",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 201
+    "rows": 168
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 201
+    "rows": 168
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1831,
+      "rows_affected": 1519,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 57,
+      "rows_affected": 52,
       "examples": [
         {
           "job_id": "2133063",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 65,
+      "rows_affected": 58,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 56,
+      "rows_affected": 50,
       "examples": [
         {
           "job_id": "2133063",
@@ -90,7 +90,7 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 201,
+      "rows_affected": 168,
       "examples": []
     },
     {
@@ -111,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 201,
+      "rows_affected": 168,
       "examples": []
     },
     {
@@ -125,7 +125,7 @@
       "id": "T6.2",
       "name": "Chuẩn hóa Unicode về NFC",
       "action": "modify",
-      "rows_affected": 4,
+      "rows_affected": 2,
       "examples": []
     },
     {
@@ -139,28 +139,28 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 76,
+      "rows_affected": 67,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 53,
+      "rows_affected": 40,
       "examples": []
     },
     {
       "id": "T6.5",
       "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
       "action": "modify",
-      "rows_affected": 42,
+      "rows_affected": 39,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 201,
+      "rows_affected": 165,
       "examples": [
         {
           "job_id": "2017763",
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 201,
+      "rows_affected": 168,
       "examples": [
         {
           "job_id": "2017763",
@@ -232,7 +232,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 154,
+      "rows_affected": 130,
       "examples": [
         {
           "job_id": "2017763",
@@ -261,18 +261,18 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 25.4,
-      "fill_pct_out": 25.4
+      "fill_pct_in": 27.4,
+      "fill_pct_out": 27.4
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 27.9,
-      "fill_pct_out": 27.9
+      "fill_pct_in": 30.4,
+      "fill_pct_out": 30.4
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 32.3,
-      "fill_pct_out": 32.3
+      "fill_pct_in": 34.5,
+      "fill_pct_out": 34.5
     },
     {
       "field": "deadline_date",
@@ -281,13 +281,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 27.9,
-      "fill_pct_out": 27.9
+      "fill_pct_in": 29.8,
+      "fill_pct_out": 29.8
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 27.9,
-      "fill_pct_out": 27.9
+      "fill_pct_in": 29.8,
+      "fill_pct_out": 29.8
     },
     {
       "field": "headcount",
@@ -306,13 +306,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 89.6,
-      "fill_pct_out": 89.6
+      "fill_pct_in": 83.9,
+      "fill_pct_out": 83.9
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 92.5,
-      "fill_pct_out": 92.5
+      "fill_pct_in": 92.3,
+      "fill_pct_out": 92.3
     },
     {
       "field": "locations",
@@ -331,8 +331,8 @@
     },
     {
       "field": "benefits_clean",
-      "fill_pct_in": 98.0,
-      "fill_pct_out": 98.0
+      "fill_pct_in": 97.0,
+      "fill_pct_out": 97.0
     },
     {
       "field": "work_mode_raw",
@@ -341,8 +341,8 @@
     },
     {
       "field": "work_mode_jd",
-      "fill_pct_in": 2.5,
-      "fill_pct_out": 2.5
+      "fill_pct_in": 3.0,
+      "fill_pct_out": 3.0
     },
     {
       "field": "employment_type_raw",
@@ -351,13 +351,13 @@
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 2.0,
-      "fill_pct_out": 2.0
+      "fill_pct_in": 2.4,
+      "fill_pct_out": 2.4
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 76.6,
-      "fill_pct_out": 76.6
+      "fill_pct_in": 77.4,
+      "fill_pct_out": 77.4
     }
   ],
   "checks": {
@@ -370,16 +370,16 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 57,
+      "header": 52,
       "title": 0,
       "jd": 0,
-      "none": 144
+      "none": 116
     },
     "salary_under_1m_count": 0,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 147,
-      "en": 53,
+      "vi": 127,
+      "en": 40,
       "other": 1
     },
     "language_fasttext": {
@@ -391,12 +391,12 @@
         "2137252",
         "2139753"
       ],
-      "conf_lt_0_9": 37
+      "conf_lt_0_9": 27
     },
     "text_quality": {
       "before": {
         "html": 0,
-        "nfc": 4,
+        "nfc": 2,
         "hidden": 0
       },
       "residual_html_pct": 0.0,
@@ -428,33 +428,33 @@
       "batch_size": 4,
       "torch": "2.14.1+cu130",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1100,
+      "peak_vram_mib": 1204,
       "fell_back_to_cpu": false,
-      "rows_en": 133,
-      "rows_translated": 117,
-      "rows_failed": 16,
-      "chunks": 2806,
-      "cache_hits": 2788,
-      "model_calls": 36,
-      "retries": 18,
-      "failed_chunks": 18
+      "rows_en": 118,
+      "rows_translated": 103,
+      "rows_failed": 15,
+      "chunks": 2449,
+      "cache_hits": 2365,
+      "model_calls": 101,
+      "retries": 17,
+      "failed_chunks": 17
     },
-    "experience_parsed_rate": 27.9,
+    "experience_parsed_rate": 29.8,
     "posted_month_source": {
-      "first_crawled_at": 136,
-      "posted_date": 65
+      "first_crawled_at": 110,
+      "posted_date": 58
     },
     "posted_month_distribution": {
-      "2026-10": 192,
-      "2026-11": 9
+      "2026-10": 161,
+      "2026-11": 7
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "None": 201
+        "None": 168
       },
       "work_mode_jd": {
-        "None": 196,
+        "None": 163,
         "onsite": 3,
         "remote": 1,
         "hybrid": 1
@@ -465,16 +465,16 @@
         "WH5": 1
       },
       "employment_type_raw": {
-        "None": 201
+        "None": 168
       },
       "employment_type_jd": {
-        "None": 197,
+        "None": 164,
         "internship": 1,
         "full_time": 3
       },
       "exp_jd_kind": {
-        "jd": 150,
-        "None": 47,
+        "jd": 126,
+        "None": 38,
         "jd_zero": 4
       },
       "conflicts": {}
@@ -482,27 +482,27 @@
   },
   "samples": [
     {
-      "job_id": "topdev_2135981",
-      "source": "topdev",
-      "field": "description_clean",
-      "before": "Card System Daily Operations: Execute day-to-day operational tasks for the card system under the supervision of the Specialist — including batch job monitoring (settlement runs, clearing file generati…",
-      "after": "Card System Daily Operations: Execute day-to-day operational tasks for the card system under the supervision of the Specialist - including batch job monitoring (settlement runs, clearing file generati…",
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2138238",
+      "job_id": "topdev_2137048",
       "source": "topdev",
       "field": "requirements_clean",
-      "before": "Có 1–3 năm kinh nghiệm ở vị trí BA, ERP Consultant hoặc Odoo Consultant. Bắt buộc đã từng tham gia triển khai phân hệ Kế toán hoặc kinh nghiệm học tập/làm việc lĩnh vực kế toán.\nBiết sử dụng AI để hỗ …",
-      "after": "Có 1-3 năm kinh nghiệm ở vị trí BA, ERP Consultant hoặc Odoo Consultant. Bắt buộc đã từng tham gia triển khai phân hệ Kế toán hoặc kinh nghiệm học tập/làm việc lĩnh vực kế toán.\nBiết sử dụng AI để hỗ …",
+      "before": "Nam/Nữ từ 22 – 30 tuổi\nYêu cầu bằng cấp: Trung cấp trở lên chuyên ngành Hóa học, Sinh học, Nông Học, các ngành liên quan đến môi trường,...\nSử dụng thành thạo vi tính văn phòng.\nAm hiểu về hóa chất.\nK…",
+      "after": "Nam/Nữ từ 22 - 30 tuổi Yêu cầu bằng cấp: Trung cấp trở lên chuyên ngành Hóa học, Sinh học, Nông Học, các ngành liên quan đến môi trường,...\nSử dụng thành thạo vi tính văn phòng.\nAm hiểu về hóa chất.\nK…",
       "changed": true
     },
     {
-      "job_id": "topdev_2138283",
+      "job_id": "topdev_2137503",
       "source": "topdev",
       "field": "salary_min_vnd",
-      "before": "Thỏa thuận",
-      "after": null,
+      "before": "1.000 USD to 1.200 USD",
+      "after": 25400000.0,
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2137253",
+      "source": "topdev",
+      "field": "exp_min_years",
+      "before": "48 months",
+      "after": 4.0,
       "changed": true
     }
   ]

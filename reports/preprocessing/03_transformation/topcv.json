@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:43:44+00:00",
-  "code_version": "a8dab25",
+  "generated_at": "2026-11-19T01:24:49+00:00",
+  "code_version": "012c5d9",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 1523
+    "rows": 1270
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1523
+    "rows": 1270
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 2185,
+      "rows_affected": 1836,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 887,
+      "rows_affected": 712,
       "examples": [
         {
           "job_id": "2013194",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 1523,
+      "rows_affected": 1270,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 1516,
+      "rows_affected": 1265,
       "examples": [
         {
           "job_id": "2013194",
@@ -90,28 +90,28 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 1523,
+      "rows_affected": 1270,
       "examples": []
     },
     {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 1516,
+      "rows_affected": 1265,
       "examples": []
     },
     {
       "id": "T2f",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 2,
+      "rows_affected": 1,
       "examples": []
     },
     {
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 1523,
+      "rows_affected": 1270,
       "examples": []
     },
     {
@@ -139,28 +139,28 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 457,
+      "rows_affected": 404,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 80,
+      "rows_affected": 78,
       "examples": []
     },
     {
       "id": "T6.5",
       "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
       "action": "modify",
-      "rows_affected": 393,
+      "rows_affected": 334,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 1515,
+      "rows_affected": 1264,
       "examples": [
         {
           "job_id": "2013194",
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 1516,
+      "rows_affected": 1265,
       "examples": [
         {
           "job_id": "2013194",
@@ -218,22 +218,14 @@
       "id": "T9a",
       "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 26,
-      "examples": [
-        {
-          "job_id": "2330469",
-          "field": "T9a",
-          "before": "Làm việc tại văn phòng / Onsite, Làm việc từ xa (Remote), Kết hợp tại văn phòng và từ xa (Hybrid)",
-          "after": "raw=hybrid jd=remote strong=False",
-          "url": "https://www.topcv.vn/brand/transcosmoshochiminh/tuyen-dung/nhan-vien-thiet-ke-web-khoi-digital-marketing-offshore-khong-yeu-cau-kinh-nghiem-j2330469.html"
-        }
-      ]
+      "rows_affected": 21,
+      "examples": []
     },
     {
       "id": "T9b",
       "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 78,
+      "rows_affected": 51,
       "examples": [
         {
           "job_id": "2324476",
@@ -262,7 +254,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 1177,
+      "rows_affected": 1006,
       "examples": [
         {
           "job_id": "2013194",
@@ -291,38 +283,38 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 48.9,
-      "fill_pct_out": 48.9
+      "fill_pct_in": 45.8,
+      "fill_pct_out": 45.8
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 56.8,
-      "fill_pct_out": 56.8
+      "fill_pct_in": 54.6,
+      "fill_pct_out": 54.6
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 6.7,
-      "fill_pct_out": 6.7
+      "fill_pct_in": 7.5,
+      "fill_pct_out": 7.5
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 95.3,
-      "fill_pct_out": 95.3
+      "fill_pct_in": 94.9,
+      "fill_pct_out": 94.9
     },
     {
       "field": "headcount",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "job_title_clean",
@@ -336,18 +328,18 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 86.7,
-      "fill_pct_out": 86.7
+      "fill_pct_in": 86.0,
+      "fill_pct_out": 86.0
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 97.2,
-      "fill_pct_out": 97.2
+      "fill_pct_in": 97.4,
+      "fill_pct_out": 97.4
     },
     {
       "field": "locations",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "language",
@@ -366,8 +358,8 @@
     },
     {
       "field": "work_mode_raw",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "work_mode_jd",
@@ -376,18 +368,18 @@
     },
     {
       "field": "employment_type_raw",
-      "fill_pct_in": 99.3,
-      "fill_pct_out": 99.3
+      "fill_pct_in": 99.5,
+      "fill_pct_out": 99.5
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 5.1,
-      "fill_pct_out": 5.1
+      "fill_pct_in": 4.0,
+      "fill_pct_out": 4.0
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 77.3,
-      "fill_pct_out": 77.3
+      "fill_pct_in": 79.2,
+      "fill_pct_out": 79.2
     }
   ],
   "checks": {
@@ -400,16 +392,16 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 883,
+      "header": 707,
       "title": 8,
       "jd": 0,
-      "none": 632
+      "none": 555
     },
-    "salary_under_1m_count": 2,
-    "salary_from_x_count": 22,
+    "salary_under_1m_count": 1,
+    "salary_from_x_count": 18,
     "language_distribution": {
-      "vi": 1441,
-      "en": 80,
+      "vi": 1190,
+      "en": 78,
       "other": 2
     },
     "language_fasttext": {
@@ -421,7 +413,7 @@
         "2323457",
         "2309919"
       ],
-      "conf_lt_0_9": 54
+      "conf_lt_0_9": 52
     },
     "text_quality": {
       "before": {
@@ -458,97 +450,94 @@
       "batch_size": 4,
       "torch": "2.14.1+cu130",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1100,
+      "peak_vram_mib": 1120,
       "fell_back_to_cpu": false,
-      "rows_en": 80,
+      "rows_en": 78,
       "rows_translated": 68,
-      "rows_failed": 12,
-      "chunks": 1685,
-      "cache_hits": 1672,
-      "model_calls": 26,
-      "retries": 13,
-      "failed_chunks": 13
+      "rows_failed": 10,
+      "chunks": 1646,
+      "cache_hits": 1608,
+      "model_calls": 49,
+      "retries": 11,
+      "failed_chunks": 11
     },
-    "experience_parsed_rate": 99.5,
+    "experience_parsed_rate": 99.6,
     "posted_month_source": {
-      "posted_date": 102,
-      "first_crawled_at": 1421
+      "posted_date": 95,
+      "first_crawled_at": 1175
     },
     "posted_month_distribution": {
-      "2026-10": 1500,
-      "2026-09": 14,
-      "2026-11": 9
+      "2026-10": 1252,
+      "2026-09": 11,
+      "2026-11": 7
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "onsite": 1454,
-        "hybrid": 51,
-        "None": 7,
-        "remote": 11
+        "onsite": 1223,
+        "hybrid": 35,
+        "None": 5,
+        "remote": 7
       },
       "work_mode_jd": {
-        "None": 1497,
+        "None": 1249,
         "onsite": 17,
-        "remote": 7,
-        "hybrid": 2
+        "remote": 3,
+        "hybrid": 1
       },
       "work_mode_jd_rules": {
         "WO2": 1,
         "WO3": 16,
-        "WR1": 7,
-        "WH4": 1,
-        "WH1": 1,
-        "WR2": 1
+        "WR1": 3,
+        "WH1": 1
       },
       "employment_type_raw": {
-        "full_time": 1478,
-        "part_time": 8,
-        "internship": 25,
-        "None": 10,
+        "full_time": 1239,
+        "part_time": 5,
+        "None": 6,
+        "internship": 18,
         "contract": 2
       },
       "employment_type_jd": {
-        "None": 1445,
-        "part_time": 4,
-        "internship": 65,
-        "full_time": 7,
+        "None": 1219,
+        "part_time": 2,
+        "internship": 44,
+        "full_time": 3,
         "contract": 2
       },
       "exp_jd_kind": {
-        "jd": 1092,
-        "None": 346,
-        "jd_zero": 85
+        "jd": 949,
+        "None": 264,
+        "jd_zero": 57
       },
       "conflicts": {
-        "T9b": 47,
-        "T9a": 1
+        "T9b": 32
       }
     }
   },
   "samples": [
     {
-      "job_id": "topcv_2305229",
+      "job_id": "topcv_2173210",
       "source": "topcv",
-      "field": "headcount",
-      "before": "1 người",
-      "after": 1.0,
+      "field": "salary_min_vnd",
+      "before": "Thoả thuận",
+      "after": null,
       "changed": true
     },
     {
-      "job_id": "topcv_2327543",
+      "job_id": "topcv_2306245",
       "source": "topcv",
       "field": "description_clean",
-      "before": "Lên ý tưởng và viết nội dung cho ngành thời trang, mỹ phẩm, thực phẩm\nNghiên cứu insight khách hàng và xu hướng thị trường để tối ưu nội dung.\nxây dựng concept nội dung cho chiến dịch marketing.\nTheo …",
-      "after": "Lên ý tưởng và viết nội dung cho ngành thời trang, mỹ phẩm, thực phẩm Nghiên cứu insight khách hàng và xu hướng thị trường để tối ưu nội dung.\nxây dựng concept nội dung cho chiến dịch marketing.\nTheo …",
+      "before": "● Thiết kế, xây dựng và vận hành hạ tầng CI/CD theo hướng tự động hóa và bảo mật (Secure CI/CD Pipeline).\n● Tích hợp các công cụ bảo mật vào quy trình DevOps: SAST, DAST, SCA, container security, vuln…",
+      "after": "- Thiết kế, xây dựng và vận hành hạ tầng CI/CD theo hướng tự động hóa và bảo mật (Secure CI/CD Pipeline).\n- Tích hợp các công cụ bảo mật vào quy trình DevOps: SAST, DAST, SCA, container security, vuln…",
       "changed": true
     },
     {
-      "job_id": "topcv_2303052",
+      "job_id": "topcv_1317899",
       "source": "topcv",
-      "field": "requirements_clean",
-      "before": "Tốt nghiệp đại học chuyên ngành Công nghệ Thông tin / Khoa học Máy tính hoặc các ngành tương đương\nCó từ 3 - 5 năm kinh nghiệm thực tế với Java/Spring Framework hoặc JavaScript/TypeScript\nThành thạo n…",
-      "after": "Tốt nghiệp đại học chuyên ngành Công nghệ Thông tin / Khoa học Máy tính hoặc các ngành tương đương Có từ 3 - 5 năm kinh nghiệm thực tế với Java/Spring Framework hoặc JavaScript/TypeScript Thành thạo n…",
+      "field": "headcount",
+      "before": "7 người",
+      "after": 7.0,
       "changed": true
     }
   ]

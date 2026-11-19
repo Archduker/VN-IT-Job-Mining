@@ -2,50 +2,50 @@
  "step": "03_transformation",
  "trace_job": "topcv_2325743",
  "run": {
-  "generated_at": "2026-11-18T11:57:34+00:00",
-  "code_version": "8b56ea9",
+  "generated_at": "2026-11-19T02:04:53+00:00",
+  "code_version": "012c5d9",
   "mode": "applied",
   "input": {
    "path": "data/preprocessing/02_integration/all.parquet",
-   "rows": 4495
+   "rows": 3997
   },
   "output": {
    "path": "data/preprocessing/03_transformation/all.parquet",
-   "rows": 4495
+   "rows": 3997
   },
   "dropped": [],
   "by_source": {
    "careerviet": {
-    "in": 400,
-    "out": 400
+    "in": 405,
+    "out": 405
    },
    "glints": {
-    "in": 154,
-    "out": 154
+    "in": 155,
+    "out": 155
    },
    "itviec": {
-    "in": 814,
-    "out": 814
+    "in": 785,
+    "out": 785
    },
    "jobsgo": {
-    "in": 543,
-    "out": 543
+    "in": 501,
+    "out": 501
    },
    "topcv": {
-    "in": 1523,
-    "out": 1523
+    "in": 1270,
+    "out": 1270
    },
    "topdev": {
-    "in": 201,
-    "out": 201
+    "in": 168,
+    "out": 168
    },
    "vieclam24h": {
-    "in": 162,
-    "out": 162
+    "in": 121,
+    "out": 121
    },
    "vietnamworks": {
-    "in": 698,
-    "out": 698
+    "in": 592,
+    "out": 592
    }
   },
   "checks": {
@@ -58,16 +58,16 @@
    "id": "T1",
    "name": "Null trá hình thành null",
    "action": "modify",
-   "rows": 11500,
+   "rows": 10398,
    "by_source": {
-    "topcv": 2185,
-    "topdev": 1831,
-    "vietnamworks": 1589,
-    "careerviet": 1576,
-    "vieclam24h": 335,
-    "itviec": 2678,
+    "topcv": 1836,
+    "topdev": 1519,
+    "vietnamworks": 1355,
+    "careerviet": 1600,
+    "vieclam24h": 251,
+    "itviec": 2571,
     "glints": 323,
-    "jobsgo": 983
+    "jobsgo": 943
    },
    "examples": []
   },
@@ -75,16 +75,16 @@
    "id": "T2",
    "name": "Bóc tách dải số lương Cascade",
    "action": "modify",
-   "rows": 2062,
+   "rows": 1751,
    "by_source": {
-    "topcv": 887,
-    "topdev": 57,
-    "vietnamworks": 201,
-    "careerviet": 119,
-    "vieclam24h": 150,
-    "itviec": 209,
-    "glints": 96,
-    "jobsgo": 343
+    "topcv": 712,
+    "topdev": 52,
+    "vietnamworks": 157,
+    "careerviet": 120,
+    "vieclam24h": 110,
+    "itviec": 202,
+    "glints": 97,
+    "jobsgo": 301
    },
    "examples": [
     {
@@ -114,16 +114,16 @@
    "id": "T3",
    "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
    "action": "modify",
-   "rows": 4323,
+   "rows": 3852,
    "by_source": {
-    "topcv": 1523,
-    "topdev": 65,
-    "vietnamworks": 698,
-    "careerviet": 391,
-    "vieclam24h": 162,
-    "itviec": 788,
-    "glints": 154,
-    "jobsgo": 542
+    "topcv": 1270,
+    "topdev": 58,
+    "vietnamworks": 592,
+    "careerviet": 395,
+    "vieclam24h": 121,
+    "itviec": 762,
+    "glints": 155,
+    "jobsgo": 499
    },
    "examples": []
   },
@@ -131,16 +131,16 @@
    "id": "T4",
    "name": "Bóc tách số năm kinh nghiệm",
    "action": "modify",
-   "rows": 4080,
+   "rows": 3639,
    "by_source": {
-    "topcv": 1516,
-    "topdev": 56,
-    "vietnamworks": 593,
-    "careerviet": 358,
-    "vieclam24h": 162,
-    "itviec": 714,
-    "glints": 139,
-    "jobsgo": 542
+    "topcv": 1265,
+    "topdev": 50,
+    "vietnamworks": 506,
+    "careerviet": 364,
+    "vieclam24h": 121,
+    "itviec": 692,
+    "glints": 142,
+    "jobsgo": 499
    },
    "examples": [
     {
@@ -170,16 +170,16 @@
    "id": "T3b",
    "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
    "action": "modify",
-   "rows": 4495,
+   "rows": 3997,
    "by_source": {
-    "topcv": 1523,
-    "topdev": 201,
-    "vietnamworks": 698,
-    "careerviet": 400,
-    "vieclam24h": 162,
-    "itviec": 814,
-    "glints": 154,
-    "jobsgo": 543
+    "topcv": 1270,
+    "topdev": 168,
+    "vietnamworks": 592,
+    "careerviet": 405,
+    "vieclam24h": 121,
+    "itviec": 785,
+    "glints": 155,
+    "jobsgo": 501
    },
    "examples": []
   },
@@ -187,16 +187,16 @@
    "id": "T5",
    "name": "Bóc tách chỉ tiêu headcount",
    "action": "modify",
-   "rows": 2695,
+   "rows": 2260,
    "by_source": {
-    "topcv": 1516,
+    "topcv": 1265,
     "topdev": 0,
-    "vietnamworks": 697,
+    "vietnamworks": 591,
     "careerviet": 0,
-    "vieclam24h": 162,
+    "vieclam24h": 121,
     "itviec": 0,
     "glints": 0,
-    "jobsgo": 320
+    "jobsgo": 283
    },
    "examples": []
   },
@@ -204,9 +204,9 @@
    "id": "T2f",
    "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
    "action": "flag",
-   "rows": 13,
+   "rows": 12,
    "by_source": {
-    "topcv": 2,
+    "topcv": 1,
     "topdev": 0,
     "vietnamworks": 3,
     "careerviet": 1,
@@ -221,16 +221,16 @@
    "id": "T6",
    "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
    "action": "modify",
-   "rows": 4495,
+   "rows": 3997,
    "by_source": {
-    "topcv": 1523,
-    "topdev": 201,
-    "vietnamworks": 698,
-    "careerviet": 400,
-    "vieclam24h": 162,
-    "itviec": 814,
-    "glints": 154,
-    "jobsgo": 543
+    "topcv": 1270,
+    "topdev": 168,
+    "vietnamworks": 592,
+    "careerviet": 405,
+    "vieclam24h": 121,
+    "itviec": 785,
+    "glints": 155,
+    "jobsgo": 501
    },
    "examples": []
   },
@@ -238,11 +238,11 @@
    "id": "T6.1",
    "name": "Bóc thẻ HTML và entity",
    "action": "modify",
-   "rows": 8,
+   "rows": 7,
    "by_source": {
     "topcv": 0,
     "topdev": 0,
-    "vietnamworks": 8,
+    "vietnamworks": 7,
     "careerviet": 0,
     "vieclam24h": 0,
     "itviec": 0,
@@ -255,16 +255,16 @@
    "id": "T6.2",
    "name": "Chuẩn hóa Unicode về NFC",
    "action": "modify",
-   "rows": 25,
+   "rows": 27,
    "by_source": {
     "topcv": 0,
-    "topdev": 4,
+    "topdev": 2,
     "vietnamworks": 0,
-    "careerviet": 14,
+    "careerviet": 17,
     "vieclam24h": 0,
     "itviec": 0,
     "glints": 7,
-    "jobsgo": 0
+    "jobsgo": 1
    },
    "examples": []
   },
@@ -272,12 +272,12 @@
    "id": "T6.3",
    "name": "Bỏ ký tự ẩn",
    "action": "modify",
-   "rows": 27,
+   "rows": 26,
    "by_source": {
     "topcv": 2,
     "topdev": 0,
     "vietnamworks": 0,
-    "careerviet": 23,
+    "careerviet": 22,
     "vieclam24h": 1,
     "itviec": 0,
     "glints": 1,
@@ -289,16 +289,16 @@
    "id": "T6.4",
    "name": "Gạch ngang và bullet về một chuẩn",
    "action": "modify",
-   "rows": 1460,
+   "rows": 1312,
    "by_source": {
-    "topcv": 457,
-    "topdev": 76,
-    "vietnamworks": 230,
-    "careerviet": 143,
-    "vieclam24h": 57,
-    "itviec": 272,
-    "glints": 81,
-    "jobsgo": 144
+    "topcv": 404,
+    "topdev": 67,
+    "vietnamworks": 186,
+    "careerviet": 144,
+    "vieclam24h": 40,
+    "itviec": 254,
+    "glints": 83,
+    "jobsgo": 134
    },
    "examples": []
   },
@@ -306,14 +306,14 @@
    "id": "T6b",
    "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
    "action": "modify",
-   "rows": 1193,
+   "rows": 1114,
    "by_source": {
-    "topcv": 80,
-    "topdev": 53,
-    "vietnamworks": 309,
-    "careerviet": 69,
+    "topcv": 78,
+    "topdev": 40,
+    "vietnamworks": 272,
+    "careerviet": 67,
     "vieclam24h": 10,
-    "itviec": 546,
+    "itviec": 521,
     "glints": 62,
     "jobsgo": 64
    },
@@ -323,16 +323,16 @@
    "id": "T6.5",
    "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
    "action": "modify",
-   "rows": 1103,
+   "rows": 960,
    "by_source": {
-    "topcv": 393,
-    "topdev": 42,
-    "vietnamworks": 368,
+    "topcv": 334,
+    "topdev": 39,
+    "vietnamworks": 304,
     "careerviet": 0,
-    "vieclam24h": 29,
-    "itviec": 172,
+    "vieclam24h": 25,
+    "itviec": 167,
     "glints": 0,
-    "jobsgo": 99
+    "jobsgo": 91
    },
    "examples": []
   },
@@ -340,16 +340,16 @@
    "id": "T7",
    "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
    "action": "modify",
-   "rows": 4474,
+   "rows": 3977,
    "by_source": {
-    "topcv": 1515,
-    "topdev": 201,
-    "vietnamworks": 698,
-    "careerviet": 397,
-    "vieclam24h": 162,
-    "itviec": 814,
-    "glints": 153,
-    "jobsgo": 534
+    "topcv": 1264,
+    "topdev": 165,
+    "vietnamworks": 592,
+    "careerviet": 402,
+    "vieclam24h": 121,
+    "itviec": 785,
+    "glints": 154,
+    "jobsgo": 494
    },
    "examples": [
     {
@@ -379,16 +379,16 @@
    "id": "T8",
    "name": "Bóc tách địa điểm 3 cấp",
    "action": "modify",
-   "rows": 4480,
+   "rows": 3983,
    "by_source": {
-    "topcv": 1516,
-    "topdev": 201,
-    "vietnamworks": 697,
-    "careerviet": 394,
-    "vieclam24h": 162,
-    "itviec": 814,
-    "glints": 154,
-    "jobsgo": 542
+    "topcv": 1265,
+    "topdev": 168,
+    "vietnamworks": 591,
+    "careerviet": 399,
+    "vieclam24h": 121,
+    "itviec": 785,
+    "glints": 155,
+    "jobsgo": 499
    },
    "examples": [
     {
@@ -418,16 +418,16 @@
    "id": "T9a",
    "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
    "action": "flag",
-   "rows": 106,
+   "rows": 101,
    "by_source": {
-    "topcv": 26,
+    "topcv": 21,
     "topdev": 5,
-    "vietnamworks": 14,
+    "vietnamworks": 13,
     "careerviet": 9,
-    "vieclam24h": 4,
+    "vieclam24h": 3,
     "itviec": 20,
-    "glints": 9,
-    "jobsgo": 19
+    "glints": 10,
+    "jobsgo": 20
    },
    "examples": [
     {
@@ -445,11 +445,11 @@
      "url": "https://www.vietnamworks.com/ai-engineer-remote-fulltime-hybrid-onsite-2110354-jv"
     },
     {
-     "job_id": "2330469",
+     "job_id": "29403151860",
      "field": "T9a",
-     "before": "Làm việc tại văn phòng / Onsite, Làm việc từ xa (Remote), Kết hợp tại văn phòng và từ xa (Hybrid)",
-     "after": "raw=hybrid jd=remote strong=False",
-     "url": "https://www.topcv.vn/brand/transcosmoshochiminh/tuyen-dung/nhan-vien-thiet-ke-web-khoi-digital-marketing-offshore-khong-yeu-cau-kinh-nghiem-j2330469.html"
+     "before": "None",
+     "after": "raw=remote jd=hybrid strong=True",
+     "url": "https://jobsgo.vn/viec-lam/ha-noi-cong-ty-co-phan-lendi-tuyen-dung-full-stack-developer-hybrid-29403151860.html"
     }
    ]
   },
@@ -457,16 +457,16 @@
    "id": "T9b",
    "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
    "action": "flag",
-   "rows": 294,
+   "rows": 248,
    "by_source": {
-    "topcv": 78,
+    "topcv": 51,
     "topdev": 4,
-    "vietnamworks": 17,
+    "vietnamworks": 16,
     "careerviet": 16,
-    "vieclam24h": 13,
-    "itviec": 52,
-    "glints": 23,
-    "jobsgo": 91
+    "vieclam24h": 12,
+    "itviec": 50,
+    "glints": 24,
+    "jobsgo": 75
    },
    "examples": [
     {
@@ -496,16 +496,16 @@
    "id": "T9c",
    "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
    "action": "flag",
-   "rows": 3379,
+   "rows": 3069,
    "by_source": {
-    "topcv": 1177,
-    "topdev": 154,
-    "vietnamworks": 517,
-    "careerviet": 310,
-    "vieclam24h": 101,
-    "itviec": 612,
-    "glints": 136,
-    "jobsgo": 372
+    "topcv": 1006,
+    "topdev": 130,
+    "vietnamworks": 449,
+    "careerviet": 315,
+    "vieclam24h": 85,
+    "itviec": 591,
+    "glints": 138,
+    "jobsgo": 355
    },
    "examples": [
     {
@@ -576,12 +576,12 @@
   {
    "column": "dedup_key",
    "dtype": "object",
-   "fill_pct": 99.9
+   "fill_pct": 100.0
   },
   {
    "column": "also_on",
    "dtype": "object",
-   "fill_pct": 2.6
+   "fill_pct": 2.7
   },
   {
    "column": "first_crawled_at",
@@ -601,17 +601,17 @@
   {
    "column": "company_address",
    "dtype": "object",
-   "fill_pct": 87.4
+   "fill_pct": 87.2
   },
   {
    "column": "raw_category_text",
    "dtype": "object",
-   "fill_pct": 92.9
+   "fill_pct": 93.2
   },
   {
    "column": "raw_location_text",
    "dtype": "object",
-   "fill_pct": 97.4
+   "fill_pct": 97.5
   },
   {
    "column": "working_locations",
@@ -621,57 +621,57 @@
   {
    "column": "raw_posted_date",
    "dtype": "object",
-   "fill_pct": 64.5
+   "fill_pct": 67.0
   },
   {
    "column": "raw_deadline",
    "dtype": "object",
-   "fill_pct": 94.7
+   "fill_pct": 94.9
   },
   {
    "column": "raw_salary_text",
    "dtype": "object",
-   "fill_pct": 60.4
+   "fill_pct": 59.7
   },
   {
    "column": "raw_employment_type",
    "dtype": "object",
-   "fill_pct": 94.5
+   "fill_pct": 94.8
   },
   {
    "column": "raw_work_mode",
    "dtype": "object",
-   "fill_pct": 54.6
+   "fill_pct": 54.5
   },
   {
    "column": "raw_experience_text",
    "dtype": "object",
-   "fill_pct": 90.8
+   "fill_pct": 91.0
   },
   {
    "column": "raw_seniority_text",
    "dtype": "object",
-   "fill_pct": 73.6
+   "fill_pct": 71.9
   },
   {
    "column": "raw_education_text",
    "dtype": "object",
-   "fill_pct": 60.7
+   "fill_pct": 59.0
   },
   {
    "column": "raw_headcount",
    "dtype": "object",
-   "fill_pct": 60.0
+   "fill_pct": 56.5
   },
   {
    "column": "skills_list",
    "dtype": "object",
-   "fill_pct": 62.0
+   "fill_pct": 59.5
   },
   {
    "column": "benefits_list",
    "dtype": "object",
-   "fill_pct": 98.8
+   "fill_pct": 98.5
   },
   {
    "column": "raw_description_text",
@@ -756,7 +756,7 @@
   {
    "column": "translated_by",
    "dtype": "object",
-   "fill_pct": 26.5
+   "fill_pct": 27.9
   },
   {
    "column": "translation_status",
@@ -791,12 +791,12 @@
   {
    "column": "salary_min_vnd",
    "dtype": "float64",
-   "fill_pct": 40.2
+   "fill_pct": 38.0
   },
   {
    "column": "salary_max_vnd",
    "dtype": "float64",
-   "fill_pct": 44.6
+   "fill_pct": 42.6
   },
   {
    "column": "salary_currency_raw",
@@ -826,12 +826,12 @@
   {
    "column": "posted_date",
    "dtype": "object",
-   "fill_pct": 64.5
+   "fill_pct": 67.0
   },
   {
    "column": "deadline_date",
    "dtype": "object",
-   "fill_pct": 94.6
+   "fill_pct": 94.8
   },
   {
    "column": "posted_month",
@@ -841,27 +841,27 @@
   {
    "column": "exp_min_years",
    "dtype": "float64",
-   "fill_pct": 90.8
+   "fill_pct": 91.0
   },
   {
    "column": "exp_max_years",
    "dtype": "float64",
-   "fill_pct": 68.6
+   "fill_pct": 66.6
   },
   {
    "column": "headcount",
    "dtype": "float64",
-   "fill_pct": 60.0
+   "fill_pct": 56.5
   },
   {
    "column": "benefits_clean",
    "dtype": "object",
-   "fill_pct": 98.8
+   "fill_pct": 98.5
   },
   {
    "column": "skills_clean",
    "dtype": "object",
-   "fill_pct": 88.8
+   "fill_pct": 88.6
   },
   {
    "column": "benefits_std",
@@ -871,22 +871,22 @@
   {
    "column": "locations",
    "dtype": "object",
-   "fill_pct": 99.7
+   "fill_pct": 99.6
   },
   {
    "column": "work_mode_raw",
    "dtype": "object",
-   "fill_pct": 54.9
+   "fill_pct": 54.7
   },
   {
    "column": "work_mode_jd",
    "dtype": "object",
-   "fill_pct": 2.4
+   "fill_pct": 2.5
   },
   {
    "column": "work_mode_jd_rules",
    "dtype": "object",
-   "fill_pct": 2.4
+   "fill_pct": 2.5
   },
   {
    "column": "work_mode_jd_strong",
@@ -901,17 +901,17 @@
   {
    "column": "employment_type_raw",
    "dtype": "object",
-   "fill_pct": 93.0
+   "fill_pct": 93.3
   },
   {
    "column": "employment_types_raw",
    "dtype": "object",
-   "fill_pct": 93.0
+   "fill_pct": 93.3
   },
   {
    "column": "employment_type_jd",
    "dtype": "object",
-   "fill_pct": 6.5
+   "fill_pct": 6.2
   },
   {
    "column": "employment_type_conflict",
@@ -921,22 +921,22 @@
   {
    "column": "exp_min_years_jd",
    "dtype": "float64",
-   "fill_pct": 75.2
+   "fill_pct": 76.8
   },
   {
    "column": "exp_max_years_jd",
    "dtype": "float64",
-   "fill_pct": 18.0
+   "fill_pct": 18.4
   },
   {
    "column": "exp_jd_kind",
    "dtype": "object",
-   "fill_pct": 75.2
+   "fill_pct": 76.8
   },
   {
    "column": "exp_jd_text",
    "dtype": "object",
-   "fill_pct": 75.2
+   "fill_pct": 76.8
   },
   {
    "column": "flags",

@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:45:58+00:00",
-  "code_version": "a8dab25",
+  "generated_at": "2026-11-19T01:27:31+00:00",
+  "code_version": "012c5d9",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 698
+    "rows": 592
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 698
+    "rows": 592
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1589,
+      "rows_affected": 1355,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 201,
+      "rows_affected": 157,
       "examples": [
         {
           "job_id": "2102736",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 698,
+      "rows_affected": 592,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 593,
+      "rows_affected": 506,
       "examples": [
         {
           "job_id": "2102610",
@@ -90,14 +90,14 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 698,
+      "rows_affected": 592,
       "examples": []
     },
     {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 697,
+      "rows_affected": 591,
       "examples": []
     },
     {
@@ -111,14 +111,14 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 698,
+      "rows_affected": 592,
       "examples": []
     },
     {
       "id": "T6.1",
       "name": "Bóc thẻ HTML và entity",
       "action": "modify",
-      "rows_affected": 8,
+      "rows_affected": 7,
       "examples": []
     },
     {
@@ -139,28 +139,28 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 230,
+      "rows_affected": 186,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 309,
+      "rows_affected": 272,
       "examples": []
     },
     {
       "id": "T6.5",
       "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
       "action": "modify",
-      "rows_affected": 368,
+      "rows_affected": 304,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 698,
+      "rows_affected": 592,
       "examples": [
         {
           "job_id": "2102610",
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 697,
+      "rows_affected": 591,
       "examples": [
         {
           "job_id": "2102610",
@@ -218,7 +218,7 @@
       "id": "T9a",
       "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 14,
+      "rows_affected": 13,
       "examples": [
         {
           "job_id": "2110354",
@@ -233,7 +233,7 @@
       "id": "T9b",
       "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 17,
+      "rows_affected": 16,
       "examples": [
         {
           "job_id": "2110304",
@@ -262,7 +262,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 517,
+      "rows_affected": 449,
       "examples": [
         {
           "job_id": "2102610",
@@ -291,13 +291,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 23.9,
-      "fill_pct_out": 23.9
+      "fill_pct_in": 21.3,
+      "fill_pct_out": 21.3
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 27.2,
-      "fill_pct_out": 27.2
+      "fill_pct_in": 25.7,
+      "fill_pct_out": 25.7
     },
     {
       "field": "posted_date",
@@ -311,18 +311,18 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 85.0,
-      "fill_pct_out": 85.0
+      "fill_pct_in": 85.5,
+      "fill_pct_out": 85.5
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 85.0,
-      "fill_pct_out": 85.0
+      "fill_pct_in": 85.5,
+      "fill_pct_out": 85.5
     },
     {
       "field": "headcount",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 99.8,
+      "fill_pct_out": 99.8
     },
     {
       "field": "job_title_clean",
@@ -341,13 +341,13 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 88.5,
-      "fill_pct_out": 88.5
+      "fill_pct_in": 89.5,
+      "fill_pct_out": 89.5
     },
     {
       "field": "locations",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 99.8,
+      "fill_pct_out": 99.8
     },
     {
       "field": "language",
@@ -361,33 +361,33 @@
     },
     {
       "field": "benefits_clean",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 99.8,
+      "fill_pct_out": 99.8
     },
     {
       "field": "work_mode_raw",
-      "fill_pct_in": 0.4,
-      "fill_pct_out": 0.4
+      "fill_pct_in": 0.5,
+      "fill_pct_out": 0.5
     },
     {
       "field": "work_mode_jd",
-      "fill_pct_in": 2.0,
-      "fill_pct_out": 2.0
+      "fill_pct_in": 2.2,
+      "fill_pct_out": 2.2
     },
     {
       "field": "employment_type_raw",
-      "fill_pct_in": 91.0,
-      "fill_pct_out": 91.0
+      "fill_pct_in": 90.7,
+      "fill_pct_out": 90.7
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 2.4,
-      "fill_pct_out": 2.4
+      "fill_pct_in": 2.7,
+      "fill_pct_out": 2.7
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 74.1,
-      "fill_pct_out": 74.1
+      "fill_pct_in": 75.8,
+      "fill_pct_out": 75.8
     }
   ],
   "checks": {
@@ -400,36 +400,34 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 200,
+      "header": 157,
       "title": 2,
-      "jd": 2,
-      "none": 494
+      "jd": 1,
+      "none": 432
     },
     "salary_under_1m_count": 2,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 388,
-      "en": 309,
+      "vi": 319,
+      "en": 272,
       "other": 1
     },
     "language_fasttext": {
       "model": "lid.176.bin",
       "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
       "conf_min": 0.6,
-      "disagree_with_old_rule": 6,
+      "disagree_with_old_rule": 4,
       "disagree_examples": [
-        "2110677",
-        "2111797",
         "2118846",
         "2121173",
         "2123254",
         "2125913"
       ],
-      "conf_lt_0_9": 169
+      "conf_lt_0_9": 148
     },
     "text_quality": {
       "before": {
-        "html": 8,
+        "html": 7,
         "nfc": 0,
         "hidden": 0
       },
@@ -462,36 +460,36 @@
       "batch_size": 4,
       "torch": "2.14.1+cu130",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1195,
+      "peak_vram_mib": 1204,
       "fell_back_to_cpu": false,
-      "rows_en": 442,
-      "rows_translated": 385,
-      "rows_failed": 57,
-      "chunks": 7916,
-      "cache_hits": 7266,
-      "model_calls": 725,
-      "retries": 75,
-      "failed_chunks": 75
+      "rows_en": 390,
+      "rows_translated": 340,
+      "rows_failed": 50,
+      "chunks": 6961,
+      "cache_hits": 6707,
+      "model_calls": 316,
+      "retries": 62,
+      "failed_chunks": 62
     },
-    "experience_parsed_rate": 85.0,
+    "experience_parsed_rate": 85.5,
     "posted_month_source": {
-      "posted_date": 698
+      "posted_date": 592
     },
     "posted_month_distribution": {
-      "2026-09": 307,
-      "2026-10": 391
+      "2026-09": 266,
+      "2026-10": 326
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "None": 695,
+        "None": 589,
         "remote": 3
       },
       "work_mode_jd": {
-        "None": 684,
+        "None": 579,
         "remote": 8,
         "onsite": 1,
-        "hybrid": 5
+        "hybrid": 4
       },
       "work_mode_jd_rules": {
         "WR1": 9,
@@ -500,23 +498,23 @@
         "WH1": 2,
         "WO3": 1,
         "WH2": 1,
-        "WH3": 3,
+        "WH3": 2,
         "WH7": 1
       },
       "employment_type_raw": {
-        "full_time": 635,
-        "None": 63
+        "full_time": 537,
+        "None": 55
       },
       "employment_type_jd": {
-        "None": 681,
-        "full_time": 11,
+        "None": 576,
+        "full_time": 10,
         "internship": 3,
         "contract": 3
       },
       "exp_jd_kind": {
-        "jd": 508,
-        "None": 181,
-        "jd_zero": 9
+        "jd": 442,
+        "None": 143,
+        "jd_zero": 7
       },
       "conflicts": {
         "T9b": 5,
@@ -527,23 +525,23 @@
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2112505",
+      "job_id": "vietnamworks_2112532",
       "source": "vietnamworks",
-      "field": "salary_min_vnd",
-      "before": "Thương lượng",
-      "after": null,
+      "field": "description_clean",
+      "before": "Phát triển Backend & API:\n● Phát triển và triển khai các dịch vụ Backend chất lượng cao bằng Node.js (Express.js/NestJS) hoặc Python (FastAPI/Django) cho ứng dụng Web/Mobile.\n● Thiết kế, tối ưu các ch…",
+      "after": "Phát triển Backend & API:\n- Phát triển và triển khai các dịch vụ Backend chất lượng cao bằng Node.js (Express.js/NestJS) hoặc Python (FastAPI/Django) cho ứng dụng Web/Mobile.\n- Thiết kế, tối ưu các ch…",
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2121672",
+      "job_id": "vietnamworks_2116883",
       "source": "vietnamworks",
-      "field": "posted_date",
-      "before": "2026-10-21T10:00:39+07:00",
-      "after": "2026-10-21",
+      "field": "requirements_clean",
+      "before": "Background in economics, finance, banking or accounting\nGood computing skills and knowledge of Microsoft Office, particularly Excel\nGood verbal and written communication skills in English\nProactive, d…",
+      "after": "Background in economics, finance, banking or accounting Good computing skills and knowledge of Microsoft Office, particularly Excel Good verbal and written communication skills in English Proactive, d…",
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2113957",
+      "job_id": "vietnamworks_2103904",
       "source": "vietnamworks",
       "field": "headcount",
       "before": "1",

@@ -2,7 +2,7 @@
 
 > Code: `preprocessing/transformation/run.py` (`process_source`, `run`); `salary_parser.py` (`parse_salary_cascade`), `date_parser.py` (`process_dates`), `experience_parser.py`, `headcount_parser.py`, `location_parser.py`, `skill_extractor.py` (`extract_skills`, `extract_benefits`); `preprocessing/common/text_clean.py`, `lang_id.py`; `preprocessing/translation/` (`make_context`, `translator.py`, `core.py`); `preprocessing/missing_outlier/sneaky_null_detector.py`. Luật mới T9: `preprocessing/transformation/jd_extractor.py` đọc `preprocessing/dictionaries/jd_extraction.json`.
 > Lệnh: `python scripts/run_preprocessing.py --step transformation --source all [--dry-run] [--translate]`.
-> Dữ liệu mẫu: [`samples/03_transformation.json`](samples/03_transformation.json) (lần chạy thật 18/11/2026 **có dịch**, xong 18:57, đầu vào là bảng 02 sau C9 và luật thắng chung, 4.495 tin).
+> Dữ liệu mẫu: [`samples/03_transformation.json`](samples/03_transformation.json) (chạy lại 19/11/2026 **có dịch**, dùng cache bản dịch 18/11, đầu vào là bảng 02 sau bộ lọc IT ba tầng, 3.997 tin).
 > Prompt: [`docs/prompting/preprocessing/03_transformation.md`](../../prompting/preprocessing/03_transformation.md).
 >
 > **Trạng thái của file này:** mục 2.1 và 2.2 là luật đang chạy. Mục 2.2 được người dùng duyệt 18/11, đã code và **chạy thật 18/11 (có dịch)**. Số trong file là của lần chạy đó, trừ chỗ ghi khác.
@@ -31,14 +31,14 @@ Biến chữ thành giá trị dùng được:
 
 ### 2.1. Luật đang chạy
 
-Số tin là của lần chạy thật 18/11 có dịch (4.495 tin).
+Số tin là của lần chạy lại 19/11 có dịch (3.997 tin, sau bộ lọc IT ba tầng ở 01; lần 18/11 là 4.495 tin).
 
 | Mã | Điều kiện / cách làm | Hành động | Số tin 18/11 |
 |---|---|---|---|
 | T1 | Null trá hình ("0", "Đang cập nhật", "N/A", …) ở mọi cột `raw_*` chuyển thành null (`is_val_null`) | modify | 11.500 ô |
 | T6 | Làm sạch chữ cho `raw_description_text`, `raw_requirements_text`, `job_title` → `*_clean`, `*_norm` (viết thường), `*_fold` (viết thường, bỏ dấu, chỉ để so khớp). Gồm: T6.1 bóc thẻ HTML và entity; T6.2 NFC; T6.3 bỏ ký tự ẩn (`​`, `﻿`, `\xa0`); T6.4 gạch ngang và bullet về `- `. Còn HTML hoặc NFD thì lặp lại, tối đa 3 lần | modify | 4.495 (T6.1: 8, T6.2: 25, T6.3: 27, T6.4: 1.460) |
-| T6 (ngôn ngữ) | fastText `lid.176` trên `description_clean`. Độ tin cậy dưới 0,6 thì ra `other`. Luật đếm dấu cũ giữ ở `language_rule` để đối chiếu | modify | `vi` 3.296, `en` 1.193, `other` 6 |
-| T6b | Chỉ khi có `--translate`: dịch `description_clean` và `requirements_clean` của tin `en` bằng envit5 (revision `840bc881`). Thuật ngữ trong `no_translate.json` được thay bằng token `XTERMnX` trước khi dịch. Văn bản cắt thành đoạn ≤ 200 token, giải mã greedy. Bản dịch được kiểm (số liệu, token, tỷ lệ độ dài 0,3–3,0); hỏng thì giữ bản gốc và ghi `failed`. Cache ở `data/preprocessing/translation/translations_cache.jsonl` | modify | 1.193 tin `en`: 984 `translated`, 209 `failed` (257/25.121 đoạn hỏng sau 1 lần thử lại, giữ bản gốc ở đoạn đó). 16.546 lần gọi model, 8.832 đoạn lấy từ cache |
+| T6 (ngôn ngữ) | fastText `lid.176` trên `description_clean`. Độ tin cậy dưới 0,6 thì ra `other`. Luật đếm dấu cũ giữ ở `language_rule` để đối chiếu | modify | `vi` 2.876, `en` 1.114, `other` 7 |
+| T6b | Chỉ khi có `--translate`: dịch `description_clean` và `requirements_clean` của tin `en` bằng envit5 (revision `840bc881`). Thuật ngữ trong `no_translate.json` được thay bằng token `XTERMnX` trước khi dịch. Văn bản cắt thành đoạn ≤ 200 token, giải mã greedy. Bản dịch được kiểm (số liệu, token, tỷ lệ độ dài 0,3–3,0); hỏng thì giữ bản gốc và ghi `failed`. Cache ở `data/preprocessing/translation/translations_cache.jsonl` | modify | 1.114 tin `en`: 914 `translated`, 200 `failed` (giữ bản gốc ở đoạn hỏng). Lần 18/11: 1.193 tin, 209 `failed`, 257/25.121 đoạn hỏng sau 1 lần thử lại |
 | T2 | Lương, đọc lần lượt trường lương → tiêu đề → JD. Tiêu đề và JD chỉ nhận cụm số có đơn vị tiền đứng sát số. `.` và `,` theo sau đủ 3 chữ số là dấu hàng nghìn. "Từ X" chỉ đặt min; "Up to X", "Tới X" chỉ đặt max. **1 USD = 25.400 đ**; lương năm chia 12. Thỏa thuận thì `is_negotiable` = true và số để NaN (thiếu kiểu MNAR, không bù) | modify | 2.052 từ ô lương, 20 từ tiêu đề, 5 từ JD; 2.443 thỏa thuận |
 | T2f | Lương tháng ngoài 1–500 triệu: bỏ số, gắn `salary_suspect` | flag | 13 |
 | T3 | `raw_posted_date`, `raw_deadline` dạng ISO hoặc `dd/mm/yyyy` → date. Hạn nộp trước ngày cào thì chỉ gắn cờ `deadline_before_crawl` | modify | 4.323 |
@@ -49,7 +49,7 @@ Số tin là của lần chạy thật 18/11 có dịch (4.495 tin).
 
 ### 2.2. Luật thêm ngày 18/11 (người dùng duyệt, đã chạy thật)
 
-Số tin lần chạy thật: T3b 4.495 (2.901 từ ngày đăng, 1.594 từ lần cào đầu); T6.5 1.103; T9a 106; T9b 294; T9c 3.379.
+Số tin lần chạy lại 19/11: T3b 3.997 (2.676 từ ngày đăng, 1.321 từ lần cào đầu); T6.5 960; T9a 101; T9b 248; T9c 3.069.
 
 | Mã | Điều kiện / cách làm | Hành động | Cột mới | Vì sao |
 |---|---|---|---|---|
@@ -96,14 +96,14 @@ Toàn bộ mẫu, cụm nhiễu và quyết định nằm trong `preprocessing/d
 | `employment_type` | raw, trừ khi tiêu đề có Intern (EI1) thì lấy internship. Raw trống thì lấy JD |
 | `exp_min_years` | itviec: JD trước, ô JSON-LD làm dự phòng. 7 nguồn còn lại: ô của sàn trước, JD bù chỗ trống. Gắn `exp_source` = `raw` / `jd` / `jd_zero` / `itviec_jsonld` và `exp_conflict` khi ô và JD lệch ≥ 1 năm |
 
-**Số đo lần chạy thật 18/11** (bảng 03, 4.495 tin):
+**Số đo lần chạy lại 19/11** (bảng 03, 3.997 tin):
 
 | Khái niệm | Số đo |
 |---|---|
-| `work_mode` | Ô của sàn có ở 2.466 tin. JD có ở 106 tin (72 tín hiệu mạnh), thêm 55 tin ô trống. 11 tin lệch ô ↔ JD. Còn 1.974 tin cần bước 04 suy |
-| `employment_type` | JD có ở 294 tin (thực tập 220). 176 tin lệch ô ↔ JD, phần lớn là tin thực tập mà ô ghi toàn thời gian |
-| `exp_min_years` | JD có ở 3.379 tin (235 là "không yêu cầu kinh nghiệm"). JD bù 252 tin ô trống (topdev 111, itviec 61, vietnamworks 46, careerviet 17, glints 10, topcv 6, jobsgo 1). itviec có JD ở 612 tin, bước 04 lấy JD trước |
-| `employment_type` vào Silver? | Cả ô và JD đều trống ở 303 tin (topdev 197, vietnamworks 62, itviec 23, …). Người dùng chốt 18/11: vẫn đưa vào Silver, null khi không biết (spec 05 mục 4.4) |
+| `work_mode` | Ô của sàn có ở 2.188 tin. JD có ở 101 tin (70 tín hiệu mạnh), thêm 54 tin ô trống. 10 tin lệch ô ↔ JD (7 tín hiệu mạnh). Còn 1.755 tin cần bước 04 suy |
+| `employment_type` | JD có ở 248 tin (thực tập 190). 154 tin lệch ô ↔ JD, phần lớn là tin thực tập mà ô ghi toàn thời gian |
+| `exp_min_years` | JD có ở 3.069 tin (182 là "không yêu cầu kinh nghiệm"). JD bù 219 tin ô trống (topdev 90, itviec 57, vietnamworks 40, careerviet 17, glints 9, topcv 4, jobsgo 2). itviec có JD ở 591 tin, bước 04 lấy JD trước |
+| `employment_type` vào Silver? | Cả ô và JD đều trống ở 259 tin (topdev 164, vietnamworks 54, itviec 22, …). Người dùng chốt 18/11: vẫn đưa vào Silver, null khi không biết (spec 05 mục 4.4) |
 
 ## 3. Quy trình xử lý
 
@@ -132,8 +132,8 @@ Thứ tự trong `process_source`, cho từng dòng. Các mục **[mới]** thê
 
 | | Đường dẫn | Số dòng 18/11 |
 |---|---|---|
-| Input | `data/preprocessing/02_integration/all.parquet` (30 cột) | 4.495 |
-| Output | `data/preprocessing/03_transformation/all.parquet`: giữ 30 cột của 02, thêm 52 cột (82 cột), gồm 15 cột của T3b, T6.5, T9 | 4.495 |
+| Input | `data/preprocessing/02_integration/all.parquet` (30 cột) | 3.997 |
+| Output | `data/preprocessing/03_transformation/all.parquet`: giữ 30 cột của 02, thêm 52 cột (82 cột), gồm 15 cột của T3b, T6.5, T9 | 3.997 |
 | Cache dịch | `data/preprocessing/translation/translations_cache.jsonl` (khóa `k` = hash văn bản, `v` = bản dịch) | — |
 | Report | `reports/preprocessing/03_transformation/`; `extra.language_distribution`, `extra.text_quality`, `extra.language` (sha256 model `7e69ec54…`) | — |
 
@@ -143,13 +143,13 @@ Thứ tự trong `process_source`, cho từng dòng. Các mục **[mới]** thê
 |---|---|---|
 | `description_clean`, `requirements_clean`, `job_title_clean` (+ `_norm`, `_fold`) | T6 | 100% |
 | `language`, `language_conf`, `language_rule` | T6 | 100% |
-| `description_vi`, `requirements_vi` (+ `_vi_norm`, `_vi_fold`), `translated_by`, `translation_status`, `translation_chunks` | T6b | `not_needed` 3.302, `translated` 984, `failed` 209 |
+| `description_vi`, `requirements_vi` (+ `_vi_norm`, `_vi_fold`), `translated_by`, `translation_status`, `translation_chunks` | T6b | `not_needed` 2.883, `translated` 914, `failed` 200 |
 | `salary_min_vnd` / `salary_max_vnd` | T2 | 40,2% / 44,6% |
 | `is_negotiable` | T2 | 2.443 tin thỏa thuận |
 | `salary_currency_raw`, `salary_period_raw`, `salary_source` | T2 | `header` 2.052, `title` 20, `jd` 5, `none` 2.418 |
 | `salary_suspect` | T2f | 13 tin |
 | `posted_date` / `deadline_date` | T3 | 64,5% / 94,6% |
-| `posted_month` | T3b | 100%: 2026-09 960, 2026-10 3.512, 2026-11 23 |
+| `posted_month` | T3b | 100%: 2026-09 886, 2026-10 3.091, 2026-11 20 |
 | `exp_min_years` / `exp_max_years` | T4 | 90,8% / — |
 | `headcount` | T5 | 60,0% |
 | `benefits_clean` | T6.5 | 4.439 tin có phúc lợi |
@@ -218,11 +218,11 @@ Lấy từ report và từ trang `jd_dictionary.html`.
 
 | Kiểm tra | Cách | Ngưỡng | Kết quả 18/11 |
 |---|---|---|---|
-| Luật bảo toàn | `checks.rows_conserved` | vào = ra | Đạt (4.495) |
+| Luật bảo toàn | `checks.rows_conserved` | vào = ra | Đạt (3.997) |
 | Chất lượng chữ | `extra.text_quality.residual_*_pct` | HTML 0%, NFD 0%, ký tự ẩn 0% | Đạt |
 | Parser lương, kinh nghiệm, ngày, địa điểm | 50 chuỗi thật mỗi parser, gán tay | ≥ 95% | Chưa đo |
 | Bản dịch | 50 JD (`scripts/build_translation_review_sample.py`): kỹ năng và số liệu không đổi | 0 lỗi đổi số | Chưa kiểm (PRE-33) |
-| T9 | `scripts/review_jd_dictionary.py` sau khi chạy; đọc tay mọi ca lệch | Đọc 100% ca lệch | Bản nháp: 9/11 ca lệch work_mode thì JD đúng. Lần chạy thật: 11 ca lệch work_mode, 176 ca lệch loại hợp đồng, chưa đọc tay |
+| T9 | `scripts/review_jd_dictionary.py` sau khi chạy; đọc tay mọi ca lệch | Đọc 100% ca lệch | Bản nháp: 9/11 ca lệch work_mode thì JD đúng. Lần chạy lại 19/11: 10 ca lệch work_mode, 154 ca lệch loại hợp đồng, chưa đọc tay |
 | Test | `pytest tests/unit/test_transformation_step.py` (có test T3b, T6.5, T7, T9) | Xanh | Xanh |
 | Trang | `docs/presentation/preprocessing_steps/03_transformation.html` | Có | Có |
 
@@ -241,7 +241,7 @@ Lấy từ report và từ trang `jd_dictionary.html`.
 | ~~Kỹ năng lẫn nhãn ngành TopCV~~ | Xong ở 02 (L-50) | — |
 | Phúc lợi tiếng Anh không khớp từ điển; glints 74,4% | — | PRE-41 (người dùng đã duyệt mở rộng từ điển) |
 | ~~Kỹ năng bị rút cả từ bản dịch~~ | Xong | T7 (sửa) |
-| ~~Phúc lợi chưa NFC~~ | Xong: 1.103 tin được sửa | T6.5 |
-| Tin dịch `failed` | 209/1.193 (17,5%; 257/25.121 đoạn, tức 1,0%, giữ bản gốc tiếng Anh). Lần 10/11: 222/1.274. Model làm rơi "+" trong "5+ years" (chưa đo lại) | PRE-34 |
+| ~~Phúc lợi chưa NFC~~ | Xong: 960 tin được sửa (19/11) | T6.5 |
+| Tin dịch `failed` | 200/1.114 (18,0%, giữ bản gốc tiếng Anh, 19/11). Lần 18/11: 209/1.193; lần 10/11: 222/1.274. Model làm rơi "+" trong "5+ years" (chưa đo lại) | PRE-34 |
 
 - **Việc mở:** PRE-33, PRE-34, PRE-35, PRE-37, PRE-40, PRE-41.
