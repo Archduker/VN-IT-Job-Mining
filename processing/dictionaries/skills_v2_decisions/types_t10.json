@@ -1,0 +1,1096 @@
+{
+ "_meta": {
+  "batch": "t10",
+  "rule": "K8.17 (docs/spec/processing/08_skills.md)",
+  "generated": "2026-11-19",
+  "min_df": 5,
+  "rows": "1351-1407",
+  "n_ext_jobs": 1606,
+  "approved": null
+ },
+ "items": [
+  {
+   "slug": "freeswitch",
+   "name": "Asterisk / FreeSWITCH",
+   "group": "systems_network",
+   "df": 5,
+   "examples": [
+    "Đã từng làm việc với PBX/Softswitch: Asterisk, FreeSWITCH, Kamailio, OpenSIPS hoặc tương đương",
+    "Ưu tiên ứng viên có kiến thức hoặc kinh nghiệm ở một hoặc nhiều lĩnh vực sau:VoIP:Asterisk, FreeSWITCH, Kamailio; hiểu biết về giao thức SIP.Network:Có kiến thức về TCP/IP, Switching, Routing;"
+   ],
+   "ext": {
+    "n": 1,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: concept; ngoài ít (0 tin); nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "functional_safety",
+   "name": "Functional Safety (ISO 26262)",
+   "group": "embedded_iot",
+   "df": 5,
+   "examples": [
+    "Knowledge of Functional Safety (ISO 26262), Automotive Cybersecurity (ISO/SAE 21434), and Automotive SPICE.",
+    "Knowledge of functional safety or cybersecurity concepts"
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: concept; ngoài ít (1 tin); nhóm embedded_iot",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "gantt",
+   "name": "Gantt chart",
+   "group": "methodology_pm",
+   "df": 5,
+   "examples": [
+    "Lập kế hoạch dự án, WBS, Gantt Chart, CPM",
+    "Quản lý tiến độ: Lập tiến độ dự án chi tiết (WBS, Gantt,...) theo dõi sát sao các mốc thời gian của dự án hệ thống công nghệ thông tin, cơ điện nhẹ công trình xây dựng trung tâm dữ liệu (Data Center), trụ sở cơ quan nhà "
+   ],
+   "ext": {
+    "n": 1,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "gdb",
+   "name": "GDB",
+   "group": "dev_tools",
+   "df": 5,
+   "examples": [
+    "Biết sử dụng Git, CMake/Makefile, GDB.",
+    "Perform software debugging and system-level troubleshooting using tools such as GDB, QNX Momentics, and Lauterbach."
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 3,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (3 tin); nhóm dev_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "getx",
+   "name": "GetX",
+   "group": "mobile",
+   "df": 5,
+   "examples": [
+    "Có kiến thức về các phương thức quản lý state như Provider, Riverpod, Bloc/Cubit hoặc GetX.",
+    "Với ứng viên chuyên Flutter: Có kinh nghiệm sử dụng ít nhất một giải pháp quản lý state trong Flutter như Bloc, Riverpod, Provider, GetX hoặc tương đương."
+   ],
+   "ext": {
+    "n": 1,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm mobile",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "google_maps_api",
+   "name": "Google Maps API",
+   "group": "frontend",
+   "df": 5,
+   "examples": [
+    "Exposure to Jetpack Compose, Retrofit2 / OkHttp3, RxJava, or Google Maps SDK.",
+    "Phát triển Web Frontend & Portal:Xây dựng Portal/Admin Dashboard tốc độ cao bằngNext.js (v14+),React,TypeScriptvàTailwind CSS.Quản lý state phức tạp (Zustand, React Query), xử lý bảng dữ liệu lớn, biểu đồ real-time và tí"
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm frontend",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "gps_rtk",
+   "name": "GPS/RTK",
+   "group": "embedded_iot",
+   "df": 5,
+   "examples": [
+    "+ GPS/RTK (định vị chính xác cao).",
+    "Hiểu biết vàcó kinh nghiệm làm việc với các công nghệ: GPS/RTK, Giao tiếp CAN (CAN Bus), Cảm biến IMU, Cảm biến LiDAR, Camera và xử lý dữ liệu hình ảnh, Hệ thống quản lý pin (BMS), Điều khiển động cơ, Hệ điều hành Linux."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm embedded_iot",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "hudi",
+   "name": "Apache Hudi",
+   "group": "data_engineering",
+   "df": 5,
+   "examples": [
+    "Experience with BigQuery or open table formats such as Apache Iceberg, Delta Lake, or Apache Hudi;",
+    "Có kiến thức vững về định dạng dữ liệu dạng cột (Parquet) và các table format hiện đại như Iceberg, Delta, Hudi."
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 2,
+    "keywords": 1
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: hoi; nhóm ranh giới data_engineering, ngoài ít (3 tin)",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "i2c",
+   "name": "I2C",
+   "group": "embedded_iot",
+   "df": 5,
+   "examples": [
+    "Experience with communication protocols such as I2C, SPI, CAN, LIN, FlexRay and Ethernet.",
+    "Hiểu rõ về thiết kế mạch điện và các giao thức truyền thông như UART, RS232/485, SPI, I2C, USB, WiFi, Bluetooth, Ethernet."
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 1,
+    "keywords": 1
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: concept; ngoài ít (2 tin); nhóm embedded_iot",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ios_concurrency",
+   "name": "GCD / Swift Concurrency",
+   "group": "mobile",
+   "df": 5,
+   "examples": [
+    "tham chiếu retain cycle, GCD/OperationQueue/Swift Concurrency).",
+    "Hands-on experience with memory management and multithreading/concurrency: Android: JVM/ART memory behavior, threading, concurrency primitives, iOS: ARC, retain cycles, GCD/OperationQueue/Swift Concurrency;"
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm mobile",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "iso_20022",
+   "name": "ISO 20022 / SWIFT MT",
+   "group": "enterprise_apps",
+   "df": 5,
+   "examples": [
+    "Hiểu biết về chuẩn ISO 20022 hoặc ISO 8583 là một lợi thế.",
+    "Hiểu biết về chuẩn ISO 20022 hoặc ISO 8583 là một lợi thế."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 2
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: tool; ngoài ít (2 tin); nhóm enterprise_apps",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "kafka_connect",
+   "name": "Kafka Connect / Kafka Streams",
+   "group": "messaging",
+   "df": 5,
+   "examples": [
+    "Experience with CDC and streaming ingestion tools such as Debezium or Kafka Connect.",
+    "Có kiến thức/kinh nghiệm về Kafka Cluster, Kafka connect, Redis cluster;"
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm messaging",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "kaggle",
+   "name": "Kaggle",
+   "group": "data_science_ml",
+   "df": 5,
+   "examples": [
+    "Đã từng fine-tune mô hình (LoRA/QLoRA/PEFT cho LLM, transfer learning cho CV, hoặc feature engineering nâng cao cho predictive model), kể cả ở quy mô nhỏ (đồ án, Kaggle, personal project).",
+    "Có sản phẩm cá nhân: GitHub, portfolio, bài viết kỹ thuật, Kaggle, cuộc thi."
+   ],
+   "ext": {
+    "n": 1,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: concept; ngoài ít (0 tin); nhóm data_science_ml",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "kiro",
+   "name": "Kiro / Windsurf",
+   "group": "ai_tools",
+   "df": 5,
+   "examples": [
+    "Willingness to learn and use AI tools (e.g., Kiro, Claude, Cursor) to improve testing efficiency and explore test automation.",
+    "Năng lực AI (AI-Driven Mindset): Có minh chứng thực tế về việc ứng dụng thành thạo các công cụ AI để gia tăng hiệu suất công việc (ví dụ: Cursor, GitHub Copilot, Kiro, Claude Code) và/hoặc đã từng tích hợp các AI Models "
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm ai_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "legacy_modernization",
+   "name": "Hiện đại hóa hệ thống cũ",
+   "group": "architecture_api",
+   "df": 5,
+   "examples": [
+    "Platform Modernization & Improvement",
+    "Platform Modernization & Product Delivery"
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "linear_tool",
+   "name": "Linear (công cụ quản lý issue)",
+   "group": "dev_tools",
+   "df": 5,
+   "examples": [
+    "Collaborate with different teams (FE, BE, QA, Design, Customer Success) in Linear + Confluence; run sprints, groom backlogs, cut scope ruthlessly.",
+    "Sử dụng tốt các công cụ quản lý lỗi/dự án nhưJira, Linear, TrellohoặcGitLab Issues."
+   ],
+   "ext": {
+    "n": 1,
+    "tech_stack": 1,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm dev_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "liquibase",
+   "name": "Liquibase / Flyway",
+   "group": "databases",
+   "df": 5,
+   "examples": [
+    ", Liquibase, Docker, Kubernetes, and CI/CD pipelines.",
+    "Kotlin, Spring Boot, Gradle, jOOQ, Liquibase, Kotest/JUnit, Karate/Rest Assured"
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 3,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (3 tin); nhóm databases",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "logstash",
+   "name": "Logstash / Fluentd",
+   "group": "devops",
+   "df": 5,
+   "examples": [
+    "Triển khai, vận hành và xây dựng hệ thống cảnh báo chủ động tập trung sử dụng Prometheus, Grafana, và ECK (Elasticsearch, Logstash, Kibana on K8s).",
+    "Có kinh nghiệm với ELK Stack (Elasticsearch, Logstash, Kibana)."
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 2,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: hoi; nhóm ranh giới devops, ngoài ít (2 tin)",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "mdm_device",
+   "name": "Mobile Device Management",
+   "group": "systems_network",
+   "df": 5,
+   "examples": [
+    "Develop backend, frontend, and mobile features for Mobile Device Management (MDM) products, ensuring high-quality code, performance, and security.",
+    "Giải pháp quản lý thiết bị di động (Mobile Device Management – MDM)."
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "model_validation",
+   "name": "Model validation (model risk)",
+   "group": "data_science_ml",
+   "df": 5,
+   "examples": [
+    "Relevant Experience At least 12 years of relevant experience in banking risk management, analytics, model development or model validation, including at least 5 years in a senior leadership role.",
+    "Solid understanding of supervised learning, feature engineering, model validation, and experimentation (A/B / switchback testing)"
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm data_science_ml",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "motor_control",
+   "name": "Điều khiển động cơ (motor control)",
+   "group": "embedded_iot",
+   "df": 5,
+   "examples": [
+    "+ Điều khiển động cơ (Motor Control).",
+    "Điều khiển động cơ (Motor Control)."
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm embedded_iot",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ms_security_cert",
+   "name": "Microsoft security cert (SC-200/SC-300)",
+   "group": "certifications",
+   "df": 5,
+   "examples": [
+    "Ưu tiên sở hữu một trong các chứng chỉ quốc tế: Security+, CEH, SC-200, SC-300, CISSP, CISM.",
+    "Có ít nhất 01 chứng chỉ ATTT: Security+, CEH, CySA+, CSA, SC-200 hoặc tương đương."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chung_chi",
+   "ly_do": "Claude đọc lại: hoi (chung_chi); luật: hoi; nhóm ranh giới certifications, ngoài ít (0 tin)",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ndr",
+   "name": "NDR",
+   "group": "security",
+   "df": 5,
+   "examples": [
+    "Có kinh nghiệm triển khai hoặc vận hành một hoặc nhiều giải pháp như SIEM, SOAR, EDR/XDR, NDR, IDS/IPS, WAF, DLP, IAM/PAM.",
+    "Xây dựng phương án triển khai các hệ thống SIEM, SOAR, EDR/XDR, NDR phù hợp với mô hình đa khách hàng (multi-tenant)."
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 1,
+    "keywords": 1
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (2 tin); nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "network_automation",
+   "name": "Network automation",
+   "group": "systems_network",
+   "df": 5,
+   "examples": [
+    "Good Understanding on Network Automation (Python and Ansible).",
+    "Các chứng chỉ Network Automation / Security liên quan."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 3
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (3 tin); nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "new_relic",
+   "name": "New Relic",
+   "group": "devops",
+   "df": 5,
+   "examples": [
+    "ELK Stack, New Relic",
+    "(Signoz/Sentry/New Relic) and monitoring stacks (Prometheus/Grafana)."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 1,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: hoi; nhóm ranh giới devops, ngoài ít (1 tin)",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ntp",
+   "name": "NTP",
+   "group": "systems_network",
+   "df": 5,
+   "examples": [
+    "Working knowledge of Active Directory, DNS, NTP, SSH, SFTP and Syslog.",
+    "Có kinh nghiệm làm việc với các chuẩn truyền thông (LoRa, Ethernet, 4G, WIFI, NBIoT...), các giao thức (MODBUS RTU/TCP, MQTTS, HTTPS, TCP/IP, FTP, NTP...)"
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: concept; ngoài ít (0 tin); nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "nunit",
+   "name": "NUnit / xUnit",
+   "group": "testing_qa",
+   "df": 5,
+   "examples": [
+    "(xUnit, NUnit, Moq) and Test-Driven Development (TDD).",
+    "Điểm cộng (Không bắt buộc):Đã từng tìm hiểu/thực hànhasync/awaittrong C#.Có kiến thức cơ bản về thiết kế UI/UX hoặc từng làm việc với Figma.Quan tâm đến lĩnh vực kiểm thử phần cứng/thiết bị đo hoặc tự động hoá.Đã viết un"
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: concept; ngoài ít (0 tin); nhóm testing_qa",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ot_security",
+   "name": "OT security",
+   "group": "security",
+   "df": 5,
+   "examples": [
+    "Experience with OT is an advantage.",
+    "Experience with OT is an advantage."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 3
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (3 tin); nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "policy_as_code",
+   "name": "Policy as code (Kyverno, OPA)",
+   "group": "security",
+   "df": 5,
+   "examples": [
+    "Contribute to the rollout of Policy-as-Code (e.g., Kyverno, OPA) for cluster governance.",
+    "Contribute to the rollout of Policy-as-Code (e.g., Kyverno, OPA) for cluster governance."
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 3,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (3 tin); nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ppap",
+   "name": "PPAP / APQP",
+   "group": "methodology_pm",
+   "df": 5,
+   "examples": [
+    "Làm tài liệu PPAP, tài liệu phán đoán",
+    "Làm tài liệu PPAP, tài liệu phán đoán"
+   ],
+   "ext": {
+    "n": 0,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: concept; ngoài ít (0 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "print_on_demand",
+   "name": "Print on demand (POD)",
+   "group": "digital_marketing",
+   "df": 5,
+   "examples": [
+    "Đã từng design cho các sàn POD US.",
+    "Đã từng design cho các sàn POD US."
+   ],
+   "ext": {
+    "n": 0,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm digital_marketing",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "program_management",
+   "name": "Program management",
+   "group": "methodology_pm",
+   "df": 5,
+   "examples": [
+    "[tag] Program management",
+    "[tag] Program Management"
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "qlik",
+   "name": "Qlik Sense / QlikView",
+   "group": "bi_analytics",
+   "df": 5,
+   "examples": [
+    "Báo cáo quản trị:Phối hợp xây dựng dashboard/KPI và các báo cáo quản trị trên Excel, Power BI, Qlik hoặc công cụ tương đương; phân tích biến động doanh thu, chi phí, tồn kho và hiệu quả vận hành.",
+    "Có kinh nghiệm sử dụng một trong các công cụ BI/Visualization: Tableau, Power BI, Qlik, Google Data Studio"
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 2,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (2 tin); nhóm bi_analytics",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "quant_modeling",
+   "name": "Mô hình định lượng (quant)",
+   "group": "data_science_ml",
+   "df": 5,
+   "examples": [
+    "Minimum 5-8 years of experience in data science, machine learning, actuarial analytics or quantitative modeling, with demonstrated end-to-end project ownership.",
+    "At least 8 years of experience in Data Science, Machine Learning, Analytics, or Quantitative Modeling."
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm data_science_ml",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "rdp",
+   "name": "RDP / Remote Desktop",
+   "group": "systems_network",
+   "df": 5,
+   "examples": [
+    "Troubleshoot issues in person or remotely using tools such as RDP, VNC, or TeamViewer, and escalate unresolved issues to the broader IT team.",
+    "Có am hiểu về hệ điều hành Linux/Windows (biết RDP, SSH, basic linux command)."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: concept; ngoài ít (1 tin); nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "reference_data",
+   "name": "Reference data",
+   "group": "data_engineering",
+   "df": 5,
+   "examples": [
+    "Kiến thức và chuyên môn Có kiến thức tốt về Quản trị dữ liệu và các lĩnh vực liên quan như Data Quality, Metadata, Data Dictionary, Business Glossary, Data Classification, Master Data, Reference Data, Data Lineage và Dat",
+    "Master Data & Reference Data"
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 0,
+    "keywords": 2
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm ranh giới data_engineering, ngoài ít (2 tin)",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "reserved_instances",
+   "name": "Reserved instances / savings plans",
+   "group": "cloud",
+   "df": 5,
+   "examples": [
+    "Đề xuất các phương pháp tối ưu chi phí như sử dụng Reserved Instances, Savings Plans, Spot Instances hoặc tự động tắt các tài nguyên không sử dụng.",
+    "Track and reduce AWS costs: budgets, choosing the right resource sizes, Savings Plans / Reserved Instances."
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: tool; ngoài ít (0 tin); nhóm cloud",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "salesforce_cert",
+   "name": "Salesforce certification",
+   "group": "certifications",
+   "df": 5,
+   "examples": [
+    "Has OOP knowledge Strong logical thinking, flexible problem-solving, and effective teamwork skills. *Preferred Qualifications: Salesforce Certified Platform Developer I / II",
+    "MuleSoft Certified Platform Architect."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chung_chi",
+   "ly_do": "Claude đọc lại: hoi (chung_chi); luật: hoi; nhóm ranh giới certifications, ngoài ít (0 tin)",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "sap_badi",
+   "name": "BADIs / User Exits",
+   "group": "enterprise_apps",
+   "df": 5,
+   "examples": [
+    "Phát triển, tùy chỉnh, mở rộng hệ thống bằng ABAP, ABAP OO, CDS View, AMDP, ODATA, BAPI, IDoc, Enhancements, User Exit, BADIs.",
+    "[tag] BADIs"
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 2
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (2 tin); nhóm enterprise_apps",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "sap_mdg",
+   "name": "SAP MDG",
+   "group": "enterprise_apps",
+   "df": 5,
+   "examples": [
+    "Internally, you'll contribute to shaping product features, streamlining business processes, and helping us deliver maximum value through SimpleMDG (simplemdg.com).",
+    "Laidon developed SimpleMDG (simplemdg.com), a powerful master data governance solution on SAP BTP that fortifies master data foundations, enhances operational excellence, ensures compliance, and drives innovation at scal"
+   ],
+   "ext": {
+    "n": 0,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm enterprise_apps",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "smartsheet",
+   "name": "Smartsheet",
+   "group": "dev_tools",
+   "df": 5,
+   "examples": [
+    "Maintain project documentation and ensure project tools (e.g., Jira, Smartsheet) are updated.",
+    "Maintain project documentation and ensure project tools (e.g., Jira, Smartsheet) are updated."
+   ],
+   "ext": {
+    "n": 0,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm dev_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "spa",
+   "name": "SPA",
+   "group": "frontend",
+   "df": 5,
+   "examples": [
+    "Highly skilled and confident in SPA web frameworks specifically React (plus Vue & Angular)",
+    "Có kinh nghiệm xây dựng SPA hoàn chỉnh với React/Vue: state management, routing, component design, form handling."
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: tool; ngoài ít (0 tin); nhóm frontend",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "spi",
+   "name": "SPI",
+   "group": "embedded_iot",
+   "df": 5,
+   "examples": [
+    "Có nhiều kinh nghiệm với các phương thức giao tiếp bao gồm I2C, SPI, UART, CAN và TCP/IP.",
+    "Giao tiếp và truyền thông: UART, Modbus RTU, SPI, I2C."
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 1,
+    "keywords": 1
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: concept; ngoài ít (2 tin); nhóm embedded_iot",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ssas",
+   "name": "SSAS",
+   "group": "bi_analytics",
+   "df": 5,
+   "examples": [
+    "Ưu tiên ứng viên:+Có hiểu biết và kinh nghiệm thực tế với các thành phần SAP BW: DataSource, InfoObject, InfoCube, DSO, Query và Transformation (kiến trúc, phương pháp trích xuất dữ liệu (Extractors) và mô hình hóa dữ li",
+    "Competent in BI technologies (SQL, SSIS, Python, R, AAS, SSAS, Power BI and Qlikview)"
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 1,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm bi_analytics",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "supabase",
+   "name": "Supabase",
+   "group": "backend",
+   "df": 5,
+   "examples": [
+    "Experience with PostgreSQL, Supabase, or comparable relational database technologies.",
+    "Supabase"
+   ],
+   "ext": {
+    "n": 1,
+    "tech_stack": 1,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm backend",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "symfony",
+   "name": "Symfony",
+   "group": "backend",
+   "df": 5,
+   "examples": [
+    "Chi tiết công việc Senior/Lead PHP Developer (Symfony, English) tại Ekino Vietnam",
+    "Symfony (5.4 up to 7.4)"
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 2,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (2 tin); nhóm backend",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "terraform_cert",
+   "name": "Terraform Associate",
+   "group": "certifications",
+   "df": 5,
+   "examples": [
+    "Relevant certifications such as OpenStack COA/COE, CKA/CKAD/CKS, RHCSA/RHCE, Terraform Associate, or a public-cloud certification.",
+    "HashiCorp Terraform Associate"
+   ],
+   "ext": {
+    "n": 1,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chung_chi",
+   "ly_do": "Claude đọc lại: hoi (chung_chi); luật: hoi; nhóm ranh giới certifications, ngoài ít (0 tin)",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "trellix",
+   "name": "Trellix / McAfee",
+   "group": "security",
+   "df": 5,
+   "examples": [
+    "Đã làm việc với các giải pháp của Palo Alto Networks, Fortinet, Radware, F5, Imperva, Trellix/McAfee,",
+    "Có kinh nghiệm và triển khai thành tạo các thiết bị như Checkpoint, Palo Alto, Cisco, F5, A10, Citrix, Fortinet, Sonicwall, Sophos, Trellix, Imperva..."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 1,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: concept; ngoài ít (1 tin); nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ttp_threat",
+   "name": "TTP (tactics, techniques, procedures)",
+   "group": "security",
+   "df": 5,
+   "examples": [
+    "Duy trì và cập nhật thư viện TTP (Tactics, Techniques, Procedures) dưới dạng tự động hoá, ánh xạ theo khung MITRE ATT&CK",
+    "Có khả năng đọc log, phân tích IOC/IOA và hiểu các TTP phổ biến theo MITRE ATT&CK."
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "unity_profiler",
+   "name": "Unity Profiler",
+   "group": "game_dev",
+   "df": 5,
+   "examples": [
+    "Kinh nghiệm tối ưu hiệu năng (CPU/GPU/Memory), sử dụng tốt Unity Profiler và các công cụ phân tích hiệu suất.",
+    "Kinh nghiệm tối ưu hiệu năng có đo đạc: sử dụng Unity Profiler, Frame Debugger, hiểu rõ cách xử lý draw call, overdraw, GC allocation."
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm game_dev",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "value_engineering",
+   "name": "Value engineering",
+   "group": "methodology_pm",
+   "df": 5,
+   "examples": [
+    "Tham gia các cuộc họp về phát triển sản phẩm mới (New Product Development), họp tối ưu hóa giá trị (Value Engineering) và họp sản xuất mẫu lô đầu tiên (First of Mass Production Sample) để ghi nhận (record) và cập nhật cá",
+    "Tham gia các cuộc họp về phát triển sản phẩm mới (New Product Development), họp tối ưu hóa giá trị (Value Engineering) và họp sản xuất mẫu lô đầu tiên (First of Mass Production Sample) để ghi nhận (record) và cập nhật cá"
+   ],
+   "ext": {
+    "n": 0,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "vng_cloud",
+   "name": "VNG Cloud / BizFly Cloud",
+   "group": "cloud",
+   "df": 5,
+   "examples": [
+    "Experience implementing and flexibly adapting security solutions on domestic cloud infrastructure such as VNG Cloud.",
+    "Hands-on Cloud Competency:Practical, hands-on configuration experience withAWS Cloudcore services (EC2, VPC, S3, IAM, RDS, CloudWatch, etc.).Hands-on deployment or operational experience with at least one or moreVietname"
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm cloud",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "voice_assistant",
+   "name": "Voice assistant (wake word)",
+   "group": "ai_genai",
+   "df": 5,
+   "examples": [
+    "Có dự án xử lý âm thanh/giọng nói hoặc mong muốn phát triển thêm theo hướng Voice Assistant.",
+    "Experience in AI, voice assistant, or multi-agent system testing is a strong advantage."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm ai_genai",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "vsan",
+   "name": "VMware vSAN",
+   "group": "systems_network",
+   "df": 5,
+   "examples": [
+    "Kiến thức về ảo hóa VMware vSphere: ESXi Hypervior, Virtual Machine, vSphere Installation, vSphere Storage, Virtual Network, Vmware Vsphere HA, DRS, vSAN, vCenter.",
+    "Hiểu biết về các công nghệ liên quan đến hệ thống ảo hóa VMware như vCloud Director, NSX-V, NSX-T, vSphere SRM , vSphere, vCenter, vMotion, vSAN, vRealize Operations."
+   ],
+   "ext": {
+    "n": 3,
+    "tech_stack": 1,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: concept; ngoài ít (1 tin); nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "yaml",
+   "name": "YAML / JSON config",
+   "group": "dev_tools",
+   "df": 5,
+   "examples": [
+    "Design context layers and reusable knowledge assets using Markdown, YAML, schemas, and related formats.",
+    "Practical experience with Infrastructure as Code, scripting, or Automation tools such as Terraform, PowerShell, Azure CLI, JSON, YAML, or similar technologies."
+   ],
+   "ext": {
+    "n": 4,
+    "tech_stack": 2,
+    "keywords": 0
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: tool; ngoài ít (2 tin); nhóm dev_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "zachman",
+   "name": "Zachman Framework",
+   "group": "architecture_api",
+   "df": 5,
+   "examples": [
+    "đào tạo Thạc sỹ chỉ là tiêu chí xem xét ưu tiên). • Trình độ ngoại ngữ: Tiếng Anh trình độ B1 (Khung tham chiếu chung Châu Âu) hoặc tương đương trở lên. • Có một trong các chứng chỉ về Kiến trúc doanh nghiệp sau: TOGAF, ",
+    "Strong knowledge of enterprise architecture (TOGAF, Zachman, or equivalent). 5."
+   ],
+   "ext": {
+    "n": 1,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: concept; ngoài ít (1 tin); nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "zendesk",
+   "name": "Zendesk / Freshdesk",
+   "group": "enterprise_apps",
+   "df": 5,
+   "examples": [
+    "Hands-on experience with SQL, Postman, or ticket tools such as Jira or Zendesk.",
+    "Sử dụng thành thạo các công cụ hỗ trợ từ xa (TeamViewer, AnyDesk, Remote Desktop) và hệ thống ticketing (Jira Service Desk, Freshservice, Zendesk)."
+   ],
+   "ext": {
+    "n": 2,
+    "tech_stack": 1,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm enterprise_apps",
+   "quyet_dinh": null
+  }
+ ]
+}

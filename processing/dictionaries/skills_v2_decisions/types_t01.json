@@ -1,0 +1,2857 @@
+{
+ "_meta": {
+  "batch": "t01",
+  "rule": "K8.17 (docs/spec/processing/08_skills.md)",
+  "generated": "2026-11-19",
+  "min_df": 5,
+  "rows": "1-150",
+  "n_ext_jobs": 1606,
+  "approved": null
+ },
+ "items": [
+  {
+   "slug": "information_security",
+   "name": "An toàn thông tin",
+   "group": "security",
+   "df": 1243,
+   "examples": [
+    "Giám sát, phát hiện và phân loại các cảnh báo an toàn thông tin trên hệ thống SOC.",
+    "Phối hợp chặt chẽ với Kỹ sư R&D và PM để bóc tách khối lượng, chuẩn bị tài liệu đáp ứng phần Yêu cầu Kỹ thuật (Catalogue, giấy chứng nhận tiêu chuẩn thiết bị IP65, CE, thông số mã nguồn, chứng nhận kiểm định an toàn thôn"
+   ],
+   "ext": {
+    "n": 632,
+    "tech_stack": 0,
+    "keywords": 69
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/69 ở tech_stack; nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "software_testing",
+   "name": "Kiểm thử phần mềm",
+   "group": "testing_qa",
+   "df": 1163,
+   "examples": [
+    "Familiar with system implementation life cycle, including requirements, testing, deployment, user training, and post-go-live support.",
+    "Join in full project lifecycle experience including design, data, functional specs, configuration, testing and post-go-live support experience"
+   ],
+   "ext": {
+    "n": 502,
+    "tech_stack": 0,
+    "keywords": 110
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/110 ở tech_stack; nhóm testing_qa",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "database",
+   "name": "Cơ sở dữ liệu",
+   "group": "databases",
+   "df": 1028,
+   "examples": [
+    "Làm việc với API, database, websocket và cloud backend.",
+    "Hiểu biết về API, database, SQL, …"
+   ],
+   "ext": {
+    "n": 500,
+    "tech_stack": 0,
+    "keywords": 17
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm databases gợi ý tool, ngoài 0/17 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ai",
+   "name": "AI (trí tuệ nhân tạo)",
+   "group": "ai_genai",
+   "df": 1002,
+   "examples": [
+    "Knowledge of AIOps & Automated Root Cause Analysis: Leveraging AI to process vast amounts of operational data (telemetry—including logs, metrics, traces, and events) to automatically detect anomalies and identify the roo",
+    "Yêu thích, có niềm đam mê lĩnh vực nghiên cứu phát triển Công nghệ thông tin, cụ thể DevOPS, AI, Cloud Computing."
+   ],
+   "ext": {
+    "n": 472,
+    "tech_stack": 4,
+    "keywords": 128
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 4/132 ở tech_stack; nhóm ai_genai",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "api",
+   "name": "API",
+   "group": "architecture_api",
+   "df": 901,
+   "examples": [
+    "Thực hiện hỗ trợ người sử dụng cuối sử dụng phần mềm hệ thống theo tài liệu hỗ trợ đào tạo hoặc các team phát triển khác về tích hợp lấy dữ liệu theo tài liệu API hoặc dataset mà bộ phận cung cấp.",
+    "Thiết kế & phát triển API chuẩn REST/OpenAPI, dễ dàng mở rộng và tích hợp với hệ sinh thái ERP/CRM/eCommerce."
+   ],
+   "ext": {
+    "n": 474,
+    "tech_stack": 3,
+    "keywords": 12
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 3/15 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "sql",
+   "name": "SQL",
+   "group": "databases",
+   "df": 887,
+   "examples": [
+    "Có thể khả năng lập trình, đặc biệt là Python, SQL trong xử lí, phân tích dữ liệu và tự động hoá.",
+    "Experience working with databases (MySQL, PostgreSQL, MongoDB, etc.) and writing SQL queries for data validation."
+   ],
+   "ext": {
+    "n": 434,
+    "tech_stack": 283,
+    "keywords": 4
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 283/287 ở tech_stack; nhóm databases",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "troubleshooting",
+   "name": "Troubleshooting",
+   "group": "systems_network",
+   "df": 849,
+   "examples": [
+    "Experience with Linux basic command, independently complete project deployment, troubleshooting;",
+    "Strong experience with production database administration and troubleshooting."
+   ],
+   "ext": {
+    "n": 394,
+    "tech_stack": 0,
+    "keywords": 17
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/17 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "python",
+   "name": "Python",
+   "group": "programming_languages",
+   "df": 833,
+   "examples": [
+    "Basic knowledge of Python, Go, Java, or Node.js and REST APIs.",
+    "Có kinh nghiệm với ít nhất một trong các công nghệ sau: Backend (PHP, Python, JavaScript/TypeScript), Frontend (HTML, CSS, JavaScript/TypeScript), Database (Postgresql, Elasticsearch, Redis), Server (AWS, Linux), Develop"
+   ],
+   "ext": {
+    "n": 460,
+    "tech_stack": 393,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 393/393 ở tech_stack; nhóm programming_languages",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "cloud_computing",
+   "name": "Cloud computing",
+   "group": "cloud",
+   "df": 752,
+   "examples": [
+    "Cloud Infrastructure",
+    "Tối thiểu 5 năm kinh nghiệm trong vai trò Software Engineer / Technical Lead / Principal Engineer hoặc Solution Architect; có kinh nghiệm thiết kế kiến trúc cho các hệ thống cloud-native hoặc AI/Data."
+   ],
+   "ext": {
+    "n": 425,
+    "tech_stack": 3,
+    "keywords": 154
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm cloud gợi ý tool, ngoài 3/157 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "it_infrastructure",
+   "name": "Hạ tầng CNTT",
+   "group": "systems_network",
+   "df": 713,
+   "examples": [
+    "Quản lý và vận hành hệ thống IT Infrastructure (35%)",
+    "[tag] IT Infrastructure"
+   ],
+   "ext": {
+    "n": 376,
+    "tech_stack": 0,
+    "keywords": 90
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/90 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "networking",
+   "name": "Mạng máy tính",
+   "group": "systems_network",
+   "df": 681,
+   "examples": [],
+   "ext": {
+    "n": 334,
+    "tech_stack": 2,
+    "keywords": 93
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 2/95 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "cicd",
+   "name": "CI/CD",
+   "group": "devops",
+   "df": 677,
+   "examples": [
+    "Có kiến thức về Docker, CI/CD.",
+    "Sử dụng tốt Git, CI/CD, Docker; có kinh nghiệm viết Unit Test, xử lý lỗi và tối ưu hiệu năng."
+   ],
+   "ext": {
+    "n": 407,
+    "tech_stack": 2,
+    "keywords": 345
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 2/347 ở tech_stack; nhóm devops",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ai_application",
+   "name": "Ứng dụng AI vào công việc",
+   "group": "ai_genai",
+   "df": 598,
+   "examples": [
+    "Các kinh nghiệm liên quan/ Relevant Experience Tối thiểu 3-5 năm kinh nghiệm làm việc về phân tích nâng cao/ phát triển mô hình học máy/ học sâu, và/hoặc ứng dụng AI/GenAI.",
+    "Có kiến thức, kinh nghiệm trong nghiên cứu, phát triển, ứng dụng AI và Chuyển đổi"
+   ],
+   "ext": {
+    "n": 253,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm ai_genai",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "rest_api",
+   "name": "REST API",
+   "group": "architecture_api",
+   "df": 594,
+   "examples": [
+    "Thành thạo một trong các ngôn ngữ .Net (C#), Java, Python…; cơ sở dữ liệu Oracle /PostgreSQL /Mysql… Thiết kế và tích hợp REST API, OpenAPI, APISIX,…",
+    "Có kinh nghiệm làm việc với REST API / JSON."
+   ],
+   "ext": {
+    "n": 321,
+    "tech_stack": 79,
+    "keywords": 180
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: concept; ngoài 79/259 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "agile",
+   "name": "Agile",
+   "group": "methodology_pm",
+   "df": 591,
+   "examples": [
+    "Có hiểu biết về Agile/Scrum, quản lý backlog, ưu tiên yêu cầu và phối hợp release sản phẩm.",
+    "Có kinh nghiệm phát triển dự án theo mô hình Agile Scrum."
+   ],
+   "ext": {
+    "n": 205,
+    "tech_stack": 0,
+    "keywords": 156
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/156 ở tech_stack; nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "qa_qc",
+   "name": "QA/QC (đảm bảo chất lượng phần mềm)",
+   "group": "testing_qa",
+   "df": 587,
+   "examples": [
+    "· Strong interest in software testing and quality assurance.",
+    "Coverage and Quality Assurance: Drive functional and code coverage to meet project goals."
+   ],
+   "ext": {
+    "n": 256,
+    "tech_stack": 0,
+    "keywords": 34
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/34 ở tech_stack; nhóm testing_qa",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "monitoring",
+   "name": "Giám sát hệ thống (Monitoring)",
+   "group": "devops",
+   "df": 566,
+   "examples": [],
+   "ext": {
+    "n": 315,
+    "tech_stack": 0,
+    "keywords": 80
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/80 ở tech_stack; nhóm devops",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "docker",
+   "name": "Docker",
+   "group": "devops",
+   "df": 549,
+   "examples": [
+    "[tag] Docker",
+    "Biết Docker, Linux; có hiểu biết về Kubernetes."
+   ],
+   "ext": {
+    "n": 322,
+    "tech_stack": 256,
+    "keywords": 9
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 256/265 ở tech_stack; nhóm devops",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "git",
+   "name": "Git",
+   "group": "dev_tools",
+   "df": 538,
+   "examples": [
+    "Yêu Cầu Công Việc Nền tảng lập trình tốt, sử dụng được Python; hiểu cấu trúc dữ liệu, thuật toán, OOP, REST API, cơ sở dữ liệu và Git.",
+    "Quen thuộc với Git."
+   ],
+   "ext": {
+    "n": 300,
+    "tech_stack": 114,
+    "keywords": 28
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 114/142 ở tech_stack; nhóm dev_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "java",
+   "name": "Java",
+   "group": "programming_languages",
+   "df": 530,
+   "examples": [
+    "PL/SQL, C#, Java",
+    "Core Tech Stack: Deep expertise in Enterprise Java (Spring Boot / WebFlux) and designing low-latency, high-availability systems."
+   ],
+   "ext": {
+    "n": 290,
+    "tech_stack": 252,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 252/252 ở tech_stack; nhóm programming_languages",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "data_analysis",
+   "name": "Phân tích dữ liệu",
+   "group": "bi_analytics",
+   "df": 503,
+   "examples": [
+    "Yêu Cầu Công Việc Có từ 1 năm kinh nghiệm liên quan đến phân tích dữ liệu, báo cáo hoặc hỗ trợ BA là lợi thế.",
+    "Có khả năng vận dụng các kỹ thuật phân tích thống kê, kiểm định giả thuyết và phân tích dữ liệu phức tạp; có khả năng đưa ra các phân tích và khuyến nghị mang tính thực tiễn cao."
+   ],
+   "ext": {
+    "n": 183,
+    "tech_stack": 0,
+    "keywords": 33
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm bi_analytics gợi ý tool, ngoài 0/33 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "sdlc",
+   "name": "SDLC (vòng đời phát triển phần mềm)",
+   "group": "methodology_pm",
+   "df": 495,
+   "examples": [
+    "Nắm rất vững quy trình phát triển phần mềm (Software Development Life Cycle).",
+    "Participate in the full Software Development Life Cycle (SDLC), including requirement analysis, design, development, testing, deployment, and support."
+   ],
+   "ext": {
+    "n": 201,
+    "tech_stack": 0,
+    "keywords": 56
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/56 ở tech_stack; nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "debugging",
+   "name": "Debugging",
+   "group": "dev_tools",
+   "df": 491,
+   "examples": [
+    "Thành thạo Debugging và Performance testing skills.",
+    "Thành thạo ứng dụng AI trong phát triển phần mềm, từ phân tích yêu cầu, thiết kế giải pháp đến lập trình, kiểm thử, debugging và review code."
+   ],
+   "ext": {
+    "n": 242,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: tool; ngoài ít (1 tin); nhóm dev_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "postgresql",
+   "name": "PostgreSQL",
+   "group": "databases",
+   "df": 477,
+   "examples": [
+    "Cơ sở dữ liệu: CouchDB/PostgreSQL.",
+    "Install, configure, manage, and maintain database systems, including Microsoft SQL Server, MySQL, and PostgreSQL, ensuring stable and reliable operations."
+   ],
+   "ext": {
+    "n": 265,
+    "tech_stack": 245,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 245/245 ở tech_stack; nhóm databases",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "aws",
+   "name": "AWS",
+   "group": "cloud",
+   "df": 476,
+   "examples": [
+    "Infrastructure: AWS / GCP",
+    "Experience with AWS, GCP, or Azure."
+   ],
+   "ext": {
+    "n": 278,
+    "tech_stack": 94,
+    "keywords": 93
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 94/187 ở tech_stack; nhóm cloud",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "performance_optimization",
+   "name": "Tối ưu hiệu năng",
+   "group": "architecture_api",
+   "df": 476,
+   "examples": [
+    "Experience with high availability, scalability, performance optimization, or disaster recovery.",
+    "Strong SQL skills and understanding of data modeling, partitioning, and performance optimization."
+   ],
+   "ext": {
+    "n": 258,
+    "tech_stack": 0,
+    "keywords": 41
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/41 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "scalability",
+   "name": "Scalability",
+   "group": "architecture_api",
+   "df": 455,
+   "examples": [
+    "Deep understanding of system design, scalability, resiliency, and performance optimization.",
+    "Experience with high availability, scalability, performance optimization, or disaster recovery."
+   ],
+   "ext": {
+    "n": 258,
+    "tech_stack": 0,
+    "keywords": 18
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/18 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "linux",
+   "name": "Linux",
+   "group": "systems_network",
+   "df": 449,
+   "examples": [
+    "Am hiểu Windows , macOS; biết Linux là một lợi thế.",
+    "Deep expertise in Linux/UNIX administration, networking, and system security."
+   ],
+   "ext": {
+    "n": 253,
+    "tech_stack": 123,
+    "keywords": 40
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: hoi; nhóm systems_network gợi ý concept, ngoài 123/163 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "it_operations",
+   "name": "Vận hành hệ thống IT",
+   "group": "systems_network",
+   "df": 436,
+   "examples": [
+    "At least 8 years of experience in IT Operations, IT Service Management, Product Support, or enterprise platform environments.",
+    "Have at least 3 years of experience in IT operations, infrastructure, networking, cybersecurity, or managed services."
+   ],
+   "ext": {
+    "n": 203,
+    "tech_stack": 0,
+    "keywords": 23
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/23 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "devops",
+   "name": "DevOps",
+   "group": "devops",
+   "df": 430,
+   "examples": [
+    "Collaborate closely with Backend, DevOps, Cloud, and QA teams to ensure remediation and secure system architectures.",
+    "Có từ 5–7 năm kinh nghiệm trở lên trong lĩnh vực Cloud Platform, Infrastructure Automation hoặc DevOps trên môi trường hybrid/multi-cloud/multi-region."
+   ],
+   "ext": {
+    "n": 255,
+    "tech_stack": 0,
+    "keywords": 57
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/57 ở tech_stack; nhóm devops",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "reporting",
+   "name": "Báo cáo (reporting)",
+   "group": "bi_analytics",
+   "df": 430,
+   "examples": [
+    "Knowledge of analytics, reporting, or data-driven marketing approaches",
+    "Tối thiểu 2 năm kinh nghiệm trong lĩnh vực BI, Data Analytics hoặc Reporting."
+   ],
+   "ext": {
+    "n": 181,
+    "tech_stack": 0,
+    "keywords": 27
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm bi_analytics gợi ý tool, ngoài 0/27 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "scrum",
+   "name": "Scrum",
+   "group": "methodology_pm",
+   "df": 430,
+   "examples": [
+    "Experience working in Agile/Scrum environments.",
+    "Phối hợp phát triển (Agile/Scrum):"
+   ],
+   "ext": {
+    "n": 138,
+    "tech_stack": 0,
+    "keywords": 90
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/90 ở tech_stack; nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "microservices",
+   "name": "Microservices",
+   "group": "architecture_api",
+   "df": 428,
+   "examples": [
+    "Design, develop, and maintain backend systems, APIs, and microservices for cloud-based products and platforms.",
+    "Microservices"
+   ],
+   "ext": {
+    "n": 241,
+    "tech_stack": 2,
+    "keywords": 214
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 2/216 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "authn_authz",
+   "name": "Authentication/Authorization",
+   "group": "security",
+   "df": 414,
+   "examples": [
+    "Có kinh nghiệm thiết kế và tích hợp REST API, JSON, HTTP, Authentication/Authorization; hiểu các mã HTTP phổ biến.",
+    "Có kiến thức về authentication/authorization, API security là lợi thế."
+   ],
+   "ext": {
+    "n": 204,
+    "tech_stack": 0,
+    "keywords": 9
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/9 ở tech_stack; nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "erp",
+   "name": "ERP",
+   "group": "enterprise_apps",
+   "df": 413,
+   "examples": [
+    "2+ years of experience as an IT Business Analyst or Functional Consultant, preferably in a SaaS or enterprise software environment",
+    "Trở thành đầu mối kỹ thuật và vận hành giữa Khối CNTT Tập đoàn và các nhà máy trong khu vực.- Vận hành hệ thống mạng (Core Network – WAN – LAN – WiFi)- Firewall – Kết nối WAN – VPN- Hỗ trợ hệ thống máy chủ & thiết bị IT-"
+   ],
+   "ext": {
+    "n": 134,
+    "tech_stack": 14,
+    "keywords": 86
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm enterprise_apps gợi ý tool, ngoài 14/100 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "kubernetes",
+   "name": "Kubernetes",
+   "group": "devops",
+   "df": 410,
+   "examples": [
+    "Collaborate with DevOps to deliver production-grade services on Docker/Docker Swarm/Kubernetes.",
+    "Experience working in cloud / Kubernetes environment"
+   ],
+   "ext": {
+    "n": 252,
+    "tech_stack": 202,
+    "keywords": 15
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 202/217 ở tech_stack; nhóm devops",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "mysql",
+   "name": "MySQL",
+   "group": "databases",
+   "df": 409,
+   "examples": [
+    "Có hiểu biết về Apache server, Database MySQL, Linux server, Network, and Security.",
+    "Strong knowledge of relational databases (MySQL, PostgreSQL) and query optimization"
+   ],
+   "ext": {
+    "n": 206,
+    "tech_stack": 192,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 192/192 ở tech_stack; nhóm databases",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "code_review",
+   "name": "Code review",
+   "group": "dev_tools",
+   "df": 408,
+   "examples": [
+    "Understanding of AI-assisted software development practices, including AI-supported coding, code review, testing, documentation, and productivity enhancement.",
+    "Có kinh nghiệm sử dụng Git, chiến lược branching, pull request, code review và phát triển phần mềm theo mô hình cộng tác nhóm."
+   ],
+   "ext": {
+    "n": 232,
+    "tech_stack": 0,
+    "keywords": 32
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm dev_tools gợi ý tool, ngoài 0/32 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "project_management",
+   "name": "Quản lý dự án",
+   "group": "methodology_pm",
+   "df": 401,
+   "examples": [
+    "Có kiến thức về quản lý dự án (Project Management) là một điểm cộng.",
+    "Quản lý dự án chuyển đổi số và đối tác công nghệ."
+   ],
+   "ext": {
+    "n": 125,
+    "tech_stack": 0,
+    "keywords": 9
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/9 ở tech_stack; nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "frontend_dev",
+   "name": "Frontend development",
+   "group": "frontend",
+   "df": 397,
+   "examples": [
+    "Good understanding of frontend, backend, relational databases and SQL, APIs, authentication and authorization, infrastructure, deployment, and system integration.",
+    "Có kinh nghiệm về ứng dụng AI coding Tool , hiểu biết về Frontend,backend để xây dựng app, web nội bộ"
+   ],
+   "ext": {
+    "n": 202,
+    "tech_stack": 0,
+    "keywords": 24
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm frontend gợi ý tool, ngoài 0/24 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "sql_query",
+   "name": "Truy vấn SQL (JOIN, GROUP BY)",
+   "group": "databases",
+   "df": 381,
+   "examples": [
+    "Viết được SQL (SELECT, JOIN, GROUP BY) và dùng công cụ product analytics (ví dụ: Firebase, GA4, Mixpanel, Amplitude) để tự phân tích funnel và hành vi người dùng.",
+    "Thành thạo truy vấn SQL (SELECT, JOIN, GROUP BY, điều kiện lọc nâng cao) để kiểm tra, xác minh dữ liệu;"
+   ],
+   "ext": {
+    "n": 188,
+    "tech_stack": 1,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: tool; ngoài ít (1 tin); nhóm databases",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "computer_hardware",
+   "name": "Phần cứng máy tính",
+   "group": "systems_network",
+   "df": 379,
+   "examples": [
+    "Có kiến thức về quản trị mạng, server, phần cứng máy tính và hệ thống điện cơ bản.",
+    "Có kiến thức về Windows, Microsoft Office, phần cứng máy tính, máy in và mạng LAN/Wi-Fi."
+   ],
+   "ext": {
+    "n": 141,
+    "tech_stack": 0,
+    "keywords": 34
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/34 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ms_office",
+   "name": "Tin học văn phòng (Microsoft Office)",
+   "group": "office_tools",
+   "df": 379,
+   "examples": [
+    "Thành thạo Microsoft Office 365;",
+    "[tag] Microsoft Office"
+   ],
+   "ext": {
+    "n": 114,
+    "tech_stack": 50,
+    "keywords": 5
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "office",
+   "ly_do": "Claude đọc lại: hoi (office); luật: tool; ngoài 50/55 ở tech_stack; nhóm office_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "requirements_analysis",
+   "name": "Phân tích yêu cầu",
+   "group": "methodology_pm",
+   "df": 376,
+   "examples": [
+    "Có khả năng phân tích yêu cầu và viết tài liệu tốt.",
+    "Có khả năng phân tích yêu cầu, tạo tài liệu hệ thống"
+   ],
+   "ext": {
+    "n": 127,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "test_plan",
+   "name": "Test plan, test case",
+   "group": "testing_qa",
+   "df": 373,
+   "examples": [
+    "Hỗ trợ xây dựng và cập nhật test plan, test case dựa trên đặc tả.",
+    "[tag] Test Plan"
+   ],
+   "ext": {
+    "n": 167,
+    "tech_stack": 0,
+    "keywords": 31
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/31 ở tech_stack; nhóm testing_qa",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "software_architecture",
+   "name": "Kiến trúc phần mềm",
+   "group": "architecture_api",
+   "df": 362,
+   "examples": [
+    "[tag] Software Architecture",
+    "[tag] Software Architecture"
+   ],
+   "ext": {
+    "n": 207,
+    "tech_stack": 0,
+    "keywords": 42
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/42 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "uat",
+   "name": "UAT",
+   "group": "testing_qa",
+   "df": 358,
+   "examples": [
+    "Đồng hành cùng dự án triển khai Khảo sát, viết tài liệu (BRD, đặc tả báo cáo), đào tạo người dùng, hỗ trợ UAT và Go-live.",
+    "Support QA and UAT hands-on"
+   ],
+   "ext": {
+    "n": 98,
+    "tech_stack": 0,
+    "keywords": 50
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/50 ở tech_stack; nhóm testing_qa",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "backup",
+   "name": "Backup/Restore",
+   "group": "systems_network",
+   "df": 356,
+   "examples": [
+    "Có kiến thức chuyên sâu về an toàn thông tin, Firewall, Endpoint Security, VPN, Backup/Restore, quản lý lỗ hổng và phân quyền truy cập.",
+    "Có kiến thức chuyên sâu về an toàn thông tin, Firewall, Endpoint Security, VPN, Backup/Restore, quản lý lỗ hổng và phân quyền truy cập."
+   ],
+   "ext": {
+    "n": 164,
+    "tech_stack": 1,
+    "keywords": 53
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 1/54 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "software_deployment",
+   "name": "Triển khai phần mềm",
+   "group": "systems_network",
+   "df": 355,
+   "examples": [
+    "Cài đặt, cấu hình và triển khai phần mềm SAP Business One theo yêu cầu của khách hàng.",
+    "Hiểu biết về thiết kế và triển khai phần mềm, các khái niệm về cơ sở dữ liệu."
+   ],
+   "ext": {
+    "n": 134,
+    "tech_stack": 0,
+    "keywords": 5
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/5 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "business_analysis",
+   "name": "Phân tích nghiệp vụ",
+   "group": "methodology_pm",
+   "df": 352,
+   "examples": [
+    "Tham gia các buổi đào tạo nội bộ về sản phẩm và quy trình phân tích nghiệp vụ.",
+    "Quản lý và cập nhật tài liệu phân tích nghiệp vụ đảm bảo tài liệu luôn được cập nhật mới nhất;"
+   ],
+   "ext": {
+    "n": 69,
+    "tech_stack": 0,
+    "keywords": 22
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/22 ở tech_stack; nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "sql_server",
+   "name": "SQL Server",
+   "group": "databases",
+   "df": 349,
+   "examples": [
+    "CSDL: Biết SQL Server/MySQL, truy vấn dữ liệu",
+    "CSDL: Biết SQL Server/MySQL, truy vấn dữ liệu."
+   ],
+   "ext": {
+    "n": 153,
+    "tech_stack": 138,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 138/138 ở tech_stack; nhóm databases",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "server_admin",
+   "name": "Quản trị máy chủ",
+   "group": "systems_network",
+   "df": 346,
+   "examples": [
+    "Yêu Cầu Công Việc Tốt nghiệp Đại học, chuyên ngành Công nghệ thông tin / điện tử viễn thông hoặc chuyên ngành khác liên quan Có kiến thức về quản trị hệ thống mạng, máy chủ, hệ thống lưu trữ, cơ sở dữ liệu và các ứng dụn",
+    "Có kiến thức về quản lý tài khoản, quyền truy cập, máy chủ, sao lưu dữ liệu và bảo mật thiết bị."
+   ],
+   "ext": {
+    "n": 179,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "data_processing",
+   "name": "Xử lý dữ liệu",
+   "group": "data_engineering",
+   "df": 343,
+   "examples": [
+    "Có kiến thức cơ bản về SQL, xử lý dữ liệu và mô hình client-server là lợi thế.",
+    "Có kinh nghiệm làm việc với Oracle, PostgreSQL, MySQL, SQL Server, sử dụng SQL, tối ưu truy vấn, transaction và xử lý dữ liệu."
+   ],
+   "ext": {
+    "n": 169,
+    "tech_stack": 0,
+    "keywords": 12
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/12 ở tech_stack; nhóm data_engineering",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ux_design",
+   "name": "UX",
+   "group": "design_creative",
+   "df": 343,
+   "examples": [
+    "Own features from design to release—spot UX gaps early, ship core value first, log tech debt deliberately, and clean it up later.",
+    "Tinh thần học hỏi cao – chủ động tìm hiểu nghiệp vụ, kiến thức kỹ thuật và nguyên tắc UI/UX."
+   ],
+   "ext": {
+    "n": 114,
+    "tech_stack": 0,
+    "keywords": 4
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (4 tin); nhóm design_creative",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "javascript",
+   "name": "JavaScript",
+   "group": "programming_languages",
+   "df": 338,
+   "examples": [
+    "Familiarity with front-end technologies (JavaScript, HTML5, CSS3) and MVC architecture.",
+    "Strong TypeScript and JavaScript skills."
+   ],
+   "ext": {
+    "n": 190,
+    "tech_stack": 165,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 165/165 ở tech_stack; nhóm programming_languages",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "azure",
+   "name": "Azure",
+   "group": "cloud",
+   "df": 335,
+   "examples": [
+    "Có chứng chỉ như CKA/CKAD/CKS, AWS/GCP/Azure Certified hoặc các chứng chỉ cloud/platform liên quan.",
+    "Manage and support cloud environments (Azure, AWS) and virtualization platforms"
+   ],
+   "ext": {
+    "n": 194,
+    "tech_stack": 63,
+    "keywords": 41
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 63/104 ở tech_stack; nhóm cloud",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "jira",
+   "name": "Jira",
+   "group": "dev_tools",
+   "df": 335,
+   "examples": [
+    "Cập nhật tiến độ trên hệ thống quản lý dự án (Jira).",
+    "Experience working with Jira, Confluence, Jenkins, and other delivery collaboration tools."
+   ],
+   "ext": {
+    "n": 102,
+    "tech_stack": 14,
+    "keywords": 1
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 14/15 ở tech_stack; nhóm dev_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "risk_management",
+   "name": "Quản lý rủi ro",
+   "group": "methodology_pm",
+   "df": 324,
+   "examples": [
+    "[tag] Risk Management",
+    "Proven experience in project estimation, budget control, people management and risk management."
+   ],
+   "ext": {
+    "n": 126,
+    "tech_stack": 0,
+    "keywords": 29
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/29 ở tech_stack; nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "web_development",
+   "name": "Lập trình web",
+   "group": "frontend",
+   "df": 323,
+   "examples": [
+    "Có kiến thức về: Lập trình Web, Lập trình hệ thống.",
+    "Có kiến thức về: Lập trình Web, Lập trình hệ thống."
+   ],
+   "ext": {
+    "n": 164,
+    "tech_stack": 0,
+    "keywords": 19
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm frontend gợi ý tool, ngoài 0/19 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "process_improvement",
+   "name": "Cải tiến quy trình",
+   "group": "methodology_pm",
+   "df": 313,
+   "examples": [
+    "[tag] Process Improvement",
+    "[tag] Process Improvement"
+   ],
+   "ext": {
+    "n": 132,
+    "tech_stack": 0,
+    "keywords": 3
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (3 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "react",
+   "name": "React",
+   "group": "frontend",
+   "df": 313,
+   "examples": [
+    "React / TypeScript",
+    "Có kinh nghiệm lập trình frontend với React js, Vue, Angular, Next js."
+   ],
+   "ext": {
+    "n": 160,
+    "tech_stack": 149,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 149/149 ở tech_stack; nhóm frontend",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "backend_dev",
+   "name": "Backend development",
+   "group": "backend",
+   "df": 312,
+   "examples": [
+    "3+ years of experience in backend engineering",
+    "5+ years of experience in DevOps, SRE, Platform Engineering, or Backend Engineering."
+   ],
+   "ext": {
+    "n": 169,
+    "tech_stack": 0,
+    "keywords": 14
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm backend gợi ý tool, ngoài 0/14 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "machine_learning",
+   "name": "Machine Learning",
+   "group": "data_science_ml",
+   "df": 310,
+   "examples": [
+    "Hiểu các khái niệm cơ bản về Machine Learning, Deep Learning, và kiến trúc Transformer.",
+    "Expertise in deep learning, machine learning, and quantitative trading."
+   ],
+   "ext": {
+    "n": 150,
+    "tech_stack": 6,
+    "keywords": 69
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 6/75 ở tech_stack; nhóm data_science_ml",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "srs",
+   "name": "SRS (đặc tả yêu cầu)",
+   "group": "methodology_pm",
+   "df": 309,
+   "examples": [
+    "Xây dựng tài liệu theo dự án BRD / URD / SRS / HDSD/ Thiết kế chi tiết ...",
+    "Chuyển đổi yêu cầu nghiệp vụ thành tài liệu đặc tả chức năng (BRD, SRS, User Story, Use Case)."
+   ],
+   "ext": {
+    "n": 58,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "excel",
+   "name": "Excel",
+   "group": "office_tools",
+   "df": 308,
+   "examples": [
+    "Tích hợp dữ liệu từ SQL, SAP, SharePoint, Excel, API; thiết lập ETL/ELT pipeline tự động.",
+    "Thành thạo Excel/Google Sheets;"
+   ],
+   "ext": {
+    "n": 84,
+    "tech_stack": 49,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 49/49 ở tech_stack; nhóm office_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "dashboard",
+   "name": "Dashboard",
+   "group": "bi_analytics",
+   "df": 307,
+   "examples": [
+    "Thành thạo triển khai và vận hành Jira, Confluence và các tính năng nâng cao như Workflow, Automation, Dashboard, JQL, Rich Filter.",
+    "BI & Visualization Tools: Có kinh nghiệm sử dụng Power BI, Tableau, Superset hoặc công cụ tương đương để xây dựng báo cáo, dashboard và trực quan hóa dữ liệu."
+   ],
+   "ext": {
+    "n": 126,
+    "tech_stack": 0,
+    "keywords": 41
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm bi_analytics gợi ý tool, ngoài 0/41 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "system_administration",
+   "name": "Quản trị hệ thống",
+   "group": "systems_network",
+   "df": 304,
+   "examples": [
+    "Có từ 3 – 5 năm kinh nghiệm trong lĩnh vực IT Infrastructure, System Administration hoặc Network Administration.",
+    "5+ years of experience in IT Operations, Infrastructure, System Administration, or related fields."
+   ],
+   "ext": {
+    "n": 142,
+    "tech_stack": 0,
+    "keywords": 34
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/34 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "system_integration",
+   "name": "Tích hợp hệ thống",
+   "group": "architecture_api",
+   "df": 301,
+   "examples": [
+    "Understanding of system integration, Batch/Job processing, EOD processing, and incident management is an advantage.",
+    "Domain Knowledge: Priority given to candidates with experience in CRM, Loyalty, OMS, ERP, POS, eCommerce, or system integration."
+   ],
+   "ext": {
+    "n": 150,
+    "tech_stack": 0,
+    "keywords": 43
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/43 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "progress_tracking",
+   "name": "Quản lý tiến độ",
+   "group": "methodology_pm",
+   "df": 299,
+   "examples": [
+    "Yêu cầu có kỹ năng quản lý tiến độ, lập tài liệu và đánh giá.",
+    "Có kỹ năng quản lý tiến độ, xử lý vấn đề và giao tiếp tốt."
+   ],
+   "ext": {
+    "n": 79,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "oracle_db",
+   "name": "Oracle Database",
+   "group": "databases",
+   "df": 296,
+   "examples": [
+    "Yêu cầu ưu tiên Từng tham gia triển khai hoặc tích hợp với các hệ thống quản trị doanh nghiệp như ERP (SAP, Oracle, Odoo...), CRM, HRM, DMS, BPM hoặc các nền tảng SaaS B2B.",
+    "Thành thạo cơ sở dữ liệu quan hệ (MS SQL Server, PostgreSQL hoặc Oracle): Kỹ năng tối ưu hóa truy vấn chuyên sâu (Execution Plan, Indexing, Partitioning)."
+   ],
+   "ext": {
+    "n": 158,
+    "tech_stack": 136,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 136/136 ở tech_stack; nhóm databases",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "llm",
+   "name": "LLM",
+   "group": "ai_genai",
+   "df": 290,
+   "examples": [
+    "AI Agent, LLM integration, prompt engineering.",
+    "Ưu tiên kinh nghiệm LLM integration thực tế hoặc kinh nghiệm xây dựng AI agent / LLM application với LangChain và LangGraph (multi-agent, workflow, tool calling, RAG)."
+   ],
+   "ext": {
+    "n": 162,
+    "tech_stack": 7,
+    "keywords": 115
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 7/122 ở tech_stack; nhóm ai_genai",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "automation_test",
+   "name": "Automation test",
+   "group": "testing_qa",
+   "df": 284,
+   "examples": [
+    "[tag] Automation Test",
+    "[tag] Automation Test"
+   ],
+   "ext": {
+    "n": 159,
+    "tech_stack": 0,
+    "keywords": 73
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/73 ở tech_stack; nhóm testing_qa",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "gcp",
+   "name": "Google Cloud (GCP)",
+   "group": "cloud",
+   "df": 283,
+   "examples": [
+    "Knowledge of cloud security principles across AWS, Azure, or GCP.",
+    "Có kinh nghiệm làm việc với các hệ thống: Linux, Windows Server, Network infrastructure, Cloud platforms (AWS, Azure, GCP) là lợi thế."
+   ],
+   "ext": {
+    "n": 167,
+    "tech_stack": 42,
+    "keywords": 52
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 42/94 ở tech_stack; nhóm cloud",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "csharp",
+   "name": "C",
+   "group": "programming_languages",
+   "df": 273,
+   "examples": [
+    "Yêu Cầu Công Việc Có từ 3 năm kinh nghiệm phát triển Backend bằng C#/.NET.",
+    "Có kinh nghiệm với một hoặc nhiều ngôn ngữ/công nghệ Backend phổ biến (Golang, Java/Spring Boot, Node.js, Python, C#...)"
+   ],
+   "ext": {
+    "n": 152,
+    "tech_stack": 135,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 135/135 ở tech_stack; nhóm programming_languages",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "solution_architecture",
+   "name": "Solution Architecture",
+   "group": "architecture_api",
+   "df": 272,
+   "examples": [
+    "Business Requirement → Solution Architecture → Technical Design → Delivery Assurance → Operable & Secure Solution",
+    "2–5 years of experience in Cloud Pre-sales, Solution Architecture, Cloud Engineering, or Infrastructure Consulting."
+   ],
+   "ext": {
+    "n": 127,
+    "tech_stack": 0,
+    "keywords": 12
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/12 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ui_ux",
+   "name": "UI/UX",
+   "group": "design_creative",
+   "df": 272,
+   "examples": [
+    "Strong experience implementing UI/UX designs accurately and efficiently.",
+    "Develop UI/UX mockups for HMI or web applications to validate functional flows and system interfaces."
+   ],
+   "ext": {
+    "n": 69,
+    "tech_stack": 0,
+    "keywords": 19
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/19 ở tech_stack; nhóm design_creative",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "containerization",
+   "name": "Container",
+   "group": "devops",
+   "df": 263,
+   "examples": [
+    "Có kiến thức về triển khai và vận hành các nền tảng cloud, kiến thức về container, CI/CD.",
+    "Phối hợp với đội System trong việc triển khai, vận hành hạ tầng cho các dịch vụ dữ liệu (container, cloud resource);"
+   ],
+   "ext": {
+    "n": 158,
+    "tech_stack": 0,
+    "keywords": 21
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/21 ở tech_stack; nhóm devops",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "routing_switching",
+   "name": "Routing & Switching",
+   "group": "systems_network",
+   "df": 262,
+   "examples": [
+    "Frontend:Thành thạoReactJS,Next.js (App Router), nắm vững các hook chuyên sâu, SSR/SSG/ISR, state management (Zustand/Redux Toolkit) và CSS hiện đại (Tailwind CSS).",
+    "Triển khai cấu hình và quản trị hạ tầng thiết bị mạng CNTT tại Datacenter: Switch Core, Router, Firewall, SAN Switch."
+   ],
+   "ext": {
+    "n": 119,
+    "tech_stack": 7,
+    "keywords": 11
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 7/18 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "typescript",
+   "name": "TypeScript",
+   "group": "programming_languages",
+   "df": 262,
+   "examples": [
+    "Thành thạo ít nhất một trong các công nghệ: HTML, CSS, JavaScript/TypeScript, ReactJS, VueJS, Angular.",
+    "Knowledge with popular web applications framework – angular v22, signalr , tailwindcss, typescript, Bootstrap, jQuery, Angular.js, Node.js, React Able for English speaking, writing and listening skills is plus"
+   ],
+   "ext": {
+    "n": 165,
+    "tech_stack": 139,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 139/139 ở tech_stack; nhóm programming_languages",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "kafka",
+   "name": "Kafka",
+   "group": "messaging",
+   "df": 258,
+   "examples": [
+    "Experience designing and implementing microservices, API-driven systems, event-driven architectures or messaging systems (e.g., Kafka), RDBMS and SQL.",
+    "Kinh nghiệm phát triển hệ thống phân tán với message queue (RabbitMQ, Kafka);"
+   ],
+   "ext": {
+    "n": 148,
+    "tech_stack": 123,
+    "keywords": 1
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 123/124 ở tech_stack; nhóm messaging",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "requirements_gathering",
+   "name": "Thu thập yêu cầu",
+   "group": "methodology_pm",
+   "df": 258,
+   "examples": [
+    "[tag] Thu Thập Yêu Cầu",
+    "Có kỹ năng khảo sát và thu thập yêu cầu."
+   ],
+   "ext": {
+    "n": 80,
+    "tech_stack": 0,
+    "keywords": 9
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/9 ở tech_stack; nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "firewall",
+   "name": "Firewall",
+   "group": "security",
+   "df": 256,
+   "examples": [
+    "Firewall, Router & Switch",
+    "Theo dõi, quản lý các tài sản, thiết bị mạng CNTT trong phòng máy chủ (switches, routers, modems, converters, wireless devices, firewalls….)."
+   ],
+   "ext": {
+    "n": 129,
+    "tech_stack": 4,
+    "keywords": 55
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 4/59 ở tech_stack; nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "redis",
+   "name": "Redis",
+   "group": "databases",
+   "df": 256,
+   "examples": [
+    "Hiểu biết sâu về các kỹ thuật/công nghệ: Redis, Kafka, RabbitMQ, Kong API Gateway, Camunda ...",
+    "Có kinh nghiệm Tuning & Troubleshooting cho hệ điều hành Linux, Windows, các hệ quản trị cơ sở dữ liệu như MySQL/MariaDB, PostgreSQL, MongoDB, Redis..."
+   ],
+   "ext": {
+    "n": 146,
+    "tech_stack": 128,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 128/128 ở tech_stack; nhóm databases",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "windows",
+   "name": "Windows",
+   "group": "systems_network",
+   "df": 252,
+   "examples": [
+    "Có kiến thức về Windows, Windows Server, Active Directory, DNS, DHCP và File Server.",
+    "Có kiến thức cơ bản về: Thiết bị mạng, Routing, Switching, server hardware, storage, Linux, Windows, Vmware (biết NSX-T là lợi thế), Cloud (Public/Private là lợi thế)."
+   ],
+   "ext": {
+    "n": 109,
+    "tech_stack": 49,
+    "keywords": 3
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: hoi; nhóm systems_network gợi ý concept, ngoài 49/52 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "quality_control",
+   "name": "Kiểm soát chất lượng",
+   "group": "testing_qa",
+   "df": 251,
+   "examples": [
+    "[tag] Kiểm Soát Chất Lượng",
+    "Tối thiểu 03 năm kinh nghiệm làm việc trong lĩnh vực đảm bảo chất lượng / kiểm soát chất lượng / nhận hàng thực phẩm tươi sống / ngành hàng thực phẩm tươi sống"
+   ],
+   "ext": {
+    "n": 76,
+    "tech_stack": 0,
+    "keywords": 5
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/5 ở tech_stack; nhóm testing_qa",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "storage",
+   "name": "Lưu trữ (SAN/NAS)",
+   "group": "systems_network",
+   "df": 251,
+   "examples": [
+    "Có kiến thức về lưu trữ: Ceph, SAN, NAS, Object Storage.",
+    "Triển khai cấu hình và quản trị hạ tầng thiết bị mạng CNTT tại Datacenter: Switch Core, Router, Firewall, SAN Switch."
+   ],
+   "ext": {
+    "n": 131,
+    "tech_stack": 0,
+    "keywords": 27
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/27 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "oop",
+   "name": "Lập trình hướng đối tượng (OOP)",
+   "group": "architecture_api",
+   "df": 246,
+   "examples": [
+    "OOP, Design Patterns",
+    "Nắm vững kiến thức về lập trình hướng đối tượng OOP."
+   ],
+   "ext": {
+    "n": 136,
+    "tech_stack": 0,
+    "keywords": 70
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/70 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "crm",
+   "name": "CRM",
+   "group": "enterprise_apps",
+   "df": 245,
+   "examples": [
+    "4+ years of experience in Data Analytics, Business Intelligence, Business Insights, CRM Analytics, Marketing Analytics, or a similar role.",
+    "Có ít nhất 1 năm kinh nghiệm triển khai hệ thống phần mềm cho doanh nghiệp (ERP, CRM, SaaS, phần mềm quản lý...)."
+   ],
+   "ext": {
+    "n": 92,
+    "tech_stack": 7,
+    "keywords": 34
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm enterprise_apps gợi ý tool, ngoài 7/41 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "technical_support",
+   "name": "Hỗ trợ kỹ thuật",
+   "group": "systems_network",
+   "df": 240,
+   "examples": [
+    "Chi tiết công việc Technical Support L2 tại Công Ty Cổ Phần Inter Group",
+    "[tag] Technical Support"
+   ],
+   "ext": {
+    "n": 98,
+    "tech_stack": 0,
+    "keywords": 13
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/13 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "nodejs",
+   "name": "Node.js",
+   "group": "backend",
+   "df": 233,
+   "examples": [
+    "Basic knowledge of Python, Go, Java, or Node.js and REST APIs.",
+    "Thành thạo xử lý backend cho Python (FastAPI) và Node.js."
+   ],
+   "ext": {
+    "n": 127,
+    "tech_stack": 114,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 114/114 ở tech_stack; nhóm backend",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "user_story",
+   "name": "User Story",
+   "group": "methodology_pm",
+   "df": 232,
+   "examples": [
+    "Thành thạo xây dựng tài liệu đặc tả (BRD/URD, User Story, Use Case…); thiết kế prototype; sử dụng Jira/Linear/Azure DevOps; có khả năng dùng SQL cơ bản để tự kiểm tra dữ liệu, phân tích lỗi UAT;",
+    "Hỗ trợ phân tích yêu cầu nghiệp vụ, xây dựng tài liệu như BRD, SRS, User Story..."
+   ],
+   "ext": {
+    "n": 26,
+    "tech_stack": 0,
+    "keywords": 2
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (2 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "user_support",
+   "name": "Hỗ trợ người dùng",
+   "group": "systems_network",
+   "df": 229,
+   "examples": [
+    "[tag] Hỗ Trợ Người Dùng",
+    "Hỗ trợ người dùng (End-user Support):Tiếp nhận, ghi nhận và xử lý các yêu cầu/sự cố (IT tickets) liên quan đến phần cứng (PC, Laptop, máy in, máy quét, điện thoại IP, màn hình,...) và phần mềm (Windows, macOS, Microsoft "
+   ],
+   "ext": {
+    "n": 74,
+    "tech_stack": 0,
+    "keywords": 11
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/11 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "access_control",
+   "name": "Access control",
+   "group": "security",
+   "df": 224,
+   "examples": [
+    "Có kiến thức về phân quyền, access control, backup và quản trị dữ liệu .",
+    "Understanding of AI security risks, including prompt injection, data leakage, access control, and guardrails."
+   ],
+   "ext": {
+    "n": 113,
+    "tech_stack": 0,
+    "keywords": 13
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/13 ở tech_stack; nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "html",
+   "name": "HTML",
+   "group": "frontend",
+   "df": 224,
+   "examples": [
+    "Good understanding of CSS, and HTML.",
+    "HTML/CSS, Javascript, Jquery căn bản"
+   ],
+   "ext": {
+    "n": 107,
+    "tech_stack": 93,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 93/93 ở tech_stack; nhóm frontend",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "mongodb",
+   "name": "MongoDB",
+   "group": "databases",
+   "df": 219,
+   "examples": [
+    "[tag] MongoDB",
+    "Sử dụng thành thạo một trong các cơ sở dữ liệu: PostgreSQL, MongoDB, Redis."
+   ],
+   "ext": {
+    "n": 113,
+    "tech_stack": 109,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 109/109 ở tech_stack; nhóm databases",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "power_bi",
+   "name": "Power BI",
+   "group": "bi_analytics",
+   "df": 218,
+   "examples": [
+    "Power BI.",
+    "Sử dụng thành thạo và đa dạng các công cụ trực quan hóa dữ liệu như Power BI (mạnh về DAX, tối ưu Data Modeling), Looker Studio, Superset hoặc các công cụ tương đương."
+   ],
+   "ext": {
+    "n": 99,
+    "tech_stack": 80,
+    "keywords": 1
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 80/81 ở tech_stack; nhóm bi_analytics",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "data_science",
+   "name": "Data Science",
+   "group": "data_science_ml",
+   "df": 217,
+   "examples": [
+    "[tag] Data Science",
+    "Education: Bachelor's or Master's degree in Data Science, Statistics, Computer Science, Engineering, Business Administration, or related field."
+   ],
+   "ext": {
+    "n": 98,
+    "tech_stack": 0,
+    "keywords": 7
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/7 ở tech_stack; nhóm data_science_ml",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "css",
+   "name": "CSS",
+   "group": "frontend",
+   "df": 216,
+   "examples": [
+    "Có kiến thức cơ bản về phát triển web: HTML, CSS, JavaScript; hiểu các khái niệm REST API, SQL và OOP",
+    "Biết JavaScript, HTML và CSS ở mức làm việc được với giao diện."
+   ],
+   "ext": {
+    "n": 99,
+    "tech_stack": 89,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 89/89 ở tech_stack; nhóm frontend",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "api_integration",
+   "name": "Tích hợp API",
+   "group": "architecture_api",
+   "df": 214,
+   "examples": [
+    "[tag] Api Integration",
+    "[tag] Api Integration"
+   ],
+   "ext": {
+    "n": 107,
+    "tech_stack": 0,
+    "keywords": 19
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/19 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "compliance",
+   "name": "Compliance (tuân thủ)",
+   "group": "security",
+   "df": 209,
+   "examples": [
+    "Hiểu biết về MDM concepts: device enrollment, policy, compliance, app management",
+    "Typically 5–7 years of experience in fraud risk management, internal audit, compliance, or financial crime investigation."
+   ],
+   "ext": {
+    "n": 108,
+    "tech_stack": 0,
+    "keywords": 15
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/15 ở tech_stack; nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "system_design",
+   "name": "System design",
+   "group": "architecture_api",
+   "df": 209,
+   "examples": [
+    "At least 2 years of experience in software architecture / system design.",
+    "[tag] System Design"
+   ],
+   "ext": {
+    "n": 119,
+    "tech_stack": 0,
+    "keywords": 20
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/20 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "use_case",
+   "name": "Use Case",
+   "group": "methodology_pm",
+   "df": 206,
+   "examples": [
+    "Thành thạo xây dựng BRD, SRS, Use Case, User Story, BPMN 2.0 và Prototype;",
+    "Nắm vững các tài liệu và phương pháp phân tích yêu cầu: BRD/SRS, User Story, Use Case, Acceptance Criteria, As-Is/To-Be."
+   ],
+   "ext": {
+    "n": 52,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ai_agent",
+   "name": "AI Agent",
+   "group": "ai_genai",
+   "df": 205,
+   "examples": [
+    "AI Agent & Conversational AI: Thiết kế và phát triển kiến trúc AI Agent voice-first, bao gồm intent, planning, tool calling, memory, hội thoại đa lượt, guardrail và fallback.",
+    "Có kiến thức về MLflow, SageMaker, NVIDIA Triton, MLOps hoặc AI Agent."
+   ],
+   "ext": {
+    "n": 119,
+    "tech_stack": 0,
+    "keywords": 67
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/67 ở tech_stack; nhóm ai_genai",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "lan_wan",
+   "name": "LAN/WAN",
+   "group": "systems_network",
+   "df": 204,
+   "examples": [
+    "Quản trị mạng lưới (Network): Bảo trì, quản lý môi trường mạng LAN và Wi-Fi của công ty;",
+    "Phụ trách thiết kế, triển khai và bảo trì mạng LAN, WAN và mạng không dây (WLAN); cấu hình và quản lý các thiết bị mạng (như router, switch, firewall); nhanh chóng xử lý khi xảy ra sự cố mạng để đảm bảo hoạt động kinh do"
+   ],
+   "ext": {
+    "n": 78,
+    "tech_stack": 5,
+    "keywords": 59
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 5/64 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "relational_db",
+   "name": "CSDL quan hệ (RDBMS)",
+   "group": "databases",
+   "df": 202,
+   "examples": [
+    "Experience with RDBMS (MySQL/PostgreSQL) and caching (Redis).",
+    "Có thể hiểu và phát triển thiết kế RDBMS (SQL, Server, MYSQL) > phát triển Stored Procedure."
+   ],
+   "ext": {
+    "n": 125,
+    "tech_stack": 0,
+    "keywords": 15
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm databases gợi ý tool, ngoài 0/15 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "data_modeling",
+   "name": "Data Modeling",
+   "group": "data_engineering",
+   "df": 201,
+   "examples": [
+    "Understanding of relational and/or NoSQL databases, data modeling, and performance optimization.",
+    "Strong SQL skills and understanding of data modeling, partitioning, and performance optimization."
+   ],
+   "ext": {
+    "n": 102,
+    "tech_stack": 0,
+    "keywords": 39
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/39 ở tech_stack; nhóm data_engineering",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "design_patterns",
+   "name": "Design Patterns",
+   "group": "architecture_api",
+   "df": 201,
+   "examples": [
+    "Nắm vững OOP, SOLID, Design Patterns; có khả năng áp dụng vào thiết kế, refactor và maintain codebase.",
+    "Advanced knowledge of complex software design, distributed system design, design patterns, data structures, algorithms and protocol"
+   ],
+   "ext": {
+    "n": 131,
+    "tech_stack": 0,
+    "keywords": 44
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/44 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "unit_test",
+   "name": "Unit test",
+   "group": "testing_qa",
+   "df": 201,
+   "examples": [
+    "Hỗ trợ viết unit test, kiểm thử và sửa lỗi trong quá trình phát triển.",
+    "Xây dựng unit test, integration test, thực hiện debug, tối ưu hiệu năng, xử lý lỗi và nâng cao chất lượng mã nguồn trong suốt quá trình phát triển trên cả hai nền tảng."
+   ],
+   "ext": {
+    "n": 112,
+    "tech_stack": 0,
+    "keywords": 16
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/16 ở tech_stack; nhóm testing_qa",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "bi",
+   "name": "BI",
+   "group": "bi_analytics",
+   "df": 200,
+   "examples": [
+    "Năng lực:Quản lý thời gian, Power BI, Tableau, SQL, Tư duy Định hướng Giải pháp & Quyết đoán, Tư duy Logic & Phản biện sắc bén.",
+    "Kiểm soát người ra vào; tài sản, thiết bị vào ra của khách hàng."
+   ],
+   "ext": {
+    "n": 97,
+    "tech_stack": 2,
+    "keywords": 58
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm bi_analytics gợi ý tool, ngoài 2/60 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "brd",
+   "name": "BRD",
+   "group": "methodology_pm",
+   "df": 199,
+   "examples": [
+    "Create BRD (Business Requirement Document), Feature List (if needed), UC list and UC detail, GBR (General Business Rules) and wire frame for complex UCs (if needed)",
+    "Thành thạo phân tích và quản lý yêu cầu; có kinh nghiệm với BRD, SRS, User Story, Use"
+   ],
+   "ext": {
+    "n": 18,
+    "tech_stack": 0,
+    "keywords": 2
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (2 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "data_warehouse",
+   "name": "Data Warehouse",
+   "group": "data_engineering",
+   "df": 198,
+   "examples": [
+    "Kiến thức: Ứng viên cần có khả năng nghiên cứu, tham mưu và tham gia thiết kế, triển khai các hệ thống tích hợp và nền tảng dữ liệu trong môi trường ngân hàng, cụ thể: - Am hiểu kiến trúc và mô hình xử lý dữ liệu hiện đạ",
+    "Hiểu về ETL/ELT, Data Warehouse, Data Modeling và xử lý dữ liệu trùng lặp."
+   ],
+   "ext": {
+    "n": 102,
+    "tech_stack": 1,
+    "keywords": 73
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 1/74 ở tech_stack; nhóm data_engineering",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "regression_test",
+   "name": "Regression test",
+   "group": "testing_qa",
+   "df": 194,
+   "examples": [
+    "[tag] Regression Testing",
+    "Thực hiện Functional Testing, Regression Testing, Integration Testing, API Testing..."
+   ],
+   "ext": {
+    "n": 100,
+    "tech_stack": 0,
+    "keywords": 53
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/53 ở tech_stack; nhóm testing_qa",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "figma",
+   "name": "Figma",
+   "group": "design_creative",
+   "df": 192,
+   "examples": [
+    "Biết sử dụng các công cụ như Jira, Confluence, Draw.io, Figma hoặc các công cụ tương đương.",
+    "from PRDs, Figma, and our knowledge base, and the engineer focuses on judgment, calibration, and"
+   ],
+   "ext": {
+    "n": 20,
+    "tech_stack": 7,
+    "keywords": 5
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: concept; ngoài 7/12 ở tech_stack; nhóm design_creative",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "mobile_app_dev",
+   "name": "Phát triển ứng dụng di động",
+   "group": "mobile",
+   "df": 191,
+   "examples": [
+    "Am hiểu về các lỗ hổng và điểm yếu an ninh bảo mật, đặc biệt là web, API, mobile app, server, network, database.",
+    "Tối thiểu 1 năm kinh nghiệm làm việc trong lĩnh vực Marketing Online hoặc Marketing Mobile App."
+   ],
+   "ext": {
+    "n": 90,
+    "tech_stack": 0,
+    "keywords": 23
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm mobile gợi ý tool, ngoài 0/23 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "quality_management",
+   "name": "Quản lý chất lượng",
+   "group": "methodology_pm",
+   "df": 190,
+   "examples": [
+    "[tag] Quality Management",
+    "Diploma or Bachelor's Degree in Engineering, Manufacturing, Furniture Technology, Quality Management or a related field."
+   ],
+   "ext": {
+    "n": 62,
+    "tech_stack": 0,
+    "keywords": 7
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/7 ở tech_stack; nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "dotnet",
+   "name": ".NET",
+   "group": "backend",
+   "df": 186,
+   "examples": [
+    "Có kiến thức hoặc khả năng lập trình/scripting với Java, .NET, PHP, Shell Script, Python phục vụ tự động hóa vận hành.",
+    "Ưu tiên ứng viên có kinh nghiệm với Python, Node.js, Java hoặc C#; ví dụ FastAPI/Django/Flask, Express/NestJS, Spring Boot hoặc .NET/ASP.NET Core."
+   ],
+   "ext": {
+    "n": 96,
+    "tech_stack": 71,
+    "keywords": 1
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 71/72 ở tech_stack; nhóm backend",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "big_data",
+   "name": "Big Data",
+   "group": "data_engineering",
+   "df": 185,
+   "examples": [
+    "Data engineering skills are a big plus — dimensional modeling (star and snowflake schemas), ETL pipelines, and working with big data.",
+    "Design end-to-end cloud architectures using Huawei Cloud services (compute, AI, big data, containers, etc.)."
+   ],
+   "ext": {
+    "n": 103,
+    "tech_stack": 1,
+    "keywords": 38
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 1/39 ở tech_stack; nhóm data_engineering",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "kms_hsm",
+   "name": "KMS/HSM, mã hóa",
+   "group": "security",
+   "df": 183,
+   "examples": [
+    "Familiarity with HSM / cloud KMS concepts; integration experience (AWS KMS, GCP KMS, Azure Key Vault, or PKCS#11) is a plus.",
+    "Có kinh nghiệm thực tế với các dịch vụ quản lý trên AWS như S3, EKS, RDS, KMS, SQS, SNS."
+   ],
+   "ext": {
+    "n": 100,
+    "tech_stack": 0,
+    "keywords": 10
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/10 ở tech_stack; nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "logging",
+   "name": "Logging",
+   "group": "devops",
+   "df": 182,
+   "examples": [
+    "Có kinh nghiệm với Microservices, Event-driven Architecture, Monitoring, Logging, CI/CD và vận hành Production.",
+    "Có kinh nghiệm xây dựng observability stack (logging, monitoring, tracing)."
+   ],
+   "ext": {
+    "n": 112,
+    "tech_stack": 0,
+    "keywords": 14
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/14 ở tech_stack; nhóm devops",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "spring_boot",
+   "name": "Spring Boot",
+   "group": "backend",
+   "df": 180,
+   "examples": [
+    "Thiết kế và phát triển các dịch vụ backend sử dụng Java, Spring Boot, Spring MVC, Spring Data JPA/JDBC/MyBatis.",
+    "Nắm chắc Spring Core: IoC, DI, Bean... và có kinh nghiệm với các framework thuộc hệ sinh thái Spring như Spring Boot, Spring MVC, Spring Batch, Spring AOP..."
+   ],
+   "ext": {
+    "n": 95,
+    "tech_stack": 88,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 88/88 ở tech_stack; nhóm backend",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "bash",
+   "name": "Bash/Shell script",
+   "group": "programming_languages",
+   "df": 179,
+   "examples": [
+    "Có khả năng sử dụng một trong các ngôn ngữ lập trình: Bash, Python, PHP, …",
+    "Có khả năng PowerShell, Bash và/hoặc Python phục vụ quản trị và tự động hóa là lợi thế."
+   ],
+   "ext": {
+    "n": 106,
+    "tech_stack": 80,
+    "keywords": 3
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 80/83 ở tech_stack; nhóm programming_languages",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "golang",
+   "name": "Go (Golang)",
+   "group": "programming_languages",
+   "df": 179,
+   "examples": [
+    "Golang",
+    "Có kinh nghiệm lập trình Golang và xây dựng REST API là một lợi thế."
+   ],
+   "ext": {
+    "n": 99,
+    "tech_stack": 84,
+    "keywords": 0
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 84/84 ở tech_stack; nhóm programming_languages",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "message_queue",
+   "name": "Message Queue",
+   "group": "messaging",
+   "df": 179,
+   "examples": [
+    "Hiểu biết về kiến trúc Microservices, RESTful APIs, Message Queue (RabbitMQ, Kafka…).",
+    "Message queue..."
+   ],
+   "ext": {
+    "n": 104,
+    "tech_stack": 0,
+    "keywords": 15
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm messaging gợi ý tool, ngoài 0/15 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "tcp_ip",
+   "name": "TCP/IP",
+   "group": "systems_network",
+   "df": 179,
+   "examples": [
+    "Có kiến thức cơ bản về TCP/IP, DNS, DHCP, VPN .",
+    "Có kiến thức về các giao thức mạng và giao thức web liên quan (ví dụ: tcp/ip, udp, ipsec, http, https, các giao thức định tuyến)."
+   ],
+   "ext": {
+    "n": 84,
+    "tech_stack": 9,
+    "keywords": 22
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: concept; ngoài 9/31 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "wireframe",
+   "name": "Wireframe / Mockup",
+   "group": "design_creative",
+   "df": 176,
+   "examples": [
+    "Có kỹ năng viết tài liệu chuyên môn, sử dụng các phần mềm thiết kế như EA | Power Designer, Visio, UML, Mockup | Wireframe. 4.",
+    "Nắm vững các kỹ năng BA: thu thập, phân tích và đặc tả yêu cầu, phân tích quy trình nghiệp vụ, business rules, xây dựng Use Case, User Story, SRS, Wireframe/Mock-up và các tài liệu liên quan."
+   ],
+   "ext": {
+    "n": 11,
+    "tech_stack": 0,
+    "keywords": 1
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (1 tin); nhóm design_creative",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "android",
+   "name": "Android",
+   "group": "mobile",
+   "df": 173,
+   "examples": [
+    "để tăng hiệu suất công việc Thành thạo Android (Kotlin/Java) và Flutter (Dart); hoặc rất mạnh một nền tảng và có khả năng học nhanh nền tảng còn lại.",
+    "mobile applications (iOS and Android)."
+   ],
+   "ext": {
+    "n": 86,
+    "tech_stack": 10,
+    "keywords": 26
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: hoi; nhóm mobile gợi ý tool, ngoài 10/36 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "prototyping",
+   "name": "Prototype",
+   "group": "design_creative",
+   "df": 173,
+   "examples": [
+    "Biết sử dụng AI để hỗ trợ phát triển concept, hình ảnh thương hiệu, prototype hoặc tối ưu quy trình làm việc.",
+    "Sử dụng thành thạo các công cụ hỗ trợ xây dựng sơ đồ luồng, thiết kế wireframe/prototype."
+   ],
+   "ext": {
+    "n": 48,
+    "tech_stack": 0,
+    "keywords": 7
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/7 ở tech_stack; nhóm design_creative",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "user_training",
+   "name": "Đào tạo người dùng",
+   "group": "systems_network",
+   "df": 172,
+   "examples": [
+    "Experience in functional specification documentation, system testing and user training.",
+    "· Experience in functional specification documentation, system testing and user training."
+   ],
+   "ext": {
+    "n": 48,
+    "tech_stack": 0,
+    "keywords": 4
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (4 tin); nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "jenkins",
+   "name": "Jenkins",
+   "group": "devops",
+   "df": 170,
+   "examples": [
+    "[tag] Jenkins",
+    "Familiarity with agile methodologies and hands-on experience with DevOps practices and CI/CD pipelines using Azure DevOps, GitHub Actions, Bamboo, or Jenkins."
+   ],
+   "ext": {
+    "n": 108,
+    "tech_stack": 75,
+    "keywords": 4
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 75/79 ở tech_stack; nhóm devops",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "operating_systems",
+   "name": "Hệ điều hành",
+   "group": "systems_network",
+   "df": 168,
+   "examples": [
+    "Nắm chắc kiến thức nền tảng CNTT: cấu trúc dữ liệu & giải thuật, mạng máy tính, hệ điều hành, cơ sở dữ liệu.",
+    "Nắm vững kiến thức về bảo mật mạng, hệ điều hành, ứng dụng web; hiểu các khung/tiêu chuẩn an toàn thông tin phổ biến (ISO/IEC 27001, NIST) là lợi thế."
+   ],
+   "ext": {
+    "n": 84,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "query_optimization",
+   "name": "Tối ưu truy vấn",
+   "group": "databases",
+   "df": 167,
+   "examples": [
+    "You have experience with PostgreSQL, MongoDB, and Redis, including schema design, migrations, query optimization, caching, queues, and locks.",
+    "Nắm vững RESTful API, SQL, database design, query optimization và ORM."
+   ],
+   "ext": {
+    "n": 95,
+    "tech_stack": 0,
+    "keywords": 12
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm databases gợi ý tool, ngoài 0/12 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "cybersecurity",
+   "name": "An ninh mạng (Cybersecurity)",
+   "group": "security",
+   "df": 166,
+   "examples": [
+    "Theo dõi các mối đe dọa an ninh mạng mới và đánh giá công nghệ/giải pháp bảo mật mới.",
+    "Phụ trách thiết kế, tối ưu và duy trì các giải pháp an ninh mạng."
+   ],
+   "ext": {
+    "n": 93,
+    "tech_stack": 0,
+    "keywords": 42
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/42 ở tech_stack; nhóm security",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "wifi",
+   "name": "Wi-Fi",
+   "group": "systems_network",
+   "df": 166,
+   "examples": [
+    "Hiểu biết về Windows, Office, phần cứng máy tính, mạng LAN/WAN, Wi-Fi và máy in.",
+    "Network Infrastructure: Ability to configure network devices such as firewalls, switches, and Wi-Fi systems, as well as network protocols including VLAN, DHCP, DNS, and VPN."
+   ],
+   "ext": {
+    "n": 56,
+    "tech_stack": 1,
+    "keywords": 19
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 1/20 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "nosql",
+   "name": "NoSQL",
+   "group": "databases",
+   "df": 165,
+   "examples": [
+    "Có kinh nghiệm làm việc với CSDL SQL & NoSQL (MySQL, Oracle, MongoDB…).",
+    "Kiến thức về các loại CSDL (RDBMS, Graph Databases, NoSQL Products, ...)."
+   ],
+   "ext": {
+    "n": 102,
+    "tech_stack": 32,
+    "keywords": 11
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: tool; ngoài 32/43 ở tech_stack; nhóm databases",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "printer",
+   "name": "Máy in",
+   "group": "systems_network",
+   "df": 164,
+   "examples": [
+    "Am hiểu về phần cứng máy tính, máy in, POS và các thiết bị công nghệ thông tin",
+    "Có hiểu biết kiến thức về phần cứng: mạng, máy tính, máy in."
+   ],
+   "ext": {
+    "n": 55,
+    "tech_stack": 0,
+    "keywords": 0
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (0 tin); nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "rag",
+   "name": "RAG",
+   "group": "ai_genai",
+   "df": 164,
+   "examples": [
+    "Có kinh nghiệm với: LLM Agents (GPT, Gemini, Claude...), LangChain / LangGraph/ ADK, Autogen, RAG pipelines, Vector Database(Milvus, pgvector...).",
+    "Có kinh nghiệm với các hệ thống dựa trên LLM (OpenAI APIs, LLM mã nguồn mở, RAG, fine-tuning)."
+   ],
+   "ext": {
+    "n": 100,
+    "tech_stack": 2,
+    "keywords": 72
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 2/74 ở tech_stack; nhóm ai_genai",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "statistics",
+   "name": "Thống kê",
+   "group": "data_science_ml",
+   "df": 164,
+   "examples": [
+    "[tag] Statistics",
+    "A Master’s degree or PhD in Computer Science, Statistics, Mathematics, or a related quantitative field."
+   ],
+   "ext": {
+    "n": 64,
+    "tech_stack": 0,
+    "keywords": 10
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/10 ở tech_stack; nhóm data_science_ml",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "streaming",
+   "name": "Xử lý luồng (streaming)",
+   "group": "data_engineering",
+   "df": 163,
+   "examples": [
+    "Kinh nghiệm trong B2B / SaaS / OTT / Streaming.",
+    "Hands-on experience with Streaming / Real-time systems."
+   ],
+   "ext": {
+    "n": 92,
+    "tech_stack": 0,
+    "keywords": 31
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/31 ở tech_stack; nhóm data_engineering",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "data_governance",
+   "name": "Data Governance",
+   "group": "data_engineering",
+   "df": 162,
+   "examples": [
+    "Demonstrated experience with data governance, data catalogs, metadata management, and data lineage tools.",
+    "Có hiểu biết cơ bản về hệ sinh thái dữ liệu: DWH, BI, ETL, Data Governance, Big Data, Data Lake/Lakehouse."
+   ],
+   "ext": {
+    "n": 74,
+    "tech_stack": 0,
+    "keywords": 49
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/49 ở tech_stack; nhóm data_engineering",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "etl",
+   "name": "ETL/ELT",
+   "group": "data_engineering",
+   "df": 162,
+   "examples": [
+    "Familiarity with ETL/ELT orchestration tools (e.g., Airflow,",
+    "Kỹ năng cứng: Chuyên gia về Microservices, Data Pipeline (Kafka, RabbitMQ, ETL), thiết kế database lớn xử lý giao dịch tài chính."
+   ],
+   "ext": {
+    "n": 94,
+    "tech_stack": 2,
+    "keywords": 77
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 2/79 ở tech_stack; nhóm data_engineering",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "rca",
+   "name": "RCA (phân tích nguyên nhân gốc)",
+   "group": "methodology_pm",
+   "df": 162,
+   "examples": [
+    ", khả năng troubleshooting, RCA, ownership và phối hợp tốt với các team.",
+    "Đã từng viết RCA, lập kế hoạch Change và làm việc theo ITIL (Incident/Problem/Change/Request)."
+   ],
+   "ext": {
+    "n": 85,
+    "tech_stack": 0,
+    "keywords": 11
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/11 ở tech_stack; nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "data_engineering",
+   "name": "Data Engineering",
+   "group": "data_engineering",
+   "df": 159,
+   "examples": [
+    "in Data Engineering.",
+    "Data Engineering"
+   ],
+   "ext": {
+    "n": 65,
+    "tech_stack": 1,
+    "keywords": 2
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm ranh giới data_engineering, ngoài ít (3 tin)",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "vpn",
+   "name": "VPN",
+   "group": "systems_network",
+   "df": 159,
+   "examples": [
+    "Có kiến thức về LAN/WAN, TCP/IP, VLAN, VPN, Wi-Fi, Firewall và Switch.",
+    "Khảo sát, thiết kế, triển khai và quản trị vận hành hệ thống hạ tầng mạng (LAN, WAN, Wireless, VPN, Internet) cho doanh nghiệp/khách hàng."
+   ],
+   "ext": {
+    "n": 75,
+    "tech_stack": 14,
+    "keywords": 29
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 14/43 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "ios",
+   "name": "iOS",
+   "group": "mobile",
+   "df": 158,
+   "examples": [
+    "Phát triển ứng dụng Mobile Native (Android/iOS) bằng React Native.",
+    "Có kinh nghiệm làm việc với native capability của Android/iOS thông qua plugin hoặc Platform Channels."
+   ],
+   "ext": {
+    "n": 79,
+    "tech_stack": 9,
+    "keywords": 30
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: hoi; nhóm mobile gợi ý tool, ngoài 9/39 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "data_structures",
+   "name": "Cấu trúc dữ liệu và giải thuật",
+   "group": "architecture_api",
+   "df": 156,
+   "examples": [
+    "Nắm vững kiến thức về thiết kế phần mềm, cấu trúc dữ liệu, lập trình hướng đối tượng, lập trình bất đồng bộ, xử lý đồng thời và nguyên tắc xây dựng hệ thống phân tán.",
+    "Kiến thức về lập trình, cấu trúc dữ liệu và giải thuật, lý thuyết đồ thị."
+   ],
+   "ext": {
+    "n": 76,
+    "tech_stack": 0,
+    "keywords": 6
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài 0/6 ở tech_stack; nhóm architecture_api",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "github_copilot",
+   "name": "GitHub Copilot",
+   "group": "ai_tools",
+   "df": 156,
+   "examples": [
+    "Đã từng dùng công cụ AI tạo sinh (ChatGPT, Claude, GitHub Copilot...) để học hoặc code, hoặc có động lực mạnh để ứng dụng AI vào công việc",
+    "Đam mê, có hứng thú với việc ứng dụng các công cụ AI (OpenAI, Claude, Gemini, GitHub Copilot) vào quá trình phát triển."
+   ],
+   "ext": {
+    "n": 95,
+    "tech_stack": 3,
+    "keywords": 7
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: tool; luật: hoi; nhóm ai_tools gợi ý tool, ngoài 3/10 ở tech_stack",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "claude",
+   "name": "Claude",
+   "group": "ai_tools",
+   "df": 155,
+   "examples": [
+    "Experience using AI chat tools (ChatGPT, Claude, Gemini, etc.) for research, debugging, and learning",
+    "Tích hợp các mô hình AI: OpenAI, Gemini, Claude, Ollama, Open-source LLM"
+   ],
+   "ext": {
+    "n": 80,
+    "tech_stack": 8,
+    "keywords": 3
+   },
+   "de_xuat": "tool",
+   "lop_hoi": null,
+   "ly_do": "ngoài 8/11 ở tech_stack; nhóm ai_tools",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "product_management",
+   "name": "Quản lý sản phẩm (Product Management)",
+   "group": "methodology_pm",
+   "df": 155,
+   "examples": [
+    "Có kiến thức về Product Management, Product Discovery, Product Delivery và Product Lifecycle;",
+    "Có từ 3 năm kinh nghiệm trong Product Management, Product Owner hoặc vai trò tương đương; có kinh nghiệm thực tế trong quá trình xây dựng và phát triển sản phẩm."
+   ],
+   "ext": {
+    "n": 53,
+    "tech_stack": 0,
+    "keywords": 2
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "ngoài ít (2 tin); nhóm methodology_pm",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "dns",
+   "name": "DNS",
+   "group": "systems_network",
+   "df": 154,
+   "examples": [
+    "Main task 2: Vận hành Shared Services & Network Hub Quản lý và vận hành Route 53 Resolver, Private Hosted Zones, DNS forwarding rules cho toàn bộ tổ chức.",
+    "Solid understanding of network architecture and protocols (TCP/IP, LAN/WAN, VLAN, DNS, DHCP, VPN)."
+   ],
+   "ext": {
+    "n": 75,
+    "tech_stack": 6,
+    "keywords": 7
+   },
+   "de_xuat": "hoi",
+   "lop_hoi": "chuan",
+   "ly_do": "Claude đọc lại: hoi (chuan); luật: concept; ngoài 6/13 ở tech_stack; nhóm systems_network",
+   "quyet_dinh": null
+  },
+  {
+   "slug": "caching",
+   "name": "Caching",
+   "group": "backend",
+   "df": 152,
+   "examples": [
+    "· Tư duy kiến trúc: Hiểu biết về Microservices, Caching, Message Broker (Redis, Kafka).",
+    "Thành thạo Ruby/Rails, ActiveRecord, PostgreSQL, REST API, Background Jobs, Caching, RSpec."
+   ],
+   "ext": {
+    "n": 74,
+    "tech_stack": 0,
+    "keywords": 12
+   },
+   "de_xuat": "concept",
+   "lop_hoi": null,
+   "ly_do": "Claude đọc lại: concept; luật: hoi; nhóm backend gợi ý tool, ngoài 0/12 ở tech_stack",
+   "quyet_dinh": null
+  }
+ ]
+}

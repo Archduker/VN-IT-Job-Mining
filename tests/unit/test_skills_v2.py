@@ -75,3 +75,63 @@ def test_unapproved_dictionary_stops(tmp_path):
     p.write_text(json.dumps({"_meta": {"approved": False}, "skills": [], "not_skill": []}), encoding="utf-8")
     with pytest.raises(ValueError, match="skills_v2.json chưa được duyệt"):
         load_skills_v2(p)
+
+
+# K8.17: nhãn type (tool | concept) chỉ lấy từ lô đã duyệt
+import build_skills_v2 as B  # noqa: E402
+import propose_skill_types as PT  # noqa: E402
+
+
+def _batch(approved, items):
+    return {"_meta": {"approved": approved}, "items": items}
+
+
+def _item(slug, de_xuat, lop=None, quyet_dinh=None):
+    return {"slug": slug, "de_xuat": de_xuat, "lop_hoi": lop, "quyet_dinh": quyet_dinh}
+
+
+def test_types_only_from_approved_batches():
+    types, errs, appr = B.load_types([
+        ("types_t01", _batch({"date": "2026-11-19"}, [_item("python", "tool"), _item("agile", "concept")])),
+        ("types_t02", _batch(None, [_item("docker", "tool")])),
+    ])
+    assert types == {"python": "tool", "agile": "concept"} and errs == [] and appr == ["types_t01"]
+
+
+def test_quyet_dinh_and_class_answer_override_proposal():
+    types, errs, _ = B.load_types([("t", _batch({"lop_hoi": {"chuan": "concept"}}, [
+        _item("rest_api", "hoi", "chuan"), _item("debugging", "tool", quyet_dinh="concept"),
+        _item("ccna", "hoi", "chung_chi")]))])
+    assert types == {"rest_api": "concept", "debugging": "concept"}
+    assert errs == ["t: ccna chưa có nhãn ('hoi')"]       # lớp chưa chốt thì dừng, không tự quyết
+
+
+def test_attach_types_null_for_unreviewed_and_non_technical():
+    skills = [{"slug": "python", "kind": "technical"}, {"slug": "kafka", "kind": "technical"},
+              {"slug": "communication", "kind": "soft"}]
+    errs = B.attach_types(skills, {"python": "tool", "ghost": "tool"})
+    assert [s["type"] for s in skills] == ["tool", None, None]
+    assert errs == ["type: slug không có trong từ điển 'ghost'"]
+
+
+def test_review_list_parses_and_rejects_duplicates(tmp_path):
+    p = tmp_path / "types_claude.txt"
+    p.write_text("# chú thích\ntool linux figma\ncon erp\nhoi:chuan rest_api\n", encoding="utf-8")
+    assert PT.load_review(p) == {"linux": ("tool", None), "figma": ("tool", None), "erp": ("concept", None),
+                                 "rest_api": ("hoi", "chuan")}
+    p.write_text("tool linux\ncon linux\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="linux"):
+        PT.load_review(p)
+
+
+def test_propose_rule_uses_evidence_then_group():
+    assert PT.propose("databases", {"tech_stack": 9, "keywords": 1})[0] == "tool"
+    assert PT.propose("databases", {"tech_stack": 0, "keywords": 17})[0] == "hoi"    # nhóm và bằng chứng ngược nhau
+    assert PT.propose("methodology_pm", {})[0] == "concept"                          # ít bằng chứng: theo nhóm
+    assert PT.propose("certifications", {})[0] == "hoi"                              # nhóm ranh giới
+
+
+def test_read_lines_keeps_hash_inside_names(tmp_path):
+    (tmp_path / "b001.txt").write_text("# lô 1\nS 54 csharp programming_languages n=C#  # ghi chú\n", encoding="utf-8")
+    (tmp_path / "types_claude.txt").write_text("tool python\n", encoding="utf-8")   # không phải lệnh từ điển
+    assert B.read_lines(tmp_path) == [("b001.txt:2", "S 54 csharp programming_languages n=C#")]

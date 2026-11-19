@@ -336,6 +336,13 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Còn lại:** recall IT 82% trên tập giữ lại (luật ưu tiên sạch nên bỏ nhầm một phần tin IT, nhất là vietnamworks, jobsgo). Người dùng chấp nhận khoảng tin cậy hiện có ngày 19/11.
 - **Kiểm chứng:** `pytest tests/unit/test_it_filter.py` (27 test); `python scripts/eval_it_filter.py`: tập giữ lại đúng 94,8% [90,7; 97,2], precision IT 97,6% [87,7; 99,6]; cả 643 nhãn đúng 95,0%. Tin lật so với 18/11: `data/preprocessing/review/it_filter_flips_2026-11-19.csv` (người dùng chấp nhận).
 
+### L-52. Tên hiển thị "C#" thành "C" trong skills_v2 (Dữ liệu, 19/11/2026)
+- **Lỗi:** `skills_v2.json` ghi `csharp` với tên "C", trùng tên với `c_lang`. Chỉ ảnh hưởng tên hiển thị (trang duyệt, cột `skill` của `job_skills.parquet`); khớp đi qua alias nên không đổi kết quả trích.
+- **Nguyên nhân:** `read_lines` trong `scripts/build_skills_v2.py` cắt mọi thứ sau `#` như chú thích, nên `n=C#` còn `n=C`.
+- **Cách xử lý:** chú thích chỉ bắt đầu ở `#` đầu dòng hoặc sau khoảng trắng. Dựng lại từ điển: chỉ tên `csharp` đổi, các trường khác và `not_skill`, `can_hoi` giữ nguyên. `read_lines` cũng bỏ qua `types_*.txt` (danh sách nhãn K8.17, không phải lệnh từ điển).
+- **Còn lại:** `job_skills.parquet` mang tên mới khi chạy lại bước 08 (P2).
+- **Kiểm chứng:** `pytest tests/unit/test_skills_v2.py -k hash_inside_names`.
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

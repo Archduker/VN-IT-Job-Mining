@@ -18,6 +18,11 @@
 Alias ngắn (dưới 4 ký tự, không có `# + .`) tự chuyển sang `short_aliases` với dạng viết gốc hay gặp nhất,
 trừ khi dạng đó toàn chữ thường (khi đó bỏ, ghi cảnh báo).
 
+Nhãn `type` (K8.17): `skills_v2_decisions/types_t*.json` (sinh bởi `scripts/propose_skill_types.py`). Chỉ lô có
+`_meta.approved` mới được dùng; mỗi mục lấy `quyet_dinh`, nếu trống thì lấy lớp đã chốt trong
+`_meta.approved.lop_hoi` (khi `de_xuat = hoi`), nếu không thì `de_xuat`. Kỹ năng kỹ thuật không nằm trong lô đã duyệt
+có `type = null` (không vào K-tool); kỹ năng mềm và ngoại ngữ luôn `type = null`.
+
 Đầu ra: `processing/dictionaries/skills_v2.json` (`_meta.approved` = false) và
 `processing/dictionaries/skills_v2_decisions.tsv` (khóa → quyết định, không phụ thuộc số dòng).
 
@@ -281,11 +286,54 @@ def build(cands, lines):
     }
 
 
+TYPES = ("tool", "concept")
+
+
+def load_types(batches):
+    """batches: [(tên, doc)] → (slug → type, lỗi, tên lô đã duyệt). Lô chưa duyệt bị bỏ qua (K8.17)."""
+    types, errors, approved = {}, [], []
+    for name, doc in batches:
+        appr = (doc.get("_meta") or {}).get("approved")
+        if not appr:
+            continue
+        approved.append(name)
+        by_class = appr.get("lop_hoi") or {}
+        for it in doc.get("items", []):
+            t = it.get("quyet_dinh") or (by_class.get(it.get("lop_hoi")) if it.get("de_xuat") == "hoi" else None)                 or it.get("de_xuat")
+            if t not in TYPES:
+                errors.append(f"{name}: {it.get('slug')} chưa có nhãn ({t!r})")
+            elif it["slug"] in types and types[it["slug"]] != t:
+                errors.append(f"{name}: {it['slug']} có hai nhãn khác nhau")
+            else:
+                types[it["slug"]] = t
+    return types, errors, approved
+
+
+def read_type_batches(dec_dir=DEC_DIR):
+    return [(p.stem, json.loads(p.read_text(encoding="utf-8"))) for p in sorted(Path(dec_dir).glob("types_t*.json"))]
+
+
+def attach_types(skills, types):
+    """Ghi `type` vào từng kỹ năng; trả lỗi khi lô có slug không còn trong từ điển hoặc không phải kỹ thuật."""
+    errors, by = [], {s["slug"]: s for s in skills}
+    for slug in types:
+        if slug not in by:
+            errors.append(f"type: slug không có trong từ điển {slug!r}")
+        elif by[slug]["kind"] != "technical":
+            errors.append(f"type: {slug} không phải kỹ năng kỹ thuật")
+    for s in skills:
+        s["type"] = types.get(s["slug"]) if s["kind"] == "technical" else None
+    return errors
+
+
 def read_lines(dec_dir=DEC_DIR):
     lines = []
     for p in sorted(Path(dec_dir).glob("*.txt")):
+        if p.name.startswith("types_"):   # danh sách đọc lại nhãn type (K8.17), không phải lệnh từ điển
+            continue
         for i, ln in enumerate(p.read_text(encoding="utf-8").splitlines(), 1):
-            ln = ln.split("#", 1)[0].strip() if not ln.lstrip().startswith(("F ", "L ")) else ln.strip()
+            # chú thích: '#' ở đầu dòng hoặc sau khoảng trắng; '#' dính chữ là tên (n=C#, n=F#)
+            ln = re.split(r"(?:^|\s)#", ln, maxsplit=1)[0].strip() if not ln.lstrip().startswith(("F ", "L ")) else ln.strip()
             if ln:
                 lines.append((f"{p.name}:{i}", ln))
     return lines
@@ -297,12 +345,15 @@ def main() -> None:
     a = ap.parse_args()
     cands = load_candidates()
     res = build(cands, read_lines())
+    types, type_errors, type_batches = load_types(read_type_batches())
+    res["errors"] += type_errors + attach_types(res["skills"], types)
     for w in res["warns"]:
         print("CẢNH BÁO", w)
     for e in res["errors"]:
         print("LỖI", e)
     print(f"đã quyết {len(res['covered'])}/{len(cands)} dòng; đọc liên tục tới dòng {res['progress']}; "
-          f"kỹ năng {len(res['skills'])}; not_skill {len(res['not_skill'])}; can_hoi {len(res['can_hoi'])}")
+          f"kỹ năng {len(res['skills'])}; not_skill {len(res['not_skill'])}; can_hoi {len(res['can_hoi'])}; "
+          f"type {len(types)} ({', '.join(type_batches) or 'chưa lô nào duyệt'})")
     if res["errors"]:
         sys.exit(1)
     if a.check:
@@ -313,7 +364,7 @@ def main() -> None:
     appr = json.loads(appr_path.read_text(encoding="utf-8")) if appr_path.exists() else None
     doc = {
         "_meta": {
-            "version": "2.0.0" if appr else "2.0.0-draft",
+            "version": ("2.1.0" if types else "2.0.0") if appr else "2.0.0-draft",
             "approved": bool(appr),
             "approval": appr,
             "updated": dt.date.today().isoformat(),
@@ -324,6 +375,9 @@ def main() -> None:
             "n_decided": len(res["covered"]),
             "groups": GROUPS,
             "not_skill_reasons": REASONS,
+            "types": {"rule": "K8.17: tool = công cụ có tên riêng; concept = khái niệm; null = chưa duyệt (không vào K-tool)",
+                      "batches_approved": type_batches, "n_typed": len(types),
+                      "by_type": {k: sum(v == k for v in types.values()) for k in TYPES}},
             "match": ("aliases: khớp trên văn bản fold, nguyên từ; đoạn gốc có dấu phải đúng alias_forms; "
                       "short_aliases: khớp phân biệt hoa thường trên văn bản gốc, bỏ khi đứng trước '-' + chữ cái (Go-live); "
                       "not_skill degree: cụm chặn"),
