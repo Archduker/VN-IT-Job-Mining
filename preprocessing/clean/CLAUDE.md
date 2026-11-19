@@ -8,4 +8,4 @@
 - CLI tạo mẫu phải tôn trọng `--source`; `--level1-it` chỉ hợp lệ cùng `--resample-review` và không âm.
 - `drop=[]` chỉ bỏ qua C4c. C5/C6/C7 vẫn có thể loại dòng; không khẳng định toàn bộ non_IT còn sống ở output.
 - Đếm trường thiếu bằng số bản ghi thật: phần trăm làm tròn 100% không chứng minh không có null.
-- Gate category IT của SPEC-05 thuộc common/it_filter và cần lead phối hợp; không tự sửa mã của thành viên khác.
+- Chuyên mục sàn trong bộ lọc IT chỉ là tín hiệu phụ (người dùng chốt phương án C ngày 19/11): theo `it_filter_v2.json` chỉ itviec được dùng chuyên mục IT để giữ tin ở tầng 2; tầng 0 (nhóm loại hoàn toàn) thì chuyên mục không cứu được.

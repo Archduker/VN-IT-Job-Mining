@@ -1,11 +1,16 @@
 {
  "_meta": {
-  "version": "2.0.0-draft",
-  "approved": false,
+  "version": "2.0.0",
+  "approved": true,
   "updated": "2026-11-19",
   "spec": "docs/spec/preprocessing/01_clean.md dòng C4a, mục 2.1",
   "prompt": "docs/prompting/preprocessing/01_clean_it_filter.md",
-  "note": "Khớp từ nguyên vẹn trên tiêu đề viết thường (NFC). Từ khóa mỗi nhóm loại chỉ lấy từ định nghĩa và câu trả lời Q1-Q8, H1-H9 của người dùng; ngưỡng tầng 2 chọn trên tập tune của C4b."
+  "note": "Khớp từ nguyên vẹn trên tiêu đề viết thường (NFC). Từ khóa mỗi nhóm loại chỉ lấy từ định nghĩa và câu trả lời Q1-Q8, H1-H9 của người dùng; ngưỡng tầng 2 chọn trên tập tune của C4b.",
+  "approval": {
+   "date": "2026-11-19",
+   "quote": "duyệt B với cả từ khóa, làm tiếp G3 đi",
+   "evidence": "scripts/eval_it_filter.py: giữ lại 192 tin, đúng 0,948 [0,907; 0,972], P_IT 0,976 [0,877; 0,996], R_IT 0,82; luật cũ 0,932 / 0,930"
+  }
  },
  "excluded_roles": {
   "sales_marketing": [
@@ -99,7 +104,7 @@
   ]
  },
  "exceptions": {
-  "_note": "Tiêu đề có các từ này thì không bị tầng 0 loại. it_role_terms chỉ áp cho nhóm sales_marketing và graphic_design; embedded_for_automation chỉ áp cho q4_embedded_iot (H6). Chờ người dùng duyệt.",
+  "_note": "Tiêu đề có các từ này thì không bị tầng 0 loại. it_role_terms chỉ áp cho nhóm sales_marketing và graphic_design; embedded_for_automation chỉ áp cho q4_embedded_iot (H6).",
   "it_role_terms": [
    "business intelligence",
    "developer",
@@ -189,11 +194,13 @@
   ],
   "rule": {
    "_note": "Chọn ở G2 trên tập tune. it = (nhóm nghề và core >= k_fam) hoặc sec >= k_sec hoặc core >= k_core hoặc (chuyên mục IT và core >= k_cat; k_cat_by_source ghi đè theo nguồn). null = tắt nhánh đó.",
-   "k_fam": null,
+   "k_fam": 2,
    "k_sec": null,
-   "k_core": null,
+   "k_core": 8,
    "k_cat": null,
-   "k_cat_by_source": {}
+   "k_cat_by_source": {
+    "itviec": 0
+   }
   }
  }
 }

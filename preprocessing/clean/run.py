@@ -20,7 +20,7 @@ from typing import Any
 
 from preprocessing.clean.label_review import validation_metrics
 from preprocessing.common import REPO_ROOT, SOURCES, step_report
-from preprocessing.common.it_filter import classify, classify_unknown
+from preprocessing.common import it_filter as IT
 from preprocessing.common.raw_reader import read_raw, snapshot_order
 from preprocessing.common.step_report import StepReport, merge_reports
 from preprocessing.deduplication.inter_source import authority
@@ -187,29 +187,37 @@ def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tup
         it["flat"] = flatten_raw_job_record(it["env"], source)
     fill_in = _fill(items)
 
-    # C4a: luật 2 tầng ở mọi nguồn, chỉ gắn nhãn; bỏ hay không do C4c và it_policy.json
-    status, levels = Counter(), Counter()
+    # C4a: luật ba tầng (đặc tả 01 mục 2, 2.1; preprocessing/dictionaries/it_filter_v2.json đã duyệt), chỉ gắn nhãn;
+    # bỏ hay không do C4c và it_policy.json. Tầng 0 = nhóm không phải IT (loại hoàn toàn), tầng 1 = từ khóa tiêu đề và
+    # tag sàn, tầng 2 = kỹ năng skills_v2 trong JD + nhóm nghề + chuyên mục sàn.
+    cfg = IT.load_config()
+    status, levels, excluded = Counter(), Counter(), Counter()
     for it in items:
         f = it["flat"]
         # Nhãn chuyên môn của sàn (TopCV category_tags) vẫn là tín hiệu IT dù không còn nằm trong skills_list (18/11)
         signals = list(f.get("skills_list") or []) + list(f.get("category_tags") or [])
-        rule = classify(f.get("job_title"), signals)
-        level = 1
-        if rule == "unknown":
-            level = 2
-            st = classify_unknown(f.get("job_title"), signals,
-                                  f"{f.get('raw_description_text') or ''} {f.get('raw_requirements_text') or ''}", f.get("company_name"))
+        group = IT.excluded_role(f.get("job_title"), cfg)
+        if group:
+            rule, level, st = "non_it", 0, "non_it"
+            excluded[group] += 1
         else:
-            st = rule
+            rule = IT.classify_tier1(f.get("job_title"), signals, cfg)
+            level, st = 1, rule
+            if rule == "unknown":
+                level = 2
+                jd = f"{f.get('raw_description_text') or ''} {f.get('raw_requirements_text') or ''}"
+                st = IT.tier2_decide(IT.it_signals(f.get("job_title"), jd, f.get("raw_category_text"), cfg),
+                                     source, cfg["tier2"]["rule"])
         status[st] += 1
         levels[f"tang_{level}_{st}"] += 1
         it["env"]["metadata"]["clean"] = {"snapshot_file": it["rel"], "it_rule": rule, "it_rule_level": level,
                                           "it_status": st, "dedup_key": dedup_key(f), "also_on": [],
                                           "first_scraped_at": first_seen.get(_job_id(it))}
     non_it = [i for i in items if i["env"]["metadata"]["clean"]["it_status"] == "non_it"]
-    report.rule("C4a", "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
+    report.rule("C4a", "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
                 "flag", status["non_it"], [_ex(i, "job_title", i["flat"].get("job_title"), "non_it") for i in non_it])
     report.data["extra"]["it_levels"] = dict(levels)
+    report.data["extra"]["it_excluded_groups"] = dict(excluded)
     report.data["extra"]["it_status"] = dict(status)
 
     classified = list(items)
