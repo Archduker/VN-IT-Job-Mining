@@ -1,0 +1,56 @@
+# Top kỹ năng mỗi nhóm nghề, bảng 04 chạy lại 19/11 (3.916 tin), bước 08 skills_v2, mọi via
+
+## Web (1536 tin)
+ KỸ THUẬT: information_security 35%, database 34%, api 30%, rest_api 28%, ai 27%, troubleshooting 27%, software_testing 25%, java 24%, git 23%, code_review 21%, cicd 21%, networking 20%, sql 20%, frontend_dev 20%, python 20%
+ MỀM: coordination 51%, communication 42%, proactiveness 34%, problem_solving 30%, teamwork 28%
+ NGOẠI NGỮ: english 42%, japanese 5%, vietnamese 4%
+
+## Other (526 tin)
+ KỸ THUẬT: information_security 33%, software_testing 27%, database 22%, ai 21%, troubleshooting 20%, cloud_computing 20%, sql 19%, api 17%, data_analysis 16%, erp 16%, python 16%, reporting 16%, networking 15%, it_infrastructure 15%, monitoring 14%
+ MỀM: coordination 58%, communication 49%, proactiveness 32%, problem_solving 30%, teamwork 29%
+ NGOẠI NGỮ: english 42%, toeic 4%, japanese 4%
+
+## Bridge (479 tin)
+ KỸ THUẬT: business_analysis 40%, agile 40%, software_testing 37%, srs 34%, user_story 34%, uat 34%, scrum 32%, project_management 31%, brd 27%, jira 25%, sql 24%, wireframe 23%, use_case 22%, data_analysis 22%, requirements_gathering 21%
+ MỀM: coordination 70%, communication 68%, documentation 41%, proactiveness 39%, problem_solving 37%
+ NGOẠI NGỮ: english 46%, toeic 4%, chinese 3%
+
+## Data/AI (388 tin)
+ KỸ THUẬT: python 57%, sql 54%, data_analysis 50%, ai 47%, machine_learning 35%, data_processing 31%, database 31%, power_bi 30%, dashboard 30%, data_warehouse 30%, bi 29%, data_science 29%, statistics 26%, etl 25%, data_engineering 25%
+ MỀM: coordination 53%, communication 38%, proactiveness 35%, problem_solving 34%, analytical_skills 28%
+ NGOẠI NGỮ: english 37%, toeic 5%, vietnamese 4%
+
+## Tester (382 tin)
+ KỸ THUẬT: software_testing 73%, test_plan 60%, qa_qc 54%, automation_test 39%, regression_test 34%, api 32%, sql 30%, defect_management 30%, api_testing 30%, sdlc 26%, agile 25%, jira 24%, postman 23%, manual_test 23%, quality_management 22%
+ MỀM: coordination 55%, communication 47%, carefulness 32%, analytical_skills 29%, proactiveness 28%
+ NGOẠI NGỮ: english 42%, japanese 6%, toeic 3%
+
+## DevOps/Cloud (234 tin)
+ KỸ THUẬT: cloud_computing 69%, it_infrastructure 65%, information_security 64%, cicd 62%, kubernetes 61%, devops 58%, aws 56%, monitoring 54%, linux 50%, docker 50%, networking 47%, containerization 42%, troubleshooting 41%, terraform 38%, azure 38%
+ MỀM: coordination 50%, communication 41%, proactiveness 29%, problem_solving 27%, documentation 25%
+ NGOẠI NGỮ: english 48%, toeic 5%, vietnamese 3%
+
+## Security (231 tin)
+ KỸ THUẬT: information_security 73%, networking 57%, troubleshooting 49%, it_infrastructure 47%, firewall 36%, monitoring 33%, linux 32%, routing_switching 32%, cloud_computing 30%, python 29%, backup 28%, server_admin 28%, cybersecurity 27%, software_testing 24%, database 23%
+ MỀM: coordination 57%, communication 35%, proactiveness 33%, problem_solving 29%, documentation 29%
+ NGOẠI NGỮ: english 50%, toeic 5%, japanese 3%
+
+## Design (61 tin)
+ KỸ THUẬT: figma 62%, ui_ux 61%, ux_design 59%, wireframe 51%, ui_design 49%, prototyping 43%, design_system 38%, photoshop 36%, illustrator 33%, user_flow 31%, typography 30%, graphic_design 23%, mobile_app_dev 23%, ai_application 21%, adobe_xd 21%
+ MỀM: coordination 70%, proactiveness 52%, creativity 38%, teamwork 36%, communication 31%
+ NGOẠI NGỮ: english 11%, toeic 2%
+
+## Game (43 tin)
+ KỸ THUẬT: unity 58%, game_design 42%, game_programming 40%, csharp 37%, android 33%, ios 33%, prototyping 33%, market_research 30%, hyper_casual 30%, game_balancing 23%, performance_optimization 21%, monetization 21%, algorithms 19%, level_design 19%, data_analysis 19%
+ MỀM: coordination 70%, proactiveness 58%, creativity 44%, eagerness_to_learn 42%, logical_thinking 40%
+ NGOẠI NGỮ: english 35%, cefr 2%
+
+## Mobile (26 tin)
+ KỸ THUẬT: ios 69%, mobile_app_dev 54%, android 54%, swift 50%, flutter 46%, rest_api 42%, performance_optimization 42%, kotlin 38%, clean_architecture 38%, software_testing 38%, cicd 35%, scalability 35%, code_review 35%, product_management 35%, qa_qc 35%
+ MỀM: coordination 65%, communication 65%, problem_solving 50%, analytical_skills 42%, proactiveness 42%
+ NGOẠI NGỮ: english 50%, toeic 8%
+
+## IoT (10 tin)
+ KỸ THUẬT: technical_drawing 60%, cnc 50%, cicd 30%, it_infrastructure 30%, data_science 30%, ai 30%, machine_learning 30%, machining 30%, statistics 30%, python 30%, docker 30%, performance_optimization 20%, mlops 20%, mastercam 20%, streaming 20%
+ MỀM: proactiveness 50%, coordination 50%, carefulness 30%, communication 20%, eagerness_to_learn 20%
+ NGOẠI NGỮ: chinese 20%, english 10%, toeic 10%
