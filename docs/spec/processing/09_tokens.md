@@ -1,4 +1,6 @@
-# Bước 09: Tokens
+# Bước 09: Tokens (**đã bỏ khỏi chuỗi 19/11/2026**)
+
+> **Bỏ 19/11/2026** (kế hoạch yêu cầu dữ liệu P3, người dùng duyệt): bên đọc duy nhất là `n_tokens` của 10c, nay bước 10 tự đếm số từ của mô tả + yêu cầu (`processing/construction/features.py`, `word_count`). `09_tokens` không còn trong `PROCESSING_STEPS`; code `processing/transformation/` còn, chờ gỡ (PRE-39). Phần dưới là mô tả cũ.
 
 > Code: `processing/transformation/tokenize.py` (`tokenize`, `domain_stopwords`, `load_general_stopwords`, `remove_stopwords`); `processing/transformation/run.py` (`run`).
 > Lệnh: `python scripts/run_preprocessing.py --step tokens --source all [--dry-run]`.

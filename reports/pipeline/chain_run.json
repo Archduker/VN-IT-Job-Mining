@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-19T08:50:41+00:00",
+  "generated_at": "2026-11-19T08:56:41+00:00",
   "sources": [
     "topcv",
     "topdev",
@@ -13,7 +13,7 @@
   "translate": false,
   "steps": [
     {
-      "step": "08_skills",
+      "step": "10_features",
       "status": "OK",
       "missing": [],
       "input": 3916,

@@ -18,10 +18,10 @@ Processing biến bảng sạch thành các **biểu diễn** mà Mining dùng: 
 
 | Đầu ra | Bước | Bên đọc | SD |
 |---|---|---|---|
-| `07_sections/all.parquet` (bullet theo section) | 07 | 08, 09, 12_e5 | gián tiếp: SD2, SD3 |
+| `07_sections/all.parquet` (bullet theo section) | 07 | 08, 12_e5 | gián tiếp: SD2, SD3 |
 | `08_skills/job_skills.parquet` (tin × kỹ năng, mức bắt buộc hay ưu tiên) | 08 | 10; dự kiến M1 BI (nhu cầu kỹ năng của tin người mới) và M6, cả hai chưa có code | SD1 (câu về kỹ năng), SD2, SD4, SD5 |
-| `09_tokens/all.parquet` | 09 | 10c (`n_tokens`) | gián tiếp |
-| `10_features/features.parquet` + `encoding_dictionary.json` | 10 | M2 (cột `skill__*`), M3, M4, M5 | SD2, SD3, SD4, SD5 |
+| ~~`09_tokens/all.parquet`~~ | 09 | **Bỏ khỏi chuỗi 19/11**: 10c tự đếm `n_tokens` | — |
+| `10_features/features.parquet` + `encoding_dictionary.json` | 10 | M2 (cột `skill__*` = K-tool; `concept__*`, `soft__*` bảng riêng), M3, M4, M5 | SD2, SD3, SD4, SD5 |
 | ~~`12_tfidf/`~~ | 12_tfidf | **Bỏ** (người dùng chốt 17/11, mục 3.5) | — |
 | `12_e5/job_emb.npz` | 12_e5 | M3 (phân cụm), M4 | SD3 |
 
@@ -33,7 +33,7 @@ Processing biến bảng sạch thành các **biểu diễn** mà Mining dùng: 
 data/preprocessing/04_normalization/all.parquet   (bảng sạch, spec 05)
   ▼  07 sections   tách JD thành bullet, gán section
   ▼  08 skills     trích kỹ năng trên từng bullet       (07 và 08 chạy trong cùng một lần gọi)
-  ▼  09 tokens     tách từ, bỏ stopword                 (đọc bảng 04, tự gọi lại analyze của 07–08)
+  ✗  09 tokens     bỏ khỏi chuỗi 19/11 (10c tự đếm số từ)
   ▼  10 features   10 rời rạc hóa → 10b chọn kỹ năng → 10c xây đặc trưng → 10d mã hóa
   ▼  12_e5         embedding bullet của 07 bằng multilingual-e5-base (cần GPU)
 data/processing/<bước>/
@@ -160,8 +160,8 @@ Kết quả 10/11: 10 stopword theo miền (các, có, của, kinh nghiệm, là
 | Mục | Nội dung |
 |---|---|
 | Mục đích | Một ma trận số, mỗi tin một dòng, dùng chung cho mọi bước Mining. Phục vụ SD2 (cột kỹ năng), SD3 (đầu vào phân cụm và Isolation Forest), SD4 (đặc trưng của model lương), SD5 |
-| Code | `processing/encoding/features.py` (`build_features`, `run`); `processing/transformation/discretize.py` (10); `processing/selection/sparsity.py` (10b); `processing/construction/features.py` (10c). Còn import `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` từ `preprocessing/encoding/run.py` |
-| Đầu vào | Bảng 04, `08_skills/job_skills.parquet`, `09_tokens/all.parquet` |
+| Code | `processing/encoding/features.py` (`build_features`, `skill_block`, `run`); `processing/transformation/discretize.py` (10); `processing/selection/sparsity.py` (10b); `processing/construction/features.py` (10c); hằng ở `processing/encoding/constants.py` |
+| Đầu vào | Bảng 04, `08_skills/job_skills.parquet` (cần cột `type`) |
 | Đầu ra | `data/processing/10_features/features.parquet` (đúng 4.671 dòng, khóa `job_id_global`), `encoding_dictionary.json` (mỗi cột: cách mã hóa, cột nguồn) |
 | Report | `reports/processing/10_features/`; `extra`: `n_cols`, `min_df`, `n_skill_cols`, `n_skills_folded` |
 
@@ -173,7 +173,7 @@ Kết quả 10/11: 10 stopword theo miền (các, có, của, kinh nghiệm, là
 | `salary_bin_eqfreq5` | 5 nhóm đều tần suất trên tin có lương |
 | `exp_bin` | 0: dưới 1 năm; 1: 1–2; 2: 3–5; 3: trên 5 |
 
-**10b, chọn kỹ năng:** kỹ năng có DF < `min_df` = 15 tin (`MIN_DF`; người dùng đề xuất 10–20) bị gom vào `skill__other_skill`. Số tin không đổi. Lần chạy 10/11: còn 171 cột kỹ năng, 49 kỹ năng bị gom. Các tiêu chí chọn khác chưa chốt (PRE-34).
+**10b, chọn kỹ năng (19/11):** ba khối theo `skill_view` (`docs/target/06_yeu_cau_du_lieu.md` mục 2): `skill__` = K-tool, `concept__` = K-concept, `soft__` = K-soft; mỗi khối gom DF < `min_df` = 15 (người dùng chốt 19/11) vào `<khối>__other_skill`. Chạy 19/11: 291, 562, 63 cột. Chi tiết ở `docs/spec/processing/10_features.md`. Các tiêu chí chọn khác chưa chốt (PRE-34).
 
 **10c, xây đặc trưng** (thiếu thì NaN): `n_skills`, `n_required`, `required_ratio`, `n_tokens`, `n_benefits`, `salary_mid`, `salary_range_ratio`.
 
@@ -181,7 +181,7 @@ Kết quả 10/11: 10 stopword theo miền (các, có, của, kinh nghiệm, là
 
 | Nhóm cột | Cách mã hóa |
 |---|---|
-| `skill__<slug>` | Multi-hot từ 08 (sau 10b) |
+| `skill__<slug>`, `concept__<slug>`, `soft__<slug>` | Multi-hot từ 08 theo ba khối (sau 10b) |
 | `seniority_ord` | Ordinal 0–4 theo 5 cấp; chưa rõ = -1 |
 | `fam__*` | One-hot 10 nhóm nghề + Other |
 | `src__*` | One-hot nguồn |
@@ -206,7 +206,7 @@ Kết quả 10/11: 10 stopword theo miền (các, có, của, kinh nghiệm, là
 - **Quyết định:** người dùng chốt ngày 17/11 bỏ TF-IDF khỏi dự án (spec 07 mục 4). Biểu diễn nội dung JD cho SD3 chỉ dùng e5 (12_e5).
 - **Lý do:** không bước Mining nào đọc `12_tfidf/`; M3 đã tắt TF-IDF tự dựng từ L-47 (`tfidf_weight` = 0) và chạy với kỹ năng + e5.
 - **Lần chạy cuối** (10/11): ma trận 4.671 × 20.000, 1.205.812 ô khác 0. Thông số cũ: `TfidfVectorizer` unigram + bigram, `min_df` 5, `sublinear_tf`, L2. Xem lại bằng `git show`.
-- **Việc code** (MINE-7): bỏ `12_tfidf` khỏi `PROCESSING_STEPS` trong `scripts/run_preprocessing.py`, xóa `processing/extraction/vectorize.py` cùng test của nó, xóa `data/processing/12_tfidf/` và `reports/processing/12_tfidf/`. Chưa làm.
+- **Việc code** (MINE-7): bỏ `12_tfidf` khỏi `PROCESSING_STEPS` trong `scripts/run_preprocessing.py` (**làm 19/11**); xóa `processing/extraction/vectorize.py` cùng test của nó, xóa `data/processing/12_tfidf/` và `reports/processing/12_tfidf/`: chưa làm (cần người dùng đồng ý xóa).
 
 ### 3.6. Bước 12_e5
 

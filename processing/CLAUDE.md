@@ -8,8 +8,8 @@ Giai đoạn 3 của quy trình chuẩn: **Processing** (bước 07–12: tách 
 |---|---|---|
 | 07 sections | `extraction/sections.py`, `extraction/run.py` | `07_sections/all.parquet` (một dòng một bullet) |
 | 08 skills | `extraction/skills.py`, `extraction/run.py`, `selection/sparsity.py` | `08_skills/job_skills.parquet` |
-| 09 tokens | `transformation/tokenize.py`, `transformation/run.py` | `09_tokens/all.parquet` |
-| 10 features (10, 10b, 10c, 10d) | `encoding/features.py`, `transformation/discretize.py`, `selection/sparsity.py`, `construction/features.py` | `10_features/features.parquet`, `encoding_dictionary.json` |
+| ~~09 tokens~~ | `transformation/tokenize.py`, `transformation/run.py` | **Bỏ khỏi chuỗi 19/11**: bước 10 tự đếm `n_tokens`; code còn, chờ gỡ (PRE-39) |
+| 10 features (10, 10b, 10c, 10d) | `encoding/features.py`, `encoding/constants.py`, `transformation/discretize.py`, `selection/sparsity.py`, `construction/features.py` | `10_features/features.parquet` (ba khối `skill__` K-tool, `concept__`, `soft__`), `encoding_dictionary.json` |
 | ~~12_tfidf~~ | `extraction/vectorize.py` | **Đã bỏ 17/11** (spec 06 mục 3.5); code còn, chờ gỡ (MINE-7). Không thêm bên đọc mới |
 | 12_e5 | `extraction/embed.py` (cần GPU) | `12_e5/` |
 
@@ -32,7 +32,8 @@ Giai đoạn 3 của quy trình chuẩn: **Processing** (bước 07–12: tách 
 - Quét kỹ năng trên văn bản fold với alias ngắn (`bi`, `ba`, `soc`, `c`) sinh nhiễu hàng loạt. Chỉ alias ≥ 4 ký tự hoặc có `# + .` đi đường fold; alias ngắn đi đường phân biệt hoa thường và phải `approved: true`.
 - Hai từ điển kỹ năng cũ: `preprocessing/dictionaries/skills.json` (bước 03 → `skills_std`) và `dictionaries/skills_taxonomy_230.json` (bước 08 trước 18/11). Từ 18/11 nguồn duy nhất cho SD là `skills_v2.json` qua bước 08 (K8.9, K8.15); `skills_std` của 03 không dùng cho phân tích (PRE-40).
 - `underthesea.word_tokenize` trả list, token ghép có dấu cách bên trong; token kỹ năng là `sk_<slug>` và không bao giờ bị coi là stopword.- 08 quét thêm bản dịch (`description_vi`, `requirements_vi`) với tin đã dịch; kỹ năng chỉ thấy trong bản dịch có `via = "text_vi"`. F1 trên gold chỉ tính `via = "text"`.
-- `encoding/features.py` còn import `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` từ `preprocessing/encoding/run.py`; dọn `preprocessing/encoding/` thì phải chuyển các hằng số này trước (PRE-39).
+- Hằng `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` ở `encoding/constants.py` (19/11); `preprocessing/encoding/run.py` import lại từ đây, đừng định nghĩa lại bên đó.
+- K-tool, K-concept, K-soft chỉ có một định nghĩa: `extraction/skills.skill_view`. Bên đọc (bước 10, Mining) gọi hàm này, không tự lọc `kind`/`type`. Kỹ năng kỹ thuật `type = null` (chưa duyệt) không phải công cụ.
 - Nhóm nghề là 10 nhóm + Other (`fam__*`, L-47). Đổi nhóm thì sửa `FAMILY_MAP` ở `preprocessing/normalization/job_title.py`, rồi chạy lại 04, 10 và Mining.
 - `posted_month` của 10 đang lấy tháng từ `posted_date` (thiếu 36%); sẽ đổi sang cột `posted_month` của bảng 04 (PRE-37).
 - 12_e5: cache theo `sha1(text)` ở `data/processing/12_e5/cache/`, chạy lại không tính lại; khoảng 40 ms/bullet trên Quadro T1000. Model chưa ghim commit (PRE-40).

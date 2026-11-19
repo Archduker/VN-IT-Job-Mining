@@ -26,7 +26,8 @@ if str(ROOT) not in sys.path:
 
 from preprocessing.common import SOURCES, STEPS  # noqa: E402
 
-PROCESSING_STEPS = ("07_sections", "08_skills", "09_tokens", "10_features", "12_tfidf", "12_e5")
+# 19/11: bỏ 09_tokens (bước 10 tự đếm n_tokens) và 12_tfidf (TF-IDF đã bỏ, spec 06) khỏi chuỗi; code còn, chưa gỡ (PRE-39)
+PROCESSING_STEPS = ("07_sections", "08_skills", "10_features", "12_e5")
 CHAIN = (*STEPS, *PROCESSING_STEPS)
 MODULES = {
     "01_clean": "preprocessing.clean.run",
@@ -63,11 +64,9 @@ def missing_inputs(step: str, sources, root: Path = ROOT) -> list[str]:
         need = [P / "01b_deduplication" / f"{s}.jsonl" for s in sources]
     elif step == "12_e5":
         need = [root / "data" / "processing" / "07_sections" / "all.parquet"]
-    elif step in ("10_features", "12_tfidf"):
+    elif step == "10_features":
         O = root / "data" / "processing"
-        need = [P / "04_normalization" / "all.parquet", O / "09_tokens" / "all.parquet"]
-        if step == "10_features":
-            need.append(O / "08_skills" / "job_skills.parquet")
+        need = [P / "04_normalization" / "all.parquet", O / "08_skills" / "job_skills.parquet"]
     else:
         prev = {"03_transformation": "02_integration"}.get(step, "03_transformation" if step == "04_normalization" else "04_normalization")
         need = [P / prev / "all.parquet"]

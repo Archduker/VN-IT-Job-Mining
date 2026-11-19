@@ -47,19 +47,8 @@ OUT_FEATURES_FILE = OUT_DIR / "features.parquet"
 OUT_COOCCURRENCE_FILE = OUT_DIR / "skill_cooccurrence.parquet"
 OUT_DICT_FILE = OUT_DIR / "encoding_dictionary.json"
 
-from preprocessing.normalization.text_cleaner import SENIORITY_LABELS as SENIORITY_ORDER  # noqa: E402  null -> -1
-SENIORITY_MAP = {lab: idx for idx, lab in enumerate(SENIORITY_ORDER)}
-
-TOP_PROVINCES_K = 10
-
-
-def to_col_slug(text: str) -> str:
-    """Tạo slug chuẩn cho tên cột (chữ thường, ascii, gạch dưới)."""
-    s = str(text or "").lower()
-    s = s.replace("c#", "csharp").replace(".net", "dotnet").replace("c++", "cpp")
-    s = fold(s)
-    s = re.sub(r"[^a-z0-9]+", "_", s).strip("_")
-    return s or "unknown"
+# Hằng đã chuyển sang processing/encoding/constants.py (F10.4, PRE-39); import lại để code bước 05 cũ vẫn chạy.
+from processing.encoding.constants import SENIORITY_MAP, SENIORITY_ORDER, TOP_PROVINCES_K, to_col_slug  # noqa: E402,F401
 
 
 def _normalize_employment_type(raw_val: Any) -> str:

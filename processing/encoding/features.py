@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Bước 10d (PH8): ma trận đặc trưng số cho Mining. Gộp 10 (rời rạc hóa), 10b (chọn kỹ năng), 10c (xây), 10d (mã hóa).
 
+Ba khối kỹ năng theo `skill_view` (docs/target/06_yeu_cau_du_lieu.md mục 2): `skill__` = K-tool, `concept__` = K-concept,
+`soft__` = K-soft; mỗi khối gom kỹ năng DF < min_df vào `<khối>__other_skill`. Không đọc bước 09 (đã bỏ, 19/11).
 Giữ đúng số dòng của bảng 04. Cờ `seniority_can_kiem` được giữ thành cột (không bỏ dòng) để Mining tự lọc.
 Lương thỏa thuận và không ghi gộp thành `salary_status__unknown`; số lương không điền.
 """
@@ -15,16 +17,17 @@ import pandas as pd
 
 from preprocessing.common import REPO_ROOT
 from preprocessing.common.step_report import StepReport, merge_reports
-from preprocessing.encoding.run import SENIORITY_MAP, TOP_PROVINCES_K, to_col_slug
-from preprocessing.normalization.job_title import fold
 from preprocessing.normalization.job_title import JOB_FAMILIES, OTHER
 from processing.construction.features import construct, salary_ref_m
-from processing.selection.sparsity import OTHER as OTHER_SKILL
+from processing.encoding.constants import SENIORITY_MAP, TOP_PROVINCES_K, to_col_slug
+from processing.extraction.skills import skill_view
 from processing.selection.sparsity import reduce_sparsity
 from processing.transformation.discretize import discretize
 
 STEP = "10_features"
-MIN_DF = 15  # người dùng đề xuất 10-20; mặc định 15
+MIN_DF = 15  # người dùng chốt 19/11: 15 cho cả ba khối
+SKILL_BLOCKS = (("skill", "tool"), ("concept", "concept"), ("soft", "soft"))  # (tiền tố cột, view của skill_view)
+EMPLOYMENT_TYPES = ("full_time", "part_time", "internship", "contract")    # giá trị của employment_type (N19)
 
 
 def _onehot(values: pd.Series, cats, prefix: str, dic: dict, extra_unknown: bool = False) -> pd.DataFrame:
@@ -39,17 +42,6 @@ def _onehot(values: pd.Series, cats, prefix: str, dic: dict, extra_unknown: bool
     return pd.DataFrame(cols, index=values.index)
 
 
-def employment_class(text) -> str:
-    """Luật từ khóa trên chuỗi gốc [ĐỀ XUẤT]; null hoặc không nhận ra (ví dụ "6") -> unknown, không đoán."""
-    t = fold(text)
-    for cls, keys in (("intern", ("thuc tap", "intern")), ("part_time", ("ban thoi gian", "part time", "part_time", "parttime")),
-                      ("contract", ("hop dong", "contract", "freelance", "thoi vu", "temporary")),
-                      ("full_time", ("toan thoi gian", "full time", "full_time", "fulltime", "chinh thuc"))):
-        if any(k in t for k in keys):
-            return cls
-    return "unknown"
-
-
 def _provinces(locations) -> list:
     return sorted({loc.get("tinh_key") for loc in (locations if locations is not None else []) if loc.get("tinh_key")})
 
@@ -62,28 +54,41 @@ def _numeric(out: dict, names, df, dic) -> None:
         dic[f"{c}__missing"] = {"method": "flag", "source_column": c}
 
 
-def build_features(df: pd.DataFrame, skills: pd.DataFrame, tokens: pd.DataFrame, min_df: int = MIN_DF
-                   ) -> Tuple[pd.DataFrame, Dict, dict]:
+def skill_block(skills: pd.DataFrame, view: str, prefix: str, index: pd.Series, min_df: int, dic: dict):
+    """Một khối multi-hot: lấy view, gom DF < min_df vào other_skill, xếp theo thứ tự tin. Trả (ma trận, báo cáo 10b)."""
+    rows = skill_view(skills, view).to_dict("records")
+    kept, rep = reduce_sparsity(rows, len(index), {}, min_df=min_df, mode="other")
+    if kept:
+        sk = pd.DataFrame(kept)
+        mat = pd.crosstab(sk["job_id_global"], sk["slug"]).clip(upper=1)
+        mat = mat.reindex(index).fillna(0).astype(np.uint8)
+    else:
+        mat = pd.DataFrame(index=index)
+    mat.columns = [f"{prefix}__{c}" for c in mat.columns]
+    mat = mat.reset_index(drop=True)
+    for c in mat.columns:
+        dic[c] = {"method": "multi_hot", "source_column": f"08_skills (skill_view {view})"}
+    return mat, rep
+
+
+def build_features(df: pd.DataFrame, skills: pd.DataFrame, min_df: int = MIN_DF) -> Tuple[pd.DataFrame, Dict, dict]:
     df = df.reset_index(drop=True)
     dic: Dict[str, dict] = {}
     ref = salary_ref_m(df)
     parts = [pd.DataFrame({"job_id_global": df["job_id_global"]}),
-             construct(df, skills, tokens).drop(columns="job_id_global"),
+             construct(df, skills).drop(columns="job_id_global"),
              discretize(df, ref)]
-    dic.update({c: {"method": "construction", "source_column": "04/08/09"} for c in parts[1].columns})
+    dic.update({c: {"method": "construction", "source_column": "04/08"} for c in parts[1].columns})
+    dic["salary_target_m"] = {"method": "construction", "source_column": "salary_*_vnd_capped",
+                              "note": "mục tiêu SD4, chỉ tham chiếu; không làm đầu vào (assert_no_leakage)"}
     dic.update({c: {"method": "discretize", "source_column": "salary/exp_min_years"} for c in parts[2].columns})
 
-    # 10b: gom kỹ năng hiếm (df < min_df) thành other_skill; số JD không đổi
-    rows = skills.to_dict("records")
-    kept, rep = reduce_sparsity(rows, len(df), {}, min_df=min_df, mode="other")
-    sk = pd.DataFrame(kept)
-    mat = pd.crosstab(sk["job_id_global"], sk["slug"]).clip(upper=1).astype(np.uint8)
-    mat = mat.reindex(df["job_id_global"]).fillna(0).astype(np.uint8)
-    mat.columns = [f"skill__{c}" for c in mat.columns]
-    mat.index = df.index
-    for c in mat.columns:
-        dic[c] = {"method": "multi_hot", "source_column": "08_skills"}
-    parts.append(mat)
+    # 10b: ba khối kỹ năng, mỗi khối gom kỹ năng hiếm (df < min_df) vào <khối>__other_skill; số JD không đổi
+    n_cols, folded = {}, {}
+    for prefix, view in SKILL_BLOCKS:
+        mat, rep = skill_block(skills, view, prefix, df["job_id_global"], min_df, dic)
+        parts.append(mat)
+        n_cols[prefix], folded[prefix] = int(mat.shape[1]), rep["folded_into"]
 
     # 10d
     parts.append(pd.DataFrame({"seniority_ord": df["seniority"].map(lambda x: SENIORITY_MAP.get(str(x), -1)).astype(np.int8)}))
@@ -91,9 +96,11 @@ def build_features(df: pd.DataFrame, skills: pd.DataFrame, tokens: pd.DataFrame,
     parts.append(_onehot(df["job_family"], [*JOB_FAMILIES, OTHER], "fam", dic))
     parts.append(_onehot(df["source_platform"], sorted(df["source_platform"].dropna().unique()), "src", dic))
     parts.append(_onehot(df["work_mode"], ["onsite", "remote", "hybrid"], "wm", dic, extra_unknown=True))
-    # E2 loại hình làm việc
-    emp = df["raw_employment_type"].map(employment_class)
-    parts.append(_onehot(emp, ["full_time", "part_time", "intern", "contract", "unknown"], "emp", dic))
+    # E2 loại hình làm việc (F10.5): đúng cột employment_type của bước 04 (N19); null -> emp__unknown
+    parts.append(_onehot(df["employment_type"], list(EMPLOYMENT_TYPES), "emp", dic, extra_unknown=True))
+    # E7a tháng đăng (F10.1): one-hot theo posted_month YYYY-MM của bước 04
+    months = sorted(df["posted_month"].dropna().unique())
+    parts.append(_onehot(df["posted_month"], months, "pm", dic, extra_unknown=True))
     # E3 tỉnh: multi-hot top K theo mọi địa điểm của tin; còn lại other; không có tỉnh = unknown; remote, ngoài VN là cờ
     name2key = {p["name"]: p["key"] for p in json.loads((REPO_ROOT / "preprocessing" / "dictionaries" / "provinces_34.json")
                                                         .read_text(encoding="utf-8"))["provinces"]}
@@ -111,15 +118,12 @@ def build_features(df: pd.DataFrame, skills: pd.DataFrame, tokens: pd.DataFrame,
     # E5 số giữ nguyên, thiếu giữ NaN kèm cột __missing
     num: dict = {}
     _numeric(num, ["log_salary_min", "log_salary_max", "exp_min_years", "exp_max_years", "headcount"], df, dic)
-    # E7 ngày: tháng đăng và số ngày còn lại tới hạn nộp tính từ ngày cào
+    # E7b số ngày còn lại tới hạn nộp tính từ ngày cào
     crawled = pd.to_datetime(df["crawled_at"], errors="coerce", utc=True).dt.tz_localize(None).dt.normalize()
-    posted = pd.to_datetime(df["posted_date"], errors="coerce")
     deadline = pd.to_datetime(df["deadline_date"], errors="coerce")
-    num["posted_month"] = posted.dt.month.astype(float).values
     num["days_to_deadline"] = (deadline - crawled).dt.days.astype(float).values
     num["days_to_deadline__missing"] = pd.isna(num["days_to_deadline"]).astype(np.uint8)
-    dic.update({"posted_month": {"method": "date", "source_column": "posted_date"},
-                "days_to_deadline": {"method": "date", "source_column": "deadline_date - crawled_at"},
+    dic.update({"days_to_deadline": {"method": "date", "source_column": "deadline_date - crawled_at"},
                 "days_to_deadline__missing": {"method": "flag", "source_column": "deadline_date"}})
     parts.append(pd.DataFrame(num, index=df.index))
     st = df["salary_status"]
@@ -133,7 +137,7 @@ def build_features(df: pd.DataFrame, skills: pd.DataFrame, tokens: pd.DataFrame,
     dic.update({c: {"method": "flag", "source_column": c.split("__")[0]} for c in flags.columns})
     parts.append(flags)
     feats = pd.concat([p.reset_index(drop=True) for p in parts], axis=1)
-    return feats, dic, {"min_df": min_df, "n_skill_cols": int(mat.shape[1]), "folded": rep["folded_into"]}
+    return feats, dic, {"min_df": min_df, "n_cols": n_cols, "n_skill_cols": n_cols["skill"], "folded": folded}
 
 
 def run(sources, dry_run: bool = True, df=None, input_path=None, out_root=None, report_root=None, min_df: int = MIN_DF):
@@ -142,8 +146,7 @@ def run(sources, dry_run: bool = True, df=None, input_path=None, out_root=None, 
     df = pd.read_parquet(input_path) if df is None else df
     df = df[df["source_platform"].isin(list(sources))].sort_values("job_id_global", kind="mergesort")
     skills = pd.read_parquet(out_root / "08_skills" / "job_skills.parquet")
-    tokens = pd.read_parquet(out_root / "09_tokens" / "all.parquet")[["job_id_global", "n_tokens"]]
-    feats, dic, rep = build_features(df, skills, tokens, min_df)
+    feats, dic, rep = build_features(df, skills, min_df)
     reports = {}
     for src in sources:
         n = int((df["source_platform"] == src).sum())
@@ -153,7 +156,8 @@ def run(sources, dry_run: bool = True, df=None, input_path=None, out_root=None, 
         reports[src] = r
     total = merge_reports(STEP, list(reports.values()), dry_run)
     total.data["extra"].update(n_cols=feats.shape[1] - 1, min_df=min_df, n_skill_cols=rep["n_skill_cols"],
-                               n_skills_folded=sum(len(v) for v in rep["folded"].values()))
+                               n_cols_by_block=rep["n_cols"],
+                               n_skills_folded={k: sum(len(v) for v in f.values()) for k, f in rep["folded"].items()})
     reports["_all"] = total
     for r in reports.values():
         r.check_conserved()
