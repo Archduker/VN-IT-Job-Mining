@@ -93,3 +93,110 @@ def classify_unknown(title: Any, skills_list: Any = None, jd_text: Any = None, c
                                                 str(jd_text or ""), company))
     family, _ = classify_job_family_rule(str(title or ""), skills)
     return "it" if family and len(skills) >= MIN_JD_SKILLS else "non_it"
+
+
+# ---------------------------------------------------------------- Bộ lọc IT ba tầng (C4a, đặc tả 19/11)
+# Đặc tả: docs/spec/preprocessing/01_clean.md dòng C4a và mục 2.1 (định nghĩa "vai trò IT").
+# Từ khóa, ngoại lệ và ngưỡng nằm ở preprocessing/dictionaries/it_filter_v2.json; chỉ dùng khi approved = true.
+# Tầng 2 đếm kỹ năng bằng matcher của bước 08 (processing.extraction.skills, từ điển skills_v2.json): phụ thuộc
+# ngược từ pre-processing sang processing, chấp nhận vì matcher chỉ đọc từ điển (kế hoạch 19/11).
+import json  # noqa: E402
+from functools import lru_cache  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+CONFIG_PATH = Path(__file__).resolve().parents[1] / "dictionaries" / "it_filter_v2.json"
+
+
+def load_config(path: Path = CONFIG_PATH, require_approved: bool = True) -> dict:
+    cfg = json.loads(Path(path).read_text(encoding="utf-8"))
+    if require_approved and cfg.get("_meta", {}).get("approved") is not True:
+        raise ValueError(f"it_filter_v2.json chưa được duyệt ({path})")
+    return cfg
+
+
+@lru_cache(maxsize=None)
+def _cached_pattern(words: tuple) -> re.Pattern:
+    return _pattern(words)
+
+
+def _hit(words, text: str) -> bool:
+    words = tuple(w for w in words if w)
+    return bool(words) and bool(_cached_pattern(words).search(text))
+
+
+def excluded_role(title: Any, cfg: dict) -> str | None:
+    """Tầng 0: tên nhóm bị loại hoàn toàn (mục 2.1) hoặc None. Ngoại lệ chỉ áp cho nhóm được ghi trong cấu hình."""
+    t = _norm(title)
+    exc = cfg["exceptions"]
+    for group, words in cfg["excluded_roles"].items():
+        if not _hit(words, t):
+            continue
+        if group in exc.get("it_role_applies_to", []) and _hit(exc["it_role_terms"], t):
+            continue
+        if group in exc.get("embedded_applies_to", []) and _hit(exc["embedded_for_automation"], t):
+            continue
+        return group
+    return None
+
+
+def classify_tier1(title: Any, skills: Any, cfg: dict, matcher=None) -> str:
+    """Như `classify`, với từ khóa sửa theo cfg["tier1"] (thêm/bớt từ IT mạnh, thêm từ không IT). Tag kỹ năng của sàn
+    đếm qua alias của skills_v2 (nhóm lõi IT), thay danh sách TECH_SKILLS viết tay của luật cũ."""
+    t1 = cfg["tier1"]
+    strong = tuple(sorted(set(STRONG_IT) - set(t1["remove_strong_it"]) | set(t1["add_strong_it"])))
+    non = tuple(sorted(set(NON_IT) | set(t1["add_non_it"])))
+    t = _norm(title)
+    is_strong, is_non = _hit(strong, t), _hit(non, t)
+    if is_strong and is_non:
+        return "unknown"
+    if is_strong:
+        return "it"
+    if is_non:
+        return "non_it"
+    if not skills:
+        return "unknown"
+    m = matcher or default_matcher()
+    core = set(cfg["tier2"]["core_groups"])
+    tech = {sl for s in skills if isinstance(s, str) for sl in [m.meta_slug(s)] if sl and m.taxonomy[sl].get("group") in core}
+    return "it" if len(tech) >= MIN_TECH_SKILLS else "unknown"
+
+
+@lru_cache(maxsize=1)
+def default_matcher():
+    from processing.extraction.skills import load_skills_v2, matcher_from_v2
+    return matcher_from_v2(load_skills_v2())
+
+
+def it_signals(title: Any, jd: Any, category: Any, cfg: dict, matcher=None) -> dict:
+    """Bốn tín hiệu tầng 2: core (kỹ năng nhóm lõi IT trong JD), sec (kỹ năng bảo mật), fam (nhóm nghề từ tiêu đề),
+    cat (chuyên mục sàn có từ IT)."""
+    from preprocessing.normalization.text_cleaner import classify_job_family_rule
+    t2 = cfg["tier2"]
+    m = matcher or default_matcher()
+    slugs = {h.slug for h in m.find(str(jd or ""))}
+    groups = [m.taxonomy[s].get("group") for s in slugs]
+    family, _ = classify_job_family_rule(str(title or ""), [])
+    return {"core": sum(g in t2["core_groups"] for g in groups),
+            "sec": sum(g == t2["security_group"] for g in groups),
+            "fam": bool(family),
+            "cat": _hit(t2["category_terms"], _norm(category))}
+
+
+def tier2_decide(sig: dict, source: str, rule: dict) -> str:
+    k_fam, k_sec, k_core = rule.get("k_fam"), rule.get("k_sec"), rule.get("k_core")
+    k_cat = (rule.get("k_cat_by_source") or {}).get(source, rule.get("k_cat"))
+    it = ((k_fam is not None and sig["fam"] and sig["core"] >= k_fam)
+          or (k_sec is not None and sig["sec"] >= k_sec)
+          or (k_core is not None and sig["core"] >= k_core)
+          or (k_cat is not None and sig["cat"] and sig["core"] >= k_cat))
+    return "it" if it else "non_it"
+
+
+def classify_it(title: Any, skills: Any, jd: Any, category: Any, source: str, cfg: dict, matcher=None) -> tuple[str, int]:
+    """(it_status, it_rule_level) theo ba tầng. Tầng 0 thắng mọi tín hiệu khác."""
+    if excluded_role(title, cfg):
+        return "non_it", 0
+    r = classify_tier1(title, skills, cfg, matcher)
+    if r != "unknown":
+        return r, 1
+    return tier2_decide(it_signals(title, jd, category, cfg, matcher), source, cfg["tier2"]["rule"]), 2

@@ -1,0 +1,199 @@
+{
+ "_meta": {
+  "version": "2.0.0-draft",
+  "approved": false,
+  "updated": "2026-11-19",
+  "spec": "docs/spec/preprocessing/01_clean.md dòng C4a, mục 2.1",
+  "prompt": "docs/prompting/preprocessing/01_clean_it_filter.md",
+  "note": "Khớp từ nguyên vẹn trên tiêu đề viết thường (NFC). Từ khóa mỗi nhóm loại chỉ lấy từ định nghĩa và câu trả lời Q1-Q8, H1-H9 của người dùng; ngưỡng tầng 2 chọn trên tập tune của C4b."
+ },
+ "excluded_roles": {
+  "sales_marketing": [
+   "sales",
+   "sale",
+   "telesales",
+   "telesale",
+   "kinh doanh",
+   "bán hàng",
+   "marketing",
+   "business development",
+   "phát triển kinh doanh",
+   "account manager",
+   "presales",
+   "pre-sales",
+   "pre sales",
+   "kỹ sư kinh doanh",
+   "sales engineer"
+  ],
+  "graphic_design": [
+   "thiết kế đồ họa",
+   "graphic design",
+   "graphic designer",
+   "đồ họa",
+   "artist",
+   "concept art"
+  ],
+  "electrical_mechanical": [
+   "kỹ sư điện",
+   "kỹ sư cơ khí",
+   "cơ khí",
+   "điện công nghiệp",
+   "điện lạnh",
+   "điện nhẹ",
+   "thiết kế điện",
+   "hệ thống điện",
+   "mechanical",
+   "electrical",
+   "cơ điện",
+   "plc",
+   "robot hàn"
+  ],
+  "q2_privacy": [
+   "data protection officer",
+   "bảo vệ dữ liệu",
+   "privacy"
+  ],
+  "q3_av": [
+   "audio visual",
+   "nghe nhìn",
+   "av"
+  ],
+  "q4_embedded_iot": [
+   "iot",
+   "nhúng",
+   "embedded",
+   "firmware"
+  ],
+  "q7_teaching": [
+   "giáo viên",
+   "giảng viên",
+   "trợ giảng",
+   "teaching assistant",
+   "teacher",
+   "gia sư"
+  ],
+  "q8_operations_growth": [
+   "operations manager",
+   "business ownership"
+  ],
+  "h2_hardware_chip": [
+   "fpga",
+   "asic",
+   "design verification",
+   "pcb",
+   "vi mạch",
+   "hardware engineer",
+   "hardware development"
+  ],
+  "h4_telecom_field": [
+   "kỹ thuật viễn thông",
+   "kỹ thuật viên viễn thông",
+   "cáp quang",
+   "ftth",
+   "wifi"
+  ],
+  "h5_repair": [
+   "sửa chữa",
+   "sửa máy tính",
+   "bảo hành"
+  ]
+ },
+ "exceptions": {
+  "_note": "Tiêu đề có các từ này thì không bị tầng 0 loại. it_role_terms chỉ áp cho nhóm sales_marketing và graphic_design; embedded_for_automation chỉ áp cho q4_embedded_iot (H6). Chờ người dùng duyệt.",
+  "it_role_terms": [
+   "business intelligence",
+   "developer",
+   "lập trình viên",
+   "data analyst",
+   "data engineer",
+   "tester",
+   "kỹ sư phần mềm",
+   "software engineer",
+   "business analyst",
+   "phân tích nghiệp vụ",
+   "brse"
+  ],
+  "it_role_applies_to": [
+   "sales_marketing",
+   "graphic_design"
+  ],
+  "embedded_for_automation": [
+   "tự động hóa",
+   "tự động hoá",
+   "automation"
+  ],
+  "embedded_applies_to": [
+   "q4_embedded_iot"
+  ]
+ },
+ "tier1": {
+  "add_strong_it": [
+   "an toàn thông tin",
+   "an ninh thông tin",
+   "pentest",
+   "pentester",
+   "kiến trúc sư giải pháp",
+   "business intelligence",
+   "hr system"
+  ],
+  "remove_strong_it": [
+   "embedded"
+  ],
+  "add_non_it": [
+   "tư vấn",
+   "labeling",
+   "gán nhãn",
+   "nhập liệu"
+  ]
+ },
+ "tier2": {
+  "core_groups": [
+   "programming_languages",
+   "frontend",
+   "backend",
+   "mobile",
+   "databases",
+   "messaging",
+   "data_engineering",
+   "cloud",
+   "devops",
+   "security",
+   "testing_qa",
+   "architecture_api",
+   "dev_tools",
+   "game_dev",
+   "blockchain",
+   "data_science_ml",
+   "ai_genai"
+  ],
+  "security_group": "security",
+  "category_terms": [
+   "cntt",
+   "công nghệ thông tin",
+   "information technology",
+   "phần mềm",
+   "lập trình",
+   "it phần cứng",
+   "it helpdesk",
+   "it",
+   "devops",
+   "kiểm thử phần mềm",
+   "an toàn thông tin",
+   "an ninh mạng",
+   "dịch vụ máy tính",
+   "xử lý dữ liệu",
+   "triển khai giải pháp it",
+   "quản lý dự án it",
+   "quản lý sản phẩm it",
+   "hạ tầng - mạng"
+  ],
+  "rule": {
+   "_note": "Chọn ở G2 trên tập tune. it = (nhóm nghề và core >= k_fam) hoặc sec >= k_sec hoặc core >= k_core hoặc (chuyên mục IT và core >= k_cat; k_cat_by_source ghi đè theo nguồn). null = tắt nhánh đó.",
+   "k_fam": null,
+   "k_sec": null,
+   "k_core": null,
+   "k_cat": null,
+   "k_cat_by_source": {}
+  }
+ }
+}
