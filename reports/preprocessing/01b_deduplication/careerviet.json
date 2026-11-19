@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:29:27+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:13:36+00:00",
+  "code_version": "d3f7008",
   "input": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
-    "rows": 410
+    "rows": 415
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/careerviet.jsonl",
-    "rows": 401
+    "rows": 406
   },
   "dropped": [
     {
@@ -125,28 +125,28 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 5,
+      "rows_affected": 13,
       "examples": [
+        {
+          "job_id": "35C86FDD",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8691,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/project-manager-assistant.35C86FDD.html"
+        },
+        {
+          "job_id": "35C86FDD",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8691,
+          "url": "https://careerviet.vn/vi/tim-viec-lam/project-manager-assistant.35C86FDD.html"
+        },
         {
           "job_id": "35C8806F",
           "field": "jaccard",
           "before": null,
-          "after": 0.9194,
+          "after": 0.921,
           "url": "https://careerviet.vn/vi/tim-viec-lam/senior-technical-engineer-sre-ops-ai.35C8806F.html"
-        },
-        {
-          "job_id": "35C889C5",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.9421,
-          "url": "https://careerviet.vn/vi/tim-viec-lam/quan-ly-du-an-phan-mem-y-te-his-lis-ris-pacs-emr.35C889C5.html"
-        },
-        {
-          "job_id": "35C89816",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.86,
-          "url": "https://careerviet.vn/vi/tim-viec-lam/qa-engineer.35C89816.html"
         }
       ]
     }
@@ -170,7 +170,7 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 291,
+    "blocking_blocks": 293,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 9

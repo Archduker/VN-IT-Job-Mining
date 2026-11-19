@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:33:27+00:00",
-  "code_version": "591391b",
+  "generated_at": "2026-11-19T01:14:48+00:00",
+  "code_version": "d3f7008",
   "input": {
     "path": "data/preprocessing/01b_deduplication/vietnamworks.jsonl",
-    "rows": 698
+    "rows": 592
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 698
+    "rows": 592
   },
   "dropped": [
     {
@@ -34,7 +34,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
       "action": "modify",
-      "rows_affected": 698,
+      "rows_affected": 592,
       "examples": []
     },
     {
@@ -108,8 +108,8 @@
     },
     {
       "field": "company_address",
-      "fill_pct_in": 82.2,
-      "fill_pct_out": 82.2
+      "fill_pct_in": 82.8,
+      "fill_pct_out": 82.8
     },
     {
       "field": "raw_category_text",
@@ -118,13 +118,13 @@
     },
     {
       "field": "raw_location_text",
-      "fill_pct_in": 85.7,
-      "fill_pct_out": 85.7
+      "fill_pct_in": 86.1,
+      "fill_pct_out": 86.1
     },
     {
       "field": "working_locations",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 99.8,
+      "fill_pct_out": 99.8
     },
     {
       "field": "raw_posted_date",
@@ -153,8 +153,8 @@
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 85.0,
-      "fill_pct_out": 85.0
+      "fill_pct_in": 85.5,
+      "fill_pct_out": 85.5
     },
     {
       "field": "raw_seniority_text",

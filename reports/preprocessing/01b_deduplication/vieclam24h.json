@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:29:27+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:13:36+00:00",
+  "code_version": "d3f7008",
   "input": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
-    "rows": 171
+    "rows": 124
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/vieclam24h.jsonl",
-    "rows": 162
+    "rows": 121
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 9
+      "rows": 3
     }
   ],
   "rules": [
@@ -67,7 +67,7 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 9,
+      "rows_affected": 3,
       "examples": [
         {
           "job_id": "200951893",
@@ -77,18 +77,18 @@
           "url": "https://vieclam24h.vn/quan-ly-du-an/nhan-vien-tu-van-quan-ly-du-an-cntt-thu-nhap-len-den-30tr-thang-c27p210000160id200951893.html"
         },
         {
-          "job_id": "200956421",
-          "field": "dedup",
-          "before": "https://vieclam24h.vn/buu-chinh-vien-thong/ky-thuat-ha-tang-fpt-telecom-binh-duong-c38p210000187id200956421.html",
-          "after": "https://vieclam24h.vn/buu-chinh-vien-thong/nhan-vien-ky-thuat-ha-tang-toan-ho-chi-minh-c38p122id200948494.html",
-          "url": "https://vieclam24h.vn/buu-chinh-vien-thong/ky-thuat-ha-tang-fpt-telecom-binh-duong-c38p210000187id200956421.html"
-        },
-        {
           "job_id": "200961863",
           "field": "dedup",
           "before": "https://vieclam24h.vn/it-phan-cung-mang/japanese-it-comtor-c7p210000187id200961863.html",
           "after": "https://www.topcv.vn/brand/transcosmoshochiminh/tuyen-dung/it-communicator-tan-binh-n2-j2327907.html",
           "url": "https://vieclam24h.vn/it-phan-cung-mang/japanese-it-comtor-c7p210000187id200961863.html"
+        },
+        {
+          "job_id": "200968549",
+          "field": "dedup",
+          "before": "https://vieclam24h.vn/it-phan-mem/ky-su-van-hanh-he-thong-mang-di-lam-ngay-c8p210000187id200968549.html",
+          "after": "https://vieclam24h.vn/it-phan-mem/full-stack-engineer-ky-su-van-hanh-he-thong-mang-di-lam-ngay-c8p210000187id200959929.html",
+          "url": "https://vieclam24h.vn/it-phan-mem/ky-su-van-hanh-he-thong-mang-di-lam-ngay-c8p210000187id200968549.html"
         }
       ]
     },
@@ -96,28 +96,14 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 5,
+      "rows_affected": 1,
       "examples": [
-        {
-          "job_id": "200948494",
-          "field": "master_id",
-          "before": "https://vieclam24h.vn/buu-chinh-vien-thong/nhan-vien-ky-thuat-ha-tang-toan-ho-chi-minh-c38p122id200948494.html",
-          "after": "32bd519a-bf99-5f86-b1b7-228ee9c1731a",
-          "url": "https://vieclam24h.vn/buu-chinh-vien-thong/nhan-vien-ky-thuat-ha-tang-toan-ho-chi-minh-c38p122id200948494.html"
-        },
         {
           "job_id": "200959929",
           "field": "master_id",
           "before": "https://vieclam24h.vn/it-phan-mem/full-stack-engineer-ky-su-van-hanh-he-thong-mang-di-lam-ngay-c8p210000187id200959929.html",
           "after": "3673a7af-2b1f-5b5b-9492-a934ea4622ff",
           "url": "https://vieclam24h.vn/it-phan-mem/full-stack-engineer-ky-su-van-hanh-he-thong-mang-di-lam-ngay-c8p210000187id200959929.html"
-        },
-        {
-          "job_id": "200967688",
-          "field": "master_id",
-          "before": "https://vieclam24h.vn/it-phan-cung-mang/ky-thuat-vien-ha-tang-vien-thong-tai-thanh-hoa-duoi-1-nam-kinh-nghiem-c7p210000175id200967688.html",
-          "after": "b3b7190b-f07d-5d17-902a-a692920302b2",
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/ky-thuat-vien-ha-tang-vien-thong-tai-thanh-hoa-duoi-1-nam-kinh-nghiem-c7p210000175id200967688.html"
         }
       ]
     },
@@ -125,7 +111,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 4,
+      "rows_affected": 3,
       "examples": [
         {
           "job_id": "200945606",
@@ -135,11 +121,11 @@
           "url": "https://vieclam24h.vn/it-phan-mem/manual-automation-tester-quality-analyst-qa-qc-c8p122id200945606.html"
         },
         {
-          "job_id": "200948494",
+          "job_id": "200946306",
           "field": "jaccard",
           "before": null,
-          "after": 0.7823,
-          "url": "https://vieclam24h.vn/buu-chinh-vien-thong/nhan-vien-ky-thuat-ha-tang-toan-ho-chi-minh-c38p122id200948494.html"
+          "after": 0.74,
+          "url": "https://vieclam24h.vn/it-phan-mem/chuyen-vien-lap-trinh-c8p73id200946306.html"
         },
         {
           "job_id": "200955584",
@@ -170,35 +156,35 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 141,
+    "blocking_blocks": 115,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 9
+      "D5": 3
     }
   },
   "samples": [
-    {
-      "job_id": "200967691",
-      "source": "vieclam24h",
-      "field": "duplicate_of",
-      "before": "200967691",
-      "after": "DROPPED D5 -> vieclam24h:200967688",
-      "changed": true
-    },
-    {
-      "job_id": "200969140",
-      "source": "vieclam24h",
-      "field": "duplicate_of",
-      "before": "200969140",
-      "after": "DROPPED D5 -> vieclam24h:200969132",
-      "changed": true
-    },
     {
       "job_id": "200961863",
       "source": "vieclam24h",
       "field": "duplicate_of",
       "before": "200961863",
       "after": "DROPPED D5 -> topcv:2327907",
+      "changed": true
+    },
+    {
+      "job_id": "200968549",
+      "source": "vieclam24h",
+      "field": "duplicate_of",
+      "before": "200968549",
+      "after": "DROPPED D5 -> vieclam24h:200959929",
+      "changed": true
+    },
+    {
+      "job_id": "200951893",
+      "source": "vieclam24h",
+      "field": "duplicate_of",
+      "before": "200951893",
+      "after": "DROPPED D5 -> topcv:2276502",
       "changed": true
     }
   ]

@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:29:27+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:13:36+00:00",
+  "code_version": "d3f7008",
   "input": {
     "path": "data/preprocessing/01_clean/topdev.jsonl",
-    "rows": 217
+    "rows": 184
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/topdev.jsonl",
-    "rows": 201
+    "rows": 168
   },
   "dropped": [
     {
@@ -96,7 +96,7 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 5,
+      "rows_affected": 4,
       "examples": [
         {
           "job_id": "2134502",
@@ -113,11 +113,11 @@
           "url": "https://topdev.vn/viec-lam/chuyen-vien-phat-trien-he-thong-aeon-finance-2136022"
         },
         {
-          "job_id": "2137000",
+          "job_id": "2138376",
           "field": "master_id",
-          "before": "https://topdev.vn/viec-lam/cvcc-phan-tich-kinh-doanh-ha-noi-ta105-ngan-hang-tmcp-viet-nam-thinh-vuong-vpbank-2137000",
-          "after": "5f312cec-7b4e-52f7-b1ed-57292cc6f03d",
-          "url": "https://topdev.vn/viec-lam/cvcc-phan-tich-kinh-doanh-ha-noi-ta105-ngan-hang-tmcp-viet-nam-thinh-vuong-vpbank-2137000"
+          "before": "https://topdev.vn/viec-lam/gd-quan-he-khach-hang-tt-sme-hoang-mai-ngan-hang-tmcp-viet-nam-thinh-vuong-vpbank-2138376",
+          "after": "c3711855-b742-5eed-ace9-276bea121125",
+          "url": "https://topdev.vn/viec-lam/gd-quan-he-khach-hang-tt-sme-hoang-mai-ngan-hang-tmcp-viet-nam-thinh-vuong-vpbank-2138376"
         }
       ]
     },
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 10,
+      "rows_affected": 9,
       "examples": [
         {
           "job_id": "2134501",
@@ -170,7 +170,7 @@
       "hop_same_version": 3,
       "hop_version_not_bumped": 3
     },
-    "blocking_blocks": 152,
+    "blocking_blocks": 135,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 16

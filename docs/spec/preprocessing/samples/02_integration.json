@@ -2,16 +2,16 @@
  "step": "02_integration",
  "trace_job": "topcv_2325743",
  "run": {
-  "generated_at": "2026-11-18T02:33:28+00:00",
-  "code_version": "591391b",
+  "generated_at": "2026-11-19T01:14:49+00:00",
+  "code_version": "d3f7008",
   "mode": "applied",
   "input": {
    "path": "data/preprocessing/01b_deduplication/<nguồn>.jsonl",
-   "rows": 4496
+   "rows": 3998
   },
   "output": {
    "path": "data/preprocessing/02_integration/all.parquet",
-   "rows": 4495
+   "rows": 3997
   },
   "dropped": [
    {
@@ -32,36 +32,36 @@
   ],
   "by_source": {
    "careerviet": {
-    "in": 401,
-    "out": 400
+    "in": 406,
+    "out": 405
    },
    "glints": {
-    "in": 154,
-    "out": 154
+    "in": 155,
+    "out": 155
    },
    "itviec": {
-    "in": 814,
-    "out": 814
+    "in": 785,
+    "out": 785
    },
    "jobsgo": {
-    "in": 543,
-    "out": 543
+    "in": 501,
+    "out": 501
    },
    "topcv": {
-    "in": 1523,
-    "out": 1523
+    "in": 1270,
+    "out": 1270
    },
    "topdev": {
-    "in": 201,
-    "out": 201
+    "in": 168,
+    "out": 168
    },
    "vieclam24h": {
-    "in": 162,
-    "out": 162
+    "in": 121,
+    "out": 121
    },
    "vietnamworks": {
-    "in": 698,
-    "out": 698
+    "in": 592,
+    "out": 592
    }
   },
   "checks": {
@@ -74,16 +74,16 @@
    "id": "I1",
    "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
    "action": "modify",
-   "rows": 4495,
+   "rows": 3997,
    "by_source": {
-    "topcv": 1523,
-    "topdev": 201,
-    "vietnamworks": 698,
-    "careerviet": 400,
-    "vieclam24h": 162,
-    "itviec": 814,
-    "glints": 154,
-    "jobsgo": 543
+    "topcv": 1270,
+    "topdev": 168,
+    "vietnamworks": 592,
+    "careerviet": 405,
+    "vieclam24h": 121,
+    "itviec": 785,
+    "glints": 155,
+    "jobsgo": 501
    },
    "examples": []
   },
@@ -91,14 +91,14 @@
    "id": "I2",
    "name": "ITviec lấy ngày đăng từ JSON-LD datePosted",
    "action": "modify",
-   "rows": 788,
+   "rows": 762,
    "by_source": {
     "topcv": 0,
     "topdev": 0,
     "vietnamworks": 0,
     "careerviet": 0,
     "vieclam24h": 0,
-    "itviec": 788,
+    "itviec": 762,
     "glints": 0,
     "jobsgo": 0
    },
@@ -111,18 +111,18 @@
      "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
     },
     {
-     "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
-     "field": "raw_posted_date",
-     "before": null,
-     "after": "2026-09-30",
-     "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
-    },
-    {
      "job_id": "business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345",
      "field": "raw_posted_date",
      "before": null,
      "after": "2026-10-14",
      "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+    },
+    {
+     "job_id": "cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720",
+     "field": "raw_posted_date",
+     "before": null,
+     "after": "2026-10-09",
+     "url": "https://itviec.com/viec-lam-it/cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720"
     }
    ]
   },
@@ -130,10 +130,10 @@
    "id": "I3",
    "name": "TopDev lấy ngày đăng và kinh nghiệm từ published/JSON-LD",
    "action": "modify",
-   "rows": 65,
+   "rows": 58,
    "by_source": {
     "topcv": 0,
-    "topdev": 65,
+    "topdev": 58,
     "vietnamworks": 0,
     "careerviet": 0,
     "vieclam24h": 0,
@@ -169,16 +169,16 @@
    "id": "I4",
    "name": "Bỏ tag SEO, ngành nghề và nhãn chuyên môn khỏi skills_list",
    "action": "modify",
-   "rows": 2366,
+   "rows": 2072,
    "by_source": {
-    "topcv": 1516,
+    "topcv": 1264,
     "topdev": 0,
     "vietnamworks": 0,
-    "careerviet": 309,
+    "careerviet": 310,
     "vieclam24h": 0,
     "itviec": 0,
     "glints": 0,
-    "jobsgo": 541
+    "jobsgo": 498
    },
    "examples": [
     {
@@ -208,16 +208,16 @@
    "id": "I5",
    "name": "Chuyển chuỗi rỗng và container rỗng về null",
    "action": "modify",
-   "rows": 1750,
+   "rows": 1659,
    "by_source": {
-    "topcv": 700,
-    "topdev": 37,
+    "topcv": 646,
+    "topdev": 39,
     "vietnamworks": 1,
-    "careerviet": 401,
+    "careerviet": 406,
     "vieclam24h": 0,
-    "itviec": 26,
-    "glints": 42,
-    "jobsgo": 543
+    "itviec": 23,
+    "glints": 43,
+    "jobsgo": 501
    },
    "examples": [
     {
@@ -347,12 +347,12 @@
   {
    "column": "dedup_key",
    "dtype": "object",
-   "fill_pct": 99.9
+   "fill_pct": 100.0
   },
   {
    "column": "also_on",
    "dtype": "object",
-   "fill_pct": 2.6
+   "fill_pct": 2.7
   },
   {
    "column": "first_crawled_at",
@@ -372,17 +372,17 @@
   {
    "column": "company_address",
    "dtype": "object",
-   "fill_pct": 87.4
+   "fill_pct": 87.2
   },
   {
    "column": "raw_category_text",
    "dtype": "object",
-   "fill_pct": 92.9
+   "fill_pct": 93.2
   },
   {
    "column": "raw_location_text",
    "dtype": "object",
-   "fill_pct": 97.4
+   "fill_pct": 97.5
   },
   {
    "column": "working_locations",
@@ -392,57 +392,57 @@
   {
    "column": "raw_posted_date",
    "dtype": "object",
-   "fill_pct": 64.5
+   "fill_pct": 67.0
   },
   {
    "column": "raw_deadline",
    "dtype": "object",
-   "fill_pct": 94.7
+   "fill_pct": 94.9
   },
   {
    "column": "raw_salary_text",
    "dtype": "object",
-   "fill_pct": 99.6
+   "fill_pct": 99.5
   },
   {
    "column": "raw_employment_type",
    "dtype": "object",
-   "fill_pct": 94.5
+   "fill_pct": 94.8
   },
   {
    "column": "raw_work_mode",
    "dtype": "object",
-   "fill_pct": 54.6
+   "fill_pct": 54.5
   },
   {
    "column": "raw_experience_text",
    "dtype": "object",
-   "fill_pct": 90.8
+   "fill_pct": 91.0
   },
   {
    "column": "raw_seniority_text",
    "dtype": "object",
-   "fill_pct": 73.6
+   "fill_pct": 71.9
   },
   {
    "column": "raw_education_text",
    "dtype": "object",
-   "fill_pct": 64.9
+   "fill_pct": 62.9
   },
   {
    "column": "raw_headcount",
    "dtype": "object",
-   "fill_pct": 60.0
+   "fill_pct": 56.6
   },
   {
    "column": "skills_list",
    "dtype": "object",
-   "fill_pct": 62.0
+   "fill_pct": 59.5
   },
   {
    "column": "benefits_list",
    "dtype": "object",
-   "fill_pct": 98.8
+   "fill_pct": 98.5
   },
   {
    "column": "raw_description_text",

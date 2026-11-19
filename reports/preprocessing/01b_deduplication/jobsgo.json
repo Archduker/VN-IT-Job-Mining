@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:29:28+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:13:36+00:00",
+  "code_version": "d3f7008",
   "input": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
-    "rows": 582
+    "rows": 530
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/jobsgo.jsonl",
-    "rows": 543
+    "rows": 501
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 39
+      "rows": 29
     }
   ],
   "rules": [
@@ -67,7 +67,7 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 39,
+      "rows_affected": 29,
       "examples": [
         {
           "job_id": "28969520074",
@@ -96,7 +96,7 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 21,
+      "rows_affected": 15,
       "examples": [
         {
           "job_id": "28974204829",
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 49,
+      "rows_affected": 39,
       "examples": [
         {
           "job_id": "28928592968",
@@ -142,11 +142,11 @@
           "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phu-trach-ai-he-thong-cong-nghe-thong-tin-thu-nhap-den-20-trieu-thang-28928592968.html"
         },
         {
-          "job_id": "28969234915",
+          "job_id": "28973783880",
           "field": "jaccard",
           "before": null,
-          "after": 1.0,
-          "url": "https://jobsgo.vn/viec-lam/account-manager-28969234915.html"
+          "after": 0.8248,
+          "url": "https://jobsgo.vn/viec-lam/dna650-nv-it-kcn-long-duc-dong-nai-28973783880.html"
         }
       ]
     }
@@ -170,35 +170,35 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 428,
+    "blocking_blocks": 419,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 39
+      "D5": 29
     }
   },
   "samples": [
     {
-      "job_id": "29131490386",
+      "job_id": "29407809457",
       "source": "jobsgo",
       "field": "duplicate_of",
-      "before": "29131490386",
-      "after": "DROPPED D5 -> jobsgo:29055149248",
+      "before": "29407809457",
+      "after": "DROPPED D5 -> jobsgo:29290405423",
       "changed": true
     },
     {
-      "job_id": "28969520074",
+      "job_id": "28995469543",
       "source": "jobsgo",
       "field": "duplicate_of",
-      "before": "28969520074",
-      "after": "DROPPED D5 -> jobsgo:28980722749",
+      "before": "28995469543",
+      "after": "DROPPED D5 -> jobsgo:28989834258",
       "changed": true
     },
     {
-      "job_id": "29406940401",
+      "job_id": "29006658639",
       "source": "jobsgo",
       "field": "duplicate_of",
-      "before": "29406940401",
-      "after": "DROPPED D5 -> jobsgo:29161282712",
+      "before": "29006658639",
+      "after": "DROPPED D5 -> jobsgo:29006631481",
       "changed": true
     }
   ]

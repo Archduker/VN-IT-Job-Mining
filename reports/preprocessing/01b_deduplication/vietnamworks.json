@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:29:27+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:13:36+00:00",
+  "code_version": "d3f7008",
   "input": {
     "path": "data/preprocessing/01_clean/vietnamworks.jsonl",
-    "rows": 701
+    "rows": 595
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/vietnamworks.jsonl",
-    "rows": 698
+    "rows": 592
   },
   "dropped": [
     {
@@ -113,11 +113,11 @@
           "url": "https://www.vietnamworks.com/agentic-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-2110213-jv"
         },
         {
-          "job_id": "2118222",
+          "job_id": "2115774",
           "field": "master_id",
-          "before": "https://www.vietnamworks.com/truong-phong-cong-nghe-thong-tin-it-manager--2118222-jv",
-          "after": "21dc5064-d1d4-5849-adda-5c925c5f6ab9",
-          "url": "https://www.vietnamworks.com/truong-phong-cong-nghe-thong-tin-it-manager--2118222-jv"
+          "before": "https://www.vietnamworks.com/chief-information-officer-1791188566996668125-2115774-jv",
+          "after": "bc5cb7de-e5e7-5e52-9c3d-f0ae8d2b1038",
+          "url": "https://www.vietnamworks.com/chief-information-officer-1791188566996668125-2115774-jv"
         }
       ]
     },
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 17,
+      "rows_affected": 16,
       "examples": [
         {
           "job_id": "2102612",
@@ -142,11 +142,11 @@
           "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
         },
         {
-          "job_id": "2110299",
+          "job_id": "2110213",
           "field": "jaccard",
           "before": null,
-          "after": 0.708,
-          "url": "https://www.vietnamworks.com/all-level-backend-engineer-java-spring-boot-khoi-cong-nghe-thong-tin-2025td1785-2110299-jv"
+          "after": 0.8438,
+          "url": "https://www.vietnamworks.com/agentic-engineer-python-go-cc-backend-and-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-2110213-jv"
         }
       ]
     }
@@ -170,7 +170,7 @@
       "hop_same_version": 3,
       "hop_version_not_bumped": 2
     },
-    "blocking_blocks": 561,
+    "blocking_blocks": 486,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 3

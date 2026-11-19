@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:29:27+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:13:36+00:00",
+  "code_version": "d3f7008",
   "input": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
-    "rows": 842
+    "rows": 813
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/itviec.jsonl",
-    "rows": 814
+    "rows": 785
   },
   "dropped": [
     {
@@ -96,7 +96,7 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 32,
+      "rows_affected": 31,
       "examples": [
         {
           "job_id": "ai-software-engineer-python-go-c-c-ai-agents-mb-bank-5434",
@@ -125,28 +125,28 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 12,
+      "rows_affected": 7,
       "examples": [
-        {
-          "job_id": "cv-cvcc-dich-vu-va-chinh-sach-cntt-ngan-hang-tnhh-mtv-viet-nam-hien-dai-mbv-3914",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.8616,
-          "url": "https://itviec.com/viec-lam-it/cv-cvcc-dich-vu-va-chinh-sach-cntt-ngan-hang-tnhh-mtv-viet-nam-hien-dai-mbv-3914"
-        },
-        {
-          "job_id": "cvcc-cv-quan-tri-du-lieu-ngan-hang-tnhh-mtv-viet-nam-hien-dai-mbv-5112",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.8797,
-          "url": "https://itviec.com/viec-lam-it/cvcc-cv-quan-tri-du-lieu-ngan-hang-tnhh-mtv-viet-nam-hien-dai-mbv-5112"
-        },
         {
           "job_id": "devops-engineer-con-cung-4206",
           "field": "jaccard",
           "before": null,
           "after": 0.9058,
           "url": "https://itviec.com/viec-lam-it/devops-engineer-con-cung-4206"
+        },
+        {
+          "job_id": "java-developer-spring-boot-microservices-oracle-goline-corporation-4348",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8078,
+          "url": "https://itviec.com/viec-lam-it/java-developer-spring-boot-microservices-oracle-goline-corporation-4348"
+        },
+        {
+          "job_id": "manual-tester-sql-postman-mysql-api-mariadb-cong-ty-cp-cong-nghe-tasc-viet-nam-5353",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.8156,
+          "url": "https://itviec.com/viec-lam-it/manual-tester-sql-postman-mysql-api-mariadb-cong-ty-cp-cong-nghe-tasc-viet-nam-5353"
         }
       ]
     }
@@ -170,7 +170,7 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 685,
+    "blocking_blocks": 668,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 28

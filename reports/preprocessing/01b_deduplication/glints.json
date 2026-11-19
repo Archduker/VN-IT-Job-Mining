@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:29:27+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:13:36+00:00",
+  "code_version": "d3f7008",
   "input": {
     "path": "data/preprocessing/01_clean/glints.jsonl",
     "rows": 162
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/glints.jsonl",
-    "rows": 154
+    "rows": 155
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 8
+      "rows": 7
     }
   ],
   "rules": [
@@ -67,7 +67,7 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 8,
+      "rows_affected": 7,
       "examples": [
         {
           "job_id": "1ddb2d5c-abcf-45b2-9477-67cebaeded0f",
@@ -87,7 +87,7 @@
           "job_id": "23c1df11-b548-4e00-8771-ac586d650ddf",
           "field": "dedup",
           "before": "https://glints.com/vn/opportunities/jobs/nhan-vien-qa-1-nam-kinh-nghiem-thu-thua/23c1df11-b548-4e00-8771-ac586d650ddf",
-          "after": "https://glints.com/vn/opportunities/jobs/nhan-vien-qa-may-mac-1-nam-kinh-nghiem-long-an/55b76248-a402-4626-a0ee-a4291b09a25e",
+          "after": "https://glints.com/vn/opportunities/jobs/nhan-vien-qa-1-nam-kinh-nghiem-long-an/9152ef12-667a-4627-9508-55cff759b915",
           "url": "https://glints.com/vn/opportunities/jobs/nhan-vien-qa-1-nam-kinh-nghiem-thu-thua/23c1df11-b548-4e00-8771-ac586d650ddf"
         }
       ]
@@ -173,16 +173,16 @@
     "blocking_blocks": 106,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 8
+      "D5": 7
     }
   },
   "samples": [
     {
-      "job_id": "d0776e19-95a7-4539-b036-1ac8ec92af2b",
+      "job_id": "65c229e6-033d-4caa-983f-f33e3e11e2ca",
       "source": "glints",
       "field": "duplicate_of",
-      "before": "d0776e19-95a7-4539-b036-1ac8ec92af2b",
-      "after": "DROPPED D5 -> glints:00b4d332-8e6e-4714-9853-e816085f7d01",
+      "before": "65c229e6-033d-4caa-983f-f33e3e11e2ca",
+      "after": "DROPPED D5 -> glints:9152ef12-667a-4627-9508-55cff759b915",
       "changed": true
     },
     {
@@ -194,11 +194,11 @@
       "changed": true
     },
     {
-      "job_id": "65c229e6-033d-4caa-983f-f33e3e11e2ca",
+      "job_id": "21e095c8-2d39-42d3-b491-ebb48ec2430e",
       "source": "glints",
       "field": "duplicate_of",
-      "before": "65c229e6-033d-4caa-983f-f33e3e11e2ca",
-      "after": "DROPPED D5 -> glints:55b76248-a402-4626-a0ee-a4291b09a25e",
+      "before": "21e095c8-2d39-42d3-b491-ebb48ec2430e",
+      "after": "DROPPED D5 -> glints:3c8011a7-4614-47c8-9dda-2b9a4c8fc9a9",
       "changed": true
     }
   ]

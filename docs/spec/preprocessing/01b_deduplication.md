@@ -2,7 +2,7 @@
 
 > Code: `preprocessing/deduplication/run.py` (`load_items`, `enrich`, `pick_cross_winner`, `run`), `intra_source.py` (`pick_winner`, `apply_d2`, CDC), `inter_source.py` (`build_blocks`, `exact_cross_pairs`, `clusters`, `fuse`, `PLATFORM_AUTHORITY`), `minhash.py`, `blocking.py`, `text_norm.py`; tham số `preprocessing/dictionaries/dedup_policy.json`.
 > Lệnh: `python scripts/run_preprocessing.py --step deduplication --source all [--dry-run]`.
-> Dữ liệu mẫu: [`samples/01b_deduplication.json`](samples/01b_deduplication.json) (chạy lại 18/11/2026 sau các quyết định L-50, code `591391b`).
+> Dữ liệu mẫu: [`samples/01b_deduplication.json`](samples/01b_deduplication.json) (chạy lại 19/11/2026 sau bộ lọc IT ba tầng ở bước 01).
 > Prompt: [`docs/prompting/preprocessing/01b_deduplication.md`](../../prompting/preprocessing/01b_deduplication.md).
 
 ## 1. Mục đích
@@ -29,9 +29,9 @@ Số tin là của lần chạy lại 18/11 (đầu vào 01 đã bỏ tin ngoài
 | D2 | Tầng 2, cùng sàn: `sha1(text_fold)` trùng và cùng `company_slug`. Bản bị bỏ ghi vào `repost_records` | drop | 0 |
 | D3 | Gán blocking key `company_slug_mãTỉnh_nhómTiêuĐề` cho mọi bản còn sống | flag | — |
 | D4 | Tầng 2, khác sàn: như D2 | drop | 0 |
-| D5 | Tầng 3: MinHash/LSH chỉ để **sinh cặp ứng viên**; mọi cặp phải qua Jaccard chính xác trên shingle 5 từ. Cặp có J ≥ 0,85 **và** cùng `company_slug` thì bị loại, cả cùng sàn lẫn khác sàn. Gộp bắc cầu bằng Union-Find | drop | 125 |
-| D6 | Hợp nhất golden record cho mỗi cụm (`fuse`): bản giữ có `merged_from` | flag | 106 cụm (27 cụm khác sàn) |
-| D7 | Cặp có J từ 0,70 nhưng không bị loại (khác công ty, hoặc dưới 0,85): chỉ ghi vào audit | flag | 164 |
+| D5 | Tầng 3: MinHash/LSH chỉ để **sinh cặp ứng viên**; mọi cặp phải qua Jaccard chính xác trên shingle 5 từ. Cặp có J ≥ 0,85 **và** cùng `company_slug` thì bị loại, cả cùng sàn lẫn khác sàn. Gộp bắc cầu bằng Union-Find | drop | 105 |
+| D6 | Hợp nhất golden record cho mỗi cụm (`fuse`): bản giữ có `merged_from` | flag | 93 cụm (27 cụm khác sàn) |
+| D7 | Cặp có J từ 0,70 nhưng không bị loại (khác công ty, hoặc dưới 0,85): chỉ ghi vào audit | flag | 140 |
 
 **Chọn bản giữ trong một cụm D4/D5** (`pick_cross_winner`), chung luật với C7 của bước 01 (người dùng chốt 18/11, L-50):
 
@@ -47,15 +47,17 @@ Ngày được parse theo ISO và `dd/mm/yyyy`, ngày không có múi giờ quy 
 
 | Nguồn | Vào | D5 bỏ | Ra | D6 cụm | D7 cặp |
 |---|---|---|---|---|---|
-| careerviet | 410 | 9 | 401 | 9 | 5 |
-| glints | 162 | 8 | 154 | 5 | 4 |
-| itviec | 842 | 28 | 814 | 32 | 12 |
-| jobsgo | 582 | 39 | 543 | 21 | 49 |
-| topcv | 1.536 | 13 | 1.523 | 24 | 63 |
-| topdev | 217 | 16 | 201 | 5 | 10 |
-| vieclam24h | 171 | 9 | 162 | 5 | 4 |
-| vietnamworks | 701 | 3 | 698 | 5 | 17 |
-| **Tổng** | **4.621** | **125** | **4.496** | 106 | 164 |
+| careerviet | 415 | 9 | 406 | 9 | 13 |
+| glints | 162 | 7 | 155 | 5 | 4 |
+| itviec | 813 | 28 | 785 | 31 | 7 |
+| jobsgo | 530 | 29 | 501 | 15 | 39 |
+| topcv | 1.280 | 10 | 1.270 | 23 | 49 |
+| topdev | 184 | 16 | 168 | 4 | 9 |
+| vieclam24h | 124 | 3 | 121 | 1 | 3 |
+| vietnamworks | 595 | 3 | 592 | 5 | 16 |
+| **Tổng** | **4.103** | **105** | **3.998** | 93 | 140 |
+
+Chạy lại 19/11 sau bộ lọc IT mới ở 01 (vào 4.621 → 4.103): D5 bỏ 105 (trước 125), giảm ở jobsgo (39 → 29) và vieclam24h (9 → 3) vì nhiều tin trùng nhau nay bị loại từ bước 01.
 
 So lần chạy đầu 18/11: D5 bỏ thêm ở itviec (24 → 28) và topdev (14 → 16), bớt ở topcv (17 → 13) và vietnamworks (7 → 3), vì bản topcv, vietnamworks thường nhiều trường hơn nên nay được giữ.
 
@@ -63,9 +65,9 @@ So lần chạy đầu 18/11: D5 bỏ thêm ở itviec (24 → 28) và topdev (1
 
 | Khoảng J | Số cặp | Ghi chú |
 |---|---|---|
-| [0,85; 1] | 214 | Chỉ cặp cùng công ty bị loại; các cặp còn lại bị cổng công ty chặn |
-| [0,80; 0,90) | 87 | |
-| [0,70; 0,85) | 95 | |
+| [0,85; 1] | 182 | Chỉ cặp cùng công ty bị loại; các cặp còn lại bị cổng công ty chặn |
+| [0,80; 0,90) | 71 | |
+| [0,70; 0,85) | 74 | |
 
 ## 3. Quy trình xử lý
 
@@ -101,9 +103,9 @@ So lần chạy đầu 18/11: D5 bỏ thêm ở itviec (24 → 28) và topdev (1
 
 | | Đường dẫn | Định dạng | Số dòng 18/11 |
 |---|---|---|---|
-| Input | `data/preprocessing/01_clean/<nguồn>.jsonl` | jsonl envelope | 4.621 |
-| Output | `data/preprocessing/01b_deduplication/<nguồn>.jsonl` | jsonl envelope, thêm `metadata.dedup` | 4.496 |
-| Golden record | `data/preprocessing/01b_deduplication/golden_master_jobs.parquet` (+ `.jsonl`) | một dòng một master | 4.496 |
+| Input | `data/preprocessing/01_clean/<nguồn>.jsonl` | jsonl envelope | 4.103 |
+| Output | `data/preprocessing/01b_deduplication/<nguồn>.jsonl` | jsonl envelope, thêm `metadata.dedup` | 3.998 |
+| Golden record | `data/preprocessing/01b_deduplication/golden_master_jobs.parquet` (+ `.jsonl`) | một dòng một master | 3.998 |
 | Audit | `data/preprocessing/01b_deduplication/duplicates_audit.csv` | csv: `kind`, `rule`, `job_id_a`, `title_a`, `url_a`, `job_id_b`, `title_b`, `url_b`, `jaccard`, `same_company`, `title_differs`, `same_source`, `blocking_key`, `kept_job_id`, `linked_via` | cặp đạt + vùng xét lại + 5 dòng gián tiếp |
 | Report | `reports/preprocessing/01b_deduplication/` | `extra`: `tier_counts`, `pairs_by_band`, `clusters`, `cross_platform_clusters`, `cdc`, `unparsed_dates`, `lineage_rows`, … | — |
 
@@ -151,10 +153,10 @@ Tin này không trùng tin nào, nên đi qua nguyên vẹn. `metadata.clean` gi
 
 ## 6. Kiểm tra và nghiệm thu
 
-| Kiểm tra | Cách | Kết quả 18/11 |
+| Kiểm tra | Cách | Kết quả 19/11 |
 |---|---|---|
-| Luật bảo toàn | `checks.rows_conserved` | Đạt (4.621 = 4.496 + 125) |
-| Truy vết đủ | Mỗi input của 01 có đúng một tham chiếu trong `source_job_ids` hoặc `repost_records` (`lineage_rows`) | 4.621 dòng truy vết = 4.621 input |
+| Luật bảo toàn | `checks.rows_conserved` | Đạt (4.103 = 3.998 + 105) |
+| Truy vết đủ | Mỗi input của 01 có đúng một tham chiếu trong `source_job_ids` hoặc `repost_records` (`lineage_rows`) | 4.103 dòng truy vết = 4.103 input |
 | Ngày không parse được | `extra.unparsed_dates` | 0 |
 | Độ đúng cặp gần ngưỡng | 50 cặp từ `scripts/build_dedup_pairs_sample.py` (seed 42, 25 cặp [0,85; 0,90) bị loại + 25 cặp [0,80; 0,85) không bị loại); đích precision ≥ 95% | Người dùng duyệt 11/11 ("ổn rồi") nhưng chưa chấm từng cặp, nên chưa có con số |
 | Test | `pytest tests/unit/test_deduplication_step.py` | Xanh (gồm `test_pick_cross_winner_độ_đầy_đủ_trước_uy_tín`) |
@@ -162,8 +164,8 @@ Tin này không trùng tin nào, nên đi qua nguyên vẹn. `metadata.clean` gi
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- **Trạng thái:** có code; chạy thật 18/11, chạy lại cùng ngày sau các quyết định L-50.
+- **Trạng thái:** có code; chạy thật 18/11, chạy lại cùng ngày sau các quyết định L-50, chạy lại 19/11 sau bộ lọc IT mới ở 01.
 - **Chỗ thiếu:**
-  - Cổng công ty chặn các cặp J ≥ 0,85 khác tên công ty. 214 cặp đạt ngưỡng, nhưng chỉ cặp cùng `company_slug` bị loại. Cùng công ty mà tên viết khác thì vẫn còn trùng (PRE-33).
+  - Cổng công ty chặn các cặp J ≥ 0,85 khác tên công ty. 182 cặp đạt ngưỡng, nhưng chỉ cặp cùng `company_slug` bị loại. Cùng công ty mà tên viết khác thì vẫn còn trùng (PRE-33).
   - Chưa có precision trên 50 cặp đã chấm.
 - **Việc mở:** PRE-33, PRE-35.

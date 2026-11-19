@@ -2,7 +2,7 @@
 
 > Code: `preprocessing/integration/run.py` (`process_source`, `run`; hằng `KEYS`, `CLEAN_META`, `KEEP_18`), `json_flattener.py` (`flatten_raw_job_record`, `_flatten_<nguồn>`, `split_careerviet_benefits`), `schema.py` (pydantic `JobRecord`).
 > Lệnh: `python scripts/run_preprocessing.py --step integration --source all [--dry-run]`. Phải chạy `--source all`, vì đầu ra là một file chung.
-> Dữ liệu mẫu: [`samples/02_integration.json`](samples/02_integration.json) (chạy lại 18/11/2026 sau các quyết định L-50).
+> Dữ liệu mẫu: [`samples/02_integration.json`](samples/02_integration.json) (chạy lại 19/11/2026 sau bộ lọc IT ba tầng ở bước 01).
 > Prompt: [`docs/prompting/preprocessing/02_integration.md`](../../prompting/preprocessing/02_integration.md).
 
 ## 1. Mục đích
@@ -13,16 +13,16 @@
 
 ## 2. Luật
 
-Số tin là của lần chạy lại 18/11 (đầu vào đã qua C9 và luật bản giữ mới; TopCV đọc thêm `date_posted`, bỏ nhãn chuyên môn khỏi kỹ năng).
+Số tin là của lần chạy lại 19/11 (đầu vào đã qua bộ lọc IT ba tầng ở 01; từ 18/11: C9, luật bản giữ mới, TopCV đọc thêm `date_posted`, bỏ nhãn chuyên môn khỏi kỹ năng).
 
 | Mã | Điều kiện | Hành động | Số tin |
 |---|---|---|---|
-| I1 | Làm phẳng envelope bằng `_flatten_<nguồn>` (`strict=True`) về 5 khóa, 6 trường từ 01 và 19 trường `raw_*` | modify | 4.495 |
-| I2 | ITviec: ngày đăng lấy từ `job_posting_jsonld.datePosted`, thay cho dạng tương đối "Đăng 6 giờ trước" | modify | 788 |
-| I3 | TopDev: ngày đăng lấy theo thứ tự `published.date` → `date_posted` → JSON-LD; kinh nghiệm lấy từ JSON-LD `experienceRequirements` | modify | 65 |
-| I3b | TopCV: ngày đăng lấy từ `date_posted` (chỉ bản cào gần đây có; người dùng chốt 18/11, L-50). Không đếm riêng trong report | modify | 102 tin có giá trị |
-| I4 | Bỏ tag SEO, ngành và nhãn chuyên môn khỏi `skills_list`: CareerViet `job-tags`, JobsGO `occupations`, TopCV `industry_knowledge` + `overview_tags["Chuyên môn"]` (thêm 18/11, L-50). Nhãn TopCV chuyển sang khóa `category_tags` chỉ có trong bộ nhớ: bộ lọc IT của bước 01 vẫn đọc nó (kết quả lọc không đổi), bước 02 không xuất | modify | 2.366 (careerviet 309, jobsgo 541, topcv 1.516) |
-| I5 | Chuỗi rỗng và container rỗng chuyển thành null | modify | 1.750 (tăng vì `skills_list` TopCV rỗng ở 46% tin sau khi bỏ nhãn) |
+| I1 | Làm phẳng envelope bằng `_flatten_<nguồn>` (`strict=True`) về 5 khóa, 6 trường từ 01 và 19 trường `raw_*` | modify | 3.997 |
+| I2 | ITviec: ngày đăng lấy từ `job_posting_jsonld.datePosted`, thay cho dạng tương đối "Đăng 6 giờ trước" | modify | 762 |
+| I3 | TopDev: ngày đăng lấy theo thứ tự `published.date` → `date_posted` → JSON-LD; kinh nghiệm lấy từ JSON-LD `experienceRequirements` | modify | 58 |
+| I3b | TopCV: ngày đăng lấy từ `date_posted` (chỉ bản cào gần đây có; người dùng chốt 18/11, L-50). Không đếm riêng trong report | modify | 95 tin có giá trị |
+| I4 | Bỏ tag SEO, ngành và nhãn chuyên môn khỏi `skills_list`: CareerViet `job-tags`, JobsGO `occupations`, TopCV `industry_knowledge` + `overview_tags["Chuyên môn"]` (thêm 18/11, L-50). Nhãn TopCV chuyển sang khóa `category_tags` chỉ có trong bộ nhớ: bộ lọc IT của bước 01 vẫn đọc nó (kết quả lọc không đổi), bước 02 không xuất | modify | 2.072 (careerviet 310, jobsgo 498, topcv 1.264) |
+| I5 | Chuỗi rỗng và container rỗng chuyển thành null | modify | 1.659 (tăng vì `skills_list` TopCV rỗng ở 51% tin sau khi bỏ nhãn) |
 | I0 | Dòng JSON hỏng | drop | 0 |
 | I6 | Không qua `JobRecord` (khóa, kiểu, `job_title` rỗng) | drop | 1 (careerviet `35C8A80A`, thiếu `job_title`) |
 | I7 | Lỗi trong `_flatten_<nguồn>` | drop | 0 |
@@ -65,8 +65,8 @@ Số tin là của lần chạy lại 18/11 (đầu vào đã qua C9 và luật 
 
 | | Đường dẫn | Định dạng | Số dòng 18/11 |
 |---|---|---|---|
-| Input | `data/preprocessing/01b_deduplication/<nguồn>.jsonl` | jsonl envelope | 4.496 |
-| Output | `data/preprocessing/02_integration/all.parquet` | parquet, 30 cột | 4.495 |
+| Input | `data/preprocessing/01b_deduplication/<nguồn>.jsonl` | jsonl envelope | 3.998 |
+| Output | `data/preprocessing/02_integration/all.parquet` | parquet, 30 cột | 3.997 |
 | Bị loại | `data/preprocessing/rejected/02_integration/<nguồn>.jsonl` | jsonl: `step`, `source`, `rule`, `reason`, `job_id`, `line_no`, `raw_line` | 1 |
 | Report | `reports/preprocessing/02_integration/` | `fields[]` là độ phủ 19 trường theo nguồn | — |
 
@@ -137,9 +137,9 @@ Envelope ở 01b trở thành một dòng (trích):
 
 ## 6. Kiểm tra và nghiệm thu
 
-| Kiểm tra | Cách | Kết quả 18/11 |
+| Kiểm tra | Cách | Kết quả 19/11 |
 |---|---|---|
-| Luật bảo toàn | `checks.rows_conserved` | Đạt (4.496 = 4.495 + 1) |
+| Luật bảo toàn | `checks.rows_conserved` | Đạt (3.998 = 3.997 + 1) |
 | Hợp đồng cột | `tests/unit/test_integration_step.py::test_integration_output_contract_and_conservation` (30 cột, không có cột cấm) | Xanh |
 | Tách phúc lợi, work mode | `::test_careerviet_benefits_split_by_fixed_labels`, `::test_topdev_benefits_html_list_one_item_per_line`, `::test_itviec_work_model_kept_as_raw_work_mode`, `::test_topcv_date_posted_and_skills_without_industry_labels` | Xanh |
 | `first_crawled_at` | Mọi dòng có giá trị; tin nhiều snapshot có `first_crawled_at` < `crawled_at` | Đạt |

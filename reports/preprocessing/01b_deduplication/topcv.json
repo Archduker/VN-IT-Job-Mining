@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:29:27+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:13:36+00:00",
+  "code_version": "d3f7008",
   "input": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
-    "rows": 1536
+    "rows": 1280
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/topcv.jsonl",
-    "rows": 1523
+    "rows": 1270
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 13
+      "rows": 10
     }
   ],
   "rules": [
@@ -67,15 +67,8 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 13,
+      "rows_affected": 10,
       "examples": [
-        {
-          "job_id": "1013348",
-          "field": "dedup",
-          "before": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html",
-          "after": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html",
-          "url": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html"
-        },
         {
           "job_id": "1839052",
           "field": "dedup",
@@ -89,6 +82,13 @@
           "before": "https://www.topcv.vn/viec-lam/truong-nhom-kiem-thu-phan-mem/2144442.html",
           "after": "https://www.topcv.vn/viec-lam/truong-nhom-tester-linh-vuc-cntt-ott/2165864.html",
           "url": "https://www.topcv.vn/viec-lam/truong-nhom-kiem-thu-phan-mem/2144442.html"
+        },
+        {
+          "job_id": "2290443",
+          "field": "dedup",
+          "before": "https://www.topcv.vn/viec-lam/solution-consultant-kinh-nghiem-erp-implementation-consultant-chuyen-vien-trien-khai-giai-phap-phan-mem-erp/2290443.html",
+          "after": "https://www.topcv.vn/viec-lam/solution-consultant-kinh-nghiem-erp-implementation-consultant/2315056.html",
+          "url": "https://www.topcv.vn/viec-lam/solution-consultant-kinh-nghiem-erp-implementation-consultant-chuyen-vien-trien-khai-giai-phap-phan-mem-erp/2290443.html"
         }
       ]
     },
@@ -96,7 +96,7 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 24,
+      "rows_affected": 23,
       "examples": [
         {
           "job_id": "1506721",
@@ -106,18 +106,18 @@
           "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
         },
         {
-          "job_id": "1629932",
-          "field": "master_id",
-          "before": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html",
-          "after": "dc5ddf91-f4fc-519c-a2ce-7b074b2c45e5",
-          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html"
-        },
-        {
           "job_id": "1832499",
           "field": "master_id",
           "before": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
           "after": "25b609ec-a899-524d-9361-74a916ad0bc8",
           "url": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html"
+        },
+        {
+          "job_id": "2119759",
+          "field": "master_id",
+          "before": "https://www.topcv.vn/viec-lam/product-owner-tu-6-thang-kinh-nghiem/2119759.html",
+          "after": "6d5c0c7b-da6b-5ebf-ab5d-ff2eacebab38",
+          "url": "https://www.topcv.vn/viec-lam/product-owner-tu-6-thang-kinh-nghiem/2119759.html"
         }
       ]
     },
@@ -125,14 +125,14 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 63,
+      "rows_affected": 49,
       "examples": [
         {
-          "job_id": "1975529",
+          "job_id": "1682674",
           "field": "jaccard",
           "before": null,
-          "after": 0.856,
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem-co-dao-tao/1975529.html"
+          "after": 0.9321,
+          "url": "https://www.topcv.vn/viec-lam/solution-architecture-expert/1682674.html"
         },
         {
           "job_id": "2002662",
@@ -142,11 +142,11 @@
           "url": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-network/2002662.html"
         },
         {
-          "job_id": "2045641",
+          "job_id": "2106548",
           "field": "jaccard",
           "before": null,
-          "after": 0.8841,
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke/2045641.html"
+          "after": 0.7773,
+          "url": "https://www.topcv.vn/viec-lam/nhan-vien-playable-ads/2106548.html"
         }
       ]
     }
@@ -170,35 +170,35 @@
       "hop_same_version": 9,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 1270,
+    "blocking_blocks": 1076,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 13
+      "D5": 10
     }
   },
   "samples": [
+    {
+      "job_id": "2315657",
+      "source": "topcv",
+      "field": "duplicate_of",
+      "before": "2315657",
+      "after": "DROPPED D5 -> topcv:2315697",
+      "changed": true
+    },
+    {
+      "job_id": "2144442",
+      "source": "topcv",
+      "field": "duplicate_of",
+      "before": "2144442",
+      "after": "DROPPED D5 -> topcv:2165864",
+      "changed": true
+    },
     {
       "job_id": "2308003",
       "source": "topcv",
       "field": "duplicate_of",
       "before": "2308003",
       "after": "DROPPED D5 -> topcv:2319815",
-      "changed": true
-    },
-    {
-      "job_id": "1839052",
-      "source": "topcv",
-      "field": "duplicate_of",
-      "before": "1839052",
-      "after": "DROPPED D5 -> topcv:1832499",
-      "changed": true
-    },
-    {
-      "job_id": "2283253",
-      "source": "topcv",
-      "field": "duplicate_of",
-      "before": "2283253",
-      "after": "DROPPED D5 -> topcv:2315136",
       "changed": true
     }
   ]

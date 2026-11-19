@@ -2,16 +2,16 @@
  "step": "01b_deduplication",
  "trace_job": "topcv_2325743",
  "run": {
-  "generated_at": "2026-11-18T02:31:00+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:14:38+00:00",
+  "code_version": "d3f7008",
   "mode": "applied",
   "input": {
    "path": null,
-   "rows": 4621
+   "rows": 4103
   },
   "output": {
    "path": null,
-   "rows": 4496
+   "rows": 3998
   },
   "dropped": [
    {
@@ -32,41 +32,41 @@
    {
     "rule": "D5",
     "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-    "rows": 125
+    "rows": 105
    }
   ],
   "by_source": {
    "careerviet": {
-    "in": 410,
-    "out": 401
+    "in": 415,
+    "out": 406
    },
    "glints": {
     "in": 162,
-    "out": 154
+    "out": 155
    },
    "itviec": {
-    "in": 842,
-    "out": 814
+    "in": 813,
+    "out": 785
    },
    "jobsgo": {
-    "in": 582,
-    "out": 543
+    "in": 530,
+    "out": 501
    },
    "topcv": {
-    "in": 1536,
-    "out": 1523
+    "in": 1280,
+    "out": 1270
    },
    "topdev": {
-    "in": 217,
-    "out": 201
+    "in": 184,
+    "out": 168
    },
    "vieclam24h": {
-    "in": 171,
-    "out": 162
+    "in": 124,
+    "out": 121
    },
    "vietnamworks": {
-    "in": 701,
-    "out": 698
+    "in": 595,
+    "out": 592
    }
   },
   "checks": {
@@ -147,25 +147,18 @@
    "id": "D5",
    "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
    "action": "drop",
-   "rows": 125,
+   "rows": 105,
    "by_source": {
-    "topcv": 13,
+    "topcv": 10,
     "topdev": 16,
     "vietnamworks": 3,
     "careerviet": 9,
-    "vieclam24h": 9,
+    "vieclam24h": 3,
     "itviec": 28,
-    "glints": 8,
-    "jobsgo": 39
+    "glints": 7,
+    "jobsgo": 29
    },
    "examples": [
-    {
-     "job_id": "1013348",
-     "field": "dedup",
-     "before": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html",
-     "after": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html",
-     "url": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html"
-    },
     {
      "job_id": "1839052",
      "field": "dedup",
@@ -179,6 +172,13 @@
      "before": "https://glints.com/vn/opportunities/jobs/dna769-ky-thuat-vien-it-phan-mem-khong-yeu-cau-kinh-nghiem/1ddb2d5c-abcf-45b2-9477-67cebaeded0f",
      "after": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01",
      "url": "https://glints.com/vn/opportunities/jobs/dna769-ky-thuat-vien-it-phan-mem-khong-yeu-cau-kinh-nghiem/1ddb2d5c-abcf-45b2-9477-67cebaeded0f"
+    },
+    {
+     "job_id": "200951893",
+     "field": "dedup",
+     "before": "https://vieclam24h.vn/quan-ly-du-an/nhan-vien-tu-van-quan-ly-du-an-cntt-thu-nhap-len-den-30tr-thang-c27p210000160id200951893.html",
+     "after": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-quan-ly-du-an-cntt/2276502.html",
+     "url": "https://vieclam24h.vn/quan-ly-du-an/nhan-vien-tu-van-quan-ly-du-an-cntt-thu-nhap-len-den-30tr-thang-c27p210000160id200951893.html"
     }
    ]
   },
@@ -186,16 +186,16 @@
    "id": "D6",
    "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
    "action": "flag",
-   "rows": 106,
+   "rows": 93,
    "by_source": {
-    "topcv": 24,
-    "topdev": 5,
+    "topcv": 23,
+    "topdev": 4,
     "vietnamworks": 5,
     "careerviet": 9,
-    "vieclam24h": 5,
-    "itviec": 32,
+    "vieclam24h": 1,
+    "itviec": 31,
     "glints": 5,
-    "jobsgo": 21
+    "jobsgo": 15
    },
    "examples": [
     {
@@ -213,11 +213,11 @@
      "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
     },
     {
-     "job_id": "1629932",
+     "job_id": "1832499",
      "field": "master_id",
-     "before": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html",
-     "after": "dc5ddf91-f4fc-519c-a2ce-7b074b2c45e5",
-     "url": "https://www.topcv.vn/viec-lam/chuyen-vien-tu-van-giai-phap-cntt/1629932.html"
+     "before": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
+     "after": "25b609ec-a899-524d-9361-74a916ad0bc8",
+     "url": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html"
     }
    ]
   },
@@ -225,24 +225,24 @@
    "id": "D7",
    "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
    "action": "flag",
-   "rows": 164,
+   "rows": 140,
    "by_source": {
-    "topcv": 63,
-    "topdev": 10,
-    "vietnamworks": 17,
-    "careerviet": 5,
-    "vieclam24h": 4,
-    "itviec": 12,
+    "topcv": 49,
+    "topdev": 9,
+    "vietnamworks": 16,
+    "careerviet": 13,
+    "vieclam24h": 3,
+    "itviec": 7,
     "glints": 4,
-    "jobsgo": 49
+    "jobsgo": 39
    },
    "examples": [
     {
-     "job_id": "1975529",
+     "job_id": "1682674",
      "field": "jaccard",
      "before": null,
-     "after": 0.856,
-     "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem-co-dao-tao/1975529.html"
+     "after": 0.9321,
+     "url": "https://www.topcv.vn/viec-lam/solution-architecture-expert/1682674.html"
     },
     {
      "job_id": "2002662",

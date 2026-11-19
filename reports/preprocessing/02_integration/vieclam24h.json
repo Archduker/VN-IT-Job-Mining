@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:33:27+00:00",
-  "code_version": "591391b",
+  "generated_at": "2026-11-19T01:14:48+00:00",
+  "code_version": "d3f7008",
   "input": {
     "path": "data/preprocessing/01b_deduplication/vieclam24h.jsonl",
-    "rows": 162
+    "rows": 121
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 162
+    "rows": 121
   },
   "dropped": [
     {
@@ -34,7 +34,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
       "action": "modify",
-      "rows_affected": 162,
+      "rows_affected": 121,
       "examples": []
     },
     {
