@@ -6,7 +6,17 @@
   "min_df": 5,
   "rows": "1201-1350",
   "n_ext_jobs": 1606,
-  "approved": null
+  "approved": {
+   "date": "2026-11-19",
+   "by": "người dùng",
+   "quote": "oke continue",
+   "scope": "duyệt cả 10 lô theo đề xuất; 3 lớp theo gợi ý của Claude",
+   "lop_hoi": {
+    "chuan": "concept",
+    "chung_chi": "concept",
+    "office": "tool"
+   }
+  }
  },
  "items": [
   {
