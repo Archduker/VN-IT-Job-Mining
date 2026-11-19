@@ -16,6 +16,11 @@ MODEL_ID = "VietAI/envit5-translation"
 MODEL_REVISION = "840bc88104d5a4277af740eaedb024df8c3093e7"  # commit HF, ghim để tái lập
 MAX_CHUNK_TOKENS = 200
 GEN_PARAMS = {"do_sample": False, "num_beams": 1, "max_new_tokens": 512, "input_prefix": "en: "}
+# Sửa 19/11 (đặc tả 03 T6b): đoạn hỏng chia mảnh <= RETRY_MAX_TOKENS rồi dịch greedy; mảnh còn hỏng dịch beam 4.
+RETRY_MAX_TOKENS = 60
+RETRY_NUM_BEAMS = 4
+RETRY_PARAMS = {**GEN_PARAMS, "retry": f"split{RETRY_MAX_TOKENS}+beam{RETRY_NUM_BEAMS}"}  # khóa cache của bản ghép
+BEAM_PARAMS = {**GEN_PARAMS, "num_beams": RETRY_NUM_BEAMS}
 NO_TRANSLATE_FILE = Path(__file__).resolve().parents[1] / "dictionaries" / "no_translate.json"
 
 _NUM = re.compile(r"\d+")
@@ -24,6 +29,7 @@ _PH = re.compile(r"XTERM\d+X")
 _BULLET = re.compile(r"^(\s*(?:[-•*●▪–]|\d{1,2}[.)])\s+)")
 _SENT = re.compile(r"(?<=[.!?;:])\s+")
 _VI_PREFIX = re.compile(r"^\s*vi:\s*", re.I)
+_PH_SPACED = re.compile(r"(XTERM\d+)\s+X\b")  # model hay chèn dấu cách: "XTERM30 X"
 LEN_RATIO = (0.3, 3.0)  # đề xuất, chưa có số đo; chỉ áp cho đoạn >= 20 ký tự
 
 
@@ -90,8 +96,14 @@ def _by_words(seg: str, max_tokens: int, count: Callable[[str], int]) -> List[st
 
 
 def numbers_equal(src: str, dst: str) -> bool:
-    nums = lambda t: sorted(_NUM.findall(_SEP.sub("", _PH.sub("", t))))
+    """So theo giá trị ("01" = "1"); số viết bằng chữ không được nới (đặc tả 03 T6b, 19/11)."""
+    nums = lambda t: sorted(int(x) for x in _NUM.findall(_SEP.sub("", _PH.sub("", t))))
     return nums(src) == nums(dst)
+
+
+def clean_output(text: str) -> str:
+    """Bỏ tiền tố "vi:" và dấu cách model chèn vào token giữ chỗ, trước khi kiểm và ghép."""
+    return _PH_SPACED.sub(r"\1X", _VI_PREFIX.sub("", text).strip())
 
 
 def is_valid(src: str, dst: str) -> bool:
@@ -116,8 +128,11 @@ class TranslationContext:
     def __init__(self, translate_batch: Optional[Callable[[List[str]], List[str]]] = None,
                  count: Callable[[str], int] = lambda s: len(s.split()),
                  terms: Sequence[str] = (), cache_path: Optional[Path] = None,
-                 max_tokens: int = MAX_CHUNK_TOKENS, meta: Optional[Callable[[], dict]] = None):
+                 max_tokens: int = MAX_CHUNK_TOKENS, meta: Optional[Callable[[], dict]] = None,
+                 retry_batch: Optional[Callable[[List[str]], List[str]]] = None,
+                 retry_tokens: int = RETRY_MAX_TOKENS):
         self.translate_batch, self.count, self.terms = translate_batch, count, list(terms)
+        self.retry_batch, self.retry_tokens = retry_batch, retry_tokens  # retry_batch: dịch beam (None thì bỏ bước beam)
         self.max_tokens, self.meta = max_tokens, meta or dict  # meta: hàm trả dict (VRAM đỉnh đọc lúc báo cáo)
         self.cache_path = Path(cache_path) if cache_path else None
         self.cache: Dict[str, str] = {}
@@ -126,7 +141,8 @@ class TranslationContext:
                 d = json.loads(line)
                 self.cache[d["k"]] = d["v"]
         self.stats = {"rows_en": 0, "rows_translated": 0, "rows_failed": 0, "chunks": 0,
-                      "cache_hits": 0, "model_calls": 0, "retries": 0, "failed_chunks": 0}
+                      "cache_hits": 0, "model_calls": 0, "retries": 0, "failed_chunks": 0,
+                      "retry_pieces": 0, "beam_calls": 0, "rescued_chunks": 0}
 
     def _put(self, key: str, val: str) -> None:
         self.cache[key] = val
@@ -136,32 +152,80 @@ class TranslationContext:
                 f.write(json.dumps({"k": key, "v": val}, ensure_ascii=False) + "\n")
 
     def _translate_chunks(self, chunks: List[str]) -> Tuple[List[str], int]:
-        """Trả (bản dịch từng đoạn, số đoạn hỏng); đoạn hỏng giữ nguyên gốc, không vào cache."""
+        """Trả (bản dịch từng đoạn, số đoạn hỏng); đoạn hỏng giữ nguyên gốc, không vào cache.
+
+        Greedy một lần trên đoạn; đoạn hỏng thì `_retry` (chia mảnh, rồi beam). Không lặp greedy trên
+        cùng đoạn, vì greedy cho đúng kết quả cũ (sửa 19/11, đặc tả 03 T6b)."""
         keys = [cache_key(c) for c in chunks]
-        res: Dict[int, str] = {i: self.cache[k] for i, k in enumerate(keys) if k in self.cache}
+        rkeys = [cache_key(c, params=RETRY_PARAMS) for c in chunks]
+        res: Dict[int, str] = {}
+        for i in range(len(chunks)):
+            for k in (keys[i], rkeys[i]):
+                if k in self.cache:
+                    res[i] = self.cache[k]
+                    break
         self.stats["cache_hits"] += len(res)
         todo = [i for i in range(len(chunks)) if i not in res]
-        failed = 0
-        for attempt in (0, 1):
-            if not todo:
-                break
-            if attempt:
-                self.stats["retries"] += len(todo)
+        if todo:
             outs = self.translate_batch([chunks[i] for i in todo])
             self.stats["model_calls"] += len(todo)
             bad = []
             for i, o in zip(todo, outs):
-                o = _VI_PREFIX.sub("", o).strip()
+                o = clean_output(o)
                 if is_valid(chunks[i], o):
                     res[i] = o
                     self._put(keys[i], o)
                 else:
                     bad.append(i)
             todo = bad
-        for i in todo:  # retry một lần rồi vẫn hỏng: giữ gốc
-            res[i] = chunks[i]
-            failed += 1
+        failed = 0
+        for i in todo:
+            self.stats["retries"] += 1
+            o = self._retry(chunks[i])
+            if o is None:  # còn mảnh hỏng: giữ gốc cả đoạn
+                res[i] = chunks[i]
+                failed += 1
+            else:
+                res[i] = o
+                self._put(rkeys[i], o)
+                self.stats["rescued_chunks"] += 1
         return [res[i] for i in range(len(chunks))], failed
+
+    def _translate_pieces(self, pieces: List[str], fn, params: dict, stat: str) -> Dict[int, str]:
+        """Dịch các mảnh (dùng cache theo `params`), trả {vị trí: bản dịch hợp lệ}."""
+        got: Dict[int, str] = {}
+        need = []
+        for i, p in enumerate(pieces):
+            k = cache_key(p, params=params)
+            if k in self.cache:
+                got[i] = self.cache[k]
+                self.stats["cache_hits"] += 1
+            else:
+                need.append(i)
+        if need:
+            outs = fn([pieces[i] for i in need])
+            self.stats[stat] += len(need)
+            for i, o in zip(need, outs):
+                o = clean_output(o)
+                if is_valid(pieces[i], o):
+                    got[i] = o
+                    self._put(cache_key(pieces[i], params=params), o)
+        return got
+
+    def _retry(self, chunk: str) -> Optional[str]:
+        parts = split_text(chunk, self.retry_tokens, self.count)
+        pieces = [b for _, b in parts]
+        self.stats["retry_pieces"] += len(pieces)
+        got = self._translate_pieces(pieces, self.translate_batch, GEN_PARAMS, "model_calls")
+        rest = [i for i in range(len(pieces)) if i not in got]
+        if rest and self.retry_batch is not None:
+            beam = self._translate_pieces([pieces[i] for i in rest], self.retry_batch, BEAM_PARAMS, "beam_calls")
+            for j, i in enumerate(rest):
+                if j in beam:
+                    got[i] = beam[j]
+        if len(got) < len(pieces):
+            return None
+        return "".join(lead + got[i] for i, (lead, _) in enumerate(parts))
 
     def translate_fields(self, desc: Optional[str], req: Optional[str], language: str) -> dict:
         """Cột dịch cho một tin. Chỉ dịch khi language == 'en' và có translate_batch."""
@@ -200,5 +264,6 @@ class TranslationContext:
 
     def manifest(self) -> dict:
         return {"model_id": MODEL_ID, "model_revision": MODEL_REVISION, "gen_params": GEN_PARAMS,
-                "max_chunk_tokens": MAX_CHUNK_TOKENS, "fields": ["description", "requirements"],
+                "retry_params": RETRY_PARAMS, "beam_params": BEAM_PARAMS,
+                "max_chunk_tokens": MAX_CHUNK_TOKENS, "retry_max_tokens": RETRY_MAX_TOKENS, "fields": ["description", "requirements"],
                 "approved_terms": len(self.terms), **self.meta(), **self.stats}

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Callable, List
 
-from preprocessing.translation.core import GEN_PARAMS, MODEL_ID, MODEL_REVISION
+from preprocessing.translation.core import GEN_PARAMS, MODEL_ID, MODEL_REVISION, RETRY_NUM_BEAMS
 
 
 class EnViTranslator:
@@ -33,29 +33,33 @@ class EnViTranslator:
     def count(self, text: str) -> int:
         return len(self.tok(text, add_special_tokens=False).input_ids)
 
-    def _gen(self, batch: List[str]) -> List[str]:
+    def _gen(self, batch: List[str], num_beams: int = GEN_PARAMS["num_beams"]) -> List[str]:
         enc = self.tok([GEN_PARAMS["input_prefix"] + c for c in batch], return_tensors="pt", padding=True)
         enc.pop("token_type_ids", None)
         enc = {k: v.to(self.device) for k, v in enc.items()}
         with self.torch.no_grad():
-            out = self.model.generate(**enc, do_sample=False, num_beams=GEN_PARAMS["num_beams"],
+            out = self.model.generate(**enc, do_sample=False, num_beams=num_beams,
                                       max_new_tokens=GEN_PARAMS["max_new_tokens"])
         if self.device == "cuda":
             self.peak_vram_mib = max(self.peak_vram_mib, self.torch.cuda.max_memory_allocated() / 2**20)
         return self.tok.batch_decode(out, skip_special_tokens=True)
 
-    def translate_batch(self, chunks: List[str]) -> List[str]:
+    def translate_batch(self, chunks: List[str], num_beams: int = GEN_PARAMS["num_beams"]) -> List[str]:
         res: List[str] = []
         for i in range(0, len(chunks), self.batch_size):
             b = chunks[i:i + self.batch_size]
             try:
-                res += self._gen(b)
+                res += self._gen(b, num_beams)
             except self.torch.cuda.OutOfMemoryError:
                 self.torch.cuda.empty_cache()
                 self.model.to("cpu")
                 self.device, self.fell_back_to_cpu = "cpu", True
-                res += self._gen(b)
+                res += self._gen(b, num_beams)
         return res
+
+    def translate_batch_beam(self, chunks: List[str]) -> List[str]:
+        """Lần thử lại của mảnh hỏng (đặc tả 03 T6b, 19/11): beam search RETRY_NUM_BEAMS nhánh."""
+        return self.translate_batch(chunks, RETRY_NUM_BEAMS)
 
     def info(self) -> dict:
         import transformers
@@ -67,6 +71,7 @@ class EnViTranslator:
 def make_context(batch_size: int = 4, cache_path=None):
     from preprocessing.translation.core import TranslationContext, load_approved_terms
     t = EnViTranslator(batch_size)
-    ctx = TranslationContext(t.translate_batch, t.count, load_approved_terms(), cache_path, meta=t.info)
+    ctx = TranslationContext(t.translate_batch, t.count, load_approved_terms(), cache_path, meta=t.info,
+                             retry_batch=t.translate_batch_beam)
     ctx.translator = t
     return ctx
