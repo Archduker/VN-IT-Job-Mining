@@ -6,6 +6,7 @@ Quy trình test, chỗ đặt test và luật chung nằm ở `tests/README.md`;
 - Mạng ngoài localhost bị chặn ở mức socket. Test lỗi kết nối thì kiểm xem mình có quên mock R2 không, đừng gỡ chốt chặn. Test cần mạng thật thì gắn `@pytest.mark.live` và chạy `make test-live` khi người dùng đồng ý.
 - `--strict-markers` đang bật: marker mới phải khai báo trong `pyproject.toml`.
 - Từng có test ghi vào `data/` thật rồi bị đồng bộ lên R2 (4 tin ITviec giả, `docs/issue_log.md` L-12). Mọi đường dẫn ghi phải nằm trong `tmp_path`.
+- `monkeypatch.setattr(module, "X_FILE", ...)` không đổi được tham số mặc định đã gắn lúc định nghĩa hàm (`def write(path=X_FILE)`). Gọi hàm phải truyền đường dẫn rõ; sau khi chạy test xem `git status` có file `reports/` nào bị sửa không (19/11: test bước 04 từng ghi đè `anomalies.json`).
 
 ## Contract test cho crawler
 

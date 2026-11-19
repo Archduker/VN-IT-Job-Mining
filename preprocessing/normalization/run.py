@@ -547,7 +547,7 @@ def run(
         pd.DataFrame(q_normalized, columns=list(pd.DataFrame(all_normalized).columns) + ["quarantine_reason"]
                      if not q_normalized else None).to_parquet(QUARANTINE_FILE, engine="pyarrow", index=False)
         _write_company_pairs(pending)
-    write_anomalies(anomalies)
+    write_anomalies(anomalies, ANOMALIES_FILE)  # truyền rõ: mặc định của hàm gắn lúc định nghĩa, test đổi đường dẫn không ăn
     total_rep.write()
     return reports
 
