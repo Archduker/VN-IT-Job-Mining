@@ -1,0 +1,47 @@
+﻿dong,nguon,job_id,job_title,nhan_cu,nhan_moi,ly_do,do_chac,can_hoi
+40,careerviet,35C82000,Chuyên viên Kiểm định mô hình rủi ro tín dụng,non_it,it,"Q6: phân tích mô hình rủi ro, JD có Python, SQL, SAS",cao,
+57,careerviet,35C89D56,"Chuyên viên phân tích định lượng - Nhóm Phân tích rủi ro TT, rủi ro TK và rủi ro LS",non_it,it,Q6: phân tích định lượng rủi ro,cao,
+70,careerviet,35C88A27,KỸ SƯ TỰ ĐỘNG HÓA,non_it,it,"Q5: kỹ sư tự động hóa (C++, Python, SQL)",cao,
+79,careerviet,35C8AE4E,Giám đốc Vận hành Dự án AI,it,non_it,"Q8: giám đốc vận hành, JD là chiến lược kinh doanh",thấp,
+124,glints,d8e0e752-7e09-4f9d-b6a8-c8c3e9fed581,Kỹ sư QA/QC,it,non_it,"QA/QC của công ty xây dựng, không phải vai trò IT",cao,
+130,itviec,avvc-events-engineer-tech-lounge-av-hanoi-nab-innovation-centre-vietnam-0637,AVVC Events Engineer - Tech Lounge & AV (Hanoi),it,non_it,Q3: kỹ sư AV,cao,
+137,itviec,project-manager-supply-chain-operations-crossian-4743,Project Manager - Supply Chain Operations,it,non_it,"Q8: PM vận hành chuỗi cung ứng, không phải dự án IT",thấp,
+156,itviec,senior-lead-business-ownership-product-growth-m_service-momo-1946,"Senior/Lead, Business Ownership (Product & Growth)",it,non_it,Q8: Business Ownership (Product & Growth),cao,
+234,jobsgo,29015267725,Cloud Technical Sales / PreSales,it,non_it,Q1: Cloud Technical Sales / PreSales,cao,
+261,jobsgo,29103001644,AI ENGINEER (PCB SECTION – PRODUCTION),it,non_it,"""AI"" là Auto Insert (máy cắm linh kiện PCB), không phải AI",cao,
+293,topcv,2321935,Nhân Viên Phân Tích Hiệu Quả Và Tối Ưu Quy Trình Kinh Doanh,it,non_it,"Cùng tin với dòng 30 (careerviet, không IT); JD không có Python/SQL",cao,
+325,topcv,2264317,Kỹ Sư IoT (IoT Engineer),it,non_it,Q4: kỹ sư IoT,cao,
+326,topcv,2310723,CMC Telecom,it,non_it,"JD rỗng, tiêu đề là tên công ty (CMC Telecom)",cao,
+329,topcv,1789496,Phụ Trách Bảo Vệ Dữ Liệu (Data Protection Officer),it,non_it,Q2: DPO,cao,
+338,topcv,2328674,Design Intern,it,non_it,Thiết kế ấn phẩm mạng xã hội = thiết kế đồ họa,cao,
+342,topcv,2297307,Privacy Compliance – Junior,it,non_it,Q2: Privacy Compliance,cao,
+345,topcv,2264394,Operations Manager,it,non_it,Q8: Operations Manager,cao,
+351,topcv,2203776,Trưởng Nhóm Presales,it,non_it,Q1: Trưởng nhóm Presales,cao,
+376,topcv,2326468,Kỹ Sư Lập Trình PLC Cho Máy Tự Động,non_it,it,"Q5: lập trình PLC máy tự động (C#, Python)",thấp,
+557,vietnamworks,2109697,"Phó Phòng Quản Trị Rủi RO Tín Dụng Và Quản Lý Danh Mục, Phụ Trách Mô Hình Đo Lường Rủi RO Tín Dụng, Khối QTRR",non_it,it,"Q6: phụ trách mô hình rủi ro tín dụng, JD có Python, SQL",cao,
+603,vietnamworks,2115812,Chuyên Viên/ Nhân viên Kế Hoạch và Phát Triển Mạng Bay,non_it,it,"Q6: kế hoạch mạng bay (Python, SQL)",cao,
+624,vietnamworks,2120433,Kỹ Sư Cấu Hình triển khai hệ thống AV (Audio Visual)- Thu nhập 15-40 Triệu,it,non_it,Q3: kỹ sư AV,cao,
+168,itviec,da-nang-ui-ux-designer-one-tech-stop-vietnam-company-ltd-5157,[Da Nang] UI/UX Designer,it,,,,H1 UI/UX designer
+370,topcv,1720494,Fresher UI/ UX Designer,it,,,,H1 UI/UX designer
+246,jobsgo,29030571258,[Graduate Program 2026] Kỹ Sư Test Fresher,it,,,,"H2 Kiểm thử / thiết kế phần cứng, chip"
+348,topcv,2262435,Design Verification Intern,it,,,,"H2 Kiểm thử / thiết kế phần cứng, chip"
+229,jobsgo,28981958438,Service Application Engineer/Kỹ Sư Hỗ Trợ Dịch Vụ (Lương 18 - 21 Triệu),it,,,,H3 Kỹ sư dịch vụ bảo trì máy
+522,vieclam24h,200949198,Nhân Viên Kỹ Thuật Triển Khai - Bảo Trì Wifi Fpt (Bình Chánh),non_it,,,,H4 Kỹ thuật viên viễn thông lắp đặt wifi/FTTH
+526,vieclam24h,200956151,Fpt Telecom Đà Nẵng| Đội Trưởng Kỹ Thuật Viễn Thông,non_it,,,,H4 Kỹ thuật viên viễn thông lắp đặt wifi/FTTH
+533,vieclam24h,200978374,Nhân Viên Kỹ Thuật Viễn Thông - Thu Nhập Từ 10 - 20 Triệu,non_it,,,,H4 Kỹ thuật viên viễn thông lắp đặt wifi/FTTH
+535,vieclam24h,200947887,Nhân Viên Kỹ Thuật Hạ Tầng Đăk Lăk,non_it,,,,H4 Kỹ thuật viên viễn thông lắp đặt wifi/FTTH
+537,vieclam24h,200959111,Nhân Viên Kỹ Thuật Viễn Thông,non_it,,,,H4 Kỹ thuật viên viễn thông lắp đặt wifi/FTTH
+544,vieclam24h,200967689,Nhân Viên Kỹ Thuật Mạng & Viễn Thông - Lương 10-12 Triệu,non_it,,,,H4 Kỹ thuật viên viễn thông lắp đặt wifi/FTTH
+523,vieclam24h,200918960,Kỹ Thuật Viên Sửa Chữa Điện Thoại Hoặc Laptop (Chỉ Cần Biết Một Trong Hai),non_it,,,,"H5 Kỹ thuật viên sửa máy tính, laptop, IT phần cứng"
+527,vieclam24h,200928738,Nhân Viên Kỹ Thuật Điện Tử Laptop,non_it,,,,"H5 Kỹ thuật viên sửa máy tính, laptop, IT phần cứng"
+530,vieclam24h,200960259,Bdh.T10.26 - Kỹ Thuật Viên,non_it,,,,"H5 Kỹ thuật viên sửa máy tính, laptop, IT phần cứng"
+532,vieclam24h,200963495,Nhân Viên Kỹ Thuật,non_it,,,,"H5 Kỹ thuật viên sửa máy tính, laptop, IT phần cứng"
+536,vieclam24h,200959750,Nhân Viên Kỹ Thuật - Vũng Tàu (Làm Gần Nhà),non_it,,,,"H5 Kỹ thuật viên sửa máy tính, laptop, IT phần cứng"
+538,vieclam24h,200950332,Nhân Viên Kỹ Thuật Bảo Hành Vi Tính,non_it,,,,"H5 Kỹ thuật viên sửa máy tính, laptop, IT phần cứng"
+541,vieclam24h,200920658,[Huế] Nhân Viên Kỹ Thuật,non_it,,,,"H5 Kỹ thuật viên sửa máy tính, laptop, IT phần cứng"
+543,vieclam24h,200948446,"[HCM] Nhân Viên Kỹ Thuật Sửa Máy Tính, Laptop",non_it,,,,"H5 Kỹ thuật viên sửa máy tính, laptop, IT phần cứng"
+362,topcv,2312958,Kỹ Sư Embedded Software Cho Mảng Tự Động Hoá,it,,,,H6 Nhúng cho tự động hóa (Q4 và Q5 chồng nhau)
+71,careerviet,35C8A330,Business Planning Analyst,non_it,,,,H7 Báo cáo / kế hoạch tài chính có dùng SQL
+565,vietnamworks,2115704,Chuyên Viên Chính Báo Cáo Tuân Thủ - Phòng Kế Toán và Thuế,non_it,,,,H7 Báo cáo / kế hoạch tài chính có dùng SQL
+608,vietnamworks,2103437,Giám Đốc Trung Tâm Quản Lý Tài Sản Nợ Có,it,,,,"H8 Giám đốc ALM ngân hàng, kỹ năng AI/ML"
+135,itviec,senior-it-product-marketing-specialist-product-owner-bosch-global-software-technologies-company-limited-2555,Senior IT Product Marketing Specialist (Product Owner),it,,,,H9 Product marketing kiêm Product Owner
