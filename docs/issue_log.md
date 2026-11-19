@@ -329,6 +329,13 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Còn lại:** chạy lại 03 trên bảng 02 mới (cùng lượt dịch), rồi 04 và Silver.
 - **Kiểm chứng:** 01: C9 bỏ 197 tin (glints 100, vietnamworks 82, jobsgo 13, topcv 1, vieclam24h 1), ra 4.621; 01b: D5 125, ra 4.496; 02: 4.495 tin, 30 cột; TopCV `raw_posted_date` 102 tin; top kỹ năng TopCV là Python 68, SQL 66 (không còn nhãn ngành). Test: `tests/unit/test_clean_step.py::test_c9_out_of_study_window`, `::test_c7_keeps_most_complete_then_most_authoritative`, `tests/unit/test_deduplication_step.py::test_pick_cross_winner_độ_đầy_đủ_trước_uy_tín`, `tests/unit/test_integration_step.py::test_topcv_date_posted_and_skills_without_industry_labels`.
 
+### L-51. Bộ lọc IT đúng 90,8%, dưới đích 95% (PRE-12, Dữ liệu, 19/11/2026)
+- **Lỗi:** bước 01, C4a xếp sai 59/643 nhãn C4b (đúng 90,8%, precision IT 86,5%): tầng 1 sai 16, tầng 2 sai 43; các tin sales, đồ họa, điện/cơ khí lọt vào tập IT.
+- **Nguyên nhân:** chưa có định nghĩa "tin IT" thống nhất nên cả nhãn lẫn luật đều lệch ở ca ranh giới; tầng 2 (`classify_unknown`) đếm 40 kỹ năng viết tay (`TECH_SKILLS`) và không phân biệt chuyên mục sàn đáng tin hay không.
+- **Cách xử lý:** người dùng chốt định nghĩa "vai trò IT", chuyên mục sàn là tín hiệu phụ (C), ưu tiên precision, cùng Q1–Q8, H1–H9 (`docs/spec/preprocessing/01_clean.md` mục 2.1). Soát lại nhãn (`data/preprocessing/gold/it_review/relabel_2026-11-19.csv`, 168 IT / 475 không IT), chia tune 451 / giữ lại 192. `preprocessing/common/it_filter.py` thêm luật ba tầng (`excluded_role`, `classify_tier1`, `it_signals`, `tier2_decide`, `classify_it`) theo `preprocessing/dictionaries/it_filter_v2.json` (phương án B: nhóm nghề + ≥ 2 kỹ năng lõi skills_v2, hoặc ≥ 8 kỹ năng lõi, hoặc itviec có chuyên mục IT). Chạy thật lại 01 → 01b → 02: 4.621 → 4.103 → 3.998 → 3.997.
+- **Còn lại:** recall IT 82% trên tập giữ lại (luật ưu tiên sạch nên bỏ nhầm một phần tin IT, nhất là vietnamworks, jobsgo). Người dùng chấp nhận khoảng tin cậy hiện có ngày 19/11.
+- **Kiểm chứng:** `pytest tests/unit/test_it_filter.py` (27 test); `python scripts/eval_it_filter.py`: tập giữ lại đúng 94,8% [90,7; 97,2], precision IT 97,6% [87,7; 99,6]; cả 643 nhãn đúng 95,0%. Tin lật so với 18/11: `data/preprocessing/review/it_filter_flips_2026-11-19.csv` (người dùng chấp nhận).
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

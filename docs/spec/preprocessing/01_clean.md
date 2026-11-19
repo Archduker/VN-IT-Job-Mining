@@ -221,7 +221,7 @@ Lấy từ `rules[].examples` của report.
 
 - Theo tầng (cả 643): tầng 0 đúng 99,6% (265 tin), tầng 1 95,7% (211), tầng 2 86,8% (167).
 - Theo nguồn (cả 643, precision IT / recall IT): topcv 100% / 87,1%; topdev 100% / 83,3%; vieclam24h 100% / 100%; itviec 97,4% / 92,7%; careerviet 94,7% / 78,3%; jobsgo 92,9% / 76,5%; vietnamworks 90,9% / 74,1%; glints 90,0% / 94,7%.
-- Precision IT trên tập giữ lại đạt đích; đúng chung trên tập giữ lại 94,8%, thấp hơn đích 0,2 điểm; cận dưới khoảng tin cậy đều dưới 95%. Đóng PRE-12 hay không do người dùng quyết.
+- Precision IT trên tập giữ lại đạt đích; đúng chung trên tập giữ lại 94,8%, thấp hơn đích 0,2 điểm; cận dưới khoảng tin cậy đều dưới 95%. Người dùng chấp nhận khoảng tin cậy này 19/11, PRE-12 đóng (L-51).
 
 
 **Độ đúng bộ lọc IT trên 643 nhãn (luật cũ, nhãn phiên bản 1, 18/11; để so):**
@@ -246,7 +246,7 @@ Lấy từ `rules[].examples` của report.
 
 - **Trạng thái:** có code; chạy thật 18/11 trên tập raw đang có trên R2, chạy lại cùng ngày sau các quyết định L-50 (C9, luật bản giữ C7, `category_tags`). Chạy thật lần nữa 19/11 với bộ lọc IT ba tầng (ra 4.103 tin).
 - **Chỗ thiếu so với bảng Silver:**
-  - Bộ lọc IT (19/11): precision IT 97,6% trên tập giữ lại, đúng chung 94,8%. Recall IT còn thấp ở vietnamworks (74,1%) và jobsgo (76,5%): luật ưu tiên sạch nên bỏ nhầm một phần tin IT (PRE-12).
+  - Bộ lọc IT (19/11): precision IT 97,6% trên tập giữ lại, đúng chung 94,8%. Recall IT còn thấp ở vietnamworks (74,1%) và jobsgo (76,5%): luật ưu tiên sạch nên bỏ nhầm một phần tin IT (người dùng chấp nhận 19/11, L-51).
   - Khóa C6, C7 chỉ gồm công ty + tiêu đề, nên tin cùng công ty mà tên viết khác ("MBBANK" và "Ngân hàng TMCP Quân đội") vẫn lọt (PRE-33).
 - **Làm lại bộ lọc IT (19/11):** đo thử trên 240 tin tầng 2: luật cũ đúng 0,821; chỉ đếm kỹ năng kỹ thuật v2 đúng 0,40–0,80 (v2 có cả Excel, CAD, cơ khí); chỉ đếm nhóm lõi IT tối đa khoảng 0,82; luật cũ + "≥ 4 kỹ năng bảo mật" 0,85; chuyên mục sàn chỉ đáng tin ở itviec (24 IT / 1 không IT), vieclam24h 0 IT / 23 không IT. Vì vậy luật mới phối hợp 4 tín hiệu thay vì chỉ đếm kỹ năng.
-- **Việc mở:** PRE-12, PRE-33, PRE-35.
+- **Việc mở:** PRE-33, PRE-35. PRE-12 đóng 19/11 (L-51).

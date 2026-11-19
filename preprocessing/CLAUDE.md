@@ -9,7 +9,7 @@ Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <ngu�
 | Bước | Thư mục | Việc |
 |---|---|---|
 | 00 profiling | `scripts/profile_sources.py` | Đo trước và sau làm sạch (chỉ đọc) |
-| 01 clean | `clean/`, `common/it_filter.py`, `common/raw_reader.py` | Snapshot mới nhất, lọc IT 2 tầng theo `it_policy.json`, bỏ JD dưới 50 từ, bỏ CTV/đa cấp, khử trùng theo công ty + tiêu đề |
+| 01 clean | `clean/`, `common/it_filter.py`, `common/raw_reader.py` | Snapshot mới nhất, lọc IT 3 tầng theo `dictionaries/it_filter_v2.json` (L-51), bỏ JD dưới 50 từ, bỏ CTV/đa cấp, khử trùng theo công ty + tiêu đề |
 | 01b deduplication | `deduplication/` | 3 tầng: (nguồn, id) → `sha1(text_fold)` → MinHash + Jaccard ≥ 0,85 cùng `company_slug` |
 | 02 integration | `integration/` | Làm phẳng về 19 trường `raw_*` (gồm `raw_work_mode`) + khóa + `first_crawled_at`, gộp 8 nguồn vào `all.parquet` |
 | 03 transformation | `transformation/`, `translation/`, `common/text_clean.py`, `common/lang_id.py` | Làm sạch ký tự, parse lương/ngày/kinh nghiệm, fastText ngôn ngữ, dịch EN→VI (envit5), rút kỹ năng và phúc lợi, tách địa điểm |
@@ -48,6 +48,6 @@ Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <ngu�
 
 ## Việc còn mở
 
-`docs/KNOWN_ISSUED.md` mục 3: PRE-12 (bộ lọc IT 90,8% sau khi chạy lại 18/11, chưa đạt 95%), PRE-33 (việc chờ người dùng), PRE-34 (222 tin dịch hỏng), PRE-35 (dữ liệu chưa sạch cho SD1–SD5), PRE-37 (`posted_month`), PRE-38 (tỉnh lấy từ trụ sở), PRE-39 (dọn code theo spec 05).
+`docs/KNOWN_ISSUED.md` mục 3: PRE-33 (việc chờ người dùng), PRE-34 (222 tin dịch hỏng), PRE-35 (dữ liệu chưa sạch cho SD1–SD5), PRE-37 (`posted_month`), PRE-38 (tỉnh lấy từ trụ sở), PRE-39 (dọn code theo spec 05).
 
 Chạy lại pipeline thì so số trước và sau, rồi mới đẩy lên R2 bằng `scripts/push_preprocessing_to_r2.py` (chạy thử trước, người dùng duyệt rồi mới `--push`).
