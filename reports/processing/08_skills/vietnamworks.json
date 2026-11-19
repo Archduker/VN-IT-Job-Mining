@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:20:29+00:00",
-  "code_version": "8ce6be5",
+  "generated_at": "2026-11-19T08:45:56+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 583
@@ -30,6 +30,11 @@
       "technical": 11071,
       "soft": 2531,
       "language": 385
+    },
+    "rows_by_type": {
+      "concept": 8144,
+      "tool": 2659,
+      "null": 3184
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -156,5 +161,95 @@
     ],
     "short_forms_approved": 756,
     "alias_conflicts_dropped": 0
-  }
+  },
+  "samples": [
+    {
+      "job_id": "vietnamworks_2112949",
+      "source": "vietnamworks",
+      "field": "skills",
+      "before": [
+        "Lập Bản Vẽ Thiết Kế",
+        "Thiết Kế Cơ Khí 3D",
+        "PYTHON",
+        "Xử lý hình ảnh",
+        "Computer Vision"
+      ],
+      "after": [
+        "computer_hardware",
+        "computer_vision",
+        "image_processing",
+        "python",
+        "requirements_analysis"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2115479",
+      "source": "vietnamworks",
+      "field": "skills",
+      "before": [
+        "Data Engineering",
+        "Sql",
+        "Team Mentoring",
+        "Etl/Elt Pipelines",
+        "PYTHON"
+      ],
+      "after": [
+        "ai",
+        "airflow",
+        "api",
+        "big_data",
+        "cicd",
+        "data_engineering",
+        "data_integration",
+        "data_lake",
+        "data_modeling",
+        "data_pipeline",
+        "data_processing",
+        "data_quality",
+        "data_warehouse",
+        "dataops",
+        "dbt",
+        "etl",
+        "git",
+        "logging",
+        "machine_learning",
+        "mentoring"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2117929",
+      "source": "vietnamworks",
+      "field": "skills",
+      "before": [
+        "Auditing",
+        "Team Management",
+        "Information Security/ Cybersecurity",
+        "It Risk Assessment",
+        "communication"
+      ],
+      "after": [
+        "cisa",
+        "cism",
+        "communication",
+        "consulting",
+        "coordination",
+        "english",
+        "enthusiasm",
+        "information_security",
+        "internal_control",
+        "it_audit",
+        "it_governance",
+        "it_infrastructure",
+        "itgc",
+        "leadership",
+        "regulatory_compliance",
+        "risk_management",
+        "team_management",
+        "vietnamese"
+      ],
+      "changed": true
+    }
+  ]
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T16:34:33+00:00",
+  "generated_at": "2026-11-19T08:41:20+00:00",
   "sources": [
     "topcv",
     "topdev",
@@ -13,173 +13,24 @@
   "translate": false,
   "steps": [
     {
-      "step": "01_clean",
+      "step": "08_skills",
       "status": "OK",
       "missing": [],
-      "input": 13361,
-      "output": 4799,
-      "dropped": 8562,
+      "input": 3916,
+      "output": 3916,
+      "dropped": 0,
       "conserved": true,
       "mode": "dry_run",
       "rejected": {
-        "topcv": 1212,
-        "topdev": 3674,
-        "vietnamworks": 1166,
-        "careerviet": 250,
-        "vieclam24h": 1103,
-        "itviec": 69,
-        "glints": 77,
-        "jobsgo": 1011
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 0,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 0,
+        "glints": 0,
+        "jobsgo": 0
       }
-    },
-    {
-      "step": "01b_deduplication",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/preprocessing/01_clean/topcv.jsonl",
-        "data/preprocessing/01_clean/topdev.jsonl",
-        "data/preprocessing/01_clean/vietnamworks.jsonl",
-        "data/preprocessing/01_clean/careerviet.jsonl",
-        "data/preprocessing/01_clean/vieclam24h.jsonl",
-        "data/preprocessing/01_clean/itviec.jsonl",
-        "data/preprocessing/01_clean/glints.jsonl",
-        "data/preprocessing/01_clean/jobsgo.jsonl"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
-    },
-    {
-      "step": "02_integration",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/preprocessing/01b_deduplication/topcv.jsonl",
-        "data/preprocessing/01b_deduplication/topdev.jsonl",
-        "data/preprocessing/01b_deduplication/vietnamworks.jsonl",
-        "data/preprocessing/01b_deduplication/careerviet.jsonl",
-        "data/preprocessing/01b_deduplication/vieclam24h.jsonl",
-        "data/preprocessing/01b_deduplication/itviec.jsonl",
-        "data/preprocessing/01b_deduplication/glints.jsonl",
-        "data/preprocessing/01b_deduplication/jobsgo.jsonl"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
-    },
-    {
-      "step": "03_transformation",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/preprocessing/02_integration/all.parquet"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
-    },
-    {
-      "step": "04_normalization",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/preprocessing/03_transformation/all.parquet"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
-    },
-    {
-      "step": "05_encoding",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/preprocessing/04_normalization/all.parquet"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
-    },
-    {
-      "step": "07_sections",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/preprocessing/04_normalization/all.parquet"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
-    },
-    {
-      "step": "08_skills",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/preprocessing/04_normalization/all.parquet"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
-    },
-    {
-      "step": "09_tokens",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/preprocessing/04_normalization/all.parquet"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
-    },
-    {
-      "step": "10_features",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/preprocessing/04_normalization/all.parquet",
-        "data/processing/09_tokens/all.parquet",
-        "data/processing/08_skills/job_skills.parquet"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
-    },
-    {
-      "step": "12_tfidf",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/preprocessing/04_normalization/all.parquet",
-        "data/processing/09_tokens/all.parquet"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
-    },
-    {
-      "step": "12_e5",
-      "status": "INPUT_MISSING",
-      "missing": [
-        "data/processing/07_sections/all.parquet"
-      ],
-      "input": null,
-      "output": null,
-      "dropped": null,
-      "conserved": null,
-      "mode": "dry_run"
     }
   ]
 }

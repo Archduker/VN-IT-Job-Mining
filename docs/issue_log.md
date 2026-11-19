@@ -343,6 +343,12 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Còn lại:** `job_skills.parquet` mang tên mới khi chạy lại bước 08 (P2).
 - **Kiểm chứng:** `pytest tests/unit/test_skills_v2.py -k hash_inside_names`.
 
+### L-53. Báo cáo bước 07 hoặc 08 mất khối `samples` khi chạy bước kia (Dữ liệu, 19/11/2026)
+- **Lỗi:** sau `run_preprocessing.py --step skills`, `reports/processing/07_sections/*.json` mất `samples`; chạy `--step sections` thì 08 mất. Commit 5223195 có 07 có mẫu, 08 không có.
+- **Nguyên nhân:** `processing.extraction.run` ghi lại báo cáo cả 07 và 08 trong một lần gọi, còn driver chỉ gắn mẫu (`_finish_reports`) cho bước được gọi.
+- **Cách xử lý:** `scripts/run_preprocessing.py`: `SAME_CALL = ("07_sections", "08_skills")`; chạy một trong hai thì gắn mẫu cho cả hai. Chạy lại 08 ngày 19/11: cả hai báo cáo có 3 mẫu mỗi nguồn.
+- **Kiểm chứng:** `pytest tests/unit/test_ph9_chain.py -k both_07_and_08`.
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

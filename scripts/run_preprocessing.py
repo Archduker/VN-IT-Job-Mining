@@ -106,6 +106,9 @@ def _samples(step: str, sources, root: Path) -> dict:
     return {}
 
 
+SAME_CALL = ("07_sections", "08_skills")   # processing.extraction.run ghi cả hai bước
+
+
 def _finish_reports(step, sources, dry_run, root, partial):
     """Gắn samples vào báo cáo; 07-09 sao báo cáo từ reports/processing sang reports/preprocessing."""
     from preprocessing.common.samples import inject_samples
@@ -173,7 +176,9 @@ def run_chain(steps, sources, dry_run: bool, translate: bool = False, root: Path
             if src != "_all" and hasattr(r, "data"):
                 d = r.data
                 print(f"  {src}: input {d['input']['rows']} → output {d['output']['rows']} bỏ {sum(x['rows'] for x in d['dropped'])}")
-        _finish_reports(step, sources, dry_run, root, partial)
+        # 07 và 08 do cùng một lần gọi ghi lại cả hai báo cáo, nên gắn mẫu cho cả hai (không thì bước kia mất `samples`)
+        for s in (SAME_CALL if step in SAME_CALL else (step,)):
+            _finish_reports(s, sources, dry_run, root, partial)
     if write_summary:
         out = root / "reports" / "pipeline" / ("chain_dry_run.json" if dry_run else "chain_run.json")
         out.parent.mkdir(parents=True, exist_ok=True)

@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:55:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T08:45:57+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 164
+    "rows": 121
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 164
+    "rows": 121
   },
   "dropped": [],
   "rules": [],
@@ -24,205 +24,267 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 700,
-    "n_jobs_no_skill": 19,
+    "n_job_skill_rows": 2723,
+    "n_jobs_no_skill": 0,
+    "rows_by_kind": {
+      "technical": 2061,
+      "soft": 602,
+      "language": 60
+    },
+    "rows_by_type": {
+      "concept": 1450,
+      "null": 688,
+      "tool": 585
+    },
+    "dictionary": "skills_v2.json",
     "top_skills": [
       {
+        "skill": "coordination",
+        "n_jobs": 81
+      },
+      {
         "skill": "communication",
-        "n_jobs": 82
+        "n_jobs": 62
+      },
+      {
+        "skill": "proactiveness",
+        "n_jobs": 46
       },
       {
         "skill": "english",
-        "n_jobs": 47
+        "n_jobs": 44
       },
       {
-        "skill": "teamwork",
-        "n_jobs": 34
+        "skill": "enthusiasm",
+        "n_jobs": 41
+      },
+      {
+        "skill": "networking",
+        "n_jobs": 39
+      },
+      {
+        "skill": "troubleshooting",
+        "n_jobs": 39
       },
       {
         "skill": "problem_solving",
+        "n_jobs": 37
+      },
+      {
+        "skill": "computer_hardware",
         "n_jobs": 33
       },
       {
-        "skill": "logical_thinking",
-        "n_jobs": 24
+        "skill": "database",
+        "n_jobs": 31
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 30
+      },
+      {
+        "skill": "information_security",
+        "n_jobs": 30
+      },
+      {
+        "skill": "software_testing",
+        "n_jobs": 30
+      },
+      {
+        "skill": "documentation",
+        "n_jobs": 28
+      },
+      {
+        "skill": "eagerness_to_learn",
+        "n_jobs": 27
       },
       {
         "skill": "python",
+        "n_jobs": 27
+      },
+      {
+        "skill": "analytical_skills",
+        "n_jobs": 27
+      },
+      {
+        "skill": "carefulness",
+        "n_jobs": 22
+      },
+      {
+        "skill": "ai",
+        "n_jobs": 22
+      },
+      {
+        "skill": "printer",
         "n_jobs": 20
       },
       {
-        "skill": "machine_learning",
+        "skill": "system_administration",
         "n_jobs": 20
       },
       {
-        "skill": "android_sdk",
-        "n_jobs": 16
+        "skill": "logical_thinking",
+        "n_jobs": 20
       },
       {
-        "skill": "data_analysis",
-        "n_jobs": 16
+        "skill": "consulting",
+        "n_jobs": 19
       },
       {
-        "skill": "postgresql",
-        "n_jobs": 15
+        "skill": "erp",
+        "n_jobs": 18
       },
       {
-        "skill": "docker",
-        "n_jobs": 14
+        "skill": "ms_office",
+        "n_jobs": 18
       },
       {
-        "skill": "agile_scrum",
-        "n_jobs": 12
+        "skill": "git",
+        "n_jobs": 17
       },
       {
-        "skill": "project_management",
-        "n_jobs": 12
+        "skill": "debugging",
+        "n_jobs": 17
       },
       {
-        "skill": "cicd",
-        "n_jobs": 11
+        "skill": "windows",
+        "n_jobs": 17
       },
       {
-        "skill": "rest_api",
-        "n_jobs": 11
-      },
-      {
-        "skill": "linux",
-        "n_jobs": 11
-      },
-      {
-        "skill": "mysql",
-        "n_jobs": 11
-      },
-      {
-        "skill": "javascript",
-        "n_jobs": 10
-      },
-      {
-        "skill": "java",
-        "n_jobs": 9
-      },
-      {
-        "skill": "infosec",
-        "n_jobs": 9
+        "skill": "sql",
+        "n_jobs": 17
       },
       {
         "skill": "presentation",
-        "n_jobs": 9
-      },
-      {
-        "skill": "sql_server",
-        "n_jobs": 9
-      },
-      {
-        "skill": "oracle_db",
-        "n_jobs": 8
-      },
-      {
-        "skill": "redis",
-        "n_jobs": 8
-      },
-      {
-        "skill": "power_bi",
-        "n_jobs": 8
-      },
-      {
-        "skill": "microservices",
-        "n_jobs": 7
-      },
-      {
-        "skill": "react",
-        "n_jobs": 7
-      },
-      {
-        "skill": "csharp",
-        "n_jobs": 7
-      },
-      {
-        "skill": "jira",
-        "n_jobs": 7
-      },
-      {
-        "skill": "business_analysis",
-        "n_jobs": 7
+        "n_jobs": 17
       }
     ],
-    "short_forms_approved": 0,
-    "alias_conflicts_dropped": 1
+    "short_forms_approved": 756,
+    "alias_conflicts_dropped": 0
   },
   "samples": [
     {
-      "job_id": "vieclam24h_200946697",
+      "job_id": "vieclam24h_200961975",
       "source": "vieclam24h",
       "field": "skills",
       "before": [
-        "lập trình game mobile",
-        "Mobile",
-        "mobile developer",
-        "Mobile Apps",
-        "Game",
-        "game designer",
-        "recruitment executive",
-        "Mobile App",
-        "procurement executive",
-        "admin executive",
-        "Việc làm Hà Nội",
-        "IT Phần mềm",
-        "Công Ty TNHH Adtirex"
-      ],
-      "after": [
-        "communication",
-        "data_analysis",
-        "english",
-        "waterfall"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200951552",
-      "source": "vieclam24h",
-      "field": "skills",
-      "before": [
-        "nhân viên triển khai phần mềm erp",
-        "nhân viên triển khai phần mềm",
-        "it phần mềm",
-        "Phần Mềm",
-        "Trưởng Nhóm",
-        "kinh doanh phần mềm",
-        "kỹ sư phần mềm",
-        "trưởng nhóm marketing",
-        "trưởng nhóm bán hàng",
-        "trưởng nhóm marketing online",
-        "Việc làm TP.HCM",
-        "Công Ty Cổ Phần Asoft"
-      ],
-      "after": [
-        "communication",
-        "problem_solving"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200963483",
-      "source": "vieclam24h",
-      "field": "skills",
-      "before": [
-        "nhân viên it",
-        "nhân viên it support",
-        "nhân viên it phần mềm",
-        "It",
-        "it support / it helpdesk",
-        "it officer",
+        "process engineer",
+        "construction engineer",
+        "instrument engineer",
         "it engineer",
-        "it support",
-        "it manager",
-        "it tiếng anh",
+        "mechanical engineer",
+        "bridge engineer",
+        "system administrator",
+        "piping engineer",
+        "qs engineer",
+        "production engineer",
         "IT Phần cứng - Mạng",
-        "Công Ty TNHH Kỹ Thuật ..."
+        "Công Ty Cổ Phần Viễn ..."
       ],
       "after": [
-        "cybersecurity"
+        "access_control",
+        "backup",
+        "communication",
+        "compliance",
+        "computer_hardware",
+        "coordination",
+        "database",
+        "defect_management",
+        "documentation",
+        "english",
+        "hardening",
+        "information_security",
+        "it_infrastructure",
+        "it_operations",
+        "milestone_review",
+        "monitoring",
+        "operating_systems",
+        "patch_management",
+        "progress_tracking",
+        "redhat"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200956825",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "it helpdesk",
+        "it support / it helpdesk",
+        "không yêu cầu kinh nghiệm",
+        "nhân viên văn phòng không cần kinh nghiệm",
+        "nhân viên văn phòng tphcm không cần kinh nghiệm",
+        "nhân viên it",
+        "không cần kinh nghiệm",
+        "kế toán không yêu cầu kinh nghiệm",
+        "chưa có kinh nghiệm",
+        "nhân viên it support",
+        "IT Phần cứng - Mạng",
+        "Công Ty TNHH Bao Bì ..."
+      ],
+      "after": [
+        "attendance_device",
+        "communication",
+        "computer_hardware",
+        "computer_repair",
+        "coordination",
+        "eagerness_to_learn",
+        "enthusiasm",
+        "information_security",
+        "it_infrastructure",
+        "monitoring",
+        "ms_office",
+        "operating_systems",
+        "printer",
+        "proactiveness",
+        "troubleshooting",
+        "user_support",
+        "vulnerability_assessment",
+        "wifi",
+        "windows"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200947793",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "nhân viên thiết kế website",
+        "thiết kế website",
+        "nhân viên thiết kế",
+        "nhân viên thiết kế rập",
+        "nhân viên thiết kế 3d",
+        "nhân viên thiết kế nội thất",
+        "nhân viên quản trị website",
+        "nhân viên thiết kế bao bì",
+        "nhân viên seo website",
+        "Thiết Kế",
+        "IT Phần mềm",
+        "Aa Trading Co.,ltd"
+      ],
+      "after": [
+        "aesthetic_sense",
+        "communication",
+        "computer_hardware",
+        "coordination",
+        "creativity",
+        "css",
+        "design_system",
+        "eagerness_to_learn",
+        "graphic_design",
+        "html",
+        "independent_work",
+        "javascript",
+        "performance_optimization",
+        "proactiveness",
+        "problem_solving",
+        "product_analytics",
+        "prototyping",
+        "responsive_design",
+        "seo",
+        "software_installation"
       ],
       "changed": true
     }

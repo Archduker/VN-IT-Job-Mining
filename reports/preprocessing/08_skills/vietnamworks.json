@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:55:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T08:45:56+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 774
+    "rows": 583
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 774
+    "rows": 583
   },
   "dropped": [],
   "rules": [],
@@ -24,185 +24,230 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 4186,
-    "n_jobs_no_skill": 67,
+    "n_job_skill_rows": 13987,
+    "n_jobs_no_skill": 1,
+    "rows_by_kind": {
+      "technical": 11071,
+      "soft": 2531,
+      "language": 385
+    },
+    "rows_by_type": {
+      "concept": 8144,
+      "tool": 2659,
+      "null": 3184
+    },
+    "dictionary": "skills_v2.json",
     "top_skills": [
       {
         "skill": "english",
-        "n_jobs": 340
+        "n_jobs": 258
       },
       {
         "skill": "communication",
-        "n_jobs": 336
+        "n_jobs": 253
       },
       {
-        "skill": "machine_learning",
-        "n_jobs": 218
+        "skill": "coordination",
+        "n_jobs": 226
       },
       {
-        "skill": "python",
-        "n_jobs": 163
+        "skill": "information_security",
+        "n_jobs": 176
       },
       {
-        "skill": "teamwork",
-        "n_jobs": 146
+        "skill": "ai",
+        "n_jobs": 147
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 141
+        "n_jobs": 145
+      },
+      {
+        "skill": "enthusiasm",
+        "n_jobs": 138
+      },
+      {
+        "skill": "software_testing",
+        "n_jobs": 136
+      },
+      {
+        "skill": "python",
+        "n_jobs": 126
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 121
+      },
+      {
+        "skill": "sql",
+        "n_jobs": 120
+      },
+      {
+        "skill": "documentation",
+        "n_jobs": 115
+      },
+      {
+        "skill": "it_infrastructure",
+        "n_jobs": 115
+      },
+      {
+        "skill": "analytical_skills",
+        "n_jobs": 113
+      },
+      {
+        "skill": "proactiveness",
+        "n_jobs": 110
+      },
+      {
+        "skill": "troubleshooting",
+        "n_jobs": 110
+      },
+      {
+        "skill": "leadership",
+        "n_jobs": 109
+      },
+      {
+        "skill": "cloud_computing",
+        "n_jobs": 105
+      },
+      {
+        "skill": "networking",
+        "n_jobs": 105
+      },
+      {
+        "skill": "database",
+        "n_jobs": 104
       },
       {
         "skill": "data_analysis",
-        "n_jobs": 131
+        "n_jobs": 99
       },
       {
-        "skill": "project_management",
+        "skill": "api",
+        "n_jobs": 97
+      },
+      {
+        "skill": "consulting",
+        "n_jobs": 97
+      },
+      {
+        "skill": "planning",
         "n_jobs": 83
       },
       {
-        "skill": "linux",
-        "n_jobs": 80
-      },
-      {
-        "skill": "agile_scrum",
+        "skill": "reporting",
         "n_jobs": 78
       },
       {
-        "skill": "business_analysis",
-        "n_jobs": 77
-      },
-      {
-        "skill": "power_bi",
-        "n_jobs": 76
-      },
-      {
-        "skill": "infosec",
-        "n_jobs": 72
-      },
-      {
-        "skill": "rest_api",
-        "n_jobs": 68
+        "skill": "monitoring",
+        "n_jobs": 78
       },
       {
         "skill": "presentation",
+        "n_jobs": 78
+      },
+      {
+        "skill": "eagerness_to_learn",
+        "n_jobs": 72
+      },
+      {
+        "skill": "project_management",
+        "n_jobs": 70
+      },
+      {
+        "skill": "risk_management",
         "n_jobs": 66
-      },
-      {
-        "skill": "clean_architecture",
-        "n_jobs": 62
-      },
-      {
-        "skill": "oracle_db",
-        "n_jobs": 62
-      },
-      {
-        "skill": "java",
-        "n_jobs": 61
-      },
-      {
-        "skill": "logical_thinking",
-        "n_jobs": 61
-      },
-      {
-        "skill": "cicd",
-        "n_jobs": 61
-      },
-      {
-        "skill": "azure",
-        "n_jobs": 54
-      },
-      {
-        "skill": "docker",
-        "n_jobs": 53
-      },
-      {
-        "skill": "cybersecurity",
-        "n_jobs": 49
-      },
-      {
-        "skill": "jira",
-        "n_jobs": 44
-      },
-      {
-        "skill": "microservices",
-        "n_jobs": 43
-      },
-      {
-        "skill": "sql_server",
-        "n_jobs": 43
-      },
-      {
-        "skill": "cpp",
-        "n_jobs": 38
-      },
-      {
-        "skill": "postgresql",
-        "n_jobs": 37
-      },
-      {
-        "skill": "csharp",
-        "n_jobs": 36
-      },
-      {
-        "skill": "kubernetes",
-        "n_jobs": 36
       }
     ],
-    "short_forms_approved": 0,
-    "alias_conflicts_dropped": 1
+    "short_forms_approved": 756,
+    "alias_conflicts_dropped": 0
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2112056",
+      "job_id": "vietnamworks_2112949",
       "source": "vietnamworks",
       "field": "skills",
       "before": [
-        "Application Development",
-        "Computer Science",
-        "System Integration",
-        "Salesforce",
-        "Rest Api"
+        "Lập Bản Vẽ Thiết Kế",
+        "Thiết Kế Cơ Khí 3D",
+        "PYTHON",
+        "Xử lý hình ảnh",
+        "Computer Vision"
       ],
       "after": [
+        "computer_hardware",
+        "computer_vision",
+        "image_processing",
+        "python",
+        "requirements_analysis"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2115479",
+      "source": "vietnamworks",
+      "field": "skills",
+      "before": [
+        "Data Engineering",
+        "Sql",
+        "Team Mentoring",
+        "Etl/Elt Pipelines",
+        "PYTHON"
+      ],
+      "after": [
+        "ai",
+        "airflow",
+        "api",
+        "big_data",
+        "cicd",
+        "data_engineering",
+        "data_integration",
+        "data_lake",
+        "data_modeling",
+        "data_pipeline",
+        "data_processing",
+        "data_quality",
+        "data_warehouse",
+        "dataops",
+        "dbt",
+        "etl",
+        "git",
+        "logging",
         "machine_learning",
-        "rest_api"
+        "mentoring"
       ],
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2121103",
+      "job_id": "vietnamworks_2117929",
       "source": "vietnamworks",
       "field": "skills",
       "before": [
-        "Phân Tích Nghiệp Vụ",
-        "Business analysis",
-        "Credit Risk Management",
-        "IT Business Analysis"
+        "Auditing",
+        "Team Management",
+        "Information Security/ Cybersecurity",
+        "It Risk Assessment",
+        "communication"
       ],
       "after": [
-        "business_analysis",
+        "cisa",
+        "cism",
         "communication",
+        "consulting",
+        "coordination",
         "english",
-        "jira"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2100871",
-      "source": "vietnamworks",
-      "field": "skills",
-      "before": [
-        "Chứng khoán",
-        "Fintech",
-        "Phân Tích Dữ Liệu",
-        "Quản Lý Sản Phẩm",
-        "Power Bi"
-      ],
-      "after": [
-        "data_analysis",
-        "fintech",
-        "logical_thinking",
-        "power_bi"
+        "enthusiasm",
+        "information_security",
+        "internal_control",
+        "it_audit",
+        "it_governance",
+        "it_infrastructure",
+        "itgc",
+        "leadership",
+        "regulatory_compliance",
+        "risk_management",
+        "team_management",
+        "vietnamese"
       ],
       "changed": true
     }

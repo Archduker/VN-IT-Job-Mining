@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:20:29+00:00",
-  "code_version": "8ce6be5",
+  "generated_at": "2026-11-19T08:45:56+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 402
@@ -30,6 +30,11 @@
       "soft": 2411,
       "technical": 9876,
       "language": 249
+    },
+    "rows_by_type": {
+      "null": 2794,
+      "concept": 7237,
+      "tool": 2505
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -156,5 +161,94 @@
     ],
     "short_forms_approved": 756,
     "alias_conflicts_dropped": 0
-  }
+  },
+  "samples": [
+    {
+      "job_id": "careerviet_35C87E47",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "agile",
+        "automation_test",
+        "backend_dev",
+        "business_analysis",
+        "carefulness",
+        "communication",
+        "coordination",
+        "devops",
+        "docker",
+        "dynamism",
+        "enthusiasm",
+        "erp",
+        "gcp",
+        "independent_work",
+        "odoo",
+        "playwright",
+        "proactiveness",
+        "progress_tracking",
+        "qa_qc",
+        "rca"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C89037",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "analytical_skills",
+        "ansible",
+        "argocd",
+        "aws",
+        "azure",
+        "backup",
+        "bash",
+        "bgp",
+        "capacity_planning",
+        "centos",
+        "ceph",
+        "cicd",
+        "cka",
+        "cloud_computing",
+        "cloud_security",
+        "containerization",
+        "dashboard",
+        "debugging",
+        "devops",
+        "disaster_recovery"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C83F00",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "agile",
+        "ai",
+        "ai_application",
+        "batch_processing",
+        "big_data",
+        "cloud_computing",
+        "communication",
+        "consulting",
+        "coordination",
+        "data_analysis",
+        "data_engineering",
+        "data_flow",
+        "data_governance",
+        "data_modeling",
+        "data_pipeline",
+        "data_processing",
+        "data_science",
+        "database_design",
+        "english",
+        "enthusiasm"
+      ],
+      "changed": true
+    }
+  ]
 }

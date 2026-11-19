@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:20:29+00:00",
-  "code_version": "8ce6be5",
+  "generated_at": "2026-11-19T08:45:56+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 166
@@ -30,6 +30,11 @@
       "technical": 3777,
       "soft": 920,
       "language": 117
+    },
+    "rows_by_type": {
+      "concept": 2688,
+      "tool": 1023,
+      "null": 1103
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -156,5 +161,95 @@
     ],
     "short_forms_approved": 756,
     "alias_conflicts_dropped": 0
-  }
+  },
+  "samples": [
+    {
+      "job_id": "topdev_2137775",
+      "source": "topdev",
+      "field": "skills",
+      "before": [
+        "IT Helpdesk",
+        "IT Support",
+        "IT Staff"
+      ],
+      "after": [
+        "account_admin",
+        "authn_authz",
+        "carefulness",
+        "computer_hardware",
+        "english",
+        "enthusiasm",
+        "honesty",
+        "ms_office",
+        "printer",
+        "user_support",
+        "work_under_pressure"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2138248",
+      "source": "topdev",
+      "field": "skills",
+      "before": [
+        "Linux",
+        "Tester",
+        "Software Developer",
+        "C/C++",
+        "Embedded",
+        "RTOS",
+        "Kernel"
+      ],
+      "after": [
+        "code_review",
+        "communication",
+        "cpp",
+        "debugging",
+        "dsp",
+        "embedded",
+        "english",
+        "linux",
+        "linux_kernel",
+        "lte",
+        "rtos",
+        "teamwork",
+        "troubleshooting",
+        "wireless"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2134271",
+      "source": "topdev",
+      "field": "skills",
+      "before": [
+        "Linux",
+        "IT Helpdesk",
+        "Network",
+        "Windows"
+      ],
+      "after": [
+        "access_control",
+        "account_admin",
+        "active_listening",
+        "communication",
+        "computer_hardware",
+        "dhcp",
+        "dns",
+        "information_security",
+        "linux",
+        "logical_thinking",
+        "macos",
+        "networking",
+        "patience",
+        "proactiveness",
+        "remote_support",
+        "troubleshooting",
+        "user_training",
+        "windows",
+        "work_under_pressure"
+      ],
+      "changed": true
+    }
+  ]
 }

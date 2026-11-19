@@ -75,7 +75,7 @@ def load_skills_v2(path: Path = SKILLS_V2_PATH) -> dict:
 def matcher_from_v2(d: dict) -> "SkillMatcher":
     """Matcher của bước 08 từ skills_v2 (K8.15). Cụm bằng cấp không trùng alias kỹ năng thành cụm chặn."""
     tax = [{"slug": s["slug"], "name": s["name"], "group": s["group"], "kind": s["kind"], "parent": s.get("parent"),
-            "aliases": s["aliases"]} for s in d["skills"]]
+            "type": s.get("type"), "aliases": s["aliases"]} for s in d["skills"]]
     skill_keys = {a for s in d["skills"] for a in s["aliases"]}
     forms = {a: f for s in d["skills"] for a, f in s.get("alias_forms", {}).items()}
     blockers = []
@@ -204,5 +204,28 @@ def extract_skills(bullets: Sequence[Bullet], matcher: SkillMatcher, meta: Itera
     for slug in sorted(agg):
         t = matcher.taxonomy[slug]
         rows.append({**agg[slug], "skill": t.get("canonical") or t.get("name"), "kind": t.get("kind"),
-                     "parent": t.get("parent")})
+                     "parent": t.get("parent"), "type": t.get("type")})
     return rows, hits_by_bullet
+
+
+SKILL_VIEWS = ("all", "tool", "concept", "soft")
+
+
+def skill_view(job_skills, view: str):
+    """Ba góc nhìn kỹ năng của docs/target/06_yeu_cau_du_lieu.md mục 2, một định nghĩa cho bước 10, Silver và Mining.
+
+    - `tool` (K-tool): kỹ thuật, `type = tool` (K8.17); kỹ năng chưa có nhãn duyệt (`type` null) không vào.
+    - `concept` (K-concept): kỹ thuật, `type = concept`.
+    - `soft` (K-soft): `kind` là `soft` hoặc `language`.
+    - `all`: mọi dòng.
+    Mọi `via` (văn bản gốc, bản dịch, thẻ sàn) và mọi phần JD đều giữ (quyết định 1, 2 ngày 19/11).
+    """
+    if view not in SKILL_VIEWS:
+        raise ValueError(f"view lạ {view!r}; chọn một trong {SKILL_VIEWS}")
+    if view == "all":
+        return job_skills
+    if view == "soft":
+        return job_skills[job_skills["kind"].isin(["soft", "language"])]
+    if "type" not in job_skills.columns:
+        raise ValueError("job_skills thiếu cột `type`: chạy lại bước 08 với skills_v2 ≥ 2.1.0 (K8.17)")
+    return job_skills[(job_skills["kind"] == "technical") & (job_skills["type"] == view)]

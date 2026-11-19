@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T19:55:04+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T08:45:56+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 400
+    "rows": 402
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 400
+    "rows": 402
   },
   "dropped": [],
   "rules": [],
@@ -24,191 +24,229 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 2900,
-    "n_jobs_no_skill": 5,
+    "n_job_skill_rows": 12536,
+    "n_jobs_no_skill": 0,
+    "rows_by_kind": {
+      "soft": 2411,
+      "technical": 9876,
+      "language": 249
+    },
+    "rows_by_type": {
+      "null": 2794,
+      "concept": 7237,
+      "tool": 2505
+    },
+    "dictionary": "skills_v2.json",
     "top_skills": [
       {
+        "skill": "coordination",
+        "n_jobs": 270
+      },
+      {
         "skill": "communication",
-        "n_jobs": 195
+        "n_jobs": 193
       },
       {
         "skill": "english",
-        "n_jobs": 190
+        "n_jobs": 185
       },
       {
-        "skill": "machine_learning",
-        "n_jobs": 131
+        "skill": "proactiveness",
+        "n_jobs": 165
       },
       {
-        "skill": "python",
-        "n_jobs": 104
+        "skill": "information_security",
+        "n_jobs": 163
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 86
+        "n_jobs": 124
+      },
+      {
+        "skill": "database",
+        "n_jobs": 124
       },
       {
         "skill": "teamwork",
-        "n_jobs": 86
+        "n_jobs": 124
       },
       {
-        "skill": "data_analysis",
+        "skill": "software_testing",
+        "n_jobs": 123
+      },
+      {
+        "skill": "enthusiasm",
+        "n_jobs": 114
+      },
+      {
+        "skill": "troubleshooting",
+        "n_jobs": 112
+      },
+      {
+        "skill": "ai",
+        "n_jobs": 109
+      },
+      {
+        "skill": "sql",
+        "n_jobs": 103
+      },
+      {
+        "skill": "cloud_computing",
+        "n_jobs": 102
+      },
+      {
+        "skill": "analytical_skills",
+        "n_jobs": 101
+      },
+      {
+        "skill": "documentation",
+        "n_jobs": 99
+      },
+      {
+        "skill": "leadership",
+        "n_jobs": 98
+      },
+      {
+        "skill": "it_infrastructure",
+        "n_jobs": 98
+      },
+      {
+        "skill": "python",
+        "n_jobs": 92
+      },
+      {
+        "skill": "api",
+        "n_jobs": 81
+      },
+      {
+        "skill": "ai_application",
+        "n_jobs": 77
+      },
+      {
+        "skill": "it_operations",
         "n_jobs": 74
       },
       {
+        "skill": "consulting",
+        "n_jobs": 70
+      },
+      {
+        "skill": "data_analysis",
+        "n_jobs": 70
+      },
+      {
+        "skill": "eagerness_to_learn",
+        "n_jobs": 69
+      },
+      {
         "skill": "logical_thinking",
+        "n_jobs": 69
+      },
+      {
+        "skill": "erp",
         "n_jobs": 68
       },
       {
-        "skill": "docker",
+        "skill": "networking",
+        "n_jobs": 67
+      },
+      {
+        "skill": "planning",
         "n_jobs": 63
       },
       {
-        "skill": "rest_api",
-        "n_jobs": 62
-      },
-      {
-        "skill": "cicd",
-        "n_jobs": 60
-      },
-      {
-        "skill": "azure",
-        "n_jobs": 57
-      },
-      {
-        "skill": "infosec",
-        "n_jobs": 56
-      },
-      {
-        "skill": "agile_scrum",
-        "n_jobs": 55
-      },
-      {
-        "skill": "oracle_db",
-        "n_jobs": 51
-      },
-      {
-        "skill": "postgresql",
-        "n_jobs": 48
-      },
-      {
-        "skill": "linux",
-        "n_jobs": 48
-      },
-      {
-        "skill": "sql_server",
-        "n_jobs": 44
-      },
-      {
-        "skill": "mysql",
-        "n_jobs": 39
-      },
-      {
-        "skill": "business_analysis",
-        "n_jobs": 38
-      },
-      {
-        "skill": "java",
-        "n_jobs": 37
-      },
-      {
-        "skill": "microservices",
-        "n_jobs": 35
-      },
-      {
-        "skill": "kubernetes",
-        "n_jobs": 35
-      },
-      {
-        "skill": "jira",
-        "n_jobs": 33
-      },
-      {
-        "skill": "power_bi",
-        "n_jobs": 33
-      },
-      {
-        "skill": "project_management",
-        "n_jobs": 31
-      },
-      {
-        "skill": "mongodb",
-        "n_jobs": 27
-      },
-      {
-        "skill": "firewall",
-        "n_jobs": 27
-      },
-      {
         "skill": "presentation",
-        "n_jobs": 27
-      },
-      {
-        "skill": "nodejs",
-        "n_jobs": 25
+        "n_jobs": 62
       }
     ],
-    "short_forms_approved": 0,
-    "alias_conflicts_dropped": 1
+    "short_forms_approved": 756,
+    "alias_conflicts_dropped": 0
   },
   "samples": [
     {
-      "job_id": "careerviet_35C88AC6",
+      "job_id": "careerviet_35C87E47",
       "source": "careerviet",
       "field": "skills",
       "before": null,
       "after": [
-        "azure",
-        "chromadb",
-        "cicd",
-        "docker",
-        "gcp",
-        "genai",
-        "hugging_face",
-        "infosec",
-        "iso_27001",
-        "kubernetes",
-        "langchain",
-        "llm",
-        "machine_learning",
-        "milvus",
-        "nlp",
-        "numpy",
-        "pandas",
-        "pinecone",
-        "python",
-        "pytorch"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C8A19A",
-      "source": "careerviet",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "infosec",
-        "linux",
-        "mysql",
-        "nginx",
-        "ubuntu"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C83F06",
-      "source": "careerviet",
-      "field": "skills",
-      "before": null,
-      "after": [
+        "agile",
+        "automation_test",
+        "backend_dev",
+        "business_analysis",
+        "carefulness",
         "communication",
+        "coordination",
+        "devops",
+        "docker",
+        "dynamism",
+        "enthusiasm",
+        "erp",
+        "gcp",
+        "independent_work",
+        "odoo",
+        "playwright",
+        "proactiveness",
+        "progress_tracking",
+        "qa_qc",
+        "rca"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C89037",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "analytical_skills",
+        "ansible",
+        "argocd",
+        "aws",
+        "azure",
+        "backup",
+        "bash",
+        "bgp",
+        "capacity_planning",
+        "centos",
+        "ceph",
+        "cicd",
+        "cka",
+        "cloud_computing",
+        "cloud_security",
+        "containerization",
+        "dashboard",
+        "debugging",
+        "devops",
+        "disaster_recovery"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C83F00",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "agile",
+        "ai",
+        "ai_application",
+        "batch_processing",
+        "big_data",
+        "cloud_computing",
+        "communication",
+        "consulting",
+        "coordination",
         "data_analysis",
+        "data_engineering",
+        "data_flow",
+        "data_governance",
+        "data_modeling",
+        "data_pipeline",
+        "data_processing",
+        "data_science",
+        "database_design",
         "english",
-        "infosec",
-        "logical_thinking",
-        "machine_learning",
-        "matlab",
-        "python"
+        "enthusiasm"
       ],
       "changed": true
     }

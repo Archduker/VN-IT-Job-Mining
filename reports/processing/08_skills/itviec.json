@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:20:29+00:00",
-  "code_version": "8ce6be5",
+  "generated_at": "2026-11-19T08:45:57+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 736
@@ -30,6 +30,11 @@
       "soft": 3941,
       "technical": 23542,
       "language": 629
+    },
+    "rows_by_type": {
+      "null": 4983,
+      "tool": 7008,
+      "concept": 16121
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -156,5 +161,111 @@
     ],
     "short_forms_approved": 756,
     "alias_conflicts_dropped": 0
-  }
+  },
+  "samples": [
+    {
+      "job_id": "itviec_devops-engineer-vnggames-0837",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "CI/CD",
+        "Linux"
+      ],
+      "after": [
+        "access_control",
+        "ai",
+        "ai_agent",
+        "ai_application",
+        "ansible",
+        "audit_logging",
+        "aws",
+        "bash",
+        "caching",
+        "cicd",
+        "claude",
+        "claude_code",
+        "cloud_computing",
+        "compliance",
+        "container_orchestration",
+        "containerization",
+        "coordination",
+        "cursor",
+        "dast",
+        "database"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-principal-ruby-on-rails-developer-aws-backend-andpad-vietnam-co-ltd-4221",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "Ruby on Rails",
+        "Design Systems",
+        "Ruby",
+        "Microservices",
+        "AWS",
+        "English"
+      ],
+      "after": [
+        "ansible",
+        "api",
+        "api_design",
+        "aws",
+        "aws_aurora",
+        "aws_codebuild",
+        "azure",
+        "bugsnag",
+        "cicd",
+        "circleci",
+        "cloud_computing",
+        "configuration_management",
+        "containerization",
+        "database",
+        "datadog",
+        "debugging",
+        "design_system",
+        "docker",
+        "documentation",
+        "dynamodb"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-backend-engineer-python-django-aws-lhv-software-4327",
+      "source": "itviec",
+      "field": "skills",
+      "before": [
+        "Python",
+        "AWS",
+        "DevOps",
+        "Django",
+        "SQL",
+        "English"
+      ],
+      "after": [
+        "ai",
+        "ai_assisted_dev",
+        "api",
+        "api_gateway",
+        "application_support",
+        "aws",
+        "aws_s3",
+        "aws_ses",
+        "aws_sqs",
+        "claude_code",
+        "cloud_computing",
+        "code_review",
+        "communication",
+        "devops",
+        "django",
+        "documentation",
+        "english",
+        "golang",
+        "ideation",
+        "java"
+      ],
+      "changed": true
+    }
+  ]
 }

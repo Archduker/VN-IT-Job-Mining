@@ -100,10 +100,24 @@ Ký hiệu: ✅ đạt, ⚠️ đạt một phần hoặc phải ghi giới hạ
 | T2 | React ⇒ JavaScript/TypeScript | confidence ≥ 0,6 | như trên |
 | T3 | Không công cụ nào phủ ≥ 20% ở **cả** 6 nghề lớn | 0 công cụ | như trên |
 | T4 | Đọc tay 100 cặp (tin, công cụ) ngẫu nhiên, seed 42 | đúng ≥ 90% | `data/processing/skill_candidates/tool_check_100.csv` |
-| T5 | Trên 1.047 tin trùng URL: bắt `tech_stack` của họ | ≥ 0,85 | dữ liệu ngoài ở `data/external/vnjt/` (gitignore) |
-| T6 | Trên 1.047 tin trùng URL: công cụ của mình nằm trong `tech_stack ∪ keywords` của họ | ≥ 0,70 | như trên |
+| T5 | Trên tin ghép với dữ liệu ngoài: bắt `tech_stack` của họ | ≥ 0,85 | dữ liệu ngoài ở `data/external/vnjt/` (gitignore) |
+| T6 | Trên tin ghép với dữ liệu ngoài: công cụ của mình nằm trong `tech_stack ∪ keywords` của họ | ≥ 0,70 | như trên |
 
 T5 và T6 chỉ là đối chiếu: dữ liệu ngoài do LLM sinh, không phải gold. Khi có bộ gold (`gold_labels.json`) thì F1 trên gold thay cho T5, T6.
+
+**Kết quả đo 19/11** (`python scripts/eval_skill_views.py`, skills_v2 2.1.0, bước 08 chạy lại trên bảng 04; ghép ngoài 1.606 tin theo mã + tiêu đề, trong đó 1.045 trùng nguyên URL):
+
+| View | Số kỹ năng | Trung vị/tin | T1 người mới | T2 | T3 | T5 / T6 (1.606 tin) | T5 / T6 (1.045 tin trùng URL) |
+|---|---|---|---|---|---|---|---|
+| Mọi kỹ năng | 2.077 | 25 | 19 | 0,67 | 6 (kỹ năng mềm) | 0,93 / 0,34 | 0,90 / 0,34 |
+| Kỹ thuật | 2.003 | 19 | 14 | 0,67 | 0 | 0,93 / 0,40 | 0,90 / 0,41 |
+| **K-tool** | **534** | **5** | **4 ✅** | **0,67 ✅** | **0 ✅** | **0,85 ✅ / 0,69 ❌** | **0,82 ❌ / 0,69 ❌** |
+| K-concept | 873 | 14 | 10 | — | 0 | 0,06 / 0,27 | 0,07 / 0,30 |
+| K-soft | 74 | 5 | 5 | — | 6 | 0 / 0,02 | 0 / 0,02 |
+
+- **T4:** 94/100 cặp đúng ✅. Sáu cặp sai: OpenStack Swift (lưu trữ) khớp ngôn ngữ Swift; "ASP" trong "ASP .NET CORE" khớp ASP classic; Oracle là tên công ty; "EXCEL" là giá trị cốt lõi của VinUni; alias "grid" của Selenium Grid khớp "Grid System"; "quản lý phiên bản" của artifact registry khớp Git.
+- **T5, T6 sát ngưỡng:** T6 thiếu 0,01. Phần chênh còn lại chủ yếu là công cụ mình bắt mà danh sách LLM của họ bỏ (họ trung bình 5,5 mục/tin), nên đây là đối chiếu, không phải gold.
+- **SD5, coverage@10 trên K-tool** (tỷ lệ tin người mới mà top 10 công cụ của nghề phủ ≥ 70% công cụ của tin): Web 0,13; Bridge 0,44; Data/AI 0,18; Tester 0,28; DevOps/Cloud 0,09; Security 0,11. Tin người mới chỉ có trung vị 4 công cụ nhưng mỗi nghề có nhiều stack khác nhau, nên một danh sách top 10 chung không phủ được phần lớn tin. M6 cần tính theo gói (SD2) thay vì một danh sách.
 
 ## 5. Điều kiện còn treo
 

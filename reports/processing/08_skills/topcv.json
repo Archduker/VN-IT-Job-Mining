@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:20:29+00:00",
-  "code_version": "8ce6be5",
+  "generated_at": "2026-11-19T08:45:56+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 1265
@@ -30,6 +30,11 @@
       "soft": 6299,
       "technical": 27377,
       "language": 586
+    },
+    "rows_by_type": {
+      "null": 7422,
+      "concept": 18971,
+      "tool": 7869
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -156,5 +161,108 @@
     ],
     "short_forms_approved": 756,
     "alias_conflicts_dropped": 0
-  }
+  },
+  "samples": [
+    {
+      "job_id": "topcv_1763894",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Hiểu Biết Về Các Hệ Điều Hành (windows",
+        "Linux)",
+        "Phân Tích Nhật Ký (log Analysis)",
+        "Phát Hiện Và Phản Hồi Sự Cố Bảo Mật (incident Response)",
+        "Kiến Thức Về Malware Analysis Tools (ida Pro",
+        "Ghidra",
+        "...)",
+        "Phân Tích Mã Độc (malware Analysis)",
+        "Phân Tích Mối Đe Dọa Mạng",
+        "Kiến Thức Về Các Giao Thức Mạng (tcp Ip",
+        "Http",
+        "Dns)"
+      ],
+      "after": [
+        "apt_threat",
+        "assembly",
+        "ceh",
+        "chfi",
+        "cpp",
+        "csharp",
+        "gcti",
+        "http",
+        "information_security",
+        "kms_hsm",
+        "network_protocols",
+        "networking",
+        "python",
+        "reverse_engineering",
+        "windbg",
+        "wireshark"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2321841",
+      "source": "topcv",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "access_control",
+        "account_admin",
+        "active_directory",
+        "antivirus",
+        "application_support",
+        "attendance_device",
+        "backup",
+        "bravo",
+        "cctv",
+        "computer_hardware",
+        "coordination",
+        "erp",
+        "file_server",
+        "inventory_mgmt",
+        "misa",
+        "phishing",
+        "printer",
+        "sap",
+        "server_admin",
+        "software_installation"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2329934",
+      "source": "topcv",
+      "field": "skills",
+      "before": [
+        "Communication",
+        "business analysis",
+        "Agile Development",
+        "Coordination"
+      ],
+      "after": [
+        "adaptability",
+        "agile",
+        "azure_devops",
+        "blockchain",
+        "business_analysis",
+        "carefulness",
+        "communication",
+        "consulting",
+        "coordination",
+        "decision_making",
+        "documentation",
+        "eagerness_to_learn",
+        "english",
+        "enthusiasm",
+        "figma",
+        "genai",
+        "ielts",
+        "japanese",
+        "jira",
+        "jlpt"
+      ],
+      "changed": true
+    }
+  ]
 }

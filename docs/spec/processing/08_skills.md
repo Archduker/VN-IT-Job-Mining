@@ -90,7 +90,7 @@ Thứ tự trong `analyze` và `run` (`processing/extraction/run.py`):
 | | Chi tiết |
 |---|---|
 | Input | Bullet của 07 (tính trong cùng lần gọi); cột `skills_list`, `translation_status`, `description_vi`, `requirements_vi` của bảng 04; taxonomy; `short_aliases.json` đã duyệt |
-| Output | `data/processing/08_skills/job_skills.parquet`, một dòng một cặp (tin, kỹ năng): `job_id_global`, `source_platform`, `slug`, `skill` (tên chuẩn), `level` (`required`, `preferred`), `weight` (1 hoặc 0,5), `section`, `via` (`text`, `text_vi`, `meta`), `n_mentions`. Tùy chọn: `job_skills_reduced.parquet` |
+| Output | `data/processing/08_skills/job_skills.parquet`, một dòng một cặp (tin, kỹ năng): `job_id_global`, `source_platform`, `slug`, `skill` (tên chuẩn), `level` (`required`, `preferred`), `weight` (1 hoặc 0,5), `section`, `via` (`text`, `text_vi`, `meta`), `n_mentions`, `kind`, `parent`, `type` (K8.17: `tool`, `concept` hoặc null). Ba góc nhìn K-tool, K-concept, K-soft lấy bằng `skills.skill_view` (không lọc lại ở bên đọc). Tùy chọn: `job_skills_reduced.parquet` |
 | Report | `reports/processing/08_skills/`; `extra`: `n_job_skill_rows`, `n_jobs_no_skill`, `top_skills` (30), `short_forms_approved`, `alias_conflicts_dropped`; `_all` thêm `sparsity` |
 
 ## 5. Dữ liệu mẫu
@@ -104,6 +104,7 @@ Thứ tự trong `analyze` và `run` (`processing/extraction/run.py`):
 | Số tin được giữ | `checks.rows_conserved` | Bằng bảng 04 | Đạt (10/11) |
 | P/R/F1 micro theo cặp (tin, kỹ năng) | `python scripts/eval_gold_processing.py`; chỉ tính `via = text`; nhãn không ánh xạ được về taxonomy tính là FN và báo riêng | F1 ≥ 0,85 | **0,27** (11/11); có thể một phần do cách so tên kỹ năng với `slug`. **19/11 (K8.16)**, đo trên 20 JD gold còn file nhãn (76–100, 20/25 JD còn trong bảng 03), cách đo mới (nhãn qua alias v2, tách nhãn gộp "A / B"): từ điển 230 P 0,76 R 0,44 F1 0,56; **skills_v2 P 0,43 R 0,86 F1 0,57**, riêng kỹ năng kỹ thuật R 0,99 P 0,46. Xem 40 FP mẫu: khoảng 34–37 là kỹ năng có thật trong JD mà gold không ghi (Pub/Sub, NoSQL, ERP, UAT…), nên precision bị gold thiếu kéo xuống; chưa kết luận được ngưỡng 0,85 |
 | Kiểm thủ công | 20 tin ngẫu nhiên | Hợp lý | Chưa làm |
+| Ba góc nhìn kỹ năng (K8.17) | `python scripts/eval_skill_views.py` → `data/processing/skill_candidates/skill_views_eval.json`; ngưỡng T1–T6 ở `docs/target/06_yeu_cau_du_lieu.md` mục 4 | T1–T6 | **19/11**, chạy lại 07/08 trên bảng 04 (3.916 tin, 111.128 dòng; tool 24.992, concept 62.527, null 23.609): K-tool 534 kỹ năng, trung vị 5/tin, người mới 4 (T1 đạt), React ⇒ JS/TS 0,67 (T2 đạt), 0 công cụ phủ ≥ 20% cả 6 nghề (T3 đạt), đọc tay 94/100 (T4 đạt), T5 0,85 / T6 0,69 trên 1.606 tin ghép (T6 thiếu 0,01); trên 1.045 tin trùng URL T5 0,82, T6 0,69 |
 | Test | `tests/unit/test_skills_ac.py`, `test_ph8_run.py` | Pass | — |
 
 ## 7. Trạng thái, chỗ thiếu, việc mở

@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:20:29+00:00",
-  "code_version": "8ce6be5",
+  "generated_at": "2026-11-19T08:45:57+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 146
@@ -30,6 +30,11 @@
       "technical": 3383,
       "soft": 717,
       "language": 127
+    },
+    "rows_by_type": {
+      "null": 896,
+      "concept": 2252,
+      "tool": 1079
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -156,5 +161,89 @@
     ],
     "short_forms_approved": 756,
     "alias_conflicts_dropped": 0
-  }
+  },
+  "samples": [
+    {
+      "job_id": "glints_1db0e1f6-3468-4269-bcbf-bca4d55db8f8",
+      "source": "glints",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "acl",
+        "authn_authz",
+        "ccna",
+        "ccnp",
+        "chinese",
+        "communication",
+        "comptia_network",
+        "coordination",
+        "dhcp",
+        "dns",
+        "documentation",
+        "elk_stack",
+        "english",
+        "entra_id",
+        "exchange_online",
+        "firewall",
+        "information_security",
+        "intune",
+        "it_infrastructure",
+        "lan_wan"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_3a46cca3-8a42-44f1-9950-e54d15d6e72e",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Leadership",
+        "Quality Assurance",
+        "Team Management"
+      ],
+      "after": [
+        "communication",
+        "english",
+        "fda_compliance",
+        "leadership",
+        "qa_qc",
+        "sop",
+        "team_management"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_537fc2c8-800a-4251-a2f0-bf00e47e2e7e",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Microsoft Excel",
+        "Data Analytics",
+        "Warehouse Operator"
+      ],
+      "after": [
+        "ai",
+        "analytical_skills",
+        "bi",
+        "coordination",
+        "crm",
+        "dashboard",
+        "data_analysis",
+        "data_engineering",
+        "data_integration",
+        "data_processing",
+        "data_visualization",
+        "data_warehouse",
+        "database",
+        "eagerness_to_learn",
+        "english",
+        "erp",
+        "excel",
+        "excel_advanced",
+        "google_sheets",
+        "ielts"
+      ],
+      "changed": true
+    }
+  ]
 }

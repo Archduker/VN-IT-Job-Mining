@@ -98,6 +98,7 @@ def run(sources=SOURCES, dry_run: bool = True, df: Optional[pd.DataFrame] = None
         sk = [r for r in skill_rows if r["source_platform"] == src]
         r8.data["extra"] = {"n_job_skill_rows": len(sk), "n_jobs_no_skill": st["no_skill"],
                             "rows_by_kind": dict(Counter(r.get("kind") for r in sk)),
+                            "rows_by_type": dict(Counter(r.get("type") or "null" for r in sk)),
                             "dictionary": "skills_v2.json" if matcher.forms is not None else "skills_taxonomy_230.json",
                             "top_skills": [{"skill": s, "n_jobs": c} for s, c in
                                            Counter(r["slug"] for r in sk).most_common(30)],

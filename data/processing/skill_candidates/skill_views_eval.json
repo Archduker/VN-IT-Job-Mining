@@ -1,0 +1,704 @@
+{
+ "n_jobs": 3916,
+ "n_newcomer": 1181,
+ "n_ext_matched": 1606,
+ "n_ext_exact_url": 1045,
+ "thresholds": {
+  "T1": 10,
+  "T2": 0.6,
+  "T3": 0,
+  "T4": 0.9,
+  "T5": 0.85,
+  "T6": 0.7
+ },
+ "views": {
+  "all": {
+   "n_rows": 111128,
+   "n_slugs": 2077,
+   "jobs_with_any": 3915,
+   "median_per_job": 25.0,
+   "T1_median_newcomer": 19.0,
+   "T2_react_js_ts": [
+    0.671,
+    313
+   ],
+   "flutter_dart": [
+    0.394,
+    66
+   ],
+   "T3_broad_in_6_families": [
+    "communication",
+    "coordination",
+    "english",
+    "proactiveness",
+    "problem_solving",
+    "teamwork"
+   ],
+   "T5_T6_matched": {
+    "n_jobs": 1606,
+    "T5_recall_tech_stack": 0.934,
+    "T6_in_their_lists": 0.336
+   },
+   "T5_T6_exact_url": {
+    "n_jobs": 1045,
+    "T5_recall_tech_stack": 0.904,
+    "T6_in_their_lists": 0.342
+   },
+   "coverage_at_10_newcomer": {
+    "Web": {
+     "n_jobs": 514,
+     "share_ok": 0.002
+    },
+    "Bridge": {
+     "n_jobs": 94,
+     "share_ok": 0.0
+    },
+    "Data/AI": {
+     "n_jobs": 98,
+     "share_ok": 0.0
+    },
+    "Tester": {
+     "n_jobs": 123,
+     "share_ok": 0.008
+    },
+    "DevOps/Cloud": {
+     "n_jobs": 45,
+     "share_ok": 0.0
+    },
+    "Security": {
+     "n_jobs": 64,
+     "share_ok": 0.0
+    }
+   },
+   "top20": [
+    [
+     "coordination",
+     2176
+    ],
+    [
+     "communication",
+     1798
+    ],
+    [
+     "english",
+     1650
+    ],
+    [
+     "proactiveness",
+     1332
+    ],
+    [
+     "information_security",
+     1243
+    ],
+    [
+     "problem_solving",
+     1184
+    ],
+    [
+     "software_testing",
+     1163
+    ],
+    [
+     "teamwork",
+     1065
+    ],
+    [
+     "database",
+     1028
+    ],
+    [
+     "ai",
+     1002
+    ],
+    [
+     "enthusiasm",
+     988
+    ],
+    [
+     "api",
+     901
+    ],
+    [
+     "sql",
+     887
+    ],
+    [
+     "documentation",
+     886
+    ],
+    [
+     "analytical_skills",
+     861
+    ],
+    [
+     "troubleshooting",
+     849
+    ],
+    [
+     "python",
+     833
+    ],
+    [
+     "eagerness_to_learn",
+     777
+    ],
+    [
+     "cloud_computing",
+     752
+    ],
+    [
+     "it_infrastructure",
+     713
+    ]
+   ]
+  },
+  "technical": {
+   "n_rows": 89126,
+   "n_slugs": 2003,
+   "jobs_with_any": 3904,
+   "median_per_job": 19.0,
+   "T1_median_newcomer": 14.0,
+   "T2_react_js_ts": [
+    0.671,
+    313
+   ],
+   "flutter_dart": [
+    0.394,
+    66
+   ],
+   "T3_broad_in_6_families": [],
+   "T5_T6_matched": {
+    "n_jobs": 1606,
+    "T5_recall_tech_stack": 0.934,
+    "T6_in_their_lists": 0.402
+   },
+   "T5_T6_exact_url": {
+    "n_jobs": 1045,
+    "T5_recall_tech_stack": 0.904,
+    "T6_in_their_lists": 0.414
+   },
+   "coverage_at_10_newcomer": {
+    "Web": {
+     "n_jobs": 514,
+     "share_ok": 0.004
+    },
+    "Bridge": {
+     "n_jobs": 94,
+     "share_ok": 0.011
+    },
+    "Data/AI": {
+     "n_jobs": 98,
+     "share_ok": 0.021
+    },
+    "Tester": {
+     "n_jobs": 123,
+     "share_ok": 0.041
+    },
+    "DevOps/Cloud": {
+     "n_jobs": 45,
+     "share_ok": 0.0
+    },
+    "Security": {
+     "n_jobs": 64,
+     "share_ok": 0.0
+    }
+   },
+   "top20": [
+    [
+     "information_security",
+     1243
+    ],
+    [
+     "software_testing",
+     1163
+    ],
+    [
+     "database",
+     1028
+    ],
+    [
+     "ai",
+     1002
+    ],
+    [
+     "api",
+     901
+    ],
+    [
+     "sql",
+     887
+    ],
+    [
+     "troubleshooting",
+     849
+    ],
+    [
+     "python",
+     833
+    ],
+    [
+     "cloud_computing",
+     752
+    ],
+    [
+     "it_infrastructure",
+     713
+    ],
+    [
+     "networking",
+     681
+    ],
+    [
+     "cicd",
+     677
+    ],
+    [
+     "ai_application",
+     598
+    ],
+    [
+     "rest_api",
+     594
+    ],
+    [
+     "agile",
+     591
+    ],
+    [
+     "qa_qc",
+     587
+    ],
+    [
+     "monitoring",
+     566
+    ],
+    [
+     "docker",
+     549
+    ],
+    [
+     "git",
+     538
+    ],
+    [
+     "java",
+     530
+    ]
+   ]
+  },
+  "tool": {
+   "n_rows": 24992,
+   "n_slugs": 534,
+   "jobs_with_any": 3273,
+   "median_per_job": 5.0,
+   "T1_median_newcomer": 4.0,
+   "T2_react_js_ts": [
+    0.671,
+    313
+   ],
+   "flutter_dart": [
+    0.394,
+    66
+   ],
+   "T3_broad_in_6_families": [],
+   "T5_T6_matched": {
+    "n_jobs": 1606,
+    "T5_recall_tech_stack": 0.854,
+    "T6_in_their_lists": 0.689
+   },
+   "T5_T6_exact_url": {
+    "n_jobs": 1045,
+    "T5_recall_tech_stack": 0.816,
+    "T6_in_their_lists": 0.694
+   },
+   "coverage_at_10_newcomer": {
+    "Web": {
+     "n_jobs": 514,
+     "share_ok": 0.127
+    },
+    "Bridge": {
+     "n_jobs": 94,
+     "share_ok": 0.443
+    },
+    "Data/AI": {
+     "n_jobs": 98,
+     "share_ok": 0.181
+    },
+    "Tester": {
+     "n_jobs": 123,
+     "share_ok": 0.281
+    },
+    "DevOps/Cloud": {
+     "n_jobs": 45,
+     "share_ok": 0.089
+    },
+    "Security": {
+     "n_jobs": 64,
+     "share_ok": 0.109
+    }
+   },
+   "top20": [
+    [
+     "sql",
+     887
+    ],
+    [
+     "python",
+     833
+    ],
+    [
+     "docker",
+     549
+    ],
+    [
+     "git",
+     538
+    ],
+    [
+     "java",
+     530
+    ],
+    [
+     "postgresql",
+     477
+    ],
+    [
+     "aws",
+     476
+    ],
+    [
+     "linux",
+     449
+    ],
+    [
+     "kubernetes",
+     410
+    ],
+    [
+     "mysql",
+     409
+    ],
+    [
+     "ms_office",
+     379
+    ],
+    [
+     "sql_server",
+     349
+    ],
+    [
+     "javascript",
+     338
+    ],
+    [
+     "azure",
+     335
+    ],
+    [
+     "jira",
+     335
+    ],
+    [
+     "react",
+     313
+    ],
+    [
+     "excel",
+     308
+    ],
+    [
+     "oracle_db",
+     296
+    ],
+    [
+     "gcp",
+     283
+    ],
+    [
+     "csharp",
+     273
+    ]
+   ]
+  },
+  "concept": {
+   "n_rows": 62527,
+   "n_slugs": 873,
+   "jobs_with_any": 3899,
+   "median_per_job": 14.0,
+   "T1_median_newcomer": 10.0,
+   "T2_react_js_ts": [
+    null,
+    0
+   ],
+   "flutter_dart": [
+    null,
+    0
+   ],
+   "T3_broad_in_6_families": [],
+   "T5_T6_matched": {
+    "n_jobs": 1606,
+    "T5_recall_tech_stack": 0.059,
+    "T6_in_their_lists": 0.274
+   },
+   "T5_T6_exact_url": {
+    "n_jobs": 1045,
+    "T5_recall_tech_stack": 0.066,
+    "T6_in_their_lists": 0.295
+   },
+   "coverage_at_10_newcomer": {
+    "Web": {
+     "n_jobs": 514,
+     "share_ok": 0.014
+    },
+    "Bridge": {
+     "n_jobs": 94,
+     "share_ok": 0.075
+    },
+    "Data/AI": {
+     "n_jobs": 98,
+     "share_ok": 0.062
+    },
+    "Tester": {
+     "n_jobs": 123,
+     "share_ok": 0.057
+    },
+    "DevOps/Cloud": {
+     "n_jobs": 45,
+     "share_ok": 0.022
+    },
+    "Security": {
+     "n_jobs": 64,
+     "share_ok": 0.0
+    }
+   },
+   "top20": [
+    [
+     "information_security",
+     1243
+    ],
+    [
+     "software_testing",
+     1163
+    ],
+    [
+     "database",
+     1028
+    ],
+    [
+     "ai",
+     1002
+    ],
+    [
+     "api",
+     901
+    ],
+    [
+     "troubleshooting",
+     849
+    ],
+    [
+     "cloud_computing",
+     752
+    ],
+    [
+     "it_infrastructure",
+     713
+    ],
+    [
+     "networking",
+     681
+    ],
+    [
+     "cicd",
+     677
+    ],
+    [
+     "ai_application",
+     598
+    ],
+    [
+     "rest_api",
+     594
+    ],
+    [
+     "agile",
+     591
+    ],
+    [
+     "qa_qc",
+     587
+    ],
+    [
+     "monitoring",
+     566
+    ],
+    [
+     "data_analysis",
+     503
+    ],
+    [
+     "sdlc",
+     495
+    ],
+    [
+     "debugging",
+     491
+    ],
+    [
+     "performance_optimization",
+     476
+    ],
+    [
+     "scalability",
+     455
+    ]
+   ]
+  },
+  "soft": {
+   "n_rows": 22002,
+   "n_slugs": 74,
+   "jobs_with_any": 3742,
+   "median_per_job": 5.0,
+   "T1_median_newcomer": 5.0,
+   "T2_react_js_ts": [
+    null,
+    0
+   ],
+   "flutter_dart": [
+    null,
+    0
+   ],
+   "T3_broad_in_6_families": [
+    "communication",
+    "coordination",
+    "english",
+    "proactiveness",
+    "problem_solving",
+    "teamwork"
+   ],
+   "T5_T6_matched": {
+    "n_jobs": 1606,
+    "T5_recall_tech_stack": 0.0,
+    "T6_in_their_lists": 0.016
+   },
+   "T5_T6_exact_url": {
+    "n_jobs": 1045,
+    "T5_recall_tech_stack": 0.0,
+    "T6_in_their_lists": 0.015
+   },
+   "coverage_at_10_newcomer": {
+    "Web": {
+     "n_jobs": 514,
+     "share_ok": 0.49
+    },
+    "Bridge": {
+     "n_jobs": 94,
+     "share_ok": 0.333
+    },
+    "Data/AI": {
+     "n_jobs": 98,
+     "share_ok": 0.287
+    },
+    "Tester": {
+     "n_jobs": 123,
+     "share_ok": 0.487
+    },
+    "DevOps/Cloud": {
+     "n_jobs": 45,
+     "share_ok": 0.548
+    },
+    "Security": {
+     "n_jobs": 64,
+     "share_ok": 0.5
+    }
+   },
+   "top20": [
+    [
+     "coordination",
+     2176
+    ],
+    [
+     "communication",
+     1798
+    ],
+    [
+     "english",
+     1650
+    ],
+    [
+     "proactiveness",
+     1332
+    ],
+    [
+     "problem_solving",
+     1184
+    ],
+    [
+     "teamwork",
+     1065
+    ],
+    [
+     "enthusiasm",
+     988
+    ],
+    [
+     "documentation",
+     886
+    ],
+    [
+     "analytical_skills",
+     861
+    ],
+    [
+     "eagerness_to_learn",
+     777
+    ],
+    [
+     "leadership",
+     615
+    ],
+    [
+     "logical_thinking",
+     566
+    ],
+    [
+     "planning",
+     553
+    ],
+    [
+     "presentation",
+     531
+    ],
+    [
+     "carefulness",
+     522
+    ],
+    [
+     "consulting",
+     487
+    ],
+    [
+     "independent_work",
+     465
+    ],
+    [
+     "work_under_pressure",
+     380
+    ],
+    [
+     "mentoring",
+     341
+    ],
+    [
+     "creativity",
+     320
+    ]
+   ]
+  }
+ },
+ "T4_manual": {
+  "n": 100,
+  "share_ok": 0.94
+ }
+}

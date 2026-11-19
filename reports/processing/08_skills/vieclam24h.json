@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:20:29+00:00",
-  "code_version": "8ce6be5",
+  "generated_at": "2026-11-19T08:45:57+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 121
@@ -30,6 +30,11 @@
       "technical": 2061,
       "soft": 602,
       "language": 60
+    },
+    "rows_by_type": {
+      "concept": 1450,
+      "null": 688,
+      "tool": 585
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -156,5 +161,132 @@
     ],
     "short_forms_approved": 756,
     "alias_conflicts_dropped": 0
-  }
+  },
+  "samples": [
+    {
+      "job_id": "vieclam24h_200961975",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "process engineer",
+        "construction engineer",
+        "instrument engineer",
+        "it engineer",
+        "mechanical engineer",
+        "bridge engineer",
+        "system administrator",
+        "piping engineer",
+        "qs engineer",
+        "production engineer",
+        "IT Phần cứng - Mạng",
+        "Công Ty Cổ Phần Viễn ..."
+      ],
+      "after": [
+        "access_control",
+        "backup",
+        "communication",
+        "compliance",
+        "computer_hardware",
+        "coordination",
+        "database",
+        "defect_management",
+        "documentation",
+        "english",
+        "hardening",
+        "information_security",
+        "it_infrastructure",
+        "it_operations",
+        "milestone_review",
+        "monitoring",
+        "operating_systems",
+        "patch_management",
+        "progress_tracking",
+        "redhat"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200956825",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "it helpdesk",
+        "it support / it helpdesk",
+        "không yêu cầu kinh nghiệm",
+        "nhân viên văn phòng không cần kinh nghiệm",
+        "nhân viên văn phòng tphcm không cần kinh nghiệm",
+        "nhân viên it",
+        "không cần kinh nghiệm",
+        "kế toán không yêu cầu kinh nghiệm",
+        "chưa có kinh nghiệm",
+        "nhân viên it support",
+        "IT Phần cứng - Mạng",
+        "Công Ty TNHH Bao Bì ..."
+      ],
+      "after": [
+        "attendance_device",
+        "communication",
+        "computer_hardware",
+        "computer_repair",
+        "coordination",
+        "eagerness_to_learn",
+        "enthusiasm",
+        "information_security",
+        "it_infrastructure",
+        "monitoring",
+        "ms_office",
+        "operating_systems",
+        "printer",
+        "proactiveness",
+        "troubleshooting",
+        "user_support",
+        "vulnerability_assessment",
+        "wifi",
+        "windows"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200947793",
+      "source": "vieclam24h",
+      "field": "skills",
+      "before": [
+        "nhân viên thiết kế website",
+        "thiết kế website",
+        "nhân viên thiết kế",
+        "nhân viên thiết kế rập",
+        "nhân viên thiết kế 3d",
+        "nhân viên thiết kế nội thất",
+        "nhân viên quản trị website",
+        "nhân viên thiết kế bao bì",
+        "nhân viên seo website",
+        "Thiết Kế",
+        "IT Phần mềm",
+        "Aa Trading Co.,ltd"
+      ],
+      "after": [
+        "aesthetic_sense",
+        "communication",
+        "computer_hardware",
+        "coordination",
+        "creativity",
+        "css",
+        "design_system",
+        "eagerness_to_learn",
+        "graphic_design",
+        "html",
+        "independent_work",
+        "javascript",
+        "performance_optimization",
+        "proactiveness",
+        "problem_solving",
+        "product_analytics",
+        "prototyping",
+        "responsive_design",
+        "seo",
+        "software_installation"
+      ],
+      "changed": true
+    }
+  ]
 }

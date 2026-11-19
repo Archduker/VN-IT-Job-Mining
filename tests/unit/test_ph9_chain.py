@@ -66,3 +66,21 @@ def test_plan_objects_lists_pipeline_keys():
     keys = [o["key"] for o in X.plan_objects(build=False)]
     assert all(k.startswith(("staging/", "curated/", "pipeline/")) for k in keys)
     assert X.pipeline_key("09_tokens", "all.parquet").endswith("pipeline/09_tokens/all.parquet")
+
+
+def test_extraction_step_finishes_both_07_and_08_reports(tmp_path, monkeypatch):
+    """07 và 08 do cùng một lần gọi ghi lại cả hai báo cáo: chạy một bước phải gắn mẫu cho cả hai (19/11)."""
+    import sys
+    import types
+
+    class Rep:
+        data = {"input": {"rows": 1}, "output": {"rows": 1}, "dropped": [], "mode": "applied", "source": "topcv"}
+
+    fake = types.ModuleType("processing.extraction.run")
+    fake.run = lambda sources, dry_run: {"07_sections": {"topcv": Rep()}, "08_skills": {"topcv": Rep()}}
+    monkeypatch.setitem(sys.modules, "processing.extraction.run", fake)
+    monkeypatch.setattr(D, "missing_inputs", lambda *a: [])
+    calls = []
+    monkeypatch.setattr(D, "_finish_reports", lambda step, *a: calls.append(step))
+    D.run_chain(["08_skills"], ["topcv"], dry_run=True, root=tmp_path, write_summary=False)
+    assert calls == ["07_sections", "08_skills"]

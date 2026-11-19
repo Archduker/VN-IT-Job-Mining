@@ -135,3 +135,32 @@ def test_read_lines_keeps_hash_inside_names(tmp_path):
     (tmp_path / "b001.txt").write_text("# lô 1\nS 54 csharp programming_languages n=C#  # ghi chú\n", encoding="utf-8")
     (tmp_path / "types_claude.txt").write_text("tool python\n", encoding="utf-8")   # không phải lệnh từ điển
     assert B.read_lines(tmp_path) == [("b001.txt:2", "S 54 csharp programming_languages n=C#")]
+
+
+# P2: bước 08 ghi `type`; skill_view là định nghĩa duy nhất của K-tool / K-concept / K-soft
+import pandas as pd  # noqa: E402
+from processing.extraction.skills import skill_view  # noqa: E402
+
+
+def test_rows_carry_type():
+    r = rows_of("Thành thạo Python, Agile và giao tiếp tốt")
+    assert r["python"]["type"] == "tool" and r["agile"]["type"] == "concept"
+    assert r["communication"]["type"] is None
+
+
+def test_skill_view_definitions():
+    js = pd.DataFrame([
+        {"slug": "python", "kind": "technical", "type": "tool", "via": "meta"},
+        {"slug": "agile", "kind": "technical", "type": "concept", "via": "text"},
+        {"slug": "rare_tool", "kind": "technical", "type": None, "via": "text"},
+        {"slug": "communication", "kind": "soft", "type": None, "via": "text"},
+        {"slug": "english", "kind": "language", "type": None, "via": "text_vi"},
+    ])
+    assert list(skill_view(js, "tool")["slug"]) == ["python"]           # thẻ sàn vẫn giữ; null không vào
+    assert list(skill_view(js, "concept")["slug"]) == ["agile"]
+    assert list(skill_view(js, "soft")["slug"]) == ["communication", "english"]
+    assert len(skill_view(js, "all")) == 5
+    with pytest.raises(ValueError, match="type"):
+        skill_view(js.drop(columns=["type"]), "tool")
+    with pytest.raises(ValueError, match="view lạ"):
+        skill_view(js, "core")

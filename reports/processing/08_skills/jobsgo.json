@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:20:29+00:00",
-  "code_version": "8ce6be5",
+  "generated_at": "2026-11-19T08:45:57+00:00",
+  "code_version": "4e3e67a",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 497
@@ -30,6 +30,11 @@
       "technical": 8039,
       "language": 260,
       "soft": 2168
+    },
+    "rows_by_type": {
+      "concept": 5664,
+      "null": 2539,
+      "tool": 2264
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -156,5 +161,80 @@
     ],
     "short_forms_approved": 756,
     "alias_conflicts_dropped": 0
-  }
+  },
+  "samples": [
+    {
+      "job_id": "jobsgo_29243218398",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "access_control",
+        "analytical_skills",
+        "backup",
+        "carefulness",
+        "ccna",
+        "ccnp",
+        "communication",
+        "coordination",
+        "csharp",
+        "database",
+        "debugging",
+        "dotnet",
+        "eagerness_to_learn",
+        "electronics",
+        "excel",
+        "information_security",
+        "java",
+        "kaizen",
+        "logical_thinking",
+        "mcu"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29318934902",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "azure",
+        "backup",
+        "bash",
+        "centos",
+        "cloud_computing",
+        "communication",
+        "computer_hardware",
+        "coordination",
+        "database",
+        "dns",
+        "english",
+        "hyperv",
+        "it_infrastructure",
+        "java",
+        "kafka",
+        "ldap",
+        "linux",
+        "lpi",
+        "monitoring",
+        "mysql"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29326389773",
+      "source": "jobsgo",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "ai",
+        "devops",
+        "machine_learning",
+        "mentoring",
+        "sdlc",
+        "software_testing"
+      ],
+      "changed": true
+    }
+  ]
 }
