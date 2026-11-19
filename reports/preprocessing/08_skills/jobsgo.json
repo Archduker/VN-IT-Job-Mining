@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:45:57+00:00",
-  "code_version": "4e3e67a",
+  "generated_at": "2026-11-19T08:50:36+00:00",
+  "code_version": "db2087e",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 497
@@ -24,17 +24,17 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 10467,
+    "n_job_skill_rows": 10463,
     "n_jobs_no_skill": 0,
     "rows_by_kind": {
-      "technical": 8039,
+      "technical": 8035,
       "language": 260,
       "soft": 2168
     },
     "rows_by_type": {
       "concept": 5664,
       "null": 2539,
-      "tool": 2264
+      "tool": 2260
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -159,7 +159,7 @@
         "n_jobs": 54
       }
     ],
-    "short_forms_approved": 756,
+    "short_forms_approved": 755,
     "alias_conflicts_dropped": 0
   },
   "samples": [

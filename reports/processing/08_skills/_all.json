@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:45:57+00:00",
-  "code_version": "4e3e67a",
+  "generated_at": "2026-11-19T08:50:36+00:00",
+  "code_version": "db2087e",
   "input": {
     "path": null,
     "rows": 3916
@@ -66,36 +66,36 @@
       },
       "before": {
         "n_jobs": 3916,
-        "nnz": 111128,
-        "n_cols_used": 2077,
-        "density_used_cols": 0.013663,
-        "density_universe": 0.013424,
-        "mean_skills_per_job": 28.378,
+        "nnz": 111116,
+        "n_cols_used": 2076,
+        "density_used_cols": 0.013668,
+        "density_universe": 0.013422,
+        "mean_skills_per_job": 28.375,
         "median_skills_per_job": 25.0,
         "jobs_with_zero_skills": 1,
         "cols_below_df": {
-          "3": 281,
-          "5": 602,
-          "10": 965,
-          "20": 1326,
-          "50": 1641
+          "3": 282,
+          "5": 603,
+          "10": 964,
+          "20": 1325,
+          "50": 1640
         }
       },
       "after": {
         "n_jobs": 3916,
-        "nnz": 111128,
-        "n_cols_used": 2077,
-        "density_used_cols": 0.013663,
+        "nnz": 111116,
+        "n_cols_used": 2076,
+        "density_used_cols": 0.013668,
         "density_universe": null,
-        "mean_skills_per_job": 28.378,
+        "mean_skills_per_job": 28.375,
         "median_skills_per_job": 25.0,
         "jobs_with_zero_skills": 1,
         "cols_below_df": {
-          "3": 281,
-          "5": 602,
-          "10": 965,
-          "20": 1326,
-          "50": 1641
+          "3": 282,
+          "5": 603,
+          "10": 964,
+          "20": 1325,
+          "50": 1640
         }
       },
       "n_skills_folded": 0,

@@ -13,8 +13,8 @@
  },
  "views": {
   "all": {
-   "n_rows": 111128,
-   "n_slugs": 2077,
+   "n_rows": 111116,
+   "n_slugs": 2076,
    "jobs_with_any": 3915,
    "median_per_job": 25.0,
    "T1_median_newcomer": 19.0,
@@ -154,8 +154,8 @@
    ]
   },
   "technical": {
-   "n_rows": 89126,
-   "n_slugs": 2003,
+   "n_rows": 89114,
+   "n_slugs": 2002,
    "jobs_with_any": 3904,
    "median_per_job": 19.0,
    "T1_median_newcomer": 14.0,
@@ -288,8 +288,8 @@
    ]
   },
   "tool": {
-   "n_rows": 24992,
-   "n_slugs": 534,
+   "n_rows": 24980,
+   "n_slugs": 533,
    "jobs_with_any": 3273,
    "median_per_job": 5.0,
    "T1_median_newcomer": 4.0,

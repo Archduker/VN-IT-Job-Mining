@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:45:56+00:00",
-  "code_version": "4e3e67a",
+  "generated_at": "2026-11-19T08:50:36+00:00",
+  "code_version": "db2087e",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 402
@@ -24,17 +24,17 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 12536,
+    "n_job_skill_rows": 12534,
     "n_jobs_no_skill": 0,
     "rows_by_kind": {
       "soft": 2411,
-      "technical": 9876,
+      "technical": 9874,
       "language": 249
     },
     "rows_by_type": {
       "null": 2794,
       "concept": 7237,
-      "tool": 2505
+      "tool": 2503
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -159,7 +159,7 @@
         "n_jobs": 62
       }
     ],
-    "short_forms_approved": 756,
+    "short_forms_approved": 755,
     "alias_conflicts_dropped": 0
   },
   "samples": [

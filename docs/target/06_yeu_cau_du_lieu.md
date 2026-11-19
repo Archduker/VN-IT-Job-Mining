@@ -119,6 +119,12 @@ T5 và T6 chỉ là đối chiếu: dữ liệu ngoài do LLM sinh, không phả
 - **T5, T6 sát ngưỡng:** T6 thiếu 0,01. Phần chênh còn lại chủ yếu là công cụ mình bắt mà danh sách LLM của họ bỏ (họ trung bình 5,5 mục/tin), nên đây là đối chiếu, không phải gold.
 - **SD5, coverage@10 trên K-tool** (tỷ lệ tin người mới mà top 10 công cụ của nghề phủ ≥ 70% công cụ của tin): Web 0,13; Bridge 0,44; Data/AI 0,18; Tester 0,28; DevOps/Cloud 0,09; Security 0,11. Tin người mới chỉ có trung vị 4 công cụ nhưng mỗi nghề có nhiều stack khác nhau, nên một danh sách top 10 chung không phủ được phần lớn tin. M6 cần tính theo gói (SD2) thay vì một danh sách.
 
+**Người dùng chốt 19/11 sau khi xem số** ("oke continue"):
+
+- Chấp nhận T5 0,85 / 0,82 và T6 0,69 (thiếu 0,01): danh sách ngoài do LLM sinh, trung bình 5,5 mục/tin, không phải gold. K-tool được dùng cho P3 và Mining.
+- Sửa hai alias sai của T4: bỏ "grid" (Selenium Grid) và "ASP" (ASP classic), cả hai thành `not_skill` generic. Sau khi chạy lại 08: 111.116 dòng (bớt 12), K-tool 533 kỹ năng, các chỉ số T1–T6 không đổi. Bốn ca tên mơ hồ (Oracle, Swift, EXCEL, "quản lý phiên bản") giữ nguyên.
+- `min_df` = 15 cho cả ba khối của bước 10: `skill__` 290 cột (phủ 92% dòng K-tool), `concept__` 561 (96%), `soft__` 62.
+
 ## 5. Điều kiện còn treo
 
 - **SD1:** chỉ 15/55 ô nghề × cấp có ≥ 30 tin có lương; các ô còn lại ghi "ít dữ liệu".

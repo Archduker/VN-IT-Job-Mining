@@ -3217,24 +3217,6 @@
    "type": "concept"
   },
   {
-   "slug": "asp_classic",
-   "name": "ASP classic",
-   "group": "backend",
-   "kind": "technical",
-   "parent": null,
-   "df": 5,
-   "examples": [
-    "Yêu Cầu Công Việc Yêu cầu Giới tính: Nam Độ tuổi: 25-30 Trình độ: Tốt nghiệp Đại học chuyên ngành công nghệ thông tin Có kiến thức về lập trình, thành thạo Java, C#, Web, JSP, ASP Hiểu biết về quy trình lốp xe là một lợi",
-    "Biết về ASP .NET CORE, SQL, web API (đã từng thực hiện các dự án / đồ án bằng các công nghệ trên)"
-   ],
-   "aliases": [],
-   "short_aliases": [
-    "ASP"
-   ],
-   "alias_forms": {},
-   "type": "tool"
-  },
-  {
    "slug": "backend_dev",
    "name": "Backend development",
    "group": "backend",
@@ -4270,6 +4252,21 @@
    ],
    "alias_forms": {},
    "type": null
+  },
+  {
+   "slug": "asp_classic",
+   "name": "ASP classic",
+   "group": "backend",
+   "kind": "technical",
+   "parent": null,
+   "df": 0,
+   "examples": [],
+   "aliases": [
+    "asp classic"
+   ],
+   "short_aliases": [],
+   "alias_forms": {},
+   "type": "tool"
   },
   {
    "slug": "zk_framework",
@@ -25280,25 +25277,6 @@
    "type": "tool"
   },
   {
-   "slug": "selenium_grid",
-   "name": "Selenium Grid",
-   "group": "testing_qa",
-   "kind": "technical",
-   "parent": "selenium",
-   "df": 8,
-   "examples": [
-    "Experienced in Selenium infrastructure: Selenium Web Driver, Selenium Grid",
-    "Experienced in Selenium infrastructure: Selenium Web Driver, Selenium Grid"
-   ],
-   "aliases": [
-    "grid",
-    "selenium grid"
-   ],
-   "short_aliases": [],
-   "alias_forms": {},
-   "type": "tool"
-  },
-  {
    "slug": "testing_library",
    "name": "React Testing Library",
    "group": "testing_qa",
@@ -26048,6 +26026,21 @@
    "short_aliases": [],
    "alias_forms": {},
    "type": null
+  },
+  {
+   "slug": "selenium_grid",
+   "name": "Selenium Grid",
+   "group": "testing_qa",
+   "kind": "technical",
+   "parent": "selenium",
+   "df": 2,
+   "examples": [],
+   "aliases": [
+    "selenium grid"
+   ],
+   "short_aliases": [],
+   "alias_forms": {},
+   "type": "tool"
   },
   {
    "slug": "specflow",
@@ -49623,6 +49616,12 @@
    "df": 8
   },
   {
+   "key": "grid",
+   "display": "Grid",
+   "reason": "generic",
+   "df": 8
+  },
+  {
    "key": "identity",
    "display": "identity",
    "reason": "generic",
@@ -52103,6 +52102,12 @@
   {
    "key": "asia-pacific",
    "display": "Asia-Pacific",
+   "reason": "generic",
+   "df": 5
+  },
+  {
+   "key": "asp",
+   "display": "ASP",
    "reason": "generic",
    "df": 5
   },

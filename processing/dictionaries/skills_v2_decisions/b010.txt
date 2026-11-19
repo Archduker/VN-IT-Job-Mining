@@ -113,8 +113,10 @@ A 2825 application_security
 N generic 2826
 N job_title 2827
 N generic 2828
-S 2829 asp_classic backend n=ASP classic
-F asp_classic ASP
+# 19/11 (P2, người dùng duyệt): 'ASP' khớp trong 'ASP .NET CORE' → bỏ; ASP classic chỉ khớp 'asp classic'
+N generic 2829
+K asp_classic backend n=ASP classic
+L asp_classic asp classic
 A 2830 aspnet
 N generic 2831
 S 2832 atlassian dev_tools n=Atlassian Suite

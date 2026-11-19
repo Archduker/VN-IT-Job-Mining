@@ -126,7 +126,9 @@ N generic 1923
 N combo 1924
 S 1925 gke cloud p=gcp n=GKE
 N generic 1926
-S 1927 selenium_grid testing_qa p=selenium n=Selenium Grid
+# 19/11 (P2, người dùng duyệt): 'grid' khớp 'Grid System' → không phải kỹ năng; Selenium Grid giữ alias 'selenium grid'
+N generic 1927
+K selenium_grid testing_qa p=selenium n=Selenium Grid
 L selenium_grid selenium grid
 S 1928 harbor devops p=docker n=Harbor / Nexus (registry)
 F harbor Harbor;Nexus

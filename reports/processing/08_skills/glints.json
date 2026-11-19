@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:45:57+00:00",
-  "code_version": "4e3e67a",
+  "generated_at": "2026-11-19T08:50:36+00:00",
+  "code_version": "db2087e",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 146
@@ -24,17 +24,17 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 4227,
+    "n_job_skill_rows": 4226,
     "n_jobs_no_skill": 0,
     "rows_by_kind": {
-      "technical": 3383,
+      "technical": 3382,
       "soft": 717,
       "language": 127
     },
     "rows_by_type": {
       "null": 896,
       "concept": 2252,
-      "tool": 1079
+      "tool": 1078
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
@@ -159,7 +159,7 @@
         "n_jobs": 26
       }
     ],
-    "short_forms_approved": 756,
+    "short_forms_approved": 755,
     "alias_conflicts_dropped": 0
   },
   "samples": [

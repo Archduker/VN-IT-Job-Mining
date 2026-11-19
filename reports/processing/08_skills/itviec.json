@@ -2,8 +2,8 @@
   "step": "08_skills",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:45:57+00:00",
-  "code_version": "4e3e67a",
+  "generated_at": "2026-11-19T08:50:36+00:00",
+  "code_version": "db2087e",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
     "rows": 736
@@ -24,16 +24,16 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 28112,
+    "n_job_skill_rows": 28111,
     "n_jobs_no_skill": 0,
     "rows_by_kind": {
       "soft": 3941,
-      "technical": 23542,
+      "technical": 23541,
       "language": 629
     },
     "rows_by_type": {
       "null": 4983,
-      "tool": 7008,
+      "tool": 7007,
       "concept": 16121
     },
     "dictionary": "skills_v2.json",
@@ -159,7 +159,7 @@
         "n_jobs": 162
       }
     ],
-    "short_forms_approved": 756,
+    "short_forms_approved": 755,
     "alias_conflicts_dropped": 0
   },
   "samples": [

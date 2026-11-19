@@ -1925,7 +1925,7 @@ git-based	Git-based	8	not_skill:generic
 git/gitlab	Git/GitLab	8	not_skill:combo
 gke	GKE	8	skill:gke
 go/no-go	go/no-go	8	not_skill:generic
-grid	Grid	8	skill:selenium_grid
+grid	Grid	8	not_skill:generic
 harbor	Harbor	8	skill:harbor
 hsrp	HSRP	8	skill:hsrp
 iatf	IATF	8	skill:iatf
@@ -2827,7 +2827,7 @@ appsec	AppSec	5	alias:application_security
 are we	Are We	5	not_skill:generic
 art director	Art Director	5	not_skill:job_title
 asia-pacific	Asia-Pacific	5	not_skill:generic
-asp	ASP	5	skill:asp_classic
+asp	ASP	5	not_skill:generic
 asp.net mvc	ASP.NET MVC	5	alias:aspnet
 at topicus	At Topicus	5	not_skill:generic
 atlassian	Atlassian	5	skill:atlassian
