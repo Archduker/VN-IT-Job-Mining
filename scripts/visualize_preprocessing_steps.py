@@ -396,6 +396,8 @@ def main() -> None:
     rep_dir = ROOT / "reports" / "preprocessing"
 
     summary, profiles = [], {}
+    if a.step != "all":  # chạy một bước thì giữ hồ sơ các bước khác đã ghi trước đó
+        profiles = {k: v for k, v in ((_load(out / "profiles.json") or {}).get("profiles") or {}).items() if k != a.step}
     for step in STEPS:
         rep = _load(rep_dir / step / "_all.json")
         prev = _prev_report(step)

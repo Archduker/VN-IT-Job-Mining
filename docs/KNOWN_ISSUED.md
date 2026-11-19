@@ -49,6 +49,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 **PRE-12. Bộ lọc IT: nghiệm thu và cổng tầng 2**
 
+- **Cập nhật 19/11:** làm lại bộ lọc ba tầng theo định nghĩa "vai trò IT" (`preprocessing/dictionaries/it_filter_v2.json`, phương án B), soát lại nhãn (168 IT, 475 không IT), chạy thật bước 01 (ra 4.103 tin). Tập giữ lại 192 tin: precision IT 97,6% [87,7; 99,6], đúng chung 94,8% [90,7; 97,2], recall IT 82%. Cả 643 nhãn: đúng 95,0%. Chờ người dùng quyết có đóng mục này không. Câu hỏi (A)/(B)/(C) về chuyên mục sàn đã chốt C ngày 19/11.
 - **Cập nhật 18/11:** nhãn C4b nay do Claude gán, cộng 48 nhãn người dùng bổ sung; chạy lại 01 trên tập raw R2. Độ đúng luật 90,8% (P_IT 86,5%, P_không IT 92,4%, R_IT 80,4%), vẫn dưới 95%. Chi tiết `docs/spec/preprocessing/01_clean.md`.
 - Số cũ (10/11): 643 nhãn tay (182 IT, 461 không IT); độ đúng luật 92,4%, tầng 2 IT 55/71, chưa tính khoảng tin cậy; yêu cầu lead ≥95% kèm khoảng tin cậy chưa chốt điều kiện cận dưới. Chi tiết `docs/presentation/van_de_can_chot.html` mục 4 và `docs/tasks/02_tai_clean_and_deduplication.md` §5.8.
 - Tầng 2 (`preprocessing/common/it_filter.py:86-95`) dùng nhóm nghề tự suy từ tiêu đề + JD, không đọc `raw_category_text` như SPEC-05 §2.4. Lead chưa chọn (A) gate bằng chuyên mục sàn, (B) miễn trừ có ghi dấu, hay (C) chuyên mục chỉ là tín hiệu ưu tiên.
@@ -92,7 +93,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
     - 258 tin cần kiểm lại `job_family`.
     - `posted_date` chỉ phủ 63,8%. Đã có cách thay: `posted_month` phủ 100% (dry-run 03 ngày 18/11, PRE-37). Tin đăng trước 09/2026 đã bị bỏ ở bước 01 (C9, L-50).
     - `work_mode` đang mặc định onsite khi có tỉnh. Bước 03 T9a đã code; chờ N14 mới ở bước 04.
-    - Bộ lọc IT đúng 92,4%, chưa đạt ≥ 95% (PRE-12).
+    - Bộ lọc IT (19/11): precision IT 97,6%, đúng chung 94,8% trên tập giữ lại (PRE-12).
   - **SD2:**
     - Khoảng 7% số tin không có kỹ năng (`skills_std` phủ 92,9%).
     - Rút kỹ năng so với nhãn gold chỉ đạt F1 0,27 (PRE-33).

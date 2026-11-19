@@ -2,8 +2,8 @@
   "step": "01_clean",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:28:55+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:11:29+00:00",
+  "code_version": "42423d5",
   "input": {
     "path": "data/glints/raw",
     "rows": 331
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 56
+      "rows": 57
     },
     {
       "rule": "C5",
@@ -51,7 +51,7 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-      "rows": 4
+      "rows": 3
     },
     {
       "rule": "C7",
@@ -83,9 +83,9 @@
     },
     {
       "id": "C4a",
-      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
+      "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 56,
+      "rows_affected": 57,
       "examples": [
         {
           "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
@@ -114,7 +114,7 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 56,
+      "rows_affected": 57,
       "examples": [
         {
           "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
@@ -194,7 +194,7 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 4,
+      "rows_affected": 3,
       "examples": [
         {
           "job_id": "05decc01-d944-4958-8c7a-21697b2d32e8",
@@ -204,18 +204,18 @@
           "url": "https://glints.com/vn/opportunities/jobs/ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/05decc01-d944-4958-8c7a-21697b2d32e8"
         },
         {
-          "job_id": "160cfe51-8606-4eec-91e1-15a2cd5a1fc7",
-          "field": "dedup_key",
-          "before": "chuỗi bán lẻ mini min|tư vấn triển khai phần mềm b2b",
-          "after": "giữ f8f06818-8693-4853-80d5-a6eb7ac201dc",
-          "url": "https://glints.com/vn/opportunities/jobs/tu-van-trien-khai-phan-mem-b2b/160cfe51-8606-4eec-91e1-15a2cd5a1fc7"
-        },
-        {
           "job_id": "a4e32cb8-d378-4f01-b491-0303e67be4e7",
           "field": "dedup_key",
           "before": "diksha technologies|java developer",
           "after": "giữ becc6671-92ff-4e5e-a9af-99a2c17c6cb3",
           "url": "https://glints.com/vn/opportunities/jobs/java-developer/a4e32cb8-d378-4f01-b491-0303e67be4e7"
+        },
+        {
+          "job_id": "a82ede9d-f519-4e2c-b547-54764c6668f0",
+          "field": "dedup_key",
+          "before": "rec talents|devsecops engineer | iiot",
+          "after": "giữ b07ba86b-1265-4bba-8eab-7ef74ca482e8",
+          "url": "https://glints.com/vn/opportunities/jobs/devsecops-engineer-iiot/a82ede9d-f519-4e2c-b547-54764c6668f0"
         }
       ]
     },
@@ -291,14 +291,20 @@
   },
   "extra": {
     "it_levels": {
-      "tang_1_it": 244,
+      "tang_1_it": 262,
       "tang_2_non_it": 44,
-      "tang_1_non_it": 12,
-      "tang_2_it": 31
+      "tang_0_non_it": 7,
+      "tang_2_it": 12,
+      "tang_1_non_it": 6
+    },
+    "it_excluded_groups": {
+      "electrical_mechanical": 4,
+      "q8_operations_growth": 1,
+      "sales_marketing": 2
     },
     "it_status": {
-      "it": 275,
-      "non_it": 56
+      "it": 274,
+      "non_it": 57
     },
     "it_policy": {
       "drop": [
@@ -320,35 +326,35 @@
         "tang_2_it": 13,
         "tang_1_it": 6
       },
-      "labeled_non_it": 28,
-      "rule_decided": 18,
-      "rule_correct": 18,
-      "status_non_it": 29,
-      "status_non_it_correct": 28,
-      "level2_labeled": 30,
-      "level2_correct": 29,
-      "level1_it_labeled": 6,
-      "level1_it_correct": 6,
+      "labeled_non_it": 29,
+      "rule_decided": 27,
+      "rule_correct": 25,
+      "status_non_it": 28,
+      "status_non_it_correct": 27,
+      "level2_labeled": 21,
+      "level2_correct": 20,
+      "level1_it_labeled": 15,
+      "level1_it_correct": 13,
       "validation": {
-        "tp": 19,
-        "fp": 0,
-        "tn": 28,
+        "tp": 18,
+        "fp": 2,
+        "tn": 27,
         "fn": 1,
         "labeled": 48,
-        "precision_it": 1.0,
-        "precision_non_it": 0.9655172413793104,
-        "recall_it": 0.95,
+        "precision_it": 0.9,
+        "precision_non_it": 0.9642857142857143,
+        "recall_it": 0.9473684210526315,
         "precision_it_ci": [
-          0.8318207759473837,
-          1.0
+          0.6989663547715127,
+          0.9721335187862318
         ],
         "precision_non_it_ci": [
-          0.8282447812067972,
-          0.9938867857072375
+          0.8228780225664668,
+          0.9936674801509623
         ],
         "recall_it_ci": [
-          0.7638688065532577,
-          0.9911185511992044
+          0.7536126883310121,
+          0.9906480059376996
         ],
         "reason": null
       }
@@ -364,18 +370,18 @@
       "changed": true
     },
     {
-      "job_id": "527d0a8a-08b9-419f-a402-ce0f5ca4a337",
+      "job_id": "561a7ddb-8e70-4720-a56a-55d3f9728a1d",
       "source": "glints",
       "field": "job_title",
-      "before": "TRƯỞNG PHÒNG QA/QC - CÓ XE ĐƯA ĐÓN - LƯƠNG 20-40 TRIỆU",
+      "before": "Merchandise (Bussiness Dept.) - Tiếng Nhật N2 + Anh - Q1, HCM",
       "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
       "changed": true
     },
     {
-      "job_id": "3043e7ba-8a6e-4124-816f-a155567b2f03",
+      "job_id": "3370ff21-d7e2-427f-8877-a10f6c85da05",
       "source": "glints",
       "field": "job_title",
-      "before": "DevOps/IT Intern",
+      "before": "IT Helpdesk",
       "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
       "changed": true
     }

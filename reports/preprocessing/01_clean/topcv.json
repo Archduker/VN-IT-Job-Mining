@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:26:16+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:11:17+00:00",
+  "code_version": "42423d5",
   "input": {
     "path": "data/topcv/raw",
     "rows": 2749
   },
   "output": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
-    "rows": 1536
+    "rows": 1280
   },
   "dropped": [
     {
@@ -31,17 +31,17 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 935
+      "rows": 1231
     },
     {
       "rule": "C5",
       "reason": "Bỏ JD dưới 50 từ",
-      "rows": 164
+      "rows": 133
     },
     {
       "rule": "C8",
       "reason": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
-      "rows": 5
+      "rows": 4
     },
     {
       "rule": "C9",
@@ -51,7 +51,7 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-      "rows": 20
+      "rows": 12
     },
     {
       "rule": "C7",
@@ -105,9 +105,9 @@
     },
     {
       "id": "C4a",
-      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
+      "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 935,
+      "rows_affected": 1231,
       "examples": [
         {
           "job_id": "1065139",
@@ -117,18 +117,18 @@
           "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke-graphic-designer/1065139.html"
         },
         {
+          "job_id": "1069670",
+          "field": "job_title",
+          "before": "2D Game Artist",
+          "after": "non_it",
+          "url": "https://www.topcv.vn/viec-lam/2d-game-artist/1069670.html"
+        },
+        {
           "job_id": "1101574",
           "field": "job_title",
           "before": "Trưởng Phòng Kinh Doanh Công Nghệ Thông Tin",
           "after": "non_it",
           "url": "https://www.topcv.vn/viec-lam/truong-phong-kinh-doanh-cong-nghe-thong-tin/1101574.html"
-        },
-        {
-          "job_id": "1150334",
-          "field": "job_title",
-          "before": "Nhân Viên Kinh Doanh Online Fulltime",
-          "after": "non_it",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-kinh-doanh-online-fulltime/1150334.html"
         }
       ]
     },
@@ -136,7 +136,7 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 935,
+      "rows_affected": 1231,
       "examples": [
         {
           "job_id": "1065139",
@@ -146,18 +146,18 @@
           "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke-graphic-designer/1065139.html"
         },
         {
+          "job_id": "1069670",
+          "field": "job_title",
+          "before": "2D Game Artist",
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/2d-game-artist/1069670.html"
+        },
+        {
           "job_id": "1101574",
           "field": "job_title",
           "before": "Trưởng Phòng Kinh Doanh Công Nghệ Thông Tin",
           "after": null,
           "url": "https://www.topcv.vn/viec-lam/truong-phong-kinh-doanh-cong-nghe-thong-tin/1101574.html"
-        },
-        {
-          "job_id": "1150334",
-          "field": "job_title",
-          "before": "Nhân Viên Kinh Doanh Online Fulltime",
-          "after": null,
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-kinh-doanh-online-fulltime/1150334.html"
         }
       ]
     },
@@ -165,15 +165,8 @@
       "id": "C5",
       "name": "Bỏ JD dưới 50 từ",
       "action": "drop",
-      "rows_affected": 164,
+      "rows_affected": 133,
       "examples": [
-        {
-          "job_id": "1448528",
-          "field": "raw_description_text",
-          "before": null,
-          "after": null,
-          "url": "https://www.topcv.vn/viec-lam/embedded-systems-engineer-mcu-rtos-linux-os/1448528.html"
-        },
         {
           "job_id": "1481975",
           "field": "raw_description_text",
@@ -187,6 +180,13 @@
           "before": null,
           "after": null,
           "url": "https://www.topcv.vn/viec-lam/devops-engineer-team-lead/1555870.html"
+        },
+        {
+          "job_id": "1632738",
+          "field": "raw_description_text",
+          "before": null,
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/scrum-master/1632738.html"
         }
       ]
     },
@@ -194,15 +194,8 @@
       "id": "C8",
       "name": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
       "action": "drop",
-      "rows_affected": 5,
+      "rows_affected": 4,
       "examples": [
-        {
-          "job_id": "1251851",
-          "field": "job_title",
-          "before": "Cộng Tác Viên Thiết Kế",
-          "after": "S3_CTV_TITLE",
-          "url": "https://www.topcv.vn/viec-lam/cong-tac-vien-thiet-ke/1251851.html"
-        },
         {
           "job_id": "1911605",
           "field": "job_title",
@@ -216,6 +209,13 @@
           "before": "CTV Xử Lý Dữ Liệu Hình Ảnh",
           "after": "S3_CTV_TITLE",
           "url": "https://www.topcv.vn/viec-lam/ctv-xu-ly-du-lieu-hinh-anh/2202781.html"
+        },
+        {
+          "job_id": "2313490",
+          "field": "job_title",
+          "before": "Cộng Tác Viên An Toàn Thông Tin",
+          "after": "S3_CTV_TITLE",
+          "url": "https://www.topcv.vn/brand/sapovn/tuyen-dung/cong-tac-vien-an-toan-thong-tin-j2313490.html"
         }
       ]
     },
@@ -238,28 +238,28 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 20,
+      "rows_affected": 12,
       "examples": [
-        {
-          "job_id": "1855721",
-          "field": "dedup_key",
-          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm",
-          "after": "giữ 1858313",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1855721.html"
-        },
-        {
-          "job_id": "1990674",
-          "field": "dedup_key",
-          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm",
-          "after": "giữ 1858313",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1990674.html"
-        },
         {
           "job_id": "2056186",
           "field": "dedup_key",
           "before": "infinity technologies global|product owner",
           "after": "giữ 2316026",
           "url": "https://www.topcv.vn/viec-lam/product-owner/2056186.html"
+        },
+        {
+          "job_id": "2206782",
+          "field": "dedup_key",
+          "before": "đầu tư công nghệ đổi mới việt|data engineer (lead)",
+          "after": "giữ 2214899",
+          "url": "https://www.topcv.vn/viec-lam/data-engineer-lead/2206782.html"
+        },
+        {
+          "job_id": "2250707",
+          "field": "dedup_key",
+          "before": "cơ điện lạnh hoàng đạt|trưởng phòng it (công nghệ thông tin)",
+          "after": "giữ 2273564",
+          "url": "https://www.topcv.vn/viec-lam/truong-phong-it-cong-nghe-thong-tin/2250707.html"
         }
       ]
     },
@@ -307,12 +307,12 @@
     {
       "field": "raw_location_text",
       "fill_pct_in": 96.8,
-      "fill_pct_out": 99.5
+      "fill_pct_out": 99.6
     },
     {
       "field": "raw_posted_date",
       "fill_pct_in": 5.2,
-      "fill_pct_out": 6.6
+      "fill_pct_out": 7.4
     },
     {
       "field": "raw_description_text",
@@ -322,7 +322,7 @@
     {
       "field": "skills_list",
       "fill_pct_in": 52.2,
-      "fill_pct_out": 54.0
+      "fill_pct_out": 49.2
     }
   ],
   "checks": {
@@ -335,14 +335,28 @@
   },
   "extra": {
     "it_levels": {
-      "tang_1_it": 1369,
-      "tang_1_non_it": 346,
-      "tang_2_non_it": 589,
-      "tang_2_it": 370
+      "tang_1_it": 1286,
+      "tang_1_non_it": 36,
+      "tang_0_non_it": 679,
+      "tang_2_non_it": 516,
+      "tang_2_it": 157
+    },
+    "it_excluded_groups": {
+      "sales_marketing": 374,
+      "q4_embedded_iot": 31,
+      "graphic_design": 238,
+      "q7_teaching": 8,
+      "electrical_mechanical": 19,
+      "q2_privacy": 2,
+      "h2_hardware_chip": 1,
+      "q8_operations_growth": 1,
+      "q3_av": 1,
+      "h4_telecom_field": 3,
+      "h5_repair": 1
     },
     "it_status": {
-      "it": 1739,
-      "non_it": 935
+      "it": 1443,
+      "non_it": 1231
     },
     "it_policy": {
       "drop": [
@@ -352,7 +366,7 @@
       "evidence": "C4b: Gán tay 109 tin, xác nhận 71 non_it (65.1%). Nguồn đăng lẫn tin ngoài IT"
     },
     "scope_c8_reasons": {
-      "S3_CTV_TITLE": 5
+      "S3_CTV_TITLE": 4
     },
     "review": {
       "file": "data/preprocessing/review/it_topcv.csv",
@@ -364,35 +378,35 @@
         "tang_2_non_it": 22,
         "tang_1_it": 29
       },
-      "labeled_non_it": 69,
-      "rule_decided": 79,
-      "rule_correct": 73,
-      "status_non_it": 72,
-      "status_non_it_correct": 62,
-      "level2_labeled": 30,
-      "level2_correct": 19,
-      "level1_it_labeled": 29,
-      "level1_it_correct": 24,
+      "labeled_non_it": 78,
+      "rule_decided": 93,
+      "rule_correct": 93,
+      "status_non_it": 82,
+      "status_non_it_correct": 78,
+      "level2_labeled": 16,
+      "level2_correct": 12,
+      "level1_it_labeled": 25,
+      "level1_it_correct": 25,
       "validation": {
-        "tp": 30,
-        "fp": 7,
-        "tn": 62,
-        "fn": 10,
+        "tp": 27,
+        "fp": 0,
+        "tn": 78,
+        "fn": 4,
         "labeled": 109,
-        "precision_it": 0.8108108108108109,
-        "precision_non_it": 0.8611111111111112,
-        "recall_it": 0.75,
+        "precision_it": 1.0,
+        "precision_non_it": 0.9512195121951219,
+        "recall_it": 0.8709677419354839,
         "precision_it_ci": [
-          0.6579530307016159,
-          0.9052002126968799
+          0.875444970258133,
+          1.0
         ],
         "precision_non_it_ci": [
-          0.762868127494437,
-          0.9227726922970102
+          0.8811853807742406,
+          0.9808689344322542
         ],
         "recall_it_ci": [
-          0.5980603857923197,
-          0.858128813609037
+          0.7114759374369357,
+          0.9486571562537085
         ],
         "reason": null
       }
@@ -400,26 +414,26 @@
   },
   "samples": [
     {
-      "job_id": "2315153",
+      "job_id": "2307314",
       "source": "topcv",
       "field": "job_title",
-      "before": "Manual QC Engineer (Japanese)",
+      "before": "Senior SAP CO/PS Consultant – Project Monitoring & Closing",
       "after": "DROPPED C5: JD_SHORT",
       "changed": true
     },
     {
-      "job_id": "2315430",
+      "job_id": "2248274",
       "source": "topcv",
       "field": "job_title",
-      "before": "Senior UI/UX Designer (E-Commerce)",
+      "before": "C++ Developer",
       "after": "DROPPED C5: JD_SHORT",
       "changed": true
     },
     {
-      "job_id": "2325100",
+      "job_id": "2318001",
       "source": "topcv",
       "field": "job_title",
-      "before": "DevOps Engineer",
+      "before": "AI Engineer (Tier2 - QN)",
       "after": "DROPPED C5: JD_SHORT",
       "changed": true
     }

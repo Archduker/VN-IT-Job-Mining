@@ -2,8 +2,8 @@
  "step": "01_clean",
  "trace_job": "topcv_2325743",
  "run": {
-  "generated_at": "2026-11-18T02:29:22+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:11:32+00:00",
+  "code_version": "42423d5",
   "mode": "applied",
   "input": {
    "path": null,
@@ -11,7 +11,7 @@
   },
   "output": {
    "path": null,
-   "rows": 4621
+   "rows": 4103
   },
   "dropped": [
    {
@@ -32,38 +32,38 @@
    {
     "rule": "C4c",
     "reason": "Bỏ tin ngoài IT theo it_policy.json",
-    "rows": 5424
+    "rows": 6050
    },
    {
     "rule": "C5",
     "reason": "Bỏ JD dưới 50 từ",
-    "rows": 187
+    "rows": 155
    },
    {
     "rule": "C8",
     "reason": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
-    "rows": 13
+    "rows": 10
    },
    {
     "rule": "C9",
     "reason": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
-    "rows": 197
+    "rows": 185
    },
    {
     "rule": "C6",
     "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-    "rows": 189
+    "rows": 140
    },
    {
     "rule": "C7",
     "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-    "rows": 127
+    "rows": 115
    }
   ],
   "by_source": {
    "careerviet": {
     "in": 660,
-    "out": 410
+    "out": 415
    },
    "glints": {
     "in": 331,
@@ -71,27 +71,27 @@
    },
    "itviec": {
     "in": 911,
-    "out": 842
+    "out": 813
    },
    "jobsgo": {
     "in": 1597,
-    "out": 582
+    "out": 530
    },
    "topcv": {
     "in": 2749,
-    "out": 1536
+    "out": 1280
    },
    "topdev": {
     "in": 3890,
-    "out": 217
+    "out": 184
    },
    "vieclam24h": {
     "in": 1276,
-    "out": 171
+    "out": 124
    },
    "vietnamworks": {
     "in": 1947,
-    "out": 701
+    "out": 595
    }
   },
   "checks": {
@@ -197,18 +197,18 @@
   },
   {
    "id": "C4a",
-   "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
+   "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
    "action": "flag",
-   "rows": 5424,
+   "rows": 6050,
    "by_source": {
-    "topcv": 935,
-    "topdev": 2552,
-    "vietnamworks": 415,
-    "careerviet": 189,
-    "vieclam24h": 475,
-    "itviec": 15,
-    "glints": 56,
-    "jobsgo": 787
+    "topcv": 1231,
+    "topdev": 2588,
+    "vietnamworks": 534,
+    "careerviet": 185,
+    "vieclam24h": 525,
+    "itviec": 48,
+    "glints": 57,
+    "jobsgo": 882
    },
    "examples": [
     {
@@ -238,16 +238,16 @@
    "id": "C4c",
    "name": "Bỏ tin ngoài IT theo it_policy.json",
    "action": "drop",
-   "rows": 5424,
+   "rows": 6050,
    "by_source": {
-    "topcv": 935,
-    "topdev": 2552,
-    "vietnamworks": 415,
-    "careerviet": 189,
-    "vieclam24h": 475,
-    "itviec": 15,
-    "glints": 56,
-    "jobsgo": 787
+    "topcv": 1231,
+    "topdev": 2588,
+    "vietnamworks": 534,
+    "careerviet": 185,
+    "vieclam24h": 525,
+    "itviec": 48,
+    "glints": 57,
+    "jobsgo": 882
    },
    "examples": [
     {
@@ -277,25 +277,18 @@
    "id": "C5",
    "name": "Bỏ JD dưới 50 từ",
    "action": "drop",
-   "rows": 187,
+   "rows": 155,
    "by_source": {
-    "topcv": 164,
+    "topcv": 133,
     "topdev": 0,
     "vietnamworks": 1,
     "careerviet": 0,
     "vieclam24h": 0,
     "itviec": 0,
     "glints": 0,
-    "jobsgo": 22
+    "jobsgo": 21
    },
    "examples": [
-    {
-     "job_id": "1448528",
-     "field": "raw_description_text",
-     "before": null,
-     "after": null,
-     "url": "https://www.topcv.vn/viec-lam/embedded-systems-engineer-mcu-rtos-linux-os/1448528.html"
-    },
     {
      "job_id": "1481975",
      "field": "raw_description_text",
@@ -309,6 +302,13 @@
      "before": null,
      "after": null,
      "url": "https://www.topcv.vn/viec-lam/devops-engineer-team-lead/1555870.html"
+    },
+    {
+     "job_id": "1632738",
+     "field": "raw_description_text",
+     "before": null,
+     "after": null,
+     "url": "https://www.topcv.vn/viec-lam/scrum-master/1632738.html"
     }
    ]
   },
@@ -316,25 +316,18 @@
    "id": "C8",
    "name": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
    "action": "drop",
-   "rows": 13,
+   "rows": 10,
    "by_source": {
-    "topcv": 5,
-    "topdev": 2,
+    "topcv": 4,
+    "topdev": 1,
     "vietnamworks": 0,
     "careerviet": 0,
-    "vieclam24h": 1,
+    "vieclam24h": 0,
     "itviec": 1,
     "glints": 1,
     "jobsgo": 3
    },
    "examples": [
-    {
-     "job_id": "1251851",
-     "field": "job_title",
-     "before": "Cộng Tác Viên Thiết Kế",
-     "after": "S3_CTV_TITLE",
-     "url": "https://www.topcv.vn/viec-lam/cong-tac-vien-thiet-ke/1251851.html"
-    },
     {
      "job_id": "1911605",
      "field": "job_title",
@@ -343,11 +336,18 @@
      "url": "https://www.topcv.vn/viec-lam/cong-tac-vien-xu-ly-du-lieu-hinh-anh/1911605.html"
     },
     {
-     "job_id": "200954508",
+     "job_id": "2139506",
      "field": "job_title",
-     "before": "Cộng Tác Viên Embedded Technical Writer",
+     "before": "CTV Phát triển Cộng đồng & Đối tác Game (Guild/Admin/Mod)",
      "after": "S3_CTV_TITLE",
-     "url": "https://vieclam24h.vn/it-phan-mem/cong-tac-vien-embedded-technical-writer-c8p210000180id200954508.html"
+     "url": "https://topdev.vn/viec-lam/ctv-phat-trien-cong-dong-doi-tac-game-guild-admin-mod-cong-ty-co-phan-funtap-2139506"
+    },
+    {
+     "job_id": "2202781",
+     "field": "job_title",
+     "before": "CTV Xử Lý Dữ Liệu Hình Ảnh",
+     "after": "S3_CTV_TITLE",
+     "url": "https://www.topcv.vn/viec-lam/ctv-xu-ly-du-lieu-hinh-anh/2202781.html"
     }
    ]
   },
@@ -355,16 +355,16 @@
    "id": "C9",
    "name": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
    "action": "drop",
-   "rows": 197,
+   "rows": 185,
    "by_source": {
     "topcv": 1,
     "topdev": 0,
-    "vietnamworks": 82,
+    "vietnamworks": 72,
     "careerviet": 0,
     "vieclam24h": 1,
     "itviec": 0,
     "glints": 100,
-    "jobsgo": 13
+    "jobsgo": 11
    },
    "examples": [
     {
@@ -394,16 +394,16 @@
    "id": "C6",
    "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
    "action": "drop",
-   "rows": 189,
+   "rows": 140,
    "by_source": {
-    "topcv": 20,
-    "topdev": 6,
-    "vietnamworks": 19,
-    "careerviet": 19,
+    "topcv": 12,
+    "topdev": 4,
+    "vietnamworks": 16,
+    "careerviet": 20,
     "vieclam24h": 0,
-    "itviec": 36,
-    "glints": 4,
-    "jobsgo": 85
+    "itviec": 33,
+    "glints": 3,
+    "jobsgo": 52
    },
    "examples": [
     {
@@ -414,18 +414,18 @@
      "url": "https://glints.com/vn/opportunities/jobs/ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/05decc01-d944-4958-8c7a-21697b2d32e8"
     },
     {
-     "job_id": "160cfe51-8606-4eec-91e1-15a2cd5a1fc7",
+     "job_id": "2056186",
      "field": "dedup_key",
-     "before": "chuỗi bán lẻ mini min|tư vấn triển khai phần mềm b2b",
-     "after": "giữ f8f06818-8693-4853-80d5-a6eb7ac201dc",
-     "url": "https://glints.com/vn/opportunities/jobs/tu-van-trien-khai-phan-mem-b2b/160cfe51-8606-4eec-91e1-15a2cd5a1fc7"
+     "before": "infinity technologies global|product owner",
+     "after": "giữ 2316026",
+     "url": "https://www.topcv.vn/viec-lam/product-owner/2056186.html"
     },
     {
-     "job_id": "1855721",
+     "job_id": "2109884",
      "field": "dedup_key",
-     "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm",
-     "after": "giữ 1858313",
-     "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1855721.html"
+     "before": "ngân hàng tmcp quân đội mbbank|chuyên viên cao cấp công nghệ mô hình - senior machine learning engineer - khối dữ liệu (2026td456629)",
+     "after": "giữ 2110215",
+     "url": "https://www.vietnamworks.com/chuyen-vien-cao-cap-cong-nghe-mo-hinh-senior-machine-learning-engineer-khoi-du-lieu-2026td456629-1790045648171714627-2109884-jv"
     }
    ]
   },
@@ -433,16 +433,16 @@
    "id": "C7",
    "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
    "action": "drop",
-   "rows": 127,
+   "rows": 115,
    "by_source": {
     "topcv": 13,
     "topdev": 5,
     "vietnamworks": 1,
-    "careerviet": 24,
-    "vieclam24h": 12,
-    "itviec": 16,
+    "careerviet": 22,
+    "vieclam24h": 10,
+    "itviec": 15,
     "glints": 8,
-    "jobsgo": 48
+    "jobsgo": 41
    },
    "examples": [
     {
@@ -460,11 +460,11 @@
      "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-kiem-thu-phan-mem/0e32e3c9-82f5-4fcd-ad2e-0f2fafad8ca2"
     },
     {
-     "job_id": "200903136",
+     "job_id": "200928170",
      "field": "dedup_key",
-     "before": "viễn thông fpt|design verification intern",
-     "after": "giữ topcv:2262435",
-     "url": "https://vieclam24h.vn/it-phan-mem/design-verification-intern-c8p210000187id200903136.html"
+     "before": "công nghệ thiên hoàng|qa manual tester (bank, finance)",
+     "after": "giữ topcv:2164938",
+     "url": "https://vieclam24h.vn/it-phan-mem/qa-manual-tester-bank-finance-c8p210000160id200928170.html"
     }
    ]
   }

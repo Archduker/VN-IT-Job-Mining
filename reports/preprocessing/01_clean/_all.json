@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-18T02:29:22+00:00",
-  "code_version": "d61d9bf",
+  "generated_at": "2026-11-19T01:11:32+00:00",
+  "code_version": "42423d5",
   "input": {
     "path": null,
     "rows": 13361
   },
   "output": {
     "path": null,
-    "rows": 4621
+    "rows": 4103
   },
   "dropped": [
     {
@@ -31,32 +31,32 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 5424
+      "rows": 6050
     },
     {
       "rule": "C5",
       "reason": "Bỏ JD dưới 50 từ",
-      "rows": 187
+      "rows": 155
     },
     {
       "rule": "C8",
       "reason": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
-      "rows": 13
+      "rows": 10
     },
     {
       "rule": "C9",
       "reason": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
-      "rows": 197
+      "rows": 185
     },
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-      "rows": 189
+      "rows": 140
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 127
+      "rows": 115
     }
   ],
   "rules": [
@@ -157,9 +157,9 @@
     },
     {
       "id": "C4a",
-      "name": "Phân loại IT bằng luật 2 tầng (từ khóa tiêu đề, rồi nhóm nghề + kỹ năng JD), chỉ gắn nhãn",
+      "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 5424,
+      "rows_affected": 6050,
       "examples": [
         {
           "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
@@ -184,21 +184,21 @@
         }
       ],
       "by_source": {
-        "topcv": 935,
-        "topdev": 2552,
-        "vietnamworks": 415,
-        "careerviet": 189,
-        "vieclam24h": 475,
-        "itviec": 15,
-        "glints": 56,
-        "jobsgo": 787
+        "topcv": 1231,
+        "topdev": 2588,
+        "vietnamworks": 534,
+        "careerviet": 185,
+        "vieclam24h": 525,
+        "itviec": 48,
+        "glints": 57,
+        "jobsgo": 882
       }
     },
     {
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 5424,
+      "rows_affected": 6050,
       "examples": [
         {
           "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
@@ -223,29 +223,22 @@
         }
       ],
       "by_source": {
-        "topcv": 935,
-        "topdev": 2552,
-        "vietnamworks": 415,
-        "careerviet": 189,
-        "vieclam24h": 475,
-        "itviec": 15,
-        "glints": 56,
-        "jobsgo": 787
+        "topcv": 1231,
+        "topdev": 2588,
+        "vietnamworks": 534,
+        "careerviet": 185,
+        "vieclam24h": 525,
+        "itviec": 48,
+        "glints": 57,
+        "jobsgo": 882
       }
     },
     {
       "id": "C5",
       "name": "Bỏ JD dưới 50 từ",
       "action": "drop",
-      "rows_affected": 187,
+      "rows_affected": 155,
       "examples": [
-        {
-          "job_id": "1448528",
-          "field": "raw_description_text",
-          "before": null,
-          "after": null,
-          "url": "https://www.topcv.vn/viec-lam/embedded-systems-engineer-mcu-rtos-linux-os/1448528.html"
-        },
         {
           "job_id": "1481975",
           "field": "raw_description_text",
@@ -259,32 +252,32 @@
           "before": null,
           "after": null,
           "url": "https://www.topcv.vn/viec-lam/devops-engineer-team-lead/1555870.html"
+        },
+        {
+          "job_id": "1632738",
+          "field": "raw_description_text",
+          "before": null,
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/scrum-master/1632738.html"
         }
       ],
       "by_source": {
-        "topcv": 164,
+        "topcv": 133,
         "topdev": 0,
         "vietnamworks": 1,
         "careerviet": 0,
         "vieclam24h": 0,
         "itviec": 0,
         "glints": 0,
-        "jobsgo": 22
+        "jobsgo": 21
       }
     },
     {
       "id": "C8",
       "name": "Bỏ tin CTV / đa cấp theo scope_keywords.json (mã lý do S3_*)",
       "action": "drop",
-      "rows_affected": 13,
+      "rows_affected": 10,
       "examples": [
-        {
-          "job_id": "1251851",
-          "field": "job_title",
-          "before": "Cộng Tác Viên Thiết Kế",
-          "after": "S3_CTV_TITLE",
-          "url": "https://www.topcv.vn/viec-lam/cong-tac-vien-thiet-ke/1251851.html"
-        },
         {
           "job_id": "1911605",
           "field": "job_title",
@@ -293,19 +286,26 @@
           "url": "https://www.topcv.vn/viec-lam/cong-tac-vien-xu-ly-du-lieu-hinh-anh/1911605.html"
         },
         {
-          "job_id": "200954508",
+          "job_id": "2139506",
           "field": "job_title",
-          "before": "Cộng Tác Viên Embedded Technical Writer",
+          "before": "CTV Phát triển Cộng đồng & Đối tác Game (Guild/Admin/Mod)",
           "after": "S3_CTV_TITLE",
-          "url": "https://vieclam24h.vn/it-phan-mem/cong-tac-vien-embedded-technical-writer-c8p210000180id200954508.html"
+          "url": "https://topdev.vn/viec-lam/ctv-phat-trien-cong-dong-doi-tac-game-guild-admin-mod-cong-ty-co-phan-funtap-2139506"
+        },
+        {
+          "job_id": "2202781",
+          "field": "job_title",
+          "before": "CTV Xử Lý Dữ Liệu Hình Ảnh",
+          "after": "S3_CTV_TITLE",
+          "url": "https://www.topcv.vn/viec-lam/ctv-xu-ly-du-lieu-hinh-anh/2202781.html"
         }
       ],
       "by_source": {
-        "topcv": 5,
-        "topdev": 2,
+        "topcv": 4,
+        "topdev": 1,
         "vietnamworks": 0,
         "careerviet": 0,
-        "vieclam24h": 1,
+        "vieclam24h": 0,
         "itviec": 1,
         "glints": 1,
         "jobsgo": 3
@@ -315,7 +315,7 @@
       "id": "C9",
       "name": "Bỏ tin đăng trước 2026-09-01 (ngoài kỳ nghiên cứu)",
       "action": "drop",
-      "rows_affected": 197,
+      "rows_affected": 185,
       "examples": [
         {
           "job_id": "02ab8190-7a4d-4741-99d7-5ce8926057cb",
@@ -342,19 +342,19 @@
       "by_source": {
         "topcv": 1,
         "topdev": 0,
-        "vietnamworks": 82,
+        "vietnamworks": 72,
         "careerviet": 0,
         "vieclam24h": 1,
         "itviec": 0,
         "glints": 100,
-        "jobsgo": 13
+        "jobsgo": 11
       }
     },
     {
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 189,
+      "rows_affected": 140,
       "examples": [
         {
           "job_id": "05decc01-d944-4958-8c7a-21697b2d32e8",
@@ -364,36 +364,36 @@
           "url": "https://glints.com/vn/opportunities/jobs/ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/05decc01-d944-4958-8c7a-21697b2d32e8"
         },
         {
-          "job_id": "160cfe51-8606-4eec-91e1-15a2cd5a1fc7",
+          "job_id": "2056186",
           "field": "dedup_key",
-          "before": "chuỗi bán lẻ mini min|tư vấn triển khai phần mềm b2b",
-          "after": "giữ f8f06818-8693-4853-80d5-a6eb7ac201dc",
-          "url": "https://glints.com/vn/opportunities/jobs/tu-van-trien-khai-phan-mem-b2b/160cfe51-8606-4eec-91e1-15a2cd5a1fc7"
+          "before": "infinity technologies global|product owner",
+          "after": "giữ 2316026",
+          "url": "https://www.topcv.vn/viec-lam/product-owner/2056186.html"
         },
         {
-          "job_id": "1855721",
+          "job_id": "2109884",
           "field": "dedup_key",
-          "before": "công nghệ phần mềm nasani|nhân viên tư vấn triển khai phần mềm",
-          "after": "giữ 1858313",
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-trien-khai-phan-mem/1855721.html"
+          "before": "ngân hàng tmcp quân đội mbbank|chuyên viên cao cấp công nghệ mô hình - senior machine learning engineer - khối dữ liệu (2026td456629)",
+          "after": "giữ 2110215",
+          "url": "https://www.vietnamworks.com/chuyen-vien-cao-cap-cong-nghe-mo-hinh-senior-machine-learning-engineer-khoi-du-lieu-2026td456629-1790045648171714627-2109884-jv"
         }
       ],
       "by_source": {
-        "topcv": 20,
-        "topdev": 6,
-        "vietnamworks": 19,
-        "careerviet": 19,
+        "topcv": 12,
+        "topdev": 4,
+        "vietnamworks": 16,
+        "careerviet": 20,
         "vieclam24h": 0,
-        "itviec": 36,
-        "glints": 4,
-        "jobsgo": 85
+        "itviec": 33,
+        "glints": 3,
+        "jobsgo": 52
       }
     },
     {
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 127,
+      "rows_affected": 115,
       "examples": [
         {
           "job_id": "091b32f4-7c9f-4ae2-befa-e9f7880e07fa",
@@ -410,22 +410,22 @@
           "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-kiem-thu-phan-mem/0e32e3c9-82f5-4fcd-ad2e-0f2fafad8ca2"
         },
         {
-          "job_id": "200903136",
+          "job_id": "200928170",
           "field": "dedup_key",
-          "before": "viễn thông fpt|design verification intern",
-          "after": "giữ topcv:2262435",
-          "url": "https://vieclam24h.vn/it-phan-mem/design-verification-intern-c8p210000187id200903136.html"
+          "before": "công nghệ thiên hoàng|qa manual tester (bank, finance)",
+          "after": "giữ topcv:2164938",
+          "url": "https://vieclam24h.vn/it-phan-mem/qa-manual-tester-bank-finance-c8p210000160id200928170.html"
         }
       ],
       "by_source": {
         "topcv": 13,
         "topdev": 5,
         "vietnamworks": 1,
-        "careerviet": 24,
-        "vieclam24h": 12,
-        "itviec": 16,
+        "careerviet": 22,
+        "vieclam24h": 10,
+        "itviec": 15,
         "glints": 8,
-        "jobsgo": 48
+        "jobsgo": 41
       }
     }
   ],
@@ -442,23 +442,23 @@
     },
     {
       "field": "raw_location_text",
-      "fill_pct_in": 96.5,
-      "fill_pct_out": 97.4
+      "fill_pct_in": 96.7,
+      "fill_pct_out": 97.5
     },
     {
       "field": "raw_posted_date",
-      "fill_pct_in": 64.7,
-      "fill_pct_out": 64.9
+      "fill_pct_in": 66.7,
+      "fill_pct_out": 67.2
     },
     {
       "field": "raw_description_text",
-      "fill_pct_in": 96.0,
+      "fill_pct_in": 96.3,
       "fill_pct_out": 100.0
     },
     {
       "field": "skills_list",
-      "fill_pct_in": 59.6,
-      "fill_pct_out": 61.8
+      "fill_pct_in": 59.1,
+      "fill_pct_out": 59.4
     }
   ],
   "checks": {
@@ -473,27 +473,27 @@
     "sources": {
       "topcv": {
         "input": 2749,
-        "output": 1536
+        "output": 1280
       },
       "topdev": {
         "input": 3890,
-        "output": 217
+        "output": 184
       },
       "vietnamworks": {
         "input": 1947,
-        "output": 701
+        "output": 595
       },
       "careerviet": {
         "input": 660,
-        "output": 410
+        "output": 415
       },
       "vieclam24h": {
         "input": 1276,
-        "output": 171
+        "output": 124
       },
       "itviec": {
         "input": 911,
-        "output": 842
+        "output": 813
       },
       "glints": {
         "input": 331,
@@ -501,41 +501,41 @@
       },
       "jobsgo": {
         "input": 1597,
-        "output": 582
+        "output": 530
       }
     },
     "it_status": {
       "topcv": {
-        "it": 1739,
-        "non_it": 935
+        "it": 1443,
+        "non_it": 1231
       },
       "topdev": {
-        "it": 230,
-        "non_it": 2552
+        "it": 194,
+        "non_it": 2588
       },
       "vietnamworks": {
-        "non_it": 415,
-        "it": 804
+        "non_it": 534,
+        "it": 685
       },
       "careerviet": {
-        "it": 453,
-        "non_it": 189
+        "non_it": 185,
+        "it": 457
       },
       "vieclam24h": {
-        "non_it": 475,
-        "it": 185
+        "non_it": 525,
+        "it": 135
       },
       "itviec": {
-        "it": 895,
-        "non_it": 15
+        "it": 862,
+        "non_it": 48
       },
       "glints": {
-        "it": 275,
-        "non_it": 56
+        "it": 274,
+        "non_it": 57
       },
       "jobsgo": {
-        "non_it": 787,
-        "it": 753
+        "non_it": 882,
+        "it": 658
       }
     },
     "review": {
@@ -549,35 +549,35 @@
           "tang_2_non_it": 22,
           "tang_1_it": 29
         },
-        "labeled_non_it": 69,
-        "rule_decided": 79,
-        "rule_correct": 73,
-        "status_non_it": 72,
-        "status_non_it_correct": 62,
-        "level2_labeled": 30,
-        "level2_correct": 19,
-        "level1_it_labeled": 29,
-        "level1_it_correct": 24,
+        "labeled_non_it": 78,
+        "rule_decided": 93,
+        "rule_correct": 93,
+        "status_non_it": 82,
+        "status_non_it_correct": 78,
+        "level2_labeled": 16,
+        "level2_correct": 12,
+        "level1_it_labeled": 25,
+        "level1_it_correct": 25,
         "validation": {
-          "tp": 30,
-          "fp": 7,
-          "tn": 62,
-          "fn": 10,
+          "tp": 27,
+          "fp": 0,
+          "tn": 78,
+          "fn": 4,
           "labeled": 109,
-          "precision_it": 0.8108108108108109,
-          "precision_non_it": 0.8611111111111112,
-          "recall_it": 0.75,
+          "precision_it": 1.0,
+          "precision_non_it": 0.9512195121951219,
+          "recall_it": 0.8709677419354839,
           "precision_it_ci": [
-            0.6579530307016159,
-            0.9052002126968799
+            0.875444970258133,
+            1.0
           ],
           "precision_non_it_ci": [
-            0.762868127494437,
-            0.9227726922970102
+            0.8811853807742406,
+            0.9808689344322542
           ],
           "recall_it_ci": [
-            0.5980603857923197,
-            0.858128813609037
+            0.7114759374369357,
+            0.9486571562537085
           ],
           "reason": null
         }
@@ -593,14 +593,14 @@
           "tang_1_it": 4
         },
         "labeled_non_it": 78,
-        "rule_decided": 54,
-        "rule_correct": 54,
+        "rule_decided": 59,
+        "rule_correct": 59,
         "status_non_it": 79,
         "status_non_it_correct": 78,
-        "level2_labeled": 30,
-        "level2_correct": 29,
-        "level1_it_labeled": 4,
-        "level1_it_correct": 4,
+        "level2_labeled": 25,
+        "level2_correct": 24,
+        "level1_it_labeled": 5,
+        "level1_it_correct": 5,
         "validation": {
           "tp": 5,
           "fp": 0,
@@ -636,34 +636,34 @@
           "tang_1_it": 14
         },
         "labeled_non_it": 67,
-        "rule_decided": 64,
-        "rule_correct": 59,
-        "status_non_it": 68,
-        "status_non_it_correct": 63,
-        "level2_labeled": 30,
-        "level2_correct": 26,
-        "level1_it_labeled": 14,
-        "level1_it_correct": 13,
+        "rule_decided": 71,
+        "rule_correct": 67,
+        "status_non_it": 72,
+        "status_non_it_correct": 65,
+        "level2_labeled": 23,
+        "level2_correct": 18,
+        "level1_it_labeled": 17,
+        "level1_it_correct": 15,
         "validation": {
-          "tp": 22,
-          "fp": 4,
-          "tn": 63,
-          "fn": 5,
+          "tp": 20,
+          "fp": 2,
+          "tn": 65,
+          "fn": 7,
           "labeled": 94,
-          "precision_it": 0.8461538461538461,
-          "precision_non_it": 0.9264705882352942,
-          "recall_it": 0.8148148148148148,
+          "precision_it": 0.9090909090909091,
+          "precision_non_it": 0.9027777777777778,
+          "recall_it": 0.7407407407407407,
           "precision_it_ci": [
-            0.6646880067178652,
-            0.9384996627642165
+            0.7218505315839416,
+            0.9747045710090048
           ],
           "precision_non_it_ci": [
-            0.8391481160428227,
-            0.9681851557488821
+            0.8126495420487314,
+            0.9521036800263443
           ],
           "recall_it_ci": [
-            0.6330131638145156,
-            0.9181929285702346
+            0.5532142868544692,
+            0.8682962543809281
           ],
           "reason": null
         }
@@ -678,35 +678,35 @@
           "tang_2_it": 8,
           "tang_1_it": 9
         },
-        "labeled_non_it": 59,
-        "rule_decided": 50,
-        "rule_correct": 50,
-        "status_non_it": 63,
+        "labeled_non_it": 57,
+        "rule_decided": 56,
+        "rule_correct": 54,
+        "status_non_it": 61,
         "status_non_it_correct": 56,
-        "level2_labeled": 30,
+        "level2_labeled": 24,
         "level2_correct": 20,
-        "level1_it_labeled": 9,
-        "level1_it_correct": 9,
+        "level1_it_labeled": 11,
+        "level1_it_correct": 10,
         "validation": {
-          "tp": 14,
-          "fp": 3,
+          "tp": 18,
+          "fp": 1,
           "tn": 56,
-          "fn": 7,
+          "fn": 5,
           "labeled": 80,
-          "precision_it": 0.8235294117647058,
-          "precision_non_it": 0.8888888888888888,
-          "recall_it": 0.6666666666666666,
+          "precision_it": 0.9473684210526315,
+          "precision_non_it": 0.9180327868852459,
+          "recall_it": 0.782608695652174,
           "precision_it_ci": [
-            0.5897054143116587,
-            0.93808873362379
+            0.7536126883310121,
+            0.9906480059376996
           ],
           "precision_non_it_ci": [
-            0.7879534424991748,
-            0.9451245133761628
+            0.8220533819707465,
+            0.9644804333931265
           ],
           "recall_it_ci": [
-            0.4537345197425524,
-            0.8280524739491653
+            0.5809651698373599,
+            0.9033602197341379
           ],
           "reason": null
         }
@@ -722,29 +722,29 @@
           "tang_1_it": 4
         },
         "labeled_non_it": 80,
-        "rule_decided": 54,
-        "rule_correct": 54,
-        "status_non_it": 76,
-        "status_non_it_correct": 76,
-        "level2_labeled": 30,
-        "level2_correct": 26,
+        "rule_decided": 69,
+        "rule_correct": 69,
+        "status_non_it": 80,
+        "status_non_it_correct": 80,
+        "level2_labeled": 15,
+        "level2_correct": 15,
         "level1_it_labeled": 4,
         "level1_it_correct": 4,
         "validation": {
           "tp": 4,
-          "fp": 4,
-          "tn": 76,
+          "fp": 0,
+          "tn": 80,
           "fn": 0,
           "labeled": 84,
-          "precision_it": 0.5,
+          "precision_it": 1.0,
           "precision_non_it": 1.0,
           "recall_it": 1.0,
           "precision_it_ci": [
-            0.2152160622138775,
-            0.7847839377861225
+            0.5101091635454025,
+            1.0
           ],
           "precision_non_it_ci": [
-            0.9518864149348626,
+            0.9541818704644728,
             0.9999999999999999
           ],
           "recall_it_ci": [
@@ -763,35 +763,35 @@
           "tang_2_non_it": 6,
           "tang_1_it": 18
         },
-        "labeled_non_it": 3,
-        "rule_decided": 18,
-        "rule_correct": 17,
-        "status_non_it": 6,
-        "status_non_it_correct": 2,
-        "level2_labeled": 30,
-        "level2_correct": 26,
-        "level1_it_labeled": 18,
-        "level1_it_correct": 17,
+        "labeled_non_it": 7,
+        "rule_decided": 30,
+        "rule_correct": 29,
+        "status_non_it": 9,
+        "status_non_it_correct": 6,
+        "level2_labeled": 18,
+        "level2_correct": 15,
+        "level1_it_labeled": 24,
+        "level1_it_correct": 24,
         "validation": {
-          "tp": 41,
+          "tp": 38,
           "fp": 1,
-          "tn": 2,
-          "fn": 4,
+          "tn": 6,
+          "fn": 3,
           "labeled": 48,
-          "precision_it": 0.9761904761904762,
-          "precision_non_it": 0.3333333333333333,
-          "recall_it": 0.9111111111111111,
+          "precision_it": 0.9743589743589743,
+          "precision_non_it": 0.6666666666666666,
+          "recall_it": 0.926829268292683,
           "precision_it_ci": [
-            0.8767879842623334,
-            0.9957845958655673
+            0.8681900983014992,
+            0.9954592968990099
           ],
           "precision_non_it_ci": [
-            0.09677141110578041,
-            0.700006684861608
+            0.3542021355803961,
+            0.879416181613089
           ],
           "recall_it_ci": [
-            0.7926642466571063,
-            0.9648888832736298
+            0.8057255146228096,
+            0.9748021693660901
           ],
           "reason": null
         }
@@ -806,35 +806,35 @@
           "tang_2_it": 13,
           "tang_1_it": 6
         },
-        "labeled_non_it": 28,
-        "rule_decided": 18,
-        "rule_correct": 18,
-        "status_non_it": 29,
-        "status_non_it_correct": 28,
-        "level2_labeled": 30,
-        "level2_correct": 29,
-        "level1_it_labeled": 6,
-        "level1_it_correct": 6,
+        "labeled_non_it": 29,
+        "rule_decided": 27,
+        "rule_correct": 25,
+        "status_non_it": 28,
+        "status_non_it_correct": 27,
+        "level2_labeled": 21,
+        "level2_correct": 20,
+        "level1_it_labeled": 15,
+        "level1_it_correct": 13,
         "validation": {
-          "tp": 19,
-          "fp": 0,
-          "tn": 28,
+          "tp": 18,
+          "fp": 2,
+          "tn": 27,
           "fn": 1,
           "labeled": 48,
-          "precision_it": 1.0,
-          "precision_non_it": 0.9655172413793104,
-          "recall_it": 0.95,
+          "precision_it": 0.9,
+          "precision_non_it": 0.9642857142857143,
+          "recall_it": 0.9473684210526315,
           "precision_it_ci": [
-            0.8318207759473837,
-            1.0
+            0.6989663547715127,
+            0.9721335187862318
           ],
           "precision_non_it_ci": [
-            0.8282447812067972,
-            0.9938867857072375
+            0.8228780225664668,
+            0.9936674801509623
           ],
           "recall_it_ci": [
-            0.7638688065532577,
-            0.9911185511992044
+            0.7536126883310121,
+            0.9906480059376996
           ],
           "reason": null
         }
@@ -849,51 +849,51 @@
           "tang_2_it": 1,
           "tang_1_it": 16
         },
-        "labeled_non_it": 75,
-        "rule_decided": 66,
-        "rule_correct": 62,
-        "status_non_it": 79,
-        "status_non_it_correct": 71,
-        "level2_labeled": 30,
-        "level2_correct": 22,
-        "level1_it_labeled": 16,
-        "level1_it_correct": 12,
+        "labeled_non_it": 79,
+        "rule_decided": 71,
+        "rule_correct": 70,
+        "status_non_it": 82,
+        "status_non_it_correct": 78,
+        "level2_labeled": 25,
+        "level2_correct": 21,
+        "level1_it_labeled": 12,
+        "level1_it_correct": 11,
         "validation": {
           "tp": 13,
-          "fp": 4,
-          "tn": 71,
-          "fn": 8,
+          "fp": 1,
+          "tn": 78,
+          "fn": 4,
           "labeled": 96,
-          "precision_it": 0.7647058823529411,
-          "precision_non_it": 0.8987341772151899,
-          "recall_it": 0.6190476190476191,
+          "precision_it": 0.9285714285714286,
+          "precision_non_it": 0.9512195121951219,
+          "recall_it": 0.7647058823529411,
           "precision_it_ci": [
-            0.5273820188043501,
-            0.9044495567791988
+            0.6853129557584887,
+            0.987277784752109
           ],
           "precision_non_it_ci": [
-            0.8127005885203686,
-            0.9477881920594147
+            0.8811853807742406,
+            0.9808689344322542
           ],
           "recall_it_ci": [
-            0.4087865377511576,
-            0.7924898863143551
+            0.5273820188043501,
+            0.9044495567791988
           ],
           "reason": null
         }
       }
     },
     "cross_source_pairs": {
-      "topcv → jobsgo": 43,
+      "topcv → jobsgo": 36,
       "vietnamworks → topcv": 13,
-      "topcv → careerviet": 10,
-      "vietnamworks → itviec": 8,
+      "topcv → careerviet": 8,
+      "vietnamworks → itviec": 7,
       "jobsgo → careerviet": 7,
       "topcv → itviec": 6,
-      "topcv → vieclam24h": 6,
+      "topcv → vieclam24h": 5,
       "vietnamworks → careerviet": 5,
-      "jobsgo → vieclam24h": 5,
       "vietnamworks → jobsgo": 4,
+      "jobsgo → vieclam24h": 4,
       "jobsgo → glints": 4,
       "topcv → glints": 3,
       "vietnamworks → topdev": 3,
@@ -968,77 +968,85 @@
     },
     "it_levels": {
       "topcv": {
-        "tang_1_it": 1369,
-        "tang_1_non_it": 346,
-        "tang_2_non_it": 589,
-        "tang_2_it": 370
+        "tang_1_it": 1286,
+        "tang_1_non_it": 36,
+        "tang_0_non_it": 679,
+        "tang_2_non_it": 516,
+        "tang_2_it": 157
       },
       "topdev": {
-        "tang_1_it": 162,
-        "tang_2_non_it": 1429,
-        "tang_2_it": 68,
-        "tang_1_non_it": 1123
+        "tang_1_it": 160,
+        "tang_2_non_it": 1326,
+        "tang_0_non_it": 661,
+        "tang_1_non_it": 601,
+        "tang_2_it": 34
       },
       "vietnamworks": {
-        "tang_1_non_it": 124,
-        "tang_2_non_it": 291,
-        "tang_1_it": 608,
-        "tang_2_it": 196
+        "tang_0_non_it": 180,
+        "tang_2_non_it": 298,
+        "tang_1_it": 627,
+        "tang_1_non_it": 56,
+        "tang_2_it": 58
       },
       "careerviet": {
-        "tang_1_it": 396,
-        "tang_2_non_it": 148,
-        "tang_2_it": 57,
-        "tang_1_non_it": 41
+        "tang_0_non_it": 51,
+        "tang_2_non_it": 112,
+        "tang_2_it": 59,
+        "tang_1_it": 398,
+        "tang_1_non_it": 22
       },
       "vieclam24h": {
-        "tang_1_non_it": 186,
-        "tang_1_it": 138,
-        "tang_2_non_it": 289,
-        "tang_2_it": 47
+        "tang_0_non_it": 257,
+        "tang_1_it": 125,
+        "tang_1_non_it": 52,
+        "tang_2_non_it": 216,
+        "tang_2_it": 10
       },
       "itviec": {
-        "tang_1_it": 843,
-        "tang_2_non_it": 15,
-        "tang_2_it": 52
+        "tang_1_it": 820,
+        "tang_0_non_it": 42,
+        "tang_2_non_it": 6,
+        "tang_2_it": 42
       },
       "glints": {
-        "tang_1_it": 244,
+        "tang_1_it": 262,
         "tang_2_non_it": 44,
-        "tang_1_non_it": 12,
-        "tang_2_it": 31
+        "tang_0_non_it": 7,
+        "tang_2_it": 12,
+        "tang_1_non_it": 6
       },
       "jobsgo": {
-        "tang_1_non_it": 235,
-        "tang_2_non_it": 552,
-        "tang_1_it": 709,
-        "tang_2_it": 44
+        "tang_0_non_it": 365,
+        "tang_1_non_it": 90,
+        "tang_2_non_it": 427,
+        "tang_1_it": 608,
+        "tang_2_it": 50
       }
     },
     "partial_run": false
   },
   "samples": [
     {
-      "job_id": "2315153",
+      "job_id": "2307314",
       "source": "topcv",
       "field": "job_title",
-      "before": "Manual QC Engineer (Japanese)",
+      "before": "Senior SAP CO/PS Consultant – Project Monitoring & Closing",
       "after": "DROPPED C5: JD_SHORT",
       "changed": true
     },
     {
-      "job_id": "2315430",
+      "job_id": "2248274",
       "source": "topcv",
       "field": "job_title",
-      "before": "Senior UI/UX Designer (E-Commerce)",
+      "before": "C++ Developer",
       "after": "DROPPED C5: JD_SHORT",
       "changed": true
     },
     {
-      "job_id": "2325100",
+      "job_id": "2318001",
       "source": "topcv",
       "field": "job_title",
-      "before": "DevOps Engineer",
+      "before": "AI Engineer (Tier2 - QN)",
       "after": "DROPPED C5: JD_SHORT",
       "changed": true
     },
@@ -1051,43 +1059,27 @@
       "changed": true
     },
     {
-      "job_id": "2137244",
-      "source": "topdev",
-      "field": "job_title",
-      "before": "Cộng Tác Viên Thiết Kế Part-Time",
-      "after": "DROPPED C8: S3_CTV_TITLE",
-      "changed": true
-    },
-    {
-      "job_id": "2099670",
+      "job_id": "2096574",
       "source": "vietnamworks",
       "field": "job_title",
-      "before": "IT Project Manager",
+      "before": "IT Governance Officer",
       "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
       "changed": true
     },
     {
-      "job_id": "2101781",
+      "job_id": "2098344",
       "source": "vietnamworks",
       "field": "job_title",
-      "before": "Technical Product Developer (Merchandiser / Developer Background) Bags & Backpacks",
+      "before": "[SPA] - IT - Chuyên viên chính Data Engineer/AI",
       "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
       "changed": true
     },
     {
-      "job_id": "2101570",
+      "job_id": "2100226",
       "source": "vietnamworks",
       "field": "job_title",
-      "before": "Nhân Viên IT / IT Administration Staff",
+      "before": "Chuyên viên Phân tích Khách hàng cá nhân - Data Analyst (Retail Banking) - Khối Dữ liệu (2026TD453678)",
       "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
-      "changed": true
-    },
-    {
-      "job_id": "200954508",
-      "source": "vieclam24h",
-      "field": "job_title",
-      "before": "Cộng Tác Viên Embedded Technical Writer",
-      "after": "DROPPED C8: S3_CTV_TITLE",
       "changed": true
     },
     {
@@ -1115,39 +1107,39 @@
       "changed": true
     },
     {
-      "job_id": "527d0a8a-08b9-419f-a402-ce0f5ca4a337",
+      "job_id": "561a7ddb-8e70-4720-a56a-55d3f9728a1d",
       "source": "glints",
       "field": "job_title",
-      "before": "TRƯỞNG PHÒNG QA/QC - CÓ XE ĐƯA ĐÓN - LƯƠNG 20-40 TRIỆU",
+      "before": "Merchandise (Bussiness Dept.) - Tiếng Nhật N2 + Anh - Q1, HCM",
       "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
       "changed": true
     },
     {
-      "job_id": "3043e7ba-8a6e-4124-816f-a155567b2f03",
+      "job_id": "3370ff21-d7e2-427f-8877-a10f6c85da05",
       "source": "glints",
       "field": "job_title",
-      "before": "DevOps/IT Intern",
+      "before": "IT Helpdesk",
       "after": "DROPPED C9: BEFORE_STUDY_WINDOW",
       "changed": true
     },
     {
-      "job_id": "29166985892",
+      "job_id": "29108609771",
       "source": "jobsgo",
       "field": "job_title",
-      "before": "Trưởng nhóm IT (Tiếng Anh tốt - có xe đưa rước) – 15–30 triệu [29008 – Cẩm Giàng, Hải Dương]",
+      "before": "Cộng Tác Viên Kiểm Thử (Full-time)",
+      "after": "DROPPED C8: S3_CTV_TITLE",
+      "changed": true
+    },
+    {
+      "job_id": "29332242322",
+      "source": "jobsgo",
+      "field": "job_title",
+      "before": "LẬP TRÌNH VIÊN AI",
       "after": "DROPPED C5: JD_SHORT",
       "changed": true
     },
     {
-      "job_id": "29128285742",
-      "source": "jobsgo",
-      "field": "job_title",
-      "before": "Tổ Phó IT - Phần Cứng - MSCV 52-29",
-      "after": "DROPPED C5: JD_SHORT",
-      "changed": true
-    },
-    {
-      "job_id": "28514569258",
+      "job_id": "28564309135",
       "source": "jobsgo",
       "field": "job_title",
       "before": "IT Staff (Programming Engineer)",
