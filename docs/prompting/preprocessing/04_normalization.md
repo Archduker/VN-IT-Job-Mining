@@ -127,8 +127,8 @@ ghi silver.parquet ; silver_gap.html
 |---|---|---|---|---|
 | — | Quyết định đầu vào | 17–18/11 | Bảng Silver 22 trường, bỏ `posted_month_source` (17/11). Quyết định chọn giá trị (18/11): itviec "Linh hoạt" → hybrid; tiêu đề và mẫu có số ngày thắng ô của sàn; itviec lấy kinh nghiệm từ JD trước; 7 nguồn còn lại giữ ô của sàn; `employment_type` chỉ vào Silver khi đủ 100% | `7aa63a2`, `adaa693` |
 | — | Quyết định bổ sung | 18/11 | Người dùng: "thêm 3 cờ vào silver" (Silver 26 trường), "lấy các loại hợp đồng đó vào sliver" (bỏ điều kiện 100%). Đầu vào 04 là bảng 03 chạy trên bảng 02 mới (4.495 tin, sau C9) | — |
-| 1 | Duyệt đặc tả | chưa | Đặc tả 04 mục 2.2, `silver.md` | — |
-| 2 | Duyệt prompt | chưa | Prompt này | — |
-| 3 | Test rồi code | chưa | | |
+| 1 | Duyệt đặc tả | 19/11 | Đặc tả 04 mục 2.2, `silver.md`. Người dùng: "oke tui thấy duyệt được á" (N14, N19, N2, M4, S1). Thêm Q1 cách ly tin dịch hỏng ("loại khỏi silver và lưu các tin failed ở một trạng thái khác", "loại cả mining và silver", "đồng nhất phần silver và cho processing và mining"); xác nhận "oke" | (commit này) |
+| 2 | Duyệt prompt | 19/11 | Duyệt cùng đặc tả | — |
+| 3 | Test rồi code | 19/11 | Test trước `tests/unit/test_normalization_final_values.py` (18 test: N14 6 ca, N19 6 ca gồm "International" không khớp intern, M4 itviec/7 nguồn/lệch, Q1, tích hợp N2 internship và `level_inferred`, `run` tách `quarantine.parquet` và bảo toàn): đỏ rồi xanh; cùng 37 test cũ của 04 xanh. Code `preprocessing/normalization/final_values.py`, `run.py` | (commit này) |
 | 4 | Dry-run | chưa | | |
 | 5 | Review, chạy thật | chưa | | |

@@ -19,6 +19,7 @@ import pandas as pd
 
 from preprocessing.common import REPO_ROOT, SOURCES
 from preprocessing.common.province import fold, is_foreign, is_remote, key as prov_key, name as prov_name
+from preprocessing.common import step_report
 from preprocessing.common.step_report import REPORTS_ROOT, StepReport, merge_reports
 from preprocessing.missing_outlier.missing_rules import (
     infer_experience_from_level,
@@ -33,6 +34,7 @@ from preprocessing.missing_outlier.outlier_handler import (
     winsorize_series,
 )
 from preprocessing.normalization.company_key import compute_company_keys
+from preprocessing.normalization import final_values as FV
 from preprocessing.normalization.job_title import (
     canonical_title,
     core_title,
@@ -54,6 +56,7 @@ STEP = "04_normalization"
 DATA_DIR = REPO_ROOT / "data"
 IN_FILE = DATA_DIR / "preprocessing" / "03_transformation" / "all.parquet"
 OUT_FILE = DATA_DIR / "preprocessing" / STEP / "all.parquet"
+QUARANTINE_FILE = DATA_DIR / "preprocessing" / STEP / "quarantine.parquet"  # Q1: tin chưa xử lý xong
 
 KEY_FIELDS = (
     "locations", "tinh_chinh", "seniority", "seniority_source",
@@ -64,6 +67,11 @@ KEY_FIELDS = (
     "salary_status", "level_inferred", "exp_min_years", "exp_source", "salary_out_of_range",
     "salary_iqr_outlier_by_level",
 )
+
+
+def _rel(path: Path) -> str:
+    """Đường dẫn trong repo dạng tương đối (report), ngoài repo (test) thì giữ nguyên."""
+    return path.relative_to(REPO_ROOT).as_posix() if path.is_relative_to(REPO_ROOT) else str(path)
 
 
 def _is_filled(val: Any) -> bool:
@@ -177,7 +185,7 @@ def process_source_records(
     title_dict = title_dict if title_dict is not None else load_title_dict()
 
     rows: List[Dict[str, Any]] = []
-    cnt = dict(n1=0, n2=0, n3=0, n4=0, n5=0, n13=0, n16=0, can_kiem=0, m3c=0, m4=0)
+    cnt = dict(n1=0, n2=0, n3=0, n4=0, n5=0, n13=0, n16=0, can_kiem=0, m3c=0, m4=0, n14=0, n19=0, n2_emp=0, m4_sel=0, exp_conflict=0)
     ex: Dict[str, List[Dict[str, Any]]] = {k: [] for k in ("n1", "n2", "n3", "n13", "n16")}
 
     def _ex(key: str, rec: Dict[str, Any], field: str, before: Any, after: Any) -> None:
@@ -204,8 +212,10 @@ def process_source_records(
             if primary_city:
                 _ex("n1", rec, "tinh_chinh", rec.get("raw_location_text"), primary_city)
 
-        # N14 work_mode + M7 tinh_status
-        rec["work_mode"] = work_mode(locs, rec.get("job_title_clean"), rec.get("raw_location_text"), primary_city)
+        # N14 (sửa 19/11): ô của sàn → JD thắng khi lệch và mạnh → JD → luật địa điểm cũ → unknown; rồi M7
+        old_mode = work_mode(locs, rec.get("job_title_clean"), rec.get("raw_location_text"), primary_city)
+        rec["work_mode"], rec["work_mode_source"] = FV.final_work_mode(rec, old_mode)
+        cnt["n14"] += rec["work_mode_source"] in ("raw", "jd", "jd_over_raw")
         rec["tinh_status"] = tinh_status(primary_city, rec["work_mode"], any(l.get("ngoai_vn") for l in locs))
 
         # N4 kỹ năng chuẩn
@@ -217,13 +227,28 @@ def process_source_records(
         core, _title_level, tech_hint = core_title(rec.get("job_title_clean"))
         rec["job_title_core"], rec["title_tech_hint"] = core, tech_hint
 
-        # N12 cấp bậc (raw, title) rồi PH7 M3c (số năm, có cờ)
+        # N19: loại hợp đồng cuối (tiêu đề Intern → ô của sàn → JD)
+        rec["employment_type"], rec["employment_type_source"] = FV.final_employment_type(rec)
+        cnt["n19"] += rec["employment_type"] is not None
+
+        # M4 (sửa 19/11) phần chọn: itviec JD trước, 7 nguồn ô của sàn trước; điền theo cấp bậc làm ở dưới
+        sel = FV.select_experience(source, rec)
+        rec["exp_min_years_parsed"], rec["exp_conflict"] = sel["exp_min_years_parsed"], sel["exp_conflict"]
+        rec["exp_min_years"] = sel["exp_min_years"]
+        cnt["m4_sel"] += sel["exp_source"] in ("jd", "jd_zero") and sel["exp_min_years_parsed"] is None
+        cnt["exp_conflict"] += sel["exp_conflict"]
+
+        # N12 cấp bậc (raw, title), N2 bổ sung (loại hợp đồng internship), rồi PH7 M3c (số năm, có cờ)
         sen, sen_src = classify_seniority(rec.get("raw_seniority_text"), rec.get("job_title_clean"))
+        if not sen and rec["employment_type"] == "internship":
+            sen, sen_src = "Intern/Fresher", "employment_type"
+            cnt["n2_emp"] += 1
         inf = infer_level_from_experience(sen, rec.get("exp_min_years"))
         sen = inf["seniority"]
         rec["seniority"] = sen
-        rec["level_inferred"] = inf["level_inferred"]
         rec["seniority_source"] = "kinh_nghiem" if inf["from_years"] else (sen_src or "none")
+        # Silver `seniority_inferred`: cấp do bước 04 suy ra (tiêu đề, kinh nghiệm, loại hợp đồng), không từ ô của sàn
+        rec["level_inferred"] = bool(sen) and rec["seniority_source"] != "raw"
         rec["seniority_level"] = seniority_level(sen)
         rec["seniority_can_kiem"] = (not inf["from_years"]) and seniority_conflict(
             sen, rec.get("exp_min_years"), rec.get("exp_max_years"))
@@ -234,7 +259,8 @@ def process_source_records(
 
         # PH7 M4 kinh nghiệm
         ei = infer_experience_from_level(rec.get("exp_min_years"), sen, rec["seniority_source"])
-        rec["exp_min_years"], rec["exp_inferred"], rec["exp_source"] = ei["exp_min_years"], ei["exp_inferred"], ei["exp_source"]
+        rec["exp_min_years"], rec["exp_inferred"] = ei["exp_min_years"], ei["exp_inferred"]
+        rec["exp_source"] = ei["exp_source"] if ei["exp_inferred"] or sel["exp_source"] is None else sel["exp_source"]
         cnt["m4"] += ei["exp_inferred"]
 
         # N16-N17 chức danh chuẩn -> nhóm nghề
@@ -270,7 +296,12 @@ def process_source_records(
     report.rule("N5", "Chuẩn hóa tên công ty", "modify", cnt["n5"])
     report.rule("N2b", "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm", "flag", cnt["can_kiem"])
     report.rule("M3c", "Cấp bậc trống suy từ số năm (X6), level_inferred=True", "flag", cnt["m3c"])
-    report.rule("M4", "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True", "flag", cnt["m4"])
+    report.rule("M4", "Kinh nghiệm thiếu sau khi chọn ô/JD: điền cận dưới theo cấp bậc, exp_inferred=True", "flag", cnt["m4"])
+    report.rule("N14", "work_mode từ ô của sàn hoặc JD (T9a); còn lại theo địa điểm", "modify", cnt["n14"])
+    report.rule("N19", "employment_type: tiêu đề Intern → ô của sàn → JD", "modify", cnt["n19"])
+    report.rule("N2c", "Cấp bậc Intern/Fresher từ employment_type internship", "modify", cnt["n2_emp"])
+    report.rule("M4s", "Kinh nghiệm lấy từ JD khi ô trống (itviec: JD trước)", "modify", cnt["m4_sel"])
+    report.rule("M4c", "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict", "flag", cnt["exp_conflict"])
     report.check_conserved()
     return rows, report
 
@@ -410,19 +441,40 @@ def run(
     all_rows: List[Dict[str, Any]] = []
     counts: Dict[str, int] = {}
     title_dict = load_title_dict()
+    quarantined: List[Dict[str, Any]] = []
     for src in sources:
         rows, rep = process_source_records(src, groups.get(src, []), dry_run=dry_run, title_dict=title_dict)
+        # Q1: tin chưa xử lý xong (dịch hỏng) không vào all.parquet; Silver, Processing, Mining cùng đọc all.parquet
+        kept, quar = [], []
+        for r in rows:
+            reason = FV.quarantine_reason(r)
+            if reason:
+                quar.append({**r, "quarantine_reason": reason})
+            else:
+                kept.append(r)
+        rep.rule("Q1", "Cách ly tin dịch EN→VI vẫn hỏng: ghi quarantine.parquet, không vào all.parquet", "drop", len(quar),
+                 [{"job_id": r.get("job_id_global"), "field": "translation_status", "before": "failed",
+                   "after": "quarantine", "url": r.get("source_url") or ""} for r in quar],
+                 reason="TRANSLATION_FAILED")
+        rep.data["output"]["rows"] = len(kept)
+        rep.data.setdefault("extra", {})
         reports[src] = rep
-        counts[src] = len(rows)
-        all_rows.extend(rows)
+        counts[src] = len(kept)
+        all_rows.extend(kept)
+        quarantined.extend(quar)
 
-    # N18: company_key trên cả bảng gộp
+    # N18: company_key trên bảng gộp (chỉ tin không cách ly; tin cách ly lấy khóa từ bảng có cả hai)
     key_map, pending = compute_company_keys([r.get("company_norm") for r in all_rows])
     for r in all_rows:
         r["company_key"] = key_map.get(r.get("company_norm")) if r.get("company_norm") else None
+    if quarantined:
+        q_map, _ = compute_company_keys([r.get("company_norm") for r in all_rows + quarantined])
+        for r in quarantined:
+            r["company_key"] = q_map.get(r.get("company_norm")) if r.get("company_norm") else None
 
-    # N6, N7, M5, M6 tính trên cả bảng gộp
+    # N6, N7, M5, M6 tính trên bảng gộp không cách ly; tin cách ly dùng cùng hàm trên bảng có cả hai (chỉ để đủ cột)
     all_normalized, salary_stats = apply_global_salary_normalizations(all_rows)
+    q_normalized = apply_global_salary_normalizations(all_rows + quarantined)[0][len(all_rows):] if quarantined else []
     anomalies = build_anomalies(all_normalized)
     by_kind: Dict[str, int] = {}
     for a in anomalies:
@@ -452,6 +504,13 @@ def run(
         ]
         vc = lambda col: pd.Series([r.get(col) or "(trống)" for r in src_normalized]).value_counts().to_dict()  # noqa: E731
         rep.data["extra"] = {
+            "quarantine": {"rows": sum(1 for r in q_normalized if r.get("source_platform") == src),
+                           "by_reason": pd.Series([r["quarantine_reason"] for r in q_normalized
+                                                   if r.get("source_platform") == src], dtype=object).value_counts().to_dict()},
+            "employment_type_distribution": vc("employment_type"),
+            "work_mode_source_distribution": vc("work_mode_source"),
+            "exp_source_distribution": vc("exp_source"),
+            "seniority_source_distribution": vc("seniority_source"),
             "seniority_distribution": vc("seniority"),
             "job_family_distribution": vc("job_family"),
             "job_family_source_distribution": vc("job_family_source"),
@@ -465,7 +524,7 @@ def run(
                 "job_title_core_distinct": len({tfold(r.get("job_title_core")) for r in src_normalized}),
                 "title_canonical_source": vc("title_canonical_source"),
             },
-            "anomalies_file": ANOMALIES_FILE.relative_to(REPO_ROOT).as_posix(),
+            "anomalies_file": _rel(ANOMALIES_FILE),
             "anomalies_by_kind": {k: sum(1 for a in anomalies if a["kind"] == k and a["source"] == src) for k in by_kind},
         }
         rep.check_conserved()
@@ -473,14 +532,20 @@ def run(
 
     total_rep = merge_reports(STEP, list(reports.values()), dry_run)
     total_rep.set_io(IN_FILE, int(df_in['source_platform'].isin(list(sources)).sum()), OUT_FILE, len(all_normalized))
-    total_rep.data["extra"].update({"global_salary_stats": salary_stats, "total_jobs": len(all_normalized),
+    total_rep.data["extra"].update({"quarantine": {"rows": len(q_normalized),
+                                                   "file": _rel(QUARANTINE_FILE),
+                                                   "by_source": {s: reports[s].data["extra"]["quarantine"]["rows"] for s in sources}},
+                                    "global_salary_stats": salary_stats, "total_jobs": len(all_normalized),
                                     "anomalies_total": len(anomalies), "anomalies_by_kind": by_kind,
-                                    "anomalies_file": ANOMALIES_FILE.relative_to(REPO_ROOT).as_posix(),
+                                    "anomalies_file": _rel(ANOMALIES_FILE),
                                     "company_pairs_pending": len(pending)})
     total_rep.check_conserved()
     if not dry_run and all_normalized:
         OUT_FILE.parent.mkdir(parents=True, exist_ok=True)
         pd.DataFrame(all_normalized).to_parquet(OUT_FILE, engine="pyarrow", index=False)
+        # Q1: luôn ghi file cách ly (rỗng thì vẫn ghi, để không còn file cũ của lần chạy trước)
+        pd.DataFrame(q_normalized, columns=list(pd.DataFrame(all_normalized).columns) + ["quarantine_reason"]
+                     if not q_normalized else None).to_parquet(QUARANTINE_FILE, engine="pyarrow", index=False)
         _write_company_pairs(pending)
     write_anomalies(anomalies)
     total_rep.write()

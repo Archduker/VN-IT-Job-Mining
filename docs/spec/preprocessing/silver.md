@@ -18,6 +18,7 @@
 | S2 | `work_mode` thiếu thì ghi `unknown`, không để null (spec 05 mục 4.4) |
 | S3 | `employment_type` vào Silver (người dùng đổi quyết định 18/11, bỏ điều kiện 100%). Tin không rõ để null; độ phủ ghi ở `silver_gap.html` |
 | S4 | Thứ tự cột đúng như bảng ở mục 4.4. Kiểu dữ liệu đúng như cột "Kiểu" |
+| S5 | Tin cách ly ở bước 04 (luật Q1, ví dụ dịch hỏng) không có trong `all.parquet` nên cũng không có trong Silver. Silver không tự lọc thêm; tập tin của Silver, Processing và Mining là một (duyệt 19/11) |
 
 ## 3. Quy trình xử lý
 

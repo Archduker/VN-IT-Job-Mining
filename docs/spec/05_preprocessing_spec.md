@@ -67,7 +67,7 @@ data/preprocessing/04_normalization/all.parquet   (bảng sạch, mục 4)
 | 01b | `data/preprocessing/01b_deduplication/<nguồn>.jsonl`, `golden_master_jobs.parquet`, `duplicates_audit.csv` | (trong `duplicates_audit.csv`) | `reports/preprocessing/01b_deduplication/…` |
 | 02 | `data/preprocessing/02_integration/all.parquet` | `data/preprocessing/rejected/02_integration/<nguồn>.jsonl` | `reports/preprocessing/02_integration/…` |
 | 03 | `data/preprocessing/03_transformation/all.parquet` | — (không bỏ dòng) | `reports/preprocessing/03_transformation/…` |
-| 04 | `data/preprocessing/04_normalization/all.parquet` | — (không bỏ dòng) | `reports/preprocessing/04_normalization/…`, `anomalies.json` |
+| 04 | `data/preprocessing/04_normalization/all.parquet` | `quarantine.parquet` (luật Q1: tin dịch hỏng, duyệt 19/11); ngoài ra không bỏ dòng | `reports/preprocessing/04_normalization/…`, `anomalies.json` |
 
 - `data/preprocessing/` không đưa vào git. `reports/preprocessing/` có trong git, vì Monitoring đọc thư mục này.
 - Mẫu gán nhãn tay nằm ở `data/preprocessing/review/it_<nguồn>.csv`. File nào đã có nhãn thì không bao giờ bị ghi đè.

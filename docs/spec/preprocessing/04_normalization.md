@@ -13,7 +13,7 @@
 - Chọn **giá trị cuối** khi bước 03 để lại hai nguồn (ô của sàn và JD).
 - Xử lý thiếu và ngoại lai bằng **cờ**, không xóa dòng, không điền trung bình.
 - Tiêu chí: consistency, completeness, accuracy. Phục vụ cả 5 SD.
-- Ranh giới: không bỏ dòng; không ghi đè cột gốc (`raw_*`, cột parse của 03); không bù lương bằng trung bình hay trung vị. N6 (cap) chạy trước N7 (log).
+- Ranh giới: không bỏ dòng, trừ luật cách ly Q1 (tin chuyển sang `quarantine.parquet`, có bảo toàn `vào = ra + cách ly`); không ghi đè cột gốc (`raw_*`, cột parse của 03); không bù lương bằng trung bình hay trung vị. N6 (cap) chạy trước N7 (log).
 
 ## 2. Luật
 
@@ -43,7 +43,7 @@
 
 Nhóm nghề sau L-47: Web 1.853, Other 707, Bridge 533, Data/AI 430, Tester 429, DevOps/Cloud 258, Security 254, Design 78, Game 61, IoT 38, Mobile 30.
 
-### 2.2. Luật mới (đề xuất 18/11, chờ duyệt)
+### 2.2. Luật mới (người dùng duyệt 19/11: N14, N19, N2, M4, S1 "oke tui thấy duyệt được á"; Q1 "oke")
 
 Các luật này dùng quyết định của người dùng ngày 18/11, ghi trong `jd_extraction.json` → `decisions`.
 
@@ -54,6 +54,16 @@ Các luật này dùng quyết định của người dùng ngày 18/11, ghi tro
 | **N2 (bổ sung)** | Tiêu đề có Intern hoặc `employment_type` = internship mà N2 chưa ra cấp → Intern/Fresher, `seniority_source` = `employment_type` | modify | `seniority` |
 | **M4 (sửa)** | `exp_min_years` cuối: itviec lấy JD trước (`exp_min_years_jd`), ô JSON-LD làm dự phòng; 7 nguồn còn lại lấy ô của sàn trước, JD bù chỗ trống; còn trống thì điền cận dưới theo cấp bậc như M4 cũ. `exp_conflict` khi ô và JD lệch ≥ 1 năm. Giá trị parse của 03 giữ ở `exp_min_years_parsed` để truy vết | modify | `exp_min_years`, `exp_source` (`raw`, `jd`, `jd_zero`, `itviec_jsonld`, `level_*`, `unknown`; `raw` thay cho `given` cũ), `exp_conflict`, `exp_min_years_parsed` |
 | **S1** | Ghi `silver.parquet` (26 cột, gồm `employment_type` và 3 cờ `seniority_inferred`, `exp_inferred`, `salary_outlier`; bổ sung 18/11): chọn cột, đổi tên sang tiếng Anh, không tính lại (xem [`silver.md`](silver.md)) | — | — |
+| **Q1** | **Cách ly tin chưa xử lý xong** (người dùng chốt 19/11: "loại khỏi silver và lưu các tin failed ở một trạng thái khác", "loại cả mining và silver", "đồng nhất phần silver và cho processing và mining"). Tin có `translation_status` = `failed` (sau khi đã dịch lại, PRE-34) **không vào `all.parquet`** mà ghi sang `data/preprocessing/04_normalization/quarantine.parquet`: cùng cột với `all.parquet`, thêm `quarantine_reason` (`TRANSLATION_FAILED`). Vì Silver (S1), Processing 07–10 và Mining đều đọc `all.parquet`, cả ba có cùng tập tin, không nơi nào phải tự lọc. Bảo toàn: `vào = all.parquet + quarantine.parquet`. Report ghi số tin cách ly theo nguồn và lý do (luật `Q1`, hành động drop trong report để kiểm bảo toàn). Tin cách ly vẫn qua mọi luật của từng tin nên có đủ cột; các phép thống kê trên cả bảng (N6 IQR, winsorize, N18 `company_key`) **chỉ tính trên tin không cách ly**, để số Mining dùng không bị tin cách ly kéo lệch. Dịch lại được thì chạy lại 03 → 04, tin tự quay về | cách ly | `quarantine_reason` |
+
+**Ghi chú khi code (19/11):**
+
+- Code: `preprocessing/normalization/final_values.py` (`final_work_mode`, `final_employment_type`, `select_experience`, `quarantine_reason`), nối vào `run.py`. Test: `tests/unit/test_normalization_final_values.py`.
+- N19 dùng đúng mẫu EI1 của `jd_extraction.json` (cùng định nghĩa với bước 03), khớp từ nguyên vẹn ("International" không khớp "intern").
+- Thứ tự trong một tin: N19 → M4 chọn (ô/JD) → N2 (ô, tiêu đề) → N2 bổ sung (internship) → M3c (số năm) → M4 điền theo cấp bậc (chỉ khi cấp từ ô hoặc tiêu đề, như M4 cũ).
+- `level_inferred` (Silver `seniority_inferred`) theo nghĩa ở spec 05 mục 4.4: true khi cấp bậc do bước 04 suy ra từ tiêu đề, số năm hoặc loại hợp đồng; false khi lấy từ ô của sàn. Trước đây chỉ true khi suy từ số năm, nên số tin `level_inferred` sẽ tăng.
+- `exp_max_years` giữ giá trị của bước 03 (luật M4 chỉ nói `exp_min_years`); lệch với `exp_min_years` lấy từ JD thì M8 gắn cờ.
+- Report thêm luật `N14`, `N19`, `N2c`, `M4s` (lấy từ JD khi ô trống), `M4c` (`exp_conflict`), `Q1`; `extra` thêm `quarantine`, phân bố `employment_type`, `work_mode_source`, `exp_source`, `seniority_source`.
 
 ## 3. Quy trình xử lý
 
