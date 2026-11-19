@@ -2,7 +2,7 @@
 
 > Đặc tả: [`docs/spec/preprocessing/01_clean.md`](../../spec/preprocessing/01_clean.md) dòng C4a (mục 2), mục 2.1 (định nghĩa "tin IT"), mục 6 (nghiệm thu).
 > Kế hoạch: G0 đặc tả và prompt → G1 soát nhãn → G2 test rồi code → G3 dry-run → G4 chạy thật lần lượt. Mỗi giai đoạn dừng cho người dùng xem.
-> **Trạng thái:** viết 19/11/2026, **chờ người dùng duyệt** cùng đặc tả. Chưa viết code.
+> **Trạng thái:** viết 19/11/2026, người dùng duyệt 19/11 cùng đặc tả.
 
 ## 1. Ngữ cảnh
 
@@ -102,7 +102,7 @@ def classify_it(title, signals, jd, category, source):
 
 ## 5. Ví dụ (thành test)
 
-Tin thật trong 643 nhãn C4b. Các ca Q1–Q8 của đặc tả chưa có kết quả mong đợi cho tới khi người dùng trả lời.
+Tin thật trong 643 nhãn C4b. Ca Q1–Q8 theo câu trả lời của người dùng 19/11 (đặc tả mục 2.1).
 
 | Đầu vào (tiêu đề; tín hiệu) | Kết quả mong đợi |
 |---|---|
@@ -113,6 +113,11 @@ Tin thật trong 643 nhãn C4b. Các ca Q1–Q8 của đặc tả chưa có kế
 | "Nhân Viên Thiết Kế Hệ Thống Điện, Điện Nhẹ, Hệ Thống Bms / Scada"; chuyên mục "IT Phần cứng - Mạng" | `non_it`, tầng 0; chuyên mục IT không cứu |
 | "Nhân Viên Thiết Kế" (bao bì) | `non_it`, tầng 0 (thiết kế đồ họa) |
 | "Backend Developer" | `it`, tầng 1 (không đổi so với luật cũ) |
+| "Cloud Technical Sales / PreSales" (Q1) | `non_it`, tầng 0 |
+| "Kỹ Sư IoT (IoT Engineer)" (Q4) | `non_it`, tầng 0 |
+| "KỸ SƯ TỰ ĐỘNG HÓA"; JD có C++, Python, SQL (Q5) | `it` |
+| "Chuyên viên phân tích định lượng - Nhóm Phân tích rủi ro" (Q6) | `it` |
+| "Research and Teaching Assistant (RTA) in Business Analytics" (Q7) | `non_it`, tầng 0 |
 | `it_filter_v2.json` có `approved` = false | Bước 01 dừng, báo "it_filter_v2.json chưa được duyệt" |
 
 ## 6. Cách review
@@ -133,8 +138,8 @@ Tin thật trong 643 nhãn C4b. Các ca Q1–Q8 của đặc tả chưa có kế
 | # | Bước quy trình | Ngày | Việc đã làm, số liệu, quyết định | Commit |
 |---|---|---|---|---|
 | — | Quyết định đầu vào | 19/11 | Người dùng: "oke làm lại lọc IT đi. Nhưng mà khi làm phải nhớ chỉnh lại tài liệu spec". Plan mode: chọn "Vai trò IT", "Tín hiệu phụ (C)", "Sạch (precision)". Góp ý kế hoạch: sales/marketing thuần, thiết kế đồ họa, kỹ sư điện/cơ khí "không phải là tin IT nha loại bỏ hoàn toàn"; "phải gọi là không tự suy diễn". Đo thử chỉ đọc trên 240 tin tầng 2 (số ở mục 1) | — |
-| 1 | Duyệt đặc tả | chưa | Đặc tả 01 C4a, mục 2.1 (định nghĩa + Q1–Q8), mục 6 | — |
-| 2 | Duyệt prompt | chưa | Prompt này | — |
+| 1 | Duyệt đặc tả | 19/11 | Người dùng: "duyệt cả 2, Q5 IT, Q6 IT, còn lại không IT". Đặc tả 01 C4a, mục 2.1 cập nhật theo câu trả lời: presales, DPO/privacy, AV, nhúng/IoT, giảng dạy, vận hành/product growth vào nhóm loại hoàn toàn; tự động hóa và phân tích dữ liệu ngành khác là IT | c876901 + (commit này) |
+| 2 | Duyệt prompt | 19/11 | Như trên | — |
 | 3 | Test rồi code | chưa | | |
 | 4 | Dry-run | chưa | | |
 | 5 | Review, chạy thật | chưa | | |

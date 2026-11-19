@@ -4,7 +4,7 @@
 > Lệnh: `python scripts/run_preprocessing.py --step clean --source all [--dry-run]`.
 > Dữ liệu mẫu: [`samples/01_clean.json`](samples/01_clean.json) (chạy lại 18/11/2026 sau các quyết định L-50, code `591391b`).
 > Prompt: [`docs/prompting/preprocessing/01_clean.md`](../../prompting/preprocessing/01_clean.md); bộ lọc IT mới (19/11): [`01_clean_it_filter.md`](../../prompting/preprocessing/01_clean_it_filter.md).
-> **Bản sửa 19/11 (chờ người dùng duyệt):** C4a ba tầng theo định nghĩa "vai trò IT" (mục 2.1), dùng từ điển kỹ năng v2; nghiệm thu lấy precision IT làm chỉ số chính (mục 6). Số liệu ở mục 2, 6 vẫn là của luật cũ chạy 18/11 cho tới khi chạy lại.
+> **Bản sửa 19/11 (người dùng duyệt 19/11):** C4a ba tầng theo định nghĩa "vai trò IT" (mục 2.1), dùng từ điển kỹ năng v2; nghiệm thu lấy precision IT làm chỉ số chính (mục 6). Số liệu ở mục 2, 6 vẫn là của luật cũ chạy 18/11 cho tới khi chạy lại.
 
 ## 1. Mục đích
 
@@ -22,7 +22,7 @@ Số tin là của lần chạy lại 18/11 (sau khi thêm C9 và đổi luật 
 | C3 | Bản ghi test (`job-<chữ>-<số>`), thiếu `job_id` hoặc `source_url`, hoặc `metadata.source` khác nguồn đang đọc | drop | 0 |
 | C1 | Một `job_id` có nhiều snapshot: giữ bản lớn nhất theo `snapshot_order` (`scraped_at`, rồi `version`). Tin trùng ngay trong file batch cũng tính ở đây | drop | 1.987 |
 | C2 | Tin trong file batch cũ đã có file riêng thì bỏ bản batch. Chưa có file riêng thì giữ bản batch (L-25) | drop | 616 (toàn vieclam24h) |
-| C4a | Phân loại IT, chỉ gắn nhãn, **ba tầng** (đặc tả 19/11; code đang chạy vẫn là hai tầng cũ). **Tầng 0** (`excluded_role`): tiêu đề thuộc nhóm **không phải IT, loại hoàn toàn** ở mục 2.1 (sales/marketing thuần, thiết kế đồ họa, kỹ sư điện/cơ khí) → `non_it`; tầng 1, tầng 2, chuyên mục sàn, tên công ty đều không được lật lại, trừ ngoại lệ đã duyệt ở mục 2.1. **Tầng 1** (`classify`): từ khóa tiêu đề và kỹ năng (gồm nhãn chuyên môn ở `category_tags`), khớp từ nguyên vẹn, ra `it`, `non_it`, `unknown`; danh sách từ khóa sửa theo định nghĩa mục 2.1 (thêm "an toàn thông tin", "an ninh thông tin", "pentest"…). **Tầng 2** (`classify_unknown`), chỉ khi tầng 1 ra `unknown`, dùng 4 tín hiệu: (a) số kỹ năng thuộc **nhóm lõi IT** của `processing/dictionaries/skills_v2.json` khớp trong JD (matcher của bước 08, `matcher_from_v2`); (b) số kỹ năng nhóm `security`; (c) nhóm nghề suy từ tiêu đề (`classify_job_family_rule`); (d) chuyên mục sàn (`raw_category_text`) có từ IT, **chỉ là tín hiệu phụ** (phương án C): chỉ cộng khi đi cùng (a). Danh sách nhóm lõi và các ngưỡng nằm trong `preprocessing/dictionaries/it_filter_v2.json` (`approved` = true mới dùng), chọn trên tập tune của C4b, **ưu tiên precision IT**. Danh sách `TECH_SKILLS` viết tay cũ bị bỏ | flag | Luật cũ 18/11: 5.424 tin `non_it`. Luật mới: chờ dry-run |
+| C4a | Phân loại IT, chỉ gắn nhãn, **ba tầng** (đặc tả duyệt 19/11; code đang chạy vẫn là hai tầng cũ). **Tầng 0** (`excluded_role`): tiêu đề thuộc nhóm **không phải IT, loại hoàn toàn** ở mục 2.1 (sales/marketing thuần kể cả presales, thiết kế đồ họa, kỹ sư điện/cơ khí, nhúng/IoT, AV, pháp chế dữ liệu, giảng dạy, quản lý vận hành/sản phẩm không làm kỹ thuật) → `non_it`; tầng 1, tầng 2, chuyên mục sàn, tên công ty đều không được lật lại, trừ ngoại lệ đã duyệt ở mục 2.1. **Tầng 1** (`classify`): từ khóa tiêu đề và kỹ năng (gồm nhãn chuyên môn ở `category_tags`), khớp từ nguyên vẹn, ra `it`, `non_it`, `unknown`; danh sách từ khóa sửa theo định nghĩa mục 2.1 (thêm "an toàn thông tin", "an ninh thông tin", "pentest"…). **Tầng 2** (`classify_unknown`), chỉ khi tầng 1 ra `unknown`, dùng 4 tín hiệu: (a) số kỹ năng thuộc **nhóm lõi IT** của `processing/dictionaries/skills_v2.json` khớp trong JD (matcher của bước 08, `matcher_from_v2`); (b) số kỹ năng nhóm `security`; (c) nhóm nghề suy từ tiêu đề (`classify_job_family_rule`); (d) chuyên mục sàn (`raw_category_text`) có từ IT, **chỉ là tín hiệu phụ** (phương án C): chỉ cộng khi đi cùng (a). Danh sách nhóm lõi và các ngưỡng nằm trong `preprocessing/dictionaries/it_filter_v2.json` (`approved` = true mới dùng), chọn trên tập tune của C4b, **ưu tiên precision IT**. Danh sách `TECH_SKILLS` viết tay cũ bị bỏ | flag | Luật cũ 18/11: 5.424 tin `non_it`. Luật mới: chờ dry-run |
 | C4c | Bỏ tin có `it_status` nằm trong `it_policy.json[<nguồn>].drop`. Chính sách được duyệt 09/11; cả 8 nguồn đều bỏ `non_it`. `can_kiem` không bao giờ bị bỏ tự động | drop | 5.424 |
 | C5 | JD (mô tả + yêu cầu) dưới **50 từ** (`MIN_JD_WORDS`, chốt 10/11) | drop | 187 |
 | C8 | CTV ở tiêu đề hoặc đa cấp ở tiêu đề + JD, theo `scope_keywords.json`. Mã lý do `S3_CTV_TITLE`, `S3_MULTI_LEVEL` | drop | 13 |
@@ -52,11 +52,12 @@ Số tin là của lần chạy lại 18/11 (sau khi thêm C9 và đổi luật 
 
 ### 2.1. Định nghĩa "tin IT" (người dùng chốt 19/11)
 
-- **Tin IT = vai trò IT:** người làm trực tiếp với hệ thống CNTT. Gồm lập trình, kiểm thử, dữ liệu, AI/ML, hạ tầng, mạng, cloud, DevOps, bảo mật, hỗ trợ kỹ thuật IT, BA/PM/PO của dự án IT, presales kỹ thuật IT.
+- **Tin IT = vai trò IT:** người làm trực tiếp với hệ thống CNTT. Gồm lập trình, kiểm thử, dữ liệu, AI/ML, hạ tầng, mạng, cloud, DevOps, bảo mật, hỗ trợ kỹ thuật IT, BA/PM/PO của dự án IT. Theo Q5, Q6: kỹ sư tự động hóa, và vai trò phân tích dữ liệu ở ngành khác có dùng Python/SQL (phân tích định lượng, kế hoạch mạng bay) cũng là IT.
 - **Không phải tin IT, loại hoàn toàn** (C4c bỏ, không giữ lại để gắn cờ), **kể cả khi công ty là công ty IT hay tin nằm trong chuyên mục IT**:
   - sales, kinh doanh, marketing thuần (bán phần mềm, bán cloud mà không làm kỹ thuật);
   - thiết kế đồ họa;
-  - kỹ sư điện, cơ khí.
+  - kỹ sư điện, cơ khí;
+  - theo Q1–Q4, Q7, Q8: presales / technical sales (kể cả cloud), DPO và privacy compliance, kỹ sư AV (nghe nhìn), kỹ sư nhúng / IoT / firmware, trợ giảng – giảng dạy, quản lý vận hành và product growth không làm kỹ thuật.
 - Khi phải đổi chác giữa giữ tin IT và giữ dữ liệu sạch: **ưu tiên sạch** (precision IT).
 - Chuyên mục sàn chỉ là tín hiệu phụ: không tự quyết, không cứu được tin ở nhóm loại hoàn toàn.
 
@@ -74,18 +75,18 @@ Số tin là của lần chạy lại 18/11 (sau khi thêm C9 và đổi luật 
 | Nhân Viên Thiết Kế; Chuyên Viên Thiết Kế (đồ họa, bao bì) | topcv | Không IT, loại (thiết kế đồ họa) |
 | Kỹ Sư Thiết Kế Điện; Nhân Viên Thiết Kế Hệ Thống Điện, Điện Nhẹ, BMS/SCADA | vieclam24h | Không IT, loại (kỹ sư điện) |
 
-**Câu hỏi chờ người dùng** (định nghĩa chưa nói rõ):
+**Ca ranh giới đã hỏi** (người dùng trả lời 19/11: "Q5 IT, Q6 IT, còn lại không IT"):
 
-| # | Tin | Nguồn | Vì sao chưa rõ |
-|---|---|---|---|
-| Q1 | Cloud Technical Sales / PreSales | jobsgo | Vừa "sales" (loại) vừa "presales kỹ thuật IT" (giữ) |
-| Q2 | Phụ Trách Bảo Vệ Dữ Liệu (DPO); Privacy Compliance – Junior | topcv | Pháp chế dữ liệu hay bảo mật thông tin |
-| Q3 | Kỹ Sư Cấu Hình triển khai hệ thống AV; AVVC Events Engineer - Tech Lounge & AV | vietnamworks, itviec | Thiết bị nghe nhìn: điện tử hay hạ tầng IT |
-| Q4 | Kỹ Sư IoT; Kỹ sư nhúng (firmware) | topcv | Gần kỹ sư điện tử; định nghĩa chưa nhắc nhúng/IoT |
-| Q5 | KỸ SƯ TỰ ĐỘNG HÓA (dùng C++, Python, SQL) | careerviet | Tự động hóa công nghiệp (cơ khí/điện) hay lập trình |
-| Q6 | Chuyên viên phân tích định lượng rủi ro (Python, MATLAB); Nhân viên Kế Hoạch Mạng Bay (Python, SQL) | careerviet, vietnamworks | Dùng công cụ dữ liệu nhưng vai trò là nghiệp vụ tài chính / hàng không |
-| Q7 | Research and Teaching Assistant in Business Analytics | vietnamworks | Giảng dạy + phân tích dữ liệu |
-| Q8 | Operations Manager; Senior/Lead Business Ownership (Product & Growth) ở công ty công nghệ | topcv, itviec | Quản lý vận hành/sản phẩm, không rõ có làm với hệ thống IT |
+| # | Tin | Nguồn | Vì sao từng chưa rõ | Chốt |
+|---|---|---|---|---|
+| Q1 | Cloud Technical Sales / PreSales | jobsgo | Vừa "sales" (loại) vừa "presales kỹ thuật IT" (giữ) | Không IT |
+| Q2 | Phụ Trách Bảo Vệ Dữ Liệu (DPO); Privacy Compliance – Junior | topcv | Pháp chế dữ liệu hay bảo mật thông tin | Không IT |
+| Q3 | Kỹ Sư Cấu Hình triển khai hệ thống AV; AVVC Events Engineer - Tech Lounge & AV | vietnamworks, itviec | Thiết bị nghe nhìn: điện tử hay hạ tầng IT | Không IT |
+| Q4 | Kỹ Sư IoT; Kỹ sư nhúng (firmware) | topcv | Gần kỹ sư điện tử; định nghĩa chưa nhắc nhúng/IoT | Không IT |
+| Q5 | KỸ SƯ TỰ ĐỘNG HÓA (dùng C++, Python, SQL) | careerviet | Tự động hóa công nghiệp (cơ khí/điện) hay lập trình | IT |
+| Q6 | Chuyên viên phân tích định lượng rủi ro (Python, MATLAB); Nhân viên Kế Hoạch Mạng Bay (Python, SQL) | careerviet, vietnamworks | Dùng công cụ dữ liệu nhưng vai trò là nghiệp vụ tài chính / hàng không | IT |
+| Q7 | Research and Teaching Assistant in Business Analytics | vietnamworks | Giảng dạy + phân tích dữ liệu | Không IT |
+| Q8 | Operations Manager; Senior/Lead Business Ownership (Product & Growth) ở công ty công nghệ | topcv, itviec | Quản lý vận hành/sản phẩm, không rõ có làm với hệ thống IT | Không IT |
 
 ## 3. Quy trình xử lý
 
