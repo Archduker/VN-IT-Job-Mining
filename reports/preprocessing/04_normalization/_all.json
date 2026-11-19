@@ -2,23 +2,29 @@
   "step": "04_normalization",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T22:25:18+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:18:47+00:00",
+  "code_version": "63f62b2",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 4671
+    "rows": 3997
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 4671
+    "rows": 3916
   },
-  "dropped": [],
+  "dropped": [
+    {
+      "rule": "Q1",
+      "reason": "TRANSLATION_FAILED",
+      "rows": 81
+    }
+  ],
   "rules": [
     {
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 4574,
+      "rows_affected": 3924,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -43,21 +49,21 @@
         }
       ],
       "by_source": {
-        "topcv": 1513,
-        "topdev": 202,
-        "vietnamworks": 766,
-        "careerviet": 394,
-        "vieclam24h": 164,
-        "itviec": 805,
-        "glints": 184,
-        "jobsgo": 546
+        "topcv": 1265,
+        "topdev": 168,
+        "vietnamworks": 585,
+        "careerviet": 399,
+        "vieclam24h": 121,
+        "itviec": 773,
+        "glints": 114,
+        "jobsgo": 499
       }
     },
     {
       "id": "N13",
       "name": "Tỉnh từ raw_location_text/company_address khi locations không ra tỉnh",
       "action": "modify",
-      "rows_affected": 656,
+      "rows_affected": 629,
       "examples": [
         {
           "job_id": "02ab4af2-fa4b-4b73-9795-c9047f9b9dbc",
@@ -82,12 +88,12 @@
         }
       ],
       "by_source": {
-        "topcv": 6,
+        "topcv": 5,
         "topdev": 0,
-        "vietnamworks": 7,
+        "vietnamworks": 4,
         "careerviet": 0,
         "vieclam24h": 0,
-        "itviec": 634,
+        "itviec": 611,
         "glints": 1,
         "jobsgo": 8
       }
@@ -96,7 +102,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 4283,
+      "rows_affected": 3707,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -106,36 +112,36 @@
           "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
         },
         {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "seniority",
+          "before": "[DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai",
+          "after": "Intern/Fresher (kinh_nghiem)",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
           "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
           "field": "seniority",
           "before": "AI Applied Coordinator Intern",
           "after": "Intern/Fresher (title)",
           "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
-        },
-        {
-          "job_id": "02ab4af2-fa4b-4b73-9795-c9047f9b9dbc",
-          "field": "seniority",
-          "before": "Developer",
-          "after": "Middle (kinh_nghiem)",
-          "url": "https://glints.com/vn/opportunities/jobs/developer/02ab4af2-fa4b-4b73-9795-c9047f9b9dbc"
         }
       ],
       "by_source": {
-        "topcv": 1483,
-        "topdev": 99,
-        "vietnamworks": 635,
-        "careerviet": 365,
-        "vieclam24h": 161,
-        "itviec": 772,
-        "glints": 227,
-        "jobsgo": 541
+        "topcv": 1239,
+        "topdev": 124,
+        "vietnamworks": 503,
+        "careerviet": 374,
+        "vieclam24h": 119,
+        "itviec": 707,
+        "glints": 146,
+        "jobsgo": 495
       }
     },
     {
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 3964,
+      "rows_affected": 3462,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -160,196 +166,162 @@
         }
       ],
       "by_source": {
-        "topcv": 1312,
-        "topdev": 147,
-        "vietnamworks": 608,
-        "careerviet": 337,
-        "vieclam24h": 134,
-        "itviec": 740,
-        "glints": 224,
-        "jobsgo": 462
+        "topcv": 1118,
+        "topdev": 132,
+        "vietnamworks": 489,
+        "careerviet": 338,
+        "vieclam24h": 101,
+        "itviec": 708,
+        "glints": 136,
+        "jobsgo": 440
       }
     },
     {
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 2091,
+      "rows_affected": 1744,
       "examples": [],
       "by_source": {
-        "topcv": 763,
-        "topdev": 72,
-        "vietnamworks": 289,
-        "careerviet": 173,
-        "vieclam24h": 94,
-        "itviec": 319,
-        "glints": 109,
-        "jobsgo": 272
+        "topcv": 596,
+        "topdev": 60,
+        "vietnamworks": 227,
+        "careerviet": 171,
+        "vieclam24h": 66,
+        "itviec": 307,
+        "glints": 66,
+        "jobsgo": 251
       }
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 4337,
+      "rows_affected": 3540,
       "examples": [],
       "by_source": {
-        "topcv": 1484,
-        "topdev": 181,
-        "vietnamworks": 774,
-        "careerviet": 323,
-        "vieclam24h": 164,
-        "itviec": 818,
-        "glints": 241,
-        "jobsgo": 352
+        "topcv": 1092,
+        "topdev": 141,
+        "vietnamworks": 592,
+        "careerviet": 322,
+        "vieclam24h": 121,
+        "itviec": 785,
+        "glints": 150,
+        "jobsgo": 337
       }
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 4668,
+      "rows_affected": 3996,
       "examples": [],
       "by_source": {
-        "topcv": 1519,
-        "topdev": 202,
-        "vietnamworks": 774,
-        "careerviet": 400,
-        "vieclam24h": 163,
-        "itviec": 818,
-        "glints": 246,
-        "jobsgo": 546
+        "topcv": 1270,
+        "topdev": 168,
+        "vietnamworks": 592,
+        "careerviet": 405,
+        "vieclam24h": 121,
+        "itviec": 785,
+        "glints": 155,
+        "jobsgo": 500
       }
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 371,
+      "rows_affected": 441,
       "examples": [],
       "by_source": {
-        "topcv": 50,
-        "topdev": 14,
-        "vietnamworks": 13,
-        "careerviet": 68,
+        "topcv": 155,
+        "topdev": 23,
+        "vietnamworks": 12,
+        "careerviet": 70,
         "vieclam24h": 2,
-        "itviec": 58,
+        "itviec": 22,
         "glints": 4,
-        "jobsgo": 162
+        "jobsgo": 153
       }
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 2516,
+      "rows_affected": 2120,
       "examples": [],
       "by_source": {
-        "topcv": 922,
-        "topdev": 37,
-        "vietnamworks": 357,
-        "careerviet": 226,
-        "vieclam24h": 139,
-        "itviec": 332,
-        "glints": 147,
-        "jobsgo": 356
+        "topcv": 726,
+        "topdev": 73,
+        "vietnamworks": 285,
+        "careerviet": 238,
+        "vieclam24h": 98,
+        "itviec": 282,
+        "glints": 96,
+        "jobsgo": 322
       }
     },
     {
       "id": "M4",
-      "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
+      "name": "Kinh nghiệm thiếu sau khi chọn ô/JD: điền cận dưới theo cấp bậc, exp_inferred=True",
       "action": "flag",
-      "rows_affected": 192,
+      "rows_affected": 54,
       "examples": [],
       "by_source": {
         "topcv": 0,
-        "topdev": 48,
-        "vietnamworks": 48,
-        "careerviet": 20,
+        "topdev": 3,
+        "vietnamworks": 15,
+        "careerviet": 7,
         "vieclam24h": 0,
-        "itviec": 65,
-        "glints": 11,
+        "itviec": 26,
+        "glints": 3,
         "jobsgo": 0
       }
     },
     {
-      "id": "N6a",
-      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
-      "action": "flag",
-      "rows_affected": 15,
-      "examples": [],
-      "by_source": {
-        "topcv": 2,
-        "topdev": 0,
-        "vietnamworks": 3,
-        "careerviet": 1,
-        "vieclam24h": 2,
-        "itviec": 1,
-        "glints": 5,
-        "jobsgo": 1
-      }
-    },
-    {
-      "id": "N6",
-      "name": "Gắn cờ ngoại lai lương IQR gộp và Winsorize 1-99% (cột *_capped)",
+      "id": "N14",
+      "name": "work_mode từ ô của sàn hoặc JD (T9a); còn lại theo địa điểm",
       "action": "modify",
-      "rows_affected": 104,
+      "rows_affected": 2242,
       "examples": [],
       "by_source": {
-        "topcv": 7,
-        "topdev": 1,
-        "vietnamworks": 36,
-        "careerviet": 1,
-        "vieclam24h": 0,
-        "itviec": 55,
-        "glints": 1,
-        "jobsgo": 3
+        "topcv": 1265,
+        "topdev": 5,
+        "vietnamworks": 13,
+        "careerviet": 9,
+        "vieclam24h": 3,
+        "itviec": 767,
+        "glints": 155,
+        "jobsgo": 25
       }
     },
     {
-      "id": "M5",
-      "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
-      "action": "flag",
-      "rows_affected": 74,
+      "id": "N19",
+      "name": "employment_type: tiêu đề Intern → ô của sàn → JD",
+      "action": "modify",
+      "rows_affected": 3738,
       "examples": [],
       "by_source": {
-        "topcv": 9,
-        "topdev": 1,
-        "vietnamworks": 22,
-        "careerviet": 0,
-        "vieclam24h": 2,
-        "itviec": 19,
-        "glints": 7,
-        "jobsgo": 14
+        "topcv": 1264,
+        "topdev": 4,
+        "vietnamworks": 538,
+        "careerviet": 396,
+        "vieclam24h": 121,
+        "itviec": 763,
+        "glints": 155,
+        "jobsgo": 497
       }
     },
     {
-      "id": "M6",
-      "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
-      "action": "flag",
-      "rows_affected": 150,
-      "examples": [],
-      "by_source": {
-        "topcv": 23,
-        "topdev": 2,
-        "vietnamworks": 41,
-        "careerviet": 1,
-        "vieclam24h": 1,
-        "itviec": 70,
-        "glints": 2,
-        "jobsgo": 10
-      }
-    },
-    {
-      "id": "M8",
-      "name": "min > max, kinh nghiệm ngoài khoảng: chỉ cờ",
-      "action": "flag",
-      "rows_affected": 5,
+      "id": "N2c",
+      "name": "Cấp bậc Intern/Fresher từ employment_type internship",
+      "action": "modify",
+      "rows_affected": 0,
       "examples": [],
       "by_source": {
         "topcv": 0,
-        "topdev": 1,
-        "vietnamworks": 4,
+        "topdev": 0,
+        "vietnamworks": 0,
         "careerviet": 0,
         "vieclam24h": 0,
         "itviec": 0,
@@ -358,55 +330,213 @@
       }
     },
     {
+      "id": "M4s",
+      "name": "Kinh nghiệm lấy từ JD khi ô trống (itviec: JD trước)",
+      "action": "modify",
+      "rows_affected": 219,
+      "examples": [],
+      "by_source": {
+        "topcv": 4,
+        "topdev": 90,
+        "vietnamworks": 40,
+        "careerviet": 17,
+        "vieclam24h": 0,
+        "itviec": 57,
+        "glints": 9,
+        "jobsgo": 2
+      }
+    },
+    {
+      "id": "M4c",
+      "name": "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict",
+      "action": "flag",
+      "rows_affected": 724,
+      "examples": [],
+      "by_source": {
+        "topcv": 41,
+        "topdev": 12,
+        "vietnamworks": 55,
+        "careerviet": 65,
+        "vieclam24h": 7,
+        "itviec": 449,
+        "glints": 1,
+        "jobsgo": 94
+      }
+    },
+    {
+      "id": "Q1",
+      "name": "Cách ly tin dịch EN→VI vẫn hỏng: ghi quarantine.parquet, không vào all.parquet",
+      "action": "drop",
+      "rows_affected": 81,
+      "examples": [
+        {
+          "job_id": "careerviet_35C83935",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/security-engineer.35C83935.html"
+        },
+        {
+          "job_id": "careerviet_35C87AB9",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/application-support-it-support.35C87AB9.html"
+        },
+        {
+          "job_id": "careerviet_35C884E8",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/lap-trinh-vien-ai-ai-developer-llm-applied-ai.35C884E8.html"
+        }
+      ],
+      "by_source": {
+        "topcv": 5,
+        "topdev": 2,
+        "vietnamworks": 9,
+        "careerviet": 3,
+        "vieclam24h": 0,
+        "itviec": 49,
+        "glints": 9,
+        "jobsgo": 4
+      }
+    },
+    {
+      "id": "N6a",
+      "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+      "action": "flag",
+      "rows_affected": 12,
+      "examples": [],
+      "by_source": {
+        "topcv": 1,
+        "topdev": 0,
+        "vietnamworks": 3,
+        "careerviet": 1,
+        "vieclam24h": 2,
+        "itviec": 1,
+        "glints": 3,
+        "jobsgo": 1
+      }
+    },
+    {
+      "id": "N6",
+      "name": "Gắn cờ ngoại lai lương IQR gộp và Winsorize 1-99% (cột *_capped)",
+      "action": "modify",
+      "rows_affected": 87,
+      "examples": [],
+      "by_source": {
+        "topcv": 5,
+        "topdev": 1,
+        "vietnamworks": 29,
+        "careerviet": 1,
+        "vieclam24h": 0,
+        "itviec": 48,
+        "glints": 0,
+        "jobsgo": 3
+      }
+    },
+    {
+      "id": "M5",
+      "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
+      "action": "flag",
+      "rows_affected": 59,
+      "examples": [],
+      "by_source": {
+        "topcv": 7,
+        "topdev": 1,
+        "vietnamworks": 18,
+        "careerviet": 0,
+        "vieclam24h": 2,
+        "itviec": 15,
+        "glints": 2,
+        "jobsgo": 14
+      }
+    },
+    {
+      "id": "M6",
+      "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
+      "action": "flag",
+      "rows_affected": 109,
+      "examples": [],
+      "by_source": {
+        "topcv": 15,
+        "topdev": 3,
+        "vietnamworks": 31,
+        "careerviet": 0,
+        "vieclam24h": 1,
+        "itviec": 51,
+        "glints": 1,
+        "jobsgo": 7
+      }
+    },
+    {
+      "id": "M8",
+      "name": "min > max, kinh nghiệm ngoài khoảng: chỉ cờ",
+      "action": "flag",
+      "rows_affected": 4,
+      "examples": [],
+      "by_source": {
+        "topcv": 0,
+        "topdev": 0,
+        "vietnamworks": 3,
+        "careerviet": 0,
+        "vieclam24h": 0,
+        "itviec": 1,
+        "glints": 0,
+        "jobsgo": 0
+      }
+    },
+    {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 2081,
+      "rows_affected": 1685,
       "examples": [],
       "by_source": {
-        "topcv": 864,
-        "topdev": 57,
-        "vietnamworks": 207,
+        "topcv": 692,
+        "topdev": 51,
+        "vietnamworks": 151,
         "careerviet": 120,
-        "vieclam24h": 151,
-        "itviec": 209,
-        "glints": 149,
-        "jobsgo": 324
+        "vieclam24h": 110,
+        "itviec": 193,
+        "glints": 90,
+        "jobsgo": 278
       }
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 4668,
+      "rows_affected": 3915,
       "examples": [],
       "by_source": {
-        "topcv": 1519,
-        "topdev": 202,
-        "vietnamworks": 774,
-        "careerviet": 400,
-        "vieclam24h": 163,
-        "itviec": 818,
-        "glints": 246,
-        "jobsgo": 546
+        "topcv": 1265,
+        "topdev": 166,
+        "vietnamworks": 583,
+        "careerviet": 402,
+        "vieclam24h": 121,
+        "itviec": 736,
+        "glints": 146,
+        "jobsgo": 496
       }
     }
   ],
   "fields": [
     {
       "field": "locations",
-      "fill_pct_in": 99.7,
-      "fill_pct_out": 99.7
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 97.8,
-      "fill_pct_out": 97.8
+      "fill_pct_in": 98.2,
+      "fill_pct_out": 98.2
     },
     {
       "field": "seniority",
-      "fill_pct_in": 91.7,
-      "fill_pct_out": 91.7
+      "fill_pct_in": 92.7,
+      "fill_pct_out": 92.7
     },
     {
       "field": "seniority_source",
@@ -425,33 +555,33 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 92.9,
-      "fill_pct_out": 92.9
+      "fill_pct_in": 88.4,
+      "fill_pct_out": 88.4
     },
     {
       "field": "company_norm",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 40.2,
-      "fill_pct_out": 40.2
+      "fill_pct_in": 38.2,
+      "fill_pct_out": 38.2
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 44.5,
-      "fill_pct_out": 44.5
+      "fill_pct_in": 43.0,
+      "fill_pct_out": 43.0
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 40.2,
-      "fill_pct_out": 40.2
+      "fill_pct_in": 38.2,
+      "fill_pct_out": 38.2
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 44.5,
-      "fill_pct_out": 44.5
+      "fill_pct_in": 43.0,
+      "fill_pct_out": 43.0
     },
     {
       "field": "is_outlier_salary",
@@ -460,18 +590,18 @@
     },
     {
       "field": "job_title_core",
-      "fill_pct_in": 100.0,
-      "fill_pct_out": 100.0
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 44.8,
-      "fill_pct_out": 44.8
+      "fill_pct_in": 43.7,
+      "fill_pct_out": 43.7
     },
     {
       "field": "company_key",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "work_mode",
@@ -495,8 +625,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 94.8,
-      "fill_pct_out": 94.8
+      "fill_pct_in": 97.9,
+      "fill_pct_out": 97.9
     },
     {
       "field": "exp_source",
@@ -525,210 +655,103 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1520,
-        "output": 1520
+        "input": 1270,
+        "output": 1265
       },
       "topdev": {
-        "input": 202,
-        "output": 202
+        "input": 168,
+        "output": 166
       },
       "vietnamworks": {
-        "input": 774,
-        "output": 774
+        "input": 592,
+        "output": 583
       },
       "careerviet": {
-        "input": 400,
-        "output": 400
+        "input": 405,
+        "output": 402
       },
       "vieclam24h": {
-        "input": 164,
-        "output": 164
+        "input": 121,
+        "output": 121
       },
       "itviec": {
-        "input": 818,
-        "output": 818
+        "input": 785,
+        "output": 736
       },
       "glints": {
-        "input": 246,
-        "output": 246
+        "input": 155,
+        "output": 146
       },
       "jobsgo": {
-        "input": 547,
-        "output": 547
+        "input": 501,
+        "output": 497
+      }
+    },
+    "quarantine": {
+      "rows": 81,
+      "file": "data/preprocessing/04_normalization/quarantine.parquet",
+      "by_source": {
+        "topcv": 5,
+        "topdev": 2,
+        "vietnamworks": 9,
+        "careerviet": 3,
+        "vieclam24h": 0,
+        "itviec": 49,
+        "glints": 9,
+        "jobsgo": 4
       }
     },
     "global_salary_stats": {
-      "outlier_count": 104,
+      "outlier_count": 87,
       "salary_suspect_count": 0,
       "iqr_bounds": {
         "lower": 0.0,
-        "upper": 76000000.0
+        "upper": 74500000.0
       },
-      "winsorize_q01_min": 1156000.0000000002,
-      "winsorize_q99_min": 90316800.00000004,
-      "winsorize_q01_max": 2400000.0,
+      "winsorize_q01_min": 1976000.0000000005,
+      "winsorize_q99_min": 76253999.99999996,
+      "winsorize_q01_max": 2000000.0,
       "winsorize_q99_max": 127000000.0
     },
-    "total_jobs": 4671,
-    "anomalies_total": 3481,
+    "total_jobs": 3916,
+    "anomalies_total": 3765,
     "anomalies_by_kind": {
-      "level_inferred": 2516,
-      "seniority_can_kiem": 115,
-      "job_family_can_kiem": 258,
-      "salary_negotiable_with_value": 26,
-      "tinh_unknown": 94,
-      "salary_iqr_outlier_by_level": 150,
-      "salary_out_of_range": 74,
-      "salary_iqr_outlier_pooled": 27,
-      "salary_suspect": 15,
-      "salary_period_year": 6,
-      "exp_inferred": 192,
-      "salary_min_gt_max": 1,
-      "exp_out_of_range": 4,
-      "currency_reinterpreted": 3
+      "level_inferred": 2978,
+      "seniority_can_kiem": 76,
+      "job_family_can_kiem": 364,
+      "tinh_unknown": 65,
+      "salary_negotiable_with_value": 20,
+      "salary_iqr_outlier_by_level": 109,
+      "salary_out_of_range": 59,
+      "salary_iqr_outlier_pooled": 21,
+      "salary_suspect": 12,
+      "salary_period_year": 3,
+      "exp_inferred": 51,
+      "currency_reinterpreted": 3,
+      "exp_out_of_range": 4
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "company_pairs_pending": 11
   },
   "samples": [
     {
-      "job_id": "topcv_2310960",
+      "job_id": "topcv_2320537",
       "source": "topcv",
       "field": "locations",
       "before": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Vĩnh Tuy",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: 458 Minh Khai, Timescity, Phường Vĩnh Tuy (Phường Vĩnh Tuy có thể thuộc các quận Hai Bà Trưng, Hoàng Mai cũ)"
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Vĩnh Tuy",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: 458 Minh Khai, Timescity, Phường Vĩnh Tuy (Phường Vĩnh Tuy có thể thuộc các quận Hai Bà Trưng, Hoàng Mai cũ)",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2281862",
-      "source": "topcv",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": null,
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Phường Láng (Phường Láng thuộc quận Đống Đa cũ) - Phạm vi làm việc trên toàn khu vực trên."
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": null,
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Phường Láng (Phường Láng thuộc quận Đống Đa cũ) - Phạm vi làm việc trên toàn khu vực trên.",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2277469",
-      "source": "topcv",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": "Bắc Ninh: Số 89 đường Hữu Nghị",
-          "phuong_xa": "Phường Từ Sơn",
-          "tinh_thanh": "TP. Bắc Ninh",
-          "raw": "Bắc Ninh: Số 89 đường Hữu Nghị, KCN VSIP Bắc Ninh tỉnh Bắc Ninh, VN, Phường Từ Sơn (Phường Từ Sơn thuộc Thành phố Từ Sơn cũ)"
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": "Bắc Ninh: Số 89 đường Hữu Nghị",
-          "phuong_xa": "Phường Từ Sơn",
-          "tinh_thanh": "TP. Bắc Ninh",
-          "raw": "Bắc Ninh: Số 89 đường Hữu Nghị, KCN VSIP Bắc Ninh tỉnh Bắc Ninh, VN, Phường Từ Sơn (Phường Từ Sơn thuộc Thành phố Từ Sơn cũ)",
-          "tinh_key": "bac_ninh",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2141521",
-      "source": "topdev",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": "Tầng 6, Gelex Tower, 52 Lê Đại Hành, Hà Nội",
-          "phuong_xa": "Phường Hai Bà Trưng",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 6, Gelex Tower, 52 Lê Đại Hành, phường Hai Bà Trưng, Hà Nội, Thành phố Hà Nội"
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": "Tầng 6, Gelex Tower, 52 Lê Đại Hành, Hà Nội",
-          "phuong_xa": "Phường Hai Bà Trưng",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 6, Gelex Tower, 52 Lê Đại Hành, phường Hai Bà Trưng, Hà Nội, Thành phố Hà Nội",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2136047",
-      "source": "topdev",
-      "field": "exp_min_years",
-      "before": null,
-      "after": 4.0,
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2136294",
-      "source": "topdev",
-      "field": "exp_min_years",
-      "before": null,
-      "after": 2.0,
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2111781",
-      "source": "vietnamworks",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": "Unit D3-1, 3rd floor, Standard Factory D, Lot Va.04b located on Road 24 & 17, Industrial Park within Tan Thuan Export Processing Zone, Tan Thuan Dong Ward, District 7",
-          "phuong_xa": null,
+          "phuong_xa": "Phường An Khánh",
           "tinh_thanh": "TP. Hồ Chí Minh",
-          "raw": "Unit D3-1, 3rd floor, Standard Factory D, Lot Va.04b located on Road 24 & 17, Industrial Park within Tan Thuan Export Processing Zone, Tan Thuan Dong Ward, District 7, Ho Chi Minh"
+          "raw": "Hồ Chí Minh: 34 Đường số 11, Phường An Khánh (Phường An Khánh thuộc Thành phố Thủ Đức cũ)"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Unit D3-1, 3rd floor, Standard Factory D, Lot Va.04b located on Road 24 & 17, Industrial Park within Tan Thuan Export Processing Zone, Tan Thuan Dong Ward, District 7",
-          "phuong_xa": null,
+          "dia_chi_cu_the": null,
+          "phuong_xa": "Phường An Khánh",
           "tinh_thanh": "TP. Hồ Chí Minh",
-          "raw": "Unit D3-1, 3rd floor, Standard Factory D, Lot Va.04b located on Road 24 & 17, Industrial Park within Tan Thuan Export Processing Zone, Tan Thuan Dong Ward, District 7, Ho Chi Minh",
+          "raw": "Hồ Chí Minh: 34 Đường số 11, Phường An Khánh (Phường An Khánh thuộc Thành phố Thủ Đức cũ)",
           "tinh_key": "ho_chi_minh",
           "tinh_cu": null,
           "remote": false,
@@ -738,113 +761,47 @@
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2119100",
-      "source": "vietnamworks",
-      "field": "exp_min_years",
-      "before": null,
-      "after": 5.0,
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2121022",
-      "source": "vietnamworks",
+      "job_id": "topcv_2321780",
+      "source": "topcv",
       "field": "exp_min_years",
       "before": null,
       "after": 0.0,
       "changed": true
     },
     {
-      "job_id": "careerviet_35C8ABCD",
-      "source": "careerviet",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": "Hồ Chí Minh",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hồ Chí Minh, Hà Nội"
-        },
-        {
-          "dia_chi_cu_the": "Địa điểm làm việc Hồ Chí Minh 235 Nguyễn Văn Cừ, Nguyễn Cư Trinh, Hồ Chí Minh Hà Nội Công ty TNHH kỹ thuật bền vững Việt Nam, Tầng 14, Tòa nhà Geleximco, 36 Hoàng Cầu, Ô Chợ Dừa",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Địa điểm làm việc Hồ Chí Minh 235 Nguyễn Văn Cừ, Nguyễn Cư Trinh, Quận 1, Hồ Chí Minh Hà Nội Công ty TNHH kỹ thuật bền vững Việt Nam, Tầng 14, Tòa nhà Geleximco, 36 Hoàng Cầu, Ô Chợ Dừa, Hà Nội"
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": "Hồ Chí Minh",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hồ Chí Minh, Hà Nội",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        },
-        {
-          "dia_chi_cu_the": "Địa điểm làm việc Hồ Chí Minh 235 Nguyễn Văn Cừ, Nguyễn Cư Trinh, Hồ Chí Minh Hà Nội Công ty TNHH kỹ thuật bền vững Việt Nam, Tầng 14, Tòa nhà Geleximco, 36 Hoàng Cầu, Ô Chợ Dừa",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Địa điểm làm việc Hồ Chí Minh 235 Nguyễn Văn Cừ, Nguyễn Cư Trinh, Quận 1, Hồ Chí Minh Hà Nội Công ty TNHH kỹ thuật bền vững Việt Nam, Tầng 14, Tòa nhà Geleximco, 36 Hoàng Cầu, Ô Chợ Dừa, Hà Nội",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C8AE4D",
-      "source": "careerviet",
-      "field": "exp_min_years",
-      "before": null,
-      "after": 4.0,
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C8B910",
-      "source": "careerviet",
+      "job_id": "topcv_2332279",
+      "source": "topcv",
       "field": "exp_min_years",
       "before": null,
       "after": 0.0,
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200962931",
-      "source": "vieclam24h",
+      "job_id": "topdev_2137769",
+      "source": "topdev",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 3.0,
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2134508",
+      "source": "topdev",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Số 29, đường Giáp Bát",
-          "phuong_xa": null,
+          "dia_chi_cu_the": "MB Tower, số 18 Lê Văn Lương",
+          "phuong_xa": "Phường Yên Hoà",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Số 29, đường Giáp Bát, Phường Giáp Bát, Quận Hoàng Mai, Thành phố Hà Nội, Việt Nam"
-        },
-        {
-          "dia_chi_cu_the": "101 Láng Hạ",
-          "phuong_xa": "Phường Đống Đa",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội : 101 Láng Hạ, Phường Đống Đa (Quận Đống Đa, Hà Nội cũ)"
+          "raw": "MB Tower, số 18 Lê Văn Lương, Phường Yên Hòa, Thành phố Hà Nội"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Số 29, đường Giáp Bát",
-          "phuong_xa": null,
+          "dia_chi_cu_the": "MB Tower, số 18 Lê Văn Lương",
+          "phuong_xa": "Phường Yên Hoà",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Số 29, đường Giáp Bát, Phường Giáp Bát, Quận Hoàng Mai, Thành phố Hà Nội, Việt Nam",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        },
-        {
-          "dia_chi_cu_the": "101 Láng Hạ",
-          "phuong_xa": "Phường Đống Đa",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội : 101 Láng Hạ, Phường Đống Đa (Quận Đống Đa, Hà Nội cũ)",
+          "raw": "MB Tower, số 18 Lê Văn Lương, Phường Yên Hòa, Thành phố Hà Nội",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
@@ -854,39 +811,23 @@
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200967133",
-      "source": "vieclam24h",
+      "job_id": "topdev_2142422",
+      "source": "topdev",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch, Q.Cầu Giấy, Hà Nội, Việt Nam."
-        },
-        {
-          "dia_chi_cu_the": "FPT Tân Thuận 2, Lô L.29B-31B-33B Đường Tân Thuận, Khu chế xuất Tân Thuận",
-          "phuong_xa": "Phường Tân Thuận",
+          "dia_chi_cu_the": "Số 46-48-50-52-54-56-58-60-62-64 đường số 8, KDC Trung Sơn",
+          "phuong_xa": "Xã Bình Hưng",
           "tinh_thanh": "TP. Hồ Chí Minh",
-          "raw": "TP.HCM : FPT Tân Thuận 2, Lô L.29B-31B-33B Đường Tân Thuận, Khu chế xuất Tân Thuận, Phường Tân Thuận (Quận 7, TP.HCM cũ)"
+          "raw": "Số 46-48-50-52-54-56-58-60-62-64 đường số 8, KDC Trung Sơn, Xã Bình Hưng, Huyện Bình Chánh, Thành phố Hồ Chí Minh"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 18 Tòa nhà FPT Tower, số 10 Phạm Văn Bạch, Q.Cầu Giấy, Hà Nội, Việt Nam.",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        },
-        {
-          "dia_chi_cu_the": "FPT Tân Thuận 2, Lô L.29B-31B-33B Đường Tân Thuận, Khu chế xuất Tân Thuận",
-          "phuong_xa": "Phường Tân Thuận",
+          "dia_chi_cu_the": "Số 46-48-50-52-54-56-58-60-62-64 đường số 8, KDC Trung Sơn",
+          "phuong_xa": "Xã Bình Hưng",
           "tinh_thanh": "TP. Hồ Chí Minh",
-          "raw": "TP.HCM : FPT Tân Thuận 2, Lô L.29B-31B-33B Đường Tân Thuận, Khu chế xuất Tân Thuận, Phường Tân Thuận (Quận 7, TP.HCM cũ)",
+          "raw": "Số 46-48-50-52-54-56-58-60-62-64 đường số 8, KDC Trung Sơn, Xã Bình Hưng, Huyện Bình Chánh, Thành phố Hồ Chí Minh",
           "tinh_key": "ho_chi_minh",
           "tinh_cu": null,
           "remote": false,
@@ -896,39 +837,39 @@
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200964049",
-      "source": "vieclam24h",
+      "job_id": "vietnamworks_2117981",
+      "source": "vietnamworks",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Tầng 1, Tòa B, 289A, Đường Khuất Duy Tiến",
-          "phuong_xa": "Phường Đại Mỗ",
+          "dia_chi_cu_the": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn, Duy Tân, Cầu Giấy",
+          "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 1, Tòa B, 289A, Đường Khuất Duy Tiến, Phường Đại Mỗ, TP Hà Nội"
+          "raw": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn - Duy Tân, Cầu Giấy, Hà Nội"
         },
         {
-          "dia_chi_cu_the": "289A Khuất Duy Tiến",
-          "phuong_xa": "Phường Đại Mỗ",
+          "dia_chi_cu_the": "18A Cộng Hòa, Thành phố Hồ Chí Minh, 89B Lý Nam Đế, Hà Nội, Tòa CIT 6/15 Duy Tân",
+          "phuong_xa": "Phường Hoàn Kiếm",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội : 289A Khuất Duy Tiến, Phường Đại Mỗ (Quận Nam Từ Liêm, Hà Nội cũ)"
+          "raw": "18A Cộng Hòa, Phường Bảy Hiền, Thành phố Hồ Chí Minh; 89B Lý Nam Đế, Phường Hoàn Kiếm, Hà Nội; Tòa CIT 6/15 Duy Tân, Phường Cầu Giấy, Hà Nội"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Tầng 1, Tòa B, 289A, Đường Khuất Duy Tiến",
-          "phuong_xa": "Phường Đại Mỗ",
+          "dia_chi_cu_the": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn, Duy Tân, Cầu Giấy",
+          "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 1, Tòa B, 289A, Đường Khuất Duy Tiến, Phường Đại Mỗ, TP Hà Nội",
+          "raw": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn - Duy Tân, Cầu Giấy, Hà Nội",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
         },
         {
-          "dia_chi_cu_the": "289A Khuất Duy Tiến",
-          "phuong_xa": "Phường Đại Mỗ",
+          "dia_chi_cu_the": "18A Cộng Hòa, Thành phố Hồ Chí Minh, 89B Lý Nam Đế, Hà Nội, Tòa CIT 6/15 Duy Tân",
+          "phuong_xa": "Phường Hoàn Kiếm",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội : 289A Khuất Duy Tiến, Phường Đại Mỗ (Quận Nam Từ Liêm, Hà Nội cũ)",
+          "raw": "18A Cộng Hòa, Phường Bảy Hiền, Thành phố Hồ Chí Minh; 89B Lý Nam Đế, Phường Hoàn Kiếm, Hà Nội; Tòa CIT 6/15 Duy Tân, Phường Cầu Giấy, Hà Nội",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
@@ -938,23 +879,287 @@
       "changed": true
     },
     {
-      "job_id": "itviec_principal-software-engineer-node-js-typescript-money-forward-vietnam-co-ltd-4158",
+      "job_id": "vietnamworks_2114716",
+      "source": "vietnamworks",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 0.5,
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2119648",
+      "source": "vietnamworks",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 4.0,
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C88655",
+      "source": "careerviet",
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": null,
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Hồ Chí Minh"
+        },
+        {
+          "dia_chi_cu_the": "Địa điểm làm việc Hồ Chí Minh Tòa nhà The MORE, 60 Nguyễn Thông",
+          "phuong_xa": "Phường Nhiêu Lộc",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Địa điểm làm việc Hồ Chí Minh Tòa nhà The MORE, 60 Nguyễn Thông, Phường Nhiêu Lộc, Tp.HCM."
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": null,
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Hồ Chí Minh",
+          "tinh_key": "ho_chi_minh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Địa điểm làm việc Hồ Chí Minh Tòa nhà The MORE, 60 Nguyễn Thông",
+          "phuong_xa": "Phường Nhiêu Lộc",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Địa điểm làm việc Hồ Chí Minh Tòa nhà The MORE, 60 Nguyễn Thông, Phường Nhiêu Lộc, Tp.HCM.",
+          "tinh_key": "ho_chi_minh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C88B04",
+      "source": "careerviet",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 0.0,
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C89DDC",
+      "source": "careerviet",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 0.0,
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200955690",
+      "source": "vieclam24h",
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": "Số 06 ngõ 207 Bùi Xương Trạch",
+          "phuong_xa": "Phường Khương Đình",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Số 06 ngõ 207 Bùi Xương Trạch, Phường Khương Đình, TP Hà Nội"
+        },
+        {
+          "dia_chi_cu_the": "Tòa TH Office số 3/3 Duy Tân",
+          "phuong_xa": "Phường Cầu Giấy",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Tòa TH Office số 3/3 Duy Tân, Phường Cầu Giấy (Quận Cầu Giấy, Hà Nội cũ)"
+        },
+        {
+          "dia_chi_cu_the": "Tòa TH Office số 3/3 Duy Tân",
+          "phuong_xa": "Phường Ba Đình",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Tòa TH Office số 3/3 Duy Tân, Phường Ba Đình (Quận Ba Đình, Hà Nội cũ)"
+        },
+        {
+          "dia_chi_cu_the": "Tòa TH Office số 3/3 Duy Tân",
+          "phuong_xa": "Phường Nghĩa Đô",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Tòa TH Office số 3/3 Duy Tân, Phường Nghĩa Đô (Quận Cầu Giấy | Quận Bắc Từ Liêm, Hà Nội cũ)"
+        },
+        {
+          "dia_chi_cu_the": "Tòa TH Office số 3/3 Duy Tân",
+          "phuong_xa": "Phường Từ Liêm",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Tòa TH Office số 3/3 Duy Tân, Phường Từ Liêm (Quận Nam Từ Liêm, Hà Nội cũ)"
+        },
+        {
+          "dia_chi_cu_the": "Tòa TH Office số 3/3 Duy Tân",
+          "phuong_xa": "Phường Đống Đa",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Tòa TH Office số 3/3 Duy Tân, Phường Đống Đa (Quận Đống Đa, Hà Nội cũ)"
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": "Số 06 ngõ 207 Bùi Xương Trạch",
+          "phuong_xa": "Phường Khương Đình",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Số 06 ngõ 207 Bùi Xương Trạch, Phường Khương Đình, TP Hà Nội",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Tòa TH Office số 3/3 Duy Tân",
+          "phuong_xa": "Phường Cầu Giấy",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Tòa TH Office số 3/3 Duy Tân, Phường Cầu Giấy (Quận Cầu Giấy, Hà Nội cũ)",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Tòa TH Office số 3/3 Duy Tân",
+          "phuong_xa": "Phường Ba Đình",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Tòa TH Office số 3/3 Duy Tân, Phường Ba Đình (Quận Ba Đình, Hà Nội cũ)",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Tòa TH Office số 3/3 Duy Tân",
+          "phuong_xa": "Phường Nghĩa Đô",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Tòa TH Office số 3/3 Duy Tân, Phường Nghĩa Đô (Quận Cầu Giấy | Quận Bắc Từ Liêm, Hà Nội cũ)",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Tòa TH Office số 3/3 Duy Tân",
+          "phuong_xa": "Phường Từ Liêm",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Tòa TH Office số 3/3 Duy Tân, Phường Từ Liêm (Quận Nam Từ Liêm, Hà Nội cũ)",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "Tòa TH Office số 3/3 Duy Tân",
+          "phuong_xa": "Phường Đống Đa",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Hà Nội : Tòa TH Office số 3/3 Duy Tân, Phường Đống Đa (Quận Đống Đa, Hà Nội cũ)",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200970703",
+      "source": "vieclam24h",
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": "48B Đặng Dung",
+          "phuong_xa": "Phường Tân Định",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "48B Đặng Dung, Phường Tân Định, TP Hồ Chí Minh"
+        },
+        {
+          "dia_chi_cu_the": "35 Nguyễn Văn Đậu",
+          "phuong_xa": "Phường Bình Lợi Trung",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "TP.HCM : 35 Nguyễn Văn Đậu, Phường Bình Lợi Trung (Quận Bình Thạnh, TP.HCM cũ)"
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": "48B Đặng Dung",
+          "phuong_xa": "Phường Tân Định",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "48B Đặng Dung, Phường Tân Định, TP Hồ Chí Minh",
+          "tinh_key": "ho_chi_minh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "35 Nguyễn Văn Đậu",
+          "phuong_xa": "Phường Bình Lợi Trung",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "TP.HCM : 35 Nguyễn Văn Đậu, Phường Bình Lợi Trung (Quận Bình Thạnh, TP.HCM cũ)",
+          "tinh_key": "ho_chi_minh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200947793",
+      "source": "vieclam24h",
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": "Tầng 3, Tòa nhà Kingston, 146 Nguyễn Văn Trỗi",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Tầng 3, Tòa nhà Kingston, 146 Nguyễn Văn Trỗi, Phường 08, Quận Phú Nhuận, Thành phố Hồ Chí Minh, Việt Nam"
+        },
+        {
+          "dia_chi_cu_the": "223 Hoàng Văn Thụ",
+          "phuong_xa": "Phường Phú Nhuận",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "TP.HCM : 223 Hoàng Văn Thụ, Phường Phú Nhuận (Quận Phú Nhuận, TP.HCM cũ)"
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": "Tầng 3, Tòa nhà Kingston, 146 Nguyễn Văn Trỗi",
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Tầng 3, Tòa nhà Kingston, 146 Nguyễn Văn Trỗi, Phường 08, Quận Phú Nhuận, Thành phố Hồ Chí Minh, Việt Nam",
+          "tinh_key": "ho_chi_minh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "223 Hoàng Văn Thụ",
+          "phuong_xa": "Phường Phú Nhuận",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "TP.HCM : 223 Hoàng Văn Thụ, Phường Phú Nhuận (Quận Phú Nhuận, TP.HCM cũ)",
+          "tinh_key": "ho_chi_minh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "itviec_head-of-engineering-digital-banking-payment-id10994-vpbank-5331",
       "source": "itviec",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Tòa nhà E.Town Central, Số 11 Đoàn Văn Bơ",
+          "dia_chi_cu_the": "Tòa nhà E-town Central, 11 Đoàn Văn Bơ",
           "phuong_xa": null,
           "tinh_thanh": null,
-          "raw": "Tòa nhà E.Town Central, Số 11 Đoàn Văn Bơ"
+          "raw": "Tòa nhà E-town Central, 11 Đoàn Văn Bơ"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Tòa nhà E.Town Central, Số 11 Đoàn Văn Bơ",
+          "dia_chi_cu_the": "Tòa nhà E-town Central, 11 Đoàn Văn Bơ",
           "phuong_xa": null,
           "tinh_thanh": null,
-          "raw": "Tòa nhà E.Town Central, Số 11 Đoàn Văn Bơ",
+          "raw": "Tòa nhà E-town Central, 11 Đoàn Văn Bơ",
           "tinh_key": null,
           "tinh_cu": null,
           "remote": false,
@@ -964,139 +1169,103 @@
       "changed": true
     },
     {
-      "job_id": "itviec_can-tho-fresher-php-good-english-communication-cong-ty-tnhh-nextedge-5902",
+      "job_id": "itviec_it-security-governance-senior-expert-fe-credit-3859",
       "source": "itviec",
       "field": "exp_min_years",
-      "before": null,
-      "after": 0.0,
+      "before": 3.0,
+      "after": 4.0,
       "changed": true
     },
     {
-      "job_id": "itviec_software-engineer-intern-taptap-1141",
+      "job_id": "itviec_mid-sr-fullstack-dev-golang-nextjs-reactjs-youpass-cong-ty-co-phan-youpass-4614",
       "source": "itviec",
       "field": "exp_min_years",
-      "before": null,
-      "after": 0.0,
+      "before": 0.0,
+      "after": 2.5,
       "changed": true
     },
     {
-      "job_id": "glints_e5683ff4-e7eb-403d-83a5-c451530d0e72",
+      "job_id": "glints_93594bc7-dca9-47ce-8d54-d7995bc1d26e",
       "source": "glints",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng, Phường Mễ Trì, Quận Nam Từ Liêm, Thành phố Hà Nội, Việt Nam"
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng, Phường Mễ Trì, Quận Nam Từ Liêm, Thành phố Hà Nội, Việt Nam",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "glints_0af63a55-b97f-4706-8d61-f0b52e201fc1",
-      "source": "glints",
-      "field": "exp_min_years",
-      "before": null,
-      "after": 0.0,
-      "changed": true
-    },
-    {
-      "job_id": "glints_1fe247ca-f7d3-420c-b678-137fb203e5f4",
-      "source": "glints",
-      "field": "exp_min_years",
-      "before": null,
-      "after": 0.0,
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_29080895032",
-      "source": "jobsgo",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": "3 Đặng Thái Thân, Phan Chu Trinh, Hoàn Kiếm",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "3 Đặng Thái Thân, Phan Chu Trinh, Hoàn Kiếm, Hanoi (Trước sáp nhập:Hoàn Kiếm, Hà Nội |Sau sáp nhập:Cửa Nam, Hà Nội)"
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": "3 Đặng Thái Thân, Phan Chu Trinh, Hoàn Kiếm",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "3 Đặng Thái Thân, Phan Chu Trinh, Hoàn Kiếm, Hanoi (Trước sáp nhập:Hoàn Kiếm, Hà Nội |Sau sáp nhập:Cửa Nam, Hà Nội)",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_29077269439",
-      "source": "jobsgo",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": "54 Liễu Giai, Ba Đình",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "54 Liễu Giai, Ba Đình, Hà Nội (Trước sáp nhập:Ba Đình, Hà Nội |Sau sáp nhập:Ngọc Hà, Hà Nội)"
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": "54 Liễu Giai, Ba Đình",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "54 Liễu Giai, Ba Đình, Hà Nội (Trước sáp nhập:Ba Đình, Hà Nội |Sau sáp nhập:Ngọc Hà, Hà Nội)",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "jobsgo_29163876301",
-      "source": "jobsgo",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": "Tòa nhà Sài Gòn Tel, Khu Công Viên Phần Mềm Quang Trung, Trung Mỹ Tây",
-          "phuong_xa": null,
+          "dia_chi_cu_the": "Tòa nhà Ereka, 17 Hồ Bá Kiện",
+          "phuong_xa": "Phường Hoà Hưng",
           "tinh_thanh": "TP. Hồ Chí Minh",
-          "raw": "Tòa nhà Sài Gòn Tel, Khu Công Viên Phần Mềm Quang Trung, Trung Mỹ Tây, Hồ Chí Minh (Trước sáp nhập:Quận 12, Hồ Chí Minh |Sau sáp nhập:Trung Mỹ Tây, Hồ Chí Minh)"
+          "raw": "Tòa nhà Ereka, 17 Hồ Bá Kiện, Phường Hoà Hưng, Tp.HCM, Việt Nam"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Tòa nhà Sài Gòn Tel, Khu Công Viên Phần Mềm Quang Trung, Trung Mỹ Tây",
-          "phuong_xa": null,
+          "dia_chi_cu_the": "Tòa nhà Ereka, 17 Hồ Bá Kiện",
+          "phuong_xa": "Phường Hoà Hưng",
           "tinh_thanh": "TP. Hồ Chí Minh",
-          "raw": "Tòa nhà Sài Gòn Tel, Khu Công Viên Phần Mềm Quang Trung, Trung Mỹ Tây, Hồ Chí Minh (Trước sáp nhập:Quận 12, Hồ Chí Minh |Sau sáp nhập:Trung Mỹ Tây, Hồ Chí Minh)",
+          "raw": "Tòa nhà Ereka, 17 Hồ Bá Kiện, Phường Hoà Hưng, Tp.HCM, Việt Nam",
           "tinh_key": "ho_chi_minh",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
         }
       ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_a21e8a71-9f9c-42af-a945-97e89cc00131",
+      "source": "glints",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 0.0,
+      "changed": true
+    },
+    {
+      "job_id": "glints_2401fa77-6f87-49f3-917b-fffd8099bbc8",
+      "source": "glints",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 0.0,
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29080664189",
+      "source": "jobsgo",
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": null,
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Bắc Ninh",
+          "raw": "Bắc Ninh"
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": null,
+          "phuong_xa": null,
+          "tinh_thanh": "TP. Bắc Ninh",
+          "raw": "Bắc Ninh",
+          "tinh_key": "bac_ninh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29121034556",
+      "source": "jobsgo",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 2.0,
+      "changed": true
+    },
+    {
+      "job_id": "jobsgo_29286168775",
+      "source": "jobsgo",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 5.0,
       "changed": true
     }
   ]

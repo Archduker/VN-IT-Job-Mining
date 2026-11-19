@@ -2,10 +2,10 @@
 
 > Code: `preprocessing/normalization/run.py` (`work_mode` (N14), `_fallback_tinh` (N13), `process_source`, `run`), `location_normalizer.py`, `job_title.py` (`FAMILY_MAP`, `family_from_title`), `skill_normalizer.py`, `company_key.py`, `log_transformer.py`; `preprocessing/missing_outlier/missing_rules.py` (`infer_level_from_experience` (M3c), `infer_experience_from_level` (M4), `tinh_status` (M7), `range_flags` (M8)), `outlier_handler.py`; từ điển `provinces_34.json`, `wards_34.json`, `job_titles.json`, `skills.json`, `skills_taxonomy.json`.
 > Lệnh: `python scripts/run_preprocessing.py --step normalization --source all [--dry-run]`.
-> Dữ liệu mẫu: chưa có. Bảng 04 trên máy chưa được dựng lại từ 03 ngày 18/11. Report trong git là lần chạy 10–11/11.
+> Dữ liệu mẫu: [`samples/04_normalization.json`](samples/04_normalization.json) (chạy thật 19/11/2026 trên bảng 03 sau bộ lọc IT ba tầng và dịch lại).
 > Prompt: [`docs/prompting/preprocessing/04_normalization.md`](../../prompting/preprocessing/04_normalization.md).
 >
-> **Trạng thái của file này:** mục 2.1 là luật đang chạy (số lần chạy 10–11/11). Mục 2.2 là luật mới **chờ duyệt**: chọn giá trị cuối cho `work_mode`, `employment_type`, `exp_min_years` từ các cột T9 của bước 03.
+> **Trạng thái của file này:** mục 2.1 và 2.2 là luật đang chạy (duyệt và chạy thật 19/11). Mục 2.2: chọn giá trị cuối cho `work_mode`, `employment_type`, `exp_min_years` từ các cột T9 của bước 03.
 
 ## 1. Mục đích
 
@@ -17,29 +17,29 @@
 
 ## 2. Luật
 
-### 2.1. Luật đang chạy (số lần chạy 10–11/11)
+### 2.1. Luật đang chạy (số lần chạy 19/11, đếm trên 3.997 tin vào, trước khi Q1 cách ly 81 tin)
 
 | Mã | Luật | Hành động | Số tin |
 |---|---|---|---|
-| N1 | Tỉnh: bỏ dấu, chữ thường, bỏ "tp", "tỉnh", "thành phố", rồi tra bí danh trong `provinces_34.json`. Tên cũ đổi sang tên mới, giữ tên cũ ở `tinh_cu` (Bình Dương → TP. Hồ Chí Minh). "Remote" → `remote` = true. Tên nước ngoài → `ngoai_vn` = true. `tinh_chinh` là tỉnh đầu tiên khác null | modify | 4.574 |
-| N13 | `locations` không ra tỉnh thì lấy từ `raw_location_text`, rồi từ `company_address` (`tinh_source`) | modify | 656 |
-| N14 | `work_mode` chỉ từ địa điểm và tiêu đề: remote → hybrid → onsite (khi có tỉnh) → unknown | modify | 4.671 |
-| M7 | `tinh_status` (`ok`, `remote`, `ngoai_vn`, `unknown`) | flag | 94 unknown |
-| N2 | Cấp bậc lấy từ `raw_seniority_text`, rồi từ tiêu đề, theo từ nguyên vẹn. "Nhân viên", "Chuyên viên" không tính là cấp | modify | 4.283 |
-| M3c | Cấp bậc còn trống thì suy từ số năm kinh nghiệm: [0,1) Intern/Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior; từ 5 năm trở lên để trống (L-39). Gắn `level_inferred` | flag | 2.516 |
-| M4 | Thiếu kinh nghiệm thì điền cận dưới theo cấp bậc (Intern/Fresher 0, Junior 1, Middle 2, Senior 4, Lead/Manager 5), **chỉ khi cấp lấy từ ô của sàn hoặc tiêu đề**, không lấy cấp suy từ số năm (chống vòng với M3c). Gắn `exp_inferred`, `exp_source` = `level_<cấp>` (ví dụ `level_intern`); có sẵn thì `given`. Tên luật trong report vẫn ghi "Intern/Fresher … điền 0", hẹp hơn code (mục 7) | flag | 192 |
-| N2b | Senior hoặc Trưởng nhóm mà kinh nghiệm < 2 năm, hoặc Thực tập hoặc Mới tốt nghiệp mà ≥ 3 năm → `seniority_can_kiem`. Có nhóm nghề mà JD không có kỹ năng → `job_family_can_kiem` | flag | 115 + 258 |
-| N16 | Chức danh chuẩn từ `job_titles.json` (exact, alias, fuzzy) | modify | 2.091 |
-| N3 | Nhóm nghề: chức danh lõi → chức danh chuẩn → nhóm, gộp về 10 nhóm qua `FAMILY_MAP`. Luật không ra thì Other | modify | 3.964 khác Other |
-| N4 | Kỹ năng về tên chuẩn ("ReactJS", "React.js" → "React"), bỏ trùng → `skills_std` | modify | 4.337 |
-| N5 | `company_norm`: bỏ "Công ty Cổ phần", "TNHH", … | modify | 4.668 |
-| N18 | `company_key`: rapidfuzz `token_sort_ratio` ≥ 90 và quan hệ tập con | modify | 4.668 |
-| N6a | Lương tháng ngoài 1–500 triệu: bỏ số, gắn `salary_suspect` (trước IQR) | flag | 15 |
-| N6 | IQR toàn bộ → `is_outlier_salary`; winsorize 1–99% ra `*_capped` | modify | 104 |
-| M5 | Lương ngoài 2–100 triệu/tháng → `salary_out_of_range` | flag | 74 |
-| M6 | IQR theo cấp bậc → `salary_iqr_outlier_by_level` | flag | 150 |
-| M8 | min > max, kinh nghiệm ngoài khoảng → cờ | flag | 5 |
-| N7 | `log1p` lương, sau N6 | modify | 2.081 |
+| N1 | Tỉnh: bỏ dấu, chữ thường, bỏ "tp", "tỉnh", "thành phố", rồi tra bí danh trong `provinces_34.json`. Tên cũ đổi sang tên mới, giữ tên cũ ở `tinh_cu` (Bình Dương → TP. Hồ Chí Minh). "Remote" → `remote` = true. Tên nước ngoài → `ngoai_vn` = true. `tinh_chinh` là tỉnh đầu tiên khác null | modify | 3.924 |
+| N13 | `locations` không ra tỉnh thì lấy từ `raw_location_text`, rồi từ `company_address` (`tinh_source`) | modify | 629 |
+| N14 | `work_mode` chỉ từ địa điểm và tiêu đề: remote → hybrid → onsite (khi có tỉnh) → unknown. **Từ 19/11 chỉ còn là bậc 3 của N14 mới (mục 2.2)** | modify | 1.708 tin dùng bậc này (`work_mode_source` = `location`) |
+| M7 | `tinh_status` (`ok`, `remote`, `ngoai_vn`, `unknown`) | flag | 65 unknown (bảng 3.916 tin) |
+| N2 | Cấp bậc lấy từ `raw_seniority_text`, rồi từ tiêu đề, theo từ nguyên vẹn. "Nhân viên", "Chuyên viên" không tính là cấp | modify | 3.707 |
+| M3c | Cấp bậc còn trống thì suy từ số năm kinh nghiệm: [0,1) Intern/Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior; từ 5 năm trở lên để trống (L-39). Gắn `level_inferred` | flag | 2.120 |
+| M4 | Thiếu kinh nghiệm thì điền cận dưới theo cấp bậc (Intern/Fresher 0, Junior 1, Middle 2, Senior 4, Lead/Manager 5), **chỉ khi cấp lấy từ ô của sàn hoặc tiêu đề**, không lấy cấp suy từ số năm (chống vòng với M3c). Gắn `exp_inferred`, `exp_source` = `level_<cấp>` (ví dụ `level_intern`); có sẵn thì `given`. Tên luật trong report vẫn ghi "Intern/Fresher … điền 0", hẹp hơn code (đã sửa tên luật 19/11) | flag | 54 |
+| N2b | Senior hoặc Trưởng nhóm mà kinh nghiệm < 2 năm, hoặc Thực tập hoặc Mới tốt nghiệp mà ≥ 3 năm → `seniority_can_kiem`. Có nhóm nghề mà JD không có kỹ năng → `job_family_can_kiem` | flag | 441 (cộng hai cờ) |
+| N16 | Chức danh chuẩn từ `job_titles.json` (exact, alias, fuzzy) | modify | 1.744 |
+| N3 | Nhóm nghề: chức danh lõi → chức danh chuẩn → nhóm, gộp về 10 nhóm qua `FAMILY_MAP`. Luật không ra thì Other | modify | 3.462 khác Other (bảng 3.916 tin: 3.390; Web 1.536, Other 526, Bridge 479, Data/AI 388, Tester 382, DevOps/Cloud 234, Security 231, Design 61, Game 43, Mobile 26, IoT 10) |
+| N4 | Kỹ năng về tên chuẩn ("ReactJS", "React.js" → "React"), bỏ trùng → `skills_std` | modify | 3.540 |
+| N5 | `company_norm`: bỏ "Công ty Cổ phần", "TNHH", … | modify | 3.996 |
+| N18 | `company_key`: rapidfuzz `token_sort_ratio` ≥ 90 và quan hệ tập con | modify | 3.915 (tính trên bảng không cách ly) |
+| N6a | Lương tháng ngoài 1–500 triệu: bỏ số, gắn `salary_suspect` (trước IQR) | flag | 12 |
+| N6 | IQR toàn bộ → `is_outlier_salary`; winsorize 1–99% ra `*_capped` | modify | 87 |
+| M5 | Lương ngoài 2–100 triệu/tháng → `salary_out_of_range` | flag | 59 |
+| M6 | IQR theo cấp bậc → `salary_iqr_outlier_by_level` | flag | 109 |
+| M8 | min > max, kinh nghiệm ngoài khoảng → cờ | flag | 4 |
+| N7 | `log1p` lương, sau N6 | modify | 1.685 |
 
 Nhóm nghề sau L-47: Web 1.853, Other 707, Bridge 533, Data/AI 430, Tester 429, DevOps/Cloud 258, Security 254, Design 78, Game 61, IoT 38, Mobile 30.
 
@@ -126,13 +126,12 @@ Thứ tự trong `process_source` (đọc code khi viết phần mới):
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- **Trạng thái:** có code cho 2.1, chạy thật 10–11/11. Luật mới 2.2 chờ duyệt. Chưa chạy lại trên dữ liệu 18/11.
-- **Chỗ thiếu (lần chạy 10–11/11):**
-  - 8,3% thiếu cấp bậc;
-  - 94 tin `tinh_unknown`;
-  - 258 tin `job_family_can_kiem`;
+- **Trạng thái:** có code cho 2.1 và 2.2 (trừ S1). **Chạy thật 19/11:** 3.997 vào → `all.parquet` 3.916 + `quarantine.parquet` 81 (itviec 49, glints 9, vietnamworks 9, topcv 5, jobsgo 4, careerviet 3, topdev 2), bảo toàn đạt. Luật mới: N14 lấy từ ô 2.119 / JD 52 / JD thắng ô 7 / địa điểm 1.708 / unknown 30; N19 có giá trị 3.738 (trống 253, phần lớn topdev; internship 192); M4 nguồn: ô 2.919, JD 664, JSON-LD itviec 144, JD "không yêu cầu" 54, theo cấp 51, trống 84; `exp_conflict` 724 (itviec 424 vì JSON-LD chỉ 3 mức); N2c 0 (tin internship đều đã ra Intern/Fresher từ tiêu đề). `level_inferred` (Silver `seniority_inferred`) true ở 2.978/3.916 tin: cấp từ ô của sàn chỉ 653 tin. S1 (Silver) chờ bước 08.
+- **Chỗ thiếu (lần chạy 19/11):**
+  - 285/3.916 tin (7,3%) thiếu cấp bậc;
+  - 65 tin `tinh_unknown`;
+  - 441 tin có cờ cần kiểm (`seniority_can_kiem` hoặc `job_family_can_kiem`);
   - 87/140 mục `job_titles.json` chưa duyệt;
   - tỉnh có thể lấy từ trụ sở công ty thay vì nơi làm việc (PRE-38);
-  - `work_mode` mặc định onsite khi có tỉnh (sửa bằng N14 mới).
-- **Lệch tên luật:** report ghi M4 là "Intern/Fresher thiếu kinh nghiệm điền 0", nhưng `infer_experience_from_level` điền cận dưới cho mọi cấp. Sửa chuỗi tên luật khi chạy lại 04.
+  - `work_mode` theo địa điểm (mặc định onsite khi có tỉnh) vẫn là nguồn của 1.708 tin không có ô và JD.
 - **Việc mở:** PRE-33, PRE-35, PRE-37 (việc 3), PRE-38, PRE-39.

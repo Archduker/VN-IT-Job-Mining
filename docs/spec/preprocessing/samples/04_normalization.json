@@ -1,0 +1,1390 @@
+{
+ "step": "04_normalization",
+ "trace_job": "topcv_2325743",
+ "run": {
+  "generated_at": "2026-11-19T04:18:47+00:00",
+  "code_version": "63f62b2",
+  "mode": "applied",
+  "input": {
+   "path": "data/preprocessing/03_transformation/all.parquet",
+   "rows": 3997
+  },
+  "output": {
+   "path": "data/preprocessing/04_normalization/all.parquet",
+   "rows": 3916
+  },
+  "dropped": [
+   {
+    "rule": "Q1",
+    "reason": "TRANSLATION_FAILED",
+    "rows": 81
+   }
+  ],
+  "by_source": {
+   "careerviet": {
+    "in": 405,
+    "out": 402
+   },
+   "glints": {
+    "in": 155,
+    "out": 146
+   },
+   "itviec": {
+    "in": 785,
+    "out": 736
+   },
+   "jobsgo": {
+    "in": 501,
+    "out": 497
+   },
+   "topcv": {
+    "in": 1270,
+    "out": 1265
+   },
+   "topdev": {
+    "in": 168,
+    "out": 166
+   },
+   "vieclam24h": {
+    "in": 121,
+    "out": 121
+   },
+   "vietnamworks": {
+    "in": 592,
+    "out": 583
+   }
+  },
+  "checks": {
+   "rows_conserved": true,
+   "notes": []
+  }
+ },
+ "rules": [
+  {
+   "id": "N1",
+   "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
+   "action": "modify",
+   "rows": 3924,
+   "by_source": {
+    "topcv": 1265,
+    "topdev": 168,
+    "vietnamworks": 585,
+    "careerviet": 399,
+    "vieclam24h": 121,
+    "itviec": 773,
+    "glints": 114,
+    "jobsgo": 499
+   },
+   "examples": [
+    {
+     "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+     "field": "tinh_chinh",
+     "before": "Quận Một",
+     "after": "TP. Hồ Chí Minh",
+     "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+    },
+    {
+     "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+     "field": "tinh_chinh",
+     "before": "Long Thành",
+     "after": "TP. Hồ Chí Minh",
+     "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+    },
+    {
+     "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+     "field": "tinh_chinh",
+     "before": "Quận Thủ Đức",
+     "after": "TP. Hồ Chí Minh",
+     "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+    }
+   ]
+  },
+  {
+   "id": "N13",
+   "name": "Tỉnh từ raw_location_text/company_address khi locations không ra tỉnh",
+   "action": "modify",
+   "rows": 629,
+   "by_source": {
+    "topcv": 5,
+    "topdev": 0,
+    "vietnamworks": 4,
+    "careerviet": 0,
+    "vieclam24h": 0,
+    "itviec": 611,
+    "glints": 1,
+    "jobsgo": 8
+   },
+   "examples": [
+    {
+     "job_id": "02ab4af2-fa4b-4b73-9795-c9047f9b9dbc",
+     "field": "tinh_chinh",
+     "before": "Đà Lạt",
+     "after": "Lâm Đồng",
+     "url": "https://glints.com/vn/opportunities/jobs/developer/02ab4af2-fa4b-4b73-9795-c9047f9b9dbc"
+    },
+    {
+     "job_id": "1649068",
+     "field": "tinh_chinh",
+     "before": "Nhật Bản",
+     "after": "TP. Hà Nội",
+     "url": "https://www.topcv.vn/viec-lam/brse-ky-su-cau-noi/1649068.html"
+    },
+    {
+     "job_id": "1805066",
+     "field": "tinh_chinh",
+     "before": "Nhật Bản",
+     "after": "TP. Hà Nội",
+     "url": "https://www.topcv.vn/viec-lam/c-developer/1805066.html"
+    }
+   ]
+  },
+  {
+   "id": "N2",
+   "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
+   "action": "modify",
+   "rows": 3707,
+   "by_source": {
+    "topcv": 1239,
+    "topdev": 124,
+    "vietnamworks": 503,
+    "careerviet": 374,
+    "vieclam24h": 119,
+    "itviec": 707,
+    "glints": 146,
+    "jobsgo": 495
+   },
+   "examples": [
+    {
+     "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+     "field": "seniority",
+     "before": "Retail IT Executive (Infrastructure)",
+     "after": "Junior (kinh_nghiem)",
+     "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+    },
+    {
+     "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+     "field": "seniority",
+     "before": "[DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai",
+     "after": "Intern/Fresher (kinh_nghiem)",
+     "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+    },
+    {
+     "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+     "field": "seniority",
+     "before": "AI Applied Coordinator Intern",
+     "after": "Intern/Fresher (title)",
+     "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+    }
+   ]
+  },
+  {
+   "id": "N3",
+   "name": "Nhóm nghề: 16 nhóm + Other",
+   "action": "modify",
+   "rows": 3462,
+   "by_source": {
+    "topcv": 1118,
+    "topdev": 132,
+    "vietnamworks": 489,
+    "careerviet": 338,
+    "vieclam24h": 101,
+    "itviec": 708,
+    "glints": 136,
+    "jobsgo": 440
+   },
+   "examples": [
+    {
+     "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
+     "field": "job_family",
+     "before": "Retail IT Executive (Infrastructure)",
+     "after": "Web (canonical)",
+     "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
+    },
+    {
+     "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+     "field": "job_family",
+     "before": "[DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai",
+     "after": "Security (canonical)",
+     "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+    },
+    {
+     "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
+     "field": "job_family",
+     "before": "AI Applied Coordinator Intern",
+     "after": "Data/AI (title)",
+     "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
+    }
+   ]
+  },
+  {
+   "id": "N16",
+   "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
+   "action": "modify",
+   "rows": 1744,
+   "by_source": {
+    "topcv": 596,
+    "topdev": 60,
+    "vietnamworks": 227,
+    "careerviet": 171,
+    "vieclam24h": 66,
+    "itviec": 307,
+    "glints": 66,
+    "jobsgo": 251
+   },
+   "examples": []
+  },
+  {
+   "id": "N4",
+   "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
+   "action": "modify",
+   "rows": 3540,
+   "by_source": {
+    "topcv": 1092,
+    "topdev": 141,
+    "vietnamworks": 592,
+    "careerviet": 322,
+    "vieclam24h": 121,
+    "itviec": 785,
+    "glints": 150,
+    "jobsgo": 337
+   },
+   "examples": []
+  },
+  {
+   "id": "N5",
+   "name": "Chuẩn hóa tên công ty",
+   "action": "modify",
+   "rows": 3996,
+   "by_source": {
+    "topcv": 1270,
+    "topdev": 168,
+    "vietnamworks": 592,
+    "careerviet": 405,
+    "vieclam24h": 121,
+    "itviec": 785,
+    "glints": 155,
+    "jobsgo": 500
+   },
+   "examples": []
+  },
+  {
+   "id": "N2b",
+   "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
+   "action": "flag",
+   "rows": 441,
+   "by_source": {
+    "topcv": 155,
+    "topdev": 23,
+    "vietnamworks": 12,
+    "careerviet": 70,
+    "vieclam24h": 2,
+    "itviec": 22,
+    "glints": 4,
+    "jobsgo": 153
+   },
+   "examples": []
+  },
+  {
+   "id": "M3c",
+   "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
+   "action": "flag",
+   "rows": 2120,
+   "by_source": {
+    "topcv": 726,
+    "topdev": 73,
+    "vietnamworks": 285,
+    "careerviet": 238,
+    "vieclam24h": 98,
+    "itviec": 282,
+    "glints": 96,
+    "jobsgo": 322
+   },
+   "examples": []
+  },
+  {
+   "id": "M4",
+   "name": "Kinh nghiệm thiếu sau khi chọn ô/JD: điền cận dưới theo cấp bậc, exp_inferred=True",
+   "action": "flag",
+   "rows": 54,
+   "by_source": {
+    "topcv": 0,
+    "topdev": 3,
+    "vietnamworks": 15,
+    "careerviet": 7,
+    "vieclam24h": 0,
+    "itviec": 26,
+    "glints": 3,
+    "jobsgo": 0
+   },
+   "examples": []
+  },
+  {
+   "id": "N14",
+   "name": "work_mode từ ô của sàn hoặc JD (T9a); còn lại theo địa điểm",
+   "action": "modify",
+   "rows": 2242,
+   "by_source": {
+    "topcv": 1265,
+    "topdev": 5,
+    "vietnamworks": 13,
+    "careerviet": 9,
+    "vieclam24h": 3,
+    "itviec": 767,
+    "glints": 155,
+    "jobsgo": 25
+   },
+   "examples": []
+  },
+  {
+   "id": "N19",
+   "name": "employment_type: tiêu đề Intern → ô của sàn → JD",
+   "action": "modify",
+   "rows": 3738,
+   "by_source": {
+    "topcv": 1264,
+    "topdev": 4,
+    "vietnamworks": 538,
+    "careerviet": 396,
+    "vieclam24h": 121,
+    "itviec": 763,
+    "glints": 155,
+    "jobsgo": 497
+   },
+   "examples": []
+  },
+  {
+   "id": "N2c",
+   "name": "Cấp bậc Intern/Fresher từ employment_type internship",
+   "action": "modify",
+   "rows": 0,
+   "by_source": {
+    "topcv": 0,
+    "topdev": 0,
+    "vietnamworks": 0,
+    "careerviet": 0,
+    "vieclam24h": 0,
+    "itviec": 0,
+    "glints": 0,
+    "jobsgo": 0
+   },
+   "examples": []
+  },
+  {
+   "id": "M4s",
+   "name": "Kinh nghiệm lấy từ JD khi ô trống (itviec: JD trước)",
+   "action": "modify",
+   "rows": 219,
+   "by_source": {
+    "topcv": 4,
+    "topdev": 90,
+    "vietnamworks": 40,
+    "careerviet": 17,
+    "vieclam24h": 0,
+    "itviec": 57,
+    "glints": 9,
+    "jobsgo": 2
+   },
+   "examples": []
+  },
+  {
+   "id": "M4c",
+   "name": "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict",
+   "action": "flag",
+   "rows": 724,
+   "by_source": {
+    "topcv": 41,
+    "topdev": 12,
+    "vietnamworks": 55,
+    "careerviet": 65,
+    "vieclam24h": 7,
+    "itviec": 449,
+    "glints": 1,
+    "jobsgo": 94
+   },
+   "examples": []
+  },
+  {
+   "id": "Q1",
+   "name": "Cách ly tin dịch EN→VI vẫn hỏng: ghi quarantine.parquet, không vào all.parquet",
+   "action": "drop",
+   "rows": 81,
+   "by_source": {
+    "topcv": 5,
+    "topdev": 2,
+    "vietnamworks": 9,
+    "careerviet": 3,
+    "vieclam24h": 0,
+    "itviec": 49,
+    "glints": 9,
+    "jobsgo": 4
+   },
+   "examples": [
+    {
+     "job_id": "careerviet_35C83935",
+     "field": "translation_status",
+     "before": "failed",
+     "after": "quarantine",
+     "url": "https://careerviet.vn/vi/tim-viec-lam/security-engineer.35C83935.html"
+    },
+    {
+     "job_id": "careerviet_35C87AB9",
+     "field": "translation_status",
+     "before": "failed",
+     "after": "quarantine",
+     "url": "https://careerviet.vn/vi/tim-viec-lam/application-support-it-support.35C87AB9.html"
+    },
+    {
+     "job_id": "careerviet_35C884E8",
+     "field": "translation_status",
+     "before": "failed",
+     "after": "quarantine",
+     "url": "https://careerviet.vn/vi/tim-viec-lam/lap-trinh-vien-ai-ai-developer-llm-applied-ai.35C884E8.html"
+    }
+   ]
+  },
+  {
+   "id": "N6a",
+   "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
+   "action": "flag",
+   "rows": 12,
+   "by_source": {
+    "topcv": 1,
+    "topdev": 0,
+    "vietnamworks": 3,
+    "careerviet": 1,
+    "vieclam24h": 2,
+    "itviec": 1,
+    "glints": 3,
+    "jobsgo": 1
+   },
+   "examples": []
+  },
+  {
+   "id": "N6",
+   "name": "Gắn cờ ngoại lai lương IQR gộp và Winsorize 1-99% (cột *_capped)",
+   "action": "modify",
+   "rows": 87,
+   "by_source": {
+    "topcv": 5,
+    "topdev": 1,
+    "vietnamworks": 29,
+    "careerviet": 1,
+    "vieclam24h": 0,
+    "itviec": 48,
+    "glints": 0,
+    "jobsgo": 3
+   },
+   "examples": []
+  },
+  {
+   "id": "M5",
+   "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
+   "action": "flag",
+   "rows": 59,
+   "by_source": {
+    "topcv": 7,
+    "topdev": 1,
+    "vietnamworks": 18,
+    "careerviet": 0,
+    "vieclam24h": 2,
+    "itviec": 15,
+    "glints": 2,
+    "jobsgo": 14
+   },
+   "examples": []
+  },
+  {
+   "id": "M6",
+   "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
+   "action": "flag",
+   "rows": 109,
+   "by_source": {
+    "topcv": 15,
+    "topdev": 3,
+    "vietnamworks": 31,
+    "careerviet": 0,
+    "vieclam24h": 1,
+    "itviec": 51,
+    "glints": 1,
+    "jobsgo": 7
+   },
+   "examples": []
+  },
+  {
+   "id": "M8",
+   "name": "min > max, kinh nghiệm ngoài khoảng: chỉ cờ",
+   "action": "flag",
+   "rows": 4,
+   "by_source": {
+    "topcv": 0,
+    "topdev": 0,
+    "vietnamworks": 3,
+    "careerviet": 0,
+    "vieclam24h": 0,
+    "itviec": 1,
+    "glints": 0,
+    "jobsgo": 0
+   },
+   "examples": []
+  },
+  {
+   "id": "N7",
+   "name": "Biến đổi log1p cho mức lương",
+   "action": "modify",
+   "rows": 1685,
+   "by_source": {
+    "topcv": 692,
+    "topdev": 51,
+    "vietnamworks": 151,
+    "careerviet": 120,
+    "vieclam24h": 110,
+    "itviec": 193,
+    "glints": 90,
+    "jobsgo": 278
+   },
+   "examples": []
+  },
+  {
+   "id": "N18",
+   "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
+   "action": "modify",
+   "rows": 3915,
+   "by_source": {
+    "topcv": 1265,
+    "topdev": 166,
+    "vietnamworks": 583,
+    "careerviet": 402,
+    "vieclam24h": 121,
+    "itviec": 736,
+    "glints": 146,
+    "jobsgo": 496
+   },
+   "examples": []
+  }
+ ],
+ "schema": [
+  {
+   "column": "job_id_global",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "source_platform",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "source_job_id",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "source_url",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "crawled_at",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "it_rule",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "it_rule_level",
+   "dtype": "int64",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "it_status",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "dedup_key",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "also_on",
+   "dtype": "object",
+   "fill_pct": 2.7
+  },
+  {
+   "column": "first_crawled_at",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "job_title",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "company_name",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "company_address",
+   "dtype": "object",
+   "fill_pct": 87.2
+  },
+  {
+   "column": "raw_category_text",
+   "dtype": "object",
+   "fill_pct": 93.2
+  },
+  {
+   "column": "raw_location_text",
+   "dtype": "object",
+   "fill_pct": 97.5
+  },
+  {
+   "column": "working_locations",
+   "dtype": "object",
+   "fill_pct": 98.7
+  },
+  {
+   "column": "raw_posted_date",
+   "dtype": "object",
+   "fill_pct": 66.4
+  },
+  {
+   "column": "raw_deadline",
+   "dtype": "object",
+   "fill_pct": 94.9
+  },
+  {
+   "column": "raw_salary_text",
+   "dtype": "object",
+   "fill_pct": 59.3
+  },
+  {
+   "column": "raw_employment_type",
+   "dtype": "object",
+   "fill_pct": 94.8
+  },
+  {
+   "column": "raw_work_mode",
+   "dtype": "object",
+   "fill_pct": 54.0
+  },
+  {
+   "column": "raw_experience_text",
+   "dtype": "object",
+   "fill_pct": 91.2
+  },
+  {
+   "column": "raw_seniority_text",
+   "dtype": "object",
+   "fill_pct": 72.8
+  },
+  {
+   "column": "raw_education_text",
+   "dtype": "object",
+   "fill_pct": 59.6
+  },
+  {
+   "column": "raw_headcount",
+   "dtype": "object",
+   "fill_pct": 57.3
+  },
+  {
+   "column": "skills_list",
+   "dtype": "object",
+   "fill_pct": 59.0
+  },
+  {
+   "column": "benefits_list",
+   "dtype": "object",
+   "fill_pct": 98.5
+  },
+  {
+   "column": "raw_description_text",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "raw_requirements_text",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "description_clean",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "description_norm",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "description_fold",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "requirements_clean",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "requirements_norm",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "requirements_fold",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "job_title_clean",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "job_title_norm",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "job_title_fold",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "language_rule",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "language",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "language_conf",
+   "dtype": "float64",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "description_vi",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "requirements_vi",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "translated_by",
+   "dtype": "object",
+   "fill_pct": 26.4
+  },
+  {
+   "column": "translation_status",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "translation_chunks",
+   "dtype": "int64",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "description_vi_norm",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "description_vi_fold",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "requirements_vi_norm",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "requirements_vi_fold",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_min_vnd",
+   "dtype": "float64",
+   "fill_pct": 38.3
+  },
+  {
+   "column": "salary_max_vnd",
+   "dtype": "float64",
+   "fill_pct": 43.0
+  },
+  {
+   "column": "salary_currency_raw",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_period_raw",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "is_negotiable",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_source",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_suspect",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "posted_date",
+   "dtype": "object",
+   "fill_pct": 66.4
+  },
+  {
+   "column": "deadline_date",
+   "dtype": "object",
+   "fill_pct": 94.8
+  },
+  {
+   "column": "posted_month",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "exp_min_years",
+   "dtype": "float64",
+   "fill_pct": 97.9
+  },
+  {
+   "column": "exp_max_years",
+   "dtype": "float64",
+   "fill_pct": 67.3
+  },
+  {
+   "column": "headcount",
+   "dtype": "float64",
+   "fill_pct": 57.3
+  },
+  {
+   "column": "benefits_clean",
+   "dtype": "object",
+   "fill_pct": 98.5
+  },
+  {
+   "column": "skills_clean",
+   "dtype": "object",
+   "fill_pct": 88.4
+  },
+  {
+   "column": "benefits_std",
+   "dtype": "object",
+   "fill_pct": 93.4
+  },
+  {
+   "column": "locations",
+   "dtype": "object",
+   "fill_pct": 99.6
+  },
+  {
+   "column": "work_mode_raw",
+   "dtype": "object",
+   "fill_pct": 54.3
+  },
+  {
+   "column": "work_mode_jd",
+   "dtype": "object",
+   "fill_pct": 2.5
+  },
+  {
+   "column": "work_mode_jd_rules",
+   "dtype": "object",
+   "fill_pct": 2.5
+  },
+  {
+   "column": "work_mode_jd_strong",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "work_mode_conflict",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "employment_type_raw",
+   "dtype": "object",
+   "fill_pct": 93.4
+  },
+  {
+   "column": "employment_types_raw",
+   "dtype": "object",
+   "fill_pct": 93.4
+  },
+  {
+   "column": "employment_type_jd",
+   "dtype": "object",
+   "fill_pct": 6.2
+  },
+  {
+   "column": "employment_type_conflict",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "exp_min_years_jd",
+   "dtype": "float64",
+   "fill_pct": 76.9
+  },
+  {
+   "column": "exp_max_years_jd",
+   "dtype": "float64",
+   "fill_pct": 18.3
+  },
+  {
+   "column": "exp_jd_kind",
+   "dtype": "object",
+   "fill_pct": 76.9
+  },
+  {
+   "column": "exp_jd_text",
+   "dtype": "object",
+   "fill_pct": 76.9
+  },
+  {
+   "column": "flags",
+   "dtype": "object",
+   "fill_pct": 6.5
+  },
+  {
+   "column": "tinh_source",
+   "dtype": "object",
+   "fill_pct": 98.2
+  },
+  {
+   "column": "tinh_chinh",
+   "dtype": "object",
+   "fill_pct": 98.2
+  },
+  {
+   "column": "work_mode",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "work_mode_source",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "tinh_status",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "skills_std",
+   "dtype": "object",
+   "fill_pct": 88.4
+  },
+  {
+   "column": "job_title_core",
+   "dtype": "object",
+   "fill_pct": 99.9
+  },
+  {
+   "column": "title_tech_hint",
+   "dtype": "object",
+   "fill_pct": 7.7
+  },
+  {
+   "column": "employment_type",
+   "dtype": "object",
+   "fill_pct": 93.5
+  },
+  {
+   "column": "employment_type_source",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "exp_min_years_parsed",
+   "dtype": "float64",
+   "fill_pct": 91.2
+  },
+  {
+   "column": "exp_conflict",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "seniority",
+   "dtype": "object",
+   "fill_pct": 92.7
+  },
+  {
+   "column": "seniority_source",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "level_inferred",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "seniority_level",
+   "dtype": "float64",
+   "fill_pct": 92.7
+  },
+  {
+   "column": "seniority_can_kiem",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "exp_inferred",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "exp_source",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "title_canonical",
+   "dtype": "object",
+   "fill_pct": 43.7
+  },
+  {
+   "column": "title_canonical_source",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "title_match_score",
+   "dtype": "float64",
+   "fill_pct": 3.3
+  },
+  {
+   "column": "job_family",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "job_family_source",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "job_family_generic_title",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "job_family_can_kiem",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "company_norm",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_negotiable",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_status",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_negotiable_with_value",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_out_of_range",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_min_gt_max",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "exp_out_of_range",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "company_key",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "is_outlier_salary",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_iqr_outlier_by_level",
+   "dtype": "bool",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_iqr_scope",
+   "dtype": "object",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_iqr_lower",
+   "dtype": "float64",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_iqr_upper",
+   "dtype": "float64",
+   "fill_pct": 100.0
+  },
+  {
+   "column": "salary_min_vnd_capped",
+   "dtype": "float64",
+   "fill_pct": 38.3
+  },
+  {
+   "column": "salary_max_vnd_capped",
+   "dtype": "float64",
+   "fill_pct": 43.0
+  },
+  {
+   "column": "log_salary_min",
+   "dtype": "float64",
+   "fill_pct": 38.3
+  },
+  {
+   "column": "log_salary_max",
+   "dtype": "float64",
+   "fill_pct": 43.0
+  }
+ ],
+ "trace": {
+  "present": true,
+  "row": {
+   "job_id_global": "topcv_2325743",
+   "source_platform": "topcv",
+   "source_job_id": "2325743",
+   "source_url": "https://www.topcv.vn/viec-lam/backend-developer/2325743.html",
+   "crawled_at": "2026-11-01T15:04:01.367765+00:00",
+   "it_rule": "it",
+   "it_rule_level": 1,
+   "it_status": "it",
+   "dedup_key": "eaera|backend developer",
+   "also_on": [],
+   "first_crawled_at": "2026-10-20T18:44:44.698712+00:00",
+   "job_title": "Backend Developer",
+   "company_name": "CÔNG TY TNHH EAERA VIỆT NAM",
+   "company_address": "Phòng 301 và 101, Số nhà 03 Lê Văn Hưu, Phường Phạm Đình Hổ, Quận Hai Bà Trưng, Thành phố Hà Nội, Việt Nam",
+   "raw_category_text": "Lập trình máy tính",
+   "raw_location_text": "Hà Nội",
+   "working_locations": [
+    "Hà Nội: Số 3 Lê Văn Hưu, Phường Hai Bà Trưng (Phường Hai Bà Trưng thuộc quận Hai Bà Trưng cũ)"
+   ],
+   "raw_posted_date": "2026-10-08",
+   "raw_deadline": "20/11/2026",
+   "raw_salary_text": "400 - 900 USD",
+   "raw_employment_type": "Toàn thời gian",
+   "raw_work_mode": "Làm việc tại văn phòng / Onsite",
+   "raw_experience_text": "1 năm",
+   "raw_seniority_text": "Nhân viên",
+   "raw_education_text": "Đại Học trở lên",
+   "raw_headcount": "2 người",
+   "skills_list": null,
+   "benefits_list": [
+    "A 13th-month salary as an end-of-year bonus.",
+    "A 14th-month salary depending on individual and company performance.",
+    "Annual performance reviews for salary adjustment and career development.",
+    "Technical training sessions and seminars to support continuous learning and self-improvement.",
+    "Attractive remuneration package.",
+    "A young, energetic, international, and multicultural working environment.",
+    "Strong career development opportunities within the company and the fintech industry."
+   ],
+   "raw_description_text": "At EAERA, we build and scale technology that powers modern fintech businesses. We’re looking for hands-on Backend Engineers who enjoy solving complex challenges, building reliable systems, and continuously improving their technical expertise.\nYou’ll work on a multi-tenant fintech platform, contribut… (+864 ký tự)",
+   "raw_requirements_text": "Job Requirements:\nMust Haves:\nStrong proficiency in either Python or Ruby on Rails, with willingness to work across both stacks.\nSolid understanding of backend application development and HTTP/REST APIs.\nGood understanding of relational databases and SQL, including transactions, indexes, constraints… (+1930 ký tự)",
+   "description_clean": "At EAERA, we build and scale technology that powers modern fintech businesses. We’re looking for hands-on Backend Engineers who enjoy solving complex challenges, building reliable systems, and continuously improving their technical expertise.\nYou’ll work on a multi-tenant fintech platform, contribut… (+864 ký tự)",
+   "description_norm": "at eaera, we build and scale technology that powers modern fintech businesses. we’re looking for hands-on backend engineers who enjoy solving complex challenges, building reliable systems, and continuously improving their technical expertise.\nyou’ll work on a multi-tenant fintech platform, contribut… (+864 ký tự)",
+   "description_fold": "at eaera, we build and scale technology that powers modern fintech businesses. we’re looking for hands-on backend engineers who enjoy solving complex challenges, building reliable systems, and continuously improving their technical expertise. you’ll work on a multi-tenant fintech platform, contribut… (+864 ký tự)",
+   "requirements_clean": "Job Requirements:\nMust Haves:\nStrong proficiency in either Python or Ruby on Rails, with willingness to work across both stacks.\nSolid understanding of backend application development and HTTP/REST APIs.\nGood understanding of relational databases and SQL, including transactions, indexes, constraints… (+1930 ký tự)",
+   "requirements_norm": "job requirements:\nmust haves:\nstrong proficiency in either python or ruby on rails, with willingness to work across both stacks.\nsolid understanding of backend application development and http/rest apis.\ngood understanding of relational databases and sql, including transactions, indexes, constraints… (+1930 ký tự)",
+   "requirements_fold": "job requirements: must haves: strong proficiency in either python or ruby on rails, with willingness to work across both stacks. solid understanding of backend application development and http/rest apis. good understanding of relational databases and sql, including transactions, indexes, constraints… (+1930 ký tự)",
+   "job_title_clean": "Backend Developer",
+   "job_title_norm": "backend developer",
+   "job_title_fold": "backend developer",
+   "language_rule": "en",
+   "language": "en",
+   "language_conf": 0.9009,
+   "description_vi": "Tại EAERA, chúng tôi xây dựng và mở rộng quy mô công nghệ cung cấp năng lượng cho các doanh nghiệp công nghệ tài chính hiện đại. Chúng tôi đang tìm kiếm các Kỹ sư hậu phương tận hưởng giải quyết các thách thức phức tạp, xây dựng các hệ thống đáng tin cậy và liên tục cải thiện chuyên môn kỹ thuật của… (+968 ký tự)",
+   "requirements_vi": "Yêu cầu công việc:\nPhải có:\nTrình độ mạnh trong Python hoặc Ruby on Rails, với sự sẵn sàng làm việc trên cả hai chồng.\nHiểu biết vững chắc về phát triển ứng dụng hậu phương và các API HTTP/REST.\nHiểu biết tốt về cơ sở dữ liệu quan hệ và SQL, bao gồm các giao dịch, chỉ mục, ràng buộc và tính nhất quá… (+2015 ký tự)",
+   "translated_by": "VietAI/envit5-translation@840bc881",
+   "translation_status": "translated",
+   "translation_chunks": 41,
+   "description_vi_norm": "tại eaera, chúng tôi xây dựng và mở rộng quy mô công nghệ cung cấp năng lượng cho các doanh nghiệp công nghệ tài chính hiện đại. chúng tôi đang tìm kiếm các kỹ sư hậu phương tận hưởng giải quyết các thách thức phức tạp, xây dựng các hệ thống đáng tin cậy và liên tục cải thiện chuyên môn kỹ thuật của… (+968 ký tự)",
+   "description_vi_fold": "tai eaera, chung toi xay dung va mo rong quy mo cong nghe cung cap nang luong cho cac doanh nghiep cong nghe tai chinh hien dai. chung toi dang tim kiem cac ky su hau phuong tan huong giai quyet cac thach thuc phuc tap, xay dung cac he thong dang tin cay va lien tuc cai thien chuyen mon ky thuat cua… (+968 ký tự)",
+   "requirements_vi_norm": "yêu cầu công việc:\nphải có:\ntrình độ mạnh trong python hoặc ruby on rails, với sự sẵn sàng làm việc trên cả hai chồng.\nhiểu biết vững chắc về phát triển ứng dụng hậu phương và các api http/rest.\nhiểu biết tốt về cơ sở dữ liệu quan hệ và sql, bao gồm các giao dịch, chỉ mục, ràng buộc và tính nhất quá… (+2015 ký tự)",
+   "requirements_vi_fold": "yeu cau cong viec: phai co: trinh do manh trong python hoac ruby on rails, voi su san sang lam viec tren ca hai chong. hieu biet vung chac ve phat trien ung dung hau phuong va cac api http/rest. hieu biet tot ve co so du lieu quan he va sql, bao gom cac giao dich, chi muc, rang buoc va tinh nhat qua… (+2015 ký tự)",
+   "salary_min_vnd": 10160000.0,
+   "salary_max_vnd": 22860000.0,
+   "salary_currency_raw": "USD",
+   "salary_period_raw": "month",
+   "is_negotiable": false,
+   "salary_source": "header",
+   "salary_suspect": false,
+   "posted_date": "2026-10-08",
+   "deadline_date": "2026-11-20",
+   "posted_month": "2026-10",
+   "exp_min_years": 1.0,
+   "exp_max_years": 1.0,
+   "headcount": 2.0,
+   "benefits_clean": [
+    "A 13th-month salary as an end-of-year bonus.",
+    "A 14th-month salary depending on individual and company performance.",
+    "Annual performance reviews for salary adjustment and career development.",
+    "Technical training sessions and seminars to support continuous learning and self-improvement.",
+    "Attractive remuneration package.",
+    "A young, energetic, international, and multicultural working environment.",
+    "Strong career development opportunities within the company and the fintech industry."
+   ],
+   "skills_clean": [
+    "Agile/Scrum",
+    "Azure",
+    "CI/CD",
+    "Docker",
+    "Git",
+    "JavaScript",
+    "Kafka",
+    "Kubernetes",
+    "Linux",
+    "NoSQL",
+    "Python",
+    "REST API",
+    "Ruby",
+    "SQL",
+    "TypeScript",
+    "… (+1 phần tử)"
+   ],
+   "benefits_std": [
+    "Lương tháng 13",
+    "Đào tạo"
+   ],
+   "locations": [
+    {
+     "dia_chi_cu_the": null,
+     "phuong_xa": "Phường Hai Bà Trưng",
+     "tinh_thanh": "TP. Hà Nội",
+     "raw": "Hà Nội: Số 3 Lê Văn Hưu, Phường Hai Bà Trưng (Phường Hai Bà Trưng thuộc quận Hai Bà Trưng cũ)",
+     "tinh_key": "ha_noi",
+     "tinh_cu": null,
+     "remote": false,
+     "ngoai_vn": false
+    }
+   ],
+   "work_mode_raw": "onsite",
+   "work_mode_jd": null,
+   "work_mode_jd_rules": [],
+   "work_mode_jd_strong": false,
+   "work_mode_conflict": false,
+   "employment_type_raw": "full_time",
+   "employment_types_raw": [
+    "full_time"
+   ],
+   "employment_type_jd": null,
+   "employment_type_conflict": false,
+   "exp_min_years_jd": 1.0,
+   "exp_max_years_jd": null,
+   "exp_jd_kind": "jd",
+   "exp_jd_text": "1+ years",
+   "flags": [],
+   "tinh_source": "locations",
+   "tinh_chinh": "TP. Hà Nội",
+   "work_mode": "onsite",
+   "work_mode_source": "raw",
+   "tinh_status": "ok",
+   "skills_std": [
+    "Agile/Scrum",
+    "Azure",
+    "CI/CD",
+    "Docker",
+    "Git",
+    "JavaScript",
+    "Kafka",
+    "Kubernetes",
+    "Linux",
+    "NoSQL",
+    "Python",
+    "REST API",
+    "Ruby",
+    "SQL",
+    "TypeScript",
+    "… (+1 phần tử)"
+   ],
+   "job_title_core": "Backend Developer",
+   "title_tech_hint": [],
+   "employment_type": "full_time",
+   "employment_type_source": "raw",
+   "exp_min_years_parsed": 1.0,
+   "exp_conflict": false,
+   "seniority": "Junior",
+   "seniority_source": "kinh_nghiem",
+   "level_inferred": true,
+   "seniority_level": 1.0,
+   "seniority_can_kiem": false,
+   "exp_inferred": false,
+   "exp_source": "raw",
+   "title_canonical": "Developer",
+   "title_canonical_source": "alias",
+   "title_match_score": null,
+   "job_family": "Web",
+   "job_family_source": "canonical",
+   "job_family_generic_title": false,
+   "job_family_can_kiem": false,
+   "company_norm": "eaera",
+   "salary_negotiable": false,
+   "salary_status": "value",
+   "salary_negotiable_with_value": false,
+   "salary_out_of_range": false,
+   "salary_min_gt_max": false,
+   "exp_out_of_range": false,
+   "company_key": "eaera",
+   "is_outlier_salary": false,
+   "salary_iqr_outlier_by_level": false,
+   "salary_iqr_scope": "level",
+   "salary_iqr_lower": 0.0,
+   "salary_iqr_upper": 40000000.0,
+   "salary_min_vnd_capped": 10160000.0,
+   "salary_max_vnd_capped": 22860000.0,
+   "log_salary_min": 16.1339690985398,
+   "log_salary_max": 16.94489926007547
+  }
+ }
+}

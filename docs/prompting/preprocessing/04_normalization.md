@@ -130,5 +130,5 @@ ghi silver.parquet ; silver_gap.html
 | 1 | Duyệt đặc tả | 19/11 | Đặc tả 04 mục 2.2, `silver.md`. Người dùng: "oke tui thấy duyệt được á" (N14, N19, N2, M4, S1). Thêm Q1 cách ly tin dịch hỏng ("loại khỏi silver và lưu các tin failed ở một trạng thái khác", "loại cả mining và silver", "đồng nhất phần silver và cho processing và mining"); xác nhận "oke" | (commit này) |
 | 2 | Duyệt prompt | 19/11 | Duyệt cùng đặc tả | — |
 | 3 | Test rồi code | 19/11 | Test trước `tests/unit/test_normalization_final_values.py` (18 test: N14 6 ca, N19 6 ca gồm "International" không khớp intern, M4 itviec/7 nguồn/lệch, Q1, tích hợp N2 internship và `level_inferred`, `run` tách `quarantine.parquet` và bảo toàn): đỏ rồi xanh; cùng 37 test cũ của 04 xanh. Code `preprocessing/normalization/final_values.py`, `run.py` | (commit này) |
-| 4 | Dry-run | chưa | | |
-| 5 | Review, chạy thật | chưa | | |
+| 4 | Dry-run | 19/11 | Report và `anomalies.json` chuyển sang thư mục tạm. 3.997 → 3.916 + 81 cách ly, bảo toàn đạt. Báo người dùng: `level_inferred` 2.978/3.916 theo nghĩa Silver, `exp_conflict` 724 (itviec 424), N2c 0 | — |
+| 5 | Review, chạy thật | 19/11 | Người dùng: "oke hãy chạy cho hoàn thiện plan". Chạy thật: `all.parquet` 3.916, `quarantine.parquet` 81. Sinh lại `04_normalization.html`, `samples/04_normalization.json`; số đặc tả 04 cập nhật. S1 chờ bước 08 | (commit này) |

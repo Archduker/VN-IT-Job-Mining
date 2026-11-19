@@ -2,44 +2,50 @@
   "step": "04_normalization",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-10T22:25:13+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:18:39+00:00",
+  "code_version": "63f62b2",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 774
+    "rows": 592
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 774
+    "rows": 583
   },
-  "dropped": [],
+  "dropped": [
+    {
+      "rule": "Q1",
+      "reason": "TRANSLATION_FAILED",
+      "rows": 9
+    }
+  ],
   "rules": [
     {
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 766,
+      "rows_affected": 585,
       "examples": [
         {
-          "job_id": "2085748",
+          "job_id": "2102610",
           "field": "tinh_chinh",
-          "before": "Ho Chi Minh",
+          "before": "VIFON",
           "after": "TP. Hồ Chí Minh",
-          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
+          "url": "https://www.vietnamworks.com/it-data-engineer-2102610-jv"
         },
         {
-          "job_id": "2092686",
+          "job_id": "2102612",
           "field": "tinh_chinh",
-          "before": "Phu Yen",
-          "after": "Đắk Lắk",
-          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+          "before": "Lô K, CCN-TTCN Phong Nẫm, xã Lương Hòa, tỉnh Vĩnh Long",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
         },
         {
-          "job_id": "2093859",
+          "job_id": "2102736",
           "field": "tinh_chinh",
-          "before": "Ha Noi",
-          "after": "TP. Hà Nội",
-          "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
+          "before": "Floor12, VOV, 7 Nguyen Thi Minh Khai Street, Sai Gon ward, HCMC",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://www.vietnamworks.com/ky-su-mang-va-he-thong-network-system-engineer-2102736-jv"
         }
       ]
     },
@@ -47,28 +53,28 @@
       "id": "N13",
       "name": "Tỉnh từ raw_location_text/company_address khi locations không ra tỉnh",
       "action": "modify",
-      "rows_affected": 7,
+      "rows_affected": 4,
       "examples": [
-        {
-          "job_id": "2098344",
-          "field": "tinh_chinh",
-          "before": "Ha Noi",
-          "after": "TP. Hà Nội",
-          "url": "https://www.vietnamworks.com/spa-it-chuyen-vien-chinh-data-engineerai-2098344-jv"
-        },
-        {
-          "job_id": "2109404",
-          "field": "tinh_chinh",
-          "before": "Ho Chi Minh",
-          "after": "TP. Hồ Chí Minh",
-          "url": "https://www.vietnamworks.com/nhan-vien-bao-hanh-linh-vuc-cctv-camera-it-1789964092999971519-2109404-jv"
-        },
         {
           "job_id": "2110864",
           "field": "tinh_chinh",
           "before": "Ha Noi",
           "after": "TP. Hà Nội",
           "url": "https://www.vietnamworks.com/du-an-giong-noi-ai-nguoi-noi-tieng-viet-co-hoi-lam-viec-tu-xa-2110864-jv"
+        },
+        {
+          "job_id": "2112020",
+          "field": "tinh_chinh",
+          "before": "Ho Chi Minh",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://www.vietnamworks.com/data-analyst-1790394023948591461-2112020-jv"
+        },
+        {
+          "job_id": "2112277",
+          "field": "tinh_chinh",
+          "before": "Ho Chi Minh",
+          "after": "TP. Hồ Chí Minh",
+          "url": "https://www.vietnamworks.com/chuyen-vien-quan-tri-he-thong-1790565018821746048-2112277-jv"
         }
       ]
     },
@@ -76,28 +82,28 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 635,
+      "rows_affected": 503,
       "examples": [
         {
-          "job_id": "2092686",
+          "job_id": "2102610",
           "field": "seniority",
           "before": "Nhân viên",
           "after": "Middle (kinh_nghiem)",
-          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+          "url": "https://www.vietnamworks.com/it-data-engineer-2102610-jv"
         },
         {
-          "job_id": "2093859",
+          "job_id": "2102612",
           "field": "seniority",
           "before": "Nhân viên",
-          "after": "Lead/Manager (title)",
-          "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
+          "after": "Middle (kinh_nghiem)",
+          "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
         },
         {
-          "job_id": "2094338",
+          "job_id": "2102736",
           "field": "seniority",
           "before": "Nhân viên",
-          "after": "Lead/Manager (title)",
-          "url": "https://www.vietnamworks.com/java-tech-lead-aem-or-mulesoft-2094338-jv"
+          "after": "Middle (kinh_nghiem)",
+          "url": "https://www.vietnamworks.com/ky-su-mang-va-he-thong-network-system-engineer-2102736-jv"
         }
       ]
     },
@@ -105,28 +111,28 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 608,
+      "rows_affected": 489,
       "examples": [
         {
-          "job_id": "2085748",
+          "job_id": "2102610",
           "field": "job_family",
-          "before": "Pentest (Good English)",
-          "after": "Security (title)",
-          "url": "https://www.vietnamworks.com/pentest-good-english-2085748-jv"
-        },
-        {
-          "job_id": "2092686",
-          "field": "job_family",
-          "before": "Kỹ Sư Bảo Trì/ Engineer Software - Work in Phu Yen",
+          "before": "IT Data Engineer",
           "after": "Web (canonical)",
-          "url": "https://www.vietnamworks.com/ky-su-bao-tri-engineer-software-work-in-phu-yen-2092686-jv"
+          "url": "https://www.vietnamworks.com/it-data-engineer-2102610-jv"
         },
         {
-          "job_id": "2093859",
+          "job_id": "2102766",
           "field": "job_family",
-          "before": "[ Hot Job ] Account Manager",
-          "after": "Bridge (canonical)",
-          "url": "https://www.vietnamworks.com/hot-job-account-manager-2093859-jv"
+          "before": "Tech Lead Java Developer",
+          "after": "Web (canonical)",
+          "url": "https://www.vietnamworks.com/tech-lead-java-developer-2102766-jv"
+        },
+        {
+          "job_id": "2102768",
+          "field": "job_family",
+          "before": "PowerApp Platform Developer",
+          "after": "Web (canonical)",
+          "url": "https://www.vietnamworks.com/powerapp-platform-developer-2102768-jv"
         }
       ]
     },
@@ -134,43 +140,107 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 289,
+      "rows_affected": 227,
       "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 774,
+      "rows_affected": 592,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 774,
+      "rows_affected": 592,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 13,
+      "rows_affected": 12,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 357,
+      "rows_affected": 285,
       "examples": []
     },
     {
       "id": "M4",
-      "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
+      "name": "Kinh nghiệm thiếu sau khi chọn ô/JD: điền cận dưới theo cấp bậc, exp_inferred=True",
       "action": "flag",
-      "rows_affected": 48,
+      "rows_affected": 15,
       "examples": []
+    },
+    {
+      "id": "N14",
+      "name": "work_mode từ ô của sàn hoặc JD (T9a); còn lại theo địa điểm",
+      "action": "modify",
+      "rows_affected": 13,
+      "examples": []
+    },
+    {
+      "id": "N19",
+      "name": "employment_type: tiêu đề Intern → ô của sàn → JD",
+      "action": "modify",
+      "rows_affected": 538,
+      "examples": []
+    },
+    {
+      "id": "N2c",
+      "name": "Cấp bậc Intern/Fresher từ employment_type internship",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "M4s",
+      "name": "Kinh nghiệm lấy từ JD khi ô trống (itviec: JD trước)",
+      "action": "modify",
+      "rows_affected": 40,
+      "examples": []
+    },
+    {
+      "id": "M4c",
+      "name": "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict",
+      "action": "flag",
+      "rows_affected": 55,
+      "examples": []
+    },
+    {
+      "id": "Q1",
+      "name": "Cách ly tin dịch EN→VI vẫn hỏng: ghi quarantine.parquet, không vào all.parquet",
+      "action": "drop",
+      "rows_affected": 9,
+      "examples": [
+        {
+          "job_id": "vietnamworks_2102766",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://www.vietnamworks.com/tech-lead-java-developer-2102766-jv"
+        },
+        {
+          "job_id": "vietnamworks_2108384",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://www.vietnamworks.com/software-web-developer-power-bi-and-microsoft-dynamics-erp-2108384-jv"
+        },
+        {
+          "job_id": "vietnamworks_2110094",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://www.vietnamworks.com/it-project-manager-1790059985722140265-2110094-jv"
+        }
+      ]
     },
     {
       "id": "N6a",
@@ -183,60 +253,60 @@
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR gộp và Winsorize 1-99% (cột *_capped)",
       "action": "modify",
-      "rows_affected": 36,
+      "rows_affected": 29,
       "examples": []
     },
     {
       "id": "M5",
       "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
       "action": "flag",
-      "rows_affected": 22,
+      "rows_affected": 18,
       "examples": []
     },
     {
       "id": "M6",
       "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
       "action": "flag",
-      "rows_affected": 41,
+      "rows_affected": 31,
       "examples": []
     },
     {
       "id": "M8",
       "name": "min > max, kinh nghiệm ngoài khoảng: chỉ cờ",
       "action": "flag",
-      "rows_affected": 4,
+      "rows_affected": 3,
       "examples": []
     },
     {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 207,
+      "rows_affected": 151,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 774,
+      "rows_affected": 583,
       "examples": []
     }
   ],
   "fields": [
     {
       "field": "locations",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 99.8,
+      "fill_pct_out": 99.8
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 99.0,
-      "fill_pct_out": 99.0
+      "fill_pct_in": 98.8,
+      "fill_pct_out": 98.8
     },
     {
       "field": "seniority",
-      "fill_pct_in": 82.0,
-      "fill_pct_out": 82.0
+      "fill_pct_in": 84.7,
+      "fill_pct_out": 84.7
     },
     {
       "field": "seniority_source",
@@ -265,23 +335,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 23.1,
-      "fill_pct_out": 23.1
+      "fill_pct_in": 21.4,
+      "fill_pct_out": 21.4
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 26.7,
-      "fill_pct_out": 26.7
+      "fill_pct_in": 25.9,
+      "fill_pct_out": 25.9
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 23.1,
-      "fill_pct_out": 23.1
+      "fill_pct_in": 21.4,
+      "fill_pct_out": 21.4
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 26.7,
-      "fill_pct_out": 26.7
+      "fill_pct_in": 25.9,
+      "fill_pct_out": 25.9
     },
     {
       "field": "is_outlier_salary",
@@ -295,8 +365,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 37.3,
-      "fill_pct_out": 37.3
+      "fill_pct_in": 38.3,
+      "fill_pct_out": 38.3
     },
     {
       "field": "company_key",
@@ -325,8 +395,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 90.7,
-      "fill_pct_out": 90.7
+      "fill_pct_in": 94.7,
+      "fill_pct_out": 94.7
     },
     {
       "field": "exp_source",
@@ -353,96 +423,145 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "quarantine": {
+      "rows": 9,
+      "by_reason": {
+        "TRANSLATION_FAILED": 9
+      }
+    },
+    "employment_type_distribution": {
+      "full_time": 526,
+      "(trống)": 53,
+      "internship": 3,
+      "contract": 1
+    },
+    "work_mode_source_distribution": {
+      "location": 565,
+      "jd": 9,
+      "unknown": 6,
+      "raw": 2,
+      "jd_over_raw": 1
+    },
+    "exp_source_distribution": {
+      "raw": 499,
+      "jd": 32,
+      "unknown": 31,
+      "jd_zero": 7,
+      "level_intern": 6,
+      "level_senior": 5,
+      "level_lead": 3
+    },
+    "seniority_source_distribution": {
+      "kinh_nghiem": 281,
+      "title": 112,
+      "raw": 101,
+      "none": 89
+    },
     "seniority_distribution": {
-      "Middle": 244,
-      "Lead/Manager": 145,
-      "(trống)": 139,
-      "Senior": 120,
-      "Junior": 106,
-      "Intern/Fresher": 20
+      "Middle": 195,
+      "Lead/Manager": 101,
+      "Senior": 100,
+      "(trống)": 89,
+      "Junior": 79,
+      "Intern/Fresher": 19
     },
     "job_family_distribution": {
-      "Web": 241,
-      "Other": 166,
-      "Bridge": 94,
-      "Data/AI": 92,
-      "Tester": 82,
-      "Security": 48,
-      "DevOps/Cloud": 41,
-      "IoT": 7,
+      "Web": 190,
+      "Other": 101,
+      "Data/AI": 80,
+      "Bridge": 70,
+      "Tester": 63,
+      "Security": 41,
+      "DevOps/Cloud": 35,
       "Game": 1,
-      "Mobile": 1,
+      "IoT": 1,
       "Design": 1
     },
     "job_family_source_distribution": {
-      "title": 293,
-      "canonical": 289,
-      "none": 166,
-      "skills": 26
+      "title": 238,
+      "canonical": 223,
+      "none": 101,
+      "skills": 21
     },
     "work_mode_distribution": {
-      "onsite": 758,
-      "remote": 9,
-      "unknown": 7
+      "onsite": 565,
+      "remote": 8,
+      "unknown": 6,
+      "hybrid": 4
     },
     "salary_status_distribution": {
-      "negotiable": 553,
-      "value": 218,
+      "negotiable": 425,
+      "value": 155,
       "not_stated": 3
     },
-    "salary_outliers": 36,
+    "salary_outliers": 29,
     "inference": {
-      "level_inferred": 357,
-      "exp_inferred": 48
+      "level_inferred": 393,
+      "exp_inferred": 14
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 741,
-      "job_title_core_distinct": 602,
+      "job_title_clean_distinct": 556,
+      "job_title_core_distinct": 445,
       "title_canonical_source": {
-        "none": 485,
-        "alias": 178,
-        "exact": 76,
-        "fuzzy": 35
+        "none": 360,
+        "alias": 135,
+        "exact": 60,
+        "fuzzy": 28
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 357,
-      "seniority_can_kiem": 13,
+      "level_inferred": 393,
+      "seniority_can_kiem": 12,
       "job_family_can_kiem": 0,
-      "salary_negotiable_with_value": 4,
-      "tinh_unknown": 7,
-      "salary_iqr_outlier_by_level": 41,
-      "salary_out_of_range": 22,
-      "salary_iqr_outlier_pooled": 6,
+      "tinh_unknown": 6,
+      "salary_negotiable_with_value": 3,
+      "salary_iqr_outlier_by_level": 31,
+      "salary_out_of_range": 18,
+      "salary_iqr_outlier_pooled": 4,
       "salary_suspect": 3,
-      "salary_period_year": 3,
-      "exp_inferred": 48,
-      "salary_min_gt_max": 0,
-      "exp_out_of_range": 4,
-      "currency_reinterpreted": 3
+      "salary_period_year": 1,
+      "exp_inferred": 14,
+      "currency_reinterpreted": 3,
+      "exp_out_of_range": 3
     }
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2111781",
+      "job_id": "vietnamworks_2117981",
       "source": "vietnamworks",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Unit D3-1, 3rd floor, Standard Factory D, Lot Va.04b located on Road 24 & 17, Industrial Park within Tan Thuan Export Processing Zone, Tan Thuan Dong Ward, District 7",
+          "dia_chi_cu_the": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn, Duy Tân, Cầu Giấy",
           "phuong_xa": null,
-          "tinh_thanh": "TP. Hồ Chí Minh",
-          "raw": "Unit D3-1, 3rd floor, Standard Factory D, Lot Va.04b located on Road 24 & 17, Industrial Park within Tan Thuan Export Processing Zone, Tan Thuan Dong Ward, District 7, Ho Chi Minh"
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn - Duy Tân, Cầu Giấy, Hà Nội"
+        },
+        {
+          "dia_chi_cu_the": "18A Cộng Hòa, Thành phố Hồ Chí Minh, 89B Lý Nam Đế, Hà Nội, Tòa CIT 6/15 Duy Tân",
+          "phuong_xa": "Phường Hoàn Kiếm",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "18A Cộng Hòa, Phường Bảy Hiền, Thành phố Hồ Chí Minh; 89B Lý Nam Đế, Phường Hoàn Kiếm, Hà Nội; Tòa CIT 6/15 Duy Tân, Phường Cầu Giấy, Hà Nội"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Unit D3-1, 3rd floor, Standard Factory D, Lot Va.04b located on Road 24 & 17, Industrial Park within Tan Thuan Export Processing Zone, Tan Thuan Dong Ward, District 7",
+          "dia_chi_cu_the": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn, Duy Tân, Cầu Giấy",
           "phuong_xa": null,
-          "tinh_thanh": "TP. Hồ Chí Minh",
-          "raw": "Unit D3-1, 3rd floor, Standard Factory D, Lot Va.04b located on Road 24 & 17, Industrial Park within Tan Thuan Export Processing Zone, Tan Thuan Dong Ward, District 7, Ho Chi Minh",
-          "tinh_key": "ho_chi_minh",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn - Duy Tân, Cầu Giấy, Hà Nội",
+          "tinh_key": "ha_noi",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        },
+        {
+          "dia_chi_cu_the": "18A Cộng Hòa, Thành phố Hồ Chí Minh, 89B Lý Nam Đế, Hà Nội, Tòa CIT 6/15 Duy Tân",
+          "phuong_xa": "Phường Hoàn Kiếm",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "18A Cộng Hòa, Phường Bảy Hiền, Thành phố Hồ Chí Minh; 89B Lý Nam Đế, Phường Hoàn Kiếm, Hà Nội; Tòa CIT 6/15 Duy Tân, Phường Cầu Giấy, Hà Nội",
+          "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
@@ -451,19 +570,19 @@
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2119100",
+      "job_id": "vietnamworks_2114716",
       "source": "vietnamworks",
       "field": "exp_min_years",
       "before": null,
-      "after": 5.0,
+      "after": 0.5,
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2121022",
+      "job_id": "vietnamworks_2119648",
       "source": "vietnamworks",
       "field": "exp_min_years",
       "before": null,
-      "after": 0.0,
+      "after": 4.0,
       "changed": true
     }
   ]

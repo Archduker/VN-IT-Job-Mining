@@ -2,23 +2,29 @@
   "step": "04_normalization",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-10T22:25:13+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:18:39+00:00",
+  "code_version": "63f62b2",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 202
+    "rows": 168
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 202
+    "rows": 166
   },
-  "dropped": [],
+  "dropped": [
+    {
+      "rule": "Q1",
+      "reason": "TRANSLATION_FAILED",
+      "rows": 2
+    }
+  ],
   "rules": [
     {
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 202,
+      "rows_affected": 168,
       "examples": [
         {
           "job_id": "2017763",
@@ -54,28 +60,28 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 99,
+      "rows_affected": 124,
       "examples": [
+        {
+          "job_id": "2017763",
+          "field": "seniority",
+          "before": "Lập trình viên Front-end",
+          "after": "Middle (kinh_nghiem)",
+          "url": "https://topdev.vn/viec-lam/lap-trinh-vien-front-end-cong-ty-cp-phan-mem-mor-2-2017763"
+        },
+        {
+          "job_id": "2133062",
+          "field": "seniority",
+          "before": "Game QA Engineer (Manual & Automation)",
+          "after": "Middle (kinh_nghiem)",
+          "url": "https://topdev.vn/viec-lam/game-qa-engineer-manual-automation-cong-ty-co-phan-suntek-2133062"
+        },
         {
           "job_id": "2133352",
           "field": "seniority",
           "before": "Technical Leader (Domain ITSM)",
           "after": "Lead/Manager (title)",
           "url": "https://topdev.vn/viec-lam/technical-leader-domain-itsm-fpt-is-2133352"
-        },
-        {
-          "job_id": "2133547",
-          "field": "seniority",
-          "before": "RPA Developer (Middle)",
-          "after": "Middle (title)",
-          "url": "https://topdev.vn/viec-lam/rpa-developer-middle-cyberlogitec-vietnam-co-ltd-2133547"
-        },
-        {
-          "job_id": "2133624",
-          "field": "seniority",
-          "before": "Junior/Middle/Senior IT Business Analyst (LOS, CRM System)",
-          "after": "Senior (title)",
-          "url": "https://topdev.vn/viec-lam/junior-middle-senior-it-business-analyst-los-crm-system-cong-ty-tai-chinh-tin-dung-tieu-dung-trach-nhiem-huu-han-mot-thanh-vien-sfinance-2133624"
         }
       ]
     },
@@ -83,7 +89,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 147,
+      "rows_affected": 132,
       "examples": [
         {
           "job_id": "2017763",
@@ -112,43 +118,100 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 72,
+      "rows_affected": 60,
       "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 181,
+      "rows_affected": 141,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 202,
+      "rows_affected": 168,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 14,
+      "rows_affected": 23,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 37,
+      "rows_affected": 73,
       "examples": []
     },
     {
       "id": "M4",
-      "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
+      "name": "Kinh nghiệm thiếu sau khi chọn ô/JD: điền cận dưới theo cấp bậc, exp_inferred=True",
       "action": "flag",
-      "rows_affected": 48,
+      "rows_affected": 3,
       "examples": []
+    },
+    {
+      "id": "N14",
+      "name": "work_mode từ ô của sàn hoặc JD (T9a); còn lại theo địa điểm",
+      "action": "modify",
+      "rows_affected": 5,
+      "examples": []
+    },
+    {
+      "id": "N19",
+      "name": "employment_type: tiêu đề Intern → ô của sàn → JD",
+      "action": "modify",
+      "rows_affected": 4,
+      "examples": []
+    },
+    {
+      "id": "N2c",
+      "name": "Cấp bậc Intern/Fresher từ employment_type internship",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "M4s",
+      "name": "Kinh nghiệm lấy từ JD khi ô trống (itviec: JD trước)",
+      "action": "modify",
+      "rows_affected": 90,
+      "examples": []
+    },
+    {
+      "id": "M4c",
+      "name": "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict",
+      "action": "flag",
+      "rows_affected": 12,
+      "examples": []
+    },
+    {
+      "id": "Q1",
+      "name": "Cách ly tin dịch EN→VI vẫn hỏng: ghi quarantine.parquet, không vào all.parquet",
+      "action": "drop",
+      "rows_affected": 2,
+      "examples": [
+        {
+          "job_id": "topdev_2134039",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://topdev.vn/viec-lam/hanoi-senior-automation-ai-system-engineer-zeder-viet-nam-2134039"
+        },
+        {
+          "job_id": "topdev_2138320",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://topdev.vn/viec-lam/senior-cloud-platform-engineer-cong-ty-co-phan-wecare-group-2138320"
+        }
+      ]
     },
     {
       "id": "N6a",
@@ -175,28 +238,28 @@
       "id": "M6",
       "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
       "action": "flag",
-      "rows_affected": 2,
+      "rows_affected": 3,
       "examples": []
     },
     {
       "id": "M8",
       "name": "min > max, kinh nghiệm ngoài khoảng: chỉ cờ",
       "action": "flag",
-      "rows_affected": 1,
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 57,
+      "rows_affected": 51,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 202,
+      "rows_affected": 166,
       "examples": []
     }
   ],
@@ -208,13 +271,13 @@
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.4,
+      "fill_pct_out": 99.4
     },
     {
       "field": "seniority",
-      "fill_pct_in": 49.0,
-      "fill_pct_out": 49.0
+      "fill_pct_in": 73.5,
+      "fill_pct_out": 73.5
     },
     {
       "field": "seniority_source",
@@ -233,8 +296,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 89.6,
-      "fill_pct_out": 89.6
+      "fill_pct_in": 83.7,
+      "fill_pct_out": 83.7
     },
     {
       "field": "company_norm",
@@ -243,23 +306,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 25.2,
-      "fill_pct_out": 25.2
+      "fill_pct_in": 27.7,
+      "fill_pct_out": 27.7
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 28.2,
-      "fill_pct_out": 28.2
+      "fill_pct_in": 30.7,
+      "fill_pct_out": 30.7
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 25.2,
-      "fill_pct_out": 25.2
+      "fill_pct_in": 27.7,
+      "fill_pct_out": 27.7
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 28.2,
-      "fill_pct_out": 28.2
+      "fill_pct_in": 30.7,
+      "fill_pct_out": 30.7
     },
     {
       "field": "is_outlier_salary",
@@ -268,13 +331,13 @@
     },
     {
       "field": "job_title_core",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.4,
+      "fill_pct_out": 99.4
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 35.6,
-      "fill_pct_out": 35.6
+      "fill_pct_in": 36.1,
+      "fill_pct_out": 36.1
     },
     {
       "field": "company_key",
@@ -303,8 +366,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 52.0,
-      "fill_pct_out": 52.0
+      "fill_pct_in": 84.9,
+      "fill_pct_out": 84.9
     },
     {
       "field": "exp_source",
@@ -331,92 +394,130 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "quarantine": {
+      "rows": 2,
+      "by_reason": {
+        "TRANSLATION_FAILED": 2
+      }
+    },
+    "employment_type_distribution": {
+      "(trống)": 162,
+      "full_time": 3,
+      "internship": 1
+    },
+    "work_mode_source_distribution": {
+      "location": 161,
+      "jd": 5
+    },
+    "exp_source_distribution": {
+      "jd": 85,
+      "raw": 50,
+      "unknown": 25,
+      "jd_zero": 3,
+      "level_middle": 1,
+      "level_senior": 1,
+      "level_intern": 1
+    },
+    "seniority_source_distribution": {
+      "kinh_nghiem": 73,
+      "title": 48,
+      "none": 44,
+      "raw": 1
+    },
     "seniority_distribution": {
-      "(trống)": 103,
-      "Senior": 38,
-      "Middle": 25,
-      "Lead/Manager": 20,
-      "Junior": 14,
-      "Intern/Fresher": 2
+      "Middle": 45,
+      "(trống)": 44,
+      "Senior": 37,
+      "Junior": 20,
+      "Lead/Manager": 12,
+      "Intern/Fresher": 8
     },
     "job_family_distribution": {
-      "Web": 63,
-      "Other": 55,
-      "Tester": 26,
-      "Bridge": 23,
+      "Web": 52,
+      "Other": 36,
+      "Tester": 24,
+      "Bridge": 21,
       "Data/AI": 17,
-      "DevOps/Cloud": 7,
-      "Security": 6,
+      "DevOps/Cloud": 6,
+      "Security": 4,
+      "Design": 3,
       "Game": 2,
-      "Design": 2,
       "Mobile": 1
     },
     "job_family_source_distribution": {
-      "canonical": 72,
-      "title": 70,
-      "none": 55,
-      "skills": 5
+      "title": 66,
+      "canonical": 60,
+      "none": 36,
+      "skills": 4
     },
     "work_mode_distribution": {
-      "onsite": 201,
-      "remote": 1
+      "onsite": 164,
+      "remote": 1,
+      "hybrid": 1
     },
     "salary_status_distribution": {
-      "negotiable": 144,
-      "value": 58
+      "negotiable": 114,
+      "value": 52
     },
     "salary_outliers": 1,
     "inference": {
-      "level_inferred": 37,
-      "exp_inferred": 48
+      "level_inferred": 121,
+      "exp_inferred": 3
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 200,
-      "job_title_core_distinct": 175,
+      "job_title_clean_distinct": 165,
+      "job_title_core_distinct": 145,
       "title_canonical_source": {
-        "none": 130,
-        "alias": 51,
-        "exact": 17,
+        "none": 106,
+        "alias": 43,
+        "exact": 13,
         "fuzzy": 4
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 37,
-      "seniority_can_kiem": 1,
-      "job_family_can_kiem": 13,
-      "salary_negotiable_with_value": 0,
+      "level_inferred": 121,
+      "seniority_can_kiem": 5,
+      "job_family_can_kiem": 18,
       "tinh_unknown": 0,
-      "salary_iqr_outlier_by_level": 2,
+      "salary_negotiable_with_value": 0,
+      "salary_iqr_outlier_by_level": 3,
       "salary_out_of_range": 1,
       "salary_iqr_outlier_pooled": 0,
       "salary_suspect": 0,
       "salary_period_year": 0,
-      "exp_inferred": 48,
-      "salary_min_gt_max": 1,
-      "exp_out_of_range": 0,
-      "currency_reinterpreted": 0
+      "exp_inferred": 3,
+      "currency_reinterpreted": 0,
+      "exp_out_of_range": 0
     }
   },
   "samples": [
     {
-      "job_id": "topdev_2141521",
+      "job_id": "topdev_2137769",
+      "source": "topdev",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 3.0,
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2134508",
       "source": "topdev",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Tầng 6, Gelex Tower, 52 Lê Đại Hành, Hà Nội",
-          "phuong_xa": "Phường Hai Bà Trưng",
+          "dia_chi_cu_the": "MB Tower, số 18 Lê Văn Lương",
+          "phuong_xa": "Phường Yên Hoà",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 6, Gelex Tower, 52 Lê Đại Hành, phường Hai Bà Trưng, Hà Nội, Thành phố Hà Nội"
+          "raw": "MB Tower, số 18 Lê Văn Lương, Phường Yên Hòa, Thành phố Hà Nội"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Tầng 6, Gelex Tower, 52 Lê Đại Hành, Hà Nội",
-          "phuong_xa": "Phường Hai Bà Trưng",
+          "dia_chi_cu_the": "MB Tower, số 18 Lê Văn Lương",
+          "phuong_xa": "Phường Yên Hoà",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 6, Gelex Tower, 52 Lê Đại Hành, phường Hai Bà Trưng, Hà Nội, Thành phố Hà Nội",
+          "raw": "MB Tower, số 18 Lê Văn Lương, Phường Yên Hòa, Thành phố Hà Nội",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
@@ -426,19 +527,29 @@
       "changed": true
     },
     {
-      "job_id": "topdev_2136047",
+      "job_id": "topdev_2142422",
       "source": "topdev",
-      "field": "exp_min_years",
-      "before": null,
-      "after": 4.0,
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2136294",
-      "source": "topdev",
-      "field": "exp_min_years",
-      "before": null,
-      "after": 2.0,
+      "field": "locations",
+      "before": [
+        {
+          "dia_chi_cu_the": "Số 46-48-50-52-54-56-58-60-62-64 đường số 8, KDC Trung Sơn",
+          "phuong_xa": "Xã Bình Hưng",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Số 46-48-50-52-54-56-58-60-62-64 đường số 8, KDC Trung Sơn, Xã Bình Hưng, Huyện Bình Chánh, Thành phố Hồ Chí Minh"
+        }
+      ],
+      "after": [
+        {
+          "dia_chi_cu_the": "Số 46-48-50-52-54-56-58-60-62-64 đường số 8, KDC Trung Sơn",
+          "phuong_xa": "Xã Bình Hưng",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Số 46-48-50-52-54-56-58-60-62-64 đường số 8, KDC Trung Sơn, Xã Bình Hưng, Huyện Bình Chánh, Thành phố Hồ Chí Minh",
+          "tinh_key": "ho_chi_minh",
+          "tinh_cu": null,
+          "remote": false,
+          "ngoai_vn": false
+        }
+      ],
       "changed": true
     }
   ]

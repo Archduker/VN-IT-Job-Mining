@@ -2,23 +2,29 @@
   "step": "04_normalization",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-10T22:25:10+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:18:36+00:00",
+  "code_version": "63f62b2",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1520
+    "rows": 1270
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 1520
+    "rows": 1265
   },
-  "dropped": [],
+  "dropped": [
+    {
+      "rule": "Q1",
+      "reason": "TRANSLATION_FAILED",
+      "rows": 5
+    }
+  ],
   "rules": [
     {
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 1513,
+      "rows_affected": 1265,
       "examples": [
         {
           "job_id": "2013194",
@@ -47,7 +53,7 @@
       "id": "N13",
       "name": "Tỉnh từ raw_location_text/company_address khi locations không ra tỉnh",
       "action": "modify",
-      "rows_affected": 6,
+      "rows_affected": 5,
       "examples": [
         {
           "job_id": "1649068",
@@ -64,11 +70,11 @@
           "url": "https://www.topcv.vn/viec-lam/c-developer/1805066.html"
         },
         {
-          "job_id": "2296373",
+          "job_id": "2187764",
           "field": "tinh_chinh",
           "before": "Nhật Bản",
           "after": "TP. Hà Nội",
-          "url": "https://www.topcv.vn/viec-lam/ky-su-phan-mem-nhung-tieng-nhat-n3/2296373.html"
+          "url": "https://www.topcv.vn/viec-lam/brse-se/2187764.html"
         }
       ]
     },
@@ -76,7 +82,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 1483,
+      "rows_affected": 1239,
       "examples": [
         {
           "job_id": "2013194",
@@ -105,7 +111,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 1312,
+      "rows_affected": 1118,
       "examples": [
         {
           "job_id": "2013194",
@@ -134,70 +140,134 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 763,
+      "rows_affected": 596,
       "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 1484,
+      "rows_affected": 1092,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 1519,
+      "rows_affected": 1270,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 50,
+      "rows_affected": 155,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 922,
+      "rows_affected": 726,
       "examples": []
     },
     {
       "id": "M4",
-      "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
+      "name": "Kinh nghiệm thiếu sau khi chọn ô/JD: điền cận dưới theo cấp bậc, exp_inferred=True",
       "action": "flag",
       "rows_affected": 0,
       "examples": []
     },
     {
+      "id": "N14",
+      "name": "work_mode từ ô của sàn hoặc JD (T9a); còn lại theo địa điểm",
+      "action": "modify",
+      "rows_affected": 1265,
+      "examples": []
+    },
+    {
+      "id": "N19",
+      "name": "employment_type: tiêu đề Intern → ô của sàn → JD",
+      "action": "modify",
+      "rows_affected": 1264,
+      "examples": []
+    },
+    {
+      "id": "N2c",
+      "name": "Cấp bậc Intern/Fresher từ employment_type internship",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "M4s",
+      "name": "Kinh nghiệm lấy từ JD khi ô trống (itviec: JD trước)",
+      "action": "modify",
+      "rows_affected": 4,
+      "examples": []
+    },
+    {
+      "id": "M4c",
+      "name": "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict",
+      "action": "flag",
+      "rows_affected": 41,
+      "examples": []
+    },
+    {
+      "id": "Q1",
+      "name": "Cách ly tin dịch EN→VI vẫn hỏng: ghi quarantine.parquet, không vào all.parquet",
+      "action": "drop",
+      "rows_affected": 5,
+      "examples": [
+        {
+          "job_id": "topcv_1671064",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://www.topcv.vn/brand/shinhanfinance1/tuyen-dung/application-support-officer-j1671064.html"
+        },
+        {
+          "job_id": "topcv_2315835",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://www.topcv.vn/viec-lam/database-engineer-dba/2315835.html"
+        },
+        {
+          "job_id": "topcv_2325079",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://www.topcv.vn/viec-lam/fullstack-developer-reactjs-nestjs-postgresql/2325079.html"
+        }
+      ]
+    },
+    {
       "id": "N6a",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 2,
+      "rows_affected": 1,
       "examples": []
     },
     {
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR gộp và Winsorize 1-99% (cột *_capped)",
       "action": "modify",
-      "rows_affected": 7,
+      "rows_affected": 5,
       "examples": []
     },
     {
       "id": "M5",
       "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
       "action": "flag",
-      "rows_affected": 9,
+      "rows_affected": 7,
       "examples": []
     },
     {
       "id": "M6",
       "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
       "action": "flag",
-      "rows_affected": 23,
+      "rows_affected": 15,
       "examples": []
     },
     {
@@ -211,32 +281,32 @@
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 864,
+      "rows_affected": 692,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 1519,
+      "rows_affected": 1265,
       "examples": []
     }
   ],
   "fields": [
     {
       "field": "locations",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "seniority",
-      "fill_pct_in": 97.6,
-      "fill_pct_out": 97.6
+      "fill_pct_in": 97.5,
+      "fill_pct_out": 97.5
     },
     {
       "field": "seniority_source",
@@ -255,33 +325,33 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 97.6,
-      "fill_pct_out": 97.6
+      "fill_pct_in": 85.9,
+      "fill_pct_out": 85.9
     },
     {
       "field": "company_norm",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 49.0,
-      "fill_pct_out": 49.0
+      "fill_pct_in": 45.8,
+      "fill_pct_out": 45.8
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 56.8,
-      "fill_pct_out": 56.8
+      "fill_pct_in": 54.7,
+      "fill_pct_out": 54.7
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 49.0,
-      "fill_pct_out": 49.0
+      "fill_pct_in": 45.8,
+      "fill_pct_out": 45.8
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 56.8,
-      "fill_pct_out": 56.8
+      "fill_pct_in": 54.7,
+      "fill_pct_out": 54.7
     },
     {
       "field": "is_outlier_salary",
@@ -295,13 +365,13 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 50.2,
-      "fill_pct_out": 50.2
+      "fill_pct_in": 46.9,
+      "fill_pct_out": 46.9
     },
     {
       "field": "company_key",
-      "fill_pct_in": 99.9,
-      "fill_pct_out": 99.9
+      "fill_pct_in": 100.0,
+      "fill_pct_out": 100.0
     },
     {
       "field": "work_mode",
@@ -325,8 +395,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.9,
+      "fill_pct_out": 99.9
     },
     {
       "field": "exp_source",
@@ -353,97 +423,125 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "quarantine": {
+      "rows": 5,
+      "by_reason": {
+        "TRANSLATION_FAILED": 5
+      }
+    },
+    "employment_type_distribution": {
+      "full_time": 1206,
+      "internship": 47,
+      "(trống)": 6,
+      "part_time": 4,
+      "contract": 2
+    },
+    "work_mode_source_distribution": {
+      "raw": 1260,
+      "unknown": 5
+    },
+    "exp_source_distribution": {
+      "raw": 1260,
+      "jd": 2,
+      "jd_zero": 2,
+      "unknown": 1
+    },
+    "seniority_source_distribution": {
+      "kinh_nghiem": 723,
+      "raw": 371,
+      "title": 140,
+      "none": 31
+    },
     "seniority_distribution": {
-      "Middle": 486,
-      "Lead/Manager": 350,
-      "Junior": 316,
-      "Intern/Fresher": 240,
-      "Senior": 91,
-      "(trống)": 37
+      "Middle": 417,
+      "Lead/Manager": 333,
+      "Junior": 240,
+      "Intern/Fresher": 163,
+      "Senior": 81,
+      "(trống)": 31
     },
     "job_family_distribution": {
-      "Web": 602,
-      "Bridge": 209,
-      "Other": 208,
-      "Tester": 115,
-      "Data/AI": 99,
-      "Security": 78,
-      "DevOps/Cloud": 66,
-      "Design": 63,
-      "Game": 49,
-      "IoT": 16,
-      "Mobile": 15
+      "Web": 477,
+      "Bridge": 188,
+      "Other": 151,
+      "Tester": 116,
+      "Data/AI": 93,
+      "Security": 77,
+      "DevOps/Cloud": 64,
+      "Design": 46,
+      "Game": 34,
+      "Mobile": 12,
+      "IoT": 7
     },
     "job_family_source_distribution": {
-      "canonical": 763,
-      "title": 500,
-      "none": 208,
-      "skills": 49
+      "canonical": 593,
+      "title": 479,
+      "none": 151,
+      "skills": 42
     },
     "work_mode_distribution": {
-      "onsite": 1505,
-      "unknown": 7,
+      "onsite": 1218,
+      "hybrid": 35,
       "remote": 7,
-      "hybrid": 1
+      "unknown": 5
     },
     "salary_status_distribution": {
-      "value": 886,
-      "negotiable": 630,
-      "not_stated": 4
+      "value": 710,
+      "negotiable": 552,
+      "not_stated": 3
     },
-    "salary_outliers": 7,
+    "salary_outliers": 5,
     "inference": {
-      "level_inferred": 922,
+      "level_inferred": 863,
       "exp_inferred": 0
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 1335,
-      "job_title_core_distinct": 832,
+      "job_title_clean_distinct": 1122,
+      "job_title_core_distinct": 678,
       "title_canonical_source": {
-        "none": 757,
-        "alias": 442,
-        "exact": 275,
-        "fuzzy": 46
+        "none": 672,
+        "alias": 360,
+        "exact": 207,
+        "fuzzy": 26
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 922,
-      "seniority_can_kiem": 21,
-      "job_family_can_kiem": 29,
-      "salary_negotiable_with_value": 7,
-      "tinh_unknown": 7,
-      "salary_iqr_outlier_by_level": 23,
-      "salary_out_of_range": 9,
-      "salary_iqr_outlier_pooled": 2,
-      "salary_suspect": 2,
+      "level_inferred": 863,
+      "seniority_can_kiem": 16,
+      "job_family_can_kiem": 140,
+      "tinh_unknown": 5,
+      "salary_negotiable_with_value": 8,
+      "salary_iqr_outlier_by_level": 15,
+      "salary_out_of_range": 7,
+      "salary_iqr_outlier_pooled": 1,
+      "salary_suspect": 1,
       "salary_period_year": 1,
       "exp_inferred": 0,
-      "salary_min_gt_max": 0,
-      "exp_out_of_range": 0,
-      "currency_reinterpreted": 0
+      "currency_reinterpreted": 0,
+      "exp_out_of_range": 0
     }
   },
   "samples": [
     {
-      "job_id": "topcv_2310960",
+      "job_id": "topcv_2320537",
       "source": "topcv",
       "field": "locations",
       "before": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Vĩnh Tuy",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: 458 Minh Khai, Timescity, Phường Vĩnh Tuy (Phường Vĩnh Tuy có thể thuộc các quận Hai Bà Trưng, Hoàng Mai cũ)"
+          "phuong_xa": "Phường An Khánh",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Hồ Chí Minh: 34 Đường số 11, Phường An Khánh (Phường An Khánh thuộc Thành phố Thủ Đức cũ)"
         }
       ],
       "after": [
         {
           "dia_chi_cu_the": null,
-          "phuong_xa": "Phường Vĩnh Tuy",
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: 458 Minh Khai, Timescity, Phường Vĩnh Tuy (Phường Vĩnh Tuy có thể thuộc các quận Hai Bà Trưng, Hoàng Mai cũ)",
-          "tinh_key": "ha_noi",
+          "phuong_xa": "Phường An Khánh",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Hồ Chí Minh: 34 Đường số 11, Phường An Khánh (Phường An Khánh thuộc Thành phố Thủ Đức cũ)",
+          "tinh_key": "ho_chi_minh",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
@@ -452,55 +550,19 @@
       "changed": true
     },
     {
-      "job_id": "topcv_2281862",
+      "job_id": "topcv_2321780",
       "source": "topcv",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": null,
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Phường Láng (Phường Láng thuộc quận Đống Đa cũ) - Phạm vi làm việc trên toàn khu vực trên."
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": null,
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hà Nội: Phường Láng (Phường Láng thuộc quận Đống Đa cũ) - Phạm vi làm việc trên toàn khu vực trên.",
-          "tinh_key": "ha_noi",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
+      "field": "exp_min_years",
+      "before": null,
+      "after": 0.0,
       "changed": true
     },
     {
-      "job_id": "topcv_2277469",
+      "job_id": "topcv_2332279",
       "source": "topcv",
-      "field": "locations",
-      "before": [
-        {
-          "dia_chi_cu_the": "Bắc Ninh: Số 89 đường Hữu Nghị",
-          "phuong_xa": "Phường Từ Sơn",
-          "tinh_thanh": "TP. Bắc Ninh",
-          "raw": "Bắc Ninh: Số 89 đường Hữu Nghị, KCN VSIP Bắc Ninh tỉnh Bắc Ninh, VN, Phường Từ Sơn (Phường Từ Sơn thuộc Thành phố Từ Sơn cũ)"
-        }
-      ],
-      "after": [
-        {
-          "dia_chi_cu_the": "Bắc Ninh: Số 89 đường Hữu Nghị",
-          "phuong_xa": "Phường Từ Sơn",
-          "tinh_thanh": "TP. Bắc Ninh",
-          "raw": "Bắc Ninh: Số 89 đường Hữu Nghị, KCN VSIP Bắc Ninh tỉnh Bắc Ninh, VN, Phường Từ Sơn (Phường Từ Sơn thuộc Thành phố Từ Sơn cũ)",
-          "tinh_key": "bac_ninh",
-          "tinh_cu": null,
-          "remote": false,
-          "ngoai_vn": false
-        }
-      ],
+      "field": "exp_min_years",
+      "before": null,
+      "after": 0.0,
       "changed": true
     }
   ]

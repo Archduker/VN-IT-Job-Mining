@@ -2,23 +2,29 @@
   "step": "04_normalization",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T22:25:16+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:18:43+00:00",
+  "code_version": "63f62b2",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 246
+    "rows": 155
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 246
+    "rows": 146
   },
-  "dropped": [],
+  "dropped": [
+    {
+      "rule": "Q1",
+      "reason": "TRANSLATION_FAILED",
+      "rows": 9
+    }
+  ],
   "rules": [
     {
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 184,
+      "rows_affected": 114,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -62,7 +68,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 227,
+      "rows_affected": 146,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -72,18 +78,18 @@
           "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
         },
         {
+          "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
+          "field": "seniority",
+          "before": "[DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai",
+          "after": "Intern/Fresher (kinh_nghiem)",
+          "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
+        },
+        {
           "job_id": "01fb2caa-b939-45c8-a819-66a3c73f0e08",
           "field": "seniority",
           "before": "AI Applied Coordinator Intern",
           "after": "Intern/Fresher (title)",
           "url": "https://glints.com/vn/opportunities/jobs/ai-applied-coordinator-intern/01fb2caa-b939-45c8-a819-66a3c73f0e08"
-        },
-        {
-          "job_id": "02ab4af2-fa4b-4b73-9795-c9047f9b9dbc",
-          "field": "seniority",
-          "before": "Developer",
-          "after": "Middle (kinh_nghiem)",
-          "url": "https://glints.com/vn/opportunities/jobs/developer/02ab4af2-fa4b-4b73-9795-c9047f9b9dbc"
         }
       ]
     },
@@ -91,7 +97,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 224,
+      "rows_affected": 136,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -120,21 +126,21 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 109,
+      "rows_affected": 66,
       "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 241,
+      "rows_affected": 150,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 246,
+      "rows_affected": 155,
       "examples": []
     },
     {
@@ -148,42 +154,106 @@
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 147,
+      "rows_affected": 96,
       "examples": []
     },
     {
       "id": "M4",
-      "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
+      "name": "Kinh nghiệm thiếu sau khi chọn ô/JD: điền cận dưới theo cấp bậc, exp_inferred=True",
       "action": "flag",
-      "rows_affected": 11,
+      "rows_affected": 3,
       "examples": []
+    },
+    {
+      "id": "N14",
+      "name": "work_mode từ ô của sàn hoặc JD (T9a); còn lại theo địa điểm",
+      "action": "modify",
+      "rows_affected": 155,
+      "examples": []
+    },
+    {
+      "id": "N19",
+      "name": "employment_type: tiêu đề Intern → ô của sàn → JD",
+      "action": "modify",
+      "rows_affected": 155,
+      "examples": []
+    },
+    {
+      "id": "N2c",
+      "name": "Cấp bậc Intern/Fresher từ employment_type internship",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "M4s",
+      "name": "Kinh nghiệm lấy từ JD khi ô trống (itviec: JD trước)",
+      "action": "modify",
+      "rows_affected": 9,
+      "examples": []
+    },
+    {
+      "id": "M4c",
+      "name": "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict",
+      "action": "flag",
+      "rows_affected": 1,
+      "examples": []
+    },
+    {
+      "id": "Q1",
+      "name": "Cách ly tin dịch EN→VI vẫn hỏng: ghi quarantine.parquet, không vào all.parquet",
+      "action": "drop",
+      "rows_affected": 9,
+      "examples": [
+        {
+          "job_id": "glints_218283fa-7dfa-4ab6-8e6d-ed3a5e004c6a",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://glints.com/vn/opportunities/jobs/test-leader-manager/218283fa-7dfa-4ab6-8e6d-ed3a5e004c6a"
+        },
+        {
+          "job_id": "glints_22af74bd-1e93-4a8a-8f36-e888a71a5792",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://glints.com/vn/opportunities/jobs/dx-technical-leader/22af74bd-1e93-4a8a-8f36-e888a71a5792"
+        },
+        {
+          "job_id": "glints_2fa5f9e6-5476-444c-a889-8fc910279fe8",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://glints.com/vn/opportunities/jobs/remote-job-employment-screening-officer-singapore-team/2fa5f9e6-5476-444c-a889-8fc910279fe8"
+        }
+      ]
     },
     {
       "id": "N6a",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 5,
+      "rows_affected": 3,
       "examples": []
     },
     {
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR gộp và Winsorize 1-99% (cột *_capped)",
       "action": "modify",
-      "rows_affected": 1,
+      "rows_affected": 0,
       "examples": []
     },
     {
       "id": "M5",
       "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
       "action": "flag",
-      "rows_affected": 7,
+      "rows_affected": 2,
       "examples": []
     },
     {
       "id": "M6",
       "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
       "action": "flag",
-      "rows_affected": 2,
+      "rows_affected": 1,
       "examples": []
     },
     {
@@ -197,14 +267,14 @@
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 149,
+      "rows_affected": 90,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 246,
+      "rows_affected": 146,
       "examples": []
     }
   ],
@@ -221,8 +291,8 @@
     },
     {
       "field": "seniority",
-      "fill_pct_in": 92.3,
-      "fill_pct_out": 92.3
+      "fill_pct_in": 93.8,
+      "fill_pct_out": 93.8
     },
     {
       "field": "seniority_source",
@@ -241,8 +311,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 98.0,
-      "fill_pct_out": 98.0
+      "fill_pct_in": 97.3,
+      "fill_pct_out": 97.3
     },
     {
       "field": "company_norm",
@@ -251,23 +321,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 60.2,
-      "fill_pct_out": 60.2
+      "fill_pct_in": 61.6,
+      "fill_pct_out": 61.6
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 60.6,
-      "fill_pct_out": 60.6
+      "fill_pct_in": 61.6,
+      "fill_pct_out": 61.6
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 60.2,
-      "fill_pct_out": 60.2
+      "fill_pct_in": 61.6,
+      "fill_pct_out": 61.6
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 60.6,
-      "fill_pct_out": 60.6
+      "fill_pct_in": 61.6,
+      "fill_pct_out": 61.6
     },
     {
       "field": "is_outlier_salary",
@@ -281,8 +351,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 44.3,
-      "fill_pct_out": 44.3
+      "fill_pct_in": 41.8,
+      "fill_pct_out": 41.8
     },
     {
       "field": "company_key",
@@ -311,8 +381,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 96.3,
-      "fill_pct_out": 96.3
+      "fill_pct_in": 99.3,
+      "fill_pct_out": 99.3
     },
     {
       "field": "exp_source",
@@ -339,94 +409,119 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "quarantine": {
+      "rows": 9,
+      "by_reason": {
+        "TRANSLATION_FAILED": 9
+      }
+    },
+    "employment_type_distribution": {
+      "full_time": 128,
+      "internship": 16,
+      "contract": 2
+    },
+    "work_mode_source_distribution": {
+      "raw": 143,
+      "jd_over_raw": 3
+    },
+    "exp_source_distribution": {
+      "raw": 133,
+      "jd_zero": 7,
+      "level_intern": 3,
+      "jd": 2,
+      "unknown": 1
+    },
+    "seniority_source_distribution": {
+      "kinh_nghiem": 91,
+      "title": 46,
+      "none": 9
+    },
     "seniority_distribution": {
-      "Junior": 80,
-      "Middle": 59,
-      "Intern/Fresher": 50,
-      "Lead/Manager": 20,
-      "(trống)": 19,
-      "Senior": 18
+      "Junior": 48,
+      "Intern/Fresher": 32,
+      "Middle": 31,
+      "Lead/Manager": 14,
+      "Senior": 12,
+      "(trống)": 9
     },
     "job_family_distribution": {
-      "Web": 109,
-      "Tester": 59,
-      "Data/AI": 27,
-      "Other": 22,
-      "Security": 18,
-      "DevOps/Cloud": 6,
-      "Bridge": 3,
-      "Mobile": 2
+      "Web": 61,
+      "Tester": 36,
+      "Other": 17,
+      "Data/AI": 15,
+      "Security": 11,
+      "DevOps/Cloud": 3,
+      "Mobile": 2,
+      "Bridge": 1
     },
     "job_family_source_distribution": {
-      "canonical": 109,
-      "title": 109,
-      "none": 22,
-      "skills": 6
+      "title": 63,
+      "canonical": 61,
+      "none": 17,
+      "skills": 5
     },
     "work_mode_distribution": {
-      "onsite": 181,
-      "unknown": 63,
-      "remote": 1,
-      "hybrid": 1
+      "onsite": 132,
+      "hybrid": 10,
+      "remote": 4
     },
     "salary_status_distribution": {
-      "value": 150,
-      "negotiable": 91,
-      "not_stated": 5
+      "value": 91,
+      "negotiable": 52,
+      "not_stated": 3
     },
-    "salary_outliers": 1,
+    "salary_outliers": 0,
     "inference": {
-      "level_inferred": 147,
-      "exp_inferred": 11
+      "level_inferred": 137,
+      "exp_inferred": 3
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 231,
-      "job_title_core_distinct": 179,
+      "job_title_clean_distinct": 141,
+      "job_title_core_distinct": 116,
       "title_canonical_source": {
-        "none": 137,
-        "alias": 72,
-        "exact": 27,
-        "fuzzy": 10
+        "none": 85,
+        "alias": 39,
+        "exact": 16,
+        "fuzzy": 6
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 147,
+      "level_inferred": 137,
       "seniority_can_kiem": 0,
-      "job_family_can_kiem": 4,
-      "salary_negotiable_with_value": 5,
-      "tinh_unknown": 61,
-      "salary_iqr_outlier_by_level": 2,
-      "salary_out_of_range": 7,
+      "job_family_can_kiem": 3,
+      "tinh_unknown": 36,
+      "salary_negotiable_with_value": 2,
+      "salary_iqr_outlier_by_level": 1,
+      "salary_out_of_range": 2,
       "salary_iqr_outlier_pooled": 0,
-      "salary_suspect": 5,
-      "salary_period_year": 2,
-      "exp_inferred": 11,
-      "salary_min_gt_max": 0,
-      "exp_out_of_range": 0,
-      "currency_reinterpreted": 0
+      "salary_suspect": 3,
+      "salary_period_year": 1,
+      "exp_inferred": 3,
+      "currency_reinterpreted": 0,
+      "exp_out_of_range": 0
     }
   },
   "samples": [
     {
-      "job_id": "glints_e5683ff4-e7eb-403d-83a5-c451530d0e72",
+      "job_id": "glints_93594bc7-dca9-47ce-8d54-d7995bc1d26e",
       "source": "glints",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng, Phường Mễ Trì, Quận Nam Từ Liêm, Thành phố Hà Nội, Việt Nam"
+          "dia_chi_cu_the": "Tòa nhà Ereka, 17 Hồ Bá Kiện",
+          "phuong_xa": "Phường Hoà Hưng",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Tòa nhà Ereka, 17 Hồ Bá Kiện, Phường Hoà Hưng, Tp.HCM, Việt Nam"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Tầng 4, Tháp CEO, HH2-1, đường Phạm Hùng, Phường Mễ Trì, Quận Nam Từ Liêm, Thành phố Hà Nội, Việt Nam",
-          "tinh_key": "ha_noi",
+          "dia_chi_cu_the": "Tòa nhà Ereka, 17 Hồ Bá Kiện",
+          "phuong_xa": "Phường Hoà Hưng",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Tòa nhà Ereka, 17 Hồ Bá Kiện, Phường Hoà Hưng, Tp.HCM, Việt Nam",
+          "tinh_key": "ho_chi_minh",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
@@ -435,7 +530,7 @@
       "changed": true
     },
     {
-      "job_id": "glints_0af63a55-b97f-4706-8d61-f0b52e201fc1",
+      "job_id": "glints_a21e8a71-9f9c-42af-a945-97e89cc00131",
       "source": "glints",
       "field": "exp_min_years",
       "before": null,
@@ -443,7 +538,7 @@
       "changed": true
     },
     {
-      "job_id": "glints_1fe247ca-f7d3-420c-b678-137fb203e5f4",
+      "job_id": "glints_2401fa77-6f87-49f3-917b-fffd8099bbc8",
       "source": "glints",
       "field": "exp_min_years",
       "before": null,

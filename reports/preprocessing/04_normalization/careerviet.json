@@ -2,30 +2,36 @@
   "step": "04_normalization",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-10T22:25:15+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:18:41+00:00",
+  "code_version": "63f62b2",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 400
+    "rows": 405
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 400
+    "rows": 402
   },
-  "dropped": [],
+  "dropped": [
+    {
+      "rule": "Q1",
+      "reason": "TRANSLATION_FAILED",
+      "rows": 3
+    }
+  ],
   "rules": [
     {
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 394,
+      "rows_affected": 399,
       "examples": [
         {
-          "job_id": "35C32FB4",
+          "job_id": "35C5BDE1",
           "field": "tinh_chinh",
-          "before": "Long An",
-          "after": "Tây Ninh",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+          "before": "Hà Nội",
+          "after": "TP. Hà Nội",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
         },
         {
           "job_id": "35C7AC66",
@@ -54,14 +60,14 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 365,
+      "rows_affected": 374,
       "examples": [
         {
-          "job_id": "35C32FB4",
+          "job_id": "35C5BDE1",
           "field": "seniority",
           "before": "Nhân viên",
-          "after": "Junior (kinh_nghiem)",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
+          "after": "Intern/Fresher (kinh_nghiem)",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/vi-tri-user-experience-assurance-uxa-user-oriented-testers.35C5BDE1.html"
         },
         {
           "job_id": "35C7AC66",
@@ -83,15 +89,8 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 337,
+      "rows_affected": 338,
       "examples": [
-        {
-          "job_id": "35C32FB4",
-          "field": "job_family",
-          "before": "Kỹ Sư Điện Lập Trình PLC HMI",
-          "after": "Web (canonical)",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-dien-lap-trinh-plc-hmi.35C32FB4.html"
-        },
         {
           "job_id": "35C7AC66",
           "field": "job_family",
@@ -105,6 +104,13 @@
           "before": "Development Manager",
           "after": "Web (canonical)",
           "url": "https://careerviet.vn/vi/tim-viec-lam/development-manager.35C80317.html"
+        },
+        {
+          "job_id": "35C80358",
+          "field": "job_family",
+          "before": "Chuyên viên cao cấp Mạng và Bảo mật",
+          "after": "Security (title)",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cao-cap-mang-va-bao-mat.35C80358.html"
         }
       ]
     },
@@ -112,43 +118,107 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 173,
+      "rows_affected": 171,
       "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 323,
+      "rows_affected": 322,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 400,
+      "rows_affected": 405,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 68,
+      "rows_affected": 70,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 226,
+      "rows_affected": 238,
       "examples": []
     },
     {
       "id": "M4",
-      "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
+      "name": "Kinh nghiệm thiếu sau khi chọn ô/JD: điền cận dưới theo cấp bậc, exp_inferred=True",
       "action": "flag",
-      "rows_affected": 20,
+      "rows_affected": 7,
       "examples": []
+    },
+    {
+      "id": "N14",
+      "name": "work_mode từ ô của sàn hoặc JD (T9a); còn lại theo địa điểm",
+      "action": "modify",
+      "rows_affected": 9,
+      "examples": []
+    },
+    {
+      "id": "N19",
+      "name": "employment_type: tiêu đề Intern → ô của sàn → JD",
+      "action": "modify",
+      "rows_affected": 396,
+      "examples": []
+    },
+    {
+      "id": "N2c",
+      "name": "Cấp bậc Intern/Fresher từ employment_type internship",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "M4s",
+      "name": "Kinh nghiệm lấy từ JD khi ô trống (itviec: JD trước)",
+      "action": "modify",
+      "rows_affected": 17,
+      "examples": []
+    },
+    {
+      "id": "M4c",
+      "name": "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict",
+      "action": "flag",
+      "rows_affected": 65,
+      "examples": []
+    },
+    {
+      "id": "Q1",
+      "name": "Cách ly tin dịch EN→VI vẫn hỏng: ghi quarantine.parquet, không vào all.parquet",
+      "action": "drop",
+      "rows_affected": 3,
+      "examples": [
+        {
+          "job_id": "careerviet_35C83935",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/security-engineer.35C83935.html"
+        },
+        {
+          "job_id": "careerviet_35C87AB9",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/application-support-it-support.35C87AB9.html"
+        },
+        {
+          "job_id": "careerviet_35C884E8",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/lap-trinh-vien-ai-ai-developer-llm-applied-ai.35C884E8.html"
+        }
+      ]
     },
     {
       "id": "N6a",
@@ -175,7 +245,7 @@
       "id": "M6",
       "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
       "action": "flag",
-      "rows_affected": 1,
+      "rows_affected": 0,
       "examples": []
     },
     {
@@ -196,7 +266,7 @@
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 400,
+      "rows_affected": 402,
       "examples": []
     }
   ],
@@ -213,8 +283,8 @@
     },
     {
       "field": "seniority",
-      "fill_pct_in": 91.2,
-      "fill_pct_out": 91.2
+      "fill_pct_in": 92.3,
+      "fill_pct_out": 92.3
     },
     {
       "field": "seniority_source",
@@ -233,8 +303,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 80.8,
-      "fill_pct_out": 80.8
+      "fill_pct_in": 79.4,
+      "fill_pct_out": 79.4
     },
     {
       "field": "company_norm",
@@ -243,23 +313,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 27.8,
-      "fill_pct_out": 27.8
+      "fill_pct_in": 27.1,
+      "fill_pct_out": 27.1
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 30.0,
-      "fill_pct_out": 30.0
+      "fill_pct_in": 29.9,
+      "fill_pct_out": 29.9
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 27.8,
-      "fill_pct_out": 27.8
+      "fill_pct_in": 27.1,
+      "fill_pct_out": 27.1
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 30.0,
-      "fill_pct_out": 30.0
+      "fill_pct_in": 29.9,
+      "fill_pct_out": 29.9
     },
     {
       "field": "is_outlier_salary",
@@ -273,8 +343,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 43.2,
-      "fill_pct_out": 43.2
+      "fill_pct_in": 42.3,
+      "fill_pct_out": 42.3
     },
     {
       "field": "company_key",
@@ -303,8 +373,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 94.8,
-      "fill_pct_out": 94.8
+      "fill_pct_in": 95.8,
+      "fill_pct_out": 95.8
     },
     {
       "field": "exp_source",
@@ -331,110 +401,139 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "quarantine": {
+      "rows": 3,
+      "by_reason": {
+        "TRANSLATION_FAILED": 3
+      }
+    },
+    "employment_type_distribution": {
+      "full_time": 383,
+      "internship": 10,
+      "(trống)": 9
+    },
+    "work_mode_source_distribution": {
+      "location": 387,
+      "jd": 9,
+      "unknown": 6
+    },
+    "exp_source_distribution": {
+      "raw": 361,
+      "unknown": 17,
+      "jd": 11,
+      "jd_zero": 6,
+      "level_intern": 4,
+      "level_senior": 3
+    },
+    "seniority_source_distribution": {
+      "kinh_nghiem": 235,
+      "title": 71,
+      "raw": 65,
+      "none": 31
+    },
     "seniority_distribution": {
-      "Middle": 151,
-      "Senior": 63,
+      "Middle": 159,
       "Lead/Manager": 61,
-      "Junior": 59,
-      "(trống)": 35,
-      "Intern/Fresher": 31
+      "Senior": 61,
+      "Junior": 56,
+      "Intern/Fresher": 34,
+      "(trống)": 31
     },
     "job_family_distribution": {
-      "Web": 159,
-      "Other": 63,
+      "Web": 157,
+      "Other": 66,
       "Data/AI": 58,
-      "Bridge": 44,
-      "DevOps/Cloud": 30,
-      "Security": 23,
+      "Bridge": 46,
+      "DevOps/Cloud": 28,
+      "Security": 25,
       "Tester": 20,
-      "IoT": 2,
-      "Game": 1
+      "IoT": 2
     },
     "job_family_source_distribution": {
-      "canonical": 173,
-      "title": 139,
-      "none": 63,
-      "skills": 25
+      "canonical": 170,
+      "title": 144,
+      "none": 66,
+      "skills": 22
     },
     "work_mode_distribution": {
       "onsite": 393,
       "unknown": 6,
+      "hybrid": 2,
       "remote": 1
     },
     "salary_status_distribution": {
-      "negotiable": 279,
+      "negotiable": 281,
       "value": 120,
       "not_stated": 1
     },
     "salary_outliers": 1,
     "inference": {
-      "level_inferred": 226,
-      "exp_inferred": 20
+      "level_inferred": 306,
+      "exp_inferred": 7
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 380,
-      "job_title_core_distinct": 292,
+      "job_title_clean_distinct": 382,
+      "job_title_core_distinct": 293,
       "title_canonical_source": {
-        "none": 227,
-        "alias": 93,
-        "exact": 56,
-        "fuzzy": 24
+        "none": 232,
+        "alias": 94,
+        "exact": 54,
+        "fuzzy": 22
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 226,
-      "seniority_can_kiem": 4,
-      "job_family_can_kiem": 65,
-      "salary_negotiable_with_value": 0,
+      "level_inferred": 306,
+      "seniority_can_kiem": 5,
+      "job_family_can_kiem": 66,
       "tinh_unknown": 6,
-      "salary_iqr_outlier_by_level": 1,
+      "salary_negotiable_with_value": 0,
+      "salary_iqr_outlier_by_level": 0,
       "salary_out_of_range": 0,
       "salary_iqr_outlier_pooled": 1,
       "salary_suspect": 1,
       "salary_period_year": 0,
-      "exp_inferred": 20,
-      "salary_min_gt_max": 0,
-      "exp_out_of_range": 0,
-      "currency_reinterpreted": 0
+      "exp_inferred": 7,
+      "currency_reinterpreted": 0,
+      "exp_out_of_range": 0
     }
   },
   "samples": [
     {
-      "job_id": "careerviet_35C8ABCD",
+      "job_id": "careerviet_35C88655",
       "source": "careerviet",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Hồ Chí Minh",
+          "dia_chi_cu_the": null,
           "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hồ Chí Minh, Hà Nội"
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Hồ Chí Minh"
         },
         {
-          "dia_chi_cu_the": "Địa điểm làm việc Hồ Chí Minh 235 Nguyễn Văn Cừ, Nguyễn Cư Trinh, Hồ Chí Minh Hà Nội Công ty TNHH kỹ thuật bền vững Việt Nam, Tầng 14, Tòa nhà Geleximco, 36 Hoàng Cầu, Ô Chợ Dừa",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Địa điểm làm việc Hồ Chí Minh 235 Nguyễn Văn Cừ, Nguyễn Cư Trinh, Quận 1, Hồ Chí Minh Hà Nội Công ty TNHH kỹ thuật bền vững Việt Nam, Tầng 14, Tòa nhà Geleximco, 36 Hoàng Cầu, Ô Chợ Dừa, Hà Nội"
+          "dia_chi_cu_the": "Địa điểm làm việc Hồ Chí Minh Tòa nhà The MORE, 60 Nguyễn Thông",
+          "phuong_xa": "Phường Nhiêu Lộc",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Địa điểm làm việc Hồ Chí Minh Tòa nhà The MORE, 60 Nguyễn Thông, Phường Nhiêu Lộc, Tp.HCM."
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Hồ Chí Minh",
+          "dia_chi_cu_the": null,
           "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Hồ Chí Minh, Hà Nội",
-          "tinh_key": "ha_noi",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Hồ Chí Minh",
+          "tinh_key": "ho_chi_minh",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
         },
         {
-          "dia_chi_cu_the": "Địa điểm làm việc Hồ Chí Minh 235 Nguyễn Văn Cừ, Nguyễn Cư Trinh, Hồ Chí Minh Hà Nội Công ty TNHH kỹ thuật bền vững Việt Nam, Tầng 14, Tòa nhà Geleximco, 36 Hoàng Cầu, Ô Chợ Dừa",
-          "phuong_xa": null,
-          "tinh_thanh": "TP. Hà Nội",
-          "raw": "Địa điểm làm việc Hồ Chí Minh 235 Nguyễn Văn Cừ, Nguyễn Cư Trinh, Quận 1, Hồ Chí Minh Hà Nội Công ty TNHH kỹ thuật bền vững Việt Nam, Tầng 14, Tòa nhà Geleximco, 36 Hoàng Cầu, Ô Chợ Dừa, Hà Nội",
-          "tinh_key": "ha_noi",
+          "dia_chi_cu_the": "Địa điểm làm việc Hồ Chí Minh Tòa nhà The MORE, 60 Nguyễn Thông",
+          "phuong_xa": "Phường Nhiêu Lộc",
+          "tinh_thanh": "TP. Hồ Chí Minh",
+          "raw": "Địa điểm làm việc Hồ Chí Minh Tòa nhà The MORE, 60 Nguyễn Thông, Phường Nhiêu Lộc, Tp.HCM.",
+          "tinh_key": "ho_chi_minh",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
@@ -443,15 +542,15 @@
       "changed": true
     },
     {
-      "job_id": "careerviet_35C8AE4D",
+      "job_id": "careerviet_35C88B04",
       "source": "careerviet",
       "field": "exp_min_years",
       "before": null,
-      "after": 4.0,
+      "after": 0.0,
       "changed": true
     },
     {
-      "job_id": "careerviet_35C8B910",
+      "job_id": "careerviet_35C89DDC",
       "source": "careerviet",
       "field": "exp_min_years",
       "before": null,

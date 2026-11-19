@@ -2,23 +2,29 @@
   "step": "04_normalization",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-10T22:25:16+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T04:18:42+00:00",
+  "code_version": "63f62b2",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 818
+    "rows": 785
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 818
+    "rows": 736
   },
-  "dropped": [],
+  "dropped": [
+    {
+      "rule": "Q1",
+      "reason": "TRANSLATION_FAILED",
+      "rows": 49
+    }
+  ],
   "rules": [
     {
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 805,
+      "rows_affected": 773,
       "examples": [
         {
           "job_id": "2-senior-qa-qc-800-1800-rangstrup-it-vietnam-0056",
@@ -47,7 +53,7 @@
       "id": "N13",
       "name": "Tỉnh từ raw_location_text/company_address khi locations không ra tỉnh",
       "action": "modify",
-      "rows_affected": 634,
+      "rows_affected": 611,
       "examples": [
         {
           "job_id": "2-senior-qa-qc-800-1800-rangstrup-it-vietnam-0056",
@@ -76,21 +82,14 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 772,
+      "rows_affected": 707,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
           "field": "seniority",
           "before": "AI Engineer (Remote)",
-          "after": "Intern/Fresher (kinh_nghiem)",
+          "after": "Middle (kinh_nghiem)",
           "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
-        },
-        {
-          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
-          "field": "seniority",
-          "before": "AI Operations Manager (from 5yoe, Excellent English)",
-          "after": "Lead/Manager (title)",
-          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
         },
         {
           "job_id": "business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345",
@@ -98,6 +97,13 @@
           "before": "Business Analyst Intern (Company Secretariat)",
           "after": "Intern/Fresher (title)",
           "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+        },
+        {
+          "job_id": "cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720",
+          "field": "seniority",
+          "before": "CV, CVCC Xây Dựng Mô Hình Phát Hiện Gian Lận",
+          "after": "Intern/Fresher (kinh_nghiem)",
+          "url": "https://itviec.com/viec-lam-it/cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720"
         }
       ]
     },
@@ -105,7 +111,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 740,
+      "rows_affected": 708,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -115,18 +121,18 @@
           "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
         },
         {
-          "job_id": "ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552",
-          "field": "job_family",
-          "before": "AI Operations Manager (from 5yoe, Excellent English)",
-          "after": "Data/AI (title)",
-          "url": "https://itviec.com/viec-lam-it/ai-operations-manager-from-5yoe-excellent-english-yum-digital-technology-5552"
-        },
-        {
           "job_id": "business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345",
           "field": "job_family",
           "before": "Business Analyst Intern (Company Secretariat)",
           "after": "Bridge (title)",
           "url": "https://itviec.com/viec-lam-it/business-analyst-intern-company-secretariat-phu-hung-securities-phs-0345"
+        },
+        {
+          "job_id": "fintech-frontend-dev-javascript-react-new-wealth-2706",
+          "field": "job_family",
+          "before": "FinTech Frontend Dev (JavaScript, React)",
+          "after": "Web (title)",
+          "url": "https://itviec.com/viec-lam-it/fintech-frontend-dev-javascript-react-new-wealth-2706"
         }
       ]
     },
@@ -134,43 +140,107 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 319,
+      "rows_affected": 307,
       "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 818,
+      "rows_affected": 785,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 818,
+      "rows_affected": 785,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 58,
+      "rows_affected": 22,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 332,
+      "rows_affected": 282,
       "examples": []
     },
     {
       "id": "M4",
-      "name": "Intern/Fresher thiếu kinh nghiệm điền 0, exp_inferred=True",
+      "name": "Kinh nghiệm thiếu sau khi chọn ô/JD: điền cận dưới theo cấp bậc, exp_inferred=True",
       "action": "flag",
-      "rows_affected": 65,
+      "rows_affected": 26,
       "examples": []
+    },
+    {
+      "id": "N14",
+      "name": "work_mode từ ô của sàn hoặc JD (T9a); còn lại theo địa điểm",
+      "action": "modify",
+      "rows_affected": 767,
+      "examples": []
+    },
+    {
+      "id": "N19",
+      "name": "employment_type: tiêu đề Intern → ô của sàn → JD",
+      "action": "modify",
+      "rows_affected": 763,
+      "examples": []
+    },
+    {
+      "id": "N2c",
+      "name": "Cấp bậc Intern/Fresher từ employment_type internship",
+      "action": "modify",
+      "rows_affected": 0,
+      "examples": []
+    },
+    {
+      "id": "M4s",
+      "name": "Kinh nghiệm lấy từ JD khi ô trống (itviec: JD trước)",
+      "action": "modify",
+      "rows_affected": 57,
+      "examples": []
+    },
+    {
+      "id": "M4c",
+      "name": "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict",
+      "action": "flag",
+      "rows_affected": 449,
+      "examples": []
+    },
+    {
+      "id": "Q1",
+      "name": "Cách ly tin dịch EN→VI vẫn hỏng: ghi quarantine.parquet, không vào all.parquet",
+      "action": "drop",
+      "rows_affected": 49,
+      "examples": [
+        {
+          "job_id": "itviec_ai-product-owner-pati-os-product-management-linux-pati-group-1759",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://itviec.com/viec-lam-it/ai-product-owner-pati-os-product-management-linux-pati-group-1759"
+        },
+        {
+          "job_id": "itviec_asso-manager-sre-5-yrs-english-yum-digital-technology-0418",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://itviec.com/viec-lam-it/asso-manager-sre-5-yrs-english-yum-digital-technology-0418"
+        },
+        {
+          "job_id": "itviec_automotive-autosar-base-sw-developer-joining-bonus-bosch-global-software-technologies-company-limited-4103",
+          "field": "translation_status",
+          "before": "failed",
+          "after": "quarantine",
+          "url": "https://itviec.com/viec-lam-it/automotive-autosar-base-sw-developer-joining-bonus-bosch-global-software-technologies-company-limited-4103"
+        }
+      ]
     },
     {
       "id": "N6a",
@@ -183,42 +253,42 @@
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR gộp và Winsorize 1-99% (cột *_capped)",
       "action": "modify",
-      "rows_affected": 55,
+      "rows_affected": 48,
       "examples": []
     },
     {
       "id": "M5",
       "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
       "action": "flag",
-      "rows_affected": 19,
+      "rows_affected": 15,
       "examples": []
     },
     {
       "id": "M6",
       "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
       "action": "flag",
-      "rows_affected": 70,
+      "rows_affected": 51,
       "examples": []
     },
     {
       "id": "M8",
       "name": "min > max, kinh nghiệm ngoài khoảng: chỉ cờ",
       "action": "flag",
-      "rows_affected": 0,
+      "rows_affected": 1,
       "examples": []
     },
     {
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 209,
+      "rows_affected": 193,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 818,
+      "rows_affected": 736,
       "examples": []
     }
   ],
@@ -235,8 +305,8 @@
     },
     {
       "field": "seniority",
-      "fill_pct_in": 94.4,
-      "fill_pct_out": 94.4
+      "fill_pct_in": 90.1,
+      "fill_pct_out": 90.1
     },
     {
       "field": "seniority_source",
@@ -265,23 +335,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 24.2,
-      "fill_pct_out": 24.2
+      "fill_pct_in": 24.7,
+      "fill_pct_out": 24.7
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 25.6,
-      "fill_pct_out": 25.6
+      "fill_pct_in": 26.2,
+      "fill_pct_out": 26.2
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 24.2,
-      "fill_pct_out": 24.2
+      "fill_pct_in": 24.7,
+      "fill_pct_out": 24.7
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 25.6,
-      "fill_pct_out": 25.6
+      "fill_pct_in": 26.2,
+      "fill_pct_out": 26.2
     },
     {
       "field": "is_outlier_salary",
@@ -295,8 +365,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 39.0,
-      "fill_pct_out": 39.0
+      "fill_pct_in": 39.3,
+      "fill_pct_out": 39.3
     },
     {
       "field": "company_key",
@@ -325,8 +395,8 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 95.6,
-      "fill_pct_out": 95.6
+      "fill_pct_in": 98.8,
+      "fill_pct_out": 98.8
     },
     {
       "field": "exp_source",
@@ -353,95 +423,126 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
+    "quarantine": {
+      "rows": 49,
+      "by_reason": {
+        "TRANSLATION_FAILED": 49
+      }
+    },
+    "employment_type_distribution": {
+      "full_time": 681,
+      "internship": 36,
+      "(trống)": 19
+    },
+    "work_mode_source_distribution": {
+      "raw": 707,
+      "unknown": 11,
+      "jd": 10,
+      "location": 6,
+      "jd_over_raw": 2
+    },
+    "exp_source_distribution": {
+      "jd": 530,
+      "itviec_jsonld": 144,
+      "jd_zero": 29,
+      "level_intern": 19,
+      "unknown": 9,
+      "level_junior": 2,
+      "level_senior": 2,
+      "level_lead": 1
+    },
+    "seniority_source_distribution": {
+      "title": 396,
+      "kinh_nghiem": 267,
+      "none": 73
+    },
     "seniority_distribution": {
-      "Intern/Fresher": 251,
-      "Senior": 231,
-      "Middle": 156,
-      "Lead/Manager": 118,
-      "(trống)": 46,
-      "Junior": 16
+      "Senior": 232,
+      "Middle": 189,
+      "Lead/Manager": 101,
+      "Intern/Fresher": 88,
+      "(trống)": 73,
+      "Junior": 53
     },
     "job_family_distribution": {
-      "Web": 329,
-      "DevOps/Cloud": 92,
-      "Data/AI": 85,
-      "Bridge": 84,
-      "Other": 78,
-      "Tester": 72,
-      "Security": 49,
-      "IoT": 10,
+      "Web": 297,
+      "DevOps/Cloud": 85,
+      "Data/AI": 78,
+      "Bridge": 77,
+      "Other": 74,
+      "Tester": 65,
+      "Security": 43,
       "Mobile": 9,
       "Design": 6,
-      "Game": 4
+      "Game": 2
     },
     "job_family_source_distribution": {
-      "title": 387,
-      "canonical": 319,
-      "none": 78,
-      "skills": 34
+      "title": 344,
+      "canonical": 289,
+      "none": 74,
+      "skills": 29
     },
     "work_mode_distribution": {
-      "onsite": 789,
-      "unknown": 13,
-      "remote": 10,
-      "hybrid": 6
+      "onsite": 591,
+      "hybrid": 123,
+      "remote": 11,
+      "unknown": 11
     },
     "salary_status_distribution": {
-      "negotiable": 608,
-      "value": 210
+      "negotiable": 542,
+      "value": 194
     },
-    "salary_outliers": 55,
+    "salary_outliers": 48,
     "inference": {
-      "level_inferred": 332,
-      "exp_inferred": 65
+      "level_inferred": 663,
+      "exp_inferred": 24
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 789,
-      "job_title_core_distinct": 471,
+      "job_title_clean_distinct": 709,
+      "job_title_core_distinct": 422,
       "title_canonical_source": {
-        "none": 499,
-        "alias": 204,
-        "exact": 85,
-        "fuzzy": 30
+        "none": 447,
+        "alias": 183,
+        "exact": 78,
+        "fuzzy": 28
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 332,
-      "seniority_can_kiem": 58,
+      "level_inferred": 663,
+      "seniority_can_kiem": 20,
       "job_family_can_kiem": 0,
+      "tinh_unknown": 10,
       "salary_negotiable_with_value": 4,
-      "tinh_unknown": 12,
-      "salary_iqr_outlier_by_level": 70,
-      "salary_out_of_range": 19,
-      "salary_iqr_outlier_pooled": 18,
+      "salary_iqr_outlier_by_level": 51,
+      "salary_out_of_range": 15,
+      "salary_iqr_outlier_pooled": 15,
       "salary_suspect": 1,
       "salary_period_year": 0,
-      "exp_inferred": 65,
-      "salary_min_gt_max": 0,
-      "exp_out_of_range": 0,
-      "currency_reinterpreted": 0
+      "exp_inferred": 24,
+      "currency_reinterpreted": 0,
+      "exp_out_of_range": 1
     }
   },
   "samples": [
     {
-      "job_id": "itviec_principal-software-engineer-node-js-typescript-money-forward-vietnam-co-ltd-4158",
+      "job_id": "itviec_head-of-engineering-digital-banking-payment-id10994-vpbank-5331",
       "source": "itviec",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Tòa nhà E.Town Central, Số 11 Đoàn Văn Bơ",
+          "dia_chi_cu_the": "Tòa nhà E-town Central, 11 Đoàn Văn Bơ",
           "phuong_xa": null,
           "tinh_thanh": null,
-          "raw": "Tòa nhà E.Town Central, Số 11 Đoàn Văn Bơ"
+          "raw": "Tòa nhà E-town Central, 11 Đoàn Văn Bơ"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Tòa nhà E.Town Central, Số 11 Đoàn Văn Bơ",
+          "dia_chi_cu_the": "Tòa nhà E-town Central, 11 Đoàn Văn Bơ",
           "phuong_xa": null,
           "tinh_thanh": null,
-          "raw": "Tòa nhà E.Town Central, Số 11 Đoàn Văn Bơ",
+          "raw": "Tòa nhà E-town Central, 11 Đoàn Văn Bơ",
           "tinh_key": null,
           "tinh_cu": null,
           "remote": false,
@@ -451,19 +552,19 @@
       "changed": true
     },
     {
-      "job_id": "itviec_can-tho-fresher-php-good-english-communication-cong-ty-tnhh-nextedge-5902",
+      "job_id": "itviec_it-security-governance-senior-expert-fe-credit-3859",
       "source": "itviec",
       "field": "exp_min_years",
-      "before": null,
-      "after": 0.0,
+      "before": 3.0,
+      "after": 4.0,
       "changed": true
     },
     {
-      "job_id": "itviec_software-engineer-intern-taptap-1141",
+      "job_id": "itviec_mid-sr-fullstack-dev-golang-nextjs-reactjs-youpass-cong-ty-co-phan-youpass-4614",
       "source": "itviec",
       "field": "exp_min_years",
-      "before": null,
-      "after": 0.0,
+      "before": 0.0,
+      "after": 2.5,
       "changed": true
     }
   ]
