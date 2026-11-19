@@ -2,15 +2,15 @@
   "step": "12_e5",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-10T21:13:25+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T10:25:03+00:00",
+  "code_version": "59cf7c7",
   "input": {
     "path": null,
-    "rows": 7094
+    "rows": 4363
   },
   "output": {
     "path": "data/processing/12_e5/bullet_emb.npy",
-    "rows": 7094
+    "rows": 4363
   },
   "dropped": [],
   "rules": [],
@@ -24,10 +24,10 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "bullets": 114008,
+    "bullets": 99582,
     "dim": 768,
     "model": "intfloat/multilingual-e5-base",
-    "jobs": 4671
+    "jobs": 3916
   },
   "samples": [],
   "samples_reason": "NO_ROWS_CHANGED"

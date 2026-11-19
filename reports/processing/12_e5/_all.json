@@ -2,15 +2,15 @@
   "step": "12_e5",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-10T21:13:25+00:00",
-  "code_version": "37bb865",
+  "generated_at": "2026-11-19T10:25:03+00:00",
+  "code_version": "59cf7c7",
   "input": {
     "path": null,
-    "rows": 114008
+    "rows": 99582
   },
   "output": {
     "path": null,
-    "rows": 114008
+    "rows": 99582
   },
   "dropped": [],
   "rules": [],
@@ -26,42 +26,42 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 39867,
-        "output": 39867
+        "input": 34328,
+        "output": 34328
       },
       "topdev": {
-        "input": 5675,
-        "output": 5675
+        "input": 4664,
+        "output": 4664
       },
       "vietnamworks": {
-        "input": 15501,
-        "output": 15501
+        "input": 11937,
+        "output": 11937
       },
       "careerviet": {
-        "input": 1201,
-        "output": 1201
+        "input": 4311,
+        "output": 4311
       },
       "vieclam24h": {
-        "input": 3229,
-        "output": 3229
+        "input": 2567,
+        "output": 2567
       },
       "itviec": {
-        "input": 29333,
-        "output": 29333
+        "input": 26131,
+        "output": 26131
       },
       "glints": {
-        "input": 7094,
-        "output": 7094
+        "input": 4363,
+        "output": 4363
       },
       "jobsgo": {
-        "input": 12108,
-        "output": 12108
+        "input": 11281,
+        "output": 11281
       }
     },
-    "bullets": 114008,
+    "bullets": 99582,
     "dim": 768,
     "model": "intfloat/multilingual-e5-base",
-    "jobs": 4671
+    "jobs": 3916
   },
   "samples": [],
   "samples_reason": "NO_ROWS_CHANGED"

@@ -141,5 +141,5 @@ T5 và T6 chỉ là đối chiếu: dữ liệu ngoài do LLM sinh, không phả
 | P1 (**xong 19/11**) | Nhãn `tool`/`concept` cho skills_v2 (luật K8.17), duyệt theo lô |
 | P2 (**xong 19/11**) | Bước 08 ghi `type`; hàm `skill_view`; đo T1–T6 |
 | P3 (**xong 19/11**: 994 cột, `skill__` 291, `concept__` 562, `soft__` 63) | Bước 10: ba khối `skill__` (K-tool), `concept__`, `soft__`; `n_tools`, `n_concepts`, `n_soft`; `salary_target_m`; `emp__` từ `employment_type`; `posted_month` dạng `YYYY-MM`; bỏ bước 09 |
-| P4 | 12_e5 trên bullet mới, vector tin bỏ `phuc_loi` |
+| P4 (**xong 19/11**: `job_emb.npz` khóa `job`, 3.916 tin) | 12_e5 trên bullet mới, vector tin bỏ `phuc_loi` |
 | Mining | M1 → M2 → M3/M4 → M5 → M6, mỗi bước kiểm điều kiện ở mục 3 |
