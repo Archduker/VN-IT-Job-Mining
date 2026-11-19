@@ -349,6 +349,12 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Cách xử lý:** `scripts/run_preprocessing.py`: `SAME_CALL = ("07_sections", "08_skills")`; chạy một trong hai thì gắn mẫu cho cả hai. Chạy lại 08 ngày 19/11: cả hai báo cáo có 3 mẫu mỗi nguồn.
 - **Kiểm chứng:** `pytest tests/unit/test_ph9_chain.py -k both_07_and_08`.
 
+### L-54. Chạy thử ghi đè `samples_reason` vào báo cáo thật (Dữ liệu, 19/11/2026)
+- **Lỗi:** `run_preprocessing.py --step e5 --dry-run` sửa 18 file `reports/*/12_e5/*.json` đang trong git: `samples_reason` từ `NO_ROWS_CHANGED` thành `DRY_RUN_NO_OUTPUT`, dù không có báo cáo mới.
+- **Nguyên nhân:** `_finish_reports` gắn mẫu (và chép sang `reports/preprocessing/`) cả khi chạy thử, trong khi `StepReport.write` chỉ ghi khi chạy thật.
+- **Cách xử lý:** `_finish_reports` trả về ngay khi `dry_run`. Khôi phục 18 file bằng `git checkout`.
+- **Kiểm chứng:** `pytest tests/unit/test_ph9_chain.py -k dry_run_does_not_touch`; chạy lại `--step e5 --dry-run` thì `git status` không có báo cáo nào đổi.
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

@@ -20,6 +20,7 @@ from preprocessing.common.step_report import StepReport, merge_reports
 STEP = "12_e5"
 MODEL = "intfloat/multilingual-e5-base"
 SECTIONS = ("mo_ta", "yeu_cau", "phuc_loi")
+JOB_KEY, JOB_SECTIONS = "job", ("mo_ta", "yeu_cau")   # khóa vector tin cho SD3 trong job_emb.npz (19/11)
 
 
 def text_key(text: str) -> str:
@@ -57,7 +58,8 @@ def embed_texts(texts: Sequence[str], encode_fn: Callable[[List[str]], np.ndarra
 
 
 def job_vectors(index: pd.DataFrame, emb: np.ndarray, job_ids: Sequence[str]) -> dict:
-    """index: cột job_id_global, section (cùng thứ tự với emb). Trả {all, mo_ta, yeu_cau, phuc_loi: (n,d), has: (n,3) bool}."""
+    """index: cột job_id_global, section (cùng thứ tự với emb).
+    Trả {all, job, mo_ta, yeu_cau, phuc_loi: (n,d), has: (n,3) bool}; `job` = mo_ta + yeu_cau (SD3 dùng khóa này)."""
     pos = {j: i for i, j in enumerate(job_ids)}
     n, d = len(job_ids), emb.shape[1]
     rows = index["job_id_global"].map(pos).to_numpy()
@@ -75,7 +77,9 @@ def job_vectors(index: pd.DataFrame, emb: np.ndarray, job_ids: Sequence[str]) ->
         s[nz > 0] /= nz[nz > 0, None]
         return s, c > 0
 
-    out = {"all": mean_of(np.ones(len(rows), dtype=bool))[0]}
+    out = {"all": mean_of(np.ones(len(rows), dtype=bool))[0],
+           # SD3 (docs/target/06_yeu_cau_du_lieu.md): vector tin = trung bình bullet mô tả + yêu cầu, bỏ phúc lợi
+           JOB_KEY: mean_of(np.isin(secs, JOB_SECTIONS))[0]}
     has = []
     for sec in SECTIONS:
         out[sec], h = mean_of(secs == sec)
@@ -132,5 +136,6 @@ def run(sources, dry_run: bool = True, out_root=None, report_root=None, encoder=
         np.save(out / "bullet_emb.npy", emb)
         b[["job_id_global", "bullet_idx", "section"]].to_parquet(out / "bullet_index.parquet", index=False)
         np.savez(out / "job_emb.npz", ids=np.array(ids), **{k: (x.astype(np.float16) if k != "has" else x) for k, x in v.items()})
-        (out / "meta.json").write_text(json.dumps({"model": MODEL, "prefix": "passage: ", "sections": SECTIONS}), encoding="utf-8")
+        (out / "meta.json").write_text(json.dumps({"model": MODEL, "prefix": "passage: ", "sections": SECTIONS,
+                                                     "job_key": JOB_KEY, "job_sections": JOB_SECTIONS}), encoding="utf-8")
     return reports

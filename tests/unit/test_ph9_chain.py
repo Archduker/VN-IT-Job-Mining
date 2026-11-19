@@ -84,3 +84,14 @@ def test_extraction_step_finishes_both_07_and_08_reports(tmp_path, monkeypatch):
     monkeypatch.setattr(D, "_finish_reports", lambda step, *a: calls.append(step))
     D.run_chain(["08_skills"], ["topcv"], dry_run=True, root=tmp_path, write_summary=False)
     assert calls == ["07_sections", "08_skills"]
+
+
+def test_dry_run_does_not_touch_existing_reports(tmp_path):
+    """Chạy thử không ghi báo cáo mới; báo cáo thật đang có không bị gắn `DRY_RUN_NO_OUTPUT` (19/11)."""
+    p = tmp_path / "reports" / "processing" / "12_e5"
+    p.mkdir(parents=True)
+    f = p / "topcv.json"
+    f.write_text('{"samples": [], "samples_reason": "NO_ROWS_CHANGED"}', encoding="utf-8")
+    D._finish_reports("12_e5", ["topcv"], True, tmp_path, False)
+    assert json.loads(f.read_text(encoding="utf-8"))["samples_reason"] == "NO_ROWS_CHANGED"
+    assert not (tmp_path / "reports" / "preprocessing" / "12_e5").exists()

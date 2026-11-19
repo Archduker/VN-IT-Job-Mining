@@ -109,7 +109,10 @@ SAME_CALL = ("07_sections", "08_skills")   # processing.extraction.run ghi cả 
 
 
 def _finish_reports(step, sources, dry_run, root, partial):
-    """Gắn samples vào báo cáo; 07-09 sao báo cáo từ reports/processing sang reports/preprocessing."""
+    """Gắn samples vào báo cáo; 07-09 sao báo cáo từ reports/processing sang reports/preprocessing.
+    Chạy thử không ghi báo cáo mới, nên không chạm báo cáo thật đang có (19/11: từng ghi `DRY_RUN_NO_OUTPUT` đè lên)."""
+    if dry_run:
+        return
     from preprocessing.common.samples import inject_samples
     rep = root / "reports"
     pre = rep / "preprocessing" / ("_partial" if partial and step in STEPS[:2] else "")

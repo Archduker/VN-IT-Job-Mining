@@ -53,3 +53,13 @@ def test_job_vectors_all_and_per_section():
     assert np.allclose(v["all"][2], 0)  # không có bullet: vector 0, không bịa
     assert np.allclose(v["yeu_cau"][0], [0, 1]) and np.allclose(v["phuc_loi"][0], 0)
     assert v["has"].tolist() == [[True, True, False], [True, False, False], [False, False, False]]  # mo_ta, yeu_cau, phuc_loi
+
+
+def test_job_vector_for_sd3_excludes_benefits():
+    """P4 (docs/target/06_yeu_cau_du_lieu.md SD3): vector tin `job` = trung bình bullet mo_ta + yeu_cau, bỏ phuc_loi."""
+    idx = pd.DataFrame({"job_id_global": ["j1", "j1", "j1", "j2"], "section": ["mo_ta", "phuc_loi", "phuc_loi", "phuc_loi"]})
+    emb = np.array([[1, 0], [0, 1], [0, 1], [0, 1]], dtype=np.float32)
+    v = job_vectors(idx, emb, ["j1", "j2"])
+    assert np.allclose(v["job"][0], [1, 0])          # phúc lợi không kéo vector tin
+    assert np.allclose(v["job"][1], 0)               # tin chỉ có phúc lợi: vector 0, không bịa
+    assert not np.allclose(v["all"][0], [1, 0])      # `all` (cũ) vẫn gồm phúc lợi
