@@ -2,7 +2,7 @@
 
 > Code: `mining/anomaly.py` (`build_anomaly_space`, `_reason_codes`, `detect_anomalies`, `salary_level_ratio`). Hàm mới đề xuất: `classify_kind` (mới / khác), `hand_check_sample`.
 > Lệnh: `python -m mining.run_mining_pipeline --only cluster,anomaly [--dry-run]` (M4 cần điểm GLOSH của M3).
-> Câu hỏi: [`docs/target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md`](../../target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md) câu 3.3. Trạng thái: **bản nháp 20/11, chờ duyệt.**
+> Câu hỏi: [`docs/target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md`](../../target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md) câu 3.3. Trạng thái: **đã duyệt 20/11 (người dùng: "approved").**
 
 ## 1. Mục đích
 
@@ -21,7 +21,7 @@ Tìm tin **khác** mặt bằng (đòi hỏi lệch so với cấp, lương lệ
 
 `n_skills` của code cũ đếm 290 cột K-tool của M0 (khác `n_skills` của bước 10, đếm mọi loại). Ngưỡng 15 là số cố định, đặt khi kỹ năng còn lẫn soft.
 
-### 2.2. Đề xuất, chờ duyệt
+### 2.2. Đề xuất, đã duyệt 20/11 (chưa có code)
 
 | Mã | Đề xuất | Lý do / số 20/11 |
 |---|---|---|
@@ -71,5 +71,5 @@ Tìm tin **khác** mặt bằng (đòi hỏi lệch so với cấp, lương lệ
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
 - Có code; thiếu chia loại, ngưỡng theo dữ liệu, mẫu kiểm tay (MINE-7).
-- Chờ duyệt M4.4a–c, M4.5 (định nghĩa "mới" dùng P5–P95), M4.6.
+- Đã duyệt 20/11: M4.4a–c, M4.5 (định nghĩa "mới" dùng P5–P95), M4.6.
 - PRE-36.

@@ -1,7 +1,7 @@
 # ĐẶC TẢ MINING (M0–M6): HỢP ĐỒNG CHUNG
 
 > **Dự án:** VN-IT-Job-Mining. Đề tài: "Tích hợp và khai phá dữ liệu thị trường lao động phục vụ phân tích nghề nghiệp và kỹ năng trong IT".
-> **Phiên bản:** 3.1.0, ngày 20/11/2026. **Trạng thái:** nháp, chờ duyệt cùng [`docs/spec/mining/`](mining/README.md). Bản 3.0.0 (17/11) đã duyệt; bản này rút phần chi tiết từng bước sang `spec/mining/` (như spec 06 với `spec/processing/`) và thay quyết định 3.
+> **Phiên bản:** 3.1.0, ngày 20/11/2026. **Trạng thái:** đã duyệt 20/11/2026 cùng [`docs/spec/mining/`](mining/README.md). Bản 3.0.0 (17/11) đã duyệt; bản này rút phần chi tiết từng bước sang `spec/mining/` (như spec 06 với `spec/processing/`) và thay quyết định 3.
 > **Quan hệ với tài liệu khác:** mã bước M1–M6 lấy theo [spec 03](03_data_mining_lifecycle.md) mục 3.3; M0 là phần nạp dữ liệu chung. Câu hỏi của từng SD ở [`docs/target/`](../target/00_de_tai.md); điều kiện dữ liệu ở [`06_yeu_cau_du_lieu.md`](../target/06_yeu_cau_du_lieu.md). **Luật chi tiết, quy trình, số hiện trạng của từng bước chỉ ghi ở file bước trong [`spec/mining/`](mining/README.md).** Nghiệm thu: [spec 08](08_evaluation_spec.md).
 
 ## 0. Cách đọc
@@ -44,21 +44,21 @@
 
 ## 3. Đặc tả từng bước
 
-Xem [`docs/spec/mining/`](mining/README.md). Mỗi file theo khuôn 7 mục (Mục đích; Luật 2.1 đang chạy, 2.2 đề xuất chờ duyệt; Quy trình; Input → Output; Dữ liệu mẫu; Kiểm tra; Trạng thái).
+Xem [`docs/spec/mining/`](mining/README.md). Mỗi file theo khuôn 7 mục (Mục đích; Luật 2.1 đang chạy, 2.2 đề xuất (đã duyệt 20/11); Quy trình; Input → Output; Dữ liệu mẫu; Kiểm tra; Trạng thái).
 
 ## 4. Quyết định đã chốt
 
-Người dùng duyệt 17/11/2026 (1, 2) và 19/11/2026 (3, 4–9):
+Người dùng duyệt 17/11/2026 (1, 2), 19/11/2026 (3–8) và 20/11/2026 (9, cùng bộ `spec/mining/`):
 
 1. **Bỏ TF-IDF.** Biểu diễn nội dung JD chỉ dùng e5. Gỡ `build_tfidf`, `tfidf_weight` (M0.6) và bước 12_tfidf của Processing.
 2. **Kỹ năng mềm và ngoại ngữ xếp riêng.** Bảng xếp hạng (2.1), kỹ năng hiếm và lộ trình tách danh sách công cụ và danh sách kỹ năng mềm, ngoại ngữ. Từ 19/11 việc tách dùng `skill_view` (K-soft = `kind` soft hoặc language), không dùng danh sách 8 slug cũ.
-3. **M3 dùng K-tool + K-concept + e5 `job`** (19/11, thay quyết định "loại tin không có kỹ năng" ngày 17/11). Lý do: 643/3.916 tin không có công cụ nhưng là việc IT thật (BA, Tester, IT Manager, presales; trung vị 8 khái niệm/tin). Chỉ bỏ tin không có kỹ năng kỹ thuật nào; số tin bỏ chính xác (14 hay 1) chờ chọn ở M3.1b.
+3. **M3 dùng K-tool + K-concept + e5 `job`** (19/11, thay quyết định "loại tin không có kỹ năng" ngày 17/11). Lý do: 643/3.916 tin không có công cụ nhưng là việc IT thật (BA, Tester, IT Manager, presales; trung vị 8 khái niệm/tin). Chỉ bỏ tin không có kỹ năng kỹ thuật nào; tin có `n_tools + n_concepts = 0` (14 tin ngày 19/11; M3.1b, duyệt 20/11).
 4. Kỹ năng của SD2, SD4, SD5 là **K-tool** (quyết định 1 của `06_yeu_cau_du_lieu.md`).
 5. Giữ thẻ kỹ năng của sàn (quyết định 2).
 6. Lead/Manager lương < Senior là **MNAR** (thỏa thuận nhiều), không phải lỗi (quyết định 3).
 7. Mục tiêu lương = trung bình các cận có số (`salary_target_m`, quyết định 4).
 8. `source` là biến kiểm soát của M5 (quyết định 5).
-9. Không tự suy kỹ năng JD không ghi (quyết định 6): S-02 chỉ báo cáo, S-03 ngưỡng 0,60 (đề xuất M0.7, chờ duyệt).
+9. Không tự suy kỹ năng JD không ghi (quyết định 6): S-02 chỉ báo cáo, S-03 ngưỡng 0,60 (M0.7, duyệt 20/11).
 
 ## 5. Đầu ra và bên đọc
 

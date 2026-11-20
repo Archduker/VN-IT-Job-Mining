@@ -2,7 +2,7 @@
 
 > Code: **mới** `mining/bi.py`, mỗi câu một hàm `q1_1` … `q1_7`, hàm chung `run_bi(data) -> dict[câu, bảng]`. Gọi từ `run_pipeline` bước `bi`.
 > Lệnh: `python -m mining.run_mining_pipeline --only bi [--dry-run]`.
-> Câu hỏi: [`docs/target/01_sd1_buc_tranh_thi_truong.md`](../../target/01_sd1_buc_tranh_thi_truong.md). Trạng thái: **bản nháp 20/11, chờ duyệt; chưa có code.**
+> Câu hỏi: [`docs/target/01_sd1_buc_tranh_thi_truong.md`](../../target/01_sd1_buc_tranh_thi_truong.md). Trạng thái: **đã duyệt 20/11 (người dùng: "approved"); chưa có code.**
 
 ## 1. Mục đích
 
@@ -19,7 +19,7 @@ Tiêu chí: completeness (tổng mỗi bảng = 3.916, có dòng "Không rõ"), 
 
 Chưa có. Trang Insights hiện đọc Postgres (`curated_jobs`) do `scripts/load_mart_from_parquet.py` nạp từ bảng legacy.
 
-### 2.2. Đề xuất, chờ duyệt
+### 2.2. Đề xuất, đã duyệt 20/11 (chưa có code)
 
 **Quy tắc chung cho mọi bảng:**
 
@@ -101,6 +101,6 @@ Chưa có. Trang Insights hiện đọc Postgres (`curated_jobs`) do `scripts/lo
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- Chưa có code (MINE-7). Chờ duyệt M1.0a–M1.0e, M1.B, M1.D, ngưỡng 55% của M1.0d và 18/20 ở mục 6.
+- Chưa có code (MINE-7). Đã duyệt 20/11: M1.0a–M1.0e, M1.B, M1.D, ngưỡng 55% của M1.0d và 18/20 ở mục 6.
 - Trang Insights đọc JSON này là việc của Monitoring (spec 09), không thuộc M1.
 - PRE-36 (ngưỡng n < 30), PRE-38 (tỉnh).

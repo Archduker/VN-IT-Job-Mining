@@ -2,7 +2,7 @@
 
 > Code: **mới** `mining/recommend.py`: `priority_scores`, `learning_path`, `defer_list`, `coverage_at`, `split_check`, `run_recommend`. Dùng lại `coverage_at`, `NEWCOMER`, `BIG_FAMILIES` của `scripts/eval_skill_views.py` (chuyển phần dùng chung vào `mining/`, script import lại, không viết hai bản).
 > Lệnh: `python -m mining.run_mining_pipeline --only bi,fp,salary,recommend [--dry-run]`.
-> Câu hỏi: [`docs/target/05_sd5_lo_trinh_hoc.md`](../../target/05_sd5_lo_trinh_hoc.md). Trạng thái: **bản nháp 20/11, chờ duyệt; chưa có code.**
+> Câu hỏi: [`docs/target/05_sd5_lo_trinh_hoc.md`](../../target/05_sd5_lo_trinh_hoc.md). Trạng thái: **đã duyệt 20/11 (người dùng: "approved"); chưa có code.**
 
 ## 1. Mục đích
 
@@ -23,7 +23,7 @@ Chưa có code. Số đo trước (`scripts/eval_skill_views.py`, 19/11, K-tool,
 
 Một danh sách top 10 chung cho cả nghề Web chỉ đáp ứng 13% tin Web người mới, vì nghề Web gồm nhiều ngăn xếp (Java/Spring, .NET, PHP, JS/React, Mobile…).
 
-### 2.2. Đề xuất, chờ duyệt
+### 2.2. Đề xuất, đã duyệt 20/11 (chưa có code)
 
 | Mã | Đề xuất | Lý do |
 |---|---|---|
@@ -79,5 +79,5 @@ Một danh sách top 10 chung cho cả nghề Web chỉ đáp ứng 13% tin Web 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
 - Chưa có code (MINE-7). Phụ thuộc M1, M2 (phân tầng nghề × người mới), M5.
-- Chờ duyệt M6.1 (soft chỉ theo demand), M6.2 (gói = thành phần liên thông), M6.4 (bỏ tin 0 công cụ khỏi mẫu số), M6.4b.
+- Đã duyệt 20/11: M6.1 (soft chỉ theo demand), M6.2 (gói = thành phần liên thông), M6.4 (bỏ tin 0 công cụ khỏi mẫu số), M6.4b.
 - PRE-35 (ít tin người mới), PRE-36, PRE-40.

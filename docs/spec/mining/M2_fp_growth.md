@@ -2,7 +2,7 @@
 
 > Code: `mining/association.py` (`mine_rules`, `mine_stratified_rules`, `format_rules`, `find_skill`, `pair_stats`; mlxtend FP-Growth). Hàm mới đề xuất: `top_skills_by_family`, `rare_skills`, `support_stability`.
 > Lệnh: `python -m mining.run_mining_pipeline --only fp [--dry-run]`.
-> Câu hỏi: [`docs/target/02_sd2_goi_ky_nang.md`](../../target/02_sd2_goi_ky_nang.md). Trạng thái: **bản nháp 20/11, chờ duyệt.**
+> Câu hỏi: [`docs/target/02_sd2_goi_ky_nang.md`](../../target/02_sd2_goi_ky_nang.md). Trạng thái: **đã duyệt 20/11 (người dùng: "approved").**
 
 ## 1. Mục đích
 
@@ -26,7 +26,7 @@ Luật theo nghề × người mới là đầu vào thứ tự học của M6.
 
 Nhận xét trên số 20/11: luật lift cao nhất đều ở Security / DevOps với ít giỏ (ví dụ `{ceph, cisco} ⇒ {kvm}`, support 0,021 = 4 tin, lift 47). Support 2% của nhóm 188 giỏ chỉ là 4 tin, nên số luật nổ lên ở nhóm nhỏ.
 
-### 2.2. Đề xuất, chờ duyệt
+### 2.2. Đề xuất, đã duyệt 20/11 (chưa có code)
 
 | Mã | Đề xuất | Lý do |
 |---|---|---|
@@ -73,7 +73,7 @@ Nhận xét trên số 20/11: luật lift cao nhất đều ở Security / DevOp
 
 | Kiểm tra | Ngưỡng |
 |---|---|
-| Mọi luật báo cáo có lift ≥ 1,20, confidence ≥ 0,60, `n_support` ≥ 10 tin | bắt buộc (M2.2a chờ duyệt) |
+| Mọi luật báo cáo có lift ≥ 1,20, confidence ≥ 0,60, `n_support` ≥ 10 tin | bắt buộc (M2.2a) |
 | S-01 Spring Boot ⇒ Java | conf ≥ 0,85, lift ≥ 1,5 (20/11: 0,961, pass) |
 | S-03 React ⇒ JS/TS | ≥ 0,60 (đề xuất M0.7b; 20/11: 0,671) |
 | S-02 Flutter ⇒ Dart | chỉ báo cáo (đề xuất M0.7a; 20/11: 0,394) |
@@ -85,5 +85,5 @@ Nhận xét trên số 20/11: luật lift cao nhất đều ở Security / DevOp
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
 - Có code luật; thiếu 2.1, 2.3 (nghề × cấp), 2.4, độ ổn định, kiểm tay (MINE-7).
-- Chờ duyệt M2.2a (10 tin), ngưỡng ổn định 70%, 16/20.
+- Đã duyệt 20/11: M2.2a (10 tin), ngưỡng ổn định 70%, 16/20.
 - MINE-1 (S-02, S-03), PRE-36 (ngưỡng kỹ năng hiếm).

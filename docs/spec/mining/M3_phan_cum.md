@@ -2,7 +2,7 @@
 
 > Code: `mining/clustering.py` (`build_vector_space`, `reduce_svd`, `scan_k`, `choose_k`, `fit_labels`, `run_hdbscan`, `profile_clusters`, `cluster_jobs`). Hàm mới đề xuất: `seed_stability`, `family_crosstab`, `flag_family_mismatch`.
 > Lệnh: `python -m mining.run_mining_pipeline --only cluster [--dry-run]`.
-> Câu hỏi: [`docs/target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md`](../../target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md). Trạng thái: **bản nháp 20/11, chờ duyệt.**
+> Câu hỏi: [`docs/target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md`](../../target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md). Trạng thái: **đã duyệt 20/11 (người dùng: "approved").**
 
 ## 1. Mục đích
 
@@ -41,12 +41,12 @@ Cụm 20/11 (code cũ):
 
 Cụm 2 (1.240 tin, 32%, độ thuần 0,33) gom phần lớn tin ít công cụ: đây là dấu hiệu cụm tách theo "thiếu kỹ năng" như L-47, cần đo ở M3.8.
 
-### 2.2. Đề xuất, chờ duyệt
+### 2.2. Đề xuất, đã duyệt 20/11 (chưa có code)
 
 | Mã | Đề xuất | Lý do |
 |---|---|---|
 | M3.1a | **Vector = `skill__` (K-tool) + `concept__` (K-concept) + e5 `job`.** Bỏ ba cột `__other_skill`. Mỗi khối chuẩn hóa L2 theo dòng rồi nhân √trọng số. **Trọng số đề xuất 0,35 / 0,15 / 0,5** (tool / concept / e5) | Người dùng chốt 19/11 (thay quyết định 3 ngày 17/11). Concept giúp 643 tin không có công cụ (BA, Tester, IT Manager, presales; trung vị 8 khái niệm/tin) có vị trí đúng; e5 `job` không có phúc lợi |
-| M3.1b | **Tập tin:** giữ tin có `n_tools + n_concepts ≥ 1`. 20/11 bỏ **14 tin**. Ghi `n_dropped_no_technical_skill` | Kế hoạch ghi "bỏ 1 tin" là số tin không có kỹ năng nào (`n_skills = 0`); theo đúng định nghĩa "kỹ năng kỹ thuật" (tool + concept) là 14 tin. **Cần người dùng chọn: 14 (đề xuất) hay 1** |
+| M3.1b | **Tập tin:** giữ tin có `n_tools + n_concepts ≥ 1`. 20/11 bỏ **14 tin**. Ghi `n_dropped_no_technical_skill` | Kế hoạch ghi "bỏ 1 tin" là số tin không có kỹ năng nào (`n_skills = 0`); theo đúng định nghĩa "kỹ năng kỹ thuật" (tool + concept) là 14 tin. **Người dùng duyệt 20/11: bỏ 14 tin** |
 | M3.1c | Gỡ TF-IDF (M0.6) | Quyết định 1 |
 | M3.2 | Giữ SVD ~80%, tối đa 60; báo phương sai giải thích | — |
 | M3.3 | Giữ k = 10 (đã chốt 11/11) và quét 2–20 để báo cáo. Nếu duyệt đổi k thì ghi ở đây | — |
@@ -101,5 +101,5 @@ Cụm 2 (1.240 tin, 32%, độ thuần 0,33) gom phần lớn tin ít công cụ
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
 - Có code phân cụm; thiếu khối concept, khóa `job`, lọc tin, 5 seed, bảng chéo, luật 3.2 (MINE-7).
-- **Cần người dùng chọn ở M3.1b (14 hay 1 tin)** và duyệt trọng số 0,35 / 0,15 / 0,5, các ngưỡng M3.8, M3.10.
+- Đã duyệt 20/11: M3.1b bỏ 14 tin; trọng số 0,35 / 0,15 / 0,5; ngưỡng M3.8, M3.10.
 - MINE-1 (Silhouette thấp), PRE-36.

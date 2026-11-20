@@ -2,7 +2,7 @@
 
 > Code: `mining/config.py` (đường dẫn, `COLUMN_ALIASES`, `SKILL_PREFIXES`, `*Params`), `mining/data_io.py` (`build_meta`, `skills_from_features`, `prepare_mining_data`, `load_e5`, `load_mining_data`, `MiningData`), `mining/run_mining_pipeline.py` (`STEPS`, `run_pipeline`, `_targets_summary`), `mining/sanity.py` (`run_sanity_checks`).
 > Lệnh: `python -m mining.run_mining_pipeline --only <bước> --dry-run`. M0 không có artifact riêng: nó là phần nạp dữ liệu mà mọi bước dùng.
-> Trạng thái: **bản nháp 20/11, chờ duyệt.**
+> Trạng thái: **đã duyệt 20/11 (người dùng: "approved").**
 
 ## 1. Mục đích
 
@@ -29,7 +29,7 @@ Tiêu chí: **consistency** (một định nghĩa kỹ năng, một bảng đầ
 | M0.7 | Sanity S-02: Flutter ⇒ Dart conf ≥ 0,90; S-03: React ⇒ JS/TS conf ≥ 0,80 | 20/11: S-02 0,394 fail (n = 66), S-03 0,671 fail (n = 313), S-01 0,961 pass |
 | M0.8 | **S-04 ánh xạ cấp lệch một bậc**: `levels = {1: "Fresher", 2: "Junior", 3: "Middle", 4: "Senior"}` trong khi thang là 0 = Intern/Fresher … 4 = Lead/Manager | Báo "Fresher=15,5 < Junior=22,86 < Middle=38,1 < Senior=30,0 → fail", thật ra là Junior, Middle, Senior, Lead. Tính đúng trên Silver (lương có, không ngoại lai): Intern/Fresher 10,0 (n 291) < Junior 15,5 (339) < Middle 22,5 (552) < Senior 37,5 (140) → **pass**; Lead/Manager 30,0 (260) < Senior |
 
-### 2.2. Đề xuất, chờ duyệt
+### 2.2. Đề xuất, đã duyệt 20/11 (chưa có code)
 
 | Mã | Đề xuất | Lý do |
 |---|---|---|
@@ -81,14 +81,14 @@ S-01, S-05, S-06 giữ nguyên ngưỡng.
 | Khối không lẫn nhau | Mọi cột `skills` là K-tool theo `skill_view`; không cột `concept__` nào trong `skills` | test |
 | `n_tools` khớp | `meta.n_tools` = cột `n_tools` của bước 10 cho mọi tin | bắt buộc |
 | e5 | shape (3.916, 768), khóa `job`; thiếu khóa thì lỗi | test |
-| Sanity | S-01 pass; S-02 `info`; S-03 ≥ 0,60; S-04 đơn điệu 4 cấp (Lead ghi riêng); S-06 pass | chờ duyệt M0.7, M0.8 |
+| Sanity | S-01 pass; S-02 `info`; S-03 ≥ 0,60; S-04 đơn điệu 4 cấp (Lead ghi riêng); S-06 pass | đã duyệt (M0.7, M0.8) |
 | Test | `pytest tests/unit/test_mining_data_io.py tests/unit/test_mining_sanity.py tests/unit/test_mining_pipeline.py` | xanh; `git status` không đổi `data/`, `reports/` |
 
 **Kết quả dry-run 20/11 (code cũ):** đọc `all.parquet`; 3.916 tin; 290 cột kỹ năng, độ thưa 0,9798; e5 (3.916, 768) từ khóa `all`; sanity 2 pass (S-01, S-06) / 3 fail (S-02, S-03, S-04) / 1 bỏ qua (S-05).
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- Chờ duyệt M0.1–M0.9.
+- Đã duyệt 20/11: M0.1–M0.9.
 - PRE-39 (bảng legacy), MINE-1 (sanity fail), MINE-7 (code chưa theo SD).
 - `scripts/load_mart_from_parquet.py` vẫn mặc định `--curated-path` legacy: không thuộc M0, ghi ở PRE-39.
 - Viết `mining/CLAUDE.md` (bẫy: ba khối kỹ năng, khóa e5 `job`, Silver là đầu vào, nối theo id, synthetic không báo cáo).

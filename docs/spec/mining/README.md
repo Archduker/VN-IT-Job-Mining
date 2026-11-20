@@ -2,7 +2,7 @@
 
 > **Quan hệ với spec 07:** [`07_mining_spec.md`](../07_mining_spec.md) giữ hợp đồng chung (ba tầng, chuỗi bước, đầu vào chung, quyết định đã chốt, đầu ra và bên đọc). Các file ở đây là **đặc tả chi tiết** của từng bước: luật, quy trình theo thứ tự code, input → output, dữ liệu mẫu, kiểm tra. Mỗi luật chỉ ghi chi tiết ở một chỗ, là file của bước đó. Tiêu chí nghiệm thu chung ở [spec 08](../08_evaluation_spec.md); câu hỏi của từng SD ở [`docs/target/`](../../target/00_de_tai.md); điều kiện dữ liệu ở [`06_yeu_cau_du_lieu.md`](../../target/06_yeu_cau_du_lieu.md).
 >
-> **Ngày viết:** 20/11/2026. **Trạng thái:** bản nháp, chờ người dùng duyệt (giai đoạn A của kế hoạch Mining). Sau khi duyệt mới viết prompt ở `docs/prompting/mining/` (giai đoạn B), rồi mới code (giai đoạn C).
+> **Ngày viết:** 20/11/2026. **Trạng thái:** người dùng duyệt cả bộ 20/11 ("approved"), gồm mọi đề xuất ở mục 2.2 và M3.1b bỏ 14 tin. Tiếp theo: viết prompt ở `docs/prompting/mining/` (giai đoạn B), rồi mới code (giai đoạn C).
 >
 > **Số "hiện trạng"** là của lần dry-run chỉ đọc ngày 20/11/2026 trên dữ liệu Processing 19/11 (3.916 tin), bằng code `mining/` chưa sửa (commit df14148). Lệnh: gọi `run_pipeline(..., ["fp","cluster","anomaly","salary"], dry_run=True, compute_shap=False)` từ một script trong thư mục scratch, không ghi `mining/artifacts/`. Code đó tự đọc bảng 04 `all.parquet` vì bảng legacy `data/curated/` không còn trên máy. Số đếm trên Silver lấy bằng pandas, nối Silver với `features.parquet` theo `job_id` (hai file **không cùng thứ tự dòng**).
 
@@ -10,20 +10,20 @@
 
 | Bước | File | Code | SD | Trạng thái |
 |---|---|---|---|---|
-| M0 Chuẩn bị | [`M0_chuan_bi.md`](M0_chuan_bi.md) | `mining/config.py`, `data_io.py`, `run_mining_pipeline.py`, `sanity.py` | chung | Chờ duyệt |
-| M1 BI | [`M1_bi.md`](M1_bi.md) | **mới** `mining/bi.py` | SD1 | Chờ duyệt, chưa có code |
-| M2 Gói kỹ năng | [`M2_fp_growth.md`](M2_fp_growth.md) | `mining/association.py` | SD2 | Chờ duyệt |
-| M3 Nhóm việc | [`M3_phan_cum.md`](M3_phan_cum.md) | `mining/clustering.py` | SD3 (3.1, 3.2) | Chờ duyệt |
-| M4 Tin khác hoặc mới | [`M4_tin_khac_moi.md`](M4_tin_khac_moi.md) | `mining/anomaly.py` | SD3 (3.3) | Chờ duyệt |
-| M5 Lương và SHAP | [`M5_luong_shap.md`](M5_luong_shap.md) | `mining/salary_model.py` | SD4 | Chờ duyệt |
-| M6 Lộ trình | [`M6_lo_trinh.md`](M6_lo_trinh.md) | **mới** `mining/recommend.py` | SD5 | Chờ duyệt, chưa có code |
+| M0 Chuẩn bị | [`M0_chuan_bi.md`](M0_chuan_bi.md) | `mining/config.py`, `data_io.py`, `run_mining_pipeline.py`, `sanity.py` | chung | Đã duyệt, chưa sửa code |
+| M1 BI | [`M1_bi.md`](M1_bi.md) | **mới** `mining/bi.py` | SD1 | Đã duyệt, chưa có code |
+| M2 Gói kỹ năng | [`M2_fp_growth.md`](M2_fp_growth.md) | `mining/association.py` | SD2 | Đã duyệt, chưa sửa code |
+| M3 Nhóm việc | [`M3_phan_cum.md`](M3_phan_cum.md) | `mining/clustering.py` | SD3 (3.1, 3.2) | Đã duyệt, chưa sửa code |
+| M4 Tin khác hoặc mới | [`M4_tin_khac_moi.md`](M4_tin_khac_moi.md) | `mining/anomaly.py` | SD3 (3.3) | Đã duyệt, chưa sửa code |
+| M5 Lương và SHAP | [`M5_luong_shap.md`](M5_luong_shap.md) | `mining/salary_model.py` | SD4 | Đã duyệt, chưa sửa code |
+| M6 Lộ trình | [`M6_lo_trinh.md`](M6_lo_trinh.md) | **mới** `mining/recommend.py` | SD5 | Đã duyệt, chưa có code |
 
 ## Khuôn của mỗi file
 
 Giống [`docs/spec/processing/`](../processing/README.md), 7 mục theo thứ tự:
 
 1. **Mục đích**: SD, câu hỏi, tiêu chí.
-2. **Luật**: 2.1 đang chạy (code hiện tại); 2.2 **đề xuất, chờ duyệt**. Ngưỡng chưa chốt ghi "đề xuất", không ghi như đã chốt.
+2. **Luật**: 2.1 đang chạy (code hiện tại); 2.2 **đề xuất** (bộ này đã duyệt 20/11). Ngưỡng chưa chốt ghi "đề xuất", không ghi như đã chốt.
 3. **Quy trình xử lý**: các bước đánh số theo thứ tự sẽ thực thi.
 4. **Input → Output**: đường dẫn, schema, metrics.
 5. **Dữ liệu mẫu**: điền sau lần chạy thật.

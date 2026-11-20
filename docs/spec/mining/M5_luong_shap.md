@@ -2,7 +2,7 @@
 
 > Code: `mining/salary_model.py` (`select_training_subset`, `build_salary_features`, `assert_no_leakage`, `_groups`, `_cv_scores`, `train_salary_model`, `skill_values_from_shap`). Hàm mới đề xuất: `baseline_level_family`, `mae_by_group`, `estimate_negotiable`, `compare_distributions`, `train_band_classifier` (phương án B), `factor_importance`.
 > Lệnh: `python -m mining.run_mining_pipeline --only bi,salary [--dry-run]` (baseline lấy từ M1).
-> Câu hỏi: [`docs/target/04_sd4_gia_tri_ky_nang.md`](../../target/04_sd4_gia_tri_ky_nang.md). Trạng thái: **bản nháp 20/11, chờ duyệt.** Train model là bước chính thức từ 16/11.
+> Câu hỏi: [`docs/target/04_sd4_gia_tri_ky_nang.md`](../../target/04_sd4_gia_tri_ky_nang.md). Trạng thái: **đã duyệt 20/11 (người dùng: "approved").** Train model là bước chính thức từ 16/11.
 
 ## 1. Mục đích
 
@@ -29,7 +29,7 @@
 
 Độ quan trọng (impurity) cao nhất 20/11: `exp_min_years` 0,40, `seniority_ord` 0,27, rồi aws 0,022, kubernetes 0,014, `jf::Bridge` 0,013. Số này **lạc quan** vì chia ngẫu nhiên: cùng công ty có thể ở cả hai phía.
 
-### 2.2. Đề xuất, chờ duyệt
+### 2.2. Đề xuất, đã duyệt 20/11 (chưa có code)
 
 | Mã | Đề xuất | Lý do |
 |---|---|---|
@@ -98,5 +98,5 @@
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
 - Có code; thiếu chia theo công ty, `src__`, baseline cấp × nghề, phương án B, MAE theo nhóm, 4.1 theo SHAP, 4.4, so phân bố (MINE-7).
-- Chờ duyệt M5.3b (hai cấu hình), M5.7 (tiêu chí đạt), M5.10 (bootstrap 200), M5.12 (ngưỡng 2 lần).
+- Đã duyệt 20/11: M5.3b (hai cấu hình), M5.7 (tiêu chí đạt), M5.10 (bootstrap 200), M5.12 (ngưỡng 2 lần).
 - MINE-1, MINE-5 (Mart chưa có bảng SHAP), MINE-6, PRE-35 (lương phủ 44%), PRE-36.
