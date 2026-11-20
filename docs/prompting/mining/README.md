@@ -8,7 +8,7 @@ Mỗi file là **một prompt dán cho agent** (Claude Code) để làm một b�
 
 | Bước | Prompt | Đặc tả | Code | Trạng thái 20/11 |
 |---|---|---|---|---|
-| M0 Chuẩn bị | [`M0_chuan_bi.md`](M0_chuan_bi.md) | [`M0_chuan_bi.md`](../../spec/mining/M0_chuan_bi.md) | `config.py`, `data_io.py`, `run_mining_pipeline.py`, `sanity.py`, `synthetic.py` | Code xong, dry-run 20/11; chờ xem S-06 |
+| M0 Chuẩn bị | [`M0_chuan_bi.md`](M0_chuan_bi.md) | [`M0_chuan_bi.md`](../../spec/mining/M0_chuan_bi.md) | `config.py`, `data_io.py`, `run_mining_pipeline.py`, `sanity.py`, `synthetic.py` | Xong 20/11 (d79288b, L-55) |
 | M1 BI (SD1) | [`M1_bi.md`](M1_bi.md) | [`M1_bi.md`](../../spec/mining/M1_bi.md) | mới `bi.py` | Prompt duyệt 20/11 |
 | M2 Gói kỹ năng (SD2) | [`M2_fp_growth.md`](M2_fp_growth.md) | [`M2_fp_growth.md`](../../spec/mining/M2_fp_growth.md) | `association.py` | Prompt duyệt 20/11 |
 | M3 Nhóm việc (SD3) | [`M3_phan_cum.md`](M3_phan_cum.md) | [`M3_phan_cum.md`](../../spec/mining/M3_phan_cum.md) | `clustering.py` | Prompt duyệt 20/11 |

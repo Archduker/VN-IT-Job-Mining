@@ -102,7 +102,7 @@ M0 không ghi artifact riêng. Khối `data` của dry-run 20/11 sau khi sửa (
 | S-03 | pass (0,671 ≥ 0,60) |
 | S-04 | pass: 10,0 < 15,5 < 22,5 < 37,5; Lead/Manager 30,0 (thỏa thuận 58,1%) |
 | S-05 | bỏ qua (chạy `--no-shap`) |
-| S-06 | **fail**: HN/khác 1,452; HCM/khác 1,194 (< 1,2). Trước khi sửa là 1,25: code cũ không bỏ tin nào vì `salary_suspect` không có trên bảng 04, nay bỏ 86 tin `salary_outlier` của Silver. Chờ người dùng xem (mục 7) |
+| S-06 | **fail**: HN/khác 1,452; HCM/khác 1,194 (< 1,2). Trước khi sửa là 1,25: code cũ không bỏ tin nào vì `salary_suspect` không có trên bảng 04, nay bỏ 86 tin `salary_outlier` của Silver. Người dùng chốt giữ 1,2, ghi fail |
 
 Các bước sau chạy trên dữ liệu mới, chưa đổi thuật toán: 15.565 luật; K-Means k=10 Silhouette 0,154, ARI với nghề 0,101; 231 tin bất thường; lương 1.561 tin train (bỏ 86 ngoại lai, 64 lệch so với cấp), R²(log) 0,582, MAE 5,67 triệu.
 
@@ -114,5 +114,5 @@ Các bước sau chạy trên dữ liệu mới, chưa đổi thuật toán: 15.
 - PRE-39 (bảng legacy), MINE-1 (sanity fail), MINE-7 (code chưa theo SD).
 - `scripts/load_mart_from_parquet.py` vẫn mặc định `--curated-path` legacy: không thuộc M0, ghi ở PRE-39.
 - `mining/CLAUDE.md` đã viết 20/11.
-- **S-06 fail sau khi bỏ tin ngoại lai** (HCM/khác 1,194): chờ người dùng chọn giữ ngưỡng 1,2 (ghi fail, giải thích ở MINE-1) hay đổi.
+- **S-06 fail sau khi bỏ tin ngoại lai** (HCM/khác 1,194). Người dùng chốt 20/11: **giữ ngưỡng 1,2, ghi fail** kèm giải thích (MINE-1, spec 08); không chỉnh ngưỡng để qua.
 - Còn lại cho bước sau: `salary_model._groups` vẫn theo `dup_group_id` (M5); `select_training_subset` còn khóa metrics `n_dropped_suspect` (đếm tin `salary_outlier`, đổi tên ở M5).

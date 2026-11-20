@@ -359,7 +359,7 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Lỗi:** S-04 báo "Fresher=15,5 < Junior=22,86 < Middle=38,1 < Senior=30,0 → fail" (dry-run 20/11). Cùng lúc Mining đọc `all.parquet` (vì `data/curated/` không còn), e5 khóa `all`, chỉ nạp khối `skill__`.
 - **Nguyên nhân:** `mining/sanity.py` dùng `{1: Fresher, 2: Junior, 3: Middle, 4: Senior}` trong khi thang là 0 = Intern/Fresher … 4 = Lead/Manager, nên "Fresher" thật ra là Junior và "Senior" là Lead. `mining/config.py` còn `DEFAULT_GOLDEN` legacy và `COLUMN_ALIASES` không có tên Silver.
 - **Cách xử lý (M0, `docs/spec/mining/M0_chuan_bi.md`):** S-04 dùng `SENIORITY_ORDER_LABELS[0..3]`, Lead/Manager ghi riêng kèm tỷ lệ thỏa thuận; S-02 chỉ báo cáo, S-03 ngưỡng 0,60. Đầu vào là Silver (`DEFAULT_TABLE`), nối features theo id, ba khối `skill__`/`concept__`/`soft__`, `n_tools` và `salary_target_m` lấy từ bước 10, e5 khóa `job`; gỡ TF-IDF.
-- **Còn lại:** S-06 fail (HCM/khác 1,194) khi bỏ 86 tin `salary_outlier`, chờ người dùng (MINE-1). M1–M6 theo `docs/prompting/mining/` (MINE-7).
+- **Còn lại:** S-06 fail (HCM/khác 1,194) khi bỏ 86 tin `salary_outlier`; người dùng chốt giữ ngưỡng 1,2 và ghi fail (MINE-1). M1–M6 theo `docs/prompting/mining/` (MINE-7).
 - **Kiểm chứng:** `pytest tests/unit/test_mining_*.py` (71 test); dry-run thật: S-04 10,0 < 15,5 < 22,5 < 37,5 pass.
 
 ## 3. Monitoring

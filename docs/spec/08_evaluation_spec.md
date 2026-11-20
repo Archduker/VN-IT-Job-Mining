@@ -107,7 +107,7 @@ Code: `mining/sanity.py` (`run_sanity_checks`), kết quả ghi vào `mining_met
 | S-03 | {React} ⇒ {JavaScript} hoặc {TypeScript} | Confidence ≥ 0,80. **Đổi, duyệt 20/11 (M0.7b):** ≥ 0,60 (T2) | SD2 | Fail (0,654) | 0,671 (n 313) |
 | S-04 | Trung vị lương tăng dần theo cấp: Fresher < Junior < Middle < Senior | Đơn điệu. Lead/Manager ghi riêng kèm tỷ lệ thỏa thuận (MNAR, đề xuất M0.8) | SD1, SD4 | Fail (Senior < Middle) | Code báo fail nhưng **ánh xạ cấp lệch một bậc** (lỗi, M0.8). Tính đúng: 10,0 < 15,5 < 22,5 < 37,5 → pass |
 | S-05 | Giá trị SHAP của AWS, Kubernetes hoặc System Design | φ > 0 | SD4 | Chưa đo (chưa có bảng SHAP) | Bỏ qua (không chạy SHAP) |
-| S-06 | Trung vị lương HN và HCM so với tỉnh khác (trừ Remote) | Mỗi bên > 1,2 lần | SD1, SD4 | Fail | Pass (HN 1,45; HCM 1,25) |
+| S-06 | Trung vị lương HN và HCM so với tỉnh khác (trừ Remote) | Mỗi bên > 1,2 lần | SD1, SD4 | Fail | **Fail** sau M0 (HN 1,452; HCM 1,194), vì nay bỏ 86 tin `salary_outlier`. Người dùng chốt 20/11: giữ 1,2, ghi fail (code cũ: 1,45 / 1,25 khi chưa bỏ ngoại lai) |
 
 Sanity fail không có nghĩa là thuật toán sai. Có thể do dữ liệu (rút kỹ năng sai, lương parse sai, tỉnh sai) hoặc do ngưỡng kiểm. **Phải tìm nguyên nhân trước khi dùng kết quả** (MINE-1), và ghi nguyên nhân vào báo cáo.
 
