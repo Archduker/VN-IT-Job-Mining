@@ -175,6 +175,11 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 - Khi có `--source`, prefix là `url_ledger/<nguồn>/` nên raw không được tải; không có `--source` thì tải cả `staging/`, `curated/`, `pipeline/`. Chưa có cách tải riêng Bronze (`raw/` + `url_ledger/`). Ngày 17/11 đã tải Bronze bằng script tạm (12.246 file).
 
+**PRE-44. Có thể gán sai `job_family` và lương lạ chưa gắn cờ** (mở 20/11/2026, thấy khi lấy mẫu kiểm tay M1)
+
+- Mẫu 20 tin (seed 42) của M1: "IT Security Analyst" (vietnamworks 2121527) mang `job_family` Web, đúng ra là Security; "Nhân Viên IT" (topcv 2248462) mang Web, giống IT hỗ trợ (Other). "[TP Vũng Tàu] Chuyên Gia IT" (vietnamworks 2111189) cấp Middle, lương 127 triệu, chưa bị `salary_outlier`. Mới đọc tiêu đề, chưa đối chiếu trang gốc; người dùng chưa gửi kết quả kiểm tay.
+- Luật nghề và cờ lương ở pre-processing (bước 03/04), không sửa trong Mining. M3 (bảng chéo cụm × nghề, `family_mismatch`) sẽ đo được rộng hơn.
+
 ## 3b. Data Mining
 
 **MINE-1. Mining đã chạy thật lần đầu (11/11), kết quả cụm yếu, chưa đánh giá**

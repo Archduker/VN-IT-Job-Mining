@@ -117,7 +117,7 @@ Số bảng của dry-run 20/11 ở mục 6. Bảng dưới là số đo trướ
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- **Có code 20/11** (`mining/bi.py`); dry-run đạt kiểm tổng, chờ đối chiếu tay 20 tin rồi chạy thật. Cách hiểu M1.0b khi code: tỷ lệ hay trung vị tính trên nhóm n < 30 thì null; nhóm là mẫu số (cả bảng với bảng đếm, một hàng với bảng chéo), là ô với trung vị.
+- **Có code 20/11** (`mining/bi.py`); dry-run đạt kiểm tổng; **chạy thật 20/11** (`mining/artifacts/sd1_*.json`). Đối chiếu tay 20 tin còn mở (PRE-44 ghi 3 tin nghi sai). Cách hiểu M1.0b khi code: tỷ lệ hay trung vị tính trên nhóm n < 30 thì null; nhóm là mẫu số (cả bảng với bảng đếm, một hàng với bảng chéo), là ô với trung vị.
 - Trước đây: chưa có code (MINE-7). Đã duyệt 20/11: M1.0a–M1.0e, M1.B, M1.D, ngưỡng 55% của M1.0d và 18/20 ở mục 6.
 - Trang Insights đọc JSON này là việc của Monitoring (spec 09), không thuộc M1.
 - PRE-36 (ngưỡng n < 30), PRE-38 (tỉnh).
