@@ -18,6 +18,7 @@ DEFAULT_TABLE = REPO_ROOT / "data" / "preprocessing" / "04_normalization" / "sil
 DEFAULT_FEATURES = REPO_ROOT / "data" / "processing" / "10_features" / "features.parquet"
 DEFAULT_ENCODING_DICT = REPO_ROOT / "data" / "processing" / "10_features" / "encoding_dictionary.json"
 DEFAULT_E5 = REPO_ROOT / "data" / "processing" / "12_e5" / "job_emb.npz"
+DEFAULT_JOB_SKILLS = REPO_ROOT / "data" / "processing" / "08_skills" / "job_skills.parquet"
 ARTIFACTS_DIR = REPO_ROOT / "mining" / "artifacts"
 SYNTHETIC_ARTIFACTS_DIR = ARTIFACTS_DIR / "_synthetic"
 
@@ -66,7 +67,7 @@ COLUMN_ALIASES: dict[str, list[str]] = {
     "posted_month": ["posted_month"],
 }
 # Cột Silver chép nguyên sang meta cho M1–M6 (không đổi giá trị).
-PASSTHROUGH_COLUMNS = ("company_id", "seniority_inferred", "exp_inferred", "work_mode", "employment_type",
+PASSTHROUGH_COLUMNS = ("province", "company_id", "seniority_inferred", "exp_inferred", "work_mode", "employment_type",
                        "language", "benefits", "posted_month")
 
 # Ba khối kỹ năng của bước 10 (M0.3, docs/target/06_yeu_cau_du_lieu.md mục 2):
@@ -166,6 +167,28 @@ class AnomalyParams:
     salary_ratio_limit: float = 3.0  # lương > 3x (hoặc < 1/3) trung vị cùng cấp bậc
 
 
+NEWCOMER_LABELS = ("Intern/Fresher", "Junior")
+MIDDLE_PLUS_LABELS = ("Middle", "Senior", "Lead/Manager")
+
+
+@dataclass
+class BIParams:
+    """M1 (docs/spec/mining/M1_bi.md)."""
+    min_cell: int = 30  # M1.0b: nhóm n < 30 -> "ít dữ liệu" (PRE-36)
+    mnar_share: float = 0.55  # M1.0d: cấp có >= 55% tin thỏa thuận -> ghi chú MNAR
+    top_provinces: int = 10
+    top_benefits: int = 15
+    top_benefit_cross: int = 5
+    top_tools: int = 15
+    top_soft: int = 10
+    min_newcomer_jobs: int = 30  # M1.D: nghề có >= 30 tin người mới mới có demand
+    newcomer: tuple[str, ...] = NEWCOMER_LABELS
+    middle_plus: tuple[str, ...] = MIDDLE_PLUS_LABELS
+    first_month: str = "2026-09"
+    # 1.7: nguồn ghi ngày đăng cho gần hết tin (bỏ topcv, topdev; target SD1 mục 4)
+    month_compare_sources: tuple[str, ...] = ("vietnamworks", "careerviet", "vieclam24h", "itviec", "glints", "jobsgo")
+
+
 @dataclass
 class SanityParams:
     s01_min_conf: float = 0.85
@@ -182,4 +205,5 @@ class MiningParams:
     salary: SalaryParams = field(default_factory=SalaryParams)
     anomaly: AnomalyParams = field(default_factory=AnomalyParams)
     sanity: SanityParams = field(default_factory=SanityParams)
+    bi: BIParams = field(default_factory=BIParams)
     random_state: int = RANDOM_STATE

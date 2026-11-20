@@ -46,7 +46,7 @@ def test_bad_step_and_missing_inputs_return_error(tmp_path):
     assert rmp.main(["--table", str(tmp_path / "khong_co.parquet"), "--out", str(tmp_path)]) == 2
 
 
-@pytest.mark.parametrize("step", ["bi", "recommend"])
+@pytest.mark.parametrize("step", ["recommend"])
 def test_steps_not_built_yet_fail_loudly(tmp_path, step, caplog):
     """M0.5: bi, recommend đã có trong STEPS nhưng chưa có code (M1, M6): báo lỗi rõ, không chạy im lặng."""
     assert step in rmp.STEPS
@@ -70,7 +70,8 @@ def test_runs_from_silver_files(tmp_path, flag):
     np.savez(ep, ids=ids, job=np.random.default_rng(0).normal(size=(len(ids), 8)).astype(np.float16))
     out = tmp_path / "out"
     rc = rmp.main([flag, str(sp), "--features", str(fp), "--encoding-dict", str(tmp_path / "none.json"),
-                   "--e5", str(ep), "--out", str(out), "--only", "fp,salary", "--no-shap"])
+                   "--e5", str(ep), "--job-skills", str(tmp_path / "none.parquet"),
+                   "--out", str(out), "--only", "bi,fp,salary", "--no-shap"])
     assert rc == 0
     m = json.loads((out / ARTIFACT_FILES["metrics"]).read_text(encoding="utf-8"))
     assert m["inputs"]["table"]["sha256_16"] and m["inputs"]["e5"]["sha256_16"]
@@ -78,3 +79,5 @@ def test_runs_from_silver_files(tmp_path, flag):
     n_tool = sum(c.startswith("skill__") and c != "skill__other_skill" for c in b.features.columns)
     assert m["data"]["n_cols"]["skill"] == n_tool and m["data"]["n_cols"]["concept"] > 0
     assert m["salary"]["subset"]["n_train_subset"] > 100
+    assert m["bi"]["totals_ok"] is True
+    assert (out / "sd1_1_1.json").exists() and (out / "sd1_demand.json").exists()

@@ -77,6 +77,8 @@ Chưa có. Trang Insights hiện đọc Postgres (`curated_jobs`) do `scripts/lo
 
 ## 5. Dữ liệu mẫu
 
+Số bảng của dry-run 20/11 ở mục 6. Bảng dưới là số đo trước khi có code (pandas), khớp với dry-run.
+
 Điền sau lần chạy thật. Số đo trước (pandas, 20/11, Silver + features nối theo id):
 
 | Cấp | Tỷ lệ thỏa thuận | n lương dùng được | Trung vị `salary_target_m` (triệu) |
@@ -99,8 +101,23 @@ Chưa có. Trang Insights hiện đọc Postgres (`curated_jobs`) do `scripts/lo
 | Chạy lại ra cùng JSON (trừ `generated_at`) | bắt buộc |
 | `pytest tests/unit/test_mining_bi.py` (mới): bảng nhỏ dựng tay, kiểm tổng, "ít dữ liệu", lương bỏ ngoại lai, bảng 1.7 bỏ topcv/topdev | xanh |
 
+**Dry-run 20/11** (`python -m mining.run_mining_pipeline --only bi --dry-run`, đầu vào sha256 như M0 mục 5, `job_skills` 111.116 dòng): 23 bảng, `totals_ok` true, 90 ô "ít dữ liệu", 1.644 tin lương dùng được; chạy hai lần ra cùng JSON. Chưa đối chiếu tay 20 tin.
+
+| Câu | Số chính |
+|---|---|
+| 1.1 | Web 1.536 (39,2%), Other 526, Bridge 479, Data/AI 388, Tester 382, DevOps/Cloud 234, Security 231, Design 61, Game 43, Mobile 26, IoT 10 |
+| 1.2 | Middle 30,9%, Lead/Manager 17,4%, Junior 16,7%, Senior 14,4%, Intern/Fresher 13,5%, Không rõ 7,3% |
+| 1.3 | Hà Nội 52,9%, HCM 35,5%, Đồng Nai 1,7%, Đà Nẵng 1,7%; Không rõ 72 tin |
+| 1.4 | Tỷ lệ có lương: vieclam24h 90,9%, glints 62,3%, jobsgo 60,2%, topcv 56,1%, topdev 31,3%, careerviet 29,9%, vietnamworks 26,6%, itviec 26,4%. Trung vị: Intern/Fresher 10,0 (P25 5,4, P75 15), Junior 15,5, Middle 22,5, Senior 37,5, Lead/Manager 30,0. Ghi chú MNAR: Senior 73,0%, Lead/Manager 58,1%, Không rõ 73,3% |
+| 1.5 | Người mới 1.181 tin / Middle+ 2.450: kinh nghiệm 1 / 3 năm; `n_tools` 4 / 5; JD tiếng Anh 14,1% / 30,5%; lương 13,5 / 25,0 triệu. Top công cụ người mới: python 19,7%, sql 16,8%, ms_office 13,8%, git, linux 12,1%. Top kỹ năng mềm: coordination 52,2%, communication 40,9%, english 36,4% |
+| 1.6 | Bảo hiểm 83,4%, Thưởng 69,1%, Du lịch 59,5%, Đào tạo 55,1% (trên 3.657 tin có phúc lợi) |
+| 1.7 | 6 nguồn có ngày: T9 853 tin, T10–T11 1.632 tin; cơ cấu cấp gần như nhau (Middle 29,7% / 30,2%) |
+| M1.B | 51 ô nghề × cấp lùi về trung vị cấp hoặc toàn bộ |
+| M1.D | 7 nghề có ≥ 30 tin người mới (gồm Other); Design 26, Game 26, IoT 6, Mobile 5 "ít dữ liệu" |
+
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- Chưa có code (MINE-7). Đã duyệt 20/11: M1.0a–M1.0e, M1.B, M1.D, ngưỡng 55% của M1.0d và 18/20 ở mục 6.
+- **Có code 20/11** (`mining/bi.py`); dry-run đạt kiểm tổng, chờ đối chiếu tay 20 tin rồi chạy thật. Cách hiểu M1.0b khi code: tỷ lệ hay trung vị tính trên nhóm n < 30 thì null; nhóm là mẫu số (cả bảng với bảng đếm, một hàng với bảng chéo), là ô với trung vị.
+- Trước đây: chưa có code (MINE-7). Đã duyệt 20/11: M1.0a–M1.0e, M1.B, M1.D, ngưỡng 55% của M1.0d và 18/20 ở mục 6.
 - Trang Insights đọc JSON này là việc của Monitoring (spec 09), không thuộc M1.
 - PRE-36 (ngưỡng n < 30), PRE-38 (tỉnh).

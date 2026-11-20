@@ -90,7 +90,7 @@ kiểm: tổng count mỗi bảng toàn bộ = n_jobs; tỷ lệ cộng 100 ± 0
 | # | Bước quy trình | Ngày | Việc đã làm, số liệu, quyết định | Commit |
 |---|---|---|---|---|
 | 1 | Duyệt đặc tả | 20/11 | "approved" | 1036a11 |
-| 2 | Duyệt prompt | chưa | | |
-| 3 | Test rồi code | chưa | | |
-| 4 | Dry-run | chưa | | |
+| 2 | Duyệt prompt | 20/11 | Người dùng "continue" sau khi nhận bộ prompt (coi là duyệt) | e230f28 |
+| 3 | Test rồi code | 20/11 | `tests/unit/test_mining_bi.py` (12 test theo mục 5). Code: `mining/bi.py` (`count_table`, `crosstab_table`, `stat_table`, `q1_1`…`q1_7`, `baseline_salary`, `newcomer_demand`, `run_bi`); `config.BIParams`; `MiningData.job_skills`, `--job-skills`, cột `province` vào meta; driver ghi `sd1_*.json`, gỡ `bi` khỏi `NOT_BUILT`. 82 test mining xanh. **Cách hiểu cần người dùng xem:** "ô n < 30" áp cho nhóm làm mẫu số (bảng đếm: cả bảng; bảng chéo: hàng). **Đi khác prompt:** chưa chuyển `NEWCOMER`/`BIG_FAMILIES` khỏi `scripts/eval_skill_views.py` (để M6 làm cùng `coverage_at`) | (commit này) |
+| 4 | Dry-run | 20/11 | 23 bảng, tổng khớp, 90 ô ít dữ liệu, chạy lại ra cùng JSON. Số chính ở đặc tả M1 mục 6 | |
 | 5 | Review, chạy thật | chưa | | |

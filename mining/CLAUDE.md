@@ -13,6 +13,7 @@ Lệnh: `python -m mining.run_mining_pipeline [--only fp,cluster,…] [--dry-run
 - **Cờ lương:** `meta.salary_outlier` (cờ của Silver). Tên cũ `salary_suspect` là cột của bước 03/04, không dùng trong Mining.
 - **e5 khóa `job`** (mô tả + yêu cầu, không phúc lợi). Thiếu khóa thì `MiningContractError`, không lùi về `all`.
 - **Thang cấp 0–4:** 0 = Intern/Fresher … 4 = Lead/Manager, -1 = chưa rõ (`SENIORITY_ORDER_LABELS`). S-04 từng ánh xạ lệch một bậc (sửa 20/11, M0.8).
-- **`bi`, `recommend` có trong `STEPS` nhưng chưa có code** (`NOT_BUILT`): `--only bi` trả mã 2. Gỡ khỏi `NOT_BUILT` khi làm M1, M6.
+- **`recommend` có trong `STEPS` nhưng chưa có code** (`NOT_BUILT`): `--only recommend` trả mã 2. Gỡ khỏi `NOT_BUILT` khi làm M6.
+- **M1 (`bi.py`) lấy kỹ năng từ `job_skills` + `skill_view`** (slug, như tên cột ma trận vì `encoding_dictionary.json` không có `skills_map`). Không có `--job-skills` thì lùi về ma trận và ghi chú. File `sd1_*.json` không chứa thời điểm chạy để chạy lại ra cùng file.
 - **`--synthetic` chỉ cho test** (`mining/synthetic.py`, schema giống Silver). Không lấy số báo cáo từ đó (L-19).
 - Test ghi vào `tmp_path`; chạy xong xem `git status` (không được đổi `mining/artifacts/`, `data/`, `reports/`).

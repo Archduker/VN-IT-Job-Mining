@@ -53,6 +53,7 @@ class MiningData:
     concepts: pd.DataFrame = field(default_factory=pd.DataFrame)  # K-concept (concept__)
     soft: pd.DataFrame = field(default_factory=pd.DataFrame)  # K-soft (soft__)
     e5: np.ndarray | None = None  # vector e5 khóa "job", cùng thứ tự meta
+    job_skills: pd.DataFrame | None = None  # bảng 08 (slug, kind, type…) của các tin trong meta, cho M1/M6
     table_path: Path | None = None
     input_sha256: dict[str, str | None] = field(default_factory=dict)
     resolved_columns: dict[str, str | None] = field(default_factory=dict)
@@ -416,8 +417,9 @@ def load_mining_data(
     features_path: Path | None = None,
     encoding_dict_path: Path | None = None,
     e5_path: Path | None = None,
+    job_skills_path: Path | None = None,
 ) -> MiningData:
-    """Đọc Silver + features + e5 từ file. Thiếu bảng thì FileNotFoundError (không đọc file khác thay)."""
+    """Đọc Silver + features + e5 (+ job_skills của bước 08) từ file. Thiếu bảng thì FileNotFoundError (không đọc file khác thay)."""
     table_path = Path(table_path)
     if not table_path.exists():
         raise FileNotFoundError(f"Không tìm thấy bảng đầu vào: {table_path}")
@@ -431,9 +433,15 @@ def load_mining_data(
     if e5_path and Path(e5_path).exists():
         data.e5 = load_e5(Path(e5_path), data.meta["job_id"])
         data.notes.append(f"Vector e5 (khóa job): {data.e5.shape}")
+    if job_skills_path and Path(job_skills_path).exists():
+        js = pd.read_parquet(job_skills_path)
+        data.job_skills = js[js["job_id_global"].astype(str).isin(set(data.meta["job_id"]))].reset_index(drop=True)
+        data.notes.append(f"job_skills: {len(data.job_skills)} dòng")
     data.table_path = table_path
     data.input_sha256 = {"table": file_sha256(table_path), "features": file_sha256(features_path),
                          "encoding_dict": file_sha256(encoding_dict_path), "e5": file_sha256(e5_path)}
+    if job_skills_path:
+        data.input_sha256["job_skills"] = file_sha256(job_skills_path)
     data.notes.insert(0, f"table={table_path.as_posix()}, "
                          f"features={Path(features_path).as_posix() if features is not None else None}")
     return data

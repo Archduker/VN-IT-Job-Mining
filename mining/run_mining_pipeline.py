@@ -29,6 +29,7 @@ if __package__ in (None, ""):  # chạy trực tiếp bằng đường dẫn fil
 import numpy as np  # noqa: E402
 
 from mining.anomaly import detect_anomalies  # noqa: E402
+from mining.bi import run_bi  # noqa: E402
 from mining.association import mine_stratified_rules  # noqa: E402
 from mining.clustering import cluster_jobs  # noqa: E402
 from mining.config import (  # noqa: E402
@@ -37,6 +38,7 @@ from mining.config import (  # noqa: E402
     DEFAULT_E5,
     DEFAULT_ENCODING_DICT,
     DEFAULT_FEATURES,
+    DEFAULT_JOB_SKILLS,
     DEFAULT_TABLE,
     SYNTHETIC_ARTIFACTS_DIR,
     MiningParams,
@@ -48,7 +50,7 @@ from mining.sanity import run_sanity_checks, summarize  # noqa: E402
 logger = logging.getLogger("mining")
 # Chuỗi đã duyệt (spec 03 mục 7, M0.5). bi (M1) và recommend (M6) chưa có code: chọn thì báo lỗi rõ.
 STEPS = ("bi", "fp", "cluster", "anomaly", "salary", "recommend")
-NOT_BUILT = {"bi": "M1", "recommend": "M6"}
+NOT_BUILT = {"recommend": "M6"}
 _sha256 = file_sha256
 
 
@@ -95,6 +97,14 @@ def run_pipeline(
     }
     outputs: dict[str, Any] = {}
     timings: dict[str, float] = {}
+
+    if "bi" in steps:
+        t = time.perf_counter()
+        sd1, m = run_bi(data, p.bi)
+        outputs.setdefault("json", {}).update(sd1)
+        metrics["bi"] = m
+        timings["bi"] = time.perf_counter() - t
+        logger.info("BI: %d bảng, %d ô ít dữ liệu, tổng khớp: %s", m["n_tables"], m["n_cells_low_data"], m["totals_ok"])
 
     if "fp" in steps:
         t = time.perf_counter()
@@ -146,6 +156,8 @@ def run_pipeline(
 
 def _targets_summary(m: dict[str, Any]) -> dict[str, Any]:
     s: dict[str, Any] = {}
+    if "bi" in m:
+        s["bi_totals_ok"] = m["bi"]["totals_ok"]
     if "association" in m:
         s["fp_min_rules"] = m["association"]["meets_min_rules_target"]
     if "clustering" in m:
@@ -183,6 +195,10 @@ def write_artifacts(outputs: dict[str, Any], metrics: dict[str, Any], out_dir: P
         }
         joblib.dump(bundle, path, compress=3)
         written["model"] = {"path": path.as_posix(), "bytes": path.stat().st_size}
+    for name, obj in (outputs.get("json") or {}).items():
+        path = out_dir / name
+        path.write_text(json.dumps(obj, ensure_ascii=False, indent=1, default=_json_default), encoding="utf-8")
+        written[name] = {"path": path.as_posix()}
     metrics["artifacts"] = written
     (out_dir / ARTIFACT_FILES["metrics"]).write_text(
         json.dumps(metrics, ensure_ascii=False, indent=2, default=_json_default), encoding="utf-8")
@@ -195,6 +211,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                     help=f"bảng Silver (mặc định {DEFAULT_TABLE}); --golden là bí danh cũ. Thiếu thì báo lỗi")
     ap.add_argument("--features", type=Path, default=DEFAULT_FEATURES)
     ap.add_argument("--encoding-dict", type=Path, default=DEFAULT_ENCODING_DICT)
+    ap.add_argument("--job-skills", type=Path, default=DEFAULT_JOB_SKILLS, help="bảng 08 job_skills.parquet (M1, M6)")
     ap.add_argument("--e5", type=Path, default=DEFAULT_E5, help="job_emb.npz (khóa job); thiếu file thì phân cụm không dùng e5")
     ap.add_argument("--out", type=Path, default=None, help=f"mặc định {ARTIFACTS_DIR}")
     ap.add_argument("--only", type=str, default=",".join(s for s in STEPS if s not in NOT_BUILT), help="các bước, cách nhau dấu phẩy: " + ",".join(STEPS))
@@ -236,9 +253,10 @@ def main(argv: list[str] | None = None) -> int:
         if not Path(args.table).exists():
             logger.error("Không tìm thấy bảng Silver %s. Chạy preprocessing trước, hoặc dùng --synthetic.", args.table)
             return 2
-        data = load_mining_data(args.table, args.features, args.encoding_dict, args.e5)
+        data = load_mining_data(args.table, args.features, args.encoding_dict, args.e5, args.job_skills)
         out_dir = args.out or ARTIFACTS_DIR
-        paths = {"table": args.table, "features": args.features, "encoding_dict": args.encoding_dict, "e5": args.e5}
+        paths = {"table": args.table, "features": args.features, "encoding_dict": args.encoding_dict, "e5": args.e5,
+                 "job_skills": args.job_skills}
         extra["inputs"] = {k: {"path": Path(v).as_posix(), "sha256_16": data.input_sha256.get(k)}
                            for k, v in paths.items()}
 
