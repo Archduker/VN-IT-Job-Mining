@@ -16,7 +16,7 @@ Bản đồ tài liệu. Khi tài liệu mâu thuẫn với code thì tin code; 
 | `spec/fixes/` | Đề bài sửa lỗi F01–F13 | Thực chất là việc cần làm; về sau nên chuyển sang `tasks/` |
 | `guides/` | Hướng dẫn kỹ thuật | `01_modern_data_mining_overview.md` (thiết kế ban đầu), `02_crawling_architecture_guide.md`, `two_phase_r2_crawler_playbook.md`, `crawler_output_checklist.md`, `crawler_analysis_methodology.md`, `cloud_r2_setup_guide.md`, `03_airflow_guide.md`, `03_eda_and_integration_guide.md`, `git_workflow.md` |
 | `tasks/` | Phân công và hướng dẫn theo người | `README.md` là mục lục; `legacy_TASKS.md` là kế hoạch gốc (cũ) |
-| `prompting/` | Prompt cho agent, một prompt mỗi phase (PH0–PH9) | Khuôn và bảng phase → mục spec trong `prompting/README.md` |
+| `prompting/` | Prompt cho agent: `preprocessing/`, `processing/`, `mining/` (M0–M6, từ 20/11) theo khuôn 6 phần + Log; PH0–PH9 ở thư mục gốc là lịch sử | Khuôn và bảng phase → mục spec trong `prompting/README.md` |
 | `reports/` | Báo cáo môn học (.md, .docx) | Sinh bằng `scripts/build_course_reports.py` |
 | `presentation/` | Slide và kịch bản | Sinh bằng `scripts/build_slides.py`; `slides_raw_problems.html` (vấn đề raw đo trên R2) sinh bằng `scripts/report_raw_problems_r2.py` |
 | `issue_log.md` | Nhật ký lỗi đã xử lý | Lỗi → Nguyên nhân → Cách xử lý → Kiểm chứng |
