@@ -104,7 +104,7 @@ STEPS = ("bi","fp","cluster","anomaly","salary","recommend")   # bi/recommend: s
 | # | Bước quy trình | Ngày | Việc đã làm, số liệu, quyết định | Commit |
 |---|---|---|---|---|
 | 1 | Duyệt đặc tả | 20/11 | Người dùng "approved" cả bộ `docs/spec/mining/` (M0.1–M0.9) | 1036a11 |
-| 2 | Duyệt prompt | chưa | | |
-| 3 | Test rồi code | chưa | | |
-| 4 | Dry-run | chưa | Trước khi sửa (20/11): đọc `all.parquet`, 290 cột, e5 `all`, sanity 2 pass / 3 fail / 1 bỏ qua | |
-| 5 | Review, chạy thật | chưa | | |
+| 2 | Duyệt prompt | 20/11 | Người dùng "continue" sau khi nhận bộ prompt M0–M6 (coi là duyệt), không sửa | e230f28 |
+| 3 | Test rồi code | 20/11 | Test viết lại theo schema Silver: `test_mining_data_io` (15 test: ba khối, nối theo id, khóa `job`, sha256, không lùi bảng), `test_mining_sanity` (S-02 info, S-03 0,60, S-04 thang 0–3 + Lead riêng, bỏ ngoại lai/thỏa thuận), `test_mining_pipeline` (`--only bi/recommend` trả 2, `--table`/`--golden`, đọc file Silver). Code: `config.py`, `data_io.py`, `sanity.py`, `run_mining_pipeline.py`, `clustering.py` (gỡ TF-IDF), `synthetic.py` (schema Silver, ba khối), `salary_model.py` (cờ `salary_outlier`), `mining/CLAUDE.md`. 71 test mining xanh. **Đi khác prompt:** synthetic chưa có e5 (trước đây cũng không có; test đọc file tự tạo npz khóa `job`); giữ `skills_from_lists` làm đường thử khi không có features | (commit này) |
+| 4 | Dry-run | 20/11 | Trước khi sửa: đọc `all.parquet`, 290 cột, e5 `all`, sanity 2 pass / 3 fail / 1 bỏ qua. Sau khi sửa: Silver, 290 / 561 / 62 cột, e5 `job`, `n_tools` khớp bước 10; S-01 pass, S-02 info 0,394, S-03 pass 0,671, S-04 pass (10 < 15,5 < 22,5 < 37,5; Lead 30), **S-06 fail (HCM/khác 1,194)** vì nay bỏ 86 tin `salary_outlier` | |
+| 5 | Review, chạy thật | chưa | Chờ người dùng xem S-06. M0 không có artifact riêng | |

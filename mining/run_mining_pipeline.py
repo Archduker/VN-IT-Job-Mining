@@ -1,10 +1,10 @@
-"""Driver Data Mining: chạy 4 thuật toán và ghi artifacts vào mining/artifacts/.
+"""Driver Data Mining M0–M6 (docs/spec/mining/): chạy các bước và ghi artifacts vào mining/artifacts/.
 
 Cách chạy:
-    python mining/run_mining_pipeline.py                      # dữ liệu thật (golden + features.parquet)
-    python mining/run_mining_pipeline.py --synthetic          # dữ liệu giả, ghi vào mining/artifacts/_synthetic/
-    python mining/run_mining_pipeline.py --only fp,cluster    # chỉ chạy một phần (fp, cluster, salary, anomaly)
-    python mining/run_mining_pipeline.py --dry-run            # tính xong nhưng không ghi file
+    python -m mining.run_mining_pipeline                      # dữ liệu thật (Silver + features + e5 khóa job)
+    python -m mining.run_mining_pipeline --synthetic          # dữ liệu giả, ghi vào mining/artifacts/_synthetic/
+    python -m mining.run_mining_pipeline --only fp,cluster    # chỉ chạy một phần (xem STEPS)
+    python -m mining.run_mining_pipeline --dry-run            # tính xong nhưng không ghi file
 
 Đầu ra (spec 07 §5.3, nạp vào Mart bằng scripts/load_mart_from_parquet.py):
     skill_association_rules.parquet, job_clusters.parquet, job_anomalies.parquet,
@@ -15,7 +15,6 @@ Chỉ đọc file trên máy và ghi trong thư mục --out; không đụng R2 h
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import logging
 import sys
@@ -38,27 +37,19 @@ from mining.config import (  # noqa: E402
     DEFAULT_E5,
     DEFAULT_ENCODING_DICT,
     DEFAULT_FEATURES,
-    DEFAULT_GOLDEN,
-    FALLBACK_GOLDEN,
+    DEFAULT_TABLE,
     SYNTHETIC_ARTIFACTS_DIR,
     MiningParams,
 )
-from mining.data_io import MiningData, load_mining_data, prepare_mining_data  # noqa: E402
+from mining.data_io import MiningData, file_sha256, load_mining_data, prepare_mining_data  # noqa: E402
 from mining.salary_model import train_salary_model  # noqa: E402
 from mining.sanity import run_sanity_checks, summarize  # noqa: E402
 
 logger = logging.getLogger("mining")
-STEPS = ("fp", "cluster", "anomaly", "salary")
-
-
-def _sha256(path: Path | None) -> str | None:
-    if not path or not Path(path).exists():
-        return None
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()[:16]
+# Chuỗi đã duyệt (spec 03 mục 7, M0.5). bi (M1) và recommend (M6) chưa có code: chọn thì báo lỗi rõ.
+STEPS = ("bi", "fp", "cluster", "anomaly", "salary", "recommend")
+NOT_BUILT = {"bi": "M1", "recommend": "M6"}
+_sha256 = file_sha256
 
 
 def _json_default(o: Any) -> Any:
@@ -93,8 +84,13 @@ def run_pipeline(
         "steps": steps,
         "dry_run": dry_run,
         **(extra_metrics or {}),
-        "data": {"n_jobs": data.n_jobs, "n_skill_columns": int(skills.shape[1]),
+        "data": {"table_path": data.table_path.as_posix() if data.table_path else None,
+                 "n_jobs": data.n_jobs, "n_skill_columns": int(skills.shape[1]),
+                 "n_cols": {"skill": int(skills.shape[1]), "concept": int(data.concepts.shape[1]),
+                            "soft": int(data.soft.shape[1])},
                  "skill_matrix_sparsity": round(float(1 - skills.to_numpy().mean()), 4) if skills.size else None,
+                 "e5_shape": None if data.e5 is None else list(data.e5.shape),
+                 "input_sha256": data.input_sha256,
                  "resolved_columns": data.resolved_columns, "row_log": data.row_log, "notes": data.notes},
     }
     outputs: dict[str, Any] = {}
@@ -195,12 +191,13 @@ def write_artifacts(outputs: dict[str, Any], metrics: dict[str, Any], out_dir: P
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--golden", type=Path, default=None, help=f"mặc định {DEFAULT_GOLDEN}, thiếu thì {FALLBACK_GOLDEN}")
+    ap.add_argument("--table", "--golden", dest="table", type=Path, default=DEFAULT_TABLE,
+                    help=f"bảng Silver (mặc định {DEFAULT_TABLE}); --golden là bí danh cũ. Thiếu thì báo lỗi")
     ap.add_argument("--features", type=Path, default=DEFAULT_FEATURES)
     ap.add_argument("--encoding-dict", type=Path, default=DEFAULT_ENCODING_DICT)
-    ap.add_argument("--e5", type=Path, default=DEFAULT_E5, help="job_emb.npz; thiếu file thì phân cụm không dùng e5")
+    ap.add_argument("--e5", type=Path, default=DEFAULT_E5, help="job_emb.npz (khóa job); thiếu file thì phân cụm không dùng e5")
     ap.add_argument("--out", type=Path, default=None, help=f"mặc định {ARTIFACTS_DIR}")
-    ap.add_argument("--only", type=str, default=",".join(STEPS), help="các bước, cách nhau dấu phẩy: fp,cluster,anomaly,salary")
+    ap.add_argument("--only", type=str, default=",".join(s for s in STEPS if s not in NOT_BUILT), help="các bước, cách nhau dấu phẩy: " + ",".join(STEPS))
     ap.add_argument("--synthetic", action="store_true", help="chạy trên dữ liệu giả (mining/synthetic.py)")
     ap.add_argument("--synthetic-n", type=int, default=1500)
     ap.add_argument("--no-shap", action="store_true", help="bỏ TreeSHAP (chạy nhanh hơn)")
@@ -217,6 +214,10 @@ def main(argv: list[str] | None = None) -> int:
     if unknown:
         logger.error("Bước không hợp lệ: %s (chọn trong %s)", unknown, STEPS)
         return 2
+    pending = [s for s in steps if s in NOT_BUILT]
+    if pending:
+        logger.error("Bước %s chưa làm (%s); xem docs/prompting/mining/.", pending, [NOT_BUILT[s] for s in pending])
+        return 2
     params = MiningParams()
     if args.seed is not None:
         params.random_state = args.seed
@@ -232,18 +233,14 @@ def main(argv: list[str] | None = None) -> int:
         out_dir = args.out or SYNTHETIC_ARTIFACTS_DIR
         extra["inputs"] = {"synthetic_n": args.synthetic_n}
     else:
-        golden = args.golden or (DEFAULT_GOLDEN if DEFAULT_GOLDEN.exists() else FALLBACK_GOLDEN)
-        if not Path(golden).exists():
-            logger.error("Không tìm thấy bộ golden (%s hoặc %s). Chạy preprocessing trước, hoặc dùng --synthetic.",
-                         DEFAULT_GOLDEN, FALLBACK_GOLDEN)
+        if not Path(args.table).exists():
+            logger.error("Không tìm thấy bảng Silver %s. Chạy preprocessing trước, hoặc dùng --synthetic.", args.table)
             return 2
-        data = load_mining_data(golden, args.features, args.encoding_dict, args.e5)
+        data = load_mining_data(args.table, args.features, args.encoding_dict, args.e5)
         out_dir = args.out or ARTIFACTS_DIR
-        extra["inputs"] = {
-            "golden": {"path": Path(golden).as_posix(), "sha256_16": _sha256(golden)},
-            "features": {"path": Path(args.features).as_posix(), "sha256_16": _sha256(args.features)},
-            "encoding_dict": {"path": Path(args.encoding_dict).as_posix(), "sha256_16": _sha256(args.encoding_dict)},
-        }
+        paths = {"table": args.table, "features": args.features, "encoding_dict": args.encoding_dict, "e5": args.e5}
+        extra["inputs"] = {k: {"path": Path(v).as_posix(), "sha256_16": data.input_sha256.get(k)}
+                           for k, v in paths.items()}
 
     metrics = run_pipeline(data, out_dir, steps, params, args.dry_run, not args.no_shap, extra)
     print(json.dumps({"targets": metrics["targets_summary"], "sanity": metrics["sanity_summary"],

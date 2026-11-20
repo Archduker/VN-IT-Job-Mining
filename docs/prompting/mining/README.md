@@ -8,13 +8,13 @@ Mỗi file là **một prompt dán cho agent** (Claude Code) để làm một b�
 
 | Bước | Prompt | Đặc tả | Code | Trạng thái 20/11 |
 |---|---|---|---|---|
-| M0 Chuẩn bị | [`M0_chuan_bi.md`](M0_chuan_bi.md) | [`M0_chuan_bi.md`](../../spec/mining/M0_chuan_bi.md) | `config.py`, `data_io.py`, `run_mining_pipeline.py`, `sanity.py`, `synthetic.py` | Chờ duyệt prompt |
-| M1 BI (SD1) | [`M1_bi.md`](M1_bi.md) | [`M1_bi.md`](../../spec/mining/M1_bi.md) | mới `bi.py` | Chờ duyệt prompt |
-| M2 Gói kỹ năng (SD2) | [`M2_fp_growth.md`](M2_fp_growth.md) | [`M2_fp_growth.md`](../../spec/mining/M2_fp_growth.md) | `association.py` | Chờ duyệt prompt |
-| M3 Nhóm việc (SD3) | [`M3_phan_cum.md`](M3_phan_cum.md) | [`M3_phan_cum.md`](../../spec/mining/M3_phan_cum.md) | `clustering.py` | Chờ duyệt prompt |
-| M4 Tin khác hoặc mới (SD3) | [`M4_tin_khac_moi.md`](M4_tin_khac_moi.md) | [`M4_tin_khac_moi.md`](../../spec/mining/M4_tin_khac_moi.md) | `anomaly.py` | Chờ duyệt prompt |
-| M5 Lương và SHAP (SD4) | [`M5_luong_shap.md`](M5_luong_shap.md) | [`M5_luong_shap.md`](../../spec/mining/M5_luong_shap.md) | `salary_model.py` | Chờ duyệt prompt |
-| M6 Lộ trình (SD5) | [`M6_lo_trinh.md`](M6_lo_trinh.md) | [`M6_lo_trinh.md`](../../spec/mining/M6_lo_trinh.md) | mới `recommend.py` | Chờ duyệt prompt |
+| M0 Chuẩn bị | [`M0_chuan_bi.md`](M0_chuan_bi.md) | [`M0_chuan_bi.md`](../../spec/mining/M0_chuan_bi.md) | `config.py`, `data_io.py`, `run_mining_pipeline.py`, `sanity.py`, `synthetic.py` | Code xong, dry-run 20/11; chờ xem S-06 |
+| M1 BI (SD1) | [`M1_bi.md`](M1_bi.md) | [`M1_bi.md`](../../spec/mining/M1_bi.md) | mới `bi.py` | Prompt duyệt 20/11 |
+| M2 Gói kỹ năng (SD2) | [`M2_fp_growth.md`](M2_fp_growth.md) | [`M2_fp_growth.md`](../../spec/mining/M2_fp_growth.md) | `association.py` | Prompt duyệt 20/11 |
+| M3 Nhóm việc (SD3) | [`M3_phan_cum.md`](M3_phan_cum.md) | [`M3_phan_cum.md`](../../spec/mining/M3_phan_cum.md) | `clustering.py` | Prompt duyệt 20/11 |
+| M4 Tin khác hoặc mới (SD3) | [`M4_tin_khac_moi.md`](M4_tin_khac_moi.md) | [`M4_tin_khac_moi.md`](../../spec/mining/M4_tin_khac_moi.md) | `anomaly.py` | Prompt duyệt 20/11 |
+| M5 Lương và SHAP (SD4) | [`M5_luong_shap.md`](M5_luong_shap.md) | [`M5_luong_shap.md`](../../spec/mining/M5_luong_shap.md) | `salary_model.py` | Prompt duyệt 20/11 |
+| M6 Lộ trình (SD5) | [`M6_lo_trinh.md`](M6_lo_trinh.md) | [`M6_lo_trinh.md`](../../spec/mining/M6_lo_trinh.md) | mới `recommend.py` | Prompt duyệt 20/11 |
 
 ## Khuôn prompt (6 phần)
 

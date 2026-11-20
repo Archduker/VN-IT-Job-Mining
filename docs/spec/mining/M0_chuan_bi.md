@@ -69,7 +69,16 @@ S-01, S-05, S-06 giữ nguyên ngưỡng.
 
 ## 5. Dữ liệu mẫu
 
-Điền sau lần chạy thật của M0.
+M0 không ghi artifact riêng. Khối `data` của dry-run 20/11 sau khi sửa (lệnh ở mục 6):
+
+| Trường | Giá trị |
+|---|---|
+| `table_path` | `data/preprocessing/04_normalization/silver.parquet` |
+| `n_jobs` | 3.916 |
+| `n_cols` | skill 290, concept 561, soft 62 |
+| `skill_matrix_sparsity` | 0,9798 |
+| `e5_shape` | [3.916, 768] (khóa `job`) |
+| `input_sha256` (16 ký tự) | table `ab97efa75bb7f48d`, features `a6d41b4f7159fa4e`, encoding_dict `e4cabb6eb9e002bd`, e5 `3ef62b4fffd69452` |
 
 ## 6. Kiểm tra và nghiệm thu
 
@@ -84,6 +93,19 @@ S-01, S-05, S-06 giữ nguyên ngưỡng.
 | Sanity | S-01 pass; S-02 `info`; S-03 ≥ 0,60; S-04 đơn điệu 4 cấp (Lead ghi riêng); S-06 pass | đã duyệt (M0.7, M0.8) |
 | Test | `pytest tests/unit/test_mining_data_io.py tests/unit/test_mining_sanity.py tests/unit/test_mining_pipeline.py` | xanh; `git status` không đổi `data/`, `reports/` |
 
+**Kết quả dry-run 20/11 sau khi sửa** (`python -m mining.run_mining_pipeline --only fp,cluster,anomaly,salary --dry-run --no-shap`): đọc Silver; 3.916 tin; 290 / 561 / 62 cột; `meta.n_tools` khớp bước 10 ở cả 3.916 tin; e5 khóa `job`.
+
+| Sanity | Kết quả |
+|---|---|
+| S-01 | pass (0,961) |
+| S-02 | info (0,394, n 66) |
+| S-03 | pass (0,671 ≥ 0,60) |
+| S-04 | pass: 10,0 < 15,5 < 22,5 < 37,5; Lead/Manager 30,0 (thỏa thuận 58,1%) |
+| S-05 | bỏ qua (chạy `--no-shap`) |
+| S-06 | **fail**: HN/khác 1,452; HCM/khác 1,194 (< 1,2). Trước khi sửa là 1,25: code cũ không bỏ tin nào vì `salary_suspect` không có trên bảng 04, nay bỏ 86 tin `salary_outlier` của Silver. Chờ người dùng xem (mục 7) |
+
+Các bước sau chạy trên dữ liệu mới, chưa đổi thuật toán: 15.565 luật; K-Means k=10 Silhouette 0,154, ARI với nghề 0,101; 231 tin bất thường; lương 1.561 tin train (bỏ 86 ngoại lai, 64 lệch so với cấp), R²(log) 0,582, MAE 5,67 triệu.
+
 **Kết quả dry-run 20/11 (code cũ):** đọc `all.parquet`; 3.916 tin; 290 cột kỹ năng, độ thưa 0,9798; e5 (3.916, 768) từ khóa `all`; sanity 2 pass (S-01, S-06) / 3 fail (S-02, S-03, S-04) / 1 bỏ qua (S-05).
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
@@ -91,4 +113,6 @@ S-01, S-05, S-06 giữ nguyên ngưỡng.
 - Đã duyệt 20/11: M0.1–M0.9.
 - PRE-39 (bảng legacy), MINE-1 (sanity fail), MINE-7 (code chưa theo SD).
 - `scripts/load_mart_from_parquet.py` vẫn mặc định `--curated-path` legacy: không thuộc M0, ghi ở PRE-39.
-- Viết `mining/CLAUDE.md` (bẫy: ba khối kỹ năng, khóa e5 `job`, Silver là đầu vào, nối theo id, synthetic không báo cáo).
+- `mining/CLAUDE.md` đã viết 20/11.
+- **S-06 fail sau khi bỏ tin ngoại lai** (HCM/khác 1,194): chờ người dùng chọn giữ ngưỡng 1,2 (ghi fail, giải thích ở MINE-1) hay đổi.
+- Còn lại cho bước sau: `salary_model._groups` vẫn theo `dup_group_id` (M5); `select_training_subset` còn khóa metrics `n_dropped_suspect` (đếm tin `salary_outlier`, đổi tên ở M5).

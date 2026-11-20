@@ -1,6 +1,6 @@
 """Thuật toán 3: Random Forest dự báo lương + TreeSHAP định giá kỹ năng (spec 07 §4).
 
-- Tập huấn luyện (Subset A): tin có salary_avg > 0, không thỏa thuận, không salary_suspect.
+- Tập huấn luyện (Subset A): tin có salary_avg > 0, không thỏa thuận, không salary_outlier (cờ của Silver).
 - y = log(1 + salary_avg), lương tính bằng triệu VNĐ/tháng.
 - X: kỹ năng 0/1, seniority_ord, exp_min_years (+ cờ thiếu), nhóm địa bàn, job_family.
   Không có cột nào mang thông tin lương (assert_no_leakage).
@@ -69,7 +69,7 @@ def select_training_subset(
     sal = pd.to_numeric(meta["salary_avg_mil"], errors="coerce")
     has = sal.notna() & (sal > 0)
     neg = meta["is_negotiable"].astype(bool)
-    sus = meta["salary_suspect"].astype(bool)
+    sus = meta["salary_outlier"].astype(bool)
     lo, hi = SALARY_VALID_RANGE_MIL
     in_range = sal.between(lo, hi)
     mask = has & ~neg & ~sus & in_range

@@ -1,14 +1,19 @@
 """Đọc dữ liệu đầu vào cho Mining và kiểm tra hợp đồng cột.
 
-Đầu ra là `MiningData`, một cấu trúc đã chuẩn hóa tên cột, để 4 thuật toán không phải biết
-schema của bộ golden hay features.parquet thay đổi thế nào:
-- `meta`: mỗi dòng một tin, các cột logic (job_id, job_title, job_family, seniority_ord,
-  exp_min_years, location_group, salary_avg_mil, is_negotiable, salary_suspect, jd_text, ...).
-- `skills`: ma trận 0/1 (uint8), tên cột là tên kỹ năng hiển thị, cùng thứ tự dòng với `meta`.
+Đầu vào (M0, docs/spec/mining/M0_chuan_bi.md): Silver (`data/preprocessing/04_normalization/silver.parquet`),
+`features.parquet` của bước 10 và `job_emb.npz` khóa `job` của 12_e5. Nối theo id, không theo thứ tự dòng.
+
+Đầu ra là `MiningData`:
+- `meta`: mỗi dòng một tin, các cột logic (job_id, job_title, job_family, seniority_ord, exp_min_years,
+  location_group, salary_avg_mil, is_negotiable, salary_outlier, company_id, n_tools, salary_target_m, ...).
+- `skills` (K-tool, `skill__`), `concepts` (`concept__`), `soft` (`soft__`): ma trận 0/1 (uint8), tên cột là
+  tên hiển thị, cùng thứ tự dòng với `meta`; không có cột `<khối>__other_skill`.
+- `e5`: vector khóa `job` (mô tả + yêu cầu), cùng thứ tự `meta`.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import unicodedata
@@ -23,7 +28,10 @@ import pandas as pd
 from mining.config import (
     JOB_FAMILY_OTHER,
     COLUMN_ALIASES,
+    FEATURE_META_COLUMNS,
+    PASSTHROUGH_COLUMNS,
     SALARY_VND_DETECT_THRESHOLD,
+    SKILL_BLOCKS,
     SENIORITY_LEVEL_TO_ORD,
     SENIORITY_ORDER_LABELS,
     SENIORITY_ORDINAL,
@@ -41,8 +49,12 @@ class MiningContractError(ValueError):
 @dataclass
 class MiningData:
     meta: pd.DataFrame
-    skills: pd.DataFrame
-    e5: np.ndarray | None = None  # vector e5 của JD, cùng thứ tự meta
+    skills: pd.DataFrame  # K-tool (skill__)
+    concepts: pd.DataFrame = field(default_factory=pd.DataFrame)  # K-concept (concept__)
+    soft: pd.DataFrame = field(default_factory=pd.DataFrame)  # K-soft (soft__)
+    e5: np.ndarray | None = None  # vector e5 khóa "job", cùng thứ tự meta
+    table_path: Path | None = None
+    input_sha256: dict[str, str | None] = field(default_factory=dict)
     resolved_columns: dict[str, str | None] = field(default_factory=dict)
     row_log: list[dict[str, Any]] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
@@ -76,22 +88,28 @@ def resolve_column(df: pd.DataFrame, logical: str) -> str | None:
     return None
 
 
-def find_skill_columns(columns: Iterable[str]) -> list[str]:
-    """Các cột kỹ năng nhị phân theo tiền tố, bỏ cột đếm như skills__other_count."""
-    out = []
-    for c in columns:
-        if c in SKILL_EXCLUDE_COLUMNS:
-            continue
-        if any(c.startswith(p) for p in SKILL_PREFIXES):
-            out.append(c)
-    return out
+def find_skill_columns(columns: Iterable[str], prefix: str | None = None) -> list[str]:
+    """Các cột 0/1 của một khối theo tiền tố (mặc định K-tool `skill__`), bỏ `<khối>__other_skill`."""
+    prefixes = (prefix,) if prefix else SKILL_PREFIXES
+    return [c for c in columns if c not in SKILL_EXCLUDE_COLUMNS and any(c.startswith(p) for p in prefixes)]
 
 
 def strip_skill_prefix(col: str) -> str:
-    for p in SKILL_PREFIXES:  # "skill__" đứng trước "skill_" nên bỏ đúng 2 gạch
+    for p in (*SKILL_PREFIXES, *SKILL_BLOCKS.values()):
         if col.startswith(p):
             return col[len(p):]
     return col
+
+
+def file_sha256(path: Path | None) -> str | None:
+    """16 ký tự đầu của sha256 (ghi vào metrics để biết số chạy trên file nào)."""
+    if not path or not Path(path).exists():
+        return None
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()[:16]
 
 
 def _as_list(val: Any) -> list[Any]:
@@ -245,21 +263,13 @@ def build_meta(golden: pd.DataFrame, notes: list[str]) -> tuple[pd.DataFrame, di
         notes.append("Không có cột lương: bỏ qua mô hình lương.")
     meta["salary_avg_mil"] = sal.to_numpy(dtype=float)
     meta["is_negotiable"] = _to_bool(col("is_negotiable"), n)
-    meta["salary_suspect"] = _to_bool(col("salary_suspect"), n)
+    meta["salary_outlier"] = _to_bool(col("salary_outlier"), n)
     notes.append(f"Đơn vị lương đầu vào nhận diện: {unit}.")
 
-    # Văn bản JD cho TF-IDF
-    parts = [s.astype("string").fillna("") for s in (col("jd_text"), col("jd_requirements")) if s is not None]
-    if parts:
-        jd = parts[0]
-        for p in parts[1:]:
-            jd = jd + " " + p
-        meta["jd_text"] = jd.str.strip().to_numpy()
-    else:
-        meta["jd_text"] = ""
-
-    grp = col("dup_group_id")
-    meta["dup_group_id"] = grp.astype("string").to_numpy() if grp is not None else pd.NA
+    # Cột Silver chép nguyên (M0.2); thiếu cột thì để null, M1–M6 tự ghi "Không rõ"
+    for logical in PASSTHROUGH_COLUMNS:
+        s = col(logical)
+        meta[logical] = s.to_numpy() if s is not None else None
 
     meta = meta.reset_index(drop=True)
     return meta, resolved
@@ -285,43 +295,53 @@ def skills_from_lists(lists: Sequence[Any], min_count: int = 1, max_k: int | Non
     return pd.DataFrame(mat, columns=vocab)
 
 
+def _aligned_features(features: pd.DataFrame, job_ids: pd.Series) -> pd.DataFrame:
+    """features.parquet xếp lại theo job_id của meta (nối theo id). Thiếu hoặc trùng id thì báo lỗi."""
+    key = "job_id_global" if "job_id_global" in features.columns else resolve_column(features, "job_id")
+    if key is None:
+        raise MiningContractError("features.parquet thiếu khóa job_id_global/job_id.")
+    ids = features[key].astype(str)
+    if ids.duplicated().any():
+        raise MiningContractError("features.parquet có job_id trùng.")
+    aligned = features.set_index(ids.to_numpy()).reindex(job_ids.astype(str).to_numpy())
+    missing = int(pd.isna(aligned[key]).sum())
+    if missing:
+        raise MiningContractError(f"{missing} tin của bảng đầu vào không có dòng trong features.parquet.")
+    return aligned.reset_index(drop=True)
+
+
+def block_from_features(
+    aligned: pd.DataFrame,
+    prefix: str,
+    skills_map: dict[str, str] | None = None,
+) -> pd.DataFrame:
+    """Một khối kỹ năng (đã căn theo meta) thành ma trận 0/1, tên cột là tên hiển thị."""
+    cols = find_skill_columns(aligned.columns, prefix)
+    if not cols:
+        return pd.DataFrame(index=aligned.index)
+    vals = aligned[cols].to_numpy()
+    if pd.isna(vals).any() or not np.isin(vals, [0, 1]).all():
+        raise MiningContractError(f"Cột {prefix}* phải chỉ chứa 0/1, không có NaN.")
+    names = []
+    for c in cols:
+        slug = strip_skill_prefix(c)
+        names.append((skills_map or {}).get(slug) or (skills_map or {}).get(c) or slug)
+    out = pd.DataFrame(vals.astype(np.uint8), columns=names)
+    if out.columns.duplicated().any():  # hai slug ra cùng tên hiển thị -> gộp bằng OR
+        out = out.T.groupby(level=0, sort=False).max().T.astype(np.uint8)
+    return out
+
+
 def skills_from_features(
     features: pd.DataFrame,
     job_ids: pd.Series,
     skills_map: dict[str, str] | None = None,
 ) -> pd.DataFrame:
-    """Lấy ma trận kỹ năng từ features.parquet, căn theo thứ tự job_id của meta."""
-    key = resolve_column(features, "job_id")
-    if key is None:
-        raise MiningContractError("features.parquet thiếu khóa job_id_global/job_id.")
-    skill_cols = find_skill_columns(features.columns)
-    if not skill_cols:
-        raise MiningContractError("features.parquet không có cột kỹ năng (tiền tố skill_ hoặc skill__).")
-
-    mat = features[skill_cols]
-    vals = mat.to_numpy()
-    bad = ~np.isin(vals[~pd.isna(vals)], [0, 1])
-    if pd.isna(vals).any() or bad.any():
-        raise MiningContractError("Cột kỹ năng phải chỉ chứa 0/1, không có NaN.")
-
-    feat = features[[key] + skill_cols].copy()
-    feat[key] = feat[key].astype(str)
-    if feat[key].duplicated().any():
-        raise MiningContractError("features.parquet có job_id trùng.")
-    aligned = feat.set_index(key).reindex(job_ids.astype(str).to_numpy())
-    missing = int(aligned[skill_cols[0]].isna().sum())
-    if missing:
-        raise MiningContractError(f"{missing} tin trong golden không có dòng trong features.parquet.")
-
-    names = []
-    for c in skill_cols:
-        slug = strip_skill_prefix(c)
-        names.append((skills_map or {}).get(slug) or (skills_map or {}).get(c) or slug)
-    out = pd.DataFrame(aligned.to_numpy(dtype=np.uint8), columns=names)
-    # Hai slug có thể ra cùng tên hiển thị -> gộp bằng OR
-    if out.columns.duplicated().any():
-        out = out.T.groupby(level=0, sort=False).max().T.astype(np.uint8)
-    return out
+    """Khối K-tool (`skill__`) căn theo thứ tự job_id của meta."""
+    aligned = _aligned_features(features, job_ids)
+    if not find_skill_columns(aligned.columns):
+        raise MiningContractError("features.parquet không có cột kỹ năng skill__*.")
+    return block_from_features(aligned, SKILL_PREFIXES[0], skills_map)
 
 
 def load_skills_map(path: Path | None) -> dict[str, str]:
@@ -338,57 +358,82 @@ def prepare_mining_data(
     features: pd.DataFrame | None = None,
     skills_map: dict[str, str] | None = None,
 ) -> MiningData:
-    """Chuẩn hóa golden (+ features nếu có) thành MiningData."""
+    """Chuẩn hóa bảng đầu vào (Silver) + features.parquet thành MiningData (M0)."""
     notes: list[str] = []
     meta, resolved = build_meta(golden, notes)
-    data_log = [{"step": "golden", "rows": len(meta), "note": ""}]
+    data_log = [{"step": "table", "rows": len(meta), "note": ""}]
+    concepts = soft = pd.DataFrame(index=meta.index)
 
     if features is not None:
-        skills = skills_from_features(features, meta["job_id"], skills_map)
-        notes.append(f"Ma trận kỹ năng lấy từ features.parquet: {skills.shape[1]} cột.")
+        aligned = _aligned_features(features, meta["job_id"])
+        if not find_skill_columns(aligned.columns):
+            raise MiningContractError("features.parquet không có cột kỹ năng skill__*.")
+        skills = block_from_features(aligned, SKILL_BLOCKS["skills"], skills_map)
+        concepts = block_from_features(aligned, SKILL_BLOCKS["concepts"], skills_map)
+        soft = block_from_features(aligned, SKILL_BLOCKS["soft"], skills_map)
+        notes.append(f"Ba khối kỹ năng từ features.parquet: skill {skills.shape[1]}, concept {concepts.shape[1]}, "
+                     f"soft {soft.shape[1]} cột (bỏ <khối>__other_skill).")
+        # M0.3, M0.9: đếm và mục tiêu lương lấy thẳng từ bước 10
+        for c in FEATURE_META_COLUMNS:
+            if c in aligned.columns:
+                meta[c] = pd.to_numeric(aligned[c], errors="coerce").to_numpy()
+        if "salary_target_m" in meta:
+            meta["salary_avg_mil"] = meta["salary_target_m"].to_numpy(dtype=float)
+            notes.append("Lương = salary_target_m của bước 10 (triệu VNĐ/tháng).")
     elif resolved.get("skills_list"):
         skills = skills_from_lists(golden[resolved["skills_list"]].tolist())
         notes.append(
             f"Chưa có features.parquet: dựng ma trận kỹ năng từ cột {resolved['skills_list']} "
-            f"({skills.shape[1]} kỹ năng)."
+            f"({skills.shape[1]} kỹ năng), chỉ để thử; không có khối concept/soft."
         )
     else:
-        raise MiningContractError("Không có features.parquet và golden không có cột danh sách kỹ năng.")
+        raise MiningContractError("Không có features.parquet và bảng đầu vào không có cột danh sách kỹ năng.")
 
     skills = skills.reset_index(drop=True)
-    meta["n_skills"] = skills.sum(axis=1).to_numpy(dtype=int)
-    data = MiningData(meta=meta, skills=skills, resolved_columns=resolved, row_log=data_log, notes=notes)
-    return data
+    meta["n_skills"] = skills.sum(axis=1).to_numpy(dtype=int)  # số cột K-tool của ma trận (M4 cũ dùng)
+    if "n_tools" not in meta:
+        meta["n_tools"] = meta["n_skills"]
+    return MiningData(meta=meta, skills=skills, concepts=concepts.reset_index(drop=True),
+                      soft=soft.reset_index(drop=True), resolved_columns=resolved, row_log=data_log, notes=notes)
 
 
 def load_e5(path: Path, job_ids: pd.Series) -> np.ndarray:
-    """Vector e5 'all' của từng JD, xếp theo job_ids. Thiếu job thì báo lỗi, không bịa vector."""
+    """Vector e5 khóa "job" (mô tả + yêu cầu, không phúc lợi; M0.4), xếp theo job_ids.
+
+    Thiếu khóa hoặc thiếu tin thì báo lỗi, không bịa vector và không lùi về khóa "all"."""
     z = np.load(path, allow_pickle=True)
+    if "job" not in z.files:
+        raise MiningContractError(f"{path} không có khóa 'job' (có: {z.files}); chạy lại 12_e5.")
     pos = {str(j): i for i, j in enumerate(z["ids"])}
     miss = [j for j in job_ids.astype(str) if j not in pos]
     if miss:
         raise MiningContractError(f"{len(miss)} tin không có vector e5 (ví dụ {miss[0]}).")
-    return z["all"][[pos[j] for j in job_ids.astype(str)]].astype(np.float32)
+    return z["job"][[pos[j] for j in job_ids.astype(str)]].astype(np.float32)
 
 
 def load_mining_data(
-    golden_path: Path,
+    table_path: Path,
     features_path: Path | None = None,
     encoding_dict_path: Path | None = None,
     e5_path: Path | None = None,
 ) -> MiningData:
-    golden_path = Path(golden_path)
-    if not golden_path.exists():
-        raise FileNotFoundError(f"Không tìm thấy bộ golden: {golden_path}")
-    golden = pd.read_parquet(golden_path)
+    """Đọc Silver + features + e5 từ file. Thiếu bảng thì FileNotFoundError (không đọc file khác thay)."""
+    table_path = Path(table_path)
+    if not table_path.exists():
+        raise FileNotFoundError(f"Không tìm thấy bảng đầu vào: {table_path}")
+    table = pd.read_parquet(table_path)
     features = None
     if features_path and Path(features_path).exists():
         features = pd.read_parquet(features_path)
     elif features_path:
-        logger.warning("Không thấy %s, dựng ma trận kỹ năng từ golden.", features_path)
-    data = prepare_mining_data(golden, features, load_skills_map(encoding_dict_path))
+        logger.warning("Không thấy %s, dựng ma trận kỹ năng từ cột danh sách (chỉ để thử).", features_path)
+    data = prepare_mining_data(table, features, load_skills_map(encoding_dict_path))
     if e5_path and Path(e5_path).exists():
         data.e5 = load_e5(Path(e5_path), data.meta["job_id"])
-        data.notes.append(f"Vector e5: {data.e5.shape}")
-    data.notes.insert(0, f"golden={golden_path.as_posix()}, features={Path(features_path).as_posix() if features is not None else None}")
+        data.notes.append(f"Vector e5 (khóa job): {data.e5.shape}")
+    data.table_path = table_path
+    data.input_sha256 = {"table": file_sha256(table_path), "features": file_sha256(features_path),
+                         "encoding_dict": file_sha256(encoding_dict_path), "e5": file_sha256(e5_path)}
+    data.notes.insert(0, f"table={table_path.as_posix()}, "
+                         f"features={Path(features_path).as_posix() if features is not None else None}")
     return data

@@ -7,7 +7,11 @@ mining/artifacts/_synthetic/ và mining_metrics.json có "synthetic": true.
 - Luật: {Spring Boot} => {Java} (conf = 1), {Flutter} => {Dart} (conf = 1), {React} => {JavaScript} (~0.95).
 - 8 nhóm nghề có bộ kỹ năng tách biệt -> phân cụm phải tìm được cấu trúc.
 - Lương tăng theo cấp bậc, HN/HCM cao hơn tỉnh khác, Kubernetes +20%, AWS +12%.
-- Tin bất thường: Intern/Fresher đòi 18 kỹ năng; Junior lương 300–450 triệu.
+- Tin bất thường: Intern/Fresher đòi 18 công cụ; Junior lương 300–450 triệu.
+
+Schema như Silver (M0, 20/11): `job_id`, `title`, `source`, `company_id`, `salary_min/max` (VNĐ),
+`salary_negotiable`, `salary_outlier`, `province`, `posted_month`…; features có ba khối `skill__` (công cụ),
+`concept__`, `soft__` theo CONCEPT_SKILLS / SOFT_SKILLS, kèm `n_tools`, `n_concepts`, `n_soft`, `salary_target_m`.
 """
 
 from __future__ import annotations
@@ -59,6 +63,10 @@ FAMILIES: list[tuple[str, float, list[list[tuple[str, float]]], str, float]] = [
     ], "fullstack web end to end", 1.0),
 ]
 GENERAL_SKILLS = [("Git", 0.45), ("English", 0.25), ("Agile", 0.2), ("Docker", 0.12)]
+# Phân loại kỹ năng giả theo ba góc nhìn (docs/target/06_yeu_cau_du_lieu.md mục 2); còn lại là công cụ.
+CONCEPT_SKILLS = {"Microservices", "Machine Learning", "CI/CD", "Business Analysis", "Agile",
+                  "Manual Testing", "Automation Testing", "Test Case", "UML"}
+SOFT_SKILLS = {"English"}
 SKILL_PREMIUM = {"Kubernetes": 0.20, "AWS": 0.12, "Golang": 0.12, "Kafka": 0.08, "Machine Learning": 0.08}
 
 SENIORITY_PROBS = [0.14, 0.28, 0.28, 0.22, 0.08]
@@ -98,6 +106,7 @@ def make_synthetic_jobs(
     loc_probs = np.array([loc[1] for loc in LOCATIONS])
     loc_probs = loc_probs / loc_probs.sum()
     all_skills = sorted({s for f in FAMILIES for st in f[2] for s, _ in st} | {s for s, _ in GENERAL_SKILLS})
+    tool_skills = [s for s in all_skills if s not in CONCEPT_SKILLS | SOFT_SKILLS]
 
     rows: list[dict[str, Any]] = []
     for i in range(n_jobs):
@@ -123,22 +132,31 @@ def make_synthetic_jobs(
         disclosed = rng.random() < salary_disclosed_rate
 
         title = f"{fam} Developer {sen_label}" if sen_ord >= 0 else f"{fam} Developer"
+        company = int(rng.integers(1, 80))
         rows.append({
-            "job_id_global": f"syn_{i:05d}",
-            "source_platform": SOURCES[rng.integers(len(SOURCES))],
-            "job_title": title,
-            "company_name": f"Công ty {rng.integers(1, 80):02d}",
+            "job_id": f"syn_{i:05d}",
+            "source": SOURCES[rng.integers(len(SOURCES))],
+            "title": title,
+            "company": f"Công ty {company:02d}",
+            "company_id": f"cong_ty_{company:02d}",
             "job_family": fam,
             "seniority": sen_label,
+            "seniority_inferred": bool(rng.random() < 0.5),
             "exp_min_years": exp,
-            "city_normalized": city,
-            "skills_extracted": skills,
-            "salary_avg": round(salary, 2) if disclosed else np.nan,
-            "salary_min": round(salary * 0.85, 2) if disclosed else np.nan,
-            "salary_max": round(salary * 1.15, 2) if disclosed else np.nan,
-            "is_negotiable": not disclosed,
-            "job_description": f"Tuyển {title}. Công việc: {jd_kw}.",
-            "job_requirements": "Yêu cầu: " + ", ".join(skills) + ".",
+            "exp_inferred": False,
+            "province": city,
+            "work_mode": "remote" if city == "Remote" else "onsite",
+            "employment_type": "internship" if sen_ord == 0 else "full_time",
+            "skills": skills,
+            "salary_min": round(salary * 0.85 * 1e6, -3) if disclosed else np.nan,
+            "salary_max": round(salary * 1.15 * 1e6, -3) if disclosed else np.nan,
+            "salary_negotiable": not disclosed,
+            "salary_outlier": False,
+            "benefits": ["bao_hiem", "thuong"] if rng.random() < 0.7 else [],
+            "description": f"Tuyển {title}. Công việc: {jd_kw}.",
+            "requirements": "Yêu cầu: " + ", ".join(skills) + ".",
+            "language": "en" if rng.random() < 0.25 else "vi",
+            "posted_month": "2026-09" if rng.random() < 0.25 else "2026-10",
             "_anomaly": None,
         })
 
@@ -149,33 +167,40 @@ def make_synthetic_jobs(
         if j < n_fresher_anomalies:
             r["seniority"] = SENIORITY_ORDER_LABELS[0]
             r["exp_min_years"] = 0.0
-            r["skills_extracted"] = list(rng.choice(all_skills, size=18, replace=False))
-            r["job_requirements"] = "Yêu cầu: " + ", ".join(r["skills_extracted"]) + "."
+            r["skills"] = [str(s) for s in rng.choice(tool_skills, size=18, replace=False)]
+            r["requirements"] = "Yêu cầu: " + ", ".join(r["skills"]) + "."
             r["_anomaly"] = "FRESHER_TOO_MANY_SKILLS"
         else:
             r["seniority"] = "Junior"
             r["exp_min_years"] = 1.0
             sal = float(rng.uniform(300, 450))
-            r.update({"salary_avg": sal, "salary_min": sal * 0.9, "salary_max": sal * 1.1, "is_negotiable": False})
+            r.update({"salary_min": sal * 0.9e6, "salary_max": sal * 1.1e6, "salary_negotiable": False})
             r["_anomaly"] = "SALARY_TOO_HIGH_FOR_LEVEL"
 
     golden = pd.DataFrame(rows)
-    # Như output 04_normalization: nhãn chữ 5 mức + seniority_level số 0-4 (null = chưa rõ).
-    golden["seniority_level"] = golden["seniority"].map({lab: float(i) for i, lab in enumerate(SENIORITY_ORDER_LABELS)})
     truth = {
         "rules": [("Spring Boot", "Java"), ("Flutter", "Dart"), ("React", "JavaScript")],
         "positive_salary_skills": ["Kubernetes", "AWS"],
         "n_families": len(FAMILIES),
-        "anomaly_ids": golden.loc[golden["_anomaly"].notna(), "job_id_global"].tolist(),
+        "anomaly_ids": golden.loc[golden["_anomaly"].notna(), "job_id"].tolist(),
     }
     golden = golden.drop(columns=["_anomaly"])
 
-    # features.parquet + encoding_dictionary.json theo quy ước của Phát (tiền tố skill_)
+    # features.parquet + encoding_dictionary.json như bước 10: ba khối, mỗi khối có <khối>__other_skill
     slug_to_name = {skill_slug(s): s for s in all_skills}
-    feat = {"job_id_global": golden["job_id_global"].to_numpy()}
-    sets = [set(x) for x in golden["skills_extracted"]]
+    feat: dict[str, Any] = {"job_id_global": golden["job_id"].to_numpy()}
+    sets = [set(x) for x in golden["skills"]]
+    n = len(sets)
+    counts = {"skill": np.zeros(n, dtype=int), "concept": np.zeros(n, dtype=int), "soft": np.zeros(n, dtype=int)}
     for slug, name in slug_to_name.items():
-        feat[f"skill_{slug}"] = np.fromiter((name in s for s in sets), dtype=np.uint8, count=len(sets))
+        block = "soft" if name in SOFT_SKILLS else "concept" if name in CONCEPT_SKILLS else "skill"
+        col = np.fromiter((name in s for s in sets), dtype=np.uint8, count=n)
+        feat[f"{block}__{slug}"] = col
+        counts[block] += col
+    for block in counts:
+        feat[f"{block}__other_skill"] = np.zeros(n, dtype=np.uint8)
+    feat["n_tools"], feat["n_concepts"], feat["n_soft"] = counts["skill"], counts["concept"], counts["soft"]
+    feat["salary_target_m"] = (golden[["salary_min", "salary_max"]].mean(axis=1) / 1e6).to_numpy()
     features = pd.DataFrame(feat)
     encoding_dict = {"skills": {"method": "multi-hot", "skills_map": slug_to_name}}
     return SyntheticBundle(golden=golden, features=features, encoding_dict=encoding_dict, truth=truth)

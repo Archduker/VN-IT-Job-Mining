@@ -6,7 +6,6 @@ import pytest
 from scipy import sparse
 
 from mining.clustering import (
-    build_tfidf,
     build_vector_space,
     choose_k,
     cluster_jobs,
@@ -59,15 +58,10 @@ def test_outlier_ratio_follows_quantile(result):
 
 def test_vector_space_rows_are_unit_norm():
     sk = pd.DataFrame({"A": [1, 0, 1], "B": [1, 1, 0]}, dtype=np.uint8)
-    tf = sparse.csr_matrix(np.array([[0.5, 0.5], [1.0, 0.0], [0.0, 0.0]]))
-    X = build_vector_space(sk, tf)
+    e5 = np.array([[0.5, 0.5], [1.0, 0.0], [0.0, 0.0]], dtype=np.float32)
+    X = build_vector_space(sk, e5=e5)
     norms = np.sqrt(np.asarray(X.multiply(X).sum(axis=1)).ravel())
     assert np.allclose(norms, 1.0)
-
-
-def test_tfidf_handles_empty_text():
-    mat, terms = build_tfidf(pd.Series(["", None, "  "]))
-    assert mat.shape == (3, 0) and terms == []
 
 
 def test_choose_k_prefers_at_least_min_k():
@@ -85,14 +79,13 @@ def test_profile_top_skills_by_lift():
 
 def test_vector_space_with_e5_block_is_l2_and_has_all_columns():
     skills = pd.DataFrame(np.eye(4, dtype=np.uint8), columns=list("abcd"))
-    tfidf = sparse.csr_matrix(np.array([[1, 0], [0, 1], [1, 1], [0, 0]], dtype=float))
     e5 = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0]], dtype=np.float32)  # dòng 4: JD không có bullet
-    X = build_vector_space(skills, tfidf, 0.3, e5=e5, e5_weight=0.3)
-    assert X.shape == (4, 4 + 2 + 3)
+    X = build_vector_space(skills, e5=e5, e5_weight=0.3)
+    assert X.shape == (4, 4 + 3)
     norms = np.sqrt(np.asarray(X.multiply(X).sum(axis=1)).ravel())
     assert np.allclose(norms, 1.0)
-    # không có e5 thì hành vi cũ không đổi
-    assert build_vector_space(skills, tfidf, 0.3).shape == (4, 6)
+    # không có e5 thì chỉ còn khối kỹ năng (TF-IDF đã gỡ, M0.6)
+    assert build_vector_space(skills).shape == (4, 4)
 
 
 def test_agglomerative_ward_clusters_and_reports_algorithm():

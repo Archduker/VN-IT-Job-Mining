@@ -1,4 +1,4 @@
-"""Cấu hình chung của module Data Mining (docs/spec/07_mining_spec.md).
+"""Cấu hình chung của module Data Mining (docs/spec/07_mining_spec.md, chi tiết docs/spec/mining/).
 
 Mọi chỗ phụ thuộc vào schema của bước trước (Duy: lương, cấp bậc, địa bàn; Phát: cột kỹ năng)
 đều gom ở đây. Khi đồng đội đổi tên cột, chỉ sửa COLUMN_ALIASES, không sửa thuật toán.
@@ -12,11 +12,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 # ---------------------------------------------------------------------------
-# Đường dẫn mặc định (đầu vào theo docs/tasks/06, đầu ra theo spec 07 §5.3)
+# Đường dẫn mặc định (M0.1: Silver là đầu vào duy nhất; thiếu thì báo lỗi, không lùi về file khác)
 # ---------------------------------------------------------------------------
-DEFAULT_GOLDEN = REPO_ROOT / "data" / "curated" / "curated_flat_golden_jobs.parquet"
-# Pipeline 5 bước hiện tại chưa ghi data/curated/; dùng output Normalization khi thiếu file golden.
-FALLBACK_GOLDEN = REPO_ROOT / "data" / "preprocessing" / "04_normalization" / "all.parquet"
+DEFAULT_TABLE = REPO_ROOT / "data" / "preprocessing" / "04_normalization" / "silver.parquet"
 DEFAULT_FEATURES = REPO_ROOT / "data" / "processing" / "10_features" / "features.parquet"
 DEFAULT_ENCODING_DICT = REPO_ROOT / "data" / "processing" / "10_features" / "encoding_dictionary.json"
 DEFAULT_E5 = REPO_ROOT / "data" / "processing" / "12_e5" / "job_emb.npz"
@@ -35,37 +33,53 @@ ARTIFACT_FILES = {
 RANDOM_STATE = 42
 
 # ---------------------------------------------------------------------------
-# Ánh xạ tên cột logic -> các tên có thể gặp (tên mới theo docs/tasks trước, tên cũ theo code hiện tại)
+# Ánh xạ tên cột logic -> các tên có thể gặp (M0.2: tên Silver đứng đầu; tên cũ của bảng 04 giữ sau).
 # Thứ tự trong list là thứ tự ưu tiên.
 # ---------------------------------------------------------------------------
 COLUMN_ALIASES: dict[str, list[str]] = {
-    "job_id": ["job_id_global", "job_id"],
-    "job_title": ["job_title_clean", "job_title", "title"],
-    "company_name": ["company_name", "company_norm"],
-    "source_platform": ["source_platform"],
+    "job_id": ["job_id", "job_id_global"],
+    "job_title": ["title", "job_title_clean", "job_title"],
+    "company_name": ["company", "company_name", "company_norm"],
+    "company_id": ["company_id"],
+    "source_platform": ["source", "source_platform"],
     "job_family": ["job_family"],
     # Cấp bậc có 3 dạng, ưu tiên: seniority_ord (0-4, bước Encoding E1) > nhãn chữ > seniority_level (0-4, 04_normalization).
     "seniority_ord": ["seniority_ord"],
     "seniority": ["seniority", "seniority_label"],
     "seniority_level": ["seniority_level"],
+    "seniority_inferred": ["seniority_inferred"],
     "exp_min_years": ["exp_min_years"],
-    "skills_list": ["skills_extracted", "skills_std", "skills_array"],
+    "exp_inferred": ["exp_inferred"],
+    "skills_list": ["skills", "skills_extracted", "skills_std", "skills_array"],
     # Lương trung bình: tên mới (triệu VNĐ/tháng) trước, rồi cột VNĐ cũ.
     "salary_avg": ["salary_avg", "salary_avg_mil", "salary_avg_vnd", "salary_midpoint_vnd"],
     "salary_min": ["salary_min", "salary_min_vnd_capped", "salary_min_vnd"],
     "salary_max": ["salary_max", "salary_max_vnd_capped", "salary_max_vnd"],
-    "is_negotiable": ["is_negotiable", "is_salary_negotiable"],
-    "salary_suspect": ["salary_suspect"],
-    "province": ["city_normalized", "province_norm", "tinh_chinh"],
+    "is_negotiable": ["salary_negotiable", "is_negotiable", "is_salary_negotiable"],
+    "salary_outlier": ["salary_outlier", "salary_suspect"],
+    "province": ["province", "city_normalized", "province_norm", "tinh_chinh"],
     "locations": ["locations"],
-    "jd_text": ["jd_text", "job_description", "description_clean"],
-    "jd_requirements": ["job_requirements", "requirements_clean"],
-    "dup_group_id": ["dup_group_id", "duplicate_group_id", "golden_group_id", "cluster_dup_id"],
+    "work_mode": ["work_mode"],
+    "employment_type": ["employment_type"],
+    "language": ["language"],
+    "benefits": ["benefits", "benefits_std"],
+    "posted_month": ["posted_month"],
 }
+# Cột Silver chép nguyên sang meta cho M1–M6 (không đổi giá trị).
+PASSTHROUGH_COLUMNS = ("company_id", "seniority_inferred", "exp_inferred", "work_mode", "employment_type",
+                       "language", "benefits", "posted_month")
 
-# Tiền tố cột kỹ năng nhị phân (Phát: "skill_" theo docs/tasks/05; code hiện tại: "skill__").
-SKILL_PREFIXES: tuple[str, ...] = ("skill__", "skill_")
-SKILL_EXCLUDE_COLUMNS = {"skills__other_count", "skill_count", "skills_count", "skill__other_skill"}
+# Ba khối kỹ năng của bước 10 (M0.3, docs/target/06_yeu_cau_du_lieu.md mục 2):
+# skill__ = K-tool, concept__ = K-concept, soft__ = K-soft. "skill_" một gạch không còn là tiền tố hợp lệ,
+# để không nuốt khối khác. Cột <khối>__other_skill là kỹ năng hiếm đã gom, không phải một kỹ năng.
+SKILL_PREFIXES: tuple[str, ...] = ("skill__",)
+CONCEPT_PREFIX = "concept__"
+SOFT_PREFIX = "soft__"
+SKILL_BLOCKS: dict[str, str] = {"skills": "skill__", "concepts": CONCEPT_PREFIX, "soft": SOFT_PREFIX}
+OTHER_SKILL_SUFFIX = "other_skill"
+SKILL_EXCLUDE_COLUMNS = {f"{p}{OTHER_SKILL_SUFFIX}" for p in SKILL_BLOCKS.values()}
+# Cột đếm và mục tiêu lương lấy thẳng từ features.parquet (bước 10), không tính lại.
+FEATURE_META_COLUMNS = ("n_tools", "n_concepts", "n_soft", "salary_target_m")
 
 # Lương lớn hơn ngưỡng này được hiểu là VNĐ, nhỏ hơn là triệu VNĐ (lương tháng IT nằm trong 1–500 triệu).
 SALARY_VND_DETECT_THRESHOLD = 10_000.0
@@ -115,8 +129,7 @@ class ClusteringParams:
     davies_bouldin_target: float = 1.80  # docs/tasks/08 (Thuận): DBI < 1.80
     svd_variance_target: float = 0.80
     svd_max_components: int = 60
-    tfidf_max_features: int = 100
-    tfidf_weight: float = 0.0  # kỹ năng .5 + e5 .5, bỏ TF-IDF (đo 11/11: ít chồng lấn hơn)
+    # TF-IDF đã gỡ (spec 07 quyết định 1, M0.6)
     e5_weight: float = 0.5  # tỉ lệ năng lượng của khối vector e5 trong không gian phân cụm
     silhouette_sample_size: int = 3000
     hdbscan_min_cluster_size: int = 25
@@ -154,9 +167,19 @@ class AnomalyParams:
 
 
 @dataclass
+class SanityParams:
+    s01_min_conf: float = 0.85
+    s01_min_lift: float = 1.5
+    s02_report_only: bool = True  # M0.7a: Flutter => Dart chỉ báo cáo (quyết định 6: không tự suy kỹ năng)
+    s03_min_conf: float = 0.60  # M0.7b: T2 (19/11)
+    s06_ratio: float = 1.2
+
+
+@dataclass
 class MiningParams:
     association: AssociationParams = field(default_factory=AssociationParams)
     clustering: ClusteringParams = field(default_factory=ClusteringParams)
     salary: SalaryParams = field(default_factory=SalaryParams)
     anomaly: AnomalyParams = field(default_factory=AnomalyParams)
+    sanity: SanityParams = field(default_factory=SanityParams)
     random_state: int = RANDOM_STATE

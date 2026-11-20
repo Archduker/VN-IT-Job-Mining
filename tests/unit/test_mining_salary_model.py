@@ -34,7 +34,7 @@ def test_subset_excludes_negotiable_suspect_and_implausible():
     meta = pd.DataFrame({
         "salary_avg_mil": [10, 12, np.nan, 11, 700, 400] + [15] * 25,
         "is_negotiable": [False, True, True, False, False, False] + [False] * 25,
-        "salary_suspect": [False, False, False, True, False, False] + [False] * 25,
+        "salary_outlier": [False, False, False, True, False, False] + [False] * 25,
         "seniority_ord": [2] * 31,
     })
     mask, c = select_training_subset(meta, level_ratio_limit=3.0)

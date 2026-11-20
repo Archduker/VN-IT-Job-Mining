@@ -1,6 +1,7 @@
 """Thuật toán 2: phân cụm việc làm (spec 07 §3, docs/tasks/06 bước 2).
 
-Không gian vector v = [kỹ năng 0/1 || TF-IDF JD (100 đặc trưng)], chuẩn hóa L2 (spec 07 §3.1).
+Không gian vector v = [kỹ năng 0/1 || e5], chuẩn hóa L2. TF-IDF đã gỡ (spec 07 quyết định 1, M0.6, 20/11);
+M3 sẽ đổi sang ba khối tool / concept / e5 `job` (docs/spec/mining/M3_phan_cum.md).
 Ma trận kỹ năng thưa ~97% nên K-Means chạy trên không gian đã giảm chiều bằng TruncatedSVD
 (giữ ~80% phương sai), sau đó chuẩn hóa L2 lại để khoảng cách Euclid tương đương cosine.
 Silhouette và Davies-Bouldin đo trên chính không gian này (ghi rõ trong metrics).
@@ -22,7 +23,6 @@ from scipy import sparse
 from sklearn.cluster import AgglomerativeClustering, KMeans
 from sklearn.decomposition import PCA, TruncatedSVD
 from sklearn.mixture import GaussianMixture
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import (
     adjusted_rand_score,
     davies_bouldin_score,
@@ -35,49 +35,14 @@ from mining.config import JOB_FAMILY_OTHER, RANDOM_STATE, ClusteringParams
 
 logger = logging.getLogger(__name__)
 
-# Stopwords song ngữ tối thiểu cho JD tuyển dụng (không cần thư viện ngoài).
-STOPWORDS = sorted({
-    # tiếng Việt
-    "và", "của", "các", "có", "cho", "với", "là", "trong", "được", "không", "những", "một", "để",
-    "về", "theo", "từ", "khi", "này", "đến", "tại", "như", "làm", "việc", "công", "ty", "chúng",
-    "tôi", "bạn", "ứng", "viên", "yêu", "cầu", "mô", "tả", "tuyển", "dụng", "kinh", "nghiệm",
-    "năm", "trở", "lên", "ít", "nhất", "tốt", "khả", "năng", "hoặc", "đã", "sẽ", "cần", "nhân",
-    "trên", "dưới", "hơn", "ưu", "tiên", "biết", "sử", "hiểu", "thức", "kiến", "đội",
-    # tiếng Anh
-    "the", "and", "or", "of", "to", "in", "for", "with", "on", "at", "by", "an", "a", "is", "are",
-    "be", "as", "we", "you", "our", "your", "will", "have", "has", "experience", "years", "year",
-    "work", "working", "team", "job", "requirements", "requirement", "skills", "skill", "good",
-    "knowledge", "ability", "strong", "least", "plus", "etc",
-})
-
-
-def build_tfidf(texts: pd.Series, max_features: int = 100) -> tuple[sparse.csr_matrix, list[str]]:
-    texts = pd.Series(texts).fillna("").astype(str)
-    if texts.str.strip().eq("").all():
-        return sparse.csr_matrix((len(texts), 0)), []
-    vec = TfidfVectorizer(
-        max_features=max_features, ngram_range=(1, 2), min_df=2, max_df=0.9,
-        stop_words=STOPWORDS, lowercase=True, sublinear_tf=True,
-    )
-    try:
-        mat = vec.fit_transform(texts)
-    except ValueError:  # toàn stopwords hoặc quá ít tài liệu
-        return sparse.csr_matrix((len(texts), 0)), []
-    return mat.tocsr(), list(vec.get_feature_names_out())
-
-
 def build_vector_space(
     skills: pd.DataFrame,
-    tfidf: sparse.spmatrix | None = None,
-    tfidf_weight: float = 0.3,
     e5: np.ndarray | None = None,
     e5_weight: float = 0.3,
 ) -> sparse.csr_matrix:
-    """[kỹ năng L2 * sqrt(1-w) || tfidf L2 * sqrt(w) || e5 L2 * sqrt(we)] rồi chuẩn hóa L2 từng dòng."""
+    """[kỹ năng L2 * sqrt(1-we) || e5 L2 * sqrt(we)] rồi chuẩn hóa L2 từng dòng."""
     s = normalize(sparse.csr_matrix(skills.to_numpy(dtype=np.float32)))
     blocks = []
-    if tfidf is not None and tfidf.shape[1] > 0:
-        blocks.append((normalize(sparse.csr_matrix(tfidf, dtype=np.float32)), tfidf_weight))
     if e5 is not None:
         blocks.append((normalize(sparse.csr_matrix(np.asarray(e5, dtype=np.float32))), e5_weight))
     if not blocks:
@@ -199,18 +164,12 @@ def cluster_jobs(
     skills: pd.DataFrame,
     meta: pd.DataFrame,
     params: ClusteringParams | None = None,
-    tfidf: sparse.spmatrix | None = None,
     random_state: int = RANDOM_STATE,
     e5: np.ndarray | None = None,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     """Chạy toàn bộ phần phân cụm. Trả (bảng job_clusters, metrics)."""
     p = params or ClusteringParams()
-    tfidf_terms: list[str] = []
-    if tfidf is None and p.tfidf_weight > 0:
-        tfidf, tfidf_terms = build_tfidf(meta.get("jd_text", pd.Series([""] * len(meta))), p.tfidf_max_features)
-    elif tfidf is None:
-        tfidf = sparse.csr_matrix((len(meta), 0))
-    X = build_vector_space(skills, tfidf, p.tfidf_weight, e5=e5, e5_weight=p.e5_weight)
+    X = build_vector_space(skills, e5=e5, e5_weight=p.e5_weight)
 
     Z, svd_info = reduce_svd(X, p.svd_variance_target, p.svd_max_components, random_state)
     k_lo, k_hi = (min(p.k_min, p.k_fixed), max(p.k_max, p.k_fixed)) if p.k_fixed else (p.k_min, p.k_max)
@@ -251,11 +210,10 @@ def cluster_jobs(
 
     metrics = {
         "params": {k: getattr(p, k) for k in ("k_min", "k_max", "preferred_min_k", "svd_variance_target",
-                                             "tfidf_max_features", "hdbscan_min_cluster_size",
+                                             "hdbscan_min_cluster_size",
                                              "glosh_outlier_quantile")},
-        "vector_space": {"n_skill_features": int(skills.shape[1]), "n_tfidf_features": int(tfidf.shape[1]),
-                         "n_e5_dims": 0 if e5 is None else int(np.asarray(e5).shape[1]),
-                         "tfidf_terms_sample": tfidf_terms[:20], **svd_info,
+        "vector_space": {"n_skill_features": int(skills.shape[1]),
+                         "n_e5_dims": 0 if e5 is None else int(np.asarray(e5).shape[1]), **svd_info,
                          "silhouette_space": f"TruncatedSVD {svd_info['svd_components']} chiều, chuẩn hóa L2"},
         "k_scan": scan.round(4).to_dict(orient="records"),
         "algorithm": {"agglomerative": "agglomerative(ward)", "gmm": "gmm(diag)"}.get(p.algorithm, "kmeans"),

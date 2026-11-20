@@ -147,7 +147,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 **PRE-39. Dọn code theo spec 05 v3.0.0** (mở 17/11/2026)
 
-- **19/11 (P3):** hằng `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` đã chuyển sang `processing/encoding/constants.py`; `09_tokens` và `12_tfidf` bỏ khỏi `PROCESSING_STEPS` (code còn, chưa xóa). Còn: `mining/config.py` trỏ bảng 04 và đọc ba khối `skill__`/`concept__`/`soft__` (làm khi làm Mining).
+- **19/11 (P3):** hằng `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` đã chuyển sang `processing/encoding/constants.py`; `09_tokens` và `12_tfidf` bỏ khỏi `PROCESSING_STEPS` (code còn, chưa xóa). ~~Còn: `mining/config.py` trỏ bảng 04 và đọc ba khối~~ **Xong 20/11 (M0, L-55):** Mining đọc Silver (`DEFAULT_TABLE`), bỏ `DEFAULT_GOLDEN`/`FALLBACK_GOLDEN`, ba khối kỹ năng. Còn `scripts/load_mart_from_parquet.py` mặc định `--curated-path` legacy.
 - Bỏ `05_encoding` khỏi `STEPS` (`preprocessing/common/__init__.py`) và `MODULES` (`scripts/run_preprocessing.py`), vì bước 10 đã thay thế. Người dùng duyệt đề xuất ở spec 03 mục 7 ngày 17/11.
 - Bảng sạch cuối, người dùng duyệt 17/11 (spec 05 mục 4.1):
   - Bảng sạch = `data/preprocessing/04_normalization/all.parquet`.
@@ -180,7 +180,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 **MINE-1. Mining đã chạy thật lần đầu (11/11), kết quả cụm yếu, chưa đánh giá**
 
 - Chạy fp, cluster, anomaly trên 4.671 tin (L-46): Silhouette 0,091, DB 2,63, ARI với nhóm nghề 0,056; sanity 4/6 fail (Flutter→Dart conf 0,375; React→JS|TS 0,654; lương Senior < Middle; tỉ lệ lương HN/HCM). Chưa rõ do dữ liệu hay ngưỡng kiểm; chưa chỉnh tham số. Bước `salary` (Random Forest + SHAP) chưa chạy. Đã chốt 16/11: giữ lại, và đây là bước chính thức của SD4 (`docs/target/04_sd4_gia_tri_ky_nang.md`).
-- 20/11 (dry-run chỉ đọc, dữ liệu 19/11, code cũ): sanity 2 pass / 3 fail / 1 bỏ qua. **S-04 fail là lỗi code**: `mining/sanity.py` ánh xạ `{1: Fresher, …, 4: Senior}` trên thang 0 = Intern/Fresher … 4 = Lead, lệch một bậc; tính đúng trên Silver thì 10,0 < 15,5 < 22,5 < 37,5 (pass). S-06 pass. Sửa ở M0 (`docs/spec/mining/M0_chuan_bi.md` M0.8). K-Means k=10: Silhouette 0,165, cụm 2 gom 1.240 tin (độ thuần 0,33). Chi tiết từng bước ở `docs/spec/mining/`.
+- 20/11 (dry-run chỉ đọc, dữ liệu 19/11, code cũ): sanity 2 pass / 3 fail / 1 bỏ qua. **S-04 fail là lỗi code**: `mining/sanity.py` ánh xạ `{1: Fresher, …, 4: Senior}` trên thang 0 = Intern/Fresher … 4 = Lead, lệch một bậc; tính đúng trên Silver thì 10,0 < 15,5 < 22,5 < 37,5 (pass). S-04 đã sửa (L-55). Sau M0 (đọc Silver, bỏ 86 tin `salary_outlier`): sanity 3 pass / 1 fail / 1 info / 1 bỏ qua; **S-06 fail** (HN/khác 1,452; HCM/khác 1,194 < 1,2), chờ người dùng. K-Means k=10: Silhouette 0,165, cụm 2 gom 1.240 tin (độ thuần 0,33). Chi tiết từng bước ở `docs/spec/mining/`.
 - Dòng cũ bên dưới (số giả từ `synthetic.py`) chỉ đúng cho báo cáo trước đó.
 - 11/11 (L-47): 10 family, K-Means k=10: Silhouette 0,10, DB 2,49, ARI 0,07; cụm 1 chứa 292/293 tin không có kỹ năng, cụm 9 là cụm nhiều kỹ năng (trung vị 15): phân cụm một phần tách theo số kỹ năng. Chưa thử IDF cho kỹ năng, chưa lọc tin không có kỹ năng.
 
