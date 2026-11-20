@@ -82,8 +82,23 @@ Nhận xét trên số 20/11: luật lift cao nhất đều ở Security / DevOp
 | Bảng 2.1 không có kỹ năng mềm trong bảng tool và ngược lại | test |
 | `pytest tests/unit/test_mining_association.py` | xanh |
 
+**Dry-run 20/11** (`run_association` trên Silver + features + job_skills, cùng sha256 như M0; 43 giây):
+
+| Mục | Kết quả |
+|---|---|
+| Giỏ | 3.244 giỏ; 672 tin không có công cụ (Web 201, Bridge 135, Other 120, Tester 91, Data/AI 48, Security 43…) |
+| Luật | 8.650 (trước M2.2a: 15.565). ALL 15; Web 700, DevOps/Cloud 2.643, Data/AI 505, Security 307, Tester 286, Other 133, Bridge 77; Design, Game, IoT, Mobile < 100 giỏ |
+| Nghề × nhóm cấp | Chỉ **Web người mới** (427 giỏ, 339 luật) và Other người mới (133, 3 luật) đủ 100 giỏ. Bridge 70, Data/AI 82, Tester 87, Security 55, DevOps/Cloud 44 giỏ người mới: `skipped`. Middle+ đủ ở 7 nghề. So Web: 171 luật chỉ ở người mới, 911 chỉ ở Middle+, 168 chung |
+| Kỹ năng hiếm (2.4) | 87 / 201 công cụ có DF < 2% (ví dụ k6, wireshark, nessus, prtg, katalon, way4) |
+| Ổn định (M2.5) | support × 0,5: trùng top 20 trung bình 0,75 (nhỏ nhất 0); × 2: 0,31 (nhỏ nhất 0). **Không đạt 0,70 ở × 2** |
+| S-01 / S-02 / S-03 | như M0: 0,961 pass / 0,394 info / 0,671 pass |
+| Kiểm tay | 20 luật trong `sd2_hand_check.csv`; chưa điền |
+
+Nhận xét: top 20 xếp theo lift nghiêng về luật support thấp (lift cao nhất ở cặp hiếm), nên khi tăng support thì phần lớn top 20 biến mất. Luật đối xứng (A ⇒ B và B ⇒ A) chiếm hai chỗ trong mẫu kiểm tay.
+
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- Có code luật; thiếu 2.1, 2.3 (nghề × cấp), 2.4, độ ổn định, kiểm tay (MINE-7).
+- **Có code đủ 2.1–2.4, M2.5, M2.6 từ 20/11.** Chờ người dùng xem: ổn định × 2 = 0,31 (< 0,70); 5/6 nghề lớn không đủ 100 giỏ người mới (M6 sẽ lùi về luật của cả nghề); kiểm tay 20 luật.
+- Đi khác prompt: phạm vi nghề × nhóm cấp ghi bằng hai cột `job_family_scope` (nghề) + `level_group` (all / newcomer / middle_plus), không gộp `Web|newcomer`, để Mart vẫn lọc theo nghề.
 - Đã duyệt 20/11: M2.2a (10 tin), ngưỡng ổn định 70%, 16/20.
 - MINE-1 (S-02, S-03), PRE-36 (ngưỡng kỹ năng hiếm).

@@ -7,9 +7,15 @@ import pytest
 from mining.association import (
     MACRO_SCOPE,
     find_skill,
+    hand_check_rules,
+    min_support_for,
     mine_rules,
     mine_stratified_rules,
     pair_stats,
+    rare_skills,
+    support_stability,
+    top_skills_by_family,
+    write_hand_check,
 )
 from mining.config import AssociationParams
 from mining.data_io import prepare_mining_data
@@ -78,3 +84,82 @@ def test_find_skill_and_pair_stats(data):
     st = pair_stats(data.skills, "Flutter", ["Dart"])
     # = 1 với tin thường; vài tin bất thường cài sẵn có Flutter ngẫu nhiên mà không có Dart
     assert st["confidence"] > 0.85 and st["lift"] > 1.5
+
+
+# ---------------------------------------------------------------------------
+# M2 (docs/spec/mining/M2_fp_growth.md, prompt mục 5)
+# ---------------------------------------------------------------------------
+def test_min_support_has_floor_of_ten_postings():
+    assert min_support_for(150, 0.02, 10) == pytest.approx(10 / 150)
+    assert min_support_for(3000, 0.02, 10) == 0.02
+
+
+def test_rule_backed_by_four_postings_is_dropped():
+    # 150 giỏ: A,B cùng xuất hiện 4 lần (conf 1, lift cao) -> support 0,027 < 10/150
+    rows = [[1, 1, 0]] * 4 + [[0, 0, 1]] * 146
+    sk = pd.DataFrame(rows, columns=["A", "B", "C"]).astype(np.uint8)
+    fam = pd.Series(["Web"] * 150)
+    rules, m = mine_stratified_rules(sk, fam, AssociationParams(min_group_size=100))
+    assert not _has_rule(rules, ["A"], ["B"])
+    web = [s for s in m["scopes"] if s["scope"] == "Web"][0]
+    assert web["min_support"] == pytest.approx(10 / 150, abs=1e-4)
+
+
+def test_family_by_level_group_scopes_and_skips():
+    rows = [[1, 1, 0]] * 120 + [[0, 0, 1]] * 80 + [[1, 1, 1]] * 50  # người mới: A => B có lift 200/120
+    sk = pd.DataFrame(rows, columns=["A", "B", "C"]).astype(np.uint8)
+    fam = pd.Series(["Web"] * 250)
+    level = pd.Series(["newcomer"] * 200 + ["middle_plus"] * 50)
+    rules, m = mine_stratified_rules(sk, fam, AssociationParams(min_group_size=100), level_group=level)
+    assert set(rules["level_group"]) == {"all", "newcomer"}
+    assert ((rules["job_family_scope"] == "Web") & (rules["level_group"] == "newcomer")).any()
+    skipped = [s for s in m["scopes"] if s["scope"] == "Web" and s.get("level_group") == "middle_plus"][0]
+    assert "skipped" in skipped and skipped["n_transactions"] == 50
+    assert (rules["n_support"] == (rules["support"] * rules["n_transactions"]).round().astype(int)).all()
+
+
+def test_rare_skill_by_senior_share_and_not_rare_otherwise():
+    n = 1000
+    sk = pd.DataFrame({"base": [1] * n, "x": [0] * n, "y": [0] * n}, dtype=np.uint8)
+    sk.loc[:9, "x"] = 1            # 1% giỏ, 8/10 ở Senior/Lead
+    sk.loc[500:509, "y"] = 1       # 1% giỏ, 2/10 ở Senior/Lead, không trong luật nào
+    sen = pd.Series(["Junior"] * n)
+    sen[:8] = "Senior"
+    sen[500:502] = "Lead/Manager"
+    out = rare_skills(sk, mine_rules(sk.iloc[:0], 0.5, 0.6, 1.2), sen, AssociationParams())
+    names = {r["skill"]: r for r in out["skills"]}
+    assert "x" in names and names["x"]["senior_share"] == 0.8 and names["x"]["n"] == 10
+    assert "y" not in names
+
+
+def test_top_skills_three_views_are_separate():
+    meta = pd.DataFrame({"job_id": [f"j{i}" for i in range(40)], "job_family": ["Web"] * 40})
+    js = pd.DataFrame({"job_id_global": [f"j{i}" for i in range(40)] * 2,
+                       "slug": ["python"] * 40 + ["english"] * 40,
+                       "kind": ["technical"] * 40 + ["language"] * 40,
+                       "type": ["tool"] * 40 + [None] * 40})
+    t = top_skills_by_family(meta, js, None, AssociationParams())
+    web = t["families"]["Web"]
+    assert [r["skill"] for r in web["tool"]] == ["python"] and [r["skill"] for r in web["soft"]] == ["english"]
+    assert web["concept"] == [] and t["families"]["ALL"]["tool"][0]["share"] == 1.0
+
+
+def test_support_stability_is_deterministic(data):
+    s1 = support_stability(data.skills, data.meta["job_family"], AssociationParams())
+    s2 = support_stability(data.skills, data.meta["job_family"], AssociationParams())
+    assert s1 == s2 and {"x0.5", "x2"} <= set(s1["factors"])
+    assert 0 <= s1["factors"]["x2"]["mean_overlap"] <= 1
+
+
+def test_hand_check_is_not_overwritten_once_filled(tmp_path, data):
+    rules, _ = mine_stratified_rules(data.skills, data.meta["job_family"])
+    hc = hand_check_rules(rules, AssociationParams())
+    assert len(hc) <= 20 and (hc["n_support"] >= 10).all() and {"dung", "ghi_chu"} <= set(hc.columns)
+    assert hc.groupby(["job_family_scope", "level_group"]).size().max() <= 5
+    path = tmp_path / "sd2_hand_check.csv"
+    assert write_hand_check(hc, path) is True
+    filled = pd.read_csv(path)
+    filled.loc[0, "dung"] = 1
+    filled.to_csv(path, index=False)
+    assert write_hand_check(hc, path) is False
+    assert pd.read_csv(path).loc[0, "dung"] == 1

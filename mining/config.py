@@ -117,6 +117,17 @@ class AssociationParams:
     max_len: int = 3
     min_group_size: int = 100  # nhóm nghề ít tin hơn thì không chạy vi mô
     min_rules_target: int = 30
+    min_support_count: int = 10  # M2.2a: mỗi luật dựa trên ít nhất 10 tin
+    top_n: int = 15  # 2.1
+    min_family_jobs: int = 30  # 2.1: nghề < 30 tin -> "ít dữ liệu"
+    rare_max_df: float = 0.02  # 2.4 (PRE-36)
+    rare_min_lift: float = 2.0
+    rare_senior_share: float = 0.6
+    stability_factors: tuple[float, ...] = (0.5, 2.0)  # M2.5: support một bậc dưới / trên
+    stability_top: int = 20
+    stability_target: float = 0.70  # đề xuất đã duyệt 20/11
+    hand_check_n: int = 20  # M2.6
+    hand_check_per_scope: int = 5
 
 
 @dataclass

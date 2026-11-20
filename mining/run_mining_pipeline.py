@@ -30,7 +30,7 @@ import numpy as np  # noqa: E402
 
 from mining.anomaly import detect_anomalies  # noqa: E402
 from mining.bi import run_bi  # noqa: E402
-from mining.association import mine_stratified_rules  # noqa: E402
+from mining.association import run_association, write_hand_check  # noqa: E402
 from mining.clustering import cluster_jobs  # noqa: E402
 from mining.config import (  # noqa: E402
     ARTIFACT_FILES,
@@ -108,8 +108,10 @@ def run_pipeline(
 
     if "fp" in steps:
         t = time.perf_counter()
-        rules, m = mine_stratified_rules(skills, meta["job_family"], p.association)
+        rules, sd2, hand, m = run_association(data, p.association, p.bi)
         outputs["rules"], metrics["association"] = rules, m
+        outputs.setdefault("json", {}).update(sd2)
+        outputs["hand_check_rules"] = hand
         timings["fp"] = time.perf_counter() - t
         logger.info("FP-Growth: %d luật (%d vĩ mô)", m["n_rules_total"], m["n_rules_macro"])
 
@@ -160,6 +162,7 @@ def _targets_summary(m: dict[str, Any]) -> dict[str, Any]:
         s["bi_totals_ok"] = m["bi"]["totals_ok"]
     if "association" in m:
         s["fp_min_rules"] = m["association"]["meets_min_rules_target"]
+        s["fp_stability"] = m["association"].get("meets_stability_target")
     if "clustering" in m:
         s["cluster_silhouette"] = m["clustering"]["meets_silhouette_target"]
         s["cluster_min_k"] = m["clustering"]["meets_min_clusters"]
@@ -195,6 +198,10 @@ def write_artifacts(outputs: dict[str, Any], metrics: dict[str, Any], out_dir: P
         }
         joblib.dump(bundle, path, compress=3)
         written["model"] = {"path": path.as_posix(), "bytes": path.stat().st_size}
+    if outputs.get("hand_check_rules") is not None:
+        path = out_dir / "sd2_hand_check.csv"
+        if write_hand_check(outputs["hand_check_rules"], path):
+            written["hand_check_rules"] = {"path": path.as_posix(), "rows": int(len(outputs["hand_check_rules"]))}
     for name, obj in (outputs.get("json") or {}).items():
         path = out_dir / name
         path.write_text(json.dumps(obj, ensure_ascii=False, indent=1, default=_json_default), encoding="utf-8")

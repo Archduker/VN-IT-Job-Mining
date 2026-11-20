@@ -87,7 +87,7 @@ hand_check_rules: top 20 luật (lift giảm dần, n_support ≥ 10, mỗi scop
 | # | Bước quy trình | Ngày | Việc đã làm, số liệu, quyết định | Commit |
 |---|---|---|---|---|
 | 1 | Duyệt đặc tả | 20/11 | "approved" | 1036a11 |
-| 2 | Duyệt prompt | chưa | | |
-| 3 | Test rồi code | chưa | | |
-| 4 | Dry-run | chưa | Trước khi sửa: 15.565 luật, 672 giỏ rỗng, S-01 0,961, S-02 0,394, S-03 0,671 | |
+| 2 | Duyệt prompt | 20/11 | "continue" sau khi nhận bộ prompt | e230f28 |
+| 3 | Test rồi code | 20/11 | 7 test mới trong `test_mining_association.py` (sàn 10 tin, luật 4 tin bị bỏ, nghề × nhóm cấp và `skipped`, kỹ năng hiếm, ba bảng top, ổn định tất định, file kiểm tay không ghi đè). Code: `min_support_for`, `mine_stratified_rules(level_group=, support_factor=)`, `compare_levels`, `top_skills_by_family`, `rare_skills`, `support_stability`, `hand_check_rules`, `write_hand_check`, `run_association`; cột luật mới `level_group`, `n_support`. 89 test mining xanh. **Đi khác prompt:** scope ghi hai cột (`job_family_scope` + `level_group`) thay `Web|newcomer`, để `scripts/load_mart_from_parquet.py` vẫn lọc theo nghề | (commit này) |
+| 4 | Dry-run | 20/11 | Trước khi sửa: 15.565 luật, 672 giỏ rỗng. Sau: 8.650 luật; chỉ Web và Other đủ 100 giỏ người mới; 87 kỹ năng hiếm; ổn định × 0,5 = 0,75, × 2 = 0,31 (không đạt 0,70); S-01 0,961, S-02 0,394 info, S-03 0,671 | |
 | 5 | Review, chạy thật | chưa | | |
