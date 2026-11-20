@@ -180,6 +180,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 **MINE-1. Mining đã chạy thật lần đầu (11/11), kết quả cụm yếu, chưa đánh giá**
 
 - Chạy fp, cluster, anomaly trên 4.671 tin (L-46): Silhouette 0,091, DB 2,63, ARI với nhóm nghề 0,056; sanity 4/6 fail (Flutter→Dart conf 0,375; React→JS|TS 0,654; lương Senior < Middle; tỉ lệ lương HN/HCM). Chưa rõ do dữ liệu hay ngưỡng kiểm; chưa chỉnh tham số. Bước `salary` (Random Forest + SHAP) chưa chạy. Đã chốt 16/11: giữ lại, và đây là bước chính thức của SD4 (`docs/target/04_sd4_gia_tri_ky_nang.md`).
+- 20/11 (dry-run chỉ đọc, dữ liệu 19/11, code cũ): sanity 2 pass / 3 fail / 1 bỏ qua. **S-04 fail là lỗi code**: `mining/sanity.py` ánh xạ `{1: Fresher, …, 4: Senior}` trên thang 0 = Intern/Fresher … 4 = Lead, lệch một bậc; tính đúng trên Silver thì 10,0 < 15,5 < 22,5 < 37,5 (pass). S-06 pass. Sửa ở M0 (`docs/spec/mining/M0_chuan_bi.md` M0.8). K-Means k=10: Silhouette 0,165, cụm 2 gom 1.240 tin (độ thuần 0,33). Chi tiết từng bước ở `docs/spec/mining/`.
 - Dòng cũ bên dưới (số giả từ `synthetic.py`) chỉ đúng cho báo cáo trước đó.
 - 11/11 (L-47): 10 family, K-Means k=10: Silhouette 0,10, DB 2,49, ARI 0,07; cụm 1 chứa 292/293 tin không có kỹ năng, cụm 9 là cụm nhiều kỹ năng (trung vị 15): phân cụm một phần tách theo số kỹ năng. Chưa thử IDF cho kỹ năng, chưa lọc tin không có kỹ năng.
 
@@ -189,7 +190,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 **MINE-6. Ghi chú cho báo cáo đồ án:** SHAP không phải quan hệ nhân quả; `seniority_level` 0–4 gộp Thực tập và Mới tốt nghiệp.
 
-**MINE-7. Code Mining chưa trả lời đủ câu hỏi của SD1–SD5** (mở 17/11/2026; chi tiết ở spec 07 mục 3, cột "Thiếu so với SD")
+**MINE-7. Code Mining chưa trả lời đủ câu hỏi của SD1–SD5** (mở 17/11/2026; từ 20/11 chi tiết ở `docs/spec/mining/` M0–M6, mục 2.2 và 7 của từng file)
 
 - **Thứ tự chạy:** thêm `bi` và `recommend` vào `STEPS` của `mining/run_mining_pipeline.py`, theo thứ tự `bi, fp, cluster, anomaly, salary, recommend` (đã duyệt ở spec 03 mục 7).
 - **M1 (SD1):** chưa có `mining/bi.py`; kết quả ghi `mining/artifacts/sd1_*.json`, Monitoring chỉ đọc.

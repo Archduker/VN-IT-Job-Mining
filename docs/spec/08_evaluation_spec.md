@@ -100,14 +100,14 @@ Model không thắng baseline thì **không báo cáo giá trị kỹ năng**. G
 
 Code: `mining/sanity.py` (`run_sanity_checks`), kết quả ghi vào `mining_metrics.json` (`sanity_checks`, `sanity_summary`). S-01..S-03 tính thẳng từ ma trận kỹ năng, không phụ thuộc ngưỡng support của FP-Growth.
 
-| Mã | Kiểm tra | Tiêu chí pass | SD | Kết quả 11/11 |
-|---|---|---|---|---|
-| S-01 | {Spring Boot} ⇒ {Java} | Confidence ≥ 0,85 và lift ≥ 1,5 | SD2 | Pass |
-| S-02 | {Flutter} ⇒ {Dart} | Confidence ≥ 0,90 | SD2 | Fail (0,375) |
-| S-03 | {React} ⇒ {JavaScript} hoặc {TypeScript} | Confidence ≥ 0,80 | SD2 | Fail (0,654) |
-| S-04 | Trung vị lương tăng dần theo cấp: Fresher < Junior < Middle < Senior | Đơn điệu | SD1, SD4 | Fail (Senior < Middle) |
-| S-05 | Giá trị SHAP của AWS, Kubernetes hoặc System Design | φ > 0 | SD4 | Chưa đo (chưa có bảng SHAP) |
-| S-06 | Trung vị lương HN và HCM so với tỉnh khác (trừ Remote) | Mỗi bên > 1,2 lần | SD1, SD4 | Fail |
+| Mã | Kiểm tra | Tiêu chí pass | SD | Kết quả 11/11 | Dry-run 20/11 (dữ liệu 19/11, code cũ) |
+|---|---|---|---|---|---|
+| S-01 | {Spring Boot} ⇒ {Java} | Confidence ≥ 0,85 và lift ≥ 1,5 | SD2 | Pass | Pass (0,961) |
+| S-02 | {Flutter} ⇒ {Dart} | Confidence ≥ 0,90. **Đề xuất đổi, chờ duyệt cùng M0 (M0.7a):** chỉ báo cáo, không là cổng (quyết định 6: không tự suy kỹ năng JD không ghi) | SD2 | Fail (0,375) | 0,394 (n 66) |
+| S-03 | {React} ⇒ {JavaScript} hoặc {TypeScript} | Confidence ≥ 0,80. **Đề xuất đổi, chờ duyệt cùng M0 (M0.7b):** ≥ 0,60 (T2) | SD2 | Fail (0,654) | 0,671 (n 313) |
+| S-04 | Trung vị lương tăng dần theo cấp: Fresher < Junior < Middle < Senior | Đơn điệu. Lead/Manager ghi riêng kèm tỷ lệ thỏa thuận (MNAR, đề xuất M0.8) | SD1, SD4 | Fail (Senior < Middle) | Code báo fail nhưng **ánh xạ cấp lệch một bậc** (lỗi, M0.8). Tính đúng: 10,0 < 15,5 < 22,5 < 37,5 → pass |
+| S-05 | Giá trị SHAP của AWS, Kubernetes hoặc System Design | φ > 0 | SD4 | Chưa đo (chưa có bảng SHAP) | Bỏ qua (không chạy SHAP) |
+| S-06 | Trung vị lương HN và HCM so với tỉnh khác (trừ Remote) | Mỗi bên > 1,2 lần | SD1, SD4 | Fail | Pass (HN 1,45; HCM 1,25) |
 
 Sanity fail không có nghĩa là thuật toán sai. Có thể do dữ liệu (rút kỹ năng sai, lương parse sai, tỉnh sai) hoặc do ngưỡng kiểm. **Phải tìm nguyên nhân trước khi dùng kết quả** (MINE-1), và ghi nguyên nhân vào báo cáo.
 
