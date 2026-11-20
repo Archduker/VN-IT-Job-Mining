@@ -143,11 +143,28 @@ class ClusteringParams:
     svd_variance_target: float = 0.80
     svd_max_components: int = 60
     # TF-IDF đã gỡ (spec 07 quyết định 1, M0.6)
-    e5_weight: float = 0.5  # tỉ lệ năng lượng của khối vector e5 trong không gian phân cụm
+    e5_weight: float = 0.5  # chỉ cho build_vector_space hai khối cũ; M3 dùng block_weights
     silhouette_sample_size: int = 3000
     hdbscan_min_cluster_size: int = 25
     glosh_outlier_quantile: float = 0.97
     top_skills_per_cluster: int = 8
+    # M3.1a: trọng số khối; khối vắng thì chia lại cho tổng các khối có mặt. Người dùng chốt 20/11 (1.D):
+    # 0,15 / 0,15 / 0,7 thay 0,35 / 0,15 / 0,5 (bộ cũ gom 928 tin không công cụ vào một cụm)
+    block_weights: dict[str, float] = field(default_factory=lambda: {"tool": 0.15, "concept": 0.15, "e5": 0.7})
+    kmeans_n_init: int = 50  # 2.B (20/11): n_init 10 cho ARI 5 seed 0,73; 50 cho 0,83 (k = 10)
+    stability_seeds: tuple[int, ...] = (42, 43, 44, 45, 46)  # M3.7
+    stability_ari_target: float = 0.80  # PRE-36
+    min_cluster_share: float = 0.01  # cụm nhỏ nhất >= 1% số tin (PRE-36)
+    skill_count_ratio_max: float | None = None  # M3.8, 3.B (20/11): chỉ kiểm trung vị n_tools < 1
+    hybrid_max_share: float = 0.60  # M3.10 nghề lai
+    hybrid_min_second: float = 0.20
+    niche_family_share: float = 0.50  # M3.10 nghề ngách
+    niche_small_share: float = 0.05
+    niche_min_lift: float = 5.0
+    niche_min_skills: int = 3
+    mismatch_majority: float = 0.60  # M3.10 có vẻ gán sai
+    mismatch_dist_q: float = 0.25
+    mismatch_family_share: float = 0.10
 
 
 @dataclass

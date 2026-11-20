@@ -1,7 +1,7 @@
 # Prompt M3: Nhóm việc cho SD3 (phân cụm)
 
 > Đặc tả: [`docs/spec/mining/M3_phan_cum.md`](../../spec/mining/M3_phan_cum.md) (M3.1a–c, M3.2, M3.3, M3.7–M3.11; đã duyệt 20/11, M3.1b bỏ 14 tin). Câu hỏi: `docs/target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md` câu 3.1, 3.2.
-> **Trạng thái:** viết 20/11, chờ duyệt prompt. Cần M0 xong.
+> **Trạng thái:** chạy thật 20/11; kiểm tay 8 tin `family_mismatch` còn mở.
 
 ## 1. Ngữ cảnh
 
@@ -88,7 +88,7 @@ without_e5: chạy lại với block_weights {tool: 0,7, concept: 0,3} (cùng t�
 | # | Bước quy trình | Ngày | Việc đã làm, số liệu, quyết định | Commit |
 |---|---|---|---|---|
 | 1 | Duyệt đặc tả | 20/11 | "approved"; M3.1b bỏ 14 tin | 1036a11 |
-| 2 | Duyệt prompt | chưa | | |
-| 3 | Test rồi code | chưa | | |
-| 4 | Dry-run | chưa | Trước khi sửa: Silhouette 0,165, DB 2,26, ARI với nghề 0,057, cụm 2 = 1.240 tin | |
-| 5 | Review, chạy thật | chưa | | |
+| 2 | Duyệt prompt | 20/11 | "continue" sau khi nhận bộ prompt | e230f28 |
+| 3 | Test rồi code | 20/11 | 8 test mới (bỏ tin không kỹ năng kỹ thuật, năng lượng khối, metrics, ổn định trên dữ liệu giả, nghề lai, nghề ngách, gán sai, số kỹ năng). Code: `build_block_space`, `seed_stability`, `skill_count_violations`, `family_crosstab`, `hybrid_clusters`, `niche_families`, `flag_family_mismatch`, hồ sơ cụm thêm khái niệm / tiêu đề / cấp / `n_tools`; driver ghi `cluster_family_crosstab.json`, `sd3_mismatch_hand_check.csv`, GLOSH NaN → 0 cho M4. Test ổn định dùng tool + concept và ngưỡng 0,8 (chỉ tool trên dữ liệu giả cho 0,75). **Đi khác đặc tả:** giữ tên cột Mart `is_outlier`, `glosh_outlier_score` | (commit này) |
+| 4 | Dry-run | 20/11 | Trước khi sửa: Silhouette 0,165, DB 2,26, ARI với nghề 0,057, cụm 2 = 1.240 tin. Sau (0,35/0,15/0,5): 14 tin bỏ, Silhouette 0,109, DB 2,55, ARI 5 seed 0,753, cụm 8 = 928 tin trung vị 0 công cụ, 14 tin gán sai | |
+| 5 | Review, chạy thật | 20/11 | Người dùng "1.D 2.B 3B": trọng số 0,15/0,15/0,7; `n_init` 50 (ARI 0,73 → 0,826, giữ k = 10); chỉ kiểm trung vị `n_tools` < 1. Chạy thật `--only bi,fp,cluster`: Silhouette 0,084, DB 2,49, cụm nhỏ nhất 4,9%, 8 tin gán sai. **Kiểm tay 8 tin còn mở** | (commit này) |

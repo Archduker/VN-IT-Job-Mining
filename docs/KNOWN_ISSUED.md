@@ -178,7 +178,8 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 **PRE-44. Có thể gán sai `job_family` và lương lạ chưa gắn cờ** (mở 20/11/2026, thấy khi lấy mẫu kiểm tay M1)
 
 - Mẫu 20 tin (seed 42) của M1: "IT Security Analyst" (vietnamworks 2121527) mang `job_family` Web, đúng ra là Security; "Nhân Viên IT" (topcv 2248462) mang Web, giống IT hỗ trợ (Other). "[TP Vũng Tàu] Chuyên Gia IT" (vietnamworks 2111189) cấp Middle, lương 127 triệu, chưa bị `salary_outlier`. Mới đọc tiêu đề, chưa đối chiếu trang gốc; người dùng chưa gửi kết quả kiểm tay.
-- Luật nghề và cờ lương ở pre-processing (bước 03/04), không sửa trong Mining. M3 (bảng chéo cụm × nghề, `family_mismatch`) sẽ đo được rộng hơn.
+- Luật nghề và cờ lương ở pre-processing (bước 03/04), không sửa trong Mining.
+- M3 chạy thật 20/11 đo rộng hơn: cụm AI Engineer (190 tin) có 103 tin mang `job_family` Web, 63 Data/AI; 4 tin IT Manager / Trưởng phòng CNTT mang Bridge; 2 Solution Architect mang DevOps/Cloud (`mining/artifacts/sd3_mismatch_hand_check.csv`, chờ kiểm tay).
 
 ## 3b. Data Mining
 
@@ -186,6 +187,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 - Chạy fp, cluster, anomaly trên 4.671 tin (L-46): Silhouette 0,091, DB 2,63, ARI với nhóm nghề 0,056; sanity 4/6 fail (Flutter→Dart conf 0,375; React→JS|TS 0,654; lương Senior < Middle; tỉ lệ lương HN/HCM). Chưa rõ do dữ liệu hay ngưỡng kiểm; chưa chỉnh tham số. Bước `salary` (Random Forest + SHAP) chưa chạy. Đã chốt 16/11: giữ lại, và đây là bước chính thức của SD4 (`docs/target/04_sd4_gia_tri_ky_nang.md`).
 - 20/11 (dry-run chỉ đọc, dữ liệu 19/11, code cũ): sanity 2 pass / 3 fail / 1 bỏ qua. **S-04 fail là lỗi code**: `mining/sanity.py` ánh xạ `{1: Fresher, …, 4: Senior}` trên thang 0 = Intern/Fresher … 4 = Lead, lệch một bậc; tính đúng trên Silver thì 10,0 < 15,5 < 22,5 < 37,5 (pass). S-04 đã sửa (L-55). Sau M0 (đọc Silver, bỏ 86 tin `salary_outlier`): sanity 3 pass / 1 fail / 1 info / 1 bỏ qua; **S-06 fail** (HN/khác 1,452; HCM/khác 1,194 < 1,2); người dùng chốt 20/11 giữ ngưỡng 1,2 và ghi fail, giải thích: chênh HCM so với tỉnh khác nhỏ hơn giả định khi bỏ lương ngoại lai. K-Means k=10: Silhouette 0,165, cụm 2 gom 1.240 tin (độ thuần 0,33). Chi tiết từng bước ở `docs/spec/mining/`.
+- 20/11 M3 chạy thật (tool + concept + e5, 0,15/0,15/0,7, `n_init` 50): ARI 5 seed 0,826 (đạt), không cụm nào trung vị 0 công cụ; Silhouette 0,084, DB 2,49 vẫn thấp (chưa có ngưỡng, PRE-36). Cụm 3 (810 tin, trung vị 1 công cụ, độ thuần 0,25) vẫn là cụm tin ít công cụ.
 - Dòng cũ bên dưới (số giả từ `synthetic.py`) chỉ đúng cho báo cáo trước đó.
 - 11/11 (L-47): 10 family, K-Means k=10: Silhouette 0,10, DB 2,49, ARI 0,07; cụm 1 chứa 292/293 tin không có kỹ năng, cụm 9 là cụm nhiều kỹ năng (trung vị 15): phân cụm một phần tách theo số kỹ năng. Chưa thử IDF cho kỹ năng, chưa lọc tin không có kỹ năng.
 

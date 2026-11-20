@@ -6,10 +6,16 @@ import pytest
 from scipy import sparse
 
 from mining.clustering import (
+    build_block_space,
     build_vector_space,
     choose_k,
     cluster_jobs,
+    flag_family_mismatch,
+    hybrid_clusters,
+    niche_families,
     profile_clusters,
+    seed_stability,
+    skill_count_violations,
 )
 from mining.config import JOB_FAMILY_OTHER, ClusteringParams
 from mining.data_io import prepare_mining_data
@@ -125,3 +131,83 @@ def test_family_agreement_ignores_other():
     meta.loc[meta.index[:100], "job_family"] = JOB_FAMILY_OTHER
     _, m = cluster_jobs(data.skills, meta, ClusteringParams(k_fixed=5, k_min=4, k_max=6))
     assert m["n_eval_family"] == 500 and m["n_family_other_excluded"] == 100
+
+
+# ---------------------------------------------------------------------------
+# M3 (docs/spec/mining/M3_phan_cum.md, prompt mục 5)
+# ---------------------------------------------------------------------------
+@pytest.fixture(scope="module")
+def m3():
+    b = make_synthetic_jobs(n_jobs=700, seed=11)
+    data = prepare_mining_data(b.golden, b.features, b.encoding_dict["skills"]["skills_map"])
+    meta = data.meta.copy()
+    skills, concepts = data.skills.copy(), data.concepts.copy()
+    for i in (0, 1):  # hai tin không có kỹ năng kỹ thuật nào
+        skills.iloc[i] = 0
+        concepts.iloc[i] = 0
+        meta.loc[i, ["n_tools", "n_concepts"]] = 0
+    e5 = np.random.default_rng(0).normal(size=(len(meta), 16)).astype(np.float32)
+    out, m = cluster_jobs(skills, meta, ClusteringParams(k_min=4, k_max=8, k_fixed=8), e5=e5, concepts=concepts)
+    return meta, out, m
+
+
+def test_jobs_without_technical_skill_are_left_out(m3):
+    meta, out, m = m3
+    assert len(out) == len(meta) and m["n_dropped_no_technical_skill"] == 2
+    left = out[~out["in_clustering"]]
+    assert set(left["job_id"]) == set(meta["job_id"].iloc[:2])
+    assert (left["cluster_id"] == -1).all() and left["glosh_outlier_score"].isna().all()
+    assert not left["is_outlier"].any()
+    kept = out[out["in_clustering"]]
+    assert kept[["pca_x", "pca_y", "pca_z", "dist_to_centroid"]].notna().all().all()
+
+
+def test_block_weights_give_energy_share():
+    tool = np.array([[1, 0, 1], [1, 1, 0]], dtype=float)
+    concept = np.array([[0, 1], [0, 0]], dtype=float)  # dòng 2: không có khái niệm
+    e5 = np.array([[0.3, 0.4], [1.0, 0.0]], dtype=float)
+    X = build_block_space([(tool, 0.35), (concept, 0.15), (e5, 0.5)]).toarray()
+    assert np.allclose((X[0, :3] ** 2).sum(), 0.35) and np.allclose((X[0, 5:] ** 2).sum(), 0.5)
+    assert np.allclose(np.linalg.norm(X, axis=1), 1.0)
+
+
+def test_metrics_report_block_weights_and_stability(m3):
+    _, _, m = m3
+    assert m["vector_space"]["block_weights"] == {"tool": 0.15, "concept": 0.15, "e5": 0.7}
+    assert m["stability"]["n_init"] == 50
+    assert m["stability"]["seeds"] == [42, 43, 44, 45, 46] and 0 <= m["stability"]["ari_min"] <= 1
+    assert "without_e5" in m and "crosstab" in m and m["min_cluster_share"] > 0
+
+
+def test_seed_stability_high_on_planted_structure():
+    b = make_synthetic_jobs(n_jobs=900, seed=3)
+    data = prepare_mining_data(b.golden, b.features, b.encoding_dict["skills"]["skills_map"])
+    _, m = cluster_jobs(data.skills, data.meta, ClusteringParams(k_fixed=8, k_min=8, k_max=8),
+                        concepts=data.concepts)
+    assert m["stability"]["ari_mean"] >= ClusteringParams().stability_ari_target
+
+
+def test_hybrid_cluster_rule():
+    ct = pd.DataFrame({"cluster_id": [0, 0, 0, 1], "job_family": ["Web", "Data/AI", "Other", "Web"],
+                       "n": [30, 20, 10, 50]})
+    assert hybrid_clusters(ct, ClusteringParams()) == [0]
+
+
+def test_niche_family_split_into_two_clusters():
+    ct = pd.DataFrame({"cluster_id": [0, 1, 2], "job_family": ["Web", "Web", "Tester"], "n": [60, 40, 50]})
+    assert niche_families(ct, [], ClusteringParams())["split_families"] == {"Web": [0, 1]}
+
+
+def test_family_mismatch_near_centroid():
+    labels = np.zeros(50, dtype=int)
+    fam = np.array(["Web"] * 45 + ["Tester"] * 2 + ["Bridge"] * 3)
+    dist = np.array([0.5] * 45 + [0.01, 0.02] + [0.9] * 3)
+    flags = flag_family_mismatch(labels, fam, dist, ClusteringParams())
+    assert flags[45] and flags[46] and not flags[:45].any() and not flags[47:].any()
+
+
+def test_cluster_split_by_skill_count_is_flagged():
+    prof = [{"cluster_id": 0, "median_n_tools": 0.0}, {"cluster_id": 1, "median_n_tools": 5.0},
+            {"cluster_id": 2, "median_n_tools": 12.0}]
+    assert skill_count_violations(prof, overall_median=5.0, p=ClusteringParams()) == [0]  # 3.B: chỉ phía dưới
+    assert skill_count_violations(prof, overall_median=5.0, p=ClusteringParams(skill_count_ratio_max=2.0)) == [0, 2]

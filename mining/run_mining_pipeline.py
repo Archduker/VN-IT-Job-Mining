@@ -27,6 +27,7 @@ if __package__ in (None, ""):  # chạy trực tiếp bằng đường dẫn fil
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
 
 from mining.anomaly import detect_anomalies  # noqa: E402
 from mining.bi import run_bi  # noqa: E402
@@ -118,12 +119,20 @@ def run_pipeline(
     glosh = glosh_flag = None
     if "cluster" in steps:
         t = time.perf_counter()
-        clusters, m = cluster_jobs(skills, meta, p.clustering, random_state=p.random_state, e5=data.e5)
-        if data.e5 is not None:  # so sánh không dùng e5; báo cả hai, không chọn ngầm
-            _, m0 = cluster_jobs(skills, meta, p.clustering, random_state=p.random_state)
-            m["without_e5"] = {k: m0[k] for k in ("best_k", "silhouette", "davies_bouldin", "ari_vs_job_family", "nmi_vs_job_family")}
+        clusters, m = cluster_jobs(skills, meta, p.clustering, random_state=p.random_state, e5=data.e5,
+                                   concepts=data.concepts)  # có e5 thì tự so thêm bản không e5 (without_e5)
         outputs["clusters"], metrics["clustering"] = clusters, m
-        glosh, glosh_flag = clusters["glosh_outlier_score"].to_numpy(), clusters["is_outlier"].to_numpy()
+        outputs.setdefault("json", {})["cluster_family_crosstab.json"] = {
+            "crosstab": m["crosstab"], "hybrid_clusters": m["hybrid_clusters"], "niche": m["niche"],
+            "clusters": [{k: c[k] for k in ("cluster_id", "cluster_name", "size", "dominant_job_family",
+                                            "job_family_purity")} for c in m["clusters"]]}
+        hc = clusters[clusters["family_mismatch"]]
+        outputs["hand_check_mismatch"] = (hc.sample(min(20, len(hc)), random_state=p.random_state)
+                                          [["job_id", "job_title", "job_family", "cluster_id", "cluster_name"]]
+                                          .assign(dung=pd.NA, ghi_chu=pd.NA).reset_index(drop=True))
+        # tin không vào phân cụm (M3.1b) không có GLOSH: 0 và không cờ
+        glosh = np.nan_to_num(clusters["glosh_outlier_score"].to_numpy(dtype=float), nan=0.0)
+        glosh_flag = clusters["is_outlier"].to_numpy()
         timings["cluster"] = time.perf_counter() - t
         logger.info("K-Means: k=%d, silhouette=%.4f", m["best_k"], m["silhouette"])
 
@@ -167,6 +176,9 @@ def _targets_summary(m: dict[str, Any]) -> dict[str, Any]:
         s["cluster_silhouette"] = m["clustering"]["meets_silhouette_target"]
         s["cluster_min_k"] = m["clustering"]["meets_min_clusters"]
         s["cluster_davies_bouldin"] = m["clustering"]["meets_davies_bouldin_target"]
+        s["cluster_stability"] = m["clustering"]["meets_stability_target"]
+        s["cluster_min_share"] = m["clustering"]["meets_min_cluster_share"]
+        s["cluster_no_skill_count_split"] = not m["clustering"]["skill_count_violations"]
     if "salary" in m and "holdout" in m["salary"]:
         s["salary_r2"] = m["salary"]["meets_r2_target"]
         s["salary_mae"] = m["salary"]["meets_mae_target"]
@@ -202,6 +214,10 @@ def write_artifacts(outputs: dict[str, Any], metrics: dict[str, Any], out_dir: P
         path = out_dir / "sd2_hand_check.csv"
         if write_hand_check(outputs["hand_check_rules"], path):
             written["hand_check_rules"] = {"path": path.as_posix(), "rows": int(len(outputs["hand_check_rules"]))}
+    if outputs.get("hand_check_mismatch") is not None:
+        path = out_dir / "sd3_mismatch_hand_check.csv"
+        if write_hand_check(outputs["hand_check_mismatch"], path):
+            written["hand_check_mismatch"] = {"path": path.as_posix(), "rows": int(len(outputs["hand_check_mismatch"]))}
     for name, obj in (outputs.get("json") or {}).items():
         path = out_dir / name
         path.write_text(json.dumps(obj, ensure_ascii=False, indent=1, default=_json_default), encoding="utf-8")

@@ -13,7 +13,7 @@
 | M0 Chuẩn bị | [`M0_chuan_bi.md`](M0_chuan_bi.md) | `mining/config.py`, `data_io.py`, `run_mining_pipeline.py`, `sanity.py` | chung | Đã duyệt, chưa sửa code |
 | M1 BI | [`M1_bi.md`](M1_bi.md) | **mới** `mining/bi.py` | SD1 | Đã duyệt, chưa có code |
 | M2 Gói kỹ năng | [`M2_fp_growth.md`](M2_fp_growth.md) | `mining/association.py` | SD2 | Đã duyệt, chưa sửa code |
-| M3 Nhóm việc | [`M3_phan_cum.md`](M3_phan_cum.md) | `mining/clustering.py` | SD3 (3.1, 3.2) | Đã duyệt, chưa sửa code |
+| M3 Nhóm việc | [`M3_phan_cum.md`](M3_phan_cum.md) | `mining/clustering.py` | SD3 (3.1, 3.2) | Chạy thật 20/11 (1.D, 2.B, 3.B) |
 | M4 Tin khác hoặc mới | [`M4_tin_khac_moi.md`](M4_tin_khac_moi.md) | `mining/anomaly.py` | SD3 (3.3) | Đã duyệt, chưa sửa code |
 | M5 Lương và SHAP | [`M5_luong_shap.md`](M5_luong_shap.md) | `mining/salary_model.py` | SD4 | Đã duyệt, chưa sửa code |
 | M6 Lộ trình | [`M6_lo_trinh.md`](M6_lo_trinh.md) | **mới** `mining/recommend.py` | SD5 | Đã duyệt, chưa có code |
