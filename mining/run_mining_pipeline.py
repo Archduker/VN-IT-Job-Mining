@@ -146,8 +146,14 @@ def run_pipeline(
     skill_values = None
     if "salary" in steps:
         t = time.perf_counter()
-        model, skill_values, m = train_salary_model(meta, skills, p.salary, p.random_state, compute_shap)
+        model, skill_values, m, extra = train_salary_model(meta, skills, p.salary, p.random_state, compute_shap,
+                                                           concepts=data.concepts)
         outputs["shap"], outputs["model"], metrics["salary"] = skill_values, model, m
+        if model is not None:
+            outputs["estimates"] = extra["estimates"]
+            outputs.setdefault("json", {})["salary_factor_importance.json"] = {
+                "factor_importance": extra["factor_importance"], "salary_distribution": extra["distribution"],
+                "notes": m["notes"]}
         timings["salary"] = time.perf_counter() - t
         if "holdout" in m:
             logger.info("Random Forest: R2(log)=%.4f, MAE=%.3f triệu", m["holdout"]["r2_log"], m["holdout"]["mae_mil"])
@@ -180,9 +186,10 @@ def _targets_summary(m: dict[str, Any]) -> dict[str, Any]:
         s["cluster_min_share"] = m["clustering"]["meets_min_cluster_share"]
         s["cluster_no_skill_count_split"] = not m["clustering"]["skill_count_violations"]
     if "salary" in m and "holdout" in m["salary"]:
-        s["salary_r2"] = m["salary"]["meets_r2_target"]
-        s["salary_mae"] = m["salary"]["meets_mae_target"]
+        s["salary_plan"] = m["salary"]["plan"]
+        s["salary_beats_baseline_10pct"] = m["salary"]["meets_baseline_margin"]
         s["salary_cv_std"] = m["salary"]["meets_cv_std_target"]
+        s["salary_no_company_overlap"] = m["salary"]["n_companies_overlap"] == 0
     s["sanity_all_passed"] = m["sanity_summary"]["all_passed"]
     return s
 
@@ -191,7 +198,7 @@ def write_artifacts(outputs: dict[str, Any], metrics: dict[str, Any], out_dir: P
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     written = {}
-    for key in ("rules", "clusters", "anomalies", "shap"):
+    for key in ("rules", "clusters", "anomalies", "shap", "estimates"):
         df = outputs.get(key)
         if df is None:
             continue
@@ -205,7 +212,8 @@ def write_artifacts(outputs: dict[str, Any], metrics: dict[str, Any], out_dir: P
         bundle = {
             "model": outputs["model"],
             "feature_names": list(outputs["model"].feature_names_in_),
-            "target": "log1p(salary_avg, triệu VNĐ/tháng)",
+            "target": "log1p(salary_target_m, triệu VNĐ/tháng)",
+            "config": metrics["salary"]["config_used"],
             "generated_at": metrics["generated_at"],
         }
         joblib.dump(bundle, path, compress=3)

@@ -109,11 +109,14 @@ def run_sanity_checks(
         out.append(_result("S-05", "skipped", crit5, "Chưa có bảng SHAP."))
     else:
         allv = skill_values[skill_values["job_family"] == ALL_SCOPE].set_index("skill_name")
+        by_norm = {str(n).lower().replace(" ", "_"): n for n in allv.index}  # ma trận dùng slug (aws), bí danh dùng tên (AWS)
         found = {}
         for key in ("aws", "kubernetes", "system_design"):
-            for alias in SKILL_ALIASES[key]:
-                if alias in allv.index:
-                    r = allv.loc[alias]
+            for alias in [key, *SKILL_ALIASES[key]]:
+                name = by_norm.get(alias.lower().replace(" ", "_"))
+                if name is not None:
+                    alias = name
+                    r = allv.loc[name]
                     found[alias] = {"phi": round(float(r["mean_shap_value"]), 4),
                                     "marginal_trieu": round(float(r["marginal_trieu"]), 2),
                                     "n": int(r["sample_size"])}

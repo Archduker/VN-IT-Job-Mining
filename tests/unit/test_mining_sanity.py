@@ -83,3 +83,11 @@ def test_s04_excludes_outliers_and_negotiable():
     neg = [False] * 21 + [True]
     s04 = _by_id(run_sanity_checks(_meta(sal, sen, neg, outlier), pd.DataFrame({"X": [0] * 22})))["S-04"]
     assert s04["status"] == "pass" and s04["values"]["counts"]["Intern/Fresher"] == 5
+
+
+def test_s05_finds_slug_skill_names():
+    """Ma trận dùng slug (aws, kubernetes) từ M0; S-05 từng bị skipped vì chỉ tìm "AWS" (M5, 20/11)."""
+    shap_tbl = pd.DataFrame({"skill_name": ["aws", "kubernetes"], "job_family": ["ALL", "ALL"],
+                             "mean_shap_value": [0.04, -0.01], "marginal_trieu": [0.8, -0.2], "sample_size": [120, 110]})
+    s05 = _by_id(run_sanity_checks(_meta([np.nan] * 10, [2] * 10), pd.DataFrame({"X": [0] * 10}), shap_tbl))["S-05"]
+    assert s05["status"] == "pass" and "aws" in s05["detail"]

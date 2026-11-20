@@ -1,7 +1,7 @@
 # Prompt M5: Giá trị kỹ năng và lương ước tính cho SD4
 
 > Đặc tả: [`docs/spec/mining/M5_luong_shap.md`](../../spec/mining/M5_luong_shap.md) (M5.1–M5.13; đã duyệt 20/11). Câu hỏi: `docs/target/04_sd4_gia_tri_ky_nang.md`.
-> **Trạng thái:** viết 20/11, chờ duyệt prompt. Cần M0, M1 xong.
+> **Trạng thái:** chạy thật 20/11 (phương án A, `tool_concept`).
 
 ## 1. Ngữ cảnh
 
@@ -98,7 +98,7 @@ est = estimate_negotiable(rf_final, negotiable & salary_target_m null):
 | # | Bước quy trình | Ngày | Việc đã làm, số liệu, quyết định | Commit |
 |---|---|---|---|---|
 | 1 | Duyệt đặc tả | 20/11 | "approved" | 1036a11 |
-| 2 | Duyệt prompt | chưa | | |
-| 3 | Test rồi code | chưa | | |
-| 4 | Dry-run | chưa | Trước khi sửa: 1.620 tin train, chia ngẫu nhiên, R² 0,629, MAE 6,05, baseline cấp + kinh nghiệm 6,31 | |
-| 5 | Review, chạy thật | chưa | | |
+| 2 | Duyệt prompt | 20/11 | "continue" sau khi nhận bộ prompt | e230f28 |
+| 3 | Test rồi code | 20/11 | 9 test mới (chia theo công ty, `company_id` null, `src::`, baseline lùi về cấp, khôi phục +8 triệu cài sẵn, P10 ≤ ước tính ≤ P90, phương án B, cảnh báo Senior, kỹ năng < 30 tin bị bỏ) + test S-05 slug. Code: `company_split`, `baseline_level_family` (dùng `bi.baseline_salary`), `mae_by_group`, `train_band_classifier`, `bootstrap_ci`, `factor_importance`, `compare_distributions`, `estimate_negotiable`; `train_salary_model` trả 4 phần tử. **Đi khác prompt:** P10/P90 kẹp quanh ước tính; tên cột Mart cũ của bảng SHAP giữ, thêm `delta_m`, `ci_low`, `ci_high` | (commit này) |
+| 4 | Dry-run | 20/11 | Trước khi sửa: 1.620 tin train, chia ngẫu nhiên, R² 0,629, MAE 6,05, baseline cấp + kinh nghiệm 6,31. Sau: 1.561 tin, 0 công ty chung, baseline cấp × nghề 6,142; `tool_only` hơn 3,7% (B: macro-F1 0,53), `tool_concept` hơn 10,6% (A); S-05 từng skipped (L-56) | |
+| 5 | Review, chạy thật | 20/11 | Người dùng "1.B 2.A": dùng `tool_concept`; phương án B chỉ khi A không đạt. Chạy thật `--only bi,fp,cluster,salary`: A, R²(log) 0,600, MAE 5,489; 2.172 ước tính, 1.274 có cảnh báo; sanity 4 pass / 1 info / 1 fail (S-06) | (commit này) |

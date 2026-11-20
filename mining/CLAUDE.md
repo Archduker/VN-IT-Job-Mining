@@ -13,6 +13,8 @@ Lệnh: `python -m mining.run_mining_pipeline [--only fp,cluster,…] [--dry-run
 - **Cờ lương:** `meta.salary_outlier` (cờ của Silver). Tên cũ `salary_suspect` là cột của bước 03/04, không dùng trong Mining.
 - **e5 khóa `job`** (mô tả + yêu cầu, không phúc lợi). Thiếu khóa thì `MiningContractError`, không lùi về `all`.
 - **M3: K-Means cần `n_init` 50** (`ClusteringParams.kmeans_n_init`). Với `n_init` 10, ARI giữa 5 seed chỉ 0,73 trên dữ liệu thật; đổi trọng số khối hay k thì đo lại `stability`. Trọng số tool lớn (0,35) làm tin không công cụ gom thành một cụm (L-47).
+- **M5 dùng cấu hình `tool_concept`** (`SalaryParams.feature_config`, người dùng chốt 20/11). `train_salary_model` trả 4 phần tử (model, giá trị kỹ năng, metrics, `extra` có `estimates`). Chia train/test theo `company_id`; không dùng `dup_group_id`.
+- **Tên kỹ năng là slug** (`aws`), không phải "AWS": so tên trong sanity hay báo cáo phải chuẩn hóa (L-56).
 - **Thang cấp 0–4:** 0 = Intern/Fresher … 4 = Lead/Manager, -1 = chưa rõ (`SENIORITY_ORDER_LABELS`). S-04 từng ánh xạ lệch một bậc (sửa 20/11, M0.8).
 - **`recommend` có trong `STEPS` nhưng chưa có code** (`NOT_BUILT`): `--only recommend` trả mã 2. Gỡ khỏi `NOT_BUILT` khi làm M6.
 - **M1 (`bi.py`) lấy kỹ năng từ `job_skills` + `skill_view`** (slug, như tên cột ma trận vì `encoding_dictionary.json` không có `skills_map`). Không có `--job-skills` thì lùi về ma trận và ghi chú. File `sd1_*.json` không chứa thời điểm chạy để chạy lại ra cùng file.

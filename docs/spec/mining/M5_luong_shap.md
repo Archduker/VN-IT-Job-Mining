@@ -29,7 +29,7 @@
 
 Độ quan trọng (impurity) cao nhất 20/11: `exp_min_years` 0,40, `seniority_ord` 0,27, rồi aws 0,022, kubernetes 0,014, `jf::Bridge` 0,013. Số này **lạc quan** vì chia ngẫu nhiên: cùng công ty có thể ở cả hai phía.
 
-### 2.2. Đề xuất, đã duyệt 20/11 (chưa có code)
+### 2.2. Đề xuất, đã duyệt 20/11 (code xong 20/11; quyết định sau review ở cuối bảng)
 
 | Mã | Đề xuất | Lý do |
 |---|---|---|
@@ -47,6 +47,9 @@
 | M5.11 | 4.4: `estimate_negotiable` cho tin thỏa thuận (2.192 tin, trừ tin có số): `salary_estimated_m` = expm1(trung bình các cây), `p10`, `p90` từ dự đoán từng cây, `salary_is_estimated = true`. Lưu ở `salary_estimates.parquet`, **không ghi đè** cột lương nào | SD4 câu 4.4 |
 | M5.12 | `compare_distributions`: tỷ lệ cấp, nghề, nguồn ở tập thỏa thuận so với tập có lương. Nhóm nào tỷ lệ ở tập thỏa thuận ≥ 2 lần tập có lương thì ước tính của nhóm đó mang `warning`. 20/11: Senior 20,7% ở tập thỏa thuận so với 8,8% ở tập có lương (2,4 lần) → Senior bị cảnh báo | SD4 "Kiểm tra trước khi ước tính"; MNAR |
 | M5.13 | Model cuối fit lại trên toàn tập có lương (chỉ số lấy từ holdout); SHAP tối đa 3.000 dòng | Như code hiện tại |
+| M5.3b' | **Quyết định 1.B (20/11, sau dry-run):** dùng cấu hình `tool_concept` (`SalaryParams.feature_config`); `tool_only` vẫn được đo và ghi trong `configs` | `tool_only` hơn baseline 3,7% (không đạt A); `tool_concept` hơn 10,6% (đạt A), R²(log) 0,600 |
+| M5.7' | **Quyết định 2.A (20/11):** phương án B chỉ chạy khi A không đạt | Lần chạy thật đạt A nên không có `band_classifier`. Dry-run `tool_only` (B): macro-F1 0,53, accuracy 0,57 so với 0,30 khi đoán khung đông nhất |
+| M5.11' | P10, P90 được kẹp để luôn bao quanh ước tính (`min(p10, ước tính)`, `max(p90, ước tính)`) | Trung bình các cây (thang log) gần như luôn nằm trong P10–P90; kẹp chỉ để hợp đồng `p10 ≤ ước tính ≤ p90` không bao giờ sai |
 
 ## 3. Quy trình xử lý
 
@@ -80,7 +83,26 @@
 
 ## 5. Dữ liệu mẫu
 
-Điền sau lần chạy thật.
+Chạy thật 20/11 (`--only bi,fp,cluster,salary`, cấu hình `tool_concept`, sha256 đầu vào như M0):
+
+| Mục | Số |
+|---|---|
+| Tập có lương (M5.1) | 1.561 tin; bỏ 20 vừa thỏa thuận vừa có số, 86 `salary_outlier`, 64 lệch > 3 lần trung vị cấp |
+| Chia theo công ty (M5.4) | train 1.247 tin / 746 công ty, test 314 tin / 187 công ty, **0 công ty chung** |
+| Baseline cấp × nghề (M5.6) | MAE 6,142 triệu (220 tin dùng ô, 94 lùi về cấp) |
+| `tool_only` | 318 đặc trưng; CV R² 0,567 ± 0,030; holdout R²(log) 0,558, MAE 5,918; hơn baseline 3,7% → không đạt A |
+| `tool_concept` (dùng) | 879 đặc trưng; CV R² 0,569 ± 0,028; holdout R²(log) 0,600, MAE 5,489, RMSE 7,392; **hơn baseline 10,6% → phương án A** |
+| 4.1 nhóm yếu tố (mean \|tổng SHAP\|) | kinh nghiệm 42%, cấp bậc 26%, khái niệm 13%, nguồn tin 8%, công cụ 6%, nghề 2%, tỉnh 2% |
+| Đóng góp SHAP của cấp | Intern/Fresher −0,230 < Junior −0,067 < Middle +0,047 < Senior +0,201 (tăng dần, đạt); Lead/Manager +0,176 |
+| 4.2 công cụ cộng nhiều nhất (triệu/tháng, CI 95%) | kubernetes +0,62 (0,53–0,71), cisco +0,53, docker +0,43, oracle_db +0,37, cpp +0,32, spring_boot +0,25, claude +0,24, tensorflow +0,23 |
+| 4.2 công cụ trừ nhiều nhất | illustrator −1,11, photoshop −0,53, mysql −0,21, excel −0,19, powerpoint −0,13 |
+| Chiều so với chênh trung vị thô | 66,7% trong 78 công cụ được định giá (lương nền SHAP 20,93 triệu) |
+| 4.3 MAE theo nhóm (test) | model kém baseline ở Other, Tester (sát), Intern/Fresher; nhóm < 30 tin ghi "ít dữ liệu" (DevOps, Security, Senior, itviec, …) |
+| 4.4 ước tính (M5.11) | 2.172 tin thỏa thuận; trung vị 26,5 triệu (tin có lương: 21,0); độ rộng P10–P90 trung vị 19,6 triệu |
+| Cảnh báo phân bố (M5.12) | 1.274 tin: Senior (2,1 lần), cấp Không rõ (2,6), DevOps/Cloud (2,1), IoT (2,5), itviec (2,9), vietnamworks (2,5) |
+| Sanity | S-04, S-05 pass (aws φ 0,008, kubernetes 0,029); S-06 fail (đã chốt) |
+
+Có `concept__` thì giá trị các công cụ nhỏ hơn bản `tool_only` (kubernetes 0,97 → 0,62), vì khái niệm đi kèm chia điểm SHAP với công cụ.
 
 ## 6. Kiểm tra và nghiệm thu
 
@@ -97,6 +119,8 @@
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- Có code; thiếu chia theo công ty, `src__`, baseline cấp × nghề, phương án B, MAE theo nhóm, 4.1 theo SHAP, 4.4, so phân bố (MINE-7).
-- Đã duyệt 20/11: M5.3b (hai cấu hình), M5.7 (tiêu chí đạt), M5.10 (bootstrap 200), M5.12 (ngưỡng 2 lần).
+- **Chạy thật 20/11** (mục 5): phương án A với `tool_concept` (quyết định 1.B, 2.A).
+- Artifact: `skill_salary_shap_values.parquet` (thêm `delta_m`, `ci_low`, `ci_high`; chỉ kỹ năng ≥ 30 tin), `salary_estimates.parquet`, `salary_factor_importance.json` (4.1 và bảng so phân bố), `trained_salary_rf_model.joblib`.
+- Sửa kèm: S-05 luôn "skipped" vì so tên `AWS` với slug `aws` (L-56).
+- Giá trị kỹ năng đều dưới ±1,2 triệu: kinh nghiệm và cấp giải thích phần lớn; không đọc thành "học X thì lương tăng X" (MINE-6).
 - MINE-1, MINE-5 (Mart chưa có bảng SHAP), MINE-6, PRE-35 (lương phủ 44%), PRE-36.

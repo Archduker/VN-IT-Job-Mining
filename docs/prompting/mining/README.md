@@ -13,7 +13,7 @@ Mỗi file là **một prompt dán cho agent** (Claude Code) để làm một b�
 | M2 Gói kỹ năng (SD2) | [`M2_fp_growth.md`](M2_fp_growth.md) | [`M2_fp_growth.md`](../../spec/mining/M2_fp_growth.md) | `association.py` | Chạy thật 20/11; kiểm tay 20 luật còn mở |
 | M3 Nhóm việc (SD3) | [`M3_phan_cum.md`](M3_phan_cum.md) | [`M3_phan_cum.md`](../../spec/mining/M3_phan_cum.md) | `clustering.py` | Chạy thật 20/11; kiểm tay 8 tin còn mở |
 | M4 Tin khác hoặc mới (SD3) | [`M4_tin_khac_moi.md`](M4_tin_khac_moi.md) | [`M4_tin_khac_moi.md`](../../spec/mining/M4_tin_khac_moi.md) | `anomaly.py` | Prompt duyệt 20/11 |
-| M5 Lương và SHAP (SD4) | [`M5_luong_shap.md`](M5_luong_shap.md) | [`M5_luong_shap.md`](../../spec/mining/M5_luong_shap.md) | `salary_model.py` | Prompt duyệt 20/11 |
+| M5 Lương và SHAP (SD4) | [`M5_luong_shap.md`](M5_luong_shap.md) | [`M5_luong_shap.md`](../../spec/mining/M5_luong_shap.md) | `salary_model.py` | Chạy thật 20/11 (A, `tool_concept`) |
 | M6 Lộ trình (SD5) | [`M6_lo_trinh.md`](M6_lo_trinh.md) | [`M6_lo_trinh.md`](../../spec/mining/M6_lo_trinh.md) | mới `recommend.py` | Prompt duyệt 20/11 |
 
 ## Khuôn prompt (6 phần)

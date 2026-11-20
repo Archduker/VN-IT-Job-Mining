@@ -362,6 +362,12 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Còn lại:** S-06 fail (HCM/khác 1,194) khi bỏ 86 tin `salary_outlier`; người dùng chốt giữ ngưỡng 1,2 và ghi fail (MINE-1). M1–M6 theo `docs/prompting/mining/` (MINE-7).
 - **Kiểm chứng:** `pytest tests/unit/test_mining_*.py` (71 test); dry-run thật: S-04 10,0 < 15,5 < 22,5 < 37,5 pass.
 
+### L-56. Sanity S-05 luôn "skipped" sau khi ma trận đổi sang slug (MINE-1, Dữ liệu, 20/11/2026)
+- **Lỗi:** dry-run M5 20/11: S-05 "Không có kỹ năng nào trong 3 kỹ năng trên" dù bảng SHAP có `aws` (122 tin) và `kubernetes` (112 tin).
+- **Nguyên nhân:** `mining/sanity.py` tìm tên trong `SKILL_ALIASES` ("AWS", "Kubernetes") khớp tuyệt đối với `skill_name`; từ M0 tên cột ma trận là slug (`aws`), nên không bao giờ khớp. S-01..S-03 không bị vì đi qua `find_skill`.
+- **Cách xử lý:** S-05 so theo tên chuẩn hóa (chữ thường, khoảng trắng → `_`) và thử cả khóa slug trước bí danh.
+- **Kiểm chứng:** `tests/unit/test_mining_sanity.py::test_s05_finds_slug_skill_names`; chạy thật 20/11: S-05 pass (aws φ 0,008, kubernetes φ 0,029).
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

@@ -28,6 +28,7 @@ ARTIFACT_FILES = {
     "anomalies": "job_anomalies.parquet",
     "shap": "skill_salary_shap_values.parquet",
     "model": "trained_salary_rf_model.joblib",
+    "estimates": "salary_estimates.parquet",
     "metrics": "mining_metrics.json",
 }
 
@@ -182,9 +183,16 @@ class SalaryParams:
         {"n_estimators": 300, "max_depth": None, "min_samples_leaf": 5, "max_features": "sqrt"},
         {"n_estimators": 300, "max_depth": 15, "min_samples_leaf": 1, "max_features": 0.5},
     ])
-    r2_target: float = 0.60
-    mae_target_mil: float = 4.5
+    r2_target: float = 0.60  # chỉ báo cáo (ngưỡng cũ, PRE-36)
+    mae_target_mil: float = 4.5  # chỉ báo cáo (ngưỡng cũ, PRE-36)
     cv_std_target: float = 0.05
+    # M5 (docs/spec/mining/M5_luong_shap.md, duyệt 20/11)
+    baseline_margin: float = 0.10  # M5.7: phương án A phải có MAE thấp hơn baseline cấp × nghề >= 10%
+    min_group_eval: int = 30  # ô baseline và nhóm MAE dưới 30 tin: lùi về cấp / ghi "ít dữ liệu"
+    bootstrap_n: int = 200  # M5.10: khoảng tin cậy giá trị kỹ năng
+    dist_warn_ratio: float = 2.0  # M5.12: nhóm chiếm tỷ lệ >= 2 lần ở tập thỏa thuận → cảnh báo
+    n_bands: int = 4  # phương án B: 4 khung theo tứ phân vị train
+    feature_config: str = "tool_concept"  # M5.3b: người dùng chọn 20/11 (1.B); "tool_only" vẫn được đo để so
 
 
 @dataclass
