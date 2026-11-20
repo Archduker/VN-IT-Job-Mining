@@ -236,6 +236,22 @@ class SanityParams:
 
 
 @dataclass
+class RecommendParams:
+    """M6 (docs/spec/mining/M6_lo_trinh.md, duyệt 20/11; ngưỡng PRE-36)."""
+    min_newcomer_jobs: int = 30  # M6.0
+    min_demand: float = 0.05  # M6.1: chỉ xếp kỹ năng >= 5% tin người mới của nghề
+    strong_conf: float = 0.60  # M6.2: luật mạnh
+    strong_lift: float = 1.20
+    defer_ratio: float = 3.0  # M6.3
+    defer_min_jobs: int = 10  # 4.B (20/11): kỹ năng phải có >= 10 tin Senior/Lead
+    coverage_need: float = 0.70  # M6.4: top N đáp ứng >= 70% công cụ của tin
+    coverage_ns: tuple[int, ...] = (5, 10, 15)
+    split: float = 0.20  # M6.5
+    split_max_diff: float = 0.10
+    split_seeds: tuple[int, ...] = (42, 43, 44, 45, 46)  # 3.B (20/11): lấy trung bình độ lệch qua 5 lần chia
+
+
+@dataclass
 class MiningParams:
     association: AssociationParams = field(default_factory=AssociationParams)
     clustering: ClusteringParams = field(default_factory=ClusteringParams)
@@ -243,4 +259,5 @@ class MiningParams:
     anomaly: AnomalyParams = field(default_factory=AnomalyParams)
     sanity: SanityParams = field(default_factory=SanityParams)
     bi: BIParams = field(default_factory=BIParams)
+    recommend: RecommendParams = field(default_factory=RecommendParams)
     random_state: int = RANDOM_STATE

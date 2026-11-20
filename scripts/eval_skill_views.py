@@ -30,6 +30,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 import _vnjt as X  # noqa: E402
+from mining.config import NEWCOMER_LABELS  # noqa: E402
+from mining.recommend import coverage_share  # noqa: E402
 from processing.extraction.skills import load_skills_v2, matcher_from_v2, skill_view  # noqa: E402
 
 JOB_SKILLS = ROOT / "data" / "processing" / "08_skills" / "job_skills.parquet"
@@ -37,7 +39,7 @@ SILVER = ROOT / "data" / "preprocessing" / "04_normalization" / "silver.parquet"
 BULLETS = ROOT / "data" / "processing" / "07_sections" / "all.parquet"
 OUT_DIR = ROOT / "data" / "processing" / "skill_candidates"
 SEED = 42
-NEWCOMER = ("Intern/Fresher", "Junior")
+NEWCOMER = NEWCOMER_LABELS  # dùng chung với Mining (M6)
 BIG_FAMILIES = ("Web", "Bridge", "Data/AI", "Tester", "DevOps/Cloud", "Security")
 VIEWS = ("all", "technical", "tool", "concept", "soft")
 THRESHOLDS = {"T1": 10, "T2": 0.6, "T3": 0, "T4": 0.9, "T5": 0.85, "T6": 0.70}
@@ -78,8 +80,8 @@ def coverage_at(sets: dict, silver: pd.DataFrame, n: int = 10, need: float = 0.7
         jobs = list(new.loc[new["job_family"] == f, "job_id"])
         c = Counter(s for j in jobs for s in sets.get(j, ()))
         top = {s for s, _ in c.most_common(n)}
-        ok = [len(sets[j] & top) / len(sets[j]) >= need for j in jobs if sets.get(j)]
-        out[f] = {"n_jobs": len(jobs), "share_ok": round(sum(ok) / len(ok), 3) if ok else None}
+        share, _, _ = coverage_share([sets.get(j, set()) for j in jobs], top, need)  # cùng hàm với M6.4
+        out[f] = {"n_jobs": len(jobs), "share_ok": round(share, 3) if share is not None else None}
     return out
 
 

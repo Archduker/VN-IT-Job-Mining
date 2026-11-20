@@ -199,17 +199,9 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 **MINE-7. Code Mining chưa trả lời đủ câu hỏi của SD1–SD5** (mở 17/11/2026; từ 20/11 chi tiết ở `docs/spec/mining/` M0–M6, mục 2.2 và 7 của từng file)
 
-- **Thứ tự chạy:** thêm `bi` và `recommend` vào `STEPS` của `mining/run_mining_pipeline.py`, theo thứ tự `bi, fp, cluster, anomaly, salary, recommend` (đã duyệt ở spec 03 mục 7).
-- **M1 (SD1):** chưa có `mining/bi.py`; kết quả ghi `mining/artifacts/sd1_*.json`, Monitoring chỉ đọc.
-- **M2 (SD2):** chưa có bảng top 15 kỹ năng theo nghề (2.1), chưa chia luật theo cấp bậc (2.3), chưa tìm kỹ năng hiếm (2.4), chưa chạy kiểm độ ổn định khi đổi support.
-- **M3 (SD3):** chưa đo ARI qua 5 seed, chưa kiểm trung vị số kỹ năng theo cụm, chưa xuất bảng chéo cụm × `job_family`, chưa có luật đánh dấu nghề lai, nghề ngách, tin có vẻ bị gán sai.
-- **M4 (SD3):** chưa chia hai loại "mới" và "khác".
-- **M5 (SD4):**
-  - chia dữ liệu theo `dup_group_id` thay vì `company_key`, chưa phân tầng theo cấp;
-  - baseline là model "cấp + kinh nghiệm", không phải trung vị cấp × nghề;
-  - chưa có phương án B, chưa ước tính lương cho tin thỏa thuận (`salary_estimated_vnd`, khoảng P10–P90), chưa có MAE theo nhóm;
-  - chưa chạy trên dữ liệu thật.
-- **M6 (SD5):** chưa có `mining/recommend.py`.
+- **Đã xong 20/11** (code, chạy thật, chi tiết ở mục 5–7 của từng file `docs/spec/mining/`): `STEPS` có `bi` và `recommend`; M1 (`bi.py`), M2, M3, M5, M6 (`recommend.py`). Kiểm tay còn mở: M1 (20 tin), M2 (20 luật), M3 (8 tin gán sai), M6 (đọc lộ trình Web, Data/AI).
+- **M4 (SD3):** chưa chia hai loại "mới" và "khác"; ngưỡng mã lý do chưa theo phân vị (bước còn lại duy nhất).
+- **M6:** DevOps/Cloud lệch 80/20 0,106 (> 0,10, 45 tin người mới).
 - **Quyết định đã chốt 17/11 (spec 07 mục 4), code chưa làm:**
   - Bỏ TF-IDF: gỡ `build_tfidf`, `tfidf_weight` khỏi `mining/clustering.py` và `mining/config.py`; bỏ `12_tfidf` khỏi `PROCESSING_STEPS` (`scripts/run_preprocessing.py`), xóa `processing/extraction/vectorize.py` và test, xóa `data/processing/12_tfidf/`, `reports/processing/12_tfidf/`.
   - Kỹ năng mềm và ngoại ngữ: đánh dấu 8 slug (`communication`, `teamwork`, `problem_solving`, `logical_thinking`, `time_management`, `presentation`, `english`, `japanese`) trong `skills_taxonomy_230.json`; M1, M2 (top 15, kỹ năng hiếm) và M6 xếp hai danh sách riêng.

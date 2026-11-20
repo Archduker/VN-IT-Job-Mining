@@ -46,13 +46,12 @@ def test_bad_step_and_missing_inputs_return_error(tmp_path):
     assert rmp.main(["--table", str(tmp_path / "khong_co.parquet"), "--out", str(tmp_path)]) == 2
 
 
-@pytest.mark.parametrize("step", ["recommend"])
-def test_steps_not_built_yet_fail_loudly(tmp_path, step, caplog):
-    """M0.5: bi, recommend đã có trong STEPS nhưng chưa có code (M1, M6): báo lỗi rõ, không chạy im lặng."""
-    assert step in rmp.STEPS
-    assert rmp.main(["--synthetic", "--synthetic-n", "300", "--only", step, "--out", str(tmp_path)]) == 2
-    assert "chưa làm" in caplog.text
-    assert not any(tmp_path.iterdir())
+def test_recommend_runs_alone_and_computes_its_inputs(tmp_path):
+    """M6: --only recommend tự tính M1.D, M2, M5 trong bộ nhớ khi chưa có artifact; dry-run không ghi file."""
+    assert "recommend" in rmp.STEPS and not rmp.NOT_BUILT
+    rc = rmp.main(["--synthetic", "--synthetic-n", "900", "--only", "recommend", "--dry-run", "--no-shap",
+                   "--out", str(tmp_path)])
+    assert rc == 0 and not any(tmp_path.iterdir())
 
 
 @pytest.mark.parametrize("flag", ["--table", "--golden"])

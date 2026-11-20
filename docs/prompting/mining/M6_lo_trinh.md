@@ -1,7 +1,7 @@
 # Prompt M6: Lộ trình học cho người mới (SD5)
 
 > Đặc tả: [`docs/spec/mining/M6_lo_trinh.md`](../../spec/mining/M6_lo_trinh.md) (M6.0–M6.6; đã duyệt 20/11). Câu hỏi: `docs/target/05_sd5_lo_trinh_hoc.md`.
-> **Trạng thái:** viết 20/11, chờ duyệt prompt. Cần M1, M2, M5 xong.
+> **Trạng thái:** chạy thật 20/11; đọc tay lộ trình Web, Data/AI còn mở.
 
 ## 1. Ngữ cảnh
 
@@ -85,7 +85,7 @@ for fam in nghề có ≥ 30 tin newcomer, fam ≠ Other:            # M6.0; cò
 | # | Bước quy trình | Ngày | Việc đã làm, số liệu, quyết định | Commit |
 |---|---|---|---|---|
 | 1 | Duyệt đặc tả | 20/11 | "approved" | 1036a11 |
-| 2 | Duyệt prompt | chưa | | |
-| 3 | Test rồi code | chưa | | |
-| 4 | Dry-run | chưa | Trước khi làm (19/11, top 10 theo tần suất): coverage@10 Web 0,127, Bridge 0,443, Data/AI 0,181, Tester 0,281, DevOps/Cloud 0,089, Security 0,109 | |
-| 5 | Review, chạy thật | chưa | | |
+| 2 | Duyệt prompt | 20/11 | "continue" sau khi nhận bộ prompt | e230f28 |
+| 3 | Test rồi code | 20/11 | `tests/unit/test_mining_recommend.py` 11 test (demand < 5% bị bỏ, premium chuẩn hóa, soft chỉ theo demand, chuỗi luật ra bậc, cắt chu trình, luật nhiều vế không dùng, defer, coverage 70% và bỏ tin 0 công cụ, chạy đủ một nghề + index ít dữ liệu, slug). Code mới `mining/recommend.py`; `RecommendParams`; bước `recommend` trong driver; `scripts/eval_skill_views.py` dùng `coverage_share`. Test pipeline "recommend chưa làm" thay bằng test chạy được | (commit này) |
+| 4 | Dry-run | 20/11 | Trước khi làm (19/11, top 10 theo tần suất): coverage@10 Web 0,127, Bridge 0,443, Data/AI 0,181, Tester 0,281, DevOps/Cloud 0,089, Security 0,109. Theo đặc tả: coverage@10 hơn baseline ở 6 nghề; Web 1 gói cắt 63 cạnh, javascript bậc 7 sau react (ngược lẽ thường); Bridge, Tester lệch 80/20 > 10 điểm; Web 97 kỹ năng "chưa nên học sớm" | |
+| 5 | Review, chạy thật | 20/11 | Người dùng "1.b 2.a 3.b 4.b": luật 1 ⇒ 1, vế phải là nền; giữ công thức điểm; 80/20 trung bình 5 seed; defer ≥ 10 tin Senior/Lead. Chạy thật `--only bi,fp,cluster,salary,recommend`: 6 file `sd5_<nghề>.json` + `sd5_index.json`; coverage@10 hơn baseline 6/6; 80/20 đạt 5/6 (DevOps/Cloud 0,106). **Đọc tay Web, Data/AI còn mở** | (commit này) |

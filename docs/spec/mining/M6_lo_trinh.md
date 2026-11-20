@@ -2,7 +2,7 @@
 
 > Code: **mới** `mining/recommend.py`: `priority_scores`, `learning_path`, `defer_list`, `coverage_at`, `split_check`, `run_recommend`. Dùng lại `coverage_at`, `NEWCOMER`, `BIG_FAMILIES` của `scripts/eval_skill_views.py` (chuyển phần dùng chung vào `mining/`, script import lại, không viết hai bản).
 > Lệnh: `python -m mining.run_mining_pipeline --only bi,fp,salary,recommend [--dry-run]`.
-> Câu hỏi: [`docs/target/05_sd5_lo_trinh_hoc.md`](../../target/05_sd5_lo_trinh_hoc.md). Trạng thái: **đã duyệt 20/11 (người dùng: "approved"); chưa có code.**
+> Câu hỏi: [`docs/target/05_sd5_lo_trinh_hoc.md`](../../target/05_sd5_lo_trinh_hoc.md). Trạng thái: **đã duyệt 20/11; code và chạy thật 20/11 (quyết định 1.B, 2.A, 3.B, 4.B ở mục 2.2).**
 
 ## 1. Mục đích
 
@@ -23,7 +23,7 @@ Chưa có code. Số đo trước (`scripts/eval_skill_views.py`, 19/11, K-tool,
 
 Một danh sách top 10 chung cho cả nghề Web chỉ đáp ứng 13% tin Web người mới, vì nghề Web gồm nhiều ngăn xếp (Java/Spring, .NET, PHP, JS/React, Mobile…).
 
-### 2.2. Đề xuất, đã duyệt 20/11 (chưa có code)
+### 2.2. Đề xuất, đã duyệt 20/11 (code xong 20/11; quyết định sau review ở cuối bảng)
 
 | Mã | Đề xuất | Lý do |
 |---|---|---|
@@ -35,6 +35,10 @@ Một danh sách top 10 chung cho cả nghề Web chỉ đáp ứng 13% tin Web 
 | M6.4b | Báo thêm `coverage@N` **theo gói** (tin người mới có ≥ 1 kỹ năng của gói, top N trong gói) cho nghề có ≥ 2 gói | Đo đúng cách trình bày theo gói của M6.2 |
 | M6.5 | `split_check`: chia tin người mới của nghề 80/20 (seed 42, phân tầng theo nguồn nếu đủ), tính điểm trên 80%, đo coverage@10 trên 20%; chênh với coverage trên chính 80% ≤ 10 điểm phần trăm | SD5 mục 6 |
 | M6.6 | Mỗi kỹ năng trong đầu ra có `demand`, `n_newcomer_jobs`, `premium` (hoặc "không định giá"), luật dẫn chứng (nếu có), và một câu mô tả có số, ví dụ "62% tin Web cho người mới đòi JavaScript" | SD5 mục 5, "truy được nguồn" |
+| M6.2' | **Quyết định 1.B (20/11, sau dry-run):** chỉ dùng luật 1 ⇒ 1; **vế phải là nền**: luật X ⇒ Y mạnh cho cạnh Y → X (Y ở bậc trước). Thay "bậc 1 = không là vế phải" của M6.2 | Theo M6.2 gốc: Web thành 1 gói 21 kỹ năng, cắt 63 cạnh, javascript ở bậc 7 sau react (react ⇒ javascript nghĩa là JavaScript là nền). Sau 1.B: Web 3 gói, cắt 2 cạnh |
+| M6.1' | **Quyết định 2.A (20/11):** giữ điểm = demand × (1 + premium) | Đã xem: xếp chỉ theo demand cho coverage@10 cao hơn ở Bridge (0,41 so với 0,27), Data/AI (0,20 so với 0,14), Tester (0,28 so với 0,24); người dùng giữ công thức |
+| M6.5' | **Quyết định 3.B (20/11):** chia 80/20 năm lần (seed 42–46, `split_seeds`), đạt khi trung bình độ lệch ≤ 10 điểm | Một lần chia (seed 42): Bridge lệch 0,139, Tester 0,204; phần 20% chỉ 19–25 tin |
+| M6.3' | **Quyết định 4.B (20/11):** kỹ năng "chưa nên đầu tư sớm" phải có ≥ 10 tin Senior/Lead (`defer_min_jobs`). Tỷ lệ ở tin người mới bằng 0 tính như 1 tin để tỷ số không thành vô cùng | Trước 4.B Web có 97 kỹ năng, đuôi là kỹ năng chỉ ở vài tin; sau 4.B còn 28 |
 
 ## 3. Quy trình xử lý
 
@@ -63,7 +67,24 @@ Một danh sách top 10 chung cho cả nghề Web chỉ đáp ứng 13% tin Web 
 
 ## 5. Dữ liệu mẫu
 
-Điền sau lần chạy thật.
+Chạy thật 20/11 (`--only bi,fp,cluster,salary,recommend`; M2, M5 cùng lần chạy). Coverage là tỷ lệ tin người mới mà top N đáp ứng ≥ 70% công cụ của tin; baseline = top N toàn thị trường (sql, python, docker, git, java, postgresql, aws, linux, kubernetes, mysql).
+
+| Nghề | Tin người mới | coverage@5 / baseline | @10 / baseline | @15 / baseline | Gói | Lệch 80/20 (TB 5 lần) | Chưa nên học sớm |
+|---|---|---|---|---|---|---|---|
+| Web | 514 (80 tin 0 công cụ bị bỏ) | 0,009 / 0,014 | **0,104 / 0,021** | 0,148 / 0,090 | 3 | 0,023 ✓ | 28 |
+| Tester | 123 (34 bỏ) | 0,146 / 0,090 | **0,236 / 0,090** | 0,405 / 0,191 | 3 | 0,088 ✓ | 5 |
+| Data/AI | 98 (15 bỏ) | 0,072 / 0,024 | **0,145 / 0,024** | 0,253 / 0,048 | 2 | 0,076 ✓ | 5 |
+| Bridge | 94 (24 bỏ) | 0,157 / 0 | **0,271 / 0** | 0,471 / 0,043 | 1 | 0,095 ✓ | 1 |
+| Security | 64 (9 bỏ) | 0,036 / 0 | **0,109 / 0,036** | 0,182 / 0,055 | 1 | 0,093 ✓ | 0 |
+| DevOps/Cloud | 45 | 0,022 / 0 | **0,089 / 0,067** | 0,178 / 0,133 | 3 | **0,106 ✗** | 1 |
+
+coverage@10 hơn baseline ở cả 6 nghề; Web@5 thấp hơn baseline. DevOps/Cloud lệch 80/20 vượt 10 điểm (45 tin, phần 20% chỉ 9 tin). Design, Game, IoT, Mobile: "ít dữ liệu"; Other: không làm lộ trình.
+
+Lộ trình mẫu (bậc trong gói; luật dẫn chứng ghi trong `sd5_<nghề>.json`):
+
+- **Web:** gói javascript: javascript → react, html, typescript → css, nodejs, vuejs → angular; gói sql_server: sql_server, csharp → dotnet; gói postgresql: mysql → postgresql → mongodb. Đơn lẻ theo điểm: python, docker, java, git, windows, sql, ms_office, … Chưa nên học sớm: aws (20% tin Senior/Lead, 4% người mới), kubernetes, spring_boot, kafka, azure.
+- **Data/AI:** gói python: python → docker, pytorch, git → tensorflow; gói sql: sql → power_bi → excel. Chưa nên học sớm: dbt, bigquery, pyspark, databricks, redshift.
+- Web có windows, ms_office trong top: dấu hiệu tin IT hỗ trợ mang nhãn Web (PRE-44).
 
 ## 6. Kiểm tra và nghiệm thu
 
@@ -78,6 +99,7 @@ Một danh sách top 10 chung cho cả nghề Web chỉ đáp ứng 13% tin Web 
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
-- Chưa có code (MINE-7). Phụ thuộc M1, M2 (phân tầng nghề × người mới), M5.
-- Đã duyệt 20/11: M6.1 (soft chỉ theo demand), M6.2 (gói = thành phần liên thông), M6.4 (bỏ tin 0 công cụ khỏi mẫu số), M6.4b.
+- **Chạy thật 20/11** (mục 5). Code `mining/recommend.py`; `coverage_share` dùng chung với `scripts/eval_skill_views.py` (`coverage_at` của script gọi lại hàm này; `NEWCOMER` lấy từ `mining.config.NEWCOMER_LABELS`). `BIG_FAMILIES` không chuyển: M6 tự xác định nghề theo M6.0.
+- Bước `recommend` dùng kết quả M2, M5 cùng lần chạy; nếu chạy riêng thì đọc `mining/artifacts/` hoặc tính trong bộ nhớ, nguồn ghi ở `metrics.recommend.inputs`.
+- Còn mở: DevOps/Cloud lệch 80/20 0,106; coverage tuyệt đối thấp (9–27% ở @10); người dùng chưa đọc tay lộ trình Web, Data/AI.
 - PRE-35 (ít tin người mới), PRE-36, PRE-40.

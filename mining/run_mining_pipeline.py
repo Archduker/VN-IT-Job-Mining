@@ -30,7 +30,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 from mining.anomaly import detect_anomalies  # noqa: E402
-from mining.bi import run_bi  # noqa: E402
+from mining.bi import _view_sets, newcomer_demand, run_bi  # noqa: E402
 from mining.association import run_association, write_hand_check  # noqa: E402
 from mining.clustering import cluster_jobs  # noqa: E402
 from mining.config import (  # noqa: E402
@@ -45,13 +45,14 @@ from mining.config import (  # noqa: E402
     MiningParams,
 )
 from mining.data_io import MiningData, file_sha256, load_mining_data, prepare_mining_data  # noqa: E402
+from mining.recommend import run_recommend  # noqa: E402
 from mining.salary_model import train_salary_model  # noqa: E402
 from mining.sanity import run_sanity_checks, summarize  # noqa: E402
 
 logger = logging.getLogger("mining")
 # Chuỗi đã duyệt (spec 03 mục 7, M0.5). bi (M1) và recommend (M6) chưa có code: chọn thì báo lỗi rõ.
 STEPS = ("bi", "fp", "cluster", "anomaly", "salary", "recommend")
-NOT_BUILT = {"recommend": "M6"}
+NOT_BUILT: dict[str, str] = {}  # M6 xong 20/11
 _sha256 = file_sha256
 
 
@@ -160,6 +161,37 @@ def run_pipeline(
         else:
             logger.warning("Bỏ qua mô hình lương: %s", m.get("skipped"))
 
+    if "recommend" in steps:
+        t = time.perf_counter()
+        blocks = {"tool": data.skills, "concept": data.concepts, "soft": data.soft}
+        demand = (outputs.get("json") or {}).get("sd1_demand.json") or newcomer_demand(meta, data.job_skills, p.bi, blocks)
+        src: dict[str, str] = {"demand": "M1.D (newcomer_demand) cùng lần chạy"}
+        rules = outputs.get("rules")
+        src["rules"] = "M2 cùng lần chạy"
+        if rules is None:
+            rp = Path(out_dir) / ARTIFACT_FILES["rules"]
+            if rp.exists():
+                rules, src["rules"] = pd.read_parquet(rp), f"đọc {rp.name}"
+            else:
+                rules, src["rules"] = run_association(data, p.association, p.bi)[0], "M2 tính trong bộ nhớ"
+        values = skill_values
+        src["shap"] = "M5 cùng lần chạy"
+        if values is None:
+            sp = Path(out_dir) / ARTIFACT_FILES["shap"]
+            if sp.exists():
+                values, src["shap"] = pd.read_parquet(sp), f"đọc {sp.name}"
+            else:
+                values = train_salary_model(meta, skills, p.salary, p.random_state, compute_shap, concepts=data.concepts)[1]
+                src["shap"] = "M5 tính trong bộ nhớ"
+        sd5, m = run_recommend(meta, _view_sets(meta, data.job_skills, blocks), demand, rules, values,
+                               p.recommend, p.random_state)
+        m["inputs"] = src
+        outputs.setdefault("json", {}).update(sd5)
+        metrics["recommend"] = m
+        timings["recommend"] = time.perf_counter() - t
+        logger.info("Lộ trình: %d nghề; coverage@10 hơn baseline ở mọi nghề: %s", m["n_families_with_path"],
+                    m["all_beat_baseline10"])
+
     checks = run_sanity_checks(meta, skills, skill_values)
     metrics["sanity_checks"] = checks
     metrics["sanity_summary"] = summarize(checks)
@@ -190,6 +222,9 @@ def _targets_summary(m: dict[str, Any]) -> dict[str, Any]:
         s["salary_beats_baseline_10pct"] = m["salary"]["meets_baseline_margin"]
         s["salary_cv_std"] = m["salary"]["meets_cv_std_target"]
         s["salary_no_company_overlap"] = m["salary"]["n_companies_overlap"] == 0
+    if "recommend" in m:
+        s["recommend_beats_baseline10"] = m["recommend"]["all_beat_baseline10"]
+        s["recommend_split_ok"] = m["recommend"]["all_split_ok"]
     s["sanity_all_passed"] = m["sanity_summary"]["all_passed"]
     return s
 

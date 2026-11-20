@@ -16,7 +16,7 @@
 | M3 Nhóm việc | [`M3_phan_cum.md`](M3_phan_cum.md) | `mining/clustering.py` | SD3 (3.1, 3.2) | Chạy thật 20/11 (1.D, 2.B, 3.B) |
 | M4 Tin khác hoặc mới | [`M4_tin_khac_moi.md`](M4_tin_khac_moi.md) | `mining/anomaly.py` | SD3 (3.3) | Đã duyệt, chưa sửa code |
 | M5 Lương và SHAP | [`M5_luong_shap.md`](M5_luong_shap.md) | `mining/salary_model.py` | SD4 | Chạy thật 20/11 (1.B, 2.A) |
-| M6 Lộ trình | [`M6_lo_trinh.md`](M6_lo_trinh.md) | **mới** `mining/recommend.py` | SD5 | Đã duyệt, chưa có code |
+| M6 Lộ trình | [`M6_lo_trinh.md`](M6_lo_trinh.md) | **mới** `mining/recommend.py` | SD5 | Chạy thật 20/11 (1.B, 2.A, 3.B, 4.B) |
 
 ## Khuôn của mỗi file
 
