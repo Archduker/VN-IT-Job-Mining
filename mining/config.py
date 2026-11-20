@@ -118,6 +118,7 @@ class AssociationParams:
     min_group_size: int = 100  # nhóm nghề ít tin hơn thì không chạy vi mô
     min_rules_target: int = 30
     min_support_count: int = 10  # M2.2a: mỗi luật dựa trên ít nhất 10 tin
+    min_level_group_size: int = 40  # 2.3, người dùng chốt 20/11 (2.B): nghề × nhóm cấp cần >= 40 giỏ
     top_n: int = 15  # 2.1
     min_family_jobs: int = 30  # 2.1: nghề < 30 tin -> "ít dữ liệu"
     rare_max_df: float = 0.02  # 2.4 (PRE-36)

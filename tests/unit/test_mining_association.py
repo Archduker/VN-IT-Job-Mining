@@ -106,15 +106,17 @@ def test_rule_backed_by_four_postings_is_dropped():
 
 
 def test_family_by_level_group_scopes_and_skips():
-    rows = [[1, 1, 0]] * 120 + [[0, 0, 1]] * 80 + [[1, 1, 1]] * 50  # người mới: A => B có lift 200/120
+    """2.B (20/11): nhóm cấp dùng ngưỡng riêng 40 giỏ; 30 giỏ thì skipped."""
+    rows = [[1, 1, 0]] * 30 + [[0, 0, 1]] * 20 + [[1, 1, 1]] * 30  # người mới 50 giỏ: A => B có lift 50/30
     sk = pd.DataFrame(rows, columns=["A", "B", "C"]).astype(np.uint8)
-    fam = pd.Series(["Web"] * 250)
-    level = pd.Series(["newcomer"] * 200 + ["middle_plus"] * 50)
-    rules, m = mine_stratified_rules(sk, fam, AssociationParams(min_group_size=100), level_group=level)
+    fam = pd.Series(["Web"] * 80)
+    level = pd.Series(["newcomer"] * 50 + ["middle_plus"] * 30)
+    rules, m = mine_stratified_rules(sk, fam, AssociationParams(min_group_size=60), level_group=level)
+    assert AssociationParams().min_level_group_size == 40
     assert set(rules["level_group"]) == {"all", "newcomer"}
     assert ((rules["job_family_scope"] == "Web") & (rules["level_group"] == "newcomer")).any()
     skipped = [s for s in m["scopes"] if s["scope"] == "Web" and s.get("level_group") == "middle_plus"][0]
-    assert "skipped" in skipped and skipped["n_transactions"] == 50
+    assert "skipped" in skipped and skipped["n_transactions"] == 30
     assert (rules["n_support"] == (rules["support"] * rules["n_transactions"]).round().astype(int)).all()
 
 
@@ -142,6 +144,15 @@ def test_top_skills_three_views_are_separate():
     web = t["families"]["Web"]
     assert [r["skill"] for r in web["tool"]] == ["python"] and [r["skill"] for r in web["soft"]] == ["english"]
     assert web["concept"] == [] and t["families"]["ALL"]["tool"][0]["share"] == 1.0
+
+
+def test_stability_top_ranks_by_confidence_times_support():
+    """1.B (20/11): top 20 của M2.5 xếp theo confidence × support, không theo lift."""
+    from mining.association import _top_keys
+
+    r = pd.DataFrame({"antecedents": [["a"], ["b"]], "consequents": [["x"], ["y"]],
+                      "confidence": [0.9, 0.7], "support": [0.02, 0.30], "lift": [40.0, 1.5]})
+    assert _top_keys(r, 1) == ["b=>y"]
 
 
 def test_support_stability_is_deterministic(data):

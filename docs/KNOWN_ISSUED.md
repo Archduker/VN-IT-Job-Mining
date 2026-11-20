@@ -191,7 +191,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 - Số trong báo cáo là dữ liệu giả từ `mining/synthetic.py`. Nhãn đã căn theo 5 cấp, 12 nhóm + Other nhưng chưa chạy trên `04_normalization/all.parquet` thật.
 
-**MINE-5. `load_mart_from_parquet.py` biến cột list thành chuỗi;** chưa có bảng `skill_salary_shap_values`. Script và `scripts/build_slides.py` còn dùng nhãn cũ ("Khác", 6 bậc).
+**MINE-5. `load_mart_from_parquet.py` biến cột list thành chuỗi;** từ 20/11 (M2) `skill_association_rules.parquet` có thêm cột `level_group` (all / newcomer / middle_plus) mà script chưa nạp, nên luật của nhóm cấp lẫn vào luật cả nghề trong `skill_rules`; chưa có bảng `skill_salary_shap_values`. Script và `scripts/build_slides.py` còn dùng nhãn cũ ("Khác", 6 bậc).
 
 **MINE-6. Ghi chú cho báo cáo đồ án:** SHAP không phải quan hệ nhân quả; `seniority_level` 0–4 gộp Thực tập và Mới tốt nghiệp.
 

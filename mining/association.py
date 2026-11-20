@@ -123,9 +123,9 @@ def mine_stratified_rules(
     for fam, lv, idx in sorted(groups, key=lambda g: (g[0], g[1] != ALL_LEVELS, g[1])):
         sub = skills.loc[idx]
         n_tx = int((sub.sum(axis=1) > 0).sum())
-        if n_tx < p.min_group_size:
-            scopes.append({"scope": fam, "level_group": lv, "n_transactions": n_tx,
-                           "skipped": f"< {p.min_group_size} tin"})
+        need = p.min_group_size if lv == ALL_LEVELS else p.min_level_group_size
+        if n_tx < need:
+            scopes.append({"scope": fam, "level_group": lv, "n_transactions": n_tx, "skipped": f"< {need} tin"})
             continue
         sup = min_support_for(n_tx, p.micro_min_support * support_factor, p.min_support_count)
         r = mine_rules(sub, sup, p.min_confidence, p.min_lift, p.max_len, fam, lv)
@@ -140,7 +140,8 @@ def mine_stratified_rules(
     no_tool = pd.Series(~has_skill).groupby(job_family).sum()
     metrics = {
         "params": {k: getattr(p, k) for k in ("macro_min_support", "micro_min_support", "min_support_count",
-                                             "min_confidence", "min_lift", "max_len", "min_group_size")},
+                                             "min_confidence", "min_lift", "max_len", "min_group_size",
+                                             "min_level_group_size")},
         "n_jobs": int(len(skills)),
         "n_jobs_without_skill": int((~has_skill).sum()),
         "n_jobs_without_tool_by_family": {k: int(v) for k, v in no_tool.items() if v},
@@ -242,21 +243,25 @@ def rare_skills(skills: pd.DataFrame, rules: pd.DataFrame, seniority: pd.Series,
 
 
 def _top_keys(rules: pd.DataFrame, k: int) -> list[str]:
-    """Top k luật theo lift, confidence (hòa thì theo chuỗi luật) để so độ ổn định."""
+    """Top k luật theo confidence × support (người dùng chốt 20/11, 1.B), hòa thì theo chuỗi luật.
+
+    Xếp theo lift thì top nghiêng về cặp hiếm, mất hết khi tăng support (đo 20/11: trùng 0,31 ở × 2)."""
     if rules.empty:
         return []
-    r = rules.assign(_k=[f"{','.join(a)}=>{','.join(c)}" for a, c in zip(rules["antecedents"], rules["consequents"], strict=True)])
-    r = r.sort_values(["lift", "confidence", "_k"], ascending=[False, False, True])
+    r = rules.assign(_k=[f"{','.join(a)}=>{','.join(c)}" for a, c in zip(rules["antecedents"], rules["consequents"], strict=True)],
+                     _s=rules["confidence"] * rules["support"])
+    r = r.sort_values(["_s", "_k"], ascending=[False, True])
     return r["_k"].head(k).tolist()
 
 
 def support_stability(skills: pd.DataFrame, job_family: pd.Series,
                       p: AssociationParams | None = None) -> dict[str, Any]:
-    """M2.5: chạy lại ALL và từng nghề với support × f (f trong stability_factors); overlap = |top_gốc ∩ top_mới| / |top_gốc|."""
+    """M2.5: chạy lại ALL và từng nghề với support × f (f trong stability_factors); overlap = |top_gốc ∩ top_mới| / |top_gốc|,
+    top xếp theo confidence × support."""
     p = p or AssociationParams()
     base, _ = mine_stratified_rules(skills, job_family, p, with_levels=False)
     scopes = sorted(set(base["job_family_scope"])) if len(base) else []
-    out: dict[str, Any] = {"top": p.stability_top, "factors": {}}
+    out: dict[str, Any] = {"top": p.stability_top, "rank_by": "confidence*support", "factors": {}}
     for f in p.stability_factors:
         new, _ = mine_stratified_rules(skills, job_family, p, support_factor=f, with_levels=False)
         per = {}
