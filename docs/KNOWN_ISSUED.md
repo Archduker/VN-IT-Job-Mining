@@ -179,7 +179,8 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 - "[TP Vũng Tàu] Chuyên Gia IT" (vietnamworks 2111189) cấp Middle, lương 127 triệu, chưa bị `salary_outlier`. Mới đọc tiêu đề, chưa đối chiếu trang gốc.
 - Cờ lương ở pre-processing (bước 04), không sửa trong Mining.
-- Sau L-57 cần kiểm tay lại: mẫu 89 tin tiêu đề chung về IT mà lớp JD và kỹ năng cổng không xếp được (về Other) và 287 tin xếp bằng lớp JD (`job_family_source` = `jd`).
+- **Kiểm tay nhóm nghề sau L-57 (người dùng chấm 22/11, `data/preprocessing/review/job_family_pre44_cham.csv`, 40 tin seed 42):** lớp JD đúng 13/20 (Infra/Support 9/11, nghề khác 4/9); tiêu đề chung để Other: 4/10 lẽ ra có nghề, 5/10 là tin **không phải IT**; M3 "nghi gán sai" chỉ trúng 3/10. Luật vòng 2 (N3e, spec `04_normalization.md` mục 2.3) đã có code và test, mô phỏng: 185 tin đổi nghề, Other 614 → 524, chấm ngược trên mẫu 26/39 → 34/39 (mẫu cũng là nơi rút ra luật nên số này lạc quan). **Chưa chạy lại 04 → Mining**: chờ người dùng chấm `data/preprocessing/review/non_it_other.csv` (40 tin Other, seed 42) để sửa bộ lọc IT bước 01 trong cùng một lần chạy.
+- **Tin không phải IT lọt vào bảng sạch** (bộ lọc IT bước 01): ví dụ "BI Engineer" (vietnamworks 2112505) có JD là vị trí R&D quy trình ở nhà máy; mua sắm CNTT, tuyển dụng, đối tác chuỗi ẩm thực, gia công CNC. Từ khóa tiêu đề không đủ phân biệt ("đào tạo", "process", "R&D" khớp cả tin IT). Chờ kết quả chấm `non_it_other.csv`.
 
 ## 3b. Data Mining
 

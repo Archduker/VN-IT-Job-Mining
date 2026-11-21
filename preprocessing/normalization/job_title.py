@@ -49,17 +49,21 @@ def fold(text: Any) -> str:
 # K9b: Data Analyst/BI/phân tích dữ liệu xếp Data Science/AI (SPEC-01 không có nhóm Analyst riêng; mặc định của agent).
 _RULES_RAW: List[Tuple[str, List[str]]] = [
     ("Embedded/IoT", ["embedded", "firmware", "iot", "rtos", "fpga", "microcontroller", "mcu", "vi điều khiển", "nhúng", "bare-metal", "device driver"]),
-    ("Security", ["security", "soc", "pentest", "pentester", "cyber", "cybersecurity", "an ninh mạng", "bảo mật", "infosec", "siem", "penetration tester", "appsec", "devsecops"]),
-    ("QA/QC", ["tester", "qa", "qc", "quality assurance", "quality control", "automation test", "manual test", "kiểm thử", "test engineer", "test lead", "software testing", "sqa", "quality engineer"]),
+    ("Security", ["security", "soc", "pentest", "pentester", "cyber", "cybersecurity", "an ninh mạng", "bảo mật", "infosec", "siem", "penetration tester", "appsec", "devsecops",
+                  "an toàn thông tin", "an ninh thông tin"]),
+    ("QA/QC", ["tester", "qa", "qc", "quality assurance", "quality control", "automation test", "manual test", "kiểm thử", "test engineer", "test lead", "software testing", "sqa", "quality engineer",
+               "test automation"]),
     ("Product/Project", ["business analyst", "ba", "phân tích nghiệp vụ", "business analysis", "functional analyst", "system analyst",
                          "product manager", "product owner", "po", "project manager", "pm", "quản lý sản phẩm", "quản lý dự án",
-                         "scrum master", "delivery manager", "agile coach", "project lead", "product specialist", "pmo"]),
+                         "scrum master", "delivery manager", "agile coach", "project lead", "product specialist", "pmo",
+                         "triển khai phần mềm", "it business partner", "it planning", "it governance", "planning & governance"]),
     ("DevOps/Cloud", ["devops", "cloud", "sre", "infrastructure engineer", "ci/cd", "platform engineer", "site reliability", "kubernetes", "k8s"]),
     ("System/Network", ["network engineer", "system engineer", "systems engineer", "quản trị mạng", "quản trị hệ thống", "helpdesk", "help desk", "it support",
                         "cisco", "mạng máy tính", "network admin", "network administrator", "system admin", "system administrator", "sysadmin", "kỹ sư hệ thống"]),
     ("Data Science/AI", ["data engineer", "big data", "etl", "data warehouse", "dwh", "kỹ sư dữ liệu", "data platform", "dataops", "data scientist", "data science", "machine learning", "ai engineer", "ai developer", "ai researcher", "ml engineer", "deep learning",
                          "nlp", "computer vision", "trí tuệ nhân tạo", "khoa học dữ liệu", "data analyst", "data analytics", "phân tích dữ liệu",
-                         "bi analyst", "bi developer", "bi engineer", "business intelligence", "power bi", "tableau", "genai", "llm", "ai"]),
+                         "bi analyst", "bi developer", "bi engineer", "business intelligence", "power bi", "tableau", "genai", "llm", "ai",
+                         "data governance", "master data", "cơ sở dữ liệu", "dba", "database administrator"]),
     ("Mobile", ["mobile", "flutter", "react native", "ios", "android", "swift", "kotlin"]),
     ("Fullstack", ["fullstack", "full-stack", "full stack", "toàn diện"]),
     ("Frontend", ["frontend", "front-end", "front end", "ui developer", "web frontend", "reactjs", "react developer", "vuejs", "angular developer"]),
@@ -90,7 +94,7 @@ GENERIC_IT_TITLES = {"IT", "CNTT", "Công Nghệ Thông Tin", "Kỹ Thuật", "T
 
 # N3b lớp JD: từ quá chung trong JD (có ở mọi loại tin) không tính là tín hiệu; nhóm Infra/Support thêm từ vựng hỗ trợ.
 JD_WEAK_TERMS = {fold(w) for w in ["bảo mật", "ai", "pm", "po", "ba", "qa", "qc", "cloud", "mobile", "ios", "android", "etl", "llm",
-                                   "genai", "soc", "kubernetes", "k8s", "cisco"]}
+                                   "genai", "soc", "kubernetes", "k8s", "cisco", "cơ sở dữ liệu", "erp", "sap"]}
 INFRA_JD_TERMS = [fold(w) for w in ["helpdesk", "help desk", "it support", "hỗ trợ kỹ thuật", "hỗ trợ người dùng", "máy tính", "máy in",
                                     "phần cứng", "lắp đặt", "cài đặt phần mềm", "sửa chữa", "mạng lan", "lan/wan", "wifi", "camera",
                                     "tổng đài", "windows server", "active directory", "quản trị hệ thống", "quản trị mạng", "hạ tầng",
@@ -102,7 +106,21 @@ for _fam, _terms in _JD_RAW:
     _tgt = FAMILY_MAP[_fam]
     JD_RULES[_tgt] = list(dict.fromkeys(JD_RULES.get(_tgt, []) + _terms))
 JD_MIN_HITS = 2
-JD_MARGIN = 1
+JD_MARGIN = 2  # PRE-44 vòng 2 (người dùng chốt 22/11): JD lưỡng lự giữa hai nghề thì không quyết định
+
+# PRE-44 vòng 2 (chấm 40 tin, người dùng chốt 22/11). Các luật đọc tiêu đề đầy đủ (`title_fold`), không chỉ chức danh lõi.
+TITLE_PAREN_DEVOPS = [fold("devops")]                       # "(DevOps)" trong ngoặc -> DevOps/Cloud, trừ khi lõi là Security
+TITLE_PAREN_QA = [fold("qa")]                               # "(QA Intern)" trong ngoặc -> Tester khi lõi không ra nhóm
+INFRA_FIRST = [fold("quản trị hệ thống an ninh mạng")]      # quản trị hệ thống, không phải chuyên viên bảo mật
+INFRA_TITLE = [fold("infrastructure")]                      # -> Infra/Support nếu tiêu đề không nhắc cloud
+CLOUD_TITLE = [fold(w) for w in ["cloud", "azure", "aws", "gcp", "devops", "kubernetes", "automation"]]
+MANAGER_CANON = {"IT", "CNTT", "Công Nghệ Thông Tin", "IT Staff", "Kỹ Sư IT", "Kỹ Thuật IT"}  # trưởng nhóm IT chung -> Bridge
+MANAGER_INFRA = [fold(w) for w in ["hạ tầng", "hỗ trợ", "support", "infrastructure", "camera", "helpdesk", "help desk",
+                                   "operations", "vận hành", "mạng", "network", "system", "hệ thống"]]
+ERP_TITLE = [fold(w) for w in ["erp", "sap"]]              # tư vấn/triển khai ERP -> Bridge; lập trình ERP thì không
+ERP_DEV = [fold(w) for w in ["developer", "lập trình", "abap", "fiori", "backend", "software engineer", "programmer"]]
+DEV_TITLE = [fold(w) for w in ["lập trình", "programmer", "programer", "software developer"]]  # tiêu đề IT chung -> Web
+_PAREN_TEXT = re.compile(r"\(([^()]*)\)")
 
 _GENERIC_RE = re.compile(r"^(?:it|cntt|cong nghe thong tin)(?: (?:engineer|executive|staff|specialist|generalist|manager|officer|fulltime))?$")
 
@@ -271,19 +289,38 @@ def jd_family(jd_fold: str, skills_std: Optional[Sequence[str]]) -> Optional[str
 
 
 def family_from_title(core_fold: str, canonical: Optional[str], skills_std: Optional[Sequence[str]],
-                      title_dict: Dict[str, Any], tech_hint: Sequence[str] = (), jd_text: str = "") -> Tuple[str, str]:
+                      title_dict: Dict[str, Any], tech_hint: Sequence[str] = (), jd_text: str = "",
+                      title_fold: str = "", title_level: Optional[str] = None) -> Tuple[str, str]:
     """N3a (PRE-44): chức danh cụ thể -> từ khóa tiêu đề -> chức danh chung về lập trình -> lớp JD (chỉ chức danh chung về IT)
-    -> kỹ năng cổng -> Other. `jd_text` là mô tả + yêu cầu đã fold. Trả (family, source)."""
+    -> kỹ năng cổng -> Other. `jd_text` là mô tả + yêu cầu đã fold; `title_fold` là tiêu đề đầy đủ đã fold (N3e);
+    `title_level` là cấp tách từ tiêu đề (`core_title`). Trả (family, source)."""
     fam = title_dict["family_of"].get(canonical) if canonical else None
     if fam and canonical not in GENERIC_DEV_TITLES and canonical not in GENERIC_IT_TITLES:
         return FAMILY_MAP.get(fam, fam), "canonical"
-    for family, terms in FAMILY_RULES_V2:
-        if has_term(core_fold, terms):
-            return FAMILY_MAP[family], "title"
+    paren = " ".join(_PAREN_TEXT.findall(title_fold or ""))
+    title_fam = next((family for family, terms in FAMILY_RULES_V2 if has_term(core_fold, terms)), None)
+    # N3e: "(DevOps)" trong ngoặc thắng nhóm của lõi, trừ Security (DevSecOps giữ Security)
+    if has_term(paren, TITLE_PAREN_DEVOPS) and title_fam != "Security":
+        return "DevOps/Cloud", "title_paren"
+    if has_term(core_fold, INFRA_FIRST):
+        return "Infra/Support", "title"
+    if title_fam:
+        return FAMILY_MAP[title_fam], "title"
+    if has_term(core_fold, ERP_TITLE) and not has_term(title_fold or core_fold, ERP_DEV):
+        return "Bridge", "title"
+    if has_term(core_fold, INFRA_TITLE) and not has_term(title_fold or core_fold, CLOUD_TITLE):
+        return "Infra/Support", "title"
+    if has_term(paren, TITLE_PAREN_QA):
+        return "Tester", "title_paren"
     if fam and canonical in GENERIC_DEV_TITLES:
         return FAMILY_MAP.get(fam, fam), "canonical_generic"
     skills = set(skills_std or []) | set(tech_hint or [])
     if canonical in GENERIC_IT_TITLES:
+        # N3e: trưởng nhóm IT chung (không phải hạ tầng/hỗ trợ) -> Bridge; tiêu đề IT chung nhắc lập trình -> Web
+        if title_level == "Lead/Manager" and canonical in MANAGER_CANON and not has_term(title_fold, MANAGER_INFRA):
+            return "Bridge", "title_manager"
+        if has_term(title_fold, DEV_TITLE):
+            return "Web", "title_full"
         jf = jd_family(jd_text, skills)
         if jf:
             return jf, "jd"

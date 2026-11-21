@@ -145,6 +145,50 @@ def test_n3b_jd_layer_not_used_for_developer_titles():
     assert _fam44("Developer", ["Docker", "Kubernetes"], jd="devops, ci/cd, kubernetes, docker") == ("Web", "canonical_generic")
 
 
+def _fam44b(title, skills=(), jd=""):
+    """Như _fam44 nhưng truyền tiêu đề đầy đủ và cấp (N3e, PRE-44 vòng 2)."""
+    from preprocessing.normalization.job_title import canonical_title
+    d = build_title_dict([
+        {"canonical": "IT", "family": "Web", "aliases": ["it"], "approved": True},
+        {"canonical": "Công Nghệ Thông Tin", "family": "Web", "aliases": ["cong nghe thong tin"], "approved": True},
+        {"canonical": "Technical", "family": "Web", "aliases": ["technical"], "approved": True},
+        {"canonical": "Developer", "family": "Web", "aliases": ["developer"], "approved": True},
+    ])
+    core, level, hint = core_title(title)
+    canon = canonical_title(fold(core), d)[0]
+    return family_from_title(fold(core), canon, list(skills), d, hint, jd_text=fold(jd), title_fold=fold(title), title_level=level)
+
+
+def test_n3e_manager_and_dev_titles():
+    """Người dùng chấm 22/11: trưởng nhóm IT chung là Bridge; tiêu đề IT chung nhắc lập trình là Web."""
+    assert _fam44b("Trưởng Nhóm Công Nghệ Thông Tin", jd="helpdesk, máy in, mạng lan, server") == ("Bridge", "title_manager")
+    assert _fam44b("Trưởng Nhóm IT")[0] == "Bridge"
+    assert _fam44b("Trưởng Nhóm Hạ Tầng Công Nghệ Thông Tin")[0] != "Bridge"   # hạ tầng giữ Infra/JD
+    assert _fam44b("Technical Lead")[0] != "Bridge"                             # Tech Lead không phải quản lý IT chung
+    assert _fam44b("Nhân Viên IT - Lập Trình & Quản Trị Hệ Thống", jd="helpdesk, máy in, server") == ("Web", "title_full")
+
+
+def test_n3e_paren_and_new_keywords():
+    assert _fam44b("System Admin (AI Automation/Devops)") == ("DevOps/Cloud", "title_paren")
+    assert _fam44b("DevSecOps Engineer (DevOps, AWS)")[0] == "Security"
+    assert _fam44b("Thực Tập Sinh Đảm Bảo Chất Lượng (QA Intern)") == ("Tester", "title_paren")
+    assert _fam44b("IT Infrastructure Lead")[0] == "Infra/Support"
+    assert _fam44b("Infrastructure Lead (Cloud)")[0] != "Infra/Support"
+    assert _fam44b("Nhân Viên Quản Trị Hệ Thống An Ninh Mạng")[0] == "Infra/Support"
+    assert _fam44b("Chuyên Viên An Ninh Thông Tin (ISO)")[0] == "Security"
+    assert _fam44b("Senior Test Automation Engineer")[0] == "Tester"
+    assert _fam44b("Data Governance Specialist")[0] == "Data/AI"
+    assert _fam44b("Chuyên Viên Triển Khai Phần Mềm")[0] == "Bridge"
+    assert _fam44b("IT Planning & Governance Analyst")[0] == "Bridge"
+
+
+def test_n3b_jd_margin_two():
+    """JD_MARGIN = 2: JD lưỡng lự giữa hai nghề (hơn nhau 1 tín hiệu) không quyết định."""
+    from preprocessing.normalization.job_title import jd_family
+    assert jd_family(fold("helpdesk, máy in, mạng lan, kiểm thử"), []) == "Infra/Support"
+    assert jd_family(fold("helpdesk, máy in, tester, kiểm thử"), []) is None
+
+
 def test_n16_fuzzy_rejects_swapped_acronym():
     """L-58: khớp gần đúng không ghép hai tiêu đề chỉ khác nhau ở từ viết tắt ngắn (AI/BI ↔ IT)."""
     from preprocessing.normalization.job_title import canonical_title
@@ -228,3 +272,11 @@ def test_n6_n7_salary_outliers_winsorize_and_log():
     # Kiểm tra hàng có salary 20m có log_salary_max gần 16.81
     row_20m = next(r for r in updated_rows if r["salary_max_vnd"] == 20_000_000.0)
     assert abs(row_20m["log_salary_max"] - 16.8112) < 0.01
+
+
+def test_n3e_erp_consultant_vs_erp_developer():
+    """ERP/SAP tư vấn, triển khai -> Bridge; lập trình ERP/SAP không bị kéo sang Bridge."""
+    assert _fam44b("ERP Solution Consultant")[0] == "Bridge"
+    assert _fam44b("Chuyên Viên SAP (SAP FICO)")[0] == "Bridge"
+    assert _fam44b("ERP Developer (Odoo, Python, API, PostgreSQL)")[0] != "Bridge"
+    assert _fam44b("SAP Fiori Developer")[0] != "Bridge"

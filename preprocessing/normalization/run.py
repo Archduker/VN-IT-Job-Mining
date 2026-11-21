@@ -268,7 +268,8 @@ def process_source_records(
         canon, csrc, score = canonical_title(core_fold, title_dict)
         # N3b (PRE-44): lớp JD cho tiêu đề chung về IT đọc mô tả + yêu cầu bản gốc đã fold (bước 03)
         jd_fold = f"{rec.get('description_fold') or ''} {rec.get('requirements_fold') or ''}".strip()
-        fam, fsrc = family_from_title(core_fold, canon, skills_std, title_dict, tech_hint, jd_text=jd_fold)
+        fam, fsrc = family_from_title(core_fold, canon, skills_std, title_dict, tech_hint, jd_text=jd_fold,
+                                      title_fold=tfold(rec.get("job_title_clean")), title_level=_title_level)
         rec["title_canonical"], rec["title_canonical_source"], rec["title_match_score"] = canon, csrc, score
         rec["job_family"], rec["job_family_source"] = fam, fsrc
         rec["job_family_generic_title"] = is_generic_title(core)
