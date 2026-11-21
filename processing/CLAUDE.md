@@ -34,7 +34,7 @@ Giai đoạn 3 của quy trình chuẩn: **Processing** (bước 07–12: tách 
 - `underthesea.word_tokenize` trả list, token ghép có dấu cách bên trong; token kỹ năng là `sk_<slug>` và không bao giờ bị coi là stopword.- 08 quét thêm bản dịch (`description_vi`, `requirements_vi`) với tin đã dịch; kỹ năng chỉ thấy trong bản dịch có `via = "text_vi"`. F1 trên gold chỉ tính `via = "text"`.
 - Hằng `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` ở `encoding/constants.py` (19/11); `preprocessing/encoding/run.py` import lại từ đây, đừng định nghĩa lại bên đó.
 - K-tool, K-concept, K-soft chỉ có một định nghĩa: `extraction/skills.skill_view`. Bên đọc (bước 10, Mining) gọi hàm này, không tự lọc `kind`/`type`. Kỹ năng kỹ thuật `type = null` (chưa duyệt) không phải công cụ.
-- Nhóm nghề là 10 nhóm + Other (`fam__*`, L-47). Đổi nhóm thì sửa `FAMILY_MAP` ở `preprocessing/normalization/job_title.py`, rồi chạy lại 04, 10 và Mining.
+- Nhóm nghề là 11 nhóm + Other (`fam__*`, L-47). Đổi nhóm thì sửa `FAMILY_MAP` ở `preprocessing/normalization/job_title.py`, rồi chạy lại 04, 10 và Mining.
 - `posted_month` của 10 đang lấy tháng từ `posted_date` (thiếu 36%); sẽ đổi sang cột `posted_month` của bảng 04 (PRE-37).
 - 12_e5: cache theo `sha1(text)` ở `data/processing/12_e5/cache/`, chạy lại không tính lại; khoảng 40 ms/bullet trên Quadro T1000. Model chưa ghim commit (PRE-40).
 

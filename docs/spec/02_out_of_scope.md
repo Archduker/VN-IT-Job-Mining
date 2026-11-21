@@ -37,7 +37,7 @@ flowchart TD
 - **Quyết định ngoài phạm vi:**
   - Hệ thống **KHÔNG** phân tích, lưu trữ hoặc mô hình hóa các tin tuyển dụng phi CNTT.
   - Các tin này bị chặn đứng và đào thải ngay tại bước đầu tiên của chuỗi tiền xử lý (**Bước 01 Clean**) bằng bộ quy tắc lọc nghiêm ngặt (Keyword Blacklist + Regex Domain Guard).
-  - Không xây dựng các mô hình khai phá cho các ngành nghề ngoài 10 nhóm nghề IT + Other (`job_family`, chốt ở L-47; `docs/spec/preprocessing/04_normalization.md`).
+  - Không xây dựng các mô hình khai phá cho các ngành nghề ngoài 11 nhóm nghề IT + Other (`job_family`, chốt ở L-47; `docs/spec/preprocessing/04_normalization.md`).
 
 ### 2.2. Không xây dựng Nền tảng Tìm việc / Job Portal Người dùng cuối (No Operational Job Portal)
 - **Mô tả:** Đồ án không phải là một website thương mại điện tử tuyển dụng (như TopCV thu nhỏ hay ITViec clone).
@@ -83,7 +83,7 @@ flowchart TD
 | Lĩnh vực | Thuộc phạm vi dự án (IN SCOPE) | Nằm ngoài phạm vi dự án (OUT OF SCOPE) |
 | :--- | :--- | :--- |
 | **Nguồn dữ liệu** | 8 sàn tuyển dụng lớn tại VN: TopCV, TopDev, VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints, JobsGO. | LinkedIn, Facebook Groups, Telegram Channels, Diễn đàn sinh viên Voz/Reddit, Website tuyển dụng nội bộ từng công ty. |
-| **Ngành nghề** | Tin tuyển dụng CNTT thuộc 10 nhóm nghề + Other (Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI). | Bán hàng (Sales), Marketing phi công nghệ, Nhân sự (HR), Kế toán, Hành chính, Chăm sóc khách hàng, Lao động phổ thông. |
+| **Ngành nghề** | Tin tuyển dụng CNTT thuộc 11 nhóm nghề + Other (Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, Infra/Support, IoT, Design, Data/AI). | Bán hàng (Sales), Marketing phi công nghệ, Nhân sự (HR), Kế toán, Hành chính, Chăm sóc khách hàng, Lao động phổ thông. |
 | **Thời gian dữ liệu** | Tin đăng từ tháng 9, cào trong tháng 10–11/2026. Tháng của tin là `posted_month` (lấy từ ngày đăng; nguồn không có thì lấy từ lần cào đầu tiên). | Chuỗi thời gian nhiều năm, dự báo xu hướng, so tổng số tin giữa các tháng (mục 2.6). |
 | **Chế độ xử lý** | Batch Processing qua Apache Airflow DAGs và CLI Python. | Real-time Streaming (Apache Kafka, Apache Flink, WebSockets stream). |
 | **Xử lý ngôn ngữ** | Luật, regex, từ điển đã duyệt (taxonomy 230 kỹ năng). Model chạy local, có ghi tên trong report: fastText `lid.176` (nhận diện ngôn ngữ, bước 03), `VietAI/envit5-translation` (dịch EN→VI, bước 03), `intfloat/multilingual-e5-base` (embedding, bước 12_e5). Không dùng model để phân loại hay chuẩn hóa trường. | Gọi API LLM thương mại trả phí (OpenAI GPT-4, Anthropic Claude, Gemini API) trong luồng production. |

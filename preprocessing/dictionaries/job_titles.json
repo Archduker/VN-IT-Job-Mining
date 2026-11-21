@@ -9,6 +9,7 @@
     "DevOps/Cloud",
     "Tester",
     "Security",
+    "Infra/Support",
     "IoT",
     "Design",
     "Data/AI",
@@ -89,12 +90,13 @@
     },
     {
       "canonical": "Thiết Kế",
-      "family": "Web",
+      "family": "Design",
       "aliases": [
         "thiet ke"
       ],
       "docs_with_title": 55,
-      "approved": true
+      "approved": true,
+      "note_pre44": "đổi nhóm 21/11 (PRE-44, quyết định 4.A): Web -> Design"
     },
     {
       "canonical": "Data Analyst",
@@ -773,12 +775,13 @@
     },
     {
       "canonical": "Agentic Engineer",
-      "family": "Web",
+      "family": "Data/AI",
       "aliases": [
         "agentic engineer"
       ],
       "docs_with_title": 7,
-      "approved": true
+      "approved": true,
+      "note_pre44": "đổi nhóm 21/11 (PRE-44, quyết định 4.A): Web -> Data/AI"
     },
     {
       "canonical": "Account Manager",
@@ -1070,12 +1073,13 @@
     },
     {
       "canonical": "Thiết Kế 2D",
-      "family": "Bridge",
+      "family": "Design",
       "aliases": [
         "thiet ke 2d"
       ],
       "docs_with_title": 5,
-      "approved": true
+      "approved": true,
+      "note_pre44": "đổi nhóm 21/11 (PRE-44, quyết định 4.A): Bridge -> Design"
     },
     {
       "canonical": "Kiểm Thử Tự Động",
@@ -1088,12 +1092,13 @@
     },
     {
       "canonical": "Designer POD",
-      "family": "Bridge",
+      "family": "Design",
       "aliases": [
         "designer pod"
       ],
       "docs_with_title": 5,
-      "approved": true
+      "approved": true,
+      "note_pre44": "đổi nhóm 21/11 (PRE-44, quyết định 4.A): Bridge -> Design"
     },
     {
       "canonical": "Kỹ Thuật IT",
@@ -1106,12 +1111,13 @@
     },
     {
       "canonical": "Quản Trị Cơ Sở Dữ Liệu DBA",
-      "family": "DevOps/Cloud",
+      "family": "Data/AI",
       "aliases": [
         "quan tri co so du lieu dba"
       ],
       "docs_with_title": 5,
-      "approved": true
+      "approved": true,
+      "note_pre44": "đổi nhóm 21/11 (PRE-44, quyết định 4.A): DevOps/Cloud -> Data/AI"
     },
     {
       "canonical": "Process Quality Assurance",
@@ -1160,12 +1166,13 @@
     },
     {
       "canonical": "Product Designer",
-      "family": "Bridge",
+      "family": "Design",
       "aliases": [
         "product designer"
       ],
       "docs_with_title": 5,
-      "approved": true
+      "approved": true,
+      "note_pre44": "đổi nhóm 21/11 (PRE-44, quyết định 4.A): Bridge -> Design"
     },
     {
       "canonical": "Network & System Administrator",
@@ -1232,12 +1239,13 @@
     },
     {
       "canonical": "Odoo Developer",
-      "family": "DevOps/Cloud",
+      "family": "Bridge",
       "aliases": [
         "odoo developer"
       ],
       "docs_with_title": 5,
-      "approved": true
+      "approved": true,
+      "note_pre44": "đổi nhóm 21/11 (PRE-44, quyết định 4.A): DevOps/Cloud -> Bridge"
     },
     {
       "canonical": "Master Data Engineer",

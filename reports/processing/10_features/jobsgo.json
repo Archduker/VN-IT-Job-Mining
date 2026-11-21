@@ -2,8 +2,8 @@
   "step": "10_features",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:56:39+00:00",
-  "code_version": "fe1bae6",
+  "generated_at": "2026-11-21T09:30:59+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": null,
     "rows": 497
@@ -24,7 +24,7 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_cols": 994,
+    "n_cols": 995,
     "min_df": 15,
     "model": "không dùng model"
   },

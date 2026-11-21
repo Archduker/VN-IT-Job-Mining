@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:18:36+00:00",
-  "code_version": "63f62b2",
+  "generated_at": "2026-11-21T09:29:55+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 1270
@@ -111,7 +111,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 1118,
+      "rows_affected": 1094,
       "examples": [
         {
           "job_id": "2013194",
@@ -161,7 +161,7 @@
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 155,
+      "rows_affected": 147,
       "examples": []
     },
     {
@@ -461,23 +461,26 @@
       "(trống)": 31
     },
     "job_family_distribution": {
-      "Web": 477,
-      "Bridge": 188,
-      "Other": 151,
-      "Tester": 116,
-      "Data/AI": 93,
-      "Security": 77,
-      "DevOps/Cloud": 64,
-      "Design": 46,
+      "Web": 251,
+      "Bridge": 195,
+      "Other": 174,
+      "Infra/Support": 144,
+      "Data/AI": 121,
+      "Tester": 118,
+      "Design": 76,
+      "DevOps/Cloud": 63,
+      "Mobile": 44,
+      "Security": 38,
       "Game": 34,
-      "Mobile": 12,
       "IoT": 7
     },
     "job_family_source_distribution": {
-      "canonical": 593,
-      "title": 479,
-      "none": 151,
-      "skills": 42
+      "title": 673,
+      "canonical": 211,
+      "none": 174,
+      "canonical_generic": 84,
+      "jd": 79,
+      "skills": 44
     },
     "work_mode_distribution": {
       "onsite": 1218,
@@ -509,7 +512,7 @@
     "anomalies_by_kind": {
       "level_inferred": 863,
       "seniority_can_kiem": 16,
-      "job_family_can_kiem": 140,
+      "job_family_can_kiem": 132,
       "tinh_unknown": 5,
       "salary_negotiable_with_value": 8,
       "salary_iqr_outlier_by_level": 15,

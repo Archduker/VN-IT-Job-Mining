@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:18:42+00:00",
-  "code_version": "63f62b2",
+  "generated_at": "2026-11-21T09:30:18+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 121
@@ -89,13 +89,13 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 101,
+      "rows_affected": 97,
       "examples": [
         {
           "job_id": "200011696",
           "field": "job_family",
           "before": "IT Helpdesk",
-          "after": "Web (canonical)",
+          "after": "Infra/Support (title)",
           "url": "https://vieclam24h.vn/it-phan-cung-mang/it-helpdesk-c7p122id200011696.html"
         },
         {
@@ -109,7 +109,7 @@
           "job_id": "200665507",
           "field": "job_family",
           "before": "Nhân Viên Dự Án Công Nghệ Thông Tin",
-          "after": "Web (canonical)",
+          "after": "Infra/Support (jd)",
           "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
         }
       ]
@@ -410,20 +410,24 @@
       "(trống)": 2
     },
     "job_family_distribution": {
-      "Web": 68,
-      "Other": 20,
-      "Bridge": 11,
-      "Security": 8,
+      "Infra/Support": 44,
+      "Other": 24,
+      "Web": 18,
+      "Bridge": 12,
+      "Data/AI": 7,
       "Tester": 7,
-      "Data/AI": 5,
-      "Game": 1,
-      "DevOps/Cloud": 1
+      "Mobile": 3,
+      "Design": 3,
+      "DevOps/Cloud": 2,
+      "Game": 1
     },
     "job_family_source_distribution": {
-      "canonical": 66,
-      "title": 33,
-      "none": 20,
-      "skills": 2
+      "title": 58,
+      "none": 24,
+      "jd": 22,
+      "canonical_generic": 9,
+      "canonical": 5,
+      "skills": 3
     },
     "work_mode_distribution": {
       "onsite": 120,

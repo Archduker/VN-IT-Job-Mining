@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:18:39+00:00",
-  "code_version": "63f62b2",
+  "generated_at": "2026-11-21T09:30:07+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 168
@@ -89,13 +89,13 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 132,
+      "rows_affected": 128,
       "examples": [
         {
           "job_id": "2017763",
           "field": "job_family",
           "before": "Lập trình viên Front-end",
-          "after": "Web (canonical)",
+          "after": "Web (title)",
           "url": "https://topdev.vn/viec-lam/lap-trinh-vien-front-end-cong-ty-cp-phan-mem-mor-2-2017763"
         },
         {
@@ -109,7 +109,7 @@
           "job_id": "2132792",
           "field": "job_family",
           "before": "AI-NATIVE SOFTWARE ENGINEER",
-          "after": "Web (canonical)",
+          "after": "Data/AI (title)",
           "url": "https://topdev.vn/viec-lam/ai-native-software-engineer-weeds-vina-2132792"
         }
       ]
@@ -139,7 +139,7 @@
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 23,
+      "rows_affected": 22,
       "examples": []
     },
     {
@@ -433,21 +433,24 @@
       "Intern/Fresher": 8
     },
     "job_family_distribution": {
-      "Web": 52,
-      "Other": 36,
-      "Tester": 24,
-      "Bridge": 21,
-      "Data/AI": 17,
-      "DevOps/Cloud": 6,
-      "Security": 4,
-      "Design": 3,
+      "Other": 40,
+      "Data/AI": 25,
+      "Web": 25,
+      "Tester": 25,
+      "Bridge": 23,
+      "Design": 9,
+      "DevOps/Cloud": 8,
+      "Infra/Support": 6,
+      "Security": 2,
       "Game": 2,
       "Mobile": 1
     },
     "job_family_source_distribution": {
-      "title": 66,
-      "canonical": 60,
-      "none": 36,
+      "title": 87,
+      "none": 40,
+      "canonical": 22,
+      "jd": 7,
+      "canonical_generic": 6,
       "skills": 4
     },
     "work_mode_distribution": {
@@ -478,7 +481,7 @@
     "anomalies_by_kind": {
       "level_inferred": 121,
       "seniority_can_kiem": 5,
-      "job_family_can_kiem": 18,
+      "job_family_can_kiem": 17,
       "tinh_unknown": 0,
       "salary_negotiable_with_value": 0,
       "salary_iqr_outlier_by_level": 3,

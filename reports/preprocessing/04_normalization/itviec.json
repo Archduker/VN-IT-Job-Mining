@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:18:42+00:00",
-  "code_version": "63f62b2",
+  "generated_at": "2026-11-21T09:30:20+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 785
@@ -111,13 +111,13 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 708,
+      "rows_affected": 702,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
           "field": "job_family",
           "before": "AI Engineer (Remote)",
-          "after": "Web (canonical)",
+          "after": "Data/AI (title)",
           "url": "https://itviec.com/viec-lam-it/ai-engineer-remote-alpha-bravo-development-4157"
         },
         {
@@ -465,22 +465,25 @@
       "Junior": 53
     },
     "job_family_distribution": {
-      "Web": 297,
-      "DevOps/Cloud": 85,
-      "Data/AI": 78,
-      "Bridge": 77,
-      "Other": 74,
-      "Tester": 65,
-      "Security": 43,
-      "Mobile": 9,
+      "Web": 216,
+      "Data/AI": 104,
+      "Bridge": 103,
+      "DevOps/Cloud": 90,
+      "Other": 79,
+      "Tester": 66,
+      "Security": 33,
+      "Infra/Support": 21,
+      "Mobile": 16,
       "Design": 6,
       "Game": 2
     },
     "job_family_source_distribution": {
-      "title": 344,
-      "canonical": 289,
-      "none": 74,
-      "skills": 29
+      "title": 468,
+      "canonical": 83,
+      "none": 79,
+      "canonical_generic": 60,
+      "skills": 29,
+      "jd": 17
     },
     "work_mode_distribution": {
       "onsite": 591,

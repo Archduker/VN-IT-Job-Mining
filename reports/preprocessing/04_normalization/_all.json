@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:18:47+00:00",
-  "code_version": "63f62b2",
+  "generated_at": "2026-11-21T09:30:38+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 3997
@@ -141,20 +141,20 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 3462,
+      "rows_affected": 3371,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
           "field": "job_family",
           "before": "Retail IT Executive (Infrastructure)",
-          "after": "Web (canonical)",
+          "after": "DevOps/Cloud (jd)",
           "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
         },
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
           "field": "job_family",
           "before": "[DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai",
-          "after": "Security (canonical)",
+          "after": "Web (jd)",
           "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
         },
         {
@@ -166,14 +166,14 @@
         }
       ],
       "by_source": {
-        "topcv": 1118,
-        "topdev": 132,
-        "vietnamworks": 489,
-        "careerviet": 338,
-        "vieclam24h": 101,
-        "itviec": 708,
-        "glints": 136,
-        "jobsgo": 440
+        "topcv": 1094,
+        "topdev": 128,
+        "vietnamworks": 471,
+        "careerviet": 323,
+        "vieclam24h": 97,
+        "itviec": 702,
+        "glints": 134,
+        "jobsgo": 422
       }
     },
     {
@@ -231,17 +231,17 @@
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 441,
+      "rows_affected": 411,
       "examples": [],
       "by_source": {
-        "topcv": 155,
-        "topdev": 23,
+        "topcv": 147,
+        "topdev": 22,
         "vietnamworks": 12,
-        "careerviet": 70,
+        "careerviet": 59,
         "vieclam24h": 2,
         "itviec": 22,
         "glints": 4,
-        "jobsgo": 153
+        "jobsgo": 143
       }
     },
     {
@@ -714,11 +714,11 @@
       "winsorize_q99_max": 127000000.0
     },
     "total_jobs": 3916,
-    "anomalies_total": 3765,
+    "anomalies_total": 3734,
     "anomalies_by_kind": {
       "level_inferred": 2978,
       "seniority_can_kiem": 76,
-      "job_family_can_kiem": 364,
+      "job_family_can_kiem": 333,
       "tinh_unknown": 65,
       "salary_negotiable_with_value": 20,
       "salary_iqr_outlier_by_level": 109,

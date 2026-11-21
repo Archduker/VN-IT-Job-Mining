@@ -112,7 +112,7 @@ Số liệu ở bảng dưới lấy ngày **10/11/2026** từ `reports/processi
 | Số tin IT sau lọc và khử trùng lặp | 4.671 (topcv 1.520, itviec 818, vietnamworks 774, jobsgo 547, careerviet 400, glints 246, topdev 202, vieclam24h 164) |
 | Cột kỹ năng trong ma trận đặc trưng | 171 (min_df 15) |
 | `skills_std` có giá trị | 92,9% |
-| `job_family` | 100% (10 nhóm + Other) |
+| `job_family` | 100% (11 nhóm + Other) |
 | `seniority` | 91,7% |
 | `exp_min_years` | 94,8% |
 | `tinh_chinh` | 97,8% |

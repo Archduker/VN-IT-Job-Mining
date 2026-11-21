@@ -21,7 +21,7 @@ Pre-processing biến raw của 8 sàn thành **một bảng sạch**, mỗi dò
 
 | Cột trong bảng sạch | Bước tạo | SD dùng |
 |---|---|---|
-| `job_family` (10 nhóm + Other) | 04 N3 | SD1, SD2 (luật theo nghề), SD3 (đối chiếu cụm), SD4, SD5 |
+| `job_family` (11 nhóm + Other) | 04 N3 | SD1, SD2 (luật theo nghề), SD3 (đối chiếu cụm), SD4, SD5 |
 | `seniority`, `seniority_level` (5 cấp) | 04 N2, M3c | SD1, SD2, SD4, SD5 (lọc tin người mới) |
 | `tinh_chinh` (34 tỉnh) | 04 N1, N13 | SD1, SD4 |
 | `work_mode` | 04 | SD1 |
@@ -194,7 +194,7 @@ Bảng 04 là bảng làm việc: giữ mọi cột trung gian, cờ và bản s
 | `url` | string | Link gốc | `source_url` | truy vết |
 | `title` | string | Tiêu đề đã làm sạch | `job_title_clean` | SD1, SD3 |
 | `title_canonical` | string, null | Chức danh chuẩn theo `job_titles.json`; null nếu không khớp (55% tin, 10/11) | `title_canonical` | SD1 |
-| `job_family` | string | 10 nhóm + Other | `job_family` | tất cả |
+| `job_family` | string | 11 nhóm + Other | `job_family` | tất cả |
 | `seniority` | string, null | Intern/Fresher, Junior, Middle, Senior, Lead/Manager; null nếu không rõ | `seniority` | SD1, SD4, SD5 |
 | `seniority_inferred` | bool | true nếu cấp bậc do bước 04 suy ra (từ tiêu đề, kinh nghiệm, loại hợp đồng), không lấy từ ô của sàn | `level_inferred` | SD1 (1.2) |
 | `exp_min_years` | float, null | Năm kinh nghiệm tối thiểu; "Không yêu cầu" = 0 | `exp_min_years` | SD1, SD4, SD5 |

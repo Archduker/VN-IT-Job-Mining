@@ -2,8 +2,8 @@
   "step": "10_features",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:56:39+00:00",
-  "code_version": "fe1bae6",
+  "generated_at": "2026-11-21T09:30:59+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": null,
     "rows": 3916
@@ -58,7 +58,7 @@
         "output": 497
       }
     },
-    "n_cols": 994,
+    "n_cols": 995,
     "min_df": 15,
     "n_skill_cols": 291,
     "n_cols_by_block": {

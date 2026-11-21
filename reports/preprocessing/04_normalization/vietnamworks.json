@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:18:39+00:00",
-  "code_version": "63f62b2",
+  "generated_at": "2026-11-21T09:30:08+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 592
@@ -111,13 +111,13 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 489,
+      "rows_affected": 471,
       "examples": [
         {
           "job_id": "2102610",
           "field": "job_family",
           "before": "IT Data Engineer",
-          "after": "Web (canonical)",
+          "after": "Data/AI (title)",
           "url": "https://www.vietnamworks.com/it-data-engineer-2102610-jv"
         },
         {
@@ -131,7 +131,7 @@
           "job_id": "2102768",
           "field": "job_family",
           "before": "PowerApp Platform Developer",
-          "after": "Web (canonical)",
+          "after": "Web (canonical_generic)",
           "url": "https://www.vietnamworks.com/powerapp-platform-developer-2102768-jv"
         }
       ]
@@ -466,22 +466,26 @@
       "Intern/Fresher": 19
     },
     "job_family_distribution": {
-      "Web": 190,
-      "Other": 101,
-      "Data/AI": 80,
-      "Bridge": 70,
-      "Tester": 63,
-      "Security": 41,
+      "Other": 119,
+      "Data/AI": 105,
+      "Bridge": 84,
+      "Web": 78,
+      "Tester": 66,
+      "Infra/Support": 52,
       "DevOps/Cloud": 35,
+      "Security": 32,
+      "Design": 6,
+      "Mobile": 4,
       "Game": 1,
-      "IoT": 1,
-      "Design": 1
+      "IoT": 1
     },
     "job_family_source_distribution": {
-      "title": 238,
-      "canonical": 223,
-      "none": 101,
-      "skills": 21
+      "title": 313,
+      "none": 119,
+      "canonical": 65,
+      "canonical_generic": 31,
+      "jd": 31,
+      "skills": 24
     },
     "work_mode_distribution": {
       "onsite": 565,

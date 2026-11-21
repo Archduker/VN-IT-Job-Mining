@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:18:43+00:00",
-  "code_version": "63f62b2",
+  "generated_at": "2026-11-21T09:30:25+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 501
@@ -111,7 +111,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 440,
+      "rows_affected": 422,
       "examples": [
         {
           "job_id": "28732145575",
@@ -121,18 +121,18 @@
           "url": "https://jobsgo.vn/viec-lam/ios-intern-28732145575.html"
         },
         {
-          "job_id": "28742737195",
-          "field": "job_family",
-          "before": "IT Staff (Programming Engineer)",
-          "after": "Web (canonical)",
-          "url": "https://jobsgo.vn/viec-lam/it-staff-programming-engineer-28742737195.html"
-        },
-        {
           "job_id": "28761788532",
           "field": "job_family",
           "before": "KỸ SƯ TRÍ TUỆ NHÂN TẠO / AI ENGINEER",
           "after": "Data/AI (title)",
           "url": "https://jobsgo.vn/viec-lam/ky-su-tri-tue-nhan-tao-ai-engineer-28761788532.html"
+        },
+        {
+          "job_id": "28893015988",
+          "field": "job_family",
+          "before": "Nhân Viên IT - IT Helpdesk (Tiếng Anh hoặc Tiếng Nhật)",
+          "after": "Infra/Support (jd)",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-it-helpdesk-tieng-anh-hoac-tieng-nhat-28893015988.html"
         }
       ]
     },
@@ -161,7 +161,7 @@
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 153,
+      "rows_affected": 143,
       "examples": []
     },
     {
@@ -460,22 +460,26 @@
       "(trống)": 6
     },
     "job_family_distribution": {
-      "Web": 234,
-      "Bridge": 65,
-      "Other": 61,
-      "Tester": 51,
-      "Data/AI": 42,
-      "Security": 22,
-      "DevOps/Cloud": 12,
-      "Design": 5,
+      "Infra/Support": 102,
+      "Web": 90,
+      "Other": 79,
+      "Bridge": 68,
+      "Data/AI": 56,
+      "Tester": 55,
+      "DevOps/Cloud": 13,
+      "Mobile": 12,
+      "Security": 11,
+      "Design": 7,
       "Game": 3,
-      "Mobile": 2
+      "IoT": 1
     },
     "job_family_source_distribution": {
-      "canonical": 250,
-      "title": 176,
-      "none": 61,
-      "skills": 10
+      "title": 267,
+      "none": 79,
+      "jd": 71,
+      "canonical": 36,
+      "canonical_generic": 30,
+      "skills": 14
     },
     "work_mode_distribution": {
       "onsite": 482,
@@ -507,7 +511,7 @@
     "anomalies_by_kind": {
       "level_inferred": 383,
       "seniority_can_kiem": 16,
-      "job_family_can_kiem": 137,
+      "job_family_can_kiem": 127,
       "tinh_unknown": 2,
       "salary_negotiable_with_value": 3,
       "salary_iqr_outlier_by_level": 7,

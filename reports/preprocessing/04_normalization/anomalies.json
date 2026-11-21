@@ -1,10 +1,10 @@
 {
  "step": "04_normalization",
- "total": 3765,
+ "total": 3734,
  "by_kind": {
   "level_inferred": 2978,
   "seniority_can_kiem": 76,
-  "job_family_can_kiem": 364,
+  "job_family_can_kiem": 333,
   "tinh_unknown": 65,
   "salary_negotiable_with_value": 20,
   "salary_iqr_outlier_by_level": 109,
@@ -264,7 +264,7 @@
    "job_id_global": "topcv_2324252",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-thiet-ke-bao-bi-thuong-hieu/2324252.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Design",
    "detail": ""
   },
   {
@@ -345,16 +345,6 @@
    "url": "https://www.topcv.vn/brand/smartosc/tuyen-dung/performance-tester-banking-j2329091.html",
    "field": "raw_location_text",
    "value": null,
-   "detail": ""
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "topcv",
-   "job_id": "2329344",
-   "job_id_global": "topcv_2329344",
-   "url": "https://www.topcv.vn/viec-lam/technical-training-development-game-industry/2329344.html",
-   "field": "job_family",
-   "value": "Web",
    "detail": ""
   },
   {
@@ -534,7 +524,7 @@
    "job_id_global": "topcv_1449612",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-ho-tro-ky-thuat-it-helpdesk/1449612.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -894,7 +884,7 @@
    "job_id_global": "topcv_2260554",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-it-trien-khai-du-an-remote-ha-noi-muc-luong-10-14-trieu/2260554.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -1178,16 +1168,6 @@
    "detail": "suy từ exp_min_years=3.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "topcv",
-   "job_id": "2296933",
-   "job_id_global": "topcv_2296933",
-   "url": "https://www.topcv.vn/viec-lam/technical-product-developer-handbags/2296933.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "topcv",
    "job_id": "2299407",
@@ -1294,7 +1274,7 @@
    "job_id_global": "topcv_2311505",
    "url": "https://www.topcv.vn/viec-lam/it-helpdesk-lam-viec-tai-vinh-phuc-co-xe-dua-don/2311505.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -1314,7 +1294,7 @@
    "job_id_global": "topcv_2312173",
    "url": "https://www.topcv.vn/viec-lam/ky-su-it/2312173.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -1584,7 +1564,7 @@
    "job_id_global": "topcv_2321504",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-it-support/2321504.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -2194,7 +2174,7 @@
    "job_id_global": "topcv_2328194",
    "url": "https://www.topcv.vn/viec-lam/ky-su-bao-tri-ha-tang-cntt/2328194.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -2558,16 +2538,6 @@
    "detail": ""
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "topcv",
-   "job_id": "2331939",
-   "job_id_global": "topcv_2331939",
-   "url": "https://www.topcv.vn/viec-lam/thuc-tap-sinh-cong-nghe-thong-tin-fulltime/2331939.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "topcv",
    "job_id": "2332031",
@@ -2654,7 +2624,7 @@
    "job_id_global": "topcv_2332426",
    "url": "https://www.topcv.vn/viec-lam/it-systems-engineer-phu-tho-29084/2332426.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -2834,7 +2804,7 @@
    "job_id_global": "topcv_1788043",
    "url": "https://www.topcv.vn/viec-lam/ky-thuat-vien-it-ky-thuat-cong-nghe-thong-tin/1788043.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -2934,7 +2904,7 @@
    "job_id_global": "topcv_1969813",
    "url": "https://www.topcv.vn/viec-lam/truong-nhom-ky-thuat-it-va-camera/1969813.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -3094,7 +3064,7 @@
    "job_id_global": "topcv_2161630",
    "url": "https://www.topcv.vn/viec-lam/giam-sat-it/2161630.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -3176,16 +3146,6 @@
    "field": "seniority",
    "value": "Intern/Fresher",
    "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "topcv",
-   "job_id": "2205676",
-   "job_id_global": "topcv_2205676",
-   "url": "https://www.topcv.vn/viec-lam/fresher-it-comtor-dao-tao-bai-ban-nhieu-co-hoi/2205676.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -3274,7 +3234,7 @@
    "job_id_global": "topcv_2238313",
    "url": "https://www.topcv.vn/viec-lam/truong-nhom-cong-nghe-thong-tin/2238313.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -3524,7 +3484,7 @@
    "job_id_global": "topcv_2289861",
    "url": "https://www.topcv.vn/viec-lam/ky-su-quan-tri-mang/2289861.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -3564,7 +3524,7 @@
    "job_id_global": "topcv_2298139",
    "url": "https://www.topcv.vn/viec-lam/presale-network-engineer/2298139.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -3574,7 +3534,7 @@
    "job_id_global": "topcv_2298290",
    "url": "https://www.topcv.vn/viec-lam/thuc-tap-sinh-quan-tri-he-thong-tiep-thi-lien-ket/2298290.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -3684,7 +3644,7 @@
    "job_id_global": "topcv_2308460",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-quan-tri-he-thong-du-lieu/2308460.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -3804,7 +3764,7 @@
    "job_id_global": "topcv_2315125",
    "url": "https://www.topcv.vn/viec-lam/quan-tri-mang/2315125.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -3934,7 +3894,7 @@
    "job_id_global": "topcv_2319044",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-cao-cap-quan-ly-tuan-thu-bao-mat-cong-nghe-thong-tin/2319044.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Security",
    "detail": ""
   },
   {
@@ -3994,7 +3954,7 @@
    "job_id_global": "topcv_2319608",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-ky-thuat-it/2319608.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -4288,16 +4248,6 @@
    "detail": "suy từ exp_min_years=1.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "topcv",
-   "job_id": "2329232",
-   "job_id_global": "topcv_2329232",
-   "url": "https://www.topcv.vn/viec-lam/it-project-admin/2329232.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "topcv",
    "job_id": "2329261",
@@ -4564,7 +4514,7 @@
    "job_id_global": "topcv_2312964",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-it-van-hanh-erp/2312964.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -4584,7 +4534,7 @@
    "job_id_global": "topcv_2315135",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke-kiem-media/2315135.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Design",
    "detail": ""
   },
   {
@@ -4934,7 +4884,7 @@
    "job_id_global": "topcv_2002662",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-network/2002662.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -5144,7 +5094,7 @@
    "job_id_global": "topcv_2125526",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-it/2125526.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -5344,7 +5294,7 @@
    "job_id_global": "topcv_2216917",
    "url": "https://www.topcv.vn/viec-lam/ky-thuat-vien-it-support-vien-thong/2216917.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -5384,7 +5334,7 @@
    "job_id_global": "topcv_2225852",
    "url": "https://www.topcv.vn/viec-lam/truong-nhom-system-administrator/2225852.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -5504,7 +5454,7 @@
    "job_id_global": "topcv_2246370",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-it-helpdesk/2246370.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -5654,7 +5604,7 @@
    "job_id_global": "topcv_2266764",
    "url": "https://www.topcv.vn/viec-lam/it-helpdesk/2266764.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -5674,7 +5624,7 @@
    "job_id_global": "topcv_2269566",
    "url": "https://www.topcv.vn/brand/elcom/tuyen-dung/senior-network-engineer-service-provider-ip-mpls-j2269566.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -5714,7 +5664,7 @@
    "job_id_global": "topcv_2277469",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-it/2277469.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -5764,7 +5714,7 @@
    "job_id_global": "topcv_2283670",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-it-helpdesk/2283670.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -6064,7 +6014,7 @@
    "job_id_global": "topcv_2307215",
    "url": "https://www.topcv.vn/viec-lam/vien-ha-tang-cntt-ung-dung-ai-it-infrastructure-ai-specialist/2307215.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Data/AI",
    "detail": ""
   },
   {
@@ -6124,7 +6074,7 @@
    "job_id_global": "topcv_2307663",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-ha-tang-cong-nghe-thong-tin/2307663.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -6354,7 +6304,7 @@
    "job_id_global": "topcv_2309797",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-it-phu-trach-ky-thuat-quan-ly-he-thong-website-chi-chon-ung-vien-tu-28-den-50-tuoi/2309797.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -6434,7 +6384,7 @@
    "job_id_global": "topcv_2310846",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke-designer/2310846.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Design",
    "detail": ""
   },
   {
@@ -6494,7 +6444,7 @@
    "job_id_global": "topcv_2311023",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke-designer/2311023.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Design",
    "detail": ""
   },
   {
@@ -6634,7 +6584,7 @@
    "job_id_global": "topcv_2313671",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-it-he-thong/2313671.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -7024,17 +6974,7 @@
    "job_id_global": "topcv_2319047",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-ho-tro-cong-nghe-thong-tin-it-helpdesk/2319047.html",
    "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "topcv",
-   "job_id": "2320537",
-   "job_id_global": "topcv_2320537",
-   "url": "https://www.topcv.vn/viec-lam/quan-ly-doi-tac-cong-nghe-thong-tin/2320537.html",
-   "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -7074,7 +7014,7 @@
    "job_id_global": "topcv_2320905",
    "url": "https://www.topcv.vn/viec-lam/quan-ly-it/2320905.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -7204,7 +7144,7 @@
    "job_id_global": "topcv_2321841",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-it-van-phong/2321841.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -7284,7 +7224,7 @@
    "job_id_global": "topcv_2322873",
    "url": "https://www.topcv.vn/viec-lam/ky-su-it-phan-cung/2322873.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -7474,7 +7414,7 @@
    "job_id_global": "topcv_2326216",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-thiet-ke/2326216.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Design",
    "detail": ""
   },
   {
@@ -7534,7 +7474,7 @@
    "job_id_global": "topcv_2327322",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-it-ha-tang/2327322.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -7924,7 +7864,7 @@
    "job_id_global": "topcv_2002233",
    "url": "https://www.topcv.vn/viec-lam/it-helpdesk-engineer-it-support-cong-nghe-thong-tin-cntt-tai-ha-noi-thu-nhap-hap-dan/2002233.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -8114,7 +8054,7 @@
    "job_id_global": "topcv_2157679",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-he-thong/2157679.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -8234,7 +8174,7 @@
    "job_id_global": "topcv_2224124",
    "url": "https://www.topcv.vn/viec-lam/it-helpdesk/2224124.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -8404,7 +8344,7 @@
    "job_id_global": "topcv_2248462",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-it/2248462.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -8454,7 +8394,7 @@
    "job_id_global": "topcv_2266475",
    "url": "https://www.topcv.vn/viec-lam/it-product-operation-expert/2266475.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Tester",
    "detail": ""
   },
   {
@@ -8474,7 +8414,7 @@
    "job_id_global": "topcv_2269836",
    "url": "https://www.topcv.vn/viec-lam/it-helpdesk/2269836.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -8514,7 +8454,7 @@
    "job_id_global": "topcv_2271451",
    "url": "https://www.topcv.vn/viec-lam/it-engineer-vsip-bac-ninh/2271451.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -8564,7 +8504,7 @@
    "job_id_global": "topcv_2280308",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-quan-tri-he-thong-va-ho-tro-phan-mem/2280308.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -8654,7 +8594,7 @@
    "job_id_global": "topcv_2303045",
    "url": "https://www.topcv.vn/viec-lam/lead-it-security-engineer-pentest/2303045.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Security",
    "detail": ""
   },
   {
@@ -8854,7 +8794,7 @@
    "job_id_global": "topcv_2304387",
    "url": "https://www.topcv.vn/viec-lam/chuyen-vien-thiet-ke/2304387.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Design",
    "detail": ""
   },
   {
@@ -8874,7 +8814,7 @@
    "job_id_global": "topcv_2304575",
    "url": "https://www.topcv.vn/viec-lam/technical-lead-ha-tang-cntt/2304575.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -9074,7 +9014,7 @@
    "job_id_global": "topcv_2305438",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-it/2305438.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -9274,7 +9214,7 @@
    "job_id_global": "topcv_2306643",
    "url": "https://www.topcv.vn/viec-lam/ki-thuat-vien-phan-cung-it-helpdesk/2306643.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -9404,7 +9344,7 @@
    "job_id_global": "topcv_2309251",
    "url": "https://www.topcv.vn/viec-lam/chu-quan-it/2309251.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -9794,7 +9734,7 @@
    "job_id_global": "topcv_2316622",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-it-may-tinh-camera/2316622.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -9935,16 +9875,6 @@
    "url": "https://www.topcv.vn/viec-lam/ai-product-builder/2320093.html",
    "field": "job_family",
    "value": "Data/AI",
-   "detail": ""
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "topcv",
-   "job_id": "2320237",
-   "job_id_global": "topcv_2320237",
-   "url": "https://www.topcv.vn/viec-lam/truong-phong-van-hanh-va-ho-tro-cntt/2320237.html",
-   "field": "job_family",
-   "value": "Web",
    "detail": ""
   },
   {
@@ -10204,7 +10134,7 @@
    "job_id_global": "topcv_2324227",
    "url": "https://www.topcv.vn/viec-lam/it-specialist-infrastructure-and-network-focus-hn/2324227.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -10234,7 +10164,7 @@
    "job_id_global": "topcv_2328580",
    "url": "https://www.topcv.vn/viec-lam/it-support-engineer-it-freshers-dayshift-english-fluent-20m-gross/2328580.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -10398,16 +10328,6 @@
    "detail": "suy từ exp_min_years=0.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "topcv",
-   "job_id": "2343348",
-   "job_id_global": "topcv_2343348",
-   "url": "https://www.topcv.vn/viec-lam/it-infrastructure-lead-regional-retail-expansion/2343348.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "topcv",
    "job_id": "2343371",
@@ -10464,7 +10384,7 @@
    "job_id_global": "topcv_2344486",
    "url": "https://www.topcv.vn/viec-lam/nhan-vien-ky-thuat-du-an-cctv-it-15-20tr-tai-ha-noi/2344486.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -10554,7 +10474,7 @@
    "job_id_global": "topcv_2345590",
    "url": "https://www.topcv.vn/viec-lam/technical-business-analyst/2345590.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Bridge",
    "detail": ""
   },
   {
@@ -11364,7 +11284,7 @@
    "job_id_global": "topdev_2137286",
    "url": "https://topdev.vn/viec-lam/truong-nhom-quan-ly-thiet-ke-mep-cong-ty-co-phan-tap-doan-apec-group-2137286",
    "field": "job_family",
-   "value": "Web",
+   "value": "Design",
    "detail": ""
   },
   {
@@ -11404,7 +11324,7 @@
    "job_id_global": "topdev_2137503",
    "url": "https://topdev.vn/viec-lam/viettel-asset-ky-su-quan-ly-thiet-ke-kien-truc-viettel-group-2137503",
    "field": "job_family",
-   "value": "Web",
+   "value": "Design",
    "detail": ""
   },
   {
@@ -11724,7 +11644,7 @@
    "job_id_global": "topdev_2138565",
    "url": "https://topdev.vn/viec-lam/ky-su-thiet-ke-uav-cong-ty-co-phan-aipt-viet-nam-2138565",
    "field": "job_family",
-   "value": "Web",
+   "value": "Design",
    "detail": ""
   },
   {
@@ -11836,16 +11756,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "topdev",
-   "job_id": "2139091",
-   "job_id_global": "topdev_2139091",
-   "url": "https://topdev.vn/viec-lam/nhan-vien-ky-thuat-cong-nghe-thiet-ke-jig-duong-do-ga-cong-ty-co-phan-tap-doan-karofi-2139091",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -17098,16 +17008,6 @@
    "detail": "suy từ exp_min_years=2.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C8119A",
-   "job_id_global": "careerviet_35C8119A",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/truong-nhom-mua-sam-cong-nghe-thong-tin.35C8119A.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "careerviet",
    "job_id": "35C811A3",
@@ -17116,16 +17016,6 @@
    "field": "seniority",
    "value": "Junior",
    "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C811A3",
-   "job_id_global": "careerviet_35C811A3",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-mua-sam-cong-nghe-thong-tin.35C811A3.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -17304,7 +17194,7 @@
    "job_id_global": "careerviet_35C8248B",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-system-support-nhan-vien-ho-tro-he-thong-cntt.35C8248B.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -17454,7 +17344,7 @@
    "job_id_global": "careerviet_35C832FF",
    "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-quan-tri-he-thong-va-mang.35C832FF.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -17484,7 +17374,7 @@
    "job_id_global": "careerviet_35C833DD",
    "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-it-tieng-trung-lam-tai-quang-ninh.35C833DD.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -17544,7 +17434,7 @@
    "job_id_global": "careerviet_35C83731",
    "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-quan-tri-mang-network.35C83731.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -17634,7 +17524,7 @@
    "job_id_global": "careerviet_35C8402B",
    "url": "https://careerviet.vn/vi/tim-viec-lam/presale-network-engineer.35C8402B.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -17714,7 +17604,7 @@
    "job_id_global": "careerviet_35C84493",
    "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-it.35C84493.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -17948,16 +17838,6 @@
    "detail": ""
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C85B2F",
-   "job_id_global": "careerviet_35C85B2F",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C85B2F.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "careerviet",
    "job_id": "35C85F90",
@@ -18054,7 +17934,7 @@
    "job_id_global": "careerviet_35C864B3",
    "url": "https://careerviet.vn/vi/tim-viec-lam/postsale-network-engineer.35C864B3.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -18104,7 +17984,7 @@
    "job_id_global": "careerviet_35C8651E",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-security-officer-gorvernance-risk-compliance.35C8651E.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Security",
    "detail": ""
   },
   {
@@ -18134,7 +18014,7 @@
    "job_id_global": "careerviet_35C86733",
    "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cong-nghe-thong-tin-it-project.35C86733.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -18155,16 +18035,6 @@
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-mid-senior-technology-governance-compliance-grc-chinh-sach-tuan-thu-cong-nghe.35C86787.html",
    "field": "seniority",
    "value": "Senior",
-   "detail": ""
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C86787",
-   "job_id_global": "careerviet_35C86787",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/it-mid-senior-technology-governance-compliance-grc-chinh-sach-tuan-thu-cong-nghe.35C86787.html",
-   "field": "job_family",
-   "value": "Web",
    "detail": ""
   },
   {
@@ -18204,7 +18074,7 @@
    "job_id_global": "careerviet_35C86B5C",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-support.35C86B5C.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -18244,7 +18114,7 @@
    "job_id_global": "careerviet_35C86C63",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-business-analyst-erp-trien-khai-quan-tri-he-thong-lam-viec-tai-khu-ngoai-giao-doan.35C86C63.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Bridge",
    "detail": ""
   },
   {
@@ -18294,7 +18164,7 @@
    "job_id_global": "careerviet_35C8737C",
    "url": "https://careerviet.vn/vi/tim-viec-lam/ip-network-engineer.35C8737C.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -18314,7 +18184,7 @@
    "job_id_global": "careerviet_35C8748A",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-security-governance-specialist-id5748.35C8748A.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Security",
    "detail": ""
   },
   {
@@ -18334,7 +18204,7 @@
    "job_id_global": "careerviet_35C87608",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-engineer.35C87608.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -18574,7 +18444,7 @@
    "job_id_global": "careerviet_35C87F54",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-ba-intern.35C87F54.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Bridge",
    "detail": ""
   },
   {
@@ -18744,7 +18614,7 @@
    "job_id_global": "careerviet_35C882B7",
    "url": "https://careerviet.vn/vi/tim-viec-lam/ai-engineer-long-thanh-dong-nai-28944.35C882B7.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Data/AI",
    "detail": ""
   },
   {
@@ -18764,7 +18634,7 @@
    "job_id_global": "careerviet_35C88388",
    "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cong-nghe-thong-tin-it-executive.35C88388.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -18795,16 +18665,6 @@
    "url": "https://careerviet.vn/vi/tim-viec-lam/ai-engineering-director-education.35C88490.html",
    "field": "job_family",
    "value": "Data/AI",
-   "detail": ""
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C884B3",
-   "job_id_global": "careerviet_35C884B3",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/technical-designer.35C884B3.html",
-   "field": "job_family",
-   "value": "Web",
    "detail": ""
   },
   {
@@ -18854,7 +18714,7 @@
    "job_id_global": "careerviet_35C88679",
    "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-it-van-phong.35C88679.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -18894,7 +18754,7 @@
    "job_id_global": "careerviet_35C886B2",
    "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-it-network-helpdesk-information-security-tieng-anh-tieng-trung.35C886B2.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -18956,16 +18816,6 @@
    "field": "seniority",
    "value": "Junior",
    "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C888E4",
-   "job_id_global": "careerviet_35C888E4",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-ky-thuat-phan-mem-dien-hoa-3d.35C888E4.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -19054,7 +18904,7 @@
    "job_id_global": "careerviet_35C88A9E",
    "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-it-he-thong-va-van-hanh-ai.35C88A9E.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Data/AI",
    "detail": ""
   },
   {
@@ -19144,7 +18994,7 @@
    "job_id_global": "careerviet_35C88E0E",
    "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-it.35C88E0E.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -19224,7 +19074,7 @@
    "job_id_global": "careerviet_35C88F76",
    "url": "https://careerviet.vn/vi/tim-viec-lam/senior-ai-engineer.35C88F76.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Data/AI",
    "detail": ""
   },
   {
@@ -19244,7 +19094,7 @@
    "job_id_global": "careerviet_35C88FFC",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-helpdesk.35C88FFC.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -19308,16 +19158,6 @@
    "detail": "suy từ exp_min_years=1.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C89133",
-   "job_id_global": "careerviet_35C89133",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/it-engineer.35C89133.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "careerviet",
    "job_id": "35C89192",
@@ -19334,7 +19174,7 @@
    "job_id_global": "careerviet_35C89192",
    "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-cong-nghe-thong-tin-it.35C89192.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -19434,7 +19274,7 @@
    "job_id_global": "careerviet_35C89463",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-staff.35C89463.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -19446,16 +19286,6 @@
    "field": "seniority",
    "value": "Intern/Fresher",
    "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C894D8",
-   "job_id_global": "careerviet_35C894D8",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/quan-ly-doi-tac-cong-nghe-thong-tin-it-business-partner-manager.35C894D8.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -19504,7 +19334,7 @@
    "job_id_global": "careerviet_35C89632",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-senior-staff.35C89632.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -19664,7 +19494,7 @@
    "job_id_global": "careerviet_35C89A3C",
    "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-it-helpdesk.35C89A3C.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -19726,16 +19556,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=3.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C89A58",
-   "job_id_global": "careerviet_35C89A58",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/cvcc-cv-dich-vu-va-chinh-sach-cntt.35C89A58.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -19894,7 +19714,7 @@
    "job_id_global": "careerviet_35C89E9E",
    "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-cong-nghe-thong-tin-it-officer.35C89E9E.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -20128,16 +19948,6 @@
    "detail": "suy từ exp_min_years=3.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C8A43E",
-   "job_id_global": "careerviet_35C8A43E",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-mua-sam-cong-nghe-thong-tin-id10498.35C8A43E.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "careerviet",
    "job_id": "35C8A449",
@@ -20174,7 +19984,7 @@
    "job_id_global": "careerviet_35C8A4CB",
    "url": "https://careerviet.vn/vi/tim-viec-lam/giam-sat-it.35C8A4CB.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -20274,7 +20084,7 @@
    "job_id_global": "careerviet_35C8A8AA",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-general-manager.35C8A8AA.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Bridge",
    "detail": ""
   },
   {
@@ -20314,7 +20124,7 @@
    "job_id_global": "careerviet_35C8ABD2",
    "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-it.35C8ABD2.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -20344,7 +20154,7 @@
    "job_id_global": "careerviet_35C8AD16",
    "url": "https://careerviet.vn/vi/tim-viec-lam/truong-nhom-it.35C8AD16.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -20608,16 +20418,6 @@
    "detail": "suy từ exp_min_years=1.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C8B298",
-   "job_id_global": "careerviet_35C8B298",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/nhan-vien-it.35C8B298.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "careerviet",
    "job_id": "35C8B2A1",
@@ -20724,7 +20524,7 @@
    "job_id_global": "careerviet_35C8B6A1",
    "url": "https://careerviet.vn/vi/tim-viec-lam/it-business-analyst.35C8B6A1.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Bridge",
    "detail": ""
   },
   {
@@ -20906,16 +20706,6 @@
    "field": "seniority",
    "value": "Junior",
    "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "careerviet",
-   "job_id": "35C8C434",
-   "job_id_global": "careerviet_35C8C434",
-   "url": "https://careerviet.vn/vi/tim-viec-lam/junior-it-service-specialist.35C8C434.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -30804,7 +30594,7 @@
    "job_id_global": "glints_4901fe21-e0ec-4b68-ad77-dd723a68162a",
    "url": "https://glints.com/vn/opportunities/jobs/it-helpdesk/4901fe21-e0ec-4b68-ad77-dd723a68162a",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -31344,7 +31134,7 @@
    "job_id_global": "glints_9ff6e38f-648b-4ba9-928e-f8c99d86b24a",
    "url": "https://glints.com/vn/opportunities/jobs/quan-nam-tu-liem-ha-noi-it-helpdesk-support-thoi-vu-5-thang/9ff6e38f-648b-4ba9-928e-f8c99d86b24a",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -32094,7 +31884,7 @@
    "job_id_global": "jobsgo_28893015988",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-it-helpdesk-tieng-anh-hoac-tieng-nhat-28893015988.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -32134,7 +31924,7 @@
    "job_id_global": "jobsgo_28898705589",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-support-van-phong-tuyen-nu-28898705589.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -32224,7 +32014,7 @@
    "job_id_global": "jobsgo_28964930372",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-ho-tro-it-ha-tang-850-id-21713-28964930372.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -32274,7 +32064,7 @@
    "job_id_global": "jobsgo_28971842083",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-van-phong-28971842083.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -32354,7 +32144,7 @@
    "job_id_global": "jobsgo_28976730523",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-system-network-28976730523.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -32604,7 +32394,7 @@
    "job_id_global": "jobsgo_28993921537",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-van-phong-28993921537.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -32834,7 +32624,7 @@
    "job_id_global": "jobsgo_29011845817",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-system-network-tieng-anh-trong-cong-viec-29011845817.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -33024,7 +32814,7 @@
    "job_id_global": "jobsgo_29021473328",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phan-cung-helpdesk-luong-9-10-trieu-29021473328.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -33104,7 +32894,7 @@
    "job_id_global": "jobsgo_29027855458",
    "url": "https://jobsgo.vn/viec-lam/chuyen-vien-it-29027855458.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -33176,16 +32966,6 @@
    "field": "seniority",
    "value": "Junior",
    "detail": "suy từ exp_min_years=1.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29037252126",
-   "job_id_global": "jobsgo_29037252126",
-   "url": "https://jobsgo.vn/viec-lam/it-admin-support-specialist-nghi-thu-7-chu-nhat-29037252126.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "job_family_can_kiem",
@@ -33264,7 +33044,7 @@
    "job_id_global": "jobsgo_29047463534",
    "url": "https://jobsgo.vn/viec-lam/it-system-29047463534.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -33344,7 +33124,7 @@
    "job_id_global": "jobsgo_29059820424",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-ho-tro-29059820424.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -33444,7 +33224,7 @@
    "job_id_global": "jobsgo_29066080343",
    "url": "https://jobsgo.vn/viec-lam/senior-network-engineer-service-provideripmpls-29066080343.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -33506,16 +33286,6 @@
    "field": "seniority",
    "value": "Intern/Fresher",
    "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29069420777",
-   "job_id_global": "jobsgo_29069420777",
-   "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-fulltime-cntt-29069420777.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -33664,7 +33434,7 @@
    "job_id_global": "jobsgo_29080867874",
    "url": "https://jobsgo.vn/viec-lam/it-ai-automation-video-content-specialist-29080867874.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Data/AI",
    "detail": ""
   },
   {
@@ -34004,7 +33774,7 @@
    "job_id_global": "jobsgo_29102567116",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-trien-khai-29102567116.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -34044,7 +33814,7 @@
    "job_id_global": "jobsgo_29104861967",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-29104861967.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -34208,16 +33978,6 @@
    "detail": "suy từ exp_min_years=3.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29120165500",
-   "job_id_global": "jobsgo_29120165500",
-   "url": "https://jobsgo.vn/viec-lam/chuyen-gia-it-phan-mem-29120165500.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "jobsgo",
    "job_id": "29120817292",
@@ -34294,7 +34054,7 @@
    "job_id_global": "jobsgo_29121170346",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-khong-can-kinh-nghiem-luong-den-9-trieu-dong-nai-n-29121170346.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -34314,7 +34074,7 @@
    "job_id_global": "jobsgo_29124646570",
    "url": "https://jobsgo.vn/viec-lam/network-engineer-29124646570.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -34334,7 +34094,7 @@
    "job_id_global": "jobsgo_29126018049",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-quan-tri-mang-va-he-thong-29126018049.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -34364,7 +34124,7 @@
    "job_id_global": "jobsgo_29127593213",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-helpdesk-l1-tieng-anh-29127593213.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -34474,7 +34234,7 @@
    "job_id_global": "jobsgo_29141321582",
    "url": "https://jobsgo.vn/viec-lam/hcm834-to-pho-it-helpdesk-kcx-linh-trung-thu-duc-hcm-nd-29141321582.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -34544,7 +34304,7 @@
    "job_id_global": "jobsgo_29146169285",
    "url": "https://jobsgo.vn/viec-lam/chuyen-vien-it-29146169285.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -34664,7 +34424,7 @@
    "job_id_global": "jobsgo_29159340915",
    "url": "https://jobsgo.vn/viec-lam/it-engineer-it-operations-29159340915.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -34764,7 +34524,7 @@
    "job_id_global": "jobsgo_29168968426",
    "url": "https://jobsgo.vn/viec-lam/it-support-29168968426.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -35004,7 +34764,7 @@
    "job_id_global": "jobsgo_29186227335",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-ky-thuat-it-29186227335.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -35094,7 +34854,7 @@
    "job_id_global": "jobsgo_29194103155",
    "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-it-microsoft-365-it-microsoft-365-intern-29194103155.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -35124,7 +34884,7 @@
    "job_id_global": "jobsgo_29194795684",
    "url": "https://jobsgo.vn/viec-lam/ky-su-giai-phap-cntt-dtvt-29194795684.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -35234,7 +34994,7 @@
    "job_id_global": "jobsgo_29203160348",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-support-29203160348.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -35414,7 +35174,7 @@
    "job_id_global": "jobsgo_29225239802",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-helpdesk-29225239802.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -35464,7 +35224,7 @@
    "job_id_global": "jobsgo_29229232028",
    "url": "https://jobsgo.vn/viec-lam/it-helpdesk-da-nang-29229232028.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -35614,7 +35374,7 @@
    "job_id_global": "jobsgo_29241955551",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-thiet-ke-chuyen-dong-mscv-50-2-29241955551.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Design",
    "detail": ""
   },
   {
@@ -35674,7 +35434,7 @@
    "job_id_global": "jobsgo_29256254238",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-it-officer-29256254238.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -35724,7 +35484,7 @@
    "job_id_global": "jobsgo_29271191138",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phan-cung-29271191138.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -35864,7 +35624,7 @@
    "job_id_global": "jobsgo_29286576145",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-tieng-nhat-n3-mscv-224-1-29286576145.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -35956,16 +35716,6 @@
    "field": "seniority",
    "value": "Intern/Fresher",
    "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29290853530",
-   "job_id_global": "jobsgo_29290853530",
-   "url": "https://jobsgo.vn/viec-lam/fresher-nganh-cong-nghe-thong-tin-ho-chi-minh-29290853530.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -36104,7 +35854,7 @@
    "job_id_global": "jobsgo_29300942727",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-helpdesk-up-to-12-trieu-kcn-thang-long-1-dong-anh-ha-noi-hn1414-29300942727.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36138,16 +35888,6 @@
    "detail": "suy từ exp_min_years=3.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29305871904",
-   "job_id_global": "jobsgo_29305871904",
-   "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-it-29305871904.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "jobsgo",
    "job_id": "29305885483",
@@ -36164,7 +35904,7 @@
    "job_id_global": "jobsgo_29305885483",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-cong-nghe-thong-tin-29305885483.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36254,7 +35994,7 @@
    "job_id_global": "jobsgo_29311154135",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-binh-dinh-29311154135.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36424,7 +36164,7 @@
    "job_id_global": "jobsgo_29323578920",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-it-support-system-admin-29323578920.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36498,16 +36238,6 @@
    "detail": "suy từ exp_min_years=1.0"
   },
   {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29328793256",
-   "job_id_global": "jobsgo_29328793256",
-   "url": "https://jobsgo.vn/viec-lam/ha-noi-chuyen-vien-ho-tro-phan-mem-ung-dung-khoi-cong-nghe-thong-tin-29328793256.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
-  },
-  {
    "kind": "level_inferred",
    "source": "jobsgo",
    "job_id": "29341000777",
@@ -36554,7 +36284,7 @@
    "job_id_global": "jobsgo_29343431418",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-29343431418.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36586,16 +36316,6 @@
    "field": "seniority",
    "value": "Middle",
    "detail": "suy từ exp_min_years=2.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29348944492",
-   "job_id_global": "jobsgo_29348944492",
-   "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-cong-nghe-thong-tin-fulltime-co-ho-tro-luong-moc-thuc-tap-dao-tao-29348944492.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "level_inferred",
@@ -36644,7 +36364,7 @@
    "job_id_global": "jobsgo_29350383866",
    "url": "https://jobsgo.vn/viec-lam/ky-su-it-support-tieng-anh-tot-luong-18-28-trieu-29083-phuc-yen-phu-tho-vinh-phuc-cu-29350383866.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36674,7 +36394,7 @@
    "job_id_global": "jobsgo_29353249035",
    "url": "https://jobsgo.vn/viec-lam/phu-tho-vinh-phuc-cu-ky-su-he-thong-cntt-ha-tang-mang-bao-mat-29353249035.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36704,7 +36424,7 @@
    "job_id_global": "jobsgo_29353900827",
    "url": "https://jobsgo.vn/viec-lam/ky-su-he-thong-it--it-systems-engineer-infrastructure-network-security-onsite-phu-tho29084-29353900827.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36774,7 +36494,7 @@
    "job_id_global": "jobsgo_29354987147",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-29354987147.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36794,7 +36514,7 @@
    "job_id_global": "jobsgo_29355109358",
    "url": "https://jobsgo.vn/viec-lam/ky-su-ho-it--it-support-onsite-phu-tho29083-29355109358.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36814,7 +36534,7 @@
    "job_id_global": "jobsgo_29355285885",
    "url": "https://jobsgo.vn/viec-lam/it-support-engineer--vinh-phuc--id-29083-29355285885.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36904,7 +36624,7 @@
    "job_id_global": "jobsgo_29359712639",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-ky-thuat-it-29359712639.html",
    "field": "job_family",
-   "value": "Security",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -36925,16 +36645,6 @@
    "url": "https://jobsgo.vn/viec-lam/senior-it-business-analyst-29363324653.html",
    "field": "seniority",
    "value": "Senior",
-   "detail": ""
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29363378969",
-   "job_id_global": "jobsgo_29363378969",
-   "url": "https://jobsgo.vn/viec-lam/thuc-tap-sinh-cong-nghe-thong-tin-fulltime-moc-thuc-tap-dao-tao-29363378969.html",
-   "field": "job_family",
-   "value": "Web",
    "detail": ""
   },
   {
@@ -37054,7 +36764,7 @@
    "job_id_global": "jobsgo_29373631114",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-ky-thuat-phan-mem-29373631114.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -37104,7 +36814,7 @@
    "job_id_global": "jobsgo_29377487550",
    "url": "https://jobsgo.vn/viec-lam/it-support-engineer-onsite-phu-tho-29083-29377487550.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -37124,7 +36834,7 @@
    "job_id_global": "jobsgo_29377650498",
    "url": "https://jobsgo.vn/viec-lam/it-support-29377650498.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -37166,16 +36876,6 @@
    "field": "seniority",
    "value": "Intern/Fresher",
    "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29386273163",
-   "job_id_global": "jobsgo_29386273163",
-   "url": "https://jobsgo.vn/viec-lam/fresher-cong-nghe-thong-tin-fulltime-co-ho-tro-luong-moc-thuc-tap-dao-tao-29386273163.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   },
   {
    "kind": "salary_iqr_outlier_by_level",
@@ -37224,7 +36924,7 @@
    "job_id_global": "jobsgo_29390496232",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-ky-thuat-tot-nghiep-ky-thuat-cntt-ha-noi-29390496232.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -37244,7 +36944,7 @@
    "job_id_global": "jobsgo_29390754233",
    "url": "https://jobsgo.vn/viec-lam/it-helpdesk-29390754233.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -37304,7 +37004,7 @@
    "job_id_global": "jobsgo_29391555394",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-long-khanh-29391555394.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -37384,7 +37084,7 @@
    "job_id_global": "jobsgo_29396172254",
    "url": "https://jobsgo.vn/viec-lam/ky-su-he-thong-it-infrastructure-network-security-2538m-vnd-29084-phuc-yen-vinh-phuc-29396172254.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -37414,7 +37114,7 @@
    "job_id_global": "jobsgo_29401386590",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-29401386590.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -37504,7 +37204,7 @@
    "job_id_global": "jobsgo_29408406933",
    "url": "https://jobsgo.vn/viec-lam/chuyen-vien-it-helpdesk-29408406933.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -37594,7 +37294,7 @@
    "job_id_global": "jobsgo_29417749285",
    "url": "https://jobsgo.vn/viec-lam/nhan-vien-ky-thuat-it-helpdesk-biet-lap-camera-29417749285.html",
    "field": "job_family",
-   "value": "Web",
+   "value": "Infra/Support",
    "detail": ""
   },
   {
@@ -37656,16 +37356,6 @@
    "field": "seniority",
    "value": "Intern/Fresher",
    "detail": "suy từ exp_min_years=0.0"
-  },
-  {
-   "kind": "job_family_can_kiem",
-   "source": "jobsgo",
-   "job_id": "29434505771",
-   "job_id_global": "jobsgo_29434505771",
-   "url": "https://jobsgo.vn/viec-lam/booster-it-hybrid-nhan-vien-van-hanh-game-it-supporter-booster-farmer-it-mmo-29434505771.html",
-   "field": "job_family",
-   "value": "Web",
-   "detail": ""
   }
  ]
 }

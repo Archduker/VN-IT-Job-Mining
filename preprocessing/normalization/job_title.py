@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Chức danh -> chức danh chuẩn -> nhóm nghề (PH6 N15-N17). Luật if-else + rapidfuzz, không dùng model.
 
-Nhóm nghề: 10 nhóm + `Other` (người dùng chốt 11/11/2026). Luật từ khóa, kỹ năng cổng và từ điển `job_titles.json` vẫn dùng tên
+Nhóm nghề: 11 nhóm + `Other` (người dùng chốt 11/11/2026; Infra/Support tách khỏi Security 21/11, PRE-44). Luật từ khóa, kỹ năng cổng và từ điển `job_titles.json` vẫn dùng tên
 nhóm cũ (16 nhóm); `FAMILY_MAP` gộp về 10 nhóm ở đầu ra của `family_from_title`, nên đổi nhóm chỉ cần sửa `FAMILY_MAP`.
 `job_title_clean` không bao giờ bị đổi: mọi hàm ở đây chỉ trả giá trị mới.
 Từ điển `preprocessing/dictionaries/job_titles.json`: chỉ nạp mục `approved: true` (người dùng duyệt).
@@ -22,7 +22,7 @@ OTHER = "Other"
 FUZZY_CUTOFF = 90  # K10: điểm khởi đầu, đo lại trên dữ liệu rồi mới chốt
 FUZZY_MIN_LEN = 8  # tránh "ba", "qa", "it" khớp lung tung
 
-JOB_FAMILIES = ["Web", "Mobile", "Game", "Bridge", "DevOps/Cloud", "Tester", "Security", "IoT", "Design", "Data/AI"]
+JOB_FAMILIES = ["Web", "Mobile", "Game", "Bridge", "DevOps/Cloud", "Tester", "Security", "Infra/Support", "IoT", "Design", "Data/AI"]
 
 # Nhóm cũ (luật, kỹ năng cổng, từ điển) -> 10 nhóm mới. Idempotent: tên mới ánh xạ về chính nó.
 FAMILY_MAP = {
@@ -30,10 +30,10 @@ FAMILY_MAP = {
     "Mobile": "Mobile", "Game Development": "Game",
     "Product/Project": "Bridge", "Enterprise Software": "Bridge",
     "DevOps/Cloud": "DevOps/Cloud", "QA/QC": "Tester",
-    "Security": "Security", "System/Network": "Security",
+    "Security": "Security", "System/Network": "Infra/Support",  # N3c (PRE-44, 21/11): helpdesk, mạng, hệ thống
     "Embedded/IoT": "IoT", "Design": "Design",
     "Data Science/AI": "Data/AI", "Database": "Data/AI",
-    **{f: f for f in ("Web", "Game", "Bridge", "Tester", "IoT", "Data/AI")},
+    **{f: f for f in ("Web", "Game", "Bridge", "Tester", "IoT", "Data/AI", "Infra/Support")},
     "Other": "Other",
 }
 
@@ -81,6 +81,28 @@ _SKILL_GATES: List[Tuple[str, set]] = [
     ("Backend", {"Java", "Spring Boot", "Node.js", ".NET Core", "Django", "FastAPI", "Flask", "PHP", "Laravel", "Golang", "C#",
                  "Ruby", "REST API", "GraphQL", "PostgreSQL", "MySQL", "MongoDB", "Microservices", "gRPC"}),
 ]
+
+# N3a (PRE-44, người dùng chốt 21/11): chức danh chuẩn chung không chặn từ khóa tiêu đề.
+# Chung về lập trình: xét sau từ khóa tiêu đề, giữ nhóm của từ điển (Web). Chung về IT: không quyết định nhóm, sang lớp JD.
+GENERIC_DEV_TITLES = {"Developer", "Lập Trình", "Lập Trình Viên", "Software Engineer", "Software Developer", "Phát Triển Phần Mềm"}
+GENERIC_IT_TITLES = {"IT", "CNTT", "Công Nghệ Thông Tin", "Kỹ Thuật", "Technical", "IT Engineer", "IT Staff", "Kỹ Sư IT",
+                     "KỸ THUẬT VIÊN IT PHẦN MỀM", "Kỹ Thuật IT"}
+
+# N3b lớp JD: từ quá chung trong JD (có ở mọi loại tin) không tính là tín hiệu; nhóm Infra/Support thêm từ vựng hỗ trợ.
+JD_WEAK_TERMS = {fold(w) for w in ["bảo mật", "ai", "pm", "po", "ba", "qa", "qc", "cloud", "mobile", "ios", "android", "etl", "llm",
+                                   "genai", "soc", "kubernetes", "k8s", "cisco"]}
+INFRA_JD_TERMS = [fold(w) for w in ["helpdesk", "help desk", "it support", "hỗ trợ kỹ thuật", "hỗ trợ người dùng", "máy tính", "máy in",
+                                    "phần cứng", "lắp đặt", "cài đặt phần mềm", "sửa chữa", "mạng lan", "lan/wan", "wifi", "camera",
+                                    "tổng đài", "windows server", "active directory", "quản trị hệ thống", "quản trị mạng", "hạ tầng",
+                                    "server", "backup", "vpn", "firewall", "tcp/ip"]]
+_JD_RAW = [(fam, [t for t in terms if t not in JD_WEAK_TERMS]) for fam, terms in FAMILY_RULES_V2] + [("System/Network", INFRA_JD_TERMS)]
+# gộp theo nhóm đích (FAMILY_MAP) và bỏ từ trùng, để một từ chỉ là một tín hiệu ("helpdesk" có ở cả hai danh sách)
+JD_RULES: Dict[str, List[str]] = {}
+for _fam, _terms in _JD_RAW:
+    _tgt = FAMILY_MAP[_fam]
+    JD_RULES[_tgt] = list(dict.fromkeys(JD_RULES.get(_tgt, []) + _terms))
+JD_MIN_HITS = 2
+JD_MARGIN = 1
 
 _GENERIC_RE = re.compile(r"^(?:it|cntt|cong nghe thong tin)(?: (?:engineer|executive|staff|specialist|generalist|manager|officer|fulltime))?$")
 
@@ -208,17 +230,49 @@ def canonical_title(core_fold: str, title_dict: Dict[str, Any], cutoff: int = FU
 
 
 # ---------------------------------------------------------------- N17 nhóm nghề
+def jd_family_scores(jd_fold: str, skills_std: Optional[Sequence[str]]) -> Dict[str, int]:
+    """N3b: số tín hiệu mỗi nhóm (đã gộp qua FAMILY_MAP) = từ khóa JD_RULES có trong JD + kỹ năng cổng có trong skills_std."""
+    scores: Dict[str, int] = {}
+    if jd_fold:
+        for family, terms in JD_RULES.items():
+            n = sum(1 for t in terms if has_term(jd_fold, [t]))
+            if n:
+                scores[family] = n
+    skills = set(skills_std or [])
+    for family, gate in _SKILL_GATES:
+        n = len(skills & gate)
+        if n:
+            scores[FAMILY_MAP[family]] = scores.get(FAMILY_MAP[family], 0) + n
+    return scores
+
+
+def jd_family(jd_fold: str, skills_std: Optional[Sequence[str]]) -> Optional[str]:
+    """N3b: nhóm nhiều tín hiệu nhất nếu >= JD_MIN_HITS và hơn nhóm thứ hai >= JD_MARGIN; không thì None."""
+    ranked = sorted(jd_family_scores(jd_fold, skills_std).items(), key=lambda kv: (-kv[1], kv[0]))
+    if not ranked:
+        return None
+    n1 = ranked[0][1]
+    n2 = ranked[1][1] if len(ranked) > 1 else 0
+    return ranked[0][0] if n1 >= JD_MIN_HITS and n1 - n2 >= JD_MARGIN else None
+
+
 def family_from_title(core_fold: str, canonical: Optional[str], skills_std: Optional[Sequence[str]],
-                      title_dict: Dict[str, Any], tech_hint: Sequence[str] = ()) -> Tuple[str, str]:
-    """canonical -> từ khóa tiêu đề (thu hẹp) -> kỹ năng cổng -> Other. Trả (family, source)."""
-    if canonical:
-        fam = title_dict["family_of"].get(canonical)
-        if fam:
-            return FAMILY_MAP.get(fam, fam), "canonical"
+                      title_dict: Dict[str, Any], tech_hint: Sequence[str] = (), jd_text: str = "") -> Tuple[str, str]:
+    """N3a (PRE-44): chức danh cụ thể -> từ khóa tiêu đề -> chức danh chung về lập trình -> lớp JD (chỉ chức danh chung về IT)
+    -> kỹ năng cổng -> Other. `jd_text` là mô tả + yêu cầu đã fold. Trả (family, source)."""
+    fam = title_dict["family_of"].get(canonical) if canonical else None
+    if fam and canonical not in GENERIC_DEV_TITLES and canonical not in GENERIC_IT_TITLES:
+        return FAMILY_MAP.get(fam, fam), "canonical"
     for family, terms in FAMILY_RULES_V2:
         if has_term(core_fold, terms):
             return FAMILY_MAP[family], "title"
+    if fam and canonical in GENERIC_DEV_TITLES:
+        return FAMILY_MAP.get(fam, fam), "canonical_generic"
     skills = set(skills_std or []) | set(tech_hint or [])
+    if canonical in GENERIC_IT_TITLES:
+        jf = jd_family(jd_text, skills)
+        if jf:
+            return jf, "jd"
     hits = [fam for fam, gate in _SKILL_GATES if len(skills & gate) >= 2]
     if len(hits) == 1:
         return FAMILY_MAP[hits[0]], "skills"

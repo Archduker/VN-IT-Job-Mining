@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:18:41+00:00",
-  "code_version": "63f62b2",
+  "generated_at": "2026-11-21T09:30:13+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 405
@@ -89,13 +89,13 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 338,
+      "rows_affected": 323,
       "examples": [
         {
           "job_id": "35C7AC66",
           "field": "job_family",
           "before": "ATS Software Development Engineer",
-          "after": "Web (canonical)",
+          "after": "Web (canonical_generic)",
           "url": "https://careerviet.vn/vi/tim-viec-lam/ats-software-development-engineer.35C7AC66.html"
         },
         {
@@ -139,7 +139,7 @@
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 70,
+      "rows_affected": 59,
       "examples": []
     },
     {
@@ -440,20 +440,25 @@
       "(trống)": 31
     },
     "job_family_distribution": {
-      "Web": 157,
-      "Other": 66,
-      "Data/AI": 58,
-      "Bridge": 46,
-      "DevOps/Cloud": 28,
-      "Security": 25,
-      "Tester": 20,
+      "Other": 81,
+      "Data/AI": 80,
+      "Web": 63,
+      "Bridge": 54,
+      "Infra/Support": 47,
+      "DevOps/Cloud": 27,
+      "Tester": 22,
+      "Security": 15,
+      "Mobile": 7,
+      "Design": 4,
       "IoT": 2
     },
     "job_family_source_distribution": {
-      "canonical": 170,
-      "title": 144,
-      "none": 66,
-      "skills": 22
+      "title": 195,
+      "none": 81,
+      "jd": 41,
+      "canonical": 33,
+      "canonical_generic": 29,
+      "skills": 23
     },
     "work_mode_distribution": {
       "onsite": 393,
@@ -485,7 +490,7 @@
     "anomalies_by_kind": {
       "level_inferred": 306,
       "seniority_can_kiem": 5,
-      "job_family_can_kiem": 66,
+      "job_family_can_kiem": 54,
       "tinh_unknown": 6,
       "salary_negotiable_with_value": 0,
       "salary_iqr_outlier_by_level": 0,

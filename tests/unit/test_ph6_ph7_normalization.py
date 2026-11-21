@@ -116,12 +116,14 @@ def test_title_dictionary_exact_alias_fuzzy_and_short_guard():
 
 def test_family_map_covers_old_families_and_targets_ten_groups():
     from preprocessing.normalization.job_title import FAMILY_MAP, JOB_FAMILIES, OTHER
-    assert JOB_FAMILIES == ["Web", "Mobile", "Game", "Bridge", "DevOps/Cloud", "Tester", "Security", "IoT", "Design", "Data/AI"]
+    assert JOB_FAMILIES == ["Web", "Mobile", "Game", "Bridge", "DevOps/Cloud", "Tester", "Security", "Infra/Support", "IoT", "Design",
+                            "Data/AI"]
     old = ["Backend", "Frontend", "Fullstack", "Mobile", "DevOps/Cloud", "Data Science/AI", "QA/QC", "Security", "Product/Project",
            "System/Network", "Embedded/IoT", "Software Engineering", "Game Development", "Design", "Database", "Enterprise Software"]
     assert all(FAMILY_MAP[o] in JOB_FAMILIES for o in old)
-    assert {FAMILY_MAP[o] for o in old} == set(JOB_FAMILIES)  # đủ 10 nhóm, không nhóm nào bỏ trống
-    assert FAMILY_MAP["System/Network"] == "Security" and FAMILY_MAP["Database"] == "Data/AI" and FAMILY_MAP["Enterprise Software"] == "Bridge"
+    assert {FAMILY_MAP[o] for o in old} == set(JOB_FAMILIES)  # đủ 11 nhóm, không nhóm nào bỏ trống
+    # PRE-44 N3c (21/11): System/Network tách thành Infra/Support
+    assert FAMILY_MAP["System/Network"] == "Infra/Support" and FAMILY_MAP["Database"] == "Data/AI" and FAMILY_MAP["Enterprise Software"] == "Bridge"
     assert FAMILY_MAP[OTHER] == OTHER
 
 

@@ -94,6 +94,57 @@ def test_n3_job_family_12_groups_plus_other():
     assert fam("Technical Lead", ["React", "Java"]) == ("Other", "none")  # hai nhóm hòa: K11
 
 
+def _pre44_dict():
+    """Từ điển nhỏ dựng tay theo các mục thật của job_titles.json (PRE-44)."""
+    return build_title_dict([
+        {"canonical": "IT", "family": "Web", "aliases": ["it"], "approved": True},
+        {"canonical": "IT Engineer", "family": "Web", "aliases": ["it engineer"], "approved": True},
+        {"canonical": "Developer", "family": "Web", "aliases": ["developer"], "approved": True},
+        {"canonical": "Data Engineer", "family": "Data/AI", "aliases": ["data engineer"], "approved": True},
+    ])
+
+
+def _fam44(title, skills=(), jd=""):
+    from preprocessing.normalization.job_title import canonical_title
+    d = _pre44_dict()
+    core, _, hint = core_title(title)
+    canon = canonical_title(fold(core), d)[0]
+    return family_from_title(fold(core), canon, list(skills), d, hint, jd_text=fold(jd))
+
+
+def test_n3a_title_keywords_beat_generic_dictionary_titles():
+    """PRE-44 N3a (1.B): chức danh chung trong từ điển không chặn từ khóa tiêu đề cụ thể."""
+    assert _fam44("IT Security Analyst") == ("Security", "title")
+    assert _fam44("IT Business Analyst") == ("Bridge", "title")
+    assert _fam44("AI Engineer") == ("Data/AI", "title")          # từng khớp gần đúng "IT Engineer" → Web
+    assert _fam44("Flutter Developer") == ("Mobile", "title")     # từng khớp "Developer" → Web
+    assert _fam44("Data Platform Engineer")[0] == "Data/AI"       # chức danh cụ thể vẫn đứng trước từ khóa ("platform engineer")
+    assert _fam44("Developer") == ("Web", "canonical_generic")    # chức danh chung về lập trình vẫn là Web
+
+
+def test_n3c_system_network_is_infra_support():
+    """PRE-44 N3c (3.A, 6.A): helpdesk, quản trị mạng là nhóm Infra/Support, không còn gộp vào Security."""
+    assert _fam44("IT Helpdesk") == ("Infra/Support", "title")
+    assert _fam44("Network Engineer") == ("Infra/Support", "title")
+    assert _fam44("Penetration Tester")[0] == "Security"
+
+
+def test_n3b_generic_it_title_uses_jd_then_other():
+    """PRE-44 N3b (2, 5.A): tiêu đề chung về IT đọc JD; JD không đủ tín hiệu thì Other, không mặc định Web."""
+    jd_support = "Hỗ trợ người dùng, cài đặt phần mềm, sửa chữa máy tính, máy in, quản trị mạng LAN."
+    assert _fam44("Nhân Viên IT", jd=jd_support) == ("Infra/Support", "jd")
+    assert _fam44("Nhân Viên IT", jd="Làm việc trong môi trường năng động.") == ("Other", "none")
+    # từ quá chung ("bảo mật", "ai") không đủ để thắng
+    assert _fam44("Chuyên Viên IT", jd="Bảo mật thông tin công ty, ứng dụng AI.") == ("Other", "none")
+    # hòa giữa hai nhóm → không chọn
+    assert _fam44("Nhân Viên IT", jd="helpdesk, máy in, tester, kiểm thử")[0] == "Other"
+
+
+def test_n3b_jd_layer_not_used_for_developer_titles():
+    """Tiêu đề chung về lập trình giữ Web theo tiêu đề dù JD nhắc docker, kubernetes, ci/cd."""
+    assert _fam44("Developer", ["Docker", "Kubernetes"], jd="devops, ci/cd, kubernetes, docker") == ("Web", "canonical_generic")
+
+
 def test_n4_canonical_skills():
     """Kiểm tra N4: Ánh xạ kỹ năng về tên chuẩn theo skills.json và loại bỏ trùng lặp."""
     input_skills = ["ReactJS", "React.js", "Java", "Docker", "react"]

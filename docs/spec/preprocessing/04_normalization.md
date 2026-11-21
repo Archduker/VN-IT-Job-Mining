@@ -9,7 +9,7 @@
 
 ## 1. Mục đích
 
-- Đưa giá trị về **danh mục chuẩn chung cho 8 sàn**, để BI và mô hình đếm và so sánh được: 34 tỉnh, 5 cấp bậc, 10 nhóm nghề + Other, kỹ năng chuẩn, khóa công ty.
+- Đưa giá trị về **danh mục chuẩn chung cho 8 sàn**, để BI và mô hình đếm và so sánh được: 34 tỉnh, 5 cấp bậc, 11 nhóm nghề + Other, kỹ năng chuẩn, khóa công ty.
 - Chọn **giá trị cuối** khi bước 03 để lại hai nguồn (ô của sàn và JD).
 - Xử lý thiếu và ngoại lai bằng **cờ**, không xóa dòng, không điền trung bình.
 - Tiêu chí: consistency, completeness, accuracy. Phục vụ cả 5 SD.
@@ -30,7 +30,7 @@
 | M4 | Thiếu kinh nghiệm thì điền cận dưới theo cấp bậc (Intern/Fresher 0, Junior 1, Middle 2, Senior 4, Lead/Manager 5), **chỉ khi cấp lấy từ ô của sàn hoặc tiêu đề**, không lấy cấp suy từ số năm (chống vòng với M3c). Gắn `exp_inferred`, `exp_source` = `level_<cấp>` (ví dụ `level_intern`); có sẵn thì `given`. Tên luật trong report vẫn ghi "Intern/Fresher … điền 0", hẹp hơn code (đã sửa tên luật 19/11) | flag | 54 |
 | N2b | Senior hoặc Trưởng nhóm mà kinh nghiệm < 2 năm, hoặc Thực tập hoặc Mới tốt nghiệp mà ≥ 3 năm → `seniority_can_kiem`. Có nhóm nghề mà JD không có kỹ năng → `job_family_can_kiem` | flag | 441 (cộng hai cờ) |
 | N16 | Chức danh chuẩn từ `job_titles.json` (exact, alias, fuzzy) | modify | 1.744 |
-| N3 | Nhóm nghề: chức danh lõi → chức danh chuẩn → nhóm, gộp về 10 nhóm qua `FAMILY_MAP`. Luật không ra thì Other | modify | 3.462 khác Other (bảng 3.916 tin: 3.390; Web 1.536, Other 526, Bridge 479, Data/AI 388, Tester 382, DevOps/Cloud 234, Security 231, Design 61, Game 43, Mobile 26, IoT 10) |
+| N3 | Nhóm nghề: chức danh lõi → chức danh chuẩn → nhóm, gộp về 10 nhóm qua `FAMILY_MAP`. Luật không ra thì Other. **Thay bằng N3a–N3d (mục 2.3) từ 21/11** | modify | 3.462 khác Other (bảng 3.916 tin: 3.390; Web 1.536, Other 526, Bridge 479, Data/AI 388, Tester 382, DevOps/Cloud 234, Security 231, Design 61, Game 43, Mobile 26, IoT 10) |
 | N4 | Kỹ năng về tên chuẩn ("ReactJS", "React.js" → "React"), bỏ trùng → `skills_std` | modify | 3.540 |
 | N5 | `company_norm`: bỏ "Công ty Cổ phần", "TNHH", … | modify | 3.996 |
 | N18 | `company_key`: rapidfuzz `token_sort_ratio` ≥ 90 và quan hệ tập con | modify | 3.915 (tính trên bảng không cách ly) |
@@ -64,6 +64,19 @@ Các luật này dùng quyết định của người dùng ngày 18/11, ghi tro
 - `level_inferred` (Silver `seniority_inferred`) theo nghĩa ở spec 05 mục 4.4: true khi cấp bậc do bước 04 suy ra từ tiêu đề, số năm hoặc loại hợp đồng; false khi lấy từ ô của sàn. Trước đây chỉ true khi suy từ số năm, nên số tin `level_inferred` sẽ tăng.
 - `exp_max_years` giữ giá trị của bước 03 (luật M4 chỉ nói `exp_min_years`); lệch với `exp_min_years` lấy từ JD thì M8 gắn cờ.
 - Report thêm luật `N14`, `N19`, `N2c`, `M4s` (lấy từ JD khi ô trống), `M4c` (`exp_conflict`), `Q1`; `extra` thêm `quarantine`, phân bố `employment_type`, `work_mode_source`, `exp_source`, `seniority_source`.
+
+### 2.3. Luật nhóm nghề mới (PRE-44, người dùng chốt 21/11: "1.b 2 (lớp JD) 3.a 4.a", "5.a 6.a")
+
+Lý do: N3 cũ tra `job_titles.json` **trước** từ khóa tiêu đề, mà từ điển gán thẳng các chức danh chung ("IT" 394 tin, "Developer" 317, "Lập Trình" 146, "IT Engineer" 81, "CNTT", "Kỹ Thuật", "Technical") vào Web. Mọi tiêu đề có chữ "IT" thành Web ("IT Security Analyst", "IT Helpdesk", "IT Business Analyst"); "AI Engineer" khớp gần đúng "IT Engineer" thành Web (73 tin); luật từ khóa cụ thể không bao giờ được xét. Mô phỏng chỉ đọc trên bảng 3.916 tin ngày 21/11: 873 tin đổi nghề.
+
+| Mã | Luật | Hành động | Cột |
+|---|---|---|---|
+| **N3a** | Thứ tự (quyết định 1.B): (1) chức danh chuẩn **cụ thể** trong `job_titles.json` → nhóm của nó; (2) từ khóa tiêu đề (`FAMILY_RULES_V2`); (3) chức danh chuẩn **chung về lập trình** (`GENERIC_DEV_TITLES`: Developer, Lập Trình, Lập Trình Viên, Software Engineer, Software Developer, Phát Triển Phần Mềm) → nhóm của nó (Web); (4) chức danh **chung về IT** (`GENERIC_IT_TITLES`: IT, CNTT, Công Nghệ Thông Tin, Kỹ Thuật, Technical, IT Engineer, IT Staff, Kỹ Sư IT, KỸ THUẬT VIÊN IT PHẦN MỀM, Kỹ Thuật IT) không quyết định nhóm, sang N3b; (5) kỹ năng cổng (≥ 2 kỹ năng của đúng một nhóm); (6) Other | modify | `job_family`, `job_family_source` (`canonical`, `title`, `canonical_generic`, `jd`, `skills`, `none`) |
+| **N3b** | **Lớp JD** (quyết định 2, chỉ cho tiêu đề chung về IT không có từ khóa nghề): đếm tín hiệu từng nhóm trong `description_fold` + `requirements_fold` (từ khóa tiêu đề của nhóm, bỏ các từ quá chung `JD_WEAK_TERMS` như "bảo mật", "ai", "pm", "cloud"; nhóm Infra/Support thêm từ vựng hỗ trợ `INFRA_JD_TERMS` như "máy tính", "máy in", "mạng lan", "helpdesk") cộng số kỹ năng cổng trong `skills_std`. Nhóm có nhiều tín hiệu nhất thắng nếu ≥ 2 tín hiệu và hơn nhóm thứ hai ≥ 1; không thì sang kỹ năng cổng rồi Other (quyết định 5.A). Không áp dụng cho chức danh chung về lập trình (JD đẩy "Backend Developer" sang DevOps vì nhắc docker, aws) | modify | `job_family_source` = `jd` |
+| **N3c** | Nhóm mới **`Infra/Support`** (hiển thị "IT hạ tầng & hỗ trợ"; quyết định 3.A, 6.A): `FAMILY_MAP["System/Network"]` = `Infra/Support` thay cho Security. Có 11 nhóm + Other | modify | `job_family` |
+| **N3d** | Sửa nhóm trong `job_titles.json` (quyết định 4.A): Thiết Kế, Product Designer, Designer POD, Thiết Kế 2D → Design; Agentic Engineer → Data/AI; Odoo Developer → Bridge; Quản Trị Cơ Sở Dữ Liệu DBA → Data/AI | modify | từ điển |
+
+Mô phỏng 21/11 (trước → sau): Web 1.536 → 795, Other 526 → 611, Bridge 479 → 539, Data/AI 388 → 517, Infra/Support 0 → 405, Tester 382 → 395, DevOps/Cloud 234 → 253, Security 231 → 145, Design 61 → 109, Mobile 26 → 92, Game 43, IoT 10 → 12. Lớp JD trên 306 tin tiêu đề chung về IT: Infra/Support 183, Web 16, Bridge 9, Data/AI 5, DevOps/Cloud 5, Security 2, Tester 1, không rõ 85 (→ Other).
 
 ## 3. Quy trình xử lý
 

@@ -175,11 +175,11 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 - Khi có `--source`, prefix là `url_ledger/<nguồn>/` nên raw không được tải; không có `--source` thì tải cả `staging/`, `curated/`, `pipeline/`. Chưa có cách tải riêng Bronze (`raw/` + `url_ledger/`). Ngày 17/11 đã tải Bronze bằng script tạm (12.246 file).
 
-**PRE-44. Có thể gán sai `job_family` và lương lạ chưa gắn cờ** (mở 20/11/2026, thấy khi lấy mẫu kiểm tay M1)
+**PRE-44. Lương lạ chưa gắn cờ** (mở 20/11/2026, thấy khi lấy mẫu kiểm tay M1; phần nhóm nghề đã sửa 21/11, L-57)
 
-- Mẫu 20 tin (seed 42) của M1: "IT Security Analyst" (vietnamworks 2121527) mang `job_family` Web, đúng ra là Security; "Nhân Viên IT" (topcv 2248462) mang Web, giống IT hỗ trợ (Other). "[TP Vũng Tàu] Chuyên Gia IT" (vietnamworks 2111189) cấp Middle, lương 127 triệu, chưa bị `salary_outlier`. Mới đọc tiêu đề, chưa đối chiếu trang gốc; người dùng chưa gửi kết quả kiểm tay.
-- Luật nghề và cờ lương ở pre-processing (bước 03/04), không sửa trong Mining.
-- M3 chạy thật 20/11 đo rộng hơn: cụm AI Engineer (190 tin) có 103 tin mang `job_family` Web, 63 Data/AI; 4 tin IT Manager / Trưởng phòng CNTT mang Bridge; 2 Solution Architect mang DevOps/Cloud (`mining/artifacts/sd3_mismatch_hand_check.csv`, chờ kiểm tay).
+- "[TP Vũng Tàu] Chuyên Gia IT" (vietnamworks 2111189) cấp Middle, lương 127 triệu, chưa bị `salary_outlier`. Mới đọc tiêu đề, chưa đối chiếu trang gốc.
+- Cờ lương ở pre-processing (bước 04), không sửa trong Mining.
+- Sau L-57 cần kiểm tay lại: mẫu 89 tin tiêu đề chung về IT mà lớp JD và kỹ năng cổng không xếp được (về Other) và 287 tin xếp bằng lớp JD (`job_family_source` = `jd`).
 
 ## 3b. Data Mining
 

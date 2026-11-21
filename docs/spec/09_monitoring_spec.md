@@ -161,7 +161,7 @@ Trang Pre-processing (`/preprocessing`) đọc phễu từ report từng bước
 
 ### 3.3. Bộ lọc dùng chung
 
-1. **Nhóm nghề** (`job_family`): 10 nhóm + Other (Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, IoT, Design, Data/AI).
+1. **Nhóm nghề** (`job_family`): 11 nhóm + Other (Web, Mobile, Game, Bridge, DevOps/Cloud, Tester, Security, Infra/Support, IoT, Design, Data/AI).
 2. **Cấp bậc** (`seniority`): Intern/Fresher, Junior, Middle, Senior, Lead/Manager (`SENIORITY_ORDER_LABELS` trong `mining/config.py`).
 3. **Tỉnh** (`tinh_chinh`): theo danh mục 34 tỉnh sau sáp nhập; remote và nước ngoài là giá trị riêng.
 4. **Sàn** (`source_platform`): bật tắt để so 8 sàn.
@@ -285,7 +285,7 @@ class JobClustersResponse(BaseModel):
 Nhằm khắc phục triệt để vấn đề `VIZ-3` (phụ thuộc vào báo cáo tĩnh cũ) và tuân thủ nguyên tắc `Real Numbers Only`:
 
 #### 1. Cấu Trúc Bảng Dữ Liệu Trong PostgreSQL Data Mart (`vn_it_jobs`):
-- `curated_jobs`: Chứa toàn bộ việc làm IT đã chuẩn hóa (ID, Title, Company, `job_family` 10 nhóm + Other, `seniority` 5 nhãn, Lương min/max/avg, 34 Tỉnh thành, Mảng kỹ năng `skills_array TEXT[]`). Đánh B-Tree trên `job_family`, `seniority_level`, `province_norm` và GIN index trên `skills_array`.
+- `curated_jobs`: Chứa toàn bộ việc làm IT đã chuẩn hóa (ID, Title, Company, `job_family` 11 nhóm + Other, `seniority` 5 nhãn, Lương min/max/avg, 34 Tỉnh thành, Mảng kỹ năng `skills_array TEXT[]`). Đánh B-Tree trên `job_family`, `seniority_level`, `province_norm` và GIN index trên `skills_array`.
 - `skill_rules`: Chứa danh sách luật kết hợp FP-Growth (`antecedents TEXT[]`, `consequents TEXT[]`, `support`, `confidence`, `lift`, `job_family_scope`). Đánh GIN trên `antecedents` và B-Tree trên `lift`.
 - `job_clusters`: Chứa dữ liệu phân cụm và tọa độ giảm chiều (`job_id`, `cluster_id`, `cluster_name`, `pca_x`, `pca_y`, `pca_z`, `is_outlier`, `glosh_outlier_score`).
 - `job_anomalies`: Chứa danh sách tin "khác hoặc mới" do Isolation Forest và GLOSH gắn cờ (`job_id`, `anomaly_score`, `reason_code`, `detected_by`).

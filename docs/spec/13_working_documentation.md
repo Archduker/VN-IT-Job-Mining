@@ -153,7 +153,7 @@ flowchart TD
     S01 --> S01b["01b deduplication\n(3 tầng, MinHash + Jaccard >= 0.85)"]
     S01b --> S02["02 integration\n(8 nguồn -> 18 trường)"]
     S02 --> S03["03 transformation\n(lương, kinh nghiệm, ngôn ngữ, dịch EN→VI)"]
-    S03 --> S04["04 normalization\n(10 nhóm nghề + Other, 5 cấp, 34 tỉnh, cờ thiếu và ngoại lai)"]
+    S03 --> S04["04 normalization\n(11 nhóm nghề + Other, 5 cấp, 34 tỉnh, cờ thiếu và ngoại lai)"]
     S04 --> Clean["Bảng sạch: data/preprocessing/04_normalization/all.parquet"]
     Clean --> P07["07 sections → 08 skills → 09 tokens"]
     P07 --> P10["10 features (10b/10c/10d) → 12_e5"]

@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-19T04:18:43+00:00",
-  "code_version": "63f62b2",
+  "generated_at": "2026-11-21T09:30:23+00:00",
+  "code_version": "709e73a",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 155
@@ -97,20 +97,20 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 136,
+      "rows_affected": 134,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
           "field": "job_family",
           "before": "Retail IT Executive (Infrastructure)",
-          "after": "Web (canonical)",
+          "after": "DevOps/Cloud (jd)",
           "url": "https://glints.com/vn/opportunities/jobs/retail-it-executive-infrastructure/00151110-44ff-48bc-9dd9-752c8f632935"
         },
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
           "field": "job_family",
           "before": "[DNA796] Kỹ Thuật Viên IT Phần Mềm - KCN Long Đức - Đồng Nai",
-          "after": "Security (canonical)",
+          "after": "Web (jd)",
           "url": "https://glints.com/vn/opportunities/jobs/dna796-ky-thuat-vien-it-phan-mem-kcn-long-duc-dong-nai/00b4d332-8e6e-4714-9853-e816085f7d01"
         },
         {
@@ -445,19 +445,22 @@
       "(trống)": 9
     },
     "job_family_distribution": {
-      "Web": 61,
+      "Web": 39,
       "Tester": 36,
-      "Other": 17,
-      "Data/AI": 15,
-      "Security": 11,
-      "DevOps/Cloud": 3,
-      "Mobile": 2,
+      "Data/AI": 22,
+      "Other": 19,
+      "Infra/Support": 14,
+      "DevOps/Cloud": 5,
+      "Mobile": 5,
+      "Security": 5,
       "Bridge": 1
     },
     "job_family_source_distribution": {
-      "title": 63,
-      "canonical": 61,
-      "none": 17,
+      "title": 85,
+      "jd": 19,
+      "none": 19,
+      "canonical": 12,
+      "canonical_generic": 6,
       "skills": 5
     },
     "work_mode_distribution": {

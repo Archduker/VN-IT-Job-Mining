@@ -13,7 +13,7 @@ Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <ngu�
 | 01b deduplication | `deduplication/` | 3 tầng: (nguồn, id) → `sha1(text_fold)` → MinHash + Jaccard ≥ 0,85 cùng `company_slug` |
 | 02 integration | `integration/` | Làm phẳng về 19 trường `raw_*` (gồm `raw_work_mode`) + khóa + `first_crawled_at`, gộp 8 nguồn vào `all.parquet` |
 | 03 transformation | `transformation/`, `translation/`, `common/text_clean.py`, `common/lang_id.py` | Làm sạch ký tự, parse lương/ngày/kinh nghiệm, fastText ngôn ngữ, dịch EN→VI (envit5), rút kỹ năng và phúc lợi, tách địa điểm |
-| 04 normalization | `normalization/`, `missing_outlier/` | 34 tỉnh, 5 cấp bậc, 10 nhóm nghề + Other, `company_key`, kỹ năng chuẩn; thiếu và ngoại lai chỉ gắn cờ |
+| 04 normalization | `normalization/`, `missing_outlier/` | 34 tỉnh, 5 cấp bậc, 11 nhóm nghề + Other, `company_key`, kỹ năng chuẩn; thiếu và ngoại lai chỉ gắn cờ |
 
 - `05_encoding` (`encoding/`) đã được bước 10 của `processing/` thay thế, nhưng vẫn còn trong `STEPS` (PRE-39). Không thêm logic mới vào `encoding/`.
 - Bảng sạch cuối là `data/preprocessing/04_normalization/all.parquet` (spec 05 mục 4.1, duyệt 17/11). Tin dịch hỏng bị cách ly sang `quarantine.parquet` (luật Q1, 19/11), nên Silver, Processing và Mining cùng một tập tin; đừng tự lọc thêm ở bên đọc. Silver (`silver.parquet`, 26 trường) ghi bằng `python -m preprocessing.normalization.silver` **sau bước 08**, vì `skills` lấy từ `job_skills.parquet`. Chuỗi mới không ghi `data/curated/`; các script còn đọc `curated_flat_golden_jobs.parquet` sẽ đổi theo PRE-39.
@@ -34,6 +34,7 @@ Driver: `python scripts/run_preprocessing.py --step <bước>|all --source <ngu�
 - Kỳ nghiên cứu: C9 bỏ tin có ngày đăng trước `STUDY_START` (2026-09-01) ở bước 01; tin không có ngày đăng thì giữ (L-50).
 - Nhãn chuyên môn của sàn (TopCV `industry_knowledge`, `overview_tags["Chuyên môn"]`) không phải kỹ năng: flattener để ở `category_tags`, chỉ bộ lọc IT của 01 đọc. Đưa lại vào `skills_list` sẽ làm "IT - Phần mềm" thành kỹ năng; bỏ hẳn khỏi bộ lọc thì 55 tin IT bị xếp ngoài IT (L-50).
 - Nhóm nghề: muốn đổi nhóm thì chỉ sửa `FAMILY_MAP` trong `normalization/job_title.py`, rồi chạy lại 04, `10_features` và Mining (L-47).
+- Nhóm nghề N3 (PRE-44, L-57): chức danh chuẩn **chung** ("IT", "Developer", "CNTT", "IT Engineer"…) không được đứng trước từ khóa tiêu đề, nếu không mọi tiêu đề có chữ "IT" thành Web và "AI Engineer" khớp gần đúng "IT Engineer". Thêm chức danh chung mới vào từ điển thì thêm tên vào `GENERIC_IT_TITLES` hoặc `GENERIC_DEV_TITLES`. Lớp JD (N3b) chỉ dùng cho tiêu đề chung về IT; với tiêu đề lập trình, JD nhắc docker/aws sẽ kéo sai sang DevOps.
 - Cấp bậc ↔ kinh nghiệm: [0,1) Intern/Fresher, [1,2) Junior, [2,4) Middle, [4,5) Senior, từ 5 năm để trống (L-39).
 - File mẫu gán nhãn `data/preprocessing/review/it_<nguồn>.csv` đã có nhãn tay thì không bao giờ bị ghi đè. Bộ gold `data/preprocessing/gold/gold_labels.json` gắn với mẫu `e58bceb3a5`; không dựng lại mẫu.
 - Thêm nguồn mới: thêm `_flatten_<nguồn>` và tên nguồn vào `SOURCES` ở `common/__init__.py`, `VALID_SOURCES` ở `scripts/read_eda_diagnosis.py`, và monitoring `config.py`.

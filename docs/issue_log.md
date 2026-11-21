@@ -368,6 +368,14 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Cách xử lý:** S-05 so theo tên chuẩn hóa (chữ thường, khoảng trắng → `_`) và thử cả khóa slug trước bí danh.
 - **Kiểm chứng:** `tests/unit/test_mining_sanity.py::test_s05_finds_slug_skill_names`; chạy thật 20/11: S-05 pass (aws φ 0,008, kubernetes φ 0,029).
 
+### L-57. Nhóm nghề Web bị thổi lên vì chức danh chung trong từ điển chặn luật từ khóa (PRE-44, Dữ liệu, 21/11/2026)
+- **Lỗi:** Web chiếm 1.536/3.916 tin (39%), Mobile chỉ 26. Kiểm tay M1 và cụm M3 thấy "IT Security Analyst", "Nhân viên IT Helpdesk", "IT Business Analyst" mang nhãn Web; cụm AI Engineer (190 tin) có 103 tin nhãn Web; top công cụ của Web có `windows`, `ms_office`. Security 231 tin thì phần lớn là helpdesk, quản trị mạng.
+- **Nguyên nhân:** `family_from_title` (`preprocessing/normalization/job_title.py`) tra `job_titles.json` trước từ khóa tiêu đề. Từ điển gán các chức danh chung vào Web: "IT" (394 tin, alias "it" khớp mọi tiêu đề có chữ IT), "Developer" 317, "Lập Trình" 146, "IT Engineer" 81 (75 khớp gần đúng, gồm "AI Engineer"), "CNTT", "Kỹ Thuật", "Technical". Khớp từ điển rồi thì luật từ khóa không được xét. `FAMILY_MAP` gộp System/Network vào Security (11/11). Vài mục từ điển gán sai nhóm ("Thiết Kế" → Web, "Product Designer" → Bridge).
+- **Cách xử lý (người dùng chốt 21/11, spec `docs/spec/preprocessing/04_normalization.md` mục 2.3):** N3a: chức danh cụ thể → từ khóa tiêu đề → chức danh chung về lập trình (Web) → lớp JD cho chức danh chung về IT → kỹ năng cổng → Other. N3b: lớp JD đếm từ khóa nghề trong mô tả + yêu cầu (bỏ từ quá chung, thêm từ vựng IT hỗ trợ) cộng kỹ năng cổng; thắng khi ≥ 2 tín hiệu và hơn nhóm thứ hai ≥ 1, không thì Other. N3c: nhóm mới `Infra/Support` (System/Network). N3d: sửa 7 mục `job_titles.json`. Chạy lại 04 → Silver → 10 → Mining.
+- **Kết quả (chạy thật 21/11):** Web 1.536 → 780, Other 526 → 615, Bridge 479 → 540, Data/AI 388 → 520, Infra/Support 430 (mới), Tester 382 → 395, DevOps/Cloud 234 → 243, Security 231 → 136, Design 61 → 111, Mobile 26 → 92, Game 43, IoT 10 → 11. Nguồn: title 2.146, canonical 467, canonical_generic 255, jd 287, skills 146, none 615.
+- **Còn lại:** lương 127 triệu của "[TP Vũng Tàu] Chuyên Gia IT" chưa gắn cờ (PRE-44, phần lương); trang Market Insights cũ (`monitoring/frontend/src/pages/MarketInsightsPage.tsx`) còn danh sách nhóm nghề cũ.
+- **Kiểm chứng:** `tests/unit/test_normalization_step.py` (`test_n3a_*`, `test_n3b_*`, `test_n3c_*`), `tests/unit/test_ph6_ph7_normalization.py::test_family_map_covers_old_families_and_targets_ten_groups`; dry-run và chạy thật 04 bảo toàn 3.997 = 3.916 + 81.
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

@@ -70,7 +70,7 @@ Ký hiệu: ✅ đạt, ⚠️ đạt một phần hoặc phải ghi giới hạ
 |---|---|---|---|---|
 | Vector nội dung | `job_emb.npz` (12_e5) | Vector tin = trung bình bullet `mo_ta` + `yeu_cau`, **không lấy `phuc_loi`** (phúc lợi giống nhau giữa nghề) | e5 đang chạy trên bullet cũ | ❌ chờ P4 |
 | Khối kỹ năng | `skill__*` = K-tool | Cụm không tách theo số kỹ năng: khái niệm chung không nằm trong khối chính | Hiện là mọi kỹ năng | ❌ chờ K-tool |
-| So với nhóm luật | `job_family` | Có đủ 10 nhóm + Other | 100% | ✅ |
+| So với nhóm luật | `job_family` | Có đủ 11 nhóm + Other | 100% | ✅ |
 | Mã lý do "khác hoặc mới" | `n_tools`, độ dài, lương | Ngưỡng đặt theo **phân vị** của bảng mới, không giữ số cũ | Ngưỡng cũ tính trên mọi kỹ năng | ❌ đặt lại khi làm M4 |
 
 ### SD4 · Kỹ năng nào đáng tiền (Random Forest + SHAP, M5)

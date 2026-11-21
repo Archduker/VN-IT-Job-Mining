@@ -183,7 +183,7 @@ Kết quả 10/11: 10 stopword theo miền (các, có, của, kinh nghiệm, là
 |---|---|
 | `skill__<slug>`, `concept__<slug>`, `soft__<slug>` | Multi-hot từ 08 theo ba khối (sau 10b) |
 | `seniority_ord` | Ordinal 0–4 theo 5 cấp; chưa rõ = -1 |
-| `fam__*` | One-hot 10 nhóm nghề + Other |
+| `fam__*` | One-hot 11 nhóm nghề + Other |
 | `src__*` | One-hot nguồn |
 | `wm__*` | One-hot `work_mode` (onsite, remote, hybrid, unknown) |
 | `emp__*` | Loại hình làm việc (full_time, part_time, intern, contract, unknown), luật từ khóa trên `raw_employment_type` |

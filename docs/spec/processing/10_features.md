@@ -55,7 +55,7 @@ Một **ma trận số**, mỗi tin một dòng, dùng chung cho mọi bước M
 |---|---|
 | `skill__<slug>`, `concept__<slug>`, `soft__<slug>` | Multi-hot từ 08 theo ba khối, sau 10b |
 | `seniority_ord` | Ordinal 0–4 theo `SENIORITY_MAP`; chưa rõ = -1 |
-| `fam__*` | One-hot 10 nhóm nghề + Other (`FAMILY_MAP` ở `preprocessing/normalization/job_title.py`) |
+| `fam__*` | One-hot 11 nhóm nghề + Other (`FAMILY_MAP` ở `preprocessing/normalization/job_title.py`) |
 | `src__*` | One-hot nguồn |
 | `wm__*` | One-hot `work_mode` (onsite, remote, hybrid) + `wm__unknown` |
 | `emp__*` | One-hot cột `employment_type` của bảng 04 (luật N19): full_time, part_time, internship, contract; null thì `emp__unknown` (F10.5, 19/11). Bỏ `employment_class` |

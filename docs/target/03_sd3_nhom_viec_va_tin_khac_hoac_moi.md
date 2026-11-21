@@ -9,9 +9,9 @@ Tên nghề trên tin chưa chắc phản ánh việc thật:
 - Hai tin cùng tên "Software Engineer" có thể là hai việc khác hẳn nhau.
 - Hai tin tên khác nhau có thể là cùng một việc.
 
-Hiện tại dự án gán nhóm nghề bằng luật dựa trên tiêu đề và kỹ năng, gồm 10 nhóm + Other.
+Hiện tại dự án gán nhóm nghề bằng luật dựa trên tiêu đề và kỹ năng, gồm 11 nhóm + Other.
 
-SD3 làm ngược lại: **bỏ qua tên nghề, chỉ nhìn nội dung tin** (JD và kỹ năng), rồi để máy tự gom những tin giống nhau thành nhóm. Sau đó so các nhóm máy tìm ra với 10 nhóm nghề gán bằng luật:
+SD3 làm ngược lại: **bỏ qua tên nghề, chỉ nhìn nội dung tin** (JD và kỹ năng), rồi để máy tự gom những tin giống nhau thành nhóm. Sau đó so các nhóm máy tìm ra với 11 nhóm nghề gán bằng luật:
 
 - **Khớp:** nhóm nghề gán bằng luật phản ánh đúng thị trường.
 - **Lệch:** có nghề lai (ví dụ vừa làm dữ liệu vừa làm backend), nghề ngách, hoặc tin bị gán sai nhóm.
@@ -26,7 +26,7 @@ Những tin **không giống nhóm nào** gọi là tin **khác hoặc mới**:
 | Mã | Câu hỏi |
 |---|---|
 | 3.1 | Nếu chỉ dựa vào nội dung JD và kỹ năng, thị trường chia thành mấy nhóm việc? Mỗi nhóm là việc gì (kỹ năng đặc trưng, tiêu đề hay gặp, cấp bậc và lương công khai điển hình)? |
-| 3.2 | Các nhóm máy tìm ra khớp hay lệch với 10 nhóm nghề gán bằng luật ở đâu? Có những nghề lai, nghề ngách nào? Bao nhiêu tin có vẻ bị gán sai nhóm nghề? |
+| 3.2 | Các nhóm máy tìm ra khớp hay lệch với 11 nhóm nghề gán bằng luật ở đâu? Có những nghề lai, nghề ngách nào? Bao nhiêu tin có vẻ bị gán sai nhóm nghề? |
 | 3.3 | Những tin nào khác hoặc mới so với mặt bằng? Mỗi tin thuộc loại "mới" hay "khác", và vì sao? |
 
 ## 3. Dữ liệu dùng
