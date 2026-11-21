@@ -83,7 +83,7 @@ coverage@10 hơn baseline ở cả 6 nghề; Web@5 thấp hơn baseline. DevOps/
 
 Lộ trình mẫu (bậc trong gói theo 3.B, chạy lại 20/11; luật dẫn chứng ghi trong `sd5_<nghề>.json`):
 
-- **Web:** gói javascript: javascript → react, html, css, typescript, nodejs, angular, vuejs; gói sql_server: sql_server, csharp → dotnet; gói mysql: mysql → postgresql → mongodb. Đơn lẻ theo điểm: python, docker, java, git, windows, sql, ms_office, … Chưa nên học sớm: aws (20% tin Senior/Lead, 4% người mới), kubernetes, spring_boot, kafka, azure.
+- **Web:** gói javascript: javascript → react, html, css, typescript, nodejs, angular, vuejs; gói sql_server: sql_server, csharp → dotnet; gói postgresql: mysql → postgresql → mongodb (tên gói lấy theo kỹ năng điểm cao nhất). Đơn lẻ theo điểm: python, docker, java, git, windows, sql, ms_office, … Chưa nên học sớm: aws (20% tin Senior/Lead, 4% người mới), kubernetes, spring_boot, kafka, azure.
 - **Data/AI:** gói python: python → docker, pytorch, git, tensorflow; gói sql: sql → power_bi, excel. Chưa nên học sớm: dbt, bigquery, pyspark, databricks, redshift.
 - Web có windows, ms_office trong top: dấu hiệu tin IT hỗ trợ mang nhãn Web (PRE-44).
 
