@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-21T09:29:55+00:00",
-  "code_version": "709e73a",
+  "generated_at": "2026-11-21T11:56:21+00:00",
+  "code_version": "026808f",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 1270
@@ -140,7 +140,7 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 596,
+      "rows_affected": 579,
       "examples": []
     },
     {
@@ -365,8 +365,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 46.9,
-      "fill_pct_out": 46.9
+      "fill_pct_in": 45.5,
+      "fill_pct_out": 45.5
     },
     {
       "field": "company_key",
@@ -462,10 +462,10 @@
     },
     "job_family_distribution": {
       "Web": 251,
-      "Bridge": 195,
+      "Bridge": 193,
       "Other": 174,
       "Infra/Support": 144,
-      "Data/AI": 121,
+      "Data/AI": 123,
       "Tester": 118,
       "Design": 76,
       "DevOps/Cloud": 63,
@@ -475,8 +475,8 @@
       "IoT": 7
     },
     "job_family_source_distribution": {
-      "title": 673,
-      "canonical": 211,
+      "title": 675,
+      "canonical": 209,
       "none": 174,
       "canonical_generic": 84,
       "jd": 79,
@@ -502,10 +502,10 @@
       "job_title_clean_distinct": 1122,
       "job_title_core_distinct": 678,
       "title_canonical_source": {
-        "none": 672,
+        "none": 689,
         "alias": 360,
         "exact": 207,
-        "fuzzy": 26
+        "fuzzy": 9
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",

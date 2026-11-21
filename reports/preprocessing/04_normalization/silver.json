@@ -105,16 +105,16 @@
    "field": "title_canonical",
    "source_column": "title_canonical",
    "dtype": "object",
-   "fill_pct": 43.7,
+   "fill_pct": 41.8,
    "fill_pct_by_source": {
-    "topcv": 46.9,
-    "topdev": 36.1,
-    "vietnamworks": 38.3,
-    "careerviet": 42.3,
+    "topcv": 45.5,
+    "topdev": 34.3,
+    "vietnamworks": 35.7,
+    "careerviet": 39.3,
     "vieclam24h": 54.5,
-    "itviec": 39.3,
-    "glints": 41.8,
-    "jobsgo": 50.3
+    "itviec": 36.8,
+    "glints": 38.4,
+    "jobsgo": 48.9
    },
    "samples": [
     "UI/UX Designer",
@@ -586,6 +586,6 @@
    "status": "có"
   }
  ],
- "generated_at": "2026-11-21T09:30:48+00:00",
+ "generated_at": "2026-11-21T11:56:48+00:00",
  "dry_run": false
 }

@@ -76,6 +76,8 @@ Lý do: N3 cũ tra `job_titles.json` **trước** từ khóa tiêu đề, mà t�
 | **N3c** | Nhóm mới **`Infra/Support`** (hiển thị "IT hạ tầng & hỗ trợ"; quyết định 3.A, 6.A): `FAMILY_MAP["System/Network"]` = `Infra/Support` thay cho Security. Có 11 nhóm + Other | modify | `job_family` |
 | **N3d** | Sửa nhóm trong `job_titles.json` (quyết định 4.A): Thiết Kế, Product Designer, Designer POD, Thiết Kế 2D → Design; Agentic Engineer → Data/AI; Odoo Developer → Bridge; Quản Trị Cơ Sở Dữ Liệu DBA → Data/AI | modify | từ điển |
 
+| **N16b** | Khớp gần đúng (L-58): bỏ ứng viên khi mỗi bên có một từ viết tắt nghề IT (`TITLE_ACRONYMS`: it, ai, bi, ba, qa, qc, ui, ux, ml, pm, po, dba, sre, erp, crm, sap, seo, hr) mà bên kia không có ("ai specialist" ≠ "it specialist", "bi engineer" ≠ "it engineer"), xét ứng viên kế tiếp. Từ khóa Data/AI thêm "bi engineer" | modify | `title_canonical`, `title_canonical_source` |
+
 Mô phỏng 21/11 (trước → sau): Web 1.536 → 795, Other 526 → 611, Bridge 479 → 539, Data/AI 388 → 517, Infra/Support 0 → 405, Tester 382 → 395, DevOps/Cloud 234 → 253, Security 231 → 145, Design 61 → 109, Mobile 26 → 92, Game 43, IoT 10 → 12. Lớp JD trên 306 tin tiêu đề chung về IT: Infra/Support 183, Web 16, Bridge 9, Data/AI 5, DevOps/Cloud 5, Security 2, Tester 1, không rõ 85 (→ Other).
 
 ## 3. Quy trình xử lý

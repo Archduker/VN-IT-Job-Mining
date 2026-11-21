@@ -376,6 +376,13 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Còn lại:** lương 127 triệu của "[TP Vũng Tàu] Chuyên Gia IT" chưa gắn cờ (PRE-44, phần lương); trang Market Insights cũ (`monitoring/frontend/src/pages/MarketInsightsPage.tsx`) còn danh sách nhóm nghề cũ.
 - **Kiểm chứng:** `tests/unit/test_normalization_step.py` (`test_n3a_*`, `test_n3b_*`, `test_n3c_*`), `tests/unit/test_ph6_ph7_normalization.py::test_family_map_covers_old_families_and_targets_ten_groups`; dry-run và chạy thật 04 bảo toàn 3.997 = 3.916 + 81.
 
+### L-58. "AI Specialist" thành Bridge, "BI Engineer" thành Other (PRE-44, Dữ liệu, 21/11/2026)
+- **Lỗi:** dựng mẫu chấm tay 40 tin của L-57 (`data/preprocessing/review/job_family_pre44.csv`) thấy 2 tin "AI Specialist" mang nhãn Bridge và 1 tin "BI Engineer" mang nhãn Other.
+- **Nguyên nhân:** `canonical_title` khớp gần đúng (rapidfuzz `token_set_ratio` ≥ 90) ghép "ai specialist" với chức danh "IT Specialist" (Bridge) và "bi engineer" với "IT Engineer", vì hai tiêu đề chỉ khác một từ viết tắt. L-57 chỉ chặn được trường hợp "IT Engineer" (chức danh chung), "IT Specialist" là chức danh cụ thể nên vẫn thắng. Từ khóa Data/AI có "bi analyst", "bi developer" nhưng thiếu "bi engineer".
+- **Cách xử lý:** khớp gần đúng bỏ ứng viên mà mỗi bên có một từ viết tắt nghề IT (`TITLE_ACRONYMS`: it, ai, bi, ba, qa, ui, ux, dba…) bên kia không có (`_swapped_acronym`), rồi xét ứng viên kế tiếp. Không dùng mọi từ 2–3 chữ, vì âm tiết tiếng Việt ("ky su", "cao cap", "co so") cũng ngắn: bản đầu làm 2 tin DBA mất chức danh, mô phỏng đã bắt được. Thêm "bi engineer" vào từ khóa Data/AI. Chạy lại 04 → Silver → 10 → Mining.
+- **Kết quả (chạy thật 21/11):** đúng 3 tin đổi nghề (2 AI Specialist Bridge → Data/AI, 1 BI Engineer Other → Data/AI); 75 tin "AI Engineer" chỉ mất chức danh gần đúng sai "IT Engineer", nghề vẫn Data/AI. Bảng: Data/AI 523, Bridge 538, Other 614. Mining: NMI cụm × nghề 0,3141, tin gán sai M3 14, kỹ năng hiếm 121, M4 246 tin, M5 thắng baseline 10,65% (không đổi).
+- **Kiểm chứng:** `tests/unit/test_normalization_step.py::test_n16_fuzzy_rejects_swapped_acronym`, `::test_n3_ai_specialist_and_bi_engineer_are_data_ai`; so Silver trước và sau theo `job_id` chỉ khác 3 dòng; 04 bảo toàn 3.997 = 3.916 + 81.
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

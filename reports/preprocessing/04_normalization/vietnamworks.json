@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-21T09:30:08+00:00",
-  "code_version": "709e73a",
+  "generated_at": "2026-11-21T11:56:27+00:00",
+  "code_version": "026808f",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 592
@@ -111,7 +111,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 471,
+      "rows_affected": 472,
       "examples": [
         {
           "job_id": "2102610",
@@ -140,7 +140,7 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 227,
+      "rows_affected": 212,
       "examples": []
     },
     {
@@ -365,8 +365,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 38.3,
-      "fill_pct_out": 38.3
+      "fill_pct_in": 35.7,
+      "fill_pct_out": 35.7
     },
     {
       "field": "company_key",
@@ -466,8 +466,8 @@
       "Intern/Fresher": 19
     },
     "job_family_distribution": {
-      "Other": 119,
-      "Data/AI": 105,
+      "Other": 118,
+      "Data/AI": 106,
       "Bridge": 84,
       "Web": 78,
       "Tester": 66,
@@ -480,8 +480,8 @@
       "IoT": 1
     },
     "job_family_source_distribution": {
-      "title": 313,
-      "none": 119,
+      "title": 314,
+      "none": 118,
       "canonical": 65,
       "canonical_generic": 31,
       "jd": 31,
@@ -507,10 +507,10 @@
       "job_title_clean_distinct": 556,
       "job_title_core_distinct": 445,
       "title_canonical_source": {
-        "none": 360,
+        "none": 375,
         "alias": 135,
         "exact": 60,
-        "fuzzy": 28
+        "fuzzy": 13
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",

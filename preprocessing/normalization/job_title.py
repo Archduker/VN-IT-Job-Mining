@@ -59,7 +59,7 @@ _RULES_RAW: List[Tuple[str, List[str]]] = [
                         "cisco", "mạng máy tính", "network admin", "network administrator", "system admin", "system administrator", "sysadmin", "kỹ sư hệ thống"]),
     ("Data Science/AI", ["data engineer", "big data", "etl", "data warehouse", "dwh", "kỹ sư dữ liệu", "data platform", "dataops", "data scientist", "data science", "machine learning", "ai engineer", "ai developer", "ai researcher", "ml engineer", "deep learning",
                          "nlp", "computer vision", "trí tuệ nhân tạo", "khoa học dữ liệu", "data analyst", "data analytics", "phân tích dữ liệu",
-                         "bi analyst", "bi developer", "business intelligence", "power bi", "tableau", "genai", "llm", "ai"]),
+                         "bi analyst", "bi developer", "bi engineer", "business intelligence", "power bi", "tableau", "genai", "llm", "ai"]),
     ("Mobile", ["mobile", "flutter", "react native", "ios", "android", "swift", "kotlin"]),
     ("Fullstack", ["fullstack", "full-stack", "full stack", "toàn diện"]),
     ("Frontend", ["frontend", "front-end", "front end", "ui developer", "web frontend", "reactjs", "react developer", "vuejs", "angular developer"]),
@@ -223,10 +223,24 @@ def canonical_title(core_fold: str, title_dict: Dict[str, Any], cutoff: int = FU
     if len(core_fold) >= FUZZY_MIN_LEN and title_dict["fuzzy_list"]:
         from rapidfuzz import fuzz, process
 
-        m = process.extractOne(core_fold, title_dict["fuzzy_list"], scorer=fuzz.token_set_ratio, score_cutoff=cutoff)
-        if m:
-            return title_dict["canon_of"][m[0]], "fuzzy", float(m[1])
+        for alias, score, _ in process.extract(core_fold, title_dict["fuzzy_list"], scorer=fuzz.token_set_ratio,
+                                               score_cutoff=cutoff, limit=10):
+            if not _swapped_acronym(core_fold, alias):
+                return title_dict["canon_of"][alias], "fuzzy", float(score)
     return None, "none", None
+
+
+# Từ viết tắt nghề IT. Không lấy mọi từ 2–3 chữ: âm tiết tiếng Việt ("ky su", "cao cap", "co so") cũng ngắn.
+TITLE_ACRONYMS = {"it", "ai", "bi", "ba", "qa", "qc", "ui", "ux", "ml", "pm", "po", "dba", "sre", "erp", "crm", "sap", "seo", "hr"}
+_WORD = re.compile(r"[^\W_]+")
+
+
+def _swapped_acronym(a: str, b: str) -> bool:
+    """L-58: hai tiêu đề chỉ khác nhau vì đổi một từ viết tắt lấy từ khác ("ai specialist" ↔ "it specialist",
+    "bi engineer" ↔ "it engineer"). Mỗi bên có từ viết tắt mà bên kia không có thì không coi là cùng chức danh."""
+    ta = set(_WORD.findall(a)) & TITLE_ACRONYMS
+    tb = set(_WORD.findall(b)) & TITLE_ACRONYMS
+    return bool(ta - tb) and bool(tb - ta)
 
 
 # ---------------------------------------------------------------- N17 nhóm nghề

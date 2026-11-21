@@ -145,6 +145,36 @@ def test_n3b_jd_layer_not_used_for_developer_titles():
     assert _fam44("Developer", ["Docker", "Kubernetes"], jd="devops, ci/cd, kubernetes, docker") == ("Web", "canonical_generic")
 
 
+def test_n16_fuzzy_rejects_swapped_acronym():
+    """L-58: khớp gần đúng không ghép hai tiêu đề chỉ khác nhau ở từ viết tắt ngắn (AI/BI ↔ IT)."""
+    from preprocessing.normalization.job_title import canonical_title
+    d = build_title_dict([
+        {"canonical": "IT Specialist", "family": "Bridge", "aliases": ["it specialist"], "approved": True},
+        {"canonical": "IT Engineer", "family": "Web", "aliases": ["it engineer"], "approved": True},
+        {"canonical": "Quản Trị Cơ Sở Dữ Liệu DBA", "family": "Data/AI", "aliases": [], "approved": True},
+        {"canonical": "Software Engineer", "family": "Web", "aliases": ["software engineer"], "approved": True},
+    ])
+    assert canonical_title(fold("AI Specialist"), d)[0] is None
+    assert canonical_title(fold("BI Engineer"), d)[0] is None
+    # vẫn khớp khi chỉ một bên thiếu từ ngắn (không phải đổi từ này lấy từ kia)
+    assert canonical_title(fold("quan tri du lieu"), d)[0] == "Quản Trị Cơ Sở Dữ Liệu DBA"
+    # âm tiết tiếng Việt ngắn ("ky su", "cao cap") không phải từ viết tắt
+    assert canonical_title(fold("ky su quan tri co so du lieu"), d)[0] == "Quản Trị Cơ Sở Dữ Liệu DBA"
+    assert canonical_title(fold("software development engineer in test"), d)[0] == "Software Engineer"
+
+
+def test_n3_ai_specialist_and_bi_engineer_are_data_ai():
+    """L-58: "AI Specialist" từng thành Bridge (khớp "IT Specialist"), "BI Engineer" từng thành Other."""
+    d = build_title_dict([
+        {"canonical": "IT Specialist", "family": "Bridge", "aliases": ["it specialist"], "approved": True},
+        {"canonical": "IT Engineer", "family": "Web", "aliases": ["it engineer"], "approved": True},
+    ])
+    from preprocessing.normalization.job_title import canonical_title
+    for title in ("AI Specialist", "BI Engineer"):
+        core = fold(core_title(title)[0])
+        assert family_from_title(core, canonical_title(core, d)[0], [], d)[0] == "Data/AI", title
+
+
 def test_n4_canonical_skills():
     """Kiểm tra N4: Ánh xạ kỹ năng về tên chuẩn theo skills.json và loại bỏ trùng lặp."""
     input_skills = ["ReactJS", "React.js", "Java", "Docker", "react"]

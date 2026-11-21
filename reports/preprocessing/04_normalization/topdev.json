@@ -2,8 +2,8 @@
   "step": "04_normalization",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-21T09:30:07+00:00",
-  "code_version": "709e73a",
+  "generated_at": "2026-11-21T11:56:27+00:00",
+  "code_version": "026808f",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
     "rows": 168
@@ -118,7 +118,7 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 60,
+      "rows_affected": 57,
       "examples": []
     },
     {
@@ -336,8 +336,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 36.1,
-      "fill_pct_out": 36.1
+      "fill_pct_in": 34.3,
+      "fill_pct_out": 34.3
     },
     {
       "field": "company_key",
@@ -471,10 +471,10 @@
       "job_title_clean_distinct": 165,
       "job_title_core_distinct": 145,
       "title_canonical_source": {
-        "none": 106,
+        "none": 109,
         "alias": 43,
         "exact": 13,
-        "fuzzy": 4
+        "fuzzy": 1
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
