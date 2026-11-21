@@ -87,7 +87,7 @@ hand_check: 20 tin seed 42, phân tầng theo kind (tỷ lệ theo số tin, m�
 | # | Bước quy trình | Ngày | Việc đã làm, số liệu, quyết định | Commit |
 |---|---|---|---|---|
 | 1 | Duyệt đặc tả | 20/11 | "approved" | 1036a11 |
-| 2 | Duyệt prompt | chưa | | |
-| 3 | Test rồi code | chưa | | |
-| 4 | Dry-run | chưa | Trước khi sửa: 230 tin (5,87%), IF 118, GLOSH 118, cả hai 6 | |
-| 5 | Review, chạy thật | chưa | | |
+| 2 | Duyệt prompt | 20/11 | "continue" sau khi nhận bộ prompt | e230f28 |
+| 3 | Test rồi code | 20/11 | `tests/unit/test_mining_anomaly.py` 11 test (ngưỡng P99, P95 người mới, `SALARY_OUTLIER_FLAGGED`, mới/chưa rõ, GLOSH null, một `kind` mỗi tin, mẫu kiểm tay phân tầng, tin chưa rõ cấp không qua IF). `AnomalyParams` bỏ `fresher_skill_limit`, thêm `too_many_q`, `fresher_q`, `normal_band`, `hand_check_n`; driver truyền GLOSH null, ghi `sd3_anomaly_hand_check.csv` | (commit này) |
+| 4 | Dry-run | 20/11 | Trước khi sửa: 230 tin (5,87%), IF 118, GLOSH 118, cả hai 6. Sau khi sửa: 230 tin, chưa rõ 40%; 97/117 cờ IF là tin chưa rõ cấp (nhóm 7,3% dữ liệu) | |
+| 5 | Review, chạy thật | 20/11 | Người dùng "1.b 2.a": IF chỉ fit tin biết cấp, tin chưa rõ cấp có mã cụ thể gắn cờ nguồn `rule`; trường thiếu tính là không lệch. Chạy thật cả chuỗi: 246 tin (6,28%), IF 106 + GLOSH 115 + cả hai 3 + rule 22; khác 109, mới 105, chưa rõ 32 (13%). Ngưỡng P99 26,85, P95 người mới 16. **Kiểm tay 20 tin còn mở** | (commit này) |

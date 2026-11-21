@@ -39,6 +39,7 @@ Một danh sách top 10 chung cho cả nghề Web chỉ đáp ứng 13% tin Web 
 | M6.1' | **Quyết định 2.A (20/11):** giữ điểm = demand × (1 + premium) | Đã xem: xếp chỉ theo demand cho coverage@10 cao hơn ở Bridge (0,41 so với 0,27), Data/AI (0,20 so với 0,14), Tester (0,28 so với 0,24); người dùng giữ công thức |
 | M6.5' | **Quyết định 3.B (20/11):** chia 80/20 năm lần (seed 42–46, `split_seeds`), đạt khi trung bình độ lệch ≤ 10 điểm | Một lần chia (seed 42): Bridge lệch 0,139, Tester 0,204; phần 20% chỉ 19–25 tin |
 | M6.3' | **Quyết định 4.B (20/11):** kỹ năng "chưa nên đầu tư sớm" phải có ≥ 10 tin Senior/Lead (`defer_min_jobs`). Tỷ lệ ở tin người mới bằng 0 tính như 1 tin để tỷ số không thành vô cùng | Trước 4.B Web có 97 kỹ năng, đuôi là kỹ năng chỉ ở vài tin; sau 4.B còn 28 |
+| M6.2'' | **Quyết định 3.B (20/11, sau khi đọc lộ trình):** bậc = 1 + khoảng cách **ngắn nhất** từ một kỹ năng nền (không có cạnh vào) trong gói; luật dẫn chứng lấy từ kỹ năng ở bậc ngay trước, confidence cao nhất. Thay thứ tự topo theo tầng (đường dài nhất) của M6.2 | Đường dài nhất đẩy angular xuống bậc 4 qua javascript → html → css → angular dù có luật angular ⇒ javascript (0,655); nodejs sau react; excel sau power_bi, sql. Chiều luật chỉ cho biết kỹ năng nào phổ biến hơn trong cùng tin, không phải thứ tự học, nên chuỗi dài dễ sai |
 
 ## 3. Quy trình xử lý
 
@@ -80,10 +81,10 @@ Chạy thật 20/11 (`--only bi,fp,cluster,salary,recommend`; M2, M5 cùng lần
 
 coverage@10 hơn baseline ở cả 6 nghề; Web@5 thấp hơn baseline. DevOps/Cloud lệch 80/20 vượt 10 điểm (45 tin, phần 20% chỉ 9 tin). Design, Game, IoT, Mobile: "ít dữ liệu"; Other: không làm lộ trình.
 
-Lộ trình mẫu (bậc trong gói; luật dẫn chứng ghi trong `sd5_<nghề>.json`):
+Lộ trình mẫu (bậc trong gói theo 3.B, chạy lại 20/11; luật dẫn chứng ghi trong `sd5_<nghề>.json`):
 
-- **Web:** gói javascript: javascript → react, html, typescript → css, nodejs, vuejs → angular; gói sql_server: sql_server, csharp → dotnet; gói postgresql: mysql → postgresql → mongodb. Đơn lẻ theo điểm: python, docker, java, git, windows, sql, ms_office, … Chưa nên học sớm: aws (20% tin Senior/Lead, 4% người mới), kubernetes, spring_boot, kafka, azure.
-- **Data/AI:** gói python: python → docker, pytorch, git → tensorflow; gói sql: sql → power_bi → excel. Chưa nên học sớm: dbt, bigquery, pyspark, databricks, redshift.
+- **Web:** gói javascript: javascript → react, html, css, typescript, nodejs, angular, vuejs; gói sql_server: sql_server, csharp → dotnet; gói mysql: mysql → postgresql → mongodb. Đơn lẻ theo điểm: python, docker, java, git, windows, sql, ms_office, … Chưa nên học sớm: aws (20% tin Senior/Lead, 4% người mới), kubernetes, spring_boot, kafka, azure.
+- **Data/AI:** gói python: python → docker, pytorch, git, tensorflow; gói sql: sql → power_bi, excel. Chưa nên học sớm: dbt, bigquery, pyspark, databricks, redshift.
 - Web có windows, ms_office trong top: dấu hiệu tin IT hỗ trợ mang nhãn Web (PRE-44).
 
 ## 6. Kiểm tra và nghiệm thu

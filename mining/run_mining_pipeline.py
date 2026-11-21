@@ -29,7 +29,7 @@ if __package__ in (None, ""):  # chạy trực tiếp bằng đường dẫn fil
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from mining.anomaly import detect_anomalies  # noqa: E402
+from mining.anomaly import detect_anomalies, hand_check_sample  # noqa: E402
 from mining.bi import _view_sets, newcomer_demand, run_bi  # noqa: E402
 from mining.association import run_association, write_hand_check  # noqa: E402
 from mining.clustering import cluster_jobs  # noqa: E402
@@ -131,8 +131,8 @@ def run_pipeline(
         outputs["hand_check_mismatch"] = (hc.sample(min(20, len(hc)), random_state=p.random_state)
                                           [["job_id", "job_title", "job_family", "cluster_id", "cluster_name"]]
                                           .assign(dung=pd.NA, ghi_chu=pd.NA).reset_index(drop=True))
-        # tin không vào phân cụm (M3.1b) không có GLOSH: 0 và không cờ
-        glosh = np.nan_to_num(clusters["glosh_outlier_score"].to_numpy(dtype=float), nan=0.0)
+        # tin không vào phân cụm (M3.1b) có GLOSH null; M4 coi là không cờ, cột glosh để null
+        glosh = clusters["glosh_outlier_score"].to_numpy(dtype=float)
         glosh_flag = clusters["is_outlier"].to_numpy()
         timings["cluster"] = time.perf_counter() - t
         logger.info("K-Means: k=%d, silhouette=%.4f", m["best_k"], m["silhouette"])
@@ -141,8 +141,9 @@ def run_pipeline(
         t = time.perf_counter()
         anomalies, m = detect_anomalies(meta, glosh, glosh_flag, p.anomaly, p.random_state)
         outputs["anomalies"], metrics["anomaly"] = anomalies, m
+        outputs["hand_check_anomaly"] = hand_check_sample(anomalies, p.anomaly.hand_check_n, p.random_state)
         timings["anomaly"] = time.perf_counter() - t
-        logger.info("Anomaly: %d tin bị gắn cờ (%.2f%%)", m["n_flagged"], 100 * m["anomaly_rate"])
+        logger.info("Anomaly: %d tin bị gắn cờ (%.2f%%), loại %s", m["n_flagged"], 100 * m["anomaly_rate"], m["kind_counts"])
 
     skill_values = None
     if "salary" in steps:
@@ -257,6 +258,10 @@ def write_artifacts(outputs: dict[str, Any], metrics: dict[str, Any], out_dir: P
         path = out_dir / "sd2_hand_check.csv"
         if write_hand_check(outputs["hand_check_rules"], path):
             written["hand_check_rules"] = {"path": path.as_posix(), "rows": int(len(outputs["hand_check_rules"]))}
+    if outputs.get("hand_check_anomaly") is not None:
+        path = out_dir / "sd3_anomaly_hand_check.csv"
+        if write_hand_check(outputs["hand_check_anomaly"], path):
+            written["hand_check_anomaly"] = {"path": path.as_posix(), "rows": int(len(outputs["hand_check_anomaly"]))}
     if outputs.get("hand_check_mismatch") is not None:
         path = out_dir / "sd3_mismatch_hand_check.csv"
         if write_hand_check(outputs["hand_check_mismatch"], path):

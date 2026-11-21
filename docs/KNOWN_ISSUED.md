@@ -199,8 +199,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 **MINE-7. Code Mining chưa trả lời đủ câu hỏi của SD1–SD5** (mở 17/11/2026; từ 20/11 chi tiết ở `docs/spec/mining/` M0–M6, mục 2.2 và 7 của từng file)
 
-- **Đã xong 20/11** (code, chạy thật, chi tiết ở mục 5–7 của từng file `docs/spec/mining/`): `STEPS` có `bi` và `recommend`; M1 (`bi.py`), M2, M3, M5, M6 (`recommend.py`). Kiểm tay còn mở: M1 (20 tin), M2 (20 luật), M3 (8 tin gán sai), M6 (đọc lộ trình Web, Data/AI).
-- **M4 (SD3):** chưa chia hai loại "mới" và "khác"; ngưỡng mã lý do chưa theo phân vị (bước còn lại duy nhất).
+- **Đã xong 20/11** (code, chạy thật, chi tiết ở mục 5–7 của từng file `docs/spec/mining/`): `STEPS` có `bi` và `recommend`; M1 (`bi.py`), M2, M3, M4, M5, M6 (`recommend.py`). Kiểm tay còn mở: M1 (20 tin), M2 (20 luật), M3 (8 tin gán sai), M4 (`sd3_anomaly_hand_check.csv`, 20 tin), M6 (đọc lộ trình Web, Data/AI sau 3.B).
 - **M6:** DevOps/Cloud lệch 80/20 0,106 (> 0,10, 45 tin người mới).
 - **Quyết định đã chốt 17/11 (spec 07 mục 4), code chưa làm:**
   - Bỏ TF-IDF: gỡ `build_tfidf`, `tfidf_weight` khỏi `mining/clustering.py` và `mining/config.py`; bỏ `12_tfidf` khỏi `PROCESSING_STEPS` (`scripts/run_preprocessing.py`), xóa `processing/extraction/vectorize.py` và test, xóa `data/processing/12_tfidf/`, `reports/processing/12_tfidf/`.

@@ -132,3 +132,13 @@ def test_run_recommend_writes_families_and_low_data_index():
 
 def test_family_slug():
     assert family_slug("Data/AI") == "data_ai" and family_slug("DevOps/Cloud") == "devops_cloud"
+
+
+def test_level_uses_shortest_path_from_base():
+    """3.B (20/11): C có luật trực tiếp về nền A nên ở bậc 2, dù có đường dài A → B → C."""
+    rules = _rules([(["B"], ["A"], 0.8, 2.0), (["C"], ["B"], 0.7, 2.0), (["C"], ["A"], 0.65, 2.0)])
+    path = learning_path(["A", "B", "C"], rules, P)
+    lv = {s["skill"]: s["level"] for s in path["bundles"][0]["steps"]}
+    assert lv == {"A": 1, "B": 2, "C": 2}
+    c = next(s for s in path["bundles"][0]["steps"] if s["skill"] == "C")
+    assert c["evidence"]["rule"] == "C ⇒ A"

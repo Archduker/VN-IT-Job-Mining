@@ -6,7 +6,8 @@
 - 5.2 (M6.2): gói = thành phần liên thông của đồ thị luật mạnh M2 (nghề × người mới, thiếu thì cả nghề);
   bậc theo thứ tự topo, chu trình cắt cạnh confidence thấp nhất. Luật là "hay đi kèm", không phải "học trước".
   Quyết định 1.B (20/11): chỉ dùng luật 1 ⇒ 1, và vế phải là nền: react ⇒ javascript (tin có React gần như luôn
-  có JavaScript) cho cạnh javascript → react, tức javascript ở bậc trước.
+  có JavaScript) cho cạnh javascript → react, tức javascript ở bậc trước. Quyết định 3.B: bậc theo đường ngắn nhất
+  từ kỹ năng nền.
 - 5.3 (M6.3): chưa nên đầu tư sớm = tỷ lệ ở tin Senior/Lead / tỷ lệ ở tin người mới >= 3 và demand < 5%.
 - 5.4 (M6.4): coverage@N = tỷ lệ tin người mới mà top N đáp ứng >= 70% số công cụ tin đòi (tin 0 công cụ không tính);
   baseline = top N công cụ phổ biến nhất toàn thị trường. M6.5: kiểm 80/20.
@@ -134,18 +135,22 @@ def learning_path(skills: list[str], rules: pd.DataFrame, p: RecommendParams) ->
         mset = set(members)
         sub = {e: v for e, v in edges.items() if e[0] in mset and e[1] in mset}
         cut = _break_cycles(mset, sub)
-        level: dict[str, int] = {}
-        remaining = set(members)
-        lv = 1
-        while remaining:  # Kahn theo tầng: bậc 1 = không có cạnh vào
-            layer = {s for s in remaining if not any(b == s and a in remaining for a, b in sub)}
-            for s in layer:
-                level[s] = lv
-            remaining -= layer
-            lv += 1
+        # 3.B (20/11): bậc = 1 + khoảng cách NGẮN NHẤT từ một kỹ năng nền (không có cạnh vào). Đường dài nhất từng đẩy
+        # angular xuống bậc 4 qua javascript → html → css → angular dù có luật angular ⇒ javascript.
+        level = {s: 1 for s in members if not any(b == s for _, b in sub)}
+        frontier = sorted(level, key=lambda s: order[s])
+        while frontier:
+            nxt = []
+            for a in frontier:
+                for (x, b) in sub:
+                    if x == a and b not in level:
+                        level[b] = level[a] + 1
+                        nxt.append(b)
+            frontier = nxt
         steps = []
         for s in sorted(members, key=lambda s: (level[s], order[s])):
-            ins = [(a, v) for (a, b), v in sub.items() if b == s]
+            # dẫn chứng: luật từ một kỹ năng ở bậc ngay trước, confidence cao nhất
+            ins = [(a, v) for (a, b), v in sub.items() if b == s and level.get(a) == level[s] - 1]
             ev = max(ins, key=lambda kv: (kv[1]["confidence"], kv[0]))[1] if ins and level[s] > 1 else None
             steps.append({"skill": s, "level": level[s], "evidence": ev})
         bundles.append({"name": f"Gói {min(members, key=lambda s: order[s])}",  # tên = kỹ năng điểm cao nhất

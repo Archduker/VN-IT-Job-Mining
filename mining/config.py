@@ -199,7 +199,11 @@ class SalaryParams:
 class AnomalyParams:
     contamination: float = 0.03
     n_estimators: int = 300
-    fresher_skill_limit: int = 15  # spec 07 §5.1: Fresher/Intern đòi > 15 kỹ năng
+    # M4.4a (duyệt 20/11): ngưỡng số công cụ theo phân vị dữ liệu, thay số cố định 15
+    too_many_q: float = 0.99  # TOO_MANY_SKILLS: n_tools > P99 mọi tin
+    fresher_q: float = 0.95  # FRESHER_TOO_MANY_SKILLS: tin người mới có n_tools > P95 của tin người mới
+    normal_band: tuple[float, float] = (0.05, 0.95)  # M4.5: "mới" khi các trường trong P5–P95 của cấp
+    hand_check_n: int = 20  # M4.6
     exp_mismatch_years: float = 5.0
     salary_ratio_limit: float = 3.0  # lương > 3x (hoặc < 1/3) trung vị cùng cấp bậc
 
