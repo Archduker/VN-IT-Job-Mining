@@ -2,15 +2,15 @@
   "step": "12_e5",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-19T10:25:03+00:00",
-  "code_version": "59cf7c7",
+  "generated_at": "2026-11-22T00:02:36+00:00",
+  "code_version": "f352120",
   "input": {
     "path": null,
-    "rows": 26131
+    "rows": 25908
   },
   "output": {
     "path": "data/processing/12_e5/bullet_emb.npy",
-    "rows": 26131
+    "rows": 25908
   },
   "dropped": [],
   "rules": [],
@@ -24,10 +24,10 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "bullets": 99582,
+    "bullets": 95288,
     "dim": 768,
     "model": "intfloat/multilingual-e5-base",
-    "jobs": 3916
+    "jobs": 3718
   },
   "samples": [],
   "samples_reason": "NO_ROWS_CHANGED"

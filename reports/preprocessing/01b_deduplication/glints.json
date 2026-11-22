@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:13:36+00:00",
-  "code_version": "d3f7008",
+  "generated_at": "2026-11-21T23:34:32+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/01_clean/glints.jsonl",
-    "rows": 162
+    "rows": 153
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/glints.jsonl",
-    "rows": 155
+    "rows": 146
   },
   "dropped": [
     {
@@ -125,8 +125,15 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 4,
+      "rows_affected": 6,
       "examples": [
+        {
+          "job_id": "3a5f7b15-db25-4be0-b944-86d142c2b33c",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7512,
+          "url": "https://glints.com/vn/opportunities/jobs/thuc-tap-sinh-ai/3a5f7b15-db25-4be0-b944-86d142c2b33c"
+        },
         {
           "job_id": "703416e9-0550-4ba6-bb9c-4e691a88c64a",
           "field": "jaccard",
@@ -140,13 +147,6 @@
           "before": null,
           "after": 0.9706,
           "url": "https://glints.com/vn/opportunities/jobs/fullstack-developer-react-golang/7da83cf6-f384-4b3b-8cc8-d6e0c7bcc955"
-        },
-        {
-          "job_id": "cd1e8902-89f2-43c8-bbbd-fee8b150fcb0",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.9602,
-          "url": "https://glints.com/vn/opportunities/jobs/qc-engineer-manual-automation/cd1e8902-89f2-43c8-bbbd-fee8b150fcb0"
         }
       ]
     }
@@ -170,7 +170,7 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 106,
+    "blocking_blocks": 101,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 7

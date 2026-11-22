@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:35+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:02+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 1265
+    "rows": 1185
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 1265
+    "rows": 1185
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 34328,
+    "n_bullets": 32456,
     "bullets_by_section": {
-      "mo_ta": 10524,
-      "yeu_cau": 10603,
-      "phuc_loi": 13201
+      "mo_ta": 9868,
+      "yeu_cau": 10067,
+      "phuc_loi": 12521
     },
     "bullets_by_rule": {
-      "S7.2": 34328
+      "S7.2": 32456
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "topcv_1763894",
+      "job_id": "topcv_2321289",
       "source": "topcv",
       "field": "sections",
-      "before": "Phân tích, điều tra, định danh, báo cáo về các cuộc tấn công APT và botnet.\nỨng phó, forensic sự cố APT.\nNghiên cứu sử dụng và phát triển các công cụ nội bộ phục vụ reverse/forensic.",
+      "before": "- Đọc đặc tả nghiệp vụ (module spec, user flow), viết test case và checklist nghiệm thu cho từng tính năng.\n- Kiểm thử thủ công trên web (Chrome, Safari, Edge, Firefox), giao diện responsive, ứng dụng…",
       "after": {
-        "phuc_loi": 12,
-        "yeu_cau": 6,
-        "mo_ta": 3
-      },
-      "changed": true
-    },
-    {
-      "job_id": "topcv_2321841",
-      "source": "topcv",
-      "field": "sections",
-      "before": "Hỗ trợ nhân viên các phòng ban (Kế toán, XNK, Mua hàng, Kho, Sản xuất...) xử lý các sự cố máy tính, email doanh nghiệp, kết nối mạng, cài đặt phần mềm chuyên môn.\nPhối hợp vận hành, phân quyền người d…",
-      "after": {
-        "yeu_cau": 6,
+        "yeu_cau": 11,
         "phuc_loi": 6,
         "mo_ta": 5
       },
       "changed": true
     },
     {
-      "job_id": "topcv_2329934",
+      "job_id": "topcv_2321974",
       "source": "topcv",
       "field": "sections",
-      "before": "Responsibilities As a DX Business Analyst for systems supporting audit operations, you will collaborate with business stakeholders to define solution requirements based on business needs, work closely…",
+      "before": "Build và phát triển game mobile bằng Unity Engine Phối hợp với Game Designer để triển khai các tính năng và logic của game Fix bug và tối ưu hiệu năng game",
       "after": {
-        "phuc_loi": 7,
-        "mo_ta": 2,
-        "yeu_cau": 2
+        "yeu_cau": 17,
+        "phuc_loi": 14,
+        "mo_ta": 1
+      },
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2315267",
+      "source": "topcv",
+      "field": "sections",
+      "before": "- Dẫn dắt và triển khai các dự án hệ thống của GHTK, với traffic cao, xử lý dữ liệu đơn hàng lớn theo thời gian thực.\n- Xây dựng và phát triển các sản phẩm công nghệ phục vụ khách hàng, người dùng cuố…",
+      "after": {
+        "yeu_cau": 16,
+        "phuc_loi": 15,
+        "mo_ta": 9
       },
       "changed": true
     }

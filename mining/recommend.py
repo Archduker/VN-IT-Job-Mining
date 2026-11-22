@@ -313,7 +313,10 @@ def run_recommend(meta: pd.DataFrame, view_sets: dict[str, dict], demand: dict, 
                                                   "defer_min_jobs", "coverage_need", "split", "split_max_diff")},
             "notes": NOTES,
         }
-        index.append({"job_family": f, "status": "có lộ trình", "n_newcomer": n_new, "file": f"sd5_{family_slug(f)}.json"})
+        # Nghề có lệch 80/20 vượt ngưỡng: lộ trình không ổn định giữa các lần chia, chỉ để tham khảo (22/11)
+        index.append({"job_family": f, "status": "có lộ trình", "n_newcomer": n_new, "file": f"sd5_{family_slug(f)}.json",
+                      "split_ok": bool(split["ok"]),
+                      "reliability": "ổn định" if split["ok"] else "tham khảo: lệch 80/20 vượt ngưỡng, ít tin người mới"})
         c10 = cov.get("10", {})
         fam_metrics[f] = {"n_newcomer": n_new, "n_priority_tool": len(ptool), "n_priority_soft": len(psoft),
                           "n_bundles": len(path["bundles"]), "n_standalone": len(path["standalone"]),

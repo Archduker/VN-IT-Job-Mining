@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:11:28+00:00",
-  "code_version": "42423d5",
+  "generated_at": "2026-11-21T23:34:24+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/itviec/raw",
     "rows": 911
   },
   "output": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
-    "rows": 813
+    "rows": 808
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 48
+      "rows": 53
     },
     {
       "rule": "C5",
@@ -93,7 +93,7 @@
       "id": "C4a",
       "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 48,
+      "rows_affected": 53,
       "examples": [
         {
           "job_id": "2d-concept-artist-all-level-cong-ty-co-phan-sabogame-3212",
@@ -122,7 +122,7 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 48,
+      "rows_affected": 53,
       "examples": [
         {
           "job_id": "2d-concept-artist-all-level-cong-ty-co-phan-sabogame-3212",
@@ -277,22 +277,23 @@
   },
   "extra": {
     "it_levels": {
-      "tang_1_it": 820,
-      "tang_0_non_it": 42,
+      "tang_1_it": 816,
+      "tang_0_non_it": 47,
       "tang_2_non_it": 6,
-      "tang_2_it": 42
+      "tang_2_it": 41
     },
     "it_excluded_groups": {
       "q8_operations_growth": 2,
       "graphic_design": 6,
       "q4_embedded_iot": 26,
+      "reviewed_jd": 5,
       "sales_marketing": 5,
       "q2_privacy": 1,
       "q3_av": 2
     },
     "it_status": {
-      "it": 862,
-      "non_it": 48
+      "it": 857,
+      "non_it": 53
     },
     "it_policy": {
       "drop": [

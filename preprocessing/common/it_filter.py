@@ -124,6 +124,12 @@ def _hit(words, text: str) -> bool:
     return bool(words) and bool(_cached_pattern(words).search(text))
 
 
+def reviewed_non_it(source: str, job_id: Any, cfg: dict) -> bool:
+    """Tầng 0 theo từng tin: `<nguồn>:<job_id>` có trong `reviewed_non_it.jobs` (tin đã đọc JD, kết luận không IT)."""
+    jobs = (cfg.get("reviewed_non_it") or {}).get("jobs") or {}
+    return f"{source}:{job_id}" in jobs
+
+
 def excluded_role(title: Any, cfg: dict) -> str | None:
     """Tầng 0: tên nhóm bị loại hoàn toàn (mục 2.1) hoặc None. Ngoại lệ chỉ áp cho nhóm được ghi trong cấu hình."""
     t = _norm(title)

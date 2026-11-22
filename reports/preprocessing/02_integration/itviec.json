@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:14:48+00:00",
-  "code_version": "d3f7008",
+  "generated_at": "2026-11-21T23:35:57+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/01b_deduplication/itviec.jsonl",
-    "rows": 785
+    "rows": 780
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 785
+    "rows": 780
   },
   "dropped": [
     {
@@ -34,14 +34,14 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
       "action": "modify",
-      "rows_affected": 785,
+      "rows_affected": 780,
       "examples": []
     },
     {
       "id": "I2",
       "name": "ITviec lấy ngày đăng từ JSON-LD datePosted",
       "action": "modify",
-      "rows_affected": 762,
+      "rows_affected": 757,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -184,8 +184,8 @@
     },
     {
       "field": "raw_work_mode",
-      "fill_pct_in": 96.4,
-      "fill_pct_out": 96.4
+      "fill_pct_in": 96.5,
+      "fill_pct_out": 96.5
     },
     {
       "field": "raw_experience_text",

@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:11:30+00:00",
-  "code_version": "42423d5",
+  "generated_at": "2026-11-21T23:34:27+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/jobsgo/raw",
     "rows": 1597
   },
   "output": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
-    "rows": 530
+    "rows": 511
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 882
+      "rows": 906
     },
     {
       "rule": "C5",
@@ -51,12 +51,12 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-      "rows": 52
+      "rows": 51
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 41
+      "rows": 37
     }
   ],
   "rules": [
@@ -107,7 +107,7 @@
       "id": "C4a",
       "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 882,
+      "rows_affected": 906,
       "examples": [
         {
           "job_id": "15485124967",
@@ -136,7 +136,7 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 882,
+      "rows_affected": 906,
       "examples": [
         {
           "job_id": "15485124967",
@@ -252,7 +252,7 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 52,
+      "rows_affected": 51,
       "examples": [
         {
           "job_id": "28898148850",
@@ -281,15 +281,8 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 41,
+      "rows_affected": 37,
       "examples": [
-        {
-          "job_id": "28962757732",
-          "field": "dedup_key",
-          "before": "dược phẩm và trang thiết bị y tế hoàng đức|chuyên viên hệ thống chất lượng cntt",
-          "after": "giữ topcv:2262684",
-          "url": "https://jobsgo.vn/viec-lam/chuyen-vien-he-thong-chat-luong-cntt-28962757732.html"
-        },
         {
           "job_id": "28973593774",
           "field": "dedup_key",
@@ -303,6 +296,13 @@
           "before": "global technology solutions|software tester lead",
           "after": "giữ topcv:2244120",
           "url": "https://jobsgo.vn/viec-lam/software-tester-lead-28973648090.html"
+        },
+        {
+          "job_id": "28987593723",
+          "field": "dedup_key",
+          "before": "công nghệ vcs|nhân viên phân tích nghiệp vụ",
+          "after": "giữ topcv:1317511",
+          "url": "https://jobsgo.vn/viec-lam/nhan-vien-phan-tich-nghiep-vu-28987593723.html"
         }
       ]
     }
@@ -349,24 +349,28 @@
   },
   "extra": {
     "it_levels": {
-      "tang_0_non_it": 365,
+      "tang_0_non_it": 399,
       "tang_1_non_it": 90,
-      "tang_2_non_it": 427,
-      "tang_1_it": 608,
-      "tang_2_it": 50
+      "tang_2_non_it": 417,
+      "tang_1_it": 587,
+      "tang_2_it": 47
     },
     "it_excluded_groups": {
       "sales_marketing": 293,
       "h2_hardware_chip": 13,
       "q7_teaching": 6,
+      "reviewed_jd": 22,
       "electrical_mechanical": 27,
       "q4_embedded_iot": 16,
+      "p2_procurement_hr": 10,
       "h5_repair": 7,
-      "h4_telecom_field": 3
+      "h4_telecom_field": 3,
+      "p2_data_entry": 1,
+      "graphic_design": 1
     },
     "it_status": {
-      "non_it": 882,
-      "it": 658
+      "non_it": 906,
+      "it": 634
     },
     "it_policy": {
       "drop": [
@@ -389,12 +393,12 @@
         "tang_1_it": 16
       },
       "labeled_non_it": 79,
-      "rule_decided": 71,
-      "rule_correct": 70,
+      "rule_decided": 72,
+      "rule_correct": 71,
       "status_non_it": 82,
       "status_non_it_correct": 78,
-      "level2_labeled": 25,
-      "level2_correct": 21,
+      "level2_labeled": 24,
+      "level2_correct": 20,
       "level1_it_labeled": 12,
       "level1_it_correct": 11,
       "validation": {

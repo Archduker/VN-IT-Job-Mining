@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:35+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:02+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 166
+    "rows": 147
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 166
+    "rows": 147
   },
   "dropped": [],
   "rules": [],
@@ -24,114 +24,98 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 4814,
+    "n_job_skill_rows": 4508,
     "n_jobs_no_skill": 1,
     "rows_by_kind": {
-      "technical": 3777,
-      "soft": 920,
-      "language": 117
+      "technical": 3592,
+      "soft": 811,
+      "language": 105
     },
     "rows_by_type": {
-      "concept": 2688,
-      "tool": 1023,
-      "null": 1103
+      "concept": 2542,
+      "tool": 993,
+      "null": 973
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
       {
         "skill": "coordination",
-        "n_jobs": 107
-      },
-      {
-        "skill": "communication",
-        "n_jobs": 82
+        "n_jobs": 91
       },
       {
         "skill": "english",
-        "n_jobs": 79
+        "n_jobs": 73
+      },
+      {
+        "skill": "communication",
+        "n_jobs": 73
       },
       {
         "skill": "proactiveness",
-        "n_jobs": 64
+        "n_jobs": 61
       },
       {
         "skill": "software_testing",
-        "n_jobs": 49
+        "n_jobs": 47
       },
       {
         "skill": "database",
-        "n_jobs": 45
+        "n_jobs": 43
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 44
+        "n_jobs": 40
       },
       {
         "skill": "information_security",
-        "n_jobs": 44
+        "n_jobs": 40
       },
       {
         "skill": "ai",
-        "n_jobs": 42
-      },
-      {
-        "skill": "documentation",
-        "n_jobs": 41
-      },
-      {
-        "skill": "enthusiasm",
         "n_jobs": 39
       },
       {
-        "skill": "analytical_skills",
-        "n_jobs": 38
+        "skill": "documentation",
+        "n_jobs": 39
       },
       {
         "skill": "api",
         "n_jobs": 37
       },
       {
-        "skill": "teamwork",
-        "n_jobs": 37
+        "skill": "analytical_skills",
+        "n_jobs": 36
+      },
+      {
+        "skill": "enthusiasm",
+        "n_jobs": 36
       },
       {
         "skill": "sql",
-        "n_jobs": 36
-      },
-      {
-        "skill": "leadership",
-        "n_jobs": 36
-      },
-      {
-        "skill": "python",
-        "n_jobs": 34
-      },
-      {
-        "skill": "reporting",
         "n_jobs": 33
       },
       {
+        "skill": "leadership",
+        "n_jobs": 32
+      },
+      {
+        "skill": "teamwork",
+        "n_jobs": 32
+      },
+      {
         "skill": "eagerness_to_learn",
-        "n_jobs": 32
+        "n_jobs": 31
       },
       {
-        "skill": "presentation",
-        "n_jobs": 32
-      },
-      {
-        "skill": "ai_application",
-        "n_jobs": 30
-      },
-      {
-        "skill": "planning",
+        "skill": "python",
         "n_jobs": 29
       },
       {
-        "skill": "qa_qc",
+        "skill": "reporting",
         "n_jobs": 28
       },
       {
-        "skill": "troubleshooting",
+        "skill": "ai_application",
         "n_jobs": 28
       },
       {
@@ -139,15 +123,11 @@
         "n_jobs": 28
       },
       {
+        "skill": "troubleshooting",
+        "n_jobs": 27
+      },
+      {
         "skill": "uat",
-        "n_jobs": 27
-      },
-      {
-        "skill": "carefulness",
-        "n_jobs": 27
-      },
-      {
-        "skill": "data_analysis",
         "n_jobs": 26
       },
       {
@@ -155,8 +135,28 @@
         "n_jobs": 26
       },
       {
-        "skill": "quality_control",
+        "skill": "presentation",
         "n_jobs": 26
+      },
+      {
+        "skill": "agile",
+        "n_jobs": 25
+      },
+      {
+        "skill": "rest_api",
+        "n_jobs": 25
+      },
+      {
+        "skill": "qa_qc",
+        "n_jobs": 25
+      },
+      {
+        "skill": "planning",
+        "n_jobs": 25
+      },
+      {
+        "skill": "cloud_computing",
+        "n_jobs": 24
       }
     ],
     "short_forms_approved": 755,
@@ -164,90 +164,98 @@
   },
   "samples": [
     {
-      "job_id": "topdev_2137775",
+      "job_id": "topdev_2137769",
       "source": "topdev",
       "field": "skills",
       "before": [
-        "IT Helpdesk",
-        "IT Support",
-        "IT Staff"
+        "Agile",
+        "Product Manager",
+        "Project Manager",
+        "Scrum",
+        "PMP"
       ],
       "after": [
-        "account_admin",
-        "authn_authz",
-        "carefulness",
-        "computer_hardware",
-        "english",
-        "enthusiasm",
-        "honesty",
-        "ms_office",
-        "printer",
-        "user_support",
-        "work_under_pressure"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2138248",
-      "source": "topdev",
-      "field": "skills",
-      "before": [
-        "Linux",
-        "Tester",
-        "Software Developer",
-        "C/C++",
-        "Embedded",
-        "RTOS",
-        "Kernel"
-      ],
-      "after": [
-        "code_review",
+        "agile",
         "communication",
-        "cpp",
-        "debugging",
-        "dsp",
-        "embedded",
+        "conflict_resolution",
+        "confluence",
+        "coordination",
         "english",
-        "linux",
-        "linux_kernel",
-        "lte",
-        "rtos",
-        "teamwork",
-        "troubleshooting",
-        "wireless"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "topdev_2134271",
-      "source": "topdev",
-      "field": "skills",
-      "before": [
-        "Linux",
-        "IT Helpdesk",
-        "Network",
-        "Windows"
-      ],
-      "after": [
-        "access_control",
-        "account_admin",
-        "active_listening",
-        "communication",
-        "computer_hardware",
-        "dhcp",
-        "dns",
-        "information_security",
-        "linux",
-        "logical_thinking",
-        "macos",
-        "networking",
-        "patience",
+        "information_synthesis",
+        "jira",
+        "leadership",
+        "motivation_skills",
+        "planning",
+        "pmi_acp",
+        "pmp",
         "proactiveness",
-        "remote_support",
-        "troubleshooting",
-        "user_training",
-        "windows",
-        "work_under_pressure"
+        "product_backlog",
+        "progress_tracking",
+        "project_management",
+        "psm",
+        "quality_control",
+        "risk_management"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2136937",
+      "source": "topdev",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "ai_application",
+        "communication",
+        "coordination",
+        "customer_experience",
+        "customer_journey",
+        "data_analysis",
+        "data_integration",
+        "eagerness_to_learn",
+        "image_processing",
+        "market_research",
+        "power_bi",
+        "presentation",
+        "proactiveness",
+        "problem_solving",
+        "progress_tracking",
+        "project_management",
+        "quality_management",
+        "software_deployment",
+        "task_management"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "topdev_2137253",
+      "source": "topdev",
+      "field": "skills",
+      "before": [
+        "Agile & Scrum",
+        "Business Analyst",
+        "Figma"
+      ],
+      "after": [
+        "acceptance_criteria",
+        "agile",
+        "analytical_skills",
+        "as_is_to_be",
+        "balsamiq",
+        "bpmn",
+        "communication",
+        "confluence",
+        "consulting",
+        "data_flow",
+        "data_governance",
+        "data_structures",
+        "data_testing",
+        "dfd",
+        "documentation",
+        "drawio",
+        "enthusiasm",
+        "erd",
+        "erp",
+        "excel"
       ],
       "changed": true
     }

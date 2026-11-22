@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:36+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:02+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 402
+    "rows": 387
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 402
+    "rows": 387
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 4311,
+    "n_bullets": 4166,
     "bullets_by_section": {
-      "mo_ta": 402,
-      "yeu_cau": 402,
-      "phuc_loi": 3507
+      "mo_ta": 387,
+      "yeu_cau": 387,
+      "phuc_loi": 3392
     },
     "bullets_by_rule": {
-      "S7.2": 4311
+      "S7.2": 4166
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,22 +39,22 @@
   },
   "samples": [
     {
-      "job_id": "careerviet_35C87E47",
+      "job_id": "careerviet_35C8AE29",
       "source": "careerviet",
       "field": "sections",
-      "before": "Mô tả Công việc Mô tả công việc: Chúng tôi đang tìm kiếm một Automation Tester nhiều kinh nghiệm, chuyên sử dụng Playwright với TypeScript , để đảm bảo chất lượng cho hệ thống web enterprise của công …",
+      "before": "Mô tả Công việc - Thu thập và Phân tích yêu cầu người dùng; - Xây dựng các trường hợp kiểm thử và thực hiện kiểm thử theo đúng tài liệu đặc tả yêu cầu người dùng và tài liệu phân tích thiết kế; - Điều…",
       "after": {
-        "phuc_loi": 7,
+        "phuc_loi": 14,
         "mo_ta": 1,
         "yeu_cau": 1
       },
       "changed": true
     },
     {
-      "job_id": "careerviet_35C89037",
+      "job_id": "careerviet_35C8A94A",
       "source": "careerviet",
       "field": "sections",
-      "before": "Mô tả Công việc 1. Position Summary We are looking for a DevOps Engineer with strong expertise in cloud infrastructure and automation to design, deploy, operate, and continuously improve production-gr…",
+      "before": "Mô tả Công việc Tham gia vào quá trình kiểm thử phần mềm của các dự án web/app theo yêu cầu. Phân tích yêu cầu, thiết kế test case, test scenario và test data. Thực hiện kiểm thử chức năng (Functional…",
       "after": {
         "phuc_loi": 11,
         "mo_ta": 1,
@@ -63,11 +63,12 @@
       "changed": true
     },
     {
-      "job_id": "careerviet_35C83F00",
+      "job_id": "careerviet_35C87497",
       "source": "careerviet",
       "field": "sections",
-      "before": "Mô tả Công việc Để đảm bảo hồ sơ được tiếp nhận xử lý, ứng viên cần nộp hồ sơ ứng tuyển trên website tuyển dụng chính thức của Vietcombank tại địa chỉ: tuyendung.vietcombank.com.vn [TT KT&KHDL]_Chuyên…",
+      "before": "Mô tả Công việc WinCommerce là nhà bán lẻ hàng đầu Việt Nam với mạng lưới 5,000 siêu thị và cửa hàng trên toàn quốc. Với mục tiêu mở mới hơn 1,000 cửa hàng mỗi năm, chúng tôi đang tăng trưởng thần tốc…",
       "after": {
+        "phuc_loi": 6,
         "mo_ta": 1,
         "yeu_cau": 1
       },

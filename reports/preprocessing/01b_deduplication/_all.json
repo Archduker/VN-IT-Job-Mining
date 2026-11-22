@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:14:38+00:00",
-  "code_version": "d3f7008",
+  "generated_at": "2026-11-21T23:35:55+00:00",
+  "code_version": "f352120",
   "input": {
     "path": null,
-    "rows": 4103
+    "rows": 3899
   },
   "output": {
     "path": null,
-    "rows": 3998
+    "rows": 3800
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 105
+      "rows": 99
     }
   ],
   "rules": [
@@ -107,15 +107,8 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 105,
+      "rows_affected": 99,
       "examples": [
-        {
-          "job_id": "1839052",
-          "field": "dedup",
-          "before": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html",
-          "after": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
-          "url": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html"
-        },
         {
           "job_id": "1ddb2d5c-abcf-45b2-9477-67cebaeded0f",
           "field": "dedup",
@@ -129,24 +122,31 @@
           "before": "https://vieclam24h.vn/quan-ly-du-an/nhan-vien-tu-van-quan-ly-du-an-cntt-thu-nhap-len-den-30tr-thang-c27p210000160id200951893.html",
           "after": "https://www.topcv.vn/viec-lam/nhan-vien-tu-van-quan-ly-du-an-cntt/2276502.html",
           "url": "https://vieclam24h.vn/quan-ly-du-an/nhan-vien-tu-van-quan-ly-du-an-cntt-thu-nhap-len-den-30tr-thang-c27p210000160id200951893.html"
+        },
+        {
+          "job_id": "200961863",
+          "field": "dedup",
+          "before": "https://vieclam24h.vn/it-phan-cung-mang/japanese-it-comtor-c7p210000187id200961863.html",
+          "after": "https://www.topcv.vn/brand/transcosmoshochiminh/tuyen-dung/it-communicator-tan-binh-n2-j2327907.html",
+          "url": "https://vieclam24h.vn/it-phan-cung-mang/japanese-it-comtor-c7p210000187id200961863.html"
         }
       ],
       "by_source": {
-        "topcv": 10,
-        "topdev": 16,
+        "topcv": 9,
+        "topdev": 13,
         "vietnamworks": 3,
         "careerviet": 9,
         "vieclam24h": 3,
         "itviec": 28,
         "glints": 7,
-        "jobsgo": 29
+        "jobsgo": 27
       }
     },
     {
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 93,
+      "rows_affected": 87,
       "examples": [
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
@@ -163,29 +163,29 @@
           "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
         },
         {
-          "job_id": "1832499",
+          "job_id": "200959929",
           "field": "master_id",
-          "before": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
-          "after": "25b609ec-a899-524d-9361-74a916ad0bc8",
-          "url": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html"
+          "before": "https://vieclam24h.vn/it-phan-mem/full-stack-engineer-ky-su-van-hanh-he-thong-mang-di-lam-ngay-c8p210000187id200959929.html",
+          "after": "3673a7af-2b1f-5b5b-9492-a934ea4622ff",
+          "url": "https://vieclam24h.vn/it-phan-mem/full-stack-engineer-ky-su-van-hanh-he-thong-mang-di-lam-ngay-c8p210000187id200959929.html"
         }
       ],
       "by_source": {
-        "topcv": 23,
-        "topdev": 4,
+        "topcv": 20,
+        "topdev": 2,
         "vietnamworks": 5,
         "careerviet": 9,
         "vieclam24h": 1,
         "itviec": 31,
         "glints": 5,
-        "jobsgo": 15
+        "jobsgo": 14
       }
     },
     {
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 140,
+      "rows_affected": 139,
       "examples": [
         {
           "job_id": "1682674",
@@ -195,29 +195,29 @@
           "url": "https://www.topcv.vn/viec-lam/solution-architecture-expert/1682674.html"
         },
         {
-          "job_id": "2002662",
+          "job_id": "200946306",
           "field": "jaccard",
           "before": null,
-          "after": 0.913,
-          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-network/2002662.html"
+          "after": 0.74,
+          "url": "https://vieclam24h.vn/it-phan-mem/chuyen-vien-lap-trinh-c8p73id200946306.html"
         },
         {
-          "job_id": "200945606",
+          "job_id": "2110299",
           "field": "jaccard",
           "before": null,
-          "after": 0.7541,
-          "url": "https://vieclam24h.vn/it-phan-mem/manual-automation-tester-quality-analyst-qa-qc-c8p122id200945606.html"
+          "after": 0.708,
+          "url": "https://www.vietnamworks.com/all-level-backend-engineer-java-spring-boot-khoi-cong-nghe-thong-tin-2025td1785-2110299-jv"
         }
       ],
       "by_source": {
-        "topcv": 49,
-        "topdev": 9,
-        "vietnamworks": 16,
-        "careerviet": 13,
-        "vieclam24h": 3,
-        "itviec": 7,
-        "glints": 4,
-        "jobsgo": 39
+        "topcv": 31,
+        "topdev": 8,
+        "vietnamworks": 4,
+        "careerviet": 14,
+        "vieclam24h": 1,
+        "itviec": 27,
+        "glints": 6,
+        "jobsgo": 48
       }
     }
   ],
@@ -233,36 +233,36 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1280,
-        "output": 1270
+        "input": 1199,
+        "output": 1190
       },
       "topdev": {
-        "input": 184,
-        "output": 168
+        "input": 162,
+        "output": 149
       },
       "vietnamworks": {
-        "input": 595,
-        "output": 592
+        "input": 558,
+        "output": 555
       },
       "careerviet": {
-        "input": 415,
-        "output": 406
+        "input": 400,
+        "output": 391
       },
       "vieclam24h": {
-        "input": 124,
-        "output": 121
+        "input": 108,
+        "output": 105
       },
       "itviec": {
-        "input": 813,
-        "output": 785
+        "input": 808,
+        "output": 780
       },
       "glints": {
-        "input": 162,
-        "output": 155
+        "input": 153,
+        "output": 146
       },
       "jobsgo": {
-        "input": 530,
-        "output": 501
+        "input": 511,
+        "output": 484
       }
     },
     "dedup": {
@@ -279,28 +279,28 @@
     },
     "jaccard_threshold": 0.85,
     "tier_counts": {
-      "D5": 105
+      "D5": 99
     },
     "pairs_by_band": {
-      "[0.85,1]": 182,
-      "[0.80,0.90)": 71,
-      "[0.7,0.85)": 74
+      "[0.85,1]": 176,
+      "[0.80,0.90)": 69,
+      "[0.7,0.85)": 73
     },
-    "same_source_pairs": 89,
-    "cross_source_pairs": 27,
+    "same_source_pairs": 85,
+    "cross_source_pairs": 25,
     "company_gate_blocked_pairs": 66,
-    "hit_pairs_title_differs": 113,
-    "pairs_audited": 256,
-    "pairs_over_threshold": 116,
-    "clusters": 93,
-    "golden_rows": 3998,
-    "cross_platform_clusters": 27,
+    "hit_pairs_title_differs": 107,
+    "pairs_audited": 249,
+    "pairs_over_threshold": 110,
+    "clusters": 87,
+    "golden_rows": 3800,
+    "cross_platform_clusters": 25,
     "rule_totals": {
-      "D5": 105
+      "D5": 99
     },
-    "cross_dropped": 105,
+    "cross_dropped": 99,
     "audit_rows_indirect": 4,
-    "audit_review_band": 140,
+    "audit_review_band": 139,
     "cdc": {
       "topcv": {
         "job_ids": 2674,
@@ -375,14 +375,30 @@
         "hop_version_not_bumped": 0
       }
     },
-    "blocking_blocks": 3298,
-    "blocking_unique_blocks": 3151,
+    "blocking_blocks": 3155,
+    "blocking_unique_blocks": 3019,
     "repost_records": 0,
-    "lineage_rows": 4103,
+    "lineage_rows": 3899,
     "unparsed_dates": 0,
     "partial_run": false
   },
   "samples": [
+    {
+      "job_id": "2316026",
+      "source": "topcv",
+      "field": "duplicate_of",
+      "before": "2316026",
+      "after": "DROPPED D5 -> topcv:2119759",
+      "changed": true
+    },
+    {
+      "job_id": "2290443",
+      "source": "topcv",
+      "field": "duplicate_of",
+      "before": "2290443",
+      "after": "DROPPED D5 -> topcv:2315056",
+      "changed": true
+    },
     {
       "job_id": "2315657",
       "source": "topcv",
@@ -392,43 +408,27 @@
       "changed": true
     },
     {
-      "job_id": "2144442",
-      "source": "topcv",
-      "field": "duplicate_of",
-      "before": "2144442",
-      "after": "DROPPED D5 -> topcv:2165864",
-      "changed": true
-    },
-    {
-      "job_id": "2308003",
-      "source": "topcv",
-      "field": "duplicate_of",
-      "before": "2308003",
-      "after": "DROPPED D5 -> topcv:2319815",
-      "changed": true
-    },
-    {
-      "job_id": "2137945",
-      "source": "topdev",
-      "field": "duplicate_of",
-      "before": "2137945",
-      "after": "DROPPED D5 -> itviec:cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720",
-      "changed": true
-    },
-    {
-      "job_id": "2138328",
-      "source": "topdev",
-      "field": "duplicate_of",
-      "before": "2138328",
-      "after": "DROPPED D5 -> topcv:1506721",
-      "changed": true
-    },
-    {
       "job_id": "2136587",
       "source": "topdev",
       "field": "duplicate_of",
       "before": "2136587",
       "after": "DROPPED D5 -> itviec:data-quality-management-specialist-data-division-mb-bank-0217",
+      "changed": true
+    },
+    {
+      "job_id": "2139603",
+      "source": "topdev",
+      "field": "duplicate_of",
+      "before": "2139603",
+      "after": "DROPPED D5 -> itviec:chuyen-vien-ho-tro-tich-hop-dich-vu-khoi-ngan-hang-so-mb-bank-2355",
+      "changed": true
+    },
+    {
+      "job_id": "2134501",
+      "source": "topdev",
+      "field": "duplicate_of",
+      "before": "2134501",
+      "after": "DROPPED D5 -> topdev:2134502",
       "changed": true
     },
     {
@@ -568,10 +568,10 @@
       "changed": true
     },
     {
-      "job_id": "29006658639",
+      "job_id": "29010229916",
       "source": "jobsgo",
       "field": "duplicate_of",
-      "before": "29006658639",
+      "before": "29010229916",
       "after": "DROPPED D5 -> jobsgo:29006631481",
       "changed": true
     }

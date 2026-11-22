@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:36+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:03+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 497
+    "rows": 480
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 497
+    "rows": 480
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 11281,
+    "n_bullets": 10868,
     "bullets_by_section": {
-      "mo_ta": 3853,
-      "yeu_cau": 3803,
-      "phuc_loi": 3625
+      "mo_ta": 3709,
+      "yeu_cau": 3698,
+      "phuc_loi": 3461
     },
     "bullets_by_rule": {
-      "S7.2": 11281
+      "S7.2": 10868
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "jobsgo_29243218398",
+      "job_id": "jobsgo_29166021783",
       "source": "jobsgo",
       "field": "sections",
-      "before": "Cài đặt, cấu hình và hỗ trợ vận hành các phần mềm quản lý nội bộ.\nTiếp nhận, kiểm tra và xử lý lỗi phần mềm; phối hợp với các bộ phận hoặc nhà cung cấp để khắc phục.\nHỗ trợ chỉnh sửa, nâng cấp và phát…",
+      "before": "Phát triển & Thiết kế hệ thống: Thiết kế, phát triển RESTful API/SDKs/OpenAPI cho Web, App và đối tác; đảm bảo hệ thống backend bảo mật, ổn định và có khả năng mở rộng (Scalable).\nThực hiện benchmark …",
       "after": {
-        "yeu_cau": 19,
-        "mo_ta": 11,
-        "phuc_loi": 11
+        "yeu_cau": 8,
+        "phuc_loi": 6,
+        "mo_ta": 5
       },
       "changed": true
     },
     {
-      "job_id": "jobsgo_29318934902",
+      "job_id": "jobsgo_29219332937",
       "source": "jobsgo",
       "field": "sections",
-      "before": "Tham gia nghiên cứu, thiết kế, triển khai các sản phẩm giải pháp về phần mềm, ứng dụng, phần cứng, sao lưu, ảo hóa, giám sát hệ thống.\nTriển khai cài đặt & cấu hình phần cứng máy chủ, lưu trữ, sao lưu…",
+      "before": "Thực hiện kiểm thử chức năng, luồng nghiệp vụ và trải nghiệm người dùng nhằm phát hiện các lỗi, điểm bất thường hoặc sự không phù hợp trong sản phẩm.\nPhân tích tài liệu yêu cầu, đặc tả nghiệp vụ và th…",
       "after": {
-        "yeu_cau": 5,
-        "phuc_loi": 5,
-        "mo_ta": 3
+        "mo_ta": 15,
+        "phuc_loi": 9,
+        "yeu_cau": 8
       },
       "changed": true
     },
     {
-      "job_id": "jobsgo_29326389773",
+      "job_id": "jobsgo_29008681910",
       "source": "jobsgo",
       "field": "sections",
-      "before": "Thực tập theo mô hình project-based, mentor bởi các chuyên gia giàu kinh nghiệm từ các dự án của TMA (Subject Matter Expert).\nĐược đào tạo bài bản:Kỹ năng mềm, kỹ năng làm việc chuyên nghiệp.Quy trình…",
+      "before": "Hỗ trợ thu thập, tổng hợp và xử lý dữ liệu phục vụ các dự án.\nHỗ trợ kiểm tra, làm sạch và cập nhật dữ liệu trên hệ thống.\nHỗ trợ xây dựng và duy trì các quy trình xử lý dữ liệu.\nKiểm tra tính chính x…",
       "after": {
-        "mo_ta": 13,
-        "phuc_loi": 3,
-        "yeu_cau": 2
+        "mo_ta": 6,
+        "yeu_cau": 6,
+        "phuc_loi": 5
       },
       "changed": true
     }

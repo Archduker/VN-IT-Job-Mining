@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-19T03:29:32+00:00",
-  "code_version": "db5e2f3",
+  "generated_at": "2026-11-21T23:43:20+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 405
+    "rows": 390
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 405
+    "rows": 390
   },
   "dropped": [],
   "rules": [
@@ -18,7 +18,7 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1600,
+      "rows_affected": 1532,
       "examples": []
     },
     {
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 395,
+      "rows_affected": 381,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 364,
+      "rows_affected": 351,
       "examples": [
         {
           "job_id": "35C5BDE1",
@@ -90,7 +90,7 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 405,
+      "rows_affected": 390,
       "examples": []
     },
     {
@@ -111,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 405,
+      "rows_affected": 390,
       "examples": []
     },
     {
@@ -139,14 +139,14 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 144,
+      "rows_affected": 142,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 67,
+      "rows_affected": 65,
       "examples": []
     },
     {
@@ -160,7 +160,7 @@
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 402,
+      "rows_affected": 390,
       "examples": [
         {
           "job_id": "35C5BDE1",
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 399,
+      "rows_affected": 385,
       "examples": [
         {
           "job_id": "35C5BDE1",
@@ -254,7 +254,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 315,
+      "rows_affected": 301,
       "examples": [
         {
           "job_id": "35C80317",
@@ -283,33 +283,33 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 26.9,
-      "fill_pct_out": 26.9
+      "fill_pct_in": 27.9,
+      "fill_pct_out": 27.9
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 29.6,
-      "fill_pct_out": 29.6
+      "fill_pct_in": 30.8,
+      "fill_pct_out": 30.8
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 97.5,
-      "fill_pct_out": 97.5
+      "fill_pct_in": 97.7,
+      "fill_pct_out": 97.7
     },
     {
       "field": "deadline_date",
-      "fill_pct_in": 97.5,
-      "fill_pct_out": 97.5
+      "fill_pct_in": 97.7,
+      "fill_pct_out": 97.7
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 89.9,
-      "fill_pct_out": 89.9
+      "fill_pct_in": 90.0,
+      "fill_pct_out": 90.0
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 59.8,
-      "fill_pct_out": 59.8
+      "fill_pct_in": 59.2,
+      "fill_pct_out": 59.2
     },
     {
       "field": "headcount",
@@ -328,18 +328,18 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 79.5,
-      "fill_pct_out": 79.5
+      "fill_pct_in": 81.3,
+      "fill_pct_out": 81.3
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 91.1,
-      "fill_pct_out": 91.1
+      "fill_pct_in": 91.5,
+      "fill_pct_out": 91.5
     },
     {
       "field": "locations",
-      "fill_pct_in": 98.5,
-      "fill_pct_out": 98.5
+      "fill_pct_in": 98.7,
+      "fill_pct_out": 98.7
     },
     {
       "field": "language",
@@ -353,8 +353,8 @@
     },
     {
       "field": "benefits_clean",
-      "fill_pct_in": 91.1,
-      "fill_pct_out": 91.1
+      "fill_pct_in": 91.5,
+      "fill_pct_out": 91.5
     },
     {
       "field": "work_mode_raw",
@@ -363,23 +363,23 @@
     },
     {
       "field": "work_mode_jd",
-      "fill_pct_in": 2.2,
-      "fill_pct_out": 2.2
+      "fill_pct_in": 2.3,
+      "fill_pct_out": 2.3
     },
     {
       "field": "employment_type_raw",
-      "fill_pct_in": 97.5,
-      "fill_pct_out": 97.5
+      "fill_pct_in": 97.7,
+      "fill_pct_out": 97.7
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 4.0,
-      "fill_pct_out": 4.0
+      "fill_pct_in": 4.1,
+      "fill_pct_out": 4.1
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 77.8,
-      "fill_pct_out": 77.8
+      "fill_pct_in": 77.2,
+      "fill_pct_out": 77.2
     }
   ],
   "checks": {
@@ -395,30 +395,29 @@
       "header": 121,
       "title": 0,
       "jd": 0,
-      "none": 284
+      "none": 269
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 337,
-      "en": 67,
+      "vi": 324,
+      "en": 65,
       "other": 1
     },
     "language_fasttext": {
       "model": "lid.176.bin",
       "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
       "conf_min": 0.6,
-      "disagree_with_old_rule": 7,
+      "disagree_with_old_rule": 6,
       "disagree_examples": [
         "35C8807F",
         "35C88082",
-        "35C884B3",
         "35C89632",
         "35C89B11",
         "35C8AEAD",
         "35C8C434"
       ],
-      "conf_lt_0_9": 43
+      "conf_lt_0_9": 41
     },
     "text_quality": {
       "before": {
@@ -471,35 +470,35 @@
       "transformers": "5.22.2",
       "peak_vram_mib": 1227,
       "fell_back_to_cpu": false,
-      "rows_en": 457,
-      "rows_translated": 438,
+      "rows_en": 432,
+      "rows_translated": 413,
       "rows_failed": 19,
-      "chunks": 8687,
-      "cache_hits": 8618,
-      "model_calls": 243,
-      "retries": 71,
+      "chunks": 8261,
+      "cache_hits": 8241,
+      "model_calls": 47,
+      "retries": 23,
       "failed_chunks": 23,
-      "retry_pieces": 174,
-      "beam_calls": 45,
-      "rescued_chunks": 48
+      "retry_pieces": 27,
+      "beam_calls": 24,
+      "rescued_chunks": 0
     },
-    "experience_parsed_rate": 89.9,
+    "experience_parsed_rate": 90.0,
     "posted_month_source": {
-      "posted_date": 395,
-      "first_crawled_at": 10
+      "posted_date": 381,
+      "first_crawled_at": 9
     },
     "posted_month_distribution": {
-      "2026-10": 333,
-      "2026-09": 69,
+      "2026-10": 321,
+      "2026-09": 66,
       "2026-11": 3
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "None": 405
+        "None": 390
       },
       "work_mode_jd": {
-        "None": 396,
+        "None": 381,
         "onsite": 6,
         "hybrid": 2,
         "remote": 1
@@ -512,20 +511,20 @@
         "WH5": 1
       },
       "employment_type_raw": {
-        "full_time": 388,
-        "None": 10,
+        "full_time": 374,
+        "None": 9,
         "internship": 6,
         "part_time": 1
       },
       "employment_type_jd": {
-        "None": 389,
+        "None": 374,
         "full_time": 6,
         "internship": 10
       },
       "exp_jd_kind": {
-        "None": 90,
-        "jd": 305,
-        "jd_zero": 10
+        "None": 89,
+        "jd": 292,
+        "jd_zero": 9
       },
       "conflicts": {
         "T9b": 3
@@ -534,27 +533,27 @@
   },
   "samples": [
     {
-      "job_id": "careerviet_35C88A62",
+      "job_id": "careerviet_35C85F90",
+      "source": "careerviet",
+      "field": "requirements_clean",
+      "before": "Yêu Cầu Công Việc Trình độ: - Tốt nghiệp Đại học trở lên chuyên ngành Công nghệ thông tin, Khoa học máy tính, Khoa học dữ liệu, Trí tuệ nhân tạo, Toán – Thống kê, Kỹ thuật máy tính, Hệ thống thông tin…",
+      "after": "Yêu Cầu Công Việc Trình độ: - Tốt nghiệp Đại học trở lên chuyên ngành Công nghệ thông tin, Khoa học máy tính, Khoa học dữ liệu, Trí tuệ nhân tạo, Toán - Thống kê, Kỹ thuật máy tính, Hệ thống thông tin…",
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C8BD42",
+      "source": "careerviet",
+      "field": "exp_min_years",
+      "before": "1 - 3 Năm",
+      "after": 1.0,
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C8A33C",
       "source": "careerviet",
       "field": "posted_date",
-      "before": "04/10/2026",
-      "after": "2026-10-04",
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C8127B",
-      "source": "careerviet",
-      "field": "salary_min_vnd",
-      "before": "Cạnh tranh",
-      "after": null,
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C84F8B",
-      "source": "careerviet",
-      "field": "description_clean",
-      "before": "Mô tả Công việc UpBase là Tech-Driven eCommerce Enabler hàng đầu tại Việt Nam và khu vực – Công ty công nghệ đồng hành cùng các thương hiệu và nhà bán lẻ trong hành trình chuẩn hóa, tự động hóa và tăn…",
-      "after": "Mô tả Công việc UpBase là Tech-Driven eCommerce Enabler hàng đầu tại Việt Nam và khu vực - Công ty công nghệ đồng hành cùng các thương hiệu và nhà bán lẻ trong hành trình chuẩn hóa, tự động hóa và tăn…",
+      "before": "17/10/2026",
+      "after": "2026-10-17",
       "changed": true
     }
   ]

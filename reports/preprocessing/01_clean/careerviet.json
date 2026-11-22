@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:11:27+00:00",
-  "code_version": "42423d5",
+  "generated_at": "2026-11-21T23:34:21+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/careerviet/raw",
     "rows": 660
   },
   "output": {
     "path": "data/preprocessing/01_clean/careerviet.jsonl",
-    "rows": 415
+    "rows": 400
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 185
+      "rows": 202
     },
     {
       "rule": "C5",
@@ -51,12 +51,12 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-      "rows": 20
+      "rows": 19
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 22
+      "rows": 21
     }
   ],
   "rules": [
@@ -107,7 +107,7 @@
       "id": "C4a",
       "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 185,
+      "rows_affected": 202,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -136,7 +136,7 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 185,
+      "rows_affected": 202,
       "examples": [
         {
           "job_id": "35C32FB4",
@@ -186,7 +186,7 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 20,
+      "rows_affected": 19,
       "examples": [
         {
           "job_id": "35C82ACC",
@@ -203,11 +203,11 @@
           "url": "https://careerviet.vn/vi/tim-viec-lam/ky-su-tu-van-giai-phap-cntt-vmware-network-sercurity.35C82C6D.html"
         },
         {
-          "job_id": "35C83A56",
+          "job_id": "35C8441C",
           "field": "dedup_key",
-          "before": "lotte finance|trưởng phòng mua sắm công nghệ thông tin",
-          "after": "giữ 35C85B2F",
-          "url": "https://careerviet.vn/vi/tim-viec-lam/truong-phong-mua-sam-cong-nghe-thong-tin.35C83A56.html"
+          "before": "ngân hàng tmcp ngoại thương vietcombank|chuyên viên thiết kế giải pháp và quản lý kênh số",
+          "after": "giữ 35C8C26F",
+          "url": "https://careerviet.vn/vi/tim-viec-lam/chuyen-vien-thiet-ke-giai-phap-va-quan-ly-kenh-so.35C8441C.html"
         }
       ]
     },
@@ -215,7 +215,7 @@
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 22,
+      "rows_affected": 21,
       "examples": [
         {
           "job_id": "35C82A35",
@@ -255,12 +255,12 @@
     {
       "field": "raw_location_text",
       "fill_pct_in": 97.8,
-      "fill_pct_out": 97.3
+      "fill_pct_out": 97.5
     },
     {
       "field": "raw_posted_date",
       "fill_pct_in": 97.8,
-      "fill_pct_out": 97.3
+      "fill_pct_out": 97.5
     },
     {
       "field": "raw_description_text",
@@ -283,23 +283,26 @@
   },
   "extra": {
     "it_levels": {
-      "tang_0_non_it": 51,
-      "tang_2_non_it": 112,
-      "tang_2_it": 59,
-      "tang_1_it": 398,
-      "tang_1_non_it": 22
+      "tang_0_non_it": 71,
+      "tang_2_non_it": 110,
+      "tang_2_it": 58,
+      "tang_1_it": 382,
+      "tang_1_non_it": 21
     },
     "it_excluded_groups": {
       "electrical_mechanical": 5,
       "sales_marketing": 34,
+      "reviewed_jd": 16,
       "q7_teaching": 6,
+      "p2_procurement_hr": 3,
       "graphic_design": 1,
       "q4_embedded_iot": 4,
-      "h5_repair": 1
+      "h5_repair": 1,
+      "p2_manufacturing": 1
     },
     "it_status": {
-      "non_it": 185,
-      "it": 457
+      "non_it": 202,
+      "it": 440
     },
     "it_policy": {
       "drop": [

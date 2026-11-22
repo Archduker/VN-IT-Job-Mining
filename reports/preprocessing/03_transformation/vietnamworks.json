@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-19T03:09:11+00:00",
-  "code_version": "db5e2f3",
+  "generated_at": "2026-11-21T23:39:20+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 592
+    "rows": 555
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 592
+    "rows": 555
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1355,
+      "rows_affected": 1268,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 157,
+      "rows_affected": 149,
       "examples": [
         {
           "job_id": "2102736",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 592,
+      "rows_affected": 555,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 506,
+      "rows_affected": 474,
       "examples": [
         {
           "job_id": "2102610",
@@ -90,28 +90,28 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 592,
+      "rows_affected": 555,
       "examples": []
     },
     {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 591,
+      "rows_affected": 554,
       "examples": []
     },
     {
       "id": "T2f",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 3,
+      "rows_affected": 2,
       "examples": []
     },
     {
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 592,
+      "rows_affected": 555,
       "examples": []
     },
     {
@@ -139,28 +139,28 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 186,
+      "rows_affected": 176,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 272,
+      "rows_affected": 255,
       "examples": []
     },
     {
       "id": "T6.5",
       "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
       "action": "modify",
-      "rows_affected": 304,
+      "rows_affected": 290,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 592,
+      "rows_affected": 555,
       "examples": [
         {
           "job_id": "2102610",
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 591,
+      "rows_affected": 554,
       "examples": [
         {
           "job_id": "2102610",
@@ -262,7 +262,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 449,
+      "rows_affected": 423,
       "examples": [
         {
           "job_id": "2102610",
@@ -291,13 +291,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 21.3,
-      "fill_pct_out": 21.3
+      "fill_pct_in": 21.6,
+      "fill_pct_out": 21.6
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 25.7,
-      "fill_pct_out": 25.7
+      "fill_pct_in": 25.9,
+      "fill_pct_out": 25.9
     },
     {
       "field": "posted_date",
@@ -311,13 +311,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 85.5,
-      "fill_pct_out": 85.5
+      "fill_pct_in": 85.4,
+      "fill_pct_out": 85.4
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 85.5,
-      "fill_pct_out": 85.5
+      "fill_pct_in": 85.4,
+      "fill_pct_out": 85.4
     },
     {
       "field": "headcount",
@@ -341,8 +341,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 89.5,
-      "fill_pct_out": 89.5
+      "fill_pct_in": 89.7,
+      "fill_pct_out": 89.7
     },
     {
       "field": "locations",
@@ -371,23 +371,23 @@
     },
     {
       "field": "work_mode_jd",
-      "fill_pct_in": 2.2,
-      "fill_pct_out": 2.2
+      "fill_pct_in": 2.3,
+      "fill_pct_out": 2.3
     },
     {
       "field": "employment_type_raw",
-      "fill_pct_in": 90.7,
-      "fill_pct_out": 90.7
+      "fill_pct_in": 90.5,
+      "fill_pct_out": 90.5
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 2.7,
-      "fill_pct_out": 2.7
+      "fill_pct_in": 2.9,
+      "fill_pct_out": 2.9
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 75.8,
-      "fill_pct_out": 75.8
+      "fill_pct_in": 76.2,
+      "fill_pct_out": 76.2
     }
   ],
   "checks": {
@@ -400,16 +400,16 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 157,
+      "header": 148,
       "title": 2,
       "jd": 1,
-      "none": 432
+      "none": 404
     },
-    "salary_under_1m_count": 2,
+    "salary_under_1m_count": 1,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 319,
-      "en": 272,
+      "vi": 299,
+      "en": 255,
       "other": 1
     },
     "language_fasttext": {
@@ -423,7 +423,7 @@
         "2123254",
         "2125913"
       ],
-      "conf_lt_0_9": 148
+      "conf_lt_0_9": 142
     },
     "text_quality": {
       "before": {
@@ -476,34 +476,34 @@
       "transformers": "5.22.2",
       "peak_vram_mib": 1227,
       "fell_back_to_cpu": false,
-      "rows_en": 390,
-      "rows_translated": 374,
+      "rows_en": 367,
+      "rows_translated": 351,
       "rows_failed": 16,
-      "chunks": 6961,
-      "cache_hits": 6901,
-      "model_calls": 183,
-      "retries": 54,
+      "chunks": 6566,
+      "cache_hits": 6549,
+      "model_calls": 41,
+      "retries": 20,
       "failed_chunks": 20,
-      "retry_pieces": 123,
-      "beam_calls": 34,
-      "rescued_chunks": 34
+      "retry_pieces": 24,
+      "beam_calls": 21,
+      "rescued_chunks": 0
     },
-    "experience_parsed_rate": 85.5,
+    "experience_parsed_rate": 85.4,
     "posted_month_source": {
-      "posted_date": 592
+      "posted_date": 555
     },
     "posted_month_distribution": {
-      "2026-09": 266,
-      "2026-10": 326
+      "2026-09": 254,
+      "2026-10": 301
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "None": 589,
+        "None": 552,
         "remote": 3
       },
       "work_mode_jd": {
-        "None": 579,
+        "None": 542,
         "remote": 8,
         "onsite": 1,
         "hybrid": 4
@@ -519,19 +519,19 @@
         "WH7": 1
       },
       "employment_type_raw": {
-        "full_time": 537,
-        "None": 55
+        "full_time": 502,
+        "None": 53
       },
       "employment_type_jd": {
-        "None": 576,
+        "None": 539,
         "full_time": 10,
         "internship": 3,
         "contract": 3
       },
       "exp_jd_kind": {
-        "jd": 442,
-        "None": 143,
-        "jd_zero": 7
+        "jd": 418,
+        "None": 132,
+        "jd_zero": 5
       },
       "conflicts": {
         "T9b": 5,
@@ -542,27 +542,27 @@
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2112532",
+      "job_id": "vietnamworks_2126348",
       "source": "vietnamworks",
-      "field": "description_clean",
-      "before": "Phát triển Backend & API:\n● Phát triển và triển khai các dịch vụ Backend chất lượng cao bằng Node.js (Express.js/NestJS) hoặc Python (FastAPI/Django) cho ứng dụng Web/Mobile.\n● Thiết kế, tối ưu các ch…",
-      "after": "Phát triển Backend & API:\n- Phát triển và triển khai các dịch vụ Backend chất lượng cao bằng Node.js (Express.js/NestJS) hoặc Python (FastAPI/Django) cho ứng dụng Web/Mobile.\n- Thiết kế, tối ưu các ch…",
+      "field": "salary_min_vnd",
+      "before": "25000000 - 0 VND",
+      "after": 25000000.0,
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2116883",
+      "job_id": "vietnamworks_2114694",
+      "source": "vietnamworks",
+      "field": "exp_min_years",
+      "before": "3 năm",
+      "after": 3.0,
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2121128",
       "source": "vietnamworks",
       "field": "requirements_clean",
-      "before": "Background in economics, finance, banking or accounting\nGood computing skills and knowledge of Microsoft Office, particularly Excel\nGood verbal and written communication skills in English\nProactive, d…",
-      "after": "Background in economics, finance, banking or accounting Good computing skills and knowledge of Microsoft Office, particularly Excel Good verbal and written communication skills in English Proactive, d…",
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2103904",
-      "source": "vietnamworks",
-      "field": "headcount",
-      "before": "1",
-      "after": 1.0,
+      "before": "Tốt nghiệp đại học chuyên ngành CNTT, An ninh mạng, Hệ thống thông tin, hoặc chuyên ngành liên quan phù hợp với yêu cầu công việc\nCó chứng chỉ liên quan đến bảo mật như CISSP, CISM, CEH là một lợi thế…",
+      "after": "Tốt nghiệp đại học chuyên ngành CNTT, An ninh mạng, Hệ thống thông tin, hoặc chuyên ngành liên quan phù hợp với yêu cầu công việc Có chứng chỉ liên quan đến bảo mật như CISSP, CISM, CEH là một lợi thế…",
       "changed": true
     }
   ]

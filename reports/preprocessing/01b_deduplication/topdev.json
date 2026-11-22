@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:13:36+00:00",
-  "code_version": "d3f7008",
+  "generated_at": "2026-11-21T23:34:31+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/01_clean/topdev.jsonl",
-    "rows": 184
+    "rows": 162
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/topdev.jsonl",
-    "rows": 168
+    "rows": 149
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 16
+      "rows": 13
     }
   ],
   "rules": [
@@ -67,7 +67,7 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 16,
+      "rows_affected": 13,
       "examples": [
         {
           "job_id": "2134265",
@@ -96,7 +96,7 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 4,
+      "rows_affected": 2,
       "examples": [
         {
           "job_id": "2134502",
@@ -111,13 +111,6 @@
           "before": "https://topdev.vn/viec-lam/chuyen-vien-phat-trien-he-thong-aeon-finance-2136022",
           "after": "2cf42044-f4fa-5bf9-9748-e361ab3f920b",
           "url": "https://topdev.vn/viec-lam/chuyen-vien-phat-trien-he-thong-aeon-finance-2136022"
-        },
-        {
-          "job_id": "2138376",
-          "field": "master_id",
-          "before": "https://topdev.vn/viec-lam/gd-quan-he-khach-hang-tt-sme-hoang-mai-ngan-hang-tmcp-viet-nam-thinh-vuong-vpbank-2138376",
-          "after": "c3711855-b742-5eed-ace9-276bea121125",
-          "url": "https://topdev.vn/viec-lam/gd-quan-he-khach-hang-tt-sme-hoang-mai-ngan-hang-tmcp-viet-nam-thinh-vuong-vpbank-2138376"
         }
       ]
     },
@@ -125,15 +118,8 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 9,
+      "rows_affected": 8,
       "examples": [
-        {
-          "job_id": "2134501",
-          "field": "jaccard",
-          "before": null,
-          "after": 0.8075,
-          "url": "https://topdev.vn/viec-lam/agentic-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450887-mbbank-2134501"
-        },
         {
           "job_id": "2134501",
           "field": "jaccard",
@@ -145,8 +131,15 @@
           "job_id": "2134502",
           "field": "jaccard",
           "before": null,
-          "after": 0.8037,
+          "after": 0.7901,
           "url": "https://topdev.vn/viec-lam/ai-software-engineer-python-go-c-c-backend-ai-agents-khoi-cong-nghe-thong-tin-2026td450888-mbbank-2134502"
+        },
+        {
+          "job_id": "2134512",
+          "field": "jaccard",
+          "before": null,
+          "after": 0.7081,
+          "url": "https://topdev.vn/viec-lam/senior-ai-expert-khoi-cong-nghe-thong-tin-2026td450201-mbbank-2134512"
         }
       ]
     }
@@ -170,35 +163,35 @@
       "hop_same_version": 3,
       "hop_version_not_bumped": 3
     },
-    "blocking_blocks": 135,
+    "blocking_blocks": 122,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 16
+      "D5": 13
     }
   },
   "samples": [
-    {
-      "job_id": "2137945",
-      "source": "topdev",
-      "field": "duplicate_of",
-      "before": "2137945",
-      "after": "DROPPED D5 -> itviec:cv-cvcc-xay-dung-mo-hinh-phat-hien-gian-lan-mb-bank-0720",
-      "changed": true
-    },
-    {
-      "job_id": "2138328",
-      "source": "topdev",
-      "field": "duplicate_of",
-      "before": "2138328",
-      "after": "DROPPED D5 -> topcv:1506721",
-      "changed": true
-    },
     {
       "job_id": "2136587",
       "source": "topdev",
       "field": "duplicate_of",
       "before": "2136587",
       "after": "DROPPED D5 -> itviec:data-quality-management-specialist-data-division-mb-bank-0217",
+      "changed": true
+    },
+    {
+      "job_id": "2139603",
+      "source": "topdev",
+      "field": "duplicate_of",
+      "before": "2139603",
+      "after": "DROPPED D5 -> itviec:chuyen-vien-ho-tro-tich-hop-dich-vu-khoi-ngan-hang-so-mb-bank-2355",
+      "changed": true
+    },
+    {
+      "job_id": "2134501",
+      "source": "topdev",
+      "field": "duplicate_of",
+      "before": "2134501",
+      "after": "DROPPED D5 -> topdev:2134502",
       "changed": true
     }
   ]

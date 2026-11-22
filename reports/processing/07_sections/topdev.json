@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:35+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:02+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 166
+    "rows": 147
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 166
+    "rows": 147
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 4664,
+    "n_bullets": 4266,
     "bullets_by_section": {
-      "mo_ta": 1416,
-      "yeu_cau": 1661,
-      "phuc_loi": 1587
+      "mo_ta": 1263,
+      "yeu_cau": 1564,
+      "phuc_loi": 1439
     },
     "bullets_by_rule": {
-      "S7.2": 4664
+      "S7.2": 4266
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "topdev_2137775",
+      "job_id": "topdev_2136432",
       "source": "topdev",
       "field": "sections",
-      "before": "Nhiệm vụ chính:\nHỗ trợ người dùng xử lý các sự cố về máy tính, phần mềm, email, Microsoft 365, mạng và thiết bị văn phòng.\nCài đặt, cấu hình, bảo trì và quản lý máy tính, laptop, máy in và các thiết b…",
+      "before": "Xây dựng và tối ưu các pipeline ETL/ELT, đưa dữ liệu từ các hệ thống nghiệp vụ (cho vay, khách hàng, giao dịch, thu hồi nợ…) về nền tảng dữ liệu tập trung.\nPhát triển các luồng xử lý batch, từng bước …",
       "after": {
-        "mo_ta": 9,
-        "phuc_loi": 9,
-        "yeu_cau": 2
+        "phuc_loi": 16,
+        "yeu_cau": 12,
+        "mo_ta": 6
       },
       "changed": true
     },
     {
-      "job_id": "topdev_2138248",
+      "job_id": "topdev_2139189",
       "source": "topdev",
       "field": "sections",
-      "before": "Design, develop & maintain high-performance C/C++ software Build software for wireless communication systems Translate complex technical specifications into robust software solutions Work with global …",
+      "before": "Kiểm tra chất lượng nguyên vật liệu, bán thành phẩm và thành phẩm trong quá trình sản xuất.\nGiám sát, đảm bảo quy trình sản xuất tuân thủ tiêu chuẩn chất lượng.\nPhối hợp với các bộ phận liên quan xử l…",
       "after": {
-        "phuc_loi": 10,
-        "yeu_cau": 2,
-        "mo_ta": 1
+        "mo_ta": 8,
+        "phuc_loi": 7,
+        "yeu_cau": 4
       },
       "changed": true
     },
     {
-      "job_id": "topdev_2134271",
+      "job_id": "topdev_2135786",
       "source": "topdev",
       "field": "sections",
-      "before": "Tiếp nhận và xử lý yêu cầu hỗ trợ từ người dùng qua điện thoại, email hoặc hệ thống ticketing Tạo, theo dõi và cập nhật ticket đảm bảo giải quyết đúng SLA; escalate lên Level 2/3 khi cần Hỗ trợ cài đặ…",
+      "before": "Làm việc với khách hàng và các bên liên quan để thu thập, phân tích và làm rõ yêu cầu nghiệp vụ.\nPhân tích quy trình nghiệp vụ, xác định vấn đề và đề xuất giải pháp phù hợp với yêu cầu của khách hàng.…",
       "after": {
-        "phuc_loi": 10,
-        "yeu_cau": 3,
-        "mo_ta": 1
+        "phuc_loi": 17,
+        "mo_ta": 8,
+        "yeu_cau": 8
       },
       "changed": true
     }

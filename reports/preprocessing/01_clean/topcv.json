@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:11:17+00:00",
-  "code_version": "42423d5",
+  "generated_at": "2026-11-21T23:34:03+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/topcv/raw",
     "rows": 2749
   },
   "output": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
-    "rows": 1280
+    "rows": 1199
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 1231
+      "rows": 1313
     },
     {
       "rule": "C5",
@@ -51,7 +51,7 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-      "rows": 12
+      "rows": 11
     },
     {
       "rule": "C7",
@@ -107,8 +107,15 @@
       "id": "C4a",
       "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 1231,
+      "rows_affected": 1313,
       "examples": [
+        {
+          "job_id": "1013348",
+          "field": "job_title",
+          "before": "Trưởng Phòng Giải Pháp CNTT",
+          "after": "non_it",
+          "url": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html"
+        },
         {
           "job_id": "1065139",
           "field": "job_title",
@@ -122,13 +129,6 @@
           "before": "2D Game Artist",
           "after": "non_it",
           "url": "https://www.topcv.vn/viec-lam/2d-game-artist/1069670.html"
-        },
-        {
-          "job_id": "1101574",
-          "field": "job_title",
-          "before": "Trưởng Phòng Kinh Doanh Công Nghệ Thông Tin",
-          "after": "non_it",
-          "url": "https://www.topcv.vn/viec-lam/truong-phong-kinh-doanh-cong-nghe-thong-tin/1101574.html"
         }
       ]
     },
@@ -136,8 +136,15 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 1231,
+      "rows_affected": 1313,
       "examples": [
+        {
+          "job_id": "1013348",
+          "field": "job_title",
+          "before": "Trưởng Phòng Giải Pháp CNTT",
+          "after": null,
+          "url": "https://www.topcv.vn/viec-lam/truong-phong-giai-phap-cntt/1013348.html"
+        },
         {
           "job_id": "1065139",
           "field": "job_title",
@@ -151,13 +158,6 @@
           "before": "2D Game Artist",
           "after": null,
           "url": "https://www.topcv.vn/viec-lam/2d-game-artist/1069670.html"
-        },
-        {
-          "job_id": "1101574",
-          "field": "job_title",
-          "before": "Trưởng Phòng Kinh Doanh Công Nghệ Thông Tin",
-          "after": null,
-          "url": "https://www.topcv.vn/viec-lam/truong-phong-kinh-doanh-cong-nghe-thong-tin/1101574.html"
         }
       ]
     },
@@ -238,7 +238,7 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 12,
+      "rows_affected": 11,
       "examples": [
         {
           "job_id": "2056186",
@@ -312,7 +312,7 @@
     {
       "field": "raw_posted_date",
       "fill_pct_in": 5.2,
-      "fill_pct_out": 7.4
+      "fill_pct_out": 7.7
     },
     {
       "field": "raw_description_text",
@@ -322,7 +322,7 @@
     {
       "field": "skills_list",
       "fill_pct_in": 52.2,
-      "fill_pct_out": 49.2
+      "fill_pct_out": 49.0
     }
   ],
   "checks": {
@@ -335,16 +335,19 @@
   },
   "extra": {
     "it_levels": {
-      "tang_1_it": 1286,
-      "tang_1_non_it": 36,
-      "tang_0_non_it": 679,
-      "tang_2_non_it": 516,
-      "tang_2_it": 157
+      "tang_1_it": 1208,
+      "tang_0_non_it": 790,
+      "tang_1_non_it": 30,
+      "tang_2_non_it": 493,
+      "tang_2_it": 153
     },
     "it_excluded_groups": {
+      "graphic_design": 250,
       "sales_marketing": 374,
       "q4_embedded_iot": 31,
-      "graphic_design": 238,
+      "reviewed_jd": 58,
+      "p2_data_entry": 1,
+      "p2_manufacturing": 39,
       "q7_teaching": 8,
       "electrical_mechanical": 19,
       "q2_privacy": 2,
@@ -352,11 +355,12 @@
       "q8_operations_growth": 1,
       "q3_av": 1,
       "h4_telecom_field": 3,
+      "p2_procurement_hr": 1,
       "h5_repair": 1
     },
     "it_status": {
-      "it": 1443,
-      "non_it": 1231
+      "it": 1361,
+      "non_it": 1313
     },
     "it_policy": {
       "drop": [

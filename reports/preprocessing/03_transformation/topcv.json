@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-19T03:06:57+00:00",
-  "code_version": "db5e2f3",
+  "generated_at": "2026-11-21T23:37:28+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 1270
+    "rows": 1190
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 1270
+    "rows": 1190
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 1836,
+      "rows_affected": 1730,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 712,
+      "rows_affected": 659,
       "examples": [
         {
           "job_id": "2013194",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 1270,
+      "rows_affected": 1190,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 1265,
+      "rows_affected": 1185,
       "examples": [
         {
           "job_id": "2013194",
@@ -90,14 +90,14 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 1270,
+      "rows_affected": 1190,
       "examples": []
     },
     {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 1265,
+      "rows_affected": 1185,
       "examples": []
     },
     {
@@ -111,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 1270,
+      "rows_affected": 1190,
       "examples": []
     },
     {
@@ -139,28 +139,28 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 404,
+      "rows_affected": 379,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 78,
+      "rows_affected": 77,
       "examples": []
     },
     {
       "id": "T6.5",
       "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
       "action": "modify",
-      "rows_affected": 334,
+      "rows_affected": 313,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 1264,
+      "rows_affected": 1185,
       "examples": [
         {
           "job_id": "2013194",
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 1265,
+      "rows_affected": 1185,
       "examples": [
         {
           "job_id": "2013194",
@@ -218,14 +218,14 @@
       "id": "T9a",
       "name": "Hình thức làm việc từ JD (jd_extraction.json), cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 21,
+      "rows_affected": 20,
       "examples": []
     },
     {
       "id": "T9b",
       "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 51,
+      "rows_affected": 44,
       "examples": [
         {
           "job_id": "2324476",
@@ -254,7 +254,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 1006,
+      "rows_affected": 959,
       "examples": [
         {
           "job_id": "2013194",
@@ -283,18 +283,18 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 45.8,
-      "fill_pct_out": 45.8
+      "fill_pct_in": 44.8,
+      "fill_pct_out": 44.8
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 54.6,
-      "fill_pct_out": 54.6
+      "fill_pct_in": 54.1,
+      "fill_pct_out": 54.1
     },
     {
       "field": "posted_date",
-      "fill_pct_in": 7.5,
-      "fill_pct_out": 7.5
+      "fill_pct_in": 7.7,
+      "fill_pct_out": 7.7
     },
     {
       "field": "deadline_date",
@@ -308,8 +308,8 @@
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 94.9,
-      "fill_pct_out": 94.9
+      "fill_pct_in": 94.5,
+      "fill_pct_out": 94.5
     },
     {
       "field": "headcount",
@@ -328,13 +328,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 86.0,
-      "fill_pct_out": 86.0
+      "fill_pct_in": 87.6,
+      "fill_pct_out": 87.6
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 97.4,
-      "fill_pct_out": 97.4
+      "fill_pct_in": 97.3,
+      "fill_pct_out": 97.3
     },
     {
       "field": "locations",
@@ -368,18 +368,18 @@
     },
     {
       "field": "employment_type_raw",
-      "fill_pct_in": 99.5,
-      "fill_pct_out": 99.5
+      "fill_pct_in": 99.6,
+      "fill_pct_out": 99.6
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 4.0,
-      "fill_pct_out": 4.0
+      "fill_pct_in": 3.7,
+      "fill_pct_out": 3.7
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 79.2,
-      "fill_pct_out": 79.2
+      "fill_pct_in": 80.6,
+      "fill_pct_out": 80.6
     }
   ],
   "checks": {
@@ -392,28 +392,27 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 707,
+      "header": 653,
       "title": 8,
       "jd": 0,
-      "none": 555
+      "none": 529
     },
     "salary_under_1m_count": 1,
-    "salary_from_x_count": 18,
+    "salary_from_x_count": 15,
     "language_distribution": {
-      "vi": 1190,
-      "en": 78,
-      "other": 2
+      "vi": 1112,
+      "en": 77,
+      "other": 1
     },
     "language_fasttext": {
       "model": "lid.176.bin",
       "sha256": "7e69ec5451bc261cc7844e49e4792a85d7f09c06789ec800fc4a44aec362764e",
       "conf_min": 0.6,
-      "disagree_with_old_rule": 2,
+      "disagree_with_old_rule": 1,
       "disagree_examples": [
-        "2323457",
-        "2309919"
+        "2323457"
       ],
-      "conf_lt_0_9": 52
+      "conf_lt_0_9": 51
     },
     "text_quality": {
       "before": {
@@ -464,97 +463,97 @@
       "batch_size": 4,
       "torch": "2.14.1+cu130",
       "transformers": "5.22.2",
-      "peak_vram_mib": 1120,
+      "peak_vram_mib": 1101,
       "fell_back_to_cpu": false,
-      "rows_en": 78,
-      "rows_translated": 73,
+      "rows_en": 77,
+      "rows_translated": 72,
       "rows_failed": 5,
-      "chunks": 1646,
-      "cache_hits": 1635,
-      "model_calls": 24,
-      "retries": 9,
+      "chunks": 1639,
+      "cache_hits": 1634,
+      "model_calls": 10,
+      "retries": 5,
       "failed_chunks": 5,
-      "retry_pieces": 13,
-      "beam_calls": 7,
-      "rescued_chunks": 4
+      "retry_pieces": 5,
+      "beam_calls": 5,
+      "rescued_chunks": 0
     },
     "experience_parsed_rate": 99.6,
     "posted_month_source": {
-      "posted_date": 95,
-      "first_crawled_at": 1175
+      "posted_date": 92,
+      "first_crawled_at": 1098
     },
     "posted_month_distribution": {
-      "2026-10": 1252,
-      "2026-09": 11,
+      "2026-10": 1173,
+      "2026-09": 10,
       "2026-11": 7
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "onsite": 1223,
-        "hybrid": 35,
+        "onsite": 1147,
+        "hybrid": 32,
         "None": 5,
-        "remote": 7
+        "remote": 6
       },
       "work_mode_jd": {
-        "None": 1249,
+        "None": 1170,
         "onsite": 17,
-        "remote": 3,
-        "hybrid": 1
+        "hybrid": 1,
+        "remote": 2
       },
       "work_mode_jd_rules": {
         "WO2": 1,
         "WO3": 16,
-        "WR1": 3,
-        "WH1": 1
+        "WH1": 1,
+        "WR1": 2
       },
       "employment_type_raw": {
-        "full_time": 1239,
+        "full_time": 1160,
         "part_time": 5,
-        "None": 6,
+        "None": 5,
         "internship": 18,
         "contract": 2
       },
       "employment_type_jd": {
-        "None": 1219,
+        "None": 1146,
         "part_time": 2,
-        "internship": 44,
-        "full_time": 3,
-        "contract": 2
+        "internship": 39,
+        "contract": 1,
+        "full_time": 2
       },
       "exp_jd_kind": {
-        "jd": 949,
-        "None": 264,
-        "jd_zero": 57
+        "jd": 909,
+        "None": 231,
+        "jd_zero": 50
       },
       "conflicts": {
-        "T9b": 32
+        "T9b": 26
       }
     }
   },
   "samples": [
     {
-      "job_id": "topcv_2173210",
+      "job_id": "topcv_2309262",
       "source": "topcv",
-      "field": "salary_min_vnd",
-      "before": "Thoả thuận",
-      "after": null,
+      "field": "exp_min_years",
+      "before": "5 năm",
+      "after": 5.0,
       "changed": true
     },
     {
-      "job_id": "topcv_2306245",
-      "source": "topcv",
-      "field": "description_clean",
-      "before": "● Thiết kế, xây dựng và vận hành hạ tầng CI/CD theo hướng tự động hóa và bảo mật (Secure CI/CD Pipeline).\n● Tích hợp các công cụ bảo mật vào quy trình DevOps: SAST, DAST, SCA, container security, vuln…",
-      "after": "- Thiết kế, xây dựng và vận hành hạ tầng CI/CD theo hướng tự động hóa và bảo mật (Secure CI/CD Pipeline).\n- Tích hợp các công cụ bảo mật vào quy trình DevOps: SAST, DAST, SCA, container security, vuln…",
-      "changed": true
-    },
-    {
-      "job_id": "topcv_1317899",
+      "job_id": "topcv_2318952",
       "source": "topcv",
       "field": "headcount",
-      "before": "7 người",
-      "after": 7.0,
+      "before": "1 người",
+      "after": 1.0,
+      "changed": true
+    },
+    {
+      "job_id": "topcv_2281042",
+      "source": "topcv",
+      "field": "requirements_clean",
+      "before": "Trình độ học vấn: Đại học chuyên ngành Điện tử viễn thông, Công nghệ thông tin hoặc các chứng chỉ tương đương trở lên\nKinh nghiệm: Có ít nhất 01 năm kinh nghiệm làm Quản lý nhóm, Quản lý Dự án\nKiến th…",
+      "after": "Trình độ học vấn: Đại học chuyên ngành Điện tử viễn thông, Công nghệ thông tin hoặc các chứng chỉ tương đương trở lên Kinh nghiệm: Có ít nhất 01 năm kinh nghiệm làm Quản lý nhóm, Quản lý Dự án Kiến th…",
       "changed": true
     }
   ]

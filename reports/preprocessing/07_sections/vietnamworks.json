@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:36+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:02+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 583
+    "rows": 546
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 583
+    "rows": 546
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 11937,
+    "n_bullets": 11247,
     "bullets_by_section": {
-      "mo_ta": 4383,
-      "yeu_cau": 4745,
-      "phuc_loi": 2809
+      "mo_ta": 4132,
+      "yeu_cau": 4457,
+      "phuc_loi": 2658
     },
     "bullets_by_rule": {
-      "S7.2": 11937
+      "S7.2": 11247
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,38 +39,38 @@
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2112949",
+      "job_id": "vietnamworks_2110250",
       "source": "vietnamworks",
       "field": "sections",
-      "before": "Phát triển giải pháp Computer Vision cho hệ thống kiểm tra tự động trong dây chuyền sản xuất.\nPhân tích yêu cầu dự án, đề xuất phương án kỹ thuật tối ưu về độ chính xác - tốc độ - chi phí.\nLựa chọn và…",
+      "before": "To analyze and improve Sales and CRM processes across Feed and Food businesses, translating business needs into clear functional requirements for SAP/ERP and integrated in-house applications. The role…",
       "after": {
         "mo_ta": 3,
+        "yeu_cau": 3,
+        "phuc_loi": 2
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2119426",
+      "source": "vietnamworks",
+      "field": "sections",
+      "before": "About the Role We are looking for a Middle Analytics Engineer (3+ years of exp) to bridge the gap between raw data infrastructure and business insights.\nYour mission is not to rebuild from scratch, bu…",
+      "after": {
+        "yeu_cau": 4,
         "phuc_loi": 3,
-        "yeu_cau": 1
+        "mo_ta": 2
       },
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2115479",
+      "job_id": "vietnamworks_2118310",
       "source": "vietnamworks",
       "field": "sections",
-      "before": "Develop ETL/ELT jobs to ingest, transform, and load data from multiple source systems into Data Warehouse / Data Lake platforms based on the approved analysis and design documents.\nHands-on experience…",
+      "before": "Kiểm soát, đánh giá chất lượng thi công hiện trường:\nThiết lập hệ thống quản lý chất lượng và kiểm tra hiện trường Thiết lập hệ thống đảm bảo chất lượng cho công trình bao gồm: hệ thống biểu mẫu cần t…",
       "after": {
-        "mo_ta": 7,
-        "yeu_cau": 6,
-        "phuc_loi": 6
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2117929",
-      "source": "vietnamworks",
-      "field": "sections",
-      "before": "Evaluate and assess the effectiveness of the Bank’s processes on IT governance, risk management and internal controls.\nDevelop and contribute the annual internal audit plan.\nPerform, as a team leader,…",
-      "after": {
-        "mo_ta": 10,
-        "yeu_cau": 5,
-        "phuc_loi": 5
+        "mo_ta": 6,
+        "phuc_loi": 3,
+        "yeu_cau": 2
       },
       "changed": true
     }

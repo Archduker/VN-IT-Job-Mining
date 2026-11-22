@@ -196,7 +196,8 @@ def clean_source(source: str, policy: dict[str, Any], report: StepReport) -> tup
         f = it["flat"]
         # Nhãn chuyên môn của sàn (TopCV category_tags) vẫn là tín hiệu IT dù không còn nằm trong skills_list (18/11)
         signals = list(f.get("skills_list") or []) + list(f.get("category_tags") or [])
-        group = IT.excluded_role(f.get("job_title"), cfg)
+        # PRE-44 vòng 2: tin đã đọc JD và kết luận không phải vai trò IT (it_filter_v2.json `reviewed_non_it`)
+        group = "reviewed_jd" if IT.reviewed_non_it(source, _job_id(it), cfg) else IT.excluded_role(f.get("job_title"), cfg)
         if group:
             rule, level, st = "non_it", 0, "non_it"
             excluded[group] += 1

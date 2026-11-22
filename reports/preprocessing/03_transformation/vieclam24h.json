@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-19T03:32:15+00:00",
-  "code_version": "db5e2f3",
+  "generated_at": "2026-11-21T23:44:36+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 121
+    "rows": 105
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 121
+    "rows": 105
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 251,
+      "rows_affected": 219,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 110,
+      "rows_affected": 94,
       "examples": [
         {
           "job_id": "200011696",
@@ -42,11 +42,11 @@
           "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
         },
         {
-          "job_id": "200665507",
+          "job_id": "200785936",
           "field": "salary_min_max",
-          "before": "18 - 25 triệu",
-          "after": "18000000.0 - 25000000.0 VND (header)",
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
+          "before": "10 - 15 triệu",
+          "after": "10000000.0 - 15000000.0 VND (header)",
+          "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-ky-thuat-it-support-c8p122id200785936.html"
         }
       ]
     },
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 121,
+      "rows_affected": 105,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 121,
+      "rows_affected": 105,
       "examples": [
         {
           "job_id": "200011696",
@@ -78,11 +78,11 @@
           "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
         },
         {
-          "job_id": "200665507",
+          "job_id": "200785936",
           "field": "exp_min_max",
-          "before": "4 năm",
-          "after": "4.0 - 4.0 years",
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
+          "before": "1 năm",
+          "after": "1.0 - 1.0 years",
+          "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-ky-thuat-it-support-c8p122id200785936.html"
         }
       ]
     },
@@ -90,14 +90,14 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 121,
+      "rows_affected": 105,
       "examples": []
     },
     {
       "id": "T5",
       "name": "Bóc tách chỉ tiêu headcount",
       "action": "modify",
-      "rows_affected": 121,
+      "rows_affected": 105,
       "examples": []
     },
     {
@@ -111,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 121,
+      "rows_affected": 105,
       "examples": []
     },
     {
@@ -139,28 +139,28 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 40,
+      "rows_affected": 34,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 10,
+      "rows_affected": 9,
       "examples": []
     },
     {
       "id": "T6.5",
       "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
       "action": "modify",
-      "rows_affected": 25,
+      "rows_affected": 20,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 121,
+      "rows_affected": 105,
       "examples": [
         {
           "job_id": "200011696",
@@ -177,11 +177,11 @@
           "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
         },
         {
-          "job_id": "200665507",
+          "job_id": "200785936",
           "field": "skills_clean",
-          "before": "['công nghệ thông tin' 'kỹ sư công nghệ thông tin'\n 'thực tập công nghệ thông tin' 'nhân viên dự án' 'Dự án'\n 'thực tập sinh công nghệ thông tin' 'nhân viên hỗ trợ dự án'\n 'nhân viên quản lý dự án' 'sale dự án' 'nhân viên công nghệ'\n 'Việc làm Hà Nội' 'IT Phần cứng - Mạng' 'Công Ty Cổ Phần Tư ...']",
-          "after": "['Dự án', 'sale dự án']",
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
+          "before": "['nhân viên it support' 'it support' 'it support / it helpdesk'\n 'nhân viên kỹ thuật' 'nhân viên it' 'nhân viên kỹ thuật điện'\n 'nhân viên kỹ thuật ô tô' 'nhân viên kỹ thuật sản xuất'\n 'nhân viên kỹ thuật tiếng anh' 'nhân viên kỹ thuật tòa nhà'\n 'Việc làm TP.HCM' 'IT Phần mềm' 'Công Ty TNHH Công Nghệ ...']",
+          "after": "['it support', 'IT Phần mềm']",
+          "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-ky-thuat-it-support-c8p122id200785936.html"
         }
       ]
     },
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 121,
+      "rows_affected": 105,
       "examples": [
         {
           "job_id": "200011696",
@@ -206,11 +206,11 @@
           "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
         },
         {
-          "job_id": "200665507",
+          "job_id": "200785936",
           "field": "locations",
-          "before": "Hà Nội",
-          "after": "{'dia_chi_cu_the': 'Số 9 tổ 3', 'phuong_xa': 'Phường Cầu Giấy', 'tinh_thanh': 'TP. Hà Nội', 'raw': 'Số 9 tổ 3, Phường Cầu Giấy, TP Hà Nội'}",
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
+          "before": "TP.HCM",
+          "after": "{'dia_chi_cu_the': '448/8, Nguyễn Tất Thành', 'phuong_xa': 'Phường Xóm Chiếu', 'tinh_thanh': 'TP. Hồ Chí Minh', 'raw': '448/8 (Tầng Trệt), Nguyễn Tất Thành, Phường Xóm Chiếu, TP Hồ Chí Minh'}",
+          "url": "https://vieclam24h.vn/it-phan-mem/nhan-vien-ky-thuat-it-support-c8p122id200785936.html"
         }
       ]
     },
@@ -225,7 +225,7 @@
       "id": "T9b",
       "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 12,
+      "rows_affected": 10,
       "examples": [
         {
           "job_id": "200951800",
@@ -235,18 +235,18 @@
           "url": "https://vieclam24h.vn/it-phan-cung-mang/thuc-tap-sinh-it-phan-cung-co-luong-c7p210000160id200951800.html"
         },
         {
-          "job_id": "200961366",
-          "field": "T9b",
-          "before": "Toàn thời gian cố định",
-          "after": "raw=full_time jd=internship",
-          "url": "https://vieclam24h.vn/hanh-chinh-thu-ky/thuc-tap-sinh-data-di-lam-ngay-c1p210000188id200961366.html"
-        },
-        {
           "job_id": "200962602",
           "field": "T9b",
           "before": "Toàn thời gian cố định",
           "after": "raw=full_time jd=internship",
           "url": "https://vieclam24h.vn/it-phan-mem/thuc-tap-co-phu-cap-va-ky-su-phan-mem-php-laravel-di-lam-ngay-thang-10-c8p210000187id200962602.html"
+        },
+        {
+          "job_id": "200965888",
+          "field": "T9b",
+          "before": "Toàn thời gian cố định",
+          "after": "raw=full_time jd=internship",
+          "url": "https://vieclam24h.vn/it-phan-mem/thuc-tap-kiem-thu-phan-mem-tester-c8p210000187id200965888.html"
         }
       ]
     },
@@ -254,7 +254,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 85,
+      "rows_affected": 77,
       "examples": [
         {
           "job_id": "200383662",
@@ -264,18 +264,18 @@
           "url": "https://vieclam24h.vn/it-phan-mem/full-stack-java-developer-onsite-c8p210000160id200383662.html"
         },
         {
-          "job_id": "200665507",
-          "field": "T9c",
-          "before": "4 năm",
-          "after": "4.0 - None «ít nhất 04 năm»",
-          "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-du-an-cong-nghe-thong-tin-c7p73id200665507.html"
-        },
-        {
           "job_id": "200789315",
           "field": "T9c",
           "before": "1 năm",
           "after": "1.0 - None «từ 1 năm»",
           "url": "https://vieclam24h.vn/it-phan-cung-mang/nhan-vien-thiet-ke-web-design-layout-web-c7p210000187id200789315.html"
+        },
+        {
+          "job_id": "200792353",
+          "field": "T9c",
+          "before": "Chưa có kinh nghiệm",
+          "after": "0.0 - None «sinh viên mới ra trường»",
+          "url": "https://vieclam24h.vn/it-phan-mem/web-system-engineer-c8p210000160id200792353.html"
         }
       ]
     }
@@ -283,13 +283,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 90.9,
-      "fill_pct_out": 90.9
+      "fill_pct_in": 89.5,
+      "fill_pct_out": 89.5
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 90.9,
-      "fill_pct_out": 90.9
+      "fill_pct_in": 89.5,
+      "fill_pct_out": 89.5
     },
     {
       "field": "posted_date",
@@ -308,8 +308,8 @@
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 98.3,
-      "fill_pct_out": 98.3
+      "fill_pct_in": 98.1,
+      "fill_pct_out": 98.1
     },
     {
       "field": "headcount",
@@ -333,8 +333,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 95.0,
-      "fill_pct_out": 95.0
+      "fill_pct_in": 95.2,
+      "fill_pct_out": 95.2
     },
     {
       "field": "locations",
@@ -363,8 +363,8 @@
     },
     {
       "field": "work_mode_jd",
-      "fill_pct_in": 2.5,
-      "fill_pct_out": 2.5
+      "fill_pct_in": 2.9,
+      "fill_pct_out": 2.9
     },
     {
       "field": "employment_type_raw",
@@ -373,13 +373,13 @@
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 9.9,
-      "fill_pct_out": 9.9
+      "fill_pct_in": 9.5,
+      "fill_pct_out": 9.5
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 70.2,
-      "fill_pct_out": 70.2
+      "fill_pct_in": 73.3,
+      "fill_pct_out": 73.3
     }
   ],
   "checks": {
@@ -392,7 +392,7 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 112,
+      "header": 96,
       "title": 0,
       "jd": 0,
       "none": 9
@@ -400,8 +400,8 @@
     "salary_under_1m_count": 2,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 111,
-      "en": 10,
+      "vi": 96,
+      "en": 9,
       "other": 0
     },
     "language_fasttext": {
@@ -463,34 +463,34 @@
       "transformers": "5.22.2",
       "peak_vram_mib": 1227,
       "fell_back_to_cpu": false,
-      "rows_en": 467,
-      "rows_translated": 448,
+      "rows_en": 441,
+      "rows_translated": 422,
       "rows_failed": 19,
-      "chunks": 8907,
-      "cache_hits": 8837,
-      "model_calls": 246,
-      "retries": 72,
+      "chunks": 8469,
+      "cache_hits": 8449,
+      "model_calls": 47,
+      "retries": 23,
       "failed_chunks": 23,
-      "retry_pieces": 176,
-      "beam_calls": 45,
-      "rescued_chunks": 49
+      "retry_pieces": 27,
+      "beam_calls": 24,
+      "rescued_chunks": 0
     },
     "experience_parsed_rate": 100.0,
     "posted_month_source": {
-      "posted_date": 121
+      "posted_date": 105
     },
     "posted_month_distribution": {
-      "2026-09": 23,
-      "2026-10": 97,
+      "2026-09": 19,
+      "2026-10": 85,
       "2026-11": 1
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "None": 121
+        "None": 105
       },
       "work_mode_jd": {
-        "None": 118,
+        "None": 102,
         "onsite": 2,
         "hybrid": 1
       },
@@ -500,28 +500,28 @@
         "WH1": 1
       },
       "employment_type_raw": {
-        "full_time": 115,
+        "full_time": 99,
         "internship": 5,
         "contract": 1
       },
       "employment_type_jd": {
-        "None": 109,
-        "full_time": 3,
-        "internship": 9
+        "None": 95,
+        "full_time": 2,
+        "internship": 8
       },
       "exp_jd_kind": {
-        "None": 36,
-        "jd": 77,
-        "jd_zero": 8
+        "None": 28,
+        "jd": 71,
+        "jd_zero": 6
       },
       "conflicts": {
-        "T9b": 4
+        "T9b": 3
       }
     }
   },
   "samples": [
     {
-      "job_id": "vieclam24h_200967175",
+      "job_id": "vieclam24h_200966783",
       "source": "vieclam24h",
       "field": "posted_date",
       "before": "16/10/2026",
@@ -529,19 +529,19 @@
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200952163",
+      "job_id": "vieclam24h_200963089",
       "source": "vieclam24h",
       "field": "description_clean",
-      "before": "1. Tư vấn và xây dựng giải pháp\n• Phối hợp với bộ phận Kinh doanh để khảo sát nhu cầu khách hàng.\n• Phân tích yêu cầu, thiết kế giải pháp, xây dựng danh mục thiết bị, bản đề xuất kỹ thuật, hồ sơ thầu.…",
-      "after": "1. Tư vấn và xây dựng giải pháp\n- Phối hợp với bộ phận Kinh doanh để khảo sát nhu cầu khách hàng.\n- Phân tích yêu cầu, thiết kế giải pháp, xây dựng danh mục thiết bị, bản đề xuất kỹ thuật, hồ sơ thầu.…",
+      "before": "- Xây dựng và duy trì các pipeline dữ liệu (ETL – Extract, Transform, Load) để thu thập, xử lý và lưu trữ dữ liệu học tập, hành chính từ các nguồn khác nhau của trường (như hệ thống LMS, cơ sở dữ liệu…",
+      "after": "- Xây dựng và duy trì các pipeline dữ liệu (ETL - Extract, Transform, Load) để thu thập, xử lý và lưu trữ dữ liệu học tập, hành chính từ các nguồn khác nhau của trường (như hệ thống LMS, cơ sở dữ liệu…",
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200948134",
+      "job_id": "vieclam24h_200955690",
       "source": "vieclam24h",
-      "field": "headcount",
-      "before": "2",
-      "after": 2.0,
+      "field": "salary_min_vnd",
+      "before": "8 - 12 triệu",
+      "after": 8000000.0,
       "changed": true
     }
   ]

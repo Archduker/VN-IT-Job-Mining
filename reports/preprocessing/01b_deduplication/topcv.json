@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "topcv",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:13:36+00:00",
-  "code_version": "d3f7008",
+  "generated_at": "2026-11-21T23:34:31+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/01_clean/topcv.jsonl",
-    "rows": 1280
+    "rows": 1199
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/topcv.jsonl",
-    "rows": 1270
+    "rows": 1190
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 10
+      "rows": 9
     }
   ],
   "rules": [
@@ -67,15 +67,8 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 10,
+      "rows_affected": 9,
       "examples": [
-        {
-          "job_id": "1839052",
-          "field": "dedup",
-          "before": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html",
-          "after": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
-          "url": "https://www.topcv.vn/viec-lam/truong-nhom-thiet-ke-lap-trinh-cnc/1839052.html"
-        },
         {
           "job_id": "2144442",
           "field": "dedup",
@@ -89,6 +82,13 @@
           "before": "https://www.topcv.vn/viec-lam/solution-consultant-kinh-nghiem-erp-implementation-consultant-chuyen-vien-trien-khai-giai-phap-phan-mem-erp/2290443.html",
           "after": "https://www.topcv.vn/viec-lam/solution-consultant-kinh-nghiem-erp-implementation-consultant/2315056.html",
           "url": "https://www.topcv.vn/viec-lam/solution-consultant-kinh-nghiem-erp-implementation-consultant-chuyen-vien-trien-khai-giai-phap-phan-mem-erp/2290443.html"
+        },
+        {
+          "job_id": "2303888",
+          "field": "dedup",
+          "before": "https://www.topcv.vn/viec-lam/data-analyst-f21-up-to-1500-net-1-yoe/2303888.html",
+          "after": "https://www.topcv.vn/viec-lam/fresher-data-analyst-f21-up-to-20m/2322531.html",
+          "url": "https://www.topcv.vn/viec-lam/data-analyst-f21-up-to-1500-net-1-yoe/2303888.html"
         }
       ]
     },
@@ -96,7 +96,7 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 23,
+      "rows_affected": 20,
       "examples": [
         {
           "job_id": "1506721",
@@ -106,18 +106,18 @@
           "url": "https://www.topcv.vn/viec-lam/business-analyst-erp-lead-phan-tich-nghiep-vu/1506721.html"
         },
         {
-          "job_id": "1832499",
-          "field": "master_id",
-          "before": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html",
-          "after": "25b609ec-a899-524d-9361-74a916ad0bc8",
-          "url": "https://www.topcv.vn/viec-lam/ky-su-lap-trinh-van-hanh-cnc/1832499.html"
-        },
-        {
           "job_id": "2119759",
           "field": "master_id",
           "before": "https://www.topcv.vn/viec-lam/product-owner-tu-6-thang-kinh-nghiem/2119759.html",
           "after": "6d5c0c7b-da6b-5ebf-ab5d-ff2eacebab38",
           "url": "https://www.topcv.vn/viec-lam/product-owner-tu-6-thang-kinh-nghiem/2119759.html"
+        },
+        {
+          "job_id": "2165864",
+          "field": "master_id",
+          "before": "https://www.topcv.vn/viec-lam/truong-nhom-tester-linh-vuc-cntt-ott/2165864.html",
+          "after": "36255790-30e4-5d87-a5d0-a00eda48c470",
+          "url": "https://www.topcv.vn/viec-lam/truong-nhom-tester-linh-vuc-cntt-ott/2165864.html"
         }
       ]
     },
@@ -125,7 +125,7 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 49,
+      "rows_affected": 31,
       "examples": [
         {
           "job_id": "1682674",
@@ -135,18 +135,18 @@
           "url": "https://www.topcv.vn/viec-lam/solution-architecture-expert/1682674.html"
         },
         {
-          "job_id": "2002662",
+          "job_id": "2188055",
           "field": "jaccard",
           "before": null,
-          "after": 0.913,
-          "url": "https://www.topcv.vn/viec-lam/chuyen-vien-quan-tri-mang-network/2002662.html"
+          "after": 0.7867,
+          "url": "https://www.topcv.vn/viec-lam/manual-tester-lead-staffing-lending/2188055.html"
         },
         {
-          "job_id": "2106548",
+          "job_id": "2222082",
           "field": "jaccard",
           "before": null,
-          "after": 0.7773,
-          "url": "https://www.topcv.vn/viec-lam/nhan-vien-playable-ads/2106548.html"
+          "after": 0.976,
+          "url": "https://www.topcv.vn/brand/elcom/tuyen-dung/java-developer-spring-boot-kafka-product-nghi-thu-7-chu-nhat-j2222082.html"
         }
       ]
     }
@@ -170,35 +170,35 @@
       "hop_same_version": 9,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 1076,
+    "blocking_blocks": 1016,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 10
+      "D5": 9
     }
   },
   "samples": [
+    {
+      "job_id": "2316026",
+      "source": "topcv",
+      "field": "duplicate_of",
+      "before": "2316026",
+      "after": "DROPPED D5 -> topcv:2119759",
+      "changed": true
+    },
+    {
+      "job_id": "2290443",
+      "source": "topcv",
+      "field": "duplicate_of",
+      "before": "2290443",
+      "after": "DROPPED D5 -> topcv:2315056",
+      "changed": true
+    },
     {
       "job_id": "2315657",
       "source": "topcv",
       "field": "duplicate_of",
       "before": "2315657",
       "after": "DROPPED D5 -> topcv:2315697",
-      "changed": true
-    },
-    {
-      "job_id": "2144442",
-      "source": "topcv",
-      "field": "duplicate_of",
-      "before": "2144442",
-      "after": "DROPPED D5 -> topcv:2165864",
-      "changed": true
-    },
-    {
-      "job_id": "2308003",
-      "source": "topcv",
-      "field": "duplicate_of",
-      "before": "2308003",
-      "after": "DROPPED D5 -> topcv:2319815",
       "changed": true
     }
   ]

@@ -152,7 +152,7 @@ class ClusteringParams:
     # M3.1a: trọng số khối; khối vắng thì chia lại cho tổng các khối có mặt. Người dùng chốt 20/11 (1.D):
     # 0,15 / 0,15 / 0,7 thay 0,35 / 0,15 / 0,5 (bộ cũ gom 928 tin không công cụ vào một cụm)
     block_weights: dict[str, float] = field(default_factory=lambda: {"tool": 0.15, "concept": 0.15, "e5": 0.7})
-    kmeans_n_init: int = 50  # 2.B (20/11): n_init 10 cho ARI 5 seed 0,73; 50 cho 0,83 (k = 10)
+    kmeans_n_init: int = 150  # 2.B (20/11): n_init 10 cho ARI 5 seed 0,73; 50 cho 0,83 (k = 10). 22/11 (L-59, 3.718 tin): 50 chỉ còn 0,79, nâng 150
     stability_seeds: tuple[int, ...] = (42, 43, 44, 45, 46)  # M3.7
     stability_ari_target: float = 0.80  # PRE-36
     min_cluster_share: float = 0.01  # cụm nhỏ nhất >= 1% số tin (PRE-36)

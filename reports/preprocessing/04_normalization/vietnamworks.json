@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "vietnamworks",
   "mode": "applied",
-  "generated_at": "2026-11-21T11:56:27+00:00",
-  "code_version": "026808f",
+  "generated_at": "2026-11-22T00:01:12+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 592
+    "rows": 555
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 583
+    "rows": 546
   },
   "dropped": [
     {
@@ -24,7 +24,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 585,
+      "rows_affected": 548,
       "examples": [
         {
           "job_id": "2102610",
@@ -82,7 +82,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 503,
+      "rows_affected": 471,
       "examples": [
         {
           "job_id": "2102610",
@@ -111,7 +111,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 472,
+      "rows_affected": 484,
       "examples": [
         {
           "job_id": "2102610",
@@ -121,18 +121,18 @@
           "url": "https://www.vietnamworks.com/it-data-engineer-2102610-jv"
         },
         {
+          "job_id": "2102612",
+          "field": "job_family",
+          "before": "SAP Master Data",
+          "after": "Data/AI (title)",
+          "url": "https://www.vietnamworks.com/sap-master-data--2102612-jv"
+        },
+        {
           "job_id": "2102766",
           "field": "job_family",
           "before": "Tech Lead Java Developer",
           "after": "Web (canonical)",
           "url": "https://www.vietnamworks.com/tech-lead-java-developer-2102766-jv"
-        },
-        {
-          "job_id": "2102768",
-          "field": "job_family",
-          "before": "PowerApp Platform Developer",
-          "after": "Web (canonical_generic)",
-          "url": "https://www.vietnamworks.com/powerapp-platform-developer-2102768-jv"
         }
       ]
     },
@@ -140,35 +140,35 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 212,
+      "rows_affected": 208,
       "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 592,
+      "rows_affected": 555,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 592,
+      "rows_affected": 555,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 12,
+      "rows_affected": 10,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 285,
+      "rows_affected": 270,
       "examples": []
     },
     {
@@ -189,7 +189,7 @@
       "id": "N19",
       "name": "employment_type: tiêu đề Intern → ô của sàn → JD",
       "action": "modify",
-      "rows_affected": 538,
+      "rows_affected": 503,
       "examples": []
     },
     {
@@ -203,14 +203,14 @@
       "id": "M4s",
       "name": "Kinh nghiệm lấy từ JD khi ô trống (itviec: JD trước)",
       "action": "modify",
-      "rows_affected": 40,
+      "rows_affected": 37,
       "examples": []
     },
     {
       "id": "M4c",
       "name": "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict",
       "action": "flag",
-      "rows_affected": 55,
+      "rows_affected": 50,
       "examples": []
     },
     {
@@ -246,28 +246,28 @@
       "id": "N6a",
       "name": "Lương tháng ngoài 1–500 triệu: bỏ số, gắn cờ salary_suspect",
       "action": "flag",
-      "rows_affected": 3,
+      "rows_affected": 2,
       "examples": []
     },
     {
       "id": "N6",
       "name": "Gắn cờ ngoại lai lương IQR gộp và Winsorize 1-99% (cột *_capped)",
       "action": "modify",
-      "rows_affected": 29,
+      "rows_affected": 26,
       "examples": []
     },
     {
       "id": "M5",
       "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
       "action": "flag",
-      "rows_affected": 18,
+      "rows_affected": 16,
       "examples": []
     },
     {
       "id": "M6",
       "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
       "action": "flag",
-      "rows_affected": 31,
+      "rows_affected": 24,
       "examples": []
     },
     {
@@ -281,14 +281,14 @@
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 151,
+      "rows_affected": 143,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 583,
+      "rows_affected": 546,
       "examples": []
     }
   ],
@@ -300,13 +300,13 @@
     },
     {
       "field": "tinh_chinh",
-      "fill_pct_in": 98.8,
-      "fill_pct_out": 98.8
+      "fill_pct_in": 98.7,
+      "fill_pct_out": 98.7
     },
     {
       "field": "seniority",
-      "fill_pct_in": 84.7,
-      "fill_pct_out": 84.7
+      "fill_pct_in": 84.6,
+      "fill_pct_out": 84.6
     },
     {
       "field": "seniority_source",
@@ -335,23 +335,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 21.4,
-      "fill_pct_out": 21.4
+      "fill_pct_in": 21.8,
+      "fill_pct_out": 21.8
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 25.9,
-      "fill_pct_out": 25.9
+      "fill_pct_in": 26.2,
+      "fill_pct_out": 26.2
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 21.4,
-      "fill_pct_out": 21.4
+      "fill_pct_in": 21.8,
+      "fill_pct_out": 21.8
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 25.9,
-      "fill_pct_out": 25.9
+      "fill_pct_in": 26.2,
+      "fill_pct_out": 26.2
     },
     {
       "field": "is_outlier_salary",
@@ -365,8 +365,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 35.7,
-      "fill_pct_out": 35.7
+      "fill_pct_in": 37.4,
+      "fill_pct_out": 37.4
     },
     {
       "field": "company_key",
@@ -430,100 +430,103 @@
       }
     },
     "employment_type_distribution": {
-      "full_time": 526,
-      "(trống)": 53,
+      "full_time": 491,
+      "(trống)": 51,
       "internship": 3,
       "contract": 1
     },
     "work_mode_source_distribution": {
-      "location": 565,
+      "location": 528,
       "jd": 9,
       "unknown": 6,
       "raw": 2,
       "jd_over_raw": 1
     },
     "exp_source_distribution": {
-      "raw": 499,
-      "jd": 32,
-      "unknown": 31,
-      "jd_zero": 7,
+      "raw": 467,
+      "jd": 31,
+      "unknown": 29,
       "level_intern": 6,
       "level_senior": 5,
+      "jd_zero": 5,
       "level_lead": 3
     },
     "seniority_source_distribution": {
-      "kinh_nghiem": 281,
-      "title": 112,
-      "raw": 101,
-      "none": 89
+      "kinh_nghiem": 266,
+      "title": 107,
+      "raw": 89,
+      "none": 84
     },
     "seniority_distribution": {
-      "Middle": 195,
-      "Lead/Manager": 101,
-      "Senior": 100,
-      "(trống)": 89,
-      "Junior": 79,
-      "Intern/Fresher": 19
+      "Middle": 188,
+      "Senior": 94,
+      "Lead/Manager": 90,
+      "(trống)": 84,
+      "Junior": 72,
+      "Intern/Fresher": 18
     },
     "job_family_distribution": {
-      "Other": 118,
-      "Data/AI": 106,
-      "Bridge": 84,
-      "Web": 78,
+      "Data/AI": 111,
+      "Bridge": 93,
+      "Web": 77,
+      "Other": 69,
       "Tester": 66,
-      "Infra/Support": 52,
-      "DevOps/Cloud": 35,
-      "Security": 32,
+      "Infra/Support": 49,
+      "Security": 35,
+      "DevOps/Cloud": 34,
       "Design": 6,
       "Mobile": 4,
       "Game": 1,
       "IoT": 1
     },
     "job_family_source_distribution": {
-      "title": 314,
-      "none": 118,
+      "title": 336,
+      "none": 69,
       "canonical": 65,
       "canonical_generic": 31,
-      "jd": 31,
-      "skills": 24
+      "skills": 22,
+      "jd": 19,
+      "title_paren": 2,
+      "title_full": 1,
+      "title_manager": 1
     },
     "work_mode_distribution": {
-      "onsite": 565,
+      "onsite": 528,
       "remote": 8,
       "unknown": 6,
       "hybrid": 4
     },
     "salary_status_distribution": {
-      "negotiable": 425,
-      "value": 155,
-      "not_stated": 3
+      "negotiable": 397,
+      "value": 147,
+      "not_stated": 2
     },
-    "salary_outliers": 29,
+    "salary_outliers": 26,
     "inference": {
-      "level_inferred": 393,
+      "level_inferred": 373,
       "exp_inferred": 14
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 556,
-      "job_title_core_distinct": 445,
+      "job_title_clean_distinct": 519,
+      "job_title_core_distinct": 408,
       "title_canonical_source": {
-        "none": 375,
-        "alias": 135,
+        "none": 342,
+        "alias": 131,
         "exact": 60,
         "fuzzy": 13
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 393,
-      "seniority_can_kiem": 12,
+      "level_inferred": 373,
+      "seniority_can_kiem": 10,
       "job_family_can_kiem": 0,
       "tinh_unknown": 6,
       "salary_negotiable_with_value": 3,
-      "salary_iqr_outlier_by_level": 31,
-      "salary_out_of_range": 18,
+      "salary_iqr_outlier_by_level": 24,
+      "salary_out_of_range": 16,
       "salary_iqr_outlier_pooled": 4,
-      "salary_suspect": 3,
+      "salary_suspect": 2,
       "salary_period_year": 1,
       "exp_inferred": 14,
       "currency_reinterpreted": 3,
@@ -532,39 +535,39 @@
   },
   "samples": [
     {
-      "job_id": "vietnamworks_2117981",
+      "job_id": "vietnamworks_2123555",
       "source": "vietnamworks",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn, Duy Tân, Cầu Giấy",
+          "dia_chi_cu_the": "17F, 21F Office Lobby, Lotte Mall West Lake, 272 Vo Chi Cong, Tay Ho",
           "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn - Duy Tân, Cầu Giấy, Hà Nội"
+          "raw": "17F - 21F Office Lobby, Lotte Mall West Lake, 272 Vo Chi Cong, Tay Ho, Hanoi, Vietnam"
         },
         {
-          "dia_chi_cu_the": "18A Cộng Hòa, Thành phố Hồ Chí Minh, 89B Lý Nam Đế, Hà Nội, Tòa CIT 6/15 Duy Tân",
-          "phuong_xa": "Phường Hoàn Kiếm",
+          "dia_chi_cu_the": "Tòa Lotte Mall 272 Võ Chí Công",
+          "phuong_xa": "Phường Phú Thượng",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "18A Cộng Hòa, Phường Bảy Hiền, Thành phố Hồ Chí Minh; 89B Lý Nam Đế, Phường Hoàn Kiếm, Hà Nội; Tòa CIT 6/15 Duy Tân, Phường Cầu Giấy, Hà Nội"
+          "raw": "Tòa Lotte Mall 272 Võ Chí Công, Phường Phú Thượng, Quận Tây Hồ, Hà Nội"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn, Duy Tân, Cầu Giấy",
+          "dia_chi_cu_the": "17F, 21F Office Lobby, Lotte Mall West Lake, 272 Vo Chi Cong, Tay Ho",
           "phuong_xa": null,
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "Trung tâm Công nghệ phần mềm và Dữ liệu lớn - Duy Tân, Cầu Giấy, Hà Nội",
+          "raw": "17F - 21F Office Lobby, Lotte Mall West Lake, 272 Vo Chi Cong, Tay Ho, Hanoi, Vietnam",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false
         },
         {
-          "dia_chi_cu_the": "18A Cộng Hòa, Thành phố Hồ Chí Minh, 89B Lý Nam Đế, Hà Nội, Tòa CIT 6/15 Duy Tân",
-          "phuong_xa": "Phường Hoàn Kiếm",
+          "dia_chi_cu_the": "Tòa Lotte Mall 272 Võ Chí Công",
+          "phuong_xa": "Phường Phú Thượng",
           "tinh_thanh": "TP. Hà Nội",
-          "raw": "18A Cộng Hòa, Phường Bảy Hiền, Thành phố Hồ Chí Minh; 89B Lý Nam Đế, Phường Hoàn Kiếm, Hà Nội; Tòa CIT 6/15 Duy Tân, Phường Cầu Giấy, Hà Nội",
+          "raw": "Tòa Lotte Mall 272 Võ Chí Công, Phường Phú Thượng, Quận Tây Hồ, Hà Nội",
           "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
@@ -574,19 +577,19 @@
       "changed": true
     },
     {
-      "job_id": "vietnamworks_2114716",
-      "source": "vietnamworks",
-      "field": "exp_min_years",
-      "before": null,
-      "after": 0.5,
-      "changed": true
-    },
-    {
-      "job_id": "vietnamworks_2119648",
+      "job_id": "vietnamworks_2116143",
       "source": "vietnamworks",
       "field": "exp_min_years",
       "before": null,
       "after": 4.0,
+      "changed": true
+    },
+    {
+      "job_id": "vietnamworks_2115807",
+      "source": "vietnamworks",
+      "field": "exp_min_years",
+      "before": null,
+      "after": 5.0,
       "changed": true
     }
   ]

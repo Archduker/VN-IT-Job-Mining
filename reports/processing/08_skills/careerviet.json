@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "careerviet",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:36+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:02+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 402
+    "rows": 387
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 402
+    "rows": 387
   },
   "dropped": [],
   "rules": [],
@@ -24,95 +24,95 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 12534,
+    "n_job_skill_rows": 12223,
     "n_jobs_no_skill": 0,
     "rows_by_kind": {
-      "soft": 2411,
-      "technical": 9874,
-      "language": 249
+      "soft": 2310,
+      "technical": 9678,
+      "language": 235
     },
     "rows_by_type": {
-      "null": 2794,
-      "concept": 7237,
-      "tool": 2503
+      "null": 2673,
+      "concept": 7085,
+      "tool": 2465
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
       {
         "skill": "coordination",
-        "n_jobs": 270
+        "n_jobs": 262
       },
       {
         "skill": "communication",
-        "n_jobs": 193
+        "n_jobs": 181
       },
       {
         "skill": "english",
-        "n_jobs": 185
+        "n_jobs": 172
       },
       {
         "skill": "proactiveness",
-        "n_jobs": 165
+        "n_jobs": 162
       },
       {
         "skill": "information_security",
-        "n_jobs": 163
-      },
-      {
-        "skill": "problem_solving",
-        "n_jobs": 124
-      },
-      {
-        "skill": "database",
-        "n_jobs": 124
+        "n_jobs": 159
       },
       {
         "skill": "teamwork",
-        "n_jobs": 124
+        "n_jobs": 122
       },
       {
         "skill": "software_testing",
-        "n_jobs": 123
+        "n_jobs": 121
       },
       {
-        "skill": "enthusiasm",
-        "n_jobs": 114
+        "skill": "database",
+        "n_jobs": 120
+      },
+      {
+        "skill": "problem_solving",
+        "n_jobs": 119
       },
       {
         "skill": "troubleshooting",
-        "n_jobs": 112
+        "n_jobs": 111
       },
       {
-        "skill": "ai",
+        "skill": "enthusiasm",
         "n_jobs": 109
       },
       {
+        "skill": "ai",
+        "n_jobs": 107
+      },
+      {
         "skill": "sql",
-        "n_jobs": 103
-      },
-      {
-        "skill": "cloud_computing",
-        "n_jobs": 102
-      },
-      {
-        "skill": "analytical_skills",
         "n_jobs": 101
       },
       {
-        "skill": "documentation",
-        "n_jobs": 99
+        "skill": "cloud_computing",
+        "n_jobs": 98
       },
       {
-        "skill": "leadership",
-        "n_jobs": 98
+        "skill": "documentation",
+        "n_jobs": 97
+      },
+      {
+        "skill": "analytical_skills",
+        "n_jobs": 95
       },
       {
         "skill": "it_infrastructure",
-        "n_jobs": 98
+        "n_jobs": 95
+      },
+      {
+        "skill": "leadership",
+        "n_jobs": 92
       },
       {
         "skill": "python",
-        "n_jobs": 92
+        "n_jobs": 91
       },
       {
         "skill": "api",
@@ -120,43 +120,43 @@
       },
       {
         "skill": "ai_application",
-        "n_jobs": 77
+        "n_jobs": 75
       },
       {
         "skill": "it_operations",
-        "n_jobs": 74
-      },
-      {
-        "skill": "consulting",
-        "n_jobs": 70
-      },
-      {
-        "skill": "data_analysis",
-        "n_jobs": 70
-      },
-      {
-        "skill": "eagerness_to_learn",
-        "n_jobs": 69
+        "n_jobs": 72
       },
       {
         "skill": "logical_thinking",
         "n_jobs": 69
       },
       {
-        "skill": "erp",
-        "n_jobs": 68
+        "skill": "data_analysis",
+        "n_jobs": 69
       },
       {
-        "skill": "networking",
+        "skill": "consulting",
         "n_jobs": 67
       },
       {
-        "skill": "planning",
-        "n_jobs": 63
+        "skill": "erp",
+        "n_jobs": 66
       },
       {
-        "skill": "presentation",
-        "n_jobs": 62
+        "skill": "eagerness_to_learn",
+        "n_jobs": 65
+      },
+      {
+        "skill": "networking",
+        "n_jobs": 64
+      },
+      {
+        "skill": "cicd",
+        "n_jobs": 60
+      },
+      {
+        "skill": "independent_work",
+        "n_jobs": 60
       }
     ],
     "short_forms_approved": 755,
@@ -164,89 +164,81 @@
   },
   "samples": [
     {
-      "job_id": "careerviet_35C87E47",
-      "source": "careerviet",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "agile",
-        "automation_test",
-        "backend_dev",
-        "business_analysis",
-        "carefulness",
-        "communication",
-        "coordination",
-        "devops",
-        "docker",
-        "dynamism",
-        "enthusiasm",
-        "erp",
-        "gcp",
-        "independent_work",
-        "odoo",
-        "playwright",
-        "proactiveness",
-        "progress_tracking",
-        "qa_qc",
-        "rca"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "careerviet_35C89037",
+      "job_id": "careerviet_35C8AE29",
       "source": "careerviet",
       "field": "skills",
       "before": null,
       "after": [
         "analytical_skills",
-        "ansible",
-        "argocd",
-        "aws",
-        "azure",
-        "backup",
-        "bash",
-        "bgp",
-        "capacity_planning",
-        "centos",
-        "ceph",
-        "cicd",
-        "cka",
-        "cloud_computing",
-        "cloud_security",
-        "containerization",
-        "dashboard",
-        "debugging",
-        "devops",
-        "disaster_recovery"
+        "automation_test",
+        "coordination",
+        "english",
+        "http",
+        "ms_office",
+        "powerpoint",
+        "requirements_analysis",
+        "software_testing",
+        "srs",
+        "teamwork",
+        "time_management"
       ],
       "changed": true
     },
     {
-      "job_id": "careerviet_35C83F00",
+      "job_id": "careerviet_35C8A94A",
+      "source": "careerviet",
+      "field": "skills",
+      "before": null,
+      "after": [
+        "agile",
+        "api_testing",
+        "carefulness",
+        "communication",
+        "coordination",
+        "data_testing",
+        "database",
+        "defect_management",
+        "dynamism",
+        "english",
+        "enthusiasm",
+        "integration_test",
+        "jira",
+        "logical_thinking",
+        "postman",
+        "redmine",
+        "regression_test",
+        "reporting",
+        "requirements_analysis",
+        "scrum"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "careerviet_35C87497",
       "source": "careerviet",
       "field": "skills",
       "before": null,
       "after": [
         "agile",
         "ai",
-        "ai_application",
-        "batch_processing",
-        "big_data",
-        "cloud_computing",
+        "analytical_skills",
+        "as_is_to_be",
+        "bpmn",
+        "change_management",
         "communication",
         "consulting",
         "coordination",
-        "data_analysis",
-        "data_engineering",
-        "data_flow",
-        "data_governance",
-        "data_modeling",
-        "data_pipeline",
-        "data_processing",
-        "data_science",
-        "database_design",
+        "eagerness_to_learn",
+        "embedded",
         "english",
-        "enthusiasm"
+        "leadership",
+        "persuasion",
+        "presentation",
+        "process_modeling",
+        "product_backlog",
+        "product_design",
+        "product_thinking",
+        "ux_design"
       ],
       "changed": true
     }

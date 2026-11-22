@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-19T03:32:22+00:00",
-  "code_version": "db5e2f3",
+  "generated_at": "2026-11-21T23:44:39+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 785
+    "rows": 780
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 785
+    "rows": 780
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 2571,
+      "rows_affected": 2554,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 202,
+      "rows_affected": 200,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 762,
+      "rows_affected": 757,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 692,
+      "rows_affected": 688,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -90,7 +90,7 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 785,
+      "rows_affected": 780,
       "examples": []
     },
     {
@@ -111,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 785,
+      "rows_affected": 780,
       "examples": []
     },
     {
@@ -139,28 +139,28 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 254,
+      "rows_affected": 252,
       "examples": []
     },
     {
       "id": "T6b",
       "name": "Dịch description/requirements tiếng Anh sang tiếng Việt (envit5)",
       "action": "modify",
-      "rows_affected": 521,
+      "rows_affected": 517,
       "examples": []
     },
     {
       "id": "T6.5",
       "name": "Làm sạch từng item phúc lợi (NFC, ký tự ẩn, khoảng trắng, bỏ item rỗng)",
       "action": "modify",
-      "rows_affected": 167,
+      "rows_affected": 165,
       "examples": []
     },
     {
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 785,
+      "rows_affected": 780,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 785,
+      "rows_affected": 780,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -240,7 +240,7 @@
       "id": "T9b",
       "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 50,
+      "rows_affected": 49,
       "examples": [
         {
           "job_id": "ai-engineer-intern-8seneca-3514",
@@ -269,7 +269,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 591,
+      "rows_affected": 586,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -303,8 +303,8 @@
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 25.6,
-      "fill_pct_out": 25.6
+      "fill_pct_in": 25.5,
+      "fill_pct_out": 25.5
     },
     {
       "field": "posted_date",
@@ -348,8 +348,8 @@
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 92.9,
-      "fill_pct_out": 92.9
+      "fill_pct_in": 92.8,
+      "fill_pct_out": 92.8
     },
     {
       "field": "locations",
@@ -373,13 +373,13 @@
     },
     {
       "field": "work_mode_raw",
-      "fill_pct_in": 96.4,
-      "fill_pct_out": 96.4
+      "fill_pct_in": 96.5,
+      "fill_pct_out": 96.5
     },
     {
       "field": "work_mode_jd",
-      "fill_pct_in": 2.5,
-      "fill_pct_out": 2.5
+      "fill_pct_in": 2.6,
+      "fill_pct_out": 2.6
     },
     {
       "field": "employment_type_raw",
@@ -388,13 +388,13 @@
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 6.4,
-      "fill_pct_out": 6.4
+      "fill_pct_in": 6.3,
+      "fill_pct_out": 6.3
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 75.3,
-      "fill_pct_out": 75.3
+      "fill_pct_in": 75.1,
+      "fill_pct_out": 75.1
     }
   ],
   "checks": {
@@ -407,16 +407,16 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 198,
+      "header": 196,
       "title": 4,
       "jd": 1,
-      "none": 582
+      "none": 579
     },
     "salary_under_1m_count": 1,
     "salary_from_x_count": 1,
     "language_distribution": {
-      "vi": 264,
-      "en": 521,
+      "vi": 263,
+      "en": 517,
       "other": 0
     },
     "language_fasttext": {
@@ -425,7 +425,7 @@
       "conf_min": 0.6,
       "disagree_with_old_rule": 0,
       "disagree_examples": [],
-      "conf_lt_0_9": 243
+      "conf_lt_0_9": 242
     },
     "text_quality": {
       "before": {
@@ -478,38 +478,38 @@
       "transformers": "5.22.2",
       "peak_vram_mib": 1227,
       "fell_back_to_cpu": false,
-      "rows_en": 988,
-      "rows_translated": 920,
+      "rows_en": 958,
+      "rows_translated": 890,
       "rows_failed": 68,
-      "chunks": 20734,
-      "cache_hits": 20534,
-      "model_calls": 663,
-      "retries": 200,
+      "chunks": 20195,
+      "cache_hits": 20145,
+      "model_calls": 153,
+      "retries": 76,
       "failed_chunks": 76,
-      "retry_pieces": 463,
-      "beam_calls": 122,
-      "rescued_chunks": 124
+      "retry_pieces": 103,
+      "beam_calls": 77,
+      "rescued_chunks": 0
     },
     "experience_parsed_rate": 88.2,
     "posted_month_source": {
-      "posted_date": 762,
+      "posted_date": 757,
       "first_crawled_at": 23
     },
     "posted_month_distribution": {
       "2026-09": 249,
-      "2026-10": 534,
+      "2026-10": 529,
       "2026-11": 2
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "None": 28,
-        "hybrid": 132,
-        "onsite": 625
+        "None": 27,
+        "hybrid": 131,
+        "onsite": 622
       },
       "work_mode_jd": {
         "remote": 11,
-        "None": 765,
+        "None": 760,
         "hybrid": 8,
         "onsite": 1
       },
@@ -522,17 +522,17 @@
         "WH5": 1
       },
       "employment_type_raw": {
-        "full_time": 762,
+        "full_time": 757,
         "None": 23
       },
       "employment_type_jd": {
-        "None": 735,
+        "None": 731,
         "internship": 38,
-        "full_time": 11,
+        "full_time": 10,
         "contract": 1
       },
       "exp_jd_kind": {
-        "jd": 562,
+        "jd": 557,
         "None": 194,
         "jd_zero": 29
       },
@@ -545,27 +545,27 @@
   },
   "samples": [
     {
-      "job_id": "itviec_wordpress-developer-intern-cong-ty-co-phan-truyen-thong-sefa-media-5802",
-      "source": "itviec",
-      "field": "requirements_clean",
-      "before": "Sinh viên năm cuối hoặc mới tốt nghiệp các chuyên ngành Digital Marketing, Thương mại điện tử, Công nghệ thông tin, Kinh tế, Quản trị Kinh doanh,...;\nLàm được Full-time\nTiếng Anh mức độ khá trở lên;\nK…",
-      "after": "Sinh viên năm cuối hoặc mới tốt nghiệp các chuyên ngành Digital Marketing, Thương mại điện tử, Công nghệ thông tin, Kinh tế, Quản trị Kinh doanh,...;\nLàm được Full-time Tiếng Anh mức độ khá trở lên;\nK…",
-      "changed": true
-    },
-    {
-      "job_id": "itviec_senior-product-owner-erp-crm-crossian-0944",
-      "source": "itviec",
-      "field": "exp_min_years",
-      "before": "3.1 năm (37 tháng)",
-      "after": 3.0,
-      "changed": true
-    },
-    {
-      "job_id": "itviec_expert-software-engineer-tech-lead-techcombank-2232",
+      "job_id": "itviec_devsecops-engineer-devops-python-bash-abbank-2810",
       "source": "itviec",
       "field": "description_clean",
-      "before": "Low-Level Architecture Design & Development\nContribute to low-level architecture design and develop software components that meet efficiency, scalability, and security standards.\nWork closely with arc…",
-      "after": "Low-Level Architecture Design & Development Contribute to low-level architecture design and develop software components that meet efficiency, scalability, and security standards.\nWork closely with arc…",
+      "before": "Xây dựng, phát triển và vận hành\nDevSecOps Platform & CI/CD\ncho môi trường\nOn-Premise và Cloud\nQuản trị và tích hợp\nGitLab, Jenkins, Nexus, SonarQube, Vault, ArgoCD, Kubernetes\nvà các thành phần DevSe…",
+      "after": "Xây dựng, phát triển và vận hành DevSecOps Platform & CI/CD cho môi trường On-Premise và Cloud Quản trị và tích hợp GitLab, Jenkins, Nexus, SonarQube, Vault, ArgoCD, Kubernetes và các thành phần DevSe…",
+      "changed": true
+    },
+    {
+      "job_id": "itviec_devsecops-engineer-khoi-cong-nghe-thong-tin-mb-bank-2347",
+      "source": "itviec",
+      "field": "requirements_clean",
+      "before": "Tốt nghiệp đại học các chuyên ngành Công nghệ thông tin, Toán tin, Điện tử Viễn thông, hoặc lĩnh vực liên quan.\nVị trí mở với ứng viên fresher có mong muốn theo đuổi lĩnh vực DevOps, DevSecOps\nƯu tiên…",
+      "after": "Tốt nghiệp đại học các chuyên ngành Công nghệ thông tin, Toán tin, Điện tử Viễn thông, hoặc lĩnh vực liên quan.\nVị trí mở với ứng viên fresher có mong muốn theo đuổi lĩnh vực DevOps, DevSecOps Ưu tiên…",
+      "changed": true
+    },
+    {
+      "job_id": "itviec_senior-sap-pp-consultant-itviec-recruitment-consulting-2237",
+      "source": "itviec",
+      "field": "salary_min_vnd",
+      "before": "You'll love it",
+      "after": null,
       "changed": true
     }
   ]

@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:36+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:03+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 736
+    "rows": 731
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 736
+    "rows": 731
   },
   "dropped": [],
   "rules": [],
@@ -24,35 +24,35 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 28111,
+    "n_job_skill_rows": 27984,
     "n_jobs_no_skill": 0,
     "rows_by_kind": {
-      "soft": 3941,
-      "technical": 23541,
-      "language": 629
+      "soft": 3897,
+      "technical": 23469,
+      "language": 618
     },
     "rows_by_type": {
-      "null": 4983,
-      "tool": 7007,
-      "concept": 16121
+      "null": 4925,
+      "tool": 6999,
+      "concept": 16060
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
       {
         "skill": "english",
-        "n_jobs": 438
+        "n_jobs": 434
       },
       {
         "skill": "communication",
-        "n_jobs": 386
+        "n_jobs": 382
       },
       {
         "skill": "coordination",
-        "n_jobs": 320
+        "n_jobs": 316
       },
       {
         "skill": "ai",
-        "n_jobs": 313
+        "n_jobs": 312
       },
       {
         "skill": "software_testing",
@@ -64,19 +64,19 @@
       },
       {
         "skill": "api",
-        "n_jobs": 281
+        "n_jobs": 280
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 278
+        "n_jobs": 276
       },
       {
         "skill": "cloud_computing",
-        "n_jobs": 269
+        "n_jobs": 268
       },
       {
         "skill": "cicd",
-        "n_jobs": 264
+        "n_jobs": 263
       },
       {
         "skill": "database",
@@ -84,7 +84,7 @@
       },
       {
         "skill": "proactiveness",
-        "n_jobs": 250
+        "n_jobs": 247
       },
       {
         "skill": "documentation",
@@ -96,19 +96,19 @@
       },
       {
         "skill": "sql",
-        "n_jobs": 226
+        "n_jobs": 225
       },
       {
         "skill": "teamwork",
-        "n_jobs": 215
+        "n_jobs": 213
       },
       {
         "skill": "monitoring",
-        "n_jobs": 209
+        "n_jobs": 208
       },
       {
         "skill": "aws",
-        "n_jobs": 204
+        "n_jobs": 203
       },
       {
         "skill": "docker",
@@ -116,11 +116,11 @@
       },
       {
         "skill": "enthusiasm",
-        "n_jobs": 189
+        "n_jobs": 188
       },
       {
         "skill": "agile",
-        "n_jobs": 188
+        "n_jobs": 186
       },
       {
         "skill": "it_infrastructure",
@@ -128,27 +128,27 @@
       },
       {
         "skill": "analytical_skills",
-        "n_jobs": 182
+        "n_jobs": 180
       },
       {
         "skill": "leadership",
-        "n_jobs": 176
+        "n_jobs": 175
       },
       {
         "skill": "devops",
-        "n_jobs": 173
-      },
-      {
-        "skill": "scalability",
-        "n_jobs": 171
+        "n_jobs": 172
       },
       {
         "skill": "java",
         "n_jobs": 170
       },
       {
+        "skill": "scalability",
+        "n_jobs": 170
+      },
+      {
         "skill": "troubleshooting",
-        "n_jobs": 169
+        "n_jobs": 168
       },
       {
         "skill": "rest_api",
@@ -164,106 +164,109 @@
   },
   "samples": [
     {
-      "job_id": "itviec_devops-engineer-vnggames-0837",
+      "job_id": "itviec_fresher-junior-ai-agent-engineer-python-llm-cong-ty-co-phan-thinklabs-3200",
       "source": "itviec",
       "field": "skills",
       "before": [
-        "CI/CD",
-        "Linux"
+        "Agentic AI",
+        "Git",
+        "FastAPI",
+        "Prompt Engineering",
+        "LLM",
+        "Python",
+        "Fresher Accepted"
       ],
       "after": [
-        "access_control",
         "ai",
         "ai_agent",
-        "ai_application",
-        "ansible",
-        "audit_logging",
-        "aws",
-        "bash",
-        "caching",
-        "cicd",
+        "api",
+        "api_integration",
+        "async_programming",
+        "celery",
+        "chatbot",
+        "chromadb",
         "claude",
-        "claude_code",
-        "cloud_computing",
-        "compliance",
-        "container_orchestration",
-        "containerization",
+        "communication",
+        "conflict_resolution_git",
         "coordination",
-        "cursor",
-        "dast",
-        "database"
+        "db_indexing",
+        "debugging",
+        "docker",
+        "documentation",
+        "embeddings",
+        "english",
+        "fastapi",
+        "frontend_dev"
       ],
       "changed": true
     },
     {
-      "job_id": "itviec_senior-principal-ruby-on-rails-developer-aws-backend-andpad-vietnam-co-ltd-4221",
+      "job_id": "itviec_qa-team-lead-nakivo-4659",
       "source": "itviec",
       "field": "skills",
       "before": [
-        "Ruby on Rails",
-        "Design Systems",
-        "Ruby",
-        "Microservices",
-        "AWS",
-        "English"
+        "Leadership",
+        "Automation Test",
+        "AI",
+        "QA QC"
       ],
       "after": [
-        "ansible",
+        "ai",
+        "ai_application",
+        "analytical_skills",
         "api",
-        "api_design",
-        "aws",
-        "aws_aurora",
-        "aws_codebuild",
-        "azure",
-        "bugsnag",
+        "automation_test",
+        "backup",
+        "chatgpt",
         "cicd",
-        "circleci",
+        "claude",
         "cloud_computing",
-        "configuration_management",
-        "containerization",
-        "database",
-        "datadog",
-        "debugging",
-        "design_system",
-        "docker",
-        "documentation",
-        "dynamodb"
+        "communication",
+        "computer_hardware",
+        "consulting",
+        "cursor",
+        "data_quality",
+        "decision_making",
+        "defect_management",
+        "english",
+        "enthusiasm",
+        "github_copilot"
       ],
       "changed": true
     },
     {
-      "job_id": "itviec_senior-backend-engineer-python-django-aws-lhv-software-4327",
+      "job_id": "itviec_senior-software-engineer-python-vinsmart-future-5230",
       "source": "itviec",
       "field": "skills",
       "before": [
         "Python",
-        "AWS",
-        "DevOps",
-        "Django",
         "SQL",
-        "English"
+        "API",
+        "Design Systems",
+        "AWS",
+        "ReactJS"
       ],
       "after": [
         "ai",
-        "ai_assisted_dev",
         "api",
-        "api_gateway",
-        "application_support",
         "aws",
-        "aws_s3",
-        "aws_ses",
-        "aws_sqs",
-        "claude_code",
+        "azure",
+        "backend_dev",
+        "celery",
+        "cicd",
         "cloud_computing",
-        "code_review",
-        "communication",
+        "computer_vision",
+        "design_system",
         "devops",
-        "django",
-        "documentation",
-        "english",
-        "golang",
-        "ideation",
-        "java"
+        "docker",
+        "document_processing",
+        "fastapi",
+        "frontend_dev",
+        "fullstack_dev",
+        "genai",
+        "http",
+        "information_security",
+        "iot"
       ],
       "changed": true
     }

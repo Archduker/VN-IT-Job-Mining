@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:11:20+00:00",
-  "code_version": "42423d5",
+  "generated_at": "2026-11-21T23:34:08+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/topdev/raw",
     "rows": 3890
   },
   "output": {
     "path": "data/preprocessing/01_clean/topdev.jsonl",
-    "rows": 184
+    "rows": 162
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 2588
+      "rows": 2610
     },
     {
       "rule": "C5",
@@ -107,7 +107,7 @@
       "id": "C4a",
       "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 2588,
+      "rows_affected": 2610,
       "examples": [
         {
           "job_id": "2132754",
@@ -136,7 +136,7 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 2588,
+      "rows_affected": 2610,
       "examples": [
         {
           "job_id": "2132754",
@@ -268,7 +268,7 @@
     {
       "field": "raw_posted_date",
       "fill_pct_in": 40.4,
-      "fill_pct_out": 33.2
+      "fill_pct_out": 32.1
     },
     {
       "field": "raw_description_text",
@@ -278,7 +278,7 @@
     {
       "field": "skills_list",
       "fill_pct_in": 45.0,
-      "fill_pct_out": 78.8
+      "fill_pct_out": 83.3
     }
   ],
   "checks": {
@@ -291,26 +291,29 @@
   },
   "extra": {
     "it_levels": {
-      "tang_1_it": 160,
-      "tang_2_non_it": 1326,
-      "tang_0_non_it": 661,
-      "tang_1_non_it": 601,
-      "tang_2_it": 34
+      "tang_1_it": 145,
+      "tang_2_non_it": 1298,
+      "tang_0_non_it": 716,
+      "tang_1_non_it": 596,
+      "tang_2_it": 27
     },
     "it_excluded_groups": {
       "h2_hardware_chip": 3,
-      "sales_marketing": 533,
+      "sales_marketing": 534,
+      "reviewed_jd": 20,
+      "p2_procurement_hr": 30,
       "electrical_mechanical": 47,
       "q4_embedded_iot": 1,
-      "graphic_design": 13,
+      "graphic_design": 14,
       "q7_teaching": 41,
       "h4_telecom_field": 1,
       "h5_repair": 20,
-      "q8_operations_growth": 2
+      "q8_operations_growth": 2,
+      "p2_manufacturing": 3
     },
     "it_status": {
-      "it": 194,
-      "non_it": 2588
+      "it": 172,
+      "non_it": 2610
     },
     "it_policy": {
       "drop": [
@@ -333,12 +336,12 @@
         "tang_1_it": 4
       },
       "labeled_non_it": 78,
-      "rule_decided": 59,
-      "rule_correct": 59,
+      "rule_decided": 61,
+      "rule_correct": 61,
       "status_non_it": 79,
       "status_non_it_correct": 78,
-      "level2_labeled": 25,
-      "level2_correct": 24,
+      "level2_labeled": 23,
+      "level2_correct": 22,
       "level1_it_labeled": 5,
       "level1_it_correct": 5,
       "validation": {

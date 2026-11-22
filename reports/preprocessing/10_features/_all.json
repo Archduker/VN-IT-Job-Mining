@@ -2,15 +2,15 @@
   "step": "10_features",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-21T11:56:55+00:00",
-  "code_version": "026808f",
+  "generated_at": "2026-11-22T00:02:17+00:00",
+  "code_version": "f352120",
   "input": {
     "path": null,
-    "rows": 3916
+    "rows": 3718
   },
   "output": {
     "path": null,
-    "rows": 3916
+    "rows": 3718
   },
   "dropped": [],
   "rules": [],
@@ -26,50 +26,50 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1265,
-        "output": 1265
+        "input": 1185,
+        "output": 1185
       },
       "topdev": {
-        "input": 166,
-        "output": 166
+        "input": 147,
+        "output": 147
       },
       "vietnamworks": {
-        "input": 583,
-        "output": 583
+        "input": 546,
+        "output": 546
       },
       "careerviet": {
-        "input": 402,
-        "output": 402
+        "input": 387,
+        "output": 387
       },
       "vieclam24h": {
-        "input": 121,
-        "output": 121
+        "input": 105,
+        "output": 105
       },
       "itviec": {
-        "input": 736,
-        "output": 736
+        "input": 731,
+        "output": 731
       },
       "glints": {
-        "input": 146,
-        "output": 146
+        "input": 137,
+        "output": 137
       },
       "jobsgo": {
-        "input": 497,
-        "output": 497
+        "input": 480,
+        "output": 480
       }
     },
-    "n_cols": 995,
+    "n_cols": 972,
     "min_df": 15,
-    "n_skill_cols": 291,
+    "n_skill_cols": 283,
     "n_cols_by_block": {
-      "skill": 291,
-      "concept": 562,
-      "soft": 63
+      "skill": 283,
+      "concept": 548,
+      "soft": 62
     },
     "n_skills_folded": {
-      "skill": 243,
-      "concept": 312,
-      "soft": 12
+      "skill": 251,
+      "concept": 326,
+      "soft": 13
     }
   },
   "samples": [],

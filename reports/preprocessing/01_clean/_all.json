@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:11:32+00:00",
-  "code_version": "42423d5",
+  "generated_at": "2026-11-21T23:34:31+00:00",
+  "code_version": "f352120",
   "input": {
     "path": null,
     "rows": 13361
   },
   "output": {
     "path": null,
-    "rows": 4103
+    "rows": 3899
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 6050
+      "rows": 6264
     },
     {
       "rule": "C5",
@@ -51,12 +51,12 @@
     {
       "rule": "C6",
       "reason": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
-      "rows": 140
+      "rows": 135
     },
     {
       "rule": "C7",
       "reason": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
-      "rows": 115
+      "rows": 110
     }
   ],
   "rules": [
@@ -159,7 +159,7 @@
       "id": "C4a",
       "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 6050,
+      "rows_affected": 6264,
       "examples": [
         {
           "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
@@ -184,21 +184,21 @@
         }
       ],
       "by_source": {
-        "topcv": 1231,
-        "topdev": 2588,
-        "vietnamworks": 534,
-        "careerviet": 185,
-        "vieclam24h": 525,
-        "itviec": 48,
-        "glints": 57,
-        "jobsgo": 882
+        "topcv": 1313,
+        "topdev": 2610,
+        "vietnamworks": 573,
+        "careerviet": 202,
+        "vieclam24h": 541,
+        "itviec": 53,
+        "glints": 66,
+        "jobsgo": 906
       }
     },
     {
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 6050,
+      "rows_affected": 6264,
       "examples": [
         {
           "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
@@ -223,14 +223,14 @@
         }
       ],
       "by_source": {
-        "topcv": 1231,
-        "topdev": 2588,
-        "vietnamworks": 534,
-        "careerviet": 185,
-        "vieclam24h": 525,
-        "itviec": 48,
-        "glints": 57,
-        "jobsgo": 882
+        "topcv": 1313,
+        "topdev": 2610,
+        "vietnamworks": 573,
+        "careerviet": 202,
+        "vieclam24h": 541,
+        "itviec": 53,
+        "glints": 66,
+        "jobsgo": 906
       }
     },
     {
@@ -354,7 +354,7 @@
       "id": "C6",
       "name": "Bỏ tin trùng trong cùng nguồn (công ty + tiêu đề, không phân biệt tỉnh và tuần cào)",
       "action": "drop",
-      "rows_affected": 140,
+      "rows_affected": 135,
       "examples": [
         {
           "job_id": "05decc01-d944-4958-8c7a-21697b2d32e8",
@@ -379,21 +379,21 @@
         }
       ],
       "by_source": {
-        "topcv": 12,
+        "topcv": 11,
         "topdev": 4,
-        "vietnamworks": 16,
-        "careerviet": 20,
+        "vietnamworks": 14,
+        "careerviet": 19,
         "vieclam24h": 0,
         "itviec": 33,
         "glints": 3,
-        "jobsgo": 52
+        "jobsgo": 51
       }
     },
     {
       "id": "C7",
       "name": "Bỏ tin trùng khác nguồn, ghi nguồn còn lại vào also_on",
       "action": "drop",
-      "rows_affected": 115,
+      "rows_affected": 110,
       "examples": [
         {
           "job_id": "091b32f4-7c9f-4ae2-befa-e9f7880e07fa",
@@ -421,11 +421,11 @@
         "topcv": 13,
         "topdev": 5,
         "vietnamworks": 1,
-        "careerviet": 22,
+        "careerviet": 21,
         "vieclam24h": 10,
         "itviec": 15,
         "glints": 8,
-        "jobsgo": 41
+        "jobsgo": 37
       }
     }
   ],
@@ -443,12 +443,12 @@
     {
       "field": "raw_location_text",
       "fill_pct_in": 96.7,
-      "fill_pct_out": 97.5
+      "fill_pct_out": 97.7
     },
     {
       "field": "raw_posted_date",
-      "fill_pct_in": 66.7,
-      "fill_pct_out": 67.2
+      "fill_pct_in": 67.3,
+      "fill_pct_out": 67.9
     },
     {
       "field": "raw_description_text",
@@ -458,7 +458,7 @@
     {
       "field": "skills_list",
       "fill_pct_in": 59.1,
-      "fill_pct_out": 59.4
+      "fill_pct_out": 59.5
     }
   ],
   "checks": {
@@ -473,69 +473,69 @@
     "sources": {
       "topcv": {
         "input": 2749,
-        "output": 1280
+        "output": 1199
       },
       "topdev": {
         "input": 3890,
-        "output": 184
+        "output": 162
       },
       "vietnamworks": {
         "input": 1947,
-        "output": 595
+        "output": 558
       },
       "careerviet": {
         "input": 660,
-        "output": 415
+        "output": 400
       },
       "vieclam24h": {
         "input": 1276,
-        "output": 124
+        "output": 108
       },
       "itviec": {
         "input": 911,
-        "output": 813
+        "output": 808
       },
       "glints": {
         "input": 331,
-        "output": 162
+        "output": 153
       },
       "jobsgo": {
         "input": 1597,
-        "output": 530
+        "output": 511
       }
     },
     "it_status": {
       "topcv": {
-        "it": 1443,
-        "non_it": 1231
+        "it": 1361,
+        "non_it": 1313
       },
       "topdev": {
-        "it": 194,
-        "non_it": 2588
+        "it": 172,
+        "non_it": 2610
       },
       "vietnamworks": {
-        "non_it": 534,
-        "it": 685
+        "non_it": 573,
+        "it": 646
       },
       "careerviet": {
-        "non_it": 185,
-        "it": 457
+        "non_it": 202,
+        "it": 440
       },
       "vieclam24h": {
-        "non_it": 525,
-        "it": 135
+        "non_it": 541,
+        "it": 119
       },
       "itviec": {
-        "it": 862,
-        "non_it": 48
+        "it": 857,
+        "non_it": 53
       },
       "glints": {
-        "it": 274,
-        "non_it": 57
+        "it": 265,
+        "non_it": 66
       },
       "jobsgo": {
-        "non_it": 882,
-        "it": 658
+        "non_it": 906,
+        "it": 634
       }
     },
     "review": {
@@ -593,12 +593,12 @@
           "tang_1_it": 4
         },
         "labeled_non_it": 78,
-        "rule_decided": 59,
-        "rule_correct": 59,
+        "rule_decided": 61,
+        "rule_correct": 61,
         "status_non_it": 79,
         "status_non_it_correct": 78,
-        "level2_labeled": 25,
-        "level2_correct": 24,
+        "level2_labeled": 23,
+        "level2_correct": 22,
         "level1_it_labeled": 5,
         "level1_it_correct": 5,
         "validation": {
@@ -637,33 +637,33 @@
         },
         "labeled_non_it": 67,
         "rule_decided": 71,
-        "rule_correct": 67,
-        "status_non_it": 72,
-        "status_non_it_correct": 65,
+        "rule_correct": 68,
+        "status_non_it": 75,
+        "status_non_it_correct": 67,
         "level2_labeled": 23,
         "level2_correct": 18,
-        "level1_it_labeled": 17,
-        "level1_it_correct": 15,
+        "level1_it_labeled": 14,
+        "level1_it_correct": 14,
         "validation": {
-          "tp": 20,
-          "fp": 2,
-          "tn": 65,
-          "fn": 7,
+          "tp": 19,
+          "fp": 0,
+          "tn": 67,
+          "fn": 8,
           "labeled": 94,
-          "precision_it": 0.9090909090909091,
-          "precision_non_it": 0.9027777777777778,
-          "recall_it": 0.7407407407407407,
+          "precision_it": 1.0,
+          "precision_non_it": 0.8933333333333333,
+          "recall_it": 0.7037037037037037,
           "precision_it_ci": [
-            0.7218505315839416,
-            0.9747045710090048
+            0.8318207759473837,
+            1.0
           ],
           "precision_non_it_ci": [
-            0.8126495420487314,
-            0.9521036800263443
+            0.8033863715352693,
+            0.9449508723782568
           ],
           "recall_it_ci": [
-            0.5532142868544692,
-            0.8682962543809281
+            0.5151931703585184,
+            0.8414695953022024
           ],
           "reason": null
         }
@@ -850,12 +850,12 @@
           "tang_1_it": 16
         },
         "labeled_non_it": 79,
-        "rule_decided": 71,
-        "rule_correct": 70,
+        "rule_decided": 72,
+        "rule_correct": 71,
         "status_non_it": 82,
         "status_non_it_correct": 78,
-        "level2_labeled": 25,
-        "level2_correct": 21,
+        "level2_labeled": 24,
+        "level2_correct": 20,
         "level1_it_labeled": 12,
         "level1_it_correct": 11,
         "validation": {
@@ -884,19 +884,19 @@
       }
     },
     "cross_source_pairs": {
-      "topcv → jobsgo": 36,
+      "topcv → jobsgo": 34,
       "vietnamworks → topcv": 13,
-      "topcv → careerviet": 8,
+      "topcv → careerviet": 7,
       "vietnamworks → itviec": 7,
       "jobsgo → careerviet": 7,
       "topcv → itviec": 6,
       "topcv → vieclam24h": 5,
       "vietnamworks → careerviet": 5,
-      "vietnamworks → jobsgo": 4,
       "jobsgo → vieclam24h": 4,
       "jobsgo → glints": 4,
       "topcv → glints": 3,
       "vietnamworks → topdev": 3,
+      "vietnamworks → jobsgo": 2,
       "topcv → vietnamworks": 1,
       "topdev → itviec": 1,
       "itviec → topdev": 1,
@@ -968,59 +968,59 @@
     },
     "it_levels": {
       "topcv": {
-        "tang_1_it": 1286,
-        "tang_1_non_it": 36,
-        "tang_0_non_it": 679,
-        "tang_2_non_it": 516,
-        "tang_2_it": 157
+        "tang_1_it": 1208,
+        "tang_0_non_it": 790,
+        "tang_1_non_it": 30,
+        "tang_2_non_it": 493,
+        "tang_2_it": 153
       },
       "topdev": {
-        "tang_1_it": 160,
-        "tang_2_non_it": 1326,
-        "tang_0_non_it": 661,
-        "tang_1_non_it": 601,
-        "tang_2_it": 34
+        "tang_1_it": 145,
+        "tang_2_non_it": 1298,
+        "tang_0_non_it": 716,
+        "tang_1_non_it": 596,
+        "tang_2_it": 27
       },
       "vietnamworks": {
-        "tang_0_non_it": 180,
-        "tang_2_non_it": 298,
-        "tang_1_it": 627,
+        "tang_0_non_it": 232,
+        "tang_2_non_it": 285,
+        "tang_1_it": 597,
         "tang_1_non_it": 56,
-        "tang_2_it": 58
+        "tang_2_it": 49
       },
       "careerviet": {
-        "tang_0_non_it": 51,
-        "tang_2_non_it": 112,
-        "tang_2_it": 59,
-        "tang_1_it": 398,
-        "tang_1_non_it": 22
+        "tang_0_non_it": 71,
+        "tang_2_non_it": 110,
+        "tang_2_it": 58,
+        "tang_1_it": 382,
+        "tang_1_non_it": 21
       },
       "vieclam24h": {
-        "tang_0_non_it": 257,
-        "tang_1_it": 125,
-        "tang_1_non_it": 52,
+        "tang_0_non_it": 274,
+        "tang_1_it": 110,
+        "tang_1_non_it": 51,
         "tang_2_non_it": 216,
-        "tang_2_it": 10
+        "tang_2_it": 9
       },
       "itviec": {
-        "tang_1_it": 820,
-        "tang_0_non_it": 42,
+        "tang_1_it": 816,
+        "tang_0_non_it": 47,
         "tang_2_non_it": 6,
-        "tang_2_it": 42
+        "tang_2_it": 41
       },
       "glints": {
-        "tang_1_it": 262,
+        "tang_1_it": 253,
         "tang_2_non_it": 44,
-        "tang_0_non_it": 7,
+        "tang_0_non_it": 16,
         "tang_2_it": 12,
         "tang_1_non_it": 6
       },
       "jobsgo": {
-        "tang_0_non_it": 365,
+        "tang_0_non_it": 399,
         "tang_1_non_it": 90,
-        "tang_2_non_it": 427,
-        "tang_1_it": 608,
-        "tang_2_it": 50
+        "tang_2_non_it": 417,
+        "tang_1_it": 587,
+        "tang_2_it": 47
       }
     },
     "partial_run": false

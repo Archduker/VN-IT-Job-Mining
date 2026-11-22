@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "_all",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:14:49+00:00",
-  "code_version": "d3f7008",
+  "generated_at": "2026-11-21T23:35:58+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/01b_deduplication/<nguồn>.jsonl",
-    "rows": 3998
+    "rows": 3800
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 3997
+    "rows": 3799
   },
   "dropped": [
     {
@@ -34,24 +34,24 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
       "action": "modify",
-      "rows_affected": 3997,
+      "rows_affected": 3799,
       "examples": [],
       "by_source": {
-        "topcv": 1270,
-        "topdev": 168,
-        "vietnamworks": 592,
-        "careerviet": 405,
-        "vieclam24h": 121,
-        "itviec": 785,
-        "glints": 155,
-        "jobsgo": 501
+        "topcv": 1190,
+        "topdev": 149,
+        "vietnamworks": 555,
+        "careerviet": 390,
+        "vieclam24h": 105,
+        "itviec": 780,
+        "glints": 146,
+        "jobsgo": 484
       }
     },
     {
       "id": "I2",
       "name": "ITviec lấy ngày đăng từ JSON-LD datePosted",
       "action": "modify",
-      "rows_affected": 762,
+      "rows_affected": 757,
       "examples": [
         {
           "job_id": "ai-engineer-remote-alpha-bravo-development-4157",
@@ -81,7 +81,7 @@
         "vietnamworks": 0,
         "careerviet": 0,
         "vieclam24h": 0,
-        "itviec": 762,
+        "itviec": 757,
         "glints": 0,
         "jobsgo": 0
       }
@@ -90,7 +90,7 @@
       "id": "I3",
       "name": "TopDev lấy ngày đăng và kinh nghiệm từ published/JSON-LD",
       "action": "modify",
-      "rows_affected": 58,
+      "rows_affected": 50,
       "examples": [
         {
           "job_id": "2133063",
@@ -116,7 +116,7 @@
       ],
       "by_source": {
         "topcv": 0,
-        "topdev": 58,
+        "topdev": 50,
         "vietnamworks": 0,
         "careerviet": 0,
         "vieclam24h": 0,
@@ -129,7 +129,7 @@
       "id": "I4",
       "name": "Bỏ tag SEO, ngành nghề và nhãn chuyên môn khỏi skills_list",
       "action": "modify",
-      "rows_affected": 2072,
+      "rows_affected": 1964,
       "examples": [
         {
           "job_id": "2013194",
@@ -154,21 +154,21 @@
         }
       ],
       "by_source": {
-        "topcv": 1264,
+        "topcv": 1184,
         "topdev": 0,
         "vietnamworks": 0,
-        "careerviet": 310,
+        "careerviet": 299,
         "vieclam24h": 0,
         "itviec": 0,
         "glints": 0,
-        "jobsgo": 498
+        "jobsgo": 481
       }
     },
     {
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 1659,
+      "rows_affected": 1574,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -193,14 +193,14 @@
         }
       ],
       "by_source": {
-        "topcv": 646,
-        "topdev": 39,
+        "topcv": 607,
+        "topdev": 28,
         "vietnamworks": 1,
-        "careerviet": 406,
+        "careerviet": 391,
         "vieclam24h": 0,
         "itviec": 23,
-        "glints": 43,
-        "jobsgo": 501
+        "glints": 40,
+        "jobsgo": 484
       }
     },
     {
@@ -276,33 +276,33 @@
     },
     {
       "field": "company_address",
-      "fill_pct_in": 87.3,
-      "fill_pct_out": 87.3
+      "fill_pct_in": 87.5,
+      "fill_pct_out": 87.5
     },
     {
       "field": "raw_category_text",
-      "fill_pct_in": 93.2,
-      "fill_pct_out": 93.2
+      "fill_pct_in": 93.5,
+      "fill_pct_out": 93.5
     },
     {
       "field": "raw_location_text",
-      "fill_pct_in": 97.5,
-      "fill_pct_out": 97.5
+      "fill_pct_in": 97.6,
+      "fill_pct_out": 97.6
     },
     {
       "field": "working_locations",
-      "fill_pct_in": 98.7,
-      "fill_pct_out": 98.7
+      "fill_pct_in": 98.6,
+      "fill_pct_out": 98.6
     },
     {
       "field": "raw_posted_date",
-      "fill_pct_in": 67.0,
-      "fill_pct_out": 67.0
+      "fill_pct_in": 67.6,
+      "fill_pct_out": 67.6
     },
     {
       "field": "raw_deadline",
-      "fill_pct_in": 94.9,
-      "fill_pct_out": 94.9
+      "fill_pct_in": 95.2,
+      "fill_pct_out": 95.2
     },
     {
       "field": "raw_salary_text",
@@ -311,33 +311,33 @@
     },
     {
       "field": "raw_employment_type",
-      "fill_pct_in": 94.8,
-      "fill_pct_out": 94.8
+      "fill_pct_in": 95.0,
+      "fill_pct_out": 95.0
     },
     {
       "field": "raw_work_mode",
-      "fill_pct_in": 54.5,
-      "fill_pct_out": 54.5
+      "fill_pct_in": 54.9,
+      "fill_pct_out": 54.9
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 91.1,
-      "fill_pct_out": 91.1
+      "fill_pct_in": 91.2,
+      "fill_pct_out": 91.2
     },
     {
       "field": "raw_seniority_text",
-      "fill_pct_in": 71.8,
-      "fill_pct_out": 71.8
+      "fill_pct_in": 71.3,
+      "fill_pct_out": 71.3
     },
     {
       "field": "raw_education_text",
-      "fill_pct_in": 62.9,
-      "fill_pct_out": 62.9
+      "fill_pct_in": 62.5,
+      "fill_pct_out": 62.5
     },
     {
       "field": "raw_headcount",
-      "fill_pct_in": 56.6,
-      "fill_pct_out": 56.6
+      "fill_pct_in": 55.9,
+      "fill_pct_out": 55.9
     },
     {
       "field": "skills_list",
@@ -346,8 +346,8 @@
     },
     {
       "field": "benefits_list",
-      "fill_pct_in": 98.5,
-      "fill_pct_out": 98.5
+      "fill_pct_in": 98.7,
+      "fill_pct_out": 98.7
     },
     {
       "field": "raw_description_text",
@@ -371,36 +371,36 @@
   "extra": {
     "sources": {
       "topcv": {
-        "input": 1270,
-        "output": 1270
+        "input": 1190,
+        "output": 1190
       },
       "topdev": {
-        "input": 168,
-        "output": 168
+        "input": 149,
+        "output": 149
       },
       "vietnamworks": {
-        "input": 592,
-        "output": 592
+        "input": 555,
+        "output": 555
       },
       "careerviet": {
-        "input": 406,
-        "output": 405
+        "input": 391,
+        "output": 390
       },
       "vieclam24h": {
-        "input": 121,
-        "output": 121
+        "input": 105,
+        "output": 105
       },
       "itviec": {
-        "input": 785,
-        "output": 785
+        "input": 780,
+        "output": 780
       },
       "glints": {
-        "input": 155,
-        "output": 155
+        "input": 146,
+        "output": 146
       },
       "jobsgo": {
-        "input": 501,
-        "output": 501
+        "input": 484,
+        "output": 484
       }
     }
   },

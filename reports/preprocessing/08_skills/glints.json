@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:36+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:03+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 146
+    "rows": 137
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 146
+    "rows": 137
   },
   "dropped": [],
   "rules": [],
@@ -24,35 +24,35 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 4226,
+    "n_job_skill_rows": 4102,
     "n_jobs_no_skill": 0,
     "rows_by_kind": {
-      "technical": 3382,
-      "soft": 717,
-      "language": 127
+      "technical": 3288,
+      "soft": 689,
+      "language": 125
     },
     "rows_by_type": {
-      "null": 896,
-      "concept": 2252,
-      "tool": 1078
+      "null": 864,
+      "concept": 2216,
+      "tool": 1022
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
       {
         "skill": "coordination",
-        "n_jobs": 74
+        "n_jobs": 70
       },
       {
         "skill": "english",
-        "n_jobs": 69
+        "n_jobs": 68
       },
       {
         "skill": "teamwork",
-        "n_jobs": 60
+        "n_jobs": 58
       },
       {
         "skill": "software_testing",
-        "n_jobs": 55
+        "n_jobs": 54
       },
       {
         "skill": "database",
@@ -60,35 +60,35 @@
       },
       {
         "skill": "problem_solving",
-        "n_jobs": 49
-      },
-      {
-        "skill": "communication",
         "n_jobs": 48
       },
       {
-        "skill": "qa_qc",
+        "skill": "communication",
         "n_jobs": 46
       },
       {
-        "skill": "eagerness_to_learn",
-        "n_jobs": 44
+        "skill": "qa_qc",
+        "n_jobs": 43
       },
       {
-        "skill": "proactiveness",
-        "n_jobs": 41
+        "skill": "eagerness_to_learn",
+        "n_jobs": 42
       },
       {
         "skill": "information_security",
         "n_jobs": 40
       },
       {
-        "skill": "dynamism",
-        "n_jobs": 36
+        "skill": "proactiveness",
+        "n_jobs": 39
       },
       {
         "skill": "ms_office",
         "n_jobs": 35
+      },
+      {
+        "skill": "dynamism",
+        "n_jobs": 34
       },
       {
         "skill": "api",
@@ -111,52 +111,52 @@
         "n_jobs": 32
       },
       {
-        "skill": "sql_server",
-        "n_jobs": 31
-      },
-      {
         "skill": "sql",
-        "n_jobs": 31
+        "n_jobs": 30
       },
       {
         "skill": "monitoring",
         "n_jobs": 29
       },
       {
-        "skill": "leadership",
-        "n_jobs": 29
-      },
-      {
-        "skill": "enthusiasm",
+        "skill": "ai",
         "n_jobs": 28
       },
       {
-        "skill": "postgresql",
+        "skill": "leadership",
         "n_jobs": 28
       },
       {
         "skill": "python",
-        "n_jobs": 28
-      },
-      {
-        "skill": "ai",
-        "n_jobs": 28
+        "n_jobs": 27
       },
       {
         "skill": "networking",
         "n_jobs": 26
       },
       {
-        "skill": "japanese",
-        "n_jobs": 26
-      },
-      {
-        "skill": "debugging",
+        "skill": "sql_server",
         "n_jobs": 26
       },
       {
         "skill": "documentation",
         "n_jobs": 26
+      },
+      {
+        "skill": "enthusiasm",
+        "n_jobs": 25
+      },
+      {
+        "skill": "japanese",
+        "n_jobs": 25
+      },
+      {
+        "skill": "debugging",
+        "n_jobs": 25
+      },
+      {
+        "skill": "postgresql",
+        "n_jobs": 24
       }
     ],
     "short_forms_approved": 755,
@@ -164,84 +164,115 @@
   },
   "samples": [
     {
-      "job_id": "glints_1db0e1f6-3468-4269-bcbf-bca4d55db8f8",
-      "source": "glints",
-      "field": "skills",
-      "before": null,
-      "after": [
-        "acl",
-        "authn_authz",
-        "ccna",
-        "ccnp",
-        "chinese",
-        "communication",
-        "comptia_network",
-        "coordination",
-        "dhcp",
-        "dns",
-        "documentation",
-        "elk_stack",
-        "english",
-        "entra_id",
-        "exchange_online",
-        "firewall",
-        "information_security",
-        "intune",
-        "it_infrastructure",
-        "lan_wan"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "glints_3a46cca3-8a42-44f1-9950-e54d15d6e72e",
+      "job_id": "glints_768fcd34-a128-4428-b5c7-ecfedb1819c8",
       "source": "glints",
       "field": "skills",
       "before": [
-        "Leadership",
-        "Quality Assurance",
-        "Team Management"
+        "Penetration Testing",
+        "Network Security",
+        "Teamwork",
+        "Customer Service",
+        "Information Security",
+        "Security Audit",
+        "Web App"
       ],
       "after": [
-        "communication",
-        "english",
-        "fda_compliance",
-        "leadership",
-        "qa_qc",
-        "sop",
-        "team_management"
-      ],
-      "changed": true
-    },
-    {
-      "job_id": "glints_537fc2c8-800a-4251-a2f0-bf00e47e2e7e",
-      "source": "glints",
-      "field": "skills",
-      "before": [
-        "Microsoft Excel",
-        "Data Analytics",
-        "Warehouse Operator"
-      ],
-      "after": [
-        "ai",
         "analytical_skills",
-        "bi",
+        "api",
+        "application_security",
+        "application_support",
+        "cloud_computing",
+        "cloudflare",
+        "communication",
+        "consulting",
         "coordination",
-        "crm",
-        "dashboard",
-        "data_analysis",
-        "data_engineering",
-        "data_integration",
-        "data_processing",
+        "customer_service",
+        "documentation",
+        "english",
+        "firewall",
+        "independent_work",
+        "information_security",
+        "knowledge_transfer",
+        "network_security",
+        "pentest",
+        "proactiveness",
+        "process_improvement"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_d6e48061-f031-469e-b2d4-e02aa76dd530",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Teamwork",
+        "Remote Support",
+        "Troubleshooting",
+        "IT Support",
+        "Technical Support",
+        "Ticketing System",
+        "Hardware Maintenance",
+        "Help Desk",
+        "Customer Service",
+        "Network Troubleshooting"
+      ],
+      "after": [
+        "backup",
+        "computer_hardware",
+        "coordination",
+        "customer_service",
+        "it_infrastructure",
+        "networking",
+        "proactiveness",
+        "remote_support",
+        "server_admin",
+        "storage",
+        "teamwork",
+        "technical_support",
+        "technical_writing",
+        "ticketing_system",
+        "troubleshooting",
+        "virtualization"
+      ],
+      "changed": true
+    },
+    {
+      "job_id": "glints_6fedd635-5d48-4722-a0fc-b30999e4d4a6",
+      "source": "glints",
+      "field": "skills",
+      "before": [
+        "Microsoft SQL Server",
+        "MySQL",
+        "React.js",
+        "JavaScript",
+        "jQuery",
+        "C++",
+        "MongoDB",
+        "Laravel",
+        "Node.js",
+        "PostgreSQL"
+      ],
+      "after": [
+        "agile",
+        "angular",
+        "backend_dev",
+        "bootstrap",
+        "communication",
+        "cpp",
+        "creativity",
+        "css",
         "data_visualization",
-        "data_warehouse",
-        "database",
+        "design_patterns",
         "eagerness_to_learn",
         "english",
-        "erp",
-        "excel",
-        "excel_advanced",
-        "google_sheets",
-        "ielts"
+        "french",
+        "frontend_dev",
+        "html",
+        "java",
+        "javascript",
+        "jquery",
+        "junit",
+        "laravel"
       ],
       "changed": true
     }

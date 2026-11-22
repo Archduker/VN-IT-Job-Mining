@@ -2,15 +2,15 @@
   "step": "03_transformation",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-19T03:49:09+00:00",
-  "code_version": "acccda1",
+  "generated_at": "2026-11-21T23:55:58+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 155
+    "rows": 146
   },
   "output": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 155
+    "rows": 146
   },
   "dropped": [],
   "rules": [
@@ -18,14 +18,14 @@
       "id": "T1",
       "name": "Null trá hình thành null",
       "action": "modify",
-      "rows_affected": 323,
+      "rows_affected": 304,
       "examples": []
     },
     {
       "id": "T2",
       "name": "Bóc tách dải số lương Cascade",
       "action": "modify",
-      "rows_affected": 97,
+      "rows_affected": 89,
       "examples": [
         {
           "job_id": "00b4d332-8e6e-4714-9853-e816085f7d01",
@@ -54,14 +54,14 @@
       "id": "T3",
       "name": "Bóc tách ngày chuẩn ISO/dd/mm/yyyy",
       "action": "modify",
-      "rows_affected": 155,
+      "rows_affected": 146,
       "examples": []
     },
     {
       "id": "T4",
       "name": "Bóc tách số năm kinh nghiệm",
       "action": "modify",
-      "rows_affected": 142,
+      "rows_affected": 134,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -90,7 +90,7 @@
       "id": "T3b",
       "name": "Tháng đăng posted_month: ngày đăng, không có thì lần cào đầu (giờ Việt Nam)",
       "action": "modify",
-      "rows_affected": 155,
+      "rows_affected": 146,
       "examples": []
     },
     {
@@ -111,7 +111,7 @@
       "id": "T6",
       "name": "Làm sạch text HTML/bullet và phát hiện ngôn ngữ",
       "action": "modify",
-      "rows_affected": 155,
+      "rows_affected": 146,
       "examples": []
     },
     {
@@ -139,7 +139,7 @@
       "id": "T6.4",
       "name": "Gạch ngang và bullet về một chuẩn",
       "action": "modify",
-      "rows_affected": 83,
+      "rows_affected": 76,
       "examples": []
     },
     {
@@ -160,7 +160,7 @@
       "id": "T7",
       "name": "Rút kỹ năng (chỉ bản gốc) và phúc lợi song ngữ",
       "action": "modify",
-      "rows_affected": 154,
+      "rows_affected": 145,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -189,7 +189,7 @@
       "id": "T8",
       "name": "Bóc tách địa điểm 3 cấp",
       "action": "modify",
-      "rows_affected": 155,
+      "rows_affected": 146,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -247,7 +247,7 @@
       "id": "T9b",
       "name": "Loại hợp đồng từ JD, cờ lệch với ô của sàn",
       "action": "flag",
-      "rows_affected": 24,
+      "rows_affected": 22,
       "examples": [
         {
           "job_id": "3a5f7b15-db25-4be0-b944-86d142c2b33c",
@@ -276,7 +276,7 @@
       "id": "T9c",
       "name": "Kinh nghiệm từ JD (cụm số năm hoặc cụm không yêu cầu kinh nghiệm)",
       "action": "flag",
-      "rows_affected": 138,
+      "rows_affected": 132,
       "examples": [
         {
           "job_id": "00151110-44ff-48bc-9dd9-752c8f632935",
@@ -305,13 +305,13 @@
   "fields": [
     {
       "field": "salary_min_vnd",
-      "fill_pct_in": 61.9,
-      "fill_pct_out": 61.9
+      "fill_pct_in": 60.3,
+      "fill_pct_out": 60.3
     },
     {
       "field": "salary_max_vnd",
-      "fill_pct_in": 61.9,
-      "fill_pct_out": 61.9
+      "fill_pct_in": 60.3,
+      "fill_pct_out": 60.3
     },
     {
       "field": "posted_date",
@@ -325,13 +325,13 @@
     },
     {
       "field": "exp_min_years",
-      "fill_pct_in": 91.6,
-      "fill_pct_out": 91.6
+      "fill_pct_in": 91.8,
+      "fill_pct_out": 91.8
     },
     {
       "field": "exp_max_years",
-      "fill_pct_in": 91.6,
-      "fill_pct_out": 91.6
+      "fill_pct_in": 91.8,
+      "fill_pct_out": 91.8
     },
     {
       "field": "headcount",
@@ -350,13 +350,13 @@
     },
     {
       "field": "skills_clean",
-      "fill_pct_in": 96.8,
-      "fill_pct_out": 96.8
+      "fill_pct_in": 96.6,
+      "fill_pct_out": 96.6
     },
     {
       "field": "benefits_std",
-      "fill_pct_in": 79.4,
-      "fill_pct_out": 79.4
+      "fill_pct_in": 80.1,
+      "fill_pct_out": 80.1
     },
     {
       "field": "locations",
@@ -375,8 +375,8 @@
     },
     {
       "field": "benefits_clean",
-      "fill_pct_in": 89.7,
-      "fill_pct_out": 89.7
+      "fill_pct_in": 91.1,
+      "fill_pct_out": 91.1
     },
     {
       "field": "work_mode_raw",
@@ -385,8 +385,8 @@
     },
     {
       "field": "work_mode_jd",
-      "fill_pct_in": 6.5,
-      "fill_pct_out": 6.5
+      "fill_pct_in": 6.8,
+      "fill_pct_out": 6.8
     },
     {
       "field": "employment_type_raw",
@@ -395,13 +395,13 @@
     },
     {
       "field": "employment_type_jd",
-      "fill_pct_in": 15.5,
-      "fill_pct_out": 15.5
+      "fill_pct_in": 15.1,
+      "fill_pct_out": 15.1
     },
     {
       "field": "exp_min_years_jd",
-      "fill_pct_in": 89.0,
-      "fill_pct_out": 89.0
+      "fill_pct_in": 90.4,
+      "fill_pct_out": 90.4
     }
   ],
   "checks": {
@@ -414,15 +414,15 @@
   },
   "extra": {
     "salary_source_distribution": {
-      "header": 98,
+      "header": 90,
       "title": 0,
       "jd": 2,
-      "none": 55
+      "none": 54
     },
     "salary_under_1m_count": 3,
     "salary_from_x_count": 0,
     "language_distribution": {
-      "vi": 93,
+      "vi": 84,
       "en": 62,
       "other": 0
     },
@@ -493,35 +493,35 @@
       "transformers": "5.22.2",
       "peak_vram_mib": 1227,
       "fell_back_to_cpu": false,
-      "rows_en": 1050,
-      "rows_translated": 973,
+      "rows_en": 1020,
+      "rows_translated": 943,
       "rows_failed": 77,
-      "chunks": 22531,
-      "cache_hits": 22316,
-      "model_calls": 724,
-      "retries": 219,
+      "chunks": 21992,
+      "cache_hits": 21941,
+      "model_calls": 179,
+      "retries": 87,
       "failed_chunks": 87,
-      "retry_pieces": 509,
-      "beam_calls": 142,
-      "rescued_chunks": 132
+      "retry_pieces": 128,
+      "beam_calls": 92,
+      "rescued_chunks": 0
     },
-    "experience_parsed_rate": 91.6,
+    "experience_parsed_rate": 91.8,
     "posted_month_source": {
-      "posted_date": 155
+      "posted_date": 146
     },
     "posted_month_distribution": {
-      "2026-10": 104,
-      "2026-09": 51
+      "2026-10": 98,
+      "2026-09": 48
     },
     "jd_extraction": {
       "dictionary": "preprocessing/dictionaries/jd_extraction.json",
       "work_mode_raw": {
-        "onsite": 143,
-        "remote": 5,
+        "onsite": 135,
+        "remote": 4,
         "hybrid": 7
       },
       "work_mode_jd": {
-        "None": 145,
+        "None": 136,
         "remote": 3,
         "hybrid": 5,
         "onsite": 2
@@ -535,20 +535,20 @@
         "WO2": 1
       },
       "employment_type_raw": {
-        "full_time": 141,
-        "internship": 12,
+        "full_time": 133,
+        "internship": 11,
         "contract": 2
       },
       "employment_type_jd": {
-        "None": 131,
-        "internship": 16,
+        "None": 124,
+        "internship": 15,
         "contract": 1,
-        "full_time": 7
+        "full_time": 6
       },
       "exp_jd_kind": {
-        "jd": 125,
-        "jd_zero": 13,
-        "None": 17
+        "jd": 121,
+        "jd_zero": 11,
+        "None": 14
       },
       "conflicts": {
         "T9a_strong": 3,
@@ -559,27 +559,27 @@
   },
   "samples": [
     {
-      "job_id": "glints_a21e8a71-9f9c-42af-a945-97e89cc00131",
+      "job_id": "glints_cdc02b62-a002-4ffc-8a37-a5d88118c265",
       "source": "glints",
       "field": "salary_min_vnd",
-      "before": "₫14.000.000-16.000.000/Tháng",
-      "after": 14000000.0,
+      "before": "₫18.000.000-26.000.000/Tháng",
+      "after": 18000000.0,
       "changed": true
     },
     {
-      "job_id": "glints_65c425f3-0793-4b03-9ebf-e5e070677788",
+      "job_id": "glints_d5ce12fe-9cd1-4e4d-9f0e-e279339693ca",
       "source": "glints",
-      "field": "description_clean",
-      "before": "Chi tiết công việc Manual QA Engineer tại DIBEE\nAbout Dibee\nDibee is building a smarter way for businesses to manage fleets—bringing vehicles, drivers, operating costs, and everyday fleet activities i…",
-      "after": "Chi tiết công việc Manual QA Engineer tại DIBEE About Dibee Dibee is building a smarter way for businesses to manage fleets-bringing vehicles, drivers, operating costs, and everyday fleet activities i…",
+      "field": "posted_date",
+      "before": "2026-10-20T08:54:11.835654Z",
+      "after": "2026-10-20",
       "changed": true
     },
     {
-      "job_id": "glints_279508e0-b356-4cba-b25d-34aa58bd4eb6",
+      "job_id": "glints_9a66c736-2718-44fd-ba72-a52670f68244",
       "source": "glints",
-      "field": "requirements_clean",
-      "before": "Mô tả công việc\nLàm tại công ty\n1 - 3 năm kinh nghiệm\nTối thiểu Cử Nhân\nGiới tính Nam",
-      "after": "Mô tả công việc Làm tại công ty 1 - 3 năm kinh nghiệm Tối thiểu Cử Nhân Giới tính Nam",
+      "field": "exp_min_years",
+      "before": "Dưới một năm kinh nghiệm",
+      "after": 0.0,
       "changed": true
     }
   ]

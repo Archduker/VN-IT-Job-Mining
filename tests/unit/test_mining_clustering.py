@@ -174,7 +174,7 @@ def test_block_weights_give_energy_share():
 def test_metrics_report_block_weights_and_stability(m3):
     _, _, m = m3
     assert m["vector_space"]["block_weights"] == {"tool": 0.15, "concept": 0.15, "e5": 0.7}
-    assert m["stability"]["n_init"] == 50
+    assert m["stability"]["n_init"] == ClusteringParams().kmeans_n_init == 150
     assert m["stability"]["seeds"] == [42, 43, 44, 45, 46] and 0 <= m["stability"]["ari_min"] <= 1
     assert "without_e5" in m and "crosstab" in m and m["min_cluster_share"] > 0
 

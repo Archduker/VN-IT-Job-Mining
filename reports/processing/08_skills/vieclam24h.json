@@ -2,15 +2,15 @@
   "step": "08_skills",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:36+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:03+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 121
+    "rows": 105
   },
   "output": {
     "path": "data/processing/08_skills/all.parquet",
-    "rows": 121
+    "rows": 105
   },
   "dropped": [],
   "rules": [],
@@ -24,118 +24,102 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_job_skill_rows": 2723,
+    "n_job_skill_rows": 2495,
     "n_jobs_no_skill": 0,
     "rows_by_kind": {
-      "technical": 2061,
-      "soft": 602,
-      "language": 60
+      "technical": 1922,
+      "soft": 519,
+      "language": 54
     },
     "rows_by_type": {
-      "concept": 1450,
-      "null": 688,
-      "tool": 585
+      "concept": 1343,
+      "null": 596,
+      "tool": 556
     },
     "dictionary": "skills_v2.json",
     "top_skills": [
       {
         "skill": "coordination",
-        "n_jobs": 81
+        "n_jobs": 68
       },
       {
         "skill": "communication",
-        "n_jobs": 62
+        "n_jobs": 55
       },
       {
         "skill": "proactiveness",
-        "n_jobs": 46
+        "n_jobs": 42
       },
       {
         "skill": "english",
-        "n_jobs": 44
+        "n_jobs": 38
       },
       {
         "skill": "enthusiasm",
-        "n_jobs": 41
-      },
-      {
-        "skill": "networking",
-        "n_jobs": 39
-      },
-      {
-        "skill": "troubleshooting",
-        "n_jobs": 39
-      },
-      {
-        "skill": "problem_solving",
         "n_jobs": 37
       },
       {
+        "skill": "problem_solving",
+        "n_jobs": 36
+      },
+      {
+        "skill": "networking",
+        "n_jobs": 35
+      },
+      {
+        "skill": "troubleshooting",
+        "n_jobs": 35
+      },
+      {
         "skill": "computer_hardware",
-        "n_jobs": 33
+        "n_jobs": 30
       },
       {
         "skill": "database",
-        "n_jobs": 31
+        "n_jobs": 30
       },
       {
         "skill": "teamwork",
-        "n_jobs": 30
-      },
-      {
-        "skill": "information_security",
-        "n_jobs": 30
-      },
-      {
-        "skill": "software_testing",
-        "n_jobs": 30
-      },
-      {
-        "skill": "documentation",
         "n_jobs": 28
       },
       {
-        "skill": "eagerness_to_learn",
+        "skill": "software_testing",
         "n_jobs": 27
+      },
+      {
+        "skill": "information_security",
+        "n_jobs": 26
+      },
+      {
+        "skill": "eagerness_to_learn",
+        "n_jobs": 25
       },
       {
         "skill": "python",
-        "n_jobs": 27
+        "n_jobs": 25
       },
       {
         "skill": "analytical_skills",
-        "n_jobs": 27
+        "n_jobs": 25
       },
       {
-        "skill": "carefulness",
-        "n_jobs": 22
+        "skill": "documentation",
+        "n_jobs": 24
       },
       {
         "skill": "ai",
-        "n_jobs": 22
+        "n_jobs": 20
       },
       {
         "skill": "printer",
-        "n_jobs": 20
-      },
-      {
-        "skill": "system_administration",
-        "n_jobs": 20
-      },
-      {
-        "skill": "logical_thinking",
-        "n_jobs": 20
-      },
-      {
-        "skill": "consulting",
         "n_jobs": 19
       },
       {
-        "skill": "erp",
-        "n_jobs": 18
+        "skill": "logical_thinking",
+        "n_jobs": 19
       },
       {
-        "skill": "ms_office",
+        "skill": "system_administration",
         "n_jobs": 18
       },
       {
@@ -143,20 +127,36 @@
         "n_jobs": 17
       },
       {
-        "skill": "debugging",
+        "skill": "erp",
+        "n_jobs": 17
+      },
+      {
+        "skill": "ms_office",
         "n_jobs": 17
       },
       {
         "skill": "windows",
-        "n_jobs": 17
+        "n_jobs": 16
+      },
+      {
+        "skill": "carefulness",
+        "n_jobs": 16
       },
       {
         "skill": "sql",
-        "n_jobs": 17
+        "n_jobs": 16
       },
       {
-        "skill": "presentation",
-        "n_jobs": 17
+        "skill": "server_admin",
+        "n_jobs": 16
+      },
+      {
+        "skill": "postgresql",
+        "n_jobs": 15
+      },
+      {
+        "skill": "debugging",
+        "n_jobs": 15
       }
     ],
     "short_forms_approved": 755,
@@ -164,127 +164,118 @@
   },
   "samples": [
     {
-      "job_id": "vieclam24h_200961975",
+      "job_id": "vieclam24h_200923796",
       "source": "vieclam24h",
       "field": "skills",
       "before": [
+        "network administrator",
         "process engineer",
         "construction engineer",
         "instrument engineer",
         "it engineer",
         "mechanical engineer",
         "bridge engineer",
-        "system administrator",
         "piping engineer",
         "qs engineer",
         "production engineer",
-        "IT Phần cứng - Mạng",
+        "Bưu chính viễn thông",
         "Công Ty Cổ Phần Viễn ..."
       ],
       "after": [
-        "access_control",
-        "backup",
-        "communication",
-        "compliance",
         "computer_hardware",
         "coordination",
-        "database",
-        "defect_management",
+        "design_document",
         "documentation",
+        "dwdm",
         "english",
-        "hardening",
-        "information_security",
-        "it_infrastructure",
-        "it_operations",
-        "milestone_review",
+        "equipment_installation",
         "monitoring",
-        "operating_systems",
-        "patch_management",
-        "progress_tracking",
-        "redhat"
+        "mop_cutover",
+        "network_architecture",
+        "network_devices",
+        "networking",
+        "optics",
+        "proactiveness",
+        "system_administration",
+        "technical_drawing",
+        "troubleshooting"
       ],
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200956825",
+      "job_id": "vieclam24h_200901997",
       "source": "vieclam24h",
       "field": "skills",
       "before": [
-        "it helpdesk",
-        "it support / it helpdesk",
-        "không yêu cầu kinh nghiệm",
-        "nhân viên văn phòng không cần kinh nghiệm",
-        "nhân viên văn phòng tphcm không cần kinh nghiệm",
-        "nhân viên it",
-        "không cần kinh nghiệm",
-        "kế toán không yêu cầu kinh nghiệm",
-        "chưa có kinh nghiệm",
-        "nhân viên it support",
-        "IT Phần cứng - Mạng",
-        "Công Ty TNHH Bao Bì ..."
+        "business analyst",
+        "thực tập sinh",
+        "thực tập sinh android",
+        "thực tập sinh Mỹ",
+        "thực tập sinh logistics",
+        "thực tập sinh tester",
+        "thực tập sinh seo",
+        "thực tập sinh php",
+        "thực tập sinh chứng khoán",
+        "sinh viên thực tập",
+        "Việc làm TP.HCM",
+        "IT Phần mềm",
+        "Công Ty TNHH Cloudmedia"
       ],
       "after": [
-        "attendance_device",
+        "analytical_skills",
+        "bpmn",
+        "carefulness",
         "communication",
-        "computer_hardware",
-        "computer_repair",
+        "consulting",
         "coordination",
+        "crm",
+        "drawio",
         "eagerness_to_learn",
         "enthusiasm",
-        "information_security",
-        "it_infrastructure",
-        "monitoring",
-        "ms_office",
-        "operating_systems",
-        "printer",
+        "erp",
+        "figma",
+        "logical_thinking",
+        "odoo",
         "proactiveness",
-        "troubleshooting",
-        "user_support",
-        "vulnerability_assessment",
-        "wifi",
-        "windows"
+        "requirements_analysis",
+        "software_deployment",
+        "software_testing",
+        "solution_architecture",
+        "srs"
       ],
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200947793",
+      "job_id": "vieclam24h_200958167",
       "source": "vieclam24h",
       "field": "skills",
       "before": [
-        "nhân viên thiết kế website",
-        "thiết kế website",
-        "nhân viên thiết kế",
-        "nhân viên thiết kế rập",
-        "nhân viên thiết kế 3d",
-        "nhân viên thiết kế nội thất",
-        "nhân viên quản trị website",
-        "nhân viên thiết kế bao bì",
-        "nhân viên seo website",
-        "Thiết Kế",
+        "it support",
+        "it support / it helpdesk",
+        "nhân viên it support",
+        "recruitment executive",
+        "giám sát camera",
+        "procurement executive",
+        "admin executive",
+        "It",
+        "event executive",
+        "legal executive",
         "IT Phần mềm",
-        "Aa Trading Co.,ltd"
+        "Công Ty Cổ Phần Takahiro"
       ],
       "after": [
-        "aesthetic_sense",
+        "carefulness",
+        "cctv",
         "communication",
-        "computer_hardware",
-        "coordination",
-        "creativity",
-        "css",
-        "design_system",
-        "eagerness_to_learn",
-        "graphic_design",
-        "html",
-        "independent_work",
-        "javascript",
-        "performance_optimization",
+        "computer_repair",
+        "data_integration",
+        "honesty",
+        "monitoring",
+        "ms_office",
+        "presentation",
         "proactiveness",
-        "problem_solving",
-        "product_analytics",
-        "prototyping",
-        "responsive_design",
-        "seo",
-        "software_installation"
+        "reporting",
+        "troubleshooting"
       ],
       "changed": true
     }

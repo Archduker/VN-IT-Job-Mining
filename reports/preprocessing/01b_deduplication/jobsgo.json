@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:13:36+00:00",
-  "code_version": "d3f7008",
+  "generated_at": "2026-11-21T23:34:32+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/01_clean/jobsgo.jsonl",
-    "rows": 530
+    "rows": 511
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/jobsgo.jsonl",
-    "rows": 501
+    "rows": 484
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "D5",
       "reason": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
-      "rows": 29
+      "rows": 27
     }
   ],
   "rules": [
@@ -67,7 +67,7 @@
       "id": "D5",
       "name": "Tầng 3: Jaccard shingle 5 từ >= ngưỡng và cùng company_slug (cùng sàn và khác sàn) (J >= 0.85)",
       "action": "drop",
-      "rows_affected": 29,
+      "rows_affected": 27,
       "examples": [
         {
           "job_id": "28969520074",
@@ -96,7 +96,7 @@
       "id": "D6",
       "name": "Hợp nhất Golden Record (bản giữ có merged_from)",
       "action": "flag",
-      "rows_affected": 15,
+      "rows_affected": 14,
       "examples": [
         {
           "job_id": "28974204829",
@@ -125,14 +125,14 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 39,
+      "rows_affected": 48,
       "examples": [
         {
-          "job_id": "28928592968",
+          "job_id": "28856040371",
           "field": "jaccard",
           "before": null,
-          "after": 0.7803,
-          "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phu-trach-ai-he-thong-cong-nghe-thong-tin-thu-nhap-den-20-trieu-thang-28928592968.html"
+          "after": 0.7137,
+          "url": "https://jobsgo.vn/viec-lam/chuyen-vien-trien-khai-van-hanh-28856040371.html"
         },
         {
           "job_id": "28928592968",
@@ -142,11 +142,11 @@
           "url": "https://jobsgo.vn/viec-lam/nhan-vien-it-phu-trach-ai-he-thong-cong-nghe-thong-tin-thu-nhap-den-20-trieu-thang-28928592968.html"
         },
         {
-          "job_id": "28973783880",
+          "job_id": "28967523961",
           "field": "jaccard",
           "before": null,
-          "after": 0.8248,
-          "url": "https://jobsgo.vn/viec-lam/dna650-nv-it-kcn-long-duc-dong-nai-28973783880.html"
+          "after": 0.7095,
+          "url": "https://jobsgo.vn/viec-lam/truong-phong-cong-nghe-lark-28967523961.html"
         }
       ]
     }
@@ -170,10 +170,10 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 419,
+    "blocking_blocks": 405,
     "d2_groups": 0,
     "rule_totals": {
-      "D5": 29
+      "D5": 27
     }
   },
   "samples": [
@@ -194,10 +194,10 @@
       "changed": true
     },
     {
-      "job_id": "29006658639",
+      "job_id": "29010229916",
       "source": "jobsgo",
       "field": "duplicate_of",
-      "before": "29006658639",
+      "before": "29010229916",
       "after": "DROPPED D5 -> jobsgo:29006631481",
       "changed": true
     }

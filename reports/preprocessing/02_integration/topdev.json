@@ -2,15 +2,15 @@
   "step": "02_integration",
   "source": "topdev",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:14:47+00:00",
-  "code_version": "d3f7008",
+  "generated_at": "2026-11-21T23:35:56+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/01b_deduplication/topdev.jsonl",
-    "rows": 168
+    "rows": 149
   },
   "output": {
     "path": "data/preprocessing/02_integration/all.parquet",
-    "rows": 168
+    "rows": 149
   },
   "dropped": [
     {
@@ -34,7 +34,7 @@
       "id": "I1",
       "name": "Làm phẳng envelope về 19 trường chuẩn (18 + raw_work_mode) + khóa + first_crawled_at",
       "action": "modify",
-      "rows_affected": 168,
+      "rows_affected": 149,
       "examples": []
     },
     {
@@ -48,7 +48,7 @@
       "id": "I3",
       "name": "TopDev lấy ngày đăng và kinh nghiệm từ published/JSON-LD",
       "action": "modify",
-      "rows_affected": 58,
+      "rows_affected": 50,
       "examples": [
         {
           "job_id": "2133063",
@@ -84,7 +84,7 @@
       "id": "I5",
       "name": "Chuyển chuỗi rỗng và container rỗng về null",
       "action": "modify",
-      "rows_affected": 39,
+      "rows_affected": 28,
       "examples": [
         {
           "job_id": "2136811",
@@ -164,8 +164,8 @@
     },
     {
       "field": "raw_posted_date",
-      "fill_pct_in": 34.5,
-      "fill_pct_out": 34.5
+      "fill_pct_in": 33.6,
+      "fill_pct_out": 33.6
     },
     {
       "field": "raw_deadline",
@@ -189,13 +189,13 @@
     },
     {
       "field": "raw_experience_text",
-      "fill_pct_in": 29.8,
-      "fill_pct_out": 29.8
+      "fill_pct_in": 30.2,
+      "fill_pct_out": 30.2
     },
     {
       "field": "raw_seniority_text",
-      "fill_pct_in": 0.6,
-      "fill_pct_out": 0.6
+      "fill_pct_in": 0.7,
+      "fill_pct_out": 0.7
     },
     {
       "field": "raw_education_text",
@@ -209,13 +209,13 @@
     },
     {
       "field": "skills_list",
-      "fill_pct_in": 78.0,
-      "fill_pct_out": 78.0
+      "fill_pct_in": 81.9,
+      "fill_pct_out": 81.9
     },
     {
       "field": "benefits_list",
-      "fill_pct_in": 97.0,
-      "fill_pct_out": 97.0
+      "fill_pct_in": 98.7,
+      "fill_pct_out": 98.7
     },
     {
       "field": "raw_description_text",

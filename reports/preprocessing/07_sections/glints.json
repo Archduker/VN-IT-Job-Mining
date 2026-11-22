@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:36+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:03+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 146
+    "rows": 137
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 146
+    "rows": 137
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 4363,
+    "n_bullets": 4126,
     "bullets_by_section": {
-      "mo_ta": 3535,
-      "yeu_cau": 146,
-      "phuc_loi": 682
+      "mo_ta": 3340,
+      "yeu_cau": 137,
+      "phuc_loi": 649
     },
     "bullets_by_rule": {
-      "S7.2": 4363
+      "S7.2": 4126
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,36 +39,35 @@
   },
   "samples": [
     {
-      "job_id": "glints_1db0e1f6-3468-4269-bcbf-bca4d55db8f8",
+      "job_id": "glints_768fcd34-a128-4428-b5c7-ecfedb1819c8",
       "source": "glints",
       "field": "sections",
-      "before": "Chi tiết công việc IT Specialist (Good English) tại iTechWX LOCATION:\n8th & 23rd Floor, Lancaster Luminaire Building, 1152-1154 Lang Road, Lang Thuong Ward, Dong Da District, Hanoi City Only accepting…",
+      "before": "Chi tiết công việc [DISION TECH] Web Application Firewall (WAF) Specialist tại DISION Tech Role overview We are seeking an experienced Web Application Firewall (WAF) Specialist to support the implemen…",
       "after": {
-        "mo_ta": 23,
+        "mo_ta": 28,
         "phuc_loi": 3,
         "yeu_cau": 1
       },
       "changed": true
     },
     {
-      "job_id": "glints_3a46cca3-8a42-44f1-9950-e54d15d6e72e",
+      "job_id": "glints_d6e48061-f031-469e-b2d4-e02aa76dd530",
       "source": "glints",
       "field": "sections",
-      "before": "Chi tiết công việc VT235 - QA SUPERVISOR - KCN PHÚ MỸ 3 VŨNG TÀU tại CÔNG TY CP KẾT NỐI NHÂN LỰC WORKLINK VIỆT NAM Công ty sản xuất 100% vốn đầu tư của Nhật Địa chỉ: KCN Phú Mỹ 3 - Vũng Tàu (tư túc) M…",
+      "before": "Chi tiết công việc Nhân Viên IT Hạ Tầng Máy Chủ tại Công Ty Bình Anh Mô tả công việc:\nQuản trị, vận hành và giám sát hiệu năng hạ tầng máy chủ vật lý và hệ thống ảo hóa, lưu trữ (SAN) của Công ty.\nPhâ…",
       "after": {
-        "mo_ta": 18,
-        "phuc_loi": 7,
+        "mo_ta": 16,
         "yeu_cau": 1
       },
       "changed": true
     },
     {
-      "job_id": "glints_537fc2c8-800a-4251-a2f0-bf00e47e2e7e",
+      "job_id": "glints_6fedd635-5d48-4722-a0fc-b30999e4d4a6",
       "source": "glints",
       "field": "sections",
-      "before": "Chi tiết công việc Data Analyst tại Công ty TNHH MTV CNTH Viễn Sơn THU THẬP VÀ XỬ LÝ DỮ LIỆU\n- Thu thập dữ liệu từ nhiều nguồn: ERP, CRM, Google Sheet, Excel, Database, phần mềm nội bộ\n- Làm sạch, chu…",
+      "before": "Chi tiết công việc Software Developer - Intern tại Bouygues Construction IT Vietnam Bouygues Construction IT Vietnam is a part of Bouygues Construction IT, a trusted partner for the business lines whi…",
       "after": {
-        "mo_ta": 43,
+        "mo_ta": 28,
         "phuc_loi": 2,
         "yeu_cau": 1
       },

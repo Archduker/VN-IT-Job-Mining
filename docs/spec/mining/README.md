@@ -8,6 +8,8 @@
 >
 > **Chạy lại 21/11/2026 sau L-57 (PRE-44, sửa luật nhóm nghề, thêm nhóm `Infra/Support`):** số theo nghề ở mục 5–7 của M1–M6 là của lần chạy 20/11, **chưa cập nhật**. Số mới nằm ở `mining/artifacts/mining_metrics.json` (Silver sha256_16 `bbf404d7b0870f4b`) và dashboard. Thay đổi chính: NMI cụm × nghề 0,218 → 0,313; cụm AI Engineer nay đa số Data/AI (độ thuần 0,75), cụm windows/vmware là Infra/Support (0,72); tin gán sai nghề M3 8 → 15; kỹ năng hiếm M2 87 → 121; M5 thắng baseline 10,65%, R²(log) 0,608; M6 có lộ trình cho 8 nghề (thêm Infra/Support 205 tin người mới, Design 53), lệch 80/20 chưa đạt ở Design, DevOps/Cloud, Security; M4 không đổi (246 tin). Chạy lại lần nữa cùng ngày sau L-58 (3 tin đổi nghề sang Data/AI; Silver sha256_16 `8e11e389c5aab7b1`): NMI 0,3141, tin gán sai M3 14, các số khác không đổi.
 
+> **Chạy lại 22/11/2026 sau L-59 (PRE-44 vòng 2: lọc tin không phải IT, luật nghề N3e; bảng 3.718 tin, Silver sha256_16 `60ac8d8b672d45eb`):** sanity S-01..S-06 đạt; FP-Growth 12.642 luật, 124 kỹ năng hiếm; K-Means k = 10 silhouette 0,075, NMI 0,316, ARI với nghề 0,209, tin gán sai 13 (chấm tay 3/10 đúng); ổn định 5 seed 0,826 sau khi nâng `n_init` 150 (50 chỉ còn 0,791); M4 233 tin (6,27%: mới 102, khác 97, chưa rõ 34); M5 MAE 6,105 so baseline 7,332 (hơn 16,7%), R²(log) 0,557, CV R² 0,589; M6 lệch 80/20 đạt ở Bridge, Data/AI, Tester, Web, còn Design, DevOps/Cloud, Infra/Support, Security ghi "tham khảo".
+
 ## Mục lục
 
 | Bước | File | Code | SD | Trạng thái |

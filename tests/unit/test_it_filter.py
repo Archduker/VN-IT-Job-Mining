@@ -93,3 +93,23 @@ def test_tier2_dense_core_skills_without_family_or_category():
     sig = {"core": 17, "sec": 0, "fam": False, "cat": False}   # "Technical Leader" (topcv), JD 17 kỹ năng lõi
     assert F.tier2_decide(sig, "topcv", {"k_fam": 2, "k_sec": 4, "k_core": 10, "k_cat": None}) == "it"
     assert F.tier2_decide(sig, "topcv", {"k_fam": 2, "k_sec": 4, "k_core": None, "k_cat": None}) == "non_it"
+
+
+def test_pre44_round2_excluded_title_groups():
+    """PRE-44 vòng 2 (22/11): CNC, mua sắm, nhập/thu thập dữ liệu, animator là non-IT ở tầng 0."""
+    from preprocessing.common import it_filter as IT
+    cfg = IT.load_config()
+    assert IT.excluded_role("Nhân Viên Lập Trình Máy Phay CNC", cfg) == "p2_manufacturing"
+    assert IT.excluded_role("Chuyên viên mua sắm Công nghệ thông tin", cfg) == "p2_procurement_hr"
+    assert IT.excluded_role("Nhân Viên Thu Thập Dữ Liệu", cfg) == "p2_data_entry"
+    assert IT.excluded_role("2D Animator (Game)", cfg) == "graphic_design"
+    assert IT.excluded_role("Kiểm Soát Chất Lượng Phần Mềm QA (Lead)", cfg) is None
+    assert IT.excluded_role("Senior Backend Developer", cfg) is None
+
+
+def test_reviewed_non_it_by_job_id():
+    from preprocessing.common import it_filter as IT
+    cfg = {"reviewed_non_it": {"jobs": {"vietnamworks:2112505": "JD là R&D quy trình nhà máy"}}}
+    assert IT.reviewed_non_it("vietnamworks", "2112505", cfg)
+    assert not IT.reviewed_non_it("topcv", "2112505", cfg)
+    assert not IT.reviewed_non_it("topcv", "1", {})

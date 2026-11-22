@@ -25,7 +25,8 @@ export function MarketInsightsPage() {
  const salary = useInsight<SalaryCell>('salary-heatmap', {city,level,job_family: family})
  const clusters = useInsight<ClusterPoint>('clusters', {city,level,job_family: family})
  const rules = useInsight<SkillRule>('skill-combos', {min_support: support,min_confidence: confidence,min_lift: lift,job_family_scope:scope,...(antecedent ? {antecedent} : {})})
- const canonicalFamilies = ['Backend', 'Frontend', 'Fullstack', 'Mobile', 'Data/AI', 'DevOps/Cloud', 'Kiểm thử (QA/QC)', 'Bảo mật (Security)', 'Hệ thống/Mạng', 'Phân tích nghiệp vụ (BA)', 'Quản lý SP/DA (PM/PO)', 'Thiết kế UI/UX']
+ // 11 nhóm nghề + Other, giống JOB_FAMILIES trong preprocessing/normalization/job_title.py (PRE-44, L-57)
+ const canonicalFamilies = ['Web', 'Mobile', 'Game', 'Bridge', 'DevOps/Cloud', 'Tester', 'Security', 'Infra/Support', 'IoT', 'Design', 'Data/AI', 'Other']
  const families = [...new Set([...canonicalFamilies,...options.data.map(o=>o.job_family).filter(Boolean)])].sort()
  const cities = [...new Set(options.data.map(o=>o.province_norm).filter((v): v is string => Boolean(v)))].sort()
  const actualLevels = [...new Set([...levels,...options.data.map(o=>o.seniority_level).filter((v): v is string => Boolean(v))])]

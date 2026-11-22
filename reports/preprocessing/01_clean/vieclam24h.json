@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:11:27+00:00",
-  "code_version": "42423d5",
+  "generated_at": "2026-11-21T23:34:23+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/vieclam24h/raw",
     "rows": 1276
   },
   "output": {
     "path": "data/preprocessing/01_clean/vieclam24h.jsonl",
-    "rows": 124
+    "rows": 108
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 525
+      "rows": 541
     },
     {
       "rule": "C5",
@@ -107,7 +107,7 @@
       "id": "C4a",
       "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 525,
+      "rows_affected": 541,
       "examples": [
         {
           "job_id": "100160858",
@@ -136,7 +136,7 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 525,
+      "rows_affected": 541,
       "examples": [
         {
           "job_id": "100160858",
@@ -269,25 +269,27 @@
   },
   "extra": {
     "it_levels": {
-      "tang_0_non_it": 257,
-      "tang_1_it": 125,
-      "tang_1_non_it": 52,
+      "tang_0_non_it": 274,
+      "tang_1_it": 110,
+      "tang_1_non_it": 51,
       "tang_2_non_it": 216,
-      "tang_2_it": 10
+      "tang_2_it": 9
     },
     "it_excluded_groups": {
       "sales_marketing": 179,
       "electrical_mechanical": 18,
       "h4_telecom_field": 29,
+      "reviewed_jd": 15,
       "h2_hardware_chip": 1,
       "h5_repair": 24,
-      "graphic_design": 2,
+      "graphic_design": 3,
+      "p2_manufacturing": 1,
       "q7_teaching": 3,
       "q4_embedded_iot": 1
     },
     "it_status": {
-      "non_it": 525,
-      "it": 135
+      "non_it": 541,
+      "it": 119
     },
     "it_policy": {
       "drop": [

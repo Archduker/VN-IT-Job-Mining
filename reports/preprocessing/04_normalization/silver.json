@@ -1,16 +1,16 @@
 {
  "step": "silver",
  "input": {
-  "rows": 3916
+  "rows": 3718
  },
  "output": {
-  "rows": 3916
+  "rows": 3718
  },
  "checks": {
   "errors": [],
   "passed": true
  },
- "rows": 3916,
+ "rows": 3718,
  "n_fields": 26,
  "fields": [
   {
@@ -105,16 +105,16 @@
    "field": "title_canonical",
    "source_column": "title_canonical",
    "dtype": "object",
-   "fill_pct": 41.8,
+   "fill_pct": 42.2,
    "fill_pct_by_source": {
-    "topcv": 45.5,
-    "topdev": 34.3,
-    "vietnamworks": 35.7,
-    "careerviet": 39.3,
-    "vieclam24h": 54.5,
-    "itviec": 36.8,
-    "glints": 38.4,
-    "jobsgo": 48.9
+    "topcv": 45.4,
+    "topdev": 37.4,
+    "vietnamworks": 37.4,
+    "careerviet": 39.0,
+    "vieclam24h": 56.2,
+    "itviec": 36.9,
+    "glints": 37.2,
+    "jobsgo": 50.2
    },
    "samples": [
     "UI/UX Designer",
@@ -149,16 +149,16 @@
    "field": "seniority",
    "source_column": "seniority",
    "dtype": "object",
-   "fill_pct": 92.7,
+   "fill_pct": 92.6,
    "fill_pct_by_source": {
-    "topcv": 97.5,
-    "topdev": 73.5,
-    "vietnamworks": 84.7,
-    "careerviet": 92.3,
-    "vieclam24h": 98.3,
-    "itviec": 90.1,
-    "glints": 93.8,
-    "jobsgo": 98.8
+    "topcv": 97.6,
+    "topdev": 71.4,
+    "vietnamworks": 84.6,
+    "careerviet": 92.2,
+    "vieclam24h": 98.1,
+    "itviec": 90.0,
+    "glints": 93.4,
+    "jobsgo": 99.0
    },
    "samples": [
     "Middle",
@@ -193,12 +193,12 @@
    "field": "exp_min_years",
    "source_column": "exp_min_years",
    "dtype": "float64",
-   "fill_pct": 97.9,
+   "fill_pct": 97.8,
    "fill_pct_by_source": {
     "topcv": 99.9,
-    "topdev": 84.9,
+    "topdev": 83.7,
     "vietnamworks": 94.7,
-    "careerviet": 95.8,
+    "careerviet": 95.9,
     "vieclam24h": 100.0,
     "itviec": 98.8,
     "glints": 99.3,
@@ -215,16 +215,16 @@
    "field": "exp_max_years",
    "source_column": "exp_max_years",
    "dtype": "float64",
-   "fill_pct": 67.3,
+   "fill_pct": 66.5,
    "fill_pct_by_source": {
-    "topcv": 94.9,
-    "topdev": 30.1,
-    "vietnamworks": 85.6,
-    "careerviet": 59.5,
-    "vieclam24h": 98.3,
+    "topcv": 94.6,
+    "topdev": 30.6,
+    "vietnamworks": 85.5,
+    "careerviet": 58.9,
+    "vieclam24h": 98.1,
     "itviec": 0.0,
-    "glints": 91.1,
-    "jobsgo": 79.5
+    "glints": 91.2,
+    "jobsgo": 80.0
    },
    "samples": [
     "2.0",
@@ -259,16 +259,16 @@
    "field": "salary_min",
    "source_column": "salary_min_vnd_capped",
    "dtype": "float64",
-   "fill_pct": 38.3,
+   "fill_pct": 37.6,
    "fill_pct_by_source": {
-    "topcv": 45.8,
-    "topdev": 27.7,
-    "vietnamworks": 21.4,
-    "careerviet": 27.1,
-    "vieclam24h": 90.9,
-    "itviec": 24.7,
-    "glints": 61.6,
-    "jobsgo": 51.5
+    "topcv": 44.8,
+    "topdev": 25.9,
+    "vietnamworks": 21.8,
+    "careerviet": 28.2,
+    "vieclam24h": 89.5,
+    "itviec": 24.8,
+    "glints": 59.9,
+    "jobsgo": 50.8
    },
    "samples": [
     "15000000.0",
@@ -281,16 +281,16 @@
    "field": "salary_max",
    "source_column": "salary_max_vnd_capped",
    "dtype": "float64",
-   "fill_pct": 43.0,
+   "fill_pct": 42.5,
    "fill_pct_by_source": {
-    "topcv": 54.7,
-    "topdev": 30.7,
-    "vietnamworks": 25.9,
-    "careerviet": 29.9,
-    "vieclam24h": 90.9,
-    "itviec": 26.2,
-    "glints": 61.6,
-    "jobsgo": 55.9
+    "topcv": 54.2,
+    "topdev": 29.3,
+    "vietnamworks": 26.2,
+    "careerviet": 31.0,
+    "vieclam24h": 89.5,
+    "itviec": 26.1,
+    "glints": 59.9,
+    "jobsgo": 55.0
    },
    "samples": [
     "30000000.0",
@@ -347,15 +347,15 @@
    "field": "province",
    "source_column": "tinh_chinh",
    "dtype": "object",
-   "fill_pct": 98.2,
+   "fill_pct": 98.1,
    "fill_pct_by_source": {
     "topcv": 99.6,
-    "topdev": 99.4,
-    "vietnamworks": 98.8,
-    "careerviet": 98.5,
+    "topdev": 99.3,
+    "vietnamworks": 98.7,
+    "careerviet": 98.7,
     "vieclam24h": 100.0,
     "itviec": 98.2,
-    "glints": 74.0,
+    "glints": 73.0,
     "jobsgo": 99.6
    },
    "samples": [
@@ -373,8 +373,8 @@
    "fill_pct_by_source": {
     "topcv": 99.6,
     "topdev": 100.0,
-    "vietnamworks": 99.0,
-    "careerviet": 98.5,
+    "vietnamworks": 98.9,
+    "careerviet": 98.7,
     "vieclam24h": 100.0,
     "itviec": 98.5,
     "glints": 100.0,
@@ -391,12 +391,12 @@
    "field": "employment_type",
    "source_column": "employment_type",
    "dtype": "object",
-   "fill_pct": 93.5,
+   "fill_pct": 93.8,
    "fill_pct_by_source": {
-    "topcv": 99.5,
-    "topdev": 2.4,
-    "vietnamworks": 90.9,
-    "careerviet": 97.8,
+    "topcv": 99.6,
+    "topdev": 2.0,
+    "vietnamworks": 90.7,
+    "careerviet": 97.9,
     "vieclam24h": 100.0,
     "itviec": 97.4,
     "glints": 100.0,
@@ -460,7 +460,7 @@
    "fill_pct": 100.0,
    "fill_pct_by_source": {
     "topcv": 100.0,
-    "topdev": 99.4,
+    "topdev": 99.3,
     "vietnamworks": 100.0,
     "careerviet": 100.0,
     "vieclam24h": 100.0,
@@ -479,16 +479,16 @@
    "field": "benefits",
    "source_column": "benefits_std",
    "dtype": "object",
-   "fill_pct": 93.4,
+   "fill_pct": 93.6,
    "fill_pct_by_source": {
-    "topcv": 97.4,
-    "topdev": 92.2,
-    "vietnamworks": 89.4,
-    "careerviet": 91.0,
-    "vieclam24h": 95.0,
-    "itviec": 93.1,
-    "glints": 78.8,
-    "jobsgo": 94.6
+    "topcv": 97.3,
+    "topdev": 95.2,
+    "vietnamworks": 89.6,
+    "careerviet": 91.5,
+    "vieclam24h": 95.2,
+    "itviec": 93.0,
+    "glints": 79.6,
+    "jobsgo": 94.8
    },
    "samples": [
     "['Bảo hiểm', 'Lương tháng 13', 'Thưởng', 'Nghỉ phép', 'Du lịch']",
@@ -586,6 +586,6 @@
    "status": "có"
   }
  ],
- "generated_at": "2026-11-21T11:56:48+00:00",
+ "generated_at": "2026-11-22T00:03:03+00:00",
  "dry_run": false
 }

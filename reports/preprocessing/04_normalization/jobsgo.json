@@ -2,15 +2,15 @@
   "step": "04_normalization",
   "source": "jobsgo",
   "mode": "applied",
-  "generated_at": "2026-11-21T11:56:35+00:00",
-  "code_version": "026808f",
+  "generated_at": "2026-11-22T00:01:28+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/03_transformation/all.parquet",
-    "rows": 501
+    "rows": 484
   },
   "output": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 497
+    "rows": 480
   },
   "dropped": [
     {
@@ -24,7 +24,7 @@
       "id": "N1",
       "name": "Chuẩn hóa địa phương 34 tỉnh/thành sau sáp nhập",
       "action": "modify",
-      "rows_affected": 499,
+      "rows_affected": 482,
       "examples": [
         {
           "job_id": "28732145575",
@@ -53,7 +53,7 @@
       "id": "N13",
       "name": "Tỉnh từ raw_location_text/company_address khi locations không ra tỉnh",
       "action": "modify",
-      "rows_affected": 8,
+      "rows_affected": 7,
       "examples": [
         {
           "job_id": "29023265756",
@@ -82,7 +82,7 @@
       "id": "N2",
       "name": "Cấp bậc 5 cấp (raw -> tiêu đề; số năm chỉ ở M3c, có cờ level_inferred)",
       "action": "modify",
-      "rows_affected": 495,
+      "rows_affected": 479,
       "examples": [
         {
           "job_id": "28732145575",
@@ -111,7 +111,7 @@
       "id": "N3",
       "name": "Nhóm nghề: 16 nhóm + Other",
       "action": "modify",
-      "rows_affected": 422,
+      "rows_affected": 430,
       "examples": [
         {
           "job_id": "28732145575",
@@ -140,35 +140,35 @@
       "id": "N16",
       "name": "Chức danh chuẩn từ từ điển đã duyệt (exact/alias/fuzzy)",
       "action": "modify",
-      "rows_affected": 244,
+      "rows_affected": 242,
       "examples": []
     },
     {
       "id": "N4",
       "name": "Ánh xạ kỹ năng chuẩn theo từ điển",
       "action": "modify",
-      "rows_affected": 337,
+      "rows_affected": 332,
       "examples": []
     },
     {
       "id": "N5",
       "name": "Chuẩn hóa tên công ty",
       "action": "modify",
-      "rows_affected": 500,
+      "rows_affected": 483,
       "examples": []
     },
     {
       "id": "N2b",
       "name": "Nhãn mâu thuẫn với kinh nghiệm/kỹ năng: gắn cờ cần kiểm",
       "action": "flag",
-      "rows_affected": 143,
+      "rows_affected": 151,
       "examples": []
     },
     {
       "id": "M3c",
       "name": "Cấp bậc trống suy từ số năm (X6), level_inferred=True",
       "action": "flag",
-      "rows_affected": 322,
+      "rows_affected": 310,
       "examples": []
     },
     {
@@ -182,14 +182,14 @@
       "id": "N14",
       "name": "work_mode từ ô của sàn hoặc JD (T9a); còn lại theo địa điểm",
       "action": "modify",
-      "rows_affected": 25,
+      "rows_affected": 23,
       "examples": []
     },
     {
       "id": "N19",
       "name": "employment_type: tiêu đề Intern → ô của sàn → JD",
       "action": "modify",
-      "rows_affected": 497,
+      "rows_affected": 480,
       "examples": []
     },
     {
@@ -210,7 +210,7 @@
       "id": "M4c",
       "name": "Ô và JD lệch kinh nghiệm >= 1 năm: exp_conflict",
       "action": "flag",
-      "rows_affected": 94,
+      "rows_affected": 91,
       "examples": []
     },
     {
@@ -260,14 +260,14 @@
       "id": "M5",
       "name": "Lương ngoài 2-100 triệu/tháng: chỉ cờ salary_out_of_range",
       "action": "flag",
-      "rows_affected": 14,
+      "rows_affected": 13,
       "examples": []
     },
     {
       "id": "M6",
       "name": "IQR theo cấp bậc: chỉ cờ salary_iqr_outlier_by_level",
       "action": "flag",
-      "rows_affected": 7,
+      "rows_affected": 6,
       "examples": []
     },
     {
@@ -281,14 +281,14 @@
       "id": "N7",
       "name": "Biến đổi log1p cho mức lương",
       "action": "modify",
-      "rows_affected": 278,
+      "rows_affected": 264,
       "examples": []
     },
     {
       "id": "N18",
       "name": "company_key (rapidfuzz token_sort >= 90 và tập con)",
       "action": "modify",
-      "rows_affected": 496,
+      "rows_affected": 479,
       "examples": []
     }
   ],
@@ -305,8 +305,8 @@
     },
     {
       "field": "seniority",
-      "fill_pct_in": 98.8,
-      "fill_pct_out": 98.8
+      "fill_pct_in": 99.0,
+      "fill_pct_out": 99.0
     },
     {
       "field": "seniority_source",
@@ -325,8 +325,8 @@
     },
     {
       "field": "skills_std",
-      "fill_pct_in": 67.2,
-      "fill_pct_out": 67.2
+      "fill_pct_in": 68.5,
+      "fill_pct_out": 68.5
     },
     {
       "field": "company_norm",
@@ -335,23 +335,23 @@
     },
     {
       "field": "salary_min_vnd_capped",
-      "fill_pct_in": 51.5,
-      "fill_pct_out": 51.5
+      "fill_pct_in": 50.8,
+      "fill_pct_out": 50.8
     },
     {
       "field": "salary_max_vnd_capped",
-      "fill_pct_in": 55.9,
-      "fill_pct_out": 55.9
+      "fill_pct_in": 55.0,
+      "fill_pct_out": 55.0
     },
     {
       "field": "log_salary_min",
-      "fill_pct_in": 51.5,
-      "fill_pct_out": 51.5
+      "fill_pct_in": 50.8,
+      "fill_pct_out": 50.8
     },
     {
       "field": "log_salary_max",
-      "fill_pct_in": 55.9,
-      "fill_pct_out": 55.9
+      "fill_pct_in": 55.0,
+      "fill_pct_out": 55.0
     },
     {
       "field": "is_outlier_salary",
@@ -365,8 +365,8 @@
     },
     {
       "field": "title_canonical",
-      "fill_pct_in": 48.9,
-      "fill_pct_out": 48.9
+      "fill_pct_in": 50.2,
+      "fill_pct_out": 50.2
     },
     {
       "field": "company_key",
@@ -430,92 +430,94 @@
       }
     },
     "employment_type_distribution": {
-      "full_time": 423,
-      "internship": 70,
+      "full_time": 407,
+      "internship": 69,
       "(trống)": 4
     },
     "work_mode_source_distribution": {
-      "location": 471,
-      "jd": 16,
-      "raw": 7,
+      "location": 456,
+      "jd": 15,
+      "raw": 6,
       "unknown": 2,
       "jd_over_raw": 1
     },
     "exp_source_distribution": {
-      "raw": 495,
+      "raw": 478,
       "jd": 2
     },
     "seniority_source_distribution": {
-      "kinh_nghiem": 320,
-      "raw": 108,
-      "title": 63,
-      "none": 6
+      "kinh_nghiem": 308,
+      "raw": 105,
+      "title": 62,
+      "none": 5
     },
     "seniority_distribution": {
-      "Intern/Fresher": 163,
-      "Middle": 130,
-      "Junior": 113,
-      "Lead/Manager": 49,
-      "Senior": 36,
-      "(trống)": 6
+      "Intern/Fresher": 158,
+      "Middle": 128,
+      "Junior": 107,
+      "Lead/Manager": 47,
+      "Senior": 35,
+      "(trống)": 5
     },
     "job_family_distribution": {
-      "Infra/Support": 102,
-      "Web": 90,
-      "Other": 79,
-      "Bridge": 68,
-      "Data/AI": 56,
+      "Infra/Support": 95,
+      "Web": 88,
+      "Bridge": 83,
+      "Data/AI": 57,
       "Tester": 55,
-      "DevOps/Cloud": 13,
+      "Other": 54,
+      "Security": 13,
       "Mobile": 12,
-      "Security": 11,
+      "DevOps/Cloud": 12,
       "Design": 7,
       "Game": 3,
       "IoT": 1
     },
     "job_family_source_distribution": {
-      "title": 267,
-      "none": 79,
-      "jd": 71,
+      "title": 285,
+      "jd": 58,
+      "none": 54,
       "canonical": 36,
-      "canonical_generic": 30,
-      "skills": 14
+      "canonical_generic": 31,
+      "skills": 13,
+      "title_manager": 2,
+      "title_full": 1
     },
     "work_mode_distribution": {
-      "onsite": 482,
-      "remote": 8,
-      "hybrid": 5,
+      "onsite": 468,
+      "remote": 7,
+      "hybrid": 3,
       "unknown": 2
     },
     "salary_status_distribution": {
-      "value": 299,
-      "negotiable": 197,
+      "value": 285,
+      "negotiable": 194,
       "not_stated": 1
     },
     "salary_outliers": 3,
     "inference": {
-      "level_inferred": 383,
+      "level_inferred": 370,
       "exp_inferred": 0
     },
     "title_taxonomy": {
-      "job_title_clean_distinct": 459,
-      "job_title_core_distinct": 317,
+      "job_title_clean_distinct": 442,
+      "job_title_core_distinct": 301,
       "title_canonical_source": {
-        "none": 254,
-        "alias": 162,
-        "exact": 74,
+        "none": 239,
+        "alias": 161,
+        "exact": 73,
         "fuzzy": 7
       }
     },
     "anomalies_file": "reports/preprocessing/04_normalization/anomalies.json",
     "anomalies_by_kind": {
-      "level_inferred": 383,
+      "level_inferred": 370,
       "seniority_can_kiem": 16,
-      "job_family_can_kiem": 127,
+      "job_family_can_kiem": 135,
       "tinh_unknown": 2,
       "salary_negotiable_with_value": 3,
-      "salary_iqr_outlier_by_level": 7,
-      "salary_out_of_range": 14,
+      "salary_iqr_outlier_by_level": 6,
+      "salary_out_of_range": 13,
       "salary_iqr_outlier_pooled": 0,
       "salary_suspect": 1,
       "salary_period_year": 0,
@@ -526,24 +528,24 @@
   },
   "samples": [
     {
-      "job_id": "jobsgo_29080664189",
+      "job_id": "jobsgo_29098425521",
       "source": "jobsgo",
       "field": "locations",
       "before": [
         {
-          "dia_chi_cu_the": null,
+          "dia_chi_cu_the": "16 Phạm Hùng, Từ Liêm",
           "phuong_xa": null,
-          "tinh_thanh": "TP. Bắc Ninh",
-          "raw": "Bắc Ninh"
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "16 Phạm Hùng, Từ Liêm, Hà Nội (Trước sáp nhập:Nam Từ Liêm, Hà Nội |Sau sáp nhập:Yên Hoà, Hà Nội)"
         }
       ],
       "after": [
         {
-          "dia_chi_cu_the": null,
+          "dia_chi_cu_the": "16 Phạm Hùng, Từ Liêm",
           "phuong_xa": null,
-          "tinh_thanh": "TP. Bắc Ninh",
-          "raw": "Bắc Ninh",
-          "tinh_key": "bac_ninh",
+          "tinh_thanh": "TP. Hà Nội",
+          "raw": "16 Phạm Hùng, Từ Liêm, Hà Nội (Trước sáp nhập:Nam Từ Liêm, Hà Nội |Sau sáp nhập:Yên Hoà, Hà Nội)",
+          "tinh_key": "ha_noi",
           "tinh_cu": null,
           "remote": false,
           "ngoai_vn": false

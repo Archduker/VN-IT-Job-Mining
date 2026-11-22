@@ -2,15 +2,15 @@
   "step": "07_sections",
   "source": "vieclam24h",
   "mode": "applied",
-  "generated_at": "2026-11-19T08:50:36+00:00",
-  "code_version": "db2087e",
+  "generated_at": "2026-11-22T00:02:03+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/04_normalization/all.parquet",
-    "rows": 121
+    "rows": 105
   },
   "output": {
     "path": "data/processing/07_sections/all.parquet",
-    "rows": 121
+    "rows": 105
   },
   "dropped": [],
   "rules": [],
@@ -24,14 +24,14 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_bullets": 2567,
+    "n_bullets": 2251,
     "bullets_by_section": {
-      "mo_ta": 964,
-      "yeu_cau": 938,
-      "phuc_loi": 665
+      "mo_ta": 832,
+      "yeu_cau": 839,
+      "phuc_loi": 580
     },
     "bullets_by_rule": {
-      "S7.2": 2567
+      "S7.2": 2251
     },
     "n_jobs_no_bullet": 0,
     "headings_approved": 0,
@@ -39,37 +39,37 @@
   },
   "samples": [
     {
-      "job_id": "vieclam24h_200961975",
+      "job_id": "vieclam24h_200923796",
       "source": "vieclam24h",
       "field": "sections",
-      "before": "Manage and maintain server infrastructure, including SAN/Storage, physical servers, and VMware environments, ensuring stable and efficient system operations.\nMonitor system capacity, perform security …",
+      "before": "Quản lý, vận hành và giám sát hệ thống mạng truyền dẫn IP/DWDM trong nước và quốc tế của FPT Telecom.\nTrực tiếp tham gia triển khai các dự án IP/DWDM trên phạm vi toàn quốc .\nThực hiện lắp đặt thiết b…",
       "after": {
-        "mo_ta": 12,
-        "yeu_cau": 7,
-        "phuc_loi": 1
+        "yeu_cau": 12,
+        "phuc_loi": 9,
+        "mo_ta": 7
       },
       "changed": true
     },
     {
-      "job_id": "vieclam24h_200956825",
+      "job_id": "vieclam24h_200901997",
       "source": "vieclam24h",
       "field": "sections",
-      "before": "- Giám sát hệ thống mạng hàng ngày, đảm bảo đường truyền internet luôn thông suốt và ổn định cho hơn 100 người dùng.\n- Hỗ trợ cài đặt, cấu hình máy tính, phần mềm cho nhân viên mới và xử lý các sự cố …",
+      "before": "Thu thập & Phân tích yêu cầu:\nTrực tiếp tham gia tiếp xúc khách hàng, tiếp nhận nhu cầu và khảo sát quy trình vận hành thực tế.\nTư vấn & Thiết kế giải pháp:\nTham gia nghiên cứu nghiệp vụ, xây dựng đề …",
+      "after": {
+        "mo_ta": 10,
+        "yeu_cau": 10,
+        "phuc_loi": 8
+      },
+      "changed": true
+    },
+    {
+      "job_id": "vieclam24h_200958167",
+      "source": "vieclam24h",
+      "field": "sections",
+      "before": "Kiểm tra, sửa chữa và khắc phục sự cố hệ thống máy tính, mạng tại các nhà hàng và văn phòng khu vực miền Hà Nội.\nTheo dõi, kiểm tra và giám sát hệ thống camera tại các nhà hàng; đánh giá tình hình hoạ…",
       "after": {
         "mo_ta": 7,
-        "yeu_cau": 5,
-        "phuc_loi": 5
-      },
-      "changed": true
-    },
-    {
-      "job_id": "vieclam24h_200947793",
-      "source": "vieclam24h",
-      "field": "sections",
-      "before": "Phát triển và thiết kế từ ý tưởng đến các thành phẩm UX như storyboard, wireframe, sitemaps, flowcharts, mockups… Xây dựng giao diện người dùng (UI), gia tăng tính thẩm mỹ cho các nội dung số website,…",
-      "after": {
-        "yeu_cau": 10,
-        "mo_ta": 5,
+        "yeu_cau": 4,
         "phuc_loi": 3
       },
       "changed": true

@@ -2,15 +2,15 @@
   "step": "01b_deduplication",
   "source": "itviec",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:13:36+00:00",
-  "code_version": "d3f7008",
+  "generated_at": "2026-11-21T23:34:32+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/preprocessing/01_clean/itviec.jsonl",
-    "rows": 813
+    "rows": 808
   },
   "output": {
     "path": "data/preprocessing/01b_deduplication/itviec.jsonl",
-    "rows": 785
+    "rows": 780
   },
   "dropped": [
     {
@@ -125,28 +125,28 @@
       "id": "D7",
       "name": "Cặp gần trùng không bị loại (khác công ty hoặc dưới ngưỡng), chỉ vào audit",
       "action": "flag",
-      "rows_affected": 7,
+      "rows_affected": 27,
       "examples": [
         {
-          "job_id": "devops-engineer-con-cung-4206",
+          "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
           "field": "jaccard",
           "before": null,
-          "after": 0.9058,
-          "url": "https://itviec.com/viec-lam-it/devops-engineer-con-cung-4206"
+          "after": 0.8075,
+          "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127"
         },
         {
-          "job_id": "java-developer-spring-boot-microservices-oracle-goline-corporation-4348",
+          "job_id": "agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127",
           "field": "jaccard",
           "before": null,
-          "after": 0.8078,
-          "url": "https://itviec.com/viec-lam-it/java-developer-spring-boot-microservices-oracle-goline-corporation-4348"
+          "after": 0.8037,
+          "url": "https://itviec.com/viec-lam-it/agentic-engineer-python-go-c-c-backend-ai-agents-mb-bank-5127"
         },
         {
-          "job_id": "manual-tester-sql-postman-mysql-api-mariadb-cong-ty-cp-cong-nghe-tasc-viet-nam-5353",
+          "job_id": "chuyen-vien-quan-ly-du-an-phan-mem-trung-tam-cong-nghe-thong-tin-mobifone-5846",
           "field": "jaccard",
           "before": null,
-          "after": 0.8156,
-          "url": "https://itviec.com/viec-lam-it/manual-tester-sql-postman-mysql-api-mariadb-cong-ty-cp-cong-nghe-tasc-viet-nam-5353"
+          "after": 1.0,
+          "url": "https://itviec.com/viec-lam-it/chuyen-vien-quan-ly-du-an-phan-mem-trung-tam-cong-nghe-thong-tin-mobifone-5846"
         }
       ]
     }
@@ -170,7 +170,7 @@
       "hop_same_version": 0,
       "hop_version_not_bumped": 0
     },
-    "blocking_blocks": 668,
+    "blocking_blocks": 664,
     "d2_groups": 0,
     "rule_totals": {
       "D5": 28

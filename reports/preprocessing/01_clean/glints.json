@@ -2,15 +2,15 @@
   "step": "01_clean",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-19T01:11:29+00:00",
-  "code_version": "42423d5",
+  "generated_at": "2026-11-21T23:34:26+00:00",
+  "code_version": "f352120",
   "input": {
     "path": "data/glints/raw",
     "rows": 331
   },
   "output": {
     "path": "data/preprocessing/01_clean/glints.jsonl",
-    "rows": 162
+    "rows": 153
   },
   "dropped": [
     {
@@ -31,7 +31,7 @@
     {
       "rule": "C4c",
       "reason": "Bỏ tin ngoài IT theo it_policy.json",
-      "rows": 57
+      "rows": 66
     },
     {
       "rule": "C5",
@@ -85,7 +85,7 @@
       "id": "C4a",
       "name": "Phân loại IT bằng luật 3 tầng (nhóm không IT loại hoàn toàn, từ khóa tiêu đề, kỹ năng skills_v2 trong JD), chỉ gắn nhãn",
       "action": "flag",
-      "rows_affected": 57,
+      "rows_affected": 66,
       "examples": [
         {
           "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
@@ -114,7 +114,7 @@
       "id": "C4c",
       "name": "Bỏ tin ngoài IT theo it_policy.json",
       "action": "drop",
-      "rows_affected": 57,
+      "rows_affected": 66,
       "examples": [
         {
           "job_id": "0435cda1-7cc6-4f6a-a08a-c2e310d8d9cd",
@@ -278,7 +278,7 @@
     {
       "field": "skills_list",
       "fill_pct_in": 88.5,
-      "fill_pct_out": 81.5
+      "fill_pct_out": 80.4
     }
   ],
   "checks": {
@@ -291,20 +291,21 @@
   },
   "extra": {
     "it_levels": {
-      "tang_1_it": 262,
+      "tang_1_it": 253,
       "tang_2_non_it": 44,
-      "tang_0_non_it": 7,
+      "tang_0_non_it": 16,
       "tang_2_it": 12,
       "tang_1_non_it": 6
     },
     "it_excluded_groups": {
       "electrical_mechanical": 4,
+      "reviewed_jd": 9,
       "q8_operations_growth": 1,
       "sales_marketing": 2
     },
     "it_status": {
-      "it": 274,
-      "non_it": 57
+      "it": 265,
+      "non_it": 66
     },
     "it_policy": {
       "drop": [

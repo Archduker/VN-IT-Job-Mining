@@ -2,15 +2,15 @@
   "step": "10_features",
   "source": "glints",
   "mode": "applied",
-  "generated_at": "2026-11-21T11:56:55+00:00",
-  "code_version": "026808f",
+  "generated_at": "2026-11-22T00:02:17+00:00",
+  "code_version": "f352120",
   "input": {
     "path": null,
-    "rows": 146
+    "rows": 137
   },
   "output": {
     "path": "data/processing/10_features/features.parquet",
-    "rows": 146
+    "rows": 137
   },
   "dropped": [],
   "rules": [],
@@ -24,7 +24,7 @@
     "reason": "pipeline không dùng model (luật if-else)"
   },
   "extra": {
-    "n_cols": 995,
+    "n_cols": 972,
     "min_df": 15,
     "model": "không dùng model"
   },
