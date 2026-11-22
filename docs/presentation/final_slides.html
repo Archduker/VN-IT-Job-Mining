@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Khai phá việc làm IT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Slide 1920x1080, tự co theo cửa sổ. Phím ← → / Space / PageUp PageDown, Home/End; F = toàn màn hình; in ra PDF mỗi slide một trang. */
+:root {
+  --ink: #14213D; --paper: #F7F6F2; --paper2: #ECEAE3; --muted: #4A5568;
+  --accent: #C2561B; --blue: #2F6FB0; --soft-on-dark: #C9D3E3; --line: #D9D5CA; --card: #FFFDF9;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: #0E1626; overflow: hidden; }
+body { font-family: 'Be Vietnam Pro', Arial, sans-serif; color: var(--ink); }
+#deck { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center center; }
+section { position: absolute; inset: 0; padding: 104px 128px 150px; background: var(--paper); color: var(--ink);
+  display: none; flex-direction: column; gap: 34px; overflow: hidden; }
+section.on { display: flex; }
+section.alt { background: var(--paper2); }
+section.dark { background: var(--ink); color: var(--paper); }
+section.statement { background: var(--accent); color: #FFF8F2; justify-content: center; }
+h1 { font-size: 88px; font-weight: 700; line-height: 1.08; letter-spacing: -1px; }
+h2 { font-size: 58px; font-weight: 700; line-height: 1.12; letter-spacing: -0.5px; }
+h3 { font-size: 34px; font-weight: 600; line-height: 1.2; }
+p { font-size: 30px; line-height: 1.4; }
+.eyebrow { font-size: 24px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); }
+.dark .eyebrow { color: #F0A46E; }
+.statement .eyebrow { color: #FFE2CC; }
+.lede { font-size: 32px; line-height: 1.4; color: var(--muted); max-width: 1500px; }
+.dark .lede { color: var(--soft-on-dark); }
+.statement .lede { color: #FFE9D9; }
+.small { font-size: 24px; line-height: 1.4; color: var(--muted); }
+.dark .small { color: var(--soft-on-dark); }
+.foot { position: absolute; left: 128px; right: 128px; bottom: 56px; font-size: 22px; color: var(--muted);
+  display: flex; justify-content: space-between; border-top: 2px solid var(--line); padding-top: 18px; }
+.dark .foot { color: var(--soft-on-dark); border-color: #34466E; }
+.statement .foot { color: #FFE2CC; border-color: #D9773F; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+.grid5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; }
+.card { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 30px 32px;
+  display: flex; flex-direction: column; gap: 10px; }
+.alt .card { background: var(--paper); }
+.dark .card { background: #1E2D4F; border-color: #34466E; }
+.card .num { font-size: 64px; font-weight: 700; line-height: 1; color: var(--ink); }
+.dark .card .num { color: var(--paper); }
+.num.acc { color: var(--accent) !important; }
+.num.blue { color: var(--blue) !important; }
+.card .lbl { font-size: 24px; color: var(--muted); line-height: 1.35; }
+.dark .card .lbl { color: var(--soft-on-dark); }
+.card .txt { font-size: 25px; line-height: 1.42; color: var(--muted); }
+.dark .card .txt { color: var(--soft-on-dark); }
+.card h3 { font-size: 30px; }
+.tag { font-size: 22px; font-weight: 600; color: var(--blue); letter-spacing: 1px; }
+.dark .tag { color: #8FB8E8; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.step { background: var(--card); border-top: 8px solid var(--blue); border-radius: 12px; padding: 28px; display: flex; flex-direction: column; gap: 12px; }
+.step.on2 { border-top-color: var(--accent); }
+.step .k { font-size: 22px; font-weight: 600; color: var(--blue); }
+.step.on2 .k { color: var(--accent); }
+.step .t { font-size: 30px; font-weight: 700; }
+.step .d { font-size: 23px; line-height: 1.42; color: var(--muted); }
+.bars { display: flex; flex-direction: column; gap: 12px; }
+.bar { display: grid; grid-template-columns: 250px 1fr 120px; align-items: center; gap: 18px; }
+.bar .l { font-size: 24px; }
+.bar .tr { height: 26px; background: #E3DFD4; border-radius: 4px; overflow: hidden; }
+.alt .bar .tr { background: #DAD5C8; }
+.bar .f { height: 26px; background: var(--blue); border-radius: 0 4px 4px 0; }
+.bar .f.acc { background: var(--accent); }
+.bar .f.grey { background: #9AA3B2; }
+.bar .v { font-size: 24px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { font-size: 23px; padding: 6px 18px; border-radius: 999px; background: var(--card); border: 2px solid var(--line); }
+.chip.b { border-color: var(--accent); font-weight: 600; }
+.dark .chip { background: #1E2D4F; border-color: #34466E; color: var(--paper); }
+table.t { border-collapse: collapse; width: 100%; font-size: 24px; font-variant-numeric: tabular-nums; }
+table.t th { text-align: left; font-weight: 600; color: var(--muted); font-size: 21px; padding: 10px 14px; border-bottom: 2px solid var(--ink); }
+table.t td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+table.t td.r, table.t th.r { text-align: right; }
+table.t th, table.t td:first-child { white-space: nowrap; }
+.ok { color: #2E7D4F; font-weight: 600; }
+.no { color: var(--accent); font-weight: 600; }
+.funnel { display: flex; flex-direction: column; gap: 10px; }
+.fr { display: grid; grid-template-columns: 330px 1fr 150px; align-items: center; gap: 18px; }
+.fr .l { font-size: 24px; }
+.fr .tr { height: 40px; display: flex; align-items: center; }
+.fr .f { height: 40px; background: var(--blue); border-radius: 4px; }
+.fr .v { font-size: 26px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.fr .note { font-size: 20px; color: var(--muted); margin-left: 14px; white-space: nowrap; }
+.path { display: flex; gap: 18px; align-items: stretch; }
+.lvl { flex: 1; background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.lvl .k { font-size: 22px; font-weight: 600; color: var(--blue); }
+.lvl.x { border-style: dashed; }
+.lvl.x .k { color: var(--accent); }
+.arrow { align-self: center; font-size: 40px; color: var(--muted); }
+.big { font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -3px; }
+ul.b { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+ul.b li { font-size: 27px; line-height: 1.4; padding-left: 30px; position: relative; }
+ul.b li::before { content: ""; position: absolute; left: 0; top: 15px; width: 12px; height: 12px; border-radius: 3px; background: var(--accent); }
+.dark ul.b li::before { background: #F0A46E; }
+.hl { color: var(--accent); font-weight: 700; }
+.dark .hl { color: #F0A46E; }
+#nav { position: fixed; right: 18px; bottom: 14px; font: 500 14px 'Be Vietnam Pro', Arial, sans-serif; color: #9FB0CC; display: flex; gap: 8px; align-items: center; z-index: 10; }
+#nav button { background: #1E2D4F; color: #DCE4F2; border: 1px solid #34466E; border-radius: 6px; padding: 6px 12px; font: inherit; cursor: pointer; }
+#nav button:hover { background: #2A3D66; }
+#bar { position: fixed; left: 0; bottom: 0; height: 4px; background: var(--accent); transition: width .25s; z-index: 10; }
+@media print {
+  @page { size: 1920px 1080px; margin: 0; }
+  html, body { overflow: visible; background: none; height: auto; }
+  #deck { position: static; transform: none !important; }
+  section { position: relative; display: flex !important; width: 1920px; height: 1080px; page-break-after: always; break-after: page; }
+  #nav, #bar { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- 1. Bìa -->
+<section class="dark">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:36px;">
+    <div class="eyebrow">Đồ án môn Khai phá dữ liệu · 11/2026</div>
+    <h1>Tích hợp và khai phá dữ liệu<br>thị trường lao động IT Việt Nam</h1>
+    <p class="lede">Từ 13.361 bản tin trên 8 sàn tuyển dụng đến câu trả lời cho sinh viên IT: thị trường cần ai, kỹ năng nào đi cùng nhau, kỹ năng nào đáng tiền, nên học gì trước.</p>
+    <div class="chips" style="margin-top:12px;">
+      <span class="chip">TopCV</span><span class="chip">TopDev</span><span class="chip">VietnamWorks</span><span class="chip">CareerViet</span>
+      <span class="chip">Vieclam24h</span><span class="chip">ITviec</span><span class="chip">Glints</span><span class="chip">JobsGO</span>
+    </div>
+  </div>
+  <div class="foot"><span>VN-IT-Job-Mining</span><span>1</span></div>
+</section>
+
+<!-- 2. Bài toán -->
+<section>
+  <div class="eyebrow">Bài toán</div>
+  <h2>Năm câu hỏi, xếp từ thống kê đến mô hình</h2>
+  <p class="lede">Người dùng chính là sinh viên IT và người mới vào nghề. Dữ liệu chỉ có tin tuyển dụng, nên mọi câu hỏi đều nói về phía nhà tuyển dụng.</p>
+  <div class="grid5">
+    <div class="card"><div class="tag">SD1 · BI</div><h3>Thị trường cần ai?</h3><div class="txt">Nhóm nghề, cấp bậc, tỉnh, hình thức làm việc, lương công bố, yêu cầu với người mới.</div></div>
+    <div class="card"><div class="tag">SD2 · Luật kết hợp</div><h3>Kỹ năng nào đi cùng nhau?</h3><div class="txt">Gói kỹ năng theo nghề (FP-Growth) và kỹ năng hiếm.</div></div>
+    <div class="card"><div class="tag">SD3 · Phân cụm</div><h3>Nhóm việc thật sự là gì?</h3><div class="txt">So cụm từ nội dung tin với nhóm nghề gán bằng luật; tìm tin "khác hoặc mới".</div></div>
+    <div class="card"><div class="tag">SD4 · Random Forest</div><h3>Kỹ năng nào đáng tiền?</h3><div class="txt">Mô hình lương + SHAP; ước lượng lương cho tin "thỏa thuận".</div></div>
+    <div class="card"><div class="tag">SD5 · Tổng hợp</div><h3>Người mới nên học gì trước?</h3><div class="txt">Danh sách ưu tiên và thứ tự học theo từng nghề.</div></div>
+  </div>
+  <p class="small">Thứ tự làm: BI (SD1) → khai phá không giám sát (SD2, SD3) → mô hình có giám sát (SD4, SD5).</p>
+  <div class="foot"><span>Mục tiêu</span><span>2</span></div>
+</section>
+
+<!-- 3. Dữ liệu -->
+<section class="alt" style="gap:22px;">
+  <div class="eyebrow">Dữ liệu</div>
+  <h2>8 sàn, cào hai pha, lưu trên Cloudflare R2</h2>
+  <div class="grid2" style="align-items:start;">
+    <div style="display:flex; flex-direction:column; gap:22px;">
+      <ul class="b">
+        <li><b>Pha 1 · Discovery:</b> quét trang danh sách, chuẩn hóa URL, ghi vào sổ cái URL (ledger) ở trạng thái chờ.</li>
+        <li><b>Pha 2 · Detail:</b> lấy trang chi tiết (curl_cffi giả TLS, Playwright khi cần), nghỉ 2–4,5 giây giữa các lần gọi.</li>
+        <li><b>Raw bất biến:</b> mỗi bản tin là một file JSON có mã băm SHA-256 để phát hiện thay đổi; mọi sửa lỗi làm ở bước sau.</li>
+        <li>Tin đăng tháng 9–11/2026, cào trong tháng 10–11/2026.</li>
+      </ul>
+    </div>
+    <div class="grid2" style="gap:24px;">
+      <div class="card"><div class="num">13.361</div><div class="lbl">bản tin thô trên R2</div></div>
+      <div class="card"><div class="num acc">3.718</div><div class="lbl">tin IT sạch, không trùng</div></div>
+      <div class="card"><div class="num">26</div><div class="lbl">trường trong bảng Silver</div></div>
+      <div class="card"><div class="num">973</div><div class="lbl">đặc trưng cho mining</div></div>
+    </div>
+  </div>
+  <div class="bars" style="margin-top:4px;">
+    <div class="small" style="margin-bottom:4px;">Số tin sạch theo nguồn</div>
+    <div class="bar"><span class="l">TopCV</span><div class="tr"><div class="f" style="width:100%"></div></div><span class="v">1.185</span></div>
+    <div class="bar"><span class="l">ITviec</span><div class="tr"><div class="f" style="width:61.7%"></div></div><span class="v">731</span></div>
+    <div class="bar"><span class="l">VietnamWorks</span><div class="tr"><div class="f" style="width:46.1%"></div></div><span class="v">546</span></div>
+    <div class="bar"><span class="l">JobsGO</span><div class="tr"><div class="f" style="width:40.5%"></div></div><span class="v">480</span></div>
+    <div class="bar"><span class="l">CareerViet</span><div class="tr"><div class="f" style="width:32.7%"></div></div><span class="v">387</span></div>
+    <div class="bar"><span class="l">TopDev, Glints, VL24h</span><div class="tr"><div class="f" style="width:32.8%"></div></div><span class="v">389</span></div>
+  </div>
+  <div class="foot"><span>Thu thập</span><span>3</span></div>
+</section>
+
+<!-- 4. Quy trình -->
+<section>
+  <div class="eyebrow">Quy trình</div>
+  <h2>Bốn giai đoạn, mỗi giai đoạn có số liệu kiểm chứng</h2>
+  <div class="steps">
+    <div class="step"><div class="k">1 · Collection</div><div class="t">Thu thập</div><div class="d">Cào hai pha, sổ cái URL, raw JSON bất biến trên R2. Kiểm thử hợp đồng crawler C1–C14 bằng dữ liệu mẫu offline.</div></div>
+    <div class="step"><div class="k">2 · Pre-processing</div><div class="t">Tiền xử lý (01–04)</div><div class="d">Lọc tin IT, khử trùng, làm phẳng 8 nguồn, tách lương và kinh nghiệm, chuẩn hóa 34 tỉnh, chức danh, nhóm nghề.</div></div>
+    <div class="step"><div class="k">3 · Processing</div><div class="t">Đặc trưng (07–12)</div><div class="d">Tách mục JD, trích kỹ năng bằng từ điển, ba khối tool / concept / soft, vector e5 768 chiều.</div></div>
+    <div class="step on2"><div class="k">4 · Mining</div><div class="t">Khai phá (M1–M6)</div><div class="d">BI, FP-Growth, K-Means + HDBSCAN, Isolation Forest, Random Forest + SHAP, lộ trình học.</div></div>
+  </div>
+  <div class="grid5" style="margin-top:6px;">
+    <div class="card"><h3>Completeness</h3><div class="txt">Đủ trường, đủ bản ghi; tổng mỗi bảng BI = 3.718.</div></div>
+    <div class="card"><h3>Accuracy</h3><div class="txt">Chấm tay mẫu nhóm nghề và tin không phải IT.</div></div>
+    <div class="card"><h3>Consistency</h3><div class="txt">Cùng kiểu, cùng taxonomy cho 8 sàn.</div></div>
+    <div class="card"><h3>Timeliness</h3><div class="txt">Tháng đăng tin <code>posted_month</code>; ledger cập nhật theo hash.</div></div>
+    <div class="card"><h3>Uniqueness</h3><div class="txt">Khử trùng trong nguồn và giữa các nguồn.</div></div>
+  </div>
+  <p class="small">Mỗi bước ghi báo cáo vào reports/ với kiểm tra bảo toàn: đầu vào = đầu ra + số bỏ. Model chỉ chạy trên dữ liệu thật, random_state 42, chạy lại ra cùng số.</p>
+  <div class="foot"><span>5 tiêu chí chất lượng</span><span>4</span></div>
+</section>
+
+<!-- 5. Phễu tiền xử lý -->
+<section class="alt">
+  <div class="eyebrow">Tiền xử lý</div>
+  <h2>Từ 13.361 bản tin còn 3.718 tin IT sạch</h2>
+  <div class="funnel">
+    <div class="fr"><span class="l">Raw (8 sàn)</span><div class="tr"><div class="f" style="width:100%; background:#9AA3B2"></div></div><span class="v">13.361</span></div>
+    <div class="fr"><span class="l">01 · Lọc IT, bỏ JD rỗng</span><div class="tr"><div class="f" style="width:29.2%"></div><span class="note">bỏ 9.462: không phải IT 6.264 · trùng URL 1.987 · trùng nội dung 616 …</span></div><span class="v">3.899</span></div>
+    <div class="fr"><span class="l">01b · Khử trùng giữa nguồn</span><div class="tr"><div class="f" style="width:28.4%"></div><span class="note">bỏ 99 tin đăng lại ở sàn khác</span></div><span class="v">3.800</span></div>
+    <div class="fr"><span class="l">02–03 · Làm phẳng, tách trường</span><div class="tr"><div class="f" style="width:28.4%"></div><span class="note">lương, kinh nghiệm, HTML → văn bản</span></div><span class="v">3.799</span></div>
+    <div class="fr"><span class="l">04 · Chuẩn hóa</span><div class="tr"><div class="f acc" style="width:27.8%; background:var(--accent)"></div><span class="note">cách ly 81 tin thiếu trường chính</span></div><span class="v">3.718</span></div>
+  </div>
+  <div class="grid4">
+    <div class="card"><div class="num blue">43,6%</div><div class="lbl">tin công bố lương (1.622 tin); 2.105 tin "thỏa thuận"</div></div>
+    <div class="card"><div class="num">34</div><div class="lbl">tỉnh mới sau sáp nhập: Hà Nội 1.973 · TP.HCM 1.319 · Đà Nẵng 63</div></div>
+    <div class="card"><div class="num">12</div><div class="lbl">nhóm nghề gán bằng luật (chức danh → từ khóa → JD)</div></div>
+    <div class="card"><div class="num">84</div><div class="lbl">tin lương ngoại lai được gắn cờ, không xóa</div></div>
+  </div>
+  <div class="foot"><span>Bước 01–04 · chạy thật 22/11/2026</span><span>5</span></div>
+</section>
+
+<!-- 6. Nhóm nghề và làm sạch non-IT -->
+<section>
+  <div class="eyebrow">Chất lượng nhãn</div>
+  <h2>Sửa luật gán nhóm nghề bằng chấm tay, không dùng model trong pipeline</h2>
+  <div class="grid2">
+    <div style="display:flex; flex-direction:column; gap:22px;">
+      <ul class="b">
+        <li>Chấm tay 40 tin mẫu: đúng <b>26/39</b> trước khi sửa, <b>34/39</b> sau khi sửa luật.</li>
+        <li>Luật mới: chức danh cụ thể → "(DevOps)", "(QA)" trong ngoặc → từ khóa chức danh → chức danh chung thì xét JD (hơn nhóm thứ hai ≥ 2 lần khớp).</li>
+        <li>Gemini (qua agy) đọc 400 tin nghi ngờ; người duyệt chốt <b>182 tin không phải IT</b> thành danh sách cố định. Pipeline chỉ đọc danh sách, không gọi model.</li>
+        <li>Chặn so khớp mờ đảo viết tắt (AI ↔ IT, BI ↔ IT) sau lỗi L-58.</li>
+      </ul>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div class="grid2" style="gap:22px;">
+        <div class="card"><div class="num">15,7%</div><div class="lbl">tin "Other" trước</div></div>
+        <div class="card"><div class="num acc">10,1%</div><div class="lbl">tin "Other" sau (377 tin)</div></div>
+      </div>
+      <div class="bars">
+        <div class="bar"><span class="l">Web</span><div class="tr"><div class="f" style="width:100%"></div></div><span class="v">747</span></div>
+        <div class="bar"><span class="l">Bridge / BA / PM</span><div class="tr"><div class="f" style="width:81.1%"></div></div><span class="v">606</span></div>
+        <div class="bar"><span class="l">Data/AI</span><div class="tr"><div class="f" style="width:71.6%"></div></div><span class="v">535</span></div>
+        <div class="bar"><span class="l">Tester</span><div class="tr"><div class="f" style="width:53.8%"></div></div><span class="v">402</span></div>
+        <div class="bar"><span class="l">Infra/Support</span><div class="tr"><div class="f" style="width:53%"></div></div><span class="v">396</span></div>
+        <div class="bar"><span class="l">Other</span><div class="tr"><div class="f grey" style="width:50.5%"></div></div><span class="v">377</span></div>
+        <div class="bar"><span class="l">DevOps/Cloud</span><div class="tr"><div class="f" style="width:31.6%"></div></div><span class="v">236</span></div>
+        <div class="bar"><span class="l">Security</span><div class="tr"><div class="f" style="width:22.5%"></div></div><span class="v">168</span></div>
+        <div class="bar"><span class="l">Design · Mobile · Game · IoT</span><div class="tr"><div class="f" style="width:14.9%"></div></div><span class="v">111 · 92 · 43 · 5</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>PRE-44 · L-57, L-58, L-59</span><span>6</span></div>
+</section>
+
+<!-- 7. Processing -->
+<section class="alt">
+  <div class="eyebrow">Processing</div>
+  <h2>Ba góc nhìn kỹ năng và một vector ngữ nghĩa cho mỗi tin</h2>
+  <div class="grid4">
+    <div class="card"><div class="tag">K-tool</div><div class="num">283</div><div class="lbl">công cụ cụ thể: sql, python, docker, react…</div></div>
+    <div class="card"><div class="tag">K-concept</div><div class="num">548</div><div class="lbl">khái niệm: bảo mật, kiểm thử, API, CI/CD…</div></div>
+    <div class="card"><div class="tag">K-soft</div><div class="num">62</div><div class="lbl">kỹ năng mềm, xếp riêng, không trộn với kỹ thuật</div></div>
+    <div class="card"><div class="tag">e5 · 768 chiều</div><div class="num">95.288</div><div class="lbl">câu mô tả + yêu cầu được nhúng vector</div></div>
+  </div>
+  <div class="grid2">
+    <ul class="b">
+      <li>Bước 07 tách JD thành mô tả / yêu cầu / phúc lợi, để phúc lợi không làm nhiễu kỹ năng.</li>
+      <li>Bước 08 trích kỹ năng bằng từ điển đã duyệt: 108.022 cặp tin–kỹ năng. Không tự suy kỹ năng khi JD không ghi.</li>
+      <li>Bước 10 dựng ma trận 3.718 × 973: multi-hot kỹ năng, cấp bậc, kinh nghiệm, nhóm tỉnh, nguồn, mục tiêu lương.</li>
+    </ul>
+    <div class="card">
+      <h3>Điều dữ liệu cho thấy ngay</h3>
+      <div class="txt">Trung vị mỗi tin ghi <b>5 công cụ</b>. 568 tin (15%) không ghi công cụ nào nhưng vẫn là việc IT thật (BA, Tester, IT Manager, presales), nên phân cụm dùng cả concept và e5, không bỏ các tin này.</div>
+    </div>
+  </div>
+  <div class="foot"><span>Bước 07–12</span><span>7</span></div>
+</section>
+
+<!-- 8. SD1 tổng quan -->
+<section>
+  <div class="eyebrow">SD1 · Thị trường cần ai</div>
+  <h2>Middle chiếm đa số; tin cho người mới cần ít công cụ hơn nhưng vẫn nhiều</h2>
+  <div class="grid2">
+    <div class="bars">
+      <div class="small" style="margin-bottom:4px;">Cấp bậc (3.718 tin)</div>
+      <div class="bar"><span class="l">Middle</span><div class="tr"><div class="f" style="width:100%"></div></div><span class="v">1.156</span></div>
+      <div class="bar"><span class="l">Lead/Manager</span><div class="tr"><div class="f" style="width:56.8%"></div></div><span class="v">657</span></div>
+      <div class="bar"><span class="l">Junior</span><div class="tr"><div class="f acc" style="width:51.9%"></div></div><span class="v">600</span></div>
+      <div class="bar"><span class="l">Senior</span><div class="tr"><div class="f" style="width:47.1%"></div></div><span class="v">545</span></div>
+      <div class="bar"><span class="l">Intern/Fresher</span><div class="tr"><div class="f acc" style="width:42%"></div></div><span class="v">486</span></div>
+      <div class="bar"><span class="l">Không rõ</span><div class="tr"><div class="f grey" style="width:23.7%"></div></div><span class="v">274</span></div>
+      <div class="small" style="margin-top:14px;">Hình thức: tại văn phòng 3.477 · hybrid 175 · remote 37. JD tiếng Anh: 999 tin (27%).</div>
+    </div>
+    <div>
+      <table class="t">
+        <tr><th></th><th class="r">Người mới</th><th class="r">Middle trở lên</th></tr>
+        <tr><td>Số tin</td><td class="r">1.086</td><td class="r">2.358</td></tr>
+        <tr><td>Kinh nghiệm yêu cầu (trung vị)</td><td class="r">1 năm</td><td class="r">3 năm</td></tr>
+        <tr><td>Số công cụ / tin (trung vị)</td><td class="r">4</td><td class="r">5</td></tr>
+        <tr><td>JD tiếng Anh</td><td class="r">14,6%</td><td class="r">30,8%</td></tr>
+        <tr><td>Lương công bố (trung vị)</td><td class="r">13,5 tr</td><td class="r">26,5 tr</td></tr>
+      </table>
+      <p class="small" style="margin-top:20px;">Công cụ người mới hay gặp nhất: python 21% · sql 18% · ms_office 14% · git 13% · linux 13% · docker 12% · javascript 11%.</p>
+    </div>
+  </div>
+  <div class="foot"><span>M1 · sd1_1_2, sd1_1_3, sd1_1_5</span><span>8</span></div>
+</section>
+
+<!-- 9. SD1 lương -->
+<section class="alt">
+  <div class="eyebrow">SD1 · Lương công bố</div>
+  <h2>Lương tăng đều theo cấp, nhưng cấp càng cao càng giấu lương</h2>
+  <div class="grid2">
+    <div class="bars">
+      <div class="small" style="margin-bottom:4px;">Trung vị lương công bố, triệu đồng/tháng (bỏ tin ngoại lai)</div>
+      <div class="bar"><span class="l">Intern/Fresher</span><div class="tr"><div class="f" style="width:26.7%"></div></div><span class="v">10,0</span></div>
+      <div class="bar"><span class="l">Junior</span><div class="tr"><div class="f" style="width:41.3%"></div></div><span class="v">15,5</span></div>
+      <div class="bar"><span class="l">Middle</span><div class="tr"><div class="f" style="width:60%"></div></div><span class="v">22,5</span></div>
+      <div class="bar"><span class="l">Senior</span><div class="tr"><div class="f" style="width:100%"></div></div><span class="v">37,5</span></div>
+      <div class="bar"><span class="l">Lead/Manager</span><div class="tr"><div class="f acc" style="width:80%"></div></div><span class="v">30,0</span></div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:22px;">
+      <div class="card"><div class="num acc">57,7%</div><div class="txt">tin Lead/Manager để "thỏa thuận". Trung vị Lead thấp hơn Senior vì phần công bố lệch về tin lương thấp (thiếu không ngẫu nhiên, MNAR), không có nghĩa Lead được trả ít hơn.</div></div>
+      <div class="card"><div class="txt">ITviec 74% và VietnamWorks 73% tin để thỏa thuận; TopCV 44%, JobsGO 40%. So lương giữa các sàn phải kèm tỷ lệ công bố.</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>M1 · sd1_1_4 · kiểm tra S-04 đạt</span><span>9</span></div>
+</section>
+
+<!-- 10. SD2 -->
+<section style="gap:24px;">
+  <div class="eyebrow">SD2 · Gói kỹ năng</div>
+  <h2>Kỹ năng đi theo gói, và mỗi nghề có gói riêng</h2>
+  <p class="lede">FP-Growth trên giỏ công cụ của 3.124 tin, theo toàn thị trường và từng nghề × nhóm cấp: <b>12.642 luật</b>; đổi support ± một bậc vẫn giữ top luật.</p>
+  <table class="t">
+    <tr><th>Phạm vi</th><th>Luật</th><th class="r">Số tin</th><th class="r">Confidence</th><th class="r">Lift</th></tr>
+    <tr><td>Toàn thị trường</td><td>kubernetes ⇒ docker</td><td class="r">311</td><td class="r">76%</td><td class="r">4,3</td></tr>
+    <tr><td>Toàn thị trường</td><td>gcp ⇒ aws</td><td class="r">245</td><td class="r">88%</td><td class="r">5,8</td></tr>
+    <tr><td>Web</td><td>spring_boot ⇒ java</td><td class="r">151</td><td class="r">97%</td><td class="r">2,3</td></tr>
+    <tr><td>Web</td><td>typescript ⇒ react</td><td class="r">123</td><td class="r">69%</td><td class="r">2,0</td></tr>
+    <tr><td>Data/AI</td><td>tableau ⇒ power_bi</td><td class="r">59</td><td class="r">95%</td><td class="r">3,7</td></tr>
+    <tr><td>DevOps/Cloud</td><td>grafana ⇒ prometheus</td><td class="r">65</td><td class="r">89%</td><td class="r">3,2</td></tr>
+    <tr><td>Tester</td><td>cypress ⇒ playwright</td><td class="r">41</td><td class="r">87%</td><td class="r">3,9</td></tr>
+  </table>
+  <div class="card" style="flex-direction:row; gap:28px; align-items:center;">
+    <div class="num acc" style="min-width:150px;">124</div>
+    <div class="txt">kỹ năng hiếm (&lt; 2% tin) nhưng có giá trị: đi kèm gói rất chặt (milvus đi cùng python + weaviate, lift 22,9) hoặc chủ yếu ở Senior/Lead (way4, 73% tin Senior trở lên).</div>
+  </div>
+  <div class="foot"><span>M2 · skill_association_rules, sd2_rare_skills</span><span>10</span></div>
+</section>
+
+<!-- 11. SD3 -->
+<section class="alt">
+  <div class="eyebrow">SD3 · Nhóm việc và tin lạ</div>
+  <h2>Cụm từ nội dung tin khớp một phần với nhóm nghề gán bằng luật</h2>
+  <div class="grid2">
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <p class="small">K-Means k = 10 trên K-tool + K-concept + e5, giảm chiều SVD; HDBSCAN để tìm điểm lạ.</p>
+      <div class="grid2" style="gap:20px;">
+        <div class="card"><div class="num">0,32</div><div class="lbl">NMI giữa cụm và nhóm nghề (ARI 0,21)</div></div>
+        <div class="card"><div class="num blue">0,83</div><div class="lbl">ARI trung bình 5 seed (ngưỡng 0,8): cụm ổn định</div></div>
+        <div class="card"><div class="num acc">0,075</div><div class="lbl">silhouette: cụm chồng lấn, ranh giới mờ</div></div>
+        <div class="card"><div class="num">13</div><div class="lbl">tin "có vẻ gán sai nhóm"; chấm tay 10 tin thì 3 tin sai thật</div></div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div class="card"><div class="num acc">233</div><div class="lbl">tin "khác hoặc mới" (6,3%)</div>
+        <div class="txt">Isolation Forest chạy trên tin biết cấp, ngưỡng lý do theo phân vị dữ liệu; GLOSH của HDBSCAN cho tin nằm ngoài cụm.</div></div>
+      <table class="t">
+        <tr><th>Loại</th><th class="r">Số tin</th><th>Ý nghĩa</th></tr>
+        <tr><td>mới</td><td class="r">102</td><td>tổ hợp kỹ năng ít gặp, các trường bình thường</td></tr>
+        <tr><td>khác</td><td class="r">97</td><td>có mã lý do: quá nhiều công cụ, fresher đòi nhiều…</td></tr>
+        <tr><td>chưa rõ</td><td class="r">34</td><td>bị gắn cờ nhưng chưa có lý do rõ</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span>M3, M4 · cluster_family_crosstab, job_anomalies</span><span>11</span></div>
+</section>
+
+<!-- 12. SD4 -->
+<section>
+  <div class="eyebrow">SD4 · Kỹ năng đáng tiền</div>
+  <h2>Mô hình lương thắng baseline 16,7%; kinh nghiệm và cấp bậc quyết định phần lớn</h2>
+  <div class="grid2">
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div class="grid2" style="gap:20px;">
+        <div class="card"><div class="num acc">6,1</div><div class="lbl">MAE (triệu/tháng) so với baseline trung vị cấp × nghề 7,3</div></div>
+        <div class="card"><div class="num">0,56</div><div class="lbl">R² thang log trên tập test; CV R² 0,59</div></div>
+      </div>
+      <p class="small">Random Forest, train 1.159 tin, test 299 tin. Chia theo công ty (GroupShuffleSplit theo company_id), một công ty chỉ nằm một phía nên không rò rỉ.</p>
+      <div class="card"><div class="txt">Ước lượng lương cho 2.105 tin "thỏa thuận", kèm khoảng P10–P90 từ các cây, nhãn "ước tính".</div></div>
+    </div>
+    <div class="bars">
+      <div class="small" style="margin-bottom:4px;">Tỷ trọng SHAP theo nhóm đặc trưng (thang log lương)</div>
+      <div class="bar"><span class="l">Kinh nghiệm</span><div class="tr"><div class="f acc" style="width:100.0%"></div></div><span class="v">42,1%</span></div>
+      <div class="bar"><span class="l">Cấp bậc</span><div class="tr"><div class="f acc" style="width:58.7%"></div></div><span class="v">24,7%</span></div>
+      <div class="bar"><span class="l">Khái niệm (gộp)</span><div class="tr"><div class="f" style="width:29.1%"></div></div><span class="v">12,2%</span></div>
+      <div class="bar"><span class="l">Nguồn tin</span><div class="tr"><div class="f" style="width:18.5%"></div></div><span class="v">7,8%</span></div>
+      <div class="bar"><span class="l">Công cụ (gộp)</span><div class="tr"><div class="f" style="width:13.9%"></div></div><span class="v">5,8%</span></div>
+      <div class="bar"><span class="l">Nhóm nghề</span><div class="tr"><div class="f" style="width:12.1%"></div></div><span class="v">5,1%</span></div>
+      <div class="bar"><span class="l">Tỉnh</span><div class="tr"><div class="f" style="width:5.1%"></div></div><span class="v">2,1%</span></div>
+      <p class="small" style="margin-top:14px;">Kỹ năng đứng đầu SHAP: docker, kubernetes, python, mysql, cisco. Đây là liên hệ thống kê, không phải nhân quả.</p>
+    </div>
+  </div>
+  <div class="foot"><span>M5 · salary_factor_importance · kiểm tra S-05 đạt</span><span>12</span></div>
+</section>
+
+<!-- 13. SD5 -->
+<section class="alt">
+  <div class="eyebrow">SD5 · Lộ trình cho người mới</div>
+  <h2>Ví dụ nghề Web: học theo gói, để phần nâng cao về sau</h2>
+  <p class="small">192 tin Web cho Intern/Fresher và Junior. Điểm = nhu cầu × (1 + giá trị SHAP chuẩn hóa); thứ tự học lấy từ luật M2 trong nhóm người mới.</p>
+  <div class="path">
+    <div class="lvl"><div class="k">Bước 1 · nền</div><div class="chips"><span class="chip b">javascript 40%</span><span class="chip b">git 31%</span><span class="chip">sql 30%</span><span class="chip">java 30%</span><span class="chip">python 26%</span></div></div>
+    <div class="arrow">→</div>
+    <div class="lvl"><div class="k">Bước 2 · theo gói</div><div class="chips"><span class="chip">html / css</span><span class="chip">react</span><span class="chip">typescript</span><span class="chip">nodejs</span><span class="chip">spring_boot</span><span class="chip">docker → kubernetes</span></div></div>
+    <div class="arrow">→</div>
+    <div class="lvl x"><div class="k">Chưa nên đầu tư sớm</div><div class="chips"><span class="chip">graphql</span><span class="chip">github_actions</span><span class="chip">jenkins</span><span class="chip">azure</span><span class="chip">hibernate</span></div><div class="small">phổ biến ở Senior/Lead gấp 3–14 lần người mới</div></div>
+  </div>
+  <div class="grid2" style="gap:40px;"><table class="t"><tr><th>Nghề</th><th class="r">Tin mới</th><th class="r">cov@10</th><th class="r">Baseline</th><th>Độ tin cậy</th></tr><tr><td>Bridge</td><td class="r">123</td><td class="r">0,25</td><td class="r">0,02</td><td><span class="ok">ổn định</span></td></tr><tr><td>Data/AI</td><td class="r">138</td><td class="r">0,09</td><td class="r">0,04</td><td><span class="ok">ổn định</span></td></tr><tr><td>Design</td><td class="r">53</td><td class="r">0,33</td><td class="r">0,00</td><td><span class="no">tham khảo</span></td></tr><tr><td>DevOps/Cloud</td><td class="r">42</td><td class="r">0,12</td><td class="r">0,02</td><td><span class="no">tham khảo</span></td></tr></table><table class="t"><tr><th>Nghề</th><th class="r">Tin mới</th><th class="r">cov@10</th><th class="r">Baseline</th><th>Độ tin cậy</th></tr><tr><td>Infra/Support</td><td class="r">193</td><td class="r">0,42</td><td class="r">0,02</td><td><span class="no">tham khảo</span></td></tr><tr><td>Security</td><td class="r">41</td><td class="r">0,14</td><td class="r">0,00</td><td><span class="no">tham khảo</span></td></tr><tr><td>Tester</td><td class="r">130</td><td class="r">0,17</td><td class="r">0,08</td><td><span class="ok">ổn định</span></td></tr><tr><td>Web</td><td class="r">192</td><td class="r">0,06</td><td class="r">0,02</td><td><span class="ok">ổn định</span></td></tr></table></div>
+  <div class="foot"><span>M6 · sd5_*.json · kỹ năng mềm xếp riêng (Web: phối hợp 45%, chủ động 43%, ham học 38%)</span><span>13</span></div>
+</section>
+
+<!-- 14. Đánh giá và giới hạn -->
+<section>
+  <div class="eyebrow">Đánh giá</div>
+  <h2>Cái gì đạt, cái gì chưa, và vì sao</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3 class="ok">Đạt</h3>
+      <ul class="b">
+        <li>Kiểm tra S-01 đến S-06 đạt; tổng mỗi bảng BI khớp 3.718.</li>
+        <li>Lương tăng đúng thứ tự Intern &lt; Junior &lt; Middle &lt; Senior.</li>
+        <li>Mô hình lương hơn baseline 16,7% (yêu cầu ≥ 10%).</li>
+        <li>Cụm ổn định qua 5 seed; lộ trình hơn baseline ở cả 8 nghề.</li>
+        <li>Chạy lại cho cùng số (sha256 đầu vào ghi trong mining_metrics.json).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="no">Giới hạn</h3>
+      <ul class="b">
+        <li>Silhouette 0,075: nhóm việc IT chồng lấn nhau, không tách gọn.</li>
+        <li>Lương: R² 0,56 và MAE 6,1 triệu chưa tới mục tiêu tuyệt đối (0,6 và 4,5); mới đạt mục tiêu hơn baseline.</li>
+        <li>Lộ trình 4/8 nghề lệch khi chia 80/20 nên chỉ để tham khảo.</li>
+        <li>Tỉnh lấy theo trụ sở công ty ở vài sàn (PRE-38); 57,7% tin Lead giấu lương.</li>
+        <li>Độ chính xác nhóm nghề đo trên mẫu đã dùng để sửa luật, cần đo lại trên mẫu độc lập.</li>
+        <li>Chỉ có phía nhà tuyển dụng, một kỳ 3 tháng: không kết luận xu hướng hay nhân quả.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Spec 08 · docs/KNOWN_ISSUED.md</span><span>14</span></div>
+</section>
+
+<!-- 15. Kết luận -->
+<section class="dark">
+  <div class="eyebrow">Kết luận</div>
+  <h2>Gợi ý cho sinh viên IT, rút ra từ 3.718 tin</h2>
+  <div class="grid2">
+    <ul class="b">
+      <li><b>SQL và Python</b> là nền chung, có mặt ở hơn 1/5 tin; người mới gặp thêm git, linux, docker.</li>
+      <li><b>Học theo gói:</b> javascript → html/css → react/typescript; java → spring_boot; docker → kubernetes.</li>
+      <li><b>Kinh nghiệm và cấp bậc</b> chi phối lương; kỹ năng riêng lẻ chỉ cộng thêm phần nhỏ.</li>
+      <li><b>Kỹ năng mềm</b> xuất hiện dày hơn cả công cụ trong tin cho người mới.</li>
+    </ul>
+    <div style="display:flex; flex-direction:column; gap:22px;">
+      <div class="card"><div class="tag">Sản phẩm</div><div class="txt">Pipeline 4 giai đoạn tái lập được, bảng sạch 3.718 × 26, ma trận 973 đặc trưng, artifact M1–M6 và dashboard theo SD1–SD5.</div></div>
+      <div class="card"><div class="tag">Hướng tiếp</div><div class="txt">Thu thập thêm kỳ để so theo thời gian, đo lại nhóm nghề trên mẫu độc lập, sửa tỉnh theo nơi làm việc.</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Cảm ơn thầy cô và các bạn đã lắng nghe</span><span>15</span></div>
+</section>
+
+</div>
+<div id="bar"></div>
+<div id="nav"><button id="prev" aria-label="Slide trước">←</button><span id="cnt"></span><button id="next" aria-label="Slide sau">→</button></div>
+<script>
+(function () {
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(deck.querySelectorAll('section'));
+  var i = 0;
+  try { var h = parseInt(location.hash.slice(1), 10); if (h >= 1 && h <= slides.length) i = h - 1; } catch (e) {}
+  function fit() {
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    deck.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('cnt').textContent = (i + 1) + ' / ' + slides.length;
+    document.getElementById('bar').style.width = ((i + 1) / slides.length * 100) + '%';
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+  }
+  document.addEventListener('keydown', function (e) {
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].indexOf(e.key) >= 0) { e.preventDefault(); show(i + 1); }
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].indexOf(e.key) >= 0) { e.preventDefault(); show(i - 1); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'f' || e.key === 'F') { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  var x0 = null;
+  document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; });
+  document.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1)); x0 = null; });
+  window.addEventListener('resize', fit);
+  fit(); show(i);
+})();
+</script>
+</body>
+</html>
