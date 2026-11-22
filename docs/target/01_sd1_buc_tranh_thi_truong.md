@@ -109,4 +109,4 @@ Quy tắc báo số áp dụng cho mọi bảng: ghi n và độ phủ; ô có n
 
 - Dữ liệu vào: `preprocessing/normalization/`, `processing/` (bước 10).
 - Hiển thị: `monitoring/` (trang Insights), `docs/spec/09_monitoring_spec.md`.
-- Chất lượng dữ liệu cần cho SD1: PRE-35, PRE-37 (`posted_month`) và PRE-12 trong `docs/KNOWN_ISSUED.md`. Ngưỡng n ≥ 30: PRE-36.
+- Chất lượng dữ liệu cần cho SD1: PRE-35, PRE-37 (`posted_month`) và PRE-12 trong `docs/KNOWN_ISSUED.md`. Ngưỡng n ≥ 30: chốt 22/11 (L-60).

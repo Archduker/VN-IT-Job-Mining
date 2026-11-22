@@ -21,3 +21,4 @@ Lệnh: `python -m mining.run_mining_pipeline [--only fp,cluster,…] [--dry-run
 - **M1 (`bi.py`) lấy kỹ năng từ `job_skills` + `skill_view`** (slug, như tên cột ma trận vì `encoding_dictionary.json` không có `skills_map`). Không có `--job-skills` thì lùi về ma trận và ghi chú. File `sd1_*.json` không chứa thời điểm chạy để chạy lại ra cùng file.
 - **`--synthetic` chỉ cho test** (`mining/synthetic.py`, schema giống Silver). Không lấy số báo cáo từ đó (L-19).
 - Test ghi vào `tmp_path`; chạy xong xem `git status` (không được đổi `mining/artifacts/`, `data/`, `reports/`).
+- **Nghiệm thu (22/11, L-60):** `targets_summary` chỉ chứa cổng; Silhouette/DB và R²/MAE tuyệt đối nằm ở `targets_summary.report_only`, đừng đưa lại thành cổng. Tên cụm có tiền tố "Hỗn hợp"/"Ít công cụ" (M3.8b): code đọc nghề của cụm phải dùng `dominant_job_family`, không tách từ `cluster_name`. Chạy lại mining thì chạy `python scripts/build_mining_charts.py --inject` để slide khớp số.

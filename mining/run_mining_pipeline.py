@@ -212,9 +212,7 @@ def _targets_summary(m: dict[str, Any]) -> dict[str, Any]:
         s["fp_min_rules"] = m["association"]["meets_min_rules_target"]
         s["fp_stability"] = m["association"].get("meets_stability_target")
     if "clustering" in m:
-        s["cluster_silhouette"] = m["clustering"]["meets_silhouette_target"]
         s["cluster_min_k"] = m["clustering"]["meets_min_clusters"]
-        s["cluster_davies_bouldin"] = m["clustering"]["meets_davies_bouldin_target"]
         s["cluster_stability"] = m["clustering"]["meets_stability_target"]
         s["cluster_min_share"] = m["clustering"]["meets_min_cluster_share"]
         s["cluster_no_skill_count_split"] = not m["clustering"]["skill_count_violations"]
@@ -226,7 +224,20 @@ def _targets_summary(m: dict[str, Any]) -> dict[str, Any]:
     if "recommend" in m:
         s["recommend_beats_baseline10"] = m["recommend"]["all_beat_baseline10"]
         s["recommend_split_ok"] = m["recommend"]["all_split_ok"]
+        fams = m["recommend"].get("families") or {}
+        s["recommend_split_ok_families"] = f'{sum(bool(f.get("split_ok")) for f in fams.values())}/{len(fams)}'
     s["sanity_all_passed"] = m["sanity_summary"]["all_passed"]
+    # Chốt 22/11 (L-60, đóng PRE-36): các chỉ số dưới chỉ báo cáo, không là cổng nghiệm thu.
+    # Silhouette/DB: quét k 2–20 đều cho Silhouette 0,075–0,10 nên chồng lấn là tính chất của dữ liệu;
+    # R²/MAE tuyệt đối: SD4 nghiệm thu bằng mức thắng baseline (>= 10%).
+    info: dict[str, Any] = {}
+    if "clustering" in m:
+        info["cluster_silhouette"] = m["clustering"]["meets_silhouette_target"]
+        info["cluster_davies_bouldin"] = m["clustering"]["meets_davies_bouldin_target"]
+    if "salary" in m and "holdout" in m["salary"]:
+        info["salary_r2_target"] = m["salary"].get("meets_r2_target")
+        info["salary_mae_target"] = m["salary"].get("meets_mae_target")
+    s["report_only"] = info
     return s
 
 

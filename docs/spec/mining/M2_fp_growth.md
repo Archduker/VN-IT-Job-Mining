@@ -35,7 +35,7 @@ Nhận xét trên số 20/11: luật lift cao nhất đều ở Security / DevOp
 | M2.2b | Giữ `min_confidence` 0,60, `min_lift` 1,20, `max_len` 3, `min_group_size` 100 | Đã dùng ở SD5 (luật mạnh) |
 | 2.1 | `top_skills_by_family`: với mỗi nghề, tỷ lệ tin có kỹ năng k trong tin của nghề, top 15, **ba bảng** (tool, concept, soft) từ `job_skills` + `skill_view`. Thêm phạm vi ALL. Nghề < 30 tin ghi "ít dữ liệu" | Quyết định 2 (17/11), spec 07 mục 4 |
 | 2.3 | `mine_stratified_rules` thêm phân tầng **nghề × nhóm cấp** (người mới / Middle+), áp **`min_level_group_size` 40** (người dùng chốt 20/11, phương án 2.B: với 100 thì chỉ Web và Other có giỏ người mới đủ; 40 thì đủ cả 6 nghề lớn). Support vẫn có sàn 10 tin (M2.2a). So từng cặp: luật chỉ có ở người mới, chỉ ở Middle+, ở cả hai | SD2 câu 2.3 |
-| 2.4 | `rare_skills`: K-tool có DF < 2% số giỏ **và** (nằm trong một luật lift ≥ 2 **hoặc** ≥ 60% số lần xuất hiện ở tin Senior/Lead). Mỗi kỹ năng ghi: số tin, luật mạnh nhất chứa nó, tỷ lệ tin cấp cao. Ngưỡng 2%, 2, 60% là đề xuất PRE-36 | 20/11: 217/290 cột K-tool có DF < 2%, nên điều kiện thứ hai là chính |
+| 2.4 | `rare_skills`: K-tool có DF < 2% số giỏ **và** (nằm trong một luật lift ≥ 2 **hoặc** ≥ 60% số lần xuất hiện ở tin Senior/Lead). Mỗi kỹ năng ghi: số tin, luật mạnh nhất chứa nó, tỷ lệ tin cấp cao. Ngưỡng 2%, 2, 60% là chốt 22/11, L-60 | 20/11: 217/290 cột K-tool có DF < 2%, nên điều kiện thứ hai là chính |
 | M2.5 | `support_stability`: chạy lại phạm vi ALL và từng nghề với support × 0,5 và × 2 (một bậc); đo tỷ lệ trùng của top 20 luật so với ngưỡng gốc. **Xếp top 20 theo confidence × support** (người dùng chốt 20/11, phương án 1.B; xếp theo lift cho 0,31 ở × 2 vì lift nghiêng về cặp hiếm) | Spec 08: luật mạnh không đổi lớn khi đổi support |
 | M2.6 | Xuất `sd2_hand_check.csv`: 20 luật mạnh nhất (top lift trong luật có support ≥ ngưỡng M2.2a), có cột `dung`/`ghi_chu` để người dùng điền. Đã điền thì không ghi đè | Spec 08: kiểm tay 20 luật |
 
@@ -77,8 +77,8 @@ Nhận xét trên số 20/11: luật lift cao nhất đều ở Security / DevOp
 | S-01 Spring Boot ⇒ Java | conf ≥ 0,85, lift ≥ 1,5 (20/11: 0,961, pass) |
 | S-03 React ⇒ JS/TS | ≥ 0,60 (đề xuất M0.7b; 20/11: 0,671) |
 | S-02 Flutter ⇒ Dart | chỉ báo cáo (đề xuất M0.7a; 20/11: 0,394) |
-| Độ ổn định top 20 luật khi support ×0,5 / ×2 | trùng ≥ 70% (đề xuất PRE-36) |
-| Kiểm tay 20 luật | ≥ 16/20 hợp lý (đề xuất) |
+| Độ ổn định top 20 luật khi support ×0,5 / ×2 | trùng ≥ 70% (chốt 22/11; đạt 98% / 89%) |
+| Kiểm tay 20 luật | ≥ 16/20 hợp lý (chốt 22/11; đạt 20/20, L-60) |
 | Bảng 2.1 không có kỹ năng mềm trong bảng tool và ngược lại | test |
 | `pytest tests/unit/test_mining_association.py` | xanh |
 
@@ -92,7 +92,7 @@ Nhận xét trên số 20/11: luật lift cao nhất đều ở Security / DevOp
 | Kỹ năng hiếm (2.4) | 87 / 201 công cụ có DF < 2% (ví dụ k6, wireshark, nessus, prtg, katalon, way4) |
 | Ổn định (M2.5) | support × 0,5: trùng top 20 trung bình 0,75 (nhỏ nhất 0); × 2: 0,31 (nhỏ nhất 0). **Không đạt 0,70 ở × 2** |
 | S-01 / S-02 / S-03 | như M0: 0,961 pass / 0,394 info / 0,671 pass |
-| Kiểm tay | 20 luật trong `sd2_hand_check.csv`; chưa điền |
+| Kiểm tay | 22/11 (Claude): 20/20 hợp lý, gồm 4 tập mục (grafana–prometheus, postman–swagger–sql, cursor–claude_code, cpp–flask–django). Mẫu 800 luật (seed 42): mỗi luật ≥ 5 công ty, 0,1% luật có một công ty > 50% tin |
 
 **Sau khi người dùng chốt 1.B, 2.B (chạy thật 20/11, `python -m mining.run_mining_pipeline --only bi,fp`, ghi `mining/artifacts/`):** 8.756 luật (all 4.666, Middle+ 3.642, người mới 448). Nghề × người mới: Web 427 giỏ / 339 luật, Other 133 / 3, Tester 87 / 7, Data/AI 82 / 15, Bridge 70 / 2, Security 55 / 22, DevOps/Cloud 44 / 60; Design, Game, IoT, Mobile < 40 giỏ. Ổn định (top 20 theo confidence × support): × 0,5 trùng 1,00 ở mọi phạm vi; × 2 trung bình 0,875, đạt 0,70; riêng ALL = 0 vì ở support 0,10 toàn thị trường không còn luật nào (ở 0,05 có 15 luật). Kiểm tay 20 luật (`sd2_hand_check.csv`) còn mở.
 
@@ -103,4 +103,4 @@ Nhận xét (lần đo trước khi chốt): top 20 xếp theo lift nghiêng v�
 - **Có code đủ 2.1–2.4, M2.5, M2.6 từ 20/11.** Người dùng chốt 20/11 ("1.b 2.b"): ổn định xếp top 20 theo confidence × support; nhóm cấp dùng ngưỡng 40 giỏ. Kiểm tay 20 luật còn mở.
 - Đi khác prompt: phạm vi nghề × nhóm cấp ghi bằng hai cột `job_family_scope` (nghề) + `level_group` (all / newcomer / middle_plus), không gộp `Web|newcomer`, để Mart vẫn lọc theo nghề.
 - Đã duyệt 20/11: M2.2a (10 tin), ngưỡng ổn định 70%, 16/20.
-- MINE-1 (S-02, S-03), PRE-36 (ngưỡng kỹ năng hiếm).
+- Đóng 22/11 (L-60): S-01, S-03 đạt, S-02 chỉ báo cáo; ngưỡng kỹ năng hiếm chốt.

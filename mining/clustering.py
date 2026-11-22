@@ -151,12 +151,14 @@ def profile_clusters(
     concepts: pd.DataFrame | None = None,
     meta: pd.DataFrame | None = None,
     min_salary_n: int = 30,
+    params: ClusteringParams | None = None,
 ) -> list[dict[str, Any]]:
     """Hồ sơ cụm (M3.8): công cụ và khái niệm đặc trưng (theo lift), nghề đa số, top tiêu đề, phân bố cấp,
     trung vị n_tools / n_concepts, trung vị lương (chỉ khi >= min_salary_n tin có lương)."""
     fam = pd.Series(job_family).reset_index(drop=True).fillna(JOB_FAMILY_OTHER).astype(str)
     sal = pd.Series(salary_mil).reset_index(drop=True) if salary_mil is not None else None
     m = meta.reset_index(drop=True) if meta is not None else None
+    p = params or ClusteringParams()
     profiles = []
     used_names: dict[str, int] = {}
     for cid in sorted(set(labels)):
@@ -166,7 +168,17 @@ def profile_clusters(
         dominant = str(fam_counts.index[0]) if len(fam_counts) else JOB_FAMILY_OTHER
         purity = float(fam_counts.iloc[0] / mask.sum()) if len(fam_counts) else 0.0
         head = "/".join(t["skill"] for t in top[:2]) or "không công cụ"
-        name = f"{dominant} · {head}"
+        if m is not None and "n_tools" in m:
+            med_tools = float(pd.to_numeric(m.loc[mask, "n_tools"], errors="coerce").median())
+        else:
+            med_tools = float(np.median(np.asarray(skills.loc[mask].sum(axis=1)).ravel()))
+        if med_tools <= p.name_few_tools_median:
+            prefix = "Ít công cụ"
+        elif purity < p.name_min_purity:
+            prefix = "Hỗn hợp"
+        else:
+            prefix = dominant
+        name = f"{prefix} · {head}"
         used_names[name] = used_names.get(name, 0) + 1
         if used_names[name] > 1:
             name = f"{name} ({used_names[name]})"
@@ -348,7 +360,8 @@ def cluster_jobs(
     dist = np.linalg.norm(Z - cent[[lab_idx[c] for c in labels]], axis=1)
 
     sal = _salary(mk)
-    profiles = profile_clusters(labels, sk, mk["job_family"], sal, p.top_skills_per_cluster, concepts=ck, meta=mk)
+    profiles = profile_clusters(labels, sk, mk["job_family"], sal, p.top_skills_per_cluster, concepts=ck, meta=mk,
+                                params=p)
     names = {pr["cluster_id"]: pr["cluster_name"] for pr in profiles}
     fam = mk["job_family"].fillna(JOB_FAMILY_OTHER).astype(str).to_numpy()
     known = fam != JOB_FAMILY_OTHER  # tin Other (chưa xếp được nhóm) không dùng để so với family

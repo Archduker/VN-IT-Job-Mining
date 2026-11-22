@@ -70,13 +70,13 @@ Chạy thật 20/11 (`python -m mining.run_mining_pipeline`; Silver sha256_16 `a
 |---|---|---|
 | Mỗi tin bị gắn cờ có đúng một `kind` và một `reason_code` | bắt buộc | đạt (test) |
 | Ngưỡng phân vị ghi trong metrics, chạy lại ra cùng số | bắt buộc | đạt (dry-run và chạy thật cùng 246 tin, cùng ngưỡng) |
-| Kiểm tay 20 tin: tỷ lệ đúng là khác/mới thật | báo cáo; ngưỡng chờ PRE-36 | chờ người dùng |
+| Kiểm tay 20 tin: tỷ lệ đúng là khác/mới thật | báo cáo | 22/11 (Claude): "khác" 8/8, "chưa rõ" 2/3, "mới" 2/9 (đa số JD sơ sài) |
 | Tỷ lệ "chưa rõ" | báo cáo; cao thì xem lại M4.5 | 13,0% |
 | `pytest tests/unit/test_mining_anomaly.py` | xanh | 11 passed |
 
 ## 7. Trạng thái, chỗ thiếu, việc mở
 
 - Code xong và chạy thật 20/11 (quyết định 1.B, 2.A).
-- Mở: kiểm tay `sd3_anomaly_hand_check.csv`; ngưỡng nghiệm thu chờ PRE-36.
+- Đã kiểm tay 22/11 (L-60). Kết luận SD3 câu 3.3 dựa vào loại "khác" (có mã lý do); loại "mới" chỉ để đọc thêm, không kết luận có nghề mới.
 - `EXP_SENIORITY_MISMATCH` chưa bắt tin nào (người mới ≥ 5 năm: 0 tin); giữ luật cho dữ liệu sau.
 - Nhóm "mới" gồm nhiều tin thực tập lương thấp (tỷ lệ 0,35–0,5 vẫn trong P5–P95 của cấp): GLOSH xem hồ sơ kỹ năng lạ, chưa chắc là nghề mới. Kiểm tay sẽ cho biết có cần siết M4.5 không.

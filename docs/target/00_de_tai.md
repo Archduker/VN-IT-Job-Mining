@@ -125,7 +125,7 @@ Số liệu ở bảng dưới lấy ngày **10/11/2026** từ `reports/processi
 Quy tắc chung cho mọi SD khi báo số:
 
 - Mọi bảng đều ghi **n** và **độ phủ** của cột đang dùng.
-- Ô nào có n < 30 thì không kết luận, chỉ ghi "ít dữ liệu". Ngưỡng 30 là đề xuất, chờ chốt ở PRE-36.
+- Ô nào có n < 30 thì không kết luận, chỉ ghi "ít dữ liệu". Ngưỡng 30 đã chốt 22/11 (L-60).
 - Không nói "xu hướng tăng/giảm", vì dữ liệu chỉ có khoảng 3 tháng.
 - Số tin theo tháng phụ thuộc lịch cào, nên chỉ so **cơ cấu** trong từng tháng, không so tổng số tin giữa các tháng.
 - Tháng 9 chỉ có tin của những nguồn ghi ngày đăng, vì tháng 9 chưa cào (đo trên Bronze 17/11: 1.629 tin). Khi so tháng 9 với tháng 10–11 thì chỉ dùng các nguồn ghi ngày đăng cho gần hết tin (vietnamworks, careerviet, vieclam24h, itviec, glints, jobsgo: 96–100%); bỏ topcv (0%) và topdev (40,4%), vì tin thiếu ngày đăng của hai nguồn này mang tháng cào.

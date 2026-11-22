@@ -89,17 +89,17 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
   - **SD2:**
     - Khoảng 7% số tin không có kỹ năng (`skills_std` phủ 92,9%).
     - Rút kỹ năng so với nhãn gold chỉ đạt F1 0,27 (PRE-33).
-    - Sanity Flutter⇒Dart và React⇒JS|TS fail (MINE-1).
+    - Sanity: 22/11 S-01, S-03 đạt; S-02 (Flutter⇒Dart) chỉ báo cáo (L-60).
   - **SD3:**
-    - Phân cụm đang tách theo số lượng kỹ năng của tin, không theo nội dung (MINE-1, L-47).
+    - Phân cụm không còn tách theo số kỹ năng (22/11: không cụm nào trung vị 0 công cụ; cụm trung vị 1 công cụ mang tên "Ít công cụ", L-60).
     - Bullet careerviet thô hơn các sàn khác.
     - 81 tin tiếng Anh vẫn dịch hỏng sau cách thử lại mới (19/11, trước 200); bước 04 cách ly (Q1), không vào Silver, Processing, Mining.
   - **SD4:**
     - Lương chỉ phủ 40,2% (min) và 44,5% (max).
     - Lương ngoại lai: 150 tin theo IQR từng cấp, 74 tin ngoài khoảng, 15 tin đáng ngờ.
-    - Lương Senior thấp hơn Middle (MINE-1).
+    - Lương theo cấp đã đơn điệu (S-04 đạt, L-55).
     - 115 tin có cấp bậc mâu thuẫn với kinh nghiệm (`seniority_can_kiem`).
-    - Ngưỡng chuyển từ phương án A sang phương án B: xem PRE-36.
+    - Phương án A thắng baseline 16,7% (ngưỡng 10%, chốt 22/11, L-60).
   - **SD5:**
     - Phụ thuộc SD2 và SD4.
     - Số tin Intern/Fresher/Junior ít.
@@ -109,19 +109,6 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
   1. Người dùng chốt tiêu chí sạch cho từng SD.
   2. Sửa ở `preprocessing/` và `processing/`, rồi chạy lại pipeline.
   3. Cập nhật bảng ảnh chụp trong `docs/target/00_de_tai.md`.
-
-**PRE-36. Ngưỡng nghiệm thu của SD1–SD5 chờ chốt** (mở 17/11/2026)
-
-- Người dùng quyết định chưa cần chốt ngay. Các ngưỡng dưới đây đang ghi trong `docs/target/` với nhãn "đề xuất, chờ chốt PRE-36", và chỉ là đề xuất.
-  - **Chung:** ô bảng có n < 30 thì ghi "ít dữ liệu".
-  - **SD2:** kỹ năng hiếm là kỹ năng xuất hiện ở dưới 2% số tin, và có thêm lift ≥ 2 hoặc ≥ 60% số lần xuất hiện nằm ở tin Senior/Lead.
-  - **SD3:** ARI giữa 5 lần chạy với seed khác nhau ≥ 0,8; không cụm nào dưới 1% số tin. Ngưỡng Silhouette và Davies–Bouldin chưa có đề xuất.
-  - **SD4:**
-    - Phương án A (hồi quy ra con số) đạt khi MAE thấp hơn baseline (trung vị cấp × nghề) ít nhất 10%. Nếu không đạt thì chuyển sang phương án B (đoán khung lương).
-    - Kỹ năng có dưới 30 tin trong tập có lương thì không định giá.
-    - Các ngưỡng đang có trong `mining/config.py` (R² ≥ 0,60, MAE ≤ 4,5 triệu, độ lệch chuẩn CV ≤ 0,05) cũng cần chốt lại theo SD4.
-  - **SD5:** nghề phải có ≥ 30 tin cho người mới; kỹ năng có `demand` ≥ 5%; kỹ năng "để sau" khi tỷ lệ ở tin Senior gấp ≥ 3 lần ở tin người mới; coverage tính khi đáp ứng ≥ 70% số kỹ năng tin đòi; lệch giữa train và test ≤ 10 điểm phần trăm.
-- Cách xử lý: chốt khi bắt đầu làm từng SD. Chốt xong thì sửa nhãn trong `docs/target/` và spec 08.
 
 **PRE-37. `posted_month` thay `posted_date` trong dữ liệu sạch** (mở 17/11/2026)
 
@@ -148,6 +135,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 **PRE-39. Dọn code theo spec 05 v3.0.0** (mở 17/11/2026)
 
 - **19/11 (P3):** hằng `SENIORITY_MAP`, `TOP_PROVINCES_K`, `to_col_slug` đã chuyển sang `processing/encoding/constants.py`; `09_tokens` và `12_tfidf` bỏ khỏi `PROCESSING_STEPS` (code còn, chưa xóa). ~~Còn: `mining/config.py` trỏ bảng 04 và đọc ba khối~~ **Xong 20/11 (M0, L-55):** Mining đọc Silver (`DEFAULT_TABLE`), bỏ `DEFAULT_GOLDEN`/`FALLBACK_GOLDEN`, ba khối kỹ năng. Còn `scripts/load_mart_from_parquet.py` mặc định `--curated-path` legacy.
+- Gỡ code TF-IDF còn lại (chuyển từ MINE-7, quyết định 17/11): xóa `processing/extraction/vectorize.py` và test, `data/processing/12_tfidf/`, `reports/processing/12_tfidf/`. `mining/` đã sạch TF-IDF.
 - Bỏ `05_encoding` khỏi `STEPS` (`preprocessing/common/__init__.py`) và `MODULES` (`scripts/run_preprocessing.py`), vì bước 10 đã thay thế. Người dùng duyệt đề xuất ở spec 03 mục 7 ngày 17/11.
 - Bảng sạch cuối, người dùng duyệt 17/11 (spec 05 mục 4.1):
   - Bảng sạch = `data/preprocessing/04_normalization/all.parquet`.
@@ -182,28 +170,7 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 ## 3b. Data Mining
 
-**MINE-1. Mining đã chạy thật lần đầu (11/11), kết quả cụm yếu, chưa đánh giá**
-
-- Chạy fp, cluster, anomaly trên 4.671 tin (L-46): Silhouette 0,091, DB 2,63, ARI với nhóm nghề 0,056; sanity 4/6 fail (Flutter→Dart conf 0,375; React→JS|TS 0,654; lương Senior < Middle; tỉ lệ lương HN/HCM). Chưa rõ do dữ liệu hay ngưỡng kiểm; chưa chỉnh tham số. Bước `salary` (Random Forest + SHAP) chưa chạy. Đã chốt 16/11: giữ lại, và đây là bước chính thức của SD4 (`docs/target/04_sd4_gia_tri_ky_nang.md`).
-- 20/11 (dry-run chỉ đọc, dữ liệu 19/11, code cũ): sanity 2 pass / 3 fail / 1 bỏ qua. **S-04 fail là lỗi code**: `mining/sanity.py` ánh xạ `{1: Fresher, …, 4: Senior}` trên thang 0 = Intern/Fresher … 4 = Lead, lệch một bậc; tính đúng trên Silver thì 10,0 < 15,5 < 22,5 < 37,5 (pass). S-04 đã sửa (L-55). Sau M0 (đọc Silver, bỏ 86 tin `salary_outlier`): sanity 3 pass / 1 fail / 1 info / 1 bỏ qua; **S-06 fail** (HN/khác 1,452; HCM/khác 1,194 < 1,2); người dùng chốt 20/11 giữ ngưỡng 1,2 và ghi fail, giải thích: chênh HCM so với tỉnh khác nhỏ hơn giả định khi bỏ lương ngoại lai. K-Means k=10: Silhouette 0,165, cụm 2 gom 1.240 tin (độ thuần 0,33). Chi tiết từng bước ở `docs/spec/mining/`.
-- 20/11 M3 chạy thật (tool + concept + e5, 0,15/0,15/0,7, `n_init` 50): ARI 5 seed 0,826 (đạt), không cụm nào trung vị 0 công cụ; Silhouette 0,084, DB 2,49 vẫn thấp (chưa có ngưỡng, PRE-36). Cụm 3 (810 tin, trung vị 1 công cụ, độ thuần 0,25) vẫn là cụm tin ít công cụ.
-- Dòng cũ bên dưới (số giả từ `synthetic.py`) chỉ đúng cho báo cáo trước đó.
-- 11/11 (L-47): 10 family, K-Means k=10: Silhouette 0,10, DB 2,49, ARI 0,07; cụm 1 chứa 292/293 tin không có kỹ năng, cụm 9 là cụm nhiều kỹ năng (trung vị 15): phân cụm một phần tách theo số kỹ năng. Chưa thử IDF cho kỹ năng, chưa lọc tin không có kỹ năng.
-
-- Số trong báo cáo là dữ liệu giả từ `mining/synthetic.py`. Nhãn đã căn theo 5 cấp, 12 nhóm + Other nhưng chưa chạy trên `04_normalization/all.parquet` thật.
-
-**MINE-5. `load_mart_from_parquet.py` biến cột list thành chuỗi;** từ 20/11 (M2) `skill_association_rules.parquet` có thêm cột `level_group` (all / newcomer / middle_plus) mà script chưa nạp, nên luật của nhóm cấp lẫn vào luật cả nghề trong `skill_rules`; chưa có bảng `skill_salary_shap_values` (từ 20/11 có thêm cột `delta_m`, `ci_low`, `ci_high`) và chưa nạp `salary_estimates.parquet`. Script và `scripts/build_slides.py` còn dùng nhãn cũ ("Khác", 6 bậc).
-
-**MINE-6. Ghi chú cho báo cáo đồ án:** SHAP không phải quan hệ nhân quả; `seniority_level` 0–4 gộp Thực tập và Mới tốt nghiệp.
-
-**MINE-7. Code Mining chưa trả lời đủ câu hỏi của SD1–SD5** (mở 17/11/2026; từ 20/11 chi tiết ở `docs/spec/mining/` M0–M6, mục 2.2 và 7 của từng file)
-
-- **Đã xong 20/11** (code, chạy thật, chi tiết ở mục 5–7 của từng file `docs/spec/mining/`): `STEPS` có `bi` và `recommend`; M1 (`bi.py`), M2, M3, M4, M5, M6 (`recommend.py`). Kiểm tay còn mở: M1 (20 tin), M2 (20 luật), M3 (8 tin gán sai), M4 (`sd3_anomaly_hand_check.csv`, 20 tin), M6 (đọc lộ trình Web, Data/AI sau 3.B).
-- **M6:** DevOps/Cloud lệch 80/20 0,106 (> 0,10, 45 tin người mới).
-- **Quyết định đã chốt 17/11 (spec 07 mục 4), code chưa làm:**
-  - Bỏ TF-IDF: gỡ `build_tfidf`, `tfidf_weight` khỏi `mining/clustering.py` và `mining/config.py`; bỏ `12_tfidf` khỏi `PROCESSING_STEPS` (`scripts/run_preprocessing.py`), xóa `processing/extraction/vectorize.py` và test, xóa `data/processing/12_tfidf/`, `reports/processing/12_tfidf/`.
-  - Kỹ năng mềm và ngoại ngữ: đánh dấu 8 slug (`communication`, `teamwork`, `problem_solving`, `logical_thinking`, `time_management`, `presentation`, `english`, `japanese`) trong `skills_taxonomy_230.json`; M1, M2 (top 15, kỹ năng hiếm) và M6 xếp hai danh sách riêng.
-  - M3 loại tin không có kỹ năng nào sau khi trích từ JD (bước 08) trước khi phân cụm; ghi `n_dropped_no_skill` vào metrics (11/11: 292 tin).
+**MINE-5. `load_mart_from_parquet.py` biến cột list thành chuỗi** (tầng phục vụ Postgres mart, không ảnh hưởng kết quả Mining và kết luận đồ án; 22/11); từ 20/11 (M2) `skill_association_rules.parquet` có thêm cột `level_group` (all / newcomer / middle_plus) mà script chưa nạp, nên luật của nhóm cấp lẫn vào luật cả nghề trong `skill_rules`; chưa có bảng `skill_salary_shap_values` (từ 20/11 có thêm cột `delta_m`, `ci_low`, `ci_high`) và chưa nạp `salary_estimates.parquet`. Script và `scripts/build_slides.py` còn dùng nhãn cũ ("Khác", 6 bậc).
 
 ## 4. Chung
 

@@ -10,6 +10,8 @@
 
 > **Chạy lại 22/11/2026 sau L-59 (PRE-44 vòng 2: lọc tin không phải IT, luật nghề N3e; bảng 3.718 tin, Silver sha256_16 `60ac8d8b672d45eb`):** sanity S-01..S-06 đạt; FP-Growth 12.642 luật, 124 kỹ năng hiếm; K-Means k = 10 silhouette 0,075, NMI 0,316, ARI với nghề 0,209, tin gán sai 13 (chấm tay 3/10 đúng); ổn định 5 seed 0,826 sau khi nâng `n_init` 150 (50 chỉ còn 0,791); M4 233 tin (6,27%: mới 102, khác 97, chưa rõ 34); M5 MAE 6,105 so baseline 7,332 (hơn 16,7%), R²(log) 0,557, CV R² 0,589; M6 lệch 80/20 đạt ở Bridge, Data/AI, Tester, Web, còn Design, DevOps/Cloud, Infra/Support, Security ghi "tham khảo".
 
+> **Nghiệm thu 22/11/2026 (L-60):** ngưỡng chốt (đóng PRE-36), Silhouette/DB và R²/MAE tuyệt đối chỉ báo cáo; tên cụm theo M3.8b ("Hỗn hợp", "Ít công cụ"); kiểm tay M2 20/20, M4 khác 8/8 · mới 2/9, M6 Web không bước ngược. Bảng kết quả cuối ở spec 08 mục 3. Biểu đồ cho báo cáo: `python scripts/build_mining_charts.py --inject` (ghi `docs/presentation/charts/` và chèn vào `docs/presentation/final_slides.html`).
+
 ## Mục lục
 
 | Bước | File | Code | SD | Trạng thái |

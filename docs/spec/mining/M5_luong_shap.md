@@ -40,7 +40,7 @@
 | M5.3c | `assert_no_leakage` chặn mọi cột chứa "salary" (gồm `salary_target_m`, `salary_bin_*`, `salary_mid`, `salary_range_ratio`) | Spec 06 mục 2.2 |
 | M5.4 | **Chia theo `company_id`**: GroupShuffleSplit 80/20 (seed 42); CV GroupKFold 5 phần theo công ty trên phần train. Kiểm: không `company_id` nào ở cả hai phía. `company_id` null (1 tin) thành nhóm riêng theo `job_id` | SD4 mục 4; 978 công ty trong tập có lương, công ty lớn nhất 21 tin |
 | M5.6 | **Baseline = trung vị `salary_target_m` cấp × nghề** lấy từ `sd1_baseline_salary.json` (M1.B), tính lại **chỉ trên phần train** để không rò test | SD4 |
-| M5.7 | **Phương án A đạt** khi MAE test thấp hơn baseline ≥ 10% (PRE-36) **và** std R² qua CV ≤ 0,05. R² ≥ 0,60 và MAE ≤ 4,5 chỉ báo cáo (ngưỡng cũ, chờ chốt PRE-36). Không đạt → **phương án B**: RF phân lớp 4 khung theo tứ phân vị của phần train, macro-F1 và accuracy so với baseline "luôn đoán khung đông nhất" | SD4 mục 4 |
+| M5.7 | **Phương án A đạt** khi MAE test thấp hơn baseline ≥ 10% (chốt 22/11, L-60) **và** std R² qua CV ≤ 0,05. R² ≥ 0,60 và MAE ≤ 4,5 chỉ báo cáo (chốt 22/11, L-60). Không đạt → **phương án B**: RF phân lớp 4 khung theo tứ phân vị của phần train, macro-F1 và accuracy so với baseline "luôn đoán khung đông nhất" | SD4 mục 4 |
 | M5.8 | 4.3: `mae_by_group` theo `job_family`, `seniority`, `source` trên tập test; nhóm n < 30 ghi "ít dữ liệu" | SD4 câu 4.3 |
 | M5.9 | 4.1: `factor_importance` = trung bình |SHAP| gộp theo nhóm đặc trưng (cấp, kinh nghiệm, tỉnh, nghề, nguồn, kỹ năng gộp, từng kỹ năng top 20) | Impurity importance thiên về biến liên tục |
 | M5.10 | 4.2: `skill_values_from_shap` giữ cách tính hiện có (trung bình φ trên tin có kỹ năng, quy ra triệu bằng lương nền × (e^φ − 1)); **chỉ định giá kỹ năng có ≥ 30 tin trong tập có lương** (`min_skill_sample`); thêm khoảng tin cậy bootstrap 200 lần (seed 42) trên các tin có kỹ năng. Ghi chú F10.6: cấp và kinh nghiệm tương quan nên chia điểm SHAP với nhau | SD4 câu 4.2 |
@@ -109,7 +109,7 @@ Có `concept__` thì giá trị các công cụ nhỏ hơn bản `tool_only` (ku
 | Kiểm tra | Ngưỡng |
 |---|---|
 | Không rò rỉ: không `company_id` nào ở cả train và test; `assert_no_leakage` pass | bắt buộc |
-| A thắng baseline cấp × nghề | MAE thấp hơn ≥ 10% (PRE-36) |
+| A thắng baseline cấp × nghề | MAE thấp hơn ≥ 10% (chốt 22/11; đạt 16,7%) |
 | std R² qua GroupKFold | ≤ 0,05 |
 | S-04 (sửa ở M0), S-05 (φ > 0 cho AWS, Kubernetes hoặc System Design), S-06 | pass hoặc có giải thích |
 | Đóng góp SHAP của cấp tăng dần Intern/Fresher → Senior | pass hoặc có giải thích (Lead MNAR) |
@@ -123,4 +123,4 @@ Có `concept__` thì giá trị các công cụ nhỏ hơn bản `tool_only` (ku
 - Artifact: `skill_salary_shap_values.parquet` (thêm `delta_m`, `ci_low`, `ci_high`; chỉ kỹ năng ≥ 30 tin), `salary_estimates.parquet`, `salary_factor_importance.json` (4.1 và bảng so phân bố), `trained_salary_rf_model.joblib`.
 - Sửa kèm: S-05 luôn "skipped" vì so tên `AWS` với slug `aws` (L-56).
 - Giá trị kỹ năng đều dưới ±1,2 triệu: kinh nghiệm và cấp giải thích phần lớn; không đọc thành "học X thì lương tăng X" (MINE-6).
-- MINE-1, MINE-5 (Mart chưa có bảng SHAP), MINE-6, PRE-35 (lương phủ 44%), PRE-36.
+- MINE-5 (Mart chưa có bảng SHAP), PRE-35 (lương phủ 44%). SHAP là liên hệ, không phải nhân quả.

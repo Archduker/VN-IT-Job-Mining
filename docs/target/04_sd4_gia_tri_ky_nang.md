@@ -61,7 +61,7 @@ Lương hiện chỉ phủ khoảng 40–45% số tin, và còn lỗi sanity (PR
 
 **Phương án A đạt** khi cả hai điều kiện đúng:
 
-- MAE trên tập test **thấp hơn baseline ít nhất 10%**. Ngưỡng 10% là đề xuất, chờ chốt ở PRE-36.
+- MAE trên tập test **thấp hơn baseline ít nhất 10%**. Ngưỡng 10% đã chốt 22/11 (L-60); 22/11 đạt 16,7%.
 - Đạt các ngưỡng đang có trong `mining/config.py`: R² (log) ≥ 0,60, MAE ≤ 4,5 triệu, độ lệch chuẩn R² qua các lần kiểm định chéo ≤ 0,05.
 
 ### Phương án B (dự phòng): đoán khung lương (phân lớp)
@@ -102,7 +102,7 @@ So phân bố cấp bậc, nghề và trang giữa tập có lương và tập t
 - **Quan hệ nhân quả:** SHAP cho biết model dùng kỹ năng X thế nào để đoán, không chứng minh "học X sẽ được tăng lương" (MINE-6).
 - **Lương thật nhận được:** chỉ là lương ghi trên tin.
 - **Tin thỏa thuận chắc chắn lương bao nhiêu:** ước tính dựa trên giả định tin thỏa thuận giống tin công khai lương có cùng đặc điểm. Giả định này có thể sai, ví dụ tin thỏa thuận thường là vị trí cao. Vì vậy luôn ghi nhãn "ước tính".
-- **Kỹ năng hiếm:** kỹ năng có dưới khoảng 30 tin (đề xuất, chờ chốt PRE-36) trong tập có lương thì không đủ dữ liệu để định giá. Chỉ ghi "ít dữ liệu".
+- **Kỹ năng hiếm:** kỹ năng có dưới khoảng 30 tin (chốt 22/11, L-60) trong tập có lương thì không đủ dữ liệu để định giá. Chỉ ghi "ít dữ liệu".
 
 ## 8. Code và spec liên quan
 

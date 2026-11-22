@@ -139,8 +139,8 @@ class ClusteringParams:
     k_min: int = 2  # quét 2–20 để báo Elbow và Silhouette
     k_max: int = 20
     preferred_min_k: int = 5
-    silhouette_target: float = 0.28
-    davies_bouldin_target: float = 1.80  # docs/tasks/08 (Thuận): DBI < 1.80
+    silhouette_target: float = 0.28  # chỉ báo cáo, không là cổng (chốt 22/11, L-60: quét k 2–20 đều 0,075–0,10)
+    davies_bouldin_target: float = 1.80  # chỉ báo cáo, không là cổng (chốt 22/11, L-60)
     svd_variance_target: float = 0.80
     svd_max_components: int = 60
     # TF-IDF đã gỡ (spec 07 quyết định 1, M0.6)
@@ -157,6 +157,10 @@ class ClusteringParams:
     stability_ari_target: float = 0.80  # PRE-36
     min_cluster_share: float = 0.01  # cụm nhỏ nhất >= 1% số tin (PRE-36)
     skill_count_ratio_max: float | None = None  # M3.8, 3.B (20/11): chỉ kiểm trung vị n_tools < 1
+    # M3.8b (22/11, L-60): tên cụm chỉ mang tên nghề khi nghề đó chiếm >= 40% cụm; dưới mức đó ghi "Hỗn hợp".
+    # Cụm có trung vị n_tools <= 1 ghi "Ít công cụ" (tin ghi ít công cụ, gom theo e5 + khái niệm)
+    name_min_purity: float = 0.40
+    name_few_tools_median: float = 1.0
     hybrid_max_share: float = 0.60  # M3.10 nghề lai
     hybrid_min_second: float = 0.20
     niche_family_share: float = 0.50  # M3.10 nghề ngách

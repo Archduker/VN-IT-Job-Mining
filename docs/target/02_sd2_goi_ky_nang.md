@@ -24,7 +24,7 @@ Phần này không có nhãn đúng/sai cho trước. Máy chỉ đếm và tìm
 - nằm trong một luật có lift ≥ 2;
 - có từ 60% số lần xuất hiện trở lên nằm ở tin Senior hoặc Lead/Manager.
 
-Các ngưỡng 2%, lift 2 và 60% (đề xuất, chờ chốt PRE-36).
+Các ngưỡng 2%, lift 2 và 60% (chốt 22/11, L-60).
 
 ## 3. Dữ liệu dùng
 

@@ -24,7 +24,8 @@ def test_cli_synthetic_writes_all_artifacts(tmp_path, capsys):
     assert m["synthetic"] is True
     assert {"association", "clustering", "anomaly", "salary", "sanity_checks", "targets_summary"} <= set(m)
     assert len(m["sanity_checks"]) == 6
-    assert "cluster_davies_bouldin" in m["targets_summary"]
+    assert "cluster_davies_bouldin" in m["targets_summary"]["report_only"]
+    assert "cluster_silhouette" not in m["targets_summary"]  # chỉ báo cáo từ 22/11 (L-60)
     assert m["clustering"]["davies_bouldin_target"] == 1.80
     assert m["artifacts"]["clusters"]["rows"] == 800
 

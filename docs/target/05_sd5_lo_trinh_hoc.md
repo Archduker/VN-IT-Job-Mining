@@ -16,7 +16,7 @@ Kết quả là, với mỗi nghề, một **danh sách kỹ năng ưu tiên có
 
 Áp dụng cho các nhóm nghề có ít nhất 30 tin cho người mới (Intern/Fresher, Junior).
 
-Mọi ngưỡng số trong file này (30 tin, 5%, gấp 3 lần, 70%, 10 điểm phần trăm) là đề xuất, chờ chốt ở PRE-36.
+Mọi ngưỡng số trong file này (30 tin, 5%, gấp 3 lần, 70%, 10 điểm phần trăm) đã chốt 22/11 (L-60).
 
 | Mã | Câu hỏi |
 |---|---|

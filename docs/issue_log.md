@@ -392,6 +392,36 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Còn lại:** chưa đo lại độ đúng nhóm nghề trên mẫu mới độc lập; tỉnh lấy từ trụ sở (PRE-38).
 - **Kiểm chứng:** `tests/unit/test_it_filter.py::test_pre44_round2_excluded_title_groups`, `::test_reviewed_non_it_by_job_id`; `tests/unit/test_normalization_step.py` (`test_n3e_*`, `test_n3b_jd_margin_two`); mọi bước bảo toàn (`reports/pipeline/chain_run.json`).
 
+### L-60. Nghiệm thu Mining còn treo: ngưỡng chưa chốt, tên cụm gây hiểu nhầm, kiểm tay chưa làm (PRE-36, MINE-1, MINE-6, MINE-7, Mining, 22/11/2026)
+- **Lỗi:** sau L-59, `targets_summary` vẫn báo `cluster_silhouette` và `cluster_davies_bouldin` là false như cổng nghiệm thu, dù ngưỡng chưa từng được chốt (PRE-36). Tên cụm luôn lấy nghề đa số, nên cụm chỉ 24–33% một nghề vẫn mang tên "Web" hay "Tester", và cụm 728 tin trung vị 1 công cụ mang tên "Bridge · figma/ios". Spec 08 mục 3 còn ghi "Chưa đo" ở hầu hết tiêu chí; kiểm tay M2, M4, M6 chưa làm.
+- **Nguyên nhân:** ngưỡng PRE-36 để "chốt khi làm từng SD" nhưng chưa ai chốt; `profile_clusters` (`mining/clustering.py`) đặt tên chỉ theo nghề đa số; `_targets_summary` (`mining/run_mining_pipeline.py`) gom mọi chỉ số vào cùng một danh sách.
+- **Cách xử lý (người dùng giao Claude quyết, 22/11):**
+  1. **Chốt ngưỡng (đóng PRE-36):** mọi ngưỡng đề xuất thành chính thức. Riêng Silhouette/Davies–Bouldin và R²/MAE tuyệt đối chỉ báo cáo. Lý do: quét k 2–20 đều cho Silhouette 0,075–0,10; SD4 đo bằng mức thắng baseline. `targets_summary` có khối `report_only` và `recommend_split_ok_families`.
+  2. **Đặt tên cụm (M3.8b):** cụm trung vị ≤ 1 công cụ ghi "Ít công cụ"; nghề đa số < 40% ghi "Hỗn hợp" (`ClusteringParams.name_min_purity`, `name_few_tools_median`).
+  3. **Kiểm tay M2:** 20 luật lift cao nhất là 4 tập mục, đều đúng thực tế. Đo thêm độ tập trung công ty trên mẫu 800 luật (seed 42): mỗi luật ≥ 5 công ty, chỉ 0,1% luật có một công ty chiếm quá nửa. Vậy luật không phải do một công ty đăng lặp tạo ra.
+  4. **Kiểm tay M4 (20 tin):** "khác" 8/8, "chưa rõ" 2/3, "mới" 2/9. Kết luận dùng "khác"; không kết luận có nghề mới.
+  5. **Kiểm tay M3 (tin nghi gán sai):** 6/13 là IT Manager (luật N3e xếp vào Bridge, nội dung xếp vào cụm hạ tầng). Ghi thành phát hiện SD3, không đổi luật người dùng đã chốt.
+  6. **Kiểm tay M6:** đọc lộ trình Web, không có bước ngược.
+  7. **Biểu đồ:** `scripts/build_mining_charts.py` vẽ bản đồ cụm (small multiples), heatmap cụm × nghề, quét k, độ ổn định, giá trị kỹ năng vào `docs/presentation/charts/`. Với `--inject`, script chèn các biểu đồ vào `docs/presentation/final_slides.html`.
+- **Kết quả (chạy thật 22/11, bảng sha `60ac8d8b672d45eb`):** mọi cổng trong `targets_summary` đạt, trừ `recommend_split_ok` (4/8 nghề, các nghề còn lại ghi "tham khảo"). Tên cụm:
+  - C0 Hỗn hợp · aws/git (673)
+  - C1 Infra/Support (406)
+  - C2 Bridge (226)
+  - C3 Data/AI · pytorch (193)
+  - C4 Web · spring_boot (512)
+  - C5 Hỗn hợp · ms_word (158)
+  - C6 Data/AI · tableau (316)
+  - C7 Hỗn hợp · sql/python (285)
+  - C8 Ít công cụ · figma/ios (728)
+  - C9 DevOps/Cloud (212)
+
+  Nhãn cụm và các số khác không đổi so với L-59.
+- **Kiểm chứng:**
+  - `tests/unit/test_mining_clustering.py::test_cluster_name_mixed_and_few_tools`
+  - `tests/unit/test_mining_pipeline.py` (`report_only`)
+  - spec 08 mục 3
+  - `python scripts/build_mining_charts.py --inject`
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

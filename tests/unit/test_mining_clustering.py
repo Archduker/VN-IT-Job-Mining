@@ -211,3 +211,18 @@ def test_cluster_split_by_skill_count_is_flagged():
             {"cluster_id": 2, "median_n_tools": 12.0}]
     assert skill_count_violations(prof, overall_median=5.0, p=ClusteringParams()) == [0]  # 3.B: chỉ phía dưới
     assert skill_count_violations(prof, overall_median=5.0, p=ClusteringParams(skill_count_ratio_max=2.0)) == [0, 2]
+
+
+def test_cluster_name_mixed_and_few_tools():
+    """M3.8b (L-60): nghề đa số < 40% thì tên cụm ghi "Hỗn hợp"; trung vị n_tools <= 1 ghi "Ít công cụ"."""
+    from mining.clustering import profile_clusters
+
+    labels = np.array([0] * 10 + [1] * 10 + [2] * 10)
+    skills = pd.DataFrame({"java": [1] * 10 + [1] * 10 + [0] * 10, "sql": [1] * 30}).astype(float)
+    fam = pd.Series(["Web"] * 9 + ["Tester"] + ["Web", "Web", "Web", "Tester", "Tester", "Tester",
+                    "Bridge", "Bridge", "Data/AI", "Data/AI"] + ["Design"] * 10)
+    meta = pd.DataFrame({"n_tools": [5] * 20 + [0] * 5 + [1] * 5})
+    names = {pr["cluster_id"]: pr["cluster_name"] for pr in profile_clusters(labels, skills, fam, meta=meta)}
+    assert names[0].startswith("Web · ")
+    assert names[1].startswith("Hỗn hợp · ")  # Web 30% < 40%
+    assert names[2].startswith("Ít công cụ · ")

@@ -26,7 +26,7 @@ Chưa có. Trang Insights hiện đọc Postgres (`curated_jobs`) do `scripts/lo
 | Mã | Luật |
 |---|---|
 | M1.0a | Mỗi bảng ghi `n` (số tin của ô) và `coverage` (tỷ lệ tin có giá trị ở cột đang đếm). Giá trị null đếm vào dòng **"Không rõ"**, không bỏ |
-| M1.0b | Ô có n < 30 (PRE-36, đề xuất) vẫn ghi `n` nhưng giá trị thống kê (tỷ lệ, trung vị) thay bằng `null` kèm `"note": "ít dữ liệu"` |
+| M1.0b | Ô có n < 30 (chốt 22/11, L-60) vẫn ghi `n` nhưng giá trị thống kê (tỷ lệ, trung vị) thay bằng `null` kèm `"note": "ít dữ liệu"` |
 | M1.0c | Lương: chỉ tin có `salary_target_m` (bước 10) và `salary_outlier = false`. **Không bù** lương thiếu. Thống kê là trung vị, P25, P75 (triệu VNĐ/tháng) |
 | M1.0d | Cấp có tỷ lệ thỏa thuận ≥ 55% (đề xuất) ghi chú "MNAR: lương công bố ít, trung vị có thể thấp hơn thực tế" (quyết định 3, 19/11). 20/11: Senior 73,0%, Lead/Manager 58,1%, chưa rõ cấp 73,3% |
 | M1.0e | Không có câu chữ "tăng", "giảm", "xu hướng" trong đầu ra |
@@ -120,4 +120,4 @@ Số bảng của dry-run 20/11 ở mục 6. Bảng dưới là số đo trướ
 - **Có code 20/11** (`mining/bi.py`); dry-run đạt kiểm tổng; **chạy thật 20/11** (`mining/artifacts/sd1_*.json`). Đối chiếu tay 20 tin còn mở (PRE-44 ghi 3 tin nghi sai). Cách hiểu M1.0b khi code: tỷ lệ hay trung vị tính trên nhóm n < 30 thì null; nhóm là mẫu số (cả bảng với bảng đếm, một hàng với bảng chéo), là ô với trung vị.
 - Trước đây: chưa có code (MINE-7). Đã duyệt 20/11: M1.0a–M1.0e, M1.B, M1.D, ngưỡng 55% của M1.0d và 18/20 ở mục 6.
 - Trang Insights đọc JSON này là việc của Monitoring (spec 09), không thuộc M1.
-- PRE-36 (ngưỡng n < 30), PRE-38 (tỉnh).
+- PRE-38 (tỉnh). Ngưỡng n < 30 chốt 22/11 (L-60).

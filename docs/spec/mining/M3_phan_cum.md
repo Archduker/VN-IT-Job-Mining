@@ -50,8 +50,9 @@ Cụm 2 (1.240 tin, 32%, độ thuần 0,33) gom phần lớn tin ít công cụ
 | M3.1c | Gỡ TF-IDF (M0.6) | Quyết định 1 |
 | M3.2 | Giữ SVD ~80%, tối đa 60; báo phương sai giải thích | — |
 | M3.3 | Giữ k = 10 (đã chốt 11/11) và quét 2–20 để báo cáo. Nếu duyệt đổi k thì ghi ở đây | — |
-| M3.7 | `seed_stability`: chạy K-Means với 5 seed (42, 43, 44, 45, 46) trên cùng không gian; ARI từng cặp với seed 42; báo trung bình và nhỏ nhất | Spec 08: ARI ≥ 0,8 (PRE-36) |
+| M3.7 | `seed_stability`: chạy K-Means với 5 seed (42, 43, 44, 45, 46) trên cùng không gian; ARI từng cặp với seed 42; báo trung bình và nhỏ nhất | Spec 08: ARI ≥ 0,8 (chốt 22/11, L-60) |
 | M3.8 | Hồ sơ cụm thêm: trung vị `n_tools`, `n_concepts`; top 5 tiêu đề (`title`); phân bố cấp; trung vị `salary_target_m` (n ≥ 30, M1.0b). **Kiểm "không tách theo số kỹ năng"**: không cụm nào có trung vị `n_tools` < 1 hoặc > 2 × trung vị toàn bộ (đề xuất) | SD3 mục 6, L-47 |
+| M3.8b | **22/11 (L-60):** tên cụm = `<tiền tố> · <2 công cụ lift cao nhất>`; tiền tố "Ít công cụ" khi trung vị `n_tools` ≤ 1, "Hỗn hợp" khi nghề đa số < 40% cụm, còn lại là tên nghề đa số (`name_few_tools_median`, `name_min_purity`) | Tên cũ luôn lấy nghề đa số nên cụm 24% Web vẫn tên "Web" |
 | M3.9 | Artifact `cluster_family_crosstab.json`: bảng chéo cụm × `job_family` (số tin và tỷ lệ theo hàng) | SD3 câu 3.2 |
 | M3.10 | Luật 3.2 (ngưỡng đề xuất): **nghề lai** = cụm không có nghề nào > 60% và có ≥ 2 nghề ≥ 20%; **nghề ngách** = một nghề có ≥ 2 cụm mà nghề đó chiếm ≥ 50% cụm, hoặc cụm nhỏ (< 5% số tin) có ≥ 3 công cụ lift ≥ 5; **có vẻ gán sai** = tin có `job_family` ≠ nghề đa số của cụm (nghề đa số chiếm ≥ 60%), khoảng cách tới tâm cụm ≤ P25 của cụm, và nghề của tin chiếm < 10% cụm | SD3 câu 3.2; trước đây chỉ có bảng hồ sơ, không có luật |
 | M3.11 | `job_clusters.parquet` thêm cột `in_clustering` (false cho tin bị bỏ ở M3.1b), `family_mismatch` (M3.10), `dist_to_centroid` | M4 dùng GLOSH; Monitoring vẽ |
@@ -106,11 +107,11 @@ Chạy thật 20/11 (`--only bi,fp,cluster`; sha256 đầu vào như M0). 3.902 
 
 | Kiểm tra | Ngưỡng |
 |---|---|
-| Ổn định: ARI trung bình 5 seed | ≥ 0,8 (PRE-36) |
-| Cụm nhỏ nhất | ≥ 1% số tin (PRE-36) |
+| Ổn định: ARI trung bình 5 seed | ≥ 0,8 (chốt 22/11) |
+| Cụm nhỏ nhất | ≥ 1% số tin (chốt 22/11) |
 | Không tách theo số kỹ năng (M3.8) | không cụm nào có trung vị `n_tools` < 1 (3.B) |
-| Silhouette, DB | chỉ báo cáo (chưa có ngưỡng, PRE-36) |
-| Kiểm tay 20 tin "có vẻ gán sai" (seed 42) | ghi tỷ lệ đúng; chưa có ngưỡng |
+| Silhouette, DB | chỉ báo cáo (chốt 22/11, L-60: quét k 2–20 đều 0,075–0,10) |
+| Kiểm tay tin "có vẻ gán sai" | ghi tỷ lệ đúng; không dùng để sửa nhãn. 21/11 người dùng chấm 3/10; 22/11: 6/13 là IT Manager (luật → Bridge, cụm → hạ tầng) |
 | Đọc tên cụm: mỗi cụm có top công cụ, top khái niệm, top tiêu đề | bắt buộc |
 | `pytest tests/unit/test_mining_clustering.py` (sửa theo ba khối, khóa `job`) | xanh |
 
@@ -120,5 +121,4 @@ Chạy thật 20/11 (`--only bi,fp,cluster`; sha256 đầu vào như M0). 3.902 
 - 3.2: nghề lai cụm 3, 7, 8, 9; Web bị tách ở cụm 2, 4, 7; cụm nhỏ chuyên biệt 7 (AI), 8; **8 tin "có vẻ gán sai"** (4 IT Manager / Trưởng phòng CNTT mang Bridge nằm ở cụm IT hệ thống; 2 Solution Architect mang DevOps/Cloud ở cụm Backend; 1 SRE mang Web ở cụm DevOps; 1 AI Full Stack). Mẫu kiểm tay `mining/artifacts/sd3_mismatch_hand_check.csv` chỉ có 8 dòng (ít hơn 20). **Kiểm tay còn mở.**
 - Còn yếu: cụm 3 (810 tin, trung vị 1 công cụ, độ thuần 0,25) vẫn gom tin ít công cụ; qua luật 3.B vì trung vị = 1. Cụm 7 là AI Engineer nhưng 103/190 tin mang `job_family` Web: luật nghề xếp AI Engineer vào Web (PRE-44).
 - Tên cột `job_clusters.parquet` giữ `is_outlier`, `glosh_outlier_score` (tên Mart) thay `glosh_outlier`, `glosh_score` của mục 4.
-- MINE-1 (Silhouette thấp), PRE-36.
-- MINE-1 (Silhouette thấp), PRE-36.
+- Đóng 22/11 (L-60): Silhouette chỉ báo cáo; tên cụm theo M3.8b. Kết quả cuối: spec 08 mục 3.3.

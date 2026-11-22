@@ -76,9 +76,9 @@ Những tin **không giống nhóm nào** gọi là tin **khác hoặc mới**:
 
 ## 6. Cách biết đã trả lời đúng
 
-- **Độ tách nhóm:** báo Silhouette và Davies–Bouldin. Hiện Silhouette chỉ 0,10 với k = 10 (MINE-1, L-47). Ngưỡng chấp nhận chờ chốt ở PRE-36.
-- **Độ ổn định:** chạy lại với 5 seed khác nhau. ARI giữa các lần chạy phải ≥ 0,8 (đề xuất, chờ chốt PRE-36), tức là nhóm không đổi lung tung.
-- **Kích thước nhóm:** không có nhóm nào dưới 1% số tin (đề xuất, chờ chốt PRE-36), trừ nhóm "để riêng" của HDBSCAN.
+- **Độ tách nhóm:** báo Silhouette và Davies–Bouldin. Chỉ báo cáo, không là cổng (chốt 22/11, L-60): quét k 2–20 đều cho Silhouette 0,075–0,10; với k = 10 là 0,075 (22/11).
+- **Độ ổn định:** chạy lại với 5 seed khác nhau. ARI giữa các lần chạy phải ≥ 0,8 (chốt 22/11, L-60), tức là nhóm không đổi lung tung.
+- **Kích thước nhóm:** không có nhóm nào dưới 1% số tin (chốt 22/11, L-60), trừ nhóm "để riêng" của HDBSCAN.
 - **Không tách theo số lượng kỹ năng:** nhóm không được chỉ phản ánh tin nhiều hay ít kỹ năng. Hiện đang bị lỗi này (L-47). Phải kiểm bằng trung vị số kỹ năng của từng nhóm.
 - **Kiểm tay:** đọc 20 tin "khác hoặc mới" ngẫu nhiên. Ghi tỷ lệ tin đúng là khác hoặc mới thật, so với tin chỉ do dữ liệu bị parse lỗi.
 
