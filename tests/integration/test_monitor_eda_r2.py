@@ -48,6 +48,9 @@ def test_origin_validation():
 
 
 def test_empty_remote_has_no_local_fallback():
-    with patch.object(service, "dataset", return_value=([], None)):
+    # Quét raw trên R2 đã xong mà không có bản ghi: không có dữ liệu, không lấy dữ liệu trên máy thay.
+    # Phải giả lập cả scan, nếu không test sẽ quét R2 thật (mạng bị chặn nên không bao giờ COMPLETE).
+    done = {"status": "COMPLETE", "records": 0, "inventory": []}
+    with patch.object(service, "dataset", return_value=([], None)), patch.object(service, "scan", return_value=done):
         assert service.summary("topcv")["reason"] == "NO_DATA"
         assert service.charts("topcv")["available"] is False

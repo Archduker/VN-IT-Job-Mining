@@ -62,6 +62,7 @@ def test_orphan_module_found_and_test_only_use_marked(project):
 
 
 def test_vulture_does_not_flag_called_function(project):
+    pytest.importorskip("vulture", reason="vulture chưa cài (không có trong requirements.txt)")
     names = {f["name"] for f in rcq.find_unused_code([project / "pkg"], project)}
     assert "used" not in names and "helper" not in names
     assert {"lonely", "count_a", "count_b"} <= names

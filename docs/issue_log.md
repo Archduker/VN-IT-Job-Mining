@@ -422,6 +422,28 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
   - spec 08 mục 3
   - `python scripts/build_mining_charts.py --inject`
 
+### L-61. Chạy toàn bộ test trước khi merge: 8 test hỏng, 4 test vốn đang qua trên main (Testing, 23/11/2026)
+- **Lỗi:** chạy `pytest tests/` trên `sprint/pipeline-delivery` (23/11) thấy 4 test integration không nạp được, vì venv thiếu `sse_starlette` (có trong `monitoring/backend/requirements.txt`). Cài xong thì còn 882 qua, 8 hỏng. Cả 8 test đã hỏng sẵn ở `f352120`, tức trước các thay đổi ngày 22/11. Trong đó 4 test đang qua trên `main` (TopCV contract C11, 2 test API Collection, biểu đồ EDA), nên merge lúc đó sẽ làm 4 test này hỏng trên `main`.
+- **Nguyên nhân:**
+  - **API Collection** (`test_monitor_endpoints.py`): từ `ef05bb8` (10/11), Collection chỉ đọc R2 (`collection_r2_service.py`), không đọc raw trên máy hay Airflow. Hai test vẫn kiểm hành vi cũ.
+  - **Biểu đồ EDA:** cũng commit `ef05bb8` đổi `eda_charts_from_frame` có chủ đích: EDA thô giữ mọi giá trị lương dạng số, kể cả 0, âm, ngoại lai (`tests/unit/test_eda_histogram.py`). Test cũ vẫn đòi bỏ lương 0 VND.
+  - **`test_monitor_eda_r2.py::test_empty_remote_has_no_local_fallback`:** test không giả lập `scan`, nên service quét R2 thật; mạng bị chặn nên lần quét không bao giờ COMPLETE.
+  - **TopCV contract:** từ `591391b` (18/11), F7 của TopCV chỉ lấy `required_skills`. Một trong ba tin mẫu không có mục này.
+  - **Audit ledger:** test ghi cứng ngày `2026-11-01`. Từ 23/11 ngày đó đã quá hạn cào lại, nên đếm ra 4 thay vì 3.
+  - **TF-IDF:** `execution_tfidf.fit_text` đọc file stopword không ghi rõ `encoding`, nên hỏng với bảng mã cp1252 của Windows.
+  - **Vulture:** gói `vulture` không có trong requirements.
+- **Cách xử lý:**
+  - **API Collection:** viết lại 2 test theo hợp đồng R2: thiếu cấu hình thì trả 503 `R2_NOT_CONFIGURED`, không lấy file trên máy thay vào; đếm object raw theo ngày bằng R2 giả lập.
+  - **Biểu đồ EDA:** sửa test cũ theo hợp đồng mới (đếm cả lương 0). Lần đầu mình khôi phục code cũ, nhưng làm vậy thì `test_eda_histogram.py` hỏng, nên đã hoàn tác.
+  - **EDA R2:** giả lập thêm `scan` trong test.
+  - **TopCV contract:** thêm `allow_missing` F7 kèm lý do, giống TopDev.
+  - **Audit ledger:** đổi ngày cố định thành "hôm qua".
+  - **TF-IDF:** đọc file với `encoding="utf-8"`.
+  - **Vulture:** test dùng `pytest.importorskip("vulture")`.
+  - **Môi trường:** cài `monitoring/backend/requirements.txt` vào `.venv`.
+- **Còn lại:** CLAUDE.md nhắc tới `requirements-dev.txt` nhưng file này không có trong repo; pytest, ruff và vulture chưa được liệt kê ở đâu (GEN-1).
+- **Kiểm chứng:** `pytest tests/` toàn bộ (kết quả ở commit đi kèm); so sánh 8 test trên worktree `main` và `f352120`.
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

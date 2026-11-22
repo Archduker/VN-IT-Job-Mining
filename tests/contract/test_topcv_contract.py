@@ -65,7 +65,8 @@ def test_c1_two_phase():
 def test_c4_c11_envelope_and_features(envelopes):
     for env in envelopes:
         standards.check_envelope(env, "topcv")
-    standards.check_feature_coverage(envelopes, "topcv")
+    standards.check_feature_coverage(envelopes, "topcv", allow_missing={
+        "F7": "chỉ lấy required_skills (bỏ nhãn ngành industry_knowledge/overview_tags 18/11, commit 591391b); tin không có mục kỹ năng thì thiếu"})
 
 
 def test_c5_hash_is_stable(folder):

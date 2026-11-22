@@ -19,7 +19,7 @@ def corpus(df):
 
 
 def fit_text(df, stopword_asset):
-    words = json.loads(stopword_asset.read_text())["words"]
+    words = json.loads(stopword_asset.read_text(encoding="utf-8"))["words"]
     params = dict(PARAMETERS, stop_words=words, dtype=np.float32)
     vectorizer = TfidfVectorizer(**params)
     matrix = vectorizer.fit_transform(corpus(df)).tocsr()

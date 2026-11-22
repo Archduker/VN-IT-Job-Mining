@@ -56,34 +56,42 @@ def write_raw(root, source, day, name, content):
     (folder / name).write_text(json.dumps(content, ensure_ascii=False), encoding="utf-8")
 
 
-def test_collection_without_data_has_no_invented_numbers(empty_env):
+def test_collection_without_r2_is_error_not_invented_numbers(empty_env):
+    """Từ ef05bb8 (10/11) trang Collection chỉ đọc R2: thiếu cấu hình R2 thì 503, không lấy dữ liệu trên máy thay."""
+    from app.services import collection_r2_service
+    collection_r2_service._cache = None
+    write_raw(empty_env, "careerviet", datetime.now(VN).date().isoformat(), "a_v1.json", envelope("a", CAREERVIET))
+    resp = client.get("/api/v1/monitor/collection?days=7")
+    assert resp.status_code == 503
+    assert resp.json()["detail"]["reason"] == "R2_NOT_CONFIGURED"
+
+
+def test_collection_counts_raw_objects_on_r2_by_day(empty_env, monkeypatch):
+    from unittest.mock import Mock
+
+    from app.services import collection_r2_service
+    collection_r2_service._cache = None
+    today = datetime.now(VN).date().isoformat()
+    write_raw(empty_env, "topcv", today, "local_only_v1.json", envelope("x", CAREERVIET))  # tệp trên máy không được đếm
+    keys = {"careerviet": [f"raw/careerviet/{today}/a_v1.json", f"raw/careerviet/{today}/b_v1.json",
+                           f"raw/careerviet/{today}/b_v2.json"]}
+
+    def paginate(Bucket, Prefix):
+        source = Prefix.split("/")[1]
+        return [{"Contents": [{"Key": k, "Size": 10} for k in keys.get(source, [])]}]
+
+    fake = Mock()
+    fake.get_paginator.return_value.paginate.side_effect = paginate
+    monkeypatch.setattr(r2_client, "get_client", lambda: fake)
+    monkeypatch.setattr(collection_r2_service, "_read",
+                        lambda client, key: json.dumps({"records": {"a": {"status": "DONE"}}}).encode())
     data = client.get("/api/v1/monitor/collection?days=7").json()
-    assert data["has_data"] is False
+    assert data["origin"] == "r2" and data["has_data"] is True
     assert len(data["days"]) == 7
-    assert data["kpi"]["total"] == 0
-    assert data["queue"] == {"total": 0, "pending": 0, "done": 0, "recheck_due": 0, "failed": 0}
-    assert data["kpi"]["runs_ok"] is None
-    assert data["kpi"]["unique_total"] is None and data["kpi"]["unique_reason"]
-    assert data["airflow_available"] is False and data["unavailable_reason"]
-    assert all(c["status"] is None for d in data["days"] for c in d["by_source"].values())
-
-
-def test_collection_counts_raw_and_merges_airflow_runs(empty_env, monkeypatch):
-    now = datetime.now(VN)
-    today = now.date().isoformat()
-    write_raw(empty_env, "careerviet", today, "a_v1.json", envelope("a", CAREERVIET))
-    write_raw(empty_env, "careerviet", today, "raw_batch.json", [envelope("b", CAREERVIET), envelope("c", CAREERVIET)])
-    runs = [
-        {"dag_id": "crawler_detail_careerviet", "state": "success", "start_date": now, "end_date": now},
-        {"dag_id": "crawler_detail_careerviet", "state": "failed", "start_date": now, "end_date": now},
-    ]
-    monkeypatch.setattr(airflow_service, "get_run_history", lambda days=14: runs)
-    data = client.get("/api/v1/monitor/collection?days=7").json()
-    cell = data["days"][-1]["by_source"]["careerviet"]
-    assert cell["count"] == 3
-    assert cell["status"] == "partial" and cell["failed_runs"] == 1
-    assert data["kpi"]["today"] == 3 and data["kpi"]["runs_total"] == 2
-    assert data["count_origin"]["careerviet"] == "raw"
+    assert data["days"][-1]["by_source"]["careerviet"]["count"] == 3  # đếm object (phiên bản), không phải tin duy nhất
+    assert data["days"][-1]["by_source"]["topcv"]["count"] == 0
+    assert data["raw_objects"] == 3
+    collection_r2_service._cache = None
 
 
 def test_collection_rejects_out_of_range_days(empty_env):

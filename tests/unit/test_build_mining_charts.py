@@ -9,8 +9,11 @@ def test_build_returns_all_charts_without_writing():
     charts = bmc.build()
     assert {"cluster_map", "cluster_family", "k_silhouette", "stability", "skill_value", "cluster_table"} <= set(charts)
     for name, s in charts.items():
-        assert s.startswith("<svg") or s.startswith("<table"), name
+        assert s.lstrip().startswith(("<svg", "<table", "<style")), name
     assert charts["cluster_map"].count("<title>C") == 10  # 10 ô, mỗi ô một cụm
+    ex = charts["cluster_explorer"]  # biểu đồ tương tác slide 11: dữ liệu nhúng, không gọi mạng
+    assert '"clusters":[' in ex and ex.count('"center":') == 10
+    assert "http" not in ex.split("<script>", 1)[1]
 
 
 def test_vn_number_format():

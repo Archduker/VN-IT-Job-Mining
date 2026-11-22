@@ -105,8 +105,9 @@ def test_eda_charts_from_staging_parquet(empty_root):
         "is_salary_negotiable_declared": [0, 0, 1, 1],
     }).to_parquet(folder / "topcv_flat_clean.parquet")
     charts = client.get("/api/v1/eda/topcv/charts").json()
-    assert charts["records"] == 4 and charts["salary_records"] == 2  # lương 0 VND không tính
-    assert {b["bin"]: b["count"] for b in charts["salary_histogram"]}["10–20M"] == 1
+    # Từ ef05bb8 (10/11): EDA thô giữ mọi giá trị số, kể cả 0 VND, để lộ lỗi dữ liệu (tests/unit/test_eda_histogram.py)
+    assert charts["records"] == 4 and charts["salary_records"] == 3
+    assert sum(b["count"] for b in charts["salary_histogram"]) == 3
     assert charts["skills_pareto"][0] == {"label": "Python", "count": 2, "cumulative_pct": 66.7}
     assert {loc["label"]: loc["count"] for loc in charts["locations"]} == {"Hà Nội": 2, "Đà Nẵng": 2}
     assert client.get("/api/v1/eda/topcv/summary").json()["negotiable_salary_pct"] == 50.0

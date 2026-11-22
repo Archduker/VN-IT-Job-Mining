@@ -12,6 +12,7 @@ Biểu đồ:
 - k_silhouette, k_inertia: quét k 2–20 (hai biểu đồ riêng, không dùng hai trục).
 - stability: ARI của 4 seed so với seed 42, ngưỡng 0,8.
 - skill_value: giá trị SHAP quy ra triệu/tháng của kỹ năng, kèm khoảng tin cậy bootstrap.
+- cluster_explorer: biểu đồ tương tác (canvas) 2D/3D trên pca_x/y/z, nút chọn từng cụm; dùng cho slide 11.
 """
 from __future__ import annotations
 
@@ -219,6 +220,158 @@ def cluster_table(profiles: list[dict]) -> str:
     return "".join(rows)
 
 
+CLUSTER_COLORS = ["#2a78d6", "#eb6834", "#1baf7a", "#c98500", "#e87ba4", "#008300", "#6250d6", "#e34948",
+                  "#0f8b8d", "#8a6d3b"]
+
+EXPLORER_CSS = """
+<style>
+.cx { display: grid; grid-template-columns: 1fr 500px; gap: 28px; align-items: start; }
+.cx-plot { position: relative; background: #FFFDF9; border: 2px solid #D9D5CA; border-radius: 14px; overflow: hidden; }
+.cx-plot canvas { display: block; width: 1120px; height: 640px; cursor: default; }
+.cx-plot.d3 canvas { cursor: grab; }
+.cx-modes { position: absolute; left: 16px; top: 14px; display: flex; gap: 8px; }
+.cx-btn { font: 600 21px 'Be Vietnam Pro', Arial, sans-serif; color: #14213D; background: #F7F6F2; border: 2px solid #D9D5CA;
+  border-radius: 10px; padding: 6px 14px; cursor: pointer; }
+.cx-btn.on { background: #14213D; color: #F7F6F2; border-color: #14213D; }
+.cx-hint { position: absolute; right: 16px; bottom: 12px; font-size: 18px; color: #4A5568; }
+.cx-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cx-item { display: flex; align-items: center; gap: 10px; text-align: left; font: 500 19px 'Be Vietnam Pro', Arial, sans-serif;
+  color: #14213D; background: #FFFDF9; border: 2px solid #D9D5CA; border-radius: 10px; padding: 7px 10px; cursor: pointer; }
+.cx-item .sw { width: 14px; height: 14px; border-radius: 4px; flex: none; }
+.cx-item.on { border-color: #14213D; box-shadow: inset 0 0 0 1px #14213D; }
+.cx-item.all { grid-column: 1 / -1; justify-content: center; font-weight: 600; }
+.cx-info { margin-top: 14px; background: #FFFDF9; border: 2px solid #D9D5CA; border-radius: 12px; padding: 16px 18px;
+  font-size: 20px; line-height: 1.45; color: #4A5568; min-height: 168px; }
+.cx-info b { color: #14213D; }
+.cx-info .t { font-size: 24px; font-weight: 700; color: #14213D; margin-bottom: 4px; }
+</style>
+"""
+
+EXPLORER_JS = r"""
+<script>
+(function () {
+  var D = __DATA__, COLORS = __COLORS__, BLUE = '#2F6FB0', GREY = '#CFCBBF';
+  var root = document.getElementById('cx'), cv = root.querySelector('canvas'), ctx = cv.getContext('2d');
+  var W = 1120, H = 640, sel = -1, mode = '2d', yaw = 0.7, pitch = 0.3, drag = null, auto = true;
+  cv.width = W * 2; cv.height = H * 2; ctx.scale(2, 2);
+  function proj(p) {
+    if (mode === '2d') return [W / 2 + p[0] * W * 0.44, H / 2 - p[1] * H * 0.42, 1];
+    var cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+    var x = p[0] * cy + p[2] * sy, z = -p[0] * sy + p[2] * cy, y = p[1] * cp - z * sp; z = p[1] * sp + z * cp;
+    var f = 3.2 / (3.2 + z);
+    return [W / 2 + x * f * H * 0.5, H / 2 - y * f * H * 0.46, f];
+  }
+  function dot(p, color, r) { var q = proj(p); ctx.fillStyle = color; ctx.beginPath(); ctx.arc(q[0], q[1], r * q[2], 0, 6.2832); ctx.fill(); }
+  function label(c) {
+    var q = proj(c.center), t = 'C' + c.id;
+    ctx.font = '700 22px "Be Vietnam Pro", Arial, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineWidth = 5; ctx.strokeStyle = '#FFFDF9'; ctx.strokeText(t, q[0], q[1]); ctx.fillStyle = '#14213D'; ctx.fillText(t, q[0], q[1]);
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    if (mode === '3d') {  // trục để thấy chiều xoay
+      [[[-1, 0, 0], [1, 0, 0]], [[0, -1, 0], [0, 1, 0]], [[0, 0, -1], [0, 0, 1]]].forEach(function (ax) {
+        var a = proj(ax[0]), b = proj(ax[1]); ctx.strokeStyle = '#E3DFD4'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      });
+    }
+    var pts = D.pts, i;
+    if (sel < 0) {
+      ctx.globalAlpha = 0.75;
+      for (i = 0; i < pts.length; i++) dot(pts[i], COLORS[pts[i][3]], 2.6);
+      ctx.globalAlpha = 1; D.clusters.forEach(label);
+    } else {
+      ctx.globalAlpha = 0.55;
+      for (i = 0; i < pts.length; i++) if (pts[i][3] !== sel) dot(pts[i], GREY, 2.2);
+      ctx.globalAlpha = 0.9;
+      for (i = 0; i < pts.length; i++) if (pts[i][3] === sel) dot(pts[i], COLORS[sel], 3.2);
+      ctx.globalAlpha = 1; label(D.clusters[sel]);
+    }
+  }
+  var list = root.querySelector('.cx-list'), info = root.querySelector('.cx-info');
+  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function showInfo() {
+    if (sel < 0) {
+      info.innerHTML = '<div class="t">10 cụm, ' + fmt(D.n) + ' tin</div>Bấm một cụm để làm nổi cụm đó. ' +
+        'Hình là hình chiếu PCA (2D giữ ' + D.var2 + '%, 3D giữ ' + D.var3 + '% phương sai); K-Means phân cụm trong không gian SVD 60 chiều, nên cụm tách rõ hơn hình này.';
+      return;
+    }
+    var c = D.clusters[sel];
+    info.innerHTML = '<div class="t">C' + c.id + ' · ' + c.name + '</div>' +
+      '<b>' + fmt(c.n) + '</b> tin · nghề đa số <b>' + c.fam + ' ' + c.purity + '%</b><br>' +
+      'Công cụ đặc trưng: <b>' + c.tools + '</b><br>' +
+      'Trung vị <b>' + c.ntools + '</b> công cụ/tin · lương trung vị <b>' + c.sal + '</b>';
+  }
+  function pick(id) {
+    sel = (sel === id) ? -1 : id;
+    Array.prototype.forEach.call(list.children, function (b) { b.classList.toggle('on', +b.dataset.id === sel); });
+    showInfo(); draw();
+  }
+  var all = document.createElement('button'); all.className = 'cx-item all on'; all.dataset.id = -1; all.textContent = 'Tất cả 10 cụm';
+  all.onclick = function () { pick(-1); all.blur(); }; list.appendChild(all);
+  D.clusters.forEach(function (c) {
+    var b = document.createElement('button'); b.className = 'cx-item'; b.dataset.id = c.id;
+    b.innerHTML = '<span class="sw" style="background:' + COLORS[c.id] + '"></span><span>C' + c.id + ' · ' + c.name + ' <span style="color:#4A5568">(' + fmt(c.n) + ')</span></span>';
+    b.onclick = function () { pick(c.id); b.blur(); }; list.appendChild(b);
+  });
+  root.querySelectorAll('.cx-modes .cx-btn').forEach(function (b) {
+    b.onclick = function () {
+      mode = b.dataset.mode; auto = true; b.blur();
+      root.querySelectorAll('.cx-modes .cx-btn').forEach(function (x) { x.classList.toggle('on', x === b); });
+      root.querySelector('.cx-plot').classList.toggle('d3', mode === '3d');
+      root.querySelector('.cx-hint').textContent = mode === '3d' ? 'Kéo để xoay' : 'PC1 × PC2';
+      draw();
+    };
+  });
+  cv.addEventListener('pointerdown', function (e) { if (mode === '3d') { drag = [e.clientX, e.clientY]; auto = false; cv.setPointerCapture(e.pointerId); } });
+  cv.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    yaw += (e.clientX - drag[0]) * 0.008; pitch = Math.max(-1.3, Math.min(1.3, pitch + (e.clientY - drag[1]) * 0.008));
+    drag = [e.clientX, e.clientY]; draw();
+  });
+  cv.addEventListener('pointerup', function () { drag = null; });
+  ['touchstart', 'touchend', 'touchmove'].forEach(function (t) { cv.addEventListener(t, function (e) { e.stopPropagation(); }, {passive: true}); });
+  function tick() {
+    var sec = root.closest('section');
+    if (mode === '3d' && auto && !drag && sec && sec.classList.contains('on')) { yaw += 0.004; draw(); }
+    requestAnimationFrame(tick);
+  }
+  showInfo(); draw(); requestAnimationFrame(tick);
+})();
+</script>
+"""
+
+
+def cluster_explorer(clusters: pd.DataFrame, profiles: list[dict], pca_var: list[float]) -> str:
+    """Biểu đồ tương tác (canvas, không thư viện): 2D/3D trên pca_x/y/z, bấm từng cụm để làm nổi."""
+    c = clusters[clusters["in_clustering"]].copy()
+    xyz = c[["pca_x", "pca_y", "pca_z"]].to_numpy(dtype=float)
+    lo, hi = np.quantile(xyz, 0.005, axis=0), np.quantile(xyz, 0.995, axis=0)
+    mid, half = (lo + hi) / 2, (hi - lo) / 2
+    norm = np.clip((xyz - mid) / half, -1.05, 1.05)
+    cid = c["cluster_id"].to_numpy(dtype=int)
+    pts = [[round(float(a), 3), round(float(b), 3), round(float(z), 3), int(k)] for (a, b, z), k in zip(norm, cid)]
+    info = []
+    for pr in profiles:
+        k = pr["cluster_id"]
+        center = norm[cid == k].mean(axis=0) if (cid == k).any() else np.zeros(3)
+        sal = f'{vn(pr["median_salary_mil"], 1)} triệu' if pr.get("median_salary_mil") is not None else "ít dữ liệu"
+        info.append({"id": k, "name": pr["cluster_name"].split(" · ")[0], "n": pr["size"],
+                     "fam": pr["dominant_job_family"], "purity": round(pr["job_family_purity"] * 100),
+                     "tools": ", ".join(t["skill"] for t in pr["top_skills"][:5]),
+                     "ntools": vn(pr.get("median_n_tools", 0), 0), "sal": sal,
+                     "center": [round(float(v), 3) for v in center]})
+    data = {"n": len(pts), "pts": pts, "clusters": info,
+            "var2": vn(100 * sum(pca_var[:2]), 0), "var3": vn(100 * sum(pca_var[:3]), 0)}
+    js = (EXPLORER_JS.replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"))
+          .replace("__COLORS__", json.dumps(CLUSTER_COLORS)))
+    body = ('<div class="cx" id="cx"><div class="cx-plot"><canvas aria-label="Bản đồ 10 cụm, chọn cụm bằng các nút bên phải"></canvas>'
+            '<div class="cx-modes"><button class="cx-btn on" data-mode="2d">2D</button>'
+            '<button class="cx-btn" data-mode="3d">3D</button></div><div class="cx-hint">PC1 × PC2</div></div>'
+            '<div class="cx-side"><div class="cx-list"></div><div class="cx-info"></div></div></div>')
+    return EXPLORER_CSS + body + js
+
+
 def build() -> dict[str, str]:
     m = json.loads((ART / "mining_metrics.json").read_text(encoding="utf-8"))
     cl = m["clustering"]
@@ -235,6 +388,7 @@ def build() -> dict[str, str]:
         "stability": stability(cl["stability"], 0.8),
         "skill_value": skill_value(m["salary"]["shap"]["top_skills"]),
         "cluster_table": cluster_table(profiles),
+        "cluster_explorer": cluster_explorer(clusters, profiles, cl["pca_explained_variance"]),
     }
     return charts
 
@@ -246,7 +400,7 @@ def main() -> None:
     charts = build()
     OUT.mkdir(parents=True, exist_ok=True)
     for name, s in charts.items():
-        ext = "html" if s.startswith("<table") else "svg"
+        ext = "svg" if s.startswith("<svg") else "html"
         (OUT / f"{name}.{ext}").write_text(s, encoding="utf-8", newline="\n")
         print(f"{name}: {len(s) // 1024} KB")
     if args.inject:

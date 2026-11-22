@@ -55,7 +55,7 @@ def result(tmp_path, monkeypatch):
         "h2": {"job_id": "Z", "status": "DONE", "last_scraped_at": old},
         "h3": {"job_id": "F", "status": "FAILED", "error_log": "403 Forbidden"},
         "h4": {"job_id": "R", "status": "DONE", "last_scraped_at": old, "repost_of_url_hash": "h1"},
-        "h5": {"job_id": "G", "status": "DONE", "last_scraped_at": "2026-11-01T07:00:00+00:00"},
+        "h5": {"job_id": "G", "status": "DONE", "last_scraped_at": (datetime.now(timezone.utc) - timedelta(days=1)).isoformat()},
         # H chỉ có trong file batch cũ, được đăng ký PENDING để cào lại: không phải ledger chậm hơn raw
         "h6": {"job_id": "H", "status": "PENDING", "registered_from_batch": "batch_001.json"},
     })
