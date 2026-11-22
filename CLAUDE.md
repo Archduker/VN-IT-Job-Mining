@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Thesis title: **"Tích hợp và khai phá dữ liệu thị trường lao động phục vụ phân tích nghề nghiệp và kỹ năng trong IT"**. Primary users are IT students and newcomers to the field.
 
-Pipeline that mines IT job postings from 8 Vietnamese job boards (topcv, topdev, vietnamworks, careerviet, vieclam24h, itviec, glints, jobsgo) into a deduplicated "Golden Master" dataset, with a monitoring dashboard on top. Docs, comments, and log messages are mostly Vietnamese. `README.md` describes the intended design and is stale in places; see "Known mismatches" below.
+Pipeline that mines IT job postings from 8 Vietnamese job boards (topcv, topdev, vietnamworks, careerviet, vieclam24h, itviec, glints, jobsgo) into a deduplicated "Golden Master" dataset, with a monitoring dashboard on top. Docs, comments, and log messages are mostly Vietnamese. `README.md` was rewritten on 23/11/2026 to match the code and the 22/11 results; see "Known mismatches" below for older docs.
 
 The project serves 5 goals, ordered BI → unsupervised mining → trained model. `docs/target/` is the source of truth: `00_de_tai.md` covers context and why these 5 goals, and `01`–`05` give each goal's questions, data, method, outputs and acceptance checks. Read it before changing anything in `mining/` or the Insights pages.
 
@@ -35,7 +35,7 @@ Setup needs Python 3.12 (`careerviet/crawler.py` uses 3.12-only f-string syntax)
 
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate
-pip install -r requirements-dev.txt
+pip install -r monitoring/backend/requirements.txt pytest ruff   # there is no requirements-dev.txt
 touch .env   # config lives only in .env; there is no .env.example
 ```
 
