@@ -110,7 +110,7 @@ Kiến trúc Medallion chia dữ liệu thành 3 tầng logic với mức độ 
   - **Làm sạch và parse** (bước 03): HTML, Unicode NFC, lương, kinh nghiệm, ngày; nhận ngôn ngữ (fastText `lid.176`) và dịch EN→VI (`VietAI/envit5-translation`).
 
 ### 2.3. Tầng Gold (bảng sạch, đặc trưng, kết quả Mining)
-- **Bảng sạch cuối:** `data/preprocessing/04_normalization/all.parquet` (người dùng duyệt 17/11, spec 05 mục 4.1). Trên R2 đẩy vào `curated/preprocessing/` bằng `scripts/push_preprocessing_to_r2.py`. Tên cũ `curated/gold_master_jobs.parquet`, `data/curated/curated_flat_golden_jobs.parquet` không dùng nữa (PRE-39).
+- **Bảng sạch cuối:** `data/preprocessing/04_normalization/all.parquet` (người dùng duyệt 17/11, spec 05 mục 4.1). Trên R2 nằm ở `pipeline/04_normalization/all.parquet` và `silver.parquet` (đẩy bằng `scripts/push_preprocessing_to_r2.py`, 23/11/2026); kết quả Mining nằm ở `curated/mining/`. Tên cũ `curated/gold_master_jobs.parquet`, `data/curated/curated_flat_golden_jobs.parquet` không dùng nữa (PRE-39).
 - **Nội dung bảng sạch:** `job_family` 11 nhóm + Other, `seniority` 5 nhãn, 34 tỉnh sau sáp nhập (`tinh_chinh`), lương VNĐ/tháng có cờ ngoại lai, `posted_month` thay `posted_date` (PRE-37; không có `posted_month_source`). Bảng target gọn tên tiếng Anh: `04_normalization/silver.parquet` (spec 05 mục 4.4). Thiếu dữ liệu xử lý bằng cờ, không điền giá trị (spec 05 mục 4.3).
 - **Đặc trưng và vector** (Processing, spec 06): `data/processing/10_features/features.parquet` (cột `skill__*`, `fam__*`, `seniority_ord`…), `encoding_dictionary.json`, `data/processing/12_e5/job_emb.npz`. TF-IDF đã bỏ 17/11.
 - **Kết quả Mining** (spec 07 mục 5): `mining/artifacts/` gồm `sd1_*.json` (đề xuất), `skill_association_rules.parquet`, `job_clusters.parquet`, `job_anomalies.parquet`, `skill_salary_shap_values.parquet`, `trained_salary_rf_model.joblib`, `sd5_*.json` (đề xuất), `mining_metrics.json`. Thư mục này không vào git và chưa có quy ước đẩy lên R2.
@@ -118,7 +118,7 @@ Kiến trúc Medallion chia dữ liệu thành 3 tầng logic với mức độ 
 ---
 
 ### 2.4. Tiền tố `pipeline/` (đầu ra từng bước)
-- **Vị trí lưu trữ:** `r2://vn-it-jobs/pipeline/<bước>/`, không chia theo nguồn.
+- **Vị trí lưu trữ:** `r2://vn-it-jobs/pipeline/<bước>/`, không chia theo nguồn. Đã đẩy 23/11/2026: Pre-processing 02–04 (gồm `silver.parquet`, `quarantine.parquet`) và Processing 07, 08, 10_features, 12_e5 (không gồm `cache/`).
 - **Nội dung:** đầu ra và báo cáo của từng bước tiền xử lý, để xem lại và chạy lại riêng một bước. Tên thư mục con theo bước chưa chốt.
 - **Chốt 10/11/2026:** R2 chỉ còn 5 tiền tố `url_ledger/`, `raw/`, `staging/`, `curated/`, `pipeline/`. Tiền tố cũ `silver/`, `gold/` vẫn đọc được và được đổi sang `staging/`, `curated/` (`collection/common/r2_storage.py`). Tên file bên trong `staging/`, `curated/` (ví dụ `all.parquet`) chưa chốt, xem `fixes/F13_r2_layout.md`.
 

@@ -3,8 +3,10 @@
 
 Tầng staging/ bắt buộc có tên nguồn ở cấp 2 (canonicalize_lakehouse_key), nên bảng đã gộp
 được tách lại theo cột source_platform khi đẩy lên:
-  silver: staging/<nguồn>/preprocessing/<bước>.jsonl|parquet   (bước 01–04)
-  gold:   curated/preprocessing/features.parquet, curated/preprocessing/encoding_dictionary.json
+  silver:     staging/<nguồn>/preprocessing/<bước>.jsonl|parquet   (bước 01–04)
+  pipeline:   pipeline/<bước>/<file>   bảng gộp 8 nguồn của Pre-processing (02–04, silver) và Processing (07, 08, 10, 12_e5)
+  mining:     curated/mining/<file>    kết quả Mining M1–M6 (mining/artifacts/)
+Key cũ không còn đúng với dữ liệu hiện tại nằm ở OBSOLETE_KEYS (script đẩy chỉ xóa khi có --push --delete-obsolete).
 Metadata mỗi object ghi generated_at của báo cáo bước và số dòng, để so máy với R2 theo từng key.
 """
 
@@ -28,12 +30,56 @@ def silver_key(step: str, source: str) -> str:
     return to_r2_key(f"staging/{source}/preprocessing/{step}.{ext}")
 
 
-PIPELINE_STEPS = (*STEPS, "07_sections", "08_skills", "09_tokens", "rejected", "translation")
-PROCESSING_FILES = {"07_sections": ("all.parquet",), "08_skills": ("job_skills.parquet",), "09_tokens": ("all.parquet",)}
+PIPELINE_STEPS = (*STEPS, "07_sections", "08_skills", "09_tokens", "10_features", "12_e5", "rejected", "translation")
+PROCESSING_FILES = {
+    "07_sections": ("all.parquet",),
+    "08_skills": ("job_skills.parquet",),
+    "09_tokens": ("all.parquet",),
+    "10_features": ("features.parquet", "encoding_dictionary.json"),
+    "12_e5": ("job_emb.npz", "bullet_emb.npy", "bullet_index.parquet", "meta.json"),  # bỏ cache/ (tạm)
+}
+PREPROCESSING_TABLES = {
+    "02_integration": ("all.parquet",),
+    "03_transformation": ("all.parquet",),
+    "04_normalization": ("all.parquet", "silver.parquet", "quarantine.parquet"),
+}
+MINING_DIR = REPO_ROOT / "mining" / "artifacts"
+MINING_PREFIX = "curated/mining"
+
+# Key trên R2 không còn đúng với dữ liệu hiện tại: bước 05_encoding đã bỏ (thay bằng 10_features),
+# bộ silver_* là đầu ra pipeline cũ run_staging_integration_pipeline.py (PRE-39) và sai bố cục staging/<nguồn>/.
+OBSOLETE_KEYS = (
+    "curated/preprocessing/features.parquet",
+    "curated/preprocessing/encoding_dictionary.json",
+    "staging/silver_flat_jobs.json",
+    "staging/silver_master_dataset.json",
+    "staging/silver_dataset_health_card.json",
+)
+
+_CONTENT_TYPES = {
+    ".parquet": "application/vnd.apache.parquet",
+    ".json": "application/json",
+    ".jsonl": "application/x-ndjson",
+    ".csv": "text/csv",
+    ".npz": "application/octet-stream",
+    ".npy": "application/octet-stream",
+}
+
+
+def _content_type(name: str) -> str:
+    return _CONTENT_TYPES.get(Path(name).suffix, "application/octet-stream")
+
+
+def _rows(path: Path) -> Optional[int]:
+    if path.suffix != ".parquet":
+        return None
+    import pyarrow.parquet as pq
+
+    return pq.ParquetFile(path).metadata.num_rows
 
 
 def pipeline_key(step: str, name: str) -> str:
-    """Key bảng gộp 8 nguồn: pipeline/<bước>/<tên file> (PH0). Chưa ghi gì lên R2."""
+    """Key bảng gộp 8 nguồn: pipeline/<bước>/<tên file> (PH0)."""
     if step not in PIPELINE_STEPS:
         raise ValueError(f"bước pipeline không hợp lệ: {step!r}; hợp lệ: {PIPELINE_STEPS}")
     return to_r2_key(f"pipeline/{step}/{name}")
@@ -48,7 +94,18 @@ GOLD_KEYS = {
 
 def _generated_at(step: str) -> Optional[str]:
     path = REPORTS / step / "_all.json"
+    if step in PROCESSING_FILES and (REPO_ROOT / "reports" / "processing" / step / "_all.json").exists():
+        path = REPO_ROOT / "reports" / "processing" / step / "_all.json"
     return json.loads(path.read_text(encoding="utf-8")).get("generated_at") if path.exists() else None
+
+
+def _mining_generated_at() -> Optional[str]:
+    path = MINING_DIR / "mining_metrics.json"
+    return json.loads(path.read_text(encoding="utf-8")).get("generated_at") if path.exists() else None
+
+
+def mining_key(name: str) -> str:
+    return to_r2_key(f"{MINING_PREFIX}/{name}")
 
 
 def _parquet_part(path: Path, source: str) -> Callable[[], bytes]:
@@ -91,16 +148,23 @@ def plan_objects(build: bool = True) -> List[Dict[str, Any]]:
                         "generated_at": gen, "content_type": "application/vnd.apache.parquet",
                         "build": _parquet_part(p, src) if build else None})
     # pipeline/<bước>/<tên file>: bảng gộp 8 nguồn (PH9); chỉ liệt kê file có trên máy
-    tables = {s: ("all.parquet",) for s in SILVER_STEPS[1:]}
-    tables.update({s: f for s, f in PROCESSING_FILES.items()})
+    tables = dict(PREPROCESSING_TABLES)
+    tables.update(PROCESSING_FILES)
     for step, names in tables.items():
         for name in names:
             p = (DATA.parent / "processing" if step in PROCESSING_FILES else DATA) / step / name
             if p.exists():
-                import pyarrow.parquet as pq
                 out.append({"step": step, "source": None, "key": pipeline_key(step, name),
-                            "rows": pq.ParquetFile(p).metadata.num_rows, "generated_at": _generated_at(step),
-                            "content_type": "application/vnd.apache.parquet",
+                            "rows": _rows(p), "generated_at": _generated_at(step),
+                            "content_type": _content_type(name),
+                            "build": (lambda p=p: p.read_bytes()) if build else None})
+    # curated/mining/<file>: kết quả Mining (một lần chạy, cùng generated_at của mining_metrics.json)
+    if MINING_DIR.exists():
+        gen_m = _mining_generated_at()
+        for p in sorted(MINING_DIR.iterdir()):
+            if p.is_file() and not p.name.startswith("."):
+                out.append({"step": "mining", "source": None, "key": mining_key(p.name), "rows": _rows(p),
+                            "generated_at": gen_m, "content_type": _content_type(p.name),
                             "build": (lambda p=p: p.read_bytes()) if build else None})
     gen = _generated_at("05_encoding")
     for name, key in GOLD_KEYS.items():
