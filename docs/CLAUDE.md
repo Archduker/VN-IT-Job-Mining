@@ -18,7 +18,7 @@ Bản đồ tài liệu. Khi tài liệu mâu thuẫn với code thì tin code; 
 | `tasks/` | Phân công và hướng dẫn theo người | `README.md` là mục lục; `legacy_TASKS.md` là kế hoạch gốc (cũ) |
 | `prompting/` | Prompt cho agent: `preprocessing/`, `processing/`, `mining/` (M0–M6, từ 20/11) theo khuôn 6 phần + Log; PH0–PH9 ở thư mục gốc là lịch sử | Khuôn và bảng phase → mục spec trong `prompting/README.md` |
 | `reports/` | Báo cáo môn học (.md, .docx) | Sinh bằng `scripts/build_course_reports.py` |
-| `presentation/` | Slide và kịch bản | `final_slides.html` là slide kết quả cuối (SD1–SD5, viết tay; biểu đồ trong `charts/` chèn bằng `scripts/build_mining_charts.py --inject`). `slides.html` sinh bằng `scripts/build_slides.py`; `slides_raw_problems.html` (vấn đề raw đo trên R2) sinh bằng `scripts/report_raw_problems_r2.py` |
+| `presentation/` | Slide và kịch bản | `final_slides.html` là slide kết quả cuối (SD1–SD5, viết tay; biểu đồ trong `charts/` chèn bằng `scripts/build_mining_charts.py --inject`). `giai_thich_slide_11_21.md` giải thích slide 11–21 cho người không học IT, kèm câu hỏi dự kiến và cách báo cáo phần "chưa rõ" ở slide 15. `slides.html` sinh bằng `scripts/build_slides.py`; `slides_raw_problems.html` (vấn đề raw đo trên R2) sinh bằng `scripts/report_raw_problems_r2.py` |
 | `issue_log.md` | Nhật ký lỗi đã xử lý | Lỗi → Nguyên nhân → Cách xử lý → Kiểm chứng |
 | `code_quality.md` | Chất lượng code | Sinh tự động bằng `make quality`; không sửa tay |
 

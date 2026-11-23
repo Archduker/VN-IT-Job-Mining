@@ -66,7 +66,7 @@ Các tiêu chí này lấy từ thiết kế 13 bước cũ, nay ghi ở spec 05
 
 | Tiêu chí | Cách đo | Ngưỡng | Kết quả 22/11 |
 |---|---|---|---|
-| Độ ổn định | ARI giữa 5 lần chạy với 5 seed | ≥ 0,8 | **Đạt**: 0,826 (min 0,779), `n_init` 150 |
+| Độ ổn định | ARI giữa seed 42 và 4 seed còn lại (43–46), lấy trung bình | ≥ 0,8 | **Đạt**: 0,826 (min 0,779), `n_init` 150 |
 | Kích thước nhóm | Cụm nhỏ nhất / số tin | ≥ 1% | **Đạt**: 4,26% |
 | Không tách theo số kỹ năng | Trung vị `n_tools` theo cụm | Không cụm nào trung vị 0 công cụ | **Đạt**. Cụm "Ít công cụ" (trung vị 1) được đặt tên riêng (M3.8b) |
 | Độ tách nhóm | Silhouette, Davies–Bouldin trên SVD 60 chiều | **Chỉ báo cáo** (chốt 22/11): quét k 2–20 đều cho Silhouette 0,075–0,10, nên không ngưỡng nào phân biệt được k tốt hay xấu | Silhouette 0,075; DB 2,80 (k = 10) |

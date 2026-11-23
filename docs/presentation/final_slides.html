@@ -511,7 +511,7 @@ ul.b li::before { content: ""; position: absolute; left: 0; top: 15px; width: 12
     <div><div class="small" style="margin-bottom:8px;">ARI giữa nhãn cụm của seed 42 và 4 seed khác (n_init 150)</div><div class="chart"><!-- chart:stability --><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 360" width="700" height="360" role="img" aria-label="ARI giữa các seed" font-family="'Be Vietnam Pro', Arial, sans-serif"><line x1="70" x2="590" y1="304.0" y2="304.0" stroke="#D9D5CA"/><text x="60" y="310.0" font-size="17" fill="#4A5568" text-anchor="end">0,0</text><line x1="70" x2="590" y1="247.2" y2="247.2" stroke="#D9D5CA"/><text x="60" y="253.2" font-size="17" fill="#4A5568" text-anchor="end">0,2</text><line x1="70" x2="590" y1="190.4" y2="190.4" stroke="#D9D5CA"/><text x="60" y="196.4" font-size="17" fill="#4A5568" text-anchor="end">0,4</text><line x1="70" x2="590" y1="133.6" y2="133.6" stroke="#D9D5CA"/><text x="60" y="139.6" font-size="17" fill="#4A5568" text-anchor="end">0,6</text><line x1="70" x2="590" y1="76.8" y2="76.8" stroke="#D9D5CA"/><text x="60" y="82.8" font-size="17" fill="#4A5568" text-anchor="end">0,8</text><line x1="70" x2="590" y1="20.0" y2="20.0" stroke="#D9D5CA"/><text x="60" y="26.0" font-size="17" fill="#4A5568" text-anchor="end">1,0</text><path d="M84.0,304.0 V83.3 q0,-4 4,-4 h94.0 q4,0 4,4 V304.0 Z" fill="#2F6FB0"><title>seed 43: ARI 0,791</title></path><text x="135.0" y="69.3" font-size="18" font-weight="600" fill="#14213D" text-anchor="middle">0,79</text><text x="135.0" y="330" font-size="17" fill="#4A5568" text-anchor="middle">seed 43</text><path d="M214.0,304.0 V86.7 q0,-4 4,-4 h94.0 q4,0 4,4 V304.0 Z" fill="#2F6FB0"><title>seed 44: ARI 0,779</title></path><text x="265.0" y="72.7" font-size="18" font-weight="600" fill="#14213D" text-anchor="middle">0,78</text><text x="265.0" y="330" font-size="17" fill="#4A5568" text-anchor="middle">seed 44</text><path d="M344.0,304.0 V82.6 q0,-4 4,-4 h94.0 q4,0 4,4 V304.0 Z" fill="#2F6FB0"><title>seed 45: ARI 0,794</title></path><text x="395.0" y="68.6" font-size="18" font-weight="600" fill="#14213D" text-anchor="middle">0,79</text><text x="395.0" y="330" font-size="17" fill="#4A5568" text-anchor="middle">seed 45</text><path d="M474.0,304.0 V41.3 q0,-4 4,-4 h94.0 q4,0 4,4 V304.0 Z" fill="#2F6FB0"><title>seed 46: ARI 0,939</title></path><text x="525.0" y="27.3" font-size="18" font-weight="600" fill="#14213D" text-anchor="middle">0,94</text><text x="525.0" y="330" font-size="17" fill="#4A5568" text-anchor="middle">seed 46</text><line x1="70" x2="590" y1="76.8" y2="76.8" stroke="#C2561B" stroke-width="2.5" stroke-dasharray="8 6"/><text x="598" y="82.8" font-size="17" font-weight="600" fill="#C2561B">ngưỡng 0,8</text></svg><!-- /chart:stability --></div></div>
   </div>
   <div class="grid3">
-    <div class="card"><div class="num blue">0,83</div><div class="lbl">ARI trung bình 5 seed, đạt ngưỡng 0,8</div></div>
+    <div class="card"><div class="num blue">0,83</div><div class="lbl">ARI trung bình (seed 42 so với 4 seed khác), đạt ngưỡng 0,8</div></div>
     <div class="card"><div class="num acc">0,075–0,10</div><div class="lbl">silhouette ở mọi k: không có k nào tách gọn, nên giữ k = 10 đã chốt và chỉ báo cáo silhouette</div></div>
     <div class="card"><div class="num">4,3%</div><div class="lbl">cụm nhỏ nhất (≥ 1%); không cụm nào chỉ gom theo số kỹ năng</div></div>
   </div>
@@ -524,7 +524,7 @@ ul.b li::before { content: ""; position: absolute; left: 0; top: 15px; width: 12
   <h2>Tin lạ chủ yếu là JD liệt kê quá nhiều công cụ hoặc lương lệch cấp</h2>
   <div class="grid2">
     <div style="display:flex; flex-direction:column; gap:20px;">
-      <div class="card"><div class="num acc">233</div><div class="lbl">tin bị gắn cờ (6,3%): Isolation Forest 104, GLOSH của HDBSCAN 112, cả hai 3</div></div>
+      <div class="card"><div class="num acc">233</div><div class="lbl">tin bị gắn cờ (6,3%): Isolation Forest 104, GLOSH của HDBSCAN 112 (3 tin cả hai), luật 20 (tin không rõ cấp)</div></div>
       <table class="t">
         <tr><th>Loại</th><th class="r">Số tin</th><th class="r">Kiểm tay</th><th>Ví dụ</th></tr>
         <tr><td>khác (có mã lý do)</td><td class="r">97</td><td class="r ok">8/8</td><td>DevOps đòi 32 công cụ; fresher backend 25 công cụ</td></tr>
@@ -552,7 +552,7 @@ ul.b li::before { content: ""; position: absolute; left: 0; top: 15px; width: 12
         <div class="card"><div class="num">0,56</div><div class="lbl">R² thang log trên tập test; CV R² 0,59 ± 0,03</div></div>
       </div>
       <p class="small">Random Forest, train 1.159 tin, test 299 tin. Chia theo công ty (GroupShuffleSplit theo company_id): 869 công ty, không công ty nào nằm cả hai phía, nên không rò rỉ.</p>
-      <div class="card"><div class="txt">Ước lượng lương cho 2.105 tin "thỏa thuận", kèm khoảng P10–P90 từ các cây, gắn nhãn "ước tính" và không trộn với lương công bố.</div></div>
+      <div class="card"><div class="txt">Ước lượng lương cho 2.085 tin "thỏa thuận", kèm khoảng P10–P90 từ các cây, gắn nhãn "ước tính" và không trộn với lương công bố.</div></div>
     </div>
     <div class="bars">
       <div class="small" style="margin-bottom:4px;">Tỷ trọng SHAP theo nhóm đặc trưng (thang log lương)</div>
