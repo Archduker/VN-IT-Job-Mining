@@ -28,6 +28,12 @@ Kiểm tra dữ liệu bằng `python scripts/audit_raw_data.py --r2` (ghi `repo
 
 - Đã có fixture TopDev, TopCV (`tests/fixtures/`). Còn VietnamWorks, CareerViet, Vieclam24h, ITviec, Glints, JobsGO; mỗi nguồn cần 3 mẫu thật (xem `tests/CLAUDE.md`), cần mạng.
 
+**SCRAPE-17. Ledger TopCV trên máy chưa đẩy R2 (71 raw ngày 17/11 chỉ có trên máy)** (mở 24/11/2026)
+
+- 24/11 đã đẩy ledger 7 nguồn lên R2 (catalog khớp máy theo sha256; raw không đổi, 0 file mới). TopCV giữ lại theo người dùng chọn: ledger trên máy có 69 URL `DONE` cào 17/11 mà raw chỉ nằm ở `data/_local_only/topcv/raw/2026-11-17/` (71 file, tách ra 18/11 để bộ dữ liệu chỉ dùng raw trên R2). Đẩy riêng ledger thì R2 có `DONE` thiếu raw (SCRAPE-4).
+- Muốn khép: hoặc đẩy 71 raw cùng ledger TopCV (dry-run, người dùng duyệt; bộ 3.718 tin không gồm các tin này), hoặc để nguyên.
+- Ledger 7 nguồn trên R2 nay có khoảng 3.200 URL `PENDING` phát hiện 17/11: crawler chạy lần tới sẽ cào chúng.
+
 **SCRAPE-15. TopDev cào cả tin ngoài IT; lọc IT còn import ngược từ `preprocessing`** (gộp SCRAPE-15, 18)
 
 - `topdev/crawler.py:_fetch_listing` gửi `category_ids=1` nhưng API `/td/v2/jobs` bỏ qua tham số này (đo 03/11: có hay không đều 14.572 tin). Mỗi lượt cào vẫn tốn request cho tin không dùng.
@@ -180,10 +186,10 @@ Các mục PRE-1…PRE-10, 16–19, 22, 28, 29 đã đóng hoặc bị phương 
 
 **GEN-3. Dọn code theo `docs/code_quality.md`** (`make quality`): import thừa, hàm không ai gọi, module không ai import. Người dùng duyệt từng mục trước khi sửa.
 
-**GEN-4. Layout R2: còn lệch spec 10 và chưa đẩy kết quả PH9**
+**GEN-4. Layout R2: còn một script ghi ngoài 5 tiền tố**
 
-- Đã chốt và làm 10/11 (L-33): R2 chỉ còn `url_ledger/ raw/ staging/ curated/ pipeline/`. `r2_export.plan_objects()` liệt kê key `pipeline/<bước>/...`. Chưa push `staging/ curated/ pipeline/` (cần dry-run, rồi người dùng duyệt); người dùng cần tự upload `pipeline/.keep` ở dashboard Cloudflare.
-- Còn lệch: `canonicalize_lakehouse_key` từ chối `staging/all.parquet` (bắt buộc tên nguồn ở cấp 2); `features.parquet` đang ở `curated/preprocessing/features.parquet` (spec 10 ghi `gold/features.parquet`) và `mining/config.py` đã đọc `data/processing/10_features/features.parquet` (L-46); `scripts/push_integration_to_r2.py` ghi `integration/...` ngoài 5 tiền tố.
+- Đã chốt và làm 10/11 (L-33): R2 chỉ còn `url_ledger/ raw/ staging/ curated/ pipeline/`. **23/11 đã đẩy** `staging/<nguồn>/preprocessing/`, `pipeline/` (02–04, 07, 08, 10_features, 12_e5) và `curated/mining/` bằng `scripts/push_preprocessing_to_r2.py --push --delete-obsolete` (78 object, xóa 5 key cũ gồm `curated/preprocessing/*` và `staging/silver_*.json`).
+- Còn lệch: `scripts/push_integration_to_r2.py` ghi `integration/...` ngoài 5 tiền tố.
 
 **GEN-7. Code tải R2 tự dựng trong `preprocessing/integration`**
 
