@@ -11,6 +11,7 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 | `report_raw_problems_r2.py [--from-json]` | Đo vấn đề dữ liệu raw **trực tiếp trên R2** (chỉ `list_objects_v2` và `get_object`), ghi `docs/presentation/raw_problems_r2.json` và bộ slide `slides_raw_problems.html` (mục A vấn đề raw, mục B cách xử lý). `--from-json` dựng lại slide mà không gọi R2 |
 | `read_eda_diagnosis.py --source <nguồn>` | Đọc luật EDA từ notebook mà không mở notebook |
 | `report_skills_overview.py [--out]` | Đọc bảng 04, so kỹ năng phương án A (chỉ văn bản gốc) với B (gốc + bản dịch), ghi HTML tĩnh `data/processing/skills_overview.html` (DF, độ phủ, mức cắt min_df) |
+| `plot_weight_views.py [--out]` | SD3: PCA 2D/3D của không gian phân cụm theo 4 bộ trọng số công cụ / khái niệm / e5, tô theo 7 nhóm và vai trò con, kèm độ đúng kNN; ghi `docs/presentation/weight_views.html` (L-62). Chỉ đọc dữ liệu trên máy |
 | `visualize_raw_bronze.py [--source]` | Trực quan hóa Bronze trên máy (raw + ledger) của từng nguồn ra `docs/presentation/raw_bronze/<nguồn>.html` và `index.html`: tháng đăng, tháng cào, trạng thái ledger, khóa `raw_payload`, độ phủ 25 trường sau làm phẳng, top giá trị, phúc lợi, độ dài văn bản. Không gọi R2 |
 | `visualize_preprocessing_steps.py [--step]` | Trực quan hóa từng bước 01 → 04 ra `docs/presentation/preprocessing_steps/`: số dòng theo nguồn, luật (so với report trong git HEAD), độ phủ từng trường theo nguồn đo trên `data/preprocessing/<bước>/`, mẫu trước/sau, phần `extra` của report. Bước chưa có đầu ra trên máy ghi "chưa chạy lại". Khung HTML dùng chung ở `_viz_html.py` |
 | `mine_jd_phrases.py [--out]` | Gom câu ứng viên trong JD theo chủ đề (hình thức làm việc, loại hợp đồng, kinh nghiệm, giờ làm, lương) từ bảng 03 ra `data/preprocessing/jd_phrases/<chủ đề>.tsv`, để dựng từ điển |
@@ -36,7 +37,7 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 | `run_preprocessing.py --step <bước>\|all --source <nguồn>\|all [--dry-run] [--translate]` | **Driver chuẩn.** Chuỗi pre-processing 01→04 rồi Processing 07, 08, 10, 12_e5 (`CHAIN`; `12_e5` cần GPU và model e5 đã tải) (spec 05, 06). `09_tokens`, `12_tfidf` bỏ khỏi chuỗi 19/11; `STEPS` còn `05_encoding` (đã bỏ nhưng chưa gỡ code, PRE-39). 07 và 08 do một lần gọi, chạy một trong hai thì cả hai báo cáo được gắn mẫu (L-53). Ghi `data/preprocessing/<bước>/`, `reports/preprocessing/<bước>/` (Monitoring đọc), mẫu gán nhãn `data/preprocessing/review/`. Không gọi model: phân loại là luật if-else. Từ bước 02 dữ liệu gộp 8 nguồn trong một file `all.parquet` |
 | `run_staging_integration_pipeline.py` | **Pipeline cũ, không dùng cho việc mới** (đánh dấu 17/11/2026). Chuỗi chuẩn là `run_preprocessing.py`. Script cũ ghi `data/staging/`, `data/curated/curated_flat_golden_jobs.parquet`, `reports/<nguồn>/`, theo nhãn cũ (12 Job Family, 6 bậc, 63 tỉnh) |
 | `create_golden_master_eda_notebook.py` | Sinh notebook EDA cho bộ golden |
-| `build_mining_charts.py [--inject]` | Vẽ biểu đồ SVG từ `mining/artifacts/` (bản đồ cụm small multiples, heatmap cụm × nghề, quét k, độ ổn định, giá trị kỹ năng SHAP, bảng hồ sơ cụm) ra `docs/presentation/charts/`; `--inject` chèn vào `docs/presentation/final_slides.html` giữa các chú thích `<!-- chart:<tên> -->`. Chạy lại sau mỗi lần chạy Mining |
+| `build_mining_charts.py [--inject]` | Vẽ biểu đồ từ `mining/artifacts/` (bản đồ tương tác 7 nhóm + Khác, thẻ cụm con theo nhóm, vai trò con so với danh sách, ARI theo nhóm, giá trị kỹ năng SHAP) ra `docs/presentation/charts/`; `--inject` chèn vào `docs/presentation/final_slides.html` giữa các chú thích `<!-- chart:<tên> -->`. Chạy lại sau mỗi lần chạy Mining |
 | `build_slides.py [--save-before <parquet>]` | Sinh slide thuyết trình `docs/presentation/slides.html` từ báo cáo 5 bước, `docs/presentation/data/*.json` (số trước sửa) và `compute()` của `report_data_issues.py`. Dừng nếu bảng vấn đề ↔ luật (`ISSUE_TO_RULES`) lệch với luật trong báo cáo. Chạy lại sau mỗi lần chạy pipeline |
 
 ## Ghi hoặc xóa trên R2 (phải chạy thử và được đồng ý)
@@ -52,6 +53,11 @@ Script vận hành và tiện ích. Trước khi chạy script nào, xem nó thu
 | `push_preprocessing_to_r2.py --push [--delete-obsolete]` | chạy không cờ | Đẩy output 3 giai đoạn: Pre-processing `staging/<nguồn>/preprocessing/<bước>.*` (bảng gộp tách theo nguồn) và `pipeline/02..04/` (gồm `silver.parquet`); Processing `pipeline/07_sections`, `08_skills`, `10_features`, `12_e5` (bỏ `cache/`); Mining `curated/mining/<file>` (cả `mining/artifacts/`). Chỉ đẩy key chưa có hoặc lệch (so `generated-at` và số dòng trong metadata). `--delete-obsolete` xóa key dưới `staging/`, `pipeline/`, `curated/` mà máy không còn sinh ra (không bao giờ đụng `raw/`, `url_ledger/`). Bố cục: `preprocessing/common/r2_export.py`. Đã đẩy lần đầu 23/11/2026 (78 object, xóa 5 key cũ của bước 05 và pipeline cũ) |
 | `check_r2.py` (`make check-r2`) | — | Ghi rồi xóa ngay một key thử để kiểm quyền |
 | `setup_cloud_storage.py` | — | Ghi khóa R2 vào `.env`, tạo bucket nếu chưa có |
+
+**Bẫy `push_preprocessing_to_r2.py` (25/11, L-62):**
+- Script so file bằng `generated-at` và số dòng, không so nội dung. Ghép lại artifact mà giữ `generated_at` cũ thì file đổi nội dung vẫn báo "khop".
+- Script đẩy mọi thứ có trên máy. Máy có `data/preprocessing/02–04`, `07_sections` cũ hơn R2 thì `--push` sẽ đè bản cũ lên R2.
+- Trước khi `--push`: so MD5 với ETag trên R2, và tải bản mới về máy trước.
 
 ## Cào thật (cần người dùng đồng ý)
 

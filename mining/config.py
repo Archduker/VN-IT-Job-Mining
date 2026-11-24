@@ -155,7 +155,7 @@ class ClusteringParams:
     kmeans_n_init: int = 150  # 2.B (20/11): n_init 10 cho ARI 5 seed 0,73; 50 cho 0,83 (k = 10). 22/11 (L-59, 3.718 tin): 50 chỉ còn 0,79, nâng 150
     stability_seeds: tuple[int, ...] = (42, 43, 44, 45, 46)  # M3.7
     stability_ari_target: float = 0.80  # PRE-36
-    min_cluster_share: float = 0.01  # cụm nhỏ nhất >= 1% số tin (PRE-36)
+    min_cluster_share: float = 0.01  # cụm nhỏ nhất >= 1% số tin (PRE-36); cluster_by_group: >= 1% số tin của NHÓM (người dùng đổi 24/11 sau khi xem kết quả)
     skill_count_ratio_max: float | None = None  # M3.8, 3.B (20/11): chỉ kiểm trung vị n_tools < 1
     # M3.8b (22/11, L-60): tên cụm chỉ mang tên nghề khi nghề đó chiếm >= 40% cụm; dưới mức đó ghi "Hỗn hợp".
     # Cụm có trung vị n_tools <= 1 ghi "Ít công cụ" (tin ghi ít công cụ, gom theo e5 + khái niệm)
@@ -170,6 +170,26 @@ class ClusteringParams:
     mismatch_majority: float = 0.60  # M3.10 có vẻ gán sai
     mismatch_dist_q: float = 0.25
     mismatch_family_share: float = 0.10
+    # SD3 theo 7 nhóm (người dùng chốt 24/11, `cluster_by_group`): chỉ tin có >= group_min_tools công cụ vào cụm;
+    # k mỗi nhóm = số vai trò con người dùng liệt kê (mining/job_group.SUB_ROLES), hạ k nếu trung bình < 30 tin/cụm;
+    # tên cụm lấy vai trò con khi >= 30% tin của cụm khớp tiêu đề vai trò đó.
+    # Trọng số khối cho cluster_by_group: người dùng chốt 0,5/0,5/0 (bỏ e5) ngày 24/11. Với e5 0,7, 5 cụm gần
+    # 100% là JD tiếng Anh (e5 tách theo ngôn ngữ viết JD); bỏ e5 thì 0 cụm nghiêng ngôn ngữ, ARI 0,97 (thấp nhất 0,89).
+    # 1/3 mỗi khối từng làm ARI Data & AI tụt 0,54. block_weights ở trên giữ cho cluster_jobs (bản 22/11).
+    group_block_weights: dict[str, float] = field(default_factory=lambda: {"tool": 0.5, "concept": 0.5, "e5": 0.0})
+    group_min_tools: int = 2
+    group_min_per_cluster: int = 30
+    subrole_min_share: float = 0.30
+    # Luật chốt "nghề mới" cho tin nhóm Khác (người dùng yêu cầu 24/11, đặt trước khi xem kết quả; chi tiết ở
+    # clustering.classify_other): tiêu đề cốt lõi chưa có trong danh sách vai trò, >= 3 tin từ >= 2 công ty (đếm toàn bộ
+    # dữ liệu); >= 50% tin xa mọi cụm (> P90 khoảng cách tin-tâm, ngưỡng chung) -> nghề mới; cụm gần nhất trải >= 2 nhóm
+    # -> nghề lai; cả hai cần >= 2 công cụ riêng (>= 30% tin, lift >= 2). Còn lại: tên gọi khác.
+    new_role_min_jobs: int = 3
+    new_role_min_companies: int = 2
+    new_role_min_skills: int = 2
+    new_role_skill_share: float = 0.30
+    new_role_skill_lift: float = 2.0
+    other_sim_quantile: float = 0.10
 
 
 @dataclass

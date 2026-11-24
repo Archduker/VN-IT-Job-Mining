@@ -1,6 +1,6 @@
 # Giải thích slide 11–21 (SD3, SD4, SD5, đánh giá, kết luận)
 
-Tài liệu cho người trình bày slide 11–21 của `final_slides.html`, viết để người không học IT cũng hiểu được. Mọi con số lấy từ lần chạy thật ngày 22/11/2026, gồm 3.718 tin IT, tháng 9–11/2026, nguồn `mining/artifacts/mining_metrics.json`. Câu hỏi của thầy trong file này là **câu hỏi dự kiến**, không phải câu thầy đã hỏi.
+Tài liệu cho người trình bày slide 11–21 của `final_slides.html`, viết để người không học IT cũng hiểu được. Mọi con số lấy từ lần chạy thật trên 3.718 tin IT, tháng 9–11/2026, nguồn `mining/artifacts/mining_metrics.json`: SD3 (slide 11–15) chạy lại ngày 24–25/11 theo 7 nhóm nghề, không dùng e5; phần còn lại là lần chạy 22/11. Hai lần cùng đầu vào (sha256 khớp). Câu hỏi của thầy trong file này là **câu hỏi dự kiến**, không phải câu thầy đã hỏi.
 
 **Cách dùng:**
 - **Phần 1** là từ điển thuật ngữ. Đọc trước một lần.
@@ -35,20 +35,23 @@ Tài liệu cho người trình bày slide 11–21 của `final_slides.html`, vi
 | Thuật ngữ | Giải thích đời thường | Ví dụ trong đề tài |
 |---|---|---|
 | Vector | Một dãy số đại diện cho một tin, để máy tính so tin này với tin kia | |
-| e5 (multilingual-e5-base) | Một mô hình ngôn ngữ có sẵn, đọc đoạn mô tả và yêu cầu của tin rồi trả về 768 con số, giống "dấu vân tay nội dung". Hai tin viết về cùng loại việc thì dấu vân tay gần nhau, kể cả khi dùng chữ khác nhau. Chỉ dùng để biến chữ thành số, không dùng để gán nghề | |
-| SVD, PCA | Kỹ thuật nén nhiều cột thành ít cột mà vẫn giữ phần thông tin chính, giống chụp ảnh 2D của một vật 3D | SVD nén khoảng 1.600 cột còn 60 cột để phân cụm. PCA nén còn 2–3 trục để vẽ |
+| e5 (multilingual-e5-base) | Một mô hình ngôn ngữ có sẵn, đọc đoạn mô tả và yêu cầu của tin rồi trả về 768 con số, giống "dấu vân tay nội dung". Hai tin viết về cùng loại việc thì dấu vân tay gần nhau, kể cả khi dùng chữ khác nhau. Chỉ dùng để biến chữ thành số, không dùng để gán nghề | **Không dùng cho phân cụm SD3 từ 24/11**: e5 gom tin theo ngôn ngữ viết JD (tiếng Anh hay tiếng Việt) |
+| SVD, PCA | Kỹ thuật nén nhiều cột thành ít cột mà vẫn giữ phần thông tin chính, giống chụp ảnh 2D của một vật 3D | SVD nén 829 cột (282 công cụ + 547 khái niệm) còn 60 cột để phân cụm. PCA nén còn 2–3 trục để vẽ |
 
 ### Phân cụm và đo chất lượng cụm (SD3)
 
 | Thuật ngữ | Giải thích đời thường | Ví dụ trong đề tài |
 |---|---|---|
+| 7 nhóm nghề (`job_group`) | Software, QA/QC, Data & AI, Hạ tầng, Security, Product & Business, Support & Consulting. Gán bằng luật đọc chức danh, không dùng AI | Tin không thuộc nhóm nào vào nhóm "Khác" |
+| Cụm con, vai trò con | Cụm máy tìm **trong** một nhóm, đặt tên theo vai trò con (Backend, Data Engineer…) khi ≥ 30% tin của cụm có tiêu đề khớp | 31 cụm con |
+| Mục "Khác (JD ít thông tin)" | Tin của một nhóm ghi dưới 2 công cụ: không đủ thông tin để phân cụm nên giữ trong nhóm, ở mục riêng | 744 tin |
 | Phân cụm (clustering) | Để máy tự xếp các tin giống nhau vào chung nhóm, **không cho trước đáp án**. Giống xếp quần áo trong tủ mà không có nhãn | |
-| K-Means, k | K-Means là một cách phân cụm: chọn k "tâm", mỗi tin về tâm gần nhất, rồi dời tâm vào giữa nhóm và lặp lại. k là số cụm muốn có | k = 10 |
+| K-Means, k | K-Means là một cách phân cụm: chọn k "tâm", mỗi tin về tâm gần nhất, rồi dời tâm vào giữa nhóm và lặp lại. k là số cụm muốn có | k của mỗi nhóm = số vai trò con liệt kê trước (tổng 31) |
 | seed, `n_init` | seed là "hạt giống ngẫu nhiên" quyết định điểm xuất phát. `n_init` = 150 nghĩa là thử 150 điểm xuất phát rồi giữ kết quả tốt nhất | |
-| Silhouette | Điểm từ −1 đến 1. Gần 1 là các cụm tách nhau rõ, gần 0 là ranh giới giữa các cụm mờ | Ở đây là 0,075 |
+| Silhouette | Điểm từ −1 đến 1. Gần 1 là các cụm tách nhau rõ, gần 0 là ranh giới giữa các cụm mờ | Ở đây là 0,07 (chỉ báo cáo) |
 | ARI | Độ giống nhau giữa hai cách chia nhóm: 1 là giống hệt, 0 là giống như chia ngẫu nhiên | Dùng để kiểm cụm có ổn định không khi đổi seed |
-| NMI | Cũng đo độ giống giữa hai cách chia, từ 0 đến 1 | So cụm với nhóm nghề gán bằng luật |
-| Lift | Kỹ năng xuất hiện trong cụm nhiều gấp mấy lần so với toàn thị trường | Lift 5 nghĩa là gấp 5 lần, kỹ năng "đặc trưng" của cụm |
+| kNN (độ đúng) | Lấy 15 tin gần nhất của một tin, đoán nhãn theo đa số rồi xem đúng bao nhiêu. Cao nghĩa là các nhãn tách nhau rõ trong không gian | Dùng để so các bộ trọng số ở slide 14 |
+| Lift | Kỹ năng xuất hiện trong cụm nhiều gấp mấy lần so với cả nhóm | Lift 5 nghĩa là gấp 5 lần, kỹ năng "đặc trưng" của cụm |
 
 ### Phát hiện tin bất thường (SD3)
 
@@ -58,6 +61,7 @@ Tài liệu cho người trình bày slide 11–21 của `final_slides.html`, vi
 | Contamination 3% | Tham số bảo IF đánh dấu khoảng 3% tin lạ nhất trong số tin biết cấp | |
 | HDBSCAN, GLOSH | HDBSCAN tìm các vùng dày đặc tin. GLOSH chấm điểm tin nào nằm ngoài rìa vùng dày của nó, tức là có hồ sơ kỹ năng ít gặp | |
 | Phân vị P95, P99 | P95 là mức mà 95% tin nằm dưới | P99 số công cụ là 27, nghĩa là chỉ 1% tin đòi hơn 27 công cụ |
+| Luật chốt nghề mới | Điều kiện đặt trước để gọi một tiêu đề là nghề mới: chưa có trong danh sách vai trò, ≥ 3 tin từ ≥ 2 công ty, nội dung xa mọi cụm, có ≥ 2 công cụ riêng | Kỳ này: 0 nghề mới, 2 nghề lai |
 | Mã lý do | Nhãn giải thích vì sao tin bị coi là lạ | `TOO_MANY_SKILLS` (đòi quá nhiều công cụ), `SALARY_TOO_LOW_FOR_LEVEL` (lương thấp bất thường so với cấp) |
 
 ### Mô hình lương (SD4)
@@ -85,98 +89,129 @@ Tài liệu cho người trình bày slide 11–21 của `final_slides.html`, vi
 
 ## Phần 2. Từng slide
 
-### Slide 11. "10 cụm việc IT: bấm từng cụm để xem"
+### Slide 11. "3.718 tin: 7 nhóm nghề, 31 cụm con và nhóm Khác"
 
-**Slide nói gì.** Máy tự chia 3.718 tin thành 10 nhóm việc dựa trên nội dung tin, không dựa vào nhãn nghề có sẵn.
+**Slide nói gì.** Mỗi tin được xếp vào 1 trong 7 nhóm nghề bằng luật. Trong từng nhóm, máy tự chia nhỏ theo nội dung tin thành cụm con. Không tin nào bị bỏ.
 
 **Đọc biểu đồ:**
-- Mỗi chấm là một tin, mỗi màu là một cụm.
-- Bấm tên cụm thì cụm đó sáng lên và hiện bảng thông tin. Bấm "Tất cả" để xem lại toàn bộ.
-- Nút 3D cho xoay hình bằng chuột.
-- Trục PC1, PC2 (PC3) là các trục PCA, không có đơn vị. Chúng chỉ là hướng "nhìn" đẹp nhất.
+- Mỗi chấm là một tin, màu là nhóm nghề. Nhóm Khác (ngoài 7 nhóm) màu xám.
+- Bấm một nhóm thì các tin của nhóm đó tô theo cụm con, có số thứ tự trên hình, và bảng bên phải liệt kê từng cụm con (số tin, lương, công cụ đặc trưng).
+- Tin ghi dưới 2 công cụ không có vị trí trên hình vì không đủ thông tin để đặt. Chúng được đếm ở mục "Khác (JD ít thông tin)" của nhóm.
+- Trục PC1, PC2 (PC3) là trục PCA, không có đơn vị.
 
-**Lời thoại gợi ý.** "Mỗi tin được biến thành một dãy số từ ba nguồn: công cụ, khái niệm và nội dung câu chữ (mô hình e5). Rồi thuật toán K-Means xếp các tin gần nhau vào cùng cụm. Nhóm em chốt 10 cụm. Thầy có thể bấm từng cụm để thấy cụm đó nằm ở đâu và đặc trưng bởi công cụ gì. Các chấm chồng lên nhau một phần, vì nghề IT thật sự giao nhau: một người Web cũng dùng SQL, một BA cũng dùng Jira như Tester."
+**3.718 tin chia như sau:**
 
-**Câu hỏi dự kiến:**
-- *Sao các cụm chồng lên nhau, vậy có phải chia sai?* Hình chỉ giữ khoảng 12% thông tin (3 trục PCA giữ 12% phương sai). Cụm thật được tính trên 60 chiều, nén từ khoảng 1.600 cột. Ép xuống 2–3 trục để vẽ thì bị chồng, giống bóng hai người đứng trước sau trùng nhau trên tường. Độ tốt của cụm được đo bằng số ở slide 14, không đo bằng mắt trên hình.
-- *Trọng số ba nguồn là bao nhiêu?* Công cụ 0,15, khái niệm 0,15, e5 0,70. e5 nặng hơn vì nó đọc cả câu chữ: tin viết sơ sài, ít tên công cụ vẫn được xếp đúng loại việc.
-- *Vì sao 9 tin không có trong hình?* 9 tin không có kỹ năng kỹ thuật nào nên không đưa vào phân cụm (3.709/3.718).
-
-**Điểm yếu nói trước.** Hình là minh họa, không phải bằng chứng. Bằng chứng nằm ở slide 13–14.
-
-### Slide 12. Bảng hồ sơ 10 cụm
-
-**Slide nói gì.** Mỗi cụm có bao nhiêu tin, nghề nào chiếm đa số, công cụ đặc trưng, số công cụ mỗi tin và lương trung vị.
-
-**Đọc bảng:**
-- "Nghề đa số 73%": 73% tin trong cụm thuộc nghề đó (gán bằng luật).
-- "Công cụ đặc trưng (lift)": công cụ xuất hiện trong cụm nhiều hơn hẳn so với toàn thị trường. Đây không phải công cụ phổ biến nhất.
-- Tên cụm được đặt tự động theo luật:
-  - "Ít công cụ" nếu trung vị ≤ 1 công cụ/tin.
-  - "Hỗn hợp" nếu nghề đông nhất dưới 40%.
-  - Còn lại lấy tên nghề chiếm đa số.
-- Lương là trung vị lương công bố. Chỉ ghi khi cụm có ≥ 30 tin có lương.
-
-**Lời thoại gợi ý.** "Cụm DevOps/Cloud đòi nhiều công cụ nhất, trung vị 14 công cụ mỗi tin, với argocd, helm, terraform, và lương trung vị 30 triệu. Cụm hạ tầng (C1) và cụm văn phòng (C5, word, excel) trả thấp nhất, 15–16 triệu. Có 3 cụm 'Hỗn hợp', nghĩa là không nghề nào chiếm quá 40%: đó là các tin đa năng."
+| Phần | Số tin |
+|---|---|
+| Trong 31 cụm con (7 nhóm, ≥ 2 công cụ) | 2.620 |
+| Mục "Khác (JD ít thông tin)" của 7 nhóm | 744 |
+| Nhóm Khác (ngoài 7 nhóm) | 354 |
 
 **Câu hỏi dự kiến:**
-- *C0 "Hỗn hợp" mà lương cao nhất (31,8 triệu)?* C0 gom tin đòi nền rộng (aws, git, java, sql) ở nhiều nghề, thường là tin cấp Middle trở lên đòi làm được nhiều việc. "Hỗn hợp" nói về nghề, không nói về trình độ.
-- *C8 "Ít công cụ" là nghề gì?* Không phải một nghề. Đây là các tin viết JD ngắn, gần như không nêu công cụ: thiết kế, mobile, BA viết sơ sài. Máy gom chúng lại vì cùng "ít thông tin". Nhóm em đặt tên rõ để không ai hiểu nhầm là nghề mới.
-- *Lift là gì?* Xem Phần 1. Ví dụ: argocd ít gặp trên toàn thị trường nhưng gặp nhiều trong C9, nên lift cao.
+- *Trước đây là 3.709 tin được phân cụm, sao giờ ít hơn?* Bản cũ đưa mọi tin có ít nhất 1 kỹ năng vào phân cụm. Kết quả là một cụm lớn 728 tin chỉ gom tin "thiếu công cụ", không phải một nghề. Bản mới chỉ phân cụm tin có ≥ 2 công cụ, còn lại vẫn giữ trong nhóm của nó ở mục "Khác". Tổng vẫn đủ 3.718.
+- *7 nhóm có phải máy tìm ra không?* Không. 7 nhóm lấy theo cách chia nghề IT phổ biến, gán bằng luật đọc chức danh (DBA vào Hạ tầng, IT Manager vào Product & Business). Máy chỉ tìm **vai trò con trong từng nhóm**.
+- *Số cụm mỗi nhóm chọn thế nào?* Bằng số vai trò con nhóm em liệt kê trước khi chạy (Software 6, QA/QC 3, Data & AI 5, Hạ tầng 5, Security 4 nhưng hạ còn 3 vì mỗi cụm cần trung bình ≥ 30 tin, Product & Business 5, Support 4).
 
-**Điểm yếu nói trước.** Một cụm (C8) phản ánh cách viết tin hơn là loại việc.
+**Điểm yếu nói trước.** Hình chỉ giữ khoảng 21% thông tin (3 trục PCA). Độ tốt của cụm đo ở slide 14.
 
-### Slide 13. Cụm so với nhóm nghề gán bằng luật
+### Slide 12. Cụm con trong từng nhóm
 
-**Slide nói gì.** Đặt 10 cụm (do máy tìm) cạnh 12 nhóm nghề (do luật gán) để xem chỗ nào khớp, chỗ nào nội dung tin cho góc nhìn khác.
+**Slide nói gì.** 8 thẻ (7 nhóm + nhóm Khác). Mỗi thẻ liệt kê cụm con, số tin, lương trung vị, và mục Khác của nhóm.
 
-**Đọc heatmap.** Mỗi hàng là một cụm, mỗi cột là một nghề. Ô càng đậm thì càng nhiều tin của cụm đó thuộc nghề đó. Rê chuột vào ô để xem số tin.
+**Đọc thẻ:**
+- Tên cụm là vai trò con khi ≥ 30% tin của cụm có tiêu đề khớp vai trò đó. Nếu hai cụm cùng vai trò thì thêm 2 công cụ đặc trưng để phân biệt (ví dụ "Backend · hibernate/spring" và "Backend · entity_framework/dotnet_core").
+- **Chữ cam** ("chưa khớp: html/css", "chưa khớp: cpp/csharp"): cụm máy tìm ra nhưng không khớp vai trò nào. Nhóm em để nguyên, không ép tên.
+- Lương chỉ ghi khi cụm có ≥ 30 tin công bố lương.
 
-**Lời thoại gợi ý.** "Có ba phát hiện:
-1. Data/AI tách làm hai: nhóm học sâu (pytorch, tensorflow, langchain) và nhóm phân tích BI (tableau, power_bi, sql). Hai việc khác nhau nhưng luật gom chung một nghề.
-2. Web tách theo stack: cụm Java/Spring gần như thuần Web.
-3. Luật xếp 'IT Manager' vào Bridge, nhưng nội dung JD nói về windows server, mạng, phần cứng nên rơi vào cụm hạ tầng. Ở doanh nghiệp Việt, 'Trưởng phòng CNTT' chủ yếu là quản lý hạ tầng."
+**Con số chính:**
+
+| | Cụm | Lương trung vị |
+|---|---|---|
+| Cao nhất | Backend Java/Spring | 30,0 tr |
+| | AI GenAI (gemini, claude) | 28,5 tr |
+| | DevOps/SRE, Automation Tester | 27,9 tr |
+| Thấp nhất | IT Helpdesk (macos, windows) | 13,0 tr |
+| | ERP/CRM · kubernetes/mysql | 17,2 tr |
+| | Web html/css | 17,5 tr |
 
 **Câu hỏi dự kiến:**
-- *NMI có e5 là 0,32, bỏ e5 là 0,47. Sao không bỏ e5 cho cao hơn?* NMI cao nghĩa là cụm giống nhãn luật hơn. Mục tiêu SD3 là tìm góc nhìn **khác** nhãn luật. Nếu cụm giống hệt nhãn thì phân cụm không cho thêm gì. e5 làm cụm theo nội dung thật của công việc, nhờ đó mới thấy hai kiểu Data/AI và IT Manager.
-- *Có bao nhiêu tin "có vẻ gán sai"?* 13 tin có nghề khác nghề đa số của cụm và nằm gần tâm cụm. Kiểm tay thì 6 tin là IT Manager, đúng như giải thích ở trên.
-- *Vậy luật gán nghề sai à?* Không hẳn. Luật đọc chức danh, cụm đọc nội dung. Hai cách bổ sung cho nhau; cụm không thay nhãn nghề.
+- *Sao Product & Business có tới 244 tin ở mục Khác?* Tin BA, PM thường mô tả bằng lời (phân tích yêu cầu, quản lý tiến độ), ít ghi tên công cụ, nên nhiều tin dưới ngưỡng 2 công cụ.
+- *Cụm "chưa khớp: cpp/csharp" là gì?* Tin phần mềm đòi C++/C#, OOP, debug, với tiêu đề rất khác nhau ("Software Developer", "Kỹ sư Automation Software", BrSE, cả game designer). Không vai trò nào chiếm tới 30% cụm, nên giữ tên theo công cụ.
+- *Cụm "chưa khớp: html/css" là gì?* Tin web html/css/javascript/php, tiêu đề lẫn Fullstack, Backend, Frontend. Đây là chỗ frontend "lẫn" vào: JD web nhỏ thường đòi cả front lẫn back.
 
-**Điểm yếu nói trước.** Ranh giới nghề IT chồng lấn, nên không có cách chia nào khớp 100%.
+### Slide 13. Vai trò con tìm được so với danh sách
+
+**Slide nói gì.** So vai trò máy tìm được với danh sách vai trò đặt trước.
+
+**Đọc hình:** xanh = vai trò có cụm riêng (×2 là hai cụm); viền xám = vai trò không thành cụm; cam = cụm ngoài danh sách (kèm số tin).
+
+**Phát hiện:**
+- **AI hai kiểu:** GenAI/agent (gemini, claude, openai_api, langgraph: 111 tin, 28,5 tr) và học sâu/thị giác máy (onnx, pytorch, cpp: 63 tin).
+- **Data Analyst hai kiểu:** bảng tính (excel, google_sheets: 61 tin) và BI (looker, tableau, power_bi: 94 tin, 24,2 tr).
+- **Software theo stack:** Java/Spring, .NET, Full-stack Node/Next. Frontend lẫn trong cụm web html/css.
+- **Ngoài dự kiến:** cụm "QA Engineer" là QA chất lượng sản xuất (powerpoint, word, autocad), không phải kiểm thử phần mềm; Product & Business có cụm thiết kế đồ họa, video (premiere, illustrator).
+- **Không thành cụm:** PO/PM, Scrum Master (viết JD giống BA); SOC, Pentester, Security Consultant (ít tin); Data Scientist, BI Developer (lẫn vào AI và DA); Game, Embedded (ít tin có ≥ 2 công cụ).
+
+**Câu hỏi dự kiến:**
+- *Vậy danh sách vai trò sai à?* Không. Danh sách là cách gọi tên nghề; cụm là cách JD thực sự mô tả công việc. Vai trò không thành cụm nghĩa là JD của nó viết giống một vai trò khác, hoặc quá ít tin.
+- *Có ý nghĩa gì với sinh viên?* "Data Analyst" hay "AI Engineer" trên tin tuyển dụng là hai hướng học khác nhau. Đọc kỹ công cụ trong JD trước khi ứng tuyển.
 
 ### Slide 14. Chất lượng phân cụm
 
-**Slide nói gì.** Cụm ổn định khi chạy lại, nhưng ranh giới giữa các cụm mờ ở mọi số cụm k.
+**Slide nói gì.** Cụm con ổn định ở cả 7 nhóm. Trọng số khối được chọn để cụm không bị tách theo ngôn ngữ viết JD.
 
-**Đọc biểu đồ:**
-- **Biểu đồ trái:** quét k từ 2 đến 20, silhouette chỉ dao động 0,075–0,10. Không có k nào làm các cụm tách rõ hẳn.
-- **Biểu đồ phải:** chạy lại K-Means với 4 seed khác (43–46) rồi so với seed 42. ARI lần lượt 0,79 / 0,78 / 0,79 / 0,94, trung bình **0,826**, đạt ngưỡng 0,8.
-- Cụm nhỏ nhất chiếm 4,3% số tin (ngưỡng ≥ 1%). Không cụm nào chỉ gom tin theo "nhiều hay ít kỹ năng".
+**Đọc biểu đồ và bảng:**
+- **Biểu đồ trái:** ARI giữa nhãn cụm của seed 42 và 4 seed khác (n_init 150), từng nhóm: Software 0,97; QA/QC 1,00; Data & AI 0,97; Hạ tầng 1,00; Security 0,89; Product 0,98; Support 0,95. Ngưỡng 0,8.
+- **Bảng phải:** 5 bộ trọng số công cụ / khái niệm / e5. "Tách 7 nhóm" và "Tách vai trò con" là độ đúng kNN (lấy 15 tin gần nhất, đoán nhãn theo đa số). "Cụm ≥ 90% JD tiếng Anh" đếm số cụm gần như chỉ gồm tin tiếng Anh.
+- **Thẻ:** ARI trung bình 0,97; cụm nhỏ nhất 7,4% số tin của nhóm nó (cổng ≥ 1%); silhouette 0,07 chỉ báo cáo.
 
-**Lời thoại gợi ý.** "Câu hỏi đầu tiên với phân cụm là 'chạy lại có ra như cũ không'. Đổi điểm xuất phát ngẫu nhiên 4 lần, kết quả giống lần đầu trung bình 83%, đạt ngưỡng 80% đã đặt trước. Silhouette thấp, khoảng 0,08, nhưng thấp ở **mọi** k từ 2 đến 20. Như vậy ranh giới mờ là tính chất của dữ liệu nghề IT, không phải do nhóm chọn k sai."
+**Chuyện e5 (nên kể, vì cho thấy nhóm kiểm kết quả thật):** bản 22/11 dùng e5 với trọng số 0,70. Khi vẽ bản đồ, tin tách thành hai mảng: một mảng gần như toàn JD tiếng Anh. Kiểm lại có 5 cụm ≥ 90% JD tiếng Anh (Backend aws/typescript, AI azure/aws, BA sql/jira, DevOps github_actions, Automation Tester). e5 đọc câu chữ nên nhạy với ngôn ngữ. Nhóm em thử thêm cách "trừ trung bình ngôn ngữ" (còn 1 cụm lệch) và "chỉ e5" (11 cụm lệch), rồi chọn **bỏ e5**: 0 cụm lệch, tách vai trò con 0,79, ARI thấp nhất 0,89.
 
 **Câu hỏi dự kiến:**
-- *Silhouette 0,075 có quá thấp không?* Thấp, và nhóm em không giấu: chỉ báo cáo, không dùng làm cổng nghiệm thu (chốt 22/11). Lý do: dữ liệu văn bản nhiều chiều và nghề giao nhau. Bằng chứng là quét k = 2…20 không có k nào vượt 0,10.
-- *Vì sao chọn k = 10?* k được chốt từ trước theo mục tiêu diễn giải: đủ chi tiết để tách các nghề chính, không quá vụn. Vì silhouette gần như phẳng theo k, đổi k không làm cụm tốt hơn rõ rệt.
-- *Seed là gì, vì sao phải thử nhiều seed?* K-Means bắt đầu từ điểm ngẫu nhiên. Nếu đổi seed mà ra cụm khác hẳn thì kết luận không đáng tin. Nhóm còn tăng `n_init` lên 150 (thử 150 điểm xuất phát mỗi lần) để kết quả ổn định. Với 50 thì ARI chỉ 0,79.
-- *Sao seed 46 tới 0,94 còn các seed khác 0,78–0,79?* Silhouette thấp cho thấy nhiều tin nằm giữa hai cụm. Các tin này đổi cụm tùy điểm xuất phát, nên ARI dao động. Nhóm em chưa đo riêng từng cụm đổi bao nhiêu; nếu thầy hỏi sâu thì nói đây là việc có thể đo thêm.
+- *Bỏ e5 thì bước tạo vector e5 có thừa không?* Với SD3 thì có. Vector e5 vẫn là đặc trưng của bước Processing, nhưng phân cụm vai trò dùng công cụ và khái niệm vì đây là mã chung cho cả hai ngôn ngữ.
+- *Đổi trọng số sau khi thấy kết quả có phải chỉnh số cho đẹp không?* Lý do đổi là một lỗi đo được (cụm theo ngôn ngữ), không phải để tăng chỉ số. Bảng ghi cả các bộ không được chọn. Bộ được chọn có ARI thấp nhất (0,89) **thấp hơn** bộ cũ (0,90).
+- *Cổng "cụm nhỏ nhất ≥ 1%" sao tính theo nhóm?* Cụm giờ được tìm trong từng nhóm, nên so với nhóm của nó mới đúng nghĩa. Thay đổi này ghi rõ là làm sau khi xem kết quả (24/11).
 
-**Điểm yếu nói trước.** Silhouette thấp. Trả lời bằng biểu đồ quét k như trên.
+**Điểm yếu nói trước.** Security ARI 0,89, thấp nhất vì nhóm chỉ có 116 tin vào cụm.
 
 ### Slide 15. Tin "khác hoặc mới"
 
-**Slide nói gì.** 233 tin (6,3%) có hồ sơ bất thường. Loại "khác", tức tin có lý do cụ thể, là đáng tin. Loại "mới" và "chưa rõ" không đủ để kết luận có nghề mới.
+**Slide nói gì.** Hai phần. (1) Tin lạ: chủ yếu là JD đòi quá nhiều công cụ hoặc lương lệch cấp. (2) Nhóm Khác xét bằng luật chốt nghề mới: không thấy nghề mới.
 
-**Đọc con số:**
-- Isolation Forest gắn cờ 104 tin, GLOSH 112 tin, 3 tin cả hai cùng bắt. Thêm 20 tin do **luật** gắn cờ: tin không rõ cấp bậc nhưng có lý do cụ thể, chẳng hạn lương ngoại lai. Cộng lại: 101 + 109 + 3 + 20 = 233.
-- Ba loại:
-  - **khác (97 tin):** có mã lý do đọc được. Kiểm tay 8/8 đúng.
-  - **mới (102 tin):** GLOSH thấy hồ sơ kỹ năng ít gặp, còn lương, kinh nghiệm, số công cụ đều bình thường so với cùng cấp. Kiểm tay chỉ 2/9 đúng là ngách thật (quant rủi ro, Odoo). Còn lại là JD viết chung chung.
-  - **chưa rõ (34 tin):** phần còn lại. Xem **Phần 3**.
+**Đọc con số, phần tin lạ (M4):**
+- 210 tin bị gắn cờ: Isolation Forest 104, GLOSH 86, cả hai 1, luật 21. Cộng: 103 + 85 + 1 + 21 = 210.
+- **khác (97 tin):** có mã lý do. Hay gặp nhất: lương thấp bất thường so với cấp (31), fresher đòi quá nhiều công cụ (25), lương ngoại lai (16), đòi quá nhiều công cụ (15). Một tin có thể có nhiều mã. Kiểm tay 8/8 đúng.
+- **chưa rõ (37 tin):** xem Phần 3.
 
-**Lời thoại gợi ý.** "Nhóm em dùng hai thuật toán tìm điểm lạ: Isolation Forest nhìn lương, kinh nghiệm, số công cụ; GLOSH nhìn hồ sơ kỹ năng. Mỗi tin lạ được gắn mã lý do. Ví dụ tin DevOps đòi 32 công cụ, hay tin fresher backend đòi 25 công cụ. Loại có mã lý do kiểm tay đúng 8/8 nên dùng được. Loại 'mới' chỉ đúng 2/9, đa số là tin viết sơ sài, nên nhóm em **không** kết luận có nghề mới trong kỳ này."
+**Đọc con số, phần nhóm Khác (354 tin):**
 
-**Câu hỏi dự kiến.** Xem Phần 3.
+| Kết quả | Số tin |
+|---|---|
+| Nội dung giống một cụm có sẵn | 216 |
+| JD ít thông tin (< 2 công cụ) | 115 |
+| Lẻ, xa mọi cụm (tiêu đề chưa đủ tin để xét) | 20 |
+| Nghề lai | 3 |
+| Nghề mới | 0 |
+
+**Luật chốt nghề mới** (đặt trước khi xem kết quả, code `mining/clustering.py`, hàm `classify_other`). Một tiêu đề trong nhóm Khác được xét theo thứ tự:
+1. Tiêu đề chung chung ("Nhân viên IT") → không xét.
+2. Khớp một vai trò trong danh sách → đã có.
+3. Đếm đúng tiêu đề đó trên **toàn bộ dữ liệu**: dưới 3 tin hoặc dưới 2 công ty → **theo dõi**.
+4. ≥ 50% tin của tiêu đề nằm xa mọi cụm và có ≥ 2 công cụ riêng → **nghề mới**.
+5. Tin rải ra ≥ 2 nhóm, không nhóm nào ≥ 60%, và có ≥ 2 công cụ riêng → **nghề lai**.
+6. Còn lại → **tên gọi khác** của nhóm gần nhất.
+
+**Kết quả:**
+- Nghề lai: Engineering Manager (Software + Support), Forward Deployed Engineer (Data & AI + Hạ tầng). Mỗi tiêu đề 3 tin từ 3 công ty.
+- Tên gọi khác: Tech Lead, Technical Leader (Software); Data Architect (Data & AI); IT Supervisor (Support).
+- Theo dõi: Analytics Engineer (1 tin), blockchain, playable ads, product engineer (2 tin mỗi loại).
+
+**Lời thoại gợi ý.** "Một tiêu đề lạ chưa đủ để gọi là nghề mới. Nhóm em đặt luật từ trước: phải có ít nhất 3 tin từ 2 công ty, nội dung khác hẳn mọi cụm có sẵn, và có công cụ riêng. Áp luật này, kỳ này không có nghề mới; có 2 nghề lai và một danh sách theo dõi."
+
+**Câu hỏi dự kiến:**
+- *Analytics Engineer là nghề mới mà?* Trên thế giới là vai trò đang nổi. Trong dữ liệu kỳ này, tiêu đề đúng "Analytics Engineer" chỉ có 1 tin, nên theo luật chỉ "theo dõi". Muốn chốt cần thêm các kỳ sau.
+- *Ngưỡng 3 tin, 2 công ty có tùy tiện không?* 2 công ty để loại trường hợp một công ty tự đặt tên riêng; 3 tin là mức tối thiểu để xem nội dung có khác cụm có sẵn không. Ngưỡng đặt trước khi chạy và ghi trong `mining/config.py`.
+- *Loại "mới" của GLOSH trước đây đâu rồi?* Thay bằng luật nghề mới, vì kiểm tay loại "mới" của GLOSH chỉ đúng 2/9: phần lớn là tin viết sơ sài.
 
 ### Slide 16. Mô hình lương
 
@@ -272,7 +307,8 @@ Tất cả đều đạt. Bên phải là những điểm còn yếu và vì sao
 
 **Câu hỏi dự kiến:**
 - *Ngưỡng do ai đặt, có đặt sau khi thấy kết quả không?* Ngưỡng lấy theo tài liệu mục tiêu (`docs/target/`), chốt ngày 22/11. Silhouette và R² được chuyển sang "chỉ báo cáo", có ghi lý do trong nhật ký L-60.
-- *"Chạy lại ra cùng số" nghĩa là gì?* Cố định seed 42 và ghi mã băm (sha256) của dữ liệu đầu vào. Ai chạy lại trên cùng dữ liệu cũng ra cùng số.
+- *"Chạy lại ra cùng số" nghĩa là gì?* Cố định seed 42 và ghi mã băm (sha256) của dữ liệu đầu vào. Chạy lại trên **cùng máy** ra cùng số. Chạy trên máy khác (Windows ↔ Linux), Random Forest lệch nhẹ: MAE 6,105 ↔ 6,126; BI, luật kết hợp và phân cụm thì khớp.
+- *Cổng SD3 có đổi sau khi thấy kết quả không?* Có hai thay đổi, đều ghi rõ: cụm nhỏ nhất ≥ 1% tính theo nhóm (vì cụm giờ tìm trong nhóm), và bỏ e5 (vì e5 tách theo ngôn ngữ). Ngưỡng ARI ≥ 0,8 giữ nguyên.
 
 ### Slide 20. Câu trả lời cho năm câu hỏi
 
@@ -281,12 +317,12 @@ Tất cả đều đạt. Bên phải là những điểm còn yếu và vì sao
 **Lời thoại gợi ý.** Đọc từng dòng, nhấn số chính:
 - **SD1:** Hà Nội và TP.HCM chiếm 89% số tin; người mới chiếm 29%, lương 13,5 triệu so với 26,5 triệu ở Middle trở lên.
 - **SD2:** kỹ năng đi theo gói, như java ⇒ spring_boot.
-- **SD3:** 10 nhóm việc ổn định nhưng ranh giới mờ; không thấy nghề mới.
+- **SD3:** 7 nhóm nghề tách thành 31 vai trò con ổn định; AI và Data Analyst đều có hai kiểu; không thấy nghề mới.
 - **SD4:** kinh nghiệm và cấp chiếm 67%, mỗi kỹ năng dưới 0,6 triệu.
 - **SD5:** lộ trình cho 8 nghề, 4 nghề ổn định.
 
 **Câu hỏi dự kiến:**
-- *"Không thấy nghề mới" có chắc không?* Chỉ chắc trong phạm vi dữ liệu này: một kỳ 3 tháng, chỉ có phía nhà tuyển dụng. Loại "mới" chỉ đúng 2/9 khi kiểm tay, nên nhóm em không đủ bằng chứng để nói là có.
+- *"Không thấy nghề mới" có chắc không?* Chỉ chắc trong phạm vi dữ liệu này: một kỳ 3 tháng, chỉ có phía nhà tuyển dụng. Theo luật đặt trước, không tiêu đề nào đủ ≥ 3 tin, ≥ 2 công ty và nội dung khác hẳn mọi cụm. Analytics Engineer, blockchain… đang ở danh sách theo dõi.
 
 ### Slide 21. Gợi ý cho sinh viên IT
 
@@ -312,37 +348,29 @@ Tất cả đều đạt. Bên phải là những điểm còn yếu và vì sao
 
 ### 3.1. "Chưa rõ" là gì
 
-Mỗi tin bị gắn cờ được xếp vào 1 trong 3 loại, theo luật trong `mining/anomaly.py`, hàm `classify_kind`:
+Mỗi tin bị gắn cờ được xếp vào 1 loại theo luật trong `mining/anomaly.py`, hàm `classify_kind`:
 
 | Loại | Điều kiện | Số tin |
 |---|---|---|
 | khác | Có **mã lý do cụ thể**: quá nhiều công cụ, fresher quá nhiều công cụ, lương quá thấp hoặc quá cao so với cấp, lương ngoại lai | 97 |
-| mới | GLOSH gắn cờ (hồ sơ kỹ năng ít gặp), **và** kinh nghiệm, lương, số công cụ đều nằm trong khoảng P5–P95 của cùng cấp, tức "mọi thứ bình thường, chỉ bộ kỹ năng lạ" | 102 |
-| **chưa rõ** | Bị gắn cờ nhưng **không đủ điều kiện** cho hai loại trên | 34 |
+| **chưa rõ** | Bị gắn cờ nhưng **không vượt ngưỡng** của mã lý do nào | 37 |
+| (mới, của GLOSH) | Hồ sơ kỹ năng ít gặp, mọi thứ khác bình thường. Không đưa lên slide nữa, thay bằng luật nghề mới vì kiểm tay chỉ đúng 2/9 | 76 |
 
-34 tin "chưa rõ" gồm:
-- **29 tin** do Isolation Forest gắn cờ, nhưng không tin nào vượt ngưỡng của mã lý do nào (mã chung `ISOLATION_GENERIC`).
-- **5 tin** do GLOSH gắn cờ, nhưng có ít nhất một trong ba trường (kinh nghiệm, lương, số công cụ) nằm ngoài P5–P95 của cấp. Vì vậy không xếp được vào "mới" (mới đòi mọi thứ bình thường), cũng không vào "khác" (không vượt ngưỡng mã).
+37 tin "chưa rõ" gồm:
+- **30 tin** do Isolation Forest gắn cờ (mã chung `ISOLATION_GENERIC`): 15 Intern/Fresher, 11 Lead/Manager, 4 Senior.
+- **7 tin** do GLOSH gắn cờ nhưng có kinh nghiệm, lương hoặc số công cụ ngoài P5–P95 của cấp.
 
 ### 3.2. Phát hiện chính: "chưa rõ" là nhóm giáp ngưỡng
 
-Đo lại trên `job_anomalies.parquet` (lệnh chỉ đọc, 24/11) với 29 tin Isolation Forest:
+- **25/30 tin** Isolation Forest có số công cụ thuộc **top 10%** của chính cấp đó.
+- Ngưỡng mã lý do (tính lại mỗi lần chạy): fresher > 17 công cụ (P95), mọi cấp > 27 công cụ (P99), lương > 3 lần trung vị cấp.
+- Ví dụ: fresher đòi 15–17 công cụ, hoặc lương gần gấp 3 trung vị cấp nhưng chưa vượt.
 
-| Cấp | Số tin | Số công cụ | Ngưỡng mã lý do |
-|---|---|---|---|
-| Intern/Fresher | 14 | 11–17 | `FRESHER_TOO_MANY_SKILLS`: > 17 |
-| Senior | 4 | 25–27 | `TOO_MANY_SKILLS`: > 27 |
-| Lead/Manager | 11 | 7–27 | `TOO_MANY_SKILLS`: > 27; lương > 3 lần trung vị cấp |
-
-- **23/29 tin** có số công cụ nằm trong **top 10%** của chính cấp đó, và 28/29 nằm trong top 20%.
-- Tin còn lại ("Java Tech Lead, offer upto 70tr", 7 công cụ) có lương gấp **2,33 lần** trung vị cấp, sát ngưỡng 3 lần.
-- Hai tin fresher có lương gấp 2,92 và 3,00 lần trung vị cấp. Ngưỡng là "lớn hơn 3", nên chưa vượt.
-
-**Giải thích:** Isolation Forest nhìn **tổ hợp** nhiều yếu tố cùng lúc. Một fresher đòi 16 công cụ **và** lương khá cao là tổ hợp hiếm, dù từng yếu tố chưa vượt ngưỡng riêng. Luật mã lý do thì xét từng yếu tố một. Vì vậy các tin này "lạ" theo máy nhưng chưa có mã để gọi tên.
+**Giải thích:** Isolation Forest nhìn **tổ hợp** nhiều yếu tố cùng lúc. Một fresher đòi 16 công cụ **và** lương khá cao là tổ hợp hiếm, dù từng yếu tố chưa vượt ngưỡng riêng. Luật mã lý do thì xét từng yếu tố một.
 
 ### 3.3. Kiểm tay
 
-Mẫu kiểm tay là 20 tin chọn ngẫu nhiên phân tầng (seed 42), trong đó 3 tin "chưa rõ". File: `data/preprocessing/review/mining_hand_check_2211.csv`.
+Mẫu kiểm tay 22/11 (seed 42) có 3 tin "chưa rõ"; cả 3 vẫn là "chưa rõ" ở lần chạy 25/11. File: `mining/artifacts/sd3_anomaly_hand_check.csv`.
 
 | Tin | Đánh giá |
 |---|---|
@@ -350,31 +378,23 @@ Mẫu kiểm tay là 20 tin chọn ngẫu nhiên phân tầng (seed 42), trong �
 | AI Engineer (All Level), 16 công cụ | Đúng là lạ: ghi "all level" nhưng đòi nhiều |
 | Head of AI & Data, 11 công cụ, 10 năm kinh nghiệm | Không lạ: hồ sơ bình thường của cấp cao |
 
-Kết quả 2/3. **Mẫu chỉ 3 tin nên không đủ để kết luận tỷ lệ đúng.** Nói thẳng điều này với thầy.
+Kết quả 2/3. **Mẫu chỉ 3 tin nên không đủ để kết luận tỷ lệ đúng.** Nói thẳng điều này với thầy. 8 tin "khác" đã kiểm tay cũng vẫn là "khác" (8/8).
 
 ### 3.4. Câu trả lời mẫu, khoảng 30 giây
 
-> "Chưa rõ là 34 tin máy thấy lạ nhưng không gán được lý do cụ thể. Nhóm em tách riêng thay vì ép vào 'khác' hay 'mới', để không gán nhãn sai. Khi xem lại, gần hết là tin **giáp ngưỡng**: 23 trên 29 tin đòi số công cụ thuộc top 10% của cấp mình, chẳng hạn fresher đòi 15–17 công cụ trong khi ngưỡng là trên 17. Isolation Forest bắt được vì nó nhìn tổ hợp nhiều yếu tố, còn luật mã lý do xét từng yếu tố. Nhóm em **không** dùng nhóm này để kết luận. Kết luận ở slide chỉ dựa vào loại 'khác', loại đã kiểm tay đúng 8/8."
+> "Chưa rõ là 37 tin máy thấy lạ nhưng không gán được lý do cụ thể. Nhóm em tách riêng thay vì ép vào 'khác', để không gán nhãn sai. Khi xem lại, gần hết là tin **giáp ngưỡng**: 25 trên 30 tin đòi số công cụ thuộc top 10% của cấp mình, ví dụ fresher đòi 15–17 công cụ trong khi ngưỡng là trên 17. Nhóm em **không** dùng nhóm này để kết luận. Kết luận chỉ dựa vào loại 'khác', loại đã kiểm tay đúng 8/8."
 
 ### 3.5. Câu hỏi tiếp theo có thể gặp
 
 **Vì sao không hạ ngưỡng cho "chưa rõ" thành "khác"?**
-Ngưỡng lấy theo phân vị của dữ liệu (P99 số công cụ toàn bộ, P95 cho người mới), không đặt số tùy ý. Hạ ngưỡng để "đẹp số" là chỉnh ngưỡng theo kết quả. Nhóm em giữ ngưỡng và báo cáo nhóm giáp ngưỡng riêng.
+Ngưỡng lấy theo phân vị của dữ liệu (P99 số công cụ toàn bộ, P95 cho người mới). Hạ ngưỡng để "đẹp số" là chỉnh ngưỡng theo kết quả. Nhóm em giữ ngưỡng và báo cáo nhóm giáp ngưỡng riêng.
 
-**Vì sao "mới" chỉ đúng 2/9?**
-GLOSH bắt hồ sơ kỹ năng ít gặp. Nhưng nhiều tin "ít gặp" chỉ vì viết sơ sài, kiểu "Nhân viên IT" nêu 2 công cụ, chứ không phải nghề mới. Hai tin đúng là ngách thật: quant rủi ro ngân hàng và lập trình Odoo. Vì vậy nhóm em không kết luận có nghề mới.
+**Contamination 3% mà sao có 210 tin (5,6%)?**
+3% chỉ áp cho Isolation Forest, trên tin biết cấp: 104 tin. Tổng 210 là hợp của ba cách bắt: Isolation Forest 104, GLOSH 86 (trùng 1 tin), luật 21 tin chưa rõ cấp có lý do cụ thể.
 
-**Contamination 3% mà sao có 6,3%?**
-3% chỉ áp cho Isolation Forest, trên tin biết cấp: 104 tin. Tổng 233 tin là hợp của ba cách bắt:
-- Isolation Forest: 104 tin.
-- GLOSH: 112 tin, trùng 3 tin với Isolation Forest.
-- Luật: 20 tin chưa rõ cấp có lý do cụ thể.
-
-274 tin không rõ cấp không đưa vào Isolation Forest. Lý do: trước đây Isolation Forest bắt chủ yếu "tin thiếu cấp" chứ không phải tin lạ thật (quyết định 1.B, 20/11).
-
-**Nếu có thêm thời gian, nhóm sẽ làm gì?**
-- Kiểm tay đủ 34 tin "chưa rõ". Số tin ít, làm được trong một buổi.
-- Thêm mã lý do "giáp ngưỡng", ví dụ số công cụ trong top 10% của cấp, để nhóm này có tên.
+**Nếu có thêm thời gian?**
+- Kiểm tay đủ 37 tin "chưa rõ".
+- Thêm mã lý do "giáp ngưỡng" (số công cụ trong top 10% của cấp) để nhóm này có tên.
 
 ---
 
@@ -384,18 +404,19 @@ GLOSH bắt hồ sơ kỹ năng ít gặp. Nhưng nhiều tin "ít gặp" chỉ 
 
 | Slide | Con số | Ý nghĩa | Nguồn (`mining_metrics.json`) |
 |---|---|---|---|
-| 11 | 3.709 / 3.718 | Tin được phân cụm (9 tin không có kỹ năng kỹ thuật) | `clustering.n_clustered` |
-| 11 | 0,15 / 0,15 / 0,70 | Trọng số công cụ / khái niệm / e5 | `clustering.vector_space.block_weights` |
-| 11 | 12% | Phần thông tin giữ lại khi vẽ 3 trục PCA | `clustering.pca_cumulative_variance_3d` |
-| 12 | 10 cụm, 158–728 tin | Hồ sơ cụm | `clustering.clusters` |
-| 13 | NMI 0,32 (bỏ e5 0,47) | Độ giống cụm ↔ nghề | `clustering.nmi_vs_job_family`, `without_e5` |
-| 13 | 13 tin, 6 IT Manager | Tin "có vẻ gán sai" | `clustering.n_family_mismatch`, `sd3_mismatch_hand_check.csv` |
-| 14 | Silhouette 0,075 (k = 2…20: 0,075–0,10) | Độ tách cụm | `clustering.silhouette`, `k_scan` |
-| 14 | ARI 0,826 (0,791 / 0,779 / 0,794 / 0,939) | Ổn định: seed 42 so với 43–46 | `clustering.stability` |
-| 14 | 4,3% | Cụm nhỏ nhất | `clustering.min_cluster_share` |
-| 15 | 233 = 101 + 109 + 3 + 20 | Chỉ IF + chỉ GLOSH + cả hai + luật | `anomaly.n_flagged`, `n_isolation_forest`, `n_glosh`, `n_both`, `n_rule_unknown_level` |
-| 15 | 97 / 102 / 34 | Khác / mới / chưa rõ | `anomaly.kind_counts` |
-| 15 | 27 và 17 | Ngưỡng số công cụ (P99 toàn bộ, P95 người mới) | `anomaly.thresholds_used` |
+| 11 | 2.620 + 744 + 354 = 3.718 | Trong cụm con + mục Khác của 7 nhóm + nhóm Khác | `clustering.coverage` |
+| 11 | 892 / 402 / 511 / 367 / 168 / 637 / 387 | Software / QA / Data & AI / Hạ tầng / Security / Product / Support | `clustering.group_counts` |
+| 11 | 0,5 / 0,5 / 0 | Trọng số công cụ / khái niệm / e5 | `clustering.vector_space.block_weights` |
+| 11 | 21% | Phần thông tin giữ lại khi vẽ 3 trục PCA | `clustering.pca_cumulative_variance_3d` |
+| 12 | 31 cụm, 25–220 tin | Hồ sơ cụm con | `clustering.clusters` |
+| 13 | 29/31 | Cụm khớp một vai trò trong danh sách | `clustering.n_sub_role_matched` |
+| 14 | ARI 0,97 (thấp nhất Security 0,89) | Ổn định 5 seed theo nhóm | `clustering.stability`, `by_group` |
+| 14 | 7,4% | Cụm nhỏ nhất so với nhóm của nó | `clustering.min_cluster_share` |
+| 14 | 0,07 | Silhouette (chỉ báo cáo) | `clustering.silhouette` |
+| 14 | 5 / 0 / 1 / 11 / 0 cụm | Cụm ≥ 90% JD tiếng Anh theo từng bộ trọng số | đo 24/11, `scripts/plot_weight_views.py` và chạy thử |
+| 15 | 210 = 103 + 85 + 1 + 21 | Chỉ IF + chỉ GLOSH + cả hai + luật | `anomaly.n_flagged`, `n_isolation_forest`, `n_glosh`, `n_both`, `n_rule_unknown_level` |
+| 15 | 97 / 37 | Khác / chưa rõ | `anomaly.kind_counts` |
+| 15 | 216 / 115 / 20 / 3 / 0 | Nhóm Khác: giống cụm / JD ít thông tin / lẻ / nghề lai / nghề mới | `clustering.other.status_counts`, `sd3_other_roles.json` |
 
 ### Slide 16–18 (SD4, SD5)
 
@@ -408,4 +429,4 @@ GLOSH bắt hồ sơ kỹ năng ít gặp. Nhưng nhiều tin "ít gặp" chỉ 
 | 17 | 21,3 triệu; 77 kỹ năng; bootstrap 200 | Công thức giá trị kỹ năng | `salary.shap` |
 | 18 | cov@10 và lệch 80/20 từng nghề | Lộ trình | `recommend.families` |
 
-Tóm lại, file này có 4 phần: từ điển thuật ngữ, giải thích từng slide 11–21, chuẩn bị riêng cho "chưa rõ" ở slide 15, và bảng tra số. Số ở slide 14, 15, 16 đã được sửa ngày 24/11 để khớp với kết quả chạy.
+Tóm lại, file này có 4 phần: từ điển thuật ngữ, giải thích từng slide 11–21, chuẩn bị riêng cho "chưa rõ" ở slide 15, và bảng tra số. Phần SD3 (slide 11–15, 19, 20) cập nhật ngày 25/11 theo cách phân cụm 7 nhóm, không dùng e5.

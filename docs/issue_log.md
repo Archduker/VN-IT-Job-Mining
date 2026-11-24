@@ -444,6 +444,55 @@ Chi tiết từng mục ở `docs/tasks/02_tai_clean_and_deduplication.md` §5.4
 - **Còn lại:** CLAUDE.md nhắc tới `requirements-dev.txt` nhưng file này không có trong repo; pytest, ruff và vulture chưa được liệt kê ở đâu (GEN-1).
 - **Kiểm chứng:** `pytest tests/` toàn bộ (kết quả ở commit đi kèm); so sánh 8 test trên worktree `main` và `f352120`.
 
+### L-62. Phân cụm SD3 gom theo thiếu công cụ và theo ngôn ngữ JD; chuyển sang 7 nhóm nghề + cụm con (Mining, 24–25/11/2026)
+- **Lỗi:** bản 22/11 (K-Means k = 10 trên công cụ + khái niệm + e5 0,15/0,15/0,7):
+  - Cụm lớn nhất C8 "Ít công cụ" (728 tin) gom tin vì thiếu công cụ, không vì cùng việc: 47% tin không có công cụ nào. Cộng 3 cụm "Hỗn hợp", chỉ khoảng 50% tin nằm trong cụm có nghề rõ.
+  - e5 gom tin theo ngôn ngữ viết JD: 5 cụm ≥ 90% JD tiếng Anh (Backend aws/typescript, AI azure/aws, BA sql/jira, DevOps github_actions, Automation Tester). Phát hiện khi vẽ bản đồ slide 11 (hai mảng tách hẳn).
+  - Người dùng cần mỗi cụm rõ thuộc nghề nào.
+- **Nguyên nhân:**
+  - `cluster_jobs` (`mining/clustering.py`) đưa mọi tin có ≥ 1 kỹ năng vào cùng một không gian. Tin có khối công cụ rỗng nằm gần nhau, nên tự gom thành một cụm.
+  - e5 (multilingual-e5-base) đọc câu chữ, nên khoảng cách giữa hai tin chịu ảnh hưởng của ngôn ngữ viết.
+- **Cách xử lý (người dùng chốt từng bước 24–25/11):**
+  1. **7 nhóm nghề** (`mining/job_group.py`): Software, QA/QC, Data & AI, Hạ tầng, Security, Product & Business, Support & Consulting; ngoài 7 nhóm là Khác. Gán từ `job_family` + luật tiêu đề, cụ thể:
+     - DBA → Hạ tầng; IT Manager → Product & Business.
+     - ERP/CRM consultant, Solution Architect, kiến trúc sư giải pháp, helpdesk → Support.
+     - Tin Infra/Support tiêu đề chung chung xếp theo công cụ máy chủ/mạng.
+     - Chỉ dùng cho SD3; `job_family` 11 nhóm giữ cho SD1, SD2, SD4, SD5.
+  2. **Cụm con trong từng nhóm** (`cluster_by_group`): K-Means riêng mỗi nhóm.
+     - k = số vai trò con người dùng liệt kê (`SUB_ROLES`), hạ k nếu trung bình < 30 tin/cụm.
+     - Tên cụm = vai trò con khi ≥ 30% tin của cụm có tiêu đề khớp.
+     - Chỉ tin có ≥ 2 công cụ vào cụm. Tin ít công cụ vẫn giữ trong nhóm, ở mục "Khác (JD ít thông tin)": mỗi tin đều có chỗ.
+  3. **Bỏ e5 khỏi SD3:** trọng số công cụ / khái niệm / e5 = 0,5 / 0,5 / 0 (`group_block_weights`). So 5 bộ trọng số (`scripts/plot_weight_views.py`, `docs/presentation/weight_views.html`):
+
+     | Bộ trọng số | Cụm ≥ 90% JD tiếng Anh | ARI thấp nhất |
+     |---|---|---|
+     | 0,15 / 0,15 / 0,7 | 5 | 0,90 |
+     | 1/3 mỗi khối | 0 | 0,54 |
+     | e5 trừ trung bình ngôn ngữ | 1 | 0,95 |
+     | chỉ e5 | 11 | 0,97 |
+     | **0,5 / 0,5 / 0 (chọn)** | **0** | **0,89** |
+
+  4. **Luật chốt nghề mới cho nhóm Khác** (`classify_other`): tiêu đề cốt lõi chưa có trong danh sách vai trò, ≥ 3 tin từ ≥ 2 công ty đếm trên toàn bộ dữ liệu, ≥ 50% tin xa mọi cụm, ≥ 2 công cụ riêng. Bản đầu của luật bắt nhầm (cắt tiêu đề quá ngắn, cụm rộng nuốt hết), đã sửa trước khi báo kết quả.
+  5. **Đổi cổng sau khi xem kết quả** (ghi rõ):
+     - Cụm nhỏ nhất ≥ 1% tính theo số tin của nhóm, không theo toàn bộ.
+     - Slide 15 thay loại "mới" của GLOSH (kiểm tay 2/9) bằng kết quả luật nghề mới.
+  6. **Chỉ chạy lại M3, M4** trên cùng đầu vào 22/11 (sha256 khớp) và ghép vào artifact 22/11. Lý do: chạy lại toàn bộ trên máy Linux làm Random Forest lệch nhẹ so với lần chạy trên Windows (MAE 6,126 so với 6,105), dù BI và luật kết hợp khớp từng số. `mining_metrics.json` có mục `sd3_rerun` ghi việc này.
+- **Kết quả (25/11):**
+  - 3.718 tin = 2.620 trong 31 cụm con + 744 ở mục Khác của 7 nhóm + 354 nhóm Khác. 29/31 cụm khớp vai trò.
+  - ARI 5 seed theo nhóm: trung bình 0,97, thấp nhất 0,89 (Security). Cụm nhỏ nhất 7,4% của nhóm. Silhouette 0,07 (chỉ báo cáo). 0 cụm lệch ngôn ngữ.
+  - Phát hiện: AI hai kiểu (GenAI, học sâu); Data Analyst hai kiểu (bảng tính, BI); Software theo stack; "QA Engineer" là QA sản xuất.
+  - Nhóm Khác: 0 nghề mới, 2 nghề lai (Engineering Manager, Forward Deployed Engineer), Analytics Engineer 1 tin nên chỉ theo dõi.
+  - M4: 210 tin lạ, "khác" 97 (8/8 tin đã kiểm tay vẫn cùng loại), "chưa rõ" 37.
+- **Còn lại:**
+  - Vector e5 (bước 12_e5) không còn dùng trong Mining.
+  - Câu "chạy lại ra cùng số" chỉ đúng trên cùng máy.
+  - `cluster_jobs` (bản 22/11) giữ lại để so sánh.
+  - Đẩy R2: không dùng `push_preprocessing_to_r2.py --push` từ máy này. Script so theo `generated-at` nên không thấy 5 file SD3 đã đổi; còn `data/preprocessing/02–04`, `07_sections` trên máy là bản 11/11, sẽ đè bản 22/11 trên R2. Chỉ đẩy riêng 5 file `curated/mining/` (so MD5 với ETag) và xóa `sd3_mismatch_hand_check.csv`. Đã làm 25/11 (người dùng duyệt): sau khi đẩy, 33 file `mining/artifacts/` khớp MD5 với ETag của 33 key `curated/mining/`.
+- **Kiểm chứng:**
+  - `tests/unit/test_mining_job_group.py`, `tests/unit/test_mining_cluster_by_group.py` (gồm "mỗi tin đều có chỗ"), `tests/unit/test_build_mining_charts.py`.
+  - `make test-fast`: 755 test qua.
+  - `python -m mining.run_mining_pipeline --only cluster,anomaly`, rồi `python scripts/build_mining_charts.py --inject`.
+
 ## 3. Monitoring
 
 ### L-15. Trang Raw hiện kinh nghiệm "1 - 10 Năm" thành 10 năm

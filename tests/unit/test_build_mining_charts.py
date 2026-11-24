@@ -7,13 +7,14 @@ from scripts import build_mining_charts as bmc
 @pytest.mark.needs_data("mining/artifacts/mining_metrics.json", "mining/artifacts/job_clusters.parquet")
 def test_build_returns_all_charts_without_writing():
     charts = bmc.build()
-    assert {"cluster_map", "cluster_family", "k_silhouette", "stability", "skill_value", "cluster_table"} <= set(charts)
+    assert {"cluster_explorer", "cluster_table", "role_coverage", "group_stability", "skill_value"} == set(charts)
     for name, s in charts.items():
-        assert s.lstrip().startswith(("<svg", "<table", "<style")), name
-    assert charts["cluster_map"].count("<title>C") == 10  # 10 ô, mỗi ô một cụm
-    ex = charts["cluster_explorer"]  # biểu đồ tương tác slide 11: dữ liệu nhúng, không gọi mạng
-    assert '"clusters":[' in ex and ex.count('"center":') == 10
+        assert s.lstrip().startswith(("<svg", "<style")), name
+    ex = charts["cluster_explorer"]  # biểu đồ tương tác slide 11: 7 nhóm, dữ liệu nhúng, không gọi mạng
+    assert '"groups":[' in ex and ex.count('"subs":') == 8  # 7 nhóm + nhóm Khác
     assert "http" not in ex.split("<script>", 1)[1]
+    assert charts["cluster_table"].count('class="gt-card"') == 8
+    assert charts["group_stability"].count("<title>") == 7
 
 
 def test_vn_number_format():

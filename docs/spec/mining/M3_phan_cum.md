@@ -4,6 +4,14 @@
 > Lệnh: `python -m mining.run_mining_pipeline --only cluster [--dry-run]`.
 > Câu hỏi: [`docs/target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md`](../../target/03_sd3_nhom_viec_va_tin_khac_hoac_moi.md). Trạng thái: **đã duyệt 20/11 (người dùng: "approved").**
 
+> **Thay đổi 24–25/11/2026 (L-62):** cách chạy hiện hành là `cluster_by_group`, không còn là `cluster_jobs` (k = 10) mô tả ở mục 2.1, 2.2, 5, 7.
+> - **Nhóm:** mỗi tin vào 1 trong 7 nhóm nghề (`mining/job_group.py`) hoặc nhóm Khác.
+> - **Cụm con:** K-Means riêng mỗi nhóm, k = số vai trò con liệt kê, trên công cụ + khái niệm (0,5 / 0,5, **không e5**), chỉ tin có ≥ 2 công cụ.
+> - **Tin ít công cụ:** vào mục "Khác (JD ít thông tin)" của nhóm.
+> - **Nhóm Khác:** xét bằng luật chốt nghề mới (`classify_other`).
+>
+> Xem mục 8.
+
 ## 1. Mục đích
 
 - 3.1: chỉ từ nội dung JD và kỹ năng, thị trường chia thành mấy nhóm việc, mỗi nhóm là việc gì?
@@ -122,3 +130,30 @@ Chạy thật 20/11 (`--only bi,fp,cluster`; sha256 đầu vào như M0). 3.902 
 - Còn yếu: cụm 3 (810 tin, trung vị 1 công cụ, độ thuần 0,25) vẫn gom tin ít công cụ; qua luật 3.B vì trung vị = 1. Cụm 7 là AI Engineer nhưng 103/190 tin mang `job_family` Web: luật nghề xếp AI Engineer vào Web (PRE-44).
 - Tên cột `job_clusters.parquet` giữ `is_outlier`, `glosh_outlier_score` (tên Mart) thay `glosh_outlier`, `glosh_score` của mục 4.
 - Đóng 22/11 (L-60): Silhouette chỉ báo cáo; tên cụm theo M3.8b. Kết quả cuối: spec 08 mục 3.3.
+
+## 8. Bản 24–25/11: 7 nhóm nghề, cụm con, nhóm Khác (L-62)
+
+| Bước | Luật | Code |
+|---|---|---|
+| Gán nhóm | 7 nhóm từ `job_family` + luật tiêu đề (DBA → Hạ tầng, IT Manager → Product & Business, ERP/Solution Architect/helpdesk → Support; Infra/Support chung chung theo công cụ máy chủ/mạng). Còn lại: Khác | `job_group.add_job_group` |
+| Không gian | Khối công cụ + khái niệm, trọng số 0,5 / 0,5; e5 trọng số 0 (gom theo ngôn ngữ JD); SVD 60 chiều | `ClusteringParams.group_block_weights` |
+| Tập tin | `n_tools` ≥ 2 (`group_min_tools`); tin ít công cụ ở mục "Khác (JD ít thông tin)" của nhóm | `cluster_by_group` |
+| k | Số vai trò con trong `SUB_ROLES`, hạ nếu trung bình < 30 tin/cụm | `group_min_per_cluster` |
+| Tên cụm | Vai trò con nếu ≥ 30% tin của cụm khớp tiêu đề; trùng tên thì thêm 2 công cụ lift cao nhất; không khớp thì ghi theo công cụ | `subrole_min_share` |
+| Nhóm Khác | Luật chốt nghề mới: không chung chung, chưa có trong danh sách, ≥ 3 tin / ≥ 2 công ty (toàn bộ dữ liệu), ≥ 50% tin xa mọi cụm (> P90 khoảng cách tin–tâm), ≥ 2 công cụ riêng → nghề mới; tin trải ≥ 2 nhóm → nghề lai; còn lại tên gọi khác hoặc theo dõi | `classify_other` |
+
+**Nghiệm thu (25/11):**
+
+| Kiểm tra | Ngưỡng | Kết quả |
+|---|---|---|
+| ARI 5 seed theo nhóm | ≥ 0,8 | trung bình 0,97, thấp nhất 0,89 (Security) |
+| Cụm nhỏ nhất | ≥ 1% số tin **của nhóm** (đổi 25/11 sau khi xem kết quả) | 7,4% |
+| Không gom theo số công cụ | không cụm nào trung vị `n_tools` < 1 | đạt |
+| Không gom theo ngôn ngữ JD | 0 cụm ≥ 90% JD tiếng Anh | đạt |
+| Mỗi tin đều có chỗ | cụm con + mục Khác của nhóm + nhóm Khác = 3.718 | 2.620 + 744 + 354 |
+| Silhouette | chỉ báo cáo | 0,07 |
+
+**Đầu ra mới:**
+- `job_clusters.parquet` thêm cột `job_group`, `job_group_source`, `sub_role_title`, `sub_role`, `title_core`, `other_status`, `nearest_cluster`.
+- Metrics: `clustering.by_group`, `coverage`, `other`.
+- File `sd3_other_roles.json`.

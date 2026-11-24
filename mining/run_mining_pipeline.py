@@ -32,7 +32,7 @@ import pandas as pd  # noqa: E402
 from mining.anomaly import detect_anomalies, hand_check_sample  # noqa: E402
 from mining.bi import _view_sets, newcomer_demand, run_bi  # noqa: E402
 from mining.association import run_association, write_hand_check  # noqa: E402
-from mining.clustering import cluster_jobs  # noqa: E402
+from mining.clustering import cluster_by_group  # noqa: E402
 from mining.config import (  # noqa: E402
     ARTIFACT_FILES,
     ARTIFACTS_DIR,
@@ -120,17 +120,15 @@ def run_pipeline(
     glosh = glosh_flag = None
     if "cluster" in steps:
         t = time.perf_counter()
-        clusters, m = cluster_jobs(skills, meta, p.clustering, random_state=p.random_state, e5=data.e5,
-                                   concepts=data.concepts)  # có e5 thì tự so thêm bản không e5 (without_e5)
+        # SD3 theo 7 nhóm (người dùng chốt 24/11): cụm con trong từng nhóm + luật nghề mới cho nhóm Khác
+        clusters, m = cluster_by_group(skills, meta, p.clustering, random_state=p.random_state, e5=data.e5,
+                                       concepts=data.concepts)
         outputs["clusters"], metrics["clustering"] = clusters, m
         outputs.setdefault("json", {})["cluster_family_crosstab.json"] = {
-            "crosstab": m["crosstab"], "hybrid_clusters": m["hybrid_clusters"], "niche": m["niche"],
-            "clusters": [{k: c[k] for k in ("cluster_id", "cluster_name", "size", "dominant_job_family",
-                                            "job_family_purity")} for c in m["clusters"]]}
-        hc = clusters[clusters["family_mismatch"]]
-        outputs["hand_check_mismatch"] = (hc.sample(min(20, len(hc)), random_state=p.random_state)
-                                          [["job_id", "job_title", "job_family", "cluster_id", "cluster_name"]]
-                                          .assign(dung=pd.NA, ghi_chu=pd.NA).reset_index(drop=True))
+            "crosstab": m["crosstab"], "by_group": m["by_group"],
+            "clusters": [{k: c[k] for k in ("cluster_id", "cluster_name", "job_group", "sub_role", "sub_role_share",
+                                            "size", "dominant_job_family", "job_family_purity")} for c in m["clusters"]]}
+        outputs.setdefault("json", {})["sd3_other_roles.json"] = m["other"]
         # tin không vào phân cụm (M3.1b) có GLOSH null; M4 coi là không cờ, cột glosh để null
         glosh = clusters["glosh_outlier_score"].to_numpy(dtype=float)
         glosh_flag = clusters["is_outlier"].to_numpy()

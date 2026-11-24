@@ -22,3 +22,9 @@ Lệnh: `python -m mining.run_mining_pipeline [--only fp,cluster,…] [--dry-run
 - **`--synthetic` chỉ cho test** (`mining/synthetic.py`, schema giống Silver). Không lấy số báo cáo từ đó (L-19).
 - Test ghi vào `tmp_path`; chạy xong xem `git status` (không được đổi `mining/artifacts/`, `data/`, `reports/`).
 - **Nghiệm thu (22/11, L-60):** `targets_summary` chỉ chứa cổng; Silhouette/DB và R²/MAE tuyệt đối nằm ở `targets_summary.report_only`, đừng đưa lại thành cổng. Tên cụm có tiền tố "Hỗn hợp"/"Ít công cụ" (M3.8b): code đọc nghề của cụm phải dùng `dominant_job_family`, không tách từ `cluster_name`. Chạy lại mining thì chạy `python scripts/build_mining_charts.py --inject` để slide khớp số.
+- **SD3 chạy `cluster_by_group`, không phải `cluster_jobs`** (L-62, 25/11).
+  - Nhóm `job_group` (7 nhóm + Khác, `mining/job_group.py`) chỉ dùng cho SD3; SD1, SD2, SD4, SD5 vẫn dùng `job_family` 11 nhóm.
+  - Không dùng e5 (`group_block_weights` e5 = 0): e5 gom tin theo ngôn ngữ viết JD (5 cụm ≥ 90% tiếng Anh).
+  - Tin < 2 công cụ ở mục "Khác (JD ít thông tin)" của nhóm. Kiểm `coverage` cộng đủ số tin.
+  - Thêm vai trò hay từ khóa vào `SUB_ROLES`/luật tiêu đề thì chạy lại M3, M4 rồi `build_mining_charts.py --inject`.
+- **Chỉ chạy lại một phần mining thì đừng ghi đè cả `mining/artifacts/`:** `mining_metrics.json` bị ghi lại cả file. Chạy toàn bộ trên máy khác làm Random Forest lệch nhẹ (MAE 6,105 ↔ 6,126). Muốn giữ số 22/11 của SD4, SD5 thì chạy `--only cluster,anomaly --out <thư mục tạm>` rồi ghép phần `clustering`, `anomaly` vào metrics 22/11 (cách làm ở L-62).

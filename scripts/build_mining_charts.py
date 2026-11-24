@@ -6,13 +6,12 @@ bằng SVG inline (để chữ dùng font của slide).
 
     python scripts/build_mining_charts.py [--inject]
 
-Biểu đồ:
-- cluster_map: mỗi cụm một ô (small multiples) trên hình chiếu PCA 2 chiều; cụm tô xanh, mọi tin khác xám.
-- cluster_family: heatmap tỷ lệ nhóm nghề trong từng cụm (thang một màu).
-- k_silhouette, k_inertia: quét k 2–20 (hai biểu đồ riêng, không dùng hai trục).
-- stability: ARI của 4 seed so với seed 42, ngưỡng 0,8.
+Biểu đồ (SD3 theo 7 nhóm nghề, cụm con trong từng nhóm, người dùng chốt 24/11/2026):
+- cluster_explorer: biểu đồ tương tác (canvas) 2D/3D trên pca_x/y/z, tô theo 7 nhóm; bấm một nhóm để thấy cụm con.
+- cluster_table: thẻ mỗi nhóm, liệt kê cụm con (vai trò, số tin, công cụ đặc trưng, lương trung vị).
+- role_coverage: vai trò người dùng liệt kê có tách thành cụm không, và cụm nào ngoài danh sách.
+- group_stability: ARI 5 seed theo từng nhóm, ngưỡng 0,8.
 - skill_value: giá trị SHAP quy ra triệu/tháng của kỹ năng, kèm khoảng tin cậy bootstrap.
-- cluster_explorer: biểu đồ tương tác (canvas) 2D/3D trên pca_x/y/z, nút chọn từng cụm; dùng cho slide 11.
 """
 from __future__ import annotations
 
@@ -20,12 +19,15 @@ import argparse
 import html
 import json
 import re
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))  # để import mining.job_group khi chạy như script
 ART = ROOT / "mining" / "artifacts"
 OUT = ROOT / "docs" / "presentation" / "charts"
 DECK = ROOT / "docs" / "presentation" / "final_slides.html"
@@ -33,12 +35,8 @@ DECK = ROOT / "docs" / "presentation" / "final_slides.html"
 INK = "#14213D"
 MUTED = "#4A5568"
 GRID = "#D9D5CA"
-BG_POINT = "#CFCBBF"
 BLUE = "#2F6FB0"
 ACCENT = "#C2561B"
-# Thang một màu (xanh) cho heatmap, nhạt -> đậm
-RAMP = ["#F3F1EA", "#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]
-SHORT_FAM = {"Infra/Support": "Infra", "DevOps/Cloud": "DevOps", "Security": "Sec.", "Data/AI": "Data/AI"}
 FONT = "font-family=\"'Be Vietnam Pro', Arial, sans-serif\""
 
 
@@ -55,129 +53,42 @@ def svg(w: int, h: int, body: str, label: str) -> str:
             f'role="img" aria-label="{esc(label)}" {FONT}>{body}</svg>')
 
 
-def short_name(name: str) -> str:
-    return name.replace("windows/windows_server", "windows/win_server")
+GROUP_ORDER = ["Software", "QA/QC", "Data & AI", "Hạ tầng", "Security", "Product & Business", "Support & Consulting"]
+GROUP_COLORS = ["#2a78d6", "#eb6834", "#1baf7a", "#c98500", "#e34948", "#6250d6", "#0f8b8d", "#8A8F98"]  # cuối: nhóm Khác
+SHORT_GROUP = {"Product & Business": "Product & Business", "Support & Consulting": "Support & Consulting"}
 
 
-def cluster_map(clusters: pd.DataFrame, profiles: list[dict]) -> str:
-    """Small multiples 5 × 2 trên pca_x, pca_y."""
-    c = clusters[clusters["in_clustering"]].copy()
-    x0, x1 = c["pca_x"].quantile([0.002, 0.998])
-    y0, y1 = c["pca_y"].quantile([0.002, 0.998])
-    cols, pw, ph, gx, gy, top = 5, 316, 196, 21, 20, 62
-    w = cols * pw + (cols - 1) * gx
-    rows = int(np.ceil(len(profiles) / cols))
-    h = rows * (ph + top) + (rows - 1) * gy
-    rng = np.random.default_rng(42)
-    bg = c.iloc[rng.choice(len(c), size=min(1400, len(c)), replace=False)]
-
-    def px(v: float) -> float:
-        return 8 + (min(max(v, x0), x1) - x0) / (x1 - x0) * (pw - 16)
-
-    def py(v: float) -> float:
-        return 8 + (1 - (min(max(v, y0), y1) - y0) / (y1 - y0)) * (ph - 16)
-
-    bg_dots = "".join(f'<circle cx="{px(a):.1f}" cy="{py(b):.1f}" r="1.5"/>' for a, b in zip(bg["pca_x"], bg["pca_y"]))
-    parts = []
-    for i, pr in enumerate(profiles):
-        cid = pr["cluster_id"]
-        ox = (i % cols) * (pw + gx)
-        oy = (i // cols) * (ph + top + gy)
-        sub = c[c["cluster_id"] == cid]
-        dots = "".join(f'<circle cx="{px(a):.1f}" cy="{py(b):.1f}" r="2"/>' for a, b in zip(sub["pca_x"], sub["pca_y"]))
-        prefix, _, head = short_name(pr["cluster_name"]).partition(" · ")
-        meta = f'{head} · ' + f'{pr["size"]:,} tin'.replace(",", ".") + f' · {round(pr["job_family_purity"] * 100)}%'
-        name = prefix
-        parts.append(
-            f'<g transform="translate({ox},{oy})">'
-            f'<text x="0" y="24" font-size="21" font-weight="700" fill="{INK}">C{cid} · {esc(name)}</text>'
-            f'<text x="0" y="50" font-size="17" fill="{MUTED}">{esc(meta)}</text>'
-            f'<g transform="translate(0,{top})">'
-            f'<rect width="{pw}" height="{ph}" rx="10" fill="#FFFDF9" stroke="{GRID}" stroke-width="1.5"/>'
-            f'<g fill="{BG_POINT}">{bg_dots}</g><g fill="{BLUE}" fill-opacity="0.85">{dots}</g></g>'
-            f'<title>C{cid} {esc(pr["cluster_name"])}: {pr["size"]} tin</title></g>')
-    return svg(w, h, "".join(parts), "Bản đồ 10 cụm trên hình chiếu PCA 2 chiều")
+def sub_label(pr: dict) -> str:
+    """Tên cụm con bỏ tiền tố nhóm; cụm chưa khớp vai trò ghi "chưa khớp: <công cụ>"."""
+    rest = pr["cluster_name"].split(" · ", 1)[1]
+    return rest if pr.get("sub_role_matched") else f"chưa khớp: {rest}"
 
 
-def cluster_family(crosstab: list[dict], profiles: list[dict]) -> str:
-    ct = pd.DataFrame(crosstab)
-    fam_order = ct.groupby("job_family")["n"].sum().sort_values(ascending=False).index.tolist()
-    if "Other" in fam_order:
-        fam_order = [f for f in fam_order if f != "Other"] + ["Other"]
-    label_w, cw, ch, head = 250, 80, 46, 56
-    w = label_w + cw * len(fam_order)
-    h = head + ch * len(profiles) + 8
-    cells = []
-    for j, f in enumerate(fam_order):
-        x = label_w + j * cw + cw / 2
-        cells.append(f'<text x="{x}" y="{head - 16}" font-size="19" font-weight="600" fill="{MUTED}" '
-                     f'text-anchor="middle">{esc(SHORT_FAM.get(f, f))}</text>')
-    for i, pr in enumerate(profiles):
-        cid = pr["cluster_id"]
-        y = head + i * ch
-        cells.append(f'<text x="{label_w - 14}" y="{y + ch / 2 + 8}" font-size="21" fill="{INK}" '
-                     f'text-anchor="end">C{cid} · {esc(pr["cluster_name"].split(" · ")[0].replace("Infra/Support", "Infra"))}</text>')
-        sub = ct[ct["cluster_id"] == cid].set_index("job_family")
-        for j, f in enumerate(fam_order):
-            share = float(sub["share"].get(f, 0.0)) if f in sub.index else 0.0
-            n = int(sub["n"].get(f, 0)) if f in sub.index else 0
-            k = 0 if share <= 0 else min(len(RAMP) - 1, 1 + int(share / 0.1))
-            fill = RAMP[k]
-            x = label_w + j * cw
-            cells.append(f'<rect x="{x + 1}" y="{y + 1}" width="{cw - 2}" height="{ch - 2}" rx="4" fill="{fill}">'
-                         f'<title>C{cid} × {esc(f)}: {n} tin ({vn(share * 100, 1)}%)</title></rect>')
-            if share >= 0.10:
-                tc = "#FFFFFF" if k >= 4 else INK
-                cells.append(f'<text x="{x + cw / 2}" y="{y + ch / 2 + 8}" font-size="21" font-weight="600" '
-                             f'fill="{tc}" text-anchor="middle">{round(share * 100)}%</text>')
-    return svg(w, h, "".join(cells), "Tỷ lệ nhóm nghề trong từng cụm")
+def sal_txt(pr: dict) -> str:
+    return f'{vn(pr["median_salary_mil"], 1)} tr' if pr.get("median_salary_mil") is not None else "ít dữ liệu lương"
 
 
-def line_chart(xs: list[int], ys: list[float], mark_x: int, y_fmt, title: str, w: int = 780, h: int = 360,
-               y_min: float | None = None, y_max: float | None = None) -> str:
-    l, r, t, b = 80, 24, 20, 56
-    y_min = min(ys) if y_min is None else y_min
-    y_max = max(ys) if y_max is None else y_max
-    def X(v): return l + (v - xs[0]) / (xs[-1] - xs[0]) * (w - l - r)
-    def Y(v): return t + (1 - (v - y_min) / (y_max - y_min)) * (h - t - b)
+def group_stability(by_group: dict, target: float) -> str:
+    """Thanh ngang gọn (đặt trong cột hẹp): ARI trung bình 5 seed của từng nhóm, vạch ngưỡng."""
+    short = {"Product & Business": "Product", "Support & Consulting": "Support"}
+    items = [(short.get(g, g), by_group[g]["stability"]["ari_mean"]) for g in GROUP_ORDER if by_group.get(g, {}).get("k")]
+    lab, w, rh, t, b = 150, 420, 42, 28, 30
+    h = t + rh * len(items) + b
+    def X(v): return lab + v * (w - lab - 62)
     g = []
-    for k in range(5):
-        yv = y_min + (y_max - y_min) * k / 4
-        g.append(f'<line x1="{l}" x2="{w - r}" y1="{Y(yv):.1f}" y2="{Y(yv):.1f}" stroke="{GRID}" stroke-width="1"/>'
-                 f'<text x="{l - 10}" y="{Y(yv) + 6:.1f}" font-size="17" fill="{MUTED}" text-anchor="end">{y_fmt(yv)}</text>')
-    for xv in xs:
-        if xv % 2 == 0:
-            g.append(f'<text x="{X(xv):.1f}" y="{h - b + 26}" font-size="17" fill="{MUTED}" text-anchor="middle">{xv}</text>')
-    g.append(f'<text x="{(l + w - r) / 2}" y="{h - 6}" font-size="17" fill="{MUTED}" text-anchor="middle">số cụm k</text>')
-    pts = " ".join(f"{X(a):.1f},{Y(v):.1f}" for a, v in zip(xs, ys))
-    g.append(f'<polyline points="{pts}" fill="none" stroke="{BLUE}" stroke-width="2.5" stroke-linejoin="round"/>')
-    for a, v in zip(xs, ys):
-        g.append(f'<circle cx="{X(a):.1f}" cy="{Y(v):.1f}" r="{7 if a == mark_x else 4}" '
-                 f'fill="{ACCENT if a == mark_x else BLUE}" stroke="#FFFDF9" stroke-width="2"><title>k = {a}: {y_fmt(v)}</title></circle>')
-    mv = ys[xs.index(mark_x)]
-    g.append(f'<text x="{X(mark_x):.1f}" y="{Y(mv) + 34:.1f}" font-size="18" font-weight="600" fill="{ACCENT}" text-anchor="middle">k = {mark_x} (đã chốt): {y_fmt(mv)}</text>')
-    return svg(w, h, "".join(g), title)
-
-
-def stability(stab: dict, target: float) -> str:
-    seeds = list(stab["ari_vs_first"].items())
-    w, h, l, r, t, b = 700, 360, 70, 110, 20, 56
-    def Y(v): return t + (1 - v) * (h - t - b)
-    bw = (w - l - r) / len(seeds)
-    g = []
-    for k in range(6):
-        yv = k / 5
-        g.append(f'<line x1="{l}" x2="{w - r}" y1="{Y(yv):.1f}" y2="{Y(yv):.1f}" stroke="{GRID}"/>'
-                 f'<text x="{l - 10}" y="{Y(yv) + 6:.1f}" font-size="17" fill="{MUTED}" text-anchor="end">{vn(yv, 1)}</text>')
-    for i, (seed, v) in enumerate(seeds):
-        x = l + i * bw + 14
-        g.append(f'<path d="M{x},{Y(0):.1f} V{Y(v) + 4:.1f} q0,-4 4,-4 h{bw - 36:.1f} q4,0 4,4 V{Y(0):.1f} Z" fill="{BLUE}">'
-                 f'<title>seed {seed}: ARI {vn(v, 3)}</title></path>'
-                 f'<text x="{x + (bw - 28) / 2:.1f}" y="{Y(v) - 10:.1f}" font-size="18" font-weight="600" fill="{INK}" text-anchor="middle">{vn(v, 2)}</text>'
-                 f'<text x="{x + (bw - 28) / 2:.1f}" y="{h - b + 26}" font-size="17" fill="{MUTED}" text-anchor="middle">seed {seed}</text>')
-    g.append(f'<line x1="{l}" x2="{w - r}" y1="{Y(target):.1f}" y2="{Y(target):.1f}" stroke="{ACCENT}" stroke-width="2.5" stroke-dasharray="8 6"/>'
-             f'<text x="{w - r + 8}" y="{Y(target) + 6:.1f}" font-size="17" font-weight="600" fill="{ACCENT}">ngưỡng {vn(target, 1)}</text>')
-    return svg(w, h, "".join(g), "ARI giữa các seed")
+    for k in (0, 0.5, 1):
+        g.append(f'<line x1="{X(k):.1f}" x2="{X(k):.1f}" y1="{t}" y2="{t + rh * len(items)}" stroke="{GRID}"/>'
+                 f'<text x="{X(k):.1f}" y="{t + rh * len(items) + 24}" font-size="18" fill="{MUTED}" text-anchor="middle">{vn(k, 1)}</text>')
+    for i, (name, v) in enumerate(items):
+        y = t + i * rh
+        g.append(f'<text x="{lab - 10}" y="{y + rh / 2 + 7}" font-size="21" fill="{INK}" text-anchor="end">{esc(name)}</text>'
+                 f'<rect x="{lab}" y="{y + 8}" width="{X(v) - lab:.1f}" height="{rh - 16}" rx="4" fill="{BLUE}">'
+                 f'<title>{esc(name)}: ARI {vn(v, 3)}</title></rect>'
+                 f'<text x="{X(v) + 6:.1f}" y="{y + rh / 2 + 7}" font-size="20" font-weight="600" fill="{INK}">{vn(v, 2)}</text>')
+    g.append(f'<line x1="{X(target):.1f}" x2="{X(target):.1f}" y1="{t}" y2="{t + rh * len(items)}" stroke="{ACCENT}" '
+             f'stroke-width="2.5" stroke-dasharray="6 5"/><text x="{X(target):.1f}" y="{t - 8}" font-size="18" '
+             f'font-weight="600" fill="{ACCENT}" text-anchor="middle">ngưỡng {vn(target, 1)}</text>')
+    return svg(w, h, "".join(g), "ARI giữa 5 seed theo từng nhóm nghề")
 
 
 def skill_value(top: list[dict], n_show: int = 12) -> str:
@@ -205,29 +116,95 @@ def skill_value(top: list[dict], n_show: int = 12) -> str:
     return svg(w, h, "".join(g), "Giá trị SHAP của kỹ năng, triệu đồng mỗi tháng")
 
 
-def cluster_table(profiles: list[dict]) -> str:
-    """Bảng HTML hồ sơ cụm (dùng class .t của slide)."""
-    rows = ['<table class="t"><tr><th>Cụm</th><th class="r">Số tin</th><th class="r">Nghề đa số</th>'
-            '<th>Công cụ đặc trưng (lift)</th><th class="r">Công cụ/tin</th><th class="r">Lương trung vị</th></tr>']
-    for pr in sorted(profiles, key=lambda p: -p["size"]):
-        tools = ", ".join(t["skill"] for t in pr["top_skills"][:4])
-        sal = f'{vn(pr["median_salary_mil"], 1)} tr' if pr.get("median_salary_mil") is not None else "ít dữ liệu"
-        rows.append(f'<tr><td>C{pr["cluster_id"]} · {esc(short_name(pr["cluster_name"]).split(" · ")[0])}</td>'
-                    f'<td class="r">{pr["size"]:,}</td>'.replace(",", ".")
-                    + f'<td class="r">{esc(pr["dominant_job_family"])} {round(pr["job_family_purity"] * 100)}%</td>'
-                    f'<td>{esc(tools)}</td><td class="r">{vn(pr.get("median_n_tools", 0), 0)}</td><td class="r">{sal}</td></tr>')
-    rows.append("</table>")
-    return "".join(rows)
+GT_CSS = """<style>
+.gt { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.gt-card { background: #FFFDF9; border: 2px solid #D9D5CA; border-radius: 12px; padding: 12px 14px; }
+.gt-h { font-size: 22px; font-weight: 700; color: #14213D; }
+.gt-m { font-size: 16px; color: #4A5568; margin: 2px 0 8px; }
+.gt ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.gt li { font-size: 16px; line-height: 1.25; color: #14213D; }
+.gt li span { color: #4A5568; font-size: 15px; }
+.gt li.nm b { color: #C2561B; }
+.gt li.ot b { color: #4A5568; font-weight: 600; }
+</style>"""
+
+RC_CSS = """<style>
+.rc { display: flex; flex-direction: column; gap: 10px; }
+.rc-row { display: grid; grid-template-columns: 230px 1fr; gap: 14px; align-items: center; }
+.rc-g { font-size: 20px; font-weight: 700; color: #14213D; }
+.rc-c { display: flex; flex-wrap: wrap; gap: 8px; }
+.ch { font-size: 17px; padding: 4px 12px; border-radius: 999px; border: 2px solid; }
+.ch.on { background: #2F6FB0; border-color: #2F6FB0; color: #FFFFFF; }
+.ch.off { background: transparent; border-color: #CFCBBF; color: #4A5568; }
+.ch.ex { background: #FBE9DF; border-color: #C2561B; color: #7A3410; }
+.rc-key { display: flex; gap: 8px; margin-top: 6px; padding-top: 10px; border-top: 1px solid #D9D5CA; }
+.rc-key .ch { font-size: 15px; }
+</style>"""
 
 
-CLUSTER_COLORS = ["#2a78d6", "#eb6834", "#1baf7a", "#c98500", "#e87ba4", "#008300", "#6250d6", "#e34948",
-                  "#0f8b8d", "#8a6d3b"]
+def cluster_table(profiles: list[dict], by_group: dict, cov: dict, other: dict) -> str:
+    """Thẻ mỗi nhóm (lưới 4 cột): cụm con theo số tin giảm dần, kèm công cụ đặc trưng và lương trung vị."""
+    out = [GT_CSS, '<div class="gt">']
+    for gi, g in enumerate(GROUP_ORDER):
+        subs = sorted((p for p in profiles if p["job_group"] == g), key=lambda p: -p["size"])
+        if not subs:
+            continue
+        few = cov["group_other_few_tools"].get(g, 0)
+        n = sum(p["size"] for p in subs) + few
+        n_txt = f"{n:,}".replace(",", ".")
+        out.append(f'<div class="gt-card" style="border-top:6px solid {GROUP_COLORS[gi]}"><div class="gt-h">{esc(g)}</div>'
+                   f'<div class="gt-m">{n_txt} tin · {len(subs)} cụm · ARI {vn(by_group[g]["stability"]["ari_mean"], 2)}</div><ul>')
+        for p in subs:
+            cls = "" if p.get("sub_role_matched") else ' class="nm"'
+            sal = f' · {vn(p["median_salary_mil"], 1)} tr' if p.get("median_salary_mil") is not None else ""
+            out.append(f'<li{cls}><b>{esc(sub_label(p))}</b> <span>{p["size"]} tin{sal}</span></li>')
+        if few:
+            out.append(f'<li class="ot"><b>Khác (JD ít thông tin)</b> <span>{few} tin</span></li>')
+        out.append("</ul></div>")
+    st = other["status_counts"]
+    n_o = cov["n_outside_groups"]
+    out.append(f'<div class="gt-card" style="border-top:6px solid {GROUP_COLORS[-1]}"><div class="gt-h">Khác (ngoài 7 nhóm)</div>'
+               f'<div class="gt-m">{n_o} tin · xét bằng luật nghề mới</div><ul>'
+               + "".join(f'<li class="ot"><b>{esc(k)}</b> <span>{v} tin</span></li>'
+                         for k, v in sorted(st.items(), key=lambda kv: -kv[1]))
+               + '<li class="ot"><b>nghề mới</b> <span>0 tin</span></li>' * (st.get("nghề mới", 0) == 0) + "</ul></div>")
+    out.append("</div>")
+    return "".join(out)
+
+
+def role_coverage(profiles: list[dict]) -> str:
+    """Mỗi nhóm một dòng: vai trò trong danh sách tách thành cụm (xanh) hay không (viền xám); cụm ngoài danh sách (cam)."""
+    from mining.job_group import SUB_ROLES
+
+    out = [RC_CSS, '<div class="rc">']
+    for g in GROUP_ORDER:
+        subs = [p for p in profiles if p["job_group"] == g]
+        found = {}
+        for p in subs:
+            if p.get("sub_role_matched"):
+                found[p["sub_role"]] = found.get(p["sub_role"], 0) + 1
+        chips = []
+        for name, _ in SUB_ROLES[g]:
+            k = found.get(name, 0)
+            chips.append(f'<span class="ch on">{esc(name)}{" ×" + str(k) if k > 1 else ""}</span>' if k
+                         else f'<span class="ch off">{esc(name)}</span>')
+        for p in subs:
+            if not p.get("sub_role_matched"):
+                chips.append(f'<span class="ch ex">{esc(p["head_skills"])} ({p["size"]})</span>')
+        out.append(f'<div class="rc-row"><div class="rc-g">{esc(g)}</div><div class="rc-c">{"".join(chips)}</div></div>')
+    out.append('<div class="rc-key"><span class="ch on">có cụm riêng (×2: hai cụm)</span><span class="ch off">không thành cụm</span>'
+               '<span class="ch ex">cụm chưa khớp vai trò (số tin)</span></div>')
+    out.append("</div>")
+    return "".join(out)
+
+
+SUB_COLORS = ["#2a78d6", "#eb6834", "#1baf7a", "#c98500", "#e34948", "#6250d6"]
 
 EXPLORER_CSS = """
 <style>
-.cx { display: grid; grid-template-columns: 1fr 500px; gap: 28px; align-items: start; }
+.cx { display: grid; grid-template-columns: 1fr 540px; gap: 24px; align-items: start; }
 .cx-plot { position: relative; background: #FFFDF9; border: 2px solid #D9D5CA; border-radius: 14px; overflow: hidden; }
-.cx-plot canvas { display: block; width: 1120px; height: 640px; cursor: default; }
+.cx-plot canvas { display: block; width: 1080px; height: 640px; cursor: default; }
 .cx-plot.d3 canvas { cursor: grab; }
 .cx-modes { position: absolute; left: 16px; top: 14px; display: flex; gap: 8px; }
 .cx-btn { font: 600 21px 'Be Vietnam Pro', Arial, sans-serif; color: #14213D; background: #F7F6F2; border: 2px solid #D9D5CA;
@@ -240,19 +217,21 @@ EXPLORER_CSS = """
 .cx-item .sw { width: 14px; height: 14px; border-radius: 4px; flex: none; }
 .cx-item.on { border-color: #14213D; box-shadow: inset 0 0 0 1px #14213D; }
 .cx-item.all { grid-column: 1 / -1; justify-content: center; font-weight: 600; }
-.cx-info { margin-top: 14px; background: #FFFDF9; border: 2px solid #D9D5CA; border-radius: 12px; padding: 16px 18px;
-  font-size: 20px; line-height: 1.45; color: #4A5568; min-height: 168px; }
+.cx-info { margin-top: 12px; background: #FFFDF9; border: 2px solid #D9D5CA; border-radius: 12px; padding: 12px 16px;
+  font-size: 17px; line-height: 1.4; color: #4A5568; min-height: 150px; }
 .cx-info b { color: #14213D; }
-.cx-info .t { font-size: 24px; font-weight: 700; color: #14213D; margin-bottom: 4px; }
+.cx-info .t { font-size: 22px; font-weight: 700; color: #14213D; margin-bottom: 4px; }
+.cx-info .s { display: flex; gap: 8px; align-items: baseline; margin-top: 5px; }
+.cx-info .s i { width: 12px; height: 12px; border-radius: 3px; flex: none; display: inline-block; }
 </style>
 """
 
 EXPLORER_JS = r"""
 <script>
 (function () {
-  var D = __DATA__, COLORS = __COLORS__, BLUE = '#2F6FB0', GREY = '#CFCBBF';
+  var D = __DATA__, GC = __GCOLORS__, SC = __SCOLORS__, GREY = '#CFCBBF';
   var root = document.getElementById('cx'), cv = root.querySelector('canvas'), ctx = cv.getContext('2d');
-  var W = 1120, H = 640, sel = -1, mode = '2d', yaw = 0.7, pitch = 0.3, drag = null, auto = true;
+  var W = 1080, H = 640, sel = -1, mode = '2d', yaw = 0.7, pitch = 0.3, drag = null, auto = true;
   cv.width = W * 2; cv.height = H * 2; ctx.scale(2, 2);
   function proj(p) {
     if (mode === '2d') return [W / 2 + p[0] * W * 0.44, H / 2 - p[1] * H * 0.42, 1];
@@ -262,14 +241,14 @@ EXPLORER_JS = r"""
     return [W / 2 + x * f * H * 0.5, H / 2 - y * f * H * 0.46, f];
   }
   function dot(p, color, r) { var q = proj(p); ctx.fillStyle = color; ctx.beginPath(); ctx.arc(q[0], q[1], r * q[2], 0, 6.2832); ctx.fill(); }
-  function label(c) {
-    var q = proj(c.center), t = 'C' + c.id;
-    ctx.font = '700 22px "Be Vietnam Pro", Arial, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  function label(center, t) {
+    var q = proj(center);
+    ctx.font = '700 20px "Be Vietnam Pro", Arial, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.lineWidth = 5; ctx.strokeStyle = '#FFFDF9'; ctx.strokeText(t, q[0], q[1]); ctx.fillStyle = '#14213D'; ctx.fillText(t, q[0], q[1]);
   }
   function draw() {
     ctx.clearRect(0, 0, W, H);
-    if (mode === '3d') {  // trục để thấy chiều xoay
+    if (mode === '3d') {
       [[[-1, 0, 0], [1, 0, 0]], [[0, -1, 0], [0, 1, 0]], [[0, 0, -1], [0, 0, 1]]].forEach(function (ax) {
         var a = proj(ax[0]), b = proj(ax[1]); ctx.strokeStyle = '#E3DFD4'; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
@@ -278,41 +257,48 @@ EXPLORER_JS = r"""
     var pts = D.pts, i;
     if (sel < 0) {
       ctx.globalAlpha = 0.75;
-      for (i = 0; i < pts.length; i++) dot(pts[i], COLORS[pts[i][3]], 2.6);
-      ctx.globalAlpha = 1; D.clusters.forEach(label);
+      for (i = 0; i < pts.length; i++) dot(pts[i], GC[pts[i][3]], 2.6);
+      ctx.globalAlpha = 1; D.groups.forEach(function (g) { label(g.center, g.short); });
     } else {
-      ctx.globalAlpha = 0.55;
+      ctx.globalAlpha = 0.5;
       for (i = 0; i < pts.length; i++) if (pts[i][3] !== sel) dot(pts[i], GREY, 2.2);
       ctx.globalAlpha = 0.9;
-      for (i = 0; i < pts.length; i++) if (pts[i][3] === sel) dot(pts[i], COLORS[sel], 3.2);
-      ctx.globalAlpha = 1; label(D.clusters[sel]);
+      for (i = 0; i < pts.length; i++) if (pts[i][3] === sel) dot(pts[i], D.groups[sel].subs.length ? SC[pts[i][4]] : '#4A5568', 3.2);
+      ctx.globalAlpha = 1; D.groups[sel].subs.forEach(function (s, k) { label(s.center, String(k + 1)); });
     }
   }
   var list = root.querySelector('.cx-list'), info = root.querySelector('.cx-info');
   function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
   function showInfo() {
     if (sel < 0) {
-      info.innerHTML = '<div class="t">10 cụm, ' + fmt(D.n) + ' tin</div>Bấm một cụm để làm nổi cụm đó. ' +
-        'Hình là hình chiếu PCA (2D giữ ' + D.var2 + '%, 3D giữ ' + D.var3 + '% phương sai); K-Means phân cụm trong không gian SVD 60 chiều, nên cụm tách rõ hơn hình này.';
+      info.innerHTML = '<div class="t">' + fmt(D.n) + ' tin: 7 nhóm, ' + D.k + ' cụm con và nhóm Khác</div>Bấm một nhóm để xem các cụm con. Tin ghi dưới 2 công cụ nằm ở mục Khác của nhóm, không có trên hình. ' +
+        'Hình là hình chiếu PCA (2D giữ ' + D.var2 + '%, 3D giữ ' + D.var3 + '% phương sai); K-Means chia cụm trong không gian SVD 60 chiều.';
       return;
     }
-    var c = D.clusters[sel];
-    info.innerHTML = '<div class="t">C' + c.id + ' · ' + c.name + '</div>' +
-      '<b>' + fmt(c.n) + '</b> tin · nghề đa số <b>' + c.fam + ' ' + c.purity + '%</b><br>' +
-      'Công cụ đặc trưng: <b>' + c.tools + '</b><br>' +
-      'Trung vị <b>' + c.ntools + '</b> công cụ/tin · lương trung vị <b>' + c.sal + '</b>';
+    var g = D.groups[sel];
+    if (!g.subs.length) {
+      info.innerHTML = '<div class="t">' + g.name + '</div><b>' + fmt(g.n) + '</b> tin, xét bằng luật chốt nghề mới · ' + g.few + ' tin JD ít thông tin (không có trên hình)' +
+        g.status.map(function (s) { return '<div class="s"><span><b>' + s[0] + '</b>: ' + s[1] + ' tin</span></div>'; }).join('') +
+        '<div class="s"><span><b>nghề mới</b>: 0</span></div>';
+      return;
+    }
+    info.innerHTML = '<div class="t">' + g.name + '</div><b>' + fmt(g.n) + '</b> tin · ' + g.subs.length + ' cụm con · ARI <b>' + g.ari + '</b>' +
+      (g.few ? '<div class="s"><i style="background:#CFCBBF"></i><span><b>Khác (JD ít thông tin)</b>: ' + fmt(g.few) + ' tin, không có trên hình</span></div>' : '') +
+      g.subs.map(function (s, k) {
+        return '<div class="s"><i style="background:' + SC[k] + '"></i><span><b>' + (k + 1) + '. ' + s.name + '</b> (' + fmt(s.n) + ' tin, ' + s.sal + ') · ' + s.tools + '</span></div>';
+      }).join('');
   }
   function pick(id) {
     sel = (sel === id) ? -1 : id;
     Array.prototype.forEach.call(list.children, function (b) { b.classList.toggle('on', +b.dataset.id === sel); });
     showInfo(); draw();
   }
-  var all = document.createElement('button'); all.className = 'cx-item all on'; all.dataset.id = -1; all.textContent = 'Tất cả 10 cụm';
+  var all = document.createElement('button'); all.className = 'cx-item all on'; all.dataset.id = -1; all.textContent = 'Tất cả (7 nhóm + Khác)';
   all.onclick = function () { pick(-1); all.blur(); }; list.appendChild(all);
-  D.clusters.forEach(function (c) {
-    var b = document.createElement('button'); b.className = 'cx-item'; b.dataset.id = c.id;
-    b.innerHTML = '<span class="sw" style="background:' + COLORS[c.id] + '"></span><span>C' + c.id + ' · ' + c.name + ' <span style="color:#4A5568">(' + fmt(c.n) + ')</span></span>';
-    b.onclick = function () { pick(c.id); b.blur(); }; list.appendChild(b);
+  D.groups.forEach(function (g) {
+    var b = document.createElement('button'); b.className = 'cx-item'; b.dataset.id = g.id;
+    b.innerHTML = '<span class="sw" style="background:' + GC[g.id] + '"></span><span>' + g.name + ' <span style="color:#4A5568">(' + fmt(g.n) + ')</span></span>';
+    b.onclick = function () { pick(g.id); b.blur(); }; list.appendChild(b);
   });
   root.querySelectorAll('.cx-modes .cx-btn').forEach(function (b) {
     b.onclick = function () {
@@ -342,30 +328,45 @@ EXPLORER_JS = r"""
 """
 
 
-def cluster_explorer(clusters: pd.DataFrame, profiles: list[dict], pca_var: list[float]) -> str:
-    """Biểu đồ tương tác (canvas, không thư viện): 2D/3D trên pca_x/y/z, bấm từng cụm để làm nổi."""
-    c = clusters[clusters["in_clustering"]].copy()
+def cluster_explorer(clusters: pd.DataFrame, profiles: list[dict], cl: dict) -> str:
+    """Biểu đồ tương tác (canvas, không thư viện): 2D/3D trên pca_x/y/z, tô theo 7 nhóm; bấm nhóm để thấy cụm con."""
+    by_group, pca_var, cov = cl["by_group"], cl["pca_explained_variance"], cl["coverage"]
+    c = clusters[(clusters["cluster_id"] >= 0) | ((clusters["job_group"] == "Khác") & clusters["pca_x"].notna())].copy()
     xyz = c[["pca_x", "pca_y", "pca_z"]].to_numpy(dtype=float)
     lo, hi = np.quantile(xyz, 0.005, axis=0), np.quantile(xyz, 0.995, axis=0)
     mid, half = (lo + hi) / 2, (hi - lo) / 2
     norm = np.clip((xyz - mid) / half, -1.05, 1.05)
-    cid = c["cluster_id"].to_numpy(dtype=int)
-    pts = [[round(float(a), 3), round(float(b), 3), round(float(z), 3), int(k)] for (a, b, z), k in zip(norm, cid)]
-    info = []
-    for pr in profiles:
-        k = pr["cluster_id"]
-        center = norm[cid == k].mean(axis=0) if (cid == k).any() else np.zeros(3)
-        sal = f'{vn(pr["median_salary_mil"], 1)} triệu' if pr.get("median_salary_mil") is not None else "ít dữ liệu"
-        info.append({"id": k, "name": pr["cluster_name"].split(" · ")[0], "n": pr["size"],
-                     "fam": pr["dominant_job_family"], "purity": round(pr["job_family_purity"] * 100),
-                     "tools": ", ".join(t["skill"] for t in pr["top_skills"][:5]),
-                     "ntools": vn(pr.get("median_n_tools", 0), 0), "sal": sal,
-                     "center": [round(float(v), 3) for v in center]})
-    data = {"n": len(pts), "pts": pts, "clusters": info,
+    gid = {g: i for i, g in enumerate(GROUP_ORDER + ["Khác"])}
+    groups, sub_of = [], {}
+    for g in GROUP_ORDER:
+        subs = sorted((p for p in profiles if p["job_group"] == g), key=lambda p: -p["size"])
+        if not subs:
+            continue
+        for k, p in enumerate(subs):
+            sub_of[p["cluster_id"]] = k
+        gm = (c["job_group"] == g).to_numpy()
+        groups.append({"id": gid[g], "name": g, "short": SHORT_GROUP.get(g, g).split(" & ")[0],
+                       "n": int(gm.sum()) + cov["group_other_few_tools"].get(g, 0), "few": cov["group_other_few_tools"].get(g, 0),
+                       "ari": vn(by_group[g]["stability"]["ari_mean"], 2),
+                       "center": [round(float(v), 3) for v in norm[gm].mean(axis=0)],
+                       "subs": [{"name": sub_label(p), "n": p["size"], "sal": sal_txt(p),
+                                 "tools": ", ".join(t["skill"] for t in p["top_skills"][:3]),
+                                 "center": [round(float(v), 3) for v in norm[(c["cluster_id"] == p["cluster_id"]).to_numpy()].mean(axis=0)]}
+                                for p in subs]})
+    km = (c["job_group"] == "Khác").to_numpy()
+    st = cl["other"]["status_counts"]
+    groups.append({"id": gid["Khác"], "name": "Khác (ngoài 7 nhóm)", "short": "Khác", "n": cov["n_outside_groups"],
+                   "few": st.get("JD ít thông tin", 0), "ari": None, "center": [round(float(v), 3) for v in norm[km].mean(axis=0)],
+                   "status": [[k, v] for k, v in sorted(st.items(), key=lambda kv: -kv[1]) if k != "JD ít thông tin"], "subs": []})
+    by_id = {g["id"]: g for g in groups}
+    ordered = [by_id[i] for i in sorted(by_id)]
+    pts = [[round(float(a), 3), round(float(b), 3), round(float(z), 3), gid[g], sub_of.get(int(k), 0)]
+           for (a, b, z), g, k in zip(norm, c["job_group"], c["cluster_id"])]
+    data = {"n": int(len(clusters)), "k": len(profiles), "pts": pts, "groups": ordered,
             "var2": vn(100 * sum(pca_var[:2]), 0), "var3": vn(100 * sum(pca_var[:3]), 0)}
     js = (EXPLORER_JS.replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"))
-          .replace("__COLORS__", json.dumps(CLUSTER_COLORS)))
-    body = ('<div class="cx" id="cx"><div class="cx-plot"><canvas aria-label="Bản đồ 10 cụm, chọn cụm bằng các nút bên phải"></canvas>'
+          .replace("__GCOLORS__", json.dumps(GROUP_COLORS)).replace("__SCOLORS__", json.dumps(SUB_COLORS)))
+    body = ('<div class="cx" id="cx"><div class="cx-plot"><canvas aria-label="Bản đồ 7 nhóm nghề, chọn nhóm bằng các nút bên phải"></canvas>'
             '<div class="cx-modes"><button class="cx-btn on" data-mode="2d">2D</button>'
             '<button class="cx-btn" data-mode="3d">3D</button></div><div class="cx-hint">PC1 × PC2</div></div>'
             '<div class="cx-side"><div class="cx-list"></div><div class="cx-info"></div></div></div>')
@@ -377,20 +378,13 @@ def build() -> dict[str, str]:
     cl = m["clustering"]
     clusters = pd.read_parquet(ART / "job_clusters.parquet")
     profiles = sorted(cl["clusters"], key=lambda p: p["cluster_id"])
-    ks = [r["k"] for r in cl["k_scan"]]
-    charts = {
-        "cluster_map": cluster_map(clusters, profiles),
-        "cluster_family": cluster_family(cl["crosstab"], profiles),
-        "k_silhouette": line_chart(ks, [r["silhouette"] for r in cl["k_scan"]], cl["best_k"], lambda v: vn(v, 3),
-                                   "Silhouette theo k", y_min=0.0, y_max=0.12),
-        "k_inertia": line_chart(ks, [r["inertia"] for r in cl["k_scan"]], cl["best_k"], lambda v: f"{v:.0f}",
-                                "Inertia theo k"),
-        "stability": stability(cl["stability"], 0.8),
+    return {
+        "cluster_explorer": cluster_explorer(clusters, profiles, cl),
+        "cluster_table": cluster_table(profiles, cl["by_group"], cl["coverage"], cl["other"]),
+        "role_coverage": role_coverage(profiles),
+        "group_stability": group_stability(cl["by_group"], 0.8),
         "skill_value": skill_value(m["salary"]["shap"]["top_skills"]),
-        "cluster_table": cluster_table(profiles),
-        "cluster_explorer": cluster_explorer(clusters, profiles, cl["pca_explained_variance"]),
     }
-    return charts
 
 
 def main() -> None:

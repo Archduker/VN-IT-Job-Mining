@@ -41,6 +41,14 @@ Những tin **không giống nhóm nào** gọi là tin **khác hoặc mới**:
 
 ## 4. Cách trả lời
 
+> **Từ 24–25/11/2026 (L-62, người dùng chốt):** SD3 trả lời theo 7 nhóm nghề (Software, QA/QC, Data & AI, Hạ tầng, Security, Product & Business, Support & Consulting) cộng nhóm Khác.
+> - **3.1:** trong mỗi nhóm, nội dung tin (công cụ + khái niệm, không e5) chia thành những vai trò con nào.
+> - **3.2:** vai trò con tìm được khớp hay lệch với danh sách vai trò người dùng liệt kê.
+> - **3.3:** loại "khác" vẫn lấy từ M4. "Mới" chốt bằng luật nghề mới trên nhóm Khác: ≥ 3 tin, ≥ 2 công ty, nội dung xa mọi cụm, có công cụ riêng.
+>
+> Mục dưới đây là cách làm bản 22/11, giữ để đối chiếu. Đặc tả hiện hành: `docs/spec/mining/M3_phan_cum.md` mục 8.
+
+
 - **3.1, gom nhóm:**
   - Bỏ các tin không trích được kỹ năng nào từ JD (ghi số tin bị bỏ), vì nếu giữ chúng sẽ tự gom thành một nhóm chỉ do thiếu kỹ năng.
   - Biến mỗi tin thành một vector, gồm nội dung JD (e5) ghép với kỹ năng. Giảm chiều bằng SVD/PCA (`reduce_svd`) để bỏ bớt nhiễu.

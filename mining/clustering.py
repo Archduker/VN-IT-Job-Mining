@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from typing import Any
 
 import numpy as np
@@ -441,3 +442,356 @@ def cluster_jobs(
                                                     "ari_vs_job_family", "nmi_vs_job_family")}
         metrics["without_e5"]["block_weights"] = m0["vector_space"]["block_weights"]
     return out, metrics
+
+
+def _subrole_name(group: str, roles: pd.Series, head: str, min_share: float) -> tuple[str | None, float]:
+    """Vai trò con chiếm >= min_share tin của cụm (theo từ khóa tiêu đề), và tỷ lệ đó."""
+    vc = roles.dropna().value_counts()
+    share = float(vc.iloc[0] / len(roles)) if len(vc) else 0.0
+    return (str(vc.index[0]) if share >= min_share else None), share
+
+
+OTHER_IN_GROUP = "Khác (JD ít thông tin)"
+
+
+def cluster_by_group(
+    skills: pd.DataFrame,
+    meta: pd.DataFrame,
+    params: ClusteringParams | None = None,
+    random_state: int = RANDOM_STATE,
+    e5: np.ndarray | None = None,
+    concepts: pd.DataFrame | None = None,
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """SD3 theo 7 nhóm (người dùng chốt 24/11): cụm con trong từng nhóm `job_group`.
+
+    Không gian vector như `cluster_jobs` nhưng chỉ dựng trên tin có >= group_min_tools công cụ (cả nhóm Khác).
+    Mỗi nhóm chạy K-Means riêng, k = số vai trò con đã liệt kê; tin Khác không vào cụm (xem `classify_other`).
+    HDBSCAN/GLOSH và PCA tính trên toàn bộ không gian để M4 và hình vẽ dùng như trước.
+    """
+    from mining.job_group import GROUPS, OTHER, SUB_ROLES, add_job_group
+
+    p = params or ClusteringParams()
+    meta = meta.reset_index(drop=True)
+    skills = skills.reset_index(drop=True)
+    if "job_group" not in meta:
+        meta = add_job_group(meta, skills)
+    concepts = concepts.reset_index(drop=True) if concepts is not None and concepts.shape[1] else None
+    n_all = len(meta)
+    keep = (pd.to_numeric(meta["n_tools"], errors="coerce").fillna(0) >= p.group_min_tools).to_numpy()
+    mk = meta[keep].reset_index(drop=True)
+    sk = skills[keep].reset_index(drop=True)
+    ck = concepts[keep].reset_index(drop=True) if concepts is not None else None
+    ek = np.asarray(e5)[keep] if e5 is not None else None
+
+    w = p.group_block_weights
+    blocks, used = [(sk.to_numpy(dtype=np.float32), w["tool"])], {"tool": w["tool"]}
+    if ck is not None:
+        blocks.append((ck.to_numpy(dtype=np.float32), w["concept"]))
+        used["concept"] = w["concept"]
+    if ek is not None and w["e5"] > 0:
+        blocks.append((ek.astype(np.float32), w["e5"]))
+        used["e5"] = w["e5"]
+    else:
+        ek = None  # e5 trọng số 0 (chốt 24/11): không dựng khối, metrics không ghi số chiều e5
+    Z, svd_info = reduce_svd(build_block_space(blocks), p.svd_variance_target, p.svd_max_components, random_state)
+
+    grp = mk["job_group"].to_numpy()
+    sal = _salary(mk)
+    labels = np.full(len(mk), -1, dtype=int)
+    dist = np.full(len(mk), np.nan)
+    names: dict[int, str] = {}
+    sub_role = np.array([None] * len(mk), dtype=object)
+    profiles, by_group = [], {}
+    offset = 0
+    for g in GROUPS:
+        idx = np.flatnonzero(grp == g)
+        if len(idx) < 2 * p.group_min_per_cluster:
+            by_group[g] = {"n": int(len(idx)), "k": 0, "note": "quá ít tin để chia cụm con"}
+            continue
+        k_list = len(SUB_ROLES[g])
+        k = int(min(k_list, max(2, len(idx) // p.group_min_per_cluster)))
+        Zg = Z[idx]
+        lab, _ = fit_labels(Zg, k, p.algorithm, random_state, p.kmeans_n_init)
+        stab = seed_stability(Zg, k, tuple(p.stability_seeds), p.algorithm, p.kmeans_n_init)
+        cent = np.vstack([Zg[lab == c].mean(axis=0) for c in range(k)])
+        dist[idx] = np.linalg.norm(Zg - cent[lab], axis=1)
+        sub_meta = mk.iloc[idx].reset_index(drop=True)
+        prof_g = profile_clusters(lab, sk.iloc[idx].reset_index(drop=True), sub_meta["job_family"],
+                                  sal.iloc[idx].reset_index(drop=True), p.top_skills_per_cluster,
+                                  concepts=None if ck is None else ck.iloc[idx].reset_index(drop=True),
+                                  meta=sub_meta, params=p)
+        seen: dict[str, int] = {}
+        for pr in prof_g:
+            c = pr["cluster_id"]
+            m_c = lab == c
+            head = "/".join(t["skill"] for t in pr["top_skills"][:2]) or "không công cụ"
+            role, share = _subrole_name(g, sub_meta.loc[m_c, "sub_role_title"], head, p.subrole_min_share)
+            base = f"{g} · {role}" if role else f"{g} · {head}"
+            seen[base] = seen.get(base, 0) + 1
+            pr.update({"cluster_id": offset + c, "job_group": g, "sub_role": role, "sub_role_matched": role is not None,
+                       "sub_role_share": round(share, 3), "head_skills": head,
+                       "share_in_group": round(float(m_c.mean()), 4)})
+            pr["cluster_name"] = base
+            profiles.append(pr)
+            sub_role[idx[m_c]] = role or f"chưa khớp ({head})"
+        # tên trùng trong nhóm (hai cụm cùng vai trò): thêm 2 công cụ đặc trưng để phân biệt
+        for pr in profiles:
+            if pr["job_group"] == g and seen.get(pr["cluster_name"], 0) > 1:
+                pr["cluster_name"] = f"{pr['cluster_name']} · {pr['head_skills']}"
+        for pr in profiles:
+            if pr["job_group"] == g:
+                names[pr["cluster_id"]] = pr["cluster_name"]
+        labels[idx] = lab + offset
+        sil = silhouette_score(Zg, lab, sample_size=min(p.silhouette_sample_size, len(Zg)), random_state=random_state)
+        by_group[g] = {"n": int(len(idx)), "k": k, "k_listed": k_list, "stability": stab,
+                       "meets_stability_target": bool((stab["ari_mean"] or 0) >= p.stability_ari_target),
+                       "silhouette": round(float(sil), 4),
+                       "n_sub_role_matched": sum(pr["sub_role_matched"] for pr in profiles if pr["job_group"] == g)}
+        offset += k
+
+    hdb_labels, glosh, glosh_method = run_hdbscan(Z, p.hdbscan_min_cluster_size)
+    glosh_threshold = float(np.quantile(glosh, p.glosh_outlier_quantile))
+    is_outlier = glosh >= glosh_threshold if glosh_threshold > 0 else np.zeros(len(glosh), dtype=bool)
+    pca = PCA(n_components=3, random_state=random_state)
+    coords = pca.fit_transform(Z)
+
+    inc = labels >= 0
+    sil_all = silhouette_score(Z[inc], labels[inc], sample_size=min(p.silhouette_sample_size, int(inc.sum())),
+                               random_state=random_state)
+    db_all = davies_bouldin_score(Z[inc], labels[inc])
+    fam = mk["job_family"].fillna(JOB_FAMILY_OTHER).astype(str).to_numpy()
+    ct = family_crosstab(labels[inc], fam[inc])
+    sizes = np.bincount(labels[inc])
+    overall_tools = float(pd.to_numeric(mk["n_tools"], errors="coerce").median())
+    violations = skill_count_violations(profiles, overall_tools, p)
+    n_g = {g: v["n"] for g, v in by_group.items() if v.get("k")}
+    min_share_g = min(pr["share_in_group"] for pr in profiles)
+    ari_w = sum(by_group[g]["stability"]["ari_mean"] * n for g, n in n_g.items()) / sum(n_g.values())
+
+    def full(values: np.ndarray, fill: Any, dtype: Any = None) -> np.ndarray:
+        arr = np.full(n_all, fill, dtype=dtype if dtype is not None else np.asarray(values).dtype)
+        arr[keep] = values
+        return arr
+
+    # Mọi tin đều có chỗ (người dùng chốt 25/11): tin của 7 nhóm ghi < group_min_tools công cụ vào mục "Khác" của nhóm đó
+    few = np.where(meta["job_group"].to_numpy() == OTHER, None, OTHER_IN_GROUP)
+    out = pd.DataFrame({
+        "job_id": meta["job_id"].astype(str).to_numpy(),
+        "job_title": meta["job_title"].to_numpy(),
+        "job_family": meta["job_family"].fillna(JOB_FAMILY_OTHER).astype(str).to_numpy(),
+        "cluster_id": full(labels, -1, int),
+        "cluster_name": full(np.array([names.get(int(c)) for c in labels], dtype=object), None, object),
+        "pca_x": full(coords[:, 0].astype(float), np.nan, float),
+        "pca_y": full(coords[:, 1].astype(float), np.nan, float),
+        "pca_z": full(coords[:, 2].astype(float), np.nan, float),
+        "is_outlier": full(is_outlier.astype(bool), False, bool),
+        "glosh_outlier_score": full(glosh.astype(float), np.nan, float),
+        "hdbscan_label": full(hdb_labels.astype(int), -2, int),
+        "in_clustering": full(inc, False, bool),
+        "dist_to_centroid": full(dist, np.nan, float),
+        "family_mismatch": np.zeros(n_all, dtype=bool),
+        "job_group": meta["job_group"].to_numpy(),
+        "job_group_source": meta["job_group_source"].to_numpy(),
+        "sub_role_title": meta["sub_role_title"].to_numpy(),
+    })
+    sr = np.array(few, dtype=object)
+    sub_role[(labels < 0) & (grp != OTHER)] = "Khác (nhóm quá ít tin)"  # nhóm không đủ tin để chia cụm con
+    sr[keep] = sub_role
+    out["sub_role"] = sr
+    grp_other = ((out["cluster_id"] < 0) & (out["job_group"] != OTHER)).to_numpy()  # tin 7 nhóm không vào cụm con
+    other_cols, other_m = classify_other(meta, keep, Z, labels, sk, names,
+                                         {pr["cluster_id"]: pr["sub_role"] for pr in profiles}, p)
+    out = pd.concat([out, other_cols], axis=1)
+
+    metrics = {
+        "method": "cluster_by_group",
+        "params": {k: getattr(p, k) for k in ("group_min_tools", "group_min_per_cluster", "subrole_min_share",
+                                             "svd_variance_target", "hdbscan_min_cluster_size",
+                                             "glosh_outlier_quantile", "kmeans_n_init")},
+        "n_jobs": int(n_all), "n_in_space": int(keep.sum()), "n_clustered": int(inc.sum()),
+        "n_few_tools": int((~keep).sum()), "n_other_in_space": int((grp == OTHER).sum()),
+        # 3.718 = tin trong cụm con + tin ít công cụ ở mục "Khác" của 7 nhóm + nhóm Khác (ngoài 7 nhóm)
+        "coverage": {"n_in_subclusters": int(inc.sum()),
+                     "n_group_other_few_tools": int(grp_other.sum()),
+                     "n_outside_groups": int((meta["job_group"] == OTHER).sum()),
+                     "group_other_few_tools": meta.loc[grp_other, "job_group"].value_counts().to_dict()},
+        "group_counts": meta["job_group"].value_counts().to_dict(),
+        "group_counts_in_space": mk["job_group"].value_counts().to_dict(),
+        "group_source_counts": meta["job_group_source"].value_counts().to_dict(),
+        "vector_space": {"block_weights": used, "n_skill_features": int(sk.shape[1]),
+                         "n_concept_features": 0 if ck is None else int(ck.shape[1]),
+                         "n_e5_dims": 0 if ek is None else int(ek.shape[1]), **svd_info},
+        "algorithm": "kmeans theo nhóm",
+        "best_k": int(offset), "by_group": by_group,
+        "silhouette": round(float(sil_all), 4), "davies_bouldin": round(float(db_all), 4),
+        "meets_silhouette_target": bool(sil_all >= p.silhouette_target),
+        "davies_bouldin_target": p.davies_bouldin_target,
+        "meets_davies_bouldin_target": bool(db_all < p.davies_bouldin_target),
+        "meets_min_clusters": bool(all(v.get("k", 0) >= 2 for v in by_group.values())),
+        "stability": {"ari_mean": round(float(ari_w), 4),
+                      "ari_min": round(float(min(by_group[g]["stability"]["ari_mean"] for g in n_g)), 4),
+                      "weighting": "trung bình ARI các nhóm, trọng số theo số tin", "n_init": int(p.kmeans_n_init),
+                      "seeds": [int(s) for s in p.stability_seeds]},
+        "meets_stability_target": bool(ari_w >= p.stability_ari_target),
+        "groups_below_stability": [g for g in n_g if not by_group[g]["meets_stability_target"]],
+        # cổng tính trong nhóm (người dùng đổi 24/11 sau khi xem kết quả: cụm giờ được tìm trong từng nhóm)
+        "min_cluster_share": round(min_share_g, 4),
+        "min_cluster_share_basis": "số tin của nhóm",
+        "min_cluster_share_overall": round(float(sizes.min() / inc.sum()), 4),
+        "meets_min_cluster_share": bool(min_share_g >= p.min_cluster_share),
+        "median_n_tools_overall": overall_tools,
+        "skill_count_violations": violations,
+        "n_sub_role_matched": int(sum(pr["sub_role_matched"] for pr in profiles)),
+        "crosstab": ct.to_dict(orient="records"),
+        "pca_explained_variance": [round(float(v), 4) for v in pca.explained_variance_ratio_],
+        "pca_cumulative_variance_3d": round(float(pca.explained_variance_ratio_.sum()), 4),
+        "hdbscan": {"method": glosh_method, "n_clusters": int(len(set(hdb_labels) - {-1})),
+                    "noise_ratio": round(float((hdb_labels == -1).mean()), 4),
+                    "glosh_threshold": round(glosh_threshold, 4),
+                    "outlier_ratio": round(float(is_outlier.mean()), 4)},
+        "clusters": profiles,
+        "other": other_m,
+    }
+    return out, metrics
+
+
+_SENIORITY = ("senior", "junior", "middle", "mid", "sr", "jr", "intern", "fresher", "principal", "remote", "expert",
+              "thuc tap sinh", "nhan vien", "chuyen vien cao cap", "chuyen vien", "chuyen gia", "cvcc", "cv",
+              "tuyen dung", "tuyen", "cao cap", "staff", "level")
+_SENIORITY_RE = re.compile(r"\b(?:" + "|".join(re.escape(s) for s in _SENIORITY) + r")\b")
+# Cụm không phải tên nghề (chỉ chức vụ, lĩnh vực chung): không xét nghề mới
+_GENERIC_CORES = {"it", "cntt", "cong nghe thong tin", "ky thuat", "technical", "engineer", "developer", "ky su",
+                  "lap trinh vien", "lap trinh", "phan mem", "ky su phan mem", "software engineer", "it engineer",
+                  "ky su it", "he thong", "lead", "leader", "manager", "specialist", "officer", "associate",
+                  "executive", "team leader", "pho phong", "truong phong", "full", "dev", "phan tich", "du lieu",
+                  "san pham", "tu van", "test", "it phan mem", "giam sat", "van hanh", "trien khai"}
+
+
+def title_core(title: Any) -> str:
+    """Tiêu đề cốt lõi: fold, bỏ phần trong ngoặc, bỏ từ cấp bậc, lấy đoạn đầu có nghĩa trước dấu tách."""
+    from preprocessing.normalization.job_title import fold
+
+    t = re.sub(r"[\[\(].*?[\]\)]", " ", fold(title))
+    t = re.sub(r"full\s*-\s*stack", "fullstack", t)
+    for seg in re.split(r"\s[-–]\s|[|_,:;/]", t):
+        s = re.sub(r"[^a-z0-9.+# ]", " ", _SENIORITY_RE.sub(" ", seg))
+        s = re.sub(r"\s+", " ", s).strip()
+        if len(s) >= 3 and s not in ("lead", "leader"):
+            return s
+    return ""
+
+
+def is_generic_core(core: str) -> bool:
+    from preprocessing.normalization.job_title import is_generic_title
+
+    return len(core) < 3 or core in _GENERIC_CORES or is_generic_title(core)
+
+
+def known_role(core: str) -> str | None:
+    """'<nhóm> · <vai trò>' nếu tiêu đề cốt lõi khớp từ khóa một vai trò trong danh sách 7 nhóm của người dùng."""
+    from mining.job_group import SUB_ROLES
+    from preprocessing.normalization.text_cleaner import has_term
+
+    for g, roles in SUB_ROLES.items():
+        for name, terms in roles:
+            if name in ("IT Helpdesk / Support", "SysAdmin"):  # từ khóa rộng ("it", "he thong"): không dùng để nhận tên
+                terms = [t for t in terms if t not in ("it", "he thong", "quan tri", "system", "support", "ho tro")]
+            if has_term(core, terms):
+                return f"{g} · {name}"
+    return None
+
+
+def classify_other(meta_all: pd.DataFrame, keep: np.ndarray, Z: np.ndarray, labels: np.ndarray,
+                   sk: pd.DataFrame, names: dict[int, str], sub_roles: dict[int, str | None],
+                   p: ClusteringParams) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Tin nhóm Khác: luật chốt nghề mới (người dùng yêu cầu 24/11). Trả (cột cho mọi tin, metrics).
+
+    Theo thứ tự: (1) tiêu đề cốt lõi chung chung -> không xét; (2) khớp vai trò trong danh sách 7 nhóm -> đã có;
+    (3) đếm đúng tiêu đề cốt lõi trên toàn bộ dữ liệu < 3 tin hoặc < 2 công ty -> theo dõi;
+    (4) từng tin có không gian vector: xa tâm cụm gần nhất hơn P90 khoảng cách tin-tâm của mọi tin đã vào cụm
+    (một ngưỡng chung) -> "ngoài mọi cụm". >= 50% tin ngoài mọi cụm -> nghề mới; cụm gần nhất trải >= 2 nhóm,
+    không nhóm nào >= 60% -> nghề lai; còn lại -> tên gọi khác của nhóm đa số. Nghề mới/lai cần >= 2 công cụ
+    riêng (>= 30% tin của tiêu đề đó, lift >= 2 so với nhóm gần nhất).
+    meta_all: toàn bộ tin (có job_group); keep, Z, labels, sk: theo thứ tự tin trong không gian vector."""
+    n_all = len(meta_all)
+    pos = np.full(n_all, -1)
+    pos[keep] = np.arange(int(keep.sum()))
+    cids = sorted(c for c in set(labels) if c >= 0)
+    cent = np.vstack([Z[labels == c].mean(axis=0) for c in cids])
+    inc = labels >= 0
+    lab_idx = {c: i for i, c in enumerate(cids)}
+    own_d = np.linalg.norm(Z[inc] - cent[[lab_idx[c] for c in labels[inc]]], axis=1)
+    d_thr = float(np.quantile(own_d, 1 - p.other_sim_quantile))
+    D = np.linalg.norm(Z[:, None, :] - cent[None, :, :], axis=2)  # tin trong không gian × cụm
+    near = D.argmin(axis=1)
+    outside = D.min(axis=1) > d_thr
+    group_of = {c: names[c].split(" · ")[0] for c in cids}
+    S = (sk.to_numpy() > 0).astype(float)
+    tool_names = [c.replace("skill__", "") for c in sk.columns]
+
+    comp = (meta_all["company_id"] if "company_id" in meta_all else meta_all["company_name"]).astype(str)
+    cores = meta_all["job_title"].map(title_core)
+    is_other = (meta_all["job_group"] == "Khác").to_numpy()
+    roles = []
+    for core in sorted(set(cores[is_other]) - {""}):
+        hit = (cores == core).to_numpy()
+        rows = pos[hit & keep]
+        row = {"title_core": core, "n_jobs": int(hit.sum()), "n_companies": int(comp[hit].nunique()),
+               "n_in_space": int(len(rows)), "groups": meta_all.loc[hit, "job_group"].value_counts().to_dict(),
+               "examples": meta_all.loc[hit, "job_title"].astype(str).head(4).tolist()}
+        kr = known_role(core)
+        if is_generic_core(core):
+            row["verdict"] = "tiêu đề chung chung"
+        elif kr:
+            row["verdict"] = f"đã có trong danh sách: {kr}"
+        elif row["n_jobs"] < p.new_role_min_jobs or row["n_companies"] < p.new_role_min_companies:
+            row["verdict"] = "theo dõi (chưa đủ tin)"
+        elif len(rows) < 2:
+            row["verdict"] = "theo dõi (JD ít thông tin)"
+        else:
+            grp_near = pd.Series([group_of[cids[i]] for i in near[rows]]).value_counts(normalize=True)
+            share_out = float(outside[rows].mean())
+            main = grp_near.index[0]
+            base = S[np.isin(labels, [c for c in cids if group_of[c] == main])].mean(axis=0)
+            share = S[rows].mean(axis=0)
+            lift = np.divide(share, base, out=np.full_like(share, np.inf), where=base > 0)
+            own = [tool_names[j] for j in np.argsort(-share)
+                   if share[j] >= p.new_role_skill_share and lift[j] >= p.new_role_skill_lift]
+            row.update({"share_outside": round(share_out, 3), "nearest_groups": grp_near.round(3).to_dict(),
+                        "own_skills": own[:6]})
+            if share_out >= 0.5 and len(own) >= p.new_role_min_skills:
+                row["verdict"] = "nghề mới"
+            elif grp_near.iloc[0] < 0.6 and len(own) >= p.new_role_min_skills:
+                row["verdict"] = "nghề lai"
+                row["between"] = list(grp_near.index[:2])
+            else:
+                row["verdict"] = f"tên gọi khác trong {main}"
+        roles.append(row)
+    verdict = {r["title_core"]: r["verdict"] for r in roles}
+
+    status = np.array([None] * n_all, dtype=object)
+    nearest = np.array([None] * n_all, dtype=object)
+    for i in np.flatnonzero(is_other):
+        v = verdict.get(cores[i], "")
+        if not keep[i]:
+            status[i] = "JD ít thông tin"
+            continue
+        nearest[i] = names[cids[near[pos[i]]]]
+        if v in ("nghề mới", "nghề lai"):
+            status[i] = v
+        else:
+            status[i] = "lẻ (ngoài mọi cụm)" if outside[pos[i]] else "giống cụm có sẵn"
+    cols = pd.DataFrame({"title_core": cores.where(is_other, None).to_numpy(), "other_status": status,
+                         "nearest_cluster": nearest})
+    roles.sort(key=lambda r: (-r["n_jobs"], r["title_core"]))
+    m = {"rule": "tiêu đề cốt lõi không chung chung, chưa có trong danh sách vai trò, >= %d tin và >= %d công ty "
+                 "(đếm toàn bộ dữ liệu); >= 50%% tin xa tâm cụm gần nhất hơn P%d (ngưỡng chung) = nghề mới; "
+                 "cụm gần nhất trải >= 2 nhóm, không nhóm nào >= 60%% = nghề lai; cả hai cần >= %d công cụ riêng "
+                 "(>= %d%% tin, lift >= %g so với nhóm gần nhất)"
+                 % (p.new_role_min_jobs, p.new_role_min_companies, int((1 - p.other_sim_quantile) * 100),
+                    p.new_role_min_skills, int(p.new_role_skill_share * 100), p.new_role_skill_lift),
+         "distance_threshold": round(d_thr, 4),
+         "status_counts": pd.Series(status[is_other]).value_counts().to_dict(),
+         "verdict_counts": pd.Series([r["verdict"].split(":")[0].split(" trong ")[0] for r in roles]).value_counts().to_dict(),
+         "roles": roles}
+    return cols, m
