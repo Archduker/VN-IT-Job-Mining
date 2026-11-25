@@ -1,200 +1,156 @@
 # Lời thuyết trình slide 11–21
 
-Lời nói liền mạch cho phần sau của bạn Tài (Tài trình bày đến slide 10, gói kỹ năng SD2). Đọc to được ngay, xưng "em" và "nhóm em", nói với thầy cô.
-
-**Nguồn số liệu:**
-- SD3 (slide 11–15) lấy từ lần chạy lại M3, M4 ngày 24–25/11/2026: 7 nhóm nghề, không dùng e5.
-- Các phần còn lại lấy từ lần chạy 22/11/2026.
-- Cả hai cùng đầu vào 3.718 tin, đã kiểm bằng sha256.
+Lời nói cho phần sau của bạn Tài (Tài trình bày đến slide 10, gói kỹ năng SD2). Viết theo giọng nói, đọc to được ngay.
 
 **Cách dùng:**
-- **Thời lượng:** khoảng 14–16 phút, mỗi slide 1–1,5 phút.
-- **Ký hiệu:** `[Thao tác]` là việc làm trên slide, **chữ đậm** là chỗ nhấn giọng, `(dừng)` là nghỉ 1–2 giây cho thầy cô đọc số.
-- **Bị hỏi sâu:** xem `giai_thich_slide_11_21.md`. File này chỉ có lời nói.
+- **Thời lượng:** khoảng 14 phút, mỗi slide 1–1,5 phút.
+- **Ký hiệu:** `[Thao tác]` là việc làm trên slide, **chữ đậm** là chỗ nhấn giọng, `(dừng)` là nghỉ 1–2 giây cho thầy cô nhìn số.
+- **Bị hỏi sâu:** xem `giai_thich_slide_11_21.md`.
+
+**Nguồn số liệu:** SD3 (slide 11–15) lấy từ lần chạy lại ngày 25/11/2026; các phần còn lại lấy từ lần chạy 22/11. Cả hai cùng đầu vào 3.718 tin.
 
 ---
 
-## Nhận lời từ bạn Tài (khoảng 15 giây)
+## Nhận lời từ bạn Tài
 
-> "Dạ, cảm ơn bạn Tài. Bạn vừa cho thấy kỹ năng đi theo gói, và mỗi nghề có gói riêng. Phần tiếp theo em trình bày ba câu hỏi còn lại:
-> - Trong từng nghề IT, **thực tế có những vai trò nào**, và có **nghề mới** nào xuất hiện không? Đó là SD3.
-> - Kỹ năng nào thật sự **gắn với tiền**? Đó là SD4.
-> - Một bạn sinh viên mới vào nghề nên **học gì trước, học gì sau**? Đó là SD5.
+> "Dạ, em cảm ơn bạn Tài.
 >
-> Cuối cùng là phần đánh giá và kết luận."
+> Bạn Tài vừa cho thấy kỹ năng thường đi theo gói. Phần của em sẽ trả lời ba câu hỏi còn lại. Thứ nhất, trong mỗi nghề IT thực tế có những vai trò nào, và có nghề mới nào xuất hiện không. Thứ hai, kỹ năng nào thật sự gắn với tiền. Và thứ ba, một bạn mới vào nghề nên học gì trước, học gì sau."
 
 ---
 
 ## Slide 11. 3.718 tin: 7 nhóm nghề, 31 cụm con và nhóm Khác
 
-`[Thao tác]` Để slide ở chế độ "Tất cả".
+`[Thao tác]` Để ở chế độ "Tất cả".
 
-> "Để trả lời SD3, nhóm em làm hai bước.
+> "Để biết thị trường thật sự có những vai trò nào, nhóm em làm theo hai bước.
 >
-> **Bước một**, xếp mỗi tin vào **7 nhóm nghề** quen thuộc: phát triển phần mềm, kiểm thử, dữ liệu và AI, hạ tầng, bảo mật, sản phẩm và nghiệp vụ, hỗ trợ và tư vấn. Việc này làm bằng luật đọc chức danh, không dùng AI.
+> Bước đầu, mỗi tin được xếp vào một trong **7 nhóm nghề** quen thuộc: phần mềm, kiểm thử, dữ liệu và AI, hạ tầng, bảo mật, sản phẩm – nghiệp vụ, và hỗ trợ – tư vấn. Bước này dùng luật đọc chức danh.
 >
-> **Bước hai**, trong từng nhóm, để máy tự chia nhỏ theo **nội dung tin**, tức là công cụ và kiến thức mà tin đòi. Số cụm của mỗi nhóm bằng số vai trò nhóm em liệt kê trước, ví dụ nhóm phần mềm có 6 vai trò: frontend, backend, full-stack, mobile, game, nhúng.
+> Bước sau mới là phần khai phá: **trong từng nhóm, máy tự chia nhỏ** dựa trên công cụ và kiến thức mà tin đòi hỏi. Kết quả là **31 cụm con**, mỗi cụm là một vai trò.
 >
-> Kết quả là **31 cụm con**. Và **tin nào cũng có chỗ**, không tin nào bị bỏ: (dừng)
-> - 2.620 tin vào 31 cụm con.
-> - 744 tin ghi quá ít công cụ để phân cụm, nên vào mục 'Khác' ngay trong nhóm của nó.
-> - 354 tin không thuộc 7 nhóm nào thì vào **nhóm Khác**. Đây chính là chỗ nhóm em đi tìm nghề mới."
+> Điều nhóm em muốn nhấn mạnh là **không tin nào bị bỏ ra ngoài**. (dừng) 2.620 tin vào cụm con. 744 tin ghi quá ít công cụ để phân cụm thì vẫn ở trong nhóm của mình, ở mục 'Khác'. Còn 354 tin không thuộc nhóm nào thì vào **nhóm Khác** màu xám, và đây chính là nơi nhóm em đi tìm nghề mới."
 
 `[Thao tác]` Bấm nhóm **Data & AI**.
 
-> "Ví dụ nhóm Data & AI. Máy tách được 5 cụm: Data Engineer, hai kiểu Data Analyst và hai kiểu AI. Lát nữa em sẽ nói kỹ hơn."
+> "Ví dụ với nhóm Data & AI, máy tách ra 5 vai trò: Data Engineer, hai kiểu Data Analyst và hai kiểu AI. Hai kiểu này là gì, em xin nói ở slide sau."
 
-`[Thao tác]` Bấm "Tất cả" rồi sang slide.
+`[Thao tác]` Bấm "Tất cả", sang slide.
 
 ---
 
 ## Slide 12. Cụm con trong từng nhóm
 
-> "Đây là toàn bộ 31 cụm con, mỗi thẻ là một nhóm, kèm số tin và lương trung vị.
+> "Đây là toàn cảnh 31 vai trò, mỗi thẻ là một nhóm nghề.
 >
-> Về lương, nhìn nhanh có thể thấy:
-> - Cao nhất là **Backend Java/Spring, 30 triệu**. Theo sau là AI ứng dụng GenAI 28,5 triệu, DevOps và Automation Tester khoảng 28 triệu.
-> - Thấp nhất là **IT Helpdesk, 13 triệu**, rồi đến làm web html/css và tư vấn ERP, khoảng 17 triệu. (dừng)
+> Nhìn vào lương, vai trò trả cao nhất là **Backend Java/Spring, khoảng 30 triệu**, theo sau là AI ứng dụng GenAI, DevOps và Automation Tester, đều quanh 28 triệu. Thấp nhất là **IT Helpdesk, khoảng 13 triệu**. (dừng)
 >
-> Một chi tiết đáng chú ý: nhóm Sản phẩm và Nghiệp vụ có tới **244 tin ở mục Khác**, nhiều nhất trong 7 nhóm. Lý do là tin tuyển BA hay PM thường mô tả công việc bằng lời, rất ít khi ghi tên công cụ.
+> Có một chi tiết khá thú vị: nhóm sản phẩm – nghiệp vụ có tới 244 tin nằm ở mục 'Khác', nhiều nhất trong 7 nhóm. Lý do là tin tuyển BA hay PM thường mô tả công việc bằng lời, rất ít khi ghi tên công cụ.
 >
-> Cụm có chữ màu cam là cụm máy tìm ra nhưng **không khớp vai trò nào** trong danh sách. Nhóm em để nguyên như vậy, không ép đặt tên cho đẹp."
+> Những cụm chữ màu cam là cụm máy tìm ra nhưng không khớp với vai trò nào trong danh sách. Nhóm em giữ nguyên, không ép đặt tên cho đẹp."
 
 ---
 
-## Slide 13. Vai trò con tìm được so với danh sách
+## Slide 13. Vai trò tìm được so với danh sách
 
-> "Slide này so cái máy tìm được với danh sách vai trò nhóm em đặt ra từ đầu.
-> - Ô **xanh** là vai trò có cụm riêng.
-> - Ô **viền xám** là vai trò không thành cụm.
-> - Ô **cam** là cụm nằm ngoài danh sách.
+> "Ở slide này, nhóm em đặt kết quả của máy cạnh danh sách vai trò lập từ đầu. Ô xanh là vai trò có cụm riêng, ô viền xám là vai trò không tách được, còn ô cam là cụm nằm ngoài danh sách.
 >
-> Có ba phát hiện chính:
+> Phát hiện đầu tiên: **AI và Data Analyst đều có hai kiểu khác nhau.** Một bên là AI làm GenAI, agent, với gemini, claude; bên kia là AI học sâu, thị giác máy, với pytorch, onnx. Data Analyst cũng vậy: một kiểu chủ yếu làm bảng tính, một kiểu làm BI với tableau, power BI. Với sinh viên, đây thực ra là bốn hướng học, chứ không phải hai.
 >
-> **Một, AI và Data Analyst đều tách làm hai.** AI có một nhóm làm **GenAI, agent** với gemini, claude, và một nhóm làm **học sâu, thị giác máy** với pytorch, onnx. Data Analyst có một nhóm chủ yếu làm **bảng tính**, và một nhóm làm **BI** với tableau, power BI. Với sinh viên, đây là bốn hướng học khác nhau, không phải hai.
+> Phát hiện thứ hai: phần mềm tách theo công nghệ, Java/Spring, .NET, full-stack Node. Frontend thì không đứng riêng mà nằm lẫn trong các cụm web.
 >
-> **Hai, phần mềm tách theo công nghệ:** Java/Spring, .NET, full-stack Node/Next. Còn frontend không thành cụm riêng mà nằm lẫn trong cụm web.
->
-> **Ba, có những thứ ngoài dự kiến.** Cụm 'QA Engineer' thật ra là **QA chất lượng sản xuất**, với word, excel, autocad, chứ không phải kiểm thử phần mềm. Còn PO, PM, Scrum Master viết JD giống BA nên không tách được; SOC và Pentester thì quá ít tin."
+> Và có cả điều ngoài dự kiến. (dừng) Cụm 'QA Engineer' hóa ra là **QA chất lượng sản xuất**, dùng word, excel, autocad, chứ không phải kiểm thử phần mềm. Ngược lại, PO, PM và BA viết JD giống nhau nên máy không tách được."
 
 ---
 
 ## Slide 14. Chất lượng phân cụm
 
-> "Với phân cụm, câu hỏi đầu tiên phải trả lời là: **chạy lại có ra như cũ không?**
+> "Với phân cụm, câu hỏi đầu tiên luôn là: **chạy lại có ra như cũ không?** Nhóm em chạy lại với 5 điểm xuất phát ngẫu nhiên. Cả 7 nhóm đều vượt ngưỡng 0,8, trung bình **0,97**. Nhóm thấp nhất là bảo mật, 0,89, vì có ít tin.
 >
-> Biểu đồ bên trái: nhóm em chạy lại với 5 điểm xuất phát ngẫu nhiên khác nhau. Cả 7 nhóm đều trên ngưỡng 0,8. Trung bình **0,97**, thấp nhất là Security 0,89. (dừng)
+> Bảng bên phải là một bài học nhóm em rút ra trong lúc làm. Ban đầu nhóm em có dùng thêm mô hình ngôn ngữ e5 để đọc câu chữ. Nhưng khi vẽ bản đồ, các tin tách thành hai mảng rất lạ. Kiểm lại thì thấy **5 cụm gần như toàn là tin viết bằng tiếng Anh**. (dừng) Tức là e5 đang gom tin theo ngôn ngữ, chứ không theo công việc.
 >
-> Bảng bên phải là một bài học nhóm em rút ra trong lúc làm. Ban đầu nhóm em dùng thêm mô hình ngôn ngữ e5 để đọc câu chữ trong tin. Nhưng khi vẽ ra thì thấy có **5 cụm gần như toàn là tin viết bằng tiếng Anh**. Nghĩa là e5 đang gom tin theo **ngôn ngữ viết**, chứ không theo công việc.
->
-> Nhóm em đã thử 5 cách. Cách được chọn là **bỏ e5, chỉ dùng công cụ và khái niệm**, vì đây là mã chung cho cả tiếng Anh và tiếng Việt. Kết quả: không còn cụm nào lệch theo ngôn ngữ, và vẫn ổn định.
->
-> Silhouette 0,07 nhóm em chỉ báo cáo, vì các vai trò IT vốn chồng lấn nhau."
+> Nhóm em thử 5 cách khác nhau, và chọn **bỏ e5**, chỉ dùng công cụ và khái niệm, vì đây là mã chung cho cả tiếng Anh lẫn tiếng Việt. Sau khi sửa, không còn cụm nào lệch theo ngôn ngữ mà kết quả vẫn ổn định."
 
 ---
 
-## Slide 15. Tin "khác hoặc mới"
+## Slide 15. Tin khác hoặc mới
 
-> "Câu hỏi cuối của SD3: có tin nào **lạ**, có **nghề mới** nào không? Nhóm em trả lời bằng hai phần.
+> "Câu hỏi cuối của phần này là: có tin nào lạ, và có nghề nào mới không?
 >
-> **Phần một, tin lạ.** Hai thuật toán tìm điểm lạ đánh dấu 210 tin.
-> - Loại **'khác'**, 97 tin, có lý do đọc được. Ví dụ lương thấp bất thường so với cấp, hay một tin DevOps đòi **32 công cụ**. Nhóm em kiểm tay **8 trên 8 tin đều đúng**.
-> - Loại **'chưa rõ'** là các tin giáp ngưỡng, ví dụ fresher đòi 15 đến 17 công cụ trong khi ngưỡng là trên 17.
+> Về tin lạ, hai thuật toán đánh dấu 210 tin. Đáng tin nhất là **97 tin có lý do rõ ràng**, ví dụ lương thấp bất thường so với cấp bậc, hay một tin DevOps đòi tới 32 công cụ. Nhóm em kiểm tay, **8 trên 8 tin đều đúng là lạ**. Phần còn lại là các tin giáp ngưỡng, nhóm em tách riêng chứ không dùng để kết luận.
 >
-> **Phần hai, nghề mới.** Nhóm em đặt **luật chốt từ trước**: một tiêu đề chỉ được coi là nghề mới khi chưa có trong danh sách vai trò, có ít nhất **3 tin từ 2 công ty**, nội dung nằm xa mọi cụm có sẵn, và có ít nhất 2 công cụ riêng. (dừng)
+> Về nghề mới, nhóm em đặt luật từ trước: một chức danh chỉ được gọi là nghề mới khi chưa có trong danh sách, xuất hiện ở **ít nhất 3 tin của 2 công ty**, nội dung khác hẳn mọi cụm có sẵn, và có công cụ riêng. (dừng)
 >
-> Áp luật lên 354 tin nhóm Khác:
-> - Phần lớn có nội dung giống một cụm có sẵn, chỉ là tên gọi khác. Ví dụ Tech Lead vẫn là việc phần mềm.
-> - Có **2 nghề lai**: Engineering Manager và Forward Deployed Engineer, nằm giữa hai nhóm.
-> - **Không có nghề mới.** Ví dụ Analytics Engineer là vai trò đang nổi trên thế giới, nhưng kỳ này chỉ có **1 tin**, nên nhóm em đưa vào danh sách theo dõi, chưa kết luận."
+> Áp luật này lên 354 tin nhóm Khác, phần lớn chỉ là tên gọi khác của nghề quen, ví dụ Tech Lead vẫn là việc phần mềm. Có 2 nghề lai là Engineering Manager và Forward Deployed Engineer. Và **chưa có nghề mới nào đủ điều kiện**. Ví dụ Analytics Engineer là vai trò đang nổi, nhưng kỳ này chỉ có 1 tin, nên nhóm em đưa vào danh sách theo dõi."
 
 ---
 
 ## Slide 16. Mô hình lương
 
-> "Sang SD4: **kỹ năng nào đáng tiền?** Nhóm em huấn luyện mô hình Random Forest dự đoán lương từ kinh nghiệm, cấp bậc, nghề, tỉnh và kỹ năng.
+> "Chuyển sang câu hỏi thứ hai: **kỹ năng nào đáng tiền?**
 >
-> Mô hình chỉ có giá trị khi thắng cách đoán đơn giản nhất: lấy lương giữa của những người **cùng cấp, cùng nghề**. Cách này sai trung bình 7,3 triệu. Mô hình sai **6,1 triệu**, tức tốt hơn **16,7%**, vượt ngưỡng 10% đặt từ trước. (dừng)
+> Nhóm em huấn luyện mô hình Random Forest để dự đoán lương. Một mô hình chỉ có giá trị khi thắng được cách đoán đơn giản nhất, là lấy lương giữa của những người cùng cấp, cùng nghề. Cách đơn giản sai trung bình 7,3 triệu, còn mô hình sai **6,1 triệu**, tức tốt hơn **16,7%**. (dừng)
 >
-> Để kết quả không bị 'ăn gian', nhóm em chia dữ liệu **theo công ty**: công ty nào ở phần học thì không xuất hiện ở phần thi.
+> Để kết quả không bị 'học thuộc', nhóm em chia dữ liệu theo công ty: công ty nào dùng để học thì không xuất hiện lúc kiểm tra.
 >
-> Khi hỏi mô hình mỗi yếu tố đóng góp bao nhiêu vào mức lương, câu trả lời là **kinh nghiệm 42%, cấp bậc 25%**, cộng lại **67%**. Tất cả công cụ gộp lại chỉ khoảng **6%**."
+> Khi xem mỗi yếu tố đóng góp bao nhiêu vào mức lương, **kinh nghiệm và cấp bậc chiếm tới 67%**. Toàn bộ công cụ cộng lại chỉ khoảng 6%."
 
 ---
 
 ## Slide 17. Kỹ năng đáng tiền
 
-> "Đi vào từng kỹ năng. Mỗi thanh là số tiền gắn thêm khi tin có kỹ năng đó, sau khi đã tính kinh nghiệm và cấp bậc.
+> "Đi vào từng kỹ năng, đứng đầu là cisco, kubernetes, C++ và docker. Nhưng mức cộng thêm chỉ từ **0,3 đến 0,55 triệu** một tháng. (dừng)
 >
-> Đứng đầu là **cisco 0,55 triệu, kubernetes 0,46, C++ 0,42, docker 0,33**. (dừng)
+> Để so sánh, từ Junior lên Middle lương tăng khoảng 7 triệu, từ Middle lên Senior khoảng 15 triệu.
 >
-> Nhưng so với chênh lương giữa hai cấp: Junior lên Middle là **thêm 7 triệu**, Middle lên Senior là **thêm 15 triệu**. Một kỹ năng lẻ chỉ dưới **0,6 triệu**.
->
-> Thông điệp cho sinh viên: **kỹ năng là vé vào cửa, còn kinh nghiệm mới làm lương tăng.** Và em xin nói rõ, đây là **liên hệ thống kê**, không phải nhân quả."
+> Vì vậy thông điệp cho sinh viên là: **kỹ năng là vé vào cửa, còn kinh nghiệm mới là thứ làm lương tăng.** Em cũng xin nói rõ, đây là liên hệ thống kê, không phải nhân quả: học thêm kubernetes không có nghĩa lương sẽ tăng đúng 0,46 triệu."
 
 ---
 
-## Slide 18. Lộ trình cho người mới, ví dụ nghề Web
+## Slide 18. Lộ trình cho người mới
 
-> "SD5 ghép tất cả lại thành câu trả lời thực tế: **người mới nên học gì, theo thứ tự nào?** Ví dụ nghề Web, từ 192 tin tuyển Intern, Fresher và Junior:
-> - **Bước 1, nền:** javascript, có ở 40% tin; rồi git, SQL, java, python.
-> - **Bước 2, học theo gói:** html/css, react, typescript; hoặc java đi với spring boot. Thứ tự lấy từ luật kết hợp bạn Tài đã trình bày, ví dụ học docker trước rồi mới tới kubernetes.
-> - **Chưa nên đầu tư sớm:** graphql, jenkins, azure. Các công cụ này xuất hiện ở tin Senior và Lead **nhiều gấp 3 đến 14 lần** tin người mới.
+> "Câu hỏi thứ ba ghép tất cả lại: **người mới nên học gì, theo thứ tự nào?** Em lấy ví dụ nghề Web, từ 192 tin tuyển Intern, Fresher và Junior.
 >
-> Mỗi kỹ năng trong lộ trình đều truy được về ba nguồn: bao nhiêu tin đòi, gói kỹ năng ở SD2 và giá trị lương ở SD4.
+> Đầu tiên là phần nền: javascript, có ở 40% tin, rồi đến git, SQL. Tiếp theo là học theo gói: html, css, react, typescript; hoặc java đi cùng spring boot. Thứ tự này lấy từ chính các gói kỹ năng mà bạn Tài đã trình bày. Còn graphql, jenkins hay azure thì chưa nên học sớm, vì chúng xuất hiện ở tin Senior nhiều gấp 3 đến 14 lần tin người mới.
 >
-> Lộ trình của **cả 8 nghề đều tốt hơn** cách học 'top 10 công cụ phổ biến nhất'. Bốn nghề cho kết quả ổn định; bốn nghề còn lại ít tin cho người mới nên nhóm em ghi là tham khảo."
+> Lộ trình của cả 8 nghề đều tốt hơn cách học top 10 công cụ phổ biến. Bốn nghề cho kết quả ổn định; bốn nghề còn lại có ít tin người mới nên nhóm em chỉ ghi là tham khảo."
 
 ---
 
 ## Slide 19. Đánh giá và nghiệm thu
 
-> "Để không tự chấm điểm cho mình, nhóm em **đặt ngưỡng nghiệm thu trước** khi xem kết quả. Bên trái là các cổng đều đạt:
-> - Phân cụm ổn định, ARI 0,97, và cả 3.718 tin đều có chỗ.
-> - Mô hình lương thắng baseline 16,7%.
-> - Lộ trình 8 trên 8 nghề tốt hơn baseline.
-> - Chạy lại trên cùng máy ra cùng số.
+> "Để không tự chấm điểm cho mình, nhóm em đặt các ngưỡng nghiệm thu **trước** khi xem kết quả, và tất cả đều đạt: phân cụm ổn định với ARI 0,97, mô hình lương thắng baseline 16,7%, lộ trình tốt hơn baseline ở cả 8 nghề.
 >
-> Bên phải là những điểm còn yếu, nhóm em ghi rõ chứ không giấu:
-> - Với SD3, nhóm em có **hai thay đổi sau khi xem kết quả**: bỏ e5 vì nó gom tin theo ngôn ngữ, và tính cổng cụm nhỏ theo từng nhóm. Cả hai đều ghi lý do trong nhật ký.
-> - Silhouette thấp.
-> - Chỉ 44% tin công bố lương.
-> - 4 nghề chỉ ở mức tham khảo.
-> - Nghề mới cần thêm dữ liệu các kỳ sau.
->
-> Và quan trọng nhất: dữ liệu chỉ có **phía nhà tuyển dụng, trong 3 tháng**, nên nhóm em không kết luận xu hướng hay quan hệ nhân quả."
+> Bên phải là những điểm nhóm em muốn nói thẳng. (dừng) Ở phần phân cụm, có hai chỗ nhóm em đổi sau khi xem kết quả: bỏ e5, và tính ngưỡng cụm nhỏ theo từng nhóm. Cả hai đều có lý do và được ghi lại. Ngoài ra, chỉ 44% tin công bố lương, và dữ liệu chỉ có phía nhà tuyển dụng trong 3 tháng, nên nhóm em không kết luận về xu hướng hay quan hệ nhân quả."
 
 ---
 
 ## Slide 20. Câu trả lời cho năm câu hỏi
 
-> "Quay lại năm câu hỏi ban đầu:
-> - **SD1, thị trường:** Hà Nội và TP.HCM chiếm **89%** số tin. Người mới chiếm 29%, lương khoảng **13,5 triệu**, so với 26,5 triệu từ Middle trở lên.
-> - **SD2, gói kỹ năng:** kỹ năng đi theo gói, như java với spring boot, docker với kubernetes.
-> - **SD3, nhóm việc:** 3.718 tin xếp vào 7 nhóm nghề và nhóm Khác; trong mỗi nhóm có 31 vai trò con ổn định. AI và Data Analyst đều có hai kiểu. Không thấy nghề mới; có 2 nghề lai, và Analytics Engineer đang được theo dõi.
-> - **SD4, giá trị kỹ năng:** kinh nghiệm và cấp bậc chiếm **67%**; một kỹ năng lẻ dưới 0,6 triệu.
-> - **SD5, lộ trình:** có lộ trình cho 8 nghề, 4 nghề ổn định."
+> "Tóm lại, năm câu hỏi ban đầu có năm câu trả lời.
+>
+> Thị trường IT tập trung ở Hà Nội và TP.HCM, chiếm 89% số tin; người mới chiếm 29% với lương khoảng 13,5 triệu. Kỹ năng đi theo gói, như java với spring boot. Trong mỗi nghề có nhiều vai trò con, AI và Data Analyst đều có hai hướng, và kỳ này chưa có nghề mới. Lương phụ thuộc chủ yếu vào kinh nghiệm và cấp bậc, một kỹ năng lẻ chỉ thêm dưới 0,6 triệu. Và nhóm em đã xây lộ trình học cho 8 nghề."
 
 ---
 
 ## Slide 21. Gợi ý cho sinh viên IT
 
-> "Nếu chỉ mang về **ba điều**, nhóm em mong các bạn sinh viên nhớ:
+> "Nếu chỉ mang về ba điều, nhóm em mong các bạn sinh viên nhớ:
 >
-> **Một, học nền chung:** SQL, Python, Git, Linux. Những thứ này có mặt ở tin của hầu hết các nghề.
+> **Một**, học chắc phần nền: SQL, Python, Git, Linux, vì nghề nào cũng cần.
 >
-> **Hai, chọn hướng rồi học theo gói của hướng đó.** Ngay trong một nghề cũng có nhiều hướng: Data Analyst làm bảng tính khác Data Analyst làm BI, AI GenAI khác AI học sâu. Chọn Web thì javascript rồi react, typescript; chọn DevOps thì docker rồi kubernetes.
+> **Hai**, chọn một hướng rồi học theo gói của hướng đó. Ngay trong một nghề đã có nhiều hướng, ví dụ Data Analyst làm bảng tính rất khác Data Analyst làm BI.
 >
-> **Ba, tích lũy kinh nghiệm thật sớm:** thực tập, dự án thật. Trong mô hình lương, kinh nghiệm nặng nhất, hơn hẳn việc thêm một công cụ.
+> **Ba**, tích lũy kinh nghiệm thật sớm, qua thực tập và dự án thật, vì đó là yếu tố nặng nhất trong lương.
 >
-> Về sản phẩm, nhóm em có một pipeline 4 giai đoạn chạy lại được, từ dữ liệu thô của 8 sàn đến kết quả, và dashboard theo năm câu hỏi. Hướng tiếp theo là thu thập thêm các kỳ sau, để theo dõi những vai trò mới như Analytics Engineer.
+> Hướng tiếp theo của nhóm là thu thập thêm các kỳ sau, để theo dõi những vai trò đang nổi như Analytics Engineer.
 >
-> Phần trình bày của nhóm em đến đây là hết. Em cảm ơn thầy cô và các bạn đã lắng nghe, nhóm em rất mong nhận được câu hỏi và góp ý ạ."
+> Phần trình bày của nhóm em đến đây là kết thúc. Em cảm ơn thầy cô và các bạn đã lắng nghe, và rất mong nhận được câu hỏi, góp ý ạ."
 
 ---
 
 ## Ba câu nên thuộc lòng
 
-1. **Về phân cụm:** "Mỗi tin đều có chỗ: 31 cụm con trong 7 nhóm, ổn định với ARI 0,97; tin khó thì vào mục Khác."
-2. **Về e5:** "E5 gom tin theo ngôn ngữ viết JD, nên nhóm em bỏ e5 khỏi phân cụm và dùng công cụ cùng khái niệm."
-3. **Về nghề mới:** "Luật đặt trước cần 3 tin từ 2 công ty. Analytics Engineer mới có 1 tin nên đang theo dõi, chưa kết luận."
+1. "Không tin nào bị bỏ: 31 vai trò con trong 7 nhóm, ổn định với ARI 0,97; tin khó thì vào mục Khác."
+2. "e5 gom tin theo ngôn ngữ viết, nên nhóm em bỏ e5 và dùng công cụ cùng khái niệm."
+3. "Nghề mới cần ít nhất 3 tin từ 2 công ty; Analytics Engineer mới có 1 tin nên đang theo dõi."
